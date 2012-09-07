@@ -28,6 +28,7 @@
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoLibraryQueue.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;
@@ -411,7 +412,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMovies(const std::string &method, 
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedMoviesNav("videodb://recentlyaddedmovies/", items))
+  if (!videodatabase.GetRecentlyAddedMoviesNav(g_advancedSettings.m_recentlyAddedMoviePath, items))
     return InternalError;
 
   return GetAdditionalMovieDetails(parameterObject, items, result, videodatabase, true);
@@ -424,7 +425,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const std::string &method
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedEpisodesNav("videodb://recentlyaddedepisodes/", items))
+  if (!videodatabase.GetRecentlyAddedEpisodesNav(g_advancedSettings.m_recentlyAddedEpisodePath, items))
     return InternalError;
 
   return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase, true);
@@ -437,7 +438,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const std::string &met
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedMusicVideosNav("videodb://recentlyaddedmusicvideos/", items))
+  if (!videodatabase.GetRecentlyAddedMusicVideosNav(g_advancedSettings.m_recentlyAddedMusicVideoPath, items))
     return InternalError;
 
   return GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase, true);

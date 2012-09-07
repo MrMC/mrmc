@@ -344,7 +344,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedSongs(const std::string &method, I
     amount = 0;
 
   CFileItemList items;
-  if (!musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", items, (unsigned int)amount))
+  if (!musicdatabase.GetRecentlyAddedAlbumSongs(g_advancedSettings.m_recentlyAddedMusicPath, items, (unsigned int)amount))
     return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
