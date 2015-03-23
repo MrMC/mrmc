@@ -15,9 +15,9 @@ DEPENDS = \
 	libshairplay \
 	libplist libcec tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
-	libxmlrpc libxslt ffmpeg platform crossguid libcpluff
+	libxmlrpc libxslt libdcadec ffmpeg platform crossguid libcpluff
 
-FFMPEG_DEPENDS = gnutls
+FFMPEG_DEPENDS = gnutls libdcadec
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3
