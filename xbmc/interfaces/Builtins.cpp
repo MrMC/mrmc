@@ -226,10 +226,6 @@ const BUILT_IN commands[] = {
   { "CECToggleState",             false,  "Toggle state of playing device via a CEC peripheral"},
   { "CECActivateSource",          false,  "Wake up playing device via a CEC peripheral"},
   { "CECStandby",                 false,  "Put playing device on standby via a CEC peripheral"},
-  { "Weather.Refresh",            false,  "Force weather data refresh"},
-  { "Weather.LocationNext",       false,  "Switch to next weather location"},
-  { "Weather.LocationPrevious",   false,  "Switch to previous weather location"},
-  { "Weather.LocationSet",        true,   "Switch to given weather location (parameter can be 1-3)"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes Kodi as LIRC client" },
   { "LIRC.Start",                 false,  "Adds Kodi as LIRC client" },
@@ -526,7 +522,6 @@ int CBuiltins::Execute(const std::string& execString)
       {
         //Get the correct extension point to run
         if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
             CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
             CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
         {
@@ -679,7 +674,6 @@ int CBuiltins::Execute(const std::string& execString)
         Execute(cmd);
       }
       else if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
                CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
                CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
       {
@@ -1823,27 +1817,6 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "cecstandby")
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_CECSTANDBY);
-  }
-  else if (execute == "weather.locationset" && !params.empty())
-  {
-    int loc = atoi(params[0].c_str());
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc);
-    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
-  }
-  else if (execute == "weather.locationnext")
-  {
-    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 1);
-    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
-  }
-  else if (execute == "weather.locationprevious")
-  {
-    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, -1);
-    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
-  }
-  else if (execute == "weather.refresh")
-  {
-    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 0);
-    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }
   else if (execute == "videolibrary.search")
   {

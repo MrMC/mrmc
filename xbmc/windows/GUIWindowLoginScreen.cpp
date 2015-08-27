@@ -32,7 +32,6 @@
 #endif
 #include "interfaces/Builtins.h"
 #include "utils/log.h"
-#include "utils/Weather.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "network/Network.h"
@@ -314,7 +313,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     return;
   }
 
-  g_weatherManager.Refresh();
   g_application.SetLoggingIn(true);
 
 #ifdef HAS_JSONRPC

@@ -78,7 +78,6 @@ static const TypeMapping types[] =
    {"visualization-library",             ADDON_VIZ_LIBRARY,         24084, "" },
    {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
    {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
-   {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027, "DefaultAddonWeather.png" },
    {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013, "DefaultAddonLyrics.png" },
    {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24081, "DefaultAddonHelper.png" },
    {"xbmc.python.module",                ADDON_SCRIPT_MODULE,       24082, "DefaultAddonLibrary.png" },
@@ -365,8 +364,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_SCRIPT:
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
-    case ADDON_SCRIPT_WEATHER:
-    case ADDON_SUBTITLE_MODULE:        
+    case ADDON_SUBTITLE_MODULE:
     case ADDON_PLUGIN:
     case ADDON_SERVICE:
     case ADDON_CONTEXT_ITEM:
@@ -389,7 +387,6 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRIPT:
       case ADDON_SCRIPT_LIBRARY:
       case ADDON_SCRIPT_LYRICS:
-      case ADDON_SCRIPT_WEATHER:
       case ADDON_SCRIPT_MODULE:
       case ADDON_SUBTITLE_MODULE:
       case ADDON_SCRAPER_ALBUMS:

@@ -58,7 +58,6 @@
 #include "settings/windows/GUIWindowSettingsScreenCalibration.h"
 #include "programs/GUIWindowPrograms.h"
 #include "pictures/GUIWindowPictures.h"
-#include "windows/GUIWindowWeather.h"
 #include "windows/GUIWindowLoginScreen.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "music/windows/GUIWindowVisualisation.h"
@@ -297,7 +296,6 @@ void CGUIWindowManager::CreateWindows()
 
   Add(new CGUIDialogVideoOSD);
   Add(new CGUIWindowScreensaver);
-  Add(new CGUIWindowWeather);
   Add(new CGUIWindowStartup);
   Add(new CGUIWindowSplash);
 
@@ -404,11 +402,9 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_HOME);
     Delete(WINDOW_PROGRAMS);
     Delete(WINDOW_PICTURES);
-    Delete(WINDOW_WEATHER);
 
     Delete(WINDOW_SETTINGS_MYPICTURES);
     Remove(WINDOW_SETTINGS_MYPROGRAMS);
-    Remove(WINDOW_SETTINGS_MYWEATHER);
     Remove(WINDOW_SETTINGS_MYMUSIC);
     Remove(WINDOW_SETTINGS_SYSTEM);
     Remove(WINDOW_SETTINGS_MYVIDEOS);

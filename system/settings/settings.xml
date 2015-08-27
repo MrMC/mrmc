@@ -13,13 +13,6 @@
             <show more="true" details="true">installed</show>
           </control>
         </setting>
-        <setting id="lookandfeel.skinsettings" type="action" parent="lookandfeel.skin" label="21417" help="36104">
-          <level>0</level>
-          <dependencies>
-            <dependency type="enable" on="property" name="AddonHasSettings" setting="lookandfeel.skin" />
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
         <setting id="lookandfeel.skintheme" type="string" parent="lookandfeel.skin" label="15111" help="36105">
           <level>1</level>
           <default>SKINDEFAULT</default>

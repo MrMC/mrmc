@@ -309,7 +309,6 @@ static const ActionMapping windows[] =
     { "guicalibration"           , WINDOW_SCREEN_CALIBRATION },        // backward compat
     { "picturessettings"         , WINDOW_SETTINGS_MYPICTURES },
     { "programssettings"         , WINDOW_SETTINGS_MYPROGRAMS },
-    { "weathersettings"          , WINDOW_SETTINGS_MYWEATHER },
     { "musicsettings"            , WINDOW_SETTINGS_MYMUSIC },
     { "systemsettings"           , WINDOW_SETTINGS_SYSTEM },
     { "videossettings"           , WINDOW_SETTINGS_MYVIDEOS },
@@ -384,7 +383,6 @@ static const ActionMapping windows[] =
     { "slideshow"                , WINDOW_SLIDESHOW },
     { "filestackingdialog"       , WINDOW_DIALOG_FILESTACKING },
     { "karaoke"                  , WINDOW_KARAOKELYRICS },
-    { "weather"                  , WINDOW_WEATHER },
     { "screensaver"              , WINDOW_SCREENSAVER },
     { "videoosd"                 , WINDOW_DIALOG_VIDEO_OSD },
     { "videomenu"                , WINDOW_VIDEO_MENU },

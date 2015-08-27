@@ -146,12 +146,6 @@
 						<onclick>ActivateWindow(PicturesSettings)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="6">
-						<label>8</label>
-						<label2>31404</label2>
-						<onclick>ActivateWindow(WeatherSettings)</onclick>
-						<icon>-</icon>
-					</item>
 					<item id="7">
 						<label>24001</label>
 						<label2>31408</label2>

@@ -385,7 +385,6 @@
 #define ICON_TYPE_PICTURES      104
 #define ICON_TYPE_VIDEOS        105
 #define ICON_TYPE_FILES         106
-#define ICON_TYPE_WEATHER       107
 #define ICON_TYPE_SETTINGS      109
 
 #ifndef SWIG
