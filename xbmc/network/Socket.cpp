@@ -31,10 +31,6 @@
 using namespace SOCKETS;
 //using namespace std; On VS2010, bind conflicts with std::bind
 
-#ifdef WINSOCK_VERSION
-#define close closesocket
-#endif
-
 /**********************************************************************/
 /* CPosixUDPSocket                                                    */
 /**********************************************************************/
@@ -55,11 +51,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   }
 
   // make sure we can reuse the address
-#ifdef WINSOCK_VERSION
-  const char yes=1;
-#else
   int yes = 1;
-#endif
   if (setsockopt(m_iSock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))==-1)
   {
     CLog::Log(LOGWARNING, "UDP: Could not enable the address reuse options");
@@ -152,10 +144,8 @@ void CSocketListener::AddSocket(CBaseSocket *sock)
   {
     m_sockets.push_back(sock);
     FD_SET(sock->Socket(), &m_fdset);
-#ifndef WINSOCK_VERSION
     if (sock->Socket() > m_iMaxSockets)
       m_iMaxSockets = sock->Socket();
-#endif
   }
 }
 

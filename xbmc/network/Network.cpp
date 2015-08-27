@@ -451,14 +451,8 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
 {
   struct sockaddr_storage addr;
   int    sock = -1;
-
-#ifdef WINSOCK_VERSION
-  int yes = 1;
-  int no = 0;
-#else
   unsigned int yes = 1;
   unsigned int no = 0;
-#endif
   
   // first try ipv6
   if ((sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) >= 0)

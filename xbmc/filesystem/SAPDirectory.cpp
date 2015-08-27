@@ -294,9 +294,6 @@ void CSAPSessions::StopThread(bool bWait /*= true*/)
   {
     if(shutdown(m_socket, SHUT_RDWR) == SOCKET_ERROR)
       CLog::Log(LOGERROR, "s - failed to shutdown socket");
-#ifdef WINSOCK_VERSION
-    closesocket(m_socket);
-#endif
   }
   CThread::StopThread(bWait);
 }
