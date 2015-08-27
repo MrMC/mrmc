@@ -18,7 +18,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 #include <stdlib.h>
@@ -48,15 +48,9 @@
 
 #ifdef TARGET_POSIX
 #include "posix/PosixDirectory.h"
-#elif defined(TARGET_WINDOWS)
-#include "win32/Win32Directory.h"
 #endif
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef TARGET_WINDOWS
-#include "win32/Win32SMBDirectory.h"
-#else
 #include "SMBDirectory.h"
-#endif
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
 #include "CDDADirectory.h"
@@ -122,8 +116,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 
 #ifdef TARGET_POSIX
   if (url.GetProtocol().empty() || url.IsProtocol("file")) return new CPosixDirectory();
-#elif defined(TARGET_WINDOWS)
-  if (url.GetProtocol().empty() || url.IsProtocol("file")) return new CWin32Directory();
 #else
 #error Local directory access is not implemented for this platform
 #endif
@@ -184,11 +176,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     if (url.IsProtocol("sftp") || url.IsProtocol("ssh")) return new CSFTPDirectory();
 #endif
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef TARGET_WINDOWS
-    if (url.IsProtocol("smb")) return new CWin32SMBDirectory();
-#else
     if (url.IsProtocol("smb")) return new CSMBDirectory();
-#endif
 #endif
 #ifdef HAS_FILESYSTEM
 #endif

@@ -27,10 +27,6 @@
 #include <fcntl.h>
 #include <sstream>
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "ssh.lib")
-#endif
-
 #ifndef S_ISDIR
 #define S_ISDIR(m) ((m & _S_IFDIR) != 0)
 #endif

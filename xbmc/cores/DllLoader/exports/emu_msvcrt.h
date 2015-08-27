@@ -33,11 +33,7 @@ typedef off64_t __off64_t;
 typedef fpos_t fpos64_t;
 #endif
 
-#ifdef TARGET_WINDOWS
-#include "win32/dirent.h"
-#else
 #include <dirent.h>
-#endif
 
 typedef void ( *PFV)(void);
 
@@ -47,11 +43,7 @@ typedef void ( *PFV)(void);
 #define IS_STDIN_STREAM(stream)     (stream != NULL && __IS_STDIN_STREAM(stream))
 #define IS_STDOUT_STREAM(stream)    (stream != NULL && __IS_STDOUT_STREAM(stream))
 #define IS_STDERR_STREAM(stream)    (stream != NULL && __IS_STDERR_STREAM(stream))
-#ifdef TARGET_WINDOWS
-#define IS_VALID_STREAM(stream)     (stream != NULL && (stream->_ptr != NULL))
-#else
 #define IS_VALID_STREAM(stream)     true
-#endif
 
 
 #define IS_STD_STREAM(stream)       (stream != NULL && (__IS_STDIN_STREAM(stream) || __IS_STDOUT_STREAM(stream) || __IS_STDERR_STREAM(stream)))
@@ -146,9 +138,6 @@ extern "C"
 #endif
   int dll_stati64(const char *path, struct _stati64 *buffer);
   int dll_stat64(const char *path, struct __stat64 *buffer);
-#ifdef TARGET_WINDOWS
-  int dll_stat64i32(const char *path, struct _stat64i32 *buffer);
-#endif
   int dll_stat(const char *path, struct stat *buffer);
   int dll_fstat(int fd, struct stat *buffer);
   int dll_fstati64(int fd, struct _stati64 *buffer);
@@ -170,10 +159,6 @@ extern "C"
   int dll_ftrylockfile(FILE *file);
   void dll_funlockfile(FILE *file);
   int dll_fstat64(int fd, struct __stat64 *buf);
-#ifdef TARGET_WINDOWS
-  int dll_fstat64i32(int fd, struct _stat64i32 *buffer);
-  int dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags);
-#endif
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
   int dll_filbuf(FILE *fp);
   int dll_flsbuf(int data, FILE*fp);

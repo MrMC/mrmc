@@ -85,39 +85,27 @@
 #include <stdint.h>
 
 #ifndef PRId64
-#ifdef TARGET_WINDOWS
-#define PRId64 "I64d"
-#else
-#if __WORDSIZE == 64
-#define PRId64 "ld"
-#else
-#define PRId64 "lld"
-#endif
-#endif
+  #if __WORDSIZE == 64
+    #define PRId64 "ld"
+  #else
+    #define PRId64 "lld"
+  #endif
 #endif
 
 #ifndef PRIu64
-#ifdef TARGET_WINDOWS
-#define PRIu64 "I64u"
-#else
-#if __WORDSIZE == 64
-#define PRIu64 "lu"
-#else
-#define PRIu64 "llu"
-#endif
-#endif
+  #if __WORDSIZE == 64
+  #define PRIu64 "lu"
+  #else
+  #define PRIu64 "llu"
+  #endif
 #endif
 	
 #ifndef PRIx64
-#ifdef TARGET_WINDOWS
-#define PRIx64 "I64x"
-#else
-#if __WORDSIZE == 64
-#define PRIx64 "lx"
-#else
-#define PRIx64 "llx"
-#endif
-#endif
+  #if __WORDSIZE == 64
+  #define PRIx64 "lx"
+  #else
+  #define PRIx64 "llx"
+  #endif
 #endif
 
 #ifndef PRIdS

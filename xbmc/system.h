@@ -20,7 +20,7 @@
  *
  */
 
-#if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
+#if defined(HAVE_CONFIG_H)
 #include "config.h"
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
@@ -88,44 +88,8 @@
  * Non-free Components
  **********************/
 
-#if defined(TARGET_WINDOWS)
+#if defined(HAVE_XBMC_NONFREE)
   #define HAS_FILESYSTEM_RAR
-#else
-  #if defined(HAVE_XBMC_NONFREE)
-    #define HAS_FILESYSTEM_RAR
-  #endif
-#endif
-
-/*****************
- * Win32 Specific
- *****************/
-
-#if defined(TARGET_WINDOWS)
-#define HAS_SDL_JOYSTICK
-#define HAS_DVD_DRIVE
-#define HAS_WIN32_NETWORK
-#define HAS_IRSERVERSUITE
-#define HAS_AUDIO
-#define HAS_WEB_SERVER
-#define HAS_WEB_INTERFACE
-#define HAVE_LIBSSH
-#define HAS_LIBRTMP
-#define HAVE_LIBBLURAY
-#define HAS_ASAP_CODEC
-#define HAS_FILESYSTEM_SMB
-#define HAS_FILESYSTEM_NFS
-#define HAS_ZEROCONF
-#define HAS_MDNS
-#define HAS_AIRPLAY
-#define HAS_AIRTUNES
-#define HAVE_LIBSHAIRPLAY
-#define HAVE_LIBCEC
-#define HAVE_LIBMP3LAME
-#define HAVE_LIBVORBISENC
-#define HAS_MYSQL
-#define HAS_UPNP
-
-#define DECLARE_UNUSED(a,b) a b;
 #endif
 
 /*****************
@@ -188,31 +152,6 @@
 /****************************************
  * Additional platform specific includes
  ****************************************/
-
-#if defined(TARGET_WINDOWS)
-#include <windows.h>
-#define DIRECTINPUT_VERSION 0x0800
-#include "mmsystem.h"
-#include "DInput.h"
-#include "DSound.h"
-#define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
-#define LPDIRECTSOUND8 LPDIRECTSOUND
-#undef GetFreeSpace
-#include "PlatformInclude.h"
-#ifdef HAS_DX
-#include "d3d9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
-#include "d3d11_1.h"
-#include "dxgi.h"
-#include "d3dcompiler.h"
-#include "directxmath.h"
-#else
-#include <d3d9types.h>
-#endif
-#ifdef HAS_SDL
-#include "SDL\SDL.h"
-#endif
-#endif
-
 #if defined(TARGET_POSIX)
 #include <time.h>
 #include <sys/time.h>

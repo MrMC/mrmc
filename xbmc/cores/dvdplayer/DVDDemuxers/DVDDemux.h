@@ -31,7 +31,7 @@ class CDVDInputStream;
 #pragma warning(disable:4244)
 #endif
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 

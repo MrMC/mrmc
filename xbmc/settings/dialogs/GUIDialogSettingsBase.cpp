@@ -42,11 +42,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-#if defined(TARGET_WINDOWS) // disable 4355: 'this' used in base member initializer list
-#pragma warning(push)
-#pragma warning(disable: 4355)
-#endif // defined(TARGET_WINDOWS)
-
 #define CATEGORY_GROUP_ID               3
 #define SETTINGS_GROUP_ID               5
 

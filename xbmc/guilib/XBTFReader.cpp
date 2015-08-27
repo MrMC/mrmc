@@ -27,12 +27,6 @@
 #include "guilib/XBTF.h"
 #include "utils/EndianSwap.h"
 
-#ifdef TARGET_WINDOWS
-#include "filesystem/SpecialProtocol.h"
-#include "utils/CharsetConverter.h"
-#include "win32/PlatformDefs.h"
-#endif
-
 static bool ReadString(FILE* file, char* str, size_t max_length)
 {
   if (file == nullptr || str == nullptr || max_length <= 0)
@@ -82,14 +76,7 @@ bool CXBTFReader::Open(const std::string& path)
     return false;
 
   m_path = path;
-
-#ifdef TARGET_WINDOWS
-  std::wstring strPathW;
-  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(m_path), strPathW, false);
-  m_file = _wfopen(strPathW.c_str(), L"rb");
-#else
   m_file = fopen(m_path.c_str(), "rb");
-#endif
   if (m_file == nullptr)
     return false;
 

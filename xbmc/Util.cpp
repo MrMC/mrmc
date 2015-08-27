@@ -63,10 +63,6 @@
 #include "guilib/TextureManager.h"
 #include "utils/fstrcmp.h"
 #include "storage/MediaManager.h"
-#ifdef TARGET_WINDOWS
-#include "utils/CharsetConverter.h"
-#include "WIN32Util.h"
-#endif
 #if defined(TARGET_DARWIN)
 #include "CompileInfo.h"
 #include "osx/DarwinUtils.h"
@@ -103,9 +99,7 @@ using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 
-#if !defined(TARGET_WINDOWS)
 unsigned int CUtil::s_randomSeed = time(NULL);
-#endif
 
 CUtil::CUtil(void)
 {
@@ -329,29 +323,6 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
     strPath = CEnvironment::getenv("KODI_HOME");
   else
     strPath = CEnvironment::getenv(strTarget);
-
-#ifdef TARGET_WINDOWS
-  if (strPath.find("..") != std::string::npos)
-  {
-    //expand potential relative path to full path
-    std::wstring strPathW;
-    g_charsetConverter.utf8ToW(strPath, strPathW, false);
-    CWIN32Util::AddExtraLongPathPrefix(strPathW);
-    const unsigned int bufSize = GetFullPathNameW(strPathW.c_str(), 0, NULL, NULL);
-    if (bufSize != 0)
-    {
-      wchar_t * buf = new wchar_t[bufSize];
-      if (GetFullPathNameW(strPathW.c_str(), bufSize, buf, NULL) <= bufSize-1)
-      {
-        std::wstring expandedPathW(buf);
-        CWIN32Util::RemoveExtraLongPathPrefix(expandedPathW);
-        g_charsetConverter.wToUTF8(expandedPathW, strPath);
-      }
-
-      delete [] buf;
-    }
-  }
-#endif
 
   if (strPath.empty())
   {
@@ -759,40 +730,6 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
 
-#ifdef TARGET_WINDOWS
-void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
-{
-  result->st_dev = stat->st_dev;
-  result->st_ino = stat->st_ino;
-  result->st_mode = stat->st_mode;
-  result->st_nlink = stat->st_nlink;
-  result->st_uid = stat->st_uid;
-  result->st_gid = stat->st_gid;
-  result->st_rdev = stat->st_rdev;
-#ifndef TARGET_POSIX
-  if (stat->st_size <= LONG_MAX)
-    result->st_size = (_off_t)stat->st_size;
-#else
-  if (sizeof(stat->st_size) <= sizeof(result->st_size) )
-    result->st_size = stat->st_size;
-#endif
-  else
-  {
-    result->st_size = 0;
-    CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
-  }
-#ifndef TARGET_POSIX
-  result->st_atime = stat->st_atime;
-  result->st_mtime = stat->st_mtime;
-  result->st_ctime = stat->st_ctime;
-#else
-  result->st_atime = stat->_st_atime;
-  result->st_mtime = stat->_st_mtime;
-  result->st_ctime = stat->_st_ctime;
-#endif
-}
-#endif
-
 bool CUtil::CreateDirectoryEx(const std::string& strPath)
 {
   // Function to create all directories at once instead
@@ -891,26 +828,6 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
     return result;
 
   // check the path for incorrect slashes
-#ifdef TARGET_WINDOWS
-  if (URIUtils::IsDOSPath(path))
-  {
-    StringUtils::Replace(result, '/', '\\');
-    /* The double slash correction should only be used when *absolutely*
-       necessary! This applies to certain DLLs or use from Python DLLs/scripts
-       that incorrectly generate double (back) slashes.
-    */
-    if (bFixDoubleSlashes && !result.empty())
-    {
-      // Fixup for double back slashes (but ignore the \\ of unc-paths)
-      for (size_t x = 1; x < result.size() - 1; x++)
-      {
-        if (result[x] == '\\' && result[x+1] == '\\')
-          result.erase(x);
-      }
-    }
-  }
-  else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
-#endif
   {
     StringUtils::Replace(result, '\\', '/');
     /* The double slash correction should only be used when *absolutely*
@@ -1652,15 +1569,7 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
 std::string CUtil::ResolveExecutablePath()
 {
   std::string strExecutablePath;
-#ifdef TARGET_WINDOWS
-  static const size_t bufSize = MAX_PATH * 2;
-  wchar_t* buf = new wchar_t[bufSize];
-  buf[0] = 0;
-  ::GetModuleFileNameW(0, buf, bufSize);
-  buf[bufSize-1] = 0;
-  g_charsetConverter.wToUTF8(buf,strExecutablePath);
-  delete[] buf;
-#elif defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
   uint32_t path_size =2*MAXPATHLEN;
 
@@ -2172,13 +2081,7 @@ bool CUtil::ValidatePort(int port)
 
 int CUtil::GetRandomNumber()
 {
-#ifdef TARGET_WINDOWS
-  unsigned int number;
-  if (rand_s(&number) == 0)
-    return (int)number;
-#else
   return rand_r(&s_randomSeed);
-#endif
 
   return rand();
 }

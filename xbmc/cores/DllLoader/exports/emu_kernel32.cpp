@@ -86,75 +86,7 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
   return FindClose(hFile);
 }
 
-#ifdef TARGET_WINDOWS
-#define CORRECT_SEP_STR(str) \
-  if (strstr(str, "://") == NULL) \
-  { \
-    int iSize_##str = strlen(str); \
-    for (int pos = 0; pos < iSize_##str; pos++) \
-      if (str[pos] == '/') str[pos] = '\\'; \
-  } \
-  else \
-  { \
-    int iSize_##str = strlen(str); \
-    for (int pos = 0; pos < iSize_##str; pos++) \
-      if (str[pos] == '\\') str[pos] = '/'; \
-  }
-#else
 #define CORRECT_SEP_STR(str)
-#endif
-
-#ifdef TARGET_WINDOWS
-static void to_WIN32_FIND_DATA(LPWIN32_FIND_DATAW wdata, LPWIN32_FIND_DATA data)
-{
-  std::string strname;
-  g_charsetConverter.wToUTF8(wdata->cFileName, strname);
-  size_t size = sizeof(data->cFileName) / sizeof(char);
-  strncpy(data->cFileName, strname.c_str(), size);
-  if (size)
-    data->cFileName[size - 1] = '\0';
-
-  g_charsetConverter.wToUTF8(wdata->cAlternateFileName, strname);
-  size = sizeof(data->cAlternateFileName) / sizeof(char);
-  strncpy(data->cAlternateFileName, strname.c_str(), size);
-  if (size)
-    data->cAlternateFileName[size - 1] = '\0';
-
-  data->dwFileAttributes = wdata->dwFileAttributes;
-  data->ftCreationTime = wdata->ftCreationTime;
-  data->ftLastAccessTime = wdata->ftLastAccessTime;
-  data->ftLastWriteTime = wdata->ftLastWriteTime;
-  data->nFileSizeHigh = wdata->nFileSizeHigh;
-  data->nFileSizeLow = wdata->nFileSizeLow;
-  data->dwReserved0 = wdata->dwReserved0;
-  data->dwReserved1 = wdata->dwReserved1;
-}
-
-static void to_WIN32_FIND_DATAW(LPWIN32_FIND_DATA data, LPWIN32_FIND_DATAW wdata)
-{
-  std::wstring strwname;
-  g_charsetConverter.utf8ToW(data->cFileName, strwname, false);
-  size_t size = sizeof(wdata->cFileName) / sizeof(wchar_t);
-  wcsncpy(wdata->cFileName, strwname.c_str(), size);
-  if (size)
-    wdata->cFileName[size - 1] = '\0';
-
-  g_charsetConverter.utf8ToW(data->cAlternateFileName, strwname, false);
-  size = sizeof(wdata->cAlternateFileName) / sizeof(wchar_t);
-  wcsncpy(wdata->cAlternateFileName, strwname.c_str(), size);
-  if (size)
-    data->cAlternateFileName[size - 1] = '\0';
-
-  wdata->dwFileAttributes = data->dwFileAttributes;
-  wdata->ftCreationTime = data->ftCreationTime;
-  wdata->ftLastAccessTime = data->ftLastAccessTime;
-  wdata->ftLastWriteTime = data->ftLastWriteTime;
-  wdata->nFileSizeHigh = data->nFileSizeHigh;
-  wdata->nFileSizeLow = data->nFileSizeLow;
-  wdata->dwReserved0 = data->dwReserved0;
-  wdata->dwReserved1 = data->dwReserved1;
-}
-#endif
 
 extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
 {
@@ -168,32 +100,14 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
     e[0] = '\0';
   }
 
-#ifdef TARGET_WINDOWS
-  struct _WIN32_FIND_DATAW FindFileDataW;
-  std::wstring strwfile;
-  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(p), strwfile, false);
-  HANDLE res = FindFirstFileW(strwfile.c_str(), &FindFileDataW);
-  if (res != INVALID_HANDLE_VALUE)
-    to_WIN32_FIND_DATA(&FindFileDataW, lpFindFileData);
-#else
   HANDLE res = FindFirstFile(CSpecialProtocol::TranslatePath(p).c_str(), lpFindFileData);
-#endif
   free(p);
   return res;
 }
 
 extern "C" BOOL WINAPI dllFindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATA lpFindFileData)
 {
-#ifdef TARGET_WINDOWS
-  struct _WIN32_FIND_DATAW FindFileDataW;
-  to_WIN32_FIND_DATAW(lpFindFileData, &FindFileDataW);
-  BOOL res = FindNextFileW(hFindFile, &FindFileDataW);
-  if (res)
-    to_WIN32_FIND_DATA(&FindFileDataW, lpFindFileData);
-  return res;
-#else
   return FindNextFile(hFindFile, lpFindFileData);
-#endif
 }
 
 // should be moved to CFile! or use CFile::stat
@@ -260,12 +174,8 @@ extern "C" int WINAPI dllDuplicateHandle(HANDLE hSourceProcessHandle,   // handl
 
 extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HMODULE h)
 {
-#ifdef TARGET_WINDOWS
-  return DisableThreadLibraryCalls(h);
-#else
   not_implement("kernel32.dll fake function DisableThreadLibraryCalls called\n"); //warning
   return TRUE;
-#endif
 }
 
 #ifndef TARGET_POSIX
@@ -384,14 +294,10 @@ extern "C" HMODULE WINAPI dllTerminateProcess(HANDLE hProcess, UINT uExitCode)
 }
 extern "C" HANDLE WINAPI dllGetCurrentProcess()
 {
-#ifdef TARGET_WINDOWS
-  return GetCurrentProcess();
-#else
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetCurrentProcess(void) => 9375");
 #endif
   return (HANDLE)9375;
-#endif
 }
 
 extern "C" UINT WINAPI dllGetACP()
@@ -470,30 +376,19 @@ static const char ch_envs[] =
 
 extern "C" LPVOID WINAPI dllGetEnvironmentStrings()
 {
-#ifdef TARGET_WINDOWS
-  return GetEnvironmentStrings();
-#else
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetEnvironmentStrings() => 0x%x = %p", ch_envs, ch_envs);
 #endif
   return (LPVOID)ch_envs;
-#endif
 }
 
 extern "C" LPVOID WINAPI dllGetEnvironmentStringsW()
 {
-#ifdef TARGET_WINDOWS
-  return GetEnvironmentStringsW();
-#else  
   return 0;
-#endif
 }
 
 extern "C" int WINAPI dllGetEnvironmentVariableA(LPCSTR lpName, LPSTR lpBuffer, DWORD nSize)
 {
-#ifdef TARGET_WINDOWS
-  return GetEnvironmentVariableA(lpName, lpBuffer, nSize);
-#else
   if (lpBuffer)
   {
     lpBuffer[0] = 0;
@@ -505,7 +400,6 @@ extern "C" int WINAPI dllGetEnvironmentVariableA(LPCSTR lpName, LPSTR lpBuffer, 
     return strlen(lpBuffer);
   }
   return 0;
-#endif
 }
 
 extern "C" HMODULE WINAPI dllLCMapStringA(LCID Locale, DWORD dwMapFlags, LPCSTR lpSrcStr, int cchSrc, LPSTR lpDestStr, int cchDest)
@@ -558,88 +452,26 @@ extern "C" BOOL WINAPI dllSetPriorityClass(HANDLE hProcess, DWORD dwPriorityClas
 
 extern "C" DWORD WINAPI dllFormatMessageA(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId, LPTSTR lpBuffer, DWORD nSize, va_list* Arguments)
 {
-#ifdef TARGET_WINDOWS
-  return FormatMessageA(dwFlags, lpSource, dwMessageId, dwLanguageId, lpBuffer, nSize, Arguments);
-#else
   not_implement("kernel32.dll fake function FormatMessage called\n"); //warning
   return 0;
-#endif
 }
 
 extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLength, LPTSTR lpBuffer, LPTSTR* lpFilePart)
 {
-#ifdef TARGET_WINDOWS
-  if (!lpFileName) return 0;
-  if(strstr(lpFileName, "://"))
-  {
-    unsigned int length = strlen(lpFileName);
-    if (nBufferLength < (length + 1))
-      return length + 1;
-    else
-    {
-      strcpy(lpBuffer, lpFileName);
-      if(lpFilePart)
-      {
-        char* s1 = strrchr(lpBuffer, '\\');
-        char* s2 = strrchr(lpBuffer, '/');
-        if(s2 && s1 > s2)
-          *lpFilePart = s1 + 1;
-        else if(s1 && s2 > s1)
-          *lpFilePart = s2 + 1;
-        else
-          *lpFilePart = lpBuffer;
-      }
-      return length;
-    }
-  }
-  return GetFullPathNameA(lpFileName, nBufferLength, lpBuffer, lpFilePart);
-#else
   not_implement("kernel32.dll fake function GetFullPathNameW called\n"); //warning
   return 0;
-#endif
 }
 
 extern "C" DWORD WINAPI dllGetFullPathNameW(LPCWSTR lpFileName, DWORD nBufferLength, LPWSTR lpBuffer, LPWSTR* lpFilePart)
 {
-#ifdef TARGET_WINDOWS
-  if (!lpFileName) return 0;
-  if(wcsstr(lpFileName, L"://"))
-  {
-    size_t length = wcslen(lpFileName);
-    if (nBufferLength < (length + 1))
-      return length + 1;
-    else
-    {
-      wcscpy(lpBuffer, lpFileName);
-      if(lpFilePart)
-      {
-        wchar_t* s1 = wcsrchr(lpBuffer, '\\');
-        wchar_t* s2 = wcsrchr(lpBuffer, '/');
-        if(s2 && s1 > s2)
-          *lpFilePart = s1 + 1;
-        else if(s1 && s2 > s1)
-          *lpFilePart = s2 + 1;
-        else
-          *lpFilePart = lpBuffer;
-      }
-      return length;
-    }
-  }
-  return GetFullPathNameW(lpFileName, nBufferLength, lpBuffer, lpFilePart);
-#else
   not_implement("kernel32.dll fake function GetFullPathNameW called\n"); //warning
   return 0;
-#endif
 }
 
 extern "C" DWORD WINAPI dllExpandEnvironmentStringsA(LPCTSTR lpSrc, LPTSTR lpDst, DWORD nSize)
 {
-#ifdef TARGET_WINDOWS
-  return ExpandEnvironmentStringsA(lpSrc, lpDst, nSize);
-#else
   not_implement("kernel32.dll fake function ExpandEnvironmentStringsA called\n"); //warning
   return 0;
-#endif
 }
 
 extern "C" UINT WINAPI dllGetWindowsDirectoryA(LPTSTR lpBuffer, UINT uSize)
@@ -856,34 +688,10 @@ extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCST
     destinationBuffer = (LPWSTR)malloc(destinationBufferSize * sizeof(WCHAR));
   }
 
-#ifdef TARGET_WINDOWS
-  int ret = MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, cbMultiByte, destinationBuffer, destinationBufferSize);
-#else
-  int ret = 0;
-#endif
-
-  if (ret > 0)
-  {
-    // second fix, but only if cchWideChar == 0, and ofcours ret > 0 indicating the function
-    // returned the number of bytes needed, otherwise ret would be 0, meaning a successfull conversion
-    if (cchWideChar == 0) {
-      ret--;
-    }
-
-    // revert the first fix again
-    if (cbMultiByte > 0 && cbMultiByte == cchWideChar) {
-      // the 0 termination character could never have been written on a windows machine
-      // because of cchWideChar == cbMultiByte, again xbox added one for it.
-      ret--;
-
-      memcpy(lpWideCharStr, destinationBuffer, ret * sizeof(WCHAR));
-    }
-  }
-
   if (cbMultiByte > 0 && cbMultiByte == cchWideChar)
     free(destinationBuffer);
   
-  return ret;
+  return 0;
 }
 
 // same reason as above
@@ -899,47 +707,19 @@ extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWS
     destinationBufferSize++;
     destinationBuffer = (LPSTR)malloc(destinationBufferSize * sizeof(char));
   }
-
-#ifdef TARGET_WINDOWS
-  int ret = WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, cchWideChar, destinationBuffer, destinationBufferSize, lpDefaultChar, lpUsedDefaultChar);
-#else
-  int ret = 0;
-#endif
-
-  if (ret > 0)
-  {
-    // second fix, but only if cbMultiByte == 0, and ofcours ret > 0 indicating the function
-    // returned the number of bytes needed, otherwise ret would be 0, meaning a successfull conversion
-    if (cbMultiByte == 0) {
-      ret--;
-    }
-
-    // revert the first fix again
-    if (cchWideChar > 0 && cchWideChar == cbMultiByte) {
-      // the 0 termination character could never have been written on a windows machine
-      // because of cchWideChar == cbMultiByte, again xbox added one for it.
-      ret--;
-
-      memcpy(lpMultiByteStr, destinationBuffer, ret);
-    }
-  }
   
   if (cchWideChar > 0 && cchWideChar == cbMultiByte)
     free(destinationBuffer);
 
-  return ret;
+  return 0;
 }
 
 extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine, BOOL Add)
 {
-#ifdef TARGET_WINDOWS
-  return SetConsoleCtrlHandler(HandlerRoutine, Add);
-#else
   // no consoles exists on the xbox, do nothing
   not_implement("kernel32.dll fake function SetConsoleCtrlHandler called\n");  //warning
   SetLastError(ERROR_INVALID_FUNCTION);
   return 0;
-#endif
 }
 
 extern "C" PVOID WINAPI dllEncodePointer(PVOID ptr)
@@ -1044,13 +824,8 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
       p++;
     if (p == (BYTE *)lpBuffer + numChecked)
     { // fully NULL block - reread
-#ifdef TARGET_WINDOWS
-      LONG low = 0;
-      LONG high = 0;
-#else
       int32_t low = 0;
       int32_t high = 0;
-#endif
       low = SetFilePointer(hFile, low, &high, FILE_CURRENT);
       CLog::Log(LOGWARNING,
                 "DVDReadFile() warning - "
@@ -1069,30 +844,18 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
 
 extern "C" LPVOID WINAPI dllLockResource(HGLOBAL hResData)
 {
-#ifdef TARGET_WINDOWS
-  return LockResource(hResData);
-#else
   not_implement("kernel32.dll fake function LockResource called\n"); //warning
   return 0;
-#endif
 }
 
 extern "C" SIZE_T WINAPI dllGlobalSize(HGLOBAL hMem)
 {
-#ifdef TARGET_WINDOWS
-  return GlobalSize(hMem);
-#else
   not_implement("kernel32.dll fake function GlobalSize called\n"); //warning
   return 0;
-#endif
 }
 
 extern "C" DWORD WINAPI dllSizeofResource(HMODULE hModule, HRSRC hResInfo)
 {
-#ifdef TARGET_WINDOWS
-  return SizeofResource(hModule, hResInfo);
-#else
   not_implement("kernel32.dll fake function SizeofResource called\n"); //warning
   return 0;
-#endif
 }

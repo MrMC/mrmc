@@ -896,8 +896,6 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
         || *platform == "freebsd"
 #endif
         )
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-      if (*platform == "windx" || *platform == "windows")
 #elif defined(TARGET_DARWIN_OSX)
 // Remove this after Frodo and add an architecture filter
 // in addition to platform.
@@ -986,10 +984,6 @@ std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
   if (libraryName.empty())
 #endif
   libraryName = GetExtValue(base, "@library_linux");
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-  libraryName = GetExtValue(base, "@library_windx");
-  if (libraryName.empty())
-    libraryName = GetExtValue(base, "@library_windows");
 #elif defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)
   libraryName = GetExtValue(base, "@library_ios");

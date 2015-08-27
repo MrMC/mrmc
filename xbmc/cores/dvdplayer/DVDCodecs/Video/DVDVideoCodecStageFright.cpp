@@ -20,10 +20,8 @@
 
 //#define DEBUG_VERBOSE 1
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
 #include "config.h"
-#elif defined(TARGET_WINDOWS)
-#include "system.h"
 #endif
 
 #if defined(HAS_LIBSTAGEFRIGHT)

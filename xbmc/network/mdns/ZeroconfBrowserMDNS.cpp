@@ -24,9 +24,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIMessage.h"
 #include "GUIUserMessages.h"
-#if defined(TARGET_WINDOWS)
-#include "win32/WIN32Util.h"
-#endif //TARGET_WINDOWS
 #include "network/DNSNameCache.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -47,10 +44,6 @@ CZeroconfBrowserMDNS::~CZeroconfBrowserMDNS()
   //make sure there are no browsers anymore
   for(tBrowserMap::iterator it = m_service_browsers.begin(); it != m_service_browsers.end(); ++it )
     doRemoveServiceType(it->first);
-
-#if defined(TARGET_WINDOWS)
-  WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_hWnd, BONJOUR_BROWSER_EVENT, 0 );
-#endif //TARGET_WINDOWS
 
   if (m_browser)
     DNSServiceRefDeallocate(m_browser);
@@ -235,11 +228,6 @@ bool CZeroconfBrowserMDNS::doAddServiceType(const std::string& fcr_service_type)
       CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: DNSServiceCreateConnection failed with error = %ld", (int) err);
       return false;
     }
-#if defined(TARGET_WINDOWS)
-    err = WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_hWnd, BONJOUR_BROWSER_EVENT, FD_READ | FD_CLOSE );
-    if (err != kDNSServiceErr_NoError)
-      CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: WSAAsyncSelect failed with error = %ld", (int) err);
-#endif //TARGET_WINDOWS
   }
 #endif //!HAS_MDNS_EMBEDDED
 

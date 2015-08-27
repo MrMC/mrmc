@@ -123,17 +123,6 @@ namespace MathUtils
 #if defined(__SSE2__)
     const float round_dn_to_nearest = 0.4999999f;
     i = (x > 0) ? _mm_cvttsd_si32(_mm_set_sd(x + round_to_nearest)) : _mm_cvttsd_si32(_mm_set_sd(x - round_dn_to_nearest));
-
-#elif defined(TARGET_WINDOWS)
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fadd round_to_nearest
-      fistp i
-      sar i, 1
-    }
-
 #else
     __asm__ __volatile__ (
       "fadd %%st\n\t"

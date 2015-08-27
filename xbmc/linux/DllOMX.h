@@ -21,7 +21,7 @@
 
 #if defined(HAVE_OMXLIB)
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 #ifndef __GNUC__

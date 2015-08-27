@@ -30,44 +30,6 @@
 #include <limits.h>
 #include <string.h>
 
-#ifdef TARGET_WINDOWS
-
-/* pthread_mutex_* wrapper for win32 */
-#ifndef TARGET_POSIX
-#include <windows.h>
-#include <process.h>
-typedef CRITICAL_SECTION pthread_mutex_t;
-#define pthread_mutex_init(a, b) InitializeCriticalSection(a)
-#define pthread_mutex_lock(a)    EnterCriticalSection(a)
-#define pthread_mutex_unlock(a)  LeaveCriticalSection(a)
-#define pthread_mutex_destroy(a) DeleteCriticalSection(a)
-#endif // !TARGET_POSIX
-
-#ifndef HAVE_GETTIMEOFDAY
-/* replacement gettimeofday implementation */
-#include <sys/timeb.h>
-static inline int _private_gettimeofday( struct timeval *tv, void *tz )
-{
-  struct timeb t;
-  ftime( &t );
-  tv->tv_sec = t.time;
-  tv->tv_usec = t.millitm * 1000;
-  return 0;
-}
-#define gettimeofday(TV, TZ) _private_gettimeofday((TV), (TZ))
-#endif
-
-#ifndef TARGET_POSIX
-#include <io.h> /* read() */
-#define lseek64 _lseeki64
-#endif // !TARGET_POSIX
-
-#else
-
-#include <pthread.h>
-
-#endif /* TARGET_WINDOWS */
-
 /* Uncomment for VM command tracing */
 /* #define TRACE */
 
@@ -215,16 +177,11 @@ dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state);
 /** USEFUL MACROS **/
 
 #ifdef __GNUC__
-#define printerrf(format, args...) \
-	do { if (this) snprintf(this->err_str, MAX_ERR_LEN, format, ## args); } while (0)
+  #define printerrf(format, args...) \
+    do { if (this) snprintf(this->err_str, MAX_ERR_LEN, format, ## args); } while (0)
 #else
-#ifdef _MSC_VER
-#define printerrf(str) \
-	do { if (this) snprintf(this->err_str, MAX_ERR_LEN, str); } while (0)
-#else
-#define printerrf(...) \
-	do { if (this) snprintf(this->err_str, MAX_ERR_LEN, __VA_ARGS__); } while (0)
-#endif /* TARGET_WINDOWS */
+  #define printerrf(...) \
+    do { if (this) snprintf(this->err_str, MAX_ERR_LEN, __VA_ARGS__); } while (0)
 #endif
 #define printerr(str) \
 	do { if (this) strncpy(this->err_str, str, MAX_ERR_LEN - 1); } while (0)

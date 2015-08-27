@@ -774,10 +774,7 @@ bool CSettings::InitializeDefinitions()
     CLog::Log(LOGFATAL, "Unable to load settings definitions");
     return false;
   }
-#if defined(TARGET_WINDOWS)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "win32.xml") && !Initialize(SETTINGS_XML_FOLDER "win32.xml"))
-    CLog::Log(LOGFATAL, "Unable to load win32-specific settings definitions");
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
   if (CFile::Exists(SETTINGS_XML_FOLDER "android.xml") && !Initialize(SETTINGS_XML_FOLDER "android.xml"))
     CLog::Log(LOGFATAL, "Unable to load android-specific settings definitions");
 #if defined(HAS_LIBAMCODEC)
@@ -880,25 +877,8 @@ void CSettings::InitializeDefaults()
     timezone->SetDefault(g_timezone.GetOSConfiguredTimezone());
 #endif // defined(TARGET_POSIX)
 
-#if defined(TARGET_WINDOWS)
-  #if defined(HAS_DX)
-  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_MUSICPLAYER_VISUALISATION))->SetDefault("visualization.milkdrop");
-  #endif
-
-  #if !defined(HAS_GL)
-  // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
-  // as it works nicer with switching to other applications. However on some systems vsync is broken
-  // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
-  // the front
-  if (g_sysinfo.IsAeroDisabled())
-    ((CSettingBool*)m_settingsManager->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))->SetDefault(false);
-  #endif
-#endif
-
-#if !defined(TARGET_WINDOWS)
   ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(CAEFactory::GetDefaultDevice(false));
   ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(CAEFactory::GetDefaultDevice(true));
-#endif
 
   if (g_application.IsStandAlone())
     ((CSettingInt*)m_settingsManager->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);

@@ -38,10 +38,6 @@
 #include "utils/Variant.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "input/InputManager.h"
-#if defined(TARGET_WINDOWS)
-  #include "utils/CharsetConverter.h"
-  #include "Windows.h"
-#endif
 #if defined(TARGET_ANDROID)
   #include "android/activity/XBMCApp.h"
 #endif
@@ -55,10 +51,6 @@
 #define DEFAULT_PLAYCOUNT_MIN_TIME 10
 
 using namespace XFILE;
-
-#if defined(TARGET_WINDOWS)
-extern HWND g_hWnd;
-#endif
 
 CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -83,11 +75,6 @@ CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
   m_hwndXbmc = NULL;
   m_xPos = 0;
   m_yPos = 0;
-
-
-#if defined(TARGET_WINDOWS)
-  memset(&m_processInfo, 0, sizeof(m_processInfo));
-#endif
 }
 
 CExternalPlayer::~CExternalPlayer()
@@ -121,13 +108,6 @@ bool CExternalPlayer::CloseFile(bool reopen)
   m_bAbortRequest = true;
 
   if (m_dialog && m_dialog->IsActive()) m_dialog->Close();
-
-#if defined(TARGET_WINDOWS)
-  if (m_bIsPlaying && m_processInfo.hProcess)
-  {
-    TerminateProcess(m_processInfo.hProcess, 1);
-  }
-#endif
 
   return true;
 }
@@ -225,19 +205,7 @@ void CExternalPlayer::Process()
   // make sure we surround the arguments with quotes where necessary
   std::string strFName;
   std::string strFArgs;
-#if defined(TARGET_WINDOWS)
-  // W32 batch-file handline
-  if (StringUtils::EndsWith(m_filename, ".bat") || StringUtils::EndsWith(m_filename, ".cmd"))
-  {
-    // MSDN says you just need to do this, but cmd's handing of spaces and
-    // quotes is soo broken it seems to work much better if you just omit
-    // lpApplicationName and enclose the module in lpCommandLine in quotes
-    //strFName = "cmd.exe";
-    //strFArgs = "/c ";
-  }
-  else
-#endif
-    strFName = m_filename;
+  strFName = m_filename;
 
   strFArgs.append("\"");
   strFArgs.append(m_filename);
@@ -256,50 +224,11 @@ void CExternalPlayer::Process()
     strFArgs.append("\"");
   }
 
-#if defined(TARGET_WINDOWS)
-  if (m_warpcursor)
-  {
-    GetCursorPos(&m_ptCursorpos);
-    int x = 0;
-    int y = 0;
-    switch (m_warpcursor)
-    {
-      case WARP_BOTTOM_RIGHT:
-        x = GetSystemMetrics(SM_CXSCREEN);
-      case WARP_BOTTOM_LEFT:
-        y = GetSystemMetrics(SM_CYSCREEN);
-        break;
-      case WARP_TOP_RIGHT:
-        x = GetSystemMetrics(SM_CXSCREEN);
-        break;
-      case WARP_CENTER:
-        x = GetSystemMetrics(SM_CXSCREEN) / 2;
-        y = GetSystemMetrics(SM_CYSCREEN) / 2;
-        break;
-    }
-    CLog::Log(LOGNOTICE, "%s: Warping cursor to (%d,%d)", __FUNCTION__, x, y);
-    SetCursorPos(x,y);
-  }
-
-  LONG currentStyle = GetWindowLong(g_hWnd, GWL_EXSTYLE);
-#endif
-
   if (m_hidexbmc && !m_islauncher)
   {
     CLog::Log(LOGNOTICE, "%s: Hiding %s window", __FUNCTION__, CCompileInfo::GetAppName());
     g_Windowing.Hide();
   }
-#if defined(TARGET_WINDOWS)
-  else if (currentStyle & WS_EX_TOPMOST)
-  {
-    CLog::Log(LOGNOTICE, "%s: Lowering %s window", __FUNCTION__, CCompileInfo::GetAppName());
-    SetWindowPos(g_hWnd,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
-  }
-
-  CLog::Log(LOGDEBUG, "%s: Unlocking foreground window", __FUNCTION__);
-  LockSetForegroundWindow(LSFW_UNLOCK);
-#endif
-
   m_playbackStartTime = XbmcThreads::SystemClockMillis();
 
   /* Suspend AE temporarily so exclusive or hog-mode sinks */
@@ -319,9 +248,7 @@ void CExternalPlayer::Process()
   m_callback.OnPlayBackStarted();
 
   BOOL ret = TRUE;
-#if defined(TARGET_WINDOWS)
-  ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
   ret = ExecuteAppAndroid(m_filename.c_str(), mainFile.c_str());
 #elif defined(TARGET_POSIX) || defined(TARGET_DARWIN_OSX)
   ret = ExecuteAppLinux(strFArgs.c_str());
@@ -352,36 +279,10 @@ void CExternalPlayer::Process()
   m_bIsPlaying = false;
   CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
 
-#if defined(TARGET_WINDOWS)
-  g_Windowing.Restore();
-
-  if (currentStyle & WS_EX_TOPMOST)
-  {
-    CLog::Log(LOGNOTICE, "%s: Showing %s window TOPMOST", __FUNCTION__, CCompileInfo::GetAppName());
-    SetWindowPos(g_hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
-    SetForegroundWindow(g_hWnd);
-  }
-  else
-#endif
   {
     CLog::Log(LOGNOTICE, "%s: Showing %s window", __FUNCTION__, CCompileInfo::GetAppName());
     g_Windowing.Show();
   }
-
-#if defined(TARGET_WINDOWS)
-  if (m_warpcursor)
-  {
-    m_xPos = 0;
-    m_yPos = 0;
-    if (&m_ptCursorpos != 0)
-    {
-      m_xPos = (m_ptCursorpos.x);
-      m_yPos = (m_ptCursorpos.y);
-    }
-    CLog::Log(LOGNOTICE, "%s: Restoring cursor to (%d,%d)", __FUNCTION__, m_xPos, m_yPos);
-    SetCursorPos(m_xPos,m_yPos);
-  }
-#endif
 
   /* Resume AE processing of XBMC native audio */
   if (!CAEFactory::Resume())
@@ -398,63 +299,6 @@ void CExternalPlayer::Process()
   else
     m_callback.OnPlayBackEnded();
 }
-
-#if defined(TARGET_WINDOWS)
-BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches)
-{
-  CLog::Log(LOGNOTICE, "%s: %s %s", __FUNCTION__, strPath, strSwitches);
-
-  STARTUPINFOW si;
-  memset(&si, 0, sizeof(si));
-  si.cb = sizeof(si);
-  si.dwFlags = STARTF_USESHOWWINDOW;
-  si.wShowWindow = m_hideconsole ? SW_HIDE : SW_SHOW;
-
-  std::wstring WstrPath, WstrSwitches;
-  g_charsetConverter.utf8ToW(strPath, WstrPath);
-  g_charsetConverter.utf8ToW(strSwitches, WstrSwitches);
-
-  if (m_bAbortRequest) return false;
-
-  BOOL ret = CreateProcessW(WstrPath.empty() ? NULL : WstrPath.c_str(),
-                            (LPWSTR) WstrSwitches.c_str(), NULL, NULL, FALSE, NULL,
-                            NULL, NULL, &si, &m_processInfo);
-
-  if (ret == FALSE)
-  {
-    DWORD lastError = GetLastError();
-    CLog::Log(LOGNOTICE, "%s - Failure: %d", __FUNCTION__, lastError);
-  }
-  else
-  {
-    int res = WaitForSingleObject(m_processInfo.hProcess, INFINITE);
-
-    switch (res)
-    {
-      case WAIT_OBJECT_0:
-        CLog::Log(LOGNOTICE, "%s: WAIT_OBJECT_0", __FUNCTION__);
-        break;
-      case WAIT_ABANDONED:
-        CLog::Log(LOGNOTICE, "%s: WAIT_ABANDONED", __FUNCTION__);
-        break;
-      case WAIT_TIMEOUT:
-        CLog::Log(LOGNOTICE, "%s: WAIT_TIMEOUT", __FUNCTION__);
-        break;
-      case WAIT_FAILED:
-        CLog::Log(LOGNOTICE, "%s: WAIT_FAILED (%d)", __FUNCTION__, GetLastError());
-        ret = FALSE;
-        break;
-    }
-
-    CloseHandle(m_processInfo.hThread);
-    m_processInfo.hThread = 0;
-    CloseHandle(m_processInfo.hProcess);
-    m_processInfo.hProcess = 0;
-  }
-
-  return ret;
-}
-#endif
 
 #if !defined(TARGET_ANDROID) && (defined(TARGET_POSIX) || defined(TARGET_DARWIN_OSX))
 BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
@@ -642,13 +486,6 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   XMLUtils::GetBoolean(pConfig, "playonestackitem", m_playOneStackItem);
   XMLUtils::GetBoolean(pConfig, "islauncher", m_islauncher);
   XMLUtils::GetBoolean(pConfig, "hidexbmc", m_hidexbmc);
-  if (!XMLUtils::GetBoolean(pConfig, "hideconsole", m_hideconsole))
-  {
-#ifdef TARGET_WINDOWS
-    // Default depends on whether player is a batch file
-    m_hideconsole = StringUtils::EndsWith(m_filename, ".bat");
-#endif
-  }
 
   bool bHideCursor;
   if (XMLUtils::GetBoolean(pConfig, "hidecursor", bHideCursor) && bHideCursor)
@@ -676,11 +513,6 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
           m_hidexbmc ? "true" : "false",
           m_islauncher ? "true" : "false",
           warpCursor.c_str());
-
-#ifdef TARGET_WINDOWS
-  m_filenameReplacers.push_back("^smb:// , / , \\\\ , g");
-  m_filenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
-#endif
 
   TiXmlElement* pReplacers = pConfig->FirstChildElement("replacers");
   while (pReplacers)

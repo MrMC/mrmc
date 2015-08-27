@@ -1,10 +1,6 @@
 #ifndef _RAR_OS_
 #define _RAR_OS_
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#endif
-
 #define FALSE 0
 #define TRUE  1
 

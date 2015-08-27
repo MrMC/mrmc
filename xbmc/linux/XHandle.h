@@ -21,8 +21,6 @@
  *
  */
 
-#ifndef TARGET_WINDOWS
-
 #include <list>
 #include <string>
 #include <vector>
@@ -51,7 +49,7 @@ public:
 
   // simulate mutex and critical section
   CCriticalSection *m_hMutex;
-  int       RecursionCount;  // for mutex - for compatibility with TARGET_WINDOWS critical section
+  int       RecursionCount;
   int       fd;
   bool      m_bManualEvent;
   time_t    m_tmCreation;
@@ -71,8 +69,6 @@ protected:
   static int m_objectTracker[10];
 
 };
-
-#endif
 
 #endif
 

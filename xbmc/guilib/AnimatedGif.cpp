@@ -31,11 +31,7 @@
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
 
-#ifdef TARGET_WINDOWS
-extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
-#else
 #define fopen_utf8 fopen
-#endif
 
 #pragma pack(1)
 // Error processing macro (NO-OP by default):

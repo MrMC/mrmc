@@ -33,10 +33,6 @@
 #include "XBTF.h"
 #include <lzo/lzo1x.h>
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib,"liblzo2.lib")
-#endif
-
 CTextureBundleXBT::CTextureBundleXBT(void)
 {
   m_themeBundle = false;

@@ -25,7 +25,6 @@
 
 #include <string>
 
-#ifndef TARGET_WINDOWS
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif // HAVE_CONFIG_H
@@ -58,4 +57,3 @@ namespace std
 #endif // HAVE_STD__U32STRING
 
 #endif // !defined(HAVE_STD__U16STRING) || !defined(HAVE_STD__U32STRING) 
-#endif // TARGET_WINDOWS

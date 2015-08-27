@@ -23,9 +23,7 @@
 #include <string>
 #include <vector>
 
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 #include "input/SDLJoystick.h"
 #endif
 #if defined(HAS_LIRC)
@@ -119,7 +117,7 @@ public:
 
   bool ProcessJoystickEvent(int windowId, const std::string& joystickName, int wKeyID, short inputType, float fAmount, unsigned int holdTime = 0);
 
-#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
+#if defined(HAS_SDL_JOYSTICK)
   void UpdateJoystick(SDL_Event& joyEvent);
 #endif
 

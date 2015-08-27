@@ -18,11 +18,8 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
-#endif
-#ifdef TARGET_WINDOWS
-#include "system.h" // just for HAS_LIBRTMP
 #endif
 
 #ifdef HAS_LIBRTMP

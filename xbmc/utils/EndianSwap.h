@@ -29,11 +29,6 @@
 #include "config.h"
 #include <inttypes.h>
 #endif
-#ifdef TARGET_WINDOWS
-#define __inline__ __inline
-#include <stdint.h>
-#endif
-
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus

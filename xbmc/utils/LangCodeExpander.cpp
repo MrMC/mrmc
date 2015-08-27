@@ -229,48 +229,6 @@ bool CLangCodeExpander::LookupUserCode(const std::string& desc, std::string &use
   return false;
 }
 
-#ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3)
-{
-  if (strISO36111Alpha2.length() != 2)
-    return false;
-
-  std::string strLower(strISO36111Alpha2);
-  StringUtils::ToLower(strLower);
-  StringUtils::Trim(strLower);
-  for (unsigned int index = 0; index < ARRAY_SIZE(RegionCodes); ++index)
-  {
-    if (strLower == RegionCodes[index].alpha2)
-    {
-      strISO36111Alpha3 = RegionCodes[index].alpha3;
-      return true;
-    }
-  }
-
-  return true;
-}
-
-bool CLangCodeExpander::ConvertWindowsLanguageCodeToISO6392T(const std::string& strWindowsLanguageCode, std::string& strISO6392T)
-{
-  if (strWindowsLanguageCode.length() != 3)
-    return false;
-
-  std::string strLower(strWindowsLanguageCode);
-  StringUtils::ToLower(strLower);
-  for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
-  {
-    if ((LanguageCodes[index].win_id && strLower == LanguageCodes[index].win_id) ||
-         strLower == LanguageCodes[index].iso639_2)
-    {
-      strISO6392T = LanguageCodes[index].iso639_2;
-      return true;
-    }
-  }
-
-  return false;
-}
-#endif
-
 bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& code)
 {
   if (lang.empty())

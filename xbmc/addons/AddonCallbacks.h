@@ -28,13 +28,6 @@
 #include "addons/include/xbmc_pvr_types.h"
 #include "addons/include/xbmc_codec_types.h"
 
-#ifdef TARGET_WINDOWS
-#ifndef _SSIZE_T_DEFINED
-typedef intptr_t ssize_t;
-#define _SSIZE_T_DEFINED
-#endif // !_SSIZE_T_DEFINED
-#endif // TARGET_WINDOWS
-
 typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
 typedef bool (*AddOnWakeOnLan)(const char* mac);

@@ -469,10 +469,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
 void CDVDPlayerAudio::OnStartup()
 {
   m_decode.Release();
-
-#ifdef TARGET_WINDOWS
-  CoInitializeEx(NULL, COINIT_MULTITHREADED);
-#endif
 }
 
 void CDVDPlayerAudio::UpdatePlayerInfo()
@@ -843,10 +839,6 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 
 void CDVDPlayerAudio::OnExit()
 {
-#ifdef TARGET_WINDOWS
-  CoUninitialize();
-#endif
-
   CLog::Log(LOGNOTICE, "thread end: CDVDPlayerAudio::OnExit()");
 }
 

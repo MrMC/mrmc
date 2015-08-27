@@ -55,11 +55,8 @@ namespace MEDIA_DETECT
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISubSettings.h"
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
-#endif
-#ifdef TARGET_WINDOWS
-#include "win32/WIN32Util.h"
 #endif
 #include "utils/Stopwatch.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -296,7 +293,7 @@ public:
   MEDIA_DETECT::CAutorun* m_Autorun;
 #endif
 
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
@@ -427,13 +424,8 @@ protected:
   ADDON::AddonPtr m_screenSaver;
 
   // timer information
-#ifdef TARGET_WINDOWS
-  CWinIdleTimer m_idleTimer;
-  CWinIdleTimer m_screenSaverTimer;
-#else
   CStopWatch m_idleTimer;
   CStopWatch m_screenSaverTimer;
-#endif
   CStopWatch m_restartPlayerTimer;
   CStopWatch m_frameTime;
   CStopWatch m_navigationTimer;
@@ -491,7 +483,6 @@ protected:
 
   bool InitDirectoriesLinux();
   bool InitDirectoriesOSX();
-  bool InitDirectoriesWin32();
   void CreateUserDirs();
 
   CInertialScrollingHandler *m_pInertialScrollingHandler;

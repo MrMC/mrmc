@@ -123,9 +123,6 @@
 #include "music/karaoke/karaokelyricsmanager.h"
 #endif
 #include "network/ZeroconfBrowser.h"
-#ifndef TARGET_POSIX
-#include "threads/platform/win/Win32Exception.h"
-#endif
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
 #endif
@@ -181,10 +178,6 @@
 #define MEASURE_FUNCTION
 #endif
 
-#ifdef TARGET_WINDOWS
-#include "win32util.h"
-#endif
-
 #ifdef TARGET_DARWIN_OSX
 #include "osx/CocoaInterface.h"
 #include "osx/XBMCHelper.h"
@@ -213,10 +206,6 @@
 #include "android/activity/XBMCApp.h"
 #include "android/activity/AndroidFeatures.h"
 #include "android/jni/Build.h"
-#endif
-
-#ifdef TARGET_WINDOWS
-#include "utils/Environment.h"
 #endif
 
 #if defined(HAS_LIBAMCODEC)
@@ -358,19 +347,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
     case XBMC_VIDEOMOVE:
-#ifdef TARGET_WINDOWS
-      if (g_advancedSettings.m_fullScreen)
-      {
-        // when fullscreen, remain fullscreen and resize to the dimensions of the new screen
-        RESOLUTION newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
-        if (newRes != g_graphicsContext.GetVideoResolution())
-          CDisplaySettings::GetInstance().SetCurrentResolution(newRes, true);
-      }
-      else
-#endif
-      {
         g_Windowing.OnMove(newEvent.move.x, newEvent.move.y);
-      }
       break;
     case XBMC_USEREVENT:
       CApplicationMessenger::GetInstance().PostMsg(static_cast<uint32_t>(newEvent.user.code));
@@ -432,8 +409,6 @@ bool CApplication::SetupNetwork()
 {
 #if defined(HAS_LINUX_NETWORK)
   m_network = new CNetworkLinux();
-#elif defined(HAS_WIN32_NETWORK)
-  m_network = new CNetworkWin32();
 #else
   m_network = new CNetwork();
 #endif
@@ -466,23 +441,11 @@ bool CApplication::Create()
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
 
-#ifndef TARGET_POSIX
-  //floating point precision to 24 bits (faster performance)
-  _controlfp(_PC_24, _MCW_PC);
-
-  /* install win32 exception translator, win32 exceptions
-   * can now be caught using c++ try catch */
-  win32_exception::install_handler();
-
-#endif
-
   // only the InitDirectories* for the current platform should return true
   // putting this before the first log entries saves another ifdef for g_advancedSettings.m_logFolder
   bool inited = InitDirectoriesLinux();
   if (!inited)
     inited = InitDirectoriesOSX();
-  if (!inited)
-    inited = InitDirectoriesWin32();
 
   // copy required files
   CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
@@ -558,11 +521,6 @@ bool CApplication::Create()
     CLog::Log(LOGNOTICE, "Host CPU: %s, %d core%s available", cpuModel.c_str(), g_cpuInfo.getCPUCount(), (g_cpuInfo.getCPUCount() == 1) ? "" : "s");
   else
     CLog::Log(LOGNOTICE, "%d CPU core%s available", g_cpuInfo.getCPUCount(), (g_cpuInfo.getCPUCount() == 1) ? "" : "s");
-#if defined(TARGET_WINDOWS)
-  CLog::Log(LOGNOTICE, "%s", CWIN32Util::GetResInfoString().c_str());
-  CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
-  CLog::Log(LOGNOTICE, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
-#endif
 #if defined(TARGET_ANDROID)
   CLog::Log(LOGNOTICE,
         "Product: %s, Device: %s, Board: %s - Manufacturer: %s, Brand: %s, Model: %s, Hardware: %s",
@@ -600,8 +558,6 @@ bool CApplication::Create()
   setenv("OS","OS X",true);
 #elif defined(TARGET_POSIX)
   setenv("OS","Linux",true);
-#elif defined(TARGET_WINDOWS)
-  CEnvironment::setenv("OS", "win32");
 #endif
 
   // register ffmpeg lockmanager callback
@@ -648,10 +604,6 @@ bool CApplication::Create()
   CProfilesManager::GetInstance().CreateProfileFolders();
 
   update_emu_environ();//apply the GUI settings
-
-#ifdef TARGET_WINDOWS
-  CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
-#endif // TARGET_WINDOWS
 
   // start the AudioEngine
   if (!CAEFactory::StartEngine())
@@ -731,7 +683,7 @@ bool CApplication::CreateGUI()
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
-#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
+#if defined(HAS_SDL_JOYSTICK)
   sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
 
@@ -1069,36 +1021,6 @@ bool CApplication::InitDirectoriesOSX()
 #endif
 }
 
-bool CApplication::InitDirectoriesWin32()
-{
-#ifdef TARGET_WINDOWS
-  std::string xbmcPath;
-
-  CUtil::GetHomePath(xbmcPath);
-  CEnvironment::setenv("KODI_HOME", xbmcPath);
-  CSpecialProtocol::SetXBMCBinPath(xbmcPath);
-  CSpecialProtocol::SetXBMCPath(xbmcPath);
-
-  std::string strWin32UserFolder = CWIN32Util::GetProfilePath();
-
-  g_advancedSettings.m_logFolder = strWin32UserFolder;
-  CSpecialProtocol::SetHomePath(strWin32UserFolder);
-  CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
-  CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
-
-  CEnvironment::setenv("KODI_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
-
-  CreateUserDirs();
-
-  // Expand the DLL search path with our directories
-  CWIN32Util::ExtendDllPath();
-
-  return true;
-#else
-  return false;
-#endif
-}
-
 void CApplication::CreateUserDirs()
 {
   CDirectory::Create("special://home/");
@@ -1113,7 +1035,7 @@ void CApplication::CreateUserDirs()
 
 bool CApplication::Initialize()
 {
-#if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
+#if defined(HAS_DVD_DRIVE)
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif
@@ -1334,7 +1256,7 @@ void CApplication::StopPVRManager()
 
 void CApplication::StartServices()
 {
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if defined(HAS_DVD_DRIVE)
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
@@ -1345,7 +1267,7 @@ void CApplication::StopServices()
 {
   m_network->NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if defined(HAS_DVD_DRIVE)
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 #endif
@@ -2526,7 +2448,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_RESTARTAPP:
-#if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
+#if defined(TARGET_LINUX)
     Stop(EXITCODE_RESTARTAPP);
 #endif
     break;
@@ -2626,8 +2548,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     }
 #if defined( TARGET_POSIX) && !defined(TARGET_DARWIN)
     CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->param1 == 1));
-#elif defined(TARGET_WINDOWS)
-    CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->param1 == 1));
 #endif
     /* Resume AE processing of XBMC native audio */
     if (!CAEFactory::Resume())
@@ -5242,7 +5162,7 @@ void CApplication::CloseNetworkShares()
 {
   CLog::Log(LOGDEBUG,"CApplication::CloseNetworkShares: Closing all network shares");
 
-#if defined(HAS_FILESYSTEM_SMB) && !defined(TARGET_WINDOWS)
+#if defined(HAS_FILESYSTEM_SMB)
   smb.Deinit();
 #endif
   

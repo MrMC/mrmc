@@ -66,26 +66,12 @@ void TestBasicEnvironment::SetUp()
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.
    */
-#ifdef TARGET_WINDOWS
-  std::string xbmcTempPath;
-  TCHAR lpTempPathBuffer[MAX_PATH];
-  if (!GetTempPath(MAX_PATH, lpTempPathBuffer))
-    SetUpError();
-  xbmcTempPath = lpTempPathBuffer;
-  if (!GetTempFileName(xbmcTempPath.c_str(), "xbmctempdir", 0, lpTempPathBuffer))
-    SetUpError();
-  DeleteFile(lpTempPathBuffer);
-  if (!CreateDirectory(lpTempPathBuffer, NULL))
-    SetUpError();
-  CSpecialProtocol::SetTempPath(lpTempPathBuffer);
-#else
   char buf[MAX_PATH];
   char *tmp;
   strcpy(buf, "/tmp/xbmctempdirXXXXXX");
   if ((tmp = mkdtemp(buf)) == NULL)
     SetUpError();
   CSpecialProtocol::SetTempPath(tmp);
-#endif
 
   /* Create and delete a tempfile to initialize the VFS (really to initialize
    * CLibcdio). This is done so that the initialization of the VFS does not

@@ -44,10 +44,6 @@
 
 #define USE_RELEASE_LIBS
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "freetype246MT.lib")
-#endif
-
 using namespace std;
 
 
@@ -88,9 +84,7 @@ public:
       return NULL;
 
     memoryBuf.clear();
-#ifndef TARGET_WINDOWS
     if (!realFile.GetProtocol().empty())
-#endif // ! TARGET_WINDOWS
     {
       // load file into memory if it is not on local drive
       // in case of win32: always load file into memory as filename is in UTF-8,
@@ -101,10 +95,8 @@ public:
       if (FT_New_Memory_Face(m_library, (const FT_Byte*)memoryBuf.get(), memoryBuf.size(), 0, &face) != 0)
         return NULL;
     }
-#ifndef TARGET_WINDOWS
     else if (FT_New_Face( m_library, realFile.GetFileName().c_str(), 0, &face ))
       return NULL;
-#endif // ! TARGET_WINDOWS
 
     unsigned int ydpi = 72; // 72 points to the inch is the freetype default
     unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);

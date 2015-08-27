@@ -397,11 +397,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               StringUtils::Replace(strMask, "$AUDIO", g_advancedSettings.GetMusicExtensions());
               StringUtils::Replace(strMask, "$VIDEO", g_advancedSettings.m_videoExtensions);
               StringUtils::Replace(strMask, "$IMAGE", g_advancedSettings.m_pictureExtensions);
-#if defined(_WIN32_WINNT)
-              StringUtils::Replace(strMask, "$EXECUTABLE", ".exe|.bat|.cmd|.py");
-#else
               StringUtils::Replace(strMask, "$EXECUTABLE", "");
-#endif
             }
             else
             {
@@ -410,11 +406,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               else if (type == "audio")
                 strMask = g_advancedSettings.GetMusicExtensions();
               else if (type == "executable")
-#if defined(_WIN32_WINNT)
-                strMask = ".exe|.bat|.cmd|.py";
-#else
                 strMask = "";
-#endif
             }
 
             // get any options

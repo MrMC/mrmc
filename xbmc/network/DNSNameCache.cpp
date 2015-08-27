@@ -56,7 +56,6 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   if(g_DNSCache.GetCached(strHostName, strIpAddress))
     return true;
 
-#ifndef TARGET_WINDOWS
   // perform netbios lookup (win32 is handling this via gethostbyname)
   char nmb_ip[100];
   char line[200];
@@ -81,7 +80,6 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     g_DNSCache.Add(strHostName, strIpAddress);
     return true;
   }
-#endif
 
   // perform dns lookup
   struct hostent *host = gethostbyname(strHostName.c_str());

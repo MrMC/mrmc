@@ -20,7 +20,7 @@
 
 // TODO: Need a uniform way of returning an error status
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 #include "network/Network.h"
@@ -31,9 +31,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "utils/URIUtils.h"
 #include "aojsonrpc.h"
-#ifndef TARGET_WINDOWS
 #include "XTimeUtils.h"
-#endif
 #include "guilib/LocalizeStrings.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIAudioManager.h"

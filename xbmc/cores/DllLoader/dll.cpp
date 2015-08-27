@@ -257,12 +257,8 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
 {
   if (NULL == hModule)
   {
-#ifdef TARGET_WINDOWS
-    return GetModuleFileNameA(hModule, lpFilename, nSize);
-#else
     CLog::Log(LOGDEBUG, "%s - No hModule specified", __FUNCTION__);
     return 0;
-#endif
   }
 
   LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);

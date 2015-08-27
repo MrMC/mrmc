@@ -22,11 +22,7 @@
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 
-#if   defined(TARGET_WINDOWS)
-#include "windows/WinEventsWin32.h"
-#define WinEventsType CWinEventsWin32
-
-#elif defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN_OSX)
 #include "osx/WinEventsOSX.h"
 #define WinEventsType CWinEventsOSX
 

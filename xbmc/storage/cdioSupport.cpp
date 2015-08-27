@@ -31,10 +31,6 @@
 #include <cdio/mmc.h>
 #include <cdio/cd_types.h>
 
-#if defined(TARGET_WINDOWS)
-#pragma comment(lib, "libcdio.dll.lib")
-#endif
-
 using namespace MEDIA_DETECT;
 
 std::shared_ptr<CLibcdio> CLibcdio::m_pInstance;
@@ -643,7 +639,6 @@ void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
 {
   // cdtext disabled for windows as some setup doesn't like mmc commands
   // and stall for over a minute in cdio_get_cdtext 83
-#if !defined(TARGET_WINDOWS)
   CSingleLock lock(*m_cdio);
 
   // Get the CD-Text , if any
@@ -666,7 +661,6 @@ void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
     if (pcdtext->field[i])
       xcdt[(cdtext_field_t)i] = pcdtext->field[(cdtext_field_t)i];
 #endif
-#endif // TARGET_WINDOWS
 }
 
 CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)

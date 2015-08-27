@@ -41,17 +41,10 @@ TEST(TestUtil, GetQualifiedFilename)
 TEST(TestUtil, MakeLegalPath)
 {
   std::string path;
-#ifdef TARGET_WINDOWS
-  path = "C:\\foo\\bar";
-  EXPECT_EQ(CUtil::MakeLegalPath(path), "C:\\foo\\bar");
-  path = "C:\\foo:\\bar\\";
-  EXPECT_EQ(CUtil::MakeLegalPath(path), "C:\\foo_\\bar\\");
-#else
   path = "/foo/bar/";
   EXPECT_EQ(CUtil::MakeLegalPath(path),"/foo/bar/");
   path = "/foo?/bar";
   EXPECT_EQ(CUtil::MakeLegalPath(path),"/foo_/bar");
-#endif
   path = "smb://foo/bar";
   EXPECT_EQ(CUtil::MakeLegalPath(path), "smb://foo/bar");
   path = "smb://foo/bar?/";

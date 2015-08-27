@@ -20,13 +20,9 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#ifdef TARGET_WINDOWS
-#define TIXML_USE_STL
-#pragma comment(lib, "tinyxmlSTL.lib")
-#else
 //compile fix for TinyXml < 2.6.0
 #define DOCUMENT    TINYXML_DOCUMENT
 #define ELEMENT     TINYXML_ELEMENT
@@ -35,7 +31,6 @@
 #define TEXT        TINYXML_TEXT
 #define DECLARATION TINYXML_DECLARATION
 #define TYPECOUNT   TINYXML_TYPECOUNT
-#endif
 
 #include <tinyxml.h>
 #include <string>

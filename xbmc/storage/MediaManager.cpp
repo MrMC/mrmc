@@ -23,19 +23,13 @@
 #include "guilib/LocalizeStrings.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
-#ifdef TARGET_WINDOWS
-#include "WIN32Util.h"
-#include "utils/CharsetConverter.h"
-#endif
 #include "guilib/GUIWindowManager.h"
 #ifdef HAS_DVD_DRIVE
-#ifndef TARGET_WINDOWS
 // TODO: switch all ports to use auto sources
 #include <map>
 #include <utility>
 #include "DetectDVDType.h"
 #include "filesystem/iso9660.h"
-#endif
 #endif
 #include "Autorun.h"
 #include "GUIUserMessages.h"
@@ -63,8 +57,6 @@
 #include "linux/LinuxStorageProvider.h"
 #include <sys/ioctl.h>
 #include <linux/cdrom.h>
-#elif TARGET_WINDOWS
-#include "windows/Win32StorageProvider.h"
 #endif
 
 #include <string>
@@ -104,8 +96,6 @@ void CMediaManager::Initialize()
       m_platformStorage = new CAndroidStorageProvider();
     #elif defined(TARGET_POSIX)
       m_platformStorage = new CLinuxStorageProvider();
-    #elif TARGET_WINDOWS
-      m_platformStorage = new CWin32StorageProvider();
     #endif
   }
 #ifdef HAS_DVD_DRIVE
@@ -325,41 +315,16 @@ std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bo
     strDevice = m_strFirstAvailDrive;
 #endif
 
-#ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
-    return "";
-
-  if(bReturnAsDevice == false)
-    StringUtils::Replace(strDevice, "\\\\.\\","");
-  else if(!strDevice.empty() && strDevice[1]==':')
-    strDevice = StringUtils::Format("\\\\.\\%c:", strDevice[0]);
-
-  URIUtils::RemoveSlashAtEnd(strDevice);
-#endif
   return strDevice;
 }
 
 bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
-    return false;
-
-  std::string strDevice = TranslateDevicePath(devicePath, true);
-  std::map<std::string,CCdInfo*>::iterator it;
-  CSingleLock waitLock(m_muAutoSource);
-  it = m_mapCdInfo.find(strDevice);
-  if(it != m_mapCdInfo.end())
-    return true;
-  else
-    return false;
-#else
   if(URIUtils::IsDVD(devicePath) || devicePath.empty())
     return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();   // TODO: switch all ports to use auto sources
   else
     return true; // Assume other paths to be mounted already
-#endif
 #else
   return false;
 #endif
@@ -368,21 +333,10 @@ bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 bool CMediaManager::IsAudio(const std::string& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
-    return false;
-
-  CCdInfo* pCdInfo = GetCdInfo(devicePath);
-  if(pCdInfo != NULL && pCdInfo->IsAudio(1))
-    return true;
-
-  return false;
-#else
   // TODO: switch all ports to use auto sources
   MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
   if (pInfo != NULL && pInfo->IsAudio(1))
     return true;
-#endif
 #endif
   return false;
 }
@@ -399,33 +353,7 @@ bool CMediaManager::HasOpticalDrive()
 DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
-    return DRIVE_NOT_READY;
-
-  std::string strDevice = TranslateDevicePath(devicePath, true);
-  DWORD dwRet = DRIVE_NOT_READY;
-  int status = CWIN32Util::GetDriveStatus(strDevice);
-
-  switch(status)
-  {
-  case -1: // error
-    dwRet = DRIVE_NOT_READY;
-    break;
-  case 0: // no media
-    dwRet = DRIVE_CLOSED_NO_MEDIA;
-    break;
-  case 1: // tray open
-    dwRet = DRIVE_OPEN;
-    break;
-  case 2: // media accessible
-    dwRet = DRIVE_CLOSED_MEDIA_PRESENT;
-    break;
-  }
-  return dwRet;
-#else
   return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
-#endif
 #else
   return DRIVE_NOT_READY;
 #endif
@@ -434,32 +362,7 @@ DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
 #ifdef HAS_DVD_DRIVE
 CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
 {
-#ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
-    return NULL;
-  
-  std::string strDevice = TranslateDevicePath(devicePath, true);
-  std::map<std::string,CCdInfo*>::iterator it;
-  {
-    CSingleLock waitLock(m_muAutoSource);
-    it = m_mapCdInfo.find(strDevice);
-    if(it != m_mapCdInfo.end())
-      return it->second;
-  }
-
-  CCdInfo* pCdInfo=NULL;
-  CCdIoSupport cdio;
-  pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
-  if(pCdInfo!=NULL)
-  {
-    CSingleLock waitLock(m_muAutoSource);
-    m_mapCdInfo.insert(std::pair<std::string,CCdInfo*>(strDevice,pCdInfo));
-  }
-
-  return pCdInfo;
-#else
   return MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
-#endif
 }
 
 bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
@@ -485,23 +388,7 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
 
 std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
 {
-#ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
-    return "";
-
-  std::string strDevice = TranslateDevicePath(devicePath);
-  WCHAR cVolumenName[128];
-  WCHAR cFSName[128];
-  URIUtils::AddSlashAtEnd(strDevice);
-  std::wstring strDeviceW;
-  g_charsetConverter.utf8ToW(strDevice, strDeviceW);
-  if(GetVolumeInformationW(strDeviceW.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
-    return "";
-  g_charsetConverter.wToUTF8(cVolumenName, strDevice);
-  return StringUtils::TrimRight(strDevice, " ");
-#else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
-#endif
 }
 
 std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
@@ -521,15 +408,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   if (mediaPath.empty())
     mediaPath = devicePath;
 
-#ifdef TARGET_WINDOWS
-  if (mediaPath.empty() || mediaPath == "iso9660://")
-  {
-    mediaPath = g_mediaManager.TranslateDevicePath("");
-    URIUtils::AddSlashAtEnd(mediaPath);
-  }
-#endif
-
-  // Try finding VIDEO_TS/VIDEO_TS.IFO - this indicates a DVD disc is inserted 
+  // Try finding VIDEO_TS/VIDEO_TS.IFO - this indicates a DVD disc is inserted
   std::string pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS"); 
   if(!CFile::Exists(URIUtils::AddFileToFolder(pathVideoTS, "VIDEO_TS.IFO"))) 
     return ""; // return empty
@@ -557,10 +436,6 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 
 std::string CMediaManager::GetDiscPath()
 {
-#ifdef TARGET_WINDOWS
-  return g_mediaManager.TranslateDevicePath("");
-#else
-
   CSingleLock lock(m_CritSecStorageProvider);
   VECSOURCES drives;
   m_platformStorage->GetRemovableDrives(drives);
@@ -572,7 +447,6 @@ std::string CMediaManager::GetDiscPath()
 
   // iso9660://, cdda://local/ or D:\ depending on disc type
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
-#endif
 }
 #endif
 
@@ -591,9 +465,6 @@ bool CMediaManager::Eject(const std::string& mountpath)
 void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
-  CWIN32Util::EjectTray(cDriveLetter);
-#else
   std::shared_ptr<CLibcdio> c_cdio = CLibcdio::GetInstance();
   char* dvdDevice = c_cdio->GetDeviceFileName();
   m_isoReader.Reset();
@@ -609,7 +480,6 @@ void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
     else
       break;
   }
-#endif
 #endif
 }
 
@@ -631,8 +501,6 @@ void CMediaManager::CloseTray(const char cDriveLetter)
       close(fd);
     }
   }
-#elif defined(TARGET_WINDOWS)
-  CWIN32Util::CloseTray(cDriveLetter);
 #endif
 #endif
 }
@@ -640,14 +508,10 @@ void CMediaManager::CloseTray(const char cDriveLetter)
 void CMediaManager::ToggleTray(const char cDriveLetter)
 {
 #ifdef HAS_DVD_DRIVE
-#if defined(TARGET_WINDOWS)
-  CWIN32Util::ToggleTray(cDriveLetter);
-#else
   if (GetDriveStatus() == TRAY_OPEN || GetDriveStatus() == DRIVE_OPEN)
     CloseTray();
   else
     EjectTray();
-#endif
 #endif
 }
 

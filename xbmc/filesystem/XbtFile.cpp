@@ -20,10 +20,6 @@
 
 #include <algorithm>
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib,"liblzo2.lib")
-#endif
-
 #include <lzo/lzo1x.h>
 
 #include "XbtFile.h"

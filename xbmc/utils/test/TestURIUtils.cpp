@@ -257,13 +257,9 @@ TEST_F(TestURIUtils, IsDOSPath)
 TEST_F(TestURIUtils, IsDVD)
 {
   EXPECT_TRUE(URIUtils::IsDVD("dvd://path/in/video_ts.ifo"));
-#if defined(TARGET_WINDOWS)
-  EXPECT_TRUE(URIUtils::IsDVD("dvd://path/in/file"));
-#else
   EXPECT_TRUE(URIUtils::IsDVD("iso9660://path/in/video_ts.ifo"));
   EXPECT_TRUE(URIUtils::IsDVD("udf://path/in/video_ts.ifo"));
   EXPECT_TRUE(URIUtils::IsDVD("dvd://1"));
-#endif
 }
 
 TEST_F(TestURIUtils, IsFTP)
@@ -505,25 +501,6 @@ TEST_F(TestURIUtils, GetRealPath)
 
   ref = "/path/to";
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("/path/to/some/../file/..").c_str());
-
-#ifdef TARGET_WINDOWS
-  ref = "\\\\path\\to\\file\\";
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath(ref).c_str());
-  
-  ref = "path\\to\\file";
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("..\\path\\to\\file").c_str());
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath(".\\path\\to\\file").c_str());
-
-  ref = "\\\\path\\to\\file";
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath(ref).c_str());
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("\\\\path\\to\\.\\file").c_str());
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("\\\\.\\path/to\\.\\file").c_str());
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("\\\\path\\to\\some\\..\\file").c_str());
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("\\\\..\\path\\to\\some\\..\\file").c_str());
-
-  ref = "\\\\path\\to";
-  EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("\\\\path\\to\\some\\..\\file\\..").c_str());
-#endif
 
   // test rar/zip paths
   ref = "rar://%2fpath%2fto%2frar/subpath/to/file";

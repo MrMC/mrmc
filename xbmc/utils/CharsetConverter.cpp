@@ -33,7 +33,7 @@
 #include <iconv.h>
 #include <algorithm>
 
-#if !defined(TARGET_WINDOWS) && defined(HAVE_CONFIG_H)
+#if defined(HAVE_CONFIG_H)
   #include "config.h"
 #endif
 
@@ -49,14 +49,6 @@
   #define UTF32_CHARSET "UTF-32" ENDIAN_SUFFIX
   #define UTF8_SOURCE "UTF-8-MAC"
   #define WCHAR_CHARSET UTF32_CHARSET
-#elif defined(TARGET_WINDOWS)
-  #define WCHAR_IS_UTF16 1
-  #define UTF16_CHARSET "UTF-16" ENDIAN_SUFFIX
-  #define UTF32_CHARSET "UTF-32" ENDIAN_SUFFIX
-  #define UTF8_SOURCE "UTF-8"
-  #define WCHAR_CHARSET UTF16_CHARSET 
-  #pragma comment(lib, "libfribidi.lib")
-  #pragma comment(lib, "libiconv.lib")
 #elif defined(TARGET_ANDROID)
   #define WCHAR_IS_UCS_4 1
   #define UTF16_CHARSET "UTF-16" ENDIAN_SUFFIX

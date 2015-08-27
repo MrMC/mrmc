@@ -48,9 +48,6 @@
 #include "linux/LogindUPowerSyscall.h"
 #include "linux/UPowerSyscall.h"
 #endif // HAS_DBUS
-#elif defined(TARGET_WINDOWS)
-#include "powermanagement/windows/Win32PowerSyscall.h"
-extern HWND g_hWnd;
 #endif
 
 using namespace ANNOUNCEMENT;
@@ -112,8 +109,6 @@ void CPowerManager::Initialize()
   else
 #endif // HAS_DBUS
     m_instance = new CFallbackPowerSyscall();
-#elif defined(TARGET_WINDOWS)
-  m_instance = new CWin32PowerSyscall();
 #endif
 
   if (m_instance == NULL)
@@ -270,14 +265,7 @@ void CPowerManager::OnWake()
   if (dialog)
     dialog->Close();
 
-#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
-  if (g_Windowing.IsFullScreen())
-  {
-#if defined(TARGET_WINDOWS)
-    ShowWindow(g_hWnd,SW_RESTORE);
-    SetForegroundWindow(g_hWnd);
-#endif
-  }
+#if defined(HAS_SDL)
   g_application.ResetScreenSaver();
 #endif
 

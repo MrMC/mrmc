@@ -31,9 +31,6 @@
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
 #include "mysql/errmsg.h"
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "mysqlclient.lib")
-#endif
 
 
 #define MYSQL_OK          0

@@ -24,14 +24,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#ifdef TARGET_WINDOWS
-#include <winsock.h>
-#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#endif
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -150,18 +146,10 @@ public:
 
   static void Clean()
   {
-  #ifdef TARGET_WINDOWS
-    WSACleanup();
-  #endif
   }
 
   static bool Initialize()
   {
-  #ifdef TARGET_WINDOWS
-    WSADATA wsaData;
-    if (WSAStartup(MAKEWORD(1, 1), &wsaData))
-      return false;
-  #endif
     return true;
   }
 };

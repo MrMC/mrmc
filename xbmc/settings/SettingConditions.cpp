@@ -262,10 +262,6 @@ void CSettingConditions::Initialize()
   if (CDarwinUtils::IsSnowLeopard())
     m_simpleConditions.insert("osxissnowleopard");
 #endif
-#if defined(TARGET_WINDOWS) && defined(HAS_DX)
-  m_simpleConditions.insert("has_dx");
-  m_simpleConditions.insert("hasdxva2");
-#endif
 
   if (g_application.IsStandAlone())
     m_simpleConditions.insert("isstandalone");

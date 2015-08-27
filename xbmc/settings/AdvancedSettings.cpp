@@ -328,12 +328,7 @@ void CAdvancedSettings::Initialize()
   m_bVirtualShares = true;
   m_bAllowDeferredRendering = true;
 
-//caused lots of jerks
-//#ifdef TARGET_WINDOWS
-//  m_ForcedSwapTime = 2.0;
-//#else
   m_ForcedSwapTime = 0.0;
-//#endif
 
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
@@ -840,7 +835,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
-#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
+#if defined(HAS_SDL)
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);

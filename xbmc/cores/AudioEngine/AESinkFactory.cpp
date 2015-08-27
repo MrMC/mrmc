@@ -20,10 +20,7 @@
 
 #include "AESinkFactory.h"
 #include "Interfaces/AESink.h"
-#if defined(TARGET_WINDOWS)
-  #include "Sinks/AESinkWASAPI.h"
-  #include "Sinks/AESinkDirectSound.h"
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
   #include "Sinks/AESinkAUDIOTRACK.h"
 #elif defined(TARGET_RASPBERRY_PI)
   #include "Sinks/AESinkPi.h"
@@ -59,10 +56,7 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 
     // check that it is a valid driver name
     if (
-#if defined(TARGET_WINDOWS)
-        driver == "WASAPI"      ||
-        driver == "DIRECTSOUND" ||
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
         driver == "AUDIOTRACK"  ||
 #elif defined(TARGET_RASPBERRY_PI)
         driver == "PI"          ||
@@ -98,12 +92,7 @@ IAESink *CAESinkFactory::TrySink(std::string &driver, std::string &device, AEAud
     sink = new CAESinkNULL();
   else
   {
-#if defined(TARGET_WINDOWS)
-    if (driver == "WASAPI")
-      sink = new CAESinkWASAPI();
-    if (driver == "DIRECTSOUND")
-      sink = new CAESinkDirectSound();
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
     sink = new CAESinkAUDIOTRACK();
 #elif defined(TARGET_RASPBERRY_PI)
   if (driver == "PI")
@@ -173,21 +162,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
 void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
 {
   AESinkInfo info;
-#if defined(TARGET_WINDOWS)
-
-  info.m_deviceInfoList.clear();
-  info.m_sinkName = "DIRECTSOUND";
-  CAESinkDirectSound::EnumerateDevicesEx(info.m_deviceInfoList, force);
-  if(!info.m_deviceInfoList.empty())
-    list.push_back(info);
-
-  info.m_deviceInfoList.clear();
-  info.m_sinkName = "WASAPI";
-  CAESinkWASAPI::EnumerateDevicesEx(info.m_deviceInfoList, force);
-  if(!info.m_deviceInfoList.empty())
-    list.push_back(info);
-
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
 
   info.m_deviceInfoList.clear();
   info.m_sinkName = "AUDIOTRACK";

@@ -18,10 +18,6 @@
  *
  */
 
-#ifdef TARGET_WINDOWS
-  #define _USE_MATH_DEFINES
-#endif
-
 #include "ConvolutionKernels.h"
 #include "utils/MathUtils.h"
 

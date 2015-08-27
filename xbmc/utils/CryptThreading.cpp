@@ -17,16 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifdef TARGET_WINDOWS
-#error "The threading options for the cryptography libraries don't need to be and shouldn't be set on Windows. Do not include CryptThreading in your windows project."
-#endif
-
 #include "CryptThreading.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #else
 #define HAVE_OPENSSL

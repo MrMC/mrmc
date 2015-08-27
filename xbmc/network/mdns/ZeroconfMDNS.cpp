@@ -26,9 +26,6 @@
 #include <utils/log.h>
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
-#if defined(TARGET_WINDOWS)
-#include "win32/WIN32Util.h"
-#endif //TARGET_WINDOWS
 
 #if defined(HAS_MDNS_EMBEDDED)
 #include <mDnsEmbedded.h>
@@ -207,9 +204,6 @@ void CZeroconfMDNS::doStop()
   }
   {
     CSingleLock lock(m_data_guard);
-#if defined(TARGET_WINDOWS)
-    WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_service ), g_hWnd, BONJOUR_EVENT, 0 );
-#endif //TARGET_WINDOWS
 
     if (m_service)
       DNSServiceRefDeallocate(m_service);

@@ -75,10 +75,5 @@ private:
   static std::map<std::string, std::string> m_pathMap;
 };
 
-#ifdef TARGET_WINDOWS
-#define PATH_SEPARATOR_CHAR '\\'
-#define PATH_SEPARATOR_STRING "\\"
-#else
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR_STRING "/"
-#endif

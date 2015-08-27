@@ -466,7 +466,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
 
   if (g_advancedSettings.m_fullScreen)
   {
-#if defined (TARGET_DARWIN) || defined (TARGET_WINDOWS)
+#if defined (TARGET_DARWIN)
     bool blankOtherDisplays = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS);
     g_Windowing.SetFullScreen(true,  info_org, blankOtherDisplays);
 #else

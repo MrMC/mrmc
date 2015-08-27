@@ -179,11 +179,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #elif defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
   hwSupport += "VDPAU:no ";
 #endif
-#if defined(TARGET_WINDOWS) && defined(HAS_DX)
-  hwSupport += "DXVA:yes ";
-#elif defined(TARGET_WINDOWS)
-  hwSupport += "DXVA:no ";
-#endif
 #if defined(HAVE_LIBVA) && defined(TARGET_POSIX)
   hwSupport += "VAAPI:yes ";
 #elif defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
@@ -324,7 +319,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 
 
   // try to decide if we want to try halfres decoding
-#if !defined(TARGET_POSIX) && !defined(TARGET_WINDOWS)
+#if !defined(TARGET_POSIX)
   float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
   if( pixelrate > 1400.0f*720.0f*30.0f )
   {

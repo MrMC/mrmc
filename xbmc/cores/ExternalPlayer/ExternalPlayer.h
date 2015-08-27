@@ -78,10 +78,7 @@ public:
   virtual std::string GetPlayerState();
   virtual bool SetPlayerState(const std::string& state);
   
-#if defined(TARGET_WINDOWS)
-  virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
-  //static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
   virtual BOOL ExecuteAppAndroid(const char* strSwitches,const char* strPath);
 #elif defined(TARGET_POSIX)
   virtual BOOL ExecuteAppLinux(const char* strSwitches);
@@ -100,10 +97,6 @@ private:
   int m_time;
   std::string m_launchFilename;
   HWND m_hwndXbmc; 
-#if defined(TARGET_WINDOWS)
-  POINT m_ptCursorpos;
-  PROCESS_INFORMATION m_processInfo;
-#endif 
   CGUIDialogOK* m_dialog;
   int m_xPos;
   int m_yPos;

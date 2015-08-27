@@ -20,7 +20,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 #include "DynamicDll.h"

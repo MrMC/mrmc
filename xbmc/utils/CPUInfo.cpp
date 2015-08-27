@@ -54,45 +54,6 @@
 #include "android/activity/AndroidFeatures.h"
 #endif
 
-#ifdef TARGET_WINDOWS
-#include "utils/CharsetConverter.h"
-#include <algorithm>
-#include <intrin.h>
-#include <Pdh.h>
-#include <PdhMsg.h>
-#pragma comment(lib, "Pdh.lib")
-
-// Defines to help with calls to CPUID
-#define CPUID_INFOTYPE_STANDARD 0x00000001
-#define CPUID_INFOTYPE_EXTENDED 0x80000001
-
-// Standard Features
-// Bitmasks for the values returned by a call to cpuid with eax=0x00000001
-#define CPUID_00000001_ECX_SSE3  (1<<0)
-#define CPUID_00000001_ECX_SSSE3 (1<<9)
-#define CPUID_00000001_ECX_SSE4  (1<<19)
-#define CPUID_00000001_ECX_SSE42 (1<<20)
-
-#define CPUID_00000001_EDX_MMX   (1<<23)
-#define CPUID_00000001_EDX_SSE   (1<<25)
-#define CPUID_00000001_EDX_SSE2  (1<<26)
-
-// Extended Features
-// Bitmasks for the values returned by a call to cpuid with eax=0x80000001
-#define CPUID_80000001_EDX_MMX2     (1<<22)
-#define CPUID_80000001_EDX_MMX      (1<<23)
-#define CPUID_80000001_EDX_3DNOWEXT (1<<30)
-#define CPUID_80000001_EDX_3DNOW    (1<<31)
-
-
-// Help with the __cpuid intrinsic of MSVC
-#define CPUINFO_EAX 0
-#define CPUINFO_EBX 1
-#define CPUINFO_ECX 2
-#define CPUINFO_EDX 3
-
-#endif
-
 #ifdef TARGET_POSIX
 #include "settings/AdvancedSettings.h"
 #endif
@@ -109,9 +70,6 @@ CCPUInfo::CCPUInfo(void)
 #ifdef TARGET_POSIX
   m_fProcStat = m_fProcTemperature = m_fCPUFreq = NULL;
   m_cpuInfoForFreq = false;
-#elif defined(TARGET_WINDOWS)
-  m_cpuQueryFreq = NULL;
-  m_cpuQueryLoad = NULL;
 #endif
   m_lastUsedPercentage = 0;
   m_cpuFeatures = 0;
@@ -151,89 +109,6 @@ CCPUInfo::CCPUInfo(void)
     core.m_strVendor = cpuVendor;
     m_cores[core.m_id] = core;
   }
-
-#elif defined(TARGET_WINDOWS)
-  HKEY hKeyCpuRoot;
-
-  if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\CentralProcessor", 0, KEY_READ, &hKeyCpuRoot) == ERROR_SUCCESS)
-  {
-    DWORD num = 0;
-    std::vector<CoreInfo> cpuCores;
-    wchar_t subKeyName[200]; // more than enough
-    DWORD subKeyNameLen = sizeof(subKeyName) / sizeof(wchar_t);
-    while (RegEnumKeyExW(hKeyCpuRoot, num++, subKeyName, &subKeyNameLen, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
-    {
-      HKEY hCpuKey;
-      if (RegOpenKeyExW(hKeyCpuRoot, subKeyName, 0, KEY_QUERY_VALUE, &hCpuKey) == ERROR_SUCCESS)
-      {
-        CoreInfo cpuCore;
-        if (swscanf_s(subKeyName, L"%i", &cpuCore.m_id) != 1)
-          cpuCore.m_id = num - 1;
-        wchar_t buf[300]; // more than enough
-        DWORD bufSize = sizeof(buf);
-        DWORD valType;
-        if (RegQueryValueExW(hCpuKey, L"ProcessorNameString", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS &&
-            valType == REG_SZ)
-        {
-          g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strModel);
-          cpuCore.m_strModel = cpuCore.m_strModel.substr(0, cpuCore.m_strModel.find(char(0))); // remove extra null terminations
-          StringUtils::RemoveDuplicatedSpacesAndTabs(cpuCore.m_strModel);
-          StringUtils::Trim(cpuCore.m_strModel);
-        }
-        bufSize = sizeof(buf);
-        if (RegQueryValueExW(hCpuKey, L"VendorIdentifier", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS &&
-            valType == REG_SZ)
-        {
-          g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strVendor);
-          cpuCore.m_strVendor = cpuCore.m_strVendor.substr(0, cpuCore.m_strVendor.find(char(0))); // remove extra null terminations
-        }
-        DWORD mhzVal;
-        bufSize = sizeof(mhzVal);
-        if (RegQueryValueExW(hCpuKey, L"~MHz", NULL, &valType, (LPBYTE)&mhzVal, &bufSize) == ERROR_SUCCESS &&
-            valType == REG_DWORD)
-          cpuCore.m_fSpeed = double(mhzVal);
-
-        RegCloseKey(hCpuKey);
-
-        if (cpuCore.m_strModel.empty())
-          cpuCore.m_strModel = "Unknown";
-        cpuCores.push_back(cpuCore);
-      }
-      subKeyNameLen = sizeof(subKeyName) / sizeof(wchar_t); // restore length value
-    }
-    RegCloseKey(hKeyCpuRoot);
-    std::sort(cpuCores.begin(), cpuCores.end()); // sort cores by id
-    for (size_t i = 0; i < cpuCores.size(); i++)
-      m_cores[i] = cpuCores[i]; // add in sorted order
-  }
-
-  if (!m_cores.empty())
-    m_cpuModel = m_cores.begin()->second.m_strModel;
-  else
-    m_cpuModel = "Unknown";
-
-  SYSTEM_INFO siSysInfo;
-  GetNativeSystemInfo(&siSysInfo);
-  m_cpuCount = siSysInfo.dwNumberOfProcessors;
-
-  if (PdhOpenQueryW(NULL, 0, &m_cpuQueryFreq) == ERROR_SUCCESS)
-  {
-    if (PdhAddEnglishCounterW(m_cpuQueryFreq, L"\\Processor Information(0,0)\\Processor Frequency", 0, &m_cpuFreqCounter) != ERROR_SUCCESS)
-      m_cpuFreqCounter = NULL;
-  }
-  else
-    m_cpuQueryFreq = NULL;
-  
-  if (PdhOpenQueryW(NULL, 0, &m_cpuQueryLoad) == ERROR_SUCCESS)
-  {
-    for (size_t i = 0; i < m_cores.size(); i++)
-    {
-      if (PdhAddEnglishCounterW(m_cpuQueryLoad, StringUtils::Format(L"\\Processor(%d)\\%% Idle Time", int(i)).c_str(), 0, &m_cores[i].m_coreCounter) != ERROR_SUCCESS)
-        m_cores[i].m_coreCounter = NULL;
-    }
-  }
-  else
-    m_cpuQueryLoad = NULL;
 #elif defined(TARGET_FREEBSD)
   size_t len;
   int i;
@@ -462,12 +337,6 @@ CCPUInfo::~CCPUInfo()
 
   if (m_fCPUFreq != NULL)
     fclose(m_fCPUFreq);
-#elif defined(TARGET_WINDOWS)
-  if (m_cpuQueryFreq)
-    PdhCloseQuery(m_cpuQueryFreq);
-
-  if (m_cpuQueryLoad)
-    PdhCloseQuery(m_cpuQueryLoad);
 #endif
 }
 
@@ -516,22 +385,6 @@ float CCPUInfo::getCPUFrequency()
   if (sysctlbyname("hw.cpufrequency", &hz, &len, NULL, 0) == -1)
     return 0.f;
   return hz / 1000000.0;
-#elif defined TARGET_WINDOWS
-  if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryFreq) == ERROR_SUCCESS)
-  {
-    PDH_RAW_COUNTER cnt;
-    DWORD cntType;
-    if (PdhGetRawCounterValue(m_cpuFreqCounter, &cntType, &cnt) == ERROR_SUCCESS &&
-        (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
-    {
-      return float(cnt.FirstValue);
-    }
-  }
-  
-  if (!m_cores.empty())
-    return float(m_cores.begin()->second.m_fSpeed);
-  else
-    return 0.f;
 #elif defined(TARGET_FREEBSD)
   int hz = 0;
   size_t len = sizeof(hz);
@@ -653,53 +506,7 @@ const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
 bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     unsigned long long& system, unsigned long long& idle, unsigned long long& io)
 {
-
-#ifdef TARGET_WINDOWS
-  FILETIME idleTime;
-  FILETIME kernelTime;
-  FILETIME userTime;
-  if (GetSystemTimes(&idleTime, &kernelTime, &userTime) == 0)
-    return false;
-
-  idle = (uint64_t(idleTime.dwHighDateTime) << 32) + uint64_t(idleTime.dwLowDateTime);
-  // returned "kernelTime" includes "idleTime"
-  system = (uint64_t(kernelTime.dwHighDateTime) << 32) + uint64_t(kernelTime.dwLowDateTime) - idle;
-  user = (uint64_t(userTime.dwHighDateTime) << 32) + uint64_t(userTime.dwLowDateTime);
-  nice = 0;
-  io = 0;
-
-  if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryLoad) == ERROR_SUCCESS)
-  {
-    for (std::map<int, CoreInfo>::iterator it = m_cores.begin(); it != m_cores.end(); ++it)
-    {
-      CoreInfo& curCore = it->second; // simplify usage
-      PDH_RAW_COUNTER cnt;
-      DWORD cntType;
-      if (curCore.m_coreCounter && PdhGetRawCounterValue(curCore.m_coreCounter, &cntType, &cnt) == ERROR_SUCCESS &&
-          (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
-      {
-        const LONGLONG coreTotal = cnt.SecondValue,
-                       coreIdle  = cnt.FirstValue;
-        const LONGLONG deltaTotal = coreTotal - curCore.m_total,
-                       deltaIdle  = coreIdle - curCore.m_idle;
-        const double load = (double(deltaTotal - deltaIdle) * 100.0) / double(deltaTotal);
-        
-        // win32 has some problems with calculation of load if load close to zero
-        curCore.m_fPct = (load < 0) ? 0 : load;
-        if (load >= 0 || deltaTotal > 5 * 10 * 1000 * 1000) // do not update (smooth) values for 5 seconds on negative loads
-        {
-          curCore.m_total = coreTotal;
-          curCore.m_idle = coreIdle;
-        }
-      }
-      else
-        curCore.m_fPct = double(m_lastUsedPercentage); // use CPU average as fallback
-    }
-  }
-  else
-    for (std::map<int, CoreInfo>::iterator it = m_cores.begin(); it != m_cores.end(); ++it)
-      it->second.m_fPct = double(m_lastUsedPercentage); // use CPU average as fallback
-#elif defined(TARGET_FREEBSD)
+#if defined(TARGET_FREEBSD)
   long *cptimes;
   size_t len;
   int i;
@@ -834,50 +641,7 @@ std::string CCPUInfo::GetCoresUsageString() const
 
 void CCPUInfo::ReadCPUFeatures()
 {
-#ifdef TARGET_WINDOWS
-
-  int CPUInfo[4]; // receives EAX, EBX, ECD and EDX in that order
-
-  __cpuid(CPUInfo, 0);
-  int MaxStdInfoType = CPUInfo[0];
-
-  if (MaxStdInfoType >= CPUID_INFOTYPE_STANDARD)
-  {
-    __cpuid(CPUInfo, CPUID_INFOTYPE_STANDARD);
-    if (CPUInfo[CPUINFO_EDX] & CPUID_00000001_EDX_MMX)
-      m_cpuFeatures |= CPU_FEATURE_MMX;
-    if (CPUInfo[CPUINFO_EDX] & CPUID_00000001_EDX_SSE)
-      m_cpuFeatures |= CPU_FEATURE_SSE;
-    if (CPUInfo[CPUINFO_EDX] & CPUID_00000001_EDX_SSE2)
-      m_cpuFeatures |= CPU_FEATURE_SSE2;
-    if (CPUInfo[CPUINFO_ECX] & CPUID_00000001_ECX_SSE3)
-      m_cpuFeatures |= CPU_FEATURE_SSE3;
-    if (CPUInfo[CPUINFO_ECX] & CPUID_00000001_ECX_SSSE3)
-      m_cpuFeatures |= CPU_FEATURE_SSSE3;
-    if (CPUInfo[CPUINFO_ECX] & CPUID_00000001_ECX_SSE4)
-      m_cpuFeatures |= CPU_FEATURE_SSE4;
-    if (CPUInfo[CPUINFO_ECX] & CPUID_00000001_ECX_SSE42)
-      m_cpuFeatures |= CPU_FEATURE_SSE42;
-  }
-
-  __cpuid(CPUInfo, 0x80000000);
-  int MaxExtInfoType = CPUInfo[0];
-
-  if (MaxExtInfoType >= CPUID_INFOTYPE_EXTENDED)
-  {
-    __cpuid(CPUInfo, CPUID_INFOTYPE_EXTENDED);
-
-    if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_MMX)
-      m_cpuFeatures |= CPU_FEATURE_MMX;
-    if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_MMX2)
-      m_cpuFeatures |= CPU_FEATURE_MMX2;
-    if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_3DNOW)
-      m_cpuFeatures |= CPU_FEATURE_3DNOW;
-    if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_3DNOWEXT)
-      m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
-  }
-
-#elif defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN)
   #if defined(__ppc__)
     m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
   #elif defined(TARGET_DARWIN_IOS)

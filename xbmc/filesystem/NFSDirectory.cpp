@@ -23,10 +23,6 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "DllLibNfs.h"
 
-#ifdef TARGET_WINDOWS
-#include <sys\stat.h>
-#endif
-
 #include "NFSDirectory.h"
 #include "FileItem.h"
 #include "utils/log.h"

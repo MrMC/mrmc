@@ -30,12 +30,7 @@ extern "C" {
 }
 #endif
 
-#if defined(TARGET_WINDOWS)
-struct __stat64;
-#define NFSSTAT struct __stat64
-#else
 #define NFSSTAT struct stat
-#endif
 
 class DllLibNfsInterface
 {

@@ -30,15 +30,7 @@
 #include "client/linux/handler/exception_handler.h"
 #endif
 
-#ifdef TARGET_WINDOWS
-#include <mmdeviceapi.h>
-#include "win32/IMMNotificationClient.h"
-#include "main/win32/MessagePrinter.h"
-#endif
-
-#if !defined(TARGET_WINDOWS)
 #include "main/posix/MessagePrinter.h"
-#endif
 
 extern "C" int XBMC_Run(bool renderGUI)
 {
@@ -91,46 +83,15 @@ extern "C" int XBMC_Run(bool renderGUI)
     return status;
   }
 
-#ifdef TARGET_WINDOWS
-  IMMDeviceEnumerator *pEnumerator = nullptr;
-  CMMNotificationClient cMMNC;
-  HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator,
-                                reinterpret_cast<void**>(&pEnumerator));
-  if (SUCCEEDED(hr))
-  {
-    pEnumerator->RegisterEndpointNotificationCallback(&cMMNC);
-    SAFE_RELEASE(pEnumerator);
-  }
-#endif
-
   try
   {
     status = g_application.Run();
   }
-#ifdef TARGET_WINDOWS
-  catch (const XbmcCommons::UncheckedException &e)
-  {
-    e.LogThrowMessage("CApplication::Create()");
-    CMessagePrinter::DisplayError("ERROR: Exception caught on main loop. Exiting");
-    status = -1;
-  }
-#endif
   catch(...)
   {
     CMessagePrinter::DisplayError("ERROR: Exception caught on main loop. Exiting");
     status = -1;
   }
-
-#ifdef TARGET_WINDOWS
-  // the end
-  hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator,
-                        reinterpret_cast<void**>(&pEnumerator));
-  if (SUCCEEDED(hr))
-  {
-    pEnumerator->UnregisterEndpointNotificationCallback(&cMMNC);
-    SAFE_RELEASE(pEnumerator);
-  }
-#endif
 
 #ifdef TARGET_RASPBERRY_PI
   g_RBP.Deinitialize();

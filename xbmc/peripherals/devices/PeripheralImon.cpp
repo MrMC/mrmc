@@ -50,12 +50,7 @@ bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
 {
   if (feature == FEATURE_IMON)
   {
-#if defined(TARGET_WINDOWS)
-    if (HasSetting("disable_winjoystick") && GetSettingBool("disable_winjoystick"))
-      m_bImonConflictsWithDInput = true;
-    else 
-#endif // TARGET_WINDOWS
-      m_bImonConflictsWithDInput = false;
+    m_bImonConflictsWithDInput = false;
 
     if (m_bImonConflictsWithDInput)
     {
@@ -70,9 +65,7 @@ bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
 
 void CPeripheralImon::AddSetting(const std::string &strKey, const CSetting *setting, int order)
 {
-#if !defined(TARGET_WINDOWS)
   if (strKey.compare("disable_winjoystick")!=0)
-#endif // !TARGET_WINDOWS
     CPeripheralHID::AddSetting(strKey, setting, order);
 }
 
@@ -99,12 +92,6 @@ void CPeripheralImon::ActionOnImonConflict(bool deviceInserted /*= true*/)
 {
   if (deviceInserted || m_lCountOfImonsConflictWithDInput == 0)
   {
-#if defined(TARGET_WINDOWS) && defined (HAS_SDL_JOYSTICK)
-    bool enableJoystickNow = !deviceInserted && CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEJOYSTICK);
-    CLog::Log(LOGNOTICE, "Problematic iMON hardware %s. Joystick usage: %s", (deviceInserted ? "detected" : "was removed"),
-        (enableJoystickNow) ? "enabled." : "disabled." );
-    CInputManager::GetInstance().SetEnabledJoystick(enableJoystickNow);
-#endif
   }
 }
 

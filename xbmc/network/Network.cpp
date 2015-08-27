@@ -26,11 +26,6 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
-#ifdef TARGET_WINDOWS
-#include "utils/SystemInfo.h"
-#include "win32/WIN32Util.h"
-#include "utils/CharsetConverter.h"
-#endif
 #include "utils/StringUtils.h"
 
 using namespace KODI::MESSAGING;
@@ -167,13 +162,7 @@ bool CNetwork::GetHostName(std::string& hostname)
   if (gethostname(hostName, sizeof(hostName)))
     return false;
 
-#ifdef TARGET_WINDOWS
-  std::string hostStr;
-  g_charsetConverter.systemToUtf8(hostName, hostStr);
-  hostname = hostStr;
-#else
   hostname = hostName;
-#endif
   return true;
 }
 
@@ -355,12 +344,7 @@ bool CNetwork::WakeOnLan(const char* mac)
 static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, struct timeval& timeOut, bool tryRead)
 {
   // set non-blocking
-#ifdef TARGET_WINDOWS
-  u_long nonblocking = 1;
-  int result = ioctlsocket(soc, FIONBIO, &nonblocking);
-#else
   int result = fcntl(soc, F_SETFL, fcntl(soc, F_GETFL) | O_NONBLOCK);
-#endif
 
   if (result != 0)
     return "set non-blocking option failed";
@@ -369,11 +353,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
 
   if (result < 0)
   {
-#ifdef TARGET_WINDOWS
-    if (WSAGetLastError() != WSAEWOULDBLOCK)
-#else
     if (errno != EINPROGRESS)
-#endif
       return "unexpected connect fail";
 
     { // wait for connect to complete
@@ -456,11 +436,7 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
 
   if (err_msg && *err_msg)
   {
-#ifdef TARGET_WINDOWS
-    std::string sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
-#else
     std::string sock_err = strerror(errno);
-#endif
 
     CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, inet_ntoa(addr.sin_addr), port, err_msg, sock_err.c_str());
   }
@@ -490,11 +466,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     // in case we're on ipv6, make sure the socket is dual stacked
     if (setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (const char*)&no, sizeof(no)) < 0)
     {
-#ifdef _MSC_VER
-      std::string sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
-#else
       std::string sock_err = strerror(errno);
-#endif
       CLog::Log(LOGWARNING, "%s Server: Only IPv6 supported (%s)", callerName, sock_err.c_str());
     }
 

@@ -19,10 +19,7 @@
  *
  */
 
-#if   defined(TARGET_WINDOWS)
-#define HAVE_PERIPHERAL_BUS_USB 1
-#include "win32/PeripheralBusUSB.h"
-#elif defined(TARGET_LINUX) && defined(HAVE_LIBUDEV)
+#if defined(TARGET_LINUX) && defined(HAVE_LIBUDEV)
 #define HAVE_PERIPHERAL_BUS_USB 1
 #include "linux/PeripheralBusUSBLibUdev.h"
 #elif defined(TARGET_LINUX) && defined(HAVE_LIBUSB)

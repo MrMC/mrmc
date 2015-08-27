@@ -23,13 +23,6 @@
 #include <libxslt/xslt.h>
 #include <libxslt/transform.h>
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "libxslt.lib")
-#pragma comment(lib, "libxml2.lib")
-#else
-#include <iostream>
-#endif
-
 #define TMP_BUF_SIZE 512
 void err(void *ctx, const char *msg, ...) {
   char string[TMP_BUF_SIZE];

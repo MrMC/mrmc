@@ -26,13 +26,8 @@
 #include "SpecialProtocol.h"
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #include "URL.h"
-#if defined(TARGET_POSIX)
 #include "posix/PosixFile.h"
 #define CacheLocalFile CPosixFile
-#elif defined(TARGET_WINDOWS)
-#include "win32/Win32File.h"
-#define CacheLocalFile CWin32File
-#endif // TARGET_WINDOWS
 
 #include <cassert>
 #include <algorithm>

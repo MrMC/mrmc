@@ -25,13 +25,9 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#else
 #include <cstdlib>
 #include <climits>
 #include <ctime>
-#endif
 
 class CTempFile : public XFILE::CFile
 {
@@ -55,15 +51,6 @@ public:
     }
     strcpy(tmp, m_ptempFilePath.c_str());
 
-#ifdef TARGET_WINDOWS
-    if (!GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/").c_str(),
-                         "xbmctempfile", 0, tmp))
-    {
-      m_ptempFilePath = "";
-      return false;
-    }
-    m_ptempFilePath = tmp;
-#else
     int fd;
     if ((fd = mkstemps(tmp, suffix.length())) < 0)
     {
@@ -72,7 +59,6 @@ public:
     }
     close(fd);
     m_ptempFilePath = tmp;
-#endif
 
     OpenForWrite(m_ptempFilePath.c_str(), true);
     return true;
@@ -352,9 +338,5 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
 
 std::string CXBMCTestUtils::getNewLineCharacters() const
 {
-#ifdef TARGET_WINDOWS
-  return "\r\n";
-#else
   return "\n";
-#endif
 }

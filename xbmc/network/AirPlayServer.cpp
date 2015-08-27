@@ -52,10 +52,6 @@ using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 using namespace std;
 
-#ifdef TARGET_WINDOWS
-#define close closesocket
-#endif
-
 #define RECEIVEBUFFER 1024
 
 #define AIRPLAY_STATUS_OK                  200
@@ -757,11 +753,8 @@ std::string getStringFromPlist(DllLibPlist *pLibPlist,plist_t node)
   char *tmpStr = NULL;
   pLibPlist->plist_get_string_val(node, &tmpStr);
   ret = tmpStr;
-#ifdef TARGET_WINDOWS
-  pLibPlist->plist_free_string_val(tmpStr);
-#else
   free(tmpStr);
-#endif
+
   return ret;
 }
 

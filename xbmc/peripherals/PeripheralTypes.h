@@ -23,9 +23,6 @@
 #include <map>
 #include <string>
 #include <stdio.h>
-#ifdef TARGET_WINDOWS
-#include "PlatformDefs.h"
-#endif
 #include "utils/StringUtils.h"
 
 class CSetting;

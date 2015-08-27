@@ -22,9 +22,6 @@
 #ifdef TARGET_POSIX
 #include "SoLoader.h"
 #endif
-#ifdef TARGET_WINDOWS
-#include "Win32DllLoader.h"
-#endif
 #include "DllLoader.h"
 #include "dll_tracker.h" // for python unload hack
 #include "filesystem/File.h"
@@ -242,10 +239,6 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL
       || strstr(sName, ".mvis") != NULL || strstr(sName, ".dylib") != NULL || strstr(sName, ".framework") != NULL || strstr(sName, ".pvr") != NULL)
     pLoader = new SoLoader(sName, bLoadSymbols);
-  else
-#elif defined(TARGET_WINDOWS)
-  if (1)
-    pLoader = new Win32DllLoader(sName);
   else
 #endif
     pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);

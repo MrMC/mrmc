@@ -257,20 +257,10 @@ string StringUtils::FormatV(const char *fmt, va_list args)
       return str;
     }
     free(cstr);
-#ifndef TARGET_WINDOWS
     if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
     else                                // Let's try to double the size (glibc 2.0)
       size *= 2;
-#else  // TARGET_WINDOWS
-    va_copy(argCopy, args);
-    size = _vscprintf(fmt, argCopy);
-    va_end(argCopy);
-    if (size < 0)
-      return "";
-    else
-      size++; // increment for null-termination
-#endif // TARGET_WINDOWS
   }
 
   return ""; // unreachable
@@ -312,20 +302,10 @@ wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
     }
     free(cstr);
 
-#ifndef TARGET_WINDOWS
     if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
     else                                // Let's try to double the size (glibc 2.0)
       size *= 2;
-#else  // TARGET_WINDOWS
-    va_copy(argCopy, args);
-    size = _vscwprintf(fmt, argCopy);
-    va_end(argCopy);
-    if (size < 0)
-      return L"";
-    else
-      size++; // increment for null-termination
-#endif // TARGET_WINDOWS
   }
   
   return L"";

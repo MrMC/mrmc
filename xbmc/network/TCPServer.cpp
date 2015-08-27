@@ -34,7 +34,7 @@
 #include "websocket/WebSocketManager.h"
 #include "Network.h"
 
-#if defined(TARGET_WINDOWS) || defined(HAVE_LIBBLUETOOTH)
+#if defined(HAVE_LIBBLUETOOTH)
 static const char     bt_service_name[] = "XBMC JSON-RPC";
 static const char     bt_service_desc[] = "Interface for XBMC remote control over bluetooth";
 static const char     bt_service_prov[] = "XBMC JSON-RPC Provider";
@@ -268,70 +268,6 @@ bool CTCPServer::InitializeBlue()
 {
   if (!m_nonlocal)
     return false;
-
-#ifdef TARGET_WINDOWS
-
-  SOCKET fd = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
-  if (fd == INVALID_SOCKET)
-  {
-    CLog::Log(LOGINFO, "JSONRPC Server: Unable to get bluetooth socket");
-    return false;
-  }
-  SOCKADDR_BTH sa  = {};
-  sa.addressFamily = AF_BTH;
-  sa.port          = BT_PORT_ANY;
-
-  if (bind(fd, (SOCKADDR*)&sa, sizeof(sa)) < 0)
-  {
-    CLog::Log(LOGINFO, "JSONRPC Server: Unable to bind to bluetooth socket");
-    closesocket(fd);
-    return false;
-  }
-
-  ULONG optval = TRUE;
-  if (setsockopt(fd, SOL_RFCOMM, SO_BTH_AUTHENTICATE, (const char*)&optval, sizeof(optval)) == SOCKET_ERROR)
-  {
-    CLog::Log(LOGERROR, "JSONRPC Server: Failed to force authentication for bluetooth socket");
-    closesocket(fd);
-    return false;
-  }
-
-  int len = sizeof(sa);
-  if (getsockname(fd, (SOCKADDR*)&sa, &len) < 0)
-    CLog::Log(LOGERROR, "JSONRPC Server: Failed to get bluetooth port");
-
-  if (listen(fd, 10) < 0)
-  {
-    CLog::Log(LOGERROR, "JSONRPC Server: Failed to listen to bluetooth port");
-    closesocket(fd);
-    return false;
-  }
-
-  m_servers.push_back(fd);
-
-  CSADDR_INFO addrinfo;
-  addrinfo.iProtocol   = BTHPROTO_RFCOMM;
-  addrinfo.iSocketType = SOCK_STREAM;
-  addrinfo.LocalAddr.lpSockaddr       = (SOCKADDR*)&sa;
-  addrinfo.LocalAddr.iSockaddrLength  = sizeof(sa);
-  addrinfo.RemoteAddr.lpSockaddr      = (SOCKADDR*)&sa;
-  addrinfo.RemoteAddr.iSockaddrLength = sizeof(sa);
-
-  WSAQUERYSET service = {};
-  service.dwSize = sizeof(service);
-  service.lpszServiceInstanceName = (LPSTR)bt_service_name;
-  service.lpServiceClassId        = (LPGUID)&bt_service_guid;
-  service.lpszComment             = (LPSTR)bt_service_desc;
-  service.dwNameSpace             = NS_BTH;
-  service.lpNSProviderId          = NULL; /* RFCOMM? */
-  service.lpcsaBuffer             = &addrinfo;
-  service.dwNumberOfCsAddrs       = 1;
-
-  if (WSASetService(&service, RNRSERVICE_REGISTER, 0) == SOCKET_ERROR)
-    CLog::Log(LOGERROR, "JSONRPC Server: failed to register bluetooth service error %d",  WSAGetLastError());
-
-  return true;
-#endif
 
 #ifdef HAVE_LIBBLUETOOTH
 

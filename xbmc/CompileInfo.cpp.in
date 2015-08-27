@@ -21,11 +21,6 @@
 #include "CompileInfo.h"
 #include <cstddef>
 
-#if defined(TARGET_WINDOWS) && !defined(_DEBUG)
-#include "../git_revision.h" // generated file
-#endif
-
-
 int CCompileInfo::GetMajor()
 {
   return @APP_VERSION_MAJOR@;
@@ -48,12 +43,5 @@ const char* CCompileInfo::GetSuffix()
 
 const char* CCompileInfo::GetSCMID()
 {
-#if defined(TARGET_WINDOWS)
-#ifdef GIT_REV
-  return GIT_REV;
-#else
-  return "Unknown";
-#endif
-#endif
   return "@APP_SCMID@";
 }

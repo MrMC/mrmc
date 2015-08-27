@@ -25,9 +25,6 @@
 #if defined(TARGET_POSIX)
 #include "posix/PosixInterfaceForCLog.h"
 typedef class CPosixInterfaceForCLog PlatformInterfaceForCLog;
-#elif defined(TARGET_WINDOWS)
-#include "win32/Win32InterfaceForCLog.h"
-typedef class CWin32InterfaceForCLog PlatformInterfaceForCLog;
 #endif
 
 #include "commons/ilog.h"

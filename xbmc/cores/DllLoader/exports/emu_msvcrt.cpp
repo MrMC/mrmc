@@ -73,7 +73,7 @@
 #endif
 #if defined(TARGET_ANDROID)
 #include "android/loader/AndroidDyload.h"
-#elif !defined(TARGET_WINDOWS)
+#else
 #include <dlfcn.h>
 #endif
 #include "utils/Environment.h"
@@ -113,23 +113,7 @@ extern "C" void __stdcall init_emu_environ()
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
   // python
-#if defined(TARGET_WINDOWS)
-  // fill our array with the windows system vars
-  LPTSTR lpszVariable; 
-  LPTCH lpvEnv;
-  lpvEnv = GetEnvironmentStrings();
-  if (lpvEnv != NULL)
-  {
-    lpszVariable = (LPTSTR) lpvEnv;
-    while (*lpszVariable)
-    {
-      dll_putenv(lpszVariable);
-      lpszVariable += lstrlen(lpszVariable) + 1;
-    }
-    FreeEnvironmentStrings(lpvEnv);
-  }
-  dll_putenv("OS=win32");
-#elif defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN)
   dll_putenv("OS=darwin");
 #elif defined(TARGET_POSIX)
   dll_putenv("OS=linux");
@@ -246,38 +230,6 @@ static int convert_fmode(const char* mode)
     iMode |= _O_WRONLY  | O_CREAT;
   return iMode;
 }
-
-#ifdef TARGET_WINDOWS
-static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
-{
-  std::string strname;
-  g_charsetConverter.wToUTF8(wdata->name, strname);
-  size_t size = sizeof(data->name) / sizeof(char);
-  strncpy(data->name, strname.c_str(), size);
-  if (size)
-    data->name[size - 1] = '\0';
-  data->attrib = wdata->attrib;
-  data->time_create = wdata->time_create;
-  data->time_access = wdata->time_access;
-  data->time_write = wdata->time_write;
-  data->size = wdata->size;
-}
-
-static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
-{
-  std::wstring strwname;
-  g_charsetConverter.utf8ToW(data->name, strwname, false);
-  size_t size = sizeof(wdata->name) / sizeof(wchar_t);
-  wcsncpy(wdata->name, strwname.c_str(), size);
-  if (size)
-    wdata->name[size - 1] = '\0';
-  wdata->attrib = data->attrib;
-  wdata->time_create = data->time_create;
-  wdata->time_access = data->time_access;
-  wdata->time_write = data->time_write;
-  wdata->size = data->size;
-}
-#endif
 
 extern "C"
 {
@@ -456,10 +408,8 @@ extern "C"
 #if defined(TARGET_ANDROID)
     CAndroidDyload temp;
     return temp.Open(filename);
-#elif !defined(TARGET_WINDOWS)
-    return dlopen(filename, flag);
 #else
-    return NULL;
+    return dlopen(filename, flag);
 #endif
   }
 
@@ -1848,19 +1798,6 @@ extern "C"
     return CFile::Stat(path, buffer);
   }
 
-#ifdef TARGET_WINDOWS
-  int dll_stat64i32(const char *path, struct _stat64i32 *buffer)
-  {
-    struct __stat64 a;
-    if(dll_stat64(path, &a) == 0)
-    {
-      CUtil::Stat64ToStat64i32(buffer, &a);
-      return 0;
-    }
-    return -1;
-  }
-#endif
-
   int dll_fstat(int fd, struct stat* buffer)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
@@ -1911,39 +1848,6 @@ extern "C"
     // this is what python expects
     return -1;
   }
-
-#ifdef TARGET_WINDOWS
-  int dll_fstat64i32(int fd, struct _stat64i32 *buffer)
-  {
-    CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
-    if (pFile != NULL)
-    {
-      struct __stat64 tStat = {};
-      if (pFile->Stat(&tStat) == 0)
-      {
-        CUtil::Stat64ToStat64i32(buffer, &tStat);
-        return 0;
-      }
-      return -1;
-    }
-    else if (!IS_STD_DESCRIPTOR(fd))
-    {
-      CLog::Log(LOGWARNING, "msvcrt.dll: dll_fstati64 called, TODO: add 'int64 <-> long' type checking");      //warning
-      // need to use fstat and convert everything
-      struct __stat64 temp;
-      int res = _fstat64(fd, &temp);
-      if (res == 0)
-      {
-        CUtil::Stat64ToStat64i32(buffer, &temp);
-      }
-      return res;
-    }
-
-    // fstat on stdin, stdout or stderr should fail
-    // this is what python expects
-    return -1;
-  }
-#endif
 
   int dll_setmode ( int handle, int mode )
   {
@@ -2111,11 +2015,6 @@ extern "C"
 
   void (__cdecl * dll_signal(int sig, void (__cdecl *func)(int)))(int)
   {
-#if defined(TARGET_WINDOWS)
-    //vs2008 asserts for known signals, return err for everything unknown to windows.
-    if (sig == 5 || sig == 7 || sig == 9 || sig == 10 || sig == 12 || sig == 14 || sig == 18 || sig == 19 || sig == 20)
-      return SIG_ERR;
-#endif
     return signal(sig, func);
   }
 
@@ -2286,11 +2185,7 @@ extern "C"
   // descriptor list, but we always use app's list with our wrappers
   int __cdecl dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags)
   {
-#ifdef TARGET_WINDOWS
-    return _open_osfhandle(_OSFileHandle, _Flags);
-#else
     return -1;
-#endif
   }
 
 }

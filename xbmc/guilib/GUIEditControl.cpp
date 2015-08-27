@@ -41,10 +41,6 @@ const unsigned int CGUIEditControl::smsDelay = 1000;
 
 using namespace std;
 
-#ifdef TARGET_WINDOWS
-extern HWND g_hWnd;
-#endif
-
 CGUIEditControl::CGUIEditControl(int parentID, int controlID, float posX, float posY,
                                  float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
                                  const CLabelInfo& labelInfo, const std::string &text)

@@ -24,9 +24,6 @@
 #include "windowing/WindowingFactory.h"
 #include <assert.h>
 #include <string>
-#ifdef TARGET_WINDOWS
-#include "guilib/GraphicContext.h"
-#endif
 
 //////// Generic, non-platform-specific code
 
@@ -180,40 +177,6 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 }
 
 /////  Add other platforms here.
-#elif defined(TARGET_WINDOWS)
-void DPMSSupport::PlatformSpecificInit()
-{
-  // Assume we support DPMS. Is there a way to test it?
-  m_supportedModes.push_back(OFF);
-  m_supportedModes.push_back(STANDBY);
-}
-
-bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
-{
-  if(!g_graphicsContext.IsFullScreenRoot())
-  {
-    CLog::Log(LOGDEBUG, "DPMS: not in fullscreen, power saving disabled");
-    return false;
-  }
-  switch(mode)
-  {
-  case OFF:
-    // Turn off display
-    return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2) == 0;
-  case STANDBY:
-    // Set display to low power
-    return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
-  default:
-    return true;
-  }
-}
-
-bool DPMSSupport::PlatformSpecificDisablePowerSaving()
-{
-  // Turn display on
-  return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1) == 0;
-}
-
 #elif defined(TARGET_DARWIN_OSX)
 #include <IOKit/IOKitLib.h>
 #include <CoreFoundation/CFNumber.h>

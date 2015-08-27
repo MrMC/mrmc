@@ -25,10 +25,6 @@
 #include <vector>
 #include <map>
 
-#ifdef TARGET_WINDOWS
-#undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
-#endif
-
 //forwards
 class CCriticalSection;
 

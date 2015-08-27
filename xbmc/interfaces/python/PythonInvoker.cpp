@@ -18,7 +18,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 
@@ -43,18 +43,11 @@
 #include "interfaces/python/swig.h"
 #include "interfaces/python/XBPython.h"
 #include "threads/SingleLock.h"
-#if defined(TARGET_WINDOWS)
-#include "utils/CharsetConverter.h"
-#endif // defined(TARGET_WINDOWS)
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-#ifdef TARGET_WINDOWS
-extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
-#else
 #define fopen_utf8 fopen
-#endif
 
 #define GC_SCRIPT \
   "import gc\n" \
@@ -232,13 +225,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   if (m_argv != NULL)
     PySys_SetArgv(m_argc, m_argv);
 
-#ifdef TARGET_WINDOWS
-  std::string pyPathUtf8;
-  g_charsetConverter.systemToUtf8(m_pythonPath, pyPathUtf8, false);
-  CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), pyPathUtf8.c_str());
-#else // ! TARGET_WINDOWS
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
-#endif // ! TARGET_WINDOWS
   PySys_SetPath((char *)m_pythonPath.c_str());
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(), m_sourceFile.c_str(), scriptDir.c_str());
@@ -270,13 +257,6 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
       //  is linked against may not be the DLL that xbmc is linked against so
       //  passing a FILE* to python from an fopen has the potential to crash.
       std::string nativeFilename(realFilename); // filename in system encoding
-#ifdef TARGET_WINDOWS
-      if (!g_charsetConverter.utf8ToSystem(nativeFilename, true))
-      {
-        CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): can't convert filename \"%s\" to system encoding", GetId(), m_sourceFile.c_str(), realFilename.c_str());
-        return false;
-      }
-#endif
       PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
       FILE *fp = PyFile_AsFile(file);
 
@@ -645,20 +625,7 @@ void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<s
 
 void CPythonInvoker::addPath(const std::string& path)
 {
-#if defined(TARGET_WINDOWS)
-  if (path.empty())
-    return;
-
-  std::string nativePath(path);
-  if (!g_charsetConverter.utf8ToSystem(nativePath, true))
-  {
-    CLog::Log(LOGERROR, "%s: can't convert UTF-8 path \"%s\" to system encoding", __FUNCTION__, path.c_str());
-    return;
-  }
-  addNativePath(nativePath);
-#else
   addNativePath(path);
-#endif // defined(TARGET_WINDOWS)
 }
 
 void CPythonInvoker::addNativePath(const std::string& path)

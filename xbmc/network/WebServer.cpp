@@ -18,7 +18,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 
@@ -44,14 +44,6 @@
 #include "utils/Variant.h"
 
 //#define WEBSERVER_DEBUG
-
-#ifdef TARGET_WINDOWS
-#ifndef _DEBUG
-#pragma comment(lib, "libmicrohttpd.lib")
-#else  // _DEBUG
-#pragma comment(lib, "libmicrohttpd_d.lib")
-#endif // _DEBUG
-#endif // TARGET_WINDOWS
 
 #define MAX_POST_BUFFER_SIZE 2048
 

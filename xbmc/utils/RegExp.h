@@ -28,14 +28,6 @@
 namespace PCRE {
 struct real_pcre_jit_stack; // forward declaration for PCRE without JIT
 typedef struct real_pcre_jit_stack pcre_jit_stack;
-#ifdef TARGET_WINDOWS
-#define PCRE_STATIC 1
-#ifdef _DEBUG
-#pragma comment(lib, "pcred.lib")
-#else  // ! _DEBUG
-#pragma comment(lib, "pcre.lib")
-#endif // ! _DEBUG
-#endif // TARGET_WINDOWS
 #include <pcre.h>
 }
 

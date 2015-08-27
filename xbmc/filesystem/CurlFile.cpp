@@ -1617,18 +1617,9 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
            */
           if (maxfd == -1)
           {
-#ifdef TARGET_WINDOWS
-            /* Windows does not support using select() for sleeping without a dummy
-             * socket. Instead use Windows' Sleep() and sleep for 100ms which is the
-             * minimum suggested value in the curl_multi_fdset() doc.
-             */
-            Sleep(100);
-            rc = 0;
-#else
             /* Portable sleep for platforms other than Windows. */
             struct timeval wait = { 0, 100 * 1000 }; /* 100ms */
             rc = select(0, NULL, NULL, NULL, &wait);
-#endif
           }
           else
           {
@@ -1636,22 +1627,12 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
             struct timeval wait = { (int)time_left / 1000, ((int)time_left % 1000) * 1000 };
             rc = select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &wait);
           }
-#ifdef TARGET_WINDOWS
-        } while(rc == SOCKET_ERROR && WSAGetLastError() == WSAEINTR);
-#else
         } while(rc == SOCKET_ERROR && errno == EINTR);
-#endif
 
         if(rc == SOCKET_ERROR)
         {
-#ifdef TARGET_WINDOWS
-          char buf[256];
-          strerror_s(buf, 256, WSAGetLastError());
-          CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed with socket error:%s", buf);
-#else
           char const * str = strerror(errno);
           CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed with socket error:%s", str);
-#endif
 
           return false;
         }

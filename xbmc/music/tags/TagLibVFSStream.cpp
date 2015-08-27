@@ -27,10 +27,6 @@ using namespace TagLib;
 using namespace MUSIC_INFO;
 using namespace std;
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "tag.lib")
-#endif
-
 /*!
  * Construct a File object and opens the \a file.  \a file should be a
  * be an XBMC Vfile.

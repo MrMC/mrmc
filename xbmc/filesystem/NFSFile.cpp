@@ -33,11 +33,6 @@
 
 #include <nfsc/libnfs-raw-mount.h>
 
-#ifdef TARGET_WINDOWS
-#include <fcntl.h>
-#include <sys\stat.h>
-#endif
-
 //KEEP_ALIVE_TIMEOUT is decremented every half a second
 //360 * 0.5s == 180s == 3mins
 //so when no read was done for 3mins and files are open
@@ -611,9 +606,6 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   {  
     if(buffer)
     {
-#if defined(TARGET_WINDOWS)// TODO get rid of this define after gotham
-      memcpy(buffer, &tmpBuffer, sizeof(struct __stat64));
-#else
       memset(buffer, 0, sizeof(struct __stat64));
       buffer->st_dev = tmpBuffer.st_dev;
       buffer->st_ino = tmpBuffer.st_ino;
@@ -626,7 +618,6 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
       buffer->st_atime = tmpBuffer.st_atime;
       buffer->st_mtime = tmpBuffer.st_mtime;
       buffer->st_ctime = tmpBuffer.st_ctime;
-#endif
     }
   }
   return ret;

@@ -22,9 +22,7 @@
  */
 
 #include "network/Network.h"
-#if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
-#endif
 
 #include "AirTunesServer.h"
 

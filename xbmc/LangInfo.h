@@ -33,15 +33,6 @@
 #include <vector>
 #include <locale>
 
-#ifdef TARGET_WINDOWS
-#ifdef GetDateFormat
-#undef GetDateFormat
-#endif // GetDateFormat
-#ifdef GetTimeFormat
-#undef GetTimeFormat
-#endif // GetTimeFormat
-#endif // TARGET_WINDOWS
-
 class TiXmlNode;
 
 namespace ADDON

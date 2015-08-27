@@ -391,12 +391,7 @@ void CSAPSessions::Process()
   if(m_socket == INVALID_SOCKET)
     return;
 
-#ifdef TARGET_WINDOWS
-  unsigned long nonblocking = 1;
-  ioctlsocket(m_socket, FIONBIO, &nonblocking);
-#else
   fcntl(m_socket, F_SETFL, fcntl(m_socket, F_GETFL) | O_NONBLOCK);
-#endif
 
   const char one = 1;
   setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));

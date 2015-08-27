@@ -21,16 +21,7 @@
 
 #include "DVDDemux.h"
 
-#ifdef TARGET_WINDOWS
-#define __attribute__(dummy_val)
-#else
 #include <config.h>
-#endif
-
-#ifdef TARGET_WINDOWS
-#pragma pack(push)
-#pragma pack(1)
-#endif
 
 typedef struct
 {
@@ -41,10 +32,6 @@ typedef struct
   uint32_t bitsPerSample;
   uint64_t durationMs;
 } __attribute__((__packed__)) Demux_BXA_FmtHeader;
-
-#ifdef TARGET_WINDOWS
-#pragma pack(pop)
-#endif
 
 #include <vector>
 

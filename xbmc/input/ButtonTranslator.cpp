@@ -39,11 +39,7 @@
 
 #include <algorithm>
 
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 #include "SDLJoystick.h"
-#endif
 
 #define JOYSTICK_DEFAULT_MAP "_xbmc_"
 
@@ -434,36 +430,6 @@ static const WindowMapping fallbackWindows[] =
     { WINDOW_FULLSCREEN_LIVETV   , WINDOW_FULLSCREEN_VIDEO },
     { WINDOW_FULLSCREEN_RADIO    , WINDOW_VISUALISATION }
 };
-
-#ifdef TARGET_WINDOWS
-static const ActionMapping appcommands[] =
-{
-    { "browser_back"             , APPCOMMAND_BROWSER_BACKWARD },
-    { "browser_forward"          , APPCOMMAND_BROWSER_FORWARD },
-    { "browser_refresh"          , APPCOMMAND_BROWSER_REFRESH },
-    { "browser_stop"             , APPCOMMAND_BROWSER_STOP },
-    { "browser_search"           , APPCOMMAND_BROWSER_SEARCH },
-    { "browser_favorites"        , APPCOMMAND_BROWSER_FAVORITES },
-    { "browser_home"             , APPCOMMAND_BROWSER_HOME },
-    { "volume_mute"              , APPCOMMAND_VOLUME_MUTE },
-    { "volume_down"              , APPCOMMAND_VOLUME_DOWN },
-    { "volume_up"                , APPCOMMAND_VOLUME_UP },
-    { "next_track"               , APPCOMMAND_MEDIA_NEXTTRACK },
-    { "prev_track"               , APPCOMMAND_MEDIA_PREVIOUSTRACK },
-    { "stop"                     , APPCOMMAND_MEDIA_STOP },
-    { "play_pause"               , APPCOMMAND_MEDIA_PLAY_PAUSE },
-    { "launch_mail"              , APPCOMMAND_LAUNCH_MAIL },
-    { "launch_media_select"      , APPCOMMAND_LAUNCH_MEDIA_SELECT },
-    { "launch_app1"              , APPCOMMAND_LAUNCH_APP1 },
-    { "launch_app2"              , APPCOMMAND_LAUNCH_APP2 },
-    { "play"                     , APPCOMMAND_MEDIA_PLAY },
-    { "pause"                    , APPCOMMAND_MEDIA_PAUSE },
-    { "fastforward"              , APPCOMMAND_MEDIA_FAST_FORWARD },
-    { "rewind"                   , APPCOMMAND_MEDIA_REWIND },
-    { "channelup"                , APPCOMMAND_MEDIA_CHANNEL_UP },
-    { "channeldown"              , APPCOMMAND_MEDIA_CHANNEL_DOWN }
-};
-#endif
 
 CButtonTranslator& CButtonTranslator::GetInstance()
 {
@@ -1317,8 +1283,6 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
             buttonCode = TranslateKeyboardButton(pButton);
         else if (type == "mouse")
             buttonCode = TranslateMouseCommand(pButton);
-        else if (type == "appcommand")
-            buttonCode = TranslateAppCommand(pButton->Value());
 
         if (buttonCode && pButton->FirstChild())
           MapAction(buttonCode, pButton->FirstChild()->Value(), map);
@@ -1632,22 +1596,6 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   }
 
   return button_id;
-}
-
-uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
-{
-#ifdef TARGET_WINDOWS
-  std::string strAppCommand = szButton;
-  StringUtils::ToLower(strAppCommand);
-
-  for (int i = 0; i < ARRAY_SIZE(appcommands); i++)
-    if (strAppCommand == appcommands[i].name)
-      return appcommands[i].action | KEY_APPCOMMAND;
-
-  CLog::Log(LOGERROR, "%s: Can't find appcommand %s", __FUNCTION__, szButton);
-#endif
-
-  return 0;
 }
 
 uint32_t CButtonTranslator::TranslateMouseCommand(TiXmlElement *pButton)

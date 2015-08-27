@@ -27,15 +27,6 @@ extern "C" {
 #include "libavutil/samplefmt.h"
 }
 
-#ifdef TARGET_WINDOWS
-#if _M_IX86_FP>0 && !defined(__SSE__)
-#define __SSE__
-#if _M_IX86_FP>1 && !defined(__SSE2__)
-#define __SSE2__
-#endif
-#endif
-#endif
-
 #ifdef __SSE__
 #include <xmmintrin.h>
 #else

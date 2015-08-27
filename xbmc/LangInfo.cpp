@@ -265,11 +265,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
     std::string strLang, strRegion;
     g_LangCodeExpander.ConvertToISO6391(m_strLangLocaleName, strLang);
     g_LangCodeExpander.ConvertToISO6391(m_strRegionLocaleName, strRegion);
-#ifdef TARGET_WINDOWS
-    strLocale = strLang + "-" + strRegion;
-#else
     strLocale = strLang + "_" + strRegion;
-#endif
 #ifdef TARGET_POSIX
     strLocale += ".UTF-8";
 #endif
@@ -417,17 +413,6 @@ bool CLangInfo::Load(const std::string& strLanguage)
   if (pRootElement->Attribute("locale"))
     m_defaultRegion.m_strLangLocaleName = pRootElement->Attribute("locale");
 
-#ifdef TARGET_WINDOWS
-  // Windows need 3 chars isolang code
-  if (m_defaultRegion.m_strLangLocaleName.length() == 2)
-  {
-    if (!g_LangCodeExpander.ConvertISO6391ToISO6392T(m_defaultRegion.m_strLangLocaleName, m_defaultRegion.m_strLangLocaleName, true))
-      m_defaultRegion.m_strLangLocaleName = "";
-  }
-
-  if (!g_LangCodeExpander.ConvertWindowsLanguageCodeToISO6392T(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
-    m_languageCodeGeneral = "";
-#else
   if (m_defaultRegion.m_strLangLocaleName.length() != 3)
   {
     if (!g_LangCodeExpander.ConvertToISO6392T(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
@@ -435,7 +420,6 @@ bool CLangInfo::Load(const std::string& strLanguage)
   }
   else
     m_languageCodeGeneral = m_defaultRegion.m_strLangLocaleName;
-#endif
 
   std::string tmp;
   if (g_LangCodeExpander.ConvertToISO6391(m_defaultRegion.m_strLangLocaleName, tmp))
@@ -454,15 +438,6 @@ bool CLangInfo::Load(const std::string& strLanguage)
 
       if (pRegion->Attribute("locale"))
         region.m_strRegionLocaleName = pRegion->Attribute("locale");
-
-#ifdef TARGET_WINDOWS
-      // Windows need 3 chars regions code
-      if (region.m_strRegionLocaleName.length() == 2)
-      {
-        if (!g_LangCodeExpander.ConvertISO36111Alpha2ToISO36111Alpha3(region.m_strRegionLocaleName, region.m_strRegionLocaleName))
-          region.m_strRegionLocaleName = "";
-      }
-#endif
 
       const TiXmlNode *pDateLong=pRegion->FirstChild("datelong");
       if (pDateLong && !pDateLong->NoChildren())

@@ -49,9 +49,7 @@
 #include <SDL2/SDL.h>
 #endif
 
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 #include "input/SDLJoystick.h"
 #endif
 #include "ButtonTranslator.h"
@@ -113,7 +111,7 @@ void CInputManager::SetEnabledJoystick(bool enabled /* = true */)
 #endif
 }
 
-#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
+#if defined(HAS_SDL_JOYSTICK)
 void CInputManager::UpdateJoystick(SDL_Event& joyEvent)
 {
   m_Joystick.Update(joyEvent);
@@ -642,10 +640,7 @@ bool CInputManager::OnKey(const CKey& key)
         else
         {
           // Check for paste keypress
-#ifdef TARGET_WINDOWS
-          // In Windows paste is ctrl-V
-          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
-#elif defined(TARGET_LINUX)
+#if defined(TARGET_LINUX)
           // In Linux paste is ctrl-V
           if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
 #elif defined(TARGET_DARWIN_OSX)

@@ -2320,12 +2320,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #else
     bReturn = false;
 #endif
-  else if (condition == SYSTEM_PLATFORM_WINDOWS)
-#ifdef TARGET_WINDOWS
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
   else if (condition == SYSTEM_PLATFORM_DARWIN)
 #ifdef TARGET_DARWIN
     bReturn = true;
@@ -4333,7 +4327,7 @@ std::string CGUIInfoManager::GetSystemHeatInfo(int info)
     case SYSTEM_CPU_USAGE:
 #if defined(TARGET_DARWIN_OSX)
       text = StringUtils::Format("%4.2f%%", m_resourceCounter.GetCPUUsage());
-#elif defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
+#elif defined(TARGET_DARWIN)
       text = StringUtils::Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
       text = StringUtils::Format("%s", g_cpuInfo.GetCoresUsageString().c_str());

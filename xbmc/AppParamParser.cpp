@@ -27,12 +27,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
 #include "input/InputManager.h"
-#ifdef TARGET_WINDOWS
-#include "WIN32Util.h"
-#endif
-#ifndef TARGET_WINDOWS
 #include "linux/XTimeUtils.h"
-#endif
 #include <stdlib.h>
 
 using namespace KODI::MESSAGING;

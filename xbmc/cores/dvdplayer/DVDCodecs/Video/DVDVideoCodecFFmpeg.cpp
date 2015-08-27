@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 #include "DVDVideoCodecFFmpeg.h"
@@ -28,7 +28,7 @@
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDCodecUtils.h"
-#if defined(TARGET_POSIX) || defined(TARGET_WINDOWS)
+#if defined(TARGET_POSIX)
 #include "utils/CPUInfo.h"
 #endif
 #include "settings/AdvancedSettings.h"
