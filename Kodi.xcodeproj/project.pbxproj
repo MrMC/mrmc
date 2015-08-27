@@ -1805,7 +1805,6 @@
 		DFF0F3F917528350002DA3A4 /* URIUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8EC12942613009E7A26 /* URIUtils.cpp */; };
 		DFF0F3FA17528350002DA3A4 /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466815CF1FED00727135 /* UrlOptions.cpp */; };
 		DFF0F3FB17528350002DA3A4 /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF1FB09123B1AF000B2CBCB /* Variant.cpp */; };
-		DFF0F3FC17528350002DA3A4 /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8D0D25F9FD00618676 /* Weather.cpp */; };
 		DFF0F3FD17528350002DA3A4 /* XBMCTinyXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */; };
 		DFF0F3FE17528350002DA3A4 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
 		DFF0F3FF17528350002DA3A4 /* GUIDialogAudioSubtitleSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8FE12942761009E7A26 /* GUIDialogAudioSubtitleSettings.cpp */; };
@@ -1848,7 +1847,6 @@
 		DFF0F42517528350002DA3A4 /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */; };
 		DFF0F42617528350002DA3A4 /* GUIWindowStartup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18370D25F9FA00618676 /* GUIWindowStartup.cpp */; };
 		DFF0F42717528350002DA3A4 /* GUIWindowSystemInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18390D25F9FA00618676 /* GUIWindowSystemInfo.cpp */; };
-		DFF0F42817528350002DA3A4 /* GUIWindowWeather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18490D25F9FA00618676 /* GUIWindowWeather.cpp */; };
 		DFF0F43117528350002DA3A4 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14640D25F9F900618676 /* Application.cpp */; };
 		DFF0F43317528350002DA3A4 /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352C616E5436900D21BAD /* AppParamParser.cpp */; };
 		DFF0F43417528350002DA3A4 /* Autorun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146E0D25F9F900618676 /* Autorun.cpp */; };
@@ -2142,7 +2140,6 @@
 		E38E20CD0D25F9FD00618676 /* GUIWindowVideoNav.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18410D25F9FA00618676 /* GUIWindowVideoNav.cpp */; };
 		E38E20CF0D25F9FD00618676 /* GUIWindowVideoPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18450D25F9FA00618676 /* GUIWindowVideoPlaylist.cpp */; };
 		E38E20D00D25F9FD00618676 /* GUIWindowVisualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18470D25F9FA00618676 /* GUIWindowVisualisation.cpp */; };
-		E38E20D10D25F9FD00618676 /* GUIWindowWeather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18490D25F9FA00618676 /* GUIWindowWeather.cpp */; };
 		E38E20D60D25F9FD00618676 /* LangCodeExpander.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */; };
 		E38E20D70D25F9FD00618676 /* LangInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18580D25F9FA00618676 /* LangInfo.cpp */; };
 		E38E222B0D25F9FE00618676 /* dataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CD70D25F9FC00618676 /* dataset.cpp */; };
@@ -2240,7 +2237,6 @@
 		E38E22F30D25F9FE00618676 /* SystemInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E830D25F9FD00618676 /* SystemInfo.cpp */; };
 		E38E22F40D25F9FE00618676 /* Thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E850D25F9FD00618676 /* Thread.cpp */; };
 		E38E22F70D25F9FE00618676 /* UdpClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */; };
-		E38E22F80D25F9FE00618676 /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8D0D25F9FD00618676 /* Weather.cpp */; };
 		E38E22FB0D25F9FE00618676 /* VideoDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E930D25F9FD00618676 /* VideoDatabase.cpp */; };
 		E38E22FC0D25F9FE00618676 /* VideoInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */; };
 		E38E22FD0D25F9FE00618676 /* VideoInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E970D25F9FD00618676 /* VideoInfoTag.cpp */; };
@@ -2975,7 +2971,6 @@
 		E499147D174E605900741B6D /* URIUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8EC12942613009E7A26 /* URIUtils.cpp */; };
 		E499147E174E605900741B6D /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466815CF1FED00727135 /* UrlOptions.cpp */; };
 		E499147F174E605900741B6D /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF1FB09123B1AF000B2CBCB /* Variant.cpp */; };
-		E4991480174E605900741B6D /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8D0D25F9FD00618676 /* Weather.cpp */; };
 		E4991481174E605900741B6D /* XBMCTinyXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */; };
 		E4991482174E605900741B6D /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
 		E4991483174E606500741B6D /* GUIDialogAudioSubtitleSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8FE12942761009E7A26 /* GUIDialogAudioSubtitleSettings.cpp */; };
@@ -3018,7 +3013,6 @@
 		E49914A9174E607200741B6D /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */; };
 		E49914AA174E607200741B6D /* GUIWindowStartup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18370D25F9FA00618676 /* GUIWindowStartup.cpp */; };
 		E49914AB174E607200741B6D /* GUIWindowSystemInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18390D25F9FA00618676 /* GUIWindowSystemInfo.cpp */; };
-		E49914AC174E607200741B6D /* GUIWindowWeather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18490D25F9FA00618676 /* GUIWindowWeather.cpp */; };
 		E499152C174E640800741B6D /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14640D25F9F900618676 /* Application.cpp */; };
 		E499152E174E642900741B6D /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352C616E5436900D21BAD /* AppParamParser.cpp */; };
 		E499152F174E642900741B6D /* Autorun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146E0D25F9F900618676 /* Autorun.cpp */; };
@@ -5259,8 +5253,6 @@
 		E38E18460D25F9FA00618676 /* GUIWindowVideoPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowVideoPlaylist.h; sourceTree = "<group>"; };
 		E38E18470D25F9FA00618676 /* GUIWindowVisualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowVisualisation.cpp; sourceTree = "<group>"; };
 		E38E18480D25F9FA00618676 /* GUIWindowVisualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowVisualisation.h; sourceTree = "<group>"; };
-		E38E18490D25F9FA00618676 /* GUIWindowWeather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowWeather.cpp; sourceTree = "<group>"; };
-		E38E184A0D25F9FA00618676 /* GUIWindowWeather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowWeather.h; sourceTree = "<group>"; };
 		E38E184F0D25F9FA00618676 /* IProgressCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IProgressCallback.h; sourceTree = "<group>"; };
 		E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LangCodeExpander.cpp; sourceTree = "<group>"; };
 		E38E18570D25F9FA00618676 /* LangCodeExpander.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LangCodeExpander.h; sourceTree = "<group>"; };
@@ -5489,8 +5481,6 @@
 		E38E1E860D25F9FD00618676 /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thread.h; sourceTree = "<group>"; };
 		E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UdpClient.cpp; sourceTree = "<group>"; };
 		E38E1E8C0D25F9FD00618676 /* UdpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdpClient.h; sourceTree = "<group>"; };
-		E38E1E8D0D25F9FD00618676 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Weather.cpp; sourceTree = "<group>"; };
-		E38E1E8E0D25F9FD00618676 /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Weather.h; sourceTree = "<group>"; };
 		E38E1E920D25F9FD00618676 /* WindowsShortcut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowsShortcut.h; sourceTree = "<group>"; };
 		E38E1E930D25F9FD00618676 /* VideoDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDatabase.cpp; sourceTree = "<group>"; };
 		E38E1E940D25F9FD00618676 /* VideoDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDatabase.h; sourceTree = "<group>"; };
@@ -6796,8 +6786,6 @@
 				E38E18380D25F9FA00618676 /* GUIWindowStartup.h */,
 				E38E18390D25F9FA00618676 /* GUIWindowSystemInfo.cpp */,
 				E38E183A0D25F9FA00618676 /* GUIWindowSystemInfo.h */,
-				E38E18490D25F9FA00618676 /* GUIWindowWeather.cpp */,
-				E38E184A0D25F9FA00618676 /* GUIWindowWeather.h */,
 			);
 			path = windows;
 			sourceTree = "<group>";
@@ -9493,8 +9481,6 @@
 				DF0ABB72183A94A30018445D /* Utf8Utils.h */,
 				7CF1FB09123B1AF000B2CBCB /* Variant.cpp */,
 				7CF1FB0A123B1AF000B2CBCB /* Variant.h */,
-				E38E1E8D0D25F9FD00618676 /* Weather.cpp */,
-				E38E1E8E0D25F9FD00618676 /* Weather.h */,
 				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
 				F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */,
 				F5ED908715538DCE00842059 /* XBMCTinyXML.h */,
@@ -10497,7 +10483,6 @@
 				E38E20CD0D25F9FD00618676 /* GUIWindowVideoNav.cpp in Sources */,
 				E38E20CF0D25F9FD00618676 /* GUIWindowVideoPlaylist.cpp in Sources */,
 				E38E20D00D25F9FD00618676 /* GUIWindowVisualisation.cpp in Sources */,
-				E38E20D10D25F9FD00618676 /* GUIWindowWeather.cpp in Sources */,
 				E38E20D60D25F9FD00618676 /* LangCodeExpander.cpp in Sources */,
 				E38E20D70D25F9FD00618676 /* LangInfo.cpp in Sources */,
 				E38E222B0D25F9FE00618676 /* dataset.cpp in Sources */,
@@ -10601,7 +10586,6 @@
 				E38E22F40D25F9FE00618676 /* Thread.cpp in Sources */,
 				E38E22F70D25F9FE00618676 /* UdpClient.cpp in Sources */,
 				DF29BCFA1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */,
-				E38E22F80D25F9FE00618676 /* Weather.cpp in Sources */,
 				E38E22FB0D25F9FE00618676 /* VideoDatabase.cpp in Sources */,
 				E38E22FC0D25F9FE00618676 /* VideoInfoScanner.cpp in Sources */,
 				E38E22FD0D25F9FE00618676 /* VideoInfoTag.cpp in Sources */,
@@ -12107,7 +12091,6 @@
 				DFF0F3F917528350002DA3A4 /* URIUtils.cpp in Sources */,
 				DFF0F3FA17528350002DA3A4 /* UrlOptions.cpp in Sources */,
 				DFF0F3FB17528350002DA3A4 /* Variant.cpp in Sources */,
-				DFF0F3FC17528350002DA3A4 /* Weather.cpp in Sources */,
 				DFF0F3FD17528350002DA3A4 /* XBMCTinyXML.cpp in Sources */,
 				DFF0F3FE17528350002DA3A4 /* XMLUtils.cpp in Sources */,
 				DFF0F3FF17528350002DA3A4 /* GUIDialogAudioSubtitleSettings.cpp in Sources */,
@@ -12155,7 +12138,6 @@
 				DFF0F42517528350002DA3A4 /* GUIWindowScreensaverDim.cpp in Sources */,
 				DFF0F42617528350002DA3A4 /* GUIWindowStartup.cpp in Sources */,
 				DFF0F42717528350002DA3A4 /* GUIWindowSystemInfo.cpp in Sources */,
-				DFF0F42817528350002DA3A4 /* GUIWindowWeather.cpp in Sources */,
 				DFF0F43117528350002DA3A4 /* Application.cpp in Sources */,
 				DFF0F43317528350002DA3A4 /* AppParamParser.cpp in Sources */,
 				DFF0F43417528350002DA3A4 /* Autorun.cpp in Sources */,
@@ -13170,7 +13152,6 @@
 				E499147D174E605900741B6D /* URIUtils.cpp in Sources */,
 				E499147E174E605900741B6D /* UrlOptions.cpp in Sources */,
 				E499147F174E605900741B6D /* Variant.cpp in Sources */,
-				E4991480174E605900741B6D /* Weather.cpp in Sources */,
 				DF29BCF81B5D911800904347 /* MediaLibraryEvent.cpp in Sources */,
 				E4991481174E605900741B6D /* XBMCTinyXML.cpp in Sources */,
 				395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
@@ -13217,7 +13198,6 @@
 				E49914A9174E607200741B6D /* GUIWindowScreensaverDim.cpp in Sources */,
 				E49914AA174E607200741B6D /* GUIWindowStartup.cpp in Sources */,
 				E49914AB174E607200741B6D /* GUIWindowSystemInfo.cpp in Sources */,
-				E49914AC174E607200741B6D /* GUIWindowWeather.cpp in Sources */,
 				E499152C174E640800741B6D /* Application.cpp in Sources */,
 				E499152E174E642900741B6D /* AppParamParser.cpp in Sources */,
 				E499152F174E642900741B6D /* Autorun.cpp in Sources */,
