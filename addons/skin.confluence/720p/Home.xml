@@ -907,27 +907,6 @@
 					</control>
 				</focusedlayout>
 				<content>
-					<item id="4">
-						<label>31951</label>
-						<onclick>ActivateWindow(Pictures)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoPicturesButton)</visible>
-					</item>
-					<item id="13">
-						<label>31960</label>
-						<onclick>ActivateWindow(RadioChannels)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
-						<visible>PVR.HasRadioChannels</visible>
-					</item>
-					<item id="12">
-						<label>31952</label>
-						<onclick>ActivateWindow(TVChannels)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
-						<visible>PVR.HasTVChannels</visible>
-					</item>
 					<item id="2">
 						<label>31953</label>
 						<onclick condition="StringCompare(Window.Property(VideosDirectLink),True)">ActivateWindow(Videos)</onclick>
@@ -956,21 +935,6 @@
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
-					</item>
-					<item id="1">
-						<label>31957</label>
-						<onclick condition="!System.Platform.Android">ActivateWindow(Programs,Addons,return)</onclick>
-						<onclick condition="System.Platform.Android">ActivateWindow(Programs)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
-					</item>
-					<item id="6">
-						<label>31958</label>
-						<onclick>PlayDVD()</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
-						<visible>System.HasMediaDVD</visible>
 					</item>
 					<item id="5">
 						<label>31959</label>

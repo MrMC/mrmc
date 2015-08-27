@@ -140,12 +140,6 @@
 						<onclick>ActivateWindow(MusicSettings)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="5">
-						<label>1</label>
-						<label2>31403</label2>
-						<onclick>ActivateWindow(PicturesSettings)</onclick>
-						<icon>-</icon>
-					</item>
 					<item id="7">
 						<label>24001</label>
 						<label2>31408</label2>
