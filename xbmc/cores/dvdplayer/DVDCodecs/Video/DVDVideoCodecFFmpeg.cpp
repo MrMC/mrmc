@@ -50,9 +50,6 @@
 #ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
 #endif
-#ifdef HAS_DX
-#include "DXVA.h"
-#endif
 #ifdef HAVE_LIBVA
 #include "VAAPI.h"
 #endif
@@ -122,20 +119,6 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
       else
         vdp->Release();
     }
-#endif
-#ifdef HAS_DX
-  if(DXVA::CDecoder::Supports(*cur) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
-  {
-    CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::GetFormat - Creating DXVA(%ix%i)", avctx->width, avctx->height);
-    DXVA::CDecoder* dec = new DXVA::CDecoder();
-    if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
-    {
-      ctx->SetHardware(dec);
-      return *cur;
-    }
-    else
-      dec->Release();
-  }
 #endif
 #ifdef HAVE_LIBVA
     // mpeg4 vaapi decoding is disabled
@@ -250,10 +233,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #endif
 #ifdef HAVE_LIBVA
     if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
-      tryhw = true;
-#endif
-#ifdef HAS_DX
-    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
       tryhw = true;
 #endif
 #ifdef TARGET_DARWIN_OSX

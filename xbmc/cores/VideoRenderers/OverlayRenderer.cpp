@@ -37,8 +37,6 @@
 #include "OverlayRendererGUI.h"
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "OverlayRendererGL.h"
-#elif defined(HAS_DX)
-#include "OverlayRendererDX.h"
 #endif
 
 using namespace OVERLAY;
@@ -368,8 +366,6 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   COverlay *overlay = NULL;
 #if defined(HAS_GL) || defined(HAS_GLES)
   overlay = new COverlayGlyphGL(images, targetWidth, targetHeight);
-#elif defined(HAS_DX)
-  overlay = new COverlayQuadsDX(images, targetWidth, targetHeight);
 #endif
   // scale to video dimensions
   if (overlay)
@@ -405,11 +401,6 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
     r = new COverlayTextureGL((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayTextureGL((CDVDOverlaySpu*)o);
-#elif defined(HAS_DX)
-  if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = new COverlayImageDX((CDVDOverlayImage*)o);
-  else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
-    r = new COverlayImageDX((CDVDOverlaySpu*)o);
 #endif
 
   if(!r && o->IsOverlayType(DVDOVERLAY_TYPE_TEXT))

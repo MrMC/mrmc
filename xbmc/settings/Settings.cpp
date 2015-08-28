@@ -22,7 +22,6 @@
 
 #include "Settings.h"
 #include "Application.h"
-#include "Autorun.h"
 #include "LangInfo.h"
 #include "Util.h"
 #include "events/EventLog.h"
@@ -892,9 +891,6 @@ void CSettings::InitializeDefaults()
 void CSettings::InitializeOptionFillers()
 {
   // register setting option fillers
-#ifdef HAS_DVD_DRIVE
-  m_settingsManager->RegisterSettingOptionsFiller("audiocdactions", MEDIA_DETECT::CAutorun::SettingOptionAudioCdActionsFiller);
-#endif
   m_settingsManager->RegisterSettingOptionsFiller("aequalitylevels", CAEFactory::SettingOptionsAudioQualityLevelsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevices", CAEFactory::SettingOptionsAudioDevicesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", CAEFactory::SettingOptionsAudioDevicesPassthroughFiller);

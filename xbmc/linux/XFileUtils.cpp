@@ -46,8 +46,6 @@
 //typedef struct statfs statfs64;
 #endif
 
-#include "storage/cdioSupport.h"
-
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "utils/AliasShortcutUtils.h"
@@ -289,12 +287,6 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
   result->fd = fd;
 
-#if (defined(TARGET_LINUX) || defined(TARGET_FREEBSD)) && defined(HAS_DVD_DRIVE) 
-  // special case for opening the cdrom device
-  if (strcmp(lpFileName, MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName())==0)
-    result->m_bCDROM = true;
-  else
-#endif
     result->m_bCDROM = false;
 
   // if FILE_FLAG_DELETE_ON_CLOSE then "unlink" the file (delete)

@@ -133,13 +133,9 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
     SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
-#ifndef HAS_DX
     SetControlLabel(i++, "%s %s", 22007, SYSTEM_RENDER_VENDOR);
     SetControlLabel(i++, "%s %s", 22009, SYSTEM_RENDER_VERSION);
-#else
-    SetControlLabel(i++, "%s %s", 22024, SYSTEM_RENDER_VERSION);
-#endif
-#if !defined(__arm__) && !defined(HAS_DX)
+#if !defined(__arm__)
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
 #endif
   }

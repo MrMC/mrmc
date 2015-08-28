@@ -20,7 +20,7 @@
  *
  */
 
-#include "system.h" // for HAS_DVD_DRIVE et. al.
+#include "system.h" // fixthislater
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
@@ -55,9 +55,6 @@ namespace MEDIA_DETECT
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISubSettings.h"
-#if defined(HAS_DVD_DRIVE)
-#include "storage/DetectDVDType.h"
-#endif
 #include "utils/Stopwatch.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
@@ -287,14 +284,6 @@ public:
   CNetwork& getNetwork();
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
-#endif
-
-#ifdef HAS_DVD_DRIVE
-  MEDIA_DETECT::CAutorun* m_Autorun;
-#endif
-
-#if defined(HAS_DVD_DRIVE)
-  MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
   CApplicationPlayer* m_pPlayer;

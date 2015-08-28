@@ -22,7 +22,6 @@
 #include "GUIWindowPrograms.h"
 #include "Util.h"
 #include "addons/GUIDialogAddonInfo.h"
-#include "Autorun.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "settings/MediaSourceSettings.h"
@@ -162,11 +161,6 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
-
-#ifdef HAS_DVD_DRIVE
-  if (pItem->IsDVD())
-    return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
-#endif
 
   if (pItem->m_bIsFolder) return false;
 

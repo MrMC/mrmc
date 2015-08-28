@@ -32,9 +32,6 @@
 
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#ifdef HAVE_LIBBLURAY
-#include "DVDInputStreams/DVDInputStreamBluray.h"
-#endif
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -106,8 +103,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     return false;
   }
 
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
-   || pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
     CLog::Log(LOGDEBUG, "%s: disc streams not supported for thumb extraction, file: %s", __FUNCTION__, redactPath.c_str());
     delete pInputStream;
@@ -352,7 +348,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
     return false;
   }
 
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open(playablePath.c_str(), "", true))
+  if (!pInputStream->Open(playablePath.c_str(), "", true))
   {
     delete pInputStream;
     return false;
@@ -452,18 +448,6 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
   }  /* for iStream */
 
   details.DetermineBestStreams();
-#ifdef HAVE_LIBBLURAY
-  // correct bluray runtime. we need the duration from the input stream, not the demuxer.
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-  {
-    if(((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() > 0)
-    {
-      CStreamDetailVideo* detailVideo = (CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO, 0);
-      if (detailVideo)
-        detailVideo->m_iDuration = ((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() / 1000;
-    }
-  }
-#endif
   return retVal;
 }
 

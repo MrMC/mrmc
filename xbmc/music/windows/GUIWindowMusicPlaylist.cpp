@@ -471,7 +471,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       // FIXME: get the position of the item in the playlist
       //        currently it is hacked into m_iprogramCount
 
-      // No music info and it's not CDDA so we'll just show the filename
+      // No music info so we'll just show the filename
       std::string str;
       str = CUtil::GetTitleFromPath(pItem->GetPath());
       str = StringUtils::Format("%02.2i. %s ", pItem->m_iprogramCount, str.c_str());

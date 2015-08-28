@@ -25,7 +25,6 @@
 #include "utils/SeekHandler.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
-#include "Autorun.h"
 #include "Builtins.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
@@ -98,10 +97,6 @@
 #include "osx/CocoaInterface.h"
 #endif
 
-#ifdef HAS_CDDA_RIPPER
-#include "cdrip/CDDARipper.h"
-#endif
-
 #include <vector>
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -112,10 +107,6 @@ using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
-
-#ifdef HAS_DVD_DRIVE
-using namespace MEDIA_DETECT;
-#endif
 
 typedef struct
 {
@@ -1169,12 +1160,6 @@ int CBuiltins::Execute(const std::string& execString)
   {
     g_playlistPlayer.Clear();
   }
-#ifdef HAS_DVD_DRIVE
-  else if (execute == "ejecttray")
-  {
-    g_mediaManager.ToggleTray();
-  }
-#endif
   else if (execute == "alarmclock" && params.size() > 1)
   {
     // format is alarmclock(name,command[,seconds,true]);
@@ -1234,21 +1219,6 @@ int CBuiltins::Execute(const std::string& execString)
     if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
       silent = true;
     g_alarmClock.Stop(params[0],silent);
-  }
-  else if (execute == "playdvd")
-  {
-#ifdef HAS_DVD_DRIVE
-    bool restart = false;
-    if (params.size() > 0 && StringUtils::EqualsNoCase(params[0], "restart"))
-      restart = true;
-    CAutorun::PlayDisc(g_mediaManager.GetDiscPath(), true, restart);
-#endif
-  }
-  else if (execute == "ripcd")
-  {
-#ifdef HAS_CDDA_RIPPER
-    CCDDARipper::GetInstance().RipCD();
-#endif
   }
   else if (execute == "skin.togglesetting")
   {

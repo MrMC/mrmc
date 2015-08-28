@@ -28,7 +28,6 @@
 #include "DVDDemuxFFmpeg.h"
 #include "DVDDemuxShoutcast.h"
 #include "DVDDemuxBXA.h"
-#include "DVDDemuxCDDA.h"
 #include "DVDDemuxPVRClient.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -53,22 +52,6 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
       return NULL;
   }
   
-  // Try to open CDDA demuxer
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE) && pInputStream->GetContent().compare("application/octet-stream") == 0)
-  {
-    std::string filename = pInputStream->GetFileName();
-    if (filename.substr(0, 7) == "cdda://")
-    {
-      CLog::Log(LOGDEBUG, "DVDFactoryDemuxer: Stream is probably CD audio. Creating CDDA demuxer.");
-
-      unique_ptr<CDVDDemuxCDDA> demuxer(new CDVDDemuxCDDA());
-      if (demuxer->Open(pInputStream))
-      {
-        return demuxer.release();
-      }
-    }
-  }
-
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_HTTP))
   {
     CDVDInputStreamHttp* pHttpStream = (CDVDInputStreamHttp*)pInputStream;

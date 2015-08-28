@@ -538,9 +538,6 @@ bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool
 
 bool URIUtils::IsRemote(const std::string& strFile)
 {
-  if (IsCDDA(strFile) || IsISO9660(strFile))
-    return false;
-
   if (IsStack(strFile))
     return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
 
@@ -563,23 +560,6 @@ bool URIUtils::IsRemote(const std::string& strFile)
     return IsRemote(url.GetHostName());
 
   if (!url.IsLocal())
-    return true;
-
-  return false;
-}
-
-bool URIUtils::IsOnDVD(const std::string& strFile)
-{
-  if (IsProtocol(strFile, "dvd"))
-    return true;
-
-  if (IsProtocol(strFile, "udf"))
-    return true;
-
-  if (IsProtocol(strFile, "iso9660"))
-    return true;
-
-  if (IsProtocol(strFile, "cdda"))
     return true;
 
   return false;
@@ -682,19 +662,6 @@ bool URIUtils::IsHD(const std::string& strFileName)
   return url.GetProtocol().empty() || url.IsProtocol("file");
 }
 
-bool URIUtils::IsDVD(const std::string& strFile)
-{
-  std::string strFileLow = strFile;
-  StringUtils::ToLower(strFileLow);
-  if (strFileLow.find("video_ts.ifo") != std::string::npos && IsOnDVD(strFile))
-    return true;
-
-  if (strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
-    return true;
-
-  return false;
-}
-
 bool URIUtils::IsStack(const std::string& strFile)
 {
   return IsProtocol(strFile, "stack");
@@ -789,16 +756,6 @@ bool URIUtils::IsSourcesPath(const std::string& strPath)
 {
   CURL url(strPath);
   return url.IsProtocol("sources");
-}
-
-bool URIUtils::IsCDDA(const std::string& strFile)
-{
-  return IsProtocol(strFile, "cdda");
-}
-
-bool URIUtils::IsISO9660(const std::string& strFile)
-{
-  return IsProtocol(strFile, "iso9660");
 }
 
 bool URIUtils::IsSmb(const std::string& strFile)

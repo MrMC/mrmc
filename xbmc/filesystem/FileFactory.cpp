@@ -35,12 +35,6 @@
 #ifdef HAS_FILESYSTEM_SMB
 #include "SMBFile.h"
 #endif
-#ifdef HAS_FILESYSTEM_CDDA
-#include "CDDAFile.h"
-#endif
-#ifdef HAS_FILESYSTEM
-#include "ISOFile.h"
-#endif
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPFile.h"
 #endif
@@ -66,9 +60,6 @@
 #endif
 #ifdef HAS_UPNP
 #include "UPnPFile.h"
-#endif
-#ifdef HAVE_LIBBLURAY
-#include "BlurayFile.h"
 #endif
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
@@ -123,20 +114,11 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("image")) return new CImageFile();
   else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CPosixFile();
   else if (url.IsProtocol("filereader")) return new CFileReaderFile();
-#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
-  else if (url.IsProtocol("cdda")) return new CFileCDDA();
-#endif
-#ifdef HAS_FILESYSTEM
-  else if (url.IsProtocol("iso9660")) return new CISOFile();
-#endif
   else if(url.IsProtocol("udf")) return new CUDFFile();
 #if defined(TARGET_ANDROID)
   else if (url.IsProtocol("androidapp")) return new CFileAndroidApp();
 #endif
   else if (url.IsProtocol("pipe")) return new CPipeFile();
-#ifdef HAVE_LIBBLURAY
-  else if (url.IsProtocol("bluray")) return new CBlurayFile();
-#endif
   else if (url.IsProtocol("resource")) return new CResourceFile();
 
   bool networkAvailable = g_application.getNetwork().IsAvailable();

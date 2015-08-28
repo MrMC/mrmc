@@ -76,8 +76,6 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   unsigned int filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_INTERNET);
   if ( file.IsHD() )
     filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHE_HARDDISK);
-  else if ( file.IsOnDVD() )
-    filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_DVDROM);
   else if ( file.IsOnLAN() )
     filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_LAN);
 

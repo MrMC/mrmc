@@ -153,8 +153,6 @@ public:
 
 #ifdef HAS_LINUX_NETWORK
 #include "linux/NetworkLinux.h"
-#else
-#include "windows/NetworkWin32.h"
 #endif
 
 //creates, binds and listens a tcp socket on the desired port. Set bindLocal to

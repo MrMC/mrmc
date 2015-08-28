@@ -92,10 +92,6 @@
 
 #include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
 
-#ifdef HAS_DVD_DRIVE
-using namespace MEDIA_DETECT;
-#endif
-
 using namespace XFILE;
 using namespace PLAYLIST;
 
@@ -439,7 +435,6 @@ void CUtil::GetFileAndProtocol(const std::string& strURL, std::string& strDir)
 {
   strDir = strURL;
   if (!URIUtils::IsRemote(strURL)) return ;
-  if (URIUtils::IsDVD(strURL)) return ;
 
   CURL url(strURL);
   strDir = StringUtils::Format("%s://%s", url.GetProtocol().c_str(), url.GetFileName().c_str());
@@ -494,32 +489,6 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
   if ( !g_mediaManager.IsDiscInDrive() )
   {
     strIcon = "DefaultDVDEmpty.png";
-    return ;
-  }
-
-  if ( URIUtils::IsDVD(strPath) )
-  {
-    strIcon = "DefaultDVDFull.png";
-    return ;
-  }
-
-  if ( URIUtils::IsISO9660(strPath) )
-  {
-#ifdef HAS_DVD_DRIVE
-    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
-    if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
-    {
-      strIcon = "DefaultVCD.png";
-      return ;
-    }
-#endif
-    strIcon = "DefaultDVDRom.png";
-    return ;
-  }
-
-  if ( URIUtils::IsCDDA(strPath) )
-  {
-    strIcon = "DefaultCDDA.png";
     return ;
   }
 }
@@ -1003,19 +972,6 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
     CMediaSource share = VECSOURCES.at(i);
     std::string strName = share.strName;
 
-    // special cases for dvds
-    if (URIUtils::IsOnDVD(share.strPath))
-    {
-      if (URIUtils::IsOnDVD(strPath))
-        return i;
-
-      // not a path, so we need to modify the source name
-      // since we add the drive status and disc name to the source
-      // "Name (Drive Status/Disc Name)"
-      size_t iPos = strName.rfind('(');
-      if (iPos != std::string::npos && iPos > 1)
-        strName = strName.substr(0, iPos - 1);
-    }
     if (StringUtils::EqualsNoCase(strPath, strName))
     {
       bIsSourceName = true;
@@ -1640,9 +1596,6 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
 
   if (item.HasVideoInfoTag())
     strBasePath = item.GetVideoInfoTag()->m_basePath;
-
-  if (strBasePath.empty() && item.IsOpticalMediaFile())
-    strBasePath = item.GetLocalMetadataPath();
 
   CURL url(strMovie);
   if (strBasePath.empty() && url.IsProtocol("bluray"))

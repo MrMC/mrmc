@@ -39,7 +39,6 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "Autorun.h"
 #include "interfaces/AnnouncementManager.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -322,11 +321,6 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   std::string strPicture = pItem->GetPath();
-
-#ifdef HAS_DVD_DRIVE
-  if (pItem->IsDVD())
-    return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
-#endif
 
   if (pItem->m_bIsShareOrDrive)
     return false;

@@ -52,9 +52,6 @@
 #ifdef HAS_GL
 #include "rendering/gl/GUIWindowTestPatternGL.h"
 #endif
-#ifdef HAS_DX
-#include "rendering/dx/GUIWindowTestPatternDX.h"
-#endif
 #include "settings/windows/GUIWindowSettingsScreenCalibration.h"
 #include "programs/GUIWindowPrograms.h"
 #include "pictures/GUIWindowPictures.h"
@@ -185,9 +182,6 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowSystemInfo);
 #ifdef HAS_GL
   Add(new CGUIWindowTestPatternGL);
-#endif
-#ifdef HAS_DX
-  Add(new CGUIWindowTestPatternDX);
 #endif
   Add(new CGUIWindowSettingsScreenCalibration);
   Add(new CGUIWindowSettingsCategory);

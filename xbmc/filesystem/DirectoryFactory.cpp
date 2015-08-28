@@ -52,13 +52,7 @@
 #ifdef HAS_FILESYSTEM_SMB
 #include "SMBDirectory.h"
 #endif
-#ifdef HAS_FILESYSTEM_CDDA
-#include "CDDADirectory.h"
-#endif
 #include "PluginDirectory.h"
-#ifdef HAS_FILESYSTEM
-#include "ISO9660Directory.h"
-#endif
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
@@ -87,9 +81,6 @@
 #endif
 #ifdef HAS_FILESYSTEM_NFS
 #include "NFSDirectory.h"
-#endif
-#ifdef HAVE_LIBBLURAY
-#include "BlurayDirectory.h"
 #endif
 #if defined(TARGET_ANDROID)
 #include "AndroidAppDirectory.h"
@@ -122,12 +113,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("special")) return new CSpecialProtocolDirectory();
   if (url.IsProtocol("sources")) return new CSourcesDirectory();
   if (url.IsProtocol("addons")) return new CAddonsDirectory();
-#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
-  if (url.IsProtocol("cdda")) return new CCDDADirectory();
-#endif
-#ifdef HAS_FILESYSTEM
-  if (url.IsProtocol("iso9660")) return new CISO9660Directory();
-#endif
   if (url.IsProtocol("udf")) return new CUDFDirectory();
   if (url.IsProtocol("plugin")) return new CPluginDirectory();
 #if defined(TARGET_ANDROID)
@@ -159,9 +144,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   }
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("androidapp")) return new CAndroidAppDirectory();
-#endif
-#ifdef HAVE_LIBBLURAY
-  if (url.IsProtocol("bluray")) return new CBlurayDirectory();
 #endif
   if (url.IsProtocol("resource")) return new CResourceDirectory();
   if (url.IsProtocol("events")) return new CEventsDirectory();

@@ -30,23 +30,18 @@
  special://home/          - a writeable version of the main XBMC folder
                              Linux: ~/.kodi/
                              OS X:  ~/Library/Application Support/Kodi/
-                             Win32: ~/Application Data/XBMC/
  special://userhome/      - a writable version of the user home directory
                              Linux, OS X: ~/.kodi
-                             Win32: home directory of user
  special://masterprofile/ - the master users userdata folder - usually special://home/userdata
                              Linux: ~/.kodi/userdata/
                              OS X:  ~/Library/Application Support/Kodi/UserData/
-                             Win32: ~/Application Data/XBMC/UserData/
  special://profile/       - the current users userdata folder - usually special://masterprofile/profiles/<current_profile>
                              Linux: ~/.kodi/userdata/profiles/<current_profile>
                              OS X:  ~/Library/Application Support/Kodi/UserData/profiles/<current_profile>
-                             Win32: ~/Application Data/XBMC/UserData/profiles/<current_profile>
 
  special://temp/          - the temporary directory.
                              Linux: ~/.kodi/temp
                              OS X:  ~/
-                             Win32: ~/Application Data/XBMC/cache
 */
 class CURL;
 class CSpecialProtocol

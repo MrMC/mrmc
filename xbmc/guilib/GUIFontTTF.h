@@ -34,14 +34,6 @@
 #include "utils/auto_buffer.h"
 #include "Geometry.h"
 
-#ifdef HAS_DX
-#include "DirectXMath.h"
-#include "DirectXPackedVector.h"
-
-using namespace DirectX;
-using namespace DirectX::PackedVector;
-#endif
-
 // forward definition
 class CBaseTexture;
 
@@ -70,11 +62,7 @@ typedef std::vector<color_t> vecColors;
 struct SVertex
 {
   float x, y, z;
-#ifdef HAS_DX
-  XMFLOAT4 col;
-#else
   unsigned char r, g, b, a;
-#endif
   float u, v;
 };
 
@@ -209,9 +197,6 @@ private:
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "GUIFontTTFGL.h"
 #define CGUIFontTTF CGUIFontTTFGL
-#elif defined(HAS_DX)
-#include "GUIFontTTFDX.h"
-#define CGUIFontTTF CGUIFontTTFDX
 #endif
 
 #endif

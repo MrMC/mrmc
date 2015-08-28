@@ -23,7 +23,6 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "threads/CriticalSection.h"
 
-class CDVDInputStreamNavigator;
 class CDVDDemuxSPU;
 
 class CDVDOverlayContainer : public CCriticalSection
@@ -42,8 +41,6 @@ public:
   void Clear(); // clear the fifo and delete all overlays
   void CleanUp(double pts); // validates all overlays against current pts
   int GetSize();
-
-  void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, CDVDDemuxSPU *pSpu, int iAction);
 private:
   VecOverlaysIter Remove(VecOverlaysIter itOverlay); // removes a specific overlay
 

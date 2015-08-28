@@ -30,9 +30,6 @@
 #endif
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#ifdef HAVE_LIBBLURAY
-#include "DVDInputStreams/DVDInputStreamBluray.h"
-#endif
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
@@ -439,17 +436,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 
   if (m_streaminfo)
   {
-    /* to speed up dvd switches, only analyse very short */
-    if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-      av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
-
     CLog::Log(LOGDEBUG, "%s - avformat_find_stream_info starting", __FUNCTION__);
     int iErr = avformat_find_stream_info(m_pFormatContext, NULL);
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", CURL::GetRedacted(strFile).c_str());
-      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD)
-      ||  m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY)
+      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY)
       || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == AV_CODEC_ID_AC3)
       || m_checkvideo)
       {
@@ -1157,15 +1149,6 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
           st->irFpsScale = 0;
         }
 
-        if (pStream->codec_info_nb_frames >  0
-        &&  pStream->codec_info_nb_frames <= 2
-        &&  m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-        {
-          CLog::Log(LOGDEBUG, "%s - fps may be unreliable since ffmpeg decoded only %d frame(s)", __FUNCTION__, pStream->codec_info_nb_frames);
-          st->iFpsRate  = 0;
-          st->iFpsScale = 0;
-        }
-
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
         st->fAspect = SelectAspect(pStream, &st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
@@ -1184,21 +1167,6 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         if (!stereoMode.empty())
           st->stereo_mode = stereoMode;
 
-        
-        if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
-        {
-          if (pStream->codec->codec_id == AV_CODEC_ID_PROBE)
-          {
-            // fix MPEG-1/MPEG-2 video stream probe returning AV_CODEC_ID_PROBE for still frames.
-            // ffmpeg issue 1871, regression from ffmpeg r22831.
-            if ((pStream->id & 0xF0) == 0xE0)
-            {
-              pStream->codec->codec_id = AV_CODEC_ID_MPEG2VIDEO;
-              pStream->codec->codec_tag = MKTAG('M','P','2','V');
-              CLog::Log(LOGERROR, "%s - AV_CODEC_ID_PROBE detected, forcing AV_CODEC_ID_MPEG2VIDEO", __FUNCTION__);
-            }
-          }
-        }
         break;
       }
     case AVMEDIA_TYPE_DATA:
@@ -1293,40 +1261,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       stream->ExtraData = new uint8_t[pStream->codec->extradata_size];
       memcpy(stream->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
     }
-
-#ifdef HAVE_LIBBLURAY
-    if( m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) )
-      static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
-#endif
-    if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
-    {
-      // this stuff is really only valid for dvd's.
-      // this is so that the physicalid matches the
-      // id's reported from libdvdnav
-      switch(stream->codec)
-      {
-        case AV_CODEC_ID_AC3:
-          stream->iPhysicalId = pStream->id - 128;
-          break;
-        case AV_CODEC_ID_DTS:
-          stream->iPhysicalId = pStream->id - 136;
-          break;
-        case AV_CODEC_ID_MP2:
-          stream->iPhysicalId = pStream->id - 448;
-          break;
-        case AV_CODEC_ID_PCM_S16BE:
-          stream->iPhysicalId = pStream->id - 160;
-          break;
-        case AV_CODEC_ID_DVD_SUBTITLE:
-          stream->iPhysicalId = pStream->id - 0x20;
-          break;
-        default:
-          stream->iPhysicalId = pStream->id & 0x1f;
-          break;
-      }
-    }
-    else
-      stream->iPhysicalId = pStream->id;
+    stream->iPhysicalId = pStream->id;
 
     AddStream(iId, stream);
     return stream;

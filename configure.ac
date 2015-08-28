@@ -190,8 +190,6 @@ x11_enabled="== X11 enabled. =="
 x11_disabled="== X11 disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support disabled. =="
-dvdcss_enabled="== DVDCSS support enabled. =="
-dvdcss_disabled="== DVDCSS support disabled. =="
 avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
 avahi_disabled="== Avahi support disabled. =="
 mdnsembedded_not_found="== Could not find mDNSEmbedded. Might prevent zeroconf support. =="
@@ -430,12 +428,6 @@ AC_ARG_ENABLE([upnp],
   [use_upnp=$enableval],
   [use_upnp=yes])
 
-AC_ARG_ENABLE([dvdcss],
-  [AS_HELP_STRING([--enable-dvdcss],
-  [enable DVDCSS support (default is yes)])],
-  [use_dvdcss=$enableval],
-  [use_dvdcss=yes])
-
 AC_ARG_ENABLE([mid],
   [AS_HELP_STRING([--enable-mid],
   [enable MID support (default is no)])],
@@ -477,18 +469,6 @@ AC_ARG_ENABLE([webserver],
   [disable webserver])],
   [use_webserver=$enableval],
   [use_webserver=yes])
-
-AC_ARG_ENABLE([optical-drive],
-  [AS_HELP_STRING([--disable-optical-drive],
-  [disable optical drive])],
-  [use_optical_drive=$enableval],
-  [use_optical_drive=yes])
-
-AC_ARG_ENABLE([libbluray],
-  [AS_HELP_STRING([--enable-libbluray],
-  [enable libbluray support])],
-  [use_libbluray=$enableval],
-  [use_libbluray=auto])
 
 AC_ARG_ENABLE([texturepacker],
   [AS_HELP_STRING([--enable-texturepacker],
@@ -600,7 +580,6 @@ case $host in
      use_cpu="i686"
      use_joystick=no
      use_gles=yes
-     use_optical_drive=no
      use_x11=no
      build_shared_lib=yes    
      ;;
@@ -650,8 +629,6 @@ case $host in
      use_neon=yes
      use_libcec=no
      use_vtbdecoder=yes
-     use_optical_drive=no
-     use_dvdcss=no
      use_gles=yes
      use_cpu=cortex-a8
      ARCH="arm-osx"
@@ -704,7 +681,6 @@ case $host in
      use_joystick=no
      use_neon=yes
      use_gles=yes
-     use_optical_drive=no
      use_x11=no
      use_wayland=no
      build_shared_lib=yes
@@ -741,7 +717,6 @@ if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
   webserver_checkdepends=yes
   CFLAGS="$CFLAGS -Wno-psabi"
-  DROID_DVDLIB_SEEK64="-D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64"
   CXXFLAGS="$CXXFLAGS -Wno-psabi"
   AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
 fi
@@ -1248,42 +1223,11 @@ PKG_CHECK_MODULES([TAGLIB],  [taglib >= 1.8],
   [INCLUDES="$INCLUDES $TAGLIB_CFLAGS"; LIBS="$LIBS $TAGLIB_LIBS"],
   AC_MSG_ERROR($missing_library))
 
-if test "$use_optical_drive" = "yes"; then
-  PKG_CHECK_MODULES([CDIO],       [libcdio],
-    [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
-    AC_MSG_ERROR($missing_library))
-fi
-
 if test "$target_platform" = "target_android" ; then
 PKG_CHECK_MODULES([ZIP],       [libzip],
   [INCLUDES="$INCLUDES $ZIP_CFLAGS"; LIBS="$LIBS $ZIP_LIBS"],
   AC_MSG_ERROR($missing_library))
 fi
-
-# check for libbluray
-AS_CASE([x$use_libbluray],
-  [xyes],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
-  ],
-  [xauto],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], [use_libbluray="no"])
-  ])
-
-AS_CASE([x$use_libbluray],
-  [xyes],[
-    INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    LIBBLURAY_LIB_BASENAME=`$PKG_CONFIG --libs-only-L "libbluray >= 0.2.1"`;
-    XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray], [$LIBBLURAY_LIB_BASENAME])
-    AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
-    AC_SUBST([HAVE_LIBBLURAY], 1)
-    AC_CHECK_LIB([bluray], [bd_register_argb_overlay_proc],
-      AC_CHECK_DECL([BD_EVENT_IDLE],
-        AC_DEFINE([HAVE_LIBBLURAY_BDJ], 1, [System has libbluray library with bdj support]),,
-        [[#include <libbluray/bluray.h>]]))
-  ],[
-    AC_SUBST([HAVE_LIBBLURAY], 0)
-  ]
-)
 
 #Check to see if libs are needed for functions that are often built-in to libc
 AC_SEARCH_LIBS([iconv_open],iconv,,AC_SEARCH_LIBS([libiconv_open],iconv,,AC_MSG_ERROR($missing_library)))
@@ -1345,11 +1289,6 @@ XB_FIND_SONAME([MPEG2],       [mpeg2])
 # WebServer
 if test "$use_webserver" = "yes"; then
   AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
-fi
-
-# Optical
-if test "$use_optical_drive" = "yes"; then
-  AC_DEFINE([HAS_DVD_DRIVE], [1], [Define to 1 to have optical drive support])
 fi
 
 # Alsa
@@ -2029,7 +1968,6 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
   malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h \
   strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h \
   sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h])
-AC_CHECK_HEADERS([cdio/iso9660.h],,AC_MSG_ERROR([$missing_headers]))
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STAT
@@ -2194,12 +2132,6 @@ else
   final_message="$final_message\n  Wayland:\tNo"
 fi
 
-if test "$use_libbluray" = "yes"; then
-  final_message="$final_message\n  Bluray:\tYes"
-else
-  final_message="$final_message\n  Bluray:\tNo"
-fi
-
 # we don't compile with default upstream squish, so we use our own one
 # even on non unified deps platforms
 if test "$cross_compiling" != "yes"; then
@@ -2274,24 +2206,6 @@ if test "x$use_pulse" != "xno"; then
 else
   XBMC_STANDALONE_SH_PULSE=/dev/null
   final_message="$final_message\n  PulseAudio:\tNo"
-fi
-
-# DVDCSS
-if test "$use_dvdcss" = "yes"; then
-  AC_MSG_NOTICE($dvdcss_enabled)
-  final_message="$final_message\n  DVDCSS:\tYes"
-  BUILD_DVDCSS=1
-  SKIP_CONFIG_DVDCSS=0
-  DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
-else
-  AC_MSG_NOTICE($dvdcss_disabled)
-  final_message="$final_message\n  DVDCSS:\tNo"
-  BUILD_DVDCSS=0
-  SKIP_CONFIG_DVDCSS=1
-  DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
-fi
-if test "$host_vendor" = "apple"; then
- DVDREAD_CFLAGS="$DVDREAD_CFLAGS -D__DARWIN__"
 fi
 
 # Google Test Framework
@@ -2421,12 +2335,6 @@ else
   final_message="$final_message\n  UPnP support:\t\tNo"
 fi
 
-if test "$use_optical_drive" = "yes"; then
-  final_message="$final_message\n  Optical drive:\tYes"
-else
-  final_message="$final_message\n  Optical drive:\tNo"
-fi
-
 if test "x$use_libudev" != "xno"; then
   final_message="$final_message\n  libudev support:\tYes"
 else
@@ -2482,11 +2390,9 @@ OUTPUT_FILES="Makefile \
     Makefile.include \
     addons/skin.confluence/media/Makefile \
     xbmc/Makefile \
-    xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
     xbmc/cores/VideoRenderers/Makefile \
     xbmc/cores/dvdplayer/Makefile \
-    lib/libdvd/Makefile \
     xbmc/cores/DllLoader/Makefile \
     xbmc/cores/DllLoader/exports/Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Makefile \
@@ -2622,7 +2528,6 @@ AC_SUBST(CFLAGS_FOR_BUILD)
 AC_SUBST(CXXFLAGS_FOR_BUILD)
 AC_SUBST(LDFLAGS_FOR_BUILD)
 AC_SUBST(SDL_DEFINES)
-AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_WAVEFORM)
 AC_SUBST(DISABLE_SPECTRUM)
 AC_SUBST(DISABLE_GOOM)
@@ -2727,51 +2632,6 @@ else
 fi
 ])
 ])
-
-XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
-  ./configure \
-    CC="$CC" \
-    CXX="$CXX" \
-    CFLAGS="$CFLAGS $DROID_DVDLIB_SEEK64" \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \      
-    --disable-doc \
-    --enable-static \
-    --with-pic
-], [$SKIP_CONFIG_DVDCSS])
-
-XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
-  ./configure2 \
-    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../libdvdcss/src $DROID_DVDLIB_SEEK64" \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \      
-    --enable-static \
-    --disable-shared \
-    --disable-strip \
-    --disable-opts \
-    --cc="$CC" &&
-  mkdir -p `pwd`/../includes/dvdread
-  cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
-  cp `pwd`/../libdvdread/src/dvdread/*.h `pwd`/../includes/dvdread
-], [0])
-
-XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
-  ./configure2 \
-    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes $DROID_DVDLIB_SEEK64" \
-    --extra-ldflags="-L`pwd`/../libdvdread/obj" \
-    --with-dvdread-config="`pwd`/../dvdread-config" \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \      
-    --enable-static \
-    --disable-shared \
-    --cc="$CC"
-], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   set -x

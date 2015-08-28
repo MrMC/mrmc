@@ -13,16 +13,16 @@ DEPENDS = \
 	libass libsquish \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python26 libshairplay \
-	libplist libcec libbluray boost tinyxml dummy-libxbmc \
+	libplist libcec boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
 	pythonmodule-pil libxslt ffmpeg platform crossguid
 
 FFMPEG_DEPENDS = gnutls
 
 ifeq ($(ENABLE_GPLV3),yes)
-  DEPENDS+=samba-gplv3 libcdio-gplv3
+  DEPENDS+=samba-gplv3
 else
-  DEPENDS+=samba libcdio
+  DEPENDS+=samba
 endif
 
 ifeq ($(OS),ios)

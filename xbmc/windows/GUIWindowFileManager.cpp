@@ -55,7 +55,6 @@
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "Autorun.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -171,10 +170,6 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
     }
     if (action.GetID() == ACTION_PLAYER_PLAY)
     {
-#ifdef HAS_DVD_DRIVE
-      if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
-        return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems[list]->Get(GetSelectedItem(list))->GetPath());
-#endif
     }
   }
   return CGUIWindow::OnAction(action);
@@ -333,15 +328,6 @@ void CGUIWindowFileManager::OnSort(int iList)
         if (GetDiskFreeSpaceEx(pItem->GetPath().c_str(), &ulBytesFree, NULL, NULL))
         {
           pItem->m_dwSize = ulBytesFree.QuadPart;
-          pItem->SetFileSizeLabel();
-        }
-      }
-      else if (pItem->IsDVD() && g_mediaManager.IsDiscInDrive())
-      {
-        ULARGE_INTEGER ulBytesTotal;
-        if (GetDiskFreeSpaceEx(pItem->GetPath().c_str(), NULL, &ulBytesTotal, NULL))
-        {
-          pItem->m_dwSize = ulBytesTotal.QuadPart;
           pItem->SetFileSizeLabel();
         }
       }

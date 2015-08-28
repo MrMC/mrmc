@@ -36,17 +36,6 @@
 #if !defined(TARGET_FREEBSD)
 #include <sys/timeb.h>
 #endif
-#include "system.h" // for HAS_DVD_DRIVE
-#ifdef HAS_DVD_DRIVE
-  #ifdef TARGET_POSIX
-    #include <sys/ioctl.h>
-    #if defined(TARGET_DARWIN)
-      #include <IOKit/storage/IODVDMediaBSDClient.h>
-    #elif !defined(TARGET_FREEBSD)
-      #include <linux/cdrom.h>
-    #endif
-  #endif
-#endif
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
@@ -2072,23 +2061,6 @@ extern "C"
      if (!pFile)
        return -1;
 
-#if defined(HAS_DVD_DRIVE) && !defined(TARGET_FREEBSD)
-#if !defined(TARGET_DARWIN)
-    if(request == DVD_READ_STRUCT || request == DVD_AUTH)
-#else
-    if(request == DKIOCDVDSENDKEY || request == DKIOCDVDREPORTKEY || request == DKIOCDVDREADSTRUCTURE)
-#endif
-    {
-      void *p1 = va_arg(va, void*);
-      SNativeIoControl d;
-      d.request = request;
-      d.param   = p1;
-      ret = pFile->IoControl(IOCTRL_NATIVE, &d);
-      if(ret<0)
-        CLog::Log(LOGWARNING, "%s - %ld request failed with error [%d] %s", __FUNCTION__, request, errno, strerror(errno));
-    }
-    else
-#endif
     {
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
       ret = -1;

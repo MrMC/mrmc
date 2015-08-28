@@ -74,11 +74,7 @@ even if they're a different size
 
 */
 
-#include "system.h" //HAS_DX, HAS_GL, HAS_GLES, opengl headers, direct3d headers
-
-#ifdef HAS_DX
-  #include "guilib/D3DResource.h"
-#endif
+#include "system.h" //HAS_GL, HAS_GLES, opengl headers
 
 #include "threads/Event.h"
 
@@ -255,41 +251,4 @@ class CRenderCapture : public CRenderCaptureGL
   public:
     CRenderCapture() {};
 };
-
-#elif HAS_DX /*HAS_GL*/
-
-class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
-{
-  public:
-    CRenderCaptureDX();
-    ~CRenderCaptureDX();
-
-    int  GetCaptureFormat();
-
-    void BeginRender();
-    void EndRender();
-    void ReadOut();
-    
-    virtual void OnDestroyDevice();
-    virtual void OnLostDevice();
-    virtual void OnCreateDevice() {};
-
-  private:
-    void SurfaceToBuffer();
-    void CleanupDX();
-
-    ID3D11Texture2D*        m_renderTexture;
-    ID3D11RenderTargetView* m_renderSurface;
-    ID3D11Texture2D*        m_copySurface;
-    ID3D11Query*            m_query;
-    unsigned int            m_surfaceWidth;
-    unsigned int            m_surfaceHeight;
-};
-
-class CRenderCapture : public CRenderCaptureDX
-{
-  public:
-    CRenderCapture() {};
-};
-
 #endif

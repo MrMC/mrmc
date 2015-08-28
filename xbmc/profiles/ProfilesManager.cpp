@@ -41,9 +41,6 @@
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
 #include "settings/Settings.h"
-#if defined(HAS_DVD_DRIVE)
-#include "storage/DetectDVDType.h"
-#endif
 #include "threads/SingleLock.h"
 #include "utils/FileUtils.h"
 #include "utils/log.h"
@@ -271,11 +268,6 @@ bool CProfilesManager::LoadProfile(size_t index)
   }
 
   CPasswordManager::GetInstance().Clear();
-
-  // to set labels - shares are reloaded
-#if defined(HAS_DVD_DRIVE)
-  MEDIA_DETECT::CDetectDVDMedia::UpdateState();
-#endif
 
   // init windows
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESET);

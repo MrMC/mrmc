@@ -121,10 +121,8 @@ public:
 
   static bool IsAddonsPath(const std::string& strFile);
   static bool IsSourcesPath(const std::string& strFile);
-  static bool IsCDDA(const std::string& strFile);
   static bool IsDAV(const std::string& strFile);
   static bool IsDOSPath(const std::string &path);
-  static bool IsDVD(const std::string& strFile);
   static bool IsFTP(const std::string& strFile);
   static bool IsHTTP(const std::string& strFile);
   static bool IsUDP(const std::string& strFile);
@@ -136,13 +134,11 @@ public:
   static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
   static bool IsInAPK(const std::string& strFile);
   static bool IsInZIP(const std::string& strFile);
-  static bool IsISO9660(const std::string& strFile);
   static bool IsLiveTV(const std::string& strFile);
   static bool IsPVRRecording(const std::string& strFile);
   static bool IsMultiPath(const std::string& strPath);
   static bool IsMusicDb(const std::string& strFile);
   static bool IsNfs(const std::string& strFile);
-  static bool IsOnDVD(const std::string& strFile);
   static bool IsOnLAN(const std::string& strFile);
   static bool IsHostOnLAN(const std::string& hostName, bool offLineCheck = false);
   static bool IsPlugin(const std::string& strFile);

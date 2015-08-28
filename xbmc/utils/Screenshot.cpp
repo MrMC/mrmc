@@ -79,10 +79,6 @@ bool CScreenshotSurface::capture()
   m_buffer = g_RBP.CaptureDisplay(m_width, m_height, &m_stride, true, false);
   if (!m_buffer)
     return false;
-#elif defined(HAS_DX)
-  g_graphicsContext.Lock();
-  if (g_application.m_pPlayer->IsPlayingVideo())
-  {
 #ifdef HAS_VIDEO_PLAYBACK
     g_renderManager.SetupScreenshot();
 #endif

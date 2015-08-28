@@ -261,20 +261,7 @@ bool CDummyVideoPlayer::SetPlayerState(const std::string& state)
 void CDummyVideoPlayer::Render()
 {
   const CRect vw = g_graphicsContext.GetViewWindow();
-#ifdef HAS_DX
-  unsigned num = 1;
-  D3D11_VIEWPORT newviewport;
-  g_Windowing.Get3D11Context()->RSGetViewports(&num, &newviewport);
-  newviewport.MinDepth = 0.0f;
-  newviewport.MaxDepth = 1.0f;
-  newviewport.TopLeftX = (DWORD)vw.x1;
-  newviewport.TopLeftY = (DWORD)vw.y1;
-  newviewport.Width = (DWORD)vw.Width();
-  newviewport.Height = (DWORD)vw.Height();
-  g_graphicsContext.SetClipRegion(vw.x1, vw.y1, vw.Width(), vw.Height());
-#else
   g_graphicsContext.SetViewPort(vw.x1, vw.y1, vw.Width(), vw.Height());
-#endif 
   CGUIFont *font = g_fontManager.GetFont("font13");
   if (font)
   {
@@ -288,9 +275,5 @@ void CDummyVideoPlayer::Render()
     float posY = (vw.y1 + vw.y2) * 0.5f;
     CGUITextLayout::DrawText(font, posX, posY, 0xffffffff, 0, currentTime, XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
-#ifdef HAS_DX
-  g_graphicsContext.RestoreClipRegion();
-#else
   g_graphicsContext.RestoreViewPort();
-#endif
 }

@@ -38,7 +38,6 @@
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "PlayListPlayer.h"
-#include "Autorun.h"
 #include "video/Bookmark.h"
 #include "video/VideoLibraryQueue.h"
 #include "guilib/GUIControlProfiler.h"
@@ -186,10 +185,6 @@
 #include "osx/DarwinUtils.h"
 #endif
 
-#ifdef HAS_DVD_DRIVE
-#include <cdio/logging.h>
-#endif
-
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
@@ -219,9 +214,6 @@
 
 using namespace ADDON;
 using namespace XFILE;
-#ifdef HAS_DVD_DRIVE
-using namespace MEDIA_DETECT;
-#endif
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
@@ -291,9 +283,6 @@ CApplication::CApplication(void)
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
   m_pInertialScrollingHandler = new CInertialScrollingHandler();
-#ifdef HAS_DVD_DRIVE
-  m_Autorun = new CAutorun();
-#endif
 
   m_threadID = 0;
   m_progressTrackingPlayCountUpdate = false;
@@ -311,9 +300,6 @@ CApplication::~CApplication(void)
 {
   delete m_musicInfoScanner;
   delete &m_progressTrackingVideoResumeBookmark;
-#ifdef HAS_DVD_DRIVE
-  delete m_Autorun;
-#endif
   delete m_currentStack;
 
 #ifdef HAS_KARAOKE
@@ -1035,16 +1021,7 @@ void CApplication::CreateUserDirs()
 
 bool CApplication::Initialize()
 {
-#if defined(HAS_DVD_DRIVE)
-  // turn off cdio logging
-  cdio_loglevel_default = CDIO_LOG_ERROR;
-#endif
-
-#ifdef TARGET_POSIX // TODO: Win32 has no special://home/ mapping by default, so we
-              //       must create these here. Ideally this should be using special://home/ and
-              //       be platform agnostic (i.e. unify the InitDirectories*() functions)
   if (!m_bPlatformDirectories)
-#endif
   {
     CDirectory::Create("special://xbmc/addons");
   }
@@ -1256,22 +1233,11 @@ void CApplication::StopPVRManager()
 
 void CApplication::StartServices()
 {
-#if defined(HAS_DVD_DRIVE)
-  // Start Thread for DVD Mediatype detection
-  CLog::Log(LOGNOTICE, "start dvd mediatype detection");
-  m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
-#endif
 }
 
 void CApplication::StopServices()
 {
   m_network->NetworkMessage(CNetwork::SERVICES_DOWN, 0);
-
-#if defined(HAS_DVD_DRIVE)
-  CLog::Log(LOGNOTICE, "stop dvd detect media");
-  m_DetectDVDType.StopThread();
-#endif
-
   g_peripherals.Clear();
 }
 
@@ -2766,11 +2732,7 @@ bool CApplication::Cleanup()
 
 #ifdef TARGET_POSIX
     CXHandle::DumpObjectTracker();
-
-#ifdef HAS_DVD_DRIVE
-    CLibcdio::ReleaseInstance();
 #endif
-#endif 
 #if defined(TARGET_ANDROID)
     // enable for all platforms once it's safe
     g_sectionLoader.UnloadAll();
@@ -3004,58 +2966,6 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   CVideoDatabase dbs;
 
-  // case 1: stacked ISOs
-  if (CFileItem(CStackDirectory::GetFirstStackedFile(item.GetPath()),false).IsDiscImage())
-  {
-    CStackDirectory dir;
-    CFileItemList movieList;
-    if (!dir.GetDirectory(item.GetURL(), movieList) || movieList.IsEmpty())
-      return PLAYBACK_FAIL;
-
-    // first assume values passed to the stack
-    int selectedFile = item.m_lStartPartNumber;
-    int startoffset = item.m_lStartOffset;
-
-    // check if we instructed the stack to resume from default
-    if (startoffset == STARTOFFSET_RESUME) // selected file is not specified, pick the 'last' resume point
-    {
-      if (dbs.Open())
-      {
-        CBookmark bookmark;
-        std::string path = item.GetPath();
-        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-          path = item.GetProperty("original_listitem_url").asString();
-        if( dbs.GetResumeBookMark(path, bookmark) )
-        {
-          startoffset = (int)(bookmark.timeInSeconds*75);
-          selectedFile = bookmark.partNumber;
-        }
-        dbs.Close();
-      }
-      else
-        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
-    }
-
-    // make sure that the selected part is within the boundaries
-    if (selectedFile <= 0)
-    {
-      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part 1", selectedFile);
-      selectedFile = 1;
-    }
-    else if (selectedFile > movieList.Size())
-    {
-      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part %d", selectedFile, movieList.Size());
-      selectedFile = movieList.Size();
-    }
-
-    // set startoffset in movieitem, track stack item for updating purposes, and finally play disc part
-    movieList[selectedFile - 1]->m_lStartOffset = startoffset > 0 ? STARTOFFSET_RESUME : 0;
-    movieList[selectedFile - 1]->SetProperty("stackFileItemToUpdate", true);
-    *m_stackFileItemToUpdate = item;
-    return PlayFile(*(movieList[selectedFile - 1]));
-  }
-  // case 2: all other stacks
-  else
   {
     LoadVideoSettings(item);
     
@@ -3177,19 +3087,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsDiscStub())
   {
-#ifdef HAS_DVD_DRIVE
-    // Display the Play Eject dialog if there is any optical disc drive
-    if (g_mediaManager.HasOpticalDrive())
-    {
-      if (CGUIDialogPlayEject::ShowAndGetInput(item))
-        // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
-        // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
-        return MEDIA_DETECT::CAutorun::PlayDiscAskResume() ? PLAYBACK_OK : PLAYBACK_FAIL;
-    }
-    else
-#endif
-      CGUIDialogOK::ShowAndGetInput(CVariant{435}, CVariant{436});
-
+    CGUIDialogOK::ShowAndGetInput(CVariant{435}, CVariant{436});
     return PLAYBACK_OK;
   }
 
@@ -3202,14 +3100,6 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
       return PlayFile(item_new, false);
     return PLAYBACK_FAIL;
-  }
-
-  // a disc image might be Blu-Ray disc
-  if (item.IsBDFile() || item.IsDiscImage())
-  {
-    //check if we must show the simplified bd menu
-    if (!CGUIDialogSimpleMenu::ShowPlaySelection(const_cast<CFileItem&>(item)))
-      return PLAYBACK_CANCELED;
   }
 
 #ifdef HAS_UPNP
@@ -3730,9 +3620,7 @@ void CApplication::UpdateFileState()
       // Check whether we're *really* playing video else we may race when getting eg. stream details
       if (m_pPlayer->IsPlayingVideo())
       {
-        /* Always update streamdetails, except for DVDs where we only update
-           streamdetails if total duration > 15m (Should yield more correct info) */
-        if (!(m_progressTrackingItem->IsDiscImage() || m_progressTrackingItem->IsDVDFile()) || m_pPlayer->GetTotalTime() > 15*60*1000)
+        // Always update streamdetails.
         {
           CStreamDetails details;
           // Update with stream details from player, if any
@@ -4096,9 +3984,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
           g_windowManager.SendMessage( msg );
         }
-        // stop the file if it's on dvd (will set the resume point etc)
-        if (m_itemCurrentFile->IsOnDVD())
-          StopPlaying();
       }
       else if (message.GetParam1() == GUI_MSG_UI_READY)
       {
@@ -4297,15 +4182,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!m_pPlayer->IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         CSettings::GetInstance().Save();  // save vis settings
-        WakeUpScreenSaverAndDPMS();
-        g_windowManager.PreviousWindow();
-      }
-
-      // DVD ejected while playing in vis ?
-      if (!m_pPlayer->IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-      {
-        // yes, disable vis
-        CSettings::GetInstance().Save();    // save vis settings
         WakeUpScreenSaverAndDPMS();
         g_windowManager.PreviousWindow();
       }
@@ -4513,12 +4389,6 @@ void CApplication::ProcessSlow()
     g_largeTextureManager.CleanupUnusedImages();
 
   g_TextureManager.FreeUnusedTextures(5000);
-
-#ifdef HAS_DVD_DRIVE
-  // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
-  if (!m_pPlayer->IsPlayingVideo())
-    m_Autorun->HandleAutorun();
-#endif
 
   // update upnp server/renderer states
 #ifdef HAS_UPNP

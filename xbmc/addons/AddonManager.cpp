@@ -20,7 +20,6 @@
 #include <memory>
 #include "AddonManager.h"
 #include "Addon.h"
-#include "AudioEncoder.h"
 #include "AudioDecoder.h"
 #include "ContextMenuManager.h"
 #include "DllLibCPluff.h"
@@ -128,11 +127,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
           if (URIUtils::HasExtension(library, ".py"))
             return AddonPtr(new CScreenSaver(props));
         }
-        if (type == ADDON_AUDIOENCODER && 0 == strncmp(props->plugin->identifier,
-                                                       "audioencoder.xbmc.builtin.", 26))
-        { // built in audio encoder
-          return AddonPtr(new CAudioEncoder(props));
-        }
 
         value = GetPlatformLibraryName(props->plugin->extensions->configuration);
         if (value.empty())
@@ -153,8 +147,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         {
           return AddonPtr(new ActiveAE::CActiveAEDSPAddon(props));
         }
-        else if (type == ADDON_AUDIOENCODER)
-          return AddonPtr(new CAudioEncoder(props));
         else if (type == ADDON_AUDIODECODER)
           return AddonPtr(new CAudioDecoder(props));
         else
@@ -847,8 +839,6 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new PVR::CPVRClient(addonProps));
     case ADDON_ADSPDLL:
       return AddonPtr(new ActiveAE::CActiveAEDSPAddon(addonProps));
-    case ADDON_AUDIOENCODER:
-      return AddonPtr(new CAudioEncoder(addonProps));
     case ADDON_AUDIODECODER:
       return AddonPtr(new CAudioDecoder(addonProps));
     case ADDON_RESOURCE_IMAGES:

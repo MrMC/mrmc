@@ -1320,19 +1320,6 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
     g_playlistPlayer.Reset();
     int mediaToPlay = 0;
     
-    // first try to find mainDVD file (VIDEO_TS.IFO). 
-    // If we find this we should not allow to queue VOB files
-    std::string mainDVD; 
-    for (int i = 0; i < m_vecItems->Size(); i++) 
-    { 
-      std::string path = URIUtils::GetFileName(m_vecItems->Get(i)->GetPath()); 
-      if (StringUtils::EqualsNoCase(path, "VIDEO_TS.IFO")) 
-      { 
-        mainDVD = path; 
-        break; 
-      } 
-    }
-
     // now queue...
     for ( int i = 0; i < m_vecItems->Size(); i++ )
     {
@@ -1341,7 +1328,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
       if (nItem->m_bIsFolder)
         continue;
 
-      if (!nItem->IsPlayList() && !nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
+      if (!(nItem->IsPlayList() && nItem->IsZIP() && nItem->IsRAR()))
         g_playlistPlayer.Add(iPlaylist, nItem);
 
       if (item->IsSamePath(nItem.get()))

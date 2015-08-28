@@ -2626,18 +2626,6 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
 {
   try
   {
-    if (URIUtils::IsStack(strFilenameAndPath) && CFileItem(CStackDirectory::GetFirstStackedFile(strFilenameAndPath),false).IsDiscImage())
-    {
-      CStackDirectory dir;
-      CFileItemList fileList;
-      const CURL pathToUrl(strFilenameAndPath);
-      dir.GetDirectory(pathToUrl, fileList);
-      if (!bAppend)
-        bookmarks.clear();
-      for (int i = fileList.Size() - 1; i >= 0; i--) // put the bookmarks of the highest part first in the list
-        GetBookMarksForFile(fileList[i]->GetPath(), bookmarks, type, true, (i+1));
-    }
-    else
     {
       int idFile = GetFileId(strFilenameAndPath);
       if (idFile < 0) return ;
@@ -3391,26 +3379,6 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
 
   try
   {
-    if (URIUtils::IsStack(tag.m_strFileNameAndPath) && CFileItem(CStackDirectory::GetFirstStackedFile(tag.m_strFileNameAndPath),false).IsDiscImage())
-    {
-      CStackDirectory dir;
-      CFileItemList fileList;
-      const CURL pathToUrl(tag.m_strFileNameAndPath);
-      dir.GetDirectory(pathToUrl, fileList);
-      tag.m_resumePoint.Reset();
-      for (int i = fileList.Size() - 1; i >= 0; i--)
-      {
-        CBookmark bookmark;
-        if (GetResumeBookMark(fileList[i]->GetPath(), bookmark))
-        {
-          tag.m_resumePoint = bookmark;
-          tag.m_resumePoint.partNumber = (i+1); /* store part number in here */
-          match = true;
-          break;
-        }
-      }
-    }
-    else
     {
       std::string strSQL=PrepareSQL("select timeInSeconds, totalTimeInSeconds from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
       m_pDS2->query( strSQL.c_str() );
@@ -7710,7 +7678,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
 
       // remove optical, non-existing files, files with no matching source
       bool bIsSource;
-      if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false) ||
+      if (!CFile::Exists(fullPath, false) ||
           CUtil::GetMatchingSource(fullPath, videoSources, bIsSource) < 0)
         filesToTestForDelete += m_pDS->fv("files.idFile").get_asString() + ",";
 
@@ -8252,13 +8220,6 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
         else
         {
           std::string nfoFile(URIUtils::ReplaceExtension(item.GetTBNFile(), ".nfo"));
-
-          if (item.IsOpticalMediaFile())
-          {
-            nfoFile = URIUtils::AddFileToFolder(
-                                    URIUtils::GetParentPath(nfoFile),
-                                    URIUtils::GetFileName(nfoFile));
-          }
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {

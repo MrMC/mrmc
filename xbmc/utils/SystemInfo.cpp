@@ -245,7 +245,7 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 
 std::string CSysInfoJob::GetMACAddress()
 {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
+#if defined(HAS_LINUX_NETWORK)
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
   if (iface)
     return iface->GetMacAddress();

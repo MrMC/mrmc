@@ -22,7 +22,6 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "MusicDatabase.h"
-#include "network/cddb.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
@@ -78,11 +77,6 @@ using ADDON::AddonPtr;
 
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
-
-#ifdef HAS_DVD_DRIVE
-using namespace CDDB;
-using namespace MEDIA_DETECT;
-#endif
 
 static void AnnounceRemove(const std::string& content, int id)
 {
@@ -2767,185 +2761,11 @@ error:
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
-#ifdef HAS_DVD_DRIVE
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOCDS_USECDDB))
-    return false;
-
-  // check network connectivity
-  if (!g_application.getNetwork().IsAvailable())
-    return false;
-
-  // Get information for the inserted disc
-  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
-  if (pCdInfo == NULL)
-    return false;
-
-  // If the disc has no tracks, we are finished here.
-  int nTracks = pCdInfo->GetTrackCount();
-  if (nTracks <= 0)
-    return false;
-
-  //  Delete old info if any
-  if (bRequery)
-  {
-    std::string strFile = StringUtils::Format("%x.cddb", pCdInfo->GetCddbDiscId());
-    CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetCDDBFolder(), strFile));
-  }
-
-  // Prepare cddb
-  Xcddb cddb;
-  cddb.setCacheDir(CProfilesManager::GetInstance().GetCDDBFolder());
-
-  // Do we have to look for cddb information
-  if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
-  {
-    CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-
-    if (!pDialogProgress) return false;
-    if (!pDlgSelect) return false;
-
-    // Show progress dialog if we have to connect to freedb.org
-    pDialogProgress->SetHeading(CVariant{255}); //CDDB
-    pDialogProgress->SetLine(0, CVariant{""}); // Querying freedb for CDDB info
-    pDialogProgress->SetLine(1, CVariant{256});
-    pDialogProgress->SetLine(2, CVariant{""});
-    pDialogProgress->ShowProgressBar(false);
-    pDialogProgress->Open();
-
-    // get cddb information
-    if (!cddb.queryCDinfo(pCdInfo))
-    {
-      pDialogProgress->Close();
-      int lasterror = cddb.getLastError();
-
-      // Have we found more then on match in cddb for this disc,...
-      if (lasterror == E_WAIT_FOR_INPUT)
-      {
-        // ...yes, show the matches found in a select dialog
-        // and let the user choose an entry.
-        pDlgSelect->Reset();
-        pDlgSelect->SetHeading(CVariant{255});
-        int i = 1;
-        while (1)
-        {
-          std::string strTitle = cddb.getInexactTitle(i);
-          if (strTitle == "") break;
-
-          std::string strArtist = cddb.getInexactArtist(i);
-          if (!strArtist.empty())
-            strTitle += " - " + strArtist;
-
-          pDlgSelect->Add(strTitle);
-          i++;
-        }
-        pDlgSelect->Open();
-
-        // Has the user selected a match...
-        int iSelectedCD = pDlgSelect->GetSelectedLabel();
-        if (iSelectedCD >= 0)
-        {
-          // ...query cddb for the inexact match
-          if (!cddb.queryCDinfo(pCdInfo, 1 + iSelectedCD))
-            pCdInfo->SetNoCDDBInfo();
-        }
-        else
-          pCdInfo->SetNoCDDBInfo();
-      }
-      else if (lasterror == E_NO_MATCH_FOUND)
-      {
-        pCdInfo->SetNoCDDBInfo();
-      }
-      else
-      {
-        pCdInfo->SetNoCDDBInfo();
-        // ..no, an error occured, display it to the user
-        std::string strErrorText = StringUtils::Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
-        CGUIDialogOK::ShowAndGetInput(CVariant{255}, CVariant{257}, CVariant{std::move(strErrorText)}, CVariant{0});
-      }
-    } // if ( !cddb.queryCDinfo( pCdInfo ) )
-    else
-      pDialogProgress->Close();
-  }
-
-  // Filling the file items with cddb info happens in CMusicInfoTagLoaderCDDA
-
-  return pCdInfo->HasCDDBInfo();
-#else
   return false;
-#endif
 }
 
 void CMusicDatabase::DeleteCDDBInfo()
 {
-#ifdef HAS_DVD_DRIVE
-  CFileItemList items;
-  if (!CDirectory::GetDirectory(CProfilesManager::GetInstance().GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{313}, CVariant{426});
-    return ;
-  }
-  // Show a selectdialog that the user can select the album to delete
-  CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  if (pDlg)
-  {
-    pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
-    pDlg->Reset();
-
-    map<ULONG, std::string> mapCDDBIds;
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      if (items[i]->m_bIsFolder)
-        continue;
-
-      std::string strFile = URIUtils::GetFileName(items[i]->GetPath());
-      strFile.erase(strFile.size() - 5, 5);
-      ULONG lDiscId = strtoul(strFile.c_str(), NULL, 16);
-      Xcddb cddb;
-      cddb.setCacheDir(CProfilesManager::GetInstance().GetCDDBFolder());
-
-      if (!cddb.queryCache(lDiscId))
-        continue;
-
-      std::string strDiskTitle, strDiskArtist;
-      cddb.getDiskTitle(strDiskTitle);
-      cddb.getDiskArtist(strDiskArtist);
-
-      std::string str;
-      if (strDiskArtist.empty())
-        str = strDiskTitle;
-      else
-        str = strDiskTitle + " - " + strDiskArtist;
-
-      pDlg->Add(str);
-      mapCDDBIds.insert(pair<ULONG, std::string>(lDiscId, str));
-    }
-
-    pDlg->Sort();
-    pDlg->Open();
-
-    // and wait till user selects one
-    int iSelectedAlbum = pDlg->GetSelectedLabel();
-    if (iSelectedAlbum < 0)
-    {
-      mapCDDBIds.erase(mapCDDBIds.begin(), mapCDDBIds.end());
-      return ;
-    }
-
-    std::string strSelectedAlbum = pDlg->GetSelectedLabelText();
-    map<ULONG, std::string>::iterator it;
-    for (it = mapCDDBIds.begin();it != mapCDDBIds.end();++it)
-    {
-      if (it->second == strSelectedAlbum)
-      {
-        std::string strFile = StringUtils::Format("%x.cddb", (unsigned int) it->first);
-        CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetCDDBFolder(), strFile));
-        break;
-      }
-    }
-    mapCDDBIds.erase(mapCDDBIds.begin(), mapCDDBIds.end());
-  }
-#endif
 }
 
 void CMusicDatabase::Clean()

@@ -23,8 +23,6 @@
 #include "CompileInfo.h"
 #include "utils/log.h"
 
-#include "storage/IoSupport.h"
-
 #ifndef TARGET_POSIX
 #include <process.h>
 #include "utils/CharsetConverter.h"
@@ -46,11 +44,6 @@ using namespace std;
 vector<string> m_vecAtoms;
 
 //#define API_DEBUG
-
-extern "C" HANDLE xboxopendvdrom()
-{
-  return CIoSupport::OpenCDROM();
-}
 
 extern "C" UINT WINAPI dllGetAtomNameA( ATOM nAtom, LPTSTR lpBuffer, int nSize)
 {

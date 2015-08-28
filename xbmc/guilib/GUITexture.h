@@ -30,7 +30,7 @@
 
 #include "TextureManager.h"
 #include "Geometry.h"
-#include "system.h" // HAS_GL, HAS_DX, etc
+#include "system.h" // HAS_GL, HAS_GLES, etc
 #include "GUIInfoTypes.h"
 
 typedef uint32_t color_t;
@@ -180,9 +180,6 @@ protected:
 #elif defined(HAS_GLES)
 #include "GUITextureGLES.h"
 #define CGUITexture CGUITextureGLES
-#elif defined(HAS_DX)
-#include "GUITextureD3D.h"
-#define CGUITexture CGUITextureD3D
 #endif
 
 #endif

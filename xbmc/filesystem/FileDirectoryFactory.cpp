@@ -87,9 +87,6 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (pItem->IsRSS())
     return new CRSSDirectory();
 
-  if (pItem->IsDiscImage())
-    return new CUDFDirectory();
-
 #endif
 #if defined(TARGET_ANDROID)
   if (url.IsFileType("apk"))

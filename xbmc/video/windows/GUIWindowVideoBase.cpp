@@ -60,7 +60,6 @@
 #include "utils/URIUtils.h"
 #include "GUIUserMessages.h"
 #include "storage/MediaManager.h"
-#include "Autorun.h"
 #include "URL.h"
 #include "utils/GroupUtils.h"
 #include "TextureDatabase.h"
@@ -132,14 +131,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-#if defined(HAS_DVD_DRIVE)
-      if (iControl == CONTROL_PLAY_DVD)
-      {
-        // play movie...
-        MEDIA_DETECT::CAutorun::PlayDiscAskResume(g_mediaManager.TranslateDevicePath(""));
-      }
-      else
-#endif
       if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         // get selected item
@@ -581,7 +572,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
     {
       CBookmark bookmark;
       std::string strPath = item->GetPath();
-      if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
+      if ((item->IsVideoDb()) && item->HasVideoInfoTag())
         strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
       CVideoDatabase db;
@@ -642,14 +633,6 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
   case SELECT_ACTION_CHOOSE:
     {
       CContextButtons choices;
-
-      if (item->IsVideoDb())
-      {
-        std::string itemPath(item->GetPath());
-        itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
-        if (URIUtils::IsStack(itemPath) && CFileItem(CStackDirectory::GetFirstStackedFile(itemPath),false).IsDiscImage())
-          choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
-      }
 
       std::string resumeString = GetResumeString(*item);
       if (!resumeString.empty())
@@ -828,13 +811,6 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (!item->IsPath("add") && !item->IsPlugin() &&
           !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
       {
-        if (URIUtils::IsStack(path))
-        {
-          std::vector<int> times;
-          if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
-            buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
-        }
-
         // allow a folder to be ad-hoc queued and played by the default player
         if (item->m_bIsFolder || (item->IsPlayList() &&
            !g_advancedSettings.m_playlistAsFolders))
@@ -873,7 +849,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // if autoresume is enabled then add restart video button
       // check to see if the Resume Video button is applicable
       // only if the video is NOT a DVD (in that case the resume button will be added by CGUIDialogContextMenu::GetContextButtons)
-      if (!item->IsDVD() && HasResumeItemOffset(item.get()))
+      if (HasResumeItemOffset(item.get()))
       {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
@@ -916,26 +892,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
   int selectedFile = dlg->GetSelectedFile();
   if (selectedFile > 0)
   {
-    // ISO stack
-    if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
-    {
-      std::string resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile - 1].get()));
-      stack->m_lStartOffset = 0;
-      if (!resumeString.empty()) 
-      {
-        CContextButtons choices;
-        choices.Add(SELECT_ACTION_RESUME, resumeString);
-        choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
-        int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-        if (value == SELECT_ACTION_RESUME)
-          GetResumeItemOffset(parts[selectedFile - 1].get(), stack->m_lStartOffset, stack->m_lStartPartNumber);
-        else if (value != SELECT_ACTION_PLAY)
-          return false; // if not selected PLAY, then we changed our mind so return
-      }
-      stack->m_lStartPartNumber = selectedFile;
-    }
     // regular stack
-    else
     {
       if (selectedFile > 1)
       {

@@ -56,7 +56,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   if(g_DNSCache.GetCached(strHostName, strIpAddress))
     return true;
 
-  // perform netbios lookup (win32 is handling this via gethostbyname)
+  // perform netbios lookup
   char nmb_ip[100];
   char line[200];
 

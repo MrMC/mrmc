@@ -358,36 +358,7 @@ void CPlayList::Remove(int position)
 
 int CPlayList::RemoveDVDItems()
 {
-  std::vector <std::string> vecFilenames;
-
-  // Collect playlist items from DVD share
-  ivecItems it;
-  it = m_vecItems.begin();
-  while (it != m_vecItems.end() )
-  {
-    CFileItemPtr item = *it;
-    if ( item->IsCDDA() || item->IsOnDVD() )
-    {
-      vecFilenames.push_back( item->GetPath() );
-    }
-    ++it;
-  }
-
-  // Delete them from playlist
-  int nFileCount = vecFilenames.size();
-  if ( nFileCount )
-  {
-    std::vector <std::string>::iterator it;
-    it = vecFilenames.begin();
-    while (it != vecFilenames.end() )
-    {
-      std::string& strFilename = *it;
-      Remove( strFilename );
-      ++it;
-    }
-    vecFilenames.erase( vecFilenames.begin(), vecFilenames.end() );
-  }
-  return nFileCount;
+  return 0;
 }
 
 bool CPlayList::Swap(int position1, int position2)

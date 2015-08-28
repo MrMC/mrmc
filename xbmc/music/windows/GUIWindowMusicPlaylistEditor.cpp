@@ -24,7 +24,6 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "Autorun.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "filesystem/PlaylistFileDirectory.h"
 #include "playlists/PlayListM3U.h"
@@ -201,14 +200,9 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
   // and cleared!
 
   // we're at the root source listing
-  if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
+  if (m_vecItems->IsVirtualDirectoryRoot())
     return;
 
-#ifdef HAS_DVD_DRIVE
-  if (m_vecItems->Get(iItem)->IsDVD())
-    MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
-  else
-#endif
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 

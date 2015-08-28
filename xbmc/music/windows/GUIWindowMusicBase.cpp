@@ -28,9 +28,6 @@
 #include "playlists/PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
-#ifdef HAS_CDDA_RIPPER
-#include "cdrip/CDDARipper.h"
-#endif
 #include "GUIPassword.h"
 #include "PartyModeManager.h"
 #include "GUIInfoManager.h"
@@ -855,14 +852,7 @@ void CGUIWindowMusicBase::OnRipCD()
 {
   if(g_mediaManager.IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
-    {
-#ifdef HAS_CDDA_RIPPER
-      CCDDARipper::GetInstance().RipCD();
-#endif
-    }
-    else
-      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20099});
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20099});
   }
 }
 
@@ -870,15 +860,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 {
   if(g_mediaManager.IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
-    {
-#ifdef HAS_CDDA_RIPPER
-      CFileItemPtr item = m_vecItems->Get(iItem);
-      CCDDARipper::GetInstance().RipTrack(item.get());
-#endif
-    }
-    else
-      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20099});
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20099});
   }
 }
 
@@ -1045,7 +1027,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const std::string &pa
   // Save this thumb as the directory thumb if it's the only album in the folder (files view nicety)
   // We do this by grabbing all the songs in the folder, and checking to see whether they come
   // from the same album.
-  if (saveDirThumb && CFile::Exists(albumThumb) && !albumPath.empty() && !URIUtils::IsCDDA(albumPath))
+  if (saveDirThumb && CFile::Exists(albumThumb) && !albumPath.empty())
   {
     CFileItemList items;
     GetDirectory(albumPath, items);
@@ -1073,7 +1055,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const std::string &pa
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
   if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
-     (!CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))
+     (!CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICFILES_USETAGS)))
   {
     return;
   }

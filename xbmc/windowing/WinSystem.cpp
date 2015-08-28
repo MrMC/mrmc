@@ -30,7 +30,7 @@
 
 CWinSystemBase::CWinSystemBase()
 {
-  m_eWindowSystem = WINDOW_SYSTEM_WIN32; // this is the 0 value enum
+  m_eWindowSystem = WINDOW_SYSTEM_NONE;
   m_nWidth = 0;
   m_nHeight = 0;
   m_nTop = 0;
@@ -242,7 +242,7 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, std::vector<REFRESHRA
 
 bool CWinSystemBase::UseLimitedColor()
 {
-#if defined(HAS_GL) || defined(HAS_DX)
+#if defined(HAS_GL)
   static CSettingBool* setting = (CSettingBool*)CSettings::GetInstance().GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
   return setting->GetValue();
 #else

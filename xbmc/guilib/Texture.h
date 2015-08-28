@@ -137,7 +137,4 @@ protected:
 #elif defined(HAS_GL) || defined(HAS_GLES)
 #include "TextureGL.h"
 #define CTexture CGLTexture
-#elif defined(HAS_DX)
-#include "TextureDX.h"
-#define CTexture CDXTexture
 #endif

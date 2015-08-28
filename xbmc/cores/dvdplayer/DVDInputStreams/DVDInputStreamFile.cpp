@@ -65,7 +65,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, 
    * 2) Only buffer true internet filesystems (streams) (http, etc.)
    * 3) No buffer
    */
-  if (!URIUtils::IsOnDVD(strFile) && !URIUtils::IsBluray(strFile)) // Never cache these
+  if (!URIUtils::IsBluray(strFile)) // Never cache these
   {
     if (g_advancedSettings.m_networkBufferMode == 0 || g_advancedSettings.m_networkBufferMode == 2)
     {

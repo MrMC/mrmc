@@ -59,11 +59,7 @@ bool CScreenSaver::CreateScreenSaver()
   int iHeight = g_graphicsContext.GetHeight();
 
   m_pInfo = new SCR_PROPS;
-#ifdef HAS_DX
-  m_pInfo->device     = g_Windowing.Get3D11Context();
-#else
   m_pInfo->device     = NULL;
-#endif
   m_pInfo->x          = 0;
   m_pInfo->y          = 0;
   m_pInfo->width      = iWidth;

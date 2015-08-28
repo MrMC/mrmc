@@ -87,12 +87,6 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())
       strIcon = "DefaultNetwork.png";
-    else if (pItem->IsISO9660())
-      strIcon = "DefaultDVDRom.png";
-    else if (pItem->IsDVD())
-      strIcon = "DefaultDVDFull.png";
-    else if (pItem->IsCDDA())
-      strIcon = "DefaultCDDA.png";
     else if (pItem->IsRemovable() && g_TextureManager.HasTexture("DefaultRemovableDisk.png"))
       strIcon = "DefaultRemovableDisk.png";
     else

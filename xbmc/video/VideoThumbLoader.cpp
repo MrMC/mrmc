@@ -85,9 +85,6 @@ bool CThumbExtractor::DoWork()
 {
   if (m_item.IsLiveTV()
   ||  URIUtils::IsUPnP(m_item.GetPath())
-  ||  m_item.IsDVD()
-  ||  m_item.IsDiscImage()
-  ||  m_item.IsDVDFile(false, true)
   ||  m_item.IsInternetStream()
   ||  m_item.IsDiscStub()
   ||  m_item.IsPlayList())
@@ -516,7 +513,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
   if (art.empty() && (type.empty() || type == "thumb"))
   { // backward compatibility
     art = item.FindLocalArt("", false);
-    if (art.empty() && (checkFolder || (item.m_bIsFolder && !item.IsFileFolder()) || item.IsOpticalMediaFile()))
+    if (art.empty() && (checkFolder || (item.m_bIsFolder && !item.IsFileFolder())))
     { // try movie.tbn
       art = item.FindLocalArt("movie.tbn", true);
       if (art.empty()) // try folder.jpg

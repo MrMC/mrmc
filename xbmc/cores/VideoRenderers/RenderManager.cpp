@@ -45,8 +45,6 @@
   #include "MMALRenderer.h"
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
-#elif defined(HAS_DX)
-  #include "WinRenderer.h"
 #elif defined(HAS_SDL)
   #include "LinuxRenderer.h"
 #endif
@@ -455,8 +453,6 @@ unsigned int CXBMCRenderManager::PreInit()
     m_pRenderer = new CMMALRenderer();
 #elif HAS_GLES == 2
     m_pRenderer = new CLinuxRendererGLES();
-#elif defined(HAS_DX)
-    m_pRenderer = new CWinRenderer();
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif

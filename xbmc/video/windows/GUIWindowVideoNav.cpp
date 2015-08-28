@@ -526,7 +526,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
     CFileItemPtr match;
     if (!content.empty()) /* optical media will be stacked down, so it's path won't match the base path */
     {
-      std::string pathToMatch = pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath();
+      std::string pathToMatch = pItem->GetPath();
       if (URIUtils::IsMultiPath(pathToMatch))
         pathToMatch = CMultiPathDirectory::GetFirstPath(pathToMatch);
       match = dbItems.Get(pathToMatch);
@@ -829,7 +829,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // add scan button somewhere here
     if (g_application.IsVideoScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
-    if (!item->IsDVD() && item->GetPath() != "add" && !item->IsParentFolder() &&
+    if (item->GetPath() != "add" && !item->IsParentFolder() &&
         (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       CVideoDatabase database;

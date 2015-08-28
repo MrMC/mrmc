@@ -23,7 +23,6 @@
 
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
-#include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDInputStreams/DVDInputStreamPVRManager.h"
 
 #include "DVDDemuxers/DVDDemux.h"
@@ -356,19 +355,6 @@ int CSelectionStreams::IndexOf(StreamType type, int source, int id) const
 
 int CSelectionStreams::IndexOf(StreamType type, CDVDPlayer& p) const
 {
-  if (p.m_pInputStream && p.m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    int id = -1;
-    if(type == STREAM_AUDIO)
-      id = ((CDVDInputStreamNavigator*)p.m_pInputStream)->GetActiveAudioStream();
-    else if(type == STREAM_VIDEO)
-      id = p.m_CurrentVideo.id;
-    else if(type == STREAM_SUBTITLE)
-      id = ((CDVDInputStreamNavigator*)p.m_pInputStream)->GetActiveSubtitleStream();
-
-    return IndexOf(type, STREAM_SOURCE_NAV, id);
-  }
-
   if(type == STREAM_AUDIO)
     return IndexOf(type, p.m_CurrentAudio.source, p.m_CurrentAudio.id);
   else if(type == STREAM_VIDEO)
@@ -419,50 +405,7 @@ void CSelectionStreams::Update(SelectionStream& s)
 
 void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2)
 {
-  if(input && input->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CDVDInputStreamNavigator* nav = (CDVDInputStreamNavigator*)input;
-    string filename = nav->GetFileName();
-    int source = Source(STREAM_SOURCE_NAV, filename);
-
-    int count;
-    count = nav->GetAudioStreamCount();
-    for(int i=0;i<count;i++)
-    {
-      SelectionStream s;
-      s.source   = source;
-      s.type     = STREAM_AUDIO;
-      s.id       = i;
-      s.flags    = CDemuxStream::FLAG_NONE;
-      s.filename = filename;
-
-      DVDNavStreamInfo info;
-      nav->GetAudioStreamInfo(i, info);
-      s.name     = info.name;
-      s.language = g_LangCodeExpander.ConvertToISO6392T(info.language);
-      s.channels = info.channels;
-      Update(s);
-    }
-
-    count = nav->GetSubTitleStreamCount();
-    for(int i=0;i<count;i++)
-    {
-      SelectionStream s;
-      s.source   = source;
-      s.type     = STREAM_SUBTITLE;
-      s.id       = i;
-      s.flags    = CDemuxStream::FLAG_NONE;
-      s.filename = filename;
-      s.channels = 0;
-
-      DVDNavStreamInfo info;
-      nav->GetSubtitleStreamInfo(i, info);
-      s.name     = info.name;
-      s.language = g_LangCodeExpander.ConvertToISO6392T(info.language);
-      Update(s);
-    }
-  }
-  else if(demuxer)
+  if(demuxer)
   {
     string filename = demuxer->GetFileName();
     int count = demuxer->GetNrOfStreams();
@@ -757,8 +700,7 @@ bool CDVDPlayer::OpenInputStream()
   }
 
   // find any available external subtitles for non dvd files
-  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
-  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
+  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     // find any available external subtitles
@@ -901,9 +843,6 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   if(!valid)
     CloseStream(m_CurrentSubtitle, false);
 
-  if (!dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream) || m_PlayerOptions.state.size() == 0)
-    SetSubtitleVisibleInternal(visible); // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
-
   // open teletext stream
   streams = m_SelectionStreams.Get(STREAM_TELETEXT);
   valid   = false;
@@ -1026,14 +965,6 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream)
     if(st->type != stream.type)
       return false;
 
-    if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      if(stream.type == STREAM_AUDIO    && st->iPhysicalId != m_dvd.iSelectedAudioStream)
-        return false;
-      if(stream.type == STREAM_SUBTITLE && st->iPhysicalId != m_dvd.iSelectedSPUStream)
-        return false;
-    }
-
     return true;
   }
   if (source == STREAM_SOURCE_VIDEOMUX)
@@ -1058,8 +989,7 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
   if(stream->disabled)
     return false;
 
-  if (m_pInputStream && ( m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
-                       || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) ) )
+  if (m_pInputStream && ( m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) ) )
   {
     int source_type;
 
@@ -1120,14 +1050,8 @@ void CDVDPlayer::Process()
   if (CDVDInputStream::IMenus* ptr = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream))
   {
     CLog::Log(LOGNOTICE, "DVDPlayer: playing a file with menu's");
-    if(dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream))
-      m_PlayerOptions.starttime = 0;
-
-    if(m_PlayerOptions.state.size() > 0)
+     if(m_PlayerOptions.state.size() > 0)
       ptr->SetState(m_PlayerOptions.state);
-    else if(CDVDInputStreamNavigator* nav = dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream))
-      nav->EnableSubtitleStream(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn);
-
     CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleCached = true;
   }
 
@@ -1627,9 +1551,6 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
     drop = true;
 
   m_dvdPlayerSubtitle->SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
-
-  if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    m_dvdPlayerSubtitle->UpdateOverlayInfo((CDVDInputStreamNavigator*)m_pInputStream, LIBDVDNAV_BUTTON_NORMAL);
 }
 
 void CDVDPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket)
@@ -2374,10 +2295,6 @@ void CDVDPlayer::HandleMessages()
         // set flag to indicate we have finished a seeking request
         if(!msg.GetTrickPlay())
           g_infoManager.SetDisplayAfterSeek();
-
-        // dvd's will issue a HOP_CHANNEL that we need to skip
-        if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-          m_dvd.state = DVDSTATE_SEEK;
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
                                                           && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
@@ -2419,17 +2336,6 @@ void CDVDPlayer::HandleMessages()
         SelectionStream& st = m_SelectionStreams.Get(STREAM_AUDIO, pMsg2->GetStreamId());
         if(st.source != STREAM_SOURCE_NONE)
         {
-          if(st.source == STREAM_SOURCE_NAV && m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-          {
-            CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-            if(pStream->SetActiveAudioStream(st.id))
-            {
-              m_dvd.iSelectedAudioStream = -1;
-              CloseStream(m_CurrentAudio, false);
-              m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
-            }
-          }
-          else
           {
             CloseStream(m_CurrentAudio, false);
             OpenStream(m_CurrentAudio, st.id, st.source);
@@ -2445,16 +2351,6 @@ void CDVDPlayer::HandleMessages()
         SelectionStream& st = m_SelectionStreams.Get(STREAM_SUBTITLE, pMsg2->GetStreamId());
         if(st.source != STREAM_SOURCE_NONE)
         {
-          if(st.source == STREAM_SOURCE_NAV && m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-          {
-            CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-            if(pStream->SetActiveSubtitleStream(st.id))
-            {
-              m_dvd.iSelectedSPUStream = -1;
-              CloseStream(m_CurrentSubtitle, false);
-            }
-          }
-          else
           {
             CloseStream(m_CurrentSubtitle, false);
             OpenStream(m_CurrentSubtitle, st.id, st.source);
@@ -3143,12 +3039,6 @@ void CDVDPlayer::SetSubtitle(int iStream)
 
 bool CDVDPlayer::GetSubtitleVisible()
 {
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-    return pStream->IsSubtitleStreamEnabled();
-  }
-
   return m_dvdPlayerVideo->IsSubtitleEnabled();
 }
 
@@ -3160,9 +3050,6 @@ void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 void CDVDPlayer::SetSubtitleVisibleInternal(bool bVisible)
 {
   m_dvdPlayerVideo->EnableSubtitle(bVisible);
-
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->EnableSubtitleStream(bVisible);
 }
 
 int CDVDPlayer::GetAudioStreamCount()
@@ -3332,9 +3219,6 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     stream->SetDiscard(AVDISCARD_NONE);
 
     hint.Assign(*stream, true);
-
-    if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-      hint.filename = "dvd";
   }
   else if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_VIDEOMUX)
   {
@@ -3433,18 +3317,7 @@ bool CDVDPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
 
 bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 {
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    /* set aspect ratio as requested by navigator for dvd's */
-    float aspect = static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio();
-    if(aspect != 0.0)
-    {
-      hint.aspect = aspect;
-      hint.forced_aspect = true;
-    }
-    hint.software = true;
-  }
-  else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
     // set framerate if not set by demuxer
     if (hint.fpsrate == 0 || hint.fpsscale == 0)
@@ -3750,161 +3623,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
     return 0;
   }
 
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-
-    switch (iMessage)
-    {
-    case DVDNAV_STILL_FRAME:
-      {
-        //CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME");
-
-        dvdnav_still_event_t *still_event = (dvdnav_still_event_t *)pData;
-        // should wait the specified time here while we let the player running
-        // after that call dvdnav_still_skip(m_dvdnav);
-
-        if (m_dvd.state != DVDSTATE_STILL)
-        {
-          // else notify the player we have received a still frame
-
-          if(still_event->length < 0xff)
-            m_dvd.iDVDStillTime = still_event->length * 1000;
-          else
-            m_dvd.iDVDStillTime = 0;
-
-          m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
-
-          /* adjust for the output delay in the video queue */
-          unsigned int time = 0;
-          if( m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0 )
-          {
-            time = (unsigned int)(m_dvdPlayerVideo->GetOutputDelay() / ( DVD_TIME_BASE / 1000 ));
-            if( time < 10000 && time > 0 )
-              m_dvd.iDVDStillTime += time;
-          }
-          m_dvd.state = DVDSTATE_STILL;
-          CLog::Log(LOGDEBUG,
-                    "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %d sec",
-                    still_event->length, time / 1000);
-        }
-        return NAVRESULT_HOLD;
-      }
-      break;
-    case DVDNAV_SPU_CLUT_CHANGE:
-      {
-        m_dvdPlayerSubtitle->SendMessage(new CDVDMsgSubtitleClutChange((uint8_t*)pData));
-      }
-      break;
-    case DVDNAV_SPU_STREAM_CHANGE:
-      {
-        dvdnav_spu_stream_change_event_t* event = (dvdnav_spu_stream_change_event_t*)pData;
-
-        int iStream = event->physical_wide;
-        bool visible = !(iStream & 0x80);
-
-        SetSubtitleVisibleInternal(visible);
-
-        if (iStream >= 0)
-          m_dvd.iSelectedSPUStream = (iStream & ~0x80);
-        else
-          m_dvd.iSelectedSPUStream = -1;
-
-        m_CurrentSubtitle.stream = NULL;
-      }
-      break;
-    case DVDNAV_AUDIO_STREAM_CHANGE:
-      {
-        // This should be the correct way i think, however we don't have any streams right now
-        // since the demuxer hasn't started so it doesn't change. not sure how to do this.
-        dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)pData;
-
-        // Tell system what audiostream should be opened by default
-        if (event->logical >= 0)
-          m_dvd.iSelectedAudioStream = event->physical;
-        else
-          m_dvd.iSelectedAudioStream = -1;
-
-        m_CurrentAudio.stream = NULL;
-      }
-      break;
-    case DVDNAV_HIGHLIGHT:
-      {
-        //dvdnav_highlight_event_t* pInfo = (dvdnav_highlight_event_t*)pData;
-        int iButton = pStream->GetCurrentButton();
-        CLog::Log(LOGDEBUG, "DVDNAV_HIGHLIGHT: Highlight button %d\n", iButton);
-        m_dvdPlayerSubtitle->UpdateOverlayInfo((CDVDInputStreamNavigator*)m_pInputStream, LIBDVDNAV_BUTTON_NORMAL);
-      }
-      break;
-    case DVDNAV_VTS_CHANGE:
-      {
-        //dvdnav_vts_change_event_t* vts_change_event = (dvdnav_vts_change_event_t*)pData;
-        CLog::Log(LOGDEBUG, "DVDNAV_VTS_CHANGE");
-
-        //Make sure we clear all the old overlays here, or else old forced items are left.
-        m_overlayContainer.Clear();
-
-        //Force an aspect ratio that is set in the dvdheaders if available
-        m_CurrentVideo.hint.aspect = pStream->GetVideoAspectRatio();
-        if( m_dvdPlayerVideo->IsInited() )
-          m_dvdPlayerVideo->SendMessage(new CDVDMsgDouble(CDVDMsg::VIDEO_SET_ASPECT, m_CurrentVideo.hint.aspect));
-
-        m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
-        m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-
-        return NAVRESULT_HOLD;
-      }
-      break;
-    case DVDNAV_CELL_CHANGE:
-      {
-        //dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)pData;
-        CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE");
-
-        m_dvd.state = DVDSTATE_NORMAL;
-
-        if( m_dvdPlayerVideo->IsInited() )
-          m_dvdPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
-      }
-      break;
-    case DVDNAV_NAV_PACKET:
-      {
-          //pci_t* pci = (pci_t*)pData;
-
-          // this should be possible to use to make sure we get
-          // seamless transitions over these boundaries
-          // if we remember the old vobunits boundaries
-          // when a packet comes out of demuxer that has
-          // pts values outside that boundary, it belongs
-          // to the new vobunit, wich has new timestamps
-          UpdatePlayState(0);
-      }
-      break;
-    case DVDNAV_HOP_CHANNEL:
-      {
-        // This event is issued whenever a non-seamless operation has been executed.
-        // Applications with fifos should drop the fifos content to speed up responsiveness.
-        CLog::Log(LOGDEBUG, "DVDNAV_HOP_CHANNEL");
-        if(m_dvd.state == DVDSTATE_SEEK)
-          m_dvd.state = DVDSTATE_NORMAL;
-        else
-          m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
-
-        return NAVRESULT_ERROR;
-      }
-      break;
-    case DVDNAV_STOP:
-      {
-        CLog::Log(LOGDEBUG, "DVDNAV_STOP");
-        m_dvd.state = DVDSTATE_NORMAL;
-        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026), g_localizeStrings.Get(16029));
-      }
-      break;
-    default:
-    {}
-      break;
-    }
-  }
-  return NAVRESULT_NOP;
+  return 0;
 }
 
 bool CDVDPlayer::ShowPVRChannelInfo(void)
@@ -4079,9 +3798,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - button select");
-          // show button pushed overlay
-          if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-            m_dvdPlayerSubtitle->UpdateOverlayInfo((CDVDInputStreamNavigator*)m_pInputStream, LIBDVDNAV_BUTTON_CLICKED);
 
           pMenus->ActivateButton();
         }

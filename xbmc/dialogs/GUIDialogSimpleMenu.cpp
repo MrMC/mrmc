@@ -47,34 +47,6 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
   else
     path = item.GetPath();
 
-  if (item.IsBDFile())
-  {
-    std::string root = URIUtils::GetParentPath(path);
-    URIUtils::RemoveSlashAtEnd(root);
-    if (URIUtils::GetFileName(root) == "BDMV")
-    {
-      CURL url("bluray://");
-      url.SetHostName(URIUtils::GetParentPath(root));
-      url.SetFileName("root");
-      return ShowPlaySelection(item, url.Get());
-    }
-  }
-
-  if (item.IsDiscImage())
-  {
-    CURL url2("udf://");
-    url2.SetHostName(item.GetPath());
-    url2.SetFileName("BDMV/index.bdmv");
-    if (XFILE::CFile::Exists(url2.Get()))
-    {
-      url2.SetFileName("");
-
-      CURL url("bluray://");
-      url.SetHostName(url2.Get());
-      url.SetFileName("root");
-      return ShowPlaySelection(item, url.Get());
-    }
-  }
   return true;
 }
 

@@ -793,55 +793,6 @@ namespace VIDEO
       items.Add(newItem);
     }
 
-    /*
-    stack down any dvd folders
-    need to sort using the full path since this is a collapsed recursive listing of all subdirs
-    video_ts.ifo files should sort at the top of a dvd folder in ascending order
-
-    /foo/bar/video_ts.ifo
-    /foo/bar/vts_x_y.ifo
-    /foo/bar/vts_x_y.vob
-    */
-
-    // since we're doing this now anyway, should other items be stacked?
-    items.Sort(SortByPath, SortOrderAscending);
-    int x = 0;
-    while (x < items.Size())
-    {
-      if (items[x]->m_bIsFolder)
-      {
-        x++;
-        continue;
-      }
-
-      std::string strPathX, strFileX;
-      URIUtils::Split(items[x]->GetPath(), strPathX, strFileX);
-      //CLog::Log(LOGDEBUG,"%i:%s:%s", x, strPathX.c_str(), strFileX.c_str());
-
-      const int y = x + 1;
-      if (StringUtils::EqualsNoCase(strFileX, "VIDEO_TS.IFO"))
-      {
-        while (y < items.Size())
-        {
-          std::string strPathY, strFileY;
-          URIUtils::Split(items[y]->GetPath(), strPathY, strFileY);
-          //CLog::Log(LOGDEBUG," %i:%s:%s", y, strPathY.c_str(), strFileY.c_str());
-
-          if (StringUtils::EqualsNoCase(strPathY, strPathX))
-            /*
-            remove everything sorted below the video_ts.ifo file in the same path.
-            understandbly this wont stack correctly if there are other files in the the dvd folder.
-            this should be unlikely and thus is being ignored for now but we can monitor the
-            where the path changes and potentially remove the items above the video_ts.ifo file.
-            */
-            items.Remove(y);
-          else
-            break;
-        }
-      }
-      x++;
-    }
-
     // enumerate
     for (int i=0;i<items.Size();++i)
     {
@@ -962,14 +913,7 @@ namespace VIDEO
 
     std::string strLabel;
 
-    // remove path to main file if it's a bd or dvd folder to regex the right (folder) name
-    if (item->IsOpticalMediaFile())
-    {
-      strLabel = item->GetLocalMetadataPath();
-      URIUtils::RemoveSlashAtEnd(strLabel);
-    }
-    else
-      strLabel = item->GetPath();
+    strLabel = item->GetPath();
 
     // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
     strLabel = CURL::Decode(strLabel);
@@ -1685,15 +1629,9 @@ namespace VIDEO
           return GetnfoFile(&item2, bGrabAny);
         }
       }
-
-      if (nfoFile.empty() && item->IsOpticalMediaFile())
-      {
-        CFileItem parentDirectory(item->GetLocalMetadataPath(), true);
-        nfoFile = GetnfoFile(&parentDirectory, true);
-      }
     }
     // folders (or stacked dvds) can take any nfo file if there's a unique one
-    if (item->m_bIsFolder || item->IsOpticalMediaFile() || (bGrabAny && nfoFile.empty()))
+    if (item->m_bIsFolder || (bGrabAny && nfoFile.empty()))
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
