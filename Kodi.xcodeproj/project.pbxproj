@@ -7947,7 +7947,6 @@
 				4313769112D63F9E00680C15 /* programs */,
 				C8482871156CFCD8005A996F /* pvr */,
 				43FAC8BF12D63B7400F67914 /* rendering */,
-				E38E1DF60D25F9FD00618676 /* screensavers */,
 				E38E1E000D25F9FD00618676 /* settings */,
 				43FAC84E12D62CAE00F67914 /* storage */,
 				43D8300612D64DEF00B38489 /* threads */,
@@ -8694,13 +8693,6 @@
 				E38E1D880D25F9FD00618676 /* XTimeUtils.h */,
 			);
 			path = linux;
-			sourceTree = "<group>";
-		};
-		E38E1DF60D25F9FD00618676 /* screensavers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = screensavers;
 			sourceTree = "<group>";
 		};
 		E38E1E000D25F9FD00618676 /* settings */ = {
