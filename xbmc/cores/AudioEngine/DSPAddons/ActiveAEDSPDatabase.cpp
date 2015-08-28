@@ -476,7 +476,7 @@ void CActiveAEDSPDatabase::EraseActiveDSPSettings()
 
 void CActiveAEDSPDatabase::SplitPath(const string& strFileNameAndPath, string& strPath, string& strFileName)
 {
-  if (URIUtils::IsStack(strFileNameAndPath) || StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") || StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
+  if (URIUtils::IsStack(strFileNameAndPath) || StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
   {
     URIUtils::GetParentPath(strFileNameAndPath,strPath);
     strFileName = strFileNameAndPath;

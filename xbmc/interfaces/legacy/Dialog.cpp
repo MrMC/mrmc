@@ -198,7 +198,7 @@ namespace XBMCAddon
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && !maskparam.empty())
-        mask += "|.rar|.zip";
+        mask += "|.zip";
 
       value = defaultt;
       if (type == 1)
@@ -222,7 +222,7 @@ namespace XBMCAddon
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && !lmask.empty())
-        lmask += "|.rar|.zip";
+        lmask += "|.zip";
 
       if (type == 1)
         CGUIDialogFileBrowser::ShowAndGetFileList(*shares, lmask, heading, valuelist, useThumbs, useFileDirectories);

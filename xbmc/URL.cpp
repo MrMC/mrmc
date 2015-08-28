@@ -481,9 +481,8 @@ const std::string& CURL::GetProtocolOptions() const
 
 const std::string CURL::GetFileNameWithoutPath() const
 {
-  // *.zip and *.rar store the actual zip/rar path in the hostname of the url
-  if ((IsProtocol("rar")  ||
-       IsProtocol("zip")  ||
+  // *.zip store the actual zip/rar path in the hostname of the url
+  if ((IsProtocol("zip")  ||
        IsProtocol("xbt")  ||
        IsProtocol("apk")) &&
        m_strFileName.empty())

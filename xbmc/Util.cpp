@@ -51,9 +51,6 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/RSSDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
@@ -1733,14 +1730,7 @@ int CUtil::ScanArchiveForSubtitles(const std::string& strArchivePath, const std:
   }
   else
   {
-#ifdef HAS_FILESYSTEM_RAR
-    // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
-    // so now we dont have to find any subdirs anymore, all files in the rar is checked.
-    if (!g_RarManager.GetFilesInRar(ItemList, strArchivePath, false, ""))
-      return false;
-#else
     return false;
-#endif
   }
   for (int it = 0; it < ItemList.Size(); ++it)
   {
@@ -1751,12 +1741,6 @@ int CUtil::ScanArchiveForSubtitles(const std::string& strArchivePath, const std:
     if (URIUtils::IsArchive(strPathInRar))
     {
       std::string archInArch(strPathInRar);
-      if (strExt == ".rar")
-      {
-        CURL pathToUrl(strArchivePath);
-        archInArch = URIUtils::CreateArchivePath("rar", pathToUrl, strPathInRar).Get();
-      }
-
       ScanArchiveForSubtitles(archInArch, strMovieFileNameNoExt, vecSubtitles);
       continue;
     }
@@ -1772,11 +1756,7 @@ int CUtil::ScanArchiveForSubtitles(const std::string& strArchivePath, const std:
       {
         CURL pathToURL(strArchivePath);
         std::string strSourceUrl;
-        if (URIUtils::HasExtension(strArchivePath, ".rar"))
-          strSourceUrl = URIUtils::CreateArchivePath("rar", pathToURL, strPathInRar).Get();
-        else
-          strSourceUrl = strPathInRar;
-
+        strSourceUrl = strPathInRar;
         CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, strSourceUrl.c_str());
         vecSubtitles.push_back(strSourceUrl);
         nSubtitlesAdded++;
@@ -1935,8 +1915,8 @@ std::string CUtil::GetVobSubSubFromIdx(const std::string& vobSubIdx)
     return vobSub;
   }
 
-  // look inside a .rar or .zip in the same directory
-  const std::string archTypes[] = { "rar", "zip" };
+  // look inside a .zip in the same directory
+  const std::string archTypes[] = { "zip" };
   std::string vobSubFilename = URIUtils::GetFileName(vobSub);
   for (unsigned int i = 0; i < ARRAY_SIZE(archTypes); i++)
   {
@@ -1962,7 +1942,7 @@ std::string CUtil::GetVobSubIdxFromSub(const std::string& vobSub)
     return vobSubIdx;
   }
 
-  // look outside archive (usually .rar) if the .sub is inside one
+  // look outside archive if the .sub is inside one
   if (URIUtils::IsInArchive(vobSub))
   {
 

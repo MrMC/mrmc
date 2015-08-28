@@ -677,9 +677,6 @@ bool URIUtils::IsRAR(const std::string& strFile)
   if (StringUtils::EqualsNoCase(strExtension, ".cbr"))
     return true;
 
-  if (StringUtils::EqualsNoCase(strExtension, ".rar"))
-    return true;
-
   return false;
 }
 
@@ -721,7 +718,7 @@ bool URIUtils::IsZIP(const std::string& strFile) // also checks for comic books!
 
 bool URIUtils::IsArchive(const std::string& strFile)
 {
-  return HasExtension(strFile, ".zip|.rar|.apk|.cbz|.cbr");
+  return HasExtension(strFile, ".zip|.apk|.cbz|.cbr");
 }
 
 bool URIUtils::IsSpecial(const std::string& strFile)

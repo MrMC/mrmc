@@ -2248,15 +2248,6 @@ else
   final_message="$final_message\n  mDNSEmbedded:\tNo"
 fi
 
-if test "$use_nonfree" = "yes"; then
-  final_message="$final_message\n  Non-free:\tYes"
-  HAVE_XBMC_NONFREE=1
-  AC_DEFINE([HAVE_XBMC_NONFREE], [1], [Define to 1 to enable non-free components.])
-else
-  HAVE_XBMC_NONFREE=0
-  final_message="$final_message\n  Non-free:\tNo"
-fi
-
 if test "$use_asap" = "yes"; then
   AC_CHECK_PROGS(HAVE_GDC,gdc-4.4 gdc-4.3 gdc,"no")
   if test "$HAVE_GDC" = "no"; then
@@ -2542,7 +2533,6 @@ AC_SUBST(USE_TOUCH_SKIN)
 AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
-AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(LIBCURL_BASENAME)
 AC_SUBST(LIBVORBISFILE_BASENAME)

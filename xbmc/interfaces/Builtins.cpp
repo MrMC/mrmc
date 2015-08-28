@@ -75,9 +75,6 @@
 #include "pvr/PVRManager.h"
 
 #include "filesystem/PluginDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
 #include "filesystem/ZipManager.h"
 
 #include "guilib/GUIWindowManager.h"
@@ -600,10 +597,6 @@ int CBuiltins::Execute(const std::string& execString)
 
     if (URIUtils::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
-#ifdef HAS_FILESYSTEM_RAR
-    else if (URIUtils::IsRAR(params[0]))
-      g_RarManager.ExtractArchive(params[0],strDestDirect);
-#endif
     else
       CLog::Log(LOGERROR, "Extract, No archive given");
   }
