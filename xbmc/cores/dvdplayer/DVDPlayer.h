@@ -300,8 +300,6 @@ public:
   virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR; }
   virtual int GetCacheLevel() const ;
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);
-
   virtual bool ControlsVolume() {return m_omxplayer_mode;}
 
 protected:
@@ -439,13 +437,9 @@ protected:
       state                =  DVDSTATE_NORMAL;
       iSelectedSPUStream   = -1;
       iSelectedAudioStream = -1;
-      iDVDStillTime        =  0;
-      iDVDStillStartTime   =  0;
     }
 
     int state;                // current dvdstate
-    unsigned int iDVDStillTime;      // total time in ticks we should display the still before continuing
-    unsigned int iDVDStillStartTime; // time in ticks when we started the still
     int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;

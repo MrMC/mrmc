@@ -331,11 +331,11 @@ void CDVDPlayerVideo::Process()
       if( iPriority )
         continue;
 
-      //Okey, start rendering at stream fps now instead, we are likely in a stillframe
+      //Okey, start rendering at stream fps now instead, we are likely in a stalled
       if( !m_stalled )
       {
         if(m_started)
-          CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
+          CLog::Log(LOGINFO, "CDVDPlayerVideo - Stall detected, switching to forced %f fps", m_fFrameRate);
         m_stalled = true;
         pts+= frametime*4;
       }
@@ -493,7 +493,7 @@ void CDVDPlayerVideo::Process()
 
       if (m_stalled)
       {
-        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");
+        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stall left, switching to normal playback");
         m_stalled = false;
 
         //don't allow the first frames after a still to be dropped
