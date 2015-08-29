@@ -2229,7 +2229,7 @@ fi
 
 OUTPUT_FILES="Makefile \
     Makefile.include \
-    addons/skin.confluence/media/Makefile \
+    addons/skin.mrmc/media/Makefile \
     xbmc/Makefile \
     xbmc/cores/Makefile \
     xbmc/cores/VideoRenderers/Makefile \
