@@ -2590,7 +2590,7 @@ bool CLinuxRendererGL::UploadCVRefTexture(int index)
 
     // It is the fastest way to render a CVPixelBuffer backed
     // with an IOSurface as there is no CPU -> GPU upload.
-    CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
+    CGLContextObj cgl_ctx  = g_Windowing.GetCGLContextObj();
     IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
     GLsizei       texWidth = IOSurfaceGetWidth(surface);
     GLsizei       texHeight= IOSurfaceGetHeight(surface);
@@ -2598,12 +2598,17 @@ bool CLinuxRendererGL::UploadCVRefTexture(int index)
 
     glBindTexture(m_textureTarget, fields[FIELD_FULL][0].id);
 
+    CGLError status;
     if (format_type == kCVPixelFormatType_422YpCbCr8)
-      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
+      status = CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
         texWidth / 2, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
     else if (format_type == kCVPixelFormatType_32BGRA)
-      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
+      status = CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
         texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
+    /*
+    if (status != kCGLNoError)
+      CLog::Log(LOGWARNING,"CGLTexImageIOSurface2D returned = %d,", status);
+    */
 
     glBindTexture(m_textureTarget, 0);
     fields[FIELD_FULL][0].flipindex = buf.flipindex;

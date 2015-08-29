@@ -596,6 +596,7 @@ case $host in
   *86*-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
+     use_sdl=no
      ARCH="x86-osx"
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
      AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
@@ -603,6 +604,7 @@ case $host in
   powerpc-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
+     use_sdl=no
      ARCH="powerpc-osx"
      use_arch="ppc"
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
@@ -1189,13 +1191,7 @@ AC_SEARCH_LIBS([_dn_expand], resolv)
 AC_SEARCH_LIBS([__dn_expand],resolv)
 
 # platform dependent libraries
-if test "$host_vendor" = "apple" ; then
-  if test "$use_arch" != "arm"; then
-    AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
-    AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
-    AC_DEFINE([HAVE_SDL_VERSION],[1],["SDL major version"])
-  fi
-else
+if test "$host_vendor" != "apple" ; then
 if test "$target_platform" != "target_android" ; then
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 fi

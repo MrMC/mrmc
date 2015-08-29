@@ -26,10 +26,8 @@
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 
-typedef struct SDL_Surface SDL_Surface;
-
+typedef struct _CGLContextObject *CGLContextObj;
 class IDispResource;
-class CWinEventsOSX;
 
 class CWinSystemOSX : public CWinSystemBase, public ITimerCallback
 {
@@ -46,6 +44,7 @@ public:
   virtual bool DestroyWindowSystem();
   virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool DestroyWindow();
+  bool         DestroyWindowInternal();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   bool         ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, void *additional);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
@@ -79,11 +78,17 @@ public:
   void        AnnounceOnResetDevice();
   void        StartLostDeviceTimer();
   void        StopLostDeviceTimer();
-  
-  void* GetCGLContextObj();
-  void* GetNSOpenGLContext();
 
-  std::string GetClipboardText(void);
+  
+  void         SetMovedToOtherScreen(bool moved) { m_movedToOtherScreen = moved; }
+  int          CheckDisplayChanging(uint32_t flags);
+  void         SetFullscreenWillToggle(bool toggle){ m_fullscreenWillToggle = toggle; }
+  bool         GetFullscreenWillToggle(){ return m_fullscreenWillToggle; }
+  
+  CGLContextObj  GetCGLContextObj();
+
+  std::string  GetClipboardText(void);
+  float        CocoaToNativeFlip(float y);
 
 protected:
   void  HandlePossibleRefreshrateChange();
@@ -98,25 +103,24 @@ protected:
   void  StartTextInput();
   void  StopTextInput();
 
-  void* m_glContext;
-  static void* m_lastOwnedContext;
-  SDL_Surface* m_SDLSurface;
-  CWinEventsOSX *m_osx_events;
+  void                        *m_appWindow;
+  void                        *m_glView;
+  static void                 *m_lastOwnedContext;
   bool                         m_obscured;
   unsigned int                 m_obscured_timecheck;
+  std::string                  m_name;
 
   bool                         m_use_system_screensaver;
   bool                         m_can_display_switch;
   bool                         m_movedToOtherScreen;
+  bool                         m_fullscreenWillToggle;
   int                          m_lastDisplayNr;
-  void                        *m_windowDidMove;
-  void                        *m_windowDidReSize;
-  void                        *m_windowChangedScreen;
   double                       m_refreshRate;
 
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   CTimer                       m_lostDeviceTimer;
+  CCriticalSection             m_critSection;
 };
 
 #endif

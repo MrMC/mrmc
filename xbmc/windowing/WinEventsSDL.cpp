@@ -246,13 +246,13 @@ bool CWinEventsSDL::MessagePump()
 #endif
 
       case SDL_ACTIVEEVENT:
-        //If the window was inconified or restored
-        if( event.active.state & SDL_APPACTIVE )
-        {
-          g_application.SetRenderGUI(event.active.gain != 0);
-          g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
-        }
-        else if (event.active.state & SDL_APPINPUTFOCUS)
+      //If the window was inconified or restored
+      if( event.active.state & SDL_APPACTIVE )
+      {
+        g_application.SetRenderGUI(event.active.gain != 0);
+        g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
+      }
+      else if (event.active.state & SDL_APPINPUTFOCUS)
       {
         g_application.m_AppFocused = event.active.gain != 0;
         g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);

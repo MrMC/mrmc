@@ -31,11 +31,7 @@
 #endif
 #if defined(TARGET_DARWIN_OSX)
   #include "Util.h"
-  // SDL redefines main as SDL_main 
-  #ifdef HAS_SDL
-    #include <SDL/SDL.h>
-  #endif
-#include <locale.h>
+  #include <locale.h>
 #endif
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"

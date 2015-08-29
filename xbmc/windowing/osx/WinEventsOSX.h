@@ -20,11 +20,52 @@
  *
  */
 
-#include "windowing/WinEventsSDL.h"
+#include "windowing/WinEvents.h"
+#include "threads/Thread.h"
 
-class CWinEventsOSX : public CWinEventsSDL
+class CWinEventsOSX : public IWinEvents
 {
 public:
-  CWinEventsOSX();
-  ~CWinEventsOSX();
+  void MessagePush(XBMC_Event *newEvent);
+  bool MessagePump();
+  virtual size_t  GetQueueSize();
+};
+
+class CWinEventsOSXImp: public IRunnable
+{
+public:
+  CWinEventsOSXImp();
+  virtual ~CWinEventsOSXImp();
+  static void MessagePush(XBMC_Event *newEvent);
+  static bool MessagePump();
+  static size_t GetQueueSize();
+
+  static void EnableInput();
+  static void DisableInput();
+  static void HandleInputEvent(void *event);
+
+  void *GetEventTap(){return mEventTap;}
+  bool TapVolumeKeys(){return mTapVolumeKeys;}
+  bool TapPowerKey(){return mTapPowerKey;}
+  void SetHotKeysEnabled(bool enable){mHotKeysEnabled = enable;}
+  bool AreHotKeysEnabled(){return mHotKeysEnabled;}
+
+  virtual void Run();
+  
+private:
+  static CWinEventsOSXImp *WinEvents;
+
+  void *mRunLoopSource;
+  void *mRunLoop;
+  void *mEventTap;
+  void *mLocalMonitorId;
+  bool mHotKeysEnabled;
+  bool mTapVolumeKeys;
+  bool mTapPowerKey;
+  CThread *m_TapThread;
+  
+  void enableHotKeyTap();
+  void disableHotKeyTap();
+  void enableInputEvents();
+  void disableInputEvents();
 };
