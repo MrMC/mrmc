@@ -601,12 +601,13 @@ void CGUIWindowManager::Remove(int id)
 
     m_mapWindows.erase(it);
   }
+  /*
   else
   {
     CLog::Log(LOGWARNING, "Attempted to remove window %u "
-                          "from the window manager when it didn't exist",
-              id);
+                          "from the window manager when it didn't exist", id);
   }
+  */
 }
 
 // removes and deletes the window.  Should only be called
