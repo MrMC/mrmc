@@ -474,6 +474,10 @@ protected:
   bool InitDirectoriesOSX();
   void CreateUserDirs();
 
+  /*! \brief Helper method to determine how to handle TMSG_SHUTDOWN
+  */
+  void HandleShutdownMessage();
+
   CInertialScrollingHandler *m_pInertialScrollingHandler;
   CNetwork    *m_network;
 #ifdef HAS_PERFORMANCE_SAMPLE
