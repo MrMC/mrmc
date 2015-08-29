@@ -104,7 +104,6 @@ CPVRManager::~CPVRManager(void)
 {
   CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
   Stop();
-  CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
 void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)

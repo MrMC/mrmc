@@ -1389,7 +1389,6 @@ void CActiveAE::ClearDiscardedBuffers()
     if ((*it)->m_allSamples.size() == (*it)->m_freeSamples.size())
     {
       delete (*it);
-      CLog::Log(LOGDEBUG, "CActiveAE::ClearDiscardedBuffers - buffer pool deleted");
       m_discardBufferPools.erase(it);
       return;
     }

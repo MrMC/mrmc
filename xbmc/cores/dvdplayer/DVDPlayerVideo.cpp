@@ -1381,11 +1381,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
   if (iBufferLevel < 0)
     result |= EOS_BUFFER_LEVEL;
   else if (iBufferLevel < 2)
-  {
     result |= EOS_BUFFER_LEVEL;
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG,"CDVDPlayerVideo::CalcDropRequirement - hurry: %d", iBufferLevel);
-  }
 
   bNewFrame = iDecoderPts != m_droppingStats.m_lastDecoderPts;
 
@@ -1405,8 +1401,6 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
       m_droppingStats.m_totalGain += gain.gain;
       result |= EOS_DROPPED;
       m_droppingStats.m_dropRequests = 0;
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"CDVDPlayerVideo::CalcDropRequirement - dropped pictures, Sleeptime: %f, Bufferlevel: %d, Gain: %f", iSleepTime, iBufferLevel, iGain);
     }
     else if (iDroppedPics < 0 && iGain > (1/m_fFrameRate + 0.001))
     {
@@ -1417,8 +1411,6 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
       m_droppingStats.m_totalGain += iGain;
       result |= EOS_DROPPED;
       m_droppingStats.m_dropRequests = 0;
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"CDVDPlayerVideo::CalcDropRequirement - dropped in decoder, Sleeptime: %f, Bufferlevel: %d, Gain: %f", iSleepTime, iBufferLevel, iGain);
     }
   }
   m_droppingStats.m_lastDecoderPts = iDecoderPts;

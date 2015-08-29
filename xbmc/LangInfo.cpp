@@ -271,8 +271,6 @@ void CLangInfo::CRegion::SetGlobalLocale()
 #endif
   }
 
-  CLog::Log(LOGDEBUG, "trying to set locale to %s", strLocale.c_str());
-
   // We need to set the locale to only change the collate. Otherwise,
   // decimal separator is changed depending of the current language
   // (ie. "," in French or Dutch instead of "."). This breaks atof() and
@@ -307,7 +305,6 @@ void CLangInfo::CRegion::SetGlobalLocale()
   std::locale::global(current_locale);
 #endif
   g_charsetConverter.resetSystemCharset();
-  CLog::Log(LOGINFO, "global locale set to %s", strLocale.c_str());
 }
 
 CLangInfo::CLangInfo()

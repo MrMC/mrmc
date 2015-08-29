@@ -89,8 +89,6 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
 {
-  CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
-
   CSingleLock lock (m_critSection);
 
   // Make a copy of announers. They may be removed or even remove themselves during execution of IAnnouncer::Announce()!

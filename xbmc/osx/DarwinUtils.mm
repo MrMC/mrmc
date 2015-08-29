@@ -205,7 +205,6 @@ bool CDarwinUtils::IsMavericks(void)
   // us when mavericks came out
   if (isMavericks == -1)
   {
-    CLog::Log(LOGDEBUG, "Detected Mavericks...");
     isMavericks = [NSProcessInfo instancesRespondToSelector:@selector(beginActivityWithOptions:reason:)] == TRUE ? 1 : 0;
   }
 #endif

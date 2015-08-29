@@ -792,8 +792,6 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
     else if (error < -DVD_MSEC_TO_TIME(32))
     {
       m_dvdAudio.SetPlayingPts(audioframe.pts);
-      CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket skipping a packets of duration %d",
-                DVD_TIME_TO_MSEC(audioframe.duration));
     }
     else
     {

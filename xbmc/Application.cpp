@@ -2694,10 +2694,7 @@ bool CApplication::Cleanup()
 
     CAddonMgr::GetInstance().DeInit();
 
-    CLog::Log(LOGNOTICE, "closing down remote control service");
     CInputManager::GetInstance().DisableRemoteControl();
-
-    CLog::Log(LOGNOTICE, "unload sections");
 
 #ifdef HAS_PERFORMANCE_SAMPLE
     CLog::Log(LOGNOTICE, "performance statistics");
@@ -2724,9 +2721,6 @@ bool CApplication::Cleanup()
     CSettings::GetInstance().Uninitialize();
     g_advancedSettings.Clear();
 
-#ifdef TARGET_POSIX
-    CXHandle::DumpObjectTracker();
-#endif
 #if defined(TARGET_ANDROID)
     // enable for all platforms once it's safe
     g_sectionLoader.UnloadAll();
@@ -2861,8 +2855,6 @@ void CApplication::Stop(int exitCode)
 
     // unregister ffmpeg lock manager call back
     av_lockmgr_register(NULL);
-
-    CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
   {

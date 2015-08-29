@@ -73,7 +73,6 @@ CActiveAEDSP::~CActiveAEDSP()
 {
   /* Deactivate all present dsp addons */
   Deactivate();
-  CLog::Log(LOGDEBUG, "ActiveAE DSP - destroyed");
 }
 
 CActiveAEDSP &CActiveAEDSP::GetInstance()

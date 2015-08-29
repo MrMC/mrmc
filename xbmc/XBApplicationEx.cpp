@@ -68,7 +68,6 @@ bool CXBApplicationEx::Create()
 /* Destroy the app */
 VOID CXBApplicationEx::Destroy()
 {
-  CLog::Log(LOGNOTICE, "destroy");
   // Perform app-specific cleanup
   Cleanup();
 }

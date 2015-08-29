@@ -972,7 +972,6 @@ void CLinuxRendererGLES::ReleaseShaders()
 
 void CLinuxRendererGLES::UnInit()
 {
-  CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
   if (m_rgbBuffer != NULL)

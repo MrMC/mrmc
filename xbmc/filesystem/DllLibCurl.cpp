@@ -150,8 +150,6 @@ void DllLibCurlGlobal::CheckIdle()
   {
     if( !it->m_busy && (XbmcThreads::SystemClockMillis() - it->m_idletimestamp) > idletime )
     {
-      CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
-
       // It's important to clean up multi *before* cleaning up easy, because the multi cleanup
       // code accesses stuff in the easy's structure.
       if(it->m_multi)

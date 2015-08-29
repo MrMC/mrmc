@@ -1102,8 +1102,6 @@ bool CAddonMgr::StartServices(const bool beforelogin)
 
 void CAddonMgr::StopServices(const bool onlylogin)
 {
-  CLog::Log(LOGDEBUG, "ADDON: Stopping service addons.");
-
   VECADDONS services;
   if (!GetAddons(ADDON_SERVICE, services))
     return;
