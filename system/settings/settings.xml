@@ -5,7 +5,7 @@
       <group id="1">
         <setting id="lookandfeel.skin" type="addon" label="166" help="36103">
           <level>0</level>
-          <default>skin.confluence</default>
+          <default>skin.mrmc</default>
           <constraints>
             <addontype>xbmc.gui.skin</addontype>
           </constraints>
@@ -74,7 +74,7 @@
         </setting>
         <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
           <level>0</level>
-          <default>resource.uisounds.confluence</default>
+          <default>resource.uisounds.mrmc</default>
           <constraints>
             <addontype>kodi.resource.uisounds</addontype>
             <allowempty>true</allowempty>
