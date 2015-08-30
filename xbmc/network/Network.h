@@ -83,7 +83,7 @@ public:
    virtual std::string GetMacAddress(void) = 0;
    virtual void GetMacAddressRaw(char rawMac[6]) = 0;
 
-   virtual bool GetHostMacAddress(unsigned long host, std::string& mac) = 0;
+   virtual bool GetHostMacAddress(in_addr_t host, std::string& mac) = 0;
 
    virtual std::string GetCurrentIPAddress() = 0;
    virtual std::string GetCurrentNetmask() = 0;
@@ -132,8 +132,8 @@ public:
    bool WakeOnLan(const char *mac);
 
    // Return true if host replies to ping
-   bool PingHost(unsigned long host, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false);
-   virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) = 0;
+   bool PingHost(in_addr_t ipaddr, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false);
+   virtual bool PingHost(in_addr_t ipaddr, unsigned int timeout_ms = 2000) = 0;
 
    // Get/set the nameserver(s)
    virtual std::vector<std::string> GetNameServers(void) = 0;

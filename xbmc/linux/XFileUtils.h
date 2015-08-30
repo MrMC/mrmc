@@ -30,47 +30,47 @@
 #define XBMC_FILE_SEP '\\'
 #endif
 
-HANDLE FindFirstFile(LPCSTR,LPWIN32_FIND_DATA);
+HANDLE FindFirstFile(const char*,LPWIN32_FIND_DATA);
 
-BOOL   FindNextFile(HANDLE,LPWIN32_FIND_DATA);
-BOOL   FindClose(HANDLE hFindFile);
+int   FindNextFile(HANDLE,LPWIN32_FIND_DATA);
+int   FindClose(HANDLE hFindFile);
 
 #define CreateFileA CreateFile
-HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
-            LPSECURITY_ATTRIBUTES lpSecurityAttributes,  DWORD dwCreationDisposition,
-            DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
+HANDLE CreateFile(LPCTSTR lpFileName, uint32_t dwDesiredAccess, uint32_t dwShareMode,
+            LPSECURITY_ATTRIBUTES lpSecurityAttributes,  uint32_t dwCreationDisposition,
+            uint32_t dwFlagsAndAttributes, HANDLE hTemplateFile);
 
-BOOL   CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExists);
-BOOL   DeleteFile(LPCSTR);
-BOOL   MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
+int   CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int bFailIfExists);
+int   DeleteFile(const char*);
+int   MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 
-BOOL   WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,  LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped);
-BOOL   ReadFile( HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, void* unsupportedlpOverlapped);
-BOOL   FlushFileBuffers(HANDLE hFile);
+int   WriteFile(HANDLE hFile, const void * lpBuffer, uint32_t nNumberOfBytesToWrite, uint32_t* lpNumberOfBytesWritten, void* lpOverlapped);
+int   ReadFile( HANDLE hFile, void* lpBuffer, unsigned int nNumberOfBytesToRead, uint32_t* lpNumberOfBytesRead, void* unsupportedlpOverlapped);
+int   FlushFileBuffers(HANDLE hFile);
 
-BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
-BOOL   RemoveDirectory(LPCTSTR lpPathName);
-DWORD  GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer);
+int   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
+int   RemoveDirectory(LPCTSTR lpPathName);
+uint32_t GetCurrentDirectory(uint32_t nBufferLength, char* lpBuffer);
 
-DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
-                      int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod);
-BOOL   SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove,PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
-BOOL   SetEndOfFile(HANDLE hFile);
+uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
+                      int32_t *lpDistanceToMoveHigh, uint32_t dwMoveMethod);
+int   SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove,PLARGE_INTEGER lpNewFilePointer, uint32_t dwMoveMethod);
+int   SetEndOfFile(HANDLE hFile);
 
-DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable);
-DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation );
-DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh);
-BOOL   GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize);
+uint32_t SleepEx(uint32_t dwMilliseconds,  int bAlertable);
+uint32_t GetTimeZoneInformation(LPTIME_ZONE_INFORMATION lpTimeZoneInformation );
+uint32_t GetFileSize(HANDLE hFile, uint32_t* lpFileSizeHigh);
+int   GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize);
 int    _stat64(const char *path, struct __stat64 *buffer);
 int    _stati64(const char *path,struct _stati64 *buffer);
 int _fstat64(int fd, struct __stat64 *buffer);
 
-DWORD  GetFileAttributes(LPCTSTR lpFileName);
+uint32_t GetFileAttributes(LPCTSTR lpFileName);
 
 #define ERROR_ALREADY_EXISTS EEXIST
 
 // uses statfs
-BOOL GetDiskFreeSpaceEx(
+int GetDiskFreeSpaceEx(
   LPCTSTR lpDirectoryName,
   PULARGE_INTEGER lpFreeBytesAvailable,
   PULARGE_INTEGER lpTotalNumberOfBytes,

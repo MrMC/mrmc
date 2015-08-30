@@ -300,7 +300,7 @@ bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
      * m_iSwapTime to do our swap                                     */
     diff = (diff - m_iSwapTime) * 1000 / freq;
     if (diff > 0)
-      Sleep((DWORD)diff);
+      Sleep((uint32_t)diff);
   }
   
   bool result = PresentRenderImpl(dirty);

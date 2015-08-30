@@ -538,7 +538,7 @@ void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
 #endif
 }
 
-bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
+bool CNetworkLinux::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
 {
   char cmd_line [64];
 
@@ -569,7 +569,7 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 }
 
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac)
+bool CNetworkInterfaceLinux::GetHostMacAddress(in_addr_t host_ip, std::string& mac)
 {
   bool ret = false;
   size_t needed;
@@ -619,7 +619,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
   return ret;
 }
 #else
-bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac)
+bool CNetworkInterfaceLinux::GetHostMacAddress(in_addr_t host_ip, std::string& mac)
 {
   struct arpreq areq;
   struct sockaddr_in* sin;

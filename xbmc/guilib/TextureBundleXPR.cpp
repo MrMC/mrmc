@@ -24,10 +24,6 @@
 #include "GraphicContext.h"
 #include "DirectXGraphics.h"
 #include "utils/log.h"
-#ifndef TARGET_POSIX
-#include <sys/stat.h>
-#include "utils/CharsetConverter.h"
-#endif
 #include <lzo/lzo1x.h>
 #include "addons/Skin.h"
 #include "settings/Settings.h"
@@ -41,6 +37,10 @@
 #undef ALIGN
 #define ALIGN (512)
 
+// Misc stuff found in the code, not really important
+#define PAGE_READONLY     0x02
+#define PAGE_READWRITE    0x04
+#define MAXULONG_PTR    ((ULONG) 0xffffffff)
 
 enum XPR_FLAGS
 {
@@ -50,13 +50,13 @@ enum XPR_FLAGS
 
 class CAutoBuffer
 {
-  BYTE* p;
+  uint8_t* p;
 public:
   CAutoBuffer() { p = 0; }
-  explicit CAutoBuffer(size_t s) { p = (BYTE*)malloc(s); }
+  explicit CAutoBuffer(size_t s) { p = (uint8_t*)malloc(s); }
   ~CAutoBuffer() { free(p); }
-operator BYTE*() const { return p; }
-  void Set(BYTE* buf) { free(p); p = buf; }
+operator uint8_t*() const { return p; }
+  void Set(uint8_t* buf) { free(p); p = buf; }
   bool Resize(size_t s);
 void Release() { p = 0; }
 
@@ -78,7 +78,7 @@ bool CAutoBuffer::Resize(size_t s)
   void* q = realloc(p, s);
   if (q)
   {
-    p = (BYTE*)q;
+    p = (uint8_t*)q;
     return true;
   }
   return false;
@@ -87,13 +87,13 @@ bool CAutoBuffer::Resize(size_t s)
 // as above but for texture allocation (do not change from XPhysicalAlloc!)
 class CAutoTexBuffer
 {
-  BYTE* p;
+  uint8_t* p;
 public:
   CAutoTexBuffer() { p = 0; }
-  explicit CAutoTexBuffer(size_t s) { p = (BYTE*)XPhysicalAlloc(s, MAXULONG_PTR, 128, PAGE_READWRITE); }
+  explicit CAutoTexBuffer(size_t s) { p = (uint8_t*)XPhysicalAlloc(s, MAXULONG_PTR, 128, PAGE_READWRITE); }
   ~CAutoTexBuffer() { if (p) XPhysicalFree(p); }
-operator BYTE*() const { return p; }
-  BYTE* Set(BYTE* buf) { if (p) XPhysicalFree(p); return p = buf; }
+operator uint8_t*() const { return p; }
+  uint8_t* Set(uint8_t* buf) { if (p) XPhysicalFree(p); return p = buf; }
 void Release() { p = 0; }
 };
 
@@ -112,8 +112,8 @@ CTextureBundleXPR::~CTextureBundleXPR(void)
 
 bool CTextureBundleXPR::OpenBundle()
 {
-  DWORD AlignedSize;
-  DWORD HeaderSize;
+  uint32_t AlignedSize;
+  uint32_t HeaderSize;
   int Version;
   XPR_HEADER* pXPRHeader;
 
@@ -157,13 +157,13 @@ bool CTextureBundleXPR::OpenBundle()
   m_TimeStamp = fileStat.st_mtime;
 
   CAutoBuffer HeaderBuf(ALIGN);
-  DWORD n;
+  uint32_t n;
 
   n = fread(HeaderBuf, 1, ALIGN, m_hFile);
   if (n < ALIGN)
     goto LoadError;
 
-  pXPRHeader = (XPR_HEADER*)(BYTE*)HeaderBuf;
+  pXPRHeader = (XPR_HEADER*)(uint8_t*)HeaderBuf;
   pXPRHeader->dwMagic = Endian_SwapLE32(pXPRHeader->dwMagic);
   Version = (pXPRHeader->dwMagic >> 24) - '0';
   pXPRHeader->dwMagic -= Version << 24;
@@ -185,9 +185,9 @@ bool CTextureBundleXPR::OpenBundle()
   struct DiskFileHeader_t
   {
     char Name[116];
-    DWORD Offset;
-    DWORD UnpackedSize;
-    DWORD PackedSize;
+    uint32_t Offset;
+    uint32_t UnpackedSize;
+    uint32_t PackedSize;
   }
   *FileHeader;
   FileHeader = (DiskFileHeader_t*)(HeaderBuf + sizeof(XPR_HEADER));
@@ -273,10 +273,10 @@ bool CTextureBundleXPR::LoadFile(const std::string& Filename, CAutoTexBuffer& Un
     return false;
 
   // found texture - allocate the necessary buffers
-  DWORD ReadSize = (file->second.PackedSize + (ALIGN - 1)) & ~(ALIGN - 1);
-  BYTE *buffer = (BYTE*)malloc(ReadSize);
+  uint32_t ReadSize = (file->second.PackedSize + (ALIGN - 1)) & ~(ALIGN - 1);
+  uint8_t *buffer = (unsigned char*)malloc(ReadSize);
 
-  if (!buffer || !UnpackedBuf.Set((BYTE*)XPhysicalAlloc(file->second.UnpackedSize, MAXULONG_PTR, 128, PAGE_READWRITE)))
+  if (!buffer || !UnpackedBuf.Set((uint8_t*)XPhysicalAlloc(file->second.UnpackedSize, MAXULONG_PTR, 128, PAGE_READWRITE)))
   { // failed due to lack of memory
 #ifndef TARGET_POSIX
     MEMORYSTATUSEX stat;
@@ -307,7 +307,7 @@ bool CTextureBundleXPR::LoadFile(const std::string& Filename, CAutoTexBuffer& Un
     return false;            
   }
   
-  DWORD n = fread(buffer, 1, ReadSize, m_hFile);
+  uint32_t n = fread(buffer, 1, ReadSize, m_hFile);
   if (n < ReadSize && !feof(m_hFile))
   {
     CLog::Log(LOGERROR, "Error loading texture: %s: %s: Read error", Filename.c_str(), strerror(ferror(m_hFile)));
@@ -340,7 +340,7 @@ bool CTextureBundleXPR::LoadFile(const std::string& Filename, CAutoTexBuffer& Un
 bool CTextureBundleXPR::LoadTexture(const std::string& Filename, CBaseTexture** ppTexture,
                                      int &width, int &height)
 {
-  DWORD ResDataOffset;
+  uint32_t ResDataOffset;
   *ppTexture = NULL;
 
   CAutoTexBuffer UnpackedBuf;
@@ -351,7 +351,7 @@ bool CTextureBundleXPR::LoadTexture(const std::string& Filename, CBaseTexture** 
   D3DPalette* pPal = 0;
   void* ResData = 0;
 
-  WORD RealSize[2];
+  uint16_t RealSize[2];
 
   enum XPR_FLAGS
   {
@@ -359,10 +359,10 @@ bool CTextureBundleXPR::LoadTexture(const std::string& Filename, CBaseTexture** 
     XPRFLAG_ANIM = 0x00000002
   };
 
-  BYTE* Next = UnpackedBuf;
+  uint8_t* Next = UnpackedBuf;
 
-  DWORD flags = Endian_SwapLE32(*(DWORD*)Next);
-  Next += sizeof(DWORD);
+  uint32_t flags = Endian_SwapLE32(*(unsigned int*)Next);
+  Next += sizeof(unsigned int);
   if ((flags & XPRFLAG_ANIM) || (flags >> 16) > 1)
     goto PackedLoadError;
 
@@ -410,7 +410,7 @@ PackedLoadError:
 int CTextureBundleXPR::LoadAnim(const std::string& Filename, CBaseTexture*** ppTextures,
                               int &width, int &height, int& nLoops, int** ppDelays)
 {
-  DWORD ResDataOffset;
+  uint32_t ResDataOffset;
   int nTextures = 0;
 
   *ppTextures = NULL; *ppDelays = NULL;
@@ -421,18 +421,18 @@ int CTextureBundleXPR::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
 
   struct AnimInfo_t
   {
-    DWORD nLoops;
-    WORD RealSize[2];
+    uint32_t nLoops;
+    uint16_t RealSize[2];
   }
   *pAnimInfo;
 
   D3DTexture** ppTex = 0;
   void* ResData = 0;
 
-  BYTE* Next = UnpackedBuf;
+  uint8_t* Next = UnpackedBuf;
 
-  DWORD flags = Endian_SwapLE32(*(DWORD*)Next);
-  Next += sizeof(DWORD);
+  uint32_t flags = Endian_SwapLE32(*(unsigned int*)Next);
+  Next += sizeof(unsigned int);
   if (!(flags & XPRFLAG_ANIM))
     goto PackedAnimError;
 
@@ -448,7 +448,7 @@ int CTextureBundleXPR::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
   *ppDelays = new int[nTextures];
   for (int i = 0; i < nTextures; ++i)
   {
-    ppTex[i] = (D3DTexture *)(new char[sizeof (D3DTexture)+ sizeof (DWORD)]);
+    ppTex[i] = (D3DTexture *)(new char[sizeof (D3DTexture)+ sizeof (uint32_t)]);
 
     memcpy(ppTex[i], Next, sizeof(D3DTexture));
     ppTex[i]->Common = Endian_SwapLE32(ppTex[i]->Common);
@@ -462,7 +462,7 @@ int CTextureBundleXPR::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
     Next += sizeof(int);
   }
 
-  ResDataOffset = ((DWORD)(Next - UnpackedBuf) + 127) & ~127;
+  ResDataOffset = ((uint32_t)(Next - UnpackedBuf) + 127) & ~127;
   ResData = UnpackedBuf + ResDataOffset;
 
   *ppTextures = new CBaseTexture*[nTextures];

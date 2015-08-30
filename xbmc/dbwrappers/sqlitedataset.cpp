@@ -31,7 +31,7 @@
 
 #include "sqlitedataset.h"
 #include "utils/log.h"
-#include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
+#include "system.h" // for Sleep()
 #include "utils/URIUtils.h"
 
 using namespace std;

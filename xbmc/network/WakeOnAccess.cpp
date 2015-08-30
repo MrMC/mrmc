@@ -61,7 +61,7 @@ static int GetTotalSeconds(const CDateTimeSpan& ts)
   return ts.GetSeconds() + minutes * 60;
 }
 
-static unsigned long HostToIP(const std::string& host)
+static in_addr_t HostToIP(const std::string& host)
 {
   std::string ip;
   CDNSNameCache::Lookup(host, ip);
@@ -100,7 +100,7 @@ private:
 
 bool CMACDiscoveryJob::DoWork()
 {
-  unsigned long ipAddress = HostToIP(m_host);
+  in_addr_t ipAddress = HostToIP(m_host);
 
   if (ipAddress == INADDR_NONE)
   {
@@ -284,7 +284,7 @@ public:
 
   static bool Ping (const CWakeOnAccess::WakeUpEntry& server)
   {
-    ULONG dst_ip = HostToIP(server.host);
+    in_addr_t dst_ip = HostToIP(server.host);
 
     return g_application.getNetwork().PingHost(dst_ip, server.ping_port, 2000, server.ping_mode & 1);
   }
@@ -393,7 +393,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   }
 
   {
-    ULONG dst_ip = HostToIP(server.host);
+    in_addr_t dst_ip = HostToIP(server.host);
 
     if (g_application.getNetwork().PingHost(dst_ip, server.ping_port, 500)) // quick ping with short timeout to not block too long
     {

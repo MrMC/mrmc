@@ -24,15 +24,15 @@ class CBaseTexture;
 
 #include "gui3d.h"
 
-LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
-void XPhysicalFree(LPVOID lpAddress);
+void* XPhysicalAlloc(size_t s, uint32_t ulPhysicalAddress, uint32_t ulAlignment, uint32_t flProtect);
+void XPhysicalFree(void* lpAddress);
 
 // XPR header
 struct XPR_HEADER
 {
-  DWORD dwMagic;
-  DWORD dwTotalSize;
-  DWORD dwHeaderSize;
+  uint32_t dwMagic;
+  uint32_t dwTotalSize;
+  uint32_t dwHeaderSize;
 };
 #define XPR_MAGIC_VALUE (('0' << 24) | ('R' << 16) | ('P' << 8) | 'X')
 
@@ -131,16 +131,10 @@ typedef enum _XB_D3DFORMAT
 } XB_D3DFORMAT;
 
 D3DFORMAT GetD3DFormat(XB_D3DFORMAT format);
-DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format);
+uint32_t BytesPerPixelFromFormat(XB_D3DFORMAT format);
 bool IsPalettedFormat(XB_D3DFORMAT format);
-void ParseTextureHeader(D3DTexture *tex, XB_D3DFORMAT &fmt, DWORD &width, DWORD &height, DWORD &pitch, DWORD &offset);
+void ParseTextureHeader(D3DTexture *tex, XB_D3DFORMAT &fmt, uint32_t &width, uint32_t &height, uint32_t &pitch, uint32_t &offset);
 bool IsSwizzledFormat(XB_D3DFORMAT format);
-
-#ifndef TARGET_POSIX
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int8 uint8_t;
-typedef __int16 int16_t;
-#endif
 
 #pragma pack(push, 2)
 typedef struct {

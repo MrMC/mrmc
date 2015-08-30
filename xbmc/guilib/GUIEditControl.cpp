@@ -156,7 +156,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII && m_edit.empty())
     {
       // input from the keyboard (vkey, not ascii)
-      BYTE b = action.GetID() & 0xFF;
+      uint8_t b = action.GetID() & 0xFF;
       if (b == XBMCVK_HOME)
       {
         m_cursorPos = 0;
@@ -261,7 +261,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
           {
             ClearMD5();
             m_edit.clear();
-            m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
+            m_text2.insert(m_text2.begin() + m_cursorPos++, (wchar_t)action.GetUnicode());
           }
           break;
         }

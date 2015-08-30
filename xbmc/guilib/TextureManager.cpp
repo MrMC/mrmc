@@ -421,7 +421,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   freq = CurrentHostFrequency();
   char temp[200];
   sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end - start) / freq, (bundle >= 0) ? " (bundled)" : "");
-  OutputDebugString(temp);
 #endif
 
   return pMap->GetTexture();

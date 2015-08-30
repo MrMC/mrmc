@@ -164,7 +164,7 @@ WindowsHeader_t;
 
 typedef struct
 {
-  unsigned __int64 ImageBase;
+  uint64_t ImageBase;
   unsigned long SectionAlignment;
   unsigned long FileAlignment;
   unsigned long OSVer;
@@ -176,10 +176,10 @@ typedef struct
   unsigned long CheckSum;
   unsigned short Subsystem;
   unsigned short DLLFlags;
-  unsigned __int64 SizeOfStackReserve;
-  unsigned __int64 SizeOfStackCommit;
-  unsigned __int64 SizeOfHeapReserve;
-  unsigned __int64 SizeOfHeapCommit;
+  uint64_t SizeOfStackReserve;
+  uint64_t SizeOfStackCommit;
+  uint64_t SizeOfHeapReserve;
+  uint64_t SizeOfHeapCommit;
   unsigned long LoaderFlags;
   unsigned long NumDirectories;
 }
@@ -340,7 +340,7 @@ typedef struct
 {
   union {
     unsigned char ShortName[8];
-    unsigned __int64 Offset;
+    uint64_t Offset;
   } Name;
   unsigned long Value;
   unsigned short SectionNumber;

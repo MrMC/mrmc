@@ -409,7 +409,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   return 0; // success
 }
 
-bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
+bool CNetwork::PingHost(in_addr_t ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
 {
   if (port == 0) // use icmp ping
     return PingHost (ipaddr, timeOutMs);

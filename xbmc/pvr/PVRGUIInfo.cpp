@@ -288,7 +288,7 @@ void CPVRGUIInfo::UpdateTimeshift(void)
   m_strTimeshiftPlayTime = strTimeshiftPlayTime;
 }
 
-bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
+bool CPVRGUIInfo::TranslateCharInfo(uint32_t dwInfo, std::string &strValue) const
 {
   bool bReturn(true);
   CSingleLock lock(m_critSection);
@@ -418,7 +418,7 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
   return bReturn;
 }
 
-bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
+bool CPVRGUIInfo::TranslateBoolInfo(uint32_t dwInfo) const
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -462,7 +462,7 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
   return bReturn;
 }
 
-int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
+int CPVRGUIInfo::TranslateIntInfo(uint32_t dwInfo) const
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);

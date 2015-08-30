@@ -70,7 +70,7 @@ public:
   bool IsAudio(const std::string& devicePath="");
   bool HasOpticalDrive();
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
-  DWORD GetDriveStatus(const std::string& devicePath="");
+  uint32_t GetDriveStatus(const std::string& devicePath="");
   std::string GetDiscPath();
   void SetHasOpticalDrive(bool bstatus);
 

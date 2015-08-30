@@ -19,9 +19,6 @@
  */
  
 #if defined (TARGET_DARWIN)
-// defined in PlatformDefs.h but I don't want to include that here
-typedef unsigned char BYTE;
-
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "Application.h"

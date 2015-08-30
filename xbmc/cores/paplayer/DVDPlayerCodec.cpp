@@ -178,7 +178,7 @@ bool DVDPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   int nErrors = 0;
   for (int nPacket=0; nPacket < 10 && (m_Channels == 0 || m_SampleRate == 0); nPacket++)
   {
-    BYTE dummy[256];
+    uint8_t dummy[256];
     int nSize = 256;
     if (ReadPCM(dummy, nSize, &nSize) == READ_ERROR)
       ++nErrors;
@@ -330,7 +330,7 @@ int64_t DVDPlayerCodec::Seek(int64_t iSeekTime)
   return iSeekTime;
 }
 
-int DVDPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
+int DVDPlayerCodec::ReadPCM(uint8_t *pBuffer, int size, int *actualsize)
 {
   if (m_nDecodedLen > 0)
   {

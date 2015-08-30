@@ -1040,7 +1040,7 @@ void CGUIWindowSlideShow::RenderPause()
     SET_CONTROL_HIDDEN(CONTROL_PAUSE);
   }
   /*
-   static DWORD dwCounter=0;
+   static uint32_t dwCounter=0;
    dwCounter++;
    if (dwCounter > 25)
    {

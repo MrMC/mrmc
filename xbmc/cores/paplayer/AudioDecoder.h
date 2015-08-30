@@ -84,7 +84,7 @@ private:
   float m_outputBuffer[OUTPUT_SAMPLES];
 
   // input buffer (for transferring data from the Codecs to our Pcm Ringbuffer
-  BYTE m_pcmInputBuffer[INPUT_SIZE];
+  uint8_t m_pcmInputBuffer[INPUT_SIZE];
   float m_inputBuffer[INPUT_SAMPLES];
 
   // status

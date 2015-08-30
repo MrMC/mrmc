@@ -18,7 +18,6 @@
  *
  */
 
-#define BOOL XBMC_BOOL
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -26,7 +25,6 @@
 #include "osx/CocoaInterface.h"
 #include "windowing/osx/WinEventsOSX.h"
 #include "windowing/WindowingFactory.h"
-#undef BOOL
 
 #import "OSXGLView.h"
 #import "OSXGLWindow.h"

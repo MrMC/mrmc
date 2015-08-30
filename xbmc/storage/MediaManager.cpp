@@ -300,7 +300,7 @@ bool CMediaManager::HasOpticalDrive()
   return false;
 }
 
-DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
+uint32_t CMediaManager::GetDriveStatus(const std::string& devicePath)
 {
   return DRIVE_NOT_READY;
 }

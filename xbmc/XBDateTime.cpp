@@ -23,15 +23,12 @@
 #include "XBDateTime.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
+#include "linux/ConvUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Archive.h"
-#ifdef TARGET_POSIX
 #include "XTimeUtils.h"
 #include "XFileUtils.h"
-#else
-#include <Windows.h>
-#endif
 
 #define SECONDS_PER_DAY 86400UL
 #define SECONDS_PER_HOUR 3600UL
@@ -174,10 +171,10 @@ void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
   ULARGE_INTEGER time;
   ToULargeInt(time);
 
-  time.QuadPart=(LONGLONG)day*SECONDS_PER_DAY*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)hour*SECONDS_PER_HOUR*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)minute*SECONDS_PER_MINUTE*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)second*SECONDS_TO_FILETIME;
+  time.QuadPart=(uint64_t)day*SECONDS_PER_DAY*SECONDS_TO_FILETIME;
+  time.QuadPart+=(uint64_t)hour*SECONDS_PER_HOUR*SECONDS_TO_FILETIME;
+  time.QuadPart+=(uint64_t)minute*SECONDS_PER_MINUTE*SECONDS_TO_FILETIME;
+  time.QuadPart+=(uint64_t)second*SECONDS_TO_FILETIME;
 
   FromULargeInt(time);
 }
@@ -654,10 +651,10 @@ bool CDateTime::ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const
 
 bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
 {
-  LONGLONG ll = Int32x32To64(time, 10000000)+0x19DB1DED53E8000LL;
+  long long ll = Int32x32To64(time, 10000000)+0x19DB1DED53E8000LL;
 
-  fileTime.dwLowDateTime  = (DWORD)(ll & 0xFFFFFFFF);
-  fileTime.dwHighDateTime = (DWORD)(ll >> 32);
+  fileTime.dwLowDateTime  = (uint32_t)(ll & 0xFFFFFFFF);
+  fileTime.dwHighDateTime = (uint32_t)(ll >> 32);
 
   return true;
 }
@@ -827,8 +824,8 @@ void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
 #define UNIX_BASE_TIME 116444736000000000LL /* nanoseconds since epoch */
 void CDateTime::GetAsTime(time_t& time) const
 {
-  LONGLONG ll;
-  ll = ((LONGLONG)m_time.dwHighDateTime << 32) + m_time.dwLowDateTime;
+  long long ll;
+  ll = ((long long)m_time.dwHighDateTime << 32) + m_time.dwLowDateTime;
   time=(time_t)((ll - UNIX_BASE_TIME) / 10000000);
 }
 

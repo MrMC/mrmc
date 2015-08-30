@@ -26,7 +26,7 @@
 
 int CXHandle::m_objectTracker[10] = {0};
 
-HANDLE WINAPI GetCurrentProcess(void) {
+HANDLE __stdcall GetCurrentProcess(void) {
   return (HANDLE)-1; // -1 a special value - pseudo handle
 }
 
@@ -145,14 +145,14 @@ bool CloseHandle(HANDLE hObject) {
   return true;
 }
 
-BOOL WINAPI DuplicateHandle(
+int __stdcall DuplicateHandle(
   HANDLE hSourceProcessHandle,
   HANDLE hSourceHandle,
   HANDLE hTargetProcessHandle,
   LPHANDLE lpTargetHandle,
-  DWORD dwDesiredAccess,
-  BOOL bInheritHandle,
-  DWORD dwOptions
+  uint32_t dwDesiredAccess,
+  int bInheritHandle,
+  uint32_t dwOptions
 )
 {
   /* only a simple version of this is supported */

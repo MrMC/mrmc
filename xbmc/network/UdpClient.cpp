@@ -131,7 +131,7 @@ bool CUdpClient::Send(SOCKADDR_IN aAddress, const std::string& aMessage)
   return true;
 }
 
-bool CUdpClient::Send(SOCKADDR_IN aAddress, LPBYTE pMessage, DWORD dwSize)
+bool CUdpClient::Send(SOCKADDR_IN aAddress, uint8_t* pMessage, uint32_t dwSize)
 {
   CSingleLock lock(critical_section);
 
@@ -150,7 +150,7 @@ void CUdpClient::Process()
 
   SOCKADDR_IN remoteAddress;
   char messageBuffer[1024];
-  DWORD dataAvailable;
+  uint32_t dataAvailable;
 
   while ( !m_bStop )
   {
@@ -199,7 +199,7 @@ void CUdpClient::Process()
         // to protect access to graphics resources.
 
         g_graphicsContext.Lock();
-        OnMessage(remoteAddress, message, (LPBYTE)messageBuffer, messageLength);
+        OnMessage(remoteAddress, message, (uint8_t*)messageBuffer, messageLength);
         g_graphicsContext.Unlock();
       }
       else
@@ -246,7 +246,7 @@ bool CUdpClient::DispatchNextCommand()
 
     do
     {
-      ret = sendto(client_socket, (LPCSTR) command.binary, command.binarySize, 0, (struct sockaddr *) & command.address, sizeof(command.address));
+      ret = sendto(client_socket, (const char*)command.binary, command.binarySize, 0, (struct sockaddr *) & command.address, sizeof(command.address));
     }
     while (ret == -1);
 

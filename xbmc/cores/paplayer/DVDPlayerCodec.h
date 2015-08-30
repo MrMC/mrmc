@@ -41,7 +41,7 @@ public:
   virtual bool Init(const std::string &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual int64_t Seek(int64_t iSeekTime);
-  virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
+  virtual int ReadPCM(uint8_t *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
   virtual bool CanSeek();
   virtual CAEChannelInfo GetChannelInfo() {return m_ChannelInfo;}

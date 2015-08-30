@@ -101,8 +101,6 @@ void CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
     }
     else
     {
-      //OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");
-      //OutputDebugString("Sending immediately\n");
       ProcessMessage(&message);
       return;
     }

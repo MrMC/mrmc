@@ -92,7 +92,7 @@ public:
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
-  void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  void                 RenderUpdate(bool clear, uint32_t flags = 0, uint32_t alpha = 255);
 
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);

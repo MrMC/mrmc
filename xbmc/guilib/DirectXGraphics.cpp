@@ -22,12 +22,12 @@
 #include "Texture.h"
 #include "XBTF.h"
 
-LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect)
+void* XPhysicalAlloc(size_t s, uint32_t ulPhysicalAddress, uint32_t ulAlignment, uint32_t flProtect)
 {
   return malloc(s);
 }
 
-void XPhysicalFree(LPVOID lpAddress)
+void XPhysicalFree(void* lpAddress)
 {
   free(lpAddress);
 }
@@ -52,7 +52,7 @@ D3DFORMAT GetD3DFormat(XB_D3DFORMAT format)
   }
 }
 
-DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format)
+uint32_t BytesPerPixelFromFormat(XB_D3DFORMAT format)
 {
   switch (format)
   {
@@ -76,7 +76,7 @@ bool IsPalettedFormat(XB_D3DFORMAT format)
   return false;
 }
 
-void ParseTextureHeader(D3DTexture *tex, XB_D3DFORMAT &fmt, DWORD &width, DWORD &height, DWORD &pitch, DWORD &offset)
+void ParseTextureHeader(D3DTexture *tex, XB_D3DFORMAT &fmt, uint32_t &width, uint32_t &height, uint32_t &pitch, uint32_t &offset)
 {
   fmt = (XB_D3DFORMAT)((tex->Format & 0xff00) >> 8);
   offset = tex->Data;
@@ -120,9 +120,9 @@ void Unswizzle(const void *src, unsigned int depth, unsigned int width, unsigned
   if (height == 0 || width == 0)
     return;
 
-  for (UINT y = 0; y < height; y++)
+  for (unsigned int y = 0; y < height; y++)
   {
-    UINT sy = 0;
+    unsigned int sy = 0;
     if (y < width)
     {
       for (int bit = 0; bit < 16; bit++)
@@ -131,16 +131,16 @@ void Unswizzle(const void *src, unsigned int depth, unsigned int width, unsigned
     }
     else
     {
-      UINT y_mask = y % width;
+      unsigned int y_mask = y % width;
       for (int bit = 0; bit < 16; bit++)
         sy |= ((y_mask >> bit) & 1) << (2*bit);
       sy <<= 1; // y counts twice
       sy += (y / width) * width * width;
     }
-    BYTE *d = (BYTE *)dest + y * width * depth;
-    for (UINT x = 0; x < width; x++)
+    uint8_t *d = (uint8_t*)dest + y * width * depth;
+    for (unsigned int x = 0; x < width; x++)
     {
-      UINT sx = 0;
+      unsigned int sx = 0;
       if (x < height * 2)
       {
         for (int bit = 0; bit < 16; bit++)
@@ -153,7 +153,7 @@ void Unswizzle(const void *src, unsigned int depth, unsigned int width, unsigned
           sx |= ((x_mask >> bit) & 1) << (2*bit);
         sx += (x / (2 * height)) * 2 * height * height;
       }
-      BYTE *s = (BYTE *)src + (sx + sy)*depth;
+      uint8_t *s = (uint8_t*)src + (sx + sy)*depth;
       for (unsigned int i = 0; i < depth; ++i)
         *d++ = *s++;
     }
@@ -162,12 +162,12 @@ void Unswizzle(const void *src, unsigned int depth, unsigned int width, unsigned
 
 void DXT1toARGB(const void *src, void *dest, unsigned int destWidth)
 {
-  const BYTE *b = (const BYTE *)src;
+  const uint8_t *b = (const uint8_t*)src;
   // colour is in R5G6B5 format, convert to R8G8B8
-  DWORD colour[4];
-  BYTE red[4];
-  BYTE green[4];
-  BYTE blue[4];
+  uint32_t colour[4];
+  uint8_t red[4];
+  uint8_t green[4];
+  uint8_t blue[4];
   for (int i = 0; i < 2; i++)
   {
     red[i] = b[2*i+1] & 0xf8;
@@ -198,7 +198,7 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth)
   // ok, now grab the bits
   for (int y = 0; y < 4; y++)
   {
-    DWORD *d = (DWORD *)dest + destWidth * y;
+    uint32_t *d = (uint32_t*)dest + destWidth * y;
     *d++ = colour[(b[4 + y] & 0x03)];
     *d++ = colour[(b[4 + y] & 0x0c) >> 2];
     *d++ = colour[(b[4 + y] & 0x30) >> 4];
@@ -208,8 +208,8 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth)
 
 void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
 {
-  const BYTE *b = (const BYTE *)src;
-  BYTE alpha[8];
+  const uint8_t *b = (const uint8_t*)src;
+  uint8_t alpha[8];
   alpha[0] = b[0];
   alpha[1] = b[1];
   if (alpha[0] > alpha[1])
@@ -231,7 +231,7 @@ void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
     alpha[7] = 255;                                    // Bit code 111
   }
   // ok, now grab the bits
-  BYTE a[4][4];
+  uint8_t a[4][4];
   a[0][0] = alpha[(b[2] & 0xe0) >> 5];
   a[0][1] = alpha[(b[2] & 0x1c) >> 2];
   a[0][2] = alpha[((b[2] & 0x03) << 1) | ((b[3] & 0x80) >> 7)];
@@ -249,12 +249,12 @@ void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
   a[3][2] = alpha[(b[7] & 0x38) >> 3];
   a[3][3] = alpha[(b[7] & 0x07)];
 
-  b = (BYTE *)src + 8;
+  b = (uint8_t *)src + 8;
   // colour is in R5G6B5 format, convert to R8G8B8
-  DWORD colour[4];
-  BYTE red[4];
-  BYTE green[4];
-  BYTE blue[4];
+  uint32_t colour[4];
+  uint8_t red[4];
+  uint8_t green[4];
+  uint8_t blue[4];
   for (int i = 0; i < 2; i++)
   {
     red[i] = b[2*i+1] & 0xf8;
@@ -272,7 +272,7 @@ void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
   // and assign them to our texture
   for (int y = 0; y < 4; y++)
   {
-    DWORD *d = (DWORD *)dest + destWidth * y;
+    uint32_t *d = (unsigned int*)dest + destWidth * y;
     *d++ = colour[(b[4 + y] & 0x03)] | (a[y][0] << 24);
     *d++ = colour[(b[4 + y] & 0x0e) >> 2] | (a[y][1] << 24);
     *d++ = colour[(b[4 + y] & 0x30) >> 4] | (a[y][2] << 24);
@@ -287,8 +287,8 @@ void ConvertDXT1(const void *src, unsigned int width, unsigned int height, void 
   {
     for (unsigned int x = 0; x < width; x += 4)
     {
-      const BYTE *s = (const BYTE *)src + y * width / 2 + x * 2;
-      DWORD *d = (DWORD *)dest + y * width + x;
+      const uint8_t *s = (const uint8_t*)src + y * width / 2 + x * 2;
+      uint32_t *d = (uint32_t*)dest + y * width + x;
       DXT1toARGB(s, d, width);
     }
   }
@@ -304,8 +304,8 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
   {
     for (unsigned int x = 0; x < width; x += 4)
     {
-      const BYTE *s = (const BYTE *)src + y * width + x * 4;
-      DWORD *d = (DWORD *)dest + y * width + x;
+      const uint8_t *s = (const uint8_t*)src + y * width + x * 4;
+      uint32_t *d = (uint32_t*)dest + y * width + x;
       DXT4toARGB(s, d, width);
     }
   }
@@ -314,14 +314,14 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
 void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTexture)
 {
   XB_D3DFORMAT fmt;
-  DWORD width, height, pitch, offset;
+  uint32_t width, height, pitch, offset;
   ParseTextureHeader(pTex, fmt, width, height, pitch, offset);
 
   *ppTexture = new CTexture(width, height, XB_FMT_A8R8G8B8);
 
   if (*ppTexture)
   {
-    BYTE *texDataStart = (BYTE *)texData;
+    uint8_t *texDataStart = (uint8_t*)texData;
     COLOR *color = (COLOR *)texData;
     texDataStart += offset;
 /* DXMERGE - We should really support DXT1,DXT2 and DXT4 in both renderers
@@ -330,8 +330,8 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
              We could just override, as at least then all the loading code from various texture formats
              will be in one place
 
-    BYTE *dstPixels = (BYTE *)lr.pBits;
-    DWORD destPitch = lr.Pitch;
+    uint8_t *dstPixels = (uint8_t*)lr.pBits;
+    uint32_t destPitch = lr.Pitch;
     if (fmt == XB_D3DFMT_DXT1)  // Not sure if these are 100% correct, but they seem to work :P
     {
       pitch /= 2;
@@ -350,20 +350,20 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
     if (fmt == XB_D3DFMT_DXT1)
     {
       pitch = width * 4;
-      BYTE *decoded = new BYTE[pitch * height];
+      uint8_t *decoded = new uint8_t[pitch * height];
       ConvertDXT1(texDataStart, width, height, decoded);
       texDataStart = decoded;
     }
     else if (fmt == XB_D3DFMT_DXT2 || fmt == XB_D3DFMT_DXT4)
     {
       pitch = width * 4;
-      BYTE *decoded = new BYTE[pitch * height];
+      uint8_t *decoded = new uint8_t[pitch * height];
       ConvertDXT4(texDataStart, width, height, decoded);
       texDataStart = decoded;
     }
     if (IsSwizzledFormat(fmt))
     { // first we unswizzle
-      BYTE *unswizzled = new BYTE[pitch * height];
+      uint8_t *unswizzled = new uint8_t[pitch * height];
       Unswizzle(texDataStart, BytesPerPixelFromFormat(fmt), width, height, unswizzled);
       texDataStart = unswizzled;
     }

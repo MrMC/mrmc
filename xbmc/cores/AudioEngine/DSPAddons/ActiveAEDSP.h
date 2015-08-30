@@ -278,14 +278,14 @@ namespace ActiveAE
      * @param dwInfo The boolean to get.
      * @return The requested boolean or false if it wasn't found.
      */
-    bool TranslateBoolInfo(DWORD dwInfo) const;
+    bool TranslateBoolInfo(uint32_t dwInfo) const;
 
     /*!
      * @brief Get a GUIInfoManager character string.
      * @param dwInfo The string to get.
      * @return The requested string or an empty one if it wasn't found.
      */
-    bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
+    bool TranslateCharInfo(uint32_t dwInfo, std::string &strValue) const;
   //@}
 
   /*! @name Current processing streams control function methods */

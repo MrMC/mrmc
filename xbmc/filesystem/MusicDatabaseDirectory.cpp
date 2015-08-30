@@ -126,7 +126,7 @@ void CMusicDatabaseDirectory::ClearDirectoryCache(const std::string& strDirector
   Crc32 crc;
   crc.ComputeFromLowerCase(path);
 
-  std::string strFileName = StringUtils::Format("special://temp/%08x.fi", (unsigned __int32) crc);
+  std::string strFileName = StringUtils::Format("special://temp/%08x.fi", (uint32_t) crc);
   CFile::Delete(strFileName);
 }
 

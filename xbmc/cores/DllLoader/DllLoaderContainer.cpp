@@ -62,9 +62,9 @@ void DllLoaderContainer::Clear()
 {
 }
 
-HMODULE DllLoaderContainer::GetModuleAddress(const char* sName)
+void* DllLoaderContainer::GetModuleAddress(const char* sName)
 {
-  return (HMODULE)GetModule(sName);
+  return (void*)GetModule(sName);
 }
 
 LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
@@ -78,7 +78,7 @@ LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
   return NULL;
 }
 
-LibraryLoader* DllLoaderContainer::GetModule(HMODULE hModule)
+LibraryLoader* DllLoaderContainer::GetModule(void* hModule)
 {
   for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
   {

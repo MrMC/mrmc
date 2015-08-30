@@ -22,25 +22,19 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
-#ifndef TARGET_POSIX
-#include <io.h>
-#include <direct.h>
-#include <process.h>
-#else
 #if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
-#include <mntent.h>
-#endif
+  #include <mntent.h>
 #endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #if !defined(TARGET_FREEBSD)
-#include <sys/timeb.h>
+  #include <sys/timeb.h>
 #endif
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
 #ifdef TARGET_POSIX
-#include "PlatformDefs.h" // for __stat64
+  #include "PlatformDefs.h" // for __stat64
 #endif
 #include "Util.h"
 #include "filesystem/SpecialProtocol.h"
@@ -52,18 +46,13 @@
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
-#include "emu_kernel32.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
-#ifndef TARGET_POSIX
-#include "utils/CharsetConverter.h"
-#include "utils/URIUtils.h"
-#endif
 #if defined(TARGET_ANDROID)
-#include "android/loader/AndroidDyload.h"
+  #include "android/loader/AndroidDyload.h"
 #else
-#include <dlfcn.h>
+  #include <dlfcn.h>
 #endif
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
@@ -617,10 +606,10 @@ extern "C"
       // let the operating system handle it
       // not supported: return lseeki64(fd, lPos, iWhence);
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_lseeki64 called, TODO: add 'int64 -> long' type checking");      //warning
-      return (__int64)lseek(fd, (long)lPos, iWhence);
+      return (int64_t)lseek(fd, (long)lPos, iWhence);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return (__int64)-1;
+    return (int64_t)-1;
   }
 
   __off_t dll_lseek(int fd, __off_t lPos, int iWhence)
@@ -1378,12 +1367,12 @@ extern "C"
     return -1;
   }
 
-  __int64 dll_telli64(int fd)
+  int64_t dll_telli64(int fd)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-       return (__int64)pFile->GetPosition();
+       return (int64_t)pFile->GetPosition();
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -1392,7 +1381,7 @@ extern "C"
       // not supported return telli64(fd);
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_telli64 called, TODO: add 'int64 -> long' type checking");      //warning
 #ifndef TARGET_POSIX
-      return (__int64)tell(fd);
+      return (int64_t)tell(fd);
 #elif defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
       return lseek(fd, 0, SEEK_CUR);
 #else

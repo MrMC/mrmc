@@ -1387,17 +1387,17 @@ int CPVRManager::GetStartTime(void) const
   return IsStarted() && m_guiInfo ? m_guiInfo->GetStartTime() : 0;
 }
 
-bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
+bool CPVRManager::TranslateBoolInfo(uint32_t dwInfo) const
 {
    return IsStarted() && m_guiInfo ? m_guiInfo->TranslateBoolInfo(dwInfo) : false;
 }
 
-bool CPVRManager::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
+bool CPVRManager::TranslateCharInfo(uint32_t dwInfo, std::string &strValue) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateCharInfo(dwInfo, strValue) : false;
 }
 
-int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
+int CPVRManager::TranslateIntInfo(uint32_t dwInfo) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateIntInfo(dwInfo) : 0;
 }

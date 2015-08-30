@@ -18,10 +18,8 @@
  *
  */
 
-#define BOOL XBMC_BOOL
 #include "system_gl.h"
 #include "osx/CocoaInterface.h"
-#undef BOOL
 
 #import "OSXGLView.h"
 

@@ -118,7 +118,7 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
     OnNumber(action.GetID() - REMOTE_0);
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
-    BYTE b = action.GetID() & 0xFF;
+    uint8_t b = action.GetID() & 0xFF;
     if (b == XBMCVK_LEFT) OnPrevious();
     else if (b == XBMCVK_RIGHT) OnNext();
     else if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER) OnOK();

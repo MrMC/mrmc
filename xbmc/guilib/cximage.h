@@ -38,5 +38,5 @@ private:
   DllImageLib m_dll;
   ImageInfo m_image;
   std::string m_strMimeType;
-  BYTE* m_thumbnailbuffer;
+  uint8_t* m_thumbnailbuffer;
 };

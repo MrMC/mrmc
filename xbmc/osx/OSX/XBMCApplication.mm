@@ -18,7 +18,6 @@
  *
  */
 
-#define BOOL XBMC_BOOL
 #include "system.h"
 #include "Application.h"
 #include "AppParamParser.h"
@@ -36,7 +35,6 @@
 #include "XbmcContext.h"
 #include "windowing/WindowingFactory.h"
 #include "windowing/osx/WinEventsOSX.h"
-#undef BOOL
 
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
@@ -44,13 +42,9 @@
 #import "osx/CocoaInterface.h"
 #import "osx/DarwinUtils.h"
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL 
 #import "PlatformDefs.h"
 #import "messaging/ApplicationMessenger.h"
 #import "storage/osx/DarwinStorageProvider.h"
-#undef BOOL
 
 #import "osx/DarwinUtils.h"
 #import "XBMCApplication.h"

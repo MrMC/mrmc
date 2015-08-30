@@ -68,7 +68,7 @@ public:
   virtual int ResolveOrdinal(unsigned long ordinal, void** ptr);
   virtual bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
   virtual bool IsSystemDll() { return m_bSystemDll; }
-  virtual HMODULE GetHModule() { return (HMODULE)hModule; }
+  virtual void* GetHModule() { return (void*)hModule; }
 
   Export* GetExportByFunctionName(const char* sFunctionName);
   Export* GetExportByOrdinal(unsigned long ordinal);

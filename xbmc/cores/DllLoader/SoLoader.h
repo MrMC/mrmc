@@ -39,7 +39,7 @@ public:
 
   virtual int ResolveExport(const char* symbol, void** ptr, bool logging = true);
   virtual bool IsSystemDll();
-  virtual HMODULE GetHModule();
+  virtual void* GetHModule();
   virtual bool HasSymbols();
 
 private:

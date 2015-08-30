@@ -23,13 +23,15 @@
  *
  */
 
-extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR file, LPCSTR sourcedll);
-extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
-extern "C" HMODULE __stdcall dllLoadLibraryExExtended(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags, LPCSTR sourcedll);
-extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags);
-extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
-extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function);
-extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName);
-extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename, DWORD nSize);
+typedef intptr_t (*FARPROC)(void);
+
+extern "C" void* __stdcall dllLoadLibraryExtended(const char* file, const char* sourcedll);
+extern "C" void* __stdcall dllLoadLibraryA(const char* file);
+extern "C" void* __stdcall dllLoadLibraryExExtended(const char* lpLibFileName, HANDLE hFile, uint32_t dwFlags, const char* sourcedll);
+extern "C" void* __stdcall dllLoadLibraryExA(const char* lpLibFileName, HANDLE hFile, uint32_t dwFlags);
+extern "C" int __stdcall dllFreeLibrary(void* hLibModule);
+extern "C" FARPROC __stdcall dllGetProcAddress(void* hModule, const char* function);
+extern "C" void* __stdcall dllGetModuleHandleA(const char* lpModuleName);
+extern "C" uint32_t __stdcall dllGetModuleFileNameA(void* hModule, char* lpFilename, uint32_t nSize);
 
 #endif

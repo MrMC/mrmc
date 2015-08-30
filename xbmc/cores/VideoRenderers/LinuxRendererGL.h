@@ -145,7 +145,7 @@ public:
   virtual void         AddProcessor(struct __CVBuffer *cvBufferRef, int index);
 #endif
 
-  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void RenderUpdate(bool clear, uint32_t flags = 0, uint32_t alpha = 255);
 
   // Feature support
   virtual bool SupportsMultiPassRendering();
@@ -159,7 +159,7 @@ public:
   virtual CRenderInfo GetRenderInfo();
 
 protected:
-  virtual void Render(DWORD flags, int renderBuffer);
+  virtual void Render(uint32_t flags, int renderBuffer);
   void         ClearBackBuffer();
   void         DrawBlackBars();
 
@@ -306,7 +306,7 @@ protected:
   float m_clearColour;
 
   // software scale library (fallback if required gl version is not available)
-  BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
+  uint8_t           *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int       m_rgbBufferSize;
   GLuint             m_rgbPbo;
   struct SwsContext *m_context;

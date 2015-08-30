@@ -506,7 +506,7 @@ void CLinuxRendererGLES::Update()
   ManageDisplay();
 }
 
-void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGLES::RenderUpdate(bool clear, uint32_t flags, uint32_t alpha)
 {
   if (!m_bConfigured)
     return;
@@ -576,7 +576,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   g_graphicsContext.EndPaint();
 }
 
-void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t alpha)
 {
   if (!m_bConfigured)
     return;
@@ -1049,7 +1049,7 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 #endif
 }
 
-void CLinuxRendererGLES::Render(DWORD flags, int index)
+void CLinuxRendererGLES::Render(uint32_t flags, int index)
 {
   // If rendered directly by the hardware
   if (m_renderMethod & RENDER_BYPASS)

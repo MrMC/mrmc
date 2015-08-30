@@ -56,8 +56,8 @@ typedef std::map<uintptr_t, AllocLenCaller>::iterator DataListIter;
 typedef std::list<TrackedFile*> FileList;
 typedef std::list<TrackedFile*>::iterator FileListIter;
 
-typedef std::list<HMODULE> DllList;
-typedef std::list<HMODULE>::iterator DllListIter;
+typedef std::list<void*> DllList;
+typedef std::list<void*>::iterator DllListIter;
 
 typedef std::list<uintptr_t> DummyList;
 typedef std::list<uintptr_t>::iterator DummyListIter;

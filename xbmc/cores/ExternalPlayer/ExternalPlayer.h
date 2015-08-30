@@ -79,9 +79,9 @@ public:
   virtual bool SetPlayerState(const std::string& state);
   
 #if defined(TARGET_ANDROID)
-  virtual BOOL ExecuteAppAndroid(const char* strSwitches,const char* strPath);
+  virtual int ExecuteAppAndroid(const char* strSwitches,const char* strPath);
 #elif defined(TARGET_POSIX)
-  virtual BOOL ExecuteAppLinux(const char* strSwitches);
+  virtual int ExecuteAppLinux(const char* strSwitches);
 #endif
 
 private:
@@ -96,7 +96,7 @@ private:
   int m_totalTime;
   int m_time;
   std::string m_launchFilename;
-  HWND m_hwndXbmc; 
+  void* m_hwndXbmc; 
   CGUIDialogOK* m_dialog;
   int m_xPos;
   int m_yPos;

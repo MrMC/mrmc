@@ -18,7 +18,6 @@
  *
  */
 
-#define BOOL XBMC_BOOL
 #include "windowing/osx/WinEventsOSX.h"
 #include "input/XBMC_vkeys.h"
 #include "Application.h"
@@ -30,7 +29,6 @@
 #include "input/MouseStat.h"
 #include "GUIUserMessages.h"
 #include "osx/CocoaInterface.h"
-#undef BOOL
 
 #import "osx/OSX/OSXGLWindow.h"
 

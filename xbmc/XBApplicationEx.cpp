@@ -66,14 +66,14 @@ bool CXBApplicationEx::Create()
 }
 
 /* Destroy the app */
-VOID CXBApplicationEx::Destroy()
+void CXBApplicationEx::Destroy()
 {
   // Perform app-specific cleanup
   Cleanup();
 }
 
 /* Function that runs the application */
-INT CXBApplicationEx::Run()
+int CXBApplicationEx::Run()
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
 

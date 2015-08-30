@@ -230,7 +230,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
     double dts = pkt->dts, pts=pkt->pts;
     while(!m_bStop && data_len > 0)
     {
-      int len = m_pAudioCodec->Decode((BYTE *)data_dec, data_len, dts, pts);
+      int len = m_pAudioCodec->Decode((uint8_t*)data_dec, data_len, dts, pts);
       if( (len < 0) || (len >  data_len) )
       {
         m_pAudioCodec->Reset();

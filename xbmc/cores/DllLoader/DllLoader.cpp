@@ -41,11 +41,12 @@
 
 
 #ifndef APIENTRY
+shit;
 #define APIENTRY __stdcall
 #endif
 
 //  Entry point of a dll (DllMain)
-typedef BOOL (APIENTRY *EntryFunc)(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
+typedef int (APIENTRY *EntryFunc)(void* hinstDLL, uint32_t fdwReason, void* lpvReserved);
 
 
 #ifdef TARGET_POSIX
@@ -98,7 +99,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   /* system dll's are never loaded in any way, so let's just use the pointer */
   /* to this object as their base address */
   if (m_bSystemDll)
-    hModule = (HMODULE)this;
+    hModule = (void*)this;
 
 }
 
@@ -625,29 +626,29 @@ bool DllLoader::Load()
     if (dispatch_rva == 0x124C30)
     {
       CLog::Log(LOGINFO, "QuickTime5 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x19e842)[i] = 0x90; // make_new_region ?
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x19e86d)[i] = 0x90; // call__call_CreateCompatibleDC ?
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x19e898)[i] = 0x90; // jmp_to_call_loadbitmap ?
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x19e8ac)[i] = 0x90; // call__calls_OLE_shit ?
-      for (i = 0;i < 106;i++) ((BYTE*)base + 0x261B10)[i] = 0x90; // disable threads
+      for (i = 0;i < 5;i++) ((uint8_t*)base + 0x19e842)[i] = 0x90; // make_new_region ?
+      for (i = 0;i < 28;i++) ((uint8_t*)base + 0x19e86d)[i] = 0x90; // call__call_CreateCompatibleDC ?
+      for (i = 0;i < 5;i++) ((uint8_t*)base + 0x19e898)[i] = 0x90; // jmp_to_call_loadbitmap ?
+      for (i = 0;i < 9;i++) ((uint8_t*)base + 0x19e8ac)[i] = 0x90; // call__calls_OLE_shit ?
+      for (i = 0;i < 106;i++) ((uint8_t*)base + 0x261B10)[i] = 0x90; // disable threads
     }
     else if (dispatch_rva == 0x13B330)
     {
       CLog::Log(LOGINFO, "QuickTime6 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x2730CC)[i] = 0x90; // make_new_region
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x2730f7)[i] = 0x90; // call__call_CreateCompatibleDC
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x273122)[i] = 0x90; // jmp_to_call_loadbitmap
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x273131)[i] = 0x90; // call__calls_OLE_shit
-      for (i = 0;i < 96;i++) ((BYTE*)base + 0x2AC852)[i] = 0x90; // disable threads
+      for (i = 0;i < 5;i++) ((uint8_t*)base + 0x2730CC)[i] = 0x90; // make_new_region
+      for (i = 0;i < 28;i++) ((uint8_t*)base + 0x2730f7)[i] = 0x90; // call__call_CreateCompatibleDC
+      for (i = 0;i < 5;i++) ((uint8_t*)base + 0x273122)[i] = 0x90; // jmp_to_call_loadbitmap
+      for (i = 0;i < 9;i++) ((uint8_t*)base + 0x273131)[i] = 0x90; // call__calls_OLE_shit
+      for (i = 0;i < 96;i++) ((uint8_t*)base + 0x2AC852)[i] = 0x90; // disable threads
     }
     else if (dispatch_rva == 0x13C3E0)
     {
       CLog::Log(LOGINFO, "QuickTime6.3 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x268F6C)[i] = 0x90; // make_new_region
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x268F97)[i] = 0x90; // call__call_CreateCompatibleDC
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x268FC2)[i] = 0x90; // jmp_to_call_loadbitmap
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x268FD1)[i] = 0x90; // call__calls_OLE_shit
-      for (i = 0;i < 96;i++) ((BYTE*)base + 0x2B4722)[i] = 0x90; // disable threads
+      for (i = 0;i < 5;i++) ((uint8_t*)base + 0x268F6C)[i] = 0x90; // make_new_region
+      for (i = 0;i < 28;i++) ((uint8_t*)base + 0x268F97)[i] = 0x90; // call__call_CreateCompatibleDC
+      for (i = 0;i < 5;i++) ((uint8_t*)base + 0x268FC2)[i] = 0x90; // jmp_to_call_loadbitmap
+      for (i = 0;i < 9;i++) ((uint8_t*)base + 0x268FD1)[i] = 0x90; // call__calls_OLE_shit
+      for (i = 0;i < 96;i++) ((uint8_t*)base + 0x2B4722)[i] = 0x90; // disable threads
     }
     else
     {
@@ -670,7 +671,7 @@ bool DllLoader::Load()
 #ifdef TARGET_POSIX
 	extend_stack_for_dll_alloca();
 #endif
-      initdll((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
+      initdll((void*)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
 
 #ifdef LOGALL
       CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
@@ -713,7 +714,7 @@ void DllLoader::Unload()
     if(EntryAddress)
     {
       EntryFunc initdll = (EntryFunc)EntryAddress;
-      initdll((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
+      initdll((void*)hModule, DLL_PROCESS_DETACH , 0);
     }
 
 #ifdef LOGALL
@@ -829,7 +830,7 @@ void DllLoader::UnloadSymbols()
         // It is located inside the xbdm.dll and
         // get the LoadedModuleList member (here the entry var)
         // of the structure.
-        LPBYTE g_dmi=((LPBYTE)pBaseAddress)+offset;
+        uint8_t* g_dmi=((unsigned char*)pBaseAddress)+offset;
         LIST_ENTRY* entry=(LIST_ENTRY*)(g_dmi+4);
 
         //  Search for the dll we are unloading...

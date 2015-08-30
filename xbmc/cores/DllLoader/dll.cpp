@@ -27,9 +27,11 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 
+#define MAXWORD   0xffff
+
 #define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"
 #define HIGH_WORD(a) ((uintptr_t)(a) >> 16)
-#define LOW_WORD(a) ((WORD)(((uintptr_t)(a)) & MAXWORD))
+#define LOW_WORD(a) ((uint16_t)(((uintptr_t)(a)) & MAXWORD))
 
 //#define API_DEBUG
 
@@ -49,7 +51,7 @@ char* getpath(char *buf, const char *full)
   }
 }
 
-extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sourcedll)
+extern "C" void* __stdcall dllLoadLibraryExtended(const char* lib_file, const char* sourcedll)
 {
   char libname[MAX_PATH + 1] = {};
   char libpath[MAX_PATH + 1] = {};
@@ -97,13 +99,13 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   dll = DllLoaderContainer::LoadModule(libname, libpath);
 
   if (dll)
-    return (HMODULE)dll->GetHModule();
+    return (void*)dll->GetHModule();
 
   CLog::Log(LOGERROR, "LoadLibrary('%s') failed", libname);
   return NULL;
 }
 
-extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
+extern "C" void* __stdcall dllLoadLibraryA(const char* file)
 {
   return dllLoadLibraryExtended(file, NULL);
 }
@@ -113,7 +115,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
 #define LOAD_WITH_ALTERED_SEARCH_PATH 0x00000008
 #define LOAD_IGNORE_CODE_AUTHZ_LEVEL  0x00000010
 
-extern "C" HMODULE __stdcall dllLoadLibraryExExtended(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags, LPCSTR sourcedll)
+extern "C" void* __stdcall dllLoadLibraryExExtended(const char* lpLibFileName, HANDLE hFile, uint32_t dwFlags, const char* sourcedll)
 {
   char strFlags[512];
   strFlags[0] = '\0';
@@ -128,12 +130,12 @@ extern "C" HMODULE __stdcall dllLoadLibraryExExtended(LPCSTR lpLibFileName, HAND
   return dllLoadLibraryExtended(lpLibFileName, sourcedll);
 }
 
-extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
+extern "C" void* __stdcall dllLoadLibraryExA(const char* lpLibFileName, HANDLE hFile, uint32_t dwFlags)
 {
   return dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, NULL);
 }
 
-extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
+extern "C" int __stdcall dllFreeLibrary(void* hLibModule)
 {
   LibraryLoader* dllhandle = DllLoaderContainer::GetModule(hLibModule);
 
@@ -151,7 +153,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
   return 1;
 }
 
-extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
+extern "C" FARPROC __stdcall dllGetProcAddress(void* hModule, const char* function)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 
@@ -220,7 +222,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
   return (FARPROC)address;
 }
 
-extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
+extern "C" void* __stdcall dllGetModuleHandleA(const char* lpModuleName)
 {
   /*
   If the file name extension is omitted, the default library extension .dll is appended.
@@ -246,14 +248,14 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
   if (p)
   {
     //CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
-    return (HMODULE)p->GetHModule();
+    return (void*)p->GetHModule();
   }
 
   CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
   return NULL;
 }
 
-extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
+extern "C" unsigned int __stdcall dllGetModuleFileNameA(void* hModule, char* lpFilename, uint32_t nSize)
 {
   if (NULL == hModule)
   {

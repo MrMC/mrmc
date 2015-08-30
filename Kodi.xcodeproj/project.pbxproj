@@ -1059,7 +1059,6 @@
 		DFF0F14917528350002DA3A4 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		DFF0F14A17528350002DA3A4 /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		DFF0F14B17528350002DA3A4 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
-		DFF0F14C17528350002DA3A4 /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		DFF0F14D17528350002DA3A4 /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
 		DFF0F14E17528350002DA3A4 /* coff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E149E0D25F9F900618676 /* coff.cpp */; };
 		DFF0F14F17528350002DA3A4 /* dll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A30D25F9F900618676 /* dll.cpp */; };
@@ -1746,7 +1745,6 @@
 		E38E1F560D25F9FD00618676 /* DllLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B40D25F9F900618676 /* DllLoader.cpp */; };
 		E38E1F570D25F9FD00618676 /* DllLoaderContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B60D25F9F900618676 /* DllLoaderContainer.cpp */; };
 		E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
-		E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
 		E38E1F6F0D25F9FD00618676 /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		E38E1F710D25F9FD00618676 /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E80D25F9F900618676 /* wrapper.c */; };
@@ -2042,7 +2040,6 @@
 		E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		E49911B2174E5D0A00741B6D /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		E49911B3174E5D0A00741B6D /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
-		E49911B4174E5D0A00741B6D /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		E49911B5174E5D0A00741B6D /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
 		E49911B6174E5D0A00741B6D /* coff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E149E0D25F9F900618676 /* coff.cpp */; };
 		E49911B7174E5D0A00741B6D /* dll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A30D25F9F900618676 /* dll.cpp */; };
@@ -4323,8 +4320,6 @@
 		E38E14B70D25F9F900618676 /* DllLoaderContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLoaderContainer.h; sourceTree = "<group>"; };
 		E38E14B90D25F9F900618676 /* emu_dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_dummy.cpp; sourceTree = "<group>"; };
 		E38E14BA0D25F9F900618676 /* emu_dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_dummy.h; sourceTree = "<group>"; };
-		E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_kernel32.cpp; sourceTree = "<group>"; };
-		E38E14BE0D25F9F900618676 /* emu_kernel32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_kernel32.h; sourceTree = "<group>"; };
 		E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_msvcrt.cpp; sourceTree = "<group>"; };
 		E38E14C20D25F9F900618676 /* emu_msvcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_msvcrt.h; sourceTree = "<group>"; };
 		E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmuFileWrapper.cpp; sourceTree = "<group>"; };
@@ -7555,8 +7550,6 @@
 				E38E14E20D25F9F900618676 /* util */,
 				E38E14B90D25F9F900618676 /* emu_dummy.cpp */,
 				E38E14BA0D25F9F900618676 /* emu_dummy.h */,
-				E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */,
-				E38E14BE0D25F9F900618676 /* emu_kernel32.h */,
 				E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */,
 				E38E14C20D25F9F900618676 /* emu_msvcrt.h */,
 				E38E14E80D25F9F900618676 /* wrapper.c */,
@@ -8835,7 +8828,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0620;
 			};
 			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Kodi" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -9155,7 +9148,6 @@
 				E38E1F560D25F9FD00618676 /* DllLoader.cpp in Sources */,
 				E38E1F570D25F9FD00618676 /* DllLoaderContainer.cpp in Sources */,
 				E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */,
-				E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */,
 				E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */,
 				E38E1F6F0D25F9FD00618676 /* EmuFileWrapper.cpp in Sources */,
 				E38E1F710D25F9FD00618676 /* wrapper.c in Sources */,
@@ -10111,7 +10103,6 @@
 				DFF0F14917528350002DA3A4 /* AEFactory.cpp in Sources */,
 				DFF0F14A17528350002DA3A4 /* EmuFileWrapper.cpp in Sources */,
 				DFF0F14B17528350002DA3A4 /* emu_dummy.cpp in Sources */,
-				DFF0F14C17528350002DA3A4 /* emu_kernel32.cpp in Sources */,
 				DFF0F14D17528350002DA3A4 /* emu_msvcrt.cpp in Sources */,
 				DFF0F14E17528350002DA3A4 /* coff.cpp in Sources */,
 				DFF0F14F17528350002DA3A4 /* dll.cpp in Sources */,
@@ -11031,7 +11022,6 @@
 				E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */,
 				E49911B2174E5D0A00741B6D /* EmuFileWrapper.cpp in Sources */,
 				E49911B3174E5D0A00741B6D /* emu_dummy.cpp in Sources */,
-				E49911B4174E5D0A00741B6D /* emu_kernel32.cpp in Sources */,
 				E49911B5174E5D0A00741B6D /* emu_msvcrt.cpp in Sources */,
 				E49911B6174E5D0A00741B6D /* coff.cpp in Sources */,
 				E49911B7174E5D0A00741B6D /* dll.cpp in Sources */,
@@ -12057,6 +12047,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
@@ -12074,10 +12065,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -12090,10 +12078,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				PRODUCT_NAME = Kodi;
 				SDKROOT = macosx;
@@ -12106,7 +12091,6 @@
 			baseConfigurationReference = DF3C3C7C1752AB68000989C3 /* App-ATV2.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
@@ -12159,7 +12143,6 @@
 			baseConfigurationReference = DF3C3C7C1752AB68000989C3 /* App-ATV2.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;

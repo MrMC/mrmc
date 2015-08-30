@@ -49,9 +49,9 @@ namespace PVR
 
     void Notify(const Observable &obs, const ObservableMessage msg);
 
-    bool TranslateBoolInfo(DWORD dwInfo) const;
-    bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
-    int TranslateIntInfo(DWORD dwInfo) const;
+    bool TranslateBoolInfo(uint32_t dwInfo) const;
+    bool TranslateCharInfo(uint32_t dwInfo, std::string &strValue) const;
+    int TranslateIntInfo(uint32_t dwInfo) const;
 
     /*!
      * @brief Get the total duration of the currently playing LiveTV item.

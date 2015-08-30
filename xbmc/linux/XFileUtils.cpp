@@ -50,7 +50,7 @@
 #include "utils/RegExp.h"
 #include "utils/AliasShortcutUtils.h"
 
-HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
+HANDLE FindFirstFile(const char* szPath,LPWIN32_FIND_DATA lpFindData)
 {
   if (lpFindData == NULL || szPath == NULL)
     return NULL;
@@ -136,7 +136,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   return pHandle;
 }
 
-BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
+int   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
 {
   if (lpFindData == NULL || hHandle == NULL || hHandle->GetType() != CXHandle::HND_FIND_FILE)
     return FALSE;
@@ -178,20 +178,20 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   TimeTToFileTime(fileStat.st_atime, &lpFindData->ftLastAccessTime);
   TimeTToFileTime(fileStat.st_mtime, &lpFindData->ftLastWriteTime);
 
-  lpFindData->nFileSizeHigh = (DWORD)(fileStat.st_size >> 32);
-  lpFindData->nFileSizeLow =  (DWORD)fileStat.st_size;
+  lpFindData->nFileSizeHigh = (uint32_t)(fileStat.st_size >> 32);
+  lpFindData->nFileSizeLow =  (uint32_t)fileStat.st_size;
 
   return TRUE;
 }
 
-BOOL FindClose(HANDLE hFindFile)
+int FindClose(HANDLE hFindFile)
 {
   return CloseHandle(hFindFile);
 }
 
-HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
-  DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition,
-  DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
+HANDLE CreateFile(LPCTSTR lpFileName, uint32_t dwDesiredAccess,
+  uint32_t dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, uint32_t dwCreationDisposition,
+  uint32_t dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
   // Fail on unsupported items
   if (lpSecurityAttributes != NULL )
@@ -300,7 +300,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
 //
 // it is important that this method will not call CLog because it uses it.
 //
-BOOL DeleteFile(LPCTSTR lpFileName)
+int DeleteFile(LPCTSTR lpFileName)
 {
   if (unlink(lpFileName) == 0)
     return 1;
@@ -337,7 +337,7 @@ BOOL DeleteFile(LPCTSTR lpFileName)
 //
 // it is important that this method will not call CLog because it uses it.
 //
-BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
+int MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
 {
   if (rename(lpExistingFileName, lpNewFileName) == 0)
     return 1;
@@ -379,7 +379,7 @@ BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
   return 0;
 }
 
-BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExists)
+int CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int bFailIfExists)
 {
   // If the destination file exists and we should fail...guess what? we fail!
   struct stat destStat;
@@ -472,8 +472,8 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
   return 1;
 }
 
-BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
-  LPDWORD lpNumberOfBytesRead, LPVOID lpOverlapped)
+int ReadFile(HANDLE hFile, void* lpBuffer, uint32_t nNumberOfBytesToRead,
+  uint32_t* lpNumberOfBytesRead, void* lpOverlapped)
 {
   if (lpOverlapped)
   {
@@ -491,8 +491,8 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
   return 1;
 }
 
-BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
-  LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped)
+int WriteFile(HANDLE hFile, const void * lpBuffer, uint32_t nNumberOfBytesToWrite,
+  uint32_t* lpNumberOfBytesWritten, void* lpOverlapped)
 {
   if (lpOverlapped)
   {
@@ -510,7 +510,7 @@ BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
   return 1;
 }
 
-BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
+int   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
 {
   if (mkdir(lpPathName, 0755) == 0)
     return 1;
@@ -528,7 +528,7 @@ BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttri
   return 0;
 }
 
-BOOL   RemoveDirectory(LPCTSTR lpPathName)
+int   RemoveDirectory(LPCTSTR lpPathName)
 {
   if (rmdir(lpPathName) == 0)
     return 1;
@@ -545,16 +545,16 @@ BOOL   RemoveDirectory(LPCTSTR lpPathName)
   return 0;
 }
 
-DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
-                      int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod)
+uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
+                      int32_t *lpDistanceToMoveHigh, unsigned int dwMoveMethod)
 {
   if (hFile == NULL)
     return 0;
 
-  LONGLONG offset = lDistanceToMove;
+  long long offset = lDistanceToMove;
   if (lpDistanceToMoveHigh)
   {
-    LONGLONG helper = *lpDistanceToMoveHigh;
+    long long helper = *lpDistanceToMoveHigh;
     helper <<= 32;
     offset &= 0xFFFFFFFF;   // Zero out the upper half (sign ext)
     offset |= helper;
@@ -578,11 +578,11 @@ DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
     *lpDistanceToMoveHigh = (int32_t)(currOff >> 32);
   }
 
-  return (DWORD)currOff;
+  return (uint32_t)currOff;
 }
 
 // uses statfs
-BOOL GetDiskFreeSpaceEx(
+int GetDiskFreeSpaceEx(
   LPCTSTR lpDirectoryName,
   PULARGE_INTEGER lpFreeBytesAvailable,
   PULARGE_INTEGER lpTotalNumberOfBytes,
@@ -602,18 +602,18 @@ BOOL GetDiskFreeSpaceEx(
 #endif
 
   if (lpFreeBytesAvailable)
-    lpFreeBytesAvailable->QuadPart =  (ULONGLONG)fsInfo.f_bavail * (ULONGLONG)fsInfo.f_bsize;
+    lpFreeBytesAvailable->QuadPart =  (uint64_t)fsInfo.f_bavail * (uint64_t)fsInfo.f_bsize;
 
   if (lpTotalNumberOfBytes)
-    lpTotalNumberOfBytes->QuadPart = (ULONGLONG)fsInfo.f_blocks * (ULONGLONG)fsInfo.f_bsize;
+    lpTotalNumberOfBytes->QuadPart = (uint64_t)fsInfo.f_blocks * (uint64_t)fsInfo.f_bsize;
 
   if (lpTotalNumberOfFreeBytes)
-    lpTotalNumberOfFreeBytes->QuadPart = (ULONGLONG)fsInfo.f_bfree * (ULONGLONG)fsInfo.f_bsize;
+    lpTotalNumberOfFreeBytes->QuadPart = (uint64_t)fsInfo.f_bfree * (uint64_t)fsInfo.f_bsize;
 
   return true;
 }
 
-DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
+uint32_t GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
 {
   if (lpTimeZoneInformation == NULL)
     return TIME_ZONE_ID_INVALID;
@@ -631,7 +631,7 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
   return TIME_ZONE_ID_UNKNOWN;
 }
 
-BOOL SetEndOfFile(HANDLE hFile)
+int SetEndOfFile(HANDLE hFile)
 {
   if (hFile == NULL)
     return false;
@@ -648,16 +648,16 @@ BOOL SetEndOfFile(HANDLE hFile)
   return false;
 }
 
-DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable)
+uint32_t SleepEx( unsigned int dwMilliseconds,  int bAlertable)
 {
   usleep(dwMilliseconds * 1000);
   return 0;
 }
 
-BOOL SetFilePointerEx(  HANDLE hFile,
+int SetFilePointerEx(  HANDLE hFile,
             LARGE_INTEGER liDistanceToMove,
             PLARGE_INTEGER lpNewFilePointer,
-            DWORD dwMoveMethod )
+            uint32_t dwMoveMethod )
 {
 
   int nMode = SEEK_SET;
@@ -680,7 +680,7 @@ BOOL SetFilePointerEx(  HANDLE hFile,
   return true;
 }
 
-BOOL GetFileSizeEx( HANDLE hFile, PLARGE_INTEGER lpFileSize)
+int GetFileSizeEx( HANDLE hFile, PLARGE_INTEGER lpFileSize)
 {
   if (hFile == NULL || lpFileSize == NULL) {
     return false;
@@ -695,7 +695,7 @@ BOOL GetFileSizeEx( HANDLE hFile, PLARGE_INTEGER lpFileSize)
   return true;
 }
 
-BOOL FlushFileBuffers( HANDLE hFile )
+int FlushFileBuffers( HANDLE hFile )
 {
   if (hFile == NULL)
   {
@@ -713,7 +713,7 @@ int _fstat64(int fd, struct __stat64 *buffer)
   return fstat64(fd, buffer);
 }
 
-int _stat64(   const char *path,   struct __stat64 *buffer )
+int _stat64(const char *path, struct __stat64 *buffer )
 {
 
   if (buffer == NULL || path == NULL)
@@ -722,7 +722,7 @@ int _stat64(   const char *path,   struct __stat64 *buffer )
   return stat64(path, buffer);
 }
 
-DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
+uint32_t GetFileSize(HANDLE hFile, uint32_t* lpFileSizeHigh)
 {
   if (hFile == NULL)
   {
@@ -736,20 +736,20 @@ DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
 
   if (lpFileSizeHigh)
   {
-    *lpFileSizeHigh = (DWORD)(fileStat.st_size >> 32);
+    *lpFileSizeHigh = (uint32_t)(fileStat.st_size >> 32);
   }
 
-  return (DWORD)fileStat.st_size;
+  return (uint32_t)fileStat.st_size;
 }
 
-DWORD  GetFileAttributes(LPCTSTR lpFileName)
+uint32_t GetFileAttributes(LPCTSTR lpFileName)
 {
   if (lpFileName == NULL)
   {
     return 0;
   }
 
-  DWORD dwAttr = FILE_ATTRIBUTE_NORMAL;
+  uint32_t dwAttr = FILE_ATTRIBUTE_NORMAL;
   DIR *tmpDir = opendir(lpFileName);
   if (tmpDir)
   {
@@ -766,7 +766,7 @@ DWORD  GetFileAttributes(LPCTSTR lpFileName)
   return dwAttr;
 }
 
-DWORD  GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer)
+uint32_t GetCurrentDirectory(unsigned int nBufferLength, char* lpBuffer)
 {
   if (lpBuffer == NULL)
     return 0;

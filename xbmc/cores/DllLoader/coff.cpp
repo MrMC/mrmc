@@ -392,7 +392,6 @@ int CoffLoader::LoadSections(FILE *fp)
     namebuf[8] = '\0';
     sprintf(szBuf, "Load code Sections %s Memory %p,Length %x\n", namebuf,
             SectionData[SctnCnt], max(ScnHdr->VirtualSize, ScnHdr->SizeOfRawData));
-    OutputDebugString(szBuf);
 #endif
 
     if ( ScnHdr->SizeOfRawData < ScnHdr->VirtualSize )  //initialize BSS data in the end of section
@@ -487,7 +486,7 @@ char *CoffLoader::GetStringTblOff(int Offset)
 
 char *CoffLoader::GetSymbolName(SymbolTable_t *sym)
 {
-  __int64 index = sym->Name.Offset;
+  int64_t index = sym->Name.Offset;
   int low = (int)(index & 0xFFFFFFFF);
   int high = (int)((index >> 32) & 0xFFFFFFFF);
 
@@ -960,7 +959,7 @@ void CoffLoader::PerformFixups(void)
 
   EntryAddress = (unsigned long)RVA2Data(EntryAddress);
 
-  if( (PVOID)WindowsHeader->ImageBase == hModule )
+  if( (void*)WindowsHeader->ImageBase == hModule )
     return;
 
   if ( !Directory )

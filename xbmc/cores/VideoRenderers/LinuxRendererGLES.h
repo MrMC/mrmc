@@ -147,7 +147,7 @@ public:
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual bool         IsGuiLayer();
 
-  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void RenderUpdate(bool clear, uint32_t flags = 0, uint32_t alpha = 255);
 
   // Feature support
   virtual bool SupportsMultiPassRendering();
@@ -178,8 +178,8 @@ public:
 #endif
 
 protected:
-  virtual void Render(DWORD flags, int index);
-  void RenderUpdateVideo(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void Render(uint32_t flags, int index);
+  void RenderUpdateVideo(bool clear, uint32_t flags = 0, uint32_t alpha = 255);
 
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();

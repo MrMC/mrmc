@@ -2515,15 +2515,15 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
 
   std::string cacheFile;
   if (IsMusicDb())
-    cacheFile = StringUtils::Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/mdb-%08x.fi", (uint32_t)crc);
   else if (IsVideoDb())
-    cacheFile = StringUtils::Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/vdb-%08x.fi", (uint32_t)crc);
   else if (IsSmartPlayList())
-    cacheFile = StringUtils::Format("special://temp/sp-%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/sp-%08x.fi", (uint32_t)crc);
   else if (windowID)
-    cacheFile = StringUtils::Format("special://temp/%i-%08x.fi", windowID, (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/%i-%08x.fi", windowID, (uint32_t)crc);
   else
-    cacheFile = StringUtils::Format("special://temp/%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/%08x.fi", (uint32_t)crc);
   return cacheFile;
 }
 

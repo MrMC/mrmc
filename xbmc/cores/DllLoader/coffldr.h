@@ -50,7 +50,7 @@ public:
   int ParseCoff(FILE *fp);
   int ParseHeaders(void* hModule);
 
-  void *hModule;   //standard windows HINSTANCE handle hold the whole image
+  void *hModule;   //standard windows void* handle hold the whole image
   //Pointers to somewhere in hModule, do not free these pointers
   COFF_FileHeader_t *CoffFileHeader;
   OptionHeader_t *OptionHeader;

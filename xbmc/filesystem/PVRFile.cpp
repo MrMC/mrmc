@@ -114,7 +114,7 @@ ssize_t CPVRFile::Read(void* buffer, size_t size)
     return -1;
 
   // TODO: Fix overflow in case of sizeof(int) != sizeof(size_t)
-  const int ret = g_PVRClients->ReadStream((BYTE*)buffer, size);
+  const int ret = g_PVRClients->ReadStream((uint8_t*)buffer, size);
   if (ret < 0)
     return -1;
 

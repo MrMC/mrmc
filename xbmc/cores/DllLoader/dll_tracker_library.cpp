@@ -26,7 +26,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-extern "C" inline void tracker_library_track(uintptr_t caller, HMODULE hHandle)
+extern "C" inline void tracker_library_track(uintptr_t caller, void* hHandle)
 {
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && hHandle)
@@ -36,7 +36,7 @@ extern "C" inline void tracker_library_track(uintptr_t caller, HMODULE hHandle)
   }
 }
 
-extern "C" inline void tracker_library_free(uintptr_t caller, HMODULE hHandle)
+extern "C" inline void tracker_library_free(uintptr_t caller, void* hHandle)
 {
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && hHandle)
@@ -62,7 +62,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
     CLog::Log(LOGDEBUG,"%s: Detected %" PRIdS" unloaded dll's", pInfo->pDll->GetFileName(), pInfo->dllList.size());
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
-      LibraryLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
+      LibraryLoader* pDll = DllLoaderContainer::GetModule((void*)*it);
       if( !pDll)
       {
         CLog::Log(LOGERROR, "%s - Invalid module in tracker", __FUNCTION__);
@@ -78,7 +78,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
     // now unload the dlls
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
-      LibraryLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
+      LibraryLoader* pDll = DllLoaderContainer::GetModule((void*)*it);
       if( !pDll)
       {
         CLog::Log(LOGERROR, "%s - Invalid module in tracker", __FUNCTION__);
@@ -87,13 +87,13 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
 
       if (!pDll->IsSystemDll())
       {
-        dllFreeLibrary((HMODULE)pDll->GetHModule());
+        dllFreeLibrary((void*)pDll->GetHModule());
       }
     }
   }
 }
 
-extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
+extern "C" void* __stdcall track_LoadLibraryA(const char* file)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 
@@ -101,13 +101,13 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
   const char* path = NULL;
   if (pInfo) path = pInfo->pDll->GetFileName();
 
-  HMODULE hHandle = dllLoadLibraryExtended(file, path);
+  void* hHandle = dllLoadLibraryExtended(file, path);
   tracker_library_track(loc, hHandle);
 
   return hHandle;
 }
 
-extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
+extern "C" void* __stdcall track_LoadLibraryExA(const char* lpLibFileName, HANDLE hFile, uint32_t dwFlags)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 
@@ -115,13 +115,13 @@ extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE h
   const char* path = NULL;
   if (pInfo) path = pInfo->pDll->GetFileName();
 
-  HMODULE hHandle = dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, path);
+  void* hHandle = dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, path);
   tracker_library_track(loc, hHandle);
 
   return hHandle;
 }
 
-extern "C" BOOL __stdcall track_FreeLibrary(HINSTANCE hLibModule)
+extern "C" int __stdcall track_FreeLibrary(void* hLibModule)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 

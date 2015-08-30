@@ -48,9 +48,6 @@
  * For further reference see https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ObjCRuntimeRef/Reference/reference.html
  */
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL 
 #import "WinEvents.h"
 #import "XBMC_events.h"
 #include "utils/log.h"
@@ -58,7 +55,6 @@
 #include "threads/Event.h"
 #include "Application.h"
 #include "input/Key.h"
-#undef BOOL
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>

@@ -21,11 +21,9 @@
 #import <unistd.h>
 #import <sys/mount.h>
 
-#define BOOL XBMC_BOOL 
 #include "utils/log.h"
 #include "CompileInfo.h"
 #include "windowing/WindowingFactory.h"
-#undef BOOL
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>

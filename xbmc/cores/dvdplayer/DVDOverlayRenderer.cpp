@@ -205,13 +205,13 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
 {
   CDVDOverlaySpu* pOverlay = (CDVDOverlaySpu*)pOverlaySpu;
 
-  unsigned __int8*  p_destptr = NULL;
-  unsigned __int16* p_source = (unsigned __int16*)pOverlay->result;
-  unsigned __int8*  p_dest[3];
+  uint8_t*  p_destptr = NULL;
+  uint16_t* p_source = (uint16_t*)pOverlay->result;
+  uint8_t*  p_dest[3];
 
   int i_x, i_y;
   int rp_len, i_color, pixels_to_draw;
-  unsigned __int16 i_colprecomp, i_destalpha;
+  uint16_t i_colprecomp, i_destalpha;
 
   int btn_x_start = pOverlay->crop_i_x_start;
   int btn_x_end   = pOverlay->crop_i_x_end;
@@ -280,30 +280,30 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
             * This means Alpha 0 won't be completely transparent, but
             * that's handled in a special case above anyway. */
           // First we deal with Y
-          i_colprecomp = (unsigned __int16)p_color[0]
-                        * (unsigned __int16)(p_alpha + 1);
+          i_colprecomp = (uint16_t)p_color[0]
+                        * (uint16_t)(p_alpha + 1);
           i_destalpha = 15 - p_alpha;
 
           for (p_destptr = p_dest[0] + i_x; p_destptr < p_dest[0] + i_x + pixels_to_draw; p_destptr++)
           {
-            *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
+            *p_destptr = (( i_colprecomp + (uint16_t) * p_destptr * i_destalpha ) >> 4) & 0xFF;
           }
 
           if (!(i_y & 1)) // Only draw even lines
           {
             // now U
-            i_colprecomp = (unsigned __int16)p_color[2]
-                          * (unsigned __int16)(p_alpha + 1);
+            i_colprecomp = (uint16_t)p_color[2]
+                          * (uint16_t)(p_alpha + 1);
             for ( p_destptr = p_dest[1] + (i_x >> 1); p_destptr < p_dest[1] + ((i_x + pixels_to_draw) >> 1); p_destptr++)
             {
-              *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
+              *p_destptr = (( i_colprecomp + (uint16_t) * p_destptr * i_destalpha ) >> 4) & 0xFF;
             }
             // and finally V
-            i_colprecomp = (unsigned __int16)p_color[1]
-                          * (unsigned __int16)(p_alpha + 1);
+            i_colprecomp = (uint16_t)p_color[1]
+                          * (uint16_t)(p_alpha + 1);
             for ( p_destptr = p_dest[2] + (i_x >> 1); p_destptr < p_dest[2] + ((i_x + pixels_to_draw) >> 1); p_destptr++)
             {
-              *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
+              *p_destptr = (( i_colprecomp + (uint16_t) * p_destptr * i_destalpha ) >> 4) & 0xFF;
             }
           }
           break;

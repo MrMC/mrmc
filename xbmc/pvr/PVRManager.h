@@ -202,21 +202,21 @@ namespace PVR
      * @param dwInfo The string to get.
      * @return The requested string or an empty one if it wasn't found.
      */
-    bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
+    bool TranslateCharInfo(uint32_t dwInfo, std::string &strValue) const;
 
     /*!
      * @brief Get a GUIInfoManager integer.
      * @param dwInfo The integer to get.
      * @return The requested integer or 0 if it wasn't found.
      */
-    int TranslateIntInfo(DWORD dwInfo) const;
+    int TranslateIntInfo(uint32_t dwInfo) const;
 
     /*!
      * @brief Get a GUIInfoManager boolean.
      * @param dwInfo The boolean to get.
      * @return The requested boolean or false if it wasn't found.
      */
-    bool TranslateBoolInfo(DWORD dwInfo) const;
+    bool TranslateBoolInfo(uint32_t dwInfo) const;
 
     /*!
      * @brief Show the player info.

@@ -38,48 +38,32 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <string.h>
-#if defined(TARGET_DARWIN)
-#include <stdio.h>
-#include <sched.h>
-#include <AvailabilityMacros.h>
-#ifndef __STDC_FORMAT_MACROS
-  #define __STDC_FORMAT_MACROS
-#endif
-#include <inttypes.h>
-#include <sys/sysctl.h>
-#include <mach/mach.h>
-#if defined(TARGET_DARWIN_OSX)
-#include <libkern/OSTypes.h>
-#endif
-#elif defined(TARGET_FREEBSD)
-#include <stdio.h>
-#include <sys/sysctl.h>
-#include <sys/types.h>
-#else
-#include <sys/sysinfo.h>
-#endif
-#include <sys/time.h>
-#include <time.h>
-#endif
 
-#if defined(__ppc__) || defined(__powerpc__)
-#define PIXEL_ASHIFT 0
-#define PIXEL_RSHIFT 8
-#define PIXEL_GSHIFT 16
-#define PIXEL_BSHIFT 24
-#define AMASK 0x000000ff
-#define RMASK 0x0000ff00
-#define GMASK 0x00ff0000
-#define BMASK 0xff000000
+#if defined(TARGET_DARWIN)
+  #include <stdio.h>
+  #include <sched.h>
+  #include <AvailabilityMacros.h>
+  #ifndef __STDC_FORMAT_MACROS
+    #define __STDC_FORMAT_MACROS
+  #endif
+
+  #include <inttypes.h>
+  #include <sys/sysctl.h>
+  #include <mach/mach.h>
+
+  #if defined(TARGET_DARWIN_OSX)
+    #include <libkern/OSTypes.h>
+  #endif
+
+#elif defined(TARGET_FREEBSD)
+  #include <stdio.h>
+  #include <sys/sysctl.h>
+  #include <sys/types.h>
 #else
-#define PIXEL_ASHIFT 24
-#define PIXEL_RSHIFT 16
-#define PIXEL_GSHIFT 8
-#define PIXEL_BSHIFT 0
-#define AMASK 0xff000000
-#define RMASK 0x00ff0000
-#define GMASK 0x0000ff00
-#define BMASK 0x000000ff
+  #include <sys/sysinfo.h>
+  #endif
+  #include <sys/time.h>
+  #include <time.h>
 #endif
 
 #include <stdint.h>
@@ -109,28 +93,28 @@
 #endif
 
 #ifndef PRIdS
-#define PRIdS "zd"
+  #define PRIdS "zd"
 #endif
 
 #ifndef PRIuS
-#define PRIuS "zu"
+  #define PRIuS "zu"
 #endif
 
 #ifdef TARGET_POSIX
 
-#define XXLog(a,b) printf("%s", (b))
+//#define XXLog(a,b) printf("%s", (b))
 
 #ifndef INSTALL_PATH
-#define INSTALL_PATH    "/usr/share/xbmc"
+  #define INSTALL_PATH    "/usr/share/xbmc"
 #endif
 
 #ifndef BIN_INSTALL_PATH
-#define BIN_INSTALL_PATH "/usr/lib/xbmc"
+  #define BIN_INSTALL_PATH "/usr/lib/xbmc"
 #endif
 
-#define CONST   const
-#define FALSE   0
-#define TRUE    1
+//#define CONST   const
+//#define FALSE   0
+//#define TRUE    1
 
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf
@@ -139,15 +123,17 @@
 #define strcmpi strcasecmp
 #define strnicmp  strncasecmp
 #define _atoi64(x) atoll(x)
-#define CopyMemory(dst,src,size) memmove(dst, src, size)
+//#define CopyMemory(dst,src,size) memmove(dst, src, size)
 #define ZeroMemory(dst,size) memset(dst, 0, size)
 
+/*
 #define VOID    void
 #define __int8    char
 #define __int16   short
 #define __int32   int
 #define __int64   long long
 #define __uint64  unsigned long long
+ */
 
 #if defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) || defined (__arm__) || defined(__mips__) // should this be powerpc64 only?
 #define __stdcall
@@ -155,146 +141,151 @@
 #define __stdcall   __attribute__((__stdcall__))
 #endif /* __x86_64__ */
 #define __cdecl
-#define WINBASEAPI
-#define NTAPI       __stdcall
-#define CALLBACK    __stdcall
-#define WINAPI      __stdcall
-#define WINAPIV     __cdecl
+
+//#define WINBASEAPI
+//#define NTAPI       __stdcall
+//#define CALLBACK    __stdcall
+//#define WINAPI      __stdcall
+//#define WINAPIV     __cdecl
+
 #if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
-#define APIENTRY    WINAPI
+  #define APIENTRY  __stdcall
 #else
-#define APIENTRY
+  #define APIENTRY
 #endif
-#define APIPRIVATE  __stdcall
-#define IN
-#define OUT
-#define OPTIONAL
-#define _declspec(X)
+
+//#define APIPRIVATE  __stdcall
+//#define IN
+//#define OUT
+//#define OPTIONAL
+//#define _declspec(X)
 #define __declspec(X)
 
-#define __try try
-#define EXCEPTION_EXECUTE_HANDLER ...
+//#define __try try
+//#define EXCEPTION_EXECUTE_HANDLER ...
 //NOTE: dont try to define __except because it breaks g++ (already uses it).
 
 struct CXHandle; // forward declaration
 typedef CXHandle* HANDLE;
 
-typedef void* HINSTANCE;
-typedef void* HMODULE;
+//typedef void* HINSTANCE;
+//typedef void* HMODULE;
 
-typedef unsigned int  DWORD;
-typedef unsigned short  WORD;
-typedef unsigned char   BYTE;
-typedef char        CHAR;
-typedef unsigned char UCHAR;
-typedef wchar_t     WCHAR;
-typedef int         BOOL;
-typedef BYTE        BOOLEAN;
-typedef short       SHORT;
-typedef unsigned short  USHORT;
-typedef int         INT;
-typedef unsigned int  UINT;
+//typedef unsigned int  DWORD;
+//typedef unsigned short  WORD;
+//typedef unsigned char   BYTE;
+//typedef char        CHAR;
+//typedef unsigned char UCHAR;
+//typedef wchar_t     WCHAR;
+//typedef int         BOOL;
+//typedef BYTE        BOOLEAN;
+//typedef short       SHORT;
+//typedef unsigned short  USHORT;
+//typedef int         INT;
+//typedef unsigned int  UINT;
 // typedef int INT32;              // unused; must match Xmd.h but why bother
-typedef unsigned int  UINT32;
-typedef long long     INT64;
-typedef unsigned long long    UINT64;
-typedef long        LONG;
-typedef long long     LONGLONG;
+//typedef unsigned int  UINT32;
+//typedef long long     INT64;
+//typedef unsigned long long    UINT64;
+//typedef long        LONG;
+//typedef long long     LONGLONG;
+
 #if defined(TARGET_DARWIN_OSX)
-typedef UInt32          ULONG;
+typedef uint32_t        ULONG;
 #else
 typedef unsigned long   ULONG;
 #endif
-typedef float         FLOAT;
-typedef size_t        SIZE_T;
-typedef void*         PVOID;
-typedef void*         LPVOID;
+
+//typedef float         FLOAT;
+//typedef size_t        SIZE_T;
+//typedef void*         PVOID;
+//typedef void*         LPVOID;
 //typedef PVOID         HANDLE;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
-typedef HANDLE        HDC;
-typedef void*       HWND;
+//typedef HANDLE        HDC;
+//typedef void*       HWND;
+
 #if defined(TARGET_DARWIN_OSX)
 typedef SInt32      HRESULT;
 #else
 typedef LONG        HRESULT;
 #endif
-typedef BYTE*       LPBYTE;
-typedef DWORD*        LPDWORD;
-typedef CONST CHAR*   LPCSTR;
-typedef CONST WCHAR*    LPCWSTR;
-typedef CHAR*     LPTSTR;
-typedef WCHAR         *PWSTR,      *LPWSTR,    *NWPSTR;
-typedef CHAR            *PSTR,       *LPSTR,     *NPSTR;
-typedef LONG        *PLONG, *LPLONG;
+
+//typedef BYTE*       LPBYTE;
+//typedef unsigned int*        LPDWORD;
+//typedef const char*   LPCSTR;
+//typedef CONST WCHAR*    LPCWSTR;
+//typedef char*     LPTSTR;
+//typedef wchar_t         *PWSTR,      *LPWSTR,    *NWPSTR;
+//typedef char          *PSTR,       *LPSTR,     *NPSTR;
+//typedef long        *PLONG, *LPLONG;
+
 #ifdef UNICODE
-typedef LPCWSTR       LPCTSTR;
+  typedef const wchar_t*  LPCTSTR;
 #else
-typedef LPCSTR      LPCTSTR;
+  typedef const char*     LPCTSTR;
 #endif
-typedef unsigned __int64 ULONGLONG;
-typedef long        LONG_PTR;
-typedef unsigned long   ULONG_PTR;
-typedef ULONG_PTR     DWORD_PTR;
-typedef __int64     __time64_t;
-typedef intptr_t (*FARPROC)(void);
 
-#define MAXWORD   0xffff
-#define MAXDWORD  0xffffffff
+//typedef uint64_t ULONGLONG;
+//typedef long        LONG_PTR;
+//typedef unsigned long   ULONG_PTR;
+//typedef ULONG_PTR     DWORD_PTR;
+//typedef __int64     __time64_t;
 
-typedef DWORD LCID;
-typedef WORD* LPWORD;
-typedef BOOL* LPBOOL;
-typedef CHAR* LPCHAR;
-typedef CHAR* PCHAR;
-typedef const void* LPCVOID;
+//#define MAXDWORD  0xffffffff
+
+//typedef unsigned int LCID;
+//typedef WORD* LPWORD;
+//typedef BOOL* LPBOOL;
+//typedef char* LPCHAR;
+//typedef char* PCHAR;
+//typedef const void* LPCVOID;
 
 typedef union _LARGE_INTEGER
 {
   struct {
-    DWORD LowPart;
+    uint32_t LowPart;
     int32_t HighPart;
   } u;
-  LONGLONG QuadPart;
+  long long QuadPart;
 } LARGE_INTEGER, *PLARGE_INTEGER;
 
  typedef union _ULARGE_INTEGER {
   struct {
-      DWORD LowPart;
-      DWORD HighPart;
+      uint32_t LowPart;
+      uint32_t HighPart;
   } u;
-  ULONGLONG QuadPart;
+  uint64_t QuadPart;
 } ULARGE_INTEGER, *PULARGE_INTEGER;
 
-#define MAKELONG(low,high)     ((LONG)(((WORD)((DWORD_PTR)(low) & 0xFFFF)) | ((DWORD)((WORD)((DWORD_PTR)(high) & 0xFFFF))) << 16))
-LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand);
-
-void OutputDebugString(LPCTSTR lpOuputString);
+//#define MAKELONG(low,high)     ((LONG)(((WORD)((DWORD_PTR)(low) & 0xFFFF)) | ((DWORD)((WORD)((DWORD_PTR)(high) & 0xFFFF))) << 16))
 
 // Date / Time
 
 typedef struct _SYSTEMTIME
 {
-  WORD wYear;
-  WORD wMonth;
-  WORD wDayOfWeek;
-  WORD wDay;
-  WORD wHour;
-  WORD wMinute;
-  WORD wSecond;
-  WORD wMilliseconds;
+  uint16_t wYear;
+  uint16_t wMonth;
+  uint16_t wDayOfWeek;
+  uint16_t wDay;
+  uint16_t wHour;
+  uint16_t wMinute;
+  uint16_t wSecond;
+  uint16_t wMilliseconds;
 } SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
 
+
 typedef struct _TIME_ZONE_INFORMATION {
-  LONG Bias;
-  WCHAR StandardName[32];
+  long Bias;
+  wchar_t StandardName[32];
   SYSTEMTIME StandardDate;
-  LONG StandardBias;
-  WCHAR DaylightName[32];
+  long StandardBias;
+  wchar_t DaylightName[32];
   SYSTEMTIME DaylightDate;
-  LONG DaylightBias;
+  long DaylightBias;
 } TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
 
-#define TIME_ZONE_ID_INVALID    ((DWORD)0xFFFFFFFF)
+#define TIME_ZONE_ID_INVALID    ((uint32_t)0xFFFFFFFF)
 #define TIME_ZONE_ID_UNKNOWN    0
 #define TIME_ZONE_ID_STANDARD   1
 #define TIME_ZONE_ID_DAYLIGHT   2
@@ -333,9 +324,6 @@ typedef struct _TIME_ZONE_INFORMATION {
 
 typedef int SOCKET;
 
-// Thread
-typedef int (*LPTHREAD_START_ROUTINE)(void *);
-
 // File
 #define O_BINARY 0
 #define O_TEXT   0
@@ -363,7 +351,7 @@ struct _stati64 {
   short          st_uid;
   short          st_gid;
   dev_t st_rdev;
-  __int64  st_size;
+  int64_t  st_size;
   time_t _st_atime;
   time_t _st_mtime;
   time_t _st_ctime;
@@ -371,22 +359,22 @@ struct _stati64 {
 
 typedef struct _FILETIME
 {
-  DWORD dwLowDateTime;
-  DWORD dwHighDateTime;
+  uint32_t dwLowDateTime;
+  uint32_t dwHighDateTime;
 } FILETIME, *PFILETIME, *LPFILETIME;
 
 typedef struct _WIN32_FIND_DATA
 {
-    DWORD     dwFileAttributes;
+    uint32_t     dwFileAttributes;
     FILETIME  ftCreationTime;
     FILETIME  ftLastAccessTime;
     FILETIME  ftLastWriteTime;
-    DWORD     nFileSizeHigh;
-    DWORD     nFileSizeLow;
-    DWORD     dwReserved0;
-    DWORD     dwReserved1;
-    CHAR      cFileName[260];
-    CHAR      cAlternateFileName[14];
+    uint32_t     nFileSizeHigh;
+    uint32_t     nFileSizeLow;
+    uint32_t     dwReserved0;
+    uint32_t     dwReserved1;
+    char      cFileName[260];
+    char      cAlternateFileName[14];
 } WIN32_FIND_DATA, *PWIN32_FIND_DATA, *LPWIN32_FIND_DATA;
 
 #define LPWIN32_FIND_DATAA LPWIN32_FIND_DATA
@@ -394,9 +382,9 @@ typedef struct _WIN32_FIND_DATA
 #define FILE_ATTRIBUTE_DIRECTORY           0x00000010
 
 typedef struct _SECURITY_ATTRIBUTES {
-  DWORD nLength;
-  LPVOID lpSecurityDescriptor;
-  BOOL bInheritHandle;
+  uint32_t nLength;
+  void* lpSecurityDescriptor;
+  int bInheritHandle;
 } SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 
 #define FILE_BEGIN              0
@@ -412,8 +400,8 @@ typedef struct _SECURITY_ATTRIBUTES {
 // Memory
 typedef struct _MEMORYSTATUSEX
 {
-  DWORD dwLength;
-  DWORD dwMemoryLoad;
+  uint32_t dwLength;
+  uint32_t dwMemoryLoad;
 
   uint64_t ullTotalPhys;
   uint64_t ullAvailPhys;
@@ -440,13 +428,13 @@ typedef struct _MEMORYSTATUSEX
 
 // Basic D3D stuff
 typedef struct _RECT {
-  LONG left;
-  LONG top;
-  LONG right;
-  LONG bottom;
+  long left;
+  long top;
+  long right;
+  long bottom;
 } RECT, *PRECT;
 
-typedef DWORD D3DCOLOR;
+typedef uint32_t D3DCOLOR;
 
 typedef enum _D3DFORMAT
 {
@@ -484,10 +472,10 @@ typedef enum D3DXIMAGE_FILEFORMAT
 } D3DXIMAGE_FILEFORMAT, *LPD3DXIMAGE_FILEFORMAT;
 
 typedef struct D3DXIMAGE_INFO {
-    UINT Width;
-    UINT Height;
-    UINT Depth;
-    UINT MipLevels;
+    unsigned int Width;
+    unsigned int Height;
+    unsigned int Depth;
+    unsigned int MipLevels;
     D3DFORMAT Format;
     D3DRESOURCETYPE ResourceType;
     D3DXIMAGE_FILEFORMAT ImageFileFormat;
@@ -495,19 +483,19 @@ typedef struct D3DXIMAGE_INFO {
 
 typedef struct _D3DPRESENT_PARAMETERS_
 {
-    UINT                BackBufferWidth;
-    UINT                BackBufferHeight;
+    unsigned int                BackBufferWidth;
+    unsigned int                BackBufferHeight;
     D3DFORMAT           BackBufferFormat;
-    UINT                BackBufferCount;
+    unsigned int                BackBufferCount;
     //D3DMULTISAMPLE_TYPE MultiSampleType;
     //D3DSWAPEFFECT       SwapEffect;
     //HWND                hDeviceWindow;
-    BOOL                Windowed;
-    BOOL                EnableAutoDepthStencil;
+    int                 Windowed;
+    int                 EnableAutoDepthStencil;
     D3DFORMAT           AutoDepthStencilFormat;
-    DWORD               Flags;
-    UINT                FullScreen_RefreshRateInHz;
-    UINT                FullScreen_PresentationInterval;
+    uint32_t               Flags;
+    unsigned int                FullScreen_RefreshRateInHz;
+    unsigned int                FullScreen_PresentationInterval;
     //D3DSurface         *BufferSurfaces[3];
     //D3DSurface         *DepthStencilSurface;
 } D3DPRESENT_PARAMETERS;
@@ -534,11 +522,6 @@ typedef struct _D3DMATRIX {
         float m[4][4];
     };
 } D3DMATRIX;
-
-// Misc stuff found in the code, not really important
-#define PAGE_READONLY     0x02
-#define PAGE_READWRITE    0x04
-#define MAXULONG_PTR    ((ULONG) 0xffffffff)
 
 // CreateFile defines
 #define FILE_FLAG_WRITE_THROUGH         0x80000000
@@ -575,13 +558,14 @@ typedef struct _D3DMATRIX {
 #define FILE_SHARE_WRITE                 0x00000002
 #define FILE_SHARE_DELETE                0x00000004
 
+/*
 // Audio stuff
 typedef struct tWAVEFORMATEX
 {
 WORD    wFormatTag;
 WORD    nChannels;
-DWORD   nSamplesPerSec;
-DWORD   nAvgBytesPerSec;
+uint32_t   nSamplesPerSec;
+uint32_t   nAvgBytesPerSec;
 WORD    nBlockAlign;
 WORD    wBitsPerSample;
 WORD    cbSize;
@@ -614,9 +598,9 @@ WORD    cbSize;
 
 typedef struct tGUID
 {
-  DWORD Data1;
+  uint32_t Data1;
   WORD  Data2, Data3;
-  BYTE  Data4[8];
+  uint8_t Data4[8];
 } __attribute__((__packed__)) GUID;
 
 static const GUID KSDATAFORMAT_SUBTYPE_UNKNOWN = {
@@ -646,10 +630,10 @@ typedef struct tWAVEFORMATEXTENSIBLE
     WORD wSamplesPerBlock;
     WORD wReserved;
   } Samples;
-  DWORD dwChannelMask;
+  uint32_t dwChannelMask;
   GUID SubFormat;
 } __attribute__((__packed__)) WAVEFORMATEXTENSIBLE;
-
+*/
 
 
 #endif

@@ -114,7 +114,7 @@ bool SoLoader::IsSystemDll()
   return false;
 }
 
-HMODULE SoLoader::GetHModule()
+void* SoLoader::GetHModule()
 {
   return m_soHandle;
 }

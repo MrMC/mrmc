@@ -22,7 +22,8 @@
  */
 #include "PlatformDefs.h" // UINT DWORD LPCSTR LPSTR LPBOOL ...
 
-DWORD GetLastError();
-VOID  SetLastError(DWORD dwErrCode);
+long long Int32x32To64(long Multiplier, long Multiplicand);
+uint32_t GetLastError();
+void  SetLastError(unsigned int dwErrCode);
 
 #endif

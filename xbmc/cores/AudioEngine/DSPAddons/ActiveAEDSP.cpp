@@ -381,7 +381,7 @@ int CActiveAEDSP::GetAudioDSPAddonId(const AddonPtr &addon) const
 
 /*! @name GUIInfoManager calls */
 //@{
-bool CActiveAEDSP::TranslateBoolInfo(DWORD dwInfo) const
+bool CActiveAEDSP::TranslateBoolInfo(uint32_t dwInfo) const
 {
   bool bReturn(false);
 
@@ -420,7 +420,7 @@ bool CActiveAEDSP::TranslateBoolInfo(DWORD dwInfo) const
   return bReturn;
 }
 
-bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
+bool CActiveAEDSP::TranslateCharInfo(uint32_t dwInfo, std::string &strValue) const
 {
   bool bReturn(true);
 

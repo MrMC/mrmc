@@ -3248,8 +3248,8 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
   }
 }
 
-DWORD movieTime = 0;
-DWORD castTime = 0;
+uint32_t movieTime = 0;
+uint32_t castTime = 0;
 
 CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, int id)
 {
@@ -3413,7 +3413,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   if (record == NULL)
     return details;
 
-  DWORD time = XbmcThreads::SystemClockMillis();
+  uint32_t time = XbmcThreads::SystemClockMillis();
   int idMovie = record->at(0).get_asInt();
 
   GetDetailsFromDB(record, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets, details);
@@ -3475,7 +3475,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   if (record == NULL)
     return details;
 
-  DWORD time = XbmcThreads::SystemClockMillis();
+  uint32_t time = XbmcThreads::SystemClockMillis();
   int idTvShow = record->at(0).get_asInt();
 
   GetDetailsFromDB(record, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details, 1);
@@ -3530,7 +3530,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   if (record == NULL)
     return details;
 
-  DWORD time = XbmcThreads::SystemClockMillis();
+  uint32_t time = XbmcThreads::SystemClockMillis();
   int idEpisode = record->at(0).get_asInt();
 
   GetDetailsFromDB(record, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets, details);

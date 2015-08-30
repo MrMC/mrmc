@@ -247,7 +247,7 @@ void CExternalPlayer::Process()
 
   m_callback.OnPlayBackStarted();
 
-  BOOL ret = TRUE;
+  int ret = TRUE;
 #if defined(TARGET_ANDROID)
   ret = ExecuteAppAndroid(m_filename.c_str(), mainFile.c_str());
 #elif defined(TARGET_POSIX) || defined(TARGET_DARWIN_OSX)
@@ -301,7 +301,7 @@ void CExternalPlayer::Process()
 }
 
 #if !defined(TARGET_ANDROID) && (defined(TARGET_POSIX) || defined(TARGET_DARWIN_OSX))
-BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
+int CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
 

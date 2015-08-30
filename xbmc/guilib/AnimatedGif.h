@@ -46,10 +46,10 @@
  */
 typedef struct tagGUIRGBQUAD
 {
-  BYTE rgbBlue;
-  BYTE rgbGreen;
-  BYTE rgbRed;
-  BYTE rgbReserved;
+  uint8_t rgbBlue;
+  uint8_t rgbGreen;
+  uint8_t rgbRed;
+  uint8_t rgbReserved;
 }
 GUIRGBQUAD;
 
@@ -59,17 +59,17 @@ GUIRGBQUAD;
  */
 typedef struct tagGUIBITMAPINFOHEADER
 {
-  DWORD biSize;
-  LONG biWidth;
-  LONG biHeight;
-  WORD biPlanes;
-  WORD biBitCount;
-  DWORD biCompression;
-  DWORD biSizeImage;
-  LONG biXPelsPerMeter;
-  LONG biYPelsPerMeter;
-  DWORD biClrUsed;
-  DWORD biClrImportant;
+  uint32_t biSize;
+  long biWidth;
+  long biHeight;
+  uint16_t biPlanes;
+  uint16_t biBitCount;
+  uint32_t biCompression;
+  uint32_t biSizeImage;
+  long biXPelsPerMeter;
+  long biYPelsPerMeter;
+  uint32_t biClrUsed;
+  uint32_t biClrImportant;
 }
 GUIBITMAPINFOHEADER;
 

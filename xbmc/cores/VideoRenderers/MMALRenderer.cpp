@@ -434,7 +434,7 @@ void CMMALRenderer::Update()
   ManageDisplay();
 }
 
-void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CMMALRenderer::RenderUpdate(bool clear, uint32_t flags, uint32_t alpha)
 {
   CSingleLock lock(m_sharedSection);
   int source = m_iYV12RenderBuffer;

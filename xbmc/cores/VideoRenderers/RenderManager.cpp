@@ -91,7 +91,7 @@ public:
   }
 
 private:
-  DWORD             m_count;
+  uint32_t             m_count;
   T                 m_lock;
   CCriticalSection &m_owned;
 };
@@ -795,7 +795,7 @@ void CXBMCRenderManager::RegisterRenderFeaturesCallBack(const void *ctx, RenderF
     m_pRenderer->RegisterRenderFeaturesCallBack(ctx, fn);
 }
 
-void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
+void CXBMCRenderManager::Render(bool clear, uint32_t flags, uint32_t alpha, bool gui)
 {
   CSharedLock lock(m_sharedSection);
 
@@ -852,7 +852,7 @@ bool CXBMCRenderManager::IsVideoLayer()
 }
 
 /* simple present method */
-void CXBMCRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
+void CXBMCRenderManager::PresentSingle(bool clear, uint32_t flags, uint32_t alpha)
 {
   CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];
@@ -867,7 +867,7 @@ void CXBMCRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 
 /* new simpler method of handling interlaced material, *
  * we just render the two fields right after eachother */
-void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
+void CXBMCRenderManager::PresentFields(bool clear, uint32_t flags, uint32_t alpha)
 {
   CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];
@@ -888,7 +888,7 @@ void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
   }
 }
 
-void CXBMCRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
+void CXBMCRenderManager::PresentBlend(bool clear, uint32_t flags, uint32_t alpha)
 {
   CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];

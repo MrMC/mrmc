@@ -20,9 +20,6 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #include "WinSystemOSX.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
@@ -34,7 +31,6 @@
 #include "utils/StringUtils.h"
 #include "osx/CocoaInterface.h"
 #include "osx/DarwinUtils.h"
-#undef BOOL
 
 #import "osx/OSX/OSXGLView.h"
 #import "osx/OSX/OSXGLWindow.h"

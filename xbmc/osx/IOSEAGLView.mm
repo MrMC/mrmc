@@ -20,7 +20,6 @@
 
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL 
 #include <sys/resource.h>
 #include <signal.h>
 #include <stdio.h>
@@ -37,7 +36,6 @@
 #include "Util.h"
 #include "XbmcContext.h"
 #include "WindowingFactory.h"
-#undef BOOL
 
 #import <QuartzCore/QuartzCore.h>
 

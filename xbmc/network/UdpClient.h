@@ -47,9 +47,9 @@ protected:
   bool Broadcast(int aPort, const std::string& aMessage);
   bool Send(const std::string& aIpAddress, int aPort, const std::string& aMessage);
   bool Send(SOCKADDR_IN aAddress, const std::string& aMessage);
-  bool Send(SOCKADDR_IN aAddress, LPBYTE pMessage, DWORD dwSize);
+  bool Send(SOCKADDR_IN aAddress, uint8_t* pMessage, uint32_t dwSize);
 
-  virtual void OnMessage(SOCKADDR_IN& aRemoteAddress, const std::string& aMessage, LPBYTE pMessage, DWORD dwMessageLength){};
+  virtual void OnMessage(SOCKADDR_IN& aRemoteAddress, const std::string& aMessage, uint8_t* pMessage, uint32_t dwMessageLength){};
 
 protected:
 
@@ -57,8 +57,8 @@ protected:
   {
     SOCKADDR_IN address;
     std::string message;
-    LPBYTE binary;
-    DWORD binarySize;
+    uint8_t* binary;
+    uint32_t binarySize;
   };
 
   bool DispatchNextCommand();

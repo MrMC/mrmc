@@ -40,7 +40,7 @@ public:
   virtual int ResolveExport(const char* symbol, void** ptr, bool logging = true) = 0;
   virtual int ResolveOrdinal(unsigned long ordinal, void** ptr);
   virtual bool IsSystemDll() = 0;
-  virtual HMODULE GetHModule() = 0;
+  virtual void* GetHModule() = 0;
   virtual bool HasSymbols() = 0;
 
   const char *GetName() const; // eg "mplayer.dll"

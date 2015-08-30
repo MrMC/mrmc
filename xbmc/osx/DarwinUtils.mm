@@ -18,15 +18,12 @@
  *
  */
 
-#define BOOL XBMC_BOOL 
 #include "system.h"
 #include "Application.h"
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
 #include "CompileInfo.h"
-
-#undef BOOL
 
 #if defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)

@@ -39,7 +39,7 @@ CAudioDecoder::CAudioDecoder()
 
   // output buffer (for transferring data from the Pcm Buffer to the rest of the audio chain)
   memset(&m_outputBuffer, 0, OUTPUT_SAMPLES * sizeof(float));
-  memset(&m_pcmInputBuffer, 0, INPUT_SIZE * sizeof(BYTE));
+  memset(&m_pcmInputBuffer, 0, INPUT_SIZE * sizeof(uint8_t));
   memset(&m_inputBuffer, 0, INPUT_SAMPLES * sizeof(float));
 
 }

@@ -19,14 +19,9 @@
  */
 
 #if defined(TARGET_DARWIN_IOS)
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL 
 #include "system.h"
-#undef BOOL
 
 #ifdef HAS_EGL
-#define BOOL XBMC_BOOL 
 #include "WinSystemIOS.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
@@ -38,7 +33,6 @@
 #include "threads/SingleLock.h"
 #include "video/videosync/VideoSyncIos.h"
 #include <vector>
-#undef BOOL
 
 #import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>

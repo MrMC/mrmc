@@ -26,23 +26,19 @@
 #include <ctype.h>
 #include <errno.h>
 
-void OutputDebugString(LPCTSTR lpOuputString)
+long long Int32x32To64(long Multiplier, long Multiplicand)
 {
-}
-
-LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand)
-{
-  LONGLONG result = Multiplier;
+  long long result = Multiplier;
   result *= Multiplicand;
   return result;
 }
 
-DWORD GetLastError()
+uint32_t GetLastError()
 {
   return errno;
 }
 
-VOID SetLastError(DWORD dwErrCode)
+void SetLastError(uint32_t dwErrCode)
 {
   errno = dwErrCode;
 }

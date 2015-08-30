@@ -54,7 +54,7 @@ public:
   std::string URLEncode(const std::string &value);
   std::string URLEncode(const CURL &url);
 
-  DWORD ConvertUnixToNT(int error);
+  uint32_t ConvertUnixToNT(int error);
 private:
   SMBCCTX *m_context;
 #ifdef TARGET_POSIX
