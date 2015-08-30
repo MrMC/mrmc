@@ -481,10 +481,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
     for (vector<ADDON::TYPE>::const_iterator type = validTypes.begin(); type != validTypes.end(); ++type)
     {
       VECADDONS typeAddons;
-      if (*type == ADDON_EXECUTABLE)
-        CAddonsDirectory::GetScriptsAndPlugins("executable", typeAddons);
-      else
-        CAddonMgr::GetInstance().GetAddons(*type, typeAddons);
+      CAddonMgr::GetInstance().GetAddons(*type, typeAddons);
 
       addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
     }

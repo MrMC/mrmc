@@ -22,7 +22,6 @@
 #include "JSONUtils.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonDatabase.h"
-#include "addons/PluginSource.h"
 #include "messaging/ApplicationMessenger.h"
 #include "TextureCache.h"
 #include "filesystem/File.h"
@@ -39,12 +38,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
 {
   vector<TYPE> addonTypes;
   TYPE addonType = TranslateType(parameterObject["type"].asString());
-  CPluginSource::Content content = CPluginSource::Translate(parameterObject["content"].asString());
   CVariant enabled = parameterObject["enabled"];
-
-  // ignore the "content" parameter if the type is specified but not a plugin or script
-  if (addonType != ADDON_UNKNOWN)
-    content = CPluginSource::UNKNOWN;
 
   addonTypes.push_back(addonType);
 
@@ -81,12 +75,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   // remove library addons
   for (int index = 0; index < (int)addons.size(); index++)
   {
-    PluginPtr plugin;
-    if (content != CPluginSource::UNKNOWN)
-      plugin = std::dynamic_pointer_cast<CPluginSource>(addons.at(index));
-
-    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
-       ((content != CPluginSource::UNKNOWN && plugin == NULL) || (plugin != NULL && !plugin->Provides(content))))
+    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX))
     {
       addons.erase(addons.begin() + index);
       index--;

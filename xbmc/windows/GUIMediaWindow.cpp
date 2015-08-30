@@ -31,7 +31,6 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
-#include "addons/PluginSource.h"
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
 #endif

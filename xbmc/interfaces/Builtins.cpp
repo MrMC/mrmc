@@ -46,7 +46,6 @@
 #include "addons/Addon.h" // for TranslateType, TranslateContent
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
-#include "addons/PluginSource.h"
 #include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/AnnouncementManager.h"
@@ -507,18 +506,10 @@ int CBuiltins::Execute(const std::string& execString)
       // Test to see if the param is an addon ID
       if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
       {
-        //Get the correct extension point to run
-        if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
-        {
-          scriptpath = addon->LibPath();
-        }
-        else
-        {
-          //Run a random extension point (old behaviour).
-          CAddonMgr::GetInstance().GetAddon(params[0], addon);
-          scriptpath = addon->LibPath();
-          CLog::Log(LOGWARNING, "RunScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
-        }
+        //Run a random extension point (old behaviour).
+        CAddonMgr::GetInstance().GetAddon(params[0], addon);
+        scriptpath = addon->LibPath();
+        CLog::Log(LOGWARNING, "RunScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
       }
       else
         scriptpath = params[0];

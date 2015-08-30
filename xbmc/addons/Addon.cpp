@@ -342,7 +342,6 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_ADSPDLL:
       ext = ADDON_DSP_AUDIO_EXT;
       break;
-    case ADDON_SCRIPT_LIBRARY:
     case ADDON_CONTEXT_ITEM:
       ext = ADDON_PYTHON_EXT;
       break;
@@ -360,7 +359,6 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     switch (m_props.type)
     {
       case ADDON_SCREENSAVER:
-      case ADDON_SCRIPT_LIBRARY:
       case ADDON_SCRAPER_ALBUMS:
       case ADDON_SCRAPER_ARTISTS:
       case ADDON_SCRAPER_MOVIES:

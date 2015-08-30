@@ -47,7 +47,6 @@
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
-#include "PluginSource.h"
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
@@ -85,9 +84,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
   const TYPE type = TranslateType(props->ext_point_id);
   switch (type)
   {
-
-    case ADDON_SCRIPT_LIBRARY:
-      return AddonPtr(new CAddon(props));
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CWebinterface(props));
     case ADDON_SCRAPER_ALBUMS:
@@ -783,8 +779,6 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 {
   switch (addonProps.type)
   {
-    case ADDON_SCRIPT_LIBRARY:
-      return AddonPtr(new CAddon(addonProps));
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CWebinterface(addonProps));
     case ADDON_SCRAPER_ALBUMS:

@@ -27,7 +27,6 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "FileItem.h"
 #include "addons/AddonInstaller.h"
-#include "addons/PluginSource.h"
 #include "guilib/TextureManager.h"
 #include "File.h"
 #include "SpecialProtocol.h"
@@ -50,7 +49,6 @@ const auto CATEGORY_LOOK_AND_FEEL = "category.lookandfeel";
 const std::set<TYPE> dependencyTypes = {
     ADDON_VIZ_LIBRARY,
     ADDON_SCRAPER_LIBRARY,
-    ADDON_SCRIPT_LIBRARY,
 };
 
 const std::set<TYPE> infoProviderTypes = {

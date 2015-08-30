@@ -11,7 +11,6 @@
 		0E3036ED1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
 		0E3036EE1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
 		180F6C8117CE9A5700127892 /* smc.c in Sources */ = {isa = PBXBuildFile; fileRef = 180F6C8017CE9A5700127892 /* smc.c */; };
-		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B74B13993D8A007C848B /* JSONVariantParser.cpp */; };
 		1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B75113993DA0007C848B /* JSONVariantWriter.cpp */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
@@ -1041,7 +1040,6 @@
 		DFF0F12417528350002DA3A4 /* GUIDialogAddonSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8F912942718009E7A26 /* GUIDialogAddonSettings.cpp */; };
 		DFF0F12517528350002DA3A4 /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C38812942090009E7A26 /* GUIViewStateAddonBrowser.cpp */; };
 		DFF0F12617528350002DA3A4 /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C97A12943809009E7A26 /* GUIWindowAddonBrowser.cpp */; };
-		DFF0F12717528350002DA3A4 /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		DFF0F12817528350002DA3A4 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		DFF0F12917528350002DA3A4 /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */; };
 		DFF0F12A17528350002DA3A4 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
@@ -2025,7 +2023,6 @@
 		E4991184174E5CE000741B6D /* GUIDialogAddonSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8F912942718009E7A26 /* GUIDialogAddonSettings.cpp */; };
 		E4991185174E5CE000741B6D /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C38812942090009E7A26 /* GUIViewStateAddonBrowser.cpp */; };
 		E4991186174E5CE000741B6D /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C97A12943809009E7A26 /* GUIWindowAddonBrowser.cpp */; };
-		E4991187174E5CE000741B6D /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		E4991188174E5CE000741B6D /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		E4991189174E5CE000741B6D /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */; };
 		E499118A174E5CE000741B6D /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
@@ -2864,8 +2861,6 @@
 		180F6C8017CE9A5700127892 /* smc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = smc.c; sourceTree = "<group>"; };
 		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
-		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
-		183FDF8911AF0B0500B81E9C /* PluginSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginSource.h; sourceTree = "<group>"; };
 		1840B74B13993D8A007C848B /* JSONVariantParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantParser.cpp; sourceTree = "<group>"; };
 		1840B74C13993D8A007C848B /* JSONVariantParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantParser.h; sourceTree = "<group>"; };
 		1840B75113993DA0007C848B /* JSONVariantWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantWriter.cpp; sourceTree = "<group>"; };
@@ -5283,8 +5278,6 @@
 				DF2401251B41A26E001E02DA /* ImageResource.h */,
 				395C2A071A9F06EB00EBC7AD /* LanguageResource.cpp */,
 				395C2A081A9F06EB00EBC7AD /* LanguageResource.h */,
-				183FDF8811AF0B0500B81E9C /* PluginSource.cpp */,
-				183FDF8911AF0B0500B81E9C /* PluginSource.h */,
 				C85EB75A1174614E0008E5A5 /* Repository.cpp */,
 				C85EB75B1174614E0008E5A5 /* Repository.h */,
 				395C2A0C1A9F06F500EBC7AD /* Resource.h */,
@@ -9520,7 +9513,6 @@
 				F52B063B11869862004B1D66 /* Skin.cpp in Sources */,
 				F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
 				F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */,
-				183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */,
 				F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */,
 				F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */,
 				F5BDB820120203C200F0B710 /* AutoPtrHandle.cpp in Sources */,
@@ -10094,7 +10086,6 @@
 				DFF0F12417528350002DA3A4 /* GUIDialogAddonSettings.cpp in Sources */,
 				DFF0F12517528350002DA3A4 /* GUIViewStateAddonBrowser.cpp in Sources */,
 				DFF0F12617528350002DA3A4 /* GUIWindowAddonBrowser.cpp in Sources */,
-				DFF0F12717528350002DA3A4 /* PluginSource.cpp in Sources */,
 				DFF0F12817528350002DA3A4 /* Repository.cpp in Sources */,
 				DFF0F12917528350002DA3A4 /* Scraper.cpp in Sources */,
 				DFF0F12A17528350002DA3A4 /* ScreenSaver.cpp in Sources */,
@@ -11020,7 +11011,6 @@
 				E4991184174E5CE000741B6D /* GUIDialogAddonSettings.cpp in Sources */,
 				E4991185174E5CE000741B6D /* GUIViewStateAddonBrowser.cpp in Sources */,
 				E4991186174E5CE000741B6D /* GUIWindowAddonBrowser.cpp in Sources */,
-				E4991187174E5CE000741B6D /* PluginSource.cpp in Sources */,
 				E4991188174E5CE000741B6D /* Repository.cpp in Sources */,
 				E4991189174E5CE000741B6D /* Scraper.cpp in Sources */,
 				E499118A174E5CE000741B6D /* ScreenSaver.cpp in Sources */,
