@@ -535,10 +535,6 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true")
-    { // a playable python files
-      queuedItems.Add(pItem);
-    }
     else if (pItem->IsVideoDb())
     { // this case is needed unless we allow IsVideo() to return true for videodb items,
       // but then we have issues with playlists of videodb items
@@ -686,11 +682,8 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
      (item->IsPlayList() && !URIUtils::HasExtension(item->GetPath(), ".strm")))
     return false;
 
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-    return CGUIDialogAddonInfo::ShowForItem(item);
-
   ADDON::ScraperPtr scraper;
-  if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
+  if (!m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
   {
     std::string strDir;
     if (item->IsVideoDb()       &&
@@ -808,8 +801,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-      if (!item->IsPath("add") && !item->IsPlugin() &&
-          !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
+      if (!item->IsPath("add") && !item->IsAddonsPath() && !item->IsLiveTV())
       {
         // allow a folder to be ad-hoc queued and played by the default player
         if (item->m_bIsFolder || (item->IsPlayList() &&
@@ -824,9 +816,6 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
         }
       }
-
-      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-        buttons.Add(CONTEXT_BUTTON_INFO,24003); // Add-on info
 
       if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
       { // get players
@@ -856,7 +845,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       //if the item isn't a folder or script, is a member of a list rather than a single item
       //and we're not on the last element of the list, 
       //then add add either 'play from here' or 'play only this' depending on default behaviour
-      if (!(item->m_bIsFolder || item->IsScript()) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
+      if (!item->m_bIsFolder && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
         if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM))
           buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
@@ -1228,7 +1217,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
 
   const CFileItemPtr pItem = m_vecItems->Get(iItem);
   // if its a folder, build a temp playlist
-  if (pItem->m_bIsFolder && !pItem->IsPlugin())
+  if (pItem->m_bIsFolder)
   {
     // take a copy so we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -1320,7 +1309,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
 bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items)
 {
   CURL url(items.GetPath());
-  return !(items.IsPlugin() || items.IsAddonsPath()  ||
+  return !(items.IsAddonsPath()  ||
            items.IsRSS() || items.IsInternetStream() ||
            items.IsVideoDb() || url.IsProtocol("playlistvideo"));
 }
@@ -1564,7 +1553,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   if (!item)
     return 0;
 
-  if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
+  if (m_vecItems->IsRSS())
   {
     info.reset();
     return 0;

@@ -107,11 +107,6 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
-      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-        buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
-      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
-        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-
       buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
     }
   }
@@ -217,10 +212,4 @@ void CGUIWindowPrograms::OnInfo(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return;
-
-  CFileItemPtr item = m_vecItems->Get(iItem);
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-  {
-    CGUIDialogAddonInfo::ShowForItem(item);
-  }
 }

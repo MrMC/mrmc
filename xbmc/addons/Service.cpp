@@ -55,12 +55,6 @@ bool CService::Start()
   bool ret = true;
   switch (m_type)
   {
-#ifdef HAS_PYTHON
-  case PYTHON:
-    ret = (CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), this->shared_from_this()) != -1);
-    break;
-#endif
-
   case UNKNOWN:
   default:
     ret = false;
@@ -76,12 +70,6 @@ bool CService::Stop()
 
   switch (m_type)
   {
-#ifdef HAS_PYTHON
-  case PYTHON:
-    ret = CScriptInvocationManager::GetInstance().Stop(LibPath());
-    break;
-#endif
-
   case UNKNOWN:
   default:
     ret = false;
@@ -99,14 +87,6 @@ void CService::BuildServiceType()
   size_t p = str.find_last_of('.');
   if (p != string::npos)
     ext = str.substr(p + 1);
-
-#ifdef HAS_PYTHON
-  std::string pythonExt = ADDON_PYTHON_EXT;
-  pythonExt.erase(0, 2);
-  if ( ext == pythonExt )
-    m_type = PYTHON;
-  else
-#endif
   {
     m_type = UNKNOWN;
     CLog::Log(LOGERROR, "ADDON: extension '%s' is not currently supported for service addon", ext.c_str());

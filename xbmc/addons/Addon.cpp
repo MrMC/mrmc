@@ -26,9 +26,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "system.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
-#endif
 #if defined(TARGET_DARWIN)
 #include "../osx/OSXGNUReplacements.h"
 #endif
@@ -74,24 +71,13 @@ static const TypeMapping types[] =
    {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014, "DefaultAddonTvInfo.png" },
    {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,     24083, "DefaultAddonInfoLibrary.png" },
    {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
-   {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
-   {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
-   {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013, "DefaultAddonLyrics.png" },
-   {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24081, "DefaultAddonHelper.png" },
-   {"xbmc.python.module",                ADDON_SCRIPT_MODULE,       24082, "DefaultAddonLibrary.png" },
-   {"xbmc.subtitle.module",              ADDON_SUBTITLE_MODULE,     24012, "DefaultAddonSubtitles.png" },
    {"kodi.context.item",                 ADDON_CONTEXT_ITEM,        24025, "DefaultAddonContextItem.png" },
    {"xbmc.gui.skin",                     ADDON_SKIN,                  166, "DefaultAddonSkin.png" },
    {"xbmc.webinterface",                 ADDON_WEB_INTERFACE,         199, "DefaultAddonWebSkin.png" },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "DefaultAddonRepository.png" },
    {"xbmc.pvrclient",                    ADDON_PVRDLL,              24019, "DefaultAddonPVRClient.png" },
-   {"xbmc.addon.video",                  ADDON_VIDEO,                1037, "DefaultAddonVideo.png" },
-   {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
-   {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
-   {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" },
    {"xbmc.audioencoder",                 ADDON_AUDIOENCODER,         200,  "DefaultAddonAudioEncoder.png" },
    {"kodi.audiodecoder",                 ADDON_AUDIODECODER,         201,  "DefaultAddonAudioDecoder.png" },
-   {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" },
    {"kodi.resource.images",              ADDON_RESOURCE_IMAGES,     24035, "DefaultAddonImages.png" },
    {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },
    {"kodi.resource.uisounds",            ADDON_RESOURCE_UISOUNDS,   24006, "DefaultAddonUISounds.png" },
@@ -356,12 +342,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_ADSPDLL:
       ext = ADDON_DSP_AUDIO_EXT;
       break;
-    case ADDON_SCRIPT:
     case ADDON_SCRIPT_LIBRARY:
-    case ADDON_SCRIPT_LYRICS:
-    case ADDON_SUBTITLE_MODULE:
-    case ADDON_PLUGIN:
-    case ADDON_SERVICE:
     case ADDON_CONTEXT_ITEM:
       ext = ADDON_PYTHON_EXT;
       break;
@@ -379,11 +360,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     switch (m_props.type)
     {
       case ADDON_SCREENSAVER:
-      case ADDON_SCRIPT:
       case ADDON_SCRIPT_LIBRARY:
-      case ADDON_SCRIPT_LYRICS:
-      case ADDON_SCRIPT_MODULE:
-      case ADDON_SUBTITLE_MODULE:
       case ADDON_SCRAPER_ALBUMS:
       case ADDON_SCRAPER_ARTISTS:
       case ADDON_SCRAPER_MOVIES:
@@ -392,9 +369,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRAPER_LIBRARY:
       case ADDON_PVRDLL:
       case ADDON_ADSPDLL:
-      case ADDON_PLUGIN:
       case ADDON_WEB_INTERFACE:
-      case ADDON_SERVICE:
       case ADDON_REPOSITORY:
       case ADDON_AUDIOENCODER:
       case ADDON_CONTEXT_ITEM:
@@ -526,9 +501,6 @@ void CAddon::SaveSettings(void)
   m_userSettingsLoaded = true;
   
   CAddonMgr::GetInstance().ReloadSettings(ID());//push the settings changes to the running addon instance
-#ifdef HAS_PYTHON
-  g_pythonParser.OnSettingsChanged(ID());
-#endif
 }
 
 std::string CAddon::GetSetting(const std::string& key)
@@ -634,9 +606,6 @@ void OnEnabled(const std::string& id)
       CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL))
     return addon->OnEnabled();
 
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_SERVICE))
-    std::static_pointer_cast<CService>(addon)->Start();
-
   if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM))
     CContextMenuManager::GetInstance().Register(std::static_pointer_cast<CContextMenuAddon>(addon));
 }
@@ -648,9 +617,6 @@ void OnDisabled(const std::string& id)
       CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL, false))
     return addon->OnDisabled();
 
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_SERVICE, false))
-    std::static_pointer_cast<CService>(addon)->Stop();
-
   if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM, false))
     CContextMenuManager::GetInstance().Unregister(std::static_pointer_cast<CContextMenuAddon>(addon));
 }
@@ -660,8 +626,6 @@ void OnPreInstall(const AddonPtr& addon)
   //Before installing we need to stop/unregister any local addon
   //that have this id, regardless of what the 'new' addon is.
   AddonPtr localAddon;
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_SERVICE))
-    std::static_pointer_cast<CService>(localAddon)->Stop();
 
   if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
     CContextMenuManager::GetInstance().Unregister(std::static_pointer_cast<CContextMenuAddon>(localAddon));
@@ -674,8 +638,6 @@ void OnPreInstall(const AddonPtr& addon)
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
 {
   AddonPtr localAddon;
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_SERVICE))
-    std::static_pointer_cast<CService>(localAddon)->Start();
 
   if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
     CContextMenuManager::GetInstance().Register(std::static_pointer_cast<CContextMenuAddon>(localAddon));
@@ -686,8 +648,6 @@ void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
 void OnPreUnInstall(const AddonPtr& addon)
 {
   AddonPtr localAddon;
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_SERVICE))
-    std::static_pointer_cast<CService>(localAddon)->Stop();
 
   if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
     CContextMenuManager::GetInstance().Unregister(std::static_pointer_cast<CContextMenuAddon>(localAddon));

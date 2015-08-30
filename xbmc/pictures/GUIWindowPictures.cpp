@@ -466,9 +466,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (item && !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/"))
       {
-        if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-          buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
-        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || item->IsScript()))
+        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
         {
           buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
           buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
@@ -485,13 +483,9 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
-        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-      else
-      {
-        buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-        buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
-      }
+
+      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -598,11 +592,6 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
   if (!item)
     return;
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-  {
-    CGUIDialogAddonInfo::ShowForItem(item);
-    return;
-  }
   if (item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || !item->IsPicture())
     return;
   CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);

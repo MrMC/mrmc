@@ -85,18 +85,11 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
   const TYPE type = TranslateType(props->ext_point_id);
   switch (type)
   {
-    case ADDON_PLUGIN:
-    case ADDON_SCRIPT:
-      return AddonPtr(new CPluginSource(props));
+
     case ADDON_SCRIPT_LIBRARY:
-    case ADDON_SCRIPT_LYRICS:
-    case ADDON_SCRIPT_MODULE:
-    case ADDON_SUBTITLE_MODULE:
       return AddonPtr(new CAddon(props));
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CWebinterface(props));
-    case ADDON_SERVICE:
-      return AddonPtr(new CService(props));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
     case ADDON_SCRAPER_MOVIES:
@@ -790,18 +783,10 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 {
   switch (addonProps.type)
   {
-    case ADDON_PLUGIN:
-    case ADDON_SCRIPT:
-      return AddonPtr(new CPluginSource(addonProps));
     case ADDON_SCRIPT_LIBRARY:
-    case ADDON_SCRIPT_LYRICS:
-    case ADDON_SCRIPT_MODULE:
-    case ADDON_SUBTITLE_MODULE:
       return AddonPtr(new CAddon(addonProps));
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CWebinterface(addonProps));
-    case ADDON_SERVICE:
-      return AddonPtr(new CService(addonProps));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
     case ADDON_SCRAPER_MOVIES:
@@ -1059,43 +1044,12 @@ bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPt
 
 bool CAddonMgr::StartServices(const bool beforelogin)
 {
-  CLog::Log(LOGDEBUG, "ADDON: Starting service addons.");
-
-  VECADDONS services;
-  if (!GetAddons(ADDON_SERVICE, services))
-    return false;
-
-  bool ret = true;
-  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
-  {
-    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
-    if (service)
-    {
-      if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
-        || (!beforelogin && service->GetStartOption() == CService::LOGIN) )
-        ret &= service->Start();
-    }
-  }
-
-  return ret;
+  return false;
 }
 
 void CAddonMgr::StopServices(const bool onlylogin)
 {
-  VECADDONS services;
-  if (!GetAddons(ADDON_SERVICE, services))
-    return;
 
-  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
-  {
-    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
-    if (service)
-    {
-      if ( (onlylogin && service->GetStartOption() == CService::LOGIN)
-        || (!onlylogin) )
-        service->Stop();
-    }
-  }
 }
 
 int cp_to_clog(cp_log_severity_t lvl)

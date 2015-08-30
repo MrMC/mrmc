@@ -176,80 +176,78 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       pItem->SetArt("thumb", thumb);
       return;
     }
-    if (!pItem->IsPlugin())
+    // we load the directory, grab 4 random thumb files (if available) and then generate
+    // the thumb.
+
+    CFileItemList items;
+
+    CDirectory::GetDirectory(pathToUrl, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
+    
+    // create the folder thumb by choosing 4 random thumbs within the folder and putting
+    // them into one thumb.
+    // count the number of images
+    for (int i=0; i < items.Size();)
     {
-      // we load the directory, grab 4 random thumb files (if available) and then generate
-      // the thumb.
-
-      CFileItemList items;
-
-      CDirectory::GetDirectory(pathToUrl, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
-      
-      // create the folder thumb by choosing 4 random thumbs within the folder and putting
-      // them into one thumb.
-      // count the number of images
-      for (int i=0; i < items.Size();)
+      if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR() || items[i]->IsPlayList())
       {
-        if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR() || items[i]->IsPlayList())
-        {
-          items.Remove(i);
-        }
-        else
-          i++;
-      }
-
-      if (items.IsEmpty())
-      {
-        if (pItem->IsCBZ() || pItem->IsCBR())
-        {
-          CDirectory::GetDirectory(pathToUrl, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
-          for (int i=0;i<items.Size();++i)
-          {
-            CFileItemPtr item = items[i];
-            if (item->m_bIsFolder)
-            {
-              ProcessFoldersAndArchives(item.get());
-              pItem->SetArt("thumb", items[i]->GetArt("thumb"));
-              pItem->SetIconImage(items[i]->GetIconImage());
-              return;
-            }
-          }
-        }
-        return; // no images in this folder
-      }
-
-      // randomize them
-      items.Randomize();
-
-      if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
-      { // less than 4 items, so just grab the first thumb
-        items.Sort(SortByLabel, SortOrderAscending);
-        std::string thumb = CTextureUtils::GetWrappedThumbURL(items[0]->GetPath());
-        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-        CTextureCache::GetInstance().BackgroundCacheImage(thumb);
-        pItem->SetArt("thumb", thumb);
+        items.Remove(i);
       }
       else
+        i++;
+    }
+
+    if (items.IsEmpty())
+    {
+      if (pItem->IsCBZ() || pItem->IsCBR())
       {
-        // ok, now we've got the files to get the thumbs from, lets create it...
-        // we basically load the 4 images and combine them
-        vector<string> files;
-        for (int thumb = 0; thumb < 4; thumb++)
-          files.push_back(items[thumb]->GetPath());
-        std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
-        std::string relativeCacheFile = CTextureCache::GetCacheFile(thumb) + ".png";
-        if (CPicture::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
+        CDirectory::GetDirectory(pathToUrl, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
+        for (int i=0;i<items.Size();++i)
         {
-          CTextureDetails details;
-          details.file = relativeCacheFile;
-          details.width = g_advancedSettings.GetThumbSize();
-          details.height = g_advancedSettings.GetThumbSize();
-          CTextureCache::GetInstance().AddCachedTexture(thumb, details);
-          db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-          pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));
+          CFileItemPtr item = items[i];
+          if (item->m_bIsFolder)
+          {
+            ProcessFoldersAndArchives(item.get());
+            pItem->SetArt("thumb", items[i]->GetArt("thumb"));
+            pItem->SetIconImage(items[i]->GetIconImage());
+            return;
+          }
         }
       }
+      return; // no images in this folder
     }
+
+    // randomize them
+    items.Randomize();
+
+    if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
+    { // less than 4 items, so just grab the first thumb
+      items.Sort(SortByLabel, SortOrderAscending);
+      std::string thumb = CTextureUtils::GetWrappedThumbURL(items[0]->GetPath());
+      db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+      CTextureCache::GetInstance().BackgroundCacheImage(thumb);
+      pItem->SetArt("thumb", thumb);
+    }
+    else
+    {
+      // ok, now we've got the files to get the thumbs from, lets create it...
+      // we basically load the 4 images and combine them
+      vector<string> files;
+      for (int thumb = 0; thumb < 4; thumb++)
+        files.push_back(items[thumb]->GetPath());
+      std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
+      std::string relativeCacheFile = CTextureCache::GetCacheFile(thumb) + ".png";
+      if (CPicture::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
+      {
+        CTextureDetails details;
+        details.file = relativeCacheFile;
+        details.width = g_advancedSettings.GetThumbSize();
+        details.height = g_advancedSettings.GetThumbSize();
+        CTextureCache::GetInstance().AddCachedTexture(thumb, details);
+        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+        pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));
+      }
+    }
+
     // refill in the icon to get it to update
     pItem->FillInDefaultIcon();
   }

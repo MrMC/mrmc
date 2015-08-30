@@ -337,20 +337,6 @@ std::string CGUIButtonControl::GetLabel2() const
   return strLabel;
 }
 
-void CGUIButtonControl::PythonSetLabel(const std::string &strFont, const string &strText, color_t textColor, color_t shadowColor, color_t focusedColor)
-{
-  m_label.GetLabelInfo().font = g_fontManager.GetFont(strFont);
-  m_label.GetLabelInfo().textColor = textColor;
-  m_label.GetLabelInfo().focusedColor = focusedColor;
-  m_label.GetLabelInfo().shadowColor = shadowColor;
-  SetLabel(strText);
-}
-
-void CGUIButtonControl::PythonSetDisabledColor(color_t disabledColor)
-{
-  m_label.GetLabelInfo().disabledColor = disabledColor;
-}
-
 void CGUIButtonControl::OnClick()
 {
   // Save values, as the click message may deactivate the window

@@ -66,8 +66,6 @@ void CPluginSource::SetProvides(const std::string &content)
         m_providedContent.insert(content);
     }
   }
-  if (Type() == ADDON_SCRIPT && m_providedContent.empty())
-    m_providedContent.insert(EXECUTABLE);
 }
 
 CPluginSource::Content CPluginSource::Translate(const std::string &content)
@@ -86,12 +84,6 @@ CPluginSource::Content CPluginSource::Translate(const std::string &content)
 
 TYPE CPluginSource::FullType() const
 {
-  if (Provides(VIDEO))
-    return ADDON_VIDEO;
-  if (Provides(AUDIO))
-    return ADDON_AUDIO;
-  if (Provides(IMAGE))
-    return ADDON_IMAGE;
   if (Provides(EXECUTABLE))
     return ADDON_EXECUTABLE;
 
@@ -100,10 +92,7 @@ TYPE CPluginSource::FullType() const
 
 bool CPluginSource::IsType(TYPE type) const
 {
-  return ((type == ADDON_VIDEO && Provides(VIDEO))
-       || (type == ADDON_AUDIO && Provides(AUDIO))
-       || (type == ADDON_IMAGE && Provides(IMAGE))
-       || (type == ADDON_EXECUTABLE && Provides(EXECUTABLE)));
+  return ((type == ADDON_EXECUTABLE && Provides(EXECUTABLE)));
 }
 
 } /*namespace ADDON*/

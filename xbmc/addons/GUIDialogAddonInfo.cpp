@@ -175,7 +175,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool isInstalled = NULL != m_localAddon.get();
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
   bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").asBoolean();
-  bool isExecutable = isInstalled && (m_localAddon->Type() == ADDON_PLUGIN || m_localAddon->Type() == ADDON_SCRIPT);
+  bool isExecutable = isInstalled;
   if (isInstalled)
     GrabRollbackVersions();
 
@@ -354,9 +354,6 @@ void CGUIDialogAddonInfo::OnRollback()
 
     //FIXME: this is probably broken
     // needed as cpluff won't downgrade
-    if (!m_localAddon->IsType(ADDON_SERVICE))
-      //we will handle this for service addons in CAddonInstallJob::OnPostInstall
-      CAddonMgr::GetInstance().UnregisterAddon(m_localAddon->ID());
     CAddonInstaller::GetInstance().InstallFromZip(path);
     database.RemoveAddonFromBlacklist(m_localAddon->ID(),m_rollbackVersions[choice]);
     Close();

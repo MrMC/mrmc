@@ -179,20 +179,6 @@ void CGUICheckMarkControl::SetLabel(const string &label)
   }
 }
 
-void CGUICheckMarkControl::PythonSetLabel(const std::string &strFont, const string &strText, color_t textColor)
-{
-  m_label.GetLabelInfo().font = g_fontManager.GetFont(strFont);
-  m_label.GetLabelInfo().textColor = textColor;
-  m_label.GetLabelInfo().focusedColor = textColor;
-  m_strLabel = strText;
-  SetInvalid();
-}
-
-void CGUICheckMarkControl::PythonSetDisabledColor(color_t disabledColor)
-{
-  m_label.GetLabelInfo().disabledColor = disabledColor;
-}
-
 bool CGUICheckMarkControl::UpdateColors()
 {
   bool changed = CGUIControl::UpdateColors();

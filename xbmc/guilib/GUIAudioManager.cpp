@@ -93,12 +93,6 @@ void CGUIAudioManager::Stop()
     if (it->second.initSound  ) it->second.initSound  ->Stop();
     if (it->second.deInitSound) it->second.deInitSound->Stop();
   }
-
-  for (pythonSoundsMap::iterator it = m_pythonSounds.begin(); it != m_pythonSounds.end(); ++it)
-  {
-    IAESound* sound = it->second;
-    sound->Stop();
-  }
 }
 
 // \brief Play a sound associated with a CAction
@@ -150,39 +144,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   sound->Play();
 }
 
-// \brief Play a sound given by filename
-void CGUIAudioManager::PlayPythonSound(const std::string& strFileName, bool useCached /*= true*/)
-{
-  CSingleLock lock(m_cs);
 
-  // it's not possible to play gui sounds when passthrough is active
-  if (!m_bEnabled)
-    return;
-
-  // If we already loaded the sound, just play it
-  pythonSoundsMap::iterator itsb=m_pythonSounds.find(strFileName);
-  if (itsb != m_pythonSounds.end())
-  {
-    IAESound* sound = itsb->second;
-    if (useCached)
-    {
-      sound->Play();
-      return;
-    }
-    else
-    {
-      FreeSoundAllUsage(sound);
-      m_pythonSounds.erase(itsb);
-    }
-  }
-
-  IAESound *sound = LoadSound(strFileName);
-  if (!sound)
-    return;
-
-  m_pythonSounds.insert(pair<const std::string, IAESound*>(strFileName, sound));
-  sound->Play();
-}
 
 void CGUIAudioManager::UnLoad()
 {

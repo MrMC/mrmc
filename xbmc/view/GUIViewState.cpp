@@ -561,20 +561,6 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  if (items.IsPlugin())
-  {
-    CURL url(items.GetPath());
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
-    {
-      PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
-      if (plugin->Provides(CPluginSource::AUDIO))
-        m_playlist = PLAYLIST_MUSIC;
-      if (plugin->Provides(CPluginSource::VIDEO))
-        m_playlist = PLAYLIST_VIDEO;
-    }
-  }
-
   LoadViewState(items.GetPath(), g_windowManager.GetActiveWindow());
 }
 

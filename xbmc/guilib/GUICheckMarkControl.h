@@ -58,9 +58,6 @@ public:
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
 
-  void PythonSetLabel(const std::string &strFont, const std::string &strText, color_t textColor);
-  void PythonSetDisabledColor(color_t disabledColor);
-
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();

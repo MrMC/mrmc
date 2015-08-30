@@ -646,8 +646,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
    || IsPath("add")
    || IsInternetStream()
    || IsParentFolder()
-   || IsVirtualDirectoryRoot()
-   || IsPlugin())
+   || IsVirtualDirectoryRoot())
     return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
@@ -867,11 +866,6 @@ bool CFileItem::IsPlayList() const
   return CPlayListFactory::IsPlaylist(*this);
 }
 
-bool CFileItem::IsPythonScript() const
-{
-  return URIUtils::HasExtension(m_strPath, ".py");
-}
-
 bool CFileItem::IsType(const char *ext) const
 {
   return URIUtils::HasExtension(m_strPath, ext);
@@ -921,16 +915,6 @@ bool CFileItem::IsAndroidApp() const
 bool CFileItem::IsStack() const
 {
   return URIUtils::IsStack(m_strPath);
-}
-
-bool CFileItem::IsPlugin() const
-{
-  return URIUtils::IsPlugin(m_strPath);
-}
-
-bool CFileItem::IsScript() const
-{
-  return URIUtils::IsScript(m_strPath);
 }
 
 bool CFileItem::IsAddonsPath() const
@@ -1092,10 +1076,6 @@ void CFileItem::FillInDefaultIcon()
       else if ( IsPlayList() )
       {
         SetIconImage("DefaultPlaylist.png");
-      }
-      else if ( IsPythonScript() )
-      {
-        SetIconImage("DefaultScript.png");
       }
       else
       {
@@ -2568,7 +2548,6 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
    || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
-   || IsPlugin()
    || IsAddonsPath()
    || IsLibraryFolder()
    || IsParentFolder()
@@ -2660,7 +2639,6 @@ bool CFileItem::SkipLocalArt() const
        || IsInternetStream()
        || URIUtils::IsUPnP(m_strPath)
        || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
-       || IsPlugin()
        || IsAddonsPath()
        || IsLibraryFolder()
        || IsParentFolder()
@@ -2840,7 +2818,6 @@ std::string CFileItem::GetLocalFanart() const
    || URIUtils::IsUPnP(strFile)
    || URIUtils::IsBluray(strFile)
    || IsLiveTV()
-   || IsPlugin()
    || IsAddonsPath()
    || (URIUtils::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
    || m_strPath.empty())
@@ -3052,8 +3029,7 @@ std::string CFileItem::FindTrailer() const
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
    || URIUtils::IsBluray(strFile)
-   || IsLiveTV()
-   || IsPlugin())
+   || IsLiveTV())
     return "";
 
   std::string strDir = URIUtils::GetDirectory(strFile);

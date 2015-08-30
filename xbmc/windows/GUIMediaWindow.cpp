@@ -44,7 +44,6 @@
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/PluginDirectory.h"
 #include "filesystem/SmartPlaylistDirectory.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -921,19 +920,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
     delete pFileDirectory;
   }
 
-  if (pItem->IsScript())
-  {
-    // execute the script
-    CURL url(pItem->GetPath());
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
-    {
-      if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
-        CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon);
-      return true;
-    }
-  }
-
   if (pItem->m_bIsFolder)
   {
     if ( pItem->m_bIsShareOrDrive )
@@ -982,10 +968,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
-  else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
-  {
-    return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath());
-  }
 #if defined(TARGET_ANDROID)
   else if (pItem->IsAndroidApp())
   {
@@ -1018,22 +1000,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
-
-    if (m_vecItems->IsPlugin())
-    {
-      CURL url(m_vecItems->GetPath());
-      AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(),addon))
-      {
-        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-        if (plugin && plugin->Provides(CPluginSource::AUDIO))
-        {
-          CFileItemList items;
-          std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));
-          autoplay = state.get() && state->AutoPlayNextItem();
-        }
-      }
-    }
 
     if (autoplay && !g_partyModeManager.IsEnabled() && 
         !pItem->IsPlayList())
@@ -1561,19 +1527,6 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
       XFILE::CFavouritesDirectory::AddOrRemove(item.get(), GetID());
-      return true;
-    }
-  case CONTEXT_BUTTON_PLUGIN_SETTINGS:
-    {
-      CFileItemPtr item = m_vecItems->Get(itemNumber);
-      // CONTEXT_BUTTON_PLUGIN_SETTINGS can be called for plugin item
-      // or script item; or for the plugin directory current listing.
-      bool isPluginOrScriptItem = (item && (item->IsPlugin() || item->IsScript()));
-      CURL plugin(isPluginOrScriptItem ? item->GetPath() : m_vecItems->GetPath());
-      ADDON::AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(plugin.GetHostName(), addon))
-        if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
-          Refresh();
       return true;
     }
   case CONTEXT_BUTTON_BROWSE_INTO:

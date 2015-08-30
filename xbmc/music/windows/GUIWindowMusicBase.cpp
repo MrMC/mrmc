@@ -274,12 +274,6 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     return;
   }
 
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-  {
-    CGUIDialogAddonInfo::ShowForItem(item);
-    return;
-  }
-
   OnInfo(item.get(), bShowInfo);
 }
 
@@ -671,11 +665,6 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true")
-    {
-      // python files can be played
-      queuedItems.Add(pItem);
-    }
     else if (!pItem->IsNFO() && (pItem->IsAudio() || pItem->IsVideo()))
     {
       CFileItemPtr itemCheck = queuedItems.Get(pItem->GetPath());
@@ -724,9 +713,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (item && !item->IsParentFolder())
     {
-      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-        buttons.Add(CONTEXT_BUTTON_INFO,24003); // Add-on info
-      if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
+      if (item->CanQueue() && !item->IsAddonsPath())
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
 
@@ -873,7 +860,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   const CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   // if its a folder, build a playlist
-  if ((pItem->m_bIsFolder && !pItem->IsPlugin()) || (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
+  if (pItem->m_bIsFolder || (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
   {
     // make a copy so that we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));

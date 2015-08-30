@@ -43,35 +43,10 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   CVariant enabled = parameterObject["enabled"];
 
   // ignore the "content" parameter if the type is specified but not a plugin or script
-  if (addonType != ADDON_UNKNOWN && addonType != ADDON_PLUGIN && addonType != ADDON_SCRIPT)
+  if (addonType != ADDON_UNKNOWN)
     content = CPluginSource::UNKNOWN;
 
-  if (addonType >= ADDON_VIDEO && addonType <= ADDON_EXECUTABLE)
-  {
-    addonTypes.push_back(ADDON_PLUGIN);
-    addonTypes.push_back(ADDON_SCRIPT);
-
-    switch (addonType)
-    {
-    case ADDON_VIDEO:
-      content = CPluginSource::VIDEO;
-      break;
-    case ADDON_AUDIO:
-      content = CPluginSource::AUDIO;
-      break;
-    case ADDON_IMAGE:
-      content = CPluginSource::IMAGE;
-      break;
-    case ADDON_EXECUTABLE:
-      content = CPluginSource::EXECUTABLE;
-      break;
-
-    default:
-      break;
-    }
-  }
-  else
-    addonTypes.push_back(addonType);
+  addonTypes.push_back(addonType);
 
   VECADDONS addons;
   for (vector<TYPE>::const_iterator typeIt = addonTypes.begin(); typeIt != addonTypes.end(); ++typeIt)

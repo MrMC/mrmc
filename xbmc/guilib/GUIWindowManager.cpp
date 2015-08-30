@@ -858,18 +858,6 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
     }
   }
   break;
-
-#ifdef HAS_PYTHON
-  case TMSG_GUI_PYTHON_DIALOG:
-  {
-    // This hack is not much better but at least I don't need to make ApplicationMessenger
-    //  know about Addon (Python) specific classes.
-    CAction caction(pMsg->param1);
-    static_cast<CGUIWindow*>(pMsg->lpVoid)->OnAction(caction);
-  }
-  break;
-#endif
-
   case TMSG_GUI_ACTION:
   {
     if (pMsg->lpVoid)

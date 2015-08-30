@@ -74,7 +74,6 @@
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/PVRManager.h"
 
-#include "filesystem/PluginDirectory.h"
 #include "filesystem/ZipManager.h"
 
 #include "guilib/GUIWindowManager.h"
@@ -509,9 +508,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
       {
         //Get the correct extension point to run
-        if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
-            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
+        if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
         {
           scriptpath = addon->LibPath();
         }
@@ -600,79 +597,6 @@ int CBuiltins::Execute(const std::string& execString)
     else
       CLog::Log(LOGERROR, "Extract, No archive given");
   }
-  else if (execute == "runplugin")
-  {
-    if (params.size())
-    {
-      CFileItem item(params[0]);
-      if (!item.m_bIsFolder)
-      {
-        item.SetPath(params[0]);
-        CPluginDirectory::RunScriptWithParams(item.GetPath());
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "RunPlugin called with no arguments.");
-    }
-  }
-  else if (execute == "runaddon")
-  {
-    if (params.size())
-    {
-      AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_PLUGIN))
-      {
-        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-        std::string addonid = params[0];
-        std::string urlParameters;
-        vector<string> parameters;
-        if (params.size() == 2 &&
-           (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
-          urlParameters = params[1];
-        else if (params.size() > 1)
-        {
-          parameters.insert(parameters.begin(), params.begin() + 1, params.end());
-          urlParameters = "?" + StringUtils::Join(parameters, "&");
-        }
-        else
-        {
-          // Add '/' if addon is run without params (will be removed later so it's safe)
-          // Otherwise there are 2 entries for the same plugin in ViewModesX.db
-          urlParameters = "/";
-        }
-
-        std::string cmd;
-        if (plugin->Provides(CPluginSource::VIDEO))
-          cmd = StringUtils::Format("ActivateWindow(Videos,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-        else if (plugin->Provides(CPluginSource::AUDIO))
-          cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-        else if (plugin->Provides(CPluginSource::EXECUTABLE))
-          cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-        else if (plugin->Provides(CPluginSource::IMAGE))
-          cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-        else
-          // Pass the script name (params[0]) and all the parameters
-          // (params[1] ... params[x]) separated by a comma to RunPlugin
-          cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
-        Execute(cmd);
-      }
-      else if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
-               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
-      {
-        // Pass the script name (params[0]) and all the parameters
-        // (params[1] ... params[x]) separated by a comma to RunScript
-        Execute(StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str()));
-      }
-      else
-        CLog::Log(LOGERROR, "RunAddon: unknown add-on id '%s', or unexpected add-on type (not a script or plugin).", params[0].c_str());
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "RunAddon called with no arguments.");
-    }
-  }
   else if (execute == "notifyall")
   {
     if (params.size() > 1)
@@ -732,9 +656,6 @@ int CBuiltins::Execute(const std::string& execString)
         item.SetProperty("playlist_starting_track", playOffset);
       }
     }
-
-    if (!item.m_bIsFolder && item.IsPlugin())
-      item.SetProperty("IsPlayable", true);
 
     if ( askToResume == true )
     {
@@ -1362,8 +1283,6 @@ int CBuiltins::Execute(const std::string& execString)
         StringUtils::ToLower(content);
         url.SetPassword(content);
         std::string strMask;
-        if (type == ADDON_SCRIPT)
-          strMask = ".py";
         std::string replace;
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {

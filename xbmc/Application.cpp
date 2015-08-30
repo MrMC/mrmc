@@ -50,9 +50,6 @@
 #include "addons/LanguageResource.h"
 #include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
-#endif
 #include "input/ButtonTranslator.h"
 #include "guilib/GUIAudioManager.h"
 #include "GUIPassword.h"
@@ -67,7 +64,6 @@
 #include "filesystem/StackDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/DllLibCurl.h"
-#include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_SAP
 #include "filesystem/SAPDirectory.h"
 #endif
@@ -601,10 +597,6 @@ bool CApplication::Create()
 
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
-
-#ifdef HAS_PYTHON
-  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(&g_pythonParser, ".py");
-#endif // HAS_PYTHON
 
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
@@ -2857,14 +2849,6 @@ void CApplication::Stop(int exitCode)
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
-  //If item is a plugin, expand out now and run ourselves again
-  if (item.IsPlugin())
-  {
-    CFileItem item_new(item);
-    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
-      return PlayMedia(item_new, iPlaylist);
-    return false;
-  }
   if (item.IsSmartPlayList())
   {
     CFileItemList items;
@@ -3062,14 +3046,6 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsPlayList())
     return PLAYBACK_FAIL;
-
-  if (item.IsPlugin())
-  { // we modify the item so that it becomes a real URL
-    CFileItem item_new(item);
-    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
-      return PlayFile(item_new, false);
-    return PLAYBACK_FAIL;
-  }
 
 #ifdef HAS_UPNP
   if (URIUtils::IsUPnP(item.GetPath()))
@@ -3364,12 +3340,6 @@ void CApplication::OnPlayBackEnded()
   m_ePlayState = PLAY_STATE_ENDED;
   if(m_bPlaybackStarting)
     return;
-
-  // informs python script currently running playback has ended
-  // (does nothing if python is not loaded)
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackEnded();
-#endif
 #ifdef TARGET_ANDROID
   CXBMCApp::OnPlayBackEnded();
 #endif
@@ -3389,12 +3359,6 @@ void CApplication::OnPlayBackStarted()
   m_ePlayState = PLAY_STATE_PLAYING;
   if(m_bPlaybackStarting)
     return;
-
-#ifdef HAS_PYTHON
-  // informs python script currently running playback has started
-  // (does nothing if python is not loaded)
-  g_pythonParser.OnPlayBackStarted();
-#endif
 #ifdef TARGET_ANDROID
   CXBMCApp::OnPlayBackStarted();
 #endif
@@ -3409,11 +3373,6 @@ void CApplication::OnQueueNextItem()
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   if(m_bPlaybackStarting)
     return;
-  // informs python script currently running that we are requesting the next track
-  // (does nothing if python is not loaded)
-#ifdef HAS_PYTHON
-  g_pythonParser.OnQueueNextItem(); // currently unimplemented
-#endif
 
   CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3426,12 +3385,6 @@ void CApplication::OnPlayBackStopped()
   m_ePlayState = PLAY_STATE_STOPPED;
   if(m_bPlaybackStarting)
     return;
-
-  // informs python script currently running playback has ended
-  // (does nothing if python is not loaded)
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackStopped();
-#endif
 #ifdef TARGET_ANDROID
   CXBMCApp::OnPlayBackStopped();
 #endif
@@ -3446,9 +3399,6 @@ void CApplication::OnPlayBackStopped()
 
 void CApplication::OnPlayBackPaused()
 {
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackPaused();
-#endif
 #ifdef TARGET_ANDROID
   CXBMCApp::OnPlayBackPaused();
 #endif
@@ -3461,9 +3411,6 @@ void CApplication::OnPlayBackPaused()
 
 void CApplication::OnPlayBackResumed()
 {
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackResumed();
-#endif
 #ifdef TARGET_ANDROID
   CXBMCApp::OnPlayBackResumed();
 #endif
@@ -3476,10 +3423,6 @@ void CApplication::OnPlayBackResumed()
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 {
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
-#endif
-
   CVariant param;
   param["player"]["speed"] = iSpeed;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
@@ -3488,10 +3431,6 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 {
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSeek(iTime, seekOffset);
-#endif
-
   CVariant param;
   CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
   CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
@@ -3503,9 +3442,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
 {
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSeekChapter(iChapter);
-#endif
+
 }
 
 bool CApplication::IsPlayingFullScreenVideo() const
@@ -4000,10 +3937,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // ok, grab the next song
       CFileItem file(*playlist[iNext]);
-      // handle plugin://
-      CURL url(file.GetPath());
-      if (url.IsProtocol("plugin"))
-        XFILE::CPluginDirectory::GetPluginResult(url.Get(), file);
 
       // Don't queue if next media type is different from current one
       if ((!file.IsVideo() && m_pPlayer->IsPlayingVideo())
@@ -4161,13 +4094,6 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
       return true;
     }
     CFileItem item(actionStr, false);
-#ifdef HAS_PYTHON
-    if (item.IsPythonScript())
-    { // a python script
-      CScriptInvocationManager::GetInstance().ExecuteAsync(item.GetPath());
-    }
-    else
-#endif
     if (item.IsAudio() || item.IsVideo())
     { // an audio or video file
       PlayFile(item);

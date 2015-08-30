@@ -52,7 +52,6 @@
 #ifdef HAS_FILESYSTEM_SMB
 #include "SMBDirectory.h"
 #endif
-#include "PluginDirectory.h"
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
@@ -111,7 +110,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("sources")) return new CSourcesDirectory();
   if (url.IsProtocol("addons")) return new CAddonsDirectory();
   if (url.IsProtocol("udf")) return new CUDFDirectory();
-  if (url.IsProtocol("plugin")) return new CPluginDirectory();
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("apk")) return new CAPKDirectory();
 #endif

@@ -80,7 +80,6 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultHardDisk.png";
     else if (   pItem->IsVideoDb()
              || pItem->IsMusicDb()
-             || pItem->IsPlugin()
              || pItem->IsPath("special://musicplaylists/")
              || pItem->IsPath("special://videoplaylists/")
              || pItem->IsPath("musicsearch://"))

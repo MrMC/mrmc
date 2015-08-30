@@ -51,7 +51,6 @@ const std::set<TYPE> dependencyTypes = {
     ADDON_VIZ_LIBRARY,
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,
-    ADDON_SCRIPT_MODULE,
 };
 
 const std::set<TYPE> infoProviderTypes = {
@@ -345,12 +344,7 @@ static void OutdatedAddons(const CURL& path, CFileItemList &items)
 
 static void RunningAddons(const CURL& path, CFileItemList &items)
 {
-  VECADDONS addons;
-  CAddonMgr::GetInstance().GetAddons(ADDON_SERVICE, addons);
 
-  addons.erase(std::remove_if(addons.begin(), addons.end(),
-      [](const AddonPtr& addon){ return !CScriptInvocationManager::GetInstance().IsRunning(addon->LibPath()); }), addons.end());
-  CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24994));
 }
 
 static bool Browse(const CURL& path, CFileItemList &items)
@@ -578,59 +572,13 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
 
 bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDONS &addons)
 {
-  CPluginSource::Content type = CPluginSource::Translate(content);
-  if (type == CPluginSource::UNKNOWN)
-    return false;
-
-  VECADDONS tempAddons;
-  CAddonMgr::GetInstance().GetAddons(ADDON_PLUGIN, tempAddons);
-  for (unsigned i=0; i<tempAddons.size(); i++)
-  {
-    PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(tempAddons[i]);
-    if (plugin && plugin->Provides(type))
-      addons.push_back(tempAddons[i]);
-  }
-  tempAddons.clear();
-  CAddonMgr::GetInstance().GetAddons(ADDON_SCRIPT, tempAddons);
-  for (unsigned i=0; i<tempAddons.size(); i++)
-  {
-    PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(tempAddons[i]);
-    if (plugin && plugin->Provides(type))
-      addons.push_back(tempAddons[i]);
-  }
   return true;
 }
 
 bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileItemList &items)
 {
-  items.Clear();
 
-  VECADDONS addons;
-  if (!GetScriptsAndPlugins(content, addons))
-    return false;
-
-  for (VECADDONS::const_iterator it = addons.begin(); it != addons.end(); ++it)
-  {
-    const AddonPtr addon = *it;
-    const std::string prot = addon->Type() == ADDON_PLUGIN ? "plugin://" : "script://";
-    CFileItemPtr item(FileItemFromAddon(addon, prot + addon->ID(), addon->Type() == ADDON_PLUGIN));
-    PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-    if (plugin->ProvidesSeveral())
-    {
-      CURL url = item->GetURL();
-      std::string opt = StringUtils::Format("?content_type=%s",content.c_str());
-      url.SetOptions(opt);
-      item->SetURL(url);
-    }
-    items.Add(item);
-  }
-
-  items.Add(GetMoreItem(content));
-
-  items.SetContent("addons");
-  items.SetLabel(g_localizeStrings.Get(24001)); // Add-ons
-
-  return items.Size() > 0;
+  return false;
 }
 
 CFileItemPtr CAddonsDirectory::GetMoreItem(const std::string &content)

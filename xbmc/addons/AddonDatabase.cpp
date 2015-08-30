@@ -339,10 +339,7 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons, const ADDON::TYPE &type /* = A
     if (type != ADDON_UNKNOWN)
     {
       std::string strType;
-      if (type >= ADDON_VIDEO && type <= ADDON_EXECUTABLE)
-        strType = TranslateType(ADDON_PLUGIN);
-      else
-        strType = TranslateType(type);
+      strType = TranslateType(type);
 
       if (!strType.empty())
         sql += PrepareSQL(" AND a.type = '%s'", strType.c_str());
