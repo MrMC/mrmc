@@ -76,8 +76,6 @@ static const TypeMapping types[] =
    {"xbmc.webinterface",                 ADDON_WEB_INTERFACE,         199, "DefaultAddonWebSkin.png" },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "DefaultAddonRepository.png" },
    {"xbmc.pvrclient",                    ADDON_PVRDLL,              24019, "DefaultAddonPVRClient.png" },
-   {"xbmc.audioencoder",                 ADDON_AUDIOENCODER,         200,  "DefaultAddonAudioEncoder.png" },
-   {"kodi.audiodecoder",                 ADDON_AUDIODECODER,         201,  "DefaultAddonAudioDecoder.png" },
    {"kodi.resource.images",              ADDON_RESOURCE_IMAGES,     24035, "DefaultAddonImages.png" },
    {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },
    {"kodi.resource.uisounds",            ADDON_RESOURCE_UISOUNDS,   24006, "DefaultAddonUISounds.png" },
@@ -369,9 +367,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_ADSPDLL:
       case ADDON_WEB_INTERFACE:
       case ADDON_REPOSITORY:
-      case ADDON_AUDIOENCODER:
       case ADDON_CONTEXT_ITEM:
-      case ADDON_AUDIODECODER:
         {
           std::string temp = CAddonMgr::GetInstance().GetExtValue(extension->configuration, "@library");
           m_strLibName = temp;

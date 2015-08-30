@@ -96,8 +96,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCREENSAVER:
     case ADDON_PVRDLL:
     case ADDON_ADSPDLL:
-    case ADDON_AUDIOENCODER:
-    case ADDON_AUDIODECODER:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -126,8 +124,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         {
           return AddonPtr(new ActiveAE::CActiveAEDSPAddon(props));
         }
-        else if (type == ADDON_AUDIODECODER)
-          return AddonPtr(new CAudioDecoder(props));
         else
           return AddonPtr(new CScreenSaver(props));
       }
@@ -139,8 +135,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CLanguageResource(props));
     case ADDON_RESOURCE_UISOUNDS:
       return AddonPtr(new CUISoundsResource(props));
-    case ADDON_VIZ_LIBRARY:
-      return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(props));
     case ADDON_CONTEXT_ITEM:
@@ -282,7 +276,6 @@ bool CAddonMgr::Init()
   // disable some system addons by default because they are optional
   VECADDONS addons;
   GetAddons(ADDON_PVRDLL, addons);
-  GetAddons(ADDON_AUDIODECODER, addons);
   std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   for (auto &addon : addons)
   {
@@ -679,15 +672,7 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
   if (localAddon->Type() == ADDON_PVRDLL ||
       localAddon->Type() == ADDON_ADSPDLL)
     return true;
-
-  // installed audio decoder addons can always be disabled
-  if (localAddon->Type() == ADDON_AUDIODECODER)
-    return true;
-
-  // installed audio encoder addons can always be disabled
-  if (localAddon->Type() == ADDON_AUDIOENCODER)
-    return true;
-
+  
   std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   // can't disable system addons
   if (StringUtils::StartsWith(localAddon->Path(), systemAddonsPath))
@@ -792,14 +777,10 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CSkinInfo(addonProps));
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(addonProps));
-    case ADDON_VIZ_LIBRARY:
-      return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(addonProps));
     case ADDON_ADSPDLL:
       return AddonPtr(new ActiveAE::CActiveAEDSPAddon(addonProps));
-    case ADDON_AUDIODECODER:
-      return AddonPtr(new CAudioDecoder(addonProps));
     case ADDON_RESOURCE_IMAGES:
       return AddonPtr(new CImageResource(addonProps));
     case ADDON_RESOURCE_LANGUAGE:

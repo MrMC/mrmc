@@ -47,7 +47,6 @@ const auto CATEGORY_INFO_PROVIDERS = "category.infoproviders";
 const auto CATEGORY_LOOK_AND_FEEL = "category.lookandfeel";
 
 const std::set<TYPE> dependencyTypes = {
-    ADDON_VIZ_LIBRARY,
     ADDON_SCRAPER_LIBRARY,
 };
 
