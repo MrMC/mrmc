@@ -36,9 +36,6 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
-#ifdef HAS_VISUALISATION
-#include "Visualisation.h"
-#endif
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
 #endif
@@ -107,7 +104,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return AddonPtr(new CScraper(props));
-    case ADDON_VIZ:
     case ADDON_SCREENSAVER:
     case ADDON_PVRDLL:
     case ADDON_ADSPDLL:
@@ -131,13 +127,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         value = GetPlatformLibraryName(props->plugin->extensions->configuration);
         if (value.empty())
           break;
-        if (type == ADDON_VIZ)
-        {
-#if defined(HAS_VISUALISATION)
-          return AddonPtr(new CVisualisation(props));
-#endif
-        }
-        else if (type == ADDON_PVRDLL)
+        if (type == ADDON_PVRDLL)
         {
 #ifdef HAS_PVRCLIENTS
           return AddonPtr(new PVR::CPVRClient(props));
@@ -536,9 +526,6 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
   std::string setting;
   switch (type)
   {
-  case ADDON_VIZ:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-    break;
   case ADDON_SCREENSAVER:
     setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE);
     break;
@@ -573,9 +560,6 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
 {
   switch (type)
   {
-  case ADDON_VIZ:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION,addonID);
-    break;
   case ADDON_SCREENSAVER:
     CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE,addonID);
     break;
@@ -827,10 +811,6 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScraper(addonProps));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(addonProps));
-#if defined(HAS_VISUALISATION)
-    case ADDON_VIZ:
-      return AddonPtr(new CVisualisation(addonProps));
-#endif
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_VIZ_LIBRARY:

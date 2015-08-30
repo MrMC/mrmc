@@ -74,8 +74,6 @@ static const TypeMapping types[] =
    {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014, "DefaultAddonTvInfo.png" },
    {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,     24083, "DefaultAddonInfoLibrary.png" },
    {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
-   {"xbmc.player.musicviz",              ADDON_VIZ,                 24010, "DefaultAddonVisualization.png" },
-   {"visualization-library",             ADDON_VIZ_LIBRARY,         24084, "" },
    {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
    {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
    {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013, "DefaultAddonLyrics.png" },
@@ -352,9 +350,6 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_SKIN:
       m_strLibName = "skin.xml";
       return;
-    case ADDON_VIZ:
-      ext = ADDON_VIS_EXT;
-      break;
     case ADDON_PVRDLL:
       ext = ADDON_PVRDLL_EXT;
       break;
@@ -730,9 +725,6 @@ AddonPtr CAddonLibrary::Clone() const
 
 TYPE CAddonLibrary::SetAddonType()
 {
-  if (Type() == ADDON_VIZ_LIBRARY)
-    return ADDON_VIZ;
-  else
     return ADDON_UNKNOWN;
 }
 

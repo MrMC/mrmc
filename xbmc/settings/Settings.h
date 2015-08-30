@@ -232,7 +232,6 @@ public:
   static const std::string SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING;
   static const std::string SETTING_MUSICPLAYER_CROSSFADE;
   static const std::string SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS;
-  static const std::string SETTING_MUSICPLAYER_VISUALISATION;
   static const std::string SETTING_MUSICFILES_USETAGS;
   static const std::string SETTING_MUSICFILES_TRACKFORMAT;
   static const std::string SETTING_MUSICFILES_TRACKFORMATRIGHT;

@@ -87,8 +87,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
     case REMOTE_9:
     {
       if (g_application.CurrentFileItem().IsLiveTV() &&
-          (g_windowManager.IsWindowActive(WINDOW_FULLSCREEN_VIDEO) ||
-           g_windowManager.IsWindowActive(WINDOW_VISUALISATION)))
+          (g_windowManager.IsWindowActive(WINDOW_FULLSCREEN_VIDEO)))
       {
         if(g_PVRManager.IsPlaying())
         {

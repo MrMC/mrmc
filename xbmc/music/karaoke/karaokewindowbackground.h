@@ -27,7 +27,6 @@
 
 class CGUIWindow;
 class CGUIImage;
-class CGUIVisualisationControl;
 class KaraokeVideoBackground;
 
 class CKaraokeWindowBackground : public IPlayerCallback
@@ -40,9 +39,6 @@ public:
 
   // Start with empty background
   virtual void StartEmpty();
-
-  // Start with visualisation background
-  virtual void StartVisualisation();
 
   // Start with song-specific still image background
   virtual void StartImage( const std::string& path );
@@ -74,7 +70,6 @@ private:
   enum BackgroundMode
   {
       BACKGROUND_NONE,
-      BACKGROUND_VISUALISATION,
       BACKGROUND_IMAGE,
       BACKGROUND_VIDEO
   };
@@ -83,7 +78,6 @@ private:
   CCriticalSection          m_CritSectionShared;
 
   // for visualization background
-  CGUIVisualisationControl * m_VisControl;
   CGUIImage                * m_ImgControl;
 
   BackgroundMode             m_currentMode;

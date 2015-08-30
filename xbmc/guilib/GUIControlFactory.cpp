@@ -40,7 +40,6 @@
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
 #include "GUISpinControlEx.h"
-#include "GUIVisualisationControl.h"
 #include "GUISettingsSliderControl.h"
 #include "GUIMultiImage.h"
 #include "GUIControlGroup.h"
@@ -100,8 +99,6 @@ static const ControlMapping controls[] =
     {"mover",             CGUIControl::GUICONTROL_MOVER},
     {"resize",            CGUIControl::GUICONTROL_RESIZE},
     {"edit",              CGUIControl::GUICONTROL_EDIT},
-    {"visualisation",     CGUIControl::GUICONTROL_VISUALISATION},
-    {"karvisualisation",  CGUIControl::GUICONTROL_VISUALISATION},
     {"renderaddon",       CGUIControl::GUICONTROL_RENDERADDON},
     {"multiimage",        CGUIControl::GUICONTROL_MULTI_IMAGE},
     {"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
@@ -1468,12 +1465,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUISpinControlEx *)control)->SetText(strLabel);
       ((CGUISpinControlEx *)control)->SetReverse(bReverse);
     }
-    break;
-  case CGUIControl::GUICONTROL_VISUALISATION:
-    control = new CGUIVisualisationControl(parentID, id, posX, posY, width, height);
-    break;
-  case CGUIControl::GUICONTROL_RENDERADDON:
-    control = new CGUIRenderingControl(parentID, id, posX, posY, width, height);
     break;
   default:
     break;

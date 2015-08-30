@@ -28,7 +28,6 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "PartyModeManager.h"
-#include "addons/Visualisation.h"
 #include "input/ButtonTranslator.h"
 #include "utils/AlarmClock.h"
 #include "LangInfo.h"
@@ -612,11 +611,6 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "timertype",        LISTITEM_TIMERTYPE },
                                   { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE }};
 
-const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
-                                  { "preset",           VISUALISATION_PRESET },
-                                  { "name",             VISUALISATION_NAME },
-                                  { "enabled",          VISUALISATION_ENABLED }};
-
 const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
                                   { "color2",           FANART_COLOR2 },
                                   { "color3",           FANART_COLOR3 },
@@ -1163,14 +1157,6 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       if (offset)
         return AddMultiInfo(GUIInfo(ret, 0, offset));
       return ret;
-    }
-    else if (cat.name == "visualisation")
-    {
-      for (size_t i = 0; i < sizeof(visualisation) / sizeof(infomap); i++)
-      {
-        if (prop.name == visualisation[i].str)
-          return visualisation[i].val;
-      }
     }
     else if (cat.name == "fanart")
     {
@@ -2036,31 +2022,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       return linkStatus;
     }
     break;
-
-  case VISUALISATION_PRESET:
-    {
-      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_windowManager.SendMessage(msg);
-      if (msg.GetPointer())
-      {
-        CVisualisation* viz = NULL;
-        viz = (CVisualisation*)msg.GetPointer();
-        if (viz)
-        {
-          strLabel = viz->GetPresetName();
-          URIUtils::RemoveExtension(strLabel);
-        }
-      }
-    }
-    break;
-  case VISUALISATION_NAME:
-    {
-      AddonPtr addon;
-      strLabel = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-      if (CAddonMgr::GetInstance().GetAddon(strLabel,addon) && addon)
-        strLabel = addon->Name();
-    }
-    break;
   case FANART_COLOR1:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -2666,20 +2627,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VIDEOPLAYER_SUBTITLESENABLED:
       bReturn = g_application.m_pPlayer->GetSubtitleVisible();
       break;
-    case VISUALISATION_LOCKED:
-      {
-        CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-        g_windowManager.SendMessage(msg);
-        if (msg.GetPointer())
-        {
-          CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
-          bReturn = pVis->IsLocked();
-        }
-      }
-    break;
-    case VISUALISATION_ENABLED:
-      bReturn = !CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty();
-    break;
     case VIDEOPLAYER_HAS_EPG:
       if (m_currentFile->HasPVRChannelInfoTag())
         bReturn = (m_currentFile->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);

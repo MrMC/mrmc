@@ -32,7 +32,6 @@ namespace ADDON
   typedef enum
   {
     ADDON_UNKNOWN,
-    ADDON_VIZ,
     ADDON_SKIN,
     ADDON_PVRDLL,
     ADDON_ADSPDLL,
@@ -68,8 +67,6 @@ namespace ADDON
 
   class IAddon;
   typedef std::shared_ptr<IAddon> AddonPtr;
-  class CVisualisation;
-  typedef std::shared_ptr<CVisualisation> VizPtr;
   class CSkinInfo;
   typedef std::shared_ptr<CSkinInfo> SkinPtr;
   class CPluginSource;

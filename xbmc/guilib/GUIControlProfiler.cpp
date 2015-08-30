@@ -133,8 +133,6 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "resize"; break;
   case CGUIControl::GUICONTROL_EDIT:
     lpszType = "edit"; break;
-  case CGUIControl::GUICONTROL_VISUALISATION:
-    lpszType = "visualisation"; break;
   case CGUIControl::GUICONTROL_MULTI_IMAGE:
     lpszType = "multiimage"; break;
   case CGUIControl::GUICONTROL_GROUP:

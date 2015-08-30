@@ -337,8 +337,6 @@ static const ActionMapping windows[] =
     { "seekbar"                  , WINDOW_DIALOG_SEEK_BAR },
     { "musicosd"                 , WINDOW_DIALOG_MUSIC_OSD },
     { "addonsettings"            , WINDOW_DIALOG_ADDON_SETTINGS },
-    { "visualisationsettings"    , WINDOW_DIALOG_ADDON_SETTINGS },     // backward compat
-    { "visualisationpresetlist"  , WINDOW_DIALOG_VIS_PRESET_LIST },
     { "osdvideosettings"         , WINDOW_DIALOG_VIDEO_OSD_SETTINGS },
     { "osdaudiosettings"         , WINDOW_DIALOG_AUDIO_OSD_SETTINGS },
     { "audiodspmanager"          , WINDOW_DIALOG_AUDIO_DSP_MANAGER },
@@ -374,8 +372,7 @@ static const ActionMapping windows[] =
     { "textviewer"               , WINDOW_DIALOG_TEXT_VIEWER },
     { "fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO },
     { "fullscreenlivetv"         , WINDOW_FULLSCREEN_LIVETV },         // virtual window/keymap section for PVR specific bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
-    { "fullscreenradio"          , WINDOW_FULLSCREEN_RADIO },          // virtual window for fullscreen radio, uses WINDOW_VISUALISATION as fallback
-    { "visualisation"            , WINDOW_VISUALISATION },
+    { "fullscreenradio"          , WINDOW_FULLSCREEN_RADIO },          // virtual window for fullscreen radio
     { "slideshow"                , WINDOW_SLIDESHOW },
     { "filestackingdialog"       , WINDOW_DIALOG_FILESTACKING },
     { "karaoke"                  , WINDOW_KARAOKELYRICS },
@@ -428,7 +425,6 @@ static const ActionMapping touchcommands[] =
 static const WindowMapping fallbackWindows[] =
 {
     { WINDOW_FULLSCREEN_LIVETV   , WINDOW_FULLSCREEN_VIDEO },
-    { WINDOW_FULLSCREEN_RADIO    , WINDOW_VISUALISATION }
 };
 
 CButtonTranslator& CButtonTranslator::GetInstance()

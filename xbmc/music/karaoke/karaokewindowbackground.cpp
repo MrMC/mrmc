@@ -25,7 +25,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
 #include "GUIUserMessages.h"
-#include "guilib/GUIVisualisationControl.h"
 #include "guilib/GUIImage.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -44,7 +43,6 @@ CKaraokeWindowBackground::CKaraokeWindowBackground()
   m_defaultMode = BACKGROUND_NONE;
   m_parentWindow = 0;
 
-  m_VisControl = 0;
   m_ImgControl = 0;
 
   m_videoPlayer = 0;
@@ -62,7 +60,6 @@ CKaraokeWindowBackground::~CKaraokeWindowBackground()
 void CKaraokeWindowBackground::Init(CGUIWindow * wnd)
 {
   // Init controls
-  m_VisControl = (CGUIVisualisationControl*) wnd->GetControl( CONTROL_ID_VIS );
   m_ImgControl = (CGUIImage*) wnd->GetControl( CONTROL_ID_IMG );
 
   // Init visialisation variables
@@ -72,11 +69,6 @@ void CKaraokeWindowBackground::Init(CGUIWindow * wnd)
   {
     CLog::Log( LOGDEBUG, "Karaoke default background is set to none" );
     m_defaultMode = BACKGROUND_NONE;
-  }
-  else if ( defBkgType == "vis" || defBkgType == "viz" )
-  {
-    CLog::Log( LOGDEBUG, "Karaoke default background is visualisation" );
-    m_defaultMode = BACKGROUND_VISUALISATION;
   }
   else if ( defBkgType == "image" && !g_advancedSettings.m_karaokeDefaultBackgroundFilePath.empty() )
   {
@@ -96,9 +88,6 @@ bool CKaraokeWindowBackground::OnAction(const CAction & action)
 {
   CSingleLock lock (m_CritSectionShared);
 
-  // Send it to the visualisation if we have one
-  if ( m_currentMode == BACKGROUND_VISUALISATION )
-    return m_VisControl->OnAction(action);
 
   return false;
 }
@@ -107,25 +96,6 @@ bool CKaraokeWindowBackground::OnAction(const CAction & action)
 bool CKaraokeWindowBackground::OnMessage(CGUIMessage & message)
 {
   CSingleLock lock (m_CritSectionShared);
-
-  // Forward visualisation control messages
-  switch ( message.GetMessage() )
-  {
-  case GUI_MSG_PLAYBACK_STARTED:
-      if ( m_currentMode == BACKGROUND_VISUALISATION )
-        return m_VisControl->OnMessage(message);
-    break;
-
-  case GUI_MSG_GET_VISUALISATION:
-      if ( m_currentMode == BACKGROUND_VISUALISATION )
-        return m_VisControl->OnMessage(message);
-    break;
-
-  case GUI_MSG_VISUALISATION_ACTION:
-      if ( m_currentMode == BACKGROUND_VISUALISATION )
-        return m_VisControl->OnMessage(message);
-    break;
-  }
 
   return false;
 }
@@ -148,29 +118,19 @@ void CKaraokeWindowBackground::Render()
 
 void CKaraokeWindowBackground::StartEmpty()
 {
-  m_VisControl->SetVisible( false );
   m_ImgControl->SetVisible( false );
   m_currentMode = BACKGROUND_NONE;
   CLog::Log( LOGDEBUG, "Karaoke background started using BACKGROUND_NONE mode" );
 }
 
 
-void CKaraokeWindowBackground::StartVisualisation()
-{
-  // Showing controls
-  m_ImgControl->SetVisible( false );
-  m_VisControl->SetVisible( true );
 
-  m_currentMode = BACKGROUND_VISUALISATION;
-  CLog::Log( LOGDEBUG, "Karaoke background started using BACKGROUND_VISUALISATION mode" );
-}
 
 
 void CKaraokeWindowBackground::StartImage( const std::string& path )
 {
   // Showing controls
   m_ImgControl->SetVisible( true );
-  m_VisControl->SetVisible( false );
 
   m_ImgControl->SetFileName( path );
 
@@ -193,7 +153,6 @@ void CKaraokeWindowBackground::StartVideo( const std::string& path )
   }
   
   m_ImgControl->SetVisible( false );
-  m_VisControl->SetVisible( false );
   m_currentMode = BACKGROUND_VIDEO;
 }
 
@@ -202,14 +161,9 @@ void CKaraokeWindowBackground::StartDefault()
 {
   // just in case
   m_ImgControl->SetVisible( false );
-  m_VisControl->SetVisible( false );
 
   switch ( m_defaultMode )
   {
-    case BACKGROUND_VISUALISATION:
-      StartVisualisation();
-      break;
-
     case BACKGROUND_IMAGE:
       StartImage( m_path );
       break;

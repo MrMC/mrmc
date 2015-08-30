@@ -308,11 +308,6 @@
 #define PLAYLIST_ISREPEAT           395
 #define PLAYLIST_ISREPEATONE        396
 
-#define VISUALISATION_LOCKED        400
-#define VISUALISATION_PRESET        401
-#define VISUALISATION_NAME          402
-#define VISUALISATION_ENABLED       403
-
 #define STRING_IS_EMPTY             410
 #define STRING_COMPARE              411
 #define STRING_STR                  412

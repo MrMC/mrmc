@@ -700,8 +700,7 @@ int CBuiltins::Execute(const std::string& execString)
 
     // restore to previous window if needed
     if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-        g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-        g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION )
+        g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
         g_windowManager.PreviousWindow();
 
     // reset screensaver
@@ -1725,30 +1724,30 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "addon.default.opensettings" && params.size() == 1)
   {
-    AddonPtr addon;
-    ADDON::TYPE type = TranslateType(params[0]);
-    if (CAddonMgr::GetInstance().GetDefault(type, addon))
-    {
-      bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
-      if (type == ADDON_VIZ && changed)
-        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
-    }
+//    AddonPtr addon;
+//    ADDON::TYPE type = TranslateType(params[0]);
+//    if (CAddonMgr::GetInstance().GetDefault(type, addon))
+//    {
+//      bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
+//      if (type == ADDON_VIZ && changed)
+//        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+//    }
   }
   else if (execute == "addon.default.set" && params.size() == 1)
   {
-    std::string addonID;
-    TYPE type = TranslateType(params[0]);
-    bool allowNone = false;
-    if (type == ADDON_VIZ)
-      allowNone = true;
-
-    if (type != ADDON_UNKNOWN && 
-        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
-    {
-      CAddonMgr::GetInstance().SetDefault(type,addonID);
-      if (type == ADDON_VIZ)
-        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
-    }
+//    std::string addonID;
+//    TYPE type = TranslateType(params[0]);
+//    bool allowNone = false;
+//    if (type == ADDON_VIZ)
+//      allowNone = true;
+//
+//    if (type != ADDON_UNKNOWN && 
+//        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
+//    {
+//      CAddonMgr::GetInstance().SetDefault(type,addonID);
+//      if (type == ADDON_VIZ)
+//        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+//    }
   }
   else if (execute == "addon.opensettings" && params.size() == 1)
   {

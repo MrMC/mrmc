@@ -68,7 +68,6 @@ const std::set<TYPE> lookAndFeelTypes = {
   ADDON_RESOURCE_IMAGES,
   ADDON_RESOURCE_LANGUAGE,
   ADDON_RESOURCE_UISOUNDS,
-  ADDON_VIZ,
 };
 
 static bool IsInfoProviderType(TYPE type)

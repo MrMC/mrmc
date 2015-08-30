@@ -22,7 +22,6 @@
 		18B4A0021152BFA5001AF8A6 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF11152BFA5001AF8A6 /* Addon.cpp */; };
 		18B4A0051152BFA5001AF8A6 /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */; };
 		18B4A0061152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
-		18B4A0071152BFA5001AF8A6 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */; };
 		18B700E113A6A5750009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B700DF13A6A5750009C1AF /* AddonVersion.cpp */; };
 		18B7C3841294203F009E7A26 /* AddonDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C3821294203F009E7A26 /* AddonDatabase.cpp */; };
 		18B7C38A12942090009E7A26 /* GUIDialogAddonInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C38612942090009E7A26 /* GUIDialogAddonInfo.cpp */; };
@@ -88,7 +87,6 @@
 		18B7C7E81294222E009E7A26 /* GUITextureGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7931294222E009E7A26 /* GUITextureGLES.cpp */; };
 		18B7C7E91294222E009E7A26 /* GUIToggleButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7941294222E009E7A26 /* GUIToggleButtonControl.cpp */; };
 		18B7C7EA1294222E009E7A26 /* GUIVideoControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7951294222E009E7A26 /* GUIVideoControl.cpp */; };
-		18B7C7EB1294222E009E7A26 /* GUIVisualisationControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7961294222E009E7A26 /* GUIVisualisationControl.cpp */; };
 		18B7C7EC1294222E009E7A26 /* GUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7971294222E009E7A26 /* GUIWindow.cpp */; };
 		18B7C7ED1294222E009E7A26 /* GUIWindowManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7981294222E009E7A26 /* GUIWindowManager.cpp */; };
 		18B7C7EE1294222E009E7A26 /* GUIWrappingListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */; };
@@ -1120,7 +1118,6 @@
 		DFF0F12A17528350002DA3A4 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
 		DFF0F12B17528350002DA3A4 /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		DFF0F12C17528350002DA3A4 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
-		DFF0F12D17528350002DA3A4 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */; };
 		DFF0F13617528350002DA3A4 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
 		DFF0F13717528350002DA3A4 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		DFF0F13817528350002DA3A4 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */; };
@@ -1425,7 +1422,6 @@
 		DFF0F2B117528350002DA3A4 /* GUITextureGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7931294222E009E7A26 /* GUITextureGLES.cpp */; };
 		DFF0F2B217528350002DA3A4 /* GUIToggleButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7941294222E009E7A26 /* GUIToggleButtonControl.cpp */; };
 		DFF0F2B317528350002DA3A4 /* GUIVideoControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7951294222E009E7A26 /* GUIVideoControl.cpp */; };
-		DFF0F2B417528350002DA3A4 /* GUIVisualisationControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7961294222E009E7A26 /* GUIVisualisationControl.cpp */; };
 		DFF0F2B517528350002DA3A4 /* GUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7971294222E009E7A26 /* GUIWindow.cpp */; };
 		DFF0F2B617528350002DA3A4 /* GUIWindowManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7981294222E009E7A26 /* GUIWindowManager.cpp */; };
 		DFF0F2B717528350002DA3A4 /* GUIWrappingListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */; };
@@ -1486,7 +1482,6 @@
 		DFF0F2F217528350002DA3A4 /* GUIDialogMusicInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E180F0D25F9FA00618676 /* GUIDialogMusicInfo.cpp */; };
 		DFF0F2F317528350002DA3A4 /* GUIDialogMusicOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BA0D25F9FA00618676 /* GUIDialogMusicOSD.cpp */; };
 		DFF0F2F517528350002DA3A4 /* GUIDialogSongInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17DA0D25F9FA00618676 /* GUIDialogSongInfo.cpp */; };
-		DFF0F2F617528350002DA3A4 /* GUIDialogVisualisationPresetList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */; };
 		DFF0F2F717528350002DA3A4 /* MusicAlbumInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E650D25F9FD00618676 /* MusicAlbumInfo.cpp */; };
 		DFF0F2F817528350002DA3A4 /* MusicArtistInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */; };
 		DFF0F2F917528350002DA3A4 /* MusicInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */; };
@@ -1515,7 +1510,6 @@
 		DFF0F31617528350002DA3A4 /* GUIWindowMusicPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18150D25F9FA00618676 /* GUIWindowMusicPlaylist.cpp */; };
 		DFF0F31717528350002DA3A4 /* GUIWindowMusicPlaylistEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18170D25F9FA00618676 /* GUIWindowMusicPlaylistEditor.cpp */; };
 		DFF0F31817528350002DA3A4 /* GUIWindowMusicSongs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18190D25F9FA00618676 /* GUIWindowMusicSongs.cpp */; };
-		DFF0F31917528350002DA3A4 /* GUIWindowVisualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18470D25F9FA00618676 /* GUIWindowVisualisation.cpp */; };
 		DFF0F31A17528350002DA3A4 /* Album.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DC0DA72429001F0C9D /* Album.cpp */; };
 		DFF0F31B17528350002DA3A4 /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DB0DA72429001F0C9D /* Artist.cpp */; };
 		DFF0F31C17528350002DA3A4 /* GUIViewStateMusic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17FB0D25F9FA00618676 /* GUIViewStateMusic.cpp */; };
@@ -2007,7 +2001,6 @@
 		E38E209A0D25F9FD00618676 /* GUIDialogSongInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17DA0D25F9FA00618676 /* GUIDialogSongInfo.cpp */; };
 		E38E209B0D25F9FD00618676 /* GUIDialogSubMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17DC0D25F9FA00618676 /* GUIDialogSubMenu.cpp */; };
 		E38E209D0D25F9FD00618676 /* GUIDialogVideoBookmarks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */; };
-		E38E20A00D25F9FD00618676 /* GUIDialogVisualisationPresetList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */; };
 		E38E20A20D25F9FD00618676 /* GUIDialogVolumeBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EA0D25F9FA00618676 /* GUIDialogVolumeBar.cpp */; };
 		E38E20A30D25F9FD00618676 /* GUIDialogYesNo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EC0D25F9FA00618676 /* GUIDialogYesNo.cpp */; };
 		E38E20A40D25F9FD00618676 /* GUILargeTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EE0D25F9FA00618676 /* GUILargeTextureManager.cpp */; };
@@ -2037,7 +2030,6 @@
 		E38E20CC0D25F9FD00618676 /* GUIDialogVideoInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E183F0D25F9FA00618676 /* GUIDialogVideoInfo.cpp */; };
 		E38E20CD0D25F9FD00618676 /* GUIWindowVideoNav.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18410D25F9FA00618676 /* GUIWindowVideoNav.cpp */; };
 		E38E20CF0D25F9FD00618676 /* GUIWindowVideoPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18450D25F9FA00618676 /* GUIWindowVideoPlaylist.cpp */; };
-		E38E20D00D25F9FD00618676 /* GUIWindowVisualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18470D25F9FA00618676 /* GUIWindowVisualisation.cpp */; };
 		E38E20D60D25F9FD00618676 /* LangCodeExpander.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */; };
 		E38E20D70D25F9FD00618676 /* LangInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18580D25F9FA00618676 /* LangInfo.cpp */; };
 		E38E222B0D25F9FE00618676 /* dataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CD70D25F9FC00618676 /* dataset.cpp */; };
@@ -2160,7 +2152,6 @@
 		E499118A174E5CE000741B6D /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
 		E499118B174E5CE000741B6D /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		E499118C174E5CE000741B6D /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
-		E499118D174E5CE000741B6D /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */; };
 		E4991196174E5CEB00741B6D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
 		E4991197174E5CEB00741B6D /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		E4991198174E5CF600741B6D /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */; };
@@ -2465,7 +2456,6 @@
 		E499131A174E5DAD00741B6D /* GUITextureGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7931294222E009E7A26 /* GUITextureGLES.cpp */; };
 		E499131B174E5DAD00741B6D /* GUIToggleButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7941294222E009E7A26 /* GUIToggleButtonControl.cpp */; };
 		E499131C174E5DAD00741B6D /* GUIVideoControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7951294222E009E7A26 /* GUIVideoControl.cpp */; };
-		E499131D174E5DAD00741B6D /* GUIVisualisationControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7961294222E009E7A26 /* GUIVisualisationControl.cpp */; };
 		E499131E174E5DAD00741B6D /* GUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7971294222E009E7A26 /* GUIWindow.cpp */; };
 		E499131F174E5DAD00741B6D /* GUIWindowManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7981294222E009E7A26 /* GUIWindowManager.cpp */; };
 		E4991320174E5DAD00741B6D /* GUIWrappingListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */; };
@@ -2526,7 +2516,6 @@
 		E4991373174E5F0E00741B6D /* GUIDialogMusicInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E180F0D25F9FA00618676 /* GUIDialogMusicInfo.cpp */; };
 		E4991374174E5F0E00741B6D /* GUIDialogMusicOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BA0D25F9FA00618676 /* GUIDialogMusicOSD.cpp */; };
 		E4991376174E5F0E00741B6D /* GUIDialogSongInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17DA0D25F9FA00618676 /* GUIDialogSongInfo.cpp */; };
-		E4991377174E5F0E00741B6D /* GUIDialogVisualisationPresetList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */; };
 		E4991378174E5F0E00741B6D /* MusicAlbumInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E650D25F9FD00618676 /* MusicAlbumInfo.cpp */; };
 		E4991379174E5F0E00741B6D /* MusicArtistInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */; };
 		E499137A174E5F0E00741B6D /* MusicInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */; };
@@ -2555,7 +2544,6 @@
 		E4991397174E5F0E00741B6D /* GUIWindowMusicPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18150D25F9FA00618676 /* GUIWindowMusicPlaylist.cpp */; };
 		E4991398174E5F0E00741B6D /* GUIWindowMusicPlaylistEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18170D25F9FA00618676 /* GUIWindowMusicPlaylistEditor.cpp */; };
 		E4991399174E5F0E00741B6D /* GUIWindowMusicSongs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18190D25F9FA00618676 /* GUIWindowMusicSongs.cpp */; };
-		E499139A174E5F0E00741B6D /* GUIWindowVisualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18470D25F9FA00618676 /* GUIWindowVisualisation.cpp */; };
 		E499139B174E5F0E00741B6D /* Album.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DC0DA72429001F0C9D /* Album.cpp */; };
 		E499139C174E5F0E00741B6D /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DB0DA72429001F0C9D /* Artist.cpp */; };
 		E499139D174E5F0E00741B6D /* GUIViewStateMusic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17FB0D25F9FA00618676 /* GUIViewStateMusic.cpp */; };
@@ -3086,8 +3074,6 @@
 		18B49FFD1152BFA5001AF8A6 /* Scraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scraper.h; sourceTree = "<group>"; };
 		18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScreenSaver.cpp; sourceTree = "<group>"; };
 		18B49FFF1152BFA5001AF8A6 /* ScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenSaver.h; sourceTree = "<group>"; };
-		18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualisation.cpp; sourceTree = "<group>"; };
-		18B4A0011152BFA5001AF8A6 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualisation.h; sourceTree = "<group>"; };
 		18B700DF13A6A5750009C1AF /* AddonVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonVersion.cpp; sourceTree = "<group>"; };
 		18B700E013A6A5750009C1AF /* AddonVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonVersion.h; sourceTree = "<group>"; };
 		18B7C3821294203F009E7A26 /* AddonDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonDatabase.cpp; sourceTree = "<group>"; };
@@ -3162,7 +3148,6 @@
 		18B7C7391294222D009E7A26 /* GUITextureGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextureGLES.h; sourceTree = "<group>"; };
 		18B7C73A1294222D009E7A26 /* GUIToggleButtonControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIToggleButtonControl.h; sourceTree = "<group>"; };
 		18B7C73B1294222D009E7A26 /* GUIVideoControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIVideoControl.h; sourceTree = "<group>"; };
-		18B7C73C1294222D009E7A26 /* GUIVisualisationControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIVisualisationControl.h; sourceTree = "<group>"; };
 		18B7C73D1294222D009E7A26 /* GUIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindow.h; sourceTree = "<group>"; };
 		18B7C73E1294222D009E7A26 /* GUIWindowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowManager.h; sourceTree = "<group>"; };
 		18B7C73F1294222D009E7A26 /* GUIWrappingListContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWrappingListContainer.h; sourceTree = "<group>"; };
@@ -3243,7 +3228,6 @@
 		18B7C7931294222E009E7A26 /* GUITextureGLES.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextureGLES.cpp; sourceTree = "<group>"; };
 		18B7C7941294222E009E7A26 /* GUIToggleButtonControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIToggleButtonControl.cpp; sourceTree = "<group>"; };
 		18B7C7951294222E009E7A26 /* GUIVideoControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIVideoControl.cpp; sourceTree = "<group>"; };
-		18B7C7961294222E009E7A26 /* GUIVisualisationControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIVisualisationControl.cpp; sourceTree = "<group>"; };
 		18B7C7971294222E009E7A26 /* GUIWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindow.cpp; sourceTree = "<group>"; };
 		18B7C7981294222E009E7A26 /* GUIWindowManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowManager.cpp; sourceTree = "<group>"; };
 		18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWrappingListContainer.cpp; sourceTree = "<group>"; };
@@ -4903,8 +4887,6 @@
 		E38E17DD0D25F9FA00618676 /* GUIDialogSubMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSubMenu.h; sourceTree = "<group>"; };
 		E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoBookmarks.cpp; sourceTree = "<group>"; };
 		E38E17E10D25F9FA00618676 /* GUIDialogVideoBookmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoBookmarks.h; sourceTree = "<group>"; };
-		E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVisualisationPresetList.cpp; sourceTree = "<group>"; };
-		E38E17E70D25F9FA00618676 /* GUIDialogVisualisationPresetList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVisualisationPresetList.h; sourceTree = "<group>"; };
 		E38E17EA0D25F9FA00618676 /* GUIDialogVolumeBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVolumeBar.cpp; sourceTree = "<group>"; };
 		E38E17EB0D25F9FA00618676 /* GUIDialogVolumeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVolumeBar.h; sourceTree = "<group>"; };
 		E38E17EC0D25F9FA00618676 /* GUIDialogYesNo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogYesNo.cpp; sourceTree = "<group>"; };
@@ -4964,8 +4946,6 @@
 		E38E18420D25F9FA00618676 /* GUIWindowVideoNav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowVideoNav.h; sourceTree = "<group>"; };
 		E38E18450D25F9FA00618676 /* GUIWindowVideoPlaylist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowVideoPlaylist.cpp; sourceTree = "<group>"; };
 		E38E18460D25F9FA00618676 /* GUIWindowVideoPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowVideoPlaylist.h; sourceTree = "<group>"; };
-		E38E18470D25F9FA00618676 /* GUIWindowVisualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowVisualisation.cpp; sourceTree = "<group>"; };
-		E38E18480D25F9FA00618676 /* GUIWindowVisualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowVisualisation.h; sourceTree = "<group>"; };
 		E38E184F0D25F9FA00618676 /* IProgressCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IProgressCallback.h; sourceTree = "<group>"; };
 		E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LangCodeExpander.cpp; sourceTree = "<group>"; };
 		E38E18570D25F9FA00618676 /* LangCodeExpander.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LangCodeExpander.h; sourceTree = "<group>"; };
@@ -5623,8 +5603,6 @@
 				F52B063911869862004B1D66 /* Skin.h */,
 				3961C4371ABC0A46002DBBFB /* UISoundsResource.cpp */,
 				3961C4381ABC0A46002DBBFB /* UISoundsResource.h */,
-				18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */,
-				18B4A0011152BFA5001AF8A6 /* Visualisation.h */,
 				395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */,
 				395C29C01A98A0A000EBC7AD /* Webinterface.h */,
 			);
@@ -5770,8 +5748,6 @@
 				18B7C73A1294222D009E7A26 /* GUIToggleButtonControl.h */,
 				18B7C7951294222E009E7A26 /* GUIVideoControl.cpp */,
 				18B7C73B1294222D009E7A26 /* GUIVideoControl.h */,
-				18B7C7961294222E009E7A26 /* GUIVisualisationControl.cpp */,
-				18B7C73C1294222D009E7A26 /* GUIVisualisationControl.h */,
 				18B7C7971294222E009E7A26 /* GUIWindow.cpp */,
 				18B7C73D1294222D009E7A26 /* GUIWindow.h */,
 				18B7C7981294222E009E7A26 /* GUIWindowManager.cpp */,
@@ -6112,8 +6088,6 @@
 				E38E17BB0D25F9FA00618676 /* GUIDialogMusicOSD.h */,
 				E38E17DA0D25F9FA00618676 /* GUIDialogSongInfo.cpp */,
 				E38E17DB0D25F9FA00618676 /* GUIDialogSongInfo.h */,
-				E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */,
-				E38E17E70D25F9FA00618676 /* GUIDialogVisualisationPresetList.h */,
 			);
 			path = dialogs;
 			sourceTree = "<group>";
@@ -6177,8 +6151,6 @@
 				E38E18180D25F9FA00618676 /* GUIWindowMusicPlaylistEditor.h */,
 				E38E18190D25F9FA00618676 /* GUIWindowMusicSongs.cpp */,
 				E38E181A0D25F9FA00618676 /* GUIWindowMusicSongs.h */,
-				E38E18470D25F9FA00618676 /* GUIWindowVisualisation.cpp */,
-				E38E18480D25F9FA00618676 /* GUIWindowVisualisation.h */,
 			);
 			path = windows;
 			sourceTree = "<group>";
@@ -9815,7 +9787,6 @@
 				E38E209B0D25F9FD00618676 /* GUIDialogSubMenu.cpp in Sources */,
 				E38E209D0D25F9FD00618676 /* GUIDialogVideoBookmarks.cpp in Sources */,
 				3994426E1A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp in Sources */,
-				E38E20A00D25F9FD00618676 /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				E38E20A20D25F9FD00618676 /* GUIDialogVolumeBar.cpp in Sources */,
 				E38E20A30D25F9FD00618676 /* GUIDialogYesNo.cpp in Sources */,
 				E38E20A40D25F9FD00618676 /* GUILargeTextureManager.cpp in Sources */,
@@ -9847,7 +9818,6 @@
 				E38E20CC0D25F9FD00618676 /* GUIDialogVideoInfo.cpp in Sources */,
 				E38E20CD0D25F9FD00618676 /* GUIWindowVideoNav.cpp in Sources */,
 				E38E20CF0D25F9FD00618676 /* GUIWindowVideoPlaylist.cpp in Sources */,
-				E38E20D00D25F9FD00618676 /* GUIWindowVisualisation.cpp in Sources */,
 				E38E20D60D25F9FD00618676 /* LangCodeExpander.cpp in Sources */,
 				E38E20D70D25F9FD00618676 /* LangInfo.cpp in Sources */,
 				E38E222B0D25F9FE00618676 /* dataset.cpp in Sources */,
@@ -10041,7 +10011,6 @@
 				18B4A0021152BFA5001AF8A6 /* Addon.cpp in Sources */,
 				18B4A0051152BFA5001AF8A6 /* Scraper.cpp in Sources */,
 				18B4A0061152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */,
-				18B4A0071152BFA5001AF8A6 /* Visualisation.cpp in Sources */,
 				7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */,
 				7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
 				F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */,
@@ -10129,7 +10098,6 @@
 				18B7C7E81294222E009E7A26 /* GUITextureGLES.cpp in Sources */,
 				18B7C7E91294222E009E7A26 /* GUIToggleButtonControl.cpp in Sources */,
 				18B7C7EA1294222E009E7A26 /* GUIVideoControl.cpp in Sources */,
-				18B7C7EB1294222E009E7A26 /* GUIVisualisationControl.cpp in Sources */,
 				18B7C7EC1294222E009E7A26 /* GUIWindow.cpp in Sources */,
 				18B7C7ED1294222E009E7A26 /* GUIWindowManager.cpp in Sources */,
 				7C973CF11B5037EF0002A874 /* ActiveAEDSP.cpp in Sources */,
@@ -10673,7 +10641,6 @@
 				395C2A261AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */,
 				DFF0F12B17528350002DA3A4 /* Service.cpp in Sources */,
 				DFF0F12C17528350002DA3A4 /* Skin.cpp in Sources */,
-				DFF0F12D17528350002DA3A4 /* Visualisation.cpp in Sources */,
 				DF29BCF91B5D911800904347 /* MediaLibraryEvent.cpp in Sources */,
 				DFF0F13617528350002DA3A4 /* Exception.cpp in Sources */,
 				DFF0F13717528350002DA3A4 /* ilog.cpp in Sources */,
@@ -11011,7 +10978,6 @@
 				DFF0F2B117528350002DA3A4 /* GUITextureGLES.cpp in Sources */,
 				DFF0F2B217528350002DA3A4 /* GUIToggleButtonControl.cpp in Sources */,
 				DFF0F2B317528350002DA3A4 /* GUIVideoControl.cpp in Sources */,
-				DFF0F2B417528350002DA3A4 /* GUIVisualisationControl.cpp in Sources */,
 				DFF0F2B517528350002DA3A4 /* GUIWindow.cpp in Sources */,
 				DFF0F2B617528350002DA3A4 /* GUIWindowManager.cpp in Sources */,
 				DFF0F2B717528350002DA3A4 /* GUIWrappingListContainer.cpp in Sources */,
@@ -11078,7 +11044,6 @@
 				DFF0F2F317528350002DA3A4 /* GUIDialogMusicOSD.cpp in Sources */,
 				DFF0F2F517528350002DA3A4 /* GUIDialogSongInfo.cpp in Sources */,
 				7CEE587F1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */,
-				DFF0F2F617528350002DA3A4 /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				DFF0F2F717528350002DA3A4 /* MusicAlbumInfo.cpp in Sources */,
 				DFF0F2F817528350002DA3A4 /* MusicArtistInfo.cpp in Sources */,
 				DFF0F2F917528350002DA3A4 /* MusicInfoScanner.cpp in Sources */,
@@ -11108,7 +11073,6 @@
 				DFF0F31617528350002DA3A4 /* GUIWindowMusicPlaylist.cpp in Sources */,
 				DFF0F31717528350002DA3A4 /* GUIWindowMusicPlaylistEditor.cpp in Sources */,
 				DFF0F31817528350002DA3A4 /* GUIWindowMusicSongs.cpp in Sources */,
-				DFF0F31917528350002DA3A4 /* GUIWindowVisualisation.cpp in Sources */,
 				DFF0F31A17528350002DA3A4 /* Album.cpp in Sources */,
 				DFF0F31B17528350002DA3A4 /* Artist.cpp in Sources */,
 				DFEA4B571B5271F600562321 /* ActiveAEDSPMode.cpp in Sources */,
@@ -11661,7 +11625,6 @@
 				E499118A174E5CE000741B6D /* ScreenSaver.cpp in Sources */,
 				E499118B174E5CE000741B6D /* Service.cpp in Sources */,
 				E499118C174E5CE000741B6D /* Skin.cpp in Sources */,
-				E499118D174E5CE000741B6D /* Visualisation.cpp in Sources */,
 				DFEA4B561B5271F600562321 /* ActiveAEDSPMode.cpp in Sources */,
 				E4991196174E5CEB00741B6D /* Exception.cpp in Sources */,
 				E4991197174E5CEB00741B6D /* ilog.cpp in Sources */,
@@ -12003,7 +11966,6 @@
 				E499131A174E5DAD00741B6D /* GUITextureGLES.cpp in Sources */,
 				E499131B174E5DAD00741B6D /* GUIToggleButtonControl.cpp in Sources */,
 				E499131C174E5DAD00741B6D /* GUIVideoControl.cpp in Sources */,
-				E499131D174E5DAD00741B6D /* GUIVisualisationControl.cpp in Sources */,
 				E499131E174E5DAD00741B6D /* GUIWindow.cpp in Sources */,
 				E499131F174E5DAD00741B6D /* GUIWindowManager.cpp in Sources */,
 				2F4564D61970129A00396109 /* GUIFontCache.cpp in Sources */,
@@ -12073,7 +12035,6 @@
 				E4991373174E5F0E00741B6D /* GUIDialogMusicInfo.cpp in Sources */,
 				E4991374174E5F0E00741B6D /* GUIDialogMusicOSD.cpp in Sources */,
 				E4991376174E5F0E00741B6D /* GUIDialogSongInfo.cpp in Sources */,
-				E4991377174E5F0E00741B6D /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				E4991378174E5F0E00741B6D /* MusicAlbumInfo.cpp in Sources */,
 				E4991379174E5F0E00741B6D /* MusicArtistInfo.cpp in Sources */,
 				E499137A174E5F0E00741B6D /* MusicInfoScanner.cpp in Sources */,
@@ -12103,7 +12064,6 @@
 				E4991397174E5F0E00741B6D /* GUIWindowMusicPlaylist.cpp in Sources */,
 				E4991398174E5F0E00741B6D /* GUIWindowMusicPlaylistEditor.cpp in Sources */,
 				E4991399174E5F0E00741B6D /* GUIWindowMusicSongs.cpp in Sources */,
-				E499139A174E5F0E00741B6D /* GUIWindowVisualisation.cpp in Sources */,
 				E499139B174E5F0E00741B6D /* Album.cpp in Sources */,
 				E499139C174E5F0E00741B6D /* Artist.cpp in Sources */,
 				E499139D174E5F0E00741B6D /* GUIViewStateMusic.cpp in Sources */,

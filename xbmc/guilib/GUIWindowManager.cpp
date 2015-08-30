@@ -57,7 +57,6 @@
 #include "pictures/GUIWindowPictures.h"
 #include "windows/GUIWindowLoginScreen.h"
 #include "addons/GUIWindowAddonBrowser.h"
-#include "music/windows/GUIWindowVisualisation.h"
 #include "windows/GUIWindowDebugInfo.h"
 #include "windows/GUIWindowPointer.h"
 #include "windows/GUIWindowSystemInfo.h"
@@ -72,7 +71,6 @@
 
 // Dialog includes
 #include "music/dialogs/GUIDialogMusicOSD.h"
-#include "music/dialogs/GUIDialogVisualisationPresetList.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "network/GUIDialogNetworkSetup.h"
 #include "dialogs/GUIDialogMediaSource.h"
@@ -214,7 +212,6 @@ void CGUIWindowManager::CreateWindows()
 #endif
   Add(new CGUIDialogSlider);
   Add(new CGUIDialogMusicOSD);
-  Add(new CGUIDialogVisualisationPresetList);
   Add(new CGUIDialogVideoSettings);
   Add(new CGUIDialogAudioSubtitleSettings);
   Add(new CGUIDialogVideoBookmarks);
@@ -281,7 +278,6 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogVideoInfo);
   Add(new CGUIDialogTextViewer);
   Add(new CGUIWindowFullScreen);
-  Add(new CGUIWindowVisualisation);
   Add(new CGUIWindowSlideShow);
   Add(new CGUIDialogFileStacking);
 #ifdef HAS_KARAOKE
@@ -322,7 +318,6 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
     Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
     Delete(WINDOW_DIALOG_MUSIC_OSD);
-    Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
     Delete(WINDOW_DIALOG_SELECT);
     Delete(WINDOW_DIALOG_OK);
     Delete(WINDOW_DIALOG_FILESTACKING);
@@ -379,7 +374,6 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_PLAY_EJECT);
     Delete(WINDOW_STARTUP_ANIM);
     Delete(WINDOW_LOGIN_SCREEN);
-    Delete(WINDOW_VISUALISATION);
     Delete(WINDOW_KARAOKELYRICS);
     Delete(WINDOW_SETTINGS_MENU);
     Delete(WINDOW_SETTINGS_PROFILES);
@@ -1375,7 +1369,7 @@ int CGUIWindowManager::GetActiveWindowID()
       iWin = WINDOW_FULLSCREEN_LIVETV;
   }
   // special casing for PVR radio
-  if (iWin == WINDOW_VISUALISATION && g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+  if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
     iWin = WINDOW_FULLSCREEN_RADIO;
 
   // Return the window id

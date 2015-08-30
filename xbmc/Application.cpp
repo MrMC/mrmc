@@ -2109,7 +2109,6 @@ bool CApplication::OnAction(const CAction &action)
   // Now check with the player if action can be handled.
   bool bIsPlayingPVRChannel = (g_PVRManager.IsStarted() && g_application.CurrentFileItem().IsPVRChannel());
   if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-      (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION && bIsPlayingPVRChannel) ||
       ((g_windowManager.GetActiveWindow() == WINDOW_DIALOG_VIDEO_OSD || (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD && bIsPlayingPVRChannel)) &&
         (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM || action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)) ||
       action.GetID() == ACTION_STOP)
@@ -3305,7 +3304,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if(m_pPlayer->IsPlayingAudio())
     {
       if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-        g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+        g_windowManager.ActivateWindow(WINDOW_DIALOG_MUSIC_OSD);
     }
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -3319,7 +3318,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
     else
     {
-      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION ||
+      if (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD ||
           g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
         g_windowManager.PreviousWindow();
     }
@@ -3538,7 +3537,7 @@ bool CApplication::IsPlayingFullScreenVideo() const
 bool CApplication::IsFullScreen()
 {
   return IsPlayingFullScreenVideo() ||
-        (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) ||
+        (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD) ||
          g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW;
 }
 
@@ -3669,7 +3668,7 @@ void CApplication::StopPlaying()
     m_pPlayer->CloseFile();
 
     // turn off visualisation window when stopping
-    if ((iWin == WINDOW_VISUALISATION
+    if ((iWin == WINDOW_DIALOG_MUSIC_OSD
     ||  iWin == WINDOW_FULLSCREEN_VIDEO)
     && !m_bStop)
       g_windowManager.PreviousWindow();
@@ -3848,8 +3847,7 @@ void CApplication::CheckScreenSaverAndDPMS()
   // * Are we playing a video and it is not paused?
   if ((m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPaused())
       // * Are we playing some music in fullscreen vis?
-      || (m_pPlayer->IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION
-          && !CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty()))
+      || (m_pPlayer->IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD))
   {
     ResetScreenSaverTimer();
     return;
@@ -3876,12 +3874,6 @@ void CApplication::CheckScreenSaverAndDPMS()
 // the type of screensaver displayed
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
-  if (m_pPlayer->IsPlayingAudio() && CSettings::GetInstance().GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) && !CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
-  { // just activate the visualisation if user toggled the usemusicvisinstead option
-    g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
-    return;
-  }
-
   m_bScreenSave = true;
 
   // Get Screensaver Mode
@@ -4162,7 +4154,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
-      if (!m_pPlayer->IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!m_pPlayer->IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD)
       {
         CSettings::GetInstance().Save();  // save vis settings
         WakeUpScreenSaverAndDPMS();
@@ -4763,9 +4755,8 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
     windowID = WINDOW_FULLSCREEN_VIDEO;
 
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-  if (m_pPlayer->IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
-    windowID = WINDOW_VISUALISATION;
-
+  if (m_pPlayer->IsPlayingAudio())
+    windowID = WINDOW_DIALOG_MUSIC_OSD;
 
   if (windowID != WINDOW_INVALID)
   {
