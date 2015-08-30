@@ -79,7 +79,6 @@ enum SpecialCharset
   SystemCharset,
   UserCharset /* locale.charset */, 
   SubtitleCharset /* subtitles.charset */,
-  KaraokeCharset /* karaoke.charset */
 };
 
 
@@ -241,14 +240,6 @@ std::string CConverterType::ResolveSpecialCharset(enum SpecialCharset charset)
     return g_langInfo.GetGuiCharSet();
   case SubtitleCharset:
     return g_langInfo.GetSubtitleCharSet();
-  case KaraokeCharset:
-    {
-      CSetting* karaokeSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_KARAOKE_CHARSET);
-      if (karaokeSetting == NULL || ((CSettingString*)karaokeSetting)->GetValue() == "DEFAULT")
-        return g_langInfo.GetGuiCharSet();
-
-      return ((CSettingString*)karaokeSetting)->GetValue();
-    }
   case NotSpecialCharset:
   default:
     return "UTF-8"; /* dummy value */
@@ -587,8 +578,6 @@ void CCharsetConverter::OnSettingChanged(const CSetting* setting)
     resetUserCharset();
   else if (settingId == CSettings::SETTING_SUBTITLES_CHARSET)
     resetSubtitleCharset();
-  else if (settingId == CSettings::SETTING_KARAOKE_CHARSET)
-    resetKaraokeCharset();
 }
 
 void CCharsetConverter::clear()
@@ -644,7 +633,6 @@ void CCharsetConverter::resetUserCharset(void)
   CInnerConverter::m_stdConversion[UserCharsetToUtf8].Reset();
   CInnerConverter::m_stdConversion[Utf32ToUserCharset].Reset();
   resetSubtitleCharset();
-  resetKaraokeCharset();
 }
 
 void CCharsetConverter::resetSubtitleCharset(void)
@@ -652,13 +640,9 @@ void CCharsetConverter::resetSubtitleCharset(void)
   CInnerConverter::m_stdConversion[SubtitleCharsetToUtf8].Reset();
 }
 
-void CCharsetConverter::resetKaraokeCharset(void)
-{
-}
-
 void CCharsetConverter::reinitCharsetsFromSettings(void)
 {
-  resetUserCharset(); // this will also reinit Subtitle and Karaoke charsets
+  resetUserCharset(); // this will also reinit Subtitle
 }
 
 bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)

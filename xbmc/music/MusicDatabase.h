@@ -123,7 +123,6 @@ public:
    \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
    \param dtLastPlayed [in] the time the song was last played
    \param rating [in] a rating for the song
-   \param iKaraokeNumber [in] the karaoke id of the song
    \return the id of the song
    */
   int AddSong(const int idAlbum,
@@ -137,7 +136,7 @@ public:
               int iTrack, int iDuration, int iYear,
               const int iTimesPlayed, int iStartOffset, int iEndOffset,
               const CDateTime& dtLastPlayed,
-              char rating, int iKaraokeNumber);
+              char rating);
   bool GetSong(int idSong, CSong& song);
 
   /*! \brief Update a song in the database.
@@ -171,7 +170,6 @@ public:
    \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
    \param dtLastPlayed [in] the time the song was last played
    \param rating [in] a rating for the song
-   \param iKaraokeNumber [in] the karaoke id of the song
    \return the id of the song
    */
   int UpdateSong(int idSong,
@@ -182,7 +180,7 @@ public:
                  int iTrack, int iDuration, int iYear,
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
                  const CDateTime& dtLastPlayed,
-                 char rating, int iKaraokeNumber);
+                 char rating);
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int startOffset = 0);
@@ -374,16 +372,6 @@ public:
    \return true if the scraper is in use, false otherwise.
    */
   bool ScraperInUse(const std::string &scraperID) const;
-
-  /////////////////////////////////////////////////
-  // Karaoke
-  /////////////////////////////////////////////////
-  void AddKaraokeData(int idSong, int iKaraokeNumber);
-  bool GetSongByKaraokeNumber( int number, CSong& song );
-  bool SetKaraokeSongDelay( int idSong, int delay );
-  int GetKaraokeSongsCount();
-  void ExportKaraokeInfo(const std::string &outFile, bool asHTML );
-  void ImportKaraokeInfo(const std::string &inputFile );
 
   /////////////////////////////////////////////////
   // Filters

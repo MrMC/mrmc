@@ -355,8 +355,6 @@ static const ActionMapping windows[] =
     { "pictureinfo"              , WINDOW_DIALOG_PICTURE_INFO },
     { "accesspoints"             , WINDOW_DIALOG_ACCESS_POINTS },
     { "fullscreeninfo"           , WINDOW_DIALOG_FULLSCREEN_INFO },
-    { "karaokeselector"          , WINDOW_DIALOG_KARAOKE_SONGSELECT },
-    { "karaokelargeselector"     , WINDOW_DIALOG_KARAOKE_SELECTOR },
     { "sliderdialog"             , WINDOW_DIALOG_SLIDER },
     { "addoninformation"         , WINDOW_DIALOG_ADDON_INFO },
     { "subtitlesearch"           , WINDOW_DIALOG_SUBTITLES },
@@ -375,7 +373,6 @@ static const ActionMapping windows[] =
     { "fullscreenradio"          , WINDOW_FULLSCREEN_RADIO },          // virtual window for fullscreen radio
     { "slideshow"                , WINDOW_SLIDESHOW },
     { "filestackingdialog"       , WINDOW_DIALOG_FILESTACKING },
-    { "karaoke"                  , WINDOW_KARAOKELYRICS },
     { "screensaver"              , WINDOW_SCREENSAVER },
     { "videoosd"                 , WINDOW_DIALOG_VIDEO_OSD },
     { "videomenu"                , WINDOW_VIDEO_MENU },

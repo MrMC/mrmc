@@ -115,9 +115,6 @@
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
-#ifdef HAS_KARAOKE
-#include "music/karaoke/karaokelyricsmanager.h"
-#endif
 #include "network/ZeroconfBrowser.h"
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
@@ -268,9 +265,6 @@ CApplication::CApplication(void)
 
 
   /* for now always keep this around */
-#ifdef HAS_KARAOKE
-  m_pKaraokeMgr = new CKaraokeLyricsManager();
-#endif
   m_currentStack = new CFileItemList;
 
   m_bPresentFrame = false;
@@ -298,10 +292,6 @@ CApplication::~CApplication(void)
   delete m_musicInfoScanner;
   delete &m_progressTrackingVideoResumeBookmark;
   delete m_currentStack;
-
-#ifdef HAS_KARAOKE
-  delete m_pKaraokeMgr;
-#endif
 
   delete m_dpms;
   delete m_pInertialScrollingHandler;
@@ -2160,9 +2150,6 @@ bool CApplication::OnAction(const CAction &action)
       if (!m_pPlayer->IsPaused() && m_pPlayer->GetPlaySpeed() != 1)
         m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
 
-      #ifdef HAS_KARAOKE
-      m_pKaraokeMgr->SetPaused( m_pPlayer->IsPaused() );
-#endif
       g_audioManager.Enable(m_pPlayer->IsPaused());
       return true;
     }
@@ -3218,14 +3205,6 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // reset VideoStartWindowed as it's a temp setting
   CMediaSettings::GetInstance().SetVideoStartWindowed(false);
 
-#ifdef HAS_KARAOKE
-  //We have to stop parsing a cdg before mplayer is deallocated
-  // WHY do we have to do this????
-  if (m_pKaraokeMgr)
-    m_pKaraokeMgr->Stop();
-#endif
-
-
   {
     CSingleLock lock(m_playStateMutex);
     // tell system we are starting a file
@@ -3661,10 +3640,6 @@ void CApplication::StopPlaying()
   int iWin = g_windowManager.GetActiveWindow();
   if ( m_pPlayer->IsPlaying() )
   {
-#ifdef HAS_KARAOKE
-    if( m_pKaraokeMgr )
-      m_pKaraokeMgr->Stop();
-#endif
     m_pPlayer->CloseFile();
 
     // turn off visualisation window when stopping
@@ -4007,29 +3982,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
       CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
-      if (m_pPlayer->IsPlayingAudio())
-      {
-        // Start our cdg parser as appropriate
-#ifdef HAS_KARAOKE
-        if (m_pKaraokeMgr && CSettings::GetInstance().GetBool(CSettings::SETTING_KARAOKE_ENABLED) && !m_itemCurrentFile->IsInternetStream())
-        {
-          m_pKaraokeMgr->Stop();
-          if (m_itemCurrentFile->IsMusicDb())
-          {
-            if (!m_itemCurrentFile->HasMusicInfoTag() || !m_itemCurrentFile->GetMusicInfoTag()->Loaded())
-            {
-              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(*m_itemCurrentFile);
-              tagloader->Load(m_itemCurrentFile->GetPath(),*m_itemCurrentFile->GetMusicInfoTag());
-              delete tagloader;
-            }
-            m_pKaraokeMgr->Start(m_itemCurrentFile->GetMusicInfoTag()->GetURL());
-          }
-          else
-            m_pKaraokeMgr->Start(m_itemCurrentFile->GetPath());
-        }
-#endif
-      }
-
       return true;
     }
     break;
@@ -4090,10 +4042,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
-#ifdef HAS_KARAOKE
-      if (m_pKaraokeMgr )
-        m_pKaraokeMgr->Stop();
-#endif
 #ifdef TARGET_DARWIN
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
@@ -4344,11 +4292,6 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
-
-#ifdef HAS_KARAOKE
-  if ( m_pKaraokeMgr )
-    m_pKaraokeMgr->ProcessSlow();
-#endif
 
   if (!m_pPlayer->IsPlayingVideo())
     g_largeTextureManager.CleanupUnusedImages();

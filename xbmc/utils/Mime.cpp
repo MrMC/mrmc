@@ -198,7 +198,6 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("js",        "application/javascript"));
   mimeTypes.insert(pair<string, string>("json",      "application/json"));
   mimeTypes.insert(pair<string, string>("jut",       "image/jutvision"));
-  mimeTypes.insert(pair<string, string>("kar",       "music/x-karaoke"));
   mimeTypes.insert(pair<string, string>("ksh",       "application/x-ksh"));
   mimeTypes.insert(pair<string, string>("ksh",       "text/x-script.ksh"));
   mimeTypes.insert(pair<string, string>("la",        "audio/nspaudio"));

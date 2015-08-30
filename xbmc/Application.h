@@ -66,7 +66,6 @@ namespace MEDIA_DETECT
 #include "interfaces/IActionListener.h"
 
 class CSeekHandler;
-class CKaraokeLyricsManager;
 class CInertialScrollingHandler;
 class DPMSSupport;
 class CSplash;
@@ -303,8 +302,6 @@ public:
   } PlayState;
   PlayState m_ePlayState;
   CCriticalSection m_playStateMutex;
-
-  CKaraokeLyricsManager* m_pKaraokeMgr;
 
   PLAYERCOREID m_eForcedNextPlayer;
   std::string m_strPlayListFile;
