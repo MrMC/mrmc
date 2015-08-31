@@ -311,16 +311,16 @@ typedef struct _TIME_ZONE_INFORMATION {
 #define INVALID_SOCKET (~0)
 #define closesocket(s)  close(s)
 #define ioctlsocket(s, f, v) ioctl(s, f, v)
-#define WSAGetLastError() (errno)
-#define WSASetLastError(e) (errno = e)
-#define WSAECONNRESET ECONNRESET
-#define WSAHOST_NOT_FOUND ENOENT
-#define WSAETIMEDOUT  ETIMEDOUT
-#define WSAEADDRINUSE EADDRINUSE
-#define WSAECANCELLED EINTR
-#define WSAECONNREFUSED ECONNREFUSED
-#define WSAECONNABORTED ECONNABORTED
-#define WSAETIMEDOUT ETIMEDOUT
+//#define WSAGetLastError() (errno)
+//#define WSASetLastError(e) (errno = e)
+//#define WSAECONNRESET ECONNRESET
+//#define WSAHOST_NOT_FOUND ENOENT
+//#define WSAETIMEDOUT  ETIMEDOUT
+//#define WSAEADDRINUSE EADDRINUSE
+//#define WSAECANCELLED EINTR
+//#define WSAECONNREFUSED ECONNREFUSED
+//#define WSAECONNABORTED ECONNABORTED
+//#define WSAETIMEDOUT ETIMEDOUT
 
 typedef int SOCKET;
 
@@ -434,7 +434,7 @@ typedef struct _RECT {
   long bottom;
 } RECT, *PRECT;
 
-typedef uint32_t D3DCOLOR;
+//typedef uint32_t D3DCOLOR;
 
 typedef enum _D3DFORMAT
 {
@@ -445,6 +445,7 @@ typedef enum _D3DFORMAT
   D3DFMT_UNKNOWN          = 0xFFFFFFFF
 } D3DFORMAT;
 
+/*
 typedef enum D3DRESOURCETYPE
 {
     D3DRTYPE_SURFACE = 1,
@@ -522,6 +523,7 @@ typedef struct _D3DMATRIX {
         float m[4][4];
     };
 } D3DMATRIX;
+*/
 
 // CreateFile defines
 #define FILE_FLAG_WRITE_THROUGH         0x80000000
