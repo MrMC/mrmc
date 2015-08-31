@@ -4014,7 +4014,7 @@
 		DF3C3D1B1752BED3000989C3 /* CopyRootFiles-ios.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "CopyRootFiles-ios.command"; sourceTree = "<group>"; };
 		DF3C3D1C1752BED3000989C3 /* CopyRootFiles-osx.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "CopyRootFiles-osx.command"; sourceTree = "<group>"; };
 		DF3C3D1D1752BED3000989C3 /* genoutputdirlink.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = genoutputdirlink.command; sourceTree = "<group>"; };
-		DF3C3D1E1752BED3000989C3 /* makepythoninterface.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = makepythoninterface.command; sourceTree = "<group>"; };
+		DF3C3D1E1752BED3000989C3 /* makeinterface.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = makeinterface.command; sourceTree = "<group>"; };
 		DF3C3D1F1752BED3000989C3 /* updateversioninfo-osx.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "updateversioninfo-osx.command"; sourceTree = "<group>"; };
 		DF3E5EF5199D400B0039675D /* kodiclientwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodiclientwrapper.h; sourceTree = "<group>"; };
 		DF3E5EF8199D41300039675D /* kodiclient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodiclient.h; sourceTree = "<group>"; };
@@ -8369,7 +8369,7 @@
 				DF3C3D1B1752BED3000989C3 /* CopyRootFiles-ios.command */,
 				DF3C3D1C1752BED3000989C3 /* CopyRootFiles-osx.command */,
 				DF3C3D1D1752BED3000989C3 /* genoutputdirlink.command */,
-				DF3C3D1E1752BED3000989C3 /* makepythoninterface.command */,
+				DF3C3D1E1752BED3000989C3 /* makeinterface.command */,
 				DF3C3D1F1752BED3000989C3 /* updateversioninfo-osx.command */,
 				E47252BF175115F9001C1AAA /* Codesign.command */,
 			);
@@ -8764,7 +8764,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "Kodi" */;
 			buildPhases = (
-				F502C011160F378F00C96C76 /* Make interface-python */,
+				F502C011160F378F00C96C76 /* Make interfaces */,
 				8DD76F760486A8DE00D96B5E /* Sources */,
 				8DD76F780486A8DE00D96B5E /* Frameworks */,
 				1D64E5FA157BD742001ACEBE /* genoutputdirlink */,
@@ -8784,7 +8784,7 @@
 			buildConfigurationList = DFFC52CE17527B4F00C937AB /* Build configuration list for PBXNativeTarget "Kodi-ATV2" */;
 			buildPhases = (
 				DFFC52C617527B3100C937AB /* Resources */,
-				DFF0EB3017527FDE002DA3A4 /* Make interface-python */,
+				DFF0EB3017527FDE002DA3A4 /* Make interfaces */,
 				DFFC52C717527B3100C937AB /* Sources */,
 				DFFC52C817527B3100C937AB /* Frameworks */,
 				DFF0EB321752801C002DA3A4 /* copy root files */,
@@ -8804,7 +8804,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "Kodi-iOS" */;
 			buildPhases = (
-				E49910C1174D1F6600741B6D /* Make interface-python */,
+				E49910C1174D1F6600741B6D /* Make interfaces */,
 				E4991085174D0D2600741B6D /* Sources */,
 				E4991086174D0D2600741B6D /* Frameworks */,
 				E4991087174D0D2600741B6D /* Resources */,
@@ -8972,19 +8972,19 @@
 			shellPath = /bin/sh;
 			shellScript = "tools/darwin/Support/updateversioninfo-osx.command";
 		};
-		DFF0EB3017527FDE002DA3A4 /* Make interface-python */ = {
+		DFF0EB3017527FDE002DA3A4 /* Make interfaces */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Make interface-python";
+			name = "Make interfaces";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = tools/darwin/Support/makepythoninterface.command;
+			shellScript = tools/darwin/Support/makeinterface.command;
 		};
 		DFF0EB321752801C002DA3A4 /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -9084,33 +9084,33 @@
 			shellPath = /bin/bash;
 			shellScript = "tools/darwin/Support/CopyRootFiles-ios.command";
 		};
-		E49910C1174D1F6600741B6D /* Make interface-python */ = {
+		E49910C1174D1F6600741B6D /* Make interfaces */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Make interface-python";
+			name = "Make interfaces";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = tools/darwin/Support/makepythoninterface.command;
+			shellScript = tools/darwin/Support/makeinterface.command;
 		};
-		F502C011160F378F00C96C76 /* Make interface-python */ = {
+		F502C011160F378F00C96C76 /* Make interfaces */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Make interface-python";
+			name = "Make interfaces";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = tools/darwin/Support/makepythoninterface.command;
+			shellScript = tools/darwin/Support/makeinterface.command;
 		};
 		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11956,7 +11956,6 @@
 					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
@@ -11965,7 +11964,6 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
@@ -12015,7 +12013,6 @@
 					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
@@ -12024,7 +12021,6 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
@@ -12114,7 +12110,6 @@
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/atv2/XBMCATV2-Info.plist";
@@ -12124,14 +12119,13 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
-					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
 				PRODUCT_NAME = Kodi;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "2,3";
-				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2";
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = frappliance;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
@@ -12167,7 +12161,6 @@
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/atv2/XBMCATV2-Info.plist";
@@ -12177,14 +12170,13 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
-					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
 				PRODUCT_NAME = Kodi;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "2,3";
-				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2";
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = frappliance;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(ARCHS)-target";
@@ -12222,7 +12214,6 @@
 					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/ios/XBMCIOS-Info.plist";
@@ -12262,7 +12253,6 @@
 					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "xbmc/osx/ios/XBMCIOS-Info.plist";

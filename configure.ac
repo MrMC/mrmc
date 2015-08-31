@@ -397,12 +397,6 @@ AC_ARG_ENABLE([avahi],
   [use_mdnsembedded=$enableval],
   [use_mdnsembedded=auto])
 
-AC_ARG_ENABLE([non-free],
-  [AS_HELP_STRING([--disable-non-free],
-  [disable componentents with non-compliant licenses])],
-  [use_nonfree=$enableval],
-  [use_nonfree=yes])
-
 AC_ARG_ENABLE([asap-codec],
   [AS_HELP_STRING([--enable-asap-codec],
   [enable ASAP ADPCM support])],
@@ -1618,26 +1612,6 @@ if test "${USE_STATIC_FFMPEG}" = "1"; then
   done
   LIBS=$(${ECHO} ${LIBS} | ${SED} ':a;N;$!ba;s/\n/ /g')
 fi
-
-echo "Checking for SWIG installation"
-AC_PATH_PROG(SWIG_EXE, swig, "none")
-if test "$SWIG_EXE" = "none"; then
-  AC_PATH_PROG(SWIG20_EXE, swig2.0, "none")
-  if test "$SWIG20_EXE" != "none" ; then
-    SWIG_EXE=$SWIG20_EXE
-  fi
-fi
-if test "$SWIG_EXE" = "none"; then
-  AC_MSG_ERROR($missing_program)
-fi
-final_message="$final_message\n  SWIG Available:\tYes"
-
-echo "Checking for a jre installation"
-AC_PATH_PROG(JAVA_EXE, java, "none")
-if test "$JAVA_EXE" = "none"; then
-  AC_MSG_ERROR($missing_program)
-fi
-final_message="$final_message\n  JRE Available:\tYes"
 
 echo "Checking for doxygen installation"
 AC_PATH_PROG(DOXYGEN_EXE, doxygen, "none")

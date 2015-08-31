@@ -52,7 +52,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/interfaces/interfaces.a \
                    xbmc/interfaces/json-rpc/json-rpc.a \
                    xbmc/interfaces/legacy/legacy.a \
-                   xbmc/interfaces/python/python_binding.a \
                    xbmc/linux/linux.a \
                    xbmc/listproviders/listproviders.a \
                    xbmc/main/posix/MessagePrinter.a \
@@ -109,7 +108,6 @@ NWAOBJSXBMC=	xbmc/threads/threads.a \
 ifeq (@USE_WEB_SERVER@,1)
 DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/wsgi/legacy-wsgi.a
 DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
-DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/python/httprequesthandlers-python.a
 endif
 
 ifeq (@USE_OPENGL@,1)
@@ -187,8 +185,7 @@ endif
 LIB_DIRS=\
 	lib/cximage-6.0 \
 	lib/libexif \
-	lib/cpluff \
-	lib/xbmc-dll-symbols
+	lib/cpluff
 
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
@@ -238,7 +235,6 @@ CHECK_DIRS = xbmc/addons/test \
              xbmc/utils/test \
              xbmc/video/test \
              xbmc/threads/test \
-             xbmc/interfaces/python/test \
              xbmc/cores/AudioEngine/Sinks/test \
              xbmc/test
 CHECK_LIBS = xbmc/addons/test/addonsTest.a \
@@ -248,7 +244,6 @@ CHECK_LIBS = xbmc/addons/test/addonsTest.a \
              xbmc/utils/test/utilsTest.a \
              xbmc/video/test/videoTest.a \
              xbmc/threads/test/threadTest.a \
-             xbmc/interfaces/python/test/pythonSwigTest.a \
              xbmc/cores/AudioEngine/Sinks/test/AESinkTest.a \
              xbmc/test/xbmc-test.a
 

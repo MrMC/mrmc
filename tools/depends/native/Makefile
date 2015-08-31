@@ -7,7 +7,7 @@ endif
 NATIVE= m4-native gettext-native autoconf-native automake-native \
         libtool-native pkg-config-native yasm-native cmake-native \
         gas-preprocessor-native zlib-native \
-        pcre-native swig-native rpl-native libsquish-native \
+        pcre-native rpl-native libsquish-native \
         tiff-native libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
         JsonSchemaBuilder TexturePacker \
         google-breakpad-native
@@ -32,7 +32,6 @@ automake-native: autoconf-native
 libtool-native: automake-native
 libpng-native: zlib-native
 tiff-native: libjpeg-turbo-native
-swig-native: pcre-native
 tar-native: xz-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
