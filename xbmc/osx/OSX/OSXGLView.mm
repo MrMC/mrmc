@@ -46,8 +46,6 @@
     m_glcontext = [[NSOpenGLContext alloc] initWithFormat:m_pixFmt shareContext:nil];
   }
   
-  [self updateTrackingAreas];
-  
   GLint swapInterval = 1;
   [m_glcontext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
   [m_glcontext makeCurrentContext];
