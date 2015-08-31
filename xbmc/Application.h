@@ -196,7 +196,6 @@ public:
   bool SetupNetwork();
   void CloseNetworkShares();
 
-  void ShowAppMigrationMessage();
   virtual void Process();
   void ProcessSlow();
   void ResetScreenSaver();

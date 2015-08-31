@@ -3871,9 +3871,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
         if (m_fallbackLanguageLoaded)
           CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});
-
-        // show info dialog about moved configuration files if needed
-        ShowAppMigrationMessage();
       }
     }
     break;
@@ -4099,26 +4096,6 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
     }
   }
   return true;
-}
-
-// inform the user that the configuration data has moved from old XBMC location
-// to new Kodi location - if applicable
-void CApplication::ShowAppMigrationMessage()
-{
-  // .kodi_migration_complete will be created from the installer/packaging
-  // once an old XBMC configuration was moved to the new Kodi location
-  // if this is the case show the migration info to the user once which
-  // tells him to have a look into the wiki where the move of configuration
-  // is further explained.
-  if (CFile::Exists("special://home/.kodi_data_was_migrated") &&
-      !CFile::Exists("special://home/.kodi_migration_info_shown"))
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{24128}, CVariant{24129});
-    CFile tmpFile;
-    // create the file which will prevent this dialog from appearing in the future
-    tmpFile.OpenForWrite("special://home/.kodi_migration_info_shown");
-    tmpFile.Close();
-  }
 }
 
 void CApplication::Process()
