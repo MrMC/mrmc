@@ -12,7 +12,7 @@ BASE_URL=https://downloads.sourceforge.net/project/xmlrpc-c/Xmlrpc-c%20Super%20S
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
     ./configure --prefix=$(PREFIX)
 
-LIBDYLIB=$(PLATFORM)/gettext-runtime/intl/.libs/libintl.a
+LIBDYLIB=$(PLATFORM)/src/libxmlrpc.a
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
@@ -30,7 +30,7 @@ $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	#$(MAKE) -C $(PLATFORM) install
+	$(MAKE) -C $(PLATFORM) install
 	touch $@
 
 clean:
