@@ -13,9 +13,9 @@ DEPENDS = \
 	libass libsquish \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql \
 	libshairplay \
-	libplist libcec boost tinyxml dummy-libxbmc \
+	libplist libcec tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
-	libxslt ffmpeg platform crossguid
+	xmlrpc-c libxslt ffmpeg platform crossguid
 
 FFMPEG_DEPENDS = gnutls
 
