@@ -879,11 +879,6 @@ INCLUDES="-I\$(abs_top_srcdir) $INCLUDES"
 # Check inotify availability
 AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
 
-# Checks for boost headers using CXX instead of CC
-AC_LANG_PUSH([C++])
-AC_CHECK_HEADER([boost/circular_buffer.hpp],, AC_MSG_ERROR($missing_library))
-AC_LANG_POP([C++])
-
 # Wayland
 if test "$use_wayland" = "yes"; then
   AC_MSG_NOTICE($wayland_enabled)
