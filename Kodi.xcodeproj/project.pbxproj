@@ -878,9 +878,6 @@
 		DF54F7FE1B6580AD000FCBA4 /* ContextMenuItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF54F7FC1B6580AC000FCBA4 /* ContextMenuItem.cpp */; };
 		DF54F7FF1B6580AD000FCBA4 /* ContextMenuItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF54F7FC1B6580AC000FCBA4 /* ContextMenuItem.cpp */; };
 		DF54F8001B6580AD000FCBA4 /* ContextMenuItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF54F7FC1B6580AC000FCBA4 /* ContextMenuItem.cpp */; };
-		DF54F8031B6580C8000FCBA4 /* ContextMenuAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF54F8011B6580C8000FCBA4 /* ContextMenuAddon.cpp */; };
-		DF54F8041B6580C8000FCBA4 /* ContextMenuAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF54F8011B6580C8000FCBA4 /* ContextMenuAddon.cpp */; };
-		DF54F8051B6580C8000FCBA4 /* ContextMenuAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF54F8011B6580C8000FCBA4 /* ContextMenuAddon.cpp */; };
 		DF56EF1F1A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */; };
 		DF56EF201A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */; };
 		DF56EF211A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */; };
@@ -4062,8 +4059,6 @@
 		DF529BAD1741697B00523FB4 /* Environment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Environment.h; sourceTree = "<group>"; };
 		DF54F7FC1B6580AC000FCBA4 /* ContextMenuItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenuItem.cpp; sourceTree = "<group>"; };
 		DF54F7FD1B6580AC000FCBA4 /* ContextMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenuItem.h; sourceTree = "<group>"; };
-		DF54F8011B6580C8000FCBA4 /* ContextMenuAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenuAddon.cpp; sourceTree = "<group>"; };
-		DF54F8021B6580C8000FCBA4 /* ContextMenuAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenuAddon.h; sourceTree = "<group>"; };
 		DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPFileHandler.cpp; sourceTree = "<group>"; };
 		DF56EF1E1A798A3F00CAAEFB /* HTTPFileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPFileHandler.h; sourceTree = "<group>"; };
 		DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpRangeUtils.cpp; sourceTree = "<group>"; };
@@ -5257,8 +5252,6 @@
 				18B700E013A6A5750009C1AF /* AddonVersion.h */,
 				395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */,
 				395C2A231AA4C32100EBC7AD /* AudioDecoder.h */,
-				DF54F8011B6580C8000FCBA4 /* ContextMenuAddon.cpp */,
-				DF54F8021B6580C8000FCBA4 /* ContextMenuAddon.h */,
 				18B49FF61152BFA5001AF8A6 /* DllAddon.h */,
 				18B7C38612942090009E7A26 /* GUIDialogAddonInfo.cpp */,
 				18B7C38712942090009E7A26 /* GUIDialogAddonInfo.h */,
@@ -9755,7 +9748,6 @@
 				C84828C8156CFCD8005A996F /* GUIDialogPVRChannelManager.cpp in Sources */,
 				C84828C9156CFCD8005A996F /* GUIDialogPVRChannelsOSD.cpp in Sources */,
 				C84828CC156CFCD8005A996F /* GUIDialogPVRGroupManager.cpp in Sources */,
-				DF54F8031B6580C8000FCBA4 /* ContextMenuAddon.cpp in Sources */,
 				C84828CD156CFCD8005A996F /* GUIDialogPVRGuideInfo.cpp in Sources */,
 				C84828CE156CFCD8005A996F /* GUIDialogPVRGuideOSD.cpp in Sources */,
 				C84828CF156CFCD8005A996F /* GUIDialogPVRGuideSearch.cpp in Sources */,
@@ -10568,7 +10560,6 @@
 				DFF0F36117528350002DA3A4 /* PlayListM3U.cpp in Sources */,
 				DF4BF0191A4EF31F0053AC56 /* cc_decoder.c in Sources */,
 				DFF0F36217528350002DA3A4 /* PlayListPLS.cpp in Sources */,
-				DF54F8051B6580C8000FCBA4 /* ContextMenuAddon.cpp in Sources */,
 				DFF0F36317528350002DA3A4 /* PlayListURL.cpp in Sources */,
 				DFF0F36417528350002DA3A4 /* PlayListWPL.cpp in Sources */,
 				DFEA4B5B1B52721300562321 /* GUIDialogAudioDSPManager.cpp in Sources */,
@@ -11402,7 +11393,6 @@
 				E4991379174E5F0E00741B6D /* MusicArtistInfo.cpp in Sources */,
 				E499137A174E5F0E00741B6D /* MusicInfoScanner.cpp in Sources */,
 				E499137B174E5F0E00741B6D /* MusicInfoScraper.cpp in Sources */,
-				DF54F8041B6580C8000FCBA4 /* ContextMenuAddon.cpp in Sources */,
 				E4991388174E5F0E00741B6D /* MusicInfoTag.cpp in Sources */,
 				E499138A174E5F0E00741B6D /* MusicInfoTagLoaderCDDA.cpp in Sources */,
 				E499138B174E5F0E00741B6D /* MusicInfoTagLoaderDatabase.cpp in Sources */,

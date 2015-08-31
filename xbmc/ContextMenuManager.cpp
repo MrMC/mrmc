@@ -22,7 +22,6 @@
 #include "ContextMenuItem.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
-#include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/log.h"
@@ -49,52 +48,10 @@ CContextMenuManager& CContextMenuManager::GetInstance()
 
 void CContextMenuManager::Init()
 {
-  VECADDONS addons;
-  if (CAddonMgr::GetInstance().GetAddons(ADDON_CONTEXT_ITEM, addons))
-    for (const auto& addon : addons)
-      Register(std::static_pointer_cast<CContextMenuAddon>(addon));
+
 }
 
-void CContextMenuManager::Register(const ContextItemAddonPtr& cm)
-{
-  if (!cm)
-    return;
 
-  for (const auto& menuItem : cm->GetItems())
-  {
-    auto existing = std::find_if(m_items.begin(), m_items.end(),
-        [&](const Item& kv){ return kv.second == menuItem; });
-    if (existing != m_items.end())
-    {
-      if (!menuItem.GetLabel().empty())
-        existing->second = menuItem;
-    }
-    else
-    {
-      m_items.push_back(std::make_pair(m_nextButtonId, menuItem));
-      ++m_nextButtonId;
-    }
-  }
-}
-
-bool CContextMenuManager::Unregister(const ContextItemAddonPtr& cm)
-{
-  if (!cm)
-    return false;
-
-  const auto menuItems = cm->GetItems();
-
-  auto it = std::remove_if(m_items.begin(), m_items.end(),
-    [&](const Item& kv)
-    {
-      if (kv.second.IsGroup())
-        return false; //keep in case other items use them
-      return std::find(menuItems.begin(), menuItems.end(), kv.second) != menuItems.end();
-    }
-  );
-  m_items.erase(it, m_items.end());
-  return true;
-}
 
 bool CContextMenuManager::IsVisible(
   const CContextMenuItem& menuItem, const CContextMenuItem& root, const CFileItemPtr& fileItem)

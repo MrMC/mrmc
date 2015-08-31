@@ -21,7 +21,6 @@
 #include "ContextMenuItem.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
-#include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/StringUtils.h"

@@ -71,7 +71,6 @@ static const TypeMapping types[] =
    {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014, "DefaultAddonTvInfo.png" },
    {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,     24083, "DefaultAddonInfoLibrary.png" },
    {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
-   {"kodi.context.item",                 ADDON_CONTEXT_ITEM,        24025, "DefaultAddonContextItem.png" },
    {"xbmc.gui.skin",                     ADDON_SKIN,                  166, "DefaultAddonSkin.png" },
    {"xbmc.webinterface",                 ADDON_WEB_INTERFACE,         199, "DefaultAddonWebSkin.png" },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "DefaultAddonRepository.png" },
@@ -340,9 +339,6 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_ADSPDLL:
       ext = ADDON_DSP_AUDIO_EXT;
       break;
-    case ADDON_CONTEXT_ITEM:
-      ext = ADDON_PYTHON_EXT;
-      break;
     default:
       m_strLibName.clear();
       return;
@@ -367,7 +363,6 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_ADSPDLL:
       case ADDON_WEB_INTERFACE:
       case ADDON_REPOSITORY:
-      case ADDON_CONTEXT_ITEM:
         {
           std::string temp = CAddonMgr::GetInstance().GetExtValue(extension->configuration, "@library");
           m_strLibName = temp;
@@ -599,9 +594,6 @@ void OnEnabled(const std::string& id)
   if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL) ||
       CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL))
     return addon->OnEnabled();
-
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::GetInstance().Register(std::static_pointer_cast<CContextMenuAddon>(addon));
 }
 
 void OnDisabled(const std::string& id)
@@ -611,19 +603,10 @@ void OnDisabled(const std::string& id)
       CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL, false))
     return addon->OnDisabled();
 
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM, false))
-    CContextMenuManager::GetInstance().Unregister(std::static_pointer_cast<CContextMenuAddon>(addon));
 }
 
 void OnPreInstall(const AddonPtr& addon)
 {
-  //Before installing we need to stop/unregister any local addon
-  //that have this id, regardless of what the 'new' addon is.
-  AddonPtr localAddon;
-
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::GetInstance().Unregister(std::static_pointer_cast<CContextMenuAddon>(localAddon));
-
   //Fallback to the pre-install callback in the addon.
   //BUG: If primary extension point have changed we're calling the wrong method.
   addon->OnPreInstall();
@@ -631,21 +614,11 @@ void OnPreInstall(const AddonPtr& addon)
 
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
 {
-  AddonPtr localAddon;
-
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::GetInstance().Register(std::static_pointer_cast<CContextMenuAddon>(localAddon));
-
   addon->OnPostInstall(update, modal);
 }
 
 void OnPreUnInstall(const AddonPtr& addon)
 {
-  AddonPtr localAddon;
-
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::GetInstance().Unregister(std::static_pointer_cast<CContextMenuAddon>(localAddon));
-
   addon->OnPreUnInstall();
 }
 

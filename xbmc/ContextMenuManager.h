@@ -21,7 +21,6 @@
 
 #include <vector>
 #include "ContextMenuItem.h"
-#include "addons/ContextMenuAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
 
 
@@ -51,16 +50,6 @@ public:
     CContextButtons& list,
     const CContextMenuItem& root = MAIN);
 
-  /*!
-   * \brief Adds a context item to this manager.
-   * NOTE: only 'enabled' context addons should be added.
-   */
-  void Register(const ADDON::ContextItemAddonPtr& cm);
-
-  /*!
-   * \brief Removes a context addon from this manager.
-   */
-  bool Unregister(const ADDON::ContextItemAddonPtr& cm);
 
 private:
   CContextMenuManager();
