@@ -23,9 +23,9 @@
 
 #include "PlatformDefs.h"
 
-LPTSTR GetCommandLine();
-DWORD GetCurrentDirectory(DWORD nBufferLength, LPTSTR lpBuffer);
-BOOL SetCurrentDirectory(LPCTSTR lpPathName);
-DWORD GetLastError();
+char* GetCommandLine();
+uint32_t GetCurrentDirectory(uint32_t nBufferLength, char* lpBuffer);
+int SetCurrentDirectory(const char* lpPathName);
+uint32_t GetLastError();
 #endif // XWINAPI_H__
 

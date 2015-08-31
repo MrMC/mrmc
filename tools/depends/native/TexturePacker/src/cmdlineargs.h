@@ -22,12 +22,12 @@
  */
 
 #ifdef TARGET_POSIX
-#include "PlatformDefs.h"
-#include "xwinapi.h"
-typedef LPSTR PSZ;
-#define _snprintf snprintf
+  #include "PlatformDefs.h"
+  #include "xwinapi.h"
+  typedef char* PSZ;
+  #define _snprintf snprintf
 #else
-#include <windows.h>
+  #include <windows.h>
 #endif
 #include <vector>
 #include <string>

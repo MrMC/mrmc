@@ -19,13 +19,13 @@
  */
 
 #ifdef TARGET_WINDOWS
-#include <sys/types.h>
-#include <sys/stat.h>
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
-#define platform_stricmp _stricmp
+  #include <sys/types.h>
+  #include <sys/stat.h>
+  #define __STDC_FORMAT_MACROS
+  #include <inttypes.h>
+  #define platform_stricmp _stricmp
 #else
-#define platform_stricmp stricmp
+  #define platform_stricmp stricmp
 #endif
 #include <cerrno>
 #include <dirent.h>
@@ -42,15 +42,15 @@
 #include "squish.h"
 
 #ifdef TARGET_WINDOWS
-#define strncasecmp _strnicmp
+  #define strncasecmp _strnicmp
 #endif
 
 #ifdef USE_LZO_PACKING
-#ifdef TARGET_WINDOWS
-#include "win32/liblzo/LZO1X.H"
-#else
-#include <lzo/lzo1x.h>
-#endif
+  #ifdef TARGET_WINDOWS
+    #include "win32/liblzo/LZO1X.H"
+  #else
+    #include <lzo/lzo1x.h>
+  #endif
 #endif
 
 using namespace std;
