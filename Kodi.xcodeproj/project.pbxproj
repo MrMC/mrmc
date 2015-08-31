@@ -14,6 +14,9 @@
 		1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B74B13993D8A007C848B /* JSONVariantParser.cpp */; };
 		1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B75113993DA0007C848B /* JSONVariantWriter.cpp */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
+		18690DCE1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
+		18690DCF1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
+		18690DD01B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
 		188F75FE152217BC009870CE /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
 		188F7602152217DF009870CE /* GUIOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F7600152217DF009870CE /* GUIOperations.cpp */; };
 		18968DC814155D7C005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DC614155D7C005BA742 /* ApplicationOperations.cpp */; };
@@ -2856,6 +2859,8 @@
 		184C472D1296BC6E0006DB3E /* Service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Service.cpp; sourceTree = "<group>"; };
 		184C472E1296BC6E0006DB3E /* Service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Service.h; sourceTree = "<group>"; };
 		18576525156ED3710088C35A /* README.osx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.osx; path = docs/README.osx; sourceTree = "<group>"; };
+		18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenSubtitlesSearch.cpp; sourceTree = "<group>"; };
+		18690DCD1B94DA6200E762C1 /* OpenSubtitlesSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSubtitlesSearch.h; sourceTree = "<group>"; };
 		188F751815211733009870CE /* IJSONRPCAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJSONRPCAnnouncer.h; sourceTree = "<group>"; };
 		188F751915211743009870CE /* JSONRPCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPCUtils.h; sourceTree = "<group>"; };
 		188F75FC152217BC009870CE /* Mime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mime.cpp; sourceTree = "<group>"; };
@@ -5210,6 +5215,15 @@
 				F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */,
 			);
 			name = "System Libs and Frameworks";
+			sourceTree = "<group>";
+		};
+		18690DCB1B94DA6200E762C1 /* subtitles */ = {
+			isa = PBXGroup;
+			children = (
+				18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */,
+				18690DCD1B94DA6200E762C1 /* OpenSubtitlesSearch.h */,
+			);
+			path = subtitles;
 			sourceTree = "<group>";
 		};
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
@@ -8288,6 +8302,7 @@
 				18B7C8F21294261F009E7A26 /* StringUtils.h */,
 				DFD882E517DD189E001516FE /* StringValidation.cpp */,
 				DFD882E617DD189E001516FE /* StringValidation.h */,
+				18690DCB1B94DA6200E762C1 /* subtitles */,
 				E38E1E830D25F9FD00618676 /* SystemInfo.cpp */,
 				E38E1E840D25F9FD00618676 /* SystemInfo.h */,
 				397877D31AAAF87700F98A45 /* Temperature.cpp */,
@@ -9417,6 +9432,7 @@
 				F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */,
 				E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */,
 				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.cpp in Sources */,
+				18690DCE1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */,
 				83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */,
 				F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */,
 				F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
@@ -10903,6 +10919,7 @@
 				7CCDA7EA192756250074CF51 /* NptMessaging.cpp in Sources */,
 				7CCDA7F3192756250074CF51 /* NptNetwork.cpp in Sources */,
 				7CCDA7FC192756250074CF51 /* NptQueue.cpp in Sources */,
+				18690DD01B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */,
 				7CCDA805192756250074CF51 /* NptResults.cpp in Sources */,
 				7CCDA808192756250074CF51 /* NptRingBuffer.cpp in Sources */,
 				7CCDA811192756250074CF51 /* NptSimpleMessageQueue.cpp in Sources */,
@@ -11191,6 +11208,7 @@
 				E499129D174E5D9900741B6D /* PipeFile.cpp in Sources */,
 				E499129E174E5D9900741B6D /* PipesManager.cpp in Sources */,
 				E499129F174E5D9900741B6D /* PlaylistDirectory.cpp in Sources */,
+				18690DCF1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */,
 				E49912A0174E5D9900741B6D /* PlaylistFileDirectory.cpp in Sources */,
 				E49912A2174E5D9900741B6D /* PVRDirectory.cpp in Sources */,
 				E49912A3174E5D9900741B6D /* PVRFile.cpp in Sources */,
