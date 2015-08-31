@@ -80,16 +80,6 @@ VTB_SDK6=/System/Library/Frameworks/VideoToolbox.framework/VideoToolbox
 VTB_SDK5=/System/Library/PrivateFrameworks/VideoToolbox.framework/VideoToolbox
 install_name_tool -change "$VTB_SDK6" "$VTB_SDK5" "$TARGET_BINARY"
 
-
-echo "Package $EXTERNAL_LIBS/lib/python2.6"
-mkdir -p "$TARGET_CONTENTS/Frameworks/lib"
-PYTHONSYNC="rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests"
-${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python2.6" "$TARGET_FRAMEWORKS/lib/"
-rm -rf "$TARGET_FRAMEWORKS/lib/python2.6/config"
-
-echo "Checking $TARGET_FRAMEWORKS/lib/python2.6 *.so for dylib dependencies"
-check_xbmc_dylib_depends "$TARGET_FRAMEWORKS"/lib/python2.6 "*.so"
-
 echo "Checking $XBMC_HOME/system *.so for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/system "*.so"
 

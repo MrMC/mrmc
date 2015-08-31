@@ -41,7 +41,7 @@ public:
   static float       GetIOSVersion(void);
   static const char *GetIOSVersionString(void);
   static const char *GetOSXVersionString(void);
-  static int         GetFrameworkPath(bool forPython, char* path, uint32_t *pathsize);
+  static int         GetFrameworkPath(char* path, uint32_t *pathsize);
   static int         GetExecutablePath(char* path, uint32_t *pathsize);
   static const char *GetAppRootFolder(void);
   static bool        IsIosSandboxed(void);

@@ -159,17 +159,6 @@ void CGUIAudioManager::UnLoad()
     }
   }
 
-  // Free sounds from python
-  {
-    pythonSoundsMap::iterator it = m_pythonSounds.begin();
-    while (it != m_pythonSounds.end())
-    {
-      IAESound* sound = it->second;
-      FreeSound(sound);
-      m_pythonSounds.erase(it++);
-    }
-  }
-
   // free action sounds
   {
     actionSoundMap::iterator it = m_actionSoundMap.begin();
@@ -387,16 +376,5 @@ void CGUIAudioManager::SetVolume(float level)
   {
     if (it->second.initSound  ) it->second.initSound  ->SetVolume(level);
     if (it->second.deInitSound) it->second.deInitSound->SetVolume(level);
-  }
-
-  {
-    pythonSoundsMap::iterator it = m_pythonSounds.begin();
-    while (it != m_pythonSounds.end())
-    {
-      if (it->second)
-        it->second->SetVolume(level);
-
-      ++it;
-    }
   }
 }

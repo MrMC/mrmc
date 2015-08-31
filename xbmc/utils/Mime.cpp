@@ -321,8 +321,6 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("psd",       "application/octet-stream"));
   mimeTypes.insert(pair<string, string>("pvu",       "paleovu/x-pv"));
   mimeTypes.insert(pair<string, string>("pwz",       "application/vnd.ms-powerpoint"));
-  mimeTypes.insert(pair<string, string>("py",        "text/x-script.phyton"));
-  mimeTypes.insert(pair<string, string>("pyc",       "applicaiton/x-bytecode.python"));
   mimeTypes.insert(pair<string, string>("qcp",       "audio/vnd.qcelp"));
   mimeTypes.insert(pair<string, string>("qd3",       "x-world/x-3dmf"));
   mimeTypes.insert(pair<string, string>("qd3d",      "x-world/x-3dmf"));

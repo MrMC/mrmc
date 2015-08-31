@@ -11,11 +11,11 @@ DEPENDS = \
 	libjpeg-turbo tiff jasper libpng \
 	libogg libvorbis libflac fribidi \
 	libass libsquish \
-	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
-	python26 libshairplay \
+	libmodplug librtmp libxml2 yajl libmicrohttpd mysql \
+	libshairplay \
 	libplist libcec boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
-	pythonmodule-pil libxslt ffmpeg platform crossguid
+	libxslt ffmpeg platform crossguid
 
 FFMPEG_DEPENDS = gnutls
 
@@ -82,7 +82,6 @@ libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 librtmp: openssl
 libmicrohttpd: gnutls libgcrypt libgpg-error
-python26: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
@@ -94,7 +93,6 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python26
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)

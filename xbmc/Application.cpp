@@ -522,13 +522,6 @@ bool CApplication::Create()
   std::string strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
 
-  // for python scripts that check the OS
-#if defined(TARGET_DARWIN)
-  setenv("OS","OS X",true);
-#elif defined(TARGET_POSIX)
-  setenv("OS","Linux",true);
-#endif
-
   // register ffmpeg lockmanager callback
   av_lockmgr_register(&ffmpeg_lockmgr_cb);
   // register avcodec

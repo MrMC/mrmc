@@ -2049,7 +2049,6 @@ void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
   URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
   m_mediaDir = fallbackMediaPath;
 
-  //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
   g_TextureManager.AddTexturePath(m_mediaDir);
   CGUIMediaWindow::AllocResources(forceLoad);
   g_TextureManager.RemoveTexturePath(m_mediaDir);

@@ -35,11 +35,6 @@ LIBGCRYPT_CONFIG=@prefix@/@deps_dir@/bin/libgcrypt-config
 PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
-PYTHON_VERSION=2.6
-PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lutil -lssl -lcrypto"
-PYTHON_CPPFLAGS=-I@prefix@/@deps_dir@/include/python${PYTHON_VERSION}
-PYTHON_SITE_PKG=@prefix@/@deps_dir@/lib/python${PYTHON_VERSION}/site-packages
-PYTHON_NOVERSIONCHECK=no-check
 NATIVE_ROOT=@prefix@/@tool_dir@
 
 #libomxil-bellagio
@@ -61,10 +56,6 @@ if test "${PACKAGE_NAME}" = "libgcrypt"; then
   ac_cv_sys_symbol_underscore=no
   CFLAGS="$CFLAGS -std=gnu99"
 fi
-
-#python
-ac_cv_func_gethostbyname_r=no
-ac_cv_header_sys_un_h=yes
 
 #rsxs/projectm
 jm_cv_func_gettimeofday_clobber=no
@@ -90,15 +81,11 @@ samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no
 libreplace_cv_HAVE_GETADDRINFO=no
 
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "ios"; then
-  # disable python support
-  export PYTHON_VER=0.0
   # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
   export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
 fi
 
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
-  # disable python support
-  export PYTHON_VER=0.0
   # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
   export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
   # uses OPT instead of CFLAGS
@@ -136,10 +123,6 @@ if test "@platform_os@" = "android"; then
   samba_cv_HAVE_UT_UT_TYPE=no
   ac_cv_func_srand=yes
   ac_cv_func_rand=yes
-
-  #python: android doesn't have libutil
-  PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lssl -lcrypto"
-
 fi
 
 if test "@platform_os@" = "ios"; then

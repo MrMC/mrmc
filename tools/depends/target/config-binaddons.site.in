@@ -54,10 +54,6 @@ if test "${PACKAGE_NAME}" = "libgcrypt"; then
   CFLAGS="$CFLAGS -std=gnu99"
 fi
 
-#python
-ac_cv_func_gethostbyname_r=no
-ac_cv_header_sys_un_h=yes
-
 #rsxs/projectm
 jm_cv_func_gettimeofday_clobber=no
 mac_cv_pkg_ldflags=-lz
@@ -82,15 +78,11 @@ samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no
 libreplace_cv_HAVE_GETADDRINFO=no
 
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "ios"; then
-  # disable python support
-  export PYTHON_VER=0.0
   # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
   export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
 fi
 
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
-  # disable python support
-  export PYTHON_VER=0.0
   # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
   export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
   # uses OPT instead of CFLAGS
@@ -123,10 +115,6 @@ if test "@platform_os@" = "android"; then
   samba_cv_HAVE_UT_UT_TYPE=no
   ac_cv_func_srand=yes
   ac_cv_func_rand=yes
-
-  #python: android doesn't have libutil
-  PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lssl -lcrypto"
-
 fi
 
 if test "@platform_os@" = "ios"; then
@@ -152,11 +140,6 @@ if test "@platform_os@" = "ios"; then
     export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
     export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
   fi
-
-  # tweaks for libmpeg2
-  if test "${PACKAGE_NAME}" = "libmpeg2" ; then
-    export LDFLAGS="${LDFLAGS} -Wl,-read_only_relocs,suppress"
-  fi
 fi
 
 #Fix for older, broken android toolchains
@@ -169,7 +152,6 @@ fi
 if test "${ac_unique_file}" = "src/flac/main.c" || \
    test "${ac_unique_file}" = "src/framing.c" || \
    test "${ac_unique_file}" = "src/libdvdcss.c" || \
-   test "${PACKAGE_NAME}" = "libmpeg2" || \
    test "${PACKAGE_NAME}" = "libssh2" ; then
      CFLAGS="$CFLAGS -fvisibility=default"
 fi

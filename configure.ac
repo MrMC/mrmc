@@ -8,7 +8,6 @@ AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
 m4_include([m4/ax_prog_cxx_for_build.m4])
 m4_include([m4/ax_cxx_compile_stdcxx_11.m4])
-m4_include([m4/ax_python_devel.m4])
 m4_include([m4/xbmc_arch.m4])
 
 AC_CONFIG_AUX_DIR([build-aux])
@@ -489,13 +488,6 @@ AC_ARG_ENABLE([codec],
   [add_codecs=$enableval],
   [add_codecs=no])
 
-AC_ARG_ENABLE([libav-compat],
-  [AS_HELP_STRING([--enable-libav-compat],
-  [build a wrapper around libav to provide the functions needed by ${APP_NAME}. This is
-   *not* supported by ${APP_NAME} developers and is provided only for convenience. (default is no) 'Linux only'])],
-  [use_libav_hacks=$enableval],
-  [use_libav_hacks=no])
-
 ### End of external library options
 
 if test "x$host_vendor" != "xapple"; then
@@ -585,11 +577,6 @@ case $host in
      use_cpu=cortex-a8
      ARCH="arm-osx"
      use_arch="arm"
-     PYTHON_VERSION="2.6"
-     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
-     PYTHON_CPPFLAGS="-I${prefix}/include/python2.6"
-     PYTHON_SITE_PKG="${prefix}/lib/python2.6/site-packages"
-     PYTHON_NOVERSIONCHECK="no-check"
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
      AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
      ;;
@@ -902,20 +889,6 @@ AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/circular_buffer.hpp],, AC_MSG_ERROR($missing_library))
 AC_LANG_POP([C++])
-
-# Python
-if test -z "$PYTHON_NOVERSIONCHECK"; then
-  AX_PYTHON_DEVEL([>= '2.6'])
-  AX_PYTHON_DEVEL([< '3.0'])
-  PYTHON_VERSION=$ac_python_version
-fi
-
-if test -z "$PYTHON_VERSION"; then
-  AC_MSG_ERROR([Can't find a Python version.])
-else
-  LIBS="$LIBS $PYTHON_LDFLAGS"
-  AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
-fi
 
 # Wayland
 if test "$use_wayland" = "yes"; then
@@ -1669,7 +1642,7 @@ final_message="$final_message\n  JRE Available:\tYes"
 echo "Checking for doxygen installation"
 AC_PATH_PROG(DOXYGEN_EXE, doxygen, "none")
 if test "$DOXYGEN_EXE" = "none"; then
-  AC_MSG_WARN([Unable to find doxygen installation. Will not be able to make docstrings for the python api])
+  AC_MSG_WARN([Unable to find doxygen installation.])
   final_message="$final_message\n  Doxygen Available:\tNo"
   USE_DOXYGEN=0
 else
@@ -2205,19 +2178,6 @@ fi
 
 ### External libraries messages
 
-if test "$host_vendor" = "apple" ; then
-  # built internal but referenced as external, we link directly to them.
-  # this MUST be the last thing before OUTPUT_FILES as they do not
-  # exist until after we build FFMpeg.
-  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libavcodec -lavcodec"
-  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libavfilter -lavfilter"
-  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libswresample -lswresample"
-  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libavformat -lavformat"
-  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libavutil -lavutil"
-  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libpostproc -lpostproc"
-  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libswscale -lswscale"
-fi
-
 OUTPUT_FILES="Makefile \
     Makefile.include \
     addons/skin.mrmc/media/Makefile \
@@ -2296,10 +2256,6 @@ OUTPUT_FILES="Makefile \
     tools/android/packaging/xbmc/strings.xml \
     addons/xbmc.addon/addon.xml"
 
-if test "$use_webserver" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/network/httprequesthandler/python/Makefile"
-fi
-
 if test "$use_wayland" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
 fi
@@ -2315,10 +2271,6 @@ fi
 if test "$use_sse4" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/linux/sse4/Makefile"
 fi
-
-OUTPUT_FILES="$OUTPUT_FILES \
-  xbmc/interfaces/python/Makefile \
-  xbmc/interfaces/python/test/Makefile"
 
 # needed for kodi-config.cmake
 if echo "$libdir" | grep -q '${exec_prefix}'; then
@@ -2358,8 +2310,6 @@ AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(GNUTLS_ALL_LIBS)
 AC_SUBST(VORBISENC_ALL_LIBS)
 AC_SUBST(USE_TOUCH_SKIN)
-AC_SUBST(USE_LIBAV_HACKS)
-AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(LIBCURL_BASENAME)
@@ -2367,7 +2317,6 @@ AC_SUBST(LIBVORBISFILE_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
 AC_SUBST(LIBASS_BASENAME)
-AC_SUBST(LIBMEPG2_BASENAME)
 AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)
 AC_SUBST(USE_OPENGL)
 AC_SUBST(USE_OPENGLES)

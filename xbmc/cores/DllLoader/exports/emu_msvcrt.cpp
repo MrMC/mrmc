@@ -90,68 +90,20 @@ extern "C" void __stdcall init_emu_environ()
 {
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
-  // python
-#if defined(TARGET_DARWIN)
-  dll_putenv("OS=darwin");
-#elif defined(TARGET_POSIX)
-  dll_putenv("OS=linux");
-#else
-  dll_putenv("OS=unknown");
-#endif
-
   // check if we are running as real xbmc.app or just binary
-  if (!CUtil::GetFrameworksPath(true).empty())
+  if (!CUtil::GetFrameworksPath().empty())
   {
-    // using external python, it's build looking for xxx/lib/python2.6
-    // so point it to frameworks which is where python2.6 is located
-    dll_putenv(string("PYTHONPATH=" +
-      CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
-    dll_putenv(string("PYTHONHOME=" +
-      CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
     dll_putenv(string("PATH=.;" +
       CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
   }
   else
   {
-    dll_putenv(string("PYTHONPATH=" +
-      CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" +
-      CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib")).c_str());
-    dll_putenv(string("PYTHONHOME=" +
-      CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
-    dll_putenv(string("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
-      CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
+    dll_putenv(string("PATH=.;" +
+      CSpecialProtocol::TranslatePath("special://xbmc")).c_str());
   }
 
-#if defined(TARGET_ANDROID)
-  string apkPath = getenv("XBMC_ANDROID_APK");
-  apkPath += "/assets/python2.6";
-  dll_putenv(string("PYTHONHOME=" + apkPath).c_str());
-  dll_putenv("PYTHONOPTIMIZE=");
-  dll_putenv("PYTHONNOUSERSITE=1");
-  dll_putenv("PYTHONPATH=");
-#else
-  dll_putenv("PYTHONOPTIMIZE=1");
-#endif
-
-  //dll_putenv("PYTHONCASEOK=1");
-  //dll_putenv("PYTHONDEBUG=1");
-  //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
-  //dll_putenv("PYTHONDUMPREFS=1");
-  //dll_putenv("THREADDEBUG=1");
-  //dll_putenv("PYTHONMALLOCSTATS=1");
-  //dll_putenv("PYTHONY2K=1");
-  dll_putenv("TEMP=special://temp/temp"); // for python tempdir
-
-  // libdvdnav
-  dll_putenv("DVDREAD_NOKEYS=1");
-  //dll_putenv("DVDREAD_VERBOSE=1");
-  //dll_putenv("DVDREAD_USE_DIRECT=1");
-
-  // libdvdcss
-  dll_putenv("DVDCSS_METHOD=key");
-  dll_putenv("DVDCSS_VERBOSE=3");
-  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
+  //dll_putenv("TEMP=special://temp/temp"); // for python tempdir
 }
 
 extern "C" void __stdcall update_emu_environ()

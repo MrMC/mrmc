@@ -66,7 +66,6 @@ public:
 
   void PlayActionSound(const CAction& action);
   void PlayWindowSound(int id, WINDOW_SOUND event);
-  void PlayPythonSound(const std::string& strFileName, bool useCached = true);
 
   void Enable(bool bEnable);
   void SetVolume(float level);
@@ -75,12 +74,10 @@ private:
   typedef std::map<const std::string, CSoundInfo> soundCache;
   typedef std::map<int, IAESound*              > actionSoundMap;
   typedef std::map<int, CWindowSounds          > windowSoundMap;
-  typedef std::map<const std::string, IAESound* > pythonSoundsMap;
 
   soundCache          m_soundCache;
   actionSoundMap      m_actionSoundMap;
   windowSoundMap      m_windowSoundMap;
-  pythonSoundsMap     m_pythonSounds;
 
   std::string          m_strMediaDir;
   bool                m_bEnabled;

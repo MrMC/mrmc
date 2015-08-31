@@ -30,7 +30,7 @@ KeyboardView *g_pIosKeyboard = nil;
 
 bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
-  // we are in xbmc main thread or python module thread.
+  // we are in xbmc main thread.
 
   CCocoaAutoPool pool;
   
