@@ -651,12 +651,12 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   if (!m_appWindow)
     return false;
   
-  OSXGLView *view = [(NSWindow *)m_appWindow contentView];
+  OSXGLView *view = [(NSWindow*)m_appWindow contentView];
   
   if (view && (newWidth > 0) && (newHeight > 0))
   {
     NSOpenGLContext *context = [view getGLContext];
-    NSWindow* window = (NSWindow *)m_appWindow;
+    NSWindow* window = (NSWindow*)m_appWindow;
     
     [window setContentSize:NSMakeSize(newWidth, newHeight)];
     [window update];
@@ -845,7 +845,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
     // Assign view from old context, move back to original screen.
     [window setFrameOrigin:last_window_origin];
-    // return the mouse bounds in SDL view to prevous size
+    // return the mouse bounds in view to prevous size
     [view setFrameSize:last_view_size ];
     [view setFrameOrigin:last_view_origin ];
   }
@@ -864,11 +864,12 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     m_fullscreenWillToggle = true;
     // toggle cocoa fullscreen mode
     if ([(NSWindow *)m_appWindow respondsToSelector:@selector(toggleFullScreen:)])
-      [(NSWindow *)m_appWindow toggleFullScreen:nil];
+    {
+      // does not seem to work, wonder why ?
+      //[(NSWindow*)m_appWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
+      [(NSWindow*)m_appWindow toggleFullScreen:nil];
+    }
   }
-
-  // need to make sure SDL tracks any window size changes
-  ResizeWindow(m_nWidth, m_nHeight, -1, -1);
   
   return true;
 }

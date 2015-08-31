@@ -255,6 +255,10 @@ bool CDarwinUtils::DeviceHasRetina(double &scale)
 // methods which are available on 10.7 and later
 bool CDarwinUtils::DeviceHasNativeFullscreen(void)
 {
+  // damn animation effect is too slow when transitioning,
+  // so just turn this off for now.
+  return false;
+
   static int useNativeFullscreen = -1;
   if (useNativeFullscreen == -1)
     useNativeFullscreen = NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 ? 1 : 0;
