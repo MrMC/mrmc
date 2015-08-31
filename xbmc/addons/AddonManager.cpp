@@ -21,7 +21,6 @@
 #include "AddonManager.h"
 #include "Addon.h"
 #include "AudioDecoder.h"
-#include "ContextMenuManager.h"
 #include "DllLibCPluff.h"
 #include "addons/ImageResource.h"
 #include "addons/LanguageResource.h"

@@ -20,7 +20,6 @@
 
 #include "GUIWindowPVRGuide.h"
 
-#include "ContextMenuManager.h"
 #include "GUIUserMessages.h"
 #include "input/Key.h"
 #include "pvr/PVRManager.h"
@@ -120,7 +119,6 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 void CGUIWindowPVRGuide::UpdateSelectedItemPath()

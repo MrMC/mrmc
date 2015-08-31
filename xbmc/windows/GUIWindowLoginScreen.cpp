@@ -47,7 +47,6 @@
 #include "addons/AddonManager.h"
 #include "view/ViewState.h"
 #include "pvr/PVRManager.h"
-#include "ContextMenuManager.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 
 using namespace KODI::MESSAGING;
@@ -234,8 +233,6 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (iItem == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
     choices.Add(2, 12334);
 
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, choices);
-
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 2)
   {
@@ -255,8 +252,6 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (iItem < (int)CProfilesManager::GetInstance().GetNumberOfProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
 
-  if (choice >= CONTEXT_BUTTON_FIRST_ADDON)
-    return CContextMenuManager::GetInstance().OnClick(choice, pItem);
   return false;
 }
 

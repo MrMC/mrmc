@@ -20,7 +20,6 @@
 
 #include "GUIWindowPVRTimers.h"
 
-#include "ContextMenuManager.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
@@ -111,7 +110,6 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
   }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowPVRTimers::OnAction(const CAction &action)

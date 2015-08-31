@@ -41,7 +41,6 @@
 #include "storage/MediaManager.h"
 #include "LangInfo.h"
 #include "input/Key.h"
-#include "ContextMenuManager.h"
 
 #include <utility>
 
@@ -185,8 +184,6 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& 
     if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_UNKNOWN, false) && addon->HasSettings())
       buttons.Add(CONTEXT_BUTTON_SETTINGS, 24020);
   }
-
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

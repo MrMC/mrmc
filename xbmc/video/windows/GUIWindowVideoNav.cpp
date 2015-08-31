@@ -50,7 +50,6 @@
 #include "video/VideoInfoScanner.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "pvr/recordings/PVRRecording.h"
-#include "ContextMenuManager.h"
 
 #include <utility>
 
@@ -971,7 +970,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
     }
-    CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
   }
 }
 

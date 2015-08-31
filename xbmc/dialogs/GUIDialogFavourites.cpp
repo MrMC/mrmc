@@ -30,7 +30,6 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
-#include "ContextMenuManager.h"
 #include "utils/Variant.h"
 
 using namespace XFILE;
@@ -133,7 +132,6 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   choices.Add(5, 20019);
 
   CFileItemPtr itemPtr = m_favourites->Get(item);
-  CContextMenuManager::GetInstance().AddVisibleItems(itemPtr, choices);
 
   int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 
@@ -150,8 +148,6 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     OnRename(item);
   else if (button == 5)
     OnSetThumb(item);
-  else if (button >= CONTEXT_BUTTON_FIRST_ADDON)
-    CContextMenuManager::GetInstance().OnClick(button, itemPtr);
 }
 
 void CGUIDialogFavourites::OnMoveItem(int item, int amount)

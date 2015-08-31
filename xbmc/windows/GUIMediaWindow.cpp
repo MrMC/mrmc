@@ -21,7 +21,6 @@
 #include "GUIMediaWindow.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
-#include "ContextMenuManager.h"
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -1552,8 +1551,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   default:
     break;
   }
-  if (button >= CONTEXT_BUTTON_FIRST_ADDON)
-    return CContextMenuManager::GetInstance().OnClick(button, m_vecItems->Get(itemNumber));
+
   return false;
 }
 

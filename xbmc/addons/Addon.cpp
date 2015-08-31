@@ -21,7 +21,6 @@
 #include "Addon.h"
 #include "AddonManager.h"
 #include "addons/Service.h"
-#include "ContextMenuManager.h"
 #include "settings/Settings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"

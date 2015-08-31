@@ -20,7 +20,6 @@
 
 #include "GUIWindowPVRSearch.h"
 
-#include "ContextMenuManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
@@ -78,7 +77,6 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
   buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);             /* Clear search results */
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 void CGUIWindowPVRSearch::OnWindowLoaded()
