@@ -72,9 +72,12 @@ void CActiveAESink::Dispose()
     m_sink = NULL;
   }
 
-  delete m_sampleOfSilence->pkt;
-  m_sampleOfSilence->pkt = NULL;
-  delete m_sampleOfSilence, m_sampleOfSilence = NULL;
+  if (m_sampleOfSilence)
+  {
+    delete m_sampleOfSilence->pkt;
+    m_sampleOfSilence->pkt = NULL;
+    delete m_sampleOfSilence, m_sampleOfSilence = NULL;
+  }
 }
 
 AEDeviceType CActiveAESink::GetDeviceType(const std::string &device)
