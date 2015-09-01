@@ -10,7 +10,10 @@ BASE_URL=https://downloads.sourceforge.net/project/xmlrpc-c/Xmlrpc-c%20Super%20S
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
-    ./configure --prefix=$(PREFIX)
+    ./configure --prefix=$(PREFIX) \
+    --disable-abyss-server \
+    --disable-cgi-server \
+    --enable-libxml2-backend
 
 LIBDYLIB=$(PLATFORM)/src/libxmlrpc.a
 
