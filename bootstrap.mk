@@ -1,5 +1,4 @@
 BOOTSTRAP_SUBDIRS += configure.ac
-BOOTSTRAP_SUBDIRS += lib/cpluff/configure.ac
 BOOTSTRAP_SUBDIRS += lib/gtest/configure.ac
 
 ifneq ($(wildcard pvr-addons/Makefile.am),)

@@ -1025,6 +1025,10 @@ PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS],
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
+
+AC_CHECK_LIB([cpluff],      [main],, AC_MSG_ERROR($missing_library))
+XB_FIND_SONAME([CPLUFF], [cpluff])
+
 if echo "$ARCH" | grep -q freebsd; then
 AC_CHECK_LIB([pthread],     [main],LIBS="-pthread $LIBS", AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([pthread],     [pthread_set_name_np],
@@ -2368,15 +2372,6 @@ else
 fi
 ])
 ])
-
-XB_CONFIG_MODULE([lib/cpluff], [
-  ./configure --disable-nls \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX" LDFLAGS="$LDFLAGS" LIBS=""
-    #LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
-], [0])
 
 XB_CONFIG_MODULE([lib/gtest], [
   ./configure \

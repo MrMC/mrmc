@@ -28,9 +28,12 @@
 #include "AddonDatabase.h"
 
 class DllLibCPluff;
+
+// nasty hack to get to cpluff includes,
+// it leaks funtion real names outside of m_cpluff which appends cp_XXX on them :)
 extern "C"
 {
-#include "lib/cpluff/libcpluff/cpluff.h"
+#include <cpluff.h>
 }
 
 namespace ADDON

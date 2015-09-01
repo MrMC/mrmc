@@ -15,7 +15,7 @@ DEPENDS = \
 	libshairplay \
 	libplist libcec tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
-	xmlrpc-c libxslt ffmpeg platform crossguid
+	xmlrpc-c libxslt ffmpeg platform crossguid libcpluff
 
 FFMPEG_DEPENDS = gnutls
 
@@ -100,6 +100,7 @@ libcec: platform
 ifeq ($(OS),linux)
 crossguid: libuuid
 endif
+libcpluff: expat
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
