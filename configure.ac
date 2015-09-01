@@ -204,8 +204,6 @@ dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
 sdl_joystick_not_found="== Could not find SDL2. Joystick support disabled. =="
 libcap_disabled="== Capabilities detection support disabled. =="
 libcap_not_found="== Could not find libcap. Capabilities detection support disabled. =="
-gtest_enabled="== Google Test Framework will be configured. =="
-gtest_disabled="== Google Test Framework will not be configured. =="
 breakpad_enabled="== Google Breakpad will be configured. =="
 breakpad_disabled="== Google Breakpad Framework will not be configured. =="
 
@@ -463,12 +461,6 @@ AC_ARG_ENABLE([player],
   [enable additional players from a list of comma separated names, (default is none, choices are omxplayer)])],
   [add_players=$enableval],
   [add_players=no])
-
-AC_ARG_ENABLE([gtest],
-  [AS_HELP_STRING([--enable-gtest],
-  [configure Google Test Framework (default is yes)])],
-  [configure_gtest=$enableval],
-  [configure_gtest=yes])
 
 AC_ARG_ENABLE([breakpad],
   [AS_HELP_STRING([--enable-breakpad],
@@ -899,32 +891,6 @@ if test "$use_wayland" = "yes"; then
     AC_MSG_ERROR($missing_library))
   AC_DEFINE([HAVE_WAYLAND], [1], [Define to 1 if you have Wayland libs installed.])
   AC_DEFINE([HAVE_XKBCOMMON], [1], [Define to 1 if you have libxkbcommon installed.])
-
-  # If we are also building with tests then we want to build
-  # wayland tests as well
-  if test "$configure_gtest" = "yes"; then
-    have_weston_sdk=no;
-    PKG_CHECK_MODULES([PIXMAN],
-                      [pixman-1],have_pixman=yes,
-                      [AC_MSG_WARN($missing_library); have_pixman=no])
-    PKG_CHECK_MODULES([WESTON],
-                      [weston >= 1.1.90],[have_weston_sdk=yes],
-                      [have_weston_sdk=no; AC_MSG_WARN($missing_library)])
-
-    AC_CHECK_PROG(WAYLAND_SCANNER, wayland-scanner, "wayland-scanner", "no")
-    if test "x$WAYLAND_SCANNER" == "xno"; then
-      AC_MSG_WARN($missing_program)
-    else
-      if test "x$have_weston_sdk" == "xyes" && test "x$have_pixman" = "xyes"; then
-        AC_SUBST(WAYLAND_TEST_INCLUDES,"$WAYLAND_CLIENT_CFLAGS $XKBCOMMON_CFLAGS $PIXMAN_CFLAGS $WESTON_CFLAGS")
-        AC_SUBST(WAYLAND_TEST_LIBS,"$WAYLAND_CLIENT_LIBS $XKBCOMMON_LIBS $PIXMAN_LIBS $WESTON_LIBS")
-        AC_DEFINE([HAVE_WESTON_SDK], [1], [Define to 1 if Weston SDK is installed.])
-        AC_SUBST(USE_WAYLAND_TEST_EXTENSION, 1)
-      fi
-      AC_SUBST(WAYLAND_SCANNER)
-      AC_DEFINE([HAVE_WAYLAND_XBMC_PROTO],[1],["Define to 1 if the wayland test-protocol will be built"])
-    fi
-  fi
 
   # Disable SDL and X11 builds
   use_joystick=no
@@ -1995,19 +1961,6 @@ else
   final_message="$final_message\n  PulseAudio:\tNo"
 fi
 
-# Google Test Framework
-if test "$configure_gtest" = "yes"; then
-  AC_MSG_NOTICE($gtest_enabled)
-  final_message="$final_message\n  Google Test Framework Configured:\tYes"
-  GTEST_CONFIGURED=1
-  SKIP_CONFIG_GTEST=0
-else
-  AC_MSG_NOTICE($gtest_disabled)
-  final_message="$final_message\n  Google Test Framework Configured:\tNo"
-  GTEST_CONFIGURED=0
-  SKIP_CONFIG_GTEST=1
-fi
-
 # Google Breakpad
 if test "$use_breakpad" = "yes"; then
   USE_BREAKPAD=1
@@ -2315,7 +2268,6 @@ AC_SUBST(USE_UPNP)
 AC_SUBST(USE_XKBCOMMON)
 AC_SUBST(USE_OMXLIB)
 AC_SUBST(USE_ANDROID)
-AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
 AC_SUBST(UPNP_DEFINES)
 AC_SUBST(USE_SSE4)
@@ -2372,21 +2324,6 @@ else
 fi
 ])
 ])
-
-XB_CONFIG_MODULE([lib/gtest], [
-  ./configure \
-    CC="$CC" \
-    CXX="$CXX" \
-    CFLAGS="$CFLAGS" \
-    CXXFLAGS="$CXXFLAGS" \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \
-    --disable-shared \
-    --enable-static \
-    --with-pthreads
-], [$SKIP_CONFIG_GTEST])
 
 AC_OUTPUT
 
