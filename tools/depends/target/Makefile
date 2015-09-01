@@ -15,7 +15,7 @@ DEPENDS = \
 	libshairplay \
 	libplist libcec tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
-	xmlrpc-c libxslt ffmpeg platform crossguid libcpluff
+	libxmlrpc libxslt ffmpeg platform crossguid libcpluff
 
 FFMPEG_DEPENDS = gnutls
 
