@@ -250,10 +250,5 @@ public:
    * Instruct AE to re-initialize, e.g. after ELD change event
    */
   virtual void DeviceChange() {return; }
-
-  /**
-   * Indicates if dsp addon system is active.
-   */
-  virtual bool HasDSP() { return false; };
 };
 

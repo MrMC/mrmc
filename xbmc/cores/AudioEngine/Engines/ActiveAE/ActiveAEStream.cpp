@@ -53,7 +53,6 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_streamFreeBuffers = 0;
   m_streamIsBuffering = false;
   m_streamIsFlushed = false;
-  m_bypassDSP = false;
   m_streamSlave = NULL;
   m_leftoverBuffer = new uint8_t[m_format.m_frameSize];
   m_leftoverBytes = 0;
@@ -466,11 +465,6 @@ bool CActiveAEStream::IsFading()
 {
   CSingleLock lock(m_streamLock);
   return m_streamFading;
-}
-
-bool CActiveAEStream::HasDSP()
-{
-  return AE.HasDSP();
 }
 
 const unsigned int CActiveAEStream::GetFrameSize() const

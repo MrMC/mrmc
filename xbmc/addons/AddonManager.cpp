@@ -38,8 +38,6 @@
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
 #endif
-#include "DllAudioDSP.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #ifdef HAS_PVRCLIENTS
 #include "pvr/addons/PVRClient.h"
 #endif
@@ -93,7 +91,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CScraper(props));
     case ADDON_SCREENSAVER:
     case ADDON_PVRDLL:
-    case ADDON_ADSPDLL:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -117,10 +114,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #ifdef HAS_PVRCLIENTS
           return AddonPtr(new PVR::CPVRClient(props));
 #endif
-        }
-        else if (type == ADDON_ADSPDLL)
-        {
-          return AddonPtr(new ActiveAE::CActiveAEDSPAddon(props));
         }
         else
           return AddonPtr(new CScreenSaver(props));
@@ -665,8 +658,7 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
     return false;
 
   // installed PVR addons can always be disabled
-  if (localAddon->Type() == ADDON_PVRDLL ||
-      localAddon->Type() == ADDON_ADSPDLL)
+  if (localAddon->Type() == ADDON_PVRDLL)
     return true;
   
   std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
@@ -775,8 +767,6 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(addonProps));
-    case ADDON_ADSPDLL:
-      return AddonPtr(new ActiveAE::CActiveAEDSPAddon(addonProps));
     case ADDON_RESOURCE_IMAGES:
       return AddonPtr(new CImageResource(addonProps));
     case ADDON_RESOURCE_LANGUAGE:

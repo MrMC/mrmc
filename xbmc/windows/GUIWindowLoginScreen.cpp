@@ -47,7 +47,6 @@
 #include "addons/AddonManager.h"
 #include "view/ViewState.h"
 #include "pvr/PVRManager.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 
 using namespace KODI::MESSAGING;
 
@@ -273,9 +272,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // stop PVR related services
   g_application.StopPVRManager();
 
-  // stop audio DSP services with a blocking message
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF);
-
   if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
@@ -328,9 +324,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   g_application.UpdateLibraries();
   CStereoscopicsManager::GetInstance().Initialize();
-
-  // start audio DSP related services with a blocking message
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)

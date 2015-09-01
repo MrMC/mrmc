@@ -2142,7 +2142,6 @@ OUTPUT_FILES="Makefile \
     xbmc/windowing/Makefile \
     xbmc/windowing/egl/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
-    lib/addons/library.kodi.adsp/Makefile \
     lib/addons/library.xbmc.codec/Makefile \
     lib/addons/library.kodi.guilib/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \

@@ -35,7 +35,6 @@
 #include "cores/IPlayer.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "PlayListPlayer.h"
 #include "video/Bookmark.h"
@@ -218,7 +217,6 @@ using namespace PVR;
 using namespace EPG;
 using namespace PERIPHERALS;
 using namespace KODI::MESSAGING;
-using namespace ActiveAE;
 
 using namespace XbmcThreads;
 
@@ -395,7 +393,6 @@ bool CApplication::Create()
   CApplicationMessenger::GetInstance().RegisterReceiver(this);
   CApplicationMessenger::GetInstance().RegisterReceiver(&g_playlistPlayer);
   CApplicationMessenger::GetInstance().RegisterReceiver(&g_infoManager);
-  CApplicationMessenger::GetInstance().RegisterReceiver(&g_AEDSPManager);
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
@@ -573,9 +570,6 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "CApplication::Create: Failed to start the AudioEngine");
     return false;
   }
-
-  // start AudioDSP engine with a blocking message
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
 
   // restore AE's previous volume state
   SetHardwareVolume(m_volumeLevel);
@@ -1070,7 +1064,6 @@ bool CApplication::Initialize()
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
       CStereoscopicsManager::GetInstance().Initialize();
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON); // send a blocking message to active AudioDSP engine
     }
 
   }
@@ -1256,22 +1249,6 @@ void CApplication::OnSettingChanged(const CSetting *setting)
   }
   else if (StringUtils::StartsWithNoCase(settingId, "audiooutput."))
   {
-    if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED)
-    {
-      if (((CSettingBool *) setting)->GetValue())
-      {
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_RESTART); // send non blocking media restart message
-      }
-      else
-      {
-        CAEFactory::OnSettingsChange(settingId);
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_RESTART); // send non blocking media restart message
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF);
-      }
-      return;
-    }
-
     // AE is master of audio settings and needs to be informed first
     CAEFactory::OnSettingsChange(settingId);
 
@@ -2757,7 +2734,6 @@ void CApplication::Stop(int exitCode)
     if (CVideoLibraryQueue::GetInstance().IsRunning())
       CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF); // send a blocking message to deactivate AudioDSP engine
     CApplicationMessenger::GetInstance().Cleanup();
 
     CLog::Log(LOGNOTICE, "stop player");
@@ -3015,7 +2991,6 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     // Switch to default options
     CMediaSettings::GetInstance().GetCurrentVideoSettings() = CMediaSettings::GetInstance().GetDefaultVideoSettings();
-    CMediaSettings::GetInstance().GetCurrentAudioSettings() = CMediaSettings::GetInstance().GetDefaultAudioSettings();
     // see if we have saved options in the database
 
     m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
@@ -3458,8 +3433,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
       *m_stackFileItemToUpdate,
       m_progressTrackingVideoResumeBookmark,
       m_progressTrackingPlayCountUpdate,
-      CMediaSettings::GetInstance().GetCurrentVideoSettings(),
-      CMediaSettings::GetInstance().GetCurrentAudioSettings());
+      CMediaSettings::GetInstance().GetCurrentVideoSettings());
   
   if (bForeground)
   {

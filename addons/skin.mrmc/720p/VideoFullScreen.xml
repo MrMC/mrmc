@@ -215,28 +215,12 @@
 						<visible>!Player.ChannelPreviewActive</visible>
 					</control>
 					<control type="image" id="1">
-						<description>ADSP Master Mode Image</description>
-						<width>85</width>
-						<height>35</height>
-						<aspectratio align="right">keep</aspectratio>
-						<visible>![IsEmpty(ADSP.MasterOwnIcon) | Player.ChannelPreviewActive]</visible>
-						<texture>$INFO[ADSP.MasterOwnIcon]</texture>
-					</control>
-					<control type="image" id="1">
 						<description>Audio Codec Image</description>
 						<width>85</width>
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
-						<visible>IsEmpty(ADSP.MasterOverrideIcon) + !Player.ChannelPreviewActive</visible>
+						<visible>!Player.ChannelPreviewActive</visible>
 						<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
-					</control>
-					<control type="image" id="1">
-						<description>ADSP Audio Codec Override Image</description>
-						<width>85</width>
-						<height>35</height>
-						<aspectratio align="right">keep</aspectratio>
-						<visible>![IsEmpty(ADSP.MasterOverrideIcon) | Player.ChannelPreviewActive]</visible>
-						<texture>$INFO[ADSP.MasterOverrideIcon]</texture>
 					</control>
 					<control type="image" id="1">
 						<description>Audio Channels Image</description>

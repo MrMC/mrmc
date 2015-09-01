@@ -27,7 +27,6 @@
 #include "events/EventLog.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
@@ -345,9 +344,6 @@ const std::string CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME = "audio
 const std::string CSettings::SETTING_AUDIOOUTPUT_NORMALIZELEVELS = "audiooutput.normalizelevels";
 const std::string CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY = "audiooutput.processquality";
 const std::string CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE = "audiooutput.streamsilence";
-const std::string CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED = "audiooutput.dspaddonsenabled";
-const std::string CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS = "audiooutput.dspsettings";
-const std::string CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB = "audiooutput.dspresetdb";
 const std::string CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE = "audiooutput.guisoundmode";
 const std::string CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH = "audiooutput.passthrough";
 const std::string CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE = "audiooutput.passthroughdevice";
@@ -601,7 +597,6 @@ void CSettings::Uninitialize()
 #if defined(TARGET_DARWIN_OSX)
   m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
-  m_settingsManager->UnregisterCallback(&ActiveAE::CActiveAEDSP::GetInstance());
 
   // cleanup the settings manager
   m_settingsManager->Clear();
@@ -1034,7 +1029,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_NORMALIZELEVELS);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKIN);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_FONT);
@@ -1149,10 +1143,6 @@ void CSettings::InitializeISettingCallbacks()
 #endif
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB);
-  m_settingsManager->RegisterCallback(&ActiveAE::CActiveAEDSP::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()

@@ -305,9 +305,6 @@ public:
   static const std::string SETTING_AUDIOOUTPUT_NORMALIZELEVELS;
   static const std::string SETTING_AUDIOOUTPUT_PROCESSQUALITY;
   static const std::string SETTING_AUDIOOUTPUT_STREAMSILENCE;
-  static const std::string SETTING_AUDIOOUTPUT_DSPADDONSENABLED;
-  static const std::string SETTING_AUDIOOUTPUT_DSPSETTINGS;
-  static const std::string SETTING_AUDIOOUTPUT_DSPRESETDB;
   static const std::string SETTING_AUDIOOUTPUT_GUISOUNDMODE;
   static const std::string SETTING_AUDIOOUTPUT_PASSTHROUGH;
   static const std::string SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE;
