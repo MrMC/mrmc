@@ -945,15 +945,6 @@
 		DFBB431A178B5E6F006CC20A /* CompileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4317178B5E6F006CC20A /* CompileInfo.cpp */; };
 		DFBB431B178B5E6F006CC20A /* CompileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4317178B5E6F006CC20A /* CompileInfo.cpp */; };
 		DFBE805115F7D75700D7D102 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */; };
-		DFC6F4B61AFF7CB10039A7FA /* kiss_fft.c in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4AF1AFF7CB10039A7FA /* kiss_fft.c */; };
-		DFC6F4B71AFF7CB10039A7FA /* kiss_fft.c in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4AF1AFF7CB10039A7FA /* kiss_fft.c */; };
-		DFC6F4B81AFF7CB10039A7FA /* kiss_fft.c in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4AF1AFF7CB10039A7FA /* kiss_fft.c */; };
-		DFC6F4B91AFF7CB10039A7FA /* kiss_fftr.c in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4B11AFF7CB10039A7FA /* kiss_fftr.c */; };
-		DFC6F4BA1AFF7CB10039A7FA /* kiss_fftr.c in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4B11AFF7CB10039A7FA /* kiss_fftr.c */; };
-		DFC6F4BB1AFF7CB10039A7FA /* kiss_fftr.c in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4B11AFF7CB10039A7FA /* kiss_fftr.c */; };
-		DFC6F4C11AFF7E300039A7FA /* rfft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4BF1AFF7E300039A7FA /* rfft.cpp */; };
-		DFC6F4C21AFF7E300039A7FA /* rfft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4BF1AFF7E300039A7FA /* rfft.cpp */; };
-		DFC6F4C31AFF7E300039A7FA /* rfft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFC6F4BF1AFF7E300039A7FA /* rfft.cpp */; };
 		DFCA6AC7152245CD000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */; };
 		DFCA6AC8152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */; };
 		DFCA6AC9152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABF152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp */; };
@@ -4159,13 +4150,6 @@
 		DFBB4317178B5E6F006CC20A /* CompileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompileInfo.cpp; sourceTree = "<group>"; };
 		DFBB4318178B5E6F006CC20A /* CompileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompileInfo.h; sourceTree = "<group>"; };
 		DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		DFC6F4AD1AFF7CB10039A7FA /* _kiss_fft_guts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _kiss_fft_guts.h; sourceTree = "<group>"; };
-		DFC6F4AF1AFF7CB10039A7FA /* kiss_fft.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kiss_fft.c; sourceTree = "<group>"; };
-		DFC6F4B01AFF7CB10039A7FA /* kiss_fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kiss_fft.h; sourceTree = "<group>"; };
-		DFC6F4B11AFF7CB10039A7FA /* kiss_fftr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kiss_fftr.c; sourceTree = "<group>"; };
-		DFC6F4B21AFF7CB10039A7FA /* kiss_fftr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kiss_fftr.h; sourceTree = "<group>"; };
-		DFC6F4BF1AFF7E300039A7FA /* rfft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rfft.cpp; sourceTree = "<group>"; };
-		DFC6F4C01AFF7E300039A7FA /* rfft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rfft.h; sourceTree = "<group>"; };
 		DFC8B7CC199C1EC100424777 /* TopShelf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TopShelf.png; sourceTree = "<group>"; };
 		DFC8B7CD199C2B3A00424777 /* KodiAppliance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KodiAppliance.h; sourceTree = "<group>"; };
 		DFC8B7CE199C2B3A00424777 /* KodiAppliance.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KodiAppliance.mm; sourceTree = "<group>"; };
@@ -4801,7 +4785,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -5598,7 +5582,7 @@
 			children = (
 				8DD76F7E0486A8DE00D96B5E /* Kodi */,
 				D6299ABB1AFC2A9F00E3059D /* Kodi.app */,
-				E4991089174D0D2600741B6D /* Kodi.app */,
+				E4991089174D0D2600741B6D /* kodi.app */,
 				DFFC52CB17527B3100C937AB /* Kodi.frappliance */,
 			);
 			name = Products;
@@ -7168,26 +7152,6 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		DFC6F4AB1AFF7CB10039A7FA /* contrib */ = {
-			isa = PBXGroup;
-			children = (
-				DFC6F4AC1AFF7CB10039A7FA /* kissfft */,
-			);
-			path = contrib;
-			sourceTree = "<group>";
-		};
-		DFC6F4AC1AFF7CB10039A7FA /* kissfft */ = {
-			isa = PBXGroup;
-			children = (
-				DFC6F4AD1AFF7CB10039A7FA /* _kiss_fft_guts.h */,
-				DFC6F4AF1AFF7CB10039A7FA /* kiss_fft.c */,
-				DFC6F4B01AFF7CB10039A7FA /* kiss_fft.h */,
-				DFC6F4B11AFF7CB10039A7FA /* kiss_fftr.c */,
-				DFC6F4B21AFF7CB10039A7FA /* kiss_fftr.h */,
-			);
-			path = kissfft;
-			sourceTree = "<group>";
-		};
 		DFCA6AB8152245CD000BFAAE /* httprequesthandler */ = {
 			isa = PBXGroup;
 			children = (
@@ -7367,7 +7331,6 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
-				DFC6F4AB1AFF7CB10039A7FA /* contrib */,
 				18B49FF01152BEEB001AF8A6 /* addons */,
 				EC720A91155091CA00FFD782 /* commons */,
 				E38E149A0D25F9F900618676 /* cores */,
@@ -8264,8 +8227,6 @@
 				18ACF84213596C9B00B67371 /* RecentlyAddedJob.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
 				E38E1E740D25F9FD00618676 /* RegExp.h */,
-				DFC6F4BF1AFF7E300039A7FA /* rfft.cpp */,
-				DFC6F4C01AFF7E300039A7FA /* rfft.h */,
 				F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */,
 				F5DC87E0110A287400EE1B15 /* RingBuffer.h */,
 				DFAF6A4D16EBAE3800D6AE12 /* RssManager.cpp */,
@@ -8808,7 +8769,7 @@
 			);
 			name = "Kodi-iOS";
 			productName = "Kodi-iOS";
-			productReference = E4991089174D0D2600741B6D /* Kodi.app */;
+			productReference = E4991089174D0D2600741B6D /* kodi.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -9295,7 +9256,6 @@
 				E38E20B80D25F9FD00618676 /* GUIWindowMusicPlaylistEditor.cpp in Sources */,
 				E38E20B90D25F9FD00618676 /* GUIWindowMusicSongs.cpp in Sources */,
 				E38E20BB0D25F9FD00618676 /* GUIDialogVideoOSD.cpp in Sources */,
-				DFC6F4B91AFF7CB10039A7FA /* kiss_fftr.c in Sources */,
 				E38E20BC0D25F9FD00618676 /* GUIWindowPictures.cpp in Sources */,
 				E38E20BD0D25F9FD00618676 /* GUIWindowPointer.cpp in Sources */,
 				E38E20BE0D25F9FD00618676 /* GUIWindowPrograms.cpp in Sources */,
@@ -9770,7 +9730,6 @@
 				C84828FA156CFD5E005A996F /* GUIEPGGridContainer.cpp in Sources */,
 				C84828FE156CFDC3005A996F /* GUIDialogExtendedProgressBar.cpp in Sources */,
 				C8482901156CFE4B005A996F /* Observer.cpp in Sources */,
-				DFC6F4C11AFF7E300039A7FA /* rfft.cpp in Sources */,
 				C8482904156CFED9005A996F /* DVDDemuxPVRClient.cpp in Sources */,
 				C8482909156CFF24005A996F /* PVRDirectory.cpp in Sources */,
 				C848290A156CFF24005A996F /* PVRFile.cpp in Sources */,
@@ -9791,7 +9750,6 @@
 				3994427F1A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */,
 				36A9466715CF1FD200727135 /* MusicDbUrl.cpp in Sources */,
 				DF29BCE81B5D911700904347 /* AddonEvent.cpp in Sources */,
-				DFC6F4B61AFF7CB10039A7FA /* kiss_fft.c in Sources */,
 				36A9466A15CF1FED00727135 /* UrlOptions.cpp in Sources */,
 				36A9466D15CF201F00727135 /* VideoDbUrl.cpp in Sources */,
 				DF2345E115FA639500A934F6 /* UPnP.cpp in Sources */,
@@ -10771,7 +10729,6 @@
 				DFF0F45417528350002DA3A4 /* MouseStat.cpp in Sources */,
 				DFF1FE23199D2FFF0008211F /* KodiAppliance.mm in Sources */,
 				2F4564D71970129A00396109 /* GUIFontCache.cpp in Sources */,
-				DFC6F4B81AFF7CB10039A7FA /* kiss_fft.c in Sources */,
 				DFF0F46F17528350002DA3A4 /* ButtonTranslator.cpp in Sources */,
 				DFF0F47017528350002DA3A4 /* InertialScrollingHandler.cpp in Sources */,
 				DFF0F47217528350002DA3A4 /* KeyboardStat.cpp in Sources */,
@@ -10925,13 +10882,11 @@
 				7CCDA850192756250074CF51 /* NptTls.cpp in Sources */,
 				7CCDA853192756250074CF51 /* NptUri.cpp in Sources */,
 				7CCDA85C192756250074CF51 /* NptUtils.cpp in Sources */,
-				DFC6F4C31AFF7E300039A7FA /* rfft.cpp in Sources */,
 				7CCDA865192756250074CF51 /* NptXml.cpp in Sources */,
 				7CCDA86E192756250074CF51 /* NptZip.cpp in Sources */,
 				7CCDAA84192756250074CF51 /* NptPosixDynamicLibraries.cpp in Sources */,
 				7CCDAA87192756250074CF51 /* NptPosixEnvironment.cpp in Sources */,
 				7CCDAA8D192756250074CF51 /* NptPosixNetwork.cpp in Sources */,
-				DFC6F4BB1AFF7CB10039A7FA /* kiss_fftr.c in Sources */,
 				7CCDAA90192756250074CF51 /* NptPosixQueue.cpp in Sources */,
 				7CCDAA99192756250074CF51 /* NptPosixSystem.cpp in Sources */,
 				7CCDAAA2192756250074CF51 /* NptPosixThreads.cpp in Sources */,
@@ -11014,7 +10969,6 @@
 				DF4BF0171A4EF31E0053AC56 /* cc_decoder.c in Sources */,
 				E49911BA174E5D0A00741B6D /* dll_tracker_library.cpp in Sources */,
 				E49911BB174E5D0A00741B6D /* dll_util.cpp in Sources */,
-				DFC6F4BA1AFF7CB10039A7FA /* kiss_fftr.c in Sources */,
 				E49911BC174E5D0A00741B6D /* DllLoader.cpp in Sources */,
 				DF2401271B41A26F001E02DA /* ImageResource.cpp in Sources */,
 				E49911BD174E5D0A00741B6D /* DllLoaderContainer.cpp in Sources */,
@@ -11160,7 +11114,6 @@
 				E4991269174E5D8F00741B6D /* FTPParse.cpp in Sources */,
 				E4991270174E5D8F00741B6D /* HTTPDirectory.cpp in Sources */,
 				E4991271174E5D8F00741B6D /* HTTPFile.cpp in Sources */,
-				DFC6F4C21AFF7E300039A7FA /* rfft.cpp in Sources */,
 				E4991272174E5D8F00741B6D /* IDirectory.cpp in Sources */,
 				E4991273174E5D8F00741B6D /* IFile.cpp in Sources */,
 				E4991274174E5D8F00741B6D /* ImageFile.cpp in Sources */,
@@ -11345,7 +11298,6 @@
 				E499132F174E5DAD00741B6D /* VisibleEffect.cpp in Sources */,
 				E4991330174E5DAD00741B6D /* XBTF.cpp in Sources */,
 				DFEA4B541B5271F200562321 /* ActiveAEDSPDatabase.cpp in Sources */,
-				DFC6F4B71AFF7CB10039A7FA /* kiss_fft.c in Sources */,
 				E4991331174E5DAD00741B6D /* XBTFReader.cpp in Sources */,
 				E4991345174E5E5C00741B6D /* GenericTouchActionHandler.cpp in Sources */,
 				E499134B174E5E5C00741B6D /* ITouchInputHandling.cpp in Sources */,
