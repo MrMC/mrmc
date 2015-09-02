@@ -23,6 +23,7 @@
 #include <string>
 #include "guilib/GUIDialog.h"
 #include "threads/CriticalSection.h"
+#include "utils/subtitles/OpenSubtitlesSearch.h"
 
 enum SUBTITLE_STORAGEMODE
 {
@@ -59,6 +60,7 @@ protected:
 
   void SetSubtitles(const std::string &subtitle);
 
+  COpenSubtitlesSearch* m_subtitles_searcher;
   CCriticalSection m_critsection;
   CFileItemList* m_subtitles;
   CFileItemList* m_serviceItems;

@@ -20,7 +20,16 @@
 #include "OpenSubtitlesSearch.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+#include "FileItem.h"
+#include "utils/LangCodeExpander.h"
 
+#include <xmlrpc-c/base.hpp>
+#include <xmlrpc-c/client_simple.hpp>
+
+COpenSubtitlesSearch::COpenSubtitlesSearch()
+{
+}
 
 bool COpenSubtitlesSearch::SubtitleFileSizeAndHash(const std::string &path, std::string &strSize, std::string &strHash)
 {
@@ -51,4 +60,53 @@ bool COpenSubtitlesSearch::SubtitleFileSizeAndHash(const std::string &path, std:
   strSize = StringUtils::Format("%llu", fileSize); // format size
   return true;
 
+}
+
+bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::string strLanguages,
+                                          const std::string preferredLanguage,CFileItemList &subtitlesList)
+{
+
+  std::vector<std::string> languages3;
+  std::vector<std::string> languages = StringUtils::Split(strLanguages, ',');
+  for(std::vector<std::string>::iterator it = languages.begin(); it != languages.end(); ++it)
+    languages3.push_back(g_LangCodeExpander.ConvertToISO6392T((*it).c_str()));
+  
+  LogIn();
+  if (LogIn())
+  {
+    std::string strSize;
+    std::string strHash;
+    SubtitleFileSizeAndHash(path, strSize, strHash);
+    CLog::Log(LOGDEBUG, "%s - HASH - %s and Size - %s", __FUNCTION__, strHash.c_str(), strSize.c_str());
+    /// Search for subs here
+    
+    return true;
+  }
+  return false;
+}
+
+
+bool COpenSubtitlesSearch::LogIn()
+{
+  std::string const serverUrl("http://api.opensubtitles.org/xml-rpc");
+  std::string const methodName("LogIn");
+  
+  xmlrpc_c::clientSimple myClient;
+  xmlrpc_c::value result;
+  
+  myClient.call(serverUrl, methodName, "ssss", &result, "","","eng","XBMC_Subtitles");
+  
+  std::map<std::string, xmlrpc_c::value> const resultStruct = xmlrpc_c::value_struct(result);
+  std::map<std::string, xmlrpc_c::value>::const_iterator iterStatus = resultStruct.find("status");
+  
+  std::string retStatus = (std::string)xmlrpc_c::value_string(iterStatus->second);
+  
+  if (retStatus == "200 OK")
+  {
+    std::map<std::string, xmlrpc_c::value>::const_iterator iterToken = resultStruct.find("token");
+    m_strToken = (std::string)xmlrpc_c::value_string(iterToken->second);
+    CLog::Log(LOGDEBUG, "%s - OpenSubitles returned %s", __FUNCTION__, m_strToken.c_str());
+    return true;
+  }
+  return false;
 }

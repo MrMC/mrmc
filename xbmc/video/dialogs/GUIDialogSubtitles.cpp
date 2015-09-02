@@ -58,6 +58,7 @@ using namespace XFILE;
 
 CGUIDialogSubtitles::CGUIDialogSubtitles(void)
     : CGUIDialog(WINDOW_DIALOG_SUBTITLES, "DialogSubtitles.xml")
+    , m_subtitles_searcher (new COpenSubtitlesSearch)
     , m_subtitles(new CFileItemList)
     , m_serviceItems(new CFileItemList)
     , m_pausedOnRun(false)
@@ -70,6 +71,7 @@ CGUIDialogSubtitles::~CGUIDialogSubtitles(void)
 {
   delete m_subtitles;
   delete m_serviceItems;
+  delete m_subtitles_searcher;
 }
 
 bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
@@ -199,12 +201,12 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   else if (StringUtils::EqualsNoCase(preferredLanguage, "default"))
     preferredLanguage = g_langInfo.GetEnglishLanguageName();
   
-  std::string strSize;
-  std::string strHash;
   std::string strPlayingFile = g_application.CurrentFileItem().GetPath();
-  COpenSubtitlesSearch::SubtitleFileSizeAndHash(strPlayingFile, strSize, strHash);
+  m_subtitles_searcher->SubtitleSearch(strPlayingFile,strLanguages,preferredLanguage,*m_subtitles);
+  
+
   // OpenSubtitles module hash [cd5b99119afb2dba] and size [849483376] for 2Guns
-  CLog::Log(LOGDEBUG, "%s - HASH - %s and Size - %s", __FUNCTION__, strHash.c_str(), strSize.c_str());
+//  CLog::Log(LOGDEBUG, "%s - HASH - %s and Size - %s", __FUNCTION__, strHash.c_str(), strSize.c_str());
 
 }
 

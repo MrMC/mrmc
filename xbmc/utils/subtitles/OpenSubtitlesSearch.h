@@ -19,9 +19,16 @@
  */
 
 #include <string>
+#include "FileItem.h"
 
 class COpenSubtitlesSearch
 {
 public:
-  static bool SubtitleFileSizeAndHash(const std::string &path, std::string &strSize, std::string &strHash);
+  COpenSubtitlesSearch();
+  bool SubtitleFileSizeAndHash(const std::string &path, std::string &strSize, std::string &strHash);
+  bool SubtitleSearch(const std::string &path,const std::string strLanguages,
+                      const std::string preferredLanguage,CFileItemList &subtitlesList);
+  bool LogIn();
+private:
+  std::string m_strToken;
 };
