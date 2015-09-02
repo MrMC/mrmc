@@ -71,7 +71,6 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
   for(std::vector<std::string>::iterator it = languages.begin(); it != languages.end(); ++it)
     languages3.push_back(g_LangCodeExpander.ConvertToISO6392T((*it).c_str()));
   
-  LogIn();
   if (LogIn())
   {
     std::string strSize;
@@ -79,6 +78,9 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     SubtitleFileSizeAndHash(path, strSize, strHash);
     CLog::Log(LOGDEBUG, "%s - HASH - %s and Size - %s", __FUNCTION__, strHash.c_str(), strSize.c_str());
     /// Search for subs here
+    
+    std::vector<xmlrpc_c::value_array> searchParams;
+    xmlrpc_c::paramList searchList;
     
     return true;
   }

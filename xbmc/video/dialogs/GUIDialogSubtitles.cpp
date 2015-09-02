@@ -39,7 +39,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/subtitles/OpenSubtitlesSearch.h"
 #include "URL.h"
 #include "Util.h"
 #include "video/VideoDatabase.h"

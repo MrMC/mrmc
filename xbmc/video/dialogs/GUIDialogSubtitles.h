@@ -33,6 +33,7 @@ enum SUBTITLE_STORAGEMODE
 
 class CFileItem;
 class CFileItemList;
+class COpenSubtitlesSearch;
 
 class CGUIDialogSubtitles : public CGUIDialog
 {
