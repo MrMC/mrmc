@@ -54,7 +54,6 @@ protected:
   void UpdateStatus(STATUS status);
 
   void Search(const std::string &search="");
-  void OnSearchComplete(const CFileItemList *items);
 
   void Download(const CFileItem &subtitle);
   void OnDownloadComplete(const CFileItemList *items, const std::string &language);

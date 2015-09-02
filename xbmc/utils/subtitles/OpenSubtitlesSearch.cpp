@@ -63,7 +63,8 @@ bool COpenSubtitlesSearch::SubtitleFileSizeAndHash(const std::string &path, std:
 }
 
 bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::string strLanguages,
-                                          const std::string preferredLanguage,CFileItemList &subtitlesList)
+                                          const std::string preferredLanguage,
+                                          CFileItemList &subtitlesList)
 {
 
   std::vector<std::string> languages3;
@@ -78,10 +79,55 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     SubtitleFileSizeAndHash(path, strSize, strHash);
     CLog::Log(LOGDEBUG, "%s - HASH - %s and Size - %s", __FUNCTION__, strHash.c_str(), strSize.c_str());
     /// Search for subs here
-    
-    std::vector<xmlrpc_c::value_array> searchParams;
+
     xmlrpc_c::paramList searchList;
+    searchList.addc(m_strToken);
     
+    std::vector<std::map<std::string, std::string>> searchParams;
+    std::map<std::string, std::string> searchHashParam;
+    searchHashParam["sublanguageid"] = StringUtils::Join(languages3, ",");
+    searchHashParam["moviehash"] = strHash;
+    searchHashParam["moviebytesize"] = strSize;
+    searchParams.push_back(searchHashParam);
+    
+    searchList.addc(searchParams);
+    
+    std::map<std::string, xmlrpc_c::value> searchStringParam;
+    
+    std::string const serverUrl("http://api.opensubtitles.org/xml-rpc");
+    std::string const methodName("SearchSubtitles");
+    
+    xmlrpc_c::clientSimple myClient;
+    xmlrpc_c::value result;
+    
+    myClient.call(serverUrl, methodName, searchList, &result);
+    
+    std::map<std::string, xmlrpc_c::value> const resultStruct = xmlrpc_c::value_struct(result);
+    std::map<std::string, xmlrpc_c::value>::const_iterator iterStatus = resultStruct.find("data");
+    std::vector<xmlrpc_c::value> retStatus = xmlrpc_c::value_array(iterStatus->second).cvalue();
+    
+    std::vector<std::string> itemsNeeded = {"ZipDownloadLink", "IDSubtitleFile", "SubFileName", "SubFormat",
+                                 "LanguageName", "SubRating", "ISO639", "MatchedBy", "SubHearingImpaired"
+    };
+    
+    for (std::vector<xmlrpc_c::value>::iterator it = retStatus.begin() ; it != retStatus.end(); ++it)
+    {
+//
+//      CFileItem item;
+      CFileItemPtr item(new CFileItem());
+      std::map<std::string, xmlrpc_c::value> const resultStruct = xmlrpc_c::value_struct(*it);
+      iterStatus = resultStruct.find("LanguageName");
+      std::string retStatus = (std::string)xmlrpc_c::value_string(iterStatus->second);
+      item->SetLabel(retStatus);
+      iterStatus = resultStruct.find("SubFileName");
+      retStatus = (std::string)xmlrpc_c::value_string(iterStatus->second);
+      item->SetLabel2(retStatus);
+      iterStatus = resultStruct.find("SubRating");
+      retStatus = (std::string)xmlrpc_c::value_string(iterStatus->second);
+      item->SetIconImage(retStatus);
+      subtitlesList.Add(item);
+      
+    }
     return true;
   }
   return false;

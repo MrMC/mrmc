@@ -201,31 +201,23 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
     preferredLanguage = g_langInfo.GetEnglishLanguageName();
   
   std::string strPlayingFile = g_application.CurrentFileItem().GetPath();
+  
   m_subtitles_searcher->SubtitleSearch(strPlayingFile,strLanguages,preferredLanguage,*m_subtitles);
   
-
-  // OpenSubtitles module hash [cd5b99119afb2dba] and size [849483376] for 2Guns
-//  CLog::Log(LOGDEBUG, "%s - HASH - %s and Size - %s", __FUNCTION__, strHash.c_str(), strSize.c_str());
-
-}
-
-void CGUIDialogSubtitles::OnSearchComplete(const CFileItemList *items)
-{
-  CSingleLock lock(m_critsection);
-  m_subtitles->Assign(*items);
   UpdateStatus(SEARCH_COMPLETE);
   m_updateSubsList = true;
-
-  if (!items->IsEmpty() && g_application.m_pPlayer->GetSubtitleCount() == 0 &&
-    m_LastAutoDownloaded != g_application.CurrentFile() && CSettings::GetInstance().GetBool(CSettings::SETTING_SUBTITLES_DOWNLOADFIRST))
+  
+  if (!m_subtitles->IsEmpty() && g_application.m_pPlayer->GetSubtitleCount() == 0 &&
+      m_LastAutoDownloaded != g_application.CurrentFile() && CSettings::GetInstance().GetBool(CSettings::SETTING_SUBTITLES_DOWNLOADFIRST))
   {
-    CFileItemPtr item = items->Get(0);
+    CFileItemPtr item = m_subtitles->Get(0);
     CLog::Log(LOGDEBUG, "%s - Automatically download first subtitle: %s", __FUNCTION__, item->GetLabel2().c_str());
     m_LastAutoDownloaded = g_application.CurrentFile();
     Download(*item);
   }
-
+  
   SetInvalid();
+
 }
 
 void CGUIDialogSubtitles::UpdateStatus(STATUS status)
