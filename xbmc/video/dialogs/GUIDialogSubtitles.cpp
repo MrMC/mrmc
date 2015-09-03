@@ -43,6 +43,7 @@
 #include "Util.h"
 #include "video/VideoDatabase.h"
 #include "filesystem/Directory.h"
+#include "filesystem/CurlFile.h"
 
 using namespace ADDON;
 using namespace XFILE;
@@ -88,7 +89,7 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
 
       int item = msg.GetParam1();
       if (item >= 0 && item < m_subtitles->Size())
-        Download(*m_subtitles->Get(item));
+        Download(item);
       return true;
     }
     else if (iControl == CONTROL_MANUALSEARCH)
@@ -202,11 +203,9 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   
   std::string strPlayingFile = g_application.CurrentFileItem().GetPath();
   
-  std::vector<std::map<std::string, std::string>> subtitlesList;
+  m_subtitles_searcher->SubtitleSearch(strPlayingFile,strLanguages,preferredLanguage,m_subtitlesList);
   
-  m_subtitles_searcher->SubtitleSearch(strPlayingFile,strLanguages,preferredLanguage,subtitlesList);
-  
-  for (std::vector<std::map<std::string, std::string>>::iterator is = subtitlesList.begin() ; is != subtitlesList.end(); ++is)
+  for (std::vector<std::map<std::string, std::string>>::iterator is = m_subtitlesList.begin() ; is != m_subtitlesList.end(); ++is)
   {
     CFileItemPtr item(new CFileItem());
     std::map<std::string, std::string> sub = *is;
@@ -217,7 +216,6 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
     item->SetProperty("sync", sub["MatchedBy"] == "moviehash" ? "true":"false");
     item->SetProperty("hearing_imp", sub["SubHearingImpaired"] == "1" ? "true":"false");
     m_subtitles->Add(item);
-    
   }
   
   UpdateStatus(SEARCH_COMPLETE);
@@ -226,10 +224,10 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   if (!m_subtitles->IsEmpty() && g_application.m_pPlayer->GetSubtitleCount() == 0 &&
       m_LastAutoDownloaded != g_application.CurrentFile() && CSettings::GetInstance().GetBool(CSettings::SETTING_SUBTITLES_DOWNLOADFIRST))
   {
-    CFileItemPtr item = m_subtitles->Get(0);
-    CLog::Log(LOGDEBUG, "%s - Automatically download first subtitle: %s", __FUNCTION__, item->GetLabel2().c_str());
+    CLog::Log(LOGDEBUG, "%s - Automatically download first subtitle: %s", __FUNCTION__,
+              m_subtitlesList[0]["SubFileName"].c_str());
     m_LastAutoDownloaded = g_application.CurrentFile();
-    Download(*item);
+    Download(0);
   }
   
   SetInvalid();
@@ -267,24 +265,16 @@ void CGUIDialogSubtitles::UpdateStatus(STATUS status)
   }
 }
 
-void CGUIDialogSubtitles::Download(const CFileItem &subtitle)
+void CGUIDialogSubtitles::Download(const int index)
 {
   UpdateStatus(DOWNLOADING);
-
-  // subtitle URL should be of the form plugin://<addonid>/?param=foo&param=bar
-  // we just append (if not already present) the action=download parameter.
-  CURL url(subtitle.GetURL());
-  if (url.GetOption("action").empty())
-    url.SetOption("action", "download");
-
-
-}
-
-void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const std::string &language)
-{
+  std::map<std::string, std::string> sub = m_subtitlesList[index];
 
   SUBTITLE_STORAGEMODE storageMode = (SUBTITLE_STORAGEMODE) CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_STORAGEMODE);
 
+  std::vector<std::string> items;
+  m_subtitles_searcher->Download(sub["IDSubtitleFile"],sub["SubFormat"],items);
+  
   // Get (unstacked) path
   std::string strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
 
@@ -314,11 +304,11 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
       strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
 
     // Handle stacks
-    if (g_application.CurrentFileItem().IsStack() && items->Size() > 1)
+    if (g_application.CurrentFileItem().IsStack() && items.size() > 1)
     {
       CStackDirectory::GetPaths(g_application.CurrentFileItem().GetPath(), vecFiles);
       // Make sure (stack) size is the same as the size of the items handed to us, else fallback to single item
-      if (items->Size() != (int) vecFiles.size())
+      if (items.size() !=  vecFiles.size())
       {
         vecFiles.clear();
         vecFiles.push_back(strCurrentFile);
@@ -342,12 +332,13 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
   // Extract the language and appropriate extension
   std::string strSubLang;
-  g_LangCodeExpander.ConvertToISO6391(language, strSubLang);
-
+  g_LangCodeExpander.ConvertToISO6391(sub["LanguageName"], strSubLang);
+  
+  
   // Iterate over all items to transfer
-  for (unsigned int i = 0; i < vecFiles.size() && i < (unsigned int) items->Size(); i++)
+  for (unsigned int i = 0; i < vecFiles.size() && i < (unsigned int) items.size(); i++)
   {
-    std::string strUrl = items->Get(i)->GetPath();
+    std::string strUrl = items[i];
     std::string strFileName = URIUtils::GetFileName(vecFiles[i]);
     URIUtils::RemoveExtension(strFileName);
 
@@ -410,6 +401,8 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
       // Set sub for currently playing (stack) item
       if (vecFiles[i] == strCurrentFile)
         SetSubtitles(strDestFile);
+      
+    CFile::Delete(strUrl);
     }
   }
 

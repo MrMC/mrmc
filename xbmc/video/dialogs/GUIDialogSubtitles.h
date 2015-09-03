@@ -55,11 +55,11 @@ protected:
 
   void Search(const std::string &search="");
 
-  void Download(const CFileItem &subtitle);
-  void OnDownloadComplete(const CFileItemList *items, const std::string &language);
+  void Download(const int index);
 
   void SetSubtitles(const std::string &subtitle);
 
+  std::vector<std::map<std::string, std::string>> m_subtitlesList;
   COpenSubtitlesSearch* m_subtitles_searcher;
   CCriticalSection m_critsection;
   CFileItemList* m_subtitles;

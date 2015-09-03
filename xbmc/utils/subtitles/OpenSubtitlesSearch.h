@@ -31,6 +31,9 @@ public:
   bool SubtitleSearch(const std::string &path,const std::string strLanguages,
                       const std::string preferredLanguage,std::vector<std::map<std::string, std::string>> &subtitlesList);
   bool LogIn();
+  bool Download(const std::string subID,const std::string format,std::vector<std::string> &items);
 private:
+  bool gzipInflate( const std::string& compressedBytes, std::string& uncompressedBytes );
+  std::string base64_decode(std::string const& encoded_string);
   std::string m_strToken;
 };
