@@ -21,8 +21,8 @@
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "FileItem.h"
 #include "utils/LangCodeExpander.h"
+#include "GUIInfoManager.h"
 
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/client_simple.hpp>
@@ -64,14 +64,17 @@ bool COpenSubtitlesSearch::SubtitleFileSizeAndHash(const std::string &path, std:
 
 bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::string strLanguages,
                                           const std::string preferredLanguage,
-                                          CFileItemList &subtitlesList)
+                                          std::vector<std::map<std::string, std::string>> &subtitlesList)
 {
 
+  std::string lg;
   std::vector<std::string> languages3;
   std::vector<std::string> languages = StringUtils::Split(strLanguages, ',');
   for(std::vector<std::string>::iterator it = languages.begin(); it != languages.end(); ++it)
-    languages3.push_back(g_LangCodeExpander.ConvertToISO6392T((*it).c_str()));
-  
+  {
+    g_LangCodeExpander.ConvertToISO6392T((*it).c_str(),lg);
+    languages3.push_back(lg);
+  }
   if (LogIn())
   {
     std::string strSize;
@@ -85,14 +88,32 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     
     std::vector<std::map<std::string, std::string>> searchParams;
     std::map<std::string, std::string> searchHashParam;
+    std::string strLang = StringUtils::Join(languages3, ",");
     searchHashParam["sublanguageid"] = StringUtils::Join(languages3, ",");
     searchHashParam["moviehash"] = strHash;
     searchHashParam["moviebytesize"] = strSize;
     searchParams.push_back(searchHashParam);
     
+    std::map<std::string, std::string> searchStringParam;
+    searchStringParam["sublanguageid"] = StringUtils::Join(languages3, ",");
+    
+//    Below for testing only
+    searchStringParam["query"] = "2+Guns+(2013)";
+    searchParams.push_back(searchStringParam);
+    
+    std::string strPlayingFile = g_application.CurrentFileItem().GetPath();
+    
+    std::string strPlayingtitle = g_application.m_pPlayer->GetPlayingTitle();
+    
+    CVideoInfoTag* tag = g_application.CurrentFileItem().GetVideoInfoTag();
+    
+    
+//    See below
+//    int year = tag->m_iYear;
+
     searchList.addc(searchParams);
     
-    std::map<std::string, xmlrpc_c::value> searchStringParam;
+    
     
     std::string const serverUrl("http://api.opensubtitles.org/xml-rpc");
     std::string const methodName("SearchSubtitles");
@@ -112,21 +133,14 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     
     for (std::vector<xmlrpc_c::value>::iterator it = retStatus.begin() ; it != retStatus.end(); ++it)
     {
-//
-//      CFileItem item;
-      CFileItemPtr item(new CFileItem());
-      std::map<std::string, xmlrpc_c::value> const resultStruct = xmlrpc_c::value_struct(*it);
-      iterStatus = resultStruct.find("LanguageName");
-      std::string retStatus = (std::string)xmlrpc_c::value_string(iterStatus->second);
-      item->SetLabel(retStatus);
-      iterStatus = resultStruct.find("SubFileName");
-      retStatus = (std::string)xmlrpc_c::value_string(iterStatus->second);
-      item->SetLabel2(retStatus);
-      iterStatus = resultStruct.find("SubRating");
-      retStatus = (std::string)xmlrpc_c::value_string(iterStatus->second);
-      item->SetIconImage(retStatus);
-      subtitlesList.Add(item);
-      
+      std::map<std::string, std::string> subtitle;
+      std::map<std::string, xmlrpc_c::value> const subtitleStruct = xmlrpc_c::value_struct(*it);
+      for (std::vector<std::string>::iterator is = itemsNeeded.begin() ; is != itemsNeeded.end(); ++is)
+      {
+        std::map<std::string, xmlrpc_c::value>::const_iterator subItem = subtitleStruct.find(*is);
+        subtitle[*is] = (std::string)xmlrpc_c::value_string(subItem->second);
+      }
+      subtitlesList.push_back(subtitle);
     }
     return true;
   }

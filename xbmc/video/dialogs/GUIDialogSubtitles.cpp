@@ -202,7 +202,23 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   
   std::string strPlayingFile = g_application.CurrentFileItem().GetPath();
   
-  m_subtitles_searcher->SubtitleSearch(strPlayingFile,strLanguages,preferredLanguage,*m_subtitles);
+  std::vector<std::map<std::string, std::string>> subtitlesList;
+  
+  m_subtitles_searcher->SubtitleSearch(strPlayingFile,strLanguages,preferredLanguage,subtitlesList);
+  
+  for (std::vector<std::map<std::string, std::string>>::iterator is = subtitlesList.begin() ; is != subtitlesList.end(); ++is)
+  {
+    CFileItemPtr item(new CFileItem());
+    std::map<std::string, std::string> sub = *is;
+    item->SetLabel(sub["LanguageName"]);
+    item->SetLabel2(sub["SubFileName"]);
+    item->SetIconImage(sub["SubRating"]);
+    item->SetArt("thumb",sub["ISO639"]);
+    item->SetProperty("sync", sub["MatchedBy"] == "moviehash" ? "true":"false");
+    item->SetProperty("hearing_imp", sub["SubHearingImpaired"] == "1" ? "true":"false");
+    m_subtitles->Add(item);
+    
+  }
   
   UpdateStatus(SEARCH_COMPLETE);
   m_updateSubsList = true;
