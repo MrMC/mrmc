@@ -208,7 +208,7 @@ void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevelBasic */, bool 
   if (level != EventLevelBasic || !includeHigherLevels)
   {
     // add the level to the path
-    path += EventLevelToString(level);
+    path += IEvent::EventLevelToString(level);
     // add whether to include higher levels or not to the path
     if (includeHigherLevels)
       path += "+";
