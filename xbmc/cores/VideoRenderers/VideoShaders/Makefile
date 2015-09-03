@@ -1,6 +1,8 @@
-SRCS=YUV2RGBShader.cpp VideoFilterShader.cpp ConvolutionKernels.cpp
+SRCS  = YUV2RGBShader.cpp
+SRCS += VideoFilterShader.cpp
+SRCS += ConvolutionKernels.cpp
 
-LIB=VideoShaders.a
+LIB   = videoshaders.a
 
 include ../../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

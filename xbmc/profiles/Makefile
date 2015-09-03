@@ -1,7 +1,7 @@
-SRCS=Profile.cpp \
-     ProfilesManager.cpp \
+SRCS  = Profile.cpp
+SRCS += ProfilesManager.cpp
 
-LIB=profiles.a
+LIB  = profiles.a
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

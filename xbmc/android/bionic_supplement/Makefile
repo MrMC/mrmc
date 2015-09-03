@@ -1,5 +1,6 @@
 SRCS     = rand_r.c
 SRCS    += getdelim.c
+
 LIB      = bionic_supplement.a
 
 include ../../../Makefile.include

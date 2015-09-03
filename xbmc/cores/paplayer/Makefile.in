@@ -1,4 +1,4 @@
-ARCH=@ARCH@
+ARCH = @ARCH@
 
 .PHONY: compile
 
@@ -12,7 +12,7 @@ SRCS += CodecFactory.cpp
 SRCS += DVDPlayerCodec.cpp
 SRCS += PAPlayer.cpp
 
-LIB = paplayer.a
+LIB   = paplayer.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -1,11 +1,9 @@
-SRCS=GUIDialogAudioDSPManager.cpp \
-     GUIDialogAudioDSPSettings.cpp \
-     GUIDialogContentSettings.cpp \
-     GUIDialogSettingsBase.cpp \
-     GUIDialogSettingsManagerBase.cpp \
-     GUIDialogSettingsManualBase.cpp \
+SRCS  = GUIDialogContentSettings.cpp
+SRCS += GUIDialogSettingsBase.cpp
+SRCS += GUIDialogSettingsManagerBase.cpp
+SRCS += GUIDialogSettingsManualBase.cpp
 
-LIB=settings_dialogs.a
+LIB   = settings_dialogs.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

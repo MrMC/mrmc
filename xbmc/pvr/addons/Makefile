@@ -1,7 +1,7 @@
-SRCS=PVRClient.cpp \
-     PVRClients.cpp
+SRCS  = PVRClient.cpp
+SRCS += PVRClients.cpp
 
-LIB=pvraddons.a
+LIB   = pvraddons.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

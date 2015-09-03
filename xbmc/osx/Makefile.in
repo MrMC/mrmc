@@ -8,13 +8,15 @@ SRCS  = XBMCHelper.m
 SRCS += AutoPool.mm
 SRCS += DarwinUtils.mm
 SRCS += CocoaInterface.mm
-SRCS += HotKeyController.m
 SRCS += OSXGNUReplacements.c
 SRCS += OSXTextInputResponder.mm
 ifeq ($(findstring osx,@ARCH@), osx)
 SRCS += smc.c
+SRCS += OSX/OSXGLView.mm
+SRCS += OSX/OSXGLWindow.mm
+SRCS += OSX/XBMCApplication.mm
 endif
 	
-LIB = osx.a
+LIB   = osx.a
 
 include @abs_top_srcdir@/Makefile.include

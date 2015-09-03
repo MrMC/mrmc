@@ -1,10 +1,9 @@
-INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
 SRCS  = DVDCodecUtils.cpp
 SRCS += DVDFactoryCodec.cpp
 
-LIB=	DVDCodecs.a
+LIB   = dvdcodecs.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
-

@@ -1,7 +1,7 @@
-SRCS=GUIWindowTestPatternGL.cpp \
-     RenderSystemGL.cpp \
+SRCS  = GUIWindowTestPatternGL.cpp
+SRCS += RenderSystemGL.cpp
      
-LIB=rendering_gl.a
+LIB   = rendering_gl.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

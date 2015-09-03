@@ -1,13 +1,8 @@
-.SUFFIXES : .m .mm .cpp
-
-SRCS  = main.cpp
-SRCS += posix/MessagePrinter.cpp
-
-ifeq ($(findstring osx,@ARCH@),osx)
-SRCS += osx/SDLMain.mm
+ifneq ($(findstring osx,@ARCH@),osx)
+SRCS += main.cpp
 endif
 
-LIB=main.a
+LIB   = main.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.mm,%.P,$(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS))))

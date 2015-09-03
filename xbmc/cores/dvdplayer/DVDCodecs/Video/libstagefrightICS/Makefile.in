@@ -1,7 +1,7 @@
-ARCH=@ARCH@
+ARCH = @ARCH@
 
-INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
-INCLUDES+=-I..
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer
+INCLUDES += -I..
 
 SRCS += StageFrightInterface.cpp
 SRCS += StageFrightVideo.cpp
@@ -13,8 +13,8 @@ INCLUDES += -I${prefix}/opt/android-source/frameworks/base/include/media/stagefr
 INCLUDES += -I${prefix}/opt/android-source/system/core/include
 INCLUDES += -I${prefix}/opt/android-source/libhardware/include
 
-LIBNAME=libXBMCvcodec_stagefrightICS
-LIB_SHARED=@abs_top_srcdir@/system/players/dvdplayer/$(LIBNAME)-$(ARCH).so
+LIBNAME = libXBMCvcodec_stagefrightICS
+LIB_SHARED = @abs_top_srcdir@/system/players/dvdplayer/$(LIBNAME)-$(ARCH).so
 
 LIBS += -landroid -lEGL -lGLESv2 -L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lstagefright -lbinder -lui -lgui -L@abs_top_srcdir@ -l@APP_NAME_LC@
 
@@ -41,9 +41,7 @@ Surface.o: Surface.cpp
 SurfaceTexture.o: SurfaceTexture.cpp
 	$(CXX) -MF $*.d -MD -c $(JNICXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
 
-CLEAN_FILES = \
-	$(LIB_SHARED) \
+CLEAN_FILES = $(LIB_SHARED)
 
-DISTCLEAN_FILES= \
-	Makefile \
+DISTCLEAN_FILES = Makefile
 

@@ -1,7 +1,6 @@
-.SUFFIXES : .cpp 
- 
-SRCS = MessagePrinter.cpp 
-LIB=MessagePrinter.a 
+SRCS  = MessagePrinter.cpp 
+
+LIB   = messageprinter.a 
  
 include @abs_top_srcdir@/Makefile.include 
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

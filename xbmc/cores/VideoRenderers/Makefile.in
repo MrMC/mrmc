@@ -24,7 +24,7 @@ ifeq (@USE_MMAL@,1)
 SRCS += MMALRenderer.cpp
 endif
 
-LIB = VideoRenderer.a
+LIB   = videorenderer.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.S,,$(SRCS)))) 

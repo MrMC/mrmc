@@ -1,18 +1,18 @@
-SRCS=Bookmark.cpp \
-     FFmpegVideoDecoder.cpp \
-     GUIViewStateVideo.cpp \
-     PlayerController.cpp \
-     Teletext.cpp \
-     VideoDatabase.cpp \
-     VideoDbUrl.cpp \
-     VideoInfoDownloader.cpp \
-     VideoInfoScanner.cpp \
-     VideoInfoTag.cpp \
-     VideoLibraryQueue.cpp \
-     VideoReferenceClock.cpp \
-     VideoThumbLoader.cpp \
+SRCS  = Bookmark.cpp
+SRCS += FFmpegVideoDecoder.cpp
+SRCS += GUIViewStateVideo.cpp
+SRCS += PlayerController.cpp
+SRCS += Teletext.cpp
+SRCS += VideoDatabase.cpp
+SRCS += VideoDbUrl.cpp
+SRCS += VideoInfoDownloader.cpp
+SRCS += VideoInfoScanner.cpp
+SRCS += VideoInfoTag.cpp
+SRCS += VideoLibraryQueue.cpp
+SRCS += VideoReferenceClock.cpp
+SRCS += VideoThumbLoader.cpp
      
-LIB=video.a
+LIB   = video.a
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

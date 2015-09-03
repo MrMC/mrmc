@@ -1,21 +1,15 @@
-CXXFLAGS += -D__STDC_FORMAT_MACROS \
-          -DENABLE_DVDINPUTSTREAM_STACK \
+CXXFLAGS += -D__STDC_FORMAT_MACROS
 
-SRCS=	DVDFactoryInputStream.cpp \
-	DVDInputStream.cpp \
-	DVDInputStreamBluray.cpp \
-	DVDInputStreamFFmpeg.cpp \
-	DVDInputStreamFile.cpp \
-	DVDInputStreamHttp.cpp \
-	DVDInputStreamMemory.cpp \
-	DVDInputStreamNavigator.cpp \
-	DVDInputStreamRTMP.cpp \
-	DVDInputStreamPVRManager.cpp \
-	DVDInputStreamStack.cpp \
-	DVDStateSerializer.cpp \
+SRCS  = DVDFactoryInputStream.cpp
+SRCS += DVDInputStream.cpp
+SRCS += DVDInputStreamFFmpeg.cpp
+SRCS += DVDInputStreamFile.cpp
+SRCS += DVDInputStreamHttp.cpp
+SRCS += DVDInputStreamMemory.cpp
+SRCS += DVDInputStreamRTMP.cpp
+SRCS += DVDInputStreamPVRManager.cpp
 
-LIB=	DVDInputStreams.a
+LIB   = dvdinputstreams.a
 
 include ../../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
-

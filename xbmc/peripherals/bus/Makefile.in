@@ -16,7 +16,7 @@ ifeq (@USE_LIBCEC@,1)
 SRCS += virtual/PeripheralBusCEC.cpp
 endif
 
-LIB = peripheral-bus.a
+LIB   = peripheral-bus.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

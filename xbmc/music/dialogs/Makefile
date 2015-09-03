@@ -1,9 +1,8 @@
-SRCS=GUIDialogMusicInfo.cpp \
-     GUIDialogMusicOSD.cpp \
-     GUIDialogSongInfo.cpp \
-     GUIDialogVisualisationPresetList.cpp \
+SRCS  = GUIDialogMusicInfo.cpp
+SRCS += GUIDialogMusicOSD.cpp
+SRCS += GUIDialogSongInfo.cpp
 
-LIB=musicdialogs.a
+LIB   = musicdialogs.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -1,25 +1,25 @@
 ifeq (@USE_UPNP@, 1)
-INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaRenderer \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Extras \
-          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
-          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
 
-SRCS= UPnP.cpp \
-      UPnPInternal.cpp \
-      UPnPPlayer.cpp \
-      UPnPRenderer.cpp \
-      UPnPServer.cpp \
-      UPnPSettings.cpp \
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaRenderer
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Extras
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix
+INCLUDES += -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
 
-LIB=upnp.a
+SRCS  = UPnP.cpp
+SRCS += UPnPInternal.cpp
+SRCS += UPnPPlayer.cpp
+SRCS += UPnPRenderer.cpp
+SRCS += UPnPServer.cpp
+SRCS += UPnPSettings.cpp
+
+LIB   = upnp.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 endif
-

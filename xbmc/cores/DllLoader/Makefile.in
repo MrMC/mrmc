@@ -17,7 +17,7 @@ ifneq ($(findstring freebsd,@ARCH@),freebsd)
 SRCS += ldt_keeper.c
 endif
 
-LIB = dllloader.a
+LIB   = dllloader.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

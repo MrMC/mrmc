@@ -1,10 +1,7 @@
-SRCS=AutorunMediaJob.cpp \
-     cdioSupport.cpp \
-     DetectDVDType.cpp \
-     IoSupport.cpp \
-     MediaManager.cpp \
+SRCS  = AutorunMediaJob.cpp
+SRCS += MediaManager.cpp
      
-LIB=storage.a
+LIB   = storage.a
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

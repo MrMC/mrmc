@@ -1,8 +1,7 @@
-INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
 SRCS  = DVDDemux.cpp
 SRCS += DVDDemuxBXA.cpp
-SRCS += DVDDemuxCDDA.cpp
 SRCS += DVDDemuxFFmpeg.cpp
 SRCS += DVDDemuxPVRClient.cpp
 SRCS += DVDDemuxShoutcast.cpp
@@ -11,8 +10,7 @@ SRCS += DVDDemuxVobsub.cpp
 SRCS += DVDDemuxCC.cpp
 SRCS += DVDFactoryDemuxer.cpp
 
-LIB = DVDDemuxers.a
+LIB   = dvddemuxers.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
-

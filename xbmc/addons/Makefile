@@ -1,35 +1,30 @@
-SRCS=Addon.cpp \
-     AddonCallbacks.cpp \
-     AddonCallbacksAddon.cpp \
-     AddonCallbacksAudioDSP.cpp \
-     AddonCallbacksCodec.cpp \
-     AddonCallbacksGUI.cpp \
-     AddonCallbacksPVR.cpp \
-     AddonDatabase.cpp \
-     AddonInstaller.cpp \
-     AddonManager.cpp \
-     AddonStatusHandler.cpp \
-     AddonVersion.cpp \
-     AudioEncoder.cpp \
-     ContextMenuAddon.cpp \
-     AudioDecoder.cpp \
-     GUIDialogAddonInfo.cpp \
-     GUIDialogAddonSettings.cpp \
-     GUIViewStateAddonBrowser.cpp \
-     GUIWindowAddonBrowser.cpp \
-     ImageResource.cpp \
-     LanguageResource.cpp \
-     PluginSource.cpp \
-     Repository.cpp \
-     Scraper.cpp \
-     ScreenSaver.cpp \
-     Service.cpp \
-     Skin.cpp \
-     UISoundsResource.cpp \
-     Visualisation.cpp \
-     Webinterface.cpp \
+SRCS  = Addon.cpp
+SRCS += AddonCallbacks.cpp
+SRCS += AddonCallbacksAddon.cpp
+SRCS += AddonCallbacksCodec.cpp
+SRCS += AddonCallbacksGUI.cpp
+SRCS += AddonCallbacksPVR.cpp
+SRCS += AddonDatabase.cpp
+SRCS += AddonInstaller.cpp
+SRCS += AddonManager.cpp
+SRCS += AddonStatusHandler.cpp
+SRCS += AddonVersion.cpp
+SRCS += AudioDecoder.cpp
+SRCS += GUIDialogAddonInfo.cpp
+SRCS += GUIDialogAddonSettings.cpp
+SRCS += GUIViewStateAddonBrowser.cpp
+SRCS += GUIWindowAddonBrowser.cpp
+SRCS += ImageResource.cpp
+SRCS += LanguageResource.cpp
+SRCS += Repository.cpp
+SRCS += Scraper.cpp
+SRCS += ScreenSaver.cpp
+SRCS += Service.cpp
+SRCS += Skin.cpp
+SRCS += UISoundsResource.cpp
+SRCS += Webinterface.cpp
 
-LIB=addons.a
+LIB   = addons.a
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

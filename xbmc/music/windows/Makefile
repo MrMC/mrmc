@@ -1,11 +1,10 @@
-SRCS=GUIWindowMusicBase.cpp \
-     GUIWindowMusicNav.cpp \
-     GUIWindowMusicPlaylist.cpp \
-     GUIWindowMusicPlaylistEditor.cpp \
-     GUIWindowMusicSongs.cpp \
-     GUIWindowVisualisation.cpp \
+SRCS  = GUIWindowMusicBase.cpp
+SRCS += GUIWindowMusicNav.cpp
+SRCS += GUIWindowMusicPlaylist.cpp
+SRCS += GUIWindowMusicPlaylistEditor.cpp
+SRCS += GUIWindowMusicSongs.cpp
 
-LIB=musicwindows.a
+LIB   = musicwindows.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

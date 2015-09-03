@@ -1,14 +1,14 @@
-SRCS=GUIDialogAudioSubtitleSettings.cpp \
-     GUIDialogFileStacking.cpp \
-     GUIDialogFullScreenInfo.cpp \
-     GUIDialogSubtitles.cpp \
-     GUIDialogTeletext.cpp \
-     GUIDialogVideoBookmarks.cpp \
-     GUIDialogVideoInfo.cpp \
-     GUIDialogVideoOSD.cpp \
-     GUIDialogVideoSettings.cpp \
+SRCS  = GUIDialogAudioSubtitleSettings.cpp
+SRCS += GUIDialogFileStacking.cpp
+SRCS += GUIDialogFullScreenInfo.cpp
+SRCS += GUIDialogSubtitles.cpp
+SRCS += GUIDialogTeletext.cpp
+SRCS += GUIDialogVideoBookmarks.cpp
+SRCS += GUIDialogVideoInfo.cpp
+SRCS += GUIDialogVideoOSD.cpp
+SRCS += GUIDialogVideoSettings.cpp
 
-LIB=videodialogs.a
+LIB   = videodialogs.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

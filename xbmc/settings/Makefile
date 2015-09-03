@@ -1,19 +1,18 @@
-SRCS=AdvancedSettings.cpp \
-     AudioDSPSettings.cpp \
-     DisplaySettings.cpp \
-     MediaSettings.cpp \
-     MediaSourceSettings.cpp \
-     SettingAddon.cpp \
-     SettingConditions.cpp \
-     SettingControl.cpp \
-     SettingCreator.cpp \
-     SettingPath.cpp \
-     Settings.cpp \
-     SettingUtils.cpp \
-     SkinSettings.cpp \
-     VideoSettings.cpp \
+SRCS  = AdvancedSettings.cpp
+SRCS += DisplaySettings.cpp
+SRCS += MediaSettings.cpp
+SRCS += MediaSourceSettings.cpp
+SRCS += SettingAddon.cpp
+SRCS += SettingConditions.cpp
+SRCS += SettingControl.cpp
+SRCS += SettingCreator.cpp
+SRCS += SettingPath.cpp
+SRCS += Settings.cpp
+SRCS += SettingUtils.cpp
+SRCS += SkinSettings.cpp
+SRCS += VideoSettings.cpp
 
-LIB=settings.a
+LIB   = settings.a
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

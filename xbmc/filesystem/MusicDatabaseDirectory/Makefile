@@ -1,26 +1,26 @@
-SRCS=DirectoryNode.cpp \
-     DirectoryNodeAlbum.cpp \
-     DirectoryNodeAlbumCompilations.cpp \
-     DirectoryNodeAlbumCompilationsSongs.cpp \
-     DirectoryNodeAlbumRecentlyAdded.cpp \
-     DirectoryNodeAlbumRecentlyAddedSong.cpp \
-     DirectoryNodeAlbumRecentlyPlayed.cpp \
-     DirectoryNodeAlbumRecentlyPlayedSong.cpp \
-     DirectoryNodeAlbumTop100.cpp \
-     DirectoryNodeAlbumTop100Song.cpp \
-     DirectoryNodeArtist.cpp \
-     DirectoryNodeGrouped.cpp \
-     DirectoryNodeOverview.cpp \
-     DirectoryNodeRoot.cpp \
-     DirectoryNodeSingles.cpp \
-     DirectoryNodeSong.cpp \
-     DirectoryNodeSongTop100.cpp \
-     DirectoryNodeTop100.cpp \
-     DirectoryNodeYearAlbum.cpp \
-     DirectoryNodeYearSong.cpp \
-     QueryParams.cpp \
+SRCS  = DirectoryNode.cpp
+SRCS += DirectoryNodeAlbum.cpp
+SRCS += DirectoryNodeAlbumCompilations.cpp
+SRCS += DirectoryNodeAlbumCompilationsSongs.cpp
+SRCS += DirectoryNodeAlbumRecentlyAdded.cpp
+SRCS += DirectoryNodeAlbumRecentlyAddedSong.cpp
+SRCS += DirectoryNodeAlbumRecentlyPlayed.cpp
+SRCS += DirectoryNodeAlbumRecentlyPlayedSong.cpp
+SRCS += DirectoryNodeAlbumTop100.cpp
+SRCS += DirectoryNodeAlbumTop100Song.cpp
+SRCS += DirectoryNodeArtist.cpp
+SRCS += DirectoryNodeGrouped.cpp
+SRCS += DirectoryNodeOverview.cpp
+SRCS += DirectoryNodeRoot.cpp
+SRCS += DirectoryNodeSingles.cpp
+SRCS += DirectoryNodeSong.cpp
+SRCS += DirectoryNodeSongTop100.cpp
+SRCS += DirectoryNodeTop100.cpp
+SRCS += DirectoryNodeYearAlbum.cpp
+SRCS += DirectoryNodeYearSong.cpp
+SRCS += QueryParams.cpp
 
-LIB=musicdatabasedirectory.a
+LIB   = musicdatabasedirectory.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

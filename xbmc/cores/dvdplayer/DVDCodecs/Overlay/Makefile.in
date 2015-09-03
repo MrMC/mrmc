@@ -1,4 +1,4 @@
-INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
 SRCS  = DVDOverlayCodec.cpp
 SRCS += DVDOverlayCodecFFmpeg.cpp
@@ -8,8 +8,7 @@ SRCS += DVDOverlayCodecTX3G.cpp
 SRCS += contrib/cc_decoder.c
 SRCS += contrib/cc_decoder708.cpp
 
-LIB = Overlay.a
+LIB   = overlay.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
-

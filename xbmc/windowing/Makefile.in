@@ -1,25 +1,30 @@
-SRCS=WinEventsSDL.cpp \
-     WinEventsLinux.cpp \
-     WinEventsWayland.cpp \
-     WinEventsX11.cpp \
-     WinSystem.cpp \
-     WinEvents.cpp
+SRCS  = WinSystem.cpp
+SRCS += WinEvents.cpp
 
-# Wayland implementation detail
-ifeq (@USE_WAYLAND@,1)
-SRCS += wayland/EventLoop.cpp \
-        wayland/Seat.cpp \
-        wayland/Pointer.cpp \
-        wayland/PointerProcessor.cpp \
-        wayland/InputFactory.cpp \
-        wayland/Keyboard.cpp \
-        wayland/KeyboardProcessor.cpp \
-        wayland/PollThread.cpp \
-        wayland/Wayland11EventQueueStrategy.cpp \
-        wayland/Wayland12EventQueueStrategy.cpp
+# fixme, these should have build USE_xxx flags setup
+SRCS += WinEventsSDL.cpp
+SRCS += WinEventsLinux.cpp
+
+ifeq (@USE_X11@,1)
+SRCS += WinEventsX11.cpp
 endif
 
-LIB=windowing.a
+# wayland implementation detail
+ifeq (@USE_WAYLAND@,1)
+SRCS += WinEventsWayland.cpp
+SRCS += wayland/EventLoop.cpp
+SRCS += wayland/Seat.cpp
+SRCS += wayland/Pointer.cpp
+SRCS += wayland/PointerProcessor.cpp
+SRCS += wayland/InputFactory.cpp
+SRCS += wayland/Keyboard.cpp
+SRCS += wayland/KeyboardProcessor.cpp
+SRCS += wayland/PollThread.cpp
+SRCS += wayland/Wayland11EventQueueStrategy.cpp
+SRCS += wayland/Wayland12EventQueueStrategy.cpp
+endif
+
+LIB   = windowing.a
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

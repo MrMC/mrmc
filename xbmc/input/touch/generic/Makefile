@@ -1,10 +1,10 @@
-SRCS=GenericTouchActionHandler.cpp \
-     GenericTouchInputHandler.cpp \
-     GenericTouchPinchDetector.cpp \
-     GenericTouchRotateDetector.cpp \
-     GenericTouchSwipeDetector.cpp \
+SRCS  = GenericTouchActionHandler.cpp
+SRCS += GenericTouchInputHandler.cpp
+SRCS += GenericTouchPinchDetector.cpp
+SRCS += GenericTouchRotateDetector.cpp
+SRCS += GenericTouchSwipeDetector.cpp
 
-LIB=input_touch_generic.a
+LIB   = input_touch_generic.a
 
 include ../../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

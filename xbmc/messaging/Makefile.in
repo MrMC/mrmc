@@ -1,7 +1,6 @@
-SRCS = ApplicationMessenger.cpp
+SRCS  = ApplicationMessenger.cpp
 
-LIB = messaging.a
+LIB   = messaging.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %c,%.P,$(patsubst %.S,,$(SRCS))))
-

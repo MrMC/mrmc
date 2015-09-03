@@ -1,7 +1,7 @@
-SRCS=PVRRecording.cpp \
-     PVRRecordings.cpp
+SRCS  = PVRRecording.cpp
+SRCS += PVRRecordings.cpp
 
-LIB=pvrrecordings.a
+LIB   = pvrrecordings.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
