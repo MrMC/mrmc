@@ -272,7 +272,7 @@ void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
   // and assign them to our texture
   for (int y = 0; y < 4; y++)
   {
-    uint32_t *d = (unsigned int*)dest + destWidth * y;
+    uint32_t *d = (uint32_t*)dest + destWidth * y;
     *d++ = colour[(b[4 + y] & 0x03)] | (a[y][0] << 24);
     *d++ = colour[(b[4 + y] & 0x0e) >> 2] | (a[y][1] << 24);
     *d++ = colour[(b[4 + y] & 0x30) >> 4] | (a[y][2] << 24);

@@ -274,7 +274,7 @@ bool CTextureBundleXPR::LoadFile(const std::string& Filename, CAutoTexBuffer& Un
 
   // found texture - allocate the necessary buffers
   uint32_t ReadSize = (file->second.PackedSize + (ALIGN - 1)) & ~(ALIGN - 1);
-  uint8_t *buffer = (unsigned char*)malloc(ReadSize);
+  uint8_t *buffer = (uint8_t*)malloc(ReadSize);
 
   if (!buffer || !UnpackedBuf.Set((uint8_t*)XPhysicalAlloc(file->second.UnpackedSize, MAXULONG_PTR, 128, PAGE_READWRITE)))
   { // failed due to lack of memory
@@ -361,8 +361,8 @@ bool CTextureBundleXPR::LoadTexture(const std::string& Filename, CBaseTexture** 
 
   uint8_t* Next = UnpackedBuf;
 
-  uint32_t flags = Endian_SwapLE32(*(unsigned int*)Next);
-  Next += sizeof(unsigned int);
+  uint32_t flags = Endian_SwapLE32(*(uint32_t*)Next);
+  Next += sizeof(uint32_t);
   if ((flags & XPRFLAG_ANIM) || (flags >> 16) > 1)
     goto PackedLoadError;
 
@@ -431,8 +431,8 @@ int CTextureBundleXPR::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
 
   uint8_t* Next = UnpackedBuf;
 
-  uint32_t flags = Endian_SwapLE32(*(unsigned int*)Next);
-  Next += sizeof(unsigned int);
+  uint32_t flags = Endian_SwapLE32(*(uint32_t*)Next);
+  Next += sizeof(uint32_t);
   if (!(flags & XPRFLAG_ANIM))
     goto PackedAnimError;
 
