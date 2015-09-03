@@ -83,7 +83,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
   return true;
 }
 
-void CSettingAddon::copy(const CSettingAddon &setting)
+void CSettingAddon::copyaddontype(const CSettingAddon &setting)
 {
   CSettingString::Copy(setting);
   
