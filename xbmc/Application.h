@@ -44,11 +44,6 @@ namespace ADDON
   typedef std::shared_ptr<IAddon> AddonPtr;
 }
 
-namespace MEDIA_DETECT
-{
-  class CAutorun;
-}
-
 #include "cores/IPlayerCallback.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"

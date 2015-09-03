@@ -396,8 +396,6 @@ public:
     g_PVRManager.Start(false);
     return true;
   }
-private:
-  int m_openWindowId;
 };
 
 void CPVRManager::Start(bool bAsync /* = false */)
