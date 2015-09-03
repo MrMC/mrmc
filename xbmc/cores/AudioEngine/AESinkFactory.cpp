@@ -171,7 +171,6 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
     list.push_back(info);
 
 #elif defined(TARGET_RASPBERRY_PI)
-
   info.m_deviceInfoList.clear();
   info.m_sinkName = "PI";
   CAESinkPi::EnumerateDevicesEx(info.m_deviceInfoList, force);
@@ -184,6 +183,7 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
   if(!info.m_deviceInfoList.empty())
     list.push_back(info);
   #endif
+
 #elif defined(TARGET_DARWIN_IOS)
 
   info.m_deviceInfoList.clear();
