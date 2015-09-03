@@ -191,7 +191,7 @@ bool CProfilesManager::Save()
   return Save(PROFILES_FILE);
 }
 
-bool CProfilesManager::Save(const std::string &file) const
+bool CProfilesManager::Save(const std::string &file)
 {
   CSingleLock lock(m_critical);
 

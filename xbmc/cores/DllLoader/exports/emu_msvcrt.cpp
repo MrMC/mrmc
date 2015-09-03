@@ -1508,7 +1508,7 @@ extern "C"
 
   int dll_fgetpos(FILE* stream, fpos_t* pos)
   {
-    fpos64_t tmpPos;
+    fpos64_t tmpPos = 0;
     int ret;
 
     ret = dll_fgetpos64(stream, &tmpPos);

@@ -86,7 +86,7 @@ public:
    \param root XML node
    \return True if the setting values were successfully saved, false otherwise
    */
-  virtual bool Save(TiXmlNode *root) const;
+  virtual bool Save(TiXmlNode *root);
   /*!
    \brief Unloads the previously loaded setting values.
 
@@ -406,8 +406,8 @@ private:
   virtual bool OnSettingsLoading();
   virtual void OnSettingsLoaded();
   virtual void OnSettingsUnloaded();
-  virtual bool OnSettingsSaving() const;
-  virtual void OnSettingsSaved() const;
+  virtual bool OnSettingsSaving();
+  virtual void OnSettingsSaved();
   virtual void OnSettingsCleared();
 
   // implementation of ISubSettings

@@ -152,6 +152,11 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strBackendHostname.clear();
   m_bIsPlayingTV          = false;
   m_bIsPlayingRecording   = false;
+  m_bGotBackendName       = false;
+  m_bGotBackendVersion    = false;
+  m_bGotConnectionString  = false;
+  m_bGotFriendlyName      = false;
+  m_bGotAddonCapabilities = false;
   memset(&m_addonCapabilities, 0, sizeof(m_addonCapabilities));
   m_apiVersion = AddonVersion("0.0.0");
 }

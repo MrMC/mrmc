@@ -44,11 +44,11 @@
   {
     m_pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
     m_glcontext = [[NSOpenGLContext alloc] initWithFormat:m_pixFmt shareContext:nil];
+
+    GLint swapInterval = 1;
+    [m_glcontext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
+    [m_glcontext makeCurrentContext];
   }
-  
-  GLint swapInterval = 1;
-  [m_glcontext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
-  [m_glcontext makeCurrentContext];
   
   return self;
 }

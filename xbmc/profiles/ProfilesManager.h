@@ -52,7 +52,7 @@ public:
     \param file XML file to save.
     \return true on success, false on failure to save
     */
-  bool Save(const std::string &file) const;
+  bool Save(const std::string &file);
 
   void Clear();
 
