@@ -45,7 +45,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   std::string root = url.Get();
 
-  if (IsAliasShortcut(root))
+  if (IsAliasShortcut(root, true))
     TranslateAliasShortcut(root);
 
   DIR *dir = opendir(root.c_str());
@@ -134,7 +134,7 @@ bool CPosixDirectory::Exists(const CURL& url)
 {
   std::string path = url.Get();
 
-  if (IsAliasShortcut(path))
+  if (IsAliasShortcut(path, true))
     TranslateAliasShortcut(path);
 
   struct stat buffer;

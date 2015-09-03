@@ -23,6 +23,7 @@
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "CompileInfo.h"
 
 #if defined(TARGET_DARWIN)
@@ -257,7 +258,7 @@ bool CDarwinUtils::DeviceHasNativeFullscreen(void)
 {
   // damn animation effect is too slow when transitioning,
   // so just turn this off for now.
-  return false;
+  //return false;
 
   static int useNativeFullscreen = -1;
   if (useNativeFullscreen == -1)
@@ -521,6 +522,7 @@ int CDarwinUtils::BatteryLevel(void)
   if(!IsAppleTV2())
     batteryLevel = [[UIDevice currentDevice] batteryLevel];
 #else
+  CCocoaAutoPool pool;
   CFTypeRef powerSourceInfo = IOPSCopyPowerSourcesInfo();
   CFArrayRef powerSources = IOPSCopyPowerSourcesList(powerSourceInfo);
 
@@ -576,6 +578,7 @@ void CDarwinUtils::SetScheduling(int message)
 
 bool CFStringRefToStringWithEncoding(CFStringRef source, std::string &destination, CFStringEncoding encoding)
 {
+  CCocoaAutoPool pool;
   const char *cstr = CFStringGetCStringPtr(source, encoding);
   if (!cstr)
   {
@@ -610,11 +613,13 @@ void CDarwinUtils::PrintDebugString(std::string debugString)
 
 bool CDarwinUtils::CFStringRefToString(CFStringRef source, std::string &destination)
 {
+  CCocoaAutoPool pool;
   return CFStringRefToStringWithEncoding(source, destination, CFStringGetSystemEncoding());
 }
 
 bool CDarwinUtils::CFStringRefToUTF8String(CFStringRef source, std::string &destination)
 {
+  CCocoaAutoPool pool;
   return CFStringRefToStringWithEncoding(source, destination, kCFStringEncodingUTF8);
 }
 
@@ -628,6 +633,8 @@ const std::string& CDarwinUtils::GetManufacturer(void)
 	// until other than Apple devices with iOS will be released
     manufName = "Apple Inc.";
 #elif defined(TARGET_DARWIN_OSX)
+    CCocoaAutoPool pool;
+
     const CFMutableDictionaryRef matchExpDev = IOServiceMatching("IOPlatformExpertDevice");
     if (matchExpDev)
     {
@@ -655,14 +662,27 @@ const std::string& CDarwinUtils::GetManufacturer(void)
   return manufName;
 }
 
-bool CDarwinUtils::IsAliasShortcut(const std::string& path)
+bool CDarwinUtils::IsAliasShortcut(const std::string& path, bool isdirectory)
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_OSX)
-  NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
-  NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
-  NSNumber* wasAliased = nil;
+  CCocoaAutoPool pool;
 
+  NSURL *nsUrl;
+  if (isdirectory)
+  {
+    std::string cleanpath = path;
+    URIUtils::RemoveSlashAtEnd(cleanpath);
+    NSString *nsPath = [NSString stringWithUTF8String:cleanpath.c_str()];
+    nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:TRUE];
+  }
+  else
+  {
+    NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
+    nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:FALSE];
+  }
+
+  NSNumber* wasAliased = nil;
   if (nsUrl != nil)
   {
     NSError *error = nil;
@@ -679,6 +699,8 @@ bool CDarwinUtils::IsAliasShortcut(const std::string& path)
 void CDarwinUtils::TranslateAliasShortcut(std::string& path)
 {
 #if defined(TARGET_DARWIN_OSX)
+  CCocoaAutoPool pool;
+
   NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
   NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
   
@@ -711,6 +733,8 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_OSX)
+  CCocoaAutoPool pool;
+
   NSString *nsToPath = [NSString stringWithUTF8String:toPath.c_str()];
   NSURL *toUrl = [NSURL fileURLWithPath:nsToPath];
   NSString *nsFromPath = [NSString stringWithUTF8String:fromPath.c_str()];
@@ -734,6 +758,8 @@ bool DarwinIsMavericks()
   static int isMavericks = -1;
 
 #if defined(TARGET_DARWIN_OSX)
+  CCocoaAutoPool pool;
+
   // there is no NSAppKitVersionNumber10_9 out there anywhere
   // so we detect mavericks by one of these newly added app nap
   // methods - and fix the ugly mouse rect problem which was hitting
