@@ -433,3 +433,83 @@ void CGUIDialogSubtitles::SetSubtitles(const std::string &subtitle)
     g_application.m_pPlayer->AddSubtitle(subtitle);
   }
 }
+
+/// below for future use, if we add more search services
+void CGUIDialogSubtitles::FillServices()
+{
+  ClearServices();
+  
+  VECADDONS addons;
+  //  ADDON::CAddonMgr::GetInstance().GetAddons(ADDON_SUBTITLE_MODULE, addons, true);
+  
+  if (addons.empty())
+  {
+    UpdateStatus(NO_SERVICES);
+    return;
+  }
+  
+  std::string defaultService;
+  const CFileItem &item = g_application.CurrentUnstackedItem();
+  if (item.GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS ||
+      item.GetVideoContentType() == VIDEODB_CONTENT_EPISODES)
+    // Set default service for tv shows
+    defaultService = CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_TV);
+  else
+    // Set default service for filemode and movies
+    defaultService = CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_MOVIE);
+  
+  std::string service = addons.front()->ID();
+  for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); ++addonIt)
+  {
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addonIt, "plugin://" + (*addonIt)->ID(), false));
+    m_serviceItems->Add(item);
+    if ((*addonIt)->ID() == defaultService)
+      service = (*addonIt)->ID();
+  }
+  
+  // Bind our services to the UI
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_SERVICELIST, 0, 0, m_serviceItems);
+  OnMessage(msg);
+  
+  SetService(service);
+}
+
+bool CGUIDialogSubtitles::SetService(const std::string &service)
+{
+  if (service != m_currentService)
+  {
+    m_currentService = service;
+    CLog::Log(LOGDEBUG, "New Service [%s] ", m_currentService.c_str());
+    
+    CFileItemPtr currentService = GetService();
+    // highlight this item in the skin
+    for (int i = 0; i < m_serviceItems->Size(); i++)
+    {
+      CFileItemPtr pItem = m_serviceItems->Get(i);
+      pItem->Select(pItem == currentService);
+    }
+    
+    SET_CONTROL_LABEL(CONTROL_NAMELABEL, currentService->GetLabel());
+    
+    std::string icon = URIUtils::AddFileToFolder(currentService->GetProperty("Addon.Path").asString(), "logo.png");
+    SET_CONTROL_FILENAME(CONTROL_NAMELOGO, icon);
+    
+    if (g_application.m_pPlayer->GetSubtitleCount() == 0)
+      SET_CONTROL_HIDDEN(CONTROL_SUBSEXIST);
+    else
+      SET_CONTROL_VISIBLE(CONTROL_SUBSEXIST);
+    
+    return true;
+  }
+  return false;
+}
+
+const CFileItemPtr CGUIDialogSubtitles::GetService() const
+{
+  for (int i = 0; i < m_serviceItems->Size(); i++)
+  {
+    if (m_serviceItems->Get(i)->GetProperty("Addon.ID") == m_currentService)
+      return m_serviceItems->Get(i);
+  }
+  return CFileItemPtr();
+}

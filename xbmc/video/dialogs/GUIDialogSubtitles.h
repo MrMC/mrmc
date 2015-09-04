@@ -46,6 +46,8 @@ public:
 protected:
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
+  const CFileItemPtr GetService() const;
+  void FillServices();
   bool SetService(const std::string &service);
   void ClearServices();
   void ClearSubtitles();
