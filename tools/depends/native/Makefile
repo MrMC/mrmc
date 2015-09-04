@@ -9,8 +9,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         gas-preprocessor-native zlib-native \
         pcre-native rpl-native libsquish-native \
         tiff-native libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
-        JsonSchemaBuilder TexturePacker \
-        google-breakpad-native
+        JsonSchemaBuilder TexturePacker
 
 
 ifeq ($(OS),ios)
