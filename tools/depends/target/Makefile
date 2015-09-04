@@ -8,7 +8,7 @@ DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls libssh2 curl \
-	libjpeg-turbo tiff jasper libpng \
+	libjpeg-turbo tiff jasper libpng libgif \
 	libogg libvorbis libflac fribidi \
 	libass libsquish \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql \

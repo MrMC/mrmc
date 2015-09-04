@@ -978,7 +978,8 @@ fi
 PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS], [1], [Define if we have gnutls]), AC_MSG_WARN("gnutls not found"))
 
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+AC_CHECK_LIB([gif],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([dcadec],      [main],, AC_MSG_ERROR($missing_library))
 
