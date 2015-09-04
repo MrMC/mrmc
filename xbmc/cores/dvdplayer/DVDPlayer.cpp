@@ -842,6 +842,8 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   }
   if(!valid)
     CloseStream(m_CurrentSubtitle, false);
+  
+  SetSubtitleVisibleInternal(visible);
 
   // open teletext stream
   streams = m_SelectionStreams.Get(STREAM_TELETEXT);
