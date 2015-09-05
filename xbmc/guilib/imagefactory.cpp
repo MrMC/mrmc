@@ -19,6 +19,7 @@
  */
 
 #include "imagefactory.h"
+#include "guilib/PngIO.h"
 #include "guilib/JpegIO.h"
 #include "guilib/cximage.h"
 #include "utils/Mime.h"
@@ -41,6 +42,8 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 {
   if(strMimeType == "image/jpeg" || strMimeType == "image/tbn" || strMimeType == "image/jpg")
     return new CJpegIO();
+  else if(strMimeType == "image/png")
+    return new CPngIO();
   return new CXImage(strMimeType);
 }
 

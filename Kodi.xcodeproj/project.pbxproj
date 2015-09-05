@@ -2761,6 +2761,9 @@
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
+		F5D915AF1B9A367F004BB28A /* PngIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915AD1B9A367F004BB28A /* PngIO.cpp */; };
+		F5D915B01B9A367F004BB28A /* PngIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915AD1B9A367F004BB28A /* PngIO.cpp */; };
+		F5D915B11B9A367F004BB28A /* PngIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915AD1B9A367F004BB28A /* PngIO.cpp */; };
 		F5DB700217322DBB00D4DF21 /* FavouritesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DB700017322DBB00D4DF21 /* FavouritesOperations.cpp */; };
 		F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
 		F5E10537140AA38100175026 /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10513140AA38000175026 /* PeripheralBusUSB.cpp */; };
@@ -4977,6 +4980,8 @@
 		F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRenderer.cpp; sourceTree = "<group>"; };
 		F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParserVplayer.cpp; sourceTree = "<group>"; };
 		F5D8EF5A103912A4004A11AB /* DVDSubtitleParserVplayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserVplayer.h; sourceTree = "<group>"; };
+		F5D915AD1B9A367F004BB28A /* PngIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PngIO.cpp; sourceTree = "<group>"; };
+		F5D915AE1B9A367F004BB28A /* PngIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PngIO.h; sourceTree = "<group>"; };
 		F5DB700017322DBB00D4DF21 /* FavouritesOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FavouritesOperations.cpp; sourceTree = "<group>"; };
 		F5DB700117322DBB00D4DF21 /* FavouritesOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesOperations.h; sourceTree = "<group>"; };
 		F5DC87E0110A287400EE1B15 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
@@ -5380,6 +5385,8 @@
 				18B7C7441294222D009E7A26 /* LocalizeStrings.h */,
 				18B7C79D1294222E009E7A26 /* MatrixGLES.cpp */,
 				18B7C7451294222E009E7A26 /* MatrixGLES.h */,
+				F5D915AD1B9A367F004BB28A /* PngIO.cpp */,
+				F5D915AE1B9A367F004BB28A /* PngIO.h */,
 				18B7C7461294222E009E7A26 /* Resolution.h */,
 				18B7C79E1294222E009E7A26 /* Shader.cpp */,
 				18B7C7471294222E009E7A26 /* Shader.h */,
@@ -9083,6 +9090,7 @@
 				E38E20010D25F9FD00618676 /* MemBufferCache.cpp in Sources */,
 				E38E20020D25F9FD00618676 /* CacheStrategy.cpp in Sources */,
 				E38E20070D25F9FD00618676 /* Directory.cpp in Sources */,
+				F5D915AF1B9A367F004BB28A /* PngIO.cpp in Sources */,
 				E38E20090D25F9FD00618676 /* DirectoryHistory.cpp in Sources */,
 				E38E200B0D25F9FD00618676 /* DllLibCurl.cpp in Sources */,
 				E38E200E0D25F9FD00618676 /* File.cpp in Sources */,
@@ -10618,6 +10626,7 @@
 				DFF0F44017528350002DA3A4 /* LangInfo.cpp in Sources */,
 				DFF0F44117528350002DA3A4 /* MediaSource.cpp in Sources */,
 				DFF0F44217528350002DA3A4 /* NfoFile.cpp in Sources */,
+				F5D915B11B9A367F004BB28A /* PngIO.cpp in Sources */,
 				DF56EF211A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */,
 				DFF0F44317528350002DA3A4 /* PartyModeManager.cpp in Sources */,
 				DFF0F44417528350002DA3A4 /* PasswordManager.cpp in Sources */,
@@ -10916,6 +10925,7 @@
 				E49911EB174E5D3E00741B6D /* DVDSubtitleParserMicroDVD.cpp in Sources */,
 				E49911EC174E5D3E00741B6D /* DVDSubtitleParserMPL2.cpp in Sources */,
 				E49911ED174E5D3E00741B6D /* DVDSubtitleParserSami.cpp in Sources */,
+				F5D915B01B9A367F004BB28A /* PngIO.cpp in Sources */,
 				E49911EE174E5D3E00741B6D /* DVDFactorySubtitle.cpp in Sources */,
 				E49911EF174E5D3E00741B6D /* DVDSubtitleLineCollection.cpp in Sources */,
 				E49911F0174E5D3E00741B6D /* DVDSubtitleParserSubrip.cpp in Sources */,
@@ -11797,7 +11807,6 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -11854,7 +11863,6 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -11951,7 +11959,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
-					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
@@ -12002,7 +12009,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
-					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
