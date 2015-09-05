@@ -29,30 +29,22 @@ class CJpegIO : public IImage
 
 public:
   CJpegIO();
-  ~CJpegIO();
-  bool           Open(const std::string& m_texturePath,  unsigned int minx=0, unsigned int miny=0, bool read=true);
-  bool           Read(unsigned char* buffer, unsigned int bufSize, unsigned int minx, unsigned int miny);
-  bool           CreateThumbnail(const std::string& sourceFile, const std::string& destFile, int minx, int miny, bool rotateExif);
-  bool           CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const std::string& destFile, unsigned int minx, unsigned int miny);
-  static bool           CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile);
-  void           Close();
+ ~CJpegIO();
+
   // methods for the imagefactory
-  virtual bool   Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
   virtual bool   LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
-  virtual bool   CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
-                                            unsigned char* &bufferout, unsigned int &bufferoutSize);
+  virtual bool   Decode(const unsigned char *pixels, unsigned int pitch);
+  virtual bool   CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height,
+                   unsigned int pitch, const std::string& destFile,
+                   unsigned char* &bufferout, unsigned int &bufferoutSize);
   virtual void   ReleaseThumbnailBuffer();
 
 protected:
   static  void   jpeg_error_exit(j_common_ptr cinfo);
+  static unsigned int GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size);
 
-  static unsigned int   GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size);
-
-  unsigned char  *m_inputBuff;
-  unsigned int   m_inputBuffSize;
+  unsigned char *m_thumbnailbuffer;
   struct         jpeg_decompress_struct m_cinfo;
-  std::string     m_texturePath;
-  unsigned char* m_thumbnailbuffer;
 };
 
 #endif

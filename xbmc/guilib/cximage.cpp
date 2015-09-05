@@ -65,7 +65,7 @@ bool CXImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
   return true;
 }
 
-bool CXImage::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
+bool CXImage::Decode(const unsigned char *pixels, unsigned int pitch)
 {
   if (m_image.width == 0 || m_image.height == 0 || !m_dll.IsLoaded())
     return false;
@@ -113,8 +113,9 @@ bool CXImage::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
   return true;
 }
 
-bool CXImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
-                                         unsigned char* &bufferout, unsigned int &bufferoutSize)
+bool CXImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height,
+  unsigned int pitch, const std::string& destFile,
+  unsigned char* &bufferout, unsigned int &bufferoutSize)
 {
   if (!bufferin || !m_dll.IsLoaded()) 
     return false;

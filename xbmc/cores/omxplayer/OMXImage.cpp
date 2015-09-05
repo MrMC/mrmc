@@ -107,10 +107,10 @@ void COMXImage::Deinitialize()
 }
 
 bool COMXImage::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
-      unsigned int format, unsigned int pitch, const std::string& destFile)
+      unsigned int pitch, const std::string& destFile)
 {
   COMXImageEnc omxImageEnc;
-  bool ret = omxImageEnc.CreateThumbnailFromSurface(buffer, width, height, format, pitch, destFile);
+  bool ret = omxImageEnc.CreateThumbnailFromSurface(buffer, width, height, pitch, destFile);
   if (!ret)
     CLog::Log(LOGNOTICE, "%s: unable to create thumbnail %s %dx%d", __func__, destFile.c_str(), width, height);
   return ret;
@@ -1427,11 +1427,11 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
 }
 
 bool COMXImageEnc::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
-    unsigned int format, unsigned int pitch, const std::string& destFile)
+    unsigned int pitch, const std::string& destFile)
 {
-  if(format != XB_FMT_A8R8G8B8 || !buffer)
+  if(!buffer)
   {
-    CLog::Log(LOGDEBUG, "%s::%s : %s failed format=0x%x\n", CLASSNAME, __func__, destFile.c_str(), format);
+    CLog::Log(LOGDEBUG, "%s::%s : %s failed\n", CLASSNAME, __func__, destFile.c_str();
     return false;
   }
 
