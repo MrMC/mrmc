@@ -4,20 +4,57 @@ ifneq ($(shell test -f $(PREFIX)/share/config.site && echo 1),1)
   $(error Error: $(PREFIX)/share/config.site  is missing. Please reconfigure depends to generate it)
 endif
 
-DEPENDS = \
-	pcre expat gettext sqlite3 libgpg-error \
-	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
-	openssl gmp nettle gnutls libssh2 curl \
-	libjpeg-turbo tiff jasper libpng libgif \
-	libogg libvorbis libflac fribidi \
-	libass libsquish \
-	libmodplug librtmp libxml2 yajl libmicrohttpd mysql \
-	libshairplay \
-	libplist libcec tinyxml dummy-libxbmc \
-	libamplayer libssh taglib libusb libnfs libmp3lame \
-	libxmlrpc libxslt libdcadec ffmpeg platform crossguid libcpluff
-
-FFMPEG_DEPENDS = gnutls libdcadec
+DEPENDS  = pcre
+DEPENDS += expat
+DEPENDS += gettext
+DEPENDS += sqlite3
+DEPENDS += libgpg-error
+DEPENDS += libgcrypt
+DEPENDS += bzip2
+DEPENDS += liblzo2
+DEPENDS += libzip
+DEPENDS += freetype2
+DEPENDS += fontconfig
+DEPENDS += openssl
+DEPENDS += gmp
+DEPENDS += nettle
+DEPENDS += gnutls
+DEPENDS += libssh2
+DEPENDS += curl
+DEPENDS += libjpeg-turbo
+DEPENDS += tiff
+DEPENDS += jasper
+DEPENDS += libpng
+DEPENDS += libgif
+DEPENDS += libogg
+DEPENDS += libvorbis
+DEPENDS += libflac
+DEPENDS += fribidi
+DEPENDS += libass
+DEPENDS += libsquish
+DEPENDS += libmodplug
+DEPENDS += librtmp
+DEPENDS += libxml2
+DEPENDS += yajl
+DEPENDS += libmicrohttpd mysql
+DEPENDS += libshairplay
+DEPENDS += libplist
+DEPENDS += libcec
+DEPENDS += tinyxml
+DEPENDS += dummy-libxbmc
+DEPENDS += libamplayer
+DEPENDS += libssh
+DEPENDS += taglib
+DEPENDS += libusb
+DEPENDS += libnfs
+DEPENDS += libmp3lame
+DEPENDS += libxmlrpc
+DEPENDS += libxslt
+DEPENDS += libdcadec
+DEPENDS += ffmpeg
+DEPENDS += platform
+DEPENDS += crossguid
+DEPENDS += libcpluff
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3
@@ -25,14 +62,16 @@ else
   DEPENDS+=samba
 endif
 
+EXCLUDED_DEPENDS =
 ifeq ($(OS),ios)
   DEPENDS += Backrow
-  EXCLUDED_DEPENDS = libcec libusb
+  EXCLUDED_DEPENDS += libcec
+  EXCLUDED_DEPENDS += libusb
 endif
 
 ifeq ($(OS),osx)
   DEPENDS += libGLEW
-  EXCLUDED_DEPENDS = libusb
+  EXCLUDED_DEPENDS += libusb
 endif
 
 ifeq ($(OS),android)
@@ -41,19 +80,19 @@ endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
 
-ZLIB=
+ZLIB =
 ifneq ($(HAS_ZLIB),1)
   DEPENDS += zlib
   ZLIB = zlib
 endif
 
-ICONV=
+ICONV =
 ifeq ($(NEED_LIBICONV),1)
   DEPENDS += libiconv
   ICONV = libiconv
 endif
 
-ALSA_LIB=
+ALSA_LIB =
 LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
   DEPENDS += libuuid
@@ -95,7 +134,7 @@ gnutls: nettle $(ZLIB)
 nettle: gmp
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
-ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
+ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis gnutls libdcadec
 libcec: platform
 ifeq ($(OS),linux)
 crossguid: libuuid
@@ -125,6 +164,7 @@ test-dependencies:
 distclean::
 	for d in $(DEPENDS); do $(MAKE) -C $$d distclean; done
 
+ifeq ($(OS),linux)
 linux-system-libs:
 	[ -f $(PREFIX)/lib/pkgconfig/x11.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/x11.pc $(PREFIX)/lib/pkgconfig/x11.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xproto.pc ] || ln -s /usr/share/pkgconfig/xproto.pc $(PREFIX)/lib/pkgconfig/xproto.pc
@@ -144,3 +184,4 @@ linux-system-libs:
 	[ -f $(PREFIX)/lib/pkgconfig/sm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/sm.pc $(PREFIX)/lib/pkgconfig/sm.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xmu.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xmu.pc $(PREFIX)/lib/pkgconfig/xmu.pc
 	[ -f $(PREFIX)/lib/pkgconfig/libdrm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(PREFIX)/lib/pkgconfig/libdrm.pc
+endif
