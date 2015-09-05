@@ -436,17 +436,14 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 
   if (m_streaminfo)
   {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_SUPPORTSDTSHDCPUDECODING))
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
     {
-      for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+      AVStream *st = m_pFormatContext->streams[i];
+      if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->codec->codec_id == AV_CODEC_ID_DTS)
       {
-        AVStream *st = m_pFormatContext->streams[i];
-        if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->codec->codec_id == AV_CODEC_ID_DTS)
-        {
-          AVCodec* pCodec = avcodec_find_decoder_by_name("libdcadec");
-          if (pCodec)
-            st->codec->codec = pCodec;
-        }
+        AVCodec* pCodec = avcodec_find_decoder_by_name("libdcadec");
+        if (pCodec)
+          st->codec->codec = pCodec;
       }
     }
     CLog::Log(LOGDEBUG, "%s - avformat_find_stream_info starting", __FUNCTION__);
