@@ -604,7 +604,7 @@ bool DllLoader::Load()
   if (strstr(GetName(), "QuickTime.qts"))
   {
     int i;
-    uintptr_t dispatch_addr = NULL;
+    uintptr_t dispatch_addr = 0;
     uintptr_t imagebase_addr;
     uintptr_t dispatch_rva;
 
