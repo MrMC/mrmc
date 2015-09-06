@@ -1081,7 +1081,7 @@ bool COMXImageDec::HandlePortSettingChange(unsigned int resize_width, unsigned i
   return true;
 }
 
-bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes, unsigned width, unsigned height, unsigned stride, void *pixels)
+bool COMXImageDec::Decode(uint8_t* const demuxer_content, unsigned demuxer_bytes, unsigned width, unsigned height, unsigned stride, void *pixels)
 {
   CSingleLock lock(m_OMXSection);
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -1252,7 +1252,7 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
   CSingleLock lock(m_OMXSection);
 
   unsigned int demuxer_bytes = 0;
-  const uint8_t *demuxer_content = NULL;
+  uint8_t* const demuxer_content = NULL;
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
   OMX_INIT_STRUCTURE(m_encoded_format);

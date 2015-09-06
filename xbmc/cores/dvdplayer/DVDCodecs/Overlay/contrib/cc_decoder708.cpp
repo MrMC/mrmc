@@ -1059,7 +1059,7 @@ void process_current_packet (cc708_service_decoder *decoders)
   }
 }
 
-void decode_708 (const unsigned char *data, int datalength, cc708_service_decoder* decoders)
+void decode_708 (unsigned char* const data, int datalength, cc708_service_decoder* decoders)
 {
   /* Note: The data has this format:
         1 byte for cc_valid and cc_type
@@ -1148,7 +1148,7 @@ void CDecoderCC708::Init(void (*handler)(int service, void *userdata), void *use
   ccx_decoders_708_init(m_cc708decoders, handler, userdata, this);
 }
 
-void CDecoderCC708::Decode(const unsigned char *data, int datalength)
+void CDecoderCC708::Decode(unsigned char* const data, int datalength)
 {
   decode_708(data, datalength, m_cc708decoders);
 }

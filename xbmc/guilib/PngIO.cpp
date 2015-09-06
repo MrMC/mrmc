@@ -149,7 +149,7 @@ bool CPngIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, un
   return true;
 }
 
-bool CPngIO::Decode(const unsigned char *pixels, unsigned int pitch)
+bool CPngIO::Decode(unsigned char* const pixels, unsigned int pitch)
 {
   // the code in this if statement gets called if libpng encounters an error
   if (setjmp(png_jmpbuf(pngStructPtr)))

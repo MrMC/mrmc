@@ -313,7 +313,7 @@ bool CJpegIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
   return true;
 }
 
-bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch)
+bool CJpegIO::Decode(unsigned char* const pixels, unsigned int pitch)
 {
   struct my_error_mgr jerr;
   m_cinfo.err = jpeg_std_error(&jerr.pub);

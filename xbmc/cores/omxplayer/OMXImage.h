@@ -119,7 +119,7 @@ public:
 
   // Required overrides
   void Close();
-  bool Decode(const uint8_t *data, unsigned size, unsigned int width, unsigned int height, unsigned stride, void *pixels);
+  bool Decode(uint8_t* const data, unsigned size, unsigned int width, unsigned int height, unsigned stride, void *pixels);
   unsigned int GetDecodedWidth() { return (unsigned int)m_decoded_format.format.image.nFrameWidth; };
   unsigned int GetDecodedHeight() { return (unsigned int)m_decoded_format.format.image.nFrameHeight; };
   unsigned int GetDecodedStride() { return (unsigned int)m_decoded_format.format.image.nStride; };
@@ -186,7 +186,7 @@ public:
 
   // Required overrides
   void Close(void);
-  bool Decode(const uint8_t *data, unsigned size, unsigned int width, unsigned int height, void *egl_image);
+  bool Decode(uint8_t* const data, unsigned size, unsigned int width, unsigned int height, void *egl_image);
 protected:
   bool HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, void *egl_image, bool port_settings_changed);
 
