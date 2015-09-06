@@ -957,14 +957,14 @@
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
 					</item>
-					<item id="1">
+<!-- 					<item id="1">
 						<label>31957</label>
 						<onclick condition="!System.Platform.Android">ActivateWindow(Programs,Addons,return)</onclick>
 						<onclick condition="System.Platform.Android">ActivateWindow(Programs)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
-					</item>
+					</item> -->
 					<item id="6">
 						<label>31958</label>
 						<onclick>PlayDVD()</onclick>
