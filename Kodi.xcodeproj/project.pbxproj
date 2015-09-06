@@ -2761,6 +2761,9 @@
 		F5D915AF1B9A367F004BB28A /* PngIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915AD1B9A367F004BB28A /* PngIO.cpp */; };
 		F5D915B01B9A367F004BB28A /* PngIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915AD1B9A367F004BB28A /* PngIO.cpp */; };
 		F5D915B11B9A367F004BB28A /* PngIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915AD1B9A367F004BB28A /* PngIO.cpp */; };
+		F5D915B41B9CF191004BB28A /* GifIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915B21B9CF191004BB28A /* GifIO.cpp */; };
+		F5D915B51B9CF191004BB28A /* GifIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915B21B9CF191004BB28A /* GifIO.cpp */; };
+		F5D915B61B9CF191004BB28A /* GifIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915B21B9CF191004BB28A /* GifIO.cpp */; };
 		F5DB700217322DBB00D4DF21 /* FavouritesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DB700017322DBB00D4DF21 /* FavouritesOperations.cpp */; };
 		F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
 		F5E10537140AA38100175026 /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10513140AA38000175026 /* PeripheralBusUSB.cpp */; };
@@ -4737,7 +4740,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = kodi.app; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -4976,6 +4979,8 @@
 		F5D8EF5A103912A4004A11AB /* DVDSubtitleParserVplayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserVplayer.h; sourceTree = "<group>"; };
 		F5D915AD1B9A367F004BB28A /* PngIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PngIO.cpp; sourceTree = "<group>"; };
 		F5D915AE1B9A367F004BB28A /* PngIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PngIO.h; sourceTree = "<group>"; };
+		F5D915B21B9CF191004BB28A /* GifIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GifIO.cpp; sourceTree = "<group>"; };
+		F5D915B31B9CF191004BB28A /* GifIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GifIO.h; sourceTree = "<group>"; };
 		F5DB700017322DBB00D4DF21 /* FavouritesOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FavouritesOperations.cpp; sourceTree = "<group>"; };
 		F5DB700117322DBB00D4DF21 /* FavouritesOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesOperations.h; sourceTree = "<group>"; };
 		F5DC87E0110A287400EE1B15 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
@@ -5241,6 +5246,8 @@
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
 				18B7C75A1294222E009E7A26 /* GraphicContext.cpp */,
 				18B7C6FD1294222D009E7A26 /* GraphicContext.h */,
+				F5D915B21B9CF191004BB28A /* GifIO.cpp */,
+				F5D915B31B9CF191004BB28A /* GifIO.h */,
 				18B7C6FE1294222D009E7A26 /* gui3d.h */,
 				DF3488E513FD958F0026A711 /* GUIAction.cpp */,
 				DF3488E613FD958F0026A711 /* GUIAction.h */,
@@ -5534,7 +5541,7 @@
 			children = (
 				8DD76F7E0486A8DE00D96B5E /* Kodi */,
 				D6299ABB1AFC2A9F00E3059D /* Kodi.app */,
-				E4991089174D0D2600741B6D /* kodi.app */,
+				E4991089174D0D2600741B6D /* Kodi.app */,
 				DFFC52CB17527B3100C937AB /* Kodi.frappliance */,
 			);
 			name = Products;
@@ -8695,7 +8702,7 @@
 			);
 			name = "Kodi-iOS";
 			productName = "Kodi-iOS";
-			productReference = E4991089174D0D2600741B6D /* kodi.app */;
+			productReference = E4991089174D0D2600741B6D /* Kodi.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -9170,6 +9177,7 @@
 				E38E20A40D25F9FD00618676 /* GUILargeTextureManager.cpp in Sources */,
 				E38E20A50D25F9FD00618676 /* GUIMediaWindow.cpp in Sources */,
 				E38E20A60D25F9FD00618676 /* GUIPassword.cpp in Sources */,
+				F5D915B41B9CF191004BB28A /* GifIO.cpp in Sources */,
 				E38E20AA0D25F9FD00618676 /* GUIViewStateMusic.cpp in Sources */,
 				E38E20AC0D25F9FD00618676 /* GUIViewStateVideo.cpp in Sources */,
 				E38E20AE0D25F9FD00618676 /* GUIWindowFileManager.cpp in Sources */,
@@ -10601,6 +10609,7 @@
 				DFF0F42617528350002DA3A4 /* GUIWindowStartup.cpp in Sources */,
 				DFF0F42717528350002DA3A4 /* GUIWindowSystemInfo.cpp in Sources */,
 				DFF0F43117528350002DA3A4 /* Application.cpp in Sources */,
+				F5D915B61B9CF191004BB28A /* GifIO.cpp in Sources */,
 				DFF0F43317528350002DA3A4 /* AppParamParser.cpp in Sources */,
 				DFF0F43517528350002DA3A4 /* AutoSwitch.cpp in Sources */,
 				DFF0F43617528350002DA3A4 /* BackgroundInfoLoader.cpp in Sources */,
@@ -11075,6 +11084,7 @@
 				E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */,
 				E49912B4174E5D9900741B6D /* SMBFile.cpp in Sources */,
 				E49912B5174E5D9900741B6D /* SourcesDirectory.cpp in Sources */,
+				F5D915B51B9CF191004BB28A /* GifIO.cpp in Sources */,
 				DF6A0D821A4584E80075BBFC /* OverrideDirectory.cpp in Sources */,
 				E49912B6174E5D9900741B6D /* SpecialProtocol.cpp in Sources */,
 				E49912B7174E5D9900741B6D /* SpecialProtocolDirectory.cpp in Sources */,
