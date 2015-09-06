@@ -257,10 +257,6 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
     //g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), TRUE);
   }
 
-  //   Reset();
-  if (nextWindowID != WINDOW_PICTURES)
-    m_ImageLib.Unload();
-
   g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
 
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
@@ -932,8 +928,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         m_Resolution = g_graphicsContext.GetVideoResolution();
 
       CGUIWindow::OnMessage(message);
-      if (message.GetParam1() != WINDOW_PICTURES)
-        m_ImageLib.Load();
 
       g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
 

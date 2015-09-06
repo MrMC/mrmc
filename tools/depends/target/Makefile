@@ -23,7 +23,6 @@ DEPENDS += libssh2
 DEPENDS += curl
 DEPENDS += libjpeg-turbo
 DEPENDS += tiff
-DEPENDS += jasper
 DEPENDS += libpng
 DEPENDS += libgif
 DEPENDS += libogg

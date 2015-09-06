@@ -270,14 +270,9 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
 
   if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height, autoRotate))
   {
+    CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, texturePath.c_str());
     delete pImage;
-    pImage = ImageFactory::CreateFallbackLoader(texturePath);
-    if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height))
-    {
-      CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, texturePath.c_str());
-      delete pImage;
-      return false;
-    }
+    return false;
   }
   delete pImage;
 
@@ -295,13 +290,9 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   IImage* pImage = ImageFactory::CreateLoaderFromMimeType(mimeType);
   if(!LoadIImage(pImage, buffer, size, width, height))
   {
+    CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, mimeType.c_str());
     delete pImage;
-    pImage = ImageFactory::CreateFallbackLoader(mimeType);
-    if(!LoadIImage(pImage, buffer, size, width, height))
-    {
-      delete pImage;
-      return false;
-    }
+    return false;
   }
   delete pImage;
   return true;
