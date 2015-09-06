@@ -46,7 +46,6 @@ DEPENDS += libssh
 DEPENDS += taglib
 DEPENDS += libusb
 DEPENDS += libnfs
-DEPENDS += libmp3lame
 DEPENDS += libxmlrpc
 DEPENDS += libxslt
 DEPENDS += libdcadec
@@ -126,7 +125,6 @@ libbluray: $(ICONV) libxml2
 libssh: openssl
 mysql: openssl
 libzip: $(ZLIB)
-libmp3lame: $(ICONV)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
