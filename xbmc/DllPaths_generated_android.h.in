@@ -28,7 +28,6 @@
 // * foo.so will be renamed libfoo.so in the packaging stage
 
 #define DLL_PATH_LIBEXIF       "libexif-@ARCH@.so"
-#define DLL_PATH_MEDIAINFO     "libmediainfo-@ARCH@.so"
 
 #define DLL_PATH_CPLUFF        "@CPLUFF_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"

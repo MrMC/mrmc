@@ -26,7 +26,6 @@
 
 /* libraries */
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif-@ARCH@.so"
-#define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
 
 #define DLL_PATH_CPLUFF        "@CPLUFF_SONAME@"
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
