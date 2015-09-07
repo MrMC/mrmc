@@ -566,10 +566,10 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   {
     NSWindow *appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight) styleMask:windowStyleMask];
     appWindow.backgroundColor = [NSColor blackColor];
-    NSString *title = [NSString stringWithFormat:@"%s" , m_name.c_str()];
+    NSString *title = [NSString stringWithUTF8String:m_name.c_str()];
     appWindow.title = title;
-    [appWindow makeKeyAndOrderFront:nil];
     [appWindow setOneShot:NO];
+
     //if (!fullScreen)
     {
       NSWindowCollectionBehavior behavior = [appWindow collectionBehavior];
@@ -578,20 +578,25 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
     }
     // create new content view
     NSRect rect = [appWindow contentRectForFrameRect:[appWindow frame]];
-    
+
     // create new view if we don't have one
     if(!m_glView)
       m_glView = [[OSXGLView alloc] initWithFrame:rect];
     OSXGLView *contentView = (OSXGLView*)m_glView;
-    
+
     // associate with current window
     [appWindow setContentView: contentView];
-    m_bWindowCreated = true;
-    
+    [[contentView getGLContext] makeCurrentContext];
+    [[contentView getGLContext] update];
+
+    // now that we have a view, and a current gl context, then we can show window.
+    [(NSWindow*)appWindow orderFront:nil];
+
     m_appWindow = appWindow;
+    m_bWindowCreated = true;
   }
 
-  [(NSWindow *)m_appWindow makeKeyWindow];
+  [(NSWindow*)m_appWindow makeKeyWindow];
   
   // check if we have to hide the mouse after creating the window
   // in case we start windowed with the mouse over the window

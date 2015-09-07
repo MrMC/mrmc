@@ -47,7 +47,9 @@
 
     GLint swapInterval = 1;
     [m_glcontext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
-    [m_glcontext makeCurrentContext];
+
+    m_trackingArea = nullptr;
+    [self updateTrackingAreas];
   }
   
   return self;
@@ -56,11 +58,17 @@
 - (void)dealloc
 {
   //NSLog(@"OSXGLView dealoc");
+  if (m_trackingArea != nullptr)
+  {
+    [self removeTrackingArea:m_trackingArea];
+    [m_trackingArea release], m_trackingArea = nullptr;
+  }
+
   [NSOpenGLContext clearCurrentContext];
   [m_glcontext clearDrawable];
   [m_glcontext release];
   [m_pixFmt release];
-  [m_trackingArea release];
+
   [super dealloc];
 }
 
@@ -77,15 +85,15 @@
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0, 0, 0, 0);
-    
-    [m_glcontext update];
+
+    //[m_glcontext update];
   }
 }
 
 -(void)updateTrackingAreas
 {
   //NSLog(@"updateTrackingAreas");
-  if (m_trackingArea != nil)
+  if (m_trackingArea != nullptr)
   {
     [self removeTrackingArea:m_trackingArea];
     [m_trackingArea release];
@@ -99,6 +107,7 @@
                                                    owner:self
                                                 userInfo:nil];
   [self addTrackingArea:m_trackingArea];
+  [super updateTrackingAreas];
 }
 
 - (void)mouseEntered:(NSEvent*)theEvent
