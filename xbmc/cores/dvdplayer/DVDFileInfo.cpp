@@ -103,13 +103,6 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     return false;
   }
 
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-  {
-    CLog::Log(LOGDEBUG, "%s: disc streams not supported for thumb extraction, file: %s", __FUNCTION__, redactPath.c_str());
-    delete pInputStream;
-    return false;
-  }
-
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
     delete pInputStream;

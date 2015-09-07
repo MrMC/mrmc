@@ -991,43 +991,19 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
   if(stream->disabled)
     return false;
 
-  if (m_pInputStream && ( m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) ) )
-  {
-    int source_type;
+  if(stream->source == current.source
+  && stream->iId    == current.id)
+    return false;
 
-    source_type = STREAM_SOURCE_MASK(current.source);
-    if(source_type != STREAM_SOURCE_DEMUX
-    && source_type != STREAM_SOURCE_NONE)
-      return false;
+  if(stream->type != current.type)
+    return false;
 
-    source_type = STREAM_SOURCE_MASK(stream->source);
-    if(source_type  != STREAM_SOURCE_DEMUX
-    || stream->type != current.type
-    || stream->iId  == current.id)
-      return false;
+  if(current.type == STREAM_SUBTITLE)
+    return false;
 
-    if(current.type == STREAM_AUDIO    && stream->iPhysicalId == m_dvd.iSelectedAudioStream)
-      return true;
-    if(current.type == STREAM_SUBTITLE && stream->iPhysicalId == m_dvd.iSelectedSPUStream)
-      return true;
-    if(current.type == STREAM_VIDEO    && current.id < 0)
-      return true;
-  }
-  else
-  {
-    if(stream->source == current.source
-    && stream->iId    == current.id)
-      return false;
+  if(current.id < 0)
+    return true;
 
-    if(stream->type != current.type)
-      return false;
-
-    if(current.type == STREAM_SUBTITLE)
-      return false;
-
-    if(current.id < 0)
-      return true;
-  }
   return false;
 }
 
@@ -2405,7 +2381,7 @@ void CDVDPlayer::HandleMessages()
         m_dvdPlayerVideo->SetSpeed(speed);
 
         // We can't pause demuxer until our buffers are full. Doing so will result in continued
-        // calls to Read() which may then block indefinitely (CDVDInputStreamRTMP for example).
+        // calls to Read() which may then block indefinitely.
         if(m_pDemuxer)
         {
           m_DemuxerPausePending = (speed == DVD_PLAYSPEED_PAUSE);

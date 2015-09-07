@@ -852,10 +852,8 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
       CURL::IsProtocolEqual(protocol, "tcp")   || CURL::IsProtocolEqual(protocol, "udp")    ||
       CURL::IsProtocolEqual(protocol, "rtp")   || CURL::IsProtocolEqual(protocol, "sdp")    ||
       CURL::IsProtocolEqual(protocol, "mms")   || CURL::IsProtocolEqual(protocol, "mmst")   ||
-      CURL::IsProtocolEqual(protocol, "mmsh")  || CURL::IsProtocolEqual(protocol, "rtsp")   ||
-      CURL::IsProtocolEqual(protocol, "rtmp")  || CURL::IsProtocolEqual(protocol, "rtmpt")  ||
-      CURL::IsProtocolEqual(protocol, "rtmpe") || CURL::IsProtocolEqual(protocol, "rtmpte") ||
-      CURL::IsProtocolEqual(protocol, "rtmps"))
+      CURL::IsProtocolEqual(protocol, "mmsh")  || CURL::IsProtocolEqual(protocol, "rtsp")
+    )
     return true;
 
   return false;

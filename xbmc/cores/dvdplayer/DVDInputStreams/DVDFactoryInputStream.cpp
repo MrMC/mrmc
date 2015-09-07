@@ -24,7 +24,6 @@
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamPVRManager.h"
-#include "DVDInputStreamRTMP.h"
 #include "FileItem.h"
 #include "storage/MediaManager.h"
 #include "URL.h"
@@ -49,14 +48,6 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 7) == "mmst://"
        || file.substr(0, 7) == "mmsh://")
     return new CDVDInputStreamFFmpeg();
-#ifdef HAS_LIBRTMP
-  else if(file.substr(0, 7) == "rtmp://"
-       || file.substr(0, 8) == "rtmpt://"
-       || file.substr(0, 8) == "rtmpe://"
-       || file.substr(0, 9) == "rtmpte://"
-       || file.substr(0, 8) == "rtmps://")
-    return new CDVDInputStreamRTMP();
-#endif
   else if (item.IsInternetStream())
   {
     if (item.IsType(".m3u8"))
