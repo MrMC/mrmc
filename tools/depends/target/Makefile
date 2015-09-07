@@ -34,7 +34,8 @@ DEPENDS += libsquish
 DEPENDS += libmodplug
 DEPENDS += libxml2
 DEPENDS += yajl
-DEPENDS += libmicrohttpd mysql
+DEPENDS += libmicrohttpd
+DEPENDS += mysql
 DEPENDS += libshairplay
 DEPENDS += libplist
 DEPENDS += libcec
@@ -112,14 +113,11 @@ fontconfig: freetype2 expat $(ICONV)
 libssh2: libgcrypt openssl
 curl: openssl libssh2
 tiff: libjpeg-turbo
-jasper: libjpeg-turbo
 libvorbis: libogg
 libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
-libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
-libbluray: $(ICONV) libxml2
 libssh: openssl
 mysql: openssl
 libzip: $(ZLIB)
