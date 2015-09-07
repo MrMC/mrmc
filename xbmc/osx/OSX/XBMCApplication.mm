@@ -207,9 +207,12 @@ static void setupWindowMenu(void)
 
 - (void) stopRunLoop
 {
-  // to get applicationShouldTerminate and
-  // applicationWillTerminate notifications.
-  [[NSApplication sharedApplication] terminate:nil];
+  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
+    name:NSWorkspaceDidMountNotification object:nil];
+
+  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
+    name:NSWorkspaceDidUnmountNotification object:nil];
+
   // to flag a stop on next event.
   [[NSApplication sharedApplication] stop:nil];
   
@@ -292,20 +295,6 @@ static void setupWindowMenu(void)
   
   // kick our mainloop into an extra thread
   [NSThread detachNewThreadSelector:@selector(mainLoopThread:) toTarget:self withObject:nil];
-}
-
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
-{
-  return NSTerminateNow;
-}
-
-- (void) applicationWillTerminate: (NSNotification *) note
-{
-  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
-    name:NSWorkspaceDidMountNotification object:nil];
-
-  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
-    name:NSWorkspaceDidUnmountNotification object:nil];
 }
 
 - (void) applicationWillResignActive:(NSNotification *) note
