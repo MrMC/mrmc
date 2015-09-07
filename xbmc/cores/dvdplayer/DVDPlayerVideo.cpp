@@ -375,9 +375,6 @@ void CDVDPlayerVideo::Process()
         pts = pMsgGeneralResync->m_timestamp;
 
       double absolute = m_pClock->GetAbsoluteClock();
-      double delay = m_FlipTimeStamp - absolute;
-      if( delay > frametime ) delay = frametime;
-      else if( delay < 0 )    delay = 0;
       m_FlipTimePts = pts -frametime;
 
       if(pMsgGeneralResync->m_clock)
@@ -566,7 +563,7 @@ void CDVDPlayerVideo::Process()
       if (!g_renderManager.Supports(RENDERFEATURE_ROTATION))
         mFilters |= CDVDVideoCodec::FILTER_ROTATE;
 
-      mFilters = m_pVideoCodec->SetFilters(mFilters);
+      m_pVideoCodec->SetFilters(mFilters);
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
