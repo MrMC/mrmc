@@ -180,11 +180,8 @@ public:
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;
   bool IsNFO() const;
-  bool IsRAR() const;
   bool IsAPK() const;
   bool IsZIP() const;
-  bool IsCBZ() const;
-  bool IsCBR() const;
   bool IsOnLAN() const;
   bool IsHD() const;
   bool IsNfs() const;  

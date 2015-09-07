@@ -263,9 +263,7 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip")
-      || url.IsProtocol("rar")
       || url.IsProtocol("apk")
-      || url.IsProtocol("bluray")
       || url.IsProtocol("udf")
       || url.IsProtocol("xbt");
 }
@@ -311,14 +309,14 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
     if (!dir.GetDirectory(url, items))
       return false;
     items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
-    if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip"))
+    if (IsProtocol(items[0]->m_strDVDLabel, "zip"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
-      if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip"))
+      if (IsProtocol(items[0]->m_strDVDLabel, "zip"))
         items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
         items[i]->SetPath(items[i]->m_strDVDLabel);
@@ -409,11 +407,6 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
     strCheck = CStackDirectory::GetFirstStackedFile(strPath);
 
   std::string strDirectory = GetDirectory(strCheck);
-  if (IsInRAR(strCheck))
-  {
-    std::string strPath=strDirectory;
-    GetParentPath(strPath, strDirectory);
-  }
   if (IsStack(strPath))
   {
     strCheck = strDirectory;
@@ -667,22 +660,9 @@ bool URIUtils::IsStack(const std::string& strFile)
   return IsProtocol(strFile, "stack");
 }
 
-bool URIUtils::IsRAR(const std::string& strFile)
-{
-  std::string strExtension = GetExtension(strFile);
-
-  if (strExtension == ".001" && !StringUtils::EndsWithNoCase(strFile, ".ts.001"))
-    return true;
-
-  if (StringUtils::EqualsNoCase(strExtension, ".cbr"))
-    return true;
-
-  return false;
-}
-
 bool URIUtils::IsInArchive(const std::string &strFile)
 {
-  return IsInZIP(strFile) || IsInRAR(strFile) || IsInAPK(strFile);
+  return IsInZIP(strFile) || IsInAPK(strFile);
 }
 
 bool URIUtils::IsInAPK(const std::string& strFile)
@@ -699,13 +679,6 @@ bool URIUtils::IsInZIP(const std::string& strFile)
   return url.IsProtocol("zip") && !url.GetFileName().empty();
 }
 
-bool URIUtils::IsInRAR(const std::string& strFile)
-{
-  CURL url(strFile);
-
-  return url.IsProtocol("rar") && !url.GetFileName().empty();
-}
-
 bool URIUtils::IsAPK(const std::string& strFile)
 {
   return HasExtension(strFile, ".apk");
@@ -713,12 +686,12 @@ bool URIUtils::IsAPK(const std::string& strFile)
 
 bool URIUtils::IsZIP(const std::string& strFile) // also checks for comic books!
 {
-  return HasExtension(strFile, ".zip|.cbz");
+  return HasExtension(strFile, ".zip");
 }
 
 bool URIUtils::IsArchive(const std::string& strFile)
 {
-  return HasExtension(strFile, ".zip|.apk|.cbz|.cbr");
+  return HasExtension(strFile, ".zip|.apk");
 }
 
 bool URIUtils::IsSpecial(const std::string& strFile)
@@ -937,11 +910,6 @@ bool URIUtils::IsNfs(const std::string& strFile)
 bool URIUtils::IsVideoDb(const std::string& strFile)
 {
   return IsProtocol(strFile, "videodb");
-}
-
-bool URIUtils::IsBluray(const std::string& strFile)
-{
-  return IsProtocol(strFile, "bluray");
 }
 
 bool URIUtils::IsAndroidApp(const std::string &path)

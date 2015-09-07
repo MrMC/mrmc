@@ -1145,16 +1145,10 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const std::strin
     m_Image[iPic].SetTexture(iSlideNumber, pTexture, GetDisplayEffect(iSlideNumber));
     m_Image[iPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
     
-    m_Image[iPic].m_bIsComic = false;
-    if (URIUtils::IsInRAR(m_slides->Get(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
+    if (URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath()))
     {
       CURL url(m_slides->Get(m_iCurrentSlide)->GetPath());
       std::string strHostName = url.GetHostName();
-      if (URIUtils::HasExtension(strHostName, ".cbr|.cbz"))
-      {
-        m_Image[iPic].m_bIsComic = true;
-        m_Image[iPic].Move((float)m_Image[iPic].GetOriginalWidth(),(float)m_Image[iPic].GetOriginalHeight());
-      }
     }
   }
   else if (iSlideNumber >= m_slides->Size() || GetPicturePath(m_slides->Get(iSlideNumber).get()) != strFileName)
@@ -1279,7 +1273,7 @@ void CGUIWindowSlideShow::AddItems(const std::string &strPath, path_set *recursi
     {
       AddItems(item->GetPath(), recursivePaths);
     }
-    else if (!item->m_bIsFolder && !URIUtils::IsRAR(item->GetPath()) && !URIUtils::IsZIP(item->GetPath()))
+    else if (!item->m_bIsFolder && !URIUtils::IsZIP(item->GetPath()))
     { // add to the slideshow
       Add(item.get());
     }

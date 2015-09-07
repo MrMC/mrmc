@@ -2458,14 +2458,12 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
     if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
       g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-    if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
+    if (URIUtils::IsZIP(pMsg->strParam))
     {
       CFileItemList items;
       CURL pathToUrl;
       if (URIUtils::IsZIP(pMsg->strParam))
         pathToUrl = URIUtils::CreateArchivePath("zip", CURL(pMsg->strParam), "");
-      else
-        pathToUrl = URIUtils::CreateArchivePath("rar", CURL(pMsg->strParam), "");
 
       CUtil::GetRecursiveListing(pathToUrl.Get(), items, g_advancedSettings.m_pictureExtensions, XFILE::DIR_FLAG_NO_FILE_DIRS);
       if (items.Size() > 0)

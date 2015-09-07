@@ -186,12 +186,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_SUBTITLE_BROWSER)
   {
-    std::string strPath;
-    if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
-      strPath = CURL(g_application.CurrentFileItem().GetPath()).GetHostName();
-    else
-      strPath = g_application.CurrentFileItem().GetPath();
-
+    std::string strPath = g_application.CurrentFileItem().GetPath();
     std::string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";

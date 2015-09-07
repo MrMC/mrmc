@@ -171,7 +171,6 @@ void CURL::Parse(const std::string& strURL1)
   //TODO fix all Addon paths
   std::string strProtocol2 = GetTranslatedProtocol();
   if(IsProtocol("rss") ||
-     IsProtocol("rar") ||
      IsProtocol("apk") ||
      IsProtocol("xbt") ||
      IsProtocol("zip") ||

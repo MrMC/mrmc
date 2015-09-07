@@ -382,9 +382,6 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       {
         CFileItem item(*pItem);
         std::string path(item.GetPath());
-        if (URIUtils::IsInRAR(item.GetPath()))
-          SetupRarOptions(item,path);
-
         CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
         AddJob(extract);
 
@@ -400,8 +397,6 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     {
       CFileItem item(*pItem);
       std::string path(item.GetPath());
-      if (URIUtils::IsInRAR(item.GetPath()))
-        SetupRarOptions(item,path);
       CThumbExtractor* extract = new CThumbExtractor(item,path,false);
       AddJob(extract);
     }

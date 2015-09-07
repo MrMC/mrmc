@@ -431,7 +431,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 
   // we take a copy so that we can alter the queue state
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
-  if (item->IsRAR() || item->IsZIP())
+  if (item->IsZIP())
     return;
 
   //  Allow queuing of unqueueable items
@@ -456,7 +456,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems)
 {
-  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
+  if (!pItem->CanQueue() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
     return;
 
   if (pItem->m_bIsFolder)

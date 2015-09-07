@@ -552,14 +552,9 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     if (!Update(iList, strPath))
       ShowShareErrorMessage(pItem.get());
   }
-  else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
+  else if (pItem->IsZIP()) // mount zip archive
   {
     CURL pathToUrl = URIUtils::CreateArchivePath("zip", pItem->GetURL(), "");
-    Update(iList, pathToUrl.Get());
-  }
-  else if (pItem->IsRAR() || pItem->IsCBR())
-  {
-    CURL pathToUrl = URIUtils::CreateArchivePath("rar", pItem->GetURL(), "");
     Update(iList, pathToUrl.Get());
   }
   else
@@ -791,7 +786,7 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
   CURL url(m_Directory[iList]->GetPath());
-  if (url.IsProtocol("rar") || url.IsProtocol("zip"))
+  if (url.IsProtocol("zip"))
   {
     // check for step-below, if, unmount rar
     if (url.GetFileName().empty())

@@ -38,30 +38,30 @@
 #include "linux/RBP.h"
 #endif
 
-  CXBMCRenderManager g_renderManager;
-  CLangCodeExpander  g_LangCodeExpander;
-  CLocalizeStrings   g_localizeStrings;
-  CLocalizeStrings   g_localizeStringsTemp;
+  CXBMCRenderManager        g_renderManager;
+  CLangCodeExpander         g_LangCodeExpander;
+  CLocalizeStrings          g_localizeStrings;
+  CLocalizeStrings          g_localizeStringsTemp;
 
-  XFILE::CDirectoryCache g_directoryCache;
+  XFILE::CDirectoryCache    g_directoryCache;
 
-  CGUITextureManager g_TextureManager;
-  CGUILargeTextureManager g_largeTextureManager;
+  CGUITextureManager        g_TextureManager;
+  CGUILargeTextureManager   g_largeTextureManager;
 
-  CGUIPassword       g_passwordManager;
-  CGUIInfoManager    g_infoManager;
+  CGUIPassword              g_passwordManager;
+  CGUIInfoManager           g_infoManager;
 
-  XCURL::DllLibCurlGlobal g_curlInterface;
-  CPartyModeManager     g_partyModeManager;
+  XCURL::DllLibCurlGlobal   g_curlInterface;
+  CPartyModeManager         g_partyModeManager;
 
-  CAlarmClock        g_alarmClock;
+  CAlarmClock               g_alarmClock;
   PLAYLIST::CPlayListPlayer g_playlistPlayer;
 
 #ifdef TARGET_RASPBERRY_PI
-  CRBP               g_RBP;
+  CRBP                      g_RBP;
 #endif
 
-  CZipManager g_ZipManager;
+  CZipManager               g_ZipManager;
 
-  CDataCacheCore g_dataCacheCore;
+  CDataCacheCore            g_dataCacheCore;
 

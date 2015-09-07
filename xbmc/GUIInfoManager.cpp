@@ -4936,7 +4936,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return path;
     }
   case LISTITEM_PICTURE_PATH:
-    if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
+    if (item->IsPicture() && (!item->IsZIP()))
       return item->GetPath();
     break;
   case LISTITEM_STUDIO:

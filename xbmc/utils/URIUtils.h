@@ -129,7 +129,6 @@ public:
   static bool IsTCP(const std::string& strFile);
   static bool IsHD(const std::string& strFileName);
   static bool IsInArchive(const std::string& strFile);
-  static bool IsInRAR(const std::string& strFile);
   static bool IsInternetStream(const std::string& path, bool bStrictCheck = false);
   static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
   static bool IsInAPK(const std::string& strFile);
@@ -143,7 +142,6 @@ public:
   static bool IsHostOnLAN(const std::string& hostName, bool offLineCheck = false);
   static bool IsPlugin(const std::string& strFile);
   static bool IsScript(const std::string& strFile);
-  static bool IsRAR(const std::string& strFile);
   static bool IsRemote(const std::string& strFile);
   static bool IsSmb(const std::string& strFile);
   static bool IsSpecial(const std::string& strFile);
@@ -154,7 +152,6 @@ public:
   static bool IsAPK(const std::string& strFile);
   static bool IsZIP(const std::string& strFile);
   static bool IsArchive(const std::string& strFile);
-  static bool IsBluray(const std::string& strFile);
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);

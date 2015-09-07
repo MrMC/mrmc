@@ -825,7 +825,6 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
     || (IsPlayList() && g_advancedSettings.m_playlistAsFolders)
     || IsAPK()
     || IsZIP()
-    || IsRAR()
     || IsRSS()
     || IsType(".ogg|.oga|.nsf|.sid|.sap|.xbt|.xsp")
 #if defined(TARGET_ANDROID)
@@ -876,11 +875,6 @@ bool CFileItem::IsNFO() const
   return URIUtils::HasExtension(m_strPath, ".nfo");
 }
 
-bool CFileItem::IsRAR() const
-{
-  return URIUtils::IsRAR(m_strPath);
-}
-
 bool CFileItem::IsAPK() const
 {
   return URIUtils::IsAPK(m_strPath);
@@ -889,16 +883,6 @@ bool CFileItem::IsAPK() const
 bool CFileItem::IsZIP() const
 {
   return URIUtils::IsZIP(m_strPath);
-}
-
-bool CFileItem::IsCBZ() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cbz");
-}
-
-bool CFileItem::IsCBR() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cbr");
 }
 
 bool CFileItem::IsRSS() const
@@ -1102,9 +1086,7 @@ void CFileItem::FillInDefaultIcon()
   // Set the icon overlays (if applicable)
   if (!HasOverlay())
   {
-    if (URIUtils::IsInRAR(m_strPath))
-      SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
-    else if (URIUtils::IsInZIP(m_strPath))
+    if (URIUtils::IsInZIP(m_strPath))
       SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
   }
 }
@@ -2217,7 +2199,6 @@ void CFileItemList::StackFolders()
       if( !item->IsRemote()
         || item->IsSmb()
         || item->IsNfs() 
-        || URIUtils::IsInRAR(item->GetPath())
         || URIUtils::IsInZIP(item->GetPath())
         || URIUtils::IsOnLAN(item->GetPath())
         )
@@ -2429,14 +2410,8 @@ void CFileItemList::StackFiles()
       {
         // have a stack, remove the items and add the stacked item
         // dont actually stack a multipart rar set, just remove all items but the first
-        std::string stackPath;
-        if (Get(stack[0])->IsRAR())
-          stackPath = Get(stack[0])->GetPath();
-        else
-        {
-          CStackDirectory dir;
-          stackPath = dir.ConstructStackPath(*this, stack);
-        }
+        CStackDirectory dir;
+        std::string stackPath = dir.ConstructStackPath(*this, stack);
         item1->SetPath(stackPath);
         // clean up list
         for (unsigned k = 1; k < stack.size(); k++)
@@ -2604,7 +2579,7 @@ std::string CFileItem::GetTBNFile() const
     strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInZIP(strFile))
   {
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
@@ -2684,7 +2659,7 @@ std::string CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) c
     strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInZIP(strFile))
   {
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
@@ -2721,7 +2696,6 @@ std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.
   std::string strFolder = m_strPath;
 
   if (IsStack() ||
-      URIUtils::IsInRAR(strFolder) ||
       URIUtils::IsInZIP(strFolder))
   {
     URIUtils::GetParentPath(m_strPath,strFolder);
@@ -2805,7 +2779,7 @@ std::string CFileItem::GetLocalFanart() const
     std::string strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-fanart"));
     strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
   }
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInZIP(strFile))
   {
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
@@ -2816,7 +2790,6 @@ std::string CFileItem::GetLocalFanart() const
   // no local fanart available for these
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
-   || URIUtils::IsBluray(strFile)
    || IsLiveTV()
    || IsAddonsPath()
    || (URIUtils::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
@@ -3017,7 +2990,7 @@ std::string CFileItem::FindTrailer() const
     std::string strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-trailer"));
     strFile2 = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile));
   }
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInZIP(strFile))
   {
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
@@ -3028,7 +3001,6 @@ std::string CFileItem::FindTrailer() const
   // no local trailer available for these
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
-   || URIUtils::IsBluray(strFile)
    || IsLiveTV())
     return "";
 

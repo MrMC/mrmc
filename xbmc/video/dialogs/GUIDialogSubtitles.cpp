@@ -298,7 +298,7 @@ void CGUIDialogSubtitles::Download(const int index)
        TODO: We need some way to avoid special casing this all over the place
              for rar/zip (perhaps modify GetDirectory?)
      */
-    if (URIUtils::IsInRAR(strCurrentFile) || URIUtils::IsInZIP(strCurrentFile))
+    if (URIUtils::IsInZIP(strCurrentFile))
       strCurrentFilePath = URIUtils::GetDirectory(CURL(strCurrentFile).GetHostName());
     else
       strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);

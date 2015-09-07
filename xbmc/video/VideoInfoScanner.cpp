@@ -1568,15 +1568,6 @@ namespace VIDEO
     // Find a matching .nfo file
     if (!item->m_bIsFolder)
     {
-      if (URIUtils::IsInRAR(item->GetPath())) // we have a rarred item - we want to check outside the rars
-      {
-        CFileItem item2(*item);
-        CURL url(item->GetPath());
-        std::string strPath = URIUtils::GetDirectory(url.GetHostName());
-        item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item->GetPath())));
-        return GetnfoFile(&item2, bGrabAny);
-      }
-
       // grab the folder path
       std::string strPath = URIUtils::GetDirectory(item->GetPath());
 
