@@ -20,16 +20,19 @@
  *
 */
 
-#include "windowing/WindowingFactory.h"
-#include "settings/AdvancedSettings.h"
-#include "filesystem/File.h"
-#include "utils/log.h"
-#include "XBTF.h"
-#include "JpegIO.h"
-#include "utils/StringUtils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <jpeglib.h>
 #include <setjmp.h>
 
-#define EXIF_TAG_ORIENTATION    0x0112
+#include "guilib/JpegIO.h"
+
+#include "guilib/XBTF.h"
+//#include "filesystem/File.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "windowing/WindowingFactory.h"
 
 struct my_error_mgr
 {
@@ -37,234 +40,42 @@ struct my_error_mgr
   jmp_buf setjmp_buffer;        // for return to caller
 };
 
-#if JPEG_LIB_VERSION < 80
-
-/*Versions of libjpeg prior to 8.0 did not have a pre-made mechanism for
-  decoding directly from memory. Here we backport the functions from v8.
-  When using v8 or higher, the built-in functions are used instead.
-  Original formatting left intact for the most part for easy comparison. */
-
-static void x_init_mem_source(j_decompress_ptr cinfo)
-{
-  /* no work necessary here */
-}
-
-static void x_term_source(j_decompress_ptr cinfo)
-{
-  /* no work necessary here */
-}
-
-static boolean x_fill_mem_input_buffer(j_decompress_ptr cinfo)
-{
-  static JOCTET mybuffer[4];
-
-  /* The whole JPEG data is expected to reside in the supplied memory
-   * buffer, so any request for more data beyond the given buffer size
-   * is treated as an error.
-   */
-  /* Insert a fake EOI marker */
-  mybuffer[0] = (JOCTET) 0xFF;
-  mybuffer[1] = (JOCTET) JPEG_EOI;
-
-  cinfo->src->next_input_byte = mybuffer;
-  cinfo->src->bytes_in_buffer = 2;
-
-  return true;
-}
-
-static void x_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
-{
-  struct jpeg_source_mgr * src = cinfo->src;
-
-  /* Just a dumb implementation for now.  Could use fseek() except
-   * it doesn't work on pipes.  Not clear that being smart is worth
-   * any trouble anyway --- large skips are infrequent.
-   */
-  if (num_bytes > 0) {
-    while (num_bytes > (long) src->bytes_in_buffer) {
-      num_bytes -= (long) src->bytes_in_buffer;
-      (void) (*src->fill_input_buffer) (cinfo);
-      /* note we assume that fill_input_buffer will never return FALSE,
-       * so suspension need not be handled.
-       */
-    }
-    src->next_input_byte += (size_t) num_bytes;
-    src->bytes_in_buffer -= (size_t) num_bytes;
-  }
-}
-
-static void x_mem_src(j_decompress_ptr cinfo, unsigned char *inbuffer, unsigned long insize)
-{
-  struct jpeg_source_mgr * src;
-
-  if (inbuffer == NULL || insize == 0)	/* Treat empty input as fatal error */
-  {
-    (cinfo)->err->msg_code = 0;
-    (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
-  }
-
-  /* The source object is made permanent so that a series of JPEG images
-   * can be read from the same buffer by calling jpeg_mem_src only before
-   * the first one.
-   */
-  if (cinfo->src == NULL) {	/* first time for this JPEG object? */
-    cinfo->src = (struct jpeg_source_mgr *)
-      (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
-				  sizeof(struct jpeg_source_mgr));
-  }
-
-  src = cinfo->src;
-  src->init_source = x_init_mem_source;
-  src->fill_input_buffer = x_fill_mem_input_buffer;
-  src->skip_input_data = x_skip_input_data;
-  src->resync_to_restart = jpeg_resync_to_restart; /* use default method */
-  src->term_source = x_term_source;
-  src->bytes_in_buffer = (size_t) insize;
-  src->next_input_byte = (JOCTET *) inbuffer;
-}
-
-#define OUTPUT_BUF_SIZE  4096
-typedef struct {
-  struct jpeg_destination_mgr pub; /* public fields */
-
-  unsigned char ** outbuffer;   /* target buffer */
-  unsigned long * outsize;
-  unsigned char * newbuffer;    /* newly allocated buffer */
-  JOCTET * buffer;              /* start of buffer */
-  size_t bufsize;
-} x_mem_destination_mgr;
-
-typedef x_mem_destination_mgr * x_mem_dest_ptr;
-
-static void x_init_mem_destination (j_compress_ptr cinfo)
-{
-  /* no work necessary here */
-}
-
-static boolean x_empty_mem_output_buffer(j_compress_ptr cinfo)
-{
-  size_t nextsize;
-  JOCTET * nextbuffer;
-  x_mem_dest_ptr dest = (x_mem_dest_ptr) cinfo->dest;
-
-  /* Try to allocate new buffer with double size */
-  nextsize = dest->bufsize * 2;
-  nextbuffer = (JOCTET*) malloc(nextsize);
-
-  if (nextbuffer == NULL)
-  {
-    (cinfo)->err->msg_code = 0;
-    (cinfo)->err->msg_parm.i[0] = 10;
-    (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
-  }
-
-  memcpy(nextbuffer, dest->buffer, dest->bufsize);
-
-  if (dest->newbuffer != NULL)
-    free(dest->newbuffer);
-
-  dest->newbuffer = nextbuffer;
-
-  dest->pub.next_output_byte = nextbuffer + dest->bufsize;
-  dest->pub.free_in_buffer = dest->bufsize;
-
-  dest->buffer = nextbuffer;
-  dest->bufsize = nextsize;
-
-  return TRUE;
-}
-
-static void x_term_mem_destination(j_compress_ptr cinfo)
-{
-  x_mem_dest_ptr dest = (x_mem_dest_ptr) cinfo->dest;
-
-  *dest->outbuffer = dest->buffer;
-  *dest->outsize = dest->bufsize - dest->pub.free_in_buffer;
-}
-
-static void x_jpeg_mem_dest(j_compress_ptr cinfo,
-  unsigned char **outbuffer, unsigned long *outsize)
-{
-  x_mem_dest_ptr dest;
-
-  if (outbuffer == NULL || outsize == NULL)     /* sanity check */
-  {
-    (cinfo)->err->msg_code = 0;
-    (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
-  }
-
-  /* The destination object is made permanent so that multiple JPEG images
-   * can be written to the same buffer without re-executing jpeg_mem_dest.
-   */
-  if (cinfo->dest == NULL) {    /* first time for this JPEG object? */
-    cinfo->dest = (struct jpeg_destination_mgr *)
-      (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
-                                  sizeof(x_mem_destination_mgr));
-  }
-
-  dest = (x_mem_dest_ptr) cinfo->dest;
-  dest->pub.init_destination = x_init_mem_destination;
-  dest->pub.empty_output_buffer = x_empty_mem_output_buffer;
-  dest->pub.term_destination = x_term_mem_destination;
-  dest->outbuffer = outbuffer;
-  dest->outsize = outsize;
-  dest->newbuffer = NULL;
-
-  if (*outbuffer == NULL || *outsize == 0) {
-    /* Allocate initial buffer */
-    dest->newbuffer = *outbuffer = (unsigned char*)malloc(OUTPUT_BUF_SIZE);
-    if (dest->newbuffer == NULL)
-    {
-      (cinfo)->err->msg_code = 0;
-      (cinfo)->err->msg_parm.i[0] = 10;
-      (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
-    }
-    *outsize = OUTPUT_BUF_SIZE;
-  }
-
-  dest->pub.next_output_byte = dest->buffer = *outbuffer;
-  dest->pub.free_in_buffer = dest->bufsize = *outsize;
-}
-#endif
-
 CJpegIO::CJpegIO()
 : IImage()
-, m_thumbnailbuffer(NULL)
+, m_thumbnailbuffer(nullptr)
 {
-  memset(&m_cinfo, 0, sizeof(m_cinfo));
+  m_cinfo = new struct jpeg_decompress_struct;
+  memset(m_cinfo, 0, sizeof(*m_cinfo));
 }
 
 CJpegIO::~CJpegIO()
 {
+  delete m_cinfo, m_cinfo = nullptr;
   ReleaseThumbnailBuffer();
 }
 
-bool CJpegIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
+bool CJpegIO::LoadImageFromMemory(unsigned char *buffer, unsigned int bufSize, unsigned int width, unsigned int height)
 {
   // buffer will persist, width and height are 1) real size of image or 2) max surface size.
-  if (buffer == NULL || !bufSize)
+  if (buffer == nullptr || !bufSize)
     return false;
   
-  jpeg_create_decompress(&m_cinfo);
-#if JPEG_LIB_VERSION < 80
-  x_mem_src(&m_cinfo, buffer, bufSize);
-#else
-  jpeg_mem_src(&m_cinfo, buffer, bufSize);
-#endif
+  jpeg_create_decompress(m_cinfo);
+  jpeg_mem_src(m_cinfo, buffer, bufSize);
   
   struct my_error_mgr jerr;
-  m_cinfo.err = jpeg_std_error(&jerr.pub);
+  m_cinfo->err = jpeg_std_error(&jerr.pub);
   jerr.pub.error_exit = jpeg_error_exit;
 
   if (setjmp(jerr.setjmp_buffer))
   {
-    jpeg_destroy_decompress(&m_cinfo);
+    jpeg_destroy_decompress(m_cinfo);
     return false;
   }
   else
   {
-    jpeg_save_markers (&m_cinfo, JPEG_APP0 + 1, 0xFFFF);
-    jpeg_read_header(&m_cinfo, true);
+    jpeg_save_markers (m_cinfo, JPEG_APP0 + 1, 0xFFFF);
+    jpeg_read_header(m_cinfo, true);
     
     /*  libjpeg can scale the image for us if it is too big. It must be in the format
      num/denom, where (for our purposes) that is [1-8]/8 where 8/8 is the unscaled image.
@@ -278,8 +89,8 @@ bool CJpegIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
       height = g_advancedSettings.m_imageRes;
       if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
       { // a separate fanart resolution is specified - check if the image is exactly equal to this res
-        if (m_cinfo.image_width == (unsigned int)g_advancedSettings.m_fanartRes * 16/9 &&
-            m_cinfo.image_height == (unsigned int)g_advancedSettings.m_fanartRes)
+        if (m_cinfo->image_width == (unsigned int)g_advancedSettings.m_fanartRes * 16/9 &&
+            m_cinfo->image_height == (unsigned int)g_advancedSettings.m_fanartRes)
         { // special case for fanart res
           height = g_advancedSettings.m_fanartRes;
         }
@@ -287,27 +98,27 @@ bool CJpegIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
       width = height * 16/9;
     }
 
-    m_cinfo.scale_denom = 8;
-    m_cinfo.out_color_space = JCS_RGB;
+    m_cinfo->scale_denom = 8;
+    m_cinfo->out_color_space = JCS_RGB;
     unsigned int maxtexsize = g_Windowing.GetMaxTextureSize();
     for (unsigned int scale = 1; scale <= 8; scale++)
     {
-      m_cinfo.scale_num = scale;
-      jpeg_calc_output_dimensions(&m_cinfo);
-      if ((m_cinfo.output_width > maxtexsize) || (m_cinfo.output_height > maxtexsize))
+      m_cinfo->scale_num = scale;
+      jpeg_calc_output_dimensions(m_cinfo);
+      if ((m_cinfo->output_width > maxtexsize) || (m_cinfo->output_height > maxtexsize))
       {
-        m_cinfo.scale_num--;
+        m_cinfo->scale_num--;
         break;
       }
-      if (m_cinfo.output_width >= width && m_cinfo.output_height >= height)
+      if (m_cinfo->output_width >= width && m_cinfo->output_height >= height)
         break;
     }
-    jpeg_calc_output_dimensions(&m_cinfo);
-    m_width  = m_cinfo.output_width;
-    m_height = m_cinfo.output_height;
+    jpeg_calc_output_dimensions(m_cinfo);
+    m_width  = m_cinfo->output_width;
+    m_height = m_cinfo->output_height;
 
-    if (m_cinfo.marker_list)
-      m_orientation = GetExifOrientation(m_cinfo.marker_list->data, m_cinfo.marker_list->data_length);
+    if (m_cinfo->marker_list)
+      m_orientation = GetExifOrientation(m_cinfo->marker_list->data, m_cinfo->marker_list->data_length);
   }
 
   return true;
@@ -316,24 +127,24 @@ bool CJpegIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
 bool CJpegIO::Decode(unsigned char* const pixels, unsigned int pitch)
 {
   struct my_error_mgr jerr;
-  m_cinfo.err = jpeg_std_error(&jerr.pub);
+  m_cinfo->err = jpeg_std_error(&jerr.pub);
   jerr.pub.error_exit = jpeg_error_exit;
 
   if (setjmp(jerr.setjmp_buffer))
   {
-    jpeg_destroy_decompress(&m_cinfo);
+    jpeg_destroy_decompress(m_cinfo);
     return false;
   }
   else
   {
-    jpeg_start_decompress(&m_cinfo);
+    jpeg_start_decompress(m_cinfo);
     
     // pixels format is XB_FMT_A8R8G8B8
     unsigned char *dst = (unsigned char*)pixels;
     unsigned char* row = new unsigned char[m_width * 3];
-    while (m_cinfo.output_scanline < m_height)
+    while (m_cinfo->output_scanline < m_height)
     {
-      jpeg_read_scanlines(&m_cinfo, &row, 1);
+      jpeg_read_scanlines(m_cinfo, &row, 1);
       unsigned char *src2 = row;
       unsigned char *dst2 = dst;
       for (unsigned int x = 0; x < m_width; x++, src2 += 3)
@@ -347,13 +158,13 @@ bool CJpegIO::Decode(unsigned char* const pixels, unsigned int pitch)
     }
     delete[] row;
 
-    jpeg_finish_decompress(&m_cinfo);
+    jpeg_finish_decompress(m_cinfo);
   }
-  jpeg_destroy_decompress(&m_cinfo);
+  jpeg_destroy_decompress(m_cinfo);
   return true;
 }
 
-bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height,
+bool CJpegIO::CreateThumbnailFromSurface(unsigned char *bufferin, unsigned int width, unsigned int height,
   unsigned int pitch, const std::string& destFile,
   unsigned char* &bufferout, unsigned int &bufferoutSize)
 {
@@ -362,7 +173,7 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int w
   struct my_error_mgr jerr;
   JSAMPROW row_pointer[1];
 
-  if(bufferin == NULL)
+  if(bufferin == nullptr)
   {
     CLog::Log(LOGERROR, "JpegIO::CreateThumbnailFromSurface no buffer");
     return false;
@@ -388,8 +199,8 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int w
   }
 
   long unsigned int outBufSize = width * height;
-  m_thumbnailbuffer = (unsigned char*) malloc(outBufSize); //Initial buffer. Grows as-needed.
-  if (m_thumbnailbuffer == NULL)
+  m_thumbnailbuffer = (unsigned char*)malloc(outBufSize); //Initial buffer. Grows as-needed.
+  if (m_thumbnailbuffer == nullptr)
   {
     CLog::Log(LOGERROR, "JpegIO::CreateThumbnailFromSurface error allocating memory for image buffer");
     return false;
@@ -407,18 +218,14 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int w
   }
   else
   {
-#if JPEG_LIB_VERSION < 80
-    x_jpeg_mem_dest(&cinfo, &m_thumbnailbuffer, &outBufSize);
-#else
     jpeg_mem_dest(&cinfo, &m_thumbnailbuffer, &outBufSize);
-#endif
     cinfo.image_width = width;
     cinfo.image_height = height;
     cinfo.input_components = 3;
     cinfo.in_color_space = JCS_RGB;
     jpeg_set_defaults(&cinfo);
-    jpeg_set_quality(&cinfo, 90, TRUE);
-    jpeg_start_compress(&cinfo, TRUE);
+    jpeg_set_quality(&cinfo, 90, true);
+    jpeg_start_compress(&cinfo, true);
 
     while (cinfo.next_scanline < cinfo.image_height)
     {
@@ -439,15 +246,15 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int w
 
 void CJpegIO::ReleaseThumbnailBuffer()
 {
-  if(m_thumbnailbuffer != NULL)
+  if(m_thumbnailbuffer != nullptr)
   {
     free(m_thumbnailbuffer);
-    m_thumbnailbuffer = NULL;
+    m_thumbnailbuffer = nullptr;
   }
 }
 
 // override libjpeg's error function to avoid an exit() call
-void CJpegIO::jpeg_error_exit(j_common_ptr cinfo)
+void CJpegIO::jpeg_error_exit(struct jpeg_common_struct *cinfo)
 {
   std::string msg = StringUtils::Format("Error %i: %s",cinfo->err->msg_code, cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
   CLog::Log(LOGWARNING, "JpegIO: %s", msg.c_str());
@@ -456,14 +263,16 @@ void CJpegIO::jpeg_error_exit(j_common_ptr cinfo)
   longjmp(myerr->setjmp_buffer, 1);
 }
 
-unsigned int CJpegIO::GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size)
+unsigned int CJpegIO::GetExifOrientation(unsigned char *exif_data, unsigned int exif_data_size)
 {
+  #define EXIF_TAG_ORIENTATION 0x0112
+
+  bool isMotorola = false;
   unsigned int offset = 0;
   unsigned int numberOfTags = 0;
   unsigned int tagNumber = 0;
-  bool isMotorola = false;
-  unsigned const char ExifHeader[] = "Exif\0\0";
   unsigned int orientation = 0;
+  unsigned const char ExifHeader[] = "Exif\0\0";
   
   // read exif head, check for "Exif"
   //   next we want to read to current offset + length
@@ -581,5 +390,5 @@ unsigned int CJpegIO::GetExifOrientation(unsigned char* exif_data, unsigned int 
   if (orientation > 8)
     orientation = 0;
   
-  return orientation;//done
+  return orientation;
 }

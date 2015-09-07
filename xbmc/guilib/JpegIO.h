@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -18,11 +20,10 @@
  *
  */
 
-#ifndef GUILIB_JPEGIO_H
-#define GUILIB_JPEGIO_H
-
-#include <jpeglib.h>
 #include "iimage.h"
+
+struct jpeg_common_struct;
+struct jpeg_decompress_struct;
 
 class CJpegIO : public IImage
 {
@@ -34,17 +35,16 @@ public:
   // methods for the imagefactory
   virtual bool   LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
   virtual bool   Decode(unsigned char* const pixels, unsigned int pitch);
-  virtual bool   CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height,
-                   unsigned int pitch, const std::string& destFile,
+
+  virtual bool   CreateThumbnailFromSurface(unsigned char *bufferin, unsigned int width, unsigned int height,
+                   unsigned int pitch, const std::string &destFile,
                    unsigned char* &bufferout, unsigned int &bufferoutSize);
   virtual void   ReleaseThumbnailBuffer();
 
 protected:
-  static  void   jpeg_error_exit(j_common_ptr cinfo);
-  static unsigned int GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size);
+  static  void   jpeg_error_exit(struct jpeg_common_struct *cinfo);
+  static unsigned int GetExifOrientation(unsigned char *exif_data, unsigned int exif_data_size);
 
   unsigned char *m_thumbnailbuffer;
-  struct         jpeg_decompress_struct m_cinfo;
+  struct         jpeg_decompress_struct *m_cinfo;
 };
-
-#endif
