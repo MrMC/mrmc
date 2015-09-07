@@ -1543,8 +1543,6 @@
 		DFF0F3DF17528350002DA3A4 /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
 		DFF0F3E017528350002DA3A4 /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
 		DFF0F3E117528350002DA3A4 /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828FF156CFE4B005A996F /* Observer.cpp */; };
-		DFF0F3E217528350002DA3A4 /* PerformanceSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */; };
-		DFF0F3E317528350002DA3A4 /* PerformanceStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */; };
 		DFF0F3E417528350002DA3A4 /* POUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908C15538E2300842059 /* POUtils.cpp */; };
 		DFF0F3E517528350002DA3A4 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
 		DFF0F3E617528350002DA3A4 /* RegExp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E730D25F9FD00618676 /* RegExp.cpp */; };
@@ -1903,8 +1901,6 @@
 		E38E22E40D25F9FE00618676 /* MusicAlbumInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E650D25F9FD00618676 /* MusicAlbumInfo.cpp */; };
 		E38E22E50D25F9FE00618676 /* MusicInfoScraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E670D25F9FD00618676 /* MusicInfoScraper.cpp */; };
 		E38E22E70D25F9FE00618676 /* Network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6B0D25F9FD00618676 /* Network.cpp */; };
-		E38E22E90D25F9FE00618676 /* PerformanceSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */; };
-		E38E22EA0D25F9FE00618676 /* PerformanceStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */; };
 		E38E22EB0D25F9FE00618676 /* RegExp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E730D25F9FD00618676 /* RegExp.cpp */; };
 		E38E22EC0D25F9FE00618676 /* RssReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E750D25F9FD00618676 /* RssReader.cpp */; };
 		E38E22ED0D25F9FE00618676 /* ScraperParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E770D25F9FD00618676 /* ScraperParser.cpp */; };
@@ -2520,8 +2516,6 @@
 		E4991463174E605900741B6D /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
 		E4991464174E605900741B6D /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
 		E4991465174E605900741B6D /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828FF156CFE4B005A996F /* Observer.cpp */; };
-		E4991466174E605900741B6D /* PerformanceSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */; };
-		E4991467174E605900741B6D /* PerformanceStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */; };
 		E4991468174E605900741B6D /* POUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908C15538E2300842059 /* POUtils.cpp */; };
 		E4991469174E605900741B6D /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
 		E499146A174E605900741B6D /* RegExp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E730D25F9FD00618676 /* RegExp.cpp */; };
@@ -4677,10 +4671,6 @@
 		E38E1E680D25F9FD00618676 /* MusicInfoScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoScraper.h; sourceTree = "<group>"; };
 		E38E1E6B0D25F9FD00618676 /* Network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Network.cpp; sourceTree = "<group>"; };
 		E38E1E6C0D25F9FD00618676 /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
-		E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerformanceSample.cpp; sourceTree = "<group>"; };
-		E38E1E700D25F9FD00618676 /* PerformanceSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerformanceSample.h; sourceTree = "<group>"; };
-		E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerformanceStats.cpp; sourceTree = "<group>"; };
-		E38E1E720D25F9FD00618676 /* PerformanceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerformanceStats.h; sourceTree = "<group>"; };
 		E38E1E730D25F9FD00618676 /* RegExp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RegExp.cpp; sourceTree = "<group>"; };
 		E38E1E740D25F9FD00618676 /* RegExp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegExp.h; sourceTree = "<group>"; };
 		E38E1E750D25F9FD00618676 /* RssReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RssReader.cpp; sourceTree = "<group>"; };
@@ -8138,10 +8128,6 @@
 				C84828FF156CFE4B005A996F /* Observer.cpp */,
 				C8482900156CFE4B005A996F /* Observer.h */,
 				B542632E19917D3500726998 /* params_check_macros.h */,
-				E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */,
-				E38E1E700D25F9FD00618676 /* PerformanceSample.h */,
-				E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */,
-				E38E1E720D25F9FD00618676 /* PerformanceStats.h */,
 				F5ED908C15538E2300842059 /* POUtils.cpp */,
 				F5ED908D15538E2300842059 /* POUtils.h */,
 				399442591A8DD8D0006C39E9 /* ProgressJob.cpp */,
@@ -9238,8 +9224,6 @@
 				E38E22E40D25F9FE00618676 /* MusicAlbumInfo.cpp in Sources */,
 				E38E22E50D25F9FE00618676 /* MusicInfoScraper.cpp in Sources */,
 				E38E22E70D25F9FE00618676 /* Network.cpp in Sources */,
-				E38E22E90D25F9FE00618676 /* PerformanceSample.cpp in Sources */,
-				E38E22EA0D25F9FE00618676 /* PerformanceStats.cpp in Sources */,
 				E38E22EB0D25F9FE00618676 /* RegExp.cpp in Sources */,
 				E38E22EC0D25F9FE00618676 /* RssReader.cpp in Sources */,
 				E38E22ED0D25F9FE00618676 /* ScraperParser.cpp in Sources */,
@@ -10522,8 +10506,6 @@
 				DFF0F3DF17528350002DA3A4 /* md5.cpp in Sources */,
 				DFF0F3E017528350002DA3A4 /* Mime.cpp in Sources */,
 				DFF0F3E117528350002DA3A4 /* Observer.cpp in Sources */,
-				DFF0F3E217528350002DA3A4 /* PerformanceSample.cpp in Sources */,
-				DFF0F3E317528350002DA3A4 /* PerformanceStats.cpp in Sources */,
 				DFF0F3E417528350002DA3A4 /* POUtils.cpp in Sources */,
 				DFF0F3E517528350002DA3A4 /* RecentlyAddedJob.cpp in Sources */,
 				DFF0F3E617528350002DA3A4 /* RegExp.cpp in Sources */,
@@ -11429,8 +11411,6 @@
 				E4991463174E605900741B6D /* md5.cpp in Sources */,
 				E4991464174E605900741B6D /* Mime.cpp in Sources */,
 				E4991465174E605900741B6D /* Observer.cpp in Sources */,
-				E4991466174E605900741B6D /* PerformanceSample.cpp in Sources */,
-				E4991467174E605900741B6D /* PerformanceStats.cpp in Sources */,
 				E4991468174E605900741B6D /* POUtils.cpp in Sources */,
 				E4991469174E605900741B6D /* RecentlyAddedJob.cpp in Sources */,
 				E499146A174E605900741B6D /* RegExp.cpp in Sources */,

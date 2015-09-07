@@ -22,11 +22,6 @@
 #include "XBApplicationEx.h"
 #include "utils/log.h"
 #include "threads/SystemClock.h"
-#ifdef HAS_PERFORMANCE_SAMPLE
-#include "utils/PerformanceSample.h"
-#else
-#define MEASURE_FUNCTION
-#endif
 #include "commons/Exception.h"
 
 // Put this here for easy enable and disable
@@ -84,9 +79,6 @@ int CXBApplicationEx::Run()
   // Run xbmc
   while (!m_bStop)
   {
-#ifdef HAS_PERFORMANCE_SAMPLE
-    CPerformanceSample sampleLoop("XBApplicationEx-loop");
-#endif
     //-----------------------------------------
     // Animate and render a frame
     //-----------------------------------------

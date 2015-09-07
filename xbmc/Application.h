@@ -51,9 +51,6 @@ namespace ADDON
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISubSettings.h"
 #include "utils/Stopwatch.h"
-#ifdef HAS_PERFORMANCE_SAMPLE
-#include "utils/PerformanceStats.h"
-#endif
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
@@ -275,9 +272,6 @@ public:
   static bool OnEvent(XBMC_Event& newEvent);
 
   CNetwork& getNetwork();
-#ifdef HAS_PERFORMANCE_SAMPLE
-  CPerformanceStats &GetPerformanceStats();
-#endif
 
   CApplicationPlayer* m_pPlayer;
 
@@ -471,9 +465,6 @@ protected:
 
   CInertialScrollingHandler *m_pInertialScrollingHandler;
   CNetwork    *m_network;
-#ifdef HAS_PERFORMANCE_SAMPLE
-  CPerformanceStats m_perfStats;
-#endif
 
   ReplayGainSettings m_replayGainSettings;
   
