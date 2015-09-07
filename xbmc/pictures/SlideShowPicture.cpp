@@ -539,7 +539,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   UpdateVertices(m_ax, m_ay, x, y, dirtyregions);
 
   // now render the image in the top right corner if we're zooming
-  if (m_fZoomAmount == 1 || m_bIsComic)
+  if (m_fZoomAmount == 1)
   {
     const float empty[4] = {0};
     UpdateVertices(m_bx, m_by, empty, empty, dirtyregions);
@@ -735,7 +735,7 @@ void CSlideShowPic::Render()
   Render(m_ax, m_ay, m_pImage, (m_alpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
-  if (m_fZoomAmount == 1.0f || m_bIsComic) return ;
+  if (m_fZoomAmount == 1.0f) return ;
 
   Render(m_bx, m_by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
   Render(m_sx, m_sy, m_pImage, 0xFFFFFFFF);
