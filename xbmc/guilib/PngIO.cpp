@@ -183,6 +183,8 @@ bool CPngIO::Decode(unsigned char* const pixels, unsigned int pitch)
   png_read_end(pngStructPtr, pngInfoPtr);
   png_destroy_read_struct(&pngStructPtr, &pngInfoPtr, NULL);
 
+  delete [] row_pointers;
+
   return true;
 }
 
@@ -241,6 +243,8 @@ bool CPngIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int wi
   png_set_write_fn(pngStructPtr, (void*)this, WriteMemoryCallback, NULL);
   png_write_png(pngStructPtr, pngInfoPtr, PNG_TRANSFORM_BGR, NULL);
   png_destroy_write_struct(&pngStructPtr, &pngInfoPtr);
+
+  delete [] row_pointers;
 
   // these are modified in WriteMemoryCallback
   bufferout = m_compressedBuffer;
