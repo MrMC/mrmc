@@ -631,10 +631,6 @@ bool CApplication::CreateGUI()
 
   uint32_t sdlFlags = 0;
 
-#if defined(TARGET_DARWIN_OSX)
-  sdlFlags |= SDL_INIT_VIDEO;
-#endif
-
 #if defined(HAS_SDL_JOYSTICK)
   sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
@@ -664,10 +660,6 @@ bool CApplication::CreateGUI()
     CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
     return false;
   }
-  #if defined(TARGET_DARWIN)
-  // SDL_Init will install a handler for segfaults, restore the default handler.
-  signal(SIGSEGV, SIG_DFL);
-  #endif
 #endif
 
   // Initialize core peripheral port support. Note: If these parameters
