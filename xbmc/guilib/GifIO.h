@@ -36,12 +36,12 @@ namespace XFILE
 {
   class CFile;
 };
-class GifFrame;
+class CGifFrame;
 
 class CGifIO : public IImage
 {
 public:
-  typedef std::shared_ptr<GifFrame> FramePtr;
+  typedef std::shared_ptr<CGifFrame> FramePtr;
 
   CGifIO();
   virtual ~CGifIO();
@@ -70,11 +70,11 @@ private:
 
   bool Slurp(GifFileType* gif);
   static void ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject* src, unsigned int size);
-  bool gcbToFrame(GifFrame &frame, unsigned int imgIdx);
+  bool gcbToFrame(CGifFrame &frame, unsigned int imgIdx);
   bool ExtractFrames(unsigned int count);
-  void SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame);
-  void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
-  bool PrepareTemplate(const GifFrame &frame);
+  void SetFrameAreaToBack(unsigned char* dest, const CGifFrame &frame);
+  void ConstructFrame(CGifFrame &frame, const unsigned char* src) const;
+  bool PrepareTemplate(const CGifFrame &frame);
   void PrettyPrintError(std::string messageTemplate, int reason);
 
   inline std::string memOrFile()
@@ -99,20 +99,20 @@ private:
   
 };
 
-class GifFrame
+class CGifFrame
 {
   friend class CGifIO;
   
 public:
   
-  GifFrame();
-  virtual ~GifFrame();
+  CGifFrame();
+  virtual ~CGifFrame();
   
   unsigned char* m_pImage;
   unsigned int m_delay;
   
 private:
-  GifFrame(const GifFrame& src);
+  CGifFrame(const CGifFrame& src);
   
   unsigned int m_imageSize;
   unsigned int m_height;

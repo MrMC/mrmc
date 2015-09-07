@@ -330,7 +330,7 @@ void CGifIO::InitTemplateAndColormap()
     m_globalPalette.clear();
 }
 
-bool CGifIO::gcbToFrame(GifFrame &frame, unsigned int imgIdx)
+bool CGifIO::gcbToFrame(CGifFrame &frame, unsigned int imgIdx)
 {
   frame.m_delay = 0;
   frame.m_disposal = 0;
@@ -368,7 +368,7 @@ bool CGifIO::ExtractFrames(unsigned int count)
 
   for (unsigned int i = 0; i < count; i++)
   {
-    FramePtr frame(new GifFrame);
+    FramePtr frame(new CGifFrame);
     SavedImage savedImage = m_gif->SavedImages[i];
     GifImageDesc imageDesc = m_gif->SavedImages[i].ImageDesc;
     frame->m_top    = imageDesc.Top;
@@ -413,7 +413,7 @@ bool CGifIO::ExtractFrames(unsigned int count)
   return true;
 }
 
-void CGifIO::ConstructFrame(GifFrame &frame, const unsigned char* src) const
+void CGifIO::ConstructFrame(CGifFrame &frame, const unsigned char* src) const
 {
   for (unsigned int dest_y = frame.m_top, src_y = 0; src_y < frame.m_height; ++dest_y, ++src_y)
   {
@@ -438,7 +438,7 @@ void CGifIO::ConstructFrame(GifFrame &frame, const unsigned char* src) const
   }
 }
 
-bool CGifIO::PrepareTemplate(const GifFrame &frame)
+bool CGifIO::PrepareTemplate(const CGifFrame &frame)
 {
   switch (frame.m_disposal)
   {
@@ -493,7 +493,7 @@ bool CGifIO::PrepareTemplate(const GifFrame &frame)
   return true;
 }
 
-void CGifIO::SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame)
+void CGifIO::SetFrameAreaToBack(unsigned char* dest, const CGifFrame &frame)
 {
   for (unsigned int dest_y = frame.m_top, src_y = 0; src_y < frame.m_height; ++dest_y, ++src_y)
   {
@@ -515,7 +515,7 @@ void CGifIO::PrettyPrintError(std::string messageTemplate, int reason)
     CLog::Log(LOGERROR, "%s - (reason unknown)", messageTemplate.c_str());
 }
 
-GifFrame::GifFrame()
+CGifFrame::CGifFrame()
   : m_pImage(nullptr)
   , m_delay(0)
   , m_imageSize(0)
@@ -526,7 +526,7 @@ GifFrame::GifFrame()
   , m_disposal(0)
 {}
 
-GifFrame::GifFrame(const GifFrame& src)
+CGifFrame::CGifFrame(const CGifFrame& src)
  : m_pImage(nullptr)
  , m_delay(src.m_delay)
  , m_imageSize(src.m_imageSize)
@@ -546,7 +546,7 @@ GifFrame::GifFrame(const GifFrame& src)
     m_palette = src.m_palette;
 }
 
-GifFrame::~GifFrame()
+CGifFrame::~CGifFrame()
 {
   delete[] m_pImage, m_pImage = nullptr;
 }
