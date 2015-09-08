@@ -437,14 +437,8 @@ void CWinSystemIOS::ShowOSMouse(bool show)
 
 bool CWinSystemIOS::HasCursor()
 {
-  if( CDarwinUtils::IsAppleTV2() )
-  {
-    return true;
-  }
-  else//apple touch devices
-  {
-    return false;
-  }
+  // apple touch devices
+  return false;
 }
 
 void CWinSystemIOS::NotifyAppActiveChange(bool bActivated)

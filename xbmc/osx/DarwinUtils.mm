@@ -181,18 +181,6 @@ enum iosPlatform getIosPlatform()
   return eDev;
 }
 
-bool CDarwinUtils::IsAppleTV2(void)
-{
-  static enum iosPlatform platform = iDeviceUnknown;
-#if defined(TARGET_DARWIN_IOS)
-  if( platform == iDeviceUnknown )
-  {
-    platform = getIosPlatform();
-  }
-#endif
-  return (platform == AppleTV2);
-}
-
 bool CDarwinUtils::IsMavericks(void)
 {
   static int isMavericks = -1;
@@ -489,8 +477,7 @@ int CDarwinUtils::BatteryLevel(void)
 {
   float batteryLevel = 0;
 #if defined(TARGET_DARWIN_IOS)
-  if(!IsAppleTV2())
-    batteryLevel = [[UIDevice currentDevice] batteryLevel];
+  batteryLevel = [[UIDevice currentDevice] batteryLevel];
 #else
   CCocoaAutoPool pool;
   CFTypeRef powerSourceInfo = IOPSCopyPowerSourcesInfo();

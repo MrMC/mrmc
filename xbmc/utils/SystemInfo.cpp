@@ -998,15 +998,6 @@ std::string CSysInfo::GetBuildDate()
   return StringUtils::Format("%s", __DATE__);
 }
 
-bool CSysInfo::IsAppleTV2()
-{
-#if defined(TARGET_DARWIN)
-  return CDarwinUtils::IsAppleTV2();
-#else
-  return false;
-#endif
-}
-
 bool CSysInfo::HasVideoToolBoxDecoder()
 {
 #if defined(HAVE_VIDEOTOOLBOXDECODER)

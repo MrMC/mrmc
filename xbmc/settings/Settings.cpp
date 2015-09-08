@@ -834,7 +834,7 @@ void CSettings::InitializeVisibility()
   CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
   CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE);
 
-  if (!g_sysinfo.IsAppleTV2() || CDarwinUtils::GetIOSVersion() >= 4.3)
+  if (CDarwinUtils::GetIOSVersion() >= 4.3)
   {
     timezonecountry->SetRequirementsMet(false);
     timezone->SetRequirementsMet(false);
