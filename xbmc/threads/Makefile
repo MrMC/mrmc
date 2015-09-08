@@ -1,6 +1,5 @@
 SRCS  = Atomics.cpp
 SRCS += Event.cpp
-SRCS += LockFree.cpp
 SRCS += Thread.cpp
 SRCS += Timer.cpp
 SRCS += SystemClock.cpp
