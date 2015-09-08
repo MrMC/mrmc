@@ -36,7 +36,7 @@
 #include "URL.h"
 #include <assert.h>
 
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#if defined(TARGET_DARWIN_IOS)
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif
 
@@ -473,7 +473,7 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
   // on ios the hw textures might be deleted from the os
   // when XBMC is backgrounded (e.x. for backgrounded music playback)
   // sanity check before delete in that case.
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#if defined(TARGET_DARWIN_IOS)
     if (!g_Windowing.IsBackgrounded() || glIsTexture(m_unusedHwTextures[i]))
 #endif
       glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);

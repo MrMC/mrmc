@@ -24,11 +24,7 @@
 #include "guilib/LocalizeStrings.h"
 
 #import "IOSExternalTouchController.h"
-#if defined(TARGET_DARWIN_IOS_ATV2)
-#import "KodiController.h"
-#else
 #import "XBMCController.h"
-#endif
 
 //dim the touchscreen after 15 secs without touch event
 const CGFloat touchScreenDimTimeoutSecs       = 15.0;

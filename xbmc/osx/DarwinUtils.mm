@@ -341,18 +341,7 @@ int  CDarwinUtils::GetFrameworkPath(char* path, uint32_t *pathsize)
   path[0] = 0;
   *pathsize = 0;
 
-  // a) Kodi frappliance running under ATV2
-  Class Frapp = NSClassFromString(@"AppATV2Detector");
-  if (Frapp != NULL)
-  {
-    pathname = [[NSBundle bundleForClass:Frapp] pathForResource:@"Frameworks" ofType:@""];
-    strcpy(path, [pathname UTF8String]);
-    *pathsize = strlen(path);
-    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(a) -> %s", path);
-    return 0;
-  }
-
-  // b) Kodi application running under IOS
+  // 1) Kodi application running under IOS
   pathname = [[NSBundle mainBundle] executablePath];
   std::string appName = std::string(CCompileInfo::GetAppName()) + ".app/" + std::string(CCompileInfo::GetAppName());
   if (pathname && strstr([pathname UTF8String], appName.c_str()))
@@ -367,7 +356,7 @@ int  CDarwinUtils::GetFrameworkPath(char* path, uint32_t *pathsize)
     return 0;
   }
 
-  // d) Kodi application running under OSX
+  // 2) Kodi application running under OSX
   pathname = [[NSBundle mainBundle] executablePath];
   if (pathname && strstr([pathname UTF8String], "Contents"))
   {
@@ -403,20 +392,8 @@ int  CDarwinUtils::GetExecutablePath(char* path, uint32_t *pathsize)
   // see if we can figure out who we are
   NSString *pathname;
 
-  // a) Kodi frappliance running under ATV2
-  Class Frapp = NSClassFromString(@"AppATV2Detector");
-  if (Frapp != NULL)
-  {
-    NSString *appName = [NSString stringWithUTF8String:CCompileInfo::GetAppName()];
-    pathname = [[NSBundle bundleForClass:Frapp] pathForResource:appName ofType:@""];
-    strcpy(path, [pathname UTF8String]);
-    *pathsize = strlen(path);
-    //CLog::Log(LOGDEBUG, "DarwinExecutablePath(a) -> %s", path);
-    return 0;
-  }
-
-  // b) Kodi application running under IOS
-  // c) Kodi application running under OSX
+  // 1) Kodi application running under IOS
+  // 2) Kodi application running under OSX
   pathname = [[NSBundle mainBundle] executablePath];
   strcpy(path, [pathname UTF8String]);
   *pathsize = strlen(path);
@@ -476,13 +453,6 @@ bool CDarwinUtils::HasVideoToolboxDecoder(void)
 
   if (DecoderAvailable == -1)
   {
-    Class XBMCfrapp = NSClassFromString(@"AppATV2Detector");
-    if (XBMCfrapp != NULL)
-    {
-      // atv2 has seatbelt profile key removed so nothing to do here
-      DecoderAvailable = 1;
-    }
-    else
     {
       /* When XBMC is started from a sandbox directory we have to check the sysctl values */      
       if (IsIosSandboxed())

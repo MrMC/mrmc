@@ -1020,8 +1020,6 @@ std::string CSysInfo::GetBuildTargetPlatformName(void)
 {
 #if defined(TARGET_DARWIN_OSX)
   return "OS X";
-#elif defined(TARGET_DARWIN_IOS_ATV2)
-  return "iOS ATV2";
 #elif defined(TARGET_DARWIN_IOS)
   return "iOS";
 #elif defined(TARGET_FREEBSD)

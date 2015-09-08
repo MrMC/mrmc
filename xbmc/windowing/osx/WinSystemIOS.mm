@@ -39,11 +39,7 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
 
-#if defined(TARGET_DARWIN_IOS_ATV2)
-#import "atv2/KodiController.h"
-#else
 #import "ios/XBMCController.h"
-#endif
 #import "osx/IOSScreenManager.h"
 #include "osx/DarwinUtils.h"
 #import <dlfcn.h>
@@ -144,9 +140,7 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_bFullScreen = fullScreen;
 
   CLog::Log(LOGDEBUG, "About to switch to %i x %i on screen %i",m_nWidth, m_nHeight, res.iScreen);
-#ifndef TARGET_DARWIN_IOS_ATV2
   SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
-#endif//TARGET_DARWIN_IOS_ATV2
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   
   return true;
@@ -250,7 +244,6 @@ void CWinSystemIOS::UpdateResolutions()
     UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, w, h, fps);
   }
 
-#ifndef TARGET_DARWIN_IOS_ATV2
   //see resolution.h enum RESOLUTION for how the resolutions
   //have to appear in the resolution info vector in CDisplaySettings
   //add the desktop resolutions of the other screens
@@ -268,7 +261,6 @@ void CWinSystemIOS::UpdateResolutions()
   //now just fill in the possible reolutions for the attached screens
   //and push to the resolution info vector
   FillInVideoModes();
-#endif //TARGET_DARWIN_IOS_ATV2
 }
 
 void CWinSystemIOS::FillInVideoModes()
