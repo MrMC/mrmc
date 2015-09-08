@@ -612,7 +612,7 @@ void CWinEventsOSXImp::enableInputEvents()
   disableInputEvents();// allow only one registration at a time
 
   // Create an event tap. We are interested in mouse and keyboard events.
-  eventMask = /*NSLeftMouseDownMask |
+  eventMask = NSLeftMouseDownMask |
               NSLeftMouseUpMask |
               NSRightMouseDownMask |
               NSRightMouseUpMask |
@@ -622,7 +622,7 @@ void CWinEventsOSXImp::enableInputEvents()
               NSOtherMouseUpMask |
               NSOtherMouseDraggedMask |
               NSMouseMovedMask |
-              NSScrollWheelMask |*/
+              NSScrollWheelMask |
               NSKeyDownMask |
               NSKeyUpMask;
 
