@@ -210,6 +210,26 @@ bool CDarwinUtils::IsSnowLeopard(void)
   return isSnowLeopard == 1;
 }
 
+bool CDarwinUtils::DeviceHas10BitH264(void)
+{
+  static int has10BitH264 = -1;
+#if defined(TARGET_DARWIN_IOS)
+  if (has10BitH264 == -1)
+  {
+    cpu_type_t type;
+    size_t size = sizeof(type);
+    sysctlbyname("hw.cputype", &type, &size, NULL, 0);
+
+    // 10bit H264 decoding was introduced with the 64bit ARM CPUs, the A7/A8
+    if (type == CPU_TYPE_ARM64)
+      has10BitH264 = 1;
+    else
+      has10BitH264 = 0;
+  }
+#endif
+  return has10BitH264 == 1;
+}
+
 bool CDarwinUtils::DeviceHasRetina(double &scale)
 {
   static enum iosPlatform platform = iDeviceUnknown;

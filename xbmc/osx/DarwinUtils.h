@@ -34,6 +34,7 @@ public:
   static bool        IsMavericks(void);
   static bool        IsSnowLeopard(void);
   static bool        DeviceHasRetina(double &scale);
+  static bool        DeviceHas10BitH264(void);
   static bool        DeviceHasNativeFullscreen(void);
   static const char *GetOSReleaseString(void);
   static const char *GetOSVersionString(void);
