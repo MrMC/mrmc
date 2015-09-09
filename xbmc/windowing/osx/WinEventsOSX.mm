@@ -299,7 +299,7 @@ NSEvent* InputEventHandler(NSEvent *nsevent)
 {
   bool passEvent = true;
   CGEventRef event = [nsevent CGEvent];
-  CGEventType type = [nsevent type];
+  CGEventType type = CGEventGetType(event);
   
   // The incoming mouse position.
   NSPoint location = [nsevent locationInWindow];
