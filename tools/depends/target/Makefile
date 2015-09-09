@@ -117,7 +117,7 @@ libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: libxml2 $(ZLIB)
-libssh: openssl
+libssh: openssl $(ZLIB)
 mysql: openssl
 libzip: $(ZLIB)
 libpng: $(ZLIB)
