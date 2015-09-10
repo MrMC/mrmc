@@ -513,11 +513,11 @@ bool CApplication::Create()
 
   // register ffmpeg lockmanager callback
   av_lockmgr_register(&ffmpeg_lockmgr_cb);
-  // register avcodec
+  // register avcodec (this routine memory leaks)
   avcodec_register_all();
-  // register avformat
+  // register avformat (this routine also leaks memory)
   av_register_all();
-  // register avfilter
+  // register avfilter (this routine also leaks memory)
   avfilter_register_all();
   // set avutil callback
   av_log_set_callback(ff_avutil_log);
