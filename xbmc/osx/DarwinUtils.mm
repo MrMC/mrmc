@@ -258,6 +258,15 @@ bool CDarwinUtils::DeviceHasRetina(double &scale)
   return (platform >= iPhone4);
 }
 
+bool CDarwinUtils::DeviceHasLeakyVDA(void)
+{
+  static int hasLeakyVDA = -1;
+  if (hasLeakyVDA == -1)
+    hasLeakyVDA = NSAppKitVersionNumber <= NSAppKitVersionNumber10_9 ? 1 : 0;
+
+  return hasLeakyVDA == 1;
+}
+
 // for sdk 10.6 we need to define something
 #if !defined(NSAppKitVersionNumber10_7)
 #define NSAppKitVersionNumber10_7 1138
