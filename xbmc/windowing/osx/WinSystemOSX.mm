@@ -280,6 +280,7 @@ NSString* screenNameForDisplay(CGDirectDisplayID displayID)
 
   NSString *screenName = nil;
 
+  // IODisplayCreateInfoDictionary leaks IOCFUnserializeparse, nothing we can do about it.
   NSDictionary *deviceInfo = (NSDictionary *)IODisplayCreateInfoDictionary(CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName);
   NSDictionary *localizedNames = [deviceInfo objectForKey:[NSString stringWithUTF8String:kDisplayProductName]];
 
