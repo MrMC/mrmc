@@ -598,6 +598,7 @@ void CSettings::Uninitialize()
 #if defined(TARGET_DARWIN_OSX)
   m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
+  m_settingsManager->UnregisterCallback(&CWakeOnAccess::GetInstance());
 
   // cleanup the settings manager
   m_settingsManager->Clear();
@@ -1140,6 +1141,8 @@ void CSettings::InitializeISettingCallbacks()
 #endif
 
   settingSet.clear();
+  settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
+  m_settingsManager->RegisterCallback(&CWakeOnAccess::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()

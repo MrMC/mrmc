@@ -111,7 +111,7 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
   return ret;
 }
 
-bool CSettingsManager::Save(TiXmlNode *root)
+bool CSettingsManager::Save(TiXmlNode *root) const
 {
   CSharedLock lock(m_critical);
   CSharedLock settingsLock(m_settingsCritical);
@@ -924,7 +924,7 @@ void CSettingsManager::OnSettingsLoaded()
     (*it)->OnSettingsLoaded();
 }
 
-bool CSettingsManager::OnSettingsSaving()
+bool CSettingsManager::OnSettingsSaving() const
 {
   CSharedLock lock(m_critical);
   for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); ++it)
@@ -936,7 +936,7 @@ bool CSettingsManager::OnSettingsSaving()
   return true;
 }
 
-void CSettingsManager::OnSettingsSaved()
+void CSettingsManager::OnSettingsSaved() const
 {
   CSharedLock lock(m_critical);
   for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); ++it)
