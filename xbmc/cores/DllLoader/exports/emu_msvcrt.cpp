@@ -227,47 +227,6 @@ extern "C"
     not_implement("msvcrt.dll fake function abort() called\n");     //warning
   }
 
-  void* dll__dllonexit(PFV input, PFV ** start, PFV ** end)
-  {
-    //ported from WINE code
-    PFV *tmp;
-    int len;
-
-    if (!start || !*start || !end || !*end)
-    {
-      //FIXME("bad table\n");
-      return NULL;
-    }
-
-    len = (*end - *start);
-
-    if (++len <= 0)
-      return NULL;
-
-    tmp = (PFV*) realloc (*start, len * sizeof(tmp) );
-    if (!tmp)
-      return NULL;
-    *start = tmp;
-    *end = tmp + len;
-    tmp[len - 1] = input;
-    return (void *)input;
-
-    //wrong handling, this function is used for register functions
-    //that called before exit use _initterm functions.
-
-    //dllReleaseAll( );
-    //return TRUE;
-  }
-
-  _onexit_t dll_onexit(_onexit_t func)
-  {
-    not_implement("msvcrt.dll fake function dll_onexit() called\n");
-
-    // register to dll unload list
-    // return func if succsesfully added to the dll unload list
-    return NULL;
-  }
-
   int dllputs(const char* szLine)
   {
     if (!szLine[0]) return EOF;
@@ -1643,17 +1602,6 @@ extern "C"
     return pdup;
   }
 
-
-  //Critical Section has been fixed in EMUkernel32.cpp
-
-  int dll_initterm(PFV * start, PFV * end)        //pncrt.dll
-  {
-    PFV * temp;
-    for (temp = start; temp < end; temp ++)
-      if (*temp)
-        (*temp)(); //call initial function table.
-    return 0;
-  }
 
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct stat *buffer)

@@ -22,10 +22,6 @@
 #ifndef _EMU_MSVCRT_H_
 #define _EMU_MSVCRT_H_
 
-#ifdef TARGET_POSIX
-#define _onexit_t void*
-#endif
-
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
 typedef off_t __off_t;
 typedef int64_t off64_t;
@@ -34,8 +30,6 @@ typedef fpos_t fpos64_t;
 #endif
 
 #include <dirent.h>
-
-typedef void ( *PFV)(void);
 
 #define __IS_STDIN_STREAM(stream)  (stream == stdin || fileno(stream) == fileno(stdin) || fileno(stream) == 0)
 #define __IS_STDOUT_STREAM(stream) (stream == stdout || fileno(stream) == fileno(stdout) || fileno(stream) == 1)
@@ -69,8 +63,6 @@ extern "C"
   void* dllrealloc( void *memblock, size_t size );
   void dllexit(int iCode);
   void dllabort();
-  void* dll__dllonexit(PFV input, PFV ** start, PFV ** end);
-  _onexit_t dll_onexit(_onexit_t func);
   int dllputs(const char* szLine);
   int dll_putchar(int c);
   int dll_putc(int c, FILE *stream);
@@ -129,7 +121,6 @@ extern "C"
   int dll_fileno(FILE* stream);
   void dll_rewind(FILE* stream);
   void dll_clearerr(FILE* stream);
-  int dll_initterm(PFV * start, PFV * end);
   uintptr_t dll_beginthread(void( *start_address )( void * ),unsigned stack_size,void *arglist);
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, uint32_t dwStackSize,
                            LPTHREAD_START_ROUTINE lpStartAddress, void* lpParameter, unsigned int dwCreationFlags,
