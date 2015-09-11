@@ -120,13 +120,13 @@ public:
 
   CApplication(void);
   virtual ~CApplication(void);
-  virtual bool Initialize();
-  virtual void FrameMove(bool processEvents, bool processGUI = true);
-  virtual void Render();
+  virtual bool Initialize() override;
+  virtual void FrameMove(bool processEvents, bool processGUI = true) override;
+  virtual void Render() override;
   virtual bool RenderNoPresent();
   virtual void Preflight();
-  virtual bool Create();
-  virtual bool Cleanup();
+  virtual bool Create() override;
+  virtual bool Cleanup() override;
 
   bool CreateGUI();
   bool InitWindow();
@@ -147,17 +147,17 @@ public:
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
   CFileItem& CurrentUnstackedItem();
-  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnMessage(CGUIMessage& message) override;
   PLAYERCOREID GetCurrentPlayer();
-  virtual void OnPlayBackEnded();
-  virtual void OnPlayBackStarted();
-  virtual void OnPlayBackPaused();
-  virtual void OnPlayBackResumed();
-  virtual void OnPlayBackStopped();
-  virtual void OnQueueNextItem();
-  virtual void OnPlayBackSeek(int iTime, int seekOffset);
-  virtual void OnPlayBackSeekChapter(int iChapter);
-  virtual void OnPlayBackSpeedChanged(int iSpeed);
+  virtual void OnPlayBackEnded() override;
+  virtual void OnPlayBackStarted() override;
+  virtual void OnPlayBackPaused() override;
+  virtual void OnPlayBackResumed() override;
+  virtual void OnPlayBackStopped() override;
+  virtual void OnQueueNextItem() override;
+  virtual void OnPlayBackSeek(int iTime, int seekOffset) override;
+  virtual void OnPlayBackSeekChapter(int iChapter) override;
+  virtual void OnPlayBackSpeedChanged(int iSpeed) override;
 
   virtual int  GetMessageMask() override;
   virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
@@ -188,7 +188,7 @@ public:
   bool SetupNetwork();
   void CloseNetworkShares();
 
-  virtual void Process();
+  virtual void Process() override;
   void ProcessSlow();
   void ResetScreenSaver();
   float GetVolume(bool percentage = true) const;
@@ -342,7 +342,7 @@ public:
 
   bool SwitchToFullScreen(bool force = false);
 
-  void SetRenderGUI(bool renderGUI);
+  void SetRenderGUI(bool renderGUI) override;
   bool GetRenderGUI() const { return m_renderGUI; };
 
   bool SetLanguage(const std::string &strLanguage);
