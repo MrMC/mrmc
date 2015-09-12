@@ -25,6 +25,10 @@
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 
+// USE_xxx  is for Makefiles (never use them in source code)
+// HAVE_xxx comes from configure.ac
+// HAS_xxx  is something we made up for app features
+
 /*****************
  * All platforms
  *****************/
@@ -40,10 +44,6 @@
 #endif
 
 #define HAS_JSONRPC
-
-#ifdef USE_ASAP_CODEC
-#define HAS_ASAP_CODEC
-#endif
 
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_SAP
