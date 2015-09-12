@@ -1,3 +1,5 @@
+SRCS  =
+SRCS += ActorProtocol.cpp 
 SRCS += AlarmClock.cpp
 SRCS += AliasShortcutUtils.cpp
 SRCS += Archive.cpp
@@ -38,8 +40,6 @@ SRCS += log.cpp
 SRCS += md5.cpp
 SRCS += Mime.cpp
 SRCS += Observer.cpp
-SRCS += PerformanceSample.cpp
-SRCS += PerformanceStats.cpp
 SRCS += posix/PosixInterfaceForCLog.cpp
 SRCS += POUtils.cpp
 SRCS += ProgressJob.cpp
@@ -62,6 +62,7 @@ SRCS += StreamUtils.cpp
 SRCS += StringUtils.cpp
 SRCS += StringValidation.cpp
 SRCS += subtitles/OpenSubtitlesSearch.cpp
+SRCS += SysfsUtils.cpp
 SRCS += SystemInfo.cpp
 SRCS += Temperature.cpp
 SRCS += TextSearch.cpp
@@ -74,8 +75,6 @@ SRCS += XBMCTinyXML.cpp
 SRCS += XMLUtils.cpp
 SRCS += Utf8Utils.cpp
 SRCS += XSLTUtils.cpp
-SRCS += ActorProtocol.cpp 
-SRCS += SysfsUtils.cpp
 
 ifeq (@USE_OPENGLES@,1)
 SRCS += AMLUtils.cpp

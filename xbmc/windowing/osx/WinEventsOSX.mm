@@ -28,9 +28,9 @@
 #include "utils/log.h"
 #include "input/MouseStat.h"
 #include "GUIUserMessages.h"
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 
-#import "osx/OSX/OSXGLWindow.h"
+#import "platform/darwin/osx/OSXGLWindow.h"
 
 #import <ApplicationServices/ApplicationServices.h>
 #import <Cocoa/Cocoa.h>

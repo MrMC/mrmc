@@ -29,12 +29,12 @@
 #include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "osx/CocoaInterface.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/osx/CocoaInterface.h"
+#include "platform/darwin/DarwinUtils.h"
 
-#import "osx/OSX/OSXGLView.h"
-#import "osx/OSX/OSXGLWindow.h"
-#import "osx/OSXTextInputResponder.h"
+#import "platform/darwin/osx/OSXGLView.h"
+#import "platform/darwin/osx/OSXGLWindow.h"
+#import "platform/darwin/osx/OSXTextInputResponder.h"
 
 #import <Cocoa/Cocoa.h>
 #import <IOKit/pwr_mgt/IOPMLib.h>

@@ -961,7 +961,9 @@ AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([gif],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([dcadec],      [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([xmlrpc++],    [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([xmlrpc_client++],[main],, AC_MSG_ERROR($missing_library))
 
 AC_CHECK_LIB([cpluff],      [main],, AC_MSG_ERROR($missing_library))
 XB_FIND_SONAME([CPLUFF], [cpluff])
@@ -2032,76 +2034,90 @@ fi
 
 ### External libraries messages
 
-OUTPUT_FILES="Makefile \
-    Makefile.include \
-    addons/skin.mrmc/media/Makefile \
-    xbmc/Makefile \
-    xbmc/cores/Makefile \
-    xbmc/cores/VideoRenderers/Makefile \
-    xbmc/cores/dvdplayer/Makefile \
-    xbmc/cores/DllLoader/Makefile \
-    xbmc/cores/DllLoader/exports/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
-    xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
-    xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
-    xbmc/cores/AudioEngine/Makefile \
-    xbmc/cores/paplayer/Makefile \
-    xbmc/cores/omxplayer/Makefile \
-    xbmc/cores/playercorefactory/Makefile \
-    xbmc/messaging/Makefile \
-    xbmc/osx/Makefile \
-    xbmc/guilib/Makefile \
-    xbmc/input/linux/Makefile \
-    xbmc/interfaces/Makefile \
-    xbmc/network/Makefile \
-    xbmc/network/upnp/Makefile \
-    lib/libexif/Makefile \
-    lib/libUPnP/Makefile \
-    xbmc/DllPaths_generated.h \
-    xbmc/DllPaths_generated_android.h \
-    xbmc/freebsd/Makefile \
-    xbmc/linux/Makefile \
-    xbmc/filesystem/Makefile \
-    xbmc/windowing/Makefile \
-    xbmc/windowing/egl/Makefile \
-    lib/addons/library.xbmc.addon/Makefile \
-    lib/addons/library.xbmc.codec/Makefile \
-    lib/addons/library.kodi.guilib/Makefile \
-    lib/addons/library.xbmc.pvr/Makefile \
-    tools/Linux/${APP_NAME_LC}.sh \
-    tools/Linux/${APP_NAME_LC}-standalone.sh \
-    tools/Linux/${APP_NAME_LC}-xsession.desktop \
-    tools/EventClients/Makefile \
-    tools/EventClients/Clients/OSXRemote/Makefile \
-    xbmc/peripherals/bus/Makefile \
-    xbmc/peripherals/devices/Makefile \
-    xbmc/android/activity/Makefile \
-    xbmc/android/loader/Makefile \
-    xbmc/android/jni/Makefile \
-    xbmc/utils/Makefile \
-    xbmc/main/Makefile \
-    xbmc/main/posix/Makefile \
-    tools/darwin/Configurations/App.xcconfig \
-    tools/darwin/Configurations/Common.xcconfig \
-    tools/darwin/packaging/ios/mkdeb-ios.sh \
-    tools/darwin/packaging/osx/mkdmg-osx.sh \
-    xbmc/osx/Info.plist \
-    xbmc/osx/ios/XBMCIOS-Info.plist \
-    project/cmake/kodi-config.cmake \
-    project/cmake/xbmc-config.cmake \
-    tools/android/packaging/xbmc/AndroidManifest.xml \
-    tools/android/packaging/Makefile \
-    tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java \
-    tools/android/packaging/xbmc/src/org/xbmc/kodi/Main.java \
-    tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCBroadcastReceiver.java \
-    tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java \
-    tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSettingsContentObserver.java \
-    tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java \
-    tools/android/packaging/xbmc/strings.xml \
-    addons/xbmc.addon/addon.xml"
+OUTPUT_FILES="$OUTPUT_FILES Makefile"
+OUTPUT_FILES="$OUTPUT_FILES Makefile.include"
+OUTPUT_FILES="$OUTPUT_FILES addons/skin.mrmc/media/Makefile"
+
+OUTPUT_FILES="$OUTPUT_FILES lib/libexif/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES lib/libUPnP/Makefile"
+
+OUTPUT_FILES="$OUTPUT_FILES addons/xbmc.addon/addon.xml"
+OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.addon/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.addon/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.codec/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.kodi.guilib/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.pvr/Makefile"
+
+OUTPUT_FILES="$OUTPUT_FILES tools/EventClients/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES project/cmake/kodi-config.cmake"
+OUTPUT_FILES="$OUTPUT_FILES project/cmake/xbmc-config.cmake"
+
+OUTPUT_FILES="$OUTPUT_FILES xbmc/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/VideoRenderers/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/DllLoader/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/DllLoader/exports/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDDemuxers/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDSubtitles/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/AudioEngine/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/paplayer/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/omxplayer/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/playercorefactory/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/filesystem/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/guilib/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/input/linux/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/interfaces/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/messaging/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/network/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/network/upnp/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/peripherals/bus/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/peripherals/devices/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/egl/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/utils/Makefile"
+
+OUTPUT_FILES="$OUTPUT_FILES xbmc/freebsd/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/linux/Makefile"
+
+OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/DllPaths_generated.h"
+
+if test "$host_vendor" = "apple"; then
+OUTPUT_FILES="$OUTPUT_FILES tools/EventClients/Clients/OSXRemote/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES tools/darwin/Configurations/App.xcconfig"
+OUTPUT_FILES="$OUTPUT_FILES tools/darwin/Configurations/Common.xcconfig"
+OUTPUT_FILES="$OUTPUT_FILES tools/darwin/packaging/ios/mkdeb-ios.sh"
+OUTPUT_FILES="$OUTPUT_FILES tools/darwin/packaging/osx/mkdmg-osx.sh"
+
+OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/osx/Info.plist"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/ios/IOS-Info.plist"
+else
+OUTPUT_FILES="$OUTPUT_FILES tools/Linux/${APP_NAME_LC}.sh"
+OUTPUT_FILES="$OUTPUT_FILES tools/Linux/${APP_NAME_LC}-standalone.sh"
+OUTPUT_FILES="$OUTPUT_FILES tools/Linux/${APP_NAME_LC}-xsession.desktop"
+fi
+
+if test "$target_platform" = "target_android" ; then
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/AndroidManifest.xml"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/Main.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCBroadcastReceiver.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSettingsContentObserver.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/strings.xml"
+
+OUTPUT_FILES="$OUTPUT_FILES xbmc/DllPaths_generated_android.h"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/activity/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/loader/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/jni/Makefile"
+fi
 
 if test "$use_wayland" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"

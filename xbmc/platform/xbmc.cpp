@@ -25,7 +25,7 @@
 #include "linux/RBP.h"
 #endif
 
-#include "main/posix/MessagePrinter.h"
+#include "platform/MessagePrinter.h"
 
 extern "C" int XBMC_Run(bool renderGUI)
 {

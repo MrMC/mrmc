@@ -6,7 +6,6 @@ SRCS += DVDInputStreamFFmpeg.cpp
 SRCS += DVDInputStreamFile.cpp
 SRCS += DVDInputStreamHttp.cpp
 SRCS += DVDInputStreamMemory.cpp
-SRCS += DVDInputStreamRTMP.cpp
 SRCS += DVDInputStreamPVRManager.cpp
 
 LIB   = dvdinputstreams.a

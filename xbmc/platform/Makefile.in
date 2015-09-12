@@ -1,0 +1,29 @@
+SRCS  = MessagePrinter.cpp
+
+ifeq ($(findstring osx,@ARCH@), osx)
+SRCS += xbmc.cpp
+SRCS += XbmcContext.cpp
+SRCS += darwin/AutoPool.mm
+SRCS += darwin/DarwinUtils.mm
+SRCS += darwin/OSXGNUReplacements.c
+SRCS += darwin/osx/OSXTextInputResponder.mm
+SRCS += darwin/osx/smc.c
+SRCS += darwin/osx/XBMCHelper.m
+SRCS += darwin/osx/CocoaInterface.mm
+SRCS += darwin/osx/OSXGLView.mm
+SRCS += darwin/osx/OSXGLWindow.mm
+SRCS += darwin/osx/XBMCApplication.mm
+
+else ifeq (@USE_ANDROID@,1)
+SRCS += xbmc.cpp
+SRCS += XbmcContext.cpp
+
+else
+SRCS += posix/main.cpp
+
+endif
+
+LIB   = main.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.mm,%.P,$(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS))))

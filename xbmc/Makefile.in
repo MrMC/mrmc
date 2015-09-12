@@ -31,8 +31,6 @@ SRCS += URL.cpp
 SRCS += Util.cpp
 SRCS += XBApplicationEx.cpp
 SRCS += XBDateTime.cpp
-SRCS += xbmc.cpp
-SRCS += XbmcContext.cpp
 
 LIB   = xbmc.a
 

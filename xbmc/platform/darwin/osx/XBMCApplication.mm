@@ -25,28 +25,28 @@
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
-#include "xbmc.h"
+#include "platform/xbmc.h"
 #include <sys/resource.h>
 #include <signal.h>
 #include "Util.h"
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
-#include "XbmcContext.h"
+#include "platform/XbmcContext.h"
 #include "windowing/WindowingFactory.h"
 #include "windowing/osx/WinEventsOSX.h"
 
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 
-#import "osx/CocoaInterface.h"
-#import "osx/DarwinUtils.h"
+#import "platform/darwin/osx/CocoaInterface.h"
+#import "platform/darwin/DarwinUtils.h"
 
 #import "PlatformDefs.h"
 #import "messaging/ApplicationMessenger.h"
 #import "storage/osx/DarwinStorageProvider.h"
 
-#import "osx/DarwinUtils.h"
+#import "platform/darwin/DarwinUtils.h"
 #import "XBMCApplication.h"
 
 

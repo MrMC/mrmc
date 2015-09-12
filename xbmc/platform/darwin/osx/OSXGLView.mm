@@ -19,7 +19,7 @@
  */
 
 #include "system_gl.h"
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 
 #import "OSXGLView.h"
 

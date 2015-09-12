@@ -292,7 +292,7 @@ case $host in
       ;;
     esac
     platform_cflags+=" -arch $use_cpu -m$platform_min_version"
-    platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path"
+    platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path -stdlib=libc++"
     platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -std=c++11 -stdlib=libc++"
     platform_includes="-isysroot $use_sdk_path"
     deps_dir=$sdk_name"_"$use_cpu-target

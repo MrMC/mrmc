@@ -22,13 +22,13 @@
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/DisplaySettings.h"
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #include "windowing/osx/WinEventsOSX.h"
 #include "windowing/WindowingFactory.h"
 
 #import "OSXGLView.h"
 #import "OSXGLWindow.h"
-#import "osx/DarwinUtils.h"
+#import "platform/darwin/DarwinUtils.h"
 
 //------------------------------------------------------------------------------------------
 @implementation OSXGLWindow

@@ -62,7 +62,7 @@
 #include "storage/MediaManager.h"
 #if defined(TARGET_DARWIN)
 #include "CompileInfo.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #include "filesystem/File.h"
 #include "settings/MediaSettings.h"

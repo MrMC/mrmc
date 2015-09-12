@@ -53,7 +53,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/interfaces/json-rpc/json-rpc.a \
                    xbmc/linux/linux.a \
                    xbmc/listproviders/listproviders.a \
-                   xbmc/main/posix/messageprinter.a \
                    xbmc/media/media.a \
                    xbmc/messaging/messaging.a \
                    xbmc/music/dialogs/musicdialogs.a \
@@ -124,7 +123,6 @@ endif
 INSTALL_FILTER =
 
 ifeq ($(findstring osx,@ARCH@),osx)
-DIRECTORY_ARCHIVES += xbmc/osx/osx.a
 DIRECTORY_ARCHIVES += xbmc/network/osx/network.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/osx/powermanagement.a
@@ -164,10 +162,10 @@ DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
 endif
 
 ifeq (@USE_ANDROID@,1)
-DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
+DIRECTORY_ARCHIVES += xbmc/platform/android/loader/AndroidDyload.a
+DIRECTORY_ARCHIVES += xbmc/platform/android/bionic_supplement/bionic_supplement.a
+DIRECTORY_ARCHIVES += xbmc/platform/android/jni/jni.a
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
-DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
-DIRECTORY_ARCHIVES += xbmc/android/jni/jni.a
 endif
 
 ifeq (@USE_OMXPLAYER@,1)
@@ -321,9 +319,9 @@ $(FFMPEGOBJS): dvdpcodecs
 endif
 
 ifeq (@USE_ANDROID@,1)
-MAINOBJS+=xbmc/android/activity/activity.a
-else ifneq ($(findstring osx,@ARCH@),osx)
-MAINOBJS+=xbmc/main/main.a
+MAINOBJS+=xbmc/platform/android/activity/activity.a
+else
+MAINOBJS+=xbmc/platform/main.a
 endif
 
 OBJSXBMC =$(DIRECTORY_ARCHIVES)

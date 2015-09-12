@@ -18,22 +18,21 @@
  */
 
 #include "OpenSubtitlesSearch.h"
+
+#include "GUIInfoManager.h"
+#include "URL.h"
+#include "Util.h"
 #include "filesystem/File.h"
+#include "filesystem/CurlFile.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/LangCodeExpander.h"
-#include "GUIInfoManager.h"
 #include "video/VideoInfoTag.h"
-#include "Util.h"
-#include "filesystem/CurlFile.h"
-#include "URL.h"
 
-
+#include <zlib.h>
+#include <zconf.h>
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/client_simple.hpp>
-
-#include "zlib.h"
-#include "zconf.h"
 
 static const std::string base64_chars =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
