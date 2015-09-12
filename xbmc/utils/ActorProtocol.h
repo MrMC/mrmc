@@ -35,54 +35,59 @@ class Message
 {
   friend class Protocol;
 public:
-  int signal;
-  bool isSync;
-  bool isSyncFini;
-  bool isOut;
-  bool isSyncTimeout;
-  int payloadSize;
-  uint8_t buffer[MSG_INTERNAL_BUFFER_SIZE];
-  uint8_t *data;
-  Message *replyMessage;
-  Protocol *origin;
-  CEvent *event;
+  virtual ~Message();
 
-  void Release();
-  bool Reply(int sig, void *data = NULL, int size = 0);
+  void        Release();
+  bool        Reply(int sig, void *data = NULL, int size = 0);
+
+  int         signal;
+  bool        isSync;
+  bool        isSyncFini;
+  bool        isOut;
+  bool        isSyncTimeout;
+  int         payloadSize;
+  uint8_t     buffer[MSG_INTERNAL_BUFFER_SIZE];
+  uint8_t     *data;
+  Message     *replyMessage;
+  Protocol    *origin;
+  CEvent      *event;
 
 private:
-  Message() {isSync = false; data = NULL; event = NULL; replyMessage = NULL;};
+  Message();
 };
 
 class Protocol
 {
 public:
-  Protocol(std::string name, CEvent* inEvent, CEvent *outEvent)
-    : portName(name), inDefered(false), outDefered(false) {containerInEvent = inEvent; containerOutEvent = outEvent;};
+  Protocol(std::string name, CEvent *inEvent, CEvent *outEvent);
   virtual ~Protocol();
-  Message *GetMessage();
-  void ReturnMessage(Message *msg);
-  bool SendOutMessage(int signal, void *data = NULL, int size = 0, Message *outMsg = NULL);
-  bool SendInMessage(int signal, void *data = NULL, int size = 0, Message *outMsg = NULL);
-  bool SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = NULL, int size = 0);
-  bool ReceiveOutMessage(Message **msg);
-  bool ReceiveInMessage(Message **msg);
-  void Purge();
-  void PurgeIn(int signal);
-  void PurgeOut(int signal);
-  void DeferIn(bool value) {inDefered = value;};
-  void DeferOut(bool value) {outDefered = value;};
-  void Lock() {criticalSection.lock();};
-  void Unlock() {criticalSection.unlock();};
+
+  Message*    GetMessage();
+  void        ReturnMessage(Message *msg);
+  bool        SendOutMessage(int signal, void *data = NULL, int size = 0, Message *outMsg = NULL);
+  bool        SendInMessage(int signal, void *data = NULL, int size = 0, Message *outMsg = NULL);
+  bool        SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = NULL, int size = 0);
+  bool        ReceiveOutMessage(Message **msg);
+  bool        ReceiveInMessage(Message **msg);
+  void        Purge();
+  void        PurgeIn(int signal);
+  void        PurgeOut(int signal);
+  void        DeferIn(bool value) {inDefered = value;};
+  void        DeferOut(bool value) {outDefered = value;};
+  void        Lock() {criticalSection.lock();};
+  void        Unlock() {criticalSection.unlock();};
+
   std::string portName;
 
 protected:
-  CEvent *containerInEvent, *containerOutEvent;
+  CEvent      *containerInEvent;
+  CEvent      *containerOutEvent;
   CCriticalSection criticalSection;
   std::queue<Message*> outMessages;
   std::queue<Message*> inMessages;
   std::queue<Message*> freeMessageQueue;
-  bool inDefered, outDefered;
+  bool        inDefered;
+  bool        outDefered;
 };
 
 }
