@@ -29,13 +29,9 @@
  * All platforms
  *****************/
 #define HAS_DVD_SWSCALE
-#define HAS_DVDPLAYER
 #define HAS_EVENT_SERVER
-#define HAS_KARAOKE
 #define HAS_SCREENSAVER
-#define HAS_PYTHON
 #define HAS_VIDEO_PLAYBACK
-#define HAS_VISUALISATION
 #define HAS_PVRCLIENTS
 
 #ifdef HAVE_LIBMICROHTTPD
@@ -50,7 +46,6 @@
 #endif
 
 #define HAS_FILESYSTEM
-#define HAS_FILESYSTEM_CDDA
 #define HAS_FILESYSTEM_SAP
 
 #ifdef HAVE_LIBSMBCLIENT
@@ -172,10 +167,6 @@
 #define HAS_GLES 1
 #endif
 
-#ifdef HAS_DVD_DRIVE
-#define HAS_CDDA_RIPPER
-#endif
-
 #define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)
 #define SAFE_DELETE_ARRAY(p) do { delete[] (p);   (p)=NULL; } while (0)
 #define SAFE_RELEASE(p)      do { if(p) { (p)->Release(); (p)=NULL; } } while (0)
@@ -185,12 +176,3 @@
 #define GET_R(color)            ((color >> 16) & 0xFF)
 #define GET_G(color)            ((color >>  8) & 0xFF)
 #define GET_B(color)            ((color >>  0) & 0xFF)
-
-/****************
- * default skin
- ****************/
-#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS)
-#define DEFAULT_SKIN          "skin.re-touched"
-#else
-#define DEFAULT_SKIN          "skin.confluence"
-#endif
