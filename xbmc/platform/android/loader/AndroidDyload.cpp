@@ -201,6 +201,7 @@ void CAndroidDyload::GetDeps(string filename, strings *results)
       }
     }
   }
+  free(data);
   close(fd);
   return;
 }
