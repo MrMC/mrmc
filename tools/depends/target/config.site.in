@@ -57,14 +57,6 @@ if test "${PACKAGE_NAME}" = "libgcrypt"; then
   CFLAGS="$CFLAGS -std=gnu99"
 fi
 
-#rsxs/projectm
-jm_cv_func_gettimeofday_clobber=no
-mac_cv_pkg_ldflags=-lz
-if test "@platform_os@" = "osx"; then
-  ac_cv_func_strnlen_working=no
-  ac_cv_header_stdbool_h=yes
-fi
-
 #gnutls
 gl_cv_func_gettimeofday_clobber=no
 
