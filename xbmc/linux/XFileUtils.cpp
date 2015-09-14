@@ -20,30 +20,30 @@
 
 #include "system.h"
 #include "PlatformInclude.h"
+#include "XHandle.h"
 #include "XFileUtils.h"
 #include "XTimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 
-#ifdef TARGET_POSIX
-#include "XHandle.h"
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)
-#include <sys/vfs.h>
-#else
-#include <sys/param.h>
-#include <sys/mount.h>
-#endif
 #include <dirent.h>
 #include <errno.h>
 
-#if defined(TARGET_ANDROID)
-#include <sys/file.h>
-#include <sys/statfs.h>
+#if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)
+  #include <sys/vfs.h>
+#else
+  #include <sys/param.h>
+  #include <sys/mount.h>
+#endif
 
-/* from android header: note: this corresponds to the kernel's statfs64 type */
-//typedef struct statfs statfs64;
+#if defined(TARGET_ANDROID)
+  #include <sys/file.h>
+  #include <sys/statfs.h>
+  /* from android header: note: this corresponds to the kernel's statfs64 type */
+  //typedef struct statfs statfs64;
 #endif
 
 #include "utils/log.h"
@@ -776,5 +776,3 @@ uint32_t GetCurrentDirectory(unsigned int nBufferLength, char* lpBuffer)
 
     return strlen(lpBuffer);
 }
-#endif
-

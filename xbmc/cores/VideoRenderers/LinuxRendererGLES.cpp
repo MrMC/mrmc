@@ -43,7 +43,7 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/Texture.h"
-#include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
+#include "cores/dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
 #include "RenderFormats.h"
@@ -63,7 +63,7 @@ extern "C" {
 #include <CoreVideo/CoreVideo.h>
 #endif
 #ifdef TARGET_DARWIN_IOS
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #if defined(HAS_LIBSTAGEFRIGHT)
 #include <EGL/egl.h>
@@ -1930,7 +1930,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     {
       delete [] m_rgbBuffer;
       m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
-      m_rgbBuffer = new BYTE[m_rgbBufferSize];
+      m_rgbBuffer = new uint8_t[m_rgbBufferSize];
     }
 
 #if defined(__ARM_NEON__)
@@ -2092,7 +2092,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
   for (int i = 0; i < 3; i++)
-    im.plane[i] = new BYTE[im.planesize[i]];
+    im.plane[i] = new uint8_t[im.planesize[i]];
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -2289,7 +2289,7 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
   im.planesize[2] = 0;
 
   for (int i = 0; i < 2; i++)
-    im.plane[i] = new BYTE[im.planesize[i]];
+    im.plane[i] = new uint8_t[im.planesize[i]];
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)

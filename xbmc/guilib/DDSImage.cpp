@@ -111,7 +111,7 @@ bool CDDSImage::ReadFile(const std::string &inputFile)
     return false;
 
   // and read it in
-  if (file.Read(m_data, m_desc.linearSize) != m_desc.linearSize)
+  if (file.Read(m_data, m_desc.linearSize) != (ssize_t)m_desc.linearSize)
     return false;
 
   file.Close();
@@ -142,7 +142,7 @@ bool CDDSImage::WriteFile(const std::string &outputFile) const
   return file.Write("DDS ", 4) == 4 &&
     file.Write(&m_desc, sizeof(m_desc)) == sizeof(m_desc) &&
   // now the data
-    file.Write(m_data, m_desc.linearSize) == m_desc.linearSize;
+    file.Write(m_data, m_desc.linearSize) == (ssize_t)m_desc.linearSize;
 }
 
 unsigned int CDDSImage::GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format)

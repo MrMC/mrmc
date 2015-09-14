@@ -194,7 +194,7 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
         while (m_iFilePos < iFilePosition)
         {
           unsigned int iToRead = (iFilePosition - m_iFilePos)>blockSize ? blockSize : (int)(iFilePosition - m_iFilePos);
-          if (Read(buf.get(),iToRead) != iToRead)
+          if (Read(buf.get(),iToRead) != (ssize_t)iToRead)
             return -1;
         }
         return m_iFilePos;
@@ -213,7 +213,7 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
       while (m_iFilePos < iFilePosition)
       {
         unsigned int iToRead = (iFilePosition - m_iFilePos)>blockSize ? blockSize : (int)(iFilePosition - m_iFilePos);
-        if (Read(buf.get(), iToRead) != iToRead)
+        if (Read(buf.get(), iToRead) != (ssize_t)iToRead)
           return -1;
       }
       return m_iFilePos;
@@ -226,7 +226,7 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
       while( (int)m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
         unsigned int iToRead = (mZipItem.usize + iFilePosition - m_ZStream.total_out > blockSize) ? blockSize : (int)(mZipItem.usize + iFilePosition - m_ZStream.total_out);
-        if (Read(buf.get(), iToRead) != iToRead)
+        if (Read(buf.get(), iToRead) != (ssize_t)iToRead)
           return -1;
       }
       return m_iFilePos;

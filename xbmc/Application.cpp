@@ -1289,7 +1289,9 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   if (setting == NULL)
     return false;
 
+#if defined(HAS_LIBAMCODEC) || defined(TARGET_ANDROID) || defined(TARGET_DARWIN_OSX)
   const std::string &settingId = setting->GetId();
+#endif
 #if defined(HAS_LIBAMCODEC)
   if (settingId == CSettings::SETTING_VIDEOPLAYER_USEAMCODEC)
   {

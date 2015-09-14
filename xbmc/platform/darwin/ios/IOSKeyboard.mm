@@ -22,7 +22,7 @@
 #include "IOSKeyboard.h"
 #include "IOSKeyboardView.h"
 #include "XBMCDebugHelpers.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 #import "AutoPool.h"
 

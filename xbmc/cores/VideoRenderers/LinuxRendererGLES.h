@@ -333,7 +333,7 @@ protected:
 
   // software scale libraries (fallback if required gl version is not available)
   struct SwsContext *m_sw_context;
-  BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
+  uint8_t     *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int m_rgbBufferSize;
   float        m_textureMatrix[16];
 };

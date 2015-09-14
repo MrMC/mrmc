@@ -47,7 +47,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
 #if defined(TARGET_DARWIN_IOS)
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 
 using namespace ADDON;

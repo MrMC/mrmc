@@ -27,14 +27,14 @@
 #include "WindowingFactory.h"
 #include "settings/DisplaySettings.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 #import <Foundation/Foundation.h>
 #include <objc/runtime.h>
 
 #import "IOSScreenManager.h"
 #if defined(TARGET_DARWIN_IOS)
-#import "xbmc/osx/ios/XBMCController.h"
+#import "platform/darwin/ios/XBMCController.h"
 #endif
 #import "IOSExternalTouchController.h"
 #import "IOSEAGLView.h"

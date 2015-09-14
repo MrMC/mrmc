@@ -34,7 +34,7 @@ XBMCController *m_xbmcController;
 // - on iOS7 first application is asked for supported orientation
 // - then the controller of the current view is asked for supported orientation
 // - if both say OK - rotation is allowed
-- (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
 {
   if ([[window rootViewController] respondsToSelector:@selector(supportedInterfaceOrientations)])
     return [[window rootViewController] supportedInterfaceOrientations];

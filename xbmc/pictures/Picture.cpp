@@ -92,7 +92,7 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   }
 
   XFILE::CFile file;
-  const bool ret = file.OpenForWrite(thumbFile, true) && file.Write(thumb, thumbsize) == thumbsize;
+  const bool ret = file.OpenForWrite(thumbFile, true) && file.Write(thumb, thumbsize) == (ssize_t)thumbsize;
   pImage->ReleaseThumbnailBuffer();
   delete pImage;
 

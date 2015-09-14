@@ -149,7 +149,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
       if ( numStyleRecords != 0 )
       {
         CLog::Log(LOGDEBUG, "CDVDOverlayCodecTX3G: found additional StyleBoxes on subtitle; skipping" );
-        LEN_CHECK(size);
+        LEN_CHECK((int)size);
         SKIP_ARRAY(size);
         continue;
       }
@@ -185,7 +185,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
     else
     {
       // Found some other kind of TextSampleModifierBox. Skip it.
-      LEN_CHECK(size);
+      LEN_CHECK((int)size);
       SKIP_ARRAY(size);
     }
   }

@@ -45,7 +45,7 @@
 #include "TextureCache.h"
 #undef id
 #include <math.h>
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 using namespace KODI::MESSAGING;
 
@@ -1124,10 +1124,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)setIOSNowPlayingInfo:(NSDictionary *)info
 {
   self.nowPlayingInfo = info;
-  // MPNowPlayingInfoCenter is an ios5+ class, following code will work on ios5 even if compiled by xcode3
-  Class NowPlayingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
-  if (NowPlayingInfoCenter)
-    [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.nowPlayingInfo];
+  [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.nowPlayingInfo];
 }
 //--------------------------------------------------------------
 - (void)onPlay:(NSDictionary *)item

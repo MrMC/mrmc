@@ -190,7 +190,7 @@ typedef CXHandle* HANDLE;
 //typedef long        LONG;
 //typedef long long     LONGLONG;
 
-#if defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN)
 typedef uint32_t        ULONG;
 #else
 typedef unsigned long   ULONG;
@@ -205,8 +205,8 @@ typedef unsigned long   ULONG;
 //typedef HANDLE        HDC;
 //typedef void*       HWND;
 
-#if defined(TARGET_DARWIN_OSX)
-typedef SInt32      HRESULT;
+#if defined(TARGET_DARWIN)
+typedef int32_t      HRESULT;
 #else
 typedef LONG        HRESULT;
 #endif
