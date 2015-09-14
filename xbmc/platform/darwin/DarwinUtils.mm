@@ -260,11 +260,14 @@ bool CDarwinUtils::DeviceHasRetina(double &scale)
 
 bool CDarwinUtils::DeviceHasLeakyVDA(void)
 {
+#if defined(TARGET_DARWIN_OSX)
   static int hasLeakyVDA = -1;
   if (hasLeakyVDA == -1)
     hasLeakyVDA = NSAppKitVersionNumber <= NSAppKitVersionNumber10_9 ? 1 : 0;
-
   return hasLeakyVDA == 1;
+#else
+  return false;
+#endif
 }
 
 // for sdk 10.6 we need to define something
@@ -279,10 +282,14 @@ bool CDarwinUtils::DeviceHasNativeFullscreen(void)
   // so just turn this off for now.
   //return false;
 
+#if defined(TARGET_DARWIN_OSX)
   static int useNativeFullscreen = -1;
   if (useNativeFullscreen == -1)
     useNativeFullscreen = NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 ? 1 : 0;
   return useNativeFullscreen == 1;
+#else
+  return false;
+#endif
 }
 
 const char *CDarwinUtils::GetOSReleaseString(void)
