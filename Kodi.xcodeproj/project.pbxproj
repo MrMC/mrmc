@@ -1815,6 +1815,8 @@
 		F5CC234718150277006B5E91 /* AESinkNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC234518150277006B5E91 /* AESinkNULL.cpp */; };
 		F5CC234918150277006B5E91 /* AESinkNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC234518150277006B5E91 /* AESinkNULL.cpp */; };
 		F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */; };
+		F5D0E1151BA667600070EE9C /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59045931BA3D75000DB589A /* XbmcContext.cpp */; };
+		F5D0E1161BA667650070EE9C /* MessagePrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59045901BA375B100DB589A /* MessagePrinter.cpp */; };
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
@@ -8804,6 +8806,7 @@
 				E49911D7174E5D2E00741B6D /* DVDDemuxPVRClient.cpp in Sources */,
 				E49911D8174E5D2E00741B6D /* DVDDemuxShoutcast.cpp in Sources */,
 				E49911D9174E5D2E00741B6D /* DVDDemuxUtils.cpp in Sources */,
+				F5D0E1161BA667650070EE9C /* MessagePrinter.cpp in Sources */,
 				E49911DA174E5D2E00741B6D /* DVDDemuxVobsub.cpp in Sources */,
 				E49911DB174E5D2E00741B6D /* DVDFactoryDemuxer.cpp in Sources */,
 				E49911DC174E5D3700741B6D /* DVDFactoryInputStream.cpp in Sources */,
@@ -9001,6 +9004,7 @@
 				E49912C4174E5DA000741B6D /* DirectoryNodeMoviesOverview.cpp in Sources */,
 				E49912C5174E5DA000741B6D /* DirectoryNodeMusicVideosOverview.cpp in Sources */,
 				E49912C6174E5DA000741B6D /* DirectoryNodeOverview.cpp in Sources */,
+				F5D0E1151BA667600070EE9C /* XbmcContext.cpp in Sources */,
 				DFED5AC71AB23388001F080D /* ReplayGain.cpp in Sources */,
 				E49912C7174E5DA000741B6D /* DirectoryNodeRecentlyAddedEpisodes.cpp in Sources */,
 				E49912C8174E5DA000741B6D /* DirectoryNodeRecentlyAddedMovies.cpp in Sources */,
@@ -9817,8 +9821,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
@@ -9839,8 +9846,10 @@
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/ios/XBMCIOS-Info.plist";
+				INFOPLIST_FILE = "$SRCROOT/xbmc/platform/darwin/ios/IOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -9856,8 +9865,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
@@ -9878,7 +9890,9 @@
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "xbmc/osx/ios/XBMCIOS-Info.plist";
+				INFOPLIST_FILE = "$SRCROOT/xbmc/platform/darwin/ios/IOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
