@@ -18,6 +18,8 @@
  *
  */
 
+#include <memory>
+
 #include "imagefactory.h"
 #include "guilib/GifIO.h"
 #include "guilib/PngIO.h"

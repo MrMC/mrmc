@@ -21,6 +21,7 @@
 
 #include <string>
 #include <vector>
+#include <arpa/inet.h>
 
 #include "system.h"
 
