@@ -313,7 +313,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
 {
   if (strTarget.empty())
-    strPath = CEnvironment::getenv("KODI_HOME");
+    strPath = CEnvironment::getenv("MRMC_HOME");
   else
     strPath = CEnvironment::getenv(strTarget);
 
@@ -358,7 +358,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
   }
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  /* Change strPath accordingly when target is KODI_HOME and when INSTALL_PATH
+  /* Change strPath accordingly when target is MRMC_HOME and when INSTALL_PATH
    * and BIN_INSTALL_PATH differ
    */
   std::string installPath = INSTALL_PATH;

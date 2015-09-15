@@ -67,7 +67,7 @@ XBMCHelper::XBMCHelper()
   , m_port(0)
   , m_errorStarting(false)
 {
-  // Compute the KODI_HOME path.
+  // Compute the MRMC_HOME path.
   std::string homePath;
   CUtil::GetHomePath(homePath);
   m_homepath = homePath;

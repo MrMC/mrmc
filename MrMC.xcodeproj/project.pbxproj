@@ -2793,7 +2793,7 @@
 		889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RSSDirectory.cpp; sourceTree = "<group>"; };
 		889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSDirectory.h; sourceTree = "<group>"; };
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
-		8DD76F7E0486A8DE00D96B5E /* Kodi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Kodi; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DD76F7E0486A8DE00D96B5E /* MrMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MrMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
 		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
@@ -2915,7 +2915,7 @@
 		C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemGlobals.cpp; sourceTree = "<group>"; };
 		C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
-		D6299ABB1AFC2A9F00E3059D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6299ABB1AFC2A9F00E3059D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF00492B162DAEA200A971AD /* PVROperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVROperations.cpp; sourceTree = "<group>"; };
 		DF00492C162DAEA200A971AD /* PVROperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVROperations.h; sourceTree = "<group>"; };
 		DF02BA601A910623006DCA16 /* VideoSyncIos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VideoSyncIos.cpp; path = videosync/VideoSyncIos.cpp; sourceTree = "<group>"; };
@@ -3756,7 +3756,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -4529,9 +4529,9 @@
 		19C28FBDFE9D53C911CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DD76F7E0486A8DE00D96B5E /* Kodi */,
-				D6299ABB1AFC2A9F00E3059D /* Kodi.app */,
-				E4991089174D0D2600741B6D /* Kodi.app */,
+				8DD76F7E0486A8DE00D96B5E /* MrMC */,
+				D6299ABB1AFC2A9F00E3059D /* MrMC.app */,
+				E4991089174D0D2600741B6D /* MrMC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -7535,9 +7535,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6E2FACBA0E26DF7A00DF79EA /* Kodi.app */ = {
+		6E2FACBA0E26DF7A00DF79EA /* MrMC.app */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXNativeTarget "Kodi.app" */;
+			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXNativeTarget "MrMC.app" */;
 			buildPhases = (
 				F5DEC3580E6DEBB2005A4E24 /* copy root files */,
 				6E2FACC70E26E22400DF79EA /* copy frameworks */,
@@ -7549,14 +7549,14 @@
 			dependencies = (
 				6E2FACC40E26E08100DF79EA /* PBXTargetDependency */,
 			);
-			name = Kodi.app;
+			name = MrMC.app;
 			productName = Kodi.app;
-			productReference = D6299ABB1AFC2A9F00E3059D /* Kodi.app */;
+			productReference = D6299ABB1AFC2A9F00E3059D /* MrMC.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8DD76F740486A8DE00D96B5E /* Kodi */ = {
+		8DD76F740486A8DE00D96B5E /* MrMC */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "Kodi" */;
+			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "MrMC" */;
 			buildPhases = (
 				F502C011160F378F00C96C76 /* Make interfaces */,
 				8DD76F760486A8DE00D96B5E /* Sources */,
@@ -7567,15 +7567,15 @@
 			);
 			dependencies = (
 			);
-			name = Kodi;
+			name = MrMC;
 			productInstallPath = "$(HOME)/bin";
 			productName = Kodi;
-			productReference = 8DD76F7E0486A8DE00D96B5E /* Kodi */;
+			productReference = 8DD76F7E0486A8DE00D96B5E /* MrMC */;
 			productType = "com.apple.product-type.tool";
 		};
-		E4991088174D0D2600741B6D /* Kodi-iOS */ = {
+		E4991088174D0D2600741B6D /* MrMC-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "Kodi-iOS" */;
+			buildConfigurationList = E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "MrMC-iOS" */;
 			buildPhases = (
 				E49910C1174D1F6600741B6D /* Make interfaces */,
 				E4991085174D0D2600741B6D /* Sources */,
@@ -7590,9 +7590,9 @@
 			);
 			dependencies = (
 			);
-			name = "Kodi-iOS";
+			name = "MrMC-iOS";
 			productName = "Kodi-iOS";
-			productReference = E4991089174D0D2600741B6D /* Kodi.app */;
+			productReference = E4991089174D0D2600741B6D /* MrMC.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -7603,7 +7603,7 @@
 			attributes = {
 				LastUpgradeCheck = 0710;
 			};
-			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Kodi" */;
+			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "MrMC" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -7618,9 +7618,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8DD76F740486A8DE00D96B5E /* Kodi */,
-				6E2FACBA0E26DF7A00DF79EA /* Kodi.app */,
-				E4991088174D0D2600741B6D /* Kodi-iOS */,
+				8DD76F740486A8DE00D96B5E /* MrMC */,
+				6E2FACBA0E26DF7A00DF79EA /* MrMC.app */,
+				E4991088174D0D2600741B6D /* MrMC-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -9635,7 +9635,7 @@
 /* Begin PBXTargetDependency section */
 		6E2FACC40E26E08100DF79EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8DD76F740486A8DE00D96B5E /* Kodi */;
+			target = 8DD76F740486A8DE00D96B5E /* MrMC */;
 			targetProxy = 6E2FACC30E26E08100DF79EA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -9700,7 +9700,7 @@
 					"$(OTHER_CFLAGS)",
 					"-Wreorder",
 				);
-				PRODUCT_NAME = Kodi;
+				PRODUCT_NAME = MrMC;
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
 				ZERO_LINK = NO;
@@ -9756,7 +9756,7 @@
 					"$(OTHER_CFLAGS)",
 					"-Wreorder",
 				);
-				PRODUCT_NAME = Kodi;
+				PRODUCT_NAME = MrMC;
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
 				ZERO_LINK = NO;
@@ -9794,7 +9794,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = Kodi;
+				PRODUCT_NAME = MrMC;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -9805,7 +9805,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
-				PRODUCT_NAME = Kodi;
+				PRODUCT_NAME = MrMC;
 				SDKROOT = macosx;
 				ZERO_LINK = NO;
 			};
@@ -9902,7 +9902,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "Kodi" */ = {
+		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "MrMC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB924808733DCA0010E9CD /* Debug */,
@@ -9911,7 +9911,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Kodi" */ = {
+		1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "MrMC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB924C08733DCA0010E9CD /* Debug */,
@@ -9920,7 +9920,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXNativeTarget "Kodi.app" */ = {
+		6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXNativeTarget "MrMC.app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6E2FACBB0E26DF7A00DF79EA /* Debug */,
@@ -9929,7 +9929,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "Kodi-iOS" */ = {
+		E49910A5174D0D2600741B6D /* Build configuration list for PBXNativeTarget "MrMC-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E49910A3174D0D2600741B6D /* Debug */,

@@ -360,7 +360,7 @@ void CApplication::Preflight()
   std::string install_path;
 
   CUtil::GetHomePath(install_path);
-  setenv("KODI_HOME", install_path.c_str(), 0);
+  setenv("MRMC_HOME", install_path.c_str(), 0);
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
 #endif
@@ -780,7 +780,7 @@ bool CApplication::InitDirectoriesLinux()
   std::string appName = CCompileInfo::GetAppName();
   std::string dotLowerAppName = "." + appName;
   StringUtils::ToLower(dotLowerAppName);
-  const char* envAppHome = "KODI_HOME";
+  const char* envAppHome = "MRMC_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
 
@@ -872,7 +872,7 @@ bool CApplication::InitDirectoriesOSX()
 
   std::string appPath;
   CUtil::GetHomePath(appPath);
-  setenv("KODI_HOME", appPath.c_str(), 0);
+  setenv("MRMC_HOME", appPath.c_str(), 0);
 
 #if defined(TARGET_DARWIN_IOS)
   std::string fontconfigPath;

@@ -60,7 +60,7 @@ public:
   static std::string GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder = false);
   static void GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename);
   static void RunShortcut(const char* szPath);
-  static void GetHomePath(std::string& strPath, const std::string& strTarget = ""); // default target is "KODI_HOME"
+  static void GetHomePath(std::string& strPath, const std::string& strTarget = ""); // default target is "MRMC_HOME"
   static bool IsPVR(const std::string& strFile);
   static bool IsHTSP(const std::string& strFile);
   static bool IsLiveTV(const std::string& strFile);
