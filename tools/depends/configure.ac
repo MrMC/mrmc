@@ -249,7 +249,7 @@ case $host in
             AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
         esac
         platform_os="osx"
-        platform_min_version=macosx-version-min=10.9
+        platform_min_version=macosx-version-min=10.8
       ;;
 
       arm-apple-darwin*)
