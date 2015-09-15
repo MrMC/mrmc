@@ -105,8 +105,8 @@ void CXHandle::Init()
   m_hCond=NULL;
   m_type = HND_NULL;
   RecursionCount=0;
-  m_bManualEvent=FALSE;
-  m_bEventSet=FALSE;
+  m_bManualEvent=false;
+  m_bEventSet=false;
   m_nFindFileIterator=0 ;
   m_nRefCount=1;
   m_tmCreation = time(NULL);
@@ -161,7 +161,7 @@ int __stdcall DuplicateHandle(
       && dwOptions            == DUPLICATE_SAME_ACCESS);
 
   if (hSourceHandle == INVALID_HANDLE_VALUE)
-    return FALSE;
+    return 0;
 
   {
     CSingleLock lock(*(hSourceHandle->m_internalLock));
@@ -171,6 +171,6 @@ int __stdcall DuplicateHandle(
   if(lpTargetHandle)
     *lpTargetHandle = hSourceHandle;
 
-  return TRUE;
+  return 1;
 }
 

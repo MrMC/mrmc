@@ -469,9 +469,9 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_DEBUGFUNCTION, debug_callback);
 
   if( g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG )
-    g_curlInterface.easy_setopt(h, CURLOPT_VERBOSE, TRUE);
+    g_curlInterface.easy_setopt(h, CURLOPT_VERBOSE, 1l);
   else
-    g_curlInterface.easy_setopt(h, CURLOPT_VERBOSE, FALSE);
+    g_curlInterface.easy_setopt(h, CURLOPT_VERBOSE, 0l);
 
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
@@ -489,12 +489,12 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
-  g_curlInterface.easy_setopt(h, CURLOPT_HEADER, FALSE);
+  g_curlInterface.easy_setopt(h, CURLOPT_HEADER, 0l);
 
   g_curlInterface.easy_setopt(h, CURLOPT_FTP_USE_EPSV, 0); // turn off epsv
 
   // Allow us to follow two redirects
-  g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, TRUE);
+  g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, 1l);
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
 
   // Enable cookie engine for current handle to re-use them in future requests
@@ -516,7 +516,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // honored during the DNS lookup - which you can work around by building libcurl
   // with c-ares support. c-ares is a library that provides asynchronous name
   // resolves. Unfortunately, c-ares does not yet support IPv6.
-  g_curlInterface.easy_setopt(h, CURLOPT_NOSIGNAL, TRUE);
+  g_curlInterface.easy_setopt(h, CURLOPT_NOSIGNAL, 1l);
 
   // not interested in failed requests
   g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
@@ -533,7 +533,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYHOST, 0);
 
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_URL, m_url.c_str());
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, FALSE);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, 0l);
 
   // setup POST data if it is set (and it may be empty)
   if (m_postdataset)
@@ -549,7 +549,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   else
   {
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, NULL);
-    g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
+    g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, 1l);
   }
 
   // setup any requested authentication
@@ -1061,7 +1061,7 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   assert(m_state->m_multiHandle);
 
-  SetCommonOptions(m_state); 
+  SetCommonOptions(m_state);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_UPLOAD, 1);
 
   g_curlInterface.multi_add_handle(m_state->m_multiHandle, m_state->m_easyHandle);

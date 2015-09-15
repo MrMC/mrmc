@@ -386,8 +386,8 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
   default:
     break;
   }
-  
-  return TRUE;
+
+  return true;
 }
 
 

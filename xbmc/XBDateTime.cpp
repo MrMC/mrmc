@@ -645,7 +645,7 @@ bool CDateTime::IsValid() const
 
 bool CDateTime::ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const
 {
-  return SystemTimeToFileTime(&time, &fileTime) == TRUE &&
+  return SystemTimeToFileTime(&time, &fileTime) == 1 &&
          (fileTime.dwLowDateTime > 0 || fileTime.dwHighDateTime > 0);
 }
 
@@ -672,7 +672,7 @@ bool CDateTime::ToFileTime(const tm& time, FILETIME& fileTime) const
   st.wMinute=time.tm_min;
   st.wSecond=time.tm_sec;
 
-  return SystemTimeToFileTime(&st, &fileTime)==TRUE;
+  return SystemTimeToFileTime(&st, &fileTime) == 1;
 }
 
 void CDateTime::ToULargeInt(ULARGE_INTEGER& time) const

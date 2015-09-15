@@ -208,7 +208,7 @@ typedef unsigned long   ULONG;
 #if defined(TARGET_DARWIN)
 typedef int32_t      HRESULT;
 #else
-typedef LONG        HRESULT;
+typedef unsigned long HRESULT;
 #endif
 
 //typedef BYTE*       LPBYTE;

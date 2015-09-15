@@ -139,10 +139,10 @@ HANDLE FindFirstFile(const char* szPath,LPWIN32_FIND_DATA lpFindData)
 int   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
 {
   if (lpFindData == NULL || hHandle == NULL || hHandle->GetType() != CXHandle::HND_FIND_FILE)
-    return FALSE;
+    return 0;
 
   if ((unsigned int) hHandle->m_nFindFileIterator >= hHandle->m_FindFileResults.size())
-    return FALSE;
+    return 0;
 
   std::string strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
   std::string strFileNameTest = hHandle->m_FindFileDir + strFileName;
@@ -181,7 +181,7 @@ int   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   lpFindData->nFileSizeHigh = (uint32_t)(fileStat.st_size >> 32);
   lpFindData->nFileSizeLow =  (uint32_t)fileStat.st_size;
 
-  return TRUE;
+  return 1;
 }
 
 int FindClose(HANDLE hFindFile)
@@ -368,7 +368,7 @@ int MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
   }
 
   // try the stupid
-  if (CopyFile(lpExistingFileName,lpNewFileName,TRUE))
+  if (CopyFile(lpExistingFileName, lpNewFileName, 1))
   {
     if (DeleteFile(lpExistingFileName))
       return 1;

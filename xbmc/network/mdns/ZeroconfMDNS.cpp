@@ -33,7 +33,7 @@
 
 #pragma comment(lib, "dnssd.lib")
 
-extern HWND g_hWnd;
+extern void* g_hWnd;
 
 void CZeroconfMDNS::Process()
 {
