@@ -69,7 +69,7 @@ extern "C" {
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include "windowing/egl/EGLWrapper.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "DVDCodecs/Video/DVDVideoCodecStageFright.h"
 
 // EGL extension functions

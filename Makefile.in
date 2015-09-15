@@ -320,9 +320,8 @@ endif
 
 ifeq (@USE_ANDROID@,1)
 MAINOBJS+=xbmc/platform/android/activity/activity.a
-else
-MAINOBJS+=xbmc/platform/main.a
 endif
+MAINOBJS+=xbmc/platform/main.a
 
 OBJSXBMC =$(DIRECTORY_ARCHIVES)
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))

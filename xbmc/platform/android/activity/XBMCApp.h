@@ -29,10 +29,10 @@
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
 
-#include "xbmc.h"
-#include "android/jni/Activity.h"
-#include "android/jni/BroadcastReceiver.h"
-#include "android/jni/AudioManager.h"
+#include "platform/xbmc.h"
+#include "platform/android/jni/Activity.h"
+#include "platform/android/jni/BroadcastReceiver.h"
+#include "platform/android/jni/AudioManager.h"
 #include "threads/Event.h"
 
 // forward delares

@@ -19,7 +19,7 @@
  */
 
 #include "AndroidTouch.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 

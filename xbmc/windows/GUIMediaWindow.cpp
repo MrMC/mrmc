@@ -31,7 +31,7 @@
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
 #if defined(TARGET_ANDROID)
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #endif
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogMediaFilter.h"

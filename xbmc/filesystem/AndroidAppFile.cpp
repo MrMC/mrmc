@@ -29,7 +29,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include <jni.h>
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 using namespace XFILE;
 
 CFileAndroidApp::CFileAndroidApp(void)

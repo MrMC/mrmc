@@ -6,7 +6,7 @@
 #include <vector>
 #include <dlfcn.h>
 #include <fcntl.h>
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "AndroidDyload.h"
 #include "utils/StringUtils.h"
 #include "CompileInfo.h"

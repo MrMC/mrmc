@@ -35,8 +35,8 @@
 #include "utils/log.h"
 #include "threads/Thread.h"
 
-#include "android/jni/Surface.h"
-#include "android/jni/SurfaceTexture.h"
+#include "platform/android/jni/Surface.h"
+#include "platform/android/jni/SurfaceTexture.h"
 
 #define CLASSNAME "CStageFrightVideoPrivate"
 

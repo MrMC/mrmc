@@ -50,7 +50,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #if defined(TARGET_ANDROID)
-  #include "android/loader/AndroidDyload.h"
+  #include "platform/android/loader/AndroidDyload.h"
 #else
   #include <dlfcn.h>
 #endif
