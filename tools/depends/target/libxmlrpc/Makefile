@@ -15,7 +15,7 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
     --disable-cgi-server \
     --enable-libxml2-backend
 
-LIBDYLIB=$(PLATFORM)/src/libxmlrpc.a
+LIBDYLIB=$(PLATFORM)/src/libxmlrpc.so
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
@@ -27,6 +27,11 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 < ../mkandroid.patch
+	sed -ie "s|THREAD_LIBS = -lpthread|THREAD_LIBS = |" "$(PLATFORM)/config.mk.in"
+	sed -ie "s|-lpthread|$(THREAD_LIBS)|" "$(PLATFORM)/common.mk"
+	sed -ie "s|-lpthread|$(THREAD_LIBS)|" "$(PLATFORM)/lib/libutil/Makefile"
+	cd $(PLATFORM); cp ../config.sub .
 	cd $(PLATFORM); autoconf
 	cd $(PLATFORM); $(CONFIGURE)
 
