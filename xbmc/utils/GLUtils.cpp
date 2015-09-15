@@ -25,6 +25,10 @@
 #include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdeprecated-declarations" ///< 'gluErrorString' is deprecated
+#endif
+
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 #if defined(HAS_GL) && defined(_DEBUG)
 #define printMatrix(matrix)                                             \
