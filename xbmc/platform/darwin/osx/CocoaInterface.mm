@@ -38,6 +38,8 @@
 
 #import "platform/darwin/AutoPool.h"
 
+// extern this so we do not have to make a include for cocoa_monitor.m
+extern io_service_t IOServicePortFromCGDisplayID(CGDirectDisplayID displayID);
 
 //#define MAX_DISPLAYS 32
 //static NSWindow* blankingWindows[MAX_DISPLAYS];
@@ -379,10 +381,10 @@ bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
   // try for display we are running on
   display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
  
-  io_registry_entry_t dspPort = CGDisplayIOServicePort(display_id);
+  io_registry_entry_t dspPort = IOServicePortFromCGDisplayID(display_id);
   // if fails, go for main display
   if (dspPort == MACH_PORT_NULL)
-    dspPort = CGDisplayIOServicePort(kCGDirectMainDisplay);
+    dspPort = IOServicePortFromCGDisplayID(kCGDirectMainDisplay);
 
   CFDataRef model;
   model = (CFDataRef)IORegistryEntrySearchCFProperty(dspPort, kIOServicePlane, CFSTR("model"),
@@ -396,6 +398,9 @@ bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
 
     CFRelease(model);
   }
+
+  if (dspPort == MACH_PORT_NULL)
+    IOObjectRelease(dspPort);
 
   return(result);
 }
