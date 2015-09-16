@@ -207,6 +207,11 @@
   
 }
 
+- (NSApplicationPresentationOptions) window:(NSWindow *)window willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions
+{
+  return (proposedOptions| NSApplicationPresentationAutoHideToolbar);
+}
+
 - (void)windowDidMiniaturize:(NSNotification *)aNotification
 {
   //NSLog(@"windowDidMiniaturize");
