@@ -21,17 +21,19 @@
 #if defined(TARGET_DARWIN_OSX)
 
 #include "WinSystemOSX.h"
+
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/DisplaySettings.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "platform/darwin/osx/CocoaInterface.h"
-#include "platform/darwin/DarwinUtils.h"
 
+#import "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/DictionaryUtils.h"
+#import "platform/darwin/osx/CocoaInterface.h"
 #import "platform/darwin/osx/OSXGLView.h"
 #import "platform/darwin/osx/OSXGLWindow.h"
 #import "platform/darwin/osx/OSXTextInputResponder.h"
@@ -42,10 +44,6 @@
 
 // turn off deprecated warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
-#if !defined(NSWindowCollectionBehaviorFullScreenPrimary)
-#define NSWindowCollectionBehaviorFullScreenPrimary (1 << 7)
-#endif
 
 //------------------------------------------------------------------------------------------
 // special object-c class for handling the inhibit display NSTimer callback.
@@ -62,12 +60,6 @@
 
 //------------------------------------------------------------------------------------------
 #define MAX_DISPLAYS 32
-// if there was a devicelost callback
-// but no device reset for 3 secs
-// a timeout fires the reset callback
-// (for ensuring that e.x. AE isn't stuck)
-#define LOST_DEVICE_TIMEOUT_MS 3000
-static NSWindow* blankingWindows[MAX_DISPLAYS];
 
 //------------------------------------------------------------------------------------------
 CRect CGRectToCRect(CGRect cgrect)
@@ -78,62 +70,6 @@ CRect CGRectToCRect(CGRect cgrect)
     cgrect.origin.x + cgrect.size.width,
     cgrect.origin.y + cgrect.size.height);
   return crect;
-}
-
-//------------------------------------------------------------------------------------------
-Boolean GetDictionaryBoolean(CFDictionaryRef theDict, const void* key)
-{
-  // get a boolean from the dictionary
-  Boolean value = false;
-  CFBooleanRef boolRef;
-  boolRef = (CFBooleanRef)CFDictionaryGetValue(theDict, key);
-  if (boolRef != NULL)
-    value = CFBooleanGetValue(boolRef);
-  return value;
-}
-//------------------------------------------------------------------------------------------
-long GetDictionaryLong(CFDictionaryRef theDict, const void* key)
-{
-  // get a long from the dictionary
-  long value = 0;
-  CFNumberRef numRef;
-  numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-  if (numRef != NULL)
-    CFNumberGetValue(numRef, kCFNumberLongType, &value);
-  return value;
-}
-//------------------------------------------------------------------------------------------
-int GetDictionaryInt(CFDictionaryRef theDict, const void* key)
-{
-  // get a long from the dictionary
-  int value = 0;
-  CFNumberRef numRef;
-  numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-  if (numRef != NULL)
-    CFNumberGetValue(numRef, kCFNumberIntType, &value);
-  return value;
-}
-//------------------------------------------------------------------------------------------
-float GetDictionaryFloat(CFDictionaryRef theDict, const void* key)
-{
-  // get a long from the dictionary
-  int value = 0;
-  CFNumberRef numRef;
-  numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-  if (numRef != NULL)
-    CFNumberGetValue(numRef, kCFNumberFloatType, &value);
-  return value;
-}
-//------------------------------------------------------------------------------------------
-double GetDictionaryDouble(CFDictionaryRef theDict, const void* key)
-{
-  // get a long from the dictionary
-  double value = 0.0;
-  CFNumberRef numRef;
-  numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-  if (numRef != NULL)
-    CFNumberGetValue(numRef, kCFNumberDoubleType, &value);
-  return value;
 }
 
 //---------------------------------------------------------------------------------
@@ -167,6 +103,7 @@ void SetMenuBarVisible(bool visible)
     NSLog(@"Error.  Make sure you have a valid combination of options.");
   }
 }
+
 //---------------------------------------------------------------------------------
 CGDirectDisplayID GetDisplayID(int screen_index)
 {
@@ -201,79 +138,6 @@ int GetDisplayIndex(CGDirectDisplayID display)
   return -1;
 }
 
-void BlankOtherDisplays(int screen_index)
-{
-  int i;
-  int numDisplays = [[NSScreen screens] count];
-
-  // zero out blankingWindows for debugging
-  for (i=0; i<MAX_DISPLAYS; i++)
-  {
-    blankingWindows[i] = 0;
-  }
-
-  // Blank.
-  for (i=0; i<numDisplays; i++)
-  {
-    if (i != screen_index)
-    {
-      // Get the size.
-      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:i];
-      NSRect    screenRect = [pScreen frame];
-
-      // Build a blanking window.
-      screenRect.origin = NSZeroPoint;
-      blankingWindows[i] = [[NSWindow alloc] initWithContentRect:screenRect
-        styleMask:NSBorderlessWindowMask
-        backing:NSBackingStoreBuffered
-        defer:NO
-        screen:pScreen];
-
-      [blankingWindows[i] setBackgroundColor:[NSColor blackColor]];
-      [blankingWindows[i] setLevel:CGShieldingWindowLevel()];
-      [blankingWindows[i] makeKeyAndOrderFront:nil];
-    }
-  }
-}
-
-void UnblankDisplays(void)
-{
-  int numDisplays = [[NSScreen screens] count];
-  int i = 0;
-
-  for (i=0; i<numDisplays; i++)
-  {
-    if (blankingWindows[i] != 0)
-    {
-      // Get rid of the blanking windows we created.
-      [blankingWindows[i] close];
-      if ([blankingWindows[i] isReleasedWhenClosed] == NO)
-        [blankingWindows[i] release];
-      blankingWindows[i] = 0;
-    }
-  }
-}
-
-CGDisplayFadeReservationToken DisplayFadeToBlack(bool fade)
-{
-  // Fade to black to hide resolution-switching flicker and garbage.
-  CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
-  if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess && fade)
-    CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0, TRUE);
-
-  return(fade_token);
-}
-
-void DisplayFadeFromBlack(CGDisplayFadeReservationToken fade_token, bool fade)
-{
-  if (fade_token != kCGDisplayFadeReservationInvalidToken)
-  {
-    if (fade)
-      CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
-    CGReleaseDisplayFadeReservation(fade_token);
-  }
-}
-
 NSString* screenNameForDisplay(CGDirectDisplayID displayID)
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -303,63 +167,6 @@ void ShowHideNSWindow(NSWindow *wind, bool show)
     [wind orderOut:nil];
 }
 */
-
-static NSWindow *curtainWindow;
-void fadeInDisplay(NSScreen *theScreen, double fadeTime)
-{
-  int     fadeSteps     = 100;
-  double  fadeInterval  = (fadeTime / (double) fadeSteps);
-
-  if (curtainWindow != nil)
-  {
-    for (int step = 0; step < fadeSteps; step++)
-    {
-      double fade = 1.0 - (step * fadeInterval);
-      [curtainWindow setAlphaValue:fade];
-
-      NSDate *nextDate = [NSDate dateWithTimeIntervalSinceNow:fadeInterval];
-      [[NSRunLoop currentRunLoop] runUntilDate:nextDate];
-    }
-  }
-  [curtainWindow close];
-  curtainWindow = nil;
-
-  //Cocoa_ShowMouse();
-}
-
-void fadeOutDisplay(NSScreen *theScreen, double fadeTime)
-{
-  int     fadeSteps     = 100;
-  double  fadeInterval  = (fadeTime / (double) fadeSteps);
-
-  Cocoa_HideMouse();
-
-  curtainWindow = [[NSWindow alloc]
-    initWithContentRect:[theScreen frame]
-    styleMask:NSBorderlessWindowMask
-    backing:NSBackingStoreBuffered
-    defer:YES
-    screen:theScreen];
-
-  [curtainWindow setAlphaValue:0.0];
-  [curtainWindow setBackgroundColor:[NSColor blackColor]];
-  [curtainWindow setLevel:NSScreenSaverWindowLevel];
-
-  [curtainWindow makeKeyAndOrderFront:nil];
-  [curtainWindow setFrame:[curtainWindow
-    frameRectForContentRect:[theScreen frame]]
-    display:YES
-    animate:NO];
-
-  for (int step = 0; step < fadeSteps; step++)
-  {
-    double fade = step * fadeInterval;
-    [curtainWindow setAlphaValue:fade];
-
-    NSDate *nextDate = [NSDate dateWithTimeIntervalSinceNow:fadeInterval];
-    [[NSRunLoop currentRunLoop] runUntilDate:nextDate];
-  }
-}
 
 // try to find mode that matches the desired size, refreshrate
 // non interlaced, nonstretched, safe for hardware
@@ -495,6 +302,10 @@ CWinSystemOSX::~CWinSystemOSX()
 {
 }
 
+// if there was a devicelost callback but no device reset for 3 secs
+// a timeout fires the reset callback (for ensuring that e.x. AE isn't stuck)
+#define LOST_DEVICE_TIMEOUT_MS 3000
+
 void CWinSystemOSX::StartLostDeviceTimer()
 {
   if (m_lostDeviceTimer.IsRunning())
@@ -539,8 +350,6 @@ bool CWinSystemOSX::DestroyWindowSystem()
     //[(OSXGLView*)m_glView release];
     m_glView = NULL;
   }
-
-  UnblankDisplays();
   
   return true;
 }
@@ -713,24 +522,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   if (m_lastDisplayNr == -1)
     m_lastDisplayNr = res.iScreen;
 
-  // Fade to black to hide resolution-switching flicker and garbage.
-  //CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
-
-  // If we're already fullscreen then we must be moving to a different display.
-  // or if we are still on the same display - it might be only a refreshrate/resolution
-  // change request.
-  // Recurse to reset fullscreen mode and then continue.
-  /*
-  if (was_fullscreen && fullScreen)
-  {
-    needtoshowme = false;
-    //ShowHideNSWindow([last_view window], needtoshowme);
-    RESOLUTION_INFO& window = CDisplaySettings::Get().GetResolutionInfo(RES_WINDOW);
-    CWinSystemOSX::SetFullScreen(false, window, blankOtherDisplays);
-    needtoshowme = true;
-  }
-   */
-
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
@@ -808,10 +599,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       // Hide the menu bar.
       if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
         SetMenuBarVisible(false);
-      
-      // Blank other displays if requested.
-      if (blankOtherDisplays)
-        BlankOtherDisplays(res.iScreen);
     }
     else
     {
@@ -851,11 +638,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       // Show menubar.
       if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks())
         SetMenuBarVisible(true);
-      
-      // Unblank.
-      // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.
-      //if (blankOtherDisplays)
-        UnblankDisplays();
     }
     else
     {
@@ -875,8 +657,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
 
   [window setAllowsConcurrentViewDrawing:YES];
-
-  //DisplayFadeFromBlack(fade_token, needtoshowme);
 
   //ShowHideNSWindow([last_view window], needtoshowme);
 

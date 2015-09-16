@@ -5,6 +5,7 @@ SRCS += xbmc.cpp
 SRCS += XbmcContext.cpp
 SRCS += darwin/AutoPool.mm
 SRCS += darwin/DarwinUtils.mm
+SRCS += darwin/DictionaryUtils.mm
 SRCS += darwin/OSXGNUReplacements.c
 SRCS += darwin/osx/OSXTextInputResponder.mm
 SRCS += darwin/osx/smc.c

@@ -1818,6 +1818,8 @@
 		F5D0E1151BA667600070EE9C /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59045931BA3D75000DB589A /* XbmcContext.cpp */; };
 		F5D0E1161BA667650070EE9C /* MessagePrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59045901BA375B100DB589A /* MessagePrinter.cpp */; };
 		F5D0E1181BA88FCC0070EE9C /* cocoa_monitor.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D0E1171BA88FCC0070EE9C /* cocoa_monitor.mm */; };
+		F5D13EBB1BAA178A0075A95C /* DictionaryUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */; };
+		F5D13EBC1BAA178A0075A95C /* DictionaryUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */; };
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
@@ -3757,7 +3759,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MrMC.app; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -3998,6 +4000,8 @@
 		F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
 		F5CEE60813D3C89700225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
 		F5D0E1171BA88FCC0070EE9C /* cocoa_monitor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_monitor.mm; sourceTree = "<group>"; };
+		F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DictionaryUtils.mm; sourceTree = "<group>"; };
+		F5D13EBA1BAA17890075A95C /* DictionaryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DictionaryUtils.h; sourceTree = "<group>"; };
 		F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererGL.h; sourceTree = "<group>"; };
 		F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererGL.cpp; sourceTree = "<group>"; };
 		F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRenderer.h; sourceTree = "<group>"; };
@@ -7314,6 +7318,8 @@
 				F59045291BA372A600DB589A /* AutoPool.mm */,
 				F590452B1BA372A600DB589A /* DarwinUtils.h */,
 				F590452C1BA372A600DB589A /* DarwinUtils.mm */,
+				F5D13EBA1BAA17890075A95C /* DictionaryUtils.h */,
+				F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */,
 				F590452D1BA372A600DB589A /* ios */,
 				F59045451BA372A600DB589A /* osx */,
 				F59045561BA372A600DB589A /* OSXGNUReplacements.h */,
@@ -8626,6 +8632,7 @@
 				7CC7B6C0191869EA00DDB120 /* SettingCreator.cpp in Sources */,
 				DF923E5D1A11536A008CDB0C /* DataCacheCore.cpp in Sources */,
 				7CC7B6C3191869EA00DDB120 /* SettingUtils.cpp in Sources */,
+				F5D13EBB1BAA178A0075A95C /* DictionaryUtils.mm in Sources */,
 				7CC7B6C819186A8800DDB120 /* SettingConditions.cpp in Sources */,
 				7CCDA0DB192753E30074CF51 /* PltAction.cpp in Sources */,
 				7CCDA0E4192753E30074CF51 /* PltArgument.cpp in Sources */,
@@ -9133,6 +9140,7 @@
 				E4991356174E5EBE00741B6D /* JSONRPC.cpp in Sources */,
 				E4991357174E5EBE00741B6D /* JSONServiceDescription.cpp in Sources */,
 				E4991358174E5EBE00741B6D /* PlayerOperations.cpp in Sources */,
+				F5D13EBC1BAA178A0075A95C /* DictionaryUtils.mm in Sources */,
 				E4991359174E5EBE00741B6D /* PlaylistOperations.cpp in Sources */,
 				E499135A174E5EBE00741B6D /* PVROperations.cpp in Sources */,
 				E499135B174E5EBE00741B6D /* SystemOperations.cpp in Sources */,

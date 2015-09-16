@@ -35,9 +35,6 @@
 
 #include "utils/log.h"
 
-// forwards
-
-
 // Returns the io_service_t corresponding to a CG display ID, or 0 on failure.
 // The io_service_t should be released with IOObjectRelease when not needed.
 //
