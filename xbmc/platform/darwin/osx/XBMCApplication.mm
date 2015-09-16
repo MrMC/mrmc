@@ -48,6 +48,7 @@
 
 #import "platform/darwin/DarwinUtils.h"
 #import "XBMCApplication.h"
+#import "windowing/WinSystem.h"
 
 
 // For some reaon, Apple removed setAppleMenu from the headers in 10.4,
@@ -121,8 +122,8 @@ static void setupApplicationMenu(void)
 
   [appleMenu addItem:[NSMenuItem separatorItem]];
 
-  //title = [@"Quit " stringByAppendingString:appName];
-  //[appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
+  title = [@"Quit " stringByAppendingString:appName];
+  [appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
 
 
   // Put menu into the menubar
@@ -302,11 +303,13 @@ static void setupWindowMenu(void)
 - (void) applicationWillResignActive:(NSNotification *) note
 {
   // when app moves to background
+  g_Windowing.NotifyAppFocusChange(false);
 }
 
 - (void) applicationWillBecomeActive:(NSNotification *) note
 {
   // when app moves to front
+  g_Windowing.NotifyAppFocusChange(true);
 }
 
 /*
@@ -367,20 +370,14 @@ static void setupWindowMenu(void)
   [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
-  // Post a SDL_QUIT event
-  //SDL_Event event;
-  //event.type = SDL_QUIT;
-  //SDL_PushEvent(&event);
+  // Post an quit event to the application thread.
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 }
 
 - (void)fullScreenToggle:(id)sender
 {
   // Post an toggle full-screen event to the application thread.
-  //SDL_Event event;
-  //memset(&event, 0, sizeof(event));
-  //event.type = SDL_USEREVENT;
-  //event.user.code = TMSG_TOGGLEFULLSCREEN;
-  //SDL_PushEvent(&event);
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
 }
 
 - (void)floatOnTopToggle:(id)sender
