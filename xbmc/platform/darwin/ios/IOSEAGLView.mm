@@ -367,6 +367,9 @@ using namespace KODI::MESSAGING;
 - (void) runAnimation:(id) arg
 {
   CCocoaAutoPool outerpool;
+
+  [[NSThread currentThread] setName:@"XBMC_Run"];
+  
   // set up some xbmc specific relationships
   XBMC::Context context;
   readyToRun = true;

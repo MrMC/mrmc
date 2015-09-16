@@ -236,6 +236,8 @@ static void setupWindowMenu(void)
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   // empty
   
+  [[NSThread currentThread] setName:@"XBMC_Run"];
+
   // set up some xbmc specific relationships
   XBMC::Context context;
   
