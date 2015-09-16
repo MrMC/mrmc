@@ -891,7 +891,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     {
       // does not seem to work, wonder why ?
       //[(NSWindow*)m_appWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
-      [(NSWindow*)m_appWindow toggleFullScreen:nil];
+      // toggleFullScreen is very nasty and really should be done on main thread
+      [(NSWindow*)m_appWindow performSelectorOnMainThread:@selector(toggleFullScreen) withObject:nil waitUntilDone:NO];
     }
   }
 
