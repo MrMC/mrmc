@@ -748,13 +748,13 @@ bool CApplication::InitDirectoriesLinux()
 /*
    The following is the directory mapping for Platform Specific Mode:
 
-   special://xbmc/          => [read-only] system directory (/usr/share/kodi)
-   special://home/          => [read-write] user's directory that will override special://kodi/ system-wide
+   special://xbmc/          => [read-only] system directory (/usr/share/mrmc)
+   special://home/          => [read-write] user's directory that will override special://mrmc/ system-wide
                                installations like skins, screensavers, etc.
-                               ($HOME/.kodi)
-                               NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
+                               ($HOME/.mrmc)
+                               NOTE: MrMC will look in both special://xbmc/addons and special://home/addons for addons.
    special://masterprofile/ => [read-write] userdata of master profile. It will by default be
-                               mapped to special://home/userdata ($HOME/.kodi/userdata)
+                               mapped to special://home/userdata ($HOME/.mrmc/userdata)
    special://profile/       => [read-write] current profile's userdata directory.
                                Generally special://masterprofile for the master profile or
                                special://masterprofile/profiles/<profile_name> for other profiles.
@@ -781,8 +781,8 @@ bool CApplication::InitDirectoriesLinux()
   std::string dotLowerAppName = "." + appName;
   StringUtils::ToLower(dotLowerAppName);
   const char* envAppHome = "MRMC_HOME";
-  const char* envAppBinHome = "KODI_BIN_HOME";
-  const char* envAppTemp = "KODI_TEMP";
+  const char* envAppBinHome = "MRMC_BIN_HOME";
+  const char* envAppTemp = "MRMC_TEMP";
 
   CUtil::GetHomePath(appBinPath, envAppBinHome);
   if (getenv(envAppHome))

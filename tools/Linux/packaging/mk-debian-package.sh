@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Copyright (C) 2013 Team XBMC
-# http://kodi.tv
+# http://mrmc.tv
 #
 # This Program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ DEBIAN=${DEBIAN:-"https://github.com/xbmc/xbmc-packaging/archive/master.tar.gz"}
 BUILD_DATE=$(date '+%Y%m%d.%H%M')
 
 function usage {
-    echo "$0: this script builds a Kodi debian package from a git repository."
+    echo "$0: this script builds a MrMC debian package from a git repository."
     echo "The build is controlled by ENV variables, which van be overridden as appropriate:"
     echo "BUILDER is either debuild(default) or pdebuild(needs a proper pbuilder setup)"
     checkEnv
@@ -101,7 +101,7 @@ function archiveRepo {
     git clean -xfd
     echo $REV > VERSION
     tools/depends/target/ffmpeg/autobuild.sh -d
-    DEST="kodi-${RELEASEV}~git${BUILD_DATE}-${TAG}"
+    DEST="mrmc-${RELEASEV}~git${BUILD_DATE}-${TAG}"
     [[ -d debian ]] && rm -rf debian
     cd ..
     tar -czf ${DEST}.tar.gz -h --exclude .git $(basename $REPO_DIR)

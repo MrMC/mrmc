@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([kodi], [15.9.702], [http://trac.kodi.tv])
+AC_INIT([mrmc], [15.9.702], [http://mrmc.tv])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -1966,7 +1966,7 @@ fi
 if test "x$use_upnp" != "xno"; then
   final_message="$final_message\n  UPnP support:\t\tYes"
   USE_UPNP=1
-  UPNP_DEFINES='-DNPT_CONFIG_ENABLE_LOGGING -DPLT_HTTP_DEFAULT_USER_AGENT="\"UPnP/1.0 DLNADOC/1.50 Kodi\"" -DPLT_HTTP_DEFAULT_SERVER="\"UPnP/1.0 DLNADOC/1.50 Kodi\""'
+  UPNP_DEFINES='-DNPT_CONFIG_ENABLE_LOGGING -DPLT_HTTP_DEFAULT_USER_AGENT="\"UPnP/1.0 DLNADOC/1.50 MrMC\"" -DPLT_HTTP_DEFAULT_SERVER="\"UPnP/1.0 DLNADOC/1.50 MrMC\""'
   AC_DEFINE([USE_UPNP], [1], [Define to 1 to enable UPnP support.])
 else
   USE_UPNP=0

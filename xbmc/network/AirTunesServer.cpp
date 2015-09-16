@@ -22,7 +22,7 @@
  */
 
 #include "network/Network.h"
-#pragma GCC diagnostic ignored "-Wwrite-strings"
+//#pragma GCC diagnostic ignored "-Wwrite-strings"
 
 #include "AirTunesServer.h"
 

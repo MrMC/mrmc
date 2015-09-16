@@ -26,21 +26,21 @@
 
 /* paths are as follows:
 
- special://xbmc/          - the main XBMC folder (i.e. where the app resides).
- special://home/          - a writeable version of the main XBMC folder
-                             Linux: ~/.kodi/
-                             OS X:  ~/Library/Application Support/Kodi/
+ special://xbmc/          - the main MrMC folder (i.e. where the app resides).
+ special://home/          - a writeable version of the main MrMC folder
+                             Linux: ~/.mrmc/
+                             OS X:  ~/Library/Application Support/MrMC/
  special://userhome/      - a writable version of the user home directory
-                             Linux, OS X: ~/.kodi
+                             Linux, OS X: ~/.mrmc
  special://masterprofile/ - the master users userdata folder - usually special://home/userdata
-                             Linux: ~/.kodi/userdata/
-                             OS X:  ~/Library/Application Support/Kodi/UserData/
+                             Linux: ~/.mrmc/userdata/
+                             OS X:  ~/Library/Application Support/MrMC/UserData/
  special://profile/       - the current users userdata folder - usually special://masterprofile/profiles/<current_profile>
-                             Linux: ~/.kodi/userdata/profiles/<current_profile>
-                             OS X:  ~/Library/Application Support/Kodi/UserData/profiles/<current_profile>
+                             Linux: ~/.mrmc/userdata/profiles/<current_profile>
+                             OS X:  ~/Library/Application Support/MrMC/UserData/profiles/<current_profile>
 
  special://temp/          - the temporary directory.
-                             Linux: ~/.kodi/temp
+                             Linux: ~/.mrmc/temp
                              OS X:  ~/
 */
 class CURL;

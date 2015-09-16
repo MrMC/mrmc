@@ -15,7 +15,10 @@
 #   You should have received a copy of the GNU General Public License along
 #   with this program; if not, write to the Free Software Foundation, Inc.,
 #   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
+#
+#   Forked to MrMC Copyright (C) 2015 Team MrMC
+#
+#
 use strict;
 use warnings;
 
@@ -71,8 +74,8 @@ if (! defined $ARGV[0]) {
 
 if ( $ARGV[0] eq "-c" ) {
     die("TODO: -c\n");
-    #make_dmg(make_mpkg(), "Kodi Atlantis - 8.10", "Kodi Media Center");
+    #make_dmg(make_mpkg(), "MrMC Atlantis - 8.10", "MrMC Media Center");
     exit;
 }
 
-make_dmg($ARGV[0], $ARGV[1], "Kodi");
+make_dmg($ARGV[0], $ARGV[1], "MrMC");

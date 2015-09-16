@@ -1,10 +1,10 @@
 [Desktop Entry]
 Version=1.0
-Name=Kodi media center
+Name=MrMC
 GenericName=Media center
 Comment=Manage and view your media
-Exec=kodi
-Icon=kodi
+Exec=mrmc
+Icon=mrmc
 Terminal=false
 Type=Application
 Categories=AudioVideo;Video;Player;TV;
@@ -13,10 +13,10 @@ Actions=Fullscreen;Standalone;
 
 [Desktop Action Fullscreen]
 Name=Open in fullscreen
-Exec=kodi -fs
+Exec=mrmc -fs
 OnlyShowIn=Unity;
 
 [Desktop Action Standalone]
 Name=Open in standalone mode
-Exec=kodi --standalone
+Exec=mrmc --standalone
 OnlyShowIn=Unity;
