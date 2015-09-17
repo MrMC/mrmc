@@ -175,15 +175,7 @@ void CSMB::Init()
 #endif
 
     // initialize samba and do some hacking into the settings
-    if (smbc_init_context(m_context))
-    {
-      // setup context using the smb old interface compatibility
-      SMBCCTX *old_context = smbc_set_context(m_context);
-      // free previous context or we leak it, this comes from smbc_init above
-      if (old_context)
-        smbc_free_context(old_context, 1);
-    }
-    else
+    if (smbc_init_context(m_context) == NULL)
     {
       smbc_free_context(m_context, 1);
       m_context = NULL;
