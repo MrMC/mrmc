@@ -22,16 +22,11 @@ DEPENDS += gnutls
 DEPENDS += libssh2
 DEPENDS += curl
 DEPENDS += libjpeg-turbo
-DEPENDS += tiff
 DEPENDS += libpng
 DEPENDS += libgif
-DEPENDS += libogg
-DEPENDS += libvorbis
-DEPENDS += libflac
 DEPENDS += fribidi
 DEPENDS += libass
 DEPENDS += libsquish
-DEPENDS += libmodplug
 DEPENDS += libxml2
 DEPENDS += yajl
 DEPENDS += libmicrohttpd
@@ -67,7 +62,12 @@ ifeq ($(OS),ios)
 endif
 
 ifeq ($(OS),osx)
-  DEPENDS += libGLEW
+  ifeq ($(SIMULATOR),no)
+    DEPENDS += libGLEW
+    EXCLUDED_DEPENDS += libcec
+  else
+    EXCLUDED_DEPENDS += libcec
+  endif
   EXCLUDED_DEPENDS += libusb
 endif
 
@@ -111,9 +111,6 @@ libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
 libssh2: libgcrypt openssl
 curl: openssl libssh2
-tiff: libjpeg-turbo
-libvorbis: libogg
-libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: libxml2 $(ZLIB)
@@ -122,11 +119,13 @@ mysql: openssl
 libzip: $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
+samba: libssh2
+samba-gplv3: libssh2
 gnutls: nettle $(ZLIB)
 nettle: gmp
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
-ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis gnutls libdcadec
+ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls libdcadec
 libcec: platform
 ifeq ($(OS),linux)
 crossguid: libuuid
