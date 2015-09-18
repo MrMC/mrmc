@@ -1750,7 +1750,7 @@
 		F590456E1BA372A600DB589A /* IOSKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = F590453A1BA372A600DB589A /* IOSKeyboard.mm */; };
 		F59045701BA372A600DB589A /* IOSKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F590453C1BA372A600DB589A /* IOSKeyboardView.mm */; };
 		F59045721BA372A600DB589A /* IOSScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = F590453E1BA372A600DB589A /* IOSScreenManager.mm */; };
-		F59045741BA372A600DB589A /* XBMCApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = F59045401BA372A600DB589A /* XBMCApplication.m */; };
+		F59045741BA372A600DB589A /* XBMCApplication.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045401BA372A600DB589A /* XBMCApplication.mm */; };
 		F59045761BA372A600DB589A /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045421BA372A600DB589A /* XBMCController.mm */; };
 		F59045781BA372A600DB589A /* CocoaInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045471BA372A600DB589A /* CocoaInterface.mm */; };
 		F590457B1BA372A600DB589A /* OSXGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F590454A1BA372A600DB589A /* OSXGLView.mm */; };
@@ -3894,7 +3894,7 @@
 		F590453D1BA372A600DB589A /* IOSScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSScreenManager.h; sourceTree = "<group>"; };
 		F590453E1BA372A600DB589A /* IOSScreenManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSScreenManager.mm; sourceTree = "<group>"; };
 		F590453F1BA372A600DB589A /* XBMCApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCApplication.h; sourceTree = "<group>"; };
-		F59045401BA372A600DB589A /* XBMCApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCApplication.m; sourceTree = "<group>"; };
+		F59045401BA372A600DB589A /* XBMCApplication.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCApplication.mm; sourceTree = "<group>"; };
 		F59045411BA372A600DB589A /* XBMCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCController.h; sourceTree = "<group>"; };
 		F59045421BA372A600DB589A /* XBMCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCController.mm; sourceTree = "<group>"; };
 		F59045431BA372A600DB589A /* XBMCDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCDebugHelpers.h; sourceTree = "<group>"; };
@@ -7347,7 +7347,7 @@
 				F590453D1BA372A600DB589A /* IOSScreenManager.h */,
 				F590453E1BA372A600DB589A /* IOSScreenManager.mm */,
 				F590453F1BA372A600DB589A /* XBMCApplication.h */,
-				F59045401BA372A600DB589A /* XBMCApplication.m */,
+				F59045401BA372A600DB589A /* XBMCApplication.mm */,
 				F59045411BA372A600DB589A /* XBMCController.h */,
 				F59045421BA372A600DB589A /* XBMCController.mm */,
 				F59045431BA372A600DB589A /* XBMCDebugHelpers.h */,
@@ -8847,7 +8847,7 @@
 				E49911F8174E5D4500741B6D /* DVDFileInfo.cpp in Sources */,
 				E49911F9174E5D4500741B6D /* DVDMessage.cpp in Sources */,
 				E49911FA174E5D4500741B6D /* DVDMessageQueue.cpp in Sources */,
-				F59045741BA372A600DB589A /* XBMCApplication.m in Sources */,
+				F59045741BA372A600DB589A /* XBMCApplication.mm in Sources */,
 				E49911FC174E5D4500741B6D /* DVDOverlayContainer.cpp in Sources */,
 				DF4A3BB31B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */,
 				E49911FD174E5D4500741B6D /* DVDOverlayRenderer.cpp in Sources */,
