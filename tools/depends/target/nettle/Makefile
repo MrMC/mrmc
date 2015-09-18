@@ -11,6 +11,9 @@ ifeq ($(OS),ios)
   ifneq (,$(findstring 3.,$(XCODE_VERSION)))
     CONFIGURE_FLAGS=-disable-assembler
   endif
+ ifeq ($(CPU),arm64)
+    CONFIGURE_FLAGS=-disable-assembler
+  endif
 endif
 
 # configuration settings

@@ -6,9 +6,11 @@ LIBNAME=libjpeg-turbo
 VERSION=1.2.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --with-jpeg8 --disable-shared
+          ./configure --prefix=$(PREFIX) --disable-shared \
+          --with-jpeg8 $(CONFIGURE_EXTRA)
 
 export CFLAGS=-O3
 

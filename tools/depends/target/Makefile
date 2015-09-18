@@ -41,19 +41,14 @@ DEPENDS += libssh
 DEPENDS += taglib
 DEPENDS += libusb
 DEPENDS += libnfs
-DEPENDS += libxmlrpc
+DEPENDS += libulxmlrpcpp
 DEPENDS += libxslt
 DEPENDS += libdcadec
 DEPENDS += ffmpeg
 DEPENDS += platform
 DEPENDS += crossguid
 DEPENDS += libcpluff
-
-ifeq ($(ENABLE_GPLV3),yes)
-  DEPENDS+=samba-gplv3
-else
-  DEPENDS+=samba
-endif
+DEPENDS += samba
 
 EXCLUDED_DEPENDS =
 ifeq ($(OS),ios)
@@ -62,12 +57,8 @@ ifeq ($(OS),ios)
 endif
 
 ifeq ($(OS),osx)
-  ifeq ($(SIMULATOR),no)
-    DEPENDS += libGLEW
-    EXCLUDED_DEPENDS += libcec
-  else
-    EXCLUDED_DEPENDS += libcec
-  endif
+  DEPENDS += libGLEW
+  EXCLUDED_DEPENDS += libcec
   EXCLUDED_DEPENDS += libusb
 endif
 
@@ -120,7 +111,6 @@ libzip: $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
 samba: libssh2
-samba-gplv3: libssh2
 gnutls: nettle $(ZLIB)
 nettle: gmp
 libsdl2: $(LINUX_SYSTEM_LIBS)

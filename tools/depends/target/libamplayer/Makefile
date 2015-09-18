@@ -19,8 +19,7 @@ all: .installed-$(PLATFORM)
 	touch $@
 
 clean:
-	rm -f .installed-$(PLATFORM)
-	rm -f .patched-$(PLATFORM)
+	rm -rf $(PLATFORM) rm -f .installed-$(PLATFORM) .patched-$(PLATFORM)
 
-distclean:: clean
-	rm -rf $(PLATFORM)
+distclean::
+	rm -rf $(PLATFORM) rm -f .installed-$(PLATFORM) .patched-$(PLATFORM)

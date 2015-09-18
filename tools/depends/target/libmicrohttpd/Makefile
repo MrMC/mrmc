@@ -35,12 +35,12 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)/src/microhttpd
-	$(MAKE) -C $(PLATFORM)/src/include install
+	$(MAKE) -j1 -C $(PLATFORM)/src/microhttpd
+	$(MAKE) -j1 -C $(PLATFORM)/src/include install
 	$(STRIP_MEMMEM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM)/src/microhttpd install
+	$(MAKE) -j1 -C $(PLATFORM)/src/microhttpd install
 	# internal _MD5xxx collides with others
 	$(RPL) -e "_MD5Init" "_MDyInit" $(PREFIX)/lib/libmicrohttpd.a
 	$(RPL) -e "_MD5Final" "_MDyFinal" $(PREFIX)/lib/libmicrohttpd.a

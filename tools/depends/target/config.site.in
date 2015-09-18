@@ -60,26 +60,21 @@ fi
 #gnutls
 gl_cv_func_gettimeofday_clobber=no
 
+#samba (changes for all platforms)
+if test "${PACKAGE_NAME}" = "Samba"; then
+  SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
+  samba_cv_CC_NEGATIVE_ENUM_VALUES=yes
+  libreplace_cv_HAVE_C99_VSNPRINTF=yes
+  samba_cv_HAVE_C99_VSNPRINTF=yes
+  samba_cv_HAVE_IFACE_GETIFADDRS=yes
+  ac_cv_header_standards_h=no
 
-#samba
-SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
-samba_cv_CC_NEGATIVE_ENUM_VALUES=yes
-libreplace_cv_HAVE_C99_VSNPRINTF=yes
-samba_cv_HAVE_C99_VSNPRINTF=yes
-ac_cv_header_standards_h=no
-
-ac_cv_file__proc_sys_kernel_core_pattern=no
-samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no
-libreplace_cv_HAVE_GETADDRINFO=no
-
-if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "ios"; then
-  # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
-  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
+  ac_cv_file__proc_sys_kernel_core_pattern=no
+  samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no
+  libreplace_cv_HAVE_GETADDRINFO=no
 fi
 
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
-  # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
-  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
   # uses OPT instead of CFLAGS
   export OPT="${CFLAGS}"
   # various configure overrides
@@ -88,13 +83,11 @@ if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
   # fixes crash on 10.6 if xbmc is built using 10.7 SDK with 10.6 min
   ac_cv_func_vdprintf=no
 fi
-
 if test "@platform_os@" = "android"; then
   #samba
   SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
   libreplace_cv_READDIR_GETDIRENTRIES=no
   libreplace_cv_READDIR_GETDENTS=no
-  libreplace_cv_HAVE_IFACE_IFCONF=yes
   libreplace_cv_HAVE_MMAP=yes
   libreplace_cv_HAVE_GETTIMEOFDAY_TZ=yes
   libreplace_cv_HAVE_SECURE_MKSTEMP=yes

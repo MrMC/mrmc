@@ -1,0 +1,19 @@
+--- a/config/ltmain.sh-org	2015-10-30 16:21:22.000000000 -0400
++++ b/config/ltmain.sh	2015-10-30 16:22:21.000000000 -0400
+@@ -7519,16 +7519,6 @@ EOF
+ 
+       case $host in
+       *-*-darwin*)
+-	# Don't allow lazy linking, it breaks C++ global constructors
+-	# But is supposedly fixed on 10.4 or later (yay!).
+-	if test "$tagname" = CXX ; then
+-	  case ${MACOSX_DEPLOYMENT_TARGET-10.0} in
+-	    10.[0123])
+-	      compile_command="$compile_command ${wl}-bind_at_load"
+-	      finalize_command="$finalize_command ${wl}-bind_at_load"
+-	    ;;
+-	  esac
+-	fi
+ 	# Time to change all our "foo.ltframework" stuff back to "-framework foo"
+ 	compile_deplibs=`$ECHO "X $compile_deplibs" | $Xsed -e 's% \([^ $]*\).ltframework% -framework \1%g'`
+ 	finalize_deplibs=`$ECHO "X $finalize_deplibs" | $Xsed -e 's% \([^ $]*\).ltframework% -framework \1%g'`

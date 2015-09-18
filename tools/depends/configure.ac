@@ -9,6 +9,19 @@ m4_include([../../m4/xbmc_arch.m4])
 m4_include([../../m4/ax_cxx_compile_stdcxx_11.m4])
 AX_CXX_COMPILE_STDCXX_11(,[optional])
 
+# check for not same cpu value
+AC_DEFUN([MC_CHECK_NOT_CPU],
+[
+  AC_MSG_CHECKING([for $2])
+  case $1 in
+    $2*)
+      AC_MSG_ERROR(error in configure of --with-arch=$1)
+      ;;
+    *)
+      AC_MSG_RESULT([$1 is not $2])
+  esac
+])
+
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
   [specify path to toolchain. Required for android. Defaults to xcode root for darwin, /usr for linux])],
@@ -49,13 +62,6 @@ AC_ARG_WITH([sdk],
   [spcify sdk platform version (optional for android). default is android-17])],
   [use_sdk=$withval])
 
-AC_ARG_ENABLE([gplv3],
-  [AS_HELP_STRING([--enable-gplv3],
-  [enable gplv3 components. default is yes])],
-  [use_gplv3=$enableval],
-  [use_gplv3=yes])
-
-
 AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
 if test "x$HAVE_UNZIP" = "xno" ; then
   AC_MSG_ERROR("Missing program: unzip")
@@ -78,17 +84,14 @@ fi
 
 use_host=$host_alias
 
+cross_compiling="yes"
 if test "x$host" = "x$build"; then
-use_host=$build_cpu-$build_os
+  use_host=$build_cpu-$build_os
+  cross_compiling="no"
 fi
 
 deps_dir=$use_host
 tool_dir=$build_cpu-$build_os-native
-cross_compiling="yes"
-
-if test "x$host" = "x$build"; then
-  cross_compiling="no"
-fi
 
 passed_cflags="$CFLAGS"
 passed_ldflags="$LDFLAGS"
@@ -181,7 +184,7 @@ case $host in
     AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
     use_build_toolchain=$use_xcodepath
 
-    #darwin builds are always cross
+    # darwin builds are always cross
     cross_compiling="yes"
 
     platform_cflags="-std=gnu99 -no_compact_linkedit -no-cpp-precomp"
@@ -207,19 +210,30 @@ case $host in
     esac
     case $host in
       *86*-apple-darwin)
-        found_sdk_version=[`$use_xcodebuild -showsdks | sed -E -n 's/.*macosx([0-9]+)\.([0-9]+)/\1.\2/p' | sort  -n -t. -k1,1 -k2,2 | tail -n 1`]
-        case $use_xcode in
-          5.* | 5.*.* )
-            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
-            ;;
+        MC_CHECK_NOT_CPU([$use_cpu], "arm")
+
+        # setup which cpu to use
+        case $host in
+          x86_64-apple-darwin*)
+            if test "x$use_cpu" = "xauto"; then
+              use_cpu=x86_64
+            fi
+          ;;
+          i*86-apple-darwin*)
+            if test "x$use_cpu" = "xauto"; then
+              use_cpu=i386
+            fi
+            platform_ldflags+=" -read_only_relocs suppress"
+         ;;
           *)
-            use_toolchain="${use_toolchain:-$use_xcodepath}"
-            ;;
+            AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
         esac
+
+       # setup which sdk to use
+        found_sdk_version=[`$use_xcodebuild -showsdks | sed -E -n 's/.*macosx([0-9]+)\.([0-9]+)/\1.\2/p' | sort  -n -t. -k1,1 -k2,2 | tail -n 1`]
         use_sdk="${use_sdk:-$found_sdk_version}"
-        if test "$use_cpu" = "armv7"; then
-          AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
-        fi
+
+        # now that we know which sdk, error check sdk_name
         case $use_sdk in
           10.5);;
           10.6);;
@@ -232,46 +246,44 @@ case $host in
             AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
         esac
         sdk_name=macosx$use_sdk
-        use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name Path`]
+        platform_min_version="macosx-version-min=10.8"
 
-        case $host in
-          x86_64-apple-darwin*)
-            if test "x$use_cpu" = "xauto"; then
-              use_cpu=x86_64
-            fi
-          ;;
-          i*86-apple-darwin*)
-            if test "x$use_cpu" = "xauto"; then
-              use_cpu=i386
-            fi
-          ;;
-          *)
-            AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
-        esac
+        use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name Path`]
         platform_os="osx"
-        platform_min_version=macosx-version-min=10.8
+
+        # find the matching toolchain
+        case $use_xcode in
+          5.* | 5.*.* )
+            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
+            ;;
+          *)
+            use_toolchain="${use_toolchain:-$use_xcodepath}"
+            ;;
+        esac
       ;;
 
       arm-apple-darwin*)
+        MC_CHECK_NOT_CPU([$use_cpu], "*86")
+
+        # setup which cpu to use
         if test "x$use_cpu" = "xauto"; then
           use_cpu=armv7
         fi
-        if test "$use_cpu" != "armv7"; then
-          AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
-        fi
-        platform_min_version="iphoneos-version-min=8.4"
-        found_sdk_version=[`$use_xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}'`]
-        use_sdk="${use_sdk:-$found_sdk_version}"
-        sdk_name=iphoneos$use_sdk
-        case $use_xcode in
-          3.*.* | 4.* | 4.*.*)
-            use_toolchain="${use_toolchain:-`$use_xcodebuild -version -sdk $sdk_name PlatformPath`/Developer}"
-            ;;
-          *)
-            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
-            ;;
-        esac
-        
+
+        # setup which sdk to use
+        if test "$use_platform" = "tvos"; then
+          found_sdk_version=[`$use_xcodebuild -showsdks | grep appletvos | sort | tail -n 1 | awk '{ print $2}'`]
+          use_sdk="${use_sdk:-$found_sdk_version}"
+	  platform_cflags+=" -fembed-bitcode"
+	  platform_cxxflags+=" -fembed-bitcode"
+          sdk_name=appletvos$use_sdk
+          platform_min_version="appletvos-version-min=9.0"
+        else
+          found_sdk_version=[`$use_xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}'`]
+          use_sdk="${use_sdk:-$found_sdk_version}"
+          sdk_name=iphoneos$use_sdk
+          platform_min_version="iphoneos-version-min=8.4"
+         fi
 	case $use_sdk in
           4.*);;
           5.*);;
@@ -283,16 +295,31 @@ case $host in
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;
         esac
-        use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
+
+        # find the matching toolchain
+        case $use_xcode in
+          3.*.* | 4.* | 4.*.*)
+            use_toolchain="${use_toolchain:-`$use_xcodebuild -version -sdk $sdk_name PlatformPath`/Developer}"
+            ;;
+          *)
+            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
+            ;;
+        esac
+
         platform_os="ios"
-        tmp_flags="-mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -O3 -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
-        platform_cflags+=" $tmp_flags"
+        if [ ! test "x$use_cpu" = "xarm64" ]; then
+          platform_cflags+=" -mcpu=cortex-a8 -mfpu=neon"
+        fi
+        platform_cflags+=" -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings -O3"
+        platform_cflags+=" -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
+        platform_cflags+=" -Wno-error=implicit-function-declaration"
         platform_ldflags+=" -L$use_sdk_path/usr/lib/system"
-        platform_cxxflags+=" $tmp_flags"
+        platform_cxxflags+=" $cpu_flags"
+        use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
       ;;
     esac
     platform_cflags+=" -arch $use_cpu -m$platform_min_version"
-    platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path -stdlib=libc++"
+    platform_ldflags+=" -arch $use_cpu -m$platform_min_version -stdlib=libc++ -isysroot $use_sdk_path"
     platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -std=c++11 -stdlib=libc++"
     platform_includes="-isysroot $use_sdk_path"
     deps_dir=$sdk_name"_"$use_cpu-target
@@ -503,7 +530,6 @@ AC_SUBST(build_os)
 AC_SUBST(has_zlib)
 AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
-AC_SUBST(use_gplv3)
 AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
 
@@ -516,9 +542,14 @@ if test "$platform_os" == "android"; then
 fi
 
 if test "$platform_os" == "ios"; then
-  simulator_sdk_path=[`$use_xcodebuild -version -sdk iphonesimulator$use_sdk | grep ^Path | awk '{ print $2}'`]
+  if test "$use_platform" = "tvos"; then
+    simulator_sdk_path=[`$use_xcodebuild -version -sdk appletvsimulator$use_sdk  | grep ^Path | awk '{ print $2}'`]
+  else
+    simulator_sdk_path=[`$use_xcodebuild -version -sdk iphonesimulator$use_sdk  | grep ^Path | awk '{ print $2}'`]
+  fi
   cp -vf $simulator_sdk_path/usr/include/crt_externs.h $prefix/$deps_dir/include
 fi
+echo -e "use simulator:\t $use_simulator"
 
 if test "x$has_localeconv" == "xno" && test "$platform_os" == "android"; then
   cp -vf target/android-libc-replacements/locale.h $prefix/$deps_dir/include/

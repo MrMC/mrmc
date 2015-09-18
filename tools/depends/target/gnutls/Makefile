@@ -12,9 +12,12 @@ ifeq (darwin, $(findstring darwin, $(HOST)))
 ARCHIVE_TOOL=$(ARCHIVE_TOOL_NATIVE)
 endif
 
+CONFIGURE_HACKS = ac_cv_func_vfork_works=no
+CONFIGURE_HACKS+= ac_cv_func_fork=no
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --enable-local-libopts
+          ./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --enable-local-libopts --disable-doc --disable-tests $(CONFIGURE_HACKS)
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 

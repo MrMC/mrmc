@@ -31,6 +31,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -Np1 -i ../02-mysqlclient-ios.patch
 	cd $(PLATFORM); patch -Np1 -i ../03-mysqlclient-android.patch
 	cd $(PLATFORM); patch -p0 < ../04-strnlen.patch
+	cd $(PLATFORM); patch -p1 < ../05-mysqlclient-ios64.patch
 	cd $(PLATFORM); autoconf
 	cd $(PLATFORM); $(CONFIGURE) 
 

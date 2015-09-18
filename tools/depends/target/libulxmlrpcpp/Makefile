@@ -2,20 +2,17 @@
 DEPS= ../../Makefile.include Makefile
 
 # lib name, version
-LIBNAME=xmlrpc-c
-VERSION=1.33.17
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tgz
-BASE_URL=https://downloads.sourceforge.net/project/xmlrpc-c/Xmlrpc-c%20Super%20Stable/$(VERSION)
+LIBNAME=ulxmlrpcpp
+VERSION=1.7.5
+SOURCE=$(LIBNAME)-$(VERSION)-src
+ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
     ./configure --prefix=$(PREFIX) \
-    --disable-abyss-server \
-    --disable-cgi-server \
-    --enable-libxml2-backend
+    CFLAGS="-D__unix__" LDFLAGS="-lc++" CXXFLAGS="-D__unix__ -Wno-error=c++11-narrowing"
 
-LIBDYLIB=$(PLATFORM)/src/libxmlrpc.so
+LIBDYLIB=$(PLATFORM)/ulxmlrpcpp/.libs/libulxmlrpcpp.a
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
@@ -27,16 +24,15 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../mkandroid.patch
-	sed -ie "s|THREAD_LIBS = -lpthread|THREAD_LIBS = |" "$(PLATFORM)/config.mk.in"
-	sed -ie "s|-lpthread|$(THREAD_LIBS)|" "$(PLATFORM)/common.mk"
-	sed -ie "s|-lpthread|$(THREAD_LIBS)|" "$(PLATFORM)/lib/libutil/Makefile"
-	cd $(PLATFORM); cp ../config.sub .
-	cd $(PLATFORM); autoconf
+	sed -ie "s|contrib docs tests||" "$(PLATFORM)/Makefile.am"
+	sed -ie "s|contrib docs tests||" "$(PLATFORM)/ulxmlrpcpp/Makefile.am"
+	sed -ie "s|fork()|-1|" "$(PLATFORM)/ulxmlrpcpp/contrib/mprocess_rpc_server.cpp"
+	cd $(PLATFORM); $(AUTORECONF) -vif
+	cd $(PLATFORM); patch -p1 < ../tvos-bitcode-fix.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" LDFLAGS="$(LDFLAGS)" $(MAKE) -C $(PLATFORM)
+	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
@@ -48,4 +44,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-
