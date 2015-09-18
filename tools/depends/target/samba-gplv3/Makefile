@@ -7,14 +7,29 @@ VERSION=3.6.12
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
+# clang issue with optimizing out functions
+CONFIGURE_HAMMER=samba_cv_optimize_out_funcation_calls=no
+
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) \
-          --without-cluster-support --disable-swat --without-ldap \
-          --without-pam --without-pam_smbpass --with-fhs --with-libtalloc=no \
-          --with-libtdb=no --without-winbind --disable-cups --without-ads \
-          --disable-avahi --disable-fam --without-libaddns --without-libnetapi \
-          --without-dnsupdate --without-libsmbsharemodes \
-          --with-libiconv=$(STAGING_DIR)
+          ./configure --prefix=$(PREFIX) --disable-shared --enable-static \
+          --with-fhs \
+          --disable-fam \
+          --disable-cups \
+          --disable-swat \
+          --disable-avahi \
+          --disable-iprint \
+          --without-ads \
+          --without-pam \
+          --without-pam_smbpass \
+          --without-ldap \
+          --without-winbind \
+          --without-libaddns \
+          --without-libnetapi \
+          --without-dnsupdate \
+          --without-cluster-support \
+          --without-libsmbsharemodes \
+          --with-libiconv=$(STAGING_DIR) \
+          $(CONFIGURE_HAMMER)
 
 # configuration settings
 # android does not really support LFS but we can force it
@@ -46,19 +61,25 @@ endif
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/source3 libsmbclient
+	$(MAKE) -C $(PLATFORM)/source3 libwbclient
+	$(MAKE) -C $(PLATFORM)/source3 libtalloc
+	$(MAKE) -C $(PLATFORM)/source3 libtdb
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/source3 installlibsmbclient
-ifeq (darwin, $(findstring darwin, $(HOST)))
-	mv $(PREFIX)/lib/libsmbclient.dylib.0 $(PREFIX)/lib/libsmbclient.dylib
-	install_name_tool -id $(PREFIX)/lib/libsmbclient.dylib $(PREFIX)/lib/libsmbclient.dylib
-endif
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libsmbclient.so 
-	mv -f $(PREFIX)/lib/libsmbclient.so.0 $(PREFIX)/lib/libsmbclient.so
-	$(RPL) -e "libsmbclient.so.0" "libsmbclient.so\x00\x00" $(PREFIX)/lib/libsmbclient.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libsmbclient.so | grep ibrary
-endif
+	$(MAKE) -C $(PLATFORM)/source3 installlibwbclient
+	$(MAKE) -C $(PLATFORM)/source3 installlibtalloc
+	$(MAKE) -C $(PLATFORM)/source3 installlibtdb
+	# internal collides with _MD5xxx in libmicrohttpd.a
+	$(RPL) -e "_MD5Init" "_MDxInit" $(PREFIX)/lib/libsmbclient.a
+	$(RPL) -e "_MD5Final" "_MDxFinal" $(PREFIX)/lib/libsmbclient.a
+	$(RPL) -e "_MD5Update" "_MDxUpdate" $(PREFIX)/lib/libsmbclient.a
+	# internal collides with _SHA256_xxx in libcrypto.a(sha256.o)
+	$(RPL) -e "_SHA256_Init" "_SHA256xInit" $(PREFIX)/lib/libsmbclient.a
+	$(RPL) -e "_SHA256_Final" "_SHA256xFinal" $(PREFIX)/lib/libsmbclient.a
+	$(RPL) -e "_SHA256_Update" "_SHA256xUpdate" $(PREFIX)/lib/libsmbclient.a
+	# internal collides with _packet_send libssh.a(packet.o)
+	$(RPL) -e "_packet_send" "_SMBpkt_send" $(PREFIX)/lib/libsmbclient.a
 	touch $@
 
 clean:
