@@ -25,7 +25,7 @@ HEADER_SEARCH_PATHS = $(inherited) xbmc xbmc/linux xbmc/osx xbmc/cores/dvdplayer
 LIBRARY_SEARCH_PATHS = $(inherited) $(XBMC_DEPENDS)/lib $(XBMC_DEPENDS)/lib/mysql
 FRAMEWORK_SEARCH_PATHS = $(inherited) "$(SDKROOT)/System/Library/PrivateFrameworks/" "$(SDKROOT)/System/Library/Frameworks/"
 
-XBMC_OTHER_LDFLAGS_COMMON = $(inherited) -Wl,-headerpad_max_install_names -Wl,-all_load -lz -lm -liconv -lbz2 -lintl -lexpat -lssl -lgpg-error -lresolv -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -lsmbclient -lyajl -ljpeg -lpng -lgif -lcrypto -lgcrypt -lavdevice -lavfilter -lavcodec -lavformat -lpostproc -lavutil -ldcadec -lswresample -lswscale -ltag -lmysqlclient -lxml2 -lxmlrpc++ -lxmlrpc_client++ -lxslt -lnettle -lgmp -lhogweed -lgnutls -lsquish -lcrossguid
+XBMC_OTHER_LDFLAGS_COMMON = $(inherited) -Wl,-headerpad_max_install_names -Wl,-all_load -lz -lm -liconv -lresolv -lbz2 -lintl -lexpat -lssl -lgpg-error -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -ltdb -ltalloc -lwbclient -lsmbclient -lyajl -ljpeg -lpng -lgif -lcrypto -lgcrypt -lavfilter -lavcodec -lavformat -lpostproc -lavutil -ldcadec -lswresample -lswscale -ltag -lmysqlclient -lxml2 -lxmlrpc++ -lxmlrpc_client++ -lxslt -lnettle -lgmp -lhogweed -lgnutls -lsquish -lcrossguid
 
 CLANG_CXX_LANGUAGE_STANDARD = c++0x
 CLANG_CXX_LIBRARY = libc++
