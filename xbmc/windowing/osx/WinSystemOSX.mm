@@ -46,19 +46,6 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 //------------------------------------------------------------------------------------------
-// special object-c class for handling the inhibit display NSTimer callback.
-@interface windowInhibitScreenSaverClass : NSObject
-- (void) updateSystemActivity: (NSTimer*)timer;
-@end
-
-@implementation windowInhibitScreenSaverClass
--(void) updateSystemActivity: (NSTimer*)timer
-{
-  UpdateSystemActivity(UsrActivity);
-}
-@end
-
-//------------------------------------------------------------------------------------------
 #define MAX_DISPLAYS 32
 
 //------------------------------------------------------------------------------------------
@@ -1119,26 +1106,41 @@ void CWinSystemOSX::OnMove(int x, int y)
   //printf("CWinSystemOSX::OnMove\n");
 }
 
+IOPMAssertionID systemSleepAssertionID = kIOPMNullAssertionID;
 void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 {
   //printf("CWinSystemOSX::EnableSystemScreenSaver\n");
   // see Technical Q&A QA1340
-  static IOPMAssertionID assertionID = 0;
+  static IOPMAssertionID systemIdleAssertionID = kIOPMNullAssertionID;
+  static IOPMAssertionID systemSleepAssertionID = kIOPMNullAssertionID;
 
-  if (!bEnable)
+  if (bEnable)
   {
-    if (assertionID == 0)
+    if (systemIdleAssertionID != kIOPMNullAssertionID)
     {
-      CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
-      IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
-        kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
+      IOPMAssertionRelease(systemIdleAssertionID);
+      systemIdleAssertionID = kIOPMNullAssertionID;
     }
-    UpdateSystemActivity(UsrActivity);
+    if (systemSleepAssertionID != kIOPMNullAssertionID)
+    {
+      IOPMAssertionRelease(systemSleepAssertionID);
+      systemSleepAssertionID = kIOPMNullAssertionID;
+    }
   }
-  else if (assertionID != 0)
+  else
   {
-    IOPMAssertionRelease(assertionID);
-    assertionID = 0;
+    if (systemIdleAssertionID == kIOPMNullAssertionID)
+    {
+      CFStringRef reasonForActivity= CFSTR("MrMC requested disable system idle sleep");
+      IOPMAssertionCreateWithName(kIOPMAssertionTypeNoIdleSleep,
+        kIOPMAssertionLevelOn, reasonForActivity, &systemIdleAssertionID);
+    }
+    if (systemSleepAssertionID == kIOPMNullAssertionID)
+    {
+      CFStringRef reasonForActivity= CFSTR("MrMC requested disable system screen saver");
+      IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
+        kIOPMAssertionLevelOn, reasonForActivity, &systemSleepAssertionID);
+    }
   }
 
   m_use_system_screensaver = bEnable;
