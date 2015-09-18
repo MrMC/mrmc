@@ -24,7 +24,7 @@
 #include <math.h>
 
 extern "C" {
-#include "libavutil/samplefmt.h"
+#include <libavutil/samplefmt.h>
 }
 
 #ifdef __SSE__
