@@ -40,8 +40,11 @@ $(LIBDYLIB): $(PLATFORM)
 	$(STRIP_MEMMEM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	rm -f $(PREFIX)/lib/libmicrohttpd.so $(PREFIX)/lib/libmicrohttpd.so.5 $(PREFIX)/lib/libmicrohttpd.so.5.2.1
 	$(MAKE) -C $(PLATFORM)/src/microhttpd install
+	# internal _MD5xxx collides with others
+	$(RPL) -e "_MD5Init" "_MDyInit" $(PREFIX)/lib/libmicrohttpd.a
+	$(RPL) -e "_MD5Final" "_MDyFinal" $(PREFIX)/lib/libmicrohttpd.a
+	$(RPL) -e "_MD5Update" "_MDyUpdate" $(PREFIX)/lib/libmicrohttpd.a
 	touch $@
 
 clean:
