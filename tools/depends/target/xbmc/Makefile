@@ -15,6 +15,12 @@ CONFIGURE = cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
 ifeq ($(OS),android)
 CONFIGURE += --enable-codec=libstagefright,amcodec
 endif
+ifeq ($(OS),ios)
+CONFIGURE += --disable-airplay --disable-airtunes
+endif
+ifeq ($(OS),osx)
+CONFIGURE += --disable-airplay --disable-airtunes
+endif
 
 ifeq ($(Configuration),Release)
 DEBUG = --enable-debug=no
