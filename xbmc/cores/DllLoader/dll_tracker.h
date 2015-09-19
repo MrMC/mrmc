@@ -22,7 +22,7 @@
  */
 
 #include "threads/CriticalSection.h"
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 
 #include <list>
 #include <map>

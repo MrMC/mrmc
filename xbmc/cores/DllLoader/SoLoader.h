@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include "system.h"
 #ifdef TARGET_POSIX
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #endif
 #include "DllLoader.h"
 

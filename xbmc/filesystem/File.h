@@ -34,7 +34,7 @@
 #include <string>
 #include "utils/auto_buffer.h"
 #include "IFileTypes.h"
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 
 class BitstreamStats;
 class CURL;

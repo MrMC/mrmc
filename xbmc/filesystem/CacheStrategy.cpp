@@ -24,7 +24,7 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "SpecialProtocol.h"
-#include "PlatformDefs.h" //for PRIdS, PRId64
+#include "linux/PlatformDefs.h" //for PRIdS, PRId64
 #include "URL.h"
 #include "posix/PosixFile.h"
 #define CacheLocalFile CPosixFile

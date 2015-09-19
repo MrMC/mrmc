@@ -18,7 +18,7 @@
  *
  */
 
-#include "XHandle.h"
+#include "linux/XHandle.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 

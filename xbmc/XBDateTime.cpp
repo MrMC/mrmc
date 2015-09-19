@@ -27,8 +27,8 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Archive.h"
-#include "XTimeUtils.h"
-#include "XFileUtils.h"
+#include "linux/XTimeUtils.h"
+#include "linux/XFileUtils.h"
 
 #define SECONDS_PER_DAY 86400UL
 #define SECONDS_PER_HOUR 3600UL

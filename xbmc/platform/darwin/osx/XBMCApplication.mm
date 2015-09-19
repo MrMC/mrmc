@@ -42,7 +42,7 @@
 #import "platform/darwin/osx/CocoaInterface.h"
 #import "platform/darwin/DarwinUtils.h"
 
-#import "PlatformDefs.h"
+#import "linux/PlatformDefs.h"
 #import "messaging/ApplicationMessenger.h"
 #import "storage/osx/DarwinStorageProvider.h"
 

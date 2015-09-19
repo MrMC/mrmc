@@ -20,7 +20,7 @@
  *
  */
 
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include "DVDOverlay.h"
 #include <string.h>
 #include <stdlib.h>

@@ -9684,29 +9684,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = "";
 				GENERATE_PROFILING_CODE = NO;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/dvdplayer,
-					lib,
-					lib/ffmpeg,
-					addons/library.xbmc.addon,
-					$XBMC_DEPENDS/include,
-					$XBMC_DEPENDS/include/libcec,
-					$XBMC_DEPENDS/include/mysql,
-					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/libxml2,
-				);
-				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -9740,29 +9720,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = "";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/dvdplayer,
-					lib,
-					lib/ffmpeg,
-					addons/library.xbmc.addon,
-					$XBMC_DEPENDS/include,
-					$XBMC_DEPENDS/include/libcec,
-					$XBMC_DEPENDS/include/mysql,
-					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/libxml2,
-				);
-				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -9843,22 +9803,7 @@
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/dvdplayer,
-					lib,
-					addons/library.xbmc.addon,
-					$XBMC_DEPENDS/include,
-					$XBMC_DEPENDS/include/libcec,
-					$XBMC_DEPENDS/include/mysql,
-					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/libxml2,
-				);
-				INFOPLIST_FILE = "$SRCROOT/xbmc/platform/darwin/ios/IOS-Info.plist";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				PROVISIONING_PROFILE = "";
@@ -9887,22 +9832,7 @@
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/dvdplayer,
-					lib,
-					addons/library.xbmc.addon,
-					$XBMC_DEPENDS/include,
-					$XBMC_DEPENDS/include/libcec,
-					$XBMC_DEPENDS/include/mysql,
-					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/libxml2,
-				);
-				INFOPLIST_FILE = "$SRCROOT/xbmc/platform/darwin/ios/IOS-Info.plist";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;

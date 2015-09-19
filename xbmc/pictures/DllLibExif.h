@@ -21,7 +21,7 @@
  */
 
 #include "DynamicDll.h"
-#include "lib/libexif/libexif.h"
+#include "libexif/libexif.h"
 
 class DllLibExifInterface
 {

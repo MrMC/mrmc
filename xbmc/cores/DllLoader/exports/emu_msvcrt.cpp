@@ -34,7 +34,7 @@
 #include <time.h>
 #include <signal.h>
 #ifdef TARGET_POSIX
-  #include "PlatformDefs.h" // for __stat64
+  #include "linux/PlatformDefs.h" // for __stat64
 #endif
 #include "Util.h"
 #include "filesystem/SpecialProtocol.h"

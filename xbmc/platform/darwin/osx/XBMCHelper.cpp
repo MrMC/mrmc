@@ -25,7 +25,7 @@
 #include <mach-o/dyld.h>
 
 #include "XBMCHelper.h"
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include "Util.h"
 #include "CompileInfo.h"
 

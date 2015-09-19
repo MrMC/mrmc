@@ -22,7 +22,7 @@
  *
  */
 
-#include "XMemUtils.h"
+#include "linux/XMemUtils.h"
 #include "Util.h"
 
 #if defined(TARGET_DARWIN)
