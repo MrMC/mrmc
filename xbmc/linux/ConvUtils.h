@@ -20,7 +20,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "PlatformDefs.h" // UINT DWORD LPCSTR LPSTR LPBOOL ...
+#include "linux/PlatformDefs.h" // UINT DWORD LPCSTR LPSTR LPBOOL ...
 
 long long Int32x32To64(long Multiplier, long Multiplicand);
 uint32_t GetLastError();

@@ -21,7 +21,7 @@
  */
 
 #include "DVDOverlay.h"
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
 
 #include <string>

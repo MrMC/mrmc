@@ -25,7 +25,7 @@
 
 #include "system.h"
 #ifdef TARGET_POSIX
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #endif
 
 class LibraryLoader

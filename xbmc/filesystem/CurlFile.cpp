@@ -34,9 +34,9 @@
 #ifdef TARGET_POSIX
 #include <errno.h>
 #include <inttypes.h>
-#include "../linux/XFileUtils.h"
-#include "../linux/XTimeUtils.h"
-#include "../linux/ConvUtils.h"
+#include "linux/XFileUtils.h"
+#include "linux/XTimeUtils.h"
+#include "linux/ConvUtils.h"
 #endif
 
 #include "DllLibCurl.h"

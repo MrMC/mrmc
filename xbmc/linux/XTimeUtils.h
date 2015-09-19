@@ -21,7 +21,7 @@
  *
  */
 
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 
 void GetLocalTime(LPSYSTEMTIME);
 

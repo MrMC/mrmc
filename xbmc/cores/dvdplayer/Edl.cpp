@@ -25,7 +25,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/PVRManager.h"
 

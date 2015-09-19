@@ -21,11 +21,11 @@
  *
  */
 
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include "XHandlePublic.h"
-#include "XFileUtils.h"
-#include "XTimeUtils.h"
-#include "XMemUtils.h"
+#include "linux/XFileUtils.h"
+#include "linux/XTimeUtils.h"
+#include "linux/XMemUtils.h"
 #include "ConvUtils.h"
 
 #endif

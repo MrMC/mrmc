@@ -60,7 +60,7 @@
 #else
   #include <net/if_arp.h>
 #endif
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include "NetworkLinux.h"
 #include "Util.h"
 #include "utils/StringUtils.h"

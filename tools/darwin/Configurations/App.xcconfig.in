@@ -18,14 +18,33 @@
 //
 //
 
+// Settings here will OVERRIDE those in project panel unless inherited
+
 XBMC_DEPENDS_ROOT = @DEPENDS_ROOT_FOR_XCODE@
 
-HEADER_SEARCH_PATHS = $(inherited) xbmc xbmc/linux xbmc/osx xbmc/cores/dvdplayer lib $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2
+// This setting is for devs that do not understand the difference
+// between #include <some.h> vs #include "some.h".
+// <> is for system includes, "" is for user includes.
+// Do not mix them or the include gods get angry.
+ALWAYS_SEARCH_USER_PATHS = NO
+
+// This is #include "some.h"
+USER_HEADER_SEARCH_PATHS = $(inherited) xbmc xbmc/cores/dvdplayer addons/library.xbmc.addon lib
+
+// This is #include <some.h>
+// Normally $XBMC_DEPENDS/include is all you need but some libs
+// incude others using wacky paths, include them here to fix that.
+HEADER_SEARCH_PATHS = $(inherited) $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $(XBMC_DEPENDS)/include/libxml2
 
 LIBRARY_SEARCH_PATHS = $(inherited) $(XBMC_DEPENDS)/lib $(XBMC_DEPENDS)/lib/mysql
-FRAMEWORK_SEARCH_PATHS = $(inherited) "$(SDKROOT)/System/Library/PrivateFrameworks/" "$(SDKROOT)/System/Library/Frameworks/"
 
-XBMC_OTHER_LDFLAGS_COMMON = $(inherited) -Wl,-headerpad_max_install_names -Wl,-all_load -lz -lm -liconv -lresolv -lbz2 -lintl -lexpat -lssl -lgpg-error -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -ltdb -ltalloc -lwbclient -lsmbclient -lyajl -ljpeg -lpng -lgif -lcrypto -lgcrypt -lavfilter -lavcodec -lavformat -lpostproc -lavutil -ldcadec -lswresample -lswscale -ltag -lmysqlclient -lxml2 -lxmlrpc++ -lxmlrpc_client++ -lxslt -lnettle -lgmp -lhogweed -lgnutls -lsquish -lcrossguid
+// These are the libs we need to link, xcode will supply any defaults
+APP_SYSTEM_LIBS = -lz -lm -liconv -lresolv -lbz2
+APP_FFMPEG_LIBS = -lavfilter -lavcodec -lavformat -lpostproc -lavutil -lswresample -lswscale
+APP_SAMBA__LIBS = -ltdb -ltalloc -lwbclient -lsmbclient
+APP_XMLRPC_LIBS = -lxmlrpc++ -lxmlrpc_client++
+// -Wl,-all_load is a hammer, todo: remove it
+APP_OTHER_LDFLAGS_COMMON = $(APP_SYSTEM_LIBS) -Wl,-all_load -lintl -lexpat -lssl -lgpg-error -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -lyajl -ljpeg -lpng -lgif -lcrypto -lgcrypt -ldcadec -ltag -lmysqlclient -lxml2 -lxslt -lnettle -lgmp -lhogweed -lgnutls -lsquish -lcrossguid $(APP_XMLRPC_LIBS) $(APP_SAMBA__LIBS) $(APP_FFMPEG_LIBS)
 
 CLANG_CXX_LANGUAGE_STANDARD = c++0x
 CLANG_CXX_LIBRARY = libc++

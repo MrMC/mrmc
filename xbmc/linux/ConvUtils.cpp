@@ -18,7 +18,7 @@
  *
  */
 
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 
 #ifdef TARGET_POSIX
 

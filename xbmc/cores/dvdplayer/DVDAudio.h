@@ -24,7 +24,7 @@
   #include "config.h"
 #endif
 #include "threads/CriticalSection.h"
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 class IAEStream;

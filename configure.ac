@@ -920,8 +920,6 @@ if test "$use_mysql" = "yes"; then
 fi
 AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([LIBDCADEC], [dcadec],, AC_MSG_ERROR([libdcadec not found]))
 
 PKG_CHECK_MODULES([LIBCURL], [libcurl],, AC_MSG_ERROR([libcurl not found]))
@@ -954,8 +952,6 @@ PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS],
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([gif],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([xmlrpc++],    [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([xmlrpc_client++],[main],, AC_MSG_ERROR($missing_library))
 
@@ -1119,9 +1115,6 @@ fi
   fi
 fi
 
-XB_FIND_SONAME([OGG],         [ogg])
-XB_FIND_SONAME([VORBIS],      [vorbis])
-XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([ASS],         [ass])
 
 # WebServer
@@ -2148,14 +2141,10 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(FFMPEG_LIBDIR)
 AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(GNUTLS_ALL_LIBS)
-AC_SUBST(VORBISENC_ALL_LIBS)
 AC_SUBST(DCADEC_ALL_LIBS)
 AC_SUBST(USE_TOUCH_SKIN)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(LIBCURL_BASENAME)
-AC_SUBST(LIBVORBISFILE_BASENAME)
-AC_SUBST(LIBOGG_BASENAME)
-AC_SUBST(LIBVORBIS_BASENAME)
 AC_SUBST(LIBASS_BASENAME)
 AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)
 AC_SUBST(USE_OPENGL)

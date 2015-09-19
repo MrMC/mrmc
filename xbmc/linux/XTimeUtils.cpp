@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#include "XTimeUtils.h"
+#include "linux/XTimeUtils.h"
 #include "LinuxTimezone.h"
 
 #if defined(TARGET_DARWIN)

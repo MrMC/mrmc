@@ -20,9 +20,9 @@
 
 #include "system.h"
 #include "PlatformInclude.h"
-#include "XHandle.h"
-#include "XFileUtils.h"
-#include "XTimeUtils.h"
+#include "linux/XHandle.h"
+#include "linux/XFileUtils.h"
+#include "linux/XTimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 

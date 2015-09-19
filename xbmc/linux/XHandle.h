@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include "XHandlePublic.h"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"

@@ -20,7 +20,7 @@
  */
 
 #include "AEAudioFormat.h"
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include <math.h>
 
 extern "C" {

@@ -29,7 +29,7 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include <deque>
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 #include "threads/Event.h"
 
 class CRenderCapture;

@@ -177,7 +177,7 @@
 #include "input/InputManager.h"
 
 #ifdef TARGET_POSIX
-#include "XHandle.h"
+#include "linux/XHandle.h"
 #endif
 
 #if defined(TARGET_ANDROID)
