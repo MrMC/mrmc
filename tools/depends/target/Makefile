@@ -62,12 +62,7 @@ ifeq ($(OS),ios)
 endif
 
 ifeq ($(OS),osx)
-  ifeq ($(SIMULATOR),no)
-    DEPENDS += libGLEW
-    EXCLUDED_DEPENDS += libcec
-  else
-    EXCLUDED_DEPENDS += libcec
-  endif
+  DEPENDS += libGLEW
   EXCLUDED_DEPENDS += libusb
 endif
 
