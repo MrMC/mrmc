@@ -62,7 +62,10 @@ ifeq ($(OS),ios)
 endif
 
 ifeq ($(OS),osx)
-  DEPENDS += libGLEW
+  ifneq ($(NEVER_YOU_MIND),yes)
+    DEPENDS += libGLEW
+  endif
+  EXCLUDED_DEPENDS += libcec
   EXCLUDED_DEPENDS += libusb
 endif
 
