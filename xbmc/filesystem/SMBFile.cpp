@@ -58,6 +58,8 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
   return orig_cache(c, server, share, workgroup, username);
 }
 
+bool CSMB::IsFirstInit = true;
+
 CSMB::CSMB()
 {
   m_IdleTimeout = 0;
@@ -175,7 +177,23 @@ void CSMB::Init()
 #endif
 
     // initialize samba and do some hacking into the settings
-    if (smbc_init_context(m_context) == NULL)
+    if (smbc_init_context(m_context))
+    {
+      // setup context using the smb old interface compatibility
+      SMBCCTX *old_context = smbc_set_context(m_context);
+      // free previous context or we leak it, this comes from smbc_init above.
+      // there is a bug in smbclient (old interface), if we init/set a context
+      // then set(null)/free it in DeInit above, the next smbc_set_context
+      // return the already freed previous context, free again and bang, crash.
+      // so we setup a stic bool to track the first init so we can free the
+      // context associated with the initial smbc_init.
+      if (old_context && IsFirstInit)
+      {
+        smbc_free_context(old_context, 1);
+        IsFirstInit = false;
+      }
+    }
+    else
     {
       smbc_free_context(m_context, 1);
       m_context = NULL;
