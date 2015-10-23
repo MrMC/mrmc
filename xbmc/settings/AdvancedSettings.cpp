@@ -1043,6 +1043,11 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "capath", m_databaseVideo.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseVideo.ciphers);
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseVideo.compression);
+    CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_VIDEO);
+    if (setting != NULL)
+    {
+      setting->SetVisible(false);
+    }
   }
 
   pDatabase = pRootElement->FirstChildElement("musicdatabase");
@@ -1060,6 +1065,11 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "capath", m_databaseMusic.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseMusic.ciphers);
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseMusic.compression);
+    CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_MUSIC);
+    if (setting != NULL)
+    {
+      setting->SetVisible(false);
+    }
   }
 
   pDatabase = pRootElement->FirstChildElement("tvdatabase");
@@ -1343,4 +1353,9 @@ std::string CAdvancedSettings::GetMusicExtensions() const
 {
   std::string result(m_musicExtensions);
   return result;
+}
+
+bool CAdvancedSettings::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  return (!(g_advancedSettings.m_databaseMusic.type == "mysql") && !(g_advancedSettings.m_databaseVideo.type == "mysql"));
 }

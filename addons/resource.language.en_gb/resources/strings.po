@@ -4076,7 +4076,41 @@ msgctxt "#1260"
 msgid "Announce services to other systems"
 msgstr ""
 
-#empty strings from id 1261 to 1267
+#: system/settings/settings.xml
+msgctxt "#1261"
+msgid "MySQL"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1262"
+msgid "Setup remote MySQL database connection"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1263"
+msgid "Enable/Disable MySQL setup"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1264"
+msgid "Define server port"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1265"
+msgid "Define video database name"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1266"
+msgid "Define music database name"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1267"
+msgid "Name to be used to connect to or create new database"
+msgstr ""
+
 
 #: system/settings/settings.xml
 msgctxt "#1268"
