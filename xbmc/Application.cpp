@@ -985,7 +985,14 @@ bool CApplication::Initialize()
   //  uses these other libraries."
   g_curlInterface.Load();
   g_curlInterface.Unload();
-
+  
+  // check if we have set internal MYSQL settings and load
+  const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
+  if (((CSettingBool*)mysqlSetting)->GetValue())
+  {
+    g_advancedSettings.setInetrnalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
+  }
+  
   // initialize (and update as needed) our databases
   CDatabaseManager::GetInstance().Initialize();
 

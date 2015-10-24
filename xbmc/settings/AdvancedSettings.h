@@ -393,6 +393,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_userAgent;
 
     static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data);
+    void setInetrnalMYSQL(const bool enable, const bool init);
   private:
     std::string m_musicExtensions;
     void setExtraLogLevel(const std::vector<CVariant> &components);

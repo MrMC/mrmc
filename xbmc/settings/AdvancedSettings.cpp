@@ -28,6 +28,10 @@
 #include "system.h"
 #include "AdvancedSettings.h"
 #include "Application.h"
+#include "DatabaseManager.h"
+#include "GUIInfoManager.h"
+#include "dialogs/GUIDialogBusy.h"
+
 #include "network/DNSNameCache.h"
 #include "filesystem/File.h"
 #include "utils/LangCodeExpander.h"
@@ -46,6 +50,7 @@
 #include "addons/IAddon.h"
 #include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
+#include "guilib/GUIWindowManager.h"
 #if defined(TARGET_DARWIN_IOS)
 #include "platform/darwin/DarwinUtils.h"
 #endif
@@ -103,6 +108,8 @@ void CAdvancedSettings::OnSettingChanged(const CSetting *setting)
     m_extraLogEnabled = static_cast<const CSettingBool*>(setting)->GetValue();
   else if (settingId == CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL)
     setExtraLogLevel(CSettingUtils::GetList(static_cast<const CSettingList*>(setting)));
+  else if (settingId == CSettings::SETTING_MYSQL_ENABLED)
+    setInetrnalMYSQL(((CSettingBool*)setting)->GetValue(), true);
 }
 
 void CAdvancedSettings::Initialize()
@@ -1027,51 +1034,60 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pPVR, "numericchannelswitchtimeout", m_iPVRNumericChannelSwitchTimeout, 50, 60000);
   }
 
-  TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
-  if (pDatabase)
+  TiXmlElement* pDatabase;
+  // check if we have set internal MYSQL settings and load
+  const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
+  if (((CSettingBool*)mysqlSetting)->GetValue())
   {
-    CLog::Log(LOGWARNING, "VIDEO database configuration is experimental.");
-    XMLUtils::GetString(pDatabase, "type", m_databaseVideo.type);
-    XMLUtils::GetString(pDatabase, "host", m_databaseVideo.host);
-    XMLUtils::GetString(pDatabase, "port", m_databaseVideo.port);
-    XMLUtils::GetString(pDatabase, "user", m_databaseVideo.user);
-    XMLUtils::GetString(pDatabase, "pass", m_databaseVideo.pass);
-    XMLUtils::GetString(pDatabase, "name", m_databaseVideo.name);
-    XMLUtils::GetString(pDatabase, "key", m_databaseVideo.key);
-    XMLUtils::GetString(pDatabase, "cert", m_databaseVideo.cert);
-    XMLUtils::GetString(pDatabase, "ca", m_databaseVideo.ca);
-    XMLUtils::GetString(pDatabase, "capath", m_databaseVideo.capath);
-    XMLUtils::GetString(pDatabase, "ciphers", m_databaseVideo.ciphers);
-    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseVideo.compression);
-    CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_VIDEO);
-    if (setting != NULL)
+    setInetrnalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
+  }
+  else // no mysql settings in guisettings.xml, check advanced settings
+  {
+    pDatabase = pRootElement->FirstChildElement("videodatabase");
+    if (pDatabase)
     {
-      setting->SetVisible(false);
+      CLog::Log(LOGWARNING, "VIDEO database configuration is experimental.");
+      XMLUtils::GetString(pDatabase, "type", m_databaseVideo.type);
+      XMLUtils::GetString(pDatabase, "host", m_databaseVideo.host);
+      XMLUtils::GetString(pDatabase, "port", m_databaseVideo.port);
+      XMLUtils::GetString(pDatabase, "user", m_databaseVideo.user);
+      XMLUtils::GetString(pDatabase, "pass", m_databaseVideo.pass);
+      XMLUtils::GetString(pDatabase, "name", m_databaseVideo.name);
+      XMLUtils::GetString(pDatabase, "key", m_databaseVideo.key);
+      XMLUtils::GetString(pDatabase, "cert", m_databaseVideo.cert);
+      XMLUtils::GetString(pDatabase, "ca", m_databaseVideo.ca);
+      XMLUtils::GetString(pDatabase, "capath", m_databaseVideo.capath);
+      XMLUtils::GetString(pDatabase, "ciphers", m_databaseVideo.ciphers);
+      XMLUtils::GetBoolean(pDatabase, "compression", m_databaseVideo.compression);
+      CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_VIDEO);
+      if (setting != NULL)
+      {
+        setting->SetVisible(false);
+      }
+    }
+
+    pDatabase = pRootElement->FirstChildElement("musicdatabase");
+    if (pDatabase)
+    {
+      XMLUtils::GetString(pDatabase, "type", m_databaseMusic.type);
+      XMLUtils::GetString(pDatabase, "host", m_databaseMusic.host);
+      XMLUtils::GetString(pDatabase, "port", m_databaseMusic.port);
+      XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
+      XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
+      XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
+      XMLUtils::GetString(pDatabase, "key", m_databaseMusic.key);
+      XMLUtils::GetString(pDatabase, "cert", m_databaseMusic.cert);
+      XMLUtils::GetString(pDatabase, "ca", m_databaseMusic.ca);
+      XMLUtils::GetString(pDatabase, "capath", m_databaseMusic.capath);
+      XMLUtils::GetString(pDatabase, "ciphers", m_databaseMusic.ciphers);
+      XMLUtils::GetBoolean(pDatabase, "compression", m_databaseMusic.compression);
+      CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_MUSIC);
+      if (setting != NULL)
+      {
+        setting->SetVisible(false);
+      }
     }
   }
-
-  pDatabase = pRootElement->FirstChildElement("musicdatabase");
-  if (pDatabase)
-  {
-    XMLUtils::GetString(pDatabase, "type", m_databaseMusic.type);
-    XMLUtils::GetString(pDatabase, "host", m_databaseMusic.host);
-    XMLUtils::GetString(pDatabase, "port", m_databaseMusic.port);
-    XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
-    XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
-    XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
-    XMLUtils::GetString(pDatabase, "key", m_databaseMusic.key);
-    XMLUtils::GetString(pDatabase, "cert", m_databaseMusic.cert);
-    XMLUtils::GetString(pDatabase, "ca", m_databaseMusic.ca);
-    XMLUtils::GetString(pDatabase, "capath", m_databaseMusic.capath);
-    XMLUtils::GetString(pDatabase, "ciphers", m_databaseMusic.ciphers);
-    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseMusic.compression);
-    CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_MUSIC);
-    if (setting != NULL)
-    {
-      setting->SetVisible(false);
-    }
-  }
-
   pDatabase = pRootElement->FirstChildElement("tvdatabase");
   if (pDatabase)
   {
@@ -1109,6 +1125,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
   if (pElement)
   {
+
     XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
   }
   
@@ -1357,5 +1374,53 @@ std::string CAdvancedSettings::GetMusicExtensions() const
 
 bool CAdvancedSettings::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return (!(g_advancedSettings.m_databaseMusic.type == "mysql") && !(g_advancedSettings.m_databaseVideo.type == "mysql"));
+  const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
+  return (((g_advancedSettings.m_databaseMusic.type == "mysql") || (g_advancedSettings.m_databaseVideo.type == "mysql"))
+          && !((CSettingBool*)mysqlSetting)->GetValue()
+          );
+}
+
+void CAdvancedSettings::setInetrnalMYSQL(const bool enable, const bool init)
+{
+  if (enable) // ENABLED
+  {
+    // We must have HOST, USER and PASS
+    if (!CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_HOST).empty() &&
+        !CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_USER).empty() &&
+        !CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_PASS).empty())
+    {
+      g_advancedSettings.m_databaseMusic.type = "mysql";
+      g_advancedSettings.m_databaseMusic.user = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_USER);
+      g_advancedSettings.m_databaseMusic.pass = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_PASS);
+      g_advancedSettings.m_databaseMusic.port = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_PORT);
+      g_advancedSettings.m_databaseMusic.host = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_HOST);
+      g_advancedSettings.m_databaseMusic.name = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_MUSIC);
+      
+      g_advancedSettings.m_databaseVideo.type = "mysql";
+      g_advancedSettings.m_databaseVideo.user = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_USER);
+      g_advancedSettings.m_databaseVideo.pass = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_PASS);
+      g_advancedSettings.m_databaseVideo.port = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_PORT);
+      g_advancedSettings.m_databaseVideo.host = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_HOST);
+      g_advancedSettings.m_databaseVideo.name = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_VIDEO);
+      
+    }
+  }
+  else //DISABLED
+  {
+    m_databaseMusic.Reset();
+    m_databaseVideo.Reset();
+  }
+  // check if we need to intiialize databases, only do this if we are settings it while running.
+  // if we load it from start, application.cpp will initialize it anyway
+  if (init)
+  {
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if (dialog)
+      dialog->Open();
+    CSingleLock lock(g_graphicsContext);
+    CDatabaseManager::GetInstance().Initialize();
+    g_infoManager.ResetCache();
+    g_infoManager.ResetLibraryBools();
+    dialog->Close();
+  }
 }
