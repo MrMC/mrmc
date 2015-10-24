@@ -31,6 +31,7 @@
 #include "DatabaseManager.h"
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #include "network/DNSNameCache.h"
 #include "filesystem/File.h"
@@ -110,6 +111,7 @@ void CAdvancedSettings::OnSettingChanged(const CSetting *setting)
     setExtraLogLevel(CSettingUtils::GetList(static_cast<const CSettingList*>(setting)));
   else if (settingId == CSettings::SETTING_MYSQL_ENABLED)
     setInetrnalMYSQL(((CSettingBool*)setting)->GetValue(), true);
+//  CSettings::GetInstance().Save();
 }
 
 void CAdvancedSettings::Initialize()
@@ -1403,6 +1405,12 @@ void CAdvancedSettings::setInetrnalMYSQL(const bool enable, const bool init)
       g_advancedSettings.m_databaseVideo.host = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_HOST);
       g_advancedSettings.m_databaseVideo.name = CSettings::GetInstance().GetString(CSettings::SETTING_MYSQL_VIDEO);
       
+    }
+    else //if not, set ENABLED to false
+    {
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36013), g_localizeStrings.Get(36014), 3000, true);
+      const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
+      ((CSettingBool*)mysqlSetting)->SetValue(false);
     }
   }
   else //DISABLED

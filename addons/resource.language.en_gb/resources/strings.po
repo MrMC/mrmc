@@ -14797,7 +14797,15 @@ msgctxt "#36012"
 msgid "Couldn't initialise the CEC adapter. Please check your settings."
 msgstr ""
 
-#empty strings from id 36013 to 36014
+#: xbmc/peripherals/devices/peripheralcecadapter.cpp
+msgctxt "#36013"
+msgid "User,password and host must be set,"
+msgstr ""
+
+#: xbmc/peripherals/devices/peripheralcecadapter.cpp
+msgctxt "#36014"
+msgid "disabling MYSQL configuration"
+msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36015"
