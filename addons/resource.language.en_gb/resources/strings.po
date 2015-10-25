@@ -5303,7 +5303,12 @@ msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr ""
 
-#empty strings from id 12374 to 12375
+#: unknown
+msgctxt "#12374"
+msgid "Loading database, please wait"
+msgstr ""
+
+#empty strings from id 12375
 
 #: xbmc\settings\dialogs\GUIDialogAudioDSPSettings.cpp
 #: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
