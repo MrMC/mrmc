@@ -27,6 +27,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
+#include "utils/JobManager.h"
 
 class CVariant;
 
@@ -115,7 +116,7 @@ struct StagefrightConfig
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
+class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJobQueue
 {
   public:
     CAdvancedSettings();

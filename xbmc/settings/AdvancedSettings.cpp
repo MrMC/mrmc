@@ -47,6 +47,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "utils/JobManager.h"
 #include "filesystem/SpecialProtocol.h"
 #include "addons/IAddon.h"
 #include "addons/AddonManager.h"
@@ -58,6 +59,29 @@
 
 using namespace ADDON;
 using namespace XFILE;
+
+
+class CAdvancedSettingsJob: public CJob
+{
+public:
+  CAdvancedSettingsJob(CGUIDialogBusy* dialog)
+  : m_dialog(dialog)
+  {
+  }
+  virtual ~CAdvancedSettingsJob()
+  {
+  }
+  virtual bool DoWork()
+  {
+    CDatabaseManager::GetInstance().Initialize();
+    g_infoManager.ResetCache();
+    g_infoManager.ResetLibraryBools();
+    m_dialog->Close();
+    return true;
+  }
+private:
+  CGUIDialogBusy* m_dialog;
+};
 
 CAdvancedSettings::CAdvancedSettings()
 {
@@ -1425,10 +1449,7 @@ void CAdvancedSettings::setInetrnalMYSQL(const bool enable, const bool init)
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
       dialog->Open();
-    CSingleLock lock(g_graphicsContext);
-    CDatabaseManager::GetInstance().Initialize();
-    g_infoManager.ResetCache();
-    g_infoManager.ResetLibraryBools();
-    dialog->Close();
+    //spin off new job, keep it moving
+    AddJob(new CAdvancedSettingsJob(dialog));
   }
 }
