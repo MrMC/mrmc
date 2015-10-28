@@ -1,0 +1,45 @@
+-include ../../Makefile.include
+DEPS= ../../Makefile.include Makefile
+
+# lib name, version
+LIBNAME=libtasn1
+VERSION=4.7
+SOURCE=$(LIBNAME)-$(VERSION)
+ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=http://ftp.gnu.org/gnu/libtasn1
+
+# configuration settings
+CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
+	./configure --prefix=$(PREFIX) --disable-shared \
+
+LIBDYLIB=$(PLATFORM)/lib/.libs/libtasn1.a
+
+CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
+
+all: .installed-$(PLATFORM)
+
+$(TARBALLS_LOCATION)/$(ARCHIVE):
+	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
+
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
+	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); $(CONFIGURE)
+
+$(LIBDYLIB): $(PLATFORM)
+	$(MAKE) -C $(PLATFORM)
+
+.installed-$(PLATFORM): $(LIBDYLIB)
+	$(MAKE) -C $(PLATFORM) install
+	rm -f $(PREFIX)/bin/asn1Parser
+	rm -f $(PREFIX)/bin/asn1Coding
+	rm -f $(PREFIX)/bin/asn1Decoding
+	touch $@
+
+clean:
+	$(MAKE) -C $(PLATFORM) clean
+	rm -f .installed-$(PLATFORM)
+
+distclean::
+	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+
