@@ -20,7 +20,8 @@
  *
  */
 
-#import <Cocoa/Cocoa.h>
+#import <CoreFoundation/CFNumber.h>
+#import <CoreFoundation/CFDictionary.h>
 
 Boolean   GetDictionaryBoolean(CFDictionaryRef theDict, const void* key);
 long      GetDictionaryLong(CFDictionaryRef theDict, const void* key);

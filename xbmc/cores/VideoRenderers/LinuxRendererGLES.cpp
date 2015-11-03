@@ -47,7 +47,7 @@
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
 #include "RenderFormats.h"
-#include "xbmc/Application.h"
+#include "Application.h"
 #include "cores/IPlayer.h"
 
 extern "C" {
