@@ -27,12 +27,16 @@
 #include <CoreVideo/CoreVideo.h>
 #include <CoreMedia/CoreMedia.h>
 
+class DllVideoToolBox;
+class CBitstreamConverter;
+struct VTDumpDecompressionPropCtx;
+
 // tracks a frame in and output queue in display order
 typedef struct frame_queue {
   double              dts;
   double              pts;
-  int                 width;
-  int                 height;
+  size_t              width;
+  size_t              height;
   double              sort_time;
   FourCharCode        pixel_buffer_format;
   CVPixelBufferRef    pixel_buffer_ref;
@@ -63,8 +67,14 @@ protected:
     void *refcon, CFDictionaryRef frameInfo,
     OSStatus status, UInt32 infoFlags, CVBufferRef imageBuffer);
 
+  static void vtdec_session_dump_property(
+    CFStringRef prop_name, CFDictionaryRef prop_attrs, CDVDVideoCodecVideoToolBox *ctx);
+  void vtdec_session_dump_properties();
+
+  DllVideoToolBox   *m_dll;
   void              *m_vt_session;    // opaque videotoolbox session
-  CMFormatDescriptionRef m_fmt_desc;
+  CBitstreamConverter    *m_bitstream;
+  CMFormatDescriptionRef  m_fmt_desc;
 
   const char        *m_pFormatName;
   bool              m_DropPictures;
@@ -75,9 +85,6 @@ protected:
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
   int32_t           m_queue_depth;    // we will try to keep the queue depth at m_max_ref_frames
   int32_t           m_max_ref_frames;
-
-  bool              m_convert_bytestream;
-  bool              m_convert_3byteTo4byteNALSize;
 };
 
 #endif
