@@ -36,7 +36,6 @@ public:
   static bool        DeviceHasRetina(double &scale);
   static bool        DeviceHasLeakyVDA(void);
   static bool        DeviceHas10BitH264(void);
-  static bool        DeviceHasNativeFullscreen(void);
   static const char *GetOSReleaseString(void);
   static const char *GetOSVersionString(void);
   static float       GetIOSVersion(void);
