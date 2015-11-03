@@ -28,3 +28,8 @@ long      GetDictionaryLong(CFDictionaryRef theDict, const void* key);
 int       GetDictionaryInt(CFDictionaryRef theDict, const void* key);
 float     GetDictionaryFloat(CFDictionaryRef theDict, const void* key);
 double    GetDictionaryDouble(CFDictionaryRef theDict, const void* key);
+void      CFDictionarySetSInt32(CFMutableDictionaryRef dictionary, CFStringRef key, SInt32 numberSInt32);
+void      CFDictionarySetDouble(CFMutableDictionaryRef dictionary, CFStringRef key, double numberDouble);
+void      CFMutableDictionarySetData(CFMutableDictionaryRef  dict, CFStringRef key, const uint8_t *value, int length);
+void      CFMutableDictionarySetObject(CFMutableDictionaryRef dict, CFStringRef key, CFTypeRef *value);
+void      CFMutableDictionarySetString(CFMutableDictionaryRef dict, CFStringRef key, const char *value);
