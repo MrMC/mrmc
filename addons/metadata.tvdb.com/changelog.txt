@@ -1,3 +1,6 @@
+[B]2.0.0[/B]
+ - Rename to MrMC and add new API key
+ 
 [B]1.8.2[/B]
 - Fixed: Runtime being zero in some cases
 
