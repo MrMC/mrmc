@@ -1,5 +1,4 @@
-#ifndef __PLATFORM_DEFS_H__
-#define __PLATFORM_DEFS_H__
+#pragma once
 
 /*
  *      Copyright (C) 2005-2013 Team XBMC
@@ -102,8 +101,6 @@
 
 #ifdef TARGET_POSIX
 
-//#define XXLog(a,b) printf("%s", (b))
-
 #ifndef INSTALL_PATH
   #define INSTALL_PATH    "/usr/share/xbmc"
 #endif
@@ -112,10 +109,6 @@
   #define BIN_INSTALL_PATH "/usr/lib/xbmc"
 #endif
 
-//#define CONST   const
-//#define FALSE   0
-//#define TRUE    1
-
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf
 #define _stricmp  strcasecmp
@@ -123,30 +116,9 @@
 #define strcmpi strcasecmp
 #define strnicmp  strncasecmp
 #define _atoi64(x) atoll(x)
-//#define CopyMemory(dst,src,size) memmove(dst, src, size)
 #define ZeroMemory(dst,size) memset(dst, 0, size)
 
-/*
-#define VOID    void
-#define __int8    char
-#define __int16   short
-#define __int32   int
-#define __int64   long long
-#define __uint64  unsigned long long
- */
-
-#if defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) || defined (__arm__) || defined(__mips__) // should this be powerpc64 only?
-#define __stdcall
-#else /* !__x86_64__ */
-#define __stdcall   __attribute__((__stdcall__))
-#endif /* __x86_64__ */
 #define __cdecl
-
-//#define WINBASEAPI
-//#define NTAPI       __stdcall
-//#define CALLBACK    __stdcall
-//#define WINAPI      __stdcall
-//#define WINAPIV     __cdecl
 
 #if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
   #define APIENTRY  __stdcall
@@ -154,41 +126,10 @@
   #define APIENTRY
 #endif
 
-//#define APIPRIVATE  __stdcall
-//#define IN
-//#define OUT
-//#define OPTIONAL
-//#define _declspec(X)
 #define __declspec(X)
-
-//#define __try try
-//#define EXCEPTION_EXECUTE_HANDLER ...
-//NOTE: dont try to define __except because it breaks g++ (already uses it).
 
 struct CXHandle; // forward declaration
 typedef CXHandle* HANDLE;
-
-//typedef void* HINSTANCE;
-//typedef void* HMODULE;
-
-//typedef unsigned int  DWORD;
-//typedef unsigned short  WORD;
-//typedef unsigned char   BYTE;
-//typedef char        CHAR;
-//typedef unsigned char UCHAR;
-//typedef wchar_t     WCHAR;
-//typedef int         BOOL;
-//typedef BYTE        BOOLEAN;
-//typedef short       SHORT;
-//typedef unsigned short  USHORT;
-//typedef int         INT;
-//typedef unsigned int  UINT;
-// typedef int INT32;              // unused; must match Xmd.h but why bother
-//typedef unsigned int  UINT32;
-//typedef long long     INT64;
-//typedef unsigned long long    UINT64;
-//typedef long        LONG;
-//typedef long long     LONGLONG;
 
 #if defined(TARGET_DARWIN)
 typedef uint32_t        ULONG;
@@ -196,14 +137,7 @@ typedef uint32_t        ULONG;
 typedef unsigned long   ULONG;
 #endif
 
-//typedef float         FLOAT;
-//typedef size_t        SIZE_T;
-//typedef void*         PVOID;
-//typedef void*         LPVOID;
-//typedef PVOID         HANDLE;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
-//typedef HANDLE        HDC;
-//typedef void*       HWND;
 
 #if defined(TARGET_DARWIN)
 typedef int32_t      HRESULT;
@@ -211,35 +145,12 @@ typedef int32_t      HRESULT;
 typedef unsigned long HRESULT;
 #endif
 
-//typedef BYTE*       LPBYTE;
-//typedef unsigned int*        LPDWORD;
-//typedef const char*   LPCSTR;
-//typedef CONST WCHAR*    LPCWSTR;
-//typedef char*     LPTSTR;
-//typedef wchar_t         *PWSTR,      *LPWSTR,    *NWPSTR;
-//typedef char          *PSTR,       *LPSTR,     *NPSTR;
-//typedef long        *PLONG, *LPLONG;
-
 #ifdef UNICODE
   typedef const wchar_t*  LPCTSTR;
 #else
   typedef const char*     LPCTSTR;
 #endif
 
-//typedef uint64_t ULONGLONG;
-//typedef long        LONG_PTR;
-//typedef unsigned long   ULONG_PTR;
-//typedef ULONG_PTR     DWORD_PTR;
-//typedef __int64     __time64_t;
-
-//#define MAXDWORD  0xffffffff
-
-//typedef unsigned int LCID;
-//typedef WORD* LPWORD;
-//typedef BOOL* LPBOOL;
-//typedef char* LPCHAR;
-//typedef char* PCHAR;
-//typedef const void* LPCVOID;
 
 typedef union _LARGE_INTEGER
 {
@@ -257,8 +168,6 @@ typedef union _LARGE_INTEGER
   } u;
   uint64_t QuadPart;
 } ULARGE_INTEGER, *PULARGE_INTEGER;
-
-//#define MAKELONG(low,high)     ((LONG)(((WORD)((DWORD_PTR)(low) & 0xFFFF)) | ((DWORD)((WORD)((DWORD_PTR)(high) & 0xFFFF))) << 16))
 
 // Date / Time
 
@@ -311,16 +220,6 @@ typedef struct _TIME_ZONE_INFORMATION {
 #define INVALID_SOCKET (~0)
 #define closesocket(s)  close(s)
 #define ioctlsocket(s, f, v) ioctl(s, f, v)
-//#define WSAGetLastError() (errno)
-//#define WSASetLastError(e) (errno = e)
-//#define WSAECONNRESET ECONNRESET
-//#define WSAHOST_NOT_FOUND ENOENT
-//#define WSAETIMEDOUT  ETIMEDOUT
-//#define WSAEADDRINUSE EADDRINUSE
-//#define WSAECANCELLED EINTR
-//#define WSAECONNREFUSED ECONNREFUSED
-//#define WSAECONNABORTED ECONNABORTED
-//#define WSAETIMEDOUT ETIMEDOUT
 
 typedef int SOCKET;
 
@@ -434,8 +333,6 @@ typedef struct _RECT {
   long bottom;
 } RECT, *PRECT;
 
-//typedef uint32_t D3DCOLOR;
-
 typedef enum _D3DFORMAT
 {
   D3DFMT_A8R8G8B8         = 0x00000006,
@@ -445,85 +342,6 @@ typedef enum _D3DFORMAT
   D3DFMT_UNKNOWN          = 0xFFFFFFFF
 } D3DFORMAT;
 
-/*
-typedef enum D3DRESOURCETYPE
-{
-    D3DRTYPE_SURFACE = 1,
-    D3DRTYPE_VOLUME = 2,
-    D3DRTYPE_TEXTURE = 3,
-    D3DRTYPE_VOLUMETEXTURE = 4,
-    D3DRTYPE_CubeTexture = 5,
-    D3DRTYPE_VERTEXBUFFER = 6,
-    D3DRTYPE_INDEXBUFFER = 7,
-    D3DRTYPE_FORCE_DWORD = 0x7fffffff
-} D3DRESOURCETYPE, *LPD3DRESOURCETYPE;
-
-typedef enum D3DXIMAGE_FILEFORMAT
-{
-    D3DXIFF_BMP = 0,
-    D3DXIFF_JPG = 1,
-    D3DXIFF_TGA = 2,
-    D3DXIFF_PNG = 3,
-    D3DXIFF_DDS = 4,
-    D3DXIFF_PPM = 5,
-    D3DXIFF_DIB = 6,
-    D3DXIFF_HDR = 7,
-    D3DXIFF_PFM = 8,
-    D3DXIFF_FORCE_DWORD = 0x7fffffff
-} D3DXIMAGE_FILEFORMAT, *LPD3DXIMAGE_FILEFORMAT;
-
-typedef struct D3DXIMAGE_INFO {
-    unsigned int Width;
-    unsigned int Height;
-    unsigned int Depth;
-    unsigned int MipLevels;
-    D3DFORMAT Format;
-    D3DRESOURCETYPE ResourceType;
-    D3DXIMAGE_FILEFORMAT ImageFileFormat;
-} D3DXIMAGE_INFO, *LPD3DXIMAGE_INFO;
-
-typedef struct _D3DPRESENT_PARAMETERS_
-{
-    unsigned int                BackBufferWidth;
-    unsigned int                BackBufferHeight;
-    D3DFORMAT           BackBufferFormat;
-    unsigned int                BackBufferCount;
-    //D3DMULTISAMPLE_TYPE MultiSampleType;
-    //D3DSWAPEFFECT       SwapEffect;
-    //HWND                hDeviceWindow;
-    int                 Windowed;
-    int                 EnableAutoDepthStencil;
-    D3DFORMAT           AutoDepthStencilFormat;
-    uint32_t               Flags;
-    unsigned int                FullScreen_RefreshRateInHz;
-    unsigned int                FullScreen_PresentationInterval;
-    //D3DSurface         *BufferSurfaces[3];
-    //D3DSurface         *DepthStencilSurface;
-} D3DPRESENT_PARAMETERS;
-
-typedef enum D3DPRIMITIVETYPE
-{
-    D3DPT_POINTLIST = 1,
-    D3DPT_LINELIST = 2,
-    D3DPT_LINESTRIP = 3,
-    D3DPT_TRIANGLELIST = 4,
-    D3DPT_TRIANGLESTRIP = 5,
-    D3DPT_TRIANGLEFAN = 6,
-    D3DPT_FORCE_DWORD = 0x7fffffff
-} D3DPRIMITIVETYPE, *LPD3DPRIMITIVETYPE;
-
-typedef struct _D3DMATRIX {
-    union {
-        struct {
-            float        _11, _12, _13, _14;
-            float        _21, _22, _23, _24;
-            float        _31, _32, _33, _34;
-            float        _41, _42, _43, _44;
-        } u;
-        float m[4][4];
-    };
-} D3DMATRIX;
-*/
 
 // CreateFile defines
 #define FILE_FLAG_WRITE_THROUGH         0x80000000
@@ -560,86 +378,4 @@ typedef struct _D3DMATRIX {
 #define FILE_SHARE_WRITE                 0x00000002
 #define FILE_SHARE_DELETE                0x00000004
 
-/*
-// Audio stuff
-typedef struct tWAVEFORMATEX
-{
-WORD    wFormatTag;
-WORD    nChannels;
-uint32_t   nSamplesPerSec;
-uint32_t   nAvgBytesPerSec;
-WORD    nBlockAlign;
-WORD    wBitsPerSample;
-WORD    cbSize;
-} __attribute__((__packed__)) WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
-
-#define WAVE_FORMAT_UNKNOWN           0x0000
-#define WAVE_FORMAT_PCM               0x0001
-#define WAVE_FORMAT_ADPCM             0x0002
-#define WAVE_FORMAT_IEEE_FLOAT        0x0003
-#define WAVE_FORMAT_EXTENSIBLE        0xFFFE
-
-#define SPEAKER_FRONT_LEFT            0x00001
-#define SPEAKER_FRONT_RIGHT           0x00002
-#define SPEAKER_FRONT_CENTER          0x00004
-#define SPEAKER_LOW_FREQUENCY         0x00008
-#define SPEAKER_BACK_LEFT             0x00010
-#define SPEAKER_BACK_RIGHT            0x00020
-#define SPEAKER_FRONT_LEFT_OF_CENTER  0x00040
-#define SPEAKER_FRONT_RIGHT_OF_CENTER 0x00080
-#define SPEAKER_BACK_CENTER           0x00100
-#define SPEAKER_SIDE_LEFT             0x00200
-#define SPEAKER_SIDE_RIGHT            0x00400
-#define SPEAKER_TOP_CENTER            0x00800
-#define SPEAKER_TOP_FRONT_LEFT        0x01000
-#define SPEAKER_TOP_FRONT_CENTER      0x02000
-#define SPEAKER_TOP_FRONT_RIGHT       0x04000
-#define SPEAKER_TOP_BACK_LEFT         0x08000
-#define SPEAKER_TOP_BACK_CENTER       0x10000
-#define SPEAKER_TOP_BACK_RIGHT        0x20000
-
-typedef struct tGUID
-{
-  uint32_t Data1;
-  WORD  Data2, Data3;
-  uint8_t Data4[8];
-} __attribute__((__packed__)) GUID;
-
-static const GUID KSDATAFORMAT_SUBTYPE_UNKNOWN = {
-  WAVE_FORMAT_UNKNOWN,
-  0x0000, 0x0000,
-  {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
-};
-
-static const GUID KSDATAFORMAT_SUBTYPE_PCM = {
-  WAVE_FORMAT_PCM,
-  0x0000, 0x0010,
-  {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
-};
-
-static const GUID KSDATAFORMAT_SUBTYPE_IEEE_FLOAT = {
-  WAVE_FORMAT_IEEE_FLOAT,
-  0x0000, 0x0010,
-  {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
-};
-
-typedef struct tWAVEFORMATEXTENSIBLE
-{
-  WAVEFORMATEX Format;
-  union
-  {
-    WORD wValidBitsPerSample;
-    WORD wSamplesPerBlock;
-    WORD wReserved;
-  } Samples;
-  uint32_t dwChannelMask;
-  GUID SubFormat;
-} __attribute__((__packed__)) WAVEFORMATEXTENSIBLE;
-*/
-
-
 #endif
-
-#endif //__PLATFORM_DEFS_H__
-
-

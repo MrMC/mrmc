@@ -1,5 +1,4 @@
 SRCS  = Bookmark.cpp
-SRCS += FFmpegVideoDecoder.cpp
 SRCS += GUIViewStateVideo.cpp
 SRCS += PlayerController.cpp
 SRCS += Teletext.cpp
