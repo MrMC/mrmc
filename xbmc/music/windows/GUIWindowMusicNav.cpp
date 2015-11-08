@@ -694,10 +694,10 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);
       CONTENT_TYPE content = CONTENT_ALBUMS;
       if (params.GetAlbumId() != -1)
-        path = StringUtils::Format("musicdb://albums/%li/",params.GetAlbumId());
+        path = StringUtils::Format("musicdb://albums/%i/",params.GetAlbumId());
       else if (params.GetArtistId() != -1)
       {
-        path = StringUtils::Format("musicdb://artists/%li/",params.GetArtistId());
+        path = StringUtils::Format("musicdb://artists/%i/",params.GetArtistId());
         content = CONTENT_ARTISTS;
       }
 

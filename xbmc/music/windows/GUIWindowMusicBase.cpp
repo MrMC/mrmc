@@ -1146,7 +1146,7 @@ bool CGUIWindowMusicBase::CanContainFilter(const std::string &strDirectory) cons
 void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
-  if (CMediaSettings::GetInstance().GetMusicNeedsUpdate() == 53)
+  if (CMediaSettings::GetInstance().GetMusicNeedsUpdate() == 35)
   {
     if (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) && !g_application.IsMusicScanning())
     {
