@@ -19,10 +19,10 @@
 			<description>LOGO</description>
 			<left>10</left>
 			<top>5</top>
-			<width>240</width>
-			<height>98</height>
+			<width>225</width>
+			<height>66</height>
 			<aspectratio aligny="top" align="left">keep</aspectratio>
-			<texture>home_logox2.png</texture>
+			<texture>mrmc_logo1.png</texture>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<visible>!Skin.HasSetting(homepageWeatherinfo)</visible>

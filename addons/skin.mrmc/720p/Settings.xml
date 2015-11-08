@@ -59,10 +59,10 @@
 				<description>LOGO</description>
 				<left>30</left>
 				<top>15</top>
-				<width>220</width>
-				<height>80</height>
+				<width>225</width>
+				<height>66</height>
 				<aspectratio>keep</aspectratio>
-				<texture>mrmc_logo.png</texture>
+				<texture>mrmc_logo1.png</texture>
 			</control>
 			<control type="list" id="9000">
 				<left>10</left>
