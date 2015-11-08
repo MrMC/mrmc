@@ -24,6 +24,8 @@
 #include "GUIUserMessages.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
+
 #include "CompileInfo.h"
 
 #if defined(TARGET_DARWIN)
@@ -270,28 +272,6 @@ bool CDarwinUtils::DeviceHasLeakyVDA(void)
 #endif
 }
 
-// for sdk 10.6 we need to define something
-#if !defined(NSAppKitVersionNumber10_7)
-#define NSAppKitVersionNumber10_7 1138
-#endif
-// check if we can use the native fullscreen
-// methods which are available on 10.7 and later
-bool CDarwinUtils::DeviceHasNativeFullscreen(void)
-{
-  // damn animation effect is too slow when transitioning,
-  // so just turn this off for now.
-  //return false;
-
-#if defined(TARGET_DARWIN_OSX)
-  static int useNativeFullscreen = -1;
-  if (useNativeFullscreen == -1)
-    useNativeFullscreen = NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 ? 1 : 0;
-  return useNativeFullscreen == 1;
-#else
-  return false;
-#endif
-}
-
 const char *CDarwinUtils::GetOSReleaseString(void)
 {
   static std::string osreleaseStr;
@@ -358,7 +338,7 @@ const char *CDarwinUtils::GetOSXVersionString(void)
 #endif
 }
 
-int  CDarwinUtils::GetFrameworkPath(char* path, uint32_t *pathsize)
+int  CDarwinUtils::GetFrameworkPath(char* path, size_t *pathsize)
 {
   CCocoaAutoPool pool;
   // see if we can figure out who we are
@@ -374,7 +354,7 @@ int  CDarwinUtils::GetFrameworkPath(char* path, uint32_t *pathsize)
   {
     strcpy(path, [pathname UTF8String]);
     // Move backwards to last "/"
-    for (int n=strlen(path)-1; path[n] != '/'; n--)
+    for (size_t n=strlen(path)-1; path[n] != '/'; n--)
       path[n] = '\0';
     strcat(path, "Frameworks");
     *pathsize = strlen(path);
@@ -412,7 +392,7 @@ int  CDarwinUtils::GetFrameworkPath(char* path, uint32_t *pathsize)
   return -1;
 }
 
-int  CDarwinUtils::GetExecutablePath(char* path, uint32_t *pathsize)
+int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
 {
   CCocoaAutoPool pool;
   // see if we can figure out who we are
@@ -428,92 +408,103 @@ int  CDarwinUtils::GetExecutablePath(char* path, uint32_t *pathsize)
   return 0;
 }
 
-const char* CDarwinUtils::GetAppRootFolder(void)
+const char* CDarwinUtils::GetUserLogDirectory(void)
 {
-  static std::string rootFolder = "";
-  if ( rootFolder.length() == 0)
+  static std::string appLogFolder;
+  if (appLogFolder.empty())
   {
-    if (IsIosSandboxed())
-    {
-      // when we are sandbox make documents our root
-      // so that user can access everything he needs 
-      // via itunes sharing
-      rootFolder = "Documents";
-    }
-    else
-    {
-      rootFolder = "Library/Preferences";
-    }
+    // log file location
+    #if defined(TARGET_DARWIN_TVOS)
+      appLogFolder = CDarwinUtils::GetOSCachesDirectory();
+    #elif defined(TARGET_DARWIN_IOS)
+      appLogFolder = URIUtils::AddFileToFolder(CDarwinUtils::GetOSAppRootFolder(), CCompileInfo::GetAppName());
+    #else
+      appLogFolder = URIUtils::AddFileToFolder(getenv("HOME"), "Library");
+    #endif
+    appLogFolder = URIUtils::AddFileToFolder(appLogFolder, "logs");
+    mkdir(appLogFolder.c_str(), 0755);
+    // stupid log directory wants a ending slash
+    URIUtils::AddSlashAtEnd(appLogFolder);
   }
-  return rootFolder.c_str();
+
+  return appLogFolder.c_str();
 }
 
-bool CDarwinUtils::IsIosSandboxed(void)
+const char* CDarwinUtils::GetUserTempDirectory(void)
 {
-  static int ret = -1;
-  if (ret == -1)
+  static std::string appTempFolder;
+  if (appTempFolder.empty())
   {
-    uint32_t path_size = 2*MAXPATHLEN;
-    char     given_path[2*MAXPATHLEN];
-    int      result = -1; 
-    ret = 0;
-    memset(given_path, 0x0, path_size);
-    /* Get Application directory */  
-    result = GetExecutablePath(given_path, &path_size);
-    if (result == 0)
-    {
-      // we re sandboxed if we are installed in /var/mobile/Applications
-      if (strlen("/var/mobile/Applications/") < path_size &&
-        strncmp(given_path, "/var/mobile/Applications/", strlen("/var/mobile/Applications/")) == 0)
-      {
-        ret = 1;
-      }
-    }
+    // location for temp files
+    #if defined(TARGET_DARWIN_TVOS)
+      appTempFolder = CDarwinUtils::GetOSTemporaryDirectory();
+    #elif defined(TARGET_DARWIN_IOS)
+      appTempFolder = URIUtils::AddFileToFolder(CDarwinUtils::GetOSAppRootFolder(),  CCompileInfo::GetAppName());
+    #else
+      std::string dotLowerAppName = StringUtils::Format(".%s", CCompileInfo::GetAppName());
+      StringUtils::ToLower(dotLowerAppName);
+      appTempFolder = URIUtils::AddFileToFolder(getenv("HOME"), dotLowerAppName);
+      mkdir(appTempFolder.c_str(), 0755);
+    #endif
+    appTempFolder = URIUtils::AddFileToFolder(appTempFolder, "temp");
   }
-  return ret == 1;
+
+  return appTempFolder.c_str();
 }
 
-bool CDarwinUtils::HasVideoToolboxDecoder(void)
+const char* CDarwinUtils::GetUserHomeDirectory(void)
 {
-  static int DecoderAvailable = -1;
-
-  if (DecoderAvailable == -1)
+  static std::string appHomeFolder;
+  if (appHomeFolder.empty())
   {
-    {
-      /* When XBMC is started from a sandbox directory we have to check the sysctl values */      
-      if (IsIosSandboxed())
-      {
-        uint64_t proc_enforce = 0;
-        uint64_t vnode_enforce = 0; 
-        size_t size = sizeof(vnode_enforce);
-
-        sysctlbyname("security.mac.proc_enforce",  &proc_enforce,  &size, NULL, 0);  
-        sysctlbyname("security.mac.vnode_enforce", &vnode_enforce, &size, NULL, 0);
-
-        if (vnode_enforce && proc_enforce)
-        {
-          DecoderAvailable = 1;
-          CLog::Log(LOGINFO, "VideoToolBox decoder not available. Use : sysctl -w security.mac.proc_enforce=0; sysctl -w security.mac.vnode_enforce=0\n");
-        }
-        else
-        {
-          DecoderAvailable = 1;
-          CLog::Log(LOGINFO, "VideoToolBox decoder available\n");
-        }  
-      }
-      else
-      {
-        DecoderAvailable = 1;
-      }
-    }
+    #if defined(TARGET_DARWIN_TVOS)
+      appHomeFolder = URIUtils::AddFileToFolder(CDarwinUtils::GetOSCachesDirectory(), "home");
+    #elif defined(TARGET_DARWIN_IOS)
+      appHomeFolder = URIUtils::AddFileToFolder(CDarwinUtils::GetOSAppRootFolder(), CCompileInfo::GetAppName());
+    #else
+      appHomeFolder = URIUtils::AddFileToFolder(getenv("HOME"), "Library/Application Support");
+      appHomeFolder = URIUtils::AddFileToFolder(appHomeFolder, CCompileInfo::GetAppName());
+    #endif
   }
 
-  return (DecoderAvailable == 1);
+  return appHomeFolder.c_str();
+}
+
+const char* CDarwinUtils::GetOSAppRootFolder(void)
+{
+  NSArray *writablePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *appTempFolder = [writablePaths lastObject];
+  return [appTempFolder UTF8String];
+}
+
+const char* CDarwinUtils::GetOSCachesDirectory()
+{
+  static std::string cacheFolder;
+  if (cacheFolder.empty())
+  {
+    NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+    cacheFolder = [cachePath UTF8String];
+    URIUtils::RemoveSlashAtEnd(cacheFolder);
+  }
+  return cacheFolder.c_str();
+}
+
+const char* CDarwinUtils::GetOSTemporaryDirectory()
+{
+  static std::string tmpFolder;
+  if (tmpFolder.empty())
+  {
+    tmpFolder = [NSTemporaryDirectory() UTF8String];
+    URIUtils::RemoveSlashAtEnd(tmpFolder);
+  }
+
+  return tmpFolder.c_str();
 }
 
 int CDarwinUtils::BatteryLevel(void)
 {
   float batteryLevel = 0;
+#if !defined(TARGET_DARWIN_TVOS)
 #if defined(TARGET_DARWIN_IOS)
   batteryLevel = [[UIDevice currentDevice] batteryLevel];
 #else
@@ -544,6 +535,7 @@ int CDarwinUtils::BatteryLevel(void)
   }
   CFRelease(powerSources);
   CFRelease(powerSourceInfo);
+#endif
 #endif
   return batteryLevel * 100;  
 }
@@ -748,25 +740,6 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
   }
 #endif
   return ret;
-}
-
-bool DarwinIsMavericks()
-{
-  static int isMavericks = -1;
-
-#if defined(TARGET_DARWIN_OSX)
-  CCocoaAutoPool pool;
-
-  // there is no NSAppKitVersionNumber10_9 out there anywhere
-  // so we detect mavericks by one of these newly added app nap
-  // methods - and fix the ugly mouse rect problem which was hitting
-  // us when mavericks came out
-  if (isMavericks == -1)
-  {
-    isMavericks = [NSProcessInfo instancesRespondToSelector:@selector(beginActivityWithOptions:reason:)] == TRUE ? 1 : 0;
-  }
-#endif
-  return isMavericks == 1;
 }
 
 #endif
