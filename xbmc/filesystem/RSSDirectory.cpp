@@ -621,7 +621,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   int mins = 60;
   TiXmlElement* ttl = docHandle.FirstChild("rss").FirstChild("ttl").Element();
   if (ttl)
-    mins = strtol(ttl->FirstChild()->Value(),NULL,10);
+    mins = std::stoi(ttl->FirstChild()->Value(),NULL,10);
   time += CDateTimeSpan(0,0,mins,0);
   items.SetPath(strPath);
   items.Save();

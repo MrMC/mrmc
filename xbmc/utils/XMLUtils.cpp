@@ -34,7 +34,7 @@ bool XMLUtils::GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t&
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
-  uintValue = atol(pNode->FirstChild()->Value());
+  uintValue = atoi(pNode->FirstChild()->Value());
   return true;
 }
 
@@ -53,7 +53,7 @@ bool XMLUtils::GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLo
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
-  lLongValue = atol(pNode->FirstChild()->Value());
+  lLongValue = atoi(pNode->FirstChild()->Value());
   return true;
 }
 

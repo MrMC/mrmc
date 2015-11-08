@@ -90,7 +90,7 @@ int MemBufferCache::WriteToCache(const char *pBuffer, size_t iSize)
 
   if (!m_buffer.WriteData((char*)pBuffer, nToWrite))
   {
-    CLog::Log(LOGWARNING,"%s, failed to write %d bytes to buffer. max buffer size: %d", __FUNCTION__, nToWrite, m_buffer.getMaxWriteSize());
+    CLog::Log(LOGWARNING,"%s, failed to write %d bytes to buffer. max buffer size: %zu", __FUNCTION__, nToWrite, m_buffer.getMaxWriteSize());
     nToWrite = 0;
   }
 
@@ -114,7 +114,7 @@ int MemBufferCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
   {
     if (!m_buffer.ReadData(pBuffer, nRead))
     {
-      CLog::Log(LOGWARNING, "%s, failed to read %d bytes from buffer. max read size: %d", __FUNCTION__, nRead, m_buffer.getMaxReadSize());
+      CLog::Log(LOGWARNING, "%s, failed to read %d bytes from buffer. max read size: %zu", __FUNCTION__, nRead, m_buffer.getMaxReadSize());
       return 0;
     }
 
@@ -157,8 +157,8 @@ int64_t MemBufferCache::Seek(int64_t iFilePosition)
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.
   // we try to avoid a (heavy) seek on the source
-  if (iFilePosition > m_nStartPosition + m_buffer.getMaxReadSize() &&
-      iFilePosition < m_nStartPosition + m_buffer.getMaxReadSize() + 100000)
+  if (iFilePosition > m_nStartPosition + int64_t(m_buffer.getMaxReadSize()) &&
+      iFilePosition < m_nStartPosition + int64_t(m_buffer.getMaxReadSize() + 100000))
   {
     int nRequired = (int)(iFilePosition - (m_nStartPosition + m_buffer.getMaxReadSize()));
     lock.Leave();
@@ -167,7 +167,7 @@ int64_t MemBufferCache::Seek(int64_t iFilePosition)
   }
 
   // check if seek is inside the current buffer
-  if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + m_buffer.getMaxReadSize())
+  if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + int64_t(m_buffer.getMaxReadSize()))
   {
     unsigned int nOffset = (unsigned int)(iFilePosition - m_nStartPosition);
     // copy to history so we can seek back

@@ -510,7 +510,7 @@ char CURL::GetDirectorySeparator() const
 
 std::string CURL::Get() const
 {
-  unsigned int sizeneed = m_strProtocol.length()
+  size_t sizeneed = m_strProtocol.length()
                         + m_strDomain.length()
                         + m_strUserName.length()
                         + m_strPassword.length()
@@ -557,7 +557,7 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
     return strURL;
   }
 
-  unsigned int sizeneed = m_strProtocol.length()
+  size_t sizeneed = m_strProtocol.length()
                         + m_strDomain.length()
                         + m_strHostName.length()
                         + m_strFileName.length()
@@ -623,7 +623,7 @@ std::string CURL::GetWithoutFilename() const
   if (m_strProtocol.empty())
     return "";
 
-  unsigned int sizeneed = m_strProtocol.length()
+  size_t sizeneed = m_strProtocol.length()
                         + m_strDomain.length()
                         + m_strUserName.length()
                         + m_strPassword.length()

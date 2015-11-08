@@ -294,7 +294,7 @@ CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback 
 CGUIFont* GUIFontManager::GetDefaultFont(bool border)
 {
   // first find "font13" or "__defaultborder__"
-  unsigned int font13index = m_vecFonts.size();
+  size_t font13index = m_vecFonts.size();
   CGUIFont *font13border = NULL;
   for (unsigned int i = 0; i < m_vecFonts.size(); i++)
   {

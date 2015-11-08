@@ -249,7 +249,7 @@ bool CEpgInfoTag::IsUpcoming(void) const
 float CEpgInfoTag::ProgressPercentage(void) const
 {
   float fReturn(0);
-  int iDuration;
+  long iDuration;
   time_t currentTime, startTime, endTime;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
 
@@ -267,7 +267,7 @@ float CEpgInfoTag::ProgressPercentage(void) const
 
 int CEpgInfoTag::Progress(void) const
 {
-  int iDuration;
+  long iDuration;
   time_t currentTime, startTime;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
 

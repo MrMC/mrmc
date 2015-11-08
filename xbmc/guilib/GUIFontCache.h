@@ -170,10 +170,10 @@ struct CGUIFontCacheDynamicPosition
 
 struct CVertexBuffer
 {
-  void *bufferHandle;
+  unsigned int bufferHandle; // this is really a GLuint
   size_t size;
   CVertexBuffer() : bufferHandle(NULL), size(0), m_font(NULL) {}
-  CVertexBuffer(void *bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
+  CVertexBuffer(unsigned int bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
   CVertexBuffer(const CVertexBuffer &other) : bufferHandle(other.bufferHandle), size(other.size), m_font(other.m_font)
   {
     /* In practice, the copy constructor is only called before a vertex buffer

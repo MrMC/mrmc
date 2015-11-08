@@ -565,12 +565,12 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   colors.push_back(select);
   colors.push_back(0x00FFFFFF);
 
-  unsigned int startHighlight = m_cursorPos;
-  unsigned int endHighlight   = m_cursorPos + m_edit.size();
-  unsigned int startSelection = m_cursorPos + m_editOffset;
-  unsigned int endSelection   = m_cursorPos + m_editOffset + m_editLength;
+  size_t startHighlight = m_cursorPos;
+  size_t endHighlight   = m_cursorPos + m_edit.size();
+  size_t startSelection = m_cursorPos + m_editOffset;
+  size_t endSelection   = m_cursorPos + m_editOffset + m_editLength;
 
-  for (unsigned int i = 0; i < text.size(); i++)
+  for (size_t i = 0; i < text.size(); i++)
   {
     unsigned int ch = text[i];
     if (m_editLength > 0 && startSelection <= i && i < endSelection)
@@ -637,7 +637,7 @@ bool CGUIEditControl::ClearMD5()
   return true;
 }
 
-unsigned int CGUIEditControl::GetCursorPosition() const
+size_t CGUIEditControl::GetCursorPosition() const
 {
   return m_cursorPos;
 }

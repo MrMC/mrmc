@@ -37,6 +37,6 @@ namespace XFILE
     virtual int GetLastResponseCode() { return m_lastResponseCode; }
 
   private:
-    int m_lastResponseCode;
+    long m_lastResponseCode;
   };
 }

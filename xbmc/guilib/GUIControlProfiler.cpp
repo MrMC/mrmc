@@ -54,8 +54,8 @@ void CGUIControlProfilerItem::Reset(CGUIControlProfiler *pProfiler)
 
   m_visTime = 0;
   m_renderTime = 0;
-  const unsigned int dwSize = m_vecChildren.size();
-  for (unsigned int i=0; i<dwSize; ++i)
+  const size_t dwSize = m_vecChildren.size();
+  for (size_t i=0; i<dwSize; ++i)
     delete m_vecChildren[i];
   m_vecChildren.clear();
 
@@ -204,8 +204,8 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
   {
     TiXmlElement *xmlChilds = new TiXmlElement("children");
     xmlControl->LinkEndChild(xmlChilds);
-    const unsigned int dwSize = m_vecChildren.size();
-    for (unsigned int i=0; i<dwSize; ++i)
+    const size_t dwSize = m_vecChildren.size();
+    for (size_t i=0; i<dwSize; ++i)
       m_vecChildren[i]->SaveToXML(xmlChilds);
   }
 }
@@ -218,8 +218,8 @@ CGUIControlProfilerItem *CGUIControlProfilerItem::AddControl(CGUIControl *pContr
 
 CGUIControlProfilerItem *CGUIControlProfilerItem::FindOrAddControl(CGUIControl *pControl, bool recurse)
 {
-  const unsigned int dwSize = m_vecChildren.size();
-  for (unsigned int i=0; i<dwSize; ++i)
+  const size_t dwSize = m_vecChildren.size();
+  for (size_t i=0; i<dwSize; ++i)
   {
     CGUIControlProfilerItem *p = m_vecChildren[i];
     if (p->m_pControl == pControl)
@@ -317,8 +317,8 @@ void CGUIControlProfiler::EndFrame(void)
   m_iFrameCount++;
   if (m_iFrameCount >= m_iMaxFrameCount)
   {
-    const unsigned int dwSize = m_ItemHead.m_vecChildren.size();
-    for (unsigned int i=0; i<dwSize; ++i)
+    const size_t dwSize = m_ItemHead.m_vecChildren.size();
+    for (size_t i=0; i<dwSize; ++i)
     {
       CGUIControlProfilerItem *p = m_ItemHead.m_vecChildren[i];
       m_ItemHead.m_visTime += p->m_visTime;

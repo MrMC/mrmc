@@ -127,7 +127,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   {
     // Read TextSampleModifierBox
     LEN_CHECK(4);
-    uint32_t size = READ_U32();
+    long size = READ_U32();
     if (size == 0)
       size = pos - end;   // extends to end of packet
     if (size == 1)

@@ -139,11 +139,11 @@ JSONRPC_STATUS CJSONRPC::Version(const std::string &method, ITransportLayer *tra
   {
     vector<string> parts = StringUtils::Split(version, ".");
     if (parts.size() > 0)
-      result["version"]["major"] = (int)strtol(parts[0].c_str(), NULL, 10);
+      result["version"]["major"] = std::stoi(parts[0].c_str(), NULL, 10);
     if (parts.size() > 1)
-      result["version"]["minor"] = (int)strtol(parts[1].c_str(), NULL, 10);
+      result["version"]["minor"] = std::stoi(parts[1].c_str(), NULL, 10);
     if (parts.size() > 2)
-      result["version"]["patch"] = (int)strtol(parts[2].c_str(), NULL, 10);
+      result["version"]["patch"] = std::stoi(parts[2].c_str(), NULL, 10);
   }
 
   return OK;

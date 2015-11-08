@@ -92,7 +92,7 @@
 using namespace XFILE;
 using namespace PLAYLIST;
 
-unsigned int CUtil::s_randomSeed = time(NULL);
+unsigned int CUtil::s_randomSeed = (unsigned int)time(nullptr);
 
 CUtil::CUtil(void)
 {
@@ -323,7 +323,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
 #if defined(TARGET_DARWIN)
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
-    uint32_t path_size =2*MAXPATHLEN;
+    size_t   path_size =2*MAXPATHLEN;
 
     result = CDarwinUtils::GetExecutablePath(given_path, &path_size);
     if (result == 0)
@@ -1524,7 +1524,7 @@ std::string CUtil::ResolveExecutablePath()
   std::string strExecutablePath;
 #if defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
-  uint32_t path_size =2*MAXPATHLEN;
+  size_t   path_size =2*MAXPATHLEN;
 
   CDarwinUtils::GetExecutablePath(given_path, &path_size);
   strExecutablePath = given_path;
@@ -1567,7 +1567,7 @@ std::string CUtil::GetFrameworksPath()
   std::string strFrameworksPath;
 #if defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
-  uint32_t path_size =2*MAXPATHLEN;
+  size_t   path_size =2*MAXPATHLEN;
 
   CDarwinUtils::GetFrameworkPath(given_path, &path_size);
   strFrameworksPath = given_path;

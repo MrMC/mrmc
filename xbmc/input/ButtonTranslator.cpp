@@ -1678,7 +1678,7 @@ uint32_t CButtonTranslator::TranslateTouchCommand(TiXmlElement *pButton, CButton
   attrVal = pButton->Attribute("pointers");
   if (attrVal != NULL)
   {
-    int pointers = (int)strtol(attrVal, NULL, 0);
+    int pointers = std::stoi(attrVal, NULL, 0);
     if (pointers >= 1)
       actionId += pointers - 1;
   }

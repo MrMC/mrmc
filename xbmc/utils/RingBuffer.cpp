@@ -42,11 +42,11 @@ CRingBuffer::~CRingBuffer()
 }
 
 /* Create a ring buffer with the specified 'size' */
-bool CRingBuffer::Create(unsigned int size)
+bool CRingBuffer::Create(size_t size)
 {
   CSingleLock lock(m_critSection);
   m_buffer = (char*)malloc(size);
-  if (m_buffer != NULL)
+  if (m_buffer != nullptr)
   {
     m_size = size;
     return true;
@@ -58,10 +58,10 @@ bool CRingBuffer::Create(unsigned int size)
 void CRingBuffer::Destroy()
 {
   CSingleLock lock(m_critSection);
-  if (m_buffer != NULL)
+  if (m_buffer != nullptr)
   {
     free(m_buffer);
-    m_buffer = NULL;
+    m_buffer = nullptr;
   }
   m_size = 0;
   m_readPtr = 0;
@@ -81,7 +81,7 @@ void CRingBuffer::Clear()
 /* Read in data from the ring buffer to the supplied buffer 'buf'. The amount
  * read in is specified by 'size'.
  */
-bool CRingBuffer::ReadData(char *buf, unsigned int size)
+bool CRingBuffer::ReadData(char *buf, size_t size)
 {
   CSingleLock lock(m_critSection);
   if (size > m_fillCount)
@@ -90,7 +90,7 @@ bool CRingBuffer::ReadData(char *buf, unsigned int size)
   }
   if (size + m_readPtr > m_size)
   {
-    unsigned int chunk = m_size - m_readPtr;
+    size_t chunk = m_size - m_readPtr;
     memcpy(buf, m_buffer + m_readPtr, chunk);
     memcpy(buf + chunk, m_buffer, size - chunk);
     m_readPtr = size - chunk;
@@ -109,16 +109,16 @@ bool CRingBuffer::ReadData(char *buf, unsigned int size)
 /* Read in data from the ring buffer to another ring buffer object specified by
  * 'rBuf'.
  */
-bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
+bool CRingBuffer::ReadData(CRingBuffer &rBuf, size_t size)
 {
   CSingleLock lock(m_critSection);
-  if (rBuf.getBuffer() == NULL)
+  if (rBuf.getBuffer() == nullptr)
     rBuf.Create(size);
 
   bool bOk = size <= rBuf.getMaxWriteSize() && size <= getMaxReadSize();
   if (bOk)
   {
-    unsigned int chunksize = std::min(size, m_size - m_readPtr);
+    size_t chunksize = std::min(size, m_size - m_readPtr);
     bOk = rBuf.WriteData(&getBuffer()[m_readPtr], chunksize);
     if (bOk && chunksize < size)
       bOk = rBuf.WriteData(&getBuffer()[0], size - chunksize);
@@ -132,7 +132,7 @@ bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
 /* Write data to ring buffer from buffer specified in 'buf'. Amount read in is
  * specified by 'size'.
  */
-bool CRingBuffer::WriteData(const char *buf, unsigned int size)
+bool CRingBuffer::WriteData(const char *buf, size_t size)
 {
   CSingleLock lock(m_critSection);
   if (size > m_size - m_fillCount)
@@ -141,7 +141,7 @@ bool CRingBuffer::WriteData(const char *buf, unsigned int size)
   }
   if (size + m_writePtr > m_size)
   {
-    unsigned int chunk = m_size - m_writePtr;
+    size_t chunk = m_size - m_writePtr;
     memcpy(m_buffer + m_writePtr, buf, chunk);
     memcpy(m_buffer, buf + chunk, size - chunk);
     m_writePtr = size - chunk;
@@ -160,17 +160,17 @@ bool CRingBuffer::WriteData(const char *buf, unsigned int size)
 /* Write data to ring buffer from another ring buffer object specified by
  * 'rBuf'.
  */
-bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
+bool CRingBuffer::WriteData(CRingBuffer &rBuf, size_t size)
 {
   CSingleLock lock(m_critSection);
-  if (m_buffer == NULL)
+  if (m_buffer == nullptr)
     Create(size);
 
   bool bOk = size <= rBuf.getMaxReadSize() && size <= getMaxWriteSize();
   if (bOk)
   {
-    unsigned int readpos = rBuf.getReadPtr();
-    unsigned int chunksize = std::min(size, rBuf.getSize() - readpos);
+    size_t readpos = rBuf.getReadPtr();
+    size_t chunksize = std::min(size, rBuf.getSize() - readpos);
     bOk = WriteData(&rBuf.getBuffer()[readpos], chunksize);
     if (bOk && chunksize < size)
       bOk = WriteData(&rBuf.getBuffer()[0], size - chunksize);
@@ -180,7 +180,7 @@ bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
 }
 
 /* Skip bytes in buffer to be read */
-bool CRingBuffer::SkipBytes(int skipSize)
+bool CRingBuffer::SkipBytes(long skipSize)
 {
   CSingleLock lock(m_critSection);
   if (skipSize < 0)
@@ -188,14 +188,14 @@ bool CRingBuffer::SkipBytes(int skipSize)
     return false; // skipping backwards is not supported
   }
 
-  unsigned int size = skipSize;
+  size_t size = skipSize;
   if (size > m_fillCount)
   {
     return false;
   }
   if (size + m_readPtr > m_size)
   {
-    unsigned int chunk = m_size - m_readPtr;
+    size_t chunk = m_size - m_readPtr;
     m_readPtr = size - chunk;
   }
   else
@@ -227,30 +227,30 @@ char *CRingBuffer::getBuffer()
   return m_buffer;
 }
 
-unsigned int CRingBuffer::getSize()
+size_t CRingBuffer::getSize()
 {
   CSingleLock lock(m_critSection);
   return m_size;
 }
 
-unsigned int CRingBuffer::getReadPtr() const
+size_t CRingBuffer::getReadPtr() const
 {
   return m_readPtr;
 }
 
-unsigned int CRingBuffer::getWritePtr()
+size_t CRingBuffer::getWritePtr()
 {
   CSingleLock lock(m_critSection);
   return m_writePtr;
 }
 
-unsigned int CRingBuffer::getMaxReadSize()
+size_t CRingBuffer::getMaxReadSize()
 {
   CSingleLock lock(m_critSection);
   return m_fillCount;
 }
 
-unsigned int CRingBuffer::getMaxWriteSize()
+size_t CRingBuffer::getMaxWriteSize()
 {
   CSingleLock lock(m_critSection);
   return m_size - m_fillCount;

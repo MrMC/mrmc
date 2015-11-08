@@ -25,14 +25,14 @@
 
 #include "system_gl.h"
 
-#include "xbmc/guilib/FrameBufferObject.h"
-#include "xbmc/guilib/Shader.h"
+#include "guilib/FrameBufferObject.h"
+#include "guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "RenderFormats.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
-#include "xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 
 class CRenderCapture;
 

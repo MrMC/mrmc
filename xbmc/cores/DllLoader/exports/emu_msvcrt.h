@@ -54,7 +54,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 extern "C"
 {
   char* dll_strdup( const char* str);
-  void dll_sleep(unsigned long imSec);
+  void dll_sleep(unsigned imSec);
   void InitFiles();
   void dllReleaseAll( );
   void* dllmalloc(size_t size);

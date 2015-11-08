@@ -804,7 +804,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
           std::pair<int, int> entry;
           if (optionElement->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &entry.first) == TIXML_SUCCESS && entry.first > 0)
           {
-            entry.second = strtol(optionElement->FirstChild()->Value(), NULL, 10);
+            entry.second = std::stoi(optionElement->FirstChild()->Value(), NULL, 10);
             m_options.push_back(entry);
           }
 

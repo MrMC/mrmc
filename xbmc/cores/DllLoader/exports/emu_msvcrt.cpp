@@ -86,7 +86,7 @@ char **dll__environ = dll__environ_imp;
 
 CCriticalSection dll_cs_environ;
 
-extern "C" void __stdcall init_emu_environ()
+extern "C" void init_emu_environ()
 {
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
@@ -106,7 +106,7 @@ extern "C" void __stdcall init_emu_environ()
   //dll_putenv("TEMP=special://temp/temp"); // for python tempdir
 }
 
-extern "C" void __stdcall update_emu_environ()
+extern "C" void update_emu_environ()
 {
   // Use a proxy, if the GUI was configured as such
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
@@ -138,7 +138,7 @@ extern "C" void __stdcall update_emu_environ()
   }
 }
 
-extern "C" void __stdcall cleanup_emu_environ()
+extern "C" void cleanup_emu_environ()
 {
   for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS; i++)
   {
@@ -163,7 +163,7 @@ static int convert_fmode(const char* mode)
 
 extern "C"
 {
-  void dll_sleep(unsigned long imSec)
+  void dll_sleep(unsigned imSec)
   {
     Sleep(imSec);
   }
@@ -249,12 +249,12 @@ extern "C"
     tmp[2048 - 1] = 0;
     CLog::Log(LOGDEBUG, "  msg: %s", tmp);
 
-    return strlen(tmp);
+    return static_cast<int>(strlen(tmp));
   }
 
   char *dll_fullpath(char *absPath, const char *relPath, size_t maxLength)
   {
-    unsigned int len = strlen(relPath);
+    size_t len = strlen(relPath);
     if (len > maxLength && absPath != NULL) return NULL;
 
     // dll has to make sure it uses the correct path for now
@@ -426,13 +426,13 @@ extern "C"
         
         return -1;
       }
-      return ret;
+      return static_cast<int>(ret);
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-      return read(fd, buffer, uiSize);
+      return static_cast<int>(read(fd, buffer, uiSize));
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     errno = EBADF;
@@ -458,13 +458,13 @@ extern "C"
 
         return -1;
       }
-      return ret;
+      return static_cast<int>(ret);
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-      return write(fd, buffer, uiSize);
+      return static_cast<int>(write(fd, buffer, uiSize));
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     errno = EBADF;
@@ -1009,12 +1009,12 @@ extern "C"
           break;
         read += r;
       } while (bufSize > read);
-      return read / size;
+      return static_cast<int>(read / size);
     }
     else if (!IS_STD_STREAM(stream))
     {
       // it might be something else than a file, let the operating system handle it
-      return fread(buffer, size, count, stream);
+      return static_cast<int>(fread(buffer, size, count, stream));
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return 0;
@@ -1153,7 +1153,7 @@ extern "C"
       if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
       {
         size_t len = strlen(szLine);
-        return dll_fwrite(static_cast<const void*>(szLine), sizeof(char), len, stream);
+        return static_cast<int>(dll_fwrite(static_cast<const void*>(szLine), sizeof(char), len, stream));
       }
       else if (!IS_STD_STREAM(stream))
       {
@@ -1386,7 +1386,7 @@ extern "C"
   {
     std::string buffer = StringUtils::FormatV(format, va);
     CLog::Log(LOGDEBUG, "  msg: %s", buffer.c_str());
-    return buffer.length();
+    return static_cast<int>(buffer.length());
   }
 
   int dll_vfprintf(FILE *stream, const char *format, va_list va)
@@ -1402,18 +1402,18 @@ extern "C"
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
     {
       CLog::Log(LOGINFO, "  msg: %s", tmp);
-      return strlen(tmp);
+      return static_cast<int>(strlen(tmp));
     }
     else
     {
       CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
       if (pFile != NULL)
       {
-        int len = strlen(tmp);
+        size_t len = strlen(tmp);
         // replace all '\n' occurences with '\r\n'...
         char tmp2[2048];
-        int j = 0;
-        for (int i = 0; i < len; i++)
+        size_t j = 0;
+        for (size_t i = 0; i < len; i++)
         {
           if (j == 2047)
           { // out of space
@@ -1435,7 +1435,7 @@ extern "C"
         tmp2[j] = 0;
         len = strlen(tmp2);
         pFile->Write(tmp2, len);
-        return len;
+        return static_cast<int>(len);
       }
       else if (!IS_STD_STREAM(stream) && IS_VALID_STREAM(stream))
       {
@@ -1446,7 +1446,7 @@ extern "C"
     }
 
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return strlen(tmp);
+    return static_cast<int>(strlen(tmp));
   }
 
   int dll_fscanf(FILE* stream, const char* format, ...)
@@ -1780,7 +1780,7 @@ extern "C"
       if (value_start != NULL)
       {
         char var[64];
-        int size = strlen(envstring) + 1;
+        size_t size = strlen(envstring) + 1;
         char *value = (char*)malloc(size);
 
         if (!value)

@@ -72,7 +72,7 @@ public:
 
   virtual std::string GetLabel2() const;
 
-  unsigned int GetCursorPosition() const;
+  size_t GetCursorPosition() const;
   void SetCursorPosition(unsigned int iPosition);
 
   void SetInputType(INPUT_TYPE type, int heading);
@@ -116,7 +116,7 @@ protected:
 
   static const int spaceWidth = 5;
 
-  unsigned int m_cursorPos;
+  size_t m_cursorPos;
   unsigned int m_cursorBlink;
 
   int m_inputHeading;

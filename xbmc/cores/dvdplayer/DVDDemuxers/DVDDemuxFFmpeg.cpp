@@ -1679,7 +1679,7 @@ void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
           StringUtils::Trim(no_channels, " \t");
           if (!no_channels.empty())
           {
-            int val = strtol(no_channels.c_str(), NULL, 0);
+            int val = std::stoi(no_channels.c_str(), NULL, 0);
             if (val > 0)
               channels = val;
             else
@@ -1697,7 +1697,7 @@ void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
           StringUtils::Trim(rate, " \t");
           if (!rate.empty())
           {
-            int val = strtol(rate.c_str(), NULL, 0);
+            int val = std::stoi(rate.c_str(), NULL, 0);
             if (val > 0)
               samplerate = val;
             else

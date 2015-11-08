@@ -181,7 +181,7 @@ void CScraperParser::ReplaceBuffers(std::string& strDest)
     std::string strInfo = strDest.substr(iIndex+10, iEnd - iIndex - 10);
     std::string strReplace;
     if (m_scraper)
-      strReplace = m_scraper->GetString(strtol(strInfo.c_str(),NULL,10));
+      strReplace = m_scraper->GetString(std::stoi(strInfo.c_str(),NULL,10));
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
     iIndex += strReplace.length();
   }

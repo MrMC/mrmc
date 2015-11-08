@@ -174,12 +174,12 @@ unsigned int CAudioDecoder::GetDataSize()
   // check for end of file and end of buffer
   if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
     m_status = STATUS_ENDED;
-  return std::min(m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3), (unsigned int)OUTPUT_SAMPLES);
+  return std::min((int)m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3), OUTPUT_SAMPLES);
 }
 
 void *CAudioDecoder::GetData(unsigned int samples)
 {
-  unsigned int size  = samples * (m_codec->m_BitsPerSample >> 3);
+  size_t size  = samples * (m_codec->m_BitsPerSample >> 3);
   if (size > sizeof(m_outputBuffer))
   {
     CLog::Log(LOGERROR, "CAudioDecoder::GetData - More data was requested then we have space to buffer!");
@@ -188,7 +188,7 @@ void *CAudioDecoder::GetData(unsigned int samples)
   
   if (size > m_pcmBuffer.getMaxReadSize())
   {
-    CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%i) requested than we have to give (%i)!", size, m_pcmBuffer.getMaxReadSize());
+    CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%zu) requested than we have to give (%zu)!", size, m_pcmBuffer.getMaxReadSize());
     size = m_pcmBuffer.getMaxReadSize();
   }
 
@@ -217,7 +217,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
   CSingleLock lock(m_critSection);
 
   // Read in more data
-  int maxsize = std::min<int>(INPUT_SAMPLES, m_pcmBuffer.getMaxWriteSize() / (m_codec->m_BitsPerSample >> 3));
+  int maxsize = std::min<int>(INPUT_SAMPLES, (int)m_pcmBuffer.getMaxWriteSize() / (m_codec->m_BitsPerSample >> 3));
   numsamples = std::min<int>(numsamples, maxsize);
   numsamples -= (numsamples % m_codec->GetChannelInfo().Count());  // make sure it's divisible by our number of channels
   if ( numsamples )

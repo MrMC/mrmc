@@ -48,7 +48,7 @@
 
 void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 {
-  int pos = device.find_first_of(':');
+  size_t pos = device.find_first_of(':');
   if (pos > 0)
   {
     driver = device.substr(0, pos);

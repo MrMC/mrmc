@@ -651,7 +651,7 @@ bool CGUIDialogNumeric::ShowAndGetSeconds(std::string &timeString, const std::st
 {
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
-  int seconds = StringUtils::TimeStringToSeconds(timeString);
+  long seconds = StringUtils::TimeStringToSeconds(timeString);
   SYSTEMTIME time = {0};
   time.wHour = seconds / 3600;
   time.wMinute = (seconds - time.wHour * 3600) / 60;

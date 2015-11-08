@@ -455,8 +455,8 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if ((execute == "setfocus" || execute == "control.setfocus") && params.size())
   {
-    int controlID = atol(params[0].c_str());
-    int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
+    int controlID = atoi(params[0].c_str());
+    int subItem = (params.size() > 1) ? atoi(params[1].c_str())+1 : 0;
     CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
   }
@@ -477,8 +477,8 @@ int CBuiltins::Execute(const std::string& execString)
         while (params.size() > iPtr + 1)
         {
           CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(),
-              atol(params[iPtr].c_str()),
-              (params.size() >= iPtr + 2) ? atol(params[iPtr + 1].c_str())+1 : 0);
+              atoi(params[iPtr].c_str()),
+              (params.size() >= iPtr + 2) ? atoi(params[iPtr + 1].c_str())+1 : 0);
           g_windowManager.SendMessage(msg);
           iPtr += 2;
         }
@@ -1052,7 +1052,7 @@ int CBuiltins::Execute(const std::string& execString)
       }
     }
     // play the desired offset
-    int pos = atol(strPos.c_str());
+    int pos = atoi(strPos.c_str());
     // playlist is already playing
     if (g_application.m_pPlayer->IsPlaying())
       g_playlistPlayer.PlayNext(pos);

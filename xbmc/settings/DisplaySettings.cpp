@@ -563,9 +563,9 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
   else if (strResolution.size() >= 21)
   {
     // format: SWWWWWHHHHHRRR.RRRRRP333, where S = screen, W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
-    int screen = std::strtol(StringUtils::Mid(strResolution, 0,1).c_str(), NULL, 10);
-    int width = std::strtol(StringUtils::Mid(strResolution, 1,5).c_str(), NULL, 10);
-    int height = std::strtol(StringUtils::Mid(strResolution, 6,5).c_str(), NULL, 10);
+    int screen = std::stoi(StringUtils::Mid(strResolution, 0,1).c_str(), NULL, 10);
+    int width = std::stoi(StringUtils::Mid(strResolution, 1,5).c_str(), NULL, 10);
+    int height = std::stoi(StringUtils::Mid(strResolution, 6,5).c_str(), NULL, 10);
     float refresh = (float)std::strtod(StringUtils::Mid(strResolution, 11,9).c_str(), NULL);
     unsigned flags = 0;
 

@@ -181,9 +181,9 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
     else
     {
       if (thumbURL.HasOption("width") && StringUtils::IsInteger(thumbURL.GetOption("width")))
-        width = strtol(thumbURL.GetOption("width").c_str(), NULL, 0);
+        width = std::stoi(thumbURL.GetOption("width").c_str(), NULL, 0);
       if (thumbURL.HasOption("height") && StringUtils::IsInteger(thumbURL.GetOption("height")))
-        height = strtol(thumbURL.GetOption("height").c_str(), NULL, 0);
+        height = std::stoi(thumbURL.GetOption("height").c_str(), NULL, 0);
     }
 
     if (thumbURL.HasOption("scaling_algorithm"))

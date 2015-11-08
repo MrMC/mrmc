@@ -34,7 +34,7 @@ class CMusicDatabase;
 class CArtist
 {
 public:
-  long idArtist;
+  int idArtist;
   bool operator<(const CArtist& a) const
   {
     if (strMusicBrainzArtistID.empty() && a.strMusicBrainzArtistID.empty())
@@ -132,7 +132,7 @@ public:
   void SetArtistId(int idArtist)               { this->idArtist = idArtist; }
 
 private:
-  long idArtist;
+  int idArtist;
   std::string m_strArtist;
   std::string m_strMusicBrainzArtistID;
   std::string m_strJoinPhrase;

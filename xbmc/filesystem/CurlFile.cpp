@@ -186,7 +186,7 @@ size_t CCurlFile::CReadState::ReadCallback(char *buffer, size_t size, size_t nit
 
 size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t nitems)
 {
-  unsigned int amount = size * nitems;
+  size_t amount = size * nitems;
 //  CLog::Log(LOGDEBUG, "CCurlFile::WriteCallback (%p) with %i bytes, readsize = %i, writesize = %i", this, amount, m_buffer.getMaxReadSize(), m_buffer.getMaxWriteSize() - m_overflowSize);
   if (m_overflowSize)
   {
@@ -234,7 +234,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
     {
-      CLog::Log(LOGWARNING, "CCurlFile::WriteCallback - Failed to grow overflow buffer from %i bytes to %i bytes", m_overflowSize, amount + m_overflowSize);
+      CLog::Log(LOGWARNING, "CCurlFile::WriteCallback - Failed to grow overflow buffer from %ul bytes to %lul bytes", m_overflowSize, amount + m_overflowSize);
       return 0;
     }
     memcpy(m_overflowBuffer + m_overflowSize, buffer, amount);
@@ -811,7 +811,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         else if (name == "sslcipherlist")
           m_cipherlist = value;
         else if (name == "connection-timeout")
-          m_connecttimeout = strtol(value.c_str(), NULL, 10);
+          m_connecttimeout = std::stoi(value.c_str(), NULL, 10);
         else
           SetRequestHeader(it->first, value);
       }

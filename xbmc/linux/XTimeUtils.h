@@ -25,7 +25,7 @@
 
 void GetLocalTime(LPSYSTEMTIME);
 
-void __stdcall Sleep(uint32_t dwMilliSeconds);
+void Sleep(useconds_t dwMilliSeconds);
 
 int   FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime);
 int   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime);

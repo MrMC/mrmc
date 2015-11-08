@@ -105,7 +105,7 @@ bool EpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
 bool EpgSearchFilter::MatchBroadcastId(const CEpgInfoTag &tag) const
 {
   if (m_iUniqueBroadcastId != EPG_SEARCH_UNSET)
-    return (tag.UniqueBroadcastID() == m_iUniqueBroadcastId);
+    return ((int)tag.UniqueBroadcastID() == m_iUniqueBroadcastId);
 
   return true;
 }
