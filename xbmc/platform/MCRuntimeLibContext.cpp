@@ -18,13 +18,13 @@
  *
  */
 
-#include "XbmcContext.h"
+#include "platform/MCRuntimeLibContext.h"
 
 #include "threads/Thread.h"
 #include "commons/Exception.h"
 #include "utils/log.h"
 
-namespace XBMC
+namespace MCRuntimeLib
 {
 
   class ContextOpaque

@@ -25,14 +25,14 @@
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
-#include "platform/xbmc.h"
+#include "platform/MCRuntimeLib.h"
+#include "platform/MCRuntimeLibContext.h"
 #include <sys/resource.h>
 #include <signal.h>
 #include "Util.h"
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
-#include "platform/XbmcContext.h"
 #include "windowing/WindowingFactory.h"
 #include "windowing/osx/WinEventsOSX.h"
 
@@ -237,23 +237,8 @@ static void setupWindowMenu(void)
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   // empty
   
-  [[NSThread currentThread] setName:@"XBMC_Run"];
+  [[NSThread currentThread] setName:@"MCRuntimeLib"];
 
-  // set up some xbmc specific relationships
-  XBMC::Context context;
-  
-  bool renderGUI = true;
-  //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
-  //the loglevel set with the --debug flag
-#ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
-  
 #if defined(DEBUG)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
@@ -262,13 +247,16 @@ static void setupWindowMenu(void)
 #endif
   
   setlocale(LC_NUMERIC, "C");
-  g_advancedSettings.Initialize();
   
+  // set up some xbmc specific relationships
+  MCRuntimeLib::Context context;
+
   CAppParamParser appParamParser;
   appParamParser.Parse((const char **)gArgv, (int)gArgc);
   
-  gStatus = XBMC_Run(renderGUI);
-  g_application.SetRenderGUI(false);
+  bool renderGUI = true;
+  gStatus = MCRuntimeLib_Run(renderGUI);
+  MCRuntimeLib_SetRenderGUI(false);
   [pool release];
   [self performSelectorOnMainThread:@selector(stopRunLoop) withObject:nil waitUntilDone:false];
 }

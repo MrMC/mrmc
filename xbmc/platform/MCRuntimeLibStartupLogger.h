@@ -22,7 +22,7 @@
 #include <vector>
 #include <utility>
 
-class CMessagePrinter
+class CMCRuntimeLibStartupLogger
 {
 public:
 

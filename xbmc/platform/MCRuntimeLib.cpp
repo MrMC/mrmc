@@ -18,21 +18,41 @@
  *
  */
 
+#include "platform/MCRuntimeLibStartupLogger.h"
+
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/log.h"
 
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"
 #endif
 
-#include "platform/MessagePrinter.h"
 
-extern "C" int XBMC_Run(bool renderGUI)
+extern "C" void MCRuntimeLib_Preflight()
+{
+}
+
+extern "C" void MCRuntimeLib_Postflight()
+{
+}
+
+extern "C" void MCRuntimeLib_SetRenderGUI(bool renderGUI)
+{
+  g_application.SetRenderGUI(renderGUI);
+}
+
+extern "C" bool MCRuntimeLib_Running()
+{
+  return !g_application.m_bStop;
+}
+
+extern "C" int MCRuntimeLib_Run(bool renderGUI)
 {
   int status = -1;
 
-  if (!g_advancedSettings.Initialized())
-  {
+  //this can't be set from CAdvancedSettings::Initialize()
+  //because it will overwrite the loglevel set with the --debug flag
 #ifdef _DEBUG
   g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
   g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
@@ -40,12 +60,16 @@ extern "C" int XBMC_Run(bool renderGUI)
   g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
+  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+
+  // not a failure if returns false, just means someone
+  // did the init before us.
+  if (!g_advancedSettings.Initialized())
     g_advancedSettings.Initialize();
-  }
 
   if (!g_application.Create())
   {
-    CMessagePrinter::DisplayError("ERROR: Unable to create application. Exiting");
+    CMCRuntimeLibStartupLogger::DisplayError("ERROR: Unable to create application. Exiting");
     return status;
   }
 
@@ -57,12 +81,12 @@ extern "C" int XBMC_Run(bool renderGUI)
 
   if (renderGUI && !g_application.CreateGUI())
   {
-    CMessagePrinter::DisplayError("ERROR: Unable to create GUI. Exiting");
+    CMCRuntimeLibStartupLogger::DisplayError("ERROR: Unable to create GUI. Exiting");
     return status;
   }
   if (!g_application.Initialize())
   {
-    CMessagePrinter::DisplayError("ERROR: Unable to Initialize. Exiting");
+    CMCRuntimeLibStartupLogger::DisplayError("ERROR: Unable to Initialize. Exiting");
     return status;
   }
 
@@ -72,7 +96,7 @@ extern "C" int XBMC_Run(bool renderGUI)
   }
   catch(...)
   {
-    CMessagePrinter::DisplayError("ERROR: Exception caught on main loop. Exiting");
+    CMCRuntimeLibStartupLogger::DisplayError("ERROR: Exception caught on main loop. Exiting");
     status = -1;
   }
 

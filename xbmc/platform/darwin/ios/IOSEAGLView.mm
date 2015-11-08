@@ -20,35 +20,35 @@
 
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
-#include <sys/resource.h>
-#include <signal.h>
-#include <stdio.h>
+#import <sys/resource.h>
+#import <signal.h>
+#import <stdio.h>
 
-#include "system.h"
-#include "AdvancedSettings.h"
-#include "FileItem.h"
-#include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "WindowingFactory.h"
-#include "VideoReferenceClock.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "Util.h"
-#include "XbmcContext.h"
-#include "WindowingFactory.h"
+#import "system.h"
+#import "AdvancedSettings.h"
+#import "FileItem.h"
+#import "Application.h"
+#import "messaging/ApplicationMessenger.h"
+#import "WindowingFactory.h"
+#import "VideoReferenceClock.h"
+#import "utils/log.h"
+#import "utils/TimeUtils.h"
+#import "Util.h"
+#import "platform/MCRuntimeLibContext.h"
+#import "WindowingFactory.h"
 
 #import <QuartzCore/QuartzCore.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
-#import "IOSEAGLView.h"
-#if defined(TARGET_DARWIN_IOS)
+
+#import "platform/darwin/AutoPool.h"
+#import "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios/IOSEAGLView.h"
 #import "platform/darwin/ios/XBMCController.h"
-#endif
-#import "IOSScreenManager.h"
-#import "AutoPool.h"
-#import "DarwinUtils.h"
-#import "XBMCDebugHelpers.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
 
 using namespace KODI::MESSAGING;
 
@@ -368,10 +368,10 @@ using namespace KODI::MESSAGING;
 {
   CCocoaAutoPool outerpool;
 
-  [[NSThread currentThread] setName:@"XBMC_Run"];
+  [[NSThread currentThread] setName:@"MCRuntimeLib"];
   
-  // set up some xbmc specific relationships
-  XBMC::Context context;
+  // set up some MCRuntimeLib specific relationships
+  MCRuntimeLib::Context run_context;
   readyToRun = true;
 
   // signal we are alive
@@ -433,13 +433,14 @@ using namespace KODI::MESSAGING;
   // signal we are dead
   [myLock unlockWithCondition:TRUE];
 
-  // grrr, xbmc does not shutdown properly and leaves
-  // several classes in an indeterminant state, we must exit and
-  // reload Lowtide/AppleTV, boo.
   [g_xbmcController enableScreenSaver];
   [g_xbmcController enableSystemSleep];
-  //[g_xbmcController applicationDidExit];
   exit(0);
+  /*
+  // die the iOS way :)
+  UIApplication *app = [UIApplication sharedApplication];
+  [app performSelector:@selector(suspend)];
+  */
 }
 //--------------------------------------------------------------
 @end

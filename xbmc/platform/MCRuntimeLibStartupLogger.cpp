@@ -18,27 +18,27 @@
 *
 */
 
-#include "MessagePrinter.h"
+#include "platform/MCRuntimeLibStartupLogger.h"
 #include "CompileInfo.h"
 
 #include <stdio.h>
 
-void CMessagePrinter::DisplayMessage(const std::string& message)
+void CMCRuntimeLibStartupLogger::DisplayMessage(const std::string& message)
 {
   fprintf(stdout, "%s\n", message.c_str());
 }
 
-void CMessagePrinter::DisplayWarning(const std::string& warning)
+void CMCRuntimeLibStartupLogger::DisplayWarning(const std::string& warning)
 {
   fprintf(stderr, "%s\n", warning.c_str());
 }
 
-void CMessagePrinter::DisplayError(const std::string& error)
+void CMCRuntimeLibStartupLogger::DisplayError(const std::string& error)
 {
   fprintf(stderr,"%s\n", error.c_str());
 }
 
-void CMessagePrinter::DisplayHelpMessage(const std::vector<std::pair<std::string, std::string>>& help)
+void CMCRuntimeLibStartupLogger::DisplayHelpMessage(const std::vector<std::pair<std::string, std::string>>& help)
 {
   //very crude implementation, pretty it up when possible
   std::string message;
