@@ -35,7 +35,6 @@
 #include "settings/MediaSettings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "Application.h"
-#include "threads/Atomics.h"
 #include "guilib/GUIWindowManager.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "settings/DisplaySettings.h"
@@ -68,7 +67,7 @@ CMMALVideoBuffer::~CMMALVideoBuffer()
 
 CMMALVideoBuffer* CMMALVideoBuffer::Acquire()
 {
-  long count = AtomicIncrement(&m_refs);
+  long count = ++m_refs;
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p (%p) ref:%ld", CLASSNAME, __func__, this, mmal_buffer, count);
   (void)count;
@@ -77,7 +76,7 @@ CMMALVideoBuffer* CMMALVideoBuffer::Acquire()
 
 long CMMALVideoBuffer::Release()
 {
-  long count = AtomicDecrement(&m_refs);
+  long count = --m_refs;
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p (%p) ref:%ld", CLASSNAME, __func__, this, mmal_buffer, count);
   if (count == 0)

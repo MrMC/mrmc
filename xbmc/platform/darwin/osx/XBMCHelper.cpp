@@ -18,7 +18,7 @@
  *
  */
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(__APPLE__) && !defined(__arm__) && !defined(__arm64__)
 #include <fstream>
 #include <signal.h>
 #include <sstream>
@@ -39,7 +39,7 @@
 
 #include "threads/Atomics.h"
 
-static long sg_singleton_lock_variable = 0;
+static std::atomic<long> sg_singleton_lock_variable {0};
 XBMCHelper* XBMCHelper::smp_instance = 0;
 
 #define XBMC_HELPER_PROGRAM "XBMCHelper"
