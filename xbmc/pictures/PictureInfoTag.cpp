@@ -27,6 +27,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Archive.h"
+#include "utils/exif/libexif.h"
 
 using namespace std;
 
@@ -54,11 +55,7 @@ bool CPictureInfoTag::Load(const std::string &path)
 {
   m_isLoaded = false;
 
-  DllLibExif exifDll;
-  if (path.empty() || !exifDll.Load())
-    return false;
-
-  if (exifDll.process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
+  if (XEXIF::process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
     m_isLoaded = true;
 
   ConvertDateTime();
