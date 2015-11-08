@@ -22,11 +22,10 @@
 
 SDKROOT = macosx
 MACOSX_DEPLOYMENT_TARGET = 10.9
+INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/osx/Info.plist
 
 ARCHS = i386 x86_64
 ONLY_ACTIVE_ARCH = YES
-
-INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/osx/Info.plist
 
 XBMC_DEPENDS = $(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target
 

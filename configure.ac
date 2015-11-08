@@ -952,8 +952,7 @@ PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS],
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([gif],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([xmlrpc++],    [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([xmlrpc_client++],[main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([ulxmlrpcpp],  [main],, AC_MSG_ERROR($missing_library))
 
 AC_CHECK_LIB([cpluff],      [main],, AC_MSG_ERROR($missing_library))
 XB_FIND_SONAME([CPLUFF], [cpluff])
@@ -2008,7 +2007,6 @@ OUTPUT_FILES="$OUTPUT_FILES Makefile"
 OUTPUT_FILES="$OUTPUT_FILES Makefile.include"
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.mrmc/media/Makefile"
 
-OUTPUT_FILES="$OUTPUT_FILES lib/libexif/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES lib/libUPnP/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES addons/xbmc.addon/addon.xml"
@@ -2065,7 +2063,8 @@ OUTPUT_FILES="$OUTPUT_FILES tools/darwin/packaging/ios/mkdeb-ios.sh"
 OUTPUT_FILES="$OUTPUT_FILES tools/darwin/packaging/osx/mkdmg-osx.sh"
 
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/osx/Info.plist"
-OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/ios/IOS-Info.plist"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/ios/Info.plist"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/tvos/Info.plist"
 else
 OUTPUT_FILES="$OUTPUT_FILES tools/Linux/${APP_NAME_LC}.sh"
 OUTPUT_FILES="$OUTPUT_FILES tools/Linux/${APP_NAME_LC}-standalone.sh"

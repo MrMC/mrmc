@@ -166,6 +166,7 @@
 #endif
 #ifdef TARGET_DARWIN
 #include "platform/darwin/DarwinUtils.h"
+#include "platform/darwin/DarwinNSUserDefaults.h"
 #endif
 
 #include "storage/MediaManager.h"
@@ -328,22 +329,38 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
   return true;
 }
 
-extern "C" void __stdcall init_emu_environ();
-extern "C" void __stdcall update_emu_environ();
-extern "C" void __stdcall cleanup_emu_environ();
+extern "C" void init_emu_environ();
+extern "C" void update_emu_environ();
+extern "C" void cleanup_emu_environ();
 
 //
 // Utility function used to copy files from the application bundle
 // over to the user data directory in Application Support/Kodi.
 //
-static void CopyUserDataIfNeeded(const std::string &strPath, const std::string &file)
+static void CopyUserDataXMLFilesIfNeeded(const std::string &strPath, const std::string &file)
 {
-  std::string destPath = URIUtils::AddFileToFolder(strPath, file);
-  if (!CFile::Exists(destPath))
+  // this needs to move out into DarwinUtils
+  std::string dstPath = URIUtils::AddFileToFolder(strPath, file);
+  std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
+#if defined(TARGET_DARWIN_TVOS)
+  if (CDarwinNSUserDefaults::IsKeyFromPath(dstPath))
   {
-    // need to copy it across
-    std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
-    CFile::Copy(srcPath, destPath);
+    if (!CDarwinNSUserDefaults::KeyFromPathExists(dstPath))
+    {
+      CXBMCTinyXML xmlDoc;
+      if (xmlDoc.LoadFile(srcPath))
+        xmlDoc.SaveFile(dstPath);
+    }
+  }
+  else
+#endif
+  {
+    if (!CFile::Exists(dstPath))
+    {
+      // need to copy it across
+      std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
+      CFile::Copy(srcPath, dstPath);
+    }
   }
 }
 
@@ -407,10 +424,10 @@ bool CApplication::Create()
   if (!inited)
     inited = InitDirectoriesOSX();
 
-  // copy required files
-  CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-  CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
-  CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+  // copy required xml files
+  CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "RssFeeds.xml");
+  CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "favourites.xml");
+  CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "Lircmap.xml");
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str()))
   {
@@ -584,9 +601,9 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
     return false;
   }
-
+#if !defined(TARGET_DARWIN_TVOS) && !defined(TARGET_DARWIN_IOS)
   g_peripherals.Initialise();
-
+#endif
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   CInputManager::GetInstance().InitializeInputs();
@@ -858,26 +875,35 @@ bool CApplication::InitDirectoriesLinux()
 bool CApplication::InitDirectoriesOSX()
 {
 #if defined(TARGET_DARWIN)
-  std::string userName;
-  if (getenv("USER"))
-    userName = getenv("USER");
-  else
-    userName = "root";
-
   std::string userHome;
+#if defined(TARGET_DARWIN_OSX)
+  // OSX HOME: The user home directory
   if (getenv("HOME"))
     userHome = getenv("HOME");
   else
     userHome = "/root";
+#else
+  // iOS/TVOS HOME: The home directory of your application
+  // change it to match osx definition which is the norm.
+  userHome = CDarwinUtils::GetUserHomeDirectory();
+  setenv("HOME", userHome.c_str(), 1);
+#endif
+  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesOSX: userHome(%s), HOME(%s)", userHome.c_str() , getenv("HOME"));
 
   std::string appPath;
+  // this is stupid;
+  // GetHomePath gets the app home.
+  // SetHomePath sets path to special://home which is user home.
   CUtil::GetHomePath(appPath);
   setenv("MRMC_HOME", appPath.c_str(), 0);
+  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesOSX: appPath(%s)", appPath.c_str());
 
 #if defined(TARGET_DARWIN_IOS)
-  std::string fontconfigPath;
-  fontconfigPath = appPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
-  setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
+  std::string fontconfigFilePath;
+  fontconfigFilePath = appPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
+  // the location of the fonts.conf file
+  setenv("FONTCONFIG_FILE", fontconfigFilePath.c_str(), 1);
+  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesOSX: fontconfigFilePath(%s)", fontconfigFilePath.c_str());
 #endif
 
   // setup path to our internal dylibs so loader can find them
@@ -888,56 +914,19 @@ bool CApplication::InitDirectoriesOSX()
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(appPath);
     CSpecialProtocol::SetXBMCPath(appPath);
-    #if defined(TARGET_DARWIN_IOS)
-      std::string appName = CCompileInfo::GetAppName();
-      CSpecialProtocol::SetHomePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName);
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName + "/userdata");
-    #else
-      std::string appName = CCompileInfo::GetAppName();
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/" + appName);
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/" + appName + "/userdata");
-    #endif
+    CSpecialProtocol::SetXBMCBinPath(appPath);
 
-    std::string dotLowerAppName = "." + appName;
-    StringUtils::ToLower(dotLowerAppName);
-    // location for temp files
-    #if defined(TARGET_DARWIN_IOS)
-      std::string strTempPath = URIUtils::AddFileToFolder(userHome,  std::string(CDarwinUtils::GetAppRootFolder()) + "/" + appName + "/temp");
-    #else
-      std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
-      CDirectory::Create(strTempPath);
-      strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/temp");
-    #endif
-    CSpecialProtocol::SetTempPath(strTempPath);
+    // home and masterprofile locations
+    CSpecialProtocol::SetHomePath(userHome);
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/userdata");
 
+    // temp files location
+    CSpecialProtocol::SetTempPath(CDarwinUtils::GetUserTempDirectory());
     // xbmc.log file location
-    #if defined(TARGET_DARWIN_IOS)
-      strTempPath = userHome + "/" + std::string(CDarwinUtils::GetAppRootFolder());
-    #else
-      strTempPath = userHome + "/Library/Logs";
-    #endif
-    URIUtils::AddSlashAtEnd(strTempPath);
-    g_advancedSettings.m_logFolder = strTempPath;
+    g_advancedSettings.m_logFolder = CDarwinUtils::GetUserLogDirectory();
 
     CreateUserDirs();
-  }
-  else
-  {
-    URIUtils::AddSlashAtEnd(appPath);
-    g_advancedSettings.m_logFolder = appPath;
-
-    CSpecialProtocol::SetXBMCBinPath(appPath);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
-
-    std::string strTempPath = URIUtils::AddFileToFolder(appPath, "portable_data/temp");
-    CSpecialProtocol::SetTempPath(strTempPath);
-
-    URIUtils::AddSlashAtEnd(strTempPath);
-    g_advancedSettings.m_logFolder = strTempPath;
   }
 
   return true;
@@ -949,8 +938,10 @@ bool CApplication::InitDirectoriesOSX()
 void CApplication::CreateUserDirs()
 {
   CDirectory::Create("special://home/");
+#if !defined(TARGET_DARWIN_TVOS)
   CDirectory::Create("special://home/addons");
   CDirectory::Create("special://home/addons/packages");
+#endif
   CDirectory::Create("special://home/media");
   CDirectory::Create("special://home/system");
   CDirectory::Create("special://masterprofile/");
@@ -4095,7 +4086,9 @@ void CApplication::Process()
     ProcessSlow();
   }
 
+#if !defined(TARGET_DARWIN)
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
+#endif
 }
 
 // We get called every 500ms

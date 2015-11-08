@@ -219,7 +219,7 @@
 						<width>85</width>
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
-						<visible>!Player.ChannelPreviewActive</visible>
+						<visible>!Player.ChannelPreviewActive +!System.Platform.IOS + !System.Platform.TVOS</visible>
 						<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
 					</control>
 					<control type="image" id="1">

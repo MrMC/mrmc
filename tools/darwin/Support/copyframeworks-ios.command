@@ -75,11 +75,6 @@ chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
 install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_BINARY"
 done
 
-echo "Fixing $TARGET_BINARY VideoToolbox dylib name"
-VTB_SDK6=/System/Library/Frameworks/VideoToolbox.framework/VideoToolbox
-VTB_SDK5=/System/Library/PrivateFrameworks/VideoToolbox.framework/VideoToolbox
-install_name_tool -change "$VTB_SDK6" "$VTB_SDK5" "$TARGET_BINARY"
-
 echo "Checking $XBMC_HOME/system *.so for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/system "*.so"
 

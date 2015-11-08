@@ -1,0 +1,49 @@
+//
+//      Copyright (C) 2012-2013 Team XBMC
+//      http://xbmc.org
+//
+//  This Program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2, or (at your option)
+//  any later version.
+//
+//  This Program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with XBMC; see the file COPYING.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//
+
+#include "App.xcconfig"
+
+PRODUCT_NAME = $(APP_NAME)
+
+SDKROOT = appletvos
+TVOS_DEPLOYMENT_TARGET = 9.0
+INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/tvos/Info.plist
+
+ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIconTopShelfImage
+
+ARCHS = arm64
+VALID_ARCHS = arm64
+ONLY_ACTIVE_ARCH = YES
+
+EXECUTABLE_SUFFIX = .bin
+XBMC_DEPENDS = $(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target
+INSTALL_PATH = $(HOME)/Library/Bundles
+
+GCC_INLINES_ARE_PRIVATE_EXTERN = NO
+GCC_SYMBOLS_PRIVATE_EXTERN = NO
+COPY_PHASE_STRIP = NO
+DEAD_CODE_STRIPPING = NO
+OTHER_CPLUSPLUSFLAGS = $(inherited) $(OTHER_CFLAGS) -Wreorder
+
+OTHER_LDFLAGS = $(APP_OTHER_LDFLAGS_COMMON)
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks
+
+GCC_PREPROCESSOR_DEFINITIONS = TARGET_DARWIN_IOS TARGET_DARWIN_TVOS $(inherited)

@@ -191,11 +191,13 @@
 			<onclick>ActivateWindow(Settings)</onclick>
 		</control>
 		<control type="button" id="90123">
+			<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 			<include>ButtonHomeSubCommonValues</include>
 			<label>7</label>
 			<onclick>ActivateWindow(FileManager)</onclick>
 		</control>
 		<control type="button" id="90124">
+			<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 			<include>ButtonHomeSubCommonValues</include>
 			<label>13200</label>
 			<onclick>ActivateWindow(Profiles)</onclick>

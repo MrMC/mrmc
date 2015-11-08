@@ -139,7 +139,7 @@
 						<height>35</height>
 						<aspectratio align="right">keep</aspectratio>
 						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
-						<visible>!Player.ChannelPreviewActive</visible>
+						<visible>!Player.ChannelPreviewActive + !System.Platform.IOS + !System.Platform.TVOS</visible>
 					</control>
 					<control type="group">
 						<description>Rating</description>

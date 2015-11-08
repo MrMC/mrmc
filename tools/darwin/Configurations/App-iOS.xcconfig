@@ -21,12 +21,12 @@
 #include "App.xcconfig"
 
 PRODUCT_NAME = $(APP_NAME)
-//build against latest
-SDKROOT = iphoneos
-IPHONEOS_DEPLOYMENT_TARGET = 8.1
-INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/ios/IOS-Info.plist
 
-ARCHS = armv7
+SDKROOT = iphoneos
+IPHONEOS_DEPLOYMENT_TARGET = 8.4
+INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/ios/Info.plist
+
+ARCHS = armv7 arm64
 VALID_ARCHS = armv7 arm64
 ONLY_ACTIVE_ARCH = YES
 
@@ -40,6 +40,6 @@ COPY_PHASE_STRIP = NO
 DEAD_CODE_STRIPPING = NO
 OTHER_CPLUSPLUSFLAGS = $(inherited) $(OTHER_CFLAGS) -Wreorder
 
-OTHER_LDFLAGS = $(APP_OTHER_LDFLAGS_COMMON) -weak_framework VideoToolbox
+OTHER_LDFLAGS = $(APP_OTHER_LDFLAGS_COMMON)
 
 GCC_PREPROCESSOR_DEFINITIONS = TARGET_DARWIN_IOS $(inherited)

@@ -47,6 +47,7 @@
 	</include>
 	<include name="AudioCodecFlaggingConditions">
 		<control type="image">
+			<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 			<description>Audio Codec Image</description>
 			<width>80</width>
 			<height>35</height>

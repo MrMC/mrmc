@@ -169,6 +169,7 @@ const std::string CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER = "videoplayer.use
 const std::string CSettings::SETTING_VIDEOPLAYER_USEOMX = "videoplayer.useomx";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX = "videoplayer.usevideotoolbox";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDA = "videoplayer.usevda";
+const std::string CSettings::SETTING_VIDEOPLAYER_USEAVF = "videoplayer.useavf";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMMAL = "videoplayer.usemmal";
 const std::string CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT = "videoplayer.usestagefright";
 const std::string CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE = "videoplayer.limitguiupdate";
@@ -465,7 +466,7 @@ bool CSettings::Load(const std::string &file)
 {
   CXBMCTinyXML xmlDoc;
   bool updated = false;
-  if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
+  if (!xmlDoc.LoadFile(file) ||
       !m_settingsManager->Load(xmlDoc.RootElement(), updated))
   {
     CLog::Log(LOGERROR, "CSettings: unable to load settings from %s, creating new default settings", file.c_str());
@@ -801,6 +802,9 @@ bool CSettings::InitializeDefinitions()
 #if defined(TARGET_DARWIN_OSX)
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_osx.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_osx.xml"))
     CLog::Log(LOGFATAL, "Unable to load osx-specific settings definitions");
+#elif defined(TARGET_DARWIN_TVOS)
+  if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_tvos.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_tvos.xml"))
+    CLog::Log(LOGFATAL, "Unable to load tvos-specific settings definitions");
 #elif defined(TARGET_DARWIN_IOS)
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_ios.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_ios.xml"))
     CLog::Log(LOGFATAL, "Unable to load ios-specific settings definitions");
@@ -1164,9 +1168,9 @@ void CSettings::InitializeISettingCallbacks()
 bool CSettings::Reset()
 {
   std::string settingsFile = CProfilesManager::GetInstance().GetSettingsFile();
-  // try to delete the settings file
-  if (XFILE::CFile::Exists(settingsFile, false) && !XFILE::CFile::Delete(settingsFile))
-    CLog::Log(LOGWARNING, "Unable to delete old settings file at %s", settingsFile.c_str());
+
+  CXBMCTinyXML xmlDoc;
+  xmlDoc.DeleteFile(settingsFile);
   
   // unload any loaded settings
   Unload();

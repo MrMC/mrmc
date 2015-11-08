@@ -1077,31 +1077,34 @@
 			<left>20</left>
 			<top>55r</top>
 			<include>Window_OpenClose_Animation</include>
-			<control type="button" id="20">
-				<description>Power push button</description>
-				<left>55</left>
-				<top>0</top>
-				<width>45</width>
-				<height>45</height>
-				<label>31003</label>
-				<font>-</font>
-				<onclick>ActivateWindow(ShutdownMenu)</onclick>
-				<texturefocus border="5">floor_buttonFO.png</texturefocus>
-				<texturenofocus border="5">floor_button.png</texturenofocus>
-				<onleft>21</onleft>
-				<onright>21</onright>
-				<onup>9002</onup>
-				<ondown>9003</ondown>
-			</control>
-			<control type="image">
-				<description>Power Icon</description>
-				<left>60</left>
-				<top>5</top>
-				<width>35</width>
-				<height>35</height>
-				<aspectratio>keep</aspectratio>
-				<texture>icon_power.png</texture>
-			</control>
+			<control type="group">
+				<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
+				<control type="button" id="20">
+					<description>Power push button</description>
+					<left>55</left>
+					<top>0</top>
+					<width>45</width>
+					<height>45</height>
+					<label>31003</label>
+					<font>-</font>
+					<onclick>ActivateWindow(ShutdownMenu)</onclick>
+					<texturefocus border="5">floor_buttonFO.png</texturefocus>
+					<texturenofocus border="5">floor_button.png</texturenofocus>
+					<onleft>21</onleft>
+					<onright>21</onright>
+					<onup>9002</onup>
+					<ondown>9003</ondown>
+				</control>
+				<control type="image">
+					<description>Power Icon</description>
+					<left>60</left>
+					<top>5</top>
+					<width>35</width>
+					<height>35</height>
+					<aspectratio>keep</aspectratio>
+					<texture>icon_power.png</texture>
+				</control>
+			</control>	
 			<control type="button" id="21">
 				<description>Favourites push button</description>
 				<left>0</left>

@@ -1267,6 +1267,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       else if (platform == "osx")  return SYSTEM_PLATFORM_DARWIN_OSX;
       else if (platform == "ios")  return SYSTEM_PLATFORM_DARWIN_IOS;
       else if (platform == "android") return SYSTEM_PLATFORM_ANDROID;
+      else if (platform == "tvos") return SYSTEM_PLATFORM_DARWIN_TVOS;
     }
     if (info[0].name == "musicplayer")
     { // TODO: these two don't allow duration(foo) and also don't allow more than this number of levels...
@@ -2265,6 +2266,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = true;
 #else
     bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_DARWIN_TVOS)
+#ifdef TARGET_DARWIN_TVOS
+    bReturn = true;
+#else
+  bReturn = false;
 #endif
   else if (condition == SYSTEM_PLATFORM_ANDROID)
 #if defined(TARGET_ANDROID)

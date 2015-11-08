@@ -28,6 +28,8 @@
 #include "RegExp.h"
 #include "utils/log.h"
 
+#include "platform/darwin/DarwinNSUserDefaults.h"
+
 #define MAX_ENTITY_LENGTH 8 // size of largest entity "&#xNNNN;"
 #define BUFFER_SIZE 4096
 
@@ -64,15 +66,35 @@ bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
 
 bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding)
 {
+  XFILE::auto_buffer buffer;
+  std::string dataCharset = "";
+
   value = _filename.c_str();
 
-  XFILE::CFile file;
-  XFILE::auto_buffer buffer;
-
-  if (file.LoadFile(value, buffer) <= 0)
+#if defined(TARGET_DARWIN_TVOS)
+  if (CDarwinNSUserDefaults::IsKeyFromPath(value))
   {
-    SetError(TIXML_ERROR_OPENING_FILE, NULL, NULL, TIXML_ENCODING_UNKNOWN);
-    return false;
+    std::string xml_data;
+    if (!CDarwinNSUserDefaults::GetKeyFromPath(value, xml_data))
+      return false;
+
+    buffer.allocate(xml_data.size());
+    memcpy(buffer.get(), xml_data.data(), buffer.length());
+  }
+  else
+#endif
+  {
+    if (!XFILE::CFile::Exists(value))
+      return false;
+
+    XFILE::CFile file;
+    if (file.LoadFile(value, buffer) <= 0)
+    {
+      SetError(TIXML_ERROR_OPENING_FILE, NULL, NULL, TIXML_ENCODING_UNKNOWN);
+      return false;
+    }
+    if (encoding == TIXML_ENCODING_UNKNOWN)
+      dataCharset = file.GetContentCharset();
   }
 
   // Delete the existing data:
@@ -83,12 +105,13 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
   buffer.clear(); // free memory early
 
   if (encoding == TIXML_ENCODING_UNKNOWN)
-    Parse(data, file.GetContentCharset());
+    Parse(data, dataCharset);
   else
     Parse(data, encoding);
 
   if (Error())
     return false;
+
   return true;
 }
 
@@ -98,33 +121,63 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, const std::string& doc
   StringUtils::ToUpper(m_SuggestedCharset);
   return LoadFile(_filename, TIXML_ENCODING_UNKNOWN);
 }
-
-bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
-{
-  std::string data;
-  char buf[BUFFER_SIZE];
-  memset(buf, 0, BUFFER_SIZE);
-  int result;
-  while ((result = fread(buf, 1, BUFFER_SIZE, f)) > 0)
-    data.append(buf, result);
-  return Parse(data, encoding);
-}
-
 bool CXBMCTinyXML::SaveFile(const char *_filename) const
 {
   return SaveFile(std::string(_filename));
 }
 
-bool CXBMCTinyXML::SaveFile(const std::string& filename) const
+bool CXBMCTinyXML::SaveFile(const std::string& _filename) const
 {
-  XFILE::CFile file;
-  if (file.OpenForWrite(filename, true))
+#if defined(TARGET_DARWIN_TVOS)
+  if (CDarwinNSUserDefaults::IsKeyFromPath(_filename))
   {
     TiXmlPrinter printer;
+    printer.SetIndent(NULL);
+    printer.SetLineBreak(NULL);
     Accept(&printer);
-    return file.Write(printer.CStr(), printer.Size()) == static_cast<ssize_t>(printer.Size());
+
+    std::string xml_data = printer.CStr();
+    return CDarwinNSUserDefaults::SetKeyFromPath(_filename, xml_data, true);
   }
+  else
+#endif
+  {
+    XFILE::CFile file;
+    if (file.OpenForWrite(_filename, true))
+    {
+      TiXmlPrinter printer;
+      Accept(&printer);
+      return file.Write(printer.CStr(), printer.Size()) == static_cast<ssize_t>(printer.Size());
+    }
+  }
+
   return false;
+}
+
+bool CXBMCTinyXML::DeleteFile(const char *_filename) const
+{
+  return DeleteFile(std::string(_filename));
+}
+
+bool CXBMCTinyXML::DeleteFile(const std::string& _filename) const
+{
+#if defined(TARGET_DARWIN_TVOS)
+  if (CDarwinNSUserDefaults::IsKeyFromPath(value))
+  {
+    if (!CDarwinNSUserDefaults::DeleteKeyFromPath(_filename, true))
+      return false;
+  }
+  else
+#endif
+  {
+    // try to delete the xml file
+    if (XFILE::CFile::Exists(_filename, false) && !XFILE::CFile::Delete(_filename))
+    {
+      CLog::Log(LOGWARNING, "Unable to delete old settings file at %s", _filename.c_str());
+      return false;
+    }
+  }
+  return true;
 }
 
 bool CXBMCTinyXML::Parse(const char *_data, TiXmlEncoding encoding)

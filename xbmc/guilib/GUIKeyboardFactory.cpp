@@ -31,10 +31,12 @@
 #include "utils/Variant.h"
 
 #include "dialogs/GUIDialogKeyboardGeneric.h"
-#if defined(TARGET_DARWIN_IOS)
-#include "platform/darwin/ios/IOSKeyboard.h"
-#include "windowing/WindowingFactory.h"
+#if defined(TARGET_DARWIN_TVOS)
+  #include "platform/darwin/tvos/MainKeyboard.h"
+#elif defined(TARGET_DARWIN_IOS)
+  #include "platform/darwin/ios/IOSKeyboard.h"
 #endif
+#include "windowing/WindowingFactory.h"
 
 using namespace KODI::MESSAGING;
 
@@ -96,7 +98,10 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
   else if (heading.isInteger() && heading.asInteger())
     headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_TVOS)
+  if (g_Windowing.GetCurrentScreen() == 0)
+    kb = new CMainKeyboard();
+#elif defined(TARGET_DARWIN_IOS)
   if (g_Windowing.GetCurrentScreen() == 0)
     kb = new CIOSKeyboard();
 #endif

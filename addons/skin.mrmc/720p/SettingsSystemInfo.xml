@@ -88,6 +88,7 @@
 					<label>20037</label>
 				</control>
 				<control type="button" id="94">
+					<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 					<description>Button Storage</description>
 					<height>60</height>
 					<width>241</width>
