@@ -54,23 +54,22 @@ using namespace KODI::MESSAGING;
 #endif
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 
-#import <AVFoundation/AVAudioSession.h>
 #import <MediaPlayer/MPMediaItem.h>
 #ifdef __IPHONE_5_0
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
 #else
 const NSString *MPNowPlayingInfoPropertyElapsedPlaybackTime = @"MPNowPlayingInfoPropertyElapsedPlaybackTime";
-const NSString *MPNowPlayingInfoPropertyPlaybackRate = @"MPNowPlayingInfoPropertyPlaybackRate";
-const NSString *MPNowPlayingInfoPropertyPlaybackQueueIndex = @"MPNowPlayingInfoPropertyPlaybackQueueIndex";
-const NSString *MPNowPlayingInfoPropertyPlaybackQueueCount = @"MPNowPlayingInfoPropertyPlaybackQueueCount";
+const NSString *MPNowPlayingInfoPropertyPlaybackRate        = @"MPNowPlayingInfoPropertyPlaybackRate";
+const NSString *MPNowPlayingInfoPropertyPlaybackQueueIndex  = @"MPNowPlayingInfoPropertyPlaybackQueueIndex";
+const NSString *MPNowPlayingInfoPropertyPlaybackQueueCount  = @"MPNowPlayingInfoPropertyPlaybackQueueCount";
 #endif
-#import "IOSEAGLView.h"
 
-#import "XBMCController.h"
-#import "IOSScreenManager.h"
-#import "XBMCApplication.h"
-#import "XBMCDebugHelpers.h"
-#import "AutoPool.h"
+#import "platform/darwin/AutoPool.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios/IOSEAGLView.h"
+#import "platform/darwin/ios/XBMCController.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
+#import "platform/darwin/ios/XBMCApplication.h"
 
 XBMCController *g_xbmcController;
 static CEvent screenChangeEvent;
@@ -231,10 +230,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)rescheduleNetworkAutoSuspend;
 @end
 
-@interface UIApplication (extended)
--(void) terminateWithSuccess;
-@end
-
 @implementation XBMCController
 @synthesize animating;
 @synthesize lastGesturePoint;
@@ -288,72 +283,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [self sendKey:XBMCK_BACKSPACE];
 }
 // END OF UIKeyInput protocol
-
-// - iOS6 rotation API - will be called on iOS7 runtime!--------
-- (NSUInteger)supportedInterfaceOrientations
-{
-  //mask defines available as of ios6 sdk
-  //return UIInterfaceOrientationMaskLandscape;
-  return (1 << UIInterfaceOrientationLandscapeLeft) | (1 << UIInterfaceOrientationLandscapeRight);
-}
-// - old rotation API will be called on iOS6 and lower - removed in iOS7
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{  
-  //on external screens somehow the logic is rotated by 90°
-  //so we have to do this with our supported orientations then aswell
-  if([[IOSScreenManager sharedInstance] isExternalScreen])
-  {
-    if(interfaceOrientation == UIInterfaceOrientationPortrait) 
-    {
-      return YES;
-    }
-  }
-  else//internal screen
-  {
-    if(interfaceOrientation == UIInterfaceOrientationLandscapeLeft) 
-    {
-      return YES;
-    }
-    else if(interfaceOrientation == UIInterfaceOrientationLandscapeRight)
-    {
-      return YES;
-    }
-  }
-  return NO;
-}
-//--------------------------------------------------------------
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-#if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() < 8.0)
-#endif
-  {
-    orientation = toInterfaceOrientation;
-    CGRect srect = [IOSScreenManager getLandscapeResolution: [m_glView getCurrentScreen]];
-    CGRect rect = srect;;
-  
-    switch(toInterfaceOrientation)
-    {
-      case UIInterfaceOrientationPortrait:
-      case UIInterfaceOrientationPortraitUpsideDown:
-        if(![[IOSScreenManager sharedInstance] isExternalScreen])
-        {
-          rect.size = CGSizeMake( srect.size.height, srect.size.width );
-        }
-        break;
-      case UIInterfaceOrientationLandscapeLeft:
-      case UIInterfaceOrientationLandscapeRight:
-      case UIInterfaceOrientationUnknown:
-        break;//just leave the rect as is
-    }
-    m_glView.frame = rect;
-  }
-}
-
-- (UIInterfaceOrientation) getOrientation
-{
-	return orientation;
-}
 
 -(void)sendKey:(XBMCKey) key
 {
@@ -751,29 +680,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 
   orientation = UIInterfaceOrientationLandscapeLeft;
 
-#if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() < 8.0)
-#endif
-  {
-    /* We start in landscape mode */
-    CGRect srect = frame;
-    // in ios sdks older then 8.0 the landscape mode is 90 degrees
-    // rotated
-    srect.size = CGSizeMake( frame.size.height, frame.size.width );
-  
-    m_glView = [[IOSEAGLView alloc] initWithFrame: srect withScreen:screen];
-    [[IOSScreenManager sharedInstance] setView:m_glView];
-    [m_glView setMultipleTouchEnabled:YES];
-  
-    /* Check if screen is Retina */
-    screenScale = [m_glView getScreenScale:screen];
-
-    [self.view addSubview: m_glView];
-  
-    [self createGestureRecognizers];
-    [m_window addSubview: self.view];
-  }
-
   [m_window makeKeyAndVisible];
   g_xbmcController = self;  
   
@@ -782,7 +688,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   return self;
 }
 //--------------------------------------------------------------
-#if __IPHONE_8_0
 - (void)loadView
 {
   [super loadView];
@@ -1011,7 +916,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 }
 //--------------------------------------------------------------
 - (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
-  LOG(@"%s: type %d, subtype: %d", __PRETTY_FUNCTION__, receivedEvent.type, receivedEvent.subtype);
+  LOG(@"%s: type %ld, subtype: %ld", __PRETTY_FUNCTION__, (long)receivedEvent.type, (long)receivedEvent.subtype);
   if (receivedEvent.type == UIEventTypeRemoteControl)
   {
     [self disableNetworkAutoSuspend];
@@ -1050,7 +955,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 		  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       default:
-        LOG(@"unhandled subtype: %d", receivedEvent.subtype);
+        LOG(@"unhandled subtype: %ld", (long)receivedEvent.subtype);
         break;
     }
     [self rescheduleNetworkAutoSuspend];

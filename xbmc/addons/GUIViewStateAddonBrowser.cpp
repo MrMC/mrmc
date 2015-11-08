@@ -84,6 +84,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24033);
     m_sources.push_back(share);
   }
+#if !defined(TARGET_DARWIN_IOS)
   {
     CMediaSource share;
     share.strPath = "addons://install/";
@@ -98,6 +99,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(137);
     m_sources.push_back(share);
   }
+#endif
   {
     CMediaSource share;
     share.strPath = "addons://manage/";

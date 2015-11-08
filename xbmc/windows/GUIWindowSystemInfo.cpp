@@ -100,7 +100,9 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s %s", 13283, SYSTEM_OS_VERSION_INFO);
     SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
     SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
+#if !defined(TARGET_DARWIN_OSX) && !defined(TARGET_DARWIN_TVOS)
     SetControlLabel(i++, "%s: %s", 12395, SYSTEM_BATTERY_LEVEL);
+#endif
   }
 
   else if (m_section == CONTROL_BT_STORAGE)
@@ -119,12 +121,16 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
     SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_LINK_STATE));
+#if !defined(TARGET_DARWIN_IOS)
     SetControlLabel(i++, "%s: %s", 149, NETWORK_MAC_ADDRESS);
+#endif
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_MASK);
+#if !defined(TARGET_DARWIN_IOS)
     SetControlLabel(i++, "%s: %s", 13160, NETWORK_GATEWAY_ADDRESS);
     SetControlLabel(i++, "%s: %s", 13161, NETWORK_DNS1_ADDRESS);
     SetControlLabel(i++, "%s: %s", 20307, NETWORK_DNS2_ADDRESS);
+#endif
     SetControlLabel(i++, "%s %s", 13295, SYSTEM_INTERNET_STATE);
   }
 

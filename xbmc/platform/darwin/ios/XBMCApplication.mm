@@ -18,14 +18,14 @@
  *
  */
  
-#import <UIKit/UIKit.h>
-#import <AVFoundation/AVAudioSession.h>
-
-#import "XBMCApplication.h"
-#import "XBMCController.h"
-#import "IOSScreenManager.h"
-#import "XBMCDebugHelpers.h"
 #import <objc/runtime.h>
+
+#import <UIKit/UIKit.h>
+
+#import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios/XBMCApplication.h"
+#import "platform/darwin/ios/XBMCController.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
 
 @implementation XBMCApplicationDelegate
 XBMCController *m_xbmcController;  
@@ -52,7 +52,7 @@ XBMCController *m_xbmcController;
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
 
   [m_xbmcController resumeAnimation];
   [m_xbmcController enterForeground];
@@ -111,7 +111,7 @@ XBMCController *m_xbmcController;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
 
   [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
   UIScreen *currentScreen = [UIScreen mainScreen];

@@ -18,17 +18,18 @@
  *
  */
 
-#include "guilib/GUIWindowManager.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "threads/Event.h"
-#include "Application.h"
-#include "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/ios/IOSKeyboardView.h"
 
-#import "IOSKeyboardView.h"
-#import "IOSScreenManager.h"
-#import "XBMCController.h"
-#import "XBMCDebugHelpers.h"
-#include "IOSKeyboard.h"
+#import "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
+#import "platform/darwin/ios/XBMCController.h"
+#import "platform/darwin/ios/IOSKeyboard.h"
+
+#import "Application.h"
+#import "guilib/GUIWindowManager.h"
+#import "guilib/GUIKeyboardFactory.h"
+#import "threads/Event.h"
 
 static CEvent keyboardFinishedEvent;
 

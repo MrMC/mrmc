@@ -96,9 +96,9 @@
 
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
+#endif
 #include "linux/LinuxResourceCounter.h"
 static CLinuxResourceCounter m_resourceCounter;
-#endif
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -2129,7 +2129,11 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
         return true;
       }
     case SYSTEM_CPU_USAGE:
+#if defined(TARGET_DARWIN)
+      value = m_resourceCounter.GetCPUUsage();
+#else
       value = g_cpuInfo.getUsedPercentage();
+#endif
       return true;
     case PVR_PLAYING_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
@@ -4219,10 +4223,8 @@ std::string CGUIInfoManager::GetSystemHeatInfo(int info)
       text = StringUtils::Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-#if defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN)
       text = StringUtils::Format("%4.2f%%", m_resourceCounter.GetCPUUsage());
-#elif defined(TARGET_DARWIN)
-      text = StringUtils::Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
       text = StringUtils::Format("%s", g_cpuInfo.GetCoresUsageString().c_str());
 #endif

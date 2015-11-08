@@ -68,8 +68,9 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
 {
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
 
+#if !defined(TARGET_DARWIN)
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
-
+#endif
   static int yShift = 20;
   static int xShift = 40;
   static unsigned int lastShift = time(NULL);
@@ -110,8 +111,12 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     double dCPU = m_resourceCounter.GetCPUUsage();
     std::string ucAppName = lcAppName;
     StringUtils::ToUpper(ucAppName);
-    info = StringUtils::Format("LOG: %s%s.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s (CPU-%s %4.2f%%%s)", g_advancedSettings.m_logFolder.c_str(), lcAppName.c_str(),
-                               stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), ucAppName.c_str(), dCPU, profiling.c_str());
+    info = StringUtils::Format("LOG: %s%s.log\n"
+      "MEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\n"
+      "CPU: %s (CPU-%s %4.2f%%%s)",
+      g_advancedSettings.m_logFolder.c_str(), lcAppName.c_str(),
+      stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(),
+      strCores.c_str(), ucAppName.c_str(), dCPU, profiling.c_str());
 #endif
   }
 

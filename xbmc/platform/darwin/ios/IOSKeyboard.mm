@@ -18,13 +18,14 @@
  *
  */
 
-#include "XBMCController.h"
-#include "IOSKeyboard.h"
-#include "IOSKeyboardView.h"
-#include "XBMCDebugHelpers.h"
-#include "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/ios/IOSKeyboard.h"
 
-#import "AutoPool.h"
+#import "platform/darwin/AutoPool.h"
+#import "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios/XBMCController.h"
+#import "platform/darwin/ios/IOSKeyboardView.h"
+
 
 KeyboardView *g_pIosKeyboard = nil;
 

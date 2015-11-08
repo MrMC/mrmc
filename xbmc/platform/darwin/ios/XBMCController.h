@@ -80,7 +80,6 @@ typedef enum
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;
 - (CGFloat) getScreenScale:(UIScreen *)screen;
-- (UIInterfaceOrientation) getOrientation;
 - (void) createGestureRecognizers;
 - (void) activateKeyboard:(UIView *)view;
 - (void) deactivateKeyboard:(UIView *)view;

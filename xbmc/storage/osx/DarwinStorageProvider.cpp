@@ -44,10 +44,12 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   CMediaSource share;
 
   // User home folder
+#if !defined(TARGET_DARWIN_IOS)
   share.strPath = getenv("HOME");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   localDrives.push_back(share);
+#endif
 
 #if defined(TARGET_DARWIN_OSX)
   // User desktop folder

@@ -18,6 +18,9 @@
         </setting>
       </group>
     </category>
+    <category id="dvds">
+      <visible>false</visible>
+    </category>
   </section>
   <section id="music">
     <category id="audiocds">
@@ -39,6 +42,10 @@
       <group id="1">
         <setting id="audiooutput.audiodevice" type="string">
           <default>Default</default>
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.supportdtshdcpudecoding" type="boolean">
+          <default>false</default>
           <visible>false</visible>
         </setting>
       </group>
@@ -66,6 +73,12 @@
           <visible>false</visible>
         </setting>
       </group>
+    </category>
+    <category id="powermanagement">
+      <visible>false</visible>
+    </category>
+    <category id="masterlock">
+      <visible>false</visible>
     </category>
   </section>
 </settings>
