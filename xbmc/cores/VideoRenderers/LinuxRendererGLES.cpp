@@ -47,14 +47,14 @@
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
 #include "RenderFormats.h"
-#include "xbmc/Application.h"
+#include "Application.h"
 #include "cores/IPlayer.h"
 
 extern "C" {
 #include "libswscale/swscale.h"
 }
 
-#if defined(__ARM_NEON__)
+#if defined(__ARM_NEON__) && !defined(__LP64__)
 #include "yuv2rgb.neon.h"
 #include "utils/CPUInfo.h"
 #endif
@@ -1933,7 +1933,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
       m_rgbBuffer = new uint8_t[m_rgbBufferSize];
     }
 
-#if defined(__ARM_NEON__)
+#if defined(__ARM_NEON__) && !defined(__LP64__)
     if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     {
       yuv420_2_rgb8888_neon(m_rgbBuffer, im->plane[0], im->plane[2], im->plane[1],

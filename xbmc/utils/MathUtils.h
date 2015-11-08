@@ -32,10 +32,11 @@
 // avoid including system.h or other magic includes.
 // use 'gcc -dM -E - < /dev/null' or similar to find them.
 
-#if defined(__ppc__) || \
+#if defined(__ppc__)     || \
     defined(__powerpc__) || \
-    defined(__mips__) || \
-    defined(__arm__)
+    defined(__mips__)    || \
+    defined(__arm__)     || \
+    defined(__arm64__)
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 

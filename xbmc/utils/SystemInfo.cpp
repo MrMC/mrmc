@@ -1085,7 +1085,9 @@ std::string CSysInfo::GetBuildTargetCpuFamily(void)
 {
 #if defined(__thumb__) || defined(_M_ARMT) 
   return "ARM (Thumb)";
-#elif defined(__arm__) || defined(_M_ARM) || defined (__aarch64__)
+#elif defined(__arm64__) || defined (__aarch64__)
+  return "ARM64";
+#elif defined(__arm__) || defined(_M_ARM)
   return "ARM";
 #elif defined(__mips__) || defined(mips) || defined(__mips)
   return "MIPS";
