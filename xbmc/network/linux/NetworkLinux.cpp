@@ -540,6 +540,7 @@ void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
 
 bool CNetworkLinux::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
 {
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_ANDROID)
   char cmd_line [64];
 
   struct in_addr host_ip; 
@@ -566,6 +567,9 @@ bool CNetworkLinux::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
     CLog::Log(LOGERROR, "Ping fail : status = %d, errno = %d : '%s'", status, errno, cmd_line);
 
   return result == 0;
+#else
+  return false;
+#endif
 }
 
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)

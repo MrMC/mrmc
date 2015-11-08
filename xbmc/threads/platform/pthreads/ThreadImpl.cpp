@@ -59,15 +59,17 @@ void CThread::TermHandler() { }
 void CThread::SetThreadInfo()
 {
 #ifdef TARGET_FREEBSD
-#if __FreeBSD_version < 900031
-  long lwpid;
-  thr_self(&lwpid);
-  m_ThreadOpaque.LwpId = lwpid;
-#else
-  m_ThreadOpaque.LwpId = pthread_getthreadid_np();
-#endif
+  #if __FreeBSD_version < 900031
+    long lwpid;
+    thr_self(&lwpid);
+    m_ThreadOpaque.LwpId = lwpid;
+  #else
+    m_ThreadOpaque.LwpId = pthread_getthreadid_np();
+  #endif
 #elif defined(TARGET_ANDROID)
   m_ThreadOpaque.LwpId = gettid();
+#elif defined(TARGET_DARWIN_IOS)
+  m_ThreadOpaque.LwpId = pthread_mach_thread_np(pthread_self());
 #else
   m_ThreadOpaque.LwpId = syscall(SYS_gettid);
 #endif

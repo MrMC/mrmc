@@ -568,8 +568,13 @@ bool CPVRManager::SetWakeupCommand(void)
 
       std::string strExecCommand = StringUtils::Format("%s %ld", strWakeupCommand.c_str(), iWakeupTime);
 
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_ANDROID)
       const int iReturn = system(strExecCommand.c_str());
+#else
+      const int iReturn = -1;
+#endif
       if (iReturn != 0)
+
         CLog::Log(LOGERROR, "%s - failed to execute wakeup command '%s': %s (%d)", __FUNCTION__, strExecCommand.c_str(), strerror(iReturn), iReturn);
 
       return iReturn == 0;

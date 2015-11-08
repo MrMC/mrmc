@@ -26,7 +26,7 @@
 
 int CXHandle::m_objectTracker[10] = {0};
 
-HANDLE __stdcall GetCurrentProcess(void) {
+HANDLE GetCurrentProcess(void) {
   return (HANDLE)-1; // -1 a special value - pseudo handle
 }
 
@@ -144,33 +144,3 @@ bool CloseHandle(HANDLE hObject) {
 
   return true;
 }
-
-int __stdcall DuplicateHandle(
-  HANDLE hSourceProcessHandle,
-  HANDLE hSourceHandle,
-  HANDLE hTargetProcessHandle,
-  LPHANDLE lpTargetHandle,
-  uint32_t dwDesiredAccess,
-  int bInheritHandle,
-  uint32_t dwOptions
-)
-{
-  /* only a simple version of this is supported */
-  assert(hSourceProcessHandle == GetCurrentProcess()
-      && hTargetProcessHandle == GetCurrentProcess()
-      && dwOptions            == DUPLICATE_SAME_ACCESS);
-
-  if (hSourceHandle == INVALID_HANDLE_VALUE)
-    return 0;
-
-  {
-    CSingleLock lock(*(hSourceHandle->m_internalLock));
-    hSourceHandle->m_nRefCount++;
-  }
-
-  if(lpTargetHandle)
-    *lpTargetHandle = hSourceHandle;
-
-  return 1;
-}
-

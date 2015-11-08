@@ -80,7 +80,7 @@ public:
   
 #if defined(TARGET_ANDROID)
   virtual int ExecuteAppAndroid(const char* strSwitches,const char* strPath);
-#elif defined(TARGET_POSIX)
+#elif !defined(TARGET_DARWIN_IOS)
   virtual int ExecuteAppLinux(const char* strSwitches);
 #endif
 

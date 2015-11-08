@@ -1,6 +1,4 @@
-#ifndef XHANDLEPUBLIC_H
-#define XHANDLEPUBLIC_H
-
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -29,15 +27,3 @@ bool CloseHandle(HANDLE hObject);
 
 #define DUPLICATE_CLOSE_SOURCE 0x00000001
 #define DUPLICATE_SAME_ACCESS  0x00000002
-
-int __stdcall DuplicateHandle(
-  HANDLE hSourceProcessHandle,
-  HANDLE hSourceHandle,
-  HANDLE hTargetProcessHandle,
-  LPHANDLE lpTargetHandle,
-  uint32_t dwDesiredAccess,
-  int bInheritHandle,
-  uint32_t dwOptions
-);
-
-#endif

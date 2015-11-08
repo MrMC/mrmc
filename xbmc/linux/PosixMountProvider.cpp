@@ -131,6 +131,7 @@ std::vector<std::string> CPosixMountProvider::GetDiskUsage()
 
 bool CPosixMountProvider::Eject(const std::string& mountpath)
 {
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_ANDROID)
   // just go ahead and try to umount the disk
   // if it does umount, life is good, if not, no loss.
   std::string cmd = "umount \"" + mountpath + "\"";
@@ -138,7 +139,7 @@ bool CPosixMountProvider::Eject(const std::string& mountpath)
 
   if (status == 0)
     return true;
-
+#endif
   return false;
 }
 
