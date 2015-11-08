@@ -804,6 +804,12 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.useavf" type="boolean" label="13453" help="13454">
+          <requirement>hasAVF</requirement>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="myvideos" label="14081" help="36601">

@@ -1399,7 +1399,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
       result |= EOS_DROPPED;
       m_droppingStats.m_dropRequests = 0;
     }
-    else if (iDroppedPics < 0 && iGain > (1/m_fFrameRate + 0.001))
+    else if (iDroppedPics < 0 && iGain > (2 * (1/m_fFrameRate + 0.001)))
     {
       CDroppingStats::CGain gain;
       gain.gain = iGain;

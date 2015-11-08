@@ -28,26 +28,26 @@
 #include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 
 #if defined(TARGET_DARWIN_OSX)
-#include "Video/DVDVideoCodecVDA.h"
+  #include "Video/DVDVideoCodecVDA.h"
 #endif
-#if defined(HAVE_VIDEOTOOLBOXDECODER)
-#include "Video/DVDVideoCodecVideoToolBox.h"
-#include "utils/SystemInfo.h"
+#if defined(TARGET_DARWIN_IOS)
+  #include "Video/DVDVideoCodecVideoToolBox.h"
+  #include "Video/DVDVideoCodecAVFoundation.h"
 #endif
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
 #if defined(HAS_IMXVPU)
-#include "Video/DVDVideoCodecIMX.h"
+  #include "Video/DVDVideoCodecIMX.h"
 #endif
 #include "Video/MMALCodec.h"
 #include "Video/DVDVideoCodecStageFright.h"
 #if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#include "Video/DVDVideoCodecAmlogic.h"
+  #include "utils/AMLUtils.h"
+  #include "Video/DVDVideoCodecAmlogic.h"
 #endif
 #if defined(TARGET_ANDROID)
-#include "Video/DVDVideoCodecAndroidMediaCodec.h"
-#include "platform/android/activity/AndroidFeatures.h"
+  #include "Video/DVDVideoCodecAndroidMediaCodec.h"
+  #include "platform/android/activity/AndroidFeatures.h"
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
@@ -129,7 +129,6 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
   return NULL;
 }
 
-
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info)
 {
   CDVDVideoCodec* pCodec = NULL;
@@ -141,59 +140,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
     options.m_formats = info.formats;
 
   options.m_opaque_pointer = info.opaque_pointer;
-
-  //when support for a hardware decoder is not compiled in
-  //only print it if it's actually available on the platform
-  std::string hwSupport;
-#if defined(TARGET_DARWIN_OSX)
-  hwSupport += "VDADecoder:yes ";
-#endif
-#if defined(HAVE_VIDEOTOOLBOXDECODER) && defined(TARGET_DARWIN)
-  hwSupport += "VideoToolBoxDecoder:yes ";
-#elif defined(TARGET_DARWIN)
-  hwSupport += "VideoToolBoxDecoder:no ";
-#endif
-#if defined(HAS_LIBAMCODEC)
-  hwSupport += "AMCodec:yes ";
-#else
-  hwSupport += "AMCodec:no ";
-#endif
-#if defined(TARGET_ANDROID)
-  hwSupport += "MediaCodec:yes ";
-#else
-  hwSupport += "MediaCodec:no ";
-#endif
-#if defined(HAVE_LIBOPENMAX)
-  hwSupport += "OpenMax:yes ";
-#elif defined(TARGET_POSIX)
-  hwSupport += "OpenMax:no ";
-#endif
-#if defined(HAS_LIBSTAGEFRIGHT)
-  hwSupport += "libstagefright:yes ";
-#elif defined(_LINUX)
-  hwSupport += "libstagefright:no ";
-#endif
-#if defined(HAVE_LIBVDPAU) && defined(TARGET_POSIX)
-  hwSupport += "VDPAU:yes ";
-#elif defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  hwSupport += "VDPAU:no ";
-#endif
-#if defined(HAVE_LIBVA) && defined(TARGET_POSIX)
-  hwSupport += "VAAPI:yes ";
-#elif defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  hwSupport += "VAAPI:no ";
-#endif
-#if defined(HAS_IMXVPU)
-  hwSupport += "iMXVPU:yes ";
-#else
-  hwSupport += "iMXVPU:no ";
-#endif
-#if defined(HAS_MMAL)
-  hwSupport += "MMAL:yes ";
-#else
-  hwSupport += "MMAL:no ";
-#endif
-  CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
 
 #if defined(HAS_LIBAMCODEC)
   // amcodec can handle dvd playback.
@@ -231,21 +177,22 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
   }
 #endif
 
-#if defined(HAVE_VIDEOTOOLBOXDECODER)
-  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
+#if defined(TARGET_DARWIN_IOS) // && !defined(TARGET_DARWIN_TVOS)
+  if (!hint.software)
   {
-    if (g_sysinfo.HasVideoToolBoxDecoder())
+    switch(hint.codec)
     {
-      switch(hint.codec)
-      {
-        case AV_CODEC_ID_H264:
-          if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
-            break;
+      case AV_CODEC_ID_H264:
+      case AV_CODEC_ID_MPEG4:
+        if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
+          break;
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
           if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
-          break;
-        default:
-          break;
-      }
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAVF))
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecAVFoundation(), hint, options)) ) return pCodec;
+        break;
+      default:
+        break;
     }
   }
 #endif

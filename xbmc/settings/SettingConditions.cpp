@@ -256,6 +256,9 @@ void CSettingConditions::Initialize()
   if (CDarwinUtils::IsSnowLeopard())
     m_simpleConditions.insert("osxissnowleopard");
 #endif
+#ifdef TARGET_DARWIN_IOS
+  m_simpleConditions.insert("hasAVF");
+#endif
 
   if (g_application.IsStandAlone())
     m_simpleConditions.insert("isstandalone");

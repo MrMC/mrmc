@@ -1770,6 +1770,8 @@
 		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5AA30F11BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; };
 		F5AA30F21BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		F5AA30FA1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */; };
+		F5AA30FB1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */; };
 		F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */; };
 		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AE409C13415D9E0004BD79 /* AudioLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */; };
@@ -4811,6 +4813,8 @@
 		F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AliasShortcutUtils.cpp; sourceTree = "<group>"; };
 		F5AA30EF1BE5643A00693976 /* VideoLayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLayerView.h; sourceTree = "<group>"; };
 		F5AA30F01BE5643A00693976 /* VideoLayerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VideoLayerView.mm; sourceTree = "<group>"; };
+		F5AA30F81BF014C100693976 /* DVDVideoCodecAVFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecAVFoundation.h; sourceTree = "<group>"; };
+		F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DVDVideoCodecAVFoundation.mm; sourceTree = "<group>"; };
 		F5AACA660FB3DE2D00DBB77C /* GUIDialogSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSelect.h; sourceTree = "<group>"; };
 		F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSelect.cpp; sourceTree = "<group>"; };
 		F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSlider.cpp; sourceTree = "<group>"; };
@@ -7336,6 +7340,8 @@
 			children = (
 				F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */,
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
+				F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */,
+				F5AA30F81BF014C100693976 /* DVDVideoCodecAVFoundation.h */,
 				E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */,
 				E38E153E0D25F9F900618676 /* DVDVideoCodecFFmpeg.h */,
 				F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */,
@@ -10194,6 +10200,7 @@
 				E4991393174E5F0E00741B6D /* TagLibVFSStream.cpp in Sources */,
 				E4991394174E5F0E00741B6D /* TagLoaderTagLib.cpp in Sources */,
 				E4991395174E5F0E00741B6D /* GUIWindowMusicBase.cpp in Sources */,
+				F5AA30FA1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */,
 				E4991396174E5F0E00741B6D /* GUIWindowMusicNav.cpp in Sources */,
 				E4991397174E5F0E00741B6D /* GUIWindowMusicPlaylist.cpp in Sources */,
 				E4991398174E5F0E00741B6D /* GUIWindowMusicPlaylistEditor.cpp in Sources */,
@@ -11093,6 +11100,7 @@
 				F5D140681BAF0B6D0075A95C /* TagLoaderTagLib.cpp in Sources */,
 				F5D140691BAF0B6D0075A95C /* GUIWindowMusicBase.cpp in Sources */,
 				F5D1406A1BAF0B6D0075A95C /* GUIWindowMusicNav.cpp in Sources */,
+				F5AA30FB1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */,
 				F5D1406B1BAF0B6D0075A95C /* GUIWindowMusicPlaylist.cpp in Sources */,
 				F5D1406C1BAF0B6D0075A95C /* GUIWindowMusicPlaylistEditor.cpp in Sources */,
 				F5D1406D1BAF0B6D0075A95C /* GUIWindowMusicSongs.cpp in Sources */,

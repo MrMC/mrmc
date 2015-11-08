@@ -6616,7 +6616,18 @@ msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 interlaced fails hard on Intel hardware."
 msgstr ""
 
-#empty strings from id 13453 to 13456
+#: system/settings/settings.xml
+msgctxt "#13453"
+msgid "Allow hardware acceleration - AVFoundation"
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (AVFoundation)" with label #13453
+#: system/settings/settings.xml
+msgctxt "#13454"
+msgid "Enable AVFoundation hardware decoding of video files."
+msgstr ""
+
+#empty strings from id 13455 to 13456
 
 #. Option for video related setting #13454: sw filter
 #: system/settings/settings.xml
