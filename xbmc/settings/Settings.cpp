@@ -397,6 +397,15 @@ const std::string CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS = "general.addon
 const std::string CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addonforeignfilter";
 const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
 
+
+const std::string CSettings::SETTING_MYSQL_ENABLED = "mysql.enabled";
+const std::string CSettings::SETTING_MYSQL_HOST = "mysql.host";
+const std::string CSettings::SETTING_MYSQL_PORT = "mysql.port";
+const std::string CSettings::SETTING_MYSQL_USER = "mysql.user";
+const std::string CSettings::SETTING_MYSQL_PASS = "mysql.pass";
+const std::string CSettings::SETTING_MYSQL_VIDEO = "mysql.video";
+const std::string CSettings::SETTING_MYSQL_MUSIC = "mysql.music";
+
 CSettings::CSettings()
   : m_initialized(false)
 {
@@ -972,6 +981,13 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
   settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
   settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
+  settingSet.insert(CSettings::SETTING_MYSQL_ENABLED);
+  settingSet.insert(CSettings::SETTING_MYSQL_HOST);
+  settingSet.insert(CSettings::SETTING_MYSQL_PORT);
+  settingSet.insert(CSettings::SETTING_MYSQL_USER);
+  settingSet.insert(CSettings::SETTING_MYSQL_PASS);
+  settingSet.insert(CSettings::SETTING_MYSQL_VIDEO);
+  settingSet.insert(CSettings::SETTING_MYSQL_MUSIC);
   m_settingsManager->RegisterCallback(&g_advancedSettings, settingSet);
 
   settingSet.clear();

@@ -961,9 +961,7 @@ void CApplication::CreateUserDirs()
 bool CApplication::Initialize()
 {
   if (!m_bPlatformDirectories)
-  {
     CDirectory::Create("special://xbmc/addons");
-  }
 
   // load the language and its translated strings
   if (!LoadLanguage(false))
@@ -985,6 +983,15 @@ bool CApplication::Initialize()
   //  uses these other libraries."
   g_curlInterface.Load();
   g_curlInterface.Unload();
+
+  // check if we have set internal MYSQL settings and load
+  const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
+  if (((CSettingBool*)mysqlSetting)->GetValue())
+  {
+    if (g_advancedSettings.m_splashImage)
+      CSplash::GetInstance().Show(g_localizeStrings.Get(12374));
+    g_advancedSettings.setInetrnalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
+  }
 
   // initialize (and update as needed) our databases
   CDatabaseManager::GetInstance().Initialize();
@@ -1639,7 +1646,7 @@ bool CApplication::LoadUserWindows()
           {
             const TiXmlNode *pType = pRootElement->FirstChild("id");
             if (pType && pType->FirstChild())
-              id = atol(pType->FirstChild()->Value());
+              id = atoi(pType->FirstChild()->Value());
           }
           std::string visibleCondition;
           CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
