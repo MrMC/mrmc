@@ -19,10 +19,7 @@
  */
 
 #include "DllLoaderContainer.h"
-#ifdef TARGET_POSIX
 #include "SoLoader.h"
-#endif
-#include "DllLoader.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -66,10 +63,12 @@ void* DllLoaderContainer::GetModuleAddress(const char* sName)
 
 LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; ++i)
   {
-    if (stricmp(m_dlls[i]->GetName(), sName) == 0) return m_dlls[i];
-    if (!m_dlls[i]->IsSystemDll() && stricmp(m_dlls[i]->GetFileName(), sName) == 0) return m_dlls[i];
+    if (stricmp(m_dlls[i]->GetName(), sName) == 0)
+      return m_dlls[i];
+    if (!m_dlls[i]->IsSystemDll() && stricmp(m_dlls[i]->GetFileName(), sName) == 0)
+      return m_dlls[i];
   }
 
   return NULL;
@@ -77,16 +76,17 @@ LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
 
 LibraryLoader* DllLoaderContainer::GetModule(void* hModule)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; ++i)
   {
-    if (m_dlls[i]->GetHModule() == hModule) return m_dlls[i];
+    if (m_dlls[i]->GetHModule() == hModule)
+      return m_dlls[i];
   }
-  return NULL;
+  return nullptr;
 }
 
 LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurrentDir/*=NULL*/, bool bLoadSymbols/*=false*/)
 {
-  LibraryLoader* pDll=NULL;
+  LibraryLoader* pDll = nullptr;
 
   if (IsSystemDll(sName))
   {
@@ -100,9 +100,7 @@ LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCu
   }
 
   if (!pDll)
-  {
     pDll = GetModule(sName);
-  }
 
   if (!pDll)
   {
@@ -115,7 +113,6 @@ LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCu
 #ifdef LOGALL
     CLog::Log(LOGDEBUG, "Already loaded Dll %s at 0x%x", pDll->GetFileName(), pDll);
 #endif
-
   }
 
   return pDll;
@@ -123,6 +120,9 @@ LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCu
 
 LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols)
 {
+  // if file is in an archive (apk, zip, etc)
+  // copy it out to our temp directory so we can load it.
+  // dyopen does not work on files inside compressed archives.
   if (URIUtils::IsInArchive(sName))
   {
     CURL url(sName);
@@ -136,10 +136,10 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);
   }
-#ifdef TARGET_POSIX
   else if (strcmp(sName, "xbmc.so") == 0)
+  {
     return LoadDll(sName, bLoadSymbols);
-#endif
+  }
   else if (sCurrentDir)
   { // in the path of the parent dll?
     std::string strPath=sCurrentDir;
@@ -160,8 +160,8 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
 #else
   vecEnv = StringUtils::Split(ENV_PATH, ';');
 #endif
-  LibraryLoader* pDll = NULL;
 
+  LibraryLoader *pDll = nullptr;
   for (std::vector<std::string>::const_iterator i = vecEnv.begin(); i != vecEnv.end(); ++i)
   {
     std::string strPath = *i;
@@ -171,10 +171,10 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
     CLog::Log(LOGDEBUG, "Searching for the dll %s in directory %s", sName, strPath.c_str());
 #endif
 
-    strPath+=sName;
+    strPath += sName;
 
     // Have we already loaded this dll
-    if ((pDll = GetModule(strPath.c_str())) != NULL)
+    if ((pDll = GetModule(strPath.c_str())) != nullptr)
       return pDll;
 
     if (CFile::Exists(strPath))
@@ -182,25 +182,26 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   }
 
   // can't find it in any of our paths - could be a system dll
-  if ((pDll = LoadDll(sName, bLoadSymbols)) != NULL)
+  if ((pDll = LoadDll(sName, bLoadSymbols)) != nullptr)
     return pDll;
 
   CLog::Log(LOGDEBUG, "Dll %s was not found in path", sName);
-  return NULL;
+  return nullptr;
 }
 
 void DllLoaderContainer::ReleaseModule(LibraryLoader*& pDll)
 {
   if (!pDll)
     return;
+
   if (pDll->IsSystemDll())
   {
     CLog::Log(LOGFATAL, "%s is a system dll and should never be released", pDll->GetName());
     return;
   }
 
-  int iRefCount=pDll->DecrRef();
-  if (iRefCount==0)
+  int iRefCount = pDll->DecrRef();
+  if (iRefCount == 0)
   {
 
 #ifdef LOGALL
@@ -210,11 +211,12 @@ void DllLoaderContainer::ReleaseModule(LibraryLoader*& pDll)
     if (!pDll->HasSymbols())
     {
       pDll->Unload();
-      delete pDll;
-      pDll=NULL;
+      delete pDll, pDll = nullptr;
     }
     else
+    {
       CLog::Log(LOGINFO, "%s has symbols loaded and can never be unloaded", pDll->GetName());
+    }
   }
 #ifdef LOGALL
   else
@@ -226,30 +228,23 @@ void DllLoaderContainer::ReleaseModule(LibraryLoader*& pDll)
 
 LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 {
-
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "Loading dll %s", sName);
 #endif
 
-  LibraryLoader* pLoader;
-#ifdef TARGET_POSIX
-  if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL
-      || strstr(sName, ".mvis") != NULL || strstr(sName, ".dylib") != NULL || strstr(sName, ".framework") != NULL || strstr(sName, ".pvr") != NULL)
+  LibraryLoader *pLoader = nullptr;
+  if (strstr(sName, ".so") != nullptr ||
+      strstr(sName, ".vis") != nullptr ||
+      strstr(sName, ".xbs") != nullptr ||
+      strstr(sName, ".mvis") != nullptr ||
+      strstr(sName, ".dylib") != nullptr ||
+      strstr(sName, ".framework") != nullptr ||
+      strstr(sName, ".pvr") != nullptr
+      )
+  {
     pLoader = new SoLoader(sName, bLoadSymbols);
-  else
-#endif
-    pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
-
-  if (!pLoader)
-  {
-    CLog::Log(LOGERROR, "Unable to create dll %s", sName);
-    return NULL;
-  }
-
-  if (!pLoader->Load())
-  {
-    delete pLoader;
-    return NULL;
+    if (!pLoader->Load())
+      delete pLoader, pLoader = nullptr;
   }
 
   return pLoader;
@@ -257,9 +252,10 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 
 bool DllLoaderContainer::IsSystemDll(const char* sName)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; ++i)
   {
-    if (m_dlls[i]->IsSystemDll() && stricmp(m_dlls[i]->GetName(), sName) == 0) return true;
+    if (m_dlls[i]->IsSystemDll() && stricmp(m_dlls[i]->GetName(), sName) == 0)
+      return true;
   }
 
   return false;
@@ -272,15 +268,16 @@ int DllLoaderContainer::GetNrOfModules()
 
 LibraryLoader* DllLoaderContainer::GetModule(int iPos)
 {
-  if (iPos < m_iNrOfDlls) return m_dlls[iPos];
-  return NULL;
+  if (iPos < m_iNrOfDlls)
+    return m_dlls[iPos];
+  return nullptr;
 }
 
 void DllLoaderContainer::RegisterDll(LibraryLoader* pDll)
 {
-  for (int i = 0; i < 64; i++)
+  for (int i = 0; i < 64; ++i)
   {
-    if (m_dlls[i] == NULL)
+    if (m_dlls[i] == nullptr)
     {
       m_dlls[i] = pDll;
       m_iNrOfDlls++;
@@ -301,18 +298,17 @@ void DllLoaderContainer::UnRegisterDll(LibraryLoader* pDll)
     {
       // remove from the list
       bool bRemoved = false;
-      for (int i = 0; i < m_iNrOfDlls && m_dlls[i]; i++)
+      for (int i = 0; i < m_iNrOfDlls && m_dlls[i]; ++i)
       {
-        if (m_dlls[i] == pDll) bRemoved = true;
+        if (m_dlls[i] == pDll)
+          bRemoved = true;
         if (bRemoved && i + 1 < m_iNrOfDlls)
-        {
           m_dlls[i] = m_dlls[i + 1];
-        }
       }
       if (bRemoved)
       {
         m_iNrOfDlls--;
-        m_dlls[m_iNrOfDlls] = NULL;
+        m_dlls[m_iNrOfDlls] = nullptr;
       }
     }
   }

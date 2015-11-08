@@ -23,10 +23,9 @@
 
 #include <stdio.h>
 #include "system.h"
-#ifdef TARGET_POSIX
 #include "linux/PlatformDefs.h"
-#endif
-#include "DllLoader.h"
+
+#include "LibraryLoader.h"
 
 class SoLoader : public LibraryLoader
 {
@@ -34,18 +33,18 @@ public:
   SoLoader(const std::string &so, bool bGlobal = false);
   ~SoLoader();
 
-  virtual bool Load();
-  virtual void Unload();
+  virtual bool  Load();
+  virtual void  Unload();
 
-  virtual int ResolveExport(const char* symbol, void** ptr, bool logging = true);
-  virtual bool IsSystemDll();
+  virtual int   ResolveExport(const char* symbol, void** ptr, bool logging = true);
+  virtual bool  IsSystemDll();
   virtual void* GetHModule();
-  virtual bool HasSymbols();
+  virtual bool  HasSymbols();
 
 private:
-  void* m_soHandle;
-  bool m_bGlobal;
-  bool m_bLoaded;
+  void   *m_soHandle;
+  bool    m_bGlobal;
+  bool    m_bLoaded;
 };
 
 #endif
