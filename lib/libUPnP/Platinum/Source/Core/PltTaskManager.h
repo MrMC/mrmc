@@ -66,7 +66,7 @@ public:
      will allow. When the value is reached, a thread calling AddTask will block until
      a task has finished.
      */
-	PLT_TaskManager(NPT_Cardinal max_tasks = 0);
+	PLT_TaskManager(NPT_Cardinal max_tasks = 4);
 	virtual ~PLT_TaskManager();
 
     /**
