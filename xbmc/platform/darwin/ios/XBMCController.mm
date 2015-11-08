@@ -651,6 +651,18 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     }
   }
 }
+
+- (void) insertVideoView:(UIView*)view
+{
+  [self.view insertSubview:view belowSubview:m_glView];
+  [self.view setNeedsDisplay];
+}
+
+- (void) removeVideoView:(UIView*)view
+{
+  [view removeFromSuperview];
+}
+
 //--------------------------------------------------------------
 - (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
 { 
@@ -703,12 +715,15 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     /* Check if screen is Retina */
     screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
   
+    m_glView.opaque = NO;
+    m_glView.backgroundColor = [UIColor clearColor];
     [self.view addSubview: m_glView];
-  
+
+    [self.view setNeedsDisplay];
+
     [self createGestureRecognizers];
   }
 }
-#endif
 //--------------------------------------------------------------
 -(void)viewDidLoad
 {

@@ -93,6 +93,8 @@ typedef enum
 - (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
 - (void) activateScreen: (UIScreen *)screen withOrientation:(UIInterfaceOrientation)newOrientation;
 - (id)   initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
+- (void) insertVideoView:(UIView*)view;
+- (void) removeVideoView:(UIView*)view;
 @end
 
 extern XBMCController *g_xbmcController;

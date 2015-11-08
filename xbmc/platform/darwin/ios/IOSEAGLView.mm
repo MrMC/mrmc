@@ -165,15 +165,21 @@ using namespace KODI::MESSAGING;
     //and set frame size
     [self setScreen:screen withFrameBufferResize:FALSE];
 
-    eaglLayer.opaque = TRUE;
+    eaglLayer.opaque = NO;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
       kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
       nil];
-		
-    EAGLContext *aContext = [[EAGLContext alloc] 
-      initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    
+
+    // Try OpenGL ES 3.0
+    EAGLContext *aContext = [[EAGLContext alloc]
+      initWithAPI:kEAGLRenderingAPIOpenGLES3];
+
+    // Fallback to OpenGL ES 2.0
+    if (aContext == nullptr)
+      aContext = [[EAGLContext alloc]
+        initWithAPI:kEAGLRenderingAPIOpenGLES2];
+
     if (!aContext)
       ELOG(@"Failed to create ES context");
     else if (![EAGLContext setCurrentContext:aContext])
