@@ -83,6 +83,14 @@ public:
    \brief Clear any previously cached passwords
    */
   void Clear();
+  /*!
+   \ SetUserPass for modules, parts of the code that need user/pass ... e.g. subtitle search
+   */
+  bool SetUserPass(std::string module, std::string &user, std::string &pass);
+  /*!
+   \ GetUserPass for modules, parts of the code that need user/pass ... e.g. subtitle search
+   */
+  bool GetUserPass(std::string module, std::string &user, std::string &pass);
 
 private:
   // private construction, and no assignements; use the provided singleton methods

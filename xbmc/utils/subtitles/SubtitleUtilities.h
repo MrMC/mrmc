@@ -26,21 +26,10 @@
 #include "Application.h"
 #include "SubtitleSearch.h"
 
-class COpenSubtitlesSearch:public CSubtitleSearch
+class CSubtitleUtilities
 {
 public:
-  COpenSubtitlesSearch();
-  virtual ~COpenSubtitlesSearch(void);
-  virtual bool SubtitleSearch(const std::string &path,const std::string strLanguages,
-                      const std::string preferredLanguage,CFileItemList &subtitlesList);
-  virtual std::string ModuleName();
-  virtual void ChangeUserPass();
-  virtual bool Download(const CFileItem *subItem,std::vector<std::string> &items);
-private:
-  bool LogIn();
-  std::string m_strToken;
-  std::string m_strUser;
-  std::string m_strPass;
-  bool m_authenticated;
-  
+  static bool SubtitleFileSizeAndHash(const std::string &path, std::string &strSize, std::string &strHash);
+  static bool gzipInflate( const std::string& compressedBytes, std::string& uncompressedBytes );
+  static std::string sha256(const std::string *string);
 };

@@ -22,6 +22,7 @@
 #include "profiles/ProfilesManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "URL.h"
+#include "utils/Base64.h"
 #include "utils/XMLUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -175,4 +176,83 @@ std::string CPasswordManager::GetServerLookup(const std::string &path) const
 {
   CURL url(path);
   return "smb://" + url.GetHostName() + "/";
+}
+
+bool CPasswordManager::GetUserPass(std::string module, std::string &user, std::string &pass)
+{
+  CSingleLock lock(m_critSection);
+
+  std::string passwordsFile = CProfilesManager::GetInstance().GetUserDataItem("modulepasswords.xml");
+  if (XFILE::CFile::Exists(passwordsFile))
+  {
+    CXBMCTinyXML doc;
+    if (!doc.LoadFile(passwordsFile))
+    {
+      CLog::Log(LOGERROR, "%s - Unable to load: %s, Line %d\n%s",
+                __FUNCTION__, passwordsFile.c_str(), doc.ErrorRow(), doc.ErrorDesc());
+      return false;
+    }
+    const TiXmlElement *root = doc.RootElement();
+    if (root->ValueStr() != "passwords")
+      return false;
+    // read in our passwords
+    const TiXmlElement *mod = root->FirstChildElement(module);
+    std::string pass64Decoded;
+    if (mod && XMLUtils::GetString(mod, "user", user) && XMLUtils::GetString(mod, "pass", pass64Decoded))
+    {
+      Base64::Decode(pass64Decoded, pass);
+      return true;
+    }
+  }
+  user = "";
+  pass = "";
+  return false;
+}
+
+bool CPasswordManager::SetUserPass(std::string module, std::string &user, std::string &pass)
+{
+  CSingleLock lock(m_critSection);
+  bool saveDetails = false;
+  CXBMCTinyXML doc;
+  if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(user, pass, module, &saveDetails, true))
+    return false;
+
+  std::string pass64Encoded;
+  Base64::Encode(pass, pass64Encoded);
+  std::string passwordsFile = CProfilesManager::GetInstance().GetUserDataItem("modulepasswords.xml");
+  if (XFILE::CFile::Exists(passwordsFile))
+  {
+    if (!doc.LoadFile(passwordsFile))
+    {
+      CLog::Log(LOGERROR, "%s - Unable to load: %s, Line %d\n%s",
+                __FUNCTION__, passwordsFile.c_str(), doc.ErrorRow(), doc.ErrorDesc());
+      return false;
+    }
+    TiXmlElement *root = doc.RootElement();
+    if (root->ValueStr() != "passwords")
+      return false;
+    TiXmlElement *mod = root->FirstChildElement(module);
+    if (mod)
+      root->RemoveChild(mod);
+    TiXmlElement pathElement(module);
+    TiXmlNode *newMod = root->InsertEndChild(pathElement);
+    XMLUtils::SetString(newMod, "user", user);
+    XMLUtils::SetString(newMod, "pass", pass64Encoded);
+  }
+  else
+  {
+    TiXmlElement rootElement("passwords");
+    TiXmlNode *root = doc.InsertEndChild(rootElement);
+    if (!root)
+      return false;
+
+    TiXmlElement pathElement(module);
+    TiXmlNode *mod = root->InsertEndChild(pathElement);
+    XMLUtils::SetString(mod, "user", user);
+    XMLUtils::SetString(mod, "pass", pass64Encoded);
+
+  }
+  doc.SaveFile(passwordsFile);
+
+  return true;
 }

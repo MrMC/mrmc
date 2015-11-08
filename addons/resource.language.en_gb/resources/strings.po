@@ -13850,7 +13850,27 @@ msgctxt "#24147"
 msgid "Failed to scan %s: %s"
 msgstr ""
 
-#empty strings from id 24148 to 24991
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#24148"
+msgid "Set Credentials"
+msgstr ""
+
+#: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
+msgctxt "#24149"
+msgid "Set User and Password for %s"
+msgstr ""
+
+#: settings.xml
+msgctxt "#24150"
+msgid "OpenSubtitles.org"
+msgstr ""
+
+#: settings.xml
+msgctxt "#24151"
+msgid "Podnapisi.net"
+msgstr ""
+
+#empty strings from id 24150 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp

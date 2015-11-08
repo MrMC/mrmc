@@ -1015,27 +1015,27 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="subtitles.tv" type="addon" label="24116" help="24117">
+        <setting id="subtitles.tv" type="integer" label="24116" help="24117">
           <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-            <addontype>xbmc.subtitle.module</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
+          <default>0</default>
+            <constraints>
+              <options>
+                <option label="24150">0</option> <!-- OpenSubtitles -->
+                <option label="24151">1</option> <!-- Podnapisi -->
+              </options>
+            </constraints>
+          <control type="list" format="string" />
         </setting>
-        <setting id="subtitles.movie" type="addon" label="24118" help="24119">
+        <setting id="subtitles.movie" type="integer" label="24118" help="24119">
           <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>		  
-            <addontype>xbmc.subtitle.module</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
+          <default>0</default>
+            <constraints>
+              <options>
+                <option label="24150">0</option> <!-- OpenSubtitles -->
+                <option label="24151">1</option> <!-- Podnapisi -->
+              </options>
+            </constraints>
+          <control type="list" format="string" />
         </setting>
       </group>
     </category>

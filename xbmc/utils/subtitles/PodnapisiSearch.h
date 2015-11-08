@@ -26,21 +26,16 @@
 #include "Application.h"
 #include "SubtitleSearch.h"
 
-class COpenSubtitlesSearch:public CSubtitleSearch
+class CPodnapisiSearch:public CSubtitleSearch
 {
 public:
-  COpenSubtitlesSearch();
-  virtual ~COpenSubtitlesSearch(void);
+  CPodnapisiSearch();
+  virtual ~CPodnapisiSearch(void);
   virtual bool SubtitleSearch(const std::string &path,const std::string strLanguages,
                       const std::string preferredLanguage,CFileItemList &subtitlesList);
   virtual std::string ModuleName();
   virtual void ChangeUserPass();
   virtual bool Download(const CFileItem *subItem,std::vector<std::string> &items);
 private:
-  bool LogIn();
-  std::string m_strToken;
-  std::string m_strUser;
-  std::string m_strPass;
-  bool m_authenticated;
-  
+  bool LogIn();  
 };
