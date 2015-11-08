@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2013 Team XBMC
+ *      Copyright (C) 2010-2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,33 +23,35 @@
 #endif
 
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
+#include "DynamicDll.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecUtils.h"
 #include "DVDVideoCodecVideoToolBox.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "platform/darwin/DarwinUtils.h"
+#include "platform/darwin/DictionaryUtils.h"
 
 extern "C" {
-#include "libswscale/swscale.h"
 #include "libavformat/avformat.h"
 }
 
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
 #if defined(__cplusplus)
 extern "C"
 {
 #endif
-
 #pragma pack(push, 4)
-
-//-----------------------------------------------------------------------------------
 // /System/Library/PrivateFrameworks/VideoToolbox.framework
 enum VTFormat {
   kVTFormatJPEG         = 'jpeg', // kCMVideoCodecType_JPEG
-  kVTFormatH264         = 'avc1', // kCMVideoCodecType_H264 (MPEG-4 Part 10))
+  kVTFormatH264         = 'avc1', // kCMVideoCodecType_H264 (MPEG-4 Part 10)
+  kVTFormatH265         = 'hvc1', // kCMVideoCodecType_H265 (MPEG-4 Part 15)
   kVTFormatMPEG4Video   = 'mp4v', // kCMVideoCodecType_MPEG4Video (MPEG-4 Part 2)
   kVTFormatMPEG2Video   = 'mp2v'  // kCMVideoCodecType_MPEG2Video
 };
@@ -71,7 +73,7 @@ enum {
 };
 enum {
   // decode and return buffers for all frames currently in flight.
-  kVTDecoderFlush_EmitFrames = 1 << 0		
+  kVTDecoderFlush_EmitFrames = 1 << 0          
 };
 
 typedef UInt32 VTFormatId;
@@ -90,9 +92,7 @@ struct _VTDecompressionOutputCallback {
   void *refcon;
 };
 
-extern CFStringRef kVTVideoDecoderSpecification_EnableSandboxedVideoDecoder;
-
-extern OSStatus VTDecompressionSessionCreate(
+OSStatus VTDecompressionSessionCreate(
   CFAllocatorRef allocator,
   CMFormatDescriptionRef videoFormatDescription,
   CFTypeRef sessionOptions,
@@ -100,45 +100,62 @@ extern OSStatus VTDecompressionSessionCreate(
   VTDecompressionOutputCallback *outputCallback,
   VTDecompressionSessionRef *session);
 
-extern OSStatus VTDecompressionSessionDecodeFrame(
+OSStatus VTDecompressionSessionDecodeFrame(
   VTDecompressionSessionRef session, CMSampleBufferRef sbuf,
   uint32_t decoderFlags, CFDictionaryRef frameInfo, uint32_t unk1);
 
-extern OSStatus VTDecompressionSessionCopyProperty(VTDecompressionSessionRef session, CFTypeRef key, void* unk, CFTypeRef * value);
-extern OSStatus VTDecompressionSessionCopySupportedPropertyDictionary(VTDecompressionSessionRef session, CFDictionaryRef * dict);
-extern OSStatus VTDecompressionSessionSetProperty(VTDecompressionSessionRef session, CFStringRef propName, CFTypeRef propValue);
-extern void VTDecompressionSessionInvalidate(VTDecompressionSessionRef session);
-extern void VTDecompressionSessionRelease(VTDecompressionSessionRef session);
-extern VTDecompressionSessionRef VTDecompressionSessionRetain(VTDecompressionSessionRef session);
-extern OSStatus VTDecompressionSessionWaitForAsynchronousFrames(VTDecompressionSessionRef session);
-
-//-----------------------------------------------------------------------------------
-// /System/Library/Frameworks/CoreMedia.framework
-union
-{
-  void* lpAddress;
-  // iOS <= 4.2
-  OSStatus (*FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom1)(
-    CFAllocatorRef allocator, UInt32 formatId, UInt32 width, UInt32 height,
-    UInt32 atomId, const UInt8 *data, CFIndex len, CMFormatDescriptionRef *formatDesc);
-  // iOS >= 4.3
-  OSStatus (*FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom2)(
-    CFAllocatorRef allocator, UInt32 formatId, UInt32 width, UInt32 height,
-    UInt32 atomId, const UInt8 *data, CFIndex len, CFDictionaryRef extensions, CMFormatDescriptionRef *formatDesc);
-} FigVideoHack;
-extern OSStatus FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom(
-  CFAllocatorRef allocator, UInt32 formatId, UInt32 width, UInt32 height,
-  UInt32 atomId, const UInt8 *data, CFIndex len, CMFormatDescriptionRef *formatDesc);
-
-extern CMSampleBufferRef FigSampleBufferRetain(CMSampleBufferRef buf);
-//-----------------------------------------------------------------------------------
+OSStatus VTDecompressionSessionCopyProperty(VTDecompressionSessionRef session, CFTypeRef key, void* unk, CFTypeRef * value);
+OSStatus VTDecompressionSessionCopySupportedPropertyDictionary(VTDecompressionSessionRef session, CFDictionaryRef * dict);
+OSStatus VTDecompressionSessionSetProperty(VTDecompressionSessionRef session, CFStringRef propName, CFTypeRef propValue);
+void VTDecompressionSessionInvalidate(VTDecompressionSessionRef session);
+OSStatus VTDecompressionSessionWaitForAsynchronousFrames(VTDecompressionSessionRef session);
 #pragma pack(pop)
     
 #if defined(__cplusplus)
 }
 #endif
 
-int CheckNP2( unsigned x )
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+class DllVideoToolBoxInterface
+{
+public:
+  virtual ~DllVideoToolBoxInterface() {}
+
+  virtual OSStatus VTDecompressionSessionCreate(CFAllocatorRef allocator, CMFormatDescriptionRef videoFormatDescription, CFTypeRef sessionOptions, CFDictionaryRef destinationPixelBufferAttributes, VTDecompressionOutputCallback *outputCallback, VTDecompressionSessionRef *session) = 0;
+  virtual OSStatus VTDecompressionSessionDecodeFrame(VTDecompressionSessionRef session, CMSampleBufferRef sbuf, uint32_t decoderFlags, CFDictionaryRef frameInfo, uint32_t unk1) = 0;
+  virtual OSStatus VTDecompressionSessionCopyProperty(VTDecompressionSessionRef session, CFTypeRef key, void* unk, CFTypeRef * value) = 0;
+  virtual OSStatus VTDecompressionSessionCopySupportedPropertyDictionary(VTDecompressionSessionRef session, CFDictionaryRef * dict) = 0;
+  virtual OSStatus VTDecompressionSessionSetProperty(VTDecompressionSessionRef session, CFStringRef propName, CFTypeRef propValue) = 0;
+  virtual void VTDecompressionSessionInvalidate(VTDecompressionSessionRef session) = 0;
+  virtual OSStatus VTDecompressionSessionWaitForAsynchronousFrames(VTDecompressionSessionRef session) = 0;
+};
+
+class DllVideoToolBox : public DllDynamic, public DllVideoToolBoxInterface
+{
+  DECLARE_DLL_WRAPPER(DllVideoToolBox, "/System/Library/Frameworks/VideoToolbox.framework/VideoToolbox")
+  DEFINE_METHOD6(OSStatus, VTDecompressionSessionCreate, (CFAllocatorRef p1, CMFormatDescriptionRef p2, CFTypeRef p3, CFDictionaryRef p4, VTDecompressionOutputCallback *p5, VTDecompressionSessionRef *p6))
+  DEFINE_METHOD5(OSStatus, VTDecompressionSessionDecodeFrame, (VTDecompressionSessionRef p1, CMSampleBufferRef p2, uint32_t p3, CFDictionaryRef p4, uint32_t p5))
+  DEFINE_METHOD4(OSStatus, VTDecompressionSessionCopyProperty, (VTDecompressionSessionRef p1, CFTypeRef p2, void* p3, CFTypeRef * p4))
+  DEFINE_METHOD2(OSStatus, VTDecompressionSessionCopySupportedPropertyDictionary, (VTDecompressionSessionRef p1, CFDictionaryRef * p2))
+  DEFINE_METHOD3(OSStatus, VTDecompressionSessionSetProperty, (VTDecompressionSessionRef p1, CFStringRef p2, CFTypeRef p3))
+  DEFINE_METHOD1(void, VTDecompressionSessionInvalidate, (VTDecompressionSessionRef p1))
+  DEFINE_METHOD1(OSStatus, VTDecompressionSessionWaitForAsynchronousFrames, (VTDecompressionSessionRef p1))
+
+  BEGIN_METHOD_RESOLVE()
+    RESOLVE_METHOD_RENAME(VTDecompressionSessionCreate, VTDecompressionSessionCreate)
+    RESOLVE_METHOD_RENAME(VTDecompressionSessionDecodeFrame, VTDecompressionSessionDecodeFrame)
+    RESOLVE_METHOD_RENAME(VTDecompressionSessionCopyProperty, VTDecompressionSessionCopyProperty)
+    RESOLVE_METHOD_RENAME(VTDecompressionSessionCopySupportedPropertyDictionary, VTDecompressionSessionCopySupportedPropertyDictionary)
+    RESOLVE_METHOD_RENAME(VTDecompressionSessionSetProperty, VTDecompressionSessionSetProperty)
+    RESOLVE_METHOD_RENAME(VTDecompressionSessionInvalidate, VTDecompressionSessionInvalidate)
+    RESOLVE_METHOD_RENAME(VTDecompressionSessionWaitForAsynchronousFrames, VTDecompressionSessionWaitForAsynchronousFrames)
+  END_METHOD_RESOLVE()
+};
+
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+static int CheckNP2( unsigned x )
 {
     --x;
     x |= x >> 1;
@@ -151,120 +168,148 @@ int CheckNP2( unsigned x )
 
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
-// helper functions for debuging VTDecompression
-#if _DEBUG
-char* vtutil_string_to_utf8(CFStringRef s)
+typedef struct VTDumpDecompressionPropCtx
 {
-  char *result;
-  CFIndex size;
+  CDVDVideoCodecVideoToolBox *ctx;
+  VTDecompressionSessionRef session;
+} VTDumpDecompressionPropCtx;
 
-  size = CFStringGetMaximumSizeForEncoding(CFStringGetLength (s), kCFStringEncodingUTF8);
+// helper functions for debuging VTDecompression
+static char* vtutil_string_to_utf8(CFStringRef s)
+{
+  char *result = nullptr;
+
+  CFIndex size = CFStringGetMaximumSizeForEncoding(CFStringGetLength (s), kCFStringEncodingUTF8);
   result = (char*)malloc(size + 1);
   CFStringGetCString(s, result, size + 1, kCFStringEncodingUTF8);
 
   return result;
 }
 
-char* vtutil_object_to_string(CFTypeRef obj)
+static char* vtutil_object_to_string(CFTypeRef obj)
 {
-  char *result;
-  CFStringRef s;
+  char *result = nullptr;
 
   if (obj == NULL)
     return strdup ("(null)");
 
-  s = CFCopyDescription(obj);
+  CFStringRef s = CFCopyDescription(obj);
   result = vtutil_string_to_utf8(s);
   CFRelease(s);
 
   return result;
 }
 
-typedef struct {
-  VTDecompressionSessionRef session;
-} VTDumpDecompressionPropCtx;
-
-void
-vtdec_session_dump_property(CFStringRef prop_name, CFDictionaryRef prop_attrs, VTDumpDecompressionPropCtx *dpc)
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+static void write_mp4_description_length(AVIOContext *context, int length)
 {
-  char *name_str;
-  CFTypeRef prop_value;
-  OSStatus status;
-
-  name_str = vtutil_string_to_utf8(prop_name);
-  if (true)
+  for (int i = 3; i >= 0; i--)
   {
-    char *attrs_str;
+    uint8_t byte = (length >> (i * 7)) & 0x7F;
+    if (i != 0)
+        byte |= 0x80;
 
-    attrs_str = vtutil_object_to_string(prop_attrs);
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s = %s\n", name_str, attrs_str);
-    free(attrs_str);
+    avio_w8(context, byte);
   }
+}
 
-  status = VTDecompressionSessionCopyProperty(dpc->session, prop_name, NULL, &prop_value);
-  if (status == kVTDecoderNoErr)
+static CFDataRef ESDSCreate(const uint8_t *p_buf, int i_buf_size)
+{
+  int full_size = 3 + 5 + 13 + 5 + i_buf_size + 3;
+  int config_size = 13 + 5 + i_buf_size;
+  int padding = 12;
+
+  AVIOContext *context;
+  int status = avio_open_dyn_buf(&context);
+  if (status != noErr)
+    CLog::Log(LOGERROR,"VideoToolBox: opening dyn buf failed (%i).", status);
+
+  avio_w8(context, 0);        // Version
+  avio_wb24(context, 0);      // Flags
+
+  // elementary stream description tag
+  avio_w8(context, 0x03);     // ES description tag
+  write_mp4_description_length(context, full_size);
+  avio_wb16(context, 0);      // esid
+  avio_w8(context, 0);        // stream priority (0-3)
+
+  // decoder configuration description tag
+  avio_w8(context, 0x04);
+  write_mp4_description_length(context, config_size);
+  avio_w8(context, 32);       // object type identification (32 = MPEG4)
+  avio_w8(context, 0x11);     // stream type
+  avio_wb24(context, 0);      // buffer size
+  avio_wb32(context, 0);      // max bitrate
+  avio_wb32(context, 0);      // avg bitrate
+
+  // decoder specific description tag
+  avio_w8(context, 0x05);     // dec specific info tag
+  write_mp4_description_length(context, i_buf_size);
+  avio_write(context, p_buf, i_buf_size);
+
+  // sync layer configuration description tag
+  avio_w8(context, 0x06);     // tag
+  avio_w8(context, 0x01);     // length
+  avio_w8(context, 0x02);     // no SL
+
+  uint8_t *rw_extradata = (uint8_t*)malloc(full_size + padding);
+  avio_close_dyn_buf(context, &rw_extradata);
+
+  CFDataRef data = CFDataCreate(kCFAllocatorDefault,
+    rw_extradata, full_size + padding);
+
+  return data;
+}
+
+static CFDataRef avvCCreate(const uint8_t *p_buf, int i_buf_size)
+{
+  CFDataRef data;
+  // each NAL sent to the decoder is preceded by a 4 byte header
+  // we need to change the avcC header to signal headers of 4 bytes, if needed
+  if (i_buf_size >= 4 && (p_buf[4] & 0x03) != 0x03)
   {
-    char *value_str;
+    uint8_t *p_fixed_buf = (uint8_t*)malloc(i_buf_size);
+    if (!p_fixed_buf)
+        return NULL;
 
-    value_str = vtutil_object_to_string(prop_value);
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s = %s\n", name_str, value_str);
-    free(value_str);
-
-    if (prop_value != NULL)
-      CFRelease(prop_value);
+    memcpy(p_fixed_buf, p_buf, i_buf_size);
+    p_fixed_buf[4] |= 0x03;
+    data = CFDataCreate(kCFAllocatorDefault, p_fixed_buf, i_buf_size);
   }
   else
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s = <failed to query: %d>\n", name_str, (int)status);
+    data = CFDataCreate(kCFAllocatorDefault, p_buf, i_buf_size);
   }
 
-  free(name_str);
+  return data;
 }
 
-void vtdec_session_dump_properties(VTDecompressionSessionRef session)
+static CFDataRef hevCCreate(const uint8_t *p_buf, int i_buf_size)
 {
-  VTDumpDecompressionPropCtx dpc = { session };
-  CFDictionaryRef dict;
-  OSStatus status;
+  CFDataRef data;
+  // each NAL sent to the decoder is preceded by a 4 byte header
+  // we need to change the hevC header to signal headers of 4 bytes, if needed
+  if (i_buf_size >= 4 && (p_buf[4] & 0x03) != 0x03)
+  {
+    uint8_t *p_fixed_buf = (uint8_t*)malloc(i_buf_size);
+    if (!p_fixed_buf)
+        return NULL;
 
-  status = VTDecompressionSessionCopySupportedPropertyDictionary(session, &dict);
-  if (status != kVTDecoderNoErr)
-    goto error;
-  CFDictionaryApplyFunction(dict, (CFDictionaryApplierFunction)vtdec_session_dump_property, &dpc);
-  CFRelease(dict);
+    memcpy(p_fixed_buf, p_buf, i_buf_size);
+    p_fixed_buf[4] |= 0x03;
+    data = CFDataCreate(kCFAllocatorDefault, p_fixed_buf, i_buf_size);
+  }
+  else
+  {
+    data = CFDataCreate(kCFAllocatorDefault, p_buf, i_buf_size);
+  }
 
-  return;
-
-error:
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "failed to dump properties\n");
+  return data;
 }
-#endif
+
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
-// helper function that inserts an int32_t into a dictionary
-static void
-CFDictionarySetSInt32(CFMutableDictionaryRef dictionary, CFStringRef key, SInt32 numberSInt32)
-{
-  CFNumberRef number;
-
-  number = CFNumberCreate(NULL, kCFNumberSInt32Type, &numberSInt32);
-  CFDictionarySetValue(dictionary, key, number);
-  CFRelease(number);
-}
-// helper function that inserts an double into a dictionary
-static void
-CFDictionarySetDouble(CFMutableDictionaryRef dictionary, CFStringRef key, double numberDouble)
-{
-    CFNumberRef number;
-    
-    number = CFNumberCreate(NULL, kCFNumberDoubleType, &numberDouble);
-    CFDictionaryAddValue(dictionary, key, number);
-    CFRelease(number);
-}
 // helper function that wraps dts/pts into a dictionary
 static CFDictionaryRef
 CreateDictionaryWithDisplayTime(double time, double dts, double pts)
@@ -336,45 +381,51 @@ CreateFormatDescription(VTFormatId format_id, int width, int height)
   else
     return NULL;
 }
-// helper function to create a avcC atom format descriptor
+// helper function to create a avcC/hevC/esds atom format descriptor
 static CMFormatDescriptionRef
-CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height, const uint8_t *extradata, int extradata_size, uint32_t atom)
+CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height, const uint8_t *extradata, int extradata_size)
 {
-  CMFormatDescriptionRef fmt_desc = NULL;
-  OSStatus status;
+  CFMutableDictionaryRef pixelAspectRatio = CFDictionaryCreateMutable (NULL, 0, &kCFTypeDictionaryKeyCallBacks,
+    &kCFTypeDictionaryValueCallBacks);
+  CFDictionarySetSInt32(pixelAspectRatio, CFSTR("HorizontalSpacing"), width);
+  CFDictionarySetSInt32(pixelAspectRatio, CFSTR("VerticalSpacing")  , height);
 
-  FigVideoHack.lpAddress = (void*)FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom;
-  
-  if (CDarwinUtils::GetIOSVersion() < 4.3)
+  CFMutableDictionaryRef atoms = CFDictionaryCreateMutable(NULL,
+    0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+
+  if (format_id == kVTFormatH264)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s - GetIOSVersion says < 4.3", __FUNCTION__);
-    status = FigVideoHack.FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom1(
-      NULL,
-      format_id,
-      width,
-      height,
-      atom,
-      extradata,
-      extradata_size,
-      &fmt_desc);
+    CFDataRef avcCData = avvCCreate(extradata, extradata_size);
+    CFDictionarySetValue(atoms, CFSTR ("avcC"), avcCData);
+    CFRelease(avcCData);
+  }
+  else if (format_id == kVTFormatH265)
+  {
+    CFDataRef hevCData = hevCCreate(extradata, extradata_size);
+    CFDictionarySetValue(atoms, CFSTR ("hevC"), hevCData);
+    CFRelease(hevCData);
+  }
+  else if (format_id == kVTFormatMPEG4Video)
+  {
+    CFDataRef esdsData = ESDSCreate(extradata, extradata_size);
+    CFDictionarySetValue(atoms, CFSTR ("esds"), esdsData);
+    CFRelease(esdsData);
   }
   else
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s - GetIOSVersion says >= 4.3", __FUNCTION__);
-    status = FigVideoHack.FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom2(
-      NULL,
-      format_id,
-      width,
-      height,
-      atom,
-      extradata,
-      extradata_size,
-      NULL,
-      &fmt_desc);
+    return NULL;
   }
 
+  CFMutableDictionaryRef extensions = CFDictionaryCreateMutable (NULL,
+    0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+  CFMutableDictionarySetString(extensions, CFSTR("CVImageBufferChromaLocationBottomField"), "left");
+  CFMutableDictionarySetString(extensions, CFSTR("CVImageBufferChromaLocationTopField"), "left");
+  CFDictionarySetValue(extensions, CFSTR("FullRangeVideo"), kCFBooleanFalse);
+  CFMutableDictionarySetObject(extensions, CFSTR("CVPixelAspectRatio"), (CFTypeRef*)pixelAspectRatio);
+  CFMutableDictionarySetObject(extensions, CFSTR("SampleDescriptionExtensionAtoms"), (CFTypeRef*)atoms);
+
+  CMFormatDescriptionRef fmt_desc = NULL;
+  OSStatus status = CMVideoFormatDescriptionCreate(NULL, format_id, width, height, extensions, &fmt_desc);
   if (status == kVTDecoderNoErr)
     return fmt_desc;
   else
@@ -428,618 +479,10 @@ CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc, void *demux_buff, size_t
 
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
-/* MPEG-4 esds (elementary stream descriptor) */
-typedef struct {
-  int version;
-  long flags;
-
-  uint16_t esid;
-  uint8_t  stream_priority;
-
-  uint8_t  objectTypeId;
-  uint8_t  streamType;
-  uint32_t bufferSizeDB;
-  uint32_t maxBitrate;
-  uint32_t avgBitrate;
-
-  int      decoderConfigLen;
-  uint8_t* decoderConfig;
-} quicktime_esds_t;
-
-int quicktime_write_mp4_descr_length(AVIOContext *pb, int length, int compact)
-{
-  int i;
-  uint8_t b;
-  int numBytes;
-  
-  if (compact)
-  {
-    if (length <= 0x7F)
-    {
-      numBytes = 1;
-    }
-    else if (length <= 0x3FFF)
-    {
-      numBytes = 2;
-    }
-    else if (length <= 0x1FFFFF)
-    {
-      numBytes = 3;
-    }
-    else
-    {
-      numBytes = 4;
-    }
-  }
-  else
-  {
-    numBytes = 4;
-  }
-
-  for (i = numBytes-1; i >= 0; i--)
-  {
-    b = (length >> (i * 7)) & 0x7F;
-    if (i != 0)
-    {
-      b |= 0x80;
-    }
-    avio_w8(pb, b);
-  }
-
-  return numBytes; 
-}
-
-void quicktime_write_esds(AVIOContext *pb, quicktime_esds_t *esds)
-{
-  avio_w8(pb, 0);     // Version
-  avio_wb24(pb, 0);     // Flags
-
-  // elementary stream descriptor tag
-  avio_w8(pb, 0x03);
-  quicktime_write_mp4_descr_length(pb,
-    3 + 5 + (13 + 5 + esds->decoderConfigLen) + 3, false);
-  // 3 bytes + 5 bytes for tag
-  avio_wb16(pb, esds->esid);
-  avio_w8(pb, esds->stream_priority);
-
-  // decoder configuration description tag
-  avio_w8(pb, 0x04);
-  quicktime_write_mp4_descr_length(pb,
-    13 + 5 + esds->decoderConfigLen, false);
-  // 13 bytes + 5 bytes for tag
-  avio_w8(pb, esds->objectTypeId); // objectTypeIndication
-  avio_w8(pb, esds->streamType);   // streamType
-  avio_wb24(pb, esds->bufferSizeDB); // buffer size
-  avio_wb32(pb, esds->maxBitrate);   // max bitrate
-  avio_wb32(pb, esds->avgBitrate);   // average bitrate
-
-  // decoder specific description tag
-  avio_w8(pb, 0x05);
-  quicktime_write_mp4_descr_length(pb, esds->decoderConfigLen, false);
-  avio_write(pb, esds->decoderConfig, esds->decoderConfigLen);
-
-  // sync layer configuration descriptor tag
-  avio_w8(pb, 0x06);  // tag
-  avio_w8(pb, 0x01);  // length
-  avio_w8(pb, 0x7F);  // no SL
-
-  /* no IPI_DescrPointer */
-	/* no IP_IdentificationDataSet */
-	/* no IPMP_DescriptorPointer */
-	/* no LanguageDescriptor */
-	/* no QoS_Descriptor */
-	/* no RegistrationDescriptor */
-	/* no ExtensionDescriptor */
-
-}
-
-quicktime_esds_t* quicktime_set_esds(const uint8_t * decoderConfig, int decoderConfigLen)
-{
-  // ffmpeg's codec->avctx->extradata, codec->avctx->extradata_size
-  // are decoderConfig/decoderConfigLen
-  quicktime_esds_t *esds;
-
-  esds = (quicktime_esds_t*)malloc(sizeof(quicktime_esds_t));
-  memset(esds, 0, sizeof(quicktime_esds_t));
-
-  esds->version         = 0;
-  esds->flags           = 0;
-  
-  esds->esid            = 0;
-  esds->stream_priority = 0;      // 16 ? 0x1f
-  
-  esds->objectTypeId    = 32;     // 32 = AV_CODEC_ID_MPEG4, 33 = AV_CODEC_ID_H264
-  // the following fields is made of 6 bits to identify the streamtype (4 for video, 5 for audio)
-  // plus 1 bit to indicate upstream and 1 bit set to 1 (reserved)
-  esds->streamType      = 0x11;
-  esds->bufferSizeDB    = 64000;  // Hopefully not important :)
-  
-  // Maybe correct these later?
-  esds->maxBitrate      = 200000; // 0 for vbr
-  esds->avgBitrate      = 200000;
-  
-  esds->decoderConfigLen = decoderConfigLen;
-  esds->decoderConfig = (uint8_t*)malloc(esds->decoderConfigLen);
-  memcpy(esds->decoderConfig, decoderConfig, esds->decoderConfigLen);
-  return esds;
-}
-
-void quicktime_esds_dump(quicktime_esds_t * esds)
-{
-  int i;
-  printf("esds: \n");
-  printf(" Version:          %d\n",       esds->version);
-  printf(" Flags:            0x%06lx\n",  esds->flags);
-  printf(" ES ID:            0x%04x\n",   esds->esid);
-  printf(" Priority:         0x%02x\n",   esds->stream_priority);
-  printf(" objectTypeId:     %d\n",       esds->objectTypeId);
-  printf(" streamType:       0x%02x\n",   esds->streamType);
-  printf(" bufferSizeDB:     %d\n",       esds->bufferSizeDB);
-
-  printf(" maxBitrate:       %d\n",       esds->maxBitrate);
-  printf(" avgBitrate:       %d\n",       esds->avgBitrate);
-  printf(" decoderConfigLen: %d\n",       esds->decoderConfigLen);
-  printf(" decoderConfig:");
-  for(i = 0; i < esds->decoderConfigLen; i++)
-  {
-    if(!(i % 16))
-      printf("\n ");
-    printf("%02x ", esds->decoderConfig[i]);
-  }
-  printf("\n");
-}
-
-//-----------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------
-// TODO: refactor this so as not to need these ffmpeg routines.
-// These are not exposed in ffmpeg's API so we dupe them here.
-// AVC helper functions for muxers,
-//  * Copyright (c) 2006 Baptiste Coudurier <baptiste.coudurier@smartjog.com>
-// This is part of FFmpeg
-//  * License as published by the Free Software Foundation; either
-//  * version 2.1 of the License, or (at your option) any later version.
-#define VDA_RB16(x)                          \
-  ((((const uint8_t*)(x))[0] <<  8) |        \
-   ((const uint8_t*)(x)) [1])
-
-#define VDA_RB24(x)                          \
-  ((((const uint8_t*)(x))[0] << 16) |        \
-   (((const uint8_t*)(x))[1] <<  8) |        \
-   ((const uint8_t*)(x))[2])
-
-#define VDA_RB32(x)                          \
-  ((((const uint8_t*)(x))[0] << 24) |        \
-   (((const uint8_t*)(x))[1] << 16) |        \
-   (((const uint8_t*)(x))[2] <<  8) |        \
-   ((const uint8_t*)(x))[3])
-
-static const uint8_t *avc_find_startcode_internal(const uint8_t *p, const uint8_t *end)
-{
-  const uint8_t *a = p + 4 - ((intptr_t)p & 3);
-
-  for (end -= 3; p < a && p < end; p++)
-  {
-    if (p[0] == 0 && p[1] == 0 && p[2] == 1)
-      return p;
-  }
-
-  for (end -= 3; p < end; p += 4)
-  {
-    uint32_t x = *(const uint32_t*)p;
-    if ((x - 0x01010101) & (~x) & 0x80808080) // generic
-    {
-      if (p[1] == 0)
-      {
-        if (p[0] == 0 && p[2] == 1)
-          return p;
-        if (p[2] == 0 && p[3] == 1)
-          return p+1;
-      }
-      if (p[3] == 0)
-      {
-        if (p[2] == 0 && p[4] == 1)
-          return p+2;
-        if (p[4] == 0 && p[5] == 1)
-          return p+3;
-      }
-    }
-  }
-
-  for (end += 3; p < end; p++)
-  {
-    if (p[0] == 0 && p[1] == 0 && p[2] == 1)
-      return p;
-  }
-
-  return end + 3;
-}
-
-const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end)
-{
-  const uint8_t *out= avc_find_startcode_internal(p, end);
-  if (p<out && out<end && !out[-1])
-    out--;
-  return out;
-}
-
-const int avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size)
-{
-  const uint8_t *p = buf_in;
-  const uint8_t *end = p + size;
-  const uint8_t *nal_start, *nal_end;
-
-  size = 0;
-  nal_start = avc_find_startcode(p, end);
-  while (nal_start < end)
-  {
-    while (!*(nal_start++));
-    nal_end = avc_find_startcode(nal_start, end);
-    avio_wb32(pb, nal_end - nal_start);
-    avio_write(pb, nal_start, nal_end - nal_start);
-    size += 4 + nal_end - nal_start;
-    nal_start = nal_end;
-  }
-  return size;
-}
-
-const int avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size)
-{
-  AVIOContext *pb;
-  int ret = avio_open_dyn_buf(&pb);
-  if (ret < 0)
-    return ret;
-
-  avc_parse_nal_units(pb, buf_in, *size);
-
-  av_freep(buf);
-  *size = avio_close_dyn_buf(pb, buf);
-  return 0;
-}
-
-/*
- * if extradata size is greater than 7, then have a valid quicktime 
- * avcC atom header.
- *
- *      -: avcC atom header :-
- *  -----------------------------------
- *  1 byte  - version
- *  1 byte  - h.264 stream profile
- *  1 byte  - h.264 compatible profiles
- *  1 byte  - h.264 stream level
- *  6 bits  - reserved set to 63
- *  2 bits  - NAL length 
- *            ( 0 - 1 byte; 1 - 2 bytes; 3 - 4 bytes)
- *  3 bit   - reserved
- *  5 bits  - number of SPS 
- *  for (i=0; i < number of SPS; i++) {
- *      2 bytes - SPS length
- *      SPS length bytes - SPS NAL unit
- *  }
- *  1 byte  - number of PPS
- *  for (i=0; i < number of PPS; i++) {
- *      2 bytes - PPS length 
- *      PPS length bytes - PPS NAL unit 
- *  }
- 
- how to detect the interlacing used on an existing stream:
-- progressive is signalled by setting
-   frame_mbs_only_flag: 1 in the SPS.
-- interlaced is signalled by setting
-   frame_mbs_only_flag: 0 in the SPS and
-   field_pic_flag: 1 on all frames.
-- paff is signalled by setting
-   frame_mbs_only_flag: 0 in the SPS and
-   field_pic_flag: 1 on all frames that get interlaced and
-   field_pic_flag: 0 on all frames that get progressive.
-- mbaff is signalled by setting
-   frame_mbs_only_flag: 0 in the SPS and
-   mb_adaptive_frame_field_flag: 1 in the SPS and
-   field_pic_flag: 0 on the frames,
-   (field_pic_flag: 1 would indicate a normal interlaced frame).
-*/
-const int isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len)
-{
-  // extradata from bytestream h264, convert to avcC atom data for bitstream
-  if (len > 6)
-  {
-    /* check for h264 start code */
-    if (VDA_RB32(data) == 0x00000001 || VDA_RB24(data) == 0x000001)
-    {
-      uint8_t *buf=NULL, *end, *start;
-      uint32_t sps_size=0, pps_size=0;
-      uint8_t *sps=0, *pps=0;
-
-      int ret = avc_parse_nal_units_buf(data, &buf, &len);
-      if (ret < 0)
-        return ret;
-      start = buf;
-      end = buf + len;
-
-      /* look for sps and pps */
-      while (buf < end)
-      {
-        unsigned int size;
-        uint8_t nal_type;
-        size = VDA_RB32(buf);
-        nal_type = buf[4] & 0x1f;
-        if (nal_type == 7) /* SPS */
-        {
-          sps = buf + 4;
-          sps_size = size;
-        }
-        else if (nal_type == 8) /* PPS */
-        {
-          pps = buf + 4;
-          pps_size = size;
-        }
-        buf += size + 4;
-      }
-      assert(sps);
-
-      avio_w8(pb, 1); /* version */
-      avio_w8(pb, sps[1]); /* profile */
-      avio_w8(pb, sps[2]); /* profile compat */
-      avio_w8(pb, sps[3]); /* level */
-      avio_w8(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
-      avio_w8(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
-
-      avio_wb16(pb, sps_size);
-      avio_write(pb, sps, sps_size);
-      if (pps)
-      {
-        avio_w8(pb, 1); /* number of pps */
-        avio_wb16(pb, pps_size);
-        avio_write(pb, pps, pps_size);
-      }
-      av_free(start);
-    }
-    else
-    {
-      avio_write(pb, data, len);
-    }
-  }
-  return 0;
-}
-//-----------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------
-// GStreamer h264 parser
-// Copyright (C) 2005 Michal Benes <michal.benes@itonis.tv>
-//           (C) 2008 Wim Taymans <wim.taymans@gmail.com>
-// gsth264parse.c:
-//  * License as published by the Free Software Foundation; either
-//  * version 2.1 of the License, or (at your option) any later version.
-typedef struct
-{
-  const uint8_t *data;
-  const uint8_t *end;
-  int head;
-  uint64_t cache;
-} nal_bitstream;
-
-static void
-nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size)
-{
-  bs->data = data;
-  bs->end  = data + size;
-  bs->head = 0;
-  // fill with something other than 0 to detect
-  //  emulation prevention bytes
-  bs->cache = 0xffffffff;
-}
-
-static uint32_t
-nal_bs_read(nal_bitstream *bs, int n)
-{
-  uint32_t res = 0;
-  int shift;
-
-  if (n == 0)
-    return res;
-
-  // fill up the cache if we need to
-  while (bs->head < n)
-  {
-    uint8_t a_byte;
-    bool check_three_byte;
-
-    check_three_byte = TRUE;
-next_byte:
-    if (bs->data >= bs->end)
-    {
-      // we're at the end, can't produce more than head number of bits
-      n = bs->head;
-      break;
-    }
-    // get the byte, this can be an emulation_prevention_three_byte that we need
-    // to ignore.
-    a_byte = *bs->data++;
-    if (check_three_byte && a_byte == 0x03 && ((bs->cache & 0xffff) == 0))
-    {
-      // next byte goes unconditionally to the cache, even if it's 0x03
-      check_three_byte = FALSE;
-      goto next_byte;
-    }
-    // shift bytes in cache, moving the head bits of the cache left
-    bs->cache = (bs->cache << 8) | a_byte;
-    bs->head += 8;
-  }
-
-  // bring the required bits down and truncate
-  if ((shift = bs->head - n) > 0)
-    res = bs->cache >> shift;
-  else
-    res = bs->cache;
-
-  // mask out required bits
-  if (n < 32)
-    res &= (1 << n) - 1;
-
-  bs->head = shift;
-
-  return res;
-}
-
-static bool
-nal_bs_eos(nal_bitstream *bs)
-{
-  return (bs->data >= bs->end) && (bs->head == 0);
-}
-
-// read unsigned Exp-Golomb code
-static int
-nal_bs_read_ue(nal_bitstream *bs)
-{
-  int i = 0;
-
-  while (nal_bs_read(bs, 1) == 0 && !nal_bs_eos(bs) && i < 32)
-    i++;
-
-  return ((1 << i) - 1 + nal_bs_read(bs, i));
-}
-
-typedef struct
-{
-  int profile_idc;
-  int level_idc;
-  int sps_id;
-
-  int chroma_format_idc;
-  int separate_colour_plane_flag;
-  int bit_depth_luma_minus8;
-  int bit_depth_chroma_minus8;
-  int qpprime_y_zero_transform_bypass_flag;
-  int seq_scaling_matrix_present_flag;
-
-  int log2_max_frame_num_minus4;
-  int pic_order_cnt_type;
-  int log2_max_pic_order_cnt_lsb_minus4;
-
-  int max_num_ref_frames;
-  int gaps_in_frame_num_value_allowed_flag;
-  int pic_width_in_mbs_minus1;
-  int pic_height_in_map_units_minus1;
-
-  int frame_mbs_only_flag;
-  int mb_adaptive_frame_field_flag;
-
-  int direct_8x8_inference_flag;
-
-  int frame_cropping_flag;
-  int frame_crop_left_offset;
-  int frame_crop_right_offset;
-  int frame_crop_top_offset;
-  int frame_crop_bottom_offset;
-} sps_info_struct;
-
-static void
-parseh264_sps(uint8_t *sps, uint32_t sps_size,  int *level, int *profile, bool *interlaced, int32_t *max_ref_frames)
-{
-  nal_bitstream bs;
-  sps_info_struct sps_info = {0};
-
-  nal_bs_init(&bs, sps, sps_size);
-
-  sps_info.profile_idc  = nal_bs_read(&bs, 8);
-  nal_bs_read(&bs, 1);  // constraint_set0_flag
-  nal_bs_read(&bs, 1);  // constraint_set1_flag
-  nal_bs_read(&bs, 1);  // constraint_set2_flag
-  nal_bs_read(&bs, 1);  // constraint_set3_flag
-  nal_bs_read(&bs, 4);  // reserved
-  sps_info.level_idc    = nal_bs_read(&bs, 8);
-  sps_info.sps_id       = nal_bs_read_ue(&bs);
-
-  if (sps_info.profile_idc == 100 ||
-      sps_info.profile_idc == 110 ||
-      sps_info.profile_idc == 122 ||
-      sps_info.profile_idc == 244 ||
-      sps_info.profile_idc == 44  ||
-      sps_info.profile_idc == 83  ||
-      sps_info.profile_idc == 86)
-  {
-    sps_info.chroma_format_idc                    = nal_bs_read_ue(&bs);
-    if (sps_info.chroma_format_idc == 3)
-      sps_info.separate_colour_plane_flag         = nal_bs_read(&bs, 1);
-    sps_info.bit_depth_luma_minus8                = nal_bs_read_ue(&bs);
-    sps_info.bit_depth_chroma_minus8              = nal_bs_read_ue(&bs);
-    sps_info.qpprime_y_zero_transform_bypass_flag = nal_bs_read(&bs, 1);
-
-    sps_info.seq_scaling_matrix_present_flag = nal_bs_read (&bs, 1);
-    if (sps_info.seq_scaling_matrix_present_flag)
-    {
-      /* TODO: unfinished */
-    }
-  }
-  sps_info.log2_max_frame_num_minus4 = nal_bs_read_ue(&bs);
-  if (sps_info.log2_max_frame_num_minus4 > 12)
-  { // must be between 0 and 12
-    // don't early return here - the bits we are using (profile/level/interlaced/ref frames)
-    // might still be valid - let the parser go on and pray.
-    //return;
-  }
-
-  sps_info.pic_order_cnt_type = nal_bs_read_ue(&bs);
-  if (sps_info.pic_order_cnt_type == 0)
-  {
-    sps_info.log2_max_pic_order_cnt_lsb_minus4 = nal_bs_read_ue(&bs);
-  }
-  else if (sps_info.pic_order_cnt_type == 1)
-  { // TODO: unfinished
-    /*
-    delta_pic_order_always_zero_flag = gst_nal_bs_read (bs, 1);
-    offset_for_non_ref_pic = gst_nal_bs_read_se (bs);
-    offset_for_top_to_bottom_field = gst_nal_bs_read_se (bs);
-
-    num_ref_frames_in_pic_order_cnt_cycle = gst_nal_bs_read_ue (bs);
-    for( i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++ )
-    offset_for_ref_frame[i] = gst_nal_bs_read_se (bs);
-    */
-  }
-
-  sps_info.max_num_ref_frames             = nal_bs_read_ue(&bs);
-  sps_info.gaps_in_frame_num_value_allowed_flag = nal_bs_read(&bs, 1);
-  sps_info.pic_width_in_mbs_minus1        = nal_bs_read_ue(&bs);
-  sps_info.pic_height_in_map_units_minus1 = nal_bs_read_ue(&bs);
-
-  sps_info.frame_mbs_only_flag            = nal_bs_read(&bs, 1);
-  if (!sps_info.frame_mbs_only_flag)
-    sps_info.mb_adaptive_frame_field_flag = nal_bs_read(&bs, 1);
-
-  sps_info.direct_8x8_inference_flag      = nal_bs_read(&bs, 1);
-
-  sps_info.frame_cropping_flag            = nal_bs_read(&bs, 1);
-  if (sps_info.frame_cropping_flag)
-  {
-    sps_info.frame_crop_left_offset       = nal_bs_read_ue(&bs);
-    sps_info.frame_crop_right_offset      = nal_bs_read_ue(&bs);
-    sps_info.frame_crop_top_offset        = nal_bs_read_ue(&bs);
-    sps_info.frame_crop_bottom_offset     = nal_bs_read_ue(&bs);
-  }
-
-  *level = sps_info.level_idc;
-  *profile = sps_info.profile_idc;
-  *interlaced = !sps_info.frame_mbs_only_flag;
-  *max_ref_frames = sps_info.max_num_ref_frames;
-}
-
-bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_frames, int *level, int *profile)
-{
-  // check the avcC atom's sps for number of reference frames and
-  // bail if interlaced, VDA does not handle interlaced h264.
-  bool interlaced = true;
-  uint8_t *spc = extradata + 6;
-  uint32_t sps_size = VDA_RB16(spc);
-  if (sps_size)
-    parseh264_sps(spc+3, sps_size-1, level, profile, &interlaced, max_ref_frames);
-  if (interlaced)
-    return false;
-  return true;
-}
-
-//-----------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------
 CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
 {
   m_fmt_desc    = NULL;
+  m_bitstream   = NULL;
   m_vt_session  = NULL;
   m_pFormatName = "vtb";
 
@@ -1048,17 +491,18 @@ CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
   m_max_ref_frames = 4;
   pthread_mutex_init(&m_queue_mutex, NULL);
 
-  m_convert_bytestream = false;
-  m_convert_3byteTo4byteNALSize = false; 
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
   m_DropPictures = false;
   m_sort_time_offset = 0.0;
+  
+  m_dll = new DllVideoToolBox();
 }
 
 CDVDVideoCodecVideoToolBox::~CDVDVideoCodecVideoToolBox()
 {
   Dispose();
   pthread_mutex_destroy(&m_queue_mutex);
+  SAFE_DELETE(m_dll);
 }
 
 bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
@@ -1069,11 +513,22 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     int height = hints.height;
     int level  = hints.level;
     int profile = hints.profile;
-    int spsLevel = level;
-    int spsProfile = profile;
     unsigned int extrasize = hints.extrasize; // extra data for codec to use
     uint8_t *extradata = (uint8_t*)hints.extradata; // size of extra data
  
+#if defined(TARGET_DARWIN_IOS)
+    if (CDarwinUtils::GetIOSVersion() < 6.0)
+    {
+      // under below iOS 5, VideoToolbox.framework is private
+      m_dll->SetFile("/System/Library/PrivateFrameworks/VideoToolbox.framework/VideoToolbox");
+    }
+#endif
+    if (!m_dll->IsLoaded() && !m_dll->Load())
+    {
+      CLog::Log(LOGERROR,"VideoToolBox: Error loading VideoToolBox framework (%s).",__FUNCTION__);
+      return false;
+    }
+
     switch(profile)
     {
       case FF_PROFILE_H264_HIGH_10:
@@ -1098,34 +553,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     switch (hints.codec)
     {
       case AV_CODEC_ID_MPEG4:
-        if (extrasize)
-        {
-          AVIOContext *pb;
-          quicktime_esds_t *esds;
-
-          if (avio_open_dyn_buf(&pb) < 0)
-            return false;
-
-          esds = quicktime_set_esds(extradata, extrasize);
-          quicktime_write_esds(pb, esds);
-
-          // unhook from ffmpeg's extradata
-          extradata = NULL;
-          // extract the esds atom decoderConfig from extradata
-          extrasize = avio_close_dyn_buf(pb, &extradata);
-          free(esds->decoderConfig);
-          free(esds);
-
-          m_fmt_desc = CreateFormatDescriptionFromCodecData(
-            kVTFormatMPEG4Video, width, height, extradata, extrasize, 'esds');
-
-          // done with the converted extradata, we MUST free using av_free
-          av_free(extradata);
-        }
-        else
-        {
-          m_fmt_desc = CreateFormatDescription(kVTFormatMPEG4Video, width, height);          
-        }
+        m_fmt_desc = CreateFormatDescriptionFromCodecData(
+          kVTFormatMPEG4Video, width, height, extradata, extrasize);
         m_pFormatName = "vtb-mpeg4";
       break;
 
@@ -1134,110 +563,62 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         m_pFormatName = "vtb-mpeg2";
       break;
 
+      case AV_CODEC_ID_H265:
+        // use a bitstream converter for all flavors
+        m_bitstream = new CBitstreamConverter;
+        if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
+          return false;
+        m_fmt_desc = CreateFormatDescriptionFromCodecData(
+          kVTFormatH265, width, height, extradata, extrasize);
+        m_pFormatName = "vtb-h265";
+      break;
+
       case AV_CODEC_ID_H264:
         if (extrasize < 7 || extradata == NULL)
         {
-          //m_fmt_desc = CreateFormatDescription(kVTFormatH264, width, height);
           CLog::Log(LOGNOTICE, "%s - avcC atom too data small or missing", __FUNCTION__);
           return false;
         }
-
-        if (extradata[0] == 1)
-        {
-          // check for interlaced and get number of ref frames
-          if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames, &spsLevel, &spsProfile))
-            return false;
-
-          // overwrite level and profile from the hints
-          // if we got something more valid from the extradata
-          if (level == 0 && spsLevel > 0)
-            level = spsLevel;
-          
-          if (profile == 0 && spsProfile > 0)
-            profile = spsProfile;
-
-          // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
-          // with a bogus m_fmt_desc returned that crashes on CFRelease.
-          if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
-          {
-            // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
-            CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
-              __FUNCTION__, m_max_ref_frames);
-            return false;
-          }
-
-          if (extradata[4] == 0xFE)
-          {
-            // video content is from some silly encoder that think 3 byte NAL sizes
-            // are valid, setup to convert 3 byte NAL sizes to 4 byte.
-            extradata[4] = 0xFF;
-            m_convert_3byteTo4byteNALSize = true;
-          }
-          // valid avcC atom data always starts with the value 1 (version)
-          m_fmt_desc = CreateFormatDescriptionFromCodecData(
-            kVTFormatH264, width, height, extradata, extrasize, 'avcC');
-
-          CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, extrasize, m_max_ref_frames);
-        }
         else
         {
-          if ( (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1) ||
-               (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 1))
+          // use a bitstream converter for all flavors, that way
+          // even avcC with silly 3-byte nals are covered.
+          m_bitstream = new CBitstreamConverter;
+          if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
+            return false;
+
+          if (m_bitstream->GetExtraSize() < 8)
           {
-            // video content is from x264 or from bytestream h264 (AnnexB format)
-            // NAL reformating to bitstream format required
-
-            AVIOContext *pb;
-            if (avio_open_dyn_buf(&pb) < 0)
-              return false;
-
-            m_convert_bytestream = true;
-            // create a valid avcC atom data from ffmpeg's extradata
-            isom_write_avcc(pb, extradata, extrasize);
-            // unhook from ffmpeg's extradata
-            extradata = NULL;
-            // extract the avcC atom data into extradata getting size into extrasize
-            extrasize = avio_close_dyn_buf(pb, &extradata);
-
-            // check for interlaced and get number of ref frames
-            if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames, &spsLevel, &spsProfile))
-            {
-              av_free(extradata);
-              return false;
-            }
-            
-            // overwrite level and profile from the hints
-            // if we got something more valid from the extradata
-            if (level == 0 && spsLevel > 0)
-              level = spsLevel;
-            
-            if (profile == 0 && spsProfile > 0)
-              profile = spsProfile;
-
-            // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
-            // with a bogus m_fmt_desc returned that crashes on CFRelease.
-            if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
-            {
-              // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
-              CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
-                __FUNCTION__, m_max_ref_frames);
-              av_free(extradata);
-              return false;
-            }
- 
-            // CFDataCreate makes a copy of extradata contents
-            m_fmt_desc = CreateFormatDescriptionFromCodecData(
-              kVTFormatH264, width, height, extradata, extrasize, 'avcC');
-
-            // done with the new converted extradata, we MUST free using av_free
-            av_free(extradata);
-            CLog::Log(LOGNOTICE, "%s - created avcC atom of size(%d)", __FUNCTION__, extrasize);
+            SAFE_DELETE(m_bitstream);
+            return false;
           }
           else
           {
-            CLog::Log(LOGNOTICE, "%s - invalid avcC atom data", __FUNCTION__);
+            // check the avcC atom's sps for number of reference frames and
+            // bail if interlaced, VTB does not handle interlaced h264.
+            bool interlaced = true;
+            uint8_t *spc = m_bitstream->GetExtraData() + 6;
+            uint32_t sps_size = BS_RB16(spc);
+            if (sps_size)
+              m_bitstream->parseh264_sps(spc+3, sps_size-1, &interlaced, &m_max_ref_frames);
+            if (interlaced)
+            {
+              CLog::Log(LOGNOTICE, "%s - possible interlaced content.", __FUNCTION__);
+              return false;
+            }
+          }
+
+          if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+          {
+            // Main@L3.2, VTB cannot handle greater than 4 reference frames
+            CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode.", __FUNCTION__);
             return false;
           }
+
+          m_fmt_desc = CreateFormatDescriptionFromCodecData(
+            kVTFormatH264, width, height, extradata, extrasize);
+
+          CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, extrasize, m_max_ref_frames);
         }
         m_pFormatName = "vtb-h264";
       break;
@@ -1247,15 +628,12 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
-    if(m_fmt_desc == NULL)
+    if (m_fmt_desc == NULL)
     {
-      CLog::Log(LOGNOTICE, "%s - created avcC atom of failed", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s - created format descriptor", __FUNCTION__);
       m_pFormatName = "";
       return false;
     }
-
-    if (m_max_ref_frames == 0)
-      m_max_ref_frames = 2;
 
     CreateVTSession(width, height, m_fmt_desc);
     if (m_vt_session == NULL)
@@ -1285,7 +663,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_videobuffer.iDisplayHeight = hints.height;
 
     m_DropPictures = false;
-    m_max_ref_frames = std::min(m_max_ref_frames, 5);
+    // default to 5 min, this helps us feed correct pts to the player.
+    m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
     m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
 
     return true;
@@ -1298,11 +677,9 @@ void CDVDVideoCodecVideoToolBox::Dispose()
 {
   DestroyVTSession();
   if (m_fmt_desc)
-  {
-    CFRelease(m_fmt_desc);
-    m_fmt_desc = NULL;
-  }
-  
+    CFRelease(m_fmt_desc), m_fmt_desc = NULL;
+  SAFE_DELETE(m_bitstream);
+ 
   if (m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
   {
     // release any previous retained cvbuffer reference
@@ -1325,115 +702,68 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
 {
   if (pData)
   {
-    OSStatus status;
-    double sort_time;
-    uint32_t decoderFlags = 0;
-    CFDictionaryRef frameInfo = NULL;
-    CMSampleBufferRef sampleBuff = NULL;
-    AVIOContext *pb = NULL;
-    int demux_size = 0;
-    uint8_t *demux_buff = NULL;
-    
-    if (m_convert_bytestream)
+    if (m_bitstream)
     {
-      // convert demuxer packet from bytestream (AnnexB) to bitstream
-      if(avio_open_dyn_buf(&pb) < 0)
-        return VC_ERROR;
-
-      avc_parse_nal_units(pb, pData, iSize);
-      demux_size = avio_close_dyn_buf(pb, &demux_buff);
-      sampleBuff = CreateSampleBufferFrom(m_fmt_desc, demux_buff, demux_size);
+      m_bitstream->Convert(pData, iSize);
+      iSize = m_bitstream->GetConvertSize();
+      pData = m_bitstream->GetConvertBuffer();
     }
-    else if (m_convert_3byteTo4byteNALSize)
-    {
-      // convert demuxer packet from 3 byte NAL sizes to 4 byte
-      if (avio_open_dyn_buf(&pb) < 0)
-        return VC_ERROR;
 
-      uint32_t nal_size;
-      uint8_t *end = pData + iSize;
-      uint8_t *nal_start = pData;
-      while (nal_start < end)
-      {
-        nal_size = VDA_RB24(nal_start);
-        avio_wb32(pb, nal_size);
-        nal_start += 3;
-        avio_write(pb, nal_start, nal_size);
-        nal_start += nal_size;
-      }
-
-      demux_size = avio_close_dyn_buf(pb, &demux_buff);
-      sampleBuff = CreateSampleBufferFrom(m_fmt_desc, demux_buff, demux_size);
-    }
-    else
-    {
-      sampleBuff = CreateSampleBufferFrom(m_fmt_desc, pData, iSize);
-    }
-    
+    CMSampleBufferRef sampleBuff = CreateSampleBufferFrom(m_fmt_desc, pData, iSize);
     if (!sampleBuff)
     {
-      if (demux_size)
-        av_free(demux_buff);
       CLog::Log(LOGNOTICE, "%s - CreateSampleBufferFrom failed", __FUNCTION__);
       return VC_ERROR;
     }
     
-    sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
-    frameInfo = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
+    double sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
+    CFDictionaryRef frameInfo = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
 
+    uint32_t decoderFlags = 0;
     if (m_DropPictures)
-    {
       decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
-    }
 
     // submit for decoding
-    status = VTDecompressionSessionDecodeFrame(m_vt_session, sampleBuff, decoderFlags, frameInfo, 0);
+    OSStatus status = m_dll->VTDecompressionSessionDecodeFrame(m_vt_session, sampleBuff, decoderFlags, frameInfo, 0);
     if (status != kVTDecoderNoErr)
     {
       CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned(%d)",
         __FUNCTION__, (int)status);
       CFRelease(frameInfo);
       CFRelease(sampleBuff);
-      if (demux_size)
-        av_free(demux_buff);
       return VC_ERROR;
       // VTDecompressionSessionDecodeFrame returned 8969 (codecBadDataErr)
       // VTDecompressionSessionDecodeFrame returned -12350
-      // VTDecompressionSessionDecodeFrame returned -12902
-      // VTDecompressionSessionDecodeFrame returned -12911
+      // VTDecompressionSessionDecodeFrame returned -12902 (kVTParameterErr)
+      // VTDecompressionSessionDecodeFrame returned -12909 (kVTVideoDecoderBadDataErr)
+      // VTDecompressionSessionDecodeFrame returned -12911 (kVTVideoDecoderMalfunctionErr)
     }
 
     // wait for decoding to finish
-    status = VTDecompressionSessionWaitForAsynchronousFrames(m_vt_session);
+    status = m_dll->VTDecompressionSessionWaitForAsynchronousFrames(m_vt_session);
     if (status != kVTDecoderNoErr)
     {
       CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionWaitForAsynchronousFrames returned(%d)",
         __FUNCTION__, (int)status);
       CFRelease(frameInfo);
       CFRelease(sampleBuff);
-      if (demux_size)
-        av_free(demux_buff);
       return VC_ERROR;
     }
 
     CFRelease(frameInfo);
     CFRelease(sampleBuff);
-    if (demux_size)
-      av_free(demux_buff);
   }
 
-  // TODO: queue depth is related to the number of reference frames in encoded h.264.
-  // so we need to buffer until we get N ref frames + 1.
-  if (m_queue_depth < m_max_ref_frames)
+  if (m_queue_depth < (2 * m_max_ref_frames))
     return VC_BUFFER;
 
-  return VC_PICTURE | VC_BUFFER;
+  return VC_PICTURE;
 }
 
 void CDVDVideoCodecVideoToolBox::Reset(void)
 {
   // flush decoder
-  VTDecompressionSessionWaitForAsynchronousFrames(m_vt_session);
+  m_dll->VTDecompressionSessionWaitForAsynchronousFrames(m_vt_session);
 
   while (m_queue_depth)
     DisplayQueuePop();
@@ -1454,10 +784,10 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pthread_mutex_lock(&m_queue_mutex);
   pDvdVideoPicture->dts             = m_display_queue->dts;
   pDvdVideoPicture->pts             = m_display_queue->pts;
-  pDvdVideoPicture->iWidth          = m_display_queue->width;
-  pDvdVideoPicture->iHeight         = m_display_queue->height;
-  pDvdVideoPicture->iDisplayWidth   = m_display_queue->width;
-  pDvdVideoPicture->iDisplayHeight  = m_display_queue->height;
+  pDvdVideoPicture->iWidth          = (unsigned int)m_display_queue->width;
+  pDvdVideoPicture->iHeight         = (unsigned int)m_display_queue->height;
+  pDvdVideoPicture->iDisplayWidth   = (unsigned int)m_display_queue->width;
+  pDvdVideoPicture->iDisplayHeight  = (unsigned int)m_display_queue->height;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
   m_display_queue->pixel_buffer_ref = NULL;
   pthread_mutex_unlock(&m_queue_mutex);
@@ -1474,7 +804,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 //  CLog::Log(LOGDEBUG, "%s - VTBDecoderDecode dts(%f), pts(%f), cvBufferRef(%p)", __FUNCTION__,
 //    pDvdVideoPicture->dts, pDvdVideoPicture->pts, pDvdVideoPicture->cvBufferRef);
 
-  return VC_PICTURE | VC_BUFFER;
+  return true;
 }
 
 bool CDVDVideoCodecVideoToolBox::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -1514,7 +844,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   VTDecompressionOutputCallback outputCallback;
   OSStatus status;
 
-  #if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
   double scale = 0.0;
 
   // decoding, scaling and rendering above 1920 x 800 runs into
@@ -1540,6 +870,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     width = new_width;
     height = height * w_scaler;
   }
+#if !defined(__LP64__)
   // scale output pictures down to 720p size for display
   if (width > width_clamp)
   {
@@ -1547,7 +878,8 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     width = width_clamp;
     height = height * w_scaler;
   }
-  #endif
+#endif
+#endif
   destinationPixelBufferAttributes = CFDictionaryCreateMutable(
     NULL, // CFAllocatorRef allocator
     0,    // CFIndex capacity
@@ -1569,7 +901,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   outputCallback.callback = VTDecoderCallback;
   outputCallback.refcon = this;
 
-  status = VTDecompressionSessionCreate(
+  status = m_dll->VTDecompressionSessionCreate(
     NULL, // CFAllocatorRef allocator
     fmt_desc,
     NULL, // CFTypeRef sessionOptions
@@ -1580,6 +912,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   {
     m_vt_session = NULL;
     CLog::Log(LOGERROR, "%s - failed with status = (%d)", __FUNCTION__, (int)status);
+    // -12906, kVTCouldNotFindVideoDecoderErr
   }
   else
   {
@@ -1595,7 +928,7 @@ CDVDVideoCodecVideoToolBox::DestroyVTSession(void)
 {
   if (m_vt_session)
   {
-    VTDecompressionSessionInvalidate((VTDecompressionSessionRef)m_vt_session);
+    m_dll->VTDecompressionSessionInvalidate((VTDecompressionSessionRef)m_vt_session);
     CFRelease((VTDecompressionSessionRef)m_vt_session);
     m_vt_session = NULL;
   }
@@ -1627,7 +960,7 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
   {
     CLog::Log(LOGERROR, "%s - imageBuffer format is not 'BGRA',is reporting 0x%x",
       "VTDecoderCallback", (int)format_type);
-    return;
+    //return;
   }
   if (kVTDecodeInfo_FrameDropped & infoFlags)
   {
@@ -1700,6 +1033,62 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
   ctx->m_queue_depth++;
   //
   pthread_mutex_unlock(&ctx->m_queue_mutex);	
+}
+
+void CDVDVideoCodecVideoToolBox::vtdec_session_dump_property(CFStringRef prop_name, CFDictionaryRef prop_attrs, CDVDVideoCodecVideoToolBox *ctx)
+{
+  char     *name_str;
+  OSStatus  status;
+  CFTypeRef prop_value;
+
+  name_str = vtutil_string_to_utf8(prop_name);
+  if (name_str)
+  {
+    char *attrs_str = vtutil_object_to_string(prop_attrs);
+    if (attrs_str && g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s = %s\n", name_str, attrs_str);
+    free(attrs_str);
+  }
+
+  VTDecompressionSessionRef vt_session = (VTDecompressionSessionRef)ctx->m_vt_session;
+  status = ctx->m_dll->VTDecompressionSessionCopyProperty(vt_session, prop_name, NULL, &prop_value);
+  if (status == kVTDecoderNoErr)
+  {
+    char *value_str = vtutil_object_to_string(prop_value);
+    if (value_str && g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s = %s\n", name_str, value_str);
+    free(value_str);
+
+    if (prop_value != NULL)
+      CFRelease(prop_value);
+  }
+  else
+  {
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s = <failed to query: %d>\n", name_str, (int)status);
+  }
+
+  free(name_str);
+}
+
+void CDVDVideoCodecVideoToolBox::vtdec_session_dump_properties()
+{
+  VTDecompressionSessionRef vt_session = (VTDecompressionSessionRef)m_vt_session;
+  VTDumpDecompressionPropCtx dpc = { this, vt_session };
+  CFDictionaryRef dict;
+  OSStatus status;
+
+  status = m_dll->VTDecompressionSessionCopySupportedPropertyDictionary(vt_session, &dict);
+  if (status != kVTDecoderNoErr)
+    goto error;
+  CFDictionaryApplyFunction(dict, (CFDictionaryApplierFunction)vtdec_session_dump_property, &dpc);
+  CFRelease(dict);
+
+  return;
+
+error:
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "failed to dump properties\n");
 }
 
 #endif
