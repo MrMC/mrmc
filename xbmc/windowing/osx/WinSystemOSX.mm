@@ -63,7 +63,7 @@ CRect CGRectToCRect(CGRect cgrect)
 void SetMenuBarVisible(bool visible)
 {
   // native fullscreen stuff handles this for us...
-  if (!visible && CDarwinUtils::DeviceHasNativeFullscreen())
+  if (!visible)
     return;
 
   if ([NSApplication sharedApplication] == nil)
@@ -355,17 +355,17 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   // for native fullscreen we always want to set the same windowed flags
   NSUInteger windowStyleMask;
-  if (fullScreen && !CDarwinUtils::DeviceHasNativeFullscreen())
+  if (fullScreen)
     windowStyleMask = NSBorderlessWindowMask;
   else
     windowStyleMask = NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask;
 
-  if (m_appWindow == NULL || !CDarwinUtils::DeviceHasNativeFullscreen())
+  if (m_appWindow == NULL)
   {
     NSWindow *appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight) styleMask:windowStyleMask];
     NSString *title = [NSString stringWithUTF8String:m_name.c_str()];
-    [(NSWindow*)m_appWindow setBackgroundColor:[NSColor blackColor]];
-    [(NSWindow*)m_appWindow setTitle:title];
+    [appWindow setBackgroundColor:[NSColor blackColor]];
+    [appWindow setTitle:title];
     [appWindow setOneShot:NO];
 
     //if (!fullScreen)
@@ -388,13 +388,13 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
     [[contentView getGLContext] update];
 
     // now that we have a view, and a current gl context, then we can show window.
-    [(NSWindow*)appWindow orderFront:nil];
+//    [appWindow orderFront:nil];
 
     m_appWindow = appWindow;
     m_bWindowCreated = true;
   }
 
-  [(NSWindow*)m_appWindow makeKeyWindow];
+  [(NSWindow*)m_appWindow makeKeyAndOrderFront:nil];
 /*
   [(NSWindow*)m_appWindow update];
   [(NSWindow*)m_appWindow display];
@@ -459,10 +459,7 @@ bool CWinSystemOSX::DestroyWindow()
   // when using native fullscreen
   // we never destroy the window
   // we reuse it ...
-  if (CDarwinUtils::DeviceHasNativeFullscreen())
-    return true;
-
-  return DestroyWindowInternal();
+  return true;
 }
 
 bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
@@ -524,15 +521,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     }
   }
   
-  // we are toggled by osx fullscreen feature
-  // only resize and reset the toggle flag
-  if (CDarwinUtils::DeviceHasNativeFullscreen() && m_fullscreenWillToggle)
-  {
-    ResizeWindow(m_nWidth, m_nHeight, -1, -1);
-    m_fullscreenWillToggle = false;
-    return true;
-  }
-  
   [window setAllowsConcurrentViewDrawing:NO];
 
   if (m_bFullScreen)
@@ -543,62 +531,39 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     last_view_origin = [view frame].origin;
     last_window_origin = [window  frame].origin;
     
-    if (CSettings::GetInstance().GetBool("videoscreen.fakefullscreen"))
-    {
-      // This is Cocca Windowed FullScreen Mode
-      // Get the screen rect of our current display
-      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
-      NSRect    screenRect = [pScreen frame];
+    // This is Cocca Windowed FullScreen Mode
+    // Get the screen rect of our current display
+    NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
+    NSRect    screenRect = [pScreen frame];
 
-      // remove frame origin offset of orginal display
-      screenRect.origin = NSZeroPoint;
+    // remove frame origin offset of orginal display
+    screenRect.origin = NSZeroPoint;
 
-      DestroyWindow();
-      CreateNewWindow(m_name, true, res, NULL);
-      window = (NSWindow *)m_appWindow;
-      view = [window contentView];
-      
-      //[window makeKeyAndOrderFront:nil];
-      //[window setLevel:NSNormalWindowLevel];
-      
-      // ...and the original one beneath it and on the same screen.
-      //[[view window] setLevel:NSNormalWindowLevel-1];
-      
-      // old behaviour - set origin to 0,0 when going
-      // to fullscreen - not needed when we use native
-      // fullscreen mode
-      if (!CDarwinUtils::DeviceHasNativeFullscreen())
-      {
-        [window setFrameOrigin:[pScreen frame].origin];
-        [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
-      }
-      [view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
+//    DestroyWindow();
+    DestroyWindowInternal();
+    CreateNewWindow(m_name, true, res, NULL);
+    window = (NSWindow *)m_appWindow;
+    view = [window contentView];
+    
+    //[window makeKeyAndOrderFront:nil];
+    //[window setLevel:NSNormalWindowLevel];
+    
+    // ...and the original one beneath it and on the same screen.
+    //[[view window] setLevel:NSNormalWindowLevel-1];
+    
+    [window setFrameOrigin:[pScreen frame].origin];
+    [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
+    [view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
 
-      NSString *title = [NSString stringWithFormat:@"%s" , ""];
-      window.title = title;
-      
-      if (!CDarwinUtils::DeviceHasNativeFullscreen())
-      {
-        NSUInteger windowStyleMask = NSBorderlessWindowMask;
-        [window setStyleMask:windowStyleMask];
-      }
-      
-      // Hide the menu bar.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
-        SetMenuBarVisible(false);
-    }
-    else
-    {
-      // Capture the display before going fullscreen.
-      if (blankOtherDisplays == true)
-        CGCaptureAllDisplays();
-      else
-        CGDisplayCapture(GetDisplayID(res.iScreen));
-
-      // If we don't hide menu bar, it will get events and interrupt the program.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
-        SetMenuBarVisible(false);
-    }
+    NSString *title = [NSString stringWithFormat:@"%s" , ""];
+    window.title = title;
+    
+    // Hide the menu bar.
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
+//        SetMenuBarVisible(false);
+      [OSXGLWindow SetMenuBarInvisible];
+    
+    ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 
     // Hide the mouse.
     Cocoa_HideMouse();
@@ -610,61 +575,41 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
     //Cocoa_ShowMouse();
 
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
-    {
-      DestroyWindow();
-      CreateNewWindow(m_name, false, res, NULL);
-      window = (NSWindow *)m_appWindow;
-      view = [window contentView];
-      
-      //NSString *title = [NSString stringWithFormat:@"%s" , m_name.c_str()];
-      //window.title = title;
-      //NSUInteger windowStyleMask = NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask;
-      //[window setStyleMask:windowStyleMask];
-      
-      // Show menubar.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks())
-        SetMenuBarVisible(true);
-    }
-    else
-    {
-      // Show menubar.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks())
-        SetMenuBarVisible(true);
-      
-      // release displays
-      CGReleaseAllDisplays();
-    }
-
+//    DestroyWindow();
+    DestroyWindowInternal();
+    CreateNewWindow(m_name, false, res, NULL);
+    window = (NSWindow *)m_appWindow;
+    view = [window contentView];
+    
+    // Show menubar.
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks())
+      [OSXGLWindow SetMenuBarVisible];
+    
     // Assign view from old context, move back to original screen.
     [window setFrameOrigin:last_window_origin];
     // return the mouse bounds in view to prevous size
     [view setFrameSize:last_view_size ];
     [view setFrameOrigin:last_view_origin ];
+    
+    ResizeWindow(last_view_size.width, last_view_size.height, last_window_origin.y, last_window_origin.x);
+    m_fullscreenWillToggle = false;
   }
 
   [window setAllowsConcurrentViewDrawing:YES];
 
-  //ShowHideNSWindow([last_view window], needtoshowme);
-
   // set the toggle flag so that the
   // native "willenterfullscreen" et al callbacks
   // know that they are "called" by xbmc and not osx
-  if (CDarwinUtils::DeviceHasNativeFullscreen())
+//  m_fullscreenWillToggle = true;
+  // toggle cocoa fullscreen mode
+  if ([window respondsToSelector:@selector(toggleFullScreen:)] && m_fullscreenWillToggle)
   {
     m_fullscreenWillToggle = true;
-    // toggle cocoa fullscreen mode
-    if ([(NSWindow*)m_appWindow respondsToSelector:@selector(toggleFullScreen:)])
-    {
-      // does not seem to work, wonder why ?
-      //[(NSWindow*)m_appWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
-      // toggleFullScreen is very nasty and really should be done on main thread
-      [(NSWindow*)m_appWindow performSelectorOnMainThread:@selector(toggleFullScreen) withObject:nil waitUntilDone:NO];
-    }
+    // does not seem to work, wonder why ?
+    //[(NSWindow*)m_appWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
+    // toggleFullScreen is very nasty and really should be done on main thread
+    [window performSelectorOnMainThread:@selector(toggleFullScreen:) withObject:nil waitUntilDone:NO];
   }
-
-  if (CDarwinUtils::DeviceHasNativeFullscreen())
-    ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 
   return true;
 }

@@ -60,4 +60,6 @@
 -(void) rightMouseDragged:(NSEvent *) theEvent;
 -(void) otherMouseDragged:(NSEvent *) theEvent;
 -(void) scrollWheel:(NSEvent *) theEvent;
+
+- (BOOL) canBecomeKeyWindow;
 @end
