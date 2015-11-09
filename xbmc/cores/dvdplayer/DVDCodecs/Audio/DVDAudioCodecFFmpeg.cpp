@@ -19,20 +19,18 @@
  */
 
 #include "DVDAudioCodecFFmpeg.h"
-#ifdef TARGET_POSIX
-#include "linux/XMemUtils.h"
-#endif
-#include "../../DVDStreamInfo.h"
-#include "utils/log.h"
+#include "cores/dvdplayer/DVDStreamInfo.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+#if defined(TARGET_DARWIN_IOS)
+  #include "platform/darwin/DarwinUtils.h"
+#endif
+
 extern "C" {
 #include "libavutil/opt.h"
 }
 
-#include "settings/Settings.h"
-#if defined(TARGET_DARWIN)
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#endif
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
@@ -66,6 +64,12 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
+    return false;
+  }
+
+  if (!CDarwinUtils::AudioCodecLicenseCheck(pCodec->name))
+  {
+    Dispose();
     return false;
   }
 

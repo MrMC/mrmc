@@ -742,4 +742,21 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
   return ret;
 }
 
+bool CDarwinUtils::AudioCodecLicenseCheck(const std::string &name)
+{
+#if defined(TARGET_DARWIN_IOS)
+  // cripple DTS decode under ios/tvos app store (pending license)
+  if (name == "dts" || name == "dca")
+    return false;
+#if !defined(TARGET_DARWIN_TVOS)
+  // cripple AC3/EAC3 decode under ios app store (pending license)
+  if (name == "ac3" || name == "a52")
+    return false;
+  if (name == "eac3")
+    return false;
+#endif
+#endif
+  return true;
+}
+
 #endif
