@@ -790,7 +790,7 @@ bool CGUIWindowPVRBase::UpdateEpgForChannel(CFileItem *item)
 {
   CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
-  CEpg *epg = channel->GetEPG();
+  CEpgPtr epg = channel->GetEPG();
   if (!epg)
     return false;
 

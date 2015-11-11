@@ -185,7 +185,7 @@ void CPVRRecording::Reset(void)
   m_bGotMetaData       = false;
   m_iRecordingId       = 0;
   m_bIsDeleted         = false;
-  m_iEpgEventId        = -1;
+  m_iEpgEventId        = 0;
   m_iSeason            = -1;
   m_iEpisode           = -1;
 

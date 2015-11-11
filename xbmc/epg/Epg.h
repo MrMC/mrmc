@@ -27,6 +27,8 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
+#include <memory>
+
 namespace PVR
 {
   class CPVRChannel;
@@ -35,7 +37,9 @@ namespace PVR
 /** EPG container for CEpgInfoTag instances */
 namespace EPG
 {
-  typedef std::map<unsigned int, CEpg*> EPGMAP;
+  class CEpg;
+  typedef std::shared_ptr<CEpg> CEpgPtr;
+  typedef std::map<unsigned int, CEpgPtr> EPGMAP;
 
   class CEpg : public Observable
   {
@@ -209,7 +213,7 @@ namespace EPG
      * @param uniqueID The unique ID of the event to find.
      * @return The found tag or an empty tag if it wasn't found.
      */
-    CEpgInfoTagPtr GetTag(int uniqueID) const;
+    CEpgInfoTagPtr GetTag(unsigned int uniqueID) const;
 
     /*!
      * @brief Update an entry in this EPG.
@@ -305,6 +309,13 @@ namespace EPG
      * @return True when this EPG is valid and can be updated, false otherwise.
      */
     bool IsValid(void) const;
+
+    /*!
+     * @brief Get all events with a valid broadcast Id
+     * @return the table of events
+     */
+    std::vector<CEpgInfoTagPtr> GetAllEventsWithBroadcastId() const;
+
   protected:
     CEpg(void);
 
