@@ -282,7 +282,7 @@ case $host in
           found_sdk_version=[`$use_xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
           sdk_name=iphoneos$use_sdk
-          platform_min_version="iphoneos-version-min=8.4"
+          platform_min_version="iphoneos-version-min=9.0"
          fi
 	case $use_sdk in
           4.*);;
