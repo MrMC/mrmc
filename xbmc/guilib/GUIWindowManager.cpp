@@ -1324,7 +1324,7 @@ int CGUIWindowManager::GetActiveWindowID()
     iWin = GetTopMostModalDialogID() & WINDOW_ID_MASK;
 
   // If the window is FullScreenVideo check for special cases
-  if (iWin == WINDOW_FULLSCREEN_VIDEO)
+  else if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
     // check if we're in a DVD menu
     if (g_application.m_pPlayer->IsInMenu())
@@ -1333,9 +1333,6 @@ int CGUIWindowManager::GetActiveWindowID()
     else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_LIVETV;
   }
-  // special casing for PVR radio
-  if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-    iWin = WINDOW_FULLSCREEN_RADIO;
 
   // Return the window id
   return iWin;
