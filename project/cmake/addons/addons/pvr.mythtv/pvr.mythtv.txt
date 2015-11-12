@@ -1,1 +1,1 @@
-pvr.mythtv https://github.com/kodi-pvr/pvr.mythtv master
+pvr.mythtv https://github.com/mrmc/pvr.mythtv e83033e9921ded1163e5bb4748355378b7407dcf

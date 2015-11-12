@@ -21,13 +21,13 @@ if(NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
   message(FATAL_ERROR "Could not determine app version! make sure that ${APP_ROOT}/version.txt exists")
 endif()
 
-# in case we need to download something, set KODI_MIRROR to the default if not alread set
-if(NOT DEFINED KODI_MIRROR)
-  set(KODI_MIRROR "http://mirrors.kodi.tv")
+# in case we need to download something, set BUILDDEPENDS_MIRROR to the default if not alread set
+if(NOT DEFINED BUILDDEPENDS_MIRROR)
+  set(BUILDDEPENDS_MIRROR "http://mrmc.tv/mrmc")
 endif()
 
-### copy all the addon binding header files to include/kodi
-# make sure include/kodi exists and is empty
+### copy all the addon binding header files to include/APP_NAME_LC
+# make sure include/mrmc exists and is empty
 set(APP_LIB_DIR ${DEPENDS_PATH}/lib/${APP_NAME_LC})
 if(NOT EXISTS "${APP_LIB_DIR}/")
   file(MAKE_DIRECTORY ${APP_LIB_DIR})
@@ -56,10 +56,10 @@ if(NOT WIN32)
   endif()
 endif()
 
-# generate the proper kodi-config.cmake file
-configure_file(${APP_ROOT}/project/cmake/kodi-config.cmake.in ${APP_LIB_DIR}/kodi-config.cmake @ONLY)
+# generate the proper mrmc-config.cmake file
+configure_file(${APP_ROOT}/project/cmake/mrmc-config.cmake.in ${APP_LIB_DIR}/mrmc-config.cmake @ONLY)
 
-# copy cmake helpers to lib/kodi
+# copy cmake helpers to lib/mrmc
 file(COPY ${APP_ROOT}/project/cmake/scripts/common/addon-helpers.cmake
           ${APP_ROOT}/project/cmake/scripts/common/addoptions.cmake
      DESTINATION ${APP_LIB_DIR})
@@ -67,7 +67,7 @@ file(COPY ${APP_ROOT}/project/cmake/scripts/common/addon-helpers.cmake
 # generate xbmc-config.cmake for backwards compatibility to xbmc
 configure_file(${APP_ROOT}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xbmc-config.cmake @ONLY)
 
-### copy all the addon binding header files to include/kodi
+### copy all the addon binding header files to include/mrmc
 # parse addon-bindings.mk to get the list of header files to copy
 file(STRINGS ${APP_ROOT}/xbmc/addons/addon-bindings.mk bindings)
 string(REPLACE "\n" ";" bindings "${bindings}")
@@ -75,7 +75,7 @@ foreach(binding ${bindings})
   string(REPLACE " =" ";" binding "${binding}")
   string(REPLACE "+=" ";" binding "${binding}")
   list(GET binding 1 header)
-  # copy the header file to include/kodi
+  # copy the header file to include/mrmc
   file(COPY ${APP_ROOT}/${header} DESTINATION ${APP_INCLUDE_DIR})
 
   # auto-generate header files for backwards compatibility to xbmc with deprecation warning
@@ -84,53 +84,12 @@ foreach(binding ${bindings})
   if (NOT EXISTS "${XBMC_INCLUDE_DIR}/${headerfile}")
     file(WRITE ${XBMC_INCLUDE_DIR}/${headerfile}
 "#pragma once
-#define DEPRECATION_WARNING \"Including xbmc/${headerfile} has been deprecated, please use kodi/${headerfile}\"
+#define DEPRECATION_WARNING \"Including xbmc/${headerfile} has been deprecated, please use mrmc/${headerfile}\"
 #ifdef _MSC_VER
   #pragma message(\"WARNING: \" DEPRECATION_WARNING)
 #else
   #warning DEPRECATION_WARNING
 #endif
-#include \"kodi/${headerfile}\"")
+#include \"mrmc/${headerfile}\"")
   endif()
 endforeach()
-
-### on windows we need a "patch" binary to be able to patch 3rd party sources
-if(WIN32)
-  find_program(PATCH_FOUND NAMES patch patch.exe)
-  if(PATCH_FOUND)
-    message(STATUS "patch utility found at ${PATCH_FOUND}")
-  else()
-    set(PATCH_ARCHIVE_NAME "patch-2.5.9-7-bin-1")
-    set(PATCH_ARCHIVE "${PATCH_ARCHIVE_NAME}.zip")
-    set(PATCH_URL "${KODI_MIRROR}/build-deps/win32/${PATCH_ARCHIVE}")
-    set(PATCH_DOWNLOAD ${BUILD_DIR}/download/${PATCH_ARCHIVE})
-
-    # download the archive containing patch.exe
-    message(STATUS "Downloading patch utility from ${PATCH_URL}...")
-    file(DOWNLOAD "${PATCH_URL}" "${PATCH_DOWNLOAD}" STATUS PATCH_DL_STATUS LOG PATCH_LOG SHOW_PROGRESS)
-    list(GET PATCH_DL_STATUS 0 PATCH_RETCODE)
-    if(NOT ${PATCH_RETCODE} EQUAL 0)
-      message(FATAL_ERROR "ERROR downloading ${PATCH_URL} - status: ${PATCH_DL_STATUS} log: ${PATCH_LOG}")
-    endif()
-
-    # extract the archive containing patch.exe
-    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${PATCH_DOWNLOAD}
-                    WORKING_DIRECTORY ${BUILD_DIR})
-
-    # make sure the extraction worked and that patch.exe is there
-    set(PATCH_PATH ${BUILD_DIR}/${PATCH_ARCHIVE_NAME})
-    set(PATCH_BINARY_PATH ${PATCH_PATH}/bin/patch.exe)
-    if(NOT EXISTS ${PATCH_PATH} OR NOT EXISTS ${PATCH_BINARY_PATH})
-      message(FATAL_ERROR "ERROR extracting patch utility from ${PATCH_DOWNLOAD_DIR}")
-    endif()
-
-    # copy patch.exe into the output directory
-    file(INSTALL ${PATCH_BINARY_PATH} DESTINATION ${DEPENDS_PATH}/bin)
-
-    # make sure that cmake can find the copied patch.exe
-    find_program(PATCH_FOUND NAMES patch patch.exe)
-    if(NOT PATCH_FOUND)
-      message(FATAL_ERROR "ERROR installing patch utility from ${PATCH_BINARY_PATH} to ${DEPENDS_PATH}/bin")
-    endif()
-  endif()
-endif()

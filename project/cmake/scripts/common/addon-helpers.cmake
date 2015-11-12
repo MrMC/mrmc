@@ -118,7 +118,7 @@ macro (build_addon target prefix libs)
 endmacro()
 
 # finds a path to a given file (recursive)
-function (kodi_find_path var_name filename search_path strip_file)
+function (mrmc_find_path var_name filename search_path strip_file)
   file(GLOB_RECURSE PATH_TO_FILE ${search_path} ${filename})
   if(strip_file)
     string(REPLACE ${filename} "" PATH_TO_FILE ${PATH_TO_FILE})

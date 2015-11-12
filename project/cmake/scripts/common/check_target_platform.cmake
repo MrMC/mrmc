@@ -44,9 +44,9 @@ function(check_install_permissions install_dir have_perms)
   # param[out] have_perms wether we have permissions to install to install_dir
 
   set(${have_perms} TRUE)
-  execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/lib/kodi
-                  COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/share/kodi
-                  COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/lib/kodi/.cmake-inst-test ${install_dir}/share/kodi/.cmake-inst-test
+  execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/lib/mrmc
+                  COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/share/mrmc
+                  COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/lib/mrmc/.cmake-inst-test ${install_dir}/share/mrmc/.cmake-inst-test
                   RESULT_VARIABLE permtest)
 
   if(${permtest} GREATER 0)
@@ -55,7 +55,7 @@ function(check_install_permissions install_dir have_perms)
   endif()
   set(${have_perms} "${${have_perms}}" PARENT_SCOPE)
 
-  if(EXISTS ${install_dir}/lib/kodi/.cmake-inst-test OR EXISTS ${install_dir}/share/kodi/.cmake-inst-test)
-    file(REMOVE ${install_dir}/lib/kodi/.cmake-inst-test ${install_dir}/share/kodi/.cmake-inst-test)
+  if(EXISTS ${install_dir}/lib/mrmc/.cmake-inst-test OR EXISTS ${install_dir}/share/mrmc/.cmake-inst-test)
+    file(REMOVE ${install_dir}/lib/mrmc/.cmake-inst-test ${install_dir}/share/mrmc/.cmake-inst-test)
   endif()
 endfunction()

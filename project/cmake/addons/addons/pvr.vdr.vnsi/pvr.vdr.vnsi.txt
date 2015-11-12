@@ -1,1 +1,1 @@
-pvr.vdr.vnsi https://github.com/kodi-pvr/pvr.vdr.vnsi master
+pvr.vdr.vnsi https://github.com/mrmc/pvr.vdr.vnsi e7e42401f9aa75993434f3bfb48a8bf051488bc6

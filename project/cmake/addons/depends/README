@@ -1,4 +1,4 @@
-KODI ADDON DEPENDENCIES
+MRMC ADDON DEPENDENCIES
 =======================
 This directory contains the cmake-based buildsystem for addon dependencies. It
 looks into the "common" and the "<platform>/cmake" sub-directories and parses

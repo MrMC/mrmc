@@ -2017,7 +2017,7 @@ OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.kodi.guilib/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.pvr/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES tools/EventClients/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES project/cmake/kodi-config.cmake"
+OUTPUT_FILES="$OUTPUT_FILES project/cmake/mrmc-config.cmake"
 OUTPUT_FILES="$OUTPUT_FILES project/cmake/xbmc-config.cmake"
 
 OUTPUT_FILES="$OUTPUT_FILES xbmc/Makefile"
@@ -2104,7 +2104,7 @@ if test "$use_sse4" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/linux/sse4/Makefile"
 fi
 
-# needed for kodi-config.cmake
+# needed for mrmc-config.cmake
 if echo "$libdir" | grep -q '${exec_prefix}'; then
   if test "${prefix}" = "NONE" || test "${prefix}" = ""; then
     prefix="/usr/local"

@@ -1,4 +1,4 @@
-project(kodi-addons)
+project(mrmc-addons)
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -123,7 +123,7 @@ if(ADDON_SRC_PREFIX)
 endif()
 
 if(NOT APP_LIB_DIR)
-  set(APP_LIB_DIR "${DEPENDS_PATH}/lib/kodi")
+  set(APP_LIB_DIR "${DEPENDS_PATH}/lib/mrmc")
 else()
   file(TO_CMAKE_PATH "${APP_LIB_DIR}" APP_LIB_DIR)
 endif()
@@ -303,8 +303,8 @@ foreach(addon ${addons})
                                    DEPENDERS build
                                    ALWAYS 1)
 
-          # add "kodi-platform" as a dependency to every addon
-          add_dependencies(${id} kodi-platform)
+          # add "mrmc-platform" as a dependency to every addon
+          add_dependencies(${id} mrmc-platform)
 
           set(${id}_DEPENDS_DIR ${SOURCE_DIR}/depends)
 

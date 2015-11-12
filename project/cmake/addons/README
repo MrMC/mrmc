@@ -1,4 +1,4 @@
-KODI ADDONS
+MRMC ADDONS
 ===========
 This directory contains the cmake-based buildsystem for addons. It looks into
 the "addons" sub-directory and parses all *.txt files recursively. Each addon
@@ -46,8 +46,8 @@ specific paths:
   * BUILD_DIR points to the directory where the addons and their dependencies
     will be downloaded and built.
   * PACKAGE_ZIP=ON means that the add-ons will be 'packaged' into a common folder,
-    rather than being placed in <CMAKE_INSTALL_PREFIX>/lib/kodi/addons and
-    <CMAKE_INSTALL_PREFIX>/share/kodi/addons.
+    rather than being placed in <CMAKE_INSTALL_PREFIX>/lib/mrmc/addons and
+    <CMAKE_INSTALL_PREFIX>/share/mrmc/addons.
   * PACKAGE_DIR points to the directory where the ZIP archived addons will be
     stored after they have been packaged (defaults to <BUILD_DIR>/zips)
   * ARCH_DEFINES specifies the platform-specific C/C++ preprocessor defines
