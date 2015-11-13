@@ -122,10 +122,6 @@ static CEvent keyboardFinishedEvent;
     headingW = MIN(self.bounds.size.width/2, headingSize.width+30);
   }
   CGFloat kbHeight = _kbRect.size.width;
-#if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() >= 8.0)
-    kbHeight =_kbRect.size.height;
-#endif
 
   CGFloat y = kbHeight <= 0 ?
     _textField.frame.origin.y : 
