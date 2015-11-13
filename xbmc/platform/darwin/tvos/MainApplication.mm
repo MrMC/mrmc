@@ -32,7 +32,7 @@ MainController *m_xbmcController;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-  PRINT_SIGNATURE();
+//  PRINT_SIGNATURE();
 
   [m_xbmcController pauseAnimation];
   [m_xbmcController becomeInactive];
@@ -48,7 +48,7 @@ MainController *m_xbmcController;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-  PRINT_SIGNATURE();
+//  PRINT_SIGNATURE();
 
   if (application.applicationState == UIApplicationStateBackground)
   {
@@ -59,14 +59,14 @@ MainController *m_xbmcController;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-  PRINT_SIGNATURE();
+//  PRINT_SIGNATURE();
 
   [m_xbmcController stopAnimation];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-  PRINT_SIGNATURE();
+//  PRINT_SIGNATURE();
 }
 
 - (void)screenDidConnect:(NSNotification *)aNotification
