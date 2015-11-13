@@ -11,7 +11,7 @@
 	<key>CFBundleExecutable</key>
 	<string>@APP_NAME@</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.mrmc.tvos.@APP_NAME_LC@</string>
+	<string>tv.mrmc.@APP_NAME_LC@.tvos</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.@APP_VERSION_TAG_LC@</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>r####</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>

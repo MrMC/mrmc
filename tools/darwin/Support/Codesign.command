@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 #this is the list of binaries we have to sign for being able to run un-jailbroken
 LIST_BINARY_EXTENSIONS="dylib so 0 vis pvr"
 
@@ -14,11 +12,11 @@ if [ ! -f ${GEN_ENTITLEMENTS} ]; then
   exit -1
 fi
 
-BUNDLEID="org.mrmc.osx.mrmc"
+BUNDLEID="tv.mrmc.mrmc.osx"
 if [ "${PLATFORM_NAME}" == "iphoneos" ]; then
-  BUNDLEID="org.mrmc.ios.mrmc"
+  BUNDLEID="tv.mrmc.mrmc.ios"
 elif [ "${PLATFORM_NAME}" == "appletvos" ]; then
-  BUNDLEID="org.mrmc.tvos.mrmc"
+  BUNDLEID="tv.mrmc.mrmc.tvos"
 fi
 echo "The BUNDLEID is ${BUNDLEID}"
 echo "${CODE_SIGN_IDENTITY}"

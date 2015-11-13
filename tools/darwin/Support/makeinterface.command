@@ -6,7 +6,7 @@ else
   PATH=$PATH:$XBMC_DEPENDS_ROOT/toolchain/bin
 fi
 
-if [ "$ACTION" = build ] ; then
+if [ "$ACTION" == build ] || [ "$ACTION" == install ] ; then
   make -f ${SRCROOT}/codegenerator.mk
   make -f ${SRCROOT}/xbmc/gen-compileinfo.mk
 fi

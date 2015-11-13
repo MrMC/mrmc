@@ -2,7 +2,7 @@
 
 echo "copy root files"
 
-if [ "$ACTION" = build ] ; then
+if [ "$ACTION" == build ] || [ "$ACTION" == install ] ; then
 
 # for external testing
 #TARGET_NAME=$APP_NAME.app

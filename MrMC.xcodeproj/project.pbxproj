@@ -1693,6 +1693,8 @@
 		F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */; };
 		F5364D34155B3B270016D00B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364D33155B3B270016D00B /* CoreVideo.framework */; };
 		F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364E04155B3CAF0016D00B /* IOSurface.framework */; };
+		F545708B1BF597A100432C6A /* updateversioninfo-ios.command in Resources */ = {isa = PBXBuildFile; fileRef = F545708A1BF597A100432C6A /* updateversioninfo-ios.command */; };
+		F545708C1BF597A100432C6A /* updateversioninfo-ios.command in Resources */ = {isa = PBXBuildFile; fileRef = F545708A1BF597A100432C6A /* updateversioninfo-ios.command */; };
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */; };
 		F558F25613ABCF7800631E12 /* WinEventsOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = F558F25513ABCF7800631E12 /* WinEventsOSX.mm */; };
@@ -4696,6 +4698,11 @@
 		F536166E1B94E61200BD5776 /* sha1.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = sha1.hpp; sourceTree = "<group>"; };
 		F5364D33155B3B270016D00B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		F5364E04155B3CAF0016D00B /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = /System/Library/Frameworks/IOSurface.framework; sourceTree = "<absolute>"; };
+		F54570841BF5947A00432C6A /* Info.plist.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist.in; sourceTree = "<group>"; };
+		F54570851BF5947A00432C6A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F54570881BF5955900432C6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F54570891BF5955900432C6A /* Info.plist.in */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Info.plist.in; sourceTree = "<group>"; };
+		F545708A1BF597A100432C6A /* updateversioninfo-ios.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "updateversioninfo-ios.command"; sourceTree = "<group>"; };
 		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
 		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
 		F5487B4A0FE6F02700E506FD /* StreamDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamDetails.h; sourceTree = "<group>"; };
@@ -8026,6 +8033,7 @@
 				DF3C3D1D1752BED3000989C3 /* genoutputdirlink.command */,
 				DF3C3D1E1752BED3000989C3 /* makeinterface.command */,
 				DF3C3D1F1752BED3000989C3 /* updateversioninfo-osx.command */,
+				F545708A1BF597A100432C6A /* updateversioninfo-ios.command */,
 				E47252BF175115F9001C1AAA /* Codesign.command */,
 			);
 			name = Support;
@@ -8213,6 +8221,8 @@
 				F590452F1BA372A600DB589A /* Default-667h@2x.png */,
 				F59045301BA372A600DB589A /* Default-736h@3x.png */,
 				F59045311BA372A600DB589A /* Default-Landscape-736h@3x.png */,
+				F54570851BF5947A00432C6A /* Info.plist */,
+				F54570841BF5947A00432C6A /* Info.plist.in */,
 				F59045321BA372A600DB589A /* InfoPlist.strings */,
 				F59045351BA372A600DB589A /* IOSEAGLView.h */,
 				F59045361BA372A600DB589A /* IOSEAGLView.mm */,
@@ -8237,6 +8247,8 @@
 			children = (
 				F59045461BA372A600DB589A /* CocoaInterface.h */,
 				F59045471BA372A600DB589A /* CocoaInterface.mm */,
+				F54570881BF5955900432C6A /* Info.plist */,
+				F54570891BF5955900432C6A /* Info.plist.in */,
 				F5D0E1171BA88FCC0070EE9C /* cocoa_monitor.mm */,
 				F59045491BA372A600DB589A /* OSXGLView.h */,
 				F590454A1BA372A600DB589A /* OSXGLView.mm */,
@@ -8527,6 +8539,7 @@
 				E4991087174D0D2600741B6D /* Resources */,
 				E49910C0174D1E5300741B6D /* copy root files */,
 				E49910BF174D1E3500741B6D /* copy frameworks */,
+				F52253171BF5AE380018510C /* update version info */,
 				E49910BD174D1E0700741B6D /* genoutputdirlink */,
 				E49910BE174D1E1E00741B6D /* codesign */,
 			);
@@ -8549,6 +8562,7 @@
 				F5D1424A1BAF0B6D0075A95C /* Resources */,
 				F5D1425E1BAF0B6D0075A95C /* copy root files */,
 				F5D1425F1BAF0B6D0075A95C /* copy frameworks */,
+				F52253181BF5AF3B0018510C /* update version info */,
 				F5D142601BAF0B6D0075A95C /* genoutputdirlink */,
 				F5D142611BAF0B6D0075A95C /* codesign */,
 			);
@@ -8625,6 +8639,7 @@
 				F59045641BA372A600DB589A /* Default-667h@2x.png in Resources */,
 				F59045671BA372A600DB589A /* InfoPlist.strings in Resources */,
 				F59045651BA372A600DB589A /* Default-736h@3x.png in Resources */,
+				F545708B1BF597A100432C6A /* updateversioninfo-ios.command in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8632,6 +8647,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F545708C1BF597A100432C6A /* updateversioninfo-ios.command in Resources */,
 				F5D142B01BAF31FB0075A95C /* InfoPlist.strings in Resources */,
 				F5D142AB1BAF31FB0075A95C /* Assets.xcassets in Resources */,
 			);
@@ -8780,6 +8796,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = tools/darwin/Support/makeinterface.command;
+		};
+		F52253171BF5AE380018510C /* update version info */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "update version info";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "tools/darwin/Support/updateversioninfo-ios.command";
+		};
+		F52253181BF5AF3B0018510C /* update version info */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "update version info";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "tools/darwin/Support/updateversioninfo-ios.command";
 		};
 		F5D13EC61BAF0B6D0075A95C /* Make interfaces */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11740,9 +11784,11 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				PROVISIONING_PROFILE = "";
+				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -11765,9 +11811,11 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -11796,6 +11844,7 @@
 				PRODUCT_NAME = MrMC;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
+				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Debug;
@@ -11822,7 +11871,9 @@
 				PRODUCT_NAME = MrMC;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
+				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = 3;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};

@@ -2,7 +2,7 @@
 
 echo "copy root files"
 
-if [ "$ACTION" = build ] ; then
+if [ "$ACTION" == build ] || [ "$ACTION" == install ] ; then
 
 # for external testing
 TARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION
@@ -19,8 +19,8 @@ SKINSYNC="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cv
 # rsync command for including everything but the skins
 ADDONSYNC="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude addons/skin.mrmc --exclude addons/skin.re-touched --exclude screensaver.rsxs* --exclude visualization.*"
 
-# binary name is MrMC but we build MrMC.bin so to get a clean binary each time
-mv $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME.bin $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME
+# binary name is MrMC but we build MrMC so to get a clean binary each time
+mv $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME
 
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
