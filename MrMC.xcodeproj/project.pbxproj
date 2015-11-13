@@ -2708,7 +2708,6 @@
 		F5D142B31BAF31FB0075A95C /* MainApplication.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D1429D1BAF31FB0075A95C /* MainApplication.mm */; };
 		F5D142B41BAF31FB0075A95C /* MainController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D1429F1BAF31FB0075A95C /* MainController.mm */; };
 		F5D142B51BAF31FB0075A95C /* MainEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A11BAF31FB0075A95C /* MainEAGLView.mm */; };
-		F5D142B61BAF31FB0075A95C /* MainExternalTouchController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A31BAF31FB0075A95C /* MainExternalTouchController.mm */; };
 		F5D142B71BAF31FB0075A95C /* MainKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A51BAF31FB0075A95C /* MainKeyboard.mm */; };
 		F5D142B81BAF31FB0075A95C /* MainKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A71BAF31FB0075A95C /* MainKeyboardView.mm */; };
 		F5D142B91BAF31FB0075A95C /* MainScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A91BAF31FB0075A95C /* MainScreenManager.mm */; };
@@ -4893,8 +4892,6 @@
 		F5D1429F1BAF31FB0075A95C /* MainController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainController.mm; sourceTree = "<group>"; };
 		F5D142A01BAF31FB0075A95C /* MainEAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainEAGLView.h; sourceTree = "<group>"; };
 		F5D142A11BAF31FB0075A95C /* MainEAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainEAGLView.mm; sourceTree = "<group>"; };
-		F5D142A21BAF31FB0075A95C /* MainExternalTouchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainExternalTouchController.h; sourceTree = "<group>"; };
-		F5D142A31BAF31FB0075A95C /* MainExternalTouchController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainExternalTouchController.mm; sourceTree = "<group>"; };
 		F5D142A41BAF31FB0075A95C /* MainKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainKeyboard.h; sourceTree = "<group>"; };
 		F5D142A51BAF31FB0075A95C /* MainKeyboard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainKeyboard.mm; sourceTree = "<group>"; };
 		F5D142A61BAF31FB0075A95C /* MainKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainKeyboardView.h; sourceTree = "<group>"; };
@@ -8395,8 +8392,6 @@
 				F5D1429F1BAF31FB0075A95C /* MainController.mm */,
 				F5D142A01BAF31FB0075A95C /* MainEAGLView.h */,
 				F5D142A11BAF31FB0075A95C /* MainEAGLView.mm */,
-				F5D142A21BAF31FB0075A95C /* MainExternalTouchController.h */,
-				F5D142A31BAF31FB0075A95C /* MainExternalTouchController.mm */,
 				F5D142A41BAF31FB0075A95C /* MainKeyboard.h */,
 				F5D142A51BAF31FB0075A95C /* MainKeyboard.mm */,
 				F5D142A61BAF31FB0075A95C /* MainKeyboardView.h */,
@@ -11314,7 +11309,6 @@
 				F5D141101BAF0B6D0075A95C /* DatabaseUtils.cpp in Sources */,
 				F5D141111BAF0B6D0075A95C /* Environment.cpp in Sources */,
 				F5D141121BAF0B6D0075A95C /* Fanart.cpp in Sources */,
-				F5D142B61BAF31FB0075A95C /* MainExternalTouchController.mm in Sources */,
 				F5D141131BAF0B6D0075A95C /* FileOperationJob.cpp in Sources */,
 				F5D141141BAF0B6D0075A95C /* FileUtils.cpp in Sources */,
 				F5D141151BAF0B6D0075A95C /* GLUtils.cpp in Sources */,

@@ -31,7 +31,6 @@
   unsigned int  _screenIdx;
   bool _externalScreen;
   MainEAGLView *_glView;
-  MainExternalTouchController *_externalTouchController;
 }
 @property (readonly, getter=GetScreenIdx)unsigned int  _screenIdx;
 @property (readonly, getter=isExternalScreen)bool _externalScreen;
@@ -49,10 +48,6 @@
 + (CGRect)  getLandscapeResolution:(UIScreen *)screen;
 // fades the screen from black back to full alpha after delaySecs seconds
 - (void)    fadeFromBlack:(CGFloat) delaySecs;
-// returns true if switching to screenIdx will change from internal to external screen
-- (bool)    willSwitchToExternal:(unsigned int) screenIdx;
-// returns true if switching to screenIdx will change from external to internal screen
-- (bool)    willSwitchToInternal:(unsigned int) screenIdx;
 // singleton access
 + (id)      sharedInstance;
 @end

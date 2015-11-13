@@ -36,7 +36,6 @@
 #import "platform/darwin/tvos/MainScreenManager.h"
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/MainEAGLView.h"
-#import "platform/darwin/tvos/MainExternalTouchController.h"
 
 const CGFloat timeSwitchingToExternalSecs = 6.0;
 const CGFloat timeSwitchingToInternalSecs = 2.0;
@@ -148,21 +147,8 @@ static CEvent screenChangeEvent;
 // - fade back from black
 - (void) changeScreenSelector:(NSDictionary *)dict
 {
-  bool activateExternalTouchController = false;
   int screenIdx = [[dict objectForKey:@"screenIdx"] intValue];
   UIScreenMode *mode = [dict objectForKey:@"screenMode"];
-
-  if([self willSwitchToInternal:screenIdx] && _externalTouchController != nil)
-  {
-    [_externalTouchController release];
-    _externalTouchController = nil;
-  }
-
-  if([self willSwitchToExternal:screenIdx])
-  {
-    activateExternalTouchController = true;
-  }
-
 
   [UIView animateWithDuration:timeFadeSecs delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
     [_glView setAlpha:0.0];
@@ -170,10 +156,6 @@ static CEvent screenChangeEvent;
   completion:^(BOOL finished)
   {
     [self setScreen:screenIdx withMode:mode];
-    if(activateExternalTouchController)
-    {
-      _externalTouchController = [[MainExternalTouchController alloc] init];
-    }
   }];
 }
 //--------------------------------------------------------------
@@ -213,24 +195,6 @@ static CEvent screenChangeEvent;
   return true;
 }
 //--------------------------------------------------------------
-- (bool) willSwitchToExternal:(unsigned int) screenIdx
-{
-  if(_screenIdx == 0 && screenIdx != _screenIdx)
-  {
-    return true;
-  }
-  return false;
-}
-//--------------------------------------------------------------
-- (bool) willSwitchToInternal:(unsigned int) screenIdx
-{
-  if(_screenIdx != 0 && screenIdx == 0)
-  {
-    return true;
-  }
-  return false;
-}
-//--------------------------------------------------------------
 + (CGRect) getLandscapeResolution:(UIScreen *)screen
 {
   CGRect res = [screen bounds];
@@ -267,10 +231,6 @@ static CEvent screenChangeEvent;
 //--------------------------------------------------------------
 - (void) dealloc
 {
-  if(_externalTouchController != nil )
-  {
-    [_externalTouchController release];
-  }
   [super dealloc];
 }
 //--------------------------------------------------------------
