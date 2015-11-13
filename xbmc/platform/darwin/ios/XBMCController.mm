@@ -1179,5 +1179,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //  LOG(@"default: %@", [notification name]);
 //  LOG(@"userInfo: %@", [notification userInfo]);
 }
+- (BOOL)shouldAutorotate
+{
+  UIInterfaceOrientation orient = [[UIApplication sharedApplication] statusBarOrientation];
+  
+  return (orient == UIInterfaceOrientationLandscapeLeft ||
+          orient == UIInterfaceOrientationLandscapeRight);
+}
 
+-(NSUInteger)supportedInterfaceOrientations
+{
+  return UIInterfaceOrientationMaskLandscape;
+}
 @end
