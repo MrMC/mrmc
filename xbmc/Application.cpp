@@ -431,10 +431,7 @@ bool CApplication::Create()
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str()))
   {
-    std::string lcAppName = CCompileInfo::GetAppName();
-    StringUtils::ToLower(lcAppName);
-    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.%s (%s)\n", lcAppName.c_str(),
-      CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
+    fprintf(stderr,"Could not init logging classes. Log folder error (%s)\n", CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
     return false;
   }
 
@@ -521,7 +518,7 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Local hostname: %s", hostname.c_str());
   std::string lowerAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lowerAppName);
-  CLog::Log(LOGNOTICE, "Log File is located: %s%s.log", g_advancedSettings.m_logFolder.c_str(), lowerAppName.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %s/%s.log", g_advancedSettings.m_logFolder.c_str(), lowerAppName.c_str());
   CRegExp::LogCheckUtf8Support();
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
@@ -920,11 +917,11 @@ bool CApplication::InitDirectoriesOSX()
     // home and masterprofile locations
     CSpecialProtocol::SetHomePath(userHome);
     CSpecialProtocol::SetMasterProfilePath(userHome + "/userdata");
+    CSpecialProtocol::SetLogsPath(CDarwinUtils::GetUserLogDirectory());
+    g_advancedSettings.m_logFolder = "special://logs";
 
     // temp files location
     CSpecialProtocol::SetTempPath(CDarwinUtils::GetUserTempDirectory());
-    // xbmc.log file location
-    g_advancedSettings.m_logFolder = CDarwinUtils::GetUserLogDirectory();
 
     CreateUserDirs();
   }
@@ -946,6 +943,7 @@ void CApplication::CreateUserDirs()
   CDirectory::Create("special://home/system");
   CDirectory::Create("special://masterprofile/");
   CDirectory::Create("special://temp/");
+  CDirectory::Create("special://logs");
   CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
 }
 

@@ -79,6 +79,11 @@ void CSpecialProtocol::SetTempPath(const std::string &dir)
   SetPath("temp", dir);
 }
 
+void CSpecialProtocol::SetLogsPath(const std::string &dir)
+{
+  SetPath("logs", dir);
+}
+
 bool CSpecialProtocol::ComparePath(const std::string &path1, const std::string &path2)
 {
   return TranslatePath(path1) == TranslatePath(path2);
@@ -158,6 +163,7 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
            RootDir == "home" ||
            RootDir == "userhome" ||
            RootDir == "temp" ||
+           RootDir == "logs" ||
            RootDir == "profile" ||
            RootDir == "masterprofile" ||
            RootDir == "frameworks")
@@ -250,6 +256,7 @@ void CSpecialProtocol::LogPaths()
   CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
   CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
+  CLog::Log(LOGNOTICE, "special://logs/ is mapped to: %s", GetPath("logs").c_str());
   //CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
   if (!CUtil::GetFrameworksPath().empty())
     CLog::Log(LOGNOTICE, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());

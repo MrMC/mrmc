@@ -432,7 +432,7 @@ void CAdvancedSettings::Initialize()
   m_extraLogLevels = 0;
 
   #if defined(TARGET_DARWIN)
-    m_logFolder = CDarwinUtils::GetUserLogDirectory();
+    m_logFolder = "special://logs";
   #else
     m_logFolder = "special://home/";              // log file location
   #endif

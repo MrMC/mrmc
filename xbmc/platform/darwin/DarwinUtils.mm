@@ -422,7 +422,6 @@ const char* CDarwinUtils::GetUserLogDirectory(void)
       appLogFolder = URIUtils::AddFileToFolder(getenv("HOME"), "Library");
     #endif
     appLogFolder = URIUtils::AddFileToFolder(appLogFolder, "logs");
-    mkdir(appLogFolder.c_str(), 0755);
     // stupid log directory wants a ending slash
     URIUtils::AddSlashAtEnd(appLogFolder);
   }
