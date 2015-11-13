@@ -108,6 +108,7 @@
 #endif
   [videolayer removeFromSuperlayer];
   self.videolayer = nullptr;
+  [super dealloc];
 }
 
 #if MCSAMPLEBUFFER_DEBUG_MESSAGES

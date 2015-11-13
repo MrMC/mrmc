@@ -64,7 +64,7 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel setTextAlignment:NSTextAlignmentCenter];
     [descriptionLabel setContentMode:UIViewContentModeCenter];
     //setup multiline behaviour
-    [descriptionLabel setLineBreakMode:(NSLineBreakMode)UILineBreakModeTailTruncation];
+    [descriptionLabel setLineBreakMode:(NSLineBreakMode)NSLineBreakByTruncatingTail];
 
     [descriptionLabel setNumberOfLines:5];
     std::string descText    = g_localizeStrings.Get(34404) + "\n";
@@ -110,8 +110,6 @@ const CGFloat timeFadeSecs                    = 2.0;
     [_internalWindow setScreen:[UIScreen mainScreen]];
     [_internalWindow makeKeyAndVisible];
     [_internalWindow setRootViewController:self];
-
-    [self setWantsFullScreenLayout:YES];
 
     [self startSleepTimer];//will fade from black too
   }
@@ -333,19 +331,20 @@ const CGFloat timeFadeSecs                    = 2.0;
   [super dealloc];  
 }
 //--------------------------------------------------------------
-// - iOS6 rotation API - will be called on iOS7 runtime!--------
-- (NSUInteger)supportedInterfaceOrientations
-{
-  // mask defines available as of ios6 sdk
-  //return UIInterfaceOrientationMaskAll;
-  return (1 << UIInterfaceOrientationLandscapeLeft) | (1 << UIInterfaceOrientationLandscapeRight) |
-  (1 << UIInterfaceOrientationPortraitUpsideDown) | (1 << UIInterfaceOrientationPortrait);
-}
 - (BOOL)shouldAutorotate
 {
   _startup = false;
-  return [self shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)[[UIDevice currentDevice] orientation]];
+  UIInterfaceOrientation orient = [[UIApplication sharedApplication] statusBarOrientation];
+  
+  return (orient == UIInterfaceOrientationLandscapeLeft ||
+          orient == UIInterfaceOrientationLandscapeRight);
 }
+
+-(NSUInteger)supportedInterfaceOrientations
+{
+  return UIInterfaceOrientationMaskLandscape;
+}
+
 // - old rotation API will be called on iOS6 and lower - removed in iOS7
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 { 
