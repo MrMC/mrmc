@@ -108,7 +108,9 @@
 #endif
   [videolayer removeFromSuperlayer];
   self.videolayer = nullptr;
-  [super dealloc];
+#if !defined(TARGET_DARWIN_TVOS)
+  [super dealloc]; // we need this for IOS, not for TVOS
+#endif
 }
 
 #if MCSAMPLEBUFFER_DEBUG_MESSAGES
