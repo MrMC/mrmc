@@ -1770,7 +1770,7 @@
 		F5A7B37E113AFB900059D6AA /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
 		F5A7B42C113CBB950059D6AA /* AddonsDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B42B113CBB950059D6AA /* AddonsDirectory.cpp */; };
 		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
-		F5AA30F11BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; };
+		F5AA30F11BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		F5AA30F21BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		F5AA30FA1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */; };
 		F5AA30FB1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */; };

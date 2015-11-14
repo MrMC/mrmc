@@ -107,10 +107,6 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVSampleBufferDisplayLayerFailedToDecodeNotification object:videoLayer];
 #endif
   [videolayer removeFromSuperlayer];
-  self.videolayer = nullptr;
-#if !defined(TARGET_DARWIN_TVOS)
-  [super dealloc]; // we need this for IOS, not for TVOS
-#endif
 }
 
 #if MCSAMPLEBUFFER_DEBUG_MESSAGES
