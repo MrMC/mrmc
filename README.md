@@ -6,7 +6,7 @@ MrMC is an open source (GPL), multiple platform, software media player for digit
 
 ##### Installation
 
-See [docs/README.xxx] (https://github.com/davilla/mrmc/tree/master/docs) for specific platform build information.
+See [docs/README.xxx] (https://github.com/mrmc/mrmc/tree/master/docs) for specific platform build information.
 
 ##### Quick MrMC development links
 
@@ -17,6 +17,6 @@ See [docs/README.xxx] (https://github.com/davilla/mrmc/tree/master/docs) for spe
 
 ##### Useful links
 
-* [MrMC wiki] FEEDME
-* [MrMC community forums] FEEDME
-* [MrMC website] FEEDME
+* [MrMC wiki] http://mrmc.tv/wiki/
+* [MrMC community forums] http://mrmc.tv/forum/
+* [MrMC website] http://mrmc.tv/
