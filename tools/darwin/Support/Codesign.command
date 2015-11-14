@@ -7,7 +7,7 @@ echo "${CODE_SIGN_IDENTITY}"
 echo "${CODESIGNING_FOLDER_PATH}"
 
 # pull the CFBundleIdentifier out of the built xxx.app
-BUNDLEID=`mdls -raw -name kMDItemCFBundleIdentifier ${CODESIGNING_FOLDER_PATH}`
+BUNDLEID=`mdls -name kMDItemCFBundleIdentifier ${CODESIGNING_FOLDER_PATH} -raw `
 echo "CFBundleIdentifier is ${BUNDLEID}"
 
 # codesign the internal items that will be missed when bundle is signed by xcode
