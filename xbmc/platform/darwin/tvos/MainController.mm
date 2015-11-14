@@ -375,7 +375,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   // even if we hold down for a long time. UITapGestureRecognizer
   // will eat the ending on long holds and we never see it.
   auto upRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(gameControllerUpArrowPressed:)];
+    initWithTarget: self action: @selector(IRRemoteUpArrowPressed:)];
   upRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeUpArrow]];
   upRecognizer.minimumPressDuration = 0.01;
   upRecognizer.delegate = self;
@@ -383,7 +383,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [upRecognizer release];
 
   auto downRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(gameControllerDownArrowPressed:)];
+    initWithTarget: self action: @selector(IRRemoteDownArrowPressed:)];
   downRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeDownArrow]];
   downRecognizer.minimumPressDuration = 0.01;
   downRecognizer.delegate = self;
@@ -391,7 +391,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [downRecognizer release];
 
   auto leftRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(gameControllerLeftArrowPressed:)];
+    initWithTarget: self action: @selector(IRRemoteLeftArrowPressed:)];
   leftRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeLeftArrow]];
   leftRecognizer.minimumPressDuration = 0.01;
   leftRecognizer.delegate = self;
@@ -399,7 +399,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [leftRecognizer release];
 
   auto rightRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(gameControllerRightArrowPressed:)];
+    initWithTarget: self action: @selector(IRRemoteRightArrowPressed:)];
   rightRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
   rightRecognizer.minimumPressDuration = 0.01;
   rightRecognizer.delegate = self;
@@ -467,7 +467,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (void)selectPressed:(UITapGestureRecognizer *)sender
 {
-  switch (sender.state) {
+  switch (sender.state)
+  {
     case UIGestureRecognizerStateBegan:
       self.m_holdCounter = 0;
       self.m_holdTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(incrementCounter) userInfo:nil repeats:YES];
@@ -501,7 +502,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 }
 
 //--------------------------------------------------------------
-- (IBAction)gameControllerUpArrowPressed:(UIGestureRecognizer *)sender
+- (IBAction)IRRemoteUpArrowPressed:(UIGestureRecognizer *)sender
 {
   //PRINT_SIGNATURE();
   if (sender.state == UIGestureRecognizerStateBegan) {
@@ -518,7 +519,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
 }
 //--------------------------------------------------------------
-- (IBAction)gameControllerDownArrowPressed:(UIGestureRecognizer *)sender
+- (IBAction)IRRemoteDownArrowPressed:(UIGestureRecognizer *)sender
 {
   //PRINT_SIGNATURE();
   if (sender.state == UIGestureRecognizerStateBegan) {
@@ -535,7 +536,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
 }
 //--------------------------------------------------------------
-- (IBAction)gameControllerLeftArrowPressed:(UIGestureRecognizer *)sender
+- (IBAction)IRRemoteLeftArrowPressed:(UIGestureRecognizer *)sender
 {
   //PRINT_SIGNATURE();
   if (sender.state == UIGestureRecognizerStateBegan) {
@@ -552,7 +553,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
 }
 //--------------------------------------------------------------
-- (IBAction)gameControllerRightArrowPressed:(UIGestureRecognizer *)sender
+- (IBAction)IRRemoteRightArrowPressed:(UIGestureRecognizer *)sender
 {
   //PRINT_SIGNATURE();
   if (sender.state == UIGestureRecognizerStateBegan) {
@@ -721,7 +722,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-
 
   [self createPanGestureRecognizers];
   [self createPressGesturecognizers];
