@@ -1477,6 +1477,7 @@ void CAdvancedSettings::OnJobComplete(unsigned int jobID, bool success, CJob *jo
   }
   if(m_busyDialog)
     m_busyDialog->Close();
+  // tell home window to update recently added
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
   CJobQueue::OnJobComplete(jobID, success, job);
 }
