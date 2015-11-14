@@ -1693,8 +1693,6 @@
 		F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */; };
 		F5364D34155B3B270016D00B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364D33155B3B270016D00B /* CoreVideo.framework */; };
 		F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364E04155B3CAF0016D00B /* IOSurface.framework */; };
-		F545708B1BF597A100432C6A /* updateversioninfo-ios.command in Resources */ = {isa = PBXBuildFile; fileRef = F545708A1BF597A100432C6A /* updateversioninfo-ios.command */; };
-		F545708C1BF597A100432C6A /* updateversioninfo-ios.command in Resources */ = {isa = PBXBuildFile; fileRef = F545708A1BF597A100432C6A /* updateversioninfo-ios.command */; };
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */; };
 		F558F25613ABCF7800631E12 /* WinEventsOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = F558F25513ABCF7800631E12 /* WinEventsOSX.mm */; };
@@ -8579,10 +8577,10 @@
 				LastUpgradeCheck = 0710;
 				TargetAttributes = {
 					E4991088174D0D2600741B6D = {
-						DevelopmentTeam = 5CY78AG2Q7;
+						DevelopmentTeam = 8U6WVDN2Q6;
 					};
 					F5D13EC51BAF0B6D0075A95C = {
-						DevelopmentTeam = 5CY78AG2Q7;
+						DevelopmentTeam = 8U6WVDN2Q6;
 					};
 				};
 			};
@@ -8634,7 +8632,6 @@
 				F59045641BA372A600DB589A /* Default-667h@2x.png in Resources */,
 				F59045671BA372A600DB589A /* InfoPlist.strings in Resources */,
 				F59045651BA372A600DB589A /* Default-736h@3x.png in Resources */,
-				F545708B1BF597A100432C6A /* updateversioninfo-ios.command in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8642,7 +8639,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F545708C1BF597A100432C6A /* updateversioninfo-ios.command in Resources */,
 				F5D142B01BAF31FB0075A95C /* InfoPlist.strings in Resources */,
 				F5D142AB1BAF31FB0075A95C /* Assets.xcassets in Resources */,
 			);
@@ -11771,8 +11767,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Scott Davilla (FMV8PXPEJ8)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Scott Davilla (FMV8PXPEJ8)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_BITCODE = NO;
@@ -11781,6 +11777,7 @@
 				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PROVISIONING_PROFILE = "";
 				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -11798,8 +11795,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Scott Davilla (FMV8PXPEJ8)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Scott Davilla (FMV8PXPEJ8)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = NO;
@@ -11807,6 +11804,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_STYLE = "non-global";
@@ -11825,8 +11823,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Scott Davilla (FMV8PXPEJ8)";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer: Scott Davilla (FMV8PXPEJ8)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_BITCODE = YES;
@@ -11835,6 +11833,7 @@
 				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = MrMC;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
@@ -11853,8 +11852,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Scott Davilla (FMV8PXPEJ8)";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer: Scott Davilla (FMV8PXPEJ8)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = YES;
@@ -11862,6 +11861,7 @@
 				GCC_C_LANGUAGE_STANDARD = c11;
 				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = MrMC;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
