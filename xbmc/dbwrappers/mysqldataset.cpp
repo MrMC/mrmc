@@ -118,6 +118,8 @@ int MysqlDatabase::connect(bool create_new) {
 
     if (conn == NULL) {
       conn = mysql_init(conn);
+      unsigned int conn_timeout=2;
+      mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &conn_timeout);
       mysql_ssl_set(
         conn, 
         key.empty() ? NULL : key.c_str(), 
