@@ -456,12 +456,17 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (void)menuPressed:(UITapGestureRecognizer *)sender
 {
-  //PRINT_SIGNATURE();
-  if (sender.state == UIGestureRecognizerStateBegan) {
-    //NSLog(@"button pressed  - menu");
-  } else if (sender.state == UIGestureRecognizerStateEnded) {
-    //NSLog(@"button released - menu");
-    [self sendKeyDownUp:XBMCK_ESCAPE];
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+      break;
+    case UIGestureRecognizerStateChanged:
+      break;
+    case UIGestureRecognizerStateEnded:
+      [self sendKeyDownUp:XBMCK_ESCAPE];
+      break;
+    default:
+      break;
   }
 }
 //--------------------------------------------------------------
@@ -492,81 +497,90 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 
 - (void)playPausePressed:(UITapGestureRecognizer *) sender
 {
-  //PRINT_SIGNATURE();
-  if (sender.state == UIGestureRecognizerStateBegan) {
-    //NSLog(@"button pressed  - playPause");
-  } else if (sender.state == UIGestureRecognizerStateEnded) {
-    //NSLog(@"button released - playPause");
-    [self sendKeyDownUp:XBMCK_SPACE];
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+      break;
+    case UIGestureRecognizerStateChanged:
+      break;
+    case UIGestureRecognizerStateEnded:
+      [self sendKeyDownUp:XBMCK_SPACE];
+      break;
+    default:
+      break;
   }
 }
 
 //--------------------------------------------------------------
 - (IBAction)IRRemoteUpArrowPressed:(UIGestureRecognizer *)sender
 {
-  //PRINT_SIGNATURE();
-  if (sender.state == UIGestureRecognizerStateBegan) {
-    //NSLog(@"button pressed   - UpArrow");
-    [self startKeyPressTimer:XBMCK_UP];
-  } else if (sender.state == UIGestureRecognizerStateChanged) {
-    //NSLog(@"button changed - UpArrow");
-  } else if (sender.state == UIGestureRecognizerStateCancelled) {
-    //NSLog(@"button cancelled - UpArrow");
-  } else if (sender.state == UIGestureRecognizerStateEnded) {
-    //NSLog(@"button released  - UpArrow");
-    [self stopKeyPressTimer];
-    [self sendKeyUp:XBMCK_UP];
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+      [self startKeyPressTimer:XBMCK_UP];
+      break;
+    case UIGestureRecognizerStateChanged:
+      break;
+    case UIGestureRecognizerStateEnded:
+      [self stopKeyPressTimer];
+      [self sendKeyUp:XBMCK_UP];
+      break;
+    default:
+      break;
   }
 }
 //--------------------------------------------------------------
 - (IBAction)IRRemoteDownArrowPressed:(UIGestureRecognizer *)sender
 {
-  //PRINT_SIGNATURE();
-  if (sender.state == UIGestureRecognizerStateBegan) {
-    //NSLog(@"button pressed   - DownArrow");
-    [self startKeyPressTimer:XBMCK_DOWN];
-  } else if (sender.state == UIGestureRecognizerStateChanged) {
-    //NSLog(@"button changed   - DownArrow");
-  } else if (sender.state == UIGestureRecognizerStateCancelled) {
-    //NSLog(@"button cancelled - DownArrow");
-  } else if (sender.state == UIGestureRecognizerStateEnded) {
-    //NSLog(@"button released  - DownArrow");
-    [self stopKeyPressTimer];
-    [self sendKeyUp:XBMCK_DOWN];
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+      [self startKeyPressTimer:XBMCK_DOWN];
+      break;
+    case UIGestureRecognizerStateChanged:
+      break;
+    case UIGestureRecognizerStateEnded:
+      [self stopKeyPressTimer];
+      [self sendKeyUp:XBMCK_DOWN];
+      break;
+    default:
+      break;
   }
 }
 //--------------------------------------------------------------
 - (IBAction)IRRemoteLeftArrowPressed:(UIGestureRecognizer *)sender
 {
-  //PRINT_SIGNATURE();
-  if (sender.state == UIGestureRecognizerStateBegan) {
-    //NSLog(@"button pressed   - LeftArrow");
-    [self startKeyPressTimer:XBMCK_LEFT];
-  } else if (sender.state == UIGestureRecognizerStateChanged) {
-    //NSLog(@"button changed   - LeftArrow");
-  } else if (sender.state == UIGestureRecognizerStateCancelled) {
-    //NSLog(@"button cancelled - LeftArrow");
-  } else if (sender.state == UIGestureRecognizerStateEnded) {
-    //NSLog(@"button released  - LeftArrow");
-    [self stopKeyPressTimer];
-    [self sendKeyUp:XBMCK_LEFT];
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+      [self startKeyPressTimer:XBMCK_LEFT];
+      break;
+    case UIGestureRecognizerStateChanged:
+      break;
+    case UIGestureRecognizerStateEnded:
+      [self stopKeyPressTimer];
+      [self sendKeyUp:XBMCK_LEFT];
+      break;
+    default:
+      break;
   }
 }
 //--------------------------------------------------------------
 - (IBAction)IRRemoteRightArrowPressed:(UIGestureRecognizer *)sender
 {
-  //PRINT_SIGNATURE();
-  if (sender.state == UIGestureRecognizerStateBegan) {
-    //NSLog(@"button pressed   - RightArrow");
-    [self startKeyPressTimer:XBMCK_RIGHT];
-  } else if (sender.state == UIGestureRecognizerStateChanged) {
-    //NSLog(@"button changed   - RightArrow");
-  } else if (sender.state == UIGestureRecognizerStateCancelled) {
-    //NSLog(@"button cancelled - RightArrow");
-  } else if (sender.state == UIGestureRecognizerStateEnded) {
-    //NSLog(@"button released  - RightArrow");
-    [self stopKeyPressTimer];
-    [self sendKeyUp:XBMCK_RIGHT];
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+      [self startKeyPressTimer:XBMCK_RIGHT];
+      break;
+    case UIGestureRecognizerStateChanged:
+      break;
+    case UIGestureRecognizerStateEnded:
+      [self stopKeyPressTimer];
+      [self sendKeyUp:XBMCK_RIGHT];
+      break;
+    default:
+      break;
   }
 }
 //--------------------------------------------------------------
@@ -574,64 +588,70 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 {
   //PRINT_SIGNATURE();
   if (m_appAlive == YES) //NO GESTURES BEFORE WE ARE UP AND RUNNING
-  { 
-    CGPoint velocity = [sender velocityInView:m_glView];
+  {
     XBMCKey key;
-    if ([sender state] == UIGestureRecognizerStateBegan)
+    CGPoint velocity = [sender velocityInView:m_glView];
+    switch (sender.state)
     {
-      CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-      point.x *= m_screenScale;
-      point.y *= m_screenScale;
-      m_touchBeginSignaled = false;
-      m_lastGesturePoint = point;
-    }
-
-    if ([sender state] == UIGestureRecognizerStateChanged)
-    {
-      CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-      point.x *= m_screenScale;
-      point.y *= m_screenScale;
-      CGFloat yMovement = point.y - m_lastGesturePoint.y;
-      CGFloat xMovement = point.x - m_lastGesturePoint.x;
-      
-      if (!m_touchBeginSignaled)
+      case UIGestureRecognizerStateBegan:
       {
-        CGFloat xSlop = 100 * (1000 / m_screensize.width);
-        CGFloat ySlop = 100 * (1000 / m_screensize.height);
-        if (fabs(xMovement) > xSlop || fabs(yMovement) > ySlop)
-        {
-          if ((fabs(xMovement) > fabs(yMovement)) && (fabs(velocity.x) > fabs(velocity.y)))
-          {
-            //x axis
-            if (xMovement > 0.0f)
-              //left > right
-              key = XBMCK_RIGHT;
-            else
-              //right > left
-              key = XBMCK_LEFT;
-          }
-          else
-          {
-            // y axis
-            if (yMovement > 0.0f)
-              // up > down
-              key = XBMCK_DOWN;
-            else
-              // down > up
-              key = XBMCK_UP;
-          }
-          m_touchBeginSignaled = true;
-          [self startKeyPressTimer:key];
-        }
+        CGPoint point    = [sender locationOfTouch:0 inView:m_glView];
+        point.x *= m_screenScale;
+        point.y *= m_screenScale;
+        m_touchBeginSignaled = false;
+        m_lastGesturePoint = point;
+        break;
       }
-    }
-    
-    if (m_touchBeginSignaled &&
-       ([sender state] == UIGestureRecognizerStateEnded || [sender state] == UIGestureRecognizerStateCancelled))
-    {
-      m_touchBeginSignaled = false;
-      [self stopKeyPressTimer];
-      [self sendKeyUp:key];
+      case UIGestureRecognizerStateChanged:
+      {
+        CGPoint point    = [sender locationOfTouch:0 inView:m_glView];
+        point.x *= m_screenScale;
+        point.y *= m_screenScale;
+        CGFloat yMovement = point.y - m_lastGesturePoint.y;
+        CGFloat xMovement = point.x - m_lastGesturePoint.x;
+        if (!m_touchBeginSignaled)
+        {
+          CGFloat xSlop = 100 * (1000 / m_screensize.width);
+          CGFloat ySlop = 100 * (1000 / m_screensize.height);
+          if (fabs(xMovement) > xSlop || fabs(yMovement) > ySlop)
+          {
+            if ((fabs(xMovement) > fabs(yMovement)) && (fabs(velocity.x) > fabs(velocity.y)))
+            {
+              //x axis
+              if (xMovement > 0.0f)
+                //left > right
+                key = XBMCK_RIGHT;
+              else
+                //right > left
+                key = XBMCK_LEFT;
+            }
+            else
+            {
+              // y axis
+              if (yMovement > 0.0f)
+                // up > down
+                key = XBMCK_DOWN;
+              else
+                // down > up
+                key = XBMCK_UP;
+            }
+            m_touchBeginSignaled = true;
+            [self startKeyPressTimer:key];
+          }
+        }
+        break;
+      }
+      case UIGestureRecognizerStateEnded:
+      case UIGestureRecognizerStateCancelled:
+        if (m_touchBeginSignaled)
+        {
+          m_touchBeginSignaled = false;
+          [self stopKeyPressTimer];
+          [self sendKeyUp:key];
+        }
+        break;
+      default:
+        break;
     }
   }
 }
