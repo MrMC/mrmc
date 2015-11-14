@@ -28,6 +28,7 @@
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/JobManager.h"
+#include "dialogs/GUIDialogBusy.h"
 
 class CVariant;
 
@@ -395,7 +396,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
 
     static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data);
     void setInetrnalMYSQL(const bool enable, const bool init);
+  protected:
+    virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   private:
+    CGUIDialogBusy* m_busyDialog;
     std::string m_musicExtensions;
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };

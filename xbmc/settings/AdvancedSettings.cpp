@@ -30,7 +30,6 @@
 #include "Application.h"
 #include "DatabaseManager.h"
 #include "GUIInfoManager.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 
 #include "network/DNSNameCache.h"
@@ -64,8 +63,7 @@ using namespace XFILE;
 class CAdvancedSettingsJob: public CJob
 {
 public:
-  CAdvancedSettingsJob(CGUIDialogBusy* dialog)
-  : m_dialog(dialog)
+  CAdvancedSettingsJob()
   {
   }
   virtual ~CAdvancedSettingsJob()
@@ -74,19 +72,23 @@ public:
   virtual bool DoWork()
   {
     CDatabaseManager::GetInstance().Initialize();
-    g_infoManager.ResetCache();
-    g_infoManager.ResetLibraryBools();
-    m_dialog->Close();
-    return true;
+    CVideoDatabase videoDB;
+    if(videoDB.Open())
+    {
+      videoDB.Close();
+      g_infoManager.ResetCache();
+      g_infoManager.ResetLibraryBools();
+      return true;
+    }
+    return false;
   }
-private:
-  CGUIDialogBusy* m_dialog;
 };
 
 CAdvancedSettings::CAdvancedSettings()
 {
   m_initialized = false;
   m_fullScreen = false;
+  m_busyDialog = NULL;
 }
 
 void CAdvancedSettings::OnSettingsLoaded()
@@ -1446,10 +1448,30 @@ void CAdvancedSettings::setInetrnalMYSQL(const bool enable, const bool init)
   // if we load it from start, application.cpp will initialize it anyway
   if (init)
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Open();
+     m_busyDialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if (m_busyDialog)
+      m_busyDialog->Open();
     //spin off new job, keep it moving
-    AddJob(new CAdvancedSettingsJob(dialog));
+    AddJob(new CAdvancedSettingsJob());
   }
+}
+
+void CAdvancedSettings::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{  
+  if (!success)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(16033), g_localizeStrings.Get(36024), 10000, true);
+    const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
+    ((CSettingBool*)mysqlSetting)->SetValue(false);
+    // we failed to set MySQL, use sqlite and init it
+    m_databaseMusic.Reset();
+    m_databaseVideo.Reset();
+    CDatabaseManager::GetInstance().Initialize();
+    g_infoManager.ResetCache();
+    g_infoManager.ResetLibraryBools();
+  }
+  if(m_busyDialog)
+    m_busyDialog->Close();
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
+  CJobQueue::OnJobComplete(jobID, success, job);
 }
