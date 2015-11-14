@@ -944,3 +944,5 @@ xbmc/main/posix/Makefile
 
 /pvr-addons
 /adsp-addons
+xbmc/platform/darwin/ios/IOS-Info.plist
+xbmc/cores/avfplayer
