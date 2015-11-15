@@ -743,18 +743,29 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
 
 bool CDarwinUtils::AudioCodecLicenseCheck(const std::string &name)
 {
-#if defined(TARGET_DARWIN_IOS)
-  // cripple DTS decode under ios/tvos app store (pending license)
-  if (name == "dts" || name == "dca")
-    return false;
-#if !defined(TARGET_DARWIN_TVOS)
-  // cripple AC3/EAC3 decode under ios app store (pending license)
-  if (name == "ac3" || name == "a52")
-    return false;
-  if (name == "eac3")
-    return false;
-#endif
-#endif
+  NSString *tzName = [[NSTimeZone systemTimeZone] name];
+  NSArray *tzNames = @[@"America/Adak", @"America/Anchorage", @"America/Boise", @"America/Chicago", @"America/Denver", @"America/Detroit", @"America/Indiana/Indianapolis", @"America/Indiana/Knox", @"America/Indiana/Marengo", @"America/Indiana/Petersburg", @"America/Indiana/Tell_City", @"America/Indiana/Vevay", @"America/Indiana/Vincennes", @"America/Indiana/Winamac", @"America/Juneau", @"America/Kentucky/Louisville", @"America/Kentucky/Monticello", @"America/Los_Angeles", @"America/Menominee", @"America/Metlakatla", @"America/New_York", @"America/Nome", @"America/North_Dakota/Beulah", @"America/North_Dakota/Center", @"America/North_Dakota/New_Salem", @"America/Phoenix", @"America/Puerto_Rico", @"America/Shiprock", @"America/Sitka", @"America/St_Thomas", @"America/Thule", @"America/Yakutat", @"Pacific/Guam", @"Pacific/Honolulu", @"Pacific/Johnston", @"Pacific/Kwajalein", @"Pacific/Midway", @"Pacific/Pago_Pago", @"Pacific/Saipan", @"Pacific/Wake"];
+
+  if ([tzNames containsObject:tzName] || [[tzName stringByDeletingLastPathComponent] isEqualToString:@"US"])
+  {
+  #if defined(TARGET_DARWIN_IOS)
+    // cripple DTS decode under ios/tvos app store (pending license)
+    if (name == "dts" ||
+        name == "dca" ||
+        name == "dtshd")
+      return false;
+    #if !defined(TARGET_DARWIN_TVOS)
+      // cripple AC3/EAC3 decode under ios app store (pending license)
+      if (name == "ac3" ||
+          name == "a52" ||
+          name == "ac-3"||
+          name == "eac3"||
+          name == "truehd")
+        return false;
+    #endif
+  #endif
+  }
+
   return true;
 }
 
