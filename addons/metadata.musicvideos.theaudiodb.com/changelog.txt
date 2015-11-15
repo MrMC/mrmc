@@ -1,3 +1,6 @@
+[B]2.0.0[/B]
+- rebrand and add MrMC API key
+
 [B]1.2.7[/B]
 - Fixed: Allow for apostrophes in artist/title
 

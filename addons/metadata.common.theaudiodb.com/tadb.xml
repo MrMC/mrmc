@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scraperfunctions>
 	<GetTADBArtistThumbsByID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistThumbs&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistThumbs&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBArtistThumbsByID>
 	<GetTADBArtistThumbsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistThumbs&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistThumbs&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistThumbsByMBID>
@@ -23,12 +23,12 @@
 	</ParseTADBArtistThumbs>
 
 	<GetTADBArtistFanartsByID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistFanarts&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistFanarts&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBArtistFanartsByID>
 	<GetTADBArtistFanartsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistFanarts&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistFanarts&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistFanartsByMBID>
@@ -51,12 +51,12 @@
 	</ParseTADBArtistFanarts>
 
 	<GetTADBBiographyByID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBBiography&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBBiography&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBBiographyByID>
 	<GetTADBBiographyByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBBiography&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBBiography&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBBiographyByMBID>
@@ -94,7 +94,7 @@
 	</ParseTADBBiography>
 
 	<GetTADBFMFallbackBiographyByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackBiography&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackBiography&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBFMFallbackBiographyByMBID>
@@ -114,12 +114,12 @@
 	</ParseTADBFallbackBiography>
 
 	<GetTADBDiscographyByID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBDiscography&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBDiscography&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBDiscographyByID>
 	<GetTADBDiscographyByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBDiscography&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/discography-mb.php?s=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBDiscography&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/discography-mb.php?s=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBDiscographyByMBID>
@@ -136,12 +136,12 @@
 	</ParseTADBDiscography>
 
 	<GetTADBLifeSpanByID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBLifeSpan&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBLifeSpan&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBLifeSpanByID>
 	<GetTADBLifeSpanByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBLifeSpan&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBLifeSpan&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBLifeSpanByMBID>
@@ -185,7 +185,7 @@
 	</ParseTADBLifeSpan>
 
 	<GetTADBFallbackLifeSpanByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackLifeSpan&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackLifeSpan&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBFallbackLifeSpanByMBID>
@@ -220,12 +220,12 @@
 	</ParseTADBFallbackLifeSpan>
 
 	<GetTADBArtistGenresByID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistGenresByID>
 	<GetTADBArtistGenresByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistGenresByMBID>
@@ -260,7 +260,7 @@
 	</ParseTADBArtistGenres>
 
 	<GetTADBFallbackArtistGenresByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBFallbackArtistGenresByMBID>
@@ -277,12 +277,12 @@
 	</ParseTADBFallbackArtistGenres>
 
 	<GetTADBArtistMoodsByID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistMoods&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistMoods&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistMoodsByID>
 	<GetTADBArtistMoodsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistMoods&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistMoods&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistMoodsByMBID>
@@ -317,7 +317,7 @@
 	</ParseTADBArtistMoods>
 
 	<GetTADBFallbackArtistMoodsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackArtistMoods&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackArtistMoods&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBFallbackArtistMoodsByMBID>
@@ -334,12 +334,12 @@
 	</ParseTADBFallbackArtistMoods>
 
 	<GetTADBArtistStylesByID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistStyles&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistStyles&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistStylesByID>
 	<GetTADBArtistStylesByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistStyles&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistStyles&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistStylesByMBID>
@@ -374,7 +374,7 @@
 	</ParseTADBArtistStyles>
 
 	<GetTADBFallbackArtistStylesByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackArtistStyles&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackArtistStyles&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBFallbackArtistStylesByMBID>
@@ -391,12 +391,12 @@
 	</ParseTADBFallbackArtistStyles>
 
 	<GetTADBAlbumReviewByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumReview&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumReview&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumReviewByID>
 	<GetTADBAlbumReviewByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumReview&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumReview&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumReviewByMBID>
@@ -413,12 +413,12 @@
 	</ParseTADBAlbumReview>
 
 	<GetTADBAlbumRating dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumRating&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumRating&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumRating>
 	<GetTADBAlbumRatingByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumRating&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumRating&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumRatingByMBID>
@@ -432,7 +432,7 @@
 	</ParseTADBAlbumRating>
 
 	<GetTADBAlbumTitleByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumTitle&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumTitle&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumTitleByID>
@@ -446,7 +446,7 @@
 	</ParseTADBAlbumTitle>
 
 	<GetTADBAlbumArtistByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumArtist&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumArtist&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumArtistByID>
@@ -460,12 +460,12 @@
 	</ParseTADBAlbumArtist>
 
 	<GetTADBAlbumDateByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumDate&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumDate&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumDateByID>
 	<GetTADBAlbumDateByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumDate&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumDate&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumDateByMBID>
@@ -479,12 +479,12 @@
 	</ParseTADBAlbumDate>
 
 	<GetTADBAlbumGenresByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumGenres&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumGenres&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumGenresByID>
 	<GetTADBAlbumGenresByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumGenres&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumGenres&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumGenresByMBID>
@@ -498,12 +498,12 @@
 	</ParseTADBAlbumGenres>
 
 	<GetTADBAlbumMoodsByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumMoods&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumMoods&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumMoodsByID>
 	<GetTADBAlbumMoodsByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumMoods&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumMoods&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumMoodsByMBID>
@@ -517,12 +517,12 @@
 	</ParseTADBAlbumMoods>
 
 	<GetTADBAlbumStylesByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumStyles&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumStyles&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumStylesByID>
 	<GetTADBAlbumStylesByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumStyles&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumStyles&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumStylesByMBID>
@@ -536,7 +536,7 @@
 	</ParseTADBAlbumStyles>
 
 	<GetTADBAlbumTracksByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumTracks&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/track.php?m=\1&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumTracks&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/track.php?m=\1&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumTracksByID>
@@ -550,12 +550,12 @@
 	</ParseTADBAlbumTracks>
 
 	<GetTADBAlbumThumbsByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumThumbs&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumThumbs&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumThumbsByID>
 	<GetTADBAlbumThumbsByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumThumbs&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumThumbs&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/1134167510258925390035/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumThumbsByMBID>
