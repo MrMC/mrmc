@@ -469,13 +469,12 @@
 			<visible>IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
 			<control type="image">
 				<description>Background End image</description>
-				<left>0</left>
+				<left>145</left>
 				<top>0</top>
 				<width>35</width>
 				<height>35</height>
 				<colordiffuse>CCFFFFFF</colordiffuse>
 				<texture flipy="true" border="0,5,0,0" flipx="true">HomeSubEnd.png</texture>
-				<animation effect="slide" start="0,0" end="145,0" time="0" condition="StringCompare(2,2)">Conditional</animation>
 			</control>
 			<control type="group" id="600">
 				<left>180</left>
