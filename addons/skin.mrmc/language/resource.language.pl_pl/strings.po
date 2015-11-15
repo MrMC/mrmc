@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/kodi-main/language/pl_PL/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/MrMC-main/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -461,7 +461,7 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]KONFIGURACJA SYSTEMU[/B][CR][CR]Wyświetlanie obrazu · Odtwarzanie dźwięku · Urządzenia wejściowe · Internet[CR]Oszczędzanie energii · Diagnostyka · Kontrola dostępu"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
 msgstr "[B]KONFIGURACJA DODATKÓW[/B][CR][CR]Zarządzanie zainstalowanymi dodatkami · Przeglądanie i instalacja dodatków[CR]Modyfikacja ustawień dodatków"
 
 msgctxt "#31409"
@@ -469,7 +469,7 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]KONFIGURACJA TELEWIZJI[/B][CR][CR]Menu ekranowe · Przewodnik · Nagrywanie · Kontrola rodzicielska"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURACJA USŁUG[/B][CR][CR]Zdalne sterowanie przez uPnP i HTTP · Współdzielenie plików[CR]Aktywacja Zeroconf · Ustawienia AirPlay"
 
 msgctxt "#31411"
@@ -489,7 +489,7 @@ msgid "Login"
 msgstr "Logowanie"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
+msgid "Select your MrMC user profile[CR]to login and continue"
 msgstr "Wybierz profil użytkownika[CR]do zalogowania, aby kontynuować"
 
 msgctxt "#31422"

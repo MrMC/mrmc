@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/kodi-main/language/zh_CN/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/MrMC-main/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -461,16 +461,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]设置系统选项[/B][CR][CR]设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电选项 · 启用调试 · 设置主机锁定"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
-msgstr "[B]设置插件功能[/B][CR][CR]管理你安装的插件 · 在 kodi.tv 浏览并安装插件 · 修改插件设置"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
+msgstr "[B]设置插件功能[/B][CR][CR]管理你安装的插件 · 在 MrMC.tv 浏览并安装插件 · 修改插件设置"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]设置直播电视[/B][CR][CR]更改全屏信息 · 管理电子节目单数据设置"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]设置网络服务[/B][CR][CR]设置通过 UPnP 和 HTTP 控制 Kodi · 配置文件共享[CR]启用 Zeroconf · 设置 AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]设置网络服务[/B][CR][CR]设置通过 UPnP 和 HTTP 控制 MrMC · 配置文件共享[CR]启用 Zeroconf · 设置 AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,7 +489,7 @@ msgid "Login"
 msgstr "登录"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
+msgid "Select your MrMC user profile[CR]to login and continue"
 msgstr "选择您的用户配置文件[CR]登录并继续"
 
 msgctxt "#31422"

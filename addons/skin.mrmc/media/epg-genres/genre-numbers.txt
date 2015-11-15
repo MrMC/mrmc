@@ -1,4 +1,4 @@
-Genre Numbers set internally by Kodi
+Genre Numbers set internally by MrMC
 
 0 = other/unknown
 16 = moviedrama

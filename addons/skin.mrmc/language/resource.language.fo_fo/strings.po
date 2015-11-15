@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Faroese (Faroe Islands) (http://www.transifex.com/projects/p/kodi-main/language/fo_FO/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Faroese (Faroe Islands) (http://www.transifex.com/projects/p/MrMC-main/language/fo_FO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -221,8 +221,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]STILLINGAR FYRI SKIPAN[/B][CR][CR]Set upp og stilla skermar · Stilla ljóð · Stilla fjarstýringar[CR]Stilla streymsparing · Tendra debugging · Áset høvuðslás"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]STILLA TÆNASTUR[/B][CR][CR]Áset stýring av Kodi umvegis UPnP ella HTTP · Stilla fíludeiling[CR]Tendra Zeroconf · Stilla AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]STILLA TÆNASTUR[/B][CR][CR]Áset stýring av MrMC umvegis UPnP ella HTTP · Stilla fíludeiling[CR]Tendra Zeroconf · Stilla AirPlay"
 
 msgctxt "#31502"
 msgid "TV"

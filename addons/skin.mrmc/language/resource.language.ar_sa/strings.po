@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/kodi-main/language/ar_SA/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/MrMC-main/language/ar_SA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -253,8 +253,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]ضبط إعدادات النظام[/B][CR][CR]ضبط ومعايره طُرُق العرض - ضبط مخارج الصوت - ضبط التحكم عن بعد[CR]ضبط إعدادات توفير الطاقه - ضبط وضع المعالجه - ضبط القفل الرئيسى"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "تكوين إعدادات الخدمة [B/][CR][CR] إعداد التحكم بـKodi عبر UPnP و HTTP. نكوين مشاركة ملف [CR] تمكن  Zeroconf. تكوين التشغيل الحي "
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "تكوين إعدادات الخدمة [B/][CR][CR] إعداد التحكم بـMrMC عبر UPnP و HTTP. نكوين مشاركة ملف [CR] تمكن  Zeroconf. تكوين التشغيل الحي "
 
 msgctxt "#31413"
 msgid "Local subtitle available"

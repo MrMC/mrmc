@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/kodi-main/language/ta_IN/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/MrMC-main/language/ta_IN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -193,8 +193,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]தொலைக்காட்சி அமைப்புகள் கட்டமைப்பு[/B][CR][CR]முழுத்திரை தகவல் மாற்று · EPG தரவு அமைப்புகள் மேலாண்மை"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]சேவை அமைப்புகள் கட்டமைப்பு[/B][CR][CR]UPnP மற்றும் HTTP வழியாக Kodiஅமைப்பு கட்டுப்பாடு  · கோப்பு பகிர்வு கட்டமைப்பு[CR]Zeroconf செயல்படுத்த · AirPlay கட்டமைப்பு"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]சேவை அமைப்புகள் கட்டமைப்பு[/B][CR][CR]UPnP மற்றும் HTTP வழியாக MrMCஅமைப்பு கட்டுப்பாடு  · கோப்பு பகிர்வு கட்டமைப்பு[CR]Zeroconf செயல்படுத்த · AirPlay கட்டமைப்பு"
 
 msgctxt "#31413"
 msgid "Local subtitle available"

@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Croatian (Croatia) (http://www.transifex.com/projects/p/kodi-main/language/hr_HR/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Croatian (Croatia) (http://www.transifex.com/projects/p/MrMC-main/language/hr_HR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -261,8 +261,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]PRILAGODITE TV POSTAVKE[/B][CR][CR]Promjenite informacije cijelog zaslona · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG)"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]PRILAGODITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje Kodijem putem UPnP-a i HTTP-a · Prilagodite dijeljenje datoteka[CR]Omogućite Zeroconf · Prilagodite AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]PRILAGODITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje MrMCjem putem UPnP-a i HTTP-a · Prilagodite dijeljenje datoteka[CR]Omogućite Zeroconf · Prilagodite AirPlay"
 
 msgctxt "#31413"
 msgid "Local subtitle available"

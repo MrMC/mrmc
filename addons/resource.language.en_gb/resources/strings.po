@@ -1,12 +1,12 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/kodi-main/language/en_GB/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/MrMC-main/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -61,7 +61,7 @@ msgstr ""
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#6"
-msgid "Kodi SVN"
+msgid "MrMC SVN"
 msgstr ""
 
 #: Used in Confluence
@@ -75,7 +75,7 @@ msgstr ""
 
 #: Unknown
 msgctxt "#9"
-msgid "Kodi media center"
+msgid "MrMC media center"
 msgstr ""
 
 #empty string with id 10
@@ -2121,7 +2121,7 @@ msgid "Audio options"
 msgstr ""
 
 msgctxt "#482"
-msgid "About Kodi"
+msgid "About MrMC"
 msgstr ""
 
 #empty strings from id 483 to 484
@@ -6757,7 +6757,7 @@ msgstr ""
 
 #: system/settings/darwin.xml
 msgctxt "#13602"
-msgid "Allow start of Kodi using the remote"
+msgid "Allow start of MrMC using the remote"
 msgstr ""
 
 #: system/settings/darwin.xml
@@ -9348,7 +9348,7 @@ msgid "Enter the name of the new channel"
 msgstr ""
 
 msgctxt "#19209"
-msgid "Kodi virtual backend"
+msgid "MrMC virtual backend"
 msgstr ""
 
 msgctxt "#19210"
@@ -9619,7 +9619,7 @@ msgid "No PVR add-ons could be found"
 msgstr ""
 
 msgctxt "#19272"
-msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit http://kodi.wiki/view/PVR to learn more."
+msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit http://MrMC.wiki/view/PVR to learn more."
 msgstr ""
 
 #empty strings from id 19273 to 19274
@@ -10313,7 +10313,7 @@ msgid "Screenshots"
 msgstr ""
 
 msgctxt "#20009"
-msgid "Use Kodi"
+msgid "Use MrMC"
 msgstr ""
 
 #empty string with id 20010
@@ -13785,16 +13785,16 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr ""
 
-#. Info dialog after migrating userdata from xbmc to kodi
+#. Info dialog after migrating userdata from xbmc to MrMC
 #: xbmc/Application.cpp
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr ""
 
-#. Info dialog after migrating userdata from xbmc to kodi
+#. Info dialog after migrating userdata from xbmc to MrMC
 #: xbmc/Application.cpp
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgid "The configuration of XBMC has been moved to the new location for MrMC. Please refer to http://MrMC.wiki/view/Migration - this message will not be shown again!"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -16803,10 +16803,10 @@ msgctxt "#36416"
 msgid "Specify the type of remote used."
 msgstr ""
 
-#. Description of setting "System -> Input Devices -> Allow start of Kodi with remote" with label #13602
+#. Description of setting "System -> Input Devices -> Allow start of MrMC with remote" with label #13602
 #: system/settings/settings.xml
 msgctxt "#36417"
-msgid "Always run a Kodi helper so that the remote can be used to start Kodi."
+msgid "Always run a MrMC helper so that the remote can be used to start MrMC."
 msgstr ""
 
 #. Description of setting "System -> Input Devices -> Sequence delay time" with label #13603

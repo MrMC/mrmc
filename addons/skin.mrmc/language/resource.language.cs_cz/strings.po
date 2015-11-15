@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/kodi-main/language/cs_CZ/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/MrMC-main/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -461,16 +461,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Nastavení úsporného režimu · Povolení informací o ladění · Rodičovský zámek"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
-msgstr "[B]KONFIGURACE DOPLŇKŮ[/B][CR][CR]Spravujte Vaše instalované doplňky. Prohlížejte a instalujte doplňky z kodi.tv[CR]Upravujte nastavení doplňků"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
+msgstr "[B]KONFIGURACE DOPLŇKŮ[/B][CR][CR]Spravujte Vaše instalované doplňky. Prohlížejte a instalujte doplňky z MrMC.tv[CR]Upravujte nastavení doplňků"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ TELEVIZNÍHO PŘEHRÁVÁNÍ[/B][CR][CR]Změna zobrazení přes celou obrazovku · Nastavení EPG dat"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání Kodi skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolení zeroconf · Nastavení AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání MrMC skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolení zeroconf · Nastavení AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,8 +489,8 @@ msgid "Login"
 msgstr "Přihlášení"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Vyberte Váš Kodi uživatelský profil[CR]pro přihlášení a pokračování"
+msgid "Select your MrMC user profile[CR]to login and continue"
+msgstr "Vyberte Váš MrMC uživatelský profil[CR]pro přihlášení a pokračování"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

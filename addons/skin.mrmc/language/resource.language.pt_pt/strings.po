@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/kodi-main/language/pt_PT/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/MrMC-main/language/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -301,8 +301,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]CONFIGURAR DEFINIÇÕES DE TV[/B][CR][CR]Definir informação em ecrã cheio · Gerir definições de dados do EPG"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURAR DEFINIÇÕES DE SERVIÇOS[/B][CR][CR]Configurar controlo do Kodi via UPnP e HTTP · Configurar partilha de ficheiros[CR]Activar ZeroConf · Configurar AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE SERVIÇOS[/B][CR][CR]Configurar controlo do MrMC via UPnP e HTTP · Configurar partilha de ficheiros[CR]Activar ZeroConf · Configurar AirPlay"
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -314,7 +314,7 @@ msgstr "Iniciar sessão"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
-msgstr "Mostrar ou ocultar o ecrã de início de sessão ao iniciar o Kodi"
+msgstr "Mostrar ou ocultar o ecrã de início de sessão ao iniciar o MrMC"
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."

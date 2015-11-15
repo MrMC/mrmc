@@ -317,7 +317,7 @@
 					<info>system.memory(used)</info>
 				</control>
 				<control type="grouplist">
-					<description>Kodi build version</description>
+					<description>MrMC build version</description>
 					<itemgap>50</itemgap>
 					<top>450</top>
 					<left>0</left>
@@ -333,7 +333,7 @@
 						<font>font13_title</font>
 					</control>
 					<control type="label" id="52">
-						<description>Kodi Build Version</description>
+						<description>MrMC Build Version</description>
 						<left>90</left>
 						<top>450</top>
 						<width>auto</width>
@@ -350,7 +350,7 @@
 					<left>0</left>
 					<orientation>horizontal</orientation>
 					<control type="label">
-						<description>kodi Compiled Text</description>
+						<description>MrMC Compiled Text</description>
 						<width>auto</width>
 						<height>25</height>
 						<label>$LOCALIZE[174]</label>
@@ -359,7 +359,7 @@
 						<font>font13_title</font>
 					</control>
 					<control type="label" id="53">
-						<description>Kodi Build Date</description>
+						<description>MrMC Build Date</description>
 						<width>auto</width>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>

@@ -1,15 +1,15 @@
-# Kodi Media Center language file
+# MrMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team Kodi
+# Addon Provider: Jezz_X, Team MrMC
 msgid ""
 msgstr ""
-"Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Project-Id-Version: MrMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Russian (Russia) (http://www.transifex.com/projects/p/kodi-main/language/ru_RU/)\n"
+"Last-Translator: MrMC Translation Team\n"
+"Language-Team: Russian (Russia) (http://www.transifex.com/projects/p/MrMC-main/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -461,16 +461,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СИСТЕМЫ[/B][CR][CR]Настройка и калибровка дисплеев • Настройка вывода аудио • Настройка[CR]дистанционного управления • Настройка параметров энергосбережения • Включение отладки • Настройка блокировки"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
-msgstr "[B]КОНФИГУРАЦИЯ ДОПОЛНЕНИЙ[/B][CR][CR]Управление дополнениями - Поиск и установка дополнений с kodi.tv[CR]Настройки дополнений"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
+msgstr "[B]КОНФИГУРАЦИЯ ДОПОЛНЕНИЙ[/B][CR][CR]Управление дополнениями - Поиск и установка дополнений с MrMC.tv[CR]Настройки дополнений"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ТВ[/B][CR][CR]Настройка полноэкранной информации · Настройка отображения EPG"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СЛУЖБ[/B][CR][CR]Настройка управления Kodi по UPnP и HTTP • Настройка доступа к файлам[CR]Включение Zeroconf • Настройка AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СЛУЖБ[/B][CR][CR]Настройка управления MrMC по UPnP и HTTP • Настройка доступа к файлам[CR]Включение Zeroconf • Настройка AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,8 +489,8 @@ msgid "Login"
 msgstr "Вход"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Выберите профиль пользователя Kodi,[CR]чтобы войти и продолжить"
+msgid "Select your MrMC user profile[CR]to login and continue"
+msgstr "Выберите профиль пользователя MrMC,[CR]чтобы войти и продолжить"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
