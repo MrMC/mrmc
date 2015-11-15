@@ -789,37 +789,6 @@ AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd g
 AC_CHECK_SIZEOF([int])
 AC_CHECK_SIZEOF([size_t])
 
-# Check for intrinsics
-AC_MSG_CHECKING([for __sync_add_and_fetch(temp, 1)])
-AC_TRY_LINK([],[long* temp=0; long ret=__sync_add_and_fetch(temp, 1);],
-                [have_builtin_sync_add_and_fetch=yes],
-                [have_builtin_sync_add_and_fetch=no])
-AC_MSG_RESULT($have_builtin_sync_add_and_fetch)
-if test "x$have_builtin_sync_add_and_fetch" = "xyes"; then
-    AC_DEFINE(HAS_BUILTIN_SYNC_ADD_AND_FETCH, 1,
-        [Define to 1 if your compiler supports the __sync_add_and_fetch() intrinsic.])
-fi
-
-AC_MSG_CHECKING([for __sync_sub_and_fetch(temp, 1)])
-AC_TRY_LINK([],[long* temp=0; long ret=__sync_sub_and_fetch(temp, 1);],
-                [have_builtin_sync_sub_and_fetch=yes],
-                [have_builtin_sync_sub_and_fetch=no])
-AC_MSG_RESULT($have_builtin_sync_sub_and_fetch)
-if test "x$have_builtin_sync_sub_and_fetch" = "xyes"; then
-    AC_DEFINE(HAS_BUILTIN_SYNC_SUB_AND_FETCH, 1,
-        [Define to 1 if your compiler supports the __sync_sub_and_fetch() intrinsic.])
-fi
-
-AC_MSG_CHECKING([for __sync_val_compare_and_swap(temp, 1, 1)])
-AC_TRY_LINK([],[long *temp = 0; long ret=__sync_val_compare_and_swap(temp, 1, 1);],
-                [have_builtin_sync_val_compare_and_swap=yes],
-                [have_builtin_sync_val_compare_and_swap=no])
-AC_MSG_RESULT($have_builtin_sync_val_compare_and_swap)
-if test "x$have_builtin_sync_val_compare_and_swap" = "xyes"; then
-    AC_DEFINE(HAS_BUILTIN_SYNC_VAL_COMPARE_AND_SWAP, 1,
-        [Define to 1 if your compiler supports the __sync_val_compare_and_swap() intrinsic.])
-fi
-
 # Check for u16string/u32string declarations
 AC_LANG_PUSH([C++])
 AC_CHECK_TYPES([std::u16string, std::u32string], [], [], [[#include <string>]])
