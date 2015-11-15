@@ -240,10 +240,9 @@ void CSettingConditions::Initialize()
 #ifdef HAS_LIBSTAGEFRIGHT
   m_simpleConditions.insert("have_libstagefrightdecoder");
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
   m_simpleConditions.insert("have_videotoolboxdecoder");
-  if (g_sysinfo.HasVideoToolBoxDecoder())
-    m_simpleConditions.insert("hasvideotoolboxdecoder");
+  m_simpleConditions.insert("hasvideotoolboxdecoder");
 #endif
 #ifdef TARGET_DARWIN_OSX
   m_simpleConditions.insert("HasVDA");

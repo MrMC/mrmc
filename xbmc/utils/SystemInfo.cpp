@@ -1002,15 +1002,6 @@ std::string CSysInfo::GetBuildDate()
   return StringUtils::Format("%s", __DATE__);
 }
 
-bool CSysInfo::HasVideoToolBoxDecoder()
-{
-#if defined(HAVE_VIDEOTOOLBOXDECODER)
-  return true;
-#else
-  return false;
-#endif
-}
-
 std::string CSysInfo::GetBuildTargetPlatformName(void)
 {
 #if defined(TARGET_DARWIN_OSX)

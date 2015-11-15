@@ -115,7 +115,6 @@ public:
   static std::string GetBuildDate();
 
   bool HasInternet();
-  bool HasVideoToolBoxDecoder();
   bool IsAeroDisabled();
   bool HasHW3DInterlaced();
   static bool IsWindowsVersion(WindowsVersion ver);

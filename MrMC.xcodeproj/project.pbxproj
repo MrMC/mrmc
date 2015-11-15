@@ -2529,7 +2529,6 @@
 		F5D141951BAF0B6D0075A95C /* LinuxRendererGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4991588174E68D700741B6D /* LinuxRendererGLES.cpp */; };
 		F5D141961BAF0B6D0075A95C /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; };
 		F5D141971BAF0B6D0075A95C /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
-		F5D141981BAF0B6D0075A95C /* DVDVideoCodecVideoToolBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */; };
 		F5D141991BAF0B6D0075A95C /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
 		F5D1419A1BAF0B6D0075A95C /* yuv2rgb.neon.S in Sources */ = {isa = PBXBuildFile; fileRef = E4991595174E70BF00741B6D /* yuv2rgb.neon.S */; };
 		F5D1419B1BAF0B6D0075A95C /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
@@ -11441,7 +11440,6 @@
 				F5D141951BAF0B6D0075A95C /* LinuxRendererGLES.cpp in Sources */,
 				F5D141961BAF0B6D0075A95C /* DVDCodecUtils.cpp in Sources */,
 				F5D141971BAF0B6D0075A95C /* DVDFactoryCodec.cpp in Sources */,
-				F5D141981BAF0B6D0075A95C /* DVDVideoCodecVideoToolBox.cpp in Sources */,
 				F5D141991BAF0B6D0075A95C /* fstrcmp.c in Sources */,
 				F5D1419A1BAF0B6D0075A95C /* yuv2rgb.neon.S in Sources */,
 				F5D1419B1BAF0B6D0075A95C /* FavouritesDirectory.cpp in Sources */,
