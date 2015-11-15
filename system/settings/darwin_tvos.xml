@@ -80,6 +80,7 @@
       </group>
       <group id="2">
         <setting id="input.enablemouse">
+          <default>false</default>
           <visible>false</visible>
         </setting>
       </group>
