@@ -750,8 +750,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)viewWillAppear:(BOOL)animated
 {
   //PRINT_SIGNATURE();
-  // move this later into CocoaPowerSyscall
-  [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
   [self resumeAnimation];
   [super viewWillAppear:animated];
 }
@@ -767,8 +765,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 {  
   //PRINT_SIGNATURE();
   [self pauseAnimation];
-  // move this later into CocoaPowerSyscall
-  [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
   [super viewWillDisappear:animated];
 }
 //--------------------------------------------------------------
@@ -837,10 +833,14 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (void)disableScreenSaver
 {
+  if ([UIApplication sharedApplication].idleTimerDisabled == NO)
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 //--------------------------------------------------------------
 - (void)enableScreenSaver
 {
+  if ([UIApplication sharedApplication].idleTimerDisabled == YES)
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 //--------------------------------------------------------------
 - (bool)changeScreen:(unsigned int)screenIdx withMode:(UIScreenMode *)mode

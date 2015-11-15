@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
+  <section id="appearance">
+    <category id="screensaver">
+      <visible>false</visible>
+      <group id="1">
+        <setting id="screensaver.mode">
+          <default></default>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="screensaver.usemusicvisinstead">
+          <default>false</default>
+        </setting>
+        <setting id="screensaver.usedimonpause">
+          <default>false</default>
+        </setting>
+      </group>
+    </category>
+  </section>
   <section id="videos">
     <category id="videoplayer">
       <group id="3">

@@ -3821,6 +3821,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STARTED:
     {
 #ifdef TARGET_DARWIN_IOS
+      if (m_pPlayer->IsPlayingVideo())
+        CDarwinUtils::EnableOSScreenSaver(false);
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       CPlayList playList = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
@@ -3908,6 +3910,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
 #ifdef TARGET_DARWIN_IOS
+      CDarwinUtils::EnableOSScreenSaver(true);
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       // first check if we still have items in the stack to play

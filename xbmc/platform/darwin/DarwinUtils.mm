@@ -34,6 +34,9 @@
   #import <UIKit/UIKit.h>
   #import <mach/mach_host.h>
   #import <sys/sysctl.h>
+  #if defined(TARGET_DARWIN_TVOS)
+    #import "platform/darwin/tvos/MainController.h"
+  #endif
 #else
   #import <Cocoa/Cocoa.h>
   #import <CoreFoundation/CoreFoundation.h>
@@ -537,6 +540,16 @@ int CDarwinUtils::BatteryLevel(void)
 #endif
 #endif
   return batteryLevel * 100;  
+}
+
+void CDarwinUtils::EnableOSScreenSaver(bool enable)
+{
+#if defined(TARGET_DARWIN_TVOS)
+  if (enable)
+    [g_xbmcController enableScreenSaver];
+  else
+    [g_xbmcController disableScreenSaver];
+#endif
 }
 
 void CDarwinUtils::SetScheduling(int message)
