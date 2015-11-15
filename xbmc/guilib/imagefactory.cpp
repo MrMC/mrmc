@@ -51,3 +51,19 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 
   return NULL;
 }
+
+IImage* ImageFactory::CreateLoaderFromProbe(unsigned char* buffer, size_t size)
+{
+  if (size <= 5)
+    return NULL;
+  if (buffer[1] == 'P' && buffer[2] == 'N' && buffer[3] == 'G')
+    return new CPngIO();
+  if (buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF)
+    // don't include the last APP0 byte (0xE0), as some (non-conforming) JPEG/JFIF files might have some other
+    // APPn-specific data here, and we should skip over this.
+    return new CJpegIO();
+  if (buffer[0] == 'G' && buffer[1] == 'I' && buffer[2] == 'F')
+    return new CGifIO();
+
+  return NULL;
+}

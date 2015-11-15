@@ -31,4 +31,5 @@ public:
   static IImage* CreateLoader(const std::string& strFileName);
   static IImage* CreateLoader(const CURL& url);
   static IImage* CreateLoaderFromMimeType(const std::string& strMimeType);
+  static IImage* CreateLoaderFromProbe(unsigned char* buffer, size_t size);
 };

@@ -266,7 +266,12 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
   if(strMimeType.empty())
     pImage = ImageFactory::CreateLoader(texturePath);
   else
-    pImage = ImageFactory::CreateLoaderFromMimeType(strMimeType);
+  {
+    // probe first, sometimes the minetype can be wrong
+    pImage = ImageFactory::CreateLoaderFromProbe((unsigned char *)buf.get(), buf.size());
+    if (!pImage)
+      pImage = ImageFactory::CreateLoaderFromMimeType(strMimeType);
+  }
 
   if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height, autoRotate))
   {
@@ -287,7 +292,11 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
   unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
 
-  IImage* pImage = ImageFactory::CreateLoaderFromMimeType(mimeType);
+  IImage* pImage = nullptr;
+  // probe first, sometimes the minetype can be wrong
+  pImage = ImageFactory::CreateLoaderFromProbe(buffer, size);
+  if (!pImage)
+    pImage = ImageFactory::CreateLoaderFromMimeType(mimeType);
   if(!LoadIImage(pImage, buffer, size, width, height))
   {
     CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, mimeType.c_str());
