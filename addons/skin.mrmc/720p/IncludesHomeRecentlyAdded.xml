@@ -10,7 +10,7 @@
 			<animation effect="fade" time="150">WindowClose</animation>
 			<control type="group">
 				<left>190</left>
-				<top>50</top>
+				<top>75</top>
 				<visible>Library.HasContent(Movies)</visible>
 				<visible>Container(9000).Hasfocus(10) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
