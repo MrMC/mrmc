@@ -289,7 +289,7 @@ msgid "Current scraper"
 msgstr "Aktuell skrapare"
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "Välj en skrapare"
 
 msgctxt "#31314"

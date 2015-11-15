@@ -333,7 +333,7 @@ msgid "Current scraper"
 msgstr "当前刮削器"
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "选择刮削器"
 
 msgctxt "#31314"

@@ -333,7 +333,7 @@ msgid "Current scraper"
 msgstr "Jelenlegi leolvasó"
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "Válassz leolvasót"
 
 msgctxt "#31314"

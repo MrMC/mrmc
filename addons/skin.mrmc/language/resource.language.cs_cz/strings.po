@@ -333,7 +333,7 @@ msgid "Current scraper"
 msgstr "Současný stahovač"
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "Vyberte stahovač"
 
 msgctxt "#31314"

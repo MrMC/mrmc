@@ -333,7 +333,7 @@ msgid "Current scraper"
 msgstr "Dabartinis skreperis"
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "Pasirinkite skreperį"
 
 msgctxt "#31314"

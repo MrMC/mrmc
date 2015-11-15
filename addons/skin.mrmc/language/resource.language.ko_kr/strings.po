@@ -333,7 +333,7 @@ msgid "Current scraper"
 msgstr "현재 정보수집기"
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "정보수집기 선택"
 
 msgctxt "#31314"

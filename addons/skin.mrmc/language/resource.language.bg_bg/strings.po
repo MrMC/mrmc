@@ -325,7 +325,7 @@ msgid "Current scraper"
 msgstr "Текущ източник на инф."
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "Изберете източник на инф."
 
 msgctxt "#31314"

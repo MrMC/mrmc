@@ -333,7 +333,7 @@ msgid "Current scraper"
 msgstr "Текущий инфоресурс"
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "Выбрать инфоресурс"
 
 msgctxt "#31314"

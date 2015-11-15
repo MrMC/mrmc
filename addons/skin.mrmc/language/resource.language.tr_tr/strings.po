@@ -333,7 +333,7 @@ msgid "Current scraper"
 msgstr "Geçerli sağlayıcı"
 
 msgctxt "#31313"
-msgid "Choose a scraper"
+msgid "Choose metadata provider"
 msgstr "Sağlayıcı seç"
 
 msgctxt "#31314"
