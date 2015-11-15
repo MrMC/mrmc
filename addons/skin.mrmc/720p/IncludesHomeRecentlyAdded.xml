@@ -14,6 +14,7 @@
 				<visible>Library.HasContent(Movies)</visible>
 				<visible>Container(9000).Hasfocus(10) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
+				<animation effect="slide" start="0,0" end="80,0" time="300" tween="quadratic" easing="out" condition="Player.Playing">conditional</animation>
 				<control type="label">
 					<description>Title label</description>
 					<left>180</left>
@@ -246,10 +247,11 @@
 			</control>
 			<control type="group">
 				<left>160</left>
-				<top>50</top>
+				<top>75</top>
 				<visible>Library.HasContent(TVShows)</visible>
 				<visible>Container(9000).Hasfocus(11) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
+				<animation effect="slide" start="0,0" end="80,0" time="300" tween="quadratic" easing="out" condition="Player.Playing">conditional</animation>
 				<control type="label">
 					<description>Title label</description>
 					<left>240</left>
@@ -507,7 +509,7 @@
 			</control>
 			<control type="group">
 				<left>240</left>
-				<top>50</top>
+				<top>75</top>
 				<visible>Library.HasContent(Music)</visible>
 				<visible>Container(9000).Hasfocus(3) + !Skin.HasSetting(HomepageHideRecentlyAddedAlbums)</visible>
 				<include>VisibleFadeEffect</include>
