@@ -358,7 +358,11 @@ void CAdvancedSettings::Initialize()
   m_startFullScreen = false;
 #endif
   m_showExitButton = true;
+#if defined(TARGET_DARWIN_TVOS)
+  m_splashImage = false;
+#else
   m_splashImage = true;
+#endif
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
