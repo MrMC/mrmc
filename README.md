@@ -18,5 +18,5 @@ See [docs/README.xxx] (https://github.com/davilla/mrmc/tree/master/docs) for spe
 ##### Useful links
 
 * [MrMC wiki] FEEDME
-* [MrMC community forums] FEEDME
-* [MrMC website] FEEDME
+* [MrMC community forums] http://mrmc.tv/forum
+* [MrMC website] http://mrmc.tv
