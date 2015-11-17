@@ -93,18 +93,38 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
+        <setting id="lookandfeel.rsshost" type="string" label="13254" help="13255">
+        <dependencies>
+            <dependency>
+                <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
+            </dependency>
           </dependencies>
-          <control type="button" format="action">
-            <hidevalue>true</hidevalue>
-          </control>
+          <level>0</level>
+          <default>http://forum.mrmc.tv/feed.php?mode=topics</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+        <setting id="lookandfeel.rssinterval" type="integer" label="13256" help="13257">
+        <dependencies>
+            <dependency>
+                <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
+            </dependency>
+          </dependencies> 
+          <level>0</level>
+          <default>30</default>
+          <constraints>
+            <minimum>15</minimum>
+            <step>15</step>
+            <maximum>120</maximum>
+          </constraints>
+          <control type="spinner" format="integer" delayed="true"/>
+        </setting>
+        <setting id="lookandfeel.rssrtl" type="boolean" label="13258" help="13259">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
     </category>

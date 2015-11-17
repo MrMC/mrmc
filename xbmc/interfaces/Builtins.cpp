@@ -148,7 +148,6 @@ const BUILT_IN commands[] = {
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload Kodi's skin" },
   { "UnloadSkin",                 false,  "Unload Kodi's skin" },
-  { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
   { "Playlist.Clear",             false,  "Clear the current playlist" },

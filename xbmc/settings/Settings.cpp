@@ -95,7 +95,9 @@ const std::string CSettings::SETTING_LOOKANDFEEL_SKINZOOM = "lookandfeel.skinzoo
 const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW = "lookandfeel.startupwindow";
 const std::string CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN = "lookandfeel.soundskin";
 const std::string CSettings::SETTING_LOOKANDFEEL_ENABLERSSFEEDS = "lookandfeel.enablerssfeeds";
-const std::string CSettings::SETTING_LOOKANDFEEL_RSSEDIT = "lookandfeel.rssedit";
+const std::string CSettings::SETTING_LOOKANDFEEL_RSSHOST = "lookandfeel.rsshost";
+const std::string CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL = "lookandfeel.rssinterval";
+const std::string CSettings::SETTING_LOOKANDFEEL_RSSRTL = "lookandfeel.rssrtl";
 const std::string CSettings::SETTING_LOCALE_LANGUAGE = "locale.language";
 const std::string CSettings::SETTING_LOCALE_COUNTRY = "locale.country";
 const std::string CSettings::SETTING_LOCALE_CHARSET = "locale.charset";
@@ -630,7 +632,6 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingsHandler(&CUPnPSettings::GetInstance());
 #endif
   m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::GetInstance());
-  m_settingsManager->UnregisterSettingsHandler(&CRssManager::GetInstance());
   m_settingsManager->UnregisterSettingsHandler(&g_langInfo);
   m_settingsManager->UnregisterSettingsHandler(&g_application);
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
@@ -1138,7 +1139,9 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&PVR::g_PVRManager, settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_RSSEDIT);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_RSSHOST);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_RSSRTL);
   m_settingsManager->RegisterCallback(&CRssManager::GetInstance(), settingSet);
 
 #if defined(TARGET_LINUX)

@@ -5895,7 +5895,31 @@ msgctxt "#13253"
 msgid "Cancel move"
 msgstr ""
 
-#empty strings from id 13254 to 13269
+msgctxt "#13254"
+msgid "RSS/ATOM feed url"
+msgstr ""
+
+msgctxt "#13255"
+msgid "Enter RSS/ATOM feed url"
+msgstr ""
+
+msgctxt "#13256"
+msgid "Refresh interval in seconds"
+msgstr ""
+
+msgctxt "#13257"
+msgid "How often should feed be refreshed"
+msgstr ""
+
+msgctxt "#13258"
+msgid "Scroll left-to-right"
+msgstr ""
+
+msgctxt "#13259"
+msgid "Enable this for RTL support"
+msgstr ""
+
+#empty strings from id 13260 to 13269
 
 msgctxt "#13270"
 msgid "Hardware:"

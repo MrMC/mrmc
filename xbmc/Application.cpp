@@ -425,7 +425,6 @@ bool CApplication::Create()
     inited = InitDirectoriesOSX();
 
   // copy required xml files
-  CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "RssFeeds.xml");
   CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "favourites.xml");
   CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "Lircmap.xml");
 
