@@ -6,9 +6,9 @@ TOC
 1. The source for PVR addons
 -----------------------------------------------------------------------------
 
-PVR add-ons source is not included in Kodi's tree directly.
+PVR add-ons source is not included in MrMC's tree directly.
 
-The source code can be found at: https://github.com/kodi-pvr/
+The source code can be found at: https://github.com/mrmc/
 
 -----------------------------------------------------------------------------
 2. How to compile

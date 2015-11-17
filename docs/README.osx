@@ -4,7 +4,7 @@ TOC
 3. Install required libs
   3.1. Install Xcode
   3.1.1 Supported Xcode and OSX constellations
-  3.2. Install Kodi build depends
+  3.2. Install MrMC build depends
   3.2.1 Compiling as 32 Bit binary
   3.2.2 Compiling as 64 Bit binary
   3.2.3 Compile binary addons
@@ -17,17 +17,17 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-This is a platform port of Kodi for the Apple OSX operating system. 10.9 and 10.10 Intel development 
+This is a platform port of MrMC for the Apple OSX operating system. 10.9 and 10.10 Intel development 
 platforms are supported. Xcode 6 newer are the recommended versions.
-There are 3 ways to build Kodi for Mac, from command-line with make, from command-line
+There are 3 ways to build MrMC for Mac, from command-line with make, from command-line
 using xcodebuild or from Xcode.
 
-The minimum version of OSX you need to run(!) Kodi is 10.7 atm.
+The minimum version of OSX you need to run(!) MrMC is 10.7 atm.
 
 Generally, Xcode is the easiest as it presents the build system in a GUI environment.
 The command-line build is still under development.
 
-Kodi for Mac is composed of a main binary with numerous dynamic libraries and
+MrMC for Mac is composed of a main binary with numerous dynamic libraries and
 codecs that support a multitude of music and video formats.
 
 On Mavericks (OSX 10.9.x) we recommend using Xcode 6.1.
@@ -45,7 +45,7 @@ its not part of OSX anymore since 10.8.
 -----------------------------------------------------------------------------
 
  $ cd $HOME
- $ git clone git://github.com/xbmc/xbmc.git Kodi
+ $ git clone git://github.com/mrmc/mrmc.git MrMC
 
 -----------------------------------------------------------------------------
 3.1 Install XCODE
@@ -62,26 +62,24 @@ Xcode 6.1 runs on 10.9.5 and later (at least Mavericks).
 As far as we know the compilation for mac osx should work with the following
 constellations of Xcode and osx versions (to be updated once we know more):
  
-1. XCode 6.0.1 against OSX SDK 10.9 (M)
-2. XCode 6.1.0 against OSX SDK 10.10 (Y)
-3. XCode 6.2.0 against OSX SDK 10.10 (Y)
-4. XCode 6.3.0 against OSX SDK 10.10 (Y)
+1. XCode 7.x.x against OSX SDK 10.10 (Y)
+2. XCode 7.x.x against OSX SDK 10.11 (Y)
 
 -----------------------------------------------------------------------------
-3.2 Install Kodi build depends
+3.2 Install MrMC build depends
 -----------------------------------------------------------------------------
  The following commands will build using the latest OSX SDK found on your
  system.
 
 3.2.1 Compiling as 32 Bit binary
- $ cd $HOME/Kodi
+ $ cd $HOME/MrMC
  $ cd tools/depends
  $ ./bootstrap
  $ ./configure --host=i386-apple-darwin
  $ make
 
 3.2.2 Compiling as 64 Bit binary
- $ cd $HOME/Kodi
+ $ cd $HOME/MrMC
  $ cd tools/depends
  $ ./bootstrap
  $ ./configure --host=x86_64-apple-darwin
@@ -114,41 +112,41 @@ first. This is a simple step and involves the following:
 4.a Compilation by using command-line building via xcodebuild or
     by compiling via Xcode GUI
 
- $ cd $HOME/Kodi
+ $ cd $HOME/MrMC
  $ make -C tools/depends/target/xbmc
  $ make clean
  $ make xcode_depends
 
 4.b Compilation by using command-line building via make (experimental)
 
- $ cd $HOME/Kodi
+ $ cd $HOME/MrMC
  $ make -C tools/depends/target/xbmc
  $ make clean
 
 The configure operation will setup the build environment for codecs and
-internal libraries that are used by Kodi. This step is required for both Xcode
+internal libraries that are used by MrMC. This step is required for both Xcode
 and command-line building. The "make clean" ensures that there are no stale
 binaries from git that might cause problems.
 
 -----------------------------------------------------------------------------
 4.1 Using Xcode
 -----------------------------------------------------------------------------
-Start XCode and open the Kodi project (Kodi.xcodeproj) located in $HOME/Kodi.
-For development, Kodi is run from the $HOME/Kodi directory and needs to have
-the KODI_HOME environment variable set to know where that directory is located.
-To set KODI_HOME environment variable:
+Start XCode and open the MrMC project (MrMC.xcodeproj) located in $HOME/MrMC.
+For development, MrMC is run from the $HOME/MrMC directory and needs to have
+the MrMC_HOME environment variable set to know where that directory is located.
+To set MrMC_HOME environment variable:
 
 Xcode 6 and later
- Menu -> Product -> Edit Sheme -> "Run Kodi"/"Debug" -> Add KODI_HOME into
- the List of "Environment Variables". Set the value to the path to the Kodi
- root folder. For example, "/Users/bigdog/Documents/Kodi"	
+ Menu -> Product -> Edit Sheme -> "Run MrMC"/"Debug" -> Add MrMC_HOME into
+ the List of "Environment Variables". Set the value to the path to the MrMC
+ root folder. For example, "/Users/bigdog/Documents/MrMC"	
 
-There are two build targets "Kodi" and "Kodi.app" (each in 32Bit and 64Bit flavour) 
-with debug and release settings. The "Kodi" target is used for rapid build and 
-debug cycles while the "Kodi.app" target is used to build a self contained 
+There are two build targets "MrMC" and "MrMC.app" (each in 32Bit and 64Bit flavour) 
+with debug and release settings. The "MrMC" target is used for rapid build and 
+debug cycles while the "MrMC.app" target is used to build a self contained 
 OSX application bundle.
 
-Set the build target to "Kodi" or "Kodi.app" and be sure to select the same 
+Set the build target to "MrMC" or "MrMC.app" and be sure to select the same 
 architecture as selected in step 3.2 (either i386 for 32Bit or x86_64 for 64Bit), 
 then build. 
 
@@ -161,21 +159,21 @@ You can see the progress in "Build Results". There are a large number of static
 and dynamic libaries that will need to be built. Once these are built, 
 subsequent builds will be faster.
 
-After the build, you can ether run Kodi for Mac from Xcode or run it from
+After the build, you can ether run MrMC for Mac from Xcode or run it from
 the command-line. If you run it from the command-line, make sure your set
-the KODI_HOME environment variable (export KODI_HOME=$HOME/Kodi). Then, to
+the MrMC_HOME environment variable (export MrMC_HOME=$HOME/MrMC). Then, to
 run the debug version:
 
-$ ./build/Debug/Kodi
+$ ./build/Debug/MrMC
 
 Or the release version:
 
-$ ./build/Release/Kodi
+$ ./build/Release/MrMC
 
 You can also build via Xcode from the command-line using the following:
 
 $ xcodebuild -configuration Release ONLY_ACTIVE_ARCH=YES ARCHS=i386 VALID_ARCHS=i386 \
-  -target "Kodi.app" -project Kodi.xcodeproj
+  -target "MrMC.app" -project MrMC.xcodeproj
 
 You can specify "Release" instead of "Debug" as a configuration. Be sure to set *_ARCHS
 variables to the same architecture as selected in step 3.2 (either i386 for 32Bit or x86_64 
@@ -191,25 +189,25 @@ You could try xcodebuild from the command-line with altered SDK - like 10.9 in t
 below(normally unneeded - for advanced developers).
 
  a)
- $ cd $HOME/Kodi
- $ export KODI_HOME=`pwd`
+ $ cd $HOME/MrMC
+ $ export MrMC_HOME=`pwd`
  $ make xcode_depends
- $ xcodebuild -sdk macosx10.9 -project Kodi.xcodeproj -target Kodi.app ONLY_ACTIVE_ARCH=YES \
+ $ xcodebuild -sdk macosx10.9 -project MrMC.xcodeproj -target MrMC.app ONLY_ACTIVE_ARCH=YES \
    ARCHS=x86_64 VALID_ARCHS=x86_64  -configuration Release build
 
  b) building via make
- $ cd $HOME/Kodi
- $ export KODI_HOME=`pwd`
+ $ cd $HOME/MrMC
+ $ export MrMC_HOME=`pwd`
  $ make
- $ ./Kodi.bin
+ $ ./MrMC.bin
 
 -----------------------------------------------------------------------------
 5. Packaging
 -----------------------------------------------------------------------------
-This section describes how to package Kodi in a disk image for
+This section describes how to package MrMC in a disk image for
 distribution.
 
-  1. build Kodi.app from XCode so that the application bundle is correctly updated.
+  1. build MrMC.app from XCode so that the application bundle is correctly updated.
 
   2. $ cd tools/darwin/packaging/osx
 
