@@ -3299,7 +3299,7 @@ void CApplication::OnPlayBackStarted()
 #if defined(TARGET_ANDROID)
   CXBMCApp::OnPlayBackStarted();
 #elif defined(TARGET_DARWIN_IOS)
-  if (m_pPlayer->IsPlayingVideo())
+  if (!m_pPlayer->IsPlayingAudio())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
@@ -3358,7 +3358,7 @@ void CApplication::OnPlayBackResumed()
 #if defined(TARGET_ANDROID)
   CXBMCApp::OnPlayBackResumed();
 #elif defined(TARGET_DARWIN_IOS)
-  if (m_pPlayer->IsPlayingVideo())
+  if (!m_pPlayer->IsPlayingAudio())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
