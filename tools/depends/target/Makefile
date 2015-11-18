@@ -52,6 +52,7 @@ DEPENDS += samba
 
 EXCLUDED_DEPENDS =
 ifeq ($(OS),ios)
+  DEPENDS += mrmc-repo-resources
   EXCLUDED_DEPENDS += libcec
   EXCLUDED_DEPENDS += libusb
 endif
@@ -144,6 +145,7 @@ test-dependencies:
 
 distclean::
 	for d in $(DEPENDS); do $(MAKE) -C $$d distclean; done
+	rm -rf $(PREFIX)/addons
 
 ifeq ($(OS),linux)
 linux-system-libs:
