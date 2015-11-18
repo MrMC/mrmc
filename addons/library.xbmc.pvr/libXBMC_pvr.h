@@ -75,6 +75,9 @@ public:
         std::string tempbin = getenv("XBMC_ANDROID_LIBS");
         libBasePath = tempbin + "/" + PVR_HELPER_DLL_NAME;
       }
+#elif defined(TARGET_OS_IOS) || defined(TARGET_OS_TV)
+    std::string tempbin = getenv("MRMC_IOS_LIBS");
+    libBasePath = tempbin + "/" + PVR_HELPER_DLL_NAME;
 #endif
 
     m_libXBMC_pvr = dlopen(libBasePath.c_str(), RTLD_LAZY);

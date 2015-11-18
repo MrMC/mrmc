@@ -47,6 +47,14 @@ function check_xbmc_dylib_depends
   done
 }
 
+function move_addon_dylibs_to_frameworks
+{
+  for b in $(find "$1" -type f -name "$2" -print) ; do
+    echo "Moving $(basename $b)"
+    mv -f "$b" "$TARGET_FRAMEWORKS/"
+  done
+}
+
 EXTERNAL_LIBS=$XBMC_DEPENDS
 
 TARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION
@@ -76,9 +84,13 @@ done
 
 echo "Checking addons *.so for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.so"
+echo "Moving addons *.so to frameworks"
+move_addon_dylibs_to_frameworks "$XBMC_HOME"/addons "*.so"
 
 echo "Checking addons *.dylib for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.dylib"
+echo "Moving addons *.dylib to frameworks"
+move_addon_dylibs_to_frameworks "$XBMC_HOME"/addons "*.dylib"
 
 echo "Checking xbmc/DllPaths_generated.h for dylib dependencies"
 for a in $(grep .dylib "$SRCROOT"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\"//g) ; do

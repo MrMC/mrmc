@@ -178,6 +178,12 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     std::string tempbin = getenv("XBMC_ANDROID_LIBS");
     strFileName = tempbin + "/" + m_strLibName;
   }
+#elif defined(TARGET_DARWIN_IOS)
+  // iOS libs live in xxx.app/FrameWorks, no subdirs.
+  if (!XFILE::CFile::Exists(strFileName))
+  {
+    strFileName = CSpecialProtocol::TranslatePath("special://frameworks/" + m_strLibName);
+  }
 #endif
   if (!XFILE::CFile::Exists(strFileName))
   {
