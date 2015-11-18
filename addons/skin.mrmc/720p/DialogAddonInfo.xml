@@ -307,6 +307,7 @@
 				</control>
 				<control type="button" id="6">
 					<description>Install/UnInstall Addon button</description>
+					<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 					<width>220</width>
 					<height>43</height>
 					<label>24022</label>
