@@ -17,7 +17,7 @@ LANGSYNC="rsync -aq --exclude .git* --exclude .DS_Store* --exclude *.dll --exclu
 
 # rsync command for skins. jpg, png exclusion is handled during sync
 # if a Textures.xbt file is found
-SKINSYNC="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat"
+SKINSYNC="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat --exclude media/Makefile* --exclude media/Subtitles --exclude media/LeftRating --exclude media/flagging --exclude media/epg-genres --exclude media/CenterRating"
 
 # rsync command for including everything but the skins
 ADDONSYNC="rsync -aq --no-links --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude addons/lib --exclude addons/share --exclude addons/skin.mrmc --exclude addons/skin.re-touched"
