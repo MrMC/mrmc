@@ -12,6 +12,9 @@ TARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION
 # rsync command with exclusions for items we don't want in the app package
 SYNC="rsync -aq --exclude .git* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *x86-osx.so --exclude *.zlib --exclude *.a"
 
+# rsync command for language pacs
+LANGSYNC="rsync -aq --exclude .git* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *x86-osx.so --exclude *.zlib --exclude *.a --exclude resource.uisounds*"
+
 # rsync command for skins. jpg, png exclusion is handled during sync
 # if a Textures.xbt file is found
 SKINSYNC="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat"
@@ -37,7 +40,7 @@ ${SYNC} "$SRCROOT/userdata"     "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 ${ADDONSYNC} "$SRCROOT/addons"  "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 
 # package items that are located in depends
-${SYNC} "$XBMC_DEPENDS/mrmc/repo-resources/" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
+${LANGSYNC} "$XBMC_DEPENDS/mrmc/repo-resources/" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
 
 # sync skin.mrmc
 SYNCSKIN_B=${SKINSYNC}
