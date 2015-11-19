@@ -27,7 +27,7 @@ ANDROID_OFF_T_FIX=sed -ie "s|off_t|off64_t|g" "$(PLATFORM)/source/include/libsmb
 endif
 
 # clang issue with optimizing out functions
-CONFIGURE_HAMMER=samba_cv_optimize_out_funcation_calls=no
+CONFIGURE_HAMMER=samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_default_domain=no
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
