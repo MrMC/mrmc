@@ -26,6 +26,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../utils.patch
 	cd $(PLATFORM); patch -p1 < ../readahead.patch
 	cd $(PLATFORM); $(CONFIGURE)
+ifeq ($(OS),ios)
+	# this is nasty but cannot figure out how to get those flags out of libtool
+	cd $(PLATFORM); patch -p1 < ../darwin-fixbitcode.patch
+endif
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)

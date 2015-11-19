@@ -276,6 +276,7 @@ case $host in
           use_sdk="${use_sdk:-$found_sdk_version}"
 	  platform_cflags+=" -fembed-bitcode"
 	  platform_cxxflags+=" -fembed-bitcode"
+	  platform_ldflags+=" -Wl,-bitcode_bundle"
           sdk_name=appletvos$use_sdk
           platform_min_version="appletvos-version-min=9.0"
         else

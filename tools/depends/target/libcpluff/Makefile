@@ -8,7 +8,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
-    ./configure --prefix=$(PREFIX) --disable-nls
+    ./configure --prefix=$(PREFIX) --disable-nls $LD_FLAGS="${LDFLAGS} -bitcode_bundle"
 
 LIBDYLIB=$(PLATFORM)/libcpluff/.libs/libcpluff.a
 
