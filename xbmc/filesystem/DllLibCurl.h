@@ -59,7 +59,11 @@ namespace XCURL
 
   class DllLibCurl : public DllDynamic, DllLibCurlInterface
   {
+#if defined(TARGET_DARWIN_IOS)
+    DECLARE_DLL_WRAPPER(DllLibCurl, "libcurl.framework/libcurl")
+#else
     DECLARE_DLL_WRAPPER(DllLibCurl, DLL_PATH_LIBCURL)
+#endif
     DEFINE_METHOD1(CURLcode, global_init, (long p1))
     DEFINE_METHOD0(void, global_cleanup)
     DEFINE_METHOD0(CURL_HANDLE *, easy_init)

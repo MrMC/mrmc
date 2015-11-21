@@ -1,29 +1,35 @@
-ARCH=@ARCH@
-INCLUDES=-I. -I../../../xbmc/addons/include -I../../../xbmc -I../../../xbmc/cores/dvdplayer/DVDDemuxers
-DEFINES+=
-CXXFLAGS=-fPIC
-LIBNAME=libXBMC_pvr
-OBJS=$(LIBNAME).o
+ARCH = @ARCH@
+INCLUDES = -I. 
+INCLUDES+= -I@abs_top_srcdir@/xbmc/addons/include
+INCLUDES+= -I@abs_top_srcdir@/xbmc/cores/dvdplayer/DVDDemuxers
+CXXFLAGS = -fPIC
+LIBNAME  = libXBMCpvr
+LIBPATH  = @abs_top_srcdir@/addons/library.xbmc.pvr
+OBJS     = $(LIBNAME).o
 
 ifeq ($(findstring osx,$(ARCH)), osx)
-LIB_SHARED=../../../addons/library.xbmc.pvr/$(LIBNAME)-$(ARCH).dylib
+  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).dylib
+  BCSYMBOLMAP_PATH = @prefix@/bcsymbolmaps/$(LIBNAME)
 else
-LIB_SHARED=../../../addons/library.xbmc.pvr/$(LIBNAME)-$(ARCH).so
+  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).so
 endif
 
 all: $(LIB_SHARED)
 
 $(LIB_SHARED): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(LDFLAGS) -dynamiclib -o $@ $(OBJS)
+	mkdir -p $(BCSYMBOLMAP_PATH)
+	rm -f $(BCSYMBOLMAP_PATH)/*.bcsymbolmap
+	$(CXX) $(LDFLAGS) -dynamiclib -Wl,-bitcode_verify -Wl,-bitcode_hide_symbols -Wl,-bitcode_symbol_map,$(BCSYMBOLMAP_PATH) -o $@ $(OBJS)
 else
 	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
 endif
 
-CLEAN_FILES = \
-	$(LIB_SHARED) \
+CLEAN_FILES = $(LIB_SHARED)
+ifeq ($(findstring osx,$(ARCH)), osx)
+  CLEAN_FILES+= $(BCSYMBOLMAP_PATH)/*.bcsymbolmap
+endif
 
-DISTCLEAN_FILES= \
-	Makefile \
+DISTCLEAN_FILES = Makefile
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include

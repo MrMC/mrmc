@@ -36,6 +36,7 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
+	rm -rf $(PREFIX)/lib/libulxmlrpcpp*.dylib $(PREFIX)/lib/libulxmlrpcpp.la
 	touch $@
 
 clean:

@@ -82,11 +82,6 @@ for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | awk ' { print $1
   install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_BINARY"
 done
 
-echo "Checking addons *.so for dylib dependencies"
-check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.so"
-echo "Moving addons *.so to frameworks"
-move_addon_dylibs_to_frameworks "$XBMC_HOME"/addons "*.so"
-
 echo "Checking addons *.dylib for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.dylib"
 echo "Moving addons *.dylib to frameworks"

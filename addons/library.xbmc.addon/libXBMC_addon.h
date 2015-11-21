@@ -27,57 +27,43 @@
 #include <stdint.h>
 #include <stdarg.h>
 
-#ifdef _WIN32                   // windows
-  #ifndef _SSIZE_T_DEFINED
-  typedef intptr_t      ssize_t;
-  #define _SSIZE_T_DEFINED
-  #endif // !_SSIZE_T_DEFINED
-
-  #if defined(BUILD_KODI_ADDON)
-    #include "platform/windows/dlfcn-win32.h"
-  #else
-    #include "dlfcn-win32.h"
-  #endif
-
-  #define ADDON_DLL               "\\library.xbmc.addon\\libXBMC_addon" ADDON_HELPER_EXT
-  #define ADDON_HELPER_EXT        ".dll"
-#else
-  #if defined(__APPLE__)          // osx
-    #if defined(__POWERPC__)
-      #define ADDON_HELPER_ARCH   "powerpc-osx"
-    #elif defined(__arm__)
-      #define ADDON_HELPER_ARCH   "arm-osx"
-    #elif defined(__arm64__)
-      #define ADDON_HELPER_ARCH   "arm-osx"
-    #elif defined(__x86_64__)
-      #define ADDON_HELPER_ARCH   "x86-osx"
-    #else
-      #define ADDON_HELPER_ARCH   "x86-osx"
-    #endif
-    #define ADDON_HELPER_EXT      ".dylib"
-  #else                           // linux
-    #if defined(__x86_64__)
-      #define ADDON_HELPER_ARCH   "x86_64-linux"
-    #elif defined(_POWERPC)
-      #define ADDON_HELPER_ARCH   "powerpc-linux"
-    #elif defined(_POWERPC64)
-      #define ADDON_HELPER_ARCH   "powerpc64-linux"
-    #elif defined(__ARMEL__)
-      #define ADDON_HELPER_ARCH   "arm"
-    #elif defined(__mips__)
-      #define ADDON_HELPER_ARCH   "mips"
-    #else
-      #define ADDON_HELPER_ARCH   "i486-linux"
-    #endif
-    #define ADDON_HELPER_EXT      ".so"
-  #endif
-  #include <dlfcn.h>              // linux+osx
-  #define ADDON_DLL_NAME "libXBMC_addon-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-  #define ADDON_DLL "/library.xbmc.addon/" ADDON_DLL_NAME
-#endif
+#include <dlfcn.h>
 #if defined(ANDROID)
   #include <sys/stat.h>
 #endif
+
+#if defined(__APPLE__)          // darwin
+  #if defined(__POWERPC__)
+    #define ADDON_HELPER_ARCH   "powerpc-osx"
+  #elif defined(__arm__)
+    #define ADDON_HELPER_ARCH   "arm-osx"
+  #elif defined(__arm64__)
+    #define ADDON_HELPER_ARCH   "arm-osx"
+  #elif defined(__x86_64__)
+    #define ADDON_HELPER_ARCH   "x86-osx"
+  #else
+    #define ADDON_HELPER_ARCH   "x86-osx"
+  #endif
+  #define ADDON_HELPER_EXT      ".dylib"
+#else                           // linux
+  #if defined(__x86_64__)
+    #define ADDON_HELPER_ARCH   "x86_64-linux"
+  #elif defined(_POWERPC)
+    #define ADDON_HELPER_ARCH   "powerpc-linux"
+  #elif defined(_POWERPC64)
+    #define ADDON_HELPER_ARCH   "powerpc64-linux"
+  #elif defined(__ARMEL__)
+    #define ADDON_HELPER_ARCH   "arm"
+  #elif defined(__mips__)
+    #define ADDON_HELPER_ARCH   "mips"
+  #else
+    #define ADDON_HELPER_ARCH   "i486-linux"
+  #endif
+  #define ADDON_HELPER_EXT      ".so"
+#endif
+#define ADDON_NAME "libXBMCaddon"
+#define ADDON_DLL_NAME ADDON_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define ADDON_DLL "/library.xbmc.addon/" ADDON_DLL_NAME
 
 #ifdef LOG_DEBUG
   #undef LOG_DEBUG
@@ -143,8 +129,10 @@ namespace ADDON
         libBasePath = tempbin + "/" + ADDON_DLL_NAME;
       }
 #elif defined(TARGET_OS_IOS) || defined(TARGET_OS_TV)
-      std::string tempbin = getenv("MRMC_IOS_LIBS");
-      libBasePath = tempbin + "/" + ADDON_DLL_NAME;
+      // <path>/xxx.app/Frameworks/<libname>.framework/<libname>
+      libBasePath = getenv("MRMC_IOS_FRAMEWORKS");
+      libBasePath += "/" ADDON_NAME "-" ADDON_HELPER_ARCH ".framework";
+      libBasePath += "/" ADDON_NAME "-" ADDON_HELPER_ARCH;
 #endif
 
       m_libXBMC_addon = dlopen(libBasePath.c_str(), RTLD_LAZY);
@@ -570,41 +558,41 @@ namespace ADDON
     }
 
   protected:
-    void* (*XBMC_register_me)(void *HANDLE);
-    void (*XBMC_unregister_me)(void *HANDLE, void* CB);
-    void (*XBMC_log)(void *HANDLE, void* CB, const addon_log_t loglevel, const char *msg);
-    bool (*XBMC_get_setting)(void *HANDLE, void* CB, const char* settingName, void *settingValue);
-    void (*XBMC_queue_notification)(void *HANDLE, void* CB, const queue_msg_t type, const char *msg);
-    bool (*XBMC_wake_on_lan)(void *HANDLE, void* CB, const char* mac);
-    char* (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
-    char* (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
-    char* (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);
-    void (*XBMC_free_string)(void *HANDLE, void* CB, char* str);
-    void* (*XBMC_open_file)(void *HANDLE, void* CB, const char* strFileName, unsigned int flags);
-    void* (*XBMC_open_file_for_write)(void *HANDLE, void* CB, const char* strFileName, bool bOverWrite);
+    void*   (*XBMC_register_me)(void *HANDLE);
+    void    (*XBMC_unregister_me)(void *HANDLE, void* CB);
+    void    (*XBMC_log)(void *HANDLE, void* CB, const addon_log_t loglevel, const char *msg);
+    bool    (*XBMC_get_setting)(void *HANDLE, void* CB, const char* settingName, void *settingValue);
+    void    (*XBMC_queue_notification)(void *HANDLE, void* CB, const queue_msg_t type, const char *msg);
+    bool    (*XBMC_wake_on_lan)(void *HANDLE, void* CB, const char* mac);
+    char*   (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
+    char*   (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
+    char*   (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);
+    void    (*XBMC_free_string)(void *HANDLE, void* CB, char* str);
+    void*   (*XBMC_open_file)(void *HANDLE, void* CB, const char* strFileName, unsigned int flags);
+    void*   (*XBMC_open_file_for_write)(void *HANDLE, void* CB, const char* strFileName, bool bOverWrite);
     ssize_t (*XBMC_read_file)(void *HANDLE, void* CB, void* file, void* lpBuf, size_t uiBufSize);
-    bool (*XBMC_read_file_string)(void *HANDLE, void* CB, void* file, char *szLine, int iLineLength);
-    ssize_t(*XBMC_write_file)(void *HANDLE, void* CB, void* file, const void* lpBuf, size_t uiBufSize);
-    void (*XBMC_flush_file)(void *HANDLE, void* CB, void* file);
+    bool    (*XBMC_read_file_string)(void *HANDLE, void* CB, void* file, char *szLine, int iLineLength);
+    ssize_t (*XBMC_write_file)(void *HANDLE, void* CB, void* file, const void* lpBuf, size_t uiBufSize);
+    void    (*XBMC_flush_file)(void *HANDLE, void* CB, void* file);
     int64_t (*XBMC_seek_file)(void *HANDLE, void* CB, void* file, int64_t iFilePosition, int iWhence);
-    int (*XBMC_truncate_file)(void *HANDLE, void* CB, void* file, int64_t iSize);
+    int     (*XBMC_truncate_file)(void *HANDLE, void* CB, void* file, int64_t iSize);
     int64_t (*XBMC_get_file_position)(void *HANDLE, void* CB, void* file);
     int64_t (*XBMC_get_file_length)(void *HANDLE, void* CB, void* file);
-    void (*XBMC_close_file)(void *HANDLE, void* CB, void* file);
-    int (*XBMC_get_file_chunk_size)(void *HANDLE, void* CB, void* file);
-    bool (*XBMC_file_exists)(void *HANDLE, void* CB, const char *strFileName, bool bUseCache);
-    int (*XBMC_stat_file)(void *HANDLE, void* CB, const char *strFileName, struct __stat64* buffer);
-    bool (*XBMC_delete_file)(void *HANDLE, void* CB, const char *strFileName);
-    bool (*XBMC_can_open_directory)(void *HANDLE, void* CB, const char* strURL);
-    bool (*XBMC_create_directory)(void *HANDLE, void* CB, const char* strPath);
-    bool (*XBMC_directory_exists)(void *HANDLE, void* CB, const char* strPath);
-    bool (*XBMC_remove_directory)(void *HANDLE, void* CB, const char* strPath);
+    void    (*XBMC_close_file)(void *HANDLE, void* CB, void* file);
+    int     (*XBMC_get_file_chunk_size)(void *HANDLE, void* CB, void* file);
+    bool    (*XBMC_file_exists)(void *HANDLE, void* CB, const char *strFileName, bool bUseCache);
+    int     (*XBMC_stat_file)(void *HANDLE, void* CB, const char *strFileName, struct __stat64* buffer);
+    bool    (*XBMC_delete_file)(void *HANDLE, void* CB, const char *strFileName);
+    bool    (*XBMC_can_open_directory)(void *HANDLE, void* CB, const char* strURL);
+    bool    (*XBMC_create_directory)(void *HANDLE, void* CB, const char* strPath);
+    bool    (*XBMC_directory_exists)(void *HANDLE, void* CB, const char* strPath);
+    bool    (*XBMC_remove_directory)(void *HANDLE, void* CB, const char* strPath);
 
   private:
-    void *m_libXBMC_addon;
-    void *m_Handle;
-    void *m_Callbacks;
-    struct cb_array
+    void    *m_libXBMC_addon;
+    void    *m_Handle;
+    void    *m_Callbacks;
+    struct  cb_array
     {
       const char* libPath;
     };

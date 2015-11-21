@@ -902,7 +902,7 @@ bool CApplication::InitDirectoriesOSX()
   fontconfigFilePath = appPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
   // the location of the fonts.conf file
   setenv("FONTCONFIG_FILE", fontconfigFilePath.c_str(), 1);
-  setenv("MRMC_IOS_LIBS", frameworksPath.c_str(), 1);
+  setenv("MRMC_IOS_FRAMEWORKS", frameworksPath.c_str(), 1);
   CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesOSX: fontconfigFilePath(%s)", fontconfigFilePath.c_str());
 #endif
   

@@ -141,7 +141,7 @@ void URIUtils::RemoveExtension(std::string& strFileName)
     strFileMask += "|" + g_advancedSettings.m_videoExtensions;
     strFileMask += "|" + g_advancedSettings.m_subtitlesExtensions;
 #if defined(TARGET_DARWIN)
-    strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg|.app|.applescript|.workflow";
+    strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg|.app|.dylib|.applescript|.workflow";
 #else
     strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg";
 #endif

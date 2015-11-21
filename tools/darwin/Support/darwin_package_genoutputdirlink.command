@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if [ ${XCODE_VERSION_MINOR} -gt 400 ]
-then
+if [ ${XCODE_VERSION_MINOR} -gt 400 ]; then
   TARGET_OUTPUT_DIR="${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}"
   mkdir -p "${TARGET_OUTPUT_DIR}"
 
-  if [ "${BUILT_PRODUCTS_DIR}" != "${TARGET_OUTPUT_DIR}" ]
-  then
+  if [ "${BUILT_PRODUCTS_DIR}" != "${TARGET_OUTPUT_DIR}" ]; then
     rm -rf "${TARGET_OUTPUT_DIR}/${FULL_PRODUCT_NAME}"
     rm -rf "${TARGET_OUTPUT_DIR}/${DWARF_DSYM_FILE_NAME}"
     ln -s "${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}" "${TARGET_OUTPUT_DIR}/"  || true

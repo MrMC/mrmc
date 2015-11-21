@@ -55,6 +55,8 @@ ifeq ($(OS),ios)
   DEPENDS += mrmc-repo-resources
   EXCLUDED_DEPENDS += libcec
   EXCLUDED_DEPENDS += libusb
+  EXCLUDED_DEPENDS += libplist
+  EXCLUDED_DEPENDS += libshairplay
 endif
 
 ifeq ($(OS),osx)

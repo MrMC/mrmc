@@ -84,7 +84,11 @@ public:
 
 class DllLibNfs : public DllDynamic, DllLibNfsInterface
 {
+#if defined(TARGET_DARWIN_IOS)
+  DECLARE_DLL_WRAPPER(DllLibNfs, "libnfs.framework/libnfs")
+#else
   DECLARE_DLL_WRAPPER(DllLibNfs, DLL_PATH_LIBNFS)
+#endif
   DEFINE_METHOD0(struct   nfs_context *, nfs_init_context)
   DEFINE_METHOD0(struct nfs_server_list *, nfs_find_local_servers)
   DEFINE_METHOD1(void, free_nfs_srvr_list, (struct nfs_server_list *p1))

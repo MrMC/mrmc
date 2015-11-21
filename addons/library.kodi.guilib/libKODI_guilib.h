@@ -28,12 +28,9 @@
 
 typedef void* GUIHANDLE;
 
-#ifdef _WIN32
-#define GUI_HELPER_DLL "\\library.kodi.guilib\\libKODI_guilib" ADDON_HELPER_EXT
-#else
-#define GUI_HELPER_DLL_NAME "libKODI_guilib-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define GUI_HELPER_NAME "libKODIguilib"
+#define GUI_HELPER_DLL_NAME GUI_HELPER_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
 #define GUI_HELPER_DLL "/library.kodi.guilib/" GUI_HELPER_DLL_NAME
-#endif
 
 /* current ADDONGUI API version */
 #define KODI_GUILIB_API_VERSION "5.8.0"
@@ -81,15 +78,17 @@ public:
     libBasePath += GUI_HELPER_DLL;
 
 #if defined(ANDROID)
-      struct stat st;
-      if(stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + GUI_HELPER_DLL_NAME;
-      }
+    struct stat st;
+    if(stat(libBasePath.c_str(),&st) != 0)
+    {
+      std::string tempbin = getenv("XBMC_ANDROID_LIBS");
+      libBasePath = tempbin + "/" + GUI_HELPER_DLL_NAME;
+    }
 #elif defined(TARGET_OS_IOS) || defined(TARGET_OS_TV)
-    std::string tempbin = getenv("MRMC_IOS_LIBS");
-    libBasePath = tempbin + "/" + GUI_HELPER_DLL_NAME;
+    // <path>/xxx.app/Frameworks/<libname>.framework/<libname>
+    libBasePath = getenv("MRMC_IOS_FRAMEWORKS");
+    libBasePath += "/" GUI_HELPER_NAME "-" ADDON_HELPER_ARCH ".framework";
+    libBasePath += "/" GUI_HELPER_NAME "-" ADDON_HELPER_ARCH;
 #endif
 
     m_libKODI_guilib = dlopen(libBasePath.c_str(), RTLD_LAZY);

@@ -27,12 +27,9 @@
 #include "xbmc_pvr_types.h"
 #include "libXBMC_addon.h"
 
-#ifdef _WIN32
-#define PVR_HELPER_DLL "\\library.xbmc.pvr\\libXBMC_pvr" ADDON_HELPER_EXT
-#else
-#define PVR_HELPER_DLL_NAME "libXBMC_pvr-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define PVR_HELPER_NAME "libXBMCpvr"
+#define PVR_HELPER_DLL_NAME PVR_HELPER_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
 #define PVR_HELPER_DLL "/library.xbmc.pvr/" PVR_HELPER_DLL_NAME
-#endif
 
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
@@ -69,15 +66,17 @@ public:
     libBasePath += PVR_HELPER_DLL;
 
 #if defined(ANDROID)
-      struct stat st;
-      if(stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + PVR_HELPER_DLL_NAME;
-      }
+    struct stat st;
+    if(stat(libBasePath.c_str(),&st) != 0)
+    {
+      std::string tempbin = getenv("XBMC_ANDROID_LIBS");
+      libBasePath = tempbin + "/" + PVR_HELPER_DLL_NAME;
+    }
 #elif defined(TARGET_OS_IOS) || defined(TARGET_OS_TV)
-    std::string tempbin = getenv("MRMC_IOS_LIBS");
-    libBasePath = tempbin + "/" + PVR_HELPER_DLL_NAME;
+    // <path>/xxx.app/Frameworks/<libname>.framework/<libname>
+    libBasePath = getenv("MRMC_IOS_FRAMEWORKS");
+    libBasePath += "/" PVR_HELPER_NAME "-" ADDON_HELPER_ARCH ".framework";
+    libBasePath += "/" PVR_HELPER_NAME "-" ADDON_HELPER_ARCH;
 #endif
 
     m_libXBMC_pvr = dlopen(libBasePath.c_str(), RTLD_LAZY);

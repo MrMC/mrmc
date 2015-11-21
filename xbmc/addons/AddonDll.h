@@ -31,6 +31,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/AnnouncementManager.h"
 #include "utils/XMLUtils.h"
@@ -179,9 +180,14 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     strFileName = tempbin + "/" + m_strLibName;
   }
 #elif defined(TARGET_DARWIN_IOS)
-  // iOS libs live in xxx.app/FrameWorks, no subdirs.
+  // iOS libs live in xxx.app/FrameWorks/<libname/.framework/<libname>.
   if (!XFILE::CFile::Exists(strFileName))
   {
+    // ios/tvos, dylibs are repackaged into dynamic frameworks
+    // strip the .dylib and redirect the load name.
+    // format is <path>/xxx.app/Frameworks/<libname>.framework/<libname>
+    std::string strID = ID();
+    std::string m_strLibName = StringUtils::Format("%s.framework/%s",strID.c_str(),strID.c_str());
     strFileName = CSpecialProtocol::TranslatePath("special://frameworks/" + m_strLibName);
   }
 #endif

@@ -27,12 +27,9 @@
 #include "xbmc_codec_types.h"
 #include "libXBMC_addon.h"
 
-#ifdef _WIN32
-#define CODEC_HELPER_DLL "\\library.xbmc.codec\\libXBMC_codec" ADDON_HELPER_EXT
-#else
-#define CODEC_HELPER_DLL_NAME "libXBMC_codec-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define CODEC_HELPER_NAME "libXBMCcodec"
+#define CODEC_HELPER_DLL_NAME CODEC_HELPER_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
 #define CODEC_HELPER_DLL "/library.xbmc.codec/" CODEC_HELPER_DLL_NAME
-#endif
 
 class CHelper_libXBMC_codec
 {
@@ -66,15 +63,17 @@ public:
     libBasePath += CODEC_HELPER_DLL;
 
 #if defined(ANDROID)
-      struct stat st;
-      if(stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + CODEC_HELPER_DLL_NAME;
-      }
+    struct stat st;
+    if (stat(libBasePath.c_str(),&st) != 0)
+    {
+      std::string tempbin = getenv("XBMC_ANDROID_LIBS");
+      libBasePath = tempbin + "/" + CODEC_HELPER_DLL_NAME;
+    }
 #elif defined(TARGET_OS_IOS) || defined(TARGET_OS_TV)
-    std::string tempbin = getenv("MRMC_IOS_LIBS");
-    libBasePath = tempbin + "/" + CODEC_HELPER_DLL_NAME;
+    // <path>/xxx.app/Frameworks/<libname>.framework/<libname>
+    libBasePath = getenv("MRMC_IOS_FRAMEWORKS");
+    libBasePath += "/" CODEC_HELPER_NAME "-" ADDON_HELPER_ARCH ".framework";
+    libBasePath += "/" CODEC_HELPER_NAME "-" ADDON_HELPER_ARCH;
 #endif
 
     m_libXBMC_codec = dlopen(libBasePath.c_str(), RTLD_LAZY);

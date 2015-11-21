@@ -57,7 +57,11 @@ public:
 
 class DllLibCPluff : public DllDynamic, DllLibCPluffInterface
 {
+#if defined(TARGET_DARWIN_IOS)
+  DECLARE_DLL_WRAPPER(DllLibCPluff, "libcpluff.framework/libcpluff")
+#else
   DECLARE_DLL_WRAPPER(DllLibCPluff, DLL_PATH_CPLUFF)
+#endif
   DEFINE_METHOD0(const char*,         get_version)
   DEFINE_METHOD1(void,                set_fatal_error_handler,  (cp_fatal_error_func_t p1))
   DEFINE_METHOD0(cp_status_t,         init)

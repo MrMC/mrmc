@@ -68,7 +68,11 @@ public:
 
 class DllLibass : public DllDynamic, DllLibassInterface
 {
+#if defined(TARGET_DARWIN_IOS)
+  DECLARE_DLL_WRAPPER(DllLibass, "libass.framework/libass")
+#else
   DECLARE_DLL_WRAPPER(DllLibass, DLL_PATH_LIBASS)
+#endif
   DEFINE_METHOD2(void, ass_set_extract_fonts, (ASS_Library * p1, int p2))
   DEFINE_METHOD2(void, ass_set_fonts_dir, (ASS_Library * p1, const char * p2))
   DEFINE_METHOD0(ASS_Library *, ass_library_init)

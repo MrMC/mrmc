@@ -9,7 +9,8 @@ ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --with-openssl
+	./configure --prefix=$(PREFIX) --with-openssl \
+	--disable-hidden-symbols
 
 SHELL := /bin/bash
 RM    := rm -rf
