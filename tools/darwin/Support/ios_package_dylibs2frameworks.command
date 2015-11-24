@@ -33,7 +33,7 @@ TARGET_CONTENTS="${TARGET_BUILD_DIR}/${TARGET_NAME}"
 TARGET_FRAMEWORKS="${TARGET_CONTENTS}/Frameworks"
 
 # use the same date/time stamp format for all CFBundleVersions
-BUNDLE_REVISION=$(date -u +%y%m%d%H%M)
+BUNDLE_REVISION=$(date -u +%y%m%d.%H%M)
 
 # ios/tvos use different framework plists
 if [ "$PLATFORM_NAME" == "appletvos" ]; then
