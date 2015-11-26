@@ -517,7 +517,10 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     case UIGestureRecognizerStateChanged:
       break;
     case UIGestureRecognizerStateEnded:
-      [self sendKeyDownUp:XBMCK_BACKSPACE];
+      if (g_windowManager.GetFocusedWindow() == WINDOW_FULLSCREEN_VIDEO)
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+      else
+        [self sendKeyDownUp:XBMCK_BACKSPACE];
       break;
     default:
       break;
