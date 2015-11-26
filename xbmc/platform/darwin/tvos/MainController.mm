@@ -486,7 +486,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 }
 
 //--------------------------------------------------------------
-- (void)incrementCounter
+- (void)buttonHoldSelect
 {
   self.m_holdCounter++;
   [self.m_holdTimer invalidate];
@@ -517,7 +517,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     case UIGestureRecognizerStateChanged:
       break;
     case UIGestureRecognizerStateEnded:
-      [self sendKeyDownUp:XBMCK_ESCAPE];
+      [self sendKeyDownUp:XBMCK_BACKSPACE];
       break;
     default:
       break;
@@ -530,7 +530,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   {
     case UIGestureRecognizerStateBegan:
       self.m_holdCounter = 0;
-      self.m_holdTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(incrementCounter) userInfo:nil repeats:YES];
+      self.m_holdTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(buttonHoldSelect) userInfo:nil repeats:YES];
       break;
     case UIGestureRecognizerStateChanged:
       if (self.m_holdCounter > 1)
