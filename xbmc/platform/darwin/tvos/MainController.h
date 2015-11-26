@@ -45,6 +45,7 @@ typedef enum
   CGPoint                     m_lastGesturePoint;
   CGFloat                     m_screenScale;
   bool                        m_touchBeginSignaled;
+  int                         m_touchDirection;
   int                         m_screenIdx;
 
   bool                        m_isPlayingBeforeInactive;
@@ -68,6 +69,7 @@ typedef enum
 @property CGPoint             m_lastGesturePoint;
 @property CGFloat             m_screenScale;
 @property bool                m_touchBeginSignaled;
+@property int                 m_touchDirection;
 @property int                 m_screenIdx;
 @property CGSize              m_screensize;
 

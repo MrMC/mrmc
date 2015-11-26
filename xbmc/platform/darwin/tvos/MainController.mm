@@ -222,6 +222,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 @synthesize m_lastGesturePoint;
 @synthesize m_screenScale;
 @synthesize m_touchBeginSignaled;
+@synthesize m_touchDirection;
 @synthesize m_screenIdx;
 @synthesize m_screensize;
 @synthesize m_networkAutoSuspendTimer;
@@ -320,6 +321,15 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 }
 
 //--------------------------------------------------------------
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{  
+  if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+    return YES;
+  }
+  return NO;
+}
+
+//--------------------------------------------------------------
 // called before pressesBegan:withEvent: is called on the gesture recognizer
 // for a new press. return NO to prevent the gesture recognizer from seeing this press
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
@@ -355,6 +365,50 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 
   return handled;
 }
+
+//--------------------------------------------------------------
+- (void)createSwipeGestureRecognizers
+{
+  UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
+                                         initWithTarget:self action:@selector(handleSwipe:)];
+
+  swipeLeft.delaysTouchesBegan = YES;
+  swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+  swipeLeft.delegate = self;
+  [m_glView addGestureRecognizer:swipeLeft];
+  [swipeLeft release];
+
+  //single finger swipe right
+  UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
+                                          initWithTarget:self action:@selector(handleSwipe:)];
+
+  swipeRight.delaysTouchesBegan = YES;
+  swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+  swipeRight.delegate = self;
+  [m_glView addGestureRecognizer:swipeRight];
+  [swipeRight release];
+
+  //single finger swipe up
+  UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
+                                       initWithTarget:self action:@selector(handleSwipe:)];
+
+  swipeUp.delaysTouchesBegan = NO;
+  swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
+  swipeUp.delegate = self;
+  [m_glView addGestureRecognizer:swipeUp];
+  [swipeUp release];
+
+  //single finger swipe down
+  UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
+                                         initWithTarget:self action:@selector(handleSwipe:)];
+
+  swipeDown.delaysTouchesBegan = NO;
+  swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
+  swipeDown.delegate = self;
+  [m_glView addGestureRecognizer:swipeDown];
+  [swipeDown release];
+}
+  
 //--------------------------------------------------------------
 - (void)createPanGestureRecognizers
 {
@@ -586,58 +640,39 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (IBAction)handlePan:(UIPanGestureRecognizer *)sender 
 {
-  //PRINT_SIGNATURE();
   if (m_appAlive == YES) //NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     XBMCKey key;
-    CGPoint velocity = [sender velocityInView:m_glView];
     switch (sender.state)
     {
       case UIGestureRecognizerStateBegan:
       {
-        CGPoint point    = [sender locationOfTouch:0 inView:m_glView];
-        point.x *= m_screenScale;
-        point.y *= m_screenScale;
         m_touchBeginSignaled = false;
-        m_lastGesturePoint = point;
         break;
       }
       case UIGestureRecognizerStateChanged:
       {
-        CGPoint point    = [sender locationOfTouch:0 inView:m_glView];
-        point.x *= m_screenScale;
-        point.y *= m_screenScale;
-        CGFloat yMovement = point.y - m_lastGesturePoint.y;
-        CGFloat xMovement = point.x - m_lastGesturePoint.x;
-        if (!m_touchBeginSignaled)
+        if (!m_touchBeginSignaled && m_touchDirection)
         {
-          CGFloat xSlop = 100 * (1000 / m_screensize.width);
-          CGFloat ySlop = 100 * (1000 / m_screensize.height);
-          if (fabs(xMovement) > xSlop || fabs(yMovement) > ySlop)
+          switch (m_touchDirection)
           {
-            if ((fabs(xMovement) > fabs(yMovement)) && (fabs(velocity.x) > fabs(velocity.y)))
-            {
-              //x axis
-              if (xMovement > 0.0f)
-                //left > right
-                key = XBMCK_RIGHT;
-              else
-                //right > left
-                key = XBMCK_LEFT;
-            }
-            else
-            {
-              // y axis
-              if (yMovement > 0.0f)
-                // up > down
-                key = XBMCK_DOWN;
-              else
-                // down > up
-                key = XBMCK_UP;
-            }
-            m_touchBeginSignaled = true;
-            [self startKeyPressTimer:key];
+            case UISwipeGestureRecognizerDirectionRight:
+              key = XBMCK_RIGHT;
+              break;
+            case UISwipeGestureRecognizerDirectionLeft:
+              key = XBMCK_LEFT;
+              break;
+            case UISwipeGestureRecognizerDirectionUp:
+              key = XBMCK_UP;
+              break;
+            case UISwipeGestureRecognizerDirectionDown:
+              key = XBMCK_DOWN;
+              break;
+            default:
+              break;
           }
+          m_touchBeginSignaled = true;
+          [self startKeyPressTimer:key];
         }
         break;
       }
@@ -646,6 +681,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
         if (m_touchBeginSignaled)
         {
           m_touchBeginSignaled = false;
+          m_touchDirection = NULL;
           [self stopKeyPressTimer];
           [self sendKeyUp:key];
         }
@@ -655,6 +691,19 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     }
   }
 }
+
+//--------------------------------------------------------------
+- (IBAction)handleSwipe:(UISwipeGestureRecognizer *)sender
+{
+  if(m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    if (sender.state == UIGestureRecognizerStateRecognized)
+    {
+      m_touchDirection = [sender direction];
+    }
+  }
+}
+
 #pragma mark -
 - (void) insertVideoView:(UIView*)view
 {
@@ -743,6 +792,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 {
   [super viewDidLoad];
 
+  [self createSwipeGestureRecognizers];
   [self createPanGestureRecognizers];
   [self createPressGesturecognizers];
 }
