@@ -8,7 +8,6 @@ OBJS     = $(LIBNAME).o
 
 ifeq ($(findstring osx,$(ARCH)), osx)
   LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).dylib
-  BCSYMBOLMAP_PATH = @prefix@/bcsymbolmaps/$(LIBNAME)
 else
   LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).so
 endif
@@ -17,17 +16,12 @@ all: $(LIB_SHARED)
 
 $(LIB_SHARED): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	mkdir -p $(BCSYMBOLMAP_PATH)
-	rm -f $(BCSYMBOLMAP_PATH)/*.bcsymbolmap
-	$(CXX) $(LDFLAGS) -dynamiclib -Wl,-bitcode_verify -Wl,-bitcode_hide_symbols -Wl,-bitcode_symbol_map,$(BCSYMBOLMAP_PATH) -o $@ $(OBJS)
+	$(CXX) $(LDFLAGS) -dynamiclib -o $@ $(OBJS)
 else
 	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
 endif
 
 CLEAN_FILES = $(LIB_SHARED)
-ifeq ($(findstring osx,$(ARCH)), osx)
-  CLEAN_FILES+= $(BCSYMBOLMAP_PATH)/*.bcsymbolmap
-endif
 
 DISTCLEAN_FILES = Makefile
 

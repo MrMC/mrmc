@@ -7,17 +7,10 @@ VERSION=7.39.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
-ifeq ($(OS),ios)
-# silly configure, if we pass this down from the main LDFLAGS, we get bcsymbolmaps 
-# for all the configure tests while we only care about the one from the actual lib.
-BCSYMMAPBITS=-Wl,-bitcode_verify -Wl,-bitcode_hide_symbols -Wl,-bitcode_symbol_map,$(PREFIX)/bcsymbolmaps/lib$(LIBNAME)
-endif
-
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
-          --without-libssh2 --disable-ntlm-wb \
-	  LDFLAGS="$(BCSYMMAPBITS)"
+          --without-libssh2 --disable-ntlm-wb
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
@@ -38,9 +31,6 @@ ifeq ($(OS),ios)
 endif
 
 $(LIBDYLIB): $(PLATFORM)
-ifeq ($(OS),ios)
-	rm -rf $(PREFIX)/bcsymbolmaps/lib$(LIBNAME); mkdir -p $(PREFIX)/bcsymbolmaps/lib$(LIBNAME)
-endif
 	$(MAKE) -C $(PLATFORM)/lib
 
 .installed-$(PLATFORM): $(LIBDYLIB)
@@ -63,6 +53,4 @@ clean:
 	rm -f .installed-$(PLATFORM)
 
 distclean::
-	rm -rf $(PREFIX)/bcsymbolmaps/lib$(LIBNAME)
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-
