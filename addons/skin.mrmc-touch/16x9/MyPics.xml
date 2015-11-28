@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<views>50,500</views>
+	<onunload>Skin.Reset(MediaSubMenuVisible)</onunload>
+	<controls>
+		<include>CommonBackground</include>
+		<include>MediaBladeLeft</include>
+		<include>CommonBackgroundOverlay</include>
+		<include>FileCountCommons</include>
+		<include>HomeButtonCommons</include>
+		<include>CommonNowPlaying</include>
+		<include>OptionsButtonCommons</include>
+		<control type="label">
+			<description>Window label</description>
+			<include>MediaWindowTitleCommons</include>
+			<label>$LOCALIZE[1]$INFO[Container.FolderName, - ]</label>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<include>CommonRootView</include> <!-- view id = 50 -->
+			<include>ThumbnailView</include> <!-- view id = 500 -->
+		</control>
+		<include>ScrollBarCommons</include>
+		<include>MediaSubMenu</include>
+		<include name="DropdownMenu">
+			<param name="SB">380</param>
+			<param name="PB">320</param>
+			<param name="PF">302</param>
+		</include>
+		<include>ScrollOffsetLabel</include>
+		<include>BehindDialogFadeOut</include>
+	</controls>
+</window>

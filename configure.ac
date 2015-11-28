@@ -1187,7 +1187,7 @@ fi
 
 # touch skin
 use_touch_skin=no
-if [[ -f "addons/skin.re-touched/addon.xml" ]]; then 
+if [[ -f "addons/skin.mrmc-touch/addon.xml" ]]; then 
   use_touch_skin=yes
   USE_TOUCH_SKIN=1
   AC_DEFINE([HAS_TOUCH_SKIN], [1], [Whether to build the touch skin.])
@@ -2062,7 +2062,7 @@ OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
 fi
 
 if test "$use_touch_skin" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES addons/skin.mrmc-touch/media/Makefile"
 fi
 
 if test "$use_codec_libstagefright" = "yes"; then

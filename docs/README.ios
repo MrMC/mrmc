@@ -42,8 +42,6 @@ character itself should NOT be typed as part of the command.
 
  $ cd $HOME
  $ git clone git://github.com/mrmc/mrmc.git MrMC
- $ cd MrMC
- $ git submodule update --init addons/skin.re-touched
 
 -----------------------------------------------------------------------------
 3.1 Install Xcode

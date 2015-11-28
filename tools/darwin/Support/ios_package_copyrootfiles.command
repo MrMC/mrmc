@@ -27,7 +27,7 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   LANGSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDSYS} --exclude resource.uisounds*"
 
   # rsync command for including everything but the skins
-  ADDONSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDDBG} --exclude addons/lib --exclude addons/share --exclude addons/skin.mrmc --exclude addons/skin.re-touched --exclude *changelog.* --exclude *library.*/*.h --exclude *library.*/*.cpp --exclude *xml.in"
+  ADDONSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDDBG} --exclude addons/lib --exclude addons/share --exclude addons/skin.mrmc --exclude addons/skin.mrmc-touch --exclude *changelog.* --exclude *library.*/*.h --exclude *library.*/*.cpp --exclude *xml.in"
 
   # binary name is MrMC but we build MrMC so to get a clean binary each time
   mv $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME
@@ -59,14 +59,14 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   ${SYNC} "$SRCROOT/addons/skin.mrmc/icon.png"      "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.mrmc"
 
   # sync touch skin if it exists
-  if [ -f "$SRCROOT/addons/skin.re-touched/addon.xml" ]; then
+  if [ -f "$SRCROOT/addons/skin.mrmc-touch/addon.xml" ]; then
     SYNCSKIN_B=${SYNC}
-    if [ -f "$SRCROOT/addons/skin.re-touched/media/Textures.xbt" ]; then
+    if [ -f "$SRCROOT/addons/skin.mrmc-touch/media/Textures.xbt" ]; then
       SYNCSKIN_B="${SYNC} --exclude *.png --exclude *.jpg"
     fi
-    ${SYNCSKIN_B} "$SRCROOT/addons/skin.re-touched"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-    ${SYNC} "$SRCROOT/addons/skin.re-touched/background" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.re-touched"
-    ${SYNC} "$SRCROOT/addons/skin.re-touched/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.re-touched"
+    ${SYNCSKIN_B} "$SRCROOT/addons/skin.mrmc-touch"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
+    ${SYNC} "$SRCROOT/addons/skin.mrmc-touch/background" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.mrmc-touch"
+    ${SYNC} "$SRCROOT/addons/skin.mrmc-touch/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.mrmc-touch"
   fi
 
   # fixups, addons might have silly symlinks because cmake is stupid, remove them

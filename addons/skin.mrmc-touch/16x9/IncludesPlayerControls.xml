@@ -1,0 +1,1163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="PlayerControlCommons">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<include>ScreenWidth</include>
+			<height>ScreenHeight</height>
+			<colordiffuse>BBFFFFFF</colordiffuse>
+			<texture>black-back.png</texture>
+			<visible>!Window.IsVisible(Visualisation) + !Window.IsVisible(FullScreenVideo)</visible>
+		</control>
+		<include>CommonHeader</include>
+		<control type="group">
+			<posx>0</posx>
+			<posy>84</posy>
+			<visible>Skin.HasSetting(PlayerControlsShowAudioInfo) + Player.HasAudio</visible>
+			<animation effect="slide" start="0,-200" end="0,0" time="300" easing="out" tween="quadratic" >Visible</animation>
+			<animation effect="slide" start="0,0" end="0,-200" time="300" easing="in" tween="quadratic" >Hidden</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>ScreenWidth</include>
+				<height>200</height>
+				<texture border="5">DialogBack.png</texture>
+			</control>
+			<control type="group">
+				<control type="image">
+					<description>cover image</description>
+					<posx>20</posx>
+					<posy>10</posy>
+					<width>180</width>
+					<height>180</height>
+					<info>MusicPlayer.Cover</info>
+					<aspectratio>keep</aspectratio>
+					<bordertexture>ThumbBorderGrey.png</bordertexture>
+					<bordersize>2</bordersize>
+				</control>
+				<control type="label">
+					<description>Artist label</description>
+					<posx>220</posx>
+					<posy>25</posy>
+					<width>1020</width>
+					<height>25</height>
+					<align>left</align>
+					<font>font13</font>
+					<label>$INFO[MusicPlayer.Artist]</label>
+					<textcolor>black</textcolor>
+				</control>
+				<control type="label">
+					<posx>230</posx>
+					<posy>60</posy>
+					<width>1030</width>
+					<height>30</height>
+					<font>font30_title</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[MusicPlayer.Title]</label>
+					<textcolor>black</textcolor>
+					<scroll>true</scroll>
+				</control>
+				<control type="label">
+					<description>Album label</description>
+					<posx>220</posx>
+					<posy>95</posy>
+					<width>1020</width>
+					<height>25</height>
+					<align>left</align>
+					<font>font13</font>
+					<label>$INFO[MusicPlayer.Album]</label>
+					<textcolor>black</textcolor>
+				</control>
+				<control type="group">
+					<posx>220</posx>
+					<posy>135</posy>
+					<width>600</width>
+					<height>48</height>
+					<control type="image">
+						<description>Audio Codec Image</description>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>100</width>
+						<height>48</height>
+						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
+					</control>
+					<control type="group">
+						<description>Rating</description>
+						<posx>105</posx>
+						<posy>0</posy>
+						<width>160</width>
+						<height>48</height>
+						<control type="image">
+							<description>rating back</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>145</width>
+							<height>48</height>
+							<texture border="5">flagging/blank.png</texture>
+						</control>
+						<control type="image">
+							<description>Rating</description>
+							<posx>10</posx>
+							<posy>8</posy>
+							<width>125</width>
+							<height>32</height>
+							<texture fallback="light/left_rating/rating0.png">$INFO[Player.StarRating,light/left_rating/]</texture>
+						</control>
+					</control>
+				</control>
+				<control type="label">
+					<description>Normal Header label</description>
+					<posx>20r</posx>
+					<posy>5</posy>
+					<width>300</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>black</textcolor>
+					<label>$LOCALIZE[589]</label>
+					<visible>MusicPartyMode.Enabled</visible>
+				</control>
+				<control type="label">
+					<description>Partymode Header label</description>
+					<posx>20r</posx>
+					<posy>5</posy>
+					<width>300</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>black</textcolor>
+					<label>$INFO[musicplayer.Playlistposition,$LOCALIZE[554]: ]$INFO[musicplayer.Playlistlength, / ]</label>
+					<visible>!MusicPartyMode.Enabled</visible>
+				</control>
+				<control type="label">
+					<posx>20r</posx>
+					<posy>160</posy>
+					<width>800</width>
+					<height>25</height>
+					<label>$LOCALIZE[209]: $INFO[MusicPlayer.offset(1).Artist,, - ]$INFO[MusicPlayer.offset(1).Title]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>black</textcolor>
+					<scroll>true</scroll>
+					<visible>MusicPlayer.HasNext</visible>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>84</posy>
+			<visible>Skin.HasSetting(PlayerControlsShowVideoInfo) + Player.HasVideo</visible>
+			<animation effect="slide" start="0,-200" end="0,0" time="300" easing="out" tween="quadratic" >Visible</animation>
+			<animation effect="slide" start="0,0" end="0,-200" time="300" easing="in" tween="quadratic" >Hidden</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>ScreenWidth</include>
+				<height>200</height>
+				<texture border="5">DialogBack.png</texture>
+			</control>
+			<control type="group">
+				<control type="group">
+					<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes)</visible>
+					<control type="image">
+						<description>cover image</description>
+						<posx>20</posx>
+						<posy>10</posy>
+						<width>250</width>
+						<height>180</height>
+						<info>VideoPlayer.Cover</info>
+						<aspectratio align="right">keep</aspectratio>
+						<bordertexture>ThumbBorderGrey.png</bordertexture>
+						<bordersize>2</bordersize>
+					</control>
+					<control type="label">
+						<description>studio label</description>
+						<posx>290</posx>
+						<posy>25</posy>
+						<width>950</width>
+						<height>25</height>
+						<align>left</align>
+						<font>font13</font>
+						<label>$INFO[VideoPlayer.Studio]</label>
+						<textcolor>black</textcolor>
+					</control>
+					<control type="label">
+						<posx>300</posx>
+						<posy>60</posy>
+						<width>940</width>
+						<height>30</height>
+						<font>font30_title</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[VideoPlayer.Title]</label>
+						<textcolor>black</textcolor>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Genre label</description>
+						<posx>290</posx>
+						<posy>95</posy>
+						<width>950</width>
+						<height>25</height>
+						<align>left</align>
+						<font>font13</font>
+						<label>$INFO[VideoPlayer.Genre]</label>
+						<textcolor>black</textcolor>
+					</control>
+					<control type="group">
+						<posx>290</posx>
+						<posy>135</posy>
+						<width>600</width>
+						<height>48</height>
+						<control type="image">
+							<description>Video Codec Image</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>100</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.VideoCodec,flagging/video/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Resolution Image</description>
+							<posx>105</posx>
+							<posy>0</posy>
+							<width>64</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.VideoResolution,flagging/video/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Audio Codec Image</description>
+							<posx>174</posx>
+							<posy>0</posy>
+							<width>100</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Audio Codec Image</description>
+							<posx>279</posx>
+							<posy>0</posy>
+							<width>64</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.AudioChannels,flagging/audio/,.png]</texture>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>VideoPlayer.Content(Movies)</visible>
+					<control type="image">
+						<description>cover image</description>
+						<posx>20</posx>
+						<posy>10</posy>
+						<width>150</width>
+						<height>180</height>
+						<info>VideoPlayer.Cover</info>
+						<aspectratio>keep</aspectratio>
+						<bordertexture>ThumbBorderGrey.png</bordertexture>
+						<bordersize>2</bordersize>
+					</control>
+					<control type="label">
+						<description>Studio label</description>
+						<posx>190</posx>
+						<posy>25</posy>
+						<width>1050</width>
+						<height>25</height>
+						<align>left</align>
+						<font>font13</font>
+						<label>$INFO[VideoPlayer.Studio]</label>
+						<textcolor>black</textcolor>
+					</control>
+					<control type="label">
+						<posx>200</posx>
+						<posy>60</posy>
+						<width>1040</width>
+						<height>30</height>
+						<font>font30_title</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[VideoPlayer.Title]</label>
+						<textcolor>black</textcolor>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Genre label</description>
+						<posx>190</posx>
+						<posy>95</posy>
+						<width>1050</width>
+						<height>25</height>
+						<align>left</align>
+						<font>font13</font>
+						<label>$INFO[VideoPlayer.Genre]</label>
+						<textcolor>black</textcolor>
+					</control>
+					<control type="group">
+						<posx>190</posx>
+						<posy>135</posy>
+						<width>600</width>
+						<height>48</height>
+						<control type="image">
+							<description>Video Codec Image</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>100</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.VideoCodec,flagging/video/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Resolution Image</description>
+							<posx>105</posx>
+							<posy>0</posy>
+							<width>64</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.VideoResolution,flagging/video/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Audio Codec Image</description>
+							<posx>174</posx>
+							<posy>0</posy>
+							<width>100</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Audio Codec Image</description>
+							<posx>279</posx>
+							<posy>0</posy>
+							<width>64</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.AudioChannels,flagging/audio/,.png]</texture>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>VideoPlayer.Content(Episodes)</visible>
+					<control type="image">
+						<description>cover image</description>
+						<posx>20</posx>
+						<posy>10</posy>
+						<width>250</width>
+						<height>180</height>
+						<info>VideoPlayer.Cover</info>
+						<aspectratio>scale</aspectratio>
+						<bordertexture>ThumbBorderGrey.png</bordertexture>
+						<bordersize>2</bordersize>
+					</control>
+					<control type="label">
+						<description>Show label</description>
+						<posx>290</posx>
+						<posy>25</posy>
+						<width>950</width>
+						<height>25</height>
+						<align>left</align>
+						<font>font13</font>
+						<label>$INFO[VideoPlayer.TVShowTitle]</label>
+						<textcolor>black</textcolor>
+					</control>
+					<control type="label">
+						<posx>300</posx>
+						<posy>60</posy>
+						<width>940</width>
+						<height>30</height>
+						<font>font30_title</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[VideoPlayer.Title]</label>
+						<textcolor>black</textcolor>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Episode label</description>
+						<posx>290</posx>
+						<posy>95</posy>
+						<width>950</width>
+						<height>25</height>
+						<align>left</align>
+						<font>font13</font>
+						<label>$INFO[VideoPlayer.Season,$LOCALIZE[20373]: ] &#32;&#32;&#32; $INFO[VideoPlayer.Episode,$LOCALIZE[20359]: ]</label>
+						<textcolor>black</textcolor>
+					</control>
+					<control type="group">
+						<posx>290</posx>
+						<posy>135</posy>
+						<width>600</width>
+						<height>48</height>
+						<control type="image">
+							<description>Video Codec Image</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>100</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.VideoCodec,flagging/video/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Resolution Image</description>
+							<posx>105</posx>
+							<posy>0</posy>
+							<width>64</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.VideoResolution,flagging/video/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Audio Codec Image</description>
+							<posx>174</posx>
+							<posy>0</posy>
+							<width>100</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
+						</control>
+						<control type="image">
+							<description>Audio Codec Image</description>
+							<posx>279</posx>
+							<posy>0</posy>
+							<width>64</width>
+							<height>48</height>
+							<texture>$INFO[VideoPlayer.AudioChannels,flagging/audio/,.png]</texture>
+						</control>
+					</control>
+				</control>
+				<control type="label">
+					<description>Chapter label</description>
+					<posx>20r</posx>
+					<posy>5</posy>
+					<width>1200</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>black</textcolor>
+					<label>$INFO[Player.Chapter,$LOCALIZE[21396]: ]$INFO[Player.ChapterCount, / ]$INFO[Player.ChapterName,[COLOR=grey3] (,)[/COLOR]]</label>
+					<visible>Player.ChapterCount</visible>
+				</control>
+				<control type="label">
+					<posx>20r</posx>
+					<posy>160</posy>
+					<width>800</width>
+					<height>25</height>
+					<label>$LOCALIZE[31049] $INFO[Player.FinishTime]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>black</textcolor>
+					<scroll>true</scroll>
+				</control>
+			</control>
+		</control>
+		<include>CommonHeader</include>
+		<control type="image">
+			<posx>0</posx>
+			<posy>20</posy>
+			<include>ScreenWidth</include>
+			<height>64</height>
+			<texture>header.png</texture>
+		</control>
+		<control type="grouplist">
+			<description>Top Left bar</description>
+			<posx>0</posx>
+			<posy>20</posy>
+			<width>70</width>
+			<height>64</height>
+			<align>left</align>
+			<itemgap>5</itemgap>
+			<orientation>horizontal</orientation>
+			<control type="button">
+				<description>Playlist Button</description>
+				<width>64</width>
+				<height>64</height>
+				<texturenofocus>icon_playlistmusic.png</texturenofocus>
+				<texturefocus>icon_playlistmusic.png</texturefocus>
+				<onclick>Back</onclick>
+				<onclick>ActivateWindow(MusicPlaylist)</onclick>
+				<visible>Player.HasAudio</visible>
+			</control>
+			<control type="button">
+				<description>Playlist Button</description>
+				<width>64</width>
+				<height>64</height>
+				<texturenofocus>icon_playlistvideo.png</texturenofocus>
+				<texturefocus>icon_playlistvideo.png</texturefocus>
+				<onclick>Back</onclick>
+				<onclick>ActivateWindow(VideoPlaylist)</onclick>
+				<visible>Player.HasVideo</visible>
+			</control>
+			<control type="image">
+				<width>2</width>
+				<height>62</height>
+				<texture>header-divide.png</texture>
+			</control>
+		</control>
+		<control type="group">
+			<visible>!System.Platform.IOS</visible>
+			<posx>80</posx>
+			<posy>28</posy>
+			<control type="label">
+				<description>label</description>
+				<posx>5</posx>
+				<posy>0</posy>
+				<height>20</height>
+				<width>200</width>
+				<label>13376</label>
+				<font>font12</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>Volumelabel</description>
+				<posx>375</posx>
+				<posy>0</posy>
+				<height>20</height>
+				<width>200</width>
+				<label>$INFO[Control.GetLabel(1)]</label>
+				<font>font12</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="progress" id="2">
+				<description>Volume</description>
+				<posx>0</posx>
+				<posy>23</posy>
+				<width>380</width>
+				<height>20</height>
+				<info>Player.Volume</info>
+			</control>
+			<control type="slider" id="1">
+				<description>Volume Slider</description>
+				<posx>0</posx>
+				<posy>23</posy>
+				<width>380</width>
+				<height>20</height>
+ 				<info>Player.Volume</info>
+				<action>Volume</action>
+				<texturesliderbar>OSDProgressBack2.png</texturesliderbar>
+				<textureslidernib>OSDSliderNib.png</textureslidernib>
+				<textureslidernibfocus>OSDSliderNib.png</textureslidernibfocus>
+			</control>
+			<control type="image">
+				<posx>390</posx>
+				<posy>-8</posy>
+				<width>2</width>
+				<height>62</height>
+				<texture>header-divide.png</texture>
+			</control>
+		</control>
+		<control type="grouplist">
+			<description>Top Right bar</description>
+			<posx>1080r</posx>
+			<posy>25</posy>
+			<width>1000</width>
+			<height>64</height>
+			<align>right</align>
+			<itemgap>5</itemgap>
+			<orientation>horizontal</orientation>
+			<control type="radiobutton">
+				<description>Show Info Button</description>
+				<width>270</width>
+				<height>50</height>
+				<label>$LOCALIZE[544]</label>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<selected>Skin.HasSetting(PlayerControlsShowAudioInfo)</selected>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<onclick>Skin.ToggleSetting(PlayerControlsShowAudioInfo)</onclick>
+				<visible>Player.HasAudio</visible>
+			</control>
+			<control type="radiobutton">
+				<description>Show Info Button</description>
+				<width>270</width>
+				<height>50</height>
+				<label>$LOCALIZE[544]</label>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<selected>Skin.HasSetting(PlayerControlsShowVideoInfo)</selected>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<onclick>Skin.ToggleSetting(PlayerControlsShowVideoInfo)</onclick>
+				<visible>Player.HasVideo</visible>
+			</control>
+			<control type="button">
+				<description>Submenu Button</description>
+				<width>200</width>
+				<height>50</height>
+				<label>$LOCALIZE[33063]</label>
+				<font>font13</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<onclick>Skin.ToggleSetting(PlayerControlsSubMenuVisible)</onclick>
+				<visible>Window.IsVisible(Fullscreenvideo) | Window.IsVisible(Visualisation)</visible>
+			</control>
+			<control type="radiobutton">
+				<description>Fullscreen Button</description>
+				<posy>5</posy>
+				<width>230</width>
+				<height>50</height>
+				<radiowidth>36</radiowidth>
+				<radioheight>36</radioheight>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<label>31008</label>
+				<onclick>fullscreen</onclick>
+				<textureradioonfocus>GoFullscreen.png</textureradioonfocus>
+				<textureradioonnofocus>GoFullscreen.png</textureradioonnofocus>
+				<textureradioofffocus>GoFullscreen.png</textureradioofffocus>
+				<textureradiooffnofocus>GoFullscreen.png</textureradiooffnofocus>
+				<visible>!Window.IsVisible(Visualisation) + !Window.IsVisible(FullScreenVideo)</visible>
+			</control>
+			<control type="radiobutton">
+				<description>Fullscreen Button</description>
+				<posy>5</posy>
+				<width>230</width>
+				<height>50</height>
+				<radiowidth>36</radiowidth>
+				<radioheight>36</radioheight>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<label>31008</label>
+				<onclick>Dialog.Close(VideoOSD,true)</onclick>
+				<onclick>Dialog.Close(MusicOSD,true)</onclick>
+				<onclick>fullscreen</onclick>
+				<textureradioonfocus flipx="true" flipy="true">GoFullscreen.png</textureradioonfocus>
+				<textureradioonnofocus flipx="true" flipy="true">GoFullscreen.png</textureradioonnofocus>
+				<textureradioofffocus flipx="true" flipy="true">GoFullscreen.png</textureradioofffocus>
+				<textureradiooffnofocus flipx="true" flipy="true">GoFullscreen.png</textureradiooffnofocus>
+				<visible>Window.IsVisible(Visualisation) | Window.IsVisible(FullScreenVideo)</visible>
+			</control>
+		</control>
+		<control type="group">
+			<posx>65r</posx>
+			<posy>20</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>2</width>
+				<height>62</height>
+				<texture>header-divide.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Button</description>
+				<posx>5</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<font>-</font>
+				<onclick>Back</onclick>
+				<texturefocus>icon_close.png</texturefocus>
+				<texturenofocus>icon_close.png</texturenofocus>
+			</control>
+		</control>
+
+		<control type="group">
+			<posx>0</posx>
+			<posy>100r</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>ScreenWidth</include>
+				<height>100</height>
+				<texture>floor.png</texture>
+			</control>
+			<control type="label">
+				<posx>180</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>32</height>
+				<font>font13_title</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[Player.Time(hh:mm:ss)]</label>
+			</control>
+			<control type="label">
+				<posx>180r</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>32</height>
+				<font>font13_title</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[Player.Duration(hh:mm:ss)]</label>
+			</control>
+			<control type="group">
+				<include>16x9_xPos_Relocation</include>
+				<control type="progress">
+					<description>Progressbar</description>
+					<posx>200</posx>
+					<posy>0</posy>
+					<width>880</width>
+					<height>12</height>
+					<info>Player.Progress</info>
+					<texturebg flipy="true" border="10,0,10,0">HeaderProgressBack.png</texturebg>
+					<midtexture flipy="true" border="10,0,10,0">HeaderProgressFront.png</midtexture>
+				</control>
+				<control type="slider" id="87">
+					<description>Seek Slider</description>
+					<posx>200</posx>
+					<posy>-4</posy>
+					<width>880</width>
+					<height>20</height>
+					<action>seek</action>
+					<texturesliderbar>OSDProgressBack2.png</texturesliderbar>
+					<textureslidernib>OSDSliderNib.png</textureslidernib>
+					<textureslidernibfocus>OSDSliderNib.png</textureslidernibfocus>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posx>150r</posx>
+			<posy>65r</posy>
+			<visible>!VideoPlayer.Content(LiveTV)</visible>
+			<control type="button" id="606">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
+				<font>-</font>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<onclick>PlayerControl(Repeat)</onclick>
+				<onleft>100</onleft>
+				<onright>607</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>OSDRepeatNF.png</texture>
+				<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+				<visible>!Control.HasFocus(606)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>OSDRepeatFO.png</texture>
+				<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+				<visible>Control.HasFocus(606)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>OSDRepeatOneNF.png</texture>
+				<visible>Playlist.IsRepeatOne</visible>
+				<visible>!Control.HasFocus(606)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>OSDRepeatOneFO.png</texture>
+				<visible>Playlist.IsRepeatOne</visible>
+				<visible>Control.HasFocus(606)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>OSDRepeatAllNF.png</texture>
+				<visible>Playlist.IsRepeat</visible>
+				<visible>!Control.HasFocus(606)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>OSDRepeatAllFO.png</texture>
+				<visible>Playlist.IsRepeat</visible>
+				<visible>Control.HasFocus(606)</visible>
+			</control>
+			<control type="togglebutton" id="607">
+				<posx>70</posx>
+				<posy>0</posy>
+				<width>60</width>
+				<height>60</height>
+				<label>$LOCALIZE[590]$INFO[Playlist.Random, : ]</label>
+				<font>-</font>
+				<texturefocus>OSDRandomOffFO.png</texturefocus>
+				<texturenofocus>OSDRandomOffNF.png</texturenofocus>
+				<usealttexture>Playlist.IsRandom</usealttexture>
+				<alttexturefocus>OSDRandomOnFO.png</alttexturefocus>
+				<alttexturenofocus>OSDRandomOnNF.png</alttexturenofocus>
+				<onclick>PlayerControl(Random)</onclick>
+				<onleft>606</onleft>
+				<onright>100</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+			</control>
+		</control>
+		<control type="grouplist" id="800">
+			<posx>210r</posx>
+			<posy>65r</posy>
+			<onup>1000</onup>
+			<ondown>1000</ondown>
+			<onleft>100</onleft>
+			<onright>100</onright>
+			<itemgap>0</itemgap>
+			<orientation>horizontal</orientation>
+			<visible>VideoPlayer.Content(LiveTV)</visible>
+			<control type="button" id="801">
+				<width>60</width>
+				<height>60</height>
+				<label>19019</label>
+				<font>-</font>
+				<texturefocus>OSDChannelListFO.png</texturefocus>
+				<texturenofocus>OSDChannelListNF.png</texturenofocus>
+				<onclick>ActivateWindow(PVROSDChannels)</onclick>
+				<onclick>Dialog.Close(VideoOSD)</onclick>
+			</control>
+			<control type="button" id="802">
+				<width>60</width>
+				<height>60</height>
+				<label>$LOCALIZE[19029]$INFO[VideoPlayer.ChannelName, - ]</label>
+				<font>-</font>
+				<texturefocus>OSDepgFO.png</texturefocus>
+				<texturenofocus>OSDepgNF.png</texturenofocus>
+				<onclick>ActivateWindow(PVROSDGuide)</onclick>
+				<onclick>Dialog.Close(VideoOSD)</onclick>
+			</control>
+			<control type="button" id="803">
+				<width>60</width>
+				<height>60</height>
+				<label>31356</label>
+				<font>-</font>
+				<texturefocus>OSDTeleTextFO.png</texturefocus>
+				<texturenofocus>OSDTeleTextNF.png</texturenofocus>
+				<onclick>ActivateWindow(Teletext)</onclick>
+			</control>
+		</control>
+		<control type="grouplist" id="100">
+			<posx>0</posx>
+			<posy>82r</posy>
+			<include>ScreenWidth</include>
+			<align>center</align>
+			<itemgap>0</itemgap>
+			<orientation>horizontal</orientation>
+			<onup>1000</onup>
+			<ondown>1000</ondown>
+			<onleft condition="!VideoPlayer.Content(LiveTV)">607</onleft>
+			<onleft condition="VideoPlayer.Content(LiveTV)">800</onleft>
+			<onright condition="!VideoPlayer.Content(LiveTV)">606</onright>
+			<onright condition="VideoPlayer.Content(LiveTV)">800</onright>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<control type="button" id="600">
+				<width>80</width>
+				<height>80</height>
+				<label>210</label>
+				<font>-</font>
+				<texturefocus>OSDPrevTrackFO.png</texturefocus>
+				<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
+				<onclick>PlayerControl(Previous)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="700">
+				<width>80</width>
+				<height>80</height>
+				<label>210</label>
+				<font>-</font>
+				<texturefocus>OSDChannelUPFO.png</texturefocus>
+				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<onclick>PlayerControl(Previous)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="701">
+				<width>80</width>
+				<height>80</height>
+				<label>209</label>
+				<font>-</font>
+				<texturefocus>OSDChannelDownFO.png</texturefocus>
+				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<onclick>PlayerControl(Next)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="601">
+				<width>80</width>
+				<height>80</height>
+				<label>31354</label>
+				<font>-</font>
+				<texturefocus>OSDRewindFO.png</texturefocus>
+				<texturenofocus>OSDRewindNF.png</texturenofocus>
+				<onclick>PlayerControl(Rewind)</onclick>
+			</control>
+			<control type="togglebutton" id="602">
+				<width>80</width>
+				<height>80</height>
+				<label>31351</label>
+				<altlabel>208</altlabel>
+				<font>-</font>
+				<texturefocus>OSDPauseFO.png</texturefocus>
+				<texturenofocus>OSDPauseNF.png</texturenofocus>
+				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+				<onclick>PlayerControl(Play)</onclick>
+			</control>
+			<control type="button" id="603">
+				<width>80</width>
+				<height>80</height>
+				<label>31352</label>
+				<font>-</font>
+				<texturefocus>OSDStopFO.png</texturefocus>
+				<texturenofocus>OSDStopNF.png</texturenofocus>
+				<onclick>PlayerControl(Stop)</onclick>
+			</control>
+			<control type="button" id="604">
+				<width>80</width>
+				<height>80</height>
+				<label>31353</label>
+				<font>-</font>
+				<texturefocus>OSDForwardFO.png</texturefocus>
+				<texturenofocus>OSDForwardNF.png</texturenofocus>
+				<onclick>PlayerControl(Forward)</onclick>
+			</control>
+			<control type="button" id="605">
+				<width>80</width>
+				<height>80</height>
+				<label>209</label>
+				<font>-</font>
+				<texturefocus>OSDNextTrackFO.png</texturefocus>
+				<texturenofocus>OSDNextTrackNF.png</texturenofocus>
+				<onclick>PlayerControl(Next)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="togglebutton" id="703">
+				<width>80</width>
+				<height>80</height>
+				<label>264</label>
+				<altlabel>265</altlabel>
+				<font>-</font>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
+				<usealttexture>Player.Recording</usealttexture>
+				<alttexturefocus>OSDRecordOnFO.png</alttexturefocus>
+				<alttexturenofocus>OSDRecordOnNF.png</alttexturenofocus>
+				<onclick>PlayerControl(Record)</onclick>
+				<visible>Player.CanRecord</visible>
+			</control>
+		</control>
+
+		<control type="group">
+			<visible>Window.IsVisible(FullscreenVideo) + !VideoPlayer.Content(LiveTV)</visible>
+			<posx>80r</posx>
+			<posy>385</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>170</height>
+				<colordiffuse>EEFFFFFF</colordiffuse>
+				<texture border="3">PlayerControls-Background.png</texture>
+			</control>
+			<control type="button">
+				<posx>10</posx>
+				<posy>38</posy>
+				<width>60</width>
+				<height>35</height>
+				<hitrect x="5" y="5" w="75" h="80" />
+				<label>-</label>
+				<font>-</font>
+				<texturefocus>icon_subtitles.png</texturefocus>
+				<texturenofocus>icon_subtitles.png</texturenofocus>
+				<onleft>100</onleft>
+				<onright>702</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>Dialog.Close(VideoOSD,true)</onclick>
+				<onclick>ShowSubtitles</onclick>
+				<visible>VideoPlayer.HasSubtitles</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>88</posy>
+				<width>80</width>
+				<height>2</height>
+				<texture>header-divide.png</texture>
+			</control>
+			<control type="button">
+				<posx>10</posx>
+				<posy>100</posy>
+				<width>65</width>
+				<height>60</height>
+				<label>-</label>
+				<hitrect x="5" y="100" w="75" h="70" />
+				<font>-</font>
+				<texturefocus flipy="true">icon_shift.png</texturefocus>
+				<texturenofocus flipy="true">icon_shift.png</texturenofocus>
+				<onleft>100</onleft>
+				<onright>702</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>Close</onclick>
+				<onclick>ActivateWindow(SubtitleSearch)</onclick>
+			</control>
+		</control>
+
+		<control type="group">
+			<visible>Skin.HasSetting(PlayerControlsSubMenuVisible)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="button">
+				<description>Hidden button to close the sort when its focused</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>ScreenWidth</include>
+				<height>ScreenHeight</height>
+				<texturenofocus>-</texturenofocus>
+				<texturefocus>-</texturefocus>
+				<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+			</control>
+			<control type="group">
+				<posx>570r</posx>
+				<posy>113</posy>
+				<control type="image">
+					<description>Shadow Background</description>
+					<posx>-30</posx>
+					<posy>-30</posy>
+					<width>380</width>
+					<height>400</height>
+					<texture border="30">ShadowBorder.png</texture>
+				</control>
+				<control type="button">
+					<description>Panel Background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>320</width>
+					<height>340</height>
+					<texturefocus border="5">SubBack.png</texturefocus>
+					<texturenofocus border="5">SubBack.png</texturenofocus>
+					<onclick>noop</onclick>
+				</control>
+				<control type="image">
+					<description>Panel Forground image</description>
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>300</width>
+					<height>314</height>
+					<texture border="5">SubBack2.png</texture>
+				</control>
+				<control type="image">
+					<description>Panel Arrow image</description>
+					<posx>140</posx>
+					<posy>-34</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>arrow-big-up.png</texture>
+				</control>
+				<control type="grouplist">
+					<posx>11</posx>
+					<posy>10</posy>
+					<width>300</width>
+					<height>234</height>
+					<onleft>9000</onleft>
+					<onright>50</onright>
+					<onup>9000</onup>
+					<ondown>9000</ondown>
+					<itemgap>-1</itemgap>
+					<!-- Buttons for Fullscreen Video -->
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>13395</label>
+						<onclick>Dialog.Close(VideoOSD,true)</onclick>
+						<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+						<onclick>ActivateWindow(123)</onclick>
+						<visible>Window.IsVisible(FullScreenVideo)</visible>
+					</control>
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>31002</label>
+						<onclick>Dialog.Close(VideoOSD,true)</onclick>
+						<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+						<onclick>ActivateWindow(124)</onclick>
+						<visible>Window.IsVisible(FullScreenVideo)</visible>
+					</control>
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>298</label>
+						<onclick>Dialog.Close(VideoOSD,true)</onclick>
+						<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+						<onclick>ActivateWindow(125)</onclick>
+						<visible>Window.IsVisible(FullScreenVideo)</visible>
+					</control>
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>31355</label>
+						<onclick>PlayerControl(ShowVideoMenu)</onclick>
+						<visible>VideoPlayer.HasMenu</visible>
+						<visible>Window.IsVisible(FullScreenVideo)</visible>
+					</control>
+					<!-- Buttons for Fullscreen Audio -->
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>250</label>
+						<onclick>Dialog.Close(MusicOSD,true)</onclick>
+						<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+						<onclick>Addon.Default.Set(xbmc.player.musicviz)</onclick>
+						<visible>Window.IsVisible(Visualisation)</visible>
+					</control>
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>31005</label>
+						<onclick>Dialog.Close(MusicOSD,true)</onclick>
+						<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+						<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
+						<visible>Window.IsVisible(Visualisation)</visible>
+					</control>
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>31006</label>
+						<onclick>Dialog.Close(MusicOSD,true)</onclick>
+						<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+						<onclick>ActivateWindow(122)</onclick>
+						<visible>Window.IsVisible(Visualisation)</visible>
+					</control>
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>15047</label>
+						<onclick>Dialog.Close(MusicOSD,true)</onclick>
+						<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+						<onclick>ActivateWindow(OSDAudioDSPSettings)</onclick>
+						<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
+					</control>
+					<control type="button">
+						<include>ButtonCommonValues2</include>
+						<label>29900</label>
+						<onclick>Dialog.Close(MusicOSD,true)</onclick>
+						<onclick>Skin.Reset(PlayerControlsSubMenuVisible)</onclick>
+						<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+						<visible>MusicPlayer.Content(LiveTV) + RDS.HasRadiotextPlus</visible>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>100</posy>
+						<width>298</width>
+						<height>10</height>
+						<texture>shelf_shadow.png</texture>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

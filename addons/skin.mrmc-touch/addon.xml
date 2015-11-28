@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.mrmc-touch" version="5.1.1" name="MrMC-Touch" provider-name="Tem MrMC">
+	<requires>
+		<import addon="xbmc.gui" version="5.10.0"/>
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false">
+		<res width="1280" height="960" aspect="4:3" folder="16x9"/>
+		<res width="1706" height="960" aspect="16:9" default="true" folder="16x9"/>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Skin designed to be used on touch screen devices</summary>
+	
+		<disclaimer lang="en">Do not use this skin unless you have either touch screen or a mouse connected or you may lose navigation</disclaimer>
+		<platform>all</platform>
+		<license>Creative Commons Attribution-Share Alike 3.0 United States</license>
+		<forum></forum>
+		<website></website>
+		<email></email>
+		<source></source>
+	</extension>
+</addon>

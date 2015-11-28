@@ -946,3 +946,4 @@ xbmc/main/posix/Makefile
 /adsp-addons
 xbmc/platform/darwin/ios/IOS-Info.plist
 xbmc/cores/avfplayer
+addons/skin.mrmc-touch/media/Textures.xbt

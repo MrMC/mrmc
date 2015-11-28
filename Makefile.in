@@ -182,7 +182,7 @@ MRMC_MEDIA=addons/skin.mrmc/media
 SKIN_DIRS=$(MRMC_MEDIA)
 
 ifeq (@USE_TOUCH_SKIN@,1)
-TOUCH_SKIN_MEDIA=addons/skin.re-touched/media
+TOUCH_SKIN_MEDIA=addons/skin.mrmc-touch/media
 SKIN_DIRS+=$(TOUCH_SKIN_MEDIA)
 endif
 

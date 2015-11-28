@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol></defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="group">
+			<posx>650r</posx>
+			<posy>20</posy>
+			<animation effect="slide" start="0,0" end= "215,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
+			<visible>!Window.IsVisible(FullscreenVideo) + !Window.IsVisible(Visualisation)</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>BackgroundWidth</include>
+				<height>77</height>
+				<texture border="8">IconBack.png</texture>
+			</control>
+			<control type="fadelabel" id="30">
+				<posx>10</posx>
+				<posy>10</posy>
+				<include>LabelWidth</include>
+				<height>15</height>
+				<scrollout>false</scrollout>
+				<pauseatend>3000</pauseatend>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<textcolor>black</textcolor>
+			</control>
+			<control type="fadelabel" id="31">
+				<posx>10</posx>
+				<posy>34</posy>
+				<include>LabelWidth</include>
+				<height>20</height>
+				<scrollout>false</scrollout>
+				<pauseatend>3000</pauseatend>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textcolor>black</textcolor>
+				<haspath>true</haspath>
+			</control>
+			<control type="progress" id="32">
+				<description>progress control</description>
+				<posx>10</posx>
+				<posy>57</posy>
+				<include>LabelWidth</include>
+				<height>15</height>
+			</control>
+		</control>
+	</controls>
+</window>
