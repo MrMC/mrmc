@@ -59,10 +59,10 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   ${SYNC} "$SRCROOT/addons/skin.mrmc/icon.png"      "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.mrmc"
 
   # sync touch skin if it exists
-  if [ -f "$SRCROOT/addons/skin.mrmc-touch/addon.xml" ]; then
+  if [ -f "$SRCROOT/addons/skin.mrmc-touch/addon.xml" ] && [ "$PLATFORM_NAME" == "iphoneos" ]; then
     SYNCSKIN_B=${SYNC}
     if [ -f "$SRCROOT/addons/skin.mrmc-touch/media/Textures.xbt" ]; then
-      SYNCSKIN_B="${SYNC} --exclude *.png --exclude *.jpg"
+      SYNCSKIN_B="${SYNC} --exclude *.png --exclude *.jpg --exclude media/Makefile*"
     fi
     ${SYNCSKIN_B} "$SRCROOT/addons/skin.mrmc-touch"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
     ${SYNC} "$SRCROOT/addons/skin.mrmc-touch/background" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.mrmc-touch"

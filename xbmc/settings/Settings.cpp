@@ -860,7 +860,7 @@ void CSettings::InitializeVisibility()
 void CSettings::InitializeDefaults()
 {
   // set some default values if necessary
-#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS)
+#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
   ((CSettingAddon*)m_settingsManager->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->SetDefault("skin.mrmc-touch");
 #endif
 
