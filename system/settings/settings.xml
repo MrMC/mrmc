@@ -2467,6 +2467,7 @@
       <group id="2">
         <setting id="mysql.video" type="string" label="1265" help="1267">
           <level>1</level>
+          <default>MyVideos</default>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
@@ -2474,6 +2475,7 @@
         </setting> 
         <setting id="mysql.music" type="string" label="1266" help="1267">
           <level>1</level>
+          <default>MyMusic</default>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
