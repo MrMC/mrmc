@@ -610,26 +610,37 @@ void CDVDVideoCodecAVFoundation::Process()
               DestRect != oldDestRect ||
               ViewRect != oldViewRect)
           {
-            // things that might touch iOS gui need to happen on main thread.
-            dispatch_async(dispatch_get_main_queue(),^{
-              CGRect frame = CGRectMake(
-                DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height());
-              // save the offset
-              CGPoint offset = frame.origin;
-              // transform to zero x/y origin
-              frame = CGRectOffset(frame, -frame.origin.x, -frame.origin.y);
-              mcview.frame = frame;
-              mcview.center= CGPointMake(mcview.center.x + offset.x, mcview.center.y + offset.y);
-              // video layer needs to get resized too,
-              // not sure why, it should track the view.
-              videolayer.frame = frame;
-              // we startup hidden, kick off an animated fade in.
-              if (mcview.hidden == YES)
-                [mcview setHiddenAnimated:NO delay:NSTimeInterval(0.1) duration:NSTimeInterval(2.0)];
-            });
-            oldSrcRect  = SrcRect;
-            oldDestRect = DestRect;
-            oldViewRect = ViewRect;
+            // g_renderManager lies, check for empty rects too.
+            if (!SrcRect.IsEmpty() && !DestRect.IsEmpty() && !ViewRect.IsEmpty())
+            {
+              // this makes zero sense, what is really going on with video scaling under avsamplebufferdisplaylayer ?
+              float realwidth  = [g_xbmcController getScreenSize].width  / g_xbmcController.m_screenScale;
+              float realheight = [g_xbmcController getScreenSize].height / g_xbmcController.m_screenScale;
+              CRect ScreenRect(0, 0, realwidth, realheight);
+              CRect MappedRect = DestRect;
+              MappedRect.MapRect(ViewRect, ScreenRect);
+
+              // things that might touch iOS gui need to happen on main thread.
+              dispatch_async(dispatch_get_main_queue(),^{
+                CGRect frame = CGRectMake(
+                  MappedRect.x1, MappedRect.y1, MappedRect.Width(), MappedRect.Height());
+                // save the offset
+                CGPoint offset = frame.origin;
+                // transform to zero x/y origin
+                frame = CGRectOffset(frame, -frame.origin.x, -frame.origin.y);
+                mcview.frame = frame;
+                mcview.center= CGPointMake(mcview.center.x + offset.x, mcview.center.y + offset.y);
+                // video layer needs to get resized too,
+                // not sure why, it should track the view.
+                videolayer.frame = frame;
+                // we startup hidden, kick off an animated fade in.
+                if (mcview.hidden == YES)
+                  [mcview setHiddenAnimated:NO delay:NSTimeInterval(0.1) duration:NSTimeInterval(2.0)];
+              });
+              oldSrcRect  = SrcRect;
+              oldDestRect = DestRect;
+              oldViewRect = ViewRect;
+            }
           }
         }
       }

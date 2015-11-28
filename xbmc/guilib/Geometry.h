@@ -249,6 +249,21 @@ public:
     return fragmentsList;
   }
 
+  void	MapRect(const this_type &src, const this_type &dst)
+  {
+    // given a base rect in src rect coordinates, remap the
+    // base rect to dst rect coordinates. useful for scaling
+    // from one coordinate system to another (i.e. 720p to 1080p)
+    // origin is the apple quickdraw API under System 1-9, pre-osx.
+    double xfactor = (dst.x2 - dst.x1) / (src.x2 - src.x1);
+    double yfactor = (dst.y2 - dst.y1) / (src.y2 - src.y1);
+
+    x1 = dst.x1 + (double)(x1 - src.x1) * xfactor;
+    y1 = dst.y1 + (double)(y1 - src.y1) * yfactor;
+    x2 = dst.x2 + (double)(x2 - src.x2) * xfactor;
+    y2 = dst.y2 + (double)(y2 - src.y2) * yfactor;
+  }
+
   bool operator !=(const this_type &rect) const
   {
     if (x1 != rect.x1) return true;

@@ -67,7 +67,7 @@
 		AVSampleBufferDisplayLayer *videolayer = [[AVSampleBufferDisplayLayerClass alloc] init];
     videolayer.bounds = self.bounds;
 		videolayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-		videolayer.videoGravity = AVLayerVideoGravityResizeAspect;
+		videolayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 #if defined(TARGET_DARWIN_IOS)
 		videolayer.backgroundColor = [[UIColor blackColor] CGColor];
 		//videolayer.backgroundColor = [[UIColor clearColor] CGColor];
@@ -107,6 +107,13 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVSampleBufferDisplayLayerFailedToDecodeNotification object:videoLayer];
 #endif
   [videolayer removeFromSuperlayer];
+}
+
+- (void)layoutSubviews
+{
+  AVSampleBufferDisplayLayer *videolayer = self.videolayer;
+  if (videolayer)
+    videolayer.frame = self.bounds;
 }
 
 #if MCSAMPLEBUFFER_DEBUG_MESSAGES
