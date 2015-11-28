@@ -17,7 +17,7 @@
 		</control>
 		<control type="image">
 			<description>LOGO</description>
-			<left>10</left>
+			<left>-15</left>
 			<top>5</top>
 			<width>225</width>
 			<height>66</height>
