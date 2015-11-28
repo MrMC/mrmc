@@ -16,6 +16,10 @@
  *  along with XBMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
+ *
+ *  Refactored. Copyright (C) 2015 Team MrMC
+ *  https://github.com/MrMC
+ *
  */
 
 #import <UIKit/UIKit.h>
@@ -28,41 +32,21 @@
 @interface IOSEAGLView : UIView
 {    
 @private
-  EAGLContext *context;
+  EAGLContext  *m_context;
   // The pixel dimensions of the CAEAGLLayer.
-  GLint framebufferWidth;
-  GLint framebufferHeight;
+  GLint         m_framebufferWidth;
+  GLint         m_framebufferHeight;
   // The OpenGL ES names for the framebuffer and renderbuffer used to render to this view.
-  GLuint defaultFramebuffer, colorRenderbuffer, depthRenderbuffer;
-	// the shader program object
-	GLuint program;
-	//
-	GLfloat rotz;
-	
-	BOOL animating;
-  BOOL xbmcAlive;
-  BOOL readyToRun;
-  BOOL pause;
-  NSConditionLock* animationThreadLock;
-  NSThread* animationThread;
-  UIScreen *currentScreen;
-
-  BOOL framebufferResizeRequested;
+  GLuint        m_defaultFramebuffer, m_colorRenderbuffer, m_depthRenderbuffer;
+  UIScreen     *m_currentScreen;
+  BOOL          m_framebufferResizeRequested;
 }
-@property (readonly, nonatomic, getter=isAnimating) BOOL animating;
-@property (readonly, nonatomic, getter=isXBMCAlive) BOOL xbmcAlive;
-@property (readonly, nonatomic, getter=isReadyToRun) BOOL readyToRun;
-@property (readonly, nonatomic, getter=isPause) BOOL pause;
-@property (readonly, getter=getCurrentScreen) UIScreen *currentScreen;
-@property BOOL framebufferResizeRequested;
+@property (readonly, getter=getContext) EAGLContext *m_context;
+@property (readonly, getter=getCurrentScreen) UIScreen *m_currentScreen;
 
-- (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
-- (void) pauseAnimation;
-- (void) resumeAnimation;
-- (void) startAnimation;
-- (void) stopAnimation;
-- (void) setFramebuffer;
-- (bool) presentFramebuffer;
-- (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize;
-- (CGFloat) getScreenScale:(UIScreen *)screen;
+- (id)          initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
+- (void)        setFramebuffer;
+- (bool)        presentFramebuffer;
+- (void)        setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize;
+- (CGFloat)     getScreenScale:(UIScreen *)screen;
 @end

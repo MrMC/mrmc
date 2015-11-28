@@ -19,12 +19,11 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
-#import <AudioToolbox/AudioToolbox.h>
 
-#import "XBMC_events.h"
-#include "XBMC_keysym.h"
+@class IOSEAGLView;
+
+#import "input/XBMC_keysym.h"
+#import "windowing/XBMC_events.h"
 
 @class IOSEAGLView;
 
@@ -37,39 +36,45 @@ typedef enum
 
 @interface XBMCController : UIViewController <UIGestureRecognizerDelegate, UIKeyInput>
 {
-  UIWindow *m_window;
-  IOSEAGLView  *m_glView;
-  int m_screensaverTimeout;
-	
-  /* Touch handling */
-  CGSize screensize;
-  CGPoint lastGesturePoint;
-  CGFloat screenScale;
-  bool touchBeginSignaled;
-  int  m_screenIdx;
+  UIWindow                   *m_window;
+  IOSEAGLView                *m_glView;
+  int                         m_screensaverTimeout;
+	  // Touch handling
+  CGSize                      m_screensize;
+  CGPoint                     m_lastGesturePoint;
+  CGFloat                     m_screenScale;
+  bool                        m_touchBeginSignaled;
+  int                         m_screenIdx;
 
-  UIInterfaceOrientation orientation;
+  UIInterfaceOrientation      m_orientation;
   
-  bool m_isPlayingBeforeInactive;
-  UIBackgroundTaskIdentifier m_bgTask;
-  NSTimer *m_networkAutoSuspendTimer;
-  IOSPlaybackState m_playbackState;
-  NSDictionary *nowPlayingInfo;
+  bool                        m_isPlayingBeforeInactive;
+  UIBackgroundTaskIdentifier  m_bgTask;
+  NSTimer                    *m_networkAutoSuspendTimer;
+  IOSPlaybackState            m_playbackState;
+  NSDictionary               *m_nowPlayingInfo;
+
+  BOOL                        m_pause;
+  BOOL                        m_appAlive;
+  BOOL                        m_animating;
+  BOOL                        m_readyToRun;
+  NSConditionLock            *m_animationThreadLock;
+  NSThread                   *m_animationThread;
 }
-@property (readonly, nonatomic, getter=isAnimating) BOOL animating;
-@property CGPoint lastGesturePoint;
-@property CGFloat screenScale;
-@property bool touchBeginSignaled;
-@property int  m_screenIdx;
-@property CGSize screensize;
-@property (nonatomic, retain) NSTimer *m_networkAutoSuspendTimer;
-@property (nonatomic, retain) NSDictionary *nowPlayingInfo;
+@property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
+@property (nonatomic, retain) NSTimer      *m_networkAutoSuspendTimer;
+@property CGPoint             m_lastGesturePoint;
+@property CGFloat             m_screenScale;
+@property bool                m_touchBeginSignaled;
+@property int                 m_screenIdx;
+@property CGSize              m_screensize;
 
 // message from which our instance is obtained
 - (void) pauseAnimation;
 - (void) resumeAnimation;
 - (void) startAnimation;
 - (void) stopAnimation;
+
 - (void) enterBackground;
 - (void) enterForeground;
 - (void) becomeInactive;
@@ -92,7 +97,9 @@ typedef enum
 - (void) enableScreenSaver;
 - (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
 - (void) activateScreen: (UIScreen *)screen withOrientation:(UIInterfaceOrientation)newOrientation;
+  // message from which our instance is obtained
 - (id)   initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
+
 - (void) insertVideoView:(UIView*)view;
 - (void) removeVideoView:(UIView*)view;
 @end

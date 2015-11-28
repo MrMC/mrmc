@@ -27,6 +27,7 @@ if [ "${CODE_SIGN_IDENTITY_FOR_ITEMS}" == "" ]; then
     # Fall back to old behavior.
     CODE_SIGN_IDENTITY_FOR_ITEMS="${CODE_SIGN_IDENTITY}"
 fi
+echo "${CODE_SIGN_IDENTITY_FOR_ITEMS}"
 
 TARGET_NAME="${PRODUCT_NAME}.${WRAPPER_EXTENSION}"
 TARGET_CONTENTS="${TARGET_BUILD_DIR}/${TARGET_NAME}"
@@ -36,10 +37,10 @@ TARGET_FRAMEWORKS="${TARGET_CONTENTS}/Frameworks"
 BUNDLE_REVISION=$(date -u +%y%m%d.%H%M)
 
 # ios/tvos use different framework plists
-if [ "$PLATFORM_NAME" == "appletvos" ]; then
-  SEEDFRAMEWORKPLIST="${PROJECT_DIR}/xbmc/platform/darwin/tvos/FrameworkSeed_Info.plist"
-else
+if [ "$PLATFORM_NAME" == "iphoneos" ]; then
   SEEDFRAMEWORKPLIST="${PROJECT_DIR}/xbmc/platform/darwin/ios/FrameworkSeed_Info.plist"
+elif [ "${PLATFORM_NAME}" == "appletvos" ]; then
+  SEEDFRAMEWORKPLIST="${PROJECT_DIR}/xbmc/platform/darwin/tvos/FrameworkSeed_Info.plist"
 fi
 
 function convert2framework
@@ -55,7 +56,6 @@ function convert2framework
   BUNDLEID="tv.mrmc.framework.${DYLIB_LIBNAME}"
 
   echo "CFBundleIdentifier is ${BUNDLEID}"
-  echo "${CODE_SIGN_IDENTITY_FOR_ITEMS}"
   echo "convert ${DYLIB_BASENAME} to ${DYLIB_LIBNAME}.framework and codesign"
 
   DEST_FRAMEWORK="${TARGET_FRAMEWORKS}/${DYLIB_LIBNAME}.framework"

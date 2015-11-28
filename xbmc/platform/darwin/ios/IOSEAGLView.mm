@@ -16,32 +16,17 @@
  *  along with XBMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
+ *
+ *  Refactored. Copyright (C) 2015 Team MrMC
+ *  https://github.com/MrMC
+ *
  */
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#import <sys/resource.h>
-#import <signal.h>
-#import <stdio.h>
-
 #import "system.h"
+
 #import "AdvancedSettings.h"
-#import "FileItem.h"
-#import "Application.h"
 #import "messaging/ApplicationMessenger.h"
-#import "WindowingFactory.h"
-#import "VideoReferenceClock.h"
 #import "utils/log.h"
-#import "utils/TimeUtils.h"
-#import "Util.h"
-#import "platform/MCRuntimeLibContext.h"
-#import "WindowingFactory.h"
-
-#import <QuartzCore/QuartzCore.h>
-#import <CoreGraphics/CoreGraphics.h>
-
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
 
 #import "platform/darwin/AutoPool.h"
 #import "platform/darwin/DarwinUtils.h"
@@ -53,51 +38,91 @@
 using namespace KODI::MESSAGING;
 
 //--------------------------------------------------------------
-@interface IOSEAGLView (PrivateMethods)
-- (void) setContext:(EAGLContext *)newContext;
-- (void) createFramebuffer;
-- (void) deleteFramebuffer;
-- (void) runDisplayLink;
-@end
-
-@implementation IOSEAGLView
-@synthesize animating;
-@synthesize xbmcAlive;
-@synthesize readyToRun;
-@synthesize pause;
-@synthesize currentScreen;
-@synthesize framebufferResizeRequested;
+@implementation	  IOSEAGLView
+@synthesize       m_context;
+@synthesize       m_currentScreen;
 
 // You must implement this method
 + (Class) layerClass
 {
   return [CAEAGLLayer class];
 }
+
+//--------------------------------------------------------------
+- (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
+{
+  //PRINT_SIGNATURE();
+  m_framebufferResizeRequested = FALSE;
+  if ((self = [super initWithFrame:frame]))
+  {
+    // Get the layer
+    CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
+    //set screen, handlescreenscale and set frame size
+    [self setScreen:screen withFrameBufferResize:FALSE];
+
+    eaglLayer.opaque = NO;
+    eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
+      [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
+      kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
+
+    // Try OpenGL ES 3.0
+    EAGLContext *aContext = [[EAGLContext alloc]
+      initWithAPI:kEAGLRenderingAPIOpenGLES3];
+
+    // Fallback to OpenGL ES 2.0
+    if (aContext == nullptr)
+      aContext = [[EAGLContext alloc]
+        initWithAPI:kEAGLRenderingAPIOpenGLES2];
+
+    if (!aContext)
+      ELOG(@"Failed to create ES context");
+    else if (![EAGLContext setCurrentContext:aContext])
+      ELOG(@"Failed to set ES context current");
+
+    m_context = aContext;
+    [aContext release];
+
+    [self createFramebuffer];
+    [self setFramebuffer];
+  }
+
+  return self;
+}
+
+//--------------------------------------------------------------
+- (void) dealloc
+{
+  [self deleteFramebuffer];
+  [m_context release];
+
+  [super dealloc];
+}
+
 //--------------------------------------------------------------
 - (void) resizeFrameBuffer
 {
-  CGRect frame = [IOSScreenManager getLandscapeResolution: currentScreen]; 
+  CGRect frame = [IOSScreenManager getLandscapeResolution: m_currentScreen];
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];  
   //allow a maximum framebuffer size of 1080p
   //needed for tvout on iPad3/4 and iphone4/5 and maybe AppleTV3
-  if(frame.size.width * frame.size.height > 2073600)
+  if (frame.size.width * frame.size.height > 2073600)
     return;
   //resize the layer - ios will delay this
   //and call layoutSubviews when its done with resizing
   //so the real framebuffer resize is done there then ...
-  if(framebufferWidth != frame.size.width ||
-     framebufferHeight != frame.size.height )
+  if (m_framebufferWidth  != frame.size.width ||
+      m_framebufferHeight != frame.size.height )
   {
-    framebufferResizeRequested = TRUE;
+    m_framebufferResizeRequested = TRUE;
     [eaglLayer setFrame:frame];
   }
 }
 
 - (void)layoutSubviews
 {
-  if(framebufferResizeRequested)
+  if (m_framebufferResizeRequested)
   {
-    framebufferResizeRequested = FALSE;
+    m_framebufferResizeRequested = FALSE;
     [self deleteFramebuffer];
     [self createFramebuffer];
     [self setFramebuffer];
@@ -140,90 +165,32 @@ using namespace KODI::MESSAGING;
   CGFloat scaleFactor = 1.0;
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
 
-  currentScreen = screen;
-  scaleFactor = [self getScreenScale: currentScreen];
+  m_currentScreen = screen;
+  scaleFactor = [self getScreenScale: m_currentScreen];
 
   //this will activate retina on supported devices
   [eaglLayer setContentsScale:scaleFactor];
   [self setContentScaleFactor:scaleFactor];
-  if(resize)
-  {
+  if (resize)
     [self resizeFrameBuffer];
-  }
 }
 
 //--------------------------------------------------------------
-- (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
+- (BOOL)canBecomeFocused
 {
-  //PRINT_SIGNATURE();
-  framebufferResizeRequested = FALSE;
-  if ((self = [super initWithFrame:frame]))
-  {
-    // Get the layer
-    CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-    //set screen, handlescreenscale
-    //and set frame size
-    [self setScreen:screen withFrameBufferResize:FALSE];
-
-    eaglLayer.opaque = NO;
-    eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-      [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
-      kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
-      nil];
-
-    // Try OpenGL ES 3.0
-    EAGLContext *aContext = [[EAGLContext alloc]
-      initWithAPI:kEAGLRenderingAPIOpenGLES3];
-
-    // Fallback to OpenGL ES 2.0
-    if (aContext == nullptr)
-      aContext = [[EAGLContext alloc]
-        initWithAPI:kEAGLRenderingAPIOpenGLES2];
-
-    if (!aContext)
-      ELOG(@"Failed to create ES context");
-    else if (![EAGLContext setCurrentContext:aContext])
-      ELOG(@"Failed to set ES context current");
-    
-    self.context = aContext;
-    [aContext release];
-
-    animating = FALSE;
-    xbmcAlive = FALSE;
-    pause = FALSE;
-    [self setContext:context];
-    [self createFramebuffer];
-    [self setFramebuffer];
-  }
-
-  return self;
+  // need this or we do not get GestureRecognizers under tvos.
+  return YES;
 }
 
-//--------------------------------------------------------------
-- (void) dealloc
-{
-  //PRINT_SIGNATURE();
-  [self deleteFramebuffer];    
-  [context release];
-  
-  [super dealloc];
-}
-
-//--------------------------------------------------------------
-- (EAGLContext *)context
-{
-  return context;
-}
 //--------------------------------------------------------------
 - (void)setContext:(EAGLContext *)newContext
 {
-  PRINT_SIGNATURE();
-  if (context != newContext)
+  if (m_context != newContext)
   {
     [self deleteFramebuffer];
     
-    [context release];
-    context = [newContext retain];
+    [m_context release];
+    m_context = [newContext retain];
     
     [EAGLContext setCurrentContext:nil];
   }
@@ -232,221 +199,97 @@ using namespace KODI::MESSAGING;
 //--------------------------------------------------------------
 - (void)createFramebuffer
 {
-  if (context && !defaultFramebuffer)
+  if (m_context && !m_defaultFramebuffer)
   {
     //PRINT_SIGNATURE();
-    [EAGLContext setCurrentContext:context];
+    [EAGLContext setCurrentContext:m_context];
     
     // Create default framebuffer object.
-    glGenFramebuffers(1, &defaultFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+    glGenFramebuffers(1, &m_defaultFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFramebuffer);
     
     // Create color render buffer and allocate backing store.
-    glGenRenderbuffers(1, &colorRenderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-    [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+    glGenRenderbuffers(1, &m_colorRenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_colorRenderbuffer);
+    [m_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &m_framebufferWidth);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &m_framebufferHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_colorRenderbuffer);
 
-    glGenRenderbuffers(1, &depthRenderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+    glGenRenderbuffers(1, &m_depthRenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_depthRenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_framebufferWidth, m_framebufferHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthRenderbuffer);
     
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
       ELOG(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
   }
 }
+
 //--------------------------------------------------------------
 - (void) deleteFramebuffer
 {
-  if (context && !pause)
+  if (m_context)
   {
-    PRINT_SIGNATURE();
-    [EAGLContext setCurrentContext:context];
+    [EAGLContext setCurrentContext:m_context];
     
-    if (defaultFramebuffer)
+    if (m_defaultFramebuffer)
     {
-      glDeleteFramebuffers(1, &defaultFramebuffer);
-      defaultFramebuffer = 0;
+      glDeleteFramebuffers(1, &m_defaultFramebuffer);
+      m_defaultFramebuffer = 0;
     }
     
-    if (colorRenderbuffer)
+    if (m_colorRenderbuffer)
     {
-      glDeleteRenderbuffers(1, &colorRenderbuffer);
-      colorRenderbuffer = 0;
+      glDeleteRenderbuffers(1, &m_colorRenderbuffer);
+      m_colorRenderbuffer = 0;
     }
 
-    if (depthRenderbuffer)
+    if (m_depthRenderbuffer)
     {
-      glDeleteRenderbuffers(1, &depthRenderbuffer);
-      depthRenderbuffer = 0;
+      glDeleteRenderbuffers(1, &m_depthRenderbuffer);
+      m_depthRenderbuffer = 0;
     }
   }
 }
+
 //--------------------------------------------------------------
 - (void) setFramebuffer
 {
-  if (context && !pause)
+  if (m_context)
   {
-    if ([EAGLContext currentContext] != context)
-      [EAGLContext setCurrentContext:context];
+    if ([EAGLContext currentContext] != m_context)
+      [EAGLContext setCurrentContext:m_context];
     
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFramebuffer);
     
-    if(framebufferHeight > framebufferWidth) {
-      glViewport(0, 0, framebufferHeight, framebufferWidth);
-      glScissor(0, 0, framebufferHeight, framebufferWidth);
+    if (m_framebufferHeight > m_framebufferWidth)
+    {
+      glViewport(0, 0, m_framebufferHeight, m_framebufferWidth);
+      glScissor( 0, 0, m_framebufferHeight, m_framebufferWidth);
     } 
     else
     {
-      glViewport(0, 0, framebufferWidth, framebufferHeight);
-      glScissor(0, 0, framebufferWidth, framebufferHeight);
+      glViewport(0, 0, m_framebufferWidth, m_framebufferHeight);
+      glScissor( 0, 0, m_framebufferWidth, m_framebufferHeight);
     }
   }
 }
+
 //--------------------------------------------------------------
 - (bool) presentFramebuffer
 {
   bool success = FALSE;
-  
-  if (context && !pause)
+  if (m_context)
   {
-    if ([EAGLContext currentContext] != context)
-      [EAGLContext setCurrentContext:context];
+    if ([EAGLContext currentContext] != m_context)
+      [EAGLContext setCurrentContext:m_context];
     
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-    success = [context presentRenderbuffer:GL_RENDERBUFFER];
+    glBindRenderbuffer(GL_RENDERBUFFER, m_colorRenderbuffer);
+    success = [m_context presentRenderbuffer:GL_RENDERBUFFER];
   }
   
   return success;
 }
-//--------------------------------------------------------------
-- (void) pauseAnimation
-{
-  PRINT_SIGNATURE();
-  pause = TRUE;
-  g_application.SetRenderGUI(false);
-}
-//--------------------------------------------------------------
-- (void) resumeAnimation
-{
-  PRINT_SIGNATURE();
-  pause = FALSE;
-  g_application.SetRenderGUI(true);
-}
-//--------------------------------------------------------------
-- (void) startAnimation
-{
-  PRINT_SIGNATURE();
-	if (!animating && context)
-	{
-		animating = TRUE;
 
-    // kick off an animation thread
-    animationThreadLock = [[NSConditionLock alloc] initWithCondition: FALSE];
-    animationThread = [[NSThread alloc] initWithTarget:self
-      selector:@selector(runAnimation:)
-      object:animationThreadLock];
-    [animationThread start];
-	}
-}
-//--------------------------------------------------------------
-- (void) stopAnimation
-{
-  PRINT_SIGNATURE();
-	if (animating && context)
-	{
-		animating = FALSE;
-    xbmcAlive = FALSE;
-    if (!g_application.m_bStop)
-    {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
-    }
-    // wait for animation thread to die
-    if ([animationThread isFinished] == NO)
-      [animationThreadLock lockWhenCondition:TRUE];
-	}
-}
-//--------------------------------------------------------------
-- (void) runAnimation:(id) arg
-{
-  CCocoaAutoPool outerpool;
-
-  [[NSThread currentThread] setName:@"MCRuntimeLib"];
-  
-  // set up some MCRuntimeLib specific relationships
-  MCRuntimeLib::Context run_context;
-  readyToRun = true;
-
-  // signal we are alive
-  NSConditionLock* myLock = arg;
-  [myLock lock];
-  
-  #ifdef _DEBUG
-    g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-    g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-  #else
-    g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-    g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
-  #endif
-
-  // Prevent child processes from becoming zombies on exit if not waited upon. See also Util::Command
-  struct sigaction sa;
-  memset(&sa, 0, sizeof(sa));
-  sa.sa_flags = SA_NOCLDWAIT;
-  sa.sa_handler = SIG_IGN;
-  sigaction(SIGCHLD, &sa, NULL);
-
-  setlocale(LC_NUMERIC, "C");
- 
-  g_application.Preflight();
-  if (!g_application.Create())
-  {
-    readyToRun = false;
-    ELOG(@"%sUnable to create application", __PRETTY_FUNCTION__);
-  }
-
-  if (!g_application.CreateGUI())
-  {
-    readyToRun = false;
-    ELOG(@"%sUnable to create GUI", __PRETTY_FUNCTION__);
-  }
-
-  if (!g_application.Initialize())
-  {
-    readyToRun = false;
-    ELOG(@"%sUnable to initialize application", __PRETTY_FUNCTION__);
-  }
-  
-  if (readyToRun)
-  {
-    g_advancedSettings.m_startFullScreen = true;
-    g_advancedSettings.m_canWindowed = false;
-    xbmcAlive = TRUE;
-    try
-    {
-      CCocoaAutoPool innerpool;
-      g_application.Run();
-    }
-    catch(...)
-    {
-      ELOG(@"%sException caught on main loop. Exiting", __PRETTY_FUNCTION__);
-    }
-  }
-
-  // signal we are dead
-  [myLock unlockWithCondition:TRUE];
-
-  [g_xbmcController enableScreenSaver];
-  [g_xbmcController enableSystemSleep];
-  exit(0);
-  /*
-  // die the iOS way :)
-  UIApplication *app = [UIApplication sharedApplication];
-  [app performSelector:@selector(suspend)];
-  */
-}
-//--------------------------------------------------------------
 @end

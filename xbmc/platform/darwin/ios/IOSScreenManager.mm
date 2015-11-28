@@ -59,7 +59,7 @@ static CEvent screenChangeEvent;
     [UIView animateWithDuration:timeFadeSecs delay:delaySecs options:UIViewAnimationOptionCurveEaseInOut animations:^{
       [_glView setAlpha:1.0];
     }
-    completion:^(BOOL finished){   screenChangeEvent.Set(); }];
+    completion:^(BOOL finished){ screenChangeEvent.Set(); }];
   }
 }
 //--------------------------------------------------------------
