@@ -815,7 +815,7 @@
         <setting id="videoplayer.usevideotoolbox" type="boolean" label="13432" help="36162">
           <requirement>HasVideoToolBoxDecoder</requirement>
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usevda" type="boolean" label="13429" help="36160">
@@ -827,7 +827,7 @@
         <setting id="videoplayer.useavf" type="boolean" label="13453" help="13454">
           <requirement>hasAVF</requirement>
           <level>2</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
       </group>
