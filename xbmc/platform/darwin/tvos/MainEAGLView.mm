@@ -62,7 +62,7 @@ using namespace KODI::MESSAGING;
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
     //set screen, handlescreenscale and set frame size
     [self setScreen:screen withFrameBufferResize:FALSE];
-    
+
     eaglLayer.opaque = NO;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
@@ -84,18 +84,17 @@ using namespace KODI::MESSAGING;
     
     m_context = aContext;
     [aContext release];
-    
+
     [self createFramebuffer];
     [self setFramebuffer];
   }
-  
+
   return self;
 }
 
 //--------------------------------------------------------------
 - (void) dealloc
 {
-  //PRINT_SIGNATURE();
   [self deleteFramebuffer];    
   [m_context release];
   
@@ -198,7 +197,6 @@ using namespace KODI::MESSAGING;
 //--------------------------------------------------------------
 - (void)setContext:(EAGLContext *)newContext
 {
-  //PRINT_SIGNATURE();
   if (m_context != newContext)
   {
     [self deleteFramebuffer];
@@ -245,7 +243,6 @@ using namespace KODI::MESSAGING;
 {
   if (m_context)
   {
-    //PRINT_SIGNATURE();
     [EAGLContext setCurrentContext:m_context];
     
     if (m_defaultFramebuffer)
@@ -278,7 +275,8 @@ using namespace KODI::MESSAGING;
     
     glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFramebuffer);
     
-    if (m_framebufferHeight > m_framebufferWidth) {
+    if (m_framebufferHeight > m_framebufferWidth)
+    {
       glViewport(0, 0, m_framebufferHeight, m_framebufferWidth);
       glScissor( 0, 0, m_framebufferHeight, m_framebufferWidth);
     } 

@@ -29,9 +29,7 @@
 #import "MusicInfoTag.h"
 #import "SpecialProtocol.h"
 #import "PlayList.h"
-#define id _id
 #import "TextureCache.h"
-#undef id
 
 #import "guilib/GUIWindowManager.h"
 #import "input/Key.h"
@@ -39,8 +37,6 @@
 #import "interfaces/AnnouncementManager.h"
 #import "messaging/ApplicationMessenger.h"
 
-#import "platform/MCRuntimeLib.h"
-#import "platform/MCRuntimeLibContext.h"
 #import "platform/darwin/AutoPool.h"
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
@@ -48,14 +44,15 @@
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/MainScreenManager.h"
 #import "platform/darwin/tvos/MainApplication.h"
-#import "windowing/WindowingFactory.h"
-#import "utils/log.h"
+#import "platform/MCRuntimeLib.h"
+#import "platform/MCRuntimeLibContext.h"
 #import "utils/Variant.h"
-
-using namespace KODI::MESSAGING;
+#import "windowing/WindowingFactory.h"
 
 #import <MediaPlayer/MPMediaItem.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
+
+using namespace KODI::MESSAGING;
 
 MainController *g_xbmcController;
 
@@ -1040,8 +1037,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   // signal the thread is dead
   [myLock unlockWithCondition:TRUE];
   
-  [g_xbmcController enableScreenSaver];
-  [g_xbmcController enableSystemSleep];
+  [self enableScreenSaver];
+  [self enableSystemSleep];
 }
 
 #pragma mark - remote control routines
