@@ -23,7 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN)
   #include "platform/darwin/DarwinUtils.h"
 #endif
 

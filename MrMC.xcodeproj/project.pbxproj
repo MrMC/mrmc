@@ -8596,7 +8596,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = tools/darwin/Support/genoutputdirlink.command;
+			shellScript = tools/darwin/Support/darwin_package_genoutputdirlink.command;
 		};
 		1D64E5FC157BD76F001ACEBE /* genoutputdirlink */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -8715,7 +8715,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = tools/darwin/Support/makeinterface.command;
+			shellScript = tools/darwin/Support/darwin_makeinterfaces.command;
 		};
 		F52253171BF5AE380018510C /* update version info */ = {
 			isa = PBXShellScriptBuildPhase;
