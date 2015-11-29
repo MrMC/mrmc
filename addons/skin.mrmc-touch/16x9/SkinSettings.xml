@@ -53,14 +53,6 @@
 					<label>10000</label>
 					<onfocus>Skin.SetString(SkinSettings,1)</onfocus>
 				</control>
-				<control type="button" id="92">
-					<description>Addon Button</description>
-					<width>310</width>
-					<height>50</height>
-					<include>ButtonInfoDialogsCommonValues</include>
-					<label>24001</label>
-					<onfocus>Skin.SetString(SkinSettings,2)</onfocus>
-				</control>
 			</control>
 			<control type="grouplist" id="100">
 				<description>control area</description>
@@ -164,19 +156,6 @@
 					<onclick>Skin.ToggleSetting(HideHomeButtonPictures)</onclick>
 					<selected>!Skin.HasSetting(HideHomeButtonPictures)</selected>
 				</control>
-				<control type="radiobutton" id="108">
-					<description>Hide Programs</description>
-					<height>55</height>
-					<width>920</width>
-					<font>font13</font>
-					<textcolor>white</textcolor>
-					<focusedcolor>black</focusedcolor>
-					<texturefocus border="5">ListFO.png</texturefocus>
-					<texturenofocus border="5">ListNF.png</texturenofocus>
-					<label>$LOCALIZE[0]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonPrograms)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonPrograms)</selected>
-				</control>
 				<control type="label" id="110">
 					<height>50</height>
 					<width>920</width>
@@ -185,19 +164,6 @@
 					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
-				</control>
-				<control type="radiobutton" id="111">
-					<description>Show Weather info and button</description>
-					<height>55</height>
-					<width>920</width>
-					<font>font13</font>
-					<textcolor>white</textcolor>
-					<focusedcolor>black</focusedcolor>
-					<texturefocus border="5">ListFO.png</texturefocus>
-					<texturenofocus border="5">ListNF.png</texturenofocus>
-					<label>$LOCALIZE[31550]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonWeather)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonWeather)</selected>
 				</control>
 				<control type="radiobutton" id="112">
 					<description>Use custom background</description>
