@@ -369,7 +369,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleSwipe:)];
 
-  swipeLeft.delaysTouchesBegan = YES;
+  swipeLeft.delaysTouchesBegan = NO;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
   swipeLeft.delegate = self;
   [m_glView addGestureRecognizer:swipeLeft];
@@ -379,7 +379,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
                                           initWithTarget:self action:@selector(handleSwipe:)];
 
-  swipeRight.delaysTouchesBegan = YES;
+  swipeRight.delaysTouchesBegan = NO;
   swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
   swipeRight.delegate = self;
   [m_glView addGestureRecognizer:swipeRight];
@@ -414,6 +414,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   auto pan = [[UIPanGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePan:)];
   pan.delegate = self;
+  pan.delaysTouchesBegan = YES;
   [m_glView addGestureRecognizer:pan];
   [pan release];
 }
