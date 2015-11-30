@@ -563,8 +563,9 @@ static void EnumerateDevices(AEDeviceInfoList &list)
     device.m_dataFormats.push_back(AE_FMT_AC3);
     device.m_dataFormats.push_back(AE_FMT_DTS);
     device.m_dataFormats.push_back(AE_FMT_EAC3);
-    device.m_dataFormats.push_back(AE_FMT_TRUEHD);
-    device.m_dataFormats.push_back(AE_FMT_DTSHD);
+    // ATV cant do below
+//    device.m_dataFormats.push_back(AE_FMT_TRUEHD);
+//    device.m_dataFormats.push_back(AE_FMT_DTSHD);
   }
   else
     device.m_deviceType = AE_DEVTYPE_PCM;
