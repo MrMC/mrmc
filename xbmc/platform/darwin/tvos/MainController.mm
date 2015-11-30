@@ -672,8 +672,14 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
             default:
               break;
           }
-          m_touchBeginSignaled = true;
-          [self startKeyPressTimer:key];
+          // ignore UP/DOWN swipes while in full screen playback
+          if (g_windowManager.GetFocusedWindow() != WINDOW_FULLSCREEN_VIDEO ||
+              key == XBMCK_LEFT ||
+              key == XBMCK_RIGHT)
+          {
+            m_touchBeginSignaled = true;
+            [self startKeyPressTimer:key];
+          }
         }
         break;
       }
