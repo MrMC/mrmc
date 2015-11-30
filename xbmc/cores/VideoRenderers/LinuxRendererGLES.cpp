@@ -3001,6 +3001,8 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
 
 #if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
+#elif defined(TARGET_DARWIN_TVOS)
+  return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
 #else
   return VS_INTERLACEMETHOD_RENDER_BOB;
 #endif
