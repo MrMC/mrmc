@@ -21,12 +21,38 @@
 #include <stdlib.h>
 #include <setjmp.h>
 
+#include "cores/FFmpeg.h"
 #include "guilib/PngIO.h"
 #include "utils/log.h"
 
 #ifndef png_jmpbuf
 #  define png_jmpbuf(png_ptr) ((png_ptr)->jmpbuf)
 #endif
+
+static bool ReScaleImage(
+  uint8_t *in_pixels, unsigned int in_width, unsigned int in_height, unsigned int in_pitch,
+  uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch)
+{
+  struct SwsContext *context = sws_getContext(
+    in_width, in_height, PIX_FMT_BGRA,
+    out_width, out_height, PIX_FMT_BGRA,
+    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+
+  uint8_t *src[] = { in_pixels, 0, 0, 0 };
+  int     srcStride[] = { (int)in_pitch, 0, 0, 0 };
+  uint8_t *dst[] = { out_pixels , 0, 0, 0 };
+  int     dstStride[] = { (int)out_pitch, 0, 0, 0 };
+
+  if (context)
+  {
+    sws_scale(context, src, srcStride, 0, in_height, dst, dstStride);
+    sws_freeContext(context);
+    return true;
+  }
+
+  return false;
+}
+
 
 CPngIO::CPngIO()
   : IImage()
@@ -102,15 +128,10 @@ bool CPngIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, un
   png_get_IHDR(pngStructPtr, pngInfoPtr, &info_width, &info_height,
                &bit_depth, &color_type, NULL, NULL, NULL);
 
-  if (info_width < m_width)
-    m_width = info_width;
-  if (info_height < m_height)
-    m_height = info_height;
-
-  if (info_width != m_originalWidth)
-    m_originalWidth = info_width;
-  if (info_height != m_originalHeight)
-    m_originalHeight = info_height;
+  m_width = info_width;
+  m_height = info_height;
+  m_originalWidth = info_width;
+  m_originalHeight = info_height;
 
   if (png_get_valid(pngStructPtr, pngInfoPtr, PNG_INFO_tRNS))
     png_set_tRNS_to_alpha(pngStructPtr);
@@ -151,6 +172,10 @@ bool CPngIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, un
 
 bool CPngIO::Decode(unsigned char* const pixels, unsigned int pitch)
 {
+  bool rescale = false;
+  if (m_width != m_originalWidth || m_height != m_originalHeight)
+    rescale = true;
+
   // the code in this if statement gets called if libpng encounters an error
   if (setjmp(png_jmpbuf(pngStructPtr)))
   {
@@ -161,11 +186,9 @@ bool CPngIO::Decode(unsigned char* const pixels, unsigned int pitch)
 
   // row size in bytes
   unsigned int rowbytes = png_get_rowbytes(pngStructPtr, pngInfoPtr);
-  if (rowbytes < pitch)
-    rowbytes = pitch;
 
   // row_pointers is for pointing to image_data for reading the png with libpng
-  png_bytep *row_pointers = (png_bytep*)new png_bytep[m_height * sizeof(png_bytep)];
+  png_bytep *row_pointers = (png_bytep*)new png_bytep[m_originalHeight * sizeof(png_bytep)];
   if (row_pointers == NULL)
   {
     CLog::Log(LOGERROR, "PngIO: could not allocate memory for PNG row pointers");
@@ -173,10 +196,21 @@ bool CPngIO::Decode(unsigned char* const pixels, unsigned int pitch)
     return false;
   }
 
-  png_byte *image_data = (png_byte*)pixels;
-  // set the individual row_pointers to point at the correct offsets of image_data
-  for (unsigned int i = 0; i < m_height; i++)
-    row_pointers[i] = image_data + i * rowbytes;
+  png_byte *image_data;
+  if (rescale)
+  {
+    image_data = new uint8_t[m_originalHeight * rowbytes];
+    // set the individual row_pointers to point at the correct offsets of image_data
+    for (unsigned int i = 0; i < m_originalHeight; i++)
+      row_pointers[i] = image_data + (i * rowbytes);
+  }
+  else
+  {
+    image_data = (png_byte*)pixels;
+    // set the individual row_pointers to point at the correct offsets of image_data
+    for (unsigned int i = 0; i < m_originalHeight; i++)
+      row_pointers[i] = image_data + (i * pitch);
+  }
 
   // read the png into image_data through row_pointers
   png_read_image(pngStructPtr, row_pointers);
@@ -184,6 +218,14 @@ bool CPngIO::Decode(unsigned char* const pixels, unsigned int pitch)
   png_destroy_read_struct(&pngStructPtr, &pngInfoPtr, NULL);
 
   delete [] row_pointers;
+
+  if (rescale)
+  {
+    ReScaleImage(
+      image_data, m_originalWidth, m_originalHeight, rowbytes,
+      pixels, m_width, m_height, pitch);
+     delete [] image_data;
+  }
 
   return true;
 }
