@@ -557,12 +557,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
     NSString *title = [NSString stringWithFormat:@"%s" , ""];
     window.title = title;
-    
-    // Hide the menu bar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
-//        SetMenuBarVisible(false);
-      [OSXGLWindow SetMenuBarInvisible];
-    
+
     ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 
     // Hide the mouse.
