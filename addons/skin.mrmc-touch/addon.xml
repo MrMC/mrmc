@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.mrmc-touch" version="5.1.1" name="MrMC-Touch" provider-name="Tem MrMC">
+<addon id="skin.mrmc-touch" version="5.1.1" name="MrMC-Touch" provider-name="Team MrMC">
 	<requires>
 		<import addon="xbmc.gui" version="5.10.0"/>
 	</requires>

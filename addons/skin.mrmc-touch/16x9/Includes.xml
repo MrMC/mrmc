@@ -157,11 +157,11 @@
 					<width>65</width>
 					<height>65</height>
 					<label>-</label>
-					<texturefocus>OSDPlayFO.png</texturefocus>
-					<texturenofocus>OSDPlayNF.png</texturenofocus>
+					<texturefocus>OSDPauseFO.png</texturefocus>
+					<texturenofocus>OSDPauseNF.png</texturenofocus>
 					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
-					<alttexturefocus>OSDPauseFO.png</alttexturefocus>
-					<alttexturenofocus>OSDPauseNF.png</alttexturenofocus>
+					<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+					<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
 					<onclick>PlayerControl(Play)</onclick>
 				</control>
 				<control type="button">
