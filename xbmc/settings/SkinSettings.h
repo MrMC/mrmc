@@ -49,7 +49,7 @@ public:
 
   void Reset(const std::string &setting);
   void Reset();
-
+  void SaveXMLSettings();
 protected:
   CSkinSettings();
   CSkinSettings(const CSkinSettings&);

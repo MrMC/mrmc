@@ -1127,6 +1127,7 @@ int CBuiltins::Execute(const std::string& execString)
   {
     int setting = CSkinSettings::GetInstance().TranslateBool(parameter);
     CSkinSettings::GetInstance().SetBool(setting, !CSkinSettings::GetInstance().GetBool(setting));
+    CSkinSettings::GetInstance().SaveXMLSettings();
     CSettings::GetInstance().Save();
   }
   else if (execute == "skin.setbool" && params.size())
@@ -1135,22 +1136,26 @@ int CBuiltins::Execute(const std::string& execString)
     {
       int string = CSkinSettings::GetInstance().TranslateBool(params[0]);
       CSkinSettings::GetInstance().SetBool(string, StringUtils::EqualsNoCase(params[1], "true"));
+      CSkinSettings::GetInstance().SaveXMLSettings();
       CSettings::GetInstance().Save();
       return 0;
     }
     // default is to set it to true
     int setting = CSkinSettings::GetInstance().TranslateBool(params[0]);
     CSkinSettings::GetInstance().SetBool(setting, true);
+    CSkinSettings::GetInstance().SaveXMLSettings();
     CSettings::GetInstance().Save();
   }
   else if (execute == "skin.reset")
   {
     CSkinSettings::GetInstance().Reset(parameter);
+    CSkinSettings::GetInstance().SaveXMLSettings();
     CSettings::GetInstance().Save();
   }
   else if (execute == "skin.resetsettings")
   {
     CSkinSettings::GetInstance().Reset();
+    CSkinSettings::GetInstance().SaveXMLSettings();
     CSettings::GetInstance().Save();
   }
   else if (execute == "skin.theme")
@@ -1210,6 +1215,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (execute == "skin.setstring")
       {
         CSkinSettings::GetInstance().SetString(string, params[1]);
+        CSkinSettings::GetInstance().SaveXMLSettings();
         CSettings::GetInstance().Save();
         return 0;
       }
@@ -1320,6 +1326,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
         CSkinSettings::GetInstance().SetString(string, value);
     }
+    CSkinSettings::GetInstance().SaveXMLSettings();
     CSettings::GetInstance().Save();
   }
   else if (execute == "skin.setaddon" && params.size() > 1)
