@@ -1435,7 +1435,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   skin->Start();
 
   // migrate any skin-specific settings that are still stored in guisettings.xml
-  CSkinSettings::GetInstance().MigrateSettings(skin);
+//  CSkinSettings::GetInstance().MigrateSettings(skin);
 
   // check if the skin has been properly loaded and if it has a Home.xml
   if (!skin->HasSkinFile("Home.xml"))
