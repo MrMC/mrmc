@@ -220,10 +220,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 @synthesize m_screenScale;
 @synthesize m_touchBeginSignaled;
 @synthesize m_touchDirection;
+@synthesize m_currentKey;
 @synthesize m_screenIdx;
+@synthesize m_currentClick;
 @synthesize m_screensize;
 @synthesize m_networkAutoSuspendTimer;
 @synthesize m_nowPlayingInfo;
+@synthesize m_clickResetPan;
+
+// set to 1 to enable new remote function, to be tested for 1.1
+#define NEW_REMOTE_HANDLING 0
 
 #pragma mark - internal key press methods
 //--------------------------------------------------------------
@@ -259,10 +265,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 // start repeating after 0.25s
 #define REPEATED_KEYPRESS_DELAY_S 0.50
-// pause 0.01s (10ms) between keypresses
+// pause 0.05s (50ms) between keypresses
 #define REPEATED_KEYPRESS_PAUSE_S 0.05
 //--------------------------------------------------------------
+
 - (void)startKeyPressTimer:(XBMCKey)keyId
+{
+  [self startKeyPressTimer:keyId clickTime:REPEATED_KEYPRESS_PAUSE_S];
+}
+
+- (void)startKeyPressTimer:(XBMCKey)keyId clickTime:(NSTimeInterval)interval
 {
   //PRINT_SIGNATURE();
   if (self.pressAutoRepeatTimer != nil)
@@ -276,7 +288,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   // schedule repeated timer which starts after REPEATED_KEYPRESS_DELAY_S
   // and fires every REPEATED_KEYPRESS_PAUSE_S
   NSTimer *timer = [[NSTimer alloc] initWithFireDate:fireDate
-    interval:REPEATED_KEYPRESS_PAUSE_S
+    interval:interval
     target:self
     selector:@selector(keyPressTimerCallback:)
     userInfo:number
@@ -307,6 +319,42 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [self sendKeyDown:(XBMCKey)[keyId intValue]];
 }
 
+- (XBMCKey)getPanDirection:(CGPoint)translation
+{
+  int x = (int)translation.x;
+  int y = (int)translation.y;
+  int absX = x;
+  int absY = y;
+  
+  if (absX < 0)
+    absX *= -1;
+  
+  if (absY < 0)
+    absY *= -1;
+  
+  bool horizontal, veritical;
+  horizontal = ( absX > absY ) ;
+  veritical = !horizontal;
+  
+  // Determine up, down, right, or left:
+  bool swipe_up, swipe_down, swipe_left, swipe_right;
+  swipe_left = (horizontal && x < 0);
+  swipe_right = (horizontal && x >= 0);
+  swipe_up = (veritical && y < 0);
+  swipe_down = (veritical && y >= 0);
+  
+  if (swipe_down)
+    return XBMCK_DOWN;
+  if (swipe_up)
+    return XBMCK_UP;
+  if (swipe_left)
+    return XBMCK_LEFT;
+  if (swipe_right)
+    return XBMCK_RIGHT;
+  
+  return XBMCK_UNKNOWN;
+}
+
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 #pragma mark - gesture methods
@@ -323,6 +371,21 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
     return YES;
   }
+  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+    return YES;
+  }
+  return NO;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+// enable for new remote function
+#if (NEW_REMOTE_HANDLING)
+  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]])
+  {
+    return YES;
+  }
+#endif
   return NO;
 }
 
@@ -414,9 +477,9 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   auto pan = [[UIPanGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePan:)];
   pan.delegate = self;
-  pan.delaysTouchesBegan = YES;
   [m_glView addGestureRecognizer:pan];
   [pan release];
+  m_clickResetPan = false;
 }
 //--------------------------------------------------------------
 - (void)createPressGesturecognizers
@@ -527,6 +590,9 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (void)selectPressed:(UITapGestureRecognizer *)sender
 {
+  // if we have clicked select while scrolling up/down we need to reset direction of pan
+  m_clickResetPan = true;
+  
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
@@ -643,60 +709,158 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 {
   if (m_appAlive == YES) //NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
-    XBMCKey key;
-    switch (sender.state)
+#if (NEW_REMOTE_HANDLING)
+  XBMCKey key;
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
     {
-      case UIGestureRecognizerStateBegan:
+      m_currentClick = -1;
+      m_currentKey = XBMCK_UNKNOWN;
+      break;
+    }
+    case UIGestureRecognizerStateChanged:
+    {
+      CGPoint gesturePoint = [sender translationInView:m_glView];
+      gesturePoint.x = gesturePoint.x/1.92;
+      gesturePoint.y = gesturePoint.y/1.08;
+      
+      key = [self getPanDirection:gesturePoint];
+      
+      // ignore UP/DOWN swipes while in full screen playback
+      if (g_windowManager.GetFocusedWindow() != WINDOW_FULLSCREEN_VIDEO ||
+          key == XBMCK_LEFT ||
+          key == XBMCK_RIGHT)
+      {
+        int click;
+        int absX = gesturePoint.x;
+        int absY = gesturePoint.y;
+        
+        if (absX < 0)
+          absX *= -1;
+        
+        if (absY < 0)
+          absY *= -1;
+        
+        if (key == XBMCK_RIGHT || key == XBMCK_LEFT)
+        {
+          if (absX > 200)
+            click = 2;
+          else if (absX > 70)
+            click = 1;
+          else
+            click = 0;
+        }
+        else
+        {
+          if (absY > 200)
+            click = 2;
+          else if (absY > 100)
+            click = 1;
+          else
+            click = 0;
+        }
+        
+        if (m_clickResetPan || m_currentKey != key || click != m_currentClick)
+        {
+          [self stopKeyPressTimer];
+          [self sendKeyUp:m_currentKey];
+          
+          if (click != m_currentClick)
+          {
+            m_currentClick = click;
+          }
+          if (m_currentKey == XBMCK_UNKNOWN || m_clickResetPan ||
+              ((m_currentKey == XBMCK_RIGHT && key == XBMCK_LEFT) ||
+               (m_currentKey == XBMCK_LEFT && key == XBMCK_RIGHT) ||
+               (m_currentKey == XBMCK_UP && key == XBMCK_DOWN) ||
+               (m_currentKey == XBMCK_DOWN && key == XBMCK_UP))
+              )
+          {
+            m_clickResetPan = false;
+            m_currentKey = key;
+          }
+          
+          if (m_currentClick == 2)
+          {
+            //fast click
+            [self startKeyPressTimer:m_currentKey clickTime:0.20];
+            LOG("fast click");
+          }
+          else if (m_currentClick == 1)
+          {
+            // slow click
+            [self startKeyPressTimer:m_currentKey clickTime:0.80];
+            LOG("slow click");
+          }
+        }
+      }
+      break;
+    }
+    case UIGestureRecognizerStateEnded:
+    case UIGestureRecognizerStateCancelled:
+      [self stopKeyPressTimer];
+      break;
+    default:
+      break;
+  }
+}
+#else
+  XBMCKey key;
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+    {
+      m_touchBeginSignaled = false;
+      break;
+    }
+    case UIGestureRecognizerStateChanged:
+    {
+      if (!m_touchBeginSignaled && m_touchDirection)
+      {
+        switch (m_touchDirection)
+        {
+          case UISwipeGestureRecognizerDirectionRight:
+            key = XBMCK_RIGHT;
+            break;
+          case UISwipeGestureRecognizerDirectionLeft:
+            key = XBMCK_LEFT;
+            break;
+          case UISwipeGestureRecognizerDirectionUp:
+            key = XBMCK_UP;
+            break;
+          case UISwipeGestureRecognizerDirectionDown:
+            key = XBMCK_DOWN;
+            break;
+          default:
+            break;
+        }
+        // ignore UP/DOWN swipes while in full screen playback
+        if (g_windowManager.GetFocusedWindow() != WINDOW_FULLSCREEN_VIDEO ||
+            key == XBMCK_LEFT ||
+            key == XBMCK_RIGHT)
+        {
+          m_touchBeginSignaled = true;
+          [self startKeyPressTimer:key];
+        }
+      }
+      break;
+    }
+    case UIGestureRecognizerStateEnded:
+    case UIGestureRecognizerStateCancelled:
+      if (m_touchBeginSignaled)
       {
         m_touchBeginSignaled = false;
-        break;
+        m_touchDirection = NULL;
+        [self stopKeyPressTimer];
+        [self sendKeyUp:key];
       }
-      case UIGestureRecognizerStateChanged:
-      {
-        if (!m_touchBeginSignaled && m_touchDirection)
-        {
-          switch (m_touchDirection)
-          {
-            case UISwipeGestureRecognizerDirectionRight:
-              key = XBMCK_RIGHT;
-              break;
-            case UISwipeGestureRecognizerDirectionLeft:
-              key = XBMCK_LEFT;
-              break;
-            case UISwipeGestureRecognizerDirectionUp:
-              key = XBMCK_UP;
-              break;
-            case UISwipeGestureRecognizerDirectionDown:
-              key = XBMCK_DOWN;
-              break;
-            default:
-              break;
-          }
-          // ignore UP/DOWN swipes while in full screen playback
-          if (g_windowManager.GetFocusedWindow() != WINDOW_FULLSCREEN_VIDEO ||
-              key == XBMCK_LEFT ||
-              key == XBMCK_RIGHT)
-          {
-            m_touchBeginSignaled = true;
-            [self startKeyPressTimer:key];
-          }
-        }
-        break;
-      }
-      case UIGestureRecognizerStateEnded:
-      case UIGestureRecognizerStateCancelled:
-        if (m_touchBeginSignaled)
-        {
-          m_touchBeginSignaled = false;
-          m_touchDirection = NULL;
-          [self stopKeyPressTimer];
-          [self sendKeyUp:key];
-        }
-        break;
-      default:
-        break;
-    }
+      break;
+    default:
+      break;
   }
+}
+#endif
 }
 
 //--------------------------------------------------------------
@@ -704,10 +868,26 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 {
   if(m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
-    if (sender.state == UIGestureRecognizerStateRecognized)
+#if (NEW_REMOTE_HANDLING)
+    switch ([sender direction])
     {
-      m_touchDirection = [sender direction];
+      case UISwipeGestureRecognizerDirectionRight:
+        [self sendKeyDownUp:XBMCK_RIGHT];
+        break;
+      case UISwipeGestureRecognizerDirectionLeft:
+        [self sendKeyDownUp:XBMCK_LEFT];
+        break;
+      case UISwipeGestureRecognizerDirectionUp:
+        [self sendKeyDownUp:XBMCK_UP];
+        break;
+      case UISwipeGestureRecognizerDirectionDown:
+        [self sendKeyDownUp:XBMCK_DOWN];
+        break;
     }
+#else
+    // remove if we go with new remote function
+    m_touchDirection = [sender direction];
+#endif
   }
 }
 

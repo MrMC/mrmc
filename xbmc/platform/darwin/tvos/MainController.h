@@ -46,7 +46,9 @@ typedef enum
   CGFloat                     m_screenScale;
   bool                        m_touchBeginSignaled;
   int                         m_touchDirection;
+  XBMCKey                     m_currentKey;
   int                         m_screenIdx;
+  int                         m_currentClick;
 
   bool                        m_isPlayingBeforeInactive;
   UIBackgroundTaskIdentifier  m_bgTask;
@@ -60,6 +62,7 @@ typedef enum
   BOOL                        m_readyToRun;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
+  bool                        m_clickResetPan;
 }
 // why are these properties ?
 @property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
@@ -70,8 +73,11 @@ typedef enum
 @property CGFloat             m_screenScale;
 @property bool                m_touchBeginSignaled;
 @property int                 m_touchDirection;
+@property XBMCKey             m_currentKey;
+@property int                 m_currentClick;
 @property int                 m_screenIdx;
 @property CGSize              m_screensize;
+@property bool                m_clickResetPan;
 
 - (void) pauseAnimation;
 - (void) resumeAnimation;
