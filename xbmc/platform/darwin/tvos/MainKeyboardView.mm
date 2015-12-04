@@ -22,7 +22,6 @@
 
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
-#import "platform/darwin/tvos/MainScreenManager.h"
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/MainKeyboard.h"
 

@@ -27,18 +27,9 @@
 
 #import "system.h"
 
-#import "AdvancedSettings.h"
-#import "messaging/ApplicationMessenger.h"
-#import "utils/log.h"
-
-#import "platform/darwin/AutoPool.h"
-#import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainEAGLView.h"
 #import "platform/darwin/tvos/MainController.h"
-#import "platform/darwin/tvos/MainScreenManager.h"
-
-using namespace KODI::MESSAGING;
 
 //--------------------------------------------------------------
 @implementation   MainEAGLView
@@ -60,8 +51,6 @@ using namespace KODI::MESSAGING;
   {
     // Get the layer
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-    //set screen, handlescreenscale and set frame size
-    [self setScreen:screen withFrameBufferResize:FALSE];
 
     eaglLayer.opaque = NO;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -99,92 +88,6 @@ using namespace KODI::MESSAGING;
   [m_context release];
   
   [super dealloc];
-}
-
-//--------------------------------------------------------------
-- (void) resizeFrameBuffer
-{
-  CGRect frame = [MainScreenManager getLandscapeResolution: m_currentScreen];
-  CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];  
-  //allow a maximum framebuffer size of 1080p
-  //needed for tvout on iPad3/4 and iphone4/5 and maybe AppleTV3
-  if (frame.size.width * frame.size.height > 2073600)
-    return;
-  //resize the layer - ios will delay this
-  //and call layoutSubviews when its done with resizing
-  //so the real framebuffer resize is done there then ...
-  if (m_framebufferWidth  != frame.size.width ||
-      m_framebufferHeight != frame.size.height )
-  {
-    m_framebufferResizeRequested = TRUE;
-    [eaglLayer setFrame:frame];
-  }
-}
-
-- (void)layoutSubviews
-{
-  if (m_framebufferResizeRequested)
-  {
-    m_framebufferResizeRequested = FALSE;
-    [self deleteFramebuffer];
-    [self createFramebuffer];
-    [self setFramebuffer];
-  }
-}
-
-- (CGFloat) getScreenScale:(UIScreen *)screen
-{
-  CGFloat scale = 1.0;
-  // On iOS8 and later we use the native scale of the screen as our content scale factor.
-  // This allows us to render to the exact pixel resolution of the screen which avoids additional scaling and GPU rendering work.
-  // For example the iPhone 6 Plus appears to UIKit as a 736 x 414 pt screen with a 3x scale factor (2208 x 1242 virtual pixels).
-  // But the native pixel dimensions are actually 1920 x 1080.
-  // Since we are streaming 1080p buffers from the camera we can render to the iPhone 6 Plus screen at 1:1 with no additional scaling if we set everything up correctly.
-  // Using the native scale of the screen also allows us to render at full quality when using the display zoom feature on iPhone 6/6 Plus.
-
-  // Only try to compile this code if we are using the 8.0 or later SDK.
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-  if ( [screen respondsToSelector:@selector(nativeScale)] )
-    scale = [screen nativeScale];
-  else
-#endif
-  {
-    if ([screen respondsToSelector:@selector(scale)])
-    {
-      // normal other iDevices report 1.0 here
-      // retina devices report 2.0 here
-      // this info is true as of 19.3.2012.
-      if ([screen scale] > 1.0)
-        scale = [screen scale];
-
-      //if no retina display scale detected yet -
-      //ensure retina resolution on supported devices mainScreen
-      //even on older iOS SDKs
-      double screenScale = 1.0;
-      if (scale == 1.0 && screen == [UIScreen mainScreen] && CDarwinUtils::DeviceHasRetina(screenScale))
-        scale = screenScale;//set scale factor from our static list in case older SDKs report 1.0
-
-      // fix for ip6 plus which seems to report 2.0 when not compiled with ios8 sdk
-      if (CDarwinUtils::DeviceHasRetina(screenScale) && screenScale == 3.0)
-        scale = screenScale;
-    }
-  }
-  return scale;
-}
-
-- (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize;
-{
-  CGFloat scaleFactor = 1.0;
-  CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
-
-  m_currentScreen = screen;
-  scaleFactor = [self getScreenScale: m_currentScreen];
-
-  //this will activate retina on supported devices
-  [eaglLayer setContentsScale:scaleFactor];
-  [self setContentScaleFactor:scaleFactor];
-  if (resize)
-    [self resizeFrameBuffer];
 }
 
 //--------------------------------------------------------------

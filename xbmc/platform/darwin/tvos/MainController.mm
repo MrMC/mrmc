@@ -42,7 +42,6 @@
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainEAGLView.h"
 #import "platform/darwin/tvos/MainController.h"
-#import "platform/darwin/tvos/MainScreenManager.h"
 #import "platform/darwin/tvos/MainApplication.h"
 #import "platform/MCRuntimeLib.h"
 #import "platform/MCRuntimeLibContext.h"
@@ -918,7 +917,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   
   m_isPlayingBeforeInactive = NO;
   m_bgTask = UIBackgroundTaskInvalid;
-  m_playbackState = IOS_PLAYBACK_STOPPED;
+  m_playbackState = TVOS_PLAYBACK_STOPPED;
 
   m_window = [[UIWindow alloc] initWithFrame:frame];
   [m_window setRootViewController:self];  
@@ -964,13 +963,12 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [super loadView];
 
   self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.view.autoresizesSubviews = YES;
+  self.view.autoresizesSubviews = YES;
   
   m_glView = [[MainEAGLView alloc] initWithFrame:self.view.bounds withScreen:[UIScreen mainScreen]];
-  [[MainScreenManager sharedInstance] setView:m_glView];
 
   // Check if screen is Retina
-  m_screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
+  m_screenScale = [[UIScreen mainScreen] nativeScale];
 
   [self.view addSubview: m_glView];
 }
@@ -1047,11 +1045,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   m_screensize.height = m_glView.bounds.size.height * m_screenScale;
   return m_screensize;
 }
-//--------------------------------------------------------------
-- (CGFloat)getScreenScale:(UIScreen *)screen;
-{
-  return [m_glView getScreenScale:screen];
-}
+
 //--------------------------------------------------------------
 - (void)didReceiveMemoryWarning
 {
@@ -1082,9 +1076,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (bool)changeScreen:(unsigned int)screenIdx withMode:(UIScreenMode *)mode
 {
-  bool ret = [[MainScreenManager sharedInstance] changeScreen:screenIdx withMode:mode];
-
-  return ret;
+  return true;
 }
 //--------------------------------------------------------------
 - (void)activateScreen:(UIScreen *)screen
@@ -1312,7 +1304,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 
 #pragma mark - Now Playing routines
 //--------------------------------------------------------------
-- (void)setIOSNowPlayingInfo:(NSDictionary *)info
+- (void)setTVOSNowPlayingInfo:(NSDictionary *)info
 {
   self.m_nowPlayingInfo = info;
   [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.m_nowPlayingInfo];
@@ -1386,10 +1378,10 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
    MPNowPlayingInfoPropertyChapterCount;
    */
 
-  [self setIOSNowPlayingInfo:dict];
+  [self setTVOSNowPlayingInfo:dict];
   [dict release];
 
-  m_playbackState = IOS_PLAYBACK_PLAYING;
+  m_playbackState = TVOS_PLAYBACK_PLAYING;
   [self disableNetworkAutoSuspend];
 }
 //--------------------------------------------------------------
@@ -1406,14 +1398,14 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     if (speed)
       [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
 
-    [self setIOSNowPlayingInfo:info];
+    [self setTVOSNowPlayingInfo:info];
   }
 }
 //--------------------------------------------------------------
 - (void)onPause:(NSDictionary *)item
 {
   //PRINT_SIGNATURE();
-  m_playbackState = IOS_PLAYBACK_PAUSED;
+  m_playbackState = TVOS_PLAYBACK_PAUSED;
   // schedule set network auto suspend state for save power if idle.
   [self rescheduleNetworkAutoSuspend];
 }
@@ -1421,9 +1413,9 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)onStop:(NSDictionary *)item
 {
   //PRINT_SIGNATURE();
-  [self setIOSNowPlayingInfo:nil];
+  [self setTVOSNowPlayingInfo:nil];
 
-  m_playbackState = IOS_PLAYBACK_STOPPED;
+  m_playbackState = TVOS_PLAYBACK_STOPPED;
   // delay set network auto suspend state in case we are switching playing item.
   [self rescheduleNetworkAutoSuspend];
 }
@@ -1431,7 +1423,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)rescheduleNetworkAutoSuspend
 {
   //LOG(@"%s: playback state: %d", __PRETTY_FUNCTION__,  m_playbackState);
-  if (m_playbackState == IOS_PLAYBACK_PLAYING)
+  if (m_playbackState == TVOS_PLAYBACK_PLAYING)
   {
     [self disableNetworkAutoSuspend];
     return;
@@ -1439,7 +1431,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if (m_networkAutoSuspendTimer)
     [m_networkAutoSuspendTimer invalidate];
 
-  int delay = m_playbackState == IOS_PLAYBACK_PAUSED ? 60 : 30;  // wait longer if paused than stopped
+  int delay = m_playbackState == TVOS_PLAYBACK_PAUSED ? 60 : 30;  // wait longer if paused than stopped
   self.m_networkAutoSuspendTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(enableNetworkAutoSuspend:) userInfo:nil repeats:NO];
 }
 

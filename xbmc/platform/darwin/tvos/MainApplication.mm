@@ -25,7 +25,6 @@
 
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainController.h"
-#import "platform/darwin/tvos/MainScreenManager.h"
 
 @implementation MainApplicationDelegate
 MainController *m_xbmcController;
@@ -71,12 +70,12 @@ MainController *m_xbmcController;
 
 - (void)screenDidConnect:(NSNotification *)aNotification
 {
-  [MainScreenManager updateResolutions];
+
 }
 
 - (void)screenDidDisconnect:(NSNotification *)aNotification
 {
-  [MainScreenManager updateResolutions];
+
 }
 
 - (void)registerScreenNotifications:(BOOL)bRegister

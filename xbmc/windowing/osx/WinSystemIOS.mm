@@ -41,7 +41,6 @@
 
 #if defined(TARGET_DARWIN_TVOS)
   #import "platform/darwin/tvos/MainController.h"
-  #import "platform/darwin/tvos/MainScreenManager.h"
 #else
   #import "platform/darwin/ios/XBMCController.h"
   #import "platform/darwin/ios/IOSScreenManager.h"
@@ -199,9 +198,7 @@ int CWinSystemIOS::GetNumScreens()
 int CWinSystemIOS::GetCurrentScreen()
 {
   int idx = 0;
-#if defined(TARGET_DARWIN_TVOS)
-  if ([[MainScreenManager sharedInstance] isExternalScreen])
-#else
+#if !defined(TARGET_DARWIN_TVOS)
   if ([[IOSScreenManager sharedInstance] isExternalScreen])
 #endif
   {
@@ -390,10 +387,9 @@ bool CWinSystemIOS::InitDisplayLink(CVideoSyncIos *syncImpl)
   //init with the appropriate display link for the
   //used screen
 #if defined(TARGET_DARWIN_TVOS)
-  if([[MainScreenManager sharedInstance] isExternalScreen])
+  unsigned int currentScreenIdx = 1;
 #else
   if([[IOSScreenManager sharedInstance] isExternalScreen])
-#endif
   {
     fprintf(stderr,"InitDisplayLink on external");
   }
@@ -401,12 +397,9 @@ bool CWinSystemIOS::InitDisplayLink(CVideoSyncIos *syncImpl)
   {
     fprintf(stderr,"InitDisplayLink on internal");
   }
-  
-#if defined(TARGET_DARWIN_TVOS)
-  unsigned int currentScreenIdx = [[MainScreenManager sharedInstance] GetScreenIdx];
-#else
   unsigned int currentScreenIdx = [[IOSScreenManager sharedInstance] GetScreenIdx];
 #endif
+  
   UIScreen * currentScreen = [[UIScreen screens] objectAtIndex:currentScreenIdx];
   [m_pDisplayLink->callbackClass SetVideoSyncImpl:syncImpl];
   m_pDisplayLink->impl = [currentScreen displayLinkWithTarget:m_pDisplayLink->callbackClass selector:@selector(runDisplayLink)];

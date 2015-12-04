@@ -693,7 +693,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     [m_glView setMultipleTouchEnabled:YES];
   
     /* Check if screen is Retina */
-    m_screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
+    m_screenScale = [[UIScreen mainScreen] nativeScale];
   
     m_glView.opaque = NO;
     m_glView.backgroundColor = [UIColor clearColor];

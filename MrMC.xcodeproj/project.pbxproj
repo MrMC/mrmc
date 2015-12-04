@@ -2694,7 +2694,6 @@
 		F5D142B51BAF31FB0075A95C /* MainEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A11BAF31FB0075A95C /* MainEAGLView.mm */; };
 		F5D142B71BAF31FB0075A95C /* MainKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A51BAF31FB0075A95C /* MainKeyboard.mm */; };
 		F5D142B81BAF31FB0075A95C /* MainKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A71BAF31FB0075A95C /* MainKeyboardView.mm */; };
-		F5D142B91BAF31FB0075A95C /* MainScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D142A91BAF31FB0075A95C /* MainScreenManager.mm */; };
 		F5D142DE1BAF882F0075A95C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142DD1BAF882F0075A95C /* OpenGLES.framework */; };
 		F5D142E01BAF88630075A95C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142DF1BAF88630075A95C /* UIKit.framework */; };
 		F5D142E21BAF88760075A95C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142E11BAF88760075A95C /* CoreGraphics.framework */; };
@@ -4866,8 +4865,6 @@
 		F5D142A51BAF31FB0075A95C /* MainKeyboard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainKeyboard.mm; sourceTree = "<group>"; };
 		F5D142A61BAF31FB0075A95C /* MainKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainKeyboardView.h; sourceTree = "<group>"; };
 		F5D142A71BAF31FB0075A95C /* MainKeyboardView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainKeyboardView.mm; sourceTree = "<group>"; };
-		F5D142A81BAF31FB0075A95C /* MainScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainScreenManager.h; sourceTree = "<group>"; };
-		F5D142A91BAF31FB0075A95C /* MainScreenManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainScreenManager.mm; sourceTree = "<group>"; };
 		F5D142DD1BAF882F0075A95C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.0.sdk/System/Library/Frameworks/OpenGLES.framework; sourceTree = DEVELOPER_DIR; };
 		F5D142DF1BAF88630075A95C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		F5D142E11BAF88760075A95C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -8344,8 +8341,6 @@
 				F5D142A51BAF31FB0075A95C /* MainKeyboard.mm */,
 				F5D142A61BAF31FB0075A95C /* MainKeyboardView.h */,
 				F5D142A71BAF31FB0075A95C /* MainKeyboardView.mm */,
-				F5D142A81BAF31FB0075A95C /* MainScreenManager.h */,
-				F5D142A91BAF31FB0075A95C /* MainScreenManager.mm */,
 			);
 			path = tvos;
 			sourceTree = "<group>";
@@ -11059,7 +11054,6 @@
 				F5D1404F1BAF0B6D0075A95C /* AnnouncementManager.cpp in Sources */,
 				F5D140501BAF0B6D0075A95C /* Builtins.cpp in Sources */,
 				F5D140511BAF0B6D0075A95C /* ConvUtils.cpp in Sources */,
-				F5D142B91BAF31FB0075A95C /* MainScreenManager.mm in Sources */,
 				F5D140521BAF0B6D0075A95C /* LinuxResourceCounter.cpp in Sources */,
 				F5D140531BAF0B6D0075A95C /* LinuxTimezone.cpp in Sources */,
 				F5D140541BAF0B6D0075A95C /* PosixMountProvider.cpp in Sources */,

@@ -29,10 +29,10 @@
 
 typedef enum
 {
-  IOS_PLAYBACK_STOPPED,
-  IOS_PLAYBACK_PAUSED,
-  IOS_PLAYBACK_PLAYING
-} IOSPlaybackState;
+  TVOS_PLAYBACK_STOPPED,
+  TVOS_PLAYBACK_PAUSED,
+  TVOS_PLAYBACK_PLAYING
+} TVOSPlaybackState;
 
 @interface MainController : UIViewController <UIGestureRecognizerDelegate>
 {
@@ -53,7 +53,7 @@ typedef enum
   bool                        m_isPlayingBeforeInactive;
   UIBackgroundTaskIdentifier  m_bgTask;
   NSTimer                    *m_networkAutoSuspendTimer;
-  IOSPlaybackState            m_playbackState;
+  TVOSPlaybackState           m_playbackState;
   NSDictionary               *m_nowPlayingInfo;
 
   BOOL                        m_pause;
@@ -87,13 +87,12 @@ typedef enum
 - (void) enterBackground;
 - (void) enterForeground;
 - (void) becomeInactive;
-- (void) setIOSNowPlayingInfo:(NSDictionary *)info;
+- (void) setTVOSNowPlayingInfo:(NSDictionary *)info;
 - (void) sendKeyDownUp:(XBMCKey)key;
 - (void) observeDefaultCenterStuff: (NSNotification *)notification;
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;
-- (CGFloat) getScreenScale:(UIScreen *)screen;
 - (void) activateKeyboard:(UIView *)view;
 - (void) deactivateKeyboard:(UIView *)view;
 
