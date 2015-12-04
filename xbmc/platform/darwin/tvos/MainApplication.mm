@@ -68,34 +68,6 @@ MainController *m_xbmcController;
 //  PRINT_SIGNATURE();
 }
 
-- (void)screenDidConnect:(NSNotification *)aNotification
-{
-
-}
-
-- (void)screenDidDisconnect:(NSNotification *)aNotification
-{
-
-}
-
-- (void)registerScreenNotifications:(BOOL)bRegister
-{
-  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];  
-  
-  if( bRegister )
-  {
-    //register to screen notifications
-    [nc addObserver:self selector:@selector(screenDidConnect:) name:UIScreenDidConnectNotification object:nil]; 
-    [nc addObserver:self selector:@selector(screenDidDisconnect:) name:UIScreenDidDisconnectNotification object:nil]; 
-  }
-  else
-  {
-    //deregister from screen notifications
-    [nc removeObserver:self name:UIScreenDidConnectNotification object:nil];
-    [nc removeObserver:self name:UIScreenDidDisconnectNotification object:nil];
-  }
-}
-
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
   //PRINT_SIGNATURE();
@@ -104,12 +76,10 @@ MainController *m_xbmcController;
 
   m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
   [m_xbmcController startAnimation];
-  [self registerScreenNotifications:YES];
 }
 
 - (void)dealloc
 {
-  [self registerScreenNotifications:NO];
   [m_xbmcController stopAnimation];
   [m_xbmcController release];
 

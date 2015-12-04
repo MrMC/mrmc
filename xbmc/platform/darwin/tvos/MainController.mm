@@ -33,12 +33,10 @@
 
 #import "guilib/GUIWindowManager.h"
 #import "input/Key.h"
-#import "input/touch/generic/GenericTouchActionHandler.h"
 #import "interfaces/AnnouncementManager.h"
 #import "messaging/ApplicationMessenger.h"
 
 #import "platform/darwin/AutoPool.h"
-#import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainEAGLView.h"
 #import "platform/darwin/tvos/MainController.h"
@@ -1078,20 +1076,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 {
   return true;
 }
-//--------------------------------------------------------------
-- (void)activateScreen:(UIScreen *)screen
-{
-  // Since ios7 we have to handle the orientation manually
-  // it differs by 90 degree between internal and external screen
-  float angle = 0;
-  UIView *view = [m_window.subviews objectAtIndex:0];
-  // reset the rotation of the view
-  view.layer.transform = CATransform3DMakeRotation(angle, 0, 0.0, 1.0);
-  view.layer.bounds = view.bounds;
-  m_window.screen = screen;
-  [view setFrame:m_window.frame];
-}
-
 //--------------------------------------------------------------
 - (void)enterBackground
 {
