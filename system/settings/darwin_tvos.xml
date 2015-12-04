@@ -63,6 +63,9 @@
         <setting id="videoscreen.blankdisplays">
           <visible>false</visible>
         </setting>
+        <setting id="videoscreen.resolution" type="integer" parent="videoscreen.screen" label="169" help="36352">
+          <visible>false</visible>
+        </setting>
       </group>
     </category>
     <category id="audiooutput">
