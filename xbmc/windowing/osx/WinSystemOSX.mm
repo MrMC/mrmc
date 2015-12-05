@@ -63,8 +63,8 @@ CRect CGRectToCRect(CGRect cgrect)
 void SetMenuBarVisible(bool visible)
 {
   // native fullscreen stuff handles this for us...
-  if (!visible)
-    return;
+//  if (!visible)
+//    return;
 
   if ([NSApplication sharedApplication] == nil)
     printf("[NSApplication sharedApplication] nil %d\n" , visible);
@@ -546,6 +546,10 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
     NSString *title = [NSString stringWithFormat:@"%s" , ""];
     window.title = title;
+    
+    // Hide the menu bar.
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
+      SetMenuBarVisible(false);
 
     ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 
@@ -567,7 +571,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     
     // Show menubar.
     if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks())
-      [OSXGLWindow SetMenuBarVisible];
+      SetMenuBarVisible(true);
     
     // Assign view from old context, move back to original screen.
     [window setFrameOrigin:last_window_origin];
