@@ -277,8 +277,6 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_glView     = NULL;
   m_obscured_timecheck = XbmcThreads::SystemClockMillis() + 1000;
   m_use_system_screensaver = true;
-  // check runtime, we only allow this on 10.5+
-  m_can_display_switch = (floor(NSAppKitVersionNumber) >= 949);
   m_lastDisplayNr = -1;
   m_movedToOtherScreen = false;
   m_refreshRate = 0.0;
@@ -316,8 +314,7 @@ bool CWinSystemOSX::InitWindowSystem()
   if (!CWinSystemBase::InitWindowSystem())
     return false;
 
-  if (m_can_display_switch)
-    CGDisplayRegisterReconfigurationCallback(DisplayReconfigured, (void*)this);
+  CGDisplayRegisterReconfigurationCallback(DisplayReconfigured, (void*)this);
 
   return true;
 }
@@ -325,8 +322,7 @@ bool CWinSystemOSX::InitWindowSystem()
 bool CWinSystemOSX::DestroyWindowSystem()
 {
   //printf("CWinSystemOSX::DestroyWindowSystem\n");
-  if (m_can_display_switch)
-    CGDisplayRemoveReconfigurationCallback(DisplayReconfigured, (void*)this);
+  CGDisplayRemoveReconfigurationCallback(DisplayReconfigured, (void*)this);
 
   DestroyWindowInternal();
   
@@ -510,21 +506,14 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
   
-  //handle resolution/refreshrate switching early here
-  if (m_bFullScreen)
-  {
-    if (m_can_display_switch)
-    {
-      // switch videomode
-      SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
-      m_lastDisplayNr = res.iScreen;
-    }
-  }
-  
   [window setAllowsConcurrentViewDrawing:NO];
 
   if (m_bFullScreen)
   {
+    // switch videomode
+    SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
+    m_lastDisplayNr = res.iScreen;
+    
     // FullScreen Mode
     // Save info about the windowed context so we can restore it when returning to windowed.
     last_view_size = [view frame].size;
@@ -633,12 +622,9 @@ void CWinSystemOSX::UpdateResolutions()
     CDisplaySettings::GetInstance().AddResolutionInfo(res);
   }
 
-  if (m_can_display_switch)
-  {
-    // now just fill in the possible reolutions for the attached screens
-    // and push to the resolution info vector
-    FillInVideoModes();
-  }
+  // now just fill in the possible reolutions for the attached screens
+  // and push to the resolution info vector
+  FillInVideoModes();
 }
 
 void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenIdx)

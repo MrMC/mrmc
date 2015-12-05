@@ -111,7 +111,6 @@ protected:
   std::string                  m_name;
 
   bool                         m_use_system_screensaver;
-  bool                         m_can_display_switch;
   bool                         m_movedToOtherScreen;
   bool                         m_fullscreenWillToggle;
   int                          m_lastDisplayNr;
