@@ -529,7 +529,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     screenRect.origin = NSZeroPoint;
 
 //    DestroyWindow();
-    DestroyWindowInternal();
+//    DestroyWindowInternal();
     CreateNewWindow(m_name, true, res, NULL);
     window = (NSWindow *)m_appWindow;
     view = [window contentView];
@@ -564,7 +564,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     //Cocoa_ShowMouse();
 
 //    DestroyWindow();
-    DestroyWindowInternal();
+//    DestroyWindowInternal();
     CreateNewWindow(m_name, false, res, NULL);
     window = (NSWindow *)m_appWindow;
     view = [window contentView];
