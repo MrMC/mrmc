@@ -1071,6 +1071,24 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if ([UIApplication sharedApplication].idleTimerDisabled == YES)
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
+
+//--------------------------------------------------------------
+- (UIScreenMode*) preferredScreenMode:(UIScreen*) screen
+{
+  // tvOS only support one mode, the current one.
+  return [screen currentMode];
+}
+
+//--------------------------------------------------------------
+- (NSArray<UIScreenMode *> *) availableScreenModes:(UIScreen*) screen
+{
+  // tvOS only support one mode, the current one,
+  // pass back an array with this inside.
+  NSMutableArray *array = [[[NSMutableArray alloc] initWithCapacity:1] autorelease];
+  [array addObject:[screen currentMode]];
+  return array;
+}
+
 //--------------------------------------------------------------
 - (bool)changeScreen:(unsigned int)screenIdx withMode:(UIScreenMode *)mode
 {

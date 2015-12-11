@@ -157,7 +157,7 @@ UIScreenMode *getModeForResolution(int width, int height, unsigned int screenIdx
     return NULL;
     
   UIScreen *aScreen = [[UIScreen screens]objectAtIndex:screenIdx];
-  for ( UIScreenMode *mode in [aScreen availableModes] )
+  for ( UIScreenMode *mode in [g_xbmcController availableScreenModes:aScreen]  )
   {
     //for main screen also find modes where width and height are
     //exchanged (because of the 90°degree rotated buildinscreens)
@@ -221,7 +221,7 @@ bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenI
   //then use the preferred mode
   if(*h == 0 || *w ==0)
   {
-    UIScreenMode *firstMode = [screen preferredMode];
+    UIScreenMode *firstMode = [g_xbmcController preferredScreenMode:screen];
     *w = firstMode.size.width;
     *h = firstMode.size.height;
   }
@@ -287,7 +287,7 @@ void CWinSystemIOS::FillInVideoModes()
     //screen 0 is mainscreen - 1 has to be the external one...
     UIScreen *aScreen = [[UIScreen screens]objectAtIndex:disp];
     //found external screen
-    for ( UIScreenMode *mode in [aScreen availableModes] )
+    for ( UIScreenMode *mode in [g_xbmcController availableScreenModes:aScreen] )
     {
       w = mode.size.width;
       h = mode.size.height;
