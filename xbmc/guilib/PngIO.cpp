@@ -133,36 +133,43 @@ bool CPngIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, un
   m_originalWidth = info_width;
   m_originalHeight = info_height;
 
-  if (png_get_valid(pngStructPtr, pngInfoPtr, PNG_INFO_tRNS))
-    png_set_tRNS_to_alpha(pngStructPtr);
+  // we want one byte per pixel
+  if (bit_depth == 16)
+      png_set_strip_16(pngStructPtr);
+  else if (bit_depth < 8)
+      png_set_packing(pngStructPtr);
 
-  // set it to 32bit pixeldepth
-  png_color_8 sig_bit;
-  sig_bit.red   = 32;
-  sig_bit.green = 32;
-  sig_bit.blue  = 32;
-  // if the image has an alpha channel then
-  sig_bit.alpha = 32;
-  png_set_sBIT(pngStructPtr, pngInfoPtr, &sig_bit);
-
-  // add filler (or alpha) byte (before/after each RGB triplet)
-  png_set_filler(pngStructPtr, 0xff, PNG_FILLER_AFTER);
-
-  if (color_type == PNG_COLOR_TYPE_RGB ||
-      color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-    png_set_bgr(pngStructPtr);
-
-  // convert indexed color to rgb
+  // convert indexed colormap to rgb
   if (color_type == PNG_COLOR_TYPE_PALETTE)
     png_set_palette_to_rgb(pngStructPtr);
 
-  // we only eat 32bit RGBA, must convert grayscale into this format
+  // convert grayscales to RGB
   if (color_type == PNG_COLOR_TYPE_GRAY ||
       color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
   {
     png_set_expand_gray_1_2_4_to_8(pngStructPtr);
     png_set_gray_to_rgb(pngStructPtr);
   }
+
+  if (png_get_valid(pngStructPtr, pngInfoPtr, PNG_INFO_tRNS))
+    png_set_tRNS_to_alpha(pngStructPtr);
+
+  // set it to 32bit pixel depth
+  png_color_8 sig_bit;
+  sig_bit.red   = 32;
+  sig_bit.green = 32;
+  sig_bit.blue  = 32;
+  sig_bit.alpha = 32;
+  png_set_sBIT(pngStructPtr, pngInfoPtr, &sig_bit);
+
+  // add filler (or alpha) byte (before/after each RGB triplet)
+  png_set_filler(pngStructPtr, 0xff, PNG_FILLER_AFTER);
+
+  // convert RGB's to BGR, colormaps will be RGB
+  if (color_type == PNG_COLOR_TYPE_RGB ||
+      color_type == PNG_COLOR_TYPE_RGB_ALPHA ||
+      color_type == PNG_COLOR_TYPE_PALETTE)
+    png_set_bgr(pngStructPtr);
 
   // update the png info struct
   png_read_update_info(pngStructPtr, pngInfoPtr);
