@@ -225,8 +225,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 @synthesize m_nowPlayingInfo;
 @synthesize m_clickResetPan;
 
-// set to 1 to enable new remote function, to be tested for 1.1
-#define NEW_REMOTE_HANDLING 0
+// set to 1 to enable new remote function, to be tested for 1.0.2
+#define NEW_REMOTE_HANDLING 1
 
 #pragma mark - internal key press methods
 //--------------------------------------------------------------
