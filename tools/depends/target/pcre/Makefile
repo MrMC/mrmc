@@ -6,7 +6,6 @@ LIBNAME=pcre
 VERSION=8.36
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-BASE_URL=http://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; ./configure --prefix=$(PREFIX) \
