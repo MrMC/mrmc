@@ -341,7 +341,7 @@ void CMusicDatabase::CreateViews()
 int CMusicDatabase::AddAlbumInfoSong(int idAlbum, const CSong& song)
 {
   std::string strSQL = PrepareSQL("SELECT idAlbumInfoSong FROM albuminfosong WHERE idAlbumInfo = %i and iTrack = %i", idAlbum, song.iTrack);
-  int idAlbumInfoSong = std::stoi(GetSingleValue(strSQL).c_str(), NULL, 10);
+  int idAlbumInfoSong = strtol(GetSingleValue(strSQL).c_str(), NULL, 10);
   if (idAlbumInfoSong > 0)
   {
     strSQL = PrepareSQL("UPDATE albuminfosong SET strTitle = '%s', iDuration = %i WHERE idAlbumInfoSong = %i", song.strTitle.c_str(), song.iDuration, idAlbumInfoSong);
@@ -3999,7 +3999,7 @@ bool CMusicDatabase::GetCompilationSongs(const std::string& strBaseDir, CFileIte
 
 int CMusicDatabase::GetCompilationAlbumsCount()
 {
-  return std::stoi(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1").c_str(), NULL, 10);
+  return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1").c_str(), NULL, 10);
 }
 
 int CMusicDatabase::GetSinglesCount()

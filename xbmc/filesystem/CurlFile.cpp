@@ -811,7 +811,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         else if (name == "sslcipherlist")
           m_cipherlist = value;
         else if (name == "connection-timeout")
-          m_connecttimeout = std::stoi(value.c_str(), NULL, 10);
+          m_connecttimeout = strtol(value.c_str(), NULL, 10);
         else
           SetRequestHeader(it->first, value);
       }
