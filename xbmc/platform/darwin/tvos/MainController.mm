@@ -371,6 +371,9 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
     return YES;
   }
+  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+    return YES;
+  }
   return NO;
 }
 
@@ -378,7 +381,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 {
 // enable for new remote function
 #if (NEW_REMOTE_HANDLING)
-  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]])
+  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && ([otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] || [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]))
   {
     return YES;
   }
@@ -477,6 +480,39 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [m_glView addGestureRecognizer:pan];
   [pan release];
   m_clickResetPan = false;
+}
+//--------------------------------------------------------------
+- (void)createTapGesturecognizers
+{
+  //PRINT_SIGNATURE();
+  // tap side of siri remote pad
+  auto upRecognizer = [[UITapGestureRecognizer alloc]
+                       initWithTarget: self action: @selector(tapUpArrowPressed:)];
+  upRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeUpArrow]];
+  upRecognizer.delegate = self;
+  [m_glView addGestureRecognizer: upRecognizer];
+  [upRecognizer release];
+  
+  auto downRecognizer = [[UITapGestureRecognizer alloc]
+                         initWithTarget: self action: @selector(tapDownArrowPressed:)];
+  downRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeDownArrow]];
+  downRecognizer.delegate = self;
+  [m_glView addGestureRecognizer: downRecognizer];
+  [downRecognizer release];
+  
+  auto leftRecognizer = [[UITapGestureRecognizer alloc]
+                         initWithTarget: self action: @selector(tapLeftArrowPressed:)];
+  leftRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeLeftArrow]];
+  leftRecognizer.delegate = self;
+  [m_glView addGestureRecognizer: leftRecognizer];
+  [leftRecognizer release];
+  
+  auto rightRecognizer = [[UITapGestureRecognizer alloc]
+                          initWithTarget: self action: @selector(tapRightArrowPressed:)];
+  rightRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
+  rightRecognizer.delegate = self;
+  [m_glView addGestureRecognizer: rightRecognizer];
+  [rightRecognizer release];
 }
 //--------------------------------------------------------------
 - (void)createPressGesturecognizers
@@ -701,6 +737,28 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
       break;
   }
 }
+
+//--------------------------------------------------------------
+- (IBAction)tapUpArrowPressed:(UIGestureRecognizer *)sender
+{
+  [self sendKeyDownUp:XBMCK_UP];
+}
+//--------------------------------------------------------------
+- (IBAction)tapDownArrowPressed:(UIGestureRecognizer *)sender
+{
+  [self sendKeyDownUp:XBMCK_DOWN];
+}
+//--------------------------------------------------------------
+- (IBAction)tapLeftArrowPressed:(UIGestureRecognizer *)sender
+{
+  [self sendKeyDownUp:XBMCK_LEFT];
+}
+//--------------------------------------------------------------
+- (IBAction)tapRightArrowPressed:(UIGestureRecognizer *)sender
+{
+  [self sendKeyDownUp:XBMCK_RIGHT];
+}
+
 //--------------------------------------------------------------
 - (IBAction)handlePan:(UIPanGestureRecognizer *)sender 
 {
@@ -978,6 +1036,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [self createSwipeGestureRecognizers];
   [self createPanGestureRecognizers];
   [self createPressGesturecognizers];
+  [self createTapGesturecognizers];
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
