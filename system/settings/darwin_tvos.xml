@@ -107,7 +107,9 @@
       </group>
     </category>
     <category id="powermanagement">
-      <visible>false</visible>
+      <group id="1">
+        <visible>false</visible>
+      </group>
     </category>
     <category id="masterlock">
       <visible>false</visible>
