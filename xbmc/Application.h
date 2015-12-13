@@ -456,7 +456,7 @@ protected:
   float NavigationIdleTime();
 
   bool InitDirectoriesLinux();
-  bool InitDirectoriesOSX();
+  bool InitDirectoriesDarwin();
   void CreateUserDirs();
 
   /*! \brief Helper method to determine how to handle TMSG_SHUTDOWN

@@ -422,7 +422,7 @@ bool CApplication::Create()
   // putting this before the first log entries saves another ifdef for g_advancedSettings.m_logFolder
   bool inited = InitDirectoriesLinux();
   if (!inited)
-    inited = InitDirectoriesOSX();
+    inited = InitDirectoriesDarwin();
 
   // copy required xml files
   CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "favourites.xml");
@@ -868,23 +868,16 @@ bool CApplication::InitDirectoriesLinux()
 #endif
 }
 
-bool CApplication::InitDirectoriesOSX()
+bool CApplication::InitDirectoriesDarwin()
 {
 #if defined(TARGET_DARWIN)
-  std::string userHome;
-#if defined(TARGET_DARWIN_OSX)
-  // OSX HOME: The user home directory
-  if (getenv("HOME"))
-    userHome = getenv("HOME");
-  else
-    userHome = "/root";
-#else
+  std::string userHome = CDarwinUtils::GetUserHomeDirectory();
+#if defined(TARGET_DARWIN_IOS)
   // iOS/TVOS HOME: The home directory of your application
   // change it to match osx definition which is the norm.
-  userHome = CDarwinUtils::GetUserHomeDirectory();
   setenv("HOME", userHome.c_str(), 1);
 #endif
-  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesOSX: userHome(%s), HOME(%s)", userHome.c_str() , getenv("HOME"));
+  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesDarwin: userHome(%s), HOME(%s)", userHome.c_str() , getenv("HOME"));
 
   std::string appPath;
   // this is stupid;
@@ -892,7 +885,7 @@ bool CApplication::InitDirectoriesOSX()
   // SetHomePath sets path to special://home which is user home.
   CUtil::GetHomePath(appPath);
   setenv("MRMC_HOME", appPath.c_str(), 0);
-  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesOSX: appPath(%s)", appPath.c_str());
+  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesDarwin: appPath(%s)", appPath.c_str());
   // setup path to our internal dylibs so loader can find them
   std::string frameworksPath = CUtil::GetFrameworksPath();
   CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
@@ -903,7 +896,7 @@ bool CApplication::InitDirectoriesOSX()
   // the location of the fonts.conf file
   setenv("FONTCONFIG_FILE", fontconfigFilePath.c_str(), 1);
   setenv("MRMC_IOS_FRAMEWORKS", frameworksPath.c_str(), 1);
-  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesOSX: fontconfigFilePath(%s)", fontconfigFilePath.c_str());
+  CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesDarwin: fontconfigFilePath(%s)", fontconfigFilePath.c_str());
 #endif
   
   // OSX always runs with m_bPlatformDirectories == true
