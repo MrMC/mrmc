@@ -111,7 +111,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     double dCPU = m_resourceCounter.GetCPUUsage();
     std::string ucAppName = lcAppName;
     StringUtils::ToUpper(ucAppName);
-    info = StringUtils::Format("LOG: %s%s.log\n"
+    info = StringUtils::Format("LOG: %s/%s.log\n"
       "MEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\n"
       "CPU: %s (CPU-%s %4.2f%%%s)",
       g_advancedSettings.m_logFolder.c_str(), lcAppName.c_str(),
