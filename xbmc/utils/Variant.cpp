@@ -25,12 +25,14 @@
 
 #include "Variant.h"
 
-#ifndef strtoll
-#define strtoll(str, endptr, base)  (int64_t)strtod(str, endptr)
-#define strtoull(str, endptr, base) (uint64_t)strtod(str, endptr)
-#define wcstoll(str, endptr, base)  (int64_t)wcstod(str, endptr)
-#define wcstoull(str, endptr, base) (uint64_t)wcstod(str, endptr)
-#endif // strtoll
+#if !defined(TARGET_DARWIN)
+  #ifndef strtoll
+    #define strtoll( str, endptr, base) (int64_t) strtod(str, endptr)
+    #define strtoull(str, endptr, base) (uint64_t)strtod(str, endptr)
+    #define wcstoll( str, endptr, base) (int64_t) wcstod(str, endptr)
+    #define wcstoull(str, endptr, base) (uint64_t)wcstod(str, endptr)
+  #endif // strtoll
+#endif
 
 using namespace std;
 
