@@ -60,6 +60,7 @@ typedef enum
   BOOL                        m_appAlive;
   BOOL                        m_animating;
   BOOL                        m_readyToRun;
+  BOOL                        m_disableIdleTimer;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
   bool                        m_clickResetPan;
@@ -102,6 +103,7 @@ typedef enum
 - (void) enableSystemSleep;
 - (void) disableScreenSaver;
 - (void) enableScreenSaver;
+- (void) resetSystemIdleTimer;
 
 - (NSArray<UIScreenMode *> *) availableScreenModes:(UIScreen*) screen;
 - (UIScreenMode*) preferredScreenMode:(UIScreen*) screen;

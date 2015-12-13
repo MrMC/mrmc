@@ -71,11 +71,15 @@ MainController *m_xbmcController;
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
   //PRINT_SIGNATURE();
-
   UIScreen *currentScreen = [UIScreen mainScreen];
-
   m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
   [m_xbmcController startAnimation];
+}
+
+- (BOOL)application:(UIApplication *)app
+  openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options
+{
+  return NO;
 }
 
 - (void)dealloc

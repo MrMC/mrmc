@@ -833,6 +833,10 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 //--------------------------------------------------------------
+- (void)resetSystemIdleTimer
+{
+}
+//--------------------------------------------------------------
 - (UIScreenMode*) preferredScreenMode:(UIScreen*) screen
 {
   // present because preferredMode is prohibited under tvOS

@@ -544,12 +544,19 @@ int CDarwinUtils::BatteryLevel(void)
 
 void CDarwinUtils::EnableOSScreenSaver(bool enable)
 {
+  //CLog::Log(LOGDEBUG, "CDarwinUtils::EnableOSScreenSaver(%d)", enable);
 #if defined(TARGET_DARWIN_TVOS)
   if (enable)
     [g_xbmcController enableScreenSaver];
   else
     [g_xbmcController disableScreenSaver];
 #endif
+}
+
+void CDarwinUtils::ResetSystemIdleTimer()
+{
+  //CLog::Log(LOGDEBUG, "CDarwinUtils::ResetSystemIdleTimer");
+  [g_xbmcController resetSystemIdleTimer];
 }
 
 void CDarwinUtils::SetScheduling(int message)

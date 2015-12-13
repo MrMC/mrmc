@@ -970,7 +970,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   m_appAlive = FALSE;
   m_animating = FALSE;
   m_readyToRun = FALSE;
-  
+
   m_isPlayingBeforeInactive = NO;
   m_bgTask = UIBackgroundTaskInvalid;
   m_playbackState = TVOS_PLAYBACK_STOPPED;
@@ -982,7 +982,9 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   // Turn off autoresizing
   m_window.autoresizingMask = 0;
   m_window.autoresizesSubviews = NO;
-  
+
+  [self enableScreenSaver];
+
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   [center addObserver: self
      selector: @selector(observeDefaultCenterStuff:) name: nil object: nil];
@@ -1121,14 +1123,30 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (void)disableScreenSaver
 {
-  if ([UIApplication sharedApplication].idleTimerDisabled == NO)
-    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+  m_disableIdleTimer = YES;
+  [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 //--------------------------------------------------------------
 - (void)enableScreenSaver
 {
-  if ([UIApplication sharedApplication].idleTimerDisabled == YES)
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+  m_disableIdleTimer = NO;
+  [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+}
+
+//--------------------------------------------------------------
+- (void)resetSystemIdleTimer
+{
+  //PRINT_SIGNATURE();
+  // this is silly :)
+  // when system screen saver kicks off, we switch to UIApplicationStateInactive, the only way
+  // to get out of the screensaver is to call ourself to open an custom URL that is registered
+  // in our Info.plist. The openURL method of UIApplication must be supported but we can just
+  // reply NO and we get restored to UIApplicationStateActive.
+  if ([UIApplication sharedApplication].applicationState == UIApplicationStateInactive)
+  {
+    NSURL *url = [NSURL URLWithString:@"mrmc://wakeup"];
+    [[UIApplication sharedApplication] openURL:url];
+  }
 }
 
 //--------------------------------------------------------------
@@ -1175,10 +1193,13 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
     m_isPlayingBeforeInactive = NO;
   }
+
+  [self enableScreenSaver];
 }
 
 - (void)becomeInactive
 {
+  //PRINT_SIGNATURE();
   // if we were interrupted, already paused here
   // else if user background us or lock screen, only pause video here, audio keep playing.
   if (g_application.m_pPlayer->IsPlayingVideo() &&
