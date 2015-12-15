@@ -2698,6 +2698,10 @@
 		F5D142E01BAF88630075A95C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142DF1BAF88630075A95C /* UIKit.framework */; };
 		F5D142E21BAF88760075A95C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142E11BAF88760075A95C /* CoreGraphics.framework */; };
 		F5D142E41BAF88880075A95C /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142E31BAF88880075A95C /* MediaPlayer.framework */; };
+		F5D5F2EC1C2083B700E3FE8B /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		F5D5F2ED1C2083B700E3FE8B /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		F5D5F2F01C2083C600E3FE8B /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		F5D5F2F11C2083C600E3FE8B /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
@@ -4869,6 +4873,10 @@
 		F5D142DF1BAF88630075A95C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		F5D142E11BAF88760075A95C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		F5D142E31BAF88880075A95C /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.0.sdk/System/Library/Frameworks/MediaPlayer.framework; sourceTree = DEVELOPER_DIR; };
+		F5D5F2E91C2083B700E3FE8B /* darwinICMPPing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = darwinICMPPing.h; sourceTree = "<group>"; };
+		F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = darwinICMPPing.m; sourceTree = "<group>"; };
+		F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePing.m; sourceTree = "<group>"; };
+		F5D5F2F21C2083CD00E3FE8B /* SimplePing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
 		F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererGL.h; sourceTree = "<group>"; };
 		F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererGL.cpp; sourceTree = "<group>"; };
 		F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRenderer.h; sourceTree = "<group>"; };
@@ -5705,10 +5713,14 @@
 		4313772312D646E300680C15 /* osx */ = {
 			isa = PBXGroup;
 			children = (
-				E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */,
+				F5D5F2E91C2083B700E3FE8B /* darwinICMPPing.h */,
+				F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */,
+				F5D5F2F21C2083CD00E3FE8B /* SimplePing.h */,
+				F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */,
 				E49ACD9E10074A4000A86ECD /* ZeroconfBrowserOSX.h */,
-				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */,
+				E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */,
 				E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */,
+				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -9771,6 +9783,7 @@
 				E499117F174E5CE000741B6D /* AddonInstaller.cpp in Sources */,
 				E4991180174E5CE000741B6D /* AddonManager.cpp in Sources */,
 				E4991181174E5CE000741B6D /* AddonStatusHandler.cpp in Sources */,
+				F5D5F2F01C2083C600E3FE8B /* SimplePing.m in Sources */,
 				E4991182174E5CE000741B6D /* AddonVersion.cpp in Sources */,
 				E4991183174E5CE000741B6D /* GUIDialogAddonInfo.cpp in Sources */,
 				E4991184174E5CE000741B6D /* GUIDialogAddonSettings.cpp in Sources */,
@@ -10279,6 +10292,7 @@
 				E49913F3174E5FB000741B6D /* PVRClients.cpp in Sources */,
 				E49913F4174E5FB000741B6D /* PVRChannel.cpp in Sources */,
 				E49913F5174E5FB000741B6D /* PVRChannelGroup.cpp in Sources */,
+				F5D5F2EC1C2083B700E3FE8B /* darwinICMPPing.m in Sources */,
 				E49913F6174E5FB000741B6D /* PVRChannelGroupInternal.cpp in Sources */,
 				E49913F7174E5FB000741B6D /* PVRChannelGroups.cpp in Sources */,
 				E49913F8174E5FB000741B6D /* PVRChannelGroupsContainer.cpp in Sources */,
@@ -10849,6 +10863,7 @@
 				F5D13F831BAF0B6D0075A95C /* IDirectory.cpp in Sources */,
 				F5D13F841BAF0B6D0075A95C /* IFile.cpp in Sources */,
 				F5D13F851BAF0B6D0075A95C /* ImageFile.cpp in Sources */,
+				F5D5F2ED1C2083B700E3FE8B /* darwinICMPPing.m in Sources */,
 				F5D13F861BAF0B6D0075A95C /* LibraryDirectory.cpp in Sources */,
 				F5D13F871BAF0B6D0075A95C /* MemBufferCache.cpp in Sources */,
 				F5D13F881BAF0B6D0075A95C /* MultiPathDirectory.cpp in Sources */,
@@ -11344,6 +11359,7 @@
 				F5D1416B1BAF0B6D0075A95C /* GUIWindowSystemInfo.cpp in Sources */,
 				F5D1416C1BAF0B6D0075A95C /* Application.cpp in Sources */,
 				F5D1416D1BAF0B6D0075A95C /* AppParamParser.cpp in Sources */,
+				F5D5F2F11C2083C600E3FE8B /* SimplePing.m in Sources */,
 				F5D1416E1BAF0B6D0075A95C /* AutoSwitch.cpp in Sources */,
 				F5D1416F1BAF0B6D0075A95C /* BackgroundInfoLoader.cpp in Sources */,
 				F5D141701BAF0B6D0075A95C /* CueDocument.cpp in Sources */,
