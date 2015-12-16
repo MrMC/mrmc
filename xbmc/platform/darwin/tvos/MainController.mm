@@ -658,7 +658,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     case UIGestureRecognizerStateChanged:
       break;
     case UIGestureRecognizerStateEnded:
-      [self sendKeyDownUp:XBMCK_SPACE];
+      [self sendKeyDownUp:XBMCK_MEDIA_PLAY_PAUSE];
       break;
     default:
       break;
@@ -1349,7 +1349,10 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
         break;
       case UIEventSubtypeRemoteControlPause:
         // ACTION_PAUSE sometimes cause unpause, use MediaPauseIfPlaying to make sure pause only
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
+        //CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
+        // warning, something is wacky, in tvOS we only get this if play/pause button is pushed
+        // the playPausePressed method should be getting called and it does, sometimes. WTF ?
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlStop:
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
