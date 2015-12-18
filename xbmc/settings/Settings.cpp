@@ -408,6 +408,7 @@ const std::string CSettings::SETTING_MYSQL_USER = "mysql.user";
 const std::string CSettings::SETTING_MYSQL_PASS = "mysql.pass";
 const std::string CSettings::SETTING_MYSQL_VIDEO = "mysql.video";
 const std::string CSettings::SETTING_MYSQL_MUSIC = "mysql.music";
+const std::string CSettings::SETTING_THUMBCACHE_CLEAR = "thumbcache.cleanup";
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -1007,6 +1008,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_CLEANUP);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORT);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_EXPORT);
+  settingSet.insert(CSettings::SETTING_THUMBCACHE_CLEAR);
   m_settingsManager->RegisterCallback(&CMediaSettings::GetInstance(), settingSet);
 
   settingSet.clear();

@@ -326,6 +326,14 @@
         </setting>
       </group>
     </category>
+    <category id="thumbcache" label="615" help="615">
+      <group id="1">
+        <setting id="thumbcache.cleanup" type="action" label="13315" help="616">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>                      
+      </group> 
+    </category>    
     <category id="screensaver" label="360" help="36128">
       <group id="1">
         <setting id="screensaver.mode" type="addon" label="356" help="36130">

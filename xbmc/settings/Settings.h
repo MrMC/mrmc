@@ -368,6 +368,7 @@ public:
   static const std::string SETTING_MYSQL_PASS;
   static const std::string SETTING_MYSQL_VIDEO;
   static const std::string SETTING_MYSQL_MUSIC;
+  static const std::string SETTING_THUMBCACHE_CLEAR;
   
   /*!
    \brief Creates a new settings wrapper around a new settings manager.

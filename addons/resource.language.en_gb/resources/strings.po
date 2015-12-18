@@ -2693,7 +2693,17 @@ msgctxt "#614"
 msgid "Virtual folder"
 msgstr ""
 
-#empty strings from id 615 to 619
+#: settings.xml
+msgctxt "#615"
+msgid "Cached Images"
+msgstr ""
+
+#: settings.xml
+msgctxt "#616"
+msgid "Remove and recreate cached images and thumbs"
+msgstr ""
+
+#empty strings from id 617 to 619
 
 #: system/settings/settings.xml
 msgctxt "#620"

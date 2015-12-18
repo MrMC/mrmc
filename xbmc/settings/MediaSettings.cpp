@@ -41,6 +41,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "TextureDatabase.h"
+#include "TextureCache.h"
 
 CMediaSettings::CMediaSettings()
 {
@@ -317,6 +319,21 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
       videodatabase.Open();
       videodatabase.ImportFromXML(path);
       videodatabase.Close();
+    }
+  }
+  else if (settingId == CSettings::SETTING_THUMBCACHE_CLEAR)
+  {
+    // clear thumb database
+    CVariant items;
+    CTextureDatabase db;
+    if (db.Open())
+    {
+      db.GetTextures(items, "");
+      for (unsigned int index = 0; index < items.size(); index++)
+      {
+        int id = (int)items[index]["textureid"].asInteger();
+        CTextureCache::GetInstance().ClearCachedImage(id);
+      }
     }
   }
 }
