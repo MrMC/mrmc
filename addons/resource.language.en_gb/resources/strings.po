@@ -2703,7 +2703,12 @@ msgctxt "#616"
 msgid "Remove and recreate cached images and thumbs"
 msgstr ""
 
-#empty strings from id 617 to 619
+#: settings.xml
+msgctxt "#617"
+msgid "All cached thumbs and images have been removed"
+msgstr ""
+
+#empty strings from id 618 to 619
 
 #: system/settings/settings.xml
 msgctxt "#620"

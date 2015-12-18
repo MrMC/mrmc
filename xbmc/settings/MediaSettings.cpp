@@ -28,6 +28,7 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "interfaces/Builtins.h"
 #include "music/MusicDatabase.h"
 #include "profiles/ProfilesManager.h"
@@ -334,6 +335,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
         int id = (int)items[index]["textureid"].asInteger();
         CTextureCache::GetInstance().ClearCachedImage(id);
       }
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(617),"", 3000, true);
     }
   }
 }
