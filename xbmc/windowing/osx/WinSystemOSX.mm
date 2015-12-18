@@ -351,11 +351,12 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   // for native fullscreen we always want to set the same windowed flags
   NSUInteger windowStyleMask;
-  if (fullScreen)
-    windowStyleMask = NSBorderlessWindowMask;
-  else
-    windowStyleMask = NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask;
+//  if (fullScreen)
+//    windowStyleMask = NSBorderlessWindowMask;
+//  else
+//    windowStyleMask = NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask;
 
+  windowStyleMask = NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask;
   if (m_appWindow == NULL)
   {
     NSWindow *appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight) styleMask:windowStyleMask];
@@ -463,19 +464,35 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   //printf("CWinSystemOSX::ResizeWindow\n");
   if (!m_appWindow)
     return false;
+  if (newLeft < 0)
+    newLeft = m_lastX;
+  if (newTop < 0)
+    newTop = m_lastY;
+  
+  NSRect myNewFrame = NSMakeRect(newLeft, newTop, newWidth, newHeight);
+  
+  NSDictionary* windowResize = [NSDictionary dictionaryWithObjectsAndKeys: (NSWindow*)m_appWindow, NSViewAnimationTargetKey, [NSValue valueWithRect: myNewFrame], NSViewAnimationEndFrameKey, nil];
+  NSArray* animations = [NSArray arrayWithObjects:windowResize, nil];
+  NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations: animations];
+  
+  [animation setAnimationBlockingMode: NSAnimationNonblocking];
+  [animation setAnimationCurve: NSAnimationEaseIn];
+  [animation setDuration: 0.5];
+  [animation startAnimation];
   
   OSXGLView *view = [(NSWindow*)m_appWindow contentView];
+  NSOpenGLContext *context = [view getGLContext];
+  NSWindow* window = (NSWindow*)m_appWindow;
+
+
+  [window setFrameOrigin:NSMakePoint(newLeft, newTop)];
+  [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
   
-  if (view && (newWidth > 0) && (newHeight > 0))
-  {
-    NSOpenGLContext *context = [view getGLContext];
-    NSWindow* window = (NSWindow*)m_appWindow;
-    
-    [window setContentSize:NSMakeSize(newWidth, newHeight)];
-    [window update];
-    [view setFrameSize:NSMakeSize(newWidth, newHeight)];
-    [context update];
-  }
+  [window setContentSize:NSMakeSize(newWidth, newHeight)];
+  [window update];
+  [view setFrameSize:NSMakeSize(newWidth, newHeight)];
+  [context update];
+  
   m_nWidth = newWidth;
   m_nHeight = newHeight;
 
@@ -488,9 +505,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 {
   CSingleLock lock (m_critSection);
   //printf("CWinSystemOSX::SetFullScreen\n");
-  static NSPoint last_window_origin;
-  static NSSize last_view_size;
-  static NSPoint last_view_origin;
   //bool was_fullscreen = m_bFullScreen;
   
   if (m_lastDisplayNr == -1)
@@ -516,9 +530,12 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     
     // FullScreen Mode
     // Save info about the windowed context so we can restore it when returning to windowed.
-    last_view_size = [view frame].size;
-    last_view_origin = [view frame].origin;
-    last_window_origin = [window  frame].origin;
+    NSPoint pointRelativeToScreen = [window convertBaseToScreen:[view frame].origin];
+    m_lastWidth  = [view frame].size.width;
+    m_lastHeight = [view frame].size.height;
+    m_lastX      = pointRelativeToScreen.x;
+    m_lastY      = pointRelativeToScreen.y;
+    
     
     // This is Cocca Windowed FullScreen Mode
     // Get the screen rect of our current display
@@ -528,31 +545,14 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // remove frame origin offset of orginal display
     screenRect.origin = NSZeroPoint;
 
-//    DestroyWindow();
-//    DestroyWindowInternal();
-    CreateNewWindow(m_name, true, res, NULL);
-    window = (NSWindow *)m_appWindow;
-    view = [window contentView];
-    
-    //[window makeKeyAndOrderFront:nil];
-    //[window setLevel:NSNormalWindowLevel];
-    
-    // ...and the original one beneath it and on the same screen.
-    //[[view window] setLevel:NSNormalWindowLevel-1];
-    
-    [window setFrameOrigin:[pScreen frame].origin];
-    [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
-    [view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
-
-    NSString *title = [NSString stringWithFormat:@"%s" , ""];
-    window.title = title;
-    
     // Hide the menu bar.
     if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
       SetMenuBarVisible(false);
-
-    ResizeWindow(m_nWidth, m_nHeight, -1, -1);
-
+    if (m_appWindow == NULL)
+      CreateNewWindow(m_name, true, res, NULL);
+    else
+      ResizeWindow(m_nWidth, m_nHeight, 0, 0);
+    
     // Hide the mouse.
     Cocoa_HideMouse();
   }
@@ -563,23 +563,14 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
     //Cocoa_ShowMouse();
 
-//    DestroyWindow();
-//    DestroyWindowInternal();
-    CreateNewWindow(m_name, false, res, NULL);
-    window = (NSWindow *)m_appWindow;
-    view = [window contentView];
+    // Hide the menu bar.
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
+      SetMenuBarVisible(false);
+    if (m_appWindow == NULL)
+      CreateNewWindow(m_name, true, res, NULL);
+    else
+      ResizeWindow(m_lastWidth, m_lastHeight, m_lastX, m_lastY);
     
-    // Show menubar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks())
-      SetMenuBarVisible(true);
-    
-    // Assign view from old context, move back to original screen.
-    [window setFrameOrigin:last_window_origin];
-    // return the mouse bounds in view to prevous size
-    [view setFrameSize:last_view_size ];
-    [view setFrameOrigin:last_view_origin ];
-    
-    ResizeWindow(last_view_size.width, last_view_size.height, last_window_origin.y, last_window_origin.x);
     m_fullscreenWillToggle = false;
   }
 

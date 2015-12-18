@@ -114,6 +114,10 @@ protected:
   bool                         m_movedToOtherScreen;
   bool                         m_fullscreenWillToggle;
   int                          m_lastDisplayNr;
+  int                          m_lastWidth;
+  int                          m_lastHeight;
+  int                          m_lastX;
+  int                          m_lastY;
   double                       m_refreshRate;
 
   CCriticalSection             m_resourceSection;
