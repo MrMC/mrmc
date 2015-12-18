@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">50</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <include>Settings_Art</include>
+    <include>Time</include>
+    <control type="group" description="Content Upper">
+      <include>DialogOpenClose</include>
+      <posx>384</posx>
+      <posy>40</posy>
+      <width>1304</width>
+      <height>750</height>
+      <control type="image">
+        <description>background image</description>
+        <posx>-252</posx>
+        <posy>0</posy>
+        <width>1655</width>
+        <height>536</height>
+        <texture border="300,0,0,0">dialogs/SetContentBG.png</texture>
+      </control>
+      <control type="label" description="Browse files">
+        <posx>-230</posx>
+        <posy>54</posy>
+        <width>837</width>
+        <height>60</height>
+        <textcolor>Highlight</textcolor>
+        <textoffsetx>20</textoffsetx>
+        <label>$LOCALIZE[1033]</label>
+      </control>
+      <control type="list" id="50">
+        <posx>-230</posx>
+        <posy>120</posy>
+        <width>909</width>
+        <height>359</height>
+        <onleft>60</onleft>
+        <onright>9000</onright>
+        <onup>50</onup>
+        <ondown>50</ondown>
+        <scrolltime>200</scrolltime>
+        <pagecontrol>60</pagecontrol>
+        <itemlayout height="60" width="909">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <texture border="5" flipy="true">list/ListNF.png</texture>
+          </control>
+          <control type="label">
+            <posx>909</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <font>ListDetails</font>
+            <align>right</align>
+            <scroll>false</scroll>
+            <textoffsetx>20</textoffsetx>
+            <textcolor>Grey</textcolor>
+            <info>ListItem.Label2</info>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <scroll>false</scroll>
+            <textoffsetx>20</textoffsetx>
+            <info>ListItem.Label</info>
+          </control>
+        </itemlayout>
+        <focusedlayout height="60" width="909">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <texture border="5" flipy="true">list/ListNF.png</texture>
+          </control>
+          <control type="image">
+            <visible>Control.HasFocus(50)</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <texture border="2">buttons/ButtonFO.png</texture>
+          </control>
+          <control type="label">
+            <posx>909</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <font>ListDetails</font>
+            <align>right</align>
+            <textoffsetx>20</textoffsetx>
+            <textcolor>Grey</textcolor>
+            <info>ListItem.Label2</info>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <textoffsetx>20</textoffsetx>
+            <info>ListItem.Label</info>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>-250</posx>
+        <posy>120</posy>
+        <width>36</width>
+        <height>360</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>noop</onleft>
+        <onright>50</onright>
+      </control>
+      <control type="image" description="Icon">
+        <posx>692</posx>
+        <posy>61</posy>
+        <width>333</width>
+        <height>333</height>
+        <texture>$INFO[Container(50).ListItem.Icon]</texture>
+        <bordertexture border="3">thumbs/ThumbBorder3.png</bordertexture>
+        <bordersize>1</bordersize>
+        <aspectratio>scale</aspectratio>
+      </control>
+      <control type="image" description="Stars">
+        <posx>772</posx>
+        <posy>434</posy>
+        <width>174</width>
+        <height>30</height>
+        <texture>$INFO[Container(50).ListItem.StarRating]</texture>
+      </control>
+      <control type="group" id="9000" description="Right side">
+        <posx>1037</posx>
+        <posy>0</posy>
+        <control type="button" id="6" description="Open">
+          <posy>240</posy>
+          <width>315</width>
+          <label>$LOCALIZE[502]</label>
+          <onup>8999</onup>
+          <ondown>7</ondown>
+          <onleft>50</onleft>
+        </control>
+        <control type="button" id="7" description="save">
+          <posy>300</posy>
+          <width>315</width>
+          <label>$LOCALIZE[190]</label>
+          <onup>6</onup>
+          <ondown>8</ondown>
+          <onleft>50</onleft>
+        </control>
+        <control type="button" id="8" description="clear">
+          <posy>360</posy>
+          <width>315</width>
+          <label>$LOCALIZE[192]</label>
+          <onup>7</onup>
+          <ondown>8999</ondown>
+          <onleft>50</onleft>
+        </control>
+        <control type="button" id="8999" description="playlist">
+          <enable>IntegerGreaterThan(Container(100).NumItems,0)</enable>
+          <posy>420</posy>
+          <width>315</width>
+          <label>$LOCALIZE[559]</label>
+          <onup>8</onup>
+          <ondown>100</ondown>
+          <onleft>50</onleft>
+          <onclick>Control.SetFocus(100)</onclick>
+        </control>
+      </control>
+    </control>
+    <control type="group" description="Content Playlist">
+      <include>DialogOpenClose</include>
+      <posx>384</posx>
+      <posy>560</posy>
+      <width>1304</width>
+      <height>750</height>
+      <control type="image">
+        <description>background image</description>
+        <posx>-274</posx>
+        <posy>0</posy>
+        <width>1655</width>
+        <height>536</height>
+        <texture flipx="true" border="0,0,300,0">dialogs/SetContentBG.png</texture>
+      </control>
+      <control type="label" description="Playlist">
+        <posx>450</posx>
+        <posy>54</posy>
+        <width>837</width>
+        <height>60</height>
+        <textcolor>Highlight</textcolor>
+        <textoffsetx>20</textoffsetx>
+        <label>$LOCALIZE[559]</label>
+      </control>
+      <control type="label" id="101" description="item count">
+        <posx>1338</posx>
+        <posy>50</posy>
+        <width>600</width>
+        <align>right</align>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="list" id="100">
+        <posx>450</posx>
+        <posy>120</posy>
+        <width>909</width>
+        <height>359</height>
+        <onleft>9001</onleft>
+        <onright>61</onright>
+        <onup>100</onup>
+        <ondown>100</ondown>
+        <scrolltime>200</scrolltime>
+        <pagecontrol>61</pagecontrol>
+        <itemlayout height="60" width="909">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <texture border="5" flipy="true">list/ListNF.png</texture>
+          </control>
+          <control type="label">
+            <posx>909</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <font>ListDetails</font>
+            <align>right</align>
+            <scroll>false</scroll>
+            <textoffsetx>20</textoffsetx>
+            <textcolor>Grey</textcolor>
+            <info>ListItem.Label2</info>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <scroll>false</scroll>
+            <textoffsetx>20</textoffsetx>
+            <info>ListItem.Label</info>
+          </control>
+        </itemlayout>
+        <focusedlayout height="60" width="909">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <texture border="5" flipy="true">list/ListNF.png</texture>
+          </control>
+          <control type="image">
+            <visible>Control.HasFocus(100)</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <texture border="2">buttons/ButtonFO.png</texture>
+          </control>
+          <control type="label">
+            <posx>909</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <font>ListDetails</font>
+            <align>right</align>
+            <textoffsetx>20</textoffsetx>
+            <textcolor>Grey</textcolor>
+            <info>ListItem.Label2</info>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>909</width>
+            <textoffsetx>20</textoffsetx>
+            <info>ListItem.Label</info>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="scrollbar" id="61">
+        <posx>1344</posx>
+        <posy>120</posy>
+        <width>36</width>
+        <height>360</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>100</onleft>
+        <onright>noop</onright>
+      </control>
+      <control type="group">
+        <posx>105</posx>
+        <control type="image" description="Icon">
+          <posx>0</posx>
+          <posy>58</posy>
+          <width>333</width>
+          <height>333</height>
+          <texture>$INFO[Container(100).ListItem.Icon]</texture>
+          <bordertexture border="3">thumbs/ThumbBorder3.png</bordertexture>
+          <bordersize>1</bordersize>
+          <aspectratio>scale</aspectratio>
+        </control>
+        <control type="image" description="Stars">
+          <posx>80</posx>
+          <posy>434</posy>
+          <width>174</width>
+          <height>30</height>
+          <texture>$INFO[Container(100).ListItem.StarRating]</texture>
+        </control>
+      </control>
+      <control type="button" id="9001" description="go up">
+        <posx>-223</posx>
+        <posy>420</posy>
+        <width>315</width>
+        <label>$LOCALIZE[1024]</label>
+        <onup>50</onup>
+        <ondown>50</ondown>
+        <onleft>100</onleft>
+        <onright>100</onright>
+        <onclick>Control.SetFocus(50)</onclick>
+      </control>
+    </control>
+  </controls>
+</window>

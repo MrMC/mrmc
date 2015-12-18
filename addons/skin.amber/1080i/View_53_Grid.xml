@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+  <include name="View_53_Grid">
+    <control type="group" description="Grid view">
+      <visible>Control.IsVisible(53)</visible>
+      <include>ContentFade</include>
+      <control type="panel" id="53" description="Grid">
+        <viewtype label="536">Grid</viewtype>
+        <posx>60</posx>
+        <posy>90</posy>
+        <width>1800</width>
+        <height>1000</height>
+        <orientation>vertical</orientation>
+        <onleft>9000</onleft>
+        <onright>60</onright>
+        <onup>53</onup>
+        <ondown>53</ondown>
+        <preloaditems>4</preloaditems>
+        <pagecontrol>60</pagecontrol>
+        <itemlayout condition="Container.Content(TvShows) + Skin.HasSetting(53_UseBanners)" height="201" width="900">
+          <control type="image">
+            <posx>30</posx>
+            <posy>21</posy>
+            <width>830</width>
+            <height>144</height>
+            <include>ThumbBorderInside</include>
+          </control>
+          <control type="image">
+            <posx>30</posx>
+            <posy>21</posy>
+            <width>830</width>
+            <height>144</height>
+            <texture background="true">$VAR[Banner]</texture>
+            <aspectratio>stretch</aspectratio>
+          </control>
+          <control type="image">
+            <posx>822</posx>
+            <posy>129</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="Container.Content(TvShows) + Skin.HasSetting(53_UseBanners)" height="201" width="900">
+          <control type="image">
+            <posx>30</posx>
+            <posy>21</posy>
+            <width>830</width>
+            <height>144</height>
+            <include>ThumbBorderInside</include>
+          </control>
+          <control type="image">
+            <posx>30</posx>
+            <posy>21</posy>
+            <width>830</width>
+            <height>144</height>
+            <texture background="true">$VAR[Banner]</texture>
+            <aspectratio>stretch</aspectratio>
+          </control>
+          <control type="image">
+            <posx>30</posx>
+            <posy>21</posy>
+            <width>830</width>
+            <height>144</height>
+            <texture border="25">img/Frame.png</texture>
+            <bordersize>-27</bordersize>
+            <aspectratio>stretch</aspectratio>
+          </control>
+          <control type="image">
+            <posx>822</posx>
+            <posy>129</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="!Skin.HasSetting(53_BigGrid) + [[Container.Content(TvShows) + !Skin.HasSetting(53_UseBanners)] | Container.Content(musicvideos) | container.content(movies) | container.content(seasons)]" height="400" width="257">
+          <control type="image">
+            <posx>20</posx>
+            <posy>24</posy>
+            <width>216</width>
+            <height>315</height>
+            <include>PosterThumbBG</include>
+          </control>
+          <control type="image">
+            <posx>20</posx>
+            <posy>24</posy>
+            <width>216</width>
+            <height>315</height>
+            <include>PosterThumb</include>
+          </control>
+          <control type="image">
+            <posx>201</posx>
+            <posy>303</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="!Skin.HasSetting(53_BigGrid) + [[Container.Content(TvShows) + !Skin.HasSetting(53_UseBanners)] | Container.Content(musicvideos) | container.content(movies) | container.content(seasons)]" height="400" width="257">
+          <control type="image">
+            <posx>20</posx>
+            <posy>24</posy>
+            <width>216</width>
+            <height>315</height>
+            <include>PosterThumbFO</include>
+          </control>
+          <control type="image">
+            <posx>20</posx>
+            <posy>24</posy>
+            <width>216</width>
+            <height>315</height>
+            <include>PosterThumb</include>
+          </control>
+          <control type="image">
+            <posx>201</posx>
+            <posy>303</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="Skin.HasSetting(53_BigGrid) + [[Container.Content(TvShows) + !Skin.HasSetting(53_UseBanners)] | Container.Content(musicvideos) | container.content(movies) | container.content(seasons)]" height="410" width="300">
+          <control type="image">
+            <posx>33</posx>
+            <posy>30</posy>
+            <width>234</width>
+            <height>351</height>
+            <include>PosterThumbBG</include>
+          </control>
+          <control type="image">
+            <posx>33</posx>
+            <posy>30</posy>
+            <width>234</width>
+            <height>351</height>
+            <include>PosterThumb</include>
+          </control>
+          <control type="image">
+            <posx>233</posx>
+            <posy>347</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="Skin.HasSetting(53_BigGrid) + [[Container.Content(TvShows) + !Skin.HasSetting(53_UseBanners)] | Container.Content(musicvideos) | container.content(movies) | container.content(seasons)]" height="410" width="300">
+          <control type="image">
+            <posx>33</posx>
+            <posy>30</posy>
+            <width>234</width>
+            <height>351</height>
+            <include>PosterThumbFO</include>
+          </control>
+          <control type="image">
+            <posx>33</posx>
+            <posy>30</posy>
+            <width>234</width>
+            <height>351</height>
+            <include>PosterThumb</include>
+          </control>
+          <!--<control type="label">
+            <posx>150</posx>
+            <posy>411</posy>
+            <width>300</width>
+            <height>45</height>
+            <textcolor>Highlight</textcolor>
+            <align>center</align>
+            <font>Details</font>
+            <label>$INFO[ListItem.Label]</label>
+          </control>-->
+          <control type="image">
+            <posx>233</posx>
+            <posy>347</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="container.content(addons) | Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml)" height="400" width="360">
+          <control type="image">
+            <posx>36</posx>
+            <posy>27</posy>
+            <width>288</width>
+            <height>288</height>
+            <include>SquareThumbBG</include>
+          </control>
+          <control type="image">
+            <posx>36</posx>
+            <posy>27</posy>
+            <width>288</width>
+            <height>288</height>
+            <include>SquareThumb</include>
+          </control>
+          <control type="image" description="Label2 BG">
+            <posx>30</posx>
+            <posy>327</posy>
+            <width>300</width>
+            <height>54</height>
+            <texture border="3">img/WhiteRoundedT.png</texture>
+          </control>
+          <control type="label">
+            <posx>36</posx>
+            <posy>330</posy>
+            <width>288</width>
+            <height>45</height>
+            <align>center</align>
+            <font>GridItems</font>
+            <scroll>false</scroll>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="container.content(addons) | Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml)" height="400" width="360">
+          <control type="image">
+            <posx>36</posx>
+            <posy>27</posy>
+            <width>288</width>
+            <height>288</height>
+            <include>SquareThumbFO</include>
+          </control>
+          <control type="image">
+            <posx>36</posx>
+            <posy>27</posy>
+            <width>288</width>
+            <height>288</height>
+            <include>SquareThumb</include>
+          </control>
+          <control type="image" description="Label2 BG">
+            <posx>30</posx>
+            <posy>327</posy>
+            <width>300</width>
+            <height>54</height>
+            <texture border="3">img/WhiteRoundedT.png</texture>
+          </control>
+          <control type="label">
+            <posx>36</posx>
+            <posy>330</posy>
+            <width>288</width>
+            <height>45</height>
+            <align>center</align>
+            <font>GridItems</font>
+            <textcolor>Highlight</textcolor>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+        </focusedlayout>
+        <itemlayout height="360" width="450" condition="container.content(episodes)">
+          <control type="group">
+            <posx>15</posx>
+            <posy>15</posy>
+            <control type="image">
+              <include>EpisodeShowcaseThumbDimensions</include>
+              <include>EpisodeThumbBG</include>
+            </control>
+            <control type="image">
+              <include>EpisodeShowcaseThumbDimensions</include>
+              <include>EpisodeThumb</include>
+            </control>
+            <control type="group">
+              <visible>!IsEmpty(ListItem.Episode)</visible>
+              <posy>204</posy>
+              <control type="image">
+                <posx>2</posx>
+                <posy>-3</posy>
+                <width>410</width>
+                <height>75</height>
+                <bordersize>9</bordersize>
+                <texture>img/OverlayStripe.png</texture>
+              </control>
+              <control type="label">
+                <posx>30</posx>
+                <width>300</width>
+                <height>70</height>
+                <font>Slider</font>
+                <label>$LOCALIZE[31973] $INFO[ListItem.Season,,.]$INFO[ListItem.Episode]</label>
+              </control>
+              <control type="image" description="Watched Overlay">
+                <posx>357</posx>
+                <width>33</width>
+                <height>70</height>
+                <texture>$VAR[Overlay]</texture>
+                <aspectratio>keep</aspectratio>
+              </control>
+            </control>
+          </control>
+        </itemlayout>
+        <focusedlayout height="360" width="450" condition="container.content(episodes)">
+          <control type="group">
+            <posx>15</posx>
+            <posy>15</posy>
+            <control type="image">
+              <include>EpisodeShowcaseThumbDimensions</include>
+              <include>EpisodeThumbFO</include>
+            </control>
+            <control type="image">
+              <include>EpisodeShowcaseThumbDimensions</include>
+              <include>EpisodeThumb</include>
+            </control>
+            <control type="group">
+              <visible>!IsEmpty(ListItem.Episode)</visible>
+              <posy>204</posy>
+              <control type="image">
+                <posx>3</posx>
+                <posy>-3</posy>
+                <width>408</width>
+                <height>75</height>
+                <bordersize>9</bordersize>
+                <texture>img/OverlayStripe.png</texture>
+              </control>
+              <control type="label">
+                <posx>30</posx>
+                <width>300</width>
+                <height>70</height>
+                <font>Slider</font>
+                <label>$LOCALIZE[31973] $INFO[ListItem.Season,,.]$INFO[ListItem.Episode]</label>
+              </control>
+              <control type="image" description="Watched Overlay">
+                <posx>357</posx>
+                <width>33</width>
+                <height>70</height>
+                <texture>$VAR[Overlay]</texture>
+                <aspectratio>keep</aspectratio>
+              </control>
+            </control>
+            <!--<control type="label">
+              <posx>204</posx>
+              <posy>291</posy>
+              <width>450</width>
+              <height>45</height>
+              <textcolor>Highlight</textcolor>
+              <align>center</align>
+              <font>Details</font>
+              <label>$INFO[ListItem.Label]</label>
+            </control>-->
+          </control>
+        </focusedlayout>
+        <itemlayout condition="![container.content(episodes) | container.content(addons) | Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml) | Container.Content(musicvideos) | container.content(movies) | container.content(TVshows) | container.content(seasons)]" height="390" width="450">
+          <control type="image" description="GENERIC KEEP AR">
+            <posx>30</posx>
+            <posy>27</posy>
+            <width>390</width>
+            <height>288</height>
+            <include>ThumbBorderInside</include>
+          </control>
+          <control type="image">
+            <posx>30</posx>
+            <posy>27</posy>
+            <width>390</width>
+            <height>288</height>
+            <texture fallback="DefaultFolder.png" background="true">$INFO[ListItem.thumb]</texture>
+            <aspectratio>keep</aspectratio>
+          </control>
+          <control type="label">
+            <posx>30</posx>
+            <posy>327</posy>
+            <width>390</width>
+            <height>45</height>
+            <scroll>false</scroll>
+            <align>center</align>
+            <font>Details</font>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="![container.content(episodes) | container.content(addons) | Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml) | Container.Content(musicvideos) | container.content(movies) | container.content(TVshows) | container.content(seasons)]" height="390" width="450">
+          <control type="image" description="GENERIC KEEP AR">
+            <posx>30</posx>
+            <posy>27</posy>
+            <width>390</width>
+            <height>288</height>
+            <include>ThumbBorderInside</include>
+          </control>
+          <control type="image">
+            <posx>30</posx>
+            <posy>27</posy>
+            <width>390</width>
+            <height>288</height>
+            <texture fallback="DefaultFolder.png" background="true">$INFO[ListItem.thumb]</texture>
+            <aspectratio>keep</aspectratio>
+          </control>
+          <control type="image">
+            <posx>30</posx>
+            <posy>27</posy>
+            <width>390</width>
+            <height>288</height>
+            <bordersize>-27</bordersize>
+            <texture border="25">img/Frame.png</texture>
+            <aspectratio>stretch</aspectratio>
+          </control>
+          <control type="label">
+            <posx>30</posx>
+            <posy>327</posy>
+            <width>390</width>
+            <height>45</height>
+            <textcolor>Highlight</textcolor>
+            <align>center</align>
+            <font>Details</font>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="image" description="Footer Dim BG">
+        <posx>0</posx>
+        <posy>939</posy>
+        <width>1920</width>
+        <height>147</height>
+        <texture>img/GradientNew.png</texture>
+      </control>
+      <control type="image" description="Footer">
+        <posx>0</posx>
+        <posy>939</posy>
+        <width>1920</width>
+        <height>147</height>
+        <texture border="0,30,0,0">OSD/OSDBackground.png</texture>
+      </control>
+      <include>FooterInfo</include>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="-6,0" time="150">Focus</animation>
+        <animation effect="slide" start="-6,0" end="0,0" time="300">UnFocus</animation>
+        <posx>20r</posx>
+        <posy>120</posy>
+        <width>36</width>
+        <height>860</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>53</onleft>
+        <onright>9000</onright>
+      </control>
+    </control>
+  </include>
+</includes>

@@ -1,0 +1,201 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Latvian (http://www.transifex.com/projects/p/xbmc-skins/language/lv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+
+msgctxt "#31000"
+msgid "Picture Channels"
+msgstr "Attēlu kanāli"
+
+msgctxt "#31001"
+msgid "Video Channels"
+msgstr "Video kanāli"
+
+msgctxt "#31002"
+msgid "Music Channels"
+msgstr "Mūzikas kanāli"
+
+msgctxt "#31003"
+msgid "Channels Directory"
+msgstr "Kanālu direktorijs"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31005"
+msgid "Cinema"
+msgstr "Kino"
+
+msgctxt "#31007"
+msgid "PleKodi settings"
+msgstr "PleKodi iestatījumi"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Nesen Pievienotās"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Vienumi"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Vizualizācijas sagataves"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Dziesmu vārdu pielikums"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Subtitru papildinājums"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "Vienumi"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Atmiņa izmantota:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Ēterā"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauze"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Apturēt"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Patīt uz priekšu"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Attīt atpakaļ"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Filmas izvēlne"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Lejupielādē subtitrus"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "PIeejami vietējie subtitri"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "Tiešraides TV"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Ieplānotais laiks"
+
+msgctxt "#31502"
+msgid "All Movies"
+msgstr "Visas filmas"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Pievienot grupu"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Pārsaukt grupu"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Dzēst grupu"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Pieejamās[CR]grupas"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Taimeris iestatīts"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36 stundu prognoze"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Prognoze ik stundu"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Prognoze nedēļas nogalei"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Prognoze 10 dienām"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "D"
+
+msgctxt "#31961"
+msgid "Recently added"
+msgstr "Nesen pievienoti"
+
+msgctxt "#31963"
+msgid "Panel"
+msgstr "Panelis"
+
+msgctxt "#31968"
+msgid "Show info"
+msgstr "Rādīt informāciju"
+
+msgctxt "#31971"
+msgid "Concerts"
+msgstr "Koncerti"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Klipi"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "A"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Kanāli"
+
+msgctxt "#31979"
+msgid "Loading..."
+msgstr "Ielādē..."
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Papildus"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Nejaušs"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Izvēlne"

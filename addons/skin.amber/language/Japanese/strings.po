@@ -1,0 +1,165 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Japanese (http://www.transifex.com/projects/p/xbmc-skins/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "最近追加"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "アイテム"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "ビジュアライザーのプリセット"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "編集するメディアタイプを選択"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "単一イメージ"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "複数イメージ"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "歌詞アドオン"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "字幕アドオン"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "アイテム"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "メモリ使用量:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "放映日"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "一時停止"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "停止"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "早送り"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "巻き戻し"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "ムービーメニュー"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "字幕をダウンロード"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "ローカルの字幕が利用可能"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "ライブTV"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "タイマー予約時間"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "グループの追加"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "グループの名称変更"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "グループの削除"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "利用可能な[CR]グループ"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "タイマーセット完了"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36時間予報"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "1時間ごとの予報"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "週末の予報"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "10日予報"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "南"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "クリップ"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "東"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "チャンネル"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "高度な設定"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "ランダム"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "メニュー"

@@ -1,0 +1,265 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Icelandic (http://www.transifex.com/projects/p/xbmc-skins/language/is/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Picture Channels"
+msgstr "Kvikmyndarásir"
+
+msgctxt "#31001"
+msgid "Video Channels"
+msgstr "Myndbandarásir"
+
+msgctxt "#31002"
+msgid "Music Channels"
+msgstr "Tónlistarásir"
+
+msgctxt "#31003"
+msgid "Channels Directory"
+msgstr "Yfirlit rása"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31005"
+msgid "Cinema"
+msgstr "Bíó"
+
+msgctxt "#31006"
+msgid "Shared"
+msgstr "Deilt"
+
+msgctxt "#31007"
+msgid "PleKodi settings"
+msgstr "PleKodi stillingar"
+
+msgctxt "#31010"
+msgid "Queue"
+msgstr "Biðröð"
+
+msgctxt "#31011"
+msgid "Recently Viewed"
+msgstr "Nýlega skoðað"
+
+msgctxt "#31012"
+msgid "Recently Released"
+msgstr "Útgefið nýlega"
+
+msgctxt "#31013"
+msgid "Recently Aired"
+msgstr "Nýlega sent út"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Nýlega bætt við"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Hlutir"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Forstillingar myndskreytinga"
+
+msgctxt "#31049"
+msgid "Settings Level"
+msgstr "Stig stillinga"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Breyta bakgrunni fyrir heimahnapp"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "Einföld mynd"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Margföld mynd"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Viðbót fyrir lagatexta"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Viðbót fyrir þýðingartexta"
+
+msgctxt "#31291"
+msgid "Add-on manager"
+msgstr "Viðbótastjóri"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "Hlutir"
+
+msgctxt "#31293"
+msgid "Can not be customized"
+msgstr "Ekki hægt að sérsníða"
+
+msgctxt "#31297"
+msgid "min"
+msgstr "mín"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Minni notað:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Sýnt"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Bið"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stöðva"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Hratt áfram"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Til baka"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Kvikmyndavalmynd"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Niðurhala þýðingartextum"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Texti í boði á tölvu"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "Sjónvarp bein útsending"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Uppsettur tími"
+
+msgctxt "#31502"
+msgid "All Movies"
+msgstr "Allar kvikmyndir"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Bæta við hóp"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Endurnefna hóp"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Eyða hóp"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Í boði[CR]Hópar"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Stilling teljara"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36 klst veðurspá"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Klukkustunda veðurspá"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Veðurspá helgarinnar"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "10 daga veðurspá"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "S"
+
+msgctxt "#31956"
+msgid "Get theme"
+msgstr "Ná í þema"
+
+msgctxt "#31958"
+msgid "Big Panel"
+msgstr "Stórt stjórnborð"
+
+msgctxt "#31961"
+msgid "Recently added"
+msgstr "Nýlega bætt við"
+
+msgctxt "#31962"
+msgid "Low List"
+msgstr "Lár listi"
+
+msgctxt "#31963"
+msgid "Panel"
+msgstr "Slá"
+
+msgctxt "#31965"
+msgid "Banner List"
+msgstr "Listi á borða"
+
+msgctxt "#31966"
+msgid "Recommended"
+msgstr "Mælt með"
+
+msgctxt "#31968"
+msgid "Show info"
+msgstr "Sýna upplýsingar"
+
+msgctxt "#31971"
+msgid "Concerts"
+msgstr "Tónleikar"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Úrklippur"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "A"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Rásir"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Ítarlegt"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Handahófskenndur"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Valmynd"

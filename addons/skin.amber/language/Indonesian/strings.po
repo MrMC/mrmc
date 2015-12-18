@@ -1,0 +1,149 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Indonesian (http://www.transifex.com/projects/p/xbmc-skins/language/id/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "LastFM"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "yang baru saja ditambahkan"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Item"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Preset Visualisasi"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Pengaya Lirik"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "Item"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memori Digunakan:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Disiarkan"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pause"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Berhenti"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Majukan"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Mundurkan"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menu film"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Unduh subtitle"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Subtitle lokal tersedia"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "Siaran TV Langsung"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Waktu terjadwal"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Tambahkan grup"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Namai ulang Grup"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Hapus Grup"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Grup[CR]Tersedia"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Atur Timer"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Ramalan 36 Jam"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Ramalan Perjam"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Ramalan Akhir Minggu"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Ramalan 10 hari"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "S"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Klip"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "T"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Saluran"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Tingkat Lanjut"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Acak"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Menu"

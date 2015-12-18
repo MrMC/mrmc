@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">10</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <include>DimBG</include>
+    <control type="image">
+      <posx>295</posx>
+      <posy>240</posy>
+      <width>1292</width>
+      <height>600</height>
+      <texture border="50">dialogs/SmartplaylistRule.png</texture>
+    </control>
+    <control type="group">
+      <posx>310</posx>
+      <posy>250</posy>
+      <control type="label" id="2" description="Heading">
+        <posx>0</posx>
+        <posy>40</posy>
+        <width>1010</width>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+        <label>$LOCALIZE[1007]</label>
+      </control>
+      <control type="group" id="9001">
+        <posy>30</posy>
+        <control type="spincontrolex" id="10" description="Protocol">
+          <posy>90</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <onright>9000</onright>
+          <onup>15</onup>
+          <ondown>11</ondown>
+        </control>
+        <control type="edit" id="11" description="Server Name">
+          <posy>150</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <onright>9000</onright>
+          <onup>10</onup>
+          <ondown>16</ondown>
+          <texturefocus border="16,6,16,6">dialogs/AddSourceBottomFrame.png</texturefocus>
+        </control>
+        <control type="edit" id="16" description="Shared folder">
+          <posy>210</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <onright>12</onright>
+          <onup>11</onup>
+          <ondown>13</ondown>
+          <texturefocus border="16,6,16,6">dialogs/AddSourceBottomFrame.png</texturefocus>
+        </control>
+        <control type="edit" id="13" description="Port">
+          <label>$LOCALIZE[1013]</label>
+          <posy>270</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <onright>9000</onright>
+          <onup>16</onup>
+          <ondown>14</ondown>
+        </control>
+        <control type="edit" id="14" description="Username">
+          <posy>330</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <hinttext>1014</hinttext>
+          <onright>19</onright>
+          <onup>13</onup>
+          <ondown>15</ondown>
+          <texturefocus border="16,6,16,6">dialogs/AddSourceBottomFrame.png</texturefocus>
+        </control>
+        <control type="edit" id="15" description="Password">
+          <posy>390</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <onright>18</onright>
+          <onup>14</onup>
+          <ondown>10</ondown>
+          <hinttext>15052</hinttext>
+          <texturefocus border="16,6,16,6">dialogs/AddSourceBottomFrame.png</texturefocus>
+        </control>
+      </control>
+      <control type="group" id="9000">
+        <posx>1010</posx>
+        <posy>30</posy>
+        <control type="button" id="12" description="Browse">
+          <posy>210</posy>
+          <width>231</width>
+          <label>$LOCALIZE[1024]</label>
+          <onup>18</onup>
+          <onleft>16</onleft>
+          <ondown>19</ondown>
+        </control>
+        <control type="button" id="19" description="Cancel">
+          <posy>330</posy>
+          <width>231</width>
+          <label>$LOCALIZE[222]</label>
+          <onup>12</onup>
+          <onleft>14</onleft>
+          <ondown>18</ondown>
+        </control>
+        <control type="button" id="18" description="OK">
+          <posy>390</posy>
+          <width>231</width>
+          <label>$LOCALIZE[186]</label>
+          <onup>19</onup>
+          <onleft>15</onleft>
+          <ondown>12</ondown>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

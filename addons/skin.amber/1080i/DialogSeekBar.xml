@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+  <visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsActive(script-XBMC-Subtitles-main.xml)]</visible>
+  <visible>Window.IsActive(DialogFullScreenInfo.xml) | Window.IsActive(videoosd.xml) | [Window.IsVisible(FullScreenVideo) + !System.IdleTime(20) + [Player.Caching | Player.Seeking | player.forwarding | player.rewinding | Player.DisplayAfterSeek | Player.Paused]]</visible>
+  <include>OSDFade</include>
+  <controls>
+    <control type="group" description="Top Bar">
+      <control type="image" description="Background">
+       <animation effect="slide" start="0,0" end="0,30" time="0" reversible="true" condition="Player.ChapterCount + !VideoPlayer.Content(LiveTV)">Conditional</animation>
+		<posx>0</posx>
+        <posy>-30</posy>
+        <width>1920</width>
+        <height>138</height>
+        <texture flipy="true" border="0,30,0,30">OSD/OSDBackground.png</texture>
+        <colordiffuse>FFE2E2E2</colordiffuse>
+      </control>
+      <control type="label" description="Clock">
+        <posx>30r</posx>
+        <posy>5</posy>
+        <width>430</width>
+        <height>30</height>
+        <align>right</align>
+        <aligny>center</aligny>
+        <font>Details</font>
+        <shadowcolor>Black</shadowcolor>
+        <label>$INFO[System.Time]</label>
+      </control>
+      <control type="label" description="End Time">
+        <posx>30</posx>
+        <posy>5</posy>
+        <width>430</width>
+        <height>30</height>
+        <align>left</align>
+        <aligny>center</aligny>
+        <font>Details</font>
+        <shadowcolor>Black</shadowcolor>
+		<scroll>false</scroll>
+        <label>$INFO[Player.FinishTime][COLOR=Highlight] • [/COLOR]$LOCALIZE[19127]</label>
+      </control>
+	  <control type="group">
+        <visible>Window.IsActive(DialogFullScreenInfo.xml) | [Player.Caching | Player.Paused | Player.Seeking | player.forwarding | player.rewinding | Player.DisplayAfterSeek | Window.IsActive(videoosd.xml)]</visible>
+        <posy>10</posy>
+        <control type="progress" description="Buffer Bar">
+          <posx>600</posx>
+          <posy>3</posy>
+          <width>720</width>
+          <height>18</height>
+          <texturebg border="15,0,15,0">VideoOSD/ProgressBG.png</texturebg>
+          <midtexture border="15,0,15,0">VideoOSD/ProgressBar.png</midtexture>
+          <colordiffuse>Diffuse2</colordiffuse>
+          <info>Player.ProgressCache</info>
+          <visible>true</visible>
+        </control>
+        <control type="progress" id="23" description="Progress Bar">
+          <posx>600</posx>
+          <posy>3</posy>
+          <width>720</width>
+          <height>18</height>
+          <texturebg border="15,0,15,0">VideoOSD/ProgressBG.png</texturebg>
+          <midtexture border="15,0,15,0">VideoOSD/ProgressBar.png</midtexture>
+          <colordiffuse>Highlight</colordiffuse>
+          <info>Player.Progress</info>
+          <visible>true</visible>
+        </control>
+        <control type="label" description="Progress time label">
+          <posx>580</posx>
+          <posy>-5</posy>
+          <height>30</height>
+          <width>180</width>
+          <align>right</align>
+          <label>$INFO[Player.Time]</label>
+          <font>Details</font>
+          <shadowcolor>Black</shadowcolor>
+        </control>
+        <control type="label" description="Progress rem time label">
+          <posx>1340</posx>
+          <posy>-5</posy>
+          <height>30</height>
+          <width>180</width>
+          <align>left</align>
+          <label>$INFO[Player.TimeRemaining,-]</label>
+          <font>Details</font>
+          <shadowcolor>Black</shadowcolor>
+        </control>
+      </control>
+    </control>
+    <control type="group">
+      <posy>36</posy>
+      <control type="label" description="Pause">
+        <visible>![Player.Caching | Player.Seeking | player.forwarding | player.rewinding | Player.DisplayAfterSeek] + [Player.Paused + System.IdleTime(4)]</visible>
+        <include>SeekbarLabels</include>
+        <label>$LOCALIZE[112]</label>
+      </control>
+      <control type="label" id="24" description="Buffering label">
+        <visible>[Player.Paused + Player.Caching] + !Player.Seeking</visible>
+        <include>SeekbarLabels</include>
+        <label>$INFO[Player.CacheLevel,$LOCALIZE[15107] ,%]</label>
+      </control>
+      <control type="label" description="2x RW FW label">
+        <visible>player.forwarding2x | player.rewinding2x</visible>
+        <include>SeekbarLabels</include>
+        <label>2 X</label>
+      </control>
+      <control type="label" description="4x RW FW label">
+        <visible>player.forwarding4x | player.rewinding4x</visible>
+        <include>SeekbarLabels</include>
+        <label>4 X</label>
+      </control>
+      <control type="label" description="8x RW FW label">
+        <visible>player.forwarding8x | player.rewinding8x</visible>
+        <include>SeekbarLabels</include>
+        <label>8 X</label>
+      </control>
+      <control type="label" description="16x RW FW label">
+        <visible>player.forwarding16x | player.rewinding16x</visible>
+        <include>SeekbarLabels</include>
+        <label>16 X</label>
+      </control>
+      <control type="label" description="32x RW FW label">
+        <visible>player.forwarding32x | player.rewinding32x</visible>
+        <include>SeekbarLabels</include>
+        <label>32 X</label>
+      </control>
+      <control type="label" description="Seek time label">
+        <include>SeekbarLabels</include>
+        <label>$VAR[SeekLabel]</label>
+      </control>
+	  <control type="label" description="Seek time label">
+        <visible>![Player.Caching | Player.Seeking | player.forwarding | player.rewinding | Player.DisplayAfterSeek | [Player.Paused + System.IdleTime(4)]]</visible>
+        <include>SeekbarLabels</include>
+        <label>$INFO[VideoPlayer.TVShowTitle,,[COLOR=Highlight]  •  [/COLOR]]$INFO[VideoPlayer.Season,$LOCALIZE[31973],.]$INFO[VideoPlayer.Episode,,[COLOR=Highlight]  •  [/COLOR]]$INFO[VideoPlayer.ChannelNumberLabel,,.]$INFO[VideoPlayer.ChannelName,,: ]$INFO[VideoPlayer.Artist,, - ]$INFO[VideoPlayer.Album,, - ]$INFO[VideoPlayer.Title]</label>
+      </control>
+	  <control type="label" description="Chapter Info with Player info">
+        <visible>Player.ChapterCount + !VideoPlayer.Content(LiveTV)</visible>
+		<posy>36</posy>
+		<font>InfoPath</font>
+		<include>SeekbarLabels</include>
+        <label>$VAR[ChapterLabel]</label>
+      </control>
+    </control>
+  </controls>
+</window>

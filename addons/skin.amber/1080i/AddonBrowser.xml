@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">50</defaultcontrol>
+  <controls>
+    <include>Settings_Art</include>
+    <include>Time</include>
+    <control type="group" description="Content">
+      <visible>Control.IsVisible(50)</visible>
+      <include>OpenClose</include>
+      <control type="image">
+        <include>Panel_Size</include>
+        <texture flipx="true">dialogs/SettingsBG.png</texture>
+      </control>
+      <control type="group">
+        <width>609</width>
+        <height>834</height>
+        <control type="image" description="Thumb BG">
+          <posx>104</posx>
+          <posy>177</posy>
+          <width>609</width>
+          <height>873</height>
+          <texture>list/ListRibbon.png</texture>
+        </control>
+        <control type="image" description="Item Thumb">
+          <posx>176</posx>
+          <posy>220</posy>
+          <width>460</width>
+          <height>460</height>
+          <bordersize>-6</bordersize>
+          <include>SquareThumbBG</include>
+        </control>
+        <control type="image" description="Item Thumb">
+          <posx>176</posx>
+          <posy>220</posy>
+          <width>460</width>
+          <height>460</height>
+          <include>Icon_Fade</include>
+          <include>SquareThumb</include>
+        </control>
+      </control>
+      <control type="list" id="50" description="No Thumbs">
+        <viewtype label="List">list</viewtype>
+        <posx>713</posx>
+        <posy>177</posy>
+        <width>818</width>
+        <height>839</height>
+        <pagecontrol>60</pagecontrol>
+        <scrolltime>200</scrolltime>
+        <onleft>60</onleft>
+        <onright>9000</onright>
+        <onup>50</onup>
+        <ondown>50</ondown>
+        <itemlayout height="60">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>820</width>
+            <texture flipy="true" border="3">list/ListNF.png</texture>
+          </control>
+          <control type="label">
+            <posx>30</posx>
+            <posy>0</posy>
+            <width>740</width>
+            <height>60</height>
+            <info>ListItem.Label</info>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>800</width>
+            <height>60</height>
+            <font>ListDetails</font>
+            <textcolor>Grey</textcolor>
+            <align>right</align>
+            <info>ListItem.Label2</info>
+          </control>
+        </itemlayout>
+        <focusedlayout height="60">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>60</height>
+            <width>800</width>
+            <texture flipy="true" border="3">list/ListNF.png</texture>
+          </control>
+          <control type="image">
+            <visible>Control.HasFocus(50)</visible>
+            <include>VisibleFadeEffect</include>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>820</width>
+            <height>58</height>
+            <texture border="2">buttons/ButtonFO.png</texture>
+          </control>
+          <control type="label">
+            <posx>30</posx>
+            <posy>0</posy>
+            <width>740</width>
+            <height>60</height>
+            <info>ListItem.Label</info>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>800</width>
+            <height>60</height>
+            <font>ListDetails</font>
+            <textcolor>Grey2</textcolor>
+            <align>right</align>
+            <info>ListItem.Label2</info>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="grouplist" id="9000">
+        <posx>1533</posx>
+        <posy>177</posy>
+        <width>324</width>
+        <height>600</height>
+        <onleft>50</onleft>
+        <onright>noop</onright>
+        <onup>9000</onup>
+        <ondown>9000</ondown>
+        <itemgap>0</itemgap>
+        <scrolltime>200</scrolltime>
+        <control type="button" id="3">
+          <width>330</width>
+          <label>$LOCALIZE[186]</label>
+          <font>ListDetails</font>
+        </control>
+        <control type="button" id="5">
+          <width>330</width>
+          <label>$LOCALIZE[24063]</label>
+          <font>ListDetails</font>
+        </control>
+        <control type="button" id="9">
+          <width>330</width>
+          <label>$LOCALIZE[24034]</label>
+          <font>ListDetails</font>
+        </control>
+        <control type="radiobutton" id="6">
+          <width>330</width>
+          <label>$LOCALIZE[25000]</label>
+          <font>ListDetails</font>
+        </control>
+        <control type="radiobutton" id="7">
+          <width>330</width>
+          <label>$LOCALIZE[25001]</label>
+          <font>ListDetails</font>
+        </control>
+				<control type="radiobutton" id="8">
+          <width>330</width>
+          <label>$LOCALIZE[24999]</label>
+          <font>ListDetails</font>
+        </control>
+      </control>
+      <control type="textbox" description="Plot">
+        <posx>140</posx>
+        <posy>710</posy>
+        <width>534</width>
+        <height>303</height>
+        <font>InfoPlot</font>
+        <align>justify</align>
+        <label>$INFO[Container(50).ListItem.Property(Addon.Description)]</label>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>695</posx>
+        <posy>150</posy>
+        <width>36</width>
+        <height>840</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>9000</onleft>
+        <onright>50</onright>
+      </control>
+    </control>
+  </controls>
+</window>

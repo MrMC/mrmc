@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <controls>
+    <control type="group" id="13">
+      <visible>Slideshow.IsPaused</visible>
+      <include>VisibleFadeEffect</include>
+      <posy>480</posy>
+      <control type="image" description="Background">
+        <posx>618</posx>
+        <posy>534</posy>
+        <width>684</width>
+        <height>66</height>
+        <texture border="48,24,48,0">OSD/SeekBottomBar.png</texture>
+      </control>
+      <control type="label" description="Pause">
+        <include>SeekbarLabels</include>
+        <label>$LOCALIZE[112]</label>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">450</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>OpenClose</include>
+  <controls>
+    <include>Settings_Art</include>
+    <control type="group">
+      <posy>25</posy>
+      <control type="image">
+        <posx>36</posx>
+        <posy>35</posy>
+        <width>1849</width>
+        <height>1010</height>
+        <texture flipx="true">dialogs/SettingsBG.png</texture>
+      </control>
+      <control type="label" id="411">
+        <posx>120</posx>
+        <posy>90</posy>
+        <width>1200</width>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="group">
+        <control type="group">
+          <width>609</width>
+          <height>834</height>
+          <control type="image" description="Thumb BG">
+            <posx>104</posx>
+            <posy>156</posy>
+            <width>609</width>
+            <height>873</height>
+            <texture>list/ListRibbon.png</texture>
+          </control>
+          <control type="image" description="Item Thumb NOT FLIPPED">
+            <visible>!SubString(Control.GetLabel(416),*)</visible>
+            <posx>150</posx>
+            <posy>222</posy>
+            <width>522</width>
+            <height>480</height>
+            <include>Icon_Fade</include>
+            <texture fallback="DefaultThumb.png" background="true">$INFO[ListItem.thumb]</texture>
+            <aspectratio aligny="bottom">keep</aspectratio>
+          </control>
+          <control type="image" description="Item Thumb FLIPPED">
+            <visible>SubString(Control.GetLabel(416),*)</visible>
+            <posx>150</posx>
+            <posy>222</posy>
+            <width>522</width>
+            <height>480</height>
+            <include>Icon_Fade</include>
+            <texture flipx="true" background="true">$INFO[ListItem.Icon]</texture>
+            <aspectratio aligny="bottom">keep</aspectratio>
+          </control>
+        </control>
+        <control type="group" description="List">
+          <posx>0</posx>
+          <control type="list" id="450" description="No Thumbs">
+            <viewtype label="List">list</viewtype>
+            <posx>711</posx>
+            <posy>156</posy>
+            <width>820</width>
+            <height>839</height>
+            <pagecontrol>60</pagecontrol>
+            <scrolltime>200</scrolltime>
+            <onleft>noop</onleft>
+            <onright>9000</onright>
+            <onup>450</onup>
+            <ondown>450</ondown>
+            <itemlayout height="60">
+              <control type="image">
+                <posx>0</posx>
+                <posy>0</posy>
+                <height>60</height>
+                <width>820</width>
+                <texture border="3">list/ListNF.png</texture>
+              </control>
+              <control type="label">
+                <posx>30</posx>
+                <posy>0</posy>
+                <width>740</width>
+                <height>60</height>
+                <aligny>center</aligny>
+                <info>ListItem.Label</info>
+              </control>
+              <control type="label">
+                <posx>800</posx>
+                <posy>0</posy>
+                <width>795</width>
+                <height>60</height>
+                <aligny>center</aligny>
+                <align>right</align>
+                <info>ListItem.Label2</info>
+              </control>
+            </itemlayout>
+            <focusedlayout height="60">
+              <control type="image">
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>820</width>
+                <height>60</height>
+                <texture border="2">buttons/ButtonFO.png</texture>
+                <animation effect="fade" start="100" end="0" time="200" condition="!Control.HasFocus(450)">Conditional</animation>
+              </control>
+              <control type="label">
+                <posx>30</posx>
+                <posy>0</posy>
+                <width>740</width>
+                <height>60</height>
+                <aligny>center</aligny>
+                <info>ListItem.Label</info>
+              </control>
+              <control type="label">
+                <posx>800</posx>
+                <posy>0</posy>
+                <width>795</width>
+                <height>60</height>
+                <aligny>center</aligny>
+                <align>right</align>
+                <info>ListItem.Label2</info>
+              </control>
+            </focusedlayout>
+          </control>
+          <control type="panel" id="451" description="Thumbs">
+            <posx>711</posx>
+            <posy>156</posy>
+            <width>820</width>
+            <height>839</height>
+            <pagecontrol>60</pagecontrol>
+            <scrolltime>200</scrolltime>
+            <onleft>noop</onleft>
+            <onright>9000</onright>
+            <onup>451</onup>
+            <ondown>451</ondown>
+            <itemlayout height="120" width="820">
+              <control type="image">
+                <posx>0</posx>
+                <posy>0</posy>
+                <height>120</height>
+                <width>820</width>
+                <texture border="3">list/ListNF.png</texture>
+              </control>
+              <control type="image" description="Thumb">
+                <posx>10</posx>
+                <posy>10</posy>
+                <width>120</width>
+                <height>100</height>
+                <texture>$INFO[ListItem.Icon]</texture>
+                <bordertexture border="3">thumbs/ThumbBorder3.png</bordertexture>
+                <bordersize>1</bordersize>
+                <aspectratio>keep</aspectratio>
+              </control>
+              <control type="label">
+                <posx>150</posx>
+                <posy>0</posy>
+                <width>550</width>
+                <height>120</height>
+                <aligny>center</aligny>
+                <info>ListItem.Label</info>
+              </control>
+              <control type="label">
+                <posx>800</posx>
+                <posy>0</posy>
+                <width>795</width>
+                <height>120</height>
+                <aligny>center</aligny>
+                <align>right</align>
+                <info>ListItem.Label2</info>
+              </control>
+            </itemlayout>
+            <focusedlayout height="120" width="820">
+              <control type="image">
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>820</width>
+                <height>120</height>
+                <texture border="2">buttons/ButtonFO.png</texture>
+              </control>
+              <control type="image" description="Thumb">
+                <posx>10</posx>
+                <posy>10</posy>
+                <width>120</width>
+                <height>100</height>
+                <texture>$INFO[ListItem.Icon]</texture>
+                <bordertexture border="3">thumbs/ThumbBorder3.png</bordertexture>
+                <bordersize>1</bordersize>
+                <aspectratio>keep</aspectratio>
+              </control>
+              <control type="label">
+                <posx>150</posx>
+                <posy>0</posy>
+                <width>550</width>
+                <height>120</height>
+                <aligny>center</aligny>
+                <info>ListItem.Label</info>
+              </control>
+              <control type="label">
+                <posx>800</posx>
+                <posy>0</posy>
+                <width>795</width>
+                <height>120</height>
+                <aligny>center</aligny>
+                <align>right</align>
+                <info>ListItem.Label2</info>
+              </control>
+            </focusedlayout>
+          </control>
+          <control type="grouplist" id="9000">
+            <posx>1533</posx>
+            <posy>156</posy>
+            <width>324</width>
+            <height>240</height>
+            <onleft>450</onleft>
+            <onright>60</onright>
+            <onup>noop</onup>
+            <ondown>noop</ondown>
+            <itemgap>0</itemgap>
+            <scrolltime>200</scrolltime>
+            <control type="button" id="413">
+              <width>330</width>
+              <label>$LOCALIZE[186]</label>
+              <onleft>450</onleft>
+              <onright>60</onright>
+            </control>
+            <control type="button" id="414">
+              <width>330</width>
+              <label>$LOCALIZE[222]</label>
+              <onleft>450</onleft>
+              <onright>60</onright>
+            </control>
+            <control type="button" id="415">
+              <width>330</width>
+              <label>$LOCALIZE[119]</label>
+              <onleft>450</onleft>
+              <onright>60</onright>
+            </control>
+            <control type="radiobutton" id="416">
+              <width>330</width>
+              <label>$LOCALIZE[749]</label>
+              <textureradioonfocus>-</textureradioonfocus>
+              <onleft>450</onleft>
+              <onright>60</onright>
+            </control>
+          </control>
+        </control>
+      </control>
+      <control type="label" id="412">
+        <posx>126</posx>
+        <posy>900</posy>
+        <width>579</width>
+        <font>ItemCount</font>
+      </control>
+      <control type="image" description="Top line">
+        <posx>66</posx>
+        <posy>96</posy>
+        <width>1494</width>
+        <height>60</height>
+        <texture border="3">list/ListNF.png</texture>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>1836</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>1020</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>413</onleft>
+        <onright>450</onright>
+      </control>
+    </control>
+  </controls>
+</window>

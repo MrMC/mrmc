@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <controls>
+    <control type="image" id="901" description="Speaker passthrough">
+      <posx>60</posx>
+      <posy>72</posy>
+      <width>129</width>
+      <height>129</height>
+      <texture>volume/VolumeMuted.png</texture>
+      <colordiffuse>Red</colordiffuse>
+    </control>
+  </controls>
+</window>

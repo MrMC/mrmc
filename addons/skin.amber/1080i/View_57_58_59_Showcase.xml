@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+  <include name="FooterInfo">
+    <control type="group" description="Media Info Lite">
+      <include>ContentFade</include>
+      <posy>978</posy>
+      <posx>390</posx>
+      <width>1140</width>
+      <control type="label" description="Title shadow">
+        <animation effect="slide" start="0,0" end="0,27" time="0" condition="[[Control.IsVisible(58) + Skin.HasSetting(Music_Info)] | [Control.IsVisible(57) + Skin.HasSetting(Episodes_Info)] | [Control.IsVisible(59) + Skin.HasSetting(Posters_Info)]]">Conditional</animation>
+        <posx>-1</posx>
+        <posy>1</posy>
+        <width>1140</width>
+        <height>50</height>
+        <align>center</align>
+        <textcolor>Black</textcolor>
+        <shadowcolor>-</shadowcolor>
+        <font>InfoTitle</font>
+        <scroll>false</scroll>
+        <label>$INFO[ListItem.Label]</label>
+      </control>
+      <control type="label" description="Title Label">
+        <animation effect="slide" start="0,0" end="0,27" time="0" condition="[[Control.IsVisible(58) + Skin.HasSetting(Music_Info)] | [Control.IsVisible(57) + Skin.HasSetting(Episodes_Info)] | [Control.IsVisible(59) + Skin.HasSetting(Posters_Info)]]">Conditional</animation>
+        <width>1140</width>
+        <height>50</height>
+        <align>center</align>
+        <textcolor>White2</textcolor>
+        <shadowcolor>-</shadowcolor>
+        <font>InfoTitle</font>
+        <scroll>false</scroll>
+        <label>$INFO[ListItem.Label]</label>
+      </control>
+      <control type="label" description="Details">
+        <visible>Control.IsVisible(53) | [[Control.IsVisible(58) + !Skin.HasSetting(Music_Info)] | [Control.IsVisible(57) + !Skin.HasSetting(Episodes_Info)] | [Control.IsVisible(59) + !Skin.HasSetting(Posters_Info)]]</visible>
+        <posy>55</posy>
+        <width>1140</width>
+        <height>30</height>
+        <align>center</align>
+        <shadowcolor>Black</shadowcolor>
+        <label>$VAR[Fanart_Details]</label>
+      </control>
+    </control>
+    <control type="grouplist" description="Left Flags">
+      <include>ContentFade</include>
+      <posx>30</posx>
+      <posy>1017</posy>
+      <width min="90" max="450">auto</width>
+      <height>45</height>
+      <itemgap>30</itemgap>
+      <orientation>horizontal</orientation>
+      <align>left</align>
+      <aligny>center</aligny>
+      <control type="image">
+        <visible>!IsEmpty(ListItem.VideoCodec)</visible>
+        <height>45</height>
+        <width>90</width>
+        <bordersize>3</bordersize>
+        <aspectratio>keep</aspectratio>
+        <colordiffuse>Silver</colordiffuse>
+        <texture>$INFO[ListItem.VideoCodec,badges/video/,.png]</texture>
+      </control>
+      <control type="image">
+        <visible>IntegerGreaterThan(ListItem.VideoResolution,710)</visible>
+        <height>45</height>
+        <width>90</width>
+        <posx>0</posx>
+        <posy>0</posy>
+        <bordersize>3</bordersize>
+        <aspectratio>keep</aspectratio>
+        <colordiffuse>Silver</colordiffuse>
+        <texture>$INFO[ListItem.VideoResolution,badges/video/,.png]</texture>
+      </control>
+      <control type="image">
+        <visible>container.content(albums) | container.content(songs)</visible>
+        <height>45</height>
+        <width>174</width>
+        <aspectratio>keep</aspectratio>
+        <colordiffuse>Silver</colordiffuse>
+        <texture>$INFO[ListItem.StarRating]</texture>
+      </control>
+			<control type="image">
+					<visible>ListItem.IsStereoscopic</visible>
+					<height>36</height>
+					<width>102</width>
+					<aspectratio>keep</aspectratio>
+					<colordiffuse>Silver</colordiffuse>
+					<texture>badges/video/3d.png</texture>
+				</control>
+    </control>
+    <control type="grouplist" description="Right Flags">
+      <include>ContentFade</include>
+      <posx>1440</posx>
+      <posy>1017</posy>
+      <width min="90" max="450">auto</width>
+      <height>45</height>
+      <itemgap>30</itemgap>
+      <orientation>horizontal</orientation>
+      <align>right</align>
+      <aligny>center</aligny>
+      <control type="image">
+        <visible>!IsEmpty(ListItem.AudioChannels)</visible>
+        <height>45</height>
+        <width>90</width>
+        <bordersize>3</bordersize>
+        <aspectratio>keep</aspectratio>
+        <colordiffuse>Silver</colordiffuse>
+        <texture>$INFO[ListItem.AudioChannels,badges/channels,.png]</texture>
+      </control>
+      <control type="image">
+        <visible>!IsEmpty(ListItem.AudioCodec)</visible>
+        <height>45</height>
+        <width>90</width>
+        <bordersize>3</bordersize>
+        <aspectratio>keep</aspectratio>
+        <colordiffuse>Silver</colordiffuse>
+        <texture>$INFO[ListItem.AudioCodec,badges/audio/,.png]</texture>
+      </control>
+      <control type="label">
+        <visible>container.content(albums) | container.content(songs)</visible>
+        <height>45</height>
+        <width>90</width>
+        <font>Volume</font>
+        <align>right</align>
+        <label>$INFO[ListItem.Year]</label>
+      </control>
+    </control>
+  </include>
+  <include name="MovieShowcaseThumbDimensions">
+    <posx>15</posx>
+    <posy>15</posy>
+    <width>210</width>
+    <height>312</height>
+  </include>
+  <include name="MovieShowcaseBG">
+    <include>MovieShowcaseThumbDimensions</include>
+    <bordersize>-12</bordersize>
+    <texture>thumbs/PosterBG_NF.png</texture>
+  </include>
+  <include name="MovieShowcaseThumb">
+    <include>MovieShowcaseThumbDimensions</include>
+    <include>PosterThumb</include>
+  </include>
+  <include name="MovieShowcaseReflection">
+    <posx>15</posx>
+    <posy>330</posy>
+    <width>210</width>
+    <height>312</height>
+    <colordiffuse>229e9e9e</colordiffuse>
+    <texture background="true" flipy="true">$VAR[Thumbs]</texture>
+    <aspectratio aligny="top">stretch</aspectratio>
+  </include>
+  <include name="MusicShowcaseThumbDimensions">
+    <posx>15</posx>
+    <posy>144</posy>
+    <width>297</width>
+    <height>297</height>
+  </include>
+  <include name="MusicShowcaseBG">
+    <include>MusicShowcaseThumbDimensions</include>
+    <bordersize>-12</bordersize>
+    <texture>thumbs/SquareBG_NF.png</texture>
+  </include>
+  <include name="MusicShowcaseThumb">
+    <include>MusicShowcaseThumbDimensions</include>
+    <include>SquareThumb</include>
+  </include>
+  <include name="MusicShowcaseReflection">
+    <posx>15</posx>
+    <posy>444</posy>
+    <width>297</width>
+    <height>297</height>
+    <colordiffuse>339e9e9e</colordiffuse>
+    <texture background="true" flipy="true">$VAR[Thumbs]</texture>
+    <aspectratio aligny="top">stretch</aspectratio>
+  </include>
+  <include name="EpisodeShowcaseThumbDimensions">
+    <posx>12</posx>
+    <posy>12</posy>
+    <width>390</width>
+    <height>267</height>
+  </include>
+  <include name="EpisodeShowcaseBG">
+    <include>EpisodeShowcaseThumbDimensions</include>
+    <bordersize>-12</bordersize>
+    <texture>thumbs/EpisodeBG_NF.png</texture>
+  </include>
+  <include name="EpisodeShowcaseReflection">
+    <posx>12</posx>
+    <posy>73</posy>
+    <width>390</width>
+    <height>267</height>
+    <colordiffuse>339e9e9e</colordiffuse>
+    <texture background="true" flipy="true">$VAR[Thumbs]</texture>
+    <aspectratio aligny="top">scale</aspectratio>
+  </include>
+  <include name="EpisodeShowcaseThumb">
+    <include>EpisodeShowcaseThumbDimensions</include>
+    <include>EpisodeThumb</include>
+  </include>
+  <include name="View_59_Showcase">
+    <control type="group">
+      <visible>Control.IsVisible(57) | Control.IsVisible(58) | Control.IsVisible(59)</visible>
+      <include>VignetteFade</include>
+      <control type="image">
+        <animation effect="slide" easing="out" start="0,0" end="0,-400" time="300" delay="0" center="120,350" reversible="true" condition="!IsEmpty(Window.Property(gallery))">Conditional</animation>
+        <posx>0</posx>
+        <posy>1088</posy>
+        <width>1920</width>
+        <height>444</height>
+        <aspectratio>stretch</aspectratio>
+        <texture border="0,30,0,30">OSD/OSDBackground.png</texture>
+      </control>
+      <control type="image">
+        <visible>Window.IsActive(MyPics.xml) | [IsEmpty(Window.Property(gallery)) + ![[Control.IsVisible(58) + Skin.HasSetting(Music_Info)] | [Control.IsVisible(57) + Skin.HasSetting(Episodes_Info)] | [Control.IsVisible(59) + Skin.HasSetting(Posters_Info)]]]</visible>
+        <animation effect="fade" start="100" end="0" time="100" delay="0">Hidden</animation>
+        <animation effect="fade" start="0" end="100" time="200" delay="0">Visible</animation>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1920</width>
+        <height>1080</height>
+        <texture>common/VignetteStage.png</texture>
+      </control>
+      <control type="image">
+        <visible>!Window.IsActive(MyPics.xml) + IsEmpty(Window.Property(gallery)) + [[Control.IsVisible(58) + Skin.HasSetting(Music_Info)] | [Control.IsVisible(57) + Skin.HasSetting(Episodes_Info)] | [Control.IsVisible(59) + Skin.HasSetting(Posters_Info)]]</visible>
+        <animation effect="fade" start="100" end="0" time="100" delay="0">Hidden</animation>
+        <animation effect="fade" start="0" end="100" time="200" delay="0">Visible</animation>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1920</width>
+        <height>1080</height>
+        <texture>common/VignetteInfo.png</texture>
+      </control>
+    </control>
+    <control type="group" description="Showcase 59 Movies TV Seasons">
+      <visible>Control.IsVisible(59)</visible>
+      <include>ContentFade</include>
+      <control type="fixedlist" id="59">
+        <visible>[container.content(MusicVideos) + Window.IsActive(myvideonav.xml)] | container.content(movies) | container.content(sets) | container.content(tvshows) | container.content(seasons)</visible>
+        <animation effect="slide" easing="out" start="0,0" end="0,800" time="350" delay="0" center="120,350" reversible="true" condition="!IsEmpty(Window.Property(gallery))">Conditional</animation>
+        <animation effect="slide" easing="out" start="0,0" end="0,36" time="0" reversible="true" condition="Skin.HasSetting(Posters_Info)">Conditional</animation>
+        <posx>-120</posx>
+        <posy>609</posy>
+        <width>2160</width>
+        <height>471</height>
+        <onleft>59</onleft>
+        <onright>59</onright>
+        <onup condition="IsEmpty(Window.Property(gallery))">9000</onup>
+        <onup condition="!IsEmpty(Window.Property(gallery))">ClearProperty(gallery)</onup>
+        <ondown condition="Skin.HasSetting(Posters_Gallery)">SetProperty(gallery, true)</ondown>
+        <ondown condition="!Skin.HasSetting(Posters_Gallery)">60</ondown>
+        <viewtype label="20445">Fanart</viewtype>
+        <pagecontrol>60</pagecontrol>
+        <orientation>horizontal</orientation>
+        <scrolltime>250</scrolltime>
+        <focusposition>4</focusposition>
+        <movement>3</movement>
+        <preloaditems>4</preloaditems>
+        <itemlayout height="339" width="240">
+          <control type="image">
+            <include>MovieShowcaseBG</include>
+          </control>
+          <control type="image">
+            <include>MovieShowcaseThumb</include>
+          </control>
+          <control type="image">
+            <include>MovieShowcaseReflection</include>
+          </control>
+          <control type="image">
+            <posx>190</posx>
+            <posy>291</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout height="339" width="240">
+          <control type="group">
+            <animation effect="zoom" easing="out" start="100" end="118" time="350" delay="0" center="120,243">Focus</animation>
+            <animation effect="zoom" easing="in" start="118" end="100" time="250" delay="0" center="120,243">UnFocus</animation>
+            <control type="image">
+              <!--<animation effect="fade" start="100" end="0" time="100">Focus</animation>-->
+              <include>MovieShowcaseBG</include>
+            </control>
+            <!--<control type="image">
+              <animation effect="fade" start="100" end="0" time="100">Unfocus</animation>
+              <include>MovieShowcaseFO</include>
+            </control>-->
+            <control type="image">
+              <include>MovieShowcaseThumb</include>
+            </control>
+            <control type="image">
+              <include>MovieShowcaseReflection</include>
+            </control>
+            <control type="image">
+              <posx>190</posx>
+              <posy>291</posy>
+              <width>33</width>
+              <height>33</height>
+              <texture>$VAR[Overlay]</texture>
+            </control>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="group" description="Gallery">
+        <visible>!IsEmpty(Window.Property(gallery))</visible>
+        <animation effect="fade" delay="200" time="300">Visible</animation>
+        <animation effect="fade" time="100">Hidden</animation>
+        <control type="group" description="Thumb">
+          <posx>40</posx>
+          <posy>724</posy>
+          <control type="image">
+            <include>MovieShowcaseBG</include>
+          </control>
+          <control type="image">
+            <include>Icon_Fade</include>
+            <include>MovieShowcaseThumb</include>
+          </control>
+          <control type="image">
+            <posx>190</posx>
+            <posy>291</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </control>
+        <control type="group" description="Media info">
+          <posx>330</posx>
+          <posy>654</posy>
+          <control type="label" description="Title Label">
+            <posy>72</posy>
+            <width>1360</width>
+            <height>60</height>
+            <textcolor>White2</textcolor>
+            <shadowcolor>Black</shadowcolor>
+            <font>InfoTitle</font>
+            <scroll>false</scroll>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label" description="Details">
+            <posy>135</posy>
+            <height>33</height>
+            <width>1200</width>
+            <font>InfoDetails</font>
+            <shadowcolor>Black</shadowcolor>
+            <label>$VAR[Details]</label>
+          </control>
+          <control type="label" description="Genre">
+            <posy>171</posy>
+            <height>33</height>
+            <width>1200</width>
+            <font>InfoDetails</font>
+            <shadowcolor>Black</shadowcolor>
+            <label>$INFO[ListItem.Genre]</label>
+          </control>
+          <control type="textbox" description="Plot shadow">
+            <posx>-1</posx>
+            <posy>217</posy>
+            <width>1500</width>
+            <height>125</height>
+            <align>left</align>
+            <textcolor>Black</textcolor>
+            <shadowcolor>-</shadowcolor>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="textbox" description="Plot itself">
+            <posx>0</posx>
+            <posy>216</posy>
+            <width>1500</width>
+            <height>125</height>
+            <align>left</align>
+            <shadowcolor>-</shadowcolor>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="image" description="Stars">
+            <visible>!Window.IsActive(MyVideoNav.xml)</visible>
+            <posx>-3</posx>
+            <posy>366</posy>
+            <include>Stars</include>
+          </control>
+          <control type="group" description="Flags">
+            <posx>0</posx>
+            <posy>360</posy>
+            <include>MediaFlags</include>
+          </control>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="0,-3" time="150">Focus</animation>
+        <!--<animation effect="slide" start="0,0" end="0,-90" time="350" easing="out" condition="Control.HasFocus(7000)">Conditional</animation>-->
+        <posx>90</posx>
+        <posy>1056</posy>
+        <width>1750</width>
+        <height>36</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>true</showonepage>
+        <orientation>horizontal</orientation>
+        <onup>59</onup>
+        <onright>noop</onright>
+      </control>
+    </control>
+    <control type="group" description="Showcase 58 Squares">
+      <visible>Control.IsVisible(58)</visible>
+      <include>ContentFade</include>
+      <control type="fixedlist" id="58">
+        <visible>![[container.content(MusicVideos) + Window.IsActive(myvideonav.xml)] | container.content(movies) | container.content(sets) | container.content(tvshows) | container.content(seasons) | container.content(episodes)]</visible>
+        <animation effect="slide" easing="out" start="0,0" end="0,800" time="350" delay="0" center="120,350" reversible="true" condition="!IsEmpty(Window.Property(gallery))">Conditional</animation>
+        <animation effect="slide" easing="out" start="0,0" end="0,36" time="0" reversible="true" condition="Skin.HasSetting(Music_Info)">Conditional</animation>
+        <!--<animation effect="slide" easing="out" start="0,0" end="0,60" time="350" delay="0" center="120,350" reversible="true" condition="Skin.HasSetting(Music_Info)">Conditional</animation>-->
+        <posx>-174</posx>
+        <posy>480</posy>
+        <width>2268</width>
+        <height>660</height>
+        <onleft>58</onleft>
+        <onright>58</onright>
+        <onup condition="!IsEmpty(Window.Property(gallery))">ClearProperty(gallery)</onup>
+        <onup condition="IsEmpty(Window.Property(gallery))">9000</onup>
+        <ondown condition="[container.content(artists) | container.content(albums)] + Skin.HasSetting(Music_Gallery)">SetProperty(gallery, true)</ondown>
+        <ondown condition="![[container.content(artists) | container.content(albums)] + Skin.HasSetting(Music_Gallery)]">60</ondown>
+        <viewtype label="20445">Fanart</viewtype>
+        <pagecontrol>60</pagecontrol>
+        <orientation>horizontal</orientation>
+        <scrolltime>250</scrolltime>
+        <focusposition>3</focusposition>
+        <movement>2</movement>
+        <preloaditems>4</preloaditems>
+        <itemlayout height="400" width="324">
+          <control type="image">
+            <include>MusicShowcaseBG</include>
+          </control>
+          <control type="image">
+            <include>MusicShowcaseThumb</include>
+          </control>
+          <control type="image">
+            <include>MusicShowcaseReflection</include>
+          </control>
+        </itemlayout>
+        <focusedlayout height="660" width="324">
+          <control type="group">
+            <animation effect="zoom" easing="out" start="100" end="120" time="350" delay="0" center="162,345">Focus</animation>
+            <animation effect="zoom" easing="in" start="120" end="100" time="250" delay="0" center="162,345">UnFocus</animation>
+            <control type="image">
+              <include>MusicShowcaseBG</include>
+            </control>
+            <control type="image">
+              <include>MusicShowcaseThumb</include>
+            </control>
+            <control type="image">
+              <include>MusicShowcaseReflection</include>
+            </control>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="group">
+        <visible>!IsEmpty(Window.Property(gallery))</visible>
+        <animation effect="fade" delay="200" time="300">Visible</animation>
+        <animation effect="fade" time="100">Hidden</animation>
+        <control type="group" description="Thumb">
+          <posx>40</posx>
+          <posy>606</posy>
+          <control type="image">
+            <include>MusicShowcaseBG</include>
+          </control>
+          <control type="image">
+            <include>MusicShowcaseThumb</include>
+          </control>
+        </control>
+        <control type="group" description="Media info">
+          <posx>405</posx>
+          <posy>666</posy>
+          <control type="label" description="Title Label">
+            <posy>78</posy>
+            <width>1360</width>
+            <height>60</height>
+            <textcolor>White2</textcolor>
+            <font>InfoTitle</font>
+            <scroll>false</scroll>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label" description="Details">
+            <posy>141</posy>
+            <height>33</height>
+            <width>1200</width>
+            <font>InfoDetails</font>
+            <label>$VAR[Details]</label>
+          </control>
+          <control type="textbox" description="Plot">
+            <posx>0</posx>
+            <posy>216</posy>
+            <width>1450</width>
+            <height>175</height>
+            <align>left</align>
+            <label>$VAR[Plots]</label>
+          </control>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="0,-3" time="150">Focus</animation>
+        <!--<animation effect="slide" start="0,0" end="0,-90" time="350" easing="out" condition="Control.HasFocus(7000)">Conditional</animation>-->
+        <posx>90</posx>
+        <posy>1056</posy>
+        <width>1750</width>
+        <height>36</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>true</showonepage>
+        <orientation>horizontal</orientation>
+        <onup>58</onup>
+        <onright>noop</onright>
+      </control>
+    </control>
+    <control type="group" description="Showcase 57 Episodes">
+      <visible>Control.IsVisible(57)</visible>
+      <include>ContentFade</include>
+      <control type="fixedlist" id="57">
+        <visible>container.content(episodes)</visible>
+        <animation effect="slide" easing="out" start="0,0" end="0,800" time="350" delay="0" center="120,350" reversible="true" condition="!IsEmpty(Window.Property(gallery))">Conditional</animation>
+        <!--<animation effect="slide" easing="out" start="0,0" end="0,60" time="350" delay="0" center="120,350" reversible="true" condition="Skin.HasSetting(Episodes_Info)">Conditional</animation>-->
+        <posx>-75</posx>
+        <posy>645</posy>
+        <width>2070</width>
+        <height>691</height>
+        <onleft>57</onleft>
+        <onright>57</onright>
+        <onup condition="!IsEmpty(Window.Property(gallery))">ClearProperty(gallery)</onup>
+        <onup condition="IsEmpty(Window.Property(gallery))">9000</onup>
+        <ondown condition="Skin.HasSetting(Episodes_Gallery)">SetProperty(gallery, true)</ondown>
+        <ondown condition="!Skin.HasSetting(Episodes_Gallery)">60</ondown>
+        <viewtype label="20445">Fanart</viewtype>
+        <pagecontrol>60</pagecontrol>
+        <orientation>horizontal</orientation>
+        <scrolltime>250</scrolltime>
+        <focusposition>2</focusposition>
+        <movement>1</movement>
+        <preloaditems>4</preloaditems>
+        <itemlayout height="291" width="414">
+          <control type="image">
+            <include>EpisodeShowcaseBG</include>
+          </control>
+          <control type="image">
+            <include>EpisodeShowcaseThumb</include>
+          </control>
+          <control type="group">
+            <visible>!IsEmpty(ListItem.Episode)</visible>
+            <posy>210</posy>
+            <control type="image">
+              <posx>2</posx>
+              <width>410</width>
+              <height>70</height>
+              <bordersize>9</bordersize>
+              <texture>img/OverlayStripe.png</texture>
+            </control>
+            <control type="label">
+              <posx>30</posx>
+              <width>300</width>
+              <height>70</height>
+              <font>Slider</font>
+              <label>$LOCALIZE[31973] $INFO[ListItem.Season,,.]$INFO[ListItem.Episode]</label>
+            </control>
+            <control type="image" description="Watched Overlay">
+              <posx>357</posx>
+              <width>33</width>
+              <height>70</height>
+              <texture>$VAR[Overlay]</texture>
+              <aspectratio>keep</aspectratio>
+            </control>
+            <control type="image">
+              <include>EpisodeShowcaseReflection</include>
+            </control>
+          </control>
+        </itemlayout>
+        <focusedlayout height="291" width="414">
+          <control type="group">
+            <animation effect="zoom" easing="out" start="100" end="120" time="350" delay="0" center="207,144">Focus</animation>
+            <animation effect="zoom" easing="in" start="120" end="100" time="250" delay="0" center="207,144">UnFocus</animation>
+            <control type="image">
+              <include>EpisodeShowcaseBG</include>
+            </control>
+            <control type="image">
+              <include>EpisodeShowcaseThumb</include>
+            </control>
+            <control type="group">
+              <visible>!IsEmpty(ListItem.Episode)</visible>
+              <posy>210</posy>
+              <control type="image">
+                <posx>2</posx>
+                <width>410</width>
+                <height>70</height>
+                <bordersize>9</bordersize>
+                <texture>img/OverlayStripe.png</texture>
+              </control>
+              <control type="label">
+                <posx>30</posx>
+                <width>300</width>
+                <height>70</height>
+                <font>Slider</font>
+                <textcolor>White2</textcolor>
+                <label>$LOCALIZE[31973] $INFO[ListItem.Season,,.]$INFO[ListItem.Episode]</label>
+              </control>
+              <control type="image" description="Watched Overlay">
+                <posx>357</posx>
+                <width>33</width>
+                <height>70</height>
+                <texture>$VAR[Overlay]</texture>
+                <aspectratio>keep</aspectratio>
+              </control>
+              <control type="image">
+                <include>EpisodeShowcaseReflection</include>
+              </control>
+            </control>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="group" description="Gallery">
+        <visible>!IsEmpty(Window.Property(gallery))</visible>
+        <animation effect="fade" delay="200" time="300">Visible</animation>
+        <animation effect="fade" time="100">Hidden</animation>
+        <control type="group" description="Thumb">
+          <posx>40</posx>
+          <posy>747</posy>
+          <control type="image">
+            <include>EpisodeShowcaseBG</include>
+          </control>
+          <control type="image">
+            <include>EpisodeShowcaseThumb</include>
+          </control>
+        </control>
+        <control type="image" description="Watched Overlay">
+          <posx>406</posx>
+          <posy>970</posy>
+          <width>33</width>
+          <height>70</height>
+          <texture>$VAR[Overlay]</texture>
+          <aspectratio>keep</aspectratio>
+        </control>
+        <control type="group" description="Media info">
+          <posx>489</posx>
+          <posy>678</posy>
+          <control type="label" description="Title Label">
+            <posy>75</posy>
+            <width>1100</width>
+            <height>60</height>
+            <textcolor>White2</textcolor>
+            <font>InfoTitle</font>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label" description="Details">
+            <posy>148</posy>
+            <height>33</height>
+            <width>1100</width>
+            <font>InfoDetails</font>
+            <label>$VAR[Details]</label>
+          </control>
+          <control type="textbox" description="Plot">
+            <posx>0</posx>
+            <posy>189</posy>
+            <width>1350</width>
+            <height>122</height>
+            <align>left</align>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="image" description="Stars">
+            <posx>-3</posx>
+            <posy>318</posy>
+            <include>Stars</include>
+          </control>
+          <control type="image" description="HD badge">
+            <visible>![ListItem.IsFolder | IsEmpty(ListItem.VideoResolution) | !IntegerGreaterThan(ListItem.VideoResolution,710)]</visible>
+            <posx>120</posx>
+            <posy>320</posy>
+            <height>24</height>
+            <width>90</width>
+            <aspectratio aligny="bottom" align="right">keep</aspectratio>
+            <texture>badges/HD.png</texture>
+          </control>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="0,-3" time="150">Focus</animation>
+        <!--<animation effect="slide" start="0,0" end="0,-90" time="350" easing="out" condition="Control.HasFocus(7000)">Conditional</animation>-->
+        <posx>90</posx>
+        <posy>1056</posy>
+        <width>1750</width>
+        <height>36</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollBarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollBarNibFO.png</textureslidernibfocus>
+        <showonepage>true</showonepage>
+        <orientation>horizontal</orientation>
+        <onup>57</onup>
+        <onright>noop</onright>
+      </control>
+    </control>
+    <control type="group">
+      <include>ContentFade</include>
+	  <visible>!Window.IsActive(MyPics.xml) + IsEmpty(Window.Property(gallery)) + [[Control.IsVisible(58) + Skin.HasSetting(Music_Info)] | [Control.IsVisible(57) + Skin.HasSetting(Episodes_Info)] | [Control.IsVisible(59) + Skin.HasSetting(Posters_Info)]]</visible>
+      <animation effect="fade" delay="200" time="300">Visible</animation>
+      <animation effect="fade" time="100">Hidden</animation>
+      <control type="group" description="Media info">
+        <posx>135</posx>
+        <posy>99</posy>
+        <control type="label" description="Title Label">
+          <posy>87</posy>
+          <width>900</width>
+          <height>60</height>
+          <textcolor>Highlight</textcolor>
+          <font>InfoTitle</font>
+          <scroll>false</scroll>
+          <label>$INFO[ListItem.Label]</label>
+        </control>
+        <control type="label" description="Details">
+          <posy>154</posy>
+          <height>33</height>
+          <width>900</width>
+          <font>InfoDetails</font>
+          <scroll>false</scroll>
+          <label>$VAR[Details]</label>
+        </control>
+        <control type="label" description="Genre">
+          <posy>195</posy>
+          <height>33</height>
+          <width>1640</width>
+          <font>InfoDetails</font>
+          <scroll>false</scroll>
+          <label>$INFO[ListItem.Genre]</label>
+        </control>
+        <control type="textbox" description="Plot">
+          <posx>0</posx>
+          <posy>250</posy>
+          <width>900</width>
+          <height>214</height>
+          <align>justify</align>
+          <label>$VAR[Plots]</label>
+        </control>
+        <control type="group" description="Info with Fanart">
+            <visible>!IsEmpty(ListItem.Art(fanart))</visible>
+            <control type="image" description="BG">
+              <posx>1017</posx>
+              <posy>99</posy>
+              <width>640</width>
+              <height>360</height>
+              <texture border="8">img/WhiteRoundedST.png</texture>
+			  <aspectratio>stretch</aspectratio>
+            </control>
+			<control type="multiimage" description="FA">
+              <posx>1023</posx>
+              <posy>105</posy>
+              <width>628</width>
+              <height>348</height>
+              <include>BG.Defaults</include>
+              <imagepath background="true">$VAR[Fanart.Art]</imagepath>
+              <aspectratio aligny="top">scale</aspectratio>
+            </control>
+          </control>
+		 
+      </control>
+    </control>
+    <control type="group" description="Footer info">
+      <include>ContentFade</include>
+	  <visible>IsEmpty(Window.Property(gallery)) + [Control.IsVisible(57) | Control.IsVisible(58) | Control.IsVisible(59)]</visible>
+      <animation effect="fade" start="100" end="0" time="50" delay="0" center="120,350" reversible="false">Hidden</animation>
+      <animation effect="fade" start="0" end="100" time="450" delay="400" center="120,350" reversible="false">Visible</animation>
+      <include>FooterInfo</include>
+    </control>
+  </include>
+</includes>

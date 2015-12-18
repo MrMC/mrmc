@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">9</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <control type="group">
+      <include condition="Window.IsActive(home)">DimBG</include>
+      <control type="image" description="BG">
+        <include>Panel_Size</include>
+        <texture>dialogs/AddonSettingsBG.png</texture>
+      </control>
+      <control type="grouplist" id="9" description="Left side">
+        <posx>64</posx>
+        <posy>180</posy>
+        <width>387</width>
+        <height>720</height>
+        <itemgap>0</itemgap>
+        <onleft>9001</onleft>
+        <onright>2</onright>
+        <onup>9</onup>
+        <ondown>9</ondown>
+      </control>
+      <control type="button" id="13" description="Section buttons">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>324</width>
+        <align>right</align>
+        <focusedcolor>Highlight</focusedcolor>
+        <textoffsetx>10</textoffsetx>
+      </control>
+      <control type="label" id="20" description="Header">
+        <posx>0</posx>
+        <posy>90</posy>
+        <width>1920</width>
+        <textcolor>Highlight</textcolor>
+        <align>center</align>
+      </control>
+      <control type="grouplist" id="2" description="Controls for settings">
+        <posx>389</posx>
+        <posy>180</posy>
+        <width>1144</width>
+        <height>780</height>
+        <itemgap>0</itemgap>
+        <pagecontrol>60</pagecontrol>
+        <onup>9001</onup>
+        <ondown>2</ondown>
+        <onleft>9</onleft>
+        <onright>9001</onright>
+      </control>
+      <control type="button" id="3">
+        <textoffsetx>20</textoffsetx>
+      </control>
+      <control type="radiobutton" id="4">
+        <textoffsetx>20</textoffsetx>
+      </control>
+      <control type="spincontrolex" id="5">
+        <textoffsetx>20</textoffsetx>
+        <reverse>yes</reverse>
+      </control>
+      <control type="image" id="6" description="Default Separator img">
+        <height>1</height>
+      </control>
+      <control type="label" id="7" description="Sparator label headline">
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="sliderex" id="8">
+        <align>left</align>
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="grouplist" id="9001" description="Right side">
+        <posx>1533</posx>
+        <posy>180</posy>
+        <width>387</width>
+        <height>780</height>
+        <itemgap>0</itemgap>
+        <onup>9001</onup>
+        <ondown>9001</ondown>
+        <onleft>2</onleft>
+        <onright>9</onright>
+        <orientation>vertical</orientation>
+        <control type="button" id="10" description="OK">
+          <label>$LOCALIZE[186]</label>
+          <width>324</width>
+          <textoffsetx>10</textoffsetx>
+        </control>
+        <control type="button" id="11" description="cancel">
+          <label>$LOCALIZE[222]</label>
+          <width>324</width>
+          <textoffsetx>10</textoffsetx>
+        </control>
+        <control type="button" id="12" description="defaults">
+          <label>$LOCALIZE[409]</label>
+          <width>324</width>
+          <textoffsetx>10</textoffsetx>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

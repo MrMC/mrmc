@@ -1,0 +1,197 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/xbmc-skins/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31005"
+msgid "Cinema"
+msgstr "Kino"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Nedávno přidané"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Položek"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Předvolby vizualizace"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Změnit pozadí úvodní obrazovky - sekce"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "1 pozadí"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Více pozadí"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Doplněk textů písní"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Doplněk titulků"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "Položky"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Využitá paměť:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Odvysíláno"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pozastavit"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Zastavit"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Rychle vpřed"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Přetočit zpět"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Nabídka filmu"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Stáhnout titulky"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Titulky jsou k dispozici lokálně"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "Televize"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Naplánovaný čas"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Přidat skupinu"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Přejmenovat skupinu"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Smazat skupinu"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Dostupné[CR]skupiny"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Časovač nastaven"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Předpověď na 36 hodin"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Hodinová předpověď"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Předpověď na víkend"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Předpověď na 10 dní"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "J"
+
+msgctxt "#31956"
+msgid "Get theme"
+msgstr "Získat vzhled"
+
+msgctxt "#31961"
+msgid "Recently added"
+msgstr "Nedávno přidané"
+
+msgctxt "#31962"
+msgid "Low List"
+msgstr "Nízký seznam"
+
+msgctxt "#31963"
+msgid "Panel"
+msgstr "Panel"
+
+msgctxt "#31966"
+msgid "Recommended"
+msgstr "Doporučeno"
+
+msgctxt "#31968"
+msgid "Show info"
+msgstr "Zobrazit informace"
+
+msgctxt "#31971"
+msgid "Concerts"
+msgstr "Koncerty"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Klipy"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "V"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Kanály"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Pokročilé"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Náhodně"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Menu"

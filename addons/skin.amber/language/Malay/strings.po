@@ -1,0 +1,429 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Malay (http://www.transifex.com/projects/p/xbmc-skins/language/ms/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ms\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Picture Channels"
+msgstr "Saluran Gambar"
+
+msgctxt "#31001"
+msgid "Video Channels"
+msgstr "Saluran Video"
+
+msgctxt "#31002"
+msgid "Music Channels"
+msgstr "Saluran Muzik"
+
+msgctxt "#31003"
+msgid "Channels Directory"
+msgstr "Direktori Saluran"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31005"
+msgid "Cinema"
+msgstr "Wayang"
+
+msgctxt "#31006"
+msgid "Shared"
+msgstr "Dikongsi"
+
+msgctxt "#31007"
+msgid "PleKodi settings"
+msgstr "Tetapan PleKodi"
+
+msgctxt "#31008"
+msgid "Go Plex"
+msgstr "Go Plex"
+
+msgctxt "#31009"
+msgid "Go Kodi"
+msgstr "Go Kodi"
+
+msgctxt "#31010"
+msgid "Queue"
+msgstr "Baris gilir"
+
+msgctxt "#31011"
+msgid "Recently Viewed"
+msgstr "Dilihat Baru-baru Ini"
+
+msgctxt "#31012"
+msgid "Recently Released"
+msgstr "Dikeluar Baru-Baru Ini"
+
+msgctxt "#31013"
+msgid "Recently Aired"
+msgstr "Ditayang Baru-Baru Ini"
+
+msgctxt "#31014"
+msgid "On Deck"
+msgstr "Dalam Dek"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Ditambah Baru-baru Ini"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Item"
+
+msgctxt "#31038"
+msgid "Reset ALL skin settings to default values"
+msgstr "Tetap semula SEMUA tetapan kulit ke nilai lalai"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Pratetap Pengvisualan"
+
+msgctxt "#31049"
+msgid "Settings Level"
+msgstr "Aras Tetapan"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Sunting Latar Belakang untuk Jenis Media"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "Imej Tunggal"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Imej Berbilang"
+
+msgctxt "#31115"
+msgid "Start music playlist on Kodi load"
+msgstr "Mulakan senarai main muzik ketika Kodi dimuatkan"
+
+msgctxt "#31116"
+msgid "Startup playlist"
+msgstr "Senarai main permulaan"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Tambahan Lirik"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Tambahan Sarikata"
+
+msgctxt "#31291"
+msgid "Add-on manager"
+msgstr "Pengurus tambahan"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "item"
+
+msgctxt "#31293"
+msgid "Can not be customized"
+msgstr "Tidak dapat disuaikan"
+
+msgctxt "#31297"
+msgid "min"
+msgstr "min"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Ingatan Digunakan:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Diudara"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Jeda"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Henti"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Maju Pantas"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Undur"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menu cereka"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Muat Turun Sarikata"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Sarikata tempatan tersedia"
+
+msgctxt "#31389"
+msgid "(2/4) Skin default - no caps"
+msgstr "(2/4) Lalai kulit - tanpa cap"
+
+msgctxt "#31390"
+msgid "(1/4) Skin default"
+msgstr "(1/4) Lalai kulit"
+
+msgctxt "#31391"
+msgid "(4/4) Arial - no caps"
+msgstr "(4/4) Arial - tanpa cap"
+
+msgctxt "#31392"
+msgid "(3/4) Arial based"
+msgstr "(3/4) Berasaskan Arial"
+
+msgctxt "#31499"
+msgid "All TV Shows"
+msgstr "Semua Rancangan TV"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "TV Langsung"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Masa Terjadual"
+
+msgctxt "#31502"
+msgid "All Movies"
+msgstr "Semua Cereka"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Tambah Kumpulan"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Namakan Semula Kumpulan"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Padam Kumpulan"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Kumpulan[CR]Tersedia"
+
+msgctxt "#31507"
+msgid "Movies homescreen button opens:"
+msgstr "Butang skrin rumah cereka dibuka:"
+
+msgctxt "#31508"
+msgid "TV Shows homescreen button opens:"
+msgstr "Butang skrin rumah Rancangan TV buka:"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Pemasa Ditetapkan"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Ramalan 36 Jam"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Ramalan Sejam"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Ramalan Mingguan"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Ramalan 10 Hari"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "S"
+
+msgctxt "#31955"
+msgid "Display shelf items after a short delay"
+msgstr "Papar item para selepas lengah pendek"
+
+msgctxt "#31956"
+msgid "Get theme"
+msgstr "Dapatkan tema"
+
+msgctxt "#31957"
+msgid "Hide Update library button from home submenu"
+msgstr "Sembunyi butang pustaka Kemaskini dari submenu rumah"
+
+msgctxt "#31958"
+msgid "Big Panel"
+msgstr "Panel Besar"
+
+msgctxt "#31959"
+msgid "Go fullscreen on music playback"
+msgstr "Jadi skrin penuh bila main balik muzik"
+
+msgctxt "#31960"
+msgid "Music opens artists"
+msgstr "Muzik buka artis"
+
+msgctxt "#31961"
+msgid "Recently added"
+msgstr "Ditambah baru-baru ini"
+
+msgctxt "#31962"
+msgid "Low List"
+msgstr "Senarai Rendah"
+
+msgctxt "#31963"
+msgid "Panel"
+msgstr "Panel"
+
+msgctxt "#31964"
+msgid "Configure shelf items"
+msgstr "Konfigur para item"
+
+msgctxt "#31965"
+msgid "Banner List"
+msgstr "Senarai Banner"
+
+msgctxt "#31966"
+msgid "Recommended"
+msgstr "Disaran"
+
+msgctxt "#31967"
+msgid "Enable Home shelf"
+msgstr "Benarkan para Rumah"
+
+msgctxt "#31968"
+msgid "Show info"
+msgstr "Tunjuk maklumat"
+
+msgctxt "#31969"
+msgid "Artist slideshow (requires Artist slideshow add-on)"
+msgstr "Paparan slaid Artis (memerlukan tambahan paparan slaid Artis)"
+
+msgctxt "#31970"
+msgid "Push down for Gallery"
+msgstr "Tarik bawah untuk Galeri"
+
+msgctxt "#31971"
+msgid "Concerts"
+msgstr "Konsert"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Klip"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "E"
+
+msgctxt "#31974"
+msgid "Home menu"
+msgstr "Menu Rumah"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Saluran"
+
+msgctxt "#31976"
+msgid "Home shelf"
+msgstr "Para Rumah"
+
+msgctxt "#31977"
+msgid "Fast start"
+msgstr "Mula pantas"
+
+msgctxt "#31978"
+msgid "Show library info on Home (totals, unwatched...)"
+msgstr "Tunjuk maklumat pustaka pada Rumah (jumlah, belum ditonton...)"
+
+msgctxt "#31979"
+msgid "Loading..."
+msgstr "Memuatkan..."
+
+msgctxt "#31980"
+msgid "Hide unwatched and partialy watched marks"
+msgstr "Sembunyi tanda belum ditonton dan ditonton sebahagian"
+
+msgctxt "#31981"
+msgid "Hide watched marks"
+msgstr "Sembunyi tanda ditonton"
+
+msgctxt "#31982"
+msgid "Shelf items populate more slowly on some systems. By default, skin waits for them to be ready and presents Home screen afterwards.[CR][CR]This option skips this step and presents Home page immediately. Shelf items will appear with a delay, depending on a speed of your system."
+msgstr "Item para diisi secara perlahan-lahan dalam sesetengah sistem. Secara lalai, kulit menunggunya menjadi sedia dan paparkan skrin Rumah selepas itu.[CR][CR]Pilihan ini melangkau langkah ini dan persembahkan laman Rumah serta-merta. Item para akan muncul sedikit lambat, bergantung pada kelajuan sistem anda."
+
+msgctxt "#31983"
+msgid "Choose from menu"
+msgstr "Pilih dari menu"
+
+msgctxt "#31984"
+msgid "TV Tunes (requires TV Tunes add-on)"
+msgstr "Tala TV (memerlukan tambahan Tala TV)"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Lanjutan"
+
+msgctxt "#31986"
+msgid "Use default background on Home page"
+msgstr "Guna latar belakang lalai pada laman Rumah"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Rawak"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Menu"
+
+msgctxt "#31989"
+msgid "Home menu quit button function"
+msgstr "Fungsi butang keluar menu Rumah"
+
+msgctxt "#31990"
+msgid "Quit Menu"
+msgstr "Menu Keluar"
+
+msgctxt "#31991"
+msgid "Background music visualization/video player on Home screen"
+msgstr "Pemain pengvisualan/video muzik latar belakang pada skrin Rumah"
+
+msgctxt "#31992"
+msgid "Banner (wide) thumbs"
+msgstr "Lakaran kenit (lebar) banner"
+
+msgctxt "#31993"
+msgid "Not used - click to customize"
+msgstr "Tidak diguna - klik untuk suaikan"
+
+msgctxt "#31994"
+msgid "Use vertical main menu on Home screen"
+msgstr "Guna menu utama tegak pada skrin Rumah"
+
+msgctxt "#31995"
+msgid "Home layout"
+msgstr "Bentangan Rumah"
+
+msgctxt "#31996"
+msgid "Holiday snowfall theme"
+msgstr "Tema curahan salji hari perayaan"
+
+msgctxt "#31997"
+msgid "Hide channel logos in PVR List/Timeline"
+msgstr "Sembunyi logo saluran dalam Senarai/Garis Masa PVR"

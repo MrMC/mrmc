@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+  <defaultcontrol always="true">5</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <include>DimBG</include>
+    <control type="group" description="Content">
+      <include>DialogOpenClose</include>
+      <posx>315</posx>
+      <posy>280</posy>
+      <control type="image">
+        <posx>-21</posx>
+        <posy>-70</posy>
+        <width>1293</width>
+        <height>660</height>
+        <texture border="0,40,0,40">dialogs/SetContentBG.png</texture>
+      </control>
+			<control type="label" id="2" description="Heading">
+        <posx>0</posx>
+        <posy>-6</posy>
+        <width>741</width>
+        <height>40</height>
+        <align>center</align>
+				<textcolor>Highlight</textcolor>
+      </control>
+      <control type="label" id="102" description="Profile name">
+        <posx>0</posx>
+        <posy>30</posy>
+        <width>741</width>
+        <height>40</height>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="label" id="103" description="Profile Directory">
+        <font>SetContent</font>
+				<posx>0</posx>
+        <posy>78</posy>
+        <width>741</width>
+        <align>center</align>
+      </control>
+      <control type="grouplist" id="5">
+        <description>Control Area</description>
+        <posx>0</posx>
+        <posy>150</posy>
+        <width>741</width>
+        <height>360</height>
+        <itemgap>0</itemgap>
+        <orientation>vertical</orientation>
+        <onleft>noop</onleft>
+        <onright>9000</onright>
+        <onup>5</onup>
+        <ondown>5</ondown>
+      </control>
+      <control type="button" id="7">
+        <width>741</width>
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="radiobutton" id="8">
+        <width>741</width>
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="spincontrolex" id="9">
+        <width>741</width>
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="label" id="14">
+        <shadowcolor>Black</shadowcolor>
+        <font>Details</font>
+      </control>
+      <control type="group" id="9000">
+        <posx>1003</posx>
+        <control type="button" id="28" description="OK">
+          <posy>150</posy>
+          <width>231</width>
+          <label>$LOCALIZE[186]</label>
+          <onleft>5</onleft>
+          <onup>29</onup>
+          <ondown>29</ondown>
+        </control>
+        <control type="button" id="29" description="Cancel">
+          <posy>210</posy>
+          <width>231</width>
+          <label>$LOCALIZE[222]</label>
+          <onleft>5</onleft>
+          <onright>noop</onright>
+          <onup>28</onup>
+          <ondown>28</ondown>
+        </control>
+      </control>
+      <control type="image" description="Profile image">
+        <posx>753</posx>
+        <posy>149</posy>
+        <width>240</width>
+        <height>240</height>
+        <texture>unknown-user.png</texture>
+        <aspectratio>scale</aspectratio>
+      </control>
+      <control type="image" id="101" description="Profile image">
+        <posx>753</posx>
+        <posy>149</posy>
+        <width>240</width>
+        <height>240</height>
+        <texture></texture>
+        <aspectratio>scale</aspectratio>
+      </control>
+      <control type="image" description="Profile image overlay">
+        <posx>753</posx>
+        <posy>149</posy>
+        <width>240</width>
+        <height>240</height>
+        <texture border="3">thumbs/CoverOverlay0.png</texture>
+        <aspectratio>stretch</aspectratio>
+      </control>
+    </control>
+  </controls>
+</window>

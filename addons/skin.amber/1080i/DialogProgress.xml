@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+  <defaultcontrol always="true">10</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <control type="group" description="Content">
+      <posx>429</posx>
+      <posy>660</posy>
+      <control type="image" description="Dialog BG">
+        <posx>90</posx>
+        <posy>0</posy>
+        <width>882</width>
+        <height>330</height>
+        <texture border="45">dialogs/TinyDialog.png</texture>
+      </control>
+      <control type="label" id="1" description="Heading hidden">
+        <posx>51</posx>
+        <posy>40</posy>
+        <height>40</height>
+        <width>960</width>
+        <textcolor>Highlight</textcolor>
+        <align>center</align>
+        <font>-</font>
+      </control>
+      <control type="label" id="100" description="Heading and Progress">
+        <posx>51</posx>
+        <posy>40</posy>
+        <width>960</width>
+        <height>40</height>
+        <textcolor>Highlight</textcolor>
+        <align>center</align>
+        <label>$INFO[Control.GetLabel(1)]$INFO[System.Progressbar,  ,%]</label>
+      </control>
+      <control type="textbox" id="9" description="Labels">
+        <posx>51</posx>
+        <posy>100</posy>
+        <width>960</width>
+        <height>99</height>
+        <align>center</align>
+        <font>ListDetails</font>
+        <autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+      </control>
+      <control type="button" id="10" description="Cancel">
+        <posx>381</posx>
+        <posy>230</posy>
+        <height>60</height>
+        <width>300</width>
+        <label>$LOCALIZE[222]</label>
+        <align>center</align>
+        <pulseonselect>true</pulseonselect>
+      </control>
+    </control>
+  </controls>
+</window>

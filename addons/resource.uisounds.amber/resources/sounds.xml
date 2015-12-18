@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sounds>
+  <actions>
+    <action>
+      <name>Select</name>
+      <file>Click.wav</file>
+    </action>
+    <action>
+      <name>ParentDir</name>
+      <file>Back.wav</file>
+    </action>
+    <action>
+      <name>PreviousMenu</name>
+      <file>Back.wav</file>
+    </action>
+    <action>
+      <name>Screenshot</name>
+      <file>Shutter.wav</file>
+    </action>
+  </actions>
+  <windows>
+    <window>
+      <name>InfoDialog</name>
+      <activate>Notify.wav</activate>
+    </window>
+  </windows>
+</sounds>

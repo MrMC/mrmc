@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+  <include name="BigPanelPosterDimensions">
+    <posx>18</posx>
+    <posy>40</posy>
+    <width>246</width>
+    <height>369</height>
+  </include>
+  <include name="BigPanelSquareDimensions">
+    <posx>18</posx>
+    <posy>18</posy>
+    <width>247</width>
+    <height>247</height>
+    <aspectratio aligny="top">scale</aspectratio>
+  </include>
+  <include name="BigPanelEpisodeDimensions">
+    <posx>18</posx>
+    <posy>18</posy>
+    <width>342</width>
+    <height>246</height>
+  </include>
+  <include name="View_55_BigPanel">
+    <control type="group" description="Overlays">
+      <visible>Control.IsVisible(55)</visible>
+      <control type="image" description="Footer">
+        <posx>0</posx>
+        <posy>993</posy>
+        <width>1920</width>
+        <height>87</height>
+        <texture border="0,30,0,0">OSD/OSDBackground.png</texture>
+      </control>
+    </control>
+    <control type="group" description="Content">
+      <visible>Control.IsVisible(55)</visible>
+      <include>ContentFade</include>
+      <control type="panel" id="55" description="Big Panel">
+        <viewtype label="Big Panel">Big Panel</viewtype>
+        <posx>750</posx>
+        <posy>81</posy>
+        <width>1136</width>
+        <height>900</height>
+        <orientation>vertical</orientation>
+        <onleft>9000</onleft>
+        <onright>60</onright>
+        <onup>55</onup>
+        <ondown>55</ondown>
+        <preloaditems>4</preloaditems>
+        <pagecontrol>60</pagecontrol>
+        <itemlayout condition="Container.Content(TvShows) + Skin.HasSetting(55_UseBanners)" height="180" width="900">
+          <control type="group">
+            <posx>210</posx>
+            <posy>0</posy>
+            <control type="image">
+              <posx>30</posx>
+              <posy>21</posy>
+              <width>830</width>
+              <height>144</height>
+              <include>ThumbBorderInside</include>
+            </control>
+            <control type="image">
+              <posx>30</posx>
+              <posy>21</posy>
+              <width>830</width>
+              <height>144</height>
+              <texture background="true">$VAR[Banner]</texture>
+              <aspectratio>stretch</aspectratio>
+            </control>
+            <control type="image">
+              <posx>822</posx>
+              <posy>129</posy>
+              <width>33</width>
+              <height>33</height>
+              <texture>$VAR[Overlay]</texture>
+            </control>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="Container.Content(TvShows) + Skin.HasSetting(55_UseBanners)" height="180" width="900">
+          <control type="group">
+            <posx>210</posx>
+            <posy>0</posy>
+            <control type="image">
+              <posx>30</posx>
+              <posy>21</posy>
+              <width>830</width>
+              <height>144</height>
+              <include>ThumbBorderInside</include>
+            </control>
+            <control type="image">
+              <posx>30</posx>
+              <posy>21</posy>
+              <width>830</width>
+              <height>144</height>
+              <texture background="true">$VAR[Banner]</texture>
+              <aspectratio>stretch</aspectratio>
+            </control>
+            <control type="image">
+              <posx>30</posx>
+              <posy>21</posy>
+              <width>830</width>
+              <height>144</height>
+              <texture border="25">img/Frame.png</texture>
+              <bordersize>-27</bordersize>
+              <aspectratio>stretch</aspectratio>
+            </control>
+            <control type="image">
+              <posx>822</posx>
+              <posy>129</posy>
+              <width>33</width>
+              <height>33</height>
+              <texture>$VAR[Overlay]</texture>
+            </control>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="container.content(MusicVideos) | [Container.Content(tvshows) + !Skin.HasSetting(55_UseBanners)] | Container.Content(Movies) | container.content(seasons)" height="450" width="282">
+          <control type="image">
+            <include>BigPanelPosterDimensions</include>
+            <include>PosterThumbBG</include>
+          </control>
+          <control type="image">
+            <include>BigPanelPosterDimensions</include>
+            <include>PosterThumb</include>
+          </control>
+          <control type="image">
+            <posx>229</posx>
+            <posy>374</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="container.content(MusicVideos) | [Container.Content(tvshows) + !Skin.HasSetting(55_UseBanners)] | Container.Content(Movies) | container.content(seasons)" height="450" width="282">
+          <control type="image">
+            <include>BigPanelPosterDimensions</include>
+            <include>PosterThumbFO</include>
+          </control>
+          <control type="image">
+            <include>BigPanelPosterDimensions</include>
+            <include>PosterThumb</include>
+          </control>
+          <control type="image">
+            <posx>229</posx>
+            <posy>374</posy>
+            <width>33</width>
+            <height>33</height>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="container.content(addons) | Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml)" height="300" width="284">
+          <control type="image">
+            <include>BigPanelSquareDimensions</include>
+            <include>SquareThumbBG</include>
+          </control>
+          <control type="image">
+            <include>BigPanelSquareDimensions</include>
+            <include>SquareThumb</include>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="container.content(addons) | Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml)" height="300" width="284">
+          <control type="image">
+            <include>BigPanelSquareDimensions</include>
+            <include>SquareThumbFO</include>
+          </control>
+          <control type="image">
+            <include>BigPanelSquareDimensions</include>
+            <include>SquareThumb</include>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="container.content(episodes)" height="300" width="378">
+          <control type="image">
+            <include>BigPanelEpisodeDimensions</include>
+            <include>EpisodeThumbBG</include>
+          </control>
+          <control type="image">
+            <include>BigPanelEpisodeDimensions</include>
+            <include>EpisodeThumb</include>
+          </control>
+          <control type="group">
+            <visible>!IsEmpty(ListItem.Episode)</visible>
+			<control type="image">
+              <posx>9</posx>
+              <posy>189</posy>
+              <width>360</width>
+              <height>70</height>
+              <bordersize>9</bordersize>
+              <texture>img/OverlayStripe.png</texture>
+            </control>
+            <control type="label">
+              <posx>30</posx>
+              <posy>189</posy>
+              <width>300</width>
+              <height>70</height>
+              <font>Slider</font>
+              <label>$INFO[ListItem.Season,,.]$INFO[ListItem.Episode]</label>
+            </control>
+            <control type="image" description="Watched Overlay">
+              <posx>321</posx>
+              <posy>189</posy>
+              <width>33</width>
+              <height>70</height>
+              <texture>$VAR[Overlay]</texture>
+              <aspectratio>keep</aspectratio>
+            </control>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="container.content(episodes)" height="300" width="378">
+          <control type="image">
+            <include>BigPanelEpisodeDimensions</include>
+            <include>EpisodeThumbFO</include>
+          </control>
+          <control type="image">
+            <include>BigPanelEpisodeDimensions</include>
+            <include>EpisodeThumb</include>
+          </control>
+          <control type="group">
+            <visible>!IsEmpty(ListItem.Episode)</visible>
+			<control type="image">
+              <posx>9</posx>
+              <posy>189</posy>
+              <width>360</width>
+              <height>70</height>
+              <bordersize>9</bordersize>
+              <texture>img/OverlayStripe.png</texture>
+            </control>
+            <control type="label">
+              <posx>30</posx>
+              <posy>189</posy>
+              <width>300</width>
+              <height>70</height>
+              <font>Slider</font>
+              <label>$INFO[ListItem.Season,,.]$INFO[ListItem.Episode]</label>
+            </control>
+            <control type="image" description="Watched Overlay">
+              <posx>321</posx>
+              <posy>189</posy>
+              <width>33</width>
+              <height>70</height>
+              <texture>$VAR[Overlay]</texture>
+              <aspectratio>keep</aspectratio>
+            </control>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="![Container.Content(tvshows) | Container.Content(Movies) | container.content(seasons) | container.content(episodes) | container.content(addons) | Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml)]" height="300" width="354">
+          <control type="image">
+            <posx>2</posx>
+            <posy>12</posy>
+            <width>350</width>
+            <height>276</height>
+            <texture fallback="DefaultFolder.png" background="true">$INFO[ListItem.thumb]</texture>
+            <bordertexture border="25">img/FrameNF.png</bordertexture>
+            <bordersize>27</bordersize>
+            <aspectratio>keep</aspectratio>
+          </control>
+          <control type="label" description="Title Label">
+            <posx>27</posx>
+            <posy>270</posy>
+            <width>300</width>
+            <height>30</height>
+            <align>center</align>
+            <font>ListDetails</font>
+            <scroll>false</scroll>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="![Container.Content(tvshows) | Container.Content(Movies) | container.content(seasons) | container.content(episodes) | container.content(addons) | Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml)]" height="300" width="354">
+          <control type="image">
+            <posx>2</posx>
+            <posy>12</posy>
+            <width>350</width>
+            <height>276</height>
+            <texture fallback="DefaultFolder.png" background="true">$INFO[ListItem.thumb]</texture>
+            <bordertexture border="25">img/Frame.png</bordertexture>
+            <bordersize>27</bordersize>
+            <aspectratio>keep</aspectratio>
+          </control>
+          <control type="label" description="Title Label">
+            <posx>27</posx>
+            <posy>270</posy>
+            <width>300</width>
+            <height>30</height>
+            <align>center</align>
+            <font>ListDetails</font>
+            <textcolor>Highlight</textcolor>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="group" description="55 Info">
+        <visible>Window.IsActive(MyVideoNav.xml)</visible>
+        <control type="group" description="55 MediaInfo NO Small Fanart">
+          <visible>!Skin.HasSetting(55_SmallFanart)</visible>
+          <posx>60</posx>
+          <posy>100</posy>
+          <control type="label" description="Title Label">
+            <posy>18</posy>
+            <width>630</width>
+            <height>50</height>
+            <aligny>bottom</aligny>
+            <textcolor>Highlight</textcolor>
+            <font>InfoTitle</font>
+            <wrapmultiline>true</wrapmultiline>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label" description="Details">
+            <posy>108</posy>
+            <height>33</height>
+            <width>630</width>
+            <font>InfoDetails</font>
+            <label>$VAR[Details]</label>
+          </control>
+          <control type="label" description="Genre">
+            <posy>153</posy>
+            <height>33</height>
+            <width>630</width>
+            <scroll>false</scroll>
+            <font>InfoDetails</font>
+            <label>$INFO[ListItem.Genre]</label>
+          </control>
+          <control type="textbox" description="Plot51">
+            <posx>0</posx>
+            <posy>207</posy>
+            <width>630</width>
+            <height>590</height>
+            <align>left</align>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="image" description="Rating">
+            <visible>!Container.Content(Tvshows)</visible>
+            <posx>-3</posx>
+            <posy>840</posy>
+            <include>Stars</include>
+          </control>
+          <control type="label" description="Addon version">
+            <visible>Container.Content(addons)</visible>
+            <posy>840</posy>
+            <width>800</width>
+            <height>33</height>
+            <font>InfoDetails</font>
+            <label>$INFO[ListItem.Label2,$LOCALIZE[19114] : ]</label>
+          </control>
+        </control>
+        <control type="group" description="55 MediaInfo with Small Fanart">
+          <visible>Skin.HasSetting(55_SmallFanart) + ![Container.Content(tvshows) + Skin.HasSetting(55_UseBanners)]</visible>
+          <posx>60</posx>
+          <posy>100</posy>
+          <control type="group" description="Info with Fanart">
+            <visible>!IsEmpty(ListItem.Art(fanart))</visible>
+            <control type="image" description="BG">
+              <posx>3</posx>
+              <posy>18</posy>
+              <width>603</width>
+              <height>339</height>
+              <texture border="8">img/WhiteRoundedST.png</texture>
+			  <aspectratio>stretch</aspectratio>
+            </control>
+			<control type="multiimage" description="FA">
+              <posx>9</posx>
+              <posy>24</posy>
+              <width>591</width>
+              <height>327</height>
+              <include>BG.Defaults</include>
+              <imagepath background="true">$VAR[Fanart.Art]</imagepath>
+              <aspectratio aligny="top">scale</aspectratio>
+            </control>
+            <control type="label" description="Title Label">
+              <posy>418</posy>
+              <width>630</width>
+              <height>50</height>
+              <aligny>bottom</aligny>
+              <textcolor>Highlight</textcolor>
+              <font>InfoTitle</font>
+              <wrapmultiline>true</wrapmultiline>
+              <label>$INFO[ListItem.Label]</label>
+            </control>
+            <control type="label" description="Details">
+              <posy>508</posy>
+              <height>33</height>
+              <width>630</width>
+              <font>InfoDetails</font>
+              <label>$VAR[Details]</label>
+            </control>
+            <control type="textbox" description="Plot51 shorter">
+              <posx>0</posx>
+              <posy>554</posy>
+              <width>630</width>
+              <height>294</height>
+              <align>left</align>
+              <label>$VAR[Plots]</label>
+            </control>
+          </control>
+          <control type="group" description="Fallback Info">
+            <visible>IsEmpty(ListItem.Art(fanart))</visible>
+            <control type="label" description="Title Label">
+              <posy>18</posy>
+              <width>630</width>
+              <height>50</height>
+              <aligny>bottom</aligny>
+              <textcolor>Highlight</textcolor>
+              <font>InfoTitle</font>
+              <wrapmultiline>true</wrapmultiline>
+              <label>$INFO[ListItem.Label]</label>
+            </control>
+            <control type="label" description="Details">
+              <posy>108</posy>
+              <height>33</height>
+              <width>630</width>
+              <font>InfoDetails</font>
+              <label>$VAR[Details]</label>
+            </control>
+            <control type="label" description="Genre">
+              <posy>153</posy>
+              <height>33</height>
+              <width>630</width>
+              <scroll>false</scroll>
+              <font>InfoDetails</font>
+              <label>$INFO[ListItem.Genre]</label>
+            </control>
+            <control type="textbox" description="Plot51">
+              <posx>0</posx>
+              <posy>207</posy>
+              <width>630</width>
+              <height>548</height>
+              <align>left</align>
+              <label>$VAR[Plots]</label>
+            </control>
+            <control type="image" description="Rating">
+              <visible>!Container.Content(Tvshows)</visible>
+              <posx>-3</posx>
+              <posy>840</posy>
+              <include>Stars</include>
+            </control>
+            <control type="label" description="Addon version">
+              <visible>Container.Content(addons)</visible>
+              <posy>840</posy>
+              <width>800</width>
+              <height>33</height>
+              <font>InfoDetails</font>
+              <label>$INFO[ListItem.Label2,$LOCALIZE[19114] : ]</label>
+            </control>
+          </control>
+        </control>
+        <control type="group" description="55 MediaInfo with Small Fanart">
+          <visible>Skin.HasSetting(55_SmallFanart) + [Container.Content(tvshows) + Skin.HasSetting(55_UseBanners)]</visible>
+          <posx>60</posx>
+          <posy>100</posy>
+          <control type="group" description="Info with Fanart">
+            <visible>!IsEmpty(ListItem.Art(fanart))</visible>
+            <control type="image" description="FA">
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>720</width>
+              <height>405</height>
+              <include>Icon_Fade</include>
+              <texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+              <aspectratio aligny="top">scale</aspectratio>
+            </control>
+            <control type="image" description="Overlay">
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>720</width>
+              <height>405</height>
+              <include>Icon_Fade</include>
+              <texture border="3">img/CoverOverlay0.png</texture>
+              <aspectratio>stretch</aspectratio>
+            </control>
+            <control type="label" description="Title Label">
+              <posy>450</posy>
+              <width>720</width>
+              <height>50</height>
+              <aligny>bottom</aligny>
+              <textcolor>Highlight</textcolor>
+              <font>InfoTitle</font>
+              <wrapmultiline>true</wrapmultiline>
+              <label>$INFO[ListItem.Label]</label>
+            </control>
+            <control type="label" description="Details">
+              <posy>531</posy>
+              <height>33</height>
+              <width>720</width>
+              <font>InfoDetails</font>
+              <label>$VAR[Details]</label>
+            </control>
+            <control type="textbox" description="Plot51 shorter">
+              <posx>0</posx>
+              <posy>585</posy>
+              <width>720</width>
+              <height>294</height>
+              <align>left</align>
+              <label>$VAR[Plots]</label>
+            </control>
+          </control>
+          <control type="group" description="Fallback Info">
+            <visible>IsEmpty(ListItem.Art(fanart))</visible>
+            <control type="label" description="Title Label">
+              <posy>18</posy>
+              <width>720</width>
+              <height>50</height>
+              <aligny>bottom</aligny>
+              <textcolor>Highlight</textcolor>
+              <font>InfoTitle</font>
+              <wrapmultiline>true</wrapmultiline>
+              <label>$INFO[ListItem.Label]</label>
+            </control>
+            <control type="label" description="Details">
+              <posy>108</posy>
+              <height>33</height>
+              <width>720</width>
+              <font>InfoDetails</font>
+              <label>$VAR[Details]</label>
+            </control>
+            <control type="label" description="Genre">
+              <posy>153</posy>
+              <height>33</height>
+              <width>720</width>
+              <scroll>false</scroll>
+              <font>InfoDetails</font>
+              <label>$INFO[ListItem.Genre]</label>
+            </control>
+            <control type="textbox" description="Plot51">
+              <posx>0</posx>
+              <posy>207</posy>
+              <width>720</width>
+              <height>548</height>
+              <align>left</align>
+              <label>$VAR[Plots]</label>
+            </control>
+            <control type="image" description="Rating">
+              <posx>-3</posx>
+              <posy>840</posy>
+              <include>Stars</include>
+            </control>
+          </control>
+        </control>
+        <control type="group" description="Flags">
+          <posx>60</posx>
+          <posy>1032</posy>
+          <include>MediaFlags</include>
+        </control>
+        <control type="image" description="Rating">
+          <visible>Container.Content(Tvshows)</visible>
+          <posx>60</posx>
+          <posy>1032</posy>
+          <include>Stars</include>
+        </control>
+      </control>
+      <control type="group" description="Music Nav info">
+        <visible>Window.IsActive(MyMusicNav.xml)</visible>
+        <control type="group" description="55 MediaInfo">
+          <visible>!Skin.HasSetting(55_SmallFanart)</visible>
+          <posx>60</posx>
+          <posy>100</posy>
+          <control type="label" description="Title Label">
+            <posy>18</posy>
+            <width>600</width>
+            <height>50</height>
+            <aligny>bottom</aligny>
+            <textcolor>Highlight</textcolor>
+            <font>InfoTitle</font>
+            <wrapmultiline>true</wrapmultiline>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="textbox" description="Plot51">
+            <posx>0</posx>
+            <posy>120</posy>
+            <width>600</width>
+            <height>630</height>
+            <align>left</align>
+            <label>$VAR[Plots]</label>
+          </control>
+        </control>
+        <control type="group" description="55 MediaInfo">
+          <visible>Skin.HasSetting(55_SmallFanart)</visible>
+          <posx>60</posx>
+          <posy>100</posy>
+          <control type="image" description="FA">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>603</width>
+            <height>339</height>
+            <include>Icon_Fade</include>
+            <texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+            <aspectratio aligny="top">scale</aspectratio>
+          </control>
+          <control type="image" description="Overlay">
+            <visible>!IsEmpty(ListItem.Art(fanart))</visible>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>603</width>
+            <height>339</height>
+            <include>Icon_Fade</include>
+            <texture border="3">img/CoverOverlay0.png</texture>
+            <aspectratio>stretch</aspectratio>
+          </control>
+          <control type="group" description="Fallback info">
+            <visible>IsEmpty(ListItem.Art(fanart))</visible>
+            <control type="label" description="Title Label">
+              <posy>18</posy>
+              <width>600</width>
+              <height>50</height>
+              <aligny>bottom</aligny>
+              <textcolor>Highlight</textcolor>
+              <font>InfoTitle</font>
+              <wrapmultiline>true</wrapmultiline>
+              <label>$INFO[ListItem.Label]</label>
+            </control>
+            <control type="textbox" description="Plot51">
+              <posx>0</posx>
+              <posy>120</posy>
+              <width>600</width>
+              <height>630</height>
+              <align>left</align>
+              <label>$VAR[Plots]</label>
+            </control>
+          </control>
+          <control type="group" description="Info with fanart">
+            <visible>!IsEmpty(ListItem.Art(fanart))</visible>
+            <control type="label" description="Title Label">
+              <posy>400</posy>
+              <width>600</width>
+              <height>50</height>
+              <aligny>bottom</aligny>
+              <textcolor>Highlight</textcolor>
+              <font>InfoTitle</font>
+              <wrapmultiline>true</wrapmultiline>
+              <label>$INFO[ListItem.Label]</label>
+            </control>
+            <control type="textbox" description="Plot51">
+              <posx>0</posx>
+              <posy>480</posy>
+              <width>600</width>
+              <height>380</height>
+              <align>left</align>
+              <label>$VAR[Plots]</label>
+            </control>
+          </control>
+        </control>
+      </control>
+      <control type="group" description="Songs info">
+        <visible>Window.IsActive(MyMusicSongs.xml)</visible>
+        <control type="group" description="55 MediaInfo">
+          <posx>60</posx>
+          <posy>139</posy>
+          <control type="label" description="Title Label">
+            <posy>18</posy>
+            <width>600</width>
+            <height>50</height>
+            <aligny>bottom</aligny>
+            <textcolor>Highlight</textcolor>
+            <font>InfoTitle</font>
+            <wrapmultiline>true</wrapmultiline>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="textbox" description="Plot51">
+            <posx>0</posx>
+            <posy>120</posy>
+            <width>600</width>
+            <height>630</height>
+            <align>left</align>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="image" description="Rating">
+            <posx>-3</posx>
+            <posy>830</posy>
+            <include>Stars</include>
+          </control>
+        </control>
+      </control>
+      <control type="group" description="MediaInfo List 55">
+        <visible>Window.IsActive(MyPics.xml)</visible>
+        <control type="image" description="Thumb">
+          <posx>40</posx>
+          <posy>90</posy>
+          <width>660</width>
+          <height>870</height>
+          <include>Icon_Fade</include>
+          <include>ThumbBorder</include>
+          <texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+          <aspectratio>keep</aspectratio>
+        </control>
+      </control>
+      <control type="group" description="55 MediaInfo">
+        <visible>Window.IsActive(MyPrograms.xml)</visible>
+        <posx>60</posx>
+        <posy>100</posy>
+        <control type="label" description="Title Label">
+          <posy>18</posy>
+          <width>630</width>
+          <height>50</height>
+          <aligny>bottom</aligny>
+          <textcolor>Highlight</textcolor>
+          <font>InfoTitle</font>
+          <wrapmultiline>true</wrapmultiline>
+          <label>$INFO[ListItem.Label]</label>
+        </control>
+        <control type="label" description="Details">
+          <posy>108</posy>
+          <height>33</height>
+          <width>630</width>
+          <font>InfoDetails</font>
+          <label>$VAR[Details]</label>
+        </control>
+        <control type="label" description="Genre">
+          <posy>153</posy>
+          <height>33</height>
+          <width>630</width>
+          <scroll>false</scroll>
+          <font>InfoDetails</font>
+          <label>$INFO[ListItem.Genre]</label>
+        </control>
+        <control type="textbox" description="Plot51">
+          <posx>0</posx>
+          <posy>221</posy>
+          <width>630</width>
+          <height>540</height>
+          <align>left</align>
+          <label>$VAR[Plots]</label>
+        </control>
+        <control type="image" description="Rating">
+          <posx>-3</posx>
+          <posy>840</posy>
+          <include>Stars</include>
+        </control>
+        <control type="label" description="Addon version">
+          <visible>Container.Content(addons)</visible>
+          <posy>840</posy>
+          <width>800</width>
+          <height>33</height>
+          <font>InfoDetails</font>
+          <label>$INFO[ListItem.Label2,$LOCALIZE[19114] : ]</label>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="-8,0" time="150">Focus</animation>
+        <animation effect="slide" start="-8,0" end="0,0" time="300">UnFocus</animation>
+        <posx>20r</posx>
+        <posy>360</posy>
+        <width>36</width>
+        <height>700</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>55</onleft>
+        <onright>9000</onright>
+      </control>
+    </control>
+  </include>
+</includes>

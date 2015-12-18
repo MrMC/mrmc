@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+  <include name="View_56_BannerList">
+    <control type="image" description="fa overlay">
+      <visible>Control.IsVisible(56)</visible>
+      <include>VignetteFade</include>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1920</width>
+      <height>1080</height>
+      <texture>common/Vignette.png</texture>
+    </control>
+    <control type="group" description="List">
+      <visible>Control.IsVisible(56)</visible>
+      <include>ContentFade</include>
+      <control type="list" id="56">
+        <visible>Container.Content(TVShows)</visible>
+        <posx>1100</posx>
+        <posy>406</posy>
+        <width>820</width>
+        <height>648</height>
+        <onleft>9000</onleft>
+        <onright>60</onright>
+        <onup>56</onup>
+        <ondown>56</ondown>
+        <pagecontrol>60</pagecontrol>
+        <viewtype label="Banner List">Banner List</viewtype>
+        <preloaditems>4</preloaditems>
+        <itemlayout height="72" width="820">
+          <control type="image" description="BG">
+            <width>820</width>
+            <height>73</height>
+            <texture border="3">list/ListNF.png</texture>
+          </control>
+          <control type="label" description="Main Label">
+            <posx>20</posx>
+            <height>72</height>
+            <width>660</width>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <include>ListWatchedOverlay</include>
+        </itemlayout>
+        <focusedlayout height="72" width="820">
+          <control type="image" description="BG">
+            <width>820</width>
+            <height>73</height>
+            <texture border="3">list/ListNF.png</texture>
+          </control>
+          <control type="image" description="BG">
+            <posy>3</posy>
+            <width>820</width>
+            <height>69</height>
+            <texture>list/ListFO.png</texture>
+          </control>
+          <control type="label" description="Main Label">
+            <posx>20</posx>
+            <height>72</height>
+            <width>660</width>
+            <textcolor>White2</textcolor>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <include>ListWatchedOverlay</include>
+        </focusedlayout>
+      </control>
+      <control type="group" description="Banners only">
+        <posx>60</posx>
+        <posy>460</posy>
+        <control type="image" description="Banner">
+          <posx>-9</posx>
+          <posy>-72</posy>
+          <width>900</width>
+          <height>210</height>
+          <include>Icon_Fade</include>
+          <texture background="true">$VAR[Banner]</texture>
+          <include>ThumbBorder</include>
+          <aspectratio>keep</aspectratio>
+        </control>
+        <control type="group" description="Media info">
+          <animation effect="fade" delay="100" time="300">Visible</animation>
+          <animation effect="fade" time="0">Hidden</animation>
+          <posx>0</posx>
+          <posy>0</posy>
+          <control type="label" description="Details">
+            <posy>170</posy>
+            <height>33</height>
+            <width>880</width>
+            <font>InfoDetails</font>
+            <label>$VAR[Details]</label>
+          </control>
+          <control type="textbox" description="Plot51">
+            <posx>0</posx>
+            <posy>220</posy>
+            <width>880</width>
+            <height>300</height>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="image" description="Stars">
+            <posx>-6</posx>
+            <posy>532</posy>
+            <include>Stars</include>
+          </control>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="-8,0" time="150">Focus</animation>
+        <animation effect="slide" start="-8,0" end="0,0" time="300">UnFocus</animation>
+        <posx>20r</posx>
+        <posy>462</posy>
+        <width>36</width>
+        <height>576</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>56</onleft>
+        <onright>noop</onright>
+      </control>
+    </control>
+  </include>
+</includes>

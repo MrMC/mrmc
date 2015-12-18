@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">9001</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <include>DimBG</include>
+    <control type="image">
+      <posx>295</posx>
+      <posy>240</posy>
+      <width>1292</width>
+      <height>475</height>
+      <texture>dialogs/SmartplaylistRule.png</texture>
+    </control>
+    <control type="group">
+      <posx>310</posx>
+      <posy>270</posy>
+      <control type="label" description="Rule match label">
+        <posx>0</posx>
+        <posy>40</posy>
+        <width>1010</width>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+        <label>$LOCALIZE[21422]</label>
+      </control>
+      <control type="group" id="9001">
+        <posy>60</posy>
+        <control type="spincontrolex" id="15" description="Rule Field">
+          <posy>90</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <onright>9000</onright>
+          <onup>17</onup>
+          <ondown>16</ondown>
+        </control>
+        <control type="label" description="Rule Field label">
+          <posy>90</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <label>$INFO[Control.GetLabel(15)]</label>
+        </control>
+        <control type="spincontrolex" id="16" description="Rule operator">
+          <posy>150</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <onright>9000</onright>
+          <onup>15</onup>
+          <ondown>17</ondown>
+        </control>
+        <control type="label" description="Rule Field label">
+          <posy>150</posy>
+          <width>1010</width>
+          <textoffsetx>30</textoffsetx>
+          <label>$INFO[Control.GetLabel(16)]</label>
+        </control>
+        <control type="edit" id="17" description="Value Button">
+          <posy>210</posy>
+          <width>1010</width>
+          <hinttext>21420</hinttext>
+          <textoffsetx>30</textoffsetx>
+          <onup>16</onup>
+          <onright>9000</onright>
+        </control>
+      </control>
+      <control type="group" id="9000">
+        <posx>1010</posx>
+        <posy>0</posy>
+        <control type="button" id="19" description="Cancel">
+          <posy>210</posy>
+          <width>231</width>
+          <label>$LOCALIZE[222]</label>
+          <onup>18</onup>
+          <onleft>9001</onleft>
+          <ondown>20</ondown>
+        </control>
+        <control type="button" id="20" description="Browse">
+          <posy>270</posy>
+          <width>231</width>
+          <label>$LOCALIZE[1024]</label>
+          <onup>19</onup>
+          <onleft>9001</onleft>
+          <ondown>18</ondown>
+        </control>
+        <control type="button" id="18" description="OK">
+          <posy>330</posy>
+          <width>231</width>
+          <label>$LOCALIZE[186]</label>
+          <onup>20</onup>
+          <onleft>9001</onleft>
+          <ondown>19</ondown>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

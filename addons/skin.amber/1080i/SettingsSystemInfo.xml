@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">9001</defaultcontrol>
+  <backgroundcolor>0</backgroundcolor>
+  <controls>
+    <include>Settings_Art</include>
+    <include>Time</include>
+    <control type="image">
+      <include>OpenClose</include>
+      <posx>30</posx>
+      <posy>60</posy>
+      <width>1860</width>
+      <height>1010</height>
+      <texture border="0,60,0,60">dialogs/SettingsBG.png</texture>
+    </control>
+    <control type="group" description="Content">
+      <include>OpenClose</include>
+      <control type="label" description="Heading">
+        <posx>400</posx>
+        <posy>108</posy>
+        <width>1400</width>
+        <height>50</height>
+        <label>$LOCALIZE[130]</label>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="group">
+        <posy>60</posy>
+        <control type="grouplist" id="9001" description="Left panel">
+          <posx>60</posx>
+          <posy>150</posy>
+          <width>324</width>
+          <height>518</height>
+          <itemgap>0</itemgap>
+          <onleft>noop</onleft>
+          <onright>noop</onright>
+          <onup>9001</onup>
+          <ondown>9001</ondown>
+          <control type="button" id="95" description="Summary">
+            <texturenofocus border="3" flipy="true">list/ListNF.png</texturenofocus>
+            <width>324</width>
+            <label>$LOCALIZE[20037]</label>
+          </control>
+          <control type="button" id="94" description="Storage">
+            <width>324</width>
+            <label>$LOCALIZE[13277]</label>
+            <texturenofocus border="3" flipy="true">list/ListNF.png</texturenofocus>
+          </control>
+          <control type="button" id="96" description="Network">
+            <width>324</width>
+            <label>$LOCALIZE[13279]</label>
+            <texturenofocus border="3" flipy="true">list/ListNF.png</texturenofocus>
+          </control>
+          <control type="button" id="97" description="Video">
+            <width>324</width>
+            <label>$LOCALIZE[13280]</label>
+            <texturenofocus border="3" flipy="true">list/ListNF.png</texturenofocus>
+          </control>
+          <control type="button" id="98" description="Hardware">
+            <width>324</width>
+            <label>$LOCALIZE[13281]</label>
+            <texturenofocus border="3" flipy="true">list/ListNF.png</texturenofocus>
+          </control>
+          <control type="button" id="99" description="Hardware">
+            <visible>Skin.HasSetting(PVR_Enabled)</visible>
+            <width>324</width>
+            <label>$LOCALIZE[19191]</label>
+            <texturenofocus border="3" flipy="true">list/ListNF.png</texturenofocus>
+          </control>
+        </control>
+        <control type="grouplist" description="Right panel">
+          <posx>420</posx>
+          <posy>150</posy>
+          <width>1420</width>
+          <height>900</height>
+          <itemgap>9</itemgap>
+          <control type="label" id="52">
+            <description>KODI XBE BUILD Version</description>
+            <width>1420</width>
+            <textcolor>Grey3</textcolor>
+          </control>
+          <control type="label" id="21">
+            <description>CPU Text</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+            <label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+          </control>
+          <control type="label" id="23">
+            <description>Memory Text</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+            <label>$LOCALIZE[31309] $INFO[system.memory(used.percent)]</label>
+          </control>
+          <control type="label" id="2">
+            <description>Label 2</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+          </control>
+          <control type="label" id="3">
+            <description>Label 3</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+          </control>
+          <control type="label" id="4">
+            <description>Label 4</description>
+            <height>45</height>
+            <font>info</font>
+            <width>1420</width>
+          </control>
+          <control type="label" id="5">
+            <description>Label 5</description>
+            <height>90</height>
+            <width>1420</width>
+            <font>info</font>
+            <wrapmultiline>true</wrapmultiline>
+          </control>
+          <control type="label" id="6">
+            <description>Label 6</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+          </control>
+          <control type="label" id="7">
+            <description>Label 7</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+          </control>
+          <control type="label" id="8">
+            <description>Label 8</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+          </control>
+          <control type="label" id="9">
+            <description>Label 9</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+          </control>
+          <control type="label" id="10">
+            <description>Label 10</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+          </control>
+          <control type="label" id="11">
+            <description>Label 11</description>
+            <height>45</height>
+            <width>1420</width>
+            <font>info</font>
+          </control>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

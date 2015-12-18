@@ -1,0 +1,153 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Macedonian (http://www.transifex.com/projects/p/xbmc-skins/language/mk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: mk\n"
+"Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Неодамна додадено"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Ставки"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Постојни визуелизации"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Lyrics Add-on"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Add-on за преводи"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "Ставки"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Искористеност на меморија"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Емитирано"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Пауза"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Сопри"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Премотај нанапред"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Премотај наназад"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Филмско мени"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Превземи превод"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Локален превод достапен"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Закажано време"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Додади група"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Преимени група"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Избриши група"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Достапни[CR]Групи"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Тајмер поставен"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36 Часовна Прогноза"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Часовна Прогноза"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Викенд Прогноза"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "10 дневна Прогноза"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "Ј"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Клипови"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "И"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Канали"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Напредно"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Случајно"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Мени"

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+  <defaultcontrol always="true">2</defaultcontrol>
+  <backgroundcolor>0</backgroundcolor>
+  <controls>
+    <include>Settings_Art</include>
+    <include>Time</include>
+    <control type="group" description="Content">
+      <include>DialogOpenClose</include>
+      <posx>560</posx>
+      <posy>180</posy>
+      <control type="image">
+        <posx>-17</posx>
+        <posy>0</posy>
+        <width>834</width>
+        <height>650</height>
+        <texture border="45">dialogs/TinyDialog.png</texture>
+      </control>
+      <control type="label" description="Heading">
+        <posx>0</posx>
+        <posy>24</posy>
+        <width>800</width>
+        <height>40</height>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+        <label>$LOCALIZE[10034]</label>
+      </control>
+      <control type="radiobutton" id="4" description="Enable Login Screen">
+        <posx>0</posx>
+        <posy>90</posy>
+        <width>800</width>
+        <label>$LOCALIZE[20096]</label>
+        <onright>noop</onright>
+        <onleft>noop</onleft>
+        <onup>noop</onup>
+        <ondown>5</ondown>
+        <textoffsetx>30</textoffsetx>
+      </control>
+	  <control type="radiobutton" id="5" description="Enable auto Login">
+        <posx>0</posx>
+        <posy>150</posy>
+        <width>800</width>
+        <label>$LOCALIZE[33084]$INFO[system.profileautologin,:  ]</label>
+        <onright>noop</onright>
+        <onleft>noop</onleft>
+        <onup>4</onup>
+        <ondown>2</ondown>
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="group" description="Slider and List">
+        <posx>0</posx>
+        <posy>240</posy>
+        <control type="list" id="2">
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>800</width>
+          <height>360</height>
+          <onleft>noop</onleft>
+          <onright>noop</onright>
+          <onup>5</onup>
+          <ondown>noop</ondown>
+          <pagecontrol>60</pagecontrol>
+          <scrolltime>280</scrolltime>
+          <itemlayout width="800" height="60">
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>800</width>
+              <height>60</height>
+              <texture border="3" flipy="true">list/ListNF.png</texture>
+            </control>
+            <control type="label" description="Label2">
+              <posx>30r</posx>
+              <posy>0</posy>
+              <height>60</height>
+              <width>800</width>
+              <font>ListDetails</font>
+              <scroll>false</scroll>
+              <align>right</align>
+              <label>$INFO[ListItem.Label2]</label>
+            </control>
+            <control type="label" description="Main Label">
+              <posx>0</posx>
+              <posy>0</posy>
+              <height>60</height>
+              <width>800</width>
+              <textoffsetx>30</textoffsetx>
+              <label>$INFO[ListItem.Label]</label>
+            </control>
+          </itemlayout>
+          <focusedlayout width="800" height="60">
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>800</width>
+              <height>60</height>
+              <texture border="3" flipy="true">list/ListNF.png</texture>
+            </control>
+            <control type="image">
+              <visible>![Control.HasFocus(4) | Control.HasFocus(5)]</visible>
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>800</width>
+              <height>60</height>
+              <texture border="2">buttons/ButtonFO.png</texture>
+            </control>
+            <control type="label" description="Label2">
+              <posx>30r</posx>
+              <posy>0</posy>
+              <height>60</height>
+              <width>800</width>
+              <font>ListDetails</font>
+              <align>right</align>
+              <label>$INFO[ListItem.Label2]</label>
+            </control>
+            <control type="label" description="Main Label">
+              <posx>0</posx>
+              <posy>0</posy>
+              <height>60</height>
+              <width>800</width>
+              <textoffsetx>30</textoffsetx>
+              <label>$INFO[ListItem.Label]</label>
+            </control>
+          </focusedlayout>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="false">602</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <include>OSDFade</include>
+  <controls>
+    <control type="group">
+      <visible>![Window.IsActive(DialogSelect.xml) | Window.IsActive(SliderDialog) | Window.IsActive(OSDVideoSettings) | Window.IsActive(OSDAudioSettings) | Window.IsActive(VideoBookmarks) | Window.IsActive(script-XBMC-Subtitles-main.xml)]</visible>
+      <include>OSDFade</include>
+      <posx>0</posx>
+      <posy>0</posy>
+      <control type="group">
+    	<!-- Hide Background of Video Controls when in Live TV as Background from VideoFullscreen.xml is used -->
+	<visible>!VideoPlayer.Content(LiveTV)</visible>
+        <control type="group" description="Dialog Background">
+          <control type="image" description="Background">
+            <posx>0</posx>
+            <posy>950</posy>
+            <width>1920</width>
+            <height>120</height>
+            <texture>img/BlackDotT.png</texture>
+          </control>
+          <control type="image" description="Background">
+            <posx>0</posx>
+            <posy>926</posy>
+            <width>1920</width>
+            <height>156</height>
+            <texture border="0,30,0,0">OSD/OSDBackground.png</texture>
+            <!--<colordiffuse>Grey2</colordiffuse>-->
+          </control>
+          <control type="image">
+            <posx>610</posx>
+            <posy>1027</posy>
+            <width>700</width>
+            <height>1</height>
+            <aspectratio>stretch</aspectratio>
+            <texture>img/LineST.png</texture>
+          </control>
+        </control>
+      </control>
+      <control type="group" id="100">
+        <visible>!VideoPlayer.Content(LiveTV)</visible>
+        <posx>723</posx>
+        <posy>140r</posy>
+        <onup>noop</onup>
+        <ondown>702</ondown>
+        <defaultcontrol always="true">602</defaultcontrol>
+        <control type="button" id="600">
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[210]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDPreviousFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDPreviousNF.png</texturenofocus>
+          <onleft>605</onleft>
+          <onright>601</onright>
+          <onup>noop</onup>
+          <ondown>702</ondown>
+          <onclick>PlayerControl(Previous)</onclick>
+        </control>
+        <control type="button" id="601">
+          <posx>70</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31354]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDRWFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDRWNF.png</texturenofocus>
+          <onleft>600</onleft>
+          <onright>602</onright>
+          <onup>noop</onup>
+          <ondown>702</ondown>
+          <onclick>PlayerControl(Rewind)</onclick>
+        </control>
+        <control type="togglebutton" id="602">
+          <posx>151</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31351]</label>
+          <altlabel>$LOCALIZE[208]</altlabel>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDPauseFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDPauseNF.png</texturenofocus>
+          <usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+          <alttexturefocus>VideoOSD/OSDPlayFO.png</alttexturefocus>
+          <alttexturenofocus>VideoOSD/OSDPlayNF.png</alttexturenofocus>
+          <onleft>601</onleft>
+          <onright>603</onright>
+          <ondown>702</ondown>
+          <onup>noop</onup>
+          <onclick>PlayerControl(Play)</onclick>
+        </control>
+        <control type="button" id="603">
+          <posx>225</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31352]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDStopFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDStopNF.png</texturenofocus>
+          <onleft>602</onleft>
+          <onright>604</onright>
+          <onup>noop</onup>
+          <ondown>702</ondown>
+          <onclick>PlayerControl(Stop)</onclick>
+        </control>
+        <control type="button" id="604">
+          <posx>305</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31353]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDFWFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDFWNF.png</texturenofocus>
+          <onleft>603</onleft>
+          <onright>605</onright>
+          <onup>noop</onup>
+          <ondown>702</ondown>
+          <onclick>PlayerControl(Forward)</onclick>
+        </control>
+        <control type="button" id="605">
+          <posx>380</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[209]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDNextFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDNextNF.png</texturenofocus>
+          <onleft>604</onleft>
+          <onright>600</onright>
+          <onup>noop</onup>
+          <ondown>702</ondown>
+          <onclick>PlayerControl(Next)</onclick>
+        </control>
+      </control>
+      <control type="group" id="100">
+        <visible>VideoPlayer.Content(LiveTV)</visible>
+        <posx>723</posx>
+        <posy>140r</posy>
+        <onup>noop</onup>
+        <ondown>701</ondown>
+        <defaultcontrol always="true">602</defaultcontrol>
+        <control type="button" id="600">
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[210]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDChannelDownFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDChannelDownNF.png</texturenofocus>
+          <onleft>605</onleft>
+          <onright>601</onright>
+          <onup>noop</onup>
+          <ondown>701</ondown>
+          <onclick>PlayerControl(Previous)</onclick>
+        </control>
+        <control type="button" id="601">
+          <posx>70</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31354]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDChannelUpFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDChannelUpNF.png</texturenofocus>
+          <onleft>600</onleft>
+          <onright>602</onright>
+          <onup>noop</onup>
+          <ondown>701</ondown>
+          <onclick>PlayerControl(Next)</onclick>
+        </control>
+        <control type="togglebutton" id="602">
+          <posx>151</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31351]</label>
+          <altlabel>$LOCALIZE[208]</altlabel>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDPauseFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDPauseNF.png</texturenofocus>
+          <usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+          <alttexturefocus>VideoOSD/OSDPlayFO.png</alttexturefocus>
+          <alttexturenofocus>VideoOSD/OSDPlayNF.png</alttexturenofocus>
+          <onleft>601</onleft>
+          <onright>603</onright>
+          <ondown>701</ondown>
+          <onup>noop</onup>
+          <onclick>PlayerControl(Play)</onclick>
+        </control>
+        <control type="button" id="603">
+          <posx>225</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31352]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDStopFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDStopNF.png</texturenofocus>
+          <onleft>602</onleft>
+          <onright>604</onright>
+          <onup>noop</onup>
+          <ondown>701</ondown>
+          <onclick>PlayerControl(Stop)</onclick>
+        </control>
+        <control type="button" id="604">
+          <posx>305</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31353]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDChannelsFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDChannelsNF.png</texturenofocus>
+          <onleft>603</onleft>
+          <onright>605</onright>
+          <onup>noop</onup>
+          <ondown>701</ondown>
+          <onclick>ActivateWindow(PVROSDChannels)</onclick>
+          <onclick>Dialog.Close(VideoOSD)</onclick>
+        </control>
+        <control type="button" id="605">
+          <posx>380</posx>
+          <posy>0</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[209]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDEpgFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDEpgNF.png</texturenofocus>
+          <onleft>604</onleft>
+          <onright>600</onright>
+          <onup>noop</onup>
+          <ondown>701</ondown>
+          <onclick>ActivateWindow(PVROSDGuide)</onclick>
+          <onclick>Dialog.Close(VideoOSD)</onclick>
+        </control>
+      </control>
+      <control type="group" id="101">
+        <visible>!VideoPlayer.Content(LiveTV)</visible>
+        <posx>765</posx>
+        <posy>81r</posy>
+        <onup>609</onup>
+        <ondown>609</ondown>
+        <control type="togglebutton" id="700">
+          <enable>VideoPlayer.HasMenu</enable>
+          <posx>0</posx>
+          <posy>3</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31355]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDDvdFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDDvdNF.png</texturenofocus>
+          <alttexturenofocus>VideoOSD/OSDDvdDisabled.png</alttexturenofocus>
+          <usealttexture>!VideoPlayer.HasMenu</usealttexture>
+          <onleft>704</onleft>
+          <onright>699</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>PlayerControl(ShowVideoMenu)</onclick>
+        </control>
+       <control type="button" id="699">
+          <enable>VideoPlayer.IsStereoscopic</enable>
+          <posx>75</posx>
+          <posy>28</posy>
+          <width>50</width>
+          <height>50</height>
+          <label>$LOCALIZE[36501]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDStereoscopicFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDStereoscopicNF.png</texturenofocus>
+          <onup>501</onup>
+          <ondown>Close</ondown>
+          <onright>701</onright>
+          <onleft>700</onleft>
+        </control>
+        <control type="button" id="701">
+          <posx>125</posx>
+          <posy>8</posy>
+          <width>81</width>
+          <height>90</height>
+          <label>$LOCALIZE[13395]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDVideoFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDVideoNF.png</texturenofocus>
+          <onleft>699</onleft>
+          <onright>702</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>ActivateWindow(OSDVideoSettings)</onclick>
+        </control>
+        <control type="button" id="702">
+          <posx>190</posx>
+          <posy>8</posy>
+          <width>81</width>
+          <height>90</height>
+          <label>$LOCALIZE[31356]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDSubtitlesFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDSubtitlesNF.png</texturenofocus>
+          <onleft>701</onleft>
+          <onright>703</onright>
+          <onup>602</onup>
+          <onclick>Close</onclick>
+          <onclick>ActivateWindow(SubtitleSearch)</onclick>
+        </control>
+        <control type="button" id="703">
+          <posx>233</posx>
+          <posy>-6</posy>
+          <width>110</width>
+          <height>115</height>
+          <label>$LOCALIZE[292] &amp; $LOCALIZE[287]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDAudioFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDAudioNF.png</texturenofocus>
+          <onleft>702</onleft>
+          <onright>704</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>ActivateWindow(OSDAudioSettings)</onclick>
+        </control>
+        <control type="button" id="704">
+          <posx>295</posx>
+          <posy>5</posy>
+          <width>87</width>
+          <height>93</height>
+          <label>$LOCALIZE[298]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDBookmarksFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDBookmarksNF.png</texturenofocus>
+          <onleft>703</onleft>
+          <onright>700</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>ActivateWindow(VideoBookmarks)</onclick>
+        </control>
+      </control>
+      <control type="group" id="101">
+        <visible>VideoPlayer.Content(LiveTV)</visible>
+        <posx>800</posx>
+        <posy>81r</posy>
+        <onup>609</onup>
+        <ondown>609</ondown>
+        <control type="button" id="700">
+          <enable>Player.CanRecord</enable>
+          <posx>0</posx>
+          <posy>4</posy>
+          <width>90</width>
+          <height>98</height>
+          <label>$LOCALIZE[31355]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDrecordFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDRecordNF.png</texturenofocus>
+          <onleft>704</onleft>
+          <onright>701</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>PlayerControl(Record)</onclick>
+          <animation effect="fade" start="100" end="50" time="100" condition="!Player.CanRecord">Conditional</animation>
+        </control>
+        <control type="button" id="701">
+          <posx>75</posx>
+          <posy>8</posy>
+          <width>81</width>
+          <height>90</height>
+          <label>$LOCALIZE[31356]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDBookmarksFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDBookmarksNF.png</texturenofocus>
+          <onleft>700</onleft>
+          <onright>702</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>Dialog.Close(VideoOSD)</onclick>
+          <onclick>ActivateWindow(Teletext)</onclick>
+          <onclick>ActivateWindow(Teletext)</onclick>
+        </control>
+        <control type="button" id="702">
+          <posx>153</posx>
+          <posy>8</posy>
+          <width>81</width>
+          <height>90</height>
+          <label>$LOCALIZE[13395]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDVideoFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDVideoNF.png</texturenofocus>
+          <onleft>701</onleft>
+          <onright>703</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>ActivateWindow(OSDVideoSettings)</onclick>
+        </control>
+        <control type="button" id="703">
+          <posx>214</posx>
+          <posy>-6</posy>
+          <width>110</width>
+          <height>115</height>
+          <label>$LOCALIZE[292] &amp; $LOCALIZE[287]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDAudioFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDAudioNF.png</texturenofocus>
+          <onleft>702</onleft>
+          <onright>704</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>ActivateWindow(OSDAudioSettings)</onclick>
+        </control>
+        <control type="button" id="704">
+          <visible>false</visible>
+          <posx>296</posx>
+          <posy>5</posy>
+          <width>87</width>
+          <height>93</height>
+          <label>$LOCALIZE[298]</label>
+          <font>-</font>
+          <texturefocus>VideoOSD/OSDBookmarksFO.png</texturefocus>
+          <texturenofocus>VideoOSD/OSDBookmarksNF.png</texturenofocus>
+          <onleft>703</onleft>
+          <onright>700</onright>
+          <onup>602</onup>
+          <ondown>Close</ondown>
+          <onclick>ActivateWindow(VideoBookmarks)</onclick>
+        </control>
+      </control>
+    </control>
+  <control type="grouplist" id="500">
+   <visible>videoplayer.isstereoscopic + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)] + [Control.HasFocus(699) | ControlGroup(500).HasFocus | Control.HasFocus(699)]</visible>
+   <animation effect="fade" time="150">VisibleChange</animation>
+   <animation effect="slide" start="0,0" end="55,0" time="0" condition="VideoPlayer.Content(LiveTV)">Conditional</animation>
+     <left>667</left>
+     <bottom>45</bottom>
+     <width>400</width>
+     <height>220</height>
+     <itemgap>0</itemgap>
+     <onleft>100</onleft>
+     <onright>100</onright>
+     <onup>699</onup>
+     <ondown>699</ondown>
+     <orientation>vertical</orientation>
+     <include>VisibleFadeEffect</include>
+      <control type="group">
+       <description>Header</description>
+       <width>400</width>
+       <height>40</height>
+         <control type="image">
+	<description>Header</description>
+	<left>0</left>
+	<top>0</top>
+	<width>400</width>
+	<height>40</height>
+	<texture border="20,18,20,0">VideoOSD/SubMenuBack-Header.png</texture>
+         </control>
+              <control type="label">
+	<left>0</left>
+	<top>20</top>
+	<width>400</width>
+	<height>15</height>
+	<font>font12</font>
+	<label>36501</label>
+	<textcolor>white</textcolor>
+	<align>center</align>
+	<aligny>center</aligny>
+              </control>
+        </control>
+	<control type="radiobutton" id="503">
+	 <height>40</height>
+	 <width>400</width>
+	 <textoffsetx>30</textoffsetx>
+	 <aligny>center</aligny>
+	 <font>font13</font>
+	 <label>31362</label>
+	 <radioposx>300</radioposx>
+	 <texturefocus border="25,5,25,5">VideoOSD/SubMenuBack-MiddleFO.png</texturefocus>
+	 <texturenofocus border="25,5,25,5">VideoOSD/SubMenuBack-MiddleNF.png</texturenofocus>
+	 <onclick>ToggleStereoMode</onclick>
+	 <selected>IntegerGreaterThan(System.StereoscopicMode,0)</selected>
+	 <pulseonselect>false</pulseonselect>
+	</control>
+	<control type="button" id="502">
+	 <height>40</height>
+	 <width>400</width>
+	 <textoffsetx>30</textoffsetx>
+	 <aligny>center</aligny>
+	 <font>font13</font>
+	 <texturefocus border="25,5,25,5">VideoOSD/SubMenuBack-MiddleFO.png</texturefocus>
+	 <texturenofocus border="25,5,25,5">VideoOSD/SubMenuBack-MiddleNF.png</texturenofocus>
+	 <pulseonselect>false</pulseonselect>
+	 <label>31361</label>
+	 <onclick>StereoMode</onclick>
+	</control>
+	 <control type="button" id="501">
+	  <height>40</height>
+	  <width>400</width>
+	  <textoffsetx>30</textoffsetx>
+	  <aligny>center</aligny>
+	  <font>font13</font>
+	  <label>31360</label>
+	  <texturefocus border="25,5,25,5">VideoOSD/SubMenuBack-MiddleFO.png</texturefocus>
+	  <texturenofocus border="25,5,25,5">VideoOSD/SubMenuBack-MiddleNF.png</texturenofocus>
+	  <onclick>StereoModeToMono</onclick>
+	  <pulseonselect>false</pulseonselect>
+	</control>
+	<control type="image" id="549">
+	 <description>Footer</description>
+	 <width>400</width>
+	 <height>52</height>
+	 <texture border="20,0,20,50">VideoOSD/SubMenuBack-Footer.png</texture>
+	</control>
+            </control>
+  </controls>
+</window>

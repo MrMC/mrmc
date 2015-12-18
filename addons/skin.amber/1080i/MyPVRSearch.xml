@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<views>50</views>
+	<controls>
+    <control type="group" description="fanart"> 
+       <include>Pvr_Art</include> 
+     </control> 
+ 	<control type="image" description="fa overlay"> 
+ 	  <visible>Control.IsVisible(50)</visible> 
+ 	  <posx>0</posx> 
+       <posy>65</posy> 
+       <width>1920</width> 
+       <height>1015</height> 
+       <texture border="0,30,0,0">OSD/OSDBackground.png</texture> 
+       <colordiffuse>FF9e9e9e</colordiffuse> 
+     </control> 
+		<include>Time</include>
+		<control type="group">
+			<include>OpenClose</include>
+			<control type="group">
+				<description>TV Search group</description>
+				<visible>Control.IsVisible(50)</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="image" description="video window background">
+					<visible>Player.HasVideo</visible>
+					<posx>60</posx>
+					<posy>100</posy>
+					<width>600</width>
+					<height>340</height>
+					<texture>img/BlackDot.png</texture>
+				</control>
+				<control type="videowindow" description="TV Channel Live BG">
+					<visible>Player.HasVideo</visible>
+					<posx>60</posx>
+					<posy>20</posy>
+					<width>600</width>
+					<height>500</height>
+				</control>
+				<control type="image" description="Current video label bacground">
+					<visible>Player.HasVideo</visible>
+					<posx>60</posx>
+					<posy>100</posy>
+					<width>600</width>
+					<height>40</height>
+					<texture>img/BlackDot.png</texture>
+					<colordiffuse>DDFFFFFF</colordiffuse>
+				</control>
+				<control type="textbox" description="Current video label">
+					<posx>60</posx>
+					<posy>100</posy>
+					<width>600</width>
+					<height>40</height>
+					<font>Details</font>
+					<align>center</align>
+					<textcolor>White</textcolor>
+					<autoscroll delay="3000" time="3000" repeat="3000">true</autoscroll>
+					<label>$INFO[Player.Title]</label>
+					<visible>Player.HasVideo</visible>
+				</control>
+				<control type="group" description="Header">
+					<posx>60</posx>
+					<posy>430</posy>
+					<control type="image" description="split">
+						<posx>0</posx>
+						<posy>39</posy>
+						<width>1800</width>
+						<height>2</height>
+						<texture>img/LineST.png</texture>
+					</control>
+					<control type="label">
+						<description>Title header label</description>
+						<posx>20</posx>
+						<posy>0</posy>
+						<width>680</width>
+						<height>30</height>
+						<label>$LOCALIZE[369]</label>
+					</control>
+					<control type="label">
+						<description>Schedule Time header label</description>
+						<posx>710</posx>
+						<posy>0</posy>
+						<width>280</width>
+						<height>30</height>
+						<label>$LOCALIZE[21820]</label>
+					</control>
+					<control type="label">
+						<description>Channel header label</description>
+						<posx>1020</posx>
+						<posy>0</posy>
+						<width>480</width>
+						<height>30</height>
+						<label>$LOCALIZE[19148]</label>
+					</control>
+					<control type="label">
+						<description>Status header label</description>
+						<posx>1520</posx>
+						<posy>0</posy>
+						<width>280</width>
+						<height>30</height>
+						<label>$LOCALIZE[126]</label>
+					</control>
+				</control>
+				<control type="list" id="50" description="Search">
+					<posx>60</posx>
+					<posy>490</posy>
+					<width>1800</width>
+					<height>468</height>
+					<scrolltime>350</scrolltime>
+					<onleft>104</onleft>
+					<onright>77</onright>
+					<onup>50</onup>
+					<ondown>50</ondown>
+					<pagecontrol>77</pagecontrol>
+					<itemlayout height="78">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<height>78</height>
+							<width>1800</width>
+							<texture border="3">list/ListNF.png</texture>
+						</control>
+						<control type="label" description="Label">
+							<posx>10</posx>
+							<posy>0</posy>
+							<width>680</width>
+							<height>78</height>
+							<scroll>false</scroll>
+							<info>ListItem.Label</info>
+						</control>
+						<control type="label" description="Date">
+							<posx>710</posx>
+							<posy>0</posy>
+							<width>280</width>
+							<height>78</height>
+							<scroll>false</scroll>
+							<info>ListItem.Date</info>
+						</control>
+						<control type="label" description="Channel label">
+							<posx>1010</posx>
+							<posy>0</posy>
+							<width>480</width>
+							<height>78</height>
+							<scroll>false</scroll>
+							<info>ListItem.ChannelName</info>
+						</control>
+						<control type="image">
+							<posx>1760</posx>
+							<posy>0</posy>
+							<width>22</width>
+							<height>78</height>
+							<aspectratio>keep</aspectratio>
+							<texture>$VAR[PVROverlay]</texture>
+						</control>
+						<control type="label">
+							<posx>1510</posx>
+							<posy>5</posy>
+							<width>280</width>
+							<height>30</height>
+							<scroll>false</scroll>
+							<font>ListDetails</font>
+							<label>$LOCALIZE[19043]</label>
+							<visible>ListItem.IsRecording</visible>
+						</control>
+						<control type="label">
+							<posx>1510</posx>
+							<posy>40</posy>
+							<width>280</width>
+							<height>30</height>
+							<scroll>false</scroll>
+							<font>ListDetails</font>
+							<label>$LOCALIZE[31510]</label>
+							<visible>ListItem.HasTimer</visible>
+						</control>
+					</itemlayout>
+					<focusedlayout height="78">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<height>78</height>
+							<width>1800</width>
+							<texture border="3">list/ListNF.png</texture>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>3</posy>
+							<width>1800</width>
+							<height>75</height>
+							<texture>list/ListFO.png</texture>
+						</control>
+						<control type="label" description="Timer label">
+							<posx>10</posx>
+							<posy>0</posy>
+							<width>680</width>
+							<height>78</height>
+							<scroll>false</scroll>
+							<info>ListItem.Label</info>
+						</control>
+						<control type="label" description="Date">
+							<posx>710</posx>
+							<posy>0</posy>
+							<width>280</width>
+							<height>78</height>
+							<scroll>false</scroll>
+							<info>ListItem.Date</info>
+						</control>
+						<control type="label" description="Channel label">
+							<posx>1010</posx>
+							<posy>0</posy>
+							<width>480</width>
+							<height>78</height>
+							<scroll>false</scroll>
+							<info>ListItem.ChannelName</info>
+						</control>
+						<control type="image">
+							<posx>1760</posx>
+							<posy>0</posy>
+							<width>22</width>
+							<height>78</height>
+							<aspectratio>keep</aspectratio>
+							<texture>$VAR[PVROverlay]</texture>
+						</control>
+						<control type="label">
+							<posx>1510</posx>
+							<posy>5</posy>
+							<width>280</width>
+							<height>30</height>
+							<scroll>false</scroll>
+							<font>ListDetails</font>
+							<label>$LOCALIZE[19043]</label>
+							<visible>ListItem.IsRecording</visible>
+						</control>
+						<control type="label">
+							<posx>1510</posx>
+							<posy>40</posy>
+							<width>280</width>
+							<height>30</height>
+							<scroll>false</scroll>
+							<font>ListDetails</font>
+							<label>$LOCALIZE[31510]</label>
+							<visible>ListItem.HasTimer</visible>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="group" description="Footer">
+					<posx>60</posx>
+					<posy>1008</posy>
+					<control type="image" description="Bottom split">
+						<posx>0</posx>
+						<posy>-9</posy>
+						<width>1800</width>
+						<height>2</height>
+						<texture>img/LineST.png</texture>
+					</control>
+					<control type="label">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>1740</width>
+						<height>40</height>
+						<aligny>center</aligny>
+						<align>left</align>
+						<scroll>false</scroll>
+						<label>[COLOR=Highlight]$INFO[ListItem.Label][/COLOR]$INFO[ListItem.Duration,  -  ,  -  ]  [COLOR=Grey]$INFO[ListItem.StartTime,( ,  -  ]$INFO[ListItem.EndTime,, )][/COLOR]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+		<include>PVRSideBlade</include>
+	</controls>
+</window>

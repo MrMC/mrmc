@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="window">
+  <defaultcontrol always="true">450</defaultcontrol>
+  <controls>
+    <control type="image" description="BG">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1920</width>
+      <height>1080</height>
+      <texture>img/BlackDot.png</texture>
+    </control>
+    <control type="group">
+      <include>OpenClose</include>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1920</width>
+        <height>48</height>
+        <texture>common/TopStripe.png</texture>
+      </control>
+      <control type="label">
+        <posx>50</posx>
+        <posy>0</posy>
+        <width>1200</width>
+        <height>40</height>
+        <font>Details</font>
+        <label>$VAR[GlobalHeadings]</label>
+      </control>
+      <control type="label">
+        <posx>20r</posx>
+        <posy>0</posy>
+        <width>500</width>
+        <height>40</height>
+        <align>right</align>
+        <font>Details</font>
+        <textcolor>White</textcolor>
+        <shadowcolor>ShadowDark</shadowcolor>
+        <label>$VAR[Time]</label>
+      </control>
+    </control>
+    <control type="group" description="Grid view">
+      <include>OpenClose</include>
+      <control type="panel" id="450" description="Grid">
+        <posx>60</posx>
+        <posy>90</posy>
+        <width>1800</width>
+        <height>1000</height>
+        <orientation>vertical</orientation>
+        <onleft>450</onleft>
+        <onright>450</onright>
+        <onup>450</onup>
+        <ondown>450</ondown>
+        <preloaditems>4</preloaditems>
+        <pagecontrol>60</pagecontrol>
+        <scrolltime>400</scrolltime>
+        <itemlayout height="420" width="360">
+          <control type="image">
+            <posx>36</posx>
+            <posy>27</posy>
+            <width>288</width>
+            <height>288</height>
+            <include>SquareThumbBG</include>
+          </control>
+          <control type="image">
+            <posx>36</posx>
+            <posy>27</posy>
+            <width>288</width>
+            <height>288</height>
+            <include>SquareThumb</include>
+          </control>
+          <control type="label">
+            <posx>36</posx>
+            <posy>330</posy>
+            <width>288</width>
+            <height>45</height>
+            <align>center</align>
+            <scroll>false</scroll>
+            <font>ListDetails</font>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+        </itemlayout>
+        <focusedlayout height="420" width="360">
+          <control type="image">
+            <posx>36</posx>
+            <posy>27</posy>
+            <width>288</width>
+            <height>288</height>
+            <include>SquareThumbFO</include>
+          </control>
+          <control type="image">
+            <posx>36</posx>
+            <posy>27</posy>
+            <width>288</width>
+            <height>288</height>
+            <include>SquareThumb</include>
+          </control>
+          <control type="label">
+            <posx>36</posx>
+            <posy>330</posy>
+            <width>288</width>
+            <height>45</height>
+            <textcolor>Highlight</textcolor>
+            <font>ListDetails</font>
+            <align>center</align>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="image" description="Bottom fade">
+        <visible>Container.HasNext</visible>
+        <include>VisibleFadeEffect</include>
+        <posx>0</posx>
+        <posy>1040</posy>
+        <width>1920</width>
+        <height>40</height>
+        <texture>img/GradientNew.png</texture>
+        <aspectratio>stretch</aspectratio>
+      </control>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="-8,0" time="150">Focus</animation>
+        <animation effect="slide" start="-8,0" end="0,0" time="300">UnFocus</animation>
+        <posx>20r</posx>
+        <posy>360</posy>
+        <width>36</width>
+        <height>700</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>53</onleft>
+        <onright>9000</onright>
+      </control>
+    </control>
+    <control type="image" description="Bottom fade">
+      <visible>Container(450).HasNext</visible>
+      <include>VisibleFadeEffect</include>
+      <posx>0</posx>
+      <posy>1040</posy>
+      <width>1920</width>
+      <height>40</height>
+      <texture>img/GradientNew.png</texture>
+      <aspectratio>stretch</aspectratio>
+    </control>
+  </controls>
+</window>

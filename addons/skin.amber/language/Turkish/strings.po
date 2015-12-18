@@ -1,0 +1,197 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Turkish (http://www.transifex.com/projects/p/xbmc-skins/language/tr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31005"
+msgid "Cinema"
+msgstr "Sinema"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Son Eklenenler"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Öğe"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Görsel Öğe Önayarları"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Medya Türü için Arka planı değiştir"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "Tek Resim"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Çoklu Resim"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Şarkı Sözleri Eklentisi"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Altyazı Eklentisi"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "Öğeler"
+
+msgctxt "#31297"
+msgid "min"
+msgstr "dakika"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Kullanılan Bellek:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Gösterim"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Duraklat"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Durdur"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "İleri Sar"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Geri Sar"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Film menüsü"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Altyazıları İndir"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Yerel altyazı mevcut"
+
+msgctxt "#31499"
+msgid "All TV Shows"
+msgstr "Bütün TV Programları"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "Canlı TV"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Planlanan Saat"
+
+msgctxt "#31502"
+msgid "All Movies"
+msgstr "Bütün Filmler"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Grup Ekle"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Grubu Yeniden Adlandır"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Grubu Sil"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Mevcut[CR]Gruplar"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Zamanlayıcı Ayarlandı"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36 Saatlik Hava Tahmini"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Saatlik Hava Tahmini"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Hafta Sonu Hava Tahmini"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "10 Günlük Hava Tahmini"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "G"
+
+msgctxt "#31962"
+msgid "Low List"
+msgstr "Düşük Liste"
+
+msgctxt "#31963"
+msgid "Panel"
+msgstr "Panel"
+
+msgctxt "#31965"
+msgid "Banner List"
+msgstr "Afiş Listesi"
+
+msgctxt "#31966"
+msgid "Recommended"
+msgstr "Önerilen"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Klipler"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "D"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Kanallar"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Gelişmiş"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Rastgele"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Menü"

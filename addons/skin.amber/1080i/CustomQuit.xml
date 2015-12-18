@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1114">
+  <defaultcontrol always="true">9000</defaultcontrol>
+  <include>DialogOpenClose</include>
+  <controls>
+    <control type="group" description="All dialog content">
+      <animation type="WindowOpen">
+        <effect type="zoom" start="95" end="100" center="960,540" time="200" />
+        <effect type="fade" start="80" end="100" time="200" />
+      </animation>
+      <animation type="WindowClose">
+        <effect type="zoom" start="100" end="95" center="960,540" time="100" />
+        <effect type="fade" start="100" end="0" time="100" />
+      </animation>
+      <control type="image" description="Menu BG">
+        <posx>681</posx>
+        <posy>240</posy>
+        <height>572</height>
+        <width>558</width>
+        <texture border="0,40,0,40">dialogs/ContextMenu.png</texture>
+      </control>
+      <control type="label" description="Dialog heading">
+        <posx>615</posx>
+        <posy>281</posy>
+        <width>690</width>
+        <height>52</height>
+        <label>$LOCALIZE[13008]</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="group">
+        <posx>442</posx>
+        <posy>216</posy>
+        <control type="grouplist" id="9000" description="Video OSD Options">
+          <posx>255</posx>
+          <posy>150</posy>
+          <width>525</width>
+          <height>450</height>
+          <onleft>noop</onleft>
+          <onright>noop</onright>
+          <onup>9000</onup>
+          <ondown>9000</ondown>
+          <itemgap>0</itemgap>
+          <scrolltime>280</scrolltime>
+          <defaultcontrol always="true">701</defaultcontrol>
+          <control type="radiobutton" id="701" description="Menu">
+            <width>525</width>
+            <label>$LOCALIZE[31983]</label>
+            <onclick>Skin.Reset(shutdown)</onclick>
+            <selected>IsEmpty(Skin.String(shutdown))</selected>
+          </control>
+          <control type="radiobutton" id="702" description="Suspend">
+            <width>525</width>
+            <enable>System.CanSuspend</enable>
+            <label>$LOCALIZE[13011]</label>
+            <onclick>Skin.SetString(shutdown,suspend)</onclick>
+            <selected>StringCompare(Skin.String(shutdown),suspend)</selected>
+          </control>
+          <control type="radiobutton" id="703" description="Hibernate">
+            <width>525</width>
+            <enable>System.CanHibernate</enable>
+            <label>$LOCALIZE[13010]</label>
+            <onclick>Skin.SetString(shutdown,hibernate)</onclick>
+            <selected>StringCompare(Skin.String(shutdown),hibernate)</selected>
+          </control>
+          <control type="radiobutton" id="704" description="Shutdown">
+            <width>525</width>
+            <enable>System.CanPowerdown</enable>
+            <label>$LOCALIZE[13005]</label>
+            <onclick>Skin.SetString(shutdown,powerdown)</onclick>
+            <selected>StringCompare(Skin.String(shutdown),powerdown)</selected>
+          </control>
+          <control type="radiobutton" id="705" description="Reboot">
+            <width>525</width>
+            <enable>System.CanReboot</enable>
+            <label>$LOCALIZE[13013]</label>
+            <onclick>Skin.SetString(shutdown,reboot)</onclick>
+            <selected>StringCompare(Skin.String(shutdown),reboot)</selected>
+          </control>
+          <control type="radiobutton" id="706" description="Quit">
+            <width>525</width>
+            <label>$LOCALIZE[13009]</label>
+            <onclick>Skin.SetString(shutdown,quit)</onclick>
+            <selected>StringCompare(Skin.String(shutdown),quit)</selected>
+          </control>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

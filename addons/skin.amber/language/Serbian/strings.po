@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Serbian (http://www.transifex.com/projects/p/xbmc-skins/language/sr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sr\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Nedavno dodato"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Ставке"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Postojeće vizualizacije"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Uredite pozadinu tastera za početni ekran"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "Једна слика"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Више слика"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "Stavki"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Употреба меморије:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Emitovano"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauza"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Zaustavi"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Premotaj unapred"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Premotaj unazad"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Filmski meni"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Preuzmi titlove"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Lokalni prevod dostupan"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "Телевизија уживо"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Преименуј групу"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Обриши групу"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Доступне[CR]групе"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "J"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Klipovi"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "I"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Napredno"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Nasumično"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Meni"

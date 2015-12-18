@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">5</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <include>DimBG</include>
+    <control type="group" description="Content">
+      <include>DialogOpenClose</include>
+      <control type="image">
+        <posx>360</posx>
+        <posy>20</posy>
+        <width>1200</width>
+        <height>1040</height>
+        <texture>dialogs/DialogBG.png</texture>
+      </control>
+      <control type="label" description="Heading">
+        <posx>0</posx>
+        <posy>60</posy>
+        <width>1920</width>
+        <label>$LOCALIZE[13406]</label>
+        <textcolor>Highlight</textcolor>
+        <align>center</align>
+      </control>
+      <control type="group">
+        <posx>0</posx>
+        <posy>0</posy>
+        <control type="list" id="5">
+          <posx>394</posx>
+          <posy>150</posy>
+          <width>1130</width>
+          <height>840</height>
+          <onleft>noop</onleft>
+          <onright>60</onright>
+          <onup>5</onup>
+          <ondown>5</ondown>
+          <pagecontrol>60</pagecontrol>
+          <scrolltime tween="sine" easing="inout">280</scrolltime>
+          <itemlayout height="60">
+            <control type="label">
+              <posx>300</posx>
+              <height>70</height>
+              <width>800</width>
+              <align>left</align>
+              <scroll>false</scroll>
+              <font>ListDetails</font>
+              <info>ListItem.Label2</info>
+            </control>
+            <control type="label">
+              <posx>30</posx>
+              <height>60</height>
+              <width>1070</width>
+              <scroll>false</scroll>
+              <info>ListItem.Label</info>
+            </control>
+          </itemlayout>
+          <focusedlayout height="60">
+            <control type="image">
+              <height>60</height>
+              <width>1130</width>
+              <texture border="2">buttons/ButtonFO.png</texture>
+            </control>
+            <control type="label">
+              <posx>300</posx>
+              <height>70</height>
+              <width>800</width>
+              <align>left</align>
+              <font>ListDetails</font>
+              <info>ListItem.Label2</info>
+            </control>
+            <control type="label">
+              <posx>30</posx>
+              <height>60</height>
+              <width>1070</width>
+              <info>ListItem.Label</info>
+            </control>
+          </focusedlayout>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>1523</posx>
+        <posy>150</posy>
+        <width>36</width>
+        <height>840</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>5</onleft>
+        <onright>noop</onright>
+      </control>
+    </control>
+  </controls>
+</window>

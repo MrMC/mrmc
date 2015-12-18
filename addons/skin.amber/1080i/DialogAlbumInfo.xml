@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+  <defaultcontrol always="true">6</defaultcontrol>
+  <coordinates>
+    <origin x="0" y="0" />
+  </coordinates>
+  <include>OpenClose</include>
+  <controls>
+    <include>DimBG</include>
+    <control type="group" description="Content">
+      <include>DialogOpenClose</include>
+      <posx>384</posx>
+      <posy>240</posy>
+      <width>1304</width>
+      <height>750</height>
+      <control type="image">
+        <description>background image</description>
+        <posx>-252</posx>
+        <posy>0</posy>
+        <width>1655</width>
+        <height>536</height>
+        <texture border="300,0,0,0">dialogs/SetContentBG.png</texture>
+      </control>
+      <control type="label" description="Album info">
+        <visible>!container.content(artists)</visible>
+        <posx>-230</posx>
+        <posy>80</posy>
+        <width>837</width>
+        <height>60</height>
+        <textcolor>Highlight</textcolor>
+        <textoffsetx>30</textoffsetx>
+        <label>$LOCALIZE[10523]</label>
+      </control>
+      <control type="label" description="Album info">
+        <visible>container.content(artists)</visible>
+        <posx>-230</posx>
+        <posy>80</posy>
+        <width>837</width>
+        <height>60</height>
+        <textcolor>Highlight</textcolor>
+        <textoffsetx>30</textoffsetx>
+        <label>$LOCALIZE[21891]</label>
+      </control>
+      <control type="label" description="Album title">
+        <visible>!container.content(artists)</visible>
+        <posx>-230</posx>
+        <posy>150</posy>
+        <width>837</width>
+        <height>60</height>
+        <textoffsetx>30</textoffsetx>
+        <label>$LOCALIZE[558]: $INFO[ListItem.Album]</label>
+      </control>
+      <control type="label" description="Artist">
+        <posx>-230</posx>
+        <posy>210</posy>
+        <width>909</width>
+        <height>60</height>
+        <textoffsetx>30</textoffsetx>
+        <label>$LOCALIZE[557]: $INFO[ListItem.Artist]</label>
+      </control>
+      <control type="label" description="Artist">
+        <posx>-230</posx>
+        <posy>270</posy>
+        <width>909</width>
+        <height>60</height>
+        <textoffsetx>30</textoffsetx>
+        <label>$LOCALIZE[515]: $INFO[ListItem.Genre]</label>
+      </control>
+      <control type="label" description="Year">
+        <visible>!container.content(artists)</visible>
+        <posx>-230</posx>
+        <posy>330</posy>
+        <width>909</width>
+        <height>60</height>
+        <textoffsetx>30</textoffsetx>
+        <label>$LOCALIZE[562]: $INFO[ListItem.Year]</label>
+      </control>
+      <control type="label" description="Artist">
+        <visible>container.content(artists)</visible>
+        <posx>-230</posx>
+        <posy>330</posy>
+        <width>909</width>
+        <height>60</height>
+        <textoffsetx>30</textoffsetx>
+        <label>$LOCALIZE[175]: $INFO[ListItem.Property(Artist_Mood)]</label>
+      </control>
+      <control type="label" description="location">
+        <visible>!container.content(artists)</visible>
+        <posx>-230</posx>
+        <posy>420</posy>
+        <width>909</width>
+        <height>60</height>
+        <textoffsetx>30</textoffsetx>
+        <font>ItemCount</font>
+        <textcolor>Grey</textcolor>
+        <label>$INFO[ListItem.Path]</label>
+      </control>
+      <control type="label" description="styles">
+        <visible>container.content(artists)</visible>
+        <posx>-230</posx>
+        <posy>420</posy>
+        <width>909</width>
+        <height>60</height>
+        <textoffsetx>30</textoffsetx>
+        <font>ItemCount</font>
+        <textcolor>Grey</textcolor>
+        <scroll>false</scroll>
+        <label>$INFO[ListItem.Path]$INFO[ListItem.Property(Artist_Style)]</label>
+      </control>
+      <control type="image" description="Icon">
+        <posx>692</posx>
+        <posy>61</posy>
+        <width>333</width>
+        <height>333</height>
+        <texture>$INFO[ListItem.Icon]</texture>
+        <bordertexture border="3">thumbs/ThumbBorder3.png</bordertexture>
+        <bordersize>1</bordersize>
+        <aspectratio>scale</aspectratio>
+      </control>
+      <control type="group" description="Right side">
+        <posx>1037</posx>
+        <posy>0</posy>
+        <control type="button" id="11" description="last fm">
+          <posy>240</posy>
+          <width>315</width>
+          <label>$LOCALIZE[31004]</label>
+          <onup>12</onup>
+          <ondown>6</ondown>
+        </control>
+        <control type="button" id="6" description="refresh">
+          <posy>300</posy>
+          <width>315</width>
+          <label>$LOCALIZE[184]</label>
+          <onup>11</onup>
+          <ondown>10</ondown>
+        </control>
+        <control type="button" id="10" description="get thumb">
+          <posy>360</posy>
+          <width>315</width>
+          <label>$LOCALIZE[13405]</label>
+          <onup>6</onup>
+          <ondown>12</ondown>
+        </control>
+        <control type="button" id="12" description="get fanart">
+          <posy>420</posy>
+          <width>315</width>
+          <label>$LOCALIZE[20445]</label>
+          <onup>10</onup>
+          <ondown>11</ondown>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

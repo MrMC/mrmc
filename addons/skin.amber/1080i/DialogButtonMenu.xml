@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="buttonmenu" id="111">
+  <defaultcontrol always="true">9009</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <onload condition="!IntegerGreaterThan(Container(9009).NumItems,0)">close</onload>
+  <controls>
+    <control type="group" description="MENU">
+      <animation type="WindowOpen">
+        <effect type="zoom" start="95" end="100" center="960,540" time="200" />
+        <effect type="fade" start="80" end="100" time="200" />
+      </animation>
+      <animation type="WindowClose">
+        <effect type="zoom" start="100" end="95" center="960,540" time="100" />
+        <effect type="fade" start="100" end="0" time="100" />
+      </animation>
+      <control type="image" description="Menu BG">
+        <posx>699</posx>
+        <posy>300</posy>
+        <height>512</height>
+        <width>522</width>
+        <texture border="0,40,0,40">dialogs/ContextMenu.png</texture>
+      </control>
+      <control type="panel" id="9009" description="PW Options">
+        <posx>699</posx>
+        <posy>384</posy>
+        <width>522</width>
+        <height>500</height>
+        <onleft>close</onleft>
+        <onright>close</onright>
+        <onup>9009</onup>
+        <ondown>9009</ondown>
+        <scrolltime tween="sine" easing="inout">280</scrolltime>
+        <itemlayout height="60" width="522">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>522</width>
+            <height>60</height>
+            <texture border="3">buttons/ButtonNF.png</texture>
+          </control>
+          <control type="label">
+            <posx>33</posx>
+            <posy>0</posy>
+            <width>400</width>
+            <height>60</height>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="image">
+            <posx>72r</posx>
+            <posy>0</posy>
+            <width>40</width>
+            <height>60</height>
+            <aspectratio>keep</aspectratio>
+            <info>ListItem.Thumb</info>
+          </control>
+        </itemlayout>
+        <focusedlayout height="60" width="522">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>522</width>
+            <height>60</height>
+            <texture border="3">buttons/ButtonNF.png</texture>
+          </control>
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>522</width>
+            <height>60</height>
+            <texture>dialogs/ContextFO.png</texture>
+          </control>
+          <control type="label">
+            <posx>33</posx>
+            <posy>0</posy>
+            <width>400</width>
+            <height>60</height>
+            <textcolor>Highlight</textcolor>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="image">
+            <posx>72r</posx>
+            <posy>0</posy>
+            <width>40</width>
+            <height>60</height>
+            <aspectratio>keep</aspectratio>
+            <info>ListItem.ActualIcon</info>
+          </control>
+        </focusedlayout>
+        <content>
+          <item id="8" description="LogOff">
+            <visible>System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)</visible>
+            <visible>System.Loggedon</visible>
+            <onclick>dialog.close(all,true)</onclick>
+            <onclick>System.LogOff</onclick>
+            <label>$LOCALIZE[20126]</label>
+            <thumb>ProfileNF.png</thumb>
+            <icon>ProfileFO.png</icon>
+          </item>
+          <item id="9" description="Master mode">
+            <visible>System.HasLocks + System.IsMaster</visible>
+            <onclick>xbmc.mastermode</onclick>
+            <label>$LOCALIZE[20046]</label>
+            <thumb>MasterNF.png</thumb>
+            <icon>MasterFO.png</icon>
+          </item>
+          <item id="9" description="Master mode">
+            <visible>System.HasLocks + !System.IsMaster</visible>
+            <onclick>xbmc.mastermode</onclick>
+            <label>$LOCALIZE[20045]</label>
+            <thumb>NoMasterNF.png</thumb>
+            <icon>NoMasterFO.png</icon>
+          </item>
+          <item id="11" description="Quit">
+            <visible>!Skin.HasSetting(QuitMenu_Hide_Quit)</visible>
+            <onclick>dialog.close(all,true)</onclick>
+            <onclick>XBMC.Quit()</onclick>
+            <label>$LOCALIZE[13009]</label>
+            <thumb>QuitNF.png</thumb>
+            <icon>QuitFO.png</icon>
+          </item>
+          <item id="12" description="Sleep">
+            <visible>!Skin.HasSetting(QuitMenu_Hide_Sleep)</visible>
+            <visible>System.CanSuspend</visible>
+            <onclick>dialog.close(all,true)</onclick>
+            <onclick>XBMC.Suspend()</onclick>
+            <label>$LOCALIZE[13011]</label>
+            <thumb>SleepNF.png</thumb>
+            <icon>SleepFO.png</icon>
+          </item>
+          <item id="15" description="Shutdown">
+            <visible>!Skin.HasSetting(QuitMenu_Hide_Shutdown)</visible>
+            <visible>System.CanPowerDown</visible>
+            <onclick>dialog.close(all,true)</onclick>
+            <onclick>XBMC.Powerdown()</onclick>
+            <label>$LOCALIZE[13005]</label>
+            <thumb>ShutdownNF.png</thumb>
+            <icon>ShutdownFO.png</icon>
+          </item>
+          <item id="14" description="Reboot">
+            <visible>!Skin.HasSetting(QuitMenu_Hide_Reboot)</visible>
+            <visible>System.CanReboot</visible>
+            <onclick>dialog.close(all,true)</onclick>
+            <onclick>XBMC.Reset()</onclick>
+            <label>$LOCALIZE[13013]</label>
+            <thumb>RestartNF.png</thumb>
+            <icon>RestartFO.png</icon>
+          </item>
+          <item id="16" description="Settings">
+            <visible>Skin.HasSetting(QuitMenu_Show_Settings)</visible>
+            <onclick>dialog.close(all,true)</onclick>
+            <onclick>ActivateWindow(Settings,return)</onclick>
+            <label>$LOCALIZE[5]</label>
+            <thumb>SettingsNF.png</thumb>
+            <icon>SettingsFO.png</icon>
+          </item>
+        </content>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">50</defaultcontrol>
+  <onload>ClearProperty(gallery)</onload>
+  <onunload>ClearProperty(gallery)</onunload>
+  <controls>
+    <control type="group" description="BG">
+      <include>Fanart_Art</include>
+    </control>
+	<include>View_50</include>
+    <include>View_51_Panel</include>
+    <include>View_52_BigList</include>
+    <include>View_53_Grid</include>
+    <include>View_54_LowList</include>
+    <include>View_55_BigPanel</include>
+    <include>View_56_BannerList</include>
+    <!-- Showcase 57 58 & 59 -->
+    <include>View_59_Showcase</include>
+    <control type="group" description="Showcase trigger">
+        <animation effect="slide" easing="out" start="0,0" end="0,-90" time="350" delay="0" center="120,350" reversible="true" condition="!IsEmpty(Window.Property(gallery))">Conditional</animation>
+        <include>VignetteFade</include>
+		<include>Time</include>
+      </control>
+    <!-- SIDE MENU -->
+    <control type="group" description="Side menu 9000 group">
+      <include>9000Commons</include>
+      <control type="grouplist" id="9000">
+        <include>9000GrouplistParameters</include>
+        <control type="togglebutton" id="14" description="Toggle Watched">
+          <include>9000SysButtons</include>
+          <label>$LOCALIZE[535]: $LOCALIZE[16100]</label>
+          <altlabel>$LOCALIZE[535]: $LOCALIZE[16101]</altlabel>
+        </control>
+        <control type="button" id="3" description="Sort">
+          <include>9000SysButtons</include>
+        </control>
+        <control type="togglebutton" id="4" description="Sort direction">
+          <include>9000SysButtons</include>
+          <label>$LOCALIZE[21429]:  $LOCALIZE[21430]</label>
+          <altlabel>$LOCALIZE[21429]:  $LOCALIZE[21431]</altlabel>
+        </control>
+        <control type="button" id="8" description="Search">
+          <include>9000SysButtons</include>
+          <label>$LOCALIZE[137]</label>
+        </control>
+		<control type="togglebutton" id="20" description="Library update">
+          <include>9000SysButtons</include>
+          <label>653</label>
+		  <altlabel>13353</altlabel>
+		  <usealttexture>library.isscanningvideo</usealttexture>
+        </control>
+		<control type="button" id="698" description="Playlist">
+          <include>9000SysButtons</include>
+          <label>$LOCALIZE[20012]</label>
+          <onclick>ActivateWindow(videoplaylist)</onclick>
+        </control>
+		<control type="button" id="699" description="Playing">
+          <enable>Player.HasMedia</enable>
+          <include>9000SysButtons</include>
+          <label>$LOCALIZE[16003]</label>
+          <onclick>fullscreen</onclick>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

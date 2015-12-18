@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+  <include>OpenClose</include>
+  <controls>
+    <control type="group">
+      <animation effect="slide" start="0,0" end="0,-200" time="200" delay="200" reversible="true" condition="Window.IsVisible(FullScreenVideo)">Conditional</animation>
+      <posx>595</posx>
+      <posy>0</posy>
+      <control type="image" description="background">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>750</width>
+        <height>60</height>
+        <texture flipy="true" border="44,0,44,0">dialogs/BusyBG.png</texture>
+      </control>
+      <control type="label" id="30" description="Header Label">
+        <posx>132</posx>
+        <posy>2</posy>
+        <width>560</width>
+        <height>20</height>
+        <font>ExtProgressBar2</font>
+        <align>left</align>
+      </control>
+      <control type="label" id="31" description="Current Directory Label">
+        <posx>132</posx>
+        <posy>20</posy>
+        <width>560</width>
+        <height>30</height>
+        <font>ExtProgressBar</font>
+        <align>left</align>
+        <haspath>true</haspath>
+      </control>
+      <control type="label" id="1" description="Progress label">
+        <posx>36</posx>
+        <posy>2</posy>
+        <width>92</width>
+        <height>50</height>
+        <align>center</align>
+        <font>Progress</font>
+        <label>$INFO[Control.GetLabel(32),,%]</label>
+      </control>
+      <control type="progress" id="32" description="Progress bar">
+        <posx>48</posx>
+        <posy>0</posy>
+        <width>555</width>
+        <height>8</height>
+        <texturebg>-</texturebg>
+        <midtexture>-</midtexture>
+        <righttexture>-</righttexture>
+        <lefttexture>-</lefttexture>
+      </control>
+    </control>
+  </controls>
+</window>

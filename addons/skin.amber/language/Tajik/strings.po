@@ -1,0 +1,109 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Tajik (http://www.transifex.com/projects/p/xbmc-skins/language/tg/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Иловашудаи охирин"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Объект"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Барномаи иловагии лирика"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Ҳофизаи истифодашуда:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Премера"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Таваққуф"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Истодан"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Басуръат ба пеш гардонидани роҳча"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Ба ақиб бурдан"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Менюи филм"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Боргирӣ кардани субтитрҳо"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Зерунвонҳои маҳаллӣ дастрасанд"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "Пахши мустақим"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Вақти ба нақша гирифта"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Илова кардани гурӯҳ"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Тоза кардани гурӯҳ"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Нест кардани гурӯҳ"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Гурӯҳҳои[CR]дастрас"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Насби вақтсанҷ"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Пешгӯии обу ҳаво барои 36 соат"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Пешгӯии обу ҳаво барои як соат"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Пешгӯии обу ҳаво барои рӯзҳои истироҳат"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Пешгӯии обу ҳаво барои 10 рӯз"

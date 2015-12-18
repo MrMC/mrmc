@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+  <include name="List52Label">
+    <posx>15</posx>
+    <posy>0</posy>
+    <height>72</height>
+    <width>820</width>
+    <scroll>false</scroll>
+    <aligny>center</aligny>
+  </include>
+  <include name="List52Label2">
+    <posx>15</posx>
+    <posy>42</posy>
+    <height>72</height>
+    <width>620</width>
+    <font>Details</font>
+    <aligny>center</aligny>
+    <textcolor>Grey</textcolor>
+  </include>
+  <include name="List52_NF">
+    <control type="image">
+      <posx>0</posx>
+      <posy>0</posy>
+      <height>109</height>
+      <width>930</width>
+      <texture flipy="true" border="3">list/ListNF.png</texture>
+    </control>
+  </include>
+  <include name="List52_FO">
+    <control type="image">
+      <posx>0</posx>
+      <posy>1</posy>
+      <width>930</width>
+      <height>105</height>
+      <texture>list/ListFO.png</texture>
+    </control>
+  </include>
+  <include name="View_52_BigList">
+    <control type="group" description="Large Infolist2">
+      <visible>Control.IsVisible(52)</visible>
+      <include>ContentFade</include>
+      <control type="list" id="52">
+        <visible>Container.Content(Movies) | Container.Content(TVShows) | Container.Content(episodes) | container.content(songs) | Container.Content(albums) | Container.Content(artists) | Window.IsActive(MyPics.xml)</visible>
+        <viewtype label="Large List">Large List</viewtype>
+        <posx>987</posx>
+        <posy>120</posy>
+        <width>930</width>
+        <height>864</height>
+        <pagecontrol>60</pagecontrol>
+        <onleft>9000</onleft>
+        <onright>60</onright>
+        <onup>52</onup>
+        <ondown>52</ondown>
+        <preloaditems>4</preloaditems>
+        <itemlayout condition="container.content(Movies) | container.content(TVShows) | Container.Content(Seasons) | [container.content(episodes) + !Skin.HasSetting(52_Episodes_UseFanart)]" height="108" width="930">
+          <include>List52_NF</include>
+          <control type="label">
+            <include>List52Label</include>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <include>List52Label2</include>
+            <label>$VAR[Details]</label>
+          </control>
+          <control type="group">
+            <visible>![Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+            <control type="image">
+              <posx>54r</posx>
+              <posy>0</posy>
+              <width>30</width>
+              <height>108</height>
+              <texture>$VAR[Overlay]</texture>
+              <aspectratio aligny="center">keep</aspectratio>
+            </control>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="container.content(Movies) | container.content(TVShows) | Container.Content(Seasons) | [container.content(episodes) + !Skin.HasSetting(52_Episodes_UseFanart)]" height="108" width="930">
+          <include>List52_NF</include>
+          <include>List52_FO</include>
+          <control type="label">
+            <textcolor>White2</textcolor>
+            <include>List52Label</include>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <textcolor>Grey3</textcolor>
+            <include>List52Label2</include>
+            <label>$VAR[Details]</label>
+          </control>
+          <control type="group">
+            <visible>![Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+            <control type="image">
+              <posx>54r</posx>
+              <posy>0</posy>
+              <width>30</width>
+              <height>108</height>
+              <texture>$VAR[Overlay]</texture>
+              <aspectratio aligny="center">keep</aspectratio>
+            </control>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="container.content(episodes) + Skin.HasSetting(52_Episodes_UseFanart)" height="108" width="930">
+          <include>List52_NF</include>
+          <control type="image">
+            <posx>9</posx>
+            <posy>15</posy>
+            <height>78</height>
+            <width>134</width>
+            <bordersize>-7</bordersize>
+            <include>EpisodeThumbBG</include>
+          </control>
+          <control type="image">
+            <posx>9</posx>
+            <posy>15</posy>
+            <height>78</height>
+            <width>134</width>
+            <include>EpisodeThumb</include>
+          </control>
+          <control type="image">
+            <posx>159</posx>
+            <posy>0</posy>
+            <height>108</height>
+            <width>21</width>
+            <aspectratio>keep</aspectratio>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+          <control type="label">
+            <posx>189</posx>
+            <width>700</width>
+            <include>List52Label</include>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <posx>189</posx>
+            <width>700</width>
+            <include>List52Label2</include>
+            <label>$VAR[Details]</label>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="container.content(episodes) + Skin.HasSetting(52_Episodes_UseFanart)" height="108" width="930">
+          <include>List52_NF</include>
+          <include>List52_FO</include>
+          <control type="image">
+            <posx>9</posx>
+            <posy>15</posy>
+            <height>78</height>
+            <width>134</width>
+            <bordersize>-7</bordersize>
+            <include>EpisodeThumbBG</include>
+          </control>
+          <control type="image">
+            <posx>9</posx>
+            <posy>15</posy>
+            <height>78</height>
+            <width>134</width>
+            <include>EpisodeThumb</include>
+          </control>
+          <control type="image">
+            <posx>159</posx>
+            <posy>0</posy>
+            <height>108</height>
+            <width>21</width>
+            <aspectratio>keep</aspectratio>
+            <texture>$VAR[Overlay]</texture>
+          </control>
+          <control type="label">
+            <posx>189</posx>
+            <width>700</width>
+            <textcolor>White2</textcolor>
+            <include>List52Label</include>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <posx>189</posx>
+            <width>700</width>
+            <textcolor>Grey3</textcolor>
+            <include>List52Label2</include>
+            <label>$VAR[Details]</label>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="container.content(artists) | container.content(songs) | container.content(albums) | Window.IsActive(MyPics.xml)" height="108" width="930">
+          <include>List52_NF</include>
+          <control type="image">
+            <posx>9</posx>
+            <posy>12</posy>
+            <height>84</height>
+            <width>84</width>
+            <bordersize>-6</bordersize>
+            <include>SquareThumbBG</include>
+          </control>
+          <control type="image">
+            <posx>9</posx>
+            <posy>12</posy>
+            <height>84</height>
+            <width>84</width>
+            <texture background="true">$VAR[Thumbs]</texture>
+            <aspectratio aligny="top">scale</aspectratio>
+          </control>
+          <control type="label">
+            <posx>120</posx>
+            <width>700</width>
+            <textcolor>White2</textcolor>
+            <scroll>false</scroll>
+            <include>List52Label</include>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <posx>120</posx>
+            <width>700</width>
+            <scroll>false</scroll>
+            <textcolor>Grey3</textcolor>
+            <include>List52Label2</include>
+            <label>$VAR[Details]</label>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="container.content(artists) | container.content(songs) | container.content(albums) | Window.IsActive(MyPics.xml)" height="108" width="930">
+          <include>List52_NF</include>
+          <include>List52_FO</include>
+          <control type="image">
+            <posx>9</posx>
+            <posy>12</posy>
+            <height>84</height>
+            <width>84</width>
+            <bordersize>-6</bordersize>
+            <include>SquareThumbBG</include>
+          </control>
+          <control type="image">
+            <posx>9</posx>
+            <posy>12</posy>
+            <height>84</height>
+            <width>84</width>
+            <texture background="true">$VAR[Thumbs]</texture>
+            <aspectratio aligny="top">scale</aspectratio>
+          </control>
+          <control type="label">
+            <posx>120</posx>
+            <width>700</width>
+            <textcolor>White2</textcolor>
+            <include>List52Label</include>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <posx>120</posx>
+            <width>700</width>
+            <textcolor>Grey3</textcolor>
+            <include>List52Label2</include>
+            <label>$VAR[Details]</label>
+          </control>
+        </focusedlayout>
+        <itemlayout condition="![container.content(Movies) | container.content(TVShows) | container.content(episodes) | container.content(songs) | container.content(albums) | container.content(artists) | Window.IsActive(MyPics.xml)]" height="72" width="930">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>72</height>
+            <width>870</width>
+            <texture flipy="true" border="3">list/ListNF.png</texture>
+          </control>
+          <control type="label">
+            <include>List52Label</include>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <include>List52Label2</include>
+            <label>$INFO[ListItem.Label2]</label>
+          </control>
+        </itemlayout>
+        <focusedlayout condition="![container.content(Movies) | container.content(TVShows) | container.content(episodes) | container.content(songs) | container.content(albums) | container.content(artists) | Window.IsActive(MyPics.xml)]" height="72" width="930">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <height>72</height>
+            <width>870</width>
+            <texture flipy="true" border="3">list/ListNF.png</texture>
+          </control>
+          <control type="image">
+            <posx>0</posx>
+            <posy>1</posy>
+            <width>870</width>
+            <height>69</height>
+            <texture>list/ListFO.png</texture>
+          </control>
+          <control type="label">
+            <include>List52Label</include>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <include>List52Label2</include>
+            <label>$INFO[ListItem.Label2]</label>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="group" description="52 MediaInfo">
+        <visible>Window.IsActive(MyVideoNav.xml)</visible>
+        <control type="group" description="Thumbs">
+          <posy>0</posy>
+          <control type="image" description="Thumb">
+            <visible>![[Container.Content(movies) + Skin.HasSetting(52_Movies_UseFanart)] | [Container.Content(tvshows) + Skin.HasSetting(52_TV_UseFanart)] | [Container.Content(episodes) + Skin.HasSetting(52_Episodes_UseFanart)]]</visible>
+            <posx>54</posx>
+            <posy>81</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <texture background="true">$VAR[Thumbs]</texture>
+            <!--<include>ThumbBorder</include>-->
+            <aspectratio align="center" aligny="bottom">keep</aspectratio>
+          </control>
+          <control type="image" description="Thumb reflection">
+            <visible>![[Container.Content(movies) + Skin.HasSetting(52_Movies_UseFanart)] | [Container.Content(tvshows) + Skin.HasSetting(52_TV_UseFanart)] | [Container.Content(episodes) + Skin.HasSetting(52_Episodes_UseFanart)]]</visible>
+            <posx>54</posx>
+            <posy>606</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <texture flipy="true" background="true">$VAR[Thumbs]</texture>
+            <!--<include>ThumbBorder</include>-->
+            <aspectratio align="center" aligny="top">keep</aspectratio>
+            <colordiffuse>939e9e9e</colordiffuse>
+          </control>
+          <control type="image" description="fanart">
+            <visible>[Container.Content(movies) + Skin.HasSetting(52_Movies_UseFanart)] | [Container.Content(tvshows) + Skin.HasSetting(52_TV_UseFanart)] | [Container.Content(episodes) + Skin.HasSetting(52_Episodes_UseFanart)]</visible>
+            <posx>54</posx>
+            <posy>81</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+            <aspectratio align="center" aligny="bottom">keep</aspectratio>
+          </control>
+          <control type="image" description="fanart reflection">
+            <visible>[Container.Content(movies) + Skin.HasSetting(52_Movies_UseFanart)] | [Container.Content(tvshows) + Skin.HasSetting(52_TV_UseFanart)] | [Container.Content(episodes) + Skin.HasSetting(52_Episodes_UseFanart)]</visible>
+            <posx>54</posx>
+            <posy>606</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <colordiffuse>939e9e9e</colordiffuse>
+            <texture flipy="true" background="true">$INFO[ListItem.Art(fanart)]</texture>
+            <aspectratio align="center" aligny="top">keep</aspectratio>
+          </control>
+          <control type="image" description="Reflection fade">
+            <posx>54</posx>
+            <posy>603</posy>
+            <width>812</width>
+            <height>522</height>
+            <texture>img/GradientRef.png</texture>
+          </control>
+        </control>
+        <control type="group" description="Media info">
+          <posx>60</posx>
+          <posy>390</posy>
+          <control type="label" description="Title Label">
+            <posy>240</posy>
+            <width>800</width>
+            <height>60</height>
+            <textcolor>Highlight</textcolor>
+            <scroll>false</scroll>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="textbox" description="Plot51">
+            <posx>0</posx>
+            <posy>300</posy>
+            <width>800</width>
+            <height>300</height>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="image" description="Footer">
+            <posx>-60</posx>
+            <posy>603</posy>
+            <width>1920</width>
+            <height>87</height>
+            <texture border="0,30,0,0">OSD/OSDBackground.png</texture>
+          </control>
+          <control type="group" description="Flags">
+            <posx>0</posx>
+            <posy>639</posy>
+            <include>MediaFlags</include>
+          </control>
+          <control type="image" description="Rating">
+            <visible>Container.Content(Tvshows)</visible>
+            <posx>-3</posx>
+            <posy>639</posy>
+            <include>Stars</include>
+          </control>
+        </control>
+      </control>
+      <control type="group" description="52 MediaInfo">
+        <visible>Window.IsActive(MyMusicNav.xml)</visible>
+        <control type="group" description="Thumbs">
+          <posy>0</posy>
+          <control type="image" description="Thumb">
+            <visible>![[Container.Content(albums) + Skin.HasSetting(52_Albums_UseFanart)] | [Container.Content(artists) + Skin.HasSetting(52_Artists_UseFanart)]]</visible>
+            <posx>54</posx>
+            <posy>81</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <texture background="true">$VAR[Thumbs]</texture>
+            <aspectratio align="center" aligny="bottom">keep</aspectratio>
+          </control>
+          <control type="image" description="Thumb Reflection">
+            <visible>![[Container.Content(albums) + Skin.HasSetting(52_Albums_UseFanart)] | [Container.Content(artists) + Skin.HasSetting(52_Artists_UseFanart)]]</visible>
+            <posx>54</posx>
+            <posy>606</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <colordiffuse>939e9e9e</colordiffuse>
+            <texture flipy="true" background="true">$VAR[Thumbs]</texture>
+            <aspectratio align="center" aligny="top">keep</aspectratio>
+          </control>
+          <control type="image" description="fanart">
+            <visible>[Container.Content(albums) + Skin.HasSetting(52_Albums_UseFanart)] | [Container.Content(artists) + Skin.HasSetting(52_Artists_UseFanart)]</visible>
+            <posx>54</posx>
+            <posy>81</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+            <aspectratio align="center" aligny="bottom">keep</aspectratio>
+          </control>
+          <control type="image" description="fanart Reflection">
+            <visible>[Container.Content(albums) + Skin.HasSetting(52_Albums_UseFanart)] | [Container.Content(artists) + Skin.HasSetting(52_Artists_UseFanart)]</visible>
+            <posx>54</posx>
+            <posy>606</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <colordiffuse>939e9e9e</colordiffuse>
+            <texture flipy="true" background="true">$INFO[ListItem.Art(fanart)]</texture>
+            <aspectratio align="center" aligny="top">keep</aspectratio>
+          </control>
+          <control type="image" description="Reflection fade">
+            <posx>54</posx>
+            <posy>603</posy>
+            <width>812</width>
+            <height>522</height>
+            <texture>img/GradientRef.png</texture>
+          </control>
+        </control>
+        <control type="group" description="Media info">
+          <posx>60</posx>
+          <posy>390</posy>
+          <control type="label" description="Title Label">
+            <posy>240</posy>
+            <width>800</width>
+            <height>60</height>
+            <textcolor>Highlight</textcolor>
+            <scroll>false</scroll>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="textbox" description="Plot51">
+            <posx>0</posx>
+            <posy>300</posy>
+            <width>800</width>
+            <height>300</height>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="image" description="Footer">
+            <posx>-60</posx>
+            <posy>603</posy>
+            <width>1920</width>
+            <height>87</height>
+            <texture border="0,30,0,0">OSD/OSDBackground.png</texture>
+          </control>
+        </control>
+      </control>
+      <control type="group" description="52 MediaInfo">
+        <visible>Window.IsActive(MyMusicSongs.xml) + Skin.HasSetting(plexbmc)</visible>
+        <control type="group" description="Thumbs">
+          <animation effect="slide" start="0,0" end="0,210" time="0" condition="!Control.IsVisible(5005)">Conditional</animation>
+		  <posy>0</posy>
+          <control type="image" description="Thumb">
+            <visible>![[Container.Content(albums) + Skin.HasSetting(52_Albums_UseFanart)] | [Container.Content(artists) + Skin.HasSetting(52_Artists_UseFanart)]]</visible>
+            <posx>54</posx>
+            <posy>81</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <texture background="true">$VAR[Thumbs]</texture>
+            <aspectratio align="center" aligny="bottom">keep</aspectratio>
+          </control>
+          <control type="image" description="Thumb reflection">
+            <visible>![[Container.Content(albums) + Skin.HasSetting(52_Albums_UseFanart)] | [Container.Content(artists) + Skin.HasSetting(52_Artists_UseFanart)]]</visible>
+            <posx>54</posx>
+            <posy>606</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <colordiffuse>939e9e9e</colordiffuse>
+            <texture flipy="true" background="true">$VAR[Thumbs]</texture>
+            <aspectratio align="center" aligny="top">keep</aspectratio>
+          </control>
+          <control type="image" description="fanart">
+            <visible>[Container.Content(albums) + Skin.HasSetting(52_Albums_UseFanart)] | [Container.Content(artists) + Skin.HasSetting(52_Artists_UseFanart)]</visible>
+            <posx>54</posx>
+            <posy>81</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+            <aspectratio align="center" aligny="bottom">keep</aspectratio>
+          </control>
+          <control type="image" description="fanart Reflection">
+            <visible>[Container.Content(albums) + Skin.HasSetting(52_Albums_UseFanart)] | [Container.Content(artists) + Skin.HasSetting(52_Artists_UseFanart)]</visible>
+            <posx>54</posx>
+            <posy>606</posy>
+            <width>812</width>
+            <height>522</height>
+            <include>Icon_Fade</include>
+            <colordiffuse>939e9e9e</colordiffuse>
+            <texture flipy="true" background="true">$INFO[ListItem.Art(fanart)]</texture>
+            <aspectratio align="center" aligny="top">keep</aspectratio>
+          </control>
+          <control type="image" description="Reflection fade">
+            <posx>54</posx>
+            <posy>603</posy>
+            <width>812</width>
+            <height>522</height>
+            <texture>img/GradientRef.png</texture>
+          </control>
+        </control>
+        <control type="group" id="5005" description="Media info">
+          <visible>container.content(artists)</visible>
+		  <posx>60</posx>
+          <posy>390</posy>
+          <control type="label" description="Title Label">
+            <posy>240</posy>
+            <width>800</width>
+            <height>60</height>
+            <textcolor>Highlight</textcolor>
+            <scroll>false</scroll>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="textbox" description="Plot51">
+            <posx>0</posx>
+            <posy>300</posy>
+            <width>800</width>
+            <height>300</height>
+            <label>$VAR[Plots]</label>
+          </control>
+          <control type="image" description="Footer">
+            <posx>-60</posx>
+            <posy>603</posy>
+            <width>1920</width>
+            <height>87</height>
+            <texture border="0,30,0,0">OSD/OSDBackground.png</texture>
+          </control>
+        </control>
+      </control>
+      <control type="group" description="52 MediaInfo">
+        <visible>Window.IsActive(MyPics.xml)</visible>
+        <posy>75</posy>
+        <control type="image" description="Thumb">
+          <posx>93</posx>
+          <posy>60</posy>
+          <width>816</width>
+          <height>522</height>
+          <include>Icon_Fade</include>
+          <texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+          <aspectratio aligny="bottom">keep</aspectratio>
+        </control>
+        <control type="image" description="Thumb Reflection">
+          <posx>93</posx>
+          <posy>585</posy>
+          <width>816</width>
+          <height>522</height>
+          <include>Icon_Fade</include>
+          <colordiffuse>939e9e9e</colordiffuse>
+          <texture flipy="true" background="true">$INFO[ListItem.Art(thumb)]</texture>
+          <aspectratio aligny="top">keep</aspectratio>
+        </control>
+        <control type="image" description="Reflection fade">
+          <posx>87</posx>
+          <posy>603</posy>
+          <width>822</width>
+          <height>522</height>
+          <texture>img/GradientRef.png</texture>
+        </control>
+        <control type="group" description="Media info">
+          <posx>99</posx>
+          <posy>528</posy>
+          <control type="label" description="Title">
+            <posy>150</posy>
+            <width>800</width>
+            <height>33</height>
+            <font>InfoTitle</font>
+            <textcolor>Highlight</textcolor>
+            <shadowcolor>Black</shadowcolor>
+            <align>center</align>
+            <scroll>false</scroll>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label" description="Details">
+            <posy>230</posy>
+            <width>800</width>
+            <height>33</height>
+            <font>Details</font>
+            <shadowcolor>Black</shadowcolor>
+            <align>center</align>
+            <label>$VAR[Details]</label>
+          </control>
+          <control type="label" description="Genre">
+            <posy>280</posy>
+            <width>800</width>
+            <height>33</height>
+            <font>Details</font>
+            <shadowcolor>Black</shadowcolor>
+            <align>center</align>
+            <label>$INFO[ListItem.Genre]</label>
+          </control>
+          <control type="label" description="Year">
+            <posy>330</posy>
+            <width>800</width>
+            <height>33</height>
+            <font>Details</font>
+            <shadowcolor>Black</shadowcolor>
+            <align>center</align>
+            <label>$INFO[ListItem.Year]</label>
+          </control>
+          <control type="label" description="Addon version">
+            <visible>Container.Content(addons)</visible>
+            <posy>405</posy>
+            <width>800</width>
+            <height>33</height>
+            <font>Details</font>
+            <textcolor>Highlight</textcolor>
+            <align>center</align>
+            <label>$INFO[ListItem.Label2]</label>
+          </control>
+          <control type="image" description="Footer">
+            <posx>-60</posx>
+            <posy>603</posy>
+            <width>1920</width>
+            <height>87</height>
+            <texture border="0,30,0,0">OSD/OSDBackground.png</texture>
+          </control>
+          <control type="image" description="Stars">
+            <posx>-4</posx>
+            <posy>410</posy>
+            <include>Stars</include>
+          </control>
+          <control type="image" description="HD badge">
+            <visible>![ListItem.IsFolder | IsEmpty(ListItem.VideoResolution) | !IntegerGreaterThan(ListItem.VideoResolution,710)]</visible>
+            <posx>120</posx>
+            <posy>482</posy>
+            <height>24</height>
+            <width>90</width>
+            <aspectratio aligny="bottom" align="right">keep</aspectratio>
+            <texture>badges/HD.png</texture>
+          </control>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="-8,0" time="150">Focus</animation>
+        <animation effect="slide" start="-8,0" end="0,0" time="300">UnFocus</animation>
+        <posx>21r</posx>
+        <posy>99</posy>
+        <width>36</width>
+        <height>900</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>52</onleft>
+        <onright>noop</onright>
+      </control>
+    </control>
+  </include>
+</includes>

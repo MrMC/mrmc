@@ -1,0 +1,83 @@
+2.1.3
+Fix Amber GUI sounds, remove WMC PVR files, RecordPrefs.xml and DeleteTimer.xml are available on the kodi forum for each PVR add-on that
+uses them, display weather icon on all Menu entries if weather is enabled, Font sizes added to support screensavers, 
+correct PVR selector for unknown genre, fix PVR channel dialogs, 7th line codec info fix
+
+2.1.2
+Fix bookmark menu and selector, update background images to 1080, remove redundant quit sub-menu items,
+addon.xml and AddonBrowser.xml fixes
+
+2.1.1
+First release for Kodi 15 Isengard, migrate sounds to add-on, remove outdated MyPVR.xml, fix masked actor selector bar,
+support ATSC subchannels, fix Visualisation preset lists, update subtitle flags and fix sr crash, 
+update default background to 1080
+
+2.1.0
+Updates for Kodi 15 Isengard (internal), add Genre to TV Shows, SublimeKodi fixes, Add Settings and Shutdown sub-menu entries,
+Removed outdated TvTunes hooks
+
+2.0.17
+Fix missing keyboard layout button, Fix missing iso/dvd disc icon, Fix pointers, Add 3D Icon and Menu
+
+2.0.16
+Fix PVR screen alignments, update github source
+
+2.0.15
+Update german translation, exit Timeline with "Back-Key", no overlapping of Backgrounds for Video Controls from VideoOSD.xml,
+Hide Background of Video Controls when in Live TV as Background from VideoFullScreen.xml is used, Added Plex User Display 
+
+2.0.14
+Undefined Includes fix, fixed EPG Guide view (now, next, channel), Picture dialog alignment error fixed
+
+2.0.13
+Add seekbar buffer amount, Plexbmc fixes, add license/forum/source to addon.xml
+
+2.0.12
+Add Live-TV OSD and add "Launch" button to DialogAddonInfo
+
+2.0.11
+Fix addon.xml default setting
+
+2.0.10
+Fix add-on browser for Helix
+
+2.0.9
+Remove skin debug info
+
+2.0.8
+Fix label in settings for custom background images
+
+2.0.7
+More Helix Cosmectics
+
+2.0.6
+More Fixes for Helix
+
+2.0.5
+Fix Favourites Text Position
+
+2.0.4
+Updated language files from Transifex
+
+1.6.1
+Fix opening add ons on Android
+Add possibility to define custom entry point for TV Shows
+
+1.6.0
+Add PVR shortcuts to submenu
+Fix label color in PVR
+Re-wamp media covers
+Add videoplaylist link to side menu
+Fix settings descriptions
+
+1.5.8
+Fix add ons settings
+Add option to hide library sections - plexbmc profiles support
+Increase plexbmc episode items
+Finally fix busy dialog
+Plexbmc add-on support improvements
+Add holiday snowfall effect
+Fix size and scrolling of titles in panel view
+
+Ver 1.5.0
+Initial release to Gotham repository

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">8</defaultcontrol>
+  <controls>
+    <control type="videowindow" id="20">
+      <description>videowindow</description>
+      <include>Dimensions_Fullscreen</include>
+    </control>
+    <control type="mover" id="8">
+      <description>top left mover</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>256</width>
+      <height>256</height>
+      <texturefocus>calibrate/CalibrateTopLeft2.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+    <control type="mover" id="9">
+      <description>right bottom mover</description>
+      <posx>1644</posx>
+      <posy>824</posy>
+      <width>256</width>
+      <height>256</height>
+      <texturefocus>calibrate/CalibrateBottomRight2.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+    <control type="mover" id="10">
+      <description>subtitle position mover</description>
+      <posx>832</posx>
+      <posy>592</posy>
+      <width>256</width>
+      <height>128</height>
+      <texturefocus border="0,3,0,3">calibrate/CalibrateSubtitles2.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+    <control type="resize" id="11">
+      <description>pixel aspect ratio box</description>
+      <posx>0</posx>
+      <posy>348</posy>
+      <width>384</width>
+      <height>384</height>
+      <texturefocus>calibrate/CalibratePixelRatio.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+    <control type="label" id="2">
+      <description>coordinates label</description>
+      <posx>30</posx>
+      <posy>60</posy>
+      <width>1860</width>
+      <align>center</align>
+    </control>
+    <control type="label" id="3">
+      <description>help information</description>
+      <posx>30</posx>
+      <posy>105</posy>
+      <width>1860</width>
+      <align>center</align>
+    </control>
+  </controls>
+</window>

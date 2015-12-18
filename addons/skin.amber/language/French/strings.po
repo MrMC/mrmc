@@ -1,0 +1,421 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: French (http://www.transifex.com/projects/p/xbmc-skins/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#31000"
+msgid "Picture Channels"
+msgstr "Chaînes Image"
+
+msgctxt "#31001"
+msgid "Video Channels"
+msgstr "Chaînes Vidéo"
+
+msgctxt "#31002"
+msgid "Music Channels"
+msgstr "Chaînes Musique"
+
+msgctxt "#31003"
+msgid "Channels Directory"
+msgstr "Dossier des chaînes"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31005"
+msgid "Cinema"
+msgstr "Cinéma"
+
+msgctxt "#31006"
+msgid "Shared"
+msgstr "Partagé"
+
+msgctxt "#31007"
+msgid "PleKodi settings"
+msgstr "Paramètres PleKodi"
+
+msgctxt "#31008"
+msgid "Go Plex"
+msgstr "Aller vers Plex"
+
+msgctxt "#31009"
+msgid "Go Kodi"
+msgstr "Aller vers Kodi"
+
+msgctxt "#31010"
+msgid "Queue"
+msgstr "File d'attente"
+
+msgctxt "#31011"
+msgid "Recently Viewed"
+msgstr "Vu récemment"
+
+msgctxt "#31012"
+msgid "Recently Released"
+msgstr "Publié récemment"
+
+msgctxt "#31013"
+msgid "Recently Aired"
+msgstr "Diffusé récemment"
+
+msgctxt "#31014"
+msgid "On Deck"
+msgstr "Prêt"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Ajouté récemment"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Objets"
+
+msgctxt "#31038"
+msgid "Reset ALL skin settings to default values"
+msgstr "Réinitialiser TOUS les paramètres du thème avec les valeurs par défaut"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Prérèglages de visualisation"
+
+msgctxt "#31049"
+msgid "Settings Level"
+msgstr "Niveau De Paramétrage"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Modifier l'arrière-plan pour le type de média"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "Image Simple"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Image Multiple"
+
+msgctxt "#31115"
+msgid "Start music playlist on Kodi load"
+msgstr "Démarrer la playliste musicale au démarrage de Kodi"
+
+msgctxt "#31116"
+msgid "Startup playlist"
+msgstr "Playliste de démarrage"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Extension gérant les paroles"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Extension gérant les sous-titres"
+
+msgctxt "#31291"
+msgid "Add-on manager"
+msgstr "Gestionnaire d'extensions"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "objets"
+
+msgctxt "#31293"
+msgid "Can not be customized"
+msgstr "Non personnalisable"
+
+msgctxt "#31297"
+msgid "min"
+msgstr "min"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Mémoire utilisée :"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Diffusé"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pause"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Arrêter"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Avance rapide"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Retour rapide"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menu film"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Télécharger les Sous-titres"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "Sous-titre disponible localement"
+
+msgctxt "#31389"
+msgid "(2/4) Skin default - no caps"
+msgstr "(2/4) Skin par défaut - pas de caps"
+
+msgctxt "#31390"
+msgid "(1/4) Skin default"
+msgstr "(1/4) Skin par défaut"
+
+msgctxt "#31391"
+msgid "(4/4) Arial - no caps"
+msgstr "(4/4) Arial - pas de caps"
+
+msgctxt "#31392"
+msgid "(3/4) Arial based"
+msgstr "(3/4) Basé sur Arial"
+
+msgctxt "#31499"
+msgid "All TV Shows"
+msgstr "Toutes les Séries TV"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "TV En Direct"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Heure prévue"
+
+msgctxt "#31502"
+msgid "All Movies"
+msgstr "Tous Les Films"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Ajouter un Groupe"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Renommer le Groupe"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Supprimer le Groupe"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Groupes[CR]disponibles"
+
+msgctxt "#31507"
+msgid "Movies homescreen button opens:"
+msgstr "Le bouton Films de l'écran d'Accueil ouvre:"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Réglage de la minuterie"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Prévisions sur 36 heures"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Prévisions heure par heure"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Prévisions pour le weekend"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Prévisions sur 10 jours"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "S"
+
+msgctxt "#31955"
+msgid "Display shelf items after a short delay"
+msgstr "Afficher les objets de l'étagère après un court délai"
+
+msgctxt "#31956"
+msgid "Get theme"
+msgstr "Obtenir le thème"
+
+msgctxt "#31957"
+msgid "Hide Update library button from home submenu"
+msgstr "Cacher Actualiser la médiathèque dans le sous-menu Accueil"
+
+msgctxt "#31958"
+msgid "Big Panel"
+msgstr "Grand panneau"
+
+msgctxt "#31959"
+msgid "Go fullscreen on music playback"
+msgstr "Affichage plein écran lors de la lecture de musique"
+
+msgctxt "#31960"
+msgid "Music opens artists"
+msgstr "Musique ouvre Artistes"
+
+msgctxt "#31961"
+msgid "Recently added"
+msgstr "Récemment ajouté"
+
+msgctxt "#31962"
+msgid "Low List"
+msgstr "Petite liste"
+
+msgctxt "#31963"
+msgid "Panel"
+msgstr "Panneau"
+
+msgctxt "#31964"
+msgid "Configure shelf items"
+msgstr "Configurer les objets de l'étagère"
+
+msgctxt "#31965"
+msgid "Banner List"
+msgstr "Bannière"
+
+msgctxt "#31966"
+msgid "Recommended"
+msgstr "Recommandé"
+
+msgctxt "#31967"
+msgid "Enable Home shelf"
+msgstr "Activer l'étagère de l'écran d'Accueil"
+
+msgctxt "#31968"
+msgid "Show info"
+msgstr "Afficher les informations"
+
+msgctxt "#31969"
+msgid "Artist slideshow (requires Artist slideshow add-on)"
+msgstr "Diaporama Artiste (extension Artist slideshow nécessaire)"
+
+msgctxt "#31970"
+msgid "Push down for Gallery"
+msgstr "Appuyer vers le bas pour la Galerie"
+
+msgctxt "#31971"
+msgid "Concerts"
+msgstr "Concerts"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Clips"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "E"
+
+msgctxt "#31974"
+msgid "Home menu"
+msgstr "Menu d'Accueil"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Chaînes"
+
+msgctxt "#31976"
+msgid "Home shelf"
+msgstr "Étagère Accueil"
+
+msgctxt "#31977"
+msgid "Fast start"
+msgstr "Démarrage rapide"
+
+msgctxt "#31978"
+msgid "Show library info on Home (totals, unwatched...)"
+msgstr "Afficher les infos de la médiathèque sur l'Accueil (total, non vus...)"
+
+msgctxt "#31979"
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgctxt "#31980"
+msgid "Hide unwatched and partialy watched marks"
+msgstr "Masquer les indications 'Non vu' et 'Partiellement vu'"
+
+msgctxt "#31981"
+msgid "Hide watched marks"
+msgstr "Masquer les indications 'Déjà vu'"
+
+msgctxt "#31982"
+msgid "Shelf items populate more slowly on some systems. By default, skin waits for them to be ready and presents Home screen afterwards.[CR][CR]This option skips this step and presents Home page immediately. Shelf items will appear with a delay, depending on a speed of your system."
+msgstr "L'étagère se remplit moins vite sur certains systèmes. Par défaut, le thème attend et affiche l'écran d'Accueil après. [CR][CR]Cette option saute cette étape et affiche l'Accueil immédiatement. Les objets de l'étagère apparaitront plus tard, en fonction de la vitesse de votre système."
+
+msgctxt "#31983"
+msgid "Choose from menu"
+msgstr "Choisir à partir du menu"
+
+msgctxt "#31984"
+msgid "TV Tunes (requires TV Tunes add-on)"
+msgstr "TV Tunes (extension TV Tunes nécessaire)"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Avancé"
+
+msgctxt "#31986"
+msgid "Use default background on Home page"
+msgstr "Utiliser l'arrière-plan par défaut sur la page d'Accueil"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Aléatoire"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Menu"
+
+msgctxt "#31989"
+msgid "Home menu quit button function"
+msgstr "Fonction du bouton Quitter sur le menu d'Accueil"
+
+msgctxt "#31990"
+msgid "Quit Menu"
+msgstr "Menu Quitter"
+
+msgctxt "#31991"
+msgid "Background music visualization/video player on Home screen"
+msgstr "Visualisation de la musique/vidéo en fond d'écran sur l'Accueil"
+
+msgctxt "#31992"
+msgid "Banner (wide) thumbs"
+msgstr "Vignettes des bannières (larges)"
+
+msgctxt "#31993"
+msgid "Not used - click to customize"
+msgstr "Non utilisé - cliquer pour personnaliser"
+
+msgctxt "#31994"
+msgid "Use vertical main menu on Home screen"
+msgstr "Utiliser le menu vertical sur l'écran d'Accueil"
+
+msgctxt "#31995"
+msgid "Home layout"
+msgstr "Disposition Accueil"
+
+msgctxt "#31996"
+msgid "Holiday snowfall theme"
+msgstr "Thème de vacances enneigé"

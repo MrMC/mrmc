@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol>52</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <include>OpenClose</include>
+  <controls>
+    <include>Default_Art</include>
+    <control type="group" description="Content">
+      <include>OpenClose</include>
+      <posx>315</posx>
+      <posy>320</posy>
+      <width>1300</width>
+      <height>480</height>
+      <control type="image">
+        <posx>-21</posx>
+        <posy>-20</posy>
+        <width>1271</width>
+        <height>432</height>
+        <texture border="0">dialogs/LoginBG.png</texture>
+      </control>
+      <control type="label" description="Title">
+        <posx>629</posx>
+        <posy>15</posy>
+        <width>608</width>
+        <height>40</height>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+        <label>$LOCALIZE[13200]</label>
+      </control>
+      <control type="label" description="Profile Directory">
+        <posx>629</posx>
+        <posy>336</posy>
+        <width>608</width>
+        <align>center</align>
+        <font>font13</font>
+        <info>Container(52).ListItem.Label2</info>
+      </control>
+      <control type="panel" id="52">
+        <posx>629</posx>
+        <posy>80</posy>
+        <width>608</width>
+        <height>240</height>
+        <onleft>11</onleft>
+        <onright>noop</onright>
+        <onup>52</onup>
+        <ondown>52</ondown>
+        <pagecontrol>-</pagecontrol>
+        <scrolltime>240</scrolltime>
+        <itemlayout width="608" height="60">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>600</width>
+            <height>60</height>
+            <texture border="3" flipy="true">list/ListNF.png</texture>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>600</width>
+            <height>60</height>
+            <textoffsetx>30</textoffsetx>
+            <info>ListItem.Label</info>
+          </control>
+        </itemlayout>
+        <focusedlayout width="608" height="60">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>608</width>
+            <height>60</height>
+            <texture border="2">buttons/ButtonFO.png</texture>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>600</width>
+            <height>60</height>
+            <textoffsetx>30</textoffsetx>
+            <info>ListItem.Label</info>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="image">
+        <posx>252</posx>
+        <posy>30</posy>
+        <width>351</width>
+        <height>351</height>
+        <aspectratio>scale</aspectratio>
+        <texture fallback="unknown-user.png">$INFO[Container(52).ListItem.thumb]</texture>
+      </control>
+      <control type="button" id="11" description="Quit xbmc">
+        <animation effect="fade" start="100" end="60" time="0" condition="!Control.HasFocus(11)">Conditional</animation>
+        <animation effect="zoom" start="100" end="130" time="200" center="auto" condition="Control.HasFocus(11)">Conditional</animation>
+        <posx>48</posx>
+        <posy>248</posy>
+        <height>128</height>
+        <width>128</width>
+        <onright>52</onright>
+        <textoffsetx>20</textoffsetx>
+        <texturenofocus>BMShutdown.png</texturenofocus>
+        <texturefocus>BMShutdown.png</texturefocus>
+        <onclick>ActivateWindow(shutdownmenu)</onclick>
+        <label>-</label>
+      </control>
+    </control>
+  </controls>
+</window>

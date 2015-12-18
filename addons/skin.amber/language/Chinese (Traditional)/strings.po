@@ -1,0 +1,181 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (Traditional) (http://www.transifex.com/projects/p/xbmc-skins/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31005"
+msgid "Cinema"
+msgstr "電影院"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "最近新增"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "個項目"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "視覺效果設定"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "編輯媒體類型的背景"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "單一圖片"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "多張圖片"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "歌詞附加元件"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "字幕附加元件"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "項"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "已使用記憶體："
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "首播"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "暫停"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "停止"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "快轉"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "倒轉"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "電影選單"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "下載字幕"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "找到本杝端的字幕"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "電視"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "已排程的時間"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "新增群組"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "重新命名群組"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "刪除群組"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "可用的[CR]群組"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "計時器設定"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36小時預報"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "每小時預報"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "一週預報"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "10天預報"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "南"
+
+msgctxt "#31962"
+msgid "Low List"
+msgstr "低列表"
+
+msgctxt "#31963"
+msgid "Panel"
+msgstr "面板"
+
+msgctxt "#31971"
+msgid "Concerts"
+msgstr "音樂會"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "片斷"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "東"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "頻道"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "進階"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "隨機"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "選單"

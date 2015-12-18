@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+  <include name="View_54_LowList">
+    <control type="image" description="fa overlay">
+      <visible>Control.IsVisible(54)</visible>
+      <include>VignetteFade</include>
+      <posx>0</posx>
+      <posy>633</posy>
+      <width>1920</width>
+      <height>447</height>
+      <aspectratio>stretch</aspectratio>
+      <texture border="0,30,0,0">OSD/OSDBackground.png</texture>
+    </control>
+    <control type="group" description="Content">
+      <visible>Control.IsVisible(54)</visible>
+      <include>ContentFade</include>
+      <control type="list" id="54">
+        <posx>710</posx>
+        <posy>705</posy>
+        <width>1210</width>
+        <height>359</height>
+        <onleft>9000</onleft>
+        <onright>60</onright>
+        <onup>54</onup>
+        <ondown>54</ondown>
+        <pagecontrol>60</pagecontrol>
+        <viewtype label="Low List">Low List</viewtype>
+        <preloaditems>4</preloaditems>
+        <include>List_Layout</include>
+      </control>
+      <control type="group" description="54 MediaInfo">
+        <visible>Window.IsActive(MyVideoNav.xml)</visible>
+        <control type="image" description="GENERIC Thumb ONLY">
+          <visible>![Container.content(MusicVideos) | Container.Content(movies) | container.content(tvshows) | container.content(seasons) | container.content(episodes)]</visible>
+          <posx>60</posx>
+          <posy>573</posy>
+          <width>580</width>
+          <height>480</height>
+          <include>Icon_Fade</include>
+          <texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+          <include>ThumbBorder</include>
+          <aspectratio aligny="bottom">keep</aspectratio>
+        </control>
+        <control type="group" description="MediaInfo">
+          <visible>Container.content(MusicVideos) | Container.Content(movies) | container.content(tvshows) | container.content(seasons) | container.content(episodes)</visible>
+          <control type="group" description="Movies and shows">
+            <visible>!container.content(episodes)</visible>
+            <control type="image">
+              <posx>60</posx>
+              <posy>681</posy>
+              <width>246</width>
+              <height>366</height>
+              <include>PosterThumbBG</include>
+            </control>
+            <control type="image">
+              <posx>60</posx>
+              <posy>681</posy>
+              <width>246</width>
+              <height>366</height>
+              <include>Icon_Fade</include>
+              <include>PosterThumb</include>
+            </control>
+            <control type="group" description="Media info">
+              <posx>375</posx>
+              <posy>618</posy>
+              <control type="label" description="Title">
+                <posy>72</posy>
+                <width>800</width>
+                <height>33</height>
+                <font>InfoTitle</font>
+                <textcolor>Highlight</textcolor>
+                <shadowcolor>Black</shadowcolor>
+                <align>left</align>
+                <scroll>false</scroll>
+                <label>$INFO[ListItem.Title]</label>
+              </control>
+              <control type="label" description="Details">
+                <posy>123</posy>
+                <width>800</width>
+                <height>33</height>
+                <font>InfoDetails</font>
+                <shadowcolor>Black</shadowcolor>
+                <label>$VAR[Details]</label>
+              </control>
+              <control type="textbox" description="Plot Shadow">
+                <posy>166</posy>
+                <width>800</width>
+                <height>210</height>
+                <textcolor>Black</textcolor>
+                <label>$VAR[Plots]</label>
+              </control>
+              <control type="textbox" description="Plot itself">
+                <posy>165</posy>
+                <width>800</width>
+                <height>210</height>
+                <shadowcolor>-</shadowcolor>
+                <label>$VAR[Plots]</label>
+              </control>
+              <control type="group" description="Flags">
+                <posx>0</posx>
+                <posy>393</posy>
+                <include>MediaFlags</include>
+              </control>
+            </control>
+          </control>
+          <control type="group" description="Episodes only">
+            <visible>container.content(episodes)</visible>
+            <control type="image">
+              <posx>51</posx>
+              <posy>711</posy>
+              <width>492</width>
+              <height>332</height>
+              <include>EpisodeThumbBG</include>
+            </control>
+            <control type="image">
+              <posx>51</posx>
+              <posy>711</posy>
+              <width>492</width>
+              <height>332</height>
+              <include>Icon_Fade</include>
+              <include>EpisodeThumb</include>
+            </control>
+            <control type="group" description="Media info">
+              <posx>594</posx>
+              <posy>585</posy>
+              <control type="label" description="Title">
+                <posy>148</posy>
+                <width>570</width>
+                <height>33</height>
+                <font>InfoTitle</font>
+                <textcolor>Highlight</textcolor>
+                <shadowcolor>Black</shadowcolor>
+                <align>left</align>
+                <scroll>false</scroll>
+                <label>$INFO[ListItem.Title]</label>
+              </control>
+              <control type="textbox" description="Plot shadow">
+                <posx>0</posx>
+                <posy>199</posy>
+                <width>570</width>
+                <height>210</height>
+                <textcolor>Black</textcolor>
+                <label>$VAR[Plots]</label>
+              </control>
+              <control type="textbox" description="Plot itself">
+                <posx>0</posx>
+                <posy>198</posy>
+                <width>570</width>
+                <height>210</height>
+                <shadowcolor>-</shadowcolor>
+                <label>$VAR[Plots]</label>
+              </control>
+              <control type="group" description="Flags">
+                <posx>0</posx>
+                <posy>423</posy>
+                <include>MediaFlags</include>
+              </control>
+            </control>
+          </control>
+        </control>
+      </control>
+      <control type="group" description="MediaInfo List 50">
+        <posx>80</posx>
+        <posy>630</posy>
+        <visible>Window.IsActive(MyMusicNav.xml) | Window.IsActive(MyMusicSongs.xml) | Window.IsActive(MyPics.xml) | Window.IsActive(MyPrograms.xml)</visible>
+        <control type="image" description="Thumb BG">
+          <width>420</width>
+          <height>420</height>
+          <include>SquareThumbBG</include>
+        </control>
+        <control type="image" description="Thumb">
+          <width>420</width>
+          <height>420</height>
+          <include>Icon_Fade</include>
+          <include>SquareThumb</include>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <animation effect="slide" start="0,0" end="-8,0" time="150">Focus</animation>
+        <animation effect="slide" start="-8,0" end="0,0" time="300">UnFocus</animation>
+        <posx>20r</posx>
+        <posy>705</posy>
+        <height>359</height>
+        <width>36</width>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>54</onleft>
+        <onright>noop</onright>
+      </control>
+    </control>
+  </include>
+</includes>

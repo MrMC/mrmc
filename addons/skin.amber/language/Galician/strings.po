@@ -1,0 +1,349 @@
+# Kodi Media Center language file
+# Addon Name: Amber
+# Addon id: skin.amber
+# Addon Provider: Pecinko
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Galician (http://www.transifex.com/projects/p/xbmc-skins/language/gl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: gl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Picture Channels"
+msgstr "Canles de Imaxes"
+
+msgctxt "#31001"
+msgid "Video Channels"
+msgstr "Canles de Vídeos"
+
+msgctxt "#31002"
+msgid "Music Channels"
+msgstr "Canles de Música"
+
+msgctxt "#31003"
+msgid "Channels Directory"
+msgstr "Directorio de Canles"
+
+msgctxt "#31004"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#31005"
+msgid "Cinema"
+msgstr "Cine"
+
+msgctxt "#31006"
+msgid "Shared"
+msgstr "Compartido"
+
+msgctxt "#31007"
+msgid "PleKodi settings"
+msgstr "Configuración do PleKodi"
+
+msgctxt "#31008"
+msgid "Go Plex"
+msgstr "Ir a Plex"
+
+msgctxt "#31009"
+msgid "Go Kodi"
+msgstr "Ir ó Kodi"
+
+msgctxt "#31010"
+msgid "Queue"
+msgstr "Cola"
+
+msgctxt "#31011"
+msgid "Recently Viewed"
+msgstr "Vistos Recentemente"
+
+msgctxt "#31012"
+msgid "Recently Released"
+msgstr "Estreados Recentemente"
+
+msgctxt "#31013"
+msgid "Recently Aired"
+msgstr "Emitidos Recentemente"
+
+msgctxt "#31014"
+msgid "On Deck"
+msgstr "En progreso"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Engadidos Recentemente"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Elementos"
+
+msgctxt "#31038"
+msgid "Reset ALL skin settings to default values"
+msgstr "Restabelecer a configuración do Tema aos seus valores predefinidos"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Preconfiguracións de visualizacións"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Editar os fondos para os tipos de medios"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "Imaxe única"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Multi imaxe"
+
+msgctxt "#31115"
+msgid "Start music playlist on Kodi load"
+msgstr "Reproducir a listaxe de música ao iniciar o Kodi"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Complemento de letras"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Complemento de subtítulos"
+
+msgctxt "#31291"
+msgid "Add-on manager"
+msgstr "Xestor de complementos"
+
+msgctxt "#31292"
+msgid "items"
+msgstr "elementos"
+
+msgctxt "#31293"
+msgid "Can not be customized"
+msgstr "Non se pode personalizar"
+
+msgctxt "#31297"
+msgid "min"
+msgstr "min"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memoria empregada:"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Emitido"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pausa"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Deter"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Axiña Adiante"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Atrás"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menú do filme"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Descargar Subtítulos"
+
+msgctxt "#31357"
+msgid "Local subtitle available"
+msgstr "subtítulos locais dispoñíbeis"
+
+msgctxt "#31389"
+msgid "(2/4) Skin default - no caps"
+msgstr "(1/4) Predefinido do Tema - sen Maiús."
+
+msgctxt "#31390"
+msgid "(1/4) Skin default"
+msgstr "(1/4) Predefinido do Tema"
+
+msgctxt "#31391"
+msgid "(4/4) Arial - no caps"
+msgstr "(4/4) Arial (sen Maiús.)"
+
+msgctxt "#31392"
+msgid "(3/4) Arial based"
+msgstr "(3/4) Baseado en Arial"
+
+msgctxt "#31499"
+msgid "All TV Shows"
+msgstr "Todas as Series de TV"
+
+msgctxt "#31500"
+msgid "Live TV"
+msgstr "TV en directo"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Hora programada"
+
+msgctxt "#31502"
+msgid "All Movies"
+msgstr "Todos os Filmes"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Engadir Grupo"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Renomear Grupo"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Eliminar Grupo"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Grupos[CR]Dispoñibles"
+
+msgctxt "#31507"
+msgid "Movies homescreen button opens:"
+msgstr "O botón de Filmes da Pantalla Principal abre:"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Axuste do Temporizador"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Predición de 36 horas"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Predición de hora en hora"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Predición para a fin de semana"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Predición de 10 días"
+
+msgctxt "#31954"
+msgid "S"
+msgstr "S"
+
+msgctxt "#31956"
+msgid "Get theme"
+msgstr "Obter tema"
+
+msgctxt "#31961"
+msgid "Recently added"
+msgstr "Engadidos recentemente"
+
+msgctxt "#31962"
+msgid "Low List"
+msgstr "Listaxe no Fondo"
+
+msgctxt "#31963"
+msgid "Panel"
+msgstr "Panel"
+
+msgctxt "#31965"
+msgid "Banner List"
+msgstr "Listaxe de Pancartas"
+
+msgctxt "#31966"
+msgid "Recommended"
+msgstr "Recomendado"
+
+msgctxt "#31968"
+msgid "Show info"
+msgstr "Amosar info."
+
+msgctxt "#31971"
+msgid "Concerts"
+msgstr "Concertos"
+
+msgctxt "#31972"
+msgid "Clips"
+msgstr "Clips"
+
+msgctxt "#31973"
+msgid "E"
+msgstr "E"
+
+msgctxt "#31974"
+msgid "Home menu"
+msgstr "Menú principal"
+
+msgctxt "#31975"
+msgid "Channels"
+msgstr "Canles"
+
+msgctxt "#31976"
+msgid "Home shelf"
+msgstr "Andel principal"
+
+msgctxt "#31977"
+msgid "Fast start"
+msgstr "Inicio rápido"
+
+msgctxt "#31979"
+msgid "Loading..."
+msgstr "Cargando..."
+
+msgctxt "#31980"
+msgid "Hide unwatched and partialy watched marks"
+msgstr "Agochar as marcas dos non vistos e vistos parcialmente"
+
+msgctxt "#31981"
+msgid "Hide watched marks"
+msgstr "Agochar marcas de visto"
+
+msgctxt "#31985"
+msgid "Advanced"
+msgstr "Avanzado"
+
+msgctxt "#31986"
+msgid "Use default background on Home page"
+msgstr "Empregar o fondo predefinido na Pantalla Principal"
+
+msgctxt "#31987"
+msgid "Random"
+msgstr "Ó chou"
+
+msgctxt "#31988"
+msgid "Menu"
+msgstr "Menú"
+
+msgctxt "#31989"
+msgid "Home menu quit button function"
+msgstr "Función do botón saír do menú principal"
+
+msgctxt "#31990"
+msgid "Quit Menu"
+msgstr "Menú Saír"
+
+msgctxt "#31992"
+msgid "Banner (wide) thumbs"
+msgstr "Pancarta en miniatura (amplss) "
+
+msgctxt "#31993"
+msgid "Not used - click to customize"
+msgstr "Sen usar - faga clic para personalizar"
+
+msgctxt "#31994"
+msgid "Use vertical main menu on Home screen"
+msgstr "Usar o menú vertical na pantalla principal"

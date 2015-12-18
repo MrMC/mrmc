@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">50</defaultcontrol>
+  <controls>
+    <include>Fanart_Art</include>
+    <control type="group" description="Content">
+      <posy>25</posy>
+      <include>OpenClose</include>
+			<control type="image">
+        <posx>36</posx>
+        <posy>35</posy>
+        <width>1849</width>
+        <height>1010</height>
+        <texture flipx="true">dialogs/SettingsBG.png</texture>
+      </control>
+      <control type="label">
+        <posx>711</posx>
+        <posy>90</posy>
+        <width>820</width>
+        <align>center</align>
+        <label>$LOCALIZE[10522]</label>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="group">
+        <control type="group">
+          <width>609</width>
+          <height>834</height>
+          <control type="image" description="Thumb BG">
+            <posx>104</posx>
+            <posy>156</posy>
+            <width>609</width>
+            <height>873</height>
+            <texture>list/ListRibbon.png</texture>
+          </control>
+          <control type="image" description="Item Thumb">
+            <posx>158</posx>
+            <posy>150</posy>
+            <width>500</width>
+            <height>500</height>
+            <include>ThumbBorder</include>
+            <include>Icon_Fade</include>
+            <texture background="true">$INFO[ListItem.thumb]</texture>
+            <aspectratio aligny="top">keep</aspectratio>
+          </control>
+        </control>
+        <control type="group" description="List">
+          <posx>0</posx>
+          <control type="panel" id="50" description="No Thumbs">
+            <viewtype label="List">list</viewtype>
+            <posx>711</posx>
+            <posy>156</posy>
+            <width>820</width>
+            <height>839</height>
+            <pagecontrol>60</pagecontrol>
+            <scrolltime>200</scrolltime>
+            <onleft>noop</onleft>
+            <onright>9000</onright>
+            <onup>50</onup>
+            <ondown>50</ondown>
+            <itemlayout height="60" width="820">
+              <control type="image">
+                <posx>0</posx>
+                <posy>0</posy>
+                <height>60</height>
+                <width>820</width>
+                <texture border="3">list/ListNF.png</texture>
+              </control>
+              <control type="label">
+                <posx>30</posx>
+                <posy>0</posy>
+                <width>740</width>
+                <height>60</height>
+                <aligny>center</aligny>
+                <info>ListItem.Label</info>
+              </control>
+              <control type="label">
+                <posx>800</posx>
+                <posy>0</posy>
+                <width>795</width>
+                <height>60</height>
+                <aligny>center</aligny>
+                <align>right</align>
+                <info>ListItem.Label2</info>
+              </control>
+            </itemlayout>
+            <focusedlayout height="60" width="820">
+              <control type="image">
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>820</width>
+                <height>60</height>
+                <texture border="2">buttons/ButtonFO.png</texture>
+              </control>
+              <control type="label">
+                <posx>30</posx>
+                <posy>0</posy>
+                <width>740</width>
+                <height>60</height>
+                <aligny>center</aligny>
+                <info>ListItem.Label</info>
+              </control>
+              <control type="label">
+                <posx>800</posx>
+                <posy>0</posy>
+                <width>795</width>
+                <height>60</height>
+                <aligny>center</aligny>
+                <align>right</align>
+                <info>ListItem.Label2</info>
+              </control>
+            </focusedlayout>
+          </control>
+          <control type="grouplist" id="9000">
+            <posx>1533</posx>
+            <posy>156</posy>
+            <width>324</width>
+            <height>720</height>
+            <onleft>50</onleft>
+            <onright>60</onright>
+            <onup>9000</onup>
+            <ondown>9000</ondown>
+            <itemgap>0</itemgap>
+            <scrolltime>200</scrolltime>
+            <control type="radiobutton" id="20" description="shuffle">
+              <font>ListDetails</font>
+              <focusedcolor>Highlight</focusedcolor>
+              <width>330</width>
+              <label>$LOCALIZE[191]</label>
+            </control>
+            <control type="button" id="21" description="save">
+              <font>ListDetails</font>
+              <focusedcolor>Highlight</focusedcolor>
+              <width>330</width>
+              <label>$LOCALIZE[190]</label>
+            </control>
+            <control type="button" id="22" description="clear">
+              <font>ListDetails</font>
+              <focusedcolor>Highlight</focusedcolor>
+              <width>330</width>
+              <label>$LOCALIZE[192]</label>
+            </control>
+            <control type="button" id="26" description="repeat">
+              <font>ListDetails</font>
+              <focusedcolor>Highlight</focusedcolor>
+              <width>330</width>
+              <label>$LOCALIZE[486]</label>
+            </control>
+            <control type="button" id="3" description="sort method">
+              <width>330</width>
+              <focusedcolor>Highlight</focusedcolor>
+            </control>
+            <control type="togglebutton" id="4" description="Sort direction">
+              <font>ListDetails</font>
+              <width>330</width>
+              <focusedcolor>Highlight</focusedcolor>
+              <label>$LOCALIZE[21429]:  $LOCALIZE[21430]</label>
+              <altlabel>$LOCALIZE[21429]:  $LOCALIZE[21431]</altlabel>
+            </control>
+          </control>
+        </control>
+      </control>
+      <control type="label" id="12">
+        <posx>1560</posx>
+        <posy>960</posy>
+        <width>300</width>
+        <font>ItemCount</font>
+      </control>
+      <control type="image" description="Top line">
+        <posx>66</posx>
+        <posy>96</posy>
+        <width>1494</width>
+        <height>60</height>
+        <texture border="3">list/ListNF.png</texture>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>1836</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>1020</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>9000</onleft>
+        <onright>50</onright>
+      </control>
+    </control>
+    <include>Time</include>
+  </controls>
+</window>

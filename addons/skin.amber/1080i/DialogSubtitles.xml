@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <allowoverlay>no</allowoverlay>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>45</posy>
+  </coordinates>
+  <include>OpenClose</include>
+  <controls>
+    <control type="group" id="250">
+      <posx>-230</posx>
+      <control type="image" description="BG">
+        <posx>290</posx>
+        <posy>75</posy>
+        <width>1800</width>
+        <height>880</height>
+        <texture border="24,21,24,24">dialogs/TinyDialog.png</texture>
+      </control>
+      <control type="image" description="BG">
+        <posx>1660</posx>
+        <posy>90</posy>
+        <width>410</width>
+        <height>850</height>
+        <texture border="9">img/WhiteRoundedT.png</texture>
+      </control>
+      <!-- ** Required ** Do not change <id>or<type>-->
+      <control type="group">
+        <posx>300</posx>
+        <posy>111</posy>
+        <control type="image" id="110" description="Service Logo">
+          <posx>30</posx>
+          <posy>0</posy>
+          <width>375</width>
+          <height>60</height>
+          <aspectratio>keep</aspectratio>
+        </control>
+        <control type="group" id="111">
+          <control type="grouplist">
+            <posx>120</posx>
+            <posy>741</posy>
+            <width>1245</width>
+            <height>60</height>
+            <align>center</align>
+            <orientation>horizontal</orientation>
+            <itemgap>8</itemgap>
+            <control type="label" id="130" description="Notification Local subtitle available">
+              <width>1245</width>
+              <height>60</height>
+              <textcolor>Highlight</textcolor>
+              <label>31357</label>
+              <font>size22</font>
+              <align>center</align>
+              <aligny>center</aligny>
+              <wrapmultiline>true</wrapmultiline>
+            </control>
+          </control>
+        </control>
+        <control type="label" id="100" description="Active service Header">
+          <posx>75</posx>
+          <posy>12</posy>
+          <width>1320</width>
+          <height>30</height>
+          <align>center</align>
+          <aligny>center</aligny>
+        </control>
+        <control type="label" description="Video File name">
+          <posx>75</posx>
+          <posy>60</posy>
+          <width>1320</width>
+          <height>60</height>
+          <font>FManager</font>
+          <label>$INFO[Player.Filename]</label>
+          <textcolor>Highlight</textcolor>
+          <align>center</align>
+          <aligny>center</aligny>
+          <wrapmultiline>true</wrapmultiline>
+        </control>
+        <control type="label" id="140" description="Searching...">
+          <posx>75</posx>
+          <posy>117</posy>
+          <width>1320</width>
+          <height>30</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>FManager</font>
+        </control>
+      </control>
+      <!-- ** Required ** Do not change <id>or<type>-->
+      <control type="list" id="120" description="Main list">
+        <posx>309</posx>
+        <posy>285</posy>
+        <width>1350</width>
+        <height>538</height>
+        <onleft>60</onleft>
+        <onright>150</onright>
+        <onup>120</onup>
+        <ondown>120</ondown>
+        <viewtype label="535">list</viewtype>
+        <pagecontrol>60</pagecontrol>
+        <scrolltime>200</scrolltime>
+        <itemlayout width="1350" height="54">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1350</width>
+            <height>54</height>
+            <texture border="3">buttons/ButtonNF.png</texture>
+          </control>
+          <control type="image">
+            <posx>10</posx>
+            <posy>0</posy>
+            <width>33</width>
+            <height>54</height>
+            <aspectratio>keep</aspectratio>
+            <texture>flags/$INFO[ListItem.Thumb].png</texture>
+          </control>
+          <control type="label">
+            <posx>54</posx>
+            <posy>0</posy>
+            <width>135</width>
+            <height>54</height>
+            <font>FManager</font>
+            <aligny>center</aligny>
+            <textcolor>Grey</textcolor>
+            <scroll>false</scroll>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+          <control type="image">
+            <posx>204</posx>
+            <posy>0</posy>
+            <width>60</width>
+            <height>54</height>
+            <aspectratio>keep</aspectratio>
+            <texture>icon_sync.png</texture>
+            <visible>ListItem.property(sync)</visible>
+          </control>
+          <control type="image">
+            <posx>276</posx>
+            <posy>0</posy>
+            <width>24</width>
+            <height>54</height>
+            <aspectratio>keep</aspectratio>
+            <texture>icon_cc.png</texture>
+            <visible>ListItem.property(hearing_imp)</visible>
+          </control>
+          <control type="label">
+            <posx>315</posx>
+            <posy>0</posy>
+            <width>890</width>
+            <height>54</height>
+            <font>ListDetails</font>
+            <aligny>center</aligny>
+            <textcolor>Grey</textcolor>
+            <scroll>false</scroll>
+            <align>left</align>
+            <info>ListItem.Label2</info>
+          </control>
+          <control type="image">
+            <posx>1220</posx>
+            <posy>0</posy>
+            <width>120</width>
+            <height>54</height>
+            <colordiffuse>Grey</colordiffuse>
+            <aspectratio>keep</aspectratio>
+            <texture>badges/rating$INFO[ListItem.ActualIcon].png</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout width="1350" height="54">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1350</width>
+            <height>54</height>
+            <texture border="3">buttons/ButtonNF.png</texture>
+          </control>
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1350</width>
+            <height>54</height>
+            <texture border="5">buttons/ButtonFO.png</texture>
+            <visible>Control.HasFocus(120)</visible>
+          </control>
+          <control type="image">
+            <posx>10</posx>
+            <posy>0</posy>
+            <width>33</width>
+            <height>54</height>
+            <aspectratio>keep</aspectratio>
+            <texture>flags/$INFO[ListItem.Thumb].png</texture>
+          </control>
+          <control type="label">
+            <posx>54</posx>
+            <posy>0</posy>
+            <width>135</width>
+            <height>54</height>
+            <font>FManager</font>
+            <aligny>center</aligny>
+            <textcolor>White2</textcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+          <control type="image">
+            <posx>204</posx>
+            <posy>0</posy>
+            <width>60</width>
+            <height>54</height>
+            <aspectratio>keep</aspectratio>
+            <texture>icon_sync.png</texture>
+            <visible>ListItem.property(sync)</visible>
+          </control>
+          <control type="image">
+            <posx>276</posx>
+            <posy>0</posy>
+            <width>24</width>
+            <height>54</height>
+            <aspectratio>keep</aspectratio>
+            <texture>icon_cc.png</texture>
+            <visible>ListItem.property(hearing_imp)</visible>
+          </control>
+          <control type="label">
+            <posx>315</posx>
+            <posy>0</posy>
+            <width>890</width>
+            <height>54</height>
+            <font>ListDetails</font>
+            <aligny>center</aligny>
+            <textcolor>White2</textcolor>
+            <align>left</align>
+            <info>ListItem.Label2</info>
+          </control>
+          <control type="image">
+            <posx>1220</posx>
+            <posy>0</posy>
+            <width>120</width>
+            <height>54</height>
+            <aspectratio>keep</aspectratio>
+            <texture>badges/rating$INFO[ListItem.ActualIcon].png</texture>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="group" id="250" description="Right side options group">
+        <posx>-339</posx>
+        <posy>0</posy>
+        <control type="label" description="Options title right menu">
+          <posx>2000</posx>
+          <posy>220</posy>
+          <width>380</width>
+          <height>30</height>
+          <label>24018</label>
+          <font>ListDetails</font>
+          <align>center</align>
+        </control>
+        <control type="list" id="150">
+          <posx>2000</posx>
+          <posy>285</posy>
+          <width>410</width>
+          <height>432</height>
+          <onleft>120</onleft>
+          <onright>120</onright>
+          <onup>160</onup>
+          <ondown>160</ondown>
+          <scrolltime>200</scrolltime>
+          <itemlayout width="410" height="54">
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <height>54</height>
+              <width>410</width>
+              <texture border="3">buttons/ButtonNF.png</texture>
+            </control>
+            <control type="label">
+              <posx>18</posx>
+              <posy>0</posy>
+              <width>360</width>
+              <height>54</height>
+              <font>ListDetails</font>
+              <info>ListItem.Label</info>
+              <visible>!ListItem.property(man)</visible>
+            </control>
+            <control type="label">
+              <posx>18</posx>
+              <posy>0</posy>
+              <width>360</width>
+              <height>54</height>
+              <font>ListDetails</font>
+              <info>ListItem.Label</info>
+              <visible>ListItem.property(man)</visible>
+            </control>
+          </itemlayout>
+          <focusedlayout width="410" height="54">
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <height>54</height>
+              <width>410</width>
+              <texture border="3">buttons/ButtonNF.png</texture>
+            </control>
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <height>54</height>
+              <width>410</width>
+              <texture border="5">buttons/ButtonFO.png</texture>
+              <visible>Control.HasFocus(150)</visible>
+            </control>
+            <control type="label">
+              <posx>18</posx>
+              <posy>0</posy>
+              <height>54</height>
+              <width>360</width>
+              <font>ListDetails</font>
+              <info>ListItem.Label</info>
+              <visible>!ListItem.property(man)</visible>
+            </control>
+            <control type="label">
+              <posx>18</posx>
+              <posy>0</posy>
+              <height>54</height>
+              <width>360</width>
+              <font>ListDetails</font>
+              <info>ListItem.Label</info>
+              <visible>ListItem.property(man)</visible>
+            </control>
+          </focusedlayout>
+        </control>
+        <control type="button" id="160" description="Manual search Button">
+          <posx>2000</posx>
+          <posy>876</posy>
+          <width>410</width>
+          <height>54</height>
+          <font>ListDetails</font>
+          <onleft>120</onleft>
+          <onright>120</onright>
+          <onup>150</onup>
+          <ondown>150</ondown>
+          <label>24120</label>
+          <onleft>120</onleft>
+          <onright>120</onright>
+          <onup>150</onup>
+          <ondown>150</ondown>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>293</posx>
+        <posy>330</posy>
+        <width>36</width>
+        <height>500</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>true</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>noop</onleft>
+        <onright>120</onright>
+      </control>
+    </control>
+  </controls>
+</window>

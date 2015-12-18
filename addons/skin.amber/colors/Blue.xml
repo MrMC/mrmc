@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colors>
+	<color name="Grey3">FF9e9e9e</color>
+	<color name="Grey2">FFBEBEBE</color>
+	<color name="Grey">FF5E5E5E</color>
+	<color name="Label2">FF898989</color>
+	<color name="Sublist">FF777777</color>
+	<color name="White">FFCCCCCC</color>
+	<color name="White2">FFFFFFFF</color>
+	<color name="Red">FFfe3737</color>
+	<color name="Blue">FF2261B4</color>
+	<color name="Black">FF000000</color>
+	<color name="BlackT">55000000</color>
+	<color name="BlackST">90000000</color>
+	<color name="Silver">FFE2E2E2</color>
+	<color name="Diffuse">FFA0A0A0</color>
+	<color name="Diffuse2">FF474747</color>
+	<color name="Disabled">FF5E5E5E</color>	
+	<color name="LiteShadow">35000000</color>
+	<color name="Shadow">65000000</color>
+	<color name="ShadowDark">FF262626</color>
+	<color name="Highlight">FF456db8</color>
+</colors>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">5</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <include>DimBG</include>
+    <control type="group" description="Content">
+      <include>DialogOpenClose</include>
+      <posx>312</posx>
+      <posy>180</posy>
+      <control type="image">
+        <posx>-14</posx>
+        <posy>-20</posy>
+        <width>1293</width>
+        <height>720</height>
+        <texture border="55">dialogs/DialogRightSmall.png</texture>
+      </control>
+      <control type="label" id="2" description="Title">
+        <posx>0</posx>
+        <posy>50</posy>
+        <width>1010</width>
+        <height>40</height>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="grouplist" id="5">
+        <description>Control Area</description>
+        <posx>0</posx>
+        <posy>150</posy>
+        <width>1010</width>
+        <height>540</height>
+        <itemgap>0</itemgap>
+        <orientation>vertical</orientation>
+        <onleft>noop</onleft>
+        <onright>9000</onright>
+        <onup>5</onup>
+        <ondown>5</ondown>
+      </control>
+      <control type="button" id="7">
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="radiobutton" id="8">
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="spincontrolex" id="9">
+        <textoffsetx>30</textoffsetx>
+      </control>
+      <control type="label" id="14">
+        <shadowcolor>Black</shadowcolor>
+        <font>Details</font>
+      </control>
+      <control type="group" id="9000">
+        <posx>1011</posx>
+        <control type="button" id="28" description="OK">
+          <posy>510</posy>
+          <width>254</width>
+          <label>$LOCALIZE[186]</label>
+          <onleft>5</onleft>
+          <onup>29</onup>
+          <ondown>29</ondown>
+        </control>
+        <control type="button" id="29" description="Cancel">
+          <posy>570</posy>
+          <width>254</width>
+          <label>$LOCALIZE[222]</label>
+          <onleft>5</onleft>
+          <onright>noop</onright>
+          <onup>28</onup>
+          <ondown>28</ondown>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>
