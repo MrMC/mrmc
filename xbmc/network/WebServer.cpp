@@ -135,7 +135,11 @@ int CWebServer::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const c
 
 int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
 {
+#if MHD_VERSION >= 0x00090500
+  struct MHD_Response *response = MHD_create_response_from_buffer(0, NULL, MHD_RESPMEM_PERSISTENT);
+#else
   struct MHD_Response *response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+#endif
   if (!response)
   {
     CLog::Log(LOGERROR, "CWebServer: unable to create HTTP Unauthorized response");
@@ -303,7 +307,11 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                 ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince) &&
                 lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
               {
+#if MHD_VERSION >= 0x00090500
+                struct MHD_Response *response = MHD_create_response_from_buffer(0, NULL, MHD_RESPMEM_PERSISTENT);
+#else
                 struct MHD_Response *response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+#endif
                 if (response == NULL)
                 {
                   CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP 304 response");
@@ -738,7 +746,11 @@ int CWebServer::CreateRangedMemoryDownloadResponse(IHTTPRequestHandler *handler,
 
 int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &strURL, struct MHD_Response *&response)
 {
+#if MHD_VERSION >= 0x00090500
+  response = MHD_create_response_from_buffer(0, NULL, MHD_RESPMEM_PERSISTENT);
+#else
   response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+#endif
   if (response == NULL)
   {
     CLog::Log(LOGERROR, "CWebServer: failed to create HTTP redirect response to %s", strURL.c_str());
@@ -865,7 +877,11 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
   }
   else
   {
+#if MHD_VERSION >= 0x00090500
+    response = MHD_create_response_from_buffer(0, NULL, MHD_RESPMEM_PERSISTENT);
+#else
     response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+#endif
     if (response == NULL)
     {
       CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP HEAD response for %s", request.pathUrl.c_str());
@@ -903,7 +919,11 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
     }
   }
 
+#if MHD_VERSION >= 0x00090500
+  response = MHD_create_response_from_buffer(0, NULL, MHD_RESPMEM_PERSISTENT);
+#else
   response = MHD_create_response_from_data(payloadSize, payload, MHD_NO, MHD_NO);
+#endif
   if (response == NULL)
   {
     CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP %d error response", responseType);
@@ -915,7 +935,16 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
 
 int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response)
 {
+#if MHD_VERSION >= 0x00090500
+  MHD_ResponseMemoryMode mode = MHD_RESPMEM_PERSISTENT;
+  if (free)
+    mode = MHD_RESPMEM_MUST_FREE;
+  if (copy)
+    mode = MHD_RESPMEM_MUST_COPY;
+  response = MHD_create_response_from_buffer(size, const_cast<void*>(data), mode);
+#else
   response = MHD_create_response_from_data(size, const_cast<void*>(data), free ? MHD_YES : MHD_NO, copy ? MHD_YES : MHD_NO);
+#endif
   if (response == NULL)
   {
     CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP download response");
