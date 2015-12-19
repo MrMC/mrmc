@@ -57,7 +57,7 @@ public:
 
 class DllLibCPluff : public DllDynamic, DllLibCPluffInterface
 {
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
   DECLARE_DLL_WRAPPER(DllLibCPluff, "libcpluff.framework/libcpluff")
 #else
   DECLARE_DLL_WRAPPER(DllLibCPluff, DLL_PATH_CPLUFF)

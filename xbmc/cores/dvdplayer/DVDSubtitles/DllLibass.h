@@ -68,7 +68,7 @@ public:
 
 class DllLibass : public DllDynamic, DllLibassInterface
 {
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
   DECLARE_DLL_WRAPPER(DllLibass, "libass.framework/libass")
 #else
   DECLARE_DLL_WRAPPER(DllLibass, DLL_PATH_LIBASS)
