@@ -27,19 +27,11 @@
 
 @class MainEAGLView;
 
-typedef enum
-{
-  TVOS_PLAYBACK_STOPPED,
-  TVOS_PLAYBACK_PAUSED,
-  TVOS_PLAYBACK_PLAYING
-} TVOSPlaybackState;
-
 @interface MainController : UIViewController <UIGestureRecognizerDelegate>
 {
 @private
   UIWindow                   *m_window;
   MainEAGLView               *m_glView;
-  int                         m_screensaverTimeout;
   // Touch handling
   CGSize                      m_screensize;
   CGPoint                     m_lastGesturePoint;
@@ -51,10 +43,6 @@ typedef enum
   int                         m_currentClick;
 
   bool                        m_isPlayingBeforeInactive;
-  UIBackgroundTaskIdentifier  m_bgTask;
-  NSTimer                    *m_networkAutoSuspendTimer;
-  TVOSPlaybackState           m_playbackState;
-  NSDictionary               *m_nowPlayingInfo;
 
   BOOL                        m_pause;
   BOOL                        m_appAlive;
@@ -66,9 +54,7 @@ typedef enum
   bool                        m_clickResetPan;
 }
 // why are these properties ?
-@property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
-@property (nonatomic, retain) NSTimer      *m_networkAutoSuspendTimer;
-@property (nonatomic, strong) NSTimer      *m_holdTimer;
+@property (nonatomic, strong) NSTimer *m_holdTimer;
 @property int                 m_holdCounter;
 @property CGPoint             m_lastGesturePoint;
 @property CGFloat             m_screenScale;
@@ -88,7 +74,6 @@ typedef enum
 - (void) enterBackground;
 - (void) enterForeground;
 - (void) becomeInactive;
-- (void) setTVOSNowPlayingInfo:(NSDictionary *)info;
 - (void) sendKeyDownUp:(XBMCKey)key;
 - (void) observeDefaultCenterStuff: (NSNotification *)notification;
 - (void) setFramebuffer;
@@ -97,8 +82,6 @@ typedef enum
 - (void) activateKeyboard:(UIView *)view;
 - (void) deactivateKeyboard:(UIView *)view;
 
-- (void) disableNetworkAutoSuspend;
-- (void) enableNetworkAutoSuspend:(id)obj;
 - (void) disableSystemSleep;
 - (void) enableSystemSleep;
 - (void) disableScreenSaver;
