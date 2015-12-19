@@ -53,42 +53,47 @@ function convert2framework
   # make sure .dylib is stripped
   DYLIB_LIBNAME="${DYLIB_LIBBASENAME%.dylib}"
 
-  BUNDLEID="tv.mrmc.framework.${DYLIB_LIBNAME}"
+  if [ "$PLATFORM_NAME" == "iphoneos" ] || [ "$PLATFORM_NAME" == "appletvos" ]; then
+    BUNDLEID="tv.mrmc.framework.${DYLIB_LIBNAME}"
+    echo "CFBundleIdentifier is ${BUNDLEID}"
+    echo "convert ${DYLIB_BASENAME} to ${DYLIB_LIBNAME}.framework and codesign"
 
-  echo "CFBundleIdentifier is ${BUNDLEID}"
-  echo "convert ${DYLIB_BASENAME} to ${DYLIB_LIBNAME}.framework and codesign"
+    DEST_FRAMEWORK="${TARGET_FRAMEWORKS}/${DYLIB_LIBNAME}.framework"
+    mkdir -p "${DEST_FRAMEWORK}"
+    mkdir -p "${DEST_FRAMEWORK}/Headers"
+    mkdir -p "${DEST_FRAMEWORK}/Modules"
 
-  DEST_FRAMEWORK="${TARGET_FRAMEWORKS}/${DYLIB_LIBNAME}.framework"
-  mkdir -p "${DEST_FRAMEWORK}"
-  mkdir -p "${DEST_FRAMEWORK}/Headers"
-  mkdir -p "${DEST_FRAMEWORK}/Modules"
+    # framework plists are binary
+    plutil -convert binary1 "${SEEDFRAMEWORKPLIST}" -o "${DEST_FRAMEWORK}/Info.plist"
+    # set real CFBundleName
+    plutil -replace CFBundleName -string "${DYLIB_LIBNAME}" "${DEST_FRAMEWORK}/Info.plist"
+    # set real CFBundleVersion
+    plutil -replace CFBundleVersion -string "${BUNDLE_REVISION}" "${DEST_FRAMEWORK}/Info.plist"
+    # set real CFBundleIdentifier
+    plutil -replace CFBundleIdentifier -string "${BUNDLEID}" "${DEST_FRAMEWORK}/Info.plist"
+    # set real CFBundleExecutable
+    plutil -replace CFBundleExecutable -string "${DYLIB_LIBNAME}" "${DEST_FRAMEWORK}/Info.plist"
+    # move it (not copy)
+    mv -f "${DYLIB}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
 
-  # framework plists are binary
-  plutil -convert binary1 "${SEEDFRAMEWORKPLIST}" -o "${DEST_FRAMEWORK}/Info.plist"
-  # set real CFBundleName
-  plutil -replace CFBundleName -string "${DYLIB_LIBNAME}" "${DEST_FRAMEWORK}/Info.plist"
-  # set real CFBundleVersion
-  plutil -replace CFBundleVersion -string "${BUNDLE_REVISION}" "${DEST_FRAMEWORK}/Info.plist"
-  # set real CFBundleIdentifier
-  plutil -replace CFBundleIdentifier -string "${BUNDLEID}" "${DEST_FRAMEWORK}/Info.plist"
-  # set real CFBundleExecutable
-  plutil -replace CFBundleExecutable -string "${DYLIB_LIBNAME}" "${DEST_FRAMEWORK}/Info.plist"
-  # move it (not copy)
-  mv -f "${DYLIB}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
+    # fixup loader id/paths
+    LC_ID_DYLIB="@rpath/${DYLIB_LIBNAME}.framework/${DYLIB_LIBNAME}"
+    LC_RPATH1="@executable_path/Frameworks"
+    LC_RPATH2="@loader_path/Frameworks"
+    install_name_tool -id "${LC_ID_DYLIB}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
+    install_name_tool -add_rpath "${LC_RPATH1}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
+    install_name_tool -add_rpath "${LC_RPATH2}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
 
-  # fixup loader id/paths
-  LC_ID_DYLIB="@rpath/${DYLIB_LIBNAME}.framework/${DYLIB_LIBNAME}"
-  LC_RPATH1="@executable_path/Frameworks"
-  LC_RPATH2="@loader_path/Frameworks"
-  install_name_tool -id "${LC_ID_DYLIB}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
-  install_name_tool -add_rpath "${LC_RPATH1}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
-  install_name_tool -add_rpath "${LC_RPATH2}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
-
-  if [ "$STRIP_INSTALLED_PRODUCT" == "YES" ]; then
-    strip -x "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
+    if [ "$STRIP_INSTALLED_PRODUCT" == "YES" ]; then
+      strip -x "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
+    fi
+    # codesign the framework to match its CFBundleIdentifier
+    codesign --deep -f -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -i "${BUNDLEID}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
+  else
+    BUNDLEID="tv.mrmc.dylib.${DYLIB_LIBNAME}"
+    echo "CFBundleIdentifier is ${BUNDLEID}"
+    codesign --deep -f -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -i "${BUNDLEID}" "${DYLIB}"
   fi
-  # codesign the framework to match its CFBundleIdentifier
-  codesign --deep -f -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -i "${BUNDLEID}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
 }
 
 # loop over all xxx.dylibs in xxx.app/Frameworks
