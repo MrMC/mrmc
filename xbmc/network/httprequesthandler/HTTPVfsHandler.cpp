@@ -25,6 +25,7 @@
 #include "network/WebServer.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
   : CHTTPFileHandler(request)
@@ -39,7 +40,8 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
     if (XFILE::CFile::Exists(file))
     {
       bool accessible = false;
-      if (file.substr(0, 8) == "image://")
+      // special logs file path
+      if (file.substr(0, 8) == "image://" || StringUtils::StartsWithNoCase(file, "special://logs/mrmc."))
         accessible = true;
       else
       {
