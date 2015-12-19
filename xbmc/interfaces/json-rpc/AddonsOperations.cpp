@@ -127,7 +127,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
   string id = parameterObject["addonid"].asString();
   AddonPtr addon;
   if (!CAddonMgr::GetInstance().GetAddon(id, addon) || addon.get() == NULL ||
-      addon->Type() >= ADDON_MAX)
+      addon->Type() < ADDON_SKIN || addon->Type() >= ADDON_MAX)
     return InvalidParams;
     
   string argv;
