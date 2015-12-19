@@ -3,15 +3,15 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libmicrohttpd
-VERSION=svn-35533
+VERSION=0.9.48
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=http://ftp.gnu.org/gnu/libmicrohttpd
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared \
-            --disable-doc --disable-examples --disable-curl \
-            --disable-spdy
+            --disable-doc --disable-examples --disable-curl
 
 # internal memmem sym collides with internal gnutils memmem
 # when built on 10.6.8, strip it.
@@ -42,8 +42,10 @@ $(LIBDYLIB): $(PLATFORM)
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -j1 -C $(PLATFORM)/src/microhttpd install
 	# internal _MD5xxx collides with others
-	$(RPL) -e "_MD5Init" "_MDyInit" $(PREFIX)/lib/libmicrohttpd.a
 	$(RPL) -e "_MD5Final" "_MDyFinal" $(PREFIX)/lib/libmicrohttpd.a
+	$(RPL) -e "_MD5Init" "_MDyInit" $(PREFIX)/lib/libmicrohttpd.a
+	$(RPL) -e "_MD5Pad" "_MDyPad" $(PREFIX)/lib/libmicrohttpd.a
+	$(RPL) -e "_MD5Transform" "_MDyTransform" $(PREFIX)/lib/libmicrohttpd.a
 	$(RPL) -e "_MD5Update" "_MDyUpdate" $(PREFIX)/lib/libmicrohttpd.a
 	touch $@
 
