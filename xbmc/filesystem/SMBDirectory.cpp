@@ -32,17 +32,14 @@
 #include "system.h"
 
 #include "SMBDirectory.h"
-#include "Util.h"
-#include "guilib/LocalizeStrings.h"
+
 #include "FileItem.h"
+#include "PasswordManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "threads/SingleLock.h"
-#include "PasswordManager.h"
-
-#include <libsmbclient.h>
 
 struct CachedDirEntry
 {
@@ -51,7 +48,6 @@ struct CachedDirEntry
 };
 
 using namespace XFILE;
-using namespace std;
 
 CSMBDirectory::CSMBDirectory(void)
 {
@@ -67,12 +63,12 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 
-  /* samba isn't thread safe with old interface, always lock */
+  // samba isn't thread safe with old interface, always lock
   CSingleLock lock(smb);
 
   smb.Init();
 
-  //Separate roots for the authentication and the containing items to allow browsing to work correctly
+  // Separate roots for the authentication and the containing items to allow browsing to work correctly
   std::string strRoot = url.Get();
   std::string strAuth;
 
@@ -89,18 +85,18 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   // need to keep the samba lock for as short as possible.
   // so we first cache all directory entries and then go over them again asking for stat
   // "stat" is locked each time. that way the lock is freed between stat requests
-  vector<CachedDirEntry> vecEntries;
+  std::vector<CachedDirEntry> vecEntries;
   struct smbc_dirent* dirEnt;
 
   lock.Enter();
-  while ((dirEnt = smbc_readdir(fd)))
+  while ((dirEnt = smb.GetImpl()->smbc_readdir(fd)))
   {
     CachedDirEntry aDir;
     aDir.type = dirEnt->smbc_type;
     aDir.name = dirEnt->name;
     vecEntries.push_back(aDir);
   }
-  smbc_closedir(fd);
+  smb.GetImpl()->smbc_closedir(fd);
   lock.Leave();
 
   for (size_t i=0; i<vecEntries.size(); i++)
@@ -140,13 +136,12 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
           lock.Enter();
 
-          if( smbc_stat(strFullName.c_str(), &info) == 0 )
+          if( smb.GetImpl()->smbc_stat(strFullName.c_str(), &info) == 0 )
           {
-
             char value[20];
             // We poll for extended attributes which symbolizes bits but split up into a string. Where 0x02 is hidden and 0x12 is hidden directory.
             // According to the libsmbclient.h it's supposed to return 0 if ok, or the length of the string. It seems always to return the length wich is 4
-            if (smbc_getxattr(strFullName.c_str(), "system.dos_attr.mode", value, sizeof(value)) > 0)
+            if (smb.GetImpl()->smbc_getxattr(strFullName.c_str(), "system.dos_attr.mode", value, sizeof(value)) > 0)
             {
               long longvalue = strtol(value, NULL, 16);
               if (longvalue & SMBC_DOS_MODE_HIDDEN)
@@ -247,7 +242,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Using authentication url %s", CURL::GetRedacted(s).c_str());
 
   { CSingleLock lock(smb);
-    fd = smbc_opendir(s.c_str());
+    fd = smb.GetImpl()->smbc_opendir(s.c_str());
   }
 
   while (fd < 0) /* only to avoid goto in following code */
@@ -289,7 +284,7 @@ bool CSMBDirectory::Create(const CURL& url2)
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
-  int result = smbc_mkdir(strFileName.c_str(), 0);
+  int result = smb.GetImpl()->smbc_mkdir(strFileName.c_str(), 0);
   bool success = (result == 0 || EEXIST == errno);
   if(!success)
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
@@ -306,7 +301,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
-  int result = smbc_rmdir(strFileName.c_str());
+  int result = smb.GetImpl()->smbc_rmdir(strFileName.c_str());
 
   if(result != 0 && errno != ENOENT)
   {
@@ -326,10 +321,9 @@ bool CSMBDirectory::Exists(const CURL& url2)
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
-  struct stat info;
-  if (smbc_stat(strFileName.c_str(), &info) != 0)
+  struct stat info = {0};
+  if (smb.GetImpl()->smbc_stat(strFileName.c_str(), &info) != 0)
     return false;
 
   return S_ISDIR(info.st_mode);
 }
-

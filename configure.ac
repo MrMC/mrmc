@@ -1218,6 +1218,7 @@ else
 fi
 
 if test "x$use_samba" != "xno"; then
+  XB_FIND_SONAME([SMBCLIENT], [smbclient], [use_samba])
   AC_DEFINE([HAVE_LIBSMBCLIENT], [1], [Define to 1 if you have Samba installed])
   USE_LIBSMBCLIENT=1
 fi

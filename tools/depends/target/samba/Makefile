@@ -31,9 +31,9 @@ CONFIGURE_HAMMER=samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_defa
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
+        --enable-shared \
+        --disable-static \
         --disable-cups \
-        --enable-static \
-        --disable-shared \
         --disable-pie \
         --disable-iprint \
         --disable-fam \
@@ -73,6 +73,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 < ../samba30-3.0.37-android.patch
 	cd $(PLATFORM); patch -p1 < ../samba30-3.0.37_darwin-iface-getifaddrs.patch
 	$(ANDROID_OFF_T_FIX)
+	sed -ie "s|-bundle -flat_namespace -undefined suppress|-dynamiclib|" "$(PLATFORM)/source/configure.in"
 	# remove fork/execX/system, it is not used for client
 	sed -ie "s|forkret = fork()|forkret = (pid_t)-1|" "$(PLATFORM)/source/lib/system.c"
 	sed -ie "s|execv|//execv|" "$(PLATFORM)/source/lib/system.c"
@@ -90,16 +91,9 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/source installclientlib
-	# internal collides with _MD5xxx in libmicrohttpd.a
-	$(RPL) -e "_MD5Init" "_MDxInit" $(PREFIX)/lib/libsmbclient.a
-	$(RPL) -e "_MD5Final" "_MDxFinal" $(PREFIX)/lib/libsmbclient.a
-	$(RPL) -e "_MD5Update" "_MDxUpdate" $(PREFIX)/lib/libsmbclient.a
-	# internal collides with _SHA256_xxx in libcrypto.a(sha256.o)
-	$(RPL) -e "_SHA256_Init" "_SHA256xInit" $(PREFIX)/lib/libsmbclient.a
-	$(RPL) -e "_SHA256_Final" "_SHA256xFinal" $(PREFIX)/lib/libsmbclient.a
-	$(RPL) -e "_SHA256_Update" "_SHA256xUpdate" $(PREFIX)/lib/libsmbclient.a
-	# internal collides with _packet_send libssh.a(packet.o)
-	$(RPL) -e "_packet_send" "_SMBpkt_send" $(PREFIX)/lib/libsmbclient.a
+	mv  $(PREFIX)/lib/libsmbclient.dylib $(PREFIX)/lib/libsmbclient.3.dylib
+	install_name_tool -id $(PREFIX)/lib/libsmbclient.3.dylib $(PREFIX)/lib/libsmbclient.3.dylib
+	ln -s $(PREFIX)/lib/libsmbclient.3.dylib $(PREFIX)/lib/libsmbclient.dylib
 	touch $@
 
 clean:

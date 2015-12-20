@@ -97,7 +97,7 @@
 #include "network/upnp/UPnP.h"
 #include "filesystem/UPnPDirectory.h"
 #endif
-#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
+#if defined(HAS_FILESYSTEM_SMB)
 #include "filesystem/SMBDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_NFS
@@ -2725,7 +2725,7 @@ void CApplication::Stop(int exitCode)
     CSFTPSessionManager::DisconnectAllSessions();
 #endif
 
-#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
+#if defined(HAS_FILESYSTEM_SMB)
     smb.Deinit();
 #endif
 
@@ -4149,7 +4149,7 @@ void CApplication::ProcessSlow()
     UPNP::CUPnP::GetInstance()->UpdateState();
 #endif
 
-#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
+#if defined(HAS_FILESYSTEM_SMB)
   smb.CheckIfIdle();
 #endif
 

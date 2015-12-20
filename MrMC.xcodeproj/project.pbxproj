@@ -4689,6 +4689,10 @@
 		F558F29513ABD7DF00631E12 /* GUIWindowDebugInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowDebugInfo.h; sourceTree = "<group>"; };
 		F558F51D13AF03AD00631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		F558F54D13AF091000631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
+		F55902081C271E1000349249 /* DlllibSMB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DlllibSMB.h; sourceTree = "<group>"; };
+		F55902091C271E2C00349249 /* DllLibNfs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DllLibNfs.h; sourceTree = "<group>"; };
+		F559020A1C2722D000349249 /* Common.xcconfig.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = Common.xcconfig.in; sourceTree = "<group>"; };
+		F559020B1C2722E100349249 /* App.xcconfig.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = App.xcconfig.in; sourceTree = "<group>"; };
 		F563529416E53FAB00D21BAD /* UPnPSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPSettings.cpp; sourceTree = "<group>"; };
 		F563529516E53FAB00D21BAD /* UPnPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPSettings.h; sourceTree = "<group>"; };
 		F56352A216E5402100D21BAD /* GUIDialogContentSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogContentSettings.cpp; path = dialogs/GUIDialogContentSettings.cpp; sourceTree = "<group>"; };
@@ -7484,6 +7488,8 @@
 				E38E16B10D25F9FA00618676 /* DirectoryHistory.h */,
 				E38E16B40D25F9FA00618676 /* DllLibCurl.cpp */,
 				E38E16B50D25F9FA00618676 /* DllLibCurl.h */,
+				F55902091C271E2C00349249 /* DllLibNfs.h */,
+				F55902081C271E1000349249 /* DlllibSMB.h */,
 				DF29BD001B5D913B00904347 /* EventsDirectory.cpp */,
 				DF29BD011B5D913B00904347 /* EventsDirectory.h */,
 				0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */,
@@ -7962,6 +7968,7 @@
 				E49910D0174E2DFF00741B6D /* App-iOS.xcconfig */,
 				E49910D1174E2E0000741B6D /* App-OSX.xcconfig */,
 				E49910D2174E2E0000741B6D /* App.xcconfig */,
+				F559020B1C2722E100349249 /* App.xcconfig.in */,
 			);
 			name = Targets;
 			sourceTree = "<group>";
@@ -7970,6 +7977,7 @@
 			isa = PBXGroup;
 			children = (
 				E49910D3174E2E0000741B6D /* Common.xcconfig */,
+				F559020A1C2722D000349249 /* Common.xcconfig.in */,
 				E49910D4174E2E0000741B6D /* Debug.xcconfig */,
 				E49910D5174E2E0000741B6D /* Release.xcconfig */,
 			);
