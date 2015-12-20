@@ -833,8 +833,9 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 //--------------------------------------------------------------
-- (void)resetSystemIdleTimer
+- (bool)resetSystemIdleTimer
 {
+  return false;
 }
 //--------------------------------------------------------------
 - (UIScreenMode*) preferredScreenMode:(UIScreen*) screen

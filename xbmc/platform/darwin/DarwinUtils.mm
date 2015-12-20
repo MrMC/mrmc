@@ -553,11 +553,11 @@ void CDarwinUtils::EnableOSScreenSaver(bool enable)
 #endif
 }
 
-void CDarwinUtils::ResetSystemIdleTimer()
+bool CDarwinUtils::ResetSystemIdleTimer()
 {
 #if defined(TARGET_DARWIN_TVOS)
   //CLog::Log(LOGDEBUG, "CDarwinUtils::ResetSystemIdleTimer");
-  [g_xbmcController resetSystemIdleTimer];
+  return [g_xbmcController resetSystemIdleTimer];
 #endif
 }
 

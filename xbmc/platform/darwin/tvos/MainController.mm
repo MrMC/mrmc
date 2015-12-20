@@ -951,30 +951,35 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)disableScreenSaver
 {
+  PRINT_SIGNATURE();
   m_disableIdleTimer = YES;
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 //--------------------------------------------------------------
 - (void)enableScreenSaver
 {
+  PRINT_SIGNATURE();
   m_disableIdleTimer = NO;
   [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 //--------------------------------------------------------------
-- (void)resetSystemIdleTimer
+- (bool)resetSystemIdleTimer
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
   // this is silly :)
   // when system screen saver kicks off, we switch to UIApplicationStateInactive, the only way
   // to get out of the screensaver is to call ourself to open an custom URL that is registered
   // in our Info.plist. The openURL method of UIApplication must be supported but we can just
   // reply NO and we get restored to UIApplicationStateActive.
-  if ([UIApplication sharedApplication].applicationState == UIApplicationStateInactive)
+  bool inActive = [UIApplication sharedApplication].applicationState == UIApplicationStateInactive;
+  if (inActive)
   {
     NSURL *url = [NSURL URLWithString:@"mrmc://wakeup"];
     [[UIApplication sharedApplication] openURL:url];
   }
+
+  return inActive;
 }
 
 //--------------------------------------------------------------
@@ -1021,8 +1026,6 @@ MainController *g_xbmcController;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
     m_isPlayingBeforeInactive = NO;
   }
-
-  [self enableScreenSaver];
 }
 
 - (void)becomeInactive

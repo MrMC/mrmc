@@ -51,7 +51,7 @@ public:
   static const char *GetOSTemporaryDirectory();
   static int         BatteryLevel(void);
   static void        EnableOSScreenSaver(bool enable);
-  static void        ResetSystemIdleTimer();
+  static bool        ResetSystemIdleTimer();
   static void        SetScheduling(int message);
   static void        PrintDebugString(std::string debugString);
   static bool        CFStringRefToString(CFStringRef source, std::string& destination);
