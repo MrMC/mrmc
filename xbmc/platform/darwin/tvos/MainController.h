@@ -25,6 +25,14 @@
 #import <UIKit/UIKit.h>
 #import "windowing/XBMC_events.h"
 
+typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
+  UIPanGestureRecognizerDirectionUndefined,
+  UIPanGestureRecognizerDirectionUp,
+  UIPanGestureRecognizerDirectionDown,
+  UIPanGestureRecognizerDirectionLeft,
+  UIPanGestureRecognizerDirectionRight
+};
+
 @class MainEAGLView;
 
 @interface MainController : UIViewController <UIGestureRecognizerDelegate>
@@ -36,9 +44,6 @@
   CGSize                      m_screensize;
   CGPoint                     m_lastGesturePoint;
   CGFloat                     m_screenScale;
-  bool                        m_touchBeginSignaled;
-  int                         m_touchDirection;
-  XBMCKey                     m_currentKey;
   int                         m_screenIdx;
   int                         m_currentClick;
 
@@ -51,20 +56,19 @@
   BOOL                        m_disableIdleTimer;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
-  bool                        m_clickResetPan;
+  BOOL                        m_directionOverride;
+  UIPanGestureRecognizerDirection m_direction;
 }
 // why are these properties ?
 @property (nonatomic, strong) NSTimer *m_holdTimer;
 @property int                 m_holdCounter;
 @property CGPoint             m_lastGesturePoint;
 @property CGFloat             m_screenScale;
-@property bool                m_touchBeginSignaled;
-@property int                 m_touchDirection;
 @property XBMCKey             m_currentKey;
-@property int                 m_currentClick;
 @property int                 m_screenIdx;
 @property CGSize              m_screensize;
-@property bool                m_clickResetPan;
+@property BOOL                m_directionOverride;
+@property UIPanGestureRecognizerDirection m_direction;
 
 - (void) pauseAnimation;
 - (void) resumeAnimation;
