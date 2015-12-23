@@ -61,6 +61,7 @@ public:
   static void        TranslateAliasShortcut(std::string& path);
   static bool        CreateAliasShortcut(const std::string& fromPath, const std::string& toPath);
   static bool        AudioCodecLicenseCheck(const std::string &name);
+  static bool        OpenAppWithOpenURL(const std::string& path);
 };
 
 #endif

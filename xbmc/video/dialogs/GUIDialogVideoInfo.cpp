@@ -57,6 +57,9 @@
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
+#if defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/DarwinUtils.h"
+#endif
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
@@ -879,6 +882,16 @@ void CGUIDialogVideoInfo::PlayTrailer()
   // Close the dialog.
   Close(true);
 
+#if defined(TARGET_DARWIN_TVOS)
+  std::string path = m_movieItem->GetVideoInfoTag()->m_strTrailer;
+  if (StringUtils::StartsWith(path, "plugin://plugin.video.youtube"))
+  { //
+    StringUtils::TrimLeft(path, "plugin://plugin.video.youtube/?action=play_video&videoid=");
+    //path = "youtube://www.youtube.com/watch?v=6JB29yiysVg" + path;
+    path = "youtube://www.youtube.com/watch?v=6JB29yiysVg";
+    CDarwinUtils::OpenAppWithOpenURL(path);
+  }
+#else
   if (item.IsPlayList())
   {
     CFileItemList *l = new CFileItemList; //don't delete,
@@ -887,6 +900,7 @@ void CGUIDialogVideoInfo::PlayTrailer()
   }
   else
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(item)));
+#endif
 }
 
 void CGUIDialogVideoInfo::SetLabel(int iControl, const std::string &strLabel)

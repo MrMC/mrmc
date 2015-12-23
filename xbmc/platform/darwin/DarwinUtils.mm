@@ -791,4 +791,24 @@ bool CDarwinUtils::AudioCodecLicenseCheck(const std::string &name)
   return true;
 }
 
+bool CDarwinUtils::OpenAppWithOpenURL(const std::string& path)
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_TVOS)
+  NSString *ns_path = [NSString stringWithUTF8String:path.c_str()];
+  NSCharacterSet *set = [NSCharacterSet URLQueryAllowedCharacterSet];
+  NSString *ns_encoded_path = [ns_path stringByAddingPercentEncodingWithAllowedCharacters:set];
+  NSURL *ns_url = [NSURL URLWithString:ns_encoded_path];
+  
+  if ([[UIApplication sharedApplication] canOpenURL:ns_url])
+  {
+    // Can open the youtube app URL so launch the youTube app with this URL
+    [[UIApplication sharedApplication] openURL:ns_url];
+    return true;
+  }
+#endif
+
+  return ret;
+}
+
 #endif

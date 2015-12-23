@@ -49,5 +49,10 @@
 		</array>
 	</dict>
 	</array>
+  <key>LSApplicationQueriesSchemes</key>
+  <array>
+    <string>tv.mrmc.@APP_NAME_LC@.tvos</string>
+    <string>youtube</string>
+  </array>
 </dict>
 </plist>
