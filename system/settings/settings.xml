@@ -1056,6 +1056,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="subtitles.autosearch" type="boolean" label="25011" help="25012">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>        
         <setting id="subtitles.tv" type="integer" label="24116" help="24117">
           <level>1</level>
           <default>0</default>

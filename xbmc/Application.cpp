@@ -3296,6 +3296,10 @@ void CApplication::OnPlayBackStarted()
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SUBTITLES_AUTOSEARCH) &&
+      g_application.m_pPlayer->GetSubtitleCount() == 0)
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_SUBTITLES);
+  
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
