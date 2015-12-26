@@ -58,6 +58,9 @@ MainController *g_xbmcController;
 @synthesize m_screensize;
 @synthesize m_directionOverride;
 @synthesize m_direction;
+@synthesize m_currentKey;
+@synthesize m_clickResetPan;
+@synthesize m_mimicAppleSiri;
 
 #pragma mark - internal key press methods
 //--------------------------------------------------------------
@@ -147,6 +150,42 @@ MainController *g_xbmcController;
   [self sendKeyDown:(XBMCKey)[keyId intValue]];
 }
 
+- (XBMCKey)getPanDirectionKey:(CGPoint)translation
+{
+  int x = (int)translation.x;
+  int y = (int)translation.y;
+  int absX = x;
+  int absY = y;
+  
+  if (absX < 0)
+    absX *= -1;
+  
+  if (absY < 0)
+    absY *= -1;
+  
+  bool horizontal, veritical;
+  horizontal = ( absX > absY ) ;
+  veritical = !horizontal;
+  
+  // Determine up, down, right, or left:
+  bool swipe_up, swipe_down, swipe_left, swipe_right;
+  swipe_left = (horizontal && x < 0);
+  swipe_right = (horizontal && x >= 0);
+  swipe_up = (veritical && y < 0);
+  swipe_down = (veritical && y >= 0);
+  
+  if (swipe_down)
+    return XBMCK_DOWN;
+  if (swipe_up)
+    return XBMCK_UP;
+  if (swipe_left)
+    return XBMCK_LEFT;
+  if (swipe_right)
+    return XBMCK_RIGHT;
+  
+  return XBMCK_UNKNOWN;
+}
+
 - (UIPanGestureRecognizerDirection)getPanDirection:(CGPoint)translation
 {
   int x = (int)translation.x;
@@ -211,6 +250,10 @@ MainController *g_xbmcController;
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
+  if (!m_mimicAppleSiri && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && ([otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] || [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]))
+  {
+    return YES;
+  }
   return NO;
 }
 
@@ -304,6 +347,7 @@ MainController *g_xbmcController;
   pan.delegate = self;
   [m_glView addGestureRecognizer:pan];
   [pan release];
+  m_clickResetPan = false;
 }
 //--------------------------------------------------------------
 - (void)createTapGesturecognizers
@@ -447,6 +491,9 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)selectPressed:(UITapGestureRecognizer *)sender
 {
+  // if we have clicked select while scrolling up/down we need to reset direction of pan
+  m_clickResetPan = true;
+  
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
@@ -585,119 +632,217 @@ MainController *g_xbmcController;
 {
   if (m_appAlive == YES) //NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
-    static UIPanGestureRecognizerDirection direction = UIPanGestureRecognizerDirectionUndefined;
-    // speed       == how many clicks full swipe will give us(1000x1000px)
-    // minVelocity == min velocity to trigger fast scroll, add this to settings?
-    float speed = 240.0;
-    float minVelocity = 1300.0;
-    switch (sender.state) {
-        
-      case UIGestureRecognizerStateBegan: {
-        
-        if (direction == UIPanGestureRecognizerDirectionUndefined)
-        {
-          m_lastGesturePoint = [sender translationInView:sender.view];
-          m_lastGesturePoint.x = m_lastGesturePoint.x/1.92;
-          m_lastGesturePoint.y = m_lastGesturePoint.y/1.08;
+    if (m_mimicAppleSiri)
+    {
+      static UIPanGestureRecognizerDirection direction = UIPanGestureRecognizerDirectionUndefined;
+      // speed       == how many clicks full swipe will give us(1000x1000px)
+      // minVelocity == min velocity to trigger fast scroll, add this to settings?
+      float speed = 240.0;
+      float minVelocity = 1300.0;
+      switch (sender.state) {
           
-          m_direction = [self getPanDirection:m_lastGesturePoint];
-          m_directionOverride = false;
-        }
-        
-        break;
-      }
-        
-      case UIGestureRecognizerStateChanged:
-      {
-        CGPoint gesturePoint = [sender translationInView:sender.view];
-        gesturePoint.x = gesturePoint.x/1.92;
-        gesturePoint.y = gesturePoint.y/1.08;
-        
-        CGPoint gestureMovement;
-        gestureMovement.x = gesturePoint.x - m_lastGesturePoint.x;
-        gestureMovement.y = gesturePoint.y - m_lastGesturePoint.y;
-        
-        CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].x);
-        CGFloat velocityY = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].y);
-        direction = [self getPanDirection:gestureMovement];
-        if (ABS(velocityY) > minVelocity || ABS(velocityX) > minVelocity || m_directionOverride)
-        {
-          direction = m_direction;
-          // Override direction to correct swipe errors
-          m_directionOverride = true;
-        }
-        
-        switch (direction)
-        {
-          case UIPanGestureRecognizerDirectionUp:
+        case UIGestureRecognizerStateBegan: {
+          
+          if (direction == UIPanGestureRecognizerDirectionUndefined)
           {
-            if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) || ABS(velocityY) > minVelocity )
+            m_lastGesturePoint = [sender translationInView:sender.view];
+            m_lastGesturePoint.x = m_lastGesturePoint.x/1.92;
+            m_lastGesturePoint.y = m_lastGesturePoint.y/1.08;
+            
+            m_direction = [self getPanDirection:m_lastGesturePoint];
+            m_directionOverride = false;
+          }
+          
+          break;
+        }
+          
+        case UIGestureRecognizerStateChanged:
+        {
+          CGPoint gesturePoint = [sender translationInView:sender.view];
+          gesturePoint.x = gesturePoint.x/1.92;
+          gesturePoint.y = gesturePoint.y/1.08;
+          
+          CGPoint gestureMovement;
+          gestureMovement.x = gesturePoint.x - m_lastGesturePoint.x;
+          gestureMovement.y = gesturePoint.y - m_lastGesturePoint.y;
+          
+          CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].x);
+          CGFloat velocityY = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].y);
+          direction = [self getPanDirection:gestureMovement];
+          if (ABS(velocityY) > minVelocity || ABS(velocityX) > minVelocity || m_directionOverride)
+          {
+            direction = m_direction;
+            // Override direction to correct swipe errors
+            m_directionOverride = true;
+          }
+          
+          switch (direction)
+          {
+            case UIPanGestureRecognizerDirectionUp:
             {
-              [self sendKeyDownUp:XBMCK_UP];
-              if (ABS(velocityY) > minVelocity)
+              if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) || ABS(velocityY) > minVelocity )
+              {
                 [self sendKeyDownUp:XBMCK_UP];
-              m_lastGesturePoint = gesturePoint;
+                if (ABS(velocityY) > minVelocity)
+                  [self sendKeyDownUp:XBMCK_UP];
+                m_lastGesturePoint = gesturePoint;
+              }
+              break;
             }
-            break;
-          }
-          case UIPanGestureRecognizerDirectionDown:
-          {
-            if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) || ABS(velocityY) > minVelocity)
+            case UIPanGestureRecognizerDirectionDown:
             {
-              [self sendKeyDownUp:XBMCK_DOWN];
-              if (ABS(velocityY) > minVelocity)
+              if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) || ABS(velocityY) > minVelocity)
+              {
                 [self sendKeyDownUp:XBMCK_DOWN];
-              m_lastGesturePoint = gesturePoint;
+                if (ABS(velocityY) > minVelocity)
+                  [self sendKeyDownUp:XBMCK_DOWN];
+                m_lastGesturePoint = gesturePoint;
+              }
+              break;
             }
-            break;
-          }
-          case UIPanGestureRecognizerDirectionLeft:
-          {
-            if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+            case UIPanGestureRecognizerDirectionLeft:
             {
-              [self sendKeyDownUp:XBMCK_LEFT];
-              if (ABS(velocityX) > minVelocity)
+              if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+              {
                 [self sendKeyDownUp:XBMCK_LEFT];
-              m_lastGesturePoint = gesturePoint;
+                if (ABS(velocityX) > minVelocity)
+                  [self sendKeyDownUp:XBMCK_LEFT];
+                m_lastGesturePoint = gesturePoint;
+              }
+              break;
             }
-            break;
-          }
-          case UIPanGestureRecognizerDirectionRight:
-          {
-            if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+            case UIPanGestureRecognizerDirectionRight:
             {
-              [self sendKeyDownUp:XBMCK_RIGHT];
-              if (ABS(velocityX) > minVelocity)
+              if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+              {
                 [self sendKeyDownUp:XBMCK_RIGHT];
-              m_lastGesturePoint = gesturePoint;
+                if (ABS(velocityX) > minVelocity)
+                  [self sendKeyDownUp:XBMCK_RIGHT];
+                m_lastGesturePoint = gesturePoint;
+              }
+              break;
             }
-            break;
-          }
-          default:
-          {
-            break;
+            default:
+            {
+              break;
+            }
           }
         }
+          
+        case UIGestureRecognizerStateEnded: {
+          direction = UIPanGestureRecognizerDirectionUndefined;
+          break;
+        }
+          
+        default:
+          break;
       }
-        
-      case UIGestureRecognizerStateEnded: {
-        direction = UIPanGestureRecognizerDirectionUndefined;
-        break;
-      }
-        
-      default:
-        break;
     }
-    
+    else // dont mimic apple siri remote
+    {
+      XBMCKey key;
+      switch (sender.state)
+      {
+        case UIGestureRecognizerStateBegan:
+        {
+          m_currentClick = -1;
+          m_currentKey = XBMCK_UNKNOWN;
+          break;
+        }
+        case UIGestureRecognizerStateChanged:
+        {
+          CGPoint gesturePoint = [sender translationInView:m_glView];
+          gesturePoint.x = gesturePoint.x/1.92;
+          gesturePoint.y = gesturePoint.y/1.08;
+          
+          key = [self getPanDirectionKey:gesturePoint];
+          
+          // ignore UP/DOWN swipes while in full screen playback
+          if (g_windowManager.GetFocusedWindow() != WINDOW_FULLSCREEN_VIDEO ||
+              key == XBMCK_LEFT ||
+              key == XBMCK_RIGHT)
+          {
+            int click;
+            int absX = gesturePoint.x;
+            int absY = gesturePoint.y;
+            
+            if (absX < 0)
+              absX *= -1;
+            
+            if (absY < 0)
+              absY *= -1;
+            
+            if (key == XBMCK_RIGHT || key == XBMCK_LEFT)
+            {
+              if (absX > 200)
+                click = 2;
+              else if (absX > 70)
+                click = 1;
+              else
+                click = 0;
+            }
+            else
+            {
+              if (absY > 200)
+                click = 2;
+              else if (absY > 100)
+                click = 1;
+              else
+                click = 0;
+            }
+            
+            if (m_clickResetPan || m_currentKey != key || click != m_currentClick)
+            {
+              [self stopKeyPressTimer];
+              [self sendKeyUp:m_currentKey];
+              
+              if (click != m_currentClick)
+              {
+                m_currentClick = click;
+              }
+              if (m_currentKey == XBMCK_UNKNOWN || m_clickResetPan ||
+                  ((m_currentKey == XBMCK_RIGHT && key == XBMCK_LEFT) ||
+                   (m_currentKey == XBMCK_LEFT && key == XBMCK_RIGHT) ||
+                   (m_currentKey == XBMCK_UP && key == XBMCK_DOWN) ||
+                   (m_currentKey == XBMCK_DOWN && key == XBMCK_UP))
+                  )
+              {
+                m_clickResetPan = false;
+                m_currentKey = key;
+              }
+              
+              if (m_currentClick == 2)
+              {
+                //fast click
+                [self startKeyPressTimer:m_currentKey clickTime:0.20];
+                LOG("fast click");
+              }
+              else if (m_currentClick == 1)
+              {
+                // slow click
+                [self startKeyPressTimer:m_currentKey clickTime:0.80];
+                LOG("slow click");
+              }
+            }
+          }
+          break;
+        }
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:
+          [self stopKeyPressTimer];
+          break;
+        default:
+          break;
+      }
+    }
   }
 
-  
 }
 
 //--------------------------------------------------------------
 - (IBAction)handleSwipe:(UISwipeGestureRecognizer *)sender
 {
-  if(m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if(!m_mimicAppleSiri && m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     switch ([sender direction])
     {
@@ -789,15 +934,14 @@ MainController *g_xbmcController;
 
   // Check if screen is Retina
   m_screenScale = [[UIScreen mainScreen] nativeScale];
-
   [self.view addSubview: m_glView];
 }
 //--------------------------------------------------------------
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-
-//  [self createSwipeGestureRecognizers];
+  
+  [self createSwipeGestureRecognizers];
   [self createPanGestureRecognizers];
   [self createPressGesturecognizers];
   [self createTapGesturecognizers];
@@ -895,6 +1039,12 @@ MainController *g_xbmcController;
   PRINT_SIGNATURE();
   m_disableIdleTimer = NO;
   [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+}
+
+//--------------------------------------------------------------
+- (void)setSiriRemote:(BOOL)enable
+{
+  m_mimicAppleSiri = enable;
 }
 
 //--------------------------------------------------------------

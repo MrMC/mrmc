@@ -13959,7 +13959,17 @@ msgctxt "#24151"
 msgid "Podnapisi.net"
 msgstr ""
 
-#empty strings from id 24150 to 24991
+#: apple remote
+msgctxt "#24152"
+msgid "Match Apple tvOS Standard (Siri remote)"
+msgstr ""
+
+#: apple remote
+msgctxt "#24153"
+msgid "Enable to make the Siri remote match the normal Apple tvOS behavior"
+msgstr ""
+
+#empty strings from id 24152 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp

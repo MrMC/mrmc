@@ -87,7 +87,6 @@
       </group>
     </category>
     <category id="input">
-      <visible>false</visible>
       <group id="1">
         <setting id="input.peripherals">
           <visible>false</visible>
@@ -97,6 +96,11 @@
         </setting>
         <setting id="input.appleremotesequencetime">
           <visible>false</visible>
+        </setting>
+        <setting id="input.applesiri" type="boolean" label="24152" help="24153">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
       <group id="2">

@@ -1686,6 +1686,7 @@
 		F558F27B13ABD56600631E12 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */; };
 		F558F27F13ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */; };
 		F558F29613ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */; };
+		F55902191C2F14D800349249 /* TVOSSettingsHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = F55902181C2F14D800349249 /* TVOSSettingsHandler.mm */; };
 		F55BA70B17AB2264002A36D1 /* StereoscopicsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5558ED0E176396CD00118C35 /* StereoscopicsManager.cpp */; };
 		F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55611BA21766672F00754072 /* RenderFlags.cpp */; };
 		F563529616E53FAB00D21BAD /* UPnPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563529416E53FAB00D21BAD /* UPnPSettings.cpp */; };
@@ -4693,6 +4694,8 @@
 		F55902091C271E2C00349249 /* DllLibNfs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DllLibNfs.h; sourceTree = "<group>"; };
 		F559020A1C2722D000349249 /* Common.xcconfig.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = Common.xcconfig.in; sourceTree = "<group>"; };
 		F559020B1C2722E100349249 /* App.xcconfig.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = App.xcconfig.in; sourceTree = "<group>"; };
+		F55902171C2F14D800349249 /* TVOSSettingsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TVOSSettingsHandler.h; sourceTree = "<group>"; };
+		F55902181C2F14D800349249 /* TVOSSettingsHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TVOSSettingsHandler.mm; sourceTree = "<group>"; };
 		F563529416E53FAB00D21BAD /* UPnPSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPSettings.cpp; sourceTree = "<group>"; };
 		F563529516E53FAB00D21BAD /* UPnPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPSettings.h; sourceTree = "<group>"; };
 		F56352A216E5402100D21BAD /* GUIDialogContentSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogContentSettings.cpp; path = dialogs/GUIDialogContentSettings.cpp; sourceTree = "<group>"; };
@@ -8361,6 +8364,8 @@
 				F5D142A51BAF31FB0075A95C /* MainKeyboard.mm */,
 				F5D142A61BAF31FB0075A95C /* MainKeyboardView.h */,
 				F5D142A71BAF31FB0075A95C /* MainKeyboardView.mm */,
+				F55902171C2F14D800349249 /* TVOSSettingsHandler.h */,
+				F55902181C2F14D800349249 /* TVOSSettingsHandler.mm */,
 			);
 			path = tvos;
 			sourceTree = "<group>";
@@ -11550,6 +11555,7 @@
 				F5D142241BAF0B6D0075A95C /* PosixFile.cpp in Sources */,
 				F5D142251BAF0B6D0075A95C /* NptPosixDynamicLibraries.cpp in Sources */,
 				F5D142261BAF0B6D0075A95C /* NptPosixEnvironment.cpp in Sources */,
+				F55902191C2F14D800349249 /* TVOSSettingsHandler.mm in Sources */,
 				F5D142271BAF0B6D0075A95C /* NptPosixNetwork.cpp in Sources */,
 				F5D142281BAF0B6D0075A95C /* NptPosixQueue.cpp in Sources */,
 				F5D142291BAF0B6D0075A95C /* NptPosixSystem.cpp in Sources */,

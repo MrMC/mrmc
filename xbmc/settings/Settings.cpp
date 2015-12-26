@@ -36,25 +36,28 @@
 #include "guilib/StereoscopicsManager.h"
 #include "input/KeyboardLayoutManager.h"
 #if defined(TARGET_POSIX)
-#include "linux/LinuxTimezone.h"
+  #include "linux/LinuxTimezone.h"
 #endif // defined(TARGET_POSIX)
 #include "network/NetworkServices.h"
 #include "network/upnp/UPnPSettings.h"
 #include "network/WakeOnAccess.h"
-#if defined(TARGET_DARWIN_OSX)
-#include "platform/darwin/osx/XBMCHelper.h"
-#endif // defined(TARGET_DARWIN_OSX)
 #if defined(TARGET_DARWIN)
-#include "platform/darwin/DarwinUtils.h"
-#endif
-#if defined(TARGET_DARWIN_IOS)
-#include "SettingAddon.h"
+  #include "platform/darwin/DarwinUtils.h"
+  #if defined(TARGET_DARWIN_OSX)
+    #include "platform/darwin/osx/XBMCHelper.h"
+  #endif // defined(TARGET_DARWIN_OSX)
+  #if defined(TARGET_DARWIN_IOS)
+    //#include "SettingAddon.h"
+  #endif
+  #if defined(TARGET_DARWIN_TVOS)
+    #include "platform/darwin/tvos/TVOSSettingsHandler.h"
+  #endif
 #endif
 #if defined(TARGET_RASPBERRY_PI)
-#include "linux/RBP.h"
+  #include "linux/RBP.h"
 #endif
 #if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
+  #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
 #include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
@@ -364,6 +367,7 @@ const std::string CSettings::SETTING_INPUT_ENABLEJOYSTICK = "input.enablejoystic
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEMODE = "input.appleremotemode";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON = "input.appleremotealwayson";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME = "input.appleremotesequencetime";
+const std::string CSettings::SETTING_INPUT_APPLESIRI = "input.applesiri";
 const std::string CSettings::SETTING_NETWORK_USEHTTPPROXY = "network.usehttpproxy";
 const std::string CSettings::SETTING_NETWORK_HTTPPROXYTYPE = "network.httpproxytype";
 const std::string CSettings::SETTING_NETWORK_HTTPPROXYSERVER = "network.httpproxyserver";
@@ -1166,6 +1170,12 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&XBMCHelper::GetInstance(), settingSet);
 #endif
 
+#if defined(TARGET_DARWIN_TVOS)
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRI);
+  m_settingsManager->RegisterCallback(&CTVOSInputSettings::GetInstance(), settingSet);
+#endif
+  
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
   m_settingsManager->RegisterCallback(&CWakeOnAccess::GetInstance(), settingSet);
