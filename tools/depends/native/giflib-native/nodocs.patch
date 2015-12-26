@@ -1,0 +1,21 @@
+#diff -ur a/Makefile.am b/Makefile.am
+--- Makefile.am	2012-05-15 22:38:46.000000000 -0500
++++ Makefile.am	2012-06-13 19:34:01.226867571 -0500
+@@ -1,4 +1,4 @@
+-SUBDIRS = lib util doc pic
++SUBDIRS = lib util pic
+
+ EXTRA_DIST = Makefile.unx \
+ 	     autogen.sh \
+#diff -ur a/Makefile.in b/Makefile.in
+--- Makefile.in	2012-05-16 19:59:23.000000000 -0500
++++ Makefile.in	2012-06-13 19:37:23.128860063 -0500
+@@ -229,7 +229,7 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = lib util doc pic
++SUBDIRS = lib util pic
+ EXTRA_DIST = Makefile.unx \
+ 	     autogen.sh \
+ 	     tests \
