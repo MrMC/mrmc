@@ -559,6 +559,8 @@ bool CDarwinUtils::ResetSystemIdleTimer()
 #if defined(TARGET_DARWIN_TVOS)
   //CLog::Log(LOGDEBUG, "CDarwinUtils::ResetSystemIdleTimer");
   return [g_xbmcController resetSystemIdleTimer];
+#else
+  return false;
 #endif
 }
 
