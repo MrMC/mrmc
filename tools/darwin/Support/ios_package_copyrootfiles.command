@@ -27,7 +27,7 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   LANGSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDSYS} --exclude resource.uisounds*"
 
   # rsync command for including everything but the skins
-  ADDONSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDDBG} --exclude addons/lib --exclude addons/share --exclude addons/skin.mrmc --exclude addons/skin.mrmc-touch --exclude addons/skin.amber --exclude *changelog.* --exclude *library.*/*.h --exclude *library.*/*.cpp --exclude *xml.in"
+  ADDONSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDDBG} --exclude addons/lib --exclude addons/share --exclude addons/skin.mrmc --exclude addons/skin.mrmc-touch --exclude addons/skin.amber --exclude addons/skin.pm3.hd --exclude *changelog.* --exclude *library.*/*.h --exclude *library.*/*.cpp --exclude *xml.in"
 
   # binary name is MrMC but we build MrMC so to get a clean binary each time
   mv $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME
@@ -78,6 +78,17 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
     ${SYNCSKIN_C} "$SRCROOT/addons/skin.amber"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
     ${SYNC} "$SRCROOT/addons/skin.amber/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.amber"
     ${SYNC} "$SRCROOT/addons/skin.amber/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.amber"
+  fi
+
+    # sync pm3.hd skin on tvos
+  if [ -f "$SRCROOT/addons/skin.pm3.hd/addon.xml" ] && [ "$PLATFORM_NAME" == "appletvos" ]; then
+    SYNCSKIN_D=${SYNC}
+    if [ -f "$SRCROOT/addons/skin.pm3.hd/media/Textures.xbt" ]; then
+      SYNCSKIN_D="${SYNC} --exclude *.png --exclude *.jpg --exclude *.gif --exclude media/Makefile*"
+    fi
+    ${SYNCSKIN_D} "$SRCROOT/addons/skin.pm3.hd"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
+    ${SYNC} "$SRCROOT/addons/skin.pm3.hd/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.pm3.hd"
+    ${SYNC} "$SRCROOT/addons/skin.pm3.hd/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.pm3.hd"
   fi
 
   # fixups, addons might have silly symlinks because cmake is stupid, remove them

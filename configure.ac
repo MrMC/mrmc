@@ -1977,6 +1977,7 @@ OUTPUT_FILES="$OUTPUT_FILES Makefile"
 OUTPUT_FILES="$OUTPUT_FILES Makefile.include"
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.mrmc/media/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.amber/media/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES addons/skin.pm3.hd/media/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES lib/libUPnP/Makefile"
 
