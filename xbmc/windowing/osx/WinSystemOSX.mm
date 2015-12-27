@@ -281,6 +281,8 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_movedToOtherScreen = false;
   m_refreshRate = 0.0;
   m_fullscreenWillToggle = false;
+  m_lastX = 0;
+  m_lastY = 0;
 }
 
 CWinSystemOSX::~CWinSystemOSX()
@@ -464,6 +466,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   //printf("CWinSystemOSX::ResizeWindow\n");
   if (!m_appWindow)
     return false;
+
   if (newLeft < 0)
     newLeft = m_lastX;
   if (newTop < 0)
@@ -1025,6 +1028,13 @@ void CWinSystemOSX::HandlePossibleRefreshrateChange()
 void CWinSystemOSX::OnMove(int x, int y)
 {
   //printf("CWinSystemOSX::OnMove\n");
+  NSWindow *window = (NSWindow *)m_appWindow;
+  OSXGLView *view = [window contentView];
+  NSPoint pointRelativeToScreen = [window convertBaseToScreen:[view frame].origin];
+  m_lastWidth  = [view frame].size.width;
+  m_lastHeight = [view frame].size.height;
+  m_lastX      = pointRelativeToScreen.x;
+  m_lastY      = pointRelativeToScreen.y;
 }
 
 IOPMAssertionID systemSleepAssertionID = kIOPMNullAssertionID;

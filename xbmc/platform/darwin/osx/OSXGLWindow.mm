@@ -95,7 +95,7 @@
       newEvent.type = XBMC_VIDEOMOVE;
       newEvent.move.x = window_origin.x;
       newEvent.move.y = window_origin.y;
-      g_application.OnEvent(newEvent);
+      CWinEvents::MessagePush(&newEvent);
     }
   }
 }
@@ -103,26 +103,6 @@
 - (void)windowDidResize:(NSNotification *)aNotification
 {
   //NSLog(@"windowDidResize");
-  NSRect rect = [self contentRectForFrameRect:[self frame]];
-  
-  if(!g_Windowing.IsFullScreen())
-  {
-    int RES_SCREEN = g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
-    if(((int)rect.size.width == CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iWidth) &&
-       ((int)rect.size.height == CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iHeight))
-      return;
-  }
-  XBMC_Event newEvent;
-  newEvent.type = XBMC_VIDEORESIZE;
-  newEvent.resize.w = (int)rect.size.width;
-  newEvent.resize.h = (int)rect.size.height;
-  
-  // check for valid sizes cause in some cases
-  // we are hit during fullscreen transition from osx
-  // and might be technically "zero" sized
-  if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
-    g_application.OnEvent(newEvent);
-  g_windowManager.MarkDirty();
 }
 
 -(void)windowDidChangeScreen:(NSNotification *)notification
@@ -135,7 +115,7 @@
 
 -(NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize
 {
-  //NSLog(@"windowWillResize");
+  NSLog(@"windowWillResize");
   return frameSize;
 }
 
@@ -147,6 +127,21 @@
 -(void)windowDidEndLiveResize:(NSNotification *)aNotification
 {
   //NSLog(@"windowDidEndLiveResize");
+  NSRect rect = [self contentRectForFrameRect:[self frame]];
+
+  if(!g_Windowing.IsFullScreen())
+  {
+    int RES_SCREEN = g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
+    if(((int)rect.size.width == CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iWidth) &&
+       ((int)rect.size.height == CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iHeight))
+      return;
+  }
+
+  // send a message so that videoresolution (and refreshrate) is changed
+  if (rect.size.width != 0 && rect.size.height != 0)
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_VIDEORESIZE, rect.size.width, rect.size.height);
+
+  g_windowManager.MarkDirty();
 }
 
 -(void)windowDidEnterFullScreen: (NSNotification*)pNotification

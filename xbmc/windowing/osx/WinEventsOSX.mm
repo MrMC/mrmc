@@ -303,6 +303,9 @@ NSEvent* InputEventHandler(NSEvent *nsevent)
   
   // The incoming mouse position.
   NSPoint location = [nsevent locationInWindow];
+  if (location.x < 0 || location.y < 0)
+    return nsevent;
+
   // cocoa world is upside down ...
   location.y = g_Windowing.CocoaToNativeFlip(location.y);
   
