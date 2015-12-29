@@ -60,6 +60,9 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
   BOOL                        m_mimicAppleSiri;
   XBMCKey                     m_currentKey;
   BOOL                        m_clickResetPan;
+  BOOL                        m_remoteIdleState;
+  CGFloat                     m_remoteIdleTimeout;
+  BOOL                        m_shouldRemoteIdle;
   UIPanGestureRecognizerDirection m_direction;
 }
 // why are these properties ?
@@ -73,6 +76,9 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
 @property BOOL                m_directionOverride;
 @property BOOL                m_mimicAppleSiri;
 @property BOOL                m_clickResetPan;
+@property BOOL                m_remoteIdleState;
+@property CGFloat             m_remoteIdleTimeout;
+@property BOOL                m_shouldRemoteIdle;
 @property UIPanGestureRecognizerDirection m_direction;
 
 - (void) pauseAnimation;
@@ -97,6 +103,8 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
 - (void) enableScreenSaver;
 - (bool) resetSystemIdleTimer;
 - (void) setSiriRemote:(BOOL)enable;
+- (void) setRemoteIdleTimeout:(int)timeout;
+- (void) setShouldRemoteIdle:(BOOL)idle;
 
 - (NSArray<UIScreenMode *> *) availableScreenModes:(UIScreen*) screen;
 - (UIScreenMode*) preferredScreenMode:(UIScreen*) screen;
