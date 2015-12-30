@@ -116,6 +116,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
       home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
       home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
+      home->SetProperty("LatestEpisode." + value + ".RunningTime"   , item->GetVideoInfoTag()->GetDuration() / 60);
 
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());
@@ -145,6 +146,7 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , "");
     home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , "");
     home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
+    home->SetProperty("LatestEpisode." + value + ".RunningTime"   , "");
   }  
 
   i = 0;
