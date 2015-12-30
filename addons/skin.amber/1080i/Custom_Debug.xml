@@ -67,7 +67,7 @@
         <shadowcolor>FF000000</shadowcolor>
         <font>SysInfo</font>
         <align>left</align>
-        <label>RECENT: $INFO[Window(Home).Property(SkinWidgets_RecentItems)] - $INFO[Window(Home).Property(RecentMovie.1.Title)]</label>
+        <label>RECENT: $INFO[Window(Home).Property(SkinWidgets_RecentItems)] - $INFO[Window.Property(LatestMovie.1.Title)]</label>
       </control>
       <control type="label">
         <visible>Window.IsActive(home)</visible>

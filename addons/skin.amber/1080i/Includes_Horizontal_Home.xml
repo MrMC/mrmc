@@ -36,15 +36,10 @@
 	    <include condition="!Skin.HasSetting(Hide.Favourites)">Favourite.List</include>
           <include condition="System.GetBool(pvrmanager.enabled)">PVR.List</include>
       <include condition="Skin.HasSetting(Shelf.Addons)">Addons.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) + SubString(Window(Home).Property(SkinWidgets_RecentItems),t,left)">Recent.Movies.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) + SubString(Window(Home).Property(SkinWidgets_RecentItems),t,left)">Recent.Concerts.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) + SubString(Window(Home).Property(SkinWidgets_RecentItems),t,left)">Recent.Episodes.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) + SubString(Window(Home).Property(SkinWidgets_RecentItems),t,left)">Recent.Albums.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) + SubString(Window(Home).Property(SkinWidgets_RecentItems),t,left)">Recent.Clips.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) + [SubString(Window(Home).Property(SkinWidgets_Recommended),t,left) | SubString(Window(Home).Property(SkinWidgets_RandomItems),t,left)]">Recommended.And.Random.Movies.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) +  SubString(Window(Home).Property(SkinWidgets_Recommended),t,left)">Recommended.Concerts.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) + SubString(Window(Home).Property(SkinWidgets_Recommended),t,left)">Recommended.Episodes.List</include>
-      <include condition="!Skin.HasSetting(Hide.RecentlyAdded) + SubString(Window(Home).Property(SkinWidgets_Recommended),t,left)">Recommended.Albums.List</include>
+      <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Movies.List</include>
+      <!-- <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Concerts.List</include> -->
+      <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Episodes.List</include>
+      <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Albums.List</include>
       </control>
       <control type="group">
         <posy>150</posy>
