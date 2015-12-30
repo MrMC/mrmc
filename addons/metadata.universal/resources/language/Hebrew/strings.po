@@ -1,0 +1,269 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Hebrew (http://www.transifex.com/projects/p/xbmc-addons/language/he/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "אפשר פאנארט מ־themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "אפשר פוסטרים מ־themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "אפשר פוסטרים מ־IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "אפשר פוסטרים מ־MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "קבל קדימונים ישירות מיוטיוב"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "אפשר קדימונים מ־HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "העדף שפת כותרות מ"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "אפשר קדימונים מ־themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "פוסטר"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "קדימונים"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "קבל שם מארז (אוסף) מ־themoviedb.org"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "קבל עלילה "
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "קבל רשימת אמנים /  במאים / כותבים מ"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "מקורות עלילה"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "שפת עלילה מועדפת"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "קבל דירוגים מ"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "קבל סגנונות מ"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "קבל כותרת מ"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "מקורות כותרת"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "מקורות רשימת שחקנים וקרדיטים"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "מקורות סגנונות"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "שפת כותרות מועדפת"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "מקורות קדימונים"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "אוספי סרטים"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "מקורות דירוגים"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "הגדרות אישורי אבטחה"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "השג אישורי אבטחה מ-"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "     מדינת אישורי אבטחה מועדפת"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "     שפת תמונה ממוזערת מועדפת"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "קידומת אישורי אבטחה"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "הפעל פוסטרים מ-IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "הפעל פוסטרים מ-trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "הפעל פאנארט מ-trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "הפעל קדימונים מ-trakt.tv"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "שפת סגנון"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "העדפות שפת קדימונים"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "השג סלוגן מ-"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "שפת תגיות מועדפת"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "השג דירוג IMDb TOP250"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "קבל תקציר מ-"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "     שפה מועדפת לשם המארז (אוסף)"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "מקורות לפוסטרים"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "קבל מילות מפתח ושמור כתגיות מ"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "דירוג"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "דירוג ע״י"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "השתמש בניקוד מצתבר מ"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "תודות"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "השג אולפן מ-"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "השג מדינה מ־"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "חיפוש"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "מנוע חיפוש לשימוש"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "     שפת חיפוש משנית (בנוסף על en-us)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "לכלול את כל קטגוריות הסרטים"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "אזהרה:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "הפעלת כל קטגוריות הסרטים תפחית באופן משמעותי את דיוק החיפוש !!!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "עלילה"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "עלילה / מילות מפתח / תקציר"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "פאנארט"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "מקורות פאנארט"
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr "אפשר פוסטרים מ־fanart.tv"
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr "אפשר פאנארט מ־fanart.tv"

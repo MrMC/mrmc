@@ -1,0 +1,269 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/xbmc-addons/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Gebruik fanart van themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Gebruik posters van themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "Gebruik posters van IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Gebruik posters van MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Haal trailers direct van YouTube"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "Gebruik trailers van HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "Voorkeurstaal voor Titels"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Gebruik Trailers van themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Poster"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Trailers"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "Verkrijg Set (Collectie) Naam van themoviedb.org"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Haal verhaallijn van"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "Haal Cast / Regisseurs / Auteurs van"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Plotbronnen"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "Voorkeurstaal voor Plot"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Haal scores van"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Haal genres van"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Haal titels van"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Titel bronnen"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "Bronnen voor cast en credits"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Genres bronnen"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "Voorkeurstaal voor Titel "
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Bronnen voor trailers"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "Filmcollecties"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Bronnen voor waarderingen"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "Certificeringsinstellingen"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "Haal Certificering bij"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "Voorkeursland voor certificering"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "Voorkeurstaal voor miniaturen"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "Certificeringsprefix"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "Gebruik posters van IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Gebruik posters van trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Gebruik fanart van trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Gabruik trailers van trakt.tv"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "Genretaal"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "Voorkeurstaal Trailers"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "Haal motto van"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "Voorkeurstaal motto"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "Haal IMDb TOP250 plaatsing"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "Verkrijg een beschrijving van"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "Voorkeur Set (Collectie) Naam Taal"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Poster Bronnen"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "Verkrijg trefwoorden en sla op als tags van"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Waardering"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "Waardering gegenereerd met behulp van"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "Gebruik de samengevoegde score van"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Credits"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "Haal filmstudio op van"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "Haal landkeuze op van"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Zoeken"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Te gebruiken Zoekmachine"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "Secondaire zoek- taal (naast en-us)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "Selecteer Alle Film Categorieën "
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Waarschuwing:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "Het Selecteren van alle Film Categorieën zal de accuraatheid van zoekacties verminderen!!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Plot"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "Plot / Slogan / Beschrijving"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Fanart bronnen"
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr "Gebruik posters van fanart.tv"
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr "Gebruik fanart van fanart.tv"

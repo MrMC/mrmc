@@ -1,0 +1,257 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Hungarian (http://www.transifex.com/projects/p/xbmc-addons/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Fanartképek letöltése a themoviedb.org-ról"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Poszterképek letöltés a themoviedb.org-ról"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Poszterképek letöltés a MoviePosterDB-ról"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Filmelőzetesek letöltése közvetlenül a YouTube-ról"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "Filmcím a következő országból:"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Filmelőzetesek letöltése a themoviedb.org-ról"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Poster"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Bemutatók"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "Szettcímek letöltése a themoviedb-org-ról"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Cselekmény letöltése innen:"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "Szereposztás/Rendező/Író letöltése innen:"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Cselekmény források"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "Cselekmény kívánt nyelve"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Értékelés letöltése innen:"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Műfajok letöltése innen:"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Címek letöltése innen:"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Címforrások"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "Szereposztás források"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Műfaj források"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "Kívánt cím nyelv"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Filmelőzetes források"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "Filmgyűjtemények"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Értékelés források"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "Hitelesítési beállítások"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "Hitelesítés beszerzése innen:"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "Kívánt hitelesítő ország"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "Kívánt minikép nyelv"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "Hitelesítési előtag"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Poszterek engedélyezése a trakt.tv-ről"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Fanartok engedélyezése a trakt.tv-ről"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Filmelőzetesek engedélyezése a trakt.tv-ről"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "Műfaj nyelve"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "Kívánt filmelőzetes nyelv"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "Jelmondat lekérése ezzel:"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "Kívánt jelmondat nyelv"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "IMDb TOP250 helyezés lekérése"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "Rövid tartalom lekérése innen:"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "Előnyben részesített szettnév nyelv"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Poszterek forrása"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "Kulcsszavak és ezek Mentése Címkeként ebből:"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Korhatár"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "Az értékelést készítette:"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "Azon pontszámok használata melyek innen adódtak össze:"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Készítők"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "Stúdió lekérése ezzel:"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "Ország lekérése ezzel:"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Keresés"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Használandó keresőmotor"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "Műsodlagos keresőnyelv (az en-US-en kívül)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "Minden filmkategóriát  hozzáad"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Figyelem:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "Az összes filmkategória engedélyezése, csökkenteni fogja a keresési találatok pontosságát !!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Ismertetö"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "Tartalom/leírás"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Fanart források"
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr "Poszterek engedélyezése a fanart.tv-ről"
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr "Fanartok engedélyezése a fanart.tv-ről"

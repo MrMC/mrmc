@@ -1,0 +1,261 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Norwegian (http://www.transifex.com/projects/p/xbmc-addons/language/no/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: no\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Hent fanart fra themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Hent plakater fra themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "Hent plakater fra IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Hent plakater fra MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Hent trailere direkte fra YouTube"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "Hent trailere fra HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "     Foretrekk tittel fra"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Hent trailere fra themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Plakat"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Trailere"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "Hent navn på samlinger fra themoviedb.org"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Hent handlig fra"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "Hent rolleliste / regissør / forfatter Fra "
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Plotkilder"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "     Foretrukket språk"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Hent rangeringer fra"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Hent sjanger fra"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Hent tittel fra"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Tittelkilder"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "Kastet og Rulletekst Kilder"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Genrekilder"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "     Foretrekk tittel fra"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Kilder"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "Filmsamlinger"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Kilder for rangering "
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "Innstillinger for aldersgrense"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "Hent aldersgrense fra"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "     Foretrukket land for aldersgrenser"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "     Foretrukket språk"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "Prefiks"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "Hent plakater fra IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Hent plakater fra trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Hent fanart fra trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Hent trailere fra trakt.tv"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "     Foretrukket språk"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "     Foretrukket språk"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "Hent slagord fra"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "     Foretrukket språk"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "Hent IMDb TOP250 rangering"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "Hent referat fra"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "     Foretrukket språk"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Ressurser for plakater"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "Får nøkkelord og lagrer som tagger fra"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Rangering/aldersgrense"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "Rangering Generert Bruker"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "Bruk Resultatet Opptjent fra"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Anerkjennelser"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "Hent studio fra"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "Hent land fra"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Søk"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Søkemotor"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "     Sekundært språk å søke for (i tillegg til en-us)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "Inkluder Alle Filmkategorier"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Advarsel:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "Søket vil bli unøyaktig ved å slå på Alle Filmkategorier"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Handling"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "Handling / slagord / referat"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Fanart-kilder"

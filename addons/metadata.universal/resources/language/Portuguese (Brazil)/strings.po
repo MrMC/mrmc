@@ -1,0 +1,269 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/xbmc-addons/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Ativar fanart de themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Ativar posters de themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "Ativar posters de IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Ativar posters de MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Obter Trailers diretamente do YouTube"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "Ativar trailers de HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "     Linguagem preferida para o título"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Ativar trailers de themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Poster"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Trailers"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "Obter Nome do Set (Coletânea) no themoviedb.org"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Obter Enredo de"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "Obter Elenco/Diretores/Escritores de"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Fonte Enredo"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "   Linguagem Preferida para Enredo"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Obter Classificação de"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Obter Gêneros de"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Obter Títulos de"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Fontes de Títulos"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "Elenco & Fontes Créditos"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Fontes Gêneros"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "   Linguagem Preferida para Títulos"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Fontes Trailer"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "Coleções de FIlme"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Fontes Classificação"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "Ajustes de Classificação Indicativa"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "Obter Classificação Indicativa de "
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "    Usar Classificação Indicativa do País"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "   Linguagem Preferida para Miniaturas"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "Prefixo Classificação Indicativa"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "Ativar posters de IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Ativar posters de trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Ativar fanart de trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Ativar trailers de trakt.tv"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "    Linguagem Gênero"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "    Linguagem preferida de trailers"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "Obter Tagline de"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "    Linguagem preferida para linha da tag"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "Obter Ranking IMDb TOP250"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "Obter Descrição De"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "     Idioma Preferido Nome no Nome do Set (Coletânea)"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Fontes de Posters"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "Obter palavras chaves e salvar como Tags de"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Classificação"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "    Avaliação gerada usando"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "   Use o agregador de escore de"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Créditos"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "Obter Estúdio de"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "Obter País de"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Procurar"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Mecanismo de Busca a ser usado"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "    Idioma Secundário na Busca (Em adição ao en-us)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "Incluir todas as Categorias de Filmes"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Aviso:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "Ativar incluir todas as categorias de filmes irá reduzir a precisão da busca!!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Sinopse"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "Enredo/Linha da Tag/Descrição"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Fontes de Fanarts"
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr "Habilitar pôsteres de fanart.tv"
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr "Habilitar fanart de fanart.tv"

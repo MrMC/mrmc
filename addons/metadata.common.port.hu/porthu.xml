@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraperfunctions>
+
+	<GetPortHUPlotByTitleAndYear clearbuffers="no" dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="15">
+				<expression encode="1">(.+)::.+::.+</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="11">
+				<expression>(.+)::.+::.+</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="17">
+				<expression encode="1">.+::(.+)::.+</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression encode="1">.+::.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$15" output="&lt;url function=&quot;ParsePortHUSearchResults&quot; cache=&quot;porthusearch-\1.html&quot;&gt;http://www.port.hu/pls/ci/cinema.film_creator?i_text=\1&amp;amp;i_film_creator=1&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetPortHUPlotByTitleAndYear>
+	<ParsePortHUSearchResults clearbuffers="no" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="9">
+				<expression noclean="1">i_film_id=([\d]*)&amp;amp;i_city_id=-1&amp;amp;i_county_id=-1&amp;amp;i_topic_id=2" target="_top"&gt;[^&lt;]*[^&gt;]*&gt;\s\($$11\)(((?!br).)*($$17)\)).*?&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="9">
+				<expression noclean="1">i_film_id=([\d]*)&amp;amp;i_city_id=-1&amp;amp;i_county_id=-1&amp;amp;i_topic_id=2" target="_top"&gt;$$11&lt;(((?!br).)*($$17)\)).*?&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression>class="txt"&gt;\($$11\).*?div class="separator"&gt;&lt;/div&gt;\n&lt;span class="txt"&gt;(.*?)&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression>class="blackbigtitle"&gt;$$11.*?div class="separator"&gt;&lt;/div&gt;\n&lt;span class="txt"&gt;(.*?)&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$18" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
+				<expression>(.+)</expression>
+			</RegExp>
+			<RegExp input="$$18" output="&lt;url function=&quot;ParseTMDBPlot&quot; cache=&quot;tmdb-hu-$$8.json&quot;&gt;http://api.tmdb.org/3/movie/$$8?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=hu&lt;/url&gt;" dest="2">
+				<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;url function=&quot;ParsePortHUPlot&quot; cache=&quot;porthu-\1.html&quot;&gt;http://www.port.hu/pls/fi/films.film_page?i_where=2&amp;i_film_id=\1&lt;/url&gt;" dest="2">
+				<expression>(.+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParsePortHUSearchResults>
+	<ParsePortHUPlot dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="9">
+				<expression>&lt;div id="text_articol"&gt;\n&lt;span class="txt"&gt;(.*?)&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBPlot&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;http://api.tmdb.org/3/movie/$$8?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=en&lt;/url&gt;" dest="2">
+				<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
+				<expression>(.+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParsePortHUPlot>
+
+</scraperfunctions>

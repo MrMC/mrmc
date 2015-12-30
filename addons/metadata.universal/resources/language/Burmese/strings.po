@@ -1,0 +1,153 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Burmese (http://www.transifex.com/projects/p/xbmc-addons/language/my/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: my\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "themoviedb.org မှ fanart ကိုဖွင့်ထားမည်"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "themoviedb.org မှ ပိုစတာများကို ရယူမည်"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "IMPAwards မှ ပိုစတာများကို ရယူမည်"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "MoviePosterDB မှ ပိုစတာများကိုရယူမည်"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "YouTube မှ ကြော်ငြာများကိုရယူမည်"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "HD-Trailers.net မှ ကြော်ငြာများကိုရယူမည်"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "themoviedb.org မှ ကြော်ငြာများကိုရယူမည်"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "ပိုစတာ"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "ကြော်ငြာများ"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "ဇာတ်လမ်း ရယူရန်"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "ဇာတ်လမ်း ရင်းမြစ်"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "ဇတ်လမ်းအတွက်ကြိုက်နှစ်သက်သောဘာသာစကား"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "ခေါင်းစဉ်ရယူရန်"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "ခေါင်းစဉ်ရင်းမြစ်"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "ကြိုက်နှစ်သက်သောခေါင်းစဉ်ဘာသာစကား"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "ကြော်ငြာရင်းမြစ်"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "ရုပ်ရှင်များစုဆောင်းခြင်း"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "ကြိုက်နှစ်သက်သော Thumb ဘာသာစကား"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "IMDb မှ ပိုစတာများရယူမည်"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "trakt.tv မှ fanart ရယူမည်"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "trakt.tv မှ ကြော်ငြာများရယူမည်"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "ကြေငြာများအတွက် ကြိုက်နှစ်သက်သောဘာသာစကား"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "Tagline အတွက် ကြိုက်နှစ်သက်သောဘာသာစကား"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "ပိုစတာ ရင်းမြစ်"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "အဆင့်သတ်မှတ်မှု့"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "ရှာဖွေမည်"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "သုံးရန် ရှာဖွေရေးအင်ဂျင်"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "     Secondary Search Language (In Addition to en-us)"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "ဇာတ်လမ်း"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Fanart ရင်းမြစ်များ"

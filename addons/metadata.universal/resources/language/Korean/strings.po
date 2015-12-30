@@ -1,0 +1,269 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Korean (http://www.transifex.com/projects/p/xbmc-addons/language/ko/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "themoviedb.org 에서 팬아트 가져오기"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "themoviedb.org 에서 포스터 가져오기"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "IMPAwards 에서 포스터 가져오기"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "MoviePosterDB 에서 포스터 가져오기"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "유투브에서 직접 예고편 가져오기"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "HD-Trailers.net 에서 예고편 가져오기"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "선호하는 타이틀 언어"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "themoviedb.org에서 예고편 가져오기"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "포스터 (Poster)"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "예고편"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "themoviedb.org에서 시리즈(컬렉션) 제목 가져오기"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "줄거리 가져오기"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "출연/감독/작가 가져오기"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "줄거리 소스"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "선호하는 줄거리 언어"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "평점 가져오기"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "장르 가져오기"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "제목 가져오기"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "제목 소스"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "배역과 크레딧 소스"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "장르 소스"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "선호하는 제목 언어"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "예고편 소스"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "영화 시리즈"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "평점 소스"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "등급 설정"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "등급 가져오기"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "선호하는 등급 국가"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "선호하는 포스터 언어"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "등급 Prefix"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "IMDb에서 포스터 가져오기"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "trakt.tv에서 포스터 가져오기"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "trakt.tv에서 팬아트 가져오기"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "trakt.tv에서 예고편 가져오기"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "장르 언어"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "선호하는 예고편 언어"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "태그라인 가져오기"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "선호하는 태그라인 언어"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "IMDB TOP250 순위 가져오기"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "개요 가져오기"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "시리즈(컬렉션) 제목 선호 언어"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "포스터 소스"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "키워드를 태그로 저장하기"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "평점"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "평점 생성"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "점수 총계 사용"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "만든 사람들"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "스튜디오 가져오기"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "국가 가져오기"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "찾기"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "사용할 검색 엔진"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "두 번째 검색 언어 (en-us 외)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "모든 영화 분류를 포함시킴"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "경고:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "모든 영화 종류를 포람시키는것은 검색 결과 정확도를 상당히 낮춥니다 !!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "줄거리"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "줄거리 / 태그라인 / 개요"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "팬아트"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "팬아트 소스"
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr "fanart.tv 에서 포스터 가져오기"
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr "fanart.tv 에서 팬아트 가져오기"

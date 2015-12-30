@@ -1,0 +1,11 @@
+[B]1.0.3[/B]
+- Update author name
+
+[B]1.0.2[/B]
+- Fixed: Plot won't scrape due to imdb2ofdb translator changes. Partial fix; there is still an issue what char encoding
+
+[B]1.0.1[/B]
+- Fixed: Plot won't scrape due to site layout changes
+
+[B]1.0.0[/B]
+- Initial version

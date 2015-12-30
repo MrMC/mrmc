@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraperfunctions>
+	<GetMoviePosterDBThumbs dest="6">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/search?type=movies&amp;amp;query=\1&lt;/url&gt;&lt;/details&gt;" dest="6">
+			<expression>tt([t0-9]*)</expression>
+		</RegExp>
+	</GetMoviePosterDBThumbs>
+	<GetMoviePosterDBLink dest="6">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMoviePosterDBThumbs&quot;&gt;http://www.movieposterdb.com\1&lt;/url&gt;&lt;/details&gt;" dest="6">
+			<expression clear="yes">href=&quot;(/movie/[^&quot;]*)&quot;</expression>
+		</RegExp>
+	</GetMoviePosterDBLink>
+	<ParseMoviePosterDBThumbs dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot;&gt;\1l_\2&lt;/thumb&gt;" dest="6">
+				<expression repeat="yes" noclean="1,2">class=&quot;poster&quot;.*?data-original=&quot;(.*?)[a-z]_(.*?)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseMoviePosterDBThumbs>
+</scraperfunctions>

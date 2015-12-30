@@ -1,0 +1,285 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/xbmc-addons/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr ""
+
+#empty string with id 30003
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr ""
+
+#empty string with id 30006
+
+#empty string with id 30007
+
+msgctxt "#30008"
+msgid "Preferred Title Language from"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr ""
+
+#empty string with id 30010
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr ""
+
+#empty strings from id 30017 to 30019
+
+msgctxt "#30020"
+msgid "Preferred Plot Language"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr ""
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr ""
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Preferred Title Language"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Preferred Certification Country"
+msgstr ""
+
+msgctxt "#30034"
+msgid "Preferred Thumb Language"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr ""
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr ""
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr ""
+
+msgctxt "#30040"
+msgid "Genre Language"
+msgstr ""
+
+msgctxt "#30041"
+msgid "Preferred Trailer Language"
+msgstr ""
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr ""
+
+msgctxt "#30043"
+msgid "Preferred Tagline Language"
+msgstr ""
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr ""
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr ""
+
+msgctxt "#30046"
+msgid "Preferred Set (Collection) Name Language"
+msgstr ""
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr ""
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr ""
+
+#empty strings from id 30049 to 30099
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr ""
+
+#empty strings from id 30101 to 30109
+
+msgctxt "#30110"
+msgid "Rating Generated Using"
+msgstr ""
+
+#empty strings from id 30111 to 30114
+
+msgctxt "#30115"
+msgid "Use the Score Aggregated from"
+msgstr ""
+
+#empty strings from id 30116 to 30199
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr ""
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr ""
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr ""
+
+#empty strings from id 30203 to 30299
+
+msgctxt "#30300"
+msgid "Search"
+msgstr ""
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr ""
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr ""
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr ""
+
+msgctxt "#30304"
+msgid "Secondary Search Language (In Addition to en-us)"
+msgstr ""
+
+msgctxt "#30305"
+msgid "Include All Movie Categories"
+msgstr ""
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr ""
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Preferred Search Language"
+msgstr ""
+
+#empty strings from id 30309 to 30399
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr ""
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr ""
+
+#empty strings from id 30402 to 30499
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr ""
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr ""
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr ""
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr ""

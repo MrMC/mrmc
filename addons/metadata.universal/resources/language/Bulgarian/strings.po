@@ -1,0 +1,269 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Bulgarian (http://www.transifex.com/projects/p/xbmc-addons/language/bg/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Разреши ползването на фанарт от themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Разреши ползването на постери от themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "Разреши ползването на постери от IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Разреши ползването на постери от MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Получавай трейлъри директно то YouTube"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "Разреши ползването на трейлъри от HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "Предпочитан език за заглавията"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Разреши ползването на трейлъри от themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Постер"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Трейлъри"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "Получавай заглавията на поредиците от themoviedb.org"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Получавай сюжета от"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "Получавай актьори/режисьори/сценаристи от"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Източници за сюжета"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "Предпочитан език за сюжета"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Получавай рейтинга от"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Получавай жанровете от"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Получавай заглавията от"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Източници за заглавието"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "Източници за учатници и заслуги"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Източници за жанровете"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "Предпочитан език за заглавията"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Източници за трейлъра"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "Филмови поредици"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Източници за рейтинга"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "Настройки за категорията"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "Получавай категорията от"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "Категоризирай според стандарта в"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "Предпочитан език за миниатюрите"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "Представка за категорията"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "Разреши ползването на постери от IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Разреши ползването на постери от trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Разреши ползването на фанарт от trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Разреши ползването на трейлъри от trakt.tv"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "Език за жанровете"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "Предпочитан език за трейлъра"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "Получавай мотото от"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "Предпочитан език за мотото"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "Получавай класирането в IMDb TOP250"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "Получавай пояснения от"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "Предпочитан език за заглавията на поредиците"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Източници за постера"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "Съхранявай като етикети ключовите думи от"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Рейтинг"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "Генериране на рейтинг чрез"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "Ползвай средната оценка от"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Заслуги"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "Получавай имената на студиата от"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "Получавай държавите от"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Търсене"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Ползвай следната търсачка"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "Второстепенен език за търсене (допълнение към en-us)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "Включи всички филмови категории"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Внимание:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "Включването на всички категории ще намали значително точността на резултатите !!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Сюжет"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "Сюжет/Мото/Пояснения"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Фанарт"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Източници на фанарт"
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr "Разреши ползването на постери от fanart.tv"
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr "Разреши ползването на фанарт от fanart.tv"

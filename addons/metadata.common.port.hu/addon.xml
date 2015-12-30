@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.common.port.hu"
+       name="port.hu Scraper Library"
+       version="1.1.4"
+       provider-name="Olympia">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.library"
+             library="porthu.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary lang="bg">Библиотека за сваляне на инф. от port.hu</summary>
+    <summary lang="en">port.hu Scraper Library</summary>
+    <summary lang="es">Scraper de peliculas de port.hu</summary>
+    <summary lang="fi">port.hu elokuvatietojen lataajan kirjasto</summary>
+    <summary lang="fr">Scraper port.hu</summary>
+    <summary lang="hu">port.hu leolvasó-könyvtár</summary>
+    <summary lang="nl">port.hu-scraperfuncties</summary>
+    <summary lang="pl">Scraper biblioteki port.hu</summary>
+    <summary lang="pt">Scraper de filmes port.hu</summary>
+    <summary lang="ro">Bibliotecă catalog port.hu</summary>
+    <summary lang="ru">Обработчик для port.hu</summary>
+    <summary lang="se">Skrapebibliotek för port.hu</summary>
+    <summary lang="zh">port.hu刮削器代码库</summary>
+    <description lang="bg">Сваля миниатюри и fanarts от www.port.hu</description>
+    <description lang="en">Download thumbs and fanarts from www.port.hu</description>
+    <description lang="es">Descarga posters y fanart de www.port.hu</description>
+    <description lang="fi">Lataa pienoiskuvia ja fanitaidetta www.port.hu -sivustolta</description>
+    <description lang="fr">Télécharge vignettes et backdrops depuis www.port.hu</description>
+    <description lang="hu">Bélyeg- és fanartképek letöltése a www.port.hu webhelyről</description>
+    <description lang="nl">Miniaturen en fanart ophalen van www.port.hu</description>
+    <description lang="pl">Pobieraj ikony i fanarty z www.port.hu</description>
+    <description lang="pt">Descarregar informação de filmes de www.port.hu</description>
+    <description lang="ro">Descărcați miniaturi și imagini realizate de fani de pe www.port.hu</description>
+    <description lang="ru">Загружать миниатюры и фанарт с www.port.hu</description>
+    <description lang="se">Ladda ner miniatyrer och fanart från www.port.hu</description>
+    <description lang="zh">从www.port.hu下载海报和同人画</description>
+  </extension>
+</addon>

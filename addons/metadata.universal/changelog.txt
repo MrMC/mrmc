@@ -1,0 +1,193 @@
+[B]2.7.2[/B]
+- Update author name
+
+[B]2.7.1[/B]
+- fixed: Keep Original Title for foreign movies
+
+[B]2.7.0[/B]
+- fixed: Rotten Tomato info won't scrape
+- fixed: IMDb TOP250 won't scrape
+
+[B]2.6.7[/B]
+- fixed: broken TMDB search results due to API changes for real
+
+[B]2.6.6[/B]
+- fixed: broken TMDB search results due to API changes
+
+[B]2.6.5[/B]
+- removed: trakttv
+
+[B]2.6.4[/B]
+- removed: option to scrape trailers from hd-trailers.net (it was broken)
+- removed: option to scrape posters from IMPAwards (it was broken)
+- removed: option to scrape posters from IMDb (it was broken)
+- changed: settings clean-up (thanks to Miki)
+- added: option to keep Original Title for TMDB (thanks to Miki)
+- added: support for TMDB URLs in NFO files (thanks to Miki)
+- added: preferred search language for TMDB (thanks to Miki)
+
+[B]2.6.3[/B]
+- fixed: broken tmdb search after API changes
+
+[B]2.6.2[/B]
+- updated language files from Transifex
+
+[B]2.6.1[/B]
+- updated language files from Transifex
+
+[B]2.6.0[/B]
+- added: support to get movieart from fanart.tv
+
+[B]2.5.2[/B]
+- updated language files from Transifex
+
+[B]2.5.1[/B]
+- updated: TMDb API URLs
+
+[B]2.5.0[/B]
+- added: support to save keywords as tags from TMDb
+
+[B]2.4.5[/B]
+- fixed: RT critics concensus won't be scraped as plot
+
+[B]2.4.4[/B]
+- Removed broken direct youtube trailer scraping
+
+[B]2.4.3[/B]
+- Changed poster and fanart priority
+
+[B]2.4.2[/B]
+- updated language files from Transifex
+
+[B]2.4.1[/B]
+- fixed: original title once again
+
+[B]2.4.0[/B]
+- added: option to perform full search on IMDb
+
+[B]2.3.1[/B]
+- fixed: properly implement option to insert IMDb Outline as plot
+
+[B]2.3.0[/B]
+- fixed: various original title fixes
+- fixed: year won't scrape in certain cases
+- added: option to insert IMDb Outline as plot
+
+[B]2.2.0[/B]
+- fixed: original title won't scrape
+- fixed: year in case of TV Movies
+- added: option to insert RT critics concensus as plot
+- added: option to not scrape tagline
+
+[B]2.1.9[/B]
+- fixed: issue with original title
+
+[B]2.1.8[/B]
+- cosmetic: synced version number with Eden
+
+[B]2.1.7[/B]
+- changed: added 'Short' to search results
+
+[B]2.1.6[/B]
+- fixed: year won't scrape when using TMDb search
+
+[B]2.1.5[/B]
+- changed: added 'TV Special' to search results
+
+[B]2.1.4[/B]
+- updated language files from Transifex
+
+[B]2.1.3[/B]
+- fixed: SearchStringEncoding
+
+[B]2.1.2[/B]
+- changed: Clean-up
+- added: br to settings
+
+[B]2.1.1[/B]
+- added: IMDb videos to search results
+
+[B]2.1.0[/B]
+- changed: set en-us as default when searching on IMDb
+- added: option to set a secondary search language for IMDb search
+- added: ption to set language when scraping Collection Name
+- changed: revamp settings layout
+- fixed: won't scrape full cast
+
+[B]2.0.0[/B]
+- added: Option to Use IMDb Search Engine
+
+[B]1.9.4[/B]
+- updated: language files from Transifex
+
+[B]1.9.3[/B]
+- fixed: won't scrape from TMDb when movie is part of a collection
+
+[B]1.9.2[/B]
+- fixed: nfo scraping
+
+[B]1.9.1[/B]
+- fixed: won't scrape from TMDb when there is not IMDb id registered
+
+[B]1.9.0[/B]
+- updated: Settings Clean-up / added TOP250 and outline from IMDb
+
+[B]1.8.1[/B]
+- fixed: studio and country won't scrape
+
+[B]1.8.0[/B]
+- changed: switch to TMDb search engine
+
+[B]1.7.0[/B]
+- fixed: won't find anything after IMDb layout changes
+
+[B]1.6.2[/B]
+- fixed: some movies won't find after previous update
+
+[B]1.6.1[/B]
+- changed: an attempt to remove Video Games from Search Results
+
+[B]1.6.0[/B]
+- added: option to select tagline source
+
+[B]1.5.0[/B]
+- added: option to select preferred trailer language
+
+[B]1.4.0[/B]
+- added: option to get plot from port.hu
+
+[B]1.3.0[/B]
+- added: option to select genre language when screping from TMDb
+
+[B]1.2.0[/B]
+- added: option to scrape rating from MetaCritic (via IMDb)
+
+[B]1.1.2[/B]
+- added: Australia to the country list of certifications
+- changed: sorted countries alphabetically
+- added: option to scrape preferred country certification from TMDb
+
+[B]1.1.1[/B]
+- fixed: some potential html encode issues
+
+[B]1.1.0[/B]
+- added: support for trakt.tv
+
+[B]1.0.5[/B]
+- added: some improvement to match movies by their International Titles
+
+[B]1.0.4[/B]
+- updated: to use IMDb scraper library v2.2.2
+
+[B]1.0.3[/B]
+- updated: to use IMDb scraper library v2.2.1
+
+[B]1.0.2[/B]
+- added: support for OFDb.de plot
+
+[B]1.0.1[/B]
+- fixed: put UK back on the map
+- added: poster from IMDb is now optional
+
+[B]1.0.0[/B]
+- Initial version

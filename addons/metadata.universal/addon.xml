@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.universal"
+       name="Universal Movie Scraper"
+       version="2.7.2"
+       provider-name="Olympia, Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+    <import addon="metadata.common.fanart.tv" version="3.1.0"/>
+    <import addon="metadata.common.imdb.com" version="2.8.0"/>
+    <import addon="metadata.common.movieposterdb.com" version="1.1.1"/>
+    <import addon="metadata.common.ofdb.de" version="1.0.3"/>
+    <import addon="metadata.common.port.hu" version="1.0.3"/>
+    <import addon="metadata.common.omdbapi.com" version="1.0.0"/>
+    <import addon="metadata.common.themoviedb.org" version="2.12.1"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.movies"
+             language="en"
+             library="universal.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="af">Universele Fliek Skraper</summary>
+    <summary lang="be">Universal Movie Scraper</summary>
+    <summary lang="bg">Универсален източник на инф. за филми</summary>
+    <summary lang="ca">Buscador Universal de Pel·licules</summary>
+    <summary lang="cs">Univerzální zdroj dat k filmům</summary>
+    <summary lang="cy">Crafwr Ffilmiau Cyffredinol</summary>
+    <summary lang="da">Universal Film-scraper</summary>
+    <summary lang="de">Universeller Film Scraper</summary>
+    <summary lang="el">Universal Scraper Ταινιών</summary>
+    <summary lang="en">Universal Movie Scraper</summary>
+    <summary lang="en_NZ">Universal Movie Scraper</summary>
+    <summary lang="en_US">Universal Movie Scraper</summary>
+    <summary lang="es">Buscador Universal de Películas</summary>
+    <summary lang="es_AR">Buscador Universal de Películas</summary>
+    <summary lang="et">Universaalne filmide kraabits</summary>
+    <summary lang="fr">Collecteur de films universel</summary>
+    <summary lang="fr_CA">Extracteur universel pour les films</summary>
+    <summary lang="gl">Scraper universal de filmes</summary>
+    <summary lang="he">סקרייפר סרטים אוניברסלי</summary>
+    <summary lang="hr">Universal sakupljač za filmove</summary>
+    <summary lang="hu">Univerzális film adat leolvasó</summary>
+    <summary lang="is">Universal Movie Scraper</summary>
+    <summary lang="it">Scraper universale di film</summary>
+    <summary lang="ja">万能映画スクレーパー</summary>
+    <summary lang="ko">Universal 영화 정보수집기</summary>
+    <summary lang="lt">Universal Movie Scraper</summary>
+    <summary lang="lv">Universālais filmu skrāpis</summary>
+    <summary lang="mk">Universal Movie Scraper</summary>
+    <summary lang="ms">Pengikis Cakera Universal</summary>
+    <summary lang="my">Universal Movie Scraper</summary>
+    <summary lang="nl">Universele filmscraper</summary>
+    <summary lang="no">Universal Film Scraper</summary>
+    <summary lang="pl">Universal Movie Scraper</summary>
+    <summary lang="pt">Universal Movie Scraper</summary>
+    <summary lang="pt_BR">Scraper de FIlmes Universal</summary>
+    <summary lang="ro">Catalog de filme universal</summary>
+    <summary lang="ru">Универсальный скрапер фильмов</summary>
+    <summary lang="sk">Univerzálny sťahovač pre filmy</summary>
+    <summary lang="sl">Univerzalni ponudnik informacij o filmih</summary>
+    <summary lang="sv">Universell filmskrapa</summary>
+    <summary lang="ta_IN">ஒட்டு மொத்தமான நிகழ்படம் சுரண்டி</summary>
+    <summary lang="th">Universal Movie Scraper</summary>
+    <summary lang="tr">Evrensel Film Scraperi</summary>
+    <summary lang="uk">Універсальний шукач інформації про фільми</summary>
+    <summary lang="vi">Trình lấy dữ liệu phim ảnh Universal Scraper</summary>
+    <summary lang="zh">通用电影刮削器</summary>
+    <summary lang="zh_TW">通用的電影資訊搜括器</summary>
+    <description lang="af">Hierdie skraper kollekteer inligting van die volgende ondersteunde werwe: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Dit doen altyd die aanvanklike soektog op TMDb, maar daarna kan dit veld vir veld gestel word vanaf watter werf jy die spesifieke inligting wil hê.</description>
+    <description lang="be">This scraper collecting information from the following supported sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. It always does the initial search on TMDb, but following that it can be set field by field that from which site you want that specific information.</description>
+    <description lang="bg">Сваля информация от следните сайтове: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Можете да определите от кой сайт каква информация да се сваля.&#10;&#10;Първоначалното търсене винаги се прави в TMDb.</description>
+    <description lang="ca">Rascador universal és actualment el rascador més personalitzable mitjançant la recopilació d'informació dels següents llocs suportats: IMDb, TMDB, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Aquest rascador és actualment el vaixell insígnia de l'equip-Kodi raspadors. La recerca inicial es pot fer en TMDB o IMDb (segons la configuració), però després que es pot configurar camp a camp que des del lloc que voleu que la informació específica.</description>
+    <description lang="cs">Univerzální zdroj dat, který získává informace z následujících podporovaných stránek: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Vždy provádí základní hledání na TMDb či IMDb (podle nastavení), ale pro následující hledání může být upraveno pro každou hodnotu, ze které stránky chcete specifickou informaci získat.</description>
+    <description lang="cy">Universal Scraper yw'r crafwr mwyaf cyfaddas ar hyn o bryd drwy gasglu gwybodaeth o'r gwefannau canlynol: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Y crafwr hwn yw'r prif crafwr Team-Kodi. Mae modd gwneud y chwilio cyntaf un ai ar TMDb neu IMDb (yn ôl y gosodiadau) ac ar ôl hynny gall ei osod yn ôl maes o ba wefan i gasglu'r wybodaeth benodol.</description>
+    <description lang="da">Denne scraper indsamler information fra følgende understøttede sider: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Første søgning sker altid i TMDb, men efterfølgende kan der felt for felt vælges, hvilken side den specifikke infomation ønskes fra.</description>
+    <description lang="de">Universal Scraper ist aktuell der Scraper mit den meisten Anpassungsoptionen, da er Metadaten von den folgenden Seiten laden kann: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Dieser Scraper ist damit aktuell der mächtigste Scraper der Team-Kodi Scraper. Die initiale Suche kann entweder in TMDb oder IMDb ausgefürt werden (entsprechend der Einstellungen), anschließend kann aber für jedes Feld individuell ausgewählt werden, woher die Informationen bezogen werden sollen.</description>
+    <description lang="el">Αυτό το scraper συλλέγει πληροφορίες από τις ακόλουθες ιστοσελίδες: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Η αρχική αναζήτηση γίνεται πάντα στο TMDb, αλλά έπειτα μπορεί να ρυθμιστεί πεδίο ανά πεδίο από ποια σελίδα να λαμβάνονται πληροφορίες.</description>
+    <description lang="en">Universal Scraper is currently the most customizable scraper by collecting information from the following supported sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. This scraper is currently the flagship of the Team-Kodi scrapers. The initial search can be done either on TMDb or IMDb (according to the settings), but following that it can be set field by field that from which site you want that specific information.</description>
+    <description lang="en_NZ">Universal Scraper is currently the most customisable scraper by collecting information from the following supported sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. This scraper is currently the flagship of the Team-Kodi scrapers. The initial search can be done either on TMDb or IMDb (according to the settings), but following that it can be set field by field that from which site you want that specific information.</description>
+    <description lang="en_US">Universal Scraper is currently the most customizable scraper by collecting information from the following supported sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. This scraper is currently the flagship of the Team-Kodi scrapers. The initial search can be done either on TMDb or IMDb (according to the settings), but following that it can be set field by field that from which site you want that specific information.</description>
+    <description lang="es">Este buscador obtiene información de los siguientes sitios: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. La primera búsqueda siempre se realiza en TMDb, pero se puede elegir, campo por campo, de qué sitio se tiene que obtener la información.</description>
+    <description lang="es_AR">Este buscador obtiene información de los siguientes sitios: IMDb, TMDb, Rotten tomatoes, Trakt.tv, OFDb.de. Realiza la búsqueda inicial en TMDb, pero a partir de allí se puede especificar desde que sitio se desea obtener cada campo.</description>
+    <description lang="fr">Ce scraper collecte les informations depuis les sites supportés suivants : IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. La recherche initiale est toujours effectuée depuis TMDb, mais vous pouvez indiquer les sites sources des champs un par un pour avoir une information plus spécifique.</description>
+    <description lang="fr_CA">L'extracteur universel est présentement l'extracteur le plus personnalisable en collectant des informations depuis les sites suivants pris en charge : IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Cet extracteur est présentement le vaisseau amiral des extracteurs de l'équipe Kodi. La recherche initiale peut être faite soit sur TMDb ou IMDb (d'après les paramètres), mais il est ensuite possible de configurer champ par champ sur quel site aller chercher chaque information spécifique.</description>
+    <description lang="gl">O Scraper Universal é na actualidade o máis personalizábel en canto a obtención de información dos seguintes sitio: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Este scraper é actualmente o barco insignia dos scrapers do equipo de Kodi. A busca inicial pódese realizar ben sexa en TMDb ou IMDb (dependendo da configuración), pero despois de especificar campo a campo dende que sitio desexa esa información específica.</description>
+    <description lang="he">סקרייפר זה אוסף מידע מהתארים הנתמכים הבאים: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de זה תמיד עושה את החיפוש הפנימי ב-TMDb, אבל בהתאם לזאת ניתן להגדיר לכל שדה מאיזה אתר אתה רוצה לקבל את המידע.</description>
+    <description lang="hr">Univerzalni sakupljač je trenutno najprilagodljiviji sakupljač koji nabavlja informacije sa sljedećih stranica: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Ovaj sakupljač je trenutno vodeći među Team-Kodi sakupljačima. Početna pretraga može biti s TMDb ili IMDb (ovisno o postavkama), ali nadalje se može podesiti polje po polje s koje stranice želite određenu informaciju.</description>
+    <description lang="hu">Ez a leolvasó a következő helyekről gyűjt információkat: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. A kezdő keresést midig az IMDb-n végzi, de utána mezőnként beállítható, hogy melyik oldalakat használja az adott információ lekérésére.</description>
+    <description lang="is">Universal Scraper (Almenn Skafa) er eins og er mest aðlaganleg skafa til að safna upplýsingum frá eftirfarandi studdum stöðum: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Þessi skafa er eins og er flaggskip Team-Kodi skafna. Upphaflega leit er hægt að gera annaðhvort á TMDb eða IMDb (fer eftir stillingum), en þar á eftir er hægt að skilgreina eftir hverjum færslureit hvaða veitur þú vilt nota fyrir sértækar upplýsingar.</description>
+    <description lang="it">Lo Scraper Universale è al momento lo scraper più personalizzabile, raccogliendo le informazioni dai seguenti siti: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Questo scraper è il migliore tra gli scraper del Team-Kodi. La ricerca iniziale può essere eseguita sia su TMDb che su IMDb (a seconda delle impostazioni), ma per le successive informazioni è possibile impostare un sito per ogni campo di informazione preciso da raccogliere.</description>
+    <description lang="ja">このスクレーパーは、以下のサイトから情報を取得します。IMDb、TMDb、Rotten Tomatoes、Trakt.tv、OFDb.de。最初の検索は TMDb から行われますが、それに続く検索は各フィールドごとにどのサイトで検索するか設定できます。</description>
+    <description lang="ko">Universal Scraper는 항목별 사용자 설정이 가능한 정보수집기이며 다음 사이트를 지원합니다: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. 이 정보수집기는 Team-Kodi의 주력 수집기입니다. 초기 검색은 (설정에 따라) TMDb 또는 IMDB에서 수행하지만 특정 정보를 지정한 사이트에서 가져오도록 필드별 설정이 가능합니다.</description>
+    <description lang="lt">Universal Movie Scraper šiuo metu yra labiausiai derinamas skreperis, galintis surinkti informaciją iš šių interneto svetainių: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Šis skreperis yra lyderis tarp Team-Kodi skreperių. Pradinė paieška gali būti atlikta arba TMDb, arba IMDb interneto svetainėse (priklausomai nuo nustaymų), bet vėliau galima kiekvienam laukui atskirai nustatyti iš kokios interneto svetainės norite gauti konkrečią informaciją.</description>
+    <description lang="lv">Universālais skrāpis pašlaik ir vispielāgojamākais skrāpis, kas atbalsta informācijas savākšanu no šādām vietnēm: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Šis skrāpis pašreiz ir Team-Kodi skrāpju flagmanis. Sākotnējā meklēšana var notikt vai nu TMDb vai arī IMDb (atbilstoši iestatījumiem), bet visu pārējo informāciju var iestatīt lauciņu pa lauciņam, no kuras lapas iegūst specifisko informāciju.</description>
+    <description lang="mk">This scraper collecting information from the following supported sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. It always does the initial search on TMDb, but following that it can be set field by field that from which site you want that specific information.</description>
+    <description lang="ms">Pengikis Universal buat masa ini merupakan pengikis paling boleh disuai dengan mengutip maklumat dari laman tersokong berikut: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Pengikis ini buat masa ini merupakan pengikis lalai Pasukan-Kodi. Gelintar awalan boleh dibuat sama ada pada TMDb atau IMDb (berdasarkan pada tetapan), tetapi yang berikut boleh ditetapkan mengikut medan yang mana anda boleh tentukan maklumat secara khusus.</description>
+    <description lang="nl">Deze scraper verzamelt informatie van de volgende ondersteunde sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Het start altijd de eerste zoektocht op TMDb, maar vervolgens kan veld voor veld informatie gekozen worden van de site waar jij de specifieke informatie van wilt.</description>
+    <description lang="no">Denne scraper samler inn informasjon fra følgende støttede steder:  IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. På nåværende tidspunkt er denne scraperen flaggskipet blant Team-Kodi scrapere. Første søk skjer alltid i TMDb eller IMDb (avhengig av innstillinger). I etterfølgende søk kan det derimot velges felt for felt hvilken side den spesifikke informasjonen ønskes fra.</description>
+    <description lang="pl">Universal Scraper jest aktualnie esktraktorem o największych możliwościach personalizacji, zbierając informacje z następujących serwisów: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. W pierwszej kolejności przeszukuje serwisy TMDb lub IMDb (w zależności od ustawień), a następnie może być ustawiony by poszczególne pola były wypełniane informacjami z innych serwisów.</description>
+    <description lang="pt">O Universal Scraper é, actualmente, o colector mais personalizável, que obtém informação a partir dos seguinte sites suportados: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Atualmente, este é o topo de gama dos colectores da Team-Kodi. A procura inicial pode ser efectuada no TMDb ou no IMDb (de acordo com as definições), mas após isso, esta pode ser definida campo a campo a partir do site pretendido com a informação especifica.</description>
+    <description lang="pt_BR">Este scraper coleta informações dos seguintes sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. A busca inicial sempre se dá no TMDb, mas segue aquilo que estiver setado campo a campo  dos sites que você deseja informação específica.</description>
+    <description lang="ro">Acest catalog este completat cu informații de la următoarele siteuri: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Căutarea inițială se face întotdeauna pe TMDb, dar după aceasta fiecare câmp poate fi setat să ia informația de pe un site specific.</description>
+    <description lang="ru">Этот модуль собирает информацию со следующих поддерживаемых сайтов: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Он всегда делает начальный поиск по TMDb, хотя может быть установлена последовательность того, с какого сайта Вы хотите получить конкретную информацию.</description>
+    <description lang="sk">Tento sťahovač zbiera informácie z týchto stránok: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Počiatočné vyhľadávanie vždy robí pomocou TMDb, ale následne môžete pole po poli nastaviť z ktorej stránky má zbierať špecifické informácie. </description>
+    <description lang="sl">Univerzalni ponudnik je trenutno najbolj prilagodljiv ponudnik informacij o filmih s strani: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Osnovno iskanje se lahko opravi na TMDb ali IMDb (glede na nastavitev), vendar lahko nastavite od kod se bo prenesla posamezna informacija.</description>
+    <description lang="sv">Denna skrapa samlar information från följande siter: IMDb, RMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Sökning görs alltid först på TMDb, men den kan konfigureras att hämta efterföljande information - fält för fält - från valfri site.</description>
+    <description lang="ta_IN">உலகளாவிய சுரண்டி தற்போது பின்வரும் ஆதரவு தளங்களில் இருந்து தகவல்களை சேகரித்து உள்ளது: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. ஆரம்ப தேடலானது, TMDb அல்லது IMDb (அமைப்புகளை பொறுத்து) செய்யலாம், அதன் பின்னர் உங்களுக்கு தேவையான குறிப்பிட்ட தகவல்களை அமைப்பு செய்து கொள்ள முடியும்.</description>
+    <description lang="th">การดึงข้อมูลภาพยนตร์ได้รับการสนับสนุนจากเว็บไซต์  IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. โดยจะดึงข้อมูลจากเว็บ TMDB เป็นอันดับแรก แต่คุณสามารถตั้งค่าการรับข้อมูลจากเว็บไซต์ที่คุณต้องการได้</description>
+    <description lang="vi">Trình Universal Scraper là trình thu thập thông tin được với khả năng tuỳ biến tốt nhất, hỗ trợ thu thập thông tin từ các site: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. Trình này hiện là công cụ thu thập chuẩn nổi bật nhất của Team-Kodi. Việc tìm kiếm ban đầu có thể thực hiện ở cả 2 site TMDb hay IMDb (tuỳ thiết lập của bạn), kế tiếp sẽ do người dùng tuỳ chỉnh các thông tin cụ thể được lựa chọn từ từng site</description>
+    <description lang="zh">通用刮削器是当前定制功能最强的刮削器，它支持从以下站点获取信息：IMDb、TMDb、Rotten Tomatoes、Trakt.tv、OFDb.de、port.hu。此刮削器目前是 Kodi 开发团队的旗舰级刮削器。初始结果总是先从 TMDb 或 IMDb（根据设置）获取，然后可以针对不同项目分别设置从不同站点获取信息。</description>
+    <description lang="zh_TW">Universal Scraper是現今可客製化程度最高的搜括器，並從以下的支援網站取得資訊：IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de。這​​是目前Kodi團隊的旗艦搜括器。它總以 TMDb或IMDB (根據設定值) 當作初始搜尋的網站，但可以單獨在每一個獨立的選項設定你要得網站並取得指定的相關資訊。</description>
+    <platform>all</platform>
+    <license>GPL v2.0</license>
+    <forum>http://forum.xbmc.org/showthread.php?tid=129821</forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>

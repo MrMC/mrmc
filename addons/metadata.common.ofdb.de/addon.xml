@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.common.ofdb.de"
+       name="OFDb.de Scraper Library"
+       version="1.0.5"
+       provider-name="Olympia, Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.library"
+             library="ofdbcommon.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary lang="en">OFDb.de Scraper Library</summary>
+    <description lang="en">OFDb.de Scraper Library</description>
+  </extension>
+</addon>

@@ -1,0 +1,169 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Ukrainian (http://www.transifex.com/projects/p/xbmc-addons/language/uk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Включити малюнки з themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Включити постери з themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "Включити постери з IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Включити постери з MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Отримати трейлери безпосередньо з YouTube"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "Включити трейлери з HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "     Бажана мова назв з"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Включити трейлери з themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Постер"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Трейлери"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Отримати сюжет з"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Джерела сюжетів"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "Бажана мова сюжету"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Отримати рейтинги з"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Отримати жанри з"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Отримати назви з"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Джерело назв"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Джерело жанрів"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "Бажана мова назв"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Джерела трейлерів"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Джерела рейтингів"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "Включити постери з IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Включити постери з trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Включити обкладинки з trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Включити трейлери з trakt.tv"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "Бажана мова трейлерів"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Джерела постерів"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Рейтинг"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Автори"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Пошук"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Використовувана пошукова система"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "Додаткова мова для пошуку (окрім en-us)"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Застереження:"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Сюжет"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Фанарт"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Джерела обкладинок"

@@ -1,0 +1,269 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/xbmc-addons/language/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Aktivera fanart från themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Aktivera posters från themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "Aktivera posters från IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Aktivera posters från MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Hämta trailers direkt från YouTube"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "Aktivera trailers från HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "     Föredraget titelspråk från"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Aktivera trailers från themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Poster"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Trailers"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "Hämta samlingsnamn från themoviedb.org"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Hämta handling från"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "Hämta rollsättning / regissörer / författare från"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Handlingskällor"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "     Föredraget språk för handling"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Hämta betyg från"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Hämta genrer från"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Hämta titlar från"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Titelkällor"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "Källa för rollsättning och medverkande"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Genrekällor"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "     Föredraget titelspråk"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Trailerkällor"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "Filmsamlingar"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Betygskällor"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "Certifikatinställningar"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "Hämta certifikat från"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "     Föredraget certifikatland"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "     Föredraget miniatyrspråk"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "Prefix för certifikat"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "Aktivera posters från IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Aktivera posters från trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Aktivera fanart från trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Aktivera trailers från trakt.tv"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "     Genrespråk"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "     Föredraget trailerspråk"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "Hämta slogan från"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "     Föredraget språk för slogan"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "Hämta IMDb Top250 rankning"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "Hämta sammanfattning från"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "     Föredraget språk på samlingsnamn"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Posterkällor"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "Hämta nyckelord och spara som tagg från"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Rating"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "     Generera betyg från"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "     Betyg summerad från"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Medverkande"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "Hämta studio från"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "Hämta land från"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Sök"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Sökmotor att använda"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "     Sekundärt sökspråk (utöver en-us)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "Inkludera alla filmkategorier"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Varning:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "Aktivering av Alla filmer kategorin kommer att drastiskt reducera söknoggrannheten !!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Handling"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "Handling / Slogan / Sammanfattning"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Fanartkällor"
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr "Aktivera omslag från fanart.tv"
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr "Aktivera omslag fanart från fanart.tv"

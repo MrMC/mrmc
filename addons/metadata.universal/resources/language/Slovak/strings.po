@@ -1,0 +1,257 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Slovak (http://www.transifex.com/projects/p/xbmc-addons/language/sk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Povoliť FanArt-y zo stránky themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Povoliť plagáty zo stránky themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "Povoliť plagáty zo stránky IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Povoliť plagáty zo stránky MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Získať upútavky na film priamo zo služby YouTube"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "Povoliť upútavky na film zo stránky HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "Preferovaný jazyk Titulu z"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Povoliť upútavky na film zo stránky themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Plagát"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Ukážky"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "Názov Kolekcie filmov získať z themoviedb.org"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Obsah filmu získať z"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "Obsadenie / Režisérov / Scenáristov získať z "
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Zdroje pre Obsah filmu"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "Preferovaný jazyk Obsahu filmu"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Hodnotenia získať z"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Žánre získať z"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Názov filmu získať z"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Zdroje pre Názov filmu"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "Zdroje pre Obsadenie a autorov"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Zdroje pre Žánre"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "Preferovaný jazyk pre Názov filmu"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Zdroje pre Upútavky"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "Kolekcie filmov"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Zdroje Hodnotení"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "Nastavenie Certifikácií"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "Certifikácie získať z"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "Preferovaná krajina pôvodu Certifikácie"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "Preferovaný jazyk Náhľadu"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "Prefix Certifikácie"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "Povoliť plagáty z IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Povoliť plagáty z trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Povoliť fanarty z trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Povoliť Ukážky z trakt.tv"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "Jazyk pre Žánre"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "Preferovaný jazyk pre Ukážky"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "Stručné info získať z"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "Preferovaný jazyk pre Stručné info"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "Získať IMDb TOP250 hodnotenie"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "Prehľad získať z"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "Preferovaný jazyk názvu Kolekcie filmov"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Zdroje Plagátov"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Hodnotenie"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "Hodnotenie vytvorené použitím"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "Použiť súhrnný výsledok z"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Autori"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "Štúdio získať z"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "Krajinu získať z"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Hľadať"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Na vyhľadávanie použiť"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "Druhý jazyk vyhľadávania (ako doplnok k en-us)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "Zahrnúť všetky filmové kategórie"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Upozornenie:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "Zapnutie voľby Všetky filmové kategórie značne zníži presnosť vyhľadávania !!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Obsah"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "Obsah / Stručné info / Prehľad"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Zdroje FanArt-ov"

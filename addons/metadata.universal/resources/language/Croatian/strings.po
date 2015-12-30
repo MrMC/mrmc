@@ -1,0 +1,269 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Croatian (http://www.transifex.com/projects/p/xbmc-addons/language/hr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hr\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "Omogući slike omota s themoviedb.org"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "Omogući plakate s themoviedb.org"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "Omogući plakate s IMPAwards"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "Omogući plakate s MoviePosterDB"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "Nabavi najave izravno s YouTuba"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "Omogući najave s HD-Trailers.net"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "Željeni jezik naslova s"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "Omogući najave s themoviedb.org"
+
+msgctxt "#30011"
+msgid "Poster"
+msgstr "Plakat"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "Najave"
+
+msgctxt "#30013"
+msgid "Get Set (Collection) Name from themoviedb.org"
+msgstr "Nabavi naziv kolekcije s themoviedb.org"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "Nabavi kratak sadržaj s"
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "Nabavi Glumce / Redatelje / Scenariste s"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "Izvori kratkog sadržaja"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "Željeni jezik kratkog sadržaja"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "Nabavi ocjene s"
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "Nabavi žanrove s"
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "Nabavi naslove s"
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "Izvori naslova"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "Izvori uloga i zasluga"
+
+msgctxt "#30026"
+msgid "Genres Sources"
+msgstr "Izvor žanrova"
+
+msgctxt "#30027"
+msgid "     Preferred Title Language"
+msgstr "Željeni jezik naslova"
+
+msgctxt "#30028"
+msgid "Trailer Sources"
+msgstr "Izvori najava"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "Filmske kolekcije"
+
+msgctxt "#30030"
+msgid "Rating Sources"
+msgstr "Izvori ocjena"
+
+msgctxt "#30031"
+msgid "Certification Settings"
+msgstr "Postavke certifikata"
+
+msgctxt "#30032"
+msgid "Get Certification From"
+msgstr "Preuzmi certifikat s"
+
+msgctxt "#30033"
+msgid "     Preferred Certification Country"
+msgstr "Željena zemlja certifikata"
+
+msgctxt "#30034"
+msgid "     Preferred Thumb Language"
+msgstr "Željeni jezik minijature"
+
+msgctxt "#30035"
+msgid "Certification Prefix"
+msgstr "Prefiks certifikata"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "Omogući postere s IMDb"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "Omogući postere s trakt.tv"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "Omogući slike omota s trakt.tv"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "Omogući najave s trakt.tv"
+
+msgctxt "#30040"
+msgid "     Genre Language"
+msgstr "Jezik žanra"
+
+msgctxt "#30041"
+msgid "     Preferred Trailer Language"
+msgstr "Željeni jezik najava"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "Nabavi oznaku s"
+
+msgctxt "#30043"
+msgid "     Preferred Tagline Language"
+msgstr "Željeni jezik oznaka"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "Preuzmi IMDb TOP 250 rangiranih"
+
+msgctxt "#30045"
+msgid "Get Outline From"
+msgstr "Pribavi kratak sadržaj sa"
+
+msgctxt "#30046"
+msgid "     Preferred Set (Collection) Name Language"
+msgstr "Željeni jezik naziva skupine (kolekcije)"
+
+msgctxt "#30047"
+msgid "Poster Sources"
+msgstr "Izvori plakata"
+
+msgctxt "#30048"
+msgid "Get Keywords and Save as Tags from"
+msgstr "Nabavi ključne riječi i spremi kao oznake s"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "Ocjena"
+
+msgctxt "#30110"
+msgid "     Rating Generated Using"
+msgstr "Ocjena generirana korištenjem"
+
+msgctxt "#30115"
+msgid "     Use the Score Aggregated from"
+msgstr "Koristi rezultat izračunat s"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "Zasluge"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "Nabavi studio s"
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "Nabavi zemlju s"
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "Pretraživanje"
+
+msgctxt "#30301"
+msgid "themoviedb.org"
+msgstr "themoviedb.org"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30303"
+msgid "Search Engine to Use"
+msgstr "Pretraživač koji se koristi"
+
+msgctxt "#30304"
+msgid "     Secondary Search Language (In Addition to en-us)"
+msgstr "Drugi jezik za pretraživanje (pokraj en-us)"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "Uključi sve filmske kategorije"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "Upozorenje:"
+
+msgctxt "#30307"
+msgid "Enabling All Movie Categories will greatly reduce the search accuracy !!!"
+msgstr "Omogućavanje svih filmskih kategorija će uvelike smanjiti točnost pretrage!!!"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "Radnja"
+
+msgctxt "#30401"
+msgid "Plot / Tagline / Outline"
+msgstr "Radnja / Oznaka / Kratak sadržaj"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "Omot filma"
+
+msgctxt "#30501"
+msgid "Fanart Sources"
+msgstr "Izvori slika omota"
+
+msgctxt "#30502"
+msgid "Enable posters from fanart.tv"
+msgstr "Omogući plakate s fanart.tv"
+
+msgctxt "#30503"
+msgid "Enable fanart from fanart.tv"
+msgstr "Omogući slike omota s trakt.tv"

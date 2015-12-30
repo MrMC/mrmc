@@ -1,0 +1,157 @@
+# Kodi Media Center language file
+# Addon Name: Universal Movie Scraper
+# Addon id: metadata.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Japanese (http://www.transifex.com/projects/p/xbmc-addons/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30001"
+msgid "Enable fanart from themoviedb.org"
+msgstr "themoviedb.org からファンアートを取得"
+
+msgctxt "#30002"
+msgid "Enable posters from themoviedb.org"
+msgstr "themoviedb.org からポスターを取得"
+
+msgctxt "#30003"
+msgid "Enable posters from IMPAwards"
+msgstr "IMPAwards からポスターを取得"
+
+msgctxt "#30004"
+msgid "Enable posters from MoviePosterDB"
+msgstr "MoviePosterDB からポスターを取得"
+
+msgctxt "#30005"
+msgid "Get Trailers directly from YouTube"
+msgstr "YouTube から予告編を直接取得"
+
+msgctxt "#30006"
+msgid "Enable trailers from HD-Trailers.net"
+msgstr "HD-Trailers.net から予告編を取得"
+
+msgctxt "#30008"
+msgid "     Preferred Title Language from"
+msgstr "タイトル言語の優先取得先"
+
+msgctxt "#30009"
+msgid "Enable trailers from themoviedb.org"
+msgstr "themoviedb.org から予告編を取得"
+
+msgctxt "#30012"
+msgid "Trailers"
+msgstr "予告編"
+
+msgctxt "#30014"
+msgid "Get Plot from"
+msgstr "あらすじの取得元："
+
+msgctxt "#30015"
+msgid "Get Cast / Directors / Writers From"
+msgstr "出演者 / 監督 / 作者情報の取得先"
+
+msgctxt "#30016"
+msgid "Plot Sources"
+msgstr "あらすじの取得先"
+
+msgctxt "#30020"
+msgid "     Preferred Plot Language"
+msgstr "あらすじの優先言語"
+
+msgctxt "#30021"
+msgid "Get Ratings from"
+msgstr "評価の取得元："
+
+msgctxt "#30022"
+msgid "Get Genres From"
+msgstr "ジャンルの取得元："
+
+msgctxt "#30023"
+msgid "Get Title From"
+msgstr "タイトルの取得元："
+
+msgctxt "#30024"
+msgid "Title Sources"
+msgstr "タイトルの取得先"
+
+msgctxt "#30025"
+msgid "Cast & Credits Sources"
+msgstr "出演者とクレジット情報の取得先"
+
+msgctxt "#30029"
+msgid "Movie Collections"
+msgstr "映画コレクション"
+
+msgctxt "#30036"
+msgid "Enable posters from IMDb"
+msgstr "IMDb のポスターを有効に"
+
+msgctxt "#30037"
+msgid "Enable posters from trakt.tv"
+msgstr "trakt.tv のポスターを有効に"
+
+msgctxt "#30038"
+msgid "Enable fanart from trakt.tv"
+msgstr "trakt.tv のファンアートを有効に"
+
+msgctxt "#30039"
+msgid "Enable trailers from trakt.tv"
+msgstr "trakt.tv の予告編を有効に"
+
+msgctxt "#30042"
+msgid "Get Tagline From"
+msgstr "キャッチコピーの取得先"
+
+msgctxt "#30044"
+msgid "Get IMDb TOP250 Ranking"
+msgstr "IMDb トップ250ランキングを取得"
+
+msgctxt "#30100"
+msgid "Rating"
+msgstr "評価"
+
+msgctxt "#30200"
+msgid "Credits"
+msgstr "クレジット"
+
+msgctxt "#30201"
+msgid "Get Studio from"
+msgstr "スタジオ情報の取得元："
+
+msgctxt "#30202"
+msgid "Get Country from"
+msgstr "製作国情報の取得元："
+
+msgctxt "#30300"
+msgid "Search"
+msgstr "検索"
+
+msgctxt "#30302"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#30305"
+msgid "     Include All Movie Categories"
+msgstr "全ムービーカテゴリーを含める"
+
+msgctxt "#30306"
+msgid "Warning:"
+msgstr "警告:"
+
+msgctxt "#30400"
+msgid "Plot"
+msgstr "ストーリー"
+
+msgctxt "#30500"
+msgid "Fanart"
+msgstr "ファンアート"
