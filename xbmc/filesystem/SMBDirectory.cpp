@@ -208,13 +208,6 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   return true;
 }
 
-int CSMBDirectory::Open(const CURL &url)
-{
-  smb.Init();
-  std::string strAuth;
-  return OpenDir(url, strAuth);
-}
-
 /// \brief Checks authentication against SAMBA share and prompts for username and password if needed
 /// \param strAuth The SMB style path
 /// \return SMB file descriptor
