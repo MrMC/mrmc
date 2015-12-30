@@ -227,6 +227,10 @@
               <label>$LOCALIZE[1]</label>
               <onclick>activatewindow(PicturesSettings)</onclick>
             </item>
+            <item id="1" description="Addons">
+              <label>$LOCALIZE[24001]</label>
+              <onclick>ActivateWindow(AddonBrowser,root)</onclick>
+            </item>
             <item id="8" description="Service">
               <label>$LOCALIZE[14036]</label>
               <onclick>activatewindow(ServiceSettings)</onclick>
