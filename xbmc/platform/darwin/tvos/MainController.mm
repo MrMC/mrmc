@@ -64,6 +64,7 @@ MainController *g_xbmcController;
 @synthesize m_mimicAppleSiri;
 @synthesize m_remoteIdleState;
 @synthesize m_remoteIdleTimeout;
+@synthesize m_shouldRemoteIdle;
 
 #pragma mark - internal key press methods
 //--------------------------------------------------------------
