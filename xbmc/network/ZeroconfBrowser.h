@@ -110,7 +110,7 @@ public:
   //   added with AddServiceType (== needs further processing! e.g. _smb._tcp -> smb)
   // @return true if it was successfully resolved (or scheduled), false if resolve
   //         failed (async or not)
-  bool ResolveService(ZeroconfService& fr_service, double f_timeout = 1.0);
+  bool ResolveService(ZeroconfService& fr_service, double f_timeout = 2.0);
 
   // class methods
   // access to singleton; singleton gets created on call if not existent
