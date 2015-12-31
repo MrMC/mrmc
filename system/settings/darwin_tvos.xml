@@ -102,6 +102,14 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="input.applesiriosdswipe" type="boolean" parent="input.applesiri" label="24162" help="24163">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="visible" setting="input.applesiri">true</dependency>
+          </dependencies>
+        </setting>
         <setting id="input.applesiritimeoutenabled" type="boolean" label="24160" help="24161">
           <level>1</level>
           <default>true</default>

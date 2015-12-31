@@ -14009,7 +14009,17 @@ msgctxt "#24161"
 msgid "Enable remote input timeout for tap/swipe"
 msgstr ""
 
-#empty strings from id 24160 to 24991
+#: apple remote
+msgctxt "#24162"
+msgid "Disable swipe controlls in OSD"
+msgstr ""
+
+#: apple remote
+msgctxt "#24163"
+msgid "Ignore any swipe input while in fullscreen video playback, only edge tap will work for directional controlls"
+msgstr ""
+
+#empty strings from id 24164 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp

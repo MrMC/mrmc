@@ -65,6 +65,7 @@ MainController *g_xbmcController;
 @synthesize m_remoteIdleState;
 @synthesize m_remoteIdleTimeout;
 @synthesize m_shouldRemoteIdle;
+@synthesize m_RemoteOSDSwipes;
 
 #pragma mark - internal key press methods
 //--------------------------------------------------------------
@@ -292,6 +293,22 @@ MainController *g_xbmcController;
 }
 
 //--------------------------------------------------------------
+-(BOOL) shouldOSDScroll
+{
+  // we might not want to scroll in below windows, fullscreen video playback is one
+  int window = g_windowManager.GetActiveWindow();
+  
+  if (m_RemoteOSDSwipes &&
+      (window == WINDOW_FULLSCREEN_LIVETV ||
+      window == WINDOW_FULLSCREEN_VIDEO ||
+      window == WINDOW_FULLSCREEN_RADIO
+      ))
+    return NO;
+  
+  return YES;
+}
+
+//--------------------------------------------------------------
 - (void)setSiriRemote:(BOOL)enable
 {
   m_mimicAppleSiri = enable;
@@ -310,6 +327,13 @@ MainController *g_xbmcController;
   m_shouldRemoteIdle = idle;
   [self startRemoteTimer];
 }
+
+- (void)setSiriRemoteOSDSwipes:(BOOL)enable
+{
+  //PRINT_SIGNATURE();
+  m_RemoteOSDSwipes = enable;
+}
+
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -754,110 +778,113 @@ MainController *g_xbmcController;
     {
       if (m_mimicAppleSiri)
       {
-        static UIPanGestureRecognizerDirection direction = UIPanGestureRecognizerDirectionUndefined;
-        // speed       == how many clicks full swipe will give us(1000x1000px)
-        // minVelocity == min velocity to trigger fast scroll, add this to settings?
-        float speed = 240.0;
-        float minVelocity = 1300.0;
-        switch (sender.state) {
-            
-          case UIGestureRecognizerStateBegan: {
-            
-            if (direction == UIPanGestureRecognizerDirectionUndefined)
-            {
-              m_lastGesturePoint = [sender translationInView:sender.view];
-              m_lastGesturePoint.x = m_lastGesturePoint.x/1.92;
-              m_lastGesturePoint.y = m_lastGesturePoint.y/1.08;
+        if ([self shouldOSDScroll])
+        {
+          static UIPanGestureRecognizerDirection direction = UIPanGestureRecognizerDirectionUndefined;
+          // speed       == how many clicks full swipe will give us(1000x1000px)
+          // minVelocity == min velocity to trigger fast scroll, add this to settings?
+          float speed = 240.0;
+          float minVelocity = 1300.0;
+          switch (sender.state) {
               
-              m_direction = [self getPanDirection:m_lastGesturePoint];
-              m_directionOverride = false;
-            }
-            
-            break;
-          }
-            
-          case UIGestureRecognizerStateChanged:
-          {
-            CGPoint gesturePoint = [sender translationInView:sender.view];
-            gesturePoint.x = gesturePoint.x/1.92;
-            gesturePoint.y = gesturePoint.y/1.08;
-            
-            CGPoint gestureMovement;
-            gestureMovement.x = gesturePoint.x - m_lastGesturePoint.x;
-            gestureMovement.y = gesturePoint.y - m_lastGesturePoint.y;
-            
-            CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].x);
-            CGFloat velocityY = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].y);
-            direction = [self getPanDirection:gestureMovement];
-            if (ABS(velocityY) > minVelocity || ABS(velocityX) > minVelocity || m_directionOverride)
-            {
-              direction = m_direction;
-              // Override direction to correct swipe errors
-              m_directionOverride = true;
-            }
-            
-            switch (direction)
-            {
-              case UIPanGestureRecognizerDirectionUp:
+            case UIGestureRecognizerStateBegan: {
+              
+              if (direction == UIPanGestureRecognizerDirectionUndefined)
               {
-                if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) || ABS(velocityY) > minVelocity )
+                m_lastGesturePoint = [sender translationInView:sender.view];
+                m_lastGesturePoint.x = m_lastGesturePoint.x/1.92;
+                m_lastGesturePoint.y = m_lastGesturePoint.y/1.08;
+                
+                m_direction = [self getPanDirection:m_lastGesturePoint];
+                m_directionOverride = false;
+              }
+              
+              break;
+            }
+              
+            case UIGestureRecognizerStateChanged:
+            {
+              CGPoint gesturePoint = [sender translationInView:sender.view];
+              gesturePoint.x = gesturePoint.x/1.92;
+              gesturePoint.y = gesturePoint.y/1.08;
+              
+              CGPoint gestureMovement;
+              gestureMovement.x = gesturePoint.x - m_lastGesturePoint.x;
+              gestureMovement.y = gesturePoint.y - m_lastGesturePoint.y;
+              
+              CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].x);
+              CGFloat velocityY = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].y);
+              direction = [self getPanDirection:gestureMovement];
+              if (ABS(velocityY) > minVelocity || ABS(velocityX) > minVelocity || m_directionOverride)
+              {
+                direction = m_direction;
+                // Override direction to correct swipe errors
+                m_directionOverride = true;
+              }
+              
+              switch (direction)
+              {
+                case UIPanGestureRecognizerDirectionUp:
                 {
-                  [self sendKeyDownUp:XBMCK_UP];
-                  if (ABS(velocityY) > minVelocity && [self shouldFastScroll])
+                  if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) || ABS(velocityY) > minVelocity )
+                  {
                     [self sendKeyDownUp:XBMCK_UP];
-                  m_lastGesturePoint = gesturePoint;
+                    if (ABS(velocityY) > minVelocity && [self shouldFastScroll])
+                      [self sendKeyDownUp:XBMCK_UP];
+                    m_lastGesturePoint = gesturePoint;
+                  }
+                  break;
                 }
-                break;
-              }
-              case UIPanGestureRecognizerDirectionDown:
-              {
-                if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) || ABS(velocityY) > minVelocity)
+                case UIPanGestureRecognizerDirectionDown:
                 {
-                  [self sendKeyDownUp:XBMCK_DOWN];
-                  if (ABS(velocityY) > minVelocity && [self shouldFastScroll])
+                  if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) || ABS(velocityY) > minVelocity)
+                  {
                     [self sendKeyDownUp:XBMCK_DOWN];
-                  m_lastGesturePoint = gesturePoint;
+                    if (ABS(velocityY) > minVelocity && [self shouldFastScroll])
+                      [self sendKeyDownUp:XBMCK_DOWN];
+                    m_lastGesturePoint = gesturePoint;
+                  }
+                  break;
                 }
-                break;
-              }
-              case UIPanGestureRecognizerDirectionLeft:
-              {
-                if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+                case UIPanGestureRecognizerDirectionLeft:
                 {
-                  [self sendKeyDownUp:XBMCK_LEFT];
-                  if (ABS(velocityX) > minVelocity && [self shouldFastScroll])
+                  if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+                  {
                     [self sendKeyDownUp:XBMCK_LEFT];
-                  m_lastGesturePoint = gesturePoint;
+                    if (ABS(velocityX) > minVelocity && [self shouldFastScroll])
+                      [self sendKeyDownUp:XBMCK_LEFT];
+                    m_lastGesturePoint = gesturePoint;
+                  }
+                  break;
                 }
-                break;
-              }
-              case UIPanGestureRecognizerDirectionRight:
-              {
-                if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+                case UIPanGestureRecognizerDirectionRight:
                 {
-                  [self sendKeyDownUp:XBMCK_RIGHT];
-                  if (ABS(velocityX) > minVelocity && [self shouldFastScroll])
+                  if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+                  {
                     [self sendKeyDownUp:XBMCK_RIGHT];
-                  m_lastGesturePoint = gesturePoint;
+                    if (ABS(velocityX) > minVelocity && [self shouldFastScroll])
+                      [self sendKeyDownUp:XBMCK_RIGHT];
+                    m_lastGesturePoint = gesturePoint;
+                  }
+                  break;
                 }
-                break;
-              }
-              default:
-              {
-                break;
+                default:
+                {
+                  break;
+                }
               }
             }
+              
+            case UIGestureRecognizerStateEnded: {
+              direction = UIPanGestureRecognizerDirectionUndefined;
+              // start remote idle timer
+              [self startRemoteTimer];
+              break;
+            }
+              
+            default:
+              break;
           }
-            
-          case UIGestureRecognizerStateEnded: {
-            direction = UIPanGestureRecognizerDirectionUndefined;
-            // start remote idle timer
-            [self startRemoteTimer];
-            break;
-          }
-            
-          default:
-            break;
         }
       }
       else // dont mimic apple siri remote
