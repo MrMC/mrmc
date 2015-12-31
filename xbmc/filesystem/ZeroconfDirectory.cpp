@@ -218,7 +218,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory Unknown service type (%s), skipping; ", zeroconf_service.GetType().c_str());
           return false;
         }
-        
+
         service.SetProtocol(protocol);
         
         //first try to show the txt-record defined path if any
@@ -227,8 +227,16 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           return true;
         }
         else//no txt record path - so let the CDirectory handler show the folders
-        {          
-          return CDirectory::GetDirectory(service.Get(), items, "", DIR_FLAG_ALLOW_PROMPT); 
+        {
+          // CDirectory::GetDirectory returns false if authorization is required
+          // The target vfs directory will call RequireAuthentication but that is
+          // is not good enough as we can be running as a job and not under main thread,
+          // so authentication dialog does not get called. Set it again here so
+          // authentication dialog gets called and we will get called again with user/pass setup.
+          bool status = CDirectory::GetDirectory(service, items, "", DIR_FLAG_ALLOW_PROMPT);
+          if(!status)
+            RequireAuthentication(service);
+          return status;
         }
       }
     } catch (std::runtime_error& e) {
