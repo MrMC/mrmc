@@ -51,48 +51,70 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     strIpAddress = StringUtils::Format("%lu.%lu.%lu.%lu", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
     return true;
   }
-
   // check if there's a custom entry or if it's already cached
   if(g_DNSCache.GetCached(strHostName, strIpAddress))
     return true;
 
-  // perform netbios lookup
-  char nmb_ip[100];
-  char line[200];
-
-  std::string cmd = "nmblookup " + strHostName;
-  FILE* fp = popen(cmd.c_str(), "r");
-  if (fp)
+  // perform straight dns name lookup
   {
-    while (fgets(line, sizeof line, fp))
+    struct hostent *host = gethostbyname(strHostName.c_str());
+    if (host && host->h_addr_list[0])
     {
-      if (sscanf(line, "%99s *<00>\n", nmb_ip))
-      {
-        if (inet_addr(nmb_ip) != INADDR_NONE)
-          strIpAddress = nmb_ip;
-      }
+      strIpAddress = StringUtils::Format("%d.%d.%d.%d",
+        (unsigned char)host->h_addr_list[0][0],
+        (unsigned char)host->h_addr_list[0][1],
+        (unsigned char)host->h_addr_list[0][2],
+        (unsigned char)host->h_addr_list[0][3]);
+      g_DNSCache.Add(strHostName, strIpAddress);
+      return true;
     }
-    pclose(fp);
   }
 
-  if (!strIpAddress.empty())
+  // perform dns name lookup with .local appended
   {
-    g_DNSCache.Add(strHostName, strIpAddress);
-    return true;
+    struct hostent *host = gethostbyname(std::string(strHostName + ".local").c_str());
+    if (host && host->h_addr_list[0])
+    {
+      strIpAddress = StringUtils::Format("%d.%d.%d.%d",
+        (unsigned char)host->h_addr_list[0][0],
+        (unsigned char)host->h_addr_list[0][1],
+        (unsigned char)host->h_addr_list[0][2],
+        (unsigned char)host->h_addr_list[0][3]);
+      g_DNSCache.Add(strHostName, strIpAddress);
+      return true;
+    }
   }
 
-  // perform dns lookup
-  struct hostent *host = gethostbyname(strHostName.c_str());
-  if (host && host->h_addr_list[0])
+#if !defined(TARGET_DARWIN)
+  // perform netbios lookup (nmblookup does not exist for darwin)
+  // netbios names are always less than 16 chars (plus service byte) and never has a dot
+  if (strHostName.length() <= 16 && strHostName.find(".") == std::string::npos)
   {
-    strIpAddress = StringUtils::Format("%d.%d.%d.%d",
-                                       (unsigned char)host->h_addr_list[0][0],
-                                       (unsigned char)host->h_addr_list[0][1],
-                                       (unsigned char)host->h_addr_list[0][2],
-                                       (unsigned char)host->h_addr_list[0][3]);
-    g_DNSCache.Add(strHostName, strIpAddress);
-    return true;
+    char nmb_ip[100];
+    char line[200];
+
+    std::string cmd = "nmblookup " + strHostName;
+    FILE* fp = popen(cmd.c_str(), "r");
+    if (fp)
+    {
+      while (fgets(line, sizeof line, fp))
+      {
+        if (sscanf(line, "%99s *<00>\n", nmb_ip))
+        {
+          if (inet_addr(nmb_ip) != INADDR_NONE)
+            strIpAddress = nmb_ip;
+        }
+      }
+      pclose(fp);
+    }
+
+    if (!strIpAddress.empty())
+    {
+      g_DNSCache.Add(strHostName, strIpAddress);
+      return true;
+    }
   }
+#endif
 
   CLog::Log(LOGERROR, "Unable to lookup host: '%s'", strHostName.c_str());
   return false;
