@@ -89,10 +89,8 @@ class CAAudioUnitSink
    ~CAAudioUnitSink();
 
     bool         open(AudioStreamBasicDescription outputFormat);
+    bool         activate();
     bool         close();
-    bool         play(bool mute);
-    bool         mute(bool mute);
-    bool         pause();
     void         drain();
     void         getDelay(AEDelayStatus& status);
     double       cacheSize();
@@ -126,7 +124,6 @@ class CAAudioUnitSink
     AudioStreamBasicDescription m_outputFormat;
     AERingBuffer       *m_buffer;
 
-    bool                m_mute;
     Float32             m_outputVolume;
     Float32             m_outputLatency;
     Float32             m_bufferDuration;
@@ -135,8 +132,6 @@ class CAAudioUnitSink
     unsigned int        m_frameSize;
     unsigned int        m_frames;
 
-    bool                m_playing;
-    bool                m_playing_saved;
     volatile bool       m_started;
 
     CAESpinSection      m_render_section;
@@ -146,9 +141,7 @@ class CAAudioUnitSink
 
 CAAudioUnitSink::CAAudioUnitSink()
 : m_activated(false)
-, m_buffer(NULL)
-, m_playing(false)
-, m_playing_saved(false)
+, m_buffer(nullptr)
 , m_started(false)
 , m_render_timestamp(0)
 , m_render_frames(0)
@@ -177,7 +170,6 @@ CAAudioUnitSink::~CAAudioUnitSink()
 
 bool CAAudioUnitSink::open(AudioStreamBasicDescription outputFormat)
 {
-  m_mute          = false;
   m_setup         = false;
   m_outputFormat  = outputFormat;
   m_outputLatency = 0.0;
@@ -197,41 +189,15 @@ bool CAAudioUnitSink::open(AudioStreamBasicDescription outputFormat)
 bool CAAudioUnitSink::close()
 {
   deactivateAudioSession();
-  
-  delete m_buffer;
-  m_buffer = NULL;
-
+  SAFE_DELETE(m_buffer);
   m_started = false;
+
   return true;
 }
 
-bool CAAudioUnitSink::play(bool mute)
-{    
-  if (!m_playing)
-  {
-    if (activateAudioSession())
-    {
-      CAAudioUnitSink::mute(mute);
-      m_playing = !AudioOutputUnitStart(m_audioUnit);
-    }
-  }
-
-  return m_playing;
-}
-
-bool CAAudioUnitSink::mute(bool mute)
+bool CAAudioUnitSink::activate()
 {
-  m_mute = mute;
-
-  return true;
-}
-
-bool CAAudioUnitSink::pause()
-{	
-  if (m_playing)
-    m_playing = AudioOutputUnitStop(m_audioUnit);
- 
-  return m_playing;
+  return activateAudioSession();
 }
 
 void CAAudioUnitSink::getDelay(AEDelayStatus& status)
@@ -443,8 +409,8 @@ bool CAAudioUnitSink::checkSessionProperties()
   checkAudioRoute();
 
   AVAudioSession *mySession = [AVAudioSession sharedInstance];
-  m_outputVolume = [mySession outputVolume];
-  m_outputLatency = [mySession outputLatency];
+  m_outputVolume   = [mySession outputVolume];
+  m_outputLatency  = [mySession outputLatency];
   m_bufferDuration = [mySession IOBufferDuration];
 
   return true;
@@ -455,7 +421,10 @@ bool CAAudioUnitSink::activateAudioSession()
   if (!m_activated)
   {
     if (checkAudioRoute() && setupAudio())
+    {
+      AudioOutputUnitStart(m_audioUnit);
       m_activated = true;
+    }
   }
 
   return m_activated;
@@ -465,9 +434,20 @@ void CAAudioUnitSink::deactivateAudioSession()
 {
   if (m_activated)
   {
-    pause();
+    AudioUnitReset(m_audioUnit, kAudioUnitScope_Global, 0);
+
+    // this is a delayed call, the OS will block here
+    // until the autio unit actually is stopped.
+    AudioOutputUnitStop(m_audioUnit);
+
+    // detach the render callback on the unit
+    AURenderCallbackStruct callbackStruct = {0};
+    AudioUnitSetProperty(m_audioUnit,
+      kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input,
+      0, &callbackStruct, sizeof(callbackStruct));
+
     AudioUnitUninitialize(m_audioUnit);
-    AudioComponentInstanceDispose(m_audioUnit), m_audioUnit = NULL;
+    AudioComponentInstanceDispose(m_audioUnit), m_audioUnit = nullptr;
 #if 0
     AudioSessionRemovePropertyListenerWithUserData(kAudioSessionProperty_AudioRouteChange,
       sessionPropertyCallback, this);
@@ -530,7 +510,13 @@ OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFl
     //LogLevel(bytes, wanted);
     
     if (bytes == 0)
+    {
+      // Apple iOS docs say kAudioUnitRenderAction_OutputIsSilence provides a hint to
+      // the audio unit that there is no audio to process. and you must also explicitly
+      // set the buffers contents pointed at by the ioData parameter to 0.
+      memset(ioData->mBuffers[i].mData, 0, ioData->mBuffers[i].mDataByteSize);
       *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
+    }
   }
 
   sink->m_render_timestamp = inTimeStamp->mHostTime;
@@ -582,7 +568,9 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   // there are more supported ( one of those 2 gets resampled
   // by coreaudio anyway) - but for keeping it save ignore
   // the others...
+#if !defined(TARGET_DARWIN_TVOS)
   device.m_sampleRates.push_back(44100);
+#endif
   device.m_sampleRates.push_back(48000);
 
   device.m_dataFormats.push_back(AE_FMT_S16LE);
@@ -600,7 +588,7 @@ static void EnumerateDevices(AEDeviceInfoList &list)
 AEDeviceInfoList CAESinkDARWINIOS::m_devices;
 
 CAESinkDARWINIOS::CAESinkDARWINIOS()
-:   m_audioSink(NULL)
+:   m_audioSink(nullptr)
 {
 }
 
@@ -652,8 +640,10 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     case 44100:
     case 88200:
     case 176400:
+#if !defined(TARGET_DARWIN_TVOS)
       audioFormat.mSampleRate = 44100;
       break;
+#endif
     default:
     case 8000:
     case 12000:
@@ -691,15 +681,14 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   format.m_sampleRate = m_audioSink->getRealisedSampleRate();
   m_format = format;
 
-  m_audioSink->play(false);
+  m_audioSink->activate();
 
   return true;
 }
 
 void CAESinkDARWINIOS::Deinitialize()
 {
-  delete m_audioSink;
-  m_audioSink = NULL;
+  SAFE_DELETE(m_audioSink);
 }
 
 void CAESinkDARWINIOS::GetDelay(AEDelayStatus& status)
