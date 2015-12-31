@@ -26,6 +26,7 @@
 
 #import "Application.h"
 
+#import "cores/AudioEngine/AEFactory.h"
 #import "guilib/GUIWindowManager.h"
 #import "input/Key.h"
 #import "interfaces/AnnouncementManager.h"
@@ -1032,7 +1033,6 @@ MainController *g_xbmcController;
 
 - (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
 { 
-  //PRINT_SIGNATURE();
   m_screenIdx = 0;
   self = [super init];
   if (!self)
@@ -1105,7 +1105,6 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
-  //PRINT_SIGNATURE();
   [self resumeAnimation];
   [super viewWillAppear:animated];
 }
@@ -1119,7 +1118,6 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {  
-  //PRINT_SIGNATURE();
   [self pauseAnimation];
   [super viewWillDisappear:animated];
 }
@@ -1185,14 +1183,12 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)disableScreenSaver
 {
-  PRINT_SIGNATURE();
   m_disableIdleTimer = YES;
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 //--------------------------------------------------------------
 - (void)enableScreenSaver
 {
-  PRINT_SIGNATURE();
   m_disableIdleTimer = NO;
   [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
@@ -1200,7 +1196,6 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (bool)resetSystemIdleTimer
 {
-  PRINT_SIGNATURE();
   // this is silly :)
   // when system screen saver kicks off, we switch to UIApplicationStateInactive, the only way
   // to get out of the screensaver is to call ourself to open an custom URL that is registered
@@ -1241,18 +1236,24 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)enterBackground
 {
-  //PRINT_SIGNATURE();
   if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   g_Windowing.OnAppFocusChange(false);
+  // Wait for AE to suspend and delete the audio sink, this allows
+  // AudioOutputUnitStop to complete and AVAudioSession to be set inactive.
+  // We have 5 seconds before the OS will force kill us for delaying too long.
+  // Note that to user, we moved into background to user but we
+  // are really waiting here for AE to suspend.
+  XbmcThreads::EndTime timer(4000);
+  while (!CAEFactory::IsSuspended() && !timer.IsTimePast())
+    usleep(250*1000);
 }
 
 - (void)enterForeground
 {
-  //PRINT_SIGNATURE();
   g_Windowing.OnAppFocusChange(true);
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
@@ -1264,7 +1265,6 @@ MainController *g_xbmcController;
 
 - (void)becomeInactive
 {
-  //PRINT_SIGNATURE();
   // if we were interrupted, already paused here
   // else if user background us or lock screen, only pause video here, audio keep playing.
   if (g_application.m_pPlayer->IsPlayingVideo() &&
