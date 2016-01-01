@@ -1687,6 +1687,12 @@
 		F558F27F13ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */; };
 		F558F29613ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */; };
 		F55902191C2F14D800349249 /* TVOSSettingsHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = F55902181C2F14D800349249 /* TVOSSettingsHandler.mm */; };
+		F55902251C32D52D00349249 /* DSMDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021B1C30A2BD00349249 /* DSMDirectory.cpp */; };
+		F55902261C32D53100349249 /* DSMFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021D1C30A2BD00349249 /* DSMFile.cpp */; };
+		F55902271C35D96700349249 /* DSMDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021B1C30A2BD00349249 /* DSMDirectory.cpp */; };
+		F55902281C35D96800349249 /* DSMDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021B1C30A2BD00349249 /* DSMDirectory.cpp */; };
+		F55902291C35D96D00349249 /* DSMFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021D1C30A2BD00349249 /* DSMFile.cpp */; };
+		F559022A1C35D96D00349249 /* DSMFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021D1C30A2BD00349249 /* DSMFile.cpp */; };
 		F55BA70B17AB2264002A36D1 /* StereoscopicsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5558ED0E176396CD00118C35 /* StereoscopicsManager.cpp */; };
 		F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55611BA21766672F00754072 /* RenderFlags.cpp */; };
 		F563529616E53FAB00D21BAD /* UPnPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563529416E53FAB00D21BAD /* UPnPSettings.cpp */; };
@@ -4696,6 +4702,11 @@
 		F559020B1C2722E100349249 /* App.xcconfig.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = App.xcconfig.in; sourceTree = "<group>"; };
 		F55902171C2F14D800349249 /* TVOSSettingsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TVOSSettingsHandler.h; sourceTree = "<group>"; };
 		F55902181C2F14D800349249 /* TVOSSettingsHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TVOSSettingsHandler.mm; sourceTree = "<group>"; };
+		F559021A1C30A2A800349249 /* DllLibDSM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibDSM.h; sourceTree = "<group>"; };
+		F559021B1C30A2BD00349249 /* DSMDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DSMDirectory.cpp; sourceTree = "<group>"; };
+		F559021C1C30A2BD00349249 /* DSMDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSMDirectory.h; sourceTree = "<group>"; };
+		F559021D1C30A2BD00349249 /* DSMFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DSMFile.cpp; sourceTree = "<group>"; };
+		F559021E1C30A2BD00349249 /* DSMFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSMFile.h; sourceTree = "<group>"; };
 		F563529416E53FAB00D21BAD /* UPnPSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPSettings.cpp; sourceTree = "<group>"; };
 		F563529516E53FAB00D21BAD /* UPnPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPSettings.h; sourceTree = "<group>"; };
 		F56352A216E5402100D21BAD /* GUIDialogContentSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogContentSettings.cpp; path = dialogs/GUIDialogContentSettings.cpp; sourceTree = "<group>"; };
@@ -7491,8 +7502,13 @@
 				E38E16B10D25F9FA00618676 /* DirectoryHistory.h */,
 				E38E16B40D25F9FA00618676 /* DllLibCurl.cpp */,
 				E38E16B50D25F9FA00618676 /* DllLibCurl.h */,
+				F559021A1C30A2A800349249 /* DllLibDSM.h */,
 				F55902091C271E2C00349249 /* DllLibNfs.h */,
 				F55902081C271E1000349249 /* DlllibSMB.h */,
+				F559021B1C30A2BD00349249 /* DSMDirectory.cpp */,
+				F559021C1C30A2BD00349249 /* DSMDirectory.h */,
+				F559021D1C30A2BD00349249 /* DSMFile.cpp */,
+				F559021E1C30A2BD00349249 /* DSMFile.h */,
 				DF29BD001B5D913B00904347 /* EventsDirectory.cpp */,
 				DF29BD011B5D913B00904347 /* EventsDirectory.h */,
 				0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */,
@@ -9004,6 +9020,7 @@
 				E38E207D0D25F9FD00618676 /* GUIDialogButtonMenu.cpp in Sources */,
 				E38E207F0D25F9FD00618676 /* GUIDialogContextMenu.cpp in Sources */,
 				E38E20800D25F9FD00618676 /* GUIDialogFavourites.cpp in Sources */,
+				F55902251C32D52D00349249 /* DSMDirectory.cpp in Sources */,
 				E38E20810D25F9FD00618676 /* GUIDialogFileBrowser.cpp in Sources */,
 				E38E20820D25F9FD00618676 /* GUIDialogFileStacking.cpp in Sources */,
 				E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */,
@@ -9065,6 +9082,7 @@
 				E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */,
 				E38E22750D25F9FE00618676 /* XFileUtils.cpp in Sources */,
 				F59045921BA375B100DB589A /* MCRuntimeLibStartupLogger.cpp in Sources */,
+				F55902261C32D53100349249 /* DSMFile.cpp in Sources */,
 				E38E22760D25F9FE00618676 /* XHandle.cpp in Sources */,
 				E38E22770D25F9FE00618676 /* XMemUtils.cpp in Sources */,
 				E38E227A0D25F9FE00618676 /* XTimeUtils.cpp in Sources */,
@@ -10065,6 +10083,7 @@
 				E49912D2174E5DA000741B6D /* VirtualDirectory.cpp in Sources */,
 				E49912D6174E5DA000741B6D /* ZeroconfDirectory.cpp in Sources */,
 				E49912D7174E5DA000741B6D /* ZipDirectory.cpp in Sources */,
+				F55902281C35D96800349249 /* DSMDirectory.cpp in Sources */,
 				18FD1CAF1BC8E63000027005 /* SubtitleUtilities.cpp in Sources */,
 				E49912D8174E5DA000741B6D /* ZipFile.cpp in Sources */,
 				E49912D9174E5DA000741B6D /* ZipManager.cpp in Sources */,
@@ -10678,6 +10697,7 @@
 				B179BD6C1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
 				B179BD6F1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
 				B179BD721AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,
+				F55902291C35D96D00349249 /* DSMFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10947,6 +10967,7 @@
 				F5D13FC91BAF0B6D0075A95C /* DirectoryNodeMoviesOverview.cpp in Sources */,
 				F5D13FCA1BAF0B6D0075A95C /* DirectoryNodeMusicVideosOverview.cpp in Sources */,
 				F5D13FCB1BAF0B6D0075A95C /* DirectoryNodeOverview.cpp in Sources */,
+				F55902271C35D96700349249 /* DSMDirectory.cpp in Sources */,
 				F5D13FCC1BAF0B6D0075A95C /* MCRuntimeLibContext.cpp in Sources */,
 				F5D13FCD1BAF0B6D0075A95C /* ReplayGain.cpp in Sources */,
 				F5D13FCE1BAF0B6D0075A95C /* DirectoryNodeRecentlyAddedEpisodes.cpp in Sources */,
@@ -10982,6 +11003,7 @@
 				F5D13FEB1BAF0B6D0075A95C /* GUICheckMarkControl.cpp in Sources */,
 				F5D13FEC1BAF0B6D0075A95C /* GUIColorManager.cpp in Sources */,
 				F5D13FED1BAF0B6D0075A95C /* GUIControl.cpp in Sources */,
+				F559022A1C35D96D00349249 /* DSMFile.cpp in Sources */,
 				F5D13FEE1BAF0B6D0075A95C /* GUIControlFactory.cpp in Sources */,
 				F5D13FEF1BAF0B6D0075A95C /* GUIControlGroup.cpp in Sources */,
 				F5D13FF01BAF0B6D0075A95C /* ILanguageInvoker.cpp in Sources */,

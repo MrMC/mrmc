@@ -193,6 +193,8 @@ ssh_not_found="== Could not find libssh. =="
 ssh_disabled="== SSH SFTP disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
+libdsm_not_found="== Could not find libdsm. DSM (SBM) client support disabled. =="
+libdsm_disabled="== DSM (SBM) support disabled. =="
 libshairplay_not_found="== Could not find libshairplay. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
@@ -342,6 +344,12 @@ AC_ARG_ENABLE([samba],
   [disable SAMBA support (default is enabled)])],
   [use_samba=$enableval],
   [use_samba=yes])
+
+AC_ARG_ENABLE([dsm],
+  [AS_HELP_STRING([--enable-dsm],
+  [enable DSM support via libdsm (default is auto)])],
+  [use_libdsm=$enableval],
+  [use_libdsm=auto])
 
 AC_ARG_ENABLE([nfs],
   [AS_HELP_STRING([--enable-nfs],
@@ -1223,6 +1231,30 @@ if test "x$use_samba" != "xno"; then
   USE_LIBSMBCLIENT=1
 fi
 
+# libdsm
+if test "x$use_libdsm" != "xno"; then
+  AC_CHECK_HEADERS([bdsm/bdsm.h],,
+   [if test "x$use_libdsm" = "xyes"; then
+      AC_MSG_ERROR($libdsm_not_found)
+      USE_LIBDSM=0
+    elif test "x$use_libdsm" != "xno"; then
+      AC_MSG_NOTICE($libdsm_not_found)
+      use_libdsm="no"
+      USE_LIBDSM=0
+    fi
+   ])
+  if test "x$use_libdsm" != "xno"; then
+    XB_FIND_SONAME([DSM], [dsm], [use_libdsm])
+  fi
+  if test "x$use_libdsm" != "xno"; then
+    AC_DEFINE([HAVE_LIBDSM], [1], [Whether to use libdsm library.])
+    USE_LIBDSM=1
+  fi
+else
+  USE_LIBDSM=0
+  AC_MSG_NOTICE($libdsm_disabled)
+fi
+
 # libnfs
 if test "$use_libnfs" != "no"; then
   AC_CHECK_HEADERS([nfsc/libnfs.h],,
@@ -1905,6 +1937,12 @@ if test "x$use_samba" != "xno"; then
   final_message="$final_message\n  libsmbclient support:\tYes"
 else
   final_message="$final_message\n  libsmbclient support:\tNo"
+fi
+
+if test "$use_libdsm" != "no"; then
+  final_message="$final_message\n  libdsm client support:Yes"
+else
+  final_message="$final_message\n  libdsm client support:No"
 fi
 
 if test "$use_libnfs" != "no"; then

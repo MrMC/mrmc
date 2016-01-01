@@ -49,6 +49,8 @@ DEPENDS += platform
 DEPENDS += crossguid
 DEPENDS += libcpluff
 DEPENDS += samba
+DEPENDS += libtasn1
+DEPENDS += libdsm
 
 EXCLUDED_DEPENDS =
 ifeq ($(OS),ios)
@@ -122,6 +124,7 @@ ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls libdcadec
 libcec: platform
 ifeq ($(OS),linux)
 crossguid: libuuid
+libdsm: libtasn1
 endif
 libcpluff: expat
 

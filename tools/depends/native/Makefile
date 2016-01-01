@@ -7,7 +7,7 @@ endif
 NATIVE= m4-native gettext-native autoconf-native automake-native \
         libtool-native pkg-config-native yasm-native cmake-native \
         gas-preprocessor-native zlib-native \
-        pcre-native rpl-native libsquish-native \
+        pcre-native rpl-native libsquish-native asn1-parser-native \
         tiff-native libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
         JsonSchemaBuilder TexturePacker
 

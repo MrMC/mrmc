@@ -52,6 +52,10 @@
   #define HAS_FILESYSTEM_SMB
 #endif
 
+#ifdef HAVE_BDSM_BDSM_H
+  #define HAS_FILESYSTEM_DSM
+#endif
+
 #ifdef HAVE_LIBNFS
   #define HAS_FILESYSTEM_NFS
 #endif

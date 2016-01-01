@@ -1,0 +1,89 @@
+diff -rupN appletvos9.1_arm64-target/include-org/bdsm/smb_dir.h appletvos9.1_arm64-target/include/bdsm/smb_dir.h
+--- appletvos9.1_arm64-target/include-org/bdsm/smb_dir.h	2015-12-20 17:07:39.000000000 -0500
++++ appletvos9.1_arm64-target/include/bdsm/smb_dir.h	2015-12-20 17:05:28.000000000 -0500
+@@ -36,7 +36,7 @@
+ #ifndef __BDSM_SMB_FILE_H_
+ #define __BDSM_SMB_FILE_H_
+ 
+-#include "bdsm/smb_session.h"
++#include <bdsm/smb_session.h>
+ 
+ 
+ /**
+diff -rupN appletvos9.1_arm64-target/include-org/bdsm/smb_file.h appletvos9.1_arm64-target/include/bdsm/smb_file.h
+--- appletvos9.1_arm64-target/include-org/bdsm/smb_file.h	2015-12-20 17:07:39.000000000 -0500
++++ appletvos9.1_arm64-target/include/bdsm/smb_file.h	2015-12-20 17:05:28.000000000 -0500
+@@ -36,7 +36,7 @@
+ #ifndef __BDSM_SMB_FILE_H_
+ #define __BDSM_SMB_FILE_H_
+ 
+-#include "bdsm/smb_session.h"
++#include <bdsm/smb_session.h>
+ 
+ 
+ /**
+diff -rupN appletvos9.1_arm64-target/include-org/bdsm/smb_session.h appletvos9.1_arm64-target/include/bdsm/smb_session.h
+--- appletvos9.1_arm64-target/include-org/bdsm/smb_session.h	2015-12-20 17:07:39.000000000 -0500
++++ appletvos9.1_arm64-target/include/bdsm/smb_session.h	2015-12-20 17:05:43.000000000 -0500
+@@ -32,8 +32,8 @@
+ #define __BDSM_SMB_SESSION_H_
+ 
+ 
+-#include "bdsm/smb_defs.h"
+-#include "bdsm/smb_types.h"
++#include <bdsm/smb_defs.h>
++#include <bdsm/smb_types.h>
+ 
+ /**
+  * @file smb_session.h
+diff -rupN appletvos9.1_arm64-target/include-org/bdsm/smb_share.h appletvos9.1_arm64-target/include/bdsm/smb_share.h
+--- appletvos9.1_arm64-target/include-org/bdsm/smb_share.h	2015-12-20 17:07:39.000000000 -0500
++++ appletvos9.1_arm64-target/include/bdsm/smb_share.h	2015-12-20 17:06:00.000000000 -0500
+@@ -31,8 +31,8 @@
+ #ifndef __BDSM_SMB_SHARE_H_
+ #define __BDSM_SMB_SHARE_H_
+ 
+-#include "bdsm/smb_session.h"
+-#include "bdsm/smb_file.h"
++#include <bdsm/smb_session.h>
++#include <bdsm/smb_file.h>
+ 
+ /**
+  * @file smb_share.h
+diff -rupN appletvos9.1_arm64-target/include-org/bdsm/smb_stat.h appletvos9.1_arm64-target/include/bdsm/smb_stat.h
+--- appletvos9.1_arm64-target/include-org/bdsm/smb_stat.h	2015-12-20 17:07:39.000000000 -0500
++++ appletvos9.1_arm64-target/include/bdsm/smb_stat.h	2015-12-20 17:06:16.000000000 -0500
+@@ -36,8 +36,8 @@
+ #ifndef __BDSM_SMB_STAT_H_
+ #define __BDSM_SMB_STAT_H_
+ 
+-#include "bdsm/smb_defs.h"
+-#include "bdsm/smb_session.h"
++#include <bdsm/smb_defs.h>
++#include <bdsm/smb_session.h>
+ 
+ /// smb_stat_get() OP: Get file size
+ #define SMB_STAT_SIZE         0
+diff -rupN appletvos9.1_arm64-target/include-org/bdsm.h appletvos9.1_arm64-target/include/bdsm.h
+--- appletvos9.1_arm64-target/include-org/bdsm.h	2015-12-20 17:07:39.000000000 -0500
++++ appletvos9.1_arm64-target/include/bdsm.h	2015-12-20 17:04:53.000000000 -0500
+@@ -35,11 +35,11 @@
+ #define BDSM_VERSION_REVISION 1
+ #define BDSM_VERSION_AGE      0
+ 
+-#include "bdsm/netbios_ns.h"
+-#include "bdsm/netbios_defs.h"
+-#include "bdsm/smb_session.h"
+-#include "bdsm/smb_share.h"
+-#include "bdsm/smb_file.h"
+-#include "bdsm/smb_stat.h"
+-#include "bdsm/smb_dir.h"
++#include <bdsm/netbios_ns.h>
++#include <bdsm/netbios_defs.h>
++#include <bdsm/smb_session.h>
++#include <bdsm/smb_share.h>
++#include <bdsm/smb_file.h>
++#include <bdsm/smb_stat.h>
++#include <bdsm/smb_dir.h>
+ 
+ #endif

@@ -115,7 +115,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 
   // Add our protocols
   std::vector< std::pair<std::string, int> > labels;
-#ifdef HAS_FILESYSTEM_SMB
+#if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_DSM)
   labels.push_back(make_pair(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB));
 #endif
   labels.push_back(make_pair(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS));

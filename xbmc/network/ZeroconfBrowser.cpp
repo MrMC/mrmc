@@ -53,15 +53,17 @@ CZeroconfBrowser* CZeroconfBrowser::smp_instance = 0;
 
 CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started(false)
 {
-#ifdef HAS_FILESYSTEM_SMB
-  AddServiceType("_smb._tcp.");
-#endif
   AddServiceType("_ftp._tcp.");
   AddServiceType("_webdav._tcp.");
+#if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_DSM)
+  AddServiceType("_smb._tcp.");
+#endif
 #ifdef HAS_FILESYSTEM_NFS
   AddServiceType("_nfs._tcp.");  
-#endif// HAS_FILESYSTEM_NFS
+#endif
+#ifdef HAS_FILESYSTEM_SFTP
   AddServiceType("_sftp-ssh._tcp.");
+#endif
 }
 
 CZeroconfBrowser::~CZeroconfBrowser()

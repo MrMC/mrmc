@@ -1,0 +1,20 @@
+--- a/m4/libtool.m4-org	2015-12-20 16:39:01.000000000 -0500
++++ b/m4/libtool.m4	2015-12-20 16:39:31.000000000 -0500
+@@ -944,7 +944,7 @@ m4_defun_once([_LT_REQUIRED_DARWIN_CHECK
+     rhapsody* | darwin1.[[012]])
+       _lt_dar_allow_undefined='${wl}-undefined ${wl}suppress' ;;
+     darwin1.*)
+-      _lt_dar_allow_undefined='${wl}-flat_namespace ${wl}-undefined ${wl}suppress' ;;
++      _lt_dar_allow_undefined='' ;;
+     darwin*) # darwin 5.x on
+       # if running on 10.5 or later, the deployment target defaults
+       # to the OS version, if on x86, and 10.4, the deployment
+@@ -953,7 +953,7 @@ m4_defun_once([_LT_REQUIRED_DARWIN_CHECK
+ 	10.0,*86*-darwin8*|10.0,*-darwin[[91]]*)
+ 	  _lt_dar_allow_undefined='${wl}-undefined ${wl}dynamic_lookup' ;;
+ 	10.[[012]]*)
+-	  _lt_dar_allow_undefined='${wl}-flat_namespace ${wl}-undefined ${wl}suppress' ;;
++	  _lt_dar_allow_undefined='' ;;
+ 	10.*)
+ 	  _lt_dar_allow_undefined='${wl}-undefined ${wl}dynamic_lookup' ;;
+       esac

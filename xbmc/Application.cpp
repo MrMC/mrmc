@@ -100,6 +100,9 @@
 #if defined(HAS_FILESYSTEM_SMB)
 #include "filesystem/SMBDirectory.h"
 #endif
+#if defined(HAS_FILESYSTEM_DSM)
+#include "filesystem/DSMDirectory.h"
+#endif
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"
 #endif
@@ -2735,6 +2738,10 @@ void CApplication::Stop(int exitCode)
     smb.Deinit();
 #endif
 
+#if defined(HAS_FILESYSTEM_DSM)
+    CDSMSessionManager::DisconnectAllSessions();
+#endif
+
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
@@ -4163,6 +4170,10 @@ void CApplication::ProcessSlow()
   smb.CheckIfIdle();
 #endif
 
+#if defined(HAS_FILESYSTEM_DSM)
+  CDSMSessionManager::ClearOutIdleSessions();
+#endif
+
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.CheckIfIdle();
 #endif
@@ -4792,6 +4803,10 @@ void CApplication::CloseNetworkShares()
   smb.Deinit();
 #endif
   
+#if defined(HAS_FILESYSTEM_DSM)
+  CDSMSessionManager::DisconnectAllSessions();
+#endif
+
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.Deinit();
 #endif

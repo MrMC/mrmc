@@ -14019,7 +14019,17 @@ msgctxt "#24163"
 msgid "Ignore any swipe input while in fullscreen video playback, only edge tap will work for directional controlls"
 msgstr ""
 
-#empty strings from id 24164 to 24991
+#: pick samba/dsm
+msgctxt "#24164"
+msgid "Use libdsm for smb servers"
+msgstr ""
+
+#: pick samba/dsm
+msgctxt "#24165"
+msgid "Enable libdsm instead of libsmbclient, support smbX under OSX"
+msgstr ""
+
+#empty strings from id 24166 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
