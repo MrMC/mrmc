@@ -39,7 +39,7 @@ CSoundPacket::CSoundPacket(SampleConfig conf, int samples) : config(conf)
 CSoundPacket::~CSoundPacket()
 {
   if (data)
-    AE.FreeSoundSample(data);
+    AE.FreeSoundSample(data), data = nullptr;
 }
 
 CSampleBuffer::CSampleBuffer() : pkt(NULL), pool(NULL)
