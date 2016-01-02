@@ -110,7 +110,7 @@ curl: openssl libssh2
 libass: fontconfig libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: libxml2 $(ZLIB)
-libssh: openssl $(ZLIB)
+libssh: libgcrypt openssl $(ZLIB)
 mysql: openssl
 libzip: $(ZLIB)
 libpng: $(ZLIB)
