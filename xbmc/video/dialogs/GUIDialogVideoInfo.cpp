@@ -882,13 +882,12 @@ void CGUIDialogVideoInfo::PlayTrailer()
   // Close the dialog.
   Close(true);
 
-#if defined(TARGET_DARWIN_TVOS)
+#if 0 && defined(TARGET_DARWIN_TVOS)
   std::string path = m_movieItem->GetVideoInfoTag()->m_strTrailer;
   if (StringUtils::StartsWith(path, "plugin://plugin.video.youtube"))
   { //
     StringUtils::TrimLeft(path, "plugin://plugin.video.youtube/?action=play_video&videoid=");
-    //path = "youtube://www.youtube.com/watch?v=6JB29yiysVg" + path;
-    path = "youtube://www.youtube.com/watch?v=6JB29yiysVg";
+    path = "youtube://www.youtube.com/watch?v=" + path;
     CDarwinUtils::OpenAppWithOpenURL(path);
   }
 #else
