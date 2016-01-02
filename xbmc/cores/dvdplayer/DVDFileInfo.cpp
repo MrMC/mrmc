@@ -105,7 +105,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
-    delete pInputStream;
+    SAFE_DELETE(pInputStream);
     return false;
   }
 
@@ -113,7 +113,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   {
     CLog::Log(LOGERROR, "InputStream: Error opening, %s", redactPath.c_str());
     if (pInputStream)
-      delete pInputStream;
+      SAFE_DELETE(pInputStream);
     return false;
   }
 
@@ -124,7 +124,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
     if(!pDemuxer)
     {
-      delete pInputStream;
+      SAFE_DELETE(pInputStream);
       CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
       return false;
     }
@@ -133,8 +133,8 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   {
     CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
     if (pDemuxer)
-      delete pDemuxer;
-    delete pInputStream;
+      SAFE_DELETE(pDemuxer);
+    SAFE_DELETE(pInputStream);
     return false;
   }
 
@@ -281,8 +281,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
               CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, orientation, nWidth, nHeight, CTextureCache::GetCachedPath(details.file));
               bOk = true;
             }
-
-            delete [] pOutBuf;
+            SAFE_DELETE_ARRAY(pOutBuf);
           }
         }
         else
@@ -290,14 +289,14 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
           CLog::Log(LOGDEBUG,"%s - decode failed in %s after %d packets.", __FUNCTION__, redactPath.c_str(), packetsTried);
         }
       }
-      delete pVideoCodec;
+      SAFE_DELETE(pVideoCodec);
     }
   }
 
   if (pDemuxer)
-    delete pDemuxer;
+    SAFE_DELETE(pDemuxer);
 
-  delete pInputStream;
+  SAFE_DELETE(pInputStream);
 
   if(!bOk)
   {
@@ -337,13 +336,13 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
-    delete pInputStream;
+    SAFE_DELETE(pInputStream);
     return false;
   }
 
   if (!pInputStream->Open(playablePath.c_str(), "", true))
   {
-    delete pInputStream;
+    SAFE_DELETE(pInputStream);
     return false;
   }
 
@@ -351,13 +350,13 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (pDemuxer)
   {
     bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
-    delete pDemuxer;
-    delete pInputStream;
+    SAFE_DELETE(pDemuxer);
+    SAFE_DELETE(pInputStream);
     return retVal;
   }
   else
   {
-    delete pInputStream;
+    SAFE_DELETE(pInputStream);
     return false;
   }
 }

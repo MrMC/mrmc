@@ -34,8 +34,9 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
   if (pPacket)
   {
     try {
-      if (pPacket->pData) _aligned_free(pPacket->pData);
-      delete pPacket;
+      if (pPacket->pData)
+        _aligned_free(pPacket->pData);
+      SAFE_DELETE(pPacket);
     }
     catch(...) {
       CLog::Log(LOGERROR, "%s - Exception thrown while freeing packet", __FUNCTION__);
@@ -46,7 +47,8 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
 {
   DemuxPacket* pPacket = new DemuxPacket;
-  if (!pPacket) return NULL;
+  if (!pPacket)
+    return NULL;
 
   try
   {

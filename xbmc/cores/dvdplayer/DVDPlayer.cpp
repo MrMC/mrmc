@@ -503,10 +503,10 @@ void CDVDPlayer::DestroyPlayers()
 {
   if (!m_players_created)
     return;
-  delete m_dvdPlayerVideo;
-  delete m_dvdPlayerAudio;
-  delete m_dvdPlayerSubtitle;
-  delete m_dvdPlayerTeletext;
+  SAFE_DELETE(m_dvdPlayerVideo);
+  SAFE_DELETE(m_dvdPlayerAudio);
+  SAFE_DELETE(m_dvdPlayerSubtitle);
+  SAFE_DELETE(m_dvdPlayerTeletext);
   m_players_created = false;
 }
 

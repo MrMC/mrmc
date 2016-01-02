@@ -109,7 +109,7 @@ public:
   {}
  ~CDVDMsgVideoCodecChange()
   {
-    delete m_codec;
+    SAFE_DELETE(m_codec);
   }
   CDVDVideoCodec* m_codec;
   CDVDStreamInfo  m_hints;
@@ -240,7 +240,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
     m_fForcedAspectRatio = 0.0;
 
   if (m_pVideoCodec)
-    delete m_pVideoCodec;
+    SAFE_DELETE(m_pVideoCodec);
 
   m_pVideoCodec = codec;
   m_hints   = hint;
@@ -268,8 +268,7 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
   if (m_pVideoCodec)
   {
     m_pVideoCodec->Dispose();
-    delete m_pVideoCodec;
-    m_pVideoCodec = NULL;
+    SAFE_DELETE(m_pVideoCodec);
   }
 
   if (m_pTempOverlayPicture)

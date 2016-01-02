@@ -98,8 +98,8 @@ bool CDVDDemuxShoutcast::Open(CDVDInputStream* pInput)
 
 void CDVDDemuxShoutcast::Dispose()
 {
-  if (m_pDemuxStream) delete m_pDemuxStream;
-  m_pDemuxStream = NULL;
+  if (m_pDemuxStream)
+    SAFE_DELETE(m_pDemuxStream);
 
   m_pInput = NULL;
 }

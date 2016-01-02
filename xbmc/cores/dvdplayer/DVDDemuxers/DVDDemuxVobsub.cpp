@@ -39,7 +39,7 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
 {
   for(unsigned i=0;i<m_Streams.size();i++)
   {
-    delete m_Streams[i];
+    SAFE_DELETE(m_Streams[i]);
   }
   m_Streams.clear();
 }

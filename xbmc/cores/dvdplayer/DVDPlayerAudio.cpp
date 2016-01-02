@@ -90,7 +90,7 @@ public:
   {}
  ~CDVDMsgAudioCodecChange()
   {
-    delete m_codec;
+    SAFE_DELETE(m_codec);
   }
   CDVDAudioCodec* m_codec;
   CDVDStreamInfo  m_hints;
@@ -236,8 +236,7 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
   if (m_pAudioCodec)
   {
     m_pAudioCodec->Dispose();
-    delete m_pAudioCodec;
-    m_pAudioCodec = NULL;
+    SAFE_DELETE(m_pAudioCodec);
   }
 }
 
@@ -872,11 +871,11 @@ bool CDVDPlayerAudio::SwitchCodecIfNeeded()
   CDVDAudioCodec *codec = CDVDFactoryCodec::CreateAudioCodec(m_streaminfo);
   if (!codec || codec->NeedPassthrough() == m_pAudioCodec->NeedPassthrough()) {
     // passthrough state has not changed
-    delete codec;
+    SAFE_DELETE(codec);
     return false;
   }
 
-  delete m_pAudioCodec;
+  SAFE_DELETE(m_pAudioCodec);
   m_pAudioCodec = codec;
 
   return true;

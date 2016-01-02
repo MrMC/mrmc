@@ -50,8 +50,8 @@ bool CDVDInputStreamMemory::Open(const char* strFile, const std::string& content
 // close file and reset everyting
 void CDVDInputStreamMemory::Close()
 {
-  if (m_pData) delete[] m_pData;
-  m_pData = NULL;
+  if (m_pData)
+    SAFE_DELETE_ARRAY(m_pData);
   m_iDataSize = 0;
   m_iDataPos = 0;
 

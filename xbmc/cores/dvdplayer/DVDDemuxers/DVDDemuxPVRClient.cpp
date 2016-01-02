@@ -126,8 +126,7 @@ void CDVDDemuxPVRClient::Dispose()
 {
   for (int i = 0; i < MAX_STREAMS; i++)
   {
-    delete m_streams[i];
-    m_streams[i] = NULL;
+    SAFE_DELETE(m_streams[i]);
   }
 
   m_pInput = NULL;
@@ -137,8 +136,7 @@ void CDVDDemuxPVRClient::DisposeStream(int iStreamId)
 {
   if (iStreamId < 0 || iStreamId >= MAX_STREAMS)
     return;
-  delete m_streams[iStreamId];
-  m_streams[iStreamId] = NULL;
+  SAFE_DELETE(m_streams[iStreamId]);
 }
 
 void CDVDDemuxPVRClient::Reset()
@@ -205,7 +203,7 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
     if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
     {
       if (st->ExtraData)
-        delete[] (uint8_t*)st->ExtraData;
+        delete[] st->ExtraData;
       st->changes++;
       st->disabled = false;
       st->ExtraSize = len;

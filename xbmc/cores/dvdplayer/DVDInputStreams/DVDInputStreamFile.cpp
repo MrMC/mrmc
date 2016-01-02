@@ -78,8 +78,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, 
   // open file in binary mode
   if (!m_pFile->Open(strFile, flags))
   {
-    delete m_pFile;
-    m_pFile = NULL;
+    SAFE_DELETE(m_pFile);
     return false;
   }
 
@@ -96,11 +95,10 @@ void CDVDInputStreamFile::Close()
   if (m_pFile)
   {
     m_pFile->Close();
-    delete m_pFile;
+    SAFE_DELETE(m_pFile);
   }
 
   CDVDInputStream::Close();
-  m_pFile = NULL;
   m_eof = true;
 }
 

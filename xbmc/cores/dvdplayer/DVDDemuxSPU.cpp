@@ -314,7 +314,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 
       default:
         DebugLog("GetPacket, error parsing control sequence");
-        delete pSPUInfo;
+        SAFE_DELETE(pSPUInfo);
         return NULL;
         break;
       }

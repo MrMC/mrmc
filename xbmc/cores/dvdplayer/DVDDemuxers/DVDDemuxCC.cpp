@@ -338,8 +338,7 @@ void CDVDDemuxCC::Dispose()
 {
   m_streams.clear();
   m_streamdata.clear();
-  delete m_ccDecoder;
-  m_ccDecoder = NULL;
+  SAFE_DELETE(m_ccDecoder);
 
   while (!m_ccReorderBuffer.empty())
   {

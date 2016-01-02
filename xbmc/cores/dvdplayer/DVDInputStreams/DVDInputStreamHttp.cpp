@@ -71,8 +71,7 @@ bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content, 
   // open file in binary mode
   if (!m_pFile->Open(CURL(filename)))
   {
-    delete m_pFile;
-    m_pFile = NULL;
+    SAFE_DELETE(m_pFile);
     return false;
   }
 
@@ -84,11 +83,10 @@ void CDVDInputStreamHttp::Close()
   if (m_pFile)
   {
     m_pFile->Close();
-    delete m_pFile;
+    SAFE_DELETE(m_pFile);
   }
 
   CDVDInputStream::Close();
-  m_pFile = NULL;
 }
 
 int CDVDInputStreamHttp::Read(uint8_t* buf, int buf_size)

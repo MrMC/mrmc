@@ -178,8 +178,7 @@ void CDVDTeletextData::ResetTeletextCache()
           }
           free(p->ext);
         }
-        delete m_TXTCache.astCachetable[i][j];
-        m_TXTCache.astCachetable[i][j] = 0;
+        SAFE_DELETE(m_TXTCache.astCachetable[i][j]);
       }
     }
   }

@@ -96,8 +96,7 @@ bool CDVDDemuxBXA::Open(CDVDInputStream* pInput)
 
 void CDVDDemuxBXA::Dispose()
 {
-  delete m_stream;
-  m_stream = NULL;
+  SAFE_DELETE(m_stream);
 
   m_pInput = NULL;
   m_bytes = 0;
@@ -142,8 +141,7 @@ DemuxPacket* CDVDDemuxBXA::Read()
 
   if(pPacket->iSize < 1)
   {
-    delete pPacket;
-    pPacket = NULL;
+    SAFE_DELETE(pPacket);
   }
   else
   {

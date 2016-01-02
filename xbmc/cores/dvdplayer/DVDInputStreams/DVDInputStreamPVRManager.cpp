@@ -87,8 +87,7 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
   if (!CDVDInputStream::Open(strFile, content, contentLookup)) return false;
   if (!m_pFile->Open(url))
   {
-    delete m_pFile;
-    m_pFile = NULL;
+    SAFE_DELETE(m_pFile);
     m_pLiveTV = NULL;
     m_pRecordable = NULL;
     return false;
@@ -120,12 +119,10 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
     if (!m_pOtherStream->Open(transFile.c_str(), content, contentLookup))
     {
       CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - error opening [%s]", transFile.c_str());
-      delete m_pFile;
-      m_pFile = NULL;
+      SAFE_DELETE(m_pFile);
       m_pLiveTV = NULL;
       m_pRecordable = NULL;
-      delete m_pOtherStream;
-      m_pOtherStream = NULL;
+      SAFE_DELETE(m_pOtherStream);
       return false;
     }
   }
@@ -144,13 +141,13 @@ void CDVDInputStreamPVRManager::Close()
   if (m_pOtherStream)
   {
     m_pOtherStream->Close();
-    delete m_pOtherStream;
+    SAFE_DELETE(m_pOtherStream);
   }
 
   if (m_pFile)
   {
     m_pFile->Close();
-    delete m_pFile;
+    SAFE_DELETE(m_pFile);
   }
 
   CDVDInputStream::Close();
