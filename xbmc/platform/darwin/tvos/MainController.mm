@@ -812,10 +812,12 @@ MainController *g_xbmcController;
               CGPoint gestureMovement;
               gestureMovement.x = gesturePoint.x - m_lastGesturePoint.x;
               gestureMovement.y = gesturePoint.y - m_lastGesturePoint.y;
-              
-              CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].x);
-              CGFloat velocityY = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:sender.view].y);
               direction = [self getPanDirection:gestureMovement];
+              
+              CGPoint velocity = [sender velocityInView:sender.view];
+              CGFloat velocityX = (0.2*velocity.x);
+              CGFloat velocityY = (0.2*velocity.y);
+              
               if (ABS(velocityY) > minVelocity || ABS(velocityX) > minVelocity || m_directionOverride)
               {
                 direction = m_direction;
@@ -849,7 +851,8 @@ MainController *g_xbmcController;
                 }
                 case UIPanGestureRecognizerDirectionLeft:
                 {
-                  if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+                  // add 80 px to slow left/right swipes, it matched up down better
+                  if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed+80) || ABS(velocityX) > minVelocity)
                   {
                     [self sendKeyDownUp:XBMCK_LEFT];
                     if (ABS(velocityX) > minVelocity && [self shouldFastScroll])
@@ -860,7 +863,8 @@ MainController *g_xbmcController;
                 }
                 case UIPanGestureRecognizerDirectionRight:
                 {
-                  if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed) || ABS(velocityX) > minVelocity)
+                  // add 80 px to slow left/right swipes, it matched up down better
+                  if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed+80) || ABS(velocityX) > minVelocity)
                   {
                     [self sendKeyDownUp:XBMCK_RIGHT];
                     if (ABS(velocityX) > minVelocity && [self shouldFastScroll])
