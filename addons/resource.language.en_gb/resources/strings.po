@@ -17674,7 +17674,22 @@ msgctxt "#37045"
 msgid "Extract chapter thumbnails for presentation in the chapters / bookmarks dialogue. This might increase CPU load."
 msgstr ""
 
-#empty strings from id 37046 to 38009
+#: system/settings/settings.xml
+msgctxt "#37046"
+msgid "Boost center channel when downmixing"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#37047"
+msgid "Increase this value to make the dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#37048"
+msgid "%i dB"
+msgstr ""
+
+#empty strings from id 37049 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"
