@@ -3310,6 +3310,9 @@ void CApplication::OnPlayBackStarted()
 #endif
 
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_SUBTITLES_AUTOSEARCH) &&
+      !g_application.CurrentFileItem().IsAudio() &&
+      !g_application.CurrentFileItem().IsPVRChannel() &&
+      !g_application.CurrentFileItem().IsPVRRecording() &&
       g_application.m_pPlayer->GetSubtitleCount() == 0)
     g_windowManager.ActivateWindow(WINDOW_DIALOG_SUBTITLES);
   
