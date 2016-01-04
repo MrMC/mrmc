@@ -1,1 +1,1 @@
-pvr.dvblink https://github.com/mrmc/pvr.dvblink 7558d8899f4e77a7078c48cbbb3aa145ce9faf1e
+pvr.dvblink https://github.com/mrmc/pvr.dvblink e11b06721a47f9b06e919b0154d9c44088159478
