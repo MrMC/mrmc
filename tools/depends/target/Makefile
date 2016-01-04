@@ -116,7 +116,7 @@ libzip: $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
 samba: libssh2
-gnutls: nettle $(ZLIB)
+gnutls: libtasn1 nettle $(ZLIB)
 nettle: gmp
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
