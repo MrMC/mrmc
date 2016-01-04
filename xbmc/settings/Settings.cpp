@@ -65,6 +65,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingAddon.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
