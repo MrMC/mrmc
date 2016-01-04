@@ -1,1 +1,1 @@
-pvr.nextpvr https://github.com/mrmc/pvr.nextpvr e7ad01c77c30ce92561a96b67123851d0d0b381a
+pvr.nextpvr https://github.com/mrmc/pvr.nextpvr 448d047393cda65d1973a7df69d534ca073d7073

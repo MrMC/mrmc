@@ -1,1 +1,1 @@
-pvr.mediaportal.tvserver https://github.com/mrmc/pvr.mediaportal.tvserver d141cee2c7c671b50081a922aa34a723a0dc62a7
+pvr.mediaportal.tvserver https://github.com/mrmc/pvr.mediaportal.tvserver 7991dd5426a91f600f9d5acdb78e5c75c90ee089

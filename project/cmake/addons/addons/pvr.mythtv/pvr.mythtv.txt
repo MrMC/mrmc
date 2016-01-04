@@ -1,1 +1,1 @@
-pvr.mythtv https://github.com/mrmc/pvr.mythtv e83033e9921ded1163e5bb4748355378b7407dcf
+pvr.mythtv https://github.com/mrmc/pvr.mythtv 9188c40907119d6c12a522dbdd3776b14b3fabf8
