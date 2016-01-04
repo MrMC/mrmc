@@ -15,7 +15,7 @@ AC_DEFUN([MC_CHECK_NOT_CPU],
   AC_MSG_CHECKING([for $2])
   case $1 in
     $2*)
-      AC_MSG_ERROR(error in configure of --with-arch=$1)
+      AC_MSG_ERROR(error in configure of --with-cpu=$1)
       ;;
     *)
       AC_MSG_RESULT([$1 is not $2])
