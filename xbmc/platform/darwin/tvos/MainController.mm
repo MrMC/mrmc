@@ -1192,9 +1192,12 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   {
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
     m_isPlayingBeforeInactive = NO;
+  	[self disableScreenSaver];
   }
-
-  [self enableScreenSaver];
+  else
+  {
+    [self enableScreenSaver];
+  }
 }
 
 - (void)becomeInactive
