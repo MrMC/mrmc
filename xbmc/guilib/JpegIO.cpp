@@ -40,6 +40,52 @@ struct my_error_mgr
   jmp_buf setjmp_buffer;        // for return to caller
 };
 
+static void cmyk_convert_bgra(JSAMPROW src, JSAMPROW dst, unsigned int width)
+{
+  // Convert from CMYK (0..255) to BGRA (0..255)
+  // Conversion from CMYK to RGB is done in 2 steps:
+  // CMYK => CMY => RGB (see http://www.easyrgb.com/index.php?X=MATH)
+  // after computation, if C, M, Y and K are between 0 and 1, we have:
+  // R = (1 - C) * (1 - K) * 255
+  // G = (1 - M) * (1 - K) * 255
+  // B = (1 - Y) * (1 - K) * 255
+  // libjpeg stores CMYK values between 0 and 255,
+  // so we replace C by C * 255 / 255, etc... and we obtain:
+  // R = (255 - C) * (255 - K) / 255
+  // G = (255 - M) * (255 - K) / 255
+  // B = (255 - Y) * (255 - K) / 255
+  // with C, M, Y and K between 0 and 255.
+  for (unsigned int x = 0; x < width; x++)
+  {
+    const uint32_t iC = 255 - *src++;
+    const uint32_t iM = 255 - *src++;
+    const uint32_t iY = 255 - *src++;
+    const uint32_t iK = 255 - *src++;
+    *dst++ = iY * iK / 255;   // Blue
+    *dst++ = iM * iK / 255;   // Green
+    *dst++ = iC * iK / 255;   // Red
+    *dst++ = 0xff;            // Alpha
+  }
+}
+
+static void cmyk_convert_bgra_preinverted(JSAMPROW src, JSAMPROW dst, unsigned int width)
+{
+  // Convert from Inverted CMYK (0..255) to BGRA (0..255)
+  // According to libjpeg doc, Photoshop inverse the values of C, M, Y and K,
+  // that is C is replaces by 255 - C, etc...
+  for (unsigned int x = 0; x < width; x++)
+  {
+    const uint32_t iC = *src++;
+    const uint32_t iM = *src++;
+    const uint32_t iY = *src++;
+    const uint32_t iK = *src++;
+    *dst++ = iY * iK / 255;   // Blue
+    *dst++ = iM * iK / 255;   // Green
+    *dst++ = iC * iK / 255;   // Red
+    *dst++ = 0xff;            // Alpha
+  }
+}
+
 CJpegIO::CJpegIO()
 : IImage()
 , m_thumbnailbuffer(nullptr)
@@ -99,7 +145,27 @@ bool CJpegIO::LoadImageFromMemory(unsigned char *buffer, unsigned int bufSize, u
     }
 
     m_cinfo->scale_denom = 8;
-    m_cinfo->out_color_space = JCS_RGB;
+    // colorspace conversion options
+    // libjpeg can do the following conversions:
+    // GRAYSCLAE => RGB YCbCr => RGB and YCCK => CMYK
+    switch (m_cinfo->jpeg_color_space)
+    {
+      default:
+      case JCS_RGB:
+      case JCS_YCbCr:
+      case JCS_GRAYSCALE:
+        m_cinfo->out_color_space = JCS_RGB;
+        m_cinfo->out_color_components = 3;
+        m_cinfo->output_components    = 3;
+        break;
+      case JCS_CMYK:
+      case JCS_YCCK:
+        m_cinfo->out_color_space = JCS_CMYK;
+        m_cinfo->out_color_components = 4;
+        m_cinfo->output_components    = 4;
+        break;
+    }
+
     unsigned int maxtexsize = g_Windowing.GetMaxTextureSize();
     for (unsigned int scale = 1; scale <= 8; scale++)
     {
@@ -139,22 +205,39 @@ bool CJpegIO::Decode(unsigned char* const pixels, unsigned int pitch)
   {
     jpeg_start_decompress(m_cinfo);
     
-    // pixels format is XB_FMT_A8R8G8B8
-    unsigned char *dst = (unsigned char*)pixels;
-    unsigned char* row = new unsigned char[m_width * 3];
-    while (m_cinfo->output_scanline < m_height)
+    // pixels format is XB_FMT_A8R8G8B8 (which is really BGRA :)
+    JSAMPROW dst = (JSAMPROW)pixels;
+    JSAMPROW row = new JSAMPLE[m_width * m_cinfo->output_components];
+    if (m_cinfo->out_color_space == JCS_CMYK)
     {
-      jpeg_read_scanlines(m_cinfo, &row, 1);
-      unsigned char *src2 = row;
-      unsigned char *dst2 = dst;
-      for (unsigned int x = 0; x < m_width; x++, src2 += 3)
+      while (m_cinfo->output_scanline < m_height)
       {
-        *dst2++ = src2[2];
-        *dst2++ = src2[1];
-        *dst2++ = src2[0];
-        *dst2++ = 0xff;
+        jpeg_read_scanlines(m_cinfo, &row, 1);
+        JSAMPROW src2 = row;
+        JSAMPROW dst2 = dst;
+        if (m_cinfo->saw_Adobe_marker)
+          cmyk_convert_bgra_preinverted(src2, dst2, m_width);
+        else
+          cmyk_convert_bgra(src2, dst2, m_width);
+        dst += pitch;
       }
-      dst += pitch;
+    }
+    else
+    {
+      while (m_cinfo->output_scanline < m_height)
+      {
+        jpeg_read_scanlines(m_cinfo, &row, 1);
+        JSAMPROW src2 = row;
+        JSAMPROW dst2 = dst;
+        for (unsigned int x = 0; x < m_width; x++, src2 += 3)
+        {
+          *dst2++ = src2[2];
+          *dst2++ = src2[1];
+          *dst2++ = src2[0];
+          *dst2++ = 0xff;
+        }
+        dst += pitch;
+      }
     }
     delete[] row;
 
