@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>@APP_NAME@</string>
 	<key>CFBundleGetInfoString</key>
-	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.2</string>
+	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.0</string>
 	<key>CFBundleIconFile</key>
 	<string>@APP_NAME_LC@.icns</string>
 	<key>CFBundleIdentifier</key>
