@@ -100,11 +100,9 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="lookandfeel.rsshost" type="string" label="13254" help="13255">
-        <dependencies>
-            <dependency>
-                <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
-            </dependency>
+        <setting id="lookandfeel.rsshost" type="string" parent="lookandfeel.enablerssfeeds" label="13254" help="13255">
+          <dependencies>
+            <dependency type="visible" setting="lookandfeel.enablerssfeeds">true</dependency>
           </dependencies>
           <level>0</level>
           <default>http://forum.mrmc.tv/feed.php?mode=topics</default>
@@ -113,12 +111,10 @@
           </constraints>
           <control type="edit" format="string" />
         </setting>
-        <setting id="lookandfeel.rssinterval" type="integer" label="13256" help="13257">
-        <dependencies>
-            <dependency>
-                <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
-            </dependency>
-          </dependencies> 
+        <setting id="lookandfeel.rssinterval" type="integer" parent="lookandfeel.enablerssfeeds" label="13256" help="13257">
+          <dependencies>
+            <dependency type="visible" setting="lookandfeel.enablerssfeeds">true</dependency>
+          </dependencies>
           <level>0</level>
           <default>30</default>
           <constraints>
@@ -128,7 +124,10 @@
           </constraints>
           <control type="spinner" format="integer" delayed="true"/>
         </setting>
-        <setting id="lookandfeel.rssrtl" type="boolean" label="13258" help="13259">
+        <setting id="lookandfeel.rssrtl" type="boolean" parent="lookandfeel.enablerssfeeds" label="13258" help="13259">
+          <dependencies>
+            <dependency type="visible" setting="lookandfeel.enablerssfeeds">true</dependency>
+          </dependencies> 
           <level>0</level>
           <default>false</default>
           <control type="toggle" />
