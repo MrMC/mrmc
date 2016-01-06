@@ -14011,12 +14011,12 @@ msgstr ""
 
 #: apple remote
 msgctxt "#24162"
-msgid "Disable swipe controlls in OSD"
+msgid "Disable swipe controls in OSD"
 msgstr ""
 
 #: apple remote
 msgctxt "#24163"
-msgid "Ignore any swipe input while in fullscreen video playback, only edge tap will work for directional controlls"
+msgid "Ignore any swipe input while in fullscreen video playback, only edge tap will work for directional controls"
 msgstr ""
 
 #: pick samba/dsm
