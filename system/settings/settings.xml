@@ -1810,7 +1810,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="5">
+<!--       <group id="5">
         <setting id="musicplayer.visualisation" type="addon" label="250" help="36273">
           <level>0</level>
           <default>visualization.glspectrum</default>
@@ -1822,7 +1822,7 @@
             <show more="true" details="true">installed</show>
           </control>
         </setting>
-      </group>
+      </group> -->
     </category>
     <category id="musicfiles" label="14081" help="36601">
       <group id="1">
