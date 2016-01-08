@@ -76,19 +76,6 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-				<control type="radiobutton" id="102">
-					<description>Show LiveTV</description>
-					<height>55</height>
-					<width>920</width>
-					<font>font13</font>
-					<textcolor>white</textcolor>
-					<focusedcolor>black</focusedcolor>
-					<texturefocus border="5">ListFO.png</texturefocus>
-					<texturenofocus border="5">ListNF.png</texturenofocus>
-					<label>$LOCALIZE[31556]</label>
-					<onclick>Skin.ToggleSetting(ShowHomeButtonLiveTV)</onclick>
-					<selected>Skin.HasSetting(ShowHomeButtonLiveTV)</selected>
-				</control>
 				<control type="radiobutton" id="103">
 					<description>Hide Videos</description>
 					<height>55</height>
