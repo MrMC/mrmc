@@ -137,7 +137,7 @@ int CDSMSession::ConnectSession(const CURL &url)
   // we need an in_addr for netbios_ns_inverse lookup.
   struct in_addr addr = {0};
   inet_aton(ip.c_str(), &addr);
-  const char *netbios_name = m_dsmlib->netbios_ns_inverse(m_dsmlib->netbios_ns(), addr.s_addr);
+  const char *netbios_name = m_dsmlib->netbios_ns_inverse(addr.s_addr);
   if (netbios_name == nullptr)
   {
     CLog::Log(LOGDEBUG, "CDSMSession: Failed to resolve netbios name, using hostname");

@@ -20,6 +20,8 @@
  */
 
 #include "DynamicDll.h"
+#include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,8 +31,6 @@ extern "C" {
 }
 #endif
 
-#include <arpa/inet.h>
-
 class DllLibDSMInterface
 {
 public:
@@ -38,18 +38,16 @@ public:
 
   // netbios_ns.h
   // netbios name service
+                          // used with netbios_ns_discover_callbacks
   virtual const char     *netbios_ns_entry_name(netbios_ns_entry *entry)=0;
   virtual const char     *netbios_ns_entry_group(netbios_ns_entry *entry)=0;
   virtual uint32_t        netbios_ns_entry_ip(netbios_ns_entry *entry)=0;
   virtual char            netbios_ns_entry_type(netbios_ns_entry *entry)=0;
-  virtual netbios_ns     *netbios_ns_new()=0;
-  virtual void            netbios_ns_destroy(netbios_ns *ns)=0;
-  virtual int             netbios_ns_resolve(netbios_ns *ns, const char *name,
-                            char type, uint32_t *addr)=0;
-  virtual const char     *netbios_ns_inverse(netbios_ns *ns, uint32_t ip)=0;
-  virtual int             netbios_ns_discover_start(netbios_ns *ns, unsigned int broadcast_timeout,
+  virtual int             netbios_ns_resolve(const char *name, char type, uint32_t *addr)=0;
+  virtual const char     *netbios_ns_inverse(uint32_t ip)=0;
+  virtual int             netbios_ns_discover_start(unsigned int broadcast_timeout,
                             netbios_ns_discover_callbacks *callbacks)=0;
-  virtual int             netbios_ns_discover_stop(netbios_ns *ns)=0;
+  virtual int             netbios_ns_discover_stop()=0;
 
   // smb_session.h
   // functions to connect and authenticate to an SMB server
@@ -206,25 +204,60 @@ class DllLibDSM : public DllDynamic, DllLibDSMInterface
     RESOLVE_METHOD_RENAME(smb_file_mv,              smb_file_mv)
   END_METHOD_RESOLVE()
 
-  // use a global netbios_ns object and
-  // persist it over lifetime of libdsm Load/Unload
-  netbios_ns *m_netbios_ns;
-
 public:
-  virtual netbios_ns* netbios_ns() { return m_netbios_ns; }
-
   virtual bool Load()
   {
     if (!DllDynamic::Load())
       return false;
 
+    // we do not need a lock here, we are not
+    // loaded and ready yet to the outside world.
     m_netbios_ns = netbios_ns_new();
     return true;
   }
 
   virtual void Unload()
   {
+    // no lock needed here either, once we unload, we are gone
     netbios_ns_destroy(m_netbios_ns), m_netbios_ns = nullptr;
     DllDynamic::Unload();
   }
+
+  // the following two are special, they will start/stop internal thread
+  // that is global to libdsm. bad things will happen if called
+  // by different threads so they need to be c-sectioned.
+  virtual int netbios_ns_resolve(const char *name, char type, uint32_t *addr)
+  {
+    CSingleLock lock(m_netbios_ns_lock);
+    return netbios_ns_resolve(m_netbios_ns, name, type, addr);
+  }
+  virtual const char *netbios_ns_inverse(uint32_t ip)
+  {
+    CSingleLock lock(m_netbios_ns_lock);
+    return netbios_ns_inverse(m_netbios_ns, ip);
+  }
+
+  // the following two will use the same internal thread as the
+  // above two. If started, calling the above two will assert :) nice.
+  // best we can do now is lock over start/stop life cycle. This can
+  // hang threads that use the above two so be quick about it :)
+  virtual int netbios_ns_discover_start(unsigned int broadcast_timeout,
+    netbios_ns_discover_callbacks *callbacks)
+  {
+    m_netbios_ns_lock.lock();
+    return netbios_ns_discover_start(m_netbios_ns, broadcast_timeout, callbacks);
+  }
+  virtual int netbios_ns_discover_stop()
+  {
+    int rtn = netbios_ns_discover_stop(m_netbios_ns);
+    // unlock AFTER we stop please.
+    m_netbios_ns_lock.unlock();
+    return rtn;
+  }
+
+private:
+  // use a private global netbios_ns object and
+  // persist it over lifetime of libdsm Load/Unload
+  netbios_ns       *m_netbios_ns;
+  CCriticalSection  m_netbios_ns_lock;
 };
