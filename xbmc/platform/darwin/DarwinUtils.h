@@ -30,8 +30,6 @@ typedef const struct __CFString * CFStringRef;
 class CDarwinUtils
 {
 public:
-  static CDarwinUtils &GetInstance();
-  
   static const char *getIosPlatformString(void);
   static bool        IsMavericks(void);
   static bool        IsSnowLeopard(void);
