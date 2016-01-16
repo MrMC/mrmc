@@ -2172,12 +2172,12 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         else
           format = GL_LUMINANCE;
         internalformat = GetInternalFormat(format, im.bpp);
-
+/*
         if(m_renderMethod & RENDER_POT)
           CLog::Log(LOGDEBUG, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
         else
           CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
-
+*/
         glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
       }
 

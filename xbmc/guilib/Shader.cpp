@@ -84,19 +84,23 @@ bool CGLSLVertexShader::Compile()
   if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
-    CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
+    CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     CLog::Log(LOGERROR, "%s", log);
     m_lastLog = log;
     m_compiled = false;
   }
   else
   {
-    GLchar log[LOG_SIZE];
-    CLog::Log(LOGDEBUG, "GL: Vertex Shader compilation log:");
-    glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGDEBUG, "%s", log);
-    m_lastLog = log;
+    GLsizei log_length;
+    GLchar  log[LOG_SIZE];
+    glGetShaderInfoLog(m_vertexShader, LOG_SIZE, &log_length, log);
+    if (log_length > 0)
+    {
+      CLog::Log(LOGDEBUG, "GL: Vertex Shader compilation log:");
+      CLog::Log(LOGDEBUG, "%s", log);
+      m_lastLog = log;
+    }
     m_compiled = true;
   }
   return m_compiled;
@@ -193,19 +197,23 @@ bool CGLSLPixelShader::Compile()
   if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
-    CLog::Log(LOGERROR, "GL: Error compiling pixel shader");
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
+    CLog::Log(LOGERROR, "GL: Error compiling pixel shader");
     CLog::Log(LOGERROR, "%s", log);
     m_lastLog = log;
     m_compiled = false;
   }
   else
   {
-    GLchar log[LOG_SIZE];
-    CLog::Log(LOGDEBUG, "GL: Pixel Shader compilation log:");
-    glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGDEBUG, "%s", log);
-    m_lastLog = log;
+    GLsizei log_length;
+    GLchar  log[LOG_SIZE];
+    glGetShaderInfoLog(m_pixelShader, LOG_SIZE, &log_length, log);
+    if (log_length > 0)
+    {
+      CLog::Log(LOGDEBUG, "GL: Pixel Shader compilation log:");
+      CLog::Log(LOGDEBUG, "%s", log);
+      m_lastLog = log;
+    }
     m_compiled = true;
   }
   return m_compiled;
@@ -317,7 +325,6 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     return false;
   }
-  CLog::Log(LOGDEBUG, "GL: Vertex Shader compiled successfully");
 
   // compile pixel shader
   if (!m_pFP->Compile())
@@ -326,7 +333,6 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error compiling fragment shader");
     return false;
   }
-  CLog::Log(LOGDEBUG, "GL: Fragment Shader compiled successfully");
 
   // create program object
   if (!(m_shaderProgram = glCreateProgram()))
