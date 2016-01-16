@@ -91,17 +91,16 @@ MainController *m_xbmcController;
 }
 @end
 
-int main(int argc, char *argv[]) {
+static void SigPipeHandler(int s)
+{
+  NSLog(@"We Got a Pipe Single :%d____________", s);
+}
+
+int main(int argc, char *argv[])
+{
   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];	
   
-  // Block SIGPIPE
-  // SIGPIPE repeatably kills us, turn it off
-  {
-    sigset_t set;
-    sigemptyset(&set);
-    sigaddset(&set, SIGPIPE);
-    sigprocmask(SIG_BLOCK, &set, NULL);
-  }
+  signal(SIGPIPE, SigPipeHandler);
   
   int retVal = 0;
   @try
