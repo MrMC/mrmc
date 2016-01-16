@@ -61,9 +61,8 @@ private:
 
   CCriticalSection    m_critSect;
   DllLibDSM          *m_dsmlib;
-  smb_session        *m_session;
+  smb_session        *m_smb_session;
   smb_tid             m_smb_tid;
-  bool                m_connected;
   int                 m_lastActive;
 };
 
@@ -79,7 +78,7 @@ public:
 private:
   static DllLibDSM        *m_dsmlib;
   static CCriticalSection  m_critSect;
-  static std::map<std::string, CDSMSessionPtr> m_sessions;
+  static std::map<std::string, CDSMSessionPtr> m_dsmSessions;
 };
 
 namespace XFILE
@@ -110,7 +109,7 @@ namespace XFILE
 
   private:
     std::string     m_file;
-    CDSMSessionPtr  m_session;
+    CDSMSessionPtr  m_dsmSession;
     smb_fd          m_smb_fd;
     int64_t         m_fileSize;
   };
