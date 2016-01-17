@@ -863,7 +863,13 @@ ssize_t CDSMFile::Read(void* lpBuf, size_t uiBufSize)
     if (rc >= 0)
       return rc;
     else
-      CLog::Log(LOGERROR, "CDSMFile: Failed to read %i", rc);
+    {
+      CLog::Log(LOGERROR, "CDSMFile: Read failed - Retrying");
+      rc = m_dsmSession->Read(m_smb_fd, lpBuf, uiBufSize);
+      if (rc >= 0)
+        return rc;
+    }
+    CLog::Log(LOGERROR, "CDSMFile: Failed to read %i", rc);
   }
   else
     CLog::Log(LOGERROR, "CDSMFile: Can not read without a filehandle");
