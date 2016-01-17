@@ -71,6 +71,17 @@ MainController *m_xbmcController;
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
   //PRINT_SIGNATURE();
+  NSError *err = nullptr;
+  if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&err])
+  {
+    NSLog(@"AVAudioSession setCategory failed: %ld", (long)err.code);
+  }
+  err = nil;
+  if (![[AVAudioSession sharedInstance] setActive: YES error: &err])
+  {
+    NSLog(@"AVAudioSession setActive YES failed: %ld", (long)err.code);
+  }
+
   UIScreen *currentScreen = [UIScreen mainScreen];
   m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
   [m_xbmcController startAnimation];

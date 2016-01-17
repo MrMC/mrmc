@@ -101,6 +101,17 @@ XBMCController *m_xbmcController;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
+  NSError *err = nullptr;
+  if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&err])
+  {
+    NSLog(@"AVAudioSession setCategory failed: %ld", (long)err.code);
+  }
+  err = nil;
+  if (![[AVAudioSession sharedInstance] setActive: YES error: &err])
+  {
+    NSLog(@"AVAudioSession setActive YES failed: %ld", (long)err.code);
+  }
+
   [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
   UIScreen *currentScreen = [UIScreen mainScreen];
 
