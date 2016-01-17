@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -774,19 +775,45 @@ bool CDarwinUtils::AudioCodecLicenseCheck(const std::string &name)
   if ([tzNames containsObject:tzName] || [[tzName stringByDeletingLastPathComponent] isEqualToString:@"US"])
   {
   #if defined(TARGET_DARWIN_IOS)
-    // cripple DTS decode under ios/tvos app store (pending license)
-    if (name == "dts" ||
-        name == "dca" ||
-        name == "dtshd")
+    #if defined(TARGET_DARWIN_TVOS)
+      // permit transcode to ac3 under tvOS only
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE))
+        return true;
+    #endif
+
+    // cripple DTS/DTSHD decode under ios/tvos app store (pending license)
+    if (name == "dts" || name == "dca")
+    {
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
+        return true;
       return false;
+    }
+    if (name == "dtshd")
+    {
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH))
+        return true;
+      return false;
+    }
     #if !defined(TARGET_DARWIN_TVOS)
-      // cripple AC3/EAC3 decode under ios app store (pending license)
-      if (name == "ac3" ||
-          name == "a52" ||
-          name == "ac-3"||
-          name == "eac3"||
-          name == "truehd")
+      // cripple AC3/EAC3/TrueHD decode under ios app store (pending license)
+      if (name == "ac3" || name == "a52" || name == "ac-3")
+      {
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH))
+          return true;
         return false;
+      }
+      if (name == "eac3")
+      {
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH))
+          return true;
+        return false;
+      }
+      if (name == "truehd")
+      {
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH))
+          return true;
+        return false;
+      }
     #endif
   #endif
   }
