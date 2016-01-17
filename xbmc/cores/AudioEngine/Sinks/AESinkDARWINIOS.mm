@@ -488,19 +488,24 @@ OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFl
 
   for (unsigned int i = 0; i < ioData->mNumberBuffers; i++)
   {
-    // buffers come from CA already zero'd, so just copy what is wanted
     unsigned int wanted = ioData->mBuffers[i].mDataByteSize;
     unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
     sink->m_buffer->Read((unsigned char*)ioData->mBuffers[i].mData, bytes);
     //LogLevel(bytes, wanted);
-    
+
     if (bytes == 0)
     {
       // Apple iOS docs say kAudioUnitRenderAction_OutputIsSilence provides a hint to
       // the audio unit that there is no audio to process. and you must also explicitly
       // set the buffers contents pointed at by the ioData parameter to 0.
-      memset(ioData->mBuffers[i].mData, 0, ioData->mBuffers[i].mDataByteSize);
+      memset(ioData->mBuffers[i].mData, 0x00, ioData->mBuffers[i].mDataByteSize);
       *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
+    }
+    else if (bytes < wanted)
+    {
+      // zero out what we did not copy over (underflow)
+      uint8_t *empty = (uint8_t*)ioData->mBuffers[i].mData + bytes;
+      memset(empty, 0x00, wanted - bytes);
     }
   }
 
