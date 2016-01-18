@@ -25,6 +25,7 @@
 
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainController.h"
+#import "platform/darwin/tvos/TVOSTopShelf.h"
 
 @implementation MainApplicationDelegate
 MainController *m_xbmcController;
@@ -90,7 +91,14 @@ MainController *m_xbmcController;
 - (BOOL)application:(UIApplication *)app
   openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options
 {
-  return NO;
+  NSArray *urlComponents = [[url absoluteString] componentsSeparatedByString:@"/"];
+  NSString *action = urlComponents[2];
+  if ([action isEqualToString:@"display"] || [action isEqualToString:@"play"])
+  {
+    std::string cleanURL = *new std::string([[url absoluteString] UTF8String]);
+    CTVOSTopShelf::GetInstance().HandleTopShelfUrl(cleanURL,true);
+  }
+  return YES;
 }
 
 - (void)dealloc

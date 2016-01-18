@@ -39,6 +39,7 @@
 #import "platform/MCRuntimeLib.h"
 #import "platform/MCRuntimeLibContext.h"
 #import "windowing/WindowingFactory.h"
+#import "platform/darwin/tvos/TVOSTopShelf.h"
 
 using namespace KODI::MESSAGING;
 
@@ -1272,6 +1273,7 @@ MainController *g_xbmcController;
     CAEFactory::Resume();
     g_application.UpdateLibraries();
   }
+  CTVOSTopShelf::GetInstance().RunTopShelf();
 }
 
 - (void)becomeInactive

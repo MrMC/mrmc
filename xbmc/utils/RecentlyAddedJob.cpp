@@ -33,6 +33,11 @@
 #include "music/MusicThumbLoader.h"
 #include "video/VideoThumbLoader.h"
 
+#if defined(TARGET_DARWIN_TVOS)
+  #include "platform/darwin/DarwinUtils.h"
+  #include "platform/darwin/tvos/TVOSTopShelf.h"
+#endif
+
 #define NUM_ITEMS 10
 
 CRecentlyAddedJob::CRecentlyAddedJob(int flag)
@@ -148,6 +153,13 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
     home->SetProperty("LatestEpisode." + value + ".RunningTime"   , "");
   }  
+
+#if defined(TARGET_DARWIN_TVOS)
+  // send recently added Movies and TvShows to TopShelf
+  CTVOSTopShelf::GetInstance().SetMovieList(items);
+  CTVOSTopShelf::GetInstance().SetTvList(TVShowItems);
+  CTVOSTopShelf::GetInstance().SetTopShelfItems();
+#endif
 
   i = 0;
   CFileItemList MusicVideoItems;

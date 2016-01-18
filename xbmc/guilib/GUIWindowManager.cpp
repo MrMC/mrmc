@@ -880,6 +880,16 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
     }
   }
   break;
+
+  case TMSG_GUI_SHOW_VIDEO_INFO:
+  {
+    if (pMsg->lpVoid)
+    {
+      CFileItem *item = (CFileItem *)pMsg->lpVoid;
+      CGUIWindowVideoNav::ShowVideoInfo(*item);
+    }
+  }
+  break;
   }
 }
 

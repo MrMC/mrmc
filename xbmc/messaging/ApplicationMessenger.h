@@ -109,6 +109,7 @@
 #define TMSG_GUI_ACTION                   TMSG_MASK_WINDOWMANAGER + 5
 #define TMSG_GUI_ADDON_DIALOG             TMSG_MASK_WINDOWMANAGER + 6
 #define TMSG_GUI_MESSAGE                  TMSG_MASK_WINDOWMANAGER + 7
+#define TMSG_GUI_SHOW_VIDEO_INFO          TMSG_MASK_WINDOWMANAGER + 8
 
 
 #define TMSG_CALLBACK                     800

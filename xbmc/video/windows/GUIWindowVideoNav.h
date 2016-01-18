@@ -46,6 +46,8 @@ public:
   CGUIWindowVideoNav(void);
   virtual ~CGUIWindowVideoNav(void);
 
+  static CGUIWindowVideoNav &GetInstance();
+  
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -58,6 +60,8 @@ public:
    \param allowReplaceLabels allow label replacement if according GUI setting is enabled
    */
   static void LoadVideoInfo(CFileItemList &items, CVideoDatabase &database, bool allowReplaceLabels = true);
+  
+  static void ShowVideoInfo(CFileItem &item);
 
 protected:
   /*! \brief Load video information from the database for these items
