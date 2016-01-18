@@ -52,7 +52,6 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
   BOOL                        m_pause;
   BOOL                        m_appAlive;
   BOOL                        m_animating;
-  BOOL                        m_readyToRun;
   BOOL                        m_disableIdleTimer;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;

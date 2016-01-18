@@ -1046,7 +1046,6 @@ MainController *g_xbmcController;
   m_pause = FALSE;
   m_appAlive = FALSE;
   m_animating = FALSE;
-  m_readyToRun = FALSE;
 
   m_isPlayingBeforeInactive = NO;
 
@@ -1253,7 +1252,6 @@ MainController *g_xbmcController;
       usleep(250*1000);
   }
   g_application.CloseNetworkShares();
-  CAEFactory::Suspend();
   g_Windowing.OnAppFocusChange(false);
 
   // Wait for AE to suspend and delete the audio sink, this allows
@@ -1270,7 +1268,6 @@ MainController *g_xbmcController;
   if (m_appAlive)
   {
     g_Windowing.OnAppFocusChange(true);
-    CAEFactory::Resume();
     g_application.UpdateLibraries();
   }
   CTVOSTopShelf::GetInstance().RunTopShelf();
@@ -1353,7 +1350,6 @@ MainController *g_xbmcController;
   
   setlocale(LC_NUMERIC, "C");
   
-  m_readyToRun = TRUE;
   int status = 0;
   try
   {
