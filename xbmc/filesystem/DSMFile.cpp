@@ -670,8 +670,9 @@ CDSMSessionPtr CDSMSessionManager::CreateSession(const CURL &url)
   if (!m_dsmlib)
   {
     m_dsmlib = new DllLibDSM();
-    m_dsmlib->Load();
+    // disable delayed unload BEFORE loading.
     m_dsmlib->EnableDelayedUnload(false);
+    m_dsmlib->Load();
   }
 
   CURL authURL(url);
