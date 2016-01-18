@@ -25,7 +25,15 @@
 #import <UIKit/UIKit.h>
 #import "windowing/XBMC_events.h"
 
-typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
+typedef enum
+{
+  IOS_PLAYBACK_STOPPED,
+  IOS_PLAYBACK_PAUSED,
+  IOS_PLAYBACK_PLAYING
+} IOSPlaybackState;
+
+typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
+{
   UIPanGestureRecognizerDirectionUndefined,
   UIPanGestureRecognizerDirectionUp,
   UIPanGestureRecognizerDirectionDown,
@@ -48,6 +56,9 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
   int                         m_currentClick;
 
   bool                        m_isPlayingBeforeInactive;
+  UIBackgroundTaskIdentifier  m_bgTask;
+  IOSPlaybackState            m_playbackState;
+  NSDictionary               *m_nowPlayingInfo;
 
   BOOL                        m_pause;
   BOOL                        m_appAlive;
@@ -67,6 +78,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
 }
 // why are these properties ?
 @property (nonatomic, strong) NSTimer *m_holdTimer;
+@property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
 @property int                 m_holdCounter;
 @property CGPoint             m_lastGesturePoint;
 @property CGFloat             m_screenScale;
@@ -97,6 +109,9 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
 - (CGSize) getScreenSize;
 - (void) activateKeyboard:(UIView *)view;
 - (void) deactivateKeyboard:(UIView *)view;
+
+- (void) enableBackGroundTask;
+- (void) disableBackGroundTask;
 
 - (void) disableSystemSleep;
 - (void) enableSystemSleep;

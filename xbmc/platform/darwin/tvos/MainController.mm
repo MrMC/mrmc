@@ -29,17 +29,21 @@
 #import "cores/AudioEngine/AEFactory.h"
 #import "guilib/GUIWindowManager.h"
 #import "input/Key.h"
-#import "interfaces/AnnouncementManager.h"
+#import "network/NetworkServices.h"
 #import "messaging/ApplicationMessenger.h"
 #import "platform/darwin/AutoPool.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainEAGLView.h"
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/MainApplication.h"
+#import "platform/darwin/tvos/TVOSTopShelf.h"
+#import "platform/darwin/ios-common/AnnounceReceiver.h"
 #import "platform/MCRuntimeLib.h"
 #import "platform/MCRuntimeLibContext.h"
 #import "windowing/WindowingFactory.h"
-#import "platform/darwin/tvos/TVOSTopShelf.h"
+
+#import <MediaPlayer/MPMediaItem.h>
+#import <MediaPlayer/MPNowPlayingInfoCenter.h>
 
 using namespace KODI::MESSAGING;
 
@@ -59,6 +63,7 @@ MainController *g_xbmcController;
 @synthesize m_screenScale;
 @synthesize m_screenIdx;
 @synthesize m_screensize;
+@synthesize m_nowPlayingInfo;
 @synthesize m_directionOverride;
 @synthesize m_direction;
 @synthesize m_currentKey;
@@ -1048,6 +1053,7 @@ MainController *g_xbmcController;
   m_animating = FALSE;
 
   m_isPlayingBeforeInactive = NO;
+  m_bgTask = UIBackgroundTaskInvalid;
 
   m_window = [[UIWindow alloc] initWithFrame:frame];
   [m_window setRootViewController:self];  
@@ -1066,11 +1072,18 @@ MainController *g_xbmcController;
   [m_window makeKeyAndVisible];
   g_xbmcController = self;  
 
+  CAnnounceReceiver::GetInstance().Initialize();
+
   return self;
 }
 //--------------------------------------------------------------
 - (void)dealloc
 {
+  // stop background task (if running)
+  [self disableBackGroundTask];
+
+  CAnnounceReceiver::GetInstance().DeInitialize();
+
   [self stopAnimation];
   [m_glView release];
   [m_window release];
@@ -1172,9 +1185,32 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)didReceiveMemoryWarning
 {
+  PRINT_SIGNATURE();
   // Releases the view if it doesn't have a superview.
   [super didReceiveMemoryWarning];
   // Release any cached data, images, etc. that aren't in use.
+}
+//--------------------------------------------------------------
+- (void)enableBackGroundTask
+{
+  if (m_bgTask != UIBackgroundTaskInvalid)
+  {
+    [[UIApplication sharedApplication] endBackgroundTask: m_bgTask];
+    m_bgTask = UIBackgroundTaskInvalid;
+  }
+  LOG(@"%s: beginBackgroundTask", __PRETTY_FUNCTION__);
+  // we have to alloc the background task for keep network working after screen lock and dark.
+  m_bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+}
+//--------------------------------------------------------------
+- (void)disableBackGroundTask
+{
+  if (m_bgTask != UIBackgroundTaskInvalid)
+  {
+    LOG(@"%s: endBackgroundTask", __PRETTY_FUNCTION__);
+    [[UIApplication sharedApplication] endBackgroundTask: m_bgTask];
+    m_bgTask = UIBackgroundTaskInvalid;
+  }
 }
 //--------------------------------------------------------------
 - (void)disableSystemSleep
@@ -1244,16 +1280,32 @@ MainController *g_xbmcController;
   // We have 5 seconds before the OS will force kill us for delaying too long.
   XbmcThreads::EndTime timer(4500);
 
-  if (g_application.m_pPlayer->IsPlaying())
+  // this should not be required as we 'should' get becomeInactive before enterBackground
+  if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
   {
-    g_application.SaveFileState(true);
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
-    while (g_application.m_pPlayer->HasPlayer() && !timer.IsTimePast())
-      usleep(250*1000);
+    m_isPlayingBeforeInactive = YES;
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
-  g_application.CloseNetworkShares();
+
   g_Windowing.OnAppFocusChange(false);
 
+  // Apple says to disable ZeroConfig when moving to background
+  CNetworkServices::GetInstance().StartZeroconf();
+
+  if (m_isPlayingBeforeInactive)
+  {
+    // if we were playing and have paused, then
+    // enable a background task to keep the network alive
+    [self enableBackGroundTask];
+  }
+  else
+  {
+    // if we are not playing/pause when going to background
+    // close out network shares as we can get fully suspended.
+    g_application.CloseNetworkShares();
+  }
+
+  // OnAppFocusChange triggers an AE suspend.
   // Wait for AE to suspend and delete the audio sink, this allows
   // AudioOutputUnitStop to complete and AVAudioSession to be set inactive.
   // Note that to user, we moved into background to user but we
@@ -1265,11 +1317,25 @@ MainController *g_xbmcController;
 - (void)enterForeground
 {
   PRINT_SIGNATURE();
+
+  // m_appAlive is only true if we were running and got moved to background
   if (m_appAlive)
   {
-    g_Windowing.OnAppFocusChange(true);
     g_application.UpdateLibraries();
+    g_Windowing.OnAppFocusChange(true);
+    // when we come back, restore playing if we were.
+    if (m_isPlayingBeforeInactive)
+    {
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
+      m_isPlayingBeforeInactive = NO;
+    }
+    // restart ZeroConfig (if stopped)
+    CNetworkServices::GetInstance().StartZeroconf();
   }
+
+  // stop background task (if running)
+  [self disableBackGroundTask];
+
   CTVOSTopShelf::GetInstance().RunTopShelf();
 }
 
@@ -1425,8 +1491,103 @@ MainController *g_xbmcController;
     }
     // start remote timeout
     [self startRemoteTimer];
-
   }
+}
+
+#pragma mark - Now Playing routines
+//--------------------------------------------------------------
+- (void)setIOSNowPlayingInfo:(NSDictionary *)info
+{
+  PRINT_SIGNATURE();
+  self.m_nowPlayingInfo = info;
+  [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.m_nowPlayingInfo];
+}
+//--------------------------------------------------------------
+- (void)onPlay:(NSDictionary *)item
+{
+  PRINT_SIGNATURE();
+  NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+
+  NSString *title = [item objectForKey:@"title"];
+  if (title && title.length > 0)
+    [dict setObject:title forKey:MPMediaItemPropertyTitle];
+  NSString *album = [item objectForKey:@"album"];
+  if (album && album.length > 0)
+    [dict setObject:album forKey:MPMediaItemPropertyAlbumTitle];
+  NSArray *artists = [item objectForKey:@"artist"];
+  if (artists && artists.count > 0)
+    [dict setObject:[artists componentsJoinedByString:@" "] forKey:MPMediaItemPropertyArtist];
+  NSNumber *track = [item objectForKey:@"track"];
+  if (track)
+    [dict setObject:track forKey:MPMediaItemPropertyAlbumTrackNumber];
+  NSNumber *duration = [item objectForKey:@"duration"];
+  if (duration)
+    [dict setObject:duration forKey:MPMediaItemPropertyPlaybackDuration];
+  NSArray *genres = [item objectForKey:@"genre"];
+  if (genres && genres.count > 0)
+    [dict setObject:[genres componentsJoinedByString:@" "] forKey:MPMediaItemPropertyGenre];
+
+  if (NSClassFromString(@"MPNowPlayingInfoCenter"))
+  {
+    NSNumber *elapsed = [item objectForKey:@"elapsed"];
+    if (elapsed)
+      [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    NSNumber *speed = [item objectForKey:@"speed"];
+    if (speed)
+      [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+    NSNumber *current = [item objectForKey:@"current"];
+    if (current)
+      [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
+    NSNumber *total = [item objectForKey:@"total"];
+    if (total)
+      [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
+  }
+  /*
+   other properities can be set:
+   MPMediaItemPropertyAlbumTrackCount
+   MPMediaItemPropertyComposer
+   MPMediaItemPropertyDiscCount
+   MPMediaItemPropertyDiscNumber
+   MPMediaItemPropertyPersistentID
+
+   Additional metadata properties:
+   MPNowPlayingInfoPropertyChapterNumber;
+   MPNowPlayingInfoPropertyChapterCount;
+   */
+
+  [self setIOSNowPlayingInfo:dict];
+  [dict release];
+
+  m_playbackState = IOS_PLAYBACK_PLAYING;
+}
+//--------------------------------------------------------------
+- (void)OnSpeedChanged:(NSDictionary *)item
+{
+  PRINT_SIGNATURE();
+  if (NSClassFromString(@"MPNowPlayingInfoCenter"))
+  {
+    NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
+    NSNumber *elapsed = [item objectForKey:@"elapsed"];
+    if (elapsed)
+      [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    NSNumber *speed = [item objectForKey:@"speed"];
+    if (speed)
+      [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+
+    [self setIOSNowPlayingInfo:info];
+  }
+}
+//--------------------------------------------------------------
+- (void)onPause:(NSDictionary *)item
+{
+  m_playbackState = IOS_PLAYBACK_PAUSED;
+}
+//--------------------------------------------------------------
+- (void)onStop:(NSDictionary *)item
+{
+  [self setIOSNowPlayingInfo:nil];
+
+  m_playbackState = IOS_PLAYBACK_STOPPED;
 }
 
 #pragma mark - private helper methods
