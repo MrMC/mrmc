@@ -1240,30 +1240,37 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)enterBackground
 {
-  if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+  PRINT_SIGNATURE();
+  // We have 5 seconds before the OS will force kill us for delaying too long.
+  XbmcThreads::EndTime timer(4500);
+
+  if (g_application.m_pPlayer->IsPlaying())
   {
-    m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+    g_application.SaveFileState(true);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+    while (g_application.m_pPlayer->HasPlayer() && !timer.IsTimePast())
+      usleep(250*1000);
   }
+  g_application.CloseNetworkShares();
+  CAEFactory::Suspend();
   g_Windowing.OnAppFocusChange(false);
+
   // Wait for AE to suspend and delete the audio sink, this allows
   // AudioOutputUnitStop to complete and AVAudioSession to be set inactive.
-  // We have 5 seconds before the OS will force kill us for delaying too long.
   // Note that to user, we moved into background to user but we
   // are really waiting here for AE to suspend.
-  XbmcThreads::EndTime timer(4000);
   while (!CAEFactory::IsSuspended() && !timer.IsTimePast())
     usleep(250*1000);
 }
 
 - (void)enterForeground
 {
-  g_Windowing.OnAppFocusChange(true);
-  // when we come back, restore playing if we were.
-  if (m_isPlayingBeforeInactive)
+  PRINT_SIGNATURE();
+  if (m_appAlive)
   {
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
-    m_isPlayingBeforeInactive = NO;
+    g_Windowing.OnAppFocusChange(true);
+    CAEFactory::Resume();
+    g_application.UpdateLibraries();
   }
 }
 
