@@ -724,9 +724,11 @@ void CDSMSessionManager::ClearOutIdleSessions()
   }
   if (session_removed && m_dsmSessions.empty())
   {
-    CLog::Log(LOGDEBUG, "CDSMSessionManager: idle, unloading libdsm");
     if (m_dsmlib)
+    {
+      CLog::Log(LOGDEBUG, "CDSMSessionManager: idle, unloading libdsm");
       SAFE_DELETE(m_dsmlib);
+    }
   }
 }
 
@@ -741,7 +743,10 @@ void CDSMSessionManager::DisconnectAllSessions()
   }
 
   if (m_dsmlib)
+  {
+    CLog::Log(LOGDEBUG, "CDSMSessionManager:DisconnectAllSessions, unloading libdsm");
     SAFE_DELETE(m_dsmlib);
+  }
 }
 
 
