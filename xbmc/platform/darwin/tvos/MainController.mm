@@ -392,7 +392,8 @@ MainController *g_xbmcController;
       //  b) if not, let it pass to us.
       if (g_windowManager.GetActiveWindow() == WINDOW_HOME &&
           g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_FAVOURITES &&
-          g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_CONTEXT_MENU)
+          g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_CONTEXT_MENU &&
+          g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_BUSY)
         handled = NO;
       break;
 
