@@ -82,7 +82,7 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
   
   std::string searchString;
   
-  std::string searchUrl = "http://www.podnapisi.net/subtitles/search/old?sXML=1&sL=%s&sK=%s&sY=%i&sTS=%i&sTE=%i&sMH=%s";
+  std::string searchUrl = "https://www.podnapisi.net/ppodnapisi/search?sXML=1&sL=%s&sK=%s&sY=%i&sTS=%i&sTE=%i&sMH=%s";
   
   if (tag->m_iEpisode > -1)
   {
@@ -130,7 +130,14 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
   
   xmlDoc *doc = NULL;
   xmlNode *cur = NULL;
-  doc = xmlReadFile(searchString.c_str(), NULL, 0);
+  XFILE::CFile file;
+  XFILE::auto_buffer buffer;
+  if (file.LoadFile(searchString, buffer) < 1)
+  {
+    return false;
+  }
+  
+  doc = xmlReadMemory(buffer.get(), buffer.length(), NULL, NULL, 0);
   cur = xmlDocGetRootElement(doc);
   if (xmlStrcmp(cur->name, (const xmlChar *) "results"))
   {
