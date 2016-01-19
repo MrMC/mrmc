@@ -393,7 +393,8 @@ MainController *g_xbmcController;
       if (g_windowManager.GetActiveWindow() == WINDOW_HOME &&
           g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_FAVOURITES &&
           g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_CONTEXT_MENU &&
-          g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_BUSY)
+          g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_BUSY &&
+          g_windowManager.GetFocusedWindow() != WINDOW_DIALOG_VIDEO_INFO)
         handled = NO;
       break;
 
