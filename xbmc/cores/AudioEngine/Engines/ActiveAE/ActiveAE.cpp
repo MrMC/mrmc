@@ -1019,8 +1019,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     bool streaming = false;
     m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::STREAMING, &streaming, sizeof(bool));
 
-    delete m_encoder;
-    m_encoder = NULL;
+    SAFE_DELETE(m_encoder);
 
     if (m_encoderBuffers)
     {
@@ -2475,7 +2474,7 @@ uint8_t **CActiveAE::AllocSoundSample(SampleConfig &config, int &samples, int &b
 void CActiveAE::FreeSoundSample(uint8_t **data)
 {
   av_freep(data);
-  delete [] data;
+  SAFE_DELETE_ARRAY(data);
 }
 
 bool CActiveAE::CompareFormat(AEAudioFormat &lhs, AEAudioFormat &rhs)
@@ -2661,7 +2660,8 @@ void CActiveAE::StopSound(CActiveAESound *sound)
  */
 void CActiveAE::ResampleSounds()
 {
-  if ((m_settings.guisoundmode == AE_SOUND_OFF ||
+  if ((m_mode != MODE_PCM ||
+       m_settings.guisoundmode == AE_SOUND_OFF ||
       (m_settings.guisoundmode == AE_SOUND_IDLE && !m_streams.empty())))
     return;
 

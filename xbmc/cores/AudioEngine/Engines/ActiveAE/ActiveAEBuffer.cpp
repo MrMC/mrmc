@@ -52,7 +52,7 @@ CSampleBuffer::CSampleBuffer() : pkt(NULL), pool(NULL)
 
 CSampleBuffer::~CSampleBuffer()
 {
-  delete pkt;
+  SAFE_DELETE(pkt);
 }
 
 CSampleBuffer* CSampleBuffer::Acquire()
@@ -158,7 +158,7 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
 
 CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
 {
-  delete m_resampler;
+  SAFE_DELETE(m_resampler);
 }
 
 void CActiveAEBufferPoolResample::SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)
@@ -226,10 +226,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
 void CActiveAEBufferPoolResample::ChangeResampler()
 {
   if (m_resampler)
-  {
-    delete m_resampler;
-    m_resampler = NULL;
-  }
+    SAFE_DELETE(m_resampler);
 
   bool upmix = m_stereoUpmix;
   m_resampler = CAEResampleFactory::Create();

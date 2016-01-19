@@ -67,9 +67,9 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
 
 CActiveAEStream::~CActiveAEStream()
 {
-  delete [] m_leftoverBuffer;
-  delete m_remapper;
-  delete m_remapBuffer;
+  SAFE_DELETE_ARRAY(m_leftoverBuffer);
+  SAFE_DELETE(m_remapper);
+  SAFE_DELETE(m_remapBuffer);
 }
 
 void CActiveAEStream::IncFreeBuffers()

@@ -68,15 +68,13 @@ void CActiveAESink::Dispose()
   {
     m_sink->Drain();
     m_sink->Deinitialize();
-    delete m_sink;
-    m_sink = NULL;
+    SAFE_DELETE(m_sink);
   }
 
   if (m_sampleOfSilence)
   {
-    delete m_sampleOfSilence->pkt;
-    m_sampleOfSilence->pkt = NULL;
-    delete m_sampleOfSilence, m_sampleOfSilence = NULL;
+    SAFE_DELETE(m_sampleOfSilence->pkt);
+    SAFE_DELETE(m_sampleOfSilence);
   }
 }
 
@@ -217,8 +215,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             m_sink->Drain();
             m_sink->Deinitialize();
-            delete m_sink;
-            m_sink = NULL;
+            SAFE_DELETE(m_sink);
           }
           m_state = S_TOP_UNCONFIGURED;
           msg->Reply(CSinkControlProtocol::ACC);
@@ -334,8 +331,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           if (m_extError)
           {
             m_sink->Deinitialize();
-            delete m_sink;
-            m_sink = NULL;
+            SAFE_DELETE(m_sink);
             m_state = S_TOP_CONFIGURED_SUSPEND;
             m_extTimeout = 0;
           }
@@ -422,8 +418,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CSinkControlProtocol::TIMEOUT:
           m_sink->Deinitialize();
-          delete m_sink;
-          m_sink = NULL;
+          SAFE_DELETE(m_sink);
           m_state = S_TOP_CONFIGURED_SUSPEND;
           m_extTimeout = 10000;
           return;
@@ -470,8 +465,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           if (m_extError)
           {
             m_sink->Deinitialize();
-            delete m_sink;
-            m_sink = NULL;
+            SAFE_DELETE(m_sink);
             m_state = S_TOP_CONFIGURED_SUSPEND;
           }
           else
@@ -693,8 +687,7 @@ void CActiveAESink::OpenSink()
   {
     m_sink->Drain();
     m_sink->Deinitialize();
-    delete m_sink;
-    m_sink = NULL;
+    SAFE_DELETE(m_sink);
   }
 
   // get the display name of the device

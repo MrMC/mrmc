@@ -51,8 +51,8 @@ CActiveAESound::CActiveAESound(const std::string &filename) :
 
 CActiveAESound::~CActiveAESound()
 {
-  delete m_orig_sound;
-  delete m_dst_sound;
+  SAFE_DELETE(m_orig_sound);
+  SAFE_DELETE(m_dst_sound);
   Finish();
 }
 
@@ -131,8 +131,7 @@ bool CActiveAESound::Prepare()
 
   if (!m_pFile->Open(m_filename, flags))
   {
-    delete m_pFile;
-    m_pFile = NULL;
+    SAFE_DELETE(m_pFile);
     return false;
   }
   m_isSeekPossible = m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL) != 0;
@@ -142,8 +141,7 @@ bool CActiveAESound::Prepare()
 
 void CActiveAESound::Finish()
 {
-  delete m_pFile;
-  m_pFile = NULL;
+  SAFE_DELETE(m_pFile);
 }
 
 int CActiveAESound::GetChunkSize()
