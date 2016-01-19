@@ -21,7 +21,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.1</string>
 	<key>CFBundleVersion</key>
-	<string>r####</string>
+	<string>@APP_VERSION_BUNDLE_VERSION@</string>
 	<key>CFBundleSignature</key>
 	<string>@APP_NAME@</string>
 </dict>

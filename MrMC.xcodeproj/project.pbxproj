@@ -3928,7 +3928,6 @@
 		DF3C3D1C1752BED3000989C3 /* osx_package_copyrootfiles.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = osx_package_copyrootfiles.command; sourceTree = "<group>"; };
 		DF3C3D1D1752BED3000989C3 /* darwin_package_genoutputdirlink.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = darwin_package_genoutputdirlink.command; sourceTree = "<group>"; };
 		DF3C3D1E1752BED3000989C3 /* darwin_makeinterfaces.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = darwin_makeinterfaces.command; sourceTree = "<group>"; };
-		DF3C3D1F1752BED3000989C3 /* osx_package_updateversioninfo.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = osx_package_updateversioninfo.command; sourceTree = "<group>"; };
 		DF404A3616B9896C00D8023E /* iimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iimage.h; sourceTree = "<group>"; };
 		DF404A3716B9896C00D8023E /* imagefactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imagefactory.cpp; sourceTree = "<group>"; };
 		DF404A3816B9896C00D8023E /* imagefactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imagefactory.h; sourceTree = "<group>"; };
@@ -4717,7 +4716,6 @@
 		F54570851BF5947A00432C6A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F54570881BF5955900432C6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F54570891BF5955900432C6A /* Info.plist.in */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Info.plist.in; sourceTree = "<group>"; };
-		F545708A1BF597A100432C6A /* ios_package_updateversioninfo.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = ios_package_updateversioninfo.command; sourceTree = "<group>"; };
 		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
 		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
 		F5487B4A0FE6F02700E506FD /* StreamDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamDetails.h; sourceTree = "<group>"; };
@@ -4875,6 +4873,7 @@
 		F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCOperations.cpp; sourceTree = "<group>"; };
 		F5AE409B13415D9E0004BD79 /* XBMCOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCOperations.h; sourceTree = "<group>"; };
 		F5B413131065900C0035D105 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		F5B721FC1C4ED68F006432AE /* Info.plist.in */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Info.plist.in; sourceTree = "<group>"; };
 		F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CryptThreading.cpp; sourceTree = "<group>"; };
 		F5BD02F5148D3A7E001B5583 /* CryptThreading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptThreading.h; sourceTree = "<group>"; };
 		F5BDB80A120202F400F0B710 /* DVDSubtitleTagSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagSami.h; sourceTree = "<group>"; };
@@ -5142,6 +5141,7 @@
 			isa = PBXGroup;
 			children = (
 				18AC31F51C49445D00AE9433 /* Info.plist */,
+				F5B721FC1C4ED68F006432AE /* Info.plist.in */,
 				18252F0B1C497DA3002E71F9 /* TopShelf.entitlements */,
 				18AC31F21C49445D00AE9433 /* ServiceProvider.h */,
 				18AC31F31C49445D00AE9433 /* ServiceProvider.m */,
@@ -8079,10 +8079,8 @@
 				DF3C3D1B1752BED3000989C3 /* ios_package_copyrootfiles.command */,
 				DF3C3D181752BED3000989C3 /* ios_package_dylibs.command */,
 				F57483611BFFCA7300D5F221 /* ios_package_dylibs2frameworks.command */,
-				F545708A1BF597A100432C6A /* ios_package_updateversioninfo.command */,
 				DF3C3D1C1752BED3000989C3 /* osx_package_copyrootfiles.command */,
 				DF3C3D191752BED3000989C3 /* osx_package_dylibs.command */,
-				DF3C3D1F1752BED3000989C3 /* osx_package_updateversioninfo.command */,
 				DF3C3D1D1752BED3000989C3 /* darwin_package_genoutputdirlink.command */,
 				E47252BF175115F9001C1AAA /* darwin_codesign_internals.command */,
 			);
@@ -8567,7 +8565,6 @@
 			buildPhases = (
 				F5DEC3580E6DEBB2005A4E24 /* package root files */,
 				6E2FACC70E26E22400DF79EA /* package dylibs */,
-				81B8FC150E7D927A00354E2E /* update version info */,
 				1D64E5FC157BD76F001ACEBE /* genoutputdirlink */,
 			);
 			buildRules = (
@@ -8610,7 +8607,6 @@
 				E49910C0174D1E5300741B6D /* package root files */,
 				E49910BF174D1E3500741B6D /* package dylibs */,
 				F57483621BFFCD7000D5F221 /* convert dylibs to frameworks */,
-				F52253171BF5AE380018510C /* update version info */,
 				E49910BD174D1E0700741B6D /* genoutputdirlink */,
 			);
 			buildRules = (
@@ -8633,7 +8629,6 @@
 				F5D1425E1BAF0B6D0075A95C /* package root files */,
 				F5D1425F1BAF0B6D0075A95C /* package dylibs */,
 				F57483601BFFC9B800D5F221 /* convert dylibs to frameworks */,
-				F52253181BF5AF3B0018510C /* update version info */,
 				F5D142601BAF0B6D0075A95C /* genoutputdirlink */,
 				18AC31FC1C49445D00AE9433 /* Embed App Extensions */,
 			);
@@ -8780,21 +8775,6 @@
 			shellScript = tools/darwin/Support/osx_package_dylibs.command;
 			showEnvVarsInLog = 0;
 		};
-		81B8FC150E7D927A00354E2E /* update version info */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "update version info";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = tools/darwin/Support/osx_package_updateversioninfo.command;
-			showEnvVarsInLog = 0;
-		};
 		E49910BD174D1E0700741B6D /* genoutputdirlink */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -8867,36 +8847,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = tools/darwin/Support/darwin_makeinterfaces.command;
-		};
-		F52253171BF5AE380018510C /* update version info */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "update version info";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = tools/darwin/Support/ios_package_updateversioninfo.command;
-			showEnvVarsInLog = 0;
-		};
-		F52253181BF5AF3B0018510C /* update version info */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "update version info";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = tools/darwin/Support/ios_package_updateversioninfo.command;
-			showEnvVarsInLog = 0;
 		};
 		F57483601BFFC9B800D5F221 /* convert dylibs to frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
