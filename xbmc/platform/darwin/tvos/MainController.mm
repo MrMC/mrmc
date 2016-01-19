@@ -410,7 +410,7 @@ MainController *g_xbmcController;
       break;
 
     default:
-      return NO;
+      handled = NO;
   }
 
   return handled;
