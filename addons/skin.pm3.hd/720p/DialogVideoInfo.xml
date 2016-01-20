@@ -779,7 +779,8 @@
 				<description>Play Trailer</description>
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>20410</label>
-				<enable>!IsEmpty(ListItem.Trailer)</enable>
+				<visible>false</visible>
+				<!-- <enable>!IsEmpty(ListItem.Trailer)</enable> -->
 			</control>
 			<control type="button" id="5">
 				<description>Cast/Review</description>

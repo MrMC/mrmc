@@ -906,7 +906,8 @@
 				<width>195</width>
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>20410</label>
-				<visible>!IsEmpty(ListItem.Trailer)</visible>
+				<!-- <visible>!IsEmpty(ListItem.Trailer)</visible> -->
+				<visible>false</visible>
 			</control>
 		</control>
 	</controls>

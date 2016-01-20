@@ -482,7 +482,8 @@
           <textcolor>White</textcolor>
           <focusedcolor>Highlight</focusedcolor>
           <texturefocus>-</texturefocus>
-          <visible>!IsEmpty(ListItem.Trailer)</visible>
+          <visible>false</visible>
+          <!-- <visible>!IsEmpty(ListItem.Trailer)</visible> -->
           <pulseonselect>true</pulseonselect>
         </control>
         <control type="button" id="9012" description="Actors">
