@@ -1782,6 +1782,8 @@
 		F5AE40A613415D9E0004BD79 /* SystemOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409613415D9E0004BD79 /* SystemOperations.cpp */; };
 		F5AE40A713415D9E0004BD79 /* VideoLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409813415D9E0004BD79 /* VideoLibrary.cpp */; };
 		F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */; };
+		F5B721FF1C52917D006432AE /* TVOSFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B721FD1C52917D006432AE /* TVOSFile.cpp */; };
+		F5B722021C52962F006432AE /* NSData+GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = F5B722011C52962F006432AE /* NSData+GZIP.m */; };
 		F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
@@ -4874,6 +4876,10 @@
 		F5AE409B13415D9E0004BD79 /* XBMCOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCOperations.h; sourceTree = "<group>"; };
 		F5B413131065900C0035D105 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		F5B721FC1C4ED68F006432AE /* Info.plist.in */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Info.plist.in; sourceTree = "<group>"; };
+		F5B721FD1C52917D006432AE /* TVOSFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TVOSFile.cpp; sourceTree = "<group>"; };
+		F5B721FE1C52917D006432AE /* TVOSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TVOSFile.h; sourceTree = "<group>"; };
+		F5B722001C52962F006432AE /* NSData+GZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+GZIP.h"; sourceTree = "<group>"; };
+		F5B722011C52962F006432AE /* NSData+GZIP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+GZIP.m"; sourceTree = "<group>"; };
 		F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CryptThreading.cpp; sourceTree = "<group>"; };
 		F5BD02F5148D3A7E001B5583 /* CryptThreading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptThreading.h; sourceTree = "<group>"; };
 		F5BDB80A120202F400F0B710 /* DVDSubtitleTagSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagSami.h; sourceTree = "<group>"; };
@@ -7676,6 +7682,8 @@
 				DF93D68E1444A8B0007C6459 /* SpecialProtocolFile.h */,
 				E38E17590D25F9FA00618676 /* StackDirectory.cpp */,
 				E38E175A0D25F9FA00618676 /* StackDirectory.h */,
+				F5B721FD1C52917D006432AE /* TVOSFile.cpp */,
+				F5B721FE1C52917D006432AE /* TVOSFile.h */,
 				433219D312E4C6A500CD7486 /* udf25.cpp */,
 				433219D412E4C6A500CD7486 /* udf25.h */,
 				433219D512E4C6A500CD7486 /* UDFDirectory.cpp */,
@@ -8255,6 +8263,8 @@
 				F590452C1BA372A600DB589A /* DarwinUtils.mm */,
 				F5D13EBA1BAA17890075A95C /* DictionaryUtils.h */,
 				F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */,
+				F5B722001C52962F006432AE /* NSData+GZIP.h */,
+				F5B722011C52962F006432AE /* NSData+GZIP.m */,
 				F59045431BA372A600DB589A /* NSLogDebugHelpers.h */,
 				F59045561BA372A600DB589A /* OSXGNUReplacements.h */,
 				F59045551BA372A600DB589A /* OSXGNUReplacements.c */,
@@ -11445,9 +11455,11 @@
 				F5D141521BAF0B6D0075A95C /* GUIViewStateVideo.cpp in Sources */,
 				F5D141531BAF0B6D0075A95C /* PlayerController.cpp in Sources */,
 				F5D141541BAF0B6D0075A95C /* Teletext.cpp in Sources */,
+				F5B721FF1C52917D006432AE /* TVOSFile.cpp in Sources */,
 				F5D141551BAF0B6D0075A95C /* VideoDatabase.cpp in Sources */,
 				F5D141561BAF0B6D0075A95C /* VideoDbUrl.cpp in Sources */,
 				F5D141571BAF0B6D0075A95C /* VideoInfoDownloader.cpp in Sources */,
+				F5B722021C52962F006432AE /* NSData+GZIP.m in Sources */,
 				F5D141581BAF0B6D0075A95C /* VideoInfoScanner.cpp in Sources */,
 				F5D141591BAF0B6D0075A95C /* VideoInfoTag.cpp in Sources */,
 				F5D1415A1BAF0B6D0075A95C /* VideoReferenceClock.cpp in Sources */,

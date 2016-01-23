@@ -58,6 +58,9 @@
 #if defined(TARGET_ANDROID)
 #include "AndroidAppFile.h"
 #endif
+#if defined(TARGET_DARWIN_TVOS)
+  #include "filesystem/TVOSFile.h"
+#endif
 #ifdef HAS_UPNP
 #include "UPnPFile.h"
 #endif
@@ -70,9 +73,9 @@
 #include "ResourceFile.h"
 #include "Application.h"
 #include "URL.h"
-#include "utils/log.h"
 #include "network/WakeOnAccess.h"
 #include "settings/Settings.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 
@@ -105,9 +108,21 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("special")) return new CSpecialProtocolFile();
   else if (url.IsProtocol("multipath")) return new CMultiPathFile();
   else if (url.IsProtocol("image")) return new CImageFile();
-  else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CPosixFile();
+  else if (url.IsProtocol("file") || url.GetProtocol().empty())
+  {
+#if defined(TARGET_DARWIN_TVOS)
+    if (CTVOSFile::WantsFile(url))
+    {
+      return new CTVOSFile();
+    }
+    else
+#endif
+    {
+      return new CPosixFile();
+    }
+  }
   else if (url.IsProtocol("filereader")) return new CFileReaderFile();
-  else if(url.IsProtocol("udf")) return new CUDFFile();
+  else if (url.IsProtocol("udf")) return new CUDFFile();
 #if defined(TARGET_ANDROID)
   else if (url.IsProtocol("androidapp")) return new CFileAndroidApp();
 #endif

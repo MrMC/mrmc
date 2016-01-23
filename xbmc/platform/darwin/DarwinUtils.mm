@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
+#include "URL.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -37,6 +38,9 @@
   #import <mach/mach_host.h>
   #import <sys/sysctl.h>
   #if defined(TARGET_DARWIN_TVOS)
+    #import "filesystem/File.h"
+    #import "filesystem/TVOSFile.h"
+    #import "filesystem/posix/PosixFile.h"
     #import "platform/darwin/tvos/MainController.h"
   #endif
 #else
@@ -839,6 +843,137 @@ bool CDarwinUtils::OpenAppWithOpenURL(const std::string& path)
 #endif
 
   return ret;
+}
+
+uint64_t CDarwinUtils::NSUserDefaultsSize()
+{
+  NSString* libraryDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+  NSString* filepath = [libraryDir stringByAppendingPathComponent:[NSString stringWithFormat:@"/Preferences/%@.plist", [[NSBundle mainBundle] bundleIdentifier]]];
+  uint64_t fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filepath error:nil][NSFileSize] unsignedLongLongValue];
+
+  return fileSize;
+}
+
+void CDarwinUtils::MigrateUserdataXMLToNSUserDefaults()
+{
+#if defined(TARGET_DARWIN_TVOS)
+  // MrMC below 1.3 has an opps bug, NSUserDefaults was keyed to "Caches/userdata"
+  // but GetUserHomeDirectory changed to "Caches/home/userdata" so every xml was saved to
+  // Caches dir instead of into persistent NSUserDefaults. The whole point of this is to
+  // fix this error.
+
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+  CLog::Log(LOGNOTICE, "MigrateUserdataXMLToNSUserDefaults: "
+    "NSUserDefaultsSize(%lld)", NSUserDefaultsSize());
+
+  // if already migrated, we are done.
+  NSString *migration_key = @"UserdataMigrated";
+  if (![defaults objectForKey:migration_key])
+  {
+    CLog::Log(LOGNOTICE, "MigrateUserdataXMLToNSUserDefaults: migration starting");
+
+    // first we remove any old keys, these are
+    // not being used (opps) so we can just delete them
+    NSDictionary<NSString *, id> *dict = [defaults dictionaryRepresentation];
+    for( NSString *aKey in [dict allKeys] )
+    {
+      if ([aKey hasPrefix:@"Caches/userdata"])
+      {
+        [defaults removeObjectForKey:aKey];
+        CLog::Log(LOGNOTICE, "nsuserdefaults: removing %s", [aKey UTF8String]);
+      }
+    }
+
+    // now search for all xxx.xml files in the user home directory
+    // and copy them into NSUserDefaults
+    std::string userHome = CDarwinUtils::GetUserHomeDirectory();
+    NSString *nsPath = [NSString stringWithUTF8String:userHome.c_str()];
+
+    NSDirectoryEnumerator* enumerator = [[NSFileManager defaultManager] enumeratorAtPath:nsPath];
+    while (NSString *file = [enumerator nextObject])
+    {
+      NSString* fullPath = [nsPath stringByAppendingPathComponent:file];
+
+      // skip the Thumbnails directory, there are no xml files present
+      // and it can be very large.
+      if ([fullPath containsString:@"Thumbnails"])
+        continue;
+
+      // check if it's a directory
+      BOOL isDirectory = NO;
+      [[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory: &isDirectory];
+      if (isDirectory == NO)
+      {
+        // check if the file extension is 'xml'
+        if ([[file pathExtension] isEqualToString: @"xml"])
+        {
+          // log what we are doing
+          CLog::Log(LOGNOTICE, "MigrateUserdataXMLToNSUserDefaults: "
+            "Found -> %s", [fullPath UTF8String]);
+
+          // we cannot use a Cfile for src, it will get mapped into a CTVOSFile
+          const CURL srcUrl([fullPath UTF8String]);
+          XFILE::CPosixFile srcfile;
+          if (srcfile.Open(srcUrl))
+          {
+            // we could use a CFile here but WTH, let's go direct
+            const CURL dtsUrl([fullPath UTF8String]);
+            XFILE::CTVOSFile dstfile;
+            if (dstfile.OpenForWrite(dtsUrl, true))
+            {
+              size_t iBufferSize = 128 * 1024;
+              XFILE::auto_buffer buffer(iBufferSize);
+
+              while (true)
+              {
+                // read data
+                ssize_t iread = srcfile.Read(buffer.get(), iBufferSize);
+                if (iread == 0)
+                  break;
+                else if (iread < 0)
+                {
+                  CLog::Log(LOGERROR, "MigrateUserdataXMLToNSUserDefaults: "
+                    "Failed read from file %s", srcUrl.GetRedacted().c_str());
+                  break;
+                }
+
+                // write data and make sure we managed to write it all
+                ssize_t iwrite = 0;
+                while (iwrite < iread)
+                {
+                  ssize_t iwrite2 = dstfile.Write(buffer.get() + iwrite, iread - iwrite);
+                  if (iwrite2 <= 0)
+                    break;
+                  iwrite += iwrite2;
+                }
+
+                if (iwrite != iread)
+                {
+                  CLog::Log(LOGERROR, "MigrateUserdataXMLToNSUserDefaults: "
+                    "Failed write to file %s", dtsUrl.GetRedacted().c_str());
+                  break;
+                }
+              }
+              dstfile.Close();
+            }
+            srcfile.Close();
+            XFILE::CFile::Delete(srcUrl);
+          }
+        }
+      }
+    }
+
+    // set the migration_key to a known value and write it
+    // we do this for future opps :)
+    [defaults setObject:@"1" forKey:migration_key];
+    [defaults synchronize];
+
+    CLog::Log(LOGNOTICE, "MigrateUserdataXMLToNSUserDefaults: migration finished");
+    CLog::Log(LOGNOTICE, "MigrateUserdataXMLToNSUserDefaults: "
+      "NSUserDefaultsSize(%lld)", NSUserDefaultsSize());
+  }
+#endif
 }
 
 #endif

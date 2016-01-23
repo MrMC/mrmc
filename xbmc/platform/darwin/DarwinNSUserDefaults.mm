@@ -38,7 +38,6 @@ static bool translatePathIntoKey(const std::string &path, std::string &key)
   if (firstLookup)
   {
     NSDictionary<NSString *, id> *dict = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-    
     for( NSString *aKey in [dict allKeys] )
     {
       // do something like a log:

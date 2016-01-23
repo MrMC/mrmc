@@ -342,30 +342,14 @@ extern "C" void cleanup_emu_environ();
 // Utility function used to copy files from the application bundle
 // over to the user data directory in Application Support/Kodi.
 //
-static void CopyUserDataXMLFilesIfNeeded(const std::string &strPath, const std::string &file)
+static void CopyUserDataIfNeeded(const std::string &strPath, const std::string &file)
 {
-  // this needs to move out into DarwinUtils
-  std::string dstPath = URIUtils::AddFileToFolder(strPath, file);
-  std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
-#if defined(TARGET_DARWIN_TVOS)
-  if (CDarwinNSUserDefaults::IsKeyFromPath(dstPath))
+  std::string destPath = URIUtils::AddFileToFolder(strPath, file);
+  if (!CFile::Exists(destPath))
   {
-    if (!CDarwinNSUserDefaults::KeyFromPathExists(dstPath))
-    {
-      CXBMCTinyXML xmlDoc;
-      if (xmlDoc.LoadFile(srcPath))
-        xmlDoc.SaveFile(dstPath);
-    }
-  }
-  else
-#endif
-  {
-    if (!CFile::Exists(dstPath))
-    {
-      // need to copy it across
-      std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
-      CFile::Copy(srcPath, dstPath);
-    }
+    // need to copy it across
+    std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
+    CFile::Copy(srcPath, destPath);
   }
 }
 
@@ -385,6 +369,9 @@ void CApplication::Preflight()
   setenv("MRMC_HOME", install_path.c_str(), 0);
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
+#endif
+#if defined(TARGET_DARWIN_TVOS)
+  CDarwinUtils::MigrateUserdataXMLToNSUserDefaults();
 #endif
 }
 
@@ -430,8 +417,8 @@ bool CApplication::Create()
     inited = InitDirectoriesDarwin();
 
   // copy required xml files
-  CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "favourites.xml");
-  CopyUserDataXMLFilesIfNeeded("special://masterprofile/", "Lircmap.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str()))
   {
