@@ -97,6 +97,7 @@ class CAAudioUnitSink
     unsigned int write(uint8_t *data, unsigned int byte_count);
     unsigned int chunkSize() { return m_bufferDuration * m_sampleRate; }
     unsigned int getRealisedSampleRate() { return m_outputFormat.mSampleRate; }
+    std::string  getRoute() { return m_route; }
     static Float64 getCoreAudioRealisedSampleRate();
 
   private:
@@ -110,16 +111,14 @@ class CAAudioUnitSink
     void         deactivateAudioSession();
  
     // callbacks
-#if !defined(TARGET_DARWIN_TVOS)
-    static void sessionPropertyCallback(void *inClientData,
-                  AudioSessionPropertyID inID, UInt32 inDataSize, const void *inData);
-#endif
     static OSStatus renderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                   const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames,
                   AudioBufferList *ioData);
 
     bool                m_setup;
     bool                m_activated;
+    std::string         m_route;
+    id                  m_observer;
     AudioUnit           m_audioUnit;
     AudioStreamBasicDescription m_outputFormat;
     AERingBuffer       *m_buffer;
@@ -146,6 +145,7 @@ CAAudioUnitSink::CAAudioUnitSink()
 , m_render_timestamp(0)
 , m_render_frames(0)
 {
+  checkAudioRoute();
 }
 
 CAAudioUnitSink::~CAAudioUnitSink()
@@ -305,13 +305,15 @@ bool CAAudioUnitSink::setupAudio()
   if (m_setup && m_audioUnit)
     return true;
 
-#if 0
-  AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange,
-    sessionPropertyCallback, this);
+  // warning, usingBlock here, this code is queued to run when note fires
+  NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
+  m_observer = [[NSNotificationCenter defaultCenter] addObserverForName:AVAudioSessionRouteChangeNotification
+    object:[AVAudioSession sharedInstance] queue:mainQueue usingBlock:^(NSNotification *note)
+  {
+    if (checkAudioRoute())
+      checkSessionProperties();
+  }];
 
-  AudioSessionAddPropertyListener(kAudioSessionProperty_CurrentHardwareOutputVolume,
-    sessionPropertyCallback, this);
-#endif
   // Audio Unit Setup
   // Describe a default output unit.
   AudioComponentDescription description = {};
@@ -380,12 +382,16 @@ bool CAAudioUnitSink::setupAudio()
 bool CAAudioUnitSink::checkAudioRoute()
 {
   // why do we need to know the audio route ?
-#if 0
-  CFStringRef route;
-  UInt32 propertySize = sizeof(CFStringRef);
-  if (AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &propertySize, &route) != noErr)
-    return false;
-#endif
+  AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
+
+  AVAudioSessionRouteDescription *currentRoute = [myAudioSession currentRoute];
+  NSString *output = [[currentRoute.outputs objectAtIndex:0] portType];
+  if (output)
+    m_route = [output UTF8String];
+  else
+    m_route = "null";
+  CLog::Log(LOGNOTICE, "%s %s", __PRETTY_FUNCTION__, m_route.c_str());
+
   return true;
 }
 
@@ -397,6 +403,11 @@ bool CAAudioUnitSink::checkSessionProperties()
   m_outputVolume   = [mySession outputVolume];
   m_outputLatency  = [mySession outputLatency];
   m_bufferDuration = [mySession IOBufferDuration];
+
+  CLog::Log(LOGNOTICE, "%s m_outputVolume %f", __PRETTY_FUNCTION__, m_outputVolume);
+  CLog::Log(LOGNOTICE, "%s m_outputLatency %f", __PRETTY_FUNCTION__, m_outputLatency);
+  CLog::Log(LOGNOTICE, "%s m_bufferDuration %f", __PRETTY_FUNCTION__, m_bufferDuration);
+  CLog::Log(LOGNOTICE, "%s real sampleRate %f", __PRETTY_FUNCTION__, [mySession sampleRate]);
 
   return true;
 }
@@ -419,6 +430,9 @@ void CAAudioUnitSink::deactivateAudioSession()
 {
   if (m_activated)
   {
+    // disconnect observer 1st, route goes to null on AudioOutputUnitStop
+    [[NSNotificationCenter defaultCenter] removeObserver:m_observer];
+
     AudioUnitReset(m_audioUnit, kAudioUnitScope_Global, 0);
 
     // this is a delayed call, the OS will block here
@@ -433,35 +447,11 @@ void CAAudioUnitSink::deactivateAudioSession()
 
     AudioUnitUninitialize(m_audioUnit);
     AudioComponentInstanceDispose(m_audioUnit), m_audioUnit = nullptr;
-#if 0
-    AudioSessionRemovePropertyListenerWithUserData(kAudioSessionProperty_AudioRouteChange,
-      sessionPropertyCallback, this);
-    AudioSessionRemovePropertyListenerWithUserData(kAudioSessionProperty_CurrentHardwareOutputVolume,
-      sessionPropertyCallback, this);
-#endif
+
     m_setup = false;
     m_activated = false;
   }
 }
-
-#if 0
-void CAAudioUnitSink::sessionPropertyCallback(void *inClientData,
-  AudioSessionPropertyID inID, UInt32 inDataSize, const void *inData)
-{
-  CAAudioUnitSink *sink = (CAAudioUnitSink*)inClientData;
-
-  if (inID == kAudioSessionProperty_AudioRouteChange)
-  {
-    if (sink->checkAudioRoute())
-      sink->checkSessionProperties();
-  }
-  else if (inID == kAudioSessionProperty_CurrentHardwareOutputVolume)
-  {
-    if (inData && inDataSize == 4)
-      sink->m_outputVolume = *(float*)inData;
-  }
-}
-#endif
 
 inline void LogLevel(unsigned int got, unsigned int wanted)
 {
@@ -558,9 +548,7 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   // there are more supported ( one of those 2 gets resampled
   // by coreaudio anyway) - but for keeping it save ignore
   // the others...
-#if !defined(TARGET_DARWIN_TVOS)
   device.m_sampleRates.push_back(44100);
-#endif
   device.m_sampleRates.push_back(48000);
 
   device.m_dataFormats.push_back(AE_FMT_S16LE);
@@ -588,6 +576,7 @@ CAESinkDARWINIOS::~CAESinkDARWINIOS()
 
 bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
 {
+  bool hdmi = false;
   bool found = false;
   bool forceRaw = false;
 
@@ -606,6 +595,9 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   if (!found)
     return false;
 
+  m_audioSink = new CAAudioUnitSink;
+  hdmi = (m_audioSink->getRoute().find("HDMI") != std::string::npos);
+
   AudioStreamBasicDescription audioFormat = {};
 
   if (format.m_dataFormat == AE_FMT_FLOAT)
@@ -613,7 +605,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   else// this will be selected when AE wants AC3 or DTS or anything other then float
   {
     audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsSignedInteger;
-    if (AE_IS_RAW(format.m_dataFormat))
+    if (hdmi && AE_IS_RAW(format.m_dataFormat))
       forceRaw = true;
     format.m_dataFormat = AE_FMT_S16LE;
   }
@@ -630,10 +622,13 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     case 44100:
     case 88200:
     case 176400:
-#if !defined(TARGET_DARWIN_TVOS)
-      audioFormat.mSampleRate = 44100;
-      break;
+#if defined(TARGET_DARWIN_TVOS)
+      if (hdmi)
+        audioFormat.mSampleRate = 48000;
+      else
 #endif
+        audioFormat.mSampleRate = 44100;
+      break;
     default:
     case 8000:
     case 12000:
@@ -662,7 +657,6 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   SineWaveGeneratorInitWithFrequency(&m_SineWaveGenerator, 440.0, audioFormat.mSampleRate);
 #endif
 
-  m_audioSink = new CAAudioUnitSink;
   m_audioSink->open(audioFormat);
 
   format.m_frames = m_audioSink->chunkSize();
