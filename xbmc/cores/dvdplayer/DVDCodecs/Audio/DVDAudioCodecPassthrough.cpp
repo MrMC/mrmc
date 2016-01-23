@@ -64,7 +64,11 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       return bSupportsEAC3Out && (hints.samplerate == 44100 || hints.samplerate == 48000);
       break;
     case AV_CODEC_ID_DTS:
+#if defined(TARGET_DARWIN_TVOS)
+      return bSupportsDTSOut && hints.samplerate == 48000;
+#else
       return bSupportsDTSOut;
+#endif
       break;
     case AV_CODEC_ID_TRUEHD:
       return bSupportsTrueHDOut;
