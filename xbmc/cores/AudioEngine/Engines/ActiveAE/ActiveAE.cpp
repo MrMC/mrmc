@@ -284,7 +284,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEDataProtocol::DRAINSTREAM:
           stream = *(CActiveAEStream**)msg->data;
           stream->m_drain = true;
-          stream->m_resampleBuffers->m_drain = true;
+          if (stream->m_resampleBuffers)
+            stream->m_resampleBuffers->m_drain = true;
           msg->Reply(CActiveAEDataProtocol::ACC);
           stream->m_streamPort->SendInMessage(CActiveAEDataProtocol::STREAMDRAINED);
           return;
