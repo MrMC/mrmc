@@ -183,7 +183,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindow(WINDOW_SKIN_SETTINGS, "SkinSettings.xml"));
   Add(new CGUIWindowAddonBrowser);
   Add(new CGUIWindowScreensaverDim);
-  Add(new CGUIWindowDebugInfo);
+  //Add(new CGUIWindowDebugInfo);
   Add(new CGUIWindowPointer);
   Add(new CGUIDialogYesNo);
   Add(new CGUIDialogProgress);
