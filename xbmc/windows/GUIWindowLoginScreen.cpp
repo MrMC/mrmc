@@ -298,13 +298,14 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
   ADDON::CAddonMgr::GetInstance().ReInit();
 
+  // let CApplication know that we are logging into a new profile
+  g_application.SetLoggingIn(true);
+
   if (!g_application.LoadLanguage(true))
   {
     CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", CProfilesManager::GetInstance().GetCurrentProfile().getName().c_str());
     return;
   }
-
-  g_application.SetLoggingIn(true);
 
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();

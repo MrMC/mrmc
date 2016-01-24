@@ -144,8 +144,5 @@
         <visible>false</visible>
       </group>
     </category>
-    <category id="masterlock">
-      <visible>false</visible>
-    </category>
   </section>
 </settings>

@@ -350,7 +350,7 @@ public:
 
   ReplayGainSettings& GetReplayGainSettings() { return m_replayGainSettings; }
 
-  void SetLoggingIn(bool loggingIn) { m_loggingIn = loggingIn; }
+  void SetLoggingIn(bool switchingProfiles);
   
   /*!
    \brief Register an action listener.
@@ -385,7 +385,8 @@ protected:
 
   bool m_skinReverting;
 
-  bool m_loggingIn;
+  bool m_saveSkinOnUnloading;
+  bool m_autoExecScriptExecuted;
 
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
