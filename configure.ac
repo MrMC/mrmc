@@ -121,6 +121,7 @@ APP_NAME_LC=$(echo $APP_NAME | ${AWK} '{print tolower($0)}')
 APP_NAME_UC=$(echo $APP_NAME | ${AWK} '{print toupper($0)}')
 APP_VERSION_MAJOR=${APP_VERSION_MAJOR-$(${AWK} '/VERSION_MAJOR/ {print $2}' version.txt)}
 APP_VERSION_MINOR=${APP_VERSION_MINOR-$(${AWK} '/VERSION_MINOR/ {print $2}' version.txt)}
+APP_VERSION_PATCH=${APP_VERSION_PATCH-$(${AWK} '/VERSION_PATCH/ {print $2}' version.txt)}
 APP_VERSION_TAG=${APP_VERSION_TAG-$(${AWK} '/VERSION_TAG/ {print $2}' version.txt)}
 APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
 APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
@@ -139,6 +140,7 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
   AC_SUBST(APP_VERSION)
   AC_SUBST(APP_VERSION_MAJOR)
   AC_SUBST(APP_VERSION_MINOR)
+  AC_SUBST(APP_VERSION_PATCH)
   AC_SUBST(APP_VERSION_TAG)
   AC_SUBST(APP_VERSION_TAG_LC)
   AC_SUBST(APP_VERSION_CODE)
