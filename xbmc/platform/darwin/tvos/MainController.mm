@@ -1333,12 +1333,12 @@ MainController *g_xbmcController;
     }
     // restart ZeroConfig (if stopped)
     CNetworkServices::GetInstance().StartZeroconf();
+    CTVOSTopShelf::GetInstance().RunTopShelf();
   }
 
   // stop background task (if running)
   [self disableBackGroundTask];
 
-  CTVOSTopShelf::GetInstance().RunTopShelf();
 }
 
 - (void)becomeInactive

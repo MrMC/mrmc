@@ -3922,6 +3922,27 @@ std::string CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaTyp
   return GetSingleValue(query, m_pDS2);
 }
 
+std::string CVideoDatabase::GetEpisodeUrlFromUnique(const std::string uniqueId)
+{
+  std::string query = PrepareSQL("SELECT c18 FROM episode WHERE c20='%s'", uniqueId.c_str());
+  return GetSingleValue(query, m_pDS2);
+}
+
+std::string CVideoDatabase::GetMovieUrlFromMovieId(const std::string movieId)
+{
+  int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%s", movieId.c_str()));
+  std::string query = PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile='%i'", idFile);
+  std::string strMovieFolder = GetSingleValue(query, m_pDS2);
+  
+  query = PrepareSQL("SELECT strFilename FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile='%i'", idFile);
+  std::string strFileName = GetSingleValue(query, m_pDS2);
+  
+  
+  std::string strMoviePath;
+  ConstructPath(strMoviePath, strMovieFolder, strFileName);
+  return strMoviePath;
+}
+
 bool CVideoDatabase::RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType)
 {
   return ExecuteQuery(PrepareSQL("DELETE FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str()));
