@@ -51,7 +51,13 @@
     TVContentIdentifier *wrapperIdentifier = [[TVContentIdentifier alloc] initWithIdentifier:@"shelf-wrapper" container:nil];
     TVContentItem *itemMovie = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
     NSMutableArray *ContentItems = [[NSMutableArray alloc] init];
-    
+  
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    NSURL* storeUrl = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.tv.mrmc.shared"];
+    storeUrl = [storeUrl URLByAppendingPathComponent:@"Library" isDirectory:TRUE];
+    storeUrl = [storeUrl URLByAppendingPathComponent:@"Caches" isDirectory:TRUE];
+    storeUrl = [storeUrl URLByAppendingPathComponent:@"RA" isDirectory:TRUE];
+  
     for (NSUInteger i = 0; i < [movieArray count]; i++)
     {
       NSMutableDictionary * movieDict = [[NSMutableDictionary alloc] init];
@@ -60,7 +66,7 @@
       TVContentIdentifier *identifier = [[TVContentIdentifier alloc] initWithIdentifier:@"VOD" container:wrapperIdentifier];
       TVContentItem *contentItem = [[TVContentItem alloc] initWithContentIdentifier:identifier];
       
-      contentItem.imageURL = [NSURL URLWithString:[movieDict valueForKey:@"thumb"]];
+      contentItem.imageURL = [storeUrl URLByAppendingPathComponent:[movieDict valueForKey:@"thumb"] isDirectory:FALSE];
       contentItem.imageShape = TVContentItemImageShapePoster;
       contentItem.title = [movieDict valueForKey:@"title"];
       NSString *url = [movieDict valueForKey:@"url"];
@@ -83,7 +89,7 @@
       TVContentIdentifier *identifier = [[TVContentIdentifier alloc] initWithIdentifier:@"VOD" container:wrapperIdentifier];
       TVContentItem *contentItem = [[TVContentItem alloc] initWithContentIdentifier:identifier];
       
-      contentItem.imageURL = [NSURL URLWithString:[tvDict valueForKey:@"thumb"]];
+      contentItem.imageURL = [storeUrl URLByAppendingPathComponent:[tvDict valueForKey:@"thumb"] isDirectory:FALSE];
       contentItem.imageShape = TVContentItemImageShapePoster;
       contentItem.title = [tvDict valueForKey:@"title"];
       NSString *url = [tvDict valueForKey:@"url"];

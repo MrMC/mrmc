@@ -36,6 +36,7 @@
 #include "filesystem/File.h"
 
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -66,6 +67,17 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
   NSMutableArray * tvArray = [[NSMutableArray alloc] init];
   NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:@"group.tv.mrmc.shared"];
   
+  NSFileManager* fileManager = [NSFileManager defaultManager];
+  NSURL* storeUrl = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.tv.mrmc.shared"];
+  storeUrl = [storeUrl URLByAppendingPathComponent:@"Library" isDirectory:TRUE];
+  storeUrl = [storeUrl URLByAppendingPathComponent:@"Caches" isDirectory:TRUE];
+  storeUrl = [storeUrl URLByAppendingPathComponent:@"RA" isDirectory:TRUE];
+  
+  // store all old thumbs in array
+  NSMutableArray *filePaths = (NSMutableArray *)[fileManager contentsOfDirectoryAtPath:storeUrl.path error:nil];
+  std::string raPath = [storeUrl.path UTF8String];
+  
+  
   if (movies.Size() > 0)
   {
     for (int i = 0; i < movies.Size() && i < 5; ++i)
@@ -74,9 +86,19 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       NSMutableDictionary * movieDict = [[NSMutableDictionary alloc] init];
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());
-            
+      
+      std::string fileName = URIUtils::GetFileName(item->GetArt("thumb").c_str());
+      std::string destPath = URIUtils::AddFileToFolder(raPath,fileName);
+      if (!XFILE::CFile::Exists(destPath))
+        XFILE::CFile::Copy(item->GetArt("thumb").c_str(),destPath);
+      else
+        // remove from array so it doesnt get deleted at the end
+        if ([filePaths containsObject:[NSString stringWithUTF8String:fileName.c_str()]])
+          [filePaths removeObject:[NSString stringWithUTF8String:fileName.c_str()]];
+        
+      
       [movieDict setValue:[NSString stringWithUTF8String:item->GetLabel().c_str()] forKey:@"title"];
-      [movieDict setValue:[NSString stringWithUTF8String:item->GetArt("thumb").c_str()] forKey:@"thumb"];
+      [movieDict setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
       [movieDict setValue:[NSString stringWithFormat:@"%d",item->GetVideoInfoTag()->m_iDbId] forKey:@"url"];
       
       [movieArray addObject:movieDict];
@@ -111,8 +133,17 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
         videodatabase.Close();
       }
       
+      std::string fileName = URIUtils::GetFileName(seasonThumb.c_str());
+      std::string destPath = URIUtils::AddFileToFolder(raPath,fileName);
+      if (!XFILE::CFile::Exists(destPath))
+        XFILE::CFile::Copy(seasonThumb.c_str(),destPath);
+      else
+        // remove from array so it doesnt get deleted at the end
+        if ([filePaths containsObject:[NSString stringWithUTF8String:fileName.c_str()]])
+          [filePaths removeObject:[NSString stringWithUTF8String:fileName.c_str()]];
+      
       [tvDict setValue:[NSString stringWithUTF8String:title.c_str()] forKey:@"title"];
-      [tvDict setValue:[NSString stringWithUTF8String:seasonThumb.c_str()] forKey:@"thumb"];
+      [tvDict setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
       [tvDict setValue:[NSString stringWithUTF8String:item->GetVideoInfoTag()->m_strUniqueId.c_str()] forKey:@"url"];
       [tvArray addObject:tvDict];
     }
@@ -120,6 +151,11 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
     NSString *tvTitle = [NSString stringWithUTF8String:g_localizeStrings.Get(20387).c_str()];
     [shared setObject:tvTitle forKey:@"tvTitle"];
   }
+  
+  // remove unused thumbs from cache folder
+  for (NSString *strFiles in filePaths)
+    [fileManager removeItemAtURL:[storeUrl URLByAppendingPathComponent:strFiles isDirectory:FALSE] error:nil];
+  
   [shared synchronize];
 }
 
