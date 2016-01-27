@@ -1316,29 +1316,35 @@ MainController *g_xbmcController;
     usleep(250*1000);
 }
 
+- (void)enterForegroundDelayed:(id)arg
+{
+  // MCRuntimeLib_Initialized is only true if
+  // we were running and got moved to background
+  while(!MCRuntimeLib_Initialized())
+    usleep(50*1000);
+
+  // when we come back, restore playing if we were.
+  if (m_isPlayingBeforeInactive)
+  {
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
+    m_isPlayingBeforeInactive = NO;
+  }
+  // restart ZeroConfig (if stopped)
+  CNetworkServices::GetInstance().StartZeroconf();
+
+  g_application.UpdateLibraries();
+  CTVOSTopShelf::GetInstance().RunTopShelf();
+}
+
 - (void)enterForeground
 {
   PRINT_SIGNATURE();
-
-  // m_appAlive is only true if we were running and got moved to background
-  if (m_appAlive)
-  {
-    g_application.UpdateLibraries();
-    g_Windowing.OnAppFocusChange(true);
-    // when we come back, restore playing if we were.
-    if (m_isPlayingBeforeInactive)
-    {
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
-      m_isPlayingBeforeInactive = NO;
-    }
-    // restart ZeroConfig (if stopped)
-    CNetworkServices::GetInstance().StartZeroconf();
-    CTVOSTopShelf::GetInstance().RunTopShelf();
-  }
-
   // stop background task (if running)
   [self disableBackGroundTask];
 
+  g_Windowing.OnAppFocusChange(true);
+
+  [NSThread detachNewThreadSelector:@selector(enterForegroundDelayed:) toTarget:self withObject:nil];
 }
 
 - (void)becomeInactive

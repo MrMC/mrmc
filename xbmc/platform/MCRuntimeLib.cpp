@@ -42,6 +42,11 @@ extern "C" void MCRuntimeLib_SetRenderGUI(bool renderGUI)
   g_application.SetRenderGUI(renderGUI);
 }
 
+extern "C" bool MCRuntimeLib_Initialized()
+{
+  return g_application.IsAppInitialized();
+}
+
 extern "C" bool MCRuntimeLib_Running()
 {
   return !g_application.m_bStop;

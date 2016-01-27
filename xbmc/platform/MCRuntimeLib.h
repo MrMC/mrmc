@@ -24,4 +24,5 @@ extern "C" void MCRuntimeLib_Postflight();
 extern "C" void MCRuntimeLib_SetRenderGUI(bool renderGUI);
 extern "C" int  MCRuntimeLib_Run(bool renderGUI);
 extern "C" bool MCRuntimeLib_Running();
+extern "C" bool MCRuntimeLib_Initialized();
 
