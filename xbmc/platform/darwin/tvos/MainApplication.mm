@@ -22,6 +22,7 @@
 #import <objc/runtime.h>
 
 #import "platform/darwin/tvos/MainApplication.h"
+#import "platform/darwin/tvos/PreflightHandler.h"
 
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainController.h"
@@ -72,6 +73,8 @@ MainController *m_xbmcController;
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
   //PRINT_SIGNATURE();
+  CPreflightHandler::MigrateUserdataXMLToNSUserDefaults();
+
   NSError *err = nullptr;
   if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&err])
   {

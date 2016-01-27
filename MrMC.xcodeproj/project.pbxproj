@@ -1784,6 +1784,7 @@
 		F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */; };
 		F5B721FF1C52917D006432AE /* TVOSFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B721FD1C52917D006432AE /* TVOSFile.cpp */; };
 		F5B722021C52962F006432AE /* NSData+GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = F5B722011C52962F006432AE /* NSData+GZIP.m */; };
+		F5B722051C584C80006432AE /* PreflightHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B722041C584C80006432AE /* PreflightHandler.mm */; };
 		F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
@@ -4880,6 +4881,8 @@
 		F5B721FE1C52917D006432AE /* TVOSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TVOSFile.h; sourceTree = "<group>"; };
 		F5B722001C52962F006432AE /* NSData+GZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+GZIP.h"; sourceTree = "<group>"; };
 		F5B722011C52962F006432AE /* NSData+GZIP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+GZIP.m"; sourceTree = "<group>"; };
+		F5B722031C584C80006432AE /* PreflightHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreflightHandler.h; sourceTree = "<group>"; };
+		F5B722041C584C80006432AE /* PreflightHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreflightHandler.mm; sourceTree = "<group>"; };
 		F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CryptThreading.cpp; sourceTree = "<group>"; };
 		F5BD02F5148D3A7E001B5583 /* CryptThreading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptThreading.h; sourceTree = "<group>"; };
 		F5BDB80A120202F400F0B710 /* DVDSubtitleTagSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagSami.h; sourceTree = "<group>"; };
@@ -8460,6 +8463,8 @@
 				F5D142A51BAF31FB0075A95C /* MainKeyboard.mm */,
 				F5D142A61BAF31FB0075A95C /* MainKeyboardView.h */,
 				F5D142A71BAF31FB0075A95C /* MainKeyboardView.mm */,
+				F5B722031C584C80006432AE /* PreflightHandler.h */,
+				F5B722041C584C80006432AE /* PreflightHandler.mm */,
 				F55902171C2F14D800349249 /* TVOSSettingsHandler.h */,
 				F55902181C2F14D800349249 /* TVOSSettingsHandler.mm */,
 				18700F641C4A724B000A0007 /* TVOSTopShelf.h */,
@@ -11264,6 +11269,7 @@
 				F5D140971BAF0B6D0075A95C /* AEResampleFactory.cpp in Sources */,
 				F5D140981BAF0B6D0075A95C /* WakeOnAccess.cpp in Sources */,
 				F5D140991BAF0B6D0075A95C /* WebServer.cpp in Sources */,
+				F5B722051C584C80006432AE /* PreflightHandler.mm in Sources */,
 				F5D1409A1BAF0B6D0075A95C /* Zeroconf.cpp in Sources */,
 				F5D1409B1BAF0B6D0075A95C /* ZeroconfBrowser.cpp in Sources */,
 				F5D1409C1BAF0B6D0075A95C /* PeripheralBusUSB.cpp in Sources */,

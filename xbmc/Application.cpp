@@ -371,9 +371,6 @@ void CApplication::Preflight()
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
 #endif
-#if defined(TARGET_DARWIN_TVOS)
-  CDarwinUtils::MigrateUserdataXMLToNSUserDefaults();
-#endif
 }
 
 bool CApplication::SetupNetwork()
