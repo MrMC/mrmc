@@ -66,6 +66,10 @@
         <setting id="videoscreen.resolution" type="integer" parent="videoscreen.screen" label="169" help="36352">
           <visible>false</visible>
         </setting>
+        <setting id="videoscreen.vsync" type="integer" label="13105" help="36356">
+          <default>2</default> <!-- VSYNC_ALWAYS -->
+          <visible>false</visible>
+        </setting>
       </group>
     </category>
     <category id="audiooutput">
