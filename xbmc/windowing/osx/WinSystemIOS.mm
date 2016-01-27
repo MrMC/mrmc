@@ -200,10 +200,10 @@ int CWinSystemIOS::GetCurrentScreen()
   int idx = 0;
 #if !defined(TARGET_DARWIN_TVOS)
   if ([[IOSScreenManager sharedInstance] isExternalScreen])
-#endif
   {
     idx = 1;
   }
+#endif
   return idx;
 }
 
@@ -387,7 +387,7 @@ bool CWinSystemIOS::InitDisplayLink(CVideoSyncIos *syncImpl)
   //init with the appropriate display link for the
   //used screen
 #if defined(TARGET_DARWIN_TVOS)
-  unsigned int currentScreenIdx = 1;
+  unsigned int currentScreenIdx = 0;
 #else
   if([[IOSScreenManager sharedInstance] isExternalScreen])
   {
