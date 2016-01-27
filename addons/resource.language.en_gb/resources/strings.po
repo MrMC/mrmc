@@ -17355,7 +17355,32 @@ msgctxt "#36603"
 msgid "This category contains the settings for how video output is handled."
 msgstr ""
 
-#empty strings from id 36604 to 36899
+#: system/settings/settings.xml
+msgctxt "#36604"
+msgid "Sort library items by date added"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36605"
+msgid "It will sort library items by date added (current date, modified time or creation time)"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36606"
+msgid "Current date/time"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36607"
+msgid "File modify time"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36608"
+msgid "File change time"
+msgstr ""
+
+#empty strings from id 36609 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

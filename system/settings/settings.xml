@@ -504,6 +504,18 @@
         </setting>
       </group>
       <group id="3">
+        <setting id="videolibrary.dateadded" type="integer" label="36604" help="36605">
+          <level>2</level>
+          <default>1</default>
+          <constraints>
+            <options>
+              <option label="36606">0</option> <!-- use current datetime when adding a video -->
+              <option label="36607">1</option> <!-- (default) prefer to use the files mtime (if it's valid) and only use file's ctime if the mtime isn't valid -->
+              <option label="36608">2</option> <!-- use newer datetime of the file's mtime and ctime -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videolibrary.cleanup" type="action" label="334" help="36148">
           <level>2</level>
           <control type="button" format="action" />

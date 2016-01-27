@@ -879,7 +879,8 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
 
     CDateTime dateAdded;
     // Skip looking at the files ctime/mtime if defined by the user through as.xml
-    if (g_advancedSettings.m_iVideoLibraryDateAdded > 0)
+    int VideoLibraryDateAdded = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_DATEADDED);
+    if (VideoLibraryDateAdded > 0)
     {
       // Let's try to get the modification datetime
       struct __stat64 buffer;
@@ -888,7 +889,7 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
         time_t now = time(NULL);
         time_t addedTime;
         // Prefer the modification time if it's valid
-        if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
+        if (VideoLibraryDateAdded == 1)
         {
           if (buffer.st_mtime != 0 && (time_t)buffer.st_mtime <= now)
             addedTime = (time_t)buffer.st_mtime;
@@ -1299,7 +1300,7 @@ bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, const 
     CDateTime dateAdded;
 
     // Skip looking at the files ctime/mtime if defined by the user through as.xml
-    if (g_advancedSettings.m_iVideoLibraryDateAdded > 0)
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_DATEADDED) > 0)
     {
       struct __stat64 buffer;
       if (XFILE::CFile::Stat(path, &buffer) == 0)

@@ -343,7 +343,6 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryImportWatchedState = false;
   m_bVideoLibraryImportResumePoint = false;
   m_bVideoScannerIgnoreErrors = false;
-  m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
   m_iEpgLingerTime = 60 * 24;           /* keep 24 hours by default */
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
@@ -782,7 +781,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
-    XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
