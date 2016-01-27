@@ -1292,7 +1292,7 @@ MainController *g_xbmcController;
   g_Windowing.OnAppFocusChange(false);
 
   // Apple says to disable ZeroConfig when moving to background
-  CNetworkServices::GetInstance().StartZeroconf();
+  CNetworkServices::GetInstance().StopZeroconf();
 
   if (m_isPlayingBeforeInactive)
   {
