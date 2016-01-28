@@ -148,7 +148,7 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
               dstfile.Close();
             }
             srcfile.Close();
-            XFILE::CFile::Delete(srcUrl);
+            srcfile.Delete(srcUrl);
           }
         }
       }
