@@ -257,9 +257,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     bool m_useDDSFanart;
     CPictureScalingAlgorithm::Algorithm m_imageScalingAlgorithm;
 
-    int m_sambaclienttimeout;
     std::string m_sambadoscodepage;
-    bool m_sambastatfiles;
 
     bool m_bHTTPDirectoryStatFilesize;
 
@@ -309,11 +307,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     int m_iEdlCommBreakAutowait;    // seconds
     int m_iEdlCommBreakAutowind;    // seconds
 
-    int m_curlconnecttimeout;
-    int m_curllowspeedtime;
-    int m_curlretries;
-    bool m_curlDisableIPV6;
-
     bool m_fullScreen;
     bool m_startFullScreen;
     bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
@@ -353,10 +346,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     int  m_guiAlgorithmDirtyRegions;
     int  m_guiDirtyRegionNoFlipTimeout;
     unsigned int m_addonPackageFolderSize;
-
-    unsigned int m_cacheMemBufferSize;
-    unsigned int m_networkBufferMode;
-    float m_readBufferFactor;
 
     bool m_jsonOutputCompact;
     unsigned int m_jsonTcpPort;

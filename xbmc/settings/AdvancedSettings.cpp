@@ -314,9 +314,7 @@ void CAdvancedSettings::Initialize()
   m_useDDSFanart = false;
   m_imageScalingAlgorithm = CPictureScalingAlgorithm::Default;
 
-  m_sambaclienttimeout = 10;
   m_sambadoscodepage = "";
-  m_sambastatfiles = true;
 
   m_bHTTPDirectoryStatFilesize = false;
 
@@ -361,12 +359,6 @@ void CAdvancedSettings::Initialize()
   m_iEdlCommBreakAutowait = 0;             // Off by default
   m_iEdlCommBreakAutowind = 0;             // Off by default
 
-  m_curlconnecttimeout = 10;
-  m_curllowspeedtime = 20;
-  m_curlretries = 2;
-  m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
-                                  //with ipv6.
-
 #if defined(TARGET_DARWIN_IOS)
   m_startFullScreen = true;
 #else
@@ -409,11 +401,6 @@ void CAdvancedSettings::Initialize()
   m_bPVRAutoScanIconsUserSet       = false;
   m_iPVRNumericChannelSwitchTimeout = 1000;
 
-  m_cacheMemBufferSize = 1024 * 1024 * 20;
-  m_networkBufferMode = 0; // Default (buffer all internet streams/filesystems)
-  // the following setting determines the readRate of a player data
-  // as multiply of the default data read rate
-  m_readBufferFactor = 4.0f;
   m_addonPackageFolderSize = 200;
 
   m_jsonOutputCompact = true;
@@ -803,18 +790,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "blackbarcompensation", m_slideshowBlackBarCompensation, 0.0f, 50.0f);
   }
 
-  pElement = pRootElement->FirstChildElement("network");
-  if (pElement)
-  {
-    XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
-    XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
-    XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
-    XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
-    XMLUtils::GetUInt(pElement, "cachemembuffersize", m_cacheMemBufferSize);
-    XMLUtils::GetUInt(pElement, "buffermode", m_networkBufferMode, 0, 3);
-    XMLUtils::GetFloat(pElement, "readbufferfactor", m_readBufferFactor);
-  }
-
   pElement = pRootElement->FirstChildElement("jsonrpc");
   if (pElement)
   {
@@ -826,8 +801,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pElement)
   {
     XMLUtils::GetString(pElement,  "doscodepage",   m_sambadoscodepage);
-    XMLUtils::GetInt(pElement, "clienttimeout", m_sambaclienttimeout, 5, 100);
-    XMLUtils::GetBoolean(pElement, "statfiles", m_sambastatfiles);
   }
 
   pElement = pRootElement->FirstChildElement("httpdirectory");

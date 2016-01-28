@@ -27,7 +27,7 @@
 #include "CircularCache.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 
 #include <cassert>
 #include <algorithm>
@@ -180,7 +180,8 @@ bool CFileCache::Open(const CURL& url)
 
   if (!m_pCache)
   {
-    if (g_advancedSettings.m_cacheMemBufferSize == 0)
+    unsigned int cacheMemBufferSize = (unsigned int)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_CACHEMEMBUFFERSIZE) * 1024 * 1024;
+    if (cacheMemBufferSize == 0)
     {
       // Use cache on disk
       m_pCache = new CSimpleFileCache();
@@ -188,14 +189,14 @@ bool CFileCache::Open(const CURL& url)
     else
     {
       size_t cacheSize;
-      if (m_fileSize > 0 && m_fileSize < g_advancedSettings.m_cacheMemBufferSize && !(m_flags & READ_AUDIO_VIDEO))
+      if (m_fileSize > 0 && m_fileSize < cacheMemBufferSize && !(m_flags & READ_AUDIO_VIDEO))
       {
         // NOTE: We don't need to take into account READ_MULTI_STREAM here as it's only used for audio/video
         cacheSize = m_fileSize;
       }
       else
       {
-        cacheSize = g_advancedSettings.m_cacheMemBufferSize;
+        cacheSize = cacheMemBufferSize;
       }
 
       size_t back = cacheSize / 4;
@@ -297,13 +298,15 @@ void CFileCache::Process()
 
     while (m_writeRate)
     {
-      if (m_writePos - m_readPos < m_writeRate * g_advancedSettings.m_readBufferFactor)
+      int readBufferFactor = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_READBUFFERFACTOR);
+      
+      if (m_writePos - m_readPos < m_writeRate * readBufferFactor)
       {
         limiter.Reset(m_writePos);
         break;
       }
 
-      if (limiter.Rate(m_writePos) < m_writeRate * g_advancedSettings.m_readBufferFactor)
+      if (limiter.Rate(m_writePos) < m_writeRate * readBufferFactor)
         break;
 
       if (m_seekEvent.WaitMSec(100))

@@ -17380,6 +17380,116 @@ msgctxt "#36608"
 msgid "File change time"
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#36609"
+msgid "Timeout in seconds"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36610"
+msgid "Timeout in seconds for libcurl (http/ftp) connections"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36611"
+msgid "Connection lowspeed time"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36612"
+msgid "Time in seconds for libcurl to consider a connection lowspeed"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36613"
+msgid "Amount of retries"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36614"
+msgid "Amount of retries for certain failed libcurl operations (e.g. timeout)"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36615"
+msgid "Disable ipv6"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36616"
+msgid "Certain hardware/OS combinations have trouble with ipv6"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36617"
+msgid "Buffer size (MB)"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36618"
+msgid "Number of MB used for buffering streams in memory, When set to 0 the cache will be written to disk instead of RAM"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36619"
+msgid "Buffer mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36620"
+msgid "Choose what to buffer(all internet filesystems, all filesystems, true internet filesystems)"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36621"
+msgid "Buffer all internet filesystems"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36622"
+msgid "Buffer all filesystems"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36623"
+msgid "Only buffer true internet filesystems"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36624"
+msgid "No buffer"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36625"
+msgid "SMB stat"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36626"
+msgid "Disable to speed up listings of large directories over SMB network"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36627"
+msgid "SMB timeout"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36628"
+msgid "SMB timeout (in seconds)"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36629"
+msgid "Max readrate factor"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36630"
+msgid "This can help on bad connections to keep the cache filled. It will also greatly speed up buffering"
+msgstr ""
+
 #empty strings from id 36609 to 36899
 
 #: xbmc/media/MediaType.cpp

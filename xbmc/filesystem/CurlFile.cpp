@@ -604,7 +604,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 
-  if (g_advancedSettings.m_curlDisableIPV6)
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_NETWORK_DISABLEIPV6))
     g_curlInterface.easy_setopt(h, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
   if (m_proxy.length() > 0)
@@ -619,7 +619,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
 
   if (m_connecttimeout == 0)
-    m_connecttimeout = g_advancedSettings.m_curlconnecttimeout;
+    m_connecttimeout = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_CURLCLIENTTIMEOUT);
 
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
   g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_connecttimeout);
@@ -628,7 +628,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
 
   if (m_lowspeedtime == 0)
-    m_lowspeedtime = g_advancedSettings.m_curllowspeedtime;
+    m_lowspeedtime = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_CURLLOWSPEEDTIME);
 
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
@@ -1326,7 +1326,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, g_advancedSettings.m_curlconnecttimeout);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_CURLCLIENTTIMEOUT));
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1); 
 
@@ -1357,7 +1357,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     /* somehow curl doesn't reset CURLOPT_NOBODY properly so reset everything */
     SetCommonOptions(m_state);
     SetRequestHeaders(m_state);
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, g_advancedSettings.m_curlconnecttimeout);
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_CURLCLIENTTIMEOUT));
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
 #if LIBCURL_VERSION_NUM >= 0x072000 // 0.7.32
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_XFERINFOFUNCTION, transfer_abort_callback);
@@ -1558,7 +1558,7 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
         m_overflowSize = 0;
 
         // If we got here something is wrong
-        if (++retry > g_advancedSettings.m_curlretries)
+        if (++retry > CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_CURLRETRIES))
         {
           CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Reconnect failed!");
           // Reset the rest of the variables like we would in Disconnect()

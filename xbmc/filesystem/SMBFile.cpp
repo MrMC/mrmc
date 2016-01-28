@@ -177,7 +177,7 @@ void CSMB::Init()
     smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
-    smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+    smbc_setTimeout(m_context, CSettings::GetInstance().GetInt(CSettings::SETTING_SMB_CLIENTTIMEOUT) * 1000);
     // we do not need to strdup these, smbc_setXXX below will make their own copies
     if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
       smbc_setWorkgroup(m_context, (char*)CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
@@ -190,7 +190,7 @@ void CSMB::Init()
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
-    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
+    m_context->timeout = CSettings::GetInstance().GetInt(CSettings::SETTING_SMB_CLIENTTIMEOUT) * 1000;
     // we need to strdup these, they will get free'ed on smbc_free_context
     if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
       m_context->workgroup = strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());

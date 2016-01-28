@@ -290,6 +290,8 @@ public:
   static const std::string SETTING_SMB_WINSSERVER;
   static const std::string SETTING_SMB_WORKGROUP;
   static const std::string SETTING_SMB_ENABLEDSM;
+  static const std::string SETTING_SMB_STATFILES;
+  static const std::string SETTING_SMB_CLIENTTIMEOUT;
   static const std::string SETTING_VIDEOSCREEN_MONITOR;
   static const std::string SETTING_VIDEOSCREEN_SCREEN;
   static const std::string SETTING_VIDEOSCREEN_RESOLUTION;
@@ -338,6 +340,13 @@ public:
   static const std::string SETTING_NETWORK_HTTPPROXYUSERNAME;
   static const std::string SETTING_NETWORK_HTTPPROXYPASSWORD;
   static const std::string SETTING_NETWORK_BANDWIDTH;
+  static const std::string SETTING_NETWORK_CURLCLIENTTIMEOUT;
+  static const std::string SETTING_NETWORK_CURLLOWSPEEDTIME;
+  static const std::string SETTING_NETWORK_CURLRETRIES;
+  static const std::string SETTING_NETWORK_DISABLEIPV6;
+  static const std::string SETTING_NETWORK_CACHEMEMBUFFERSIZE;
+  static const std::string SETTING_NETWORK_BUFFERMODE;
+  static const std::string SETTING_NETWORK_READBUFFERFACTOR;
   static const std::string SETTING_POWERMANAGEMENT_DISPLAYSOFF;
   static const std::string SETTING_POWERMANAGEMENT_SHUTDOWNTIME;
   static const std::string SETTING_POWERMANAGEMENT_SHUTDOWNSTATE;

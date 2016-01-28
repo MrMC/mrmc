@@ -23,6 +23,7 @@
 #include "linux/PlatformDefs.h"
 #endif
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "MemBufferCache.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
@@ -37,9 +38,10 @@ MemBufferCache::MemBufferCache()
  : CCacheStrategy()
 {
   m_nStartPosition = 0;
-  m_buffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
-  m_HistoryBuffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
-  m_forwardBuffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
+  unsigned int cacheMemBufferSize = (unsigned int)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_CACHEMEMBUFFERSIZE) * 1024 * 1024;
+  m_buffer.Create(cacheMemBufferSize + 1);
+  m_HistoryBuffer.Create(cacheMemBufferSize + 1);
+  m_forwardBuffer.Create(cacheMemBufferSize + 1);
 }
 
 
