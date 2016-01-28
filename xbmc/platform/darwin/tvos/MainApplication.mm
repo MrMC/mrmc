@@ -22,11 +22,11 @@
 #import <objc/runtime.h>
 
 #import "platform/darwin/tvos/MainApplication.h"
-#import "platform/darwin/tvos/PreflightHandler.h"
 
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/TVOSTopShelf.h"
+#import "platform/darwin/tvos/PreflightHandler.h"
 
 @implementation MainApplicationDelegate
 MainController *m_xbmcController;
@@ -73,6 +73,11 @@ MainController *m_xbmcController;
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
   //PRINT_SIGNATURE();
+  // applicationDidFinishLaunching is the very first callback that we get
+
+  // This needs to run before anything does any CLog::Log calls
+  // as they will directly cause guitsetting to get accessed/created
+  // via debug log settings.
   CPreflightHandler::MigrateUserdataXMLToNSUserDefaults();
 
   NSError *err = nullptr;
