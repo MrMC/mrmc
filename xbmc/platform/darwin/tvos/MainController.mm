@@ -1332,7 +1332,10 @@ MainController *g_xbmcController;
   // restart ZeroConfig (if stopped)
   CNetworkServices::GetInstance().StartZeroconf();
 
-  g_application.UpdateLibraries();
+  // do not update if we are already updating
+  if (!(g_application.IsVideoScanning() || g_application.IsMusicScanning()))
+    g_application.UpdateLibraries();
+
   CTVOSTopShelf::GetInstance().RunTopShelf();
 }
 
