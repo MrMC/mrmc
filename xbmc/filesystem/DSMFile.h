@@ -64,6 +64,7 @@ private:
   smb_session        *m_smb_session;
   smb_tid             m_smb_tid;
   int                 m_lastActive;
+  time_t              m_timeout_sec;
 };
 
 typedef std::shared_ptr<CDSMSession> CDSMSessionPtr;

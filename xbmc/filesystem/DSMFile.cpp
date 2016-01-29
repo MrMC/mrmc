@@ -195,6 +195,8 @@ int CDSMSession::ConnectSession(const CURL &url)
     return NT_STATUS_LOGON_FAILURE;
   }
 
+  m_timeout_sec = (time_t)CSettings::GetInstance().GetInt(CSettings::SETTING_SMB_CLIENTTIMEOUT);
+
   return NT_STATUS_SUCCESS;
 }
 
@@ -217,11 +219,32 @@ bool CDSMSession::ConnectShare(const std::string &path)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    if (m_smb_tid == 0)
+    if (m_smb_tid <= 0)
     {
       // trees are always relative to share point.
       std::string sharename = extract_share_name_convert(path);
-      m_smb_tid = m_dsmlib->smb_tree_connect(m_smb_session, sharename.c_str());
+
+      time_t start = 0;
+      while(1)
+      {
+        m_lastActive = XbmcThreads::SystemClockMillis();
+        m_smb_tid = m_dsmlib->smb_tree_connect(m_smb_session, sharename.c_str());
+        if (m_smb_tid > 0)
+          break;
+
+        if (!start)
+          start = time(NULL);
+        else
+        {
+          if (time(NULL) - start >= m_timeout_sec)
+          {
+            CLog::Log(LOGERROR, "CDSMSession:ConnectShare timeout");
+            break;
+          }
+        }
+        // 100ms retry
+        usleep(100 * 1000);
+      }
       if (m_smb_tid < 0)
       {
         CLog::Log(LOGERROR, "CDSMSession: Unable to connect to share");
@@ -239,8 +262,6 @@ smb_fd CDSMSession::CreateFileHande(const std::string &file)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(file))
@@ -248,8 +269,29 @@ smb_fd CDSMSession::CreateFileHande(const std::string &file)
 
     // paths are relative to the m_smb_tid, which is the share name
     std::string filepath = strip_share_name_convert(file);
-    fd = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RO);
-    if (!fd)
+
+    time_t start = 0;
+    while(1)
+    {
+      m_lastActive = XbmcThreads::SystemClockMillis();
+      fd = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RO);
+      if (fd > 0)
+        break;
+
+      if (!start)
+        start = time(NULL);
+      else
+      {
+        if (time(NULL) - start >= m_timeout_sec)
+        {
+          CLog::Log(LOGERROR, "CDSMSession:CreateFileHande timeout");
+          break;
+        }
+      }
+      // 100ms retry
+      usleep(100 * 1000);
+    }
+    if (fd == 0)
       CLog::Log(LOGERROR, "CDSMSession: Was connected but could not create filehandle for '%s'", file.c_str());
   }
   else
@@ -275,8 +317,28 @@ smb_fd CDSMSession::CreateFileHandeForWrite(const std::string &file, bool bOverW
 
     // paths are relative to the m_smb_tid, which is the share name.
     std::string filepath = strip_share_name_convert(file);
-    fd = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RW);
-    if (!fd)
+
+    time_t start = 0;
+    while(1)
+    {
+      fd = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RW);
+      if (fd > 0)
+        break;
+
+      if (!start)
+        start = time(NULL);
+      else
+      {
+        if (time(NULL) - start >= m_timeout_sec)
+        {
+          CLog::Log(LOGERROR, "CDSMSession:CreateFileHandeForWrite timeout");
+          break;
+        }
+      }
+      // 100ms retry
+      usleep(100 * 1000);
+    }
+    if (fd == 0)
       CLog::Log(LOGERROR, "CDSMSession: Was connected but could not create filehandle for '%s'", file.c_str());
   }
   else
@@ -611,34 +673,118 @@ int CDSMSession::Stat(const char *path, struct __stat64* buffer)
 int64_t CDSMSession::Seek(const smb_fd fd, uint64_t position, int iWhence)
 {
   CSingleLock lock(m_critSect);
-  m_lastActive = XbmcThreads::SystemClockMillis();
+
   ssize_t offset = position;
-  ssize_t curpos = m_dsmlib->smb_fseek(m_smb_session, fd, offset, iWhence);
+  ssize_t curpos = 0;
+  time_t start = 0;
+  while(1)
+  {
+    m_lastActive = XbmcThreads::SystemClockMillis();
+    curpos = m_dsmlib->smb_fseek(m_smb_session, fd, offset, iWhence);
+    if (curpos >= 0)
+      break;
+
+    if (!start)
+      start = time(NULL);
+    else
+    {
+      if (time(NULL) - start >= m_timeout_sec)
+      {
+        CLog::Log(LOGERROR, "CDSMSession:Seek timeout");
+        break;
+      }
+    }
+    // 100ms retry
+    usleep(100 * 1000);
+  }
   return curpos;
 }
 
 int64_t CDSMSession::Read(const smb_fd fd, void *buffer, size_t size)
 {
   CSingleLock lock(m_critSect);
-  m_lastActive = XbmcThreads::SystemClockMillis();
-  ssize_t bytesread = m_dsmlib->smb_fread(m_smb_session, fd, buffer, size);
+
+  ssize_t bytesread = 0;
+  time_t start = 0;
+  while(1)
+  {
+    m_lastActive = XbmcThreads::SystemClockMillis();
+    bytesread = m_dsmlib->smb_fread(m_smb_session, fd, buffer, size);
+    if (bytesread >= 0)
+      break;
+
+    if (!start)
+      start = time(NULL);
+    else
+    {
+      if (time(NULL) - start >= m_timeout_sec)
+      {
+        CLog::Log(LOGERROR, "CDSMSession:Read timeout");
+        break;
+      }
+    }
+    // 100ms retry
+    usleep(100 * 1000);
+  }
   return bytesread;
 }
 
 ssize_t CDSMSession::Write(const smb_fd fd, const void *buffer, size_t size)
 {
   CSingleLock lock(m_critSect);
-  m_lastActive = XbmcThreads::SystemClockMillis();
-  ssize_t byteswritten = m_dsmlib->smb_fwrite(m_smb_session, fd, buffer, size);
+
+  ssize_t byteswritten = 0;
+  time_t start = 0;
+  while(1)
+  {
+    m_lastActive = XbmcThreads::SystemClockMillis();
+    byteswritten = m_dsmlib->smb_fwrite(m_smb_session, fd, buffer, size);
+    if (byteswritten >= 0)
+      break;
+
+    if (!start)
+      start = time(NULL);
+    else
+    {
+      if (time(NULL) - start >= m_timeout_sec)
+      {
+        CLog::Log(LOGERROR, "CDSMSession:Write timeout");
+        break;
+      }
+    }
+    // 100ms retry
+      usleep(100 * 1000);
+  }
   return byteswritten;
 }
 
 int64_t CDSMSession::GetPosition(const smb_fd fd)
 {
   CSingleLock lock(m_critSect);
-  m_lastActive = XbmcThreads::SystemClockMillis();
+
   ssize_t offset = 0;
-  ssize_t curpos = m_dsmlib->smb_fseek(m_smb_session, fd, offset, SMB_SEEK_CUR);
+  ssize_t curpos = 0;
+  time_t start = 0;
+  while(1)
+  {
+    m_lastActive = XbmcThreads::SystemClockMillis();
+    curpos = m_dsmlib->smb_fseek(m_smb_session, fd, offset, SMB_SEEK_CUR);
+    if (curpos >= 0)
+      break;
+
+    if (!start)
+      start = time(NULL);
+    else
+    {
+      if (time(NULL) - start >= m_timeout_sec)
+      {
+        CLog::Log(LOGERROR, "CDSMSession:GetPosition timeout");
+        break;
+      }
+    }
+    // 100ms retry
+    usleep(100 * 1000);
+  }
   return curpos;
 }
 

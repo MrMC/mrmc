@@ -219,7 +219,8 @@ public:
   virtual void Unload()
   {
     // no lock needed here either, once we unload, we are gone
-    netbios_ns_destroy(m_netbios_ns), m_netbios_ns = nullptr;
+    if (m_netbios_ns)
+      netbios_ns_destroy(m_netbios_ns), m_netbios_ns = nullptr;
     DllDynamic::Unload();
   }
 
