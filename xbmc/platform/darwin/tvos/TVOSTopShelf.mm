@@ -107,6 +107,12 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
     NSString *tvTitle = [NSString stringWithUTF8String:g_localizeStrings.Get(20386).c_str()];
     [shared setObject:tvTitle forKey:@"moviesTitle"];
   }
+  else
+  {
+    // cleanup if there is no RA
+    [shared removeObjectForKey:@"movies"];
+    [shared removeObjectForKey:@"moviesTitle"];
+  }
   
   if (tv.Size() > 0)
   {
@@ -150,6 +156,12 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
     [shared setObject:tvArray forKey:@"tv"];
     NSString *tvTitle = [NSString stringWithUTF8String:g_localizeStrings.Get(20387).c_str()];
     [shared setObject:tvTitle forKey:@"tvTitle"];
+  }
+  else
+  {
+    // cleanup if there is no RA
+    [shared removeObjectForKey:@"tv"];
+    [shared removeObjectForKey:@"tvTitle"];
   }
   
   // remove unused thumbs from cache folder
