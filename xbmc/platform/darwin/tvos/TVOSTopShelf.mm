@@ -139,7 +139,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
         videodatabase.Close();
       }
       
-      std::string fileName = URIUtils::GetFileName(seasonThumb.c_str());
+      std::string fileName = URIUtils::ReplaceExtension(title,URIUtils::GetExtension(seasonThumb.c_str()));
       std::string destPath = URIUtils::AddFileToFolder(raPath,fileName);
       if (!XFILE::CFile::Exists(destPath))
         XFILE::CFile::Copy(seasonThumb.c_str(),destPath);
