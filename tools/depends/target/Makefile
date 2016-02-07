@@ -30,7 +30,6 @@ DEPENDS += libflac
 DEPENDS += fribidi
 DEPENDS += libmpeg2
 DEPENDS += libass
-DEPENDS += libsquish
 DEPENDS += librtmp
 DEPENDS += libxml2
 DEPENDS += rapidjson
