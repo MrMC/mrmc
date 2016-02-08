@@ -27,7 +27,8 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   LANGSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDSYS} --exclude resource.uisounds*"
 
   # rsync command for including everything but the skins
-  ADDONSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDDBG} --exclude addons/lib --exclude addons/share --exclude addons/skin.mrmc --exclude addons/skin.mrmc-touch --exclude addons/skin.amber --exclude addons/skin.pm3.hd --exclude *changelog.* --exclude *library.*/*.h --exclude *library.*/*.cpp --exclude *xml.in"
+  DEFAULTSKIN_EXCLUDES="--exclude addons/skin.mrmc --exclude addons/skin.mrmc-touch --exclude addons/skin.amber --exclude addons/skin.pm3.hd"
+  ADDONSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDDBG} ${DEFAULTSKIN_EXCLUDES} --exclude addons/lib --exclude addons/share  --exclude *changelog.* --exclude *library.*/*.h --exclude *library.*/*.cpp --exclude *xml.in"
 
   # binary name is MrMC but we build MrMC so to get a clean binary each time
   mv $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME
