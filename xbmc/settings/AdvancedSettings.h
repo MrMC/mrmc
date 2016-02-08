@@ -252,7 +252,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
      Used for actual thumbs (eg bookmark thumbs, picture thumbs) rather than cover art which uses m_imageRes instead
      */
     unsigned int GetThumbSize() const { return m_imageRes / 2; };
-    bool m_useDDSFanart;
     CPictureScalingAlgorithm::Algorithm m_imageScalingAlgorithm;
 
     std::string m_sambadoscodepage;
