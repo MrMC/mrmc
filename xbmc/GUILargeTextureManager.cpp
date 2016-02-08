@@ -53,7 +53,7 @@ bool CImageLoader::DoWork()
     return false;
 
   if (m_use_cache)
-    loadPath = CTextureCache::GetInstance().CheckCachedImage(texturePath, true, needsChecking);
+    loadPath = CTextureCache::GetInstance().CheckCachedImage(texturePath, needsChecking);
   else
     loadPath = texturePath;
 
