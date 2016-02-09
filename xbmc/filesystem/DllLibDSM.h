@@ -216,12 +216,11 @@ public:
     return true;
   }
 
-  virtual void Unload()
+  void SuspendNetBiosNS()
   {
-    // no lock needed here either, once we unload, we are gone
+    CSingleLock lock(m_netbios_ns_lock);
     if (m_netbios_ns)
       netbios_ns_destroy(m_netbios_ns), m_netbios_ns = nullptr;
-    DllDynamic::Unload();
   }
 
   // the following two are special, they will start/stop internal thread
@@ -230,11 +229,21 @@ public:
   virtual int netbios_ns_resolve(const char *name, char type, uint32_t *addr)
   {
     CSingleLock lock(m_netbios_ns_lock);
+
+    // startup netbios_ns if not running
+    if (!m_netbios_ns)
+      m_netbios_ns = netbios_ns_new();
+
     return netbios_ns_resolve(m_netbios_ns, name, type, addr);
   }
   virtual const char *netbios_ns_inverse(uint32_t ip)
   {
     CSingleLock lock(m_netbios_ns_lock);
+
+    // startup netbios_ns if not running
+    if (!m_netbios_ns)
+      m_netbios_ns = netbios_ns_new();
+
     return netbios_ns_inverse(m_netbios_ns, ip);
   }
 
@@ -246,6 +255,11 @@ public:
     netbios_ns_discover_callbacks *callbacks)
   {
     m_netbios_ns_lock.lock();
+
+    // stop netbios_ns if running
+    if (m_netbios_ns)
+      netbios_ns_destroy(m_netbios_ns), m_netbios_ns = nullptr;
+
     return netbios_ns_discover_start(m_netbios_ns, broadcast_timeout, callbacks);
   }
   virtual int netbios_ns_discover_stop()

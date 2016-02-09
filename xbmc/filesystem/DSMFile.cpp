@@ -816,8 +816,6 @@ CDSMSessionPtr CDSMSessionManager::CreateSession(const CURL &url)
   if (!m_dsmlib)
   {
     m_dsmlib = new DllLibDSM();
-    // disable delayed unload BEFORE loading.
-    m_dsmlib->EnableDelayedUnload(false);
     m_dsmlib->Load();
   }
 
@@ -869,14 +867,6 @@ void CDSMSessionManager::ClearOutIdleSessions()
     else
       ++iter;
   }
-  if (session_removed && m_dsmSessions.empty())
-  {
-    if (m_dsmlib)
-    {
-      CLog::Log(LOGDEBUG, "CDSMSessionManager: idle, unloading libdsm");
-      SAFE_DELETE(m_dsmlib);
-    }
-  }
 }
 
 void CDSMSessionManager::DisconnectAllSessions()
@@ -885,15 +875,18 @@ void CDSMSessionManager::DisconnectAllSessions()
 
   for (std::map<std::string, CDSMSessionPtr>::iterator iter = m_dsmSessions.begin(); iter != m_dsmSessions.end();)
   {
-    iter->second->DisconnectSession();
+    // if someone is holding a copy of the session (player pause ?),
+    // nothing we can do but pray.
+    if (iter->second.unique())
+      iter->second->DisconnectSession();
     m_dsmSessions.erase(iter++);
   }
 
+  // suspend the netbios_ns, it has a thread running and sockets active.
   if (m_dsmlib)
-  {
-    CLog::Log(LOGDEBUG, "CDSMSessionManager:DisconnectAllSessions, unloading libdsm");
-    SAFE_DELETE(m_dsmlib);
-  }
+    m_dsmlib->SuspendNetBiosNS();
+
+  CLog::Log(LOGDEBUG, "CDSMSessionManager:DisconnectAllSessions");
 }
 
 
