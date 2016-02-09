@@ -18,26 +18,22 @@
  *
  */
 
-#include "threads/SystemClock.h"
 #include "SFTPFile.h"
+
 #ifdef HAS_FILESYSTEM_SFTP
-#include "threads/SingleLock.h"
-#include "utils/log.h"
+
 #include "URL.h"
+#include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+
 #include <fcntl.h>
 #include <sstream>
+
 #if defined(TARGET_DARWIN_IOS)
-#include "utils/StringUtils.h"
-#include "platform/darwin/DarwinUtils.h"
-#endif
-#ifndef S_ISDIR
-#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
-#endif
-#ifndef S_ISREG
-#define S_ISREG(m) ((m & _S_IFREG) != 0)
-#endif
-#ifndef O_RDONLY
-#define O_RDONLY _O_RDONLY
+  #include "utils/StringUtils.h"
+  #include "platform/darwin/DarwinUtils.h"
 #endif
 
 using namespace XFILE;
@@ -348,7 +344,7 @@ bool CSFTPSession::VerifyKnownHost(ssh_session session)
 
 bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std::string &username, const std::string &password)
 {
-  int timeout     = SFTP_TIMEOUT;
+  long timeout    = (long)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_CURLCLIENTTIMEOUT);
   m_connected     = false;
   m_session       = NULL;
   m_sftp_session  = NULL;

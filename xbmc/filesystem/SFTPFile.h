@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+
 #ifdef HAS_FILESYSTEM_SFTP
 #include "IFile.h"
 #include "FileItem.h"
@@ -27,6 +28,7 @@
 
 #include <libssh/libssh.h>
 #include <libssh/sftp.h>
+
 #include <string>
 #include <map>
 #include <memory>
@@ -44,9 +46,6 @@ class CURL;
 #define sftp_dir SFTP_DIR*
 #define ssh_session ssh_session*
 #endif
-
-//five secs timeout for SFTP
-#define SFTP_TIMEOUT 5
 
 class CSFTPSession
 {
