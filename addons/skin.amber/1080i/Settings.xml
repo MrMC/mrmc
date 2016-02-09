@@ -103,7 +103,7 @@
             <onclick>noop</onclick>
           </item>
           <item id="4" description="Backgrounds">
-            <visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
+            <!-- <visible>!System.Platform.IOS + !System.Platform.TVOS</visible> -->
             <label>$LOCALIZE[33069]</label>
             <onclick>noop</onclick>
           </item>

@@ -1237,6 +1237,8 @@ int CBuiltins::Execute(const std::string& execString)
     }
     else if (execute == "skin.setimage")
     {
+      // show all network drives
+      g_mediaManager.GetNetworkLocations(localShares);
       if (params.size() > 2)
       {
         value = params[2];
