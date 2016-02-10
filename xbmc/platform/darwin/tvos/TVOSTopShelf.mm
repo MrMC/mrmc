@@ -87,7 +87,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());
       
-      std::string fileName = URIUtils::GetFileName(item->GetArt("thumb").c_str());
+      std::string fileName = URIUtils::ReplaceExtension(item->GetLabel().c_str(),URIUtils::GetExtension(item->GetArt("thumb").c_str()));
       std::string destPath = URIUtils::AddFileToFolder(raPath,fileName);
       if (!XFILE::CFile::Exists(destPath))
         XFILE::CFile::Copy(item->GetArt("thumb").c_str(),destPath);
