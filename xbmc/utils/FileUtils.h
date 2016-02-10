@@ -29,4 +29,5 @@ public:
   static bool RenameFile(const std::string &strFile);
   static bool RemoteAccessAllowed(const std::string &strPath);
   static unsigned int LoadFile(const std::string &filename, void* &outputBuffer);
+  static bool ZebraListAccessCheck(const std::string &filePath);
 };
