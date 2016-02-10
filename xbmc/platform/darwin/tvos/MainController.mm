@@ -1339,7 +1339,7 @@ MainController *g_xbmcController;
   CTVOSTopShelf::GetInstance().RunTopShelf();
 }
 
-- (void)enterForeground
+- (void)becomeActive
 {
   PRINT_SIGNATURE();
   // stop background task (if running)
@@ -1352,6 +1352,7 @@ MainController *g_xbmcController;
 
 - (void)becomeInactive
 {
+  PRINT_SIGNATURE();
   // if we were interrupted, already paused here
   // else if user background us or lock screen, only pause video here, audio keep playing.
   if (g_application.m_pPlayer->IsPlayingVideo() &&
@@ -1509,14 +1510,14 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)setIOSNowPlayingInfo:(NSDictionary *)info
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
   self.m_nowPlayingInfo = info;
   [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.m_nowPlayingInfo];
 }
 //--------------------------------------------------------------
 - (void)onPlay:(NSDictionary *)item
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
   NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
 
   NSString *title = [item objectForKey:@"title"];
@@ -1574,7 +1575,7 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)OnSpeedChanged:(NSDictionary *)item
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
   if (NSClassFromString(@"MPNowPlayingInfoCenter"))
   {
     NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];

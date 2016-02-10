@@ -33,7 +33,7 @@ MainController *m_xbmcController;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-//  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
 
   [m_xbmcController pauseAnimation];
   [m_xbmcController becomeInactive];
@@ -44,12 +44,12 @@ MainController *m_xbmcController;
   //PRINT_SIGNATURE();
 
   [m_xbmcController resumeAnimation];
-  [m_xbmcController enterForeground];
+  [m_xbmcController becomeActive];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-//  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
 
   if (application.applicationState == UIApplicationStateBackground)
   {
@@ -60,14 +60,14 @@ MainController *m_xbmcController;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-//  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
 
   [m_xbmcController stopAnimation];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-//  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
 }
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
@@ -106,6 +106,18 @@ MainController *m_xbmcController;
     std::string cleanURL = *new std::string([[url absoluteString] UTF8String]);
     CTVOSTopShelf::GetInstance().HandleTopShelfUrl(cleanURL,true);
   }
+  return YES;
+}
+
+-(BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
+{
+  //PRINT_SIGNATURE();
+  return YES;
+}
+
+-(BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
+{
+  //PRINT_SIGNATURE();
   return YES;
 }
 

@@ -100,7 +100,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (void) stopAnimation;
 
 - (void) enterBackground;
-- (void) enterForeground;
+- (void) becomeActive;
 - (void) becomeInactive;
 - (void) sendKeyDownUp:(XBMCKey)key;
 - (void) observeDefaultCenterStuff: (NSNotification *)notification;
