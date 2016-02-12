@@ -27,7 +27,6 @@
 #include "FileItem.h"
 #include "DatabaseManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoInfoTag.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
@@ -37,6 +36,7 @@
 
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Base64.h"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -87,10 +87,13 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());
       
-      std::string fileName = URIUtils::ReplaceExtension(item->GetLabel().c_str(),URIUtils::GetExtension(item->GetArt("thumb").c_str()));
-      std::string destPath = URIUtils::AddFileToFolder(raPath,fileName);
+      // srcPath == full path to the thumb
+      std::string srcPath = item->GetArt("thumb");
+      // make the destfilename different for distinguish files with the same name
+      std::string fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(srcPath);
+      std::string destPath = URIUtils::AddFileToFolder(raPath, fileName);
       if (!XFILE::CFile::Exists(destPath))
-        XFILE::CFile::Copy(item->GetArt("thumb").c_str(),destPath);
+        XFILE::CFile::Copy(srcPath,destPath);
       else
         // remove from array so it doesnt get deleted at the end
         if ([filePaths containsObject:[NSString stringWithUTF8String:fileName.c_str()]])
@@ -99,7 +102,8 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       
       [movieDict setValue:[NSString stringWithUTF8String:item->GetLabel().c_str()] forKey:@"title"];
       [movieDict setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
-      [movieDict setValue:[NSString stringWithFormat:@"%d",item->GetVideoInfoTag()->m_iDbId] forKey:@"url"];
+      std::string fullPath = item->GetVideoInfoTag()->GetPath();
+      [movieDict setValue:[NSString stringWithUTF8String:Base64::Encode(fullPath).c_str()] forKey:@"url"];
       
       [movieArray addObject:movieDict];
     }
@@ -139,10 +143,10 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
         videodatabase.Close();
       }
       
-      std::string fileName = URIUtils::ReplaceExtension(title,URIUtils::GetExtension(seasonThumb.c_str()));
-      std::string destPath = URIUtils::AddFileToFolder(raPath,fileName);
+      std::string fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(seasonThumb);
+      std::string destPath = URIUtils::AddFileToFolder(raPath, fileName);
       if (!XFILE::CFile::Exists(destPath))
-        XFILE::CFile::Copy(seasonThumb.c_str(),destPath);
+        XFILE::CFile::Copy(seasonThumb ,destPath);
       else
         // remove from array so it doesnt get deleted at the end
         if ([filePaths containsObject:[NSString stringWithUTF8String:fileName.c_str()]])
@@ -150,7 +154,8 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       
       [tvDict setValue:[NSString stringWithUTF8String:title.c_str()] forKey:@"title"];
       [tvDict setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
-      [tvDict setValue:[NSString stringWithUTF8String:item->GetVideoInfoTag()->m_strUniqueId.c_str()] forKey:@"url"];
+      std::string fullPath = item->GetVideoInfoTag()->GetPath();
+      [tvDict setValue:[NSString stringWithUTF8String:Base64::Encode(fullPath).c_str()] forKey:@"url"];
       [tvArray addObject:tvDict];
     }
     [shared setObject:tvArray forKey:@"tv"];
@@ -176,33 +181,17 @@ void CTVOSTopShelf::RunTopShelf()
   if (m_handleUrl)
   {
     m_handleUrl = false;
-    
     std::vector<std::string> split = StringUtils::Split(m_url, "/");
-    
-    std::string url;
-    CVideoDatabase videodatabase;
-    if (videodatabase.Open())
+    std::string url =Base64::Decode(split[3]);
+    if (split[2] == "display")
     {
-      if (split[3] == "tv")
-      {
-        url = videodatabase.GetEpisodeUrlFromUnique(split[4].c_str());
-      }
-      else
-      {
-        url = videodatabase.GetMovieUrlFromMovieId(split[4].c_str());
-      }
-      videodatabase.Close();
-      
-      if (split[2] == "display")
-      {
-        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_SHOW_VIDEO_INFO, -1, -1, static_cast<void*>(new CFileItem(url.c_str(), false)));
-      }
-      else //play
-      {
-        // its a bit ugly, but only way to get resume window to show
-        std::string cmd = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(url.c_str()).c_str());
-        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
-      }
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_SHOW_VIDEO_INFO, -1, -1, static_cast<void*>(new CFileItem(url.c_str(), false)));
+    }
+    else //play
+    {
+      // its a bit ugly, but only way to get resume window to show
+      std::string cmd = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(url.c_str()).c_str());
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
     }
   }
 }

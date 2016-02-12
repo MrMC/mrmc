@@ -73,8 +73,8 @@
         contentItem.imageShape = TVContentItemImageShapePoster;
         contentItem.title = [movieDict valueForKey:@"title"];
         NSString *url = [movieDict valueForKey:@"url"];
-        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/movie/%@",url]];
-        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/movie/%@",url]];
+        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/%@",url]];
+        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
         [ContentItems addObject:contentItem];
       }
       itemMovie.title = [shared stringForKey:@"moviesTitle"];;
@@ -100,8 +100,8 @@
         contentItem.imageShape = TVContentItemImageShapePoster;
         contentItem.title = [tvDict valueForKey:@"title"];
         NSString *url = [tvDict valueForKey:@"url"];
-        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/tv/%@",url]];
-        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/tv/%@",url]];
+        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/%@",url]];
+        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
         [ContentItemsTv addObject:contentItem];
       }
       itemTv.title = [shared stringForKey:@"tvTitle"];

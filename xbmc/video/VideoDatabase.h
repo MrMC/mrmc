@@ -780,8 +780,6 @@ public:
   bool GetTvShowSeasons(int showId, std::map<int, int> &seasons);
   bool GetTvShowSeasonArt(int mediaId, std::map<int, std::map<std::string, std::string> > &seasonArt);
   bool GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes);
-  std::string GetEpisodeUrlFromUnique(const std::string uniqueId);
-  std::string GetMovieUrlFromMovieId(const std::string movieId);
 
   int AddTag(const std::string &tag);
   void AddTagToItem(int idItem, int idTag, const std::string &type);
