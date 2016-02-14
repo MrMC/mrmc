@@ -30,6 +30,7 @@
 #include "CompileInfo.h"
 
 #include "platform/android/activity/JNIMainActivity.h"
+#include "platform/android/activity/JNIXBMCVideoView.h"
 
 // redirect stdout / stderr to logcat
 // https://codelab.wordpress.com/2014/11/03/how-to-use-standard-output-streams-for-logging-in-android-apps/
@@ -144,6 +145,8 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   std::string frameListener = pkgRoot + "/XBMCOnFrameAvailableListener";
   std::string settingsObserver = pkgRoot + "/XBMCSettingsContentObserver";
   std::string audioFocusChangeListener = pkgRoot + "/XBMCOnAudioFocusChangeListener";
+  std::string inputDeviceListener = pkgRoot + "/XBMCInputDeviceListener";
+  std::string videoView = pkgRoot + "/XBMCVideoView";
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
@@ -261,6 +264,31 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNIMainActivity::_onAudioFocusChange
     };
     env->RegisterNatives(cAudioFocusChangeListener, &mOnAudioFocusChange, 1);
+  }
+
+  jclass cVideoView = env->FindClass(videoView.c_str());
+  if(cVideoView)
+  {
+    JNINativeMethod mOnSurfaceChanged = {
+      "_OnSurfaceChanged",
+      "(Landroid/view/SurfaceHolder;III)V",
+      (void*)&CJNIXBMCVideoView::_OnSurfaceChanged
+    };
+    env->RegisterNatives(cVideoView, &mOnSurfaceChanged, 1);
+
+    JNINativeMethod mOnSurfaceCreated = {
+      "_OnSurfaceCreated",
+      "(Landroid/view/SurfaceHolder;)V",
+      (void*)&CJNIXBMCVideoView::_OnSurfaceCreated
+    };
+    env->RegisterNatives(cVideoView, &mOnSurfaceCreated, 1);
+
+    JNINativeMethod mOnSurfaceDestroyed = {
+      "_OnSurfaceDestroyed",
+      "(Landroid/view/SurfaceHolder;)V",
+      (void*)&CJNIXBMCVideoView::_OnSurfaceDestroyed
+    };
+    env->RegisterNatives(cVideoView, &mOnSurfaceDestroyed, 1);
   }
 
   return version;

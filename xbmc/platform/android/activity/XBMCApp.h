@@ -195,6 +195,9 @@ public:
   static bool WaitVSync(unsigned int milliSeconds);
   static uint64_t GetVsyncTime() { return m_vsynctime; }
 
+  bool getVideosurfaceInUse();
+  void setVideosurfaceInUse(bool videosurfaceInUse);
+
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;

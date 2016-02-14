@@ -29,6 +29,7 @@
 #include "DVDStreamInfo.h"
 #include "threads/Thread.h"
 #include "threads/SingleLock.h"
+#include "platform/android/activity/JNIXBMCVideoView.h"
 #include "platform/android/jni/Surface.h"
 #include "guilib/Geometry.h"
 
@@ -54,7 +55,8 @@ public:
                       unsigned int texture,
                       std::shared_ptr<CJNIMediaCodec> &codec,
                       std::shared_ptr<CJNISurfaceTexture> &surfacetexture,
-                      std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready);
+                      std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready,
+                      std::shared_ptr<CJNIXBMCVideoView> &videoview);
 
   // reference counting
   CDVDMediaCodecInfo* Retain();
@@ -87,12 +89,13 @@ private:
   std::shared_ptr<CJNIMediaCodec> m_codec;
   std::shared_ptr<CJNISurfaceTexture> m_surfacetexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameready;
+  std::shared_ptr<CJNIXBMCVideoView> m_videoview;
 
   int                 m_displayWidth;
   int                 m_displayHeight;
 };
 
-class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec
+class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec, public CJNISurfaceHolderCallback
 {
 public:
   CDVDVideoCodecAndroidMediaCodec(bool surface_render = false, bool render_interlaced = false);
@@ -132,7 +135,9 @@ protected:
   bool            m_drop;
   int             m_codecControlFlags;
 
-  CJNISurface    *m_surface;
+  std::shared_ptr<CJNIXBMCVideoView> m_jnivideoview;
+  CJNISurface*    m_jnisurface;
+  CJNISurface     m_jnivideosurface;
   unsigned int    m_textureId;
   CJNISurface     m_videosurface;
   // we need these as shared_ptr because CDVDVideoCodecAndroidMediaCodec
@@ -153,4 +158,10 @@ protected:
   bool            m_render_interlaced;
   int             m_src_offset[4];
   int             m_src_stride[4];
+  
+  // CJNISurfaceHolderCallback interface
+public:
+  virtual void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
+  virtual void surfaceCreated(CJNISurfaceHolder holder) override;
+  virtual void surfaceDestroyed(CJNISurfaceHolder holder) override;
 };

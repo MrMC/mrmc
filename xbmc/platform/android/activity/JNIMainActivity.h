@@ -20,7 +20,6 @@
  */
 
 #include "platform/android/jni/Activity.h"
-#include "platform/android/jni/Surface.h"
 #include "platform/android/jni/Intent.h"
 #include "platform/android/jni/AudioDeviceInfo.h"
 #include "platform/android/jni/Image.h"
@@ -41,8 +40,6 @@ public:
   static void _doFrame(JNIEnv *env, jobject context, jlong frameTimeNanos);
   static void _onAudioDeviceAdded(JNIEnv *env, jobject context, jobjectArray devices);
   static void _onAudioDeviceRemoved(JNIEnv *env, jobject context, jobjectArray devices);
-  static void _onVideoViewAcquired(JNIEnv *env, jobject context);
-  static void _onVideoViewLost(JNIEnv *env, jobject context);
   static void _onCaptureAvailable(JNIEnv *env, jobject context, jobject image);
   static void _onScreenshotAvailable(JNIEnv *env, jobject context, jobject image);
 
@@ -54,10 +51,7 @@ public:
   static void startCrashHandler();
   static void uploadLog();
 
-  CJNISurface getVideoViewSurface();
-  void clearVideoView();
-  CJNIRect getVideoViewSurfaceRect();
-  void setVideoViewSurfaceRect(int l, int t, int r, int b);
+  CJNIRect getDisplayRect();
 
   static void takeScreenshot();
   static void startProjection();
