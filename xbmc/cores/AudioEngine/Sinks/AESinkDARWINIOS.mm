@@ -88,7 +88,7 @@ class CAAudioUnitSink
     CAAudioUnitSink();
    ~CAAudioUnitSink();
 
-    bool         open(AudioStreamBasicDescription outputFormat);
+    bool         open(AudioStreamBasicDescription outputFormat, size_t buffer_size);
     bool         activate();
     bool         close();
     void         drain();
@@ -153,7 +153,7 @@ CAAudioUnitSink::~CAAudioUnitSink()
   close();
 }
 
-bool CAAudioUnitSink::open(AudioStreamBasicDescription outputFormat)
+bool CAAudioUnitSink::open(AudioStreamBasicDescription outputFormat, size_t buffer_size)
 {
   m_setup         = false;
   m_outputFormat  = outputFormat;
@@ -166,7 +166,7 @@ bool CAAudioUnitSink::open(AudioStreamBasicDescription outputFormat)
   /* TODO: Reduce the size of this buffer, pre-calculate the size based on how large
            the buffers are that CA calls us with in the renderCallback - perhaps call
            the checkSessionProperties() before running this? */
-  m_buffer = new AERingBuffer(16384);
+  m_buffer = new AERingBuffer(buffer_size);
 
   return setupAudio();
 }
@@ -657,7 +657,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   SineWaveGeneratorInitWithFrequency(&m_SineWaveGenerator, 440.0, audioFormat.mSampleRate);
 #endif
 
-  m_audioSink->open(audioFormat);
+  m_audioSink->open(audioFormat, 16384);
 
   format.m_frames = m_audioSink->chunkSize();
   format.m_frameSamples = format.m_frames * audioFormat.mChannelsPerFrame;
