@@ -598,7 +598,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   m_audioSink = new CAAudioUnitSink;
   hdmi = (m_audioSink->getRoute().find("HDMI") != std::string::npos);
 
-  AudioStreamBasicDescription audioFormat = {};
+  AudioStreamBasicDescription audioFormat = {0};
 
   if (format.m_dataFormat == AE_FMT_FLOAT)
     audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsFloat;
