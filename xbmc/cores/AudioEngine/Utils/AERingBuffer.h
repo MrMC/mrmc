@@ -104,6 +104,11 @@ public:
     m_iRead = 0;
     m_iReadPos = 0;
     m_iWritePos = 0;
+    for (unsigned int i = 0; i < m_planes; i++)
+    {
+      if (m_Buffer[i])
+        memset(m_Buffer[i], 0x00, m_iSize);
+    }
   }
 
   /**
