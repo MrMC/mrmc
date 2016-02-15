@@ -97,7 +97,7 @@ void CPVRGUIInfo::Start(void)
 {
   ResetProperties();
   Create();
-  SetPriority(-1);
+  SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 }
 
 void CPVRGUIInfo::Stop(void)

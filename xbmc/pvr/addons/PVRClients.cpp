@@ -79,7 +79,7 @@ void CPVRClients::Start(void)
   Stop();
 
   Create();
-  SetPriority(-1);
+  SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 }
 
 void CPVRClients::Stop(void)

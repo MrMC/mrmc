@@ -592,7 +592,7 @@ bool CPVRManager::StartUpdateThreads(void)
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
   SetState(ManagerStateStarting);
   Create();
-  SetPriority(-1);
+  SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 
   return true;
 }

@@ -52,7 +52,7 @@ void CActiveAESink::Start()
   if (!IsRunning())
   {
     Create();
-    SetPriority(GetPriority()+1);
+    SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
   }
 }
 

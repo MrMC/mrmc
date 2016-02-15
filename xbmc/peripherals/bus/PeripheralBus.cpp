@@ -232,7 +232,7 @@ bool CPeripheralBus::Initialise(void)
       lock.Leave();
       m_triggerEvent.Reset();
       Create();
-      SetPriority(-1);
+      SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
     }
   }
 

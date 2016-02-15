@@ -181,7 +181,7 @@ void CEpgContainer::Start(bool bAsync)
     CheckPlayingEvents();
 
     Create();
-    SetPriority(-1);
+    SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 
     m_bStarted = true;
 
