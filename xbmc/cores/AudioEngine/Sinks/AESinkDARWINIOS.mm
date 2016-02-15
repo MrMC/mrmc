@@ -131,11 +131,11 @@ class CAAudioUnitSink
     unsigned int        m_frameSize;
     unsigned int        m_frames;
 
-    volatile bool       m_started;
+    std::atomic<bool>   m_started;
 
     CAESpinSection      m_render_section;
-    volatile int64_t    m_render_timestamp;
-    volatile uint32_t   m_render_frames;
+    std::atomic<int64_t>  m_render_timestamp;
+    std::atomic<uint32_t> m_render_frames;
 };
 
 CAAudioUnitSink::CAAudioUnitSink()
