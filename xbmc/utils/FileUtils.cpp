@@ -200,7 +200,8 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
       return true;
 
     // if this is a real path and accesses outside app, deny.
-    std::string appRoot = CDarwinUtils::GetOSAppRootFolder();
+    std::string appRoot;
+    CUtil::GetHomePath(appRoot);
     if (testpath.find(appRoot) == std::string::npos)
     {
       CLog::Log(LOGDEBUG,"http access denied");
