@@ -387,7 +387,6 @@ protected:
   bool m_skinReverting;
 
   bool m_saveSkinOnUnloading;
-  bool m_autoExecScriptExecuted;
 
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;

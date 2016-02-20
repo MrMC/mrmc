@@ -230,7 +230,6 @@ using namespace XbmcThreads;
 CApplication::CApplication(void)
   : m_pPlayer(new CApplicationPlayer)
   , m_saveSkinOnUnloading(true)
-  , m_autoExecScriptExecuted(false)
   , m_itemCurrentFile(new CFileItem)
   , m_stackFileItemToUpdate(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
@@ -4064,19 +4063,6 @@ void CApplication::Process()
   // (this can only be done after g_windowManager.Render())
   CApplicationMessenger::GetInstance().ProcessWindowMessages();
 
-  if (m_autoExecScriptExecuted)
-  {
-    m_autoExecScriptExecuted = false;
-
-    // autoexec.py - profile
-    std::string strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
-
-    if (XFILE::CFile::Exists(strAutoExecPy))
-      CScriptInvocationManager::GetInstance().ExecuteAsync(strAutoExecPy);
-    else
-      CLog::Log(LOGDEBUG, "no profile autoexec.py (%s) found, skipping", strAutoExecPy.c_str());
-  }
-
   // handle any active scripts
   CScriptInvocationManager::GetInstance().Process();
 
@@ -4793,8 +4779,6 @@ void CApplication::SetLoggingIn(bool switchingProfiles)
   // instead of into the previous one
   m_saveSkinOnUnloading = !switchingProfiles;
 
-  // make sure that the autoexec.py script is executed after logging in
-  m_autoExecScriptExecuted = true;
 }
 
 void CApplication::CloseNetworkShares()
