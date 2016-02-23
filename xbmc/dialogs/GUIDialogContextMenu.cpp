@@ -24,6 +24,7 @@
 #include "guilib/GUIControlGroupList.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
+#include "Autorun.h"
 #include "GUIPassword.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
@@ -46,8 +47,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-using namespace std;
-
 #define BACKGROUND_IMAGE       999
 #define GROUP_LIST             996
 #define BUTTON_TEMPLATE       1000
@@ -59,7 +58,7 @@ void CContextButtons::Add(unsigned int button, const std::string &label)
   for (const_iterator i = begin(); i != end(); ++i)
     if (i->first == button)
       return; // already have this button
-  push_back(pair<unsigned int, std::string>(button, label));
+  push_back(std::pair<unsigned int, std::string>(button, label));
 }
 
 void CContextButtons::Add(unsigned int button, int label)
@@ -67,7 +66,7 @@ void CContextButtons::Add(unsigned int button, int label)
   for (const_iterator i = begin(); i != end(); ++i)
     if (i->first == button)
       return; // already have added this button
-  push_back(pair<unsigned int, std::string>(button, g_localizeStrings.Get(label)));
+  push_back(std::pair<unsigned int, std::string>(button, g_localizeStrings.Get(label)));
 }
 
 CGUIDialogContextMenu::CGUIDialogContextMenu(void)
@@ -228,6 +227,16 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
   // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
   if (item && item->IsRemovable())
   {
+    if (item->IsDVD() || item->IsCDDA())
+    {
+      // We need to check if there is a detected is inserted!
+      buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
+      if (CGUIWindowVideoBase::HasResumeItemOffset(item.get()))
+        buttons.Add(CONTEXT_BUTTON_RESUME_DISC, CGUIWindowVideoBase::GetResumeString(*(item.get())));     // Resume Disc
+
+      buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
+    }
+    else // Must be HDD
     {
       buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420);  // Eject Removable HDD!
     }
@@ -314,6 +323,17 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
   case CONTEXT_BUTTON_EJECT_DRIVE:
     return g_mediaManager.Eject(item->GetPath());
 
+#ifdef HAS_DVD_DRIVE
+  case CONTEXT_BUTTON_PLAY_DISC:
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, true); // restart
+
+  case CONTEXT_BUTTON_RESUME_DISC:
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false); // resume
+
+  case CONTEXT_BUTTON_EJECT_DISC:
+    g_mediaManager.ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
+#endif
+    return true;
   default:
     break;
   }
@@ -549,6 +569,12 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const std::string &type, const CFi
   for (unsigned int i = 0; i < shares->size(); i++)
   {
     CMediaSource &testShare = shares->at(i);
+    if (URIUtils::IsDVD(testShare.strPath))
+    {
+      if (!item->IsDVD())
+        continue;
+    }
+    else
     {
       if (!URIUtils::CompareWithoutSlashAtEnd(testShare.strPath, item->GetPath()))
         continue;

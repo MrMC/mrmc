@@ -19,8 +19,8 @@
  */
 
 #include "DVDOverlayContainer.h"
+#include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "threads/SingleLock.h"
-#include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 
 CDVDOverlayContainer::CDVDOverlayContainer()
 {
@@ -163,4 +163,43 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
   }
 
   return result;
+}
+
+/*
+ * iAction should be LIBDVDNAV_BUTTON_NORMAL or LIBDVDNAV_BUTTON_CLICKED
+ */
+void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, CDVDDemuxSPU *pSpu, int iAction)
+{
+  CSingleLock lock(*this);
+
+  pStream->CheckButtons();
+
+  //Update any forced overlays.
+  for(VecOverlays::iterator it = m_overlays.begin(); it != m_overlays.end(); ++it )
+  {
+    if ((*it)->IsOverlayType(DVDOVERLAY_TYPE_SPU))
+    {
+      CDVDOverlaySpu* pOverlaySpu = (CDVDOverlaySpu*)(*it);
+
+      // make sure its a forced (menu) overlay
+      // set menu spu color and alpha data if there is a valid menu overlay
+      if (pOverlaySpu->bForced)
+      {
+        if(pOverlaySpu->Acquire()->Release() > 1)
+        {
+          pOverlaySpu = new CDVDOverlaySpu(*pOverlaySpu);
+          (*it)->Release();
+          (*it) = pOverlaySpu;
+        }
+
+        if(pStream->GetCurrentButtonInfo(pOverlaySpu, pSpu, iAction))
+        {
+          if(pOverlaySpu->m_overlay)
+            pOverlaySpu->m_overlay->Release();
+          pOverlaySpu->m_overlay = NULL;
+        }
+
+      }
+    }
+  }
 }

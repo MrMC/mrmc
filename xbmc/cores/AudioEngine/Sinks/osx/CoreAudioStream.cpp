@@ -86,11 +86,17 @@ void CCoreAudioStream::Close(bool restore)
   // Revert any format changes we made
   if (restore && m_OriginalVirtualFormat.mFormatID && m_StreamId)
   {
+    CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: "
+      "Restoring original virtual format for stream 0x%04x. (%s)",
+      (uint)m_StreamId, StreamDescriptionToString(m_OriginalVirtualFormat, formatString));
     AudioStreamBasicDescription setFormat = m_OriginalVirtualFormat;
     SetVirtualFormat(&setFormat);
   }
   if (restore && m_OriginalPhysicalFormat.mFormatID && m_StreamId)
   {
+    CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: "
+      "Restoring original physical format for stream 0x%04x. (%s)",
+      (uint)m_StreamId, StreamDescriptionToString(m_OriginalPhysicalFormat, formatString));
     AudioStreamBasicDescription setFormat = m_OriginalPhysicalFormat;
     SetPhysicalFormat(&setFormat);
   }

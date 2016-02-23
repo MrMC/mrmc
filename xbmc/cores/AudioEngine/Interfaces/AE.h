@@ -19,9 +19,10 @@
  *
  */
 
-#include <list>
 #include <map>
+#include <list>
 #include <vector>
+#include <utility>
 
 #include "system.h"
 
@@ -250,5 +251,18 @@ public:
    * Instruct AE to re-initialize, e.g. after ELD change event
    */
   virtual void DeviceChange() {return; }
+
+  /**
+   * Indicates if dsp addon system is active.
+   */
+  virtual bool HasDSP() { return false; };
+
+  /**
+   * Get the current sink data format
+   *
+   * @param Current sink data format. For more details see AEAudioFormat.
+   * @return Returns true on success, else false.
+   */
+  virtual bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) { return false; }
 };
 

@@ -32,6 +32,10 @@ public:
  ~CAndroidKey() {};
 
   bool onKeyboardEvent(AInputEvent *event);
-  void XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up);
-  void XBMC_JoyButton(uint8_t id, uint8_t button, bool up);
+
+  static void SetHandleMediaKeys(bool enable) { m_handleMediaKeys = enable; }
+  static void XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up);
+
+protected:
+  static bool m_handleMediaKeys;
 };

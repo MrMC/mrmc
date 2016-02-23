@@ -21,7 +21,7 @@
 #include "DVDInputStreamFile.h"
 #include "filesystem/File.h"
 #include "filesystem/IFile.h"
-#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
@@ -65,6 +65,21 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, 
    * 2) Only buffer true internet filesystems (streams) (http, etc.)
    * 3) No buffer
    */
+  if (!URIUtils::IsOnDVD(strFile) && !URIUtils::IsBluray(strFile)) // Never cache these
+  {
+    int networkBufferMode = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BUFFERMODE);
+    
+    if (networkBufferMode == 0 || networkBufferMode == 2)
+    {
+      if (URIUtils::IsInternetStream(CURL(strFile), (networkBufferMode == 0) ) )
+        flags |= READ_CACHED;
+    }
+    else if (networkBufferMode == 1)
+    {
+      flags |= READ_CACHED; // In buffer mode 1 force cache for (almost) all files
+    }
+  }
+
   if (!(flags & READ_CACHED))
     flags |= READ_NO_CACHE; // Make sure CFile honors our no-cache hint
 

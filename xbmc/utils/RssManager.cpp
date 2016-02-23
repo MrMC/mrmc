@@ -19,11 +19,15 @@
  */
 
 #include "RssManager.h"
+
+#include <utility>
+
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -33,8 +37,10 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-using namespace std;
 using namespace XFILE;
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CRssManager::CRssManager()
 {
@@ -62,19 +68,10 @@ void CRssManager::OnSettingsUnloaded()
   Clear();
 }
 
-bool CRssManager::OnSettingChanging(const CSetting *setting)
+void CRssManager::OnSettingAction(const CSetting *setting)
 {
   if (setting == NULL)
-    return false;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_LOOKANDFEEL_RSSHOST ||
-      settingId == CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL ||
-      settingId == CSettings::SETTING_LOOKANDFEEL_RSSRTL)
-  {
-    Reload();
-  }
-  return true;
+    return;
 }
 
 void CRssManager::Start()
@@ -96,12 +93,63 @@ void CRssManager::Stop()
 
 bool CRssManager::Load()
 {
-  RssSet set;
+  CSingleLock lock(m_critical);
+  std::string rssXML = CProfilesManager::GetInstance().GetUserDataItem("RssFeeds.xml");
+  if (!CFile::Exists(rssXML))
+    return false;
+
+  CXBMCTinyXML rssDoc;
+  if (!rssDoc.LoadFile(rssXML))
+  {
+    CLog::Log(LOGERROR, "CRssManager: error loading %s, Line %d\n%s", rssXML.c_str(), rssDoc.ErrorRow(), rssDoc.ErrorDesc());
+    return false;
+  }
+
+  const TiXmlElement *pRootElement = rssDoc.RootElement();
+  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), "rssfeeds"))
+  {
+    CLog::Log(LOGERROR, "CRssManager: error loading %s, no <rssfeeds> node", rssXML.c_str());
+    return false;
+  }
+
   m_mapRssUrls.clear();
-  set.rtl = CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_RSSRTL);
-  set.url.push_back(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_RSSHOST));
-  set.interval.push_back(CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL));
-  m_mapRssUrls.insert(make_pair(1,set));
+  const TiXmlElement* pSet = pRootElement->FirstChildElement("set");
+  while (pSet != NULL)
+  {
+    int iId;
+    if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
+    {
+      RssSet set;
+      set.rtl = pSet->Attribute("rtl") != NULL && strcasecmp(pSet->Attribute("rtl"), "true") == 0;
+      const TiXmlElement* pFeed = pSet->FirstChildElement("feed");
+      while (pFeed != NULL)
+      {
+        int iInterval;
+        if (pFeed->QueryIntAttribute("updateinterval", &iInterval) != TIXML_SUCCESS)
+        {
+          iInterval = 30; // default to 30 min
+          CLog::Log(LOGDEBUG, "CRssManager: no interval set, default to 30!");
+        }
+
+        if (pFeed->FirstChild() != NULL)
+        {
+          // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
+          //              What about the xml encoding?
+          std::string strUrl = pFeed->FirstChild()->ValueStr();
+          set.url.push_back(strUrl);
+          set.interval.push_back(iInterval);
+        }
+        pFeed = pFeed->NextSiblingElement("feed");
+      }
+
+      m_mapRssUrls.insert(std::make_pair(iId,set));
+    }
+    else
+      CLog::Log(LOGERROR, "CRssManager: found rss url set with no id in RssFeeds.xml, ignored");
+
+    pSet = pSet->NextSiblingElement("set");
+  }
+
   return true;
 }
 

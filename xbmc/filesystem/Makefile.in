@@ -3,6 +3,8 @@ CXXFLAGS += -D__STDC_FORMAT_MACROS
 SRCS  = AddonsDirectory.cpp
 SRCS += CacheStrategy.cpp
 SRCS += CircularCache.cpp
+SRCS += CDDADirectory.cpp
+SRCS += CDDAFile.cpp
 SRCS += CurlFile.cpp
 SRCS += DAVCommon.cpp
 SRCS += DAVDirectory.cpp
@@ -26,6 +28,9 @@ SRCS += HTTPFile.cpp
 SRCS += IDirectory.cpp
 SRCS += IFile.cpp
 SRCS += ImageFile.cpp
+SRCS += iso9660.cpp
+SRCS += ISO9660Directory.cpp
+SRCS += ISOFile.cpp
 SRCS += LibraryDirectory.cpp
 SRCS += MemBufferCache.cpp
 SRCS += MultiPathDirectory.cpp
@@ -40,6 +45,7 @@ SRCS += PlaylistDirectory.cpp
 SRCS += PlaylistFileDirectory.cpp
 SRCS += PipeFile.cpp
 SRCS += PipesManager.cpp
+SRCS += PluginDirectory.cpp
 SRCS += posix/PosixDirectory.cpp
 SRCS += posix/PosixFile.cpp
 SRCS += PVRFile.cpp
@@ -78,6 +84,12 @@ SRCS += AndroidAppFile.cpp
 SRCS += AndroidAppDirectory.cpp
 endif
 
+ifeq (@HAVE_XBMC_NONFREE@,1)
+SRCS += RarFile.cpp
+SRCS += RarDirectory.cpp
+SRCS += RarManager.cpp
+endif
+
 ifeq (@USE_LIBSMBCLIENT@,1)
 SRCS += SMBFile.cpp
 SRCS += SMBDirectory.cpp
@@ -86,6 +98,11 @@ endif
 ifeq (@USE_LIBNFS@,1)
 SRCS += NFSFile.cpp
 SRCS += NFSDirectory.cpp
+endif
+
+ifeq (@HAVE_LIBBLURAY@,1)
+SRCS += BlurayDirectory.cpp
+SRCS += BlurayFile.cpp
 endif
 
 ifeq (@USE_UPNP@,1)

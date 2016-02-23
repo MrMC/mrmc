@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/MrMC-main/language/ko_KR/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "배경 팬아트 숨김"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "채널창에서 RDS 가 있으면 EPG 숨김"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "배경에 \"지금 재생 중\" 비디오 보기"
@@ -227,14 +231,6 @@ msgstr "배경에 \"지금 재생 중\" 비디오 보기"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "배경에 \"지금 재생 중\" 시각화 보기"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "라이브러리 모드에서 TV 주제음악 재생 (TvTunes 애드온)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -333,7 +329,7 @@ msgid "Current scraper"
 msgstr "현재 정보수집기"
 
 msgctxt "#31313"
-msgid "Choose metadata provider"
+msgid "Choose a scraper"
 msgstr "정보수집기 선택"
 
 msgctxt "#31314"
@@ -351,10 +347,6 @@ msgstr "선택된 프로파일"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "마지막 로그인"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "노래방 노래 선택기"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]비디오 설정[/B][CR][CR]비디오 라이브러리 관리 · 비디오 재생 옵션 변경 · 비디오 목록 옵션 변경[CR]자막 글꼴 설정"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]음악 설정[/B][CR][CR]음악 라이브러리 관리 · 음악 재생 옵션 변경 · 음악 목록 옵션 변경[CR]노래 전송 설정 · 노래방 옵션 설정"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]음악 설정[/B][CR][CR]음악 라이브러리 관리 · 음악 재생 옵션 변경 · 음악 목록 옵션 변경[CR]노래 전송 설정"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -461,16 +453,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]시스템 설정[/B][CR][CR]화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정[CR]전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
-msgstr "[B]애드온 설정[/B][CR][CR]설치된 애드온 관리 · MrMC.tv에서 애드온 탐색 및 설치[CR]애드온 설정"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]애드온 설정[/B][CR][CR]설치된 애드온 관리 · kodi.tv에서 애드온 탐색 및 설치[CR]애드온 설정"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]TV 설정[/B][CR][CR]전체 화면 정보 변경 · EPG 데이터 설정"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]서비스 설정[/B][CR][CR]UPnP 및 HTTP를 통한 MrMC 제어 설정 · 파일 공유 설정[CR]Zeroconf 활성화 · AirPlay 설정"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]서비스 설정[/B][CR][CR]UPnP 및 HTTP를 통한 Kodi 제어 설정 · 파일 공유 설정[CR]Zeroconf 활성화 · AirPlay 설정"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,8 +481,8 @@ msgid "Login"
 msgstr "로그인"
 
 msgctxt "#31421"
-msgid "Select your MrMC user profile[CR]to login and continue"
-msgstr "로그인할 MrMC 사용자 프로파일을[CR]선택하고 계속하세요"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "로그인할 Kodi 사용자 프로파일을[CR]선택하고 계속하세요"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

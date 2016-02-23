@@ -21,12 +21,13 @@
  *
  */
 
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "settings/lib/ISettingCallback.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/uXstrings.h"
-
-#include <string>
-#include <vector>
 
 class CSetting;
 
@@ -172,6 +173,6 @@ private:
   class CInnerConverter;
 };
 
-XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);
-
+XBMC_GLOBAL_REF(CCharsetConverter,g_charsetConverter);
+#define g_charsetConverter XBMC_GLOBAL_USE(CCharsetConverter)
 #endif

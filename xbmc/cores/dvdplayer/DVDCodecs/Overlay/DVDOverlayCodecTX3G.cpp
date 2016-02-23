@@ -127,7 +127,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   {
     // Read TextSampleModifierBox
     LEN_CHECK(4);
-    long size = READ_U32();
+    uint32_t size = READ_U32();
     if (size == 0)
       size = pos - end;   // extends to end of packet
     if (size == 1)
@@ -149,7 +149,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
       if ( numStyleRecords != 0 )
       {
         CLog::Log(LOGDEBUG, "CDVDOverlayCodecTX3G: found additional StyleBoxes on subtitle; skipping" );
-        LEN_CHECK((int)size);
+        LEN_CHECK(size);
         SKIP_ARRAY(size);
         continue;
       }
@@ -185,7 +185,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
     else
     {
       // Found some other kind of TextSampleModifierBox. Skip it.
-      LEN_CHECK((int)size);
+      LEN_CHECK(size);
       SKIP_ARRAY(size);
     }
   }

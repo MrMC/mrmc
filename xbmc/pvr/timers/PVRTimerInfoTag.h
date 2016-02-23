@@ -37,12 +37,13 @@
  * number of the tag reported by the PVR backend and can not be played!
  */
 
-#include "XBDateTime.h"
-#include "addons/include/xbmc_pvr_types.h"
-#include "utils/ISerializable.h"
-#include "pvr/timers/PVRTimerType.h"
-
 #include <memory>
+
+#include "addons/include/xbmc_pvr_types.h"
+#include "pvr/timers/PVRTimerType.h"
+#include "threads/CriticalSection.h"
+#include "utils/ISerializable.h"
+#include "XBDateTime.h"
 
 class CFileItem;
 class CVariant;
@@ -103,6 +104,11 @@ namespace PVR
      */
     bool HasEpgInfoTag() const;
 
+    /*!
+     * @return True if this timer has corresponding epg info tag with series attributes, false otherwise
+     */
+    bool HasSeriesEpgInfoTag() const;
+
     int ChannelNumber(void) const;
     std::string ChannelName(void) const;
     std::string ChannelIcon(void) const;
@@ -118,6 +124,15 @@ namespace PVR
         || m_state == PVR_TIMER_STATE_RECORDING
         || m_state == PVR_TIMER_STATE_CONFLICT_OK
         || m_state == PVR_TIMER_STATE_CONFLICT_NOK
+        || m_state == PVR_TIMER_STATE_ERROR;
+    }
+
+    /*!
+     * @return True if this timer won't result in a recording because it is broken for some reason, false otherwise
+     */
+    bool IsBroken(void) const
+    {
+      return m_state == PVR_TIMER_STATE_CONFLICT_NOK
         || m_state == PVR_TIMER_STATE_ERROR;
     }
 
@@ -196,7 +211,7 @@ namespace PVR
 
     /* Client control functions */
     bool AddToClient() const;
-    bool DeleteFromClient(bool bForce = false, bool bDeleteSchedule = false) const;
+    bool DeleteFromClient(bool bForce = false) const;
     bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
@@ -227,7 +242,7 @@ namespace PVR
     std::string           m_strSummary;          /*!< @brief summary string with the time to show inside a GUI list */
     PVR_TIMER_STATE       m_state;               /*!< @brief the state of this timer */
     int                   m_iClientId;           /*!< @brief ID of the backend */
-    int                   m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, -1 for new */
+    unsigned int          m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, PVR_TIMER_NO_CLIENT_INDEX for new */
     unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by repeated timers, the index number of the parent, given by the backend, PVR_TIMER_NO_PARENT for no parent */
     int                   m_iClientChannelUid;   /*!< @brief channel uid */
     bool                  m_bStartAnyTime;       /*!< @brief Ignore start date and time clock. Record at 'Any Time' */

@@ -75,6 +75,13 @@
 //  Player has requested the next item for caching purposes (PAPlayer)
 #define GUI_MSG_QUEUE_NEXT_ITEM         GUI_MSG_USER + 16
 
+// Visualisation messages when loading/unloading
+#define GUI_MSG_VISUALISATION_UNLOADING GUI_MSG_USER + 117 // sent by vis
+#define GUI_MSG_VISUALISATION_LOADED    GUI_MSG_USER + 118 // sent by vis
+#define GUI_MSG_GET_VISUALISATION       GUI_MSG_USER + 119 // request to vis for the visualisation object
+#define GUI_MSG_VISUALISATION_ACTION    GUI_MSG_USER + 120 // request the vis perform an action
+#define GUI_MSG_VISUALISATION_RELOAD    GUI_MSG_USER + 121 // request the vis to reload
+
 #define GUI_MSG_VIDEO_MENU_STARTED      GUI_MSG_USER + 21 // sent by dvdplayer on entry to the menu
 
 //  Message is sent by built-in function to alert the playlist window
@@ -88,6 +95,9 @@
 //  dwParam1 = Current Playlist (PLAYLIST_MUSIC, PLAYLIST_TEMP_MUSIC, PLAYLIST_VIDEO or PLAYLIST_TEMP_VIDEO)
 //  dwParam2 = 0 or 1 or 2 (Off, Repeat All, Repeat One)
 #define GUI_MSG_PLAYLISTPLAYER_REPEAT   GUI_MSG_USER + 23
+
+// Message is sent by the background info loader when it is finished with fetching a weather location.
+#define GUI_MSG_WEATHER_FETCHED       GUI_MSG_USER + 24
 
 // Message is sent to the screensaver window to tell that it should check the lock
 #define GUI_MSG_CHECK_LOCK            GUI_MSG_USER + 25
@@ -129,3 +139,6 @@
 // Sent to CGUIWindowEventLog
 #define GUI_MSG_EVENT_ADDED        GUI_MSG_USER + 39
 #define GUI_MSG_EVENT_REMOVED      GUI_MSG_USER + 40
+
+// Send to RDS Radiotext handlers to inform about changed data
+#define GUI_MSG_UPDATE_RADIOTEXT      GUI_MSG_USER + 41

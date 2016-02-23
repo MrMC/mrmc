@@ -18,45 +18,46 @@
  *
  */
 
-#include "threads/SystemClock.h"
 #include "MusicInfoScanner.h"
-#include "music/tags/MusicInfoTagLoaderFactory.h"
-#include "MusicAlbumInfo.h"
-#include "MusicInfoScraper.h"
-#include "events/EventLog.h"
-#include "events/MediaLibraryEvent.h"
-#include "filesystem/MusicDatabaseDirectory.h"
-#include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
-#include "Util.h"
-#include "utils/md5.h"
-#include "GUIInfoManager.h"
-#include "NfoFile.h"
-#include "music/tags/MusicInfoTag.h"
-#include "guilib/GUIWindowManager.h"
+
+#include <algorithm>
+#include <utility>
+
+#include "addons/AddonManager.h"
+#include "addons/Scraper.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "filesystem/File.h"
+#include "events/EventLog.h"
+#include "events/MediaLibraryEvent.h"
+#include "FileItem.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/MusicDatabaseDirectory.h"
+#include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
+#include "GUIInfoManager.h"
+#include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "GUIUserMessages.h"
+#include "interfaces/AnnouncementManager.h"
+#include "music/MusicThumbLoader.h"
+#include "music/tags/MusicInfoTag.h"
+#include "music/tags/MusicInfoTagLoaderFactory.h"
+#include "MusicAlbumInfo.h"
+#include "MusicInfoScraper.h"
+#include "NfoFile.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "FileItem.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
+#include "TextureCache.h"
+#include "threads/SystemClock.h"
+#include "Util.h"
 #include "utils/log.h"
+#include "utils/md5.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "TextureCache.h"
-#include "music/MusicThumbLoader.h"
-#include "interfaces/AnnouncementManager.h"
-#include "GUIUserMessages.h"
-#include "addons/AddonManager.h"
-#include "addons/Scraper.h"
 
-#include <algorithm>
-
-using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
@@ -193,7 +194,7 @@ void CMusicInfoScanner::Process()
         if (m_handle)
         {
           float percentage = (float) std::distance(it, m_pathsToScan.end()) / m_pathsToScan.size();
-          m_handle->SetText(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
+          m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
           m_handle->SetPercentage(percentage);
         }
 
@@ -392,12 +393,12 @@ bool CMusicInfoScanner::IsScanning()
   return m_bRunning;
 }
 
-void CMusicInfoScanner::Stop()
+void CMusicInfoScanner::Stop(bool wait /* = false*/)
 {
   if (m_bCanInterrupt)
     m_musicDatabase.Interupt();
 
-  StopThread(false);
+  StopThread(wait);
 }
 
 void CMusicInfoScanner::CleanDatabase(bool showProgress /* = true */)
@@ -438,7 +439,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   m_seenPaths.insert(strDirectory);
 
   // Discard all excluded files defined by m_musicExcludeRegExps
-  vector<string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  std::vector<std::string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
 
@@ -458,9 +459,9 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   if ((m_flags & SCAN_RESCAN) || !m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
   { // path has changed - rescan
     if (dbHash.empty())
-      CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
+      CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, CURL::GetRedacted(strDirectory).c_str());
     else
-      CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
+      CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, CURL::GetRedacted(strDirectory).c_str());
 
     // filter items in the sub dir (for .cue sheet support)
     items.FilterCueItems();
@@ -478,7 +479,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   }
   else
   { // path is the same - no need to rescan
-    CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
+    CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, CURL::GetRedacted(strDirectory).c_str());
     m_currentItem += CountFiles(items, false);  // false for non-recursive
 
     // updated the dialog with our progress
@@ -513,7 +514,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
 
 INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& scannedItems)
 {
-  vector<string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  std::vector<std::string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -533,7 +534,7 @@ INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
     if (!tag.Loaded())
     {
-      unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
+      std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
       if (NULL != pLoader.get())
         pLoader->Load(pItem->GetPath(), tag);
     }
@@ -572,7 +573,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
    * If they're MB tagged, create albums directly from the FileItems.
    * If they're non-MB tagged, index them by album name ready for step 2.
    */
-  map<string, VECSONGS> songsByAlbumNames;
+  std::map<std::string, VECSONGS> songsByAlbumNames;
   for (int i = 0; i < items.Size(); ++i)
   {
     CMusicInfoTag& tag = *items[i]->GetMusicInfoTag();
@@ -616,7 +617,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
    In the case where the album artist is unknown, we use the primary artist
    (i.e. first artist from each song).
    */
-  for (map<string, VECSONGS>::iterator songsByAlbumName = songsByAlbumNames.begin(); songsByAlbumName != songsByAlbumNames.end(); ++songsByAlbumName)
+  for (std::map<std::string, VECSONGS>::iterator songsByAlbumName = songsByAlbumNames.begin(); songsByAlbumName != songsByAlbumNames.end(); ++songsByAlbumName)
   {
     VECSONGS &songs = songsByAlbumName->second;
     // sort the songs by tracknumber to identify duplicate track numbers
@@ -627,7 +628,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     bool hasAlbumArtist = false;
     bool isCompilation = true;
 
-    map<string, vector<CSong *> > artists;
+    std::map<std::string, std::vector<CSong *> > artists;
     for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
     {
       // test for song overlap
@@ -638,14 +639,14 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         isCompilation = false;
 
       // get primary artist
-      string primary;
-      if (!song->albumArtist.empty())
+      std::string primary;
+      if (!song->GetAlbumArtist().empty())
       {
-        primary = song->albumArtist[0];
+        primary = song->GetAlbumArtist()[0];
         hasAlbumArtist = true;
       }
-      else if (!song->artist.empty())
-        primary = song->artist[0];
+      else if (!song->artistCredits.empty())
+        primary = song->artistCredits.begin()->GetArtist();
 
       // add to the artist map
       artists[primary].push_back(&(*song));
@@ -662,7 +663,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     bool compilation = !songsByAlbumName->first.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
     if (artists.size() == 1)
     {
-      string artist = artists.begin()->first; StringUtils::ToLower(artist);
+      std::string artist = artists.begin()->first; StringUtils::ToLower(artist);
       if (!StringUtils::EqualsNoCase(artist, "various") &&
           !StringUtils::EqualsNoCase(artist, "various artists")) // 3a
         compilation = false;
@@ -675,10 +676,10 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       CLog::Log(LOGDEBUG, "Album '%s' is a compilation as there's no overlapping tracks and %s", songsByAlbumName->first.c_str(), hasAlbumArtist ? "the album artist is 'Various'" : "there is more than one unique artist");
       artists.clear();
       std::string various = g_localizeStrings.Get(340); // Various Artists
-      vector<string> va; va.push_back(various);
+      std::vector<std::string> va; va.push_back(various);
       for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
       {
-        song->albumArtist = va;
+        song->SetAlbumArtist(va);
         artists[various].push_back(&(*song));
       }
     }
@@ -687,15 +688,15 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
      Step 3: Find the common albumartist for each song and assign
      albumartist to those tracks that don't have it set.
      */
-    for (map<string, vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
+    for (std::map<std::string, std::vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
     {
       // find the common artist for these songs
-      vector<CSong *> &artistSongs = j->second;
-      vector<string> common = artistSongs.front()->albumArtist.empty() ? artistSongs.front()->artist : artistSongs.front()->albumArtist;
-      for (vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
+      std::vector<CSong *> &artistSongs = j->second;
+      std::vector<std::string> common = artistSongs.front()->GetAlbumArtist().empty() ? artistSongs.front()->GetArtist() : artistSongs.front()->GetAlbumArtist();
+      for (std::vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
       {
         unsigned int match = 0;
-        vector<string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
+        std::vector<std::string> compare = (*k)->GetAlbumArtist().empty() ? (*k)->GetArtist() : (*k)->GetAlbumArtist();
         for (; match < common.size() && match < compare.size(); match++)
         {
           if (compare[match] != common[match])
@@ -710,18 +711,17 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
        */
       CAlbum album;
       album.strAlbum = songsByAlbumName->first;
-      album.artist = common;
-      for (vector<string>::iterator it = common.begin(); it != common.end(); ++it)
+      for (std::vector<std::string>::iterator it = common.begin(); it != common.end(); ++it)
       {
         std::string strJoinPhrase = (it == --common.end() ? "" : g_advancedSettings.m_musicItemSeparator);
         CArtistCredit artistCredit(*it, strJoinPhrase);
         album.artistCredits.push_back(artistCredit);
       }
       album.bCompilation = compilation;
-      for (vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
+      for (std::vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
       {
-        if ((*k)->albumArtist.empty())
-          (*k)->albumArtist = common;
+        if ((*k)->GetAlbumArtist().empty())
+          (*k)->SetAlbumArtist(common);
         // TODO: in future we may wish to union up the genres, for now we assume they're the same
         album.genre = (*k)->genre;
         //       in addition, we may want to use year as discriminating for albums
@@ -968,11 +968,11 @@ loop:
       if (!CGUIKeyboardFactory::ShowAndGetInput(album.strAlbum, CVariant{g_localizeStrings.Get(16011)}, false))
         return INFO_CANCELLED;
 
-      std::string strTempArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+      std::string strTempArtist(album.GetAlbumArtistString());
       if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, CVariant{g_localizeStrings.Get(16025)}, false))
         return INFO_CANCELLED;
 
-      album.artist = StringUtils::Split(strTempArtist, g_advancedSettings.m_musicItemSeparator);
+      album.strArtistDesc = strTempArtist;
       goto loop;
     }
     else
@@ -985,9 +985,10 @@ loop:
   }
   else if (albumDownloadStatus == INFO_ADDED)
   {
-    album.MergeScrapedAlbum(albumInfo.GetAlbum(), CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS));
+    bool overridetags = CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS);
+    album.MergeScrapedAlbum(albumInfo.GetAlbum(), overridetags);
     m_musicDatabase.Open();
-    m_musicDatabase.UpdateAlbum(album);
+    m_musicDatabase.UpdateAlbum(album, overridetags);
     GetAlbumArtwork(album.idAlbum, album);
     m_musicDatabase.Close();
     albumInfo.SetLoaded(true);
@@ -1041,7 +1042,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
   if (m_handle)
   {
     m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321).c_str(), info->Name().c_str()));
-    m_handle->SetText(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
+    m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
   }
 
   // clear our scraper cache
@@ -1071,7 +1072,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
   {
-    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
+    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", CURL::GetRedacted(strNfo).c_str());
     result = nfoReader.Create(strNfo, info);
     if (result == CNfoFile::FULL_NFO)
     {
@@ -1102,7 +1103,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
   if (!scraper.GetAlbumCount())
   {
-    scraper.FindAlbumInfo(album.strAlbum, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+    scraper.FindAlbumInfo(album.strAlbum, album.GetAlbumArtistString());
 
     while (!scraper.Completed())
     {
@@ -1140,11 +1141,13 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
           double relevance = info.GetRelevance();
           if (relevance < 0)
-            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum, StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator), StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum, 
+                        info.GetAlbum().GetAlbumArtistString(),
+                        album.GetAlbumArtistString());
 
           // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
           // otherwise, perfect matches only
-          if (relevance >= max(minRelevance, bestRelevance))
+          if (relevance >= std::max(minRelevance, bestRelevance))
           { // we auto-select the best of these
             bestRelevance = relevance;
             iSelectedAlbum = i;
@@ -1155,7 +1158,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
             std::string strTemp = StringUtils::Format("[%0.2f]  %s", relevance, info.GetTitle2().c_str());
             CFileItem item(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
-            pDlg->Add(&item);
+            pDlg->Add(item);
           }
           if (relevance > .99f) // we're so close, no reason to search further
             break;
@@ -1179,7 +1182,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
             if (strNewAlbum == "")
               return INFO_CANCELLED;
 
-            std::string strNewArtist = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
+            std::string strNewArtist = album.GetAlbumArtistString();
             if (!CGUIKeyboardFactory::ShowAndGetInput(strNewArtist, CVariant{g_localizeStrings.Get(16025)}, false))
               return INFO_CANCELLED;
 
@@ -1189,7 +1192,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
             CAlbum newAlbum = album;
             newAlbum.strAlbum = strNewAlbum;
-            newAlbum.artist = StringUtils::Split(strNewArtist, g_advancedSettings.m_musicItemSeparator);
+            newAlbum.strArtistDesc = strNewArtist;
 
             return DownloadAlbumInfo(newAlbum, info, albumInfo, pDialog);
           }
@@ -1203,8 +1206,8 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
         if (relevance < 0)
           relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum,
                                             album.strAlbum,
-                                            StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator),
-                                            StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+                                            info.GetAlbum().GetAlbumArtistString(),
+                                            album.GetAlbumArtistString());
         if (relevance < THRESHOLD)
           return INFO_NOT_FOUND;
 
@@ -1245,7 +1248,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
   {
     if (m_musicDatabase.GetArtForItem(id, MediaTypeAlbum, "thumb").empty())
     {
-      string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
+      std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
       if (!thumb.empty())
       {
         CTextureCache::GetInstance().BackgroundCacheImage(thumb);
@@ -1290,7 +1293,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
   {
-    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
+    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", CURL::GetRedacted(strNfo).c_str());
     result = nfoReader.Create(strNfo, info);
     if (result == CNfoFile::FULL_NFO)
     {
@@ -1358,7 +1361,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
             }
             item.SetLabel(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
-            pDlg->Add(&item);
+            pDlg->Add(item);
           }
           pDlg->Open();
 
@@ -1443,9 +1446,9 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
   return bMusicBrainz;
 }
 
-map<string, string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
+std::map<std::string, std::string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
 {
-  map<string, string> artwork;
+  std::map<std::string, std::string> artwork;
 
   // check thumb
   std::string strFolder;
@@ -1496,7 +1499,7 @@ map<string, string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
 void CMusicInfoScanner::Run()
 {
   int count = 0;
-  for (set<std::string>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end() && !m_bStop; ++it)
+  for (std::set<std::string>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end() && !m_bStop; ++it)
   {
     count+=CountFilesRecursively(*it);
   }

@@ -52,7 +52,6 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
   SetID(id);
   SetProperty("xmlfile", xmlFile);
   m_lastControlID = 0;
-  m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
@@ -245,6 +244,11 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
       pChild->QueryFloatAttribute("y", &m_camera.y);
       m_hasCamera = true;
     }
+    else if (strValue == "depth" && pChild->FirstChild())
+    { 
+      float stereo = (float)atof(pChild->FirstChild()->Value());;
+      m_stereo = std::max(-1.f, std::min(1.f, stereo));
+    }
     else if (strValue == "controls")
     {
       TiXmlElement *pControl = pChild->FirstChildElement();
@@ -256,12 +260,6 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
         }
         pControl = pControl->NextSiblingElement();
       }
-    }
-    else if (strValue == "allowoverlay")
-    {
-      bool overlay = false;
-      if (XMLUtils::GetBoolean(pRootElement, "allowoverlay", overlay))
-        m_overlayState = overlay ? OVERLAY_STATE_SHOWN : OVERLAY_STATE_HIDDEN;
     }
 
     pChild = pChild->NextSiblingElement();
@@ -435,6 +433,8 @@ bool CGUIWindow::OnAction(const CAction &action)
     case ACTION_NAV_BACK:
     case ACTION_PREVIOUS_MENU:
       return OnBack(action.GetID());
+    case ACTION_SHOW_INFO:
+      return OnInfo(action.GetID());
     case ACTION_MENU:
       if (m_menuControlID > 0)
       {
@@ -543,7 +543,6 @@ void CGUIWindow::OnInitWindow()
   RestoreControlStates();
   SetInitialVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
-  g_windowManager.ShowOverlay(m_overlayState);
 
   if (!m_manualRunActions)
   {
@@ -926,7 +925,7 @@ void CGUIWindow::SaveControlStates()
 
 void CGUIWindow::RestoreControlStates()
 {
-  for (vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
+  for (std::vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
   {
     CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
     OnMessage(message);
@@ -958,12 +957,12 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
               fromControl, GetID());
     return false;
   }
-  vector<int> moveHistory;
+  std::vector<int> moveHistory;
   int nextControl = fromControl;
   while (control)
   { // grab the next control direction
     moveHistory.push_back(nextControl);
-    CGUIAction action = control->GetNavigateAction(moveAction);
+    CGUIAction action = control->GetAction(moveAction);
     action.ExecuteActions(nextControl, GetParentID());
     nextControl = action.GetNavigation();
     if (!nextControl) // 0 isn't valid control id
@@ -992,11 +991,11 @@ void CGUIWindow::SetDefaults()
   m_defaultAlways = false;
   m_defaultControl = 0;
   m_posX = m_posY = m_width = m_height = 0;
-  m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_previousWindow = WINDOW_INVALID;
   m_animations.clear();
   m_origins.clear();
   m_hasCamera = false;
+  m_stereo = 0.f;
   m_animationsEnabled = true;
   m_clearBackground = 0xff000000; // opaque black -> clear
   m_hitRect.SetRect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight);

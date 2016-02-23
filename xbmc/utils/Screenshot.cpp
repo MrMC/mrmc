@@ -56,7 +56,6 @@
 #include "utils/ScreenshotAML.h"
 #endif
 
-using namespace std;
 using namespace XFILE;
 
 CScreenshotSurface::CScreenshotSurface()
@@ -252,7 +251,7 @@ void CScreenShot::TakeScreenshot(const std::string &filename, bool sync)
 void CScreenShot::TakeScreenshot()
 {
   static bool savingScreenshots = false;
-  static vector<std::string> screenShots;
+  static std::vector<std::string> screenShots;
   bool promptUser = false;
   std::string strDir;
 

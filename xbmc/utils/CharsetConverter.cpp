@@ -19,19 +19,22 @@
  */
 
 #include "CharsetConverter.h"
-#include "utils/StringUtils.h"
+
+#include <cerrno>
+#include <algorithm>
+
+#include <iconv.h>
 #include <fribidi/fribidi.h>
-#include "LangInfo.h"
+
 #include "guilib/LocalizeStrings.h"
+#include "LangInfo.h"
+#include "log.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "system.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
-#include "log.h"
-
-#include <errno.h>
-#include <iconv.h>
-#include <algorithm>
 
 #if defined(HAVE_CONFIG_H)
   #include "config.h"
@@ -642,7 +645,7 @@ void CCharsetConverter::resetSubtitleCharset(void)
 
 void CCharsetConverter::reinitCharsetsFromSettings(void)
 {
-  resetUserCharset(); // this will also reinit Subtitle
+  resetUserCharset(); // this will also reinit Subtitle charsets
 }
 
 bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)

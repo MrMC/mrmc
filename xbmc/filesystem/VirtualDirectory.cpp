@@ -143,6 +143,18 @@ bool CVirtualDirectory::IsInSource(const std::string &path) const
   VECSOURCES shares;
   GetSources(shares);
   int iShare = CUtil::GetMatchingSource(path, shares, isSourceName);
+  if (URIUtils::IsOnDVD(path))
+  { // check to see if our share path is still available and of the same type, as it changes during autodetect
+    // and GetMatchingSource() is too naive at it's matching
+    for (unsigned int i = 0; i < shares.size(); i++)
+    {
+      CMediaSource &share = shares[i];
+      if (URIUtils::IsOnDVD(share.strPath) &&
+          StringUtils::StartsWith(path, share.strPath))
+        return true;
+    }
+    return false;
+  }
   // TODO: May need to handle other special cases that GetMatchingSource() fails on
   return (iShare > -1);
 }
@@ -154,6 +166,36 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
 
   if (m_allowNonLocalSources)
     g_mediaManager.GetRemovableDrives(shares);
+
+#ifdef HAS_DVD_DRIVE
+  // and update our dvd share
+  for (unsigned int i = 0; i < shares.size(); ++i)
+  {
+    CMediaSource& share = shares[i];
+    if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
+    {
+      if(g_mediaManager.IsAudio(share.strPath))
+      {
+        share.strStatus = "Audio-CD";
+        share.strPath = "cdda://local/";
+        share.strDiskUniqueId = "";
+      }
+      else
+      {
+        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+        share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
+        if (!share.strPath.length()) // unmounted CD
+        {
+          if (g_mediaManager.GetDiscPath() == "iso9660://")
+            share.strPath = "iso9660://";
+          else
+            // share is unmounted and not iso9660, discard it
+            shares.erase(shares.begin() + i--);
+        }
+      }
+    }
+  }
+#endif
 }
 }
 

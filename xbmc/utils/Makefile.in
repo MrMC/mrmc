@@ -75,6 +75,7 @@ SRCS += URIUtils.cpp
 SRCS += UrlOptions.cpp
 SRCS += Variant.cpp
 SRCS += Vector.cpp
+SRCS += Weather.cpp
 SRCS += XBMCTinyXML.cpp
 SRCS += XMLUtils.cpp
 SRCS += Utf8Utils.cpp

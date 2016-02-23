@@ -3,6 +3,7 @@ SRCS += PVRChannelGroup.cpp
 SRCS += PVRChannelGroupInternal.cpp
 SRCS += PVRChannelGroups.cpp
 SRCS += PVRChannelGroupsContainer.cpp
+SRCS += PVRRadioRDSInfoTag.cpp
 
 LIB   = pvrchannels.a
 

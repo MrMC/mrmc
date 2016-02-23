@@ -572,7 +572,7 @@ void CLinuxRendererGL::Update()
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
 }
 
-void CLinuxRendererGL::RenderUpdate(bool clear, uint32_t flags, unsigned int alpha)
+void CLinuxRendererGL::RenderUpdate(bool clear, uint32_t flags, uint32_t alpha)
 {
   int index = m_iYV12RenderBuffer;
 

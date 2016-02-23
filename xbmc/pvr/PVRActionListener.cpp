@@ -18,14 +18,12 @@
  *
  */
 
-#include "PVRActionListener.h"
-
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "input/Key.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogNumeric.h"
+#include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -33,6 +31,8 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+
+#include "PVRActionListener.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -87,8 +87,14 @@ bool CPVRActionListener::OnAction(const CAction &action)
     case REMOTE_9:
     {
       if (g_application.CurrentFileItem().IsLiveTV() &&
-          (g_windowManager.IsWindowActive(WINDOW_FULLSCREEN_VIDEO)))
+          (g_windowManager.IsWindowActive(WINDOW_FULLSCREEN_VIDEO) ||
+           g_windowManager.IsWindowActive(WINDOW_VISUALISATION)))
       {
+        // do not consume action if a python modal is the top most dialog
+        // as a python modal can't return that it consumed the action.
+        if (g_windowManager.IsPythonWindow(g_windowManager.GetTopMostModalDialogID()))
+          return false;
+
         if(g_PVRManager.IsPlaying())
         {
           // pvr client addon

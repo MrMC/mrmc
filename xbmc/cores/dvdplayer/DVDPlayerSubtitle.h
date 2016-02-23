@@ -30,6 +30,7 @@
 class CDVDInputStream;
 class CDVDSubtitleStream;
 class CDVDSubtitleParser;
+class CDVDInputStreamNavigator;
 class CDVDOverlayCodec;
 
 class CDVDPlayerSubtitle : public IDVDStreamPlayer
@@ -42,6 +43,8 @@ public:
   void Flush();
   void FindSubtitles(const char* strFilename);
   int GetSubtitleCount();
+
+  void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, int iAction) { m_pOverlayContainer->UpdateOverlayInfo(pStream, &m_dvdspus, iAction); }
 
   bool AcceptsData() const;
   void SendMessage(CDVDMsg* pMsg, int priority = 0);

@@ -20,13 +20,15 @@
  */
 
 #include "system.h"
+
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
+#include "messaging/IMessageTarget.h"
 #include "settings/lib/ISettingCallback.h"
+#include "system.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
-#include "messaging/IMessageTarget.h"
 
 class CFileItemList;
 class CSetting;
@@ -230,6 +232,7 @@ namespace PERIPHERALS
 #endif
     std::vector<CPeripheralBus *>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
+    CSettingsCategory *                  m_settings;
     CCriticalSection                     m_critSection;
   };
 }

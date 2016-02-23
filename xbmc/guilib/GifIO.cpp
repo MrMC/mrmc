@@ -17,15 +17,14 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-
-#include <memory>
 #include "system.h"
-
+#if defined(HAS_GIFLIB)
 #include "GifIO.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "guilib/Texture.h"
 #include "filesystem/File.h"
+#include <algorithm>
 
 #define UNSIGNED_LITTLE_ENDIAN(lo, hi)	((lo) | ((hi) << 8))
 #define GIF_MAX_MEMORY 82944000U // about 79 MB, which is equivalent to 10 full hd frames.
@@ -34,8 +33,8 @@ class Gifreader
 {
 public:
   unsigned char* buffer;
-  unsigned int   buffSize;
-  unsigned int   readPosition;
+  unsigned int buffSize;
+  unsigned int readPosition;
 
   Gifreader() : buffer(nullptr), buffSize(0), readPosition(0) {}
 };
@@ -68,94 +67,56 @@ int ReadFromVfs(GifFileType* gif, GifByteType* gifbyte, int len)
 }
 
 
-CGifIO::CGifIO()
- : m_imageSize(0)
- , m_pitch(0)
- , m_loops(0)
- , m_numFrames(0)
- , m_filename("")
- , m_gif(nullptr)
- , m_hasBackground(false)
- , m_pTemplate(nullptr)
- , m_isAnimated(-1)
+CGifIO::CGifIO() :
+  m_imageSize(0),
+  m_pitch(0),
+  m_loops(0),
+  m_numFrames(0),
+  m_filename(""),
+  m_gif(nullptr),
+  m_pTemplate(nullptr),
+  m_isAnimated(-1)
 {
-  memset(&m_backColor, 0x00, sizeof(m_backColor));
   m_gifFile = new XFILE::CFile();
 }
 
 CGifIO::~CGifIO()
 {
-  Close(m_gif);
-  Release();
-  delete m_gifFile;
-}
-
-bool CGifIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
-{
-  if (!buffer || !bufSize || !width || !height)
-    return false;
-  
-  Gifreader reader;
-  reader.buffer = buffer;
-  reader.buffSize = bufSize;
-  
-  if (!Open(m_gif, static_cast<void *>(&reader), ReadFromMemory))
-    return false;
-  
-  if (!LoadGifMetaData(m_gif))
-    return false;
-  
-  m_originalWidth = m_width;
-  m_originalHeight = m_height;
-  
-  try
+  if (m_gifFile)
   {
-    InitTemplateAndColormap();
-    
-    if (!ExtractFrames(m_numFrames))
-      return false;
-  }
-  catch (std::bad_alloc& ba)
-  {
-    CLog::Log(LOGERROR, "CGifIO::LoadImageFromMemory(): Out of memory while extracting gif frames - %s", ba.what());
+    Close(m_gif);
     Release();
-    return false;
   }
-  
-  return true;
+  SAFE_DELETE(m_gifFile);
 }
 
-bool CGifIO::Decode(unsigned char* const pixels, unsigned int pitch)
+void CGifIO::Close(GifFileType* gif)
 {
-  if (m_width == 0 || m_height == 0 || !m_gif || !m_numFrames)
-    return false;
-  
-  const unsigned char *src = m_frames[0]->m_pImage;
-  unsigned char* dst = pixels;
-  
-  if (pitch == m_pitch)
-    memcpy(dst, src, m_imageSize);
-  else
-  {
-    for (unsigned int y = 0; y < m_height; y++)
-    {
-      memcpy(dst, src, m_pitch);
-      src += m_pitch;
-      dst += pitch;
-    }
-  }
-  return true;
+  int err = 0;
+  int reason = 0;
+#if GIFLIB_MAJOR == 5 && GIFLIB_MINOR >= 1
+  err = DGifCloseFile(gif, &reason);
+#else
+  err = DGifCloseFile(gif);
+#if GIFLIB_MAJOR < 5
+  reason = GifLastError();
+#endif
+  if (err == GIF_ERROR)
+    free(gif);
+#endif
+  if (err == GIF_ERROR)
+    PrettyPrintError(StringUtils::Format("Gif::~Gif(): closing file %s failed", memOrFile().c_str()), reason);
 }
 
-bool CGifIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height,
-                                       unsigned int pitch, const std::string& destFile,
-                                       unsigned char* &bufferout, unsigned int &bufferoutSize)
+void CGifIO::Release()
 {
-  CLog::Log(LOGERROR, "CGifIO::CreateThumbnailFromSurface(): Not implemented. Something went wrong, we don't store thumbnails as gifs!");
-  return false;
+  delete[] m_pTemplate;
+  m_pTemplate = nullptr;
+  m_globalPalette.clear();
+  m_frames.clear();
 }
 
-void CGifIO::ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject *src, unsigned int size)
+void CGifIO::ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject* src, unsigned int size)
 {
   for (unsigned int i = 0; i < size; ++i)
   {
@@ -190,7 +151,11 @@ bool CGifIO::LoadGifMetaData(GifFileType* gif)
     {
       // Read number of loops
       if (++extb && extb->Function == CONTINUE_EXT_FUNC_CODE)
-        m_loops = UNSIGNED_LITTLE_ENDIAN(extb->Bytes[1], extb->Bytes[2]);
+      {
+        uint8_t low = static_cast<uint8_t>(extb->Bytes[1]);
+        uint8_t high = static_cast<uint8_t>(extb->Bytes[2]);
+        m_loops = UNSIGNED_LITTLE_ENDIAN(low, high);
+      }
     }
   }
   else
@@ -225,8 +190,13 @@ bool CGifIO::Slurp(GifFileType* gif)
 {
   if (DGifSlurp(gif) == GIF_ERROR)
   {
-    int reason = gif->Error;
-    PrettyPrintError(StringUtils::Format("CGifIO::LoadGif(): Could not read file %s", memOrFile().c_str()), reason);
+    int reason = 0;
+#if GIFLIB_MAJOR == 5
+    reason = gif->Error;
+#else
+    reason = m_dll.GifLastError();
+#endif
+    PrettyPrintError(StringUtils::Format("GifIO::LoadGif(): Could not read file %s", memOrFile().c_str()), reason);
     return false;
   }
 
@@ -243,7 +213,19 @@ bool CGifIO::LoadGif(const char* file)
   {
     InitTemplateAndColormap();
 
-    return ExtractFrames(m_numFrames);
+    int extractedFrames = ExtractFrames(m_numFrames);
+    if (extractedFrames < 0)
+    {
+      CLog::Log(LOGDEBUG, "Gif::LoadGif(): Could not extract any frame. File %s", memOrFile().c_str());
+      return false;
+    } 
+    else if (extractedFrames < (int)m_numFrames)
+    {
+      CLog::Log(LOGDEBUG, "Gif::LoadGif(): Could only extract %d/%d frames. File %s", extractedFrames, m_numFrames, memOrFile().c_str());
+      m_numFrames = extractedFrames;
+    }
+
+    return true;
   }
   catch (std::bad_alloc& ba)
   {
@@ -281,6 +263,13 @@ bool CGifIO::IsAnimated(const char* file)
 bool CGifIO::Open(GifFileType*& gif, void *dataPtr, InputFunc readFunc)
 {
   int err = 0;
+#if GIFLIB_MAJOR == 5
+  gif = DGifOpen(dataPtr, readFunc, &err);
+#else
+  gif = DGifOpen(dataPtr, readFunc);
+  if (!gif)
+    err = GifLastError();
+#endif
 
   gif = DGifOpen(dataPtr, readFunc, &err);
   if (!gif)
@@ -292,21 +281,6 @@ bool CGifIO::Open(GifFileType*& gif, void *dataPtr, InputFunc readFunc)
   return true;
 }
 
-void CGifIO::Close(GifFileType* gif)
-{
-  int reason = 0;
-  int err = DGifCloseFile(gif, &reason);
-  if (err == GIF_ERROR)
-    PrettyPrintError(StringUtils::Format("CGifIO::~Gif(): closing file %s failed", memOrFile().c_str()), reason);
-}
-
-void CGifIO::Release()
-{
-  delete[] m_pTemplate, m_pTemplate = nullptr;
-  m_globalPalette.clear();
-  m_frames.clear();
-}
-
 void CGifIO::InitTemplateAndColormap()
 {
   m_pTemplate = new unsigned char[m_imageSize];
@@ -316,32 +290,24 @@ void CGifIO::InitTemplateAndColormap()
   {
     m_globalPalette.clear();
     ConvertColorTable(m_globalPalette, m_gif->SColorMap, m_gif->SColorMap->ColorCount);
-
-    // draw the canvas
-    m_backColor = m_globalPalette[m_gif->SBackGroundColor];
-    m_hasBackground = true;
-
-    for (unsigned int i = 0; i < m_height * m_width; ++i)
-    {
-      unsigned char *dest = m_pTemplate + (i *sizeof(GifColor));
-      memcpy(dest, &m_backColor, sizeof(GifColor));
-    }
   }
   else
     m_globalPalette.clear();
 }
 
-bool CGifIO::gcbToFrame(CGifFrame &frame, unsigned int imgIdx)
+bool CGifIO::GcbToFrame(GifFrame &frame, unsigned int imgIdx)
 {
+  int transparent = -1;
   frame.m_delay = 0;
   frame.m_disposal = 0;
-  int transparent = -1;
+
   if (m_gif->ImageCount > 0)
   {
+#if GIFLIB_MAJOR == 5
     GraphicsControlBlock gcb;
     if (!DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
     {
-      PrettyPrintError(StringUtils::Format("CGifIO::ExtractFrames(): Could not read GraphicsControlBlock of frame %d in file %s",
+      PrettyPrintError(StringUtils::Format("Gif::GcbToFrame(): Could not read GraphicsControlBlock of frame %d in file %s",
         imgIdx, memOrFile().c_str()), m_gif->Error);
       return false;
     }
@@ -349,6 +315,32 @@ bool CGifIO::gcbToFrame(CGifFrame &frame, unsigned int imgIdx)
     frame.m_delay = gcb.DelayTime * 10;
     frame.m_disposal = gcb.DisposalMode;
     transparent = gcb.TransparentColor;
+#else
+    ExtensionBlock* extb = m_gif->SavedImages[imgIdx].ExtensionBlocks;
+    while (extb && extb->Function != GRAPHICS_EXT_FUNC_CODE)
+      extb++;
+
+    if (!extb || extb->ByteCount != 4)
+    {
+      CLog::Log(LOGERROR, "Gif::GcbToFrame() : Could not read GraphicsControlBlock of frame %d in file %s",
+        imgIdx, memOrFile().c_str());
+      return false;
+    }
+    else
+    {
+      uint8_t low = static_cast<uint8_t>(extb->Bytes[1]);
+      uint8_t high = static_cast<uint8_t>(extb->Bytes[2]);
+      frame.m_delay = UNSIGNED_LITTLE_ENDIAN(low, high) * 10;
+      frame.m_disposal = (extb->Bytes[0] >> 2) & 0x07;
+      if (extb->Bytes[0] & 0x01)
+      {
+        transparent = static_cast<uint8_t>(extb->Bytes[3]);
+      }
+      else
+        transparent = -1;
+    }
+
+#endif
   }
 
   if (transparent >= 0 && (unsigned)transparent < frame.m_palette.size())
@@ -356,49 +348,59 @@ bool CGifIO::gcbToFrame(CGifFrame &frame, unsigned int imgIdx)
   return true;
 }
 
-bool CGifIO::ExtractFrames(unsigned int count)
+int CGifIO::ExtractFrames(unsigned int count)
 {
   if (!m_gif)
-    return false;
+    return -1;
 
   if (!m_pTemplate)
   {
-    CLog::Log(LOGDEBUG, "CGifIO::ExtractFrames(): No frame template available");
-    return false;
+    CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No frame template available");
+    return -1;
   }
 
+  int extracted = 0;
   for (unsigned int i = 0; i < count; i++)
   {
-    FramePtr frame(new CGifFrame);
+    FramePtr frame(new GifFrame);
     SavedImage savedImage = m_gif->SavedImages[i];
     GifImageDesc imageDesc = m_gif->SavedImages[i].ImageDesc;
-    frame->m_top    = imageDesc.Top;
-    frame->m_left   = imageDesc.Left;
     frame->m_height = imageDesc.Height;
-    frame->m_width  = imageDesc.Width;
+    frame->m_width = imageDesc.Width;
+    frame->m_top = imageDesc.Top;
+    frame->m_left = imageDesc.Left;
 
     if (frame->m_top + frame->m_height > m_height || frame->m_left + frame->m_width > m_width
-      || !frame->m_width || !frame->m_height)
+      || !frame->m_width || !frame->m_height
+      || frame->m_width > m_width || frame->m_height > m_height)
     {
-      CLog::Log(LOGDEBUG, "CGifIO::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d)",
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d), skip it",
         frame->m_width, frame->m_height, frame->m_left, frame->m_top, m_width, m_height);
-      return false;
+      continue;
     }
 
     if (imageDesc.ColorMap)
     {
       frame->m_palette.clear();
       ConvertColorTable(frame->m_palette, imageDesc.ColorMap, imageDesc.ColorMap->ColorCount);
-      // TODO save a backup of the palette for frames without a table in case there's no gloabl table.
+      // TODO save a backup of the palette for frames without a table in case there's no global table.
     }
     else if (m_gif->SColorMap)
     {
       frame->m_palette = m_globalPalette;
     }
+    else
+    {
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No color map found for frame %d, skip it", i);
+      continue;
+    }
 
     // fill delay, disposal and transparent color into frame
-    if (!gcbToFrame(*frame, i))
-      return false;
+    if (!GcbToFrame(*frame, i))
+    {
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Corrupted Graphics Control Block for frame %d, skip it", i);
+      continue;
+    }
 
     frame->m_pImage = new unsigned char[m_imageSize];
     frame->m_imageSize = m_imageSize;
@@ -407,15 +409,21 @@ bool CGifIO::ExtractFrames(unsigned int count)
     ConstructFrame(*frame, savedImage.RasterBits);
 
     if (!PrepareTemplate(*frame))
-      return false;
+    {
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Could not prepare template after frame %d, skip it", i);
+      continue;
+    }
 
+    extracted++;
     m_frames.push_back(frame);
   }
-  return true;
+  return extracted;
 }
 
-void CGifIO::ConstructFrame(CGifFrame &frame, const unsigned char* src) const
+void CGifIO::ConstructFrame(GifFrame &frame, const unsigned char* src) const
 {
+  size_t paletteSize = frame.m_palette.size();
+
   for (unsigned int dest_y = frame.m_top, src_y = 0; src_y < frame.m_height; ++dest_y, ++src_y)
   {
     unsigned char *to = frame.m_pImage + (dest_y * m_pitch) + (frame.m_left * sizeof(GifColor));
@@ -423,119 +431,221 @@ void CGifIO::ConstructFrame(CGifFrame &frame, const unsigned char* src) const
     const unsigned char *from = src + (src_y * frame.m_width);
     for (unsigned int src_x = 0; src_x < frame.m_width; ++src_x)
     {
-      GifColor col = frame.m_palette[*from++];
+      unsigned char index = *from++;
+
+      if (index >= paletteSize)
+      {
+        CLog::Log(LOGDEBUG, "Gif::ConstructFrame(): Pixel (%d,%d) has no valid palette entry, skip it", src_x, src_y);
+        continue;
+      }
+
+      GifColor col = frame.m_palette[index];
       if (col.a != 0)
-      {
-        *to++ = col.b;
-        *to++ = col.g;
-        *to++ = col.r;
-        *to++ = col.a;
-      }
-      else
-      {
-        to += 4;
-      }
+        memcpy(to, &col, sizeof(GifColor));
+
+      to += 4;
     }
   }
 }
 
-bool CGifIO::PrepareTemplate(const CGifFrame &frame)
+bool CGifIO::PrepareTemplate(GifFrame &frame)
 {
   switch (frame.m_disposal)
   {
-    // No disposal specified
-    case DISPOSAL_UNSPECIFIED:
+    /* No disposal specified. */
+  case DISPOSAL_UNSPECIFIED:
     /* Leave image in place */
-    case DISPOSE_DO_NOT:
-      memcpy(m_pTemplate, frame.m_pImage, m_imageSize);
+  case DISPOSE_DO_NOT:
+    memcpy(m_pTemplate, frame.m_pImage, m_imageSize);
     break;
 
-    // Set area too background color
-    case DISPOSE_BACKGROUND:
+    /*
+       Clear the frame's area to transparency.
+       The disposal names is misleading. Do not restore to the background color because
+       this part of the specification is ignored by all browsers/image viewers.
+    */
+  case DISPOSE_BACKGROUND:
+  {
+    ClearFrameAreaToTransparency(m_pTemplate, frame);
+    break;
+  }
+  /* Restore to previous content */
+  case DISPOSE_PREVIOUS:
+  {
+
+    /* 
+    * This disposal method makes no sense for the first frame
+    * Since browsers etc. handle that too, we'll fall back to DISPOSE_DO_NOT
+    */
+    if (m_frames.empty())
     {
-      if (!m_hasBackground)
-      {
-        CLog::Log(LOGDEBUG, "CGifIO::PrepareTemplate(): Disposal method DISPOSE_BACKGROUND encountered, but the gif has no background.");
-        return false;
-      }
-      SetFrameAreaToBack(m_pTemplate, frame);
+      frame.m_disposal = DISPOSE_DO_NOT;
+      return PrepareTemplate(frame);
     }
-    break;
 
-    // Restore to previous content
-    case DISPOSE_PREVIOUS:
+    bool valid = false;
+
+    for (int i = m_frames.size() - 1; i >= 0; --i)
     {
-      bool valid = false;
-
-      for (int i = m_frames.size() - 1; i >= 0; --i)
+      if (m_frames[i]->m_disposal != DISPOSE_PREVIOUS)
       {
-        if (m_frames[i]->m_disposal != DISPOSE_PREVIOUS)
-        {
-          memcpy(m_pTemplate, m_frames[i]->m_pImage, m_imageSize);
-          valid = true;
-          break;
-        }
-      }
-      if (!valid)
-      {
-        CLog::Log(LOGDEBUG, "CGifIO::PrepareTemplate(): Disposal method DISPOSE_PREVIOUS encountered, but could not find a suitable frame.");
-        return false;
+        memcpy(m_pTemplate, m_frames[i]->m_pImage, m_imageSize);
+        valid = true;
+        break;
       }
     }
-    break;
-
-    default:
+    if (!valid)
     {
-      CLog::Log(LOGDEBUG, "CGifIO::PrepareTemplate(): Unknown disposal method: %d", frame.m_disposal);
+      CLog::Log(LOGDEBUG, "Gif::PrepareTemplate(): Disposal method DISPOSE_PREVIOUS encountered, but could not find a suitable frame.");
       return false;
     }
+    break;
   }
-
+  default:
+  {
+    CLog::Log(LOGDEBUG, "Gif::PrepareTemplate(): Unknown disposal method: %d. Using DISPOSAL_UNSPECIFIED, the animation might be wrong now.", frame.m_disposal);
+    frame.m_disposal = DISPOSAL_UNSPECIFIED;
+    return PrepareTemplate(frame);
+  }
+  }
   return true;
 }
 
-void CGifIO::SetFrameAreaToBack(unsigned char* dest, const CGifFrame &frame)
+void CGifIO::ClearFrameAreaToTransparency(unsigned char* dest, const GifFrame &frame)
 {
   for (unsigned int dest_y = frame.m_top, src_y = 0; src_y < frame.m_height; ++dest_y, ++src_y)
   {
     unsigned char *to = dest + (dest_y * m_pitch) + (frame.m_left * sizeof(GifColor));
     for (unsigned int src_x = 0; src_x < frame.m_width; ++src_x)
     {
-      memcpy(to, &m_backColor, sizeof(m_backColor));
-      to += 4;
+      to += 3;
+      *to++ = 0;
     }
   }
+}
+
+bool CGifIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
+{
+  if (!buffer || !bufSize || !width || !height)
+    return false;
+
+  Gifreader reader;
+  reader.buffer = buffer;
+  reader.buffSize = bufSize;
+
+  if (!Open(m_gif, static_cast<void *>(&reader), ReadFromMemory))
+    return false;
+
+  if (!LoadGifMetaData(m_gif))
+    return false;
+
+  m_originalWidth = m_width;
+  m_originalHeight = m_height;
+
+  try
+  {
+    InitTemplateAndColormap();
+
+    int extractedFrames = ExtractFrames(m_numFrames);
+    if (extractedFrames < 0)
+    {
+      CLog::Log(LOGDEBUG, "Gif::LoadGif(): Could not extract any frame. File %s", memOrFile().c_str());
+      return false;
+    }
+    else if (extractedFrames < (int)m_numFrames)
+    {
+      CLog::Log(LOGDEBUG, "Gif::LoadGif(): Could only extract %d/%d frames. File %s", extractedFrames, m_numFrames, memOrFile().c_str());
+      m_numFrames = extractedFrames;
+    }
+
+    return true;
+  }
+  catch (std::bad_alloc& ba)
+  {
+    CLog::Log(LOGERROR, "Gif::LoadImageFromMemory(): Out of memory while extracting gif frames - %s", ba.what());
+    Release();
+    return false;
+  }
+
+  return true;
+}
+
+bool CGifIO::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
+{
+  if (m_width == 0 || m_height == 0
+    || !m_gif
+    || format != XB_FMT_A8R8G8B8 || !m_numFrames)
+    return false;
+
+  if (m_frames.empty() || !m_frames[0]->m_pImage)
+    return false;
+
+  const unsigned char *src = m_frames[0]->m_pImage;
+  unsigned char* dst = pixels;
+
+  unsigned int copyHeight = std::min(m_height, height);
+  unsigned int copyPitch = std::min(m_pitch, pitch);
+
+  if (pitch == m_pitch && copyHeight == m_height)
+  {
+    memcpy(dst, src, m_imageSize);
+  }
+  else
+  {
+    for (unsigned int y = 0; y < copyHeight; y++)
+    {
+      memcpy(dst, src, copyPitch);
+      src += m_pitch;
+      dst += pitch;
+    }
+  }
+
+  return true;
+}
+
+bool CGifIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile,
+                                     unsigned char* &bufferout, unsigned int &bufferoutSize)
+{
+  CLog::Log(LOGERROR, "Gif::CreateThumbnailFromSurface(): Not implemented. Something went wrong, we don't store thumbnails as gifs!");
+  return false;
 }
 
 void CGifIO::PrettyPrintError(std::string messageTemplate, int reason)
 {
   const char* error = GifErrorString(reason);
+  std::string message;
   if (error)
-    CLog::Log(LOGERROR, "%s - %s", messageTemplate.c_str(), error);
+  {
+    message = StringUtils::Format(messageTemplate.append(" - %s").c_str(), error);
+  }
   else
-    CLog::Log(LOGERROR, "%s - (reason unknown)", messageTemplate.c_str());
+  {
+    message = messageTemplate.append(" (reason unknown)");
+  }
+  CLog::Log(LOGERROR, "%s", message.c_str());
 }
 
-CGifFrame::CGifFrame()
-  : m_pImage(nullptr)
-  , m_delay(0)
-  , m_imageSize(0)
-  , m_height(0)
-  , m_width(0)
-  , m_top(0)
-  , m_left(0)
-  , m_disposal(0)
+GifFrame::GifFrame() :
+  m_pImage(nullptr),
+  m_delay(0),
+  m_imageSize(0),
+  m_height(0),
+  m_width(0),
+  m_top(0),
+  m_left(0),
+  m_disposal(0)
 {}
 
-CGifFrame::CGifFrame(const CGifFrame& src)
- : m_pImage(nullptr)
- , m_delay(src.m_delay)
- , m_imageSize(src.m_imageSize)
- , m_height(src.m_height)
- , m_width(src.m_width)
- , m_top(src.m_top)
- , m_left(src.m_left)
- , m_disposal(src.m_disposal)
+
+GifFrame::GifFrame(const GifFrame& src) :
+  m_pImage(nullptr),
+  m_delay(src.m_delay),
+  m_imageSize(src.m_imageSize),
+  m_height(src.m_height),
+  m_width(src.m_width),
+  m_top(src.m_top),
+  m_left(src.m_left),
+  m_disposal(src.m_disposal)
 {
   if (src.m_pImage)
   {
@@ -544,10 +654,14 @@ CGifFrame::CGifFrame(const CGifFrame& src)
   }
 
   if (src.m_palette.size())
+  {
     m_palette = src.m_palette;
+  }
 }
 
-CGifFrame::~CGifFrame()
+GifFrame::~GifFrame()
 {
-  delete[] m_pImage, m_pImage = nullptr;
+  delete[] m_pImage;
+  m_pImage = nullptr;
 }
+#endif//HAS_GIFLIB

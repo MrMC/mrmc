@@ -20,27 +20,29 @@
  *
  */
 
+#include <utility>
+
 #include "cores/IPlayer.h"
-#include "threads/Thread.h"
-
-#include "IDVDPlayer.h"
-
-#include "DVDMessageQueue.h"
 #include "DVDClock.h"
-#include "DVDPlayerVideo.h"
+#include "DVDMessageQueue.h"
+#include "DVDPlayerRadioRDS.h"
 #include "DVDPlayerSubtitle.h"
 #include "DVDPlayerTeletext.h"
-
+#include "DVDPlayerVideo.h"
 #include "Edl.h"
 #include "FileItem.h"
-#include "utils/StreamDetails.h"
+#include "IDVDPlayer.h"
+#include "system.h"
 #include "threads/SystemClock.h"
+#include "threads/Thread.h"
+#include "utils/StreamDetails.h"
 
 #ifdef HAS_OMXPLAYER
 #include "OMXCore.h"
 #include "OMXClock.h"
 #include "linux/RBP.h"
 #else
+
 
 // dummy class to avoid ifdefs where calls are made
 class OMXClock
@@ -209,6 +211,7 @@ public:
 #define DVDPLAYER_VIDEO    2
 #define DVDPLAYER_SUBTITLE 3
 #define DVDPLAYER_TELETEXT 4
+#define DVDPLAYER_RDS      5
 
 class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 {
@@ -222,6 +225,7 @@ public:
   virtual bool IsPaused() const;
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
+  virtual bool HasRDS() const;
   virtual bool IsPassthrough() const;
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
@@ -259,6 +263,8 @@ public:
 
   virtual TextCacheStruct_t* GetTeletextCache();
   virtual void LoadPage(int p, int sp, unsigned char* buffer);
+
+  virtual std::string GetRadioText(unsigned int line);
 
   virtual int  GetChapterCount();
   virtual int  GetChapter();
@@ -300,6 +306,8 @@ public:
   virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR; }
   virtual int GetCacheLevel() const ;
 
+  virtual int OnDVDNavResult(void* pData, int iMessage);
+
   virtual bool ControlsVolume() {return m_omxplayer_mode;}
 
 protected:
@@ -318,6 +326,7 @@ protected:
   bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenSubtitleStream(CDVDStreamInfo& hint);
   bool OpenTeletextStream(CDVDStreamInfo& hint);
+  bool OpenRadioRDSStream(CDVDStreamInfo& hint);
 
   /** \brief Switches forced subtitles to forced subtitles matching the language of the current audio track.
   *          If these are not available, subtitles are disabled.
@@ -332,6 +341,7 @@ protected:
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
+  void ProcessRadioRDSData(CDemuxStream* pStream, DemuxPacket* pPacket);
 
   bool ShowPVRChannelInfo();
 
@@ -400,6 +410,7 @@ protected:
   CCurrentStream m_CurrentVideo;
   CCurrentStream m_CurrentSubtitle;
   CCurrentStream m_CurrentTeletext;
+  CCurrentStream m_CurrentRadioRDS;
 
   CSelectionStreams m_SelectionStreams;
 
@@ -421,6 +432,7 @@ protected:
   IDVDStreamPlayerAudio *m_dvdPlayerAudio; // audio part
   CDVDPlayerSubtitle *m_dvdPlayerSubtitle; // subtitle part
   CDVDTeletextData *m_dvdPlayerTeletext; // teletext part
+  CDVDRadioRDSData *m_dvdPlayerRadioRDS; // rds part
 
   CDVDClock m_clock;                // master clock
   CDVDOverlayContainer m_overlayContainer;
@@ -437,9 +449,13 @@ protected:
       state                =  DVDSTATE_NORMAL;
       iSelectedSPUStream   = -1;
       iSelectedAudioStream = -1;
+      iDVDStillTime        =  0;
+      iDVDStillStartTime   =  0;
     }
 
     int state;                // current dvdstate
+    unsigned int iDVDStillTime;      // total time in ticks we should display the still before continuing
+    unsigned int iDVDStillStartTime; // time in ticks when we started the still
     int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;

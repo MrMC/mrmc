@@ -1,1 +1,0 @@
-pvr.dvbviewer https://github.com/mrmc/pvr.dvbviewer 7ebdf9eee65d4ff4ca4b6178162c9aa68e38e406

@@ -1,5 +1,4 @@
 SRCS  = GUIDialogPeripheralSettings.cpp
-SRCS += GUIDialogPeripheralManager.cpp
 
 LIB   = peripheral-dialogs.a
 

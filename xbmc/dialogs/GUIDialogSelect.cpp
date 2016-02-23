@@ -55,8 +55,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIDialog::OnMessage(message);
-      m_viewControl.Clear();
+      CGUIDialogBoxBase::OnMessage(message);
 
       m_bButtonEnabled = false;
       m_useDetails = false;
@@ -88,7 +87,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     {
       m_bButtonPressed = false;
       m_bConfirmed = false;
-      CGUIDialog::OnMessage(message);
+      CGUIDialogBoxBase::OnMessage(message);
       return true;
     }
     break;
@@ -148,7 +147,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     break;
   }
 
-  return CGUIDialog::OnMessage(message);
+  return CGUIDialogBoxBase::OnMessage(message);
 }
 
 bool CGUIDialogSelect::OnBack(int actionID)
@@ -156,7 +155,7 @@ bool CGUIDialogSelect::OnBack(int actionID)
   m_selectedItem = nullptr;
   m_selectedItems.clear();
   m_bConfirmed = false;
-  return CGUIDialog::OnBack(actionID);
+  return CGUIDialogBoxBase::OnBack(actionID);
 }
 
 void CGUIDialogSelect::Reset()
@@ -178,28 +177,17 @@ int CGUIDialogSelect::Add(const std::string& strLabel)
   return m_vecList->Size() - 1;
 }
 
-void CGUIDialogSelect::Add(const CFileItemList& items)
+int CGUIDialogSelect::Add(const CFileItem& item)
 {
-  for (int i=0;i<items.Size();++i)
-  {
-    CFileItemPtr item = items[i];
-    Add(item.get());
-  }
-}
-
-int CGUIDialogSelect::Add(const CFileItem* pItem)
-{
-  CFileItemPtr item(new CFileItem(*pItem));
-  m_vecList->Add(item);
+  m_vecList->Add(CFileItemPtr(new CFileItem(item)));
   return m_vecList->Size() - 1;
 }
 
-void CGUIDialogSelect::SetItems(CFileItemList* pList)
+void CGUIDialogSelect::SetItems(const CFileItemList& pList)
 {
   // need to make internal copy of list to be sure dialog is owner of it
   m_vecList->Clear();
-  if (pList)
-    m_vecList->Copy(*pList);
+  m_vecList->Copy(pList);
 }
 
 int CGUIDialogSelect::GetSelectedLabel() const
@@ -323,15 +311,14 @@ void CGUIDialogSelect::OnInitWindow()
 {
   m_viewControl.SetItems(*m_vecList);
   m_selectedItems.clear();
-  if (!m_selectedItem)
+  for(int i = 0 ; i < m_vecList->Size(); i++)
   {
-    for(int i = 0 ; i < m_vecList->Size(); i++)
+    auto item = m_vecList->Get(i);
+    if (item->IsSelected())
     {
-      if (m_vecList->Get(i)->IsSelected())
-      {
-        m_selectedItem = m_vecList->Get(i);
-        break;
-      }
+      m_selectedItems.push_back(i);
+      if (m_selectedItem == nullptr)
+        m_selectedItem = item;
     }
   }
   m_viewControl.SetCurrentView(m_useDetails ? CONTROL_DETAILS : CONTROL_LIST);
@@ -349,9 +336,16 @@ void CGUIDialogSelect::OnInitWindow()
   m_viewControl.SetSelectedItem(std::max(GetSelectedLabel(), 0));
 }
 
+void CGUIDialogSelect::OnDeinitWindow(int nextWindowID)
+{
+  m_viewControl.Clear();
+
+  CGUIDialogBoxBase::OnDeinitWindow(nextWindowID);
+}
+
 void CGUIDialogSelect::OnWindowUnload()
 {
-  CGUIDialog::OnWindowUnload();
+  CGUIDialogBoxBase::OnWindowUnload();
   m_viewControl.Reset();
 }
 

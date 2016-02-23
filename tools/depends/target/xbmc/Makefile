@@ -13,13 +13,7 @@ CONFIGURE = cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
   ./configure --prefix=$(PREFIX) $(DEBUG)
 
 ifeq ($(OS),android)
-CONFIGURE += --enable-codec=libstagefright,amcodec
-endif
-ifeq ($(OS),ios)
-CONFIGURE += --disable-airplay --disable-airtunes
-endif
-ifeq ($(OS),osx)
-CONFIGURE += --disable-airplay --disable-airtunes
+CONFIGURE += --enable-codec=amcodec --enable-breakpad
 endif
 
 ifeq ($(Configuration),Release)

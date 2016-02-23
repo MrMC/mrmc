@@ -1,1 +1,0 @@
-pvr.wmc https://github.com/mrmc/pvr.wmc c33e69e6eaa18846442cb51cae4d83eba1ec1a6e

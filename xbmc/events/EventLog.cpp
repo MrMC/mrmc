@@ -29,8 +29,43 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 
+#include <utility>
+
 std::map<int, std::unique_ptr<CEventLog> > CEventLog::s_eventLogs;
 CCriticalSection CEventLog::s_critical;
+
+std::string CEventLog::EventLevelToString(EventLevel level)
+{
+  switch (level)
+  {
+  case EventLevelBasic:
+    return "basic";
+
+  case EventLevelWarning:
+    return "warning";
+
+  case EventLevelError:
+    return "error";
+
+  case EventLevelInformation:
+  default:
+    break;
+  }
+
+  return "information";
+}
+
+EventLevel CEventLog::EventLevelFromString(const std::string& level)
+{
+  if (level == "basic")
+    return EventLevelBasic;
+  if (level == "warning")
+    return EventLevelWarning;
+  if (level == "error")
+    return EventLevelError;
+
+  return EventLevelInformation;
+}
 
 CEventLog& CEventLog::GetInstance()
 {
@@ -138,18 +173,10 @@ void CEventLog::AddWithNotification(const EventPtr& eventPtr, bool withSound)
 
 void CEventLog::Remove(const EventPtr& eventPtr)
 {
-  if (eventPtr == nullptr || eventPtr->GetIdentifier().empty())
+  if (eventPtr == nullptr)
     return;
 
-  CSingleLock lock(m_critical);
-  const auto& itEvent = m_eventsMap.find(eventPtr->GetIdentifier());
-  if (itEvent == m_eventsMap.end())
-    return;
-
-  m_eventsMap.erase(itEvent);
-  std::remove_if(m_events.begin(), m_events.end(), [eventPtr](const EventPtr& otherEvent) { return eventPtr == otherEvent; });
-
-  SendMessage(eventPtr, GUI_MSG_EVENT_REMOVED);
+  Remove(eventPtr->GetIdentifier());
 }
 
 void CEventLog::Remove(const std::string& eventPtrIdentifier)
@@ -164,7 +191,7 @@ void CEventLog::Remove(const std::string& eventPtrIdentifier)
 
   EventPtr eventPtr = itEvent->second;
   m_eventsMap.erase(itEvent);
-  std::remove_if(m_events.begin(), m_events.end(), [eventPtr](const EventPtr& otherEvent) { return eventPtr == otherEvent; });
+  m_events.erase(std::remove(m_events.begin(), m_events.end(), eventPtr), m_events.end());
 
   SendMessage(eventPtr, GUI_MSG_EVENT_REMOVED);
 }
@@ -208,7 +235,7 @@ void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevelBasic */, bool 
   if (level != EventLevelBasic || !includeHigherLevels)
   {
     // add the level to the path
-    path += IEvent::EventLevelToString(level);
+    path += EventLevelToString(level);
     // add whether to include higher levels or not to the path
     if (includeHigherLevels)
       path += "+";

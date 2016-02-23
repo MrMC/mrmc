@@ -2,19 +2,20 @@
 <includes>
 	<include name="HomeRecentlyAddedInfo">
 		<control type="group" id="9003">
+			<depth>DepthMenu</depth>
 			<onup>20</onup>
-			<ondown>603</ondown>
+			<ondown condition="System.HasAddon(script.globalsearch)">608</ondown>
+			<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
 			<visible>!Window.IsVisible(Favourites)</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="fade" time="225" delay="750">WindowOpen</animation>
 			<animation effect="fade" time="150">WindowClose</animation>
 			<control type="group">
 				<left>190</left>
-				<top>75</top>
+				<top>50</top>
 				<visible>Library.HasContent(Movies)</visible>
 				<visible>Container(9000).Hasfocus(10) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
-				<animation effect="slide" start="0,0" end="80,0" time="300" tween="quadratic" easing="out" condition="Player.Playing">conditional</animation>
 				<control type="label">
 					<description>Title label</description>
 					<left>180</left>
@@ -40,7 +41,8 @@
 					<onleft>8000</onleft>
 					<onright>8000</onright>
 					<onup>20</onup>
-					<ondown>603</ondown>
+					<ondown condition="System.HasAddon(script.globalsearch)">608</ondown>
+					<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>200</scrolltime>
@@ -247,11 +249,10 @@
 			</control>
 			<control type="group">
 				<left>160</left>
-				<top>75</top>
+				<top>50</top>
 				<visible>Library.HasContent(TVShows)</visible>
 				<visible>Container(9000).Hasfocus(11) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
-				<animation effect="slide" start="0,0" end="80,0" time="300" tween="quadratic" easing="out" condition="Player.Playing">conditional</animation>
 				<control type="label">
 					<description>Title label</description>
 					<left>240</left>
@@ -276,7 +277,8 @@
 					<onleft>8001</onleft>
 					<onright>8001</onright>
 					<onup>20</onup>
-					<ondown>603</ondown>
+					<ondown condition="System.HasAddon(script.globalsearch)">608</ondown>
+					<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>200</scrolltime>
@@ -509,7 +511,7 @@
 			</control>
 			<control type="group">
 				<left>240</left>
-				<top>75</top>
+				<top>50</top>
 				<visible>Library.HasContent(Music)</visible>
 				<visible>Container(9000).Hasfocus(3) + !Skin.HasSetting(HomepageHideRecentlyAddedAlbums)</visible>
 				<include>VisibleFadeEffect</include>
@@ -537,7 +539,8 @@
 					<onleft>8002</onleft>
 					<onright>8002</onright>
 					<onup>20</onup>
-					<ondown>603</ondown>
+					<ondown condition="System.HasAddon(script.globalsearch)">608</ondown>
+					<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>200</scrolltime>

@@ -45,6 +45,7 @@ extern "C"
   
   // Devices
   //
+  char* Cocoa_MountPoint2DeviceName(char *path);
   bool Cocoa_GetVolumeNameFromMountPoint(const std::string &mountPoint, std::string &volumeName);
 
   // Mouse.

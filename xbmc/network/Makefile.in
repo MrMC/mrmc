@@ -1,4 +1,5 @@
-SRCS  = DNSNameCache.cpp
+SRCS  = cddb.cpp
+SRCS += DNSNameCache.cpp
 SRCS += EventClient.cpp
 SRCS += EventPacket.cpp
 SRCS += EventServer.cpp

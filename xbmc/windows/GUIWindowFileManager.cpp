@@ -55,6 +55,7 @@
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "Autorun.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -170,6 +171,10 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
     }
     if (action.GetID() == ACTION_PLAYER_PLAY)
     {
+#ifdef HAS_DVD_DRIVE
+      if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
+        return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems[list]->Get(GetSelectedItem(list))->GetPath());
+#endif
     }
   }
   return CGUIWindow::OnAction(action);
@@ -332,6 +337,15 @@ void CGUIWindowFileManager::OnSort(int iList)
         if (GetDiskFreeSpaceEx(pItem->GetPath().c_str(), &ulBytesFree, NULL, NULL))
         {
           pItem->m_dwSize = ulBytesFree.QuadPart;
+          pItem->SetFileSizeLabel();
+        }
+      }
+      else if (pItem->IsDVD() && g_mediaManager.IsDiscInDrive())
+      {
+        ULARGE_INTEGER ulBytesTotal;
+        if (GetDiskFreeSpaceEx(pItem->GetPath().c_str(), NULL, &ulBytesTotal, NULL))
+        {
+          pItem->m_dwSize = ulBytesTotal.QuadPart;
           pItem->SetFileSizeLabel();
         }
       }
@@ -556,9 +570,14 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     if (!Update(iList, strPath))
       ShowShareErrorMessage(pItem.get());
   }
-  else if (pItem->IsZIP()) // mount zip archive
+  else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
   {
     CURL pathToUrl = URIUtils::CreateArchivePath("zip", pItem->GetURL(), "");
+    Update(iList, pathToUrl.Get());
+  }
+  else if (pItem->IsRAR() || pItem->IsCBR())
+  {
+    CURL pathToUrl = URIUtils::CreateArchivePath("rar", pItem->GetURL(), "");
     Update(iList, pathToUrl.Get());
   }
   else
@@ -790,7 +809,7 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
   CURL url(m_Directory[iList]->GetPath());
-  if (url.IsProtocol("zip"))
+  if (url.IsProtocol("rar") || url.IsProtocol("zip"))
   {
     // check for step-below, if, unmount rar
     if (url.GetFileName().empty())

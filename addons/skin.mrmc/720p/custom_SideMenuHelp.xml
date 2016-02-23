@@ -45,5 +45,23 @@
 			<align>left</align>
 			<label>31412</label>
 		</control>
+		<control type="button" id="100">
+			<description>OK button</description>
+			<left>720</left>
+			<top>500</top>
+			<width>200</width>
+			<height>40</height>
+			<label>12321</label>
+			<font>font12_title</font>
+			<textcolor>white</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<align>center</align>
+			<onclick>Skin.Setbool(FirstTimeRun)</onclick>
+			<onclick>back</onclick>
+			<onleft>100</onleft>
+			<onright>100</onright>
+			<onup>100</onup>
+			<ondown>100</ondown>
+		</control>
 	</controls>
 </window>

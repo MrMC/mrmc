@@ -1098,8 +1098,7 @@ bool CDateTime::SetFromRFC1123DateTime(const std::string &dateTime)
   int year = strtol(date.substr(12, 4).c_str(), NULL, 10);
   int hour = strtol(date.substr(17, 2).c_str(), NULL, 10);
   int min  = strtol(date.substr(20, 2).c_str(), NULL, 10);
-  int sec  = strtol
-  (date.substr(23, 2).c_str(), NULL, 10);
+  int sec  = strtol(date.substr(23, 2).c_str(), NULL, 10);
 
   return SetDateTime(year, month, day, hour, min, sec);
 }

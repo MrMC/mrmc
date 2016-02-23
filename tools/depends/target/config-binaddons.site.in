@@ -54,14 +54,6 @@ if test "${PACKAGE_NAME}" = "libgcrypt"; then
   CFLAGS="$CFLAGS -std=gnu99"
 fi
 
-#rsxs/projectm
-jm_cv_func_gettimeofday_clobber=no
-mac_cv_pkg_ldflags=-lz
-if test "@platform_os@" = "osx"; then
-  ac_cv_func_strnlen_working=no
-  ac_cv_header_stdbool_h=yes
-fi
-
 #gnutls
 gl_cv_func_gettimeofday_clobber=no
 
@@ -145,4 +137,14 @@ fi
 #Fix for older, broken android toolchains
 if test "${PACKAGE_NAME}" = "FreeType" -a "@platform_os@" = "android"; then
   CFLAGS="$CFLAGS -std=gnu99"
+fi
+
+# These libs do not correctly export their symbols. Force them in case
+# -fvisibility=hidden is set.
+if test "${ac_unique_file}" = "src/flac/main.c" || \
+   test "${ac_unique_file}" = "src/framing.c" || \
+   test "${ac_unique_file}" = "src/libdvdcss.c" || \
+   test "${PACKAGE_NAME}" = "libmpeg2" || \
+   test "${PACKAGE_NAME}" = "libssh2" ; then
+     CFLAGS="$CFLAGS -fvisibility=default"
 fi

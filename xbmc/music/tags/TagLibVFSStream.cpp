@@ -25,13 +25,16 @@
 using namespace XFILE;
 using namespace TagLib;
 using namespace MUSIC_INFO;
-using namespace std;
+
+#ifdef TARGET_WINDOWS
+#pragma comment(lib, "tag.lib")
+#endif
 
 /*!
  * Construct a File object and opens the \a file.  \a file should be a
  * be an XBMC Vfile.
  */
-TagLibVFSStream::TagLibVFSStream(const string& strFileName, bool readOnly)
+TagLibVFSStream::TagLibVFSStream(const std::string& strFileName, bool readOnly)
 {
   m_bIsOpen = true;
   if (readOnly)
@@ -174,7 +177,7 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
     // Seek to the write position and write our buffer.  Increment the
     // writePosition.
     seek(writePosition);
-    if (m_file.Write(buffer.data(), buffer.size()) < (ssize_t)buffer.size())
+    if (m_file.Write(buffer.data(), buffer.size()) < buffer.size())
       return; // error
     writePosition += buffer.size();
 

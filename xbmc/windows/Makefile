@@ -9,6 +9,7 @@ SRCS += GUIWindowScreensaverDim.cpp
 SRCS += GUIWindowSplash.cpp
 SRCS += GUIWindowStartup.cpp
 SRCS += GUIWindowSystemInfo.cpp
+SRCS += GUIWindowWeather.cpp
 
 LIB   = windows.a
 

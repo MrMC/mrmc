@@ -49,7 +49,6 @@ private:
   void Process();
   bool Parse(int iFeed);
   void GetNewsItems(TiXmlElement* channelXmlNode, int iFeed);
-  void GetAtomItems(TiXmlElement* channelXmlNode, int iFeed);
   void AddString(std::wstring aString, int aColour, int iFeed);
   void UpdateFeed();
   virtual void OnExit();

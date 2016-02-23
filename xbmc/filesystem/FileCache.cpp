@@ -31,6 +31,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <memory>
 
 using namespace XFILE;
 

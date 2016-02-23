@@ -34,6 +34,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 
 bool CSaveFileStateJob::DoWork()
 {
@@ -43,9 +44,9 @@ bool CSaveFileStateJob::DoWork()
     progressTrackingFile = m_item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
   else if (m_item.HasProperty("original_listitem_url"))
   {
-    // only use original_listitem_url for UPnP  sources
+    // only use original_listitem_url for Python, UPnP and Bluray sources
     std::string original = m_item.GetProperty("original_listitem_url").asString();
-    if (URIUtils::IsUPnP(original))
+    if (URIUtils::IsPlugin(original) || URIUtils::IsUPnP(original) || URIUtils::IsBluray(m_item.GetPath()))
       progressTrackingFile = original;
   }
 
@@ -187,6 +188,30 @@ bool CSaveFileStateJob::DoWork()
             musicdatabase.Close();
           }
         }
+      }
+    }
+
+    if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
+    {
+      std::string redactPath = CURL::GetRedacted(progressTrackingFile);
+      CLog::Log(LOGDEBUG, "%s - Saving file state for dsp audio item %s", __FUNCTION__, redactPath.c_str());
+
+      ActiveAE::CActiveAEDSPDatabase audiodatabase;
+      if (!audiodatabase.Open())
+      {
+        CLog::Log(LOGWARNING, "%s - Unable to open dsp audio database. Can not save file state!", __FUNCTION__);
+      }
+      else
+      {
+        if (m_audioSettings != CMediaSettings::GetInstance().GetDefaultAudioSettings())
+        {
+          audiodatabase.SetActiveDSPSettings(m_item, m_audioSettings);
+        }
+        else
+        {
+          audiodatabase.DeleteActiveDSPSettings(m_item);
+        }
+        audiodatabase.Close();
       }
     }
   }

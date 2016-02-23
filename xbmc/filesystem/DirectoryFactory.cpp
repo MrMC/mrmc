@@ -43,9 +43,9 @@
 #include "DAVDirectory.h"
 #include "UDFDirectory.h"
 #include "Application.h"
+#include "settings/settings.h"
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
-#include "settings/Settings.h"
 
 #ifdef TARGET_POSIX
 #include "posix/PosixDirectory.h"
@@ -55,6 +55,13 @@
 #endif
 #ifdef HAS_FILESYSTEM_DSM
 #include "DSMDirectory.h"
+#endif
+#ifdef HAS_FILESYSTEM_CDDA
+#include "CDDADirectory.h"
+#endif
+#include "PluginDirectory.h"
+#ifdef HAS_FILESYSTEM
+#include "ISO9660Directory.h"
 #endif
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
@@ -70,6 +77,9 @@
 #endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
+#ifdef HAS_FILESYSTEM_RAR
+#include "RarDirectory.h"
+#endif
 #include "FileItem.h"
 #include "URL.h"
 #include "RSSDirectory.h"
@@ -81,6 +91,9 @@
 #endif
 #ifdef HAS_FILESYSTEM_NFS
 #include "NFSDirectory.h"
+#endif
+#ifdef HAVE_LIBBLURAY
+#include "BlurayDirectory.h"
 #endif
 #if defined(TARGET_ANDROID)
 #include "AndroidAppDirectory.h"
@@ -113,11 +126,26 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("special")) return new CSpecialProtocolDirectory();
   if (url.IsProtocol("sources")) return new CSourcesDirectory();
   if (url.IsProtocol("addons")) return new CAddonsDirectory();
+#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
+  if (url.IsProtocol("cdda")) return new CCDDADirectory();
+#endif
+#ifdef HAS_FILESYSTEM
+  if (url.IsProtocol("iso9660")) return new CISO9660Directory();
+#endif
   if (url.IsProtocol("udf")) return new CUDFDirectory();
+  if (url.IsProtocol("plugin")) return new CPluginDirectory();
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("apk")) return new CAPKDirectory();
 #endif
   if (url.IsProtocol("zip")) return new CZipDirectory();
+  if (url.IsProtocol("rar"))
+  {
+#ifdef HAS_FILESYSTEM_RAR
+    return new CRarDirectory();
+#else
+    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
+#endif
+  }
   if (url.IsProtocol("xbt")) return new CXbtDirectory();
   if (url.IsProtocol("multipath")) return new CMultiPathDirectory();
   if (url.IsProtocol("stack")) return new CStackDirectory();
@@ -136,10 +164,13 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("androidapp")) return new CAndroidAppDirectory();
 #endif
+#ifdef HAVE_LIBBLURAY
+  if (url.IsProtocol("bluray")) return new CBlurayDirectory();
+#endif
   if (url.IsProtocol("resource")) return new CResourceDirectory();
   if (url.IsProtocol("events")) return new CEventsDirectory();
 
-  bool networkAvailable = g_application.getNetwork().IsAvailable(true); // true to wait for the network (if possible)
+  bool networkAvailable = g_application.getNetwork().IsAvailable();
   if (networkAvailable)
   {
     if (url.IsProtocol("ftp") || url.IsProtocol("ftps")) return new CFTPDirectory();

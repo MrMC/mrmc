@@ -31,6 +31,7 @@
 
 #define SETTINGS_PICTURES               WINDOW_SETTINGS_MYPICTURES - WINDOW_SETTINGS_START
 #define SETTINGS_PROGRAMS               WINDOW_SETTINGS_MYPROGRAMS - WINDOW_SETTINGS_START
+#define SETTINGS_WEATHER                WINDOW_SETTINGS_MYWEATHER - WINDOW_SETTINGS_START
 #define SETTINGS_MUSIC                  WINDOW_SETTINGS_MYMUSIC - WINDOW_SETTINGS_START
 #define SETTINGS_SYSTEM                 WINDOW_SETTINGS_SYSTEM - WINDOW_SETTINGS_START
 #define SETTINGS_VIDEOS                 WINDOW_SETTINGS_MYVIDEOS - WINDOW_SETTINGS_START
@@ -47,6 +48,7 @@ typedef struct {
 
 static const SettingGroup s_settingGroupMap[] = { { SETTINGS_PICTURES,    "pictures" },
                                                   { SETTINGS_PROGRAMS,    "programs" },
+                                                  { SETTINGS_WEATHER,     "weather" },
                                                   { SETTINGS_MUSIC,       "music" },
                                                   { SETTINGS_SYSTEM,      "system" },
                                                   { SETTINGS_VIDEOS,      "videos" },
@@ -68,6 +70,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
   m_idRange.clear();
   m_idRange.push_back(WINDOW_SETTINGS_MYPICTURES);
   m_idRange.push_back(WINDOW_SETTINGS_MYPROGRAMS);
+  m_idRange.push_back(WINDOW_SETTINGS_MYWEATHER);
   m_idRange.push_back(WINDOW_SETTINGS_MYMUSIC);
   m_idRange.push_back(WINDOW_SETTINGS_SYSTEM);
   m_idRange.push_back(WINDOW_SETTINGS_MYVIDEOS);

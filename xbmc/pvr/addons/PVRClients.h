@@ -19,16 +19,18 @@
  *
  */
 
+#include "addons/AddonDatabase.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
-#include "PVRClient.h"
+
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
-#include "addons/AddonDatabase.h"
 
-#include <vector>
+#include "PVRClient.h"
+
 #include <deque>
+#include <vector>
 
 namespace EPG
 {
@@ -321,6 +323,12 @@ namespace PVR
     //@{
 
     /*!
+     * @brief Check whether there is at least one connected client supporting timers.
+     * @return True if at least one connected client supports timers, false otherwise.
+     */
+    bool SupportsTimers() const;
+
+    /*!
      * @brief Check whether a client supports timers.
      * @param iClientId The id of the client to check.
      * @return True if the supports timers, false otherwise.
@@ -354,11 +362,10 @@ namespace PVR
      * @brief Delete a timer from the backend.
      * @param timer The timer to delete.
      * @param bForce Also delete when currently recording if true.
-     * @param bDeleteSchedule Also delete schedule instead of single timer.
      * @param error An error if it occured.
      * @return True if the timer was deleted successfully, false otherwise.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
 
     /*!
      * @brief Rename a timer on the backend.
@@ -737,6 +744,7 @@ namespace PVR
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
+    uint32_t              m_scanStart;                /*!< scan start time to check for non present streams */
     std::string           m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     ADDON::VECADDONS      m_addons;
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */

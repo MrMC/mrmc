@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "Autorun.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "filesystem/PlaylistFileDirectory.h"
 #include "playlists/PlayListM3U.h"
@@ -33,6 +34,7 @@
 #include "GUIUserMessages.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "ContextMenuManager.h"
 
 #define CONTROL_LABELFILES        12
 
@@ -46,7 +48,6 @@
 CGUIWindowMusicPlaylistEditor::CGUIWindowMusicPlaylistEditor(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST_EDITOR, "MyMusicPlaylistEditor.xml")
 {
-  m_thumbLoader.SetObserver(this);
   m_playlistThumbLoader.SetObserver(this);
   m_playlist = new CFileItemList;
 }
@@ -199,9 +200,14 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
   // and cleared!
 
   // we're at the root source listing
-  if (m_vecItems->IsVirtualDirectoryRoot())
+  if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
+#ifdef HAS_DVD_DRIVE
+  if (m_vecItems->Get(iItem)->IsDVD())
+    MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
+  else
+#endif
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 
@@ -319,6 +325,7 @@ void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextBu
   }
   buttons.Add(CONTEXT_BUTTON_LOAD, 21385);
 
+  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -409,7 +416,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 {
   OnRetrieveMusicInfo(newItems);
-  FormatItemLabels(newItems, LABEL_MASKS(CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT), CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT), "%L", ""));
+  FormatItemLabels(newItems, LABEL_MASKS(CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT), "%D", "%L", ""));
   m_playlist->Append(newItems);
   UpdatePlaylist();
 }

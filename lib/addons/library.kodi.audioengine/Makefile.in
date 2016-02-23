@@ -1,0 +1,28 @@
+ARCH = @ARCH@
+INCLUDES = -I. 
+INCLUDES+= -I@abs_top_srcdir@/xbmc/addons/include
+CXXFLAGS =-fPIC
+LIBNAME  = libKODIaudioengine
+LIBPATH  = @abs_top_srcdir@/addons/library.xbmc.codec
+OBJS     = $(LIBNAME).o
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).dylib
+else
+  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).so
+endif
+
+all: $(LIB_SHARED)
+
+$(LIB_SHARED): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) $(LDFLAGS) -dynamiclib -o $@ $(OBJS)
+else
+	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
+endif
+
+CLEAN_FILES = $(LIB_SHARED)
+
+DISTCLEAN_FILES = Makefile
+
+include @abs_top_srcdir@/Makefile.include

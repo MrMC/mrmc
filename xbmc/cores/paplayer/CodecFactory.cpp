@@ -30,6 +30,22 @@ using namespace ADDON;
 
 ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
 {
+  std::string fileType = strFileType;
+  StringUtils::ToLower(fileType);
+  VECADDONS codecs;
+  CAddonMgr::GetInstance().GetAddons(ADDON_AUDIODECODER, codecs);
+  for (size_t i=0;i<codecs.size();++i)
+  {
+    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+    std::vector<std::string> exts = StringUtils::Split(dec->GetExtensions(), "|");
+    if (std::find(exts.begin(), exts.end(), "."+fileType) != exts.end())
+    {
+      CAudioDecoder* result = new CAudioDecoder(*dec);
+      static_cast<AudioDecoderDll&>(*result).Create();
+      return result;
+    }
+  }
+
   DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
   return dvdcodec;
 }
@@ -39,6 +55,22 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
   CURL urlFile(strFile);
   std::string content = strContent;
   StringUtils::ToLower(content);
+  if (!content.empty())
+  {
+    VECADDONS codecs;
+    CAddonMgr::GetInstance().GetAddons(ADDON_AUDIODECODER, codecs);
+    for (size_t i=0;i<codecs.size();++i)
+    {
+      std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+      std::vector<std::string> mime = StringUtils::Split(dec->GetMimetypes(), "|");
+      if (std::find(mime.begin(), mime.end(), content) != mime.end())
+      {
+        CAudioDecoder* result = new CAudioDecoder(*dec);
+        static_cast<AudioDecoderDll&>(*result).Create();
+        return result;
+      }
+    }
+  }
 
   if( content == "audio/mpeg"       ||
       content == "audio/mpeg3"      ||

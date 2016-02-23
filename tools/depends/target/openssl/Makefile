@@ -47,7 +47,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 		sed -ie "s|-arch i386|-arch $(CPU)|" "$(PLATFORM)/Makefile"; \
 		sed -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
 	fi
-	sed -ie "s|apps test||" "$(PLATFORM)/Makefile"; \
+	sed -ie "s|apps test||" "$(PLATFORM)/Makefile"
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -j 1 -C $(PLATFORM)

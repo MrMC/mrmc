@@ -24,17 +24,18 @@
  *
  */
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "guilib/GUIListItem.h"
+#include "GUIPassword.h"
+#include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
-#include "XBDateTime.h"
 #include "utils/SortUtils.h"
-#include "GUIPassword.h"
-#include "threads/CriticalSection.h"
-
-#include <vector>
-#include <memory>
+#include "XBDateTime.h"
 
 namespace MUSIC_INFO
 {
@@ -51,9 +52,11 @@ namespace PVR
   class CPVRChannel;
   class CPVRRecording;
   class CPVRTimerInfoTag;
+  class CPVRRadioRDSInfoTag;
   typedef std::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
   typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
   typedef std::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
+  typedef std::shared_ptr<PVR::CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
 }
 class CPictureInfoTag;
 
@@ -123,7 +126,7 @@ public:
   bool IsURL(const CURL& url) const;
   const std::string &GetPath() const { return m_strPath; };
   void SetPath(const std::string &path) { m_strPath = path; };
-  bool IsPath(const std::string& path) const;
+  bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
@@ -177,11 +180,24 @@ public:
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
   bool IsLibraryFolder() const;
+  bool IsPlugin() const;
+  bool IsScript() const;
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;
   bool IsNFO() const;
+  bool IsDiscImage() const;
+  bool IsOpticalMediaFile() const;
+  bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
+  bool IsBDFile() const;
+  bool IsRAR() const;
   bool IsAPK() const;
   bool IsZIP() const;
+  bool IsCBZ() const;
+  bool IsCBR() const;
+  bool IsISO9660() const;
+  bool IsCDDA() const;
+  bool IsDVD() const;
+  bool IsOnDVD() const;
   bool IsOnLAN() const;
   bool IsHD() const;
   bool IsNfs() const;  
@@ -198,6 +214,7 @@ public:
   bool IsUsablePVRRecording() const;
   bool IsDeletedPVRRecording() const;
   bool IsPVRTimer() const;
+  bool IsPVRRadioRDS() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -290,6 +307,21 @@ public:
   inline const PVR::CPVRTimerInfoTagPtr GetPVRTimerInfoTag() const
   {
     return m_pvrTimerInfoTag;
+  }
+
+  inline bool HasPVRRadioRDSInfoTag() const
+  {
+    return m_pvrRadioRDSInfoTag.get() != NULL;
+  }
+
+  inline const PVR::CPVRRadioRDSInfoTagPtr GetPVRRadioRDSInfoTag() const
+  {
+    return m_pvrRadioRDSInfoTag;
+  }
+
+  inline void SetPVRRadioRDSInfoTag(const PVR::CPVRRadioRDSInfoTagPtr& tag)
+  {
+    m_pvrRadioRDSInfoTag = tag;
   }
 
   /*!
@@ -433,6 +465,13 @@ public:
    \param video video details to use and set
    */
   void SetFromVideoInfoTag(const CVideoInfoTag &video);
+
+  /*! \brief Sets details using the information from the CMusicInfoTag object
+  Sets the musicinfotag and uses its information to set the label and path.
+  \param music music details to use and set
+  */
+  void SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music);
+
   /*! \brief Sets details using the information from the CAlbum object
    Sets the album in the music info tag and uses its information to set the
    label and album-specific properties.
@@ -488,6 +527,7 @@ private:
   PVR::CPVRChannelPtr m_pvrChannelInfoTag;
   PVR::CPVRRecordingPtr m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;
+  PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
 
@@ -585,7 +625,7 @@ public:
   void FilterCueItems();
   void RemoveExtensions();
   void SetFastLookup(bool fastLookup);
-  bool Contains(const std::string& fileName) const;
+  bool Contains(const std::string& fileName, bool ignoreURLOptions = false) const;
   bool GetFastLookup() const { return m_fastLookup; };
 
   /*! \brief stack a CFileItemList

@@ -121,7 +121,6 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
       home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
       home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
-      home->SetProperty("LatestEpisode." + value + ".RunningTime"   , item->GetVideoInfoTag()->GetDuration() / 60);
 
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());
@@ -151,7 +150,6 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , "");
     home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , "");
     home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
-    home->SetProperty("LatestEpisode." + value + ".RunningTime"   , "");
   }  
 
 #if defined(TARGET_DARWIN_TVOS)
@@ -229,7 +227,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       
       std::string   strRating;
       std::string   strAlbum  = item->GetMusicInfoTag()->GetAlbum();
-      std::string   strArtist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
+      std::string   strArtist = item->GetMusicInfoTag()->GetArtistString();
 
       if (idAlbum != item->GetMusicInfoTag()->GetAlbumId())
       {
@@ -244,7 +242,7 @@ bool CRecentlyAddedJob::UpdateMusic()
         }
       }
 
-      strRating = StringUtils::Format("%c", item->GetMusicInfoTag()->GetRating());
+      strRating = StringUtils::Format("%c", item->GetMusicInfoTag()->GetUserrating());
       
       home->SetProperty("LatestSong." + value + ".Title"   , item->GetMusicInfoTag()->GetTitle());
       home->SetProperty("LatestSong." + value + ".Year"    , item->GetMusicInfoTag()->GetYear());
@@ -284,7 +282,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       
       home->SetProperty("LatestAlbum." + value + ".Title"   , album.strAlbum);
       home->SetProperty("LatestAlbum." + value + ".Year"    , album.iYear);
-      home->SetProperty("LatestAlbum." + value + ".Artist"  , StringUtils::Join(album.artist, g_advancedSettings.m_videoItemSeparator));
+      home->SetProperty("LatestAlbum." + value + ".Artist"  , album.GetAlbumArtistString());
       home->SetProperty("LatestAlbum." + value + ".Rating"  , album.iRating);
       home->SetProperty("LatestAlbum." + value + ".Path"    , strDBpath);
       home->SetProperty("LatestAlbum." + value + ".Thumb"   , strThumb);

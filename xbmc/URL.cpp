@@ -153,11 +153,23 @@ void CURL::Parse(const std::string& strURL1)
     IsProtocol("virtualpath") ||
     IsProtocol("multipath") ||
     IsProtocol("filereader") ||
-    IsProtocol("special")
+    IsProtocol("special") ||
+    IsProtocol("resource")
     )
   {
     SetFileName(strURL.substr(iPos));
     return;
+  }
+
+  if (IsProtocol("udf"))
+  {
+    std::string lower(strURL);
+    StringUtils::ToLower(lower);
+    size_t isoPos = lower.find(".iso\\", iPos);
+    if (isoPos != std::string::npos)
+    {
+      strURL = strURL.replace(isoPos + 4, 1, "/");
+    }
   }
 
   // check for username/password - should occur before first /
@@ -171,6 +183,7 @@ void CURL::Parse(const std::string& strURL1)
   //TODO fix all Addon paths
   std::string strProtocol2 = GetTranslatedProtocol();
   if(IsProtocol("rss") ||
+     IsProtocol("rar") ||
      IsProtocol("apk") ||
      IsProtocol("xbt") ||
      IsProtocol("zip") ||
@@ -480,8 +493,9 @@ const std::string& CURL::GetProtocolOptions() const
 
 const std::string CURL::GetFileNameWithoutPath() const
 {
-  // *.zip store the actual zip/rar path in the hostname of the url
-  if ((IsProtocol("zip")  ||
+  // *.zip and *.rar store the actual zip/rar path in the hostname of the url
+  if ((IsProtocol("rar")  ||
+       IsProtocol("zip")  ||
        IsProtocol("xbt")  ||
        IsProtocol("apk")) &&
        m_strFileName.empty())
@@ -510,7 +524,10 @@ char CURL::GetDirectorySeparator() const
 
 std::string CURL::Get() const
 {
-  size_t sizeneed = m_strProtocol.length()
+  if (m_strProtocol.empty())
+    return m_strFileName;
+
+  unsigned int sizeneed = m_strProtocol.length()
                         + m_strDomain.length()
                         + m_strUserName.length()
                         + m_strPassword.length()
@@ -520,21 +537,26 @@ std::string CURL::Get() const
                         + m_strProtocolOptions.length()
                         + 10;
 
-  if (m_strProtocol.empty())
-    return m_strFileName;
-
   std::string strURL;
   strURL.reserve(sizeneed);
 
-  strURL = GetWithoutFilename();
-  strURL += m_strFileName;
+  strURL = GetWithoutOptions();
 
   if( !m_strOptions.empty() )
     strURL += m_strOptions;
+
   if (!m_strProtocolOptions.empty())
     strURL += "|"+m_strProtocolOptions;
 
   return strURL;
+}
+
+std::string CURL::GetWithoutOptions() const
+{
+  if (m_strProtocol.empty())
+    return m_strFileName;
+
+  return GetWithoutFilename() + m_strFileName;
 }
 
 std::string CURL::GetWithoutUserDetails(bool redact) const

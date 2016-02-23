@@ -22,8 +22,6 @@
 #include "GUIFontManager.h"
 #include "input/Key.h"
 
-using namespace std;
-
 CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo, bool wrapMultiline)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgFocus(posX, posY, width, height, textureFocus)
@@ -146,6 +144,8 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
   bool changed = m_label.SetMaxRect(m_posX, m_posY, renderWidth, m_height);
   changed |= m_label.SetText(m_info.GetLabel(m_parentID));
   changed |= m_label.SetScrolling(HasFocus());
+  changed |= m_label2.SetMaxRect(m_posX, m_posY, renderWidth, m_height);
+  changed |= m_label2.SetText(m_info2.GetLabel(m_parentID));
 
   // text changed - images need resizing
   if (m_minWidth && (m_label.GetRenderRect() != labelRenderRect))
@@ -155,15 +155,13 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
   if (m_minWidth && m_width != renderWidth)
   {
     CRect rect(m_posX, m_posY, renderWidth, m_height);
-    SetHitRect(rect);
+    SetHitRect(rect, m_hitColor);
   }
 
   // render the second label if it exists
   if (!m_info2.GetLabel(m_parentID).empty())
   {
     changed |= m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
-    changed |= m_label2.SetMaxRect(m_posX, m_posY, renderWidth, m_height);
-    changed |= m_label2.SetText(m_info2.GetLabel(m_parentID));
     changed |= m_label2.SetScrolling(HasFocus());
 
     // If overlapping was corrected - compare render rects to determine
@@ -264,7 +262,7 @@ void CGUIButtonControl::SetInvalid()
   m_imgNoFocus.SetInvalid();
 }
 
-void CGUIButtonControl::SetLabel(const string &label)
+void CGUIButtonControl::SetLabel(const std::string &label)
 { // NOTE: No fallback for buttons at this point
   if (m_info.GetLabel(GetParentID(), false) != label)
   {
@@ -273,7 +271,7 @@ void CGUIButtonControl::SetLabel(const string &label)
   }
 }
 
-void CGUIButtonControl::SetLabel2(const string &label2)
+void CGUIButtonControl::SetLabel2(const std::string &label2)
 { // NOTE: No fallback for buttons at this point
   if (m_info2.GetLabel(GetParentID(), false) != label2)
   {

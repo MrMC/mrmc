@@ -70,7 +70,7 @@ public:
 
   static bool DecodeJpeg(COMXImageFile *file, unsigned int maxWidth, unsigned int maxHeight, unsigned int stride, void *pixels);
   static bool CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
-      unsigned int pitch, const std::string& destFile);
+      unsigned int format, unsigned int pitch, const std::string& destFile);
   static bool ClampLimits(unsigned int &width, unsigned int &height, unsigned int m_width, unsigned int m_height, bool transposed = false);
   static bool CreateThumb(const std::string& srcFile, unsigned int width, unsigned int height, std::string &additional_info, const std::string& destFile);
   bool SendMessage(bool (*callback)(EGLDisplay egl_display, EGLContext egl_context, void *cookie), void *cookie);
@@ -119,7 +119,7 @@ public:
 
   // Required overrides
   void Close();
-  bool Decode(uint8_t* const data, unsigned size, unsigned int width, unsigned int height, unsigned stride, void *pixels);
+  bool Decode(const uint8_t *data, unsigned size, unsigned int width, unsigned int height, unsigned stride, void *pixels);
   unsigned int GetDecodedWidth() { return (unsigned int)m_decoded_format.format.image.nFrameWidth; };
   unsigned int GetDecodedHeight() { return (unsigned int)m_decoded_format.format.image.nFrameHeight; };
   unsigned int GetDecodedStride() { return (unsigned int)m_decoded_format.format.image.nStride; };
@@ -143,7 +143,7 @@ public:
 
   // Required overrides
   bool CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
-      unsigned int pitch, const std::string& destFile);
+      unsigned int format, unsigned int pitch, const std::string& destFile);
 protected:
   bool Encode(unsigned char *buffer, int size, unsigned int width, unsigned int height, unsigned int pitch);
   // Components
@@ -186,7 +186,7 @@ public:
 
   // Required overrides
   void Close(void);
-  bool Decode(uint8_t* const data, unsigned size, unsigned int width, unsigned int height, void *egl_image);
+  bool Decode(const uint8_t *data, unsigned size, unsigned int width, unsigned int height, void *egl_image);
 protected:
   bool HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, void *egl_image, bool port_settings_changed);
 

@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "settings/Settings.h"
 #include "../DVDClock.h"
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
@@ -203,7 +204,7 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
     if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
     {
       if (st->ExtraData)
-        delete[] st->ExtraData;
+        delete[] (uint8_t*)st->ExtraData;
       st->changes++;
       st->disabled = false;
       st->ExtraSize = len;
@@ -381,6 +382,19 @@ void CDVDDemuxPVRClient::RequestStreams()
       }
       if (!m_streams[i])
         m_streams[i] = new CDemuxStreamTeletext();
+    }
+    else if (props.stream[i].iCodecType == XBMC_CODEC_TYPE_RDS &&
+             CSettings::GetInstance().GetBool("pvrplayback.enableradiords"))
+    {
+      CDemuxStreamRadioRDS* st = NULL;
+      if (stm)
+      {
+        st = dynamic_cast<CDemuxStreamRadioRDS*>(stm);
+        if (!st || (st->codec != (AVCodecID)props.stream[i].iCodecId))
+          DisposeStream(i);
+      }
+      if (!m_streams[i])
+        m_streams[i] = new CDemuxStreamRadioRDS();
     }
     else if (props.stream[i].iCodecType == XBMC_CODEC_TYPE_SUBTITLE)
     {

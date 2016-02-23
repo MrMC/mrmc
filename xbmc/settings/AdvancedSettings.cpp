@@ -18,41 +18,41 @@
  *
  */
 
+#include "system.h"
+
+#include "AdvancedSettings.h"
+
+#include <climits>
 #include <algorithm>
 #include <string>
 #include <vector>
-#include <utility>
 
-#include <limits.h>
-
-#include "system.h"
-#include "AdvancedSettings.h"
+#include "addons/AddonManager.h"
+#include "addons/AudioDecoder.h"
+#include "addons/IAddon.h"
 #include "Application.h"
 #include "DatabaseManager.h"
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIWindowManager.h"
 
-#include "network/DNSNameCache.h"
 #include "filesystem/File.h"
-#include "utils/LangCodeExpander.h"
+#include "filesystem/SpecialProtocol.h"
 #include "LangInfo.h"
+#include "network/DNSNameCache.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingUtils.h"
+#include "video/VideoDatabase.h"
+#include "utils/LangCodeExpander.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
-#include "utils/JobManager.h"
-#include "filesystem/SpecialProtocol.h"
-#include "addons/IAddon.h"
-#include "addons/AddonManager.h"
-#include "addons/AudioDecoder.h"
-#include "guilib/GUIWindowManager.h"
-#include "video/VideoDatabase.h"
+#include "utils/XMLUtils.h"
+
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/DarwinUtils.h"
 #endif
@@ -246,7 +246,7 @@ void CAdvancedSettings::Initialize()
   m_fullScreenOnMovieStart = true;
   m_cachePath = "special://temp/";
 
-  m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
+  m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-9][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)?";
 
   m_videoCleanStringRegExps.clear();
   m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
@@ -327,20 +327,20 @@ void CAdvancedSettings::Initialize()
   m_bMusicLibraryCleanOnUpdate = false;
   m_iMusicLibraryRecentlyAddedItems = 25;
   m_strMusicLibraryAlbumFormat = "";
-  m_strMusicLibraryAlbumFormatRight = "";
   m_prioritiseAPEv2tags = false;
   m_musicItemSeparator = " / ";
   m_videoItemSeparator = " / ";
+  m_iMusicLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
   m_bVideoLibraryAllItemsOnBottom = false;
   m_iVideoLibraryRecentlyAddedItems = 25;
-  m_bVideoLibraryHideEmptySeries = false;
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryUseFastHash = true;
   m_bVideoLibraryExportAutoThumbs = false;
   m_bVideoLibraryImportWatchedState = false;
   m_bVideoLibraryImportResumePoint = false;
   m_bVideoScannerIgnoreErrors = false;
+  m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
   m_iEpgLingerTime = 60 * 24;           /* keep 24 hours by default */
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
@@ -422,11 +422,13 @@ void CAdvancedSettings::Initialize()
   m_databaseMusic.Reset();
   m_databaseVideo.Reset();
 
-  m_pictureExtensions = ".png|.jpg|.jpeg|.gif";
-  m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.gdm|.imf|.m15|.sfx|.uni|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.wv|.dsp|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.wtv|.mka|.tak|.opus|.dff|.dsf";
-  m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.tp|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.m3u8|.mov|.qt|.divx|.xvid|.bivx|.nrg|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.mk3d|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv|.rss|.mpls|.webm|.wtv|.filepart";
-  m_subtitlesExtensions = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.zip";
+  m_pictureExtensions = ".png|.jpg|.jpeg|.gif|.zip|.cbr|.rar";
+  m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.gdm|.imf|.m15|.sfx|.uni|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.dsp|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.wtv|.mka|.tak|.opus|.dff|.dsf";
+  m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.tp|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.m3u8|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.mk3d|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv|.rss|.mpls|.webm|.bdmv|.wtv";
+  m_subtitlesExtensions = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
   m_discStubExtensions = ".disc";
+  // internal music extensions
+  m_musicExtensions += "|.cdda";
   // internal video extensions
   m_videoExtensions += "|.pvr";
 
@@ -472,6 +474,12 @@ bool CAdvancedSettings::Load()
 void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 {
   CXBMCTinyXML advancedXML;
+  if (!CFile::Exists(file))
+  {
+    CLog::Log(LOGNOTICE, "No settings file to load (%s)", file.c_str());
+    return;
+  }
+
   if (!advancedXML.LoadFile(file))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", file.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
@@ -752,8 +760,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bMusicLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "albumformat", m_strMusicLibraryAlbumFormat);
-    XMLUtils::GetString(pElement, "albumformatright", m_strMusicLibraryAlbumFormatRight);
     XMLUtils::GetString(pElement, "itemseparator", m_musicItemSeparator);
+    XMLUtils::GetInt(pElement, "dateadded", m_iMusicLibraryDateAdded);
   }
 
   pElement = pRootElement->FirstChildElement("videolibrary");
@@ -761,13 +769,13 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", m_bVideoLibraryAllItemsOnBottom);
     XMLUtils::GetInt(pElement, "recentlyaddeditems", m_iVideoLibraryRecentlyAddedItems, 1, INT_MAX);
-    XMLUtils::GetBoolean(pElement, "hideemptyseries", m_bVideoLibraryHideEmptySeries);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetBoolean(pElement, "usefasthash", m_bVideoLibraryUseFastHash);
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
+    XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
@@ -1129,6 +1137,22 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseTV.compression);
   }
 
+  pDatabase = pRootElement->FirstChildElement("adspdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseADSP.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseADSP.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseADSP.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseADSP.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseADSP.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseADSP.name);
+    XMLUtils::GetString(pDatabase, "key", m_databaseADSP.key);
+    XMLUtils::GetString(pDatabase, "cert", m_databaseADSP.cert);
+    XMLUtils::GetString(pDatabase, "ca", m_databaseADSP.ca);
+    XMLUtils::GetString(pDatabase, "capath", m_databaseADSP.capath);
+    XMLUtils::GetString(pDatabase, "ciphers", m_databaseADSP.ciphers);
+  }
+
   pDatabase = pRootElement->FirstChildElement("epgdatabase");
   if (pDatabase)
   {
@@ -1149,7 +1173,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
   if (pElement)
   {
-
     XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
   }
   
@@ -1393,6 +1416,16 @@ void CAdvancedSettings::setExtraLogLevel(const std::vector<CVariant> &components
 std::string CAdvancedSettings::GetMusicExtensions() const
 {
   std::string result(m_musicExtensions);
+
+  VECADDONS codecs;
+  CAddonMgr::GetInstance().GetAddons(ADDON_AUDIODECODER, codecs);
+  for (size_t i=0;i<codecs.size();++i)
+  {
+    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+    result += '|';
+    result += dec->GetExtensions();
+  }
+
   return result;
 }
 

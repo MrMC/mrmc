@@ -1,0 +1,12 @@
+--- a/libtool-org	2015-11-18 23:14:36.000000000 -0500
++++ b/libtool	2015-11-18 23:15:45.000000000 -0500
+@@ -359,7 +359,7 @@ module_expsym_cmds="sed -e 's,^,_,' < \$
+ with_gnu_ld="no"
+ 
+ # Flag that allows shared libraries with undefined symbols to be built.
+-allow_undefined_flag="\${wl}-flat_namespace \${wl}-undefined \${wl}suppress"
++#allow_undefined_flag="\${wl}-flat_namespace \${wl}-undefined \${wl}suppress"
+ 
+ # Flag that enforces no undefined symbols.
+ no_undefined_flag=""
+

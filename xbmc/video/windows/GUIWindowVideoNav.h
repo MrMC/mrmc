@@ -47,11 +47,11 @@ public:
   virtual ~CGUIWindowVideoNav(void);
 
   static CGUIWindowVideoNav &GetInstance();
-  
+
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
 
-  virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
+  virtual void OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
 
   /*! \brief Load video information from the database for these items (public static version)
    Useful for grabbing information for file listings, from watched status to full metadata
@@ -60,7 +60,6 @@ public:
    \param allowReplaceLabels allow label replacement if according GUI setting is enabled
    */
   static void LoadVideoInfo(CFileItemList &items, CVideoDatabase &database, bool allowReplaceLabels = true);
-  
   static void ShowVideoInfo(CFileItem &item);
 
 protected:

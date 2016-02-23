@@ -824,7 +824,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     }
     // restore to previous window if needed
     if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+      g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       g_windowManager.PreviousWindow();
 
     g_application.ResetScreenSaver();
@@ -898,7 +899,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     }
 
     if ((stopSlideshow && g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) ||
-      (stopVideo && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO))
+      (stopVideo && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO) ||
+      (stopMusic && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION))
       g_windowManager.PreviousWindow();
 
     g_application.ResetScreenSaver();

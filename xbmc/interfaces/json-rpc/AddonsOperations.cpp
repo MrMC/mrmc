@@ -22,13 +22,13 @@
 #include "JSONUtils.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonDatabase.h"
+#include "addons/PluginSource.h"
 #include "messaging/ApplicationMessenger.h"
 #include "TextureCache.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-using namespace std;
 using namespace JSONRPC;
 using namespace ADDON;
 using namespace XFILE;
@@ -36,14 +36,44 @@ using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  vector<TYPE> addonTypes;
+  std::vector<TYPE> addonTypes;
   TYPE addonType = TranslateType(parameterObject["type"].asString());
+  CPluginSource::Content content = CPluginSource::Translate(parameterObject["content"].asString());
   CVariant enabled = parameterObject["enabled"];
 
-  addonTypes.push_back(addonType);
+  // ignore the "content" parameter if the type is specified but not a plugin or script
+  if (addonType != ADDON_UNKNOWN && addonType != ADDON_PLUGIN && addonType != ADDON_SCRIPT)
+    content = CPluginSource::UNKNOWN;
+
+  if (addonType >= ADDON_VIDEO && addonType <= ADDON_EXECUTABLE)
+  {
+    addonTypes.push_back(ADDON_PLUGIN);
+    addonTypes.push_back(ADDON_SCRIPT);
+
+    switch (addonType)
+    {
+    case ADDON_VIDEO:
+      content = CPluginSource::VIDEO;
+      break;
+    case ADDON_AUDIO:
+      content = CPluginSource::AUDIO;
+      break;
+    case ADDON_IMAGE:
+      content = CPluginSource::IMAGE;
+      break;
+    case ADDON_EXECUTABLE:
+      content = CPluginSource::EXECUTABLE;
+      break;
+
+    default:
+      break;
+    }
+  }
+  else
+    addonTypes.push_back(addonType);
 
   VECADDONS addons;
-  for (vector<TYPE>::const_iterator typeIt = addonTypes.begin(); typeIt != addonTypes.end(); ++typeIt)
+  for (std::vector<TYPE>::const_iterator typeIt = addonTypes.begin(); typeIt != addonTypes.end(); ++typeIt)
   {
     VECADDONS typeAddons;
     if (*typeIt == ADDON_UNKNOWN)
@@ -75,7 +105,12 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   // remove library addons
   for (int index = 0; index < (int)addons.size(); index++)
   {
-    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX))
+    PluginPtr plugin;
+    if (content != CPluginSource::UNKNOWN)
+      plugin = std::dynamic_pointer_cast<CPluginSource>(addons.at(index));
+
+    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
+       ((content != CPluginSource::UNKNOWN && plugin == NULL) || (plugin != NULL && !plugin->Provides(content))))
     {
       addons.erase(addons.begin() + index);
       index--;
@@ -94,7 +129,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
 
 JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  string id = parameterObject["addonid"].asString();
+  std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
   if (!CAddonMgr::GetInstance().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon.get() == NULL ||
       addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
@@ -108,7 +143,12 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
 
 JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  string id = parameterObject["addonid"].asString();
+  std::string id = parameterObject["addonid"].asString();
+  AddonPtr addon;
+  if (!CAddonMgr::GetInstance().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon == nullptr ||
+    addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
+    return InvalidParams;
+
   bool disabled = false;
   if (parameterObject["enabled"].isBoolean())
     disabled = !parameterObject["enabled"].asBoolean();
@@ -124,13 +164,13 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
 
 JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  string id = parameterObject["addonid"].asString();
+  std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
   if (!CAddonMgr::GetInstance().GetAddon(id, addon) || addon.get() == NULL ||
-      addon->Type() < ADDON_SKIN || addon->Type() >= ADDON_MAX)
+      addon->Type() < ADDON_VIZ || addon->Type() >= ADDON_MAX)
     return InvalidParams;
     
-  string argv;
+  std::string argv;
   CVariant params = parameterObject["params"];
   if (params.isObject())
   {
@@ -184,7 +224,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
   
   for (unsigned int index = 0; index < fields.size(); index++)
   {
-    string field = fields[index].asString();
+    std::string field = fields[index].asString();
     
     // we need to manually retrieve the enabled state of every addon
     // from the addon database because it can't be read from addon.xml

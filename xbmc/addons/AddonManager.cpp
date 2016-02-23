@@ -17,40 +17,52 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <memory>
+
 #include "AddonManager.h"
+
+#include <memory>
+#include <utility>
+
 #include "Addon.h"
-#include "AudioDecoder.h"
-#include "DllLibCPluff.h"
 #include "addons/ImageResource.h"
 #include "addons/LanguageResource.h"
 #include "addons/UISoundsResource.h"
-#include "events/EventLog.h"
+#include "addons/Webinterface.h"
+#include "AudioDecoder.h"
+#include "AudioEncoder.h"
+#include "ContextMenuAddon.h"
+#include "ContextMenuManager.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "DllAudioDSP.h"
+#include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
-#include "utils/StringUtils.h"
-#include "utils/JobManager.h"
-#include "threads/SingleLock.h"
+#include "events/EventLog.h"
 #include "LangInfo.h"
+#include "PluginSource.h"
+#include "Repository.h"
+#include "Scraper.h"
+#include "Service.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "Skin.h"
+#include "system.h"
+#include "threads/SingleLock.h"
+#include "Util.h"
+#include "utils/JobManager.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+
+#ifdef HAS_VISUALISATION
+#include "Visualisation.h"
+#endif
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
 #endif
 #ifdef HAS_PVRCLIENTS
 #include "pvr/addons/PVRClient.h"
 #endif
-//#ifdef HAS_SCRAPERS
-#include "Scraper.h"
-//#endif
-#include "Repository.h"
-#include "Skin.h"
-#include "Service.h"
-#include "Util.h"
-#include "addons/Webinterface.h"
 
-using namespace std;
 using namespace XFILE;
 
 namespace ADDON
@@ -65,7 +77,7 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
  *
  */
 
-map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
+std::map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 {
@@ -80,8 +92,31 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
   const TYPE type = TranslateType(props->ext_point_id);
   switch (type)
   {
+    case ADDON_PLUGIN:
+    case ADDON_SCRIPT:
+      return AddonPtr(new CPluginSource(props));
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_MODULE:
+    case ADDON_SUBTITLE_MODULE:
+      return AddonPtr(new CAddon(props));
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CWebinterface(props));
+    case ADDON_SCRIPT_WEATHER:
+      {
+        // Eden (API v2.0) broke old weather add-ons
+        AddonPtr result(new CAddon(props));
+        AddonVersion ver1 = result->GetDependencyVersion("xbmc.python");
+        AddonVersion ver2 = AddonVersion("2.0");
+        if (ver1 < ver2)
+        {
+          CLog::Log(LOGINFO,"%s: Weather add-ons for api < 2.0 unsupported (%s)",__FUNCTION__,result->ID().c_str());
+          return AddonPtr();
+        }
+        return result;
+      }
+    case ADDON_SERVICE:
+      return AddonPtr(new CService(props));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
     case ADDON_SCRAPER_MOVIES:
@@ -89,8 +124,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return AddonPtr(new CScraper(props));
+    case ADDON_VIZ:
     case ADDON_SCREENSAVER:
     case ADDON_PVRDLL:
+    case ADDON_ADSPDLL:
+    case ADDON_AUDIOENCODER:
+    case ADDON_AUDIODECODER:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -105,16 +144,35 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
           if (URIUtils::HasExtension(library, ".py"))
             return AddonPtr(new CScreenSaver(props));
         }
+        if (type == ADDON_AUDIOENCODER && 0 == strncmp(props->plugin->identifier,
+                                                       "audioencoder.xbmc.builtin.", 26))
+        { // built in audio encoder
+          return AddonPtr(new CAudioEncoder(props));
+        }
 
         value = GetPlatformLibraryName(props->plugin->extensions->configuration);
         if (value.empty())
           break;
-        if (type == ADDON_PVRDLL)
+        if (type == ADDON_VIZ)
+        {
+#if defined(HAS_VISUALISATION)
+          return AddonPtr(new CVisualisation(props));
+#endif
+        }
+        else if (type == ADDON_PVRDLL)
         {
 #ifdef HAS_PVRCLIENTS
           return AddonPtr(new PVR::CPVRClient(props));
 #endif
         }
+        else if (type == ADDON_ADSPDLL)
+        {
+          return AddonPtr(new ActiveAE::CActiveAEDSPAddon(props));
+        }
+        else if (type == ADDON_AUDIOENCODER)
+          return AddonPtr(new CAudioEncoder(props));
+        else if (type == ADDON_AUDIODECODER)
+          return AddonPtr(new CAudioDecoder(props));
         else
           return AddonPtr(new CScreenSaver(props));
       }
@@ -126,8 +184,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CLanguageResource(props));
     case ADDON_RESOURCE_UISOUNDS:
       return AddonPtr(new CUISoundsResource(props));
+    case ADDON_VIZ_LIBRARY:
+      return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(props));
+    case ADDON_CONTEXT_ITEM:
+      return AddonPtr(new CContextMenuAddon(props));
     default:
       break;
   }
@@ -206,6 +268,7 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
 
 bool CAddonMgr::Init()
 {
+  CSingleLock lock(m_critSection);
   m_cpluff = new DllLibCPluff;
   m_cpluff->Load();
 
@@ -265,6 +328,7 @@ bool CAddonMgr::Init()
   // disable some system addons by default because they are optional
   VECADDONS addons;
   GetAddons(ADDON_PVRDLL, addons);
+  GetAddons(ADDON_AUDIODECODER, addons);
   std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   for (auto &addon : addons)
   {
@@ -282,6 +346,10 @@ bool CAddonMgr::Init()
   m_database.GetDisabled(disabled);
   m_disabled.insert(disabled.begin(), disabled.end());
 
+  std::vector<std::string> blacklisted;
+  m_database.GetBlacklisted(blacklisted);
+  m_updateBlacklist.insert(blacklisted.begin(), blacklisted.end());
+
   VECADDONS repos;
   if (GetAddons(ADDON_REPOSITORY, repos))
   {
@@ -295,7 +363,7 @@ bool CAddonMgr::Init()
 
 void CAddonMgr::DeInit()
 {
-  if (m_cpluff)
+  if (m_cpluff && m_cpluff->IsLoaded())
     m_cpluff->destroy();
   delete m_cpluff;
   m_cpluff = NULL;
@@ -388,46 +456,23 @@ bool CAddonMgr::ReloadSettings(const std::string &id)
   return false;
 }
 
-bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion /*= false*/)
+VECADDONS CAddonMgr::GetOutdated()
 {
   CSingleLock lock(m_critSection);
-  for (int i = ADDON_UNKNOWN+1; i < ADDON_MAX; ++i)
+  auto isUpdated = [&](const AddonPtr& addon)
   {
-    VECADDONS temp;
-    if (CAddonMgr::GetInstance().GetAddons((TYPE)i, temp, true))
-    {
-      AddonPtr repoAddon;
-      for (unsigned int j = 0; j < temp.size(); j++)
-      {
-        // Ignore duplicates due to add-ons with multiple extension points
-        bool found = false;
-        for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); ++addonIt)
-        {
-          if ((*addonIt)->ID() == temp[j]->ID())
-            found = true;
-        }
+    return addon->Version() >= m_database.GetAddonVersion(addon->ID()).first;
+  };
 
-        if (found || !m_database.GetAddon(temp[j]->ID(), repoAddon))
-          continue;
-
-        if (temp[j]->Version() < repoAddon->Version() &&
-            !m_database.IsAddonBlacklisted(temp[j]->ID(),
-                                           repoAddon->Version().asString().c_str()))
-        {
-          if (getLocalVersion)
-            repoAddon->Props().version = temp[j]->Version();
-          addons.push_back(repoAddon);
-        }
-      }
-    }
-  }
-  return !addons.empty();
+  VECADDONS addons;
+  GetAllAddons(addons, true);
+  addons.erase(std::remove_if(addons.begin(), addons.end(), isUpdated), addons.end());
+  return addons;
 }
 
 bool CAddonMgr::HasOutdatedAddons()
 {
-  VECADDONS dummy;
-  return GetAllOutdatedAddons(dummy);
+  return !GetOutdated().empty();
 }
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
@@ -497,6 +542,9 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
   std::string setting;
   switch (type)
   {
+  case ADDON_VIZ:
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
+    break;
   case ADDON_SCREENSAVER:
     setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE);
     break;
@@ -531,26 +579,38 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
 {
   switch (type)
   {
+  case ADDON_VIZ:
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
+    break;
   case ADDON_SCREENSAVER:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE, addonID);
     break;
   case ADDON_SCRAPER_ALBUMS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, addonID);
     break;
   case ADDON_SCRAPER_ARTISTS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, addonID);
     break;
   case ADDON_SCRAPER_MOVIES:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT, addonID);
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT, addonID);
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT, addonID);
     break;
   case ADDON_RESOURCE_LANGUAGE:
     CSettings::GetInstance().SetString(CSettings::SETTING_LOCALE_LANGUAGE, addonID);
+    break;
+  case ADDON_SCRIPT_WEATHER:
+     CSettings::GetInstance().SetString(CSettings::SETTING_WEATHER_ADDON, addonID);
+    break;
+  case ADDON_SKIN:
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, addonID);
+    break;
+  case ADDON_RESOURCE_UISOUNDS:
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN, addonID);
     break;
   default:
     return false;
@@ -584,7 +644,6 @@ void CAddonMgr::FindAddons()
 void CAddonMgr::UnregisterAddon(const std::string& ID)
 {
   CSingleLock lock(m_critSection);
-  m_disabled.erase(ID);
   if (m_cpluff && m_cp_context)
   {
     m_cpluff->uninstall_plugin(m_cp_context, ID.c_str());
@@ -592,6 +651,35 @@ void CAddonMgr::UnregisterAddon(const std::string& ID)
     lock.Leave();
     NotifyObservers(ObservableMessageAddons);
   }
+}
+
+void CAddonMgr::OnPostUnInstall(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  m_disabled.erase(id);
+  m_updateBlacklist.erase(id);
+}
+
+bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  if (!IsBlacklisted(id))
+    return true;
+  return m_database.RemoveAddonFromBlacklist(id) && m_updateBlacklist.erase(id) > 0;
+}
+
+bool CAddonMgr::AddToUpdateBlacklist(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  if (IsBlacklisted(id))
+    return true;
+  return m_database.BlacklistAddon(id) && m_updateBlacklist.insert(id).second;
+}
+
+bool CAddonMgr::IsBlacklisted(const std::string& id) const
+{
+  CSingleLock lock(m_critSection);
+  return m_updateBlacklist.find(id) != m_updateBlacklist.end();
 }
 
 bool CAddonMgr::DisableAddon(const std::string& id)
@@ -658,9 +746,18 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
     return false;
 
   // installed PVR addons can always be disabled
-  if (localAddon->Type() == ADDON_PVRDLL)
+  if (localAddon->Type() == ADDON_PVRDLL ||
+      localAddon->Type() == ADDON_ADSPDLL)
     return true;
-  
+
+  // installed audio decoder addons can always be disabled
+  if (localAddon->Type() == ADDON_AUDIODECODER)
+    return true;
+
+  // installed audio encoder addons can always be disabled
+  if (localAddon->Type() == ADDON_AUDIOENCODER)
+    return true;
+
   std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   // can't disable system addons
   if (StringUtils::StartsWith(localAddon->Path(), systemAddonsPath))
@@ -752,8 +849,19 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 {
   switch (addonProps.type)
   {
+    case ADDON_PLUGIN:
+    case ADDON_SCRIPT:
+      return AddonPtr(new CPluginSource(addonProps));
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_WEATHER:
+    case ADDON_SCRIPT_MODULE:
+    case ADDON_SUBTITLE_MODULE:
+      return AddonPtr(new CAddon(addonProps));
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CWebinterface(addonProps));
+    case ADDON_SERVICE:
+      return AddonPtr(new CService(addonProps));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
     case ADDON_SCRAPER_MOVIES:
@@ -763,10 +871,22 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScraper(addonProps));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(addonProps));
+#if defined(HAS_VISUALISATION)
+    case ADDON_VIZ:
+      return AddonPtr(new CVisualisation(addonProps));
+#endif
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(addonProps));
+    case ADDON_VIZ_LIBRARY:
+      return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(addonProps));
+    case ADDON_ADSPDLL:
+      return AddonPtr(new ActiveAE::CActiveAEDSPAddon(addonProps));
+    case ADDON_AUDIOENCODER:
+      return AddonPtr(new CAudioEncoder(addonProps));
+    case ADDON_AUDIODECODER:
+      return AddonPtr(new CAudioDecoder(addonProps));
     case ADDON_RESOURCE_IMAGES:
       return AddonPtr(new CImageResource(addonProps));
     case ADDON_RESOURCE_LANGUAGE:
@@ -775,6 +895,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CUISoundsResource(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
+    case ADDON_CONTEXT_ITEM:
+      return AddonPtr(new CContextMenuAddon(addonProps));
     default:
       break;
   }
@@ -795,10 +917,10 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   if (!metadata)
     return false;
 
-  vector<std::string> platforms;
+  std::vector<std::string> platforms;
   if (CAddonMgr::GetInstance().GetExtList(metadata->configuration, "platform", platforms))
   {
-    for (vector<std::string>::const_iterator platform = platforms.begin(); platform != platforms.end(); ++platform)
+    for (std::vector<std::string>::const_iterator platform = platforms.begin(); platform != platforms.end(); ++platform)
     {
       if (*platform == "all")
         return true;
@@ -872,7 +994,7 @@ std::string CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path) con
     return "";
 }
 
-bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<std::string> &result) const
+bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const
 {
   result.clear();
   if (!base || !path)
@@ -1003,12 +1125,45 @@ bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPt
 
 bool CAddonMgr::StartServices(const bool beforelogin)
 {
-  return false;
+  CLog::Log(LOGDEBUG, "ADDON: Starting service addons.");
+
+  VECADDONS services;
+  if (!GetAddons(ADDON_SERVICE, services))
+    return false;
+
+  bool ret = true;
+  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
+  {
+    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
+    if (service)
+    {
+      if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
+        || (!beforelogin && service->GetStartOption() == CService::LOGIN) )
+        ret &= service->Start();
+    }
+  }
+
+  return ret;
 }
 
 void CAddonMgr::StopServices(const bool onlylogin)
 {
+  CLog::Log(LOGDEBUG, "ADDON: Stopping service addons.");
 
+  VECADDONS services;
+  if (!GetAddons(ADDON_SERVICE, services))
+    return;
+
+  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
+  {
+    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
+    if (service)
+    {
+      if ( (onlylogin && service->GetStartOption() == CService::LOGIN)
+        || (!onlylogin) )
+        service->Stop();
+    }
+  }
 }
 
 int cp_to_clog(cp_log_severity_t lvl)

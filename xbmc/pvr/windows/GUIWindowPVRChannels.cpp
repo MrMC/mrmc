@@ -18,8 +18,11 @@
  *
  */
 
-#include "GUIWindowPVRChannels.h"
 
+#include "ContextMenuManager.h"
+#include "GUIInfoManager.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "epg/EpgContainer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -27,17 +30,18 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "GUIInfoManager.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
-#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/timers/PVRTimers.h"
-#include "epg/EpgContainer.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "threads/SingleLock.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
+#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
+#include "pvr/timers/PVRTimers.h"
+
+#include "GUIWindowPVRChannels.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -73,17 +77,29 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
 
-  buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
-  buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
-  buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
+  if (channel->GetEPGNow())
+  {
+    buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                        /* Programme information */
+    buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                        /* Find similar */
+  }
 
-  if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
+  if (channel->IsRecording())
+    buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);  /* Stop recording */
+  else if (g_PVRClients->SupportsTimers(channel->ClientID()))
+    buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* Record */
+
+  if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
+    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);                        /* Audio DSP settings */
+
+  if (g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_CHANNEL))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
 
   // Add parent buttons before the Manage button
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 
-  buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
+  buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* Manage... */
+
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 std::string CGUIWindowPVRChannels::GetDirectoryPath(void)
@@ -103,8 +119,10 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonGroupManager(pItem.get(), button) ||
       OnContextButtonUpdateEpg(pItem.get(), button) ||
-      OnContextButtonRecord(pItem.get(), button) ||
+      OnContextButtonStartRecord(pItem.get(), button) ||
+      OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonManage(pItem.get(), button) ||
+      OnContextButtonActiveAEDSPSettings(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
 
@@ -325,16 +343,28 @@ bool CGUIWindowPVRChannels::OnContextButtonManage(CFileItem *item, CONTEXT_BUTTO
   return bReturn;
 }
 
-bool CGUIWindowPVRChannels::OnContextButtonRecord(CFileItem *item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRChannels::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button)
 {
-  bool bReturn(false);
+  bool bReturn = false;
 
-  if (button == CONTEXT_BUTTON_RECORD_ITEM)
+  if ((button == CONTEXT_BUTTON_START_RECORD) ||
+      (button == CONTEXT_BUTTON_ADD_TIMER))
   {
-    CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+    AddTimer(item, button == CONTEXT_BUTTON_ADD_TIMER);
+    bReturn = true;
+  }
 
-    if (channel)
-      return g_PVRManager.ToggleRecordingOnChannel(channel->ChannelID());
+  return bReturn;
+}
+
+bool CGUIWindowPVRChannels::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_STOP_RECORD)
+  {
+    StopRecordFile(item);
+    bReturn = true;
   }
 
   return bReturn;

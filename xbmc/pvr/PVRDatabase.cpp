@@ -19,16 +19,18 @@
  */
 
 #include "PVRDatabase.h"
+
+#include <utility>
+
 #include "dbwrappers/dataset.h"
+#include "pvr/addons/PVRClient.h"
+#include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-
-#include "PVRManager.h"
-#include "channels/PVRChannelGroupsContainer.h"
-#include "channels/PVRChannelGroupInternal.h"
-#include "addons/PVRClient.h"
 
 using namespace dbiplus;
 using namespace PVR;
@@ -560,7 +562,13 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
   for (PVR_CHANNEL_GROUP_MEMBERS::iterator it = group.m_members.begin(); it != group.m_members.end(); ++it)
   {
     if (it->second.channel->IsChanged() || it->second.channel->IsNew())
-      bReturn &= Persist(*it->second.channel);
+    {
+      if (Persist(*it->second.channel))
+      {
+        it->second.channel->Persisted();
+        bReturn = true;
+      }
+    }
   }
 
   bReturn &= CommitInsertQueries();

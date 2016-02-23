@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/MrMC-main/language/pt_BR/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/kodi-main/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Ocultar fanart fundo da visualização"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Esconder EPG se RDS está presente na janela do canal"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Exibir vídeo \\\"reproduzindo agora\\\" ao fundo"
@@ -227,14 +231,6 @@ msgstr "Exibir vídeo \\\"reproduzindo agora\\\" ao fundo"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Apresentar visualização de fundo em \\\"Agora reproduzindo\\\""
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Reproduzir música tema do seriado na biblioteca de vídeo (add-on TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -333,7 +329,7 @@ msgid "Current scraper"
 msgstr "Scraper atual"
 
 msgctxt "#31313"
-msgid "Choose metadata provider"
+msgid "Choose a scraper"
 msgstr "Escolha um scraper"
 
 msgctxt "#31314"
@@ -351,10 +347,6 @@ msgstr "Perfil selecionado"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "última conexão"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Selecionador de música karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]AJUSTES DE VÍDEO[/B][CR][CR]Gerencie sua coleção de vídeos · Defina opções de execução de vídeo[CR]Altere opções de listagem de vídeo · Defina fonte para legendas"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]AJUSTES DE MÚSICAS[/B][CR][CR]Gerencie sua coleção de músicas · Defina opções de execução de música[CR]Altere opções de listagem de música · Configure submissão de música · Defina opções de karaokê"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]AJUSTES DE MÚSICAS[/B][CR][CR]Gerencie sua coleção de músicas · Defina opções de execução de música[CR]Altere opções de listagem de música · Configure submissão de música"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -461,16 +453,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]AJUSTES DE SISTEMA[/B][CR][CR]Configure e calibre telas · Configure saída de áudio · Configure controles remotos[CR]Defina opções para economia de energia · Habilite a depuração · Configure o bloqueio mestre"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
-msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Administre seus addons instalados · Procure por e instale add-ons de MrMC.tv[CR]Modifique os ajustes dos add-ons\""
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Administre seus addons instalados · Procure por e instale add-ons de kodi.tv[CR]Modifique os ajustes dos add-ons\""
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]CONFIGURAR AJUSTESDE TV[/B][CR][CR]Alterar info tela cheia - Gerenciar ajustes de dados de EPG"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]AJUSTES DE SERVIÇOS[/B][CR][CR]Configure o controle do MrMC via UPnP e HTTP · Configure o compartilhamento de arquivos[CR]Habilite Zeroconf · Configure o AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]AJUSTES DE SERVIÇOS[/B][CR][CR]Configure o controle do Kodi via UPnP e HTTP · Configure o compartilhamento de arquivos[CR]Habilite Zeroconf · Configure o AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,8 +481,8 @@ msgid "Login"
 msgstr "Login"
 
 msgctxt "#31421"
-msgid "Select your MrMC user profile[CR]to login and continue"
-msgstr "Selecione seu perfil de usuário no MrMC[CR]para conectar e continue"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Selecione seu perfil de usuário no Kodi[CR]para conectar e continue"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -518,7 +510,7 @@ msgstr "Renomear grupo"
 
 msgctxt "#31505"
 msgid "Delete group"
-msgstr "Deletar gurpo"
+msgstr "Deletar grupo"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"

@@ -33,11 +33,13 @@
 #if defined(TARGET_DARWIN_IOS)
   #if !defined(TARGET_DARWIN_TVOS)
     #include "Video/DVDVideoCodecVideoToolBox.h"
+	#include "utils/SystemInfo.h"
   #endif
   #include "Video/DVDVideoCodecAVFoundation.h"
 #endif
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
+#include "Video/DVDVideoCodecLibMpeg2.h"
 #if defined(HAS_IMXVPU)
   #include "Video/DVDVideoCodecIMX.h"
 #endif
@@ -131,6 +133,7 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
   return NULL;
 }
 
+
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info)
 {
   CDVDVideoCodec* pCodec = NULL;
@@ -142,6 +145,13 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
     options.m_formats = info.formats;
 
   options.m_opaque_pointer = info.opaque_pointer;
+
+
+  if (hint.stills && (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO))
+  {
+     // If dvd is an mpeg2 and hint.stills
+     if ( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
+  }
 
 #if defined(HAS_LIBAMCODEC)
   // amcodec can handle dvd playback.
@@ -202,6 +212,22 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(TARGET_ANDROID)
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
+  {
+    switch(hint.codec)
+    {
+      case AV_CODEC_ID_MPEG4:
+      case AV_CODEC_ID_MSMPEG4V2:
+      case AV_CODEC_ID_MSMPEG4V3:
+        // Avoid h/w decoder for SD; Those files might use features
+        // not supported and can easily be soft-decoded
+        if (hint.width <= 800)
+          break;
+      default:
+        CLog::Log(LOGINFO, "MediaCodec (Surface) Video Decoder...");
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true), hint, options)) ) return pCodec;
+    }
+  }
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC))
   {
     switch(hint.codec)
@@ -215,7 +241,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
           break;
       default:
         CLog::Log(LOGINFO, "MediaCodec Video Decoder...");
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(), hint, options)) ) return pCodec;
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false), hint, options)) ) return pCodec;
     }
   }
 #endif

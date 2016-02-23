@@ -27,8 +27,6 @@
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)
 
-using namespace std;
-
 CPullupCorrection::CPullupCorrection()
 {
   ResetVFRDetection();
@@ -40,6 +38,7 @@ void CPullupCorrection::ResetVFRDetection(void)
   m_minframeduration = DVD_NOPTS_VALUE;
   m_maxframeduration = DVD_NOPTS_VALUE;
   m_VFRCounter = 0;
+  m_patternCounter = 0;
 }
 
 void CPullupCorrection::Flush()
@@ -81,7 +80,7 @@ void CPullupCorrection::Add(double pts)
     return;
 
   //get the current pattern in the ringbuffer
-  vector<double> pattern;
+  std::vector<double> pattern;
   GetPattern(pattern);
 
   //check if the pattern is the same as the saved pattern
@@ -91,6 +90,8 @@ void CPullupCorrection::Add(double pts)
     if (m_haspattern)
     {
       m_VFRCounter++;
+      m_lastPattern = m_pattern;
+      CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost on diff %f, number of losses %i", GetDiff(0), m_VFRCounter);
       Flush();
     }
 
@@ -113,6 +114,15 @@ void CPullupCorrection::Add(double pts)
     {
       m_haspattern = true;
       m_patternlength = m_pattern.size();
+
+      if (!CheckPattern(m_lastPattern))
+      {
+        m_patternCounter++;
+      }
+
+      double frameduration = CalcFrameDuration();
+      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s, frameduration: %f",
+                (int)pattern.size(), GetPatternStr().c_str(), frameduration);
     }
   }
 
@@ -164,7 +174,7 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
                                    //difftypesbuff[1] the one added before that etc
 
   //get the difftypes
-  vector<double> difftypes;
+  std::vector<double> difftypes;
   GetDifftypes(difftypes);
 
   //mark each diff with what difftype it is
@@ -222,7 +232,7 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
 }
 
 //calculate the different types of diffs we have
-void CPullupCorrection::GetDifftypes(vector<double>& difftypes)
+void CPullupCorrection::GetDifftypes(std::vector<double>& difftypes)
 {
   for (int i = 0; i < m_ringfill; i++)
   {

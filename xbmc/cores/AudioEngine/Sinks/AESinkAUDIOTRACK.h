@@ -45,8 +45,6 @@ public:
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
   virtual void         Drain           ();
-  virtual bool         HasVolume       ();
-  virtual void         SetVolume       (float scale);
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 protected:
@@ -59,7 +57,6 @@ private:
 
   static CAEDeviceInfo m_info;
   AEAudioFormat      m_format;
-  AEAudioFormat      m_lastFormat;
   double             m_volume;
   volatile int       m_min_frames;
   int16_t           *m_alignedS16;

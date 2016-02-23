@@ -29,6 +29,7 @@
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
 #define DLL_PATH_LIBDSM        "@DSM_SONAME@"
 #define DLL_PATH_LIBSMBCLIENT  "@SMBCLIENT_SONAME@"
+
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
 #define DLL_PATH_LIBCEC        "@LIBCEC_SONAME@"
@@ -39,6 +40,11 @@
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
+#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav-@ARCH@.so"
+#define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
+
+/* libbluray */
+#define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
 
 /* wayland */
 #define DLL_PATH_WAYLAND_CLIENT "@WAYLAND_CLIENT_LIBRARY_SONAME@"

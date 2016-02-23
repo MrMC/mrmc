@@ -3,258 +3,12 @@
 	<defaultcontrol always="true">100</defaultcontrol>
 	<onload condition="!MusicPlayer.Content(LiveTV)">SetFocus(602)</onload>
 	<include>dialogeffect</include>
+	<depth>DepthOSD</depth>
 	<coordinates>
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
 	<controls>
-		<control type="image">
-			<description>background image</description>
-			<left>0</left>
-			<top>0</top>
-			<width>1280</width>
-			<height>720</height>
-			<texture border="40">music_background.jpg</texture>
-		</control>
-		<control type="group">
-			<animation effect="fade" time="150">VisibleChange</animation>
-			<visible>[Player.ShowInfo | Window.IsActive(MusicOSD)] + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
-			<control type="image">
-				<left>0</left>
-				<top>-150</top>
-				<width>1280</width>
-				<height>256</height>
-				<texture flipy="true" border="1">HomeNowPlayingBack.png</texture>
-			</control>
-			<control type="label">
-				<description>Partymode Header label</description>
-				<left>30</left>
-				<top>5</top>
-				<width>800</width>
-				<height>25</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<label>$LOCALIZE[589]</label>
-				<visible>MusicPartyMode.Enabled</visible>
-			</control>
-			<control type="label">
-				<description>Normal Header label</description>
-				<left>30</left>
-				<top>5</top>
-				<width>800</width>
-				<height>25</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<label>$INFO[musicplayer.Playlistposition,$LOCALIZE[554]: ]$INFO[musicplayer.Playlistlength, / ]</label>
-				<visible>!MusicPartyMode.Enabled</visible>
-			</control>
-			<control type="label">
-				<description>Clock label</description>
-				<left>450</left>
-				<top>5</top>
-				<width>800</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<label>$INFO[System.Time]</label>
-				<animation effect="slide" start="0,0" end="-30,0" time="0" condition="Window.IsVisible(Mutebug)">conditional</animation>
-				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(MusicOSD)">conditional</animation>
-			</control>
-			<control type="image">
-				<left>0</left>
-				<top>230r</top>
-				<width>1280</width>
-				<height>230</height>
-				<texture border="1">HomeNowPlayingBack.png</texture>
-			</control>
-			<control type="image">
-				<description>cover image</description>
-				<left>20</left>
-				<top>250r</top>
-				<width>300</width>
-				<height>230</height>
-				<texture fallback="DefaultAlbumCover.png">$INFO[Player.Art(thumb)]</texture>
-				<aspectratio aligny="bottom">keep</aspectratio>
-				<bordertexture border="8">ThumbShadow.png</bordertexture>
-				<bordersize>8</bordersize>
-			</control>
-			<control type="group">
-				<left>330</left>
-				<top>185r</top>
-				<control type="label" id="1">
-					<description>Heading label</description>
-					<left>0</left>
-					<top>0</top>
-					<width>910</width>
-					<height>25</height>
-					<align>left</align>
-					<font>font13</font>
-					<label>$LOCALIZE[31040]</label>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<animation effect="slide" start="0,0" end="0,25" time="0" condition="IsEmpty(MusicPlayer.Artist) + IsEmpty(MusicPlayer.Album)">conditional</animation>
-				</control>
-				<control type="label" id="1">
-					<description>Artist label</description>
-					<left>20</left>
-					<top>30</top>
-					<width>910</width>
-					<height>25</height>
-					<align>left</align>
-					<font>font12</font>
-					<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, - ]</label>
-					<textcolor>grey2</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="grouplist">
-					<left>20</left>
-					<top>60</top>
-					<width>910</width>
-					<height>35</height>
-					<itemgap>5</itemgap>
-					<orientation>horizontal</orientation>
-					<visible>!system.getbool(audiooutput.dspaddonsenabled)</visible>
-					<control type="label">
-						<width min="10" max="700">auto</width>
-						<height>30</height>
-						<font>font30</font>
-						<align>left</align>
-						<aligny>center</aligny>
-						<label>$INFO[Player.Title]</label>
-						<textcolor>orange</textcolor>
-						<scroll>true</scroll>
-					</control>
-					<control type="image">
-						<description>Audio Codec Image</description>
-						<width>80</width>
-						<height>35</height>
-						<aspectratio align="right">keep</aspectratio>
-						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
-						<visible>!Player.ChannelPreviewActive + !System.Platform.IOS + !System.Platform.TVOS</visible>
-					</control>
-					<control type="group">
-						<description>Rating</description>
-						<width>110</width>
-						<height>35</height>
-						<control type="image">
-							<description>rating back</description>
-							<left>0</left>
-							<top>0</top>
-							<width>110</width>
-							<height>35</height>
-							<aspectratio align="left">stretch</aspectratio>
-							<texture border="5">flagging/blank.png</texture>
-						</control>
-						<control type="image">
-							<description>Rating</description>
-							<left>5</left>
-							<top>0</top>
-							<width>100</width>
-							<height>35</height>
-							<aspectratio align="center">keep</aspectratio>
-							<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
-						</control>
-					</control>
-				</control>
-				<control type="grouplist">
-					<left>20</left>
-					<top>60</top>
-					<width>910</width>
-					<height>35</height>
-					<itemgap>5</itemgap>
-					<orientation>horizontal</orientation>
-					<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
-					<control type="label">
-						<width min="10" max="620">auto</width>
-						<height>30</height>
-						<font>font30</font>
-						<align>left</align>
-						<aligny>center</aligny>
-						<label>$INFO[Player.Title]</label>
-						<textcolor>orange</textcolor>
-						<scroll>true</scroll>
-					</control>
-					<control type="group">
-						<description>Rating</description>
-						<width>110</width>
-						<height>35</height>
-						<control type="image">
-							<description>rating back</description>
-							<left>0</left>
-							<top>0</top>
-							<width>110</width>
-							<height>35</height>
-							<aspectratio align="left">stretch</aspectratio>
-							<texture border="5">flagging/blank.png</texture>
-						</control>
-						<control type="image">
-							<description>Rating</description>
-							<left>5</left>
-							<top>0</top>
-							<width>100</width>
-							<height>35</height>
-							<aspectratio align="center">keep</aspectratio>
-							<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
-						</control>
-					</control>
-				</control>
-				<control type="label">
-					<left>0</left>
-					<top>120</top>
-					<width>910</width>
-					<height>25</height>
-					<label>$LOCALIZE[19031]: $INFO[MusicPlayer.offset(1).Artist,, - ]$INFO[MusicPlayer.offset(1).Title]</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
-					<scroll>true</scroll>
-					<visible>MusicPlayer.HasNext + !Window.IsVisible(MusicOSD)</visible>
-					<animation effect="fade" time="150">VisibleChange</animation>
-				</control>
-			</control>
-			<control type="group">
-				<left>330</left>
-				<top>95r</top>
-				<control type="label">
-					<left>0</left>
-					<top>0</top>
-					<width>100</width>
-					<height>40</height>
-					<font>font13</font>
-					<align>left</align>
-					<aligny>center</aligny>
-					<label>$INFO[Player.Time(hh:mm:ss)]</label>
-				</control>
-				<control type="progress">
-					<description>Progressbar</description>
-					<left>100</left>
-					<top>15</top>
-					<width>720</width>
-					<height>16</height>
-					<info>Player.Progress</info>
-				</control>
-				<control type="label">
-					<left>820</left>
-					<top>0</top>
-					<width>100</width>
-					<height>40</height>
-					<font>font13</font>
-					<align>right</align>
-					<aligny>center</aligny>
-					<label>$INFO[Player.Duration(hh:mm:ss)]</label>
-				</control>
-			</control>
-		</control>
 		<control type="button" id="1000">
 			<description>Close Window button</description>
 			<left>84r</left>
@@ -273,9 +27,10 @@
 			<ondown>100</ondown>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<animation effect="slide" start="0,0" end="-30,0" time="0" condition="Window.IsVisible(Mutebug)">conditional</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 		</control>
 		<control type="slider" id="87">
+			<depth>DepthOSD+</depth>
 			<description>Seek Slider</description>
 			<left>430</left>
 			<top>82r</top>
@@ -288,7 +43,7 @@
 			<textureslidernib>osd_slider_nibNF.png</textureslidernib>
 			<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
 			<animation effect="fade" time="150">VisibleChange</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 		</control>
 		<control type="grouplist" id="100">
 			<left>325</left>
@@ -298,7 +53,7 @@
 			<orientation>horizontal</orientation>
 			<itemgap>0</itemgap>
 			<animation effect="fade" time="150">VisibleChange</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 			<control type="button" id="300">
 				<width>55</width>
 				<height>55</height>
@@ -403,7 +158,18 @@
 				<texturefocus>OSDepgFO.png</texturefocus>
 				<texturenofocus>OSDepgNF.png</texturenofocus>
 				<onclick>ActivateWindow(PVROSDGuide)</onclick>
-				<visible>MusicPlayer.Content(LiveTV)</visible>
+				<visible>MusicPlayer.Content(LiveTV) + !RDS.HasRadiotextPlus</visible>
+			</control>
+			<control type="button" id="308">
+				<visible>RDS.HasRadiotextPlus</visible>
+				<width>55</width>
+				<height>55</height>
+				<label>209</label>
+				<font>-</font>
+				<texturefocus>OSDRadioRDSFO.png</texturefocus>
+				<texturenofocus>OSDRadioRDSNF.png</texturenofocus>
+				<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+				<visible>MusicPlayer.Content(LiveTV) + RDS.HasRadiotextPlus</visible>
 			</control>
 			<control type="group" id="699">
 				<width>55</width>
@@ -494,17 +260,24 @@
 			</control>
 			<control type="image" id="2300">
 				<width>160</width>
-				<height>55</height>
 				<texture>-</texture>
-				<visible>!MusicPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="image" id="2400">
-				<width>215</width>
+				<width>55</width>
+				<texture>-</texture>
+				<visible>!system.getbool(audiooutput.dspaddonsenabled)</visible>
+			</control>
+			<control type="image" id="2500">
+				<width>55</width>
 				<texture>-</texture>
 				<visible>MusicPlayer.Content(LiveTV)</visible>
 			</control>
+			<control type="image" id="2600">
+				<width>55</width>
+				<texture>-</texture>
+				<visible>!Player.CanRecord</visible>
+			</control>
 			<control type="button" id="700">
-				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
 				<width>55</width>
 				<height>55</height>
 				<label>15047</label>
@@ -512,6 +285,7 @@
 				<texturefocus>OSDDSPAudioFO.png</texturefocus>
 				<texturenofocus>OSDDSPAudioNF.png</texturenofocus>
 				<onclick>ActivateWindow(OSDAudioDSPSettings)</onclick>
+				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
 			</control>
 			<control type="togglebutton" id="701">
 				<width>55</width>
@@ -555,6 +329,8 @@
 				<texturefocus>OSDPreFO.png</texturefocus>
 				<texturenofocus>OSDPreNF.png</texturenofocus>
 				<onclick>ActivateWindow(122)</onclick>
+				<enable>Visualisation.HasPresets</enable>
+				<animation effect="fade" start="100" end="50" time="75" condition="!Visualisation.HasPresets">Conditional</animation>
 			</control>
 			<control type="button" id="704">
 				<width>55</width>
@@ -564,8 +340,7 @@
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onclick>PlayerControl(record)</onclick>
-				<enable>Player.CanRecord</enable>
-				<animation effect="fade" start="100" end="50" time="75" condition="!Player.CanRecord">Conditional</animation>
+				<visible>Player.CanRecord</visible>
 			</control>
 		</control>
 	</controls>

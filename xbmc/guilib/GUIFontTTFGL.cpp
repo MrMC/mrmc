@@ -37,10 +37,7 @@
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
 
-using namespace std;
-
 #if defined(HAS_GL) || defined(HAS_GLES)
-
 
 CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName)
 : CGUIFontTTFBase(strFileName)
@@ -235,7 +232,7 @@ void CGUIFontTTFGL::LastEnd()
       glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
-      glBindBuffer(GL_ARRAY_BUFFER, m_vertexTrans[i].vertexBuffer->bufferHandle);
+      glBindBuffer(GL_ARRAY_BUFFER, (GLuint) m_vertexTrans[i].vertexBuffer->bufferHandle);
 
       // Do the actual drawing operation, split into groups of characters no
       // larger than the pre-determined size of the element array

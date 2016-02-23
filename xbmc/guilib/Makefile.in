@@ -3,7 +3,6 @@ SRCS += DirectXGraphics.cpp
 SRCS += DirtyRegionSolvers.cpp
 SRCS += DirtyRegionTracker.cpp
 SRCS += FrameBufferObject.cpp
-SRCS += GifIO.cpp
 SRCS += GraphicContext.cpp
 SRCS += GUIAction.cpp
 SRCS += GUIAudioManager.cpp
@@ -58,6 +57,7 @@ SRCS += GUITextLayout.cpp
 SRCS += GUITexture.cpp
 SRCS += GUIToggleButtonControl.cpp
 SRCS += GUIVideoControl.cpp
+SRCS += GUIVisualisationControl.cpp
 SRCS += GUIWindow.cpp
 SRCS += GUIWindowManager.cpp
 SRCS += GUIWrappingListContainer.cpp
@@ -76,6 +76,7 @@ SRCS += TextureManager.cpp
 SRCS += VisibleEffect.cpp
 SRCS += XBTF.cpp
 SRCS += XBTFReader.cpp
+SRCS += GifIO.cpp
 
 ifeq (@USE_OPENGL@,1)
 SRCS += TextureGL.cpp

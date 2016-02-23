@@ -1,1 +1,0 @@
-pvr.stalker https://github.com/mrmc/pvr.stalker 985c1903055aa7e8cdee7412d47b3081b354fb1a

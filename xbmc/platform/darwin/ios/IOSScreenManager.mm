@@ -171,7 +171,7 @@ static CEvent screenChangeEvent;
 
   if([self willSwitchToInternal:screenIdx] && _externalTouchController != nil)
   {
-    _lastTouchControllerOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    _lastTouchControllerOrientation = [_externalTouchController interfaceOrientation];
     [_externalTouchController release];
     _externalTouchController = nil;
   }

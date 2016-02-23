@@ -32,14 +32,14 @@ enum DVDStreamType
 {
   DVDSTREAM_TYPE_NONE   = -1,
   DVDSTREAM_TYPE_FILE   = 1,
-  //DVDSTREAM_TYPE_DVD    = 2,
+  DVDSTREAM_TYPE_DVD    = 2,
   DVDSTREAM_TYPE_HTTP   = 3,
   DVDSTREAM_TYPE_MEMORY = 4,
   DVDSTREAM_TYPE_FFMPEG = 5,
   DVDSTREAM_TYPE_TV     = 6,
   //DVDSTREAM_TYPE_RTMP   = 7,
   DVDSTREAM_TYPE_MPLS   = 10,
-  //DVDSTREAM_TYPE_BLURAY = 11,
+  DVDSTREAM_TYPE_BLURAY = 11,
   DVDSTREAM_TYPE_PVRMANAGER = 12,
 };
 
@@ -103,6 +103,33 @@ public:
     virtual void GetChapterName(std::string& name, int ch=-1) = 0;
     virtual int64_t GetChapterPos(int ch=-1) = 0;
     virtual bool SeekChapter(int ch) = 0;
+  };
+
+  class IMenus
+  {
+    public:
+    virtual ~IMenus() {};
+    virtual void ActivateButton() = 0;
+    virtual void SelectButton(int iButton) = 0;
+    virtual int  GetCurrentButton() = 0;
+    virtual int  GetTotalButtons() = 0;
+    virtual void OnUp() = 0;
+    virtual void OnDown() = 0;
+    virtual void OnLeft() = 0;
+    virtual void OnRight() = 0;
+    virtual void OnMenu() = 0;
+    virtual void OnBack() = 0;
+    virtual void OnNext() = 0;
+    virtual void OnPrevious() = 0;
+    virtual bool OnMouseMove(const CPoint &point) = 0;
+    virtual bool OnMouseClick(const CPoint &point) = 0;
+    virtual bool HasMenu() = 0;
+    virtual bool IsInMenu() = 0;
+    virtual void SkipStill() = 0;
+    virtual double GetTimeStampCorrection() = 0;
+    virtual bool GetState(std::string &xmlstate) = 0;
+    virtual bool SetState(const std::string &xmlstate) = 0;
+
   };
 
   class ISeekable

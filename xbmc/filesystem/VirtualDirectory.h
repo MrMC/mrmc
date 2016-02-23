@@ -37,6 +37,10 @@ namespace XFILE
     virtual bool GetDirectory(const CURL& url, CFileItemList &items);
     bool GetDirectory(const CURL& url, CFileItemList &items, bool bUseFileDirectories);
     void SetSources(const VECSOURCES& vecSources);
+    inline unsigned int GetNumberOfSources() 
+    {
+      return m_vecSources.size();
+    }
 
     bool IsSource(const std::string& strPath, VECSOURCES *sources = NULL, std::string *name = NULL) const;
     bool IsInSource(const std::string& strPath) const;

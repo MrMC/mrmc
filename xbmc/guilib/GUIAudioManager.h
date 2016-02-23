@@ -74,6 +74,7 @@ private:
   typedef std::map<const std::string, CSoundInfo> soundCache;
   typedef std::map<int, IAESound*              > actionSoundMap;
   typedef std::map<int, CWindowSounds          > windowSoundMap;
+  typedef std::map<const std::string, IAESound* > pythonSoundsMap;
 
   soundCache          m_soundCache;
   actionSoundMap      m_actionSoundMap;

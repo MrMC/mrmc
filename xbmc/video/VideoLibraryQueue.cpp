@@ -19,16 +19,19 @@
  */
 
 #include "VideoLibraryQueue.h"
-#include "GUIUserMessages.h"
-#include "Util.h"
+
+#include <utility>
+
 #include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
 #include "threads/SingleLock.h"
-#include "video/VideoDatabase.h"
+#include "Util.h"
 #include "video/jobs/VideoLibraryCleaningJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
 #include "video/jobs/VideoLibraryRefreshingJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
+#include "video/VideoDatabase.h"
 
 CVideoLibraryQueue::CVideoLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),
@@ -125,9 +128,7 @@ void CVideoLibraryQueue::CleanLibraryModal(const std::set<int>& paths /* = std::
 
 void CVideoLibraryQueue::RefreshItem(CFileItemPtr item, bool ignoreNfo /* = false */, bool forceRefresh /* = true */, bool refreshAll /* = false */, const std::string& searchTitle /* = "" */)
 {
-  CVideoLibraryRefreshingJob* refreshingJob = new CVideoLibraryRefreshingJob(item, forceRefresh, refreshAll, ignoreNfo, searchTitle);
-  refreshingJob->SetShowDialogs(false);
-  AddJob(refreshingJob);
+  AddJob(new CVideoLibraryRefreshingJob(item, forceRefresh, refreshAll, ignoreNfo, searchTitle));
 }
 
 bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /* = true */, bool refreshAll /* = false */)
@@ -138,9 +139,8 @@ bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /
 
   m_modal = true;
   CVideoLibraryRefreshingJob refreshingJob(item, forceRefresh, refreshAll);
-  refreshingJob.SetShowDialogs(true);
 
-  bool result = refreshingJob.DoWork();
+  bool result = refreshingJob.DoModal();
   m_modal = false;
 
   return result;

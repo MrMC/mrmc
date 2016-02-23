@@ -635,6 +635,9 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       return false;
     }
 
+    if (m_max_ref_frames == 0)
+      m_max_ref_frames = 2;
+
     CreateVTSession(width, height, m_fmt_desc);
     if (m_vt_session == NULL)
     {

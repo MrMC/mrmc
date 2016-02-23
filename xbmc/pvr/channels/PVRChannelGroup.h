@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,12 +19,13 @@
  *
  */
 
+#include <memory>
+#include <utility>
+
 #include "FileItem.h"
 #include "PVRChannel.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/JobManager.h"
-
-#include <memory>
 
 namespace EPG
 {

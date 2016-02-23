@@ -127,6 +127,7 @@ public:
   virtual bool OnAction(const CAction &action);
   
   virtual bool OnBack(int actionID);
+  virtual bool OnInfo(int actionID) { return false; };
 
   /*! \brief Clear the background (if necessary) prior to rendering the window
    */
@@ -153,6 +154,7 @@ public:
   virtual bool IsSoundEnabled() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
   virtual int GetViewContainerID() const { return 0; };
+  virtual bool CanBeActivated() const { return true; };
   virtual bool IsActive() const;
   void SetCoordsRes(const RESOLUTION_INFO &res) { m_coordsRes = res; };
   const RESOLUTION_INFO &GetCoordsRes() const { return m_coordsRes; };
@@ -163,10 +165,6 @@ public:
   virtual bool IsVisible() const { return true; }; // windows are always considered visible as they implement their own
                                                    // versions of UpdateVisibility, and are deemed visible if they're in
                                                    // the window manager's active list.
-
-  enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
-
-  OVERLAY_STATE GetOverlayState() const { return m_overlayState; };
 
   virtual bool IsAnimating(ANIMATION_TYPE animType);
   void DisableAnimations();
@@ -241,7 +239,6 @@ protected:
   void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect);
 
   std::vector<int> m_idRange;
-  OVERLAY_STATE m_overlayState;
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   bool m_windowLoaded;  // true if the window's xml file has been loaded

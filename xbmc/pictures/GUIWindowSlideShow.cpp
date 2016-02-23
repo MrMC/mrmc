@@ -72,10 +72,15 @@ using namespace KODI::MESSAGING;
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
-CBackgroundPicLoader::CBackgroundPicLoader() : CThread("BgPicLoader")
+CBackgroundPicLoader::CBackgroundPicLoader()
+  : CThread("BgPicLoader")
+  , m_iPic{0}
+  , m_iSlideNumber{0}
+  , m_maxWidth{0}
+  , m_maxHeight{0}
+  , m_isLoading{false}
+  , m_pCallback{nullptr}
 {
-  m_pCallback = NULL;
-  m_isLoading = false;
 }
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
@@ -101,7 +106,7 @@ void CBackgroundPicLoader::Process()
       if (m_pCallback)
       {
         unsigned int start = XbmcThreads::SystemClockMillis();
-        CBaseTexture* texture = CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, CSettings::GetInstance().GetBool(CSettings::SETTING_PICTURES_USEEXIFROTATION));
+        CBaseTexture* texture = CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight);
         totalTime += XbmcThreads::SystemClockMillis() - start;
         count++;
         // tell our parent
@@ -148,6 +153,7 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
   m_slides = new CFileItemList;
   m_Resolution = RES_INVALID;
   m_loadType = KEEP_IN_MEMORY;
+  m_bLoadNextPic = false;
   Reset();
 }
 
@@ -256,8 +262,6 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
     //FIXME: Use GUI resolution for now
     //g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), TRUE);
   }
-
-  g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
 
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
   {
@@ -929,8 +933,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
-      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
-
       // turn off slideshow if we only have 1 image
       if (m_slides->Size() <= 1)
         m_bSlideShow = false;
@@ -1145,10 +1147,16 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const std::strin
     m_Image[iPic].SetTexture(iSlideNumber, pTexture, GetDisplayEffect(iSlideNumber));
     m_Image[iPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
     
-    if (URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath()))
+    m_Image[iPic].m_bIsComic = false;
+    if (URIUtils::IsInRAR(m_slides->Get(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
     {
       CURL url(m_slides->Get(m_iCurrentSlide)->GetPath());
       std::string strHostName = url.GetHostName();
+      if (URIUtils::HasExtension(strHostName, ".cbr|.cbz"))
+      {
+        m_Image[iPic].m_bIsComic = true;
+        m_Image[iPic].Move((float)m_Image[iPic].GetOriginalWidth(),(float)m_Image[iPic].GetOriginalHeight());
+      }
     }
   }
   else if (iSlideNumber >= m_slides->Size() || GetPicturePath(m_slides->Get(iSlideNumber).get()) != strFileName)
@@ -1273,7 +1281,7 @@ void CGUIWindowSlideShow::AddItems(const std::string &strPath, path_set *recursi
     {
       AddItems(item->GetPath(), recursivePaths);
     }
-    else if (!item->m_bIsFolder && !URIUtils::IsZIP(item->GetPath()))
+    else if (!item->m_bIsFolder && !URIUtils::IsRAR(item->GetPath()) && !URIUtils::IsZIP(item->GetPath()))
     { // add to the slideshow
       Add(item.get());
     }

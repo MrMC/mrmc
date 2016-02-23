@@ -20,12 +20,14 @@
  *
  */
 
+#include <utility>
 #include <vector>
 
 #include "guilib/Resolution.h"
 #include "guilib/Geometry.h"
 #include "RenderFormats.h"
 #include "RenderFeatures.h"
+
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
@@ -80,11 +82,17 @@ public:
   void SetViewMode(int viewMode);
   RESOLUTION GetResolution() const;
 
+
   /*! \brief Get video rectangle and view window
+
   \param source is original size of the video
+
   \param dest is the target rendering area honoring aspect ratio of source
+
   \param view is the entire target rendering area for the video (including black bars)
+
   */
+
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio() const;
 

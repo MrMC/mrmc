@@ -18,7 +18,30 @@
  *
  */
 
+#include "DVDDemuxFFmpeg.h"
+
+#include <utility>
+
+#include "commons/Exception.h"
+#include "cores/FFmpeg.h"
+#include "DVDClock.h" // for DVD_TIME_BASE
+#include "DVDDemuxUtils.h"
+#include "DVDInputStreams/DVDInputStream.h"
+#include "DVDInputStreams/DVDInputStreamFFmpeg.h"
+#include "filesystem/CurlFile.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "system.h"
+#include "threads/SystemClock.h"
+#include "URL.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+
+#ifdef HAVE_LIBBLURAY
+#include "DVDInputStreams/DVDInputStreamBluray.h"
+#endif
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
@@ -28,26 +51,11 @@
 #ifdef TARGET_POSIX
 #include "stdint.h"
 #endif
-#include "DVDDemuxFFmpeg.h"
-#include "DVDInputStreams/DVDInputStream.h"
-#include "DVDInputStreams/DVDInputStreamFFmpeg.h"
-#include "DVDDemuxUtils.h"
-#include "DVDClock.h" // for DVD_TIME_BASE
-#include "commons/Exception.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "filesystem/File.h"
-#include "filesystem/CurlFile.h"
-#include "filesystem/Directory.h"
-#include "utils/log.h"
-#include "threads/SystemClock.h"
-#include "utils/StringUtils.h"
-#include "URL.h"
-#include "cores/FFmpeg.h"
 
 extern "C" {
 #include "libavutil/opt.h"
 }
+
 
 struct StereoModeConversionMap
 {
@@ -420,7 +428,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
 
   bool skipCreateStreams = false;
-  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo)
+  bool isBluray = pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY);
+  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray)
   {
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
     m_checkvideo = true;
@@ -447,12 +456,18 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
           st->codec->codec = pCodec;
       }
     }
+    /* to speed up dvd switches, only analyse very short */
+    if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+      av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
+
     CLog::Log(LOGDEBUG, "%s - avformat_find_stream_info starting", __FUNCTION__);
     int iErr = avformat_find_stream_info(m_pFormatContext, NULL);
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", CURL::GetRedacted(strFile).c_str());
-      if ((m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == AV_CODEC_ID_AC3)
+      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD)
+      ||  m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY)
+      || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == AV_CODEC_ID_AC3)
       || m_checkvideo)
       {
         // special case, our codecs can still handle it.
@@ -648,7 +663,9 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double starttime = 0.0f;
 
   // for dvd's we need the original time
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  if(CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput))
+    starttime = menu->GetTimeStampCorrection() / DVD_TIME_BASE;
+  else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
   if(timestamp > starttime)
@@ -1014,16 +1031,25 @@ int CDVDDemuxFFmpeg::GetNrOfStreams()
   return m_stream_index.size();
 }
 
-static double SelectAspect(AVStream* st, bool* forced)
+double CDVDDemuxFFmpeg::SelectAspect(AVStream* st, bool& forced)
 {
-  *forced = false;
-  /* if stream aspect is 1:1 or 0:0 use codec aspect */
-  if((st->sample_aspect_ratio.den == 1 || st->sample_aspect_ratio.den == 0)
-  && (st->sample_aspect_ratio.num == 1 || st->sample_aspect_ratio.num == 0)
-  && st->codec->sample_aspect_ratio.num != 0)
-    return av_q2d(st->codec->sample_aspect_ratio);
+  // trust matroshka container
+  if (m_bMatroska && st->sample_aspect_ratio.num != 0)
+  {
+    forced = true;
+    return av_q2d(st->sample_aspect_ratio);
+  }
 
-  *forced = true;
+  forced = false;
+  /* if stream aspect is 1:1 or 0:0 use codec aspect */
+  if((st->sample_aspect_ratio.den == 1 || st->sample_aspect_ratio.den == 0) &&
+     (st->sample_aspect_ratio.num == 1 || st->sample_aspect_ratio.num == 0) &&
+      st->codec->sample_aspect_ratio.num != 0)
+  {
+    return av_q2d(st->codec->sample_aspect_ratio);
+  }
+
+  forced = true;
   if(st->sample_aspect_ratio.num != 0)
     return av_q2d(st->sample_aspect_ratio);
 
@@ -1169,9 +1195,18 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
           st->irFpsScale = 0;
         }
 
+        if (pStream->codec_info_nb_frames >  0
+        &&  pStream->codec_info_nb_frames <= 2
+        &&  m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+        {
+          CLog::Log(LOGDEBUG, "%s - fps may be unreliable since ffmpeg decoded only %d frame(s)", __FUNCTION__, pStream->codec_info_nb_frames);
+          st->iFpsRate  = 0;
+          st->iFpsScale = 0;
+        }
+
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
-        st->fAspect = SelectAspect(pStream, &st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
+        st->fAspect = SelectAspect(pStream, st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
 
@@ -1187,6 +1222,21 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         if (!stereoMode.empty())
           st->stereo_mode = stereoMode;
 
+        
+        if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
+        {
+          if (pStream->codec->codec_id == AV_CODEC_ID_PROBE)
+          {
+            // fix MPEG-1/MPEG-2 video stream probe returning AV_CODEC_ID_PROBE for still frames.
+            // ffmpeg issue 1871, regression from ffmpeg r22831.
+            if ((pStream->id & 0xF0) == 0xE0)
+            {
+              pStream->codec->codec_id = AV_CODEC_ID_MPEG2VIDEO;
+              pStream->codec->codec_tag = MKTAG('M','P','2','V');
+              CLog::Log(LOGERROR, "%s - AV_CODEC_ID_PROBE detected, forcing AV_CODEC_ID_MPEG2VIDEO", __FUNCTION__);
+            }
+          }
+        }
         break;
       }
     case AVMEDIA_TYPE_DATA:
@@ -1260,9 +1310,6 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     }
 
-    // set ffmpeg type
-    stream->orig_type = pStream->codec->codec_type;
-
     // generic stuff
     if (pStream->duration != (int64_t)AV_NOPTS_VALUE)
       stream->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
@@ -1286,7 +1333,40 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       stream->ExtraData = new uint8_t[pStream->codec->extradata_size];
       memcpy(stream->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
     }
-    stream->iPhysicalId = pStream->id;
+
+#ifdef HAVE_LIBBLURAY
+    if( m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) )
+      static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
+#endif
+    if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
+    {
+      // this stuff is really only valid for dvd's.
+      // this is so that the physicalid matches the
+      // id's reported from libdvdnav
+      switch(stream->codec)
+      {
+        case AV_CODEC_ID_AC3:
+          stream->iPhysicalId = pStream->id - 128;
+          break;
+        case AV_CODEC_ID_DTS:
+          stream->iPhysicalId = pStream->id - 136;
+          break;
+        case AV_CODEC_ID_MP2:
+          stream->iPhysicalId = pStream->id - 448;
+          break;
+        case AV_CODEC_ID_PCM_S16BE:
+          stream->iPhysicalId = pStream->id - 160;
+          break;
+        case AV_CODEC_ID_DVD_SUBTITLE:
+          stream->iPhysicalId = pStream->id - 0x20;
+          break;
+        default:
+          stream->iPhysicalId = pStream->id & 0x1f;
+          break;
+      }
+    }
+    else
+      stream->iPhysicalId = pStream->id;
 
     AddStream(iId, stream);
     return stream;
@@ -1496,9 +1576,9 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
   {
     int idx = m_pFormatContext->programs[m_program]->stream_index[i];
     CDemuxStream *stream = GetStreamInternal(idx);
-    if(!stream)
+    if (!stream)
       return true;
-    if(m_pFormatContext->streams[idx]->codec->codec_type != stream->orig_type)
+    if (m_pFormatContext->streams[idx]->codec->codec_id != stream->codec)
       return true;
   }
   return false;

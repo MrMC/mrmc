@@ -190,7 +190,7 @@ bool CJpegIO::LoadImageFromMemory(unsigned char *buffer, unsigned int bufSize, u
   return true;
 }
 
-bool CJpegIO::Decode(unsigned char* const pixels, unsigned int pitch)
+bool CJpegIO::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
 {
   struct my_error_mgr jerr;
   m_cinfo->err = jpeg_std_error(&jerr.pub);
@@ -247,9 +247,7 @@ bool CJpegIO::Decode(unsigned char* const pixels, unsigned int pitch)
   return true;
 }
 
-bool CJpegIO::CreateThumbnailFromSurface(unsigned char *bufferin, unsigned int width, unsigned int height,
-  unsigned int pitch, const std::string& destFile,
-  unsigned char* &bufferout, unsigned int &bufferoutSize)
+bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, unsigned char* &bufferout, unsigned int &bufferoutSize)
 {
   //Encode raw data from buffer, save to destbuffer, surface format is XB_FMT_A8R8G8B8
   struct jpeg_compress_struct cinfo;
@@ -434,7 +432,7 @@ unsigned int CJpegIO::GetExifOrientation(unsigned char *exif_data, unsigned int 
   {
     if (offset > exif_data_size - 12)
       return 0; // check end of data segment
-    
+
     // Get Tag number
     if (isMotorola)
     {
@@ -448,15 +446,15 @@ unsigned int CJpegIO::GetExifOrientation(unsigned char *exif_data, unsigned int 
       tagNumber <<= 8;
       tagNumber += exif_data[offset];
     }
-    
+
     if (tagNumber == EXIF_TAG_ORIENTATION)
       break; //found orientation tag
-    
+
     if ( --numberOfTags == 0)
       return 0;//no orientation found
     offset += 12;//jump to next tag
   }
-  
+
   // Get the Orientation value
   if (isMotorola)
   {

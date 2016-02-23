@@ -33,8 +33,6 @@
 #include "settings/Settings.h"
 #include "guiinfo/GUIInfoLabels.h"
 
-using namespace std;
-
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000
 #define SCROLLING_GAP   200U
@@ -352,6 +350,15 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_SHOW_INFO:
+    {
+      if (OnInfo())
+        return true;
+      else if (action.GetID())
+        return OnClick(action.GetID());
+    }
+    break;
+
   case ACTION_FIRST_PAGE:
     SelectItem(0);
     return true;
@@ -474,7 +481,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
 
 void CGUIBaseContainer::OnUp()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_UP);
+  CGUIAction action = GetAction(ACTION_MOVE_UP);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
@@ -484,7 +491,7 @@ void CGUIBaseContainer::OnUp()
 
 void CGUIBaseContainer::OnDown()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_DOWN);
+  CGUIAction action = GetAction(ACTION_MOVE_DOWN);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
@@ -494,7 +501,7 @@ void CGUIBaseContainer::OnDown()
 
 void CGUIBaseContainer::OnLeft()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_LEFT);
+  CGUIAction action = GetAction(ACTION_MOVE_LEFT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
   if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
     return;
@@ -509,7 +516,7 @@ void CGUIBaseContainer::OnLeft()
 
 void CGUIBaseContainer::OnRight()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_RIGHT);
+  CGUIAction action = GetAction(ACTION_MOVE_RIGHT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
   if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
     return;
@@ -653,6 +660,9 @@ CGUIListItemPtr CGUIBaseContainer::GetListItem(int offset, unsigned int flag) co
   int item = GetSelectedItem() + offset;
   if (flag & INFOFLAG_LISTITEM_POSITION) // use offset from the first item displayed, taking into account scrolling
     item = CorrectOffset((int)(m_scroller.GetValue() / m_layout->Size(m_orientation)), offset);
+  
+  if (flag & INFOFLAG_LISTITEM_ABSOLUTE) // use offset from the first item
+    item = CorrectOffset(0, offset);
 
   if (flag & INFOFLAG_LISTITEM_WRAP)
   {
@@ -751,7 +761,12 @@ bool CGUIBaseContainer::OnClick(int actionID)
     { // "select" action
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < (int)m_items.size())
-        m_listProvider->OnClick(m_items[selected]);
+      {
+        if (m_clickActions.HasAnyActions())
+          m_clickActions.ExecuteActions(0, GetParentID(), m_items[selected]);
+        else
+          m_listProvider->OnClick(m_items[selected]);
+      }
       return true;
     }
     // grab the currently focused subitem (if applicable)
@@ -789,7 +804,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
   CGUIControl::SetFocus(bOnOff);
 }
 
-void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
+void CGUIBaseContainer::SaveStates(std::vector<CControlState> &states)
 {
   if (!m_listProvider || !m_listProvider->AlwaysFocusDefaultItem())
     states.push_back(CControlState(GetID(), GetSelectedItem()));
@@ -1313,5 +1328,16 @@ void CGUIBaseContainer::OnFocus()
   if (m_listProvider && m_listProvider->AlwaysFocusDefaultItem())
     SelectItem(m_listProvider->GetDefaultItem());
 
+  if (m_focusActions.HasAnyActions())
+    m_focusActions.ExecuteActions(GetID(), GetParentID());
+
   CGUIControl::OnFocus();
+}
+
+void CGUIBaseContainer::OnUnFocus()
+{
+  if (m_unfocusActions.HasAnyActions())
+    m_unfocusActions.ExecuteActions(GetID(), GetParentID());
+
+  CGUIControl::OnUnFocus();
 }

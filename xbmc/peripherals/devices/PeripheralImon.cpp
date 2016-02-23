@@ -25,7 +25,6 @@
 #include "input/InputManager.h"
 
 using namespace PERIPHERALS;
-using namespace std;
 
 std::atomic<long> CPeripheralImon::m_lCountOfImonsConflictWithDInput;
 

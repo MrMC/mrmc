@@ -3,9 +3,9 @@ INTERFACES_DIR ?= xbmc/interfaces
 
 GENERATED_JSON = $(INTERFACES_DIR)/json-rpc/ServiceDescription.h addons/xbmc.json/addon.xml
 ifeq ($(wildcard $(JSON_BUILDER)),)
-JSON_BUILDER = $(shell which JsonSchemaBuilder)
+  JSON_BUILDER = $(shell which JsonSchemaBuilder)
 ifeq ($(JSON_BUILDER),)
-JSON_BUILDER = tools/depends/native/JsonSchemaBuilder/bin/JsonSchemaBuilder
+  JSON_BUILDER = tools/depends/native/JsonSchemaBuilder/bin/JsonSchemaBuilder
 endif
 endif
 

@@ -218,7 +218,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory Unknown service type (%s), skipping; ", zeroconf_service.GetType().c_str());
           return false;
         }
-
+        
         service.SetProtocol(protocol);
         
         //first try to show the txt-record defined path if any

@@ -116,13 +116,13 @@ void SqliteDatabase::setHostName(const char *newHost) {
   if ( (host[1] == ':') && isalpha(host[0]))
   {
     size_t pos = 0;
-    while ( (pos = host.find("/", pos)) != string::npos )
+    while ( (pos = host.find("/", pos)) != std::string::npos )
       host.replace(pos++, 1, "\\");
   }
   else
   {
     size_t pos = 0;
-    while ( (pos = host.find("\\", pos)) != string::npos )
+    while ( (pos = host.find("\\", pos)) != std::string::npos )
       host.replace(pos++, 1, "/");
   }
 }
@@ -190,6 +190,7 @@ int SqliteDatabase::setErr(int err_code, const char * qry){
     break;
   default : error = "Undefined SQLite error";
   }
+  error = "[" + db + "] " + error;
   error += "\nQuery: ";
   error += qry;
   error += "\n";
@@ -269,7 +270,7 @@ int SqliteDatabase::copy(const char *backup_name) {
   CLog::Log(LOGDEBUG, "Copying from %s to %s at %s", db.c_str(), backup_name, host.c_str());
 
   int rc;
-  string backup_db = backup_name;
+  std::string backup_db = backup_name;
 
   sqlite3 *pFile;           /* Database connection opened on zFilename */
   sqlite3_backup *pBackup;  /* Backup object used to copy data */
@@ -282,7 +283,7 @@ int SqliteDatabase::copy(const char *backup_name) {
   if ( backup_db.find(".db") != (backup_db.length()-3) )
     backup_db += ".db";
 
-  string backup_path = host + backup_db;
+  std::string backup_path = host + backup_db;
 
   /* Open the database file identified by zFilename. Exit early if this fails
   ** for any reason. */
@@ -411,23 +412,23 @@ void SqliteDatabase::rollback_transaction() {
 
 // methods for formatting
 // ---------------------------------------------
-string SqliteDatabase::vprepare(const char *format, va_list args)
+std::string SqliteDatabase::vprepare(const char *format, va_list args)
 {
-  string strFormat = format;
-  string strResult = "";
+  std::string strFormat = format;
+  std::string strResult = "";
   char *p;
   size_t pos;
 
   //  %q is the sqlite format string for %s.
   //  Any bad character, like "'", will be replaced with a proper one
   pos = 0;
-  while ( (pos = strFormat.find("%s", pos)) != string::npos )
+  while ( (pos = strFormat.find("%s", pos)) != std::string::npos )
     strFormat.replace(pos++, 2, "%q");
 
   //  the %I64 enhancement is not supported by sqlite3_vmprintf
   //  must be %ll instead
   pos = 0;
-  while ( (pos = strFormat.find("%I64", pos)) != string::npos )
+  while ( (pos = strFormat.find("%I64", pos)) != std::string::npos )
     strFormat.replace(pos++, 4, "%ll");
 
   p = sqlite3_vmprintf(strFormat.c_str(), args);
@@ -479,7 +480,7 @@ sqlite3* SqliteDataset::handle(){
 }
 
 void SqliteDataset::make_query(StringList &_sql) {
-  string query;
+  std::string query;
   if (db == NULL) throw DbErrors("No Database Connection");
 
  try {
@@ -487,7 +488,7 @@ void SqliteDataset::make_query(StringList &_sql) {
   if (autocommit) db->start_transaction();
 
 
-  for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); ++i) {
+  for (std::list<std::string>::iterator i =_sql.begin(); i!=_sql.end(); ++i) {
   query = *i;
   char* err=NULL; 
   Dataset::parse_sql(query);
@@ -564,7 +565,7 @@ void SqliteDataset::fill_fields() {
 //------------- public functions implementation -----------------//
 bool SqliteDataset::dropIndex(const char *table, const char *index)
 {
-  string sql;
+  std::string sql;
 
   sql = static_cast<SqliteDatabase*>(db)->prepare("DROP INDEX IF EXISTS %s", index);
 
@@ -572,9 +573,9 @@ bool SqliteDataset::dropIndex(const char *table, const char *index)
 }
 
 
-int SqliteDataset::exec(const string &sql) {
+int SqliteDataset::exec(const std::string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
-  string qry = sql;
+  std::string qry = sql;
   int res;
   exec_res.clear();
 
@@ -585,18 +586,18 @@ int SqliteDataset::exec(const string &sql) {
   //   after:  CREATE UNIQUE INDEX ixPath ON path ( strPath )
   //
   // NOTE: unexpected results occur if brackets are not matched
-  if ( qry.find("CREATE UNIQUE INDEX") != string::npos ||
-      (qry.find("CREATE INDEX") != string::npos))
+  if ( qry.find("CREATE UNIQUE INDEX") != std::string::npos ||
+      (qry.find("CREATE INDEX") != std::string::npos))
   {
     size_t pos = 0;
     size_t pos2 = 0;
 
-    if ( (pos = qry.find("(")) != string::npos )
+    if ( (pos = qry.find("(")) != std::string::npos )
     {
       pos++;
-      while ( (pos = qry.find("(", pos)) != string::npos )
+      while ( (pos = qry.find("(", pos)) != std::string::npos )
       {
-        if ( (pos2 = qry.find(")", pos)) != string::npos )
+        if ( (pos2 = qry.find(")", pos)) != std::string::npos )
         {
           qry.replace(pos, pos2-pos+1, "");
           pos = pos2;
@@ -608,11 +609,11 @@ int SqliteDataset::exec(const string &sql) {
   // before: DROP INDEX foo ON table
   // after:  DROP INDEX foo
   size_t pos = qry.find("DROP INDEX ");
-  if ( pos != string::npos )
+  if ( pos != std::string::npos )
   {
     pos = qry.find(" ON ", pos+1);
 
-    if ( pos != string::npos )
+    if ( pos != std::string::npos )
       qry = qry.substr(0, pos);
   }
 
@@ -697,14 +698,14 @@ bool SqliteDataset::query(const std::string &query) {
   }  
 }
 
-void SqliteDataset::open(const string &sql) {
+void SqliteDataset::open(const std::string &sql) {
   set_select_sql(sql);
   open();
 }
 
 void SqliteDataset::open() {
   if (select_sql.size()) {
-    query(select_sql.c_str()); 
+    query(select_sql); 
   }
   else {
     ds_state = dsInactive;

@@ -38,6 +38,12 @@
 #ifdef HAS_FILESYSTEM_DSM
 #include "DSMFile.h"
 #endif
+#ifdef HAS_FILESYSTEM_CDDA
+#include "CDDAFile.h"
+#endif
+#ifdef HAS_FILESYSTEM
+#include "ISOFile.h"
+#endif
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPFile.h"
 #endif
@@ -49,6 +55,9 @@
 #endif
 #include "XbtFile.h"
 #include "ZipFile.h"
+#ifdef HAS_FILESYSTEM_RAR
+#include "RarFile.h"
+#endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "SFTPFile.h"
 #endif
@@ -63,6 +72,9 @@
 #endif
 #ifdef HAS_UPNP
 #include "UPnPFile.h"
+#endif
+#ifdef HAVE_LIBBLURAY
+#include "BlurayFile.h"
 #endif
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
@@ -102,6 +114,14 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   if (url.IsProtocol("apk")) return new CAPKFile();
 #endif
   if (url.IsProtocol("zip")) return new CZipFile();
+  else if (url.IsProtocol("rar"))
+  {
+#ifdef HAS_FILESYSTEM_RAR
+    return new CRarFile();
+#else
+    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
+#endif
+  }
   else if (url.IsProtocol("xbt")) return new CXbtFile();
   else if (url.IsProtocol("musicdb")) return new CMusicDatabaseFile();
   else if (url.IsProtocol("videodb")) return NULL;
@@ -122,11 +142,20 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     }
   }
   else if (url.IsProtocol("filereader")) return new CFileReaderFile();
-  else if (url.IsProtocol("udf")) return new CUDFFile();
+#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
+  else if (url.IsProtocol("cdda")) return new CFileCDDA();
+#endif
+#ifdef HAS_FILESYSTEM
+  else if (url.IsProtocol("iso9660")) return new CISOFile();
+#endif
+  else if(url.IsProtocol("udf")) return new CUDFFile();
 #if defined(TARGET_ANDROID)
   else if (url.IsProtocol("androidapp")) return new CFileAndroidApp();
 #endif
   else if (url.IsProtocol("pipe")) return new CPipeFile();
+#ifdef HAVE_LIBBLURAY
+  else if (url.IsProtocol("bluray")) return new CBlurayFile();
+#endif
   else if (url.IsProtocol("resource")) return new CResourceFile();
 
   bool networkAvailable = g_application.getNetwork().IsAvailable();

@@ -19,17 +19,18 @@
  *
  */
 
-#include <map>
-
+#include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "interfaces/IAnnouncer.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
-#include "interfaces/IAnnouncer.h"
+
 #include "pvr/recordings/PVRRecording.h"
-#include "FileItem.h"
+
+#include <map>
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -104,6 +105,12 @@ namespace PVR
      * @param channel The channel which is updated
      */
     void UpdateLastWatched(const CPVRChannelPtr &channel);
+
+    /*!
+     * @brief Set the playing group to the first group the channel is in if the given channel is not part of the current playing group
+     * @param channel The channel
+     */
+    void SetPlayingGroup(const CPVRChannelPtr &channel);
 
   public:
     /*!
@@ -182,9 +189,8 @@ namespace PVR
     /*!
      * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
      * @param strAddonId The add-on to mark as outdated
-     * @param strReferer The referer to use when downloading
      */
-    void MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer);
+    void MarkAsOutdated(const std::string& strAddonId);
 
     /*!
      * @return True when updated, false when the pvr manager failed to load after the attempt
@@ -328,10 +334,10 @@ namespace PVR
 
     /*!
      * @brief Open a stream from the given channel.
-     * @param channel The channel to open.
+     * @param fileItem The file item with the channel to open.
      * @return True if the stream was opened, false otherwise.
      */
-    bool OpenLiveStream(const CFileItem &channel);
+    bool OpenLiveStream(const CFileItem &fileItem);
 
     /*!
      * @brief Open a stream from the given recording.
@@ -442,11 +448,11 @@ namespace PVR
     bool UpdateItem(CFileItem& item);
 
     /*!
-     * @brief Switch to a channel given it's channel number.
-     * @param iChannelNumber The channel number to switch to.
+     * @brief Switch to a channel given it's channel id.
+     * @param iChannelId The channel id to switch to.
      * @return True if the channel was switched, false otherwise.
      */
-    bool ChannelSwitch(unsigned int iChannelNumber);
+    bool ChannelSwitchById(unsigned int iChannelId);
 
     /*!
      * @brief Switch to the next channel in this group.
@@ -679,8 +685,8 @@ namespace PVR
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
-    std::map<std::string, std::string> m_outdatedAddons;
-    static int                      m_pvrWindowIds[10];
+    std::vector<std::string>        m_outdatedAddons;
+    static const int                m_pvrWindowIds[10];
   };
 
   class CPVREpgsCreateJob : public CJob

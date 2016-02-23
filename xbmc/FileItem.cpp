@@ -42,6 +42,7 @@
 #include "music/MusicDatabase.h"
 #include "epg/Epg.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "video/VideoInfoTag.h"
@@ -220,7 +221,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_strPath = artist.strArtist;
   m_bIsFolder = true;
   URIUtils::AddSlashAtEnd(m_strPath);
-  GetMusicInfoTag()->SetArtist(artist.strArtist);
+  GetMusicInfoTag()->SetArtist(artist);
   FillInMimeType(false);
 }
 
@@ -309,6 +310,8 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iDriveType = share.m_iDriveType;
   SetArt("thumb", share.m_strThumbnailImage);
   SetLabelPreformated(true);
+  if (IsDVD())
+    GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
   FillInMimeType(false);
 }
 
@@ -381,6 +384,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_pvrChannelInfoTag = item.m_pvrChannelInfoTag;
   m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
+  m_pvrRadioRDSInfoTag = item.m_pvrRadioRDSInfoTag;
 
   m_lStartOffset = item.m_lStartOffset;
   m_lStartPartNumber = item.m_lStartPartNumber;
@@ -398,6 +402,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
+  m_doContentLookup = item.m_doContentLookup;
   return *this;
 }
 
@@ -449,6 +454,7 @@ void CFileItem::Reset()
   m_pvrChannelInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   m_pvrTimerInfoTag.reset();
+  m_pvrRadioRDSInfoTag.reset();
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.clear();
@@ -486,6 +492,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_mimetype;
     ar << m_extrainfo;
     ar << m_specialSort;
+    ar << m_doContentLookup;
 
     if (m_musicInfoTag)
     {
@@ -498,6 +505,13 @@ void CFileItem::Archive(CArchive& ar)
     {
       ar << 1;
       ar << *m_videoInfoTag;
+    }
+    else
+      ar << 0;
+    if (m_pvrRadioRDSInfoTag)
+    {
+      ar << 1;
+      ar << *m_pvrRadioRDSInfoTag;
     }
     else
       ar << 0;
@@ -536,6 +550,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_extrainfo;
     ar >> temp;
     m_specialSort = (SortSpecial)temp;
+    ar >> m_doContentLookup;
 
     int iType;
     ar >> iType;
@@ -544,6 +559,9 @@ void CFileItem::Archive(CArchive& ar)
     ar >> iType;
     if (iType == 1)
       ar >> *GetVideoInfoTag();
+    ar >> iType;
+    if (iType == 1)
+      ar >> *m_pvrRadioRDSInfoTag;
     ar >> iType;
     if (iType == 1)
       ar >> *GetPictureInfoTag();
@@ -570,6 +588,9 @@ void CFileItem::Serialize(CVariant& value) const
 
   if (m_videoInfoTag)
     (*m_videoInfoTag).Serialize(value["videoInfoTag"]);
+
+  if (m_pvrRadioRDSInfoTag)
+    m_pvrRadioRDSInfoTag->Serialize(value["rdsInfoTag"]);
 
   if (m_pictureInfoTag)
     (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
@@ -646,7 +667,8 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
    || IsPath("add")
    || IsInternetStream()
    || IsParentFolder()
-   || IsVirtualDirectoryRoot())
+   || IsVirtualDirectoryRoot()
+   || IsPlugin())
     return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
@@ -687,6 +709,9 @@ bool CFileItem::IsVideo() const
     return false;
 
   if (IsPVRRecording())
+    return true;
+
+  if (URIUtils::IsDVD(m_strPath))
     return true;
 
   std::string extension;
@@ -732,6 +757,11 @@ bool CFileItem::IsPVRTimer() const
   return HasPVRTimerInfoTag();
 }
 
+bool CFileItem::IsPVRRadioRDS() const
+{
+  return HasPVRRadioRDSInfoTag();
+}
+
 bool CFileItem::IsDiscStub() const
 {
   if (IsVideoDb() && HasVideoInfoTag())
@@ -757,6 +787,9 @@ bool CFileItem::IsAudio() const
 
   if (HasPictureInfoTag())
     return false;
+
+  if (IsCDDA())
+    return true;
 
   if(StringUtils::StartsWithNoCase(m_mimetype, "application/"))
   { /* check for some standard types */
@@ -825,6 +858,7 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
     || (IsPlayList() && g_advancedSettings.m_playlistAsFolders)
     || IsAPK()
     || IsZIP()
+    || IsRAR()
     || IsRSS()
     || IsType(".ogg|.oga|.nsf|.sid|.sap|.xbt|.xsp")
 #if defined(TARGET_ANDROID)
@@ -836,7 +870,8 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
 
   if(types & EFILEFOLDER_TYPE_ONBROWSE)
   {
-    if((IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
+    if((IsPlayList() && !g_advancedSettings.m_playlistAsFolders)
+    || IsDiscImage())
       return true;
   }
 
@@ -875,6 +910,51 @@ bool CFileItem::IsNFO() const
   return URIUtils::HasExtension(m_strPath, ".nfo");
 }
 
+bool CFileItem::IsDiscImage() const
+{
+  return URIUtils::HasExtension(m_strPath, ".img|.iso|.nrg");
+}
+
+bool CFileItem::IsOpticalMediaFile() const
+{
+  if (IsDVDFile(false, true))
+    return true;
+
+  return IsBDFile();
+}
+
+bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
+{
+  std::string strFileName = URIUtils::GetFileName(m_strPath);
+  if (bIfos)
+  {
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.ifo"))
+      return true;
+    if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, "_0.ifo") && strFileName.length() == 12)
+      return true;
+  }
+  if (bVobs)
+  {
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.vob"))
+      return true;
+    if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, ".vob"))
+      return true;
+  }
+
+  return false;
+}
+
+bool CFileItem::IsBDFile() const
+{
+  std::string strFileName = URIUtils::GetFileName(m_strPath);
+  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv") || StringUtils::EqualsNoCase(strFileName, "MovieObject.bdmv"));
+}
+
+bool CFileItem::IsRAR() const
+{
+  return URIUtils::IsRAR(m_strPath);
+}
+
 bool CFileItem::IsAPK() const
 {
   return URIUtils::IsAPK(m_strPath);
@@ -883,6 +963,16 @@ bool CFileItem::IsAPK() const
 bool CFileItem::IsZIP() const
 {
   return URIUtils::IsZIP(m_strPath);
+}
+
+bool CFileItem::IsCBZ() const
+{
+  return URIUtils::HasExtension(m_strPath, ".cbz");
+}
+
+bool CFileItem::IsCBR() const
+{
+  return URIUtils::HasExtension(m_strPath, ".cbr");
 }
 
 bool CFileItem::IsRSS() const
@@ -901,6 +991,16 @@ bool CFileItem::IsStack() const
   return URIUtils::IsStack(m_strPath);
 }
 
+bool CFileItem::IsPlugin() const
+{
+  return URIUtils::IsPlugin(m_strPath);
+}
+
+bool CFileItem::IsScript() const
+{
+  return URIUtils::IsScript(m_strPath);
+}
+
 bool CFileItem::IsAddonsPath() const
 {
   return URIUtils::IsAddonsPath(m_strPath);
@@ -916,6 +1016,21 @@ bool CFileItem::IsMultiPath() const
   return URIUtils::IsMultiPath(m_strPath);
 }
 
+bool CFileItem::IsCDDA() const
+{
+  return URIUtils::IsCDDA(m_strPath);
+}
+
+bool CFileItem::IsDVD() const
+{
+  return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
+}
+
+bool CFileItem::IsOnDVD() const
+{
+  return URIUtils::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
+}
+
 bool CFileItem::IsNfs() const
 {
   return URIUtils::IsNfs(m_strPath);
@@ -924,6 +1039,11 @@ bool CFileItem::IsNfs() const
 bool CFileItem::IsOnLAN() const
 {
   return URIUtils::IsOnLAN(m_strPath);
+}
+
+bool CFileItem::IsISO9660() const
+{
+  return URIUtils::IsISO9660(m_strPath);
 }
 
 bool CFileItem::IsRemote() const
@@ -973,7 +1093,7 @@ bool CFileItem::IsVirtualDirectoryRoot() const
 
 bool CFileItem::IsRemovable() const
 {
-  return m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
+  return IsOnDVD() || IsCDDA() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
@@ -1086,7 +1206,9 @@ void CFileItem::FillInDefaultIcon()
   // Set the icon overlays (if applicable)
   if (!HasOverlay())
   {
-    if (URIUtils::IsInZIP(m_strPath))
+    if (URIUtils::IsInRAR(m_strPath))
+      SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
+    else if (URIUtils::IsInZIP(m_strPath))
       SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
   }
 }
@@ -1263,6 +1385,11 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     *GetMusicInfoTag() = *item.GetMusicInfoTag();
     SetInvalid();
   }
+  if (item.HasPVRRadioRDSInfoTag())
+  {
+    m_pvrRadioRDSInfoTag = item.m_pvrRadioRDSInfoTag;
+    SetInvalid();
+  }
   if (item.HasPictureInfoTag())
   {
     *GetPictureInfoTag() = *item.GetPictureInfoTag();
@@ -1302,12 +1429,25 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
   FillInMimeType(false);
 }
 
+void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music)
+{
+  if (!music.GetTitle().empty())
+    SetLabel(music.GetTitle());
+  if (!music.GetURL().empty())
+    m_strPath = music.GetURL();
+  m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
+
+  *GetMusicInfoTag() = music;
+  FillInDefaultIcon();
+  FillInMimeType(false);
+}
+
 void CFileItem::SetFromAlbum(const CAlbum &album)
 {
   if (!album.strAlbum.empty())
     SetLabel(album.strAlbum);
   m_bIsFolder = true;
-  m_strLabel2 = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
+  m_strLabel2 = album.GetAlbumArtistString();
   GetMusicInfoTag()->SetAlbum(album);
   SetArt(album.art);
   m_bIsAlbum = true;
@@ -1346,6 +1486,22 @@ std::string CFileItem::GetOpticalMediaPath() const
     if (CFile::Exists(path))
       dvdPath = path;
   }
+#ifdef HAVE_LIBBLURAY
+  if (dvdPath.empty())
+  {
+    path = URIUtils::AddFileToFolder(GetPath(), "index.bdmv");
+    if (CFile::Exists(path))
+      dvdPath = path;
+    else
+    {
+      dvdPath = URIUtils::AddFileToFolder(GetPath(), "BDMV");
+      path = URIUtils::AddFileToFolder(dvdPath, "index.bdmv");
+      dvdPath.clear();
+      if (CFile::Exists(path))
+        dvdPath = path;
+    }
+  }
+#endif
   return dvdPath;
 }
 
@@ -1372,9 +1528,9 @@ bool CFileItem::IsURL(const CURL& url) const
   return IsPath(url.Get());
 }
 
-bool CFileItem::IsPath(const std::string& path) const
+bool CFileItem::IsPath(const std::string& path, bool ignoreURLOptions /* = false */) const
 {
-  return URIUtils::PathEquals(m_strPath, path);
+  return URIUtils::PathEquals(m_strPath, path, false, ignoreURLOptions);
 }
 
 void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)
@@ -1431,12 +1587,15 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
       {
         if (song.strAlbum.empty() && !tag.GetAlbum().empty())
           song.strAlbum = tag.GetAlbum();
-        if (song.albumArtist.empty() && !tag.GetAlbumArtist().empty())
-          song.albumArtist = tag.GetAlbumArtist();
+        //Pass album artist to final MusicInfoTag object via setting song album artist vector. 
+        if (song.GetAlbumArtist().empty() && !tag.GetAlbumArtist().empty())
+          song.SetAlbumArtist(tag.GetAlbumArtist());        
         if (song.genre.empty() && !tag.GetGenre().empty())
           song.genre = tag.GetGenre();
-        if (song.artist.empty() && !tag.GetArtist().empty())
-          song.artist = tag.GetArtist();
+        //Pass artist to final MusicInfoTag object via setting song artist description string only.
+        //Artist credits not used during loading from cue sheet. 
+        if (song.strArtistDesc.empty() && !tag.GetArtistString().empty())
+          song.strArtistDesc = tag.GetArtistString();
         if (tag.GetDiscNumber())
           song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
         if (!tag.GetCueSheet().empty())
@@ -1537,7 +1696,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   m_fastLookup = fastLookup;
 }
 
-bool CFileItemList::Contains(const std::string& fileName) const
+bool CFileItemList::Contains(const std::string& fileName, bool ignoreURLOptions /* = false */) const
 {
   CSingleLock lock(m_lock);
 
@@ -1548,7 +1707,7 @@ bool CFileItemList::Contains(const std::string& fileName) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     const CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(fileName))
+    if (pItem->IsPath(fileName, ignoreURLOptions))
       return true;
   }
   return false;
@@ -2200,6 +2359,7 @@ void CFileItemList::StackFolders()
       if( !item->IsRemote()
         || item->IsSmb()
         || item->IsNfs() 
+        || URIUtils::IsInRAR(item->GetPath())
         || URIUtils::IsInZIP(item->GetPath())
         || URIUtils::IsOnLAN(item->GetPath())
         )
@@ -2411,8 +2571,14 @@ void CFileItemList::StackFiles()
       {
         // have a stack, remove the items and add the stacked item
         // dont actually stack a multipart rar set, just remove all items but the first
-        CStackDirectory dir;
-        std::string stackPath = dir.ConstructStackPath(*this, stack);
+        std::string stackPath;
+        if (Get(stack[0])->IsRAR())
+          stackPath = Get(stack[0])->GetPath();
+        else
+        {
+          CStackDirectory dir;
+          stackPath = dir.ConstructStackPath(*this, stack);
+        }
         item1->SetPath(stackPath);
         // clean up list
         for (unsigned k = 1; k < stack.size(); k++)
@@ -2490,7 +2656,9 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
   crc.ComputeFromLowerCase(strPath);
 
   std::string cacheFile;
-  if (IsMusicDb())
+  if (IsCDDA() || IsOnDVD())
+    cacheFile = StringUtils::Format("special://temp/r-%08x.fi", (uint32_t)crc);
+  else if (IsMusicDb())
     cacheFile = StringUtils::Format("special://temp/mdb-%08x.fi", (uint32_t)crc);
   else if (IsVideoDb())
     cacheFile = StringUtils::Format("special://temp/vdb-%08x.fi", (uint32_t)crc);
@@ -2524,6 +2692,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
    || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || IsPlugin()
    || IsAddonsPath()
    || IsLibraryFolder()
    || IsParentFolder()
@@ -2580,7 +2749,7 @@ std::string CFileItem::GetTBNFile() const
     strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
-  if (URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
@@ -2615,10 +2784,12 @@ bool CFileItem::SkipLocalArt() const
        || IsInternetStream()
        || URIUtils::IsUPnP(m_strPath)
        || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+       || IsPlugin()
        || IsAddonsPath()
        || IsLibraryFolder()
        || IsParentFolder()
-       || IsLiveTV());
+       || IsLiveTV()
+       || IsDVD());
 }
 
 std::string CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) const
@@ -2660,7 +2831,7 @@ std::string CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) c
     strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
-  if (URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
@@ -2671,7 +2842,12 @@ std::string CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) c
   if (IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  if (useFolder && !(m_bIsFolder && !IsFileFolder()))
+  if (IsOpticalMediaFile())
+  { // optical media files should be treated like folders
+    useFolder = true;
+    strFile = GetLocalMetadataPath();
+  }
+  else if (useFolder && !(m_bIsFolder && !IsFileFolder()))
     strFile = URIUtils::GetDirectory(strFile);
 
   if (strFile.empty()) // empty filepath -> nothing to find
@@ -2697,6 +2873,7 @@ std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.
   std::string strFolder = m_strPath;
 
   if (IsStack() ||
+      URIUtils::IsInRAR(strFolder) ||
       URIUtils::IsInZIP(strFolder))
   {
     URIUtils::GetParentPath(m_strPath,strFolder);
@@ -2739,6 +2916,9 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
   if (IsMultiPath())
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
 
+  if (IsOpticalMediaFile())
+    return GetLocalMetadataPath();
+
   if (bUseFolderNames &&
      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
      (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !MediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
@@ -2780,7 +2960,7 @@ std::string CFileItem::GetLocalFanart() const
     std::string strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-fanart"));
     strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
   }
-  if (URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
@@ -2791,8 +2971,11 @@ std::string CFileItem::GetLocalFanart() const
   // no local fanart available for these
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
+   || URIUtils::IsBluray(strFile)
    || IsLiveTV()
+   || IsPlugin()
    || IsAddonsPath()
+   || IsDVD()
    || (URIUtils::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
    || m_strPath.empty())
     return "";
@@ -2804,6 +2987,12 @@ std::string CFileItem::GetLocalFanart() const
 
   CFileItemList items;
   CDirectory::GetDirectory(strDir, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+  if (IsOpticalMediaFile())
+  { // grab from the optical media parent folder as well
+    CFileItemList moreItems;
+    CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+    items.Append(moreItems);
+  }
 
   std::vector<std::string> fanarts = StringUtils::Split(g_advancedSettings.m_fanartImages, "|");
 
@@ -2875,6 +3064,23 @@ bool CFileItem::LoadMusicTag()
     if (pLoader->Load(m_strPath, *GetMusicInfoTag()))
       return true;
   }
+  // no tag - try some other things
+  if (IsCDDA())
+  {
+    // we have the tracknumber...
+    int iTrack = GetMusicInfoTag()->GetTrackNumber();
+    if (iTrack >= 1)
+    {
+      std::string strText = g_localizeStrings.Get(554); // "Track"
+      if (!strText.empty() && strText[strText.size() - 1] != ' ')
+        strText += " ";
+      std::string strTrack = StringUtils::Format((strText + "%i").c_str(), iTrack);
+      GetMusicInfoTag()->SetTitle(strTrack);
+      GetMusicInfoTag()->SetLoaded(true);
+      return true;
+    }
+  }
+  else
   {
     std::string fileName = URIUtils::GetFileName(m_strPath);
     URIUtils::RemoveExtension(fileName);
@@ -2991,7 +3197,7 @@ std::string CFileItem::FindTrailer() const
     std::string strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-trailer"));
     strFile2 = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile));
   }
-  if (URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
@@ -3002,7 +3208,10 @@ std::string CFileItem::FindTrailer() const
   // no local trailer available for these
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
-   || IsLiveTV())
+   || URIUtils::IsBluray(strFile)
+   || IsLiveTV()
+   || IsPlugin()
+   || IsDVD())
     return "";
 
   std::string strDir = URIUtils::GetDirectory(strFile);

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<allowoverlay>no</allowoverlay>
 	<coordinates>
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
+	<depth>DepthDialog</depth>
 	<controls>
 		<control type="group" id="100">
 			<include>VisibleFadeEffect</include>
@@ -162,7 +162,7 @@
 					<width>220</width>
 					<height>80</height>
 					<aspectratio>keep</aspectratio>
-					<texture>mrmc_logo.png</texture>
+					<texture>Confluence_Logo.png</texture>
 				</control>
 				<control type="list" id="9000">
 					<left>10</left>

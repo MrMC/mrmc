@@ -1,8 +1,11 @@
 SRCS  = Application.cpp
 SRCS += ApplicationPlayer.cpp
 SRCS += AppParamParser.cpp
+SRCS += Autorun.cpp
 SRCS += AutoSwitch.cpp
 SRCS += BackgroundInfoLoader.cpp
+SRCS += ContextMenuItem.cpp
+SRCS += ContextMenuManager.cpp
 SRCS += CompileInfo.cpp
 SRCS += CueDocument.cpp
 SRCS += DatabaseManager.cpp

@@ -1,34 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
 	<onunload condition="Container(9000).Hasfocus(10) | Container(9000).Hasfocus(11) | ControlGroup(9010).HasFocus | ControlGroup(9016).HasFocus | ControlGroup(9017).HasFocus">SetProperty(VideosDirectLink,True)</onunload>
+	<onunload condition="ControlGroup(9011).HasFocus">SetProperty(MusicDirectLink,True)</onunload>
 	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(2)">ClearProperty(VideosDirectLink)</onunload>
+	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(3)">ClearProperty(MusicDirectLink)</onunload>
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
-			<left>0</left>
-			<top>90r</top>
-			<width>1280</width>
+			<depth>DepthFloor</depth>
+			<left>-20</left>
+			<top></top>
+			<bottom>0</bottom>
+			<width>1320</width>
 			<height>90</height>
 			<texture>floor.png</texture>
-			<animation effect="fade" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
-			<animation effect="fade" time="200" condition="Window.Next(Home)">WindowClose</animation>
-		</control>
-		<control type="image">
-			<description>LOGO</description>
-			<left>-15</left>
-			<top>5</top>
-			<width>225</width>
-			<height>66</height>
-			<aspectratio aligny="top" align="left">keep</aspectratio>
-			<texture>mrmc_logo1.png</texture>
-			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>
-			<visible>!Skin.HasSetting(homepageWeatherinfo)</visible>
+			<animation effect="rotatex" end="45" time="0" center="620,0" condition="true">Conditional</animation>
+			<animation effect="slide" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="slide" time="200" condition="Window.Next(Home)">WindowClose</animation>
 		</control>
 		<!-- Music Info -->
 		<control type="group">
+			<depth>DepthMenu</depth>
 			<left>0</left>
 			<top>60</top>
 			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
@@ -87,6 +80,7 @@
 		</control>
 		<!-- LiveTV Info -->
 		<control type="group">
+			<depth>DepthMenu</depth>
 			<left>490r</left>
 			<top>70</top>
 			<visible>Container(9000).HasFocus(12) + [PVR.IsRecording | PVR.HasNonRecordingTimer]</visible>
@@ -231,6 +225,7 @@
 		</control>
 		<!-- Video Info -->
 		<control type="group">
+			<depth>DepthMenu</depth>
 			<left>0</left>
 			<top>50</top>
 			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
@@ -454,6 +449,7 @@
 			<visible>false</visible>
 		</control>
 		<control type="group">
+			<depth>DepthMenu-</depth>
 			<description>Controls for currently playing media</description>
 			<left>545r</left>
 			<top>370</top>
@@ -469,12 +465,42 @@
 			<visible>IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
 			<control type="image">
 				<description>Background End image</description>
-				<left>145</left>
+				<left>0</left>
 				<top>0</top>
 				<width>35</width>
 				<height>35</height>
 				<colordiffuse>CCFFFFFF</colordiffuse>
 				<texture flipy="true" border="0,5,0,0" flipx="true">HomeSubEnd.png</texture>
+				<animation effect="slide" start="0,0" end="145,0" time="0" condition="!System.HasAddon(script.globalsearch)">Conditional</animation>
+			</control>
+			<control type="radiobutton" id="608">
+				<colordiffuse>CCFFFFFF</colordiffuse>
+				<description>Global Search</description>
+				<left>35</left>
+				<top>0</top>
+				<height>35</height>
+				<width>145</width>
+				<textwidth>150</textwidth>
+				<textoffsetx>10</textoffsetx>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<texturefocus flipy="true" border="5">HomeSubFO.png</texturefocus>
+				<texturenofocus flipy="true" border="5">HomeSubNF.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>137</label>
+				<onclick>RunScript(script.globalsearch)</onclick>
+				<textureradioonfocus>icon_search.png</textureradioonfocus>
+				<textureradioonnofocus>icon_search.png</textureradioonnofocus>
+				<textureradioofffocus>icon_search.png</textureradioofffocus>
+				<textureradiooffnofocus>icon_search.png</textureradiooffnofocus>
+				<onleft>607</onleft>
+				<onright>601</onright>
+				<onup>9003</onup>
+				<ondown>9000</ondown>
+				<visible>System.HasAddon(script.globalsearch)</visible>
 			</control>
 			<control type="group" id="600">
 				<left>180</left>
@@ -639,12 +665,28 @@
 						<alttexturefocus>OSDPlayFO.png</alttexturefocus>
 						<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
 						<onleft>603</onleft>
-						<onright>606</onright>
+						<onright>605</onright>
 						<onup>9003</onup>
 						<ondown>9000</ondown>
 						<onclick>PlayerControl(Play)</onclick>
 						<enable>Player.PauseEnabled</enable>
 						<animation effect="fade" start="100" end="30" time="75" condition="!Player.PauseEnabled">Conditional</animation>
+					</control>
+					<control type="button" id="605">
+						<left>130</left>
+						<top>2</top>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDRadioRDSFO.png</texturefocus>
+						<texturenofocus>OSDRadioRDSNF.png</texturenofocus>
+						<onleft>604</onleft>
+						<onright>606</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+						<enable>RDS.HasRadiotextPlus</enable>
+						<animation effect="fade" start="100" end="30" time="75" condition="!RDS.HasRadiotextPlus">Conditional</animation>
 					</control>
 					<control type="button" id="606">
 						<left>160</left>
@@ -654,7 +696,7 @@
 						<label>-</label>
 						<texturefocus>OSDRecordOffFO.png</texturefocus>
 						<texturenofocus>OSDRecordOffNF.png</texturenofocus>
-						<onleft>604</onleft>
+						<onleft>605</onleft>
 						<onright>607</onright>
 						<onup>9003</onup>
 						<ondown>9000</ondown>
@@ -693,6 +735,7 @@
 			</control>
 		</control>
 		<control type="group">
+			<depth>DepthMenu</depth>
 			<top>400</top>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="225" />
@@ -703,6 +746,7 @@
 				<effect type="fade" start="100" end="0" time="225" />
 			</animation>
 			<control type="group" id="9001">
+				<depth>DepthMenu-</depth>
 				<left>0</left>
 				<top>70</top>
 				<onup>9000</onup>
@@ -801,7 +845,8 @@
 				<height>60</height>
 				<onleft>9000</onleft>
 				<onright>9000</onright>
-				<onup>603</onup>
+				<onup condition="System.HasAddon(script.globalsearch)">608</onup>
+				<onup condition="!System.HasAddon(script.globalsearch)">603</onup>
 				<ondown>9001</ondown>
 				<pagecontrol>-</pagecontrol>
 				<scrolltime>300</scrolltime>
@@ -876,6 +921,13 @@
 					</control>
 				</focusedlayout>
 				<content>
+					<item id="7">
+						<label>31950</label>
+						<onclick>ActivateWindow(Weather)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton) + !IsEmpty(Weather.Plugin)</visible>
+					</item>
 					<item id="4">
 						<label>31951</label>
 						<onclick>ActivateWindow(Pictures)</onclick>
@@ -921,19 +973,20 @@
 					</item>
 					<item id="3">
 						<label>31956</label>
-						<onclick>ActivateWindow(Music)</onclick>
+						<onclick condition="StringCompare(Window.Property(MusicDirectLink),True)">ActivateWindow(Music)</onclick>
+						<onclick condition="!StringCompare(Window.Property(MusicDirectLink),True)">ActivateWindow(Music,root)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
 					</item>
-<!-- 					<item id="1">
+					<item id="1">
 						<label>31957</label>
 						<onclick condition="!System.Platform.Android">ActivateWindow(Programs,Addons,return)</onclick>
 						<onclick condition="System.Platform.Android">ActivateWindow(Programs)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
-					</item> -->
+					</item>
 					<item id="6">
 						<label>31958</label>
 						<onclick>PlayDVD()</onclick>
@@ -950,32 +1003,31 @@
 				</content>
 			</control>
 			<control type="image">
-				<left>0</left>
+				<left>-10</left>
 				<top>6</top>
-				<width>128</width>
+				<width>138</width>
 				<height>63</height>
 				<texture>SideFade.png</texture>
 			</control>
 			<control type="image">
 				<left>128r</left>
 				<top>6</top>
-				<width>128</width>
+				<width>138</width>
 				<height>63</height>
 				<texture flipx="true">SideFade.png</texture>
 			</control>
 		</control>
 		<control type="group" id="9002">
+			<depth>DepthMenu</depth>
 			<onup>9001</onup>
-			<ondown condition="!System.Platform.TVOS">20</ondown>
-			<ondown condition="System.Platform.TVOS">21</ondown>
+			<ondown>20</ondown>
 			<control type="fixedlist" id="700">
 				<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(700).NumItems,2) | StringCompare(Container(700).NumItems,4)">conditional</animation>
 				<visible>Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)</visible>
 				<onleft>700</onleft>
 				<onright>700</onright>
 				<onup>9001</onup>
-				<ondown condition="!System.Platform.TVOS">20</ondown>
-				<ondown condition="System.Platform.TVOS">21</ondown>
+				<ondown>20</ondown>
 				<include>HomeAddonsCommonLayout</include>
 				<content>
 					<include>HomeAddonItemsVideos</include>
@@ -987,8 +1039,7 @@
 				<onleft>703</onleft>
 				<onright>703</onright>
 				<onup>9001</onup>
-				<ondown condition="!System.Platform.TVOS">20</ondown>
-				<ondown condition="System.Platform.TVOS">21</ondown>
+				<ondown>20</ondown>
 				<include>HomeAddonsCommonLayout</include>
 				<content>
 					<include>HomeAddonItemsMusic</include>
@@ -1000,8 +1051,7 @@
 				<onleft>704</onleft>
 				<onright>704</onright>
 				<onup>9001</onup>
-				<ondown condition="!System.Platform.TVOS">20</ondown>
-				<ondown condition="System.Platform.TVOS">21</ondown>
+				<ondown>20</ondown>
 				<include>HomeAddonsCommonLayout</include>
 				<content>
 					<include>HomeAddonItemsPictures</include>
@@ -1013,8 +1063,7 @@
 				<onleft>705</onleft>
 				<onright>705</onright>
 				<onup>9001</onup>
-				<ondown condition="!System.Platform.TVOS">20</ondown>
-				<ondown condition="System.Platform.TVOS">21</ondown>
+				<ondown>20</ondown>
 				<include>HomeAddonsCommonLayout</include>
 				<content>
 					<include>HomeAddonItemsPrograms</include>
@@ -1022,6 +1071,7 @@
 			</control>
 		</control>
 		<control type="group">
+			<depth>DepthMenu-</depth>
 			<left>0</left>
 			<top>33r</top>
 			<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
@@ -1048,6 +1098,7 @@
 			</control>
 		</control>
 		<control type="group" id="10">
+			<depth>DepthFooter</depth>
 			<left>20</left>
 			<top>55r</top>
 			<include>Window_OpenClose_Animation</include>

@@ -62,6 +62,10 @@ void CMediaSource::FromNameAndPaths(const std::string &category, const std::stri
     m_iDriveType = SOURCE_TYPE_VIRTUAL_DVD;
     strPath = "D:\\";
   }
+  else if (URIUtils::IsISO9660(strPath))
+    m_iDriveType = SOURCE_TYPE_VIRTUAL_DVD;
+  else if (URIUtils::IsDVD(strPath))
+    m_iDriveType = SOURCE_TYPE_DVD;
   else if (URIUtils::IsRemote(strPath))
     m_iDriveType = SOURCE_TYPE_REMOTE;
   else if (URIUtils::IsHD(strPath))

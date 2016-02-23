@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: German (Germany) (http://www.transifex.com/projects/p/MrMC-main/language/de_DE/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: German (Germany) (http://www.transifex.com/projects/p/kodi-main/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -228,14 +228,6 @@ msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Die \"Es läuft\" Hintergrund-Visualisierung anzeigen"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "TV-Titelmusikstücke beim Navigieren in der Video-Bibliothek abspielen (TvTunes Addon)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Liedtexte"
@@ -333,7 +325,7 @@ msgid "Current scraper"
 msgstr "Aktueller Scraper"
 
 msgctxt "#31313"
-msgid "Choose metadata provider"
+msgid "Choose a scraper"
 msgstr "Scraper auswählen"
 
 msgctxt "#31314"
@@ -351,10 +343,6 @@ msgstr "Profil auswählen"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Zuletzt angemeldet"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke-Titelauswahl"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -444,10 +432,6 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]VIDEO-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Video-Bibliothek verwalten · Videoabspieleinstellungen vornehmen · Videoauflistungseinstellungen ändern[CR]Untertitel-Schriftarten einstellen"
 
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MUSIK-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Musik-Bibliothek verwalten· Musikabspieleinstellungen · Musikauflistungseinstellungen ändern[CR]Musikübertragung einrichten · Karaoke-Einstellungen"
-
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
 msgstr "[B]BILDER-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Bildauflistungseinstellungen · Diashow konfigurieren"
@@ -461,7 +445,7 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]SYSTEM-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Bildschirme konfigurieren und kalibrieren · Audioausgabe konfigurieren · Fernbedienungseinstellungen[CR]Energiespar-Einstellungen vornehmen· Debugging aktivieren· Master-Sperre einrichten"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
 msgstr "[B]ADDONS KONFIGURIEREN[/B][CR][CR]Installierte Addons verwalten · Addons aus verschiedenen Repositories auswählen und installieren[CR]Addon-Einstellungen verändern"
 
 msgctxt "#31409"
@@ -469,8 +453,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]TV-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Vollbildinformationen ändern · TV-Guide-Dateneinstellungen verwalten "
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]DIENSTE KONFIGURIEREN[/B][CR][CR]Zugriff auf MrMC via UPnP und HTTP einrichten · Dateifreigaben konfigurieren[CR]Zeroconf aktivieren · AirPlay konfigurieren"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]DIENSTE KONFIGURIEREN[/B][CR][CR]Zugriff auf Kodi via UPnP und HTTP einrichten · Dateifreigaben konfigurieren[CR]Zeroconf aktivieren · AirPlay konfigurieren"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,8 +473,8 @@ msgid "Login"
 msgstr "Anmeldung"
 
 msgctxt "#31421"
-msgid "Select your MrMC user profile[CR]to login and continue"
-msgstr "Bitte MrMC-Benutzerprofil auswählen[CR]um fortzufahren"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Bitte Kodi-Benutzerprofil auswählen[CR]um fortzufahren"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

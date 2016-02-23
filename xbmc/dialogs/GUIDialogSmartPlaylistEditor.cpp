@@ -19,23 +19,23 @@
  */
 
 #include "GUIDialogSmartPlaylistEditor.h"
+
+#include <utility>
+
+#include "FileItem.h"
+#include "filesystem/File.h"
+#include "GUIDialogSmartPlaylistRule.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
+#include "profiles/ProfilesManager.h"
+#include "settings/Settings.h"
 #include "Util.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "GUIDialogSmartPlaylistRule.h"
-#include "guilib/GUIWindowManager.h"
-#include "filesystem/File.h"
-#include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
-#include "FileItem.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-
-
-using namespace std;
 
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10
@@ -353,14 +353,14 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 
   // sort out the order fields
   std::vector< std::pair<std::string, int> > labels;
-  vector<SortBy> orders = CSmartPlaylistRule::GetOrders(m_playlist.GetType());
+  std::vector<SortBy> orders = CSmartPlaylistRule::GetOrders(m_playlist.GetType());
   for (unsigned int i = 0; i < orders.size(); i++)
     labels.push_back(make_pair(g_localizeStrings.Get(SortUtils::GetSortLabel(orders[i])), orders[i]));
   SET_CONTROL_LABELS(CONTROL_ORDER_FIELD, m_playlist.m_orderField, &labels);
 
   // setup groups
   labels.clear();
-  vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
+  std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
   Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
   for (unsigned int i = 0; i < groups.size(); i++)
     labels.push_back(make_pair(CSmartPlaylistRule::GetLocalizedGroup(groups[i]), groups[i]));
@@ -423,7 +423,7 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
 
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
-  vector<PLAYLIST_TYPE> allowedTypes;
+  std::vector<PLAYLIST_TYPE> allowedTypes;
   if (m_mode == "partymusic")
   {
     allowedTypes.push_back(TYPE_SONGS);

@@ -21,6 +21,7 @@
 
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "pictures/PictureScalingAlgorithm.h"
@@ -267,6 +268,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     std::string m_fanartImages;
 
     int m_iMusicLibraryRecentlyAddedItems;
+    int m_iMusicLibraryDateAdded;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryCleanOnUpdate;
     std::string m_strMusicLibraryAlbumFormat;
@@ -278,7 +280,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
 
     bool m_bVideoLibraryAllItemsOnBottom;
     int m_iVideoLibraryRecentlyAddedItems;
-    bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryUseFastHash;
     bool m_bVideoLibraryExportAutoThumbs;
@@ -286,6 +287,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     bool m_bVideoLibraryImportResumePoint;
 
     bool m_bVideoScannerIgnoreErrors;
+    int m_iVideoLibraryDateAdded;
 
     std::set<std::string> m_vecTokens;
 
@@ -341,6 +343,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     DatabaseSettings m_databaseVideo; // advanced video database setup
     DatabaseSettings m_databaseTV;    // advanced tv database setup
     DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */
+    DatabaseSettings m_databaseADSP;  /*!< advanced audio dsp database setup */
 
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
@@ -361,6 +364,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     std::string GetMusicExtensions() const;
 
     void SetDebugMode(bool debug);
+
+    //! \brief Toggles dirty-region visualization
+    void ToggleDirtyRegionVisualization() { m_guiVisualizeDirtyRegions = !m_guiVisualizeDirtyRegions; };
 
     // runtime settings which cannot be set from advancedsettings.xml
     std::string m_pictureExtensions;
@@ -393,4 +399,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 
-XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
+XBMC_GLOBAL_REF(CAdvancedSettings,g_advancedSettings);
+#define g_advancedSettings XBMC_GLOBAL_USE(CAdvancedSettings)

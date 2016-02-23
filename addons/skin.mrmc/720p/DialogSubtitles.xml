@@ -6,8 +6,9 @@
 	</coordinates>
 	<controls>
 		<control type="group" id="250">
+			<depth>DepthDialog-</depth>
 			<animation effect="slide" start="0,0" end="900,0" time="375" tween="quadratic" easing="out">WindowClose</animation>
-			<animation type="Conditional" condition="Control.HasFocus(150) | Control.HasFocus(160)| Control.HasFocus(170)" reversible="true">
+			<animation type="Conditional" condition="Control.HasFocus(150) | Control.HasFocus(160)" reversible="true">
 				<effect type="slide" end="-250,0" time="300" />
 			</animation>
 			<control type="button" id="8999">
@@ -414,37 +415,20 @@
 				<control type="button" id="160">
 					<description>Manual search button</description>
 					<left>925</left>
-					<top>590</top>
-					<width>200</width>
-					<height>40</height>
-					<onleft>120</onleft>
-					<onright>120</onright>
-					<onup>150</onup>
-					<ondown>170</ondown>
-					<label>$LOCALIZE[24120]</label>
-					<font>font12_title</font>
-					<textcolor>white</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<align>center</align>
-					<hitrect x="925" y="555" w="200" h="100" />
-				</control>
-				<control type="button" id="170">
-					<description>Set Credentials</description>
-					<left>925</left>
 					<top>640</top>
 					<width>200</width>
 					<height>40</height>
 					<onleft>120</onleft>
 					<onright>120</onright>
-					<onup>160</onup>
+					<onup>150</onup>
 					<ondown>150</ondown>
-					<label>$LOCALIZE[24148]</label>
+					<label>$LOCALIZE[24120]</label>
 					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<align>center</align>
 					<hitrect x="925" y="605" w="200" h="100" />
-				</control>				
+				</control>
 			</control>
 		</control>
 	</controls>

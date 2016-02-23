@@ -19,6 +19,7 @@
  */
 
 #include <algorithm>
+#include <string.h>
 
 #include <lzo/lzo1x.h>
 

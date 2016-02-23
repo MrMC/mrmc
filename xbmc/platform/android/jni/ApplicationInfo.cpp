@@ -23,7 +23,7 @@
 
 using namespace jni;
 
-CJNIApplicationInfo::CJNIApplicationInfo(const jhobject &object) : CJNIBase(object)
+CJNIApplicationInfo::CJNIApplicationInfo(const jhobject &object) : CJNIPackageItemInfo(object)
   ,sourceDir(       jcast<std::string>(get_field<jhstring>(m_object, "sourceDir")))
   ,publicSourceDir( jcast<std::string>(get_field<jhstring>(m_object, "publicSourceDir")))
   ,dataDir(         jcast<std::string>(get_field<jhstring>(m_object, "dataDir")))

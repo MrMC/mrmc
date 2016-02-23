@@ -104,6 +104,16 @@ extern "C" void init_emu_environ()
   }
 
   //dll_putenv("TEMP=special://temp/temp"); // for python tempdir
+
+  // libdvdnav
+  dll_putenv("DVDREAD_NOKEYS=1");
+  //dll_putenv("DVDREAD_VERBOSE=1");
+  //dll_putenv("DVDREAD_USE_DIRECT=1");
+
+  // libdvdcss
+  dll_putenv("DVDCSS_METHOD=key");
+  dll_putenv("DVDCSS_VERBOSE=3");
+  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
 }
 
 extern "C" void update_emu_environ()
@@ -163,7 +173,7 @@ static int convert_fmode(const char* mode)
 
 extern "C"
 {
-  void dll_sleep(unsigned imSec)
+  void dll_sleep(unsigned long imSec)
   {
     Sleep(imSec);
   }

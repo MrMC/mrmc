@@ -20,10 +20,11 @@
  *
  */
 
-#include "system.h" // fixthislater
+#include "system.h" // for HAS_DVD_DRIVE et. al.
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
+#include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
 
@@ -44,12 +45,20 @@ namespace ADDON
   typedef std::shared_ptr<IAddon> AddonPtr;
 }
 
+namespace MEDIA_DETECT
+{
+  class CAutorun;
+}
+
 #include "cores/IPlayerCallback.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISubSettings.h"
+#if defined(HAS_DVD_DRIVE)
+#include "storage/DetectDVDType.h"
+#endif
 #include "utils/Stopwatch.h"
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
@@ -129,7 +138,7 @@ public:
   virtual bool Cleanup() override;
 
   bool CreateGUI();
-  bool InitWindow();
+  bool InitWindow(RESOLUTION res = RES_INVALID);
   bool DestroyWindow();
   void StartServices();
   void StopServices();
@@ -267,11 +276,19 @@ public:
   void UpdateLibraries();
   void CheckMusicPlaylist();
 
-  bool ExecuteXBMCAction(std::string action);
+  bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
   static bool OnEvent(XBMC_Event& newEvent);
 
   CNetwork& getNetwork();
+
+#ifdef HAS_DVD_DRIVE
+  MEDIA_DETECT::CAutorun* m_Autorun;
+#endif
+
+#if defined(HAS_DVD_DRIVE)
+  MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
+#endif
 
   CApplicationPlayer* m_pPlayer;
 
@@ -385,6 +402,7 @@ protected:
   bool NotifyActionListeners(const CAction &action) const;
 
   bool m_skinReverting;
+  std::string m_skinReloadSettingIgnore;
 
   bool m_saveSkinOnUnloading;
 

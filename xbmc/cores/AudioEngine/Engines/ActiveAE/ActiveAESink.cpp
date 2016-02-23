@@ -199,7 +199,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             reply.hasVolume = m_sink->HasVolume();
             m_state = S_TOP_CONFIGURED_IDLE;
             m_extTimeout = 10000;
-            m_sinkLatency = reply.latency * 1000;
+            m_sinkLatency = (int64_t)(reply.latency * 1000);
             msg->Reply(CSinkControlProtocol::ACC, &reply, sizeof(SinkReply));
           }
           else

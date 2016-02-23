@@ -50,7 +50,10 @@
 
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
-using namespace std;
+
+#ifdef TARGET_WINDOWS
+#define close closesocket
+#endif
 
 #define RECEIVEBUFFER 1024
 
@@ -638,12 +641,12 @@ std::string calcResponse(const std::string& username,
 //from a string field1="value1", field2="value2" it parses the value to a field
 std::string getFieldFromString(const std::string &str, const char* field)
 {
-  vector<string> tmpAr1 = StringUtils::Split(str, ",");
-  for(vector<string>::const_iterator i = tmpAr1.begin(); i != tmpAr1.end(); ++i)
+  std::vector<std::string> tmpAr1 = StringUtils::Split(str, ",");
+  for(std::vector<std::string>::const_iterator i = tmpAr1.begin(); i != tmpAr1.end(); ++i)
   {
     if (i->find(field) != std::string::npos)
     {
-      vector<string> tmpAr2 = StringUtils::Split(*i, "=");
+      std::vector<std::string> tmpAr2 = StringUtils::Split(*i, "=");
       if (tmpAr2.size() == 2)
       {
         StringUtils::Replace(tmpAr2[1], "\"", "");//remove quotes
@@ -981,7 +984,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
       // allow starting the player paused in ios8 mode (needed by camera roll app)
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT) && !startPlayback)
+      if (!startPlayback)
       {
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
         g_application.m_pPlayer->SeekPercentage(position * 100.0f);
@@ -1041,7 +1044,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       }
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
       {
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PREVIOUS_MENU)));
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_STOP)));
       }
     }
     ClearPhotoAssetCache();

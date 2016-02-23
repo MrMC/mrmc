@@ -31,6 +31,10 @@ extern "C" {
 #include "libavutil/opt.h"
 }
 
+#include "settings/Settings.h"
+#if defined(TARGET_DARWIN)
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {

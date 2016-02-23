@@ -18,12 +18,18 @@
  *
  */
 
+#include "EpgContainer.h"
+
+#include <utility>
+
 #include "Application.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "Epg.h"
+#include "EpgSearchFilter.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -31,9 +37,6 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "Epg.h"
-#include "EpgContainer.h"
-#include "EpgSearchFilter.h"
 
 using namespace EPG;
 using namespace PVR;
@@ -172,9 +175,6 @@ void CEpgContainer::Start(bool bAsync)
 
   LoadFromDB();
 
-  if (g_PVRManager.IsStarted())
-    g_PVRManager.Recordings()->UpdateEpgTags();
-
   CSingleLock lock(m_critSection);
   if (!m_bStop)
   {
@@ -239,7 +239,17 @@ void CEpgContainer::LoadFromDB(void)
   unsigned int iCounter(0);
   if (m_database.IsOpen())
   {
-    ShowProgressDialog(false);
+    {
+      /* unlock m_critSection before calling ShowProgressDialog() -
+         this is not legal, but works around a deadlock bug (because
+         ShowProgressDialog() calls functions which lock
+         g_graphicsContext); note that ShowProgressDialog() is
+         sometimes called with m_critSection locked and sometimes
+         without; this is a major bug that must be addressed
+         eventually */
+      CSingleExit exit(m_critSection);
+      ShowProgressDialog(false);
+    }
 
     m_database.DeleteOldEpgEntries();
     m_database.Get(*this);
@@ -615,8 +625,6 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       m_updateEvent.Set();
     }
 
-    g_PVRManager.Recordings()->UpdateEpgTags();
-
     if (bShowProgress && !bOnlyPending)
       CloseProgressDialog();
 
@@ -672,6 +680,9 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   }
   else
   {
+    if (g_PVRManager.IsStarted())
+      g_PVRManager.Recordings()->UpdateEpgTags();
+
     CSingleLock lock(m_critSection);
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
     m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
@@ -826,13 +837,15 @@ void CEpgContainer::UpdateEpgEvents()
   if (!m_lastEpgEventPurge.IsValid() || m_lastEpgEventPurge < (now - CDateTimeSpan(1,0,0,0)))
   {
     CDateTime purgeTime = now - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
-    for (auto event = m_epgEvents.begin(); event != m_epgEvents.end(); ++event)
+    for (auto event = m_epgEvents.begin(); event != m_epgEvents.end();)
     {
       if (event->second->EndAsUTC() < purgeTime)
       {
-        m_epgEvents.erase(event);
+        event = m_epgEvents.erase(event);
         ++count;
       }
+      else
+        ++event;
     }
     m_lastEpgEventPurge = now;
     CLog::Log(LOGDEBUG, "EPGContainer - %s - %d item(s) purged", __FUNCTION__, count);

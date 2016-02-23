@@ -22,8 +22,15 @@
 #include "DVDFactoryInputStream.h"
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"
+#include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamPVRManager.h"
+#ifdef HAVE_LIBBLURAY
+#include "DVDInputStreamBluray.h"
+#endif
+#ifdef ENABLE_DVDINPUTSTREAM_STACK
+#include "DVDInputStreamStack.h"
+#endif
 #include "FileItem.h"
 #include "storage/MediaManager.h"
 #include "URL.h"
@@ -37,8 +44,39 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 
   item.SetMimeType(content);
 
-  if(file.substr(0, 6) == "pvr://")
+  if(item.IsDiscImage())
+  {
+#ifdef HAVE_LIBBLURAY
+    CURL url("udf://");
+    url.SetHostName(file);
+    url.SetFileName("BDMV/index.bdmv");
+    if(XFILE::CFile::Exists(url.Get()))
+        return new CDVDInputStreamBluray(pPlayer);
+#endif
+
+    return new CDVDInputStreamNavigator(pPlayer);
+  }
+
+#ifdef HAS_DVD_DRIVE
+  if(file.compare(g_mediaManager.TranslateDevicePath("")) == 0)
+  {
+#ifdef HAVE_LIBBLURAY
+    if(XFILE::CFile::Exists(URIUtils::AddFileToFolder(file, "BDMV/index.bdmv")))
+        return new CDVDInputStreamBluray(pPlayer);
+#endif
+
+    return new CDVDInputStreamNavigator(pPlayer);
+  }
+#endif
+
+  if (item.IsDVDFile(false, true))
+    return (new CDVDInputStreamNavigator(pPlayer));
+  else if(file.substr(0, 6) == "pvr://")
     return new CDVDInputStreamPVRManager(pPlayer);
+#ifdef HAVE_LIBBLURAY
+  else if (item.IsType(".bdmv") || item.IsType(".mpls") || file.substr(0, 7) == "bluray:")
+    return new CDVDInputStreamBluray(pPlayer);
+#endif
   else if(file.substr(0, 6) == "rtp://"
        || file.substr(0, 7) == "rtsp://"
        || file.substr(0, 6) == "sdp://"
@@ -48,6 +86,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 7) == "mmst://"
        || file.substr(0, 7) == "mmsh://")
     return new CDVDInputStreamFFmpeg();
+#ifdef ENABLE_DVDINPUTSTREAM_STACK
+  else if(file.substr(0, 8) == "stack://")
+    return new CDVDInputStreamStack();
+#endif
   else if (item.IsInternetStream())
   {
     if (item.IsType(".m3u8"))

@@ -3,6 +3,7 @@ SRCS += InertialScrollingHandler.cpp
 SRCS += InputCodingTableBaiduPY.cpp
 SRCS += InputCodingTableBasePY.cpp
 SRCS += InputCodingTableFactory.cpp
+SRCS += InputCodingTableKorean.cpp
 SRCS += KeyboardLayout.cpp
 SRCS += KeyboardLayoutManager.cpp
 SRCS += KeyboardStat.cpp

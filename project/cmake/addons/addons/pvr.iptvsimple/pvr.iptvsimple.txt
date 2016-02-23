@@ -1,1 +1,0 @@
-pvr.iptvsimple https://github.com/mrmc/pvr.iptvsimple fe13788eb1b3f427ade1aeddf74dabfd7d7a8de4

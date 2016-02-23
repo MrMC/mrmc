@@ -18,23 +18,26 @@
  *
  */
 
-#include <memory>
-#include <list>
-#include "system.h"
 #include "PowerManager.h"
+
+#include <list>
+#include <memory>
+
 #include "Application.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "windowing/WindowingFactory.h"
-#include "utils/log.h"
-#include "interfaces/Builtins.h"
-#include "interfaces/AnnouncementManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "interfaces/AnnouncementManager.h"
+#include "interfaces/builtins/Builtins.h"
 #include "pvr/PVRManager.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "system.h"
+#include "utils/log.h"
+#include "utils/Weather.h"
+#include "windowing/WindowingFactory.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
@@ -66,6 +69,8 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
+  SAFE_DELETE(m_instance);
+
 #if defined(TARGET_DARWIN)
   m_instance = new CCocoaPowerSyscall();
 #elif defined(TARGET_ANDROID)
@@ -242,7 +247,7 @@ void CPowerManager::OnSleep()
   // stop lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Stopping lirc", __FUNCTION__);
-  CBuiltins::Execute("LIRC.Stop");
+  CBuiltins::GetInstance().Execute("LIRC.Stop");
 #endif
 
   PVR::CPVRManager::GetInstance().SetWakeupCommand();
@@ -272,11 +277,12 @@ void CPowerManager::OnWake()
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
-  CBuiltins::Execute("LIRC.Start");
+  CBuiltins::GetInstance().Execute("LIRC.Start");
 #endif
 
   CAEFactory::Resume();
   g_application.UpdateLibraries();
+  g_weatherManager.Refresh();
 
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");
 }

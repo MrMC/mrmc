@@ -54,8 +54,9 @@ public:
   bool LoadFile(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool LoadFile(const std::string& _filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool LoadFile(const std::string& _filename, const std::string& documentCharset);
+  bool LoadFile(FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool SaveFile(const char*) const;
-  bool SaveFile(const std::string& _filename) const;
+  bool SaveFile(const std::string& filename) const;
   bool DeleteFile(const char*) const;
   bool DeleteFile(const std::string& _filename) const;
   bool Parse(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);

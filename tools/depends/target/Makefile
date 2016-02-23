@@ -24,7 +24,11 @@ DEPENDS += curl
 DEPENDS += libjpeg-turbo
 DEPENDS += libpng
 DEPENDS += libgif
+DEPENDS += libogg
+DEPENDS += libvorbis
+DEPENDS += libflac
 DEPENDS += fribidi
+DEPENDS += libmpeg2
 DEPENDS += libass
 DEPENDS += libsquish
 DEPENDS += libxml2
@@ -34,6 +38,7 @@ DEPENDS += mysql
 DEPENDS += libshairplay
 DEPENDS += libplist
 DEPENDS += libcec
+DEPENDS += libbluray
 DEPENDS += tinyxml
 DEPENDS += dummy-libxbmc
 DEPENDS += libamplayer
@@ -48,6 +53,7 @@ DEPENDS += ffmpeg
 DEPENDS += platform
 DEPENDS += crossguid
 DEPENDS += libcpluff
+DEPENDS += libcdio
 DEPENDS += samba
 DEPENDS += libtasn1
 DEPENDS += libdsm
@@ -107,9 +113,15 @@ libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
 libssh2: libgcrypt openssl
 curl: openssl libssh2
+tiff: libjpeg-turbo
+jasper: libjpeg-turbo
+libvorbis: libogg
+libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
+libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
+libbluray: $(ICONV) libxml2
 libssh: libgcrypt openssl $(ZLIB)
 mysql: openssl
 libzip: $(ZLIB)
@@ -120,12 +132,12 @@ gnutls: libtasn1 nettle $(ZLIB)
 nettle: gmp
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
-ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls libdcadec
+ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis gnutls libdcadec
 libcec: platform
 ifeq ($(OS),linux)
 crossguid: libuuid
-libdsm: libtasn1
 endif
+libdsm: libtasn1
 libcpluff: expat
 
 .installed-$(PLATFORM): $(DEPENDS)

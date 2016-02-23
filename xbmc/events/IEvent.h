@@ -49,38 +49,6 @@ public:
 
   virtual bool CanExecute() const = 0;
   virtual bool Execute() const = 0;
-
-  static std::string EventLevelToString(EventLevel level)
-  {
-    switch (level)
-    {
-      case EventLevelBasic:
-        return "basic";
-
-      case EventLevelWarning:
-        return "warning";
-
-      case EventLevelError:
-        return "error";
-
-      case EventLevelInformation:
-      default:
-        break;
-    }
-    return "information";
-  }
-
-  static EventLevel EventLevelFromString(const std::string& level)
-  {
-    if (level == "basic")
-      return EventLevelBasic;
-    if (level == "warning")
-      return EventLevelWarning;
-    if (level == "error")
-      return EventLevelError;
-
-    return EventLevelInformation;
-  }
 };
 
 typedef std::shared_ptr<const IEvent> EventPtr;

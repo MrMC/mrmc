@@ -24,6 +24,7 @@
 #include "MusicInfoTagLoaderCDDA.h"
 #include "MusicInfoTagLoaderShn.h"
 #include "MusicInfoTagLoaderDatabase.h"
+#include "MusicInfoTagLoaderFFmpeg.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
@@ -57,6 +58,19 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   if (strExtension.empty())
     return NULL;
 
+  VECADDONS codecs;
+  CAddonMgr::GetInstance().GetAddons(ADDON_AUDIODECODER, codecs);
+  for (size_t i=0;i<codecs.size();++i)
+  {
+    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+    if (dec->HasTags() && dec->GetExtensions().find("."+strExtension) != std::string::npos)
+    {
+      CAudioDecoder* result = new CAudioDecoder(*dec);
+      static_cast<AudioDecoderDll&>(*result).Create();
+      return result;
+    }
+  }
+
 
   if (strExtension == "aac" ||
       strExtension == "ape" || strExtension == "mac" ||
@@ -75,11 +89,20 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     CTagLoaderTagLib *pTagLoader = new CTagLoaderTagLib();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
+#ifdef HAS_DVD_DRIVE
+  else if (strExtension == "cdda")
+  {
+    CMusicInfoTagLoaderCDDA *pTagLoader = new CMusicInfoTagLoaderCDDA();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  }
+#endif
   else if (strExtension == "shn")
   {
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
+  else if (strExtension == "mka" || strExtension == "dsf")
+    return new CMusicInfoTagLoaderFFmpeg();
 
   return NULL;
 }

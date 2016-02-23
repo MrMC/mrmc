@@ -19,7 +19,6 @@
  */
 
 #include "SFTPFile.h"
-
 #ifdef HAS_FILESYSTEM_SFTP
 
 #include "URL.h"
@@ -37,7 +36,6 @@
 #endif
 
 using namespace XFILE;
-using namespace std;
 
 
 static std::string CorrectPath(const std::string& path)
@@ -375,7 +373,7 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
     return false;
   }
 #if defined(TARGET_DARWIN_IOS)
-  std:string home = CDarwinUtils::GetUserHomeDirectory();
+  std::string home = CDarwinUtils::GetUserHomeDirectory();
   std::string sshFolder = StringUtils::Format("%s/.ssh", home.c_str());
   if (ssh_options_set(m_session, SSH_OPTIONS_SSH_DIR, sshFolder.c_str()) < 0)
   {
@@ -533,13 +531,13 @@ bool CSFTPSession::GetItemPermissions(const char *path, uint32_t &permissions)
 }
 
 CCriticalSection CSFTPSessionManager::m_critSect;
-map<std::string, CSFTPSessionPtr> CSFTPSessionManager::sessions;
+std::map<std::string, CSFTPSessionPtr> CSFTPSessionManager::sessions;
 
 CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CURL &url)
 {
-  string username = url.GetUserName().c_str();
-  string password = url.GetPassWord().c_str();
-  string hostname = url.GetHostName().c_str();
+  std::string username = url.GetUserName().c_str();
+  std::string password = url.GetPassWord().c_str();
+  std::string hostname = url.GetHostName().c_str();
   unsigned int port = url.HasPort() ? url.GetPort() : 22;
 
   return CSFTPSessionManager::CreateSession(hostname, port, username, password);
@@ -548,7 +546,7 @@ CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CURL &url)
 CSFTPSessionPtr CSFTPSessionManager::CreateSession(const std::string &host, unsigned int port, const std::string &username, const std::string &password)
 {
   // Convert port number to string
-  stringstream itoa;
+  std::stringstream itoa;
   itoa << port;
   std::string portstr = itoa.str();
 
@@ -567,7 +565,7 @@ CSFTPSessionPtr CSFTPSessionManager::CreateSession(const std::string &host, unsi
 void CSFTPSessionManager::ClearOutIdleSessions()
 {
   CSingleLock lock(m_critSect);
-  for(map<std::string, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end();)
+  for(std::map<std::string, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end();)
   {
     if (iter->second->IsIdle())
       sessions.erase(iter++);

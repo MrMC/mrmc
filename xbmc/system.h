@@ -33,10 +33,13 @@
  * All platforms
  *****************/
 #define HAS_DVD_SWSCALE
+#define HAS_DVDPLAYER
 #define HAS_EVENT_SERVER
 #define HAS_SCREENSAVER
 #define HAS_VIDEO_PLAYBACK
+#define HAS_VISUALISATION
 #define HAS_PVRCLIENTS
+#define HAS_ADSPADDONS
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
@@ -45,7 +48,12 @@
 
 #define HAS_JSONRPC
 
+#ifdef USE_ASAP_CODEC
+#define HAS_ASAP_CODEC
+#endif
+
 #define HAS_FILESYSTEM
+#define HAS_FILESYSTEM_CDDA
 #define HAS_FILESYSTEM_SAP
 
 #ifdef HAVE_LIBSMBCLIENT
@@ -80,6 +88,18 @@
   #define HAS_ZEROCONF
   #define HAS_MDNS
   #define HAS_MDNS_EMBEDDED
+#endif
+
+#if defined(HAVE_LIBGIF)
+  #define HAS_GIFLIB
+#endif
+
+/**********************
+ * Non-free Components
+ **********************/
+
+#if defined(HAVE_XBMC_NONFREE)
+//  #define HAS_FILESYSTEM_RAR
 #endif
 
 /*****************
@@ -169,6 +189,10 @@
 #ifdef HAVE_LIBGLES
 #undef HAS_GL
 #define HAS_GLES 1
+#endif
+
+#ifdef HAS_DVD_DRIVE
+#define HAS_CDDA_RIPPER
 #endif
 
 #define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)

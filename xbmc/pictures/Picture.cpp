@@ -52,7 +52,7 @@ bool CPicture::GetThumbnailFromSurface(const unsigned char* buffer, int width, i
 
   // get an image handler
   IImage* image = ImageFactory::CreateLoader(thumbFile);
-  if (image == NULL || !image->CreateThumbnailFromSurface((uint8_t*)buffer, width, height, stride, thumbFile.c_str(), thumb, thumbsize))
+  if (image == NULL || !image->CreateThumbnailFromSurface((uint8_t*)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
   {
     delete image;
     return false;
@@ -76,7 +76,7 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   if (URIUtils::HasExtension(thumbFile, ".jpg"))
   {
 #if defined(HAS_OMXPLAYER)
-    if (COMXImage::CreateThumbnailFromSurface((uint8_t*)buffer, width, height, stride, thumbFile.c_str()))
+    if (COMXImage::CreateThumbnailFromSurface((uint8_t*)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
       return true;
 #endif
   }
@@ -84,7 +84,7 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   unsigned char *thumb = NULL;
   unsigned int thumbsize=0;
   IImage* pImage = ImageFactory::CreateLoader(thumbFile);
-  if(pImage == NULL || !pImage->CreateThumbnailFromSurface((uint8_t*)buffer, width, height, stride, thumbFile.c_str(), thumb, thumbsize))
+  if(pImage == NULL || !pImage->CreateThumbnailFromSurface((uint8_t*)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
   {
     CLog::Log(LOGERROR, "Failed to CreateThumbnailFromSurface for %s", thumbFile.c_str());
     delete pImage;
@@ -290,7 +290,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
     int y = i / num_across;
     // load in the image
     unsigned int width = tile_width - 2*tile_gap, height = tile_height - 2*tile_gap;
-    CBaseTexture *texture = CTexture::LoadFromFile(files[i], width, height, CSettings::GetInstance().GetBool(CSettings::SETTING_PICTURES_USEEXIFROTATION), true);
+    CBaseTexture *texture = CTexture::LoadFromFile(files[i], width, height, true);
     if (texture && texture->GetWidth() && texture->GetHeight())
     {
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);

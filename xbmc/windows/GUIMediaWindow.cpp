@@ -21,6 +21,7 @@
 #include "GUIMediaWindow.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "ContextMenuManager.h"
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -30,6 +31,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
+#include "addons/PluginSource.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
@@ -42,12 +44,13 @@
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "filesystem/PluginDirectory.h"
 #include "filesystem/SmartPlaylistDirectory.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "input/Key.h"
 #include "network/Network.h"
@@ -687,7 +690,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   // TODO: Do we want to limit the directories we apply the video ones to?
   if (iWindow == WINDOW_VIDEO_NAV)
     regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-  if (iWindow == WINDOW_MUSIC_FILES)
+  if (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_MUSIC_NAV)
     regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
   if (iWindow == WINDOW_PICTURES)
     regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
@@ -774,7 +777,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
       showLabel = 997;
     else if (iWindow == WINDOW_MUSIC_FILES)
       showLabel = 998;
-    else if (iWindow == WINDOW_FILES || iWindow == WINDOW_PROGRAMS)
+    else if (iWindow == WINDOW_FILES)
       showLabel = 1026;
   }
   if (m_vecItems->IsPath("sources://video/"))
@@ -783,8 +786,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     showLabel = 998;
   else if (m_vecItems->IsPath("sources://pictures/"))
     showLabel = 997;
-  else if (m_vecItems->IsPath("sources://programs/") ||
-           m_vecItems->IsPath("sources://files/"))
+  else if (m_vecItems->IsPath("sources://files/"))
     showLabel = 1026;
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
@@ -918,6 +920,19 @@ bool CGUIMediaWindow::OnClick(int iItem)
     delete pFileDirectory;
   }
 
+  if (pItem->IsScript())
+  {
+    // execute the script
+    CURL url(pItem->GetPath());
+    AddonPtr addon;
+    if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
+    {
+      if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
+        CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon);
+      return true;
+    }
+  }
+
   if (pItem->m_bIsFolder)
   {
     if ( pItem->m_bIsShareOrDrive )
@@ -966,6 +981,10 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
+  else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
+  {
+    return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath());
+  }
 #if defined(TARGET_ANDROID)
   else if (pItem->IsAndroidApp())
   {
@@ -993,11 +1012,27 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
     else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "addons://more/"))
     {
-      CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().substr(14) + ",return)");
+      CBuiltins::GetInstance().Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().substr(14) + ",return)");
       return true;
     }
 
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
+
+    if (m_vecItems->IsPlugin())
+    {
+      CURL url(m_vecItems->GetPath());
+      AddonPtr addon;
+      if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(),addon))
+      {
+        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
+        if (plugin && plugin->Provides(CPluginSource::AUDIO))
+        {
+          CFileItemList items;
+          std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));
+          autoplay = state.get() && state->AutoPlayNextItem();
+        }
+      }
+    }
 
     if (autoplay && !g_partyModeManager.IsEnabled() && 
         !pItem->IsPlayList())
@@ -1281,6 +1316,19 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
     g_playlistPlayer.Reset();
     int mediaToPlay = 0;
     
+    // first try to find mainDVD file (VIDEO_TS.IFO). 
+    // If we find this we should not allow to queue VOB files
+    std::string mainDVD; 
+    for (int i = 0; i < m_vecItems->Size(); i++) 
+    { 
+      std::string path = URIUtils::GetFileName(m_vecItems->Get(i)->GetPath()); 
+      if (StringUtils::EqualsNoCase(path, "VIDEO_TS.IFO")) 
+      { 
+        mainDVD = path; 
+        break; 
+      } 
+    }
+
     // now queue...
     for ( int i = 0; i < m_vecItems->Size(); i++ )
     {
@@ -1289,7 +1337,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
       if (nItem->m_bIsFolder)
         continue;
 
-      if (!(nItem->IsPlayList() && nItem->IsZIP()))
+      if (!nItem->IsPlayList() && !nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
         g_playlistPlayer.Add(iPlaylist, nItem);
 
       if (item->IsSamePath(nItem.get()))
@@ -1351,7 +1399,7 @@ void CGUIMediaWindow::UpdateFileList()
       if (pItem->m_bIsFolder)
         continue;
 
-      if (!pItem->IsPlayList() && !pItem->IsZIP())
+      if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
         g_playlistPlayer.Add(iPlaylist, pItem);
 
       if (pItem->GetPath() == playlistItem.GetPath() &&
@@ -1496,7 +1544,8 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->IsPath("add") && !item->IsPath("newplaylist://") &&
       !URIUtils::IsProtocol(item->GetPath(), "newsmartplaylist") && !URIUtils::IsProtocol(item->GetPath(), "newtag") &&
-      !URIUtils::PathStarts(item->GetPath(), "addons://more/") && !URIUtils::IsProtocol(item->GetPath(), "musicsearch"))
+      !URIUtils::PathStarts(item->GetPath(), "addons://more/") && !URIUtils::IsProtocol(item->GetPath(), "musicsearch") &&
+      !URIUtils::PathStarts(item->GetPath(), "pvr://guide/") && !URIUtils::PathStarts(item->GetPath(), "pvr://timers/"))
   {
     if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
@@ -1527,6 +1576,19 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       XFILE::CFavouritesDirectory::AddOrRemove(item.get(), GetID());
       return true;
     }
+  case CONTEXT_BUTTON_PLUGIN_SETTINGS:
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      // CONTEXT_BUTTON_PLUGIN_SETTINGS can be called for plugin item
+      // or script item; or for the plugin directory current listing.
+      bool isPluginOrScriptItem = (item && (item->IsPlugin() || item->IsScript()));
+      CURL plugin(isPluginOrScriptItem ? item->GetPath() : m_vecItems->GetPath());
+      ADDON::AddonPtr addon;
+      if (CAddonMgr::GetInstance().GetAddon(plugin.GetHostName(), addon))
+        if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
+          Refresh();
+      return true;
+    }
   case CONTEXT_BUTTON_BROWSE_INTO:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
@@ -1551,7 +1613,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   default:
     break;
   }
-
+  if (button >= CONTEXT_BUTTON_FIRST_ADDON)
+    return CContextMenuManager::GetInstance().OnClick(button, m_vecItems->Get(itemNumber));
   return false;
 }
 

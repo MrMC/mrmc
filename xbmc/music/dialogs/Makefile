@@ -1,6 +1,7 @@
-SRCS  = GUIDialogMusicInfo.cpp
-SRCS += GUIDialogMusicOSD.cpp
-SRCS += GUIDialogSongInfo.cpp
+SRCS=GUIDialogMusicInfo.cpp \
+     GUIDialogMusicOSD.cpp \
+     GUIDialogSongInfo.cpp \
+     GUIDialogVisualisationPresetList.cpp \
 
 LIB   = musicdialogs.a
 

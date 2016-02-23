@@ -35,6 +35,8 @@ public:
   std::string getType() const ;
 
   int getIntExtra(const std::string &name, int defaultValue) const;
+  std::string getStringExtra(const std::string &name) const;
+  jni::jhobject getParcelableExtra(const std::string &name) const;
 
   bool hasExtra(const std::string &name) const;
   bool hasCategory(const std::string &category) const;
@@ -52,4 +54,7 @@ public:
   void setPackage(const std::string &packageName);
   void setType(const std::string &type);
   CJNIURI getData() const;
+
+  static void PopulateStaticFields();
+  static std::string EXTRA_KEY_EVENT;
 };

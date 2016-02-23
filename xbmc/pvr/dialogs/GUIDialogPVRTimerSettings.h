@@ -22,9 +22,10 @@
 #include "pvr/channels/PVRChannel.h" // PVR_INVALID_CHANNEL_UID
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
-#include <memory>
-#include <vector>
 #include <map>
+#include <memory>
+#include <utility>
+#include <vector>
 
 class CFileItem;
 class CSetting;
@@ -67,6 +68,8 @@ namespace PVR
     static void SetDateFromIndex(CDateTime &datetime, int date);
     static void SetTimeFromSystemTime(CDateTime &datetime, const SYSTEMTIME &time);
 
+    static int GetWeekdaysFromSetting(const CSetting *setting);
+
     static void TypesFiller(
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void ChannelsFiller(
@@ -85,6 +88,10 @@ namespace PVR
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void RecordingGroupFiller(
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void MarginTimeFiller(
+      const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+
+    static std::string WeekdaysValueFormatter(const CSetting *setting);
 
     void AddCondition(
       CSetting *setting, const std::string &identifier, SettingConditionCheck condition,

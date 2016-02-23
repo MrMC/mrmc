@@ -47,7 +47,7 @@ public:
   virtual void OnSettingsLoaded() override;
   virtual void OnSettingsUnloaded() override;
 
-  virtual bool OnSettingChanging(const CSetting *setting) override;
+  virtual void OnSettingAction(const CSetting *setting) override;
 
   void Start();
   void Stop();

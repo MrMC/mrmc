@@ -76,6 +76,8 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   unsigned int filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_INTERNET);
   if ( file.IsHD() )
     filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHE_HARDDISK);
+  else if ( file.IsOnDVD() )
+    filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_DVDROM);
   else if ( file.IsOnLAN() )
     filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_LAN);
 
@@ -174,7 +176,7 @@ unsigned int CAudioDecoder::GetDataSize()
   // check for end of file and end of buffer
   if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
     m_status = STATUS_ENDED;
-  return std::min((int)m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3), OUTPUT_SAMPLES);
+  return std::min(m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3), (size_t)OUTPUT_SAMPLES);
 }
 
 void *CAudioDecoder::GetData(unsigned int samples)

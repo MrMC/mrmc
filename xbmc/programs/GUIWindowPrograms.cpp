@@ -22,11 +22,13 @@
 #include "GUIWindowPrograms.h"
 #include "Util.h"
 #include "addons/GUIDialogAddonInfo.h"
+#include "Autorun.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "settings/MediaSourceSettings.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"
+#include "ContextMenuManager.h"
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3
@@ -82,7 +84,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
-          OnInfo(iItem);
+          OnItemInfo(iItem);
           return true;
         }
       }
@@ -106,10 +108,17 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
+      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+        buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
+      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
+        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+
       buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+
+  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -128,7 +137,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_INFO:
-    OnInfo(itemNumber);
+    OnItemInfo(itemNumber);
     return true;
 
   default:
@@ -153,6 +162,11 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
+
+#ifdef HAS_DVD_DRIVE
+  if (pItem->IsDVD())
+    return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
+#endif
 
   if (pItem->m_bIsFolder) return false;
 
@@ -205,8 +219,14 @@ std::string CGUIWindowPrograms::GetStartFolder(const std::string &dir)
   return CGUIMediaWindow::GetStartFolder(dir);
 }
 
-void CGUIWindowPrograms::OnInfo(int iItem)
+void CGUIWindowPrograms::OnItemInfo(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return;
+
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  {
+    CGUIDialogAddonInfo::ShowForItem(item);
+  }
 }

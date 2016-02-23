@@ -36,6 +36,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "addons/PluginSource.h"
 #include "view/ViewState.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -211,7 +212,7 @@ SortOrder CGUIViewState::GetSortOrder() const
 int CGUIViewState::GetSortOrderLabel() const
 {
   if (m_currentSortMethod >= 0 && m_currentSortMethod < (int)m_sortMethods.size())
-    if (m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder == SortOrderAscending)
+    if (m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder == SortOrderDescending)
       return 585;
 
   return 584; // default sort order label 'Ascending'
@@ -290,7 +291,8 @@ void CGUIViewState::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, i
     // the following sort methods are sorted in descending order by default
     if (sortBy == SortByDate || sortBy == SortBySize || sortBy == SortByPlaycount ||
         sortBy == SortByRating || sortBy == SortByProgramCount ||
-        sortBy == SortByBitrate || sortBy == SortByListeners)
+        sortBy == SortByBitrate || sortBy == SortByListeners || 
+        sortBy == SortByUserRating || sortBy == SortByLastPlayed)
       sortOrder = SortOrderDescending;
     else
       sortOrder = SortOrderAscending;
@@ -559,6 +561,20 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   m_currentSortMethod = 0;
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
+
+  if (items.IsPlugin())
+  {
+    CURL url(items.GetPath());
+    AddonPtr addon;
+    if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
+    {
+      PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
+      if (plugin->Provides(CPluginSource::AUDIO))
+        m_playlist = PLAYLIST_MUSIC;
+      if (plugin->Provides(CPluginSource::VIDEO))
+        m_playlist = PLAYLIST_VIDEO;
+    }
+  }
 
   LoadViewState(items.GetPath(), g_windowManager.GetActiveWindow());
 }

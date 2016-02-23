@@ -18,35 +18,39 @@
  *
  */
 
+#include "GUIWindowLoginScreen.h"
+
 #include "system.h"
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "GUIWindowLoginScreen.h"
-#include "profiles/Profile.h"
-#include "profiles/ProfilesManager.h"
-#include "profiles/dialogs/GUIDialogProfileSettings.h"
-#include "dialogs/GUIDialogContextMenu.h"
+#include "ContextMenuManager.h"
+#include "FileItem.h"
 #include "GUIPassword.h"
+#include "addons/AddonManager.h"
+#include "addons/Skin.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogOK.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/StereoscopicsManager.h"
+#include "input/Key.h"
+#include "interfaces/builtins/Builtins.h"
 #ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
-#include "interfaces/Builtins.h"
+#include "messaging/ApplicationMessenger.h"
+#include "network/Network.h"
+#include "profiles/Profile.h"
+#include "profiles/ProfilesManager.h"
+#include "profiles/dialogs/GUIDialogProfileSettings.h"
+#include "pvr/PVRManager.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Weather.h"
 #include "utils/Variant.h"
-#include "network/Network.h"
-#include "addons/Skin.h"
-#include "guilib/GUIMessage.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/StereoscopicsManager.h"
-#include "dialogs/GUIDialogOK.h"
-#include "settings/Settings.h"
-#include "FileItem.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "addons/AddonManager.h"
 #include "view/ViewState.h"
-#include "pvr/PVRManager.h"
 
 using namespace KODI::MESSAGING;
 
@@ -55,7 +59,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_LABEL_SELECTED_PROFILE  3
 
 CGUIWindowLoginScreen::CGUIWindowLoginScreen(void)
-: CGUIWindow(WINDOW_LOGIN_SCREEN, "LoginScreen.xml")
+  : CGUIWindow(WINDOW_LOGIN_SCREEN, "LoginScreen.xml")
 {
   watch.StartZero();
   m_vecItems = new CFileItemList;
@@ -145,7 +149,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
     StringUtils::ToLower(actionName);
     if ((actionName.find("shutdown") != std::string::npos) &&
         PVR::g_PVRManager.CanSystemPowerdown())
-      CBuiltins::Execute(action.GetName());
+      CBuiltins::GetInstance().Execute(action.GetName());
     return true;
   }
   return CGUIWindow::OnAction(action);
@@ -232,6 +236,8 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (iItem == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
     choices.Add(2, 12334);
 
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, choices);
+
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 2)
   {
@@ -246,11 +252,13 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   // Edit the profile after checking if the correct master lock password was given.
   if (choice == 1 && g_passwordManager.IsMasterLockUnlocked(true))
     CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
-  
+
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
   if (iItem < (int)CProfilesManager::GetInstance().GetNumberOfProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
 
+  if (choice >= CONTEXT_BUTTON_FIRST_ADDON)
+    return CContextMenuManager::GetInstance().OnClick(choice, pItem);
   return false;
 }
 
@@ -271,6 +279,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   // stop PVR related services
   g_application.StopPVRManager();
+
+  // stop audio DSP services with a blocking message
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF);
 
   if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
@@ -307,11 +318,13 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     return;
   }
 
+  g_weatherManager.Refresh();
+
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();
 #endif
 
-  // start services which should run on login 
+  // start services which should run on login
   ADDON::CAddonMgr::GetInstance().StartServices(false);
 
   // start PVR related services
@@ -325,6 +338,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   g_application.UpdateLibraries();
   CStereoscopicsManager::GetInstance().Initialize();
+
+  // start audio DSP related services with a blocking message
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE);
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)

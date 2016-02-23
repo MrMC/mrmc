@@ -54,8 +54,8 @@ void CGUIControlProfilerItem::Reset(CGUIControlProfiler *pProfiler)
 
   m_visTime = 0;
   m_renderTime = 0;
-  const size_t dwSize = m_vecChildren.size();
-  for (size_t i=0; i<dwSize; ++i)
+  const unsigned int dwSize = m_vecChildren.size();
+  for (unsigned int i=0; i<dwSize; ++i)
     delete m_vecChildren[i];
   m_vecChildren.clear();
 
@@ -133,6 +133,8 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "resize"; break;
   case CGUIControl::GUICONTROL_EDIT:
     lpszType = "edit"; break;
+  case CGUIControl::GUICONTROL_VISUALISATION:
+    lpszType = "visualisation"; break;
   case CGUIControl::GUICONTROL_MULTI_IMAGE:
     lpszType = "multiimage"; break;
   case CGUIControl::GUICONTROL_GROUP:
@@ -204,8 +206,8 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
   {
     TiXmlElement *xmlChilds = new TiXmlElement("children");
     xmlControl->LinkEndChild(xmlChilds);
-    const size_t dwSize = m_vecChildren.size();
-    for (size_t i=0; i<dwSize; ++i)
+    const unsigned int dwSize = m_vecChildren.size();
+    for (unsigned int i=0; i<dwSize; ++i)
       m_vecChildren[i]->SaveToXML(xmlChilds);
   }
 }

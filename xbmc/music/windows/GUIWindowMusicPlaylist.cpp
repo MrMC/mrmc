@@ -31,6 +31,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "input/Key.h"
 #include "GUIUserMessages.h"
+#include "ContextMenuManager.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/MediaSettings.h"
@@ -446,14 +447,10 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 {
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
   { // set label 1+2 from tags
-    if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    std::string strTrackLeft=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT);
-    if (strTrackLeft.empty())
-      strTrackLeft = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
-    std::string strTrackRight=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMATRIGHT);
-    if (strTrackRight.empty())
-      strTrackRight = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT);
-    CLabelFormatter formatter(strTrackLeft, strTrackRight);
+    std::string strTrack=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT);
+    if (strTrack.empty())
+      strTrack = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
+    CLabelFormatter formatter(strTrack, "%D");
     formatter.FormatLabels(pItem);
   } // if (pItem->m_musicInfoTag.Loaded())
   else
@@ -470,7 +467,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       // FIXME: get the position of the item in the playlist
       //        currently it is hacked into m_iprogramCount
 
-      // No music info so we'll just show the filename
+      // No music info and it's not CDDA so we'll just show the filename
       std::string str;
       str = CUtil::GetTitleFromPath(pItem->GetPath());
       str = StringUtils::Format("%02.2i. %s ", pItem->m_iprogramCount, str.c_str());
@@ -542,6 +539,8 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_CANCEL_PARTYMODE, 588);      // cancel party mode
   }
 
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    CContextMenuManager::GetInstance().AddVisibleItems(m_vecItems->Get(itemNumber), buttons);
 }
 
 bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

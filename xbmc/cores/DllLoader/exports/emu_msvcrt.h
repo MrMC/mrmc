@@ -54,7 +54,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 extern "C"
 {
   char* dll_strdup( const char* str);
-  void dll_sleep(unsigned imSec);
+  void dll_sleep(unsigned long imSec);
   void InitFiles();
   void dllReleaseAll( );
   void* dllmalloc(size_t size);
@@ -123,7 +123,7 @@ extern "C"
   void dll_clearerr(FILE* stream);
   uintptr_t dll_beginthread(void( *start_address )( void * ),unsigned stack_size,void *arglist);
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, uint32_t dwStackSize,
-                           LPTHREAD_START_ROUTINE lpStartAddress, void* lpParameter, unsigned int dwCreationFlags,
+                           LPTHREAD_START_ROUTINE lpStartAddress, void* lpParameter, uint32_t dwCreationFlags,
 #ifdef TARGET_FREEBSD
                            long* lpThreadId);
 #else

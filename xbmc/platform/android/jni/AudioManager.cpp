@@ -24,6 +24,7 @@
 
 #include "jutils/jutils-details.hpp"
 
+#include "android/activity/JNIMainActivity.h"
 #include <algorithm>
 
 using namespace jni;
@@ -80,6 +81,20 @@ int CJNIAudioManager::abandonAudioFocus(const CJNIAudioManagerAudioFocusChangeLi
                           "(Landroid/media/AudioManager$OnAudioFocusChangeListener;)I", listener.get_raw());
 }
 
+bool CJNIAudioManager::isBluetoothA2dpOn()
+{
+  return call_method<jboolean>(m_object,
+                               "isBluetoothA2dpOn",
+                               "()Z");
+}
+
+bool CJNIAudioManager::isWiredHeadsetOn()
+{
+  return call_method<jboolean>(m_object,
+                               "isWiredHeadsetOn",
+                               "()Z");
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 CJNIAudioManagerAudioFocusChangeListener* CJNIAudioManagerAudioFocusChangeListener::m_listenerInstance(NULL);
@@ -87,7 +102,7 @@ CJNIAudioManagerAudioFocusChangeListener* CJNIAudioManagerAudioFocusChangeListen
 CJNIAudioManagerAudioFocusChangeListener::CJNIAudioManagerAudioFocusChangeListener()
 : CJNIBase("org/xbmc/kodi/XBMCOnAudioFocusChangeListener")
 {
-  CJNIApplicationMainActivity *appInstance = CJNIApplicationMainActivity::GetAppInstance();
+  CJNIMainActivity *appInstance = CJNIMainActivity::GetAppInstance();
   if (!appInstance)
     return;
 

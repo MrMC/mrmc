@@ -1,1 +1,0 @@
-pvr.vdr.vnsi https://github.com/mrmc/pvr.vdr.vnsi a930b4b2d4f443b8c00f462e42b136e9d54f9e97

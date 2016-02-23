@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/MrMC-main/language/nl_NL/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/kodi-main/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +22,7 @@ msgstr "Verander je"
 
 msgctxt "#31003"
 msgid "Power options"
-msgstr "vermogen opties"
+msgstr "Energiebeheer"
 
 msgctxt "#31004"
 msgid "Working..."
@@ -62,7 +62,7 @@ msgstr "Items"
 
 msgctxt "#31026"
 msgid "Misc options"
-msgstr "Diverse Opties"
+msgstr "Overige opties"
 
 msgctxt "#31027"
 msgid "Location"
@@ -186,7 +186,7 @@ msgstr "Verberg markeringen gelezen uit bestandsnamen[COLOR=grey3](Bijv. Blu-ray
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
-msgstr "Verberg hoofd menu knoppen"
+msgstr "Verberg knoppen in het hoofdmenu"
 
 msgctxt "#31109"
 msgid "Enable custom background"
@@ -220,21 +220,17 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Fanart achtergronden verbergen"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Verberg EPG wanneer RDS aanwezig is op kanaalvenster"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
-msgstr "Toon achtergrond \"nu afspelend\" video"
+msgstr "Toon achtergrond \"Nu afspelend\" video"
 
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Toon achtergrond \"Nu afspelend\" visualisatie"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Speel de Themasong van de TV serie af in de videobibliotheek. (TvTunes add-on)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -333,7 +329,7 @@ msgid "Current scraper"
 msgstr "Huidige scanner"
 
 msgctxt "#31313"
-msgid "Choose metadata provider"
+msgid "Choose a scraper"
 msgstr "Scanner kiezen"
 
 msgctxt "#31314"
@@ -351,10 +347,6 @@ msgstr "Geselecteerd profiel"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Laatst ingelogd op"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke lied kiezer"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]VIDEO-INSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw videobibliotheek · Configureer videoafspeelopties en -bestandslijstsopties · Stel lettertype in voor ondertitels"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MUZIEKINSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw muziekbibliotheek · Configureer muziekafspeelopties en -bestandslijstopties · Configureer nummer indienen · Configureer karaokeopties"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]CONFIGUREER MUZIEKINSTELLINGEN[/B][CR][CR]Beheer uw muziekbibliotheek · Instellen muziek afspeel opties · Verander muzieklijsten opties[CR]Instellen nummer indiening "
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -461,16 +453,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]SYSTEEMINSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer en kalibreer schermen · Configureer geluidsuitgang · Configureer invoerapparaten en energiebeheeropties · Schakel debugging in · Configureer vergrendelingsopties"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
-msgstr "[B]CONFIGUREER ADD-ONS[/B][CR][CR]Beheer jouw geïnstalleerde add-ons · Zoek naar en installeer add-ons van MrMC.tv[CR]verander add-on instellingen"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]CONFIGUREER ADD-ONS[/B][CR][CR]Beheer jouw geïnstalleerde add-ons · Zoek naar en installeer add-ons van Kodi.tv[CR]verander add-on instellingen"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]CONFIGUREER TV INSTELLINGEN[/B][CR][CR]Verander volledig scherm info  · Beheer EPG data instellingen"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGUREER SERVICE-INSTELLINGEN[/B][CR][CR]Stel MrMC-beheer in via UPnP en HTTP · Configureer bestandsdeling[CR]Schakel Zeroconf in · Configureer AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGUREER SERVICE-INSTELLINGEN[/B][CR][CR]Stel Kodi-beheer in via UPnP en HTTP · Configureer bestandsdeling[CR]Schakel Zeroconf in · Configureer AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,8 +481,8 @@ msgid "Login"
 msgstr "Log-in"
 
 msgctxt "#31421"
-msgid "Select your MrMC user profile[CR]to login and continue"
-msgstr "Selecteer jouw MrMC Gebruikersprofiel[CR]om in te loggen en door te gaan"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Selecteer jouw Kodi Gebruikersprofiel[CR]om in te loggen en door te gaan"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

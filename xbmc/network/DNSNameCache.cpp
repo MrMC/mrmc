@@ -51,6 +51,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     strIpAddress = StringUtils::Format("%lu.%lu.%lu.%lu", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
     return true;
   }
+
   // check if there's a custom entry or if it's already cached
   if(g_DNSCache.GetCached(strHostName, strIpAddress))
     return true;

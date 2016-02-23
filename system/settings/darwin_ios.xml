@@ -18,9 +18,6 @@
         </setting>
       </group>
     </category>
-    <category id="dvds">
-      <visible>false</visible>
-    </category>
   </section>
   <section id="music">
     <category id="audiocds">

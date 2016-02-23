@@ -29,7 +29,7 @@ public:
 
   /*!
    \brief Load an image from memory with the format m_strMimeType to determine it's size and orientation
-   \param buffer The memory location where the image data can be found, will persist across Decode function
+   \param buffer The memory location where the image data can be found
    \param bufSize The size of the buffer
    \param width The ideal width of the texture
    \param height The ideal height of the texture
@@ -40,24 +40,25 @@ public:
    \brief Decodes the previously loaded image data to the output buffer in 32 bit raw bits
    \param pixels The output buffer
    \param pitch The pitch of the output buffer
+   \param format The format of the output buffer (JpegIO only)
    \return true if the image data could be decoded to the output buffer
    */
-  virtual bool Decode(unsigned char* const pixels, unsigned int pitch)=0;
+  virtual bool Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)=0;
   /*!
    \brief Encodes an thumbnail from raw bits of given memory location
    \remarks Caller need to call ReleaseThumbnailBuffer() afterwards to free the output buffer
    \param bufferin The memory location where the image data can be found
    \param width The width of the thumbnail
    \param height The height of the thumbnail
+   \param format The format of the input buffer (JpegIO only)
    \param pitch The pitch of the input texture stored in bufferin
    \param destFile The destination path of the thumbnail to determine the image format from the extension
    \param bufferout The output buffer (will be allocated inside the method)
    \param bufferoutSize The output buffer size
    \return true if the thumbnail was successfully created
    */
-  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height,
-    unsigned int pitch, const std::string& destFile,
-    unsigned char* &bufferout, unsigned int &bufferoutSize)=0;
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
+                                          unsigned char* &bufferout, unsigned int &bufferoutSize)=0;
   /*!
    \brief Frees the output buffer allocated by CreateThumbnailFromSurface
    */

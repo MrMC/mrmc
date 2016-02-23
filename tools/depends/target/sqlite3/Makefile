@@ -32,6 +32,10 @@ ifeq ($(OS),android)
 endif
 	# do not build the program sqlite3
 	sed -ie "s|bin_PROGRAMS = sqlite3||" "$(PLATFORM)/Makefile.am";
+ifneq ($(OS),android)
+	# seems MAP_POPULATE is broken on aarch64
+	cd $(PLATFORM); patch -p1 < ../sqlite3.c.patch
+endif
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 

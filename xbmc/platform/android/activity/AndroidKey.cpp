@@ -58,7 +58,7 @@ static KeyMap keyMap[] = {
   { AKEYCODE_DPAD_CENTER     , XBMCK_RETURN },
   { AKEYCODE_VOLUME_UP       , XBMCK_LAST },
   { AKEYCODE_VOLUME_DOWN     , XBMCK_LAST },
-  { AKEYCODE_POWER           , XBMCK_POWER },
+  { AKEYCODE_POWER           , XBMCK_LAST },
   { AKEYCODE_CAMERA          , XBMCK_LAST },
   { AKEYCODE_CLEAR           , XBMCK_LAST },
   { AKEYCODE_A               , XBMCK_a },
@@ -117,12 +117,6 @@ static KeyMap keyMap[] = {
   { AKEYCODE_MENU            , XBMCK_MENU },
   { AKEYCODE_NOTIFICATION    , XBMCK_LAST },
   { AKEYCODE_SEARCH          , XBMCK_LAST },
-  { AKEYCODE_MEDIA_PLAY_PAUSE, XBMCK_MEDIA_PLAY_PAUSE },
-  { AKEYCODE_MEDIA_STOP      , XBMCK_MEDIA_STOP },
-  { AKEYCODE_MEDIA_NEXT      , XBMCK_MEDIA_NEXT_TRACK },
-  { AKEYCODE_MEDIA_PREVIOUS  , XBMCK_MEDIA_PREV_TRACK },
-  { AKEYCODE_MEDIA_REWIND    , XBMCK_MEDIA_REWIND },
-  { AKEYCODE_MEDIA_FAST_FORWARD , XBMCK_MEDIA_FASTFORWARD },
   { AKEYCODE_MUTE            , XBMCK_LAST },
   { AKEYCODE_PAGE_UP         , XBMCK_PAGEUP },
   { AKEYCODE_PAGE_DOWN       , XBMCK_PAGEDOWN },
@@ -151,10 +145,6 @@ static KeyMap keyMap[] = {
   { AKEYCODE_SCROLL_LOCK     , XBMCK_SCROLLOCK },
   { AKEYCODE_INSERT          , XBMCK_INSERT },
   { AKEYCODE_FORWARD         , XBMCK_MEDIA_FASTFORWARD },
-  { AKEYCODE_MEDIA_PLAY      , XBMCK_MEDIA_PLAY_PAUSE },
-  { AKEYCODE_MEDIA_PAUSE     , XBMCK_MEDIA_PLAY_PAUSE },
-  { AKEYCODE_MEDIA_RECORD    , XBMCK_RECORD },
-  { AKEYCODE_MEDIA_EJECT     , XBMCK_EJECT },
   { AKEYCODE_GUIDE           , XBMCK_GUIDE },
   { AKEYCODE_SETTINGS        , XBMCK_SETTINGS },
   { AKEYCODE_INFO            , XBMCK_INFO },
@@ -162,12 +152,42 @@ static KeyMap keyMap[] = {
   { AKEYCODE_PROG_GREEN      , XBMCK_GREEN },
   { AKEYCODE_PROG_YELLOW     , XBMCK_YELLOW },
   { AKEYCODE_PROG_BLUE       , XBMCK_BLUE },
+
+  { AKEYCODE_F1              , XBMCK_F1 },
+  { AKEYCODE_F2              , XBMCK_F2 },
+  { AKEYCODE_F3              , XBMCK_F3 },
+  { AKEYCODE_F4              , XBMCK_F4 },
+  { AKEYCODE_F5              , XBMCK_F5 },
+  { AKEYCODE_F6              , XBMCK_F6 },
+  { AKEYCODE_F7              , XBMCK_F7 },
+  { AKEYCODE_F8              , XBMCK_F8 },
+  { AKEYCODE_F9              , XBMCK_F9 },
+  { AKEYCODE_F10             , XBMCK_F10 },
+  { AKEYCODE_F11             , XBMCK_F11 },
+  { AKEYCODE_F12             , XBMCK_F12 },
 };
+
+static KeyMap MediakeyMap[] = {
+  { AKEYCODE_MEDIA_PLAY_PAUSE, XBMCK_MEDIA_PLAY_PAUSE },
+  { AKEYCODE_MEDIA_STOP      , XBMCK_MEDIA_STOP },
+  { AKEYCODE_MEDIA_NEXT      , XBMCK_MEDIA_NEXT_TRACK },
+  { AKEYCODE_MEDIA_PREVIOUS  , XBMCK_MEDIA_PREV_TRACK },
+  { AKEYCODE_MEDIA_REWIND    , XBMCK_MEDIA_REWIND },
+  { AKEYCODE_MEDIA_FAST_FORWARD , XBMCK_MEDIA_FASTFORWARD },
+  { AKEYCODE_MEDIA_PLAY      , XBMCK_MEDIA_PLAY_PAUSE },
+  { AKEYCODE_MEDIA_PAUSE     , XBMCK_MEDIA_PLAY_PAUSE },
+  { AKEYCODE_MEDIA_RECORD    , XBMCK_RECORD },
+  { AKEYCODE_MEDIA_EJECT     , XBMCK_EJECT },
+};
+
+bool CAndroidKey::m_handleMediaKeys = false;
 
 bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
 {
   if (event == NULL)
     return false;
+
+  bool ret = true;
 
   int32_t flags   = AKeyEvent_getFlags(event);
   int32_t state   = AKeyEvent_getMetaState(event);
@@ -187,6 +207,21 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
     {
       sym = keyMap[index].xbmcKey;
       break;
+    }
+  }
+  if (sym == XBMCK_UNKNOWN)
+  {
+    for (unsigned int index = 0; index < sizeof(MediakeyMap) / sizeof(KeyMap); index++)
+    {
+      if (keycode == MediakeyMap[index].nativeKey)
+      {
+        sym = MediakeyMap[index].xbmcKey;
+        break;
+      }
+    }
+    if (sym != XBMCK_UNKNOWN)
+    {
+      ret = m_handleMediaKeys;
     }
   }
 
@@ -225,7 +260,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
       XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, false);
-      return true;
+      break;
 
     case AKEY_EVENT_ACTION_UP:
 #if 1
@@ -236,7 +271,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
       XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, true);
-      return true;
+      break;
 
     case AKEY_EVENT_ACTION_MULTIPLE:
 #if 1
@@ -246,6 +281,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SHIFT_ON) ? "yes" : "no",
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
+      return false;
       break;
 
     default:
@@ -256,10 +292,11 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SHIFT_ON) ? "yes" : "no",
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
+      return false;
       break;
   }
 
-  return false;
+  return ret;
 }
 
 void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up)

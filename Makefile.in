@@ -11,7 +11,7 @@ EC_DIRS = tools/EventClients
 NWAOBJSXBMC  = xbmc/threads/threads.a
 NWAOBJSXBMC += xbmc/commons/commons.a
 
-DVDPCODECS_DIRS  = lib
+DVDPCODECS_DIRS  = lib lib/libdvd 
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
 DVDPCODECS_DIRS += xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
@@ -47,6 +47,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/filesystem/filesystem.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
+                   xbmc/interfaces/builtins/builtins.a \
                    xbmc/interfaces/generic/interfaces-generic.a \
                    xbmc/interfaces/info/info.a \
                    xbmc/interfaces/interfaces.a \
@@ -55,6 +56,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/listproviders/listproviders.a \
                    xbmc/media/media.a \
                    xbmc/messaging/messaging.a \
+                   xbmc/messaging/helpers/messagingHelpers.a \
                    xbmc/music/dialogs/musicdialogs.a \
                    xbmc/music/infoscanner/musicscanner.a \
                    xbmc/music/music.a \
@@ -145,6 +147,8 @@ DIRECTORY_ARCHIVES += xbmc/storage/android/storage_android.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
 else
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
+DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
+DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/linux/powermanagement_linux.a
 DIRECTORY_ARCHIVES += xbmc/storage/linux/storage_linux.a
@@ -162,10 +166,10 @@ DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
 endif
 
 ifeq (@USE_ANDROID@,1)
+DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
+DIRECTORY_ARCHIVES += xbmc/platform/android/jni/jni.a
 DIRECTORY_ARCHIVES += xbmc/platform/android/loader/AndroidDyload.a
 DIRECTORY_ARCHIVES += xbmc/platform/android/bionic_supplement/bionic_supplement.a
-DIRECTORY_ARCHIVES += xbmc/platform/android/jni/jni.a
-DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
 endif
 
 ifeq (@USE_OMXPLAYER@,1)
@@ -174,6 +178,8 @@ endif
 
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
+	lib/addons/library.kodi.adsp \
+	lib/addons/library.kodi.audioengine \
 	lib/addons/library.xbmc.codec \
 	lib/addons/library.xbmc.pvr \
 	lib/addons/library.kodi.guilib \
@@ -258,10 +264,13 @@ dllloader: exports xbmc/cores/DllLoader/dllloader.a
 
 libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.addon
+	$(MAKE) -C lib/addons/library.kodi.adsp
+	$(MAKE) -C lib/addons/library.kodi.audioengine
 	$(MAKE) -C lib/addons/library.xbmc.codec
 	$(MAKE) -C lib/addons/library.kodi.guilib
 	$(MAKE) -C lib/addons/library.xbmc.pvr
 dvdpcodecs: dllloader
+	$(MAKE) -C lib/libdvd
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
 dvdpextcodecs: lib@APP_NAME_LC@.so
@@ -330,7 +339,7 @@ OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 BIN_DIRS = $(dir $(DIRECTORY_ARCHIVES)) $(dir $(NWAOBJSXBMC)) $(dir $(MAINOBJS))
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(DVDPCODECS_DIRS) \
-	$(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/main
+	$(LIB_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/main
 
 $(NWAOBJSXBMC) $(DIRECTORY_ARCHIVES) $(MAINOBJS): force
 	@$(MAKE) $(if $(V),,-s) -C $(@D)
@@ -509,6 +518,8 @@ clean-eventclients:
 	for d in $(EC_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-dvdpcodecs:
 	for d in $(DVDPCODECS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-libs:
+	for d in $(LIB_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-libaddons:
 	for d in $(LIBADDON_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 

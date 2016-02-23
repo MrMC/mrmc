@@ -58,6 +58,11 @@
 #define NSAppKitVersionNumber10_6 1038
 #endif
 
+#ifndef NSAppKitVersionNumber10_9
+#define NSAppKitVersionNumber10_9 1265
+#endif
+
+
 enum iosPlatform
 {
   iDeviceUnknown = -1,

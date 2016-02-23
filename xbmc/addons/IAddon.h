@@ -18,12 +18,14 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <memory>
+
+#include <stdint.h>
 
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
-#include <stdint.h>
+#include <utility>
 
 class TiXmlElement;
 
@@ -32,25 +34,45 @@ namespace ADDON
   typedef enum
   {
     ADDON_UNKNOWN,
+    ADDON_VIZ,
     ADDON_SKIN,
     ADDON_PVRDLL,
+    ADDON_ADSPDLL,
+    ADDON_SCRIPT,
+    ADDON_SCRIPT_WEATHER,
+    ADDON_SUBTITLE_MODULE,
+    ADDON_SCRIPT_LYRICS,
     ADDON_SCRAPER_ALBUMS,
     ADDON_SCRAPER_ARTISTS,
     ADDON_SCRAPER_MOVIES,
     ADDON_SCRAPER_MUSICVIDEOS,
     ADDON_SCRAPER_TVSHOWS,
     ADDON_SCREENSAVER,
+    ADDON_PLUGIN,
     ADDON_REPOSITORY,
     ADDON_WEB_INTERFACE,
+    ADDON_SERVICE,
+    ADDON_AUDIOENCODER,
+    ADDON_CONTEXT_ITEM,
+    ADDON_AUDIODECODER,
     ADDON_RESOURCE_IMAGES,
     ADDON_RESOURCE_LANGUAGE,
     ADDON_RESOURCE_UISOUNDS,
+    ADDON_VIDEO, // virtual addon types
+    ADDON_AUDIO,
+    ADDON_IMAGE,
+    ADDON_EXECUTABLE,
+    ADDON_VIZ_LIBRARY,
     ADDON_SCRAPER_LIBRARY,
+    ADDON_SCRIPT_LIBRARY,
+    ADDON_SCRIPT_MODULE,
     ADDON_MAX
   } TYPE;
 
   class IAddon;
   typedef std::shared_ptr<IAddon> AddonPtr;
+  class CVisualisation;
+  typedef std::shared_ptr<CVisualisation> VizPtr;
   class CSkinInfo;
   typedef std::shared_ptr<CSkinInfo> SkinPtr;
   class CPluginSource;
@@ -107,7 +129,7 @@ namespace ADDON
     virtual void OnPostInstall(bool update, bool modal) =0;
     virtual void OnPreUnInstall() =0;
     virtual void OnPostUnInstall() =0;
-    virtual bool CanInstall(const std::string& referer) =0;
+    virtual bool CanInstall() =0;
 
   protected:
     virtual bool LoadSettings(bool bForce = false) =0;

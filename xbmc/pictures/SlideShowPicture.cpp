@@ -31,8 +31,6 @@
 #endif
 #include <math.h>
 
-using namespace std;
-
 #define IMMEDIATE_TRANSISTION_TIME          20
 
 #define PICTURE_MOVE_AMOUNT              0.02f
@@ -157,7 +155,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
   m_fPosX = m_fPosY = 0.0f;
   m_fPosZ = 1.0f;
   m_fVelocityX = m_fVelocityY = m_fVelocityZ = 0.0f;
-  int iFrames = max((int)(g_graphicsContext.GetFPS() * CSettings::GetInstance().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME)), 1);
+  int iFrames = std::max((int)(g_graphicsContext.GetFPS() * CSettings::GetInstance().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME)), 1);
   if (m_displayEffect == EFFECT_PANORAMA)
   {
     RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
@@ -539,7 +537,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   UpdateVertices(m_ax, m_ay, x, y, dirtyregions);
 
   // now render the image in the top right corner if we're zooming
-  if (m_fZoomAmount == 1)
+  if (m_fZoomAmount == 1 || m_bIsComic)
   {
     const float empty[4] = {0};
     UpdateVertices(m_bx, m_by, empty, empty, dirtyregions);
@@ -735,7 +733,7 @@ void CSlideShowPic::Render()
   Render(m_ax, m_ay, m_pImage, (m_alpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
-  if (m_fZoomAmount == 1.0f) return ;
+  if (m_fZoomAmount == 1.0f || m_bIsComic) return ;
 
   Render(m_bx, m_by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
   Render(m_sx, m_sy, m_pImage, 0xFFFFFFFF);

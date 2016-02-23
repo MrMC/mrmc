@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/MrMC-main/language/ar_SA/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/kodi-main/language/ar_SA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -144,14 +144,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "إعدادات"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "(TvTunes ملحق) تشغيل أغاني سمة التلفزيون في مكتبة الفيديو"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "كلمات الأغاني"
@@ -244,17 +236,13 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]ضبط إعدادات المقاطع المرئيه[/B][CR][CR]ضبط إعدادات مكتبات المقاطع المرئيه - ضبط إعدادات تشغيل المقاطع المرئيه - تغيير إعدادات قوائم المقاطع المرئيه[CR]ضبط الترجمات"
 
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]ضبط إعدادات الموسيقى[/B][CR][CR]ضبط مكتبات الموسيقى · ضبط إعدادات تشغيل الموسيقى · ضبط إعدادات قائمه الموسيقى[CR]ضبط إعدادات إذاعه الموسيقى - ضبط إعدادات الكارويوكي"
-
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]ضبط إعدادات النظام[/B][CR][CR]ضبط ومعايره طُرُق العرض - ضبط مخارج الصوت - ضبط التحكم عن بعد[CR]ضبط إعدادات توفير الطاقه - ضبط وضع المعالجه - ضبط القفل الرئيسى"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "تكوين إعدادات الخدمة [B/][CR][CR] إعداد التحكم بـMrMC عبر UPnP و HTTP. نكوين مشاركة ملف [CR] تمكن  Zeroconf. تكوين التشغيل الحي "
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "تكوين إعدادات الخدمة [B/][CR][CR] إعداد التحكم بـKodi عبر UPnP و HTTP. نكوين مشاركة ملف [CR] تمكن  Zeroconf. تكوين التشغيل الحي "
 
 msgctxt "#31413"
 msgid "Local subtitle available"

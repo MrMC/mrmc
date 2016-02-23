@@ -1014,7 +1014,7 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
     m_pRenderer->AddProcessor(pic.stf, pic.eglimg, index);
 #endif
 #if defined(TARGET_ANDROID)
-  else if(pic.format == RENDER_FMT_MEDIACODEC)
+  else if(pic.format == RENDER_FMT_MEDIACODEC || pic.format == RENDER_FMT_MEDIACODECSURFACE)
     m_pRenderer->AddProcessor(pic.mediacodec, index);
 #endif
 #ifdef HAS_IMXVPU
@@ -1220,11 +1220,12 @@ void CXBMCRenderManager::DiscardBuffer()
   m_presentevent.notifyAll();
 }
 
-bool CXBMCRenderManager::GetStats(double &sleeptime, double &pts, int &bufferLevel)
+bool CXBMCRenderManager::GetStats(double &sleeptime, double &pts, int &queued, int &discard)
 {
   CSingleLock lock(m_presentlock);
   sleeptime = m_sleeptime;
   pts = m_presentpts;
-  bufferLevel = m_queued.size() + m_discard.size();
+  queued = m_queued.size();
+  discard  = m_discard.size();
   return true;
 }

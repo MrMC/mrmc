@@ -2,7 +2,7 @@ SRCS  = GUIWindowMusicBase.cpp
 SRCS += GUIWindowMusicNav.cpp
 SRCS += GUIWindowMusicPlaylist.cpp
 SRCS += GUIWindowMusicPlaylistEditor.cpp
-SRCS += GUIWindowMusicSongs.cpp
+SRCS += GUIWindowVisualisation.cpp
 
 LIB   = musicwindows.a
 

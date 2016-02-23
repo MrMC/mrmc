@@ -10,7 +10,8 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared \
-            --disable-doc --disable-examples --disable-curl
+            --disable-doc --disable-examples --disable-curl \
+            --disable-spdy
 
 # internal memmem sym collides with internal gnutils memmem
 # when built on 10.6.8, strip it.

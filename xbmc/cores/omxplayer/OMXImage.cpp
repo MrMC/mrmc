@@ -107,10 +107,10 @@ void COMXImage::Deinitialize()
 }
 
 bool COMXImage::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
-      unsigned int pitch, const std::string& destFile)
+      unsigned int format, unsigned int pitch, const std::string& destFile)
 {
   COMXImageEnc omxImageEnc;
-  bool ret = omxImageEnc.CreateThumbnailFromSurface(buffer, width, height, pitch, destFile);
+  bool ret = omxImageEnc.CreateThumbnailFromSurface(buffer, width, height, format, pitch, destFile);
   if (!ret)
     CLog::Log(LOGNOTICE, "%s: unable to create thumbnail %s %dx%d", __func__, destFile.c_str(), width, height);
   return ret;
@@ -1081,7 +1081,7 @@ bool COMXImageDec::HandlePortSettingChange(unsigned int resize_width, unsigned i
   return true;
 }
 
-bool COMXImageDec::Decode(uint8_t* const demuxer_content, unsigned demuxer_bytes, unsigned width, unsigned height, unsigned stride, void *pixels)
+bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes, unsigned width, unsigned height, unsigned stride, void *pixels)
 {
   CSingleLock lock(m_OMXSection);
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -1252,7 +1252,7 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
   CSingleLock lock(m_OMXSection);
 
   unsigned int demuxer_bytes = 0;
-  uint8_t* const demuxer_content = NULL;
+  const uint8_t *demuxer_content = NULL;
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
   OMX_INIT_STRUCTURE(m_encoded_format);
@@ -1427,11 +1427,11 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
 }
 
 bool COMXImageEnc::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
-    unsigned int pitch, const std::string& destFile)
+    unsigned int format, unsigned int pitch, const std::string& destFile)
 {
-  if(!buffer)
+  if(format != XB_FMT_A8R8G8B8 || !buffer)
   {
-    CLog::Log(LOGDEBUG, "%s::%s : %s failed\n", CLASSNAME, __func__, destFile.c_str();
+    CLog::Log(LOGDEBUG, "%s::%s : %s failed format=0x%x\n", CLASSNAME, __func__, destFile.c_str(), format);
     return false;
   }
 

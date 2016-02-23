@@ -175,7 +175,7 @@ void CBaseTexture::ClampToEdge()
   }
 }
 
-CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
+CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool requirePixels, const std::string& strMimeType)
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
@@ -184,18 +184,15 @@ CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigne
     XFILE::CFileAndroidApp file;
     if (file.Open(url))
     {
-      unsigned int imgsize = (unsigned int)file.GetLength();
-      unsigned char* inputBuff = new unsigned char[imgsize];
-      unsigned int inputBuffSize = file.Read(inputBuff, imgsize);
+      unsigned char* inputBuff;
+      unsigned int width;
+      unsigned int height;
+      unsigned int inputBuffSize = file.ReadIcon(&inputBuff, &width, &height);
       file.Close();
-      if (inputBuffSize != imgsize)
-      {
-        delete [] inputBuff;
+      if (!inputBuffSize)
         return NULL;
-      }
+
       CTexture *texture = new CTexture();
-      unsigned int width = file.GetIconWidth();
-      unsigned int height = file.GetIconHeight();
       texture->LoadFromMemory(width, height, width*4, XB_FMT_RGBA8, true, inputBuff);
       delete [] inputBuff;
       return texture;
@@ -203,7 +200,7 @@ CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigne
   }
 #endif
   CTexture *texture = new CTexture();
-  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, autoRotate, requirePixels, strMimeType))
+  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, requirePixels, strMimeType))
     return texture;
   delete texture;
   return NULL;
@@ -218,7 +215,7 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
   return NULL;
 }
 
-bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
+bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool requirePixels, const std::string& strMimeType)
 {
   if (URIUtils::HasExtension(texturePath, ".dds"))
   { // special case for DDS images
@@ -273,7 +270,7 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
       pImage = ImageFactory::CreateLoaderFromMimeType(strMimeType);
   }
 
-  if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height, autoRotate))
+  if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height))
   {
     CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, texturePath.c_str());
     delete pImage;
@@ -307,16 +304,16 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   return true;
 }
 
-bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height, bool autoRotate)
+bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
 {
   if(pImage != NULL && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
   {
     if (pImage->Width() > 0 && pImage->Height() > 0)
     {
       Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
-      if (pImage->Decode(m_pixels, GetPitch()))
+      if (pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
       {
-        if (autoRotate && pImage->Orientation())
+        if (pImage->Orientation())
           m_orientation = pImage->Orientation() - 1;
         m_hasAlpha = pImage->hasAlpha();
         m_originalWidth = pImage->originalWidth();

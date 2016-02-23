@@ -20,22 +20,24 @@
 
 #include "PVRClients.h"
 
+#include <cassert>
+#include <utility>
+
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "GUIUserMessages.h"
+#include "cores/IPlayer.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "pvr/PVRManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/Settings.h"
-#include "pvr/channels/PVRChannelGroups.h"
+#include "GUIUserMessages.h"
+#include "messaging/ApplicationMessenger.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "settings/Settings.h"
 #include "utils/Variant.h"
-
-#include <assert.h>
 
 using namespace ADDON;
 using namespace PVR;
@@ -54,6 +56,7 @@ CPVRClients::CPVRClients(void) :
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
     m_bIsPlayingRecording(false),
+    m_scanStart(0),
     m_bNoAddonWarningDisplayed(false),
     m_bRestartManagerOnAddonDisabled(false)
 {
@@ -486,13 +489,13 @@ PVR_ERROR CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer)
   return error;
 }
 
-PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule)
+PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
   PVR_CLIENT client;
 
   if (GetConnectedClient(timer.m_iClientId, client))
-    error = client->DeleteTimer(timer, bForce, bDeleteSchedule);
+    error = client->DeleteTimer(timer, bForce);
 
   return error;
 }
@@ -1433,6 +1436,20 @@ bool CPVRClients::GetClient(const std::string &strId, AddonPtr &addon) const
       return true;
     }
   }
+  return false;
+}
+
+bool CPVRClients::SupportsTimers() const
+{
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+
+  for (const auto &entry : clients)
+  {
+    if (entry.second->SupportsTimers())
+      return true;
+  }
+
   return false;
 }
 

@@ -35,6 +35,8 @@
 #include "platform/android/jni/AudioManager.h"
 #include "threads/Event.h"
 
+#include "JNIMainActivity.h"
+
 // forward delares
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
@@ -46,15 +48,16 @@ struct androidIcon
   unsigned int width;
   unsigned int height;
   void *pixels;
-};  
+};
 
 struct androidPackage
 {
   std::string packageName;
   std::string packageLabel;
+  int icon;
 };
 
-class CXBMCApp : public IActivityHandler, public CJNIApplicationMainActivity, public CJNIBroadcastReceiver, public CJNIAudioManagerAudioFocusChangeListener
+class CXBMCApp : public IActivityHandler, public CJNIMainActivity, public CJNIBroadcastReceiver, public CJNIAudioManagerAudioFocusChangeListener
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
@@ -90,11 +93,10 @@ public:
   static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
   static bool HasFocus();
+  static bool IsHeadsetPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
-  static bool GetIconSize(const std::string &packageName, int *width, int *height);
-  static bool GetIcon(const std::string &packageName, void* buffer, unsigned int bufSize); 
 
   /*!
    * \brief If external storage is available, it returns the path for the external storage (for the specified type)
@@ -118,6 +120,8 @@ public:
   static void OnPlayBackStopped();
   static void OnPlayBackEnded();
 
+  static CXBMCApp* get() { return m_xbmcappinstance; }
+
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
@@ -138,6 +142,7 @@ private:
   static CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;
   static bool m_hasFocus;
+  static bool m_headsetPlugged;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;

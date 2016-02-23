@@ -513,13 +513,13 @@
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "runtime", "set", "showlink", "streamdetails",
                 "top250", "votes", "fanart", "thumbnail", "file", "sorttitle",
-                "resume", "setid", "dateadded", "tag", "art" ]
+                "resume", "setid", "dateadded", "tag", "art", "userrating" ]
     }
   },
   "Video.Fields.MovieSet": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "title", "playcount", "fanart", "thumbnail", "art" ]
+      "enum": [ "title", "playcount", "fanart", "thumbnail", "art", "plot" ]
     }
   },
   "Video.Fields.TVShow": {
@@ -531,7 +531,7 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "art" ]
+                "dateadded", "tag", "art", "userrating" ]
     }
   },
   "Video.Fields.Season": {
@@ -550,7 +550,8 @@
                 "productioncode", "season", "episode", "originaltitle",
                 "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
                 "thumbnail", "file", "resume", "tvshowid", "dateadded",
-                "uniqueid", "art", "specialsortseason", "specialsortepisode" ]
+                "uniqueid", "art", "specialsortseason", "specialsortepisode", "userrating",
+                "seasonid" ]
     }
   },
   "Video.Fields.MusicVideo": {
@@ -560,7 +561,7 @@
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamdetails", "lastplayed",
                 "fanart", "thumbnail", "file", "resume", "dateadded",
-                "tag", "art" ]
+                "tag", "art", "userrating" ]
     }
   },
   "Video.Cast": {
@@ -673,13 +674,15 @@
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
       "setid": { "$ref": "Library.Id" },
-      "tag": { "$ref": "Array.String" }
+      "tag": { "$ref": "Array.String" },
+      "userrating": { "type": "integer" }
     }
   },
   "Video.Details.MovieSet": {
     "extends": "Video.Details.Media",
     "properties": {
-      "setid": { "$ref": "Library.Id", "required": true }
+      "setid": { "$ref": "Library.Id", "required": true },
+      "plot": { "type": "string" }
     }
   },
   "Video.Details.MovieSet.Extended": {
@@ -710,7 +713,8 @@
       "votes": { "type": "string" },
       "episodeguide": { "type": "string" },
       "season": { "type": "integer" },
-      "tag": { "$ref": "Array.String" }
+      "tag": { "$ref": "Array.String" },
+      "userrating": { "type": "integer" }
     }
   },
   "Video.Details.Season": {
@@ -741,7 +745,9 @@
       "cast": { "$ref": "Video.Cast" },
       "tvshowid": { "$ref": "Library.Id" },
       "specialsortseason": { "type": "integer" },
-      "specialsortepisode": { "type": "integer" }
+      "specialsortepisode": { "type": "integer" },
+      "userrating": { "type": "integer" },
+      "seasonid": { "$ref": "Library.Id" }
     }
   },
   "Video.Details.MusicVideo": {
@@ -754,7 +760,8 @@
       "artist": { "$ref": "Array.String" },
       "genre": { "$ref": "Array.String" },
       "track": { "type": "integer" },
-      "tag": { "$ref": "Array.String" }
+      "tag": { "$ref": "Array.String" },
+      "userrating": { "type": "integer" }
     }
   },
   "PVR.Property.Name": {

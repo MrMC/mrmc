@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/MrMC-main/language/cs_CZ/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/kodi-main/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Skrýt Fanart na pozadí"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Schovat EPG jestliže je RDS zobrazeno v okně kanálu"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Zobrazit právě přehrávané video na pozadí"
@@ -227,14 +231,6 @@ msgstr "Zobrazit právě přehrávané video na pozadí"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Zobrazit právě přehrávanou vizualizaci na pozadí"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Přehrát znělky v knihovně videí (doplněk TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -333,7 +329,7 @@ msgid "Current scraper"
 msgstr "Současný stahovač"
 
 msgctxt "#31313"
-msgid "Choose metadata provider"
+msgid "Choose a scraper"
 msgstr "Vyberte stahovač"
 
 msgctxt "#31314"
@@ -351,10 +347,6 @@ msgstr "Vybraný profil"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Naposledy přihlášen"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Výběr karaoke skladby"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ VIDEA[/B][CR][CR]Správa knihovny videí · Možnosti přehrávání videa · Možnosti zobrazení video souborů[CR]Nastavení fontu titulků"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ HUDBY[/B][CR][CR]Správa knihovny hudby · Možnosti přehrávání hudby · Možnosti zobrazení hudebních souborů[CR] Nastavení služby odesílání informací o přehrávaných skladbách · Nastavení karaoke"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ HUDBY[/B][CR][CR]Správa knihovny hudby · Možnosti přehrávání hudby · Možnosti zobrazení hudebních souborů[CR] Nastavení služby odesílání informací o přehrávaných skladbách "
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -461,16 +453,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Nastavení úsporného režimu · Povolení informací o ladění · Rodičovský zámek"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
-msgstr "[B]KONFIGURACE DOPLŇKŮ[/B][CR][CR]Spravujte Vaše instalované doplňky. Prohlížejte a instalujte doplňky z MrMC.tv[CR]Upravujte nastavení doplňků"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]KONFIGURACE DOPLŇKŮ[/B][CR][CR]Spravujte Vaše instalované doplňky. Prohlížejte a instalujte doplňky z kodi.tv[CR]Upravujte nastavení doplňků"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ TELEVIZNÍHO PŘEHRÁVÁNÍ[/B][CR][CR]Změna zobrazení přes celou obrazovku · Nastavení EPG dat"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání MrMC skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolení zeroconf · Nastavení AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání Kodi skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolení zeroconf · Nastavení AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,8 +481,8 @@ msgid "Login"
 msgstr "Přihlášení"
 
 msgctxt "#31421"
-msgid "Select your MrMC user profile[CR]to login and continue"
-msgstr "Vyberte Váš MrMC uživatelský profil[CR]pro přihlášení a pokračování"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Vyberte Váš Kodi uživatelský profil[CR]pro přihlášení a pokračování"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -578,7 +570,7 @@ msgstr "OBRÁZKY"
 
 msgctxt "#31952"
 msgid "TV"
-msgstr "Televize"
+msgstr "TELEVIZE"
 
 msgctxt "#31953"
 msgid "VIDEOS"

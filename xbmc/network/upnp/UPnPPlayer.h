@@ -61,7 +61,7 @@ public:
 
   virtual int  GetChapterCount()                               { return 0; }
   virtual int  GetChapter()                                    { return -1; }
-  virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1)     { return; }
+  virtual void GetChapterName(std::string& strChapterName)     { return; }
   virtual int  SeekChapter(int iChapter)                       { return -1; }
 
   virtual void SeekTime(int64_t iTime = 0);

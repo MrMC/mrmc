@@ -22,11 +22,13 @@
 \brief
 */
 #pragma once
-#include "dbwrappers/Database.h"
-#include "Album.h"
+#include <utility>
+
 #include "addons/Scraper.h"
-#include "utils/SortUtils.h"
+#include "Album.h"
+#include "dbwrappers/Database.h"
 #include "MusicDbUrl.h"
+#include "utils/SortUtils.h"
 
 class CArtist;
 class CFileItem;
@@ -123,7 +125,6 @@ public:
    \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
    \param dtLastPlayed [in] the time the song was last played
    \param rating [in] a rating for the song
-   \param iKaraokeNumber [in] the karaoke id of the song
    \return the id of the song
    */
   int AddSong(const int idAlbum,
@@ -136,8 +137,7 @@ public:
               const std::string &artistString, const std::vector<std::string>& genres,
               int iTrack, int iDuration, int iYear,
               const int iTimesPlayed, int iStartOffset, int iEndOffset,
-              const CDateTime& dtLastPlayed,
-              char rating, int iKaraokeNumber);
+              const CDateTime& dtLastPlayed, char rating);
   bool GetSong(int idSong, CSong& song);
 
   /*! \brief Update a song in the database.
@@ -171,7 +171,6 @@ public:
    \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
    \param dtLastPlayed [in] the time the song was last played
    \param rating [in] a rating for the song
-   \param iKaraokeNumber [in] the karaoke id of the song
    \return the id of the song
    */
   int UpdateSong(int idSong,
@@ -181,15 +180,14 @@ public:
                  const std::string& artistString, const std::vector<std::string>& genres,
                  int iTrack, int iDuration, int iYear,
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
-                 const CDateTime& dtLastPlayed,
-                 char rating, int iKaraokeNumber);
+                 const CDateTime& dtLastPlayed, char rating);
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int startOffset = 0);
   bool GetSongsByPath(const std::string& strPath, MAPSONGS& songs, bool bAppendToMap = false);
   bool Search(const std::string& search, CFileItemList &items);
   bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songs, bool exact=true);
-  bool SetSongRating(const std::string &filePath, char rating);
+  bool SetSongUserrating(const std::string &filePath, char rating);
   int  GetSongByArtistAndAlbumAndTitle(const std::string& strArtist, const std::string& strAlbum, const std::string& strTitle);
 
   /////////////////////////////////////////////////
@@ -198,9 +196,10 @@ public:
   bool AddAlbum(CAlbum& album);
   /*! \brief Update an album and all its nested entities (artists, songs, infoSongs, etc)
    \param album the album to update
+   \param OverrideTagData whether or not to replace the artist and song data, defaults to true.
    \return true or false
    */
-  bool UpdateAlbum(CAlbum& album);
+  bool UpdateAlbum(CAlbum& album, bool OverrideTagData = true);
 
   /*! \brief Add an album and all its songs to the database
    \param album the album to add
@@ -295,7 +294,7 @@ public:
   /////////////////////////////////////////////////
   bool AddAlbumArtist(int idArtist, int idAlbum, std::string strArtist, std::string joinPhrase, bool featured, int iOrder);
   bool GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<int>& albums);
-  bool GetArtistsByAlbum(int idAlbum, bool includeFeatured, std::vector<int>& artists);
+  bool GetArtistsByAlbum(int idAlbum, CFileItem* item);
   bool DeleteAlbumArtistsByAlbum(int idAlbum);
 
   bool AddSongArtist(int idArtist, int idSong, std::string strArtist, std::string joinPhrase, bool featured, int iOrder);
@@ -356,7 +355,9 @@ public:
   bool GetSongsNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
+  bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
+  bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, VECALBUMS& albums, int& total, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetRandomSong(CFileItem* item, int& idSong, const Filter &filter);
   int GetSongsCount(const Filter &filter = Filter());
@@ -385,7 +386,7 @@ public:
   /////////////////////////////////////////////////
   // XML
   /////////////////////////////////////////////////
-  void ExportToXML(const std::string &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
+  void ExportToXML(const std::string &xmlFile, bool singleFile = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const std::string &xmlFile);
 
   /////////////////////////////////////////////////
@@ -487,8 +488,15 @@ private:
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, int offset = 0, bool imageURL = false);
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, int offset = 0, bool imageURL = false);
   CArtistCredit GetArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset = 0);
+  /*! \brief Updates the dateAdded field in the song table for the file
+  with the given songId and the given path based on the files modification date
+  \param songId id of the song in the song table
+  \param strFileNameAndPath path to the file
+  */
+  void UpdateFileDateAdded(int songId, const std::string& strFileNameAndPath);
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CMusicDbUrl &baseUrl);
+  void GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits, CFileItem* item);
   CSong GetAlbumInfoSongFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   bool CleanupSongs();
   bool CleanupSongsByIds(const std::string &strSongIds);
@@ -504,7 +512,7 @@ private:
 
   // Fields should be ordered as they
   // appear in the songview
-  enum _SongFields
+  static enum _SongFields
   {
     song_idSong=0,
     song_strArtists,
@@ -519,24 +527,22 @@ private:
     song_iStartOffset,
     song_iEndOffset,
     song_lastplayed,
-    song_rating,
+    song_userrating,
     song_comment,
     song_idAlbum,
     song_strAlbum,
     song_strPath,
-    song_iKarNumber,
-    song_iKarDelay,
-    song_strKarEncoding,
     song_bCompilation,
     song_strAlbumArtists,
     song_strAlbumReleaseType,
     song_mood,
+    song_dateAdded,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 
   // Fields should be ordered as they
   // appear in the albumview
-  enum _AlbumFields
+  static enum _AlbumFields
   {
     album_idAlbum=0,
     album_strAlbum,
@@ -555,10 +561,12 @@ private:
     album_bCompilation,
     album_iTimesPlayed,
     album_strReleaseType,
+    album_dtDateAdded,
+    album_dtLastPlayed,
     album_enumCount // end of the enum, do not add past here
   } AlbumFields;
 
-  enum _ArtistCreditFields
+  static enum _ArtistCreditFields
   {
     // used for GetAlbum to get the cascaded album/song artist credits
     artistCredit_idEntity = 0,  // can be idSong or idAlbum depending on context
@@ -571,7 +579,7 @@ private:
     artistCredit_enumCount
   } ArtistCreditFields;
 
-  enum _ArtistFields
+  static enum _ArtistFields
   {
     artist_idArtist=0,
     artist_strArtist,
@@ -588,10 +596,11 @@ private:
     artist_strYearsActive,
     artist_strImage,
     artist_strFanart,
+    artist_dtDateAdded,
     artist_enumCount // end of the enum, do not add past here
   } ArtistFields;
 
-  enum _AlbumInfoSongFields
+  static enum _AlbumInfoSongFields
   {
     albumInfoSong_idAlbumInfoSong=0,
     albumInfoSong_idAlbumInfo,

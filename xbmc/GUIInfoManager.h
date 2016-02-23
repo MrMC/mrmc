@@ -44,6 +44,11 @@ namespace MUSIC_INFO
 {
   class CMusicInfoTag;
 }
+namespace PVR
+{
+  class CPVRRadioRDSInfoTag;
+  typedef std::shared_ptr<PVR::CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
+}
 class CVideoInfoTag;
 class CFileItem;
 class CGUIListItem;
@@ -125,7 +130,7 @@ public:
    \return the value of the evaluated expression.
    \sa Register
    */
-  bool EvaluateBool(const std::string &expression, int context = 0);
+  bool EvaluateBool(const std::string &expression, int context = 0, const CGUIListItemPtr &item = nullptr);
 
   int TranslateString(const std::string &strCondition);
 
@@ -160,8 +165,10 @@ public:
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
 
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
+  const PVR::CPVRRadioRDSInfoTagPtr GetCurrentRadioRDSInfoTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
+  std::string GetRadioRDSLabel(int item);
   std::string GetMusicLabel(int item);
   std::string GetMusicTagLabel(int info, const CFileItem *item);
   std::string GetVideoLabel(int item);
@@ -186,7 +193,6 @@ public:
   bool GetShowInfo() const { return m_playerShowInfo; }
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
-  bool IsPlayerOSDActive() const;
   bool IsPlayerChannelPreviewActive() const;
 
   std::string GetSystemHeatInfo(int info);

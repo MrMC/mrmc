@@ -32,8 +32,6 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "utils/log.h"
 
-using namespace std;
-
 CGUIAudioManager g_audioManager;
 
 CGUIAudioManager::CGUIAudioManager()
@@ -247,7 +245,7 @@ bool CGUIAudioManager::Load()
         std::string filename = URIUtils::AddFileToFolder(m_strMediaDir, strFile);
         IAESound *sound = LoadSound(filename);
         if (sound)
-          m_actionSoundMap.insert(pair<int, IAESound *>(id, sound));
+          m_actionSoundMap.insert(std::pair<int, IAESound *>(id, sound));
       }
 
       pAction = pAction->NextSibling();
@@ -276,7 +274,7 @@ bool CGUIAudioManager::Load()
       sounds.deInitSound = LoadWindowSound(pWindow, "deactivate");
 
       if (id > 0)
-        m_windowSoundMap.insert(pair<int, CWindowSounds>(id, sounds));
+        m_windowSoundMap.insert(std::pair<int, CWindowSounds>(id, sounds));
 
       pWindow = pWindow->NextSibling();
     }

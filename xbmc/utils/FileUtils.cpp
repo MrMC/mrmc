@@ -26,6 +26,7 @@
 #include "JobManager.h"
 #include "FileOperationJob.h"
 #include "URIUtils.h"
+#include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include <vector>
 #include "settings/MediaSourceSettings.h"
@@ -39,7 +40,6 @@
 #endif
 
 using namespace XFILE;
-using namespace std;
 
 bool CFileUtils::DeleteItem(const std::string &strPath, bool force)
 {
@@ -91,7 +91,7 @@ bool CFileUtils::RenameFile(const std::string &strFile)
     CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
     if (URIUtils::IsMultiPath(strFileAndPath))
     { // special case for multipath renames - rename all the paths.
-      vector<std::string> paths;
+      std::vector<std::string> paths;
       CMultiPathDirectory::GetPaths(strFileAndPath, paths);
       bool success = false;
       for (unsigned int i = 0; i < paths.size(); ++i)
@@ -115,7 +115,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   const unsigned int SourcesSize = 5;
   std::string SourceNames[] = { "programs", "files", "video", "music", "pictures" };
 
-  string realPath = URIUtils::GetRealPath(strPath);
+  std::string realPath = URIUtils::GetRealPath(strPath);
   // for rar:// and zip:// paths we need to extract the path to the archive
   // instead of using the VFS path
   while (URIUtils::IsInArchive(realPath))
@@ -165,6 +165,69 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
       return true;
   }
   return false;
+}
+
+CDateTime CFileUtils::GetModificationDate(const std::string& strFileNameAndPath, const bool& bUseLatestDate)
+{
+  CDateTime dateAdded;
+  if (strFileNameAndPath.empty())
+  {
+    CLog::Log(LOGDEBUG, "%s empty strFileNameAndPath variable", __FUNCTION__);
+    return dateAdded;
+  }
+
+  try
+  {
+    std::string file = strFileNameAndPath;
+    if (URIUtils::IsStack(strFileNameAndPath))
+      file = CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
+
+    if (URIUtils::IsInArchive(file))
+      file = CURL(file).GetHostName();
+
+    // Let's try to get the modification datetime
+    struct __stat64 buffer;
+    if (CFile::Stat(file, &buffer) == 0 && (buffer.st_mtime != 0 || buffer.st_ctime != 0))
+    {
+      time_t now = time(NULL);
+      time_t addedTime;
+      // Prefer the modification time if it's valid
+      if (!bUseLatestDate)
+      {
+        if (buffer.st_mtime != 0 && (time_t)buffer.st_mtime <= now)
+          addedTime = (time_t)buffer.st_mtime;
+        else
+          addedTime = (time_t)buffer.st_ctime;
+      }
+      // Use the newer of the creation and modification time
+      else
+      {
+        addedTime = std::max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+        // if the newer of the two dates is in the future, we try it with the older one
+        if (addedTime > now)
+          addedTime = std::min((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+      }
+
+      // make sure the datetime does is not in the future
+      if (addedTime <= now)
+      {
+        struct tm *time;
+#ifdef HAVE_LOCALTIME_R
+        struct tm result = {};
+        time = localtime_r(&addedTime, &result);
+#else
+        time = localtime(&addedTime);
+#endif
+        if (time)
+          dateAdded = *time;
+      }
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s unable to extract modification date for file (%s)", __FUNCTION__, strFileNameAndPath.c_str());
+  }
+  return dateAdded;
 }
 
 bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)

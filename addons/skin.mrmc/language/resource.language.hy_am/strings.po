@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Armenian (Armenia) (http://www.transifex.com/projects/p/MrMC-main/language/hy_AM/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Armenian (Armenia) (http://www.transifex.com/projects/p/kodi-main/language/hy_AM/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -127,14 +127,6 @@ msgstr "Թաքցնել"
 msgctxt "#31112"
 msgid "Options"
 msgstr "Տարբերակներ"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Նվագարկել TV թեմայի երգերը տեսադարանում (TvTunes add-on)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TV-Որոնում"
 
 msgctxt "#31128"
 msgid "Lyrics"

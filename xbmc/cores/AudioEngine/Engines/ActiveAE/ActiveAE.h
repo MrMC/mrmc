@@ -44,11 +44,8 @@ class IAEEncoder;
 namespace ActiveAE
 {
 
-class CSoundPacket;
 class CActiveAESound;
 class CActiveAEStream;
-class CActiveAEBufferPool;
-class CActiveAEBufferPoolResample;
 
 struct AudioSettings
 {
@@ -65,6 +62,7 @@ struct AudioSettings
   bool stereoupmix;
   bool normalizelevels;
   bool passthrough;
+  bool dspaddonsenabled;
   int config;
   int guisoundmode;
   unsigned int samplerate;
@@ -184,9 +182,13 @@ public:
   int64_t GetPlayingPTS();
   int Discontinuity(bool reset = false);
   void SetSuspended(bool state);
+  void SetDSP(bool state);
+  void SetCurrentSinkFormat(AEAudioFormat SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
   bool IsSuspended();
+  bool HasDSP();
+  AEAudioFormat GetCurrentSinkFormat();
   CCriticalSection *GetLock() { return &m_lock; }
 protected:
   int64_t m_playingPTS;
@@ -197,6 +199,8 @@ protected:
   unsigned int m_sinkSampleRate;
   AEDelayStatus m_sinkDelay;
   bool m_suspended;
+  bool m_hasDSP;
+  AEAudioFormat m_sinkFormat;
   CCriticalSection m_lock;
 };
 
@@ -249,6 +253,8 @@ public:
   virtual bool IsSettingVisible(const std::string &settingId);
   virtual void KeepConfiguration(unsigned int millis);
   virtual void DeviceChange();
+  virtual bool HasDSP();
+  virtual AEAudioFormat GetCurrentSinkFormat();
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();
@@ -374,5 +380,6 @@ protected:
   // polled via the interface
   float m_aeVolume;
   bool m_aeMuted;
+  bool m_aeGUISoundForce;
 };
 };

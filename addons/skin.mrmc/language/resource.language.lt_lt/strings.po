@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Lithuanian (Lithuania) (http://www.transifex.com/projects/p/MrMC-main/language/lt_LT/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Lithuanian (Lithuania) (http://www.transifex.com/projects/p/kodi-main/language/lt_LT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change your"
-msgstr "MrMC"
+msgstr "Kodi"
 
 msgctxt "#31003"
 msgid "Power options"
@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Slėpti fono Fanart"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Slėpti EPG, jei kanalo lange yra RDS"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Rodyti \"Dabar atkuriamą\" vaizdo įrašą fone"
@@ -227,14 +231,6 @@ msgstr "Rodyti \"Dabar atkuriamą\" vaizdo įrašą fone"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Rodyti \"Dabar atkuriamos\" muzikos vizualizaciją fone"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Atkurti televizijos temų dainas vaizdo bibliotekoje (TvTunes priedas)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -333,7 +329,7 @@ msgid "Current scraper"
 msgstr "Dabartinis skreperis"
 
 msgctxt "#31313"
-msgid "Choose metadata provider"
+msgid "Choose a scraper"
 msgstr "Pasirinkite skreperį"
 
 msgctxt "#31314"
@@ -351,10 +347,6 @@ msgstr "Pasirinktas profilis"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Paskutinis prisijungimas"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke dainos pasirinkimas"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]KONFIGŪRUOTI VAIZDO ĮRAŠŲ NUSTATYMUS[/B][CR][CR]Tvarkyti vaizdo biblioteką · Nustatyti vaizdo atkūrimo parinktis[CR]Keisti vaizdo įrašų sąrašo atvaizdavimo parinktis · Nustatyti subtitrų šriftus"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KONFIGŪRUOTI MUZIKOS NUSTATYMUS[/B][CR][CR]Tvarkyti muzikos biblioteką · Nustatyti dainų įkėlimą · Nustatyti karaoke parinktis[CR]Keisti muzikos sąrašo atvaizdavimo parinktis · Nustatyti muzikos atkūrimo parinktis"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]KONFIGŪRUOTI MUZIKOS NUSTATYMUS[/B][CR][CR]Tvarkyti muzikos biblioteką · Nustatyti dainų įkėlimą[CR]Keisti muzikos sąrašo atvaizdavimo parinktis · Nustatyti muzikos atkūrimo parinktis"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -461,16 +453,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]KONFIGŪRUOTI SISTEMOS NUSTATYMUS[/B][CR][CR]Nustatyti ir kalibruoti ekranus · Nustatyti garso išvestį · Nustatyti nuotolinį valdymą[CR]Nustatyti energijos taupymo parinktis · Įjungti derinimą · Nustatyti valdytojo užraktą"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
-msgstr "[B]KONFIGŪRUOTI PRIEDUS[/B][CR][CR]Tvarkyti įdiegtus priedus · naršyti ir įdiegti priedus iš MrMC.tv[CR]Keisti priedų nustatymus"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]KONFIGŪRUOTI PRIEDUS[/B][CR][CR]Tvarkyti įdiegtus priedus · naršyti ir įdiegti priedus iš kodi.tv[CR]Keisti priedų nustatymus"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]KONFIGŪRUOTI TELEVIZIJOS NUSTATYMUS[/B][CR][CR]Pakeisti viso ekrano informaciją · Tvarkyti EPG duomenų nustatymus"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGŪRUOTI PASLAUGŲ NUSTATYMUS[/B][CR][CR]Nustatyti MrMC valdymą per UPnP ir HTTP · Konfigūruoti failų bendrinimą[CR]Įjungti Zeroconf · Konfigūruoti AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGŪRUOTI PASLAUGŲ NUSTATYMUS[/B][CR][CR]Nustatyti Kodi valdymą per UPnP ir HTTP · Konfigūruoti failų bendrinimą[CR]Įjungti Zeroconf · Konfigūruoti AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,8 +481,8 @@ msgid "Login"
 msgstr "Prisijungti"
 
 msgctxt "#31421"
-msgid "Select your MrMC user profile[CR]to login and continue"
-msgstr "Pasirinkite savi MrMC profilį,[CR]norėdami prisijungti ir tęsti"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Pasirinkite savi Kodi profilį,[CR]norėdami prisijungti ir tęsti"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Vietnamese (Viet Nam) (http://www.transifex.com/projects/p/MrMC-main/language/vi_VN/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Vietnamese (Viet Nam) (http://www.transifex.com/projects/p/kodi-main/language/vi_VN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -140,14 +140,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Tùy chọn"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Phát các bài hát từ TV trong hệ thống thư viện video (add-on TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TV Turner"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lời Bài Hát"
@@ -240,10 +232,6 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]TUỲ CHỈNH CÀI ĐẶT VIDEO[/B][CR][CR]Quản lý thư viện video · Đặt chế độ xem video · Thay đổi cách liệt kê video[CR]Đặt font phụ đề"
 
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]TUỲ CHỈNH CÀI ĐẶT NHẠC[/B][CR][CR]Quản lý thư viện nhạc · Đặt chế độ nghe nhạc · Thay đổi cách liệt kê nhạc[CR]Cài đặt gửi và lấy thông tin nhạc · Đặt chế độ karaoke"
-
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]TUỲ CHỈNH CÀI ĐẶT HỆ THỐNG[/B][CR][CR]Cài đặt và điều chỉnh màn hình · Chỉnh đầu ra audio · Cài đặt điều khiển từ xa[CR]Đặt chế độ tiết kiệm năng lượng · Bật chế độ tìm sửa lỗi · Đặt khoá chủ"
@@ -253,8 +241,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]HIỆU CHỈNH TV[/B][CR][CR]Thay đội thông tin · Quản lý các hiệu chỉnh của dữ liệu EPG"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]TUỲ CHỈNH CÀI ĐẶT DỊCH VỤ[/B][CR][CR]Cài đặt điều khiển MrMC thông qua UPnP và HTTP · Tuỳ chỉnh chia sẻ file[CR]Bật Zeroconf · Tuỳ chỉnh AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]TUỲ CHỈNH CÀI ĐẶT DỊCH VỤ[/B][CR][CR]Cài đặt điều khiển Kodi thông qua UPnP và HTTP · Tuỳ chỉnh chia sẻ file[CR]Bật Zeroconf · Tuỳ chỉnh AirPlay"
 
 msgctxt "#31413"
 msgid "Local subtitle available"

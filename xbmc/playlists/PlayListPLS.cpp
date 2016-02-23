@@ -175,7 +175,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
           bFailed = true;
           break;
         }
-        m_vecItems[idx - 1]->GetMusicInfoTag()->SetDuration(atoi(strValue.c_str()));
+        m_vecItems[idx - 1]->GetMusicInfoTag()->SetDuration(atol(strValue.c_str()));
       }
       else if (strLeft == "playlistname")
       {

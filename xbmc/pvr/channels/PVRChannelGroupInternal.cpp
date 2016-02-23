@@ -20,18 +20,19 @@
 
 #include "PVRChannelGroupInternal.h"
 
+#include <cassert>
+#include <utility>
+
 #include "dialogs/GUIDialogOK.h"
+#include "epg/EpgContainer.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimers.h"
+#include "PVRChannelGroupsContainer.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
-
-#include "pvr/PVRDatabase.h"
-#include "pvr/PVRManager.h"
-#include "epg/EpgContainer.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/addons/PVRClients.h"
-
-#include <assert.h>
 
 using namespace PVR;
 using namespace EPG;

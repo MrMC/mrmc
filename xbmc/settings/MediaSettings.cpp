@@ -27,10 +27,11 @@
 #include "PlayListPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "music/MusicDatabase.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -44,6 +45,11 @@
 #include "video/VideoDatabase.h"
 #include "TextureDatabase.h"
 #include "TextureCache.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CMediaSettings::CMediaSettings()
 {
@@ -139,6 +145,31 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     m_defaultVideoSettings.m_SubtitleCached = false;
   }
 
+  pElement = settings->FirstChildElement("defaultaudiosettings");
+  if (pElement != NULL)
+  {
+    if (!XMLUtils::GetInt(pElement, "masterstreamtype", m_defaultAudioSettings.m_MasterStreamType))
+      m_defaultAudioSettings.m_MasterStreamType = AE_DSP_ASTREAM_AUTO;
+    if (!XMLUtils::GetInt(pElement, "masterstreamtypesel", m_defaultAudioSettings.m_MasterStreamTypeSel))
+      m_defaultAudioSettings.m_MasterStreamTypeSel = AE_DSP_ASTREAM_AUTO;
+    if (!XMLUtils::GetInt(pElement, "masterstreambase", m_defaultAudioSettings.m_MasterStreamBase))
+      m_defaultAudioSettings.m_MasterStreamBase = AE_DSP_ABASE_STEREO;
+
+    std::string strTag;
+    for (int type = AE_DSP_ASTREAM_BASIC; type < AE_DSP_ASTREAM_MAX; type++)
+    {
+      for (int base = AE_DSP_ABASE_STEREO; base < AE_DSP_ABASE_MAX; base++)
+      {
+        int tmp;
+        strTag = StringUtils::Format("masterprocess_%i_%i", type, base);
+        if (XMLUtils::GetInt(pElement, strTag.c_str(), tmp))
+          m_defaultAudioSettings.m_MasterModes[type][base] = tmp;
+        else
+          m_defaultAudioSettings.m_MasterModes[type][base] = 0;
+      }
+    }
+  }
+
   // mymusic settings
   pElement = settings->FirstChildElement("mymusic");
   if (pElement != NULL)
@@ -225,6 +256,20 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   if (pNode == NULL)
     return false;
 
+  XMLUtils::SetInt(pNode, "masterstreamtype", m_defaultAudioSettings.m_MasterStreamType);
+  XMLUtils::SetInt(pNode, "masterstreamtypesel", m_defaultAudioSettings.m_MasterStreamTypeSel);
+  XMLUtils::SetInt(pNode, "masterstreambase", m_defaultAudioSettings.m_MasterStreamBase);
+
+  std::string strTag;
+  for (int type = AE_DSP_ASTREAM_BASIC; type < AE_DSP_ASTREAM_MAX; type++)
+  {
+    for (int base = AE_DSP_ABASE_STEREO; base < AE_DSP_ABASE_MAX; base++)
+    {
+      strTag = StringUtils::Format("masterprocess_%i_%i", type, base);
+      XMLUtils::SetInt(pNode, strTag.c_str(), m_defaultAudioSettings.m_MasterModes[type][base]);
+    }
+  }
+
   // mymusic
   pNode = settings->FirstChild("mymusic");
   if (pNode == NULL)
@@ -278,11 +323,11 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_MUSICLIBRARY_CLEANUP)
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
+    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
       g_application.StartMusicCleanup(true);
   }
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT)
-    CBuiltins::Execute("exportlibrary(music)");
+    CBuiltins::GetInstance().Execute("exportlibrary(music)");
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_IMPORT)
   {
     std::string path;
@@ -301,11 +346,11 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_CLEANUP)
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
+    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
       g_application.StartVideoCleanup(true);
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_EXPORT)
-    CBuiltins::Execute("exportlibrary(video)");
+    CBuiltins::GetInstance().Execute("exportlibrary(video)");
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_IMPORT)
   {
     std::string path;

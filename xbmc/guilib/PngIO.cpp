@@ -177,7 +177,7 @@ bool CPngIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, un
   return true;
 }
 
-bool CPngIO::Decode(unsigned char* const pixels, unsigned int pitch)
+bool CPngIO::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
 {
   bool rescale = false;
   if (m_width != m_originalWidth || m_height != m_originalHeight)
@@ -237,9 +237,7 @@ bool CPngIO::Decode(unsigned char* const pixels, unsigned int pitch)
   return true;
 }
 
-bool CPngIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height,
-  unsigned int pitch, const std::string& destFile,
-  unsigned char* &bufferout, unsigned int &bufferoutSize)
+bool CPngIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, unsigned char* &bufferout, unsigned int &bufferoutSize)
 { // given a surface, encode it to memory and pass the memory back. someone else will do i/o with it.
   pngStructPtr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   if (!pngStructPtr)

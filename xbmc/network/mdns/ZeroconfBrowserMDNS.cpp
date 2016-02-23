@@ -18,15 +18,19 @@
  *
  */
 
+#include "system.h"
+
 #include "ZeroconfBrowserMDNS.h"
-#include <utils/log.h>
-#include <threads/SingleLock.h>
-#include "guilib/GUIWindowManager.h"
-#include "guilib/GUIMessage.h"
-#include "GUIUserMessages.h"
-#include "network/DNSNameCache.h"
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
+#include "network/DNSNameCache.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
 
 #pragma comment(lib, "dnssd.lib")
 

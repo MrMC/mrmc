@@ -20,10 +20,16 @@
  *
  */
 
-#include <vector>
-#include <gif_lib.h>
-
 #include "guilib/iimage.h"
+#include <gif_lib.h>
+#include <memory>
+#include <vector>
+#include "URL.h"
+
+namespace XFILE
+{
+  class CFile;
+};
 
 #pragma pack(1)
 struct GifColor
@@ -32,88 +38,22 @@ struct GifColor
 };
 #pragma pack()
 
-namespace XFILE
-{
-  class CFile;
-};
-class CGifFrame;
 
-class CGifIO : public IImage
-{
-public:
-  typedef std::shared_ptr<CGifFrame> FramePtr;
-
-  CGifIO();
-  virtual ~CGifIO();
-
-  virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
-  virtual bool Decode(unsigned char* const pixels, unsigned int pitch);
-  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height,
-    unsigned int pitch, const std::string& destFile,
-    unsigned char* &bufferout, unsigned int &bufferoutSize);
-
-  bool LoadGifMetaData(const char* file);
-  bool LoadGif(const char* file);
-  
-  bool IsAnimated(const char* file);
-
-  const std::vector<FramePtr>& GetFrames() const { return m_frames; }
-  unsigned int GetPitch()    const { return m_pitch; }
-  unsigned int GetNumLoops() const { return m_loops; }
-
-private:
-  bool Open(GifFileType*& gif, void *dataPtr, InputFunc readFunc);
-  void Close(GifFileType* gif);
-  void Release();
-  void InitTemplateAndColormap();
-  bool LoadGifMetaData(GifFileType* gif);
-
-  bool Slurp(GifFileType* gif);
-  static void ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject* src, unsigned int size);
-  bool gcbToFrame(CGifFrame &frame, unsigned int imgIdx);
-  bool ExtractFrames(unsigned int count);
-  void SetFrameAreaToBack(unsigned char* dest, const CGifFrame &frame);
-  void ConstructFrame(CGifFrame &frame, const unsigned char* src) const;
-  bool PrepareTemplate(const CGifFrame &frame);
-  void PrettyPrintError(std::string messageTemplate, int reason);
-
-  inline std::string memOrFile()
-  {
-    return m_filename.empty() ? std::string("memory file") : m_filename;
-  }
-
-  std::vector<FramePtr> m_frames;
-  unsigned int          m_imageSize;
-  unsigned int          m_pitch;
-  unsigned int          m_loops;
-  unsigned int          m_numFrames;
-  
-  std::string           m_filename;
-  GifFileType          *m_gif;
-  bool                  m_hasBackground;
-  GifColor              m_backColor;
-  std::vector<GifColor> m_globalPalette;
-  unsigned char        *m_pTemplate;
-  int                   m_isAnimated;
-  XFILE::CFile         *m_gifFile;
-  
-};
-
-class CGifFrame
+class GifFrame
 {
   friend class CGifIO;
-  
+
 public:
-  
-  CGifFrame();
-  virtual ~CGifFrame();
-  
+
+  GifFrame();
+  virtual ~GifFrame();
+
   unsigned char* m_pImage;
   unsigned int m_delay;
-  
+
 private:
-  CGifFrame(const CGifFrame& src);
-  
+  GifFrame(const GifFrame& src);
+
   unsigned int m_imageSize;
   unsigned int m_height;
   unsigned int m_width;
@@ -121,4 +61,58 @@ private:
   unsigned int m_left;
   std::vector<GifColor> m_palette;
   unsigned int m_disposal;
+};
+
+class CGifIO : public IImage
+{
+public:
+  typedef std::shared_ptr<GifFrame> FramePtr;
+
+  CGifIO();
+  virtual ~CGifIO();
+
+  bool LoadGifMetaData(const char* file);
+  bool LoadGif(const char* file);
+
+  virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
+  virtual bool Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format);
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, unsigned char* &bufferout, unsigned int &bufferoutSize);
+  bool IsAnimated(const char* file);
+  const std::vector<FramePtr>& GetFrames() const { return m_frames; }
+  unsigned int GetPitch() const { return m_pitch; }
+  unsigned int GetNumLoops() const { return m_loops; }
+
+private:
+  std::vector<FramePtr> m_frames;
+  unsigned int m_imageSize;
+  unsigned int m_pitch;
+  unsigned int m_loops;
+  unsigned int m_numFrames;
+
+  std::string m_filename;
+  GifFileType* m_gif;
+  std::vector<GifColor> m_globalPalette;
+  unsigned char* m_pTemplate;
+  int m_isAnimated;
+  XFILE::CFile* m_gifFile;
+
+  void InitTemplateAndColormap();
+  bool LoadGifMetaData(GifFileType* gif);
+  bool Open(GifFileType*& gif, void *dataPtr, InputFunc readFunc);
+  void Close(GifFileType* gif);
+  bool Slurp(GifFileType* gif);
+  static void ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject* src, unsigned int size);
+  bool GcbToFrame(GifFrame &frame, unsigned int imgIdx);
+  int ExtractFrames(unsigned int count);
+  void ClearFrameAreaToTransparency(unsigned char* dest, const GifFrame &frame);
+  void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
+  bool PrepareTemplate(GifFrame &frame);
+  void Release();
+  void PrettyPrintError(std::string messageTemplate, int reason);
+
+  inline std::string memOrFile()
+  {
+    return m_filename.empty() ? std::string("memory file") : CURL::GetRedacted(m_filename);
+  }
+
 };

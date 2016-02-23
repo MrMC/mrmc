@@ -25,9 +25,11 @@
  \brief
  */
 
+#include <utility>
+
 #include "FileItem.h"
-#include "GUIInfoTypes.h"
 #include "GUIAction.h"
+#include "GUIInfoTypes.h"
 
 class TiXmlElement;
 

@@ -1,1 +1,0 @@
-pvr.mediaportal.tvserver https://github.com/mrmc/pvr.mediaportal.tvserver 7991dd5426a91f600f9d5acdb78e5c75c90ee089

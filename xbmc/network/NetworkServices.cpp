@@ -19,17 +19,27 @@
  */
 
 #include "NetworkServices.h"
+
+#include <utility>
+
 #include "Application.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogOK.h"
+#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "network/Network.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+#include "utils/RssManager.h"
+#include "utils/SystemInfo.h"
+#include "utils/Variant.h"
+
 #ifdef TARGET_LINUX
 #include "Util.h"
 #endif
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/LocalizeStrings.h"
-#include "network/Network.h"
-
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"
 #endif // HAS_AIRPLAY
@@ -73,16 +83,7 @@
 #include "platform/darwin/osx/XBMCHelper.h"
 #endif
 
-#include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
-#include "utils/RssManager.h"
-#include "utils/SystemInfo.h"
-#include "utils/Variant.h"
-
 using namespace KODI::MESSAGING;
-using namespace std;
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
 #endif // HAS_JSONRPC
@@ -92,6 +93,8 @@ using namespace EVENTSERVER;
 #ifdef HAS_UPNP
 using namespace UPNP;
 #endif // HAS_UPNP
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CNetworkServices::CNetworkServices()
 #ifdef HAS_WEB_SERVER
@@ -244,6 +247,22 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
         ret = false;
 
       if (!ret)
+        return false;
+    }
+  }
+  else if (settingId == CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT)
+  {
+    if (((CSettingBool*)setting)->GetValue())
+    {
+      if (!StartAirPlayServer())
+      {
+        CGUIDialogOK::ShowAndGetInput(CVariant{1273}, CVariant{33100});
+        return false;
+      }
+    }
+    else
+    {
+      if (!StopAirPlayServer(true))
         return false;
     }
   }
@@ -401,7 +420,7 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
   {
     // okey we really don't need to restart, only deinit samba, but that could be damn hard if something is playing
     // TODO - General way of handling setting changes that require restart
-    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{14038}, CVariant{14039}))
+    if (HELPERS::ShowYesNoDialogText(CVariant{14038}, CVariant{14039}) == DialogResponse::YES)
     {
       CSettings::GetInstance().Save();
       CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTARTAPP);
@@ -421,6 +440,13 @@ bool CNetworkServices::OnSettingUpdate(CSetting* &setting, const char *oldSettin
     // and don't change the username to kodi - part of rebrand
     if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME) == "xbmc" &&
         !CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD).empty())
+      return true;
+  }
+  if (settingId == CSettings::SETTING_SERVICES_WEBSERVERPORT)
+  {
+    // if webserverport is default but webserver is activated then treat it as altered
+    // and don't change the port to new value
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
       return true;
   }
   return false;
@@ -480,7 +506,6 @@ bool CNetworkServices::StartWebserver()
   if (IsWebserverRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "Webserver: Starting...");
   if (!m_webserver.Start(webPort, CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME), CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD)))
     return false;
 
@@ -514,14 +539,12 @@ bool CNetworkServices::StopWebserver()
   if (!IsWebserverRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "Webserver: Stopping...");
   if (!m_webserver.Stop() || m_webserver.IsStarted())
   {
     CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
     return false;
   }
   
-  CLog::Log(LOGNOTICE, "Webserver: Stopped...");
 #ifdef HAS_ZEROCONF
 #ifdef HAS_WEB_INTERFACE
   CZeroconf::GetInstance()->RemoveService("servers.webserver");
@@ -538,6 +561,9 @@ bool CNetworkServices::StopWebserver()
 
 bool CNetworkServices::StartAirPlayServer()
 {
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT))
+    return true;
+
 #ifdef HAS_AIRPLAY
   if (!g_application.getNetwork().IsAvailable() || !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
@@ -555,22 +581,15 @@ bool CNetworkServices::StartAirPlayServer()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
-  txt.push_back(make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
-  txt.push_back(make_pair("model", "Xbmc,1"));
-  txt.push_back(make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
+  txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
+  txt.push_back(std::make_pair("model", "Xbmc,1"));
+  txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
 
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT))
-  {
-    // for ios8 clients we need to announce mirroring support
-    // else we won't get video urls anymore.
-    // We also announce photo caching support (as it seems faster and
-    // we have implemented it anyways). 
-    txt.push_back(make_pair("features", "0x20F7"));
-  }
-  else
-  {
-    txt.push_back(make_pair("features", "0x77"));
-  }
+  // for ios8 clients we need to announce mirroring support
+  // else we won't get video urls anymore.
+  // We also announce photo caching support (as it seems faster and
+  // we have implemented it anyways).
+  txt.push_back(std::make_pair("features", "0x20F7"));
 
   CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
@@ -710,7 +729,6 @@ bool CNetworkServices::StartEventServer()
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "ES: Starting event server");
   server->StartServer();
 
   return true;
@@ -743,9 +761,8 @@ bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
   {
     if (server->GetNumberOfClients() > 0)
     {
-      bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13140}, CVariant{13141}, cancelled, CVariant{""}, CVariant{""}, 10000)
-          || cancelled)
+      if (HELPERS::ShowYesNoDialogText(CVariant{13140}, CVariant{13141}, CVariant{""}, CVariant{""}, 10000) != 
+        DialogResponse::YES)
       {
         CLog::Log(LOGNOTICE, "ES: Not stopping event server");
         return false;

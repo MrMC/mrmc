@@ -3,7 +3,7 @@ PLATFORM=$(NATIVEPLATFORM)
 DEPS= ../../Makefile.include.in Makefile
 
 APPNAME=cmake
-VERSION=2.8.12
+VERSION=3.3.2
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -11,6 +11,11 @@ ARCHIVE=$(SOURCE).tar.gz
 
 SETENV=CC=$(CC_FOR_BUILD) CXX=$(CXX_FOR_BUILD) LD=$(LD_FOR_BUILD) CFLAGS=$(NATIVE_CFLAGS) \
 	CXXFLAGS=$(NATIVE_CXXFLAGS) LDFLAGS=$(NATIVE_LDFLAGS)
+
+ifeq ($(NATIVE_OS), osx)
+  SETENV+=SDKROOT=$(shell xcrun --show-sdk-path)
+endif
+
 CONFIGURE=./bootstrap --prefix=$(NATIVEPREFIX) --system-curl
 
 APP=$(PLATFORM)/bin/$(APPNAME)

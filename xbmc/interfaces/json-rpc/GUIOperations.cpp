@@ -24,7 +24,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/AddonManager.h"
 #include "settings/Settings.h"
@@ -32,7 +32,6 @@
 #include "guilib/StereoscopicsManager.h"
 #include "windowing/WindowingFactory.h"
 
-using namespace std;
 using namespace JSONRPC;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
@@ -66,16 +65,16 @@ JSONRPC_STATUS CGUIOperations::ActivateWindow(const std::string &method, ITransp
       cmd += "," + param->asString();
   }
   cmd += ")";
-  CBuiltins::Execute(cmd);
+  CBuiltins::GetInstance().Execute(cmd);
 
   return ACK;
 }
 
 JSONRPC_STATUS CGUIOperations::ShowNotification(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  string image = parameterObject["image"].asString();
-  string title = parameterObject["title"].asString();
-  string message = parameterObject["message"].asString();
+  std::string image = parameterObject["image"].asString();
+  std::string title = parameterObject["title"].asString();
+  std::string message = parameterObject["message"].asString();
   unsigned int displaytime = (unsigned int)parameterObject["displaytime"].asUnsignedInteger();
 
   if (image.compare("info") == 0)

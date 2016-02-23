@@ -1,15 +1,15 @@
-# MrMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team MrMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
-"Project-Id-Version: MrMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.MrMC.tv/\n"
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: MrMC Translation Team\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/MrMC-main/language/zh_CN/)\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/kodi-main/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "隐藏同人画背景"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "频道窗口使用 RDS 时隐藏电子节目单"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "在背景显示“正在播放”视频"
@@ -227,14 +231,6 @@ msgstr "在背景显示“正在播放”视频"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "在背景显示“正在播放”可视化效果"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "视频资料库模式播放电视主题曲（TvTunes 插件）"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -333,7 +329,7 @@ msgid "Current scraper"
 msgstr "当前刮削器"
 
 msgctxt "#31313"
-msgid "Choose metadata provider"
+msgid "Choose a scraper"
 msgstr "选择刮削器"
 
 msgctxt "#31314"
@@ -351,10 +347,6 @@ msgstr "选定用户配置文件"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "最近登录"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "卡拉OK歌曲选择器"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]设置视频选项[/B][CR][CR]管理视频资料库 · 设置视频播放选项 · 修改视频列表选项 · 设置字幕字体"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]设置音乐选项[/B][CR][CR]管理音乐资料库 · 设置音乐播放选项 · 修改音乐列表选项 · 设置歌曲提交 · 设置卡拉OK选项"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]设置音乐选项[/B][CR][CR]管理音乐资料库 · 设置音乐播放选项 · 修改音乐列表选项 · 设置歌曲提交"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -461,16 +453,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]设置系统选项[/B][CR][CR]设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电选项 · 启用调试 · 设置主机锁定"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from MrMC.tv[CR]Modify add-on settings"
-msgstr "[B]设置插件功能[/B][CR][CR]管理你安装的插件 · 在 MrMC.tv 浏览并安装插件 · 修改插件设置"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]设置插件功能[/B][CR][CR]管理你安装的插件 · 在 kodi.tv 浏览并安装插件 · 修改插件设置"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]设置直播电视[/B][CR][CR]更改全屏信息 · 管理电子节目单数据设置"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of MrMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]设置网络服务[/B][CR][CR]设置通过 UPnP 和 HTTP 控制 MrMC · 配置文件共享[CR]启用 Zeroconf · 设置 AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]设置网络服务[/B][CR][CR]设置通过 UPnP 和 HTTP 控制 Kodi · 配置文件共享[CR]启用 Zeroconf · 设置 AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -489,7 +481,7 @@ msgid "Login"
 msgstr "登录"
 
 msgctxt "#31421"
-msgid "Select your MrMC user profile[CR]to login and continue"
+msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "选择您的用户配置文件[CR]登录并继续"
 
 msgctxt "#31422"

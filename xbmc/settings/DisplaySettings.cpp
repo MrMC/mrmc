@@ -18,20 +18,21 @@
  *
  */
 
-#include <algorithm>
+#include "DisplaySettings.h"
+
 #include <cstdlib>
+#include <float.h>
+#include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include <float.h>
-
-#include "DisplaySettings.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/gui3d.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -41,6 +42,10 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "windowing/WindowingFactory.h"
+
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 // 0.1 second increments
 #define MAX_REFRESH_CHANGE_DELAY 200
@@ -257,8 +262,8 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     {
       if (!m_resolutionChangeAborted)
       {
-        bool cancelled = false;
-        if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13110}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
+        if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
+          DialogResponse::YES)
         {
           m_resolutionChangeAborted = true;
           return false;
@@ -278,8 +283,8 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
 
     if (!m_resolutionChangeAborted)
     {
-      bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13110}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
+      if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
+        DialogResponse::YES)
       {
         m_resolutionChangeAborted = true;
         return false;
@@ -563,9 +568,9 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
   else if (strResolution.size() >= 21)
   {
     // format: SWWWWWHHHHHRRR.RRRRRP333, where S = screen, W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
-    int screen = strtol(StringUtils::Mid(strResolution, 0,1).c_str(), NULL, 10);
-    int width = strtol(StringUtils::Mid(strResolution, 1,5).c_str(), NULL, 10);
-    int height = strtol(StringUtils::Mid(strResolution, 6,5).c_str(), NULL, 10);
+    int screen = std::strtol(StringUtils::Mid(strResolution, 0,1).c_str(), NULL, 10);
+    int width = std::strtol(StringUtils::Mid(strResolution, 1,5).c_str(), NULL, 10);
+    int height = std::strtol(StringUtils::Mid(strResolution, 6,5).c_str(), NULL, 10);
     float refresh = (float)std::strtod(StringUtils::Mid(strResolution, 11,9).c_str(), NULL);
     unsigned flags = 0;
 
