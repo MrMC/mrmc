@@ -2,7 +2,7 @@
 DEPS = Makefile ../../Makefile.include
 
 LIBNAME=libdvdnav
-BASE_URL=https://github.com/xbmc/libdvdnav
+BASE_URL=https://github.com/mrmc/libdvdnav
 VERSION=master
 
 RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
