@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="29">
+  <defaultcontrol always="true">52</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <include>OpenClose</include>
+  <controls>
+    <control type="group">
+      <top>75</top>
+      <control type="fixedlist" id="52">
+        <animation effect="slide" start="0,0" end="-225,0" time="0" condition="StringCompare(Container(52).NumItems,2)">conditional</animation>
+        <left>285</left>
+        <top>249</top>
+        <width>1350</width>
+        <height>450</height>
+        <onleft>noop</onleft>
+        <onright>noop</onright>
+        <onup>noop</onup>
+        <ondown>11</ondown>
+        <pagecontrol>-</pagecontrol>
+        <scrolltime>250</scrolltime>
+        <focusposition>1</focusposition>
+        <movement>1</movement>
+        <orientation>horizontal</orientation>
+        <itemlayout width="450" height="450">
+          <control type="image">
+            <left>75</left>
+            <top>0</top>
+            <width>300</width>
+            <height>300</height>
+            <aspectratio scalediffuse="false">scale</aspectratio>
+            <texture background="true" diffuse="images/logindiffuse.png">$INFO[ListItem.Icon]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout width="450" height="450">
+          <control type="image">
+            <left>75</left>
+            <top>0</top>
+            <width>300</width>
+            <height>300</height>
+            <aspectratio scalediffuse="false">scale</aspectratio>
+            <texture background="true" diffuse="images/logindiffuse.png">$INFO[ListItem.Icon]</texture>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="image">
+        <visible>Control.HasFocus(52)</visible>
+        <animation effect="fade" time="300">VisibleChange</animation>
+        <left>797</left>
+        <top>236</top>
+        <width>326</width>
+        <height>326</height>
+        <aspectratio>stretch</aspectratio>
+        <texture>images/LoginSlider.png</texture>
+        <animation effect="slide" start="0,0" end="-225,0" time="0" condition="StringCompare(Container(52).NumItems,2)">conditional</animation>
+        <animation type="Conditional" condition="Container(52).Position(0)">
+          <effect type="slide" start="0,0" end="-450,0" center="auto" time="200" reversible="true" />
+        </animation>
+        <animation type="Conditional" condition="Container(52).Position(1)">
+          <effect type="slide" start="0,0" end="0,0" center="auto" time="200" reversible="true" />
+        </animation>
+        <animation type="Conditional" condition="Container(52).Position(2)">
+          <effect type="slide" start="0,0" end="450,0" center="auto" time="200" reversible="true" />
+        </animation>
+      </control>
+    </control>
+    <control type="group" description="Labels and button">
+      <left>0</left>
+      <top>696</top>
+      <control type="label" description="label 1">
+        <left>0</left>
+        <top>30</top>
+        <height>45</height>
+        <width>1920</width>
+        <align>center</align>
+        <font>size33</font>
+        <textcolor>White2</textcolor>
+        <label>[B]$INFO[ListItem.Label][/B]</label>
+      </control>
+      <control type="label" description="Label 2">
+        <left>0</left>
+        <top>69</top>
+        <width>1920</width>
+        <font>size27</font>
+        <align>center</align>
+        <textcolor>Grey</textcolor>
+        <label>$INFO[ListItem.Label2]</label>
+      </control>
+      <control type="button" id="11" description="Quit xbmc">
+        <left>915</left>
+        <top>255</top>
+        <width>90</width>
+        <height>90</height>
+        <onup>52</onup>
+        <ondown>52</ondown>
+        <onleft>Control.Move(52,-1)</onleft>
+        <onleft>52</onleft>
+        <onright>Control.Move(52,1)</onright>
+        <onright>52</onright>
+        <texturefocus>images/QuitFO.png</texturefocus>
+        <texturenofocus>images/QuitNF.png</texturenofocus>
+        <onclick>XBMC.Quit</onclick>
+        <font>-</font>
+        <label>$LOCALIZE[13009]</label>
+      </control>
+    </control>
+    <include>Header</include>
+  </controls>
+</window>

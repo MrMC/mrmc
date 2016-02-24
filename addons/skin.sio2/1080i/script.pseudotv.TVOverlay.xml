@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <allowoverlay>no</allowoverlay>
+  <controls>
+    <control type="image" id="101"></control>
+    <control type="image" id="103">
+      <description>Channel Bug</description>
+      <left>220r</left>
+      <top>120r</top>
+      <width>300</width>
+      <height>200</height>
+      <aspectratio>keep</aspectratio>
+      <texture></texture>
+      <!--<colordiffuse>FF000000</colordiffuse>-->
+      <animation effect="fade" start="40" end="40" condition="True">Conditional</animation>
+    </control>
+    <control type="group" id="102">
+      <animation effect="fade" time="500">VisibleChange</animation>
+      <control type="image">
+        <description>Info Background</description>
+        <left>60</left>
+        <top>700</top>
+        <width>1800</width>
+        <height>230</height>
+        <texture border="50">pstvInfoWindow.png</texture>
+      </control>
+      <control type="grouplist">
+        <left>120</left>
+        <top>700</top>
+        <width>1680</width>
+        <height>60</height>
+        <orientation>horizontal</orientation>
+        <itemgap>10</itemgap>
+        <control type="label" id="502">
+          <description>Show Name Label</description>
+          <height>60</height>
+          <width min="40" max="470">auto</width>
+          <scroll>true</scroll>
+          <font>size24</font>
+          <textcolor>White</textcolor>
+          <shadowcolor>Black</shadowcolor>
+          <label>Now watching</label>
+        </control>
+        <control type="label" id="503">
+          <description>Show Name Label</description>
+          <width min="40" max="700">auto</width>
+          <height>60</height>
+          <label>Show Name</label>
+          <font>Size33B</font>
+          <align>left</align>
+          <textcolor>Yellow</textcolor>
+        </control>
+        <control type="label">
+          <description>Show Name Label</description>
+          <width min="10" max="50">auto</width>
+          <height>60</height>
+          <label>•</label>
+          <font>Size24</font>
+          <align>left</align>
+          <textcolor>White</textcolor>
+        </control>
+        <control type="label" id="504">
+          <description>Show Title Label</description>
+          <width min="40" max="700">auto</width>
+          <height>60</height>
+          <label>Show Title</label>
+          <font>Size24</font>
+          <align>left</align>
+          <textcolor>Grey</textcolor>
+        </control>
+      </control>
+      <control type="label" id="505">
+        <left>160</left>
+        <top>760</top>
+        <width>1500</width>
+        <height>110</height>
+        <align>left</align>
+        <aligny>top</aligny>
+        <label>Show Description</label>
+        <textcolor>FFFFFFFF</textcolor>
+        <font>Size24</font>
+        <wrapmultiline>true</wrapmultiline>
+      </control>
+      <control type="image" id="506">
+        <description>Channel Logo</description>
+        <left>1700</left>
+        <top>720</top>
+        <width>130</width>
+        <height>75</height>
+        <aspectratio>scale</aspectratio>
+      </control>
+    </control>
+  </controls>
+</window>

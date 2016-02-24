@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!--NAVI X-->
+<window>
+  <defaultcontrol>9000</defaultcontrol>
+  <allowoverlays>false</allowoverlays>
+  <controls>
+    <control type="image" id="140">
+      <description>bg</description>
+      <left>0</left>
+      <top>0</top>
+      <width>1920</width>
+      <height>1080</height>
+      <texture>images/Black.png</texture>
+    </control>
+    <control type="label" id="141">
+      <description>label_title</description>
+      <left>130</left>
+      <top>220</top>
+      <width>300</width>
+      <height>32</height>
+      <label>Browse:</label>
+      <textcolor>FFFFFFFF</textcolor>
+      <font>special13</font>
+    </control>
+    <control type="textbox" id="142">
+      <description>path</description>
+      <left>130</left>
+      <top>260</top>
+      <width>480</width>
+      <height>80</height>
+      <align>left</align>
+      <ondown>145</ondown>
+      <textcolor>FFFFFFFF</textcolor>
+      <font>special13</font>
+    </control>
+    <control type="button" id="143">
+      <description>browse</description>
+      <left>130</left>
+      <top>330</top>
+      <width>100</width>
+      <height>32</height>
+      <align>center</align>
+      <aligny>center</aligny>
+      <label>Browse</label>
+      <onup>143</onup>
+      <onleft>143</onleft>
+      <onright>144</onright>
+      <ondown>143</ondown>
+      <textcolor>FFFFFFFF</textcolor>
+      <font>special13</font>
+    </control>
+    <control type="button" id="144">
+      <description>edit</description>
+      <left>250</left>
+      <top>330</top>
+      <width>100</width>
+      <height>32</height>
+      <align>center</align>
+      <aligny>center</aligny>
+      <label>Edit</label>
+      <onup>142</onup>
+      <onleft>143</onleft>
+      <onright>145</onright>
+      <ondown>144</ondown>
+      <textcolor>FFFFFFFF</textcolor>
+      <font>special13</font>
+    </control>
+    <control type="button" id="145">
+      <description>ok</description>
+      <left>370</left>
+      <top>330</top>
+      <width>100</width>
+      <height>32</height>
+      <align>center</align>
+      <aligny>center</aligny>
+      <label>Ok</label>
+      <onup>142</onup>
+      <onleft>144</onleft>
+      <onright>146</onright>
+      <ondown>145</ondown>
+      <textcolor>FFFFFFFF</textcolor>
+      <font>special13</font>
+    </control>
+    <control type="button" id="146">
+      <description>cancel</description>
+      <left>490</left>
+      <top>330</top>
+      <width>100</width>
+      <height>32</height>
+      <align>center</align>
+      <aligny>center</aligny>
+      <label>Cancel</label>
+      <onup>142</onup>
+      <onleft>145</onleft>
+      <ondown>146</ondown>
+      <textcolor>FFFFFFFF</textcolor>
+      <font>special13</font>
+    </control>
+  </controls>
+</window>

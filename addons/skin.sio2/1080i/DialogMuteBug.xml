@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="113">
+  <defaultcontrol always="true">901</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <include>OpenClose</include>
+  <controls>
+    <control type="group">
+      <left>855</left>
+      <top>666</top>
+      <control type="image" id="901" description="Muted">
+        <width>210</width>
+        <height>206</height>
+        <aspectratio>keep</aspectratio>
+        <texture>images/MutedSpeaker.png</texture>
+      </control>
+    </control>
+  </controls>
+</window>

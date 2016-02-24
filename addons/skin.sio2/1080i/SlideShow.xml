@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="2007">
+  <controls>
+    <control type="group">
+      <left>50</left>
+      <top>200r</top>
+      <control type="image">
+        <visible>!Slideshow.IsPaused</visible>
+        <animation type="Conditional" reversible="true" condition="!Slideshow.IsPaused">
+          <effect type="fade" start="0" end="100" time="350"/>
+          <effect type="fade" start="100" end="0" delay="1500" time="350"/>
+        </animation>
+        <width>150</width>
+        <height>150</height>
+        <texture>Pics/Play.png</texture>
+      </control>
+    </control>
+    <control type="group" id="13">
+      <visible>Slideshow.IsPaused</visible>
+      <animation effect="fade" start="0" end="100" time="350">VisibleChange</animation>
+      <left>50</left>
+      <top>200r</top>
+      <control type="image">
+        <width>150</width>
+        <height>150</height>
+        <texture>Pics/Pause.png</texture>
+      </control>
+    </control>
+  </controls>
+</window>

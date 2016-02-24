@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol>9000</defaultcontrol>
+  <allowoverlays>false</allowoverlays>
+  <controls>
+    <control type="textbox" id="130">
+      <description>Text box</description>
+      <left>40</left>
+      <top>50</top>
+      <width>640</width>
+      <height>460</height>
+      <font>Size30</font>
+      <align>justify</align>
+      <onright>131</onright>
+      <onup>130</onup>
+      <ondown>130</ondown>
+      <pagecontrol>132</pagecontrol>
+      <spinleft>0</spinleft>
+      <spintop>0</spintop>
+      <pulseonselect></pulseonselect>
+      <textcolor>White</textcolor>
+    </control>
+    <control type="spincontrol" id="132">
+      <description>Next page button</description>
+      <left>600</left>
+      <top>520</top>
+      <subtype>page</subtype>
+      <font>Size30</font>
+      <textcolor>White</textcolor>
+      <onleft>130</onleft>
+      <onright>130</onright>
+      <ondown>132</ondown>
+      <onup>132</onup>
+      <showonepage>true</showonepage>
+      <!--animation effect="slide" time="300" start="600,0" end="0,0" acceleration="-1">WindowOpen</animation-->
+      <!--animation effect="slide" time="200" start="0,0" end="600,0" acceleration="1.1">WindowClose</animation-->
+      <!--visible>Control.IsVisible(100)</visible-->
+    </control>
+  </controls>
+</window>

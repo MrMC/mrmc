@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+  <include name="HomeButtonsCommons">
+    <left>0</left>
+    <width>300</width>
+    <height>81</height>
+    <texturefocus>-</texturefocus>
+    <label>-</label>
+  </include>
+  <include name="Sublist">
+    <top>592</top>
+    <width>300</width>
+    <height>430</height>
+    <scrolltime>280</scrolltime>
+    <itemlayout height="72" width="300">
+      <control type="label">
+        <left>150</left>
+        <top>0</top>
+        <width>261</width>
+        <height>72</height>
+        <textoffsetx>0</textoffsetx>
+        <font>size38</font>
+        <label>$INFO[ListItem.Label]</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <scroll>false</scroll>
+      </control>
+    </itemlayout>
+    <focusedlayout height="72" width="300">
+      <control type="label">
+        <left>150</left>
+        <top>0</top>
+        <width>261</width>
+        <height>72</height>
+        <textoffsetx>0</textoffsetx>
+        <font>size38</font>
+        <label>$INFO[ListItem.Label]</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <scroll>true</scroll>
+      </control>
+    </focusedlayout>
+  </include>
+</includes>

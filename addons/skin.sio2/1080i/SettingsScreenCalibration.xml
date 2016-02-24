@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="11">
+  <defaultcontrol always="true">8</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <controls>
+    <control type="videowindow" id="20" description="videowindow">
+      <include>Dimensions_Fullscreen</include>
+    </control>
+    <control type="mover" id="8" description="top left">
+      <left>0</left>
+      <top>0</top>
+      <width>256</width>
+      <height>256</height>
+      <texturefocus>calibrate/CalibrateTopLeft.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+    <control type="mover" id="9" description="right bottom">
+      <left>1644</left>
+      <top>824</top>
+      <width>256</width>
+      <height>256</height>
+      <texturefocus>calibrate/CalibrateBottomRight.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+    <control type="mover" id="10" description="subtitle position">
+      <left>832</left>
+      <top>592</top>
+      <width>256</width>
+      <height>128</height>
+      <texturefocus border="0,3,0,3">calibrate/CalibrateSubs.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+    <control type="resize" id="11" description="pixel aspect ratio">
+      <left>0</left>
+      <top>348</top>
+      <width>384</width>
+      <height>384</height>
+      <texturefocus>calibrate/CalibratePixelRatio.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+    <control type="label" id="2" description="coordinates label">
+      <left>30</left>
+      <top>60</top>
+      <width>1860</width>
+      <align>center</align>
+      <label>-</label>
+    </control>
+    <control type="label" id="3" description="help information">
+      <left>30</left>
+      <top>105</top>
+      <width>1860</width>
+      <align>center</align>
+      <label>-</label>
+    </control>
+  </controls>
+</window>

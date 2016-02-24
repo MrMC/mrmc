@@ -1,0 +1,260 @@
+# XBMC Media Center language file
+# Addon Name: SiO2
+# Addon id: skin.SiO2
+# Addon version: 2.2.4
+# Addon Provider: FastColors
+# Translators:
+# Translators:
+# fastcolors <fastcolors@gmail.com>, 2013
+# relyter, 2013
+# relyter, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skin SiO2\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2013-11-24 10:55+0000\n"
+"Last-Translator: fastcolors <fastcolors@gmail.com>\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/sio2-1/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31000"
+msgid "Page"
+msgstr "Страница"
+
+msgctxt "#31001"
+msgid "Items"
+msgstr "Элементы"
+
+msgctxt "#31002"
+msgid "Karaoke Song"
+msgstr "Песня караоке"
+
+msgctxt "#31003"
+msgid "Choose Shortcut function for Music Icon : Albums  Artists Genres Songs"
+msgstr "Выбор ярлыка для иконки Музыка: Альбомы, Артисты, Жанры, Песни"
+
+msgctxt "#31004"
+msgid "Visualization Presets"
+msgstr "Предустановки визуализации"
+
+msgctxt "#31005"
+msgid "End Time"
+msgstr "Конец"
+
+msgctxt "#31006"
+msgid "Last Added"
+msgstr "Последние добавленные"
+
+msgctxt "#31007"
+msgid "Last Started"
+msgstr "Последние включенные"
+
+msgctxt "#31008"
+msgid ""
+"Enable/Disable Always Colored Icons on Home Screen, when Disabled Icons will"
+" only become colored when Focused"
+msgstr "Включить/выключить цветные иконки в главном меню. Если выключено, только текущая иконка будет цветная."
+
+msgctxt "#31009"
+msgid "Recently Added Episodes"
+msgstr "Недавно добавленные серии"
+
+msgctxt "#31010"
+msgid "Open playlist"
+msgstr "Открыть плейлист"
+
+msgctxt "#31011"
+msgid "Save playlist"
+msgstr "Сохранить плейлист"
+
+msgctxt "#31012"
+msgid "Clear playlist"
+msgstr "Очистить плейлист"
+
+msgctxt "#31013"
+msgid "Available Audio"
+msgstr "Источники музыки"
+
+msgctxt "#31014"
+msgid "Current Playlist"
+msgstr "Текущий плейлист"
+
+msgctxt "#31015"
+msgid "Select Subtitle Add-on"
+msgstr "Выбор дополнения субтитров"
+
+msgctxt "#31016"
+msgid "Last Updated"
+msgstr "Последнее обновление"
+
+msgctxt "#31017"
+msgid "Choose Addon for Subtitles Search & Download"
+msgstr "Выбор аддона для поиска и загрузки субтиров"
+
+msgctxt "#31018"
+msgid "Choose Addon for Lyrics Search & Download"
+msgstr "Выбор дополнения для поиска и загрузки текстов песен"
+
+msgctxt "#31019"
+msgid ""
+"Enable or Disable Clock On top right of All Pages (not while watching "
+"Movies).[CR]Home Menu Will show Time and date."
+msgstr "Включить/выключить часы в правом верхнем углу на всех страницах, кроме страницы просмотра видео.[CR] В главном меню дополнительно будет еще дата."
+
+msgctxt "#31020"
+msgid "Enable or Disable Vinyl Record Animation from Home Shelf Albums."
+msgstr "Включить/выключить анимацию виниловой пластинки для альбомов на Полке"
+
+msgctxt "#31021"
+msgid "Memory Used:"
+msgstr "Использовано памяти:"
+
+msgctxt "#31022"
+msgid "Specify Action for Power Icon in Menu"
+msgstr "Действие при выборе иконки питания"
+
+msgctxt "#31023"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Фанарт[CR][CR]недоступен,[CR][CR]нажмите кнопку, чтобы выбрать"
+
+msgctxt "#31024"
+msgid "Aired"
+msgstr "Премьера"
+
+msgctxt "#31025"
+msgid "Playlist Options"
+msgstr "Параметры плейлиста"
+
+msgctxt "#31026"
+msgid "Arial based"
+msgstr "На основе Arial"
+
+msgctxt "#31027"
+msgid "Last Added"
+msgstr "Последние добавленные"
+
+msgctxt "#31030"
+msgid "Custom Shelf Icon"
+msgstr "Выбрать свою иконку для Полки"
+
+msgctxt "#31031"
+msgid "Replace SiO2 Icon on Shelf with A Picture of Your choice."
+msgstr "Заменить картинкой по вашему выбору иконку SiO2 на Полке   "
+
+msgctxt "#31032"
+msgid "Log Off"
+msgstr "Вылогиниться"
+
+msgctxt "#31033"
+msgid "Always Colored Menu Icons"
+msgstr "Всегда цветные иконки в главном меню"
+
+msgctxt "#31034"
+msgid "Click to Add Favourite to Home Page"
+msgstr "Нажмите, чтобы добавить Избранное в главное меню"
+
+msgctxt "#31035"
+msgid "Click to Pick Icon, Change Favourite or Remove Favourite"
+msgstr "Нажмите, чтобы выбрать иконку, изменить или убрать Избранное "
+
+msgctxt "#31036"
+msgid "Reset ALL skin settings to default"
+msgstr "Сбросить все настройки обложки на значения по умолчанию"
+
+msgctxt "#31037"
+msgid "Add-ons manager"
+msgstr "Управление дополнениями"
+
+msgctxt "#31038"
+msgid "min"
+msgstr "мин"
+
+msgctxt "#31039"
+msgid "Record Animation on Shelf"
+msgstr "Анимация пластинки на Полке"
+
+msgctxt "#31040"
+msgid "Shelf items"
+msgstr "Элементы на Полке"
+
+msgctxt "#31041"
+msgid "Active Scrollbars"
+msgstr "активные Полосы прокрутки"
+
+msgctxt "#31044"
+msgid "View options dialog"
+msgstr "Диалог выбора параметров"
+
+msgctxt "#31045"
+msgid "Recent/Recommended Inverted First Item"
+msgstr "Заменять первую позицию на Полке (Добавленные/Рекомендованные)"
+
+msgctxt "#31046"
+msgid "Customize What Is Displayed On Home Shelf."
+msgstr "Настройки содержимого Полки"
+
+msgctxt "#31047"
+msgid "Show Clock"
+msgstr "Показывать часы"
+
+msgctxt "#31048"
+msgid "Recommended"
+msgstr "Рекомендованные"
+
+msgctxt "#31049"
+msgid "Home menu Power button function"
+msgstr "Выбор действия для иконки питания в главном меню"
+
+msgctxt "#31050"
+msgid "Choose from menu"
+msgstr "Показать меню"
+
+msgctxt "#31051"
+msgid "Custom Shelf Shortcuts"
+msgstr "Настойка ярлыков на Полке"
+
+msgctxt "#31052"
+msgid "Home Page Customizer"
+msgstr "Настройки главного меню "
+
+msgctxt "#31053"
+msgid "Link For Music Icon"
+msgstr "Иконка музыки ведет к ..."
+
+msgctxt "#31054"
+msgid ""
+"Enable Views Menu in order to change the way Items are presented to you."
+msgstr "Включить меню Вид для изменения режимов просмотра элементов"
+
+msgctxt "#31055"
+msgid "Fullscreen player"
+msgstr "Воспроизведение на весь экран"
+
+msgctxt "#31056"
+msgid "Change Icon"
+msgstr "Изменить иконку"
+
+msgctxt "#31057"
+msgid "Replace Item"
+msgstr "Заменить элемент"
+
+msgctxt "#31059"
+msgid "LiveTV"
+msgstr "Телевидение"
+
+msgctxt "#31060"
+msgid "Add"
+msgstr "Добавить"
+
+msgctxt "#31062"
+msgid "Select Lyrics Add-on"
+msgstr "Выбор дополнения текстов песен"
+
+msgctxt "#31064"
+msgid "Fullscreen"
+msgstr "На весь экран"

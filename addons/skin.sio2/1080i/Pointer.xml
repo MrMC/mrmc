@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="105">
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control type="image" id="1">
+      <description>Pointer</description>
+      <width>40</width>
+      <height>40</height>
+      <texture>pointer/Pointer.png</texture>
+    </control>
+  </controls>
+</window>

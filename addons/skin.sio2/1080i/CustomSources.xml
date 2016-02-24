@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1115">
+  <defaultcontrol always="true">9000</defaultcontrol>
+  <include>DialogOpenClose</include>
+  <controls>
+    <control type="group">
+      <include>DialogOpenCloseVisible</include>
+      <control type="image" description="List back">
+        <centerleft>960</centerleft>
+        <centertop>540</centertop>
+        <width>802</width>
+        <height>600</height>
+        <aspectratio>stretch</aspectratio>
+        <texture border="50">images/ContextMenu.png</texture>
+      </control>
+      <control type="grouplist" id="9000">
+        <height>400</height>
+        <top>345</top>
+        <include>DialogGLs</include>
+        <control type="button" id="701" description="Video">
+          <include>DialogButt</include>
+          <label>3</label>
+          <onclick>Close</onclick>
+          <onclick>ActivateWindow(Videos,files)</onclick>
+        </control>
+        <control type="button" id="702" description="Music">
+          <include>DialogButt</include>
+          <label>$LOCALIZE[2]</label>
+          <onclick>Close</onclick>
+          <onclick>ActivateWindow(MusicFiles,root)</onclick>
+        </control>
+        <control type="button" id="703" description="Addons">
+          <include>DialogButt</include>
+          <label>$LOCALIZE[24001]</label>
+          <onclick>Close</onclick>
+          <onclick>ActivateWindow(AddonBrowser,root)</onclick>
+        </control>
+        <control type="button" id="704" description="Update Library">
+          <enable>Library.HasContent(Movies) | Library.HasContent(TVShows)</enable>
+          <include>DialogButt</include>
+          <label>653</label>
+          <onclick>Close</onclick>
+          <onclick>UpdateLibrary(video,,true)</onclick>
+        </control>
+        <control type="button" id="705" description="Update Library">
+          <enable>Library.HasContent(Movies) | Library.HasContent(TVShows)</enable>
+          <include>DialogButt</include>
+          <label>334</label>
+          <onclick>Close</onclick>
+          <onclick>CleanLibrary(video,true)</onclick>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1718">
+    <defaultcontrol always="true">3</defaultcontrol>
+    <include>DialogOpenClose</include>
+    <controls>
+        <control type="group">
+            <include>DialogOpenCloseVisible</include>
+            <control type="image" description="List back">
+                <centerleft>960</centerleft>
+                <centertop>540</centertop>
+                <width>802</width>
+                <height>600</height>
+                <aspectratio>stretch</aspectratio>
+                <texture border="50">images/ContextMenu.png</texture>
+            </control>
+            <control type="grouplist" id="9000">
+                <top>345</top>
+                <height>400</height>
+                <include>DialogGLs</include>
+                <control type="button" id="1">
+                    <include>DialogButt</include>
+                    <label>19023</label>
+                    <onclick>close</onclick>
+                    <onclick>ActivateWindowAndFocus(TVChannels)</onclick>
+                </control>
+                <control type="button" id="2">
+                    <include>DialogButt</include>
+                    <label>19024</label>
+                    <onclick>close</onclick>
+                    <onclick>ActivateWindowAndFocus(RADIOChannels)</onclick>
+                </control>
+                <control type="button" id="3">
+                    <include>DialogButt</include>
+                    <label>19069</label>
+                    <onclick>close</onclick>
+                    <onclick>ActivateWindow(TVGuide)</onclick>
+                </control>
+                <control type="button" id="4">
+                    <include>DialogButt</include>
+                    <label>19163</label>
+                    <onclick>close</onclick>
+                    <onclick>ActivateWindowAndFocus(tvrecordings)</onclick>
+                </control>
+                <control type="button" id="5">
+                    <include>DialogButt</include>
+                    <label>19040</label>
+                    <onclick>close</onclick>
+                    <onclick>ActivateWindowAndFocus(tvtimers)</onclick>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>

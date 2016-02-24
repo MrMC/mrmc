@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="2008">
+    <defaultcontrol always="true">450</defaultcontrol>
+    <allowoverlay>yes</allowoverlay>
+    <include>OpenClose</include>
+    <controls>
+        <control type="group">
+            <left>510</left>
+            <top>210</top>
+            <control type="image">
+                <left>-30</left>
+                <top>-30</top>
+                <width>1440</width>
+                <height>744</height>
+                <texture border="50">images/ContextMenu.png</texture>
+            </control>
+            <control type="label">
+                <left>15</left>
+                <top>48</top>
+                <width>873</width>
+                <align>center</align>
+                <info>ListItem.Label</info>
+            </control>
+            <control type="list" id="450">
+                <left>15</left>
+                <top>117</top>
+                <width>870</width>
+                <height>552</height>
+                <onleft>450</onleft>
+                <onright>450</onright>
+                <onup>450</onup>
+                <ondown>450</ondown>
+                <itemlayout height="69">
+                    <control type="image">
+                        <width>870</width>
+                        <height>66</height>
+                        <texture border="2">images/Black.png</texture>
+                    </control>
+                    <control type="label">
+                        <left>30</left>
+                        <width>810</width>
+                        <info>ListItem.Label</info>
+                    </control>
+                </itemlayout>
+                <focusedlayout height="69">
+                    <control type="image">
+                        <width>870</width>
+                        <height>66</height>
+                        <texture border="8">images/Buttonselect.png</texture>
+                    </control>
+                    <control type="label">
+                        <left>30</left>
+                        <width>810</width>
+                        <info>ListItem.Label</info>
+                    </control>
+                </focusedlayout>
+            </control>
+        </control>
+    </controls>
+</window>

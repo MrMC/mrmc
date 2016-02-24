@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">5</defaultcontrol>
+  <left>240</left>
+  <top>100</top>
+  <include>DialogOpenClose</include>
+  <controls>
+    <control type="image">
+      <left>270</left>
+      <width>1360</width>
+      <height>1080</height>
+      <texture border="50">images/ContextMenu.png</texture>
+    </control>
+    <control type="group">
+      <left>450</left>
+      <top>150</top>
+      <control type="label" id="2">
+        <description>header label</description>
+        <top>20</top>
+        <width>1020</width>
+        <height>30</height>
+        <label>587</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <font>Size42B</font>
+        <textcolor>White</textcolor>
+        <shadowcolor>black</shadowcolor>
+      </control>
+      <!--<control type="button">
+			<description>Close Window button</description>
+			<left>10</left>
+			<top>15</top>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<onclick>PreviousMenu</onclick>
+			<onleft>10</onleft>
+			<onright>10</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>
+			<textcolor>White</textcolor>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>-->
+      
+      <control type="grouplist" id="5">
+        <description>control area</description>
+        <top>80</top>
+        <width>1000</width>
+        <height>750</height>
+        <itemgap>10</itemgap>
+        <pagecontrol>6</pagecontrol>
+        <onup>9001</onup>
+        <ondown>9001</ondown>
+        <onleft>9001</onleft>
+        <onright>6</onright>
+      </control>
+      <control type="scrollbar" id="6">
+        <left>220</left>
+        <top>0</top>
+        <width>22</width>
+        <height>390</height>
+        <texturesliderbackground>images/slider_bg.png</texturesliderbackground>
+        <texturesliderbar>images/slider_bg.png</texturesliderbar>
+        <texturesliderbarfocus>images/slider_bg.png</texturesliderbarfocus>
+        <textureslidernib>images/slider_nib.png</textureslidernib>
+        <textureslidernibfocus>images/slider_nib.png</textureslidernibfocus>
+        <onleft>5</onleft>
+        <onright>9001</onright>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+      </control>
+      <control type="button" id="7">
+        <description>Default Button</description>
+        <height>60</height>
+        <align>left</align>
+      </control>
+      <control type="radiobutton" id="8">
+        <description>Default RadioButton</description>
+        <height>60</height>
+        <textcolor>White</textcolor>
+      </control>
+      <control type="spincontrolex" id="9">
+        <description>Default SpinControlex</description>
+        <height>60</height>
+        <textcolor>White</textcolor>
+        <align>left</align>
+        <aligny>center</aligny>
+        <reverse>yes</reverse>
+      </control>
+      <control type="sliderex" id="13">
+        <description>Default Slider</description>
+        <height>60</height>
+        <disabledcolor>Grey</disabledcolor>
+        <textcolor>White</textcolor>
+        <align>left</align>
+        <aligny>center</aligny>
+        <texturesliderbar>images/slider_bg.png</texturesliderbar>
+        <textureslidernib>images/slider_nib_nf.png</textureslidernib>
+        <textureslidernibfocus>images/slider_nib.png</textureslidernibfocus>
+        <sliderwidth>220</sliderwidth>
+        <sliderheight>30</sliderheight>
+      </control>
+      <control type="edit" id="12">
+        <description>Default Edit</description>
+        <height>60</height>
+        <textcolor>White</textcolor>
+      </control>
+      <control type="group" id="9001">
+        <left>305</left>
+        <top>720</top>
+        <control type="button" id="28">
+          <description>Ok Button</description>
+          <width>200</width>
+          <height>60</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <label>186</label>
+          <onup>5</onup>
+          <onleft>27</onleft>
+          <onright>27</onright>
+          <ondown>5</ondown>
+        </control>
+        <control type="button" id="27">
+          <description>Clear Button</description>
+          <left>210</left>
+          <width>200</width>
+          <height>60</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <label>192</label>
+          <onup>5</onup>
+          <onleft>28</onleft>
+          <onright>28</onright>
+          <ondown>5</ondown>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

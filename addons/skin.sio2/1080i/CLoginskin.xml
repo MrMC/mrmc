@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--NAVI X-->
+<window>
+    <defaultcontrol>9000</defaultcontrol>
+    <allowoverlays>false</allowoverlays>
+    <controls>
+        <control type="image" id="140">
+            <description>bg</description>
+            <left>200</left>
+            <top>200</top>
+            <width>350</width>
+            <height>250</height>
+            <texture>dialog-panel.png</texture>
+        </control>
+        <control type="label" id="147">
+            <description>label_title</description>
+            <left>230</left>
+            <top>220</top>
+            <width>200</width>
+            <height>32</height>
+            <label>Navi-Xtreme Sign in:</label>
+            <textcolor>FFFFFFFF</textcolor>
+            <font>special13</font>
+        </control>
+        <control type="label" id="141">
+            <description>label_username</description>
+            <left>230</left>
+            <top>265</top>
+            <width>100</width>
+            <height>32</height>
+            <label>User Name</label>
+            <textcolor>FFFFFFFF</textcolor>
+            <font>special13</font>
+        </control>
+        <control type="label" id="142">
+            <description>label_password</description>
+            <left>230</left>
+            <top>315</top>
+            <width>100</width>
+            <height>32</height>
+            <label>Password</label>
+            <textcolor>FFFFFFFF</textcolor>
+            <font>special13</font>
+        </control>
+        <control type="button" id="143">
+            <description>username</description>
+            <left>330</left>
+            <top>260</top>
+            <width>170</width>
+            <height>40</height>
+            <align>left</align>
+            <aligny>center</aligny>
+            <label>User Name</label>
+            <textcolor>FFFFFFFF</textcolor>
+            <font>special13</font>
+        </control>
+        <control type="button" id="144">
+            <description>password</description>
+            <left>330</left>
+            <top>310</top>
+            <width>170</width>
+            <height>40</height>
+            <align>left</align>
+            <aligny>center</aligny>
+            <label>Password</label>
+            <textcolor>FFFFFFFF</textcolor>
+            <font>special13</font>
+        </control>
+        <control type="button" id="145">
+            <description>login</description>
+            <left>230</left>
+            <top>370</top>
+            <width>120</width>
+            <height>32</height>
+            <align>center</align>
+            <aligny>center</aligny>
+            <label>Sign in</label>
+            <onup>144</onup>
+            <onright>146</onright>
+            <ondown>145</ondown>
+            <textcolor>FFFFFFFF</textcolor>
+            <font>special13</font>
+        </control>
+        <control type="button" id="146">
+            <description>cancel</description>
+            <left>380</left>
+            <top>370</top>
+            <width>120</width>
+            <height>32</height>
+            <align>center</align>
+            <aligny>center</aligny>
+            <label>Cancel</label>
+            <onup>144</onup>
+            <onleft>145</onleft>
+            <ondown>146</ondown>
+            <textcolor>FFFFFFFF</textcolor>
+            <font>special13</font>
+        </control>
+    </controls>
+</window>

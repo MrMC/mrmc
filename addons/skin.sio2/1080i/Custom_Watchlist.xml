@@ -1,0 +1,930 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="window" id="1113">
+  <defaultcontrol always="true">700</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <include>OpenClose</include>
+  <controls>
+    <control type="label">
+      <top>30</top>
+      <left>30</left>
+      <height>30</height>
+      <width>600</width>
+      <font>Size42B</font>
+      <label>$LOCALIZE[31028]</label>
+    </control>
+    <include>Header</include>
+    <control type="image" description="Line">
+      <left>-200</left>
+      <top>1007</top>
+      <height>1</height>
+      <width>2320</width>
+      <texture>images/Line.png</texture>
+    </control>
+    <control type="list" id="222">
+      <visible>true</visible>
+	  <left>385</left>
+      <top>1005</top>
+      <height>80</height>
+      <width>1200</width>
+      <onup>700</onup>
+      <ondown>700</ondown>
+      <onleft>noop</onleft>
+      <onright>noop</onright>
+      <pagecontrol>60</pagecontrol>
+      <orientation>horizontal</orientation>
+      <focusposition>2</focusposition>
+      <itemlayout width="384">
+        <control type="label">
+          <left>192</left>
+          <width>364</width>
+          <height>80</height>
+          <font>size26</font>
+          <align>center</align>
+          <label>$INFO[Listitem.label]</label>
+        </control>
+      </itemlayout>
+      <focusedlayout width="384">
+        <control type="image">
+		<visible>Control.HasFocus(222)</visible>
+          <height>80</height>
+          <width>384</width>
+          <texture>images/backfocus.png</texture>
+        </control>
+        <control type="label">
+          <left>192</left>
+          <width>364</width>
+          <height>80</height>
+          <font>size33B</font>
+          <align>center</align>
+          <label>$INFO[Listitem.label]</label>
+        </control>
+      </focusedlayout>
+      <content>
+        <item id="0">
+          <label>31065</label>
+          <onclick>noop</onclick>
+        </item>
+        <item id="1">
+          <label>31066</label>
+          <onclick>noop</onclick>
+        </item>
+        <item id="2">
+          <label>31067</label>
+          <onclick>noop</onclick>
+        </item>
+        <!--  <item id="3">
+          <label>OTHER</label>
+          <onclick>noop</onclick>
+        </item>
+        <item id="4">
+          <label>OTHER</label>
+          <onclick>noop</onclick>
+        </item>-->
+      </content>
+    </control>
+    <control type="group" id="700">
+      <control type="group" id="8700" description="Movieslay">
+        <visible>Container(222).Hasfocus(0) | Control.IsVisible()</visible>
+        <include>VisibleFade</include>
+        <control type="group" description="ReccomendedMoviesList">
+          <left>-210</left>
+          <top>80</top>
+          <control type="fixedlist" id="52">
+            <height>926</height>
+            <width>2200</width>
+            <onleft>noop</onleft>
+            <onright>noop</onright>
+            <onup>222</onup>
+            <ondown>222</ondown>
+            <pagecontrol>60</pagecontrol>
+            <scrolltime >300</scrolltime>
+            <orientation>horizontal</orientation>
+            <focusposition>1</focusposition>
+            <preloaditems>2</preloaditems>
+            <itemlayout width="300" height="500">
+              <control type="group">
+                <top>450</top>
+                <control type="image" description="THUMBNAIL">
+                  <left>85</left>
+                  <top>80</top>
+                  <height>350</height>
+                  <width>230</width>
+                  <texture background="true" fallback="DefaultVideoCover.png">$INFO[ListItem.Thumb]</texture>
+                  <aspectratio>scale</aspectratio>
+                </control>
+              </control>
+            </itemlayout>
+            <focusedlayout width="300" height="500">
+              <control type="group">
+                <animation effect="fade" start="0" end="100" time="250" delay="300" reversible="false">focus</animation>
+                <animation effect="fade" start="10" end="0" time="10" reversible="false">unfocus</animation>
+                <control type="label" description="MovieTitle">
+                  <left>870</left>
+                  <width>1740</width>
+                  <height>40</height>
+                  <align>center</align>
+                  <font>size42B</font>
+                  <label>$INFO[ListItem.Label]</label>
+                </control>
+                <control type="image">
+                  <top>60</top>
+                  <height>1</height>
+                  <width>1920</width>
+                  <texture>images/Line.png</texture>
+                </control>
+                <control type="image">
+                  <left>400</left>
+                  <top>490</top>
+                  <height>1</height>
+                  <width>1430</width>
+                  <texture>images/LineL.png</texture>
+                </control>
+                <control type="textbox">
+                  <description>plot</description>
+                  <left>450</left>
+                  <top>60</top>
+                  <width>840</width>
+                  <height>430</height>
+                  <font>Size27</font>
+                  <align>justify</align>
+                  <textcolor>FFFFFFFF</textcolor>
+                  <pagecontrol>60</pagecontrol>
+                  <autoscroll delay="4000" time="3000" repeat="10000"></autoscroll>
+                  <label>$INFO[ListItem.Property(Plot)]</label>
+                </control>
+                <control type="group">
+                  <left>280</left>
+                  <top>150</top>
+                  <control type="image">
+                    <height>50</height>
+                    <width>130</width>
+                    <bordersize>3</bordersize>
+                    <aspectratio>keep</aspectratio>
+                    <colordiffuse>Silver</colordiffuse>
+                    <texture>$INFO[ListItem.Property(Res),badges/video/,.png]</texture>
+                  </control>
+                  <control type="image">
+                    <top>80</top>
+                    <height>50</height>
+                    <width>130</width>
+                    <bordersize>3</bordersize>
+                    <aspectratio>keep</aspectratio>
+                    <colordiffuse>Silver</colordiffuse>
+                    <texture>$INFO[ListItem.Property(Codec),badges/video/,.png]</texture>
+                  </control>
+                  <control type="image">
+                    <left>1050</left>
+                    <height>50</height>
+                    <width>130</width>
+                    <bordersize>3</bordersize>
+                    <aspectratio>keep</aspectratio>
+                    <colordiffuse>Silver</colordiffuse>
+                    <texture>$INFO[ListItem.Property(AudioChannels),badges/channels,.png]</texture>
+                  </control>
+                  <control type="image">
+                    <left>1050</left>
+                    <top>80</top>
+                    <height>50</height>
+                    <width>130</width>
+                    <bordersize>3</bordersize>
+                    <aspectratio>keep</aspectratio>
+                    <colordiffuse>Silver</colordiffuse>
+                    <texture>$INFO[ListItem.Property(AudioCodec),badges/audio/,.png]</texture>
+                  </control>
+                </control>
+              </control>
+              <control type="group">
+                <top>450</top>
+                <animation effect="zoom" end="150" center="178,880" time="300" tween="Quadratic" easing="in">Focus</animation>
+                <animation effect="zoom" start="150" end="100" center="178,880" time="50">unFocus</animation>
+                <control type="image" description="black">
+                  <left>72</left>
+                  <top>67</top>
+                  <height>376</height>
+                  <width>256</width>
+                  <texture background="true">images/Black.png</texture>
+                  <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image" description="white">
+				<animation effect ="fade" start="100" end="0" time="10">unFocus</animation>
+                  <left>84</left>
+                  <top>78</top>
+                  <height>353</height>
+                  <width>232</width>
+                  <texture background="true">images/White.png</texture>
+                  <aspectratio>stretch</aspectratio>
+				  <colordiffuse>FF0000FF</colordiffuse>
+                </control>
+                <control type="image" description="THUMBNAIL">
+                  <left>85</left>
+                  <top>80</top>
+                  <height>350</height>
+                  <width>230</width>
+                  <texture background="true" fallback="DefaultVideoCover.png">$INFO[ListItem.Thumb]</texture>
+                  <aspectratio>scale</aspectratio>
+                </control>
+              </control>
+            </focusedlayout>
+            <content>
+              <item id="1" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.1.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.1.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.1.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.1.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.1.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.1.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.1.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.1.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.1.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.1.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.1.File)])</onclick>
+              </item>
+              <item id="2" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.2.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.2.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.2.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.2.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.2.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.2.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.2.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.2.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.2.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.2.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.2.File)])</onclick>
+              </item>
+              <item id="3" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.3.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.3.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.3.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.3.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.3.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.3.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.3.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.3.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.3.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.3.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.3.File)])</onclick>
+              </item>
+              <item id="4" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.4.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.4.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.4.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.4.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.4.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.4.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.4.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.4.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.4.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.4.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.4.File)])</onclick>
+              </item>
+              <item id="5" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.5.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.5.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.5.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.5.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.5.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.5.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.5.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.5.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.5.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.5.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.5.File)])</onclick>
+              </item>
+              <item id="6" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.6.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.6.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.6.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.6.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.6.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.6.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.6.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.6.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.6.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.6.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.6.File)])</onclick>
+              </item>
+              <item id="7" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.7.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.7.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.7.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.7.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.7.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.7.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.7.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.7.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.7.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.7.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.7.File)])</onclick>
+              </item>
+              <item id="8" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.8.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.8.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.8.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.8.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.8.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.8.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.8.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.8.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.8.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.8.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.8.File)])</onclick>
+              </item>
+              <item id="9" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.9.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.9.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.9.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.9.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.9.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.9.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.9.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.9.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.9.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.9.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.9.File)])</onclick>
+              </item>
+              <item id="10" description="Movies">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.10.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedMovie.10.Rating)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedMovie.10.Title)]</label>
+                <thumb>$INFO[Window(Home).Property(RecommendedMovie.10.Art(poster))]</thumb>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedMovie.10.Art(fanart)]</property>
+                <property name="Plot">$INFO[Window(Home).Property(RecommendedMovie.10.Plot)]</property>
+                <property name="Res">$INFO[Window(Home).Property(RecommendedMovie.10.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedMovie.10.VideoCodec)]</property>
+                <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedMovie.10.AudioChannels)]</property>
+                <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedMovie.10.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedMovie.10.File)])</onclick>
+              </item>
+            </content>
+          </control>
+        </control>
+      </control>
+      <control type="group" id="701" description="Episodes">
+        <left>110</left>
+        <top>60</top>
+        <visible>Container(222).Hasfocus(1) | Control.IsVisible()</visible>
+        <include>VisibleFade</include>
+        <control type="fixedlist" id="51">
+          <height>926</height>
+          <width>1740</width>
+          <onleft>noop</onleft>
+          <onright>noop</onright>
+          <onup>222</onup>
+          <ondown>222</ondown>
+          <scrolltime tween="sine" easing="inout">280</scrolltime>
+          <orientation>horizontal</orientation>
+          <focusposition>0</focusposition>
+          <preloaditems>2</preloaditems>
+          <itemlayout width="370" height="250">
+            <control type="group">
+              <top>680</top>
+              <control type="image" description="THUMBNAIL">
+                <top>70</top>
+                <left>60</left>
+                <height>169</height>
+                <width>300</width>
+                <texture background="true" diffuse="images/EpisodesBottom.png">$INFO[ListItem.Thumb]</texture>
+                <aspectratio scalediffuse="false">scale</aspectratio>
+              </control>
+              <control type="image">
+                <left>60</left>
+                <top>20</top>
+                <width>300</width>
+                <height>60</height>
+                <texture diffuse="images/EpisodesTop.png">$INFO[ListItem.Property(Banner)]</texture>
+              </control>
+              <control type="image" description="STARTED">
+                <top>210</top>
+                <left>60</left>
+                <height>30</height>
+                <width>30</width>
+                <texture>overlay/$INFO[ListItem.Property(Resumable),,.png]</texture>
+                <aspectratio>keep</aspectratio>
+              </control>
+            </control>
+          </itemlayout>
+          <focusedlayout width="370" height="250">
+            <control type="group">
+              <top>680</top>
+              <animation effect ="zoom" end="150" center="200,905" time="300">Focus</animation>
+              <animation effect ="zoom" start="150" end="100" center="200,905" time="300">unFocus</animation>
+              <control type="image" description="THUMBNAIL BLACK">
+                <top>2</top>
+                <left>52</left>
+                <height>243</height>
+                <width>316</width>
+                <texture diffuse="images/Diffuserounded.png">images/Black.png</texture>
+                <aspectratio scalediffuse="false">stretch</aspectratio>
+              </control>
+              <control type="image" description="THUMBNAIL WHITE">
+                <animation effect ="fade" start="100" end="0" time="10">unFocus</animation>
+                <top>8</top>
+                <left>58</left>
+                <height>233</height>
+                <width>304</width>
+                <texture background="true">images/Diffuserounded.png</texture>
+                <aspectratio scalediffuse="false">stretch</aspectratio>
+				<colordiffuse>FF0000FF</colordiffuse>
+              </control>
+              <control type="image">
+                <left>60</left>
+                <top>10</top>
+                <width>300</width>
+                <height>60</height>
+                <texture diffuse="images/EpisodesTop.png">$INFO[ListItem.Property(Banner)]</texture>
+              </control>
+              <control type="image" description="THUMBNAIL">
+                <top>70</top>
+                <left>60</left>
+                <height>169</height>
+                <width>300</width>
+                <texture background="true" diffuse="images/EpisodesBottom.png">$INFO[ListItem.Thumb]</texture>
+                <aspectratio scalediffuse="false">scale</aspectratio>
+              </control>
+              <control type="image" description="STARTED">
+                <top>210</top>
+                <left>60</left>
+                <height>30</height>
+                <width>30</width>
+                <texture>overlay/$INFO[ListItem.Property(Resumable),,.png]</texture>
+                <aspectratio>keep</aspectratio>
+              </control>
+            </control>
+            <control type="group">
+              <animation effect="fade" start="0" end="100" time="250" delay="300" reversible="false">focus</animation>
+              <animation effect="fade" start="10" end="0" time="10" reversible="false">unfocus</animation>
+              <control type="image">
+                <left>309</left>
+                <top>0</top>
+                <height>200</height>
+                <width>1082</width>
+                <texture diffuse="images/DiffuseBanner.png">$INFO[ListItem.Property(Banner)]</texture>
+                <aspectratio scalediffuse="false">scale</aspectratio>
+              </control>
+              <control type="image">
+                <left>309</left>
+                <top>0</top>
+                <height>200</height>
+                <width>1082</width>
+                <texture background="true">images/BannerOverlay.png</texture>
+              </control>
+              <control type="label" description="EPISODE TITLE">
+                <top>210</top>
+                <left>850</left>
+                <width>800</width>
+                <height>40</height>
+                <align>center</align>
+                <font>size42B</font>
+                <label>$INFO[ListItem.Property(label3)]  $INFO[ListItem.Label]</label>
+              </control>
+              <control type="textbox">
+                <description>plot</description>
+                <left>300</left>
+                <top>270</top>
+                <width>1100</width>
+                <height>300</height>
+                <font>Size27</font>
+                <align>justify</align>
+                <textcolor>FFFFFFFF</textcolor>
+                <pagecontrol>60</pagecontrol>
+                <autoscroll delay="4000" time="3000" repeat="10000"></autoscroll>
+                <label>$INFO[ListItem.Property(Plot)] $INFO[ListItem.Property(Plot)] $INFO[ListItem.Property(Plot)] $INFO[ListItem.Property(Res),badges/video/,.png]</label>
+              </control>
+              <control type="group">
+                <left>560</left>
+                <top>600</top>
+                <orientation>horizontal</orientation>
+                <control type="image">
+                  <height>50</height>
+                  <width>130</width>
+                  <bordersize>3</bordersize>
+                  <aspectratio>keep</aspectratio>
+                  <texture>$INFO[ListItem.Property(Res),badges/video/,.png]</texture>
+                </control>
+                <control type="image">
+                  <left>150</left>
+                  <height>50</height>
+                  <width>130</width>
+                  <bordersize>3</bordersize>
+                  <aspectratio>keep</aspectratio>
+                  <texture>$INFO[ListItem.Property(Codec),badges/video/,.png]</texture>
+                </control>
+                <control type="image">
+                  <left>300</left>
+                  <height>50</height>
+                  <width>130</width>
+                  <bordersize>3</bordersize>
+                  <aspectratio>keep</aspectratio>
+                  <texture>$INFO[ListItem.Property(AudioChannels),badges/channels,.png]</texture>
+                </control>
+                <control type="image">
+                  <left>450</left>
+                  <height>50</height>
+                  <width>130</width>
+                  <bordersize>3</bordersize>
+                  <aspectratio>keep</aspectratio>
+                  <texture>$INFO[ListItem.Property(AudioCodec),badges/audio/,.png]</texture>
+                </control>
+              </control>
+            </control>
+          </focusedlayout>
+          <content>
+            <item id="1" description="Episodes">
+              <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.1.Title))</visible>
+              <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.1.Rating)]</property>
+              <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.1.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.1.Episode)]</property>
+              <label>$INFO[Window(Home).Property(RecommendedEpisode.1.Title)]</label>
+              <label2>$INFO[Window(Home).Property(RecommendedEpisode.1.TVshowTitle)]</label2>
+              <thumb>$INFO[Window(Home).Property(RecommendedEpisode.1.Art(thumb))]</thumb>
+              <property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.1.Art(tvshow.banner)]</property>
+              <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.1.Resume)]</property>
+              <property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.1.Plot)]</property>
+              <property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.1.VideoResolution)]</property>
+              <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.1.VideoCodec)]</property>
+              <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.1.AudioChannels)]</property>
+              <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.1.AudioCodec)]</property>
+              <property name="Fanart">$INFO[Window(Home).Property(RecommendedEpisode.1.Art(tvshow.fanart)]</property>
+              <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.1.File)])</onclick>
+            </item>
+            <item id="2" description="Episodes">
+              <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.2.Title))</visible>
+              <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.2.Rating)]</property>
+              <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.2.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.2.Episode)]</property>
+              <label>$INFO[Window(Home).Property(RecommendedEpisode.2.Title)]</label>
+              <label2>$INFO[Window(Home).Property(RecommendedEpisode.2.TVshowTitle)]</label2>
+              <thumb>$INFO[Window(Home).Property(RecommendedEpisode.2.Art(thumb))]</thumb>
+              <property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.2.Art(tvshow.banner)]</property>
+              <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.2.Resume)]</property>
+              <property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.2.Plot)]</property>
+              <property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.2.VideoResolution)]</property>
+              <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.2.VideoCodec)]</property>
+              <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.2.AudioChannels)]</property>
+              <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.2.AudioCodec)]</property>
+              <property name="Fanart">$INFO[Window(Home).Property(RecommendedEpisode.2.Art(tvshow.fanart)]</property>
+              <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.2.File)])</onclick>
+            </item>
+            <item id="3" description="Episodes">
+              <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.3.Title))</visible>
+              <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.3.Rating)]</property>
+              <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.3.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.3.Episode)]</property>
+              <label>$INFO[Window(Home).Property(RecommendedEpisode.3.Title)]</label>
+              <label2>$INFO[Window(Home).Property(RecommendedEpisode.3.TVshowTitle)]</label2>
+              <thumb>$INFO[Window(Home).Property(RecommendedEpisode.3.Art(thumb))]</thumb>
+              <property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.3.Art(tvshow.banner)]</property>
+              <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.3.Resume)]</property>
+              <property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.3.Plot)]</property>
+              <property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.3.VideoResolution)]</property>
+              <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.3.VideoCodec)]</property>
+              <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.3.AudioChannels)]</property>
+              <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.3.AudioCodec)]</property>
+              <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.3.File)])</onclick>
+            </item>
+            <item id="4" description="Episodes">
+              <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.4.Title))</visible>
+              <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.4.Rating)]</property>
+              <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.4.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.4.Episode)]</property>
+              <label>$INFO[Window(Home).Property(RecommendedEpisode.4.Title)]</label>
+              <label2>$INFO[Window(Home).Property(RecommendedEpisode.4.TVshowTitle)]</label2>
+              <thumb>$INFO[Window(Home).Property(RecommendedEpisode.4.Art(thumb))]</thumb>
+              <property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.4.Art(tvshow.banner)]</property>
+              <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.4.Resume)]</property>
+              <property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.4.Plot)]</property>
+              <property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.4.VideoResolution)]</property>
+              <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.4.VideoCodec)]</property>
+              <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.4.AudioChannels)]</property>
+              <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.4.AudioCodec)]</property>
+              <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.4.File)])</onclick>
+            </item>
+            <item id="5" description="Episodes">
+              <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.5.Title))</visible>
+              <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.5.Rating)]</property>
+              <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.5.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.5.Episode)]</property>
+              <label>$INFO[Window(Home).Property(RecommendedEpisode.5.Title)]</label>
+              <label2>$INFO[Window(Home).Property(RecommendedEpisode.5.TVshowTitle)]</label2>
+              <thumb>$INFO[Window(Home).Property(RecommendedEpisode.5.Art(thumb))]</thumb>
+              <property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.5.Art(tvshow.banner)]</property>
+              <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.5.Resume)]</property>
+              <property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.5.Plot)]</property>
+              <property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.5.VideoResolution)]</property>
+              <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.5.VideoCodec)]</property>
+              <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.5.AudioChannels)]</property>
+              <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.5.AudioCodec)]</property>
+              <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.5.File)])</onclick>
+            </item>
+            <item id="6" description="Episodes">
+              <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.6.Title))</visible>
+              <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.6.Rating)]</property>
+              <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.6.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.6.Episode)]</property>
+              <label>$INFO[Window(Home).Property(RecommendedEpisode.6.Title)]</label>
+              <label2>$INFO[Window(Home).Property(RecommendedEpisode.6.TVshowTitle)]</label2>
+              <thumb>$INFO[Window(Home).Property(RecommendedEpisode.6.Art(thumb))]</thumb>
+              <property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.6.Art(tvshow.banner)]</property>
+              <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.6.Resume)]</property>
+              <property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.6.Plot)]</property>
+              <property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.6.VideoResolution)]</property>
+              <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.6.VideoCodec)]</property>
+              <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.6.AudioChannels)]</property>
+              <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.6.AudioCodec)]</property>
+              <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.6.File)])</onclick>
+            </item>
+            <item id="7" description="Episodes">
+              <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.7.Title))</visible>
+              <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.7.Rating)]</property>
+              <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.7.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.7.Episode)]</property>
+              <label>$INFO[Window(Home).Property(RecommendedEpisode.7.Title)]</label>
+              <label2>$INFO[Window(Home).Property(RecommendedEpisode.7.TVshowTitle)]</label2>
+              <thumb>$INFO[Window(Home).Property(RecommendedEpisode.7.Art(thumb))]</thumb>
+              <property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.7.Art(tvshow.banner)]</property>
+              <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.7.Resume)]</property>
+              <property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.7.Plot)]</property>
+              <property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.7.VideoResolution)]</property>
+              <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.7.VideoCodec)]</property>
+              <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.7.AudioChannels)]</property>
+              <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.7.AudioCodec)]</property>
+              <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.7.File)])</onclick>
+            </item>
+            <item id="8" description="Episodes">
+              <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.8.Title))</visible>
+              <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.8.Rating)]</property>
+              <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.8.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.8.Episode)]</property>
+              <label>$INFO[Window(Home).Property(RecommendedEpisode.8.Title)]</label>
+              <label2>$INFO[Window(Home).Property(RecommendedEpisode.8.TVshowTitle)]</label2>
+              <thumb>$INFO[Window(Home).Property(RecommendedEpisode.8.Art(thumb))]</thumb>
+              <property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.8.Art(tvshow.banner)]</property>
+              <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.8.Resume)]</property>
+              <property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.8.Plot)]</property>
+              <property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.8.VideoResolution)]</property>
+              <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.8.VideoCodec)]</property>
+              <property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.8.AudioChannels)]</property>
+              <property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.8.AudioCodec)]</property>
+              <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.8.File)])</onclick>
+            </item>
+            
+            <!-- ADD MORE ITEMS USING THIS REPLACE %d WITH FOLLOWING NUMBER
+<item id="%d" description="Episodes">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.%d.Title))</visible>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedEpisode.%d.Rating)]</property>
+                <property name="Label3">S $INFO[Window(Home).Property(RecommendedEpisode.%d.Season)] • E $INFO[Window(Home).Property(RecommendedEpisode.%d.Episode)]</property>
+                <label>$INFO[Window(Home).Property(RecommendedEpisode.%d.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedEpisode.%d.TVshowTitle)]</label2>
+                <thumb>$INFO[Window(Home).Property(RecommendedEpisode.%d.Art(thumb))]</thumb>
+				<property name="Banner">$INFO[Window(Home).Property(RecommendedEpisode.%d.Art(tvshow.banner)]</property>
+                <property name="Resumable">$INFO[Window(Home).Property(RecommendedEpisode.%d.Resume)]</property>
+				<property name="Plot">$INFO[Window(Home).Property(RecommendedEpisode.%d.Plot)]</property>
+				<property name="Res">$INFO[Window(Home).Property(RecommendedEpisode.%d.VideoResolution)]</property>
+                <property name="Codec">$INFO[Window(Home).Property(RecommendedEpisode.%d.VideoCodec)]</property>
+				<property name="AudioChannels">$INFO[Window(Home).Property(RecommendedEpisode.%d.AudioChannels)]</property>
+				<property name="AudioCodec">$INFO[Window(Home).Property(RecommendedEpisode.%d.AudioCodec)]</property>
+                <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.%d.File)])</onclick>
+              </item>
+-->
+          </content>
+        </control>
+      </control>
+      <control type="group" id="8701" description="Musiclay">
+        <visible>Container(222).Hasfocus(2) | Control.IsVisible()</visible>
+        <include>VisibleFade</include>
+        <control type="group" description="MusicPage">
+          <top>0</top>
+          <control type="wraplist" id="53">
+            <left>70</left>
+            <top>60</top>
+            <width>1780</width>
+            <height>1000</height>
+            <orientation>horizontal</orientation>
+            <onleft>noop</onleft>
+            <onright>noop</onright>
+            <onup>noop</onup>
+            <ondown>222</ondown>
+            <preloaditems>2</preloaditems>
+            <pagecontrol>80</pagecontrol>
+            <scrolltime tween="sine" easing="inout">280</scrolltime>
+            <itemlayout width="300">
+              <control type="group">
+                <top>620</top>
+                <control type="image" description="THUMBNAIL">
+                  <left>10</left>
+                  <top>10</top>
+                  <height>280</height>
+                  <width>280</width>
+                  <texture background="true" fallback="Defaultalbumcover.png">$INFO[ListItem.thumb]</texture>
+                  <aspectratio>stretch</aspectratio>
+                </control>
+              </control>
+            </itemlayout>
+            <focusedlayout width="300">
+              <control type="group" description="infos">
+                <animation effect="fade" start="0" end="100" time="250" delay="300">Focus</animation>
+                <animation effect="fade" start="100" end="0" time="10">unFocus</animation>
+                <control type="label">
+                  <left>890</left>
+                  <width>1780</width>
+                  <align>center</align>
+                  <label>$INFO[ListItem.Label]</label>
+                  <font>size42B</font>
+                </control>
+                <control type="image" description="fanart">
+                  <left>50</left>
+                  <top>80</top>
+                  <width>1080</width>
+                  <height>500</height>
+                  <texture background="true">$INFO[ListItem.Property(Fanart)]</texture>
+                  <aspectratio aligny="top">scale</aspectratio>
+                </control>
+                <control type="textbox">
+                  <left>1150</left>
+                  <top>70</top>
+                  <width>600</width>
+                  <height>510</height>
+                  <align>justify</align>
+                  <font>size27</font>
+                  <autoscroll delay="4000" time="3000" repeat="10000"></autoscroll>
+                  <label>$INFO[ListItem.Property(Description)]</label>
+                </control>
+              </control>
+              <control type="group">
+                <animation effect="zoom" start="100" end="150" center="10,910" time="250" tween="Quadratic" easing="in">Focus</animation>
+                <animation effect="zoom" start="150" end="100" center="10,910" time="60">unFocus</animation>
+                <top>620</top>
+                <control type="image" description="Black">
+                  <left>1</left>
+                  <top>1</top>
+                  <height>298</height>
+                  <width>298</width>
+                  <texture background="true">images/Black.png</texture>
+                  <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image" description="White">
+				<animation effect ="fade" start="100" end="0" time="10">unFocus</animation>
+                  <left>8</left>
+                  <top>8</top>
+                  <height>284</height>
+                  <width>284</width>
+                  <texture background="true">images/White.png</texture>
+                  <aspectratio>stretch</aspectratio>
+				  <colordiffuse>FF0000FF</colordiffuse>
+                </control>
+                <control type="image" description="THUMBNAIL">
+                  <left>10</left>
+                  <top>10</top>
+                  <height>280</height>
+                  <width>280</width>
+                  <texture background="true" fallback="Defaultalbumcover.png">$INFO[ListItem.thumb]</texture>
+                  <aspectratio>stretch</aspectratio>
+                </control>
+              </control>
+            </focusedlayout>
+            <content>
+              <item id="1" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.1.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.1.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.1.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.1.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.1.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.1.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.1.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.1.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.1.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.1.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.1.Play)]</onclick>
+              </item>
+              <item id="2" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.2.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.2.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.2.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.2.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.2.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.2.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.2.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.2.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.2.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.2.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.2.Play)]</onclick>
+              </item>
+              <item id="3" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.3.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.3.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.3.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.3.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.3.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.3.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.3.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.3.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.3.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.3.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.3.Play)]</onclick>
+              </item>
+              <item id="4" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.4.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.4.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.4.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.4.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.4.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.4.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.4.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.4.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.4.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.4.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.4.Play)]</onclick>
+              </item>
+              <item id="5" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.5.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.5.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.5.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.5.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.5.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.5.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.5.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.5.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.5.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.5.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.5.Play)]</onclick>
+              </item>
+              <item id="6" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.6.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.6.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.6.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.6.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.6.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.6.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.6.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.6.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.6.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.6.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.6.Play)]</onclick>
+              </item>
+              <item id="7" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.7.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.7.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.7.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.7.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.7.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.7.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.7.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.7.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.7.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.7.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.7.Play)]</onclick>
+              </item>
+              <item id="8" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.8.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.8.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.8.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.8.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.8.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.8.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.8.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.8.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.8.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.8.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.9.Play)]</onclick>
+              </item>
+              <item id="9" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.9.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.9.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.9.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.9.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.9.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.9.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.9.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.9.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.9.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.9.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.9.Play)]</onclick>
+              </item>
+              <item id="10" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.10.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.10.Title)]</label>
+                <label2>$INFO[Window(Home).Property(RecommendedAlbum.10.Artist)]</label2>
+                <property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.10.Genre)]</property>
+                <property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.10.RecordLabel)]</property>
+                <property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.10.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.10.Fanart)]</property>
+                <property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.10.Year)]</property>
+                <property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.10.Rating)]</property>
+                <thumb>$INFO[Window(Home).Property(RecommendedAlbum.10.Thumb)]</thumb>
+                <onclick>$INFO[Window(Home).Property(RecommendedAlbum.10.Play)]</onclick>
+              </item>
+              <!-- ADD MORE ITEMS USING THIS REPLACE %d WITH FOLLOWING NUMBER
+<item id="%d" description="Albums">
+                <visible>!IsEmpty(Window(Home).Property(RecommendedAlbum.%d.Title))</visible>
+                <label>$INFO[Window(Home).Property(RecommendedAlbum.%d.Title)]</label>
+				<label2>$INFO[Window(Home).Property(RecommendedAlbum.%d.Artist)]</label2>
+				<property name="Genre">$INFO[Window(Home).Property(RecommendedAlbum.%d.Genre)]</property>
+				<property name="RecordLabel">$INFO[Window(Home).Property(RecommendedAlbum.%d.RecordLabel)]</property>
+				<property name="Description">$INFO[Window(Home).Property(RecommendedAlbum.%d.Description)]</property>
+                <property name="Fanart">$INFO[Window(Home).Property(RecommendedAlbum.%d.Fanart)]</property>
+				<property name="Year">$INFO[Window(Home).Property(RecommendedAlbum.%d.Year)]</property>
+				<property name="Rating">$INFO[Window(Home).Property(RecommendedAlbum.%d.Rating)]</property>
+               <thumb>$INFO[Window(Home).Property(RecommendedAlbum.%d.Thumb)]</thumb>
+                <onclick>PlayMedia($ESCINFO[Window(Home).RecommendedAlbum.%d.Play])</onclick>
+              </item>
+-->
+            </content>
+          </control>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

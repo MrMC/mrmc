@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">143</defaultcontrol>
+  <allowoverlays>false</allowoverlays>
+  <controls>
+    <control type="image" id="140">
+      <description>bg</description>
+      <left>200</left>
+      <top>200</top>
+      <width>350</width>
+      <height>250</height>
+      <texture>images/contextmenu.png</texture>
+    </control>
+    <control type="label" id="141">
+      <description>label_title</description>
+      <left>230</left>
+      <top>220</top>
+      <width>290</width>
+      <height>32</height>
+      <align>center</align>
+      <label>Select a Star to Rate:</label>
+      <textcolor>White</textcolor>
+      <font>Size24</font>
+    </control>
+    <control type="image" id="142">
+      <description>rating</description>
+      <left>235</left>
+      <top>280</top>
+      <width>280</width>
+      <height>40</height>
+      <align>center</align>
+      <aligny>center</aligny>
+      <!--label>User Name</label-->
+      <aspectratio>keep</aspectratio>
+      <texture>rating3.png</texture>
+    </control>
+    <control type="grouplist">
+      <width>280</width>
+      <ondown>148</ondown>
+      <itemgap>0</itemgap>
+      <align>center</align>
+      <orientation>horizontal</orientation>
+      <control type="button" id="150">
+        <description>rate0</description>
+        <width>30</width>
+        <height>40</height>
+        <align>left</align>
+        <aligny>center</aligny>
+        <texturenofocus>-</texturenofocus>
+        <texturefocus>-</texturefocus>
+      </control>
+      <control type="button" id="143">
+        <description>rate1</description>
+        <width>30</width>
+        <height>40</height>
+        <align>left</align>
+        <aligny>center</aligny>
+        <texturenofocus>-</texturenofocus>
+        <texturefocus>-</texturefocus>
+      </control>
+      <control type="button" id="144">
+        <description>rate2</description>
+        <width>30</width>
+        <height>40</height>
+        <align>left</align>
+        <aligny>center</aligny>
+        <number>1</number>
+        <texturenofocus>-</texturenofocus>
+        <texturefocus>-</texturefocus>
+      </control>
+      <control type="button" id="145">
+        <description>rate3</description>
+        <width>30</width>
+        <height>40</height>
+        <align>left</align>
+        <aligny>center</aligny>
+        <number>1</number>
+        <texturenofocus>-</texturenofocus>
+        <texturefocus>-</texturefocus>
+      </control>
+      <control type="button" id="146">
+        <description>rate4</description>
+        <width>30</width>
+        <height>40</height>
+        <align>left</align>
+        <aligny>center</aligny>
+        <texturenofocus>-</texturenofocus>
+        <texturefocus>-</texturefocus>
+      </control>
+      <control type="button" id="147">
+        <description>rate5</description>
+        <width>30</width>
+        <height>40</height>
+        <align>left</align>
+        <aligny>center</aligny>
+        <texturenofocus>-</texturenofocus>
+        <texturefocus>-</texturefocus>
+      </control>
+    </control>
+    <control type="button" id="148">
+      <description>rate</description>
+      <left>255</left>
+      <top>370</top>
+      <width>120</width>
+      <height>32</height>
+      <align>center</align>
+      <aligny>center</aligny>
+      <label>Rate</label>
+      <onup>143</onup>
+      <onright>149</onright>
+      <ondown>148</ondown>
+      <textcolor>White2</textcolor>
+      <font>special13</font>
+      <texturefocus>images/buttonselect.png</texturefocus>
+    </control>
+    <control type="button" id="149">
+      <description>no thanks</description>
+      <left>380</left>
+      <top>370</top>
+      <width>120</width>
+      <height>32</height>
+      <align>center</align>
+      <aligny>center</aligny>
+      <label>No Thanks</label>
+      <onup>143</onup>
+      <onleft>148</onleft>
+      <ondown>149</ondown>
+      <textcolor>White2</textcolor>
+      <font>special13</font>
+      <texturefocus>images/buttonselect.png</texturefocus>
+    </control>
+  </controls>
+</window>

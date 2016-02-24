@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="buttonMenu" id="1112">
+  <defaultcontrol>9000</defaultcontrol>
+  <include>DialogOpenClose</include>
+  <controls>
+    <control type="image" description="BG">
+      <animation effect="fade" start="0" end="50" delay="150" time="300">WindowOpen</animation>
+      <animation effect="fade" start="50" end="0" time="50">WindowClose</animation>
+      <width>1920</width>
+      <height>1080</height>
+      <texture>images/BlackT.png</texture>
+    </control>
+    <control type="image" description="Dialog">
+      <left>448</left>
+      <top>290</top>
+      <width>1024</width>
+      <height>500</height>
+      <aspectratio>stretch</aspectratio>
+      <texture border="150">images/Dialog.png</texture>
+    </control>
+    <control type="grouplist" id="9000">
+      <left>660</left>
+      <top>450</top>
+      <width>600</width>
+      <height>126</height>
+      <onleft>9000</onleft>
+      <onright>9000</onright>
+      <onup>noop</onup>
+      <ondown>noop</ondown>
+      <itemgap>30</itemgap>
+      <align>center</align>
+      <orientation>horizontal</orientation>
+      <control type="button" id="1" description="Playdvd">
+        <enable>System.HasMediadvd</enable>
+        <animation type="Conditional" condition="!Control.IsEnabled(1)">
+          <effect type="fade" start="100" end="30" time="0" reversible="true" />
+        </animation>
+        <width>126</width>
+        <height>126</height>
+        <font>-</font>
+        <texturenofocus>images/DVDPlayNF.png</texturenofocus>
+        <texturefocus>images/DVDPlay.png</texturefocus>
+        <onclick>PlayDVD</onclick>
+        <label>13009</label>
+      </control>
+      <control type="button" id="2" description="Eject DVD">
+        <enable>System.HasMediadvd</enable>
+        <animation type="Conditional" condition="!Control.IsEnabled(2)">
+          <effect type="fade" start="100" end="30" time="0" reversible="true" />
+        </animation>
+        <width>126</width>
+        <height>126</height>
+        <font>-</font>
+        <texturenofocus>images/DVDEjectNF.png</texturenofocus>
+        <texturefocus>images/DVDEject.png</texturefocus>
+        <onclick>EjectTray()</onclick>
+        <label>13005</label>
+      </control>
+    </control>
+    <control type="group">
+      <left>660</left>
+      <top>565</top>
+      <control type="label">
+        <visible>ControlGroup(9000).HasFocus(1)</visible>
+        <width>600</width>
+        <align>center</align>
+        <font>size39B</font>
+        <label>$LOCALIZE[341]</label>
+      </control>
+      <control type="label">
+        <visible>ControlGroup(9000).HasFocus(2)</visible>
+        <width>600</width>
+        <align>center</align>
+        <font>size39B</font>
+        <label>$LOCALIZE[13391]</label>
+      </control>
+    </control>
+  </controls>
+</window>

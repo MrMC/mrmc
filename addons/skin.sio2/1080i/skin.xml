@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol>9000</defaultcontrol>
+    <allowoverlays>false</allowoverlays>
+    <controls>
+        <control type="videowindow" id="101">
+            <description>video preview window</description>
+            <width>1920</width>
+            <height>1080</height>
+            <visible>true</visible>
+        </control>
+        <control type="image" id="102">
+            <width>1920</width>
+            <height>1080</height>
+            <visible>False</visible>
+        </control>
+        <control type="image" id="103">
+            <width>1920</width>
+            <height>1080</height>
+            <visible>False</visible>
+        </control>
+        <control type="image" id="104">
+            <description>logo</description>
+            <left>15</left>
+            <top>15</top>
+            <width>48</width>
+            <height>48</height>
+            <texture>-</texture>
+        </control>
+        <control type="image" id="105">
+            <description>thumb</description>
+            <left>100</left>
+            <top>100</top>
+            <width>800</width>
+            <height>680</height>
+            <aspectratio align="center">keep</aspectratio>
+        </control>
+        <control type="image" id="126">
+            <description>rating</description>
+            <left>150</left>
+            <top>610</top>
+            <width>180</width>
+            <height>32</height>
+            <aspectratio>keep</aspectratio>
+        </control>
+        <control type="image" id="118">
+            <description>download_logo</description>
+            <left>450</left>
+            <top>670</top>
+            <width>40</width>
+            <height>25</height>
+            <texture>icon_download.png</texture>
+        </control>
+        <control type="label" id="106">
+            <description>urllbl</description>
+            <top>1030</top>
+            <width>1920</width>
+            <height>40</height>
+            <align>center</align>
+            <aligny>bottom</aligny>
+            <label></label>
+            <textcolor>FFFFFFFF</textcolor>
+            <font>Size24</font>
+        </control>
+        <control type="label" id="119">
+            <description>date</description>
+            <left>50</left>
+            <top>5</top>
+            <width>450</width>
+            <height>40</height>
+            <label>label</label>
+            <textcolor>White</textcolor>
+            <font>Size22</font>
+        </control>
+        <control type="label" id="107">
+            <description>version</description>
+            <right>50</right>
+            <top>5</top>
+            <width>350</width>
+            <height>40</height>
+            <label>version</label>
+            <align>right</align>
+            <textcolor>White</textcolor>
+            <font>Size22</font>
+        </control>
+        <control type="label" id="207">
+            <description>version</description>
+            <width>350</width>
+            <height>40</height>
+            <label>720p</label>
+            <textcolor>White</textcolor>
+            <font>Size22</font>
+            <visible>False</visible>
+        </control>
+        <control type="label" id="108">
+            <description>infotext</description>
+            <left>450</left>
+            <top>30</top>
+            <width>1020</width>
+            <height>30</height>
+            <align>center</align>
+            <label>Loading...</label>
+            <textcolor>White</textcolor>
+        </control>
+        <control type="label" id="109">
+            <description>dlinfotext</description>
+            <left>500</left>
+            <top>670</top>
+            <width>500</width>
+            <height>30</height>
+            <!--label></label-->
+            <textcolor>White</textcolor>
+        </control>
+        <control type="label" id="110">
+            <description>loading</description>
+            <left>460</left>
+            <top>100</top>
+            <width>450</width>
+            <height>30</height>
+            <label>Please wait</label>
+            <textcolor>White</textcolor>
+        </control>
+        <control type="label" id="111">
+            <visible>!Control.HasFocus(129)</visible>
+            <description>listpos</description>
+            <left>1120</left>
+            <top>1000</top>
+            <width>800</width>
+            <height>30</height>
+            <label>-</label>
+            <align>center</align>
+            <!--textcolor>FFFFFFFF</textcolor-->
+            <textcolor>Grey2</textcolor>
+        </control>
+        <control type="label" id="111">
+            <visible>Control.HasFocus(129)</visible>
+            <description>listpos</description>
+            <left>560</left>
+            <top>1000</top>
+            <width>800</width>
+            <height>30</height>
+            <label>-</label>
+            <align>center</align>
+            <!--textcolor>FFFFFFFF</textcolor-->
+            <textcolor>Grey2</textcolor>
+        </control>
+        <control type="scrollbar" id="60">
+            <description>Scroll Bar list 1</description>
+            <visible>true</visible>
+            <left>1210</left>
+            <top>100</top>
+            <width>15</width>
+            <height>530</height>
+            <onleft>50</onleft>
+            <!--onright>71</onright-->
+
+            <texturesliderbackground>scrollbar_background1.png</texturesliderbackground>
+            <texturesliderbar>scrollbar_bar1.png</texturesliderbar>
+            <texturesliderbarfocus>scrollbar_bar_focus1.png</texturesliderbarfocus>
+            <textureslidernib>-</textureslidernib>
+            <textureslidernibfocus>-</textureslidernibfocus>
+            <orientation>vertical</orientation>
+            <visible>Control.IsVisible(112)</visible>
+        </control>
+        <control type="scrollbar" id="61">
+            <description>Scroll Bar list 2</description>
+            <visible>true</visible>
+            <left>1210</left>
+            <top>220</top>
+            <width>15</width>
+            <height>400</height>
+            <onleft>50</onleft>
+            <!--onright>71</onright-->
+
+            <texturesliderbackground>scrollbar_background1.png</texturesliderbackground>
+            <texturesliderbar>scrollbar_bar1.png</texturesliderbar>
+            <texturesliderbarfocus>scrollbar_bar_focus1.png</texturesliderbarfocus>
+            <textureslidernib>-</textureslidernib>
+            <textureslidernibfocus>-</textureslidernibfocus>
+            <orientation>vertical</orientation>
+            <visible>Control.IsVisible(120)</visible>
+        </control>
+        <control type="scrollbar" id="62">
+            <description>Scroll Bar list 3</description>
+            <visible>true</visible>
+            <left>1210</left>
+            <top>100</top>
+            <width>15</width>
+            <height>530</height>
+            <onleft>50</onleft>
+            <!--onright>71</onright-->
+
+            <texturesliderbackground>scrollbar_background1.png</texturesliderbackground>
+            <texturesliderbar>scrollbar_bar1.png</texturesliderbar>
+            <texturesliderbarfocus>scrollbar_bar_focus1.png</texturesliderbarfocus>
+            <textureslidernib>-</textureslidernib>
+            <textureslidernibfocus>-</textureslidernibfocus>
+            <orientation>vertical</orientation>
+            <visible>Control.IsVisible(129)</visible>
+        </control>
+        <control type="textbox" id="121">
+            <description>Text box</description>
+            <left>100</left>
+            <top>800</top>
+            <width>800</width>
+            <height>200</height>
+            <font>Size24</font>
+            <align>justify</align>
+            <autoscroll delay="3000" time="2000" repeat="10000">true</autoscroll>
+            <textcolor>White</textcolor>
+            <visible>Control.IsVisible(120)</visible>
+        </control>
+        <control type="textbox" id="123">
+            <description>Text box2</description>
+            <left>1000</left>
+            <top>100</top>
+            <width>820</width>
+            <height>200</height>
+            <font>Size24</font>
+            <align>justify</align>
+            <onup>123</onup>
+            <ondown>123</ondown>
+            <pagecontrol>124</pagecontrol>
+            <textcolor>White</textcolor>
+        </control>
+        <control type="list" id="112">
+            <animation effect="slide" start="720" time="150">WindowOpen</animation>
+            <animation effect="slide" end="720" time="150">WindowClose</animation>
+            <description>list1</description>
+            <left>1100</left>
+            <top>100</top>
+            <width>800</width>
+            <height>880</height>
+            <onup>112</onup>
+            <ondown>112</ondown>
+            <pagecontrol>60</pagecontrol>
+            <!--onleft>122</onleft-->
+            <!--onRight>61</onRight-->
+            <!--visible>!Control.HasFocus(123)</visible-->
+            <scrolltime>200</scrolltime>
+            <itemlayout height="110">
+                <control type="image">
+                    <left>15</left>
+                    <top>15</top>
+                    <width>80</width>
+                    <height>80</height>
+                    <info>ListItem.Icon</info>
+                </control>
+                <control type="label">
+                    <width>600</width>
+                    <include>50TitleFO</include>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <info>ListItem.Label</info>
+                </control>
+                <control type="label">
+                    <left>130</left>
+                    <top>60</top>
+                    <width>560</width>
+                    <height>250</height>
+                    <font>Size24</font>
+                    <aligny>top</aligny>
+                    <textcolor>Grey</textcolor>
+                    <label>$INFO[ListItem.Label2]</label>
+                </control>
+            </itemlayout>
+            <focusedlayout height="110">
+                <control type="image">
+                    <left>-20</left>
+                    <top>-20</top>
+                    <width>800</width>
+                    <height>150</height>
+                    <texture border="32">images/Slider.png</texture>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <left>15</left>
+                    <top>15</top>
+                    <width>80</width>
+                    <height>80</height>
+                    <info>ListItem.Icon</info>
+                </control>
+                <control type="label">
+                    <width>600</width>
+                    <include>50TitleFO</include>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <info>ListItem.Label</info>
+                </control>
+                <control type="label">
+                    <left>130</left>
+                    <top>60</top>
+                    <width>560</width>
+                    <height>250</height>
+                    <font>Size24</font>
+                    <aligny>top</aligny>
+                    <textcolor>Grey</textcolor>
+                    <label>$INFO[ListItem.Label2]</label>
+                </control>
+            </focusedlayout>
+        </control>
+        <control type="list" id="120">
+            <description>list2</description>
+            <left>1100</left>
+            <top>100</top>
+            <width>800</width>
+            <height>880</height>
+            <onup>120</onup>
+            <ondown>120</ondown>
+            <pagecontrol>61</pagecontrol>
+            <!--onleft>122</onleft-->
+            <!--visible>!Control.IsVisible(123)</visible-->
+            <scrolltime>200</scrolltime>
+            <itemlayout height="110">
+                <control type="image">
+                    <left>15</left>
+                    <top>15</top>
+                    <width>80</width>
+                    <height>80</height>
+                    <info>ListItem.Icon</info>
+                </control>
+                <control type="label">
+                    <width>600</width>
+                    <scroll>false</scroll>
+                    <include>50TitleFO</include>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <info>ListItem.Label</info>
+                </control>
+                <control type="label">
+                    <left>130</left>
+                    <top>60</top>
+                    <width>560</width>
+                    <height>250</height>
+                    <font>Size24</font>
+                    <aligny>top</aligny>
+                    <textcolor>Grey</textcolor>
+                    <label>$INFO[ListItem.Label2]</label>
+                </control>
+            </itemlayout>
+            <focusedlayout height="110">
+                <control type="image">
+                    <left>-20</left>
+                    <top>-20</top>
+                    <width>800</width>
+                    <height>150</height>
+                    <texture border="32">images/Slider.png</texture>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <left>15</left>
+                    <top>15</top>
+                    <width>80</width>
+                    <height>80</height>
+                    <info>ListItem.Icon</info>
+                </control>
+                <control type="label">
+                    <width>600</width>
+                    <include>50TitleFO</include>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <align>left</align>
+                    <info>ListItem.Label</info>
+                </control>
+                <control type="label">
+                    <left>130</left>
+                    <top>60</top>
+                    <width>560</width>
+                    <height>250</height>
+                    <font>Size24</font>
+                    <aligny>top</aligny>
+                    <textcolor>Grey</textcolor>
+                    <label>$INFO[ListItem.Label2]</label>
+                </control>
+            </focusedlayout>
+        </control>
+
+        <!-- Thumbs panel -->
+        <control type="panel" id="129">
+            <left>60</left>
+            <top>140</top>
+            <width>1800</width>
+            <height>897</height>
+            <onup>129</onup>
+            <ondown>129</ondown>
+            <onleft>122</onleft>
+            <!--onright>127</onright-->
+            <orientation>vertical</orientation>
+            <pagecontrol>62</pagecontrol>
+            <scrolltime>400</scrolltime>
+            <itemlayout height="345" width="300">
+                <control type="image">
+                    <left>9</left>
+                    <top>11</top>
+                    <width>281</width>
+                    <height>281</height>
+                    <aspectratio>keep</aspectratio>
+                    <texture>$INFO[ListItem.Thumb]</texture>
+                </control>
+            </itemlayout>
+            <focusedlayout height="345" width="300">
+                <control type="image">
+                    <left>9</left>
+                    <top>11</top>
+                    <width>281</width>
+                    <height>281</height>
+                    <aspectratio>keep</aspectratio>
+                    <texture>$INFO[ListItem.Thumb]</texture>
+                </control>
+                <control type="label">
+                    <left>150</left>
+                    <top>290</top>
+                    <width>270</width>
+                    <height>45</height>
+                    <font>size24</font>
+                    <textcolor>White</textcolor>
+                    <align>center</align>
+                    <label>$INFO[ListItem.Label]</label>
+                </control>
+                <control type="image" description="selection">
+                    <animation effect="fade" start="0" end="100" time="500" delay="50" reversible="false">Focus</animation>
+                    <animation effect="fade" start="100" end="0" time="50" reversible="false">unFocus</animation>
+                    <left>0</left>
+                    <top>0</top>
+                    <width>300</width>
+                    <height>302</height>
+                    <texture border="30">images/Generalslider.png</texture>
+                </control>
+            </focusedlayout>
+        </control>
+        <control type="group">
+            <animation effect="slide" start="-450" time="250" condition="Control.HasFocus(122)">Conditional</animation>
+            <animation effect="slide" end="-450" time="250" condition="!Control.HasFocus(122)">Conditional</animation>
+            <control type="image">
+                <left>0</left>
+                <top>40</top>
+                <width>450</width>
+                <height>550</height>
+                <texture border="50">images/contextmenu.png</texture>
+            </control>
+            <control type="list" id="122">
+                <description>list3</description>
+                <left>0</left>
+                <top>100</top>
+                <width>450</width>
+                <height>600</height>
+                <onup>122</onup>
+                <ondown>122</ondown>
+                <!--pagecontrol>2050</pagecontrol-->
+                <scrolltime>200</scrolltime>
+                <itemlayout height="60">
+                    <control type="image">
+                        <width>32</width>
+                        <height>32</height>
+                        <info>ListItem.Icon</info>
+                    </control>
+                    <control type="label">
+                        <left>225</left>
+                        <width>450</width>
+                        <height>60</height>
+                        <font>Size30</font>
+                        <aligny>center</aligny>
+                        <textcolor>Silver</textcolor>
+                        <align>center</align>
+                        <info>ListItem.Label</info>
+                    </control>
+                </itemlayout>
+                <focusedlayout height="60">
+                    <control type="image">
+                        <width>450</width>
+                        <height>60</height>
+                        <texture>images/ContextButton.png</texture>
+                    </control>
+                    <control type="image">
+                        <width>32</width>
+                        <height>32</height>
+                        <info>ListItem.Icon</info>
+                    </control>
+                    <control type="label">
+                        <left>225</left>
+                        <width>450</width>
+                        <height>60</height>
+                        <font>Size30</font>
+                        <aligny>center</aligny>
+                        <selectedcolor>FFe2ff43</selectedcolor>
+                        <textcolor>FFDDDDDD</textcolor>
+                        <align>center</align>
+                        <info>ListItem.Label</info>
+                    </control>
+                </focusedlayout>
+            </control>
+        </control>
+        <control type="group">
+            <animation effect="slide" start="1930" time="250" condition="Control.HasFocus(127)">Conditional</animation>
+            <animation effect="slide" end="1930" time="250" condition="!Control.HasFocus(127)">Conditional</animation>
+            <left>1470</left>
+            <control type="image">
+                <top>40</top>
+                <width>450</width>
+                <height>550</height>
+                <texture border="50">images/contextmenu.png</texture>
+            </control>
+            <control type="list" id="127">
+                <description>list4</description>
+                <top>100</top>
+                <width>450</width>
+                <height>600</height>
+                <onup>127</onup>
+                <ondown>127</ondown>
+                <!--pagecontrol>2050</pagecontrol-->
+                <scrolltime>200</scrolltime>
+                <itemlayout height="60">
+                    <control type="image">
+                        <width>32</width>
+                        <height>32</height>
+                        <info>ListItem.Icon</info>
+                    </control>
+                    <control type="label">
+                        <left>225</left>
+                        <width>450</width>
+                        <height>60</height>
+                        <font>Size30</font>
+                        <aligny>center</aligny>
+                        <textcolor>Silver</textcolor>
+                        <align>center</align>
+                        <info>ListItem.Label</info>
+                    </control>
+                </itemlayout>
+                <focusedlayout height="60">
+                    <control type="image">
+                        <width>450</width>
+                        <height>60</height>
+                        <texture>images/ContextButton.png</texture>
+                    </control>
+                    <control type="image">
+                        <width>32</width>
+                        <height>32</height>
+                        <info>ListItem.Icon</info>
+                    </control>
+                    <control type="label">
+                        <left>225</left>
+                        <width>450</width>
+                        <height>60</height>
+                        <font>Size30</font>
+                        <aligny>center</aligny>
+                        <selectedcolor>FFe2ff43</selectedcolor>
+                        <textcolor>FFDDDDDD</textcolor>
+                        <align>center</align>
+                        <info>ListItem.Label</info>
+                    </control>
+                </focusedlayout>
+            </control>
+        </control>
+        <control type="spincontrol" id="124">
+            <description>Next page button</description>
+            <left>1100</left>
+            <top>580</top>
+            <subtype>page</subtype>
+            <font>Size22</font>
+            <textcolor>White</textcolor>
+            <onleft>124</onleft>
+            <onright>124</onright>
+            <ondown>124</ondown>
+            <onup>124</onup>
+            <showonepage>true</showonepage>
+            <textureup>default-scroll-up.png</textureup>
+            <texturedown>default-scroll-down.png</texturedown>
+            <textureupfocus>default-scroll-up-focus.png</textureupfocus>
+            <texturedownfocus>default-scroll-down-focus.png</texturedownfocus>
+            <!--animation effect="slide" time="300" start="600,0" end="0,0" acceleration="-1">WindowOpen</animation-->
+            <!--animation effect="slide" time="200" start="0,0" end="600,0" acceleration="1.1">WindowClose</animation-->
+            <visible>Control.IsVisible(123)</visible>
+        </control>
+        <control type="button" id="125">
+            <description>Left Button</description>
+            <left>50</left>
+            <top>50</top>
+            <width>24</width>
+            <height>24</height>
+            <align>center</align>
+            <aligny>center</aligny>
+            <texturenofocus>icon_left.png</texturenofocus>
+            <texturefocus>icon_left_focus1.png</texturefocus>
+        </control>
+        <control type="button" id="128">
+            <description>dummy</description>
+            <left>270</left>
+            <top>450</top>
+            <width>100</width>
+            <height>32</height>
+            <align>left</align>
+            <aligny>center</aligny>
+            <label></label>
+            <ondown>124</ondown>
+            <onright>127</onright>
+            <texturenofocus></texturenofocus>
+            <texturefocus></texturefocus>
+            <!--visible>Control.IsVisible(123)</visible-->
+        </control>
+        <control type="button" id="130">
+            <description>Right Button</description>
+            <left>1200</left>
+            <top>50</top>
+            <width>24</width>
+            <height>24</height>
+            <align>center</align>
+            <aligny>center</aligny>
+            <texturenofocus>icon_right3.png</texturenofocus>
+            <texturefocus>icon_right_focus3.png</texturefocus>
+        </control>
+    </controls>
+</window>

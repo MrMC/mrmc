@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="120">
+  <defaultcontrol always="true">101</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <control type="progress" id="23" description="Progress Bar">
+      <visible>true</visible>
+      <left>84</left>
+      <top>-750</top>
+      <width>747</width>
+      <info>Player.Progress</info>
+      <visible>true</visible>
+    </control>
+    <control type="image">
+      <left>190</left>
+      <top>90r</top>
+      <width>750</width>
+      <height>500</height>
+      <aspectratio>stretch</aspectratio>
+      <texture border="50">MusicOSD/Back.png</texture>
+    </control>
+    <control type="group" id="101">
+      <left>200</left>
+      <top>90r</top>
+      <control type="list" id="102">
+        <onright>102</onright>
+        <onleft>102</onleft>
+        <onup>555</onup>
+        <ondown>555</ondown>
+        <width>1000</width>
+        <height>100</height>
+        <orientation>horizontal</orientation>
+        <itemlayout width="90">
+          <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>90</width>
+            <height>98</height>
+            <texture>$INFO[ListItem.thumb]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout width="90">
+          <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>90</width>
+            <height>98</height>
+            <texture>$INFO[ListItem.label]</texture>
+          </control>
+        </focusedlayout>
+        <content>
+          <item id="2">
+            <visible>!Playlist.IsRepeatOne + !Playlist.IsRepeat</visible>
+            <thumb>MusicOSD/OSDRepeatNF.png</thumb>
+            <label>MusicOSD/OSDRepeatFO.png</label>
+            <onclick>XBMC.PlayerControl(Repeat)</onclick>
+          </item>
+          <item id="2">
+            <thumb>MusicOSD/OSDRepeatOneNF.png</thumb>
+            <label>MusicOSD/OSDRepeatOneFO.png</label>
+            <onclick>XBMC.PlayerControl(Repeat)</onclick>
+            <visible>Playlist.IsRepeatOne</visible>
+          </item>
+          <item id="2">
+            <thumb>MusicOSD/OSDRepeatAllNF.png</thumb>
+            <label>MusicOSD/OSDRepeatAllFO.png</label>
+            <onclick>XBMC.PlayerControl(Repeat)</onclick>
+            <visible>Playlist.IsRepeat</visible>
+          </item>
+          <item id="3">
+            <thumb>Seekbar/OSDPreviousNF.png</thumb>
+            <label>Seekbar/OSDPreviousFO.png</label>
+            <onclick>Playlist.PlayOffset(-1)</onclick>
+          </item>
+          <item id="4">
+            <thumb>Seekbar/OSDRWNF.png</thumb>
+            <label>Seekbar/OSDRWFO.png</label>
+            <onclick>PlayerControl(Rewind)</onclick>
+          </item>
+          <item id="5">
+            <visible>!Player.Paused + !Player.Forwarding + !Player.Rewinding</visible>
+            <thumb>Seekbar/OSDPauseNF.png</thumb>
+            <label>Seekbar/OSDPauseFO.png</label>
+            <onclick>PlayerControl(Play)</onclick>
+          </item>
+          <item id="5">
+            <visible>Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+            <thumb>Seekbar/OSDPlayNF.png</thumb>
+            <label>Seekbar/OSDPlayFO.png</label>
+            <onclick>PlayerControl(Play)</onclick>
+          </item>
+          <item id="6">
+            <thumb>Seekbar/OSDStopNF.png</thumb>
+            <label>Seekbar/OSDStopFO.png</label>
+            <onclick>PlayerControl(Stop)</onclick>
+          </item>
+          <item id="7">
+            <thumb>Seekbar/OSDFWNF.png</thumb>
+            <label>Seekbar/OSDFWFO.png</label>
+            <onclick>PlayerControl(Forward)</onclick>
+          </item>
+          <item id="8">
+            <thumb>Seekbar/OSDNextNF.png</thumb>
+            <label>Seekbar/OSDNextFO.png</label>
+            <onclick>Playlist.PlayOffset(1)</onclick>
+          </item>
+          <item id="9">
+            <visible>Playlist.IsRandom</visible>
+            <thumb>MusicOSD/OSDRandomOnNF.png</thumb>
+            <label>MusicOSD/OSDRandomOnFO.png</label>
+            <onclick>PlayerControl(Random)</onclick>
+          </item>
+          <item id="9">
+            <visible>!Playlist.IsRandom</visible>
+            <thumb>MusicOSD/OSDRandomOffNF.png</thumb>
+            <label>MusicOSD/OSDRandomOffFO.png</label>
+            <onclick>PlayerControl(Random)</onclick>
+          </item>
+        </content>
+      </control>
+    </control>
+    <control type="group" description="All dialog content">
+      <animation type="Focus">
+        <effect type="slide" tween="Cubic" easing="out" start="0,0" end="0,-850" time="800" />
+      </animation>
+      <animation type="Unfocus">
+        <effect type="slide" tween="Cubic" easing="in" start="0,-850" end="0,0" time="500" />
+      </animation>
+      <control type="image">
+        <left>1090</left>
+        <top>920</top>
+        <width>950</width>
+        <height>900</height>
+        <texture border="150">images/Dialog.png</texture>
+      </control>
+      <control type="label" description="Dialog heading">
+        <left>1215</left>
+        <top>1076</top>
+        <width>690</width>
+        <height>52</height>
+        <label>33063</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <include>TitleCommons</include>
+      </control>
+      <control type="grouplist" id="100" description="Music OSD Options">
+        <left>1298</left>
+        <top>1166</top>
+        <width>525</width>
+        <height>483</height>
+        <onleft>101</onleft>
+        <onright>101</onright>
+        <onup>100</onup>
+        <ondown>100</ondown>
+        <itemgap>0</itemgap>
+        <scrolltime>280</scrolltime>
+        <control type="button" id="555">
+          <description>Playlist</description>
+          <include>ButtonMenu</include>
+          <label>559</label>
+          <onclick>Close</onclick>
+          <onclick>ActivateWindow(MusicPlaylist)</onclick>
+        </control>
+        <control type="button" id="556" description="Fanart">
+          <include>ButtonMenu</include>
+          <label>$LOCALIZE[20445]</label>
+          <label2>[COLOR=Grey2]$VAR[Fanartdisplaystatus][/COLOR]</label2>
+          <onclick>Skin.ToggleSetting(MusicPlayingFanart)</onclick>
+        </control>
+        <control type="button" id="500">
+          <description>Visualisation</description>
+          <include>ButtonMenu</include>
+          <label>24010</label>
+        </control>
+        <control type="button" id="19">
+          <description>Visualisation settings</description>
+          <include>ButtonMenu</include>
+          <label>$LOCALIZE[250] $LOCALIZE[10004]</label>
+          <onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
+          <enable>Visualisation.Enabled</enable>
+          <animation effect="fade" start="100" end="50" time="100" condition="!Visualisation.Enabled">Conditional</animation>
+        </control>
+        <control type="button" id="20">
+          <description>Visualisation Presets</description>
+          <include>ButtonMenu</include>
+          <label>31004</label>
+          <onclick>ActivateWindow(122)</onclick>
+          <enable>Visualisation.Enabled</enable>
+          <animation effect="fade" start="100" end="50" time="100" condition="!Visualisation.Enabled">Conditional</animation>
+        </control>
+        <control type="button" id="9">
+          <description>Lyrics</description>
+          <include>ButtonMenu</include>
+          <label>24013</label>
+          <onclick>Close</onclick>
+          <onclick condition="IsEmpty(Skin.String(LyricPath))">Skin.SetAddon(LyricPath,xbmc.python.lyrics)</onclick>
+          <onclick condition="!IsEmpty(Skin.String(LyricPath))">XBMC.RunScript($INFO[Skin.String(LyricPath)])</onclick>
+        </control>
+        <control type="button" id="301">
+          <description>CodecInfo</description>
+          <include>ButtonMenu</include>
+          <label>21446</label>
+          <onclick>CodecInfo</onclick>
+        </control>
+      </control>
+    </control>
+    <control type="image">
+      <visible>!ControlGroup(100).HasFocus()</visible>
+      <animation type="Visible">
+        <effect type="fade" tween="circle" easing="in" start="0" end="100" time="800" />
+      </animation>
+      <left>1540</left>
+      <top>1030</top>
+      <width>48</width>
+      <height>48</height>
+      <texture>images/Dialogpull.png</texture>
+    </control>
+  </controls>
+</window>

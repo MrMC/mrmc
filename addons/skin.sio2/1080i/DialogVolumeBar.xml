@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="104">
+  <allowoverlay>yes</allowoverlay>
+  <animation effect="fade" start="100" end="0" time="400" reversible="false">WindowClose</animation>
+  <controls>
+    <control type="group">
+      <left>855</left>
+      <top>666</top>
+      <control type="group">
+        <visible>player.passthrough</visible>
+        <animation effect="fade" start="0" end="100" time="100" reversible="false">Visible</animation>
+        <control type="image" description="Volume">
+          <width>210</width>
+          <height>206</height>
+          <aspectratio>keep</aspectratio>
+          <texture>images/PTSpeaker.png</texture>
+        </control>
+      </control>
+      <control type="group">
+        <visible>!player.passthrough</visible>
+        <animation effect="fade" start="0" end="100" time="100" reversible="false">Visible</animation>
+        <control type="image" description="Volume">
+          <width>210</width>
+          <height>206</height>
+          <aspectratio>keep</aspectratio>
+          <texture>images/Speaker.png</texture>
+        </control>
+        <control type="progress" id="1" description="Progress control">
+          <left>12</left>
+          <top>150</top>
+          <width>184</width>
+          <height>9</height>
+          <texturebg border="6,0,6,0">progress/ProgressBG.png</texturebg>
+          <midtexture border="0,1,0,1">progress/ProgressM.png</midtexture>
+          <righttexture border="1,1,6,1">progress/ProgressR.png</righttexture>
+          <lefttexture border="6,1,1,1">progress/ProgressL.png</lefttexture>
+          <overlaytexture>-</overlaytexture>
+          <info>Player.Volume</info>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="107">
+    <type>dialog</type>
+    <controls>
+        <control type="group">
+            <animation effect="slide" end="0,-128" condition="Window.IsActive(DialogExtendedProgressBar.xml)">Conditional</animation>
+            <left>1190</left>
+            <top>944</top>
+            <animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
+            <animation effect="fade" start="100" end="0" time="500">WindowClose</animation>
+            <control type="image" description="Dialog BG">
+                <width>720</width>
+                <height>128</height>
+                <texture border="25">images/notification.png</texture>
+            </control>
+            <control type="group">
+                <left>20</left>
+                <top>17</top>
+                <control type="image" id="400" description="File Icon">
+                    <width>90</width>
+                    <height>90</height>
+                    <aspectratio>keep</aspectratio>
+                </control>
+            </control>
+            <control type="label" id="401" description="Heading">
+                <top>20</top>
+                <left>130</left>
+                <width>575</width>
+                <height>44</height>
+                <font>size21</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textcolor>black</textcolor>
+                <shadowcolor>-</shadowcolor>
+                <label>-</label>
+            </control>
+            <control type="label" id="402" description="Message">
+                <left>130</left>
+                <top>64</top>
+                <width>575</width>
+                <height>44</height>
+                <font>size21</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textcolor>black</textcolor>
+                <shadowcolor>-</shadowcolor>
+                <label>-</label>
+            </control>
+        </control>
+    </controls>
+</window>

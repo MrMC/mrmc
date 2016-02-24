@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="123">
+  <defaultcontrol>5</defaultcontrol>
+  <include>DialogOpenClose</include>
+  <coordinates>
+    <system>1</system>
+  </coordinates>
+  <controls>
+    <control type="image">
+      <left>150</left>
+      <top>-75</top>
+      <width>1620</width>
+      <height>1230</height>
+      <texture border="50">images/ContextMenu.png</texture>
+    </control>
+    <control type="group">
+      <left>435</left>
+      <top>180</top>
+      <control type="label">
+        <description>header label</description>
+        <left>60</left>
+        <top>-30</top>
+        <width>930</width>
+        <height>45</height>
+        <font>size28</font>
+        <label>$LOCALIZE[5]</label>
+        <align>center</align>
+        <aligny>center</aligny>
+      </control>
+      <control type="grouplist" id="5">
+        <animation effect="slide" start="0,0" end="8,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
+        <description>control area</description>
+        <left>45</left>
+        <top>105</top>
+        <width>945</width>
+        <height>480</height>
+        <itemgap>8</itemgap>
+        <pagecontrol>60</pagecontrol>
+        <onleft>28</onleft>
+        <onright>60</onright>
+        <onup>28</onup>
+        <ondown>28</ondown>
+      </control>
+      <control type="scrollbar" id="60">
+        <left>987</left>
+        <top>105</top>
+        <width>36</width>
+        <onleft>3</onleft>
+        <onright>3</onright>
+        <ondown>60</ondown>
+        <onup>60</onup>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+      </control>
+      <control type="button" id="7">
+        <description>Default Button</description>
+        <left>0</left>
+        <top>0</top>
+        <height>60</height>
+        <font>size27</font>
+        <!--<texturefocus border="5">button-focus2.png</texturefocus>-->
+      </control>
+      <control type="radiobutton" id="8">
+        <description>Default RadioButton</description>
+        <left>0</left>
+        <top>0</top>
+        <height>60</height>
+        <font>size27</font>
+        <!--<texturefocus border="5">button-focus2.png</texturefocus>-->
+      </control>
+      <control type="spincontrolex" id="9">
+        <description>Default SpinControlex</description>
+        <left>0</left>
+        <top>0</top>
+        <height>60</height>
+        <font>size27</font>
+        <!--<texturefocus border="5">button-focus2.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>-->
+      </control>
+      <control type="sliderex" id="13">
+        <description>Default Slider</description>
+        <height>60</height>
+        <!--<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>-->
+        <font>size27</font>
+      </control>
+      <control type="image" id="11">
+        <description>separator image</description>
+        <height>3</height>
+        <texture>-</texture>
+      </control>
+      <control type="group" id="9000">
+        <left>60</left>
+        <top>638</top>
+        <control type="button" id="29">
+          <description>Cancel Button</description>
+          <top>0</top>
+          <left>0</left>
+          <width>300</width>
+          <height>60</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>size26</font>
+          <label>222</label>
+          <onleft>50</onleft>
+          <onright>28</onright>
+          <onup>5</onup>
+          <ondown>5</ondown>
+          <texturenofocus border="5">images/Black.png</texturenofocus>
+        </control>
+        <control type="button" id="28">
+          <description>OK Button</description>
+          <top>0</top>
+          <left>315</left>
+          <width>300</width>
+          <height>60</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>size26</font>
+          <label>186</label>
+          <onleft>29</onleft>
+          <onright>50</onright>
+          <onup>5</onup>
+          <ondown>5</ondown>
+          <texturenofocus border="5">images/Black.png</texturenofocus>
+        </control>
+        <control type="button" id="50">
+          <description>Defaults Button</description>
+          <top>0</top>
+          <left>630</left>
+          <width>300</width>
+          <height>60</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>size26</font>
+          <label>409</label>
+          <onleft>28</onleft>
+          <onright>29</onright>
+          <onup>5</onup>
+          <ondown>5</ondown>
+          <texturenofocus border="5">images/Black.png</texturenofocus>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>
