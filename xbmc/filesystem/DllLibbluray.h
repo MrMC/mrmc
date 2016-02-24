@@ -84,7 +84,12 @@ public:
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
 {
+#if defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
+    DECLARE_DLL_WRAPPER(DllLibbluray, "libbluray.framework/libbluray")
+#else
   DECLARE_DLL_WRAPPER(DllLibbluray, DLL_PATH_LIBBLURAY)
+#endif
+
   DEFINE_METHOD3(uint32_t,            bd_get_titles,          (BLURAY *p1, uint8_t p2, uint32_t p3))
   DEFINE_METHOD3(BLURAY_TITLE_INFO*,  bd_get_title_info,      (BLURAY *p1, uint32_t p2, unsigned p3))
   DEFINE_METHOD3(BLURAY_TITLE_INFO*,  bd_get_playlist_info,   (BLURAY *p1, uint32_t p2, unsigned p3))

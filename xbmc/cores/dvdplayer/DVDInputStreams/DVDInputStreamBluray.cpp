@@ -32,7 +32,7 @@
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
-#include "DllLibbluray.h"
+#include "filesystem/DllLibbluray.h"
 #include "URL.h"
 #include "guilib/Geometry.h"
 #include "dialogs/GUIDialogKaiToast.h"

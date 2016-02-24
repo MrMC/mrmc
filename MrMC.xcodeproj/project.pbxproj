@@ -5236,6 +5236,8 @@
 		F5B724051C7CA1CA006432AE /* DialogHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialogHelper.h; sourceTree = "<group>"; };
 		F5B7240C1C7CA242006432AE /* PVRSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRSettings.cpp; sourceTree = "<group>"; };
 		F5B7240D1C7CA242006432AE /* PVRSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRSettings.h; sourceTree = "<group>"; };
+		F5B724111C7DEBB5006432AE /* DllLibMpeg2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DllLibMpeg2.h; sourceTree = "<group>"; };
+		F5B724121C7DECDA006432AE /* DllLibbluray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DllLibbluray.h; sourceTree = "<group>"; };
 		F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CryptThreading.cpp; sourceTree = "<group>"; };
 		F5BD02F5148D3A7E001B5583 /* CryptThreading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptThreading.h; sourceTree = "<group>"; };
 		F5BDB80A120202F400F0B710 /* DVDSubtitleTagSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagSami.h; sourceTree = "<group>"; };
@@ -7791,6 +7793,7 @@
 		E38E153A0D25F9F900618676 /* Video */ = {
 			isa = PBXGroup;
 			children = (
+				F5B724111C7DEBB5006432AE /* DllLibMpeg2.h */,
 				F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */,
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
 				F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */,
@@ -7996,6 +7999,7 @@
 				DF93D6701444A8B0007C6459 /* DirectoryFactory.h */,
 				E38E16B00D25F9FA00618676 /* DirectoryHistory.cpp */,
 				E38E16B10D25F9FA00618676 /* DirectoryHistory.h */,
+				F5B724121C7DECDA006432AE /* DllLibbluray.h */,
 				E38E16B40D25F9FA00618676 /* DllLibCurl.cpp */,
 				E38E16B50D25F9FA00618676 /* DllLibCurl.h */,
 				F559021A1C30A2A800349249 /* DllLibDSM.h */,

@@ -54,7 +54,11 @@ public:
 
 class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
 {
+#if defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllLibMpeg2, "libmpeg2.framework/libmpeg2")
+#else
   DECLARE_DLL_WRAPPER(DllLibMpeg2, DLL_PATH_LIBMPEG2)
+#endif
 
   DEFINE_METHOD1(uint32_t, mpeg2_accel, (uint32_t p1))
   DEFINE_METHOD0(mpeg2dec_t *, mpeg2_init)

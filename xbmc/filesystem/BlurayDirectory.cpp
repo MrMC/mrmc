@@ -19,15 +19,16 @@
  */
 #include "system.h"
 #ifdef HAVE_LIBBLURAY
-#include "BlurayDirectory.h"
+#include "filesystem/BlurayDirectory.h"
+
+#include "URL.h"
+#include "FileItem.h"
+#include "filesystem/DllLibbluray.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "URL.h"
-#include "DllLibbluray.h"
-#include "FileItem.h"
 #include "video/VideoInfoTag.h"
-#include "guilib/LocalizeStrings.h"
 
 #include <cassert>
 
