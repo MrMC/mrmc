@@ -38,6 +38,9 @@
 #define AV_PKT_FLAG_KEY PKT_FLAG_KEY
 #endif
 
+// turn off deprecated warning spew (m_CodecCtx->coded_frame).
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 using namespace ADDON;
 
 CEncoderFFmpeg::CEncoderFFmpeg():

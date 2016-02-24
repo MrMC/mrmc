@@ -19,6 +19,10 @@
  */
 
 #include "ISO9660Directory.h"
+#ifdef __GNUC__
+// iso9660_dir_t is var sized and this triggers a clang warning.
+#pragma GCC diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
+#endif
 #include "iso9660.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
