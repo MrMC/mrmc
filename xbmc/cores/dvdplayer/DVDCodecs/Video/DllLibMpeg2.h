@@ -55,6 +55,7 @@ public:
 class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
 {
   DECLARE_DLL_WRAPPER(DllLibMpeg2, DLL_PATH_LIBMPEG2)
+
   DEFINE_METHOD1(uint32_t, mpeg2_accel, (uint32_t p1))
   DEFINE_METHOD0(mpeg2dec_t *, mpeg2_init)
   DEFINE_METHOD1(const mpeg2_info_t *, mpeg2_info, (mpeg2dec_t * p1))

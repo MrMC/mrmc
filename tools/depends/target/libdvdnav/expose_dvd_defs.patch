@@ -1,0 +1,49 @@
+
+--- a/src/dvdnav/dvd_types.h-org	2016-02-24 10:00:06.000000000 -0500
++++ b/src/dvdnav/dvd_types.h	2016-02-24 10:00:36.000000000 -0500
+@@ -80,7 +80,7 @@ typedef enum {
+ 
+ /* the following types are currently unused */
+ 
+-#if 0
++#if 1
+ 
+ /* User operation permissions */
+ typedef enum {
+@@ -221,6 +221,9 @@ typedef enum {
+ } DVDDisplayMode_t;
+ 
+ /* Audio attributes */
++typedef int DVDAudioSampleFreq_t;
++typedef int DVDAudioSampleQuant_t;
++typedef int DVDChannelNumber_t;
+ typedef struct {
+   DVDAudioAppMode_t     AppMode;
+   DVDAudioFormat_t      AudioFormat;
+@@ -231,9 +234,6 @@ typedef struct {
+   DVDAudioSampleQuant_t SampleQuantization;
+   DVDChannelNumber_t    NumberOfChannels;
+ } DVDAudioAttributes_t;
+-typedef int DVDAudioSampleFreq_t;
+-typedef int DVDAudioSampleQuant_t;
+-typedef int DVDChannelNumber_t;
+ 
+ /* Subpicture attributes */
+ typedef enum {
+@@ -254,6 +254,7 @@ typedef struct {
+ } DVDSubpictureAttributes_t;
+ 
+ /* Video attributes */
++typedef int DVDVideoCompression_t;
+ typedef struct {
+   DVDBool_t PanscanPermitted;
+   DVDBool_t LetterboxPermitted;
+@@ -266,7 +267,6 @@ typedef struct {
+   DVDBool_t Line21Field2InGop;
+   int more_to_come;
+ } DVDVideoAttributes_t;
+-typedef int DVDVideoCompression_t;
+ 
+ #endif
+ 
+

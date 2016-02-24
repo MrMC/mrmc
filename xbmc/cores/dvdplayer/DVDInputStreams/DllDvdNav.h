@@ -24,19 +24,16 @@ extern "C" {
 #define DVDNAV_COMPILE
  #include <stdint.h>
 
- #include "dvdnav/dvdnav.h"
-
- #ifndef WIN32
- #define WIN32
- #endif // WIN32
+ #include <dvdnav/dvdnav.h>
 
  #ifndef HAVE_CONFIG_H
  #define HAVE_CONFIG_H
  #endif
 
- #include "dvdnav/dvdnav_internal.h"
- #include "dvdnav/vm.h"
- #include "dvdnav/dvd_types.h"
+ #include <dvdnav/decoder.h>
+ #include <dvdnav/vm.h>
+ #include <dvdnav/dvdnav_internal.h>
+ #include <dvdnav/dvd_types.h>
 
  #ifdef WIN32 // WIN32INCLUDES
  #undef HAVE_CONFIG_H
@@ -248,7 +245,11 @@ public:
 
 class DllDvdNav : public DllDynamic, DllDvdNavInterface
 {
+#if defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllDvdNav, "libdvdnav.framework/libdvdnav")
+#else
   DECLARE_DLL_WRAPPER(DllDvdNav, DLL_PATH_LIBDVDNAV)
+#endif
 
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_open, (dvdnav_t **p1, const char *p2))
   DEFINE_METHOD1(dvdnav_status_t, dvdnav_close, (dvdnav_t *p1))

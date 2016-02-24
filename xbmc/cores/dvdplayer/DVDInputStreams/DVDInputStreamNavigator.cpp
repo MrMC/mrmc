@@ -33,6 +33,7 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
+
 #define HOLDMODE_NONE 0
 #define HOLDMODE_HELD 1 /* set internally when we wish to flush demuxer */
 #define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
@@ -620,7 +621,7 @@ bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
   else if ( !(vm->state.pgc->audio_control[streamId] & (1<<15)) )
     return false;
 
-  if (vm->state.domain != VTS_DOMAIN && streamId != 0)
+  if (vm->state.domain != DVD_DOMAIN_VTSTitle && streamId != 0)
     return false;
 
   vm->state.AST_REG = streamId;
@@ -647,7 +648,7 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
   else if ( !(vm->state.pgc->subp_control[streamId] & (1<<31)) )
     return false;
 
-  if (vm->state.domain != VTS_DOMAIN && streamId != 0)
+  if (vm->state.domain != DVD_DOMAIN_VTSTitle && streamId != 0)
     return false;
 
   /* set subtitle stream without modifying visibility */
@@ -841,9 +842,9 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
     vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
     if (vm && vm->state.pgc)
     {
-      // get the current selected audiostream, for non VTS_DOMAIN it is always stream 0
+      // get the current selected audiostream, for non DVD_DOMAIN_VTSTitle it is always stream 0
       int subpN = 0;
-      if (vm->state.domain == VTS_DOMAIN)
+      if (vm->state.domain == DVD_DOMAIN_VTSTitle)
       {
         subpN = vm->state.SPST_REG & ~0x40;
 
@@ -924,7 +925,7 @@ int CDVDInputStreamNavigator::GetSubTitleStreamCount()
   if (!vm) return 0;
   if (!vm->state.pgc) return 0;
 
-  if (vm->state.domain == VTS_DOMAIN)
+  if (vm->state.domain == DVD_DOMAIN_VTSTitle)
   {
     int streamN = 0;
     for (int i = 0; i < 32; i++)
@@ -950,9 +951,9 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
     vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
     if (vm && vm->state.pgc)
     {
-      // get the current selected audiostream, for non VTS_DOMAIN it is always stream 0
+      // get the current selected audiostream, for non DVD_DOMAIN_VTSTitle it is always stream 0
       int audioN = 0;
-      if (vm->state.domain == VTS_DOMAIN)
+      if (vm->state.domain == DVD_DOMAIN_VTSTitle)
       {
         audioN = vm->state.AST_REG;
 
@@ -1078,7 +1079,7 @@ int CDVDInputStreamNavigator::GetAudioStreamCount()
   if (!vm) return 0;
   if (!vm->state.pgc) return 0;
 
-  if (vm->state.domain == VTS_DOMAIN)
+  if (vm->state.domain == DVD_DOMAIN_VTSTitle)
   {
     int streamN = 0;
     for (int i = 0; i < 8; i++)
@@ -1316,7 +1317,7 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_XBMCToExternal(int id)
   if(!vm)
     return -1;
 
-  if (vm->state.domain == VTS_DOMAIN)
+  if (vm->state.domain == DVD_DOMAIN_VTSTitle)
   {
     if(!vm->state.pgc)
       return -1;
@@ -1343,7 +1344,7 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
   if (!vm->state.pgc) return -1;
   if (id < 0) return -1;
 
-  if( vm->state.domain == VTS_DOMAIN )
+  if( vm->state.domain == DVD_DOMAIN_VTSTitle )
   {
     /* VTS domain can only have limited number of streams */
     if (id >= 8)
@@ -1373,7 +1374,7 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
     if( id != 0 )
       CLog::Log(LOGWARNING, "%s - non vts domain can't have id %d", __FUNCTION__, id);
 
-    // non VTS_DOMAIN, only one stream is available
+    // non DVD_DOMAIN_VTSTitle, only one stream is available
     return 0;
   }
 }
@@ -1387,7 +1388,7 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
   if(!vm)
     return -1;
 
-  if (vm->state.domain == VTS_DOMAIN)
+  if (vm->state.domain == DVD_DOMAIN_VTSTitle)
   {
     if(!vm->state.pgc)
       return -1;
@@ -1414,7 +1415,7 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
   if (!vm->state.pgc) return -1;
   if (id < 0) return -1;
 
-  if( vm->state.domain == VTS_DOMAIN )
+  if( vm->state.domain == DVD_DOMAIN_VTSTitle )
   {
     /* VTS domain can only have limited number of streams */
     if (id >= 32)
@@ -1444,7 +1445,7 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
     if( id != 0 )
       CLog::Log(LOGWARNING, "%s - non vts domain can't have id %d", __FUNCTION__, id);
 
-    // non VTS_DOMAIN, only one stream is available
+    // non DVD_DOMAIN_VTSTitle, only one stream is available
     return 0;
   }
 }

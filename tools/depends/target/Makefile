@@ -54,6 +54,8 @@ DEPENDS += platform
 DEPENDS += crossguid
 DEPENDS += libcpluff
 DEPENDS += libcdio
+DEPENDS += libdvdnav
+DEPENDS += libdvdread
 DEPENDS += samba
 DEPENDS += libtasn1
 DEPENDS += libdsm
@@ -139,6 +141,7 @@ crossguid: libuuid
 endif
 libdsm: libtasn1
 libcpluff: expat
+libdvdnav: libdvdread
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
