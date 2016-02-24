@@ -28,7 +28,7 @@
                         <control type="image">
                             <height>70</height>
                             <width>805</width>
-                            <texture colordiffuse="77FFFFFF">images/white.png</texture>
+                            <texture colordiffuse="77FFFFFF">images/White.png</texture>
                         </control>
                         <control type="label" description="Main Label">
                             <width>720</width>
@@ -49,7 +49,7 @@
                             <control type="image">
                                 <height>70</height>
                                 <width>805</width>
-                                <texture>images/white.png</texture>
+                                <texture>images/White.png</texture>
                             </control>
                             <control type="label" description="Main Label">
                                 <width>720</width>
@@ -62,7 +62,7 @@
                         <control type="image">
                             <height>70</height>
                             <width>805</width>
-                            <texture colordiffuse="77FFFFFF">images/white.png</texture>
+                            <texture colordiffuse="77FFFFFF">images/White.png</texture>
                         </control>
                         <include>Watched_Marks</include>
                         <include>HD_Badge</include>
@@ -97,7 +97,7 @@
                             <control type="image">
                                 <height>70</height>
                                 <width>805</width>
-                                <texture>images/white.png</texture>
+                                <texture>images/White.png</texture>
                             </control>
                             <include>Watched_Marks</include>
                             <include>HD_Badge</include>
@@ -419,7 +419,7 @@
                 <top>900</top>
                 <width>1920</width>
                 <height>280</height>
-                <texture>images/white.png</texture>
+                <texture>images/White.png</texture>
             </control>
             <control type="label" description="Media title">
                 <left>60</left>
@@ -730,7 +730,7 @@
                 <top>470</top>
                 <width>1920</width>
                 <height>612</height>
-                <texture colordiffuse="77FFFFFF">images/white.png</texture>
+                <texture colordiffuse="77FFFFFF">images/White.png</texture>
                 <aspectratio>stretch</aspectratio>
             </control>
             <control type="list" id="500" description="fanart">
@@ -787,7 +787,7 @@
                             <top>79</top>
                             <height>352</height>
                             <width>232</width>
-                            <texture background="true">images/white.png</texture>
+                            <texture background="true">images/White.png</texture>
                             <aspectratio>stretch</aspectratio>
                         </control>
                         <control type="image" description="THUMBNAIL">

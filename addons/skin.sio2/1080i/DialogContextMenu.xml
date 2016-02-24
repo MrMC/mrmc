@@ -20,12 +20,6 @@
       <centertop>540</centertop>
       <height>960</height>
       <include>DialogGLs</include>
-	  <control type="button" id="1500">
-	  <visible>System.HasAddon(script.cinema.experience) + Container.Content(Movies)</visible>
-      <include>DialogButt</include>
-	<label>31061</label>
-	<onclick>XBMC.RunScript(script.cinema.experience)</onclick>
-	</control>
     </control>
     <control type="button" id="1000" description="Buttons">
       <animation effect="zoom" time="120" start="100" end="110" center="auto" tween="Back" easing="Out">Focus</animation>
