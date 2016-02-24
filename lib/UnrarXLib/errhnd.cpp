@@ -28,7 +28,7 @@ void ErrorHandler::MemoryError()
 
 void ErrorHandler::OpenError(const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   OpenErrorMsg(FileName);
   Throw(OPEN_ERROR);
 #endif
@@ -37,14 +37,14 @@ void ErrorHandler::OpenError(const char *FileName)
 
 void ErrorHandler::CloseError(const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   if (!UserBreak)
   {
     ErrMsg(NULL,St(MErrFClose),FileName);
     SysErrMsg();
   }
 #endif
-#if !defined(SILENT) || defined(RARDLL)
+#if !defined(RAR_SILENT) || defined(RARDLL)
   Throw(FATAL_ERROR);
 #endif
 }
@@ -52,10 +52,10 @@ void ErrorHandler::CloseError(const char *FileName)
 
 void ErrorHandler::ReadError(const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   ReadErrorMsg(NULL,FileName);
 #endif
-#if !defined(SILENT) || defined(RARDLL)
+#if !defined(RAR_SILENT) || defined(RARDLL)
   Throw(FATAL_ERROR);
 #endif
 }
@@ -63,7 +63,7 @@ void ErrorHandler::ReadError(const char *FileName)
 
 bool ErrorHandler::AskRepeatRead(const char *FileName)
 {
-#if !defined(SILENT) && !defined(SFX_MODULE) && !defined(_WIN_CE)
+#if !defined(RAR_SILENT) && !defined(SFX_MODULE) && !defined(_WIN_CE)
   if (!Silent)
   {
     mprintf("\n");
@@ -77,10 +77,10 @@ bool ErrorHandler::AskRepeatRead(const char *FileName)
 
 void ErrorHandler::WriteError(const char *ArcName,const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   WriteErrorMsg(ArcName,FileName);
 #endif
-#if !defined(SILENT) || defined(RARDLL)
+#if !defined(RAR_SILENT) || defined(RARDLL)
   Throw(WRITE_ERROR);
 #endif
 }
@@ -89,11 +89,11 @@ void ErrorHandler::WriteError(const char *ArcName,const char *FileName)
 #ifdef _WIN_32
 void ErrorHandler::WriteErrorFAT(const char *FileName)
 {
-#if !defined(SILENT) && !defined(SFX_MODULE)
+#if !defined(RAR_SILENT) && !defined(SFX_MODULE)
   SysErrMsg();
   ErrMsg(NULL,St(MNTFSRequired),FileName);
 #endif
-#if !defined(SILENT) && !defined(SFX_MODULE) || defined(RARDLL)
+#if !defined(RAR_SILENT) && !defined(SFX_MODULE) || defined(RARDLL)
   Throw(WRITE_ERROR);
 #endif
 }
@@ -102,7 +102,7 @@ void ErrorHandler::WriteErrorFAT(const char *FileName)
 
 bool ErrorHandler::AskRepeatWrite(const char *FileName)
 {
-#if !defined(SILENT) && !defined(_WIN_CE)
+#if !defined(RAR_SILENT) && !defined(_WIN_CE)
   if (!Silent)
   {
     mprintf("\n");
@@ -116,14 +116,14 @@ bool ErrorHandler::AskRepeatWrite(const char *FileName)
 
 void ErrorHandler::SeekError(const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   if (!UserBreak)
   {
     ErrMsg(NULL,St(MErrSeek),FileName);
     SysErrMsg();
   }
 #endif
-#if !defined(SILENT) || defined(RARDLL)
+#if !defined(RAR_SILENT) || defined(RARDLL)
   Throw(FATAL_ERROR);
 #endif
 }
@@ -131,7 +131,7 @@ void ErrorHandler::SeekError(const char *FileName)
 
 void ErrorHandler::MemoryErrorMsg()
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   ErrMsg(NULL,St(MErrOutMem));
 #endif
 }
@@ -145,7 +145,7 @@ void ErrorHandler::OpenErrorMsg(const char *FileName)
 
 void ErrorHandler::OpenErrorMsg(const char *ArcName,const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   Log(ArcName && *ArcName ? ArcName:NULL,St(MCannotOpen),FileName);
   Alarm();
   SysErrMsg();
@@ -161,7 +161,7 @@ void ErrorHandler::CreateErrorMsg(const char *FileName)
 
 void ErrorHandler::CreateErrorMsg(const char *ArcName,const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   Log(ArcName && *ArcName ? ArcName:NULL,St(MCannotCreate),FileName);
   Alarm();
 #if defined(_WIN_32) && !defined(_WIN_CE) && !defined(SFX_MODULE) && defined(MAXPATH)
@@ -187,7 +187,7 @@ void ErrorHandler::CreateErrorMsg(const char *ArcName,const char *FileName)
 
 void ErrorHandler::ReadErrorMsg(const char *ArcName,const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   ErrMsg(ArcName,St(MErrRead),FileName);
   SysErrMsg();
 #endif
@@ -196,7 +196,7 @@ void ErrorHandler::ReadErrorMsg(const char *ArcName,const char *FileName)
 
 void ErrorHandler::WriteErrorMsg(const char *ArcName,const char *FileName)
 {
-#ifndef SILENT
+#ifndef RAR_SILENT
   ErrMsg(ArcName,St(MErrWrite),FileName);
   SysErrMsg();
 #endif
@@ -227,7 +227,7 @@ void ErrorHandler::ErrMsg(const char *ArcName,const char *fmt,...)
   Alarm();
   if (*Msg)
   {
-    Log(ArcName,"\n%s",Msg);
+    RarLog(ArcName,"\n%s",Msg);
     mprintf("\n%s\n",St(MProgAborted));
   }
 }
@@ -322,7 +322,7 @@ void ErrorHandler::Throw(int Code)
 
 void ErrorHandler::SysErrMsg()
 {
-#if defined(_WIN_32) && !defined(SFX_MODULE) && !defined(SILENT)
+#if defined(_WIN_32) && !defined(SFX_MODULE) && !defined(RAR_SILENT)
     #define STRCHR strchr
     #define ERRCHAR char
   ERRCHAR  *lpMsgBuf=NULL;

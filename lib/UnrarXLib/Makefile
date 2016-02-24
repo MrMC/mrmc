@@ -1,4 +1,4 @@
-CXXFLAGS+=-DSILENT
+CXXFLAGS+=-DRAR_SILENT
 
 SRCS=archive.cpp \
      arcread.cpp \

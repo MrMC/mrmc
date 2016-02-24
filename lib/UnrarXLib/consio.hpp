@@ -7,7 +7,7 @@ enum PASSWORD_TYPE {PASSWORD_GLOBAL,PASSWORD_FILE,PASSWORD_ARCHIVE};
 
 void InitConsoleOptions(MESSAGE_TYPE MsgStream,bool Sound);
 
-#ifndef SILENT
+#ifndef RAR_SILENT
 void mprintf(const char *fmt,...);
 void eprintf(const char *fmt,...);
 void Alarm();
@@ -20,7 +20,7 @@ int Ask(const char *AskStr);
 int KbdAnsi(char *Addr,int Size);
 void OutComment(char *Comment,int Size);
 
-#ifdef SILENT
+#ifdef RAR_SILENT
 #ifdef __GNUC__
   #define mprintf(args...)
   #define eprintf(args...)

@@ -14,7 +14,7 @@ bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,wchar *NameW,
         *UserReject=true;
       return(false);
     }
-#ifdef SILENT
+#ifdef RAR_SILENT
     Mode=OVERWRITE_ALL;
 #endif
     if (Cmd->AllYes || Mode==OVERWRITE_ALL)

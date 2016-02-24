@@ -17,7 +17,7 @@ void InitConsoleOptions(MESSAGE_TYPE MsgStream,bool Sound)
   ::Sound=Sound;
 }
 
-#if !defined(GUI) && !defined(SILENT)
+#if !defined(GUI) && !defined(RAR_SILENT)
 void mprintf(const char *fmt,...)
 {
   if (MsgStream==MSG_NULL || MsgStream==MSG_ERRONLY)
@@ -32,7 +32,7 @@ void mprintf(const char *fmt,...)
 #endif
 
 
-#if !defined(GUI) && !defined(SILENT)
+#if !defined(GUI) && !defined(RAR_SILENT)
 void eprintf(const char *fmt,...)
 {
   if (MsgStream==MSG_NULL)
@@ -47,7 +47,7 @@ void eprintf(const char *fmt,...)
 #endif
 
 
-#if !defined(GUI) && !defined(SILENT)
+#if !defined(GUI) && !defined(RAR_SILENT)
 void RawPrint(char *Msg,MESSAGE_TYPE MessageType)
 {
   File OutFile;
@@ -91,7 +91,7 @@ void RawPrint(char *Msg,MESSAGE_TYPE MessageType)
 #endif
 
 
-#ifndef SILENT
+#ifndef RAR_SILENT
 void Alarm()
 {
 #ifndef SFX_MODULE
@@ -102,7 +102,7 @@ void Alarm()
 #endif
 
 
-#ifndef SILENT
+#ifndef RAR_SILENT
 #ifndef GUI
 void GetPasswordText(char *Str,int MaxLength)
 {
@@ -131,10 +131,10 @@ void GetPasswordText(char *Str,int MaxLength)
 #endif
 
 
-#if !defined(GUI) && !defined(SILENT)
+#if !defined(GUI) && !defined(RAR_SILENT)
 unsigned int GetKey()
 {
-#ifdef SILENT
+#ifdef RAR_SILENT
   return(0);
 #else
   char Str[80];
@@ -152,7 +152,7 @@ unsigned int GetKey()
 #endif
 
 
-#ifndef SILENT
+#ifndef RAR_SILENT
 bool GetPassword(PASSWORD_TYPE Type,const char *FileName,char *Password,int MaxLength)
 {
   Alarm();
@@ -201,7 +201,7 @@ bool GetPassword(PASSWORD_TYPE Type,const char *FileName,char *Password,int MaxL
 #endif
 
 
-#if !defined(GUI) && !defined(SILENT)
+#if !defined(GUI) && !defined(RAR_SILENT)
 int Ask(const char *AskStr)
 {
   const int MaxItems=10;

@@ -469,7 +469,7 @@ bool RarVM::ExecuteCode(VM_PreparedCommand *PreparedCode,int CodeSize)
 
 void RarVM::PrintState(uint IP)
 {
-#if defined(DEBUG) && !defined(GUI) && !defined(SILENT)
+#if defined(DEBUG) && !defined(GUI) && !defined(RAR_SILENT)
   mprintf("\n");
   for (int I=0;I<sizeof(R)/sizeof(R[0]);I++)
     mprintf("R%d=%08X\t%s",I,R[I],I==3 ? "\n":"");

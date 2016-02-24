@@ -2,7 +2,7 @@
 
 
 
-#if !defined(SILENT) || !defined(RARDLL)
+#if !defined(RAR_SILENT) || !defined(RARDLL)
 const char *St(MSGID StringId)
 {
   return(StringId);

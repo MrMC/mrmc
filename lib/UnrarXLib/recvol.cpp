@@ -64,7 +64,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
     return(false);
   if (!Arc.Volume)
   {
-#ifndef SILENT
+#ifndef RAR_SILENT
     Log(ArcName,St(MNotVolume),ArcName);
 #endif
     return(false);
@@ -77,7 +77,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
   int BaseNamePartLength=VolNumStart-ArcName;
   strcpy(RecVolMask+BaseNamePartLength,"*.rev");
 
-#ifndef SILENT
+#ifndef RAR_SILENT
   Int64 RecFileSize=0;
 #endif
   FindFile Find;
@@ -121,7 +121,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
         FileCRC|=CurFile.GetByte()<<(I*8);
       if (FileCRC!=CalcFileCRC(&CurFile,Length-4))
       {
-#ifndef SILENT
+#ifndef RAR_SILENT
         mprintf(St(MCRCFailed),Name);
 #endif
         continue;
@@ -150,7 +150,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       continue;
     if ((RecVolNumber!=0 && RecVolNumber!=P[1]) || (FileNumber!=0 && FileNumber!=P[2]))
     {
-#ifndef SILENT
+#ifndef RAR_SILENT
       Log(NULL,St(MRecVolDiffSets),Name,PrevName);
 #endif
       return(false);
@@ -162,12 +162,12 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
     NewFile->TOpen(Name);
     SrcFile[FileNumber+P[0]-1]=NewFile;
     FoundRecVolumes++;
-#ifndef SILENT
+#ifndef RAR_SILENT
     if (RecFileSize==0)
       RecFileSize=NewFile->FileLength();
 #endif
   }
-#ifndef SILENT
+#ifndef RAR_SILENT
   if (!Silent || FoundRecVolumes!=0)
   {
     mprintf(St(MRecVolFound),FoundRecVolumes);
@@ -208,7 +208,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
                 NewFile->EndArcHead.ArcDataCRC!=CalcFileCRC(NewFile,NewFile->CurBlockPos))
             {
               ValidVolume=false;
-#ifndef SILENT
+#ifndef RAR_SILENT
               mprintf(St(MCRCFailed),ArcName);
 #endif
             }
@@ -225,7 +225,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
         char NewName[NM];
         strcpy(NewName,ArcName);
         strcat(NewName,".bad");
-#ifndef SILENT
+#ifndef RAR_SILENT
         mprintf(St(MBadArc),ArcName);
         mprintf(St(MRenaming),ArcName,NewName);
 #endif
@@ -242,7 +242,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       if (CurArcNum==FileNumber-1)
         strcpy(LastVolName,ArcName);
 
-#ifndef SILENT
+#ifndef RAR_SILENT
       mprintf(St(MAbsNextVol),ArcName);
 #endif
     }
@@ -250,13 +250,13 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
     NextVolumeName(ArcName,!NewNumbering);
   }
 
-#ifndef SILENT
+#ifndef RAR_SILENT
   mprintf(St(MRecVolMissing),MissingVolumes);
 #endif
 
   if (MissingVolumes==0)
   {
-#ifndef SILENT
+#ifndef RAR_SILENT
     mprintf(St(MRecVolAllExist));
 #endif
     return(false);
@@ -264,12 +264,12 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
 
   if (MissingVolumes>FoundRecVolumes)
   {
-#ifndef SILENT
+#ifndef RAR_SILENT
     mprintf(St(MRecVolCannotFix));
 #endif
     return(false);
   }
-#ifndef SILENT
+#ifndef RAR_SILENT
   mprintf(St(MReconstructing));
 #endif
 
@@ -282,7 +282,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
     if (WriteFlags[I] || SrcFile[I]==NULL)
       Erasures[EraSize++]=I;
 
-#ifndef SILENT
+#ifndef RAR_SILENT
   Int64 ProcessedSize=0;
 #ifndef GUI
   int LastPercent=-1;
@@ -309,7 +309,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       }
     if (MaxRead==0)
       break;
-#ifndef SILENT
+#ifndef RAR_SILENT
     int CurPercent=ToPercent(ProcessedSize,RecFileSize);
     if (!Cmd->DisablePercentage && CurPercent!=LastPercent)
     {
@@ -368,7 +368,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       }
     }
   }
-#if !defined(GUI) && !defined(SILENT)
+#if !defined(GUI) && !defined(RAR_SILENT)
   if (!Cmd->DisablePercentage)
     mprintf("\b\b\b\b100%%");
   if (!Silent && !Cmd->DisableDone)

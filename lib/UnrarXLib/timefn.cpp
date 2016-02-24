@@ -269,7 +269,7 @@ void RarTime::SetCurrentTime()
 #if !defined(SFX_MODULE) && !defined(_WIN_CE)
 const char *GetMonthName(int Month)
 {
-#ifdef SILENT
+#ifdef RAR_SILENT
   return("");
 #else
   static MSGID MonthID[]={

@@ -330,7 +330,7 @@ void File::Write(const void *Data,int Size)
   {
     bool success = true;
 #if defined(_WIN_32) || defined(TARGET_POSIX)
-    DWORD Written=0;
+    uint32_t Written=0;
     if (HandleType!=FILE_HANDLENORMAL)
     {
       const int MaxSize=0x4000;

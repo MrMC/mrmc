@@ -9,7 +9,7 @@ void InitLogOptions(char *LogName)
 }
 
 
-#ifndef SILENT
+#ifndef RAR_SILENT
 void Log(const char *ArcName,const char *Format,...)
 {
   safebuf char Msg[2*NM+1024];

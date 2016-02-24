@@ -27,7 +27,7 @@ bool Archive::GetComment(Array<byte> &CmtData)
 #ifndef SFX_MODULE
     if (CommHead.HeadCRC!=HeaderCRC)
     {
-      Log(FileName,St(MLogCommHead));
+      RarLog(FileName,St(MLogCommHead));
       Alarm();
       return(false);
     }
@@ -60,7 +60,7 @@ bool Archive::GetComment(Array<byte> &CmtData)
 
     if (!OldFormat && ((~DataIO.UnpFileCRC)&0xffff)!=CommHead.CommCRC)
     {
-      Log(FileName,St(MLogCommBrk));
+      RarLog(FileName,St(MLogCommBrk));
       Alarm();
       return(false);
     }
@@ -80,7 +80,7 @@ bool Archive::GetComment(Array<byte> &CmtData)
     Read(&CmtData[0],CmtLength);
     if (!OldFormat && CommHead.CommCRC!=(~CRC(0xffffffff,&CmtData[0],CmtLength)&0xffff))
     {
-      Log(FileName,St(MLogCommBrk));
+      RarLog(FileName,St(MLogCommBrk));
       Alarm();
       CmtData.Reset();
       return(false);
@@ -160,7 +160,7 @@ void Archive::ViewFileComment()
   if (CommHead.HeadCRC!=HeaderCRC)
   {
     #ifndef GUI
-    Log(FileName,St(MLogCommHead));
+    RarLog(FileName,St(MLogCommHead));
 #endif
     return;
   }
@@ -170,7 +170,7 @@ void Archive::ViewFileComment()
   Read(&CmtBuf[0],CommHead.UnpSize);
   if (CommHead.CommCRC!=((~CRC(0xffffffff,&CmtBuf[0],CommHead.UnpSize)&0xffff)))
   {
-    Log(FileName,St(MLogBrokFCmt));
+    RarLog(FileName,St(MLogBrokFCmt));
   }
   else
   {

@@ -4,7 +4,7 @@ void ExtractUnixOwner(Archive &Arc,char *FileName)
 {
   if (Arc.HeaderCRC!=Arc.UOHead.HeadCRC)
   {
-    Log(Arc.FileName,St(MOwnersBroken),FileName);
+    RarLog(Arc.FileName,St(MOwnersBroken),FileName);
     ErrHandler.SetErrorCode(CRC_ERROR);
     return;
   }
@@ -12,7 +12,7 @@ void ExtractUnixOwner(Archive &Arc,char *FileName)
   struct passwd *pw;
   if ((pw=getpwnam(Arc.UOHead.OwnerName))==NULL)
   {
-    Log(Arc.FileName,St(MErrGetOwnerID),Arc.UOHead.OwnerName);
+    RarLog(Arc.FileName,St(MErrGetOwnerID),Arc.UOHead.OwnerName);
     ErrHandler.SetErrorCode(WARNING);
     return;
   }
@@ -21,7 +21,7 @@ void ExtractUnixOwner(Archive &Arc,char *FileName)
   struct group *gr;
   if ((gr=getgrnam(Arc.UOHead.GroupName))==NULL)
   {
-    Log(Arc.FileName,St(MErrGetGroupID),Arc.UOHead.GroupName);
+    RarLog(Arc.FileName,St(MErrGetGroupID),Arc.UOHead.GroupName);
     ErrHandler.SetErrorCode(CRC_ERROR);
     return;
   }
@@ -33,7 +33,7 @@ void ExtractUnixOwner(Archive &Arc,char *FileName)
   if (chown(FileName,OwnerID,GroupID)!=0)
 #endif
   {
-    Log(Arc.FileName,St(MSetOwnersError),FileName);
+    RarLog(Arc.FileName,St(MSetOwnersError),FileName);
     ErrHandler.SetErrorCode(CRC_ERROR);
   }
   SetFileAttr(FileName,NULL,Attr);
@@ -52,7 +52,7 @@ void ExtractUnixOwnerNew(Archive &Arc,char *FileName)
   struct passwd *pw;
   if ((pw=getpwnam(OwnerName))==NULL)
   {
-    Log(Arc.FileName,St(MErrGetOwnerID),OwnerName);
+    RarLog(Arc.FileName,St(MErrGetOwnerID),OwnerName);
     ErrHandler.SetErrorCode(WARNING);
     return;
   }
@@ -61,7 +61,7 @@ void ExtractUnixOwnerNew(Archive &Arc,char *FileName)
   struct group *gr;
   if ((gr=getgrnam(GroupName))==NULL)
   {
-    Log(Arc.FileName,St(MErrGetGroupID),GroupName);
+    RarLog(Arc.FileName,St(MErrGetGroupID),GroupName);
     ErrHandler.SetErrorCode(CRC_ERROR);
     return;
   }
@@ -73,7 +73,7 @@ void ExtractUnixOwnerNew(Archive &Arc,char *FileName)
   if (chown(FileName,OwnerID,GroupID)!=0)
 #endif
   {
-    Log(Arc.FileName,St(MSetOwnersError),FileName);
+    RarLog(Arc.FileName,St(MSetOwnersError),FileName);
     ErrHandler.SetErrorCode(CRC_ERROR);
   }
   SetFileAttr(FileName,NULL,Attr);

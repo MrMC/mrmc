@@ -50,6 +50,9 @@ SRCS += posix/PosixDirectory.cpp
 SRCS += posix/PosixFile.cpp
 SRCS += PVRFile.cpp
 SRCS += PVRDirectory.cpp
+SRCS += RarFile.cpp
+SRCS += RarDirectory.cpp
+SRCS += RarManager.cpp
 SRCS += ResourceDirectory.cpp
 SRCS += ResourceFile.cpp
 SRCS += RSSDirectory.cpp
@@ -82,12 +85,6 @@ SRCS += APKDirectory.cpp
 SRCS += APKFile.cpp
 SRCS += AndroidAppFile.cpp
 SRCS += AndroidAppDirectory.cpp
-endif
-
-ifeq (@HAVE_XBMC_NONFREE@,1)
-SRCS += RarFile.cpp
-SRCS += RarDirectory.cpp
-SRCS += RarManager.cpp
 endif
 
 ifeq (@USE_LIBSMBCLIENT@,1)

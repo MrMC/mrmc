@@ -55,7 +55,7 @@ void Archive::CheckArc(bool EnableBroken)
 {
   if (!IsArchive(EnableBroken))
   {
-    Log(FileName,St(MBadArc),FileName);
+    RarLog(FileName,St(MBadArc),FileName);
     ErrHandler.Exit(FATAL_ERROR);
   }
 }
@@ -78,7 +78,7 @@ bool Archive::WCheckOpen(char *Name,wchar *NameW)
   if (!IsArchive(false))
   {
 #ifndef SHELL_EXT
-    Log(FileName,St(MNotRAR),FileName);
+    RarLog(FileName,St(MNotRAR),FileName);
 #endif
     Close();
     return(false);
@@ -119,7 +119,7 @@ bool Archive::IsArchive(bool EnableBroken)
   if (IsDevice())
   {
 #ifndef SHELL_EXT
-    Log(FileName,St(MInvalidName),FileName);
+    RarLog(FileName,St(MInvalidName),FileName);
 #endif
     return(false);
   }
@@ -170,7 +170,7 @@ bool Archive::IsArchive(bool EnableBroken)
     if (HeaderCRC!=NewMhd.HeadCRC)
     {
 #ifndef SHELL_EXT
-      Log(FileName,St(MLogMainHead));
+      RarLog(FileName,St(MLogMainHead));
 #endif
       Alarm();
       if (!EnableBroken)

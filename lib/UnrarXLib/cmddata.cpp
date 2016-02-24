@@ -775,7 +775,7 @@ void CommandData::OutTitle()
 #if defined(__GNUC__) && defined(SFX_MODULE)
   mprintf(St(MCopyrightS));
 #else
-#ifndef SILENT
+#ifndef RAR_SILENT
   static bool TitleShown=false;
   if (TitleShown)
     return;
@@ -798,7 +798,7 @@ void CommandData::OutTitle()
 
 void CommandData::OutHelp()
 {
-#if !defined(GUI) && !defined(SILENT)
+#if !defined(GUI) && !defined(RAR_SILENT)
   OutTitle();
   static MSGID Help[]={
 #ifdef SFX_MODULE
@@ -1049,7 +1049,7 @@ void CommandData::ProcessCommand()
         Extract.DoExtract(this);
       }
       break;
-#if !defined(GUI) && !defined(SILENT)
+#if !defined(GUI) && !defined(RAR_SILENT)
     case 'V':
     case 'L':
       ListArchive(this);

@@ -77,7 +77,7 @@ int Archive::ReadHeader()
     if (CurBlockPos>ArcSize || NextBlockPos>ArcSize)
     {
   #ifndef SHELL_EXT
-      Log(FileName,St(MLogUnexpEOF));
+      RarLog(FileName,St(MLogUnexpEOF));
   #endif
       ErrHandler.SetErrorCode(WARNING);
     }
@@ -93,7 +93,7 @@ int Archive::ReadHeader()
   if (ShortBlock.HeadSize<SIZEOF_SHORTBLOCKHEAD)
   {
 #ifndef SHELL_EXT
-    Log(FileName,St(MLogFileHead),"???");
+    RarLog(FileName,St(MLogFileHead),"???");
 #endif
     BrokenFileHeader=true;
     ErrHandler.SetErrorCode(CRC_ERROR);
@@ -252,7 +252,7 @@ int Archive::ReadHeader()
           BrokenFileHeader=true;
           ErrHandler.SetErrorCode(WARNING);
 #ifndef SHELL_EXT
-          Log(Archive::FileName,St(MLogFileHead),IntNameToExt(hd->FileName));
+          RarLog(Archive::FileName,St(MLogFileHead),IntNameToExt(hd->FileName));
           Alarm();
 #endif
         }
@@ -369,7 +369,7 @@ int Archive::ReadHeader()
       }
       if (!Recovered)
       {
-#ifndef SILENT
+#ifndef RAR_SILENT
         Log(FileName,St(MEncrBadCRC),FileName);
 #endif
         Close();
@@ -385,7 +385,7 @@ int Archive::ReadHeader()
   if (NextBlockPos<=CurBlockPos)
   {
 #ifndef SHELL_EXT
-    Log(FileName,St(MLogFileHead),"???");
+    RarLog(FileName,St(MLogFileHead),"???");
 #endif
     BrokenFileHeader=true;
     ErrHandler.SetErrorCode(CRC_ERROR);
@@ -583,7 +583,7 @@ bool Archive::ReadSubData(Array<byte> *UnpData,File *DestFile)
   if (HeaderCRC!=SubHead.HeadCRC)
   {
 #ifndef SHELL_EXT
-    Log(FileName,St(MSubHeadCorrupt));
+    RarLog(FileName,St(MSubHeadCorrupt));
 #endif
     ErrHandler.SetErrorCode(CRC_ERROR);
     return(false);
@@ -591,7 +591,7 @@ bool Archive::ReadSubData(Array<byte> *UnpData,File *DestFile)
   if (SubHead.Method<0x30 || SubHead.Method>0x35 || SubHead.UnpVer>PACK_VER)
   {
 #ifndef SHELL_EXT
-    Log(FileName,St(MSubHeadUnknown));
+    RarLog(FileName,St(MSubHeadUnknown));
 #endif
     return(false);
   }
@@ -630,7 +630,7 @@ bool Archive::ReadSubData(Array<byte> *UnpData,File *DestFile)
   if (SubHead.FileCRC!=~SubDataIO.UnpFileCRC)
   {
 #ifndef SHELL_EXT
-    Log(FileName,St(MSubHeadDataCRC),SubHead.FileName);
+    RarLog(FileName,St(MSubHeadDataCRC),SubHead.FileName);
 #endif
     ErrHandler.SetErrorCode(CRC_ERROR);
     if (UnpData!=NULL)

@@ -90,9 +90,10 @@ bool SubAllocator::StartSubAllocator(int SASize)
     ErrHandler.MemoryError();
     return FALSE;
   }
-
+#ifndef RAR_SILENT
   if(AllocSize != AllocSize2)
     OutputDebugString("ERROR - had to allocate smaller data than required, extract can very well fail");
+#endif
 
 #endif
   HeapEnd=HeapStart+AllocSize-UNIT_SIZE;

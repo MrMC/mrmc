@@ -5,7 +5,7 @@
 #ifndef _WIN_32
   #define _WIN_32
 #endif
-  #define SILENT
+  #define RAR_SILENT
 #endif
 
 #ifdef __EMX__

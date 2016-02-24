@@ -40,6 +40,7 @@
 #define HAS_VISUALISATION
 #define HAS_PVRCLIENTS
 #define HAS_ADSPADDONS
+#define HAS_FILESYSTEM_RAR
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
@@ -92,14 +93,6 @@
 
 #if defined(HAVE_LIBGIF)
   #define HAS_GIFLIB
-#endif
-
-/**********************
- * Non-free Components
- **********************/
-
-#if defined(HAVE_XBMC_NONFREE)
-//  #define HAS_FILESYSTEM_RAR
 #endif
 
 /*****************
