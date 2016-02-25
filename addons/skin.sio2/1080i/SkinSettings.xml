@@ -228,11 +228,6 @@
         <include>Help_Panel</include>
         <texture>icons/music.png</texture>
       </control>
-      <control type="image" description="shelf">
-        <visible>Container(50).HasFocus(15)</visible>
-        <include>Help_Panel</include>
-        <texture>help/Hub.png</texture>
-      </control>
       <control type="image" description="icon shelf">
         <visible>Container(50).HasFocus(16)</visible>
         <include>Help_Panel</include>
