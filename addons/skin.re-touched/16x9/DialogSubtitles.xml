@@ -65,6 +65,16 @@
 				<height>40</height>
 				<aspectratio>keep</aspectratio>
 			</control>
+			<control type="image">
+				<description>Arrow</description>
+				<posx>118</posx>
+				<posy>115</posy>
+				<width>27</width>
+				<height>25</height>
+				<aspectratio>keep</aspectratio>
+				<texture>arrow-big-up.png</texture>
+				<animation effect="rotate" start="0" end="180" center="auto" time="300" loop="false" condition="true">conditional</animation>
+			</control>			
 			<control type="label" id="100">
 				<description>textarea</description>
 				<posx>270</posx>
@@ -433,7 +443,7 @@
 				</control>
 				<control type="button" id="160">
 					<posx>11</posx>
-					<posy>370</posy>
+					<posy>305</posy>
 					<width>298</width>
 					<height>60</height>
 					<label>$LOCALIZE[24120]</label>
@@ -445,6 +455,22 @@
 					<texturefocus>button-focus2.png</texturefocus>
 					<align>center</align>
 					<onup>150</onup>
+					<ondown>170</ondown>
+				</control>
+				<control type="button" id="170">
+					<posx>11</posx>
+					<posy>370</posy>
+					<width>298</width>
+					<height>60</height>
+					<label>$LOCALIZE[24148]</label>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<textcolor>black</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<texturenofocus>button-nofocus.png</texturenofocus>
+					<texturefocus>button-focus2.png</texturefocus>
+					<align>center</align>
+					<onup>160</onup>
 					<ondown>150</ondown>
 				</control>
 			</control>
