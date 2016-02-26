@@ -269,3 +269,7 @@ msgstr "Top Albums"
 msgctxt "#31068"
 msgid "Toggle Debug"
 msgstr "Toggle Debug"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr ""

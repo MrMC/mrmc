@@ -20,14 +20,36 @@
             </control>
             <control type="image" id="110">
                 <description>Service Logo</description>
-                <left>350</left>
-                <top>140</top>
-                <width>1000</width>
-                <height>70</height>
+                <left>200</left>
+                <top>170</top>
+                <width>300</width>
+                <height>50</height>
                 <aspectratio align="center">keep</aspectratio>
             </control>
             <control type="group" id="111">
                 <control type="label" id="100" description="Textarea">
+                    <left>150</left>
+                    <top>150</top>
+                    <width>1400</width>
+                    <height>60</height>
+                    <font>size27</font>
+                    <textcolor>Silver</textcolor>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <wrapmultiline>true</wrapmultiline>
+                </control>
+                <control type="label" id="140" description="status">
+                    <left>150</left>
+                    <top>185</top>
+                    <width>1400</width>
+                    <height>60</height>
+                    <font>size27</font>
+                    <textcolor>Silver</textcolor>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <wrapmultiline>true</wrapmultiline>
+                </control>
+                <control type="label" description="file name">
                     <left>150</left>
                     <top>220</top>
                     <width>1400</width>
@@ -37,6 +59,7 @@
                     <align>center</align>
                     <aligny>center</aligny>
                     <wrapmultiline>true</wrapmultiline>
+                    <label>$INFO[Player.Filename]</label>
                 </control>
                 <control type="image" description="linetop">
                     <left>120</left>
@@ -52,17 +75,20 @@
                     <height>1</height>
                     <texture>images/Line.png</texture>
                 </control>
-                <control type="label" description="Local subtitle available">
-                    <left>200</left>
-                    <top>870</top>
-                    <width>1300</width>
-                    <height>60</height>
-                    <textcolor>White</textcolor>
-                    <label>20446</label>
-                    <font>size33</font>
-                    <align>center</align>
-                    <wrapmultiline>true</wrapmultiline>
-                </control>
+                <control type="group" id="130">
+                    <control type="label" description="Local subtitle available">
+                        <left>200</left>
+                        <top>870</top>
+                        <width>1300</width>
+                        <height>60</height>
+                        <textcolor>Silver</textcolor>
+                        <label>$LOCALIZE[31413]</label>
+                        <font>size27</font>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <wrapmultiline>true</wrapmultiline>
+                    </control>
+                </control>    
             </control>
             <control type="list" id="120">
                 <left>180</left>
@@ -202,7 +228,7 @@
         <control type="group" id="250">
             <left>-60</left>
             <top>90</top>
-            <animation effect="slide" start="0,0" end="-450,0" time="400" reversible="true" condition="Control.HasFocus(150) | Control.HasFocus(160) | Control.HasFocus(122)">Conditional</animation>
+            <animation effect="slide" start="0,0" end="-450,0" time="400" reversible="true" condition="Control.HasFocus(150) | Control.HasFocus(160) | Control.HasFocus(170) | Control.HasFocus(122)">Conditional</animation>
             <control type="image" description="BG">
                 <left>1827</left>
                 <top>45</top>
@@ -219,23 +245,38 @@
                 <onleft>120</onleft>
                 <onright>120</onright>
                 <onup>noop</onup>
-                <ondown>150</ondown>
+                <ondown>170</ondown>
                 <label>$LOCALIZE[24120]</label>
                 <font>size27</font>
-                <texturefocus>images/Buttonselect.png</texturefocus>
+                <texturefocus>images/white.png</texturefocus>
+                <align>center</align>
+            </control>
+            <control type="button" id="170">
+                <description>Set Credentials</description>
+                <left>2000</left>
+                <top>270</top>
+                <width>375</width>
+                <height>60</height>
+                <onleft>120</onleft>
+                <onright>120</onright>
+                <onup>160</onup>
+                <ondown>150</ondown>
+                <label>$LOCALIZE[24148]</label>
+                <font>size27</font>
+                <texturefocus>images/white.png</texturefocus>
                 <align>center</align>
             </control>
             <control type="image">
                 <description>separator</description>
                 <left>1975</left>
-                <top>258</top>
+                <top>328</top>
                 <width>450</width>
                 <height>1</height>
                 <texture>images/Line.png</texture>
             </control>
             <control type="list" id="150">
                 <left>2000</left>
-                <top>265</top>
+                <top>335</top>
                 <width>375</width>
                 <height>442</height>
                 <onleft>120</onleft>
@@ -250,23 +291,10 @@
                         <top>0</top>
                         <width>345</width>
                         <height>57</height>
-                        <font>size27</font>
-                        <aligny>center</aligny>
-                        <selectedcolor>Yellow</selectedcolor>
-                        <align>left</align>
-                        <info>ListItem.Label</info>
-                        <visible>!ListItem.property(man)</visible>
-                    </control>
-                    <control type="label">
-                        <left>15</left>
-                        <top>0</top>
-                        <width>345</width>
-                        <height>57</height>
                         <font>size26</font>
-                        <aligny>center</aligny>
                         <align>left</align>
+                        <textcolor>Grey</textcolor>
                         <info>ListItem.Label</info>
-                        <visible>ListItem.property(man)</visible>
                     </control>
                 </itemlayout>
                 <focusedlayout width="375" height="54">
@@ -275,7 +303,7 @@
                         <top>0</top>
                         <width>375</width>
                         <height>57</height>
-                        <texture border="8">Images/Buttonselect.png</texture>
+                        <texture border="10">images/Buttonselect.png</texture>
                         <visible>Control.HasFocus(150)</visible>
                     </control>
                     <control type="label">
@@ -283,25 +311,11 @@
                         <top>0</top>
                         <width>345</width>
                         <height>57</height>
-                        <font>size27</font>
-                        <aligny>center</aligny>
-                        <textcolor>white</textcolor>
-                        <selectedcolor>Yellow</selectedcolor>
-                        <align>left</align>
-                        <info>ListItem.Label</info>
-                        <visible>!ListItem.property(man)</visible>
-                    </control>
-                    <control type="label">
-                        <left>15</left>
-                        <top>0</top>
-                        <width>345</width>
-                        <height>57</height>
                         <font>size26</font>
-                        <textcolor>white</textcolor>
                         <align>left</align>
                         <aligny>center</aligny>
+                        <textcolor>White2</textcolor>
                         <info>ListItem.Label</info>
-                        <visible>ListItem.property(man)</visible>
                     </control>
                 </focusedlayout>
             </control>
