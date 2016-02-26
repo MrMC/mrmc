@@ -27,7 +27,7 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   LANGSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDSYS} --exclude resource.uisounds*"
 
   # rsync command for including everything but the skins
-  DEFAULTSKIN_EXCLUDES="--exclude addons/skin.mrmc --exclude addons/skin.mrmc-touch --exclude addons/skin.amber --exclude addons/skin.pm3.hd"
+  DEFAULTSKIN_EXCLUDES="--exclude addons/skin.mrmc --exclude addons/skin.mrmc-touch --exclude addons/skin.amber --exclude addons/skin.pm3.hd --exclude addons/skin.sio2"
   ADDONSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDDBG} ${DEFAULTSKIN_EXCLUDES} --exclude addons/lib --exclude addons/share  --exclude *changelog.* --exclude *library.*/*.h --exclude *library.*/*.cpp --exclude *xml.in"
 
   # binary name is MrMC but we build MrMC so to get a clean binary each time
@@ -90,6 +90,17 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
     ${SYNCSKIN_D} "$SRCROOT/addons/skin.pm3.hd"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
     ${SYNC} "$SRCROOT/addons/skin.pm3.hd/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.pm3.hd"
     ${SYNC} "$SRCROOT/addons/skin.pm3.hd/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.pm3.hd"
+  fi
+
+  # sync sio2 skin on tvos
+  if [ -f "$SRCROOT/addons/skin.sio2/addon.xml" ] && [ "$PLATFORM_NAME" == "appletvos" ]; then
+    SYNCSKIN_D=${SYNC}
+    if [ -f "$SRCROOT/addons/skin.sio2/media/Textures.xbt" ]; then
+      SYNCSKIN_D="${SYNC} --exclude *.png --exclude *.jpg --exclude *.gif --exclude media/Makefile*"
+    fi
+    ${SYNCSKIN_D} "$SRCROOT/addons/skin.sio2"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
+    ${SYNC} "$SRCROOT/addons/skin.sio2/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.sio2"
+    ${SYNC} "$SRCROOT/addons/skin.sio2/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.sio2"
   fi
 
   # fixups, addons might have silly symlinks because cmake is stupid, remove them
