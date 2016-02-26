@@ -259,7 +259,7 @@
           <height>432</height>
           <onleft>120</onleft>
           <onright>120</onright>
-          <onup>160</onup>
+          <onup>170</onup>
           <ondown>160</ondown>
           <scrolltime>200</scrolltime>
           <itemlayout width="410" height="54">
@@ -327,18 +327,30 @@
         </control>
         <control type="button" id="160" description="Manual search Button">
           <posx>2000</posx>
+          <posy>815</posy>
+          <width>410</width>
+          <height>54</height>
+          <font>ListDetails</font>
+          <onleft>120</onleft>
+          <onright>120</onright>
+          <label>24120</label>
+          <onleft>120</onleft>
+          <onright>120</onright>
+          <onup>150</onup>
+          <ondown>170</ondown>
+        </control>
+        <control type="button" id="170" description="Change Credentials">
+          <posx>2000</posx>
           <posy>876</posy>
           <width>410</width>
           <height>54</height>
           <font>ListDetails</font>
           <onleft>120</onleft>
           <onright>120</onright>
-          <onup>150</onup>
-          <ondown>150</ondown>
-          <label>24120</label>
+          <label>24148</label>
           <onleft>120</onleft>
           <onright>120</onright>
-          <onup>150</onup>
+          <onup>160</onup>
           <ondown>150</ondown>
         </control>
       </control>
