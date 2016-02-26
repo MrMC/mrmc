@@ -50,7 +50,7 @@
     #include "platform/darwin/osx/XBMCHelper.h"
   #endif // defined(TARGET_DARWIN_OSX)
   #if defined(TARGET_DARWIN_IOS)
-    //#include "SettingAddon.h"
+    #include "SettingAddon.h"
   #endif
   #if defined(TARGET_DARWIN_TVOS)
     #include "platform/darwin/tvos/TVOSSettingsHandler.h"
@@ -899,7 +899,7 @@ void CSettings::InitializeDefaults()
 {
   // set some default values if necessary
 #if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
-  ((CSettingAddon*)m_settingsManager->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->SetDefault("skin.mrmc-touch");
+  ((CSettingAddon*)m_settingsManager->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->SetDefault("skin.re-touched");
 #endif
 
 #if defined(TARGET_POSIX)
