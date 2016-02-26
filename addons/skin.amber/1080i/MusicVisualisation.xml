@@ -44,7 +44,7 @@
         </animation>
       </control>
       <control type="image" description="Info BG">
-        <visible>Skin.HasSetting(MusicPlayingFanart) + [Player.ShowInfo | Window.IsActive(MusicOSD) | !Visualisation.Enabled] + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
+        <visible>Skin.HasSetting(MusicPlayingFanart) + [Player.ShowInfo | Window.IsActive(MusicOSD) | !Visualisation.Enabled] + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(122)]</visible>
 		<posx>0</posx>
         <posy>270</posy>
         <width>1920</width>
@@ -56,7 +56,7 @@
         <animation effect="fade" time="200">Hidden</animation>
       </control>
       <control type="group" description="INFO grouped for visibility sake">
-        <visible>[Player.ShowInfo | Window.IsActive(MusicOSD) | !Visualisation.Enabled] + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
+        <visible>[Player.ShowInfo | Window.IsActive(MusicOSD) | !Visualisation.Enabled] + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(122)]</visible>
         <animation effect="fade" time="500">Visible</animation>
         <animation effect="fade" time="200">Hidden</animation>
         <control type="group" description="Info panel LEFT">

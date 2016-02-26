@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.amber" version="2.1.3" name="Amber" provider-name="Jester, Pecinko, MrMC">
+<addon id="skin.amber" version="2.2.3" name="Amber" provider-name="Jester, Pecinko">
   <requires>
-    <import addon="xbmc.gui" version="5.9.0"/>
+    <import addon="xbmc.gui" version="5.10.0"/>
     <import addon="resource.uisounds.amber" version="1.0.0"/>
   </requires>
   <extension

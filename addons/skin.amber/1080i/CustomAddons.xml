@@ -45,8 +45,7 @@
         <item id="4" description="Music apps">
           <visible>!Skin.HasSetting(Addons.Hide)</visible>
           <label>$LOCALIZE[1038]</label>
-          <onclick condition="Library.HasContent(Music)">ActivateWindow(MusicLibrary,Addons,return)</onclick>
-          <onclick condition="!Library.HasContent(Music)">ActivateWindow(MusicFiles,Addons,return)</onclick>
+          <onclick condition="Library.HasContent(Music)">ActivateWindow(Music,Addons,return)</onclick>
         </item>
         <item id="5" description="Picture apps">
           <visible>!Skin.HasSetting(Addons.Hide)</visible>

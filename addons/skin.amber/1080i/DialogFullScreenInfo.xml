@@ -47,7 +47,6 @@
             <itemgap>30</itemgap>
             <orientation>horizontal</orientation>
             <align>left</align>
-            <aligny>center</aligny>
             <control type="button">
               <visible>!IsEmpty(VideoPlayer.VideoResolution)</visible>
               <height>36</height>

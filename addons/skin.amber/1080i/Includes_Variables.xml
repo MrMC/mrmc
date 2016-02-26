@@ -4,10 +4,11 @@
     <value condition="Window.IsActive(home) | Window.IsActive(weather)">[COLOR=Grey2]$INFO[System.Date][/COLOR][COLOR=Highlight]  •  [/COLOR]$INFO[System.Time]</value>
     <value>$INFO[System.Time]</value>
   </variable>
-  <variable name="ChapterLabel" description="Chapter label in  DialogSeekBar">
+  <variable name="ChapterLabel" description="Chapter label in DialogSeekBar">
     <value condition="Player.ChapterCount + !IsEmpty(Player.ChapterName)">$INFO[Player.ChapterName][COLOR=Highlight] • [/COLOR]$INFO[Player.Chapter]$INFO[Player.ChapterCount, / ]</value>
     <value condition="Player.ChapterCount">$LOCALIZE[21396][COLOR=Highlight] • [/COLOR]$INFO[Player.Chapter]$INFO[Player.ChapterCount, / ]</value>
   </variable>
+
   <variable name="Overlay" description="Overlay image">
     <value condition="Skin.HasSetting(Hide_Watched_Marks) + Skin.HasSetting(Hide_Unwatched_Marks)">-</value>
     <value condition="Skin.HasSetting(Hide_Unwatched_Marks)">$INFO[ListItem.Overlay,overlay_watched/]</value>
@@ -123,6 +124,7 @@
   </variable>
   <variable name="Plots" description="Plots and descriptions">
     <value condition="Container.content(addons) + !IsEmpty(ListItem.Property(Addon.Description))">$INFO[ListItem.Property(Addon.Description)]</value>
+    <value condition="SubString(ListItem.Path,videodb://movies/sets/) + !IsEmpty(ListItem.Plot)">$INFO[ListItem.Plot]</value>
     <value condition="SubString(ListItem.Path,videodb://movies/sets/)">$LOCALIZE[20457]</value>
     <value condition="Container.Content(Seasons) + !IsEmpty(ListItem.Plot) + !IsEmpty(ListItem.Title)">$INFO[ListItem.Plot]</value>
 	<value condition="Container.Content(Seasons) + !IsEmpty(Container.ShowPlot) + !IsEmpty(ListItem.Title)">$INFO[Container.ShowPlot]</value>
@@ -166,8 +168,8 @@
     <value>special://skin/backgrounds/default/</value>
   </variable>  
   <variable name="SeekLabel">
-    <value condition="!IsEmpty(Player.SeekStepSize) + ![player.forwarding | player.rewinding]">$LOCALIZE[31046][COLOR=grey] $INFO[Player.SeekStepSize][/COLOR]</value>
-    <value condition="Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]">$LOCALIZE[31046][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</value>
+    <value condition="!IsEmpty(Player.SeekStepSize) + ![player.forwarding | player.rewinding]">$LOCALIZE[31046][COLOR=Grey2] $INFO[Player.SeekStepSize][/COLOR]</value>
+    <value condition="Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]">$LOCALIZE[31046][COLOR=Grey2] $INFO[Player.SeekOffset][/COLOR]</value>
     <value condition="!Player.DisplayAfterSeek + Player.Seeking">$LOCALIZE[31046]</value>
   </variable>
 </includes>

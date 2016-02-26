@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-  <defaultcontrol always="true">10</defaultcontrol>
+  <defaultcontrol always="true">12</defaultcontrol>
   <include>OpenClose</include>
   <coordinates>
     <origin x="0" y="0" />
@@ -101,48 +101,25 @@
       <control type="group" description="Right side">
         <posx>1037</posx>
         <posy>0</posy>
-        <control type="button" id="14" description="Decrease Rating">
-          <posy>120</posy>
-          <width>315</width>
-          <label>$LOCALIZE[563] -</label>
-          <onclick>DecreaseRating</onclick>
-          <onup>10</onup>
-          <ondown>15</ondown>
-        </control>
-        <control type="button" id="15" description="Increase Rating">
-          <posy>180</posy>
-          <width>315</width>
-          <label>$LOCALIZE[563] +</label>
-          <onclick>IncreaseRating</onclick>
-          <onup>14</onup>
-          <ondown>12</ondown>
-        </control>
         <control type="button" id="12" description="album">
-          <posy>240</posy>
+          <posy>120</posy>
           <width>315</width>
           <label>$LOCALIZE[558]</label>
           <onup>15</onup>
           <ondown>13</ondown>
         </control>
         <control type="button" id="13" description="get thumb">
-          <posy>300</posy>
+          <posy>180</posy>
           <width>315</width>
           <label>$LOCALIZE[13405]</label>
           <onup>12</onup>
           <ondown>11</ondown>
         </control>
-        <control type="button" id="11" description="cancel">
-          <posy>360</posy>
+        <control type="button" id="7" description="Set my rating">
+          <posy>240</posy>
           <width>315</width>
-          <label>$LOCALIZE[222]</label>
+          <label>$LOCALIZE[38023]</label>
           <onup>13</onup>
-          <ondown>10</ondown>
-        </control>
-        <control type="button" id="10" description="OK">
-          <posy>420</posy>
-          <width>315</width>
-          <label>$LOCALIZE[186]</label>
-          <onup>11</onup>
           <ondown>14</ondown>
         </control>
       </control>

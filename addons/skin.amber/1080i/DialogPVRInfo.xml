@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">7</defaultcontrol>
+  <include>OpenClose</include>
+  <controls>
+    <include>DimBG</include>
+    <control type="group" description="Content">
+      <include>DialogOpenClose</include>
+      <control type="image">
+        <posx>190</posx>
+        <posy>12</posy>
+        <width>1540</width>
+        <height>1008</height>
+        <texture>dialogs/DialogBG.png</texture>
+      </control>
+      <control type="label">
+        <description>header label</description>
+        <posx>260</posx>
+        <posy>60</posy>
+        <width>1400</width>
+        <label>$LOCALIZE[19053]</label>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="label">
+        <description>Title label</description>
+        <posx>260</posx>
+        <posy>135</posy>
+        <width>1400</width>
+        <font>InfoTitle</font>
+        <textcolor>White2</textcolor>
+        <label>$INFO[ListItem.Title]</label>
+        <align>center</align>
+      </control>
+      <control type="image" description="thumb">
+        <posx>420</posx>
+        <posy>234</posy>
+        <width>400</width>
+        <height>260</height>
+        <texture fallback="DefaultThumb.png">$INFO[ListItem.Thumb]</texture>
+        <include>ThumbBorder</include>
+        <aspectratio>scale</aspectratio>
+      </control>
+      <control type="group">
+        <posx>600</posx>
+        <posy>230</posy>
+        <control type="label" description="Start date">
+          <posx>300</posx>
+          <posy>0</posy>
+          <width>700</width>
+          <textcolor>White2</textcolor>
+          <label>[COLOR=Grey2]$LOCALIZE[552]:[/COLOR]$INFO[ListItem.StartDate,  ]</label>
+        </control>
+        <control type="label" description="Start date">
+          <posx>300</posx>
+          <posy>52</posy>
+          <width>700</width>
+          <textcolor>White2</textcolor>
+          <label>[COLOR=Grey2]$LOCALIZE[5]:[/COLOR]$INFO[ListItem.StartTime,  ]</label>
+        </control>
+        <control type="label" description="channel">
+          <posx>300</posx>
+          <posy>104</posy>
+          <width>700</width>
+          <textcolor>White2</textcolor>
+          <label>[COLOR=Grey2]$LOCALIZE[19148]:[/COLOR]$INFO[ListItem.ChannelName,  ]</label>
+        </control>
+        <control type="label" description="runtime">
+          <posx>300</posx>
+          <posy>156</posy>
+          <width>700</width>
+          <textcolor>White2</textcolor>
+          <label>[COLOR=Grey2]$LOCALIZE[2050]:[/COLOR]$INFO[ListItem.Duration,  ]</label>
+        </control>
+        <control type="label" description="genre">
+          <posx>300</posx>
+          <posy>208</posy>
+          <width>700</width>
+          <textcolor>White2</textcolor>
+          <label>[COLOR=Grey2]$LOCALIZE[515]:[/COLOR]$INFO[ListItem.Genre,  ]</label>
+        </control>
+      </control>
+      <control type="label" description="subtitle">
+        <posx>420</posx>
+        <posy>500</posy>
+        <width>1080</width>
+        <textcolor>White2</textcolor>
+        <align>center</align>
+        <label>[COLOR=Grey2]$INFO[ListItem.PlotOutline][/COLOR]</label>
+      </control>
+      <control type="textbox" id="400" description="Plot">
+        <posx>420</posx>
+        <posy>562</posy>
+        <width>1080</width>
+        <height>288</height>
+        <label fallback="161">$INFO[ListItem.Plot]</label>
+      </control>
+      <control type="grouplist" id="9000">
+        <posx>290</posx>
+        <posy>900</posy>
+        <width>1340</width>
+        <height>60</height>
+        <itemgap>8</itemgap>
+        <align>center</align>
+        <orientation>horizontal</orientation>
+        <onleft>9000</onleft>
+        <onright>9000</onright>
+        <onup>60</onup>
+        <ondown>60</ondown>
+        <control type="button" id="4">
+          <description>Find Similar</description>
+          <width>300</width>
+          <label>$LOCALIZE[19003]</label>
+          <align>center</align>
+          <visible>Window.IsActive(PVRGuideInfo)</visible>
+        </control>
+        <control type="button" id="5">
+          <description>Switch to Channel</description>
+          <width>300</width>
+          <label>$LOCALIZE[19165]</label>
+          <align>center</align>
+          <visible>Window.IsActive(PVRGuideInfo)</visible>
+        </control>
+        <control type="button" id="8">
+          <description>Play recording</description>
+          <width>300</width>
+          <label>$LOCALIZE[19687]</label>
+          <align>center</align>
+          <visible>Window.IsActive(PVRGuideInfo)</visible>
+        </control>
+        <control type="button" id="6">
+          <description>Record</description>
+          <width>300</width>
+          <label>-</label>
+          <align>center</align>
+          <visible>Window.IsActive(PVRGuideInfo)</visible>
+        </control>
+        <control type="button" id="7">
+          <description>OK</description>
+          <width>300</width>
+          <label>$LOCALIZE[186]</label>
+          <align>center</align>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

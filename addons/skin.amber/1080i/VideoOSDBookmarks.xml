@@ -82,6 +82,7 @@
             <posy>225</posy>
             <width>338</width>
             <height>22</height>
+            <align>center</align>
 			<selectedcolor>selected</selectedcolor>
             <label>$INFO[ListItem.Label]$INFO[ListItem.Label2, (,)]</label>
           </control>

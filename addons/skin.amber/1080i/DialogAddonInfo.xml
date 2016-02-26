@@ -189,13 +189,6 @@
           <focusedcolor>Highlight</focusedcolor>
           <textoffsetx>20</textoffsetx>
         </control>
-        <control type="button" id="11" description="rollback">
-          <label>$LOCALIZE[24048]</label>
-          <width>324</width>
-          <align>right</align>
-          <focusedcolor>Highlight</focusedcolor>
-          <textoffsetx>20</textoffsetx>
-        </control>
         <control type="button" id="6" description="install">
           <label>$LOCALIZE[24022]</label>
           <width>324</width>

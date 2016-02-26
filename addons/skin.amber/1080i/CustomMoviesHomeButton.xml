@@ -77,6 +77,22 @@
 			<onclick>Skin.SetString(movie_entries,library)</onclick>
             <selected>StringCompare(Skin.String(movie_entries),library)</selected>
           </control>
+		  <control type="radiobutton" id="705" description="Custom">
+            <visible>IsEmpty(Skin.String(CustomMovie.1.Path))</visible>
+			<width>525</width>
+            <label>636</label>
+            <onclick>Skin.Reset(movie_entries)</onclick>
+			<onclick>RunScript(script.favourites,changetitle=true&amp;property=CustomMovie.1)</onclick>
+			<selected>false</selected>
+		  </control>
+		  <control type="radiobutton" id="706" description="Custom">
+            <visible>!IsEmpty(Skin.String(CustomMovie.1.Path))</visible>
+			<width>525</width>
+            <label>$INFO[Skin.String(CustomMovie.1.Label)]</label>
+            <onclick>Skin.Reset(movie_entries)</onclick>
+			<onclick>RunScript(script.favourites,changetitle=true&amp;property=CustomMovie.1)</onclick>
+			<selected>!IsEmpty(Skin.String(CustomMovie.1.Path))</selected>
+          </control>
         </control>
       </control>
     </control>

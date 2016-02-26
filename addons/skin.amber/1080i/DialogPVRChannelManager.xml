@@ -162,6 +162,10 @@
           <width>600</width>
           <label>$LOCALIZE[19200]</label>
         </control>
+        <control type="radiobutton" id="14" description="Parental Lock">
+          <width>600</width>
+          <label>$LOCALIZE[19267]</label>
+        </control>
         <control type="label" id="29" description="spacer">
           <width>600</width>
           <label></label>

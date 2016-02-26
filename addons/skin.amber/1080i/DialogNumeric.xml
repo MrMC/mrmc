@@ -73,7 +73,7 @@
             <posy>0</posy>
             <label>$LOCALIZE[12313]</label>
             <onleft>12</onleft>
-            <onright>23</onright>
+            <onright>20</onright>
             <onup>19</onup>
             <ondown>16</ondown>
             <include>KeyboardButtons</include>
@@ -83,7 +83,7 @@
             <posx>0</posx>
             <posy>72</posy>
             <label>$LOCALIZE[12314]</label>
-            <onleft>21</onleft>
+            <onleft>23</onleft>
             <onright>15</onright>
             <onup>11</onup>
             <ondown>17</ondown>
@@ -106,7 +106,7 @@
             <posy>72</posy>
             <label>$LOCALIZE[12316]</label>
             <onleft>15</onleft>
-            <onright>21</onright>
+            <onright>23</onright>
             <onup>13</onup>
             <ondown>19</ondown>
             <include>KeyboardButtons</include>
@@ -157,46 +157,41 @@
           </control>
           <control type="group" description="Column 2">
             <posx>300</posx>
-            <control type="button" id="23">
-              <description>BACKSPACE button</description>
-              <posx>0</posx>
-              <posy>0</posy>
-              <onleft>13</onleft>
-              <onright>20</onright>
-              <onup>21</onup>
-              <ondown>21</ondown>
-              <font>ListDetails</font>
-              <width>120</width>
-              <include>KeyboardButtons</include>
-            </control>
-            <control type="image" description="Delete Backspace img">
-              <posx>9</posx>
-              <posy>2</posy>
-              <width>99</width>
-              <aspectratio>keep</aspectratio>
-              <include>KeyboardButtons</include>
-              <texture>common/KeyButtonDel.png</texture>
-            </control>
             <control type="button" id="20">
               <description>previous button</description>
-              <posx>130</posx>
+              <posx>0</posx>
               <posy>0</posy>
               <label>&lt;</label>
-              <onleft>23</onleft>
+              <onleft>13</onleft>
               <onright>22</onright>
               <onup>21</onup>
-              <ondown>21</ondown>
+              <ondown>23</ondown>
+              <width>145</width>
               <include>KeyboardButtons</include>
             </control>
             <control type="button" id="22">
               <description>next button</description>
-              <posx>210</posx>
+              <posx>155</posx>
               <posy>0</posy>
               <label>&gt;</label>
               <onleft>20</onleft>
               <onright>11</onright>
               <onup>21</onup>
+              <ondown>23</ondown>
+              <width>145</width>
+              <include>KeyboardButtons</include>
+            </control>
+            <control type="button" id="23">
+              <description>BACKSPACE button</description>
+              <label>20181</label>
+              <posx>0</posx>
+              <posy>72</posy>
+              <onleft>16</onleft>
+              <onright>14</onright>
+              <onup>20</onup>
               <ondown>21</ondown>
+              <font>ListDetails</font>
+              <width>300</width>
               <include>KeyboardButtons</include>
             </control>
             <control type="button" id="21" description="DONE button">
@@ -207,7 +202,7 @@
               <onleft>10</onleft>
               <onright>10</onright>
               <onup>23</onup>
-              <ondown>23</ondown>
+              <ondown>20</ondown>
               <textcolor>FF4fe805</textcolor>
               <font>ListDetails</font>
               <include>KeyboardButtons</include>

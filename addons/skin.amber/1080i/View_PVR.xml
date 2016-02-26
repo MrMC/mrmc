@@ -79,6 +79,7 @@
 				</control>
 				<control type="button" id="102">
 					<description>Recordings</description>
+					<visible>![Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)]</visible>
 					<include>9000SysButtons</include>
 					<label>19163</label> 
 					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVRecordings)</onclick> 
@@ -86,6 +87,7 @@
 				</control>
 				<control type="button" id="103">
 					<description>Timers</description>
+					<visible>![Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)]</visible>
 					<include>9000SysButtons</include>
 					<label>19040</label> 
 					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVTimers)</onclick> 
@@ -93,6 +95,7 @@
 				</control>
 				<control type="button" id="104">
 					<description>Search</description>
+					<visible>![Window.IsActive(TVSearch) | Window.IsActive(RadioSearch)]</visible>
 					<include>9000SysButtons</include>
 					<label>137</label> 
 					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVSearch)</onclick> 

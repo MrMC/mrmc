@@ -62,7 +62,18 @@
           <info>Player.Progress</info>
           <visible>true</visible>
         </control>
-        <control type="label" description="Progress time label">
+        <control type="slider" id="401">
+          <description>Seek Slider</description>
+          <posx>600</posx>
+          <posy>-20</posy>
+          <width>720</width>
+          <height>18</height>
+          <texturesliderbar>OSD/seekslider.png</texturesliderbar>
+        <textureslidernib>OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus>OSD/ScrollbarNibFO.png</textureslidernibfocus>
+          <visible>Player.Seeking</visible>
+        </control>
+      <control type="label" description="Progress time label">
           <posx>580</posx>
           <posy>-5</posy>
           <height>30</height>

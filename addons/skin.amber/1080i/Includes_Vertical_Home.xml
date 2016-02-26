@@ -46,7 +46,7 @@
   </include>
   <include name="RecentlyAdded_Posters">
     <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + [Control.IsVisible(312) | Control.IsVisible(515)]">Conditional</animation>
-	<animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + IntegerGreaterThan(Container(312).NumItems,0)">Conditional</animation>
+	  <animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + IntegerGreaterThan(Container(312).NumItems,0)">Conditional</animation>
     <include>VisibleFadeEffectDelayShelf</include>
     <posx>540</posx>
     <posy>378</posy>
@@ -57,14 +57,6 @@
     <movement>4</movement>
     <orientation>horizontal</orientation>
     <itemlayout height="345" width="228">
-      <!--<control type="image">
-        <posx>21</posx>
-        <posy>21</posy>
-        <width>189</width>
-        <height>285</height>
-		
-        <include>PosterThumbBG</include>
-      </control>-->
       <control type="image">
         <posx>21</posx>
         <posy>21</posy>
@@ -72,23 +64,22 @@
         <height>285</height>
         <include>PosterThumb</include>
       </control>
+      <control type="image">
+        <posx>175</posx>
+        <posy>273</posy>
+        <width>33</width>
+        <height>33</height>
+        <texture>$VAR[Overlay]</texture>
+      </control>
     </itemlayout>
     <focusedlayout height="345" width="228">
-      <!--<control type="image">
-        <visible>![Control.HasFocus(311) | Control.HasFocus(514)]</visible>
-        <posx>21</posx>
-        <posy>21</posy>
-        <width>189</width>
-        <height>285</height>
-		<include>PosterThumbBG</include>
-      </control>-->
       <control type="image">
         <visible>Control.HasFocus(311) | Control.HasFocus(514)</visible>
         <posx>21</posx>
         <posy>21</posy>
         <width>189</width>
         <height>285</height>
-		<include>PosterThumbFO</include>
+		    <include>PosterThumbFO</include>
       </control>
       <control type="image">
         <posx>21</posx>
@@ -97,11 +88,18 @@
         <height>285</height>
         <include>PosterThumb</include>
       </control>
+      <control type="image">
+        <posx>175</posx>
+        <posy>273</posy>
+        <width>33</width>
+        <height>33</height>
+        <texture>$VAR[Overlay]</texture>
+      </control>
     </focusedlayout>
   </include>
   <include name="Recommended_Posters">
     <animation effect="slide" start="0,0" end="0,162" time="0" condition="!Skin.HasSetting(plexbmc) + [Control.IsVisible(311) | Control.IsVisible(514)]">Conditional</animation>
-	<animation effect="slide" start="0,0" end="0,162" time="0" condition="Skin.HasSetting(plexbmc) + IntegerGreaterThan(Container(311).NumItems,0)">Conditional</animation>
+	  <animation effect="slide" start="0,0" end="0,162" time="0" condition="Skin.HasSetting(plexbmc) + IntegerGreaterThan(Container(311).NumItems,0)">Conditional</animation>
     <include>VisibleFadeEffectDelayShelf</include>
     <posx>540</posx>
     <posy>378</posy>
@@ -112,13 +110,6 @@
     <movement>4</movement>
     <orientation>horizontal</orientation>
     <itemlayout height="345" width="228">
-      <!--<control type="image">
-        <posx>21</posx>
-        <posy>21</posy>
-        <width>189</width>
-        <height>285</height>
-		<include>PosterThumbBG</include>
-      </control>-->
       <control type="image">
         <posx>21</posx>
         <posy>21</posy>
@@ -126,31 +117,22 @@
         <height>285</height>
         <include>PosterThumb</include>
       </control>
-	  <control type="image">
-		<visible>Control.IsVisible(312)</visible>
-		<posx>175</posx>
-		<posy>273</posy>
-		<width>33</width>
-		<height>33</height>
-		<texture>OverlayInProgress.png</texture>
-	  </control>
+  	  <control type="image">
+    		<posx>175</posx>
+    		<posy>273</posy>
+    		<width>33</width>
+    		<height>33</height>
+    		<texture>$VAR[Overlay]</texture>
+  	  </control>
     </itemlayout>
     <focusedlayout height="345" width="228">
-      <!--<control type="image">
-        <visible>![Control.HasFocus(312) | Control.HasFocus(515)]</visible>
-        <posx>21</posx>
-        <posy>21</posy>
-        <width>189</width>
-        <height>285</height>
-		<include>PosterThumbBG</include>
-      </control>-->
       <control type="image">
         <visible>Control.HasFocus(312) | Control.HasFocus(515)</visible>
         <posx>21</posx>
         <posy>21</posy>
         <width>189</width>
         <height>285</height>
-		<include>PosterThumbFO</include>
+		    <include>PosterThumbFO</include>
       </control>
       <control type="image">
         <posx>21</posx>
@@ -159,14 +141,13 @@
         <height>285</height>
         <include>PosterThumb</include>
       </control>
-	  <control type="image">
-		<visible>Control.IsVisible(312)</visible>
-		<posx>175</posx>
-		<posy>273</posy>
-		<width>33</width>
-		<height>33</height>
-		<texture>OverlayInProgress.png</texture>
-	  </control>
+      <control type="image">
+        <posx>175</posx>
+        <posy>273</posy>
+        <width>33</width>
+        <height>33</height>
+        <texture>$VAR[Overlay]</texture>
+      </control>
     </focusedlayout>
   </include>
   <include name="RecentlyAdded_Episodes">
@@ -676,7 +657,15 @@
         <texture border="0,40,0,40">home/OverlayRA2T.png</texture>
       </control>
       <include condition="!Skin.HasSetting(Hide.Favourites)">Favourite.List</include>
-      <include condition="System.GetBool(pvrmanager.enabled)">PVR.List</include>
+      <control type="group">
+        <include>PVR.List</include>
+        <visible>IsEmpty(Weather.Plugin) + System.GetBool(pvrmanager.enabled)</visible>
+      </control>
+      <control type="group">
+        <top>100</top>
+        <include>PVR.List</include>
+        <visible>!IsEmpty(Weather.Plugin) + System.GetBool(pvrmanager.enabled)</visible>
+      </control>
       <include condition="Skin.HasSetting(Shelf.Addons)">Addons.List</include>
       <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Movies.List</include>
       <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Concerts.List</include>

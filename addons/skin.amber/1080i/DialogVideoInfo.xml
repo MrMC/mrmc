@@ -31,7 +31,7 @@
       <posy>0</posy>
       <width>1192</width>
       <height>1080</height>
-      <texture>info/InfoRightPanelTop2.png</texture>
+      <texture>dialogs/InfoRightPanelTop2.png</texture>
     </control>
     <control type="image" description="Cover">
       <visible>!Container.Content(episodes)</visible>
@@ -153,6 +153,12 @@
                   <visible>!IsEmpty(ListItem.Duration)</visible>
                 </item>
                 <item>
+                  <label>$LOCALIZE[38018]:</label>
+                  <label2>$INFO[ListItem.Userrating]</label2>
+                  <onclick>noop</onclick>
+                  <visible>!IsEmpty(ListItem.Userrating)</visible>
+                </item>
+                <item>
                   <label>$LOCALIZE[563]:</label>
                   <label2>$INFO[ListItem.RatingAndVotes]</label2>
                   <onclick>noop</onclick>
@@ -196,6 +202,12 @@
                   <label2>$INFO[ListItem.Year]</label2>
                   <onclick>noop</onclick>
                   <visible>!IsEmpty(ListItem.Year)</visible>
+                </item>
+                 <item>
+                  <label>$LOCALIZE[38018]:</label>
+                  <label2>$INFO[ListItem.Userrating]</label2>
+                  <onclick>noop</onclick>
+                  <visible>!IsEmpty(ListItem.Userrating)</visible>
                 </item>
                 <item>
                   <label>$LOCALIZE[563]:</label>
@@ -260,6 +272,12 @@
                   <onclick>noop</onclick>
                   <visible>!IsEmpty(ListItem.Duration)</visible>
                 </item>
+                 <item>
+                  <label>$LOCALIZE[38018]:</label>
+                  <label2>$INFO[ListItem.Userrating]</label2>
+                  <onclick>noop</onclick>
+                  <visible>!IsEmpty(ListItem.Userrating)</visible>
+                </item>
                 <item>
                   <label>$LOCALIZE[563]:</label>
                   <label2>$INFO[ListItem.Rating]</label2>
@@ -323,6 +341,12 @@
                   <onclick>noop</onclick>
                   <visible>!IsEmpty(ListItem.Duration)</visible>
                 </item>
+                 <item>
+                  <label>$LOCALIZE[38018]:</label>
+                  <label2>$INFO[ListItem.Userrating]</label2>
+                  <onclick>noop</onclick>
+                  <visible>!IsEmpty(ListItem.Userrating)</visible>
+                </item>
               </content>
             </control>
           </control>
@@ -363,7 +387,6 @@
           <itemgap>30</itemgap>
           <orientation>horizontal</orientation>
           <align>left</align>
-          <aligny>center</aligny>
           <control type="button">
             <visible>!IsEmpty(ListItem.VideoResolution)</visible>
             <height>36</height>
@@ -482,8 +505,7 @@
           <textcolor>White</textcolor>
           <focusedcolor>Highlight</focusedcolor>
           <texturefocus>-</texturefocus>
-          <visible>false</visible>
-          <!-- <visible>!IsEmpty(ListItem.Trailer)</visible> -->
+          <visible>!IsEmpty(ListItem.Trailer)</visible>
           <pulseonselect>true</pulseonselect>
         </control>
         <control type="button" id="9012" description="Actors">
@@ -506,6 +528,16 @@
           <textcolor>White</textcolor>
           <focusedcolor>Highlight</focusedcolor>
           <label>$LOCALIZE[184]</label>
+          <texturefocus>-</texturefocus>
+        </control>
+        <control type="button" id="7" description="Set my Rating">
+          <height>54</height>
+          <width>230</width>
+          <align>center</align>
+          <font>Details</font>
+          <textcolor>White</textcolor>
+          <focusedcolor>Highlight</focusedcolor>
+          <label>$LOCALIZE[38023]</label>
           <texturefocus>-</texturefocus>
         </control>
         <control type="button" id="10" description="Get Art">
@@ -565,8 +597,8 @@
             <aligny>center</aligny>
             <scroll>false</scroll>
             <font>InfoPlot</font>
-            <info>ListItem.Label</info>
-          </control>
+            <label>$INFO[ListItem.Label]$INFO[ListItem.Label2, $LOCALIZE[20347] ,]</label>
+         </control>
         </itemlayout>
         <focusedlayout height="40" width="700">
           <control type="image">

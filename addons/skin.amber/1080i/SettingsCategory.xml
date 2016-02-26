@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
   <backgroundcolor>0</backgroundcolor>
-  <allowoverlay>no</allowoverlay>
   <defaultcontrol always="true">3</defaultcontrol>
   <controls>
     <include>Settings_Art</include>
@@ -87,7 +86,7 @@
       </control>
       <control type="label" id="14">
         <shadowcolor>Black</shadowcolor>
-        <font>details</font>
+        <font>Details</font>
       </control>
 			<control type="label" description="Settings level label">
         <posx>66</posx>

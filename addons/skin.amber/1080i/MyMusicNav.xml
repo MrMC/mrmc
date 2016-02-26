@@ -46,11 +46,6 @@
           <label>653</label>
 		  <altlabel>13353</altlabel>
         </control>
-        <control type="button" id="697" description="Files">
-          <include>9000SysButtons</include>
-          <label>$LOCALIZE[1024] $LOCALIZE[744]</label>
-          <onclick>ActivateWindow(MusicFiles,root)</onclick>
-        </control>
 		<control type="button" id="698" description="Playlist">
           <include>9000SysButtons</include>
           <label>$LOCALIZE[20011]</label>

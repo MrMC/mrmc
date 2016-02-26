@@ -268,15 +268,14 @@
           <width>525</width>
           <label>$LOCALIZE[250] $LOCALIZE[10004]</label>
           <onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
-          <enable>Visualisation.Enabled</enable>
           <animation effect="fade" start="100" end="50" time="100" condition="!Visualisation.Enabled">Conditional</animation>
         </control>
         <control type="button" id="20" description="Visualisation Presets">
           <width>525</width>
           <label>$LOCALIZE[31048]</label>
-          <onclick>ActivateWindow(visualisationpresetlist)</onclick>
-          <enable>Visualisation.Enabled</enable>
-          <animation effect="fade" start="100" end="50" time="100" condition="!Visualisation.Enabled">Conditional</animation>
+          <onclick>ActivateWindow(122)</onclick>
+          <enable>Visualisation.HasPresets</enable>
+          <animation effect="fade" start="100" end="50" time="100" condition="!Visualisation.HasPresets">Conditional</animation>
         </control>
         <control type="button" id="301" description="CodecInfo">
           <width>525</width>

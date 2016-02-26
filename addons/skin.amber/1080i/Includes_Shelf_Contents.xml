@@ -6,9 +6,9 @@
             <animation effect="slide" start="0,0" end="0,150" time="0" condition="PVR.IsRecording">conditional</animation>
             <visible>Container(300).HasFocus(300) + [PVR.IsRecording | PVR.HasNonRecordingTimer] + !Skin.HasSetting(VerticalHome)</visible>
             <control type="image">
-                <left>1065l</left>
+                <left>1100</left>
                 <top>170</top>
-                <width>855</width>
+                <width>820</width>
                 <height>140</height>
                 <texture>img/gradient.png</texture>
             </control>
@@ -66,9 +66,9 @@
         <control type="group">
             <visible>Container(300).HasFocus(300) + [PVR.IsRecording] + !Skin.HasSetting(VerticalHome)</visible>
             <control type="image">
-                <left>1065l</left>
+                <left>1100</left>
                 <top>170</top>
-                <width>855</width>
+                <width>820</width>
                 <height>140</height>
                 <texture>img/gradient.png</texture>
             </control>
@@ -370,7 +370,6 @@
     <control type="fixedlist" id="514" description="Recent concerts">
       <visible>!IsEmpty(Window(Home).Property(RecentMusicVideo.1.Title))</visible>
       <visible>Container(300).HasFocus(14)</visible>
-      <visible></visible>
       <onright>514</onright>
       <onup>300</onup>
       <ondown condition="Control.IsVisible(515)">515</ondown>
@@ -483,7 +482,6 @@
     <control type="fixedlist" id="511" description="TOP Shortcuts">
       <visible>!IsEmpty(Window(Home).Property(LatestAlbum.1.Title))</visible>
       <visible>Container(300).HasFocus(6)</visible>
-      <visible></visible>
       <onright>511</onright>
       <onup>300</onup>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>

@@ -49,7 +49,6 @@
       <itemgap>30</itemgap>
       <orientation>horizontal</orientation>
       <align>left</align>
-      <aligny>center</aligny>
       <control type="image">
         <visible>!IsEmpty(ListItem.VideoCodec)</visible>
         <height>45</height>
@@ -96,7 +95,6 @@
       <itemgap>30</itemgap>
       <orientation>horizontal</orientation>
       <align>right</align>
-      <aligny>center</aligny>
       <control type="image">
         <visible>!IsEmpty(ListItem.AudioChannels)</visible>
         <height>45</height>
@@ -726,6 +724,7 @@
         </control>
         <control type="label" description="Genre">
           <posy>195</posy>
+          <visible>!Container.Content(Artists)</visible>
           <height>33</height>
           <width>1640</width>
           <font>InfoDetails</font>

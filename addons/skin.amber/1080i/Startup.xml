@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
   <defaultcontrol always="true">10</defaultcontrol>
-  <allowoverlay>no</allowoverlay>
   <animation effect="fade" time="800">WindowOpen</animation>
   <animation effect="fade" time="200">WindowClose</animation>
   <controls>
@@ -12,7 +11,7 @@
     <!-- Show home if skin widgets loading is finished -->
     <control type="button" id="11">
       <include>HiddenButton</include>
-    <onfocus condition="!System.HasAddon(service.skin.widgets) | Skin.HasSetting(Hide.RecentlyAdded) | Skin.HasSetting(plexbmc) | Skin.HasSetting(Use.FastStart)">SetFocus(12)</onfocus>
+	  <onfocus condition="!System.HasAddon(service.skin.widgets) | Skin.HasSetting(Hide.RecentlyAdded) | Skin.HasSetting(plexbmc) | Skin.HasSetting(Use.FastStart)">SetFocus(12)</onfocus>
       <onfocus condition="![!System.HasAddon(service.skin.widgets) | Skin.HasSetting(Hide.RecentlyAdded) | Skin.HasSetting(plexbmc) | Skin.HasSetting(Use.FastStart)]">SetFocus(11)</onfocus>
       <visible>IsEmpty(Window(Home).Property(SkinWidgets_Running))</visible>
     </control>
@@ -25,6 +24,6 @@
       <include>HiddenButton</include>
       <onfocus>ReplaceWindow($INFO[System.StartupWindow])</onfocus>
     </control>
-  <include>Default_Art</include>
+	<include>Default_Art</include>
   </controls>
 </window>

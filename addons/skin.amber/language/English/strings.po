@@ -100,13 +100,23 @@ msgctxt "#31025"
 msgid "Items"
 msgstr ""
 
-#empty strings from id 31026 to 31037
+msgctxt "#31026"
+msgid "Misc options"
+msgstr ""
+
+#empty strings from id 31027 to 31037
 
 msgctxt "#31038"
 msgid "Reset ALL skin settings to default values"
 msgstr ""
 
-#empty strings from id 31039 to 31047
+#empty strings from id 31039 to 31045
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr ""
+
+#empty strings from id 31047 to 31047
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -116,7 +126,15 @@ msgctxt "#31049"
 msgid "Settings Level"
 msgstr ""
 
-#empty strings from id 31050 to 31109
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr ""
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr ""
+
+#empty strings from id 31052 to 31109
 
 msgctxt "#31110"
 msgid "Edit Background for Media Type"
@@ -150,7 +168,19 @@ msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr ""
 
-#empty strings from id 31134 to 31290
+#empty strings from id 31134 to 31202
+
+msgctxt "#31203"
+msgid "Choose your song"
+msgstr ""
+
+#empty string with id 31204
+
+msgctxt "#31205"
+msgid "Lyrics source"
+msgstr ""
+
+#empty strings from id 31206 to 31290
 
 msgctxt "#31291"
 msgid "Add-on manager"
@@ -502,4 +532,8 @@ msgstr ""
 
 msgctxt "#31997"
 msgid "Hide channel logos in PVR List/Timeline"
+msgstr ""
+
+msgctxt "#31998"
+msgid "Show lock/master mode status in title bar"
 msgstr ""

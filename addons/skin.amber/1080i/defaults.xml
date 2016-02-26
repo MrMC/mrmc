@@ -9,7 +9,6 @@
     <font>size22</font>
     <textcolor>Grey2</textcolor>
     <shadowcolor>ShadowDark</shadowcolor>
-    <focusedcolor>White2</focusedcolor>
     <selectedcolor>Highlight</selectedcolor>
     <disabledcolor>Disabled</disabledcolor>
     <scroll>true</scroll>
@@ -38,11 +37,7 @@
     <font>InfoPlot</font>
     <textcolor>White</textcolor>
     <shadowcolor>ShadowDark</shadowcolor>
-    <focusedcolor>White2</focusedcolor>
-    <selectedcolor>Highlight</selectedcolor>
-    <disabledcolor>Disabled</disabledcolor>
     <pagecontrol>61</pagecontrol>
-    <pulseonselect>false</pulseonselect>
     <autoscroll delay="5000" time="2500" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
   </default>
   <default type="image">
@@ -80,7 +75,6 @@
     <textcolor>White</textcolor>
     <shadowcolor>ShadowDark</shadowcolor>
     <focusedcolor>White2</focusedcolor>
-    <selectedcolor>Highlight</selectedcolor>
     <disabledcolor>Disabled</disabledcolor>
     <texturefocus border="2">buttons/ButtonFO.png</texturefocus>
     <texturenofocus border="3">buttons/ButtonNF.png</texturenofocus>
@@ -97,8 +91,6 @@
     <textcolor>White</textcolor>
     <shadowcolor>ShadowDark</shadowcolor>
     <focusedcolor>White2</focusedcolor>
-    <selectedcolor>White2</selectedcolor>
-    <altselectedcolor>Highlight</altselectedcolor>
     <disabledcolor>Disabled</disabledcolor>
     <texturefocus border="2">buttons/ButtonFO.png</texturefocus>
     <texturenofocus border="3">buttons/ButtonNF.png</texturenofocus>
@@ -122,8 +114,10 @@
     <radioheight>60</radioheight>
     <texturefocus border="2">buttons/ButtonFO.png</texturefocus>
     <texturenofocus border="3">buttons/ButtonNF.png</texturenofocus>
-    <textureradiofocus>buttons/RadioOn.png</textureradiofocus>
-    <textureradionofocus>buttons/RadioOff.png</textureradionofocus>
+    <textureradioonfocus>buttons/RadioOn.png</textureradioonfocus>
+    <textureradioonnofocus>buttons/RadioOn.png</textureradioonnofocus>
+    <textureradioofffocus>buttons/RadioOff.png</textureradioofffocus>
+    <textureradiooffnofocus>buttons/RadioOff.png</textureradiooffnofocus>
     <textoffsetx>20</textoffsetx>
     <pulseonselect>false</pulseonselect>
   </default>
@@ -135,19 +129,12 @@
     <textureupfocus>buttons/SpinUpFO.png</textureupfocus>
     <texturedown>buttons/SpinDownNF.png</texturedown>
     <texturedownfocus>buttons/SpinDownFO.png</texturedownfocus>
-    <!--<textureup>img/ArrowUpNF.png</textureup>
-    <textureupfocus>img/ArrowUpFO.png</textureupfocus>
-    <texturedown>img/ArrowDownNF.png</texturedown>
-    <texturedownfocus>img/ArrowDownFO.png</texturedownfocus>-->
-    <texturefocus border="2">buttons/ButtonFO.png</texturefocus>
-    <texturenofocus border="3">buttons/ButtonNF.png</texturenofocus>
     <spinwidth>40</spinwidth>
     <spinheight>60</spinheight>
     <font>size22</font>
     <textcolor>White</textcolor>
     <shadowcolor>ShadowDark</shadowcolor>
     <focusedcolor>White2</focusedcolor>
-    <selectedcolor>Highlight</selectedcolor>
     <disabledcolor>Disabled</disabledcolor>
     <textoffsetx>20</textoffsetx>
     <align>left</align>

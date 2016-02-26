@@ -34,31 +34,6 @@
         <posy>12</posy>
         <width>112</width>
         <height>112</height>
-        <texture>DefaultIconWarning.png</texture>
-      </control>
-      <control type="image" id="403" description="Default Icon">
-        <visible>false</visible>
-        <posx>12</posx>
-        <posy>12</posy>
-        <width>112</width>
-        <height>112</height>
-        <texture>DefaultIconWarning.png</texture>
-      </control>
-      <control type="image" id="404" description="Default Warning">
-        <visible>false</visible>
-        <posx>12</posx>
-        <posy>12</posy>
-        <width>112</width>
-        <height>112</height>
-        <texture>DefaultIconWarning.png</texture>
-      </control>
-      <control type="image" id="405" description="Default Error">
-        <visible>false</visible>
-        <posx>12</posx>
-        <posy>12</posy>
-        <width>112</width>
-        <height>112</height>
-        <texture>DefaultIconWarning.png</texture>
       </control>
       <control type="label" id="401" description="Heading">
         <posx>153</posx>

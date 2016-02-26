@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol>5</defaultcontrol>
+  <coordinates>
+    <left>360</left>
+    <top>20</top>
+  </coordinates>
+ <include>OpenClose</include>
+  <controls>
+    <include>DimBG</include>
+    <control type="group" description="Content">
+      <include>DialogOpenClose</include>
+      <control type="image">
+        <left>0</left>
+        <top>0</top>
+        <width>1200</width>
+        <height>1040</height>
+        <texture>dialogs/DialogBG.png</texture>
+      </control>
+      <control type="label" id="2" description="Header">
+        <left>0</left>
+        <top>0</top>
+        <width>1200</width>
+        <height>45</height>
+        <align>center</align>
+        <textcolor>Highlight</textcolor>
+      </control>
+      <control type="grouplist" id="5" description="control area">
+        <left>40</left>
+        <top>65</top>
+        <width>920</width>
+        <height>770</height>
+        <itemgap>5</itemgap>
+        <pagecontrol>60</pagecontrol>
+        <onleft>60</onleft>
+        <onright>60</onright>
+        <onup>5</onup>
+        <ondown>5</ondown>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>1163</posx>
+        <posy>90</posy>
+        <width>36</width>
+        <height>840</height>
+        <texturesliderbackground>-</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib border="18">OSD/ScrollbarNibNF.png</textureslidernib>
+        <textureslidernibfocus border="18">OSD/ScrollbarNibFO.png</textureslidernibfocus>
+        <showonepage>true</showonepage>
+        <orientation>vertical</orientation>
+        <onleft>close</onleft>
+        <onright>close</onright>
+      </control>
+      <control type="label">
+        <description>info label</description>
+        <left>40</left>
+        <top>540</top>
+        <width>720</width>
+        <height>30</height>
+        <label>$INFO[ADSP.MasterInfo]</label>
+        <align>left</align>
+        <aligny>center</aligny>
+      </control>
+      <control type="image">
+        <description>Audio DSP Image</description>
+        <left>555</left>
+        <top>540</top>
+        <width>85</width>
+        <height>35</height>
+        <aspectratio align="center">keep</aspectratio>
+        <visible>!IsEmpty(ADSP.MasterOwnIcon)</visible>
+        <texture>$INFO[ADSP.MasterOwnIcon]</texture>
+      </control>
+      <control type="image">
+        <description>Audio Codec Image if Video</description>
+        <left>640</left>
+        <top>540</top>
+        <width>85</width>
+        <height>35</height>
+        <aspectratio align="center">keep</aspectratio>
+        <texture>$INFO[VideoPlayer.AudioCodec,badges/audio/,.png]</texture>
+        <visible>IsEmpty(ADSP.MasterOverrideIcon) + Player.HasVideo</visible>
+      </control>
+      <control type="image">
+        <description>Audio Codec Image id Audio</description>
+        <left>640</left>
+        <top>540</top>
+        <width>85</width>
+        <height>35</height>
+        <aspectratio align="center">keep</aspectratio>
+        <texture>$INFO[MusicPlayer.Codec,badges/audio/,.png]</texture>
+        <visible>IsEmpty(ADSP.MasterOverrideIcon) + Player.HasAudio</visible>
+      </control>
+      <control type="image">
+        <description>Audio Codec Override Image</description>
+        <left>640</left>
+        <top>540</top>
+        <width>85</width>
+        <height>35</height>
+        <aspectratio align="center">keep</aspectratio>
+        <visible>!IsEmpty(ADSP.MasterOverrideIcon)</visible>
+        <texture>$INFO[ADSP.MasterOverrideIcon]</texture>
+      </control>
+      <control type="image">
+        <description>Audio Channels Image</description>
+        <left>730</left>
+        <top>540</top>
+        <width>50</width>
+        <height>35</height>
+        <aspectratio align="center">keep</aspectratio>
+        <texture>$INFO[VideoPlayer.AudioChannels,badges/audio/,.png]</texture>
+      </control>
+      <control type="label">
+        <description>type label</description>
+        <left>990</left>
+        <top>65</top>
+        <width>720</width>
+        <height>30</height>
+        <label>15042</label>
+        <align>left</align>
+        <aligny>center</aligny>
+      </control>
+      <control type="label">
+        <description>type label</description>
+        <left>990</left>
+        <top>100</top>
+        <width>230</width>
+        <height>30</height>
+        <label>$INFO[ADSP.DetectedStreamType]</label>
+        <align>left</align>
+        <aligny>center</aligny>
+      </control>
+    </control>
+    <control type="button" id="7" description="Button">
+      <width>1467</width>
+      <textoffsetx>42</textoffsetx>
+    </control>
+    <control type="radiobutton" id="8" description="Radio Button">
+      <width>1467</width>
+      <textoffsetx>42</textoffsetx>
+    </control>
+    <control type="spincontrolex" id="9" description="Spin control">
+      <width>1467</width>
+      <textoffsetx>42</textoffsetx>
+    </control>      
+    <control type="image" id="11">
+      <description>separator image</description>
+      <height>2</height>
+      <texture>img/LineST.png</texture>
+    </control>
+    <control type="edit" id="12">
+      <description>Default Edit</description>
+      <left>0</left>
+      <top>0</top>
+      <height>40</height>
+    </control>
+    <control type="sliderex" id="13" description="Slider control">
+      <width>1467</width>
+      <textoffsetx>42</textoffsetx>
+    </control>
+    <control type="label" id="14">
+      <shadowcolor>Black</shadowcolor>
+      <font>Details</font>
+    </control>
+  </controls>
+</window>

@@ -29,6 +29,44 @@
       </control>
       <control type="group">
         <posx>0</posx>
+        <posy>254</posy>
+        <visible>Control.IsVisible(313)</visible>
+        <control type="image">
+          <left>320</left>
+          <top>0</top>
+          <width>1450</width>
+          <height>122</height>
+          <texture border="45">dialogs/TinyDialog.png</texture>
+        </control>
+        <control type="label" id="313">
+          <description>HZCODE label</description>
+          <left>320</left>
+          <top>18</top>
+          <width>1450</width>
+          <height>40</height>
+          <align>center</align>
+          <aligny>center</aligny>
+        </control>
+        <control type="image" description="Line Split">
+          <posx>370</posx>
+          <posy>61</posy>
+          <width>1350</width>
+          <height>1</height>
+          <texture>img/LineL.png</texture>
+          <aspectratio>stretch</aspectratio>
+        </control>
+         <control type="label" id="314">
+          <description>HZLIST label</description>
+          <left>320</left>
+          <top>64</top>
+          <width>1450</width>
+          <height>40</height>
+          <align>center</align>
+          <aligny>center</aligny>
+        </control>
+      </control>
+      <control type="group">
+        <posx>0</posx>
         <posy>150</posy>
         <control type="edit" id="312">
           <description>Edit Text</description>
@@ -444,7 +482,7 @@
             </control>
             <control type="button" id="8">
               <description>BACKSPACE button</description>
-              <label>Backspace</label>
+              <label>20181</label>
               <onup>166</onup>
               <ondown>32</ondown>
               <width>175</width>
