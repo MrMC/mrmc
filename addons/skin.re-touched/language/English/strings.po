@@ -1,0 +1,402 @@
+# Kodi Media Center language file
+# Addon Name: re-Touched
+# Addon id: skin.re-touched
+# Addon Provider: Jezz_X, Martijn, ronie
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/xbmc-skins/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr ""
+
+msgctxt "#31003"
+msgid "IP"
+msgstr ""
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr ""
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr ""
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr ""
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr ""
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr ""
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr ""
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr ""
+
+#. Used for subtitle button in the OSD
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr ""
+
+msgctxt "#31013"
+msgid "Recent Movies"
+msgstr ""
+
+msgctxt "#31014"
+msgid "Recent Episodes"
+msgstr ""
+
+#empty string with id 31015
+
+msgctxt "#31016"
+msgid "Recent Albums"
+msgstr ""
+
+msgctxt "#31017"
+msgid "Volume Muted"
+msgstr ""
+
+#empty strings from id 31018 to 31023
+
+msgctxt "#31024"
+msgid "Page"
+msgstr ""
+
+msgctxt "#31025"
+msgid "Items"
+msgstr ""
+
+#empty strings from id 31026 to 31029
+#ViewType labels
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr ""
+
+msgctxt "#31031"
+msgid "Info Wide"
+msgstr ""
+
+#empty strings from id 31032 to 31039
+#Extra labels
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr ""
+
+msgctxt "#31041"
+msgid "Last updated:"
+msgstr ""
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr ""
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr ""
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr ""
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr ""
+
+#empty strings from id 31046 to 31048
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr ""
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr ""
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr ""
+
+#empty strings from id 31052 to 31054
+#Playlist Editor labels
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr ""
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr ""
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr ""
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr ""
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr ""
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr ""
+
+#empty strings from id 31061 to 31199
+#Submenu labels
+
+msgctxt "#31200"
+msgid "Back"
+msgstr ""
+
+msgctxt "#31201"
+msgid "Location"
+msgstr ""
+
+msgctxt "#31202"
+msgid "View"
+msgstr ""
+
+#empty strings from id 31203 to 31299
+#Extra labels
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr ""
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr ""
+
+#empty string with id 31302
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr ""
+
+#empty strings from id 31304 to 31308
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr ""
+
+#empty strings from id 31310 to 31311
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr ""
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr ""
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr ""
+
+#empty strings from id 31315 to 31318
+
+msgctxt "#31319"
+msgid "Currently available Kodi user profiles"
+msgstr ""
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr ""
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr ""
+
+#empty strings from id 31323 to 31324
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr ""
+
+#empty strings from id 31326 to 31350
+#Video and Music OSD Labels
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr ""
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr ""
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr ""
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr ""
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr ""
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr ""
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr ""
+
+#empty strings from id 31358 to 31389
+#Skin Fontsets
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr ""
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr ""
+
+#empty strings from id 31392 to 31399
+#Description Labels
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr ""
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr ""
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr ""
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr ""
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr ""
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr ""
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr ""
+
+msgctxt "#31407"
+msgid "Setup the skin · Add and remove home menu items · Change skin backgrounds"
+msgstr ""
+
+#empty strings from id 31408 to 31420
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr ""
+
+#empty strings from id 31422 to 31499
+#Skin Setting Headers
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr ""
+
+#empty strings from id 31503 to 31549
+#Skin Setting Options
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr ""
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr ""
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr ""
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr ""
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr ""
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr ""
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr ""
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr ""
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr ""
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr ""
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr ""

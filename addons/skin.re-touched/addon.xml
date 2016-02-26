@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.re-touched" version="5.1.1" name="re-Touched" provider-name="Jezz_X, Martijn, ronie">
+	<requires>
+		<import addon="xbmc.gui" version="5.10.0"/>
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false">
+		<res width="1280" height="960" aspect="4:3" folder="16x9"/>
+		<res width="1706" height="960" aspect="16:9" default="true" folder="16x9"/>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="af">Touched omslag deur Jezz_X ontwerp om op raak skerm toestelle te gebruik</summary>
+		<summary lang="ar">جلد ملموس من  Jezz_X صمم ليستخدم على أجهزة شاشات اللمس</summary>
+		<summary lang="be">Touched skin by Jezz_X designed to be used on touch screen devices</summary>
+		<summary lang="bg">Облик от Jezz_X за устройства със сензорен екран</summary>
+		<summary lang="ca">Touched es una pell dissenaya per Jezz_X per ser utilitzada en dispositius tàctils</summary>
+		<summary lang="cs">Motiv Touched byl vytvořen Jezz_X pro použití na zařízeních s dotykovou obrazovkou</summary>
+		<summary lang="cy">Touched skin gan Jezz_X wedi ei gynllunio ar gyfer defnydd ar ddyfeisiau sgrin cyffwrdd</summary>
+		<summary lang="da">Touched-skin af Jezz_X, designet til at blive brugt på touchscreen-enheder.</summary>
+		<summary lang="de">"Touched"-Skin von Jezz_X erstellt zur Nutzung auf Touch-Screen-Geräten</summary>
+		<summary lang="el">Το κέλυφος Touched από τον Jezz_X, σχεδιασμένο για χρήση σε συσκευές με οθόνη αφής</summary>
+		<summary lang="en">Touched skin by Jezz_X designed to be used on touch screen devices</summary>
+		<summary lang="en_AU">Touched skin by Jezz_X designed to be used on touch screen devices</summary>
+		<summary lang="en_NZ">Touched skin by Jezz_X designed to be used on touch screen devices</summary>
+		<summary lang="en_US">Touched skin by Jezz_X designed to be used on touch screen devices</summary>
+		<summary lang="es">Touched es una skin diseñada por Jezz_X para ser usada en dispositivos táctiles.</summary>
+		<summary lang="es_AR">Touched es un skin diseñado por Jezz_X para ser usado en dispositivos táctiles.</summary>
+		<summary lang="es_MX">Skin Touched por Jezz_X diseñado para uso en dispositivos con pantalla táctil</summary>
+		<summary lang="et">Touched rüü autorilt Jezz_X puutetundlikele seadetele</summary>
+		<summary lang="fi">Touched-ulkoasun tehnyt Jezz_X, suunniteltu käytettäväksi kosketusnäytöllisissä laitteissa</summary>
+		<summary lang="fr">Habillage Touched de Jezz_x conçu pour être utilisé sur les périphériques à écran tactile</summary>
+		<summary lang="fr_CA">L'habillage Touched par Jezz_X conçu pour être utilisé sur des appareils à écran tactile</summary>
+		<summary lang="gl">Pel Touched por Jezz_X deseñada para empregar en dispositivos táctiles</summary>
+		<summary lang="he">המעטפת Touched של Jezz_X המיועדת למכשירים בעלי מסך מגע</summary>
+		<summary lang="hr">Touched presvlaka od Jezz_X-a je dizajnirana za korištenje na uređajima sa zaslonima osjetljivim na dodir.</summary>
+		<summary lang="hu">A Touched felszínt Jezz_X tervezte, az érintőképernyős eszközökhöz.</summary>
+		<summary lang="id">Tampilan sentuh oleh Jezz_X didesain untuk alat layar sentuh</summary>
+		<summary lang="is">Touched viðmót eftir Jezz_X hannað til að verða notað af tækjum með snertiskjá</summary>
+		<summary lang="it">Skin Touched di Jezz_X ideata per essere usata su periferiche touch screen</summary>
+		<summary lang="ja">Touched スキン by Jezz_X（タッチスクリーン端末向け）</summary>
+		<summary lang="ko">Jezz_X가 만든 Touched 스킨은 터치 스크린 장치에서 사용하도록 디자인 되었습니다.</summary>
+		<summary lang="lt">Lietimui jautri tema sukūrta  Jezz_X skirta naudoti kompiuteriui, plančetei su sensoriniu ekranu</summary>
+		<summary lang="lv">Touched apvalks no Jezz_X dizainēts izmantošanai skārienekrāna ierīcēs</summary>
+		<summary lang="mk">Touched маска од  Jezz_X дизајнирана за користење со екрани на допир</summary>
+		<summary lang="ms">Touched skin oleh Jezz_X direka untuk digunakan pada peranti skrin sentuh</summary>
+		<summary lang="nl">Touched skin door Jezz_X ontworpen voor aanraakscherm apparaten</summary>
+		<summary lang="no">Re-Touched er spesielt utviklet for bruk på trykkskjermer</summary>
+		<summary lang="pl">Skórka autorstwa Jezz_X zaprojektowana dla urządzeń z ekranem dotykowym</summary>
+		<summary lang="pt">Tema Touched de Jezz_X, preparada para o uso em dispositivos com ecrã táctil.</summary>
+		<summary lang="pt_BR">Skin Touched por Jezz_X concebida para ser usada em dispositivos com telas sensíveis ao toque</summary>
+		<summary lang="ro">Skinul Touched realizat de Jezz_X pentru a fi folosit pe dispozitivele cu ecran de tip touch</summary>
+		<summary lang="ru">Обложка Touched от Jezz_X предназначена для использования на устройствах с сенсорным экраном.</summary>
+		<summary lang="se">Touched skin av Jezz_X utformat för att användas på pekskärmsenheter</summary>
+		<summary lang="sk">Touched skin od Jezz_X navrhnutý pre použitie na dotykových displejoch</summary>
+		<summary lang="sl">Preobleka Touched avtorja Jezz_X je namenjena za uporabo na napravah z zaslonom na dotik</summary>
+		<summary lang="sq">Maska 'Touched' nga Jezz_X, dizenjuar për tu përdorur me pajisjet me ekran me prekje</summary>
+		<summary lang="sv">Touched skal av Jezz_X designat att användas på pekskärmsenheter</summary>
+		<summary lang="ta_IN">தொடுதிரை சாதனத்திற்கான அலங்காரம் - தயாரிப்பு Jezz_X</summary>
+		<summary lang="th">หน้าตา Touched โดย Jezz_X ได้ถูกออกแบบมาเพื่อใช้กับอุปกรณ์หน้าจอสัมผ้ส</summary>
+		<summary lang="tr">Touched skin; Jezz_X tarafından dokunmatik ekranlarda kullanılmak üzere tasarlanmıştır</summary>
+		<summary lang="uk">Обкладинка Touched, створена Jezz_X для пристроїв зі сенсорним екраном.</summary>
+		<summary lang="vi">Bộ skin Touched bởi Jezz_X được thiết kế để sử dụng trên các thiết bị sử dụng màn hình cảm ứng</summary>
+		<summary lang="zh">由 Jezz_X 设计用于触屏设备的 Touched 皮肤</summary>
+		<summary lang="zh_TW">Touched 是由 Jezz_X 所設計用於觸控螢幕裝置的佈景主題</summary>
+		<description lang="af">Omslag van die grond af op ontwerp om op raak skerm toestelle soos die iPad te gebruik</description>
+		<description lang="ar">جلد صمم بالكامل ليستخدم على أجهزة شاشات اللمس مثل الـ iPad</description>
+		<description lang="be">Skin designed from the ground up to be used on touch screen devices like the iPad</description>
+		<description lang="bg">Обликът е разработен от нулата специално за употреба на устройства със сензорен екран</description>
+		<description lang="ca">Pell dissenyada des de zero especialment per dispositius de pantalla tàctil, com l'iPad</description>
+		<description lang="cs">Motiv vytvořený od základu pro použití na zařízeních s dotykovou obrazovkou jako iPad</description>
+		<description lang="cy">Croen wedi ei gynllunio o'r cychwyn i'w ddefnyddio ar ddyfeisiau sgrin cyffwrdd fel yr iPad</description>
+		<description lang="da">Skinnet er designet fra bunden til at blive brugt på touchscreen-enheder såsom iPad'en.</description>
+		<description lang="de">Skin wurde von Grund auf neu erstellt zur Nutzung auf Touch-Screen-Geräten wie dem iPad oder Android-Tablets</description>
+		<description lang="el">Κέλυφος σχεδιασμένο εξ αρχής για χρήση σε συσκευές με οθόνη αφής όπως το iPad</description>
+		<description lang="en">Skin designed from the ground up to be used on touch screen devices like the iPad</description>
+		<description lang="en_AU">Skin designed from the ground up to be used on touch screen devices like the iPad</description>
+		<description lang="en_NZ">Skin designed from the ground up to be used on touch screen devices like the iPad</description>
+		<description lang="en_US">Skin designed from the ground up to be used on touch screen devices like the iPad</description>
+		<description lang="es">Skin creada desde cero especialmente para dispositivos táctiles, como el iPad.</description>
+		<description lang="es_AR">Skin creado desde cero especialmente para dispositivos táctiles, como el iPad.</description>
+		<description lang="es_MX">Skin diseñado para uso en dispositivos con pantalla táctil como el iPad</description>
+		<description lang="et">Spetsiaalselt puutetundlikele seadetele nagu iPad kasutamiseks disainitud rüü</description>
+		<description lang="fi">Ulkoasu on suunniteltu alustalkaen käytettäväksi kosketusnäytöllisissä laitteissa, kuten iPad</description>
+		<description lang="fr">Habillage conçu dès le départ pour les écrans tactiles tel que l'iPad</description>
+		<description lang="fr_CA">Un habillage conçu à partir de zéro pour être utilisé sur les appareils à écran tactile comme l'iPad</description>
+		<description lang="gl">Pel deseñada de cero para ser empregada en dispositivos táctiles</description>
+		<description lang="he">המעטפת עוצבה מהיסוד עבור מכשירים בעלי מסך מגע כמו iPad</description>
+		<description lang="hr">Presvlaka dizajnirana od temelja za korištenje na uređajima sa zaslonima osjetljivima na dodir kao što je iPad</description>
+		<description lang="hu">A felszín elkészítésének célja az, hogy használható legyen az olyan érintőképernyős eszközökön is mint az iPad.</description>
+		<description lang="id">Tampilan didesain dari awal untuk dapat digunakan pada alat layar sentuhseperti iPad</description>
+		<description lang="is">Viðmót sem er hannað frá grunni til notkunar á tækjum með snertiskjá svo sem iPad</description>
+		<description lang="it">Skin ideata per essere usata su periferiche touch screen come l'iPad</description>
+		<description lang="ja">iPad などのタッチスクリーン端末専用に開発されたスキン</description>
+		<description lang="ko">iPad 같은 터치 스크린 장치에서 사용하도록 완전히 새롭게 디자인한 스킨</description>
+		<description lang="lt">Tema sukūrta naudojimui kompiuteriams, plančetėms su sensoriniu ekranu tokioms kaip iPad, Samsung, Asus ir t.t.</description>
+		<description lang="lv">Apvalks dizainēts no pašiem pamatiem izmantošanai skārienekrāna ierīcēs, piemēram, iPad</description>
+		<description lang="mk">Маска наново дизајнирана за користење со екрани на допир како што е iPad</description>
+		<description lang="ms">Kulit direka dari sifar untuk digunakan pada peranti skrin sentuh seperti iPad</description>
+		<description lang="nl">Skin is geheel opnieuw ontworpen om gebruikt te kunnen worden op apparaten met een aanraakscherm zoals de iPad</description>
+		<description lang="no">Dette skallet er utviklet fra bunnen av med tanke på enheter med berøringsskjerm, slik som iPad</description>
+		<description lang="pl">Skóra została zaprojektowana pod kątem urządzeń z ekranem dotykowym takich jak iPad </description>
+		<description lang="pt">Tema desenvolvido de raiz para ser usado em ecrãs tácteis de dispositivos como o iPad</description>
+		<description lang="pt_BR">Skin concebida do zero para ser usado em dispositivos com telas sensíveis ao toque, como o iPad</description>
+		<description lang="ro">Skin realizat cu scopul de a fi utilizat pe dispozitive cu ecran de tip touch precum iPad</description>
+		<description lang="ru">Обложка разработана с нуля для использования на устройствах с сенсорным экраном, например iPad</description>
+		<description lang="se">Skal utformat från grunden för att användas på pekskärmsenheter som till exempel iPad</description>
+		<description lang="sk">Vzhľad navrhnutý od základu pre použitie na zariadeniach s dotykovým displejom, ako napríklad iPad</description>
+		<description lang="sl">Preobleka je zasnovana popolnoma na novo za naprave z zaslonom na dotik, kot je iPad</description>
+		<description lang="sq">Maskë dizenjuar posaçërisht për tu përdorur me pajisjet me ekran me prekje si iPad’i</description>
+		<description lang="sv">Skal designat från grunden för att användas på pekskärmsenhter som t.ex. iPad</description>
+		<description lang="ta_IN">தொடுதிரை சாதனங்களான iPad ஆகியவற்றிகான அலங்காரம்</description>
+		<description lang="th">หน้าตาได้ถูกออกแบบขึ้นมาใหม่หมด เพื่อนำไปใช้กับอุปกรณ์หน้าจอสัมผ้ส เหมือน iPad</description>
+		<description lang="tr">iPad gibi dokunmatik ekranlı cihazlarda kullanılmak üzere sıfırdan tasarlanmış dış görünüm</description>
+		<description lang="uk">Обкладинка розроблена з нуля і призначена для використання на пристроях із сенсорним екраном, наприклад iPad.</description>
+		<description lang="vi">Bộ skin được thiết kế lại từ đầu để sử dụng trên các thiết bị cảm ứng như iPad, Surface</description>
+		<description lang="zh">为用于类似 iPad 的触屏设备而设计的皮肤</description>
+		<description lang="zh_TW">為了如 iPad 等擁有觸控螢幕的裝所重新設計的佈景主題</description>
+		<disclaimer lang="af">Moenie hierdie omslag gebruik as daar nie 'n raak skerm of muis gekoppel is nie, of jy mag navigasie verloor</disclaimer>
+		<disclaimer lang="ar">لا تستخدم هذا الجلد إذا لم يكن لديك شاشة لمس أو الفأرة موصولة أو قد تفقد التوجيه</disclaimer>
+		<disclaimer lang="be">Do not use this skin unless you have either touch screen or a mouse connected or you may lose navigation</disclaimer>
+		<disclaimer lang="bg">НЕ ползвайте облика ако устройството не е снабдено със сензорен екран или мишка, в противен случай ще загубите възможността за навигиране</disclaimer>
+		<disclaimer lang="ca">No utilitzeu aquesta pell excepte si teniu una pantalla tàctil o un ratolí connectat, sinó podeu perdre la navegació</disclaimer>
+		<disclaimer lang="cs">Nepoužívejte tento vzhled pokud nemáte dotykovou obrazovku, nebo připojenou myš. Můžete ztratit kontrolu nad ovládáním aplikace</disclaimer>
+		<disclaimer lang="cy">Peidiwch defnyddio'r croen hwn oni bai fod gennych sgrin cyffwrdd neu lygoden wedi ei gysylltu neu byddwch yn colli'r gallu i reoli.</disclaimer>
+		<disclaimer lang="da">Brug ikke dette skin medmindre du enten har en touchscreen eller mus forbundet, ellers kan du miste navigeringen.</disclaimer>
+		<disclaimer lang="de">Verwenden Sie diese Skin nur wenn Sie einen Touch-Screen haben oder eine Maus angeschlossen ist, andernfalls kann die Steuerung ausfallen</disclaimer>
+		<disclaimer lang="el">Μην χρησιμοποιήσετε αυτό το κέλυφος αν δεν έχετε είτε μία οθόνη αφής ή ένα ποντίκι συνδεδεμένο διότι μπορεί να χάσετε τη δυνατότητα πλοήγησης</disclaimer>
+		<disclaimer lang="en">Do not use this skin unless you have either touch screen or a mouse connected or you may lose navigation</disclaimer>
+		<disclaimer lang="en_AU">Do not use this skin unless you have either touch screen or a mouse connected or you may lose navigation</disclaimer>
+		<disclaimer lang="en_NZ">Do not use this skin unless you have either touch screen or a mouse connected or you may lose navigation</disclaimer>
+		<disclaimer lang="en_US">Do not use this skin unless you have either touch screen or a mouse connected or you may lose navigation</disclaimer>
+		<disclaimer lang="es">No uses esta skin a no ser que tengas un dispositivo táctil o un ratón conectado, puesto que puedes perder la posibilidad de moverte por las opciones.</disclaimer>
+		<disclaimer lang="es_AR">No uses este skin a no ser que tengas un dispositivo táctil o un mouse conectado, ya que puedes perder la posibilidad de moverte por las opciones.</disclaimer>
+		<disclaimer lang="es_MX">No uses éste skin a menos de que tengas una pantalla táctil o un mouse conectado o puedes perder la navegación</disclaimer>
+		<disclaimer lang="et">Ära kasuta seda rüüd, kui sul puudub kas puutetundlik ekraan või ühendatud hiir. Vastasel juhul võid kaotada navigeerimise võimaluse</disclaimer>
+		<disclaimer lang="fi">Älä käytä tätä skiniä ellei sinulla ole kosketusnäyttöä tai hiirtä liitettynä, koska saatat</disclaimer>
+		<disclaimer lang="fr">Ne pas utiliser cet habillage sauf si vous avez un écran tactile ou une souris connectée, sinon vous risquez de perdre la navigation</disclaimer>
+		<disclaimer lang="fr_CA">Ne pas utiliser cet habillage sauf si vous avez un écran tactile ou une souris connectée, sinon vous risquez de perdre la navigation</disclaimer>
+		<disclaimer lang="gl">Non empregar esta pel a non ser que teña ben un dispositivo táctil ou un rato conectado. Pode perder a navegación.</disclaimer>
+		<disclaimer lang="he">אין להשתמש במעטפת זו ללא מסך מגע או עכבר מחובר, אחרת לא ניתן יהיה לנווט במעטפת</disclaimer>
+		<disclaimer lang="hr">Ne koristite ovu presvlaku ukoliko nemate zaslon osjetljiv na dodir ili spojeni miš, u suprotnom možete izgubiti upravljivost računalom</disclaimer>
+		<disclaimer lang="hu">Ha a felszínt érintőképnyő nélkül, vagy egérrel használod, nem fog működni a navigálás</disclaimer>
+		<disclaimer lang="id">Dilarang menggunakan tampilan ini kecuali anda punya alat layar sentuh atau mouse tersambung atau dapat berakibat hilangnya navigasi</disclaimer>
+		<disclaimer lang="is">Notaðu ekki þetta viðmót nema þú hafir annaðhvort snertiskjá eða mús tengda, annars gætir þú tapað stjórninni á tækinu</disclaimer>
+		<disclaimer lang="it">Non usare questa skin se non hai un touch screen o un mouse connesso, o potresi perdere la navigazione</disclaimer>
+		<disclaimer lang="ja">タッチスクリーンやマウスが接続されていない端末でこのスキンを使うと、操作出来なくなる可能性があります。</disclaimer>
+		<disclaimer lang="ko">터치 스크린이나 마우스가 없는 상황에서 이 스킨을 사용하지 마십시오. 탐색이 불가능할 수 있습니다.</disclaimer>
+		<disclaimer lang="lt">Šios temos vartoti negalima, nebent Jūs turite jutiklinį ekraną, arba prijungtą pelę kitaip Jūs galite prarasti naršymą/navigaciją</disclaimer>
+		<disclaimer lang="lv">Nelietojiet šo apvalku, ja vien nav pieslēgts skārienekrāns vai pele, citādi varat zaudēt iespēju navigēt</disclaimer>
+		<disclaimer lang="mk">Не користи маска доколку немас екран на допир или маус, може да ја загубиш навигацијата</disclaimer>
+		<disclaimer lang="ms">Jangan guna kulit ini melainkan anda mempunyai skrin sentuh atau tetikus yang bersambung atau anda kehilangan navigasi</disclaimer>
+		<disclaimer lang="nl">Gebruik deze skin niet tenzij u gebruik maakt van een aanraakscherm of muis anders kan je de besturing verliezen</disclaimer>
+		<disclaimer lang="no">Ikke bruk dette skallet med mindre du har en berøringsskjerm, eller en mus tilkoblet, da du kan miste muligheten til å navigere i Kodi</disclaimer>
+		<disclaimer lang="pl">Nie używaj tej skóry jeśli nie posiadasz ekranu dotykowego lub podłączonej myszy, w przeciwnym razie możesz stracić możliwość nawigacji</disclaimer>
+		<disclaimer lang="pt">Não utilize este tema se não tiver um ecrã táctil ou um rato, pois irá perder opções de navegação.</disclaimer>
+		<disclaimer lang="pt_BR">Não use essa skin a menos que você tenha uma tela sensível ao toque ou um mouse conectado, ou você pode perder a navegação</disclaimer>
+		<disclaimer lang="ro">Nu folosiți acest skin dacă nu aveți un ecran de tip touch sau dacă nu aveți un mouse conectat sau veți pierde navigabilitatea</disclaimer>
+		<disclaimer lang="ru">Не включайте эту обложку при отсутствии сенсорного экрана или мыши, потому что возможна потеря управления.</disclaimer>
+		<disclaimer lang="se">Använd inte detta skal om du inte har endera en pekskärmsenhet eller om mus, annars kan navigeringen sluta fungera</disclaimer>
+		<disclaimer lang="sk">Nepoužívajte tento vzhľad, pokiaľ nemáte dotykovú obrazovku, alebo pripojenú myš, inak môžete stratiť kontrolu nad ovládaním aplikácie</disclaimer>
+		<disclaimer lang="sl">Ne uporabljajte te preobleke, če nimate zaslona na dotik ali povezane miške, ker boste s tem izgubili možnost navigacije</disclaimer>
+		<disclaimer lang="sq">Mos e përdorni këtë maskë nëse nuk keni, ose ekran me prekje, ose maus te lidhur, përndryshe mund të humbni aftësinë për të naviguar</disclaimer>
+		<disclaimer lang="sv">Använd inte detta skal om du inte har endera en pekskärmsenhet eller en mus ansluten, annars kan du tappa bort navigeringen</disclaimer>
+		<disclaimer lang="ta_IN">தொடுதிரை அல்லது சுட்டி சாதனம் இல்லாமல் இந்த அலங்காரத்தை உபயோகிக்கவேண்டாம்</disclaimer>
+		<disclaimer lang="th">อย่าได้ใช้หน้าตานี้ จนกว่าคุณจะมี หน้าจอสัมผัส หรือ เมาส์ อย่างใดอย่างหนึ่งเชื่อมต่ออยู่ ไม่เช่นนั้นคุณจะสูญเสียการควบคุม</disclaimer>
+		<disclaimer lang="tr">Bir dokunmatik ekranınız ya da fareniz olmadan bu dış görünümü kullanmayın, kontrolü kaybedebilirsiniz.</disclaimer>
+		<disclaimer lang="uk">Використовуйте цю обкладинку, лише якщо ваш пристрій обладнано сенсорним екраном або мишею. Інакше ви можете втратити можливість керування.</disclaimer>
+		<disclaimer lang="vi">Không sử dụng skin này trừ khi là bạn đang sử dụng màn hình cảm ứng hoặc sử dụng chuột để tránh trường hợp mất điều khiển</disclaimer>
+		<disclaimer lang="zh">在非触屏且没有鼠标控制的情况下使用此皮肤会造成无法控制设备</disclaimer>
+		<disclaimer lang="zh_TW">除非你有觸控螢幕或滑鼠連接，否則請不要使用這個佈景主題，不然你會無法控制 Kodi。</disclaimer>
+		<platform>all</platform>
+		<license>Creative Commons Attribution-Share Alike 3.0 United States</license>
+		<forum>http://forum.kodi.tv/forumdisplay.php?fid=189</forum>
+		<website></website>
+		<email></email>
+		<source>https://github.com/xbmc/skin.re-touched/</source>
+	</extension>
+</addon>
