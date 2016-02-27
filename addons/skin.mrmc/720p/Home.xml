@@ -444,7 +444,8 @@
 			<texturenofocus>-</texturenofocus>
 			<onleft>9000</onleft>
 			<onright>9000</onright>
-			<onup>20</onup>
+			<onup condition="!System.Platform.IOS + !System.Platform.TVOS">20</onup>
+			<onup condition="System.Platform.IOS | System.Platform.TVOS">21</onup>
 			<ondown>608</ondown>
 			<visible>false</visible>
 		</control>
@@ -1020,14 +1021,15 @@
 		<control type="group" id="9002">
 			<depth>DepthMenu</depth>
 			<onup>9001</onup>
-			<ondown>20</ondown>
+			<ondown>21</ondown>
 			<control type="fixedlist" id="700">
 				<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(700).NumItems,2) | StringCompare(Container(700).NumItems,4)">conditional</animation>
 				<visible>Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)</visible>
 				<onleft>700</onleft>
 				<onright>700</onright>
 				<onup>9001</onup>
-				<ondown>20</ondown>
+				<ondown condition="!System.Platform.IOS + !System.Platform.TVOS">20</ondown>
+				<ondown condition="System.Platform.IOS | System.Platform.TVOS">21</ondown>
 				<include>HomeAddonsCommonLayout</include>
 				<content>
 					<include>HomeAddonItemsVideos</include>
@@ -1039,7 +1041,8 @@
 				<onleft>703</onleft>
 				<onright>703</onright>
 				<onup>9001</onup>
-				<ondown>20</ondown>
+				<ondown condition="!System.Platform.IOS + !System.Platform.TVOS">20</ondown>
+				<ondown condition="System.Platform.IOS | System.Platform.TVOS">21</ondown>
 				<include>HomeAddonsCommonLayout</include>
 				<content>
 					<include>HomeAddonItemsMusic</include>
@@ -1051,7 +1054,8 @@
 				<onleft>704</onleft>
 				<onright>704</onright>
 				<onup>9001</onup>
-				<ondown>20</ondown>
+				<ondown condition="!System.Platform.IOS + !System.Platform.TVOS">20</ondown>
+				<ondown condition="System.Platform.IOS | System.Platform.TVOS">21</ondown>
 				<include>HomeAddonsCommonLayout</include>
 				<content>
 					<include>HomeAddonItemsPictures</include>
@@ -1063,7 +1067,8 @@
 				<onleft>705</onleft>
 				<onright>705</onright>
 				<onup>9001</onup>
-				<ondown>20</ondown>
+				<ondown condition="!System.Platform.IOS + !System.Platform.TVOS">20</ondown>
+				<ondown condition="System.Platform.IOS | System.Platform.TVOS">21</ondown>
 				<include>HomeAddonsCommonLayout</include>
 				<content>
 					<include>HomeAddonItemsPrograms</include>
