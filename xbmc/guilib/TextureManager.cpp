@@ -28,6 +28,7 @@
 #include "GraphicContext.h"
 #include "system.h"
 #include "Texture.h"
+#include "guilib/GifIO.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "URL.h"
@@ -37,9 +38,6 @@
 
 #ifdef _DEBUG_TEXTURES
 #include "utils/TimeUtils.h"
-#endif
-#if defined(HAS_GIFLIB)
-#include "guilib/GifIO.h"
 #endif
 #if defined(TARGET_DARWIN_IOS)
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
@@ -371,7 +369,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     }
     else
     {
-#if defined(HAS_GIFLIB)
       CGifIO gif;
       if(!gif.LoadGif(strPath.c_str()))
       {
@@ -398,8 +395,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
       pMap->SetWidth((int)maxWidth);
       pMap->SetHeight((int)maxHeight);
-
-#endif//HAS_GIFLIB
     }
 
     if (pMap)

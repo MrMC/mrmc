@@ -91,10 +91,6 @@
   #define HAS_MDNS_EMBEDDED
 #endif
 
-#if defined(HAVE_LIBGIF)
-  #define HAS_GIFLIB
-#endif
-
 /*****************
  * Mac Specific
  *****************/

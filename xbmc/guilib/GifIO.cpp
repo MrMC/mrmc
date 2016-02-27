@@ -18,7 +18,7 @@
 *
 */
 #include "system.h"
-#if defined(HAS_GIFLIB)
+
 #include "GifIO.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -664,4 +664,3 @@ GifFrame::~GifFrame()
   delete[] m_pImage;
   m_pImage = nullptr;
 }
-#endif//HAS_GIFLIB

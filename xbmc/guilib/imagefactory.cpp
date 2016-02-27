@@ -23,9 +23,7 @@
 #include "imagefactory.h"
 #include "guilib/PngIO.h"
 #include "guilib/JpegIO.h"
-#if defined(HAS_GIFLIB)
-  #include "guilib/GifIO.h"
-#endif
+#include "guilib/GifIO.h"
 #include "utils/Mime.h"
 
 IImage* ImageFactory::CreateLoader(const std::string& strFileName)
