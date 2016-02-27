@@ -1337,6 +1337,8 @@ MainController *g_xbmcController;
   if (!(g_application.IsVideoScanning() || g_application.IsMusicScanning()))
     g_application.UpdateLibraries();
 
+  // this handles what to do if we got pushed
+  // into foreground by a topshelf item select/play
   CTVOSTopShelf::GetInstance().RunTopShelf();
 }
 
