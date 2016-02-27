@@ -19,24 +19,27 @@
  */
 
 #include "system.h"
-#include "RarManager.h"
-#include "Util.h"
-#include "utils/CharsetConverter.h"
-#include "utils/URIUtils.h"
-#include "threads/SingleLock.h"
+
 #include "Directory.h"
-#include "SpecialProtocol.h"
-#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
-#include "utils/log.h"
-#include "filesystem/File.h"
+#include "SpecialProtocol.h"
+#include "RarManager.h"
 #include "URL.h"
+#include "Util.h"
 
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/File.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/AdvancedSettings.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
+#include "utils/URIUtils.h"
+
+#include "UnrarXLib/UnrarX.hpp"
 
 #include <set>
 

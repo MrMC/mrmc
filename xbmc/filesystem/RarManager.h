@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "threads/CriticalSection.h"
-#include "UnrarXLib/UnrarX.hpp"
 #include "utils/Stopwatch.h"
 
 class CFileItemList;
@@ -36,6 +35,8 @@ class CFileItemList;
 #define EXFILE_NOCACHE 8
 #define RAR_DEFAULT_CACHE "special://temp/"
 #define RAR_DEFAULT_PASSWORD ""
+
+typedef struct archivelist ArchiveList_struct;
 
 class CFileInfo{
 public:

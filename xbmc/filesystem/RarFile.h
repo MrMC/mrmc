@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -19,10 +21,6 @@
  */
 
 // FileRar.h: interface for the CRarFile class.
-
-#pragma once
-#ifndef FILERAR_H_
-#define FILERAR_H_
 
 #include "File.h"
 #include "IFile.h"
@@ -111,6 +109,3 @@ namespace XFILE
   };
 
 }
-
-#endif  // FILERAR_H_
-
