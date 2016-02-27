@@ -109,6 +109,8 @@ namespace XFILE
     virtual bool    Rename(const CURL& url, const CURL& urlnew);
 
   private:
+    bool IsValidFile(const std::string& strFileName);
+
     std::string     m_file;
     CDSMSessionPtr  m_dsmSession;
     smb_fd          m_smb_fd;

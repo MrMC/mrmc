@@ -556,9 +556,30 @@ bool CDSMSession::DirectoryExists(const char *path)
 
 bool CDSMSession::FileExists(const char *path)
 {
-  struct __stat64 stat_buffer = {0};
-  int exists = Stat(path, &stat_buffer);
-  return ((exists != -1) && (stat_buffer.st_mode == _S_IFREG));
+  int exists = false;
+
+  CSingleLock lock(m_critSect);
+  if (m_smb_session)
+  {
+    m_lastActive = XbmcThreads::SystemClockMillis();
+
+    // always check that we are connected to a share,
+    // this will make sure m_smb_tid is always setup
+    if (!ConnectShare(path))
+      return -1;
+
+    // paths are relative to the m_smb_tid, which is the share name
+    std::string pathname = strip_share_name_convert(path);
+    smb_stat attributes = m_dsmlib->smb_fstat(m_smb_session, m_smb_tid, pathname.c_str());
+    if (attributes)
+      exists = true;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "SFTPSession::FileExists - Failed because not connected for '%s'", path);
+  }
+
+  return exists;
 }
 
 bool CDSMSession::RemoveFile(const char *path)
@@ -906,6 +927,14 @@ CDSMFile::~CDSMFile()
 
 bool CDSMFile::Open(const CURL& url)
 {
+  // we can't open files like smb://file.f or smb://server/file.f
+  // if a file matches the if below return false, it can't exist on a samba share.
+  if (!IsValidFile(url.GetFileName()))
+  {
+      CLog::Log(LOGNOTICE,"CDSMFile->Open: Bad URL : '%s'",url.GetFileName().c_str());
+      return false;
+  }
+
   m_dsmSession = CDSMSessionManager::CreateSession(url);
   if (m_dsmSession)
   {
@@ -1047,6 +1076,11 @@ int CDSMFile::Truncate(int64_t size)
 
 bool CDSMFile::Exists(const CURL& url)
 {
+  // we can't open files like smb://file.f or smb://server/file.f
+  // if a file matches the if below return false, it can't exist on a samba share.
+  if (!IsValidFile(url.GetFileName()))
+    return false;
+
   CDSMSessionPtr session = CDSMSessionManager::CreateSession(url);
   if (session)
     return session->FileExists(url.GetFileName().c_str());
@@ -1110,6 +1144,11 @@ bool CDSMFile::Delete(const CURL& url)
 
 bool CDSMFile::OpenForWrite(const CURL& url, bool bOverWrite)
 {
+  // we can't open files like smb://file.f or smb://server/file.f
+  // if a file matches the if below return false, it can't exist on a samba share.
+  if (!IsValidFile(url.GetFileName()))
+    return false;
+
   m_dsmSession = CDSMSessionManager::CreateSession(url);
   if (m_dsmSession)
   {
@@ -1159,4 +1198,13 @@ bool CDSMFile::Rename(const CURL& url, const CURL& urlnew)
     CLog::Log(LOGERROR, "CDSMFile: Failed to create session to rename file '%s'", url.GetFileName().c_str());
     return false;
   }
+}
+
+bool CDSMFile::IsValidFile(const std::string& strFileName)
+{
+  if (strFileName.find('/') == std::string::npos || /* doesn't have sharename */
+      StringUtils::EndsWith(strFileName, "/.") || /* not current folder */
+      StringUtils::EndsWith(strFileName, "/.."))  /* not parent folder */
+      return false;
+  return true;
 }
