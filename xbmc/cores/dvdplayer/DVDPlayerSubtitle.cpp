@@ -81,7 +81,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg, int priority)
       CDVDOverlaySpu* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
       if (pSPUInfo)
       {
-        CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessSubData: Got complete SPU packet");
+        //CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessSubData: Got complete SPU packet");
         m_pOverlayContainer->Add(pSPUInfo);
         pSPUInfo->Release();
       }

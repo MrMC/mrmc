@@ -137,8 +137,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::AddData(uint8_t* data, int iSize, double pts)
 
   if (pSPUData->iSize == pSPUData->iNeededSize)
   {
-    DebugLog("got complete spu packet\n  length: %i bytes\n  stream: %i\n", pSPUData->iSize);
-
+    //DebugLog("got complete spu packet\n  length: %i bytes\n  stream: %i\n", pSPUData->iSize);
     return ParsePacket(pSPUData);
   }
 
