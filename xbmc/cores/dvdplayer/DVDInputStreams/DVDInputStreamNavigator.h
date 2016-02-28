@@ -166,6 +166,13 @@ protected:
   static void SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t &audio_attributes);
   static void SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes);
 
+  // libdvdxxx streaminng API support
+  XFILE::CFile *m_stream;
+  dvdnav_stream_cb m_stream_cb = {stream_cb_seek, stream_cb_read, nullptr};
+
+  static int stream_cb_seek(void *s, uint64_t pos);
+  static int stream_cb_read(void *s, void* buffer, int size);
+
   DllDvdNav m_dll;
   bool m_bCheckButtons;
   bool m_bEOF;
