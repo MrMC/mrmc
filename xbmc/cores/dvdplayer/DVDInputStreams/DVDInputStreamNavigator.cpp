@@ -102,9 +102,10 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   bool is_iso_container = URIUtils::HasExtension(strFile, ".iso|.img");
   if (is_iso_container)
   {
+    // no flags options, caching and others do not work well
+    // with libdvdnav streaming API.
     m_stream = new XFILE::CFile();
-    unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED | READ_NO_CACHE;
-    if (!m_stream || !m_stream->Open(strFile, flags))
+    if (!m_stream || !m_stream->Open(strFile))
     {
       SAFE_DELETE(m_stream);
       return false;
