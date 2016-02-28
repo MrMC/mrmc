@@ -1,0 +1,92 @@
+--- appletvos9.1_arm64-target/src/dvd_reader.c-org	2016-02-28 14:56:22.000000000 -0500
++++ appletvos9.1_arm64-target/src/dvd_reader.c	2016-02-28 15:02:11.000000000 -0500
+@@ -166,8 +166,8 @@ void SetUDFCacheHandle(dvd_reader_t *dev
+ /* Loop over all titles and call dvdcss_title to crack the keys. */
+ static int initAllCSSKeys( dvd_reader_t *dvd )
+ {
+-  struct timeval all_s, all_e;
+-  struct timeval t_s, t_e;
++  //struct timeval all_s, all_e;
++  //struct timeval t_s, t_e;
+   char filename[ MAX_UDF_FILE_NAME_LEN ];
+   uint32_t start, len;
+   int title;
+@@ -176,14 +176,14 @@ static int initAllCSSKeys( dvd_reader_t 
+   if(nokeys_str != NULL)
+     return 0;
+ 
+-  fprintf( stderr, "\n" );
+-  fprintf( stderr, "libdvdread: Attempting to retrieve all CSS keys\n" );
+-  fprintf( stderr, "libdvdread: This can take a _long_ time, "
+-           "please be patient\n\n" );
+-  gettimeofday(&all_s, NULL);
++  //fprintf( stderr, "\n" );
++  //fprintf( stderr, "libdvdread: Attempting to retrieve all CSS keys\n" );
++  //fprintf( stderr, "libdvdread: This can take a _long_ time, "
++  //         "please be patient\n\n" );
++  //gettimeofday(&all_s, NULL);
+ 
+   for( title = 0; title < 100; title++ ) {
+-    gettimeofday( &t_s, NULL );
++    //gettimeofday( &t_s, NULL );
+     if( title == 0 ) {
+       sprintf( filename, "/VIDEO_TS/VIDEO_TS.VOB" );
+     } else {
+@@ -192,39 +192,39 @@ static int initAllCSSKeys( dvd_reader_t 
+     start = UDFFindFile( dvd, filename, &len );
+     if( start != 0 && len != 0 ) {
+       /* Perform CSS key cracking for this title. */
+-      fprintf( stderr, "libdvdread: Get key for %s at 0x%08x\n",
+-               filename, start );
++      //fprintf( stderr, "libdvdread: Get key for %s at 0x%08x\n",
++      //         filename, start );
+       if( dvdinput_title( dvd->dev, (int)start ) < 0 ) {
+-        fprintf( stderr, "libdvdread: Error cracking CSS key for %s (0x%08x)\n", filename, start);
++        //fprintf( stderr, "libdvdread: Error cracking CSS key for %s (0x%08x)\n", filename, start);
+       }
+-      gettimeofday( &t_e, NULL );
+-      fprintf( stderr, "libdvdread: Elapsed time %ld\n",
+-               (long int) t_e.tv_sec - t_s.tv_sec );
++      //gettimeofday( &t_e, NULL );
++      //fprintf( stderr, "libdvdread: Elapsed time %ld\n",
++      //         (long int) t_e.tv_sec - t_s.tv_sec );
+     }
+ 
+     if( title == 0 ) continue;
+ 
+-    gettimeofday( &t_s, NULL );
++    //gettimeofday( &t_s, NULL );
+     sprintf( filename, "/VIDEO_TS/VTS_%02d_%d.VOB", title, 1 );
+     start = UDFFindFile( dvd, filename, &len );
+     if( start == 0 || len == 0 ) break;
+ 
+     /* Perform CSS key cracking for this title. */
+-    fprintf( stderr, "libdvdread: Get key for %s at 0x%08x\n",
+-             filename, start );
++    //fprintf( stderr, "libdvdread: Get key for %s at 0x%08x\n",
++    //         filename, start );
+     if( dvdinput_title( dvd->dev, (int)start ) < 0 ) {
+-      fprintf( stderr, "libdvdread: Error cracking CSS key for %s (0x%08x)!!\n", filename, start);
++      //fprintf( stderr, "libdvdread: Error cracking CSS key for %s (0x%08x)!!\n", filename, start);
+     }
+-    gettimeofday( &t_e, NULL );
+-    fprintf( stderr, "libdvdread: Elapsed time %ld\n",
+-             (long int) t_e.tv_sec - t_s.tv_sec );
++    //gettimeofday( &t_e, NULL );
++    //fprintf( stderr, "libdvdread: Elapsed time %ld\n",
++    //         (long int) t_e.tv_sec - t_s.tv_sec );
+   }
+   title--;
+ 
+-  fprintf( stderr, "libdvdread: Found %d VTS's\n", title );
+-  gettimeofday(&all_e, NULL);
+-  fprintf( stderr, "libdvdread: Elapsed time %ld\n",
+-           (long int) all_e.tv_sec - all_s.tv_sec );
++  //fprintf( stderr, "libdvdread: Found %d VTS's\n", title );
++  //gettimeofday(&all_e, NULL);
++  //fprintf( stderr, "libdvdread: Elapsed time %ld\n",
++  //         (long int) all_e.tv_sec - all_s.tv_sec );
+ 
+   return 0;
+ }
+

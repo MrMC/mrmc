@@ -15,27 +15,21 @@ else
   ARCHIVE=$(LIBNAME)-$(GITREV).tar.gz
 endif
 
-EXTRA_CFLAGS = -D_XBMC
+EXTRA_CONFIG = --with-libdvdcss
+EXTRA_CFLAGS = -D_XBMC -DHAVE_DVDCSS_DVDCSS_H
 ifeq ($(OS),android)
   EXTRA_CFLAGS +=  -D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64
 endif
-ifeq ($(OS),osx)
+ifeq ($(NATIVE_OS),osx)
   EXTRA_CFLAGS +=  -D__DARWIN__
-endif
-ifeq ($(OS),ios)
-  EXTRA_CFLAGS +=  -D__DARWIN__ -UHAVE_DVDCSS_DVDCSS_H
-else
-  config += --with-libdvdcss
-  EXTRA_CFLAGS += -DHAVE_DVDCSS_DVDCSS_H
 endif
 
 # configuration settings
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
 	./configure --prefix=$(PREFIX) \
 	--disable-shared --enable-static --with-pic \
+	$(EXTRA_CONFIG) \
 	CFLAGS="$(CFLAGS) $(EXTRA_CFLAGS)"
-
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 all: .installed-$(PLATFORM)
 
@@ -48,6 +42,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq ($(NATIVE_OS),osx)
+	cd $(PLATFORM); patch -p1 < ../silence-stderr-spew.patch
 	# shut up clang warnings about gcc_struct
 	sed -ie "s|,gcc_struct||" "$(PLATFORM)/src/dvdread/ifo_types.h"
 endif
@@ -55,7 +50,6 @@ endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(PLATFORM)/.libs/$(LIBNAME).a: $(PLATFORM)
-	[ -d $(PLATFORM)/.libs ] && [ ! -f $@ ] && $(MAKE) -C $(PLATFORM) clean || :
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(PLATFORM)/.libs/$(LIBNAME).a
@@ -63,8 +57,7 @@ $(PLATFORM)/.libs/$(LIBNAME).a: $(PLATFORM)
 	touch $@
 
 clean:
-	$(MAKE) -C $(PLATFORM) clean
-	rm -f .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM)
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
