@@ -836,8 +836,8 @@ xbmc/main/posix/Makefile
 /adsp-addons
 xbmc/platform/darwin/ios/IOS-Info.plist
 xbmc/cores/avfplayer
-addons/skin.mrmc-touch/media/Makefile
-addons/skin.mrmc-touch/media/Textures.xbt
+addons/skin.re-touched/media/Makefile
+addons/skin.re-touched/media/Textures.xbt
 addons/skin.amber/media/Textures.xbt
 addons/skin.amber/media/Makefile
 addons/skin.pm3.hd/media/Textures.xbt
