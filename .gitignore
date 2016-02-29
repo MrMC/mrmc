@@ -113,6 +113,7 @@ config.log
 /addons/xbmc.json/addon.xml
 /addons/kodi.guilib/addon.xml
 /addons/audiodecoder.*
+/addons/visualization.*
 
 # /lib/
 /lib/Makefile

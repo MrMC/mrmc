@@ -23,7 +23,7 @@ endif()
 
 # in case we need to download something, set KODI_MIRROR to the default if not alread set
 if(NOT DEFINED KODI_MIRROR)
-  set(KODI_MIRROR "http://mirrors.kodi.tv")
+  set(KODI_MIRROR "http://mrmc.tv/mrmc")
 endif()
 
 ### copy all the addon binding header files to include/APP_NAME_LC

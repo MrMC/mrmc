@@ -1,4 +1,4 @@
-project(kodi-addons-bootstrap)
+project(mrmc-addons-bootstrap)
 
 cmake_minimum_required(VERSION 2.8)
 
