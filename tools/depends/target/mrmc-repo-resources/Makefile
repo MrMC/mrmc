@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=repo-resources
-VERSION=1.0.0
+VERSION=2.0.0-16.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 BASE_URL=https://github.com/MrMC/repo-resources/archive
@@ -18,7 +18,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	rm $(PLATFORM)/readme.txt
+	rm -f $(PLATFORM)/readme.txt
 
 .installed-$(PLATFORM): $(PLATFORM)
 	rm -rf $(PREFIX)/mrmc/repo-resources
