@@ -253,6 +253,8 @@ static int SetImage(const std::vector<std::string>& params)
   std::string value = CSkinSettings::GetInstance().GetString(string);
   VECSOURCES localShares;
   g_mediaManager.GetLocalDrives(localShares);
+  // show all network drives
+  g_mediaManager.GetNetworkLocations(localShares);
   if (params.size() > 1)
   {
     value = params[1];
