@@ -39,6 +39,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>24001</label>
 			<onclick>ActivateWindow(Videos,Addons,return)</onclick>
+			<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 		</control>
 		<control type="image" id="90108">
 			<width>35</width>
@@ -165,6 +166,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>24001</label>
 			<onclick>ActivateWindow(Music,Addons,return)</onclick>
+			<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 		</control>
 		<control type="image" id="90119">
 			<width>35</width>
@@ -238,6 +240,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>24001</label>
 			<onclick>ActivateWindow(Pictures,Addons,return)</onclick>
+			<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 		</control>
 		<control type="image" id="90149">
 			<width>35</width>

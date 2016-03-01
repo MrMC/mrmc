@@ -149,6 +149,7 @@
 						<label>8</label>
 						<label2>31404</label2>
 						<onclick>ActivateWindow(WeatherSettings)</onclick>
+						<visible>false</visible>
 						<icon>-</icon>
 					</item>
 					<item id="7">

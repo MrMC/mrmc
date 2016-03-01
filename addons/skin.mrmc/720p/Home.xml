@@ -812,7 +812,7 @@
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9013</onleft>
 					<onright>9013</onright>
-					<visible>Container(9000).HasFocus(4)</visible>
+					<visible>Container(9000).HasFocus(4) + !System.Platform.IOS + !System.Platform.TVOS</visible>
 					<!-- Buttons for the grouplist -->
 					<include>HomeSubMenuPictures</include>
 				</control>
@@ -986,7 +986,7 @@
 						<onclick condition="System.Platform.Android">ActivateWindow(Programs)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
+						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton) + !System.Platform.IOS + !System.Platform.TVOS</visible>
 					</item>
 					<item id="6">
 						<label>31958</label>

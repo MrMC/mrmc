@@ -160,6 +160,7 @@
 						<label>24000</label>
 						<label2>31200</label2>
 						<onclick>noop</onclick>
+						<visible>false</visible>
 					</item>
 				</content>
 			</control>
@@ -491,7 +492,8 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="226">
+<!-- 					below is not used in MrMC for now  -->
+<!-- 					<control type="radiobutton" id="226">
 						<description>Hide Programs Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -516,7 +518,7 @@
 						<selected>Skin.HasSetting(HomeMenuNoWeatherButton)</selected>
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
-					</control>
+					</control> -->
 				</control>
 				<control type="scrollbar" id="60">
 					<left>1060</left>
