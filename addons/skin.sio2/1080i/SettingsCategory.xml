@@ -17,8 +17,8 @@
             <height>850</height>
             <align>left</align>
             <itemgap>8</itemgap>
-            <onup>noop</onup>
-            <ondown>noop</ondown>
+            <onup>20</onup>
+            <ondown>3</ondown>
             <onright>5</onright>
         </control>
         <control type="grouplist" id="5" description="Stage">

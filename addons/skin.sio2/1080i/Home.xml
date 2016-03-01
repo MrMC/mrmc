@@ -176,12 +176,12 @@
                     <onclick>ActivateWindow(502,$INFO[Skin.String(MusicLink)])</onclick>
                     <onclick condition="!Library.HasContent(Music)">ActivateWindow(501,root)</onclick>
                 </item>
-                <item id="343">
+<!--                 <item id="343">
                     <visible>!Skin.HasSetting(hideaddon)</visible>
                     <label>24001</label>
                     <thumb>icons/addons.png</thumb>
                     <onclick>ActivateWindow(1118)</onclick>
-                </item>
+                </item> -->
                 <item id="344">
                     <visible>!Skin.HasSetting(hidepic)</visible>
                     <label>1</label>
@@ -355,24 +355,18 @@
                     <property name="color">icons/progcolor.png</property>
                     <onclick>RunAddon($INFO[Skin.String(HomeAddon.12.Label)])</onclick>
                 </item>
-                <item id="350">
+<!--                 <item id="350">
                     <visible>!Skin.HasSetting(hideprog)</visible>
                     <thumb>icons/program.png</thumb>
                     <label>0</label>
                     <onclick>ActivateWindow(Programs)</onclick>
-                </item>
+                </item> -->
                 <item id="347">
                     <visible>!Skin.HasSetting(hideSources)</visible>
                     <thumb>icons/sources.png</thumb>
                     <label>20094</label>
                     <property name="color">icons/darkblue.png</property>
                     <onclick>activatewindow(1115)</onclick>
-                </item>
-                <item id="355">
-                    <visible>!Skin.HasSetting(hidesearch) + System.HasAddon(script.globalsearch)</visible>
-                    <thumb>icons/search.png</thumb>
-                    <label>search</label>
-                    <onclick>RunScript(script.globalsearch)</onclick>
                 </item>
                 <item id="353">
                     <visible>!Skin.HasSetting(hidebro)</visible>
@@ -382,7 +376,7 @@
                     <onclick>ActivateWindow(3)</onclick>
                 </item>
                 <item id="354">
-                    <visible>![System.Platform.ios | System.Platform.atv2]</visible>
+                    <visible>![System.Platform.IOS | System.Platform.TVOS]</visible>
                     <visible>!Skin.HasSetting(XBMC3)</visible>
                     <visible>System.HasMediadvd</visible>
                     <thumb>icons/DVD.png</thumb>
