@@ -2429,7 +2429,7 @@
             <step>1</step>
             <maximum>65535</maximum>
           </constraints>
-          <control type="edit" format="integer" />
+          <control type="edit" format="string" />
         </setting>
         <setting id="mysql.user" type="string" label="20142" help="1019">
         <dependencies>
