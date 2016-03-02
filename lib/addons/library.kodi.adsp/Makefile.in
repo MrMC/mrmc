@@ -3,7 +3,7 @@ INCLUDES = -I.
 INCLUDES+= -I@abs_top_srcdir@/xbmc/addons/include
 CXXFLAGS =-fPIC
 LIBNAME  = libKODIadsp
-LIBPATH  = @abs_top_srcdir@/addons/library.xbmc.codec
+LIBPATH  = @abs_top_srcdir@/addons/library.kodi.adsp
 OBJS     = $(LIBNAME).o
 
 ifeq ($(findstring osx,$(ARCH)), osx)
