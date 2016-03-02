@@ -43,12 +43,10 @@ CActiveAESink::CActiveAESink(CEvent *inMsgEvent) :
   m_sink = NULL;
   m_stats = NULL;
   m_volume = 0.0;
-  m_sampleOfSilence = NULL;
 }
 
 void CActiveAESink::Start()
 {
-  m_sampleOfSilence = new CSampleBuffer();
   if (!IsRunning())
   {
     Create();
@@ -71,11 +69,7 @@ void CActiveAESink::Dispose()
     SAFE_DELETE(m_sink);
   }
 
-  if (m_sampleOfSilence)
-  {
-    SAFE_DELETE(m_sampleOfSilence->pkt);
-    SAFE_DELETE(m_sampleOfSilence);
-  }
+  SAFE_DELETE(m_sampleOfSilence.pkt);
 }
 
 AEDeviceType CActiveAESink::GetDeviceType(const std::string &device)
@@ -372,7 +366,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         case CSinkDataProtocol::SAMPLE:
           m_extError = false;
           OpenSink();
-          OutputSamples(m_sampleOfSilence);
+          OutputSamples(&m_sampleOfSilence);
           m_state = S_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           m_bStateMachineSelfTrigger = true;
@@ -403,7 +397,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkDataProtocol::SAMPLE:
-          OutputSamples(m_sampleOfSilence);
+          OutputSamples(&m_sampleOfSilence);
           m_state = S_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           m_bStateMachineSelfTrigger = true;
@@ -461,7 +455,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::TIMEOUT:
-          OutputSamples(m_sampleOfSilence);
+          OutputSamples(&m_sampleOfSilence);
           if (m_extError)
           {
             m_sink->Deinitialize();
@@ -766,9 +760,9 @@ void CActiveAESink::OpenSink()
   config.sample_rate = m_sinkFormat.m_sampleRate;
 
   // init sample of silence/noise
-  delete m_sampleOfSilence->pkt;
-  m_sampleOfSilence->pkt = new CSoundPacket(config, m_sinkFormat.m_frames);
-  m_sampleOfSilence->pkt->nb_samples = m_sampleOfSilence->pkt->max_nb_samples;
+  delete m_sampleOfSilence.pkt;
+  m_sampleOfSilence.pkt = new CSoundPacket(config, m_sinkFormat.m_frames);
+  m_sampleOfSilence.pkt->nb_samples = m_sampleOfSilence.pkt->max_nb_samples;
   if (!passthrough)
     GenerateNoise();
 
@@ -874,8 +868,8 @@ void CActiveAESink::SwapInit(CSampleBuffer* samples)
 
 void CActiveAESink::GenerateNoise()
 {
-  int nb_floats = m_sampleOfSilence->pkt->max_nb_samples;
-  nb_floats *= m_sampleOfSilence->pkt->config.channels;
+  int nb_floats = m_sampleOfSilence.pkt->max_nb_samples;
+  nb_floats *= m_sampleOfSilence.pkt->config.channels;
 
   float *noise = (float*)_aligned_malloc(nb_floats*sizeof(float), 16);
   if (!noise)
@@ -894,7 +888,7 @@ void CActiveAESink::GenerateNoise()
     noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001f;
   }
 
-  SampleConfig config = m_sampleOfSilence->pkt->config;
+  SampleConfig config = m_sampleOfSilence.pkt->config;
   IAEResample *resampler = CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE);
   resampler->Init(config.channel_layout,
                  config.channels,
@@ -908,9 +902,9 @@ void CActiveAESink::GenerateNoise()
                  AV_SAMPLE_FMT_FLT,
                  CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat),
                  CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat),
-                 false, false, NULL, AE_QUALITY_UNKNOWN, false);
-  resampler->Resample(m_sampleOfSilence->pkt->data, m_sampleOfSilence->pkt->max_nb_samples,
-                     (uint8_t**)&noise, m_sampleOfSilence->pkt->max_nb_samples, 1.0);
+                 false, false, nullptr, AE_QUALITY_UNKNOWN, false);
+  resampler->Resample(m_sampleOfSilence.pkt->data, m_sampleOfSilence.pkt->max_nb_samples,
+                     (uint8_t**)&noise, m_sampleOfSilence.pkt->max_nb_samples, 1.0);
 
   _aligned_free(noise);
   delete resampler;

@@ -86,7 +86,6 @@ public:
   };
 };
 
-class CSampleBuffer;
 class CActiveAESink : private CThread
 {
 public:
@@ -127,7 +126,7 @@ protected:
   bool m_extStreaming;
   XbmcThreads::EndTime m_extSilenceTimer;
 
-  CSampleBuffer *m_sampleOfSilence;
+  CSampleBuffer m_sampleOfSilence;
   enum
   {
     CHECK_SWAP,
