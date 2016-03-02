@@ -1,6 +1,32 @@
 #!/bin/bash
 
-echo "copy root files"
+#set -x
+
+function package_skin
+{
+  SYNC_CMD="${1}"
+  SKIN_PATH="${2}"
+  SKIN_NAME=$(basename "${SKIN_PATH}")
+
+  echo "Packaging ${SKIN_NAME}"
+
+  if [ -f "$SKIN_PATH/addon.xml" ]; then
+    SYNCSKIN_CMD=${SYNC_CMD}
+    if [ -f "$SKIN_PATH/media/Textures.xbt" ]; then
+      SYNCSKIN_CMD="${SYNC_CMD} --exclude *.png --exclude *.jpg --exclude *.gif --exclude media/Makefile*"
+    fi
+    ${SYNCSKIN_CMD} "$SKIN_PATH" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
+    # these might have image files so just sync them
+    if [ -d "$SKIN_PATH/backgrounds" ]; then
+      ${SYNC_CMD} "$SKIN_PATH/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/$SKIN_NAME"
+    fi
+    if [ -f "$SKIN_PATH/icon.png" ]; then
+      ${SYNC_CMD} "$SKIN_PATH/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/$SKIN_NAME"
+    fi
+  fi
+}
+
+echo "packaging root files"
 
 if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
 
@@ -50,57 +76,27 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   # package items that are located in depends
   ${LANGSYNC} "$XBMC_DEPENDS/mrmc/repo-resources/" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
 
-  # sync skin.mrmc
-  SYNCSKIN_A=${SYNC}
-  if [ -f "$SRCROOT/addons/skin.mrmc/media/Textures.xbt" ]; then
-    SYNCSKIN_A="${SYNC} --exclude *.png --exclude *.jpg --exclude media/Makefile* --exclude media/Subtitles --exclude media/LeftRating --exclude media/flagging --exclude media/epg-genres --exclude media/CenterRating"
-  fi
-  ${SYNCSKIN_A} "$SRCROOT/addons/skin.mrmc"         "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-  ${SYNC} "$SRCROOT/addons/skin.mrmc/backgrounds"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.mrmc"
-  ${SYNC} "$SRCROOT/addons/skin.mrmc/icon.png"      "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.mrmc"
+  # always sync skin.mrmc
+  package_skin "${SYNC}" "$SRCROOT/addons/skin.mrmc"
 
   # sync touch skin if it exists
   if [ -f "$SRCROOT/addons/skin.re-touched/addon.xml" ] && [ "$PLATFORM_NAME" == "iphoneos" ]; then
-    SYNCSKIN_B=${SYNC}
-    if [ -f "$SRCROOT/addons/skin.re-touched/media/Textures.xbt" ]; then
-      SYNCSKIN_B="${SYNC} --exclude *.png --exclude *.jpg --exclude media/Makefile*"
-    fi
-    ${SYNCSKIN_B} "$SRCROOT/addons/skin.re-touched"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-    ${SYNC} "$SRCROOT/addons/skin.re-touched/background" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.re-touched"
-    ${SYNC} "$SRCROOT/addons/skin.re-touched/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.re-touched"
+    package_skin "${SYNC}" "$SRCROOT/addons/skin.re-touched"
   fi
 
-  # sync amber skin on tvos
+  # sync amber skin if tvos
   if [ -f "$SRCROOT/addons/skin.amber/addon.xml" ] && [ "$PLATFORM_NAME" == "appletvos" ]; then
-    SYNCSKIN_C=${SYNC}
-    if [ -f "$SRCROOT/addons/skin.amber/media/Textures.xbt" ]; then
-      SYNCSKIN_C="${SYNC} --exclude *.png --exclude *.jpg --exclude media/Makefile*"
-    fi
-    ${SYNCSKIN_C} "$SRCROOT/addons/skin.amber"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-    ${SYNC} "$SRCROOT/addons/skin.amber/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.amber"
-    ${SYNC} "$SRCROOT/addons/skin.amber/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.amber"
+    package_skin "${SYNC}" "$SRCROOT/addons/skin.amber"
   fi
 
-    # sync pm3.hd skin on tvos
+    # sync pm3.hd skin if tvos
   if [ -f "$SRCROOT/addons/skin.pm3.hd/addon.xml" ] && [ "$PLATFORM_NAME" == "appletvos" ]; then
-    SYNCSKIN_D=${SYNC}
-    if [ -f "$SRCROOT/addons/skin.pm3.hd/media/Textures.xbt" ]; then
-      SYNCSKIN_D="${SYNC} --exclude *.png --exclude *.jpg --exclude *.gif --exclude media/Makefile*"
-    fi
-    ${SYNCSKIN_D} "$SRCROOT/addons/skin.pm3.hd"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-    ${SYNC} "$SRCROOT/addons/skin.pm3.hd/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.pm3.hd"
-    ${SYNC} "$SRCROOT/addons/skin.pm3.hd/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.pm3.hd"
+    package_skin "${SYNC}" "$SRCROOT/addons/skin.pm3.hd"
   fi
 
-  # sync sio2 skin on tvos
+  # sync sio2 skin if tvos
   if [ -f "$SRCROOT/addons/skin.sio2/addon.xml" ] && [ "$PLATFORM_NAME" == "appletvos" ]; then
-    SYNCSKIN_D=${SYNC}
-    if [ -f "$SRCROOT/addons/skin.sio2/media/Textures.xbt" ]; then
-      SYNCSKIN_D="${SYNC} --exclude *.png --exclude *.jpg --exclude *.gif --exclude media/Makefile*"
-    fi
-    ${SYNCSKIN_D} "$SRCROOT/addons/skin.sio2"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-    ${SYNC} "$SRCROOT/addons/skin.sio2/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.sio2"
-    ${SYNC} "$SRCROOT/addons/skin.sio2/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.sio2"
+    package_skin "${SYNC}" "$SRCROOT/addons/skin.sio2"
   fi
 
   # fixups, addons might have silly symlinks because cmake is stupid, remove them
