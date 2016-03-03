@@ -2010,8 +2010,6 @@
 		F5B7249F1C7E150C006432AE /* crc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724201C7E150C006432AE /* crc.cpp */; };
 		F5B724A01C7E150C006432AE /* crc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724201C7E150C006432AE /* crc.cpp */; };
 		F5B724A11C7E150C006432AE /* crc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724201C7E150C006432AE /* crc.cpp */; };
-		F5B724A21C7E150C006432AE /* credits.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5B724221C7E150C006432AE /* credits.txt */; };
-		F5B724A31C7E150C006432AE /* credits.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5B724221C7E150C006432AE /* credits.txt */; };
 		F5B724A41C7E150C006432AE /* crypt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724231C7E150C006432AE /* crypt.cpp */; };
 		F5B724A51C7E150C006432AE /* crypt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724231C7E150C006432AE /* crypt.cpp */; };
 		F5B724A61C7E150C006432AE /* crypt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724231C7E150C006432AE /* crypt.cpp */; };
@@ -2054,8 +2052,6 @@
 		F5B724CE1C7E150C006432AE /* isnt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724401C7E150C006432AE /* isnt.cpp */; };
 		F5B724CF1C7E150C006432AE /* isnt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724401C7E150C006432AE /* isnt.cpp */; };
 		F5B724D01C7E150C006432AE /* isnt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724401C7E150C006432AE /* isnt.cpp */; };
-		F5B724D11C7E150C006432AE /* license.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5B724421C7E150C006432AE /* license.txt */; };
-		F5B724D21C7E150C006432AE /* license.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5B724421C7E150C006432AE /* license.txt */; };
 		F5B724D31C7E150C006432AE /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724451C7E150C006432AE /* log.cpp */; };
 		F5B724D41C7E150C006432AE /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724451C7E150C006432AE /* log.cpp */; };
 		F5B724D51C7E150C006432AE /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724451C7E150C006432AE /* log.cpp */; };
@@ -2080,10 +2076,6 @@
 		F5B724F11C7E150C006432AE /* rdwrfn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B7245D1C7E150C006432AE /* rdwrfn.cpp */; };
 		F5B724F21C7E150C006432AE /* rdwrfn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B7245D1C7E150C006432AE /* rdwrfn.cpp */; };
 		F5B724F31C7E150C006432AE /* rdwrfn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B7245D1C7E150C006432AE /* rdwrfn.cpp */; };
-		F5B724F41C7E150C006432AE /* Readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5B7245F1C7E150C006432AE /* Readme.txt */; };
-		F5B724F51C7E150C006432AE /* Readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5B7245F1C7E150C006432AE /* Readme.txt */; };
-		F5B724F61C7E150C006432AE /* readme_bj.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5B724601C7E150C006432AE /* readme_bj.txt */; };
-		F5B724F71C7E150C006432AE /* readme_bj.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5B724601C7E150C006432AE /* readme_bj.txt */; };
 		F5B724F81C7E150C006432AE /* recvol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724611C7E150C006432AE /* recvol.cpp */; };
 		F5B724F91C7E150C006432AE /* recvol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724611C7E150C006432AE /* recvol.cpp */; };
 		F5B724FA1C7E150C006432AE /* recvol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724611C7E150C006432AE /* recvol.cpp */; };
@@ -5384,7 +5376,6 @@
 		F5B7241F1C7E150C006432AE /* consio.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = consio.hpp; sourceTree = "<group>"; };
 		F5B724201C7E150C006432AE /* crc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crc.cpp; sourceTree = "<group>"; };
 		F5B724211C7E150C006432AE /* crc.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = crc.hpp; sourceTree = "<group>"; };
-		F5B724221C7E150C006432AE /* credits.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = credits.txt; sourceTree = "<group>"; };
 		F5B724231C7E150C006432AE /* crypt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crypt.cpp; sourceTree = "<group>"; };
 		F5B724241C7E150C006432AE /* crypt.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = crypt.hpp; sourceTree = "<group>"; };
 		F5B724261C7E150C006432AE /* dll.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dll.hpp; sourceTree = "<group>"; };
@@ -5415,7 +5406,6 @@
 		F5B7243F1C7E150C006432AE /* int64.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = int64.hpp; sourceTree = "<group>"; };
 		F5B724401C7E150C006432AE /* isnt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = isnt.cpp; sourceTree = "<group>"; };
 		F5B724411C7E150C006432AE /* isnt.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = isnt.hpp; sourceTree = "<group>"; };
-		F5B724421C7E150C006432AE /* license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
 		F5B724431C7E150C006432AE /* list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = list.hpp; sourceTree = "<group>"; };
 		F5B724441C7E150C006432AE /* loclang.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = loclang.hpp; sourceTree = "<group>"; };
 		F5B724451C7E150C006432AE /* log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = log.cpp; sourceTree = "<group>"; };
@@ -5441,8 +5431,6 @@
 		F5B7245C1C7E150C006432AE /* rawread.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rawread.hpp; sourceTree = "<group>"; };
 		F5B7245D1C7E150C006432AE /* rdwrfn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rdwrfn.cpp; sourceTree = "<group>"; };
 		F5B7245E1C7E150C006432AE /* rdwrfn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rdwrfn.hpp; sourceTree = "<group>"; };
-		F5B7245F1C7E150C006432AE /* Readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
-		F5B724601C7E150C006432AE /* readme_bj.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme_bj.txt; sourceTree = "<group>"; };
 		F5B724611C7E150C006432AE /* recvol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = recvol.cpp; sourceTree = "<group>"; };
 		F5B724621C7E150C006432AE /* recvol.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = recvol.hpp; sourceTree = "<group>"; };
 		F5B724631C7E150C006432AE /* resource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = resource.cpp; sourceTree = "<group>"; };
@@ -9210,7 +9198,6 @@
 				F5B7241F1C7E150C006432AE /* consio.hpp */,
 				F5B724201C7E150C006432AE /* crc.cpp */,
 				F5B724211C7E150C006432AE /* crc.hpp */,
-				F5B724221C7E150C006432AE /* credits.txt */,
 				F5B724231C7E150C006432AE /* crypt.cpp */,
 				F5B724241C7E150C006432AE /* crypt.hpp */,
 				F5B724261C7E150C006432AE /* dll.hpp */,
@@ -9241,7 +9228,6 @@
 				F5B7243F1C7E150C006432AE /* int64.hpp */,
 				F5B724401C7E150C006432AE /* isnt.cpp */,
 				F5B724411C7E150C006432AE /* isnt.hpp */,
-				F5B724421C7E150C006432AE /* license.txt */,
 				F5B724431C7E150C006432AE /* list.hpp */,
 				F5B724441C7E150C006432AE /* loclang.hpp */,
 				F5B724451C7E150C006432AE /* log.cpp */,
@@ -9267,8 +9253,6 @@
 				F5B7245C1C7E150C006432AE /* rawread.hpp */,
 				F5B7245D1C7E150C006432AE /* rdwrfn.cpp */,
 				F5B7245E1C7E150C006432AE /* rdwrfn.hpp */,
-				F5B7245F1C7E150C006432AE /* Readme.txt */,
-				F5B724601C7E150C006432AE /* readme_bj.txt */,
 				F5B724611C7E150C006432AE /* recvol.cpp */,
 				F5B724621C7E150C006432AE /* recvol.hpp */,
 				F5B724631C7E150C006432AE /* resource.cpp */,
@@ -9628,13 +9612,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F59045631BA372A600DB589A /* Default-568h@2x.png in Resources */,
-				F5B724A21C7E150C006432AE /* credits.txt in Resources */,
-				F5B724F61C7E150C006432AE /* readme_bj.txt in Resources */,
 				F59045661BA372A600DB589A /* Default-Landscape-736h@3x.png in Resources */,
 				F59045641BA372A600DB589A /* Default-667h@2x.png in Resources */,
-				F5B724D11C7E150C006432AE /* license.txt in Resources */,
 				183CB23B1C0B4C5A004218C2 /* Images.xcassets in Resources */,
-				F5B724F41C7E150C006432AE /* Readme.txt in Resources */,
 				F59045671BA372A600DB589A /* InfoPlist.strings in Resources */,
 				F59045651BA372A600DB589A /* Default-736h@3x.png in Resources */,
 			);
@@ -9644,11 +9624,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5B724D21C7E150C006432AE /* license.txt in Resources */,
 				F5D142B01BAF31FB0075A95C /* InfoPlist.strings in Resources */,
-				F5B724A31C7E150C006432AE /* credits.txt in Resources */,
-				F5B724F51C7E150C006432AE /* Readme.txt in Resources */,
-				F5B724F71C7E150C006432AE /* readme_bj.txt in Resources */,
 				F5D142AB1BAF31FB0075A95C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
