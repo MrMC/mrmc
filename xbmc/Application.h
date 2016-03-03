@@ -492,6 +492,9 @@ protected:
   bool m_fallbackLanguageLoaded;
   
 private:
+  void InitEnvironment();
+  void UpdateEnvironment();
+
   CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
 };
 

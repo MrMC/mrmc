@@ -91,6 +91,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/SeekHandler.h"
+#include "utils/Environment.h"
 
 #include "input/KeyboardLayoutManager.h"
 
@@ -356,10 +357,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
   return true;
 }
 
-extern "C" void init_emu_environ();
-extern "C" void update_emu_environ();
-extern "C" void cleanup_emu_environ();
-
 //
 // Utility function used to copy files from the application bundle
 // over to the user data directory in Application Support/Kodi.
@@ -449,8 +446,7 @@ bool CApplication::Create()
     return false;
   }
 
-  // Init our DllLoaders emu env
-  init_emu_environ();
+  InitEnvironment();
 
   CProfilesManager::GetInstance().Load();
 
@@ -582,7 +578,7 @@ bool CApplication::Create()
   CDirectory::Create(CProfilesManager::GetInstance().GetProfileUserDataFolder());
   CProfilesManager::GetInstance().CreateProfileFolders();
 
-  update_emu_environ();//apply the GUI settings
+  UpdateEnvironment();//apply the GUI settings
 
   // start the AudioEngine
   if (!CAEFactory::StartEngine())
@@ -2903,7 +2899,6 @@ void CApplication::Stop(int exitCode)
   // we may not get to finish the run cycle but exit immediately after a call to g_application.Stop()
   // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
-  cleanup_emu_environ();
 
   Sleep(200);
 }
@@ -5084,3 +5079,45 @@ bool CApplication::NotifyActionListeners(const CAction &action) const
   
   return false;
 }
+
+void CApplication::InitEnvironment()
+{
+/*
+  // libdvdnav
+  dll_putenv("DVDREAD_NOKEYS=1");
+  //dll_putenv("DVDREAD_VERBOSE=1");
+  //dll_putenv("DVDREAD_USE_DIRECT=1");
+
+  // libdvdcss
+  dll_putenv("DVDCSS_METHOD=key");
+  dll_putenv("DVDCSS_VERBOSE=3");
+  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
+*/
+}
+
+void CApplication::UpdateEnvironment()
+{
+  // Use a proxy, if the GUI was configured as such
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
+      && !CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
+      && CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
+      && CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE) == 0)
+  {
+    std::string strProxy;
+    if (!CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).empty() &&
+        !CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).empty())
+    {
+      strProxy = StringUtils::Format("%s:%s@",
+                                     CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).c_str(),
+                                     CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).c_str());
+    }
+
+    strProxy += CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
+    strProxy += StringUtils::Format(":%d", CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
+
+    CEnvironment::setenv( "HTTP_PROXY", "http://" + strProxy, true );
+    CEnvironment::setenv( "HTTPS_PROXY", "http://" + strProxy, true );
+  }
+}
+
+

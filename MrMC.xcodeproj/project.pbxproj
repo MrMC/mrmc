@@ -758,9 +758,6 @@
 		E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14700D25F9F900618676 /* AutoSwitch.cpp */; };
 		E38E1F3E0D25F9FD00618676 /* BackgroundInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */; };
 		E38E1F570D25F9FD00618676 /* DllLoaderContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B60D25F9F900618676 /* DllLoaderContainer.cpp */; };
-		E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
-		E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
-		E38E1F710D25F9FD00618676 /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E80D25F9F900618676 /* wrapper.c */; };
 		E38E1F730D25F9FD00618676 /* LibraryLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14ED0D25F9F900618676 /* LibraryLoader.cpp */; };
 		E38E1F760D25F9FD00618676 /* SoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F40D25F9F900618676 /* SoLoader.cpp */; };
 		E38E1F770D25F9FD00618676 /* DummyVideoPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */; };
@@ -1028,8 +1025,6 @@
 		E49911AE174E5CFE00741B6D /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		E49911AF174E5CFE00741B6D /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
-		E49911B3174E5D0A00741B6D /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
-		E49911B5174E5D0A00741B6D /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
 		E49911BD174E5D0A00741B6D /* DllLoaderContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B60D25F9F900618676 /* DllLoaderContainer.cpp */; };
 		E49911BE174E5D0A00741B6D /* LibraryLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14ED0D25F9F900618676 /* LibraryLoader.cpp */; };
 		E49911BF174E5D0A00741B6D /* SoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F40D25F9F900618676 /* SoLoader.cpp */; };
@@ -2151,8 +2146,6 @@
 		F5D13EBB1BAA178A0075A95C /* DictionaryUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */; };
 		F5D13EBE1BAE388E0075A95C /* DictionaryUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */; };
 		F5D13EC21BAE3D8F0075A95C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E499108D174D0D2600741B6D /* Foundation.framework */; };
-		F5D13EC31BAF04180075A95C /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
-		F5D13EC41BAF04190075A95C /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		F5D13EC81BAF0B6D0075A95C /* GUIWindowEventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCE61B5D911700904347 /* GUIWindowEventLog.cpp */; };
 		F5D13EC91BAF0B6D0075A95C /* cc_decoder708.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0131A4EF30F0053AC56 /* cc_decoder708.cpp */; };
 		F5D13ECA1BAF0B6D0075A95C /* XbtManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1D2DEB1B6E85EE002BB9DB /* XbtManager.cpp */; };
@@ -2187,8 +2180,6 @@
 		F5D13EE81BAF0B6D0075A95C /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		F5D13EE91BAF0B6D0075A95C /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		F5D13EEA1BAF0B6D0075A95C /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
-		F5D13EEB1BAF0B6D0075A95C /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
-		F5D13EEC1BAF0B6D0075A95C /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
 		F5D13EED1BAF0B6D0075A95C /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D31AAAF87700F98A45 /* Temperature.cpp */; };
 		F5D13EEE1BAF0B6D0075A95C /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */; };
 		F5D13EEF1BAF0B6D0075A95C /* ImageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2401241B41A26E001E02DA /* ImageResource.cpp */; };
@@ -2770,7 +2761,6 @@
 		F5D141361BAF0B6D0075A95C /* StreamDetails.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */; };
 		F5D141371BAF0B6D0075A95C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
 		F5D141381BAF0B6D0075A95C /* StringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8F11294261F009E7A26 /* StringUtils.cpp */; };
-		F5D141391BAF0B6D0075A95C /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		F5D1413A1BAF0B6D0075A95C /* SystemInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E830D25F9FD00618676 /* SystemInfo.cpp */; };
 		F5D1413B1BAF0B6D0075A95C /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848291D156D003E005A996F /* TextSearch.cpp */; };
 		F5D1413C1BAF0B6D0075A95C /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
@@ -4482,13 +4472,6 @@
 		E38E14730D25F9F900618676 /* BackgroundInfoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundInfoLoader.h; sourceTree = "<group>"; };
 		E38E14B60D25F9F900618676 /* DllLoaderContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DllLoaderContainer.cpp; sourceTree = "<group>"; };
 		E38E14B70D25F9F900618676 /* DllLoaderContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLoaderContainer.h; sourceTree = "<group>"; };
-		E38E14B90D25F9F900618676 /* emu_dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_dummy.cpp; sourceTree = "<group>"; };
-		E38E14BA0D25F9F900618676 /* emu_dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_dummy.h; sourceTree = "<group>"; };
-		E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_msvcrt.cpp; sourceTree = "<group>"; };
-		E38E14C20D25F9F900618676 /* emu_msvcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_msvcrt.h; sourceTree = "<group>"; };
-		E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmuFileWrapper.cpp; sourceTree = "<group>"; };
-		E38E14E40D25F9F900618676 /* EmuFileWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuFileWrapper.h; sourceTree = "<group>"; };
-		E38E14E80D25F9F900618676 /* wrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wrapper.c; sourceTree = "<group>"; };
 		E38E14ED0D25F9F900618676 /* LibraryLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LibraryLoader.cpp; sourceTree = "<group>"; };
 		E38E14EE0D25F9F900618676 /* LibraryLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryLoader.h; sourceTree = "<group>"; };
 		E38E14F40D25F9F900618676 /* SoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoLoader.cpp; sourceTree = "<group>"; };
@@ -7889,7 +7872,6 @@
 		E38E149D0D25F9F900618676 /* DllLoader */ = {
 			isa = PBXGroup;
 			children = (
-				E38E14B80D25F9F900618676 /* exports */,
 				E38E14B60D25F9F900618676 /* DllLoaderContainer.cpp */,
 				E38E14B70D25F9F900618676 /* DllLoaderContainer.h */,
 				E38E14ED0D25F9F900618676 /* LibraryLoader.cpp */,
@@ -7898,28 +7880,6 @@
 				E38E14F50D25F9F900618676 /* SoLoader.h */,
 			);
 			path = DllLoader;
-			sourceTree = "<group>";
-		};
-		E38E14B80D25F9F900618676 /* exports */ = {
-			isa = PBXGroup;
-			children = (
-				E38E14E20D25F9F900618676 /* util */,
-				E38E14B90D25F9F900618676 /* emu_dummy.cpp */,
-				E38E14BA0D25F9F900618676 /* emu_dummy.h */,
-				E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */,
-				E38E14C20D25F9F900618676 /* emu_msvcrt.h */,
-				E38E14E80D25F9F900618676 /* wrapper.c */,
-			);
-			path = exports;
-			sourceTree = "<group>";
-		};
-		E38E14E20D25F9F900618676 /* util */ = {
-			isa = PBXGroup;
-			children = (
-				E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */,
-				E38E14E40D25F9F900618676 /* EmuFileWrapper.h */,
-			);
-			path = util;
 			sourceTree = "<group>";
 		};
 		E38E14F80D25F9F900618676 /* dvdplayer */ = {
@@ -9875,9 +9835,6 @@
 				E38E1F3E0D25F9FD00618676 /* BackgroundInfoLoader.cpp in Sources */,
 				DF4BF0151A4EF30F0053AC56 /* cc_decoder.c in Sources */,
 				E38E1F570D25F9FD00618676 /* DllLoaderContainer.cpp in Sources */,
-				E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */,
-				E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */,
-				E38E1F710D25F9FD00618676 /* wrapper.c in Sources */,
 				E38E1F730D25F9FD00618676 /* LibraryLoader.cpp in Sources */,
 				E38E1F760D25F9FD00618676 /* SoLoader.cpp in Sources */,
 				E38E1F770D25F9FD00618676 /* DummyVideoPlayer.cpp in Sources */,
@@ -10650,7 +10607,6 @@
 				F56353BF16E9BB3500D21BAD /* BitstreamConverter.cpp in Sources */,
 				F5B723E71C7C9FBD006432AE /* Visualisation.cpp in Sources */,
 				DFAF6A4F16EBAE3800D6AE12 /* RssManager.cpp in Sources */,
-				F5D13EC31BAF04180075A95C /* EmuFileWrapper.cpp in Sources */,
 				DF89901C1709BB2D00B35C21 /* MediaSettings.cpp in Sources */,
 				DF32466219E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp in Sources */,
 				DF89901D1709BB2D00B35C21 /* MediaSourceSettings.cpp in Sources */,
@@ -10921,9 +10877,7 @@
 				E49911AE174E5CFE00741B6D /* AEStreamInfo.cpp in Sources */,
 				E49911AF174E5CFE00741B6D /* AEUtil.cpp in Sources */,
 				E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */,
-				E49911B3174E5D0A00741B6D /* emu_dummy.cpp in Sources */,
 				F5B7250B1C7E150C006432AE /* sha1.cpp in Sources */,
-				E49911B5174E5D0A00741B6D /* emu_msvcrt.cpp in Sources */,
 				397877D91AAAF87700F98A45 /* Temperature.cpp in Sources */,
 				DF4BF0171A4EF31E0053AC56 /* cc_decoder.c in Sources */,
 				DF2401271B41A26F001E02DA /* ImageResource.cpp in Sources */,
@@ -11604,7 +11558,6 @@
 				E4991476174E605900741B6D /* StreamUtils.cpp in Sources */,
 				E4991477174E605900741B6D /* StringUtils.cpp in Sources */,
 				F5B724C01C7E150C006432AE /* filestr.cpp in Sources */,
-				F5D13EC41BAF04190075A95C /* EmuFileWrapper.cpp in Sources */,
 				E4991478174E605900741B6D /* SystemInfo.cpp in Sources */,
 				E4991479174E605900741B6D /* TextSearch.cpp in Sources */,
 				E499147B174E605900741B6D /* TimeUtils.cpp in Sources */,
@@ -11939,8 +11892,6 @@
 				F5D13EE81BAF0B6D0075A95C /* AEStreamInfo.cpp in Sources */,
 				F5D13EE91BAF0B6D0075A95C /* AEUtil.cpp in Sources */,
 				F5D13EEA1BAF0B6D0075A95C /* AEFactory.cpp in Sources */,
-				F5D13EEB1BAF0B6D0075A95C /* emu_dummy.cpp in Sources */,
-				F5D13EEC1BAF0B6D0075A95C /* emu_msvcrt.cpp in Sources */,
 				F5D13EED1BAF0B6D0075A95C /* Temperature.cpp in Sources */,
 				F5D13EEE1BAF0B6D0075A95C /* cc_decoder.c in Sources */,
 				F5D13EEF1BAF0B6D0075A95C /* ImageResource.cpp in Sources */,
@@ -12617,7 +12568,6 @@
 				F5D141371BAF0B6D0075A95C /* StreamUtils.cpp in Sources */,
 				F5D141381BAF0B6D0075A95C /* StringUtils.cpp in Sources */,
 				F5B7252A1C7E150C006432AE /* unpack.cpp in Sources */,
-				F5D141391BAF0B6D0075A95C /* EmuFileWrapper.cpp in Sources */,
 				F5D1413A1BAF0B6D0075A95C /* SystemInfo.cpp in Sources */,
 				F5D1413B1BAF0B6D0075A95C /* TextSearch.cpp in Sources */,
 				18FD1CB01BC8E63000027005 /* SubtitleUtilities.cpp in Sources */,

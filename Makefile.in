@@ -30,8 +30,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/addons/addons.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
-                   xbmc/cores/DllLoader/exports/exports.a \
-                   xbmc/cores/DllLoader/exports/util/exports_utils.a \
                    xbmc/cores/ExternalPlayer/externalplayer.a \
                    xbmc/cores/VideoRenderers/videorenderer.a \
                    xbmc/cores/VideoRenderers/VideoShaders/videoshaders.a \
@@ -232,7 +230,7 @@ all : $(FINAL_TARGETS)
 
 include Makefile.include
 
-.PHONY : dllloader exports eventclients \
+.PHONY : dllloader eventclients \
 	dvdpcodecs dvdpextcodecs codecs externals force skins libaddon check
 
 # hack targets to keep build system up to date
@@ -261,11 +259,9 @@ endif
 xbmc/cores/paplayer/paplayer.a:
 $(DVDPLAYER_ARCHIVES)         : dvdpcodecs
 
-exports: xbmc/cores/DllLoader/exports/exports.a xbmc/cores/DllLoader/exports/util/exports_utils.a
-	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
-dllloader: exports xbmc/cores/DllLoader/dllloader.a
+dllloader: xbmc/cores/DllLoader/dllloader.a
 
-libaddon: exports
+libaddon:
 	$(MAKE) -C lib/addons/library.xbmc.addon
 	$(MAKE) -C lib/addons/library.kodi.adsp
 	$(MAKE) -C lib/addons/library.kodi.audioengine
@@ -296,16 +292,13 @@ libs: $(LIBSSE4)
 
 externals: codecs libs libaddon
 
-xcode_depends: \
-	codecs libs eventclients skins libaddon
+xcode_depends: libaddon skins
 
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \
 	xbmc/network/network.a \
 	xbmc/video/windows/videowindows.a \
 	xbmc/utils/utils.a \
-	xbmc/cores/DllLoader/exports/util/exports_utils.a \
-	xbmc/cores/DllLoader/exports/exports.a \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
 	xbmc/pvr/addons/pvraddons.a \
