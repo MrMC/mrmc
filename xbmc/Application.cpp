@@ -404,8 +404,9 @@ bool CApplication::SetupNetwork()
 
 bool CApplication::Create()
 {
-  SetupNetwork();
   Preflight();
+
+  SetupNetwork();
 
   // here we register all global classes for the CApplicationMessenger, 
   // after that we can send messages to the corresponding modules
