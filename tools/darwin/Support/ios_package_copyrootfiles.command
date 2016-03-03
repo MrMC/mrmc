@@ -40,7 +40,7 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   BUILDSRC="--exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude *.bat --exclude *README --exclude *README.txt"
   BUILDDBG="--exclude *.dSYM --exclude *.bcsymbolmap"
   # rsync command with exclusions for items we don't want in the app package
-  SYNC="rsync -aq ${PLATFORM} ${BUILDSYS} ${BUILDSYS}"
+  SYNC="rsync -aq ${PLATFORM} ${BUILDSYS} ${BUILDDBG}"
 
   if [ "$PLATFORM_NAME" == "appletvos" ] ; then
     # clean keymaps folder, not even sure this is needed
