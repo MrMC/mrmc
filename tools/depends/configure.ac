@@ -282,11 +282,10 @@ case $host in
           sdk_name=iphoneos$use_sdk
           platform_min_version="iphoneos-version-min=9.0"
         fi
-        if test "x$use_cpu" = "xarm64"; then
-	  platform_cflags+=" -fembed-bitcode"
-	  platform_cxxflags+=" -fembed-bitcode"
-	  platform_ldflags+=" -Wl,-bitcode_bundle"
-        fi
+        platform_cflags+=" -fembed-bitcode"
+        platform_cxxflags+=" -fembed-bitcode"
+        platform_ldflags+=" -Wl,-bitcode_bundle"
+
 	case $use_sdk in
           4.*);;
           5.*);;
@@ -321,11 +320,15 @@ case $host in
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
       ;;
     esac
+    deps_dir=$sdk_name"_"$use_cpu-target
     platform_cflags+=" -arch $use_cpu -m$platform_min_version"
     platform_ldflags+=" -arch $use_cpu -m$platform_min_version -stdlib=libc++ -isysroot $use_sdk_path"
+    if [ test "x$platform_os" = "xios" ]; then
+      platform_ldflags+=" -Wl,-bitcode_verify -Wl,-bitcode_hide_symbols -Wl,-bitcode_symbol_map,$prefix/$deps_dir/bcsymbolmaps"
+    fi
     platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -std=c++11 -stdlib=libc++"
     platform_includes="-isysroot $use_sdk_path"
-    deps_dir=$sdk_name"_"$use_cpu-target
+
     tool_dir=buildtools-native;
   ;;
   *)
@@ -493,6 +496,12 @@ fi
 
 if [ ! `mkdir -p $use_tarballs` ]; then
   AC_MSG_ERROR(unable to create tarballs dir. verify that the path and permissions are correct.)
+fi
+
+if test "x$platform_os" == "xios"; then
+  if [ ! `mkdir -p $prefix/$deps_dir/bcsymbolmaps` ]; then
+    AC_MSG_ERROR(unable to create $prefix/$deps_dir/bcsymbolmaps. verify that the path and permissions are correct.)
+  fi
 fi
 
 if test "$platform_os" == "android"; then

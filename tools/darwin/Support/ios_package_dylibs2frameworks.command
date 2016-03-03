@@ -89,6 +89,17 @@ function convert2framework
     fi
     # codesign the framework to match its CFBundleIdentifier
     codesign --deep -f -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -i "${BUNDLEID}" "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}"
+
+    if [ "$ACTION" == install ]; then
+      # extract the uuid and use it to find the matching bcsymbolmap (needed for crashlog symbolizing)
+      UUID=$(otool -l "${DEST_FRAMEWORK}/${DYLIB_LIBNAME}" | grep uuid | awk '{ print $2}')
+      echo "bcsymbolmap is ${UUID}"
+      if [ -f "${XBMC_DEPENDS}/bcsymbolmaps/${UUID}.bcsymbolmap" ]; then
+        echo "bcsymbolmap is ${UUID}.bcsymbolmap"
+        cp -f "${XBMC_DEPENDS}/bcsymbolmaps/${UUID}.bcsymbolmap" "${BUILT_PRODUCTS_DIR}/"
+      fi
+    fi
+
   else
     BUNDLEID="tv.mrmc.dylib.${DYLIB_LIBNAME}"
     echo "CFBundleIdentifier is ${BUNDLEID}"

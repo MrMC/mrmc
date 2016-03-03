@@ -167,7 +167,7 @@ test-dependencies:
 
 distclean::
 	for d in $(DEPENDS); do $(MAKE) -C $$d distclean; done
-	rm -rf $(PREFIX)/addons
+	rm -rf $(PREFIX)/addons $(PREFIX)/bcsymbolmaps
 
 ifeq ($(OS),linux)
 linux-system-libs:
