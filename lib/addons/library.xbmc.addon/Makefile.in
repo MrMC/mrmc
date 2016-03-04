@@ -2,26 +2,40 @@ ARCH = @ARCH@
 INCLUDES = -I.
 INCLUDES+= -I@abs_top_srcdir@/xbmc/addons/include
 CXXFLAGS =-fPIC
-LIBNAME  = libXBMCaddon
-LIBPATH  = @abs_top_srcdir@/addons/library.xbmc.addon
-OBJS     = $(LIBNAME).o
+LIB_NAME = libXBMCaddon
+LIB_INTERFACE = libXBMC_addon.h
+OBJS     = $(LIB_NAME).o
 
 ifeq ($(findstring osx,$(ARCH)), osx)
-  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).dylib
+  LIB_FLAGS = $(CFLAGS) $(LDFLAGS) -dynamiclib
+  LIB_EXTENSION = dylib
+  LIB_PATHPREFIX = @prefix@/mrmc/addons
 else
-  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).so
+  LIB_FLAGS = $(CFLAGS) $(LDFLAGS) -shared -g
+  LIB_EXTENSION = so
+  LIB_PATHPREFIX = @abs_top_srcdir@/addons
 endif
+LIB_PATH = $(LIB_PATHPREFIX)/library.xbmc.addon
+LIB_SHARED = $(LIB_PATH)/$(LIB_NAME)-$(ARCH).$(LIB_EXTENSION)
+ADDON_PATH = $(LIB_PATHPREFIX)/xbmc.addon
 
-all: $(LIB_SHARED)
+ADDON_XML = $(ADDON_PATH)/addon.xml
+ADDON_FILES = metadata.xsd
+ADDON_FILES+= repository.xsd
+ADDON_VERSION := $(shell awk '/ADDON_API/ {print $$2}' @abs_top_srcdir@/version.txt)
+
+all: $(LIB_SHARED) $(ADDON_XML)
+
+$(ADDON_XML): addon.xml.in
+	$(RM) -rf $(ADDON_PATH); mkdir -p $(ADDON_PATH)
+	cp -f $(ADDON_FILES) $(ADDON_PATH)/
+	sed -e s/APP_ADDON_API/$(ADDON_VERSION)/g addon.xml.in > $(ADDON_PATH)/addon.xml
 
 $(LIB_SHARED): $(OBJS)
-ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(LDFLAGS) -dynamiclib -o $@ $(OBJS)
-else
-	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $@ $(OBJS)
-endif
+	$(RM) -rf $(LIB_PATH); mkdir -p $(LIB_PATH)
+	$(CXX) $(LIB_FLAGS) -o $@ $(OBJS)
 
-CLEAN_FILES = $(LIB_SHARED)
+CLEAN_DIRS = $(LIB_PATH) $(ADDON_PATH)
 
 DISTCLEAN_FILES = Makefile
 

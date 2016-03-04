@@ -21,9 +21,9 @@
 
 #include <stdint.h>
 
-#include "../../addons/library.kodi.guilib/libKODI_guilib.h"
-#include "../../addons/library.kodi.adsp/libKODI_adsp.h"
-#include "../../addons/library.kodi.audioengine/libKODI_audioengine.h"
+#include "../../lib/addons/library.kodi.guilib/libKODI_guilib.h"
+#include "../../lib/addons/library.kodi.adsp/libKODI_adsp.h"
+#include "../../lib/addons/library.kodi.audioengine/libKODI_audioengine.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/include/kodi_adsp_types.h"
 #include "addons/include/kodi_audioengine_types.h"

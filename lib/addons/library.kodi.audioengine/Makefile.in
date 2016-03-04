@@ -1,27 +1,32 @@
 ARCH = @ARCH@
 INCLUDES = -I. 
+INCLUDES+= -I@abs_top_srcdir@/xbmc
 INCLUDES+= -I@abs_top_srcdir@/xbmc/addons/include
+INCLUDES+= -I@abs_top_srcdir@/lib/addons/library.xbmc.addon
 CXXFLAGS =-fPIC
-LIBNAME  = libKODIaudioengine
-LIBPATH  = @abs_top_srcdir@/addons/library.kodi.audioengine
-OBJS     = $(LIBNAME).o
+LIB_NAME = libKODIaudioengine
+LIB_INTERFACE = libKODI_audioengine.h
+OBJS     = $(LIB_NAME).o
 
 ifeq ($(findstring osx,$(ARCH)), osx)
-  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).dylib
+  LIB_FLAGS = $(CFLAGS) $(LDFLAGS) -dynamiclib
+  LIB_EXTENSION = dylib
+  LIB_PATHPREFIX = @prefix@/mrmc/addons
 else
-  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).so
+  LIB_FLAGS = $(CFLAGS) $(LDFLAGS) -shared -g
+  LIB_EXTENSION = so
+  LIB_PATHPREFIX = @abs_top_srcdir@/addons
 endif
+LIB_PATH = $(LIB_PATHPREFIX)/library.kodi.audioengine
+LIB_SHARED = $(LIB_PATH)/$(LIB_NAME)-$(ARCH).$(LIB_EXTENSION)
 
 all: $(LIB_SHARED)
 
 $(LIB_SHARED): $(OBJS)
-ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(LDFLAGS) -dynamiclib -o $@ $(OBJS)
-else
-	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
-endif
+	$(RM) -rf $(LIB_PATH); mkdir -p $(LIB_PATH)
+	$(CXX) $(LIB_FLAGS) -o $@ $(OBJS)
 
-CLEAN_FILES = $(LIB_SHARED)
+CLEAN_DIRS = $(LIB_PATH)
 
 DISTCLEAN_FILES = Makefile
 

@@ -21,7 +21,7 @@ endif
 
 CMAKE_EXTRA =
 ifeq (darwin, $(findstring darwin, $(HOST)))
-    INSTALL_PREFIX = ../../../../../addons/
+    INSTALL_PREFIX = $(PREFIX)/mrmc/addons/
     CMAKE_EXTRA = -DPACKAGE_ZIP=ON
 endif
 

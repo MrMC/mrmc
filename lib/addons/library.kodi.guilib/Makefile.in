@@ -1,34 +1,41 @@
 ARCH = @ARCH@
 INCLUDES = -I. 
+INCLUDES+= -I@abs_top_srcdir@/xbmc 
 INCLUDES+= -I@abs_top_srcdir@/xbmc/addons/include
+INCLUDES+= -I@abs_top_srcdir@/lib/addons/library.xbmc.addon
 CXXFLAGS = -fPIC
-LIBNAME  = libKODIguilib
-LIBPATH  = @abs_top_srcdir@/addons/library.kodi.guilib
-OBJS     = $(LIBNAME).o
+LIB_NAME = libKODIguilib
+LIB_INTERFACE = libKODI_guilib.h
+OBJS     = $(LIB_NAME).o
 
-LIB_INTERFACE = $(LIBPATH)/libKODI_guilib.h
 ifeq ($(findstring osx,$(ARCH)), osx)
-  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).dylib
+  LIB_FLAGS = $(CFLAGS) $(LDFLAGS) -dynamiclib
+  LIB_EXTENSION = dylib
+  LIB_PATHPREFIX = @prefix@/mrmc/addons
 else
-  LIB_SHARED = $(LIBPATH)/$(LIBNAME)-$(ARCH).so
+  LIB_FLAGS = $(CFLAGS) $(LDFLAGS) -shared -g
+  LIB_EXTENSION = so
+  LIB_PATHPREFIX = @abs_top_srcdir@/addons
 endif
-GENERATED_ADDON_GUILIB = @abs_top_srcdir@/addons/kodi.guilib/addon.xml
+LIB_PATH = $(LIB_PATHPREFIX)/library.kodi.guilib
+LIB_SHARED = $(LIB_PATH)/$(LIB_NAME)-$(ARCH).$(LIB_EXTENSION)
+ADDON_PATH = $(LIB_PATHPREFIX)/kodi.guilib
+
+ADDON_XML = $(ADDON_PATH)/addon.xml
 LIB_VERSION := $(shell sed -n 's/.*KODI_GUILIB_API_VERSION\s*"\(.*\)"/\1/p' $(LIB_INTERFACE))
 LIB_VERSION_MIN := $(shell sed -n 's/.*KODI_GUILIB_MIN_API_VERSION\s*"\(.*\)"/\1/p' $(LIB_INTERFACE))
 
-all: $(LIB_SHARED) $(GENERATED_ADDON_GUILIB)
+all: $(LIB_SHARED) $(ADDON_XML)
 
-$(LIB_SHARED): $(OBJS) $(LIB_INTERFACE)
-ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(LDFLAGS) -dynamiclib -o $@ $(OBJS)
-else
-	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $@ $(OBJS)
-endif
+$(ADDON_XML): addon.xml.in
+	$(RM) -rf $(ADDON_PATH); mkdir -p $(ADDON_PATH)
+	sed -e s/@guilib_version@/$(LIB_VERSION)/g -e s/@guilib_version_min@/$(LIB_VERSION_MIN)/g addon.xml.in > $@
 
-$(GENERATED_ADDON_GUILIB) : $(LIB_INTERFACE)
-	sed -e s/@guilib_version@/$(LIB_VERSION)/g -e s/@guilib_version_min@/$(LIB_VERSION_MIN)/g $@.in > $@
+$(LIB_SHARED): $(OBJS)
+	$(RM) -rf $(LIB_PATH); mkdir -p $(LIB_PATH)
+	$(CXX) $(LIB_FLAGS) -o $@ $(OBJS)
 
-CLEAN_FILES = $(LIB_SHARED)
+CLEAN_DIRS = $(LIB_PATH) $(ADDON_PATH)
 
 DISTCLEAN_FILES = Makefile
 

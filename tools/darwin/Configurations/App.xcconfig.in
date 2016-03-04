@@ -29,7 +29,7 @@ XBMC_DEPENDS_ROOT = @DEPENDS_ROOT_FOR_XCODE@
 ALWAYS_SEARCH_USER_PATHS = NO
 
 // This is #include "some.h"
-USER_HEADER_SEARCH_PATHS = $(inherited) xbmc xbmc/cores/dvdplayer addons/library.xbmc.addon lib
+USER_HEADER_SEARCH_PATHS = $(inherited) xbmc xbmc/cores/dvdplayer lib/addons/library.xbmc.addon lib
 
 // This is #include <some.h>
 // Normally $XBMC_DEPENDS/include is all you need but some libs
