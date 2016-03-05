@@ -41,6 +41,7 @@ clean:
 	rm -f .installed-$(PLATFORM)
 
 distclean:
+	@[ -f $(ADDON_PROJECT_DIR)/.success ] && for addon in $(shell cat $(ADDON_PROJECT_DIR)/.success); do rm -rf $(INSTALL_PREFIX)$$addon; done
 	rm -rf $(PLATFORM) .installed-$(PLATFORM) native
 
 .installed-$(PLATFORM): $(DEPS)
