@@ -57,6 +57,7 @@ protected:
   void          StopSampleProvider();
 
   double        GetPlayerPtsSeconds();
+  double        GetRenderPtsSeconds();
   void          UpdateFrameRateTracking(double pts);
 
   void                   *m_decoder;        // opaque decoder reference

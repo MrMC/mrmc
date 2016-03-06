@@ -117,6 +117,7 @@ public:
   int level;   // encoder level of the stream reported by the decoder. used to qualify hw decoders.
   StreamType type;
   int source;
+  bool realtime;
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
@@ -188,6 +189,7 @@ public:
     iBlockAlign = 0;
     iBitRate = 0;
     iBitsPerSample = 0;
+    iChannelLayout = 0;
     type = STREAM_AUDIO;
   }
 
@@ -200,6 +202,7 @@ public:
   int iBlockAlign;
   int iBitRate;
   int iBitsPerSample;
+  uint64_t iChannelLayout;
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream

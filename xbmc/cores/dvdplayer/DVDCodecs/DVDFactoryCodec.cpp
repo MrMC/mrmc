@@ -86,7 +86,7 @@ CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamIn
   {
     CLog::Log(LOGERROR, "FactoryCodec - Video: Failed with exception");
   }
-  return NULL;
+  return nullptr;
 }
 
 CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
@@ -108,7 +108,7 @@ CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamIn
   {
     CLog::Log(LOGERROR, "FactoryCodec - Audio: Failed with exception");
   }
-  return NULL;
+  return nullptr;
 }
 
 CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
@@ -130,16 +130,16 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
   {
     CLog::Log(LOGERROR, "FactoryCodec - Audio: Failed with exception");
   }
-  return NULL;
+  return nullptr;
 }
 
 
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info)
 {
-  CDVDVideoCodec* pCodec = NULL;
+  CDVDVideoCodec* pCodec = nullptr;
   CDVDCodecOptions options;
 
-  if(info.formats.empty())
+  if (info.formats.empty())
     options.m_formats.push_back(RENDER_FMT_YUV420P);
   else
     options.m_formats = info.formats;
@@ -291,7 +291,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
   // try to decide if we want to try halfres decoding
 #if !defined(TARGET_POSIX)
   float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
-  if( pixelrate > 1400.0f*720.0f*30.0f )
+  if (pixelrate > 1400.0f*720.0f*30.0f)
   {
     CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);
     options.m_keys.push_back(CDVDCodecOption("lowres","1"));
@@ -300,9 +300,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 
   std::string value = StringUtils::Format("%d", info.max_buffer_size);
   options.m_keys.push_back(CDVDCodecOption("surfaces", value));
-  if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options)) ) return pCodec;
+  pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options);
+  if (pCodec)
+    return pCodec;
 
-  return NULL;
+  return nullptr;
 }
 
 CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint)
@@ -314,10 +316,11 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint)
   pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
   if( pCodec ) return pCodec;
 
-  pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
-  if( pCodec ) return pCodec;
+  pCodec = OpenCodec(new CDVDAudioCodecFFmpeg(), hint, options);
+  if (pCodec)
+    return pCodec;
 
-  return NULL;
+  return nullptr;
 }
 
 CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
@@ -330,28 +333,33 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
     case AV_CODEC_ID_TEXT:
     case AV_CODEC_ID_SUBRIP:
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
-      if( pCodec ) return pCodec;
+      if (pCodec)
+        return pCodec;
       break;
 
     case AV_CODEC_ID_SSA:
     case AV_CODEC_ID_ASS:
       pCodec = OpenCodec(new CDVDOverlayCodecSSA(), hint, options);
-      if( pCodec ) return pCodec;
+      if (pCodec)
+        return pCodec;
 
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
-      if( pCodec ) return pCodec;
+      if (pCodec)
+        return pCodec;
       break;
 
     case AV_CODEC_ID_MOV_TEXT:
       pCodec = OpenCodec(new CDVDOverlayCodecTX3G(), hint, options);
-      if( pCodec ) return pCodec;
+      if (pCodec)
+        return pCodec;
       break;
 
     default:
       pCodec = OpenCodec(new CDVDOverlayCodecFFmpeg(), hint, options);
-      if( pCodec ) return pCodec;
+      if (pCodec)
+        return pCodec;
       break;
   }
 
-  return NULL;
+  return nullptr;
 }

@@ -50,9 +50,11 @@ public:
 
   AVCodecID codec;
   StreamType type;
+  bool realtime;
   int flags;
   bool software;  //force software decoding
   std::string filename;
+  bool dvd;
 
 
   // VIDEO
@@ -80,6 +82,7 @@ public:
   int bitrate;
   int blockalign;
   int bitspersample;
+  uint64_t channellayout;
 
   // SUBTITLE
 

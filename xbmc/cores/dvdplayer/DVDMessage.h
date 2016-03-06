@@ -50,7 +50,6 @@ public:
     GENERAL_RESET,                  // reset codecs for new data
     GENERAL_STREAMCHANGE,           //
     GENERAL_SYNCHRONIZE,            //
-    GENERAL_DELAY,                  //
     GENERAL_GUI_ACTION,             // gui action of some sort
     GENERAL_EOF,                    // eof of stream
 
@@ -58,6 +57,7 @@ public:
     // player core related messages (cdvdplayer.cpp)
 
     PLAYER_SET_AUDIOSTREAM,         //
+    PLAYER_SET_VIDEOSTREAM,         //
     PLAYER_SET_SUBTITLESTREAM,      //
     PLAYER_SET_SUBTITLESTREAM_VISIBLE, //
     PLAYER_SET_STATE,               // restore the dvdplayer to a certain state
@@ -73,8 +73,8 @@ public:
     PLAYER_CHANNEL_SELECT_NUMBER,   // switches to the channel with the provided channel number
     PLAYER_CHANNEL_SELECT,          // switches to the provided channel
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
-
     PLAYER_DISPLAYTIME,             // display time struct from av players
+    PLAYER_AVCHANGE,                // signal a change in audio or video parameters
 
     // demuxer related messages
 
@@ -86,6 +86,7 @@ public:
 
     VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
     VIDEO_SET_ASPECT,               // set aspectratio of video
+    VIDEO_DRAIN,                    // wait for decoder to output last frame
 
     // audio related messages
 
@@ -133,6 +134,7 @@ private:
 //////
 ////////////////////////////////////////////////////////////////////////////////
 
+/*
 class CDVDMsgGeneralResync : public CDVDMsg
 {
 public:
@@ -140,7 +142,7 @@ public:
   double m_timestamp;
   bool m_clock;
 };
-
+*/
 #define SYNCSOURCE_AUDIO  0x00000001
 #define SYNCSOURCE_VIDEO  0x00000002
 #define SYNCSOURCE_SUB    0x00000004
@@ -190,6 +192,15 @@ class CDVDMsgPlayerSetAudioStream : public CDVDMsg
 public:
   CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
   int GetStreamId()                     { return m_streamId; }
+private:
+  int m_streamId;
+};
+
+class CDVDMsgPlayerSetVideoStream : public CDVDMsg
+{
+public:
+  CDVDMsgPlayerSetVideoStream(int streamId) : CDVDMsg(PLAYER_SET_VIDEOSTREAM) { m_streamId = streamId; }
+  int GetStreamId() const { return m_streamId; }
 private:
   int m_streamId;
 };

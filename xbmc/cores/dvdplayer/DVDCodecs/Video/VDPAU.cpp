@@ -20,9 +20,9 @@
 
 #include "system.h"
 #ifdef HAVE_LIBVDPAU
+#include "VDPAU.h"
 #include <dlfcn.h>
 #include "windowing/WindowingFactory.h"
-#include "VDPAU.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
@@ -486,7 +486,7 @@ CDecoder::CDecoder() : m_vdpauOutput(&m_inMsgEvent)
   m_vdpauConfig.context = 0;
 }
 
-bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum PixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt, unsigned int surfaces)
 {
   // check if user wants to decode this format with VDPAU
   std::string gpuvendor = g_Windowing.GetRenderVendor();
@@ -760,7 +760,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   return 0;
 }
 
-bool CDecoder::IsVDPAUFormat(PixelFormat format)
+bool CDecoder::IsVDPAUFormat(AVPixelFormat format)
 {
   if (format == AV_PIX_FMT_VDPAU)
     return true;
@@ -1077,6 +1077,14 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
   return 0;
 }
 
+void CDecoder::SetCodecControl(int flags)
+{
+  m_codecControl = flags & (DVD_CODEC_CTRL_DRAIN | DVD_CODEC_CTRL_HURRY);
+  if (m_codecControl & DVD_CODEC_CTRL_DRAIN)
+    m_bufferStats.SetDraining(true);
+  else
+    m_bufferStats.SetDraining(false);
+}
 
 int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 {
@@ -1131,10 +1139,15 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   uint64_t startTime = CurrentHostCounter();
   while (!retval)
   {
+    bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
+    // if all pics are drained, break the loop by settngn VC_BUFFER
+    if (drain && decoded <= 0 && processed <= 0 && render <= 0)
+      drain = false;
+
     // first fill the buffers to keep vdpau busy
     // mixer will run with decoded >= 2. output is limited by number of output surfaces
     // In case mixer is bypassed we limit by looking at processed
-    if (decoded < 3 && processed < 3)
+    if (decoded < 3 && processed < 3 && !drain)
     {
       retval |= VC_BUFFER;
     }
@@ -1497,6 +1510,17 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
         case CMixerControlProtocol::TIMEOUT:
           if (!m_decodedPics.empty() && !m_outputSurfaces.empty())
           {
+            m_state = M_TOP_CONFIGURED_STEP1;
+            m_bStateMachineSelfTrigger = true;
+          }
+          else if (!m_outputSurfaces.empty() &&
+                   m_config.stats->IsDraining() &&
+                   m_mixerInput.size() == 1)
+          {
+            CVdpauDecodedPicture pic;
+            pic.DVDPic = m_mixerInput[0].DVDPic;
+            pic.videoSurface = VDP_INVALID_HANDLE;
+            m_decodedPics.push(pic);
             m_state = M_TOP_CONFIGURED_STEP1;
             m_bStateMachineSelfTrigger = true;
           }
@@ -2426,7 +2450,13 @@ void CMixer::FiniCycle()
   // Keep video surfaces for one 2 cycles longer than used
   // by mixer. This avoids blocking in decoder.
   // NVidia recommends num_ref + 5
-  while (m_mixerInput.size() > 5)
+  int surfToKeep = 5;
+
+  if (m_mixerInput.size() > 0 &&
+      (m_mixerInput[0].videoSurface == VDP_INVALID_HANDLE))
+    surfToKeep = 1;
+
+  while (m_mixerInput.size() > surfToKeep)
   {
     CVdpauDecodedPicture &tmp = m_mixerInput.back();
     if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
@@ -2435,6 +2465,9 @@ void CMixer::FiniCycle()
     }
     m_mixerInput.pop_back();
   }
+
+  if (surfToKeep == 1)
+    m_mixerInput.clear();
 }
 
 void CMixer::ProcessPicture()
@@ -2465,7 +2498,8 @@ void CMixer::ProcessPicture()
       past_surfaces[1] = m_mixerInput[3].videoSurface;
     if (m_mixerInput.size() > 2)
       past_surfaces[0] = m_mixerInput[2].videoSurface;
-    futu_surfaces[0] = m_mixerInput[0].videoSurface;
+    if (m_mixerInput.size() > 1)
+      futu_surfaces[0] = m_mixerInput[0].videoSurface;
     pastCount = 2;
     futuCount = 1;
   }
@@ -3428,7 +3462,7 @@ bool COutput::GLInit()
 #endif
 
 #ifdef GL_ARB_sync
-  bool hasfence = glewIsSupported("GL_ARB_sync");
+  bool hasfence = g_Windowing.IsExtSupported("GL_ARB_sync");
   for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
   {
     m_bufferPool.allRenderPics[i]->usefence = hasfence;

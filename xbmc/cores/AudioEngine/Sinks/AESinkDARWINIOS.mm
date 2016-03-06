@@ -526,12 +526,18 @@ static void EnumerateDevices(AEDeviceInfoList &list)
 #endif
   {
     device.m_deviceType = AE_DEVTYPE_IEC958; //allow passthrough for tvout
-    device.m_dataFormats.push_back(AE_FMT_AC3);
-    device.m_dataFormats.push_back(AE_FMT_DTS);
-    device.m_dataFormats.push_back(AE_FMT_EAC3);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+#if defined(TARGET_DARWIN_TVOS)
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+#endif
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+    device.m_dataFormats.push_back(AE_FMT_RAW);
     // ATV cant do below
-//    device.m_dataFormats.push_back(AE_FMT_TRUEHD);
-//    device.m_dataFormats.push_back(AE_FMT_DTSHD);
+//    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+//    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
   }
   else
     device.m_deviceType = AE_DEVTYPE_PCM;
@@ -555,6 +561,7 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   //device.m_dataFormats.push_back(AE_FMT_S24LE3);
   //device.m_dataFormats.push_back(AE_FMT_S32LE);
   device.m_dataFormats.push_back(AE_FMT_FLOAT);
+  device.m_wantsIECPassthrough = true;
 
   CLog::Log(LOGDEBUG, "EnumerateDevices:Device(%s)" , device.m_deviceName.c_str());
 
@@ -605,7 +612,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   else// this will be selected when AE wants AC3 or DTS or anything other then float
   {
     audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsSignedInteger;
-    if (hdmi && AE_IS_RAW(format.m_dataFormat))
+    if (hdmi && format.m_dataFormat == AE_FMT_RAW)
       forceRaw = true;
     format.m_dataFormat = AE_FMT_S16LE;
   }
@@ -657,10 +664,10 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   SineWaveGeneratorInitWithFrequency(&m_SineWaveGenerator, 440.0, audioFormat.mSampleRate);
 #endif
 
-  m_audioSink->open(audioFormat, 16384);
+  size_t buffer_size = 16384;
+  m_audioSink->open(audioFormat, buffer_size);
 
   format.m_frames = m_audioSink->chunkSize();
-  format.m_frameSamples = format.m_frames * audioFormat.mChannelsPerFrame;
   // reset to the realised samplerate
   format.m_sampleRate = m_audioSink->getRealisedSampleRate();
   m_format = format;

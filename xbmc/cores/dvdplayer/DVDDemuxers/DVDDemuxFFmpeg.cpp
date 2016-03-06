@@ -579,6 +579,9 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
   if(!m_pFormatContext)
     return;
 
+  if (m_speed == iSpeed)
+    return;
+
   if(m_speed != DVD_PLAYSPEED_PAUSE && iSpeed == DVD_PLAYSPEED_PAUSE)
   {
     m_pInput->Pause(m_currentPts);
@@ -661,11 +664,15 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   // we don't care for having a completly exact timestamp anyway
   double timestamp = (double)pts * num  / den;
   double starttime = 0.0f;
-
+/*
   // for dvd's we need the original time
   if(CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput))
     starttime = menu->GetTimeStampCorrection() / DVD_TIME_BASE;
   else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+    starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
+*/
+  CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput);
+  if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
   if(timestamp > starttime)
@@ -986,8 +993,7 @@ void CDVDDemuxFFmpeg::UpdateCurrentPTS()
     if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
     {
       double ts = ConvertTimestamp(stream->cur_dts, stream->time_base.den, stream->time_base.num);
-      if(m_currentPts == DVD_NOPTS_VALUE || m_currentPts > ts )
-        m_currentPts = ts;
+      m_currentPts = ts;
     }
   }
 }
@@ -1127,6 +1133,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iBlockAlign = pStream->codec->block_align;
         st->iBitRate = pStream->codec->bit_rate;
         st->iBitsPerSample = pStream->codec->bits_per_raw_sample;
+        st->iChannelLayout = pStream->codec->channel_layout;
         if (st->iBitsPerSample == 0)
           st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
 	
@@ -1235,6 +1242,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
             }
           }
         }
+/*
+        if (av_dict_get(pStream->metadata, "title", NULL, 0))
+          st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
+*/
         break;
       }
     case AVMEDIA_TYPE_DATA:
@@ -1316,6 +1327,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
     stream->codec_fourcc = pStream->codec->codec_tag;
     stream->profile = pStream->codec->profile;
     stream->level   = pStream->codec->level;
+    //stream->realtime = m_pInput->IsRealtime();
 
     stream->source = STREAM_SOURCE_DEMUX;
     stream->pPrivate = pStream;
@@ -1655,7 +1667,7 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
 
   // for video we need a decoder to get desired information into codec context
   if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO && st->codec->extradata &&
-      (!st->codec->width || st->codec->pix_fmt == PIX_FMT_NONE))
+      (!st->codec->width || st->codec->pix_fmt == AV_PIX_FMT_NONE))
   {
     // open a decoder, it will be cleared down by ffmpeg on closing the stream
     if (!st->codec->codec)
@@ -1712,7 +1724,7 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
       st = m_pFormatContext->streams[idx];
       if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO)
       {
-        if (st->codec->width && st->codec->pix_fmt != PIX_FMT_NONE)
+        if (st->codec->width && st->codec->pix_fmt != AV_PIX_FMT_NONE)
           return true;
         hasVideo = true;
       }
@@ -1725,7 +1737,7 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
       st = m_pFormatContext->streams[i];
       if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO)
       {
-        if (st->codec->width && st->codec->pix_fmt != PIX_FMT_NONE)
+        if (st->codec->width && st->codec->pix_fmt != AV_PIX_FMT_NONE)
           return true;
         hasVideo = true;
       }

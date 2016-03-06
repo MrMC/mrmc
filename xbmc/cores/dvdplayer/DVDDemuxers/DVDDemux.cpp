@@ -32,7 +32,7 @@ void CDemuxStreamRadioRDS::GetStreamInfo(std::string& strInfo)
 
 void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 {
-  char sInfo[64];
+  char sInfo[64] = {0};
 
   if (codec == AV_CODEC_ID_AC3) strcpy(sInfo, "AC3 ");
   else if (codec == AV_CODEC_ID_DTS)

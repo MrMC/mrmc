@@ -33,6 +33,7 @@ class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;
 
+
 class CDVDFactoryCodec
 {
 public:

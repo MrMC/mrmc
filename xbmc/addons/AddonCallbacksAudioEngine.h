@@ -182,12 +182,6 @@ public:
   static const unsigned int AEStream_GetSampleRate(void *AddonData, AEStreamHandle *StreamHandle);
 
   /**
-  * Returns the stream's encoded sample rate if the stream is RAW
-  * @return The stream's encoded sample rate
-  */
-  static const unsigned int AEStream_GetEncodedSampleRate(void *AddonData, AEStreamHandle *StreamHandle);
-
-  /**
   * Return the data format the stream has been configured with
   * @return The stream's data format (eg, AE_FMT_S16LE)
   */

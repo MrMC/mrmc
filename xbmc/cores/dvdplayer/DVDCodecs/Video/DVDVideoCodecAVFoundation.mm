@@ -744,6 +744,15 @@ double CDVDVideoCodecAVFoundation::GetPlayerPtsSeconds()
   return clock_pts;
 }
 
+double CDVDVideoCodecAVFoundation::GetRenderPtsSeconds()
+{
+  int queued, discard;
+  double sleepTime, renderPts;
+  g_renderManager.GetStats(sleepTime, renderPts, queued, discard);
+
+  return renderPts / DVD_TIME_BASE;
+}
+
 void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double pts)
 {
   static double last_pts = DVD_NOPTS_VALUE;

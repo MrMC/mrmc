@@ -7631,6 +7631,7 @@
 		DFB65F8815373AE7006B8FF1 /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				E38E15B50D25F9FA00618676 /* IAudioCallback.h */,
 				DFB65F8915373AE7006B8FF1 /* AE.h */,
 				DFB65F8A15373AE7006B8FF1 /* AEEncoder.h */,
 				DFEB902519E9335E00728978 /* AEResample.h */,
@@ -7863,7 +7864,6 @@
 				E38E14F70D25F9F900618676 /* DummyVideoPlayer.h */,
 				7CF05049190A1D7200222135 /* FFmpeg.cpp */,
 				7CF0504A190A1D7200222135 /* FFmpeg.h */,
-				E38E15B50D25F9FA00618676 /* IAudioCallback.h */,
 				E38E15B60D25F9FA00618676 /* IPlayer.h */,
 			);
 			path = cores;

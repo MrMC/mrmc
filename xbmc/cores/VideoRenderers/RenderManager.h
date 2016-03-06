@@ -106,7 +106,7 @@ public:
    * @param source depreciated
    * @param sync signals frame, top, or bottom field
    */
-  void FlipPage(volatile bool& bStop, double timestamp = 0.0, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
+  void FlipPage(volatile std::atomic_bool& bStop, double timestamp = 0.0, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
   bool Flush();
@@ -178,7 +178,7 @@ public:
    * If no buffering is requested in Configure, player does not need to call this,
    * because FlipPage will block.
    */
-  int WaitForBuffer(volatile bool& bStop, int timeout = 100);
+  int WaitForBuffer(volatile std::atomic_bool& bStop, int timeout = 100);
 
   /**
    * Can be called by player for lateness detection. This is done best by

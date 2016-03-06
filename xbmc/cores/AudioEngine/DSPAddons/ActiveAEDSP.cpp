@@ -618,7 +618,7 @@ bool CActiveAEDSP::UpdateAndInitialiseAudioDSPAddons(bool bInitialiseAllAudioDSP
     map = m_addons;
   }
 
-  if (map.size() == 0)
+  if (map.empty())
     return false;
 
   for (unsigned iAddonPtr = 0; iAddonPtr < map.size(); ++iAddonPtr)
@@ -683,7 +683,7 @@ bool CActiveAEDSP::UpdateAndInitialiseAudioDSPAddons(bool bInitialiseAllAudioDSP
   }
 
   /* disable add-ons that failed to initialise */
-  if (disableAddons.size() > 0)
+  if (!disableAddons.empty())
   {
     CSingleLock lock(m_critUpdateSection);
     for (VECADDONS::iterator itr = disableAddons.begin(); itr != disableAddons.end(); ++itr)

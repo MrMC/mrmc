@@ -27,7 +27,8 @@
 #include "linux/PlatformDefs.h"
 
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
-class IAEStream;
+#include "cores/AudioEngine/Interfaces/AEStream.h"
+#include <atomic>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -36,11 +37,12 @@ extern "C" {
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
 class CSingleLock;
+class CDVDClock;
 
-class CDVDAudio
+class CDVDAudio : IAEClockCallback
 {
 public:
-  CDVDAudio(volatile bool& bStop);
+  CDVDAudio(volatile bool& bStop, CDVDClock *clock);
   ~CDVDAudio();
 
   void SetVolume(float fVolume);
@@ -52,32 +54,41 @@ public:
   bool IsValidFormat(const DVDAudioFrame &audioframe);
   void Destroy();
   unsigned int AddPackets(const DVDAudioFrame &audioframe);
-  double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetPlayingPts();
-  void   SetPlayingPts(double pts);
   double GetCacheTime();  // returns total amount of data cached in audio output at this time
   double GetCacheTotal(); // returns total amount the audio device can buffer
+  double GetDelay(); // returns the time it takes to play a packet if we add one at this time
+  double GetSyncError();
+  void SetSyncErrorCorrection(double correction);
+  double GetResampleRatio();
+  void SetResampleMode(int mode);
   void Flush();
-  void Finish();
   void Drain();
+  void AbortAddPackets();
 
   void SetSpeed(int iSpeed);
   void SetResampleRatio(double ratio);
 
+  double GetClock();
+  double GetClockSpeed();
   IAEStream *m_pAudioStream;
+
 protected:
+
   double m_playingPts;
   double m_timeOfPts;
+  double m_syncError;
+  unsigned int m_syncErrorTime;
+  double m_resampleRatio;
   CCriticalSection m_critSection;
 
-  int m_iBitrate;
+  unsigned int m_sampeRate;
   int m_iBitsPerSample;
-  double m_SecondsPerByte;
   bool m_bPassthrough;
   CAEChannelInfo m_channelLayout;
   bool m_bPaused;
 
   volatile bool& m_bStop;
-  //counter that will go from 0 to m_iSpeed-1 and reset, data will only be output when speedstep is 0
-  //int m_iSpeedStep;
+  std::atomic_bool m_bAbort;
+  CDVDClock *m_pClock;
 };

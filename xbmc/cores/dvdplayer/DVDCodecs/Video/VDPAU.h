@@ -39,14 +39,14 @@
 #pragma once
 
 #include "system_gl.h"
+#define GLX_GLXEXT_PROTOTYPES
+#include <GL/glx.h>
+#include <GL/glext.h>
 
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#define GLX_GLXEXT_PROTOTYPES
-#include <GL/glx.h>
-
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "threads/CriticalSection.h"
@@ -56,6 +56,7 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
+#include "guilib/Geometry.h"
 #include <list>
 #include <map>
 
@@ -132,7 +133,7 @@ public:
   uint64_t latency;         // time decoder has waited for a frame, ideally there is no latency
   int codecFlags;
   bool canSkipDeint;
-  int processCmd;
+  bool draining;
 
   void IncDecoded() { CSingleLock l(m_sec); decodedPics++;}
   void DecDecoded() { CSingleLock l(m_sec); decodedPics--;}
@@ -144,10 +145,10 @@ public:
   void Get(uint16_t &decoded, uint16_t &processed, uint16_t &render) {CSingleLock l(m_sec); decoded = decodedPics, processed=processedPics, render=renderPics;}
   void SetParams(uint64_t time, int flags) { CSingleLock l(m_sec); latency = time; codecFlags = flags; }
   void GetParams(uint64_t &lat, int &flags) { CSingleLock l(m_sec); lat = latency; flags = codecFlags; }
-  void SetCmd(int cmd) { CSingleLock l(m_sec); processCmd = cmd; }
-  void GetCmd(int &cmd) { CSingleLock l(m_sec); cmd = processCmd; processCmd = 0; }
   void SetCanSkipDeint(bool canSkip) { CSingleLock l(m_sec); canSkipDeint = canSkip; }
   bool CanSkipDeint() { CSingleLock l(m_sec); if (canSkipDeint) return true; else return false;}
+  void SetDraining(bool drain) { CSingleLock l(m_sec); draining = drain; }
+  bool IsDraining() { CSingleLock l(m_sec); if (draining) return true; else return false;}
 private:
   CCriticalSection m_sec;
 };
@@ -556,7 +557,7 @@ public:
   CDecoder();
   virtual ~CDecoder();
 
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum PixelFormat, unsigned int surfaces = 0);
+  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual void Reset();
@@ -567,11 +568,12 @@ public:
 
   virtual int  Check(AVCodecContext* avctx);
   virtual const std::string Name() { return "vdpau"; }
+  virtual void SetCodecControl(int flags);
 
   bool Supports(VdpVideoMixerFeature feature);
   bool Supports(EINTERLACEMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod();
-  static bool IsVDPAUFormat(PixelFormat fmt);
+  static bool IsVDPAUFormat(AVPixelFormat fmt);
 
   static void FFReleaseBuffer(void *opaque, uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);

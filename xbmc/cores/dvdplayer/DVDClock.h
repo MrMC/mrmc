@@ -76,18 +76,19 @@ public:
    * allow it to adjust speed for a better match */
   int UpdateFramerate(double fps, double* interval = NULL);
 
-  void   SetMaxSpeedAdjust(double speed);
+  void SetMaxSpeedAdjust(double speed);
 
   static double GetAbsoluteClock(bool interpolated = true);
   static double GetFrequency() { return (double)m_systemFrequency ; }
   static double WaitAbsoluteClock(double target);
 
   static CDVDClock* GetMasterClock();
+
 protected:
-  static void   CheckSystemClock();
+  static void CheckSystemClock();
   static double SystemToAbsolute(int64_t system);
   static int64_t AbsoluteToSystem(double absolute);
-  double        SystemToPlaying(int64_t system);
+  double SystemToPlaying(int64_t system);
 
   CSharedSection m_critSection;
   int64_t m_systemUsed;

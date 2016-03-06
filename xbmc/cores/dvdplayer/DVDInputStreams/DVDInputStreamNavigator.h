@@ -108,6 +108,7 @@ public:
 
   bool HasMenu() { return true; }
   bool IsInMenu() { return m_bInMenu; }
+  double GetTimeStampCorrection() { return (double)(m_iVobUnitCorrection * 1000) / 90; }
 
   int GetActiveSubtitleStream();
   int GetSubTitleStreamCount();
@@ -119,6 +120,9 @@ public:
 
   int GetActiveAudioStream();
   int GetAudioStreamCount();
+  int GetAngleCount();
+  int GetActiveAngle();
+  bool SetAngle(int angle);
   bool SetActiveAudioStream(int iId);
   bool GetAudioStreamInfo(const int iId, DVDNavStreamInfo &info);
 
@@ -129,6 +133,7 @@ public:
   int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
   void GetChapterName(std::string& name, int idx=-1) {};
   int64_t GetChapterPos(int ch=-1);
+  void GetVideoResolution(uint32_t * width, uint32_t * height);
   bool SeekChapter(int iChapter);
 
   int GetTotalTime(); // the total time in milli seconds
@@ -137,8 +142,6 @@ public:
   float GetVideoAspectRatio();
 
   bool SeekTime(int iTimeInMsec); //seek within current pg(c)
-
-  double GetTimeStampCorrection() { return (double)(m_iVobUnitCorrection * 1000) / 90; }
 
   bool GetDVDTitleString(std::string& titleStr);
   bool GetDVDSerialString(std::string& serialStr);

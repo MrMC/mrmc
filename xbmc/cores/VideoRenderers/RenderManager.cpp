@@ -670,7 +670,7 @@ void CXBMCRenderManager::SetViewMode(int iViewMode)
   g_dataCacheCore.SignalVideoInfoChange();
 }
 
-void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CXBMCRenderManager::FlipPage(volatile std::atomic_bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   { CSharedLock lock(m_sharedSection);
 
@@ -1087,7 +1087,7 @@ EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHO
   return mInt;
 }
 
-int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
+int CXBMCRenderManager::WaitForBuffer(volatile std::atomic_bool& bStop, int timeout)
 {
   CSingleLock lock2(m_presentlock);
 
@@ -1185,6 +1185,9 @@ void CXBMCRenderManager::PrepareNextRender()
     next = (m_Queue[idx].timestamp <= clocktime + MAXPRESENTDELAY);
   else
     next = (m_Queue[idx].timestamp <= clocktime + frametime);
+
+  //CLog::Log(LOGDEBUG, "CRenderManager - next(%d), clocktime(%f), m_Queue[*curr].timestamp(%f)",
+  //  (int)next, clocktime, m_Queue[idx].timestamp);
 
   if (next)
   {

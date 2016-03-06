@@ -39,10 +39,12 @@ void CDVDStreamInfo::Clear()
 {
   codec = AV_CODEC_ID_NONE;
   type = STREAM_NONE;
+  realtime = false;
   software = false;
   codec_tag  = 0;
   flags = 0;
   filename.clear();
+  dvd = false;
 
   if( extradata && extrasize ) free(extradata);
 
@@ -71,6 +73,7 @@ void CDVDStreamInfo::Clear()
   blockalign = 0;
   bitrate    = 0;
   bitspersample = 0;
+  channellayout = 0;
 
   orientation = 0;
 }
@@ -79,9 +82,9 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
 {
   if( codec     != right.codec
   ||  type      != right.type
+  ||  realtime  != right.realtime
   ||  codec_tag != right.codec_tag
-  ||  flags     != right.flags
-  ||  filename  != right.filename)
+  ||  flags     != right.flags)
     return false;
 
   if( withextradata )
@@ -115,7 +118,9 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  samplerate    != right.samplerate
   ||  blockalign    != right.blockalign
   ||  bitrate       != right.bitrate
-  ||  bitspersample != right.bitspersample ) return false;
+  ||  bitspersample != right.bitspersample
+  ||  channellayout != right.channellayout)
+    return false;
 
   // SUBTITLE
 
@@ -135,9 +140,11 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
 {
   codec = right.codec;
   type = right.type;
+  realtime = right.realtime;
   codec_tag = right.codec_tag;
   flags = right.flags;
   filename = right.filename;
+  dvd = right.dvd;
 
   if( extradata && extrasize ) free(extradata);
 
@@ -181,6 +188,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   blockalign    = right.blockalign;
   bitrate       = right.bitrate;
   bitspersample = right.bitspersample;
+  channellayout = right.channellayout;
 
   // SUBTITLE
 }
@@ -191,6 +199,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
 
   codec = right.codec;
   type = right.type;
+  realtime = right.realtime;
   codec_tag = right.codec_fourcc;
   profile   = right.profile;
   level     = right.level;
@@ -213,6 +222,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     blockalign    = stream->iBlockAlign;
     bitrate       = stream->iBitRate;
     bitspersample = stream->iBitsPerSample;
+    channellayout = stream->iChannelLayout;
   }
   else if(  right.type == STREAM_VIDEO )
   {

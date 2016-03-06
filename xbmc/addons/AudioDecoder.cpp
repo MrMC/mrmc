@@ -51,10 +51,13 @@ bool CAudioDecoder::Init(const std::string& strFile, unsigned int filecache)
   CTagLoaderTagLib tag;
   tag.Load(strFile, XFILE::CMusicFileDirectory::m_tag, NULL);
 
+  int channels;
+  int sampleRate;
+
   m_context = m_pStruct->Init(strFile.c_str(), filecache,
-                              &m_Channels, &m_SampleRate,
-                              &m_BitsPerSample, &m_TotalTime,
-                              &m_Bitrate, &m_DataFormat, &m_channel);
+                              &channels, &sampleRate,
+                              &m_bitsPerSample, &m_TotalTime,
+                              &m_bitRate, &m_format.m_dataFormat, &m_channel);
 
   return (m_context != NULL);
 }
@@ -120,10 +123,7 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
 
 CAEChannelInfo CAudioDecoder::GetChannelInfo()
 {
-  if (m_channel)
-    return CAEChannelInfo(m_channel);
-
-  return ICodec::GetChannelInfo();
+  return m_format.m_channelLayout;
 }
 
 void CAudioDecoder::Destroy()

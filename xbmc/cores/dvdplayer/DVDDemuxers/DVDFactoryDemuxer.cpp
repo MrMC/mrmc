@@ -94,7 +94,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
     bool useFastswitch = URIUtils::IsUsingFastSwitch(pInputStream->GetFileName());
     streaminfo = !useFastswitch;
 
-    if(pOtherStream)
+    if (pOtherStream)
     {
       /* Used for MediaPortal PVR addon (uses PVR otherstream for playback of rtsp streams) */
       if (pOtherStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))

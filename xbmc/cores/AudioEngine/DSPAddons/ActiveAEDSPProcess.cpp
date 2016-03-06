@@ -315,7 +315,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
      */
     CLog::Log(LOGDEBUG, "  ---- DSP input resample addon ---");
     const AE_DSP_MODELIST listInputResample = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_INPUT_RESAMPLE);
-    if (listInputResample.size() == 0)
+    if (listInputResample.empty())
       CLog::Log(LOGDEBUG, "  | - no input resample addon present or enabled");
     for (unsigned int i = 0; i < listInputResample.size(); ++i)
     {
@@ -544,7 +544,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
     if (m_addonSettings.iProcessSamplerate != m_outputFormat.m_sampleRate)
     {
       const AE_DSP_MODELIST listOutputResample = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE);
-      if (listOutputResample.size() == 0)
+      if (listOutputResample.empty())
         CLog::Log(LOGDEBUG, "  | - no final post resample addon present or enabled, becomes performed by KODI");
       for (unsigned int i = 0; i < listOutputResample.size(); ++i)
       {
