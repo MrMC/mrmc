@@ -1,5 +1,6 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile \
+      0002-darwin-fixbitcode.patch
 
 # lib name, version
 LIBNAME=curl
@@ -24,9 +25,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-ifeq (osx, $(findstring osx, $(OS)))
-	cd $(PLATFORM); patch -p1 < ../0001-HTTP-reset-expected-DL-UL-sizes-on-redirects.patch
-endif
 	cd $(PLATFORM); $(CONFIGURE)
 ifeq ($(OS),ios)
 	# this is nasty but cannot figure out how to get those flags out of libtool
