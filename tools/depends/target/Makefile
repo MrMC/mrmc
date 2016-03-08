@@ -134,7 +134,7 @@ samba: libssh2
 gnutls: libtasn1 nettle $(ZLIB)
 nettle: gmp
 libsdl2: $(LINUX_SYSTEM_LIBS)
-libxslt: libgcrypt
+libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis gnutls libdcadec
 libcec: platform
 ifeq ($(OS),linux)
