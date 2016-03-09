@@ -542,7 +542,7 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   if (m_synctype == SYNC_DISCON)
   {
     double limit, error;
-    limit = DVD_MSEC_TO_TIME(10);
+    limit = DVD_MSEC_TO_TIME(32);
     error = syncerror;
 
     double absolute;
