@@ -3099,7 +3099,7 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
     info.optimal_buffer_size = info.max_buffer_size;
   }
   else
-    info.optimal_buffer_size = 3;
+    info.optimal_buffer_size = 5;
   return info;
 }
 
