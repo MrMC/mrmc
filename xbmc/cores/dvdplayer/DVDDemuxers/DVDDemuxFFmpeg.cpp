@@ -67,6 +67,8 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
   {}
 };
 
+// uncomment if one has obtained DivX licensing.
+//#define HAS_DIVX_LICENSE
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -1109,6 +1111,18 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_VIDEO:
       {
+#if !defined(HAS_DIVX_LICENSE)
+        if (pStream->codec->codec_id == AV_CODEC_ID_MPEG4)
+        {
+          // DivX formats 0.4 and 0.5 requires a DivX license.
+          if (pStream->codec->codec_tag == MKTAG('D','X','4','0'))
+            return NULL;
+          if (pStream->codec->codec_tag == MKTAG('D','X','5','0'))
+            return NULL;
+          if (pStream->codec->codec_tag == MKTAG('D','I','V','X'))
+            return NULL;
+        }
+#endif
         CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(this, pStream);
         stream = st;
         if(strcmp(m_pFormatContext->iformat->name, "flv") == 0)
@@ -1183,6 +1197,11 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_SUBTITLE:
       {
+#if !defined(HAS_DIVX_LICENSE)
+        // use of subtitles in an avi requires a DivX license
+        if (strcmp(m_pFormatContext->iformat->name, "avi") == 0)
+          return NULL;
+#endif
         if (pStream->codec->codec_id == AV_CODEC_ID_DVB_TELETEXT && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
