@@ -29,6 +29,7 @@
 #import "cores/AudioEngine/AEFactory.h"
 #import "guilib/GUIWindowManager.h"
 #import "input/Key.h"
+#import "interfaces/AnnouncementManager.h"
 #import "network/NetworkServices.h"
 #import "messaging/ApplicationMessenger.h"
 #import "platform/darwin/AutoPool.h"
@@ -1336,6 +1337,9 @@ MainController *g_xbmcController;
   // do not update if we are already updating
   if (!(g_application.IsVideoScanning() || g_application.IsMusicScanning()))
     g_application.UpdateLibraries();
+
+  // this will fire only if we are already alive and have 'menu'ed out and back
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::System, "xbmc", "OnWake");
 
   // this handles what to do if we got pushed
   // into foreground by a topshelf item select/play
