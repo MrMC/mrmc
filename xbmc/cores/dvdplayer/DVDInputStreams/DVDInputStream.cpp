@@ -25,10 +25,12 @@ CDVDInputStream::CDVDInputStream(DVDStreamType streamType)
 {
   m_streamType = streamType;
   m_contentLookup = true;
+  m_realtime = false;
 }
 
 CDVDInputStream::~CDVDInputStream()
 {
+
 }
 
 bool CDVDInputStream::Open(const char* strFile, const std::string &content, bool contentLookup)

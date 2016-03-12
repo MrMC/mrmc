@@ -77,7 +77,8 @@ bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content
   || strnicmp(strFile, "rtp://", 6) == 0)
   {
     m_can_pause = false;
-    m_can_seek  = false;
+    m_can_seek = false;
+    m_realtime = true;
   }
 
   if(strnicmp(strFile, "tcp://", 6) == 0)

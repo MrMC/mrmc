@@ -292,7 +292,8 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
   int iBytesRead;
 
   int NOPcount = 0;
-  while(true) {
+  while (true)
+  {
     int navresult = ProcessBlock(buf, &iBytesRead);
 
     if (navresult == NAVRESULT_HOLD)
@@ -383,10 +384,11 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // indirectly by some user interaction.
         m_holdmode = HOLDMODE_NONE;
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
-
-        /* if user didn't care for action, just skip it */
+/*
+        // if user didn't care for action, just skip it
         if(iNavresult == NAVRESULT_NOP)
           SkipStill();
+*/
       }
       break;
 
@@ -511,7 +513,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // change inside a cell. Therefore this event can be used to query such
         // information only when necessary and update the decoding/displaying
         // accordingly.
-
+/*
         // this may lead to a discontinuity, but it's also the end of the
         // vobunit, so make sure everything in demuxer is output
         if(m_holdmode == HOLDMODE_NONE)
@@ -521,7 +523,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           iNavresult = NAVRESULT_HOLD;
           break;
         }
-
+*/
         uint32_t pos, len;
 
         m_dll.dvdnav_current_title_info(m_dvdnav, &m_iTitle, &m_iPart);

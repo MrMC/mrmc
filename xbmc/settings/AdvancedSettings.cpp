@@ -399,7 +399,6 @@ void CAdvancedSettings::Initialize()
   m_iPVRInfoToggleInterval         = 3000;
   m_iPVRMinVideoCacheLevel         = 5;
   m_iPVRMinAudioCacheLevel         = 10;
-  m_bPVRCacheInDvdPlayer           = true;
   m_bPVRChannelIconsAutoScan       = true;
   m_bPVRAutoScanIconsUserSet       = false;
   m_iPVRNumericChannelSwitchTimeout = 1000;
@@ -1063,7 +1062,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pPVR, "infotoggleinterval", m_iPVRInfoToggleInterval, 0, 30000);
     XMLUtils::GetInt(pPVR, "minvideocachelevel", m_iPVRMinVideoCacheLevel, 0, 100);
     XMLUtils::GetInt(pPVR, "minaudiocachelevel", m_iPVRMinAudioCacheLevel, 0, 100);
-    XMLUtils::GetBoolean(pPVR, "cacheindvdplayer", m_bPVRCacheInDvdPlayer);
     XMLUtils::GetBoolean(pPVR, "channeliconsautoscan", m_bPVRChannelIconsAutoScan);
     XMLUtils::GetBoolean(pPVR, "autoscaniconsuserset", m_bPVRAutoScanIconsUserSet);
     XMLUtils::GetInt(pPVR, "numericchannelswitchtimeout", m_iPVRNumericChannelSwitchTimeout, 50, 60000);

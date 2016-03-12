@@ -40,13 +40,14 @@ using namespace PVR;
  */
 CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IDVDPlayer* pPlayer) : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER)
 {
-  m_pPlayer         = pPlayer;
-  m_pFile           = NULL;
-  m_pRecordable     = NULL;
-  m_pLiveTV         = NULL;
-  m_pOtherStream    = NULL;
-  m_eof             = true;
+  m_pPlayer = pPlayer;
+  m_pFile = NULL;
+  m_pRecordable = NULL;
+  m_pLiveTV = NULL;
+  m_pOtherStream = NULL;
+  m_eof = true;
   m_ScanTimeout.Set(0);
+  m_isOtherStreamHack = false;
 }
 
 /************************************************************************
@@ -104,9 +105,15 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
    * for the right protocol stream handler and swap every call to this input stream
    * handler.
    */
+  m_isOtherStreamHack = false;
   std::string transFile = XFILE::CPVRFile::TranslatePVRFilename(strFile);
   if(transFile.substr(0, 6) != "pvr://")
   {
+    m_isOtherStreamHack = true;
+
+    if (m_pLiveTV)
+      m_realtime = true;
+
     m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, transFile, content);
     if (!m_pOtherStream)
     {
@@ -231,7 +238,7 @@ int CDVDInputStreamPVRManager::GetTime()
 bool CDVDInputStreamPVRManager::NextChannel(bool preview/* = false*/)
 {
   PVR_CLIENT client;
-  if (!preview && !SupportsChannelSwitch())
+  if (!preview && IsOtherStreamHack())
   {
     CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
     CFileItemPtr item(g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelUp(channel));
@@ -246,7 +253,7 @@ bool CDVDInputStreamPVRManager::NextChannel(bool preview/* = false*/)
 bool CDVDInputStreamPVRManager::PrevChannel(bool preview/* = false*/)
 {
   PVR_CLIENT client;
-  if (!preview && !SupportsChannelSwitch())
+  if (!preview && IsOtherStreamHack())
   {
     CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
     CFileItemPtr item(g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelDown(channel));
@@ -266,7 +273,7 @@ bool CDVDInputStreamPVRManager::SelectChannelByNumber(unsigned int iChannelNumbe
   if (!item)
     return false;
 
-  if (!SupportsChannelSwitch())
+  if (IsOtherStreamHack())
   {
     return CloseAndOpen(item->GetPath().c_str());
   }
@@ -284,7 +291,7 @@ bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannelPtr &channel)
   assert(channel.get());
 
   PVR_CLIENT client;
-  if (!SupportsChannelSwitch())
+  if (IsOtherStreamHack())
   {
     CFileItem item(channel);
     return CloseAndOpen(item.GetPath().c_str());
@@ -384,9 +391,7 @@ bool CDVDInputStreamPVRManager::CloseAndOpen(const char* strFile)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::SupportsChannelSwitch(void)
+bool CDVDInputStreamPVRManager::IsOtherStreamHack(void)
 {
-  PVR_CLIENT client;
-  return g_PVRClients->GetPlayingClient(client) &&
-         client->HandlesInputStream();
+  return m_isOtherStreamHack;
 }

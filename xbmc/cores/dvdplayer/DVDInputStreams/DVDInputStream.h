@@ -37,7 +37,7 @@ enum DVDStreamType
   DVDSTREAM_TYPE_MEMORY = 4,
   DVDSTREAM_TYPE_FFMPEG = 5,
   DVDSTREAM_TYPE_TV     = 6,
-  //DVDSTREAM_TYPE_RTMP   = 7,
+  DVDSTREAM_TYPE_RTMP   = 7,
   DVDSTREAM_TYPE_MPLS   = 10,
   DVDSTREAM_TYPE_BLURAY = 11,
   DVDSTREAM_TYPE_PVRMANAGER = 12,
@@ -53,31 +53,9 @@ namespace XFILE
   class CFile;
 }
 
-namespace PVR
-{
-  class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-}
-
 class CDVDInputStream
 {
 public:
-  class IChannel
-  {
-    public:
-    virtual ~IChannel() {};
-    virtual bool NextChannel(bool preview = false) = 0;
-    virtual bool PrevChannel(bool preview = false) = 0;
-    virtual bool SelectChannelByNumber(unsigned int channel) = 0;
-    virtual bool SelectChannel(const PVR::CPVRChannelPtr &channel) { return false; };
-    virtual PVR::CPVRChannelPtr GetSelectedChannel() { return PVR::CPVRChannelPtr(); };
-    virtual bool UpdateItem(CFileItem& item) = 0;
-    virtual bool CanRecord() = 0;
-    virtual bool IsRecording() = 0;
-    virtual bool Record(bool bOnOff) = 0;
-    virtual bool CanPause() = 0;
-    virtual bool CanSeek() = 0;
-  };
 
   class IDisplayTime
   {
@@ -182,6 +160,10 @@ public:
 
   bool ContentLookup() { return m_contentLookup; }
 
+  bool IsRealtime() { return m_realtime; }
+
+  void SetRealtime(bool realtime) { m_realtime = realtime; }
+
 protected:
   DVDStreamType m_streamType;
   std::string m_strFileName;
@@ -190,4 +172,5 @@ protected:
   std::string m_content;
   CFileItem m_item;
   bool m_contentLookup;
+  bool m_realtime;
 };
