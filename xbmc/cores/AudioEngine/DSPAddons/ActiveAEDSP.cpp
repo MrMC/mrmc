@@ -127,7 +127,7 @@ void CActiveAEDSP::Activate(bool bAsync /* = false */)
   m_databaseDSP.Open();
 
   Create();
-  SetPriority(-1);
+  SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 }
 
 class CActiveAEDSPModeUpdateJob : public CJob
