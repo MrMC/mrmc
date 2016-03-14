@@ -176,6 +176,10 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               if (!CGUIKeyboardFactory::ShowAndGetInput(itemTitle, g_localizeStrings.Get(scraper->Content() == CONTENT_TVSHOWS ? 20357 : 16009), false))
                 return false;
 
+              // if saved text is the same as new, assume cancel
+              if (itemTitle == saved_itemTitle)
+                return false;
+
               // go through the whole process again
               needsRefresh = true;
               continue;
@@ -202,7 +206,12 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       if (IsModal())
       {
         // ask the user to input a title to use
+        std::string saved_itemTitle = itemTitle;
         if (!CGUIKeyboardFactory::ShowAndGetInput(itemTitle, g_localizeStrings.Get(scraper->Content() == CONTENT_TVSHOWS ? 20357 : 16009), false))
+          return false;
+
+        // if saved text is the same as new, assume cancel
+        if (itemTitle == saved_itemTitle)
           return false;
 
         // go through the whole process again
