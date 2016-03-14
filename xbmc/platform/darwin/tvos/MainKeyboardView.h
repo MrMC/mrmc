@@ -23,18 +23,17 @@
 
 @interface KeyboardView : UIView <UITextFieldDelegate>
 {
-  NSMutableString *text;
+  NSMutableString *_text;
   BOOL _confirmed;
   CMainKeyboard *_tvosKeyboard;
   bool *_canceled;
   BOOL _deactivated;
   UITextField *_textField;
   UITextField *_heading;
-  int _keyboardIsShowing; // 0: not, 1: will show, 2: showing
   CGRect _kbRect;
 }
 
-@property (nonatomic, retain) NSMutableString *text;
+@property (nonatomic, retain) NSMutableString *_text;
 @property (getter = isConfirmed) BOOL _confirmed;
 @property (assign, setter = registerKeyboard:) CMainKeyboard *_tvosKeyboard;
 

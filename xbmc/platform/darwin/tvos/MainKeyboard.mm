@@ -66,7 +66,7 @@ bool CMainKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string
     // user is done - get resulted text and confirmation
     confirmed = g_pTvosKeyboard.isConfirmed;
     if (confirmed)
-      typedString = [g_pTvosKeyboard.text UTF8String];
+      typedString = [g_pTvosKeyboard._text UTF8String];
   }
   [g_pTvosKeyboard release]; // bye bye native keyboard
   @synchronized([KeyboardView class])

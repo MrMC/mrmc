@@ -37,7 +37,7 @@ static CEvent keyboardFinishedEvent;
 #define SPACE_BETWEEN_INPUT_AND_KEYBOARD 0
 
 @implementation KeyboardView
-@synthesize text;
+@synthesize _text;
 @synthesize _confirmed;
 @synthesize _tvosKeyboard;
 
@@ -47,12 +47,11 @@ static CEvent keyboardFinishedEvent;
   if (self) 
   {
     _tvosKeyboard = nil;
-    _keyboardIsShowing = 0;
     _confirmed = NO;
     _canceled = NULL;
     _deactivated = NO;
     
-    self.text = [NSMutableString stringWithString:@""];
+    self._text = [NSMutableString stringWithString:@""];
 
    // default input box position above the half screen.
     CGRect textFieldFrame = CGRectMake(frame.size.width/2, 
@@ -83,33 +82,15 @@ static CEvent keyboardFinishedEvent;
    
     self.userInteractionEnabled = YES;
 
-    [self setAlpha:0.9];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textChanged:)
-                                                 name:UITextFieldTextDidChangeNotification
-                                               object:_textField];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(keyboardDidHide:) 
-                                                 name:UIKeyboardDidHideNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidChangeFrame:)
-                                                 name:UIKeyboardDidChangeFrameNotification 
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShow:)
-                                                 name:UIKeyboardDidShowNotification
-                                               object:nil];
+      selector:@selector(textChanged:) name:UITextFieldTextDidChangeNotification object:_textField];
   }
   return self;
 }
 
 - (void)layoutSubviews
 {
+  //PRINT_SIGNATURE();
   CGFloat headingW = 0;
   if (_heading.text and _heading.text.length > 0)
   {
@@ -133,72 +114,18 @@ static CEvent keyboardFinishedEvent;
   _textField.frame = CGRectMake(headingW, y, self.bounds.size.width-headingW, INPUT_BOX_HEIGHT);
 }
 
--(void)keyboardWillShow:(NSNotification *) notification{
-  NSDictionary* info = [notification userInfo];
-  CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-#if !__IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() >= 8.0)
-    kbRect = [self convertRect:kbRect fromView:nil];
-#endif
-  //LOG(@"keyboardWillShow: keyboard frame: %@", NSStringFromCGRect(kbRect));
-  _kbRect = kbRect;
-  [self setNeedsLayout];
-  _keyboardIsShowing = 1;
-}
-
--(void)keyboardDidShow:(NSNotification *) notification{
-  //LOG(@"keyboardDidShow: deactivated: %d", _deactivated);
-  _keyboardIsShowing = 2;
-  if (_deactivated)
-    [self doDeactivate:nil];
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-  PRINT_SIGNATURE();
-  [_textField resignFirstResponder];
-}
-
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
-{
-  //LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
-  // Do not break the keyboard show up process, else we will lost
-  // keyboard did hide notifaction.
-  return _keyboardIsShowing != 1;
-}
-
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
   //PRINT_SIGNATURE();
-  _confirmed = YES;
-  [_textField resignFirstResponder];
+  // when user hits 'done' button or has canceled by menuing out
   [self deactivate];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
   //PRINT_SIGNATURE();
+  // when user hits 'done' button
   _confirmed = YES;
-  [_textField resignFirstResponder];
   return YES;
-}
-
-- (void)keyboardDidChangeFrame:(id)sender
-{
-}
-
-- (void)keyboardDidHide:(id)sender
-{
-  //PRINT_SIGNATURE();
-  
-  _keyboardIsShowing = 0;
-
-  if (_textField.editing)
-  {
-    //LOG(@"kb hide when editing, it could be a language switch");
-    return;
-  }
-
-  [self deactivate];
 }
 
 - (void) doActivate:(NSDictionary *)dict
@@ -241,14 +168,9 @@ static CEvent keyboardFinishedEvent;
 
 - (void) doDeactivate:(NSDictionary *)dict
 {
-  //LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
+  //PRINT_SIGNATURE();
   _deactivated = YES;
   
-  // Do not break keyboard show up process, if so there's a bug of ios4 will not
-  // notify us keyboard hide.
-  if (_keyboardIsShowing == 1)
-    return;
-
   // invalidate our callback object
   if(_tvosKeyboard)
   {
@@ -262,14 +184,10 @@ static CEvent keyboardFinishedEvent;
   // detach the keyboard view from our main controller
   [g_xbmcController deactivateKeyboard:self];
   
-  // until keyboard did hide, we let the calling thread break loop
-  if (0 == _keyboardIsShowing)
-  {
-    // no more notification we want to receive.
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-    
-    keyboardFinishedEvent.Set();
-  }
+  // no more notification we want to receive.
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
+
+  keyboardFinishedEvent.Set();
 }
 
 - (void) deactivate
@@ -325,12 +243,12 @@ static CEvent keyboardFinishedEvent;
 }
 
 - (void) textChanged:(NSNotification*)aNotification; {
-  if (![self.text isEqualToString:_textField.text])
+  if (![self._text isEqualToString:_textField.text])
   {
-    [self.text setString:_textField.text];
+    [self._text setString:_textField.text];
     if (_tvosKeyboard)
     {
-      _tvosKeyboard->fireCallback([self.text UTF8String]);
+      _tvosKeyboard->fireCallback([self._text UTF8String]);
     }
   }
 }
@@ -343,7 +261,7 @@ static CEvent keyboardFinishedEvent;
 - (void) dealloc
 {
   //PRINT_SIGNATURE();
-  self.text = nil;
+  self._text = nil;
   [super dealloc];
 }
 @end
