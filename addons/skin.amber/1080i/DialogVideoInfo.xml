@@ -402,7 +402,7 @@
             <label>$INFO[ListItem.VideoResolution]</label>
           </control>
           <control type="image">
-            <visible>!IsEmpty(ListItem.VideoCodec)</visible>
+            <visible>![substring(ListItem.VideoCodec,div,left) | substring(ListItem.VideoCodec,xvid,left)| stringcompare(ListItem.VideoCodec,dx50)]</visible>
             <height>36</height>
             <width>102</width>
             <aspectratio>keep</aspectratio>

@@ -50,7 +50,8 @@
       <orientation>horizontal</orientation>
       <align>left</align>
       <control type="image">
-        <visible>!IsEmpty(ListItem.VideoCodec)</visible>
+        <visible>![substring(ListItem.VideoCodec,div,left) | substring(ListItem.VideoCodec,xvid,left)| stringcompare(ListItem.VideoCodec,dx50)]</visible>
+        <visible>false</visible>
         <height>45</height>
         <width>90</width>
         <bordersize>3</bordersize>

@@ -79,7 +79,8 @@
 		<value condition="substring(Listitem.mpaa,Not Rated)">mpaa_notrated</value>
 	</variable>
 	<variable name="videocodec">
-		<value condition="[substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]">divx</value>
+		<value condition="[substring(ListItem.VideoCodec,div,left) | substring(ListItem.VideoCodec,xvid,left)| stringcompare(ListItem.VideoCodec,dx50)]">avi</value>
+<!-- 		<value condition="[substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]">divx</value> -->
 		<value>$INFO[ListItem.VideoCodec]</value>
 	</variable>
 	<variable name="SeekLabel">

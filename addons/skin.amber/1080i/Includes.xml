@@ -1770,7 +1770,7 @@
         <texture>$INFO[ListItem.AudioChannels,badges/channels,.png]</texture>
       </control>
       <control type="image">
-        <visible>!IsEmpty(ListItem.VideoCodec)</visible>
+        <visible>![substring(ListItem.VideoCodec,div,left) | substring(ListItem.VideoCodec,xvid,left)| stringcompare(ListItem.VideoCodec,dx50)]</visible>
         <height>45</height>
         <width>90</width>
         <bordersize>3</bordersize>
