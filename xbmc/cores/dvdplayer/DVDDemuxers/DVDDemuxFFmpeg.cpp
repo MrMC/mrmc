@@ -1327,7 +1327,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
     stream->codec_fourcc = pStream->codec->codec_tag;
     stream->profile = pStream->codec->profile;
     stream->level   = pStream->codec->level;
-    //stream->realtime = m_pInput->IsRealtime();
+    stream->realtime = m_pInput->IsRealtime();
 
     stream->source = STREAM_SOURCE_DEMUX;
     stream->pPrivate = pStream;

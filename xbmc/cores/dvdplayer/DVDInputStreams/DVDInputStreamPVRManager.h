@@ -53,6 +53,7 @@ public:
   virtual int64_t GetLength();
 
   virtual ENextStream NextStream();
+  virtual bool IsRealtime();
 
   bool IsOtherStreamHack(void);
   bool SelectChannelByNumber(unsigned int iChannel);
@@ -115,5 +116,5 @@ inline bool CDVDInputStreamPVRManager::IsStreamType(DVDStreamType type) const
 inline CDVDInputStream* CDVDInputStreamPVRManager::GetOtherStream()
 {
   return m_pOtherStream;
-};
+}
 

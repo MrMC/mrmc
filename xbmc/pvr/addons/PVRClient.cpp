@@ -1972,3 +1972,12 @@ bool CPVRClient::Autoconfigure(void)
 
   return bReturn;
 }
+
+bool CPVRClient::IsRealTimeStream(void) const
+{
+  bool bReturn(false);
+  if (IsPlaying() && !IsPlayingRecording())
+    bReturn = true;
+
+  return bReturn;
+}

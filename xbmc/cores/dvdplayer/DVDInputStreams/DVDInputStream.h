@@ -160,7 +160,7 @@ public:
 
   bool ContentLookup() { return m_contentLookup; }
 
-  bool IsRealtime() { return m_realtime; }
+  virtual bool IsRealtime() { return m_realtime; }
 
   void SetRealtime(bool realtime) { m_realtime = realtime; }
 

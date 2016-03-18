@@ -92,6 +92,7 @@ public:
     disabled = false;
     changes = 0;
     flags = FLAG_NONE;
+    realtime = false;
   }
 
   virtual ~CDemuxStream()

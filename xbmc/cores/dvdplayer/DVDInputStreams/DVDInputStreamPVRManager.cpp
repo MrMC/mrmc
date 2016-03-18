@@ -111,9 +111,6 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
   {
     m_isOtherStreamHack = true;
 
-    if (m_pLiveTV)
-      m_realtime = true;
-
     m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, transFile, content);
     if (!m_pOtherStream)
     {
@@ -394,4 +391,9 @@ bool CDVDInputStreamPVRManager::CloseAndOpen(const char* strFile)
 bool CDVDInputStreamPVRManager::IsOtherStreamHack(void)
 {
   return m_isOtherStreamHack;
+}
+
+bool CDVDInputStreamPVRManager::IsRealtime()
+{
+  return g_PVRClients->IsRealTimeStream();
 }
