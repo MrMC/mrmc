@@ -21,7 +21,6 @@
  */
 
 #include "system.h"
-#include "threads/SharedSection.h"
 #include "threads/CriticalSection.h"
 
 #define DVD_TIME_BASE 1000000
@@ -35,25 +34,12 @@
 #define DVD_PLAYSPEED_PAUSE       0       // frame stepping
 #define DVD_PLAYSPEED_NORMAL      1000
 
-enum EMasterClock
-{
-  MASTER_CLOCK_NONE,
-  MASTER_CLOCK_AUDIO,
-  MASTER_CLOCK_AUDIO_VIDEOREF,
-  MASTER_CLOCK_VIDEO,
-  MASTER_CLOCK_INPUT,
-};
-
 class CDVDClock
 {
 public:
 
   CDVDClock();
   ~CDVDClock();
-
-  EMasterClock GetMaster();
-  void         SetMaster(EMasterClock master);
-
 
   double GetClock(bool interpolated = true);
   double GetClock(double& absolute, bool interpolated = true);
@@ -82,21 +68,18 @@ public:
   static double GetFrequency() { return (double)m_systemFrequency ; }
   static double WaitAbsoluteClock(double target);
 
-  static CDVDClock* GetMasterClock();
-
 protected:
   static void CheckSystemClock();
   static double SystemToAbsolute(int64_t system);
   static int64_t AbsoluteToSystem(double absolute);
   double SystemToPlaying(int64_t system);
 
-  CSharedSection m_critSection;
+  CCriticalSection m_critSection;
   int64_t m_systemUsed;
   int64_t m_startClock;
   int64_t m_pauseClock;
   double m_iDisc;
   bool m_bReset;
-  EMasterClock m_master;
 
   static int64_t m_systemFrequency;
   static int64_t m_systemOffset;
@@ -108,5 +91,4 @@ protected:
 
   double m_maxspeedadjust;
   CCriticalSection m_speedsection;
-  static CDVDClock *m_playerclock;
 };

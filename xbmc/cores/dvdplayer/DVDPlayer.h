@@ -400,7 +400,6 @@ protected:
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
-  void UpdateClockMaster();
   void UpdateStreamInfos();
 
   double m_UpdateApplication;

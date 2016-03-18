@@ -56,7 +56,6 @@ protected:
   void          StartSampleProviderWithBlock();
   void          StopSampleProvider();
 
-  double        GetPlayerPtsSeconds();
   double        GetRenderPtsSeconds();
   void          UpdateFrameRateTracking(double pts);
 

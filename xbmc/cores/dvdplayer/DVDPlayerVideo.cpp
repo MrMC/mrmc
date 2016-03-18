@@ -68,6 +68,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 , m_messageParent(parent)
 {
   m_pClock = pClock;
+  g_renderManager.SetDVDClock(m_pClock);
   m_pOverlayContainer = pOverlayContainer;
   m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
@@ -105,6 +106,7 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   m_bAbortOutput = true;
   StopThread();
   g_VideoReferenceClock.Stop();
+  g_renderManager.SetDVDClock((CDVDClock*)nullptr);
 }
 
 double CDVDPlayerVideo::GetOutputDelay()

@@ -175,8 +175,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
     return;
   }
 
-  CDVDClock *dvdclock = CDVDClock::GetMasterClock();
-  if(dvdclock != NULL && dvdclock->GetSpeedAdjust() != 0.0)
+  if(m_dvdClock && m_dvdClock->GetSpeedAdjust() != 0.0)
   {
     CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
     m_presenterr = 0;
@@ -234,6 +233,11 @@ std::string CXBMCRenderManager::GetVSyncState()
                                          ,     MathUtils::round_int(avgerror      * 100)
                                          , abs(MathUtils::round_int(m_presenterr  * 100)));
   return state;
+}
+
+void CXBMCRenderManager::SetDVDClock(CDVDClock *clock)
+{
+  m_dvdClock = clock;
 }
 
 bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation, int buffers)

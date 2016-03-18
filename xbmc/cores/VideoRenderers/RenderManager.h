@@ -23,6 +23,7 @@
 #include <list>
 
 #include "cores/VideoRenderers/BaseRenderer.h"
+#include "cores/dvdplayer/DVDClock.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "threads/SharedSection.h"
@@ -46,6 +47,14 @@ class CMMALRenderer;
 class CLinuxRenderer;
 class CLinuxRendererGL;
 class CLinuxRendererGLES;
+class CXBMCRenderManager;
+
+class IRenderMsg
+{
+  friend CXBMCRenderManager;
+protected:
+  virtual void VideoParamsChange() = 0;
+};
 
 class CXBMCRenderManager
 {
@@ -72,6 +81,8 @@ public:
   void ManageCaptures();
 
   void SetViewMode(int iViewMode);
+
+  void SetDVDClock(CDVDClock *clock);
 
   // Functions called from mplayer
   /**
@@ -259,6 +270,7 @@ protected:
   CCriticalSection m_presentlock;
   CEvent m_flushEvent;
   double m_clock_framefinish;
+  CDVDClock *m_dvdClock;
 
   OVERLAY::CRenderer m_overlays;
   bool m_renderedOverlay;

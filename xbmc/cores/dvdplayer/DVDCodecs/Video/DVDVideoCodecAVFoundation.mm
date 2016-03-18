@@ -396,7 +396,7 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->pts = m_pts;
     if (m_speed == DVD_PLAYSPEED_NORMAL)
     {
-      pDvdVideoPicture->pts = GetPlayerPtsSeconds() * (double)DVD_TIME_BASE;
+      pDvdVideoPicture->pts = GetRenderPtsSeconds() * (double)DVD_TIME_BASE;
       // video pts cannot be late or dvdplayer goes nuts,
       // so run it one frame ahead
       pDvdVideoPicture->pts += 1 * pDvdVideoPicture->iDuration;
@@ -502,7 +502,7 @@ void CDVDVideoCodecAVFoundation::Process()
       case START: // we are just starting up.
       {
         // player clock returns < zero if reset.
-        double player_s = GetPlayerPtsSeconds();
+        double player_s = GetRenderPtsSeconds();
         if (player_s > 0.0)
         {
           // startup with video timebase matching the player clock.
@@ -565,7 +565,7 @@ void CDVDVideoCodecAVFoundation::Process()
         Float64 timeBase_s = CMTimeGetSeconds(cmtime);
 
         // player clock returns < zero if reset. check it.
-        double player_s = GetPlayerPtsSeconds();
+        double player_s = GetRenderPtsSeconds();
         if (player_s > 0.0)
         {
           double error = fabs(timeBase_s - player_s);
@@ -732,16 +732,6 @@ void CDVDVideoCodecAVFoundation::StopSampleProvider()
     AVSampleBufferDisplayLayer *videolayer = mcview.videolayer;
     [videolayer stopRequestingMediaData];
   });
-}
-
-double CDVDVideoCodecAVFoundation::GetPlayerPtsSeconds()
-{
-  double clock_pts = 0.0;
-  CDVDClock *playerclock = CDVDClock::GetMasterClock();
-  if (playerclock)
-    clock_pts = playerclock->GetClock() / DVD_TIME_BASE;
-
-  return clock_pts;
 }
 
 double CDVDVideoCodecAVFoundation::GetRenderPtsSeconds()
