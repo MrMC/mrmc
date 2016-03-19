@@ -281,7 +281,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-  if (m_appAlive)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     UITouch *touch = (UITouch *)[[touches allObjects] objectAtIndex:0];
     CGPoint point = [touch locationInView:m_glView];
@@ -293,7 +293,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 -(void)handlePinch:(UIPinchGestureRecognizer*)sender
 {
-  if (m_appAlive)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
     point.x *= m_screenScale;
@@ -319,7 +319,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 -(void)handleRotate:(UIRotationGestureRecognizer*)sender
 {
-  if (m_appAlive)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= m_screenScale;
@@ -344,7 +344,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (IBAction)handlePan:(UIPanGestureRecognizer *)sender 
 {
-  if (m_appAlive)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   { 
     CGPoint velocity = [sender velocityInView:m_glView];
 
@@ -401,7 +401,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (IBAction)handleSwipe:(UISwipeGestureRecognizer *)sender
 {
-  if (m_appAlive)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     if (sender.state == UIGestureRecognizerStateRecognized)
     {
@@ -449,7 +449,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender
 {
-  if (m_appAlive)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= m_screenScale;
@@ -461,7 +461,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (IBAction)handleSingleFingerSingleLongTap:(UIGestureRecognizer *)sender
 {
-  if (m_appAlive)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= m_screenScale;
@@ -507,6 +507,7 @@ XBMCController *g_xbmcController;
     return nil;
 
   m_pause = FALSE;
+  m_glView = NULL;
   m_appAlive = FALSE;
   m_animating = FALSE;
   m_readyToRun = FALSE;
