@@ -17,6 +17,10 @@ function package_skin
     fi
     ${SYNCSKIN_CMD} "$SKIN_PATH" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
     # these might have image files so just sync them
+    # look for both background and backgrounds, skins do not seem to follow a dir naming convention
+    if [ -d "$SKIN_PATH/background" ]; then
+      ${SYNC_CMD} "$SKIN_PATH/background" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/$SKIN_NAME"
+    fi
     if [ -d "$SKIN_PATH/backgrounds" ]; then
       ${SYNC_CMD} "$SKIN_PATH/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/$SKIN_NAME"
     fi
