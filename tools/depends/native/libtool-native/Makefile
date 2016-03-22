@@ -9,8 +9,6 @@ VERSION=2.4.6
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-BASE_URL=http://ftpmirror.gnu.org/libtool
-
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-shared --disable-ltdl-install
