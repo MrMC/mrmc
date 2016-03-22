@@ -28,7 +28,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	sed -ie "s|contrib docs tests||" "$(PLATFORM)/ulxmlrpcpp/Makefile.am"
 	sed -ie "s|fork()|-1|" "$(PLATFORM)/ulxmlrpcpp/contrib/mprocess_rpc_server.cpp"
 	cd $(PLATFORM); $(AUTORECONF) -vif
-	cd $(PLATFORM); patch -p1 < ../tvos-bitcode-fix.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)

@@ -1,0 +1,15 @@
+--- Makefile.am.org	2016-03-21 19:05:29.000000000 -0400
++++ Makefile.am	2016-03-21 19:05:56.000000000 -0400
+@@ -416,9 +416,9 @@ update_mans = \
+ # files created in the build tree, so instead we regenerate the
+ # manual pages if the sources for the build-tree files we want to
+ # run have changed.
+-$(libtool_1): $(ltmain_sh)
++$(libtool_1):
+ 	$(AM_V_GEN)$(update_mans) --help-option=--help-all libtool
+-$(libtoolize_1): $(libtoolize_in)
++$(libtoolize_1):
+ 	$(AM_V_GEN)$(update_mans) libtoolize
+ 
+ 
+

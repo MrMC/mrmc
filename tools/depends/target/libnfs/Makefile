@@ -28,10 +28,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	sed -ie "s|utils||" "$(PLATFORM)/Makefile.am"
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
-ifeq ($(OS),ios)
-	# this is nasty but cannot figure out how to get those flags out of libtool
-	cd $(PLATFORM); patch -p1 < ../darwin-fixbitcode.patch
-endif
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)

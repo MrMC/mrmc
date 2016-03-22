@@ -3,9 +3,11 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=sqlite
-VERSION=3080600
+VERSION=3100200
 SOURCE=$(LIBNAME)-autoconf-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+
+BASE_URL=http://sqlite.org/2016
 
 # configuration settings
 export CXXFLAGS+=-DSQLITE_ENABLE_COLUMN_METADATA=1

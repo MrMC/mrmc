@@ -1,0 +1,29 @@
+--- m4/libtool.m4.org	2016-03-21 17:48:16.000000000 -0400
++++ m4/libtool.m4	2016-03-21 17:49:53.000000000 -0400
+@@ -1062,25 +1062,6 @@ _LT_EOF
+         rm -f conftest.err libconftest.a conftest conftest.c
+         rm -rf conftest.dSYM
+     ])
+-    case $host_os in
+-    rhapsody* | darwin1.[[012]])
+-      _lt_dar_allow_undefined='$wl-undefined ${wl}suppress' ;;
+-    darwin1.*)
+-      _lt_dar_allow_undefined='$wl-flat_namespace $wl-undefined ${wl}suppress' ;;
+-    darwin*) # darwin 5.x on
+-      # if running on 10.5 or later, the deployment target defaults
+-      # to the OS version, if on x86, and 10.4, the deployment
+-      # target defaults to 10.4. Don't you love it?
+-      case ${MACOSX_DEPLOYMENT_TARGET-10.0},$host in
+-	10.0,*86*-darwin8*|10.0,*-darwin[[91]]*)
+-	  _lt_dar_allow_undefined='$wl-undefined ${wl}dynamic_lookup' ;;
+-	10.[[012]][[,.]]*)
+-	  _lt_dar_allow_undefined='$wl-flat_namespace $wl-undefined ${wl}suppress' ;;
+-	10.*)
+-	  _lt_dar_allow_undefined='$wl-undefined ${wl}dynamic_lookup' ;;
+-      esac
+-    ;;
+-  esac
+     if test yes = "$lt_cv_apple_cc_single_mod"; then
+       _lt_dar_single_mod='$single_module'
+     fi
+

@@ -29,10 +29,6 @@ ifeq ($(OS),android)
 endif
 	cd $(PLATFORM); ./bootstrap
 	cd $(PLATFORM); $(CONFIGURE)
-ifeq ($(OS),ios)
-	# this is nasty but cannot figure out how to get those flags out of libtool
-	cd $(PLATFORM); patch -p1 < ../darwin-fixbitcode.patch
-endif
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)

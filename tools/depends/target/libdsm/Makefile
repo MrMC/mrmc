@@ -1,6 +1,6 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile \
-	darwin-fixbitcode.patch lib-includepath.patch
+	lib-includepath.patch
 
 # lib name, version
 LIBNAME=dsm
@@ -30,7 +30,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); ./bootstrap
-	cd $(PLATFORM); patch -p1 < ../darwin-fixbitcode.patch
 	cd $(PLATFORM); patch -p1 < ../lib-includepath.patch
 	cd $(PLATFORM); $(CONFIGURE)
 

@@ -46,10 +46,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 < ../expose_dvd_defs.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
-ifeq ($(OS),ios)
-	# this is nasty but cannot figure out how to get those flags out of libtool
-	cd $(PLATFORM); patch -p1 < ../darwin-fixbitcode.patch
-endif
 
 $(PLATFORM)/.libs/$(LIBNAME).a: $(PLATFORM)
 	[ -d $(PLATFORM)/.libs ] && [ ! -f $@ ] && $(MAKE) -C $(PLATFORM) clean || :
