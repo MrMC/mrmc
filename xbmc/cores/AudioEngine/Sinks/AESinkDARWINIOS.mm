@@ -22,13 +22,11 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
-#include "platform/darwin//DarwinUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/Condition.h"
 #include "windowing/WindowingFactory.h"
 
-#include <sstream>
 #include <AudioToolbox/AudioToolbox.h>
 #import  <AVFoundation/AVFoundation.h>
 
@@ -80,35 +78,93 @@ static float SineWaveGeneratorNextSampleFloat(SineWaveGenerator *ctx)
 }
 #endif
 
+class IDarwinAudioSink
+{
+  public:
+    IDarwinAudioSink() {};
+    virtual ~IDarwinAudioSink() {};
+
+    virtual bool         open(AudioStreamBasicDescription outputFormat, size_t buffer_size) = 0;
+    virtual bool         close() = 0;
+    virtual bool         activate() = 0;
+    virtual bool         deactivate() = 0;
+    virtual void         updatedelay(AEDelayStatus& status) = 0;
+    virtual double       buffertime() = 0;
+    virtual unsigned int bufferframes() = 0;
+    virtual unsigned int sampletrate() = 0;
+    virtual unsigned int write(uint8_t *data, unsigned int byte_count) = 0;
+    virtual void         drain() = 0;
+    virtual bool         hdmi() = 0;
+};
+
 /***************************************************************************************/
 /***************************************************************************************/
-class CAAudioUnitSink
+class CAVPlayerSink : public IDarwinAudioSink
+{
+  public:
+    CAVPlayerSink();
+   ~CAVPlayerSink() override;
+
+    bool         open(AudioStreamBasicDescription outputFormat, size_t buffer_size) override;
+    bool         close() override;
+    bool         activate() override;
+    bool         deactivate() override;
+    void         updatedelay(AEDelayStatus& status) override;
+    double       buffertime() override;
+    unsigned int bufferframes() override;
+    unsigned int sampletrate() override;
+    unsigned int write(uint8_t *data, unsigned int byte_count) override;
+    void         drain() override;
+    bool         hdmi() override { return m_hdmi; }
+
+  private:
+    bool                m_setup;
+    bool                m_activated;
+    bool                m_hdmi;
+    AudioStreamBasicDescription m_outputFormat;
+    AERingBuffer       *m_buffer;
+
+    Float32             m_outputLatency;
+    Float32             m_bufferDuration;
+
+    unsigned int        m_sampleRate;
+    unsigned int        m_frameSize;
+    unsigned int        m_frames;
+
+    std::atomic<bool>   m_started;
+
+    CAESpinSection      m_render_section;
+    std::atomic<int64_t>  m_render_timestamp;
+    std::atomic<uint32_t> m_render_frames;
+};
+
+/***************************************************************************************/
+/***************************************************************************************/
+class CAAudioUnitSink : public IDarwinAudioSink
 {
   public:
     CAAudioUnitSink();
-   ~CAAudioUnitSink();
+   ~CAAudioUnitSink() override;
 
-    bool         open(AudioStreamBasicDescription outputFormat, size_t buffer_size);
-    bool         activate();
-    bool         close();
-    void         drain();
-    void         getDelay(AEDelayStatus& status);
-    double       cacheSize();
-    unsigned int write(uint8_t *data, unsigned int byte_count);
-    unsigned int chunkSize() { return m_bufferDuration * m_sampleRate; }
-    unsigned int getRealisedSampleRate() { return m_outputFormat.mSampleRate; }
-    std::string  getRoute() { return m_route; }
-    static Float64 getCoreAudioRealisedSampleRate();
+    bool         open(AudioStreamBasicDescription outputFormat, size_t buffer_size) override;
+    bool         close() override;
+    bool         activate() override;
+    bool         deactivate() override;
+    void         updatedelay(AEDelayStatus& status) override;
+    double       buffertime() override;
+    unsigned int bufferframes() override { return m_bufferDuration * m_sampleRate; };
+    unsigned int sampletrate() override { return m_outputFormat.mSampleRate; };
+    unsigned int write(uint8_t *data, unsigned int byte_count) override;
+    void         drain() override;
+    bool         hdmi() override { return m_hdmi; }
 
   private:
     void         setCoreAudioBuffersize();
     bool         setCoreAudioInputFormat();
     void         setCoreAudioPreferredSampleRate();
     bool         setupAudio();
-    bool         checkAudioRoute();
+    void         checkForHDMI();
     bool         checkSessionProperties();
-    bool         activateAudioSession();
-    void         deactivateAudioSession();
  
     // callbacks
     static OSStatus renderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
@@ -117,7 +173,7 @@ class CAAudioUnitSink
 
     bool                m_setup;
     bool                m_activated;
-    std::string         m_route;
+    bool                m_hdmi;
     id                  m_observer;
     AudioUnit           m_audioUnit;
     AudioStreamBasicDescription m_outputFormat;
@@ -139,13 +195,16 @@ class CAAudioUnitSink
 };
 
 CAAudioUnitSink::CAAudioUnitSink()
-: m_activated(false)
+: IDarwinAudioSink()
+, m_activated(false)
+, m_hdmi(false)
 , m_buffer(nullptr)
 , m_started(false)
 , m_render_timestamp(0)
 , m_render_frames(0)
 {
-  checkAudioRoute();
+  // creator might need to know the current setup
+  checkSessionProperties();
 }
 
 CAAudioUnitSink::~CAAudioUnitSink()
@@ -173,7 +232,7 @@ bool CAAudioUnitSink::open(AudioStreamBasicDescription outputFormat, size_t buff
 
 bool CAAudioUnitSink::close()
 {
-  deactivateAudioSession();
+  deactivate();
   SAFE_DELETE(m_buffer);
   m_started = false;
 
@@ -182,10 +241,49 @@ bool CAAudioUnitSink::close()
 
 bool CAAudioUnitSink::activate()
 {
-  return activateAudioSession();
+  if (!m_activated)
+  {
+    checkForHDMI();
+    if (setupAudio())
+    {
+      AudioOutputUnitStart(m_audioUnit);
+      m_activated = true;
+    }
+  }
+
+  return m_activated;
 }
 
-void CAAudioUnitSink::getDelay(AEDelayStatus& status)
+bool CAAudioUnitSink::deactivate()
+{
+  if (m_activated)
+  {
+    // disconnect observer 1st, route goes to null on AudioOutputUnitStop
+    [[NSNotificationCenter defaultCenter] removeObserver:m_observer];
+
+    AudioUnitReset(m_audioUnit, kAudioUnitScope_Global, 0);
+
+    // this is a delayed call, the OS will block here
+    // until the autio unit actually is stopped.
+    AudioOutputUnitStop(m_audioUnit);
+
+    // detach the render callback on the unit
+    AURenderCallbackStruct callbackStruct = {0};
+    AudioUnitSetProperty(m_audioUnit,
+      kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input,
+      0, &callbackStruct, sizeof(callbackStruct));
+
+    AudioUnitUninitialize(m_audioUnit);
+    AudioComponentInstanceDispose(m_audioUnit), m_audioUnit = nullptr;
+
+    m_setup = false;
+    m_activated = false;
+  }
+
+  return m_activated;
+}
+
+void CAAudioUnitSink::updatedelay(AEDelayStatus &status)
 {
   CAESpinLock lock(m_render_section);
   do
@@ -199,8 +297,9 @@ void CAAudioUnitSink::getDelay(AEDelayStatus& status)
   status.delay += m_bufferDuration + m_outputLatency;
 }
 
-double CAAudioUnitSink::cacheSize()
+double CAAudioUnitSink::buffertime()
 {
+  // buffer size in seconds
   return (double)m_buffer->GetMaxSize() / (double)(m_frameSize * m_sampleRate);
 }
 
@@ -294,11 +393,6 @@ void CAAudioUnitSink::setCoreAudioPreferredSampleRate()
   preferredSampleRate = [mySession sampleRate];
 }
 
-Float64 CAAudioUnitSink::getCoreAudioRealisedSampleRate()
-{
-  return [[AVAudioSession sharedInstance] sampleRate];
-}
-
 bool CAAudioUnitSink::setupAudio()
 {
   OSStatus status = noErr;
@@ -310,8 +404,7 @@ bool CAAudioUnitSink::setupAudio()
   m_observer = [[NSNotificationCenter defaultCenter] addObserverForName:AVAudioSessionRouteChangeNotification
     object:[AVAudioSession sharedInstance] queue:mainQueue usingBlock:^(NSNotification *note)
   {
-    if (checkAudioRoute())
-      checkSessionProperties();
+    checkSessionProperties();
   }];
 
   // Audio Unit Setup
@@ -334,7 +427,7 @@ bool CAAudioUnitSink::setupAudio()
   setCoreAudioPreferredSampleRate();
  
 	// Get the output samplerate for knowing what was setup in reality
-  Float64 realisedSampleRate = getCoreAudioRealisedSampleRate();
+  Float64 realisedSampleRate = [[AVAudioSession sharedInstance] sampleRate];
   if (m_outputFormat.mSampleRate != realisedSampleRate)
   {
     CLog::Log(LOGNOTICE, "%s couldn't set requested samplerate %d, coreaudio will resample to %d instead", __PRETTY_FUNCTION__, (int)m_outputFormat.mSampleRate, (int)realisedSampleRate);
@@ -379,25 +472,25 @@ bool CAAudioUnitSink::setupAudio()
   return m_setup;
 }
 
-bool CAAudioUnitSink::checkAudioRoute()
+void CAAudioUnitSink::checkForHDMI()
 {
-  // why do we need to know the audio route ?
   AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
-
   AVAudioSessionRouteDescription *currentRoute = [myAudioSession currentRoute];
   NSString *output = [[currentRoute.outputs objectAtIndex:0] portType];
   if (output)
-    m_route = [output UTF8String];
+  {
+    std::string route = [output UTF8String];
+    m_hdmi = route.find("HDMI") != std::string::npos;
+  }
   else
-    m_route = "null";
-  CLog::Log(LOGNOTICE, "%s %s", __PRETTY_FUNCTION__, m_route.c_str());
-
-  return true;
+  {
+    m_hdmi = false;
+  }
 }
 
 bool CAAudioUnitSink::checkSessionProperties()
 {
-  checkAudioRoute();
+  checkForHDMI();
 
   AVAudioSession *mySession = [AVAudioSession sharedInstance];
   m_outputVolume   = [mySession outputVolume];
@@ -410,47 +503,6 @@ bool CAAudioUnitSink::checkSessionProperties()
   CLog::Log(LOGNOTICE, "%s real sampleRate %f", __PRETTY_FUNCTION__, [mySession sampleRate]);
 
   return true;
-}
-
-bool CAAudioUnitSink::activateAudioSession()
-{
-  if (!m_activated)
-  {
-    if (checkAudioRoute() && setupAudio())
-    {
-      AudioOutputUnitStart(m_audioUnit);
-      m_activated = true;
-    }
-  }
-
-  return m_activated;
-}
-
-void CAAudioUnitSink::deactivateAudioSession()
-{
-  if (m_activated)
-  {
-    // disconnect observer 1st, route goes to null on AudioOutputUnitStop
-    [[NSNotificationCenter defaultCenter] removeObserver:m_observer];
-
-    AudioUnitReset(m_audioUnit, kAudioUnitScope_Global, 0);
-
-    // this is a delayed call, the OS will block here
-    // until the autio unit actually is stopped.
-    AudioOutputUnitStop(m_audioUnit);
-
-    // detach the render callback on the unit
-    AURenderCallbackStruct callbackStruct = {0};
-    AudioUnitSetProperty(m_audioUnit,
-      kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input,
-      0, &callbackStruct, sizeof(callbackStruct));
-
-    AudioUnitUninitialize(m_audioUnit);
-    AudioComponentInstanceDispose(m_audioUnit), m_audioUnit = nullptr;
-
-    m_setup = false;
-    m_activated = false;
-  }
 }
 
 inline void LogLevel(unsigned int got, unsigned int wanted)
@@ -603,7 +655,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     return false;
 
   m_audioSink = new CAAudioUnitSink;
-  hdmi = (m_audioSink->getRoute().find("HDMI") != std::string::npos);
+  hdmi = m_audioSink->hdmi();
 
   AudioStreamBasicDescription audioFormat = {0};
 
@@ -651,7 +703,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   }
   
   if (forceRaw)//make sure input and output samplerate match for preventing resampling
-    audioFormat.mSampleRate = CAAudioUnitSink::getCoreAudioRealisedSampleRate();
+    audioFormat.mSampleRate = [[AVAudioSession sharedInstance] sampleRate];
   
   audioFormat.mFramesPerPacket = 1;
   audioFormat.mChannelsPerFrame= 2;// ios only supports 2 channels
@@ -667,9 +719,9 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   size_t buffer_size = 16384;
   m_audioSink->open(audioFormat, buffer_size);
 
-  format.m_frames = m_audioSink->chunkSize();
+  format.m_frames = m_audioSink->bufferframes();
   // reset to the realised samplerate
-  format.m_sampleRate = m_audioSink->getRealisedSampleRate();
+  format.m_sampleRate = m_audioSink->sampletrate();
   m_format = format;
 
   m_audioSink->activate();
@@ -682,10 +734,10 @@ void CAESinkDARWINIOS::Deinitialize()
   SAFE_DELETE(m_audioSink);
 }
 
-void CAESinkDARWINIOS::GetDelay(AEDelayStatus& status)
+void CAESinkDARWINIOS::GetDelay(AEDelayStatus &status)
 {
   if (m_audioSink)
-    m_audioSink->getDelay(status);
+    m_audioSink->updatedelay(status);
   else
     status.SetDelay(0.0);
 }
@@ -693,7 +745,7 @@ void CAESinkDARWINIOS::GetDelay(AEDelayStatus& status)
 double CAESinkDARWINIOS::GetCacheTotal()
 {
   if (m_audioSink)
-    return m_audioSink->cacheSize();
+    return m_audioSink->buffertime();
   return 0.0;
 }
 

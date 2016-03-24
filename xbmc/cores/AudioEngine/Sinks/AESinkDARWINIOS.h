@@ -32,7 +32,7 @@ typedef struct {
 #endif
 
 class AERingBuffer;
-class CAAudioUnitSink;
+class IDarwinAudioSink;
 
 class CAESinkDARWINIOS : public IAESink
 {
@@ -57,7 +57,7 @@ private:
   CAEDeviceInfo      m_info;
   AEAudioFormat      m_format;
 
-  CAAudioUnitSink   *m_audioSink;
+  IDarwinAudioSink  *m_audioSink;
 #if DO_440HZ_TONE_TEST
   SineWaveGenerator  m_SineWaveGenerator;
 #endif
