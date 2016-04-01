@@ -202,6 +202,7 @@ public:
   static const std::string SETTING_PVRPLAYBACK_SCANTIME;
   static const std::string SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH;
   static const std::string SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT;
+  static const std::string SETTING_PVRPLAYBACK_LIVETVWAIT;
   static const std::string SETTING_PVRPLAYBACK_FPS;
   static const std::string SETTING_PVRRECORD_INSTANTRECORDTIME;
   static const std::string SETTING_PVRRECORD_DEFAULTPRIORITY;

@@ -9653,7 +9653,11 @@ msgctxt "#19254"
 msgid "Guide update failed for channel"
 msgstr ""
 
-#empty strings from id 19255 to 19256
+msgctxt "#19255"
+msgid "LiveTV playback wait time"
+msgstr ""
+
+#empty strings from id 19256 to 19256
 
 msgctxt "#19257"
 msgid "Lock channel"
@@ -16772,7 +16776,12 @@ msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr ""
 
-#empty strings from id 36292 to 36300
+#: system/settings/settings.xml
+msgctxt "#36292"
+msgid "Wait time before starting LiveTV playback."
+msgstr ""
+
+#empty strings from id 36293 to 36300
 
 #: system/settings/settings.xml
 msgctxt "#36301"

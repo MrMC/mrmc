@@ -1444,6 +1444,18 @@
             <formatlabel>14046</formatlabel>
           </control>
         </setting>
+        <setting id="pvrplayback.livetvwait" type="integer" label="19255" help="36292">
+          <level>1</level>
+          <default>400</default>
+          <constraints>
+            <minimum>400</minimum>
+            <step>100</step>
+            <maximum>4000</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14046</formatlabel>
+          </control>
+        </setting>
       </group>
       <group id="3">
         <setting id="pvrplayback.fps" type="integer" label="19108" help="36261">
@@ -1462,7 +1474,7 @@
       <group id="4">
         <setting id="pvrplayback.enableradiords" type="boolean" label="29980" help="29981">
           <level>1</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrplayback.trafficadvisory" type="boolean" label="29982" help="29983">
