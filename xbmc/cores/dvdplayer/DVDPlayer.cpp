@@ -1878,11 +1878,19 @@ void CDVDPlayer::HandlePlaySpeed()
         if (m_CurrentAudio.id >= 0)
         {
           double adjust = -1.0; // a unique value
-          if (m_clock.GetSpeedAdjust() >= 0 && m_dvdPlayerAudio->GetLevel() < 5)
+          if (m_clock.GetSpeedAdjust() >= 0)
+          {
+            bool video_under = m_CurrentVideo.id >= 0 ? (m_dvdPlayerVideo->GetLevel() < 5) : false;
+            if (m_dvdPlayerAudio->GetLevel() < 5 || video_under)
             adjust = -0.01;
+          }
 
-          if (m_clock.GetSpeedAdjust() < 0 && m_dvdPlayerAudio->GetLevel() > 10)
-            adjust = 0.0;
+          if (m_clock.GetSpeedAdjust() < 0)
+          {
+            bool video_over = m_CurrentVideo.id >= 0 ? (m_dvdPlayerVideo->GetLevel() < 10) : true;
+            if (m_dvdPlayerAudio->GetLevel() > 10 && video_over)
+              adjust = 0.0;
+          }
 
           if (adjust != -1.0)
           {
