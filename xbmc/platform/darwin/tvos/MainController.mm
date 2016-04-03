@@ -1301,7 +1301,7 @@ MainController *g_xbmcController;
 
   // OnAppFocusChange triggers an AE suspend.
   // Wait for AE to suspend and delete the audio sink, this allows
-  // AudioOutputUnitStop to complete and AVAudioSession to be set inactive.
+  // AudioOutputUnitStop to complete.
   // Note that to user, we moved into background to user but we
   // are really waiting here for AE to suspend.
   while (!CAEFactory::IsSuspended() && !timer.IsTimePast())
