@@ -1067,10 +1067,6 @@ MainController *g_xbmcController;
 
   [self enableScreenSaver];
 
-  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-  [center addObserver: self
-     selector: @selector(observeDefaultCenterStuff:) name: nil object: nil];
-
   [m_window makeKeyAndVisible];
   g_xbmcController = self;  
 
@@ -1089,11 +1085,6 @@ MainController *g_xbmcController;
   [self stopAnimation];
   [m_glView release];
   [m_window release];
-  
-  NSNotificationCenter *center;
-  // take us off the default center for our app
-  center = [NSNotificationCenter defaultCenter];
-  [center removeObserver: self];
   
   [super dealloc];
 }
@@ -1368,6 +1359,13 @@ MainController *g_xbmcController;
   }
 }
 
+//--------------------------------------------------------------
+- (void)audioRouteChanged
+{
+  if (MCRuntimeLib_Initialized())
+    CAEFactory::DeviceChange();
+}
+
 #pragma mark - MCRuntimeLib routines
 //--------------------------------------------------------------
 - (void)pauseAnimation
@@ -1605,13 +1603,6 @@ MainController *g_xbmcController;
   [self setIOSNowPlayingInfo:nil];
 
   m_playbackState = IOS_PLAYBACK_STOPPED;
-}
-
-#pragma mark - private helper methods
-- (void)observeDefaultCenterStuff:(NSNotification *)notification
-{
-//  LOG(@"default: %@", [notification name]);
-//  LOG(@"userInfo: %@", [notification userInfo]);
 }
 
 @end

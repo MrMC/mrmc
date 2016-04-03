@@ -31,6 +31,7 @@
 #import "PlayList.h"
 #import "TextureCache.h"
 
+#import "cores/AudioEngine/AEFactory.h"
 #import "input/Key.h"
 #import "input/touch/generic/GenericTouchActionHandler.h"
 #import "messaging/ApplicationMessenger.h"
@@ -777,6 +778,13 @@ XBMCController *g_xbmcController;
   }
   // check whether we need disable network auto suspend.
   [self rescheduleNetworkAutoSuspend];
+}
+
+//--------------------------------------------------------------
+- (void)audioRouteChanged
+{
+  if (MCRuntimeLib_Initialized())
+    CAEFactory::DeviceChange();
 }
 
 - (NSArray *)keyCommands

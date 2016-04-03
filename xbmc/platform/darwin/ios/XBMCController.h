@@ -78,6 +78,8 @@ typedef enum
 - (void) enterBackground;
 - (void) enterForeground;
 - (void) becomeInactive;
+- (void) audioRouteChanged;
+
 - (void) setIOSNowPlayingInfo:(NSDictionary *)info;
 - (void) sendKey: (XBMCKey) key;
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;

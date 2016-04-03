@@ -27,6 +27,16 @@
 
 typedef enum
 {
+  DEVICE_UNKNOWN,
+  DEVICE_BACKGROUND,
+  DEVICE_FOREGROUND,
+  DEVICE_SCREENSAVER,
+  DEVICE_SUSPENDED
+} IOSDeviceState;
+
+
+typedef enum
+{
   IOS_PLAYBACK_STOPPED,
   IOS_PLAYBACK_PAUSED,
   IOS_PLAYBACK_PLAYING
@@ -102,8 +112,9 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (void) enterBackground;
 - (void) becomeActive;
 - (void) becomeInactive;
+- (void) audioRouteChanged;
+
 - (void) sendKeyDownUp:(XBMCKey)key;
-- (void) observeDefaultCenterStuff: (NSNotification *)notification;
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;

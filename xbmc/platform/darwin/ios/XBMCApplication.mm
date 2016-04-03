@@ -99,7 +99,62 @@ XBMCController *m_xbmcController;
   }
 }
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application 
+- (void)audioRouteChanged:(NSNotification *)notification
+{
+  // Your tests on the Audio Output changes will go here
+  NSInteger routeChangeReason = [notification.userInfo[AVAudioSessionRouteChangeReasonKey] integerValue];
+  switch (routeChangeReason)
+  {
+    case AVAudioSessionRouteChangeReasonUnknown:
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonUnknown");
+        break;
+    case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+        // a headset was added or removed
+        [m_xbmcController audioRouteChanged];
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNewDeviceAvailable");
+        break;
+    case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+        // a headset was added or removed
+        [m_xbmcController audioRouteChanged];
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOldDeviceUnavailable");
+        break;
+    case AVAudioSessionRouteChangeReasonCategoryChange:
+        // called at start - also when other audio wants to play
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonCategoryChange");//AVAudioSessionRouteChangeReasonCategoryChange
+        break;
+    case AVAudioSessionRouteChangeReasonOverride:
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOverride");
+        break;
+    case AVAudioSessionRouteChangeReasonWakeFromSleep:
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonWakeFromSleep");
+        break;
+    case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory");
+        break;
+    case AVAudioSessionRouteChangeReasonRouteConfigurationChange:
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonRouteConfigurationChange");
+        break;
+   default:
+        break;
+  }
+}
+
+- (void)registerAudioRouteNotifications:(BOOL)bRegister
+{
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  if (bRegister)
+  {
+    //register to audio route notifications
+    [nc addObserver:self selector:@selector(audioRouteChanged:) name:AVAudioSessionRouteChangeNotification object:nil];
+  }
+  else
+  {
+    //unregister faudio route notifications
+    [nc removeObserver:self name:AVAudioSessionRouteChangeNotification object:nil];
+  }
+}
+
+- (void)applicationDidFinishLaunching:(UIApplication *)application
 {
   NSError *err = nullptr;
   if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&err])
