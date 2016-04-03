@@ -245,10 +245,20 @@ int CDVDMessageQueue::GetLevel() const
   int level = std::min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
 
   // if we added lots of packets with NOPTS, make sure that the queue is not signalled empty
-  if (level == 0 && m_iDataSize != 0)
+  if (level == 0)
   {
-    //CLog::Log(LOGNOTICE, "CDVDMessageQueue::GetLevel() - can't determine level");
-    return 1;
+    unsigned count = 0;
+    for(SList::const_iterator it = m_list.begin(); it != m_list.end();++it)
+    {
+      if(it->message->IsType(CDVDMsg::DEMUXER_PACKET))
+        count++;
+    }
+
+    if (count > 10)
+    {
+      CLog::Log(LOGNOTICE, "CDVDMessageQueue::GetLevel() - can't determine level. demux packet count %d", count);
+      return 1;
+    }
   }
 
   return level;
