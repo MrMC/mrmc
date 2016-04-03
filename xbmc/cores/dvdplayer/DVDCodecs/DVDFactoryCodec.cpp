@@ -312,9 +312,12 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint)
   CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
-  // try passthrough first
-  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
-  if( pCodec ) return pCodec;
+  // try passthrough first, if enabled
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH))
+  {
+    pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
+    if( pCodec ) return pCodec;
+  }
 
   pCodec = OpenCodec(new CDVDAudioCodecFFmpeg(), hint, options);
   if (pCodec)
