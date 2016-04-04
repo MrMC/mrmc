@@ -68,7 +68,7 @@ static void dumpAVAudioSessionProperties()
 
 static void setAVAudioSessionProperties(NSTimeInterval bufferseconds, double samplerate, int channels)
 {
-  // drawin docs and examples explicity says,
+  // darwin docs and technotes say,
   // deavtivate the session before changing the values
   AVAudioSession *mySession = [AVAudioSession sharedInstance];
 
