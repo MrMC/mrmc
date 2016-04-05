@@ -1879,15 +1879,15 @@ void CDVDPlayer::HandlePlaySpeed()
           double adjust = -1.0; // a unique value
           if (m_clock.GetSpeedAdjust() >= 0)
           {
-            bool video_under = m_CurrentVideo.id >= 0 ? (m_dvdPlayerVideo->GetLevel() < 5) : false;
+            bool video_under = m_CurrentVideo.id >= 0 ? (m_dvdPlayerVideo->GetLevel() < 10) : false;
             if (m_dvdPlayerAudio->GetLevel() < 5 || video_under)
             adjust = -0.01;
           }
 
           if (m_clock.GetSpeedAdjust() < 0)
           {
-            bool video_over = m_CurrentVideo.id >= 0 ? (m_dvdPlayerVideo->GetLevel() < 10) : true;
-            if (m_dvdPlayerAudio->GetLevel() > 10 && video_over)
+            bool video_over = m_CurrentVideo.id >= 0 ? (m_dvdPlayerVideo->GetLevel() > 10) : true;
+            if (m_dvdPlayerAudio->GetLevel() > 5 && video_over)
               adjust = 0.0;
           }
 
@@ -1911,6 +1911,12 @@ void CDVDPlayer::HandlePlaySpeed()
     if (m_pInputStream->IsRealtime())
       threshold = 40;
 
+/*
+    bool video = m_CurrentVideo.id >= 0 && (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) &&
+                 (m_dvdPlayerVideo->GetLevel() > threshold);
+    bool audio = m_CurrentAudio.id >= 0 && (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) &&
+                 (m_dvdPlayerAudio->GetLevel() > threshold);
+*/
     bool video = m_CurrentVideo.id < 0 || (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentVideo.packets == 0 && m_CurrentAudio.packets > threshold);
     bool audio = m_CurrentAudio.id < 0 || (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
