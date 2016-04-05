@@ -607,7 +607,9 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_CurrentTeletext(STREAM_TELETEXT, DVDPLAYER_TELETEXT),
       m_CurrentRadioRDS(STREAM_RADIO_RDS, DVDPLAYER_RDS),
       m_messenger("player"),
-      m_ready(true)
+      m_ready(true),
+      m_DemuxerPausePending(false)
+
 {
   m_players_created = false;
   m_pDemuxer = NULL;
@@ -1348,17 +1350,14 @@ void CDVDPlayer::Process()
     if ((!m_dvdPlayerAudio->AcceptsData() && m_CurrentAudio.id >= 0) ||
         (!m_dvdPlayerVideo->AcceptsData() && m_CurrentVideo.id >= 0))
     {
-      if (m_pDemuxer && m_playSpeed == DVD_PLAYSPEED_PAUSE)
+      if (m_pDemuxer && m_DemuxerPausePending)
       {
+        m_DemuxerPausePending = false;
         m_pDemuxer->SetSpeed(DVD_PLAYSPEED_PAUSE);
       }
 
       Sleep(10);
       continue;
-    }
-    else if (m_pDemuxer)
-    {
-      m_pDemuxer->SetSpeed(m_playSpeed);
     }
 
     // always yield to players if they have data levels > 50 percent
@@ -2715,6 +2714,15 @@ void CDVDPlayer::HandleMessages()
         m_dvdPlayerAudio->SetSpeed(speed);
         m_dvdPlayerVideo->SetSpeed(speed);
         m_streamPlayerSpeed = speed;
+
+        // We can't pause demuxer until our buffers are full. Doing so will result in continued
+        // calls to Read() which may then block indefinitely (CDVDInputStreamRTMP for example).
+        if(m_pDemuxer)
+        {
+          m_DemuxerPausePending = (speed == DVD_PLAYSPEED_PAUSE);
+          if (!m_DemuxerPausePending)
+            m_pDemuxer->SetSpeed(speed);
+        }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
