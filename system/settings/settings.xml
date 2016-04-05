@@ -1450,7 +1450,7 @@
           <constraints>
             <minimum>400</minimum>
             <step>100</step>
-            <maximum>4000</maximum>
+            <maximum>6000</maximum>
           </constraints>
           <control type="spinner" format="string">
             <formatlabel>14046</formatlabel>
