@@ -274,6 +274,18 @@
 						<onclick>Skin.ToggleSetting(HideEPGwithRDS)</onclick>
 						<selected>Skin.HasSetting(HideEPGwithRDS)</selected>
 					</control>
+					<control type="radiobutton" id="1010">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>31123</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(kiosk)</onclick>
+						<selected>Skin.HasSetting(kiosk)</selected>
+					</control>
 					<control type="label" id="106">
 						<width>750</width>
 						<height>45</height>
