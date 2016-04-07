@@ -294,7 +294,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 -(void)handlePinch:(UIPinchGestureRecognizer*)sender
 {
-  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView && sender.numberOfTouches)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
     point.x *= m_screenScale;
@@ -320,7 +320,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 -(void)handleRotate:(UIRotationGestureRecognizer*)sender
 {
-  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView && sender.numberOfTouches)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= m_screenScale;
@@ -349,7 +349,7 @@ XBMCController *g_xbmcController;
   { 
     CGPoint velocity = [sender velocityInView:m_glView];
 
-    if ([sender state] == UIGestureRecognizerStateBegan)
+    if ([sender state] == UIGestureRecognizerStateBegan && sender.numberOfTouches)
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];
       point.x *= m_screenScale;
@@ -358,7 +358,7 @@ XBMCController *g_xbmcController;
       m_lastGesturePoint = point;
     }
 
-    if ([sender state] == UIGestureRecognizerStateChanged)
+    if ([sender state] == UIGestureRecognizerStateChanged && sender.numberOfTouches)
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];
       point.x *= m_screenScale;
@@ -402,7 +402,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (IBAction)handleSwipe:(UISwipeGestureRecognizer *)sender
 {
-  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView && sender.numberOfTouches)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     if (sender.state == UIGestureRecognizerStateRecognized)
     {
