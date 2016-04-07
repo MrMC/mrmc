@@ -315,17 +315,18 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 
   if (settingId == CSettings::SETTING_SERVICES_ESENABLED)
   {
+    bool rc = true;
 #ifdef HAS_EVENT_SERVER
     if (((CSettingBool*)setting)->GetValue())
     {
       if (!StartEventServer())
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
-        return false;
+        rc &= false;
       }
     }
     else
-      return StopEventServer(true, true);
+      rc &= StopEventServer(true, true);
 #endif // HAS_EVENT_SERVER
 
 #ifdef HAS_JSONRPC
@@ -334,12 +335,13 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
       if (!StartJSONRPCServer())
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
-        return false;
+        rc &= false;
       }
     }
     else
-      return StopJSONRPCServer(false);
+      rc &= StopJSONRPCServer(false);
 #endif // HAS_JSONRPC
+    return rc;
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESPORT)
   {
@@ -362,16 +364,18 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESALLINTERFACES)
   {
+    bool es_rc  = true;
+    bool js_rc  = true;
 #ifdef HAS_EVENT_SERVER
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     {
       if (!StopEventServer(true, true))
-        return false;
+        es_rc &= false;
 
-      if (!StartEventServer())
+      if (es_rc && !StartEventServer())
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
-        return false;
+        es_rc &= false;
       }
     }
 #endif // HAS_EVENT_SERVER
@@ -379,13 +383,18 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 #ifdef HAS_JSONRPC
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     {
-      if (!StartJSONRPCServer())
+      // restart JSONRPC TCP server without asking user
+      if (!StopJSONRPCServer(true))
+        js_rc &= false;
+
+      if (js_rc && !StartJSONRPCServer())
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
-        return false;
+        js_rc &= false;
       }
     }
 #endif // HAS_JSONRPC
+    return es_rc && js_rc;
   }
 
 #ifdef HAS_EVENT_SERVER
