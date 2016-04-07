@@ -438,7 +438,7 @@ XBMCController *g_xbmcController;
 {
   //Allow the tap gesture during init
   //(for allowing the user to tap away any messagboxes during init)
-  if (m_readyToRun)
+  if (m_readyToRun && sender.numberOfTouches)
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= m_screenScale;
@@ -450,7 +450,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender
 {
-  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView && sender.numberOfTouches)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= m_screenScale;
@@ -462,7 +462,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (IBAction)handleSingleFingerSingleLongTap:(UIGestureRecognizer *)sender
 {
-  if (m_appAlive && m_glView)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if (m_appAlive && m_glView && sender.numberOfTouches)//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= m_screenScale;
