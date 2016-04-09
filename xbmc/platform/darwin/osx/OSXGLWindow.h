@@ -32,20 +32,20 @@
 -(id) initWithContentRect:(NSRect)box styleMask:(uint)style;
 -(void) dealloc;
 -(BOOL) windowShouldClose:(id) sender;
--(void) windowDidExpose:(NSNotification *) aNotification;
--(void) windowDidMove:(NSNotification *) aNotification;
--(void) windowDidResize:(NSNotification *) aNotification;
--(void) windowDidMiniaturize:(NSNotification *) aNotification;
--(void) windowDidDeminiaturize:(NSNotification *) aNotification;
--(void) windowDidBecomeKey:(NSNotification *) aNotification;
--(void) windowDidResignKey:(NSNotification *) aNotification;
+-(void) windowDidExpose:(NSNotification *) notification;
+-(void) windowDidMove:(NSNotification *) notification;
+-(void) windowDidResize:(NSNotification *) notification;
+-(void) windowDidMiniaturize:(NSNotification *) notification;
+-(void) windowDidDeminiaturize:(NSNotification *) notification;
+-(void) windowDidBecomeKey:(NSNotification *) notification;
+-(void) windowDidResignKey:(NSNotification *) notification;
 -(NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize;
--(void) windowWillStartLiveResize:(NSNotification *)aNotification;
--(void) windowDidEndLiveResize:(NSNotification *)aNotification;
--(void) windowDidEnterFullScreen: (NSNotification*)pNotification;
--(void) windowWillEnterFullScreen: (NSNotification*)pNotification;
--(void) windowDidExitFullScreen: (NSNotification*)pNotification;
--(void) windowWillExitFullScreen: (NSNotification*)pNotification;
+-(void) windowWillStartLiveResize:(NSNotification *)notification;
+-(void) windowDidEndLiveResize:(NSNotification *)notification;
+-(void) windowDidEnterFullScreen: (NSNotification*)notification;
+-(void) windowWillEnterFullScreen: (NSNotification*)notification;
+-(void) windowDidExitFullScreen: (NSNotification*)notification;
+-(void) windowWillExitFullScreen: (NSNotification*)notification;
 -(void) windowDidChangeScreen:(NSNotification *)notification;
 
 /* Window event handling */

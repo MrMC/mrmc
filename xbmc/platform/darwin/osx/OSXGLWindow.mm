@@ -30,6 +30,8 @@
 #import "OSXGLWindow.h"
 #import "platform/darwin/DarwinUtils.h"
 
+NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWidth";
+
 //------------------------------------------------------------------------------------------
 @implementation OSXGLWindow
 
@@ -52,8 +54,9 @@
   [self setAcceptsMouseMovedEvents:YES];
   // autosave the window position/size
   [[self windowController] setShouldCascadeWindows:NO]; // Tell the controller to not cascade its windows.
-  [self setFrameAutosaveName:@"OSXGLWindowPositionHeightWidth"];  // Specify the autosave name for the window.
-  
+  [self setFrameAutosaveName:kOSXGLWindowPositionHeightWidth];  // Specify the autosave name for the window.
+  [self setFrameUsingName:[self frameAutosaveName] force:YES];
+
   g_application.m_AppFocused = true;
   
   return self;
@@ -67,66 +70,29 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
-  //NSLog(@"windowShouldClose");
-  
   if (!g_application.m_bStop)
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
   
   return NO;
 }
 
-- (void)windowDidExpose:(NSNotification *)aNotification
+- (void)windowDidExpose:(NSNotification *)notification
 {
   //NSLog(@"windowDidExpose");
   g_application.m_AppFocused = true;
 }
 
-- (void)windowDidMove:(NSNotification *)aNotification
+- (void)windowDidMove:(NSNotification *)notification
 {
-  //NSLog(@"windowDidMove");
-  NSOpenGLContext* context = [NSOpenGLContext currentContext];
-  if (context)
-  {
-    if ([context view])
-    {
-      NSPoint window_origin = [[[context view] window] frame].origin;
-      XBMC_Event newEvent;
-      memset(&newEvent, 0, sizeof(newEvent));
-      newEvent.type = XBMC_VIDEOMOVE;
-      newEvent.move.x = window_origin.x;
-      newEvent.move.y = window_origin.y;
-      CWinEvents::MessagePush(&newEvent);
-    }
-  }
+  NSLog(@"windowDidMove");
+  // will update from NSWindow bits
+  g_Windowing.OnMove(-1, -1);
 }
 
-- (void)windowDidResize:(NSNotification *)aNotification
+- (void)windowDidResize:(NSNotification *)notification
 {
-  //NSLog(@"windowDidResize");
-}
+  NSLog(@"windowDidResize");
 
--(void)windowDidChangeScreen:(NSNotification *)notification
-{
-  // user has moved the window to a
-  // different screen
-  if (!g_Windowing.IsFullScreen())
-    g_Windowing.SetMovedToOtherScreen(true);
-}
-
--(NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize
-{
-  NSLog(@"windowWillResize");
-  return frameSize;
-}
-
--(void)windowWillStartLiveResize:(NSNotification *)aNotification
-{
-  //NSLog(@"windowWillStartLiveResize");
-}
-
--(void)windowDidEndLiveResize:(NSNotification *)aNotification
-{
-  //NSLog(@"windowDidEndLiveResize");
   NSRect rect = [self contentRectForFrameRect:[self frame]];
 
   if(!g_Windowing.IsFullScreen())
@@ -139,16 +105,74 @@
 
   // send a message so that videoresolution (and refreshrate) is changed
   if (rect.size.width != 0 && rect.size.height != 0)
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_VIDEORESIZE, rect.size.width, rect.size.height);
+  {
+    XBMC_Event newEvent;
+    newEvent.type = XBMC_VIDEORESIZE;
+    newEvent.resize.w = (int)rect.size.width;
+    newEvent.resize.h = (int)rect.size.height;
 
+    // check for valid sizes cause in some cases
+    // we are hit during fullscreen transition from osx
+    // and might be technically "zero" sized
+    if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
+      g_application.OnEvent(newEvent);
+  }
   g_windowManager.MarkDirty();
 }
 
--(void)windowDidEnterFullScreen: (NSNotification*)pNotification
+-(void)windowDidChangeScreen:(NSNotification *)notification
+{
+  // user has moved the window to a different screen
+  if (!g_Windowing.IsFullScreen())
+    g_Windowing.SetMovedToOtherScreen(true);
+}
+
+-(NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize
+{
+  //NSLog(@"windowWillResize");
+  return frameSize;
+}
+
+-(void)windowWillStartLiveResize:(NSNotification *)notification
+{
+  NSLog(@"windowWillStartLiveResize");
+}
+
+-(void)windowDidEndLiveResize:(NSNotification *)notification
+{
+  NSLog(@"windowDidEndLiveResize");
+  NSRect rect = [self contentRectForFrameRect:[self frame]];
+
+  if(!g_Windowing.IsFullScreen())
+  {
+    int RES_SCREEN = g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
+    if(((int)rect.size.width == CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iWidth) &&
+       ((int)rect.size.height == CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iHeight))
+      return;
+  }
+
+  // send a message so that videoresolution (and refreshrate) is changed
+  if (rect.size.width != 0 && rect.size.height != 0)
+  {
+    XBMC_Event newEvent;
+    newEvent.type = XBMC_VIDEORESIZE;
+    newEvent.resize.w = (int)rect.size.width;
+    newEvent.resize.h = (int)rect.size.height;
+
+    // check for valid sizes cause in some cases
+    // we are hit during fullscreen transition from osx
+    // and might be technically "zero" sized
+    if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
+      g_application.OnEvent(newEvent);
+  }
+  g_windowManager.MarkDirty();
+}
+
+-(void)windowDidEnterFullScreen: (NSNotification*)notification
 {
 }
 
--(void)windowWillEnterFullScreen: (NSNotification*)pNotification
+-(void)windowWillEnterFullScreen: (NSNotification*)notification
 {
   
   // if osx is the issuer of the toggle
@@ -170,7 +194,7 @@
   }
 }
 
--(void)windowDidExitFullScreen: (NSNotification*)pNotification
+-(void)windowDidExitFullScreen: (NSNotification*)notification
 {
   // if osx is the issuer of the toggle
   // call XBMCs toggle function
@@ -192,7 +216,7 @@
   }
 }
 
--(void)windowWillExitFullScreen: (NSNotification*)pNotification
+-(void)windowWillExitFullScreen: (NSNotification*)notification
 {
   
 }
@@ -202,26 +226,26 @@
   return (proposedOptions| NSApplicationPresentationAutoHideToolbar);
 }
 
-- (void)windowDidMiniaturize:(NSNotification *)aNotification
+- (void)windowDidMiniaturize:(NSNotification *)notification
 {
   //NSLog(@"windowDidMiniaturize");
   g_application.m_AppFocused = false;
 }
 
-- (void)windowDidDeminiaturize:(NSNotification *)aNotification
+- (void)windowDidDeminiaturize:(NSNotification *)notification
 {
   //NSLog(@"windowDidDeminiaturize");
   g_application.m_AppFocused = true;
 }
 
-- (void)windowDidBecomeKey:(NSNotification *)aNotification
+- (void)windowDidBecomeKey:(NSNotification *)notification
 {
   //NSLog(@"windowDidBecomeKey");
   g_application.m_AppFocused = true;
   CWinEventsOSXImp::EnableInput();
 }
 
-- (void)windowDidResignKey:(NSNotification *)aNotification
+- (void)windowDidResignKey:(NSNotification *)notification
 {
   //NSLog(@"windowDidResignKey");
   g_application.m_AppFocused = false;
