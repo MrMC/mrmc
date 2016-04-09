@@ -22,13 +22,20 @@ endif
 ifeq ($(NATIVE_OS),osx)
   EXTRA_CFLAGS += -D__DARWIN__
 endif
+ifeq ($(OS),osx)
+  # since we removed undefined dynamic_lookup in libtool,
+  # need to actually link to required frameworks
+  EXTRA_LDFLAGS += -framework IOKit -framework CoreFoundation
+endif
+
 
 
 # configuration settings
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
 	./configure --prefix=$(PREFIX) \
 	--enable-shared --disable-static --with-pic \
-	CFLAGS="$(CFLAGS) $(EXTRA_CFLAGS)"
+	CFLAGS="$(CFLAGS) $(EXTRA_CFLAGS)" \
+	LDFLAGS="$(LDFLAGS) $(EXTRA_LDFLAGS)"
 
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
