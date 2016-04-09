@@ -62,7 +62,7 @@ public:
   static void UpdateState();
 protected:
   void UpdateDvdrom();
-  DWORD GetTrayState();
+  uint32_t GetTrayState();
 
 
   void DetectMediaType();
@@ -79,9 +79,9 @@ private:
 
   bool m_bStartup;
   bool m_bAutorun;
-  DWORD m_dwTrayState;
-  DWORD m_dwTrayCount;
-  DWORD m_dwLastTrayState;
+  uint32_t m_dwTrayState;
+  uint32_t m_dwTrayCount;
+  uint32_t m_dwLastTrayState;
 
   static std::string m_diskLabel;
   static std::string m_diskPath;

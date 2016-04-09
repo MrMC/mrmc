@@ -122,7 +122,7 @@ void CDetectDVDMedia::OnExit()
 }
 
 // Gets state of the DVD drive
-VOID CDetectDVDMedia::UpdateDvdrom()
+void CDetectDVDMedia::UpdateDvdrom()
 {
   // Signal for WaitMediaReady()
   // that we are busy detecting the
@@ -313,7 +313,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDD
   m_diskPath = strNewUrl;
 }
 
-DWORD CDetectDVDMedia::GetTrayState()
+uint32_t CDetectDVDMedia::GetTrayState()
 {
 #ifdef TARGET_POSIX
 

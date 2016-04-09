@@ -60,7 +60,7 @@
 #include "cdioSupport.h"
 #include "MediaManager.h"
 #ifdef TARGET_POSIX
-#include "XHandle.h"
+#include "linux/XHandle.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE

@@ -182,9 +182,9 @@ std::string Xcddb::Recv(bool wait4point)
     lenRead = recv((SOCKET)m_cddb_socket, (char*) & tmpbuffer, 1, 0);
 
     //Check if there was any error reading the buffer
-    if(lenRead == 0 || lenRead == SOCKET_ERROR  || WSAGetLastError() == WSAECONNRESET)
+    if(lenRead == 0 || lenRead == SOCKET_ERROR  || GetLastError() == ECONNRESET)
     {
-      CLog::Log(LOGERROR, "Xcddb::Recv Error reading buffer. lenRead = [%d] and WSAGetLastError = [%d]", lenRead, WSAGetLastError());
+      CLog::Log(LOGERROR, "Xcddb::Recv Error reading buffer. lenRead = [%d] and WSAGetLastError = [%d]", lenRead, GetLastError());
       break;
     }
 

@@ -1,6 +1,6 @@
 #include "rar.hpp"
 #ifdef TARGET_POSIX
-#include "XFileUtils.h"
+#include "linux/XFileUtils.h"
 #endif
 
 

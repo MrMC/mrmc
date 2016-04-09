@@ -282,7 +282,7 @@ HANDLE CCdIoSupport::OpenIMAGE( std::string& strFilename )
   return (HANDLE) cdio;
 }
 
-INT CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+int CCdIoSupport::ReadSector(HANDLE hDevice, uint32_t dwSector, char *lpczBuffer)
 {
   CSingleLock lock(*m_cdio);
 
@@ -296,7 +296,7 @@ INT CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   return -1;
 }
 
-INT CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+int CCdIoSupport::ReadSectorMode2(HANDLE hDevice, uint32_t dwSector, char *lpczBuffer)
 {
   CSingleLock lock(*m_cdio);
 
@@ -310,7 +310,7 @@ INT CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuff
   return -1;
 }
 
-INT CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+int CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, uint32_t dwSector, char *lpczBuffer)
 {
   CSingleLock lock(*m_cdio);
 
@@ -324,7 +324,7 @@ INT CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffe
   return -1;
 }
 
-VOID CCdIoSupport::CloseCDROM(HANDLE hDevice)
+void CCdIoSupport::CloseCDROM(HANDLE hDevice)
 {
   CSingleLock lock(*m_cdio);
 
@@ -466,7 +466,7 @@ int CCdIoSupport::ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, tra
   unsigned int track_sec_count = ::cdio_get_track_sec_count(cdio, track_num);
   memset(buffer[bufnum], 0, CDIO_CD_FRAMESIZE);
 
-  if ( track_sec_count < (UINT)superblock)
+  if ( track_sec_count < (unsigned int)superblock)
   {
     ::cdio_debug("reading block %u skipped track %d has only %u sectors\n",
                superblock, track_num, track_sec_count);
@@ -906,7 +906,7 @@ int CCdIoSupport::CddbDecDigitSum(int n)
 }
 
 // Return the number of seconds (discarding frame portion) of an MSF
-UINT CCdIoSupport::MsfSeconds(msf_t *msf)
+unsigned int CCdIoSupport::MsfSeconds(msf_t *msf)
 {
   CSingleLock lock(*m_cdio);
 

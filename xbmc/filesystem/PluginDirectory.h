@@ -26,7 +26,7 @@
 #include <map>
 #include "threads/CriticalSection.h"
 #include "addons/IAddon.h"
-#include "PlatformDefs.h"
+#include "linux/PlatformDefs.h"
 
 #include "threads/Event.h"
 
