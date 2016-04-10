@@ -68,7 +68,7 @@ echo "Package $TARGET_BUILD_DIR/$APP_NAME"
 cp -f "$TARGET_BUILD_DIR/$APP_NAME" "$TARGET_BINARY"
 
 echo "Creating icon"
-iconutil -c icns --output "$TARGET_CONTENTS/Resources/kodi.icns" "$SRCROOT/tools/darwin/packaging/media/osx/icon.iconset"
+iconutil -c icns --output "$TARGET_CONTENTS/Resources/mrmc.icns" "$SRCROOT/tools/darwin/packaging/media/osx/icon.iconset"
 
 cp -f "$SRCROOT/xbmc/platform/darwin/osx/Info.plist" "$TARGET_CONTENTS/"
 
