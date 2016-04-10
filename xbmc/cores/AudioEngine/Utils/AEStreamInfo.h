@@ -27,7 +27,7 @@
 #undef restrict
 
 extern "C" {
-#include "libavutil/crc.h"
+#include <libavutil/crc.h>
 }
 
 class CAEStreamInfo
