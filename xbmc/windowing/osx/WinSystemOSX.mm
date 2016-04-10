@@ -418,8 +418,10 @@ bool CWinSystemOSX::DestroyWindowInternal()
   {
     NSWindow *oldAppWindow = (NSWindow*)m_appWindow;
     m_appWindow = NULL;
-    [oldAppWindow setContentView:nil];
-    [oldAppWindow release];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      [oldAppWindow setContentView:nil];
+      [oldAppWindow release];
+    });
   }
 
   [pool release];
