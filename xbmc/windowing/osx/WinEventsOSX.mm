@@ -163,7 +163,7 @@ CGEventRef HotKeyEventHandler(CGEventTapProxy proxy, CGEventType type, CGEventRe
     return NULL;
   }
   
-  if (!g_application.m_AppFocused || !winEvents->AreHotKeysEnabled())
+  if (!g_application.m_renderGUI || !winEvents->AreHotKeysEnabled())
     return event;
 
  

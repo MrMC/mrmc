@@ -256,6 +256,7 @@ static void setupWindowMenu(void)
   
   bool renderGUI = true;
   gStatus = MCRuntimeLib_Run(renderGUI);
+
   MCRuntimeLib_SetRenderGUI(false);
   [pool release];
   [self performSelectorOnMainThread:@selector(stopRunLoop) withObject:nil waitUntilDone:false];
@@ -264,6 +265,8 @@ static void setupWindowMenu(void)
 // Called after the internal event loop has started running.
 - (void) applicationDidFinishLaunching: (NSNotification *) note
 {
+  //NSLog(@"applicationDidFinishLaunching");
+
   // enable multithreading, we should NOT have to do this but as we are mixing NSThreads/pthreads...
   if (![NSThread isMultiThreaded])
     [NSThread detachNewThreadSelector:@selector(kickstartMultiThreaded:) toTarget:self withObject:nil];
@@ -290,12 +293,14 @@ static void setupWindowMenu(void)
 
 - (void) applicationWillResignActive:(NSNotification *) note
 {
+  //NSLog(@"applicationWillResignActive");
   // when app moves to background
   g_Windowing.NotifyAppFocusChange(false);
 }
 
 - (void) applicationWillBecomeActive:(NSNotification *) note
 {
+  //NSLog(@"applicationWillBecomeActive");
   // when app moves to front
   g_Windowing.NotifyAppFocusChange(true);
 }

@@ -18,13 +18,14 @@
  *
  */
 
-#include "Application.h"
-#include "guilib/GUIWindowManager.h"
-#include "messaging/ApplicationMessenger.h"
-#include "settings/DisplaySettings.h"
-#include "platform/darwin/osx/CocoaInterface.h"
-#include "windowing/osx/WinEventsOSX.h"
-#include "windowing/WindowingFactory.h"
+#import "Application.h"
+#import "guilib/GUIWindowManager.h"
+#import "messaging/ApplicationMessenger.h"
+#import "settings/DisplaySettings.h"
+#import "platform/darwin/osx/CocoaInterface.h"
+#import "windowing/osx/WinEventsOSX.h"
+#import "windowing/WindowingFactory.h"
+#import "platform/MCRuntimeLib.h"
 
 #import "OSXGLView.h"
 #import "OSXGLWindow.h"
@@ -56,8 +57,6 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
   [[self windowController] setShouldCascadeWindows:NO]; // Tell the controller to not cascade its windows.
   [self setFrameAutosaveName:kOSXGLWindowPositionHeightWidth];  // Specify the autosave name for the window.
   [self setFrameUsingName:[self frameAutosaveName] force:YES];
-
-  g_application.m_AppFocused = true;
   
   return self;
 }
@@ -79,24 +78,23 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 - (void)windowDidExpose:(NSNotification *)notification
 {
   //NSLog(@"windowDidExpose");
-  g_application.m_AppFocused = true;
 }
 
 - (void)windowDidMove:(NSNotification *)notification
 {
   //NSLog(@"windowDidMove");
   // will update from NSWindow bits
-  g_Windowing.OnMove(-1, -1);
+  if (MCRuntimeLib_Initialized())
+    g_Windowing.OnMove(-1, -1);
 }
 
 - (void)windowDidResize:(NSNotification *)notification
 {
   //NSLog(@"windowDidResize");
+  if (!MCRuntimeLib_Initialized())
+    return;
 
   NSRect rect = [self contentRectForFrameRect:[self frame]];
-  NSLog(@"newTop(%f)", [self frame].origin.y);
-  NSLog(@"newTop(%f)", rect.origin.y);
-
   if (!g_Windowing.IsFullScreen())
   {
     int RES_SCREEN = g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
@@ -125,6 +123,7 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 
 -(void)windowDidChangeScreen:(NSNotification *)notification
 {
+  //NSLog(@"windowDidChangeScreen");
   // user has moved the window to a different screen
   if (!g_Windowing.IsFullScreen())
     g_Windowing.SetMovedToOtherScreen(true);
@@ -144,6 +143,9 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 -(void)windowDidEndLiveResize:(NSNotification *)notification
 {
   //NSLog(@"windowDidEndLiveResize");
+  if (!MCRuntimeLib_Initialized())
+    return;
+
   NSRect rect = [self contentRectForFrameRect:[self frame]];
 
   if(!g_Windowing.IsFullScreen())
@@ -178,7 +180,6 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 
 -(void)windowWillEnterFullScreen: (NSNotification*)notification
 {
-  
   // if osx is the issuer of the toggle
   // call XBMCs toggle function
   if (!g_Windowing.GetFullscreenWillToggle())
@@ -233,26 +234,24 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 - (void)windowDidMiniaturize:(NSNotification *)notification
 {
   //NSLog(@"windowDidMiniaturize");
-  g_application.m_AppFocused = false;
+  MCRuntimeLib_SetRenderGUI(false);
 }
 
 - (void)windowDidDeminiaturize:(NSNotification *)notification
 {
   //NSLog(@"windowDidDeminiaturize");
-  g_application.m_AppFocused = true;
+  MCRuntimeLib_SetRenderGUI(true);
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
   //NSLog(@"windowDidBecomeKey");
-  g_application.m_AppFocused = true;
   CWinEventsOSXImp::EnableInput();
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification
 {
   //NSLog(@"windowDidResignKey");
-  g_application.m_AppFocused = false;
   CWinEventsOSXImp::DisableInput();
 }
 

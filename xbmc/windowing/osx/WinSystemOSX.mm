@@ -330,15 +330,20 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   m_nHeight = res.iHeight;
   m_bFullScreen = fullScreen;
 
+  __block NSWindow *appWindow;
   // because we are not main thread, delay any updates
+  // and only become keyWindow after it finishes.
   [NSAnimationContext beginGrouping];
+  [[NSAnimationContext currentContext] setCompletionHandler: ^{
+    [appWindow makeKeyWindow];
+  }];
 
   // for native fullscreen we always want to set the same windowed flags
   NSUInteger windowStyleMask;
   windowStyleMask = NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask;
   if (m_appWindow == NULL)
   {
-    NSWindow *appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight) styleMask:windowStyleMask];
+    appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight) styleMask:windowStyleMask];
     NSString *title = [NSString stringWithUTF8String:m_name.c_str()];
     [appWindow setBackgroundColor:[NSColor blackColor]];
     [appWindow setTitle:title];
@@ -374,7 +379,10 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
     m_bWindowCreated = true;
   }
 
-  [(NSWindow*)m_appWindow makeKeyAndOrderFront:nil];
+  // warning, we can order front but not become
+  // key window or risk starting up with bad flicker
+  // becoming key window must happen in completion block.
+  [(NSWindow*)m_appWindow orderFront:nil];
 
   [NSAnimationContext endGrouping];
 
