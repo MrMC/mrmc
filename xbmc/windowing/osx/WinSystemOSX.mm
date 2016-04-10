@@ -499,8 +499,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   if (m_lastDisplayNr == -1)
     m_lastDisplayNr = res.iScreen;
 
-  NSWindow *window = (NSWindow *)m_appWindow;
-  OSXGLView *view = [window contentView];
   
   if (m_lastDisplayNr == -1)
     m_lastDisplayNr = res.iScreen;
@@ -509,6 +507,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
   
+  NSWindow *window = (NSWindow *)m_appWindow;
   [window setAllowsConcurrentViewDrawing:NO];
 
   if (m_bFullScreen)
