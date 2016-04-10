@@ -59,7 +59,10 @@ namespace XCURL
 
   class DllLibCurl : public DllDynamic, DllLibCurlInterface
   {
-#if defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
+#if defined(TARGET_DARWIN_OSX)
+    // osx system curl gets loaded very early and collides, use it instead
+    DECLARE_DLL_WRAPPER(DllLibCurl, std::string("/usr/lib/") + std::string(DLL_PATH_LIBCURL))
+#elif defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
     DECLARE_DLL_WRAPPER(DllLibCurl, "libcurl.framework/libcurl")
 #else
     DECLARE_DLL_WRAPPER(DllLibCurl, DLL_PATH_LIBCURL)
