@@ -31,11 +31,12 @@
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "DVDClock.h"
+#include "threads/Atomics.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
-
+#include "settings/DisplaySettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 
@@ -49,11 +50,19 @@
 #include "platform/android/jni/Surface.h"
 #include "platform/android/jni/SurfaceTexture.h"
 #include "platform/android/activity/AndroidFeatures.h"
+#include "platform/android/jni/View.h"
+#include "platform/android/jni/Window.h"
+#include "platform/android/jni/Display.h"
+#include "platform/android/jni/Build.h"
+
+#include "utils/StringUtils.h"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
 #include <cassert>
+
+#define DEBUG_EXTRADATA 1
 
 using namespace KODI::MESSAGING;
 
@@ -172,10 +181,28 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
 , m_codec(codec)
 , m_surfacetexture(surfacetexture)
 , m_frameready(frameready)
+, m_scaleX(1.0)
+, m_scaleY(1.0)
 {
   // paranoid checks
   assert(m_index >= 0);
   assert(m_codec != NULL);
+
+  CJNIWindow window = CXBMCApp::getWindow();
+  if (window)
+  {
+    CJNIView view(window.getDecorView());
+    if (view)
+    {
+      CJNIDisplay display = view.getDisplay();
+      if (display)
+      {
+        CRect gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
+        m_scaleX = (double)display.getWidth() / gui.Width();
+        m_scaleY = (double)display.getHeight() / gui.Height();
+      }
+    }
+  }
 }
 
 CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
@@ -185,7 +212,7 @@ CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
 
 CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 {
-  ++m_refs;
+  AtomicIncrement(&m_refs);
   m_isReleased = false;
 
   return this;
@@ -307,7 +334,10 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
   if (DestRect != cur_rect)
   {
-    CXBMCApp::get()->setVideoViewSurfaceRect(DestRect.x1, DestRect.y1, DestRect.x2, DestRect.y2);
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "RenderUpdate: %f+%f-%fx%f  scale(%fx%f)", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height(), m_scaleX, m_scaleY);
+
+    CXBMCApp::get()->setVideoViewSurfaceRect(DestRect.x1 * m_scaleX, DestRect.y1 * m_scaleY, DestRect.x2 * m_scaleX, DestRect.y2 * m_scaleY);
     cur_rect = DestRect;
     
     // setVideoViewSurfaceRect is async, so skip rendering this frame
@@ -393,6 +423,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           // No known h/w decoder supporting Hi10P
           return false;
       }
+      if (CJNIBuild::DEVICE == "foster" && hints.stereo_mode != "mono")   // SATV buggy with HTAB/HSBS
+      {
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - SATV does not support stereo mode (%s)", hints.stereo_mode.c_str());
+        return false;
+      }
+
       m_mime = "video/avc";
       m_formatname = "amc-h264";
       // check for h264-avcC and convert to h264-annex-b
@@ -485,10 +521,28 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     m_videosurface = CXBMCApp::get()->getVideoViewSurface();
     if (!m_videosurface)
       return false;
+    CXBMCApp::get()->setVideosurfaceInUse(true);
   }
 
   if (m_render_surface)
     m_formatname += "(S)";
+
+#ifdef DEBUG_EXTRADATA
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec: Extradata size: %d", m_hints.extrasize);
+  if (m_hints.extrasize)
+  {
+    std::string line;
+    for (unsigned int y=0; y*8 < m_hints.extrasize; ++y)
+    {
+      line = "";
+      for (unsigned int x=0; x<8 && y*8 + x < m_hints.extrasize; ++x)
+      {
+        line += StringUtils::Format("%02x ", ((char *)m_hints.extradata)[y*8+x]);
+      }
+      CLog::Log(LOGDEBUG, "%s", line.c_str());
+    }
+  }
+#endif
 
   // CJNIMediaCodec::createDecoderByXXX doesn't handle errors nicely,
   // it crashes if the codec isn't found. This is fixed in latest AOSP,
@@ -638,6 +692,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   ReleaseSurfaceTexture();
   if (m_render_surface)
     CXBMCApp::get()->clearVideoView();
+  CXBMCApp::get()->setVideosurfaceInUse(false);
 
   SAFE_DELETE(m_bitstream);
 }
@@ -1350,11 +1405,11 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
   m_videobuffer.iDisplayHeight = crop_bottom + 1 - crop_top;
   if (m_hints.aspect > 1.0 && !m_hints.forced_aspect)
   {
-    m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * m_hints.aspect)) & -3;
+    m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * m_hints.aspect)) & ~3;
     if (m_videobuffer.iDisplayWidth > m_videobuffer.iWidth)
     {
       m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
-      m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / m_hints.aspect)) & -3;
+      m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / m_hints.aspect)) & ~3;
     }
   }
 

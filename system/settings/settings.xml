@@ -521,6 +521,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.importall" type="boolean" label="20472" help="20473">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2">
         <setting id="videolibrary.updateonstartup" type="boolean" label="22000" help="36146">
@@ -556,6 +561,10 @@
           <control type="button" format="action" />
         </setting>
         <setting id="videolibrary.import" type="action" label="648" help="36150">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="thumbnails.cleanup" type="action" label="1451" help="37046">
           <level>2</level>
           <control type="button" format="action" />
         </setting>
@@ -872,7 +881,7 @@
         <setting id="videoplayer.usevideotoolbox" type="boolean" label="13432" help="36162">
           <requirement>HasVideoToolBoxDecoder</requirement>
           <level>2</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usevda" type="boolean" label="13429" help="36160">
@@ -884,7 +893,7 @@
         <setting id="videoplayer.useavf" type="boolean" label="13453" help="13454">
           <requirement>hasAVF</requirement>
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
       </group>
@@ -2394,6 +2403,17 @@
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
+        </setting>
+        <setting id="smb.forcev1" type="boolean" label="1209" help="36462">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="smb.overwriteconf" type="boolean" label="1224" help="36463">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+          <visible>false</visible>
         </setting>
         <setting id="smb.statfiles" type="boolean" label="36625" help="36626">
           <level>1</level>

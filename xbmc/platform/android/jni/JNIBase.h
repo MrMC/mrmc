@@ -31,13 +31,17 @@ public:
   operator safe_bool_type() const { return !m_object ?  0 : &CJNIBase::non_null_object; }
   const jni::jhobject& get_raw() const { return m_object; }
   static int GetSDKVersion();
+  const static std::string ExceptionToString();
+
+  static int RESULT_OK;
 
 protected:
   CJNIBase(jni::jhobject const& object);
   CJNIBase(std::string classname);
   ~CJNIBase();
 
-  const std::string & GetClassName() {return m_className;};
+  const std::string & GetClassName() {return m_className;}
+  const std::string GetDotClassName();
 
   jni::jhobject m_object;
 

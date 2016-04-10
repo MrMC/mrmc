@@ -47,6 +47,7 @@
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/jni/Build.h"
+#include "utils/SysfsUtils.h"
 #include "utils/AMLUtils.h"
 #endif
 
@@ -693,6 +694,83 @@ bool CSysInfo::HasHW3DInterlaced()
     return true;
 #endif
   return false;
+}
+
+bool CSysInfo::HWSupportsStereo(const int mode)
+{
+#if defined(TARGET_ANDROID)
+  if (aml_present())
+    return aml_supports_stereo(mode);
+  else if (SysfsUtils::Has("/sys/class/graphics/fb0/3d_present"))  // AFTV
+    return true;
+#endif
+  return false;
+}
+
+void CSysInfo::HWSetStereoMode(const int mode, const int view)
+{
+#if defined(TARGET_ANDROID)
+  if (aml_present())
+    aml_set_stereo_mode(mode, view);
+  else if (SysfsUtils::Has("/sys/class/graphics/fb0/3d_present"))  // AFTV
+  {
+    switch(mode)
+    {
+      default:
+        SysfsUtils::SetInt("/sys/class/graphics/fb0/format_3d", 0);
+        break;
+      case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+        SysfsUtils::SetInt("/sys/class/graphics/fb0/format_3d", 1);
+        break;
+      case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+        SysfsUtils::SetInt("/sys/class/graphics/fb0/format_3d", 2);
+        break;
+    }
+  }
+#endif
+}
+
+CSysInfo::WindowsVersion CSysInfo::m_WinVer = WindowsVersionUnknown;
+
+bool CSysInfo::IsWindowsVersion(WindowsVersion ver)
+{
+  if (ver == WindowsVersionUnknown)
+    return false;
+  return GetWindowsVersion() == ver;
+}
+
+bool CSysInfo::IsWindowsVersionAtLeast(WindowsVersion ver)
+{
+  if (ver == WindowsVersionUnknown)
+    return false;
+  return GetWindowsVersion() >= ver;
+}
+
+CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
+{
+#ifdef TARGET_WINDOWS
+  if (m_WinVer == WindowsVersionUnknown)
+  {
+    OSVERSIONINFOEXW osvi = {};
+    if (sysGetVersionExWByRef(osvi))
+    {
+      if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
+        m_WinVer = WindowsVersionVista;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1)
+        m_WinVer = WindowsVersionWin7;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
+        m_WinVer = WindowsVersionWin8;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) 
+        m_WinVer = WindowsVersionWin8_1;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0)
+        m_WinVer = WindowsVersionWin10;
+      /* Insert checks for new Windows versions here */
+      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 6)
+        m_WinVer = WindowsVersionFuture;
+    }
+  }
+#endif // TARGET_WINDOWS
+  return m_WinVer;
 }
 
 int CSysInfo::GetKernelBitness(void)

@@ -66,6 +66,7 @@
 #endif
 #if defined(TARGET_ANDROID)
 #include "AndroidAppFile.h"
+#include "AndroidSettingFile.h"
 #endif
 #if defined(TARGET_DARWIN_TVOS)
   #include "filesystem/TVOSFile.h"
@@ -78,6 +79,7 @@
 #endif
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
+#include "VideoDatabaseFile.h"
 #include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
 #include "UDFFile.h"
@@ -124,7 +126,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   }
   else if (url.IsProtocol("xbt")) return new CXbtFile();
   else if (url.IsProtocol("musicdb")) return new CMusicDatabaseFile();
-  else if (url.IsProtocol("videodb")) return NULL;
+  else if (url.IsProtocol("videodb")) return new CVideoDatabaseFile();
   else if (url.IsProtocol("special")) return new CSpecialProtocolFile();
   else if (url.IsProtocol("multipath")) return new CMultiPathFile();
   else if (url.IsProtocol("image")) return new CImageFile();
@@ -151,6 +153,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if(url.IsProtocol("udf")) return new CUDFFile();
 #if defined(TARGET_ANDROID)
   else if (url.IsProtocol("androidapp")) return new CFileAndroidApp();
+  else if (url.IsProtocol("androidsetting")) return new CFileAndroidSetting();
 #endif
   else if (url.IsProtocol("pipe")) return new CPipeFile();
 #ifdef HAVE_LIBBLURAY

@@ -117,7 +117,8 @@ void CSMB::Init()
     URIUtils::RemoveSlashAtEnd(home);
 
     snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", home.c_str());
-    if (mkdir(smb_conf, 0755) == 0)
+    int ret = mkdir(smb_conf, 0755);
+    if (ret == 0 || CSettings::GetInstance().GetBool(CSettings::SETTING_SMB_OVERWRITECONF))
     {
       snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", home.c_str());
       FILE* f = fopen(smb_conf, "w");
@@ -146,6 +147,10 @@ void CSMB::Init()
         }
         else
           fprintf(f, "\tname resolve order = bcast host\n");
+
+        // Force V1 ?
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_SMB_FORCEV1))
+          fprintf(f, "\tclient max protocol = NT1\n");
 
         // use user-configured charset. if no charset is specified,
         // samba tries to use charset 850 but falls back to ASCII in case it is not available

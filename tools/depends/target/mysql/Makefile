@@ -12,7 +12,7 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --build=$(BUILD) \
 	--enable-thread-safe-client --with-extra-charsets=complex \
 	--with-named-thread-libs=-lc --with-named-curses-libs=-lncurses --with-libedit \
-	--without-server --without-bench --without-docs --without-man --disable-shared \
+	--without-server  --without-docs --without-man --disable-shared \
         --with-ssl=$(PREFIX) LIBS=-lz
 
 LIBDYLIB=$(PLATFORM)/lib$(LIBNAME)/.libs/lib$(LIBNAME)client.a
@@ -32,6 +32,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -Np1 -i ../03-mysqlclient-android.patch
 	cd $(PLATFORM); patch -p0 < ../04-strnlen.patch
 	cd $(PLATFORM); patch -p1 < ../05-mysqlclient-ios64.patch
+	cd $(PLATFORM); patch -p1 < ../06-no-endpwent.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE) 
 

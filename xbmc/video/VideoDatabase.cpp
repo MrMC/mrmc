@@ -2462,7 +2462,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
 
     SetArtForItem(idEpisode, MediaTypeEpisode, artwork);
 
-    if (details.m_iEpisode != -1 && details.m_iSeason != -1)
+    if (!(details.m_iSeason == 0 && details.m_iEpisode == 0)) // Special episodes
     { // query DB for any episodes matching idShow, Season and Episode
       std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
                                       "FROM episode INNER JOIN files ON files.idFile=episode.idFile "
@@ -8231,6 +8231,103 @@ void CVideoDatabase::DumpToDummyFiles(const std::string &path)
     CFile file;
     if (file.OpenForWrite(URIUtils::AddFileToFolder(moviePath, movie)))
       file.Close();
+  }
+}
+
+void CVideoDatabase::ExportSingleVideoToXML(const std::string& inPath, bool images /*=false*/, bool overwrite/*=false*/, const std::string &outPath /*=""*/)
+{
+  if (!URIUtils::IsVideoDb(inPath))
+    return;
+
+  std::string strFileName=URIUtils::GetFileName(inPath);
+  if (strFileName.empty())
+	  return;
+
+  std::string strPath = URIUtils::GetDirectory(inPath);
+  if (strPath.empty())
+	  return;
+
+  std::string strExtension = URIUtils::GetExtension(strFileName);
+  URIUtils::RemoveExtension(strFileName);
+
+  if (!StringUtils::IsNaturalNumber(strFileName))
+    return;
+  long idDb=atol(strFileName.c_str());
+
+  std::vector<std::string> pathElem = StringUtils::Split(strPath, "/");
+  if (pathElem.size() == 0)
+    return;
+
+  std::string itemType = pathElem.at(2);
+  VIDEODB_CONTENT_TYPE type;
+  if (itemType == "movies" || itemType == "recentlyaddedmovies")
+    type = VIDEODB_CONTENT_MOVIES;
+  else if (itemType == "episodes" || itemType == "recentlyaddedepisodes")
+    type = VIDEODB_CONTENT_EPISODES;
+  else if (itemType == "musicvideos" || itemType == "recentlyaddedmusicvideos")
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
+  else
+    return;
+
+  CVideoInfoTag tag = GetDetailsByTypeAndId(type, idDb);
+
+  // create our xml document
+  CXBMCTinyXML xmlDoc;
+  TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+  xmlDoc.InsertEndChild(decl);
+
+  std::map<std::string, std::string> artwork;
+  GetArtForItem(tag.m_iDbId, tag.m_type, artwork);
+  switch (type)
+  {
+  case VIDEODB_CONTENT_MOVIES:
+    tag.Save(&xmlDoc, "movie", false);
+    break;
+  case VIDEODB_CONTENT_EPISODES:
+    tag.Save(&xmlDoc, "episodedetails", false);
+    break;
+  case VIDEODB_CONTENT_MUSICVIDEOS:
+    tag.Save(&xmlDoc, "musicvideo", false);
+    break;
+  }
+
+  std::string outDir;
+  std::string outNfo;
+  if (!outPath.empty())
+  {
+    outDir = URIUtils::GetParentPath(outPath);
+    outNfo = URIUtils::GetFileName(URIUtils::ReplaceExtension(outPath, ".nfo"));
+  } 
+  else
+  {
+    outDir = URIUtils::GetParentPath(tag.m_strFileNameAndPath);
+    outNfo = URIUtils::GetFileName(URIUtils::ReplaceExtension(tag.m_strFileNameAndPath, ".nfo"));
+  }
+  if (CUtil::SupportsWriteFileOperations(outDir))
+  {
+    std::string nfoFile(URIUtils::AddFileToFolder(outDir, outNfo));
+    if (overwrite || !CFile::Exists(nfoFile, false))
+    {
+      if(!xmlDoc.SaveFile(nfoFile))
+      {
+        CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+        return;
+      }
+
+      xmlDoc.Clear();
+    }
+
+    if (images)
+    {
+      CFileItem item(tag.m_strFileNameAndPath,false);
+      item.SetArt(artwork);
+      for (std::map<std::string, std::string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
+      {
+        std::string savedThumb = item.GetLocalArt(i->first, false);
+        savedThumb = URIUtils::AddFileToFolder(outDir, URIUtils::GetFileName(savedThumb));
+        CTextureCache::GetInstance().Export(i->second, savedThumb, overwrite);
+      }
+    }
   }
 }
 

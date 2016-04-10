@@ -32,6 +32,9 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
+#include "video/VideoDatabase.h"
 
 using namespace XFILE;
 
@@ -180,6 +183,59 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         strFileName = CUtil::MakeLegalFileName(strFileName);
       }
 
+      // special case for video db
+      if ( URIUtils::IsVideoDb(pItem->GetPath()) )
+      {
+        // Build filename
+        if (pItem->HasVideoInfoTag())
+        {
+          CVideoInfoTag* tag = pItem->GetVideoInfoTag();
+          if (tag->m_type == "movie")
+          {
+            strFileName = StringUtils::Format("%s (%d)", tag->m_strTitle.c_str(), tag->m_iYear);
+          }
+          else if (tag->m_type == "episode")
+          {
+            strFileName = StringUtils::Format("%s - S%dE%d - %s", tag->m_strShowTitle.c_str(), tag->m_iSeason, tag->m_iEpisode, tag->m_strTitle.c_str());
+          }
+          else if (tag->m_type == "musicvideo")
+          {
+            strFileName = tag->m_strTitle;
+          }
+        } 
+        else
+          strFileName = pItem->GetLabel();
+
+        if(!pItem->m_bIsFolder && URIUtils::GetExtension(strFileName).length() == 0)
+        {
+          // FIXME: for now we only work well if the url has the extension
+          // we should map the content type to the extension otherwise
+          strFileName += URIUtils::GetExtension(pItem->GetPath());
+        }
+        strFileName = CUtil::MakeLegalFileName(strFileName);
+      }
+
+      // special case for music db
+      if ( URIUtils::IsMusicDb(pItem->GetPath()) )
+      {
+        // Build filename
+        if (pItem->HasMusicInfoTag())
+        {
+          MUSIC_INFO::CMusicInfoTag* tag = pItem->GetMusicInfoTag();
+          strFileName = StringUtils::Format("%s - %s - %d - %s", StringUtils::Join(tag->m_artist, "+").c_str(), tag->m_strAlbum.c_str(), tag->m_iTrack, tag->m_strTitle.c_str());
+        } 
+        else
+          strFileName = pItem->GetLabel();
+
+        if(!pItem->m_bIsFolder && URIUtils::GetExtension(strFileName).length() == 0)
+        {
+          // FIXME: for now we only work well if the url has the extension
+          // we should map the content type to the extension otherwise
+          strFileName += URIUtils::GetExtension(pItem->GetPath());
+        }
+        strFileName = CUtil::MakeLegalFileName(strFileName);
+      }
+      
       std::string strnewDestFile;
       if (!strDestFile.empty()) // only do this if we have a destination
         strnewDestFile = URIUtils::ChangeBasePath(pItem->GetPath(), strFileName, strDestFile); // Convert (URL) encoding + slashes (if source / target differ)
@@ -274,6 +330,13 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
     case ActionCopy:
     case ActionReplace:
       bResult = CFile::Copy(m_strFileA, m_strFileB, this, &data);
+      if (bResult && URIUtils::IsVideoDb(m_strFileA))
+      {
+        // For VideoDb files, also export the metadata
+        CVideoDatabase videoDatabase;
+        if (videoDatabase.Open())
+          videoDatabase.ExportSingleVideoToXML(m_strFileA, true, true, m_strFileB);
+      }
       break;
 
     case ActionMove:

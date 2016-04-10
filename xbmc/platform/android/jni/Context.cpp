@@ -48,6 +48,10 @@
 #include "DisplayMetrics.h"
 #include "Intent.h"
 #include "KeyEvent.h"
+#include "Settings.h"
+#include "Environment.h"
+#include "Document.h"
+#include "RecognizerIntent.h"
 
 #include <android/native_activity.h>
 
@@ -90,6 +94,10 @@ void CJNIContext::PopulateStaticFields()
   CJNIDisplayMetrics::PopulateStaticFields();
   CJNIIntent::PopulateStaticFields();
   CJNIKeyEvent::PopulateStaticFields();
+  CJNISettings::PopulateStaticFields();
+  CJNIEnvironment::PopulateStaticFields();
+  CJNIDocument::PopulateStaticFields();
+  CJNIRecognizerIntent::PopulateStaticFields();
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()
@@ -163,6 +171,12 @@ CJNIApplicationInfo CJNIContext::getApplicationInfo()
 {
   return call_method<jhobject>(m_context,
     "getApplicationInfo", "()Landroid/content/pm/ApplicationInfo;");
+}
+
+std::string CJNIContext::getPackageName()
+{
+  return jcast<std::string>(call_method<jhstring>(m_context,
+    "getPackageName", "()Ljava/lang/String;"));
 }
 
 std::string CJNIContext::getPackageResourcePath()

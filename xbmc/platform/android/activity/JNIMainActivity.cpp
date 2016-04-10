@@ -47,6 +47,14 @@ void CJNIMainActivity::_onNewIntent(JNIEnv *env, jobject context, jobject intent
     m_appInstance->onNewIntent(CJNIIntent(jhobject(intent)));
 }
 
+void CJNIMainActivity::_onActivityResult(JNIEnv *env, jobject context, jint requestCode, jint resultCode, jobject resultData)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onActivityResult(requestCode, resultCode, CJNIIntent(jhobject(resultData)));
+}
+
 void CJNIMainActivity::_callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr)
 {
   (void)env;
@@ -74,6 +82,14 @@ void CJNIMainActivity::_onAudioFocusChange(JNIEnv *env, jobject context, jint fo
   (void)context;
   if(m_appInstance)
     m_appInstance->onAudioFocusChange(focusChange);
+}
+
+void CJNIMainActivity::_doFrame(JNIEnv *env, jobject context, jlong frameTimeNanos)
+{
+  (void)env;
+  (void)context;
+  if(m_appInstance)
+    m_appInstance->doFrame(frameTimeNanos);
 }
 
 CJNISurface CJNIMainActivity::getVideoViewSurface()
@@ -104,4 +120,10 @@ void CJNIMainActivity::unregisterMediaButtonEventReceiver()
 {
   call_method<void>(m_context,
                     "unregisterMediaButtonEventReceiver", "()V");
+}
+
+void CJNIMainActivity::screenOn()
+{
+  call_method<void>(m_context,
+                    "screenOn", "()V");
 }

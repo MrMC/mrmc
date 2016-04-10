@@ -23,7 +23,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); ./bootstrap
-	cd $(PLATFORM); patch -p0 < ../utils.patch
+	#cd $(PLATFORM); patch -p0 < ../utils.patch
+	sed -ie "s|#define statvfs|//#define statvfs|" "$(PLATFORM)/lib/libnfs.c"
+	sed -ie "s|#define statvfs|//#define statvfs|" "$(PLATFORM)/lib/libnfs-sync.c"
 	cd $(PLATFORM); patch -p1 < ../readahead.patch
 	sed -ie "s|utils||" "$(PLATFORM)/Makefile.am"
 	cd $(PLATFORM); $(AUTORECONF) -vif

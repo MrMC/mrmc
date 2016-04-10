@@ -147,6 +147,7 @@ const std::string CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS = "videolibrary
 const std::string CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS = "videolibrary.groupsingleitemsets";
 const std::string CSettings::SETTING_VIDEOLIBRARY_UPDATEONSTARTUP = "videolibrary.updateonstartup";
 const std::string CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE = "videolibrary.backgroundupdate";
+const std::string CSettings::SETTING_VIDEOLIBRARY_IMPORTALL = "videolibrary.importall";
 const std::string CSettings::SETTING_VIDEOLIBRARY_DATEADDED = "videolibrary.dateadded";
 const std::string CSettings::SETTING_VIDEOLIBRARY_CLEANUP = "videolibrary.cleanup";
 const std::string CSettings::SETTING_VIDEOLIBRARY_EXPORT = "videolibrary.export";
@@ -344,6 +345,8 @@ const std::string CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT = "services.ai
 const std::string CSettings::SETTING_SMB_WINSSERVER = "smb.winsserver";
 const std::string CSettings::SETTING_SMB_WORKGROUP = "smb.workgroup";
 const std::string CSettings::SETTING_SMB_ENABLEDSM = "smb.enabledsm";
+const std::string CSettings::SETTING_SMB_FORCEV1 = "smb.forcev1";
+const std::string CSettings::SETTING_SMB_OVERWRITECONF = "smb.overwriteconf";
 const std::string CSettings::SETTING_SMB_STATFILES = "smb.statfiles";
 const std::string CSettings::SETTING_SMB_CLIENTTIMEOUT = "smb.clienttimeout";
 const std::string CSettings::SETTING_VIDEOSCREEN_MONITOR = "videoscreen.monitor";
@@ -442,6 +445,7 @@ const std::string CSettings::SETTING_MYSQL_USER = "mysql.user";
 const std::string CSettings::SETTING_MYSQL_PASS = "mysql.pass";
 const std::string CSettings::SETTING_MYSQL_VIDEO = "mysql.video";
 const std::string CSettings::SETTING_MYSQL_MUSIC = "mysql.music";
+const std::string CSettings::SETTING_THUMBNAILS_CLEANUP = "thumbnails.cleanup";
 const std::string CSettings::SETTING_THUMBCACHE_CLEAR = "thumbcache.cleanup";
 
 CSettings::CSettings()
@@ -788,6 +792,46 @@ bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
   return m_settingsManager->LoadSetting(node, settingId);
 }
 
+bool CSettings::HasCondition(const std::string &id)
+{
+  return m_settingsManager->GetConditions().Check("isdefined", id);
+}
+
+std::vector<CVariant> CSettings::ListToValues(const CSettingList *setting, const std::vector< std::shared_ptr<CSetting> > &values)
+{
+  std::vector<CVariant> realValues;
+
+  if (setting == NULL)
+    return realValues;
+
+  for (SettingPtrList::const_iterator it = values.begin(); it != values.end(); ++it)
+  {
+    switch (setting->GetElementType())
+    {
+      case SettingTypeBool:
+        realValues.push_back(static_cast<const CSettingBool*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeInteger:
+        realValues.push_back(static_cast<const CSettingInt*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeNumber:
+        realValues.push_back(static_cast<const CSettingNumber*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeString:
+        realValues.push_back(static_cast<const CSettingString*>(it->get())->GetValue());
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return realValues;
+}
+
 bool CSettings::Initialize(const std::string &file)
 {
   CXBMCTinyXML xmlDoc;
@@ -1045,10 +1089,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_REMOVE_DUPLICATES);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS);
+  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORTALL);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_CLEANUP);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORT);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_EXPORT);
   settingSet.insert(CSettings::SETTING_THUMBCACHE_CLEAR);
+  settingSet.insert(CSettings::SETTING_THUMBNAILS_CLEANUP);
   m_settingsManager->RegisterCallback(&CMediaSettings::GetInstance(), settingSet);
 
   settingSet.clear();
@@ -1166,6 +1212,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SMB_WINSSERVER);
   settingSet.insert(CSettings::SETTING_SMB_WORKGROUP);
   settingSet.insert(CSettings::SETTING_SMB_ENABLEDSM);
+  settingSet.insert(CSettings::SETTING_SMB_FORCEV1);
+  settingSet.insert(CSettings::SETTING_SMB_OVERWRITECONF);
   m_settingsManager->RegisterCallback(&CNetworkServices::GetInstance(), settingSet);
 
   settingSet.clear();

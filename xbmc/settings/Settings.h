@@ -100,6 +100,7 @@ public:
   static const std::string SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS;
   static const std::string SETTING_VIDEOLIBRARY_UPDATEONSTARTUP;
   static const std::string SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE;
+  static const std::string SETTING_VIDEOLIBRARY_IMPORTALL;
   static const std::string SETTING_VIDEOLIBRARY_DATEADDED;
   static const std::string SETTING_VIDEOLIBRARY_CLEANUP;
   static const std::string SETTING_VIDEOLIBRARY_EXPORT;
@@ -297,6 +298,8 @@ public:
   static const std::string SETTING_SMB_WINSSERVER;
   static const std::string SETTING_SMB_WORKGROUP;
   static const std::string SETTING_SMB_ENABLEDSM;
+  static const std::string SETTING_SMB_FORCEV1;
+  static const std::string SETTING_SMB_OVERWRITECONF;
   static const std::string SETTING_SMB_STATFILES;
   static const std::string SETTING_SMB_CLIENTTIMEOUT;
   static const std::string SETTING_VIDEOSCREEN_MONITOR;
@@ -394,6 +397,7 @@ public:
   static const std::string SETTING_MYSQL_PASS;
   static const std::string SETTING_MYSQL_VIDEO;
   static const std::string SETTING_MYSQL_MUSIC;
+  static const std::string SETTING_THUMBNAILS_CLEANUP;
   static const std::string SETTING_THUMBCACHE_CLEAR;
   
   /*!
@@ -606,6 +610,16 @@ public:
    \return True if the setting was successfully loaded from the given XML node, false otherwise
    */
   bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
+
+  /*!
+   \brief Check the existence of a condition.
+
+   \param id Condition identifier
+   \return True if the condition has been defined
+   */
+  bool HasCondition(const std::string &id);
+
+  static std::vector<CVariant> ListToValues(const CSettingList *setting, const std::vector< std::shared_ptr<CSetting> > &values);
 private:
   CSettings(const CSettings&);
   CSettings const& operator=(CSettings const&);

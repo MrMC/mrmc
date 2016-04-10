@@ -32,7 +32,8 @@
 #include "system.h"
 
 #include "SMBDirectory.h"
-
+#include "Util.h"
+#include "guilib/LocalizeStrings.h"
 #include "FileItem.h"
 #include "PasswordManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -209,6 +210,13 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
 
   return true;
+}
+
+int CSMBDirectory::Open(const CURL &url)
+{
+  smb.Init();
+  std::string strAuth;
+  return OpenDir(url, strAuth);
 }
 
 /// \brief Checks authentication against SAMBA share and prompts for username and password if needed

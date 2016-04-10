@@ -77,7 +77,8 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  DEPENDS += mdnsresponder android-sources-ics
+  DEPENDS += mdnsresponder android-sources-ics libuuid
+  EXCLUDED_DEPENDS = gmp nettle gnutls
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
@@ -121,7 +122,7 @@ jasper: libjpeg-turbo
 libvorbis: libogg
 libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
-libmicrohttpd: gnutls libgcrypt libgpg-error
+libmicrohttpd: openssl libgpg-error libgcrypt
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2

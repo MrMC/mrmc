@@ -1,4 +1,5 @@
-/images/*
+images/*
+assets/*
 xbmc/assets/*
 xbmc/lib/*
 xbmc/libs/*

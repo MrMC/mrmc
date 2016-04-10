@@ -23,6 +23,7 @@
 #include <pthread.h>
 #include <string>
 #include <vector>
+#include <map>
 
 #include <android/native_activity.h>
 
@@ -34,6 +35,7 @@
 #include "platform/android/jni/BroadcastReceiver.h"
 #include "platform/android/jni/AudioManager.h"
 #include "threads/Event.h"
+#include "interfaces/IAnnouncer.h"
 
 #include "JNIMainActivity.h"
 
@@ -41,6 +43,7 @@
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;
+class CVideoSyncAndroid;
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -57,15 +60,45 @@ struct androidPackage
   int icon;
 };
 
-class CXBMCApp : public IActivityHandler, public CJNIMainActivity, public CJNIBroadcastReceiver, public CJNIAudioManagerAudioFocusChangeListener
+class CActivityResultEvent : public CEvent
+{
+public:
+  CActivityResultEvent(int requestcode)
+    : m_requestcode(requestcode)
+  {}
+  int GetRequestCode() const { return m_requestcode; }
+  int GetResultCode() const { return m_resultcode; }
+  void SetResultCode(int resultcode) { m_resultcode = resultcode; }
+  CJNIIntent GetResultData() const { return m_resultdata; }
+  void SetResultData(const CJNIIntent &resultdata) { m_resultdata = resultdata; }
+
+protected:
+  int m_requestcode;
+  CJNIIntent m_resultdata;
+  int m_resultcode;
+};
+
+class CXBMCApp
+    : public IActivityHandler
+    , public CJNIMainActivity
+    , public CJNIBroadcastReceiver
+    , public CJNIAudioManagerAudioFocusChangeListener
+    , public ANNOUNCEMENT::IAnnouncer
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
   virtual ~CXBMCApp();
+  static CXBMCApp* get() { return m_xbmcappinstance; }
+
+  // IAnnouncer IF
+  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+
   virtual void onReceive(CJNIIntent intent);
   virtual void onNewIntent(CJNIIntent intent);
+  virtual void onActivityResult(int requestCode, int resultCode, CJNIIntent resultData);
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
+  virtual void doFrame(int64_t frameTimeNanos);
 
   bool isValid() { return m_activity != NULL; }
 
@@ -89,10 +122,12 @@ public:
   static const ANativeWindow** GetNativeWindow(int timeout);
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
+  static void BringToFront();
   
   static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
-  static bool HasFocus();
+  static bool HasFocus() { return m_hasFocus; }
+  static bool IsResumed() { return m_isResumed; }
   static bool IsHeadsetPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
@@ -113,6 +148,8 @@ public:
   static void SetRefreshRate(float rate);
   static int GetDPI();
 
+  static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
+
   // Playback callbacks
   static void OnPlayBackStarted();
   static void OnPlayBackPaused();
@@ -120,7 +157,11 @@ public:
   static void OnPlayBackStopped();
   static void OnPlayBackEnded();
 
-  static CXBMCApp* get() { return m_xbmcappinstance; }
+  bool getVideosurfaceInUse();
+  void setVideosurfaceInUse(bool videosurfaceInUse);
+
+  static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
+  static void DeinitFrameCallback();
 
 protected:
   // limit who can access Volume
@@ -142,18 +183,22 @@ private:
   static CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;
   static bool m_hasFocus;
+  static bool m_isResumed;
+  static bool m_hasAudioFocus;
   static bool m_headsetPlugged;
+  bool m_videosurfaceInUse;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;
   static CCriticalSection m_applicationsMutex;
   static std::vector<androidPackage> m_applications;
+  static std::vector<CActivityResultEvent*> m_activityResultEvents;
 
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
 
-  void XBMC_Pause(bool pause);
-  void XBMC_Stop();
+  static CVideoSyncAndroid* m_syncImpl;
+
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
 };

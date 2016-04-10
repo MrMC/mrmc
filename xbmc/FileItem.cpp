@@ -986,6 +986,11 @@ bool CFileItem::IsAndroidApp() const
   return URIUtils::IsAndroidApp(m_strPath);
 }
 
+bool CFileItem::IsAndroidSetting() const
+{
+  return URIUtils::IsAndroidSetting(m_strPath);
+}
+
 bool CFileItem::IsStack() const
 {
   return URIUtils::IsStack(m_strPath);
@@ -1109,6 +1114,13 @@ bool CFileItem::IsReadOnly() const
 
 void CFileItem::FillInDefaultIcon()
 {
+  if (URIUtils::IsPVRGuideItem(m_strPath))
+  {
+    // epg items never have a default icon. no need to execute this expensive method.
+    // when filling epg grid window, easily tens of thousands of epg items are processed.
+    return;
+  }
+
   //CLog::Log(LOGINFO, "FillInDefaultIcon(%s)", pItem->GetLabel().c_str());
   // find the default icon for a file or folder item
   // for files this can be the (depending on the file type)

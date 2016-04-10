@@ -20,7 +20,7 @@ diff -ruN a/source/lib/iconv.c b/source/lib/iconv.c
 -
 +#if defined(ANDROID)
 +#include <stdint.h>
-+#include <asm/byteorder.h>
++#include <byteswap.h>
 +#endif
  /*
   * We have to use strcasecmp here as the character conversions
@@ -38,7 +38,7 @@ diff -ruN a/source/lib/iconv.c b/source/lib/iconv.c
 +    return;
 +
 +  for (i = 0; i < (n/2)*2; i += 2)
-+    *((uint16_t*)to+i) = __arch__swab16(*((uint16_t*)from+i));
++    *((uint16_t*)to+i) = bswap_16(*((uint16_t*)from+i));
 +}
 +#endif
 +

@@ -56,6 +56,7 @@
       <menu mod="longpress">Menu</menu>
       <c>ContextMenu</c>
       <c mod="longpress">Menu</c>
+      <leftwindows>ContextMenu</leftwindows>
       <space>Pause</space>
       <x>Stop</x>
       <period>SkipNext</period>
@@ -187,6 +188,8 @@
       <backspace>Backspace</backspace>
       <browser_back>Backspace</browser_back>
       <browser_back mod="longpress">PreviousMenu</browser_back>
+      <browser_search>VoiceRecognizer</browser_search>
+      <menu>VoiceRecognizer</menu>
     </keyboard>
   </VirtualKeyboard>
   <MyTVChannels>
@@ -296,10 +299,10 @@
       <r>Rewind</r>
       <period>StepForward</period>
       <comma>StepBack</comma>
-      <backspace>Fullscreen</backspace>
-      <backspace mod="longpress">Stop</backspace>
-      <browser_back>Fullscreen</browser_back>
-      <browser_back mod="longpress">Stop</browser_back>
+      <backspace>Stop</backspace>
+      <backspace mod="longpress">Fullscreen</backspace>
+      <browser_back>Stop</browser_back>
+      <browser_back mod="longpress">Fullscreen</browser_back>
       <quote>Seek(-7)</quote> <!-- Replaces smallstepback -->
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
@@ -322,13 +325,15 @@
       <down>ChapterOrBigStepBack</down>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
-      <c>Playlist</c>
       <v>ActivateWindow(Teletext)</v>
       <text>ActivateWindow(Teletext)</text>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
       <pageup>SkipNext</pageup>
       <pagedown>SkipPrevious</pagedown>
+      <menu>CodecInfo</menu>
+      <c>CodecInfo</c>
+      <leftwindows>CodecInfo</leftwindows>
     </keyboard>
   </FullscreenVideo>
   <VideoTimeSeek>

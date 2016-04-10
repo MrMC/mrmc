@@ -28,6 +28,7 @@ SRCS += ScreenSaver.cpp
 SRCS += Service.cpp
 SRCS += Skin.cpp
 SRCS += UISoundsResource.cpp
+SRCS += Visualisation.cpp
 SRCS += Webinterface.cpp
 
 LIB   = addons.a

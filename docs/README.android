@@ -28,7 +28,7 @@ character itself should NOT be typed as part of the command.
 These are the minimum packages necessary for building MrMC. Non-Ubuntu
 users will need to get the equivalents.
 
-    $ sudo apt-get install build-essential default-jdk git curl autoconf \
+    $ sudo apt-get install build-essential default-jdk git curl libcurl4-openssl-dev autoconf \
       unzip zip zlib1g-dev gawk gperf cmake
 
 If you run a 64bit operating system you will also need to get ia32-libs

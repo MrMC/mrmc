@@ -257,7 +257,7 @@ public:
 #define CODEC_TAG_jpeg  (0x6765706a)
 #define CODEC_TAG_mjpa  (0x61706a6d)
 
-#define RW_WAIT_TIME    (20 * 1000) // 20ms
+#define RW_WAIT_TIME    (5 * 1000) // 20ms
 
 #define P_PRE           (0x02000000)
 #define F_PRE           (0x03000000)
@@ -430,12 +430,6 @@ static vformat_t codecid_to_vformat(enum AVCodecID id)
     case AV_CODEC_ID_H264:
       format = VFORMAT_H264;
       break;
-    /*
-    case AV_CODEC_ID_H264MVC:
-      // H264 Multiview Video Coding (3d blurays)
-      format = VFORMAT_H264MVC;
-      break;
-    */
     case AV_CODEC_ID_MJPEG:
       format = VFORMAT_MJPEG;
       break;
@@ -524,11 +518,6 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
       // h264
       dec_type = VIDEO_DEC_FORMAT_H264;
       break;
-    /*
-    case AV_CODEC_ID_H264MVC:
-      dec_type = VIDEO_DEC_FORMAT_H264;
-      break;
-    */
     case AV_CODEC_ID_RV30:
     case CODEC_TAG_RV30:
       // realmedia 3
@@ -1080,7 +1069,7 @@ int pre_header_feeding(am_private_t *para, am_packet_t *pkt)
             }
         }
 
-        if (VFORMAT_H264 == para->video_format || VFORMAT_H264_4K2K == para->video_format) {
+        if (VFORMAT_H264 == para->video_format || VFORMAT_H264_4K2K == para->video_format || VFORMAT_H264MVC == para->video_format) {
             ret = h264_write_header(para, pkt);
             if (ret != PLAYER_SUCCESS) {
                 return ret;
@@ -1464,7 +1453,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   if (hints.width == 1920 && am_private->video_rate == 1920)
   {
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder video_rate exception");
-    am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 25000;
+    am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1000 / 25000;
   }
 
   // check for SD h264 content incorrectly reported as 60 fsp
@@ -1497,9 +1486,14 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   // handle extradata
   am_private->video_format      = codecid_to_vformat(hints.codec);
   if (am_private->video_format == VFORMAT_H264) {
-      if (hints.width > 1920 || hints.height > 1088) {
-        am_private->video_format = VFORMAT_H264_4K2K;
-      }
+    if (hints.profile == 118 || hints.profile == 128 || hints.codec_tag == AV_CODEC_ID_H264MVC)
+    {
+      CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder: MVC detected");
+      am_private->video_format = VFORMAT_H264MVC;
+      m_hints.stereo_mode = "top_bottom";
+    }
+    else if (hints.width > 1920 || hints.height > 1088)
+      am_private->video_format = VFORMAT_H264_4K2K;
   }
   switch (am_private->video_format)
   {
@@ -1519,8 +1513,8 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
 
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder "
-    "hints.width(%d), hints.height(%d), hints.codec(%d), hints.codec_tag(%d), hints.pid(%d)",
-    hints.width, hints.height, hints.codec, hints.codec_tag, hints.pid);
+    "hints.width(%d), hints.height(%d), hints.codec(%d), hints.codec_tag(%d), hints.profile(%d), hints.pid(%d)",
+    hints.width, hints.height, hints.codec, hints.codec_tag, hints.profile, hints.pid);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), hints.rfpsrate(%d), hints.rfpsscale(%d), video_rate(%d)",
     hints.fpsrate, hints.fpsscale, hints.rfpsrate, hints.rfpsscale, am_private->video_rate);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
@@ -1622,6 +1616,9 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   // disable tsync, we are playing video disconnected from audio.
   SysfsUtils::SetInt("/sys/class/tsync/enable", 0);
 
+  if (am_private->video_format == VFORMAT_H264MVC)
+    SetVideo3dMode(MODE_3D_BT);
+
   am_private->am_pkt.codec = &am_private->vcodec;
   pre_header_feeding(am_private, &am_private->am_pkt);
 
@@ -1652,6 +1649,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   // vcodec is open, update speed if it was
   // changed before dvdplayer called OpenDecoder.
   SetSpeed(m_speed);
+  ShowMainVideo(true);
 
   return true;
 }
@@ -1680,6 +1678,7 @@ void CAMLCodec::CloseDecoder()
   // return tsync to default so external apps work
   SysfsUtils::SetInt("/sys/class/tsync/enable", 1);
 
+  SetVideo3dMode(MODE_3D_DISABLE);
   ShowMainVideo(false);
 
   // add a little delay after closing in case
@@ -1853,6 +1852,7 @@ bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->format = RENDER_FMT_BYPASS;
   pDvdVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
+  strncpy(pDvdVideoPicture->stereo_mode, m_hints.stereo_mode.c_str(), sizeof(pDvdVideoPicture->stereo_mode)-1);
 
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
   if (m_speed == DVD_PLAYSPEED_NORMAL)
@@ -1897,7 +1897,7 @@ void CAMLCodec::SetSpeed(int speed)
       break;
     default:
       m_dll->codec_resume(&am_private->vcodec);
-      if ((am_private->video_format == VFORMAT_H264) || (am_private->video_format == VFORMAT_H264_4K2K))
+      if ((am_private->video_format == VFORMAT_H264) || (am_private->video_format == VFORMAT_H264_4K2K) || (am_private->video_format == VFORMAT_H264MVC))
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
       else
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);
@@ -1992,7 +1992,7 @@ void CAMLCodec::Process()
         if (abs_error > 0.125)
         {
           //CLog::Log(LOGDEBUG, "CAMLCodec::Process pts diff = %f", error);
-          if (abs_error > 0.150)
+          if (abs_error > 0.300)
           {
             // big error so try to reset pts_pcrscr
             SetVideoPtsSeconds(app_pts);
@@ -2092,8 +2092,14 @@ void CAMLCodec::GetRenderFeatures(Features &renderFeatures)
 
 void CAMLCodec::SetVideo3dMode(const int mode3d)
 {
+  static int old3dmode = MODE_3D_DISABLE;
+
+  if (mode3d == old3dmode)
+    return;
+
   CLog::Log(LOGDEBUG, "CAMLCodec::SetVideo3dMode:mode3d(0x%x)", mode3d);
   SysfsUtils::SetInt("/sys/class/ppmgr/ppmgr_3d_mode", mode3d);
+  old3dmode = mode3d;
 }
 
 std::string CAMLCodec::GetStereoMode()
@@ -2107,8 +2113,6 @@ std::string CAMLCodec::GetStereoMode()
     default:                                  stereo_mode = m_hints.stereo_mode; break;
   }
 
-  if(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
-    stereo_mode = RenderManager::GetStereoModeInvert(stereo_mode);
   return stereo_mode;
 }
 
@@ -2196,11 +2200,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   if (!update)
-  {
-    // mainvideo 'should' be showing already if we get here, make sure.
-    ShowMainVideo(true);
     return;
-  }
 
   CRect gui, display;
   gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
@@ -2299,10 +2299,6 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   SysfsUtils::SetString("/sys/class/video/axis", video_axis);
   // make sure we are in 'full stretch' so we can stretch
   SysfsUtils::SetInt("/sys/class/video/screen_mode", 1);
-
-  // we only get called once gui has changed to something
-  // that would show video playback, so show it.
-  ShowMainVideo(true);
 }
 
 void CAMLCodec::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)

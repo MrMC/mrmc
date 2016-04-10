@@ -3208,6 +3208,10 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsStack())
     return PlayStack(item, bRestart);
 
+  // If video, bring us to front
+  if (item.IsVideo())
+    g_Windowing.BringToFront();
+
   CPlayerOptions options;
 
   if( item.HasProperty("StartPercent") )
@@ -3830,6 +3834,11 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
 #if defined(TARGET_DARWIN_TVOS)
   result = CDarwinUtils::ResetSystemIdleTimer();
 #endif
+#ifdef TARGET_ANDROID
+  // Screensaver deactivated -> acquire wake lock
+  CXBMCApp::EnableWakeLock(true);
+#endif
+
 
   if(result)
   {
@@ -3837,10 +3846,6 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
     CVariant data(CVariant::VariantTypeObject);
     data["shuttingdown"] = bPowerOffKeyPressed;
     CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
-#ifdef TARGET_ANDROID
-    // Screensaver deactivated -> acquire wake lock
-    CXBMCApp::EnableWakeLock(true);
-#endif
   }
 
   return result;
@@ -3858,7 +3863,8 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
       if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           (CProfilesManager::GetInstance().UsingLoginScreen() || CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK)) &&
           CProfilesManager::GetInstance().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" && m_screenSaver->ID() != "screensaver.xbmc.builtin.black" && !m_screenSaver->ID().empty() && m_screenSaver->ID() != "visualization")
+          m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" && m_screenSaver->ID() != "screensaver.xbmc.builtin.black" && m_screenSaver->ID() != "screensaver.xbmc.builtin.system" &&
+          !m_screenSaver->ID().empty() && m_screenSaver->ID() != "visualization")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
@@ -3878,12 +3884,13 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    if (m_screenSaver->ID() == "visualization")
+    if (m_screenSaver->ID() == "visualization"  || m_screenSaver->ID() == "screensaver.xbmc.builtin.system")
     {
       // we can just continue as usual from vis mode
       return false;
     }
-    else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black" || m_screenSaver->ID().empty())
+    else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black"
+             || m_screenSaver->ID().empty())
       return true;
     else if (!m_screenSaver->ID().empty())
     { // we're in screensaver window
@@ -3984,11 +3991,12 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     }
   }
   if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim"
-      || m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
+      || m_screenSaver->ID() == "screensaver.xbmc.builtin.black"
+      || m_screenSaver->ID() == "screensaver.xbmc.builtin.system")
   {
 #ifdef TARGET_ANDROID
-    // Default screensaver activated -> release wake lock
-    CXBMCApp::EnableWakeLock(false);
+    if (m_screenSaver->ID() == "screensaver.xbmc.builtin.system")
+      CXBMCApp::EnableWakeLock(false);
 #endif
     return;
   }
@@ -4867,6 +4875,11 @@ void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
 void CApplication::StartVideoScan(const std::string &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
 {
   CVideoLibraryQueue::GetInstance().ScanLibrary(strDirectory, scanAll, userInitiated);
+}
+
+void CApplication::StartThumbnailsCleanup(bool userInitiated /* = true */)
+{
+  CTextureCache::GetInstance().AddJob(new CTextureCleanupJob());
 }
 
 void CApplication::StartMusicCleanup(bool userInitiated /* = true */)

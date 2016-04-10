@@ -96,6 +96,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         return false;
       }
       m_pFormatName = "am-h264";
+      if (m_hints.codec_tag == AV_CODEC_ID_H264MVC)
+        m_pFormatName = "am-h264mvc";
       // convert h264-avcC to h264-annex-b as h264-avcC
       // under streamers can have issues when seeking.
       if (m_hints.extradata && *(uint8_t*)m_hints.extradata == 1)
@@ -115,15 +117,6 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_MSMPEG4V2:
     case AV_CODEC_ID_MSMPEG4V3:
       m_pFormatName = "am-mpeg4";
-      break;
-    case AV_CODEC_ID_H263:
-    case AV_CODEC_ID_H263P:
-    case AV_CODEC_ID_H263I:
-      // amcodec can't handle h263
-      return false;
-      break;
-    case AV_CODEC_ID_FLV1:
-      m_pFormatName = "am-flv1";
       break;
     case AV_CODEC_ID_RV10:
     case AV_CODEC_ID_RV20:
@@ -195,11 +188,11 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   m_videobuffer.iDisplayHeight = m_videobuffer.iHeight;
   if (m_hints.aspect > 0.0 && !m_hints.forced_aspect)
   {
-    m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * m_hints.aspect)) & -3;
+    m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * m_hints.aspect)) & ~3;
     if (m_videobuffer.iDisplayWidth > m_videobuffer.iWidth)
     {
       m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
-      m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / m_hints.aspect)) & -3;
+      m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / m_hints.aspect)) & ~3;
     }
   }
 
@@ -283,11 +276,11 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
   if (m_aspect_ratio > 1.0 && !m_hints.forced_aspect)
   {
-    pDvdVideoPicture->iDisplayWidth  = ((int)lrint(pDvdVideoPicture->iHeight * m_aspect_ratio)) & -3;
+    pDvdVideoPicture->iDisplayWidth  = ((int)lrint(pDvdVideoPicture->iHeight * m_aspect_ratio)) & ~3;
     if (pDvdVideoPicture->iDisplayWidth > pDvdVideoPicture->iWidth)
     {
       pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
-      pDvdVideoPicture->iDisplayHeight = ((int)lrint(pDvdVideoPicture->iWidth / m_aspect_ratio)) & -3;
+      pDvdVideoPicture->iDisplayHeight = ((int)lrint(pDvdVideoPicture->iWidth / m_aspect_ratio)) & ~3;
     }
   }
 
