@@ -424,6 +424,14 @@
     <category id="window" label="0" help="36135">
       <visible>false</visible>
       <group id="1">
+        <setting id="window.left" type="integer" label="0" help="36136">
+          <level>4</level>
+          <default>0</default>
+        </setting>
+        <setting id="window.top" type="integer" label="0" help="36137">
+          <level>4</level>
+          <default>0</default>
+        </setting>
         <setting id="window.width" type="integer" label="0" help="36136">
           <level>4</level>
           <default>720</default>

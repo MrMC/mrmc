@@ -84,18 +84,20 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 
 - (void)windowDidMove:(NSNotification *)notification
 {
-  NSLog(@"windowDidMove");
+  //NSLog(@"windowDidMove");
   // will update from NSWindow bits
   g_Windowing.OnMove(-1, -1);
 }
 
 - (void)windowDidResize:(NSNotification *)notification
 {
-  NSLog(@"windowDidResize");
+  //NSLog(@"windowDidResize");
 
   NSRect rect = [self contentRectForFrameRect:[self frame]];
+  NSLog(@"newTop(%f)", [self frame].origin.y);
+  NSLog(@"newTop(%f)", rect.origin.y);
 
-  if(!g_Windowing.IsFullScreen())
+  if (!g_Windowing.IsFullScreen())
   {
     int RES_SCREEN = g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
     if(((int)rect.size.width == CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iWidth) &&
@@ -117,6 +119,7 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
     if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
       g_application.OnEvent(newEvent);
   }
+
   g_windowManager.MarkDirty();
 }
 
@@ -135,12 +138,12 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 
 -(void)windowWillStartLiveResize:(NSNotification *)notification
 {
-  NSLog(@"windowWillStartLiveResize");
+  //NSLog(@"windowWillStartLiveResize");
 }
 
 -(void)windowDidEndLiveResize:(NSNotification *)notification
 {
-  NSLog(@"windowDidEndLiveResize");
+  //NSLog(@"windowDidEndLiveResize");
   NSRect rect = [self contentRectForFrameRect:[self frame]];
 
   if(!g_Windowing.IsFullScreen())
@@ -165,6 +168,7 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
     if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
       g_application.OnEvent(newEvent);
   }
+
   g_windowManager.MarkDirty();
 }
 

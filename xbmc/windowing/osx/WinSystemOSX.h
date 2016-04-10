@@ -46,7 +46,6 @@ public:
   virtual bool DestroyWindow();
   bool         DestroyWindowInternal();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  bool         ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, void *additional);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
   virtual void NotifyAppFocusChange(bool bGaining);
@@ -91,6 +90,7 @@ public:
   float        CocoaToNativeFlip(float y);
 
 protected:
+  bool  ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop);
   void  HandlePossibleRefreshrateChange();
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
@@ -114,10 +114,6 @@ protected:
   bool                         m_movedToOtherScreen;
   bool                         m_fullscreenWillToggle;
   int                          m_lastDisplayNr;
-  int                          m_lastWidth;
-  int                          m_lastHeight;
-  int                          m_lastX;
-  int                          m_lastY;
   double                       m_refreshRate;
 
   CCriticalSection             m_resourceSection;

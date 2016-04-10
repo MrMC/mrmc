@@ -84,6 +84,8 @@ public:
   static const std::string SETTING_SCREENSAVER_TIME;
   static const std::string SETTING_SCREENSAVER_USEMUSICVISINSTEAD;
   static const std::string SETTING_SCREENSAVER_USEDIMONPAUSE;
+  static const std::string SETTING_WINDOW_LEFT;
+  static const std::string SETTING_WINDOW_TOP;
   static const std::string SETTING_WINDOW_WIDTH;
   static const std::string SETTING_WINDOW_HEIGHT;
   static const std::string SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS;
