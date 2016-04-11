@@ -43,7 +43,7 @@
 #include "DAVDirectory.h"
 #include "UDFDirectory.h"
 #include "Application.h"
-#include "settings/settings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
 

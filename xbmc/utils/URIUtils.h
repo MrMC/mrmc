@@ -160,9 +160,11 @@ public:
   static bool IsArchive(const std::string& strFile);
   static bool IsBluray(const std::string& strFile);
   static bool IsAndroidApp(const std::string& strFile);
+  static bool IsAndroidSetting(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);
   static bool IsPVRChannel(const std::string& strFile);
+  static bool IsPVRGuideItem(const std::string& strFile);
   static bool IsUsingFastSwitch(const std::string& strFile);
 
   static void AddSlashAtEnd(std::string& strFolder);

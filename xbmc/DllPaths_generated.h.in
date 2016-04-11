@@ -48,12 +48,12 @@
 
 /* wayland */
 #define DLL_PATH_WAYLAND_CLIENT "@WAYLAND_CLIENT_LIBRARY_SONAME@"
-#define DLL_PATH_WAYLAND_EGL "@WAYLAND_EGL_LIBRARY_SONAME@"
+#define DLL_PATH_WAYLAND_EGL   "@WAYLAND_EGL_LIBRARY_SONAME@"
 
 /* xkbcommon */
-#define DLL_PATH_XKBCOMMON "@XKBCOMMON_LIBRARY_SONAME@"
+#define DLL_PATH_XKBCOMMON     "@XKBCOMMON_LIBRARY_SONAME@"
 
 /* sse4 */
-#define DLL_PATH_LIBSSE4      "special://xbmcbin/system/libsse4-@ARCH@.so"
+#define DLL_PATH_LIBSSE4       "special://xbmcbin/system/libsse4-@ARCH@.so"
 
 #endif

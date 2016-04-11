@@ -1,4 +1,5 @@
 SRCS  = AdvancedSettings.cpp
+SRCS += AudioDSPSettings.cpp
 SRCS += DisplaySettings.cpp
 SRCS += MediaSettings.cpp
 SRCS += MediaSourceSettings.cpp

@@ -19,8 +19,8 @@
  *
  */
 
-#include "android/jni/Activity.h"
-#include "android/jni/Surface.h"
+#include "platform/android/jni/Activity.h"
+#include "platform/android/jni/Surface.h"
 
 class CJNIMainActivity : public CJNIActivity
 {

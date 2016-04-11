@@ -23,6 +23,7 @@
 #if defined(TARGET_ANDROID)
 
 #include "AndroidAppFile.h"
+#include "platform/android/activity/XBMCApp.h"
 #include <sys/stat.h>
 #include "Util.h"
 #include "URL.h"

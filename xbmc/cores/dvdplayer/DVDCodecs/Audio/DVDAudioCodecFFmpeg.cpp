@@ -76,12 +76,13 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
     return false;
   }
-
+#if defined(TARGET_DARWIN)
   if (!CDarwinUtils::AudioCodecLicenseCheck(pCodec->name))
   {
     Dispose();
     return false;
   }
+#endif
 
   m_pCodecContext = avcodec_alloc_context3(pCodec);
   m_pCodecContext->debug_mv = 0;

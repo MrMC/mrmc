@@ -27,7 +27,7 @@
 #include "utils/StringUtils.h"
 #include "CompileInfo.h"
 
-#include "android/activity/JNIMainActivity.h"
+#include "platform/android/activity/JNIMainActivity.h"
 
 // copied from new android_native_app_glue.c
 static void process_input(struct android_app* app, struct android_poll_source* source) {

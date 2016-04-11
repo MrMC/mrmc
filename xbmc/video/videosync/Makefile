@@ -1,8 +1,9 @@
-SRCS  =VideoSyncGLX.cpp
+SRCS  = VideoSyncGLX.cpp
 SRCS += VideoSyncOsx.cpp
 SRCS += VideoSyncIos.cpp
 SRCS += VideoSyncDRM.cpp
 SRCS += VideoSyncPi.cpp
+SRCS += VideoSyncAndroid.cpp
 
 LIB   = videosync.a
 

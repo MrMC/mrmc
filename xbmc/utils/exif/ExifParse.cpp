@@ -35,11 +35,11 @@
 #include <stdio.h>
 
 #include "utils/exif/ExifParse.h"
-#include "utils/Log.h"
+#include "utils/log.h"
 
 namespace XEXIF
 {
-  
+
 #define min(a,b) (a)>(b)?(b):(a)
 #define max(a,b) (a)<(b)?(b):(a)
 

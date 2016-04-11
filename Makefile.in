@@ -28,6 +28,8 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/dvdplayer.a \
 
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/addons/addons.a \
+                   xbmc/cdrip/cdrip.a \
+                   xbmc/contrib/kissfft/kissfft.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
                    xbmc/cores/ExternalPlayer/externalplayer.a \
@@ -98,6 +100,10 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/windows/windows.a \
                    xbmc/xbmc.a \
 
+NWAOBJSXBMC=	xbmc/threads/threads.a \
+		xbmc/commons/commons.a
+
+
 ifeq (@USE_WEB_SERVER@,1)
 DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
 endif
@@ -159,9 +165,7 @@ ifeq ($(findstring freebsd,@ARCH@),freebsd)
 DIRECTORY_ARCHIVES += xbmc/freebsd/freebsd.a
 endif
 
-ifeq (@HAVE_XBMC_NONFREE@,1)
 DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
-endif
 
 ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
@@ -222,6 +226,10 @@ LIBSSE4+=sse4
 sse4 : force
 	$(MAKE) -C xbmc/linux/sse4
 endif
+
+CHECK_PROGRAMS = @APP_NAME_LC@-test
+
+CLEAN_FILES += $(CHECK_PROGRAMS) $(CHECK_EXTENSIONS)
 
 all : $(FINAL_TARGETS)
 	@echo '-----------------------'
@@ -346,7 +354,7 @@ lib@APP_NAME_LC@.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -read_only_relocs suppress
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(MAINOBJS) -Wl,--no-whole-archive,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS) -Wl,-Bsymbolic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(MAINOBJS) -Wl,--no-whole-archive,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS) -Wl,-Bsymbolic -Wl,-soname,$@
 endif
 
 @APP_NAME_LC@.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)

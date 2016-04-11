@@ -18,6 +18,8 @@
  *
  */
 
+#include <stdlib.h>
+
 #include "network/Network.h"
 #include "URIUtils.h"
 #include "Application.h"
@@ -908,6 +910,14 @@ bool URIUtils::IsPVRChannel(const std::string& strFile)
   return StringUtils::StartsWithNoCase(strFile2, "pvr://channels");
 }
 
+bool URIUtils::IsPVRGuideItem(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsPVRGuideItem(CStackDirectory::GetFirstStackedFile(strFile));
+
+  return StringUtils::StartsWithNoCase(strFile, "pvr://guide");
+}
+
 bool URIUtils::IsDAV(const std::string& strFile)
 {
   if (IsStack(strFile))
@@ -1018,6 +1028,11 @@ bool URIUtils::IsBluray(const std::string& strFile)
 bool URIUtils::IsAndroidApp(const std::string &path)
 {
   return IsProtocol(path, "androidapp");
+}
+
+bool URIUtils::IsAndroidSetting(const std::string &path)
+{
+  return IsProtocol(path, "androidsetting");
 }
 
 bool URIUtils::IsLibraryFolder(const std::string& strFile)

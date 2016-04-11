@@ -35,7 +35,7 @@
 
 #include "filesystem/File.h"
 #include "utils/exif/JpegParse.h"
-#include "utils/Log.h"
+#include "utils/log.h"
 
 #define min(a,b) (a)>(b)?(b):(a)
 

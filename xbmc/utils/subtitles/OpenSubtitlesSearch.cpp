@@ -18,6 +18,8 @@
  *
  */
 
+#include <stdlib.h>
+
 // stupid libs that include their config.h
 #define PACKAGE _PACKAGE
 #undef PACKAGE

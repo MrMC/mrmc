@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([mrmc], [16.0.000], [http://mrmc.tv])
+AC_INIT([mrmc], [16.0.992], [http://mrmc.tv])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -116,6 +116,7 @@ AC_DEFUN([XB_PUSH_FLAGS], [
 ])
 
 # version can be overridden by setting the following as ENV vars when running configure
+APP_PACKAGE=${APP_PACKAGE-$(${AWK} '/APP_PACKAGE/ {print $2}' version.txt)}
 APP_NAME=${APP_NAME-$(${AWK} '/APP_NAME/ {print $2}' version.txt)}
 APP_NAME_LC=$(echo $APP_NAME | ${AWK} '{print tolower($0)}')
 APP_NAME_UC=$(echo $APP_NAME | ${AWK} '{print toupper($0)}')
@@ -134,6 +135,7 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
     APP_VERSION=${APP_VERSION}-${APP_VERSION_TAG}
   fi
 
+  AC_SUBST(APP_PACKAGE)
   AC_SUBST(APP_NAME)
   AC_SUBST(APP_NAME_LC)
   AC_SUBST(APP_NAME_UC)
@@ -1277,12 +1279,7 @@ fi
 
 # samba
 if test "x$use_samba" != "xno"; then
-  PKG_CHECK_MODULES([SAMBA], [smbclient],
-    [INCLUDES="$INCLUDES $SAMBA_CFLAGS"; LIBS="$LIBS $SAMBA_LIBS"],
-    [AC_CHECK_LIB([smbclient], [main],,
-      use_samba=no;AC_MSG_ERROR($missing_library))
-      USE_LIBSMBCLIENT=0
-    ])
+  AC_CHECK_HEADER([libsmbclient.h],, [use_samba=no;AC_MSG_ERROR($missing_library)])
 else
   AC_MSG_RESULT($samba_disabled)
   USE_LIBSMBCLIENT=0
@@ -2125,6 +2122,7 @@ OUTPUT_FILES="$OUTPUT_FILES project/cmake/mrmc-config.cmake"
 OUTPUT_FILES="$OUTPUT_FILES project/cmake/xbmc-config.cmake"
 
 OUTPUT_FILES="$OUTPUT_FILES xbmc/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cdrip/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/VideoRenderers/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/Makefile"
@@ -2143,7 +2141,9 @@ OUTPUT_FILES="$OUTPUT_FILES xbmc/filesystem/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/guilib/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/input/linux/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/interfaces/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/interfaces/builtins/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/messaging/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/messaging/helpers/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/network/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/network/upnp/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/peripherals/bus/Makefile"
@@ -2184,6 +2184,14 @@ OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCB
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSettingsContentObserver.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCVideoView.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCImageContentProvider.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCMediaContentProvider.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCRecommendationBuilder.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCJsonRPC.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSearchableActivity.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/activity_main.xml"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/searchable.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/strings.xml"
 
 OUTPUT_FILES="$OUTPUT_FILES xbmc/DllPaths_generated_android.h"
@@ -2220,9 +2228,11 @@ fi
 eval "APP_PREFIX=${prefix}"
 eval "APP_LIB_DIR=${libdir}/${APP_NAME_LC}"
 eval "APP_INCLUDE_DIR=${includedir}/${APP_NAME_LC}"
+eval "APP_PACKAGE_DIR=${APP_PACKAGE//./\/}"
 AC_SUBST(APP_PREFIX)
 AC_SUBST(APP_LIB_DIR)
 AC_SUBST(APP_INCLUDE_DIR)
+AC_SUBST(APP_PACKAGE_DIR)
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.

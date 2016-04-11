@@ -18,7 +18,7 @@ SRCS += DVDStreamInfo.cpp
 SRCS += DVDTSCorrection.cpp
 SRCS += Edl.cpp
 
-LIB = DVDPlayer.a
+LIB = dvdplayer.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -212,7 +212,7 @@ CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
 
 CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 {
-  AtomicIncrement(&m_refs);
+  ++m_refs;
   m_isReleased = false;
 
   return this;
@@ -220,7 +220,7 @@ CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 
 long CDVDMediaCodecInfo::Release()
 {
-  long count = --m_refs
+  long count = --m_refs;
   if (count == 1)
     ReleaseOutputBuffer(false);
   if (count == 0)

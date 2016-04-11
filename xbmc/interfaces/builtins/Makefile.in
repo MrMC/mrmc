@@ -19,7 +19,7 @@ ifeq (@USE_ANDROID@,1)
 SRCS += AndroidBuiltins.cpp
 endif
 
-LIB=builtins.a
+LIB = builtins.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
