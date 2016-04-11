@@ -1,0 +1,12 @@
+--- arm-linux-androideabi-android-21/ulxmlrpcpp/ulxr_tcpip_connection.cpp-org	2016-04-10 17:18:37.223153244 -0400
++++ arm-linux-androideabi-android-21/ulxmlrpcpp/ulxr_tcpip_connection.cpp	2016-04-10 17:19:04.999153032 -0400
+@@ -357,7 +357,7 @@ ULXR_API_IMPL(void) TcpIpConnection::ini
+     pimpl->host_name += ULXR_GET_STRING(buffer);
+   }
+ 
+-#elif defined(__unix__) || defined(__CYGWIN__)
++#elif defined(__CYGWIN__)
+ 
+   ret = getdomainname(buffer, sizeof(buffer)-1);
+   if (ret != 0)
+

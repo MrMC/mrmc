@@ -7,10 +7,21 @@ VERSION=1.7.5
 SOURCE=$(LIBNAME)-$(VERSION)-src
 ARCHIVE=$(SOURCE).tar.bz2
 
+CXXFLAGS_EXTRA = -D__unix__
+ifeq ($(OS),android)
+CONFIG_EXTRA = ac_cv_func_realloc_0_nonnull=yes ac_cv_func_malloc_0_nonnull=yes
+endif
+ifeq ($(BUILD_OS),osx)
+CXXFLAGS_EXTRA += -Wno-error=c++11-narrowing
+CONFIG_EXTRA = LDFLAGS="-lc++"
+endif
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
     ./configure --prefix=$(PREFIX) \
-    CFLAGS="-D__unix__" LDFLAGS="-lc++" CXXFLAGS="-D__unix__ -Wno-error=c++11-narrowing"
+    CFLAGS="$(CFLAGS) -D__unix__"  \
+    CXXFLAGS="$(CFLAGS) $(CXXFLAGS_EXTRA)" \
+    $(CONFIG_EXTRA)
 
 LIBDYLIB=$(PLATFORM)/ulxmlrpcpp/.libs/libulxmlrpcpp.a
 
@@ -27,6 +38,11 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	sed -ie "s|contrib docs tests||" "$(PLATFORM)/Makefile.am"
 	sed -ie "s|contrib docs tests||" "$(PLATFORM)/ulxmlrpcpp/Makefile.am"
 	sed -ie "s|fork()|-1|" "$(PLATFORM)/ulxmlrpcpp/contrib/mprocess_rpc_server.cpp"
+ifeq ($(OS),android)
+	sed -ie "s|#include <sys/timeb.h>||" "$(PLATFORM)/ulxmlrpcpp/ulxr_log4j.cpp"
+	cd $(PLATFORM); patch -p1 < ../01-droid-no-domainname.patch
+	cd $(PLATFORM); patch -p1 < ../02-droid-missing-libc-bits.patch
+endif
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 

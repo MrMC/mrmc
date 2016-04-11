@@ -51,20 +51,6 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libmpeg2.la $(PREFIX)/lib/libmpeg2.so $(PREFIX)/lib/libmpeg2.so.0
-	mv -f $(PREFIX)/lib/libmpeg2.so.0.1.0 $(PREFIX)/lib/libxbmpeg2.so
-	ln -sf $(PREFIX)/lib/libxbmpeg2.so $(PREFIX)/lib/libmpeg2.so
-	$(RPL) -e "libmpeg2.so.0" "libxbmpeg2.so" $(PREFIX)/lib/libxbmpeg2.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libxbmpeg2.so | grep ibrary
-	#
-	rm -f $(PREFIX)/lib/libmpeg2convert.la $(PREFIX)/lib/libmpeg2convert.so $(PREFIX)/lib/libmpeg2convert.so.0
-	mv -f $(PREFIX)/lib/libmpeg2convert.so.0.0.0 $(PREFIX)/lib/libxbmpeg2convert.so
-	ln -sf $(PREFIX)/lib/libxbmpeg2convert.so $(PREFIX)/lib/libmpeg2convert.so
-	$(RPL) -e "libmpeg2convert.so.0" "libxbmpeg2convert.so" $(PREFIX)/lib/libxbmpeg2convert.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libxbmpeg2convert.so | grep ibrary
-	#
-endif
 	touch $@
 
 clean:

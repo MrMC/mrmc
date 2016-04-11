@@ -77,8 +77,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  DEPENDS += mdnsresponder android-sources-ics libuuid
-  EXCLUDED_DEPENDS = gmp nettle gnutls
+  DEPENDS += mdnsresponder libuuid
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))

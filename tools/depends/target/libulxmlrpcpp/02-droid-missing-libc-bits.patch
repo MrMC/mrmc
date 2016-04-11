@@ -1,0 +1,12 @@
+--- arm-linux-androideabi-android-21/ulxmlrpcpp/ulxmlrpcpp.h-org	2016-04-10 17:43:40.579141771 -0400
++++ arm-linux-androideabi-android-21/ulxmlrpcpp/ulxmlrpcpp.h	2016-04-10 17:43:43.911085739 -0400
+@@ -773,7 +773,7 @@ const int TransportError               =
+ #define ULXR_DIRSEP  ULXR_PCHAR("\\")
+ #endif
+ 
+-#if defined(_MSC_VER) || (defined(__GNUC__) && (__GNUC__ < 3))
++#if defined(__unix__) || defined(_MSC_VER) || (defined(__GNUC__) && (__GNUC__ < 3))
+ # define ulxr_FILE       FILE
+ # define ulxr_isspace    isspace
+ # define ulxr_tolower    tolower
+

@@ -31,6 +31,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); ./bootstrap
 	cd $(PLATFORM); patch -p1 < ../lib-includepath.patch
+ifeq ($(OS),android)
+	sed -ie "s|HAVE_LANGINFO_H|HAVE_BALONEY|" "$(PLATFORM)/src/smb_utils.c"
+endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
