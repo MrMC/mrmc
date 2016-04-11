@@ -19584,3 +19584,24 @@ msgstr ""
 msgctxt "#38116"
 msgid "Allow also the resolution to be adjusted to closely match the source material"
 msgstr ""
+
+msgctxt "#39000"
+msgid "HD and up"
+msgstr ""
+
+msgctxt "#39001"
+msgid "Accelerate MPEG2"
+msgstr ""
+
+msgctxt "#39002"
+msgid "Accelerate MPEG4"
+msgstr ""
+
+msgctxt "#39003"
+msgid "Accelerate h264"
+msgstr ""
+
+msgctxt "#39008"
+msgid "Accelerate hevc"
+msgstr ""
+

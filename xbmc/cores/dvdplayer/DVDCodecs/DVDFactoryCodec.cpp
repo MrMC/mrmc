@@ -191,10 +191,22 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
         case AV_CODEC_ID_MPEG4:
         case AV_CODEC_ID_MSMPEG4V2:
         case AV_CODEC_ID_MSMPEG4V3:
-          // Avoid h/w decoder for SD; Those files might use features
-          // not supported and can easily be soft-decoded
-          if (hint.width < 800)
-            break;
+          if (hint.width > CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELMPEG4))
+            if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true, render_interlaced), hint, options)) ) return pCodec;
+          break;
+        case AV_CODEC_ID_MPEG1VIDEO:
+        case AV_CODEC_ID_MPEG2VIDEO:
+          if (hint.width > CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELMPEG2))
+            if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true, render_interlaced), hint, options)) ) return pCodec;
+          break;
+        case AV_CODEC_ID_H264:
+          if (hint.width > CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELH264))
+            if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true, render_interlaced), hint, options)) ) return pCodec;
+          break;
+        case AV_CODEC_ID_HEVC:
+          if (hint.width > CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELHEVC))
+            if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true, render_interlaced), hint, options)) ) return pCodec;
+          break;
         default:
           CLog::Log(LOGINFO, "MediaCodec (Surface) Video Decoder...");
           if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true, render_interlaced), hint, options)) ) return pCodec;
@@ -209,10 +221,22 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
       case AV_CODEC_ID_MPEG4:
       case AV_CODEC_ID_MSMPEG4V2:
       case AV_CODEC_ID_MSMPEG4V3:
-        // Avoid h/w decoder for SD; Those files might use features
-        // not supported and can easily be soft-decoded
-        if (hint.width <= 800)
-          break;
+        if (hint.width > CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELMPEG4))
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false, render_interlaced), hint, options)) ) return pCodec;
+        break;
+      case AV_CODEC_ID_MPEG1VIDEO:
+      case AV_CODEC_ID_MPEG2VIDEO:
+        if (hint.width > CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELMPEG2))
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false, render_interlaced), hint, options)) ) return pCodec;
+        break;
+      case AV_CODEC_ID_H264:
+        if (hint.width > CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELH264))
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false, render_interlaced), hint, options)) ) return pCodec;
+        break;
+      case AV_CODEC_ID_HEVC:
+        if (hint.width > CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELHEVC))
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false, render_interlaced), hint, options)) ) return pCodec;
+        break;
       default:
         CLog::Log(LOGINFO, "MediaCodec Video Decoder...");
         if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false, render_interlaced), hint, options)) ) return pCodec;
