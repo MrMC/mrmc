@@ -3987,7 +3987,9 @@ msgctxt "#1208"
 msgid "Mount SMB shares"
 msgstr ""
 
-#empty string with id 1209
+msgctxt "#1209"
+msgid "Force SMB v1"
+msgstr ""
 
 #: xbmc/event/windows/GUIWindowEventLog.cpp
 msgctxt "#1210"
@@ -4045,6 +4047,10 @@ msgstr ""
 
 msgctxt "#1223"
 msgid "Disabled"
+msgstr ""
+
+msgctxt "#1224"
+msgid "Overwrite existing configuration"
 msgstr ""
 
 #empty strings from id 1224 to 1225
@@ -4572,7 +4578,12 @@ msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr ""
 
-#empty strings from id 1451 to 2049
+#: system/settings/settings.xml
+msgctxt "#1451"
+msgid "Clean Thumbnails..."
+msgstr ""
+
+#empty strings from id 1452 to 2049
 #strings through to 1470 reserved for power-saving
 
 msgctxt "#2050"
@@ -8303,7 +8314,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16313"
-msgid "VDPAU - Sharpness"
+msgid "Sharpness"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
@@ -10677,7 +10688,10 @@ msgctxt "#20072"
 msgid "Make sure the selected folder is writable and that the new folder name is valid"
 msgstr ""
 
-#empty string with id 20073
+#: xbmc/windows/GUIWindowFileManager.cpp
+msgctxt "#20073"
+msgid "Android content"
+msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20074"
@@ -11257,7 +11271,11 @@ msgctxt "#20244"
 msgid "Android apps"
 msgstr ""
 
-#empty strings from id 20245 to 20249
+msgctxt "#20245"
+msgid "Android Settings"
+msgstr ""
+
+#empty strings from id 20246 to 20249
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -12079,7 +12097,15 @@ msgctxt "#20471"
 msgid "Show empty TV shows"
 msgstr ""
 
-#empty strings from id 20472 to 21329
+msgctxt "#20472"
+msgid "Import all videos"
+msgstr ""
+
+msgctxt "#20473"
+msgid "Import all videos, even if no scrapper data is available"
+msgstr ""
+
+#empty strings from id 20474 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
@@ -17619,7 +17645,19 @@ msgctxt "#36461"
 msgid "Notification event describe regular processes and actions performed by the system or the user."
 msgstr ""
 
-#empty strings from id 36462 to 36499
+#. Description of settings category "Services -> SMB Client" with label #1209
+#: system/settings/settings.xml
+msgctxt "#36462"
+msgid "Force ver 1 of the SMB protocol. Might solve connection issues."
+msgstr ""
+
+#. Description of settings category "Services -> SMB Client" with label #1224
+#: system/settings/settings.xml
+msgctxt "#36463"
+msgid "Overwrite the SMB client configuration (smb.conf) on restart"
+msgstr ""
+
+#empty strings from id 36464 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied
@@ -18373,7 +18411,13 @@ msgctxt "#37048"
 msgid "%i dB"
 msgstr ""
 
-#empty strings from id 37049 to 38009
+#: system/settings/settings.xml
+msgctxt "#37049"
+msgid "Remove dangling thumbnails."
+msgstr ""
+
+
+#empty strings from id 37050 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"
@@ -18452,3 +18496,24 @@ msgstr ""
 msgctxt "#38023"
 msgid "Set my rating"
 msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38110"
+msgid "Support MVC video (full frame 3D)"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38111"
+msgid "This option decodes frames for both eyes of MVC video. Disabling may improve performance if you don't require 3D"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38112"
+msgid "Use Full HD HDMI modes for 3D"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38113"
+msgid "This option uses frame-packing to output full resolution for 3D through HDMI"
+msgstr ""
+

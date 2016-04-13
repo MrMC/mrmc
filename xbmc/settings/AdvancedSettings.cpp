@@ -336,6 +336,7 @@ void CAdvancedSettings::Initialize()
   m_iMusicLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
   m_bVideoLibraryAllItemsOnBottom = false;
+  m_iVideoLibraryRecentlyAddedUnseen = false;
   m_iVideoLibraryRecentlyAddedItems = 25;
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryUseFastHash = true;
@@ -344,6 +345,11 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryImportResumePoint = false;
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
+
+  m_recentlyAddedMusicPath = "musicdb://songs/";
+  m_recentlyAddedMoviePath = "videodb://recentlyaddedmovies/";
+  m_recentlyAddedEpisodePath = "videodb://recentlyaddedepisodes/";
+  m_recentlyAddedMusicVideoPath = "videodb://recentlyaddedmusicvideos/";
 
   m_iEpgLingerTime = 60 * 24;           /* keep 24 hours by default */
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
@@ -437,6 +443,7 @@ void CAdvancedSettings::Initialize()
   m_stereoscopicregex_3d = "[-. _]3d[-. _]";
   m_stereoscopicregex_sbs = "[-. _]h?sbs[-. _]";
   m_stereoscopicregex_tab = "[-. _]h?tab[-. _]";
+  m_stereoscopicregex_mvc = "[-. _]h?mvc[-. _]";
 
   m_videoAssFixedWorks = false;
 
@@ -554,6 +561,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pElement, "stereoscopicregex3d", m_stereoscopicregex_3d);
     XMLUtils::GetString(pElement, "stereoscopicregexsbs", m_stereoscopicregex_sbs);
     XMLUtils::GetString(pElement, "stereoscopicregextab", m_stereoscopicregex_tab);
+    XMLUtils::GetString(pElement, "stereoscopicregexmvc", m_stereoscopicregex_mvc);
     XMLUtils::GetFloat(pElement, "subsdelayrange", m_videoSubsDelayRange, 10, 600);
     XMLUtils::GetFloat(pElement, "audiodelayrange", m_videoAudioDelayRange, 10, 600);
     XMLUtils::GetInt(pElement, "blackbarcolour", m_videoBlackBarColour, 0, 255);
@@ -771,6 +779,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", m_bVideoLibraryAllItemsOnBottom);
     XMLUtils::GetInt(pElement, "recentlyaddeditems", m_iVideoLibraryRecentlyAddedItems, 1, INT_MAX);
+    XMLUtils::GetBoolean(pElement, "recentlyaddedunseen", m_iVideoLibraryRecentlyAddedUnseen);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetBoolean(pElement, "usefasthash", m_bVideoLibraryUseFastHash);
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
@@ -778,6 +787,15 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
     XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
+
+    TiXmlElement *pSubElement = pElement->FirstChildElement("recentlyaddedpath");
+    if (pSubElement)
+    {
+      XMLUtils::GetString(pSubElement, "musicpath", m_recentlyAddedMusicPath);
+      XMLUtils::GetString(pSubElement, "moviepath", m_recentlyAddedMoviePath);
+      XMLUtils::GetString(pSubElement, "episodepath", m_recentlyAddedEpisodePath);
+      XMLUtils::GetString(pSubElement, "musicvideopath", m_recentlyAddedMusicVideoPath);
+    }
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");

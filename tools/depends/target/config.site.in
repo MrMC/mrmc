@@ -88,6 +88,7 @@ if test "@platform_os@" = "android"; then
   SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
   libreplace_cv_READDIR_GETDIRENTRIES=no
   libreplace_cv_READDIR_GETDENTS=no
+  libreplace_cv_HAVE_IFACE_IFCONF=yes
   libreplace_cv_HAVE_MMAP=yes
   libreplace_cv_HAVE_GETTIMEOFDAY_TZ=yes
   libreplace_cv_HAVE_SECURE_MKSTEMP=yes

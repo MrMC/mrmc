@@ -57,12 +57,21 @@ bool CRecentlyAddedJob::UpdateVideo()
   int            i = 0;
   CFileItemList  items;
   CVideoDatabase videodatabase;
+  std::string path;
   CVideoThumbLoader loader;
   loader.OnLoaderStart();
   
-  videodatabase.Open();
+  path = g_advancedSettings.m_recentlyAddedMoviePath;
+  if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
+  {
+    CVideoDbUrl url;
+    url.FromString(path);
+    url.AddOption("filter", "{\"type\":\"movies\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
+    path = url.ToString();
+  }
 
-  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://recentlyaddedmovies/", items, NUM_ITEMS))
+  videodatabase.Open();
+  if (videodatabase.GetRecentlyAddedMoviesNav(path, items, NUM_ITEMS))
   {  
     for (; i < items.Size(); ++i)
     {
@@ -101,8 +110,17 @@ bool CRecentlyAddedJob::UpdateVideo()
  
   i = 0;
   CFileItemList  TVShowItems; 
- 
-  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://recentlyaddedepisodes/", TVShowItems, NUM_ITEMS))
+
+  path = g_advancedSettings.m_recentlyAddedEpisodePath;
+  if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
+  {
+    CVideoDbUrl url;
+    url.FromString(path);
+    url.AddOption("filter", "{\"type\":\"episodes\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
+    path = url.ToString();
+  }
+
+  if (videodatabase.GetRecentlyAddedEpisodesNav(path, TVShowItems, NUM_ITEMS))
   {
     for (; i < TVShowItems.Size(); ++i)
     {    
@@ -160,7 +178,16 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList MusicVideoItems;
 
-  if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://recentlyaddedmusicvideos/", MusicVideoItems, NUM_ITEMS))
+  path = g_advancedSettings.m_recentlyAddedMusicVideoPath;
+  if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
+  {
+    CVideoDbUrl url;
+    url.FromString(path);
+    url.AddOption("filter", "{\"type\":\"musicvideos\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
+    path = url.ToString();
+  }
+
+  if (videodatabase.GetRecentlyAddedMusicVideosNav(path, MusicVideoItems, NUM_ITEMS))
   {
     for (; i < MusicVideoItems.Size(); ++i)
     {
@@ -215,7 +242,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   musicdatabase.Open();
   
-  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", musicItems, NUM_ITEMS))
+  if (musicdatabase.GetRecentlyAddedAlbumSongs(g_advancedSettings.m_recentlyAddedMusicPath, musicItems, NUM_ITEMS))
   {
     long idAlbum = -1;
     std::string strAlbumThumb;

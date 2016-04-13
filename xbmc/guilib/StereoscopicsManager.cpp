@@ -45,6 +45,7 @@
 #include "utils/Variant.h"
 #include "windowing/WindowingFactory.h"
 #include "guiinfo/GUIInfoLabels.h"
+#include "utils/URIUtils.h"
 
 using namespace KODI::MESSAGING;
 
@@ -201,6 +202,21 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
 
   if (re.RegFind(searchString) > -1)
     stereoMode = "top_bottom";
+
+  if (!re.RegComp(g_advancedSettings.m_stereoscopicregex_mvc.c_str()))
+  {
+    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d MVC content:'%s'", __FUNCTION__, g_advancedSettings.m_stereoscopicregex_mvc.c_str());
+    return stereoMode;
+  }
+
+  if (re.RegFind(searchString) > -1)
+    stereoMode = "left_right";
+
+  if (URIUtils::HasExtension(needle, ".ssif"))
+  {
+    stereoMode = "top_bottom";
+    return stereoMode;
+  }
 
   return stereoMode;
 }

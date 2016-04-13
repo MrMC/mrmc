@@ -479,7 +479,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       if (m_vecItems->GetPath() == "?")
         m_vecItems->SetPath("");
+      std::string path, fileName;
       std::string dir = message.GetStringParam(0);
+      URIUtils::Split(dir, path, fileName);
+      if (StringUtils::IsInteger(fileName))
+        dir = path;
       const std::string &ret = message.GetStringParam(1);
       bool returning = StringUtils::EqualsNoCase(ret, "return");
       if (!dir.empty())
@@ -759,7 +763,21 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   }
 
   if (m_vecItems->GetLabel().empty())
+  {
     m_vecItems->SetLabel(CUtil::GetTitleFromPath(m_vecItems->GetPath(), true));
+
+    // Removable sources
+    VECSOURCES removables;
+    g_mediaManager.GetRemovableDrives(removables);
+    for (auto s : removables)
+    {
+      if (URIUtils::CompareWithoutSlashAtEnd(s.strPath, m_vecItems->GetPath()))
+      {
+        m_vecItems->SetLabel(s.strName);
+        break;
+      }
+    }
+  }
 
   // check the given path for filter data
   UpdateFilterPath(strDirectory, *m_vecItems, updateFilterPath);

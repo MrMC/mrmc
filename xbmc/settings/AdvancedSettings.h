@@ -280,6 +280,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
 
     bool m_bVideoLibraryAllItemsOnBottom;
     int m_iVideoLibraryRecentlyAddedItems;
+    bool m_iVideoLibraryRecentlyAddedUnseen;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryUseFastHash;
     bool m_bVideoLibraryExportAutoThumbs;
@@ -290,6 +291,11 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     int m_iVideoLibraryDateAdded;
 
     std::set<std::string> m_vecTokens;
+
+    std::string m_recentlyAddedMusicPath;
+    std::string m_recentlyAddedMoviePath;
+    std::string m_recentlyAddedEpisodePath;
+    std::string m_recentlyAddedMusicVideoPath;
 
     int m_iEpgLingerTime;           // minutes
     int m_iEpgUpdateCheckInterval;  // seconds
@@ -376,6 +382,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     std::string m_stereoscopicregex_3d;
     std::string m_stereoscopicregex_sbs;
     std::string m_stereoscopicregex_tab;
+    std::string m_stereoscopicregex_mvc;
 
     /*!< @brief position behavior of ass subtitiles when setting "subtitle position on screen" set to "fixed"
     True to show at the fixed position set in video calibration

@@ -130,6 +130,10 @@ bool CRenderSystemGLES::InitRenderSystem()
     m_renderCaps |= RENDER_CAPS_BGRA_APPLE;
   }
 
+  if (IsExtSupported("GL_EXT_unpack_subimage"))
+  {
+    m_renderCaps |= RENDER_CAPS_EGL_SUBIMAGE;
+  }
 
 
   m_bRenderCreated = true;
@@ -718,17 +722,19 @@ GLint CRenderSystemGLES::GUIShaderGetBrightness()
   return -1;
 }
 
+void CRenderSystemGLES::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
+{
+  CRenderSystemBase::SetStereoMode(mode, view);
+
+  g_sysinfo.HWSetStereoMode(mode, view);
+}
+
 bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode)
 {
-  switch(mode)
-  {
-    case RENDER_STEREO_MODE_INTERLACED:
-      if (g_sysinfo.HasHW3DInterlaced())
-        return true;
+  if (g_sysinfo.HWSupportsStereo(mode))
+    return true;
 
-    default:
-      return CRenderSystemBase::SupportsStereo(mode);
-  }
+  return CRenderSystemBase::SupportsStereo(mode);
 }
 
 GLint CRenderSystemGLES::GUIShaderGetModel()
