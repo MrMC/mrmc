@@ -957,9 +957,10 @@ PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS],
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([gif],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([expat],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ulxmlrpcpp],  [main],, AC_MSG_ERROR($missing_library))
 
-AC_CHECK_LIB([cpluff],      [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([cpluff.h],, AC_MSG_ERROR($missing_library))
 XB_FIND_SONAME([CPLUFF], [cpluff])
 
 PKG_CHECK_MODULES([DVDNAV], [dvdnav],, AC_MSG_ERROR([dvdnav not found]))

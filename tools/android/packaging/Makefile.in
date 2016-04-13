@@ -1,10 +1,17 @@
 include ../../depends/Makefile.include
 
-OBJS = libcurl.so \
-  libplist.so libshairplay.so \
-  libxbogg.so libxbvorbis.so libxbvorbisfile.so libmpeg2.so \
-  libmpeg2convert.so libnfs.so libass.so \
-  libbluray.so libsmbclient.so
+OBJS = libcurl.so
+OBJS+= libcpluff.so
+OBJS+= libass.so
+OBJS+= libxbogg.so libxbvorbis.so libxbvorbisfile.so
+OBJS+= libmpeg2.so libmpeg2convert.so
+OBJS+= libnfs.so
+OBJS+= libdsm.so
+OBJS+= libsmbclient.so
+OBJS+= libdvdnav.so
+OBJS+= libbluray.so
+OBJS+= libplist.so
+OBJS+= libshairplay.so
 
 PLATFORM_OBJS =
 EXCLUDED_ADDONS =
@@ -122,7 +129,6 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
-	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
@@ -139,7 +145,7 @@ xbmc/classes.dex: res
 	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:$(SDKROOT)/extras/android/support/v4/android-support-v4.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/kodi/*.java
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj xbmc/libs
 
-package: libs symbols python xbmc/classes.dex
+package: libs symbols xbmc/classes.dex
 	@echo "Creating package..."
 	@cp images/@APP_NAME@app-debug-skeleton.apk images/@APP_NAME@app-debug-$(CPU)-unaligned.apk
 	@cd xbmc; $(ZIP) -r -q ../images/@APP_NAME@app-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
@@ -171,4 +177,4 @@ apk-clean:
 	rm -f xbmc/classes.dex
 	rm -rf assets
 
-.PHONY: force libs assets python sharedapk sharedobb res package
+.PHONY: force libs assets sharedapk sharedobb res package

@@ -22,7 +22,7 @@
         <setting id="videoplayer.usemediacodecsurface" type="boolean" label="13440" help="36544">
           <visible>HAS_MEDIACODEC</visible>
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <updates>
             <update type="change" />
           </updates>

@@ -9,7 +9,7 @@ ARCHIVE=$(SOURCE).tar.bz2
 
 CXXFLAGS_EXTRA = -D__unix__
 ifeq ($(OS),android)
-CONFIG_EXTRA = ac_cv_func_realloc_0_nonnull=yes ac_cv_func_malloc_0_nonnull=yes
+CONFIG_EXTRA = ac_cv_func_realloc_0_nonnull=yes
 endif
 ifeq ($(BUILD_OS),osx)
 CXXFLAGS_EXTRA += -Wno-error=c++11-narrowing
@@ -51,7 +51,7 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
-	rm -rf $(PREFIX)/lib/libulxmlrpcpp*.dylib $(PREFIX)/lib/libulxmlrpcpp.la
+	rm -rf $(PREFIX)/lib/libulxmlrpcpp*.dylib $(PREFIX)/lib/libulxmlrpcpp*.so $(PREFIX)/lib/libulxmlrpcpp.la
 	touch $@
 
 clean:
