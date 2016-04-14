@@ -78,6 +78,7 @@ endif
 
 ifeq ($(OS),android)
   DEPENDS += mdnsresponder libuuid
+  CROSSGUID_DEPS = libuuid
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
@@ -98,6 +99,7 @@ ALSA_LIB =
 LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
   DEPENDS += libuuid
+  CROSSGUID_DEPS = libuuid
   #not for raspberry pi
   ifneq ($(TARGET_PLATFORM),raspberry-pi)
     DEPENDS += libsdl2 linux-system-libs
@@ -137,9 +139,7 @@ libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis gnutls libdcadec
 libcec: platform
-ifeq ($(OS),linux)
-crossguid: libuuid
-endif
+crossguid: $(CROSSGUID_DEPS)
 libdsm: libtasn1
 libcpluff: expat
 libdvdread: libdvdcss

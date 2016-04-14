@@ -853,6 +853,7 @@ bool CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
+    CSpecialProtocol::SetLogsPath(strTempPath);
     g_advancedSettings.m_logFolder = strTempPath;
 
     CreateUserDirs();

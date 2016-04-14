@@ -5,7 +5,17 @@ xbmc/lib/*
 xbmc/libs/*
 xbmc/obj/*
 xbmc/res/drawable/splash.png
+xbmc/res/drawable-hdpi/ic_launcher.png
+xbmc/res/drawable-ldpi/ic_launcher.png
+xbmc/res/drawable-mdpi/ic_launcher.png
+xbmc/res/drawable-xhdpi/banner.png
+xbmc/res/drawable-xhdpi/ic_launcher.png
+xbmc/res/drawable-xxhdpi/ic_launcher.png
+xbmc/res/layout/activity_main.xml
+xbmc/res/xml/searchable.xml
+xbmc/searchable.xml
 xbmc/src/R.java
 xbmc/src/org/xbmc/kodi/*.class
+xbmc/src/org/xbmc/kodi/*.java
 xbmc/classes.dex
 tmp/*

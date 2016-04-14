@@ -964,13 +964,13 @@ void CXBMCApp::SetupEnv()
   if (xbmcHome.empty())
   {
     std::string cacheDir = getCacheDir().getAbsolutePath();
-    setenv("KODI_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
-    setenv("KODI_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+    setenv("MRMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+    setenv("MRMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
   }
   else
   {
-    setenv("KODI_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
-    setenv("KODI_HOME", (xbmcHome + "/assets").c_str(), 0);
+    setenv("MRMC_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
+    setenv("MRMC_HOME", (xbmcHome + "/assets").c_str(), 0);
   }
 
   std::string externalDir = CJNISystem::getProperty("xbmc.data", "");
@@ -987,7 +987,7 @@ void CXBMCApp::SetupEnv()
   if (!externalDir.empty())
     setenv("HOME", externalDir.c_str(), 0);
   else
-    setenv("HOME", getenv("KODI_TEMP"), 0);
+    setenv("HOME", getenv("MRMC_TEMP"), 0);
 
   std::string apkPath = getenv("XBMC_ANDROID_APK");
   apkPath += "/assets/python2.6";
