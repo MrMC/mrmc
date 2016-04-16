@@ -1172,7 +1172,9 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 #if (MHD_VERSION >= 0x00040001)
                           MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, NULL,
 #endif // MHD_VERSION >= 0x00040001
+#if !defined(TARGET_ANDROID)
                           MHD_OPTION_THREAD_STACK_SIZE, m_thread_stacksize,
+#endif
                           MHD_OPTION_END);
 }
 
