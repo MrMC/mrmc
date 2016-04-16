@@ -1161,7 +1161,7 @@ double CDVDPlayerVideo::GetCurrentPts()
     return DVD_NOPTS_VALUE;
   else if (m_speed == DVD_PLAYSPEED_NORMAL)
   {
-    iRenderPts -= std::max(0.0, DVD_SEC_TO_TIME(iSleepTime));
+    iRenderPts -= std::max(0.0, iSleepTime);
 
     if (iRenderPts < 0)
       iRenderPts = 0;
@@ -1292,7 +1292,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
   {
     if (iSkippedPicture > 0)
     {
-      iGain = iSkippedPicture*interval/(double)DVD_TIME_BASE;
+      iGain = iSkippedPicture*interval;
       CDroppingStats::CGain gain;
       gain.gain = iGain;
       gain.pts = iDecoderPts;
@@ -1301,11 +1301,11 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
       result |= EOS_DROPPED;
       m_droppingStats.m_dropRequests = 0;
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"CDVDPlayerVideo::CalcDropRequirement - dropped pictures, Sleeptime: %f, Bufferlevel: %d, Gain: %f", iSleepTime, iBufferLevel, iGain);
+        CLog::Log(LOGDEBUG,"CDVDPlayerVideo::CalcDropRequirement - dropped pictures, Sleeptime: %d, Bufferlevel: %d, Gain: %d", DVD_TIME_TO_MSEC(iSleepTime), iBufferLevel, DVD_TIME_TO_MSEC(iGain));
     }
     if (iDroppedFrames > 0)
     {
-      iGain = iDroppedFrames*interval/(double)DVD_TIME_BASE;
+      iGain = iDroppedFrames*interval;
       CDroppingStats::CGain gain;
       gain.gain = iGain;
       gain.pts = iDecoderPts;
@@ -1314,7 +1314,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
       result |= EOS_DROPPED;
       m_droppingStats.m_dropRequests = 0;
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"CDVDPlayerVideo::CalcDropRequirement - dropped in decoder, Sleeptime: %f, Bufferlevel: %d, Gain: %f", iSleepTime, iBufferLevel, iGain);
+        CLog::Log(LOGDEBUG,"CDVDPlayerVideo::CalcDropRequirement - dropped in decoder, Sleeptime: %d, Bufferlevel: %d, Gain: %d", DVD_TIME_TO_MSEC(iSleepTime), iBufferLevel, DVD_TIME_TO_MSEC(iGain));
     }
   }
 
@@ -1334,7 +1334,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
 
     // if lateness is smaller than frametime, we observe this state
     // for 10 cycles
-    if (m_droppingStats.m_lateFrames > 10 || iLateness < -2/m_fFrameRate)
+    if (m_droppingStats.m_lateFrames > 10 || iLateness < -2*DVD_TIME_BASE/m_fFrameRate)
     {
       result |= EOS_VERYLATE;
       m_droppingStats.m_dropRequests++;
