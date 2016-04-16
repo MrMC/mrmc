@@ -1087,11 +1087,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     }
 
     int flags = bufferInfo.flags();
+    /*
     if (flags & CJNIMediaCodec::BUFFER_FLAG_SYNC_FRAME)
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_SYNC_FRAME");
 
     if (flags & CJNIMediaCodec::BUFFER_FLAG_CODEC_CONFIG)
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_CODEC_CONFIG");
+    */
 
     if (flags & CJNIMediaCodec::BUFFER_FLAG_END_OF_STREAM)
     {
