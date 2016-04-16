@@ -23,6 +23,17 @@
 
 #include <libsmbclient.h>
 
+// stupid off_t, the size depends on arch
+// but we want smb to work with >4GB files on embedded.
+// libsmbclient is diddled in depends to force off_t to 64 bit
+// but as the header API must match here, we need to diddle it.
+#if defined(TARGET_ANDROID)
+  #define SMB_OFF_T off64_t
+#else
+  #define SMB_OFF_T off_t
+#endif
+
+
 class DllLibSMBInterface
 {
 public:
@@ -37,7 +48,7 @@ public:
   virtual int       smbc_creat(const char *furl, mode_t mode)=0;
   virtual ssize_t   smbc_read(int fd, void *buf, size_t bufsize)=0;
   virtual ssize_t   smbc_write(int fd, void *buf, size_t bufsize)=0;
-  virtual off_t     smbc_lseek(int fd, off_t offset, int whence)=0;
+  virtual SMB_OFF_T smbc_lseek(int fd, SMB_OFF_T offset, int whence)=0;
   virtual int       smbc_close(int fd)=0;
   virtual int       smbc_unlink(const char *furl)=0;
   virtual int       smbc_rename(const char *ourl, const char *nurl)=0;
@@ -67,7 +78,7 @@ class DllLibSMB : public DllDynamic, DllLibSMBInterface
   DEFINE_METHOD2(int,       smbc_creat,        (const char *p1, mode_t p2))
   DEFINE_METHOD3(ssize_t,   smbc_read,         (int p1, void *p2, size_t p3))
   DEFINE_METHOD3(ssize_t,   smbc_write,        (int p1, void *p2, size_t p3))
-  DEFINE_METHOD3(off_t,     smbc_lseek,        (int p1, off_t p2, int p3))
+  DEFINE_METHOD3(SMB_OFF_T, smbc_lseek,        (int p1, SMB_OFF_T p2, int p3))
   DEFINE_METHOD1(int,       smbc_close,        (int p1))
   DEFINE_METHOD1(int,       smbc_unlink,       (const char *p1))
   DEFINE_METHOD2(int,       smbc_rename,       (const char *p1, const char *p2))

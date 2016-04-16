@@ -75,6 +75,7 @@ ifeq ($(BUILD_OS),osx)
 	cd $(PLATFORM); patch -p1 < ../samba30-3.0.37_darwin-iface-getifaddrs.patch
 endif
 	$(ANDROID_OFF_T_FIX)
+ifeq ($(BUILD_OS),osx)
 	sed -ie "s|-bundle -flat_namespace -undefined suppress|-dynamiclib|" "$(PLATFORM)/source/configure.in"
 	# remove fork/execX/system, it is not used for client
 	sed -ie "s|forkret = fork()|forkret = (pid_t)-1|" "$(PLATFORM)/source/lib/system.c"
@@ -83,6 +84,7 @@ endif
 	sed -ie "s|system(cmd)|-1|" "$(PLATFORM)/source/lib/util.c"
 	sed -ie "s|fork()|-1|" "$(PLATFORM)/source/lib/sock_exec.c"
 	sed -ie "s|system(prog)|-1|" "$(PLATFORM)/source/lib/sock_exec.c"
+endif
 	cd $(PLATFORM)/source && ./autogen.sh
 	cd $(PLATFORM)/source; $(CONFIGURE)
 
