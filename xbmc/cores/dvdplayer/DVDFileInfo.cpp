@@ -273,7 +273,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
               aspect = hint.aspect;
             unsigned int nHeight = (unsigned int)((double)g_advancedSettings.GetThumbSize() / aspect);
 
-            uint8_t *pOutBuf = new uint8_t[nWidth * nHeight * 4];
+            uint8_t *pOutBuf = (uint8_t*)av_malloc(nWidth * nHeight * 4);
             struct SwsContext *context = sws_getContext(picture.iWidth, picture.iHeight,
                   PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_BGRA, SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
@@ -292,7 +292,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
               CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, orientation, nWidth, nHeight, CTextureCache::GetCachedPath(details.file));
               bOk = true;
             }
-            SAFE_DELETE_ARRAY(pOutBuf);
+            av_free(pOutBuf);
           }
         }
         else

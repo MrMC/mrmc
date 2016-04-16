@@ -190,7 +190,7 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
   UnInit();
 
   if (m_rgbBuffer != NULL) {
-    delete [] m_rgbBuffer;
+    av_free(m_rgbBuffer);
     m_rgbBuffer = NULL;
   }
 
@@ -1049,7 +1049,7 @@ void CLinuxRendererGLES::UnInit()
 
   if (m_rgbBuffer != NULL)
   {
-    delete [] m_rgbBuffer;
+    av_free(m_rgbBuffer);
     m_rgbBuffer = NULL;
   }
   m_rgbBufferSize = 0;
@@ -2003,9 +2003,9 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   {
     if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
     {
-      delete [] m_rgbBuffer;
+      av_free(m_rgbBuffer);
       m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
-      m_rgbBuffer = new uint8_t[m_rgbBufferSize];
+      m_rgbBuffer = m_rgbBuffer = (uint8_t*)av_malloc(m_rgbBufferSize);
     }
 
 #if defined(__ARM_NEON__) && !defined(__LP64__)
@@ -3105,7 +3105,7 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
      m_format == RENDER_FMT_EGLIMG ||
      m_format == RENDER_FMT_MEDIACODEC ||
     m_format == RENDER_FMT_MEDIACODECSURFACE)
-    info.optimal_buffer_size = 2;
+    info.optimal_buffer_size = 4;
   else if(m_format == RENDER_FMT_IMXMAP)
   {
     // Let the codec control the buffer size
