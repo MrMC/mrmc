@@ -143,12 +143,12 @@ int CDSMSession::ConnectSession(const CURL &url)
     netbios_name = url.GetHostName().c_str();
   }
 
-  if (!m_dsmlib->smb_session_connect(m_smb_session,
-    netbios_name, addr.s_addr, SMB_TRANSPORT_TCP))
+  if (m_dsmlib->smb_session_connect(m_smb_session,
+    netbios_name, addr.s_addr, SMB_TRANSPORT_TCP) != DSM_SUCCESS)
   {
     CLog::Log(LOGDEBUG, "CDSMSession: Failed to connect using SMB_TRANSPORT_TCP, trying SMB_TRANSPORT_NBT");
-    if (!m_dsmlib->smb_session_connect(m_smb_session,
-      netbios_name, addr.s_addr, SMB_TRANSPORT_NBT))
+    if (m_dsmlib->smb_session_connect(m_smb_session,
+      netbios_name, addr.s_addr, SMB_TRANSPORT_NBT) != DSM_SUCCESS)
     {
       CLog::Log(LOGERROR, "CDSMSession: Failed to connect");
       DisconnectSession();
@@ -165,17 +165,21 @@ int CDSMSession::ConnectSession(const CURL &url)
   std::string password = url.GetPassWord();
   if (login.empty())
   {
+    /*
     login = "Guest";
 
     // default to 'Guest' if no password
     if (password.empty())
       password = "Guest";
+    */
+    return NT_STATUS_LOGON_FAILURE;
   }
+
 
   // setup credentials and login.
   m_dsmlib->smb_session_set_creds(m_smb_session,
     netbios_name, login.c_str(), password.c_str());
-  if (m_dsmlib->smb_session_login(m_smb_session))
+  if (m_dsmlib->smb_session_login(m_smb_session) == DSM_SUCCESS)
   {
     int response = m_dsmlib->smb_session_is_guest(m_smb_session);
     if (response == 0)
@@ -184,7 +188,8 @@ int CDSMSession::ConnectSession(const CURL &url)
       CLog::Log(LOGDEBUG, "CDSMSession: Logged in as guest");
     else
     {
-      CLog::Log(LOGERROR, "CDSMSession: not logged in, invalid session, etc");
+      uint32_t reason = m_dsmlib->smb_session_get_nt_status(m_smb_session);
+      CLog::Log(LOGERROR, "CDSMSession: not logged in, invalid session, etc. reason(%d)", reason);
       return NT_STATUS_LOGON_FAILURE;
     }
   }
@@ -224,12 +229,13 @@ bool CDSMSession::ConnectShare(const std::string &path)
       // trees are always relative to share point.
       std::string sharename = extract_share_name_convert(path);
 
+      int response = DSM_SUCCESS;
       time_t start = 0;
       while(1)
       {
         m_lastActive = XbmcThreads::SystemClockMillis();
-        m_smb_tid = m_dsmlib->smb_tree_connect(m_smb_session, sharename.c_str());
-        if (m_smb_tid > 0)
+        response = m_dsmlib->smb_tree_connect(m_smb_session, sharename.c_str(), &m_smb_tid);
+        if (response == DSM_SUCCESS)
           break;
 
         if (!start)
@@ -245,7 +251,7 @@ bool CDSMSession::ConnectShare(const std::string &path)
         // 100ms retry
         usleep(100 * 1000);
       }
-      if (m_smb_tid < 0)
+      if (response != DSM_SUCCESS)
       {
         CLog::Log(LOGERROR, "CDSMSession: Unable to connect to share");
         return false;
@@ -270,12 +276,13 @@ smb_fd CDSMSession::CreateFileHande(const std::string &file)
     // paths are relative to the m_smb_tid, which is the share name
     std::string filepath = strip_share_name_convert(file);
 
+    int response = DSM_SUCCESS;
     time_t start = 0;
     while(1)
     {
       m_lastActive = XbmcThreads::SystemClockMillis();
-      fd = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RO);
-      if (fd > 0)
+      response = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RO, &fd);
+      if (response == DSM_SUCCESS)
         break;
 
       if (!start)
@@ -318,11 +325,12 @@ smb_fd CDSMSession::CreateFileHandeForWrite(const std::string &file, bool bOverW
     // paths are relative to the m_smb_tid, which is the share name.
     std::string filepath = strip_share_name_convert(file);
 
+    int response = DSM_SUCCESS;
     time_t start = 0;
     while(1)
     {
-      fd = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RW);
-      if (fd > 0)
+      response = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RW, &fd);
+      if (response == DSM_SUCCESS)
         break;
 
       if (!start)
@@ -364,9 +372,11 @@ bool CDSMSession::GetShares(const std::string &base, CFileItemList &items)
   {
     m_lastActive = XbmcThreads::SystemClockMillis();
 
+    int response = DSM_SUCCESS;
+    size_t share_count;
     smb_share_list shares;
-    size_t share_count = m_dsmlib->smb_share_get_list(m_smb_session, &shares);
-    if (share_count)
+    response = m_dsmlib->smb_share_get_list(m_smb_session, &shares, &share_count);
+    if (response == DSM_SUCCESS)
     {
       for(size_t i = 0; i < share_count; ++i)
       {
@@ -504,7 +514,7 @@ bool CDSMSession::CreateDirectory(const char *path)
 
     // paths are relative to the m_smb_tid, which is the share name
     std::string pathname = strip_share_name_convert(path);
-    uint32_t nt_code = m_dsmlib->smb_directory_create(m_smb_session, m_smb_tid, pathname.c_str());
+    int nt_code = m_dsmlib->smb_directory_create(m_smb_session, m_smb_tid, pathname.c_str());
     if (nt_code)
       CLog::Log(LOGERROR, "CDSMSession: Was connected but could not create directory for '%s'", path);
     else
@@ -533,7 +543,7 @@ bool CDSMSession::RemoveDirectory(const char *path)
 
     // paths are relative to the m_smb_tid, which is the share name
     std::string pathname = strip_share_name_convert(path);
-    uint32_t nt_code = m_dsmlib->smb_directory_rm(m_smb_session, m_smb_tid, pathname.c_str());
+    int nt_code = m_dsmlib->smb_directory_rm(m_smb_session, m_smb_tid, pathname.c_str());
     if (nt_code)
       CLog::Log(LOGERROR, "CDSMSession: Was connected but could not remove directory for '%s'", path);
     else
@@ -597,7 +607,7 @@ bool CDSMSession::RemoveFile(const char *path)
 
     // paths are relative to the m_smb_tid, which is the share name
     std::string pathname = strip_share_name_convert(path);
-    uint32_t nt_code = m_dsmlib->smb_file_rm(m_smb_session, m_smb_tid, pathname.c_str());
+    int nt_code = m_dsmlib->smb_file_rm(m_smb_session, m_smb_tid, pathname.c_str());
     if (nt_code)
       CLog::Log(LOGERROR, "CDSMSession: Was connected but could not remove file for '%s'", path);
     else
@@ -695,8 +705,8 @@ int64_t CDSMSession::Seek(const smb_fd fd, uint64_t position, int iWhence)
 {
   CSingleLock lock(m_critSect);
 
-  ssize_t offset = position;
-  ssize_t curpos = 0;
+  off64_t offset = position;
+  off64_t curpos = 0;
   time_t start = 0;
   while(1)
   {
@@ -783,8 +793,8 @@ int64_t CDSMSession::GetPosition(const smb_fd fd)
 {
   CSingleLock lock(m_critSect);
 
-  ssize_t offset = 0;
-  ssize_t curpos = 0;
+  off64_t offset = 0;
+  off64_t curpos = 0;
   time_t start = 0;
   while(1)
   {
@@ -874,7 +884,6 @@ CDSMSessionPtr CDSMSessionManager::CreateSession(const CURL &url)
 void CDSMSessionManager::ClearOutIdleSessions()
 {
   CSingleLock lock(m_critSect);
-  bool session_removed = false;
   for (std::map<std::string, CDSMSessionPtr>::iterator iter = m_dsmSessions.begin(); iter != m_dsmSessions.end();)
   {
     // check if there are no other shared_ptr refs and
@@ -883,7 +892,6 @@ void CDSMSessionManager::ClearOutIdleSessions()
     {
       iter->second->DisconnectSession();
       m_dsmSessions.erase(iter++);
-      session_removed = true;
     }
     else
       ++iter;
@@ -985,7 +993,7 @@ int64_t CDSMFile::Seek(int64_t iFilePosition, int iWhence)
 {
   if (m_dsmSession && m_smb_fd)
   {
-    uint64_t position = iFilePosition;
+    off64_t position = iFilePosition;
     if (iWhence == SEEK_SET)
       return m_dsmSession->Seek(m_smb_fd, position, SMB_SEEK_SET);
     else if (iWhence == SEEK_CUR)
