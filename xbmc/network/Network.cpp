@@ -158,11 +158,15 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
 
 bool CNetwork::GetHostName(std::string& hostname)
 {
+#if defined(TARGET_ANDROID)
+  hostname = "android";
+#else
   char hostName[128];
   if (gethostname(hostName, sizeof(hostName)))
     return false;
 
   hostname = hostName;
+#endif
   return true;
 }
 
