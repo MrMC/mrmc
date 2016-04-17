@@ -853,6 +853,12 @@ CDSMSessionPtr CDSMSessionManager::CreateSession(const CURL &url)
   CURL authURL(url);
   CPasswordManager::GetInstance().AuthenticateURL(authURL);
 
+  // libdsm wants IPs and does not understand hostname
+  // make sure the session sig matches this format.
+  std::string hostname = authURL.GetHostName();
+  if (HostNameToIP(hostname))
+    authURL.SetHostName(hostname);
+
   std::string key = authURL.GetHostName()
     + ':' + authURL.GetShareName()
     + ':' + authURL.GetUserName()
@@ -916,6 +922,20 @@ void CDSMSessionManager::DisconnectAllSessions()
     m_dsmlib->SuspendNetBiosNS();
 
   CLog::Log(LOGDEBUG, "CDSMSessionManager:DisconnectAllSessions");
+}
+
+bool CDSMSessionManager::HostNameToIP(std::string &hostname)
+{
+  std::string ip;
+  CDNSNameCache::Lookup(hostname, ip);
+  if (ip.empty())
+  {
+    CLog::Log(LOGERROR, "CDSMSessionManager:HostNameToIP failed");
+    return false;
+  }
+
+  hostname = ip;
+  return true;
 }
 
 

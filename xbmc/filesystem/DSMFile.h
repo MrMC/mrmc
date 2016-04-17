@@ -75,6 +75,7 @@ public:
   static CDSMSessionPtr CreateSession(const CURL &url);
   static void           ClearOutIdleSessions();
   static void           DisconnectAllSessions();
+  static bool           HostNameToIP(std::string &hostname);
 
 private:
   static DllLibDSM        *m_dsmlib;
