@@ -407,13 +407,13 @@
                     <!--<onclick condition="StringCompare(Skin.String(shutdown),suspend)">XBMC.suspend()</onclick>-->
                     <!--<onclick condition="StringCompare(Skin.String(shutdown),reboot)">XBMC.reboot()</onclick>-->
                 <!--</item>-->
-<!--                 <item id="349">
-                    <visible>!Player.HasMedia + !Skin.HasSetting(quitter)</visible>
+                <item id="349">
+                    <visible>!Player.HasMedia + !Skin.HasSetting(quitter) + ![System.Platform.IOS | System.Platform.TVOS]</visible>
                     <thumb>icons/quits.png</thumb>
                     <label>351</label>
                     <property name="color">icons/darkblue.png</property>
                     <onclick>ActivateWindow(ShutdownMenu)</onclick>
-                </item> -->
+                </item>
             </content>
         </control>
         <!-- <include>weather_shelf</include> -->
