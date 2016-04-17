@@ -56,21 +56,32 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   if(g_DNSCache.GetCached(strHostName, strIpAddress))
     return true;
 
-  // perform straight dns name lookup
+  //CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by getaddrinfo");
   {
-    struct hostent *host = gethostbyname(strHostName.c_str());
-    if (host && host->h_addr_list[0])
+    struct addrinfo hints = {0};
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    struct addrinfo *servinfo;
+
+    if (getaddrinfo(strHostName.c_str(), NULL, &hints, &servinfo) == 0)
     {
-      strIpAddress = StringUtils::Format("%d.%d.%d.%d",
-        (unsigned char)host->h_addr_list[0][0],
-        (unsigned char)host->h_addr_list[0][1],
-        (unsigned char)host->h_addr_list[0][2],
-        (unsigned char)host->h_addr_list[0][3]);
-      g_DNSCache.Add(strHostName, strIpAddress);
-      return true;
+      for(addrinfo *p = servinfo; p != NULL; p = p->ai_next)
+      {
+        if (p->ai_family == AF_INET)
+        {
+          struct sockaddr_in* saddr = (struct sockaddr_in*)p->ai_addr;
+          strIpAddress = inet_ntoa(saddr->sin_addr);
+          CLog::Log(LOGDEBUG, "getaddrinfo: '%s' -> '%s'", strHostName.c_str(), strIpAddress.c_str());
+          g_DNSCache.Add(strHostName, strIpAddress);
+          freeaddrinfo(servinfo);
+          return true;
+        }
+      }
+      freeaddrinfo(servinfo);
     }
   }
 
+  //CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by gethostbyname.local");
   // perform dns name lookup with .local appended
   {
     struct hostent *host = gethostbyname(std::string(strHostName + ".local").c_str());
@@ -86,8 +97,9 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     }
   }
 
-#if !defined(TARGET_DARWIN)
-  // perform netbios lookup (nmblookup does not exist for darwin)
+#if !defined(TARGET_DARWIN) || !defined(TARGET_ANDROID)
+  // CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by nmblookup");
+  // perform netbios lookup (nmblookup does not exist for darwin/android)
   // netbios names are always less than 16 chars (plus service byte) and never has a dot
   if (strHostName.length() <= 16 && strHostName.find(".") == std::string::npos)
   {
