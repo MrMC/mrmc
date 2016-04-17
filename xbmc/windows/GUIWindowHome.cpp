@@ -61,6 +61,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
       g_application.SwitchToFullScreen();
       return true;
     }
+/*
     if (!g_advancedSettings.m_disableminimize)
     {
       CLog::Log(LOGDEBUG, "CGUIWindowHome::OnBack - %d", m_countBackCalled);
@@ -77,6 +78,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
         return true;
       }
     }
+*/
   }
 
   m_countBackCalled = 0;
