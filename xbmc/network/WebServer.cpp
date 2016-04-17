@@ -83,6 +83,7 @@ CWebServer::CWebServer()
     m_daemon_ip4(NULL),
     m_running(false),
     m_needcredentials(false),
+    m_thread_stacksize(0),
     m_Credentials64Encoded("eGJtYzp4Ym1j") // xbmc:xbmc
 {
 #if defined(TARGET_DARWIN_TVOS)
