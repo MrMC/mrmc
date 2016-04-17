@@ -930,8 +930,21 @@ bool CDSMSessionManager::HostNameToIP(std::string &hostname)
   CDNSNameCache::Lookup(hostname, ip);
   if (ip.empty())
   {
-    CLog::Log(LOGERROR, "CDSMSessionManager:HostNameToIP failed");
-    return false;
+    // this might be a netbios name.
+    uint32_t s_addr = INADDR_NONE;
+    if (m_dsmlib->netbios_ns_resolve(hostname.c_str(), NETBIOS_FILESERVER, &s_addr) != 0)
+    {
+      CLog::Log(LOGERROR, "CDSMSessionManager:HostNameToIP failed");
+      return false;
+    }
+    ip = StringUtils::Format("%u.%u.%u.%u",
+      (s_addr & 0xFF),
+      (s_addr & 0xFF00) >> 8,
+      (s_addr & 0xFF0000) >> 16,
+      (s_addr & 0xFF000000) >> 24 );
+    CDNSNameCache::Add(hostname, ip);
+    CLog::Log(LOGDEBUG, "CDSMSessionManager:HostNameToIP, caching %s -> %s",
+      hostname.c_str(), ip.c_str());
   }
 
   hostname = ip;
