@@ -61,7 +61,7 @@
 				<width>220</width>
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
-				<texture>mrmc_logo.png</texture>
+				<texture>mrmc_logo1.png</texture>
 			</control>
 			<control type="list" id="9000">
 				<left>10</left>

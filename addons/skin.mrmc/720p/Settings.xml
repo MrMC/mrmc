@@ -57,7 +57,7 @@
 			<control type="image">
 				<description>LOGO</description>
 				<left>30</left>
-				<top>15</top>
+				<top>7</top>
 				<width>220</width>
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
