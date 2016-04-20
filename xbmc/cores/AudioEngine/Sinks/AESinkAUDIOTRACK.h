@@ -59,7 +59,7 @@ protected:
 private:
   jni::CJNIAudioTrack  *m_at_jni;
   double                m_duration_written;
-  unsigned int          m_min_buffer_size;
+  unsigned int          m_buffer_size;
   unsigned int          m_lastPlaybackHeadPosition;
   int64_t               m_offset;
   // Moving Average computes the weighted average delay over
