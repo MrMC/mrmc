@@ -77,6 +77,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
+  DEPENDS += mrmc-repo-resources
   DEPENDS += mdnsresponder libuuid
   CROSSGUID_DEPS = libuuid
 endif
