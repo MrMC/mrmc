@@ -98,6 +98,7 @@ CDSMSession::CDSMSession(DllLibDSM *lib)
   : m_dsmlib(lib)
   , m_smb_session(nullptr)
   , m_smb_tid(0)
+  , m_lastActive(XbmcThreads::SystemClockMillis())
 {
 }
 
