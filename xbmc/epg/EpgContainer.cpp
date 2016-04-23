@@ -393,7 +393,7 @@ CEpgPtr CEpgContainer::GetById(int iEpgId) const
 
   CSingleLock lock(m_critSection);
   const auto &epgEntry = m_epgs.find((unsigned int) iEpgId);
-  return epgEntry != m_epgs.end() ? epgEntry->second : NULL;
+  return epgEntry != m_epgs.end() ? epgEntry->second : CEpgPtr();
 }
 
 CEpgInfoTagPtr CEpgContainer::GetTagById(unsigned int iBroadcastId) const
@@ -415,7 +415,7 @@ CEpgPtr CEpgContainer::GetByChannel(const CPVRChannel &channel) const
       return epgEntry.second;
   }
 
-  return NULL;
+  return CEpgPtr();
 }
 
 void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName)
