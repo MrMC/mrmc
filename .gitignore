@@ -109,7 +109,9 @@ config.log
 /addons/audioencoder.*
 /addons/pvr.*
 /addons/adsp.*
-/addons/xbmc.addon/addon.xml
+/addons/xbmc.addon
+/addons/xbmc.codec
+/addons/xbmc.pvr
 /addons/xbmc.json/addon.xml
 /addons/kodi.guilib/addon.xml
 /addons/audiodecoder.*
