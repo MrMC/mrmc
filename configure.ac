@@ -127,6 +127,7 @@ APP_VERSION_TAG=${APP_VERSION_TAG-$(${AWK} '/VERSION_TAG/ {print $2}' version.tx
 APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
 APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
 APP_VERSION_BUNDLE_VERSION=$(date -u +%y%m%d.%H%M)
+APP_VERSION_ANDROID_VERSION=$(date -u +%y%m%d%H)
 APP_ADDON_API=${APP_ADDON_API-$(${AWK} '/ADDON_API/ {print $2}' version.txt)}
 if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSION_MINOR" != "" \
 && test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != ""; then
@@ -147,6 +148,7 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
   AC_SUBST(APP_VERSION_TAG_LC)
   AC_SUBST(APP_VERSION_CODE)
   AC_SUBST(APP_VERSION_BUNDLE_VERSION)
+  AC_SUBST(APP_VERSION_ANDROID_VERSION)
   AC_SUBST(APP_ADDON_API)
 
   dashes="------------------------"
