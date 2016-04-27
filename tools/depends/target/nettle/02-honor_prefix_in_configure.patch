@@ -1,0 +1,13 @@
+--- configure.ac.old	2016-04-27 15:33:40.452346426 -0600
++++ configure.ac	2016-04-27 15:34:24.004345644 -0600
+@@ -194,8 +194,8 @@
+ 	else
+ 	  # The dash builtin pwd tries to be "helpful" and remember
+ 	  # symlink names. Use -P option, and hope it's portable enough.
+-	  test -d /usr/lib${ABI} \
+-	    && (cd /usr/lib${ABI} && pwd -P | grep >/dev/null "/lib${ABI}"'$') \
++	  test -d ${exec_prefix}/lib${ABI} \
++	    && (cd ${exec_prefix}/lib${ABI} && pwd -P | grep >/dev/null "/lib${ABI}"'$') \
+ 	    && libdir='${exec_prefix}/'"lib${ABI}"
+ 	fi
+ 	;;
