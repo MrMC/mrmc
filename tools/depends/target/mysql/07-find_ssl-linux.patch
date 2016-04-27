@@ -1,0 +1,11 @@
+--- config/ac-macros/ssl.m4.old	2016-04-27 16:23:09.404293130 -0600
++++ config/ac-macros/ssl.m4	2016-04-27 16:23:26.508292823 -0600
+@@ -72,7 +72,7 @@
+ save_CPPFLAGS="$CPPFLAGS"
+ save_LIBS="$LIBS"
+ CPPFLAGS="$ssl_incs $CPPFLAGS"
+-LIBS="$LIBS $ssl_libs"
++LIBS="$ssl_libs $LIBS"
+ AC_TRY_LINK([#include <openssl/ssl.h>],
+     [return SSL_library_init();],
+     [mysql_ssl_found="yes"],

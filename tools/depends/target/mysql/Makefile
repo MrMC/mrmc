@@ -7,13 +7,18 @@ VERSION=5.1.55
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
+MYSQL_LIBS=-lz
+ifeq ($(OS), linux)
+	MYSQL_LIBS+=-ldl
+endif
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --build=$(BUILD) \
 	--enable-thread-safe-client --with-extra-charsets=complex \
 	--with-named-thread-libs=-lc --with-named-curses-libs=-lncurses --with-libedit \
 	--without-server  --without-docs --without-man --disable-shared \
-        --with-ssl=$(PREFIX) LIBS=-lz
+        --with-ssl=$(PREFIX) LIBS="$(MYSQL_LIBS)"
 
 LIBDYLIB=$(PLATFORM)/lib$(LIBNAME)/.libs/lib$(LIBNAME)client.a
 
@@ -33,6 +38,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../04-strnlen.patch
 	cd $(PLATFORM); patch -p1 < ../05-mysqlclient-ios64.patch
 	cd $(PLATFORM); patch -p1 < ../06-no-endpwent.patch
+	cd $(PLATFORM); patch -p0 < ../07-find_ssl-linux.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE) 
 
