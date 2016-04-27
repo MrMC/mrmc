@@ -1,0 +1,11 @@
+--- ulxmlrpcpp/ulxr_ssl_connection.cpp.old	2016-04-27 16:50:19.488263868 -0600
++++ ulxmlrpcpp/ulxr_ssl_connection.cpp	2016-04-27 16:50:34.424263600 -0600
+@@ -95,7 +95,7 @@
+ ULXR_API_IMPL(void) SSLConnection::initializeCTX()
+ {
+   ULXR_TRACE(ULXR_PCHAR("initializeCTX"));
+-  SSL_METHOD *meth = SSLv23_method();
++  const SSL_METHOD *meth = SSLv23_method();
+   ssl_ctx = SSL_CTX_new (meth);
+   if (!ssl_ctx)
+   {
