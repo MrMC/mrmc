@@ -24,7 +24,6 @@
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
-#include "xbmc.h"
 #ifdef TARGET_POSIX
 #include <sys/resource.h>
 #include <signal.h>
@@ -36,7 +35,8 @@
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
-#include "XbmcContext.h"
+#include "platform/MCRuntimeLib.h"
+#include "platform/MCRuntimeLibContext.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -44,7 +44,7 @@ extern "C"
 int main(int argc, char* argv[])
 {
   // set up some xbmc specific relationships
-  XBMC::Context context;
+  MCRuntimeLib::Context context;
 
   bool renderGUI = true;
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
@@ -72,5 +72,5 @@ int main(int argc, char* argv[])
   CAppParamParser appParamParser;
   appParamParser.Parse(const_cast<const char**>(argv), argc);
   
-  return XBMC_Run(renderGUI);
+  return MCRuntimeLib_Run(renderGUI);
 }
