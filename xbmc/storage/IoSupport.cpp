@@ -237,7 +237,9 @@ int CIoSupport::ReadSectorMode2(HANDLE hDevice, uint32_t dwSector, char* lpczBuf
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 Request to read sector %d\n", (int)dwSector);
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 error: %s\n", strerror(errno));
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 minute %d, second %d, frame %d\n", m, s, f);
+#ifdef _DEBUG_OUTPUT
     OutputDebugString("CD Read error\n");
+#endif
     return -1;
   }
 #else
