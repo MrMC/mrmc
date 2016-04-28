@@ -131,7 +131,7 @@ void CRemoteControl::Process()
   struct sockaddr_un addr;
   if (m_deviceName.length() >= sizeof(addr.sun_path))
   {
-    CLog::Log(LOGERROR, "LIRC %s: device name is too long(%ud), maximum is %d",
+    CLog::Log(LOGERROR, "LIRC %s: device name is too long(%zu), maximum is %zu",
               __FUNCTION__, m_deviceName.length(), sizeof(addr.sun_path));
     return;
   }
@@ -304,7 +304,7 @@ void CRemoteControl::Update()
   }
 }
 
-WORD CRemoteControl::GetButton()
+int32_t CRemoteControl::GetButton()
 {
   return m_button;
 }

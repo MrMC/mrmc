@@ -37,7 +37,7 @@ public:
   void Disconnect();
   void Reset();
   void Update();
-  WORD GetButton();
+  int32_t GetButton();
   /*! \brief retrieve the time in milliseconds that the button has been held
    \return time in milliseconds the button has been down
    */
