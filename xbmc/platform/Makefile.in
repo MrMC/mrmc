@@ -1,8 +1,8 @@
 SRCS  = MCRuntimeLibStartupLogger.cpp
-
-ifeq ($(findstring osx,@ARCH@), osx)
 SRCS += MCRuntimeLib.cpp
 SRCS += MCRuntimeLibContext.cpp
+
+ifeq ($(findstring osx,@ARCH@), osx)
 SRCS += darwin/AutoPool.mm
 SRCS += darwin/DarwinUtils.mm
 SRCS += darwin/DictionaryUtils.mm
@@ -14,10 +14,6 @@ SRCS += darwin/osx/CocoaInterface.mm
 SRCS += darwin/osx/OSXGLView.mm
 SRCS += darwin/osx/OSXGLWindow.mm
 SRCS += darwin/osx/XBMCApplication.mm
-
-else ifeq (@USE_ANDROID@,1)
-SRCS += MCRuntimeLib.cpp
-SRCS += MCRuntimeLibContext.cpp
 
 else
 SRCS += posix/main.cpp
