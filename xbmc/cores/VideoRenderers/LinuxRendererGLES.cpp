@@ -2005,7 +2005,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     {
       av_free(m_rgbBuffer);
       m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
-      m_rgbBuffer = m_rgbBuffer = (uint8_t*)av_malloc(m_rgbBufferSize);
+      m_rgbBuffer = (uint8_t*)av_malloc(m_rgbBufferSize);
     }
 
 #if defined(__ARM_NEON__) && !defined(__LP64__)
