@@ -141,8 +141,6 @@ protected:
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
 
   amc_demux m_demux_pkt;
-  std::vector<CJNIByteBuffer> m_input;
-  std::vector<CJNIByteBuffer> m_output;
   std::vector<CDVDMediaCodecInfo*> m_inflight;
 
   CBitstreamConverter *m_bitstream;
