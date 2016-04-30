@@ -1705,6 +1705,9 @@
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
+		F58BF96A1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
+		F58BF96B1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
+		F58BF96C1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
 		F590455E1BA372A600DB589A /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045291BA372A600DB589A /* AutoPool.mm */; };
 		F590455F1BA372A600DB589A /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045291BA372A600DB589A /* AutoPool.mm */; };
 		F59045611BA372A600DB589A /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F590452C1BA372A600DB589A /* DarwinUtils.mm */; };
@@ -5086,6 +5089,8 @@
 		F57B6F7F1071B8B500079ACB /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
 		F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPDirectory.h; sourceTree = "<group>"; };
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPDirectory.cpp; sourceTree = "<group>"; };
+		F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDatabaseFile.cpp; sourceTree = "<group>"; };
+		F58BF9691CD51257005BB003 /* VideoDatabaseFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDatabaseFile.h; sourceTree = "<group>"; };
 		F59045281BA372A600DB589A /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
 		F59045291BA372A600DB589A /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
 		F590452B1BA372A600DB589A /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
@@ -8337,6 +8342,8 @@
 				DF93D6961444A8B0007C6459 /* UPnPFile.h */,
 				E38E178A0D25F9FA00618676 /* VideoDatabaseDirectory.cpp */,
 				E38E178B0D25F9FA00618676 /* VideoDatabaseDirectory.h */,
+				F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */,
+				F58BF9691CD51257005BB003 /* VideoDatabaseFile.h */,
 				E38E178C0D25F9FA00618676 /* VirtualDirectory.cpp */,
 				E38E178D0D25F9FA00618676 /* VirtualDirectory.h */,
 				DF1D2DE71B6E85EE002BB9DB /* XbtDirectory.cpp */,
@@ -9993,6 +10000,7 @@
 				E38E20810D25F9FD00618676 /* GUIDialogFileBrowser.cpp in Sources */,
 				E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */,
 				E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */,
+				F58BF96A1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */,
 				E38E208A0D25F9FD00618676 /* GUIDialogMusicOSD.cpp in Sources */,
 				E38E208C0D25F9FD00618676 /* GUIDialogMuteBug.cpp in Sources */,
 				E38E208D0D25F9FD00618676 /* GUIDialogNetworkSetup.cpp in Sources */,
@@ -11214,6 +11222,7 @@
 				E49912F7174E5DAD00741B6D /* GUIFontTTFGL.cpp in Sources */,
 				E49912F8174E5DAD00741B6D /* GUIImage.cpp in Sources */,
 				E49912F9174E5DAD00741B6D /* GUIIncludes.cpp in Sources */,
+				F58BF96B1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */,
 				E49912FA174E5DAD00741B6D /* GUIInfoTypes.cpp in Sources */,
 				E49912FB174E5DAD00741B6D /* GUIKeyboardFactory.cpp in Sources */,
 				E49912FC174E5DAD00741B6D /* GUILabel.cpp in Sources */,
@@ -12186,6 +12195,7 @@
 				F5D13FD91BAF0B6D0075A95C /* QueryParams.cpp in Sources */,
 				F5D13FDA1BAF0B6D0075A95C /* VideoDatabaseDirectory.cpp in Sources */,
 				F5D13FDB1BAF0B6D0075A95C /* VirtualDirectory.cpp in Sources */,
+				F58BF96C1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */,
 				F5D13FDC1BAF0B6D0075A95C /* ZeroconfDirectory.cpp in Sources */,
 				F5D13FDD1BAF0B6D0075A95C /* ZipDirectory.cpp in Sources */,
 				F5D13FDE1BAF0B6D0075A95C /* ZipFile.cpp in Sources */,
