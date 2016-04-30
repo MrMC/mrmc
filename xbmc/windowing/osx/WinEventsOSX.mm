@@ -300,10 +300,16 @@ NSEvent* InputEventHandler(NSEvent *nsevent)
   bool passEvent = true;
   CGEventRef event = [nsevent CGEvent];
   CGEventType type = CGEventGetType(event);
-  
+
+  NSWindow *targetWindowForEvent = [nsevent window];
+  if (!targetWindowForEvent)
+    return nsevent;
+
   // The incoming mouse position.
   NSPoint location = [nsevent locationInWindow];
-  if (location.x < 0 || location.y < 0)
+  NSView  *view = [targetWindowForEvent contentView];
+  location = [view convertPoint:location fromView:nil];
+  if (NSPointInRect(location, [view frame]) == NO)
     return nsevent;
 
   // cocoa world is upside down ...
