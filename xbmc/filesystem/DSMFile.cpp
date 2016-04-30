@@ -92,13 +92,13 @@ static std::string extract_share_name_convert(const std::string &path)
 }
 
 
+#pragma mark - CDSMSession
 /********************************************************************************************/
 /********************************************************************************************/
 CDSMSession::CDSMSession(DllLibDSM *lib)
   : m_dsmlib(lib)
   , m_smb_session(nullptr)
   , m_smb_tid(0)
-  , m_lastActive(XbmcThreads::SystemClockMillis())
 {
 }
 
@@ -114,7 +114,6 @@ int CDSMSession::ConnectSession(const CURL &url)
     return NT_STATUS_INVALID_SMB;
 
   CSingleLock lock(m_critSect);
-  m_lastActive = XbmcThreads::SystemClockMillis();
 
   m_smb_session = m_dsmlib->smb_session_new();
   if (m_smb_session == nullptr)
@@ -123,7 +122,7 @@ int CDSMSession::ConnectSession(const CURL &url)
     return NT_STATUS_INVALID_SMB;
   }
 
-  CLog::Log(LOGDEBUG, "CDSMSession: Creating new session on host '%s' with session %p", url.GetHostName().c_str(), m_smb_session);
+  //CLog::Log(LOGDEBUG, "CDSMSession: Creating new session on host '%s' with session %p", url.GetHostName().c_str(), m_smb_session);
 
   std::string ip;
   CDNSNameCache::Lookup(url.GetHostName(), ip);
@@ -165,16 +164,7 @@ int CDSMSession::ConnectSession(const CURL &url)
   std::string login = url.GetUserName();
   std::string password = url.GetPassWord();
   if (login.empty())
-  {
-    /*
-    login = "Guest";
-
-    // default to 'Guest' if no password
-    if (password.empty())
-      password = "Guest";
-    */
     return NT_STATUS_LOGON_FAILURE;
-  }
 
 
   // setup credentials and login.
@@ -183,16 +173,18 @@ int CDSMSession::ConnectSession(const CURL &url)
   if (m_dsmlib->smb_session_login(m_smb_session) == DSM_SUCCESS)
   {
     int response = m_dsmlib->smb_session_is_guest(m_smb_session);
-    if (response == 0)
-      CLog::Log(LOGDEBUG, "CDSMSession: Logged in as regular user");
-    else if (response == 1)
-      CLog::Log(LOGDEBUG, "CDSMSession: Logged in as guest");
-    else
+    if (response < 0)
     {
       uint32_t reason = m_dsmlib->smb_session_get_nt_status(m_smb_session);
       CLog::Log(LOGERROR, "CDSMSession: not logged in, invalid session, etc. reason(%d)", reason);
       return NT_STATUS_LOGON_FAILURE;
     }
+    /*
+    else if (response == 0)
+      CLog::Log(LOGDEBUG, "CDSMSession: Logged in as regular user");
+    else if (response == 1)
+      CLog::Log(LOGDEBUG, "CDSMSession: Logged in as guest");
+    */
   }
   else
   {
@@ -211,7 +203,7 @@ void CDSMSession::DisconnectSession()
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    CLog::Log(LOGINFO, "CDSMSession::DisconnectSession - %p", m_smb_session);
+    //CLog::Log(LOGINFO, "CDSMSession::DisconnectSession - %p", m_smb_session);
     if (m_smb_tid)
       m_dsmlib->smb_tree_disconnect(m_smb_session, m_smb_tid), m_smb_tid = 0;
     m_dsmlib->smb_session_destroy(m_smb_session), m_smb_session = nullptr;
@@ -234,7 +226,6 @@ bool CDSMSession::ConnectShare(const std::string &path)
       time_t start = 0;
       while(1)
       {
-        m_lastActive = XbmcThreads::SystemClockMillis();
         response = m_dsmlib->smb_tree_connect(m_smb_session, sharename.c_str(), &m_smb_tid);
         if (response == DSM_SUCCESS)
           break;
@@ -281,7 +272,6 @@ smb_fd CDSMSession::CreateFileHande(const std::string &file)
     time_t start = 0;
     while(1)
     {
-      m_lastActive = XbmcThreads::SystemClockMillis();
       response = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RO, &fd);
       if (response == DSM_SUCCESS)
         break;
@@ -316,8 +306,6 @@ smb_fd CDSMSession::CreateFileHandeForWrite(const std::string &file, bool bOverW
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(file))
@@ -371,8 +359,6 @@ bool CDSMSession::GetShares(const std::string &base, CFileItemList &items)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     int response = DSM_SUCCESS;
     size_t share_count;
     smb_share_list shares;
@@ -424,7 +410,6 @@ bool CDSMSession::GetDirectory(const std::string &base, const std::string &folde
     smb_stat_list stat_list;
     {
       CSingleLock lock(m_critSect);
-      m_lastActive = XbmcThreads::SystemClockMillis();
       stat_list = m_dsmlib->smb_find(m_smb_session, m_smb_tid, foldername.c_str());
       itemcount = m_dsmlib->smb_stat_list_count(stat_list);
     }
@@ -506,8 +491,6 @@ bool CDSMSession::CreateDirectory(const char *path)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(path))
@@ -535,8 +518,6 @@ bool CDSMSession::RemoveDirectory(const char *path)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(path))
@@ -572,8 +553,6 @@ bool CDSMSession::FileExists(const char *path)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(path))
@@ -583,7 +562,10 @@ bool CDSMSession::FileExists(const char *path)
     std::string pathname = strip_share_name_convert(path);
     smb_stat attributes = m_dsmlib->smb_fstat(m_smb_session, m_smb_tid, pathname.c_str());
     if (attributes)
+    {
       exists = true;
+      m_dsmlib->smb_stat_destroy(attributes);
+    }
   }
   else
   {
@@ -599,8 +581,6 @@ bool CDSMSession::RemoveFile(const char *path)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(path))
@@ -629,8 +609,6 @@ bool CDSMSession::RenameFile(const char *path, const char *newpath)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(path))
@@ -658,8 +636,6 @@ int CDSMSession::Stat(const char *path, struct __stat64* buffer)
   CSingleLock lock(m_critSect);
   if (m_smb_session)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
-
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(path))
@@ -686,6 +662,8 @@ int CDSMSession::Stat(const char *path, struct __stat64* buffer)
       else
         buffer->st_mode = _S_IFREG;
 
+      m_dsmlib->smb_stat_destroy(attributes);
+
       return 0;
     }
     else
@@ -710,7 +688,6 @@ int64_t CDSMSession::Seek(const smb_fd fd, int64_t position, int iWhence)
   time_t start = 0;
   while(1)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
     curpos = m_dsmlib->smb_fseek(m_smb_session, fd, position, iWhence);
     if (curpos >= 0)
       break;
@@ -739,7 +716,6 @@ int64_t CDSMSession::Read(const smb_fd fd, void *buffer, size_t size)
   time_t start = 0;
   while(1)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
     bytesread = m_dsmlib->smb_fread(m_smb_session, fd, buffer, size);
     if (bytesread >= 0)
       break;
@@ -768,7 +744,6 @@ ssize_t CDSMSession::Write(const smb_fd fd, const void *buffer, size_t size)
   time_t start = 0;
   while(1)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
     byteswritten = m_dsmlib->smb_fwrite(m_smb_session, fd, buffer, size);
     if (byteswritten >= 0)
       break;
@@ -797,7 +772,6 @@ int64_t CDSMSession::GetPosition(const smb_fd fd)
   time_t start = 0;
   while(1)
   {
-    m_lastActive = XbmcThreads::SystemClockMillis();
     curpos = m_dsmlib->smb_fseek(m_smb_session, fd, 0, SMB_SEEK_CUR);
     if (curpos >= 0)
       break;
@@ -818,28 +792,13 @@ int64_t CDSMSession::GetPosition(const smb_fd fd)
   return curpos;
 }
 
-int CDSMFile::IoControl(EIoControl request, void* param)
-{
-  // we pre-checked seeking on open, no need to retest.
-  if (request == IOCTRL_SEEK_POSSIBLE)
-    return 1;
-
-  return -1;
-}
-
-bool CDSMSession::IsIdle()
-{
-  // idle session 90 seconds after last access
-  return (XbmcThreads::SystemClockMillis() - m_lastActive) > 90000;
-}
-
+#pragma mark - CDSMSessionManager
 /********************************************************************************************/
 /********************************************************************************************/
 DllLibDSM* CDSMSessionManager::m_dsmlib = nullptr;
 CCriticalSection CDSMSessionManager::m_critSect;
-std::map<std::string, CDSMSessionPtr> CDSMSessionManager::m_dsmSessions;
 
-CDSMSessionPtr CDSMSessionManager::CreateSession(const CURL &url)
+CDSMSession* CDSMSessionManager::CreateSession(const CURL &url)
 {
   CSingleLock lock(m_critSect);
 
@@ -858,69 +817,22 @@ CDSMSessionPtr CDSMSessionManager::CreateSession(const CURL &url)
   if (HostNameToIP(hostname))
     authURL.SetHostName(hostname);
 
-  std::string key = authURL.GetHostName()
-    + ':' + authURL.GetShareName()
-    + ':' + authURL.GetUserName()
-    + ':' + authURL.GetPassWord();
+  // create a new session if the session key does not exist
+  CDSMSession *session = new CDSMSession(m_dsmlib);
+  if (session->ConnectSession(authURL) == NT_STATUS_SUCCESS)
+    return session;
 
-  CDSMSessionPtr ptr = m_dsmSessions[key];
-  if (ptr == nullptr)
-  {
-    // create a new session if the session key does not exist
-    CDSMSession *session = new CDSMSession(m_dsmlib);
-    if (session->ConnectSession(authURL) == NT_STATUS_SUCCESS)
-    {
-      ptr = CDSMSessionPtr(session);
-      m_dsmSessions[key] = ptr;
-    }
-    else
-    {
-      // if the connect fails, remove the key so the session
-      // object does not hang around waiting for idle. It is most
-      // likely a failed auth and must get removed.
-      delete session;
-      m_dsmSessions.erase(key);
-    }
-  }
-
-  return ptr;
+  return nullptr;
 }
 
-void CDSMSessionManager::ClearOutIdleSessions()
+void CDSMSessionManager::Disconnect()
 {
-  CSingleLock lock(m_critSect);
-  for (std::map<std::string, CDSMSessionPtr>::iterator iter = m_dsmSessions.begin(); iter != m_dsmSessions.end();)
-  {
-    // check if there are no other shared_ptr refs and
-    // the session has been idle for 90 seconds after last access
-    if (iter->second.unique() && iter->second->IsIdle())
-    {
-      iter->second->DisconnectSession();
-      m_dsmSessions.erase(iter++);
-    }
-    else
-      ++iter;
-  }
-}
-
-void CDSMSessionManager::DisconnectAllSessions()
-{
-  CSingleLock lock(m_critSect);
-
-  for (std::map<std::string, CDSMSessionPtr>::iterator iter = m_dsmSessions.begin(); iter != m_dsmSessions.end();)
-  {
-    // if someone is holding a copy of the session (player pause ?),
-    // nothing we can do but pray.
-    if (iter->second.unique())
-      iter->second->DisconnectSession();
-    m_dsmSessions.erase(iter++);
-  }
-
-  // suspend the netbios_ns, it has a thread running and sockets active.
+  // all we have to do is suspend the netbios_ns,
+  // it has a thread running and sockets active.
   if (m_dsmlib)
     m_dsmlib->SuspendNetBiosNS();
 
-  CLog::Log(LOGDEBUG, "CDSMSessionManager:DisconnectAllSessions");
+  CLog::Log(LOGDEBUG, "CDSMSessionManager:SuspendNetBiosNameService");
 }
 
 bool CDSMSessionManager::HostNameToIP(std::string &hostname)
@@ -950,7 +862,18 @@ bool CDSMSessionManager::HostNameToIP(std::string &hostname)
   return true;
 }
 
+const char* CDSMSessionManager::IPAddressToNetBiosName(const std::string &ip)
+{
+  DllLibDSM dsmlib;
+  dsmlib.Load();
+  struct in_addr addr = {0};
+  inet_aton(ip.c_str(), &addr);
+  const char *netbios_name = dsmlib.netbios_ns_inverse(addr.s_addr);
 
+  return netbios_name;
+}
+
+#pragma mark - CDSMFile
 /********************************************************************************************/
 /********************************************************************************************/
 CDSMFile::CDSMFile()
@@ -975,7 +898,7 @@ bool CDSMFile::Open(const CURL& url)
       return false;
   }
 
-  m_dsmSession = CDSMSessionManager::CreateSession(url);
+  m_dsmSession.reset(CDSMSessionManager::CreateSession(url));
   if (m_dsmSession)
   {
     m_file = url.GetFileName().c_str();
@@ -1016,8 +939,8 @@ void CDSMFile::Close()
   if (m_dsmSession && m_smb_fd)
   {
     m_dsmSession->CloseFileHandle(m_smb_fd);
+    m_dsmSession = nullptr;
     m_smb_fd = 0;
-    m_dsmSession = CDSMSessionPtr();
   }
 }
 
@@ -1120,7 +1043,7 @@ bool CDSMFile::Exists(const CURL& url)
   if (!IsValidFile(url.GetFileName()))
     return false;
 
-  CDSMSessionPtr session = CDSMSessionManager::CreateSession(url);
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
   if (session)
     return session->FileExists(url.GetFileName().c_str());
   else
@@ -1132,7 +1055,7 @@ bool CDSMFile::Exists(const CURL& url)
 
 int CDSMFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CDSMSessionPtr session = CDSMSessionManager::CreateSession(url);
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
   if (session)
     return session->Stat(url.GetFileName().c_str(), buffer);
   else
@@ -1169,9 +1092,18 @@ int64_t CDSMFile::GetPosition()
   return -1;
 }
 
+int CDSMFile::IoControl(EIoControl request, void* param)
+{
+  // we pre-checked seeking on open, no need to retest.
+  if (request == IOCTRL_SEEK_POSSIBLE)
+    return 1;
+
+  return -1;
+}
+
 bool CDSMFile::Delete(const CURL& url)
 {
-  CDSMSessionPtr session = CDSMSessionManager::CreateSession(url);
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
   if (session)
     return session->RemoveFile(url.GetFileName().c_str());
   else
@@ -1188,7 +1120,7 @@ bool CDSMFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (!IsValidFile(url.GetFileName()))
     return false;
 
-  m_dsmSession = CDSMSessionManager::CreateSession(url);
+  m_dsmSession.reset(CDSMSessionManager::CreateSession(url));
   if (m_dsmSession)
   {
     m_file = url.GetFileName().c_str();
@@ -1223,7 +1155,7 @@ ssize_t CDSMFile::Write(const void* lpBuf, size_t uiBufSize)
 
 bool CDSMFile::Rename(const CURL& url, const CURL& urlnew)
 {
-  CDSMSessionPtr session = CDSMSessionManager::CreateSession(url);
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
   if (session)
   {
     // the session url will be authenticated,

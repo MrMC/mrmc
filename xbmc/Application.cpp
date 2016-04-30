@@ -2859,7 +2859,7 @@ void CApplication::Stop(int exitCode)
 #endif
 
 #if defined(HAS_FILESYSTEM_DSM)
-    CDSMSessionManager::DisconnectAllSessions();
+    CDSMSessionManager::Disconnect();
 #endif
 
     CLog::Log(LOGNOTICE, "unload skin");
@@ -4412,10 +4412,6 @@ void CApplication::ProcessSlow()
   smb.CheckIfIdle();
 #endif
 
-#if defined(HAS_FILESYSTEM_DSM)
-  CDSMSessionManager::ClearOutIdleSessions();
-#endif
-
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.CheckIfIdle();
 #endif
@@ -5058,7 +5054,7 @@ void CApplication::CloseNetworkShares()
 #endif
   
 #if defined(HAS_FILESYSTEM_DSM)
-  CDSMSessionManager::DisconnectAllSessions();
+  CDSMSessionManager::Disconnect();
 #endif
 
 #ifdef HAS_FILESYSTEM_NFS
