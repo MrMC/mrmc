@@ -18,6 +18,9 @@
  *
  */
 
+// iso9660_dir_t is var sized and this triggers a clang warning.
+#pragma GCC diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
+
 #include "system.h"
 
 #ifdef HAS_DVD_DRIVE

@@ -29,6 +29,9 @@
   #include <map>
   #include <utility>
   #include "DetectDVDType.h"
+
+  // iso9660_dir_t is var sized and this triggers a clang warning.
+  #pragma GCC diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
   #include "filesystem/iso9660.h"
 #endif
 #include "Autorun.h"
