@@ -8289,6 +8289,8 @@ void CVideoDatabase::ExportSingleVideoToXML(const std::string& inPath, bool imag
   case VIDEODB_CONTENT_MUSICVIDEOS:
     tag.Save(&xmlDoc, "musicvideo", false);
     break;
+  default:
+    break;
   }
 
   std::string outDir;
