@@ -3465,7 +3465,7 @@ CRenderInfo CLinuxRendererGL::GetRenderInfo()
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
   if(m_format == RENDER_FMT_CVBREF)
-    info.optimal_buffer_size = 2;
+    info.optimal_buffer_size = 4;
   else if (m_format == RENDER_FMT_VAAPI ||
            m_format == RENDER_FMT_VAAPINV12 ||
            m_format == RENDER_FMT_VDPAU ||
