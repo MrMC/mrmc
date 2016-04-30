@@ -92,7 +92,7 @@ public:
   virtual void            smb_fclose(smb_session *s, smb_fd fd)=0;
   virtual ssize_t         smb_fread(smb_session *s, smb_fd fd, void *buf, size_t buf_size)=0;
   virtual ssize_t         smb_fwrite(smb_session *s, smb_fd fd, const void *buf, size_t buf_size)=0;
-  virtual off64_t         smb_fseek(smb_session *s, smb_fd fd, off64_t offset, int whence)=0;
+  virtual int64_t         smb_fseek(smb_session *s, smb_fd fd, int64_t offset, int whence)=0;
   virtual int             smb_file_rm(smb_session *s, smb_tid tid, const char *path)=0;
   virtual int             smb_file_mv(smb_session *s, smb_tid tid, const char *old_path, const char *new_path)=0;
 };
@@ -149,7 +149,7 @@ class DllLibDSM : public DllDynamic, DllLibDSMInterface
   DEFINE_METHOD2(void,          smb_fclose,             (smb_session *p1, smb_fd p2))
   DEFINE_METHOD4(ssize_t,       smb_fread,              (smb_session *p1, smb_fd p2, void *p3, size_t p4))
   DEFINE_METHOD4(ssize_t,       smb_fwrite,             (smb_session *p1, smb_fd p2, const void *p3, size_t p4))
-  DEFINE_METHOD4(off64_t,       smb_fseek,              (smb_session *p1, smb_fd p2, off64_t p3, int p4))
+  DEFINE_METHOD4(int64_t,       smb_fseek,              (smb_session *p1, smb_fd p2, int64_t p3, int p4))
   DEFINE_METHOD3(int,           smb_file_rm,            (smb_session *p1, smb_tid p2, const char *p3))
   DEFINE_METHOD4(int,           smb_file_mv,            (smb_session *p1, smb_tid p2, const char *p3, const char *p4))
 

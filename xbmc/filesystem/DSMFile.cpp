@@ -702,17 +702,16 @@ int CDSMSession::Stat(const char *path, struct __stat64* buffer)
   }
 }
 
-int64_t CDSMSession::Seek(const smb_fd fd, uint64_t position, int iWhence)
+int64_t CDSMSession::Seek(const smb_fd fd, int64_t position, int iWhence)
 {
   CSingleLock lock(m_critSect);
 
-  off64_t offset = position;
-  off64_t curpos = 0;
+  int64_t curpos = 0;
   time_t start = 0;
   while(1)
   {
     m_lastActive = XbmcThreads::SystemClockMillis();
-    curpos = m_dsmlib->smb_fseek(m_smb_session, fd, offset, iWhence);
+    curpos = m_dsmlib->smb_fseek(m_smb_session, fd, position, iWhence);
     if (curpos >= 0)
       break;
 
@@ -794,13 +793,12 @@ int64_t CDSMSession::GetPosition(const smb_fd fd)
 {
   CSingleLock lock(m_critSect);
 
-  off64_t offset = 0;
-  off64_t curpos = 0;
+  int64_t curpos = 0;
   time_t start = 0;
   while(1)
   {
     m_lastActive = XbmcThreads::SystemClockMillis();
-    curpos = m_dsmlib->smb_fseek(m_smb_session, fd, offset, SMB_SEEK_CUR);
+    curpos = m_dsmlib->smb_fseek(m_smb_session, fd, 0, SMB_SEEK_CUR);
     if (curpos >= 0)
       break;
 
@@ -1027,14 +1025,13 @@ int64_t CDSMFile::Seek(int64_t iFilePosition, int iWhence)
 {
   if (m_dsmSession && m_smb_fd)
   {
-    off64_t position = iFilePosition;
     if (iWhence == SEEK_SET)
-      return m_dsmSession->Seek(m_smb_fd, position, SMB_SEEK_SET);
+      return m_dsmSession->Seek(m_smb_fd, iFilePosition, SMB_SEEK_SET);
     else if (iWhence == SEEK_CUR)
-      return m_dsmSession->Seek(m_smb_fd, position, SMB_SEEK_CUR);
+      return m_dsmSession->Seek(m_smb_fd, iFilePosition, SMB_SEEK_CUR);
     else if (iWhence == SEEK_END)
     {
-      position = GetLength() + iFilePosition;
+      int64_t position = GetLength() + iFilePosition;
       return m_dsmSession->Seek(m_smb_fd, position, SMB_SEEK_SET);
     }
 

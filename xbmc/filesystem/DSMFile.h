@@ -48,7 +48,7 @@ public:
   bool    RenameFile(const char *path, const char *newpath);
 
   int     Stat(const char *path, struct __stat64* buffer);
-  int64_t Seek(smb_fd handle, uint64_t position, int iWhence);
+  int64_t Seek(smb_fd handle, int64_t position, int iWhence);
   int64_t Read(smb_fd handle, void *buffer, size_t size);
   ssize_t Write(smb_fd handle, const void *buffer, size_t size);
   int64_t GetPosition(smb_fd handle);
