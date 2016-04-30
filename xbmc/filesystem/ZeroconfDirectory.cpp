@@ -28,6 +28,7 @@
 #include "network/ZeroconfBrowser.h"
 #include "Directory.h"
 #include "utils/log.h"
+#include "filesystem/DSMFile.h"
 
 using namespace XFILE;
 
@@ -220,7 +221,16 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
         
         service.SetProtocol(protocol);
-        
+        // for samba, the name is the netbios name. use netbios name
+        // for the hostname so libsmbclient and libdsl sources are handled
+        //  the same regardless of if they are set up via smb or zeroconfig browse.
+        if (protocol == "smb")
+        {
+          const char *netbios_name = CDSMSessionManager::IPAddressToNetBiosName(zeroconf_service.GetIP());
+          if (netbios_name != nullptr)
+            service.SetHostName(netbios_name);
+        }
+
         //first try to show the txt-record defined path if any
         if(GetDirectoryFromTxtRecords(zeroconf_service, service, items))
         {
