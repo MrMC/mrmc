@@ -310,7 +310,10 @@ NSEvent* InputEventHandler(NSEvent *nsevent)
   NSView  *view = [targetWindowForEvent contentView];
   location = [view convertPoint:location fromView:nil];
   if (NSPointInRect(location, [view frame]) == NO)
-    return nsevent;
+  {
+    if (type != kCGEventKeyUp && type != kCGEventKeyDown)
+      return nsevent;
+  }
 
   // cocoa world is upside down ...
   location.y = g_Windowing.CocoaToNativeFlip(location.y);
