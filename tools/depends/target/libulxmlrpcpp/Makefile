@@ -11,7 +11,7 @@ CXXFLAGS_EXTRA = -D__unix__
 ifeq ($(OS),android)
 CONFIG_EXTRA = ac_cv_func_realloc_0_nonnull=yes
 endif
-ifeq ($(BUILD_OS),osx)
+ifeq ($(NATIVE_OS),osx)
 CXXFLAGS_EXTRA += -Wno-error=c++11-narrowing
 CONFIG_EXTRA = LDFLAGS="-lc++"
 endif

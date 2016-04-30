@@ -71,11 +71,11 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 < ../samba30-3.0.37-vfs_default.c.patch
 	cd $(PLATFORM); patch -p1 < ../samba30-3.0.37-wle-fix.patch
 	cd $(PLATFORM); patch -p1 < ../samba30-3.0.37-android.patch
-ifeq ($(BUILD_OS),osx)
+ifeq ($(NATIVE_OS),osx)
 	cd $(PLATFORM); patch -p1 < ../samba30-3.0.37_darwin-iface-getifaddrs.patch
 endif
 	$(ANDROID_OFF_T_FIX)
-ifeq ($(BUILD_OS),osx)
+ifeq ($(NATIVE_OS),osx)
 	sed -ie "s|-bundle -flat_namespace -undefined suppress|-dynamiclib|" "$(PLATFORM)/source/configure.in"
 	# remove fork/execX/system, it is not used for client
 	sed -ie "s|forkret = fork()|forkret = (pid_t)-1|" "$(PLATFORM)/source/lib/system.c"
@@ -95,7 +95,7 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/source installclientlib
-ifeq ($(BUILD_OS),osx)
+ifeq ($(NATIVE_OS),osx)
 	mv  $(PREFIX)/lib/libsmbclient.dylib $(PREFIX)/lib/libsmbclient.3.dylib
 	install_name_tool -id $(PREFIX)/lib/libsmbclient.3.dylib $(PREFIX)/lib/libsmbclient.3.dylib
 	ln -s $(PREFIX)/lib/libsmbclient.3.dylib $(PREFIX)/lib/libsmbclient.dylib
