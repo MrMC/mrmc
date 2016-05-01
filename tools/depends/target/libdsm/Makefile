@@ -10,11 +10,17 @@ ARCHIVE=$(SOURCE).tar.gz
 REALARCHIVE=mrmc-jarvis-16.0-4.tar.gz
 BASE_URL=https://github.com/MrMC/libdsm/archive
 
+ifeq ($(OS),linux)
+# For off64_t
+CONFIG_EXTRA="CPPFLAGS=-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+endif
+
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
         --enable-shared \
         --disable-static \
-        --disable-debug
+        --disable-debug \
+	$(CONFIG_EXTRA)
 
 LIBDYLIB=$(PLATFORM)/.libs/libdsm.dylib
 
