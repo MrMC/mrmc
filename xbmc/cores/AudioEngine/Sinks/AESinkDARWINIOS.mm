@@ -32,7 +32,7 @@
 
 #define CA_MAX_CHANNELS 8
 static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
-  AE_CH_FL , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_FC , AE_CH_LFE , AE_CH_SL , AE_CH_SR ,
+  AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_SL , AE_CH_SR ,
   AE_CH_NULL
 };
 
@@ -64,6 +64,18 @@ static void dumpAVAudioSessionProperties()
   // if 6, then audio is set to Digial Dolby 5.1 OR hdmi path detected sink can only handle 6 channels.
   // if 8, then audio is set to Best Quality AND hdmi path detected sink can handle 8 channels.
   CLog::Log(LOGNOTICE, "%s maximumOutputNumberOfChannels %ld", __PRETTY_FUNCTION__, (long)[mySession maximumOutputNumberOfChannels]);
+  /*
+  NSArray *currentOutputs = mySession.currentRoute.outputs;
+  int count_out = [currentOutputs count];
+  for (int k = 0; k < count_out; k++)
+  {
+    AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
+    NSLog(@"dumpAVAudioSessionProperties : AVAudioSessionPortDescription, %@", portDesc);
+    for (AVAudioSessionChannelDescription *channel in portDesc.channels)
+      NSLog(@"dumpAVAudioSessionProperties : AVAudioSessionChannelDescription, %@", channel.channelName);
+  }
+  NSLog(@"dumpAVAudioSessionProperties : AVAudioSessionRouteChangeReasonNewDeviceAvailable, output count = %d", count_out);
+  */
 }
 
 static void setAVAudioSessionProperties(NSTimeInterval bufferseconds, double samplerate, int channels)
@@ -721,7 +733,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     break;
     default:
       format.m_frames = 1024;
-      buffer_size = (256 * audioFormat.mBytesPerFrame) * 8;
+      buffer_size = (512 * audioFormat.mBytesPerFrame) * 8;
     break;
   }
   m_audioSink = new CAAudioUnitSink;
