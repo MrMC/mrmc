@@ -832,7 +832,7 @@ void CDSMSessionManager::Disconnect()
   if (m_dsmlib)
     m_dsmlib->SuspendNetBiosNS();
 
-  CLog::Log(LOGDEBUG, "CDSMSessionManager:SuspendNetBiosNameService");
+  CLog::Log(LOGDEBUG, "CDSMSessionManager:Disconnect");
 }
 
 bool CDSMSessionManager::HostNameToIP(std::string &hostname)
