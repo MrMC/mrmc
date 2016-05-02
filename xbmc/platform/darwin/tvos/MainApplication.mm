@@ -138,6 +138,33 @@ MainController *m_xbmcController;
 }
 
 #pragma mark private methods
+- (void)dumpAudioDescriptions
+{
+  AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
+
+  NSArray *currentInputs = myAudioSession.currentRoute.inputs;
+  int count_in = [currentInputs count];
+  for (int k = 0; k < count_in; k++)
+  {
+    AVAudioSessionPortDescription *portDesc = [currentInputs objectAtIndex:k];
+    NSLog(@"dumpAudioDescriptions : AVAudioSessionPortDescription, %@", portDesc);
+    for (AVAudioSessionChannelDescription *channel in portDesc.channels)
+      NSLog(@"dumpAudioDescriptions : AVAudioSessionChannelDescription, %@", channel.channelName);
+  }
+  NSLog(@"dumpAudioDescriptions : AVAudioSessionRouteChangeReasonNewDeviceAvailable, input count = %d", count_in);
+
+  NSArray *currentOutputs = myAudioSession.currentRoute.outputs;
+  int count_out = [currentOutputs count];
+  for (int k = 0; k < count_out; k++)
+  {
+    AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
+    NSLog(@"dumpAudioDescriptions : AVAudioSessionPortDescription, %@", portDesc);
+    for (AVAudioSessionChannelDescription *channel in portDesc.channels)
+      NSLog(@"dumpAudioDescriptions : AVAudioSessionChannelDescription, %@", channel.channelName);
+  }
+  NSLog(@"dumpAudioDescriptions : AVAudioSessionRouteChangeReasonNewDeviceAvailable, output count = %d", count_out);
+}
+
 - (void)audioRouteChanged:(NSNotification *)notification
 {
   // Your tests on the Audio Output changes will go here
@@ -149,77 +176,20 @@ MainController *m_xbmcController;
         break;
     case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
         // an audio device was added
-        {
-          AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
-
-          NSArray *currentInputs = myAudioSession.currentRoute.inputs;
-          int count_in = [currentInputs count];
-          for (int k = 0; k < count_in; k++)
-          {
-            AVAudioSessionPortDescription *portDesc = [currentInputs objectAtIndex:k];
-            NSLog(@"routeChangeReason : AVAudioSessionPortDescription, %@", portDesc);
-          }
-          NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNewDeviceAvailable, input count = %d", count_in);
-
-          NSArray *currentOutputs = myAudioSession.currentRoute.outputs;
-          int count_out = [currentOutputs count];
-          for (int k = 0; k < count_out; k++)
-          {
-            AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
-            NSLog(@"routeChangeReason : AVAudioSessionPortDescription, %@", portDesc);
-          }
-          NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNewDeviceAvailable, output count = %d", count_out);
-        }
+        [self dumpAudioDescriptions];
         [m_xbmcController audioRouteChanged];
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNewDeviceAvailable");
         break;
     case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
         // a audio device was removed
-        {
-          AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
-
-          NSArray *currentInputs = myAudioSession.currentRoute.inputs;
-          int count_in = [currentInputs count];
-          for (int k = 0; k < count_in; k++)
-          {
-            AVAudioSessionPortDescription *portDesc = [currentInputs objectAtIndex:k];
-            NSLog(@"routeChangeReason : AVAudioSessionPortDescription, %@", portDesc);
-          }
-          NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOldDeviceUnavailable, input count = %d", count_in);
-
-          NSArray *currentOutputs = myAudioSession.currentRoute.outputs;
-          int count_out = [currentOutputs count];
-          for (int k = 0; k < count_out; k++)
-          {
-            AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
-            NSLog(@"routeChangeReason : AVAudioSessionPortDescription, %@", portDesc);
-          }
-          NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOldDeviceUnavailable, output count = %d", count_out);
-        }
+        [self dumpAudioDescriptions];
         [m_xbmcController audioRouteChanged];
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOldDeviceUnavailable");
         break;
     case AVAudioSessionRouteChangeReasonCategoryChange:
         // called at start - also when other audio wants to play
-        {
-          AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
-
-          NSArray *currentInputs = myAudioSession.currentRoute.inputs;
-          int count_in = [currentInputs count];
-          for (int k = 0; k < count_in; k++)
-          {
-            AVAudioSessionPortDescription *portDesc = [currentInputs objectAtIndex:k];
-            NSLog(@"routeChangeReason : AVAudioSessionPortDescription, %@", portDesc);
-          }
-          NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonCategoryChange, input count = %d", count_in);
-
-          NSArray *currentOutputs = myAudioSession.currentRoute.outputs;
-          int count_out = [currentOutputs count];
-          for (int k = 0; k < count_out; k++)
-          {
-            AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
-            NSLog(@"routeChangeReason : AVAudioSessionPortDescription, %@", portDesc);
-          }
-          NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonCategoryChange, output count = %d", count_out);
-        }
+        [self dumpAudioDescriptions];
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonCategoryChange");
         break;
     case AVAudioSessionRouteChangeReasonOverride:
         NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOverride");
@@ -231,27 +201,8 @@ MainController *m_xbmcController;
         NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory");
         break;
     case AVAudioSessionRouteChangeReasonRouteConfigurationChange:
-        {
-          AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
-
-          NSArray *currentInputs = myAudioSession.currentRoute.inputs;
-          int count_in = [currentInputs count];
-          for (int k = 0; k < count_in; k++)
-          {
-            AVAudioSessionPortDescription *portDesc = [currentInputs objectAtIndex:k];
-            NSLog(@"routeChangeReason : AVAudioSessionPortDescription, %@", portDesc);
-          }
-          NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonRouteConfigurationChange, input count = %d", count_in);
-
-          NSArray *currentOutputs = myAudioSession.currentRoute.outputs;
-          int count_out = [currentOutputs count];
-          for (int k = 0; k < count_out; k++)
-          {
-            AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
-            NSLog(@"routeChangeReason : AVAudioSessionPortDescription, %@", portDesc);
-          }
-          NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonRouteConfigurationChange, output count = %d", count_out);
-        }
+        [self dumpAudioDescriptions];
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonRouteConfigurationChange");
         break;
     default:
         NSLog(@"routeChangeReason : unknown notification %ld", (long)routeChangeReason);
