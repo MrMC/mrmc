@@ -401,6 +401,21 @@ public:
   static const std::string SETTING_THUMBNAILS_CLEANUP;
   static const std::string SETTING_THUMBCACHE_CLEAR;
   
+  //lighteffects , here for easier merge later
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSENABLE;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSIP;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSPORT;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSSATURATION;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSVALUE;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSSPEED;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSINTERPOLATION;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSTHRESHOLD;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICON;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICR;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICG;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICB;
+  static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER;
+  
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
 

@@ -2515,6 +2515,165 @@
         </setting> 
       </group>	
     </category>
+    <category id="lighteffects" label="857" help="858">
+      <group id="1">
+        <setting id="services.lighteffects" type="boolean" label="853" help="854">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.lighteffectsip" type="string" label="1009" help="855">
+        <dependencies>
+            <dependency type="enable">
+                <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
+            </dependency>
+          </dependencies>
+          <level>1</level>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+        <setting id="services.lighteffectsport" type="integer" label="730" help="856">
+        <dependencies>
+            <dependency type="enable">
+                <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
+            </dependency>
+          </dependencies> 
+          <level>1</level>
+          <default>19333</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>65535</maximum>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>                      
+      </group>
+      <group id="2">
+        <setting id="services.lighteffectsspeed" type="number" parent="services.lighteffects" label="863" help="864">
+          <level>1</level>
+          <default>100.0</default>
+          <constraints>
+            <minimum>0.0</minimum>
+            <step>1.0</step>
+            <maximum>100.0</maximum>
+          </constraints>
+          <control type="slider" format="number">
+            <formatlabel>862</formatlabel>
+          </control>  
+          <dependencies>
+            <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
+          </dependencies>
+        </setting>
+        <setting id="services.lighteffectssaturation" type="number" parent="services.lighteffects" label="859" help="860">
+          <level>1</level>
+          <default>1.0</default>
+          <constraints>
+            <minimum>0.0</minimum>
+            <step>0.1</step>
+            <maximum>20.0</maximum>
+          </constraints>
+          <control type="slider" format="number">
+            <formatlabel>862</formatlabel>
+          </control>  
+          <dependencies>
+            <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
+          </dependencies>
+        </setting>
+        <setting id="services.lighteffectsvalue" type="number" parent="services.lighteffects" label="861" help="881">
+          <level>1</level>
+          <default>1.0</default>
+          <constraints>
+            <minimum>0.0</minimum>
+            <step>0.1</step>
+            <maximum>20.0</maximum>
+          </constraints>
+          <control type="slider" format="number">
+            <formatlabel>862</formatlabel>
+          </control>  
+          <dependencies>
+            <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
+          </dependencies>
+        </setting>        
+        <setting id="services.lighteffectsthreshold" type="integer" parent="services.lighteffects" label="869" help="870">
+          <level>1</level>
+          <default>10</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>255</maximum>
+          </constraints>
+          <control type="slider" format="number">
+          </control>  
+          <dependencies>
+            <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
+          </dependencies>
+        </setting>
+        <setting id="services.lighteffectsinterpolation" type="boolean" parent="services.lighteffects" label="867" help="868">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="services.lighteffectsstaticon" type="boolean" label="871" help="872">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.lighteffectsstaticr" type="integer" parent="services.lighteffectsstaticon" label="873" help="874">
+          <level>1</level>
+          <default>123</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>255</maximum>
+          </constraints>
+          <control type="slider" format="number">
+          </control>  
+          <dependencies>
+            <dependency type="visible" setting="services.lighteffectsstaticon">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="services.lighteffectsstaticg" type="integer" parent="services.lighteffectsstaticon" label="875" help="876">
+          <level>1</level>
+          <default>123</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>255</maximum>
+          </constraints>
+          <control type="slider" format="number">
+          </control>  
+          <dependencies>
+            <dependency type="visible" setting="services.lighteffectsstaticon">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="services.lighteffectsstaticb" type="integer" parent="services.lighteffectsstaticon" label="877" help="878">
+          <level>1</level>
+          <default>123</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>255</maximum>
+          </constraints>
+          <control type="slider" format="number">
+          </control>  
+          <dependencies>
+            <dependency type="visible" setting="services.lighteffectsstaticon">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="services.lighteffectsstaticscreensaver" type="boolean" parent="services.lighteffectsstaticon" label="879" help="880">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="visible" setting="services.lighteffectsstaticon">true</dependency>
+          </dependencies>
+        </setting>             
+      </group>  
+    </category>    
   </section>
   <section id="system" label="13000" help="36349">
     <category id="videoscreen" label="21373" help="36603">

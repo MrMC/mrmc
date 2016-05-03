@@ -84,6 +84,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/pvr/timers/pvrtimers.a \
                    xbmc/pvr/windows/pvrwindows.a \
                    xbmc/rendering/rendering.a \
+                   xbmc/settings/services.a \
                    xbmc/settings/settings.a \
                    xbmc/settings/dialogs/settings_dialogs.a \
                    xbmc/settings/lib/settings_lib.a \
@@ -307,6 +308,7 @@ DYNOBJSXBMC= \
 	xbmc/network/network.a \
 	xbmc/video/windows/videowindows.a \
 	xbmc/utils/utils.a \
+	xbmc/settings/services.a \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
 	xbmc/pvr/addons/pvraddons.a \

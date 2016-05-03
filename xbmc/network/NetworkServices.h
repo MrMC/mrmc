@@ -87,6 +87,10 @@ public:
   bool IsRssRunning();
   bool StopRss();
 
+  bool StartLightEffectServices();
+  bool IsLightEffectServicesRunning();
+  bool StopLightEffectServices();
+
   bool StartZeroconf();
   bool IsZeroconfRunning();
   bool StopZeroconf();

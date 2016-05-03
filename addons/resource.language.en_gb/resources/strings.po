@@ -3683,6 +3683,161 @@ msgstr ""
 
 #empty strings from id 853 to 996
 
+#: lighteffects
+msgctxt "#853"
+msgid "Enable LightEffects"
+msgstr ""
+
+#: lighteffects
+msgctxt "#854"
+msgid "Enable LightEffects client , ambilight clone"
+msgstr ""
+
+#: lighteffects
+msgctxt "#855"
+msgid "LightEffects/boblight server IP"
+msgstr ""
+
+#: lighteffects
+msgctxt "#856"
+msgid "LightEffects/boblight server port"
+msgstr ""
+
+#: lighteffects
+msgctxt "#857"
+msgid "LightEffects"
+msgstr ""
+
+#: lighteffects
+msgctxt "#858"
+msgid "Setup LightEffects connection to external server"
+msgstr ""
+
+#: lighteffects
+msgctxt "#859"
+msgid "Saturation"
+msgstr ""
+
+#: lighteffects
+msgctxt "#860"
+msgid "Saturation multiplier for HSV color space"
+msgstr ""
+
+#: lighteffects
+msgctxt "#861"
+msgid "Value"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#862"
+msgid "%.1f"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#863"
+msgid "Speed"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#864"
+msgid "Factor for a first order lowpass filter, the higher you set it the faster the lights react."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#865"
+msgid "Autospeed"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#866"
+msgid "Adjusts the speed based on how fast the colors are changing."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#867"
+msgid "Interpolation"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#868"
+msgid "Interpolate between the last two writes of a client."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#869"
+msgid "Threshold"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#870"
+msgid "Pixels below the threshold value will be considered as black pixels."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#871"
+msgid "Static colour"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#872"
+msgid "Enable static colour while video is not playing."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#873"
+msgid "Red"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#874"
+msgid "Ammount of red in static RGB colour."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#875"
+msgid "Green"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#876"
+msgid "Ammount of green in static RGB colour."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#877"
+msgid "Blue"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#878"
+msgid "Ammount of blue in static RGB colour."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#879"
+msgid "Disable on screensaver"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#880"
+msgid "Disable while screensaver is on."
+msgstr ""
+
+#: lighteffects
+msgctxt "#881"
+msgid "Value multiplier for HSV color space."
+msgstr ""
+
+#: lighteffects
+msgctxt "#882"
+msgid "Error, check your settings"
+msgstr ""
+
+#: lighteffects
+msgctxt "#883"
+msgid "Disabling LightEffects client"
+msgstr ""
+
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#997"
 msgid "Add pictures..."
@@ -15565,7 +15720,15 @@ msgctxt "#36012"
 msgid "Couldn't initialise the CEC adapter. Please check your settings."
 msgstr ""
 
-#empty strings from id 36013 to 36014
+#: xbmc/peripherals/devices/peripheralcecadapter.cpp
+msgctxt "#36013"
+msgid "User,password and host must be set,"
+msgstr ""
+
+#: xbmc/peripherals/devices/peripheralcecadapter.cpp
+msgctxt "#36014"
+msgid "disabling MYSQL configuration"
+msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36015"

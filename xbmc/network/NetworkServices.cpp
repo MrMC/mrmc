@@ -29,6 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "network/Network.h"
+#include "services/lighteffects/LightEffectServices.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -475,6 +476,9 @@ void CNetworkServices::Start()
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartJSONRPCServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
   
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE) && !StartLightEffectServices())
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
+
   // note - airtunesserver has to start before airplay server (ios7 client detection bug)
   StartAirTunesServer();
   StartAirPlayServer();
@@ -489,6 +493,7 @@ void CNetworkServices::Stop(bool bWait)
     StopZeroconf();
     StopWebserver();
     StopRss();
+    StopLightEffectServices();
   }
 
   StopEventServer(bWait, false);
@@ -994,6 +999,29 @@ bool CNetworkServices::StopRss()
     return true;
 
   CRssManager::GetInstance().Stop();
+  return true;
+}
+
+bool CNetworkServices::StartLightEffectServices()
+{
+  if (IsLightEffectServicesRunning())
+    return true;
+
+  CLightEffectServices::GetInstance().Start();
+  return true;
+}
+
+bool CNetworkServices::IsLightEffectServicesRunning()
+{
+  return CLightEffectServices::GetInstance().IsActive();
+}
+
+bool CNetworkServices::StopLightEffectServices()
+{
+  if (!IsLightEffectServicesRunning())
+    return true;
+
+  CLightEffectServices::GetInstance().Stop();
   return true;
 }
 

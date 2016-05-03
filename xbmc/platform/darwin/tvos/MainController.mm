@@ -42,7 +42,8 @@
 #import "platform/MCRuntimeLib.h"
 #import "platform/MCRuntimeLibContext.h"
 #import "windowing/WindowingFactory.h"
-#include "settings/Settings.h"
+#import "settings/Settings.h"
+#import "services/lighteffects/LightEffectServices.h"
 
 #import <MediaPlayer/MPMediaItem.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
@@ -1351,6 +1352,7 @@ MainController *g_xbmcController;
   [self disableBackGroundTask];
 
   [NSThread detachNewThreadSelector:@selector(enterForegroundDelayed:) toTarget:self withObject:nil];
+  CLightEffectServices::GetInstance().Start();
 }
 
 - (void)becomeInactive
@@ -1364,6 +1366,7 @@ MainController *g_xbmcController;
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
+  CLightEffectServices::GetInstance().Stop();
 }
 
 //--------------------------------------------------------------
