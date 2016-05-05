@@ -27,7 +27,7 @@ public class XBMCBroadcastReceiver extends BroadcastReceiver
       File fProp = new File(propfn);
       if (!fProp.exists())
       {
-        propfn = Environment.getExternalStorageDirectory().getAbsolutePath() + "/xbmc_env.properties";
+        propfn = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mrmc_env.properties";
         fProp = new File(propfn);
       }
       if (!fProp.exists())
