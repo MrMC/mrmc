@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2015 Team MrMC
+ *      Copyright (C) 2016 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,11 +20,12 @@
  *
  */
 
-#include <list>
-#include <memory>
+#include "queue"
 
-#include "system.h"
 #include "DVDAudioCodec.h"
+#include "DVDStreamInfo.h"
+
+class CAudioIBufferQueue;
 
 class CDVDAudioCodecAudioConverter : public CDVDAudioCodec
 {
@@ -39,16 +40,21 @@ public:
   virtual int   GetData(uint8_t** dst);
   virtual void  Reset();
   virtual AEAudioFormat GetFormat() { return m_format; }
-  virtual bool  NeedPassthrough()   { return true; }
-  virtual const char* GetName()     { return "audioconverter"; }
-  virtual int   GetBufferSize();
+  virtual int   GetBitRate()        { return m_hints.bitrate; }
+  virtual const char* GetName()     { return m_formatName.c_str(); }
+  virtual int   GetBufferSize()     { return m_oBufferSize; }
+  virtual int   GetProfile()        { return m_hints.profile; }
 private:
-  CAEStreamParser m_parser;
-  uint8_t        *m_buffer;
-  unsigned int    m_bufferSize;
-  unsigned int    m_dataSize;
+  CDVDStreamInfo  m_hints;
   AEAudioFormat   m_format;
+  std::string     m_formatName;
+
+  void           *m_codec;
+  CAudioIBufferQueue *m_iBuffer;
+
+  uint8_t        *m_oBuffer;
+  int             m_oBufferSize;
+  bool            m_gotFrame;
   double          m_currentPts;
-  double          m_nextPts;
 };
 

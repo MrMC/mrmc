@@ -55,6 +55,9 @@
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
+#if defined(TARGET_DARWIN)
+  #include "Audio/DVDAudioCodecAudioConverter.h"
+#endif
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
 #include "Overlay/DVDOverlayCodecTX3G.h"
@@ -334,9 +337,15 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, bool al
   // we don't use passthrough if "sync playback to display" is enabled
   if (allowpassthrough)
   {
-    pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
+    pCodec = OpenCodec(new CDVDAudioCodecPassthrough(), hint, options);
     if( pCodec ) return pCodec;
   }
+
+#if defined(TARGET_DARWIN)
+  pCodec = OpenCodec(new CDVDAudioCodecAudioConverter(), hint, options);
+  if( pCodec )
+    return pCodec;
+#endif
 
   pCodec = OpenCodec(new CDVDAudioCodecFFmpeg(), hint, options);
   if (pCodec)

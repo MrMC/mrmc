@@ -1708,6 +1708,9 @@
 		F58BF96A1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
 		F58BF96B1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
 		F58BF96C1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
+		F58BF97B1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */; };
+		F58BF97C1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */; };
+		F58BF97D1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */; };
 		F590455E1BA372A600DB589A /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045291BA372A600DB589A /* AutoPool.mm */; };
 		F590455F1BA372A600DB589A /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045291BA372A600DB589A /* AutoPool.mm */; };
 		F59045611BA372A600DB589A /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F590452C1BA372A600DB589A /* DarwinUtils.mm */; };
@@ -5091,6 +5094,8 @@
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPDirectory.cpp; sourceTree = "<group>"; };
 		F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDatabaseFile.cpp; sourceTree = "<group>"; };
 		F58BF9691CD51257005BB003 /* VideoDatabaseFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDatabaseFile.h; sourceTree = "<group>"; };
+		F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecAudioConverter.cpp; sourceTree = "<group>"; };
+		F58BF97A1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecAudioConverter.h; sourceTree = "<group>"; };
 		F59045281BA372A600DB589A /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
 		F59045291BA372A600DB589A /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
 		F590452B1BA372A600DB589A /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
@@ -7966,6 +7971,8 @@
 			isa = PBXGroup;
 			children = (
 				E38E15060D25F9F900618676 /* DVDAudioCodec.h */,
+				F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */,
+				F58BF97A1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.h */,
 				E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */,
 				E38E15080D25F9F900618676 /* DVDAudioCodecFFmpeg.h */,
 				DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */,
@@ -10262,6 +10269,7 @@
 				F52B063B11869862004B1D66 /* Skin.cpp in Sources */,
 				F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
 				F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */,
+				F58BF97B1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */,
 				F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */,
 				F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */,
 				7CF1FB0C123B1AF000B2CBCB /* Variant.cpp in Sources */,
@@ -11347,6 +11355,7 @@
 				E4991393174E5F0E00741B6D /* TagLibVFSStream.cpp in Sources */,
 				E4991394174E5F0E00741B6D /* TagLoaderTagLib.cpp in Sources */,
 				E4991395174E5F0E00741B6D /* GUIWindowMusicBase.cpp in Sources */,
+				F58BF97C1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */,
 				F5AA30FA1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */,
 				E4991396174E5F0E00741B6D /* GUIWindowMusicNav.cpp in Sources */,
 				F5B722F21C7C894F006432AE /* AndroidBuiltins.cpp in Sources */,
@@ -12676,6 +12685,7 @@
 				F5D141791BAF0B6D0075A95C /* MediaSource.cpp in Sources */,
 				F5D1417A1BAF0B6D0075A95C /* NfoFile.cpp in Sources */,
 				F5D1417B1BAF0B6D0075A95C /* PartyModeManager.cpp in Sources */,
+				F58BF97D1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */,
 				F5D1417C1BAF0B6D0075A95C /* PasswordManager.cpp in Sources */,
 				F5D1417D1BAF0B6D0075A95C /* PlayListPlayer.cpp in Sources */,
 				F5D1417E1BAF0B6D0075A95C /* SectionLoader.cpp in Sources */,

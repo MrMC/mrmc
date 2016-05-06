@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015 Team MrMC
+ *      Copyright (C) 2016 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,195 +18,361 @@
  *
  */
 
+#include <AudioToolbox/AudioToolbox.h>
+
 #include "DVDAudioCodecAudioConverter.h"
-#include "DVDCodecs/DVDCodecs.h"
-#include "DVDStreamInfo.h"
 #include "utils/log.h"
 
-#include <algorithm>
+//#define DEBUG_VERBOSE 1
 
-#include "cores/AudioEngine/AEFactory.h"
+#pragma mark - statics/structs/etc
+static const AEChannel DolbyChannels[5][9] = {
+{ AE_CH_FC , AE_CH_NULL },
+{ AE_CH_FL , AE_CH_FR , AE_CH_NULL },
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_NULL },
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL},
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_SL , AE_CH_SR , AE_CH_LFE, AE_CH_NULL}
+};
 
-DVDAudioCodecAudioConverter::DVDAudioCodecAudioConverter(void) :
-  m_buffer(NULL),
-  m_bufferSize(0),
+typedef struct AudioBufferIO
+{
+	char *buffer;
+	int   packets;
+  int   channels;
+  int   framesize;
+	AudioStreamPacketDescription packet_desciption;
+} AudioBufferIO;
+
+#pragma mark - CAudioIBufferQueue
+class CAudioIBufferQueue
+{
+public:
+  CAudioIBufferQueue()
+  {
+    m_inuse = nullptr;
+    pthread_mutex_init(&m_mutex, nullptr);
+  }
+
+ ~CAudioIBufferQueue()
+  {
+    pthread_mutex_destroy(&m_mutex);
+    free_buffer(m_inuse);
+    while (!m_active.empty())
+    {
+      AudioBufferIO *buff = m_active.front();
+      m_active.pop();
+      free_buffer(buff);
+    }
+  }
+
+  void enqueue(AudioBufferIO *buff)
+  {
+    pthread_mutex_lock(&m_mutex);
+    m_active.push(buff);
+    pthread_mutex_unlock(&m_mutex);
+  }
+
+  AudioBufferIO* dequeue()
+  {
+    // dequeue is special, we need to keep the queue'ed buffer alive until the
+    // next dequeue call. Dequeue is only used by AudioCOnverter callback and a pointer
+    // to the dequeue'ed buffer is referenced until next callback.
+    pthread_mutex_lock(&m_mutex);
+    AudioBufferIO *buff = m_active.front();
+    m_active.pop();
+    free_buffer(m_inuse);
+    m_inuse = buff;
+    pthread_mutex_unlock(&m_mutex);
+    return buff;
+  }
+
+  size_t empty()
+  {
+    return m_active.empty();
+  }
+
+protected:
+  void free_buffer(AudioBufferIO *buff)
+  {
+    if (buff)
+      free(buff->buffer);
+    delete buff;
+  }
+
+  pthread_mutex_t m_mutex;
+  AudioBufferIO  *m_inuse;
+  std::queue<AudioBufferIO*> m_active;
+};
+
+#pragma mark - AudioConverter input callback
+static OSStatus converterCallback(AudioConverterRef inAudioConverter,
+  UInt32 *ioNumberDataPackets, AudioBufferList *ioData,
+  AudioStreamPacketDescription **outDataPacketDescription,
+  void *inUserData)
+{
+  // got nothing for you, head back to camp
+  CAudioIBufferQueue *abuff = (CAudioIBufferQueue*)inUserData;
+  if (abuff->empty())
+  {
+    *ioNumberDataPackets = 0;
+    ioData->mBuffers[0].mData = nullptr;
+    ioData->mBuffers[0].mDataByteSize = 0;
+    // setting these and returning any error
+    // will tell AudioConverter to try again later
+    // on next AudioConverterFillComplexBuffer call.
+    // https://developer.apple.com/library/mac/qa/qa1317/_index.html
+    return -1;
+  }
+
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "%s - ioNumberDataPackets(%d)", __FUNCTION__, *ioNumberDataPackets);
+#endif
+
+  AudioBufferIO *buff = abuff->dequeue();
+  // clamp to what we have
+	if (*ioNumberDataPackets > (UInt32)buff->packets)
+    *ioNumberDataPackets = buff->packets;
+
+  // assign the data pointer into the buffer list
+  // note:  the callback is responsible for not freeing
+  // or altering this buffer until it is called again.
+  // CAudioIBufferQueue will take care of this
+  ioData->mBuffers[0].mData = buff->buffer;
+  ioData->mBuffers[0].mDataByteSize = buff->framesize;
+  ioData->mBuffers[0].mNumberChannels = buff->channels;
+  if (outDataPacketDescription)
+  {
+    buff->packet_desciption.mStartOffset = 0;
+    buff->packet_desciption.mVariableFramesInPacket = *ioNumberDataPackets;
+    buff->packet_desciption.mDataByteSize = buff->framesize;
+    *outDataPacketDescription = &buff->packet_desciption;
+  }
+
+	return noErr;
+}
+
+#pragma mark - CDVDAudioCodecAudioConverter
+CDVDAudioCodecAudioConverter::CDVDAudioCodecAudioConverter()
+: m_formatName("darwin native")
+, m_codec(nullptr)
+, m_iBuffer(nullptr)
+, m_oBuffer(nullptr)
+, m_oBufferSize(0)
+, m_gotFrame(false)
+, m_currentPts(DVD_NOPTS_VALUE)
 {
 }
 
-DVDAudioCodecAudioConverter::~DVDAudioCodecAudioConverter(void)
+CDVDAudioCodecAudioConverter::~CDVDAudioCodecAudioConverter()
 {
   Dispose();
 }
 
-bool DVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
+bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  AEAudioFormat format;
-  format.m_dataFormat = AE_FMT_RAW;
-  format.m_sampleRate = hints.samplerate;
   switch (hints.codec)
   {
     case AV_CODEC_ID_AC3:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
-      format.m_streamInfo.m_sampleRate = hints.samplerate;
+      m_formatName = "dac-ac3";
       break;
 
     case AV_CODEC_ID_EAC3:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
-      format.m_streamInfo.m_sampleRate = hints.samplerate;
+      m_formatName = "dac-ec3";
       break;
 
     default:
       return false;
   }
 
-  m_dataSize = 0;
-  m_bufferSize = 0;
-  m_backlogSize = 0;
+  m_hints = hints;
+  // special exceptions, not a clue why, yet
+  if (m_hints.channels == 0)
+    m_hints.channels = 2;
+  if (m_hints.samplerate == 0)
+    m_hints.samplerate = 48000;
+
+  // m_format is output format
+  m_format.m_dataFormat = AE_FMT_FLOAT;
+  m_format.m_sampleRate = 48000;
+  int index;
+  switch(m_hints.channels)
+  {
+    case 1:
+      index = 0;
+    default:
+    case 2:
+      index = 1;
+      break;
+    case 3:
+      index = 2;
+      break;
+    case 6:
+      index = 3;
+      break;
+    case 8:
+      index = 4;
+      break;
+  }
+  for (int i = 0; i < m_hints.channels; ++i)
+    m_format.m_channelLayout += DolbyChannels[index][i];
+
+  AudioStreamBasicDescription iformat = {0};
+  iformat.mSampleRate = hints.samplerate;
+  iformat.mFormatID = m_hints.codec == kAudioFormatAC3 ? kAudioFormatAC3: kAudioFormatEnhancedAC3;
+  // mFramesPerPacket must be 768 for all ac3/eac3 flavors
+  iformat.mFramesPerPacket = 768;
+  iformat.mChannelsPerFrame = m_hints.channels;
+
+  AudioStreamBasicDescription oformat = {0};
+  oformat.mSampleRate = 48000;
+  oformat.mFormatID = kAudioFormatLinearPCM;
+  oformat.mFormatFlags = kLinearPCMFormatFlagIsFloat | kLinearPCMFormatFlagIsPacked;
+  oformat.mFramesPerPacket = 1;
+  oformat.mChannelsPerFrame = m_hints.channels;
+  oformat.mBitsPerChannel = CAEUtil::DataFormatToBits(AE_FMT_FLOAT);
+  oformat.mBytesPerPacket = oformat.mChannelsPerFrame * oformat.mBitsPerChannel / 8;
+  oformat.mBytesPerFrame  = oformat.mFramesPerPacket  * oformat.mBytesPerPacket;
+
+  AudioConverterRef audioconverter;
+  int err = AudioConverterNew(&iformat, &oformat, &audioconverter);
+  if (err)
+    return false;
+
+  m_codec = (void*)audioconverter;
+  m_iBuffer = new CAudioIBufferQueue();
   m_currentPts = DVD_NOPTS_VALUE;
-  m_nextPts = DVD_NOPTS_VALUE;
-  return ret;
+
+  return true;
 }
 
-void DVDAudioCodecAudioConverter::Dispose()
+void CDVDAudioCodecAudioConverter::Dispose()
 {
-  if (m_buffer)
+  if (m_codec)
   {
-    delete[] m_buffer;
-    m_buffer = NULL;
+    AudioConverterDispose((AudioConverterRef)m_codec);
+    m_codec = nullptr;
   }
-
-  m_bufferSize = 0;
+  SAFE_DELETE(m_iBuffer);
+  SAFE_DELETE_ARRAY(m_oBuffer);
+  m_oBufferSize = 0;
 }
 
-int DVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, double pts)
+int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
-  int used = 0;
-  if (m_backlogSize)
-  {
-    if (m_currentPts == DVD_NOPTS_VALUE)
-    {
-      m_currentPts = m_nextPts;
-      m_nextPts = DVD_NOPTS_VALUE;
-    }
+  if (!pData || iSize <= 0)
+    return 0;
 
-    m_dataSize = m_bufferSize;
-    unsigned int consumed = m_parser.AddData(m_backlogBuffer, m_backlogSize, &m_buffer, &m_dataSize);
-    m_bufferSize = std::max(m_bufferSize, m_dataSize);
-    if (consumed != m_backlogSize)
-    {
-      memmove(m_backlogBuffer, m_backlogBuffer+consumed, consumed);
-      m_backlogSize -= consumed;
-    }
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "%s - pData(%p), iSize(%d)", __FUNCTION__, pData, iSize);
+#endif
+  if (!m_oBuffer)
+  {
+    // set up our output buffer
+    // AudioCOnverter always seems to return no more than 1536
+    // for any ac3/eac3 flavor.
+    m_oBufferSize = 1536 * m_hints.channels * 4;
+    // just a little extra because I'm paranoid
+    m_oBuffer = new uint8_t[m_oBufferSize * 4];
   }
 
-  if (pData && !m_dataSize)
+  //CLog::MemDump((char*)pData, iSize);
+
+  // set up a input buffer for reading
+  // need to do it this way as some eac3 seems to
+  // have variable framesize and AudioConverter
+  // is very picky that ac3/eac3 frame sizes are correct.
+  AudioBufferIO *converter_buff = new AudioBufferIO;
+  converter_buff->packets = 1;
+  converter_buff->framesize = iSize;
+  converter_buff->buffer = (char*)calloc(iSize, 1);
+  converter_buff->channels = m_hints.channels;
+  converter_buff->packet_desciption = {0};
+  memcpy(converter_buff->buffer, pData, iSize);
+  m_iBuffer->enqueue(converter_buff);
+  m_currentPts = pts;
+
+  // setup output buffer list
+  AudioBufferList output_bufferlist = {0};
+  output_bufferlist.mNumberBuffers = 1;
+  output_bufferlist.mBuffers[0].mNumberChannels = m_hints.channels;
+  output_bufferlist.mBuffers[0].mDataByteSize = m_oBufferSize;
+  output_bufferlist.mBuffers[0].mData = m_oBuffer;
+
+  AudioStreamPacketDescription *outputPktDescs = nullptr;
+  UInt32 ioBytesPerPacket = m_hints.channels * CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8;
+  UInt32 ioOutputDataPackets = m_oBufferSize / ioBytesPerPacket;
+
+  // setup to run the auto converter
+  int err = 0;
+  int loops = 0;
+  int ioOutputDataPacketsTotal = 0;
+  //while (err == 0 && ioOutputDataPackets > 0)
   {
-    if (iSize <= 0)
-      return 0;
+    // kAudioCodecUnsupportedFormatError = '!dat'
+    output_bufferlist.mNumberBuffers = 1;
+    output_bufferlist.mBuffers[0].mNumberChannels = m_hints.channels;
+    output_bufferlist.mBuffers[0].mDataByteSize = m_oBufferSize;
+    output_bufferlist.mBuffers[0].mData = m_oBuffer;
 
-    if (m_currentPts == DVD_NOPTS_VALUE)
-      m_currentPts = pts;
-
-    m_dataSize = m_bufferSize;
-    used = m_parser.AddData(pData, iSize, &m_buffer, &m_dataSize);
-    m_bufferSize = std::max(m_bufferSize, m_dataSize);
-
-    if (used != iSize)
-    {
-      m_backlogSize = iSize - used;
-      memcpy(m_backlogBuffer, pData + used, m_backlogSize);
-      if (m_nextPts != DVD_NOPTS_VALUE)
-      {
-        m_nextPts = pts;
-      }
-      used = iSize;
-    }
+    // AudioConverterFillComplexBuffer is semi-sync. It will continue to call the
+    // callback unless flagged in callback that there is no current data to fetch.
+    // Generally, you will get a one per one conversion if you do your math right.
+    err = AudioConverterFillComplexBuffer((AudioConverterRef)m_codec, converterCallback,
+      m_iBuffer, &ioOutputDataPackets, &output_bufferlist, outputPktDescs);
+    ioOutputDataPacketsTotal += ioOutputDataPackets;
+    loops++;
   }
-  else if (pData)
+  if (ioOutputDataPacketsTotal > 0)
   {
-    if (m_nextPts != DVD_NOPTS_VALUE)
-    {
-      m_nextPts = pts;
-    }
-    memcpy(m_backlogBuffer + m_backlogSize, pData, iSize);
-    m_backlogSize += iSize;
-    used = iSize;
-  }
-
-  if (!m_dataSize)
-    return used;
-
-  if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-  {
-    if (!m_trueHDoffset)
-      memset(m_trueHDBuffer.get(), 0, TRUEHD_BUF_SIZE);
-
-    memcpy(&(m_trueHDBuffer.get())[m_trueHDoffset], m_buffer, m_dataSize);
-    uint8_t highByte = (m_dataSize >> 8) & 0xFF;
-    uint8_t lowByte = m_dataSize & 0xFF;
-    m_trueHDBuffer[m_trueHDoffset+2560-2] = highByte;
-    m_trueHDBuffer[m_trueHDoffset+2560-1] = lowByte;
-    m_trueHDoffset += 2560;
-
-    if (m_trueHDoffset / 2560 == 24)
-    {
-      m_dataSize = m_trueHDoffset;
-      m_trueHDoffset = 0;
-    }
-    else
-      m_dataSize = 0;
+#ifdef DEBUG_VERBOSE
+    CLog::Log(LOGDEBUG, "%s - loops(%d) ioOutputDataPacketsTotal(%d)", __FUNCTION__, loops, ioOutputDataPacketsTotal);
+#endif
+    m_gotFrame = true;
   }
 
-  if (m_dataSize)
-  {
-    m_format.m_dataFormat = AE_FMT_RAW;
-    m_format.m_streamInfo = m_parser.GetStreamInfo();
-    m_format.m_sampleRate = m_parser.GetSampleRate();
-    m_format.m_frameSize = 1;
-    CAEChannelInfo layout;
-    for (unsigned int i=0; i<m_parser.GetChannels(); i++)
-    {
-      layout += AE_CH_RAW;
-    }
-    m_format.m_channelLayout = layout;
-  }
-
-  return used;
+  return iSize;
 }
 
-void DVDAudioCodecAudioConverter::GetData(DVDAudioFrame &frame)
+void CDVDAudioCodecAudioConverter::GetData(DVDAudioFrame &frame)
 {
-  frame.nb_frames = GetData(frame.data);
+  unsigned int framebits = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
 
-  if (frame.nb_frames == 0)
+  frame.passthrough = false;
+  frame.format.m_dataFormat = m_format.m_dataFormat;
+  frame.format.m_channelLayout = m_format.m_channelLayout;
+  frame.framesize = (framebits >> 3) * frame.format.m_channelLayout.Count();
+  if(frame.framesize == 0)
     return;
-
-  frame.passthrough = true;
-  frame.format = m_format;
+  frame.nb_frames = GetData(frame.data)/frame.framesize;
   frame.planes = 1;
-  frame.bits_per_sample = 8;
-  frame.duration = DVD_MSEC_TO_TIME(frame.format.m_streamInfo.GetDuration());
+  frame.bits_per_sample = framebits;
+  frame.format.m_sampleRate = m_format.m_sampleRate;
+  frame.matrix_encoding = GetMatrixEncoding();
+  frame.audio_service_type = GetAudioServiceType();
+  frame.profile = GetProfile();
+  // compute duration.
+  if (frame.format.m_sampleRate)
+    frame.duration = ((double)frame.nb_frames * DVD_TIME_BASE) / frame.format.m_sampleRate;
+  else
+    frame.duration = 0.0;
+
   frame.pts = m_currentPts;
+}
+
+int CDVDAudioCodecAudioConverter::GetData(uint8_t** dst)
+{
+  if (m_gotFrame)
+  {
+    *dst = m_oBuffer;
+    m_gotFrame = false;
+    return m_oBufferSize;
+  }
+  return 0;
+}
+
+void CDVDAudioCodecAudioConverter::Reset()
+{
+  if (m_codec)
+    AudioConverterReset((AudioConverterRef)m_codec);
   m_currentPts = DVD_NOPTS_VALUE;
-  m_dataSize = 0;
-}
-
-int DVDAudioCodecAudioConverter::GetData(uint8_t** dst)
-{
-  *dst = m_buffer;
-  return m_dataSize;
-}
-
-void DVDAudioCodecAudioConverter::Reset()
-{
-  m_dataSize = 0;
-  m_bufferSize = 0;
-  m_backlogSize = 0;
-  m_currentPts = DVD_NOPTS_VALUE;
-  m_nextPts = DVD_NOPTS_VALUE;
-}
-
-int DVDAudioCodecAudioConverter::GetBufferSize()
-{
-  return (int)m_parser.GetBufferSize();
 }
