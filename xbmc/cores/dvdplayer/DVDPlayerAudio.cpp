@@ -99,13 +99,15 @@ bool CDVDPlayerAudio::AllowDTSHDDecode()
 bool CDVDPlayerAudio::OpenStream(CDVDStreamInfo &hints)
 {
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", hints.codec);
-/*
-  bool allowpassthrough = !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
-  if (hints.realtime)
+
+  bool allowpassthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
+  // exceptions for passthrough
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
     allowpassthrough = false;
-  CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, allowpassthrough, AllowDTSHDDecode());
-*/
-  CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints);
+  //if (hints.realtime)
+  //  allowpassthrough = false;
+
+  CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, allowpassthrough);
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported audio codec");
