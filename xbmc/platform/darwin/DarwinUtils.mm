@@ -814,19 +814,7 @@ bool CDarwinUtils::AudioCodecLicenseCheck(const std::string &name)
       return false;
     }
     #if !defined(TARGET_DARWIN_TVOS)
-      // cripple AC3/EAC3/TrueHD decode under ios app store (pending license)
-      if (name == "ac3" || name == "a52" || name == "ac-3")
-      {
-        if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH))
-          return true;
-        return false;
-      }
-      if (name == "eac3")
-      {
-        if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH))
-          return true;
-        return false;
-      }
+      // cripple TrueHD decode under ios app store (pending license)
       if (name == "truehd")
       {
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH))
