@@ -394,7 +394,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     std::string m_userAgent;
 
     static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data);
-    void setInetrnalMYSQL(const bool enable, const bool init);
+    void setInternalMYSQL(const bool enable, const bool init);
 
   protected:
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;

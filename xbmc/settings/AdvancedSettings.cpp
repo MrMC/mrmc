@@ -147,7 +147,7 @@ void CAdvancedSettings::OnSettingChanged(const CSetting *setting)
            settingId == CSettings::SETTING_MYSQL_VIDEO ||
            settingId == CSettings::SETTING_MYSQL_MUSIC
            )
-    setInetrnalMYSQL(CSettings::GetInstance().GetBool(CSettings::SETTING_MYSQL_ENABLED), true);
+    setInternalMYSQL(CSettings::GetInstance().GetBool(CSettings::SETTING_MYSQL_ENABLED), true);
 //  CSettings::GetInstance().Save();
 }
 
@@ -1090,7 +1090,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
   if (((CSettingBool*)mysqlSetting)->GetValue())
   {
-    setInetrnalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
+    setInternalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
   }
   else // no mysql settings in guisettings.xml, check advanced settings
   {
@@ -1456,7 +1456,7 @@ bool CAdvancedSettings::IsSettingVisible(const std::string &condition, const std
           );
 }
 
-void CAdvancedSettings::setInetrnalMYSQL(const bool enable, const bool init)
+void CAdvancedSettings::setInternalMYSQL(const bool enable, const bool init)
 {
   if (enable) // ENABLED
   {

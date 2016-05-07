@@ -999,7 +999,7 @@ bool CApplication::Initialize()
   {
     //show splash with MySQL loading msg even if internal splash is disabled
     CSplash::GetInstance().Show(g_localizeStrings.Get(12374));
-    g_advancedSettings.setInetrnalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
+    g_advancedSettings.setInternalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
   }
 
   // initialize (and update as needed) our databases
