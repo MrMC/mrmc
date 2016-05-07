@@ -76,7 +76,7 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
 };
 
 // uncomment if one has obtained DivX licensing.
-//#define HAS_DIVX_LICENSE
+#define HAS_DIVX_LICENSE
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
