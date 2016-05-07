@@ -34,6 +34,8 @@
 #include "platform/android/jni/Build.h"
 #include "platform/android/jni/System.h"
 
+#include "utils/SysfsUtils.h"
+
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()
   : m_width(0), m_height(0)
 {
@@ -171,15 +173,51 @@ bool CEGLNativeTypeAndroid::DestroyNativeWindow()
   return true;
 }
 
+static float overrideRefreshRate()
+{
+  static float overridedRR = -1;
+
+  if (overridedRR == -1)  // Do it once
+  {
+    int CEAmode;
+    overridedRR = 0.0;
+
+    // AFTV stick
+    // Always return 60, whatever the actual HDMI mode
+    std::string sCEAmode = CJNISystemProperties::get("hw.brcm.tv.hdmi.mode", "");
+    if (!sCEAmode.empty() && StringUtils::IsInteger(sCEAmode))
+    {
+      CEAmode = atoi(sCEAmode.c_str());
+      RESOLUTION_INFO res = SysfsUtils::CEAtoRES(CEAmode);
+      CLog::Log(LOGINFO, "CEGLNativeTypeAndroid: AFTVS refresh rate: %f", res.fRefreshRate);
+      overridedRR = res.fRefreshRate;
+    }
+
+    // AFTV1
+    // Always return 60, whatever the actual HDMI mode
+    if (SysfsUtils::GetInt("/sys/class/graphics/fb0/video_mode", CEAmode) == 0)
+    {
+      RESOLUTION_INFO res = SysfsUtils::CEAtoRES(CEAmode);
+      CLog::Log(LOGINFO, "CEGLNativeTypeAndroid: AFTV1 refresh rate: %f", res.fRefreshRate);
+      overridedRR = res.fRefreshRate;
+    }
+  }
+  return overridedRR;
+}
+
 static float currentRefreshRate()
 {
+  float overridedrate = overrideRefreshRate();
+  if (overridedrate)
+    return overridedrate;
+
   CJNIWindow window = CXBMCApp::getWindow();
   if (window)
   {
     float preferredRate = window.getAttributes().getpreferredRefreshRate();
     if (preferredRate > 20.0 && preferredRate < 70.0)
     {
-      CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: Preferred refresh rate: %f", preferredRate);
+      CLog::Log(LOGINFO, "CEGLNativeTypeAndroid: Preferred refresh rate: %f", preferredRate);
       return preferredRate;
     }
     CJNIView view(window.getDecorView());
@@ -190,7 +228,7 @@ static float currentRefreshRate()
         float reportedRate = display.getRefreshRate();
         if (reportedRate > 20.0 && reportedRate < 70.0)
         {
-          CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: Current display refresh rate: %f", reportedRate);
+          CLog::Log(LOGINFO, "CEGLNativeTypeAndroid: Current display refresh rate: %f", reportedRate);
           return reportedRate;
         }
       }
@@ -250,33 +288,37 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
 {
   RESOLUTION_INFO res;
   bool ret = GetNativeResolution(&res);
+
   if (ret && res.iWidth > 1 && res.iHeight > 1)
   {
-    std::vector<float> refreshRates;
-    CJNIWindow window = CXBMCApp::getWindow();
-    if (window)
+    if (overrideRefreshRate() == 0.0)  // If override => assume not standard
     {
-      CJNIView view = window.getDecorView();
-      if (view)
+      std::vector<float> refreshRates;
+      CJNIWindow window = CXBMCApp::getWindow();
+      if (window)
       {
-        CJNIDisplay display = view.getDisplay();
-        if (display)
+        CJNIView view = window.getDecorView();
+        if (view)
         {
-          refreshRates = display.getSupportedRefreshRates();
+          CJNIDisplay display = view.getDisplay();
+          if (display)
+          {
+            refreshRates = display.getSupportedRefreshRates();
+          }
         }
       }
-    }
 
-    if (!refreshRates.empty())
-    {
-      for (unsigned int i = 0; i < refreshRates.size(); i++)
+      if (!refreshRates.empty())
       {
-        if (refreshRates[i] < 20.0 || refreshRates[i] > 70.0)
-          continue;
-        res.fRefreshRate = refreshRates[i];
-        res.strMode      = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
-                                               res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-        resolutions.push_back(res);
+        for (unsigned int i = 0; i < refreshRates.size(); i++)
+        {
+          if (refreshRates[i] < 20.0 || refreshRates[i] > 70.0)
+            continue;
+          res.fRefreshRate = refreshRates[i];
+          res.strMode      = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
+                                                 res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+          resolutions.push_back(res);
+        }
       }
     }
     if (resolutions.empty())
@@ -302,4 +344,5 @@ bool CEGLNativeTypeAndroid::ShowWindow(bool show)
 bool CEGLNativeTypeAndroid::BringToFront()
 {
   CXBMCApp::BringToFront();
+  return true;
 }
