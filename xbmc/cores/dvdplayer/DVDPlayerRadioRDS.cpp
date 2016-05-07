@@ -516,14 +516,14 @@ CDVDRadioRDSData::CDVDRadioRDSData()
   , m_speed(DVD_PLAYSPEED_NORMAL)
   , m_messageQueue("rds")
 {
-  CLog::Log(LOGDEBUG, "Radio UECP (RDS) Processor - new %s", __FUNCTION__);
+  //CLog::Log(LOGDEBUG, "Radio UECP (RDS) Processor - new %s", __FUNCTION__);
 
   m_messageQueue.SetMaxDataSize(40 * 256 * 1024);
 }
 
 CDVDRadioRDSData::~CDVDRadioRDSData()
 {
-  CLog::Log(LOGDEBUG, "Radio UECP (RDS) Processor - delete %s", __FUNCTION__);
+  //CLog::Log(LOGDEBUG, "Radio UECP (RDS) Processor - delete %s", __FUNCTION__);
   StopThread();
 }
 
@@ -541,7 +541,7 @@ bool CDVDRadioRDSData::OpenStream(CDVDStreamInfo &hints)
   if (hints.type == STREAM_RADIO_RDS)
   {
     Flush();
-    CLog::Log(LOGNOTICE, "Creating UECP (RDS) data thread");
+    //CLog::Log(LOGNOTICE, "Creating UECP (RDS) data thread");
     Create();
   }
   return true;
@@ -555,7 +555,7 @@ void CDVDRadioRDSData::CloseStream(bool bWaitForBuffers)
   m_messageQueue.Abort();
 
   // wait for decode_video thread to end
-  CLog::Log(LOGNOTICE, "Radio UECP (RDS) Processor - waiting for data thread to exit");
+  //CLog::Log(LOGNOTICE, "Radio UECP (RDS) Processor - waiting for data thread to exit");
 
   StopThread(); // will set this->m_bStop to true
 
