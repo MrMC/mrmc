@@ -344,6 +344,7 @@ public:
   static const std::string SETTING_INPUT_APPLEREMOTESEQUENCETIME;
   static const std::string SETTING_INPUT_APPLESIRI;
   static const std::string SETTING_INPUT_APPLESIRIOSDSWIPE;
+  static const std::string SETTING_INPUT_APPLESIRIBACK;
   static const std::string SETTING_INPUT_APPLESIRITIMEOUT;
   static const std::string SETTING_INPUT_APPLESIRITIMEOUTENABLED;
   static const std::string SETTING_NETWORK_USEHTTPPROXY;

@@ -391,6 +391,7 @@ const std::string CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON = "input.applerem
 const std::string CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME = "input.appleremotesequencetime";
 const std::string CSettings::SETTING_INPUT_APPLESIRI = "input.applesiri";
 const std::string CSettings::SETTING_INPUT_APPLESIRIOSDSWIPE = "input.applesiriosdswipe";
+const std::string CSettings::SETTING_INPUT_APPLESIRIBACK = "input.applesiriback";
 const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUT = "input.applesiritimeout";
 const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED = "input.applesiritimeoutenabled";
 const std::string CSettings::SETTING_NETWORK_USEHTTPPROXY = "network.usehttpproxy";

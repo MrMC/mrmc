@@ -3671,6 +3671,16 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr ""
 
+#: settings_tvos.xml
+msgctxt "#884"
+msgid "Use menu to stop video playback"
+msgstr ""
+
+#: settings_tvos.xml
+msgctxt "#885"
+msgid "Stops playback in full screen mode when backing out with 'menu' button."
+msgstr ""
+
 #empty strings from id 853 to 996
 
 #: xbmc/windows/GUIMediaWindow.cpp

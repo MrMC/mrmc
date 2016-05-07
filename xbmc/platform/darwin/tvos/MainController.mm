@@ -42,6 +42,7 @@
 #import "platform/MCRuntimeLib.h"
 #import "platform/MCRuntimeLibContext.h"
 #import "windowing/WindowingFactory.h"
+#include "settings/Settings.h"
 
 #import <MediaPlayer/MPMediaItem.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
@@ -603,7 +604,12 @@ MainController *g_xbmcController;
       break;
     case UIGestureRecognizerStateEnded:
       if (g_windowManager.GetFocusedWindow() == WINDOW_FULLSCREEN_VIDEO)
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+      {
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK))
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+        else
+          [self sendKeyDownUp:XBMCK_ESCAPE];
+      }
       else
         [self sendKeyDownUp:XBMCK_BACKSPACE];
       

@@ -111,6 +111,11 @@
             <dependency type="visible" setting="input.applesiri">true</dependency>
           </dependencies>
         </setting>
+        <setting id="input.applesiriback" type="boolean" label="884" help="885">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="input.applesiritimeoutenabled" type="boolean" label="24160" help="24161">
           <level>1</level>
           <default>true</default>
