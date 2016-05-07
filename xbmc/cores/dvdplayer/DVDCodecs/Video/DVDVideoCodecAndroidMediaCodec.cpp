@@ -28,19 +28,19 @@
 #include "DVDVideoCodecAndroidMediaCodec.h"
 
 #include "Application.h"
+#include "cores/dvdplayer/DVDClock.h"
 #include "messaging/ApplicationMessenger.h"
-#include "DVDClock.h"
-#include "threads/Atomics.h"
-#include "utils/BitstreamConverter.h"
-#include "utils/CPUInfo.h"
-#include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
-#include "cores/VideoRenderers/RenderManager.h"
-#include "cores/VideoRenderers/RenderFlags.h"
+#include "utils/BitstreamConverter.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #include "platform/android/activity/XBMCApp.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/jni/ByteBuffer.h"
+#include "platform/android/jni/Build.h"
+#include "platform/android/jni/Display.h"
 #include "platform/android/jni/MediaCodec.h"
 #include "platform/android/jni/MediaCrypto.h"
 #include "platform/android/jni/MediaFormat.h"
@@ -48,20 +48,14 @@
 #include "platform/android/jni/MediaCodecInfo.h"
 #include "platform/android/jni/Surface.h"
 #include "platform/android/jni/SurfaceTexture.h"
-#include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/jni/View.h"
 #include "platform/android/jni/Window.h"
-#include "platform/android/jni/Display.h"
-#include "platform/android/jni/Build.h"
 
-#include "utils/StringUtils.h"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
-#include <cassert>
-
-#define DEBUG_EXTRADATA 1
+//#define DEBUG_EXTRADATA 1
 
 using namespace KODI::MESSAGING;
 
@@ -359,7 +353,6 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(bool surface_re
 , m_render_surface(surface_render)
 {
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
-  memset(&m_demux_pkt, 0x00, sizeof(m_demux_pkt));
 }
 
 CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
@@ -644,7 +637,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     "Open Android MediaCodec %s", m_codecname.c_str());
 
   m_opened = true;
-  memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
 
   return m_opened;
 }
@@ -656,11 +648,13 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 
   m_opened = false;
 
-  g_renderManager.RegisterRenderUpdateCallBack((const void*)NULL, NULL);
-
   // release any retained demux packets
-  if (m_demux_pkt.pData)
-    free(m_demux_pkt.pData);
+  while (!m_demux.empty())
+  {
+    amc_demux &demux_pkt = m_demux.front();
+    free(demux_pkt.pData);
+    m_demux.pop();
+  }
 
   // invalidate any inflight buffers
   FlushInternal();
@@ -695,36 +689,35 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 
 int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dts, double pts)
 {
-  // Handle input, add demuxer packet to input queue, we must accept it or
-  // it will be discarded as DVDPlayerVideo has no concept of "try again".
-  // we must return VC_BUFFER or VC_PICTURE, default to VC_BUFFER.
-  int rtn = VC_BUFFER;
-
   if (!m_opened)
-    return VC_ERROR;
+    return VC_BUFFER;
 
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
 
   // must check for an output picture 1st,
   // otherwise, mediacodec can stall on some devices.
-  if (GetOutputPicture() > 0)
-    rtn |= VC_PICTURE;
-
-  if (!pData)
-  {
-    // Check if we have a saved buffer
-    if (m_demux_pkt.pData)
-    {
-      pData = m_demux_pkt.pData;
-      iSize = m_demux_pkt.iSize;
-      pts = m_demux_pkt.pts;
-      dts = m_demux_pkt.dts;
-    }
-  }
+  bool gotPicture = (GetOutputPicture() > 0);
 
   if (pData)
   {
+    // Check if we have a saved buffer
+    if (m_bitstream)
+    {
+      m_bitstream->Convert(pData, iSize);
+      iSize = m_bitstream->GetConvertSize();
+      pData = m_bitstream->GetConvertBuffer();
+    }
+
+    // queue demux pkt in case we cannot get an input buffer
+    amc_demux demux_pkt;
+    demux_pkt.dts = dts;
+    demux_pkt.pts = pts;
+    demux_pkt.iSize = iSize;
+    demux_pkt.pData = (uint8_t*)malloc(iSize);
+    memcpy(demux_pkt.pData, pData, iSize);
+    m_demux.push(demux_pkt);
+
     // try to fetch an input buffer
     int64_t timeout_us = 5000;
     int index = m_codec->dequeueInputBuffer(timeout_us);
@@ -733,23 +726,20 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode ExceptionCheck");
       xbmc_jnienv()->ExceptionDescribe();
       xbmc_jnienv()->ExceptionClear();
-      rtn = VC_ERROR;
+      return VC_ERROR;
     }
-    else if (index >= 0)
+
+    if (index >= 0)
     {
       // we have an input buffer, fill it.
-      if (m_bitstream)
-      {
-        m_bitstream->Convert(pData, iSize);
-        iSize = m_bitstream->GetConvertSize();
-        pData = m_bitstream->GetConvertBuffer();
-      }
       CJNIByteBuffer buffer = m_codec->getInputBuffer(index);
       int size = buffer.capacity();
-      if (iSize > size)
+      // fetch the front demux packet
+      amc_demux &demux_pkt = m_demux.front();
+      if (demux_pkt.iSize > size)
       {
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode, iSize(%d) > size(%d)", iSize, size);
-        iSize = size;
+        demux_pkt.iSize = size;
       }
       // fetch a pointer to the ByteBuffer backing store
       uint8_t *dst_ptr = (uint8_t*)xbmc_jnienv()->GetDirectBufferAddress(buffer.get_raw());
@@ -760,74 +750,71 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         {
           case AV_CODEC_ID_VC1:
           {
-            if (iSize >= 4 && pData[0] == 0x00 && pData[1] == 0x00 && pData[2] == 0x01 && (pData[3] == 0x0d || pData[3] == 0x0f))
-              memcpy(dst_ptr, pData, iSize);
+            if (iSize >= 4 &&
+                pData[0] == 0x00 &&
+                pData[1] == 0x00 &&
+                pData[2] == 0x01 &&
+               (pData[3] == 0x0d || pData[3] == 0x0f))
+              memcpy(dst_ptr, demux_pkt.pData, demux_pkt.iSize);
             else
             {
               dst_ptr[0] = 0x00;
               dst_ptr[1] = 0x00;
               dst_ptr[2] = 0x01;
               dst_ptr[3] = 0x0d;
-              memcpy(dst_ptr+4, pData, iSize);
+              memcpy(dst_ptr+4, demux_pkt.pData, demux_pkt.iSize);
               iSize += 4;
             }
-
             break;
           }
 
           default:
-            memcpy(dst_ptr, pData, iSize);
+            memcpy(dst_ptr, demux_pkt.pData, demux_pkt.iSize);
             break;
         }
       }
+      free(demux_pkt.pData);
+      m_demux.pop();
 
       // Translate from dvdplayer dts/pts to MediaCodec pts,
       // pts WILL get re-ordered by MediaCodec if needed.
       // Do not try to pass pts as a unioned double/int64_t,
       // some android devices will diddle with presentationTimeUs
       // and you will get NaN back and DVDPlayerVideo will barf.
-      int64_t presentationTimeUs = 0;
-      if (pts != DVD_NOPTS_VALUE)
-        presentationTimeUs = pts;
-      else if (dts != DVD_NOPTS_VALUE)
-        presentationTimeUs = dts;
+      int64_t presentationTimeUs = AV_NOPTS_VALUE;
+      if (demux_pkt.pts != DVD_NOPTS_VALUE)
+        presentationTimeUs = demux_pkt.pts;
+      else if (demux_pkt.dts != DVD_NOPTS_VALUE)
+        presentationTimeUs = demux_pkt.dts;
 /*
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
-        "pts(%f), ipts(%lld), iSize(%d), GetDataSize(%d), loop_cnt(%d)",
-        presentationTimeUs, pts_dtoi(presentationTimeUs), iSize, GetDataSize(), loop_cnt);
+        "pts(%lld), iSize(%d)", presentationTimeUs, iSize);
 */
       int flags = 0;
       int offset = 0;
-      m_codec->queueInputBuffer(index, offset, iSize, presentationTimeUs, flags);
+      m_codec->queueInputBuffer(index, offset, demux_pkt.iSize, presentationTimeUs, flags);
       // clear any jni exceptions, jni gets upset if we do not.
       if (xbmc_jnienv()->ExceptionCheck())
       {
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode ExceptionCheck");
         xbmc_jnienv()->ExceptionClear();
       }
-
-      // Free saved buffer it there was one
-      if (m_demux_pkt.pData)
-      {
-        free(m_demux_pkt.pData);
-        memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
-      }
-    }
-    else
-    {
-      // We couldn't get an input buffer. Save the packet for next iteration, if it wasn't already
-      if (!m_demux_pkt.pData)
-      {
-        m_demux_pkt.dts = dts;
-        m_demux_pkt.pts = pts;
-        m_demux_pkt.iSize = iSize;
-        m_demux_pkt.pData = (uint8_t*)malloc(iSize);
-        memcpy(m_demux_pkt.pData, pData, iSize);
-      }
-
-      rtn &= ~VC_BUFFER;
     }
   }
+
+  // we must return VC_BUFFER and/or VC_PICTURE,
+  // default to VC_BUFFER.
+  int rtn = VC_BUFFER;
+  if (gotPicture)
+  {
+    rtn |= VC_PICTURE;
+    if (m_demux.size() > 25)
+      rtn &= ~VC_BUFFER;
+  }
+/*
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Decode, "
+    "rtn(%d), m_demux.size(%d)", rtn, m_demux.size());
+*/
 
   return rtn;
 }
@@ -838,10 +825,11 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     return;
 
   // dump any pending demux packets
-  if (m_demux_pkt.pData)
+  while (!m_demux.empty())
   {
-    free(m_demux_pkt.pData);
-    memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
+    amc_demux &demux_pkt = m_demux.front();
+    free(demux_pkt.pData);
+    m_demux.pop();
   }
 
   if (m_codec)
@@ -894,7 +882,10 @@ void CDVDVideoCodecAndroidMediaCodec::SetDropState(bool bDrop)
 {
   m_drop = bDrop;
   if (m_drop)
+  {
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::SetDropState");
     m_videobuffer.iFlags |=  DVP_FLAG_DROPPED;
+  }
   else
     m_videobuffer.iFlags &= ~DVP_FLAG_DROPPED;
 }
@@ -924,7 +915,7 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
   if (m_render_sw)
     return;
 
-  for (size_t i = 0; i < m_inflight.size(); i++)
+  for (size_t i = 0; i < m_inflight.size(); ++i)
   {
     m_inflight[i]->Validate(false);
     m_inflight[i]->Release();
@@ -1020,7 +1011,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 {
   int rtn = 0;
 
-  int64_t timeout_us = 10000;
+  int64_t timeout_us = 50000;
   CJNIMediaCodecBufferInfo bufferInfo;
   int index = m_codec->dequeueOutputBuffer(bufferInfo, timeout_us);
   if (xbmc_jnienv()->ExceptionCheck())
@@ -1103,7 +1094,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         else if (m_videobuffer.format == RENDER_FMT_YUV420P)
           loop_end = 3;
 
-        for (int i = 0; i < loop_end; i++)
+        for (int i = 0; i < loop_end; ++i)
         {
           uint8_t *src   = src_ptr + m_src_offset[i];
           int src_stride = m_src_stride[i];
@@ -1130,9 +1121,9 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       }
     }
 
-    int64_t pts= bufferInfo.presentationTimeUs();
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
+    int64_t pts = bufferInfo.presentationTimeUs();
     if (pts != AV_NOPTS_VALUE)
       m_videobuffer.pts = pts;
 
@@ -1145,6 +1136,11 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       xbmc_jnienv()->ExceptionClear();
 
     rtn = 1;
+  }
+  else if (index == CJNIMediaCodec::INFO_OUTPUT_BUFFERS_CHANGED)
+  {
+    // eat this, means nothing as we are using new API for buffers
+    rtn = -1;
   }
   else if (index == CJNIMediaCodec::INFO_OUTPUT_FORMAT_CHANGED)
   {
@@ -1265,7 +1261,7 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
     }
 
     // default picture format to none
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; ++i)
       m_src_offset[i] = m_src_stride[i] = 0;
     // delete any existing buffers
     for (int i = 0; i < 4; i++)
