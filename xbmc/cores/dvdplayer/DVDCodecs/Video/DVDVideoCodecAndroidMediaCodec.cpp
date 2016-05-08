@@ -1023,19 +1023,6 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   }
   if (index >= 0)
   {
-    if (m_drop)
-    {
-      m_codec->releaseOutputBuffer(index, false);
-      if (xbmc_jnienv()->ExceptionCheck())
-      {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture ExceptionCheck: releaseOutputBuffer");
-        xbmc_jnienv()->ExceptionDescribe();
-        xbmc_jnienv()->ExceptionClear();
-        return 0;
-      }
-      return 0;
-    }
-
     int flags = bufferInfo.flags();
     /*
     if (flags & CJNIMediaCodec::BUFFER_FLAG_SYNC_FRAME)
