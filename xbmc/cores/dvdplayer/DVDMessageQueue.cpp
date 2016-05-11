@@ -256,7 +256,7 @@ int CDVDMessageQueue::GetLevel() const
 
     if (count > 10)
     {
-      CLog::Log(LOGNOTICE, "CDVDMessageQueue::GetLevel() - can't determine level. demux packet count %d", count);
+      //CLog::Log(LOGNOTICE, "CDVDMessageQueue::GetLevel() - can't determine level. demux packet count %d", count);
       return 1;
     }
   }
