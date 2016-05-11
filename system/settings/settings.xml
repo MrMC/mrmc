@@ -564,7 +564,7 @@
           <level>2</level>
           <control type="button" format="action" />
         </setting>
-        <setting id="thumbnails.cleanup" type="action" label="1451" help="37046">
+        <setting id="thumbnails.cleanup" type="action" label="1451" help="37049">
           <level>2</level>
           <control type="button" format="action" />
         </setting>
