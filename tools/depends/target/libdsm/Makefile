@@ -14,6 +14,7 @@ CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
         --enable-shared \
         --disable-static \
+        --disable-programs \
         --disable-debug
 
 LIBDYLIB=$(PLATFORM)/.libs/libdsm.dylib
