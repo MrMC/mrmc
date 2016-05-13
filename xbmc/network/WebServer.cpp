@@ -37,6 +37,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "utils/Base64.h"
+#include "utils/FileUtils.h"
 #include "utils/log.h"
 #include "utils/Mime.h"
 #include "utils/FileUtils.h"
