@@ -32,7 +32,8 @@ public:
   COpenSubtitlesSearch();
   virtual ~COpenSubtitlesSearch(void);
   virtual bool SubtitleSearch(const std::string &path,const std::string strLanguages,
-                      const std::string preferredLanguage,CFileItemList &subtitlesList);
+                              const std::string preferredLanguage,CFileItemList &subtitlesList,
+                              const std::string &strSearch);
   virtual std::string ModuleName();
   virtual void ChangeUserPass();
   virtual bool Download(const CFileItem *subItem,std::vector<std::string> &items);

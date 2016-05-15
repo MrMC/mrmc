@@ -132,7 +132,8 @@ bool COpenSubtitlesSearch::LogIn()
 
 bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::string strLanguages,
                                           const std::string preferredLanguage,
-                                          CFileItemList &subtitlesList)
+                                          CFileItemList &subtitlesList,
+                                          const std::string &strSearch)
 {
   if (LogIn())
   {
@@ -164,8 +165,11 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     CVideoInfoTag* tag = g_application.CurrentFileItem().GetVideoInfoTag();
     
     std::string searchString;
-    
-    if (tag->m_iEpisode > -1)
+    if (!strSearch.empty())
+    {
+      searchString = strSearch;
+    }
+    else if (tag->m_iEpisode > -1)
     {
       searchString = StringUtils::Format("%s S%.2dE%.2d",tag->m_strShowTitle.c_str()
                                                         ,tag->m_iSeason

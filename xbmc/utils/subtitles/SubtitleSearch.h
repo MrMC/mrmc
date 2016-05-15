@@ -32,7 +32,8 @@ public:
   CSubtitleSearch(){}
   virtual ~CSubtitleSearch() {}
   virtual bool SubtitleSearch(const std::string &path,const std::string strLanguages,
-                              const std::string preferredLanguage,CFileItemList &subtitlesList) { return false; }
+                              const std::string preferredLanguage,CFileItemList &subtitlesList,
+                              const std::string &strSearch) { return false; }
   virtual std::string ModuleName() { return ""; }
   virtual bool Download(const CFileItem *subItem,std::vector<std::string> &items) { return false; }
   virtual void ChangeUserPass() {}

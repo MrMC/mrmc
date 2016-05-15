@@ -65,11 +65,12 @@ using namespace XFILE;
 class CSubtitlesJob: public CJob
 {
 public:
-  CSubtitlesJob(CSubtitleSearch *currentService, const std::string &strPlayingFile,const std::string &strLanguages,const std::string &preferredLanguage)
+  CSubtitlesJob(CSubtitleSearch *currentService, const std::string &strPlayingFile,const std::string &strLanguages,const std::string &preferredLanguage, const std::string &strSearch)
   : m_currentService(currentService),
     m_language(strLanguages),
     m_strPlayingFile(strPlayingFile),
     m_strPrefLanguage(preferredLanguage),
+    m_strSearch(strSearch),
     m_search(true)
   {
     m_subtitles = new CFileItemList;
@@ -88,7 +89,7 @@ public:
   virtual bool DoWork()
   {
     if (!m_strPlayingFile.empty())
-      m_currentService->SubtitleSearch(m_strPlayingFile,m_language,m_strPrefLanguage,*m_subtitles);
+      m_currentService->SubtitleSearch(m_strPlayingFile,m_language,m_strPrefLanguage,*m_subtitles,m_strSearch);
     else
       m_currentService->Download(m_subItem,m_items);
     return true;
@@ -116,6 +117,7 @@ private:
   std::string    m_language;
   std::string    m_strPlayingFile;
   std::string    m_strPrefLanguage;
+  std::string    m_strSearch;
   CFileItem *    m_subItem;
   std::vector<std::string> m_items;
   bool           m_search;
@@ -305,7 +307,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   std::string strPlayingFile = g_application.CurrentFileItem().GetPath();
   
   
-  AddJob(new CSubtitlesJob(m_currentService,strPlayingFile,strLanguages,preferredLanguage));
+  AddJob(new CSubtitlesJob(m_currentService,strPlayingFile,strLanguages,preferredLanguage,search));
 
 }
 

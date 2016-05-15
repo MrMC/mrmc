@@ -57,8 +57,9 @@ bool CPodnapisiSearch::LogIn()
 }
 
 bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string strLanguages,
-                                          const std::string preferredLanguage,
-                                          CFileItemList &subtitlesList)
+                                      const std::string preferredLanguage,
+                                      CFileItemList &subtitlesList,
+                                      const std::string &strSearch)
 {
   std::string strSize;
   std::string strHash;
@@ -84,7 +85,21 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
   
   std::string searchUrl = "https://www.podnapisi.net/ppodnapisi/search?sXML=1&sL=%s&sK=%s&sY=%i&sTS=%i&sTE=%i&sMH=%s";
   
-  if (tag->m_iEpisode > -1)
+  if (!strSearch.empty())
+  {
+    std::string strTitleAndYear;
+    std::string strTitle;
+    std::string strYear;
+    CUtil::CleanString(strSearch, strTitle, strTitleAndYear, strYear, false);
+    searchString = StringUtils::Format(searchUrl.c_str() ,strLang.c_str()
+                                       ,strTitle.c_str()
+                                       ,atoi(strYear.c_str())
+                                       ,0
+                                       ,0
+                                       ,strHash.c_str()
+                                       );
+  }
+  else if (tag->m_iEpisode > -1)
   {
     searchString = StringUtils::Format(searchUrl.c_str() ,strLang.c_str()
                                                          ,tag->m_strShowTitle.c_str()
