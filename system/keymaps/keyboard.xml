@@ -332,7 +332,7 @@
       <pageup>SkipNext</pageup>
       <pagedown>SkipPrevious</pagedown>
       <menu>CodecInfo</menu>
-      <c>CodecInfo</c>
+      <c>Playlist</c>
       <leftwindows>CodecInfo</leftwindows>
     </keyboard>
   </FullscreenVideo>
