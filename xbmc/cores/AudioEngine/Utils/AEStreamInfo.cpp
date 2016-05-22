@@ -76,6 +76,8 @@ CAEStreamParser::CAEStreamParser() :
 
 CAEStreamInfo::CAEStreamInfo() :
   m_type(STREAM_TYPE_NULL),
+  m_sampleRate(0),
+  m_channels(0),
   m_dataIsLE(true),
   m_dtsPeriod(0),
   m_repeat(0),
