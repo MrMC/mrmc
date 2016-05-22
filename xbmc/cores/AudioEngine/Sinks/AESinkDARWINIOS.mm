@@ -30,10 +30,8 @@
 #include <AudioToolbox/AudioToolbox.h>
 #import  <AVFoundation/AVFoundation.h>
 
-#define CA_MAX_CHANNELS 8
-static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
-  AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_SL , AE_CH_SR ,
-  AE_CH_NULL
+static enum AEChannel CAChannelMap[9] = {
+  AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_SL , AE_CH_SR , AE_CH_NULL
 };
 
 static std::string getAudioRoute()
@@ -555,11 +553,10 @@ static void EnumerateDevices(AEDeviceInfoList &list)
 
   // add channel info
   UInt32 maxChannels = [[AVAudioSession sharedInstance] maximumOutputNumberOfChannels];
-  for (UInt32 chan = 0; chan < maxChannels; ++chan)
-  {
-    if (!device.m_channels.HasChannel(CAChannelMap[chan]))
-      device.m_channels += CAChannelMap[chan];
-  }
+  if (maxChannels > 6)
+    device.m_channels = AE_CH_LAYOUT_7_1;
+  else
+    device.m_channels = AE_CH_LAYOUT_5_1;
 
   CLog::Log(LOGDEBUG, "EnumerateDevices:Device(%s)" , device.m_deviceName.c_str());
 
@@ -665,12 +662,6 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
       break;
   }
 
-  // propagate the channel info, AE seems to get this right
-  CAEChannelInfo channel_info;
-  for (size_t chan = 0; chan < format.m_channelLayout.Count(); ++chan)
-    channel_info += CAChannelMap[chan];
-  format.m_channelLayout = channel_info;
-  
   if (passthrough)
   {
     // passthrough is special, PCM encapsulated IEC61937 packets.
@@ -697,6 +688,12 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     audioFormat.mBytesPerFrame   = audioFormat.mChannelsPerFrame * (audioFormat.mBitsPerChannel >> 3);
     audioFormat.mBytesPerPacket  = audioFormat.mBytesPerFrame * audioFormat.mFramesPerPacket;
     audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsPacked;
+
+    // propagate the channel info, AE seems to get this right
+    CAEChannelInfo channel_info;
+    for (size_t chan = 0; chan < format.m_channelLayout.Count(); ++chan)
+      channel_info += CAChannelMap[chan];
+    format.m_channelLayout = channel_info;
   }
 
   std::string formatString;
@@ -711,10 +708,14 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   switch (format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
+      if (!format.m_streamInfo.m_ac3FrameSize)
+        format.m_streamInfo.m_ac3FrameSize = 1536;
       format.m_frames = format.m_streamInfo.m_ac3FrameSize;
       buffer_size = format.m_frames * 8;
     break;
     case CAEStreamInfo::STREAM_TYPE_EAC3:
+      if (!format.m_streamInfo.m_ac3FrameSize)
+        format.m_streamInfo.m_ac3FrameSize = 1536;
       format.m_frames = format.m_streamInfo.m_ac3FrameSize;
       buffer_size = format.m_frames * 8;
     break;
