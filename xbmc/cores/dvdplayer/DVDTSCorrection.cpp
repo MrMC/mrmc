@@ -91,7 +91,7 @@ void CPullupCorrection::Add(double pts)
     {
       m_VFRCounter++;
       m_lastPattern = m_pattern;
-      CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost on diff %f, number of losses %i", GetDiff(0), m_VFRCounter);
+      //CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost on diff %f", GetDiff(0));
       Flush();
     }
 
@@ -120,9 +120,9 @@ void CPullupCorrection::Add(double pts)
         m_patternCounter++;
       }
 
-      double frameduration = CalcFrameDuration();
-      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s, frameduration: %f",
-                (int)pattern.size(), GetPatternStr().c_str(), frameduration);
+      CalcFrameDuration();
+      //double frameduration = CalcFrameDuration();
+      //CLog::Log(LOGDEBUG, "CPullupCorrection: detected frameduration: %f", frameduration);
     }
   }
 
