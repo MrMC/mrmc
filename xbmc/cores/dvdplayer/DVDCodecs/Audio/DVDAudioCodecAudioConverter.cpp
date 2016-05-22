@@ -31,7 +31,7 @@ static const AEChannel DolbyChannels[5][9] = {
 { AE_CH_FL , AE_CH_FR , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL},
-{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_SL , AE_CH_SR , AE_CH_LFE, AE_CH_NULL}
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL}
 };
 
 typedef struct AudioBufferIO
@@ -125,7 +125,7 @@ static OSStatus converterCallback(AudioConverterRef inAudioConverter,
   }
 
 #ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "%s - ioNumberDataPackets(%d)", __FUNCTION__, *ioNumberDataPackets);
+  CLog::Log(LOGDEBUG, "%s - ioNumberDataPackets(%d)", __PRETTY_FUNCTION__, *ioNumberDataPackets);
 #endif
 
   AudioBufferIO *buff = abuff->dequeue();
@@ -153,7 +153,7 @@ static OSStatus converterCallback(AudioConverterRef inAudioConverter,
 
 #pragma mark - CDVDAudioCodecAudioConverter
 CDVDAudioCodecAudioConverter::CDVDAudioCodecAudioConverter()
-: m_formatName("darwin native")
+: m_formatName("dac")
 , m_codec(nullptr)
 , m_iBuffer(nullptr)
 , m_oBuffer(nullptr)
@@ -194,6 +194,14 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
   // m_format is output format
   m_format.m_dataFormat = AE_FMT_FLOAT;
   m_format.m_sampleRate = 48000;
+
+  char buf[1024] = {0};
+  int buf_size = 1024;
+  int nb_channels = m_hints.channels;
+  uint64_t channel_layout = m_hints.channellayout;
+  av_get_channel_layout_string(buf, buf_size, nb_channels, channel_layout);
+  CLog::Log(LOGDEBUG, "%s - channel_layout(%s)", __PRETTY_FUNCTION__, buf);
+
   int index;
   switch(m_hints.channels)
   {
@@ -218,7 +226,7 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
 
   AudioStreamBasicDescription iformat = {0};
   iformat.mSampleRate = hints.samplerate;
-  iformat.mFormatID = m_hints.codec == kAudioFormatAC3 ? kAudioFormatAC3: kAudioFormatEnhancedAC3;
+  iformat.mFormatID = m_hints.codec == AV_CODEC_ID_AC3 ? kAudioFormatAC3: kAudioFormatEnhancedAC3;
   // mFramesPerPacket must be 768 for all ac3/eac3 flavors
   iformat.mFramesPerPacket = 768;
   iformat.mChannelsPerFrame = m_hints.channels;
@@ -263,7 +271,7 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
     return 0;
 
 #ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "%s - pData(%p), iSize(%d)", __FUNCTION__, pData, iSize);
+  CLog::Log(LOGDEBUG, "%s - pData(%p), iSize(%d)", __PRETTY_FUNCTION__, pData, iSize);
 #endif
   if (!m_oBuffer)
   {
@@ -325,7 +333,7 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
   if (ioOutputDataPacketsTotal > 0)
   {
 #ifdef DEBUG_VERBOSE
-    CLog::Log(LOGDEBUG, "%s - loops(%d) ioOutputDataPacketsTotal(%d)", __FUNCTION__, loops, ioOutputDataPacketsTotal);
+    CLog::Log(LOGDEBUG, "%s - loops(%d) ioOutputDataPacketsTotal(%d)", __PRETTY_FUNCTION__, loops, ioOutputDataPacketsTotal);
 #endif
     m_gotFrame = true;
   }
