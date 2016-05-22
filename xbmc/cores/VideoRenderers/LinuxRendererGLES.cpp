@@ -3105,7 +3105,7 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
      m_format == RENDER_FMT_EGLIMG ||
      m_format == RENDER_FMT_MEDIACODEC ||
     m_format == RENDER_FMT_MEDIACODECSURFACE)
-    info.optimal_buffer_size = 6;
+    info.optimal_buffer_size = 4;
   else if(m_format == RENDER_FMT_IMXMAP)
   {
     // Let the codec control the buffer size
