@@ -187,7 +187,11 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
     m_fForcedAspectRatio = 0.0;
 
   if (m_pVideoCodec)
+  {
+    m_pVideoCodec->ClearPicture(&m_picture);
+    m_pVideoCodec->Dispose();
     SAFE_DELETE(m_pVideoCodec);
+  }
 
   m_pVideoCodec = codec;
   m_hints   = hint;
@@ -219,6 +223,7 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
   CLog::Log(LOGNOTICE, "deleting video codec");
   if (m_pVideoCodec)
   {
+    m_pVideoCodec->ClearPicture(&m_picture);
     m_pVideoCodec->Dispose();
     SAFE_DELETE(m_pVideoCodec);
   }
