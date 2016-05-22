@@ -451,6 +451,7 @@ void CXBMCApp::run()
   android_printf(" => running MCRuntimeLib...");
   try
   {
+    nice(10);
     status = MCRuntimeLib_Run(true);
     android_printf(" => App_Run finished with %d", status);
   }
