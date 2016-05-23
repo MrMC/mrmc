@@ -38,6 +38,7 @@
   #import <sys/sysctl.h>
   #if defined(TARGET_DARWIN_TVOS)
     #import "platform/darwin/tvos/MainController.h"
+  #import <AVFoundation/AVFoundation.h>
   #endif
 #else
   #import <Cocoa/Cocoa.h>
@@ -846,6 +847,19 @@ bool CDarwinUtils::OpenAppWithOpenURL(const std::string& path)
 #endif
 
   return ret;
+}
+
+std::string CDarwinUtils::GetAudioRoute()
+{
+  std::string route;
+#if defined(TARGET_DARWIN_IOS)
+  AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
+  AVAudioSessionRouteDescription *currentRoute = [myAudioSession currentRoute];
+  NSString *output = [[currentRoute.outputs objectAtIndex:0] portType];
+  if (output)
+    route = [output UTF8String];
+#endif
+  return route;
 }
 
 #endif
