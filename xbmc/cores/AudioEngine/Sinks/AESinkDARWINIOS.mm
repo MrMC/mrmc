@@ -22,6 +22,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
+#include "platform/darwin/DarwinUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/Condition.h"
@@ -34,22 +35,10 @@ static enum AEChannel CAChannelMap[9] = {
   AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_SL , AE_CH_SR , AE_CH_NULL
 };
 
-static std::string getAudioRoute()
-{
-  std::string route;
-  AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
-  AVAudioSessionRouteDescription *currentRoute = [myAudioSession currentRoute];
-  NSString *output = [[currentRoute.outputs objectAtIndex:0] portType];
-  if (output)
-    route = [output UTF8String];
-
-  return route;
-}
-
 static void dumpAVAudioSessionProperties()
 {
-  std::string route = getAudioRoute();
-  CLog::Log(LOGNOTICE, "%s audio route = %s", __PRETTY_FUNCTION__, route.empty() ? "NONE" : getAudioRoute().c_str());
+  std::string route = CDarwinUtils::GetAudioRoute();
+  CLog::Log(LOGNOTICE, "%s audio route = %s", __PRETTY_FUNCTION__, route.empty() ? "NONE" : route.c_str());
 
   AVAudioSession *mySession = [AVAudioSession sharedInstance];
 
@@ -579,7 +568,7 @@ CAESinkDARWINIOS::~CAESinkDARWINIOS()
 
 bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
 {
-  std::string route = getAudioRoute();
+  std::string route = CDarwinUtils::GetAudioRoute();
   // no route, no audio. bail and let AE kick back to NULL device
   if (route.empty())
     return false;
