@@ -1423,7 +1423,8 @@ MainController *g_xbmcController;
 {
   CCocoaAutoPool outerpool;
   [[NSThread currentThread] setName:@"MCRuntimeLib"];
-  
+  [[NSThread currentThread] setThreadPriority:0.75];
+
   // signal the thread is alive
   NSConditionLock* myLock = arg;
   [myLock lock];
