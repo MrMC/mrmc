@@ -31,6 +31,9 @@
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"
 #endif
+#ifdef TARGET_DARWIN_IOS
+#include "platform/darwin/DarwinUtils.h"
+#endif
 
 #include <sstream>
 #include <iomanip>
@@ -104,6 +107,14 @@ bool CDVDPlayerAudio::OpenStream(CDVDStreamInfo &hints)
   // exceptions for passthrough
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
     allowpassthrough = false;
+
+#ifdef TARGET_DARWIN_IOS
+  // check for changes from/to hdmi -> headphones/bluetooth devices
+  // AE can dynamic adapt but the passthrough setting will still bork us
+  if (CDarwinUtils::GetAudioRoute().find("HDMI") == std::string::npos)
+    allowpassthrough = false;
+#endif
+
   //if (hints.realtime)
   //  allowpassthrough = false;
 
