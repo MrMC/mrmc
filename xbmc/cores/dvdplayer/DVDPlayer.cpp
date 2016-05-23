@@ -2916,7 +2916,7 @@ void CDVDPlayer::SetCaching(ECacheState state)
       state_str = "CACHESTATE_FLUSH";
       break;
   }
-  CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - caching state %s", state_str.c_str());
+  CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - %s", state_str.c_str());
 
   if (state == CACHESTATE_FULL ||
       state == CACHESTATE_INIT)
