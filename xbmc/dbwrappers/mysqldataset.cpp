@@ -1517,7 +1517,7 @@ int MysqlDataset::exec(const std::string &sql) {
       qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
 
-  CLog::Log(LOGDEBUG,"Mysql execute: %s", qry.c_str());
+  //CLog::Log(LOGDEBUG,"Mysql execute: %s", qry.c_str());
 
   if (db->setErr( static_cast<MysqlDatabase *>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) != MYSQL_OK)
   {
