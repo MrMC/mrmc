@@ -125,7 +125,7 @@ static OSStatus converterCallback(AudioConverterRef inAudioConverter,
   }
 
 #ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "%s - ioNumberDataPackets(%d)", __PRETTY_FUNCTION__, *ioNumberDataPackets);
+  CLog::Log(LOGDEBUG, "%s - ioNumberDataPackets(%d)", __FUNCTION__, *ioNumberDataPackets);
 #endif
 
   AudioBufferIO *buff = abuff->dequeue();
@@ -200,7 +200,7 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
   int nb_channels = m_hints.channels;
   uint64_t channel_layout = m_hints.channellayout;
   av_get_channel_layout_string(buf, buf_size, nb_channels, channel_layout);
-  CLog::Log(LOGDEBUG, "%s - channel_layout(%s)", __PRETTY_FUNCTION__, buf);
+  CLog::Log(LOGDEBUG, "FactoryCodec - Audio: dac - channel_layout(%s)", buf);
 
   int index;
   switch(m_hints.channels)
@@ -271,7 +271,7 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
     return 0;
 
 #ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "%s - pData(%p), iSize(%d)", __PRETTY_FUNCTION__, pData, iSize);
+  CLog::Log(LOGDEBUG, "%s - pData(%p), iSize(%d)", __FUNCTION__, pData, iSize);
 #endif
   if (!m_oBuffer)
   {
@@ -333,7 +333,7 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
   if (ioOutputDataPacketsTotal > 0)
   {
 #ifdef DEBUG_VERBOSE
-    CLog::Log(LOGDEBUG, "%s - loops(%d) ioOutputDataPacketsTotal(%d)", __PRETTY_FUNCTION__, loops, ioOutputDataPacketsTotal);
+    CLog::Log(LOGDEBUG, "%s - loops(%d) ioOutputDataPacketsTotal(%d)", __FUNCTION__, loops, ioOutputDataPacketsTotal);
 #endif
     m_gotFrame = true;
   }
