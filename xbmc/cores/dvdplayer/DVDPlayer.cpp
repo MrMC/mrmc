@@ -2836,7 +2836,26 @@ void CDVDPlayer::HandleMessages()
           m_CurrentVideo.cachetotal = msg.cachetotal;
           m_CurrentVideo.starttime = msg.timestamp;
         }
-        CLog::Log(LOGDEBUG, "CDVDPlayer::HandleMessages - player started %d", msg.player);
+        std::string player_str;
+        switch(msg.player)
+        {
+          case DVDPLAYER_AUDIO:
+            player_str = "DVDPLAYER_AUDIO";
+            break;
+          case DVDPLAYER_VIDEO:
+            player_str = "DVDPLAYER_VIDEO";
+            break;
+          case DVDPLAYER_SUBTITLE:
+            player_str = "DVDPLAYER_SUBTITLE";
+            break;
+          case DVDPLAYER_TELETEXT:
+            player_str = "DVDPLAYER_TELETEXT";
+            break;
+          case DVDPLAYER_RDS:
+            player_str = "DVDPLAYER_RDS";
+            break;
+        }
+        CLog::Log(LOGDEBUG, "CDVDPlayer::HandleMessages - player started %s", player_str.c_str());
       }
       else if (pMsg->IsType(CDVDMsg::SUBTITLE_ADDFILE))
       {
@@ -2878,7 +2897,27 @@ void CDVDPlayer::SetCaching(ECacheState state)
   if(m_caching == state)
     return;
 
-  CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - caching state %d", state);
+  std::string state_str;
+  switch(state)
+  {
+    case CACHESTATE_DONE:
+      state_str = "CACHESTATE_DONE";
+      break;
+    case CACHESTATE_FULL:
+      state_str = "CACHESTATE_FULL";
+      break;
+    case CACHESTATE_INIT:
+      state_str = "CACHESTATE_INIT";
+      break;
+    case CACHESTATE_PLAY:
+      state_str = "CACHESTATE_PLAY";
+      break;
+    case CACHESTATE_FLUSH:
+      state_str = "CACHESTATE_FLUSH";
+      break;
+  }
+  CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - caching state %s", state_str.c_str());
+
   if (state == CACHESTATE_FULL ||
       state == CACHESTATE_INIT)
   {
