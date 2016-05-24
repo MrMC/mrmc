@@ -25,6 +25,28 @@
 
 //#define DEBUG_VERBOSE 1
 
+/*
+ac3_channel_l = 1
+ac3_channel_r = 2
+ac3_channel_c = 4
+ac3_channel_lfe = 8
+ac3_channel_ls = 16
+ac3_channel_rs = 32
+ac3_channel_lsb = 512
+ac3_channel_rsb = 1024
+
+channel_layout:
+  1_0 = 4    (0x04)
+  2_0 = 3    (0x03)
+  2_1 = 11   (0x0B)
+  3_0 = 7    (0x07)
+  3_1 = 15   (0x0F)
+  5_0 = 55   (0x37)
+  5_1 = 63   (0x3F)
+  7_0 = 1591 (0x637)
+  7_1 = 1599 (0x63F)
+*/
+
 #pragma mark - statics/structs/etc
 static const AEChannel DolbyChannels[5][9] = {
 { AE_CH_FC , AE_CH_NULL },
