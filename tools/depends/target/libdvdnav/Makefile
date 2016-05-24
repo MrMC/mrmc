@@ -15,10 +15,7 @@ else
   ARCHIVE=$(LIBNAME)-$(GITREV).tar.gz
 endif
 
-EXTRA_CFLAGS = -D_XBMC -DHAVE_DVDCSS_DVDCSS_H
-ifeq ($(OS),android)
-  EXTRA_CFLAGS += -D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64
-endif
+EXTRA_CFLAGS = -g -D_XBMC -DHAVE_DVDCSS_DVDCSS_H
 ifeq ($(NATIVE_OS),osx)
   EXTRA_CFLAGS += -D__DARWIN__
 endif
@@ -51,6 +48,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 < ../expose_dvd_defs.patch
+	cd $(PLATFORM); patch -p1 < ../revert-droid-off_t-mangling.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 

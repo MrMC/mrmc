@@ -17,9 +17,6 @@ endif
 
 EXTRA_CONFIG = --with-libdvdcss
 EXTRA_CFLAGS = -D_XBMC -DHAVE_DVDCSS_DVDCSS_H
-ifeq ($(OS),android)
-  EXTRA_CFLAGS +=  -D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64
-endif
 ifeq ($(NATIVE_OS),osx)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
