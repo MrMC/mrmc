@@ -48,11 +48,39 @@ channel_layout:
 */
 
 #pragma mark - statics/structs/etc
-static const AEChannel DolbyChannels[5][9] = {
+enum DDLayout {
+  DDLayout_1_0 = 4,
+  DDLayout_2_0 = 3,
+  DDLayout_2_1 = 11,
+  DDLayout_3_0 = 7,
+  DDLayout_3_1 = 15,
+  DDLayout_5_0 = 55,
+  DDLayout_5_1 = 63,
+  DDLayout_7_0 = 1591,
+  DDLayout_7_1 = 1599,
+};
+
+enum DDIndex {
+  DDIndex_1_0 = 0,
+  DDIndex_2_0 = 1,
+  DDIndex_2_1 = 2,
+  DDIndex_3_0 = 3,
+  DDIndex_3_1 = 4,
+  DDIndex_5_0 = 5,
+  DDIndex_5_1 = 6,
+  DDIndex_7_0 = 7,
+  DDIndex_7_1 = 8,
+};
+
+static const AEChannel DolbyChannels[9][9] = {
 { AE_CH_FC , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FR , AE_CH_NULL },
+{ AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_NULL },
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_LFE, AE_CH_NULL },
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_NULL},
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL},
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_NULL},
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL}
 };
 
@@ -219,28 +247,38 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
 
   char buf[1024] = {0};
   int buf_size = 1024;
-  int nb_channels = m_hints.channels;
-  uint64_t channel_layout = m_hints.channellayout;
-  av_get_channel_layout_string(buf, buf_size, nb_channels, channel_layout);
+  av_get_channel_layout_string(buf, buf_size, m_hints.channels, m_hints.channellayout);
   CLog::Log(LOGDEBUG, "FactoryCodec - Audio: dac - channel_layout(%s)", buf);
 
-  int index;
-  switch(m_hints.channels)
+  DDIndex index;
+  switch(m_hints.channellayout)
   {
-    case 1:
-      index = 0;
+    case DDLayout_1_0:
+      index = DDIndex_1_0;
     default:
-    case 2:
-      index = 1;
+    case DDLayout_2_0:
+      index = DDIndex_2_0;
       break;
-    case 3:
-      index = 2;
+    case DDLayout_2_1:
+      index = DDIndex_2_1;
       break;
-    case 6:
-      index = 3;
+    case DDLayout_3_0:
+      index = DDIndex_3_0;
       break;
-    case 8:
-      index = 4;
+    case DDLayout_3_1:
+      index = DDIndex_3_1;
+      break;
+    case DDLayout_5_0:
+      index = DDIndex_5_0;
+      break;
+    case DDLayout_5_1:
+      index = DDIndex_5_1;
+      break;
+    case DDLayout_7_0:
+      index = DDIndex_7_0;
+      break;
+    case DDLayout_7_1:
+      index = DDIndex_7_1;
       break;
   }
   for (int i = 0; i < m_hints.channels; ++i)
