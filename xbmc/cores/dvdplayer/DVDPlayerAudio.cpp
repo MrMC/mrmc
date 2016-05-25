@@ -499,6 +499,15 @@ void CDVDPlayerAudio::Process()
               msg.cachetime = cachetime;
               msg.timestamp = audioframe.hasTimestamp ? audioframe.pts : DVD_NOPTS_VALUE;
               m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
+
+              if (consumed < pPacket->iSize)
+              {
+                pPacket->iSize -= consumed;
+                memmove(pPacket->pData, pPacket->pData + consumed, pPacket->iSize);
+                m_messageQueue.Put(pMsg, 0, false);
+                pMsg->Acquire();
+                break;
+              }
             }
           }
         }
