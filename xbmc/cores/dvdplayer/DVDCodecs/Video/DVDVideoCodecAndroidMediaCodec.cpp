@@ -29,6 +29,7 @@
 
 #include "Application.h"
 #include "cores/dvdplayer/DVDClock.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -174,13 +175,16 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
 , m_codec(codec)
 , m_surfacetexture(surfacetexture)
 , m_frameready(frameready)
-, m_scaleX(1.0)
-, m_scaleY(1.0)
 {
   // paranoid checks
   assert(m_index >= 0);
   assert(m_codec != NULL);
 
+  // default display width/height
+  m_displayWidth = CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth;
+  m_displayHeight = CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight;
+
+  // now find the real display width/height
   CJNIWindow window = CXBMCApp::getWindow();
   if (window)
   {
@@ -190,9 +194,12 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
       CJNIDisplay display = view.getDisplay();
       if (display)
       {
-        CRect gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
-        m_scaleX = (double)display.getWidth() / gui.Width();
-        m_scaleY = (double)display.getHeight() / gui.Height();
+        CJNIDisplayMode mode = display.getMode();
+        if (mode)
+        {
+          m_displayWidth = mode.getPhysicalWidth();
+          m_displayHeight = mode.getPhysicalHeight();
+        }
       }
     }
   }
@@ -327,12 +334,23 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
   if (DestRect != cur_rect)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "RenderUpdate: %f+%f-%fx%f  scale(%fx%f)", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height(), m_scaleX, m_scaleY);
+    CRect SrcRect, DestRect, ViewRect;
+    g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect);
 
-    CXBMCApp::get()->setVideoViewSurfaceRect(DestRect.x1 * m_scaleX, DestRect.y1 * m_scaleY, DestRect.x2 * m_scaleX, DestRect.y2 * m_scaleY);
+    CRect ScreenRect(0, 0, m_displayWidth, m_displayHeight);
+    CRect MappedRect = DestRect;
+    MappedRect.MapRect(ViewRect, ScreenRect);
+
+    CXBMCApp::get()->setVideoViewSurfaceRect(MappedRect.x1, MappedRect.y1, MappedRect.x2, MappedRect.y2);
     cur_rect = DestRect;
-    
+
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    {
+      CLog::Log(LOGDEBUG, "RenderUpdate: display(%dx%d)", m_displayWidth, m_displayHeight);
+      CLog::Log(LOGDEBUG, "RenderUpdate: DestRect(%f,%f,%f,%f)", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height());
+      CLog::Log(LOGDEBUG, "RenderUpdate: MappedRect(%f,%f,%f,%f)", MappedRect.x1, MappedRect.y1, MappedRect.Width(), MappedRect.Height());
+    }
+
     // setVideoViewSurfaceRect is async, so skip rendering this frame
     ReleaseOutputBuffer(false);
   }

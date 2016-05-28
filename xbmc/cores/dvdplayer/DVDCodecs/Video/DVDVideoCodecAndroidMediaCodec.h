@@ -88,8 +88,8 @@ private:
   std::shared_ptr<CJNISurfaceTexture> m_surfacetexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameready;
 
-  double              m_scaleX;
-  double              m_scaleY;
+  int                 m_displayWidth;
+  int                 m_displayHeight;
 };
 
 class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec
