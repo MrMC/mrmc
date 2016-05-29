@@ -10,11 +10,14 @@
   </variable>
 
   <variable name="Overlay" description="Overlay image">
-    <value condition="Skin.HasSetting(Hide_Watched_Marks) + Skin.HasSetting(Hide_Unwatched_Marks)">-</value>
-    <value condition="Skin.HasSetting(Hide_Unwatched_Marks)">$INFO[ListItem.Overlay,overlay_watched/]</value>
-    <value condition="ListItem.IsResumable">$INFO[ListItem.Overlay,overlay_inprogress/]</value>
-    <value condition="Skin.HasSetting(Hide_Watched_Marks)">$INFO[ListItem.Overlay,overlay_unwatched/]</value>
-    <value condition="!IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
+    <value condition="!Skin.HasSetting(Hide_Unwatched_Marks) + !IsEmpty(ListItem.Overlay) + ListItem.IsResumable">OverlayInProgress.png</value>
+    <value condition="!Skin.HasSetting(Hide_Watched_Marks) + !IsEmpty(ListItem.Overlay) + StringCompare(ListItem.Overlay,OverlayWatched.png)">$INFO[ListItem.Overlay]</value>
+    <value condition="!Skin.HasSetting(Hide_Unwatched_Marks) + !IsEmpty(ListItem.Overlay) + !StringCompare(ListItem.Overlay,OverlayWatched.png) + Window.IsActive(MyPvrRecordings.xml)">OverlayUnwatched.png</value>
+    <value condition="!Skin.HasSetting(Hide_Unwatched_Marks) + !IsEmpty(ListItem.Overlay) + StringCompare(ListItem.Overlay,OverlayUnWatched.png)">$INFO[ListItem.Overlay]</value>
+    <value condition="!Skin.HasSetting(Hide_Unwatched_Marks) + ListItem.Property(Widgets) + ListItem.Property(InProgress)">OverlayInProgress.png</value>
+    <value condition="!Skin.HasSetting(Hide_Watched_Marks) + ListItem.Property(Widgets) + ListItem.Property(Watched)">OverlayWatched.png</value>
+    <value condition="!Skin.HasSetting(Hide_Unwatched_Marks) + ListItem.Property(Widgets) + !ListItem.Property(Watched)">OverlayUnwatched.png</value>
+    <value>-</value>
   </variable>
   <variable name="Banner" description="TV Banners">
     <value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
