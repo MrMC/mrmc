@@ -13,7 +13,7 @@
         <setting id="videoplayer.usestagefright" type="boolean" label="13436" help="36260">
           <requirement>HAVE_LIBSTAGEFRIGHTDECODER</requirement>
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <updates>
             <update type="change" />
           </updates>
@@ -22,7 +22,7 @@
         <setting id="videoplayer.usemediacodecsurface" type="boolean" label="13440" help="36544">
           <visible>HAS_MEDIACODEC</visible>
           <level>2</level>
-          <default>false</default>
+          <default>true</default>
           <updates>
             <update type="change" />
           </updates>
@@ -31,7 +31,7 @@
         <setting id="videoplayer.usemediacodec" type="boolean" label="13439" help="36544">
           <visible>HAS_MEDIACODEC</visible>
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <updates>
             <update type="change" />
           </updates>
