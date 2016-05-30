@@ -657,7 +657,7 @@ CDVDPlayer::~CDVDPlayer()
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  CLog::Log(LOGNOTICE, "VideoPlayer: Opening: %s", CURL::GetRedacted(file.GetPath()).c_str());
+  CLog::Log(LOGNOTICE, "CDVDPlayer::Opening: %s", CURL::GetRedacted(file.GetPath()).c_str());
 
   // if playing a file close it first
   // this has to be changed so we won't have to close it.
@@ -1932,10 +1932,10 @@ void CDVDPlayer::HandlePlaySpeed()
     {
       double clock = 0;
       if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
-        CLog::Log(LOGDEBUG, "VideoPlayer::Sync - Audio - pts: %f, cache: %f, totalcache: %f",
+        CLog::Log(LOGDEBUG, "CDVDPlayer::Sync - Audio - pts: %f, cache: %f, totalcache: %f",
                              m_CurrentAudio.starttime, m_CurrentAudio.cachetime, m_CurrentAudio.cachetotal);
       if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
-        CLog::Log(LOGDEBUG, "VideoPlayer::Sync - Video - pts: %f, cache: %f, totalcache: %f",
+        CLog::Log(LOGDEBUG, "CDVDPlayer::Sync - Video - pts: %f, cache: %f, totalcache: %f",
                              m_CurrentVideo.starttime, m_CurrentVideo.cachetime, m_CurrentVideo.cachetotal);
 
       if (m_CurrentAudio.starttime != DVD_NOPTS_VALUE && m_CurrentAudio.packets > 0)
