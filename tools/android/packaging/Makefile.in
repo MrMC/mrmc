@@ -14,7 +14,7 @@ OBJS+= libplist.so
 OBJS+= libshairplay.so
 
 PLATFORM_OBJS =
-EXCLUDED_ADDONS = skin.re-touched
+EXCLUDED_ADDONS =
 
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
 COPYDIRS = system addons media
