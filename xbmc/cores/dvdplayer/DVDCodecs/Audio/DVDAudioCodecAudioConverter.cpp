@@ -34,51 +34,43 @@ ac3_channel_ls = 16
 ac3_channel_rs = 32
 ac3_channel_lsb = 512
 ac3_channel_rsb = 1024
-
-channel_layout:
-  1_0 = 4    (0x04)
-  2_0 = 3    (0x03)
-  2_1 = 11   (0x0B)
-  3_0 = 7    (0x07)
-  3_1 = 15   (0x0F)
-  5_0 = 55   (0x37)
-  5_1 = 63   (0x3F)
-  7_0 = 1591 (0x637)
-  7_1 = 1599 (0x63F)
 */
 
 #pragma mark - statics/structs/etc
 enum DDLayout {
-  DDLayout_1_0 = 4,
-  DDLayout_2_0 = 3,
-  DDLayout_2_1 = 11,
-  DDLayout_3_0 = 7,
-  DDLayout_3_1 = 15,
-  DDLayout_5_0 = 55,
-  DDLayout_5_1 = 63,
-  DDLayout_7_0 = 1591,
-  DDLayout_7_1 = 1599,
+  DDLayout_1_0  = 4,
+  DDLayout_2_0  = 3,
+  DDLayout_2_1  = 11,
+  DDLayout_3_0  = 7,
+  DDLayout_3_1  = 15,
+  DDLayout_5_0  = 55,
+  DDLayout_5_1a = 63,
+  DDLayout_5_1b = 1551,
+  DDLayout_7_0  = 1591,
+  DDLayout_7_1  = 1599,
 };
 
 enum DDIndex {
-  DDIndex_1_0 = 0,
-  DDIndex_2_0 = 1,
-  DDIndex_2_1 = 2,
-  DDIndex_3_0 = 3,
-  DDIndex_3_1 = 4,
-  DDIndex_5_0 = 5,
-  DDIndex_5_1 = 6,
-  DDIndex_7_0 = 7,
-  DDIndex_7_1 = 8,
+  DDIndex_1_0  = 0,
+  DDIndex_2_0  = 1,
+  DDIndex_2_1  = 2,
+  DDIndex_3_0  = 3,
+  DDIndex_3_1  = 4,
+  DDIndex_5_0  = 5,
+  DDIndex_5_1a = 6,
+  DDIndex_5_1b = 6,
+  DDIndex_7_0  = 7,
+  DDIndex_7_1  = 8,
 };
 
-static const AEChannel DolbyChannels[9][9] = {
+static const AEChannel DolbyChannels[10][9] = {
 { AE_CH_FC , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FR , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_LFE, AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_NULL},
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_LFE, AE_CH_NULL},
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL},
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_NULL},
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL}
@@ -271,8 +263,11 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
     case DDLayout_5_0:
       index = DDIndex_5_0;
       break;
-    case DDLayout_5_1:
-      index = DDIndex_5_1;
+    case DDLayout_5_1a:
+      index = DDIndex_5_1a;
+      break;
+    case DDLayout_5_1b:
+      index = DDIndex_5_1b;
       break;
     case DDLayout_7_0:
       index = DDIndex_7_0;
