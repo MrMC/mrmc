@@ -566,6 +566,25 @@ bool CDSMSession::FileExists(const char *path)
       exists = true;
       m_dsmlib->smb_stat_destroy(attributes);
     }
+    else
+    {
+      // smb_fstat on a directory can fail, so do it the hard way
+      // we should never hit this for a directory (FileExists) but check it anyway.
+      smb_stat_list stats = m_dsmlib->smb_find(m_smb_session, m_smb_tid, pathname.c_str());
+      if (stats != NULL)
+      {
+        size_t n = m_dsmlib->smb_stat_list_count(stats);
+        if (n == 1)
+        {
+          smb_stat stat = m_dsmlib->smb_stat_list_at(stats, 0);
+          if (stat)
+          {
+            exists = true;
+            m_dsmlib->smb_stat_destroy(attributes);
+          }
+        }
+      }
+    }
   }
   else
   {
@@ -668,6 +687,38 @@ int CDSMSession::Stat(const char *path, struct __stat64* buffer)
     }
     else
     {
+      // smb_fstat on a directory can fail, so do it the hard way
+      smb_stat_list stats = m_dsmlib->smb_find(m_smb_session, m_smb_tid, pathname.c_str());
+      if (stats != NULL)
+      {
+        size_t n = m_dsmlib->smb_stat_list_count(stats);
+        if (n == 1)
+        {
+          smb_stat stat = m_dsmlib->smb_stat_list_at(stats, 0);
+          if (stat)
+          {
+            uint64_t windowsDateTime;
+            memset(buffer, 0x00, sizeof(struct __stat64));
+
+            buffer->st_size  = m_dsmlib->smb_stat_get(attributes, SMB_STAT_SIZE);
+            // times come back as windows based, convert them to posix based.
+            windowsDateTime = m_dsmlib->smb_stat_get(attributes, SMB_STAT_CTIME);
+            buffer->st_ctime = convertWindowsTimeToPosixTime(windowsDateTime);
+            windowsDateTime = m_dsmlib->smb_stat_get(attributes, SMB_STAT_MTIME);
+            buffer->st_mtime = convertWindowsTimeToPosixTime(windowsDateTime);
+            windowsDateTime = m_dsmlib->smb_stat_get(attributes, SMB_STAT_ATIME);
+            buffer->st_atime = convertWindowsTimeToPosixTime(windowsDateTime);
+            if (m_dsmlib->smb_stat_get(attributes, SMB_STAT_ISDIR))
+              buffer->st_mode = _S_IFDIR;
+            else
+              buffer->st_mode = _S_IFREG;
+
+            m_dsmlib->smb_stat_destroy(attributes);
+
+            return 0;
+          }
+        }
+      }
       // this might not be a real error, the file might not exist and we are testing that
       //CLog::Log(LOGERROR, "CDSMSession::Stat - Failed to get attributes for '%s'", path);
       return -1;
