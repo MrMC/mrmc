@@ -31,6 +31,8 @@
 #define READ_SUCCESS   0
 #define READ_ERROR     1
 
+class CFileItem;
+
 class ICodec
 {
 public:
