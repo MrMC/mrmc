@@ -1674,6 +1674,9 @@
 		F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364E04155B3CAF0016D00B /* IOSurface.framework */; };
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */; };
+		F557CD981CFDE37000DC3D50 /* TCPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F557CD961CFDE37000DC3D50 /* TCPClient.cpp */; };
+		F557CD991CFDE37000DC3D50 /* TCPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F557CD961CFDE37000DC3D50 /* TCPClient.cpp */; };
+		F557CD9A1CFDE37000DC3D50 /* TCPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F557CD961CFDE37000DC3D50 /* TCPClient.cpp */; };
 		F558F25613ABCF7800631E12 /* WinEventsOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = F558F25513ABCF7800631E12 /* WinEventsOSX.mm */; };
 		F558F27B13ABD56600631E12 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */; };
 		F558F27F13ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */; };
@@ -5043,6 +5046,8 @@
 		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
 		F5487B4A0FE6F02700E506FD /* StreamDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamDetails.h; sourceTree = "<group>"; };
 		F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamDetails.cpp; sourceTree = "<group>"; };
+		F557CD961CFDE37000DC3D50 /* TCPClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TCPClient.cpp; sourceTree = "<group>"; };
+		F557CD971CFDE37000DC3D50 /* TCPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCPClient.h; sourceTree = "<group>"; };
 		F558F25413ABCF7800631E12 /* WinEventsOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEventsOSX.h; sourceTree = "<group>"; };
 		F558F25513ABCF7800631E12 /* WinEventsOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WinEventsOSX.mm; sourceTree = "<group>"; };
 		F558F27813ABD56600631E12 /* DirtyRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegion.h; sourceTree = "<group>"; };
@@ -6401,6 +6406,8 @@
 				DFECFB4B172D9D6D00A43CF7 /* NetworkServices.h */,
 				E3E91FFC0D8C61DF002BF43D /* Socket.cpp */,
 				6E97BDC40DA2B620003A2A89 /* Socket.h */,
+				F557CD961CFDE37000DC3D50 /* TCPClient.cpp */,
+				F557CD971CFDE37000DC3D50 /* TCPClient.h */,
 				432D7CF612D870E800CE4C49 /* TCPServer.cpp */,
 				432D7CF512D870D600CE4C49 /* TCPServer.h */,
 				E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */,
@@ -10770,6 +10777,7 @@
 				7CCDA16B192753E30074CF51 /* PltService.cpp in Sources */,
 				7CCDA174192753E30074CF51 /* PltSsdp.cpp in Sources */,
 				7CCDA17D192753E30074CF51 /* PltStateVariable.cpp in Sources */,
+				F557CD981CFDE37000DC3D50 /* TCPClient.cpp in Sources */,
 				7CCDA186192753E30074CF51 /* PltTaskManager.cpp in Sources */,
 				7CCDA18F192753E30074CF51 /* PltThreadTask.cpp in Sources */,
 				7CCDA198192753E30074CF51 /* PltUPnP.cpp in Sources */,
@@ -10990,6 +10998,7 @@
 				E4991205174E5D4500741B6D /* DVDTSCorrection.cpp in Sources */,
 				E4991206174E5D4500741B6D /* Edl.cpp in Sources */,
 				E4991207174E5D4A00741B6D /* ExternalPlayer.cpp in Sources */,
+				F557CD991CFDE37000DC3D50 /* TCPClient.cpp in Sources */,
 				E499120A174E5D5A00741B6D /* AudioDecoder.cpp in Sources */,
 				E499120B174E5D5A00741B6D /* CodecFactory.cpp in Sources */,
 				E499120C174E5D5A00741B6D /* DVDPlayerCodec.cpp in Sources */,
@@ -12316,6 +12325,7 @@
 				F5D1403D1BAF0B6D0075A95C /* AddonsOperations.cpp in Sources */,
 				F5D1403E1BAF0B6D0075A95C /* ApplicationOperations.cpp in Sources */,
 				F5D1403F1BAF0B6D0075A95C /* AudioLibrary.cpp in Sources */,
+				F557CD9A1CFDE37000DC3D50 /* TCPClient.cpp in Sources */,
 				F5D140411BAF0B6D0075A95C /* FavouritesOperations.cpp in Sources */,
 				F5D140421BAF0B6D0075A95C /* FileItemHandler.cpp in Sources */,
 				F5D140431BAF0B6D0075A95C /* FileOperations.cpp in Sources */,

@@ -8,6 +8,7 @@ SRCS += GUIDialogNetworkSetup.cpp
 SRCS += Network.cpp
 SRCS += NetworkServices.cpp
 SRCS += Socket.cpp
+SRCS += TCPClient.cpp
 SRCS += TCPServer.cpp
 SRCS += UdpClient.cpp
 SRCS += WakeOnAccess.cpp
