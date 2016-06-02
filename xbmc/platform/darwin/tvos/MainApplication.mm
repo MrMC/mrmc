@@ -23,6 +23,7 @@
 
 #import "platform/darwin/tvos/MainApplication.h"
 
+#import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/TVOSTopShelf.h"
@@ -138,33 +139,6 @@ MainController *m_xbmcController;
 }
 
 #pragma mark private methods
-- (void)dumpAudioDescriptions
-{
-  AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
-
-  NSArray *currentInputs = myAudioSession.currentRoute.inputs;
-  int count_in = [currentInputs count];
-  for (int k = 0; k < count_in; k++)
-  {
-    AVAudioSessionPortDescription *portDesc = [currentInputs objectAtIndex:k];
-    NSLog(@"dumpAudioDescriptions : AVAudioSessionPortDescription, %@", portDesc);
-    for (AVAudioSessionChannelDescription *channel in portDesc.channels)
-      NSLog(@"dumpAudioDescriptions : AVAudioSessionChannelDescription, %@", channel.channelName);
-  }
-  NSLog(@"dumpAudioDescriptions : AVAudioSessionRouteChangeReasonNewDeviceAvailable, input count = %d", count_in);
-
-  NSArray *currentOutputs = myAudioSession.currentRoute.outputs;
-  int count_out = [currentOutputs count];
-  for (int k = 0; k < count_out; k++)
-  {
-    AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
-    NSLog(@"dumpAudioDescriptions : AVAudioSessionPortDescription, %@", portDesc);
-    for (AVAudioSessionChannelDescription *channel in portDesc.channels)
-      NSLog(@"dumpAudioDescriptions : AVAudioSessionChannelDescription, %@", channel.channelName);
-  }
-  NSLog(@"dumpAudioDescriptions : AVAudioSessionRouteChangeReasonNewDeviceAvailable, output count = %d", count_out);
-}
-
 - (void)audioRouteChanged:(NSNotification *)notification
 {
   // Your tests on the Audio Output changes will go here
@@ -176,33 +150,29 @@ MainController *m_xbmcController;
         break;
     case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
         // an audio device was added
-        [self dumpAudioDescriptions];
         [m_xbmcController audioRouteChanged];
-        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNewDeviceAvailable");
+        CDarwinUtils::DumpAudioDescriptions("AVAudioSessionRouteChangeReasonNewDeviceAvailable");
         break;
     case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
         // a audio device was removed
-        [self dumpAudioDescriptions];
         [m_xbmcController audioRouteChanged];
-        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOldDeviceUnavailable");
+        CDarwinUtils::DumpAudioDescriptions("AVAudioSessionRouteChangeReasonOldDeviceUnavailable");
         break;
     case AVAudioSessionRouteChangeReasonCategoryChange:
         // called at start - also when other audio wants to play
-        [self dumpAudioDescriptions];
-        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonCategoryChange");
+        CDarwinUtils::DumpAudioDescriptions("AVAudioSessionRouteChangeReasonCategoryChange");
         break;
     case AVAudioSessionRouteChangeReasonOverride:
-        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOverride");
+        //NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOverride");
         break;
     case AVAudioSessionRouteChangeReasonWakeFromSleep:
-        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonWakeFromSleep");
+        //NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonWakeFromSleep");
         break;
     case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
-        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory");
+        //NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory");
         break;
     case AVAudioSessionRouteChangeReasonRouteConfigurationChange:
-        [self dumpAudioDescriptions];
-        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonRouteConfigurationChange");
+        CDarwinUtils::DumpAudioDescriptions("AVAudioSessionRouteChangeReasonRouteConfigurationChange");
         break;
     default:
         NSLog(@"routeChangeReason : unknown notification %ld", (long)routeChangeReason);
