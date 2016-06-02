@@ -862,4 +862,42 @@ std::string CDarwinUtils::GetAudioRoute()
   return route;
 }
 
+void CDarwinUtils::DumpAudioDescriptions(const std::string& why)
+{
+#if defined(TARGET_DARWIN_IOS)
+  if (!why.empty())
+    CLog::Log(LOGDEBUG, "DumpAudioDescriptions: %s", why.c_str());
+
+  AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
+
+  NSArray *currentInputs = myAudioSession.currentRoute.inputs;
+  int count_in = [currentInputs count];
+  CLog::Log(LOGDEBUG, "DumpAudioDescriptions: input count = %d", count_in);
+  for (int k = 0; k < count_in; ++k)
+  {
+    AVAudioSessionPortDescription *portDesc = [currentInputs objectAtIndex:k];
+    CLog::Log(LOGDEBUG, "DumpAudioDescriptions: portName, %s", [portDesc.portName UTF8String]);
+    for (AVAudioSessionChannelDescription *channel in portDesc.channels)
+    {
+      CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelLabel, %d", channel.channelLabel);
+      CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelName , %s", [channel.channelName UTF8String]);
+    }
+  }
+
+  NSArray *currentOutputs = myAudioSession.currentRoute.outputs;
+  int count_out = [currentOutputs count];
+  CLog::Log(LOGDEBUG, "DumpAudioDescriptions: output count = %d", count_out);
+  for (int k = 0; k < count_out; ++k)
+  {
+    AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
+    CLog::Log(LOGDEBUG, "DumpAudioDescriptions : portName, %s", [portDesc.portName UTF8String]);
+    for (AVAudioSessionChannelDescription *channel in portDesc.channels)
+    {
+      CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelLabel, %d", channel.channelLabel);
+      CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelName , %s", [channel.channelName UTF8String]);
+    }
+  }
+#endif
+}
+
 #endif

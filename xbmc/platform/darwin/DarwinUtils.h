@@ -64,6 +64,8 @@ public:
   static bool        AudioCodecLicenseCheck(const std::string &name);
   static bool        OpenAppWithOpenURL(const std::string& path);
   static std::string GetAudioRoute();
+  static void        DumpAudioDescriptions(const std::string& why);
+
 };
 
 #endif
