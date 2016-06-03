@@ -267,7 +267,7 @@ int CDVDMessageQueue::GetLevel() const
   // if we added lots of packets with NOPTS, make sure that the queue is not signalled empty
   if (level == 0 && m_iDataSize != 0)
   {
-    CLog::Log(LOGNOTICE, "CDVDMessageQueue::GetLevel() - can't determine level");
+    //CLog::Log(LOGNOTICE, "CDVDMessageQueue::GetLevel() - can't determine level");
     return 1;
   }
 
