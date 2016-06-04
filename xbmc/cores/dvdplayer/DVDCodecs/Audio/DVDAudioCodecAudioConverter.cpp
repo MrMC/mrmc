@@ -240,14 +240,14 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
   char buf[1024] = {0};
   int buf_size = 1024;
   av_get_channel_layout_string(buf, buf_size, m_hints.channels, m_hints.channellayout);
-  CLog::Log(LOGDEBUG, "FactoryCodec - Audio: dac - channel_layout(%s)", buf);
+  CLog::Log(LOGDEBUG, "FactoryCodec - Audio: dac - channel_layout(%llu) = '%s'", m_hints.channellayout, buf);
 
   DDIndex index;
   switch(m_hints.channellayout)
   {
     case DDLayout_1_0:
       index = DDIndex_1_0;
-    default:
+      break;
     case DDLayout_2_0:
       index = DDIndex_2_0;
       break;
@@ -274,6 +274,30 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
       break;
     case DDLayout_7_1:
       index = DDIndex_7_1;
+      break;
+    default:
+      // no clue about channel layout, try it old school
+      switch(m_hints.channels)
+      {
+        case 1:
+          index = DDIndex_1_0;
+          break;
+        case 2:
+          index = DDIndex_2_0;
+          break;
+        case 3:
+          index = DDIndex_2_1;
+          break;
+        case 6:
+          index = DDIndex_5_1b;
+          break;
+        case 8:
+          index = DDIndex_7_1;
+          break;
+        default:
+          return false;
+          break;
+      }
       break;
   }
   for (int i = 0; i < m_hints.channels; ++i)
