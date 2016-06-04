@@ -33,12 +33,12 @@
 
 #if defined(TARGET_DARWIN_IOS)
   #import <Foundation/Foundation.h>
+  #import <AVFoundation/AVFoundation.h>
   #import <UIKit/UIKit.h>
   #import <mach/mach_host.h>
   #import <sys/sysctl.h>
   #if defined(TARGET_DARWIN_TVOS)
     #import "platform/darwin/tvos/MainController.h"
-  #import <AVFoundation/AVFoundation.h>
   #endif
 #else
   #import <Cocoa/Cocoa.h>
