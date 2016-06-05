@@ -299,7 +299,7 @@ void CDVDPlayerVideo::Process()
       if (!m_stalled)
       {
         if(m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
-          CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
+          CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
         m_stalled = true;
         pts += frametime * 4;
       }
@@ -336,11 +336,11 @@ void CDVDPlayerVideo::Process()
       m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_droppingStats.Reset();
 
-      CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f)", pts);
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f)", pts);
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
-      CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
       m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
@@ -543,7 +543,7 @@ bool CDVDPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametime,
   // if decoder was flushed, we need to seek back again to resume rendering
   if (decoderState & VC_FLUSHED)
   {
-    CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder was flushed");
+    CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder was flushed");
     while (!m_packets.empty())
     {
       CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
@@ -578,7 +578,7 @@ bool CDVDPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametime,
   // if decoder had an error, tell it to reset to avoid more problems
   if (decoderState & VC_ERROR)
   {
-    CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder returned error");
+    CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder returned error");
     return false;
   }
 
