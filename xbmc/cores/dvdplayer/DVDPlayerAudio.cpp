@@ -561,7 +561,7 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 {
   double syncerror = m_dvdAudio.GetSyncError();
 
-  if (m_synctype == SYNC_DISCON)
+  if (m_synctype == SYNC_DISCON && fabs(syncerror) > DVD_MSEC_TO_TIME(32))
   {
     double limit, error;
     limit = DVD_MSEC_TO_TIME(32);
