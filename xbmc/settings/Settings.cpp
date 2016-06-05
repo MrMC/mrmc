@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "Autorun.h"
 #include "LangInfo.h"
+#include "SettingAddon.h"
 #include "Util.h"
 #include "events/EventLog.h"
 #include "addons/RepositoryUpdater.h"
@@ -40,7 +41,7 @@
 #include "input/KeyboardLayoutManager.h"
 #if defined(TARGET_POSIX)
   #include "linux/LinuxTimezone.h"
-#endif // defined(TARGET_POSIX)
+#endif
 #include "network/NetworkServices.h"
 #include "network/upnp/UPnPSettings.h"
 #include "network/WakeOnAccess.h"
@@ -48,16 +49,12 @@
   #include "platform/darwin/DarwinUtils.h"
   #if defined(TARGET_DARWIN_OSX)
     #include "platform/darwin/osx/XBMCHelper.h"
-  #endif // defined(TARGET_DARWIN_OSX)
-  #if defined(TARGET_DARWIN_IOS)
-    #include "SettingAddon.h"
   #endif
   #if defined(TARGET_DARWIN_TVOS)
     #include "platform/darwin/tvos/TVOSSettingsHandler.h"
   #endif
 #endif
 #if defined(TARGET_ANDROID)
-  #include "SettingAddon.h"
   #include "platform/android/activity/AndroidFeatures.h"
 #endif
 #if defined(TARGET_RASPBERRY_PI)
@@ -65,7 +62,7 @@
 #endif
 #if defined(HAS_LIBAMCODEC)
   #include "utils/AMLUtils.h"
-#endif // defined(HAS_LIBAMCODEC)
+#endif
 #include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
