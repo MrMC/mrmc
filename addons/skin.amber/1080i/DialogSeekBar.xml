@@ -133,6 +133,7 @@
         <label>32 X</label>
       </control>
       <control type="label" description="Seek time label">
+        <visible>!Player.Caching</visible>
         <include>SeekbarLabels</include>
         <label>$VAR[SeekLabel]</label>
       </control>
