@@ -432,6 +432,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         case FF_PROFILE_H264_HIGH_10_INTRA:
           // No known h/w decoder supporting Hi10P
           return false;
+          break;
+        case FF_PROFILE_H264_HIGH:
+          if (hints.level >= 52)
+            return false;
+          break;
       }
       if (CJNIBuild::DEVICE == "foster" && hints.stereo_mode != "mono")   // SATV buggy with HTAB/HSBS
       {
