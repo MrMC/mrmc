@@ -194,14 +194,22 @@ static float overrideRefreshRate()
     }
 
     // AFTV1
-    // Always return 60, whatever the actual HDMI mode
     if (SysfsUtils::GetInt("/sys/class/graphics/fb0/video_mode", CEAmode) == 0)
     {
       RESOLUTION_INFO res = SysfsUtils::CEAtoRES(CEAmode);
       CLog::Log(LOGINFO, "CEGLNativeTypeAndroid: AFTV1 refresh rate: %f", res.fRefreshRate);
       overridedRR = res.fRefreshRate;
     }
+
+    // AFTV2
+    if (SysfsUtils::GetInt("/sys/class/switch/res_hdmi/state", CEAmode) == 0)
+    {
+      RESOLUTION_INFO res = SysfsUtils::FireOS_ConvertResolution(CEAmode);
+      CLog::Log(LOGINFO, "CEGLNativeTypeAndroid: AFTV2 refresh rate: %f", res.fRefreshRate);
+      overridedRR = res.fRefreshRate;
+    }
   }
+
   return overridedRR;
 }
 
@@ -234,6 +242,7 @@ static float currentRefreshRate()
       }
     }
   }
+
   CLog::Log(LOGDEBUG, "found no refresh rate");
   return 60.0;
 }
