@@ -19,9 +19,12 @@
  */
 
 #include "AndroidFeatures.h"
+
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #include <cpu-features.h>
+#include "platform/android/jni/Build.h"
 #include "platform/android/jni/Context.h"
 #include "platform/android/jni/JNIThreading.h"
 #include "platform/android/jni/PackageManager.h"
@@ -88,4 +91,16 @@ bool CAndroidFeatures::HasTouchScreen()
   }
 
   return (hastouchscreen == 1);
+}
+
+bool CAndroidFeatures::IsFireTVDevice()
+{
+  if (StringUtils::StartsWith(CJNIBuild::MODEL, "AFT") &&
+      StringUtils::StartsWithNoCase(CJNIBuild::MANUFACTURER, "Amazon"))
+  {
+    CLog::Log(LOGDEBUG, "CAndroidFeatures::IsFireTVDevice = yes");
+    return true;
+  }
+  else
+    return false;
 }
