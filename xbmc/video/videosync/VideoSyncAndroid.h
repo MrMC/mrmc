@@ -20,6 +20,8 @@
  */
 
 #if defined(TARGET_ANDROID)
+#include <atomic>
+
 #include "VideoSync.h"
 #include "guilib/DispResource.h"
 
@@ -41,8 +43,11 @@ public:
   void FrameCallback(int64_t frameTimeNanos);
   
 private:
-  int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
-  volatile bool m_abort;
+  int64_t           m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
+  std::atomic<bool> m_abort;
+  bool              m_debug;
+  double            m_debug_fps;
+  int               m_debug_vblanks;
 };
 
 #endif// TARGET_ANDROID

@@ -39,7 +39,11 @@ bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
   m_abort = false;
-  
+
+  m_debug = true;
+  m_debug_fps = 0.0f;
+  m_debug_vblanks = 0;
+
   CXBMCApp::InitFrameCallback(this);
   g_Windowing.Register(this);
 
@@ -48,7 +52,7 @@ bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
 
 void CVideoSyncAndroid::Run(volatile bool& stop)
 {
-  //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
+  //because android has a vblank callback, we just keep sleeping until we're asked to stop the thread
   while(!stop && !m_abort)
   {
     Sleep(100);
@@ -76,22 +80,37 @@ void CVideoSyncAndroid::OnResetDevice()
 
 void CVideoSyncAndroid::FrameCallback(int64_t frameTimeNanos)
 {
-  int           NrVBlanks;
-  double        VBlankTime;
-  int64_t       nowtime = CurrentHostCounter();
+  int NrVBlanks;
+  double VBlankTime;
+  int64_t nowtime = CurrentHostCounter();
 
-  //calculate how many vblanks happened
+  // calculate how many vblanks happened
   int64_t FT = (frameTimeNanos - m_LastVBlankTime);
   VBlankTime = FT / (double)g_VideoReferenceClock.GetFrequency();
   NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
 
-  if (NrVBlanks > 1)
-    CLog::Log(LOGDEBUG, "CVideoSyncAndroid::FrameCallback late: %lld(%f fps), %d", FT, 1.0/((double)FT/1000000000), NrVBlanks);
+  float fps = 1.0/((double)FT/1000000000.0);
+  if (m_debug)
+  {
+    m_debug_fps += fps;
+    m_debug_vblanks++;
+  }
 
-  //save the timestamp of this vblank so we can calculate how many happened next time
+  if (NrVBlanks > 1)
+  {
+    CLog::Log(LOGDEBUG, "CVideoSyncAndroid::FrameCallback late: %lld(%f fps), %d", FT, fps, NrVBlanks);
+  }
+  else if (m_debug_vblanks >= 100)
+  {
+    CLog::Log(LOGDEBUG, "CVideoSyncAndroid::FrameCallback %f fps", m_debug_fps/m_debug_vblanks);
+    m_debug_fps = 0.0;
+    m_debug_vblanks = 0;
+  }
+
+  // save the timestamp of this vblank so we can calculate how many happened next time
   m_LastVBlankTime = frameTimeNanos;
 
-  //update the vblank timestamp, update the clock and send a signal that we got a vblank
+  // update the vblank timestamp, update the clock and send a signal that we got a vblank
   UpdateClock(NrVBlanks, nowtime);
 }
 
