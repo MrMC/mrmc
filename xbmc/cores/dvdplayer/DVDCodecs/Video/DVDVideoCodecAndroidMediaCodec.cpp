@@ -973,12 +973,53 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     // Allocate a byte buffer via allocateDirect in java instead of NewDirectByteBuffer,
     // since the latter doesn't allocate storage of its own, and we don't know how long
     // the codec uses the buffer.
-    CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(size);
-    void *dts_ptr = xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
-    memcpy(dts_ptr, src_ptr, size);
-    // codec will automatically handle buffers as extradata
-    // using entries with keys "csd-0", "csd-1", etc.
-    mediaformat.setByteBuffer("csd-0", bytebuffer);
+    switch(m_hints.codec)
+    {
+      case AV_CODEC_ID_AVS:
+      case AV_CODEC_ID_CAVS:
+      case AV_CODEC_ID_H264:
+        {
+          // according to https://developer.android.com/reference/android/media/MediaCodec.html
+          // Codec-specific Data, H.264/AVC requires sps -> csd-0 and pps -> csd-1. There is a
+          // vauge reference to 'Alternately, you can concatenate all codec-specific data and
+          // submit it as a single codec-config buffer.' but MediaTek hw can have issues with
+          // passing both sps/pps in csd-0.
+          int sps_size, pps_size;
+          uint8_t *sps = nullptr, *pps = nullptr;
+          m_bitstream->ExtractH264_SPS_PPS((uint8_t*)src_ptr, size, &sps, &sps_size, &pps, &pps_size);
+          if (sps)
+          {
+            //CLog::MemDump((char*)sps, sps_size);
+            CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(sps_size + 4);
+            uint8_t *dts_ptr = (uint8_t*)xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
+            BS_WB32(dts_ptr, 0x00000001);
+            memcpy(dts_ptr + 4, sps, sps_size);
+            mediaformat.setByteBuffer("csd-0", bytebuffer);
+            free(sps);
+          }
+          if (pps)
+          {
+            //CLog::MemDump((char*)pps, pps_size);
+            CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(pps_size + 4);
+            uint8_t *dts_ptr = (uint8_t*)xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
+            BS_WB32(dts_ptr, 0x00000001);
+            memcpy(dts_ptr + 4, pps, pps_size);
+            mediaformat.setByteBuffer("csd-1", bytebuffer);
+            free(pps);
+          }
+        }
+        break;
+      default:
+        {
+          CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(size);
+          void *dts_ptr = xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
+          memcpy(dts_ptr, src_ptr, size);
+          // codec will automatically handle buffers as extradata
+          // using entries with keys "csd-0", "csd-1", etc.
+          mediaformat.setByteBuffer("csd-0", bytebuffer);
+        }
+        break;
+    }
   }
 
   InitSurfaceTexture();
