@@ -159,6 +159,9 @@ public:
   uint8_t*          GetExtraData(void) const;
   int               GetExtraSize() const;
 
+  static bool       ExtractH264_SPS_PPS(const uint8_t *data, int len,
+                      uint8_t **sps, int *spssize, uint8_t **pps, int *ppssize);
+
   static void       bits_reader_set( bits_reader_t *br, uint8_t *buf, int len );
   static uint32_t   read_bits( bits_reader_t *br, int nbits );
   static void       skip_bits( bits_reader_t *br, int nbits );

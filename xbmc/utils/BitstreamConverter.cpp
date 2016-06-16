@@ -850,6 +850,54 @@ bool CBitstreamConverter::IsSlice(uint8_t unit_type)
   }
 }
 
+bool CBitstreamConverter::ExtractH264_SPS_PPS(const uint8_t *data, int len,
+  uint8_t **sps, int *spssize, uint8_t **pps, int *ppssize)
+{
+  *spssize = 0;
+  *ppssize = 0;
+  *sps = nullptr;
+  *pps = nullptr;
+
+  // extradata from bytestream h264, extract NALs for sps and pps
+  if (len > 6)
+  {
+    // check for valid h264 start code
+    if (BS_RB32(data) == 0x00000001 || BS_RB24(data) == 0x000001)
+    {
+      uint8_t *buf = nullptr;
+      int ret = avc_parse_nal_units_buf(data, &buf, &len);
+      if (ret < 0)
+        return ret;
+
+      // look for sps and pps
+      uint8_t *end = buf + len;
+      while (end - buf > 4)
+      {
+        uint32_t size = FFMIN(BS_RB32(buf), end - buf - 4);
+        buf += 4;
+        uint8_t nal_type = buf[0] & 0x1f;
+        if (nal_type == AVC_NAL_SPS && *sps == nullptr)
+        {
+          //CLog::MemDump((char*)buf, size);
+          *sps = (uint8_t*)malloc(size);
+          memcpy(*sps, buf, size);
+          *spssize = size;
+        }
+        else if (nal_type == AVC_NAL_PPS && *pps == nullptr)
+        {
+          //CLog::MemDump((char*)buf, size);
+          *ppssize = size;
+          *pps = (uint8_t*)malloc(size);
+          memcpy(*pps, buf, size);
+        }
+        buf += size;
+      }
+    }
+  }
+
+  return true;
+}
+
 bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
