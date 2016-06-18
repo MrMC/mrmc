@@ -399,8 +399,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   switch(m_hints.codec)
   {
     case AV_CODEC_ID_MPEG2VIDEO:
-      m_mime = "video/mpeg2";
-      m_formatname = "amc-mpeg2";
+      return false;
+      //m_mime = "video/mpeg2";
+      //m_formatname = "amc-mpeg2";
       break;
     case AV_CODEC_ID_MPEG4:
       m_mime = "video/mp4v-es";
