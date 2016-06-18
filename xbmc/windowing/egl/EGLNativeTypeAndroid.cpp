@@ -20,13 +20,18 @@
 #include <stdlib.h>
 
 #include "system.h"
+
 #include <EGL/egl.h>
 #include "EGLNativeTypeAndroid.h"
-#include "utils/log.h"
-#include "settings/Settings.h"
+
 #include "guilib/gui3d.h"
-#include "platform/android/activity/XBMCApp.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/SysfsUtils.h"
+
+#include "platform/android/activity/XBMCApp.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/jni/SystemProperties.h"
 #include "platform/android/jni/View.h"
 #include "platform/android/jni/Window.h"
@@ -34,7 +39,6 @@
 #include "platform/android/jni/Build.h"
 #include "platform/android/jni/System.h"
 
-#include "utils/SysfsUtils.h"
 
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()
   : m_width(0), m_height(0)
@@ -64,7 +68,7 @@ void CEGLNativeTypeAndroid::Initialize()
   }
 
   // Try to find out the HDMI resolution
-  if (CJNIDisplay::GetSDKVersion() >= 23)
+  if (CJNIDisplay::GetSDKVersion() >= 23 || CAndroidFeatures::IsFireTVDevice())
   {
     if (m_display)
     {
@@ -128,8 +132,9 @@ void CEGLNativeTypeAndroid::Initialize()
       }
       break;
   }
-  CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: selected resolution: %dx%d", m_width, m_height);
+  CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: selected limitgui resolution: %dx%d", m_width, m_height);
 }
+
 void CEGLNativeTypeAndroid::Destroy()
 {
   return;
@@ -312,7 +317,21 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
           CJNIDisplay display = view.getDisplay();
           if (display)
           {
-            refreshRates = display.getSupportedRefreshRates();
+/*
+            if (CJNIDisplay::GetSDKVersion() >= 23 || CAndroidFeatures::IsFireTVDevice())
+            {
+              std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
+              for (auto m : modes)
+              {
+                if (m.getPhysicalWidth() == res.iWidth || m.getPhysicalHeight() == res.iHeight)
+                  refreshRates.push_back(m.getRefreshRate());
+              }
+            }
+            else
+*/
+            {
+              refreshRates = display.getSupportedRefreshRates();
+            }
           }
         }
       }
@@ -326,6 +345,7 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
           res.fRefreshRate = refreshRates[i];
           res.strMode      = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
                                                  res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+          CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid:ProbeResolutions: %s", res.strMode.c_str());
           resolutions.push_back(res);
         }
       }
@@ -337,6 +357,7 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
     }
     return true;
   }
+
   return false;
 }
 
