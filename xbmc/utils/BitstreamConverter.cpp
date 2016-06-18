@@ -350,8 +350,6 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
           m_convert_bitstream = BitstreamConvertInitAVC(m_extradata, m_extrasize);
           return true;
         }
-        else
-          CLog::Log(LOGINFO, "CBitstreamConverter::Open Invalid avcC");
       }
       else
       {
