@@ -26,20 +26,50 @@ using namespace jni;
 
 int CJNIDisplayMode::getPhysicalHeight()
 {
-  return call_method<jint>(m_object,
-    "getPhysicalHeight", "()I");
+  if (GetSDKVersion() >= 23)
+  {
+    return call_method<jint>(m_object, "getPhysicalHeight", "()I");
+  }
+  else
+  {
+    jmethodID mid = get_method_id(m_object, "getPhysicalHeight", "()I");
+    if (mid != NULL)
+      return call_method<jint>(m_object, mid);
+    else
+      return 1080;
+  }
 }
 
 int CJNIDisplayMode::getPhysicalWidth()
 {
-  return call_method<jint>(m_object,
-    "getPhysicalWidth", "()I");
+  if (GetSDKVersion() >= 23)
+  {
+    return call_method<jint>(m_object, "getPhysicalWidth", "()I");
+  }
+  else
+  {
+    jmethodID mid = get_method_id(m_object, "getPhysicalWidth", "()I");
+    if (mid != NULL)
+      return call_method<jint>(m_object, mid);
+    else
+      return 1920;
+  }
 }
 
 float CJNIDisplayMode::getRefreshRate()
 {
-  return call_method<jfloat>(m_object,
-    "getRefreshRate", "()F");
+  if (GetSDKVersion() >= 23)
+  {
+    return call_method<jfloat>(m_object, "getRefreshRate", "()F");
+  }
+  else
+  {
+    jmethodID mid = get_method_id(m_object, "getRefreshRate", "()F");
+    if (mid != NULL)
+      return call_method<jfloat>(m_object, mid);
+    else
+      return 60.0f;
+  }
 }
 
 /*************/
@@ -67,10 +97,18 @@ std::vector<float> CJNIDisplay::getSupportedRefreshRates()
 CJNIDisplayMode CJNIDisplay::getMode()
 {
   if (GetSDKVersion() >= 23)
+  {
     return call_method<jhobject>(m_object,
-                                 "getMode", "()Landroid/view/Display$Mode;");
+      "getMode", "()Landroid/view/Display$Mode;");
+  }
   else
-    return jhobject();
+  {
+    jmethodID mid = get_method_id(m_object, "getMode", "()Landroid/view/Display$Mode;");
+    if (mid != NULL)
+      return call_method<jhobject>(m_object, mid);
+    else
+      return jhobject();
+  }
 }
 
 int CJNIDisplay::getWidth()
@@ -88,9 +126,17 @@ int CJNIDisplay::getHeight()
 std::vector<CJNIDisplayMode> CJNIDisplay::getSupportedModes()
 {
   if (GetSDKVersion() >= 23)
+  {
     return jcast<CJNIDisplayModes>(call_method<jhobjectArray>(m_object,
-                                                              "getSupportedModes", "()[Landroid/view/Display$Mode;"));
+      "getSupportedModes", "()[Landroid/view/Display$Mode;"));
+  }
   else
-    return CJNIDisplayModes();
+  {
+    jmethodID mid = get_method_id(m_object, "getSupportedModes", "()[Landroid/view/Display$Mode;");
+    if (mid != NULL)
+      return jcast<CJNIDisplayModes>(call_method<jhobjectArray>(m_object, mid));
+    else
+      return CJNIDisplayModes();
+  }
 }
 
