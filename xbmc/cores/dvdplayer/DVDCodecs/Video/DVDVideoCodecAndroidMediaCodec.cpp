@@ -988,6 +988,18 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
           int sps_size, pps_size;
           uint8_t *sps = nullptr, *pps = nullptr;
           m_bitstream->ExtractH264_SPS_PPS((uint8_t*)src_ptr, size, &sps, &sps_size, &pps, &pps_size);
+
+          // most mediacodec inplementations barf on interlaced h264.
+          bool interlaced = true;
+          int max_ref_frames;
+          m_bitstream->parseh264_sps(sps, sps_size, &interlaced, &max_ref_frames);
+          if (interlaced)
+          {
+            free(sps);
+            free(pps);
+            return false;
+          }
+
           if (sps)
           {
             //CLog::MemDump((char*)sps, sps_size);
