@@ -990,14 +990,18 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
           m_bitstream->ExtractH264_SPS_PPS((uint8_t*)src_ptr, size, &sps, &sps_size, &pps, &pps_size);
 
           // most mediacodec inplementations barf on interlaced h264.
-          bool interlaced = true;
-          int max_ref_frames;
-          m_bitstream->parseh264_sps(sps, sps_size, &interlaced, &max_ref_frames);
-          if (interlaced)
+          if (sps)
           {
-            free(sps);
-            free(pps);
-            return false;
+            bool interlaced = true;
+            int max_ref_frames;
+            m_bitstream->parseh264_sps(sps+1, sps_size-1, &interlaced, &max_ref_frames);
+            if (interlaced)
+            {
+              CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec - detected interlaced h264.");
+              free(sps);
+              free(pps);
+              return false;
+            }
           }
 
           if (sps)
