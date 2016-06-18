@@ -22,6 +22,7 @@
 #include "utils/StringUtils.h"
 #include <sstream>
 #include <cmath>
+#include <cstdlib>
 
 // replace these when we hit c++17
 static inline int ClampValue(int value, int min, int max)
@@ -98,16 +99,7 @@ bool CLightEffectClient::SetOption(const char *option)
     }
     else
     {
-      float value;
-      // std::stod can throw, setup to catch it
-      try {
-        value = std::stod(stroption);
-      }
-      catch (...)
-      {
-        return false;
-      }
-
+      float value = std::strtod(stroption.c_str(), NULL);
       if (strname == "speed")
       {
         m_speed = value;

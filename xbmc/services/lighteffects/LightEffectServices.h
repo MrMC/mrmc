@@ -19,6 +19,8 @@
  *
  */
 
+#include <atomic>
+
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "settings/lib/ISettingCallback.h"

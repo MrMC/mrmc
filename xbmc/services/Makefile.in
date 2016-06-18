@@ -1,5 +1,6 @@
 SRCS  =
 SRCS += lighteffects/LightEffectServices.cpp
+SRCS += lighteffects/LightEffectClient.cpp
 
 
 LIB   = services.a
