@@ -13,7 +13,7 @@
 			<control type="group">
 				<left>190</left>
 				<top>50</top>
-				<visible>Library.HasContent(Movies)</visible>
+				<visible>!IsEmpty(Window.Property(LatestMovie.1.Title))</visible>
 				<visible>Container(9000).Hasfocus(10) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="label">
@@ -250,7 +250,7 @@
 			<control type="group">
 				<left>160</left>
 				<top>50</top>
-				<visible>Library.HasContent(TVShows)</visible>
+				<visible>!IsEmpty(Window.Property(LatestEpisode.1.EpisodeTitle))</visible>
 				<visible>Container(9000).Hasfocus(11) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="label">
