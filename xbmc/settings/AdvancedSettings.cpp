@@ -1522,5 +1522,6 @@ void CAdvancedSettings::OnJobComplete(unsigned int jobID, bool success, CJob *jo
     m_busyDialog->Close();
   // tell home window to update recently added
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
   CJobQueue::OnJobComplete(jobID, success, job);
 }
