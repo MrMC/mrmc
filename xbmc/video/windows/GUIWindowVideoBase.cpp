@@ -709,7 +709,7 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
     return CGUIDialogAddonInfo::ShowForItem(item);
 
   ADDON::ScraperPtr scraper;
-  if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV() && !item->IsServiceBased())
+  if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV() && !item->IsMediaServiceBased())
   {
     std::string strDir;
     if (item->IsVideoDb()       &&

@@ -35,24 +35,34 @@
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
-#include "services/ServiceManager.h"
+#include "services/ServicesManager.h"
 
 bool CSaveFileStateJob::DoWork()
 {
   // if its serivces item, skip database update for it
-  if (m_item.IsServiceBased())
+  if (m_item.IsMediaServiceBased())
   {
     m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds = m_bookmark.timeInSeconds;
 
-    if (m_bookmark.timeInSeconds > m_item.GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds * 0.9)
+    double total_s = m_item.GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds;
+    double total_s_90percent = total_s * 0.9;
+    double total_s_minus_5mins = total_s - (60 * 5);
+    double resume_s =  m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds;
+    if (resume_s < 0 || resume_s > std::min(total_s_90percent, total_s_minus_5mins))
+    {
       m_item.GetVideoInfoTag()->m_playCount++;
-
+      m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds = 0;
+      CServicesManager::GetInstance().SetItemWatched(m_item);
+    }
+    else
+    {
+      CServicesManager::GetInstance().UpdateItemState(m_item, m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds);
+    }
+    m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->m_playCount > 0);
     CFileItemPtr msgItem(new CFileItem(m_item));
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
     g_windowManager.SendThreadMessage(message);
 
-    // notify service content handler where we stopped playback
-    CServiceManager::SetResumePoint(m_item);
     return true;
   }
 

@@ -3705,7 +3705,7 @@ msgstr ""
 
 #: lighteffects
 msgctxt "#857"
-msgid "LightEffects"
+msgid "LightEffects client"
 msgstr ""
 
 #: lighteffects
@@ -4260,7 +4260,89 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr ""
 
-#empty strings from id 1236 to 1258
+
+#: system/settings/settings.xml
+msgctxt "#1236"
+msgid "Plex client"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1237"
+msgid "Enable Plex server sign-in/discovery"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1238"
+msgid "Plex.TV Manual Sign-in"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1239"
+msgid "Plex.TV Manual Sign-in"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1240"
+msgid "Sign-in"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1241"
+msgid "Sign-out"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1242"
+msgid "Plex Server GDM Discovery"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1243"
+msgid "Choice of GDM Plex Server discovery"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1244"
+msgid "Plex Home User"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1245"
+msgid "Change the Plex Home User"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1246"
+msgid "Plex.TV Pin Request Sign-in"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1247"
+msgid "Plex.TV Pin Request Sign-in"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1248"
+msgid "From your computer, go to this url"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1249"
+msgid "https://plex.tv/pin and enter this code -> "
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1250"
+msgid "Plex Library update interval (mins)"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1251"
+msgid "Amount of time (in mins) that Plex servers are checked for updates"
+msgstr ""
+
+
+#empty strings from id 1252 to 1258
 
 #: system/settings/settings.xml
 msgctxt "#1259"
@@ -4274,7 +4356,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1261"
-msgid "MySQL"
+msgid "MySQL client"
 msgstr ""
 
 #: system/settings/settings.xml

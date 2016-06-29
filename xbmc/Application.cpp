@@ -88,7 +88,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SkinSettings.h"
-#include "services/ServiceManager.h"
+#include "services/ServicesManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/SeekHandler.h"
@@ -143,6 +143,7 @@
 #include "windows/GUIWindowScreensaver.h"
 #include "video/VideoInfoScanner.h"
 #include "video/PlayerController.h"
+#include "video/windows/GUIWindowVideoBase.h"
 
 // Dialog includes
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
@@ -3044,23 +3045,37 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   // case 2: all other stacks
   else
   {
-    LoadVideoSettings(item);
-    
-    // see if we have the info in the database
-    // TODO: If user changes the time speed (FPS via framerate conversion stuff)
-    //       then these times will be wrong.
-    //       Also, this is really just a hack for the slow load up times we have
-    //       A much better solution is a fast reader of FPS and fileLength
-    //       that we can use on a file to get it's time.
     std::vector<int> times;
     bool haveTimes(false);
-    CVideoDatabase dbs;
-    if (dbs.Open())
+    if(item.IsMediaServiceBased())
     {
-      haveTimes = dbs.GetStackTimes(item.GetPath(), times);
-      dbs.Close();
+      std::string key("stack:1_time");
+      int totalTime = 0;
+      for(unsigned s = 1; item.HasProperty(key); key = StringUtils::Format("stack:%u_time", ++s))
+      {
+        totalTime = totalTime + item.GetProperty(key).asInteger();
+        times.push_back(totalTime);
+      }
+      haveTimes = true;
     }
-
+    else
+    {
+      LoadVideoSettings(item);
+      
+      // see if we have the info in the database
+      // TODO: If user changes the time speed (FPS via framerate conversion stuff)
+      //       then these times will be wrong.
+      //       Also, this is really just a hack for the slow load up times we have
+      //       A much better solution is a fast reader of FPS and fileLength
+      //       that we can use on a file to get it's time.
+      
+      CVideoDatabase dbs;
+      if (dbs.Open())
+      {
+        haveTimes = dbs.GetStackTimes(item.GetPath(), times);
+        dbs.Close();
+      }
+    }
 
     // calculate the total time of the stack
     CStackDirectory dir;
@@ -3089,7 +3104,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
     if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
     {  // have our times now, so update the dB
-      if (dbs.Open())
+      if (!item.IsMediaServiceBased() && dbs.Open())
       {
         if (!haveTimes && !times.empty())
           dbs.SetStackTimes(item.GetPath(), times);
@@ -3108,7 +3123,11 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
         }
         dbs.Close();
       }
+      else
+        if (item.m_lStartOffset == STARTOFFSET_RESUME)
+          seconds = item.GetVideoInfoTag()->m_resumePoint.timeInSeconds;
     }
+
 
     *m_itemCurrentFile = item;
     m_currentStackPosition = 0;
@@ -3257,37 +3276,46 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
       if( item.m_lStartOffset == STARTOFFSET_RESUME )
       {
-        options.starttime = 0.0f;
-        CBookmark bookmark;
-        std::string path = item.GetPath();
-        if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
-          path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-        else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-          path = item.GetProperty("original_listitem_url").asString();
-        if(dbs.GetResumeBookMark(path, bookmark))
+        if (item.IsMediaServiceBased())
         {
+          CBookmark bookmark = item.GetVideoInfoTag()->m_resumePoint;
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;
         }
-        /*
-         override with information from the actual item if available.  We do this as the VFS (eg plugins)
-         may set the resume point to override whatever XBMC has stored, yet we ignore it until now so that,
-         should the playerState be required, it is fetched from the database.
-         See the note in CGUIWindowVideoBase::ShowResumeMenu.
-         */
-        if (item.IsResumePointSet())
-          options.starttime = item.GetCurrentResumeTime();
-        else if (item.HasVideoInfoTag())
+        else
         {
-          // No resume point is set, but check if this item is part of a multi-episode file
-          const CVideoInfoTag *tag = item.GetVideoInfoTag();
-
-          if (tag->m_iBookmarkId > 0)
+          options.starttime = 0.0f;
+          CBookmark bookmark;
+          std::string path = item.GetPath();
+          if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
+            path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+          else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+            path = item.GetProperty("original_listitem_url").asString();
+          if(dbs.GetResumeBookMark(path, bookmark))
           {
-            CBookmark bookmark;
-            dbs.GetBookMarkForEpisode(*tag, bookmark);
             options.starttime = bookmark.timeInSeconds;
             options.state = bookmark.playerState;
+          }
+          /*
+           override with information from the actual item if available.  We do this as the VFS (eg plugins)
+           may set the resume point to override whatever XBMC has stored, yet we ignore it until now so that,
+           should the playerState be required, it is fetched from the database.
+           See the note in CGUIWindowVideoBase::ShowResumeMenu.
+           */
+          if (item.IsResumePointSet())
+            options.starttime = item.GetCurrentResumeTime();
+          else if (item.HasVideoInfoTag())
+          {
+            // No resume point is set, but check if this item is part of a multi-episode file
+            const CVideoInfoTag *tag = item.GetVideoInfoTag();
+
+            if (tag->m_iBookmarkId > 0)
+            {
+              CBookmark bookmark;
+              dbs.GetBookMarkForEpisode(*tag, bookmark);
+              options.starttime = bookmark.timeInSeconds;
+              options.state = bookmark.playerState;
+            }
           }
         }
       }
@@ -3730,8 +3758,8 @@ void CApplication::UpdateFileState()
           m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
         }
 
-        if (m_progressTrackingItem->IsServiceBased())
-          CServiceManager::UpdateFileProgressState(*m_progressTrackingItem.get(), GetTime());
+        if (m_progressTrackingItem->IsMediaServiceBased())
+          CServicesManager::GetInstance().UpdateItemState(*m_progressTrackingItem.get(), GetTime());
       }
     }
   }

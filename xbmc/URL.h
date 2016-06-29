@@ -119,6 +119,13 @@ public:
   void SetProtocolOption(const std::string &key, const std::string &value);
   void RemoveProtocolOption(const std::string &key);
 
+  bool CheckForRedactedProtocolOptions() const;
+  std::string ReplaceRedactedProtocolOptions() const;
+
+  static bool HasProtocolOptionsRedacted(const std::string &key);
+  static void SetProtocolOptionsRedacted(const std::string &key, const std::string &value);
+  static CUrlOptions m_protocolOptionsRedacted;
+
 protected:
   int m_iPort;
   std::string m_strHostName;

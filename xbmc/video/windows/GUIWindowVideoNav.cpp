@@ -51,7 +51,7 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "ContextMenuManager.h"
-#include "services/ServiceManager.h"
+#include "services/ServicesManager.h"
 
 #include <utility>
 
@@ -252,7 +252,16 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_UPDATE_LIBRARY)
       {
         if (!g_application.IsVideoScanning())
-          OnScan("");
+        {
+          if (m_vecItems->IsVideoDb())
+          {
+            OnScan("");
+          }
+          else if (CServicesManager::GetInstance().IsMediaServicesItem(*m_vecItems))
+          {
+            CServicesManager::GetInstance().UpdateMediaServicesLibray(*m_vecItems);
+          }
+        }
         else
           g_application.StopVideoScan();
         return true;
@@ -269,11 +278,11 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
 SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem()
 {
-  if (m_vecItems->IsVideoDb())
+  if (m_vecItems->IsVideoDb() || m_vecItems->IsMediaServiceBased())
   {
     NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
 
-    if (nodeType == NODE_TYPE_SEASONS || nodeType == NODE_TYPE_EPISODES)
+    if (nodeType == NODE_TYPE_SEASONS || nodeType == NODE_TYPE_EPISODES || m_vecItems->IsMediaServiceBased())
     {
       int iValue = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
       if (iValue >= SelectFirstUnwatchedItem::NEVER && iValue <= SelectFirstUnwatchedItem::ALWAYS)
@@ -977,17 +986,27 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (!item->IsParentFolder())
     {
       ADDON::ScraperPtr info;
-      VIDEO::SScanSettings settings;
-      GetScraperForItem(item.get(), info, settings);
+      if (item->IsMediaServiceBased())
+      {
+        if (item->GetVideoInfoTag()->m_type == MediaTypeTvShow)
+          buttons.Add(CONTEXT_BUTTON_INFO, 20351);
+        else if (item->GetVideoInfoTag()->m_type == MediaTypeEpisode)
+          buttons.Add(CONTEXT_BUTTON_INFO, 20352);
+        else if (item->GetVideoInfoTag()->m_type == MediaTypeMovie)
+          buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+      }
+      else
+      {
+        VIDEO::SScanSettings settings;
+        GetScraperForItem(item.get(), info, settings);
 
-      if ((info && info->Content() == CONTENT_TVSHOWS) ||
-           item->GetVideoContentType() == SERVICE_CONTENT_TVSHOW ||
-           item->GetVideoContentType() == SERVICE_CONTENT_EPISODES)
-        buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
-      else if (info && info->Content() == CONTENT_MUSICVIDEOS)
-        buttons.Add(CONTEXT_BUTTON_INFO,20393);
-      else if ((info && info->Content() == CONTENT_MOVIES) || item->GetVideoContentType() == SERVICE_CONTENT_MOVIE)
-        buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+        if ((info && info->Content() == CONTENT_TVSHOWS))
+          buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
+        else if (info && info->Content() == CONTENT_MUSICVIDEOS)
+          buttons.Add(CONTEXT_BUTTON_INFO,20393);
+        else if ((info && info->Content() == CONTENT_MOVIES))
+          buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+      }
 
       // can we update the database?
       if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
@@ -999,7 +1018,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             !StringUtils::StartsWith(item->GetPath(), "newplaylist://") &&
             !StringUtils::StartsWith(item->GetPath(), "newtag://"))
         {
-          if (item->m_bIsFolder)
+          if (item->m_bIsFolder && !item->IsMediaServiceBased())
           {
             // Have both options for folders since we don't know whether all childs are watched/unwatched
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
@@ -1029,7 +1048,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (g_application.IsVideoScanning())
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
           // no scan for new content on server lib
-          if (item->GetVideoContentType() != SERVICE_CONTENT_TVSHOW)
+          if (!item->IsMediaServiceBased())
             buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
 
@@ -1053,7 +1072,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
-        if (item->m_bIsFolder && !item->IsVideoDb() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
+        if (item->m_bIsFolder && !item->IsVideoDb() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()) &&
+            !item->IsMediaServiceBased())
         {
           if (info && info->Content() != CONTENT_NONE)
             buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
@@ -1283,7 +1303,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
       lower == "moviestudios")
   {
     StringUtils::Replace(lower, "movie", "");
-    if (CServiceManager::HasServices())
+    if (CServicesManager::GetInstance().HasServices())
       return "plex://movies/" + lower + "/";
     return "videodb://movies/" + lower + "/";
   }
@@ -1298,19 +1318,19 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
            lower == "tvshowstudios")
   {
     StringUtils::Replace(lower, "tvshow", "");
-    if (CServiceManager::HasServices())
+    if (CServicesManager::GetInstance().HasServices())
       return "plex://tvshows/" + lower + "/";
     return "videodb://tvshows/" + lower + "/";
   }
   else if (lower == "recentlyaddedmovies")
   {
-    if (CServiceManager::HasServices())
+    if (CServicesManager::GetInstance().HasServices())
       return "plex://movies/recentlyaddedmovies/";
     return "videodb://recentlyaddedmovies/";
   }
   else if (lower == "recentlyaddedepisodes")
   {
-    if (CServiceManager::HasServices())
+    if (CServicesManager::GetInstance().HasServices())
       return "plex://tvshows/recentlyaddedepisodes/";
     return "videodb://recentlyaddedepisodes/";
   }

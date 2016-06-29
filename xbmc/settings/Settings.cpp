@@ -90,6 +90,7 @@
 #include "view/ViewStateSettings.h"
 #include "input/InputManager.h"
 #include "services/lighteffects/LightEffectServices.h"
+#include "services/plex/PlexServices.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 #define SETTINGS_XML_ROOT   "settings"
@@ -321,6 +322,7 @@ const std::string CSettings::SETTING_WEATHER_CURRENTLOCATION = "weather.currentl
 const std::string CSettings::SETTING_WEATHER_ADDON = "weather.addon";
 const std::string CSettings::SETTING_WEATHER_ADDONSETTINGS = "weather.addonsettings";
 const std::string CSettings::SETTING_SERVICES_DEVICENAME = "services.devicename";
+const std::string CSettings::SETTING_SERVICES_UUID = "services.uuid";
 const std::string CSettings::SETTING_SERVICES_UPNPSERVER = "services.upnpserver";
 const std::string CSettings::SETTING_SERVICES_UPNPANNOUNCE = "services.upnpannounce";
 const std::string CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES = "services.upnplookforexternalsubtitles";
@@ -466,6 +468,13 @@ const std::string CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICG = "services.li
 const std::string CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICB = "services.lighteffectsstaticb";
 const std::string CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER = "services.lighteffectsstaticscreensaver";
 
+// plex services
+const std::string CSettings::SETTING_SERVICES_PLEXSIGNIN = "plex.signin";
+const std::string CSettings::SETTING_SERVICES_PLEXSIGNINPIN = "plex.signinpin";
+const std::string CSettings::SETTING_SERVICES_PLEXHOMEUSER  = "plex.homeuser";
+const std::string CSettings::SETTING_SERVICES_PLEXGDMSERVER = "plex.gdmserver";
+const std::string CSettings::SETTING_SERVICES_PLEXUPDATEMINS = "plex.updatetime";
+const std::string CSettings::SETTING_SERVICES_PLEXMYPLEXAUTH = "plex.myplexauthtoken";
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -963,7 +972,6 @@ void CSettings::InitializeVisibility()
 
 void CSettings::InitializeDefaults()
 {
-  // set some default values if necessary
 #if defined(HAS_TOUCH_SKIN)
   bool default_touch_skin = false;
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
@@ -1328,6 +1336,14 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER);
   m_settingsManager->RegisterCallback(&CLightEffectServices::GetInstance(), settingSet);
   
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_SERVICES_PLEXSIGNIN);
+  settingSet.insert(CSettings::SETTING_SERVICES_PLEXSIGNINPIN);
+  settingSet.insert(CSettings::SETTING_SERVICES_PLEXHOMEUSER);
+  settingSet.insert(CSettings::SETTING_SERVICES_PLEXGDMSERVER);
+  settingSet.insert(CSettings::SETTING_SERVICES_PLEXUPDATEMINS);
+  settingSet.insert(CSettings::SETTING_SERVICES_PLEXMYPLEXAUTH);
+  m_settingsManager->RegisterCallback(&CPlexServices::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()

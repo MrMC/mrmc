@@ -91,6 +91,10 @@ public:
   bool IsLightEffectServicesRunning();
   bool StopLightEffectServices();
 
+  bool StartPlexServices();
+  bool IsPlexServicesRunning();
+  bool StopPlexServices();
+
   bool StartZeroconf();
   bool IsZeroconfRunning();
   bool StopZeroconf();

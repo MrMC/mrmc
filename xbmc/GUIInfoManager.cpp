@@ -98,7 +98,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 #include "interfaces/info/InfoExpression.h"
-#include "services/ServiceManager.h"
+#include "services/ServicesManager.h"
 
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
@@ -2465,7 +2465,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_application.IsMusicScanning();
   }
   else if (condition == LIBRARY_HASSERVICES)
-    bReturn = CServiceManager::HasServices();
+    bReturn = CServicesManager::GetInstance().HasServices();
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
     bReturn = true;
@@ -3253,11 +3253,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case VIDEOPLAYER_CONTENT:
         {
           std::string strContent="files";
-          if (m_currentFile->HasVideoInfoTag() && (m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMovie ||
-                                                   m_currentFile->GetVideoInfoTag()->m_type == MediaTypeServiceMovie))
+          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMovie)
             strContent = "movies";
-          if (m_currentFile->HasVideoInfoTag() && (m_currentFile->GetVideoInfoTag()->m_type == MediaTypeEpisode ||
-                                                   m_currentFile->GetVideoInfoTag()->m_type == MediaTypeServiceEpisode))
+          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeEpisode)
             strContent = "episodes";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
             strContent = "musicvideos";
@@ -4667,7 +4665,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   *m_currentFile = item;
 
   /* also call GetMovieInfo() when a VideoInfoTag is already present or additional info won't be present in the tag */
-  if (!m_currentFile->HasPVRChannelInfoTag())
+  if (!m_currentFile->HasPVRChannelInfoTag() && !item.IsMediaServiceBased())
   {
     CVideoDatabase dbs;
     if (dbs.Open())

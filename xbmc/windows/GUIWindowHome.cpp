@@ -35,7 +35,8 @@
 #include "settings/Settings.h"
 #include "playlists/PlayList.h"
 #include "messaging/ApplicationMessenger.h"
-#include "services/ServiceManager.h"
+#include "services/ServicesManager.h"
+#include "video/windows/GUIWindowVideoBase.h"
 
 #define CONTROL_RECENTLYADDEDMOVIES      8000
 #define CONTROL_RECENTLYADDEDTVSHOWS     8001
@@ -107,7 +108,7 @@ void CGUIWindowHome::OnInitWindow()
   // this is a temporary solution until remote announcements can be delivered
   if (StringUtils::EqualsNoCase(g_advancedSettings.m_databaseVideo.type, "mysql") ||
       StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql") ||
-      CServiceManager::HasServices())
+      CServicesManager::GetInstance().HasServices())
     m_updateRA = (Audio | Video | Totals);
   AddRecentlyAddedJobs( m_updateRA );
 
@@ -288,7 +289,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowHome::PlayRecentlyAddedItem(CFileItem itemPtr)
+bool CGUIWindowHome::PlayRecentlyAddedItem(CFileItem itemPtr)
 {
   // play media
   if (itemPtr.IsAudio())
@@ -299,8 +300,19 @@ void CGUIWindowHome::PlayRecentlyAddedItem(CFileItem itemPtr)
   }
   else
   {
-    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-    g_application.PlayMedia(itemPtr, PLAYLIST_VIDEO);
+    std::string resumeString = CGUIWindowVideoBase::GetResumeString(itemPtr);
+    if (!resumeString.empty())
+    {
+      CContextButtons choices;
+      choices.Add(SELECT_ACTION_RESUME, resumeString);
+      choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+      int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+      if (value < 0)
+        return false;
+      if (value == SELECT_ACTION_RESUME)
+        itemPtr.m_lStartOffset = STARTOFFSET_RESUME;
+    }
+    g_application.PlayFile(itemPtr);
   }
+  return true;
 }

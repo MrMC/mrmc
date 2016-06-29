@@ -272,6 +272,7 @@ public:
   static const std::string SETTING_WEATHER_ADDON;
   static const std::string SETTING_WEATHER_ADDONSETTINGS;
   static const std::string SETTING_SERVICES_DEVICENAME;
+  static const std::string SETTING_SERVICES_UUID;
   static const std::string SETTING_SERVICES_UPNPSERVER;
   static const std::string SETTING_SERVICES_UPNPANNOUNCE;
   static const std::string SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES;
@@ -416,6 +417,14 @@ public:
   static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICB;
   static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER;
   
+  // plex services
+  static const std::string SETTING_SERVICES_PLEXSIGNIN;
+  static const std::string SETTING_SERVICES_PLEXSIGNINPIN;
+  static const std::string SETTING_SERVICES_PLEXHOMEUSER;
+  static const std::string SETTING_SERVICES_PLEXGDMSERVER;
+  static const std::string SETTING_SERVICES_PLEXUPDATEMINS;
+  static const std::string SETTING_SERVICES_PLEXMYPLEXAUTH;
+
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
 

@@ -19,35 +19,22 @@
  *
  */
 
-class CServiceManager
+#include "filesystem/CurlFile.h"
+
+namespace XFILE
 {
-public:
-  static bool HasServices()
+  class CPlexFile : public CCurlFile
   {
-    return false;
-  }
+  public:
+    CPlexFile();
+    virtual ~CPlexFile();
+    virtual bool Open(const CURL& url);
+    virtual bool Exists(const CURL& url);
 
-  static void SetWatched(CFileItem &item)
-  {
-  }
+    static bool TranslatePath(const std::string &path, std::string &translatedPath);
+    static bool TranslatePath(const CURL &url, std::string &translatedPath);
 
-  static void SetUnWatched(CFileItem &item)
-  {
-  }
-
-  static void SetResumePoint(CFileItem &item)
-  {
-  }
-
-  static void UpdateFileProgressState(CFileItem &item, double currentTime)
-  {
-  }
-
-  static void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit)
-  {
-  }
-
-  static void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit)
-  {
-  }
-};
+  protected:
+    virtual std::string TranslatePath(const CURL &url);
+  };
+}

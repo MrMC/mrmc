@@ -231,7 +231,7 @@
 							<selectedcolor>selected</selectedcolor>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode]</label>
+							<label>$INFO[ListItem.Property(SeasonEpisode)]</label>
 						</control>
 						<control type="label">
 							<left>20</left>
@@ -289,7 +289,7 @@
 							<selectedcolor>selected</selectedcolor>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode]</label>
+							<label>$INFO[ListItem.Property(SeasonEpisode)]</label>
 						</control>
 						<control type="label">
 							<left>20</left>

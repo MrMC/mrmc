@@ -43,7 +43,7 @@ public:
 private:
   int m_updateRA; // flag for which recently added items needs to be queried
   void AddRecentlyAddedJobs(int flag);
-  void PlayRecentlyAddedItem(CFileItem itemPtr);
+  bool PlayRecentlyAddedItem(CFileItem itemPtr);
   bool m_recentlyAddedRunning;
   int m_cumulativeUpdateFlag;
   int m_countBackCalled;

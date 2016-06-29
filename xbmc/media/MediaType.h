@@ -37,10 +37,6 @@ typedef std::string MediaType;
 #define MediaTypeTvShow           "tvshow"
 #define MediaTypeSeason           "season"
 #define MediaTypeEpisode          "episode"
-#define MediaTypeServiceMovie      "servicexmovie" // some service client/server
-#define MediaTypeServiceTvShow     "servicetvshow"
-#define MediaTypeServiceEpisode    "serviceepisode"
-#define MediaTypeServiceSeason     "serviceseason"
 
 class MediaTypes
 {

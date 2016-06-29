@@ -192,7 +192,7 @@
           <height>70</height>
           <font>Slider</font>
           <align>center</align>
-          <label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode]</label>
+          <label>$INFO[ListItem.Property(SeasonEpisode)]</label>
         </control>
       </control>
     </itemlayout>
@@ -235,7 +235,7 @@
           <height>70</height>
           <font>Slider</font>
           <align>center</align>
-          <label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode]</label>
+          <label>$INFO[ListItem.Property(SeasonEpisode)]</label>
         </control>
       </control>
     </focusedlayout>

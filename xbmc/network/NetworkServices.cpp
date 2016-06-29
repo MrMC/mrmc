@@ -30,6 +30,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "network/Network.h"
 #include "services/lighteffects/LightEffectServices.h"
+#include "services/plex/PlexServices.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -113,6 +114,14 @@ CNetworkServices::CNetworkServices()
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
 {
+  // there must be a better way to do this...
+  std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
+  if (uuid == "replaceme")
+  {
+    uuid = StringUtils::CreateUUID();
+    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_UUID, uuid);
+  }
+
 #ifdef HAS_WEB_SERVER
   CWebServer::RegisterRequestHandler(&m_httpImageHandler);
   CWebServer::RegisterRequestHandler(&m_httpImageTransformationHandler);
@@ -466,17 +475,24 @@ bool CNetworkServices::OnSettingUpdate(CSetting* &setting, const char *oldSettin
 void CNetworkServices::Start()
 {
   StartZeroconf();
+
 #ifdef HAS_WEB_SERVER
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_WEBSERVER) && !StartWebserver())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
-#endif // HAS_WEB_SERVER
+#endif
+
   StartUPnP();
+
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartEventServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
+
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartJSONRPCServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
   
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE) && !StartLightEffectServices())
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
+
+  if (!StartPlexServices())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 
   // note - airtunesserver has to start before airplay server (ios7 client detection bug)
@@ -1022,6 +1038,29 @@ bool CNetworkServices::StopLightEffectServices()
     return true;
 
   CLightEffectServices::GetInstance().Stop();
+  return true;
+}
+
+bool CNetworkServices::StartPlexServices()
+{
+  if (IsPlexServicesRunning())
+    return true;
+
+  CPlexServices::GetInstance().Start();
+  return true;
+}
+
+bool CNetworkServices::IsPlexServicesRunning()
+{
+  return CPlexServices::GetInstance().IsActive();
+}
+
+bool CNetworkServices::StopPlexServices()
+{
+  if (!IsPlexServicesRunning())
+    return true;
+
+  CPlexServices::GetInstance().Stop();
   return true;
 }
 

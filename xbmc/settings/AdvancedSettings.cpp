@@ -36,6 +36,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIWindowManager.h"
 
+#include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "LangInfo.h"
@@ -83,6 +84,8 @@ public:
       videoDB.Close();
       g_infoManager.ResetCache();
       g_infoManager.ResetLibraryBools();
+      // we need to clear DirectoryCache so that we can populate listing properly
+      g_directoryCache.Clear();
       return true;
     }
     return false;

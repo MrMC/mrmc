@@ -33,7 +33,7 @@
 #include "music/MusicThumbLoader.h"
 #include "video/VideoThumbLoader.h"
 #include "settings/Settings.h"
-#include "services/ServiceManager.h"
+#include "services/ServicesManager.h"
 
 #if defined(TARGET_DARWIN_TVOS)
   #include "platform/darwin/DarwinUtils.h"
@@ -101,6 +101,8 @@ bool CRecentlyAddedJob::UpdateVideo()
   for (int i = 0; i < m_RecentlyAddedTV->Size(); i++)
   {
     CFileItemPtr item = m_RecentlyAddedTV->Get(i);
+    std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
+    item->SetProperty("SeasonEpisode", seasonEpisode);
     if (!item->HasArt("thumb"))
     {
       loader.LoadItem(item.get());
@@ -108,8 +110,8 @@ bool CRecentlyAddedJob::UpdateVideo()
   }
 
   // get recently added TVSHOWS and MOVIES from any enabled service
-  CServiceManager::GetAllRecentlyAddedShows(*m_RecentlyAddedTV, NUM_ITEMS);
-  CServiceManager::GetAllRecentlyAddedMovies(*m_RecentlyAddedMovies, NUM_ITEMS);
+  CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_RecentlyAddedTV, NUM_ITEMS);
+  CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_RecentlyAddedMovies, NUM_ITEMS);
 
 #if defined(TARGET_DARWIN_TVOS)
   // send recently added Movies and TvShows to TopShelf

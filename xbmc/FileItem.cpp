@@ -45,6 +45,7 @@
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "services/ServicesManager.h"
 #include "video/VideoInfoTag.h"
 #include "threads/SingleLock.h"
 #include "music/tags/MusicInfoTag.h"
@@ -1076,22 +1077,9 @@ bool CFileItem::IsLiveTV() const
   return URIUtils::IsLiveTV(m_strPath);
 }
 
-bool CFileItem::IsServiceBased() const
+bool CFileItem::IsMediaServiceBased() const
 {
-  bool rtn = false;
-  int contentType = GetVideoContentType();
-  switch(contentType)
-  {
-    case SERVICE_CONTENT_MOVIE:
-    case SERVICE_CONTENT_EPISODES:
-    case SERVICE_CONTENT_TVSHOW:
-    case SERVICE_CONTENT_SEASON:
-      rtn = true;
-      break;
-    default:
-      rtn = false;
-  }
-  return rtn;
+  return CServicesManager::GetInstance().IsMediaServicesItem(*this);
 }
 
 bool CFileItem::IsHD() const
@@ -1357,7 +1345,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (HasVideoInfoTag() && item->HasVideoInfoTag())
   {
-    if (item->IsServiceBased())
+    if (item->IsMediaServiceBased())
     {
       if (!m_videoInfoTag->m_strServiceId.empty() && !item->m_videoInfoTag->m_strServiceId.empty())
         return (m_videoInfoTag->m_strServiceId == item->m_videoInfoTag->m_strServiceId);
@@ -3313,14 +3301,6 @@ int CFileItem::GetVideoContentType() const
     return VIDEODB_CONTENT_EPISODES;
   if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
     return VIDEODB_CONTENT_MUSICVIDEOS;
-  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeServiceMovie)
-    return SERVICE_CONTENT_MOVIE;
-  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeServiceTvShow)
-    return SERVICE_CONTENT_TVSHOW;
-  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeServiceEpisode)
-    return SERVICE_CONTENT_EPISODES;
-  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeServiceSeason)
-    return SERVICE_CONTENT_SEASON;
   CVideoDatabaseDirectory dir;
   VIDEODATABASEDIRECTORY::CQueryParams params;
   dir.GetQueryParams(m_strPath, params);

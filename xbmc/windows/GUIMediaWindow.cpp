@@ -58,7 +58,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "services/ServiceManager.h"
+#include "services/ServicesManager.h"
 #include "storage/MediaManager.h"
 #include "threads/SystemClock.h"
 #include "utils/FileUtils.h"
@@ -1592,12 +1592,14 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_MARK_UNWATCHED:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
-      if (item->IsServiceBased())
+      if (item->IsMediaServiceBased())
       {
         if (button == CONTEXT_BUTTON_MARK_WATCHED)
-          CServiceManager::SetWatched(*item.get());
+          CServicesManager::GetInstance().SetItemWatched(*item.get());
         else
-          CServiceManager::SetUnWatched(*item.get());
+          CServicesManager::GetInstance().SetItemUnWatched(*item.get());
+        // set resume point to 0
+        item->GetVideoInfoTag()->m_resumePoint.timeInSeconds = 0;
         item->GetVideoInfoTag()->m_playCount = (button == CONTEXT_BUTTON_MARK_WATCHED);
         item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0);
         return true;

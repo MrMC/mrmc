@@ -289,6 +289,11 @@ bool URIUtils::HasEncodedHostname(const CURL& url)
       || url.IsProtocol( "image");
 }
 
+bool URIUtils::HasRedactedHostname(const CURL& url)
+{
+  return url.HasProtocolOption("X-Plex-Token");
+}
+
 bool URIUtils::HasEncodedFilename(const CURL& url)
 {
   const std::string prot2 = url.GetTranslatedProtocol();

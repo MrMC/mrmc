@@ -30,6 +30,7 @@
 #include "CurlFile.h"
 #include "HTTPFile.h"
 #include "DAVFile.h"
+#include "PlexFile.h"
 #include "ShoutcastFile.h"
 #include "FileReaderFile.h"
 #ifdef HAS_FILESYSTEM_SMB
@@ -167,6 +168,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     if (url.IsProtocol("ftp")
     ||  url.IsProtocol("ftps")
     ||  url.IsProtocol("rss")) return new CCurlFile();
+    else if (url.IsProtocol("plex")) return new CPlexFile();
     else if (url.IsProtocol("http") ||  url.IsProtocol("https")) return new CHTTPFile();
     else if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVFile();
 #ifdef HAS_FILESYSTEM_SFTP

@@ -194,6 +194,7 @@ public:
 
   static bool HasParentInHostname(const CURL& url);
   static bool HasEncodedHostname(const CURL& url);
+  static bool HasRedactedHostname(const CURL& url);
   static bool HasEncodedFilename(const CURL& url);
 
   /*!

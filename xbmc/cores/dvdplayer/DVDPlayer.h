@@ -359,7 +359,7 @@ protected:
 
   bool ShowPVRChannelInfo();
 
-  int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "");
+  int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", const std::string language = "");
   void SetSubtitleVisibleInternal(bool bVisible);
 
   /**
