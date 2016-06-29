@@ -32,9 +32,8 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#ifdef TARGET_POSIX
+
 typedef int SOCKET;
-#endif
 
 namespace SOCKETS
 {
@@ -69,11 +68,12 @@ namespace SOCKETS
       SetAddress(address);
     }
 
-    void SetAddress(const char *address)
+    void SetAddress(const char *address, int port = 0)
     {
       memset(&saddr, 0, sizeof(saddr));
       saddr.sin_family = AF_INET;
       saddr.sin_addr.s_addr = inet_addr(address);
+      saddr.sin_port = htons(port);
       size = sizeof(saddr);
     }
 
@@ -81,6 +81,11 @@ namespace SOCKETS
     char *Address()
     {
       return inet_ntoa(saddr.sin_addr);
+    }
+
+    int Port()
+    {
+      return saddr.sin_port;
     }
 
     unsigned long ULong()
@@ -105,7 +110,7 @@ namespace SOCKETS
     virtual ~CBaseSocket() { Close(); }
 
     // socket functions
-    virtual bool Bind(CAddress& addr, int port, int range=0) = 0;
+    virtual bool Bind(CAddress& addr, int port, int range = 0) = 0;
     virtual bool Connect() = 0;
     virtual void Close() {};
 
@@ -143,8 +148,8 @@ namespace SOCKETS
 
     // read datagrams, return no. of bytes read or -1 or error
     virtual int  Read(CAddress& addr, const int buffersize, void *buffer) = 0;
-    virtual bool Broadcast(const CAddress& addr, const int datasize,
-                           const void* data) = 0;
+    virtual bool SetBroadCast(bool broadcast) = 0;
+    virtual bool GetBroadCast(bool &broadcast) = 0;
   };
 
   // Implementation specific classes
@@ -160,16 +165,13 @@ namespace SOCKETS
         m_iSock = INVALID_SOCKET;
       }
 
-    bool Bind(CAddress& addr, int port, int range=0);
+    bool Bind(CAddress& addr, int port, int range = 0);
     bool Connect() { return false; }
     bool Listen(int timeout);
     int  SendTo(const CAddress& addr, const int datasize, const void* data);
     int  Read(CAddress& addr, const int buffersize, void *buffer);
-    bool Broadcast(const CAddress& addr, const int datasize, const void* data)
-    {
-      // TODO
-      return false;
-    }
+    bool SetBroadCast(bool broadcast);
+    bool GetBroadCast(bool &broadcast);
     SOCKET  Socket() { return m_iSock; }
     void Close();
 

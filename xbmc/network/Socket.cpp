@@ -22,10 +22,9 @@
 
 #include "system.h"
 
-#ifdef HAS_EVENT_SERVER
-
 #include "Socket.h"
 #include "utils/log.h"
+
 #include <vector>
 
 using namespace SOCKETS;
@@ -116,6 +115,148 @@ int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
                      (const struct sockaddr*)&addr.saddr,
                      sizeof(addr.saddr));
 }
+
+bool CPosixUDPSocket::SetBroadCast(bool broadcast)
+{
+  int uflag = broadcast ? 1 : 0;
+  if (setsockopt(m_iSock, SOL_SOCKET, SO_BROADCAST, &uflag, sizeof(uflag)) == -1)
+  {
+    CLog::Log(LOGWARNING, "CUDPSocket: Could not set broadcast option");
+    CLog::Log(LOGWARNING, "CUDPSocket: %s", strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+
+bool CPosixUDPSocket::GetBroadCast(bool &broadcast)
+{
+  int uflag = 0;
+  socklen_t size = sizeof(uflag);
+  if (getsockopt(m_iSock, SOL_SOCKET, SO_BROADCAST, &uflag, &size) == -1)
+  {
+    CLog::Log(LOGWARNING, "CUDPSocket: Could not get broadcast option");
+    CLog::Log(LOGWARNING, "CUDPSocket: %s", strerror(errno));
+    return false;
+  }
+
+  broadcast = uflag;
+  return true;
+}
+/*
+bool CUDPMultiCastSocket::SetBlocking(bool blocking)
+{
+  int flags = fcntl(m_iSock, F_GETFL);
+  if (flags == -1)
+    return false;
+
+  if (blocking)
+    flags |= O_NONBLOCK;
+  else
+    flags &= ~O_NONBLOCK;
+
+  if (fcntl(m_iSock, F_SETFL, flags) == -1)
+    return false;
+
+  return true;
+}
+
+bool CUDPMultiCastSocket::GetBlocking(bool &blocking)
+{
+  int flags = fcntl(m_iSock, F_GETFL);
+  if (flags == -1)
+    return false;
+
+  blocking = flags & O_NONBLOCK;
+  return true;
+}
+
+bool CUDPMultiCastSocket::SetLoopBack(bool loopback)
+{
+  unsigned char uflag = loopback ? 1 : 0;
+  if (setsockopt(m_iSock, IPPROTO_IP, IP_MULTICAST_LOOP, &uflag, sizeof(uflag)) == -1)
+  {
+    CLog::Log(LOGWARNING, "UDPMultiCast: Could not set loopback option");
+    CLog::Log(LOGWARNING, "UDPMultiCast: %s", strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+
+bool CUDPMultiCastSocket::GetLoopBack(bool &loopback)
+{
+  unsigned char uflag;
+  socklen_t size = sizeof(uflag);
+  if (getsockopt(m_iSock, IPPROTO_IP, IP_MULTICAST_LOOP, &uflag, &size) == -1)
+  {
+    CLog::Log(LOGWARNING, "UDPMultiCast: Could not get loopback option");
+    CLog::Log(LOGWARNING, "UDPMultiCast: %s", strerror(errno));
+    return false;
+  }
+
+  loopback = uflag == 1;
+  return true;
+}
+
+bool CUDPMultiCastSocket::SetTimeToLive(int ttl)
+{
+  unsigned char uflag = ttl;
+  if (setsockopt(m_iSock, IPPROTO_IP, IP_MULTICAST_TTL, &uflag, sizeof(uflag)) == -1)
+  {
+    CLog::Log(LOGWARNING, "UDPMultiCast: Could not set timetolive option");
+    CLog::Log(LOGWARNING, "UDPMultiCast: %s", strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+
+bool CUDPMultiCastSocket::GetTimeToLive(int &ttl)
+{
+  unsigned char uflag = 0;
+  socklen_t size = sizeof(uflag);
+  if (getsockopt(m_iSock, IPPROTO_IP, IP_MULTICAST_TTL, &uflag, &size) == -1)
+  {
+    CLog::Log(LOGWARNING, "UDPMultiCast: Could not get timetolive option");
+    CLog::Log(LOGWARNING, "UDPMultiCast: %s", strerror(errno));
+    return false;
+  }
+
+  ttl = uflag;
+  return true;
+}
+
+bool CUDPMultiCastSocket::JoinGroup(CAddress groupAddress)
+{
+  struct ip_mreq mreq;
+  mreq.imr_multiaddr.s_addr = inet_addr(groupAddress.Address());
+  mreq.imr_interface.s_addr = INADDR_ANY;
+  if (setsockopt(m_iSock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) == -1)
+  {
+    CLog::Log(LOGWARNING, "UDPMultiCast: Could not join group");
+    CLog::Log(LOGWARNING, "UDPMultiCast: %s", strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+
+bool CUDPMultiCastSocket::LeaveGroup(CAddress groupAddress)
+{
+  struct ip_mreq mreq;
+  mreq.imr_multiaddr.s_addr = inet_addr(groupAddress.Address());
+  mreq.imr_interface.s_addr = INADDR_ANY;
+  if (setsockopt(m_iSock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) == -1)
+  {
+    CLog::Log(LOGWARNING, "UDPMultiCast: Could not leave group");
+    CLog::Log(LOGWARNING, "UDPMultiCast: %s", strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+*/
 
 /**********************************************************************/
 /* CSocketFactory                                                     */
@@ -226,5 +367,3 @@ CBaseSocket* CSocketListener::GetNextReadySocket()
   }
   return NULL;
 }
-
-#endif // HAS_EVENT_SERVER
