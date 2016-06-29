@@ -1779,7 +1779,7 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 
   if (full && (currate < maxrate) )
   {
-    CLog::Log(LOGDEBUG, "Readrate %u is too low with %u required", currate, maxrate);
+    //CLog::Log(LOGDEBUG, "Readrate %u is too low with %u required", currate, maxrate);
     level = -1.0;                          /* buffer is full & our read rate is too low  */
   }
   else

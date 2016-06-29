@@ -232,7 +232,7 @@ void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, C
   m_sessions.push_back(session);
 
 
-  CLog::Log(LOGINFO, "%s - Created session to %s://%s\n", __FUNCTION__, protocol, hostname);
+  //CLog::Log(LOGINFO, "%s - Created session to %s://%s\n", __FUNCTION__, protocol, hostname);
 
   return;
 

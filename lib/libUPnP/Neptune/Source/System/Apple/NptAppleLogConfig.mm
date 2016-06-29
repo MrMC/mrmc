@@ -24,12 +24,12 @@ NPT_GetSystemLogConfig(NPT_String& config)
 #endif
     
     NPT_Result result = NPT_SUCCESS;
-	if (npt_log_config) {
-		NSLog(@"NEPTUNE_LOG_CONFIG in plist is: %@", npt_log_config);
-		config = (const char*)[npt_log_config UTF8String];
-	} else {
-		NSLog(@"NEPTUNE_LOG_CONFIG not found in 'Info.plist'");
-        result = NPT_ERROR_NO_SUCH_PROPERTY;
+    if (npt_log_config) {
+      //NSLog(@"NEPTUNE_LOG_CONFIG in plist is: %@", npt_log_config);
+      config = (const char*)[npt_log_config UTF8String];
+    } else {
+      //NSLog(@"NEPTUNE_LOG_CONFIG not found in 'Info.plist'");
+      result = NPT_ERROR_NO_SUCH_PROPERTY;
     }
     [pool release];
     return result;

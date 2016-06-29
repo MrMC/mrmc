@@ -58,6 +58,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "services/ServiceManager.h"
 #include "storage/MediaManager.h"
 #include "threads/SystemClock.h"
 #include "utils/FileUtils.h"
@@ -68,6 +69,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoInfoTag.h"
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -643,9 +645,9 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   std::string strParentPath = m_history.GetParentPath();
 
-  CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)",
-            CURL::GetRedacted(strDirectory).c_str());
-  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", CURL::GetRedacted(strParentPath).c_str());
+  //CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)",
+  //          CURL::GetRedacted(strDirectory).c_str());
+  //CLog::Log(LOGDEBUG,"  ParentPath = [%s]", CURL::GetRedacted(strParentPath).c_str());
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
@@ -1590,6 +1592,16 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_MARK_UNWATCHED:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
+      if (item->IsServiceBased())
+      {
+        if (button == CONTEXT_BUTTON_MARK_WATCHED)
+          CServiceManager::SetWatched(*item.get());
+        else
+          CServiceManager::SetUnWatched(*item.get());
+        item->GetVideoInfoTag()->m_playCount = (button == CONTEXT_BUTTON_MARK_WATCHED);
+        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0);
+        return true;
+      }
       m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
       CVideoLibraryQueue::GetInstance().MarkAsWatched(item, (button == CONTEXT_BUTTON_MARK_WATCHED));
       return true;
