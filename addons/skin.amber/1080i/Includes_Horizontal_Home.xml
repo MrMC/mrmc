@@ -18,7 +18,7 @@
 	  <include condition="Skin.HasSetting(Shelf.Delay)">Shelf_Delay</include>
 	    <posy>-105</posy>
         <control type="image" description="RA BG XBMC only">
-        <visible>[Control.IsVisible(111) | Control.IsVisible(211) | Control.IsVisible(212) | [Control.IsVisible(311) + !Control.IsVisible(312)] | [!Control.IsVisible(311) + Control.IsVisible(312)] | [Control.IsVisible(411) + !Control.IsVisible(413)] | [!Control.IsVisible(411) + Control.IsVisible(413)] | [Control.IsVisible(511) + !Control.IsVisible(513)] | [!Control.IsVisible(511) + Control.IsVisible(513)] | [Control.IsVisible(514) + !Control.IsVisible(515)] | [!Control.IsVisible(514) + Control.IsVisible(515)] | Control.IsVisible(412) | Control.IsVisible(512)]</visible>
+        <visible>[Control.IsVisible(111) | Control.IsVisible(211) | Control.IsVisible(212) | [Control.IsVisible(8000) + !Control.IsVisible(312)] | [!Control.IsVisible(8000) + Control.IsVisible(312)] | [Control.IsVisible(8001) + !Control.IsVisible(413)] | [!Control.IsVisible(8001) + Control.IsVisible(413)] | [Control.IsVisible(8002) + !Control.IsVisible(513)] | [!Control.IsVisible(8002) + Control.IsVisible(513)] | [Control.IsVisible(514) + !Control.IsVisible(515)] | [!Control.IsVisible(514) + Control.IsVisible(515)] | Control.IsVisible(412) | Control.IsVisible(512)]</visible>
         <posx>0</posx>
           <posy>345</posy>
           <width>1920</width>
@@ -26,7 +26,7 @@
           <texture border="0,40,0,40">home/OverlayRA2.png</texture>
       </control>
       <control type="image" description="RA BG 2 XBMC only">
-        <visible>[[Control.IsVisible(311) + Control.IsVisible(312)] | [Control.IsVisible(411) + Control.IsVisible(413)] | [Control.IsVisible(511) + Control.IsVisible(513)] | [Control.IsVisible(514) + Control.IsVisible(515)]]</visible>
+        <visible>[[Control.IsVisible(8000) + Control.IsVisible(312)] | [Control.IsVisible(8001) + Control.IsVisible(413)] | [Control.IsVisible(8002) + Control.IsVisible(513)] | [Control.IsVisible(514) + Control.IsVisible(515)]]</visible>
         <posx>0</posx>
           <posy>183</posy>
           <width>1920</width>

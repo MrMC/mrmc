@@ -35,4 +35,6 @@ class CTVOSTopShelf
  private:
   static std::string m_url;
   static bool        m_handleUrl;
+  CFileItemList     *m_RecentlyAddedTV;
+  CFileItemList     *m_RecentlyAddedMovies;
 };

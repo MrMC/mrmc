@@ -300,30 +300,27 @@
   </include>
   <include name="Recent.Movies.List">
     <control type="label" description="Header">
-      <visible>Control.IsVisible(311)</visible>
+      <visible>Control.IsVisible(8000)</visible>
       <include>RecentlyAdded_Header</include>
-      <label>$INFO[Container(311).ListItem.Property(ItemType)]</label>
+      <label>$INFO[Container(8000).ListItem.Property(ItemType)]</label>
     </control>
     <control type="label" description="Label">
-      <visible>Control.HasFocus(311)</visible>
+      <visible>Control.HasFocus(8000)</visible>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Label_Commons</include>
       <include>RecentlyAdded_Label</include>
-      <label>$INFO[Container(311).ListItem.Label]</label>
+      <label>$INFO[Container(8000).ListItem.Label]</label>
     </control>
-    <control type="fixedlist" id="311" description="Movies XBMC">
-      <visible>!IsEmpty(Window.Property(LatestMovie.1.Title))</visible>
+    <control type="fixedlist" id="8000" description="Movies XBMC">
+      <visible>IntegerGreaterThan(Container(8000).NumItems,1)</visible>
       <visible>Container(300).HasFocus(4)</visible>
-      <onright>311</onright>
+      <onright>8000</onright>
       <onup>300</onup>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
-      <onleft condition="!Skin.HasSetting(VerticalHome)">311</onleft>
+      <onleft condition="!Skin.HasSetting(VerticalHome)">8000</onleft>
       <ondown condition="Control.IsVisible(312)">312</ondown>
       <ondown condition="!Control.IsVisible(312)">300</ondown>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Shelf_Commons</include>
       <include>RecentlyAdded_Posters</include>
-      <content>
-        <include>RecentMovieContent</include>
-      </content>
     </control>
   </include>
   <include name="Recommended.And.Random.Movies.List">
@@ -342,8 +339,8 @@
       <visible>![IsEmpty(Window(Home).Property(RecommendedMovie.1.Title)) + IsEmpty(Window(Home).Property(RandomMovie.1.Title))]</visible>
       <visible>Container(300).HasFocus(4)</visible>
       <onright>312</onright>
-      <onup condition="Control.IsVisible(311)">311</onup>
-      <onup condition="!Control.IsVisible(311)">300</onup>
+      <onup condition="Control.IsVisible(8000)">8000</onup>
+      <onup condition="!Control.IsVisible(8000)">300</onup>
       <ondown>300</ondown>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
       <onleft condition="!Skin.HasSetting(VerticalHome)">312</onleft>
@@ -413,30 +410,27 @@
   </include>
   <include name="Recent.Episodes.List">
     <control type="label" description="Header">
-      <visible>Control.IsVisible(411)</visible>
+      <visible>Control.IsVisible(8001)</visible>
       <include>RecentlyAdded_Header</include>
-      <label>$INFO[Container(411).ListItem.Property(ItemType)]</label>
+      <label>$INFO[Container(8001).ListItem.Property(ItemType)]</label>
     </control>
     <control type="label" description="Label">
-      <visible>Control.HasFocus(411)</visible>
+      <visible>Control.HasFocus(8001)</visible>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Label_Commons</include>
       <include>RecentlyAdded_Label</include>
-      <label>$INFO[Container(411).ListItem.Label]</label>
+      <label>$INFO[Container(8001).ListItem.Label]</label>
     </control>
-    <control type="fixedlist" id="411" description="TV Shows XBMC">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.1.EpisodeTitle))</visible>
+    <control type="fixedlist" id="8001" description="TV Shows XBMC">
+      <visible>IntegerGreaterThan(Container(8001).NumItems,1)</visible>
       <visible>Container(300).HasFocus(5)</visible>
-      <onright>411</onright>
+      <onright>8001</onright>
       <onup>300</onup>
       <ondown condition="Control.IsVisible(413)">413</ondown>
       <ondown condition="!Control.IsVisible(413)">300</ondown>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
-      <onleft condition="!Skin.HasSetting(VerticalHome)">411</onleft>
+      <onleft condition="!Skin.HasSetting(VerticalHome)">8001</onleft>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Shelf_Commons</include>
       <include>RecentlyAdded_Episodes</include>
-      <content>
-        <include>RecentEpisodeContent</include>
-      </content>
     </control>
   </include>
   <include name="Recommended.Episodes.List">
@@ -455,8 +449,8 @@
       <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.1.Title))</visible>
       <visible>Container(300).HasFocus(5)</visible>
       <onright>413</onright>
-      <onup condition="Control.IsVisible(411)">411</onup>
-      <onup condition="!Control.IsVisible(411)">300</onup>
+      <onup condition="Control.IsVisible(8001)">8001</onup>
+      <onup condition="!Control.IsVisible(8001)">300</onup>
       <ondown>300</ondown>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
       <onleft condition="!Skin.HasSetting(VerticalHome)">413</onleft>
@@ -469,30 +463,27 @@
   </include>
   <include name="Recent.Albums.List">
     <control type="label" description="Header">
-      <visible>Control.IsVisible(511)</visible>
+      <visible>Control.IsVisible(8002)</visible>
       <include>RecentlyAdded_Header</include>
-      <label>$INFO[Container(511).ListItem.Property(ItemType)]</label>
+      <label>$INFO[Container(8002).ListItem.Property(ItemType)]</label>
     </control>
     <control type="label" description="Label">
-      <visible>Control.HasFocus(511)</visible>
+      <visible>Control.HasFocus(8002)</visible>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Label_Commons</include>
       <include>RecentlyAdded_Label</include>
-      <label>$INFO[Container(511).ListItem.Property(ShelfLabel)]</label>
+      <label>$INFO[Container(8002).ListItem.Property(ShelfLabel)]</label>
     </control>
-    <control type="fixedlist" id="511" description="TOP Shortcuts">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.1.Title))</visible>
+    <control type="fixedlist" id="8002" description="TOP Shortcuts">
+      <visible>IntegerGreaterThan(Container(8002).NumItems,1)</visible>
       <visible>Container(300).HasFocus(6)</visible>
-      <onright>511</onright>
+      <onright>8002</onright>
       <onup>300</onup>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
-      <onleft condition="!Skin.HasSetting(VerticalHome)">511</onleft>
+      <onleft condition="!Skin.HasSetting(VerticalHome)">8002</onleft>
       <ondown condition="Control.IsVisible(513)">513</ondown>
       <ondown condition="!Control.IsVisible(513)">300</ondown>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Shelf_Commons</include>
       <include>RecentlyAdded_Albums</include>
-      <content>
-        <include>RecentAlbumContent</include>
-      </content>
     </control>
   </include>
   <include name="Recommended.Albums.List">
@@ -511,8 +502,8 @@
       <visible>![Skin.HasSetting(Hide.RecentlyAdded) | IsEmpty(Window(Home).Property(RecommendedAlbum.1.Title))]</visible>
       <visible>Container(300).HasFocus(6)</visible>
       <onright>513</onright>
-      <onup condition="Control.IsVisible(511)">511</onup>
-      <onup condition="!Control.IsVisible(511)">300</onup>
+      <onup condition="Control.IsVisible(8002)">8002</onup>
+      <onup condition="!Control.IsVisible(8002)">300</onup>
       <ondown>300</ondown>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
       <onleft condition="!Skin.HasSetting(VerticalHome)">513</onleft>
@@ -693,78 +684,6 @@
       <property name="ItemType">$LOCALIZE[24001]</property>
     </item>
   </include>
-  <include name="RecentMovieContent">
-    <item id="1" description="Shortcut 1 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.1.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.1.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.1.Year), • ]$INFO[Window.Property(LatestMovie.1.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.1.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.1.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.1.Path)])</onclick>
-    </item>
-    <item id="2" description="Shortcut 2 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.2.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.2.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.2.Year), • ]$INFO[Window.Property(LatestMovie.2.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.2.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.2.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.2.Path)])</onclick>
-    </item>
-    <item id="3" description="Shortcut 3 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.3.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.3.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.3.Year), • ]$INFO[Window.Property(LatestMovie.3.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.3.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.3.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.3.Path)])</onclick>
-    </item>
-    <item id="4" description="Shortcut 4 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.4.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.4.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.4.Year), • ]$INFO[Window.Property(LatestMovie.4.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.4.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.4.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.4.Path)])</onclick>
-    </item>
-    <item id="5" description="Shortcut 5 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.5.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.5.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.5.Year), • ]$INFO[Window.Property(LatestMovie.5.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.5.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.5.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.5.Path)])</onclick>
-    </item>
-    <item id="6" description="Shortcut 6 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.6.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.6.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.6.Year), • ]$INFO[Window.Property(LatestMovie.6.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.6.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.6.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.6.Path)])</onclick>
-    </item>
-    <item id="7" description="Shortcut 7 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.7.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.7.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.7.Year), • ]$INFO[Window.Property(LatestMovie.7.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.7.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.7.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.7.Path)])</onclick>
-    </item>
-    <item id="8" description="Shortcut 8 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.8.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.8.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.8.Year), • ]$INFO[Window.Property(LatestMovie.8.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.8.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.8.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.8.Path)])</onclick>
-    </item>
-    <item id="9" description="Shortcut 9 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.9.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.9.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.9.Year), • ]$INFO[Window.Property(LatestMovie.9.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.9.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.9.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.9.Path)])</onclick>
-    </item>
-    <item id="10" description="Shortcut 10 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestMovie.10.Title))</visible>
-      <label>$INFO[Window.Property(LatestMovie.10.Title)][COLOR=White]$INFO[Window.Property(LatestMovie.10.Year), • ]$INFO[Window.Property(LatestMovie.10.RunningTime), • , $LOCALIZE[12391]]$INFO[Window.Property(LatestMovie.10.Rating), • ][/COLOR]</label>
-      <thumb>$INFO[Window.Property(LatestMovie.10.Thumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.10.Path)])</onclick>
-    </item>
-  </include>
   <include name="RecommendedMovieContent">
     <item id="1" description="Shortcut 1 (skin widgets)">
       <visible>!IsEmpty(Window(Home).Property(RecommendedMovie.1.Title))</visible>
@@ -909,88 +828,6 @@
       <onclick>PlayMedia($ESCINFO[Window(Home).Property(RandomMovie.10.Path)])</onclick>
     </item>
   </include>
-  <include name="RecentEpisodeContent">
-    <item id="1" description="Shortcut 1 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.1.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.1.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.1.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.1.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.1.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.1.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.1.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.1.Path)])</onclick>
-    </item>
-    <item id="2" description="Shortcut 2 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.2.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.2.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.2.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.2.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.2.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.2.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.2.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.2.Path)])</onclick>
-    </item>
-    <item id="3" description="Shortcut 3 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.3.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.3.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.3.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.3.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.3.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.3.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.3.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.3.Path)])</onclick>
-    </item>
-    <item id="4" description="Shortcut 4 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.4.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.4.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.4.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.4.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.4.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.4.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.4.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.4.Path)])</onclick>
-    </item>
-    <item id="5" description="Shortcut 5 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.5.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.5.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.5.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.5.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.5.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.5.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.5.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.5.Path)])</onclick>
-    </item>
-    <item id="6" description="Shortcut 6 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.6.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.6.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.6.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.6.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.6.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.6.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.6.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.6.Path)])</onclick>
-    </item>
-    <item id="7" description="Shortcut 7 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.7.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.7.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.7.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.7.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.7.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.7.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.7.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.7.Path)])</onclick>
-    </item>
-    <item id="8" description="Shortcut 8 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.8.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.8.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.8.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.8.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.8.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.8.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.8.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.8.Path)])</onclick>
-    </item>
-    <item id="9" description="Shortcut 9 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.9.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.9.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.9.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.9.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.9.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.9.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.9.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.9.Path)])</onclick>
-    </item>
-    <item id="10" description="Shortcut 10 (skin widgets)">
-      <visible>!IsEmpty(Window.Property(LatestEpisode.10.EpisodeTitle))</visible>
-      <label>$INFO[Window.Property(LatestEpisode.10.EpisodeTitle)][COLOR=White]$INFO[Window.Property(LatestEpisode.10.ShowTitle), • ]$INFO[Window.Property(LatestEpisode.10.EpisodeNo), • ]$INFO[Window.Property(LatestEpisode.10.RunningTime), • , $LOCALIZE[12391]][/COLOR]</label>
-      <property name="SeasonEpisode">$INFO[Window.Property(LatestEpisode.10.EpisodeNo)]</property>
-      <thumb>$INFO[Window.Property(LatestEpisode.10.ShowThumb)]</thumb>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.10.Path)])</onclick>
-    </item>
-  </include>
   <include name="RecommendedEpisodeContent">
     <item id="1" description="Shortcut 1 (skin widgets)">
       <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.1.Title))</visible>
@@ -1071,108 +908,6 @@
       <thumb>$INFO[Window(Home).Property(RecommendedEpisode.10.Art(tvshow.poster))]</thumb>
       <property name="ItemType">$LOCALIZE[31966]</property>
       <onclick>PlayMedia($ESCINFO[Window(Home).Property(RecommendedEpisode.10.Path)])</onclick>
-    </item>
-  </include>
-  <include name="RecentAlbumContent">
-    <item id="1" description="Music">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.1.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.1.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.1.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.1.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.1.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.1.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.1.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.1.Path)]")</onclick>
-    </item>
-    <item id="2" description="Shortcut2">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.2.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.2.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.2.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.2.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.2.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.2.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.2.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.2.Path)]")</onclick>
-    </item>
-    <item id="3" description="Shortcut3">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.3.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.3.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.3.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.3.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.3.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.3.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.3.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.3.Path)]")</onclick>
-    </item>
-    <item id="4" description="Shortcut4">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.4.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.4.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.4.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.4.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.4.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.4.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.4.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.4.Path)]")</onclick>
-    </item>
-    <item id="5" description="Shortcut5">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.5.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.5.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.5.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.5.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.5.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.5.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.5.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.5.Path)]")</onclick>
-    </item>
-    <item id="6" description="Music">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.6.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.6.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.6.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.6.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.6.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.6.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.6.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.6.Path)]")</onclick>
-    </item>
-    <item id="7" description="Shortcut7">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.7.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.7.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.7.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.7.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.7.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.7.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.7.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.7.Path)]")</onclick>
-    </item>
-    <item id="8" description="Shortcut8">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.8.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.8.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.8.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.8.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.8.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.8.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.8.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.8.Path)]")</onclick>
-    </item>
-    <item id="9" description="Shortcut9">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.9.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.9.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.9.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.9.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.9.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.9.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.9.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.9.Path)]")</onclick>
-    </item>
-    <item id="10" description="Shortcut10">
-      <visible>!IsEmpty(Window(Home).Property(LatestAlbum.10.Title))</visible>
-      <label>$INFO[Window(Home).Property(LatestAlbum.10.Artist)]</label>
-      <label2>$INFO[Window(Home).Property(LatestAlbum.10.Title)]</label2>
-      <thumb>$INFO[Window(Home).Property(LatestAlbum.10.Thumb)]</thumb>
-      <property name="ShelfLabel">$INFO[Window(Home).Property(LatestAlbum.10.Title)][COLOR=White]$INFO[Window(Home).Property(LatestAlbum.10.Artist), • ]$INFO[Window(Home).Property(LatestAlbum.10.Year), • ][/COLOR]</property>
-      <property name="ItemType">$LOCALIZE[31961]</property>
-      <onclick>PlayList.Clear</onclick>
-      <onclick>PlayMedia("$INFO[Window.Property(LatestAlbum.10.Path)]")</onclick>
     </item>
   </include>
   <include name="RecommendedAlbumContent">

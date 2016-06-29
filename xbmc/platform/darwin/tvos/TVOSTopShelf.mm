@@ -36,7 +36,6 @@
 
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Base64.h"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -48,6 +47,8 @@ bool        CTVOSTopShelf::m_handleUrl;
 
 CTVOSTopShelf::CTVOSTopShelf()
 {
+  m_RecentlyAddedTV = new CFileItemList;
+  m_RecentlyAddedMovies = new CFileItemList;
 }
 
 CTVOSTopShelf::~CTVOSTopShelf()
@@ -62,6 +63,10 @@ CTVOSTopShelf &CTVOSTopShelf::GetInstance()
 
 void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
 {
+  // save these for later
+  m_RecentlyAddedTV->Assign(tv);
+  m_RecentlyAddedMovies->Assign(movies);
+
   CVideoThumbLoader loader;
   NSMutableArray * movieArray = [[NSMutableArray alloc] init];
   NSMutableArray * tvArray = [[NSMutableArray alloc] init];
@@ -102,8 +107,8 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       
       [movieDict setValue:[NSString stringWithUTF8String:item->GetLabel().c_str()] forKey:@"title"];
       [movieDict setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
-      std::string fullPath = item->GetVideoInfoTag()->GetPath();
-      [movieDict setValue:[NSString stringWithUTF8String:Base64::Encode(fullPath).c_str()] forKey:@"url"];
+      std::string fullPath = StringUtils::Format("movie/%i", i);
+      [movieDict setValue:[NSString stringWithUTF8String:fullPath.c_str()] forKey:@"url"];
       
       [movieArray addObject:movieDict];
     }
@@ -122,28 +127,34 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
   {
     for (int i = 0; i < tv.Size() && i < 5; ++i)
     {
+      std::string fileName;
+      std::string seasonThumb;
       CFileItemPtr item = tv.Get(i);
       NSMutableDictionary * tvDict = [[NSMutableDictionary alloc] init];
-      if (!item->HasArt("thumb"))
-        loader.LoadItem(item.get());
-      
       std::string title = StringUtils::Format("%s s%02de%02d",
                                               item->GetVideoInfoTag()->m_strShowTitle.c_str(),
                                               item->GetVideoInfoTag()->m_iSeason,
                                               item->GetVideoInfoTag()->m_iEpisode);
       
-      std::string seasonThumb;
-      
-      if (item->GetVideoInfoTag()->m_iIdSeason > 0)
+      if (item->IsServiceBased())
       {
-        CVideoDatabase videodatabase;
-        videodatabase.Open();
-        seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, MediaTypeSeason, "poster");
-        
-        videodatabase.Close();
+        seasonThumb = item->GetArt("tvshow.poster");
+        fileName = URIUtils::GetFileName(seasonThumb);
       }
-      
-      std::string fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(seasonThumb);
+      else
+      {
+        if (!item->HasArt("thumb"))
+          loader.LoadItem(item.get());
+        if (item->GetVideoInfoTag()->m_iIdSeason > 0)
+        {
+          CVideoDatabase videodatabase;
+          videodatabase.Open();
+          seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, MediaTypeSeason, "poster");
+
+          videodatabase.Close();
+        }
+        fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(seasonThumb);
+      }
       std::string destPath = URIUtils::AddFileToFolder(raPath, fileName);
       if (!XFILE::CFile::Exists(destPath))
         XFILE::CFile::Copy(seasonThumb ,destPath);
@@ -154,8 +165,8 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       
       [tvDict setValue:[NSString stringWithUTF8String:title.c_str()] forKey:@"title"];
       [tvDict setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
-      std::string fullPath = item->GetVideoInfoTag()->GetPath();
-      [tvDict setValue:[NSString stringWithUTF8String:Base64::Encode(fullPath).c_str()] forKey:@"url"];
+      std::string fullPath = StringUtils::Format("tv/%i", i);
+      [tvDict setValue:[NSString stringWithUTF8String:fullPath.c_str()] forKey:@"url"];
       [tvArray addObject:tvDict];
     }
     [shared setObject:tvArray forKey:@"tv"];
@@ -181,17 +192,31 @@ void CTVOSTopShelf::RunTopShelf()
   if (m_handleUrl)
   {
     m_handleUrl = false;
+    CFileItemPtr itemPtr;
     std::vector<std::string> split = StringUtils::Split(m_url, "/");
-    std::string url =Base64::Decode(split[3]);
+    int item = std::atoi(split[4].c_str());
+
+    if (split[3] == "movie")
+      itemPtr = m_RecentlyAddedMovies->Get(item);
+    else
+      itemPtr = m_RecentlyAddedTV->Get(item);
+
     if (split[2] == "display")
     {
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_SHOW_VIDEO_INFO, -1, -1, static_cast<void*>(new CFileItem(url.c_str(), false)));
+      if (itemPtr)
+        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_SHOW_VIDEO_INFO, -1, -1,  static_cast<void*>(new CFileItem(*itemPtr)));
     }
     else //play
     {
-      // its a bit ugly, but only way to get resume window to show
-      std::string cmd = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(url.c_str()).c_str());
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+      if (itemPtr)
+      {
+        int playlist = itemPtr->IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
+        g_playlistPlayer.ClearPlaylist(playlist);
+        g_playlistPlayer.SetCurrentPlaylist(playlist);
+
+        // play media
+        g_application.PlayMedia(*itemPtr, playlist);
+      }
     }
   }
 }

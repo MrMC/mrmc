@@ -51,6 +51,7 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "ContextMenuManager.h"
+#include "services/ServiceManager.h"
 
 #include <utility>
 
@@ -381,6 +382,9 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
 
   items.ClearArt();
   items.ClearProperties();
+
+  // we need to remove cache
+  items.RemoveDiscCache(GetID());
 
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
@@ -976,11 +980,13 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       VIDEO::SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
 
-      if (info && info->Content() == CONTENT_TVSHOWS)
+      if ((info && info->Content() == CONTENT_TVSHOWS) ||
+           item->GetVideoContentType() == SERVICE_CONTENT_TVSHOW ||
+           item->GetVideoContentType() == SERVICE_CONTENT_EPISODES)
         buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
       else if (info && info->Content() == CONTENT_MUSICVIDEOS)
         buttons.Add(CONTEXT_BUTTON_INFO,20393);
-      else if (info && info->Content() == CONTENT_MOVIES)
+      else if ((info && info->Content() == CONTENT_MOVIES) || item->GetVideoContentType() == SERVICE_CONTENT_MOVIE)
         buttons.Add(CONTEXT_BUTTON_INFO, 13346);
 
       // can we update the database?
@@ -1022,8 +1028,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           if (g_application.IsVideoScanning())
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-
-          buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+          // no scan for new content on server lib
+          if (item->GetVideoContentType() != SERVICE_CONTENT_TVSHOW)
+            buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
 
         if (node == NODE_TYPE_ACTOR && !dir.IsAllItem(item->GetPath()) && item->m_bIsFolder)
@@ -1234,37 +1241,79 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
 
 std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
 {
+  /*
+  "videodb://tvshows/genres"
+  "videodb://tvshows/titles"
+  "videodb://tvshows/years"
+  "videodb://tvshows/actors"
+  "videodb://tvshows/studios"
+  "videodb://tvshows/tags"
+
+   else if (StringUtils::StartsWithNoCase(strDirectory, "videodb://movies/years/")     ||
+   StringUtils::StartsWithNoCase(strDirectory, "videodb://movies/genres/")    ||
+   StringUtils::StartsWithNoCase(strDirectory, "videodb://movies/actors/")    ||
+   StringUtils::StartsWithNoCase(strDirectory, "videodb://movies/directors/") ||
+   StringUtils::StartsWithNoCase(strDirectory, "videodb://movies/sets/")      ||
+   StringUtils::StartsWithNoCase(strDirectory, "videodb://movies/countries/") ||
+   StringUtils::StartsWithNoCase(strDirectory, "videodb://movies/studios/")
+
+  <Directory secondary="1" key="collection" title="By Collection" />
+  <Directory secondary="1" key="firstCharacter" title="By First Letter" />
+  <Directory secondary="1" key="genre" title="By Genre" />
+  <Directory secondary="1" key="year" title="By Year" />
+  <Directory secondary="1" key="contentRating" title="By Content Rating" />
+
+  "videodb://movies/titles"
+  "videodb://movies/years"
+  "videodb://movies/genres"
+  "videodb://movies/actors"
+  "videodb://movies/directors"
+  "videodb://movies/sets"
+  "videodb://movies/countries"
+  "videodb://movies/studios"
+  */
   std::string lower(dir); StringUtils::ToLower(lower);
-  if (lower == "moviegenres")
-    return "videodb://movies/genres/";
-  else if (lower == "movietitles")
-    return "videodb://movies/titles/";
-  else if (lower == "movieyears")
-    return "videodb://movies/years/";
-  else if (lower == "movieactors")
-    return "videodb://movies/actors/";
-  else if (lower == "moviedirectors")
-    return "videodb://movies/directors/";
-  else if (lower == "moviestudios")
-    return "videodb://movies/studios/";
-  else if (lower == "moviesets")
-    return "videodb://movies/sets/";
-  else if (lower == "moviecountries")
-    return "videodb://movies/countries/";
+  if (lower == "movietitles"||
+      lower == "moviegenres"||
+      lower == "movieyears" ||
+      lower == "movieactors" ||
+      lower == "moviedirectors" ||
+      lower == "moviesets" ||
+      lower == "moviecountries"||
+      lower == "moviestudios")
+  {
+    StringUtils::Replace(lower, "movie", "");
+    if (CServiceManager::HasServices())
+      return "plex://movies/" + lower + "/";
+    return "videodb://movies/" + lower + "/";
+  }
   else if (lower == "movietags")
     return "videodb://movies/tags/";
   else if (lower == "movies")
     return "videodb://movies/";
-  else if (lower == "tvshowgenres")
-    return "videodb://tvshows/genres/";
-  else if (lower == "tvshowtitles")
-    return "videodb://tvshows/titles/";
-  else if (lower == "tvshowyears")
-    return "videodb://tvshows/years/";
-  else if (lower == "tvshowactors")
-    return "videodb://tvshows/actors/";
-  else if (lower == "tvshowstudios")
-    return "videodb://tvshows/studios/";
+  else if (lower == "tvshowgenres" ||
+           lower == "tvshowtitles" ||
+           lower == "tvshowyears" ||
+           lower == "tvshowactors" ||
+           lower == "tvshowstudios")
+  {
+    StringUtils::Replace(lower, "tvshow", "");
+    if (CServiceManager::HasServices())
+      return "plex://tvshows/" + lower + "/";
+    return "videodb://tvshows/" + lower + "/";
+  }
+  else if (lower == "recentlyaddedmovies")
+  {
+    if (CServiceManager::HasServices())
+      return "plex://movies/recentlyaddedmovies/";
+    return "videodb://recentlyaddedmovies/";
+  }
+  else if (lower == "recentlyaddedepisodes")
+  {
+    if (CServiceManager::HasServices())
+      return "plex://tvshows/recentlyaddedepisodes/";
+    return "videodb://recentlyaddedepisodes/";
+  }
   else if (lower == "tvshowtags")
     return "videodb://tvshows/tags/";
   else if (lower == "tvshows")
@@ -1287,10 +1336,6 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
     return "videodb://musicvideos/tags/";
   else if (lower == "musicvideos")
     return "videodb://musicvideos/";
-  else if (lower == "recentlyaddedmovies")
-    return "videodb://recentlyaddedmovies/";
-  else if (lower == "recentlyaddedepisodes")
-    return "videodb://recentlyaddedepisodes/";
   else if (lower == "recentlyaddedmusicvideos")
     return "videodb://recentlyaddedmusicvideos/";
   else if (lower == "files")

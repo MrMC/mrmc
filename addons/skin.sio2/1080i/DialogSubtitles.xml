@@ -49,7 +49,7 @@
                     <aligny>center</aligny>
                     <wrapmultiline>true</wrapmultiline>
                 </control>
-                <control type="label" description="file name">
+                <control type="label" id="180" description="file name">
                     <left>150</left>
                     <top>220</top>
                     <width>1400</width>
@@ -59,7 +59,6 @@
                     <align>center</align>
                     <aligny>center</aligny>
                     <wrapmultiline>true</wrapmultiline>
-                    <label>$INFO[Player.Filename]</label>
                 </control>
                 <control type="image" description="linetop">
                     <left>120</left>

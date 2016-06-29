@@ -599,7 +599,7 @@
 						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
 						<icon>special://skin/backgrounds/movies.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Movies_Folder)]</thumb>
-						<visible>Library.HasContent(Movies)</visible>
+						<visible>Library.HasContent(Movies) | Library.HasServices</visible>
 						<visible>!Skin.HasSetting(homepageHideMoviesButton)</visible>
 					</item>
 					<item id="10">
@@ -607,7 +607,7 @@
 						<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
 						<icon>special://skin/backgrounds/tvshow.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</thumb>
-						<visible>Library.HasContent(TVShows)</visible>
+						<visible>Library.HasContent(TVShows) | Library.HasServices</visible>
 						<visible>!Skin.HasSetting(homepageHideTVShowButton)</visible>
 					</item>
 					<item id="2">

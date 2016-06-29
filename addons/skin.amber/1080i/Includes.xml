@@ -340,6 +340,10 @@
     <texture background="true">$INFO[ListItem.Art(thumb)]</texture>
     <aspectratio aligny="top">stretch</aspectratio>
   </include>
+  <include name="SquareThumbAlbum">
+    <texture background="true">$INFO[ListItem.Property(thumb)]</texture>
+    <aspectratio aligny="top">stretch</aspectratio>
+  </include>
   <include name="SquareThumbBG">
     <bordersize>-6</bordersize>
     <!--<texture>thumbs/PosterBG_NF.png</texture>-->
@@ -366,6 +370,10 @@
   <include name="PosterThumb">
     <texture background="true">$INFO[ListItem.Art(thumb)]</texture>
     <aspectratio aligny="top">stretch</aspectratio>
+  </include>
+    <include name="PosterThumbEpisodes">
+    <texture background="true">$INFO[ListItem.Art(tvshow.thumb)]</texture>
+    <aspectratio aligny="top">keep</aspectratio>
   </include>
   <include name="PosterThumbBG">
     <bordersize>-6</bordersize>
@@ -821,7 +829,7 @@
       <onclick>$INFO[Skin.String(CustomHome.4.Path)]</onclick>
     </item>
     <item id="4" description="MyMovies">
-      <visible>!Skin.HasSetting(Movies.Hide) + Library.HasContent(Movies)</visible>
+      <visible>[!Skin.HasSetting(Movies.Hide) + Library.HasContent(Movies)] | Library.HasServices</visible>
       <label fallback="20342">$VAR[MovieEntryPointLabel2]</label>
       <thumb fallback="special://skin/backgrounds/Movies.jpg">$INFO[Skin.String(Movies.Background)]</thumb>
       <onclick>$VAR[MovieEntryPoint]</onclick>
@@ -833,7 +841,7 @@
       <onclick>$INFO[Skin.String(CustomHome.5.Path)]</onclick>
     </item>
     <item id="5" description="MyTV">
-      <visible>!Skin.HasSetting(TVShows.Hide) + Library.HasContent(TVShows)</visible>
+      <visible>[!Skin.HasSetting(TVShows.Hide) + Library.HasContent(TVShows)] | Library.HasServices</visible>
       <label fallback="20343">$VAR[TVEntryPointLabel2]</label>
       <thumb fallback="special://skin/backgrounds/TVShows.jpg">$INFO[Skin.String(TVShows.Background)]</thumb>
       <onclick>$VAR[TVEntryPoint]</onclick>

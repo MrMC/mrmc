@@ -963,14 +963,14 @@
 						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoMovieButton) + Library.HasContent(Movies)</visible>
+						<visible>Library.HasServices | [!Skin.HasSetting(HomeMenuNoMovieButton) + Library.HasContent(Movies)]</visible>
 					</item>
 					<item id="11">
 						<label>31955</label>
 						<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoTVShowButton) + Library.HasContent(TVShows)</visible>
+						<visible>Library.HasServices | [!Skin.HasSetting(HomeMenuNoTVShowButton) + Library.HasContent(TVShows)]</visible>
 					</item>
 					<item id="3">
 						<label>31956</label>

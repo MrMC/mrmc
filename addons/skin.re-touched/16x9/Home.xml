@@ -33,6 +33,7 @@
 				<onfocus>Skin.SetString(HomeContentPage,Movies)</onfocus>
 				<selected>StringCompare(Skin.String(HomeContentPage),Movies)</selected>
 				<visible>Library.HasContent(Movies)</visible>
+				<visible>Library.HasServices</visible>
 			</control>
 			<control type="radiobutton">
 				<include>ButtonHomeSubCommonValues</include>
@@ -40,6 +41,7 @@
 				<onfocus>Skin.SetString(HomeContentPage,TV)</onfocus>
 				<selected>StringCompare(Skin.String(HomeContentPage),TV)</selected>
 				<visible>Library.HasContent(TVShows)</visible>
+				<visible>Library.HasServices</visible>
 			</control>
 			<control type="radiobutton">
 				<include>ButtonHomeSubCommonValues</include>

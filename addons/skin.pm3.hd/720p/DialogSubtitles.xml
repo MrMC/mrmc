@@ -159,14 +159,13 @@
 					<orientation>vertical</orientation>
 				</control>
 			<control type="group">
-				<control type="label">
+				<control type="label" id="180">
 					<description>Video label</description>
 					<left>40</left>
 					<posy>80</posy>
 					<width>760</width>
 					<height>30</height>
 					<font>font12</font>
-					<label>$INFO[Player.Filename]</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>

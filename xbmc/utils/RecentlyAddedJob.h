@@ -32,10 +32,21 @@ class CRecentlyAddedJob : public CJob
 {
 public:
   CRecentlyAddedJob(int flag);
-  static bool UpdateVideo();
-  static bool UpdateMusic();
-  static bool UpdateTotal();
+  bool UpdateVideo();
+  bool UpdateMusic();
+  bool UpdateTotal();
+  const CFileItemList *GetMovieItems() const { return m_RecentlyAddedMovies; };
+  const CFileItemList *GetMusicSongItems() const { return m_RecentlyAddedMusicSongs; };
+  const CFileItemList *GetMusicAlbumItems() const { return m_RecentlyAddedMusicAlbums; };
+  const CFileItemList *GetMusicVideoItems() const { return m_RecentlyAddedMusicVideos; };
+  const CFileItemList *GetTvItems() const { return m_RecentlyAddedTV; };
+  const int GetFlag() const { return m_flag; };
   virtual bool DoWork();
 private:
   int m_flag;
+  CFileItemList* m_RecentlyAddedTV;
+  CFileItemList* m_RecentlyAddedMovies;
+  CFileItemList* m_RecentlyAddedMusicAlbums;
+  CFileItemList* m_RecentlyAddedMusicSongs;
+  CFileItemList* m_RecentlyAddedMusicVideos;
 };

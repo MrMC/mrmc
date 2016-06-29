@@ -159,15 +159,15 @@
                     <visible>!Skin.HasSetting(hidemovie)</visible>
                     <label>342</label>
                     <thumb>icons/movies.png</thumb>
-                    <onclick condition="Library.HasContent(Movies)">ActivateWindow(Videos,MovieTitles,return)</onclick>
-                    <onclick condition="!Library.HasContent(Movies)">ActivateWindow(Videos,root)</onclick>
+                    <onclick condition="Library.HasContent(Movies) | Library.HasServices">ActivateWindow(Videos,MovieTitles,return)</onclick>
+                    <onclick condition="!Library.HasContent(Movies) + !Library.HasServices">ActivateWindow(Videos,root)</onclick>
                 </item>
                 <item id="341">
                     <visible>!Skin.HasSetting(hidetv)</visible>
                     <label>20343</label>
                     <thumb>icons/tvshows.png</thumb>
-                    <onclick condition="Library.HasContent(TVShows)">ActivateWindow(VideoLibrary,TVShowTitles,return)</onclick>
-                    <onclick condition="!Library.HasContent(TVShows)">ActivateWindow(Videos,root)</onclick>
+                    <onclick condition="Library.HasContent(TVShows)  | Library.HasServices">ActivateWindow(VideoLibrary,TVShowTitles,return)</onclick>
+                    <onclick condition="!Library.HasContent(TVShows)  + !Library.HasServices">ActivateWindow(Videos,root)</onclick>
                 </item>
                 <item id="342">
                     <visible>!Skin.HasSetting(hidemusic)</visible>

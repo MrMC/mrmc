@@ -59,6 +59,7 @@ using namespace XFILE;
 #define CONTROL_SERVICELIST          150
 #define CONTROL_MANUALSEARCH         160
 #define CONTROL_CHANGECREDENTIALS    170
+#define CONTROL_FILENAME             180
 
 /*! \brief simple job to retrieve a directory and store a string (language)
  */
@@ -227,6 +228,14 @@ void CGUIDialogSubtitles::OnInitWindow()
   }
 
   CGUIWindow::OnInitWindow();
+
+  std::string file;
+  if (g_application.CurrentFileItem().IsServiceBased())
+    file = g_application.CurrentFileItem().GetVideoInfoTag()->m_strServiceFile;
+  else
+    file = g_application.CurrentFileItem().GetPath();
+  SET_CONTROL_LABEL(CONTROL_FILENAME, URIUtils::GetFileName(file));
+
   FillServices();
   Search();
 }
