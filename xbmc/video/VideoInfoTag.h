@@ -189,6 +189,9 @@ public:
   CDateTime m_dateAdded;
   MediaType m_type;
   int m_duration; ///< duration in seconds
+  // for service items
+  std::string m_strServiceId;
+  std::string m_strServiceFile;
 
 private:
   /* \brief Parse our native XML format for video info.

@@ -98,6 +98,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 #include "interfaces/info/InfoExpression.h"
+#include "services/ServiceManager.h"
 
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
@@ -1114,6 +1115,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       if (prop.name == "isscanning") return LIBRARY_IS_SCANNING;
       else if (prop.name == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; // TODO: change to IsScanning(Video)
       else if (prop.name == "isscanningmusic") return LIBRARY_IS_SCANNING_MUSIC;
+      else if (prop.name == "hasservices") return LIBRARY_HASSERVICES;
       else if (prop.name == "hascontent" && prop.num_params())
       {
         std::string cat = prop.param(0);
@@ -2462,6 +2464,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     bReturn = g_application.IsMusicScanning();
   }
+  else if (condition == LIBRARY_HASSERVICES)
+    bReturn = CServiceManager::HasServices();
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
     bReturn = true;
@@ -3249,9 +3253,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case VIDEOPLAYER_CONTENT:
         {
           std::string strContent="files";
-          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMovie)
+          if (m_currentFile->HasVideoInfoTag() && (m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMovie ||
+                                                   m_currentFile->GetVideoInfoTag()->m_type == MediaTypeServiceMovie))
             strContent = "movies";
-          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeEpisode)
+          if (m_currentFile->HasVideoInfoTag() && (m_currentFile->GetVideoInfoTag()->m_type == MediaTypeEpisode ||
+                                                   m_currentFile->GetVideoInfoTag()->m_type == MediaTypeServiceEpisode))
             strContent = "episodes";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
             strContent = "musicvideos";

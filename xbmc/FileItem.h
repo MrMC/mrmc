@@ -225,6 +225,7 @@ public:
   bool IsRemovable() const;
   bool IsPVR() const;
   bool IsLiveTV() const;
+  bool IsServiceBased() const;
   bool IsRSS() const;
   bool IsAndroidApp() const;
   bool IsAndroidSetting() const;

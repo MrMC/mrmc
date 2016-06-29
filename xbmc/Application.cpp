@@ -88,6 +88,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SkinSettings.h"
+#include "services/ServiceManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/SeekHandler.h"
@@ -3728,6 +3729,9 @@ void CApplication::UpdateFileState()
           // Do nothing
           m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
         }
+
+        if (m_progressTrackingItem->IsServiceBased())
+          CServiceManager::UpdateFileProgressState(*m_progressTrackingItem.get(), GetTime());
       }
     }
   }

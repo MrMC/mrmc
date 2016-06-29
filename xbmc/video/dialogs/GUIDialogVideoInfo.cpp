@@ -1844,11 +1844,14 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
 
 std::string CGUIDialogVideoInfo::GetLocalizedVideoType(const std::string &strType)
 {
-  if (MediaTypes::IsMediaType(strType, MediaTypeMovie))
+  if (MediaTypes::IsMediaType(strType, MediaTypeMovie) ||
+      MediaTypes::IsMediaType(strType, MediaTypeServiceMovie))
     return g_localizeStrings.Get(20342);
-  else if (MediaTypes::IsMediaType(strType, MediaTypeTvShow))
+  else if (MediaTypes::IsMediaType(strType, MediaTypeTvShow) ||
+           MediaTypes::IsMediaType(strType, MediaTypeServiceTvShow))
     return g_localizeStrings.Get(20343);
-  else if (MediaTypes::IsMediaType(strType, MediaTypeEpisode))
+  else if (MediaTypes::IsMediaType(strType, MediaTypeEpisode) ||
+           MediaTypes::IsMediaType(strType, MediaTypeServiceEpisode))
     return g_localizeStrings.Get(20359);
   else if (MediaTypes::IsMediaType(strType, MediaTypeMusicVideo))
     return g_localizeStrings.Get(20391);

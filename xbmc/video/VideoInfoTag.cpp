@@ -95,6 +95,8 @@ void CVideoInfoTag::Reset()
   m_iIdSeason = -1;
   m_dateAdded.Reset();
   m_type.clear();
+  m_strServiceId.clear();
+  m_strServiceFile.clear();
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathInfo, const TiXmlElement *additionalNode)

@@ -1076,6 +1076,24 @@ bool CFileItem::IsLiveTV() const
   return URIUtils::IsLiveTV(m_strPath);
 }
 
+bool CFileItem::IsServiceBased() const
+{
+  bool rtn = false;
+  int contentType = GetVideoContentType();
+  switch(contentType)
+  {
+    case SERVICE_CONTENT_MOVIE:
+    case SERVICE_CONTENT_EPISODES:
+    case SERVICE_CONTENT_TVSHOW:
+    case SERVICE_CONTENT_SEASON:
+      rtn = true;
+      break;
+    default:
+      rtn = false;
+  }
+  return rtn;
+}
+
 bool CFileItem::IsHD() const
 {
   return URIUtils::IsHD(m_strPath);
@@ -1339,6 +1357,11 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (HasVideoInfoTag() && item->HasVideoInfoTag())
   {
+    if (item->IsServiceBased())
+    {
+      if (!m_videoInfoTag->m_strServiceId.empty() && !item->m_videoInfoTag->m_strServiceId.empty())
+        return (m_videoInfoTag->m_strServiceId == item->m_videoInfoTag->m_strServiceId);
+    }
     if (m_videoInfoTag->m_iDbId != -1 && item->m_videoInfoTag->m_iDbId != -1)
       return ((m_videoInfoTag->m_iDbId == item->m_videoInfoTag->m_iDbId) &&
         (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));        
@@ -2790,6 +2813,7 @@ std::string CFileItem::GetTBNFile() const
 bool CFileItem::SkipLocalArt() const
 {
   return (m_strPath.empty()
+       || HasProperty("SkipLocalArt")
        || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
        || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
        || m_bIsShareOrDrive
@@ -3289,7 +3313,14 @@ int CFileItem::GetVideoContentType() const
     return VIDEODB_CONTENT_EPISODES;
   if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
     return VIDEODB_CONTENT_MUSICVIDEOS;
-
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeServiceMovie)
+    return SERVICE_CONTENT_MOVIE;
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeServiceTvShow)
+    return SERVICE_CONTENT_TVSHOW;
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeServiceEpisode)
+    return SERVICE_CONTENT_EPISODES;
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeServiceSeason)
+    return SERVICE_CONTENT_SEASON;
   CVideoDatabaseDirectory dir;
   VIDEODATABASEDIRECTORY::CQueryParams params;
   dir.GetQueryParams(m_strPath, params);

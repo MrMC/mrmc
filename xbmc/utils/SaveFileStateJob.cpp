@@ -35,9 +35,27 @@
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "services/ServiceManager.h"
 
 bool CSaveFileStateJob::DoWork()
 {
+  // if its serivces item, skip database update for it
+  if (m_item.IsServiceBased())
+  {
+    m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds = m_bookmark.timeInSeconds;
+
+    if (m_bookmark.timeInSeconds > m_item.GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds * 0.9)
+      m_item.GetVideoInfoTag()->m_playCount++;
+
+    CFileItemPtr msgItem(new CFileItem(m_item));
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
+    g_windowManager.SendThreadMessage(message);
+
+    // notify service content handler where we stopped playback
+    CServiceManager::SetResumePoint(m_item);
+    return true;
+  }
+
   std::string progressTrackingFile = m_item.GetPath();
 
   if (m_item.HasVideoInfoTag() && StringUtils::StartsWith(m_item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
