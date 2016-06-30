@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile \
 
 # lib name, version
 LIBNAME=curl
-VERSION=7.39.0
+VERSION=7.49.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 

@@ -4,8 +4,8 @@
  with_gnu_ld="no"
  
  # Flag that allows shared libraries with undefined symbols to be built.
--allow_undefined_flag="\${wl}-flat_namespace \${wl}-undefined \${wl}suppress"
-+#allow_undefined_flag="\${wl}-flat_namespace \${wl}-undefined \${wl}suppress"
+-allow_undefined_flag="\$wl-flat_namespace \$wl-undefined \${wl}suppress"
++#allow_undefined_flag="\$wl-flat_namespace \$wl-undefined \${wl}suppress"
  
  # Flag that enforces no undefined symbols.
  no_undefined_flag=""
