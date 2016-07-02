@@ -82,7 +82,8 @@ std::string CGUIViewStateWindowPictures::GetExtensions()
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
   VECSOURCES *pictureSources = CMediaSourceSettings::GetInstance().GetSources("pictures");
-  AddAddonsSource("image", g_localizeStrings.Get(1039), "DefaultAddonPicture.png");
+  // we dont have any addons, lets not show it in GUI
+//  AddAddonsSource("image", g_localizeStrings.Get(1039), "DefaultAddonPicture.png");
   AddOrReplace(*pictureSources, CGUIViewState::GetSources());
   return *pictureSources;
 }

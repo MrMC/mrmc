@@ -61,7 +61,8 @@ std::string CGUIViewStateWindowMusic::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowMusic::GetSources()
 {
-  AddAddonsSource("audio", g_localizeStrings.Get(1038), "DefaultAddonMusic.png");
+  // we dont have any addons, lets not show it in GUI
+//  AddAddonsSource("audio", g_localizeStrings.Get(1038), "DefaultAddonMusic.png");
   return CGUIViewState::GetSources();
 }
 
