@@ -89,6 +89,7 @@ namespace XFILE
       void SetMimeType(std::string mimetype)                     { SetRequestHeader("Content-Type", mimetype); }
       void SetRequestHeader(const std::string& header, const std::string& value);
       void SetRequestHeader(const std::string& header, long value);
+      int  GetResponseCode()                                     { return m_httpresponse; };
 
       void ClearRequestHeaders();
       void SetBufferSize(unsigned int size);
