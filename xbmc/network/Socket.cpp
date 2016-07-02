@@ -336,6 +336,13 @@ void CSocketListener::Clear()
   m_iCurrentSocket = 0;
 }
 
+CBaseSocket* CSocketListener::GetFirstSocket()
+{
+  for (size_t i = 0 ; i < m_sockets.size(); ++i)
+    return m_sockets[i];
+  return NULL;
+}
+
 CBaseSocket* CSocketListener::GetFirstReadySocket()
 {
   if (m_iReadyCount<=0)

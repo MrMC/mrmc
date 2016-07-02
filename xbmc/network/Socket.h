@@ -203,6 +203,7 @@ namespace SOCKETS
     void         AddSocket(CBaseSocket *);
     bool         Listen(int timeoutMs); // in ms, -1=>never timeout, 0=>poll
     void         Clear();
+    CBaseSocket* GetFirstSocket();
     CBaseSocket* GetFirstReadySocket();
     CBaseSocket* GetNextReadySocket();
 
