@@ -188,7 +188,7 @@
 		<include>BehindDialogFadeOut</include>
 		<control type="button" id="10">
 			<description>Default Category Button</description>
-			<height>60</height>
+			<height>40</height>
 			<width>260</width>
 			<textoffsetx>20</textoffsetx>
 			<align>right</align>
@@ -204,7 +204,7 @@
 			<description>Default Button</description>
 			<left>0</left>
 			<top>0</top>
-			<height>40</height>
+			<height>30</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
