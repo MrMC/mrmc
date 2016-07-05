@@ -61,6 +61,7 @@ namespace XFILE
       virtual ssize_t Write(const void* lpBuf, size_t uiBufSize);
       virtual std::string GetMimeType()                          { return m_state->m_httpheader.GetMimeType(); }
       virtual std::string GetContent()                           { return m_state->m_httpheader.GetValue("content-type"); }
+      virtual std::string GetContentEncoding()                   { return m_state->m_httpheader.GetValue("content-encoding"); }
       virtual int IoControl(EIoControl request, void* param);
       virtual std::string GetContentCharset(void)                { return GetServerReportedCharset(); }
 
