@@ -3272,10 +3272,10 @@
         </setting>
         <setting id="network.readbufferfactor" type="integer" label="36629" help="36630">
           <level>2</level>
-          <default>4</default>
+          <default>8</default>
           <constraints>
             <minimum>1</minimum>
-            <maximum>10</maximum>
+            <maximum>20</maximum>
           </constraints>
           <control type="edit" format="integer" />
         </setting>                                
