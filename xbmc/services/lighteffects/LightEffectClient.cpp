@@ -20,6 +20,7 @@
 
 #include "LightEffectClient.h"
 #include "utils/StringUtils.h"
+#include <stdlib.h>
 #include <sstream>
 #include <cmath>
 #include <cstdlib>
@@ -99,7 +100,7 @@ bool CLightEffectClient::SetOption(const char *option)
     }
     else
     {
-      float value = std::strtod(stroption.c_str(), NULL);
+     float value = strtod(stroption.c_str(), NULL);
       if (strname == "speed")
       {
         m_speed = value;
@@ -208,8 +209,7 @@ bool CLightEffectClient::ParseGetLights(std::string &message)
   if (!ParseWord(message, "lights") || !GetWord(message, word))
     return false;
 
-  // atol never throws
-  int nrlights = std::atol(word.c_str());
+  int nrlights = strtol(word.c_str(), NULL, 10);
   if (nrlights < 1)
     return false;
 
