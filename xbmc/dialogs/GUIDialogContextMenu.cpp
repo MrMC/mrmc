@@ -151,6 +151,7 @@ void CGUIDialogContextMenu::SetupButtons()
       }
     }
   }
+  pGroupList->SetDefaultControl(0, true);
 
   // fix up background images placement and size
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
