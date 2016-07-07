@@ -543,7 +543,7 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
 #elif defined(TARGET_DARWIN_IOS)
     osName = "iOS";
 #elif defined(TARGET_DARWIN_OSX)
-    osName = "OS X";
+    osName = "OSX";
 #elif defined (TARGET_ANDROID)
     osName = "Android";
 #elif defined(TARGET_LINUX)
