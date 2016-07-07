@@ -58,6 +58,9 @@ bool CSaveFileStateJob::DoWork()
 
   std::string progressTrackingFile = m_item.GetPath();
 
+  if (StringUtils::StartsWith(progressTrackingFile, "videodb://recentlyadded"))
+    progressTrackingFile = progressTrackingFile = m_item.GetVideoInfoTag()->m_strFileNameAndPath;
+    
   if (m_item.HasVideoInfoTag() && StringUtils::StartsWith(m_item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
     progressTrackingFile = m_item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
   else if (m_item.HasProperty("original_listitem_url"))
