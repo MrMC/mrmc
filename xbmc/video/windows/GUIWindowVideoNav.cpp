@@ -1018,7 +1018,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             !StringUtils::StartsWith(item->GetPath(), "newplaylist://") &&
             !StringUtils::StartsWith(item->GetPath(), "newtag://"))
         {
-          if (item->m_bIsFolder && !item->IsMediaServiceBased())
+          if ((item->m_bIsFolder && !item->IsMediaServiceBased()) ||
+              item->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0)
           {
             // Have both options for folders since we don't know whether all childs are watched/unwatched
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
