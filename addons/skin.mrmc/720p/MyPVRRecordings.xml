@@ -123,6 +123,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<aspectratio>keep</aspectratio>
 					</control>
 				</itemlayout>
@@ -199,6 +200,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<aspectratio>keep</aspectratio>
 					</control>
 				</focusedlayout>

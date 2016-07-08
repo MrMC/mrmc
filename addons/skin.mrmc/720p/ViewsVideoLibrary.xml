@@ -73,6 +73,7 @@
 						<height>35</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<animation type="focus">
 							<effect type="fade" start="0" end="100" time="150" />
 							<effect type="slide" start="0,0" end="40,40" time="150" />
@@ -398,6 +399,7 @@
 						<height>35</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<animation type="focus">
 							<effect type="fade" start="0" end="100" time="150" />
 							<effect type="slide" start="0,0" end="10,5" time="150" />
@@ -837,6 +839,7 @@
 						<width>16</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</itemlayout>
@@ -916,6 +919,7 @@
 						<width>16</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</focusedlayout>
@@ -1269,6 +1273,7 @@
 						<width>16</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</itemlayout>
@@ -1348,6 +1353,7 @@
 						<width>16</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</focusedlayout>
@@ -1646,6 +1652,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<aspectratio>keep</aspectratio>
 					</control>
 				</itemlayout>
@@ -1694,6 +1701,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
 						<aspectratio>keep</aspectratio>
 					</control>
 				</focusedlayout>

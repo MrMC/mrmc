@@ -88,6 +88,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos)</visible>
+						<visible>!ListItem.IsResumable</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
@@ -181,6 +182,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 						<aspectratio>keep</aspectratio>
 						<visible>Window.IsVisible(Videos)</visible>
+						<visible>!ListItem.IsResumable</visible>
 					</control>
 				</focusedlayout>
 			</control>
