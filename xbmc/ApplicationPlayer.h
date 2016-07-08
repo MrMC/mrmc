@@ -79,7 +79,8 @@ public:
   void SetPlaySpeed(int iSpeed, bool bApplicationMuted);
 
   // proxy calls
-  void   AddSubtitle(const std::string& strSubPath);
+  void  AddSubtitle(const std::string& strSubPath);
+  void  AddSubtitle(const SPlayerSubtitleStreamInfo& info);
   bool  CanPause();
   bool  CanRecord();
   bool  CanSeek();

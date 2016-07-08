@@ -270,6 +270,7 @@ public:
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);
   virtual void AddSubtitle(const std::string& strSubPath);
+  virtual void AddSubtitle(const SPlayerSubtitleStreamInfo& info);
 
   virtual int GetAudioStreamCount();
   virtual int GetAudioStream();
@@ -360,6 +361,7 @@ protected:
   bool ShowPVRChannelInfo();
 
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", const std::string language = "");
+  int  AddSubtitleStreamInfo(const SPlayerSubtitleStreamInfo& info);
   void SetSubtitleVisibleInternal(bool bVisible);
 
   /**

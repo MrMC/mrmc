@@ -2887,6 +2887,11 @@ void CDVDPlayer::HandleMessages()
           SetSubtitleVisibleInternal(true);
         }
       }
+      else if (pMsg->IsType(CDVDMsg::SUBTITLE_ADDSTREAMINFO))
+      {
+        SPlayerSubtitleStreamInfo info = ((CDVDMsgType<SPlayerSubtitleStreamInfo>*) pMsg)->m_value;
+        AddSubtitleStreamInfo(info);
+      }
       else if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
       {
         if (((CDVDMsgGeneralSynchronize*)pMsg)->Wait(100, SYNCSOURCE_OWNER))
@@ -4571,6 +4576,11 @@ void CDVDPlayer::AddSubtitle(const std::string& strSubPath)
   m_messenger.Put(new CDVDMsgType<std::string>(CDVDMsg::SUBTITLE_ADDFILE, strSubPath));
 }
 
+void CDVDPlayer::AddSubtitle(const SPlayerSubtitleStreamInfo& info)
+{
+  m_messenger.Put(new CDVDMsgType<SPlayerSubtitleStreamInfo>(CDVDMsg::SUBTITLE_ADDSTREAMINFO, info));
+}
+
 int CDVDPlayer::GetCacheLevel() const
 {
   CSingleLock lock(m_StateSection);
@@ -4709,6 +4719,20 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
       s.flags = static_cast<CDemuxStream::EFlags>(info.flag);
   }
+  m_SelectionStreams.Update(s);
+  return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
+}
+
+int CDVDPlayer::AddSubtitleStreamInfo(const SPlayerSubtitleStreamInfo& info)
+{
+  SelectionStream s;
+  s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, info.file);
+  s.type     = STREAM_SUBTITLE;
+  s.id       = 0;
+  s.filename = info.file;
+  s.language = info.language;
+  s.name     = g_localizeStrings.Get(21602);
+  s.flags    = CDemuxStream::FLAG_NONE;
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }

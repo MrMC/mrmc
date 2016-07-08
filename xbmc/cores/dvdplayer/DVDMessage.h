@@ -94,7 +94,8 @@ public:
 
     // subtitle related messages
     SUBTITLE_CLUTCHANGE,
-    SUBTITLE_ADDFILE
+    SUBTITLE_ADDFILE,
+    SUBTITLE_ADDSTREAMINFO
   };
 
   CDVDMsg(Message msg)
