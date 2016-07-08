@@ -48,10 +48,10 @@ AC_ARG_WITH([cpu],
   [optional. specify target cpu. guessed if not specified])],
   [use_cpu=$withval],use_cpu=auto)
 
-AC_ARG_WITH([ndk],
-  [AS_HELP_STRING([--with-ndk],
+AC_ARG_WITH([ndk-path],
+  [AS_HELP_STRING([--with-ndk-path],
   [specify path to ndk (required for android only)])],
-  [use_ndk=$withval])
+  [use_ndk_path=$withval])
 
 AC_ARG_WITH([sdk-path],
   [AS_HELP_STRING([--with-sdk-path],
@@ -62,6 +62,11 @@ AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
   [spcify sdk platform version (optional for android). default is android-21])],
   [use_sdk=$withval])
+
+AC_ARG_WITH([ndk-api],
+  [AS_HELP_STRING([--with-ndk-api],
+  [spcify ndk level (optional for android). default is 21])],
+  [use_ndk_api=$withval])
 
 AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
 if test "x$HAVE_UNZIP" = "xno" ; then
@@ -510,12 +515,12 @@ if test -z $use_tarballs; then
 fi
 
 if test "$platform_os" == "android"; then
-  if test -z $use_ndk; then
+  if test -z $use_ndk_path; then
     AC_MSG_ERROR("NDK path is required for android")
   fi
 
-  if ([! test -f "$use_ndk/source.properties"] && [! test -f "$use_ndk/RELEASE.TXT"]) ; then
-    AC_MSG_ERROR("$use_ndk is not an NDK directory")
+  if ([! test -f "$use_ndk_path/source.properties"] && [! test -f "$use_ndk_path/RELEASE.TXT"]) ; then
+    AC_MSG_ERROR("$use_ndk_path is not an NDK directory")
   fi
 
   if test -z $use_sdk_path; then
@@ -526,7 +531,7 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR(verify sdk path)
   fi
 
-  if [ ! test -f $use_ndk/sources/android/native_app_glue/android_native_app_glue.h ]; then
+  if [ ! test -f $use_ndk_path/sources/android/native_app_glue/android_native_app_glue.h ]; then
     AC_MSG_ERROR(verify ndk path)
   fi
 
@@ -611,8 +616,9 @@ fi
 if test "$platform_os" == "android"; then
 echo -e
   AC_SUBST(use_sdk_path)
-  AC_SUBST(use_ndk)
+  AC_SUBST(use_ndk_path)
   AC_SUBST(use_sdk)
+  AC_SUBST(use_ndk_api)
 fi
 
 AC_SUBST(use_host)
