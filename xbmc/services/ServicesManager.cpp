@@ -26,6 +26,8 @@
 #include "interfaces/AnnouncementManager.h"
 #include "services/plex/PlexUtils.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
+#include "utils/StringHasher.h"
 #include "video/VideoInfoTag.h"
 
 using namespace ANNOUNCEMENT;
@@ -44,12 +46,21 @@ public:
   }
   virtual bool DoWork()
   {
-    if (m_function == "SetWatched")
-      CPlexUtils::SetWatched(m_item);
-    else if (m_function == "SetUnWatched")
-      CPlexUtils::SetUnWatched(m_item);
-    else if (m_function == "SetProgress")
-      CPlexUtils::ReportProgress(m_item, m_currentTime);
+    using namespace StringHasher;
+    switch(mkhash(m_function.c_str()))
+    {
+      case "SetWatched"_mkhash:
+        CPlexUtils::SetWatched(m_item);
+        break;
+      case "SetUnWatched"_mkhash:
+        CPlexUtils::SetUnWatched(m_item);
+        break;
+      case "SetProgress"_mkhash:
+        CPlexUtils::ReportProgress(m_item, m_currentTime);
+        break;
+      default:
+        return false;
+    }
     return true;
   }
   virtual bool operator==(const CJob *job) const
@@ -81,25 +92,28 @@ CServicesManager& CServicesManager::GetInstance()
 
 void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
+  using namespace StringHasher;
   //CLog::Log(LOGDEBUG, "CServicesManager::Announce [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
   if ((flag & Player) && strcmp(sender, "xbmc") == 0)
   {
-    if (strcmp(message, "OnPlay") == 0)
+    switch(mkhash(message))
     {
-      CPlexUtils::SetPlayState(PlexUtilsPlayerState::playing);
-      if(g_application.m_pPlayer->GetSubtitleCount() < 1)
-      {
-        CFileItem item = g_application.CurrentFileItem();
-        CPlexUtils::GetItemSubtiles(item);
-      }
-    }
-    else if (strcmp(message, "OnPause") == 0)
-    {
-      CPlexUtils::SetPlayState(PlexUtilsPlayerState::paused);
-    }
-    else if (strcmp(message, "OnStop") == 0)
-    {
-      CPlexUtils::SetPlayState(PlexUtilsPlayerState::stopped);
+      case "OnPlay"_mkhash:
+        CPlexUtils::SetPlayState(PlexUtilsPlayerState::playing);
+        if(g_application.m_pPlayer->GetSubtitleCount() < 1)
+        {
+          CFileItem item = g_application.CurrentFileItem();
+          CPlexUtils::GetItemSubtiles(item);
+        }
+        break;
+      case "OnPause"_mkhash:
+        CPlexUtils::SetPlayState(PlexUtilsPlayerState::paused);
+        break;
+      case "OnStop"_mkhash:
+        CPlexUtils::SetPlayState(PlexUtilsPlayerState::stopped);
+        break;
+      default:
+        break;
     }
   }
 }

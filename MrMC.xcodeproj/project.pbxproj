@@ -5108,6 +5108,7 @@
 		F55BD3151D1DB4F00072FE3A /* PlexDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexDirectory.h; sourceTree = "<group>"; };
 		F55BD3191D22423D0072FE3A /* ServicesManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServicesManager.h; sourceTree = "<group>"; };
 		F55BD31B1D246E240072FE3A /* ServicesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServicesManager.cpp; sourceTree = "<group>"; };
+		F55BD31F1D3158E50072FE3A /* StringHasher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringHasher.h; sourceTree = "<group>"; };
 		F5632F8F1CB9473A002027D9 /* Autorun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Autorun.cpp; sourceTree = "<group>"; };
 		F5632F901CB9473A002027D9 /* Autorun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Autorun.h; sourceTree = "<group>"; };
 		F5632F971CB947FB002027D9 /* cddb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cddb.cpp; sourceTree = "<group>"; };
@@ -8735,6 +8736,7 @@
 				E38E1E820D25F9FD00618676 /* Stopwatch.h */,
 				F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */,
 				F5487B4A0FE6F02700E506FD /* StreamDetails.h */,
+				F55BD31F1D3158E50072FE3A /* StringHasher.h */,
 				18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */,
 				18ECC96113CF178D00A9ED6C /* StreamUtils.h */,
 				18B7C8F11294261F009E7A26 /* StringUtils.cpp */,

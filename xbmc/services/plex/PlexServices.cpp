@@ -42,6 +42,7 @@
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/StringHasher.h"
 #include "utils/JobManager.h"
 
 #include "utils/JSONVariantParser.h"
@@ -307,13 +308,20 @@ void CPlexServices::Announce(AnnouncementFlag flag, const char *sender, const ch
 {
   if ((flag & AnnouncementFlag::Player) && strcmp(sender, "xbmc") == 0)
   {
-    if (strcmp(message, "OnPlay") == 0)
-      m_playState = PlexServicePlayerState::playing;
-    else if (strcmp(message, "OnPause") == 0)
-      m_playState = PlexServicePlayerState::paused;
-    else if (strcmp(message, "OnStop") == 0)
+    using namespace StringHasher;
+    switch(mkhash(message))
     {
-      m_playState = PlexServicePlayerState::stopped;
+      case "OnPlay"_mkhash:
+        m_playState = PlexServicePlayerState::playing;
+        break;
+      case "OnPause"_mkhash:
+        m_playState = PlexServicePlayerState::paused;
+        break;
+      case "OnStop"_mkhash:
+        m_playState = PlexServicePlayerState::stopped;
+        break;
+      default:
+        break;
     }
   }
   else if ((flag & AnnouncementFlag::Other) && strcmp(sender, "plex") == 0)
