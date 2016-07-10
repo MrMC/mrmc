@@ -19,6 +19,8 @@
  */
 
 #include <atomic>
+#include <memory>
+#include <algorithm>
 
 #include "PlexClient.h"
 #include "PlexUtils.h"
@@ -35,12 +37,12 @@
 #include <string>
 #include <sstream>
 
-static bool IsInSubNet(std::string address, std::string port)
+static bool IsInSubNet(CURL url)
 {
   bool rtn = false;
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
   in_addr_t localMask = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
-  in_addr_t testAddress = ntohl(inet_addr(address.c_str()));
+  in_addr_t testAddress = ntohl(inet_addr(url.GetHostName().c_str()));
   in_addr_t localAddress = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
 
   in_addr_t temp1 = testAddress & localMask;
@@ -49,20 +51,31 @@ static bool IsInSubNet(std::string address, std::string port)
   {
     // we are on the same subnet
     // now make sure it is a plex server
-    std::string url = "https://" + address + ":" + port;
-    rtn = CPlexUtils::GetIdentity(url);
+    rtn = CPlexUtils::GetIdentity(url, 1);
   }
   return rtn;
 }
 
-CPlexClient::CPlexClient(std::string data, std::string ip)
+CPlexClient::CPlexClient()
 {
   m_local = true;
-  m_alive = true;
   m_owned = true;
-  m_scheme = "http";
+  m_presence = true;
+  m_protocol = "http";
   m_needUpdate = false;
+}
+
+CPlexClient::~CPlexClient()
+{
+}
+
+bool CPlexClient::Init(std::string data, std::string ip)
+{
+  m_url = "";
+
   int port = 32400;
+  m_protocol = "http";
+
   std::string s;
   std::istringstream f(data);
   while (std::getline(f, s))
@@ -88,51 +101,65 @@ CPlexClient::CPlexClient(std::string data, std::string ip)
   CURL url;
   url.SetHostName(ip);
   url.SetPort(port);
-  url.SetProtocol(m_scheme);
+  url.SetProtocol(m_protocol);
+  if (CPlexUtils::GetIdentity(url, 2))
+    m_url = url.Get();
 
-  m_url = url.Get();
+  return !m_url.empty();
 }
 
-CPlexClient::CPlexClient(const TiXmlElement* DeviceNode)
+bool CPlexClient::Init(const TiXmlElement* DeviceNode)
 {
-  m_local = false;
-  m_alive = true;
-  m_needUpdate = false;
+  m_url = "";
+  m_presence = XMLUtils::GetAttribute(DeviceNode, "presence") == "1";
+  if (!m_presence)
+    return false;
+
   m_uuid = XMLUtils::GetAttribute(DeviceNode, "clientIdentifier");
   m_owned = XMLUtils::GetAttribute(DeviceNode, "owned");
   m_serverName = XMLUtils::GetAttribute(DeviceNode, "name");
   m_accessToken = XMLUtils::GetAttribute(DeviceNode, "accessToken");
   m_httpsRequired = XMLUtils::GetAttribute(DeviceNode, "httpsRequired");
 
-  std::string owned;
-  std::string port;
-  std::string address;
+  std::vector<PlexConnection> connections;
   const TiXmlElement* ConnectionNode = DeviceNode->FirstChildElement("Connection");
   while (ConnectionNode)
   {
-    port = XMLUtils::GetAttribute(ConnectionNode, "port");
-    address = XMLUtils::GetAttribute(ConnectionNode, "address");
-    m_scheme = XMLUtils::GetAttribute(ConnectionNode, "protocol");
-    if (XMLUtils::GetAttribute(ConnectionNode, "local") == "1" && IsInSubNet(address, port))
-    {
-      m_local = true;
-      break;
-    }
+    PlexConnection connection;
+    connection.port = XMLUtils::GetAttribute(ConnectionNode, "port");
+    connection.address = XMLUtils::GetAttribute(ConnectionNode, "address");
+    connection.protocol = XMLUtils::GetAttribute(ConnectionNode, "protocol");
+    connection.external = XMLUtils::GetAttribute(ConnectionNode, "local") == "0" ? 1 : 0;
+    connections.push_back(connection);
 
     ConnectionNode = ConnectionNode->NextSiblingElement("Connection");
   }
 
   CURL url;
-  url.SetHostName(address);
-  url.SetPort(atoi(port.c_str()));
-  url.SetProtocol(m_scheme);
-  url.SetProtocolOptions("&X-Plex-Token=" + m_accessToken);
+  if (!connections.empty())
+  {
+    // sort so that all external=0 are first. These are the local connections.
+    std::sort(connections.begin(), connections.end(),
+      [] (PlexConnection const& a, PlexConnection const& b) { return a.external < b.external; });
 
-  m_url = url.Get();
-}
+    for (const auto &connection : connections)
+    {
+      url.SetHostName(connection.address);
+      url.SetPort(atoi(connection.port.c_str()));
+      url.SetProtocol(connection.protocol);
+      url.SetProtocolOptions("&X-Plex-Token=" + m_accessToken);
+      int timeout = connection.external ? 5 : 1;
+      if (CPlexUtils::GetIdentity(url, timeout))
+      {
+        m_url = url.Get();
+        m_protocol = url.GetProtocol();
+        m_local = (connection.external == 0);
+        break;
+      }
+    }
+  }
 
-CPlexClient::~CPlexClient()
-{
+  return !m_url.empty();
 }
 
 std::string CPlexClient::GetUrl()
@@ -164,36 +191,50 @@ const PlexSectionsContentVector CPlexClient::GetMovieContent() const
   return m_movieSectionsContents;
 }
 
-bool CPlexClient::IsMe(const CURL& url)
+const std::string CPlexClient::FormatContentTitle(const std::string contentTitle) const
+{
+  std::string owned = (GetOwned() == "1") ? "O":"S";
+  std::string title = StringUtils::Format("Plex(%s) - %s - %s %s",
+              owned.c_str(), GetServerName().c_str(), contentTitle.c_str(), GetPresence()? "":"(off-line)");
+  return title;
+}
+
+std::string CPlexClient::FindSectionTitle(const std::string &path)
+{
+  CURL real_url(path);
+  if (real_url.GetProtocol() == "plex")
+    real_url = CURL(Base64::Decode(URIUtils::GetFileName(real_url)));
+
+  if (!real_url.GetFileName().empty())
+  {
+    {
+      CSingleLock lock(m_criticalMovies);
+      for (const auto &contents : m_movieSectionsContents)
+      {
+        if (real_url.GetFileName().find(contents.section) != std::string::npos)
+          return contents.title;
+      }
+    }
+    {
+      CSingleLock lock(m_criticalTVShow);
+      for (const auto &contents : m_showSectionsContents)
+      {
+        if (real_url.GetFileName().find(contents.section) != std::string::npos)
+          return contents.title;
+      }
+    }
+  }
+
+  return "";
+}
+
+bool CPlexClient::IsSameClientHostName(const CURL& url)
 {
   CURL real_url(url);
   if (real_url.GetProtocol() == "plex")
     real_url = CURL(Base64::Decode(URIUtils::GetFileName(real_url)));
 
-  if (GetHost() == real_url.GetHostName())
-  {
-    if (!real_url.GetFileName().empty())
-    {
-      {
-        CSingleLock lock(m_criticalMovies);
-        for (const auto &contents : m_movieSectionsContents)
-        {
-          if (real_url.GetFileName().find(contents.section) != std::string::npos)
-            return true;
-        }
-      }
-      {
-        CSingleLock lock(m_criticalTVShow);
-        for (const auto &contents : m_showSectionsContents)
-        {
-          if (real_url.GetFileName().find(contents.section) != std::string::npos)
-            return true;
-        }
-      }
-    }
-  }
-
-  return false;
+  return GetHost() == real_url.GetHostName();
 }
 
 std::string CPlexClient::LookUpUuid(const std::string path) const
@@ -267,6 +308,7 @@ bool CPlexClient::ParseSections(PlexSectionParsing parser)
         content.updatedAt = XMLUtils::GetAttribute(DirectoryNode, "updatedAt");
         std::string key = XMLUtils::GetAttribute(DirectoryNode, "key");
         content.section = "library/sections/" + key;
+        content.thumb = XMLUtils::GetAttribute(DirectoryNode, "composite");
         std::string art = XMLUtils::GetAttribute(DirectoryNode, "art");
         if (m_local)
           content.art = art;
@@ -340,4 +382,12 @@ bool CPlexClient::ParseSections(PlexSectionParsing parser)
   }
 
   return rtn;
+}
+
+void CPlexClient::SetPresence(bool presence)
+{
+  if (m_presence != presence)
+  {
+    m_presence = presence;
+  }
 }

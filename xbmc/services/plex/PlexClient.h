@@ -32,6 +32,14 @@ enum PlexSectionParsing
   updateSection,
 };
 
+struct PlexConnection
+{
+  std::string port;
+  std::string address;
+  std::string protocol;
+  int external;
+};
+
 struct PlexSectionsContent
 {
   int port;
@@ -48,8 +56,11 @@ struct PlexSectionsContent
   std::string path;
   std::string section;
   std::string art;
+  std::string thumb;
 };
 
+class CFileItem;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
 typedef std::vector<PlexSectionsContent> PlexSectionsContentVector;
 
 
@@ -58,29 +69,39 @@ class CPlexClient
   friend class CPlexServices;
 
 public:
-  CPlexClient(std::string data, std::string ip);
-  CPlexClient(const TiXmlElement* DeviceNode);
+  CPlexClient();
  ~CPlexClient();
+
+  bool Init(const TiXmlElement* DeviceNode);
+  bool Init(std::string data, std::string ip);
 
   const bool NeedUpdate() const             { return m_needUpdate; }
   const std::string &GetContentType() const { return m_contentType; }
   const std::string &GetServerName() const  { return m_serverName; }
   const std::string &GetUuid() const        { return m_uuid; }
   const std::string &GetOwned() const       { return m_owned; }
-  const std::string &GetScheme() const      { return m_scheme; }
-  const bool &IsLocal() const { return m_local; }
+  bool GetPresence() const                  { return m_presence; }
+  const std::string &GetProtocol() const    { return m_protocol; }
+  const bool &IsLocal() const               { return m_local; }
+
+  void  AddSectionItem(CFileItemPtr root)   { m_section_items.push_back(root); };
+  std::vector<CFileItemPtr> GetSectionItems()  { return m_section_items; };
+  void ClearSectionItems()                  { m_section_items.clear(); };
 
   const PlexSectionsContentVector GetTvContent() const;
   const PlexSectionsContentVector GetMovieContent() const;
+  const std::string FormatContentTitle(const std::string contentTitle) const;
+  std::string FindSectionTitle(const std::string &path);
+
   std::string GetHost();
   int         GetPort();
   std::string GetUrl();
 
 protected:
-  bool        IsMe(const CURL& url);
+  bool        IsSameClientHostName(const CURL& url);
   std::string LookUpUuid(const std::string path) const;
   bool        ParseSections(PlexSectionParsing parser);
-  void        SetVanished() { m_alive = false; };
+  void        SetPresence(bool presence);
 
 private:
   bool        m_local;
@@ -91,9 +112,10 @@ private:
   std::string m_url;
   std::string m_accessToken;
   std::string m_httpsRequired;
-  std::string m_scheme;
-  std::atomic<bool> m_alive;
+  std::string m_protocol;
+  std::atomic<bool> m_presence;
   std::atomic<bool> m_needUpdate;
+  std::vector<CFileItemPtr> m_section_items;
   CCriticalSection  m_criticalMovies;
   CCriticalSection  m_criticalTVShow;
   std::vector<PlexSectionsContent> m_movieSectionsContents;

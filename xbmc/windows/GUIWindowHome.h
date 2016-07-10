@@ -47,6 +47,7 @@ private:
   bool m_recentlyAddedRunning;
   int m_cumulativeUpdateFlag;
   int m_countBackCalled;
+  CCriticalSection             m_critsection;
   CFileItemList*               m_RecentlyAddedTV;
   CFileItemList*               m_RecentlyAddedMovies;
   CFileItemList*               m_RecentlyAddedMusicSongs;

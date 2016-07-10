@@ -790,6 +790,12 @@ bool CDVDPlayer::OpenInputStream()
       CURL::GetRedacted(m_filename.c_str()).c_str());
     return false;
   }
+  
+  if (m_item.IsMediaServiceBased())
+  {
+    CServicesManager::GetInstance().GetSubtitles(m_item);
+  }
+  
   // find any available external subtitles for non dvd files
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)

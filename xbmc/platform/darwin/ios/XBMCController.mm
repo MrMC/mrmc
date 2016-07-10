@@ -35,7 +35,7 @@
 #import "input/Key.h"
 #import "input/touch/generic/GenericTouchActionHandler.h"
 #import "messaging/ApplicationMessenger.h"
-
+#import "network/NetworkServices.h"
 #import "platform/darwin/AutoPool.h"
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
@@ -764,6 +764,7 @@ XBMCController *g_xbmcController;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
     m_isPlayingBeforeInactive = NO;
   }
+  CNetworkServices::GetInstance().StartPlexServices();
 }
 
 - (void)becomeInactive
@@ -778,6 +779,7 @@ XBMCController *g_xbmcController;
   }
   // check whether we need disable network auto suspend.
   [self rescheduleNetworkAutoSuspend];
+  CNetworkServices::GetInstance().StopPlexServices();
 }
 
 //--------------------------------------------------------------

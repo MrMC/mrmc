@@ -30,6 +30,9 @@ namespace XFILE
 {
   class CCurlFile;
 }
+class CPlexClient;
+typedef std::shared_ptr<CPlexClient> CPlexClientPtr;
+
 
 enum class PlexUtilsPlayerState
 {
@@ -42,9 +45,9 @@ class CPlexUtils
 {
 public:
   static bool HasClients();
-  static bool GetIdentity(std::string url);
+  static bool GetIdentity(CURL url, int timeout);
   static void GetDefaultHeaders(XFILE::CCurlFile &curl);
-  static void SetPlexItemProperties(CFileItem &item, const std::string uuid);
+  static void SetPlexItemProperties(CFileItem &item, const CPlexClientPtr &client);
 
   static void SetWatched(CFileItem &item);
   static void SetUnWatched(CFileItem &item);
@@ -60,10 +63,14 @@ public:
   static bool GetPlexEpisodes(CFileItemList &items, const std::string url);
   static bool GetPlexFilter(CFileItemList &items, std::string url, std::string parentPath, std::string filter);
   static bool GetItemSubtiles(CFileItem &item);
+  static bool GetMoreItemInfo(CFileItem &item);
+  static bool GetMoreResolutions(CFileItem &item);
 
 private:
   static void ReportToServer(std::string url, std::string filename);
   static bool GetVideoItems(CFileItemList &items,CURL url, TiXmlElement* rootXmlNode, std::string type, int season = -1);
   static void GetVideoDetails(CFileItem &item, const TiXmlElement* videoNode);
+  static void GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* videoNode, std::string id = "0");
   static TiXmlDocument GetPlexXML(std::string url, std::string filter = "");
+  static void RemoveSubtitleProperties(CFileItem &item);
 };

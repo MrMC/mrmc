@@ -231,7 +231,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   m_bViewReview = true;
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber, "xx"));
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.c_str() + 2, "plugin"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.c_str() + 2, "plugin") && !m_movieItem->IsMediaServiceBased());
   // Disable video user rating button for plugins as they don't have tables to save this
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin());
 
@@ -405,7 +405,11 @@ void CGUIDialogVideoInfo::Update()
   else
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
 
-  CONTROL_ENABLE(CONTROL_BTN_PLAY);
+  if (m_movieItem->IsMediaServiceBased() &&
+      (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow))
+    CONTROL_DISABLE(CONTROL_BTN_PLAY);
+  else
+    CONTROL_ENABLE(CONTROL_BTN_PLAY);
 
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
@@ -578,10 +582,13 @@ void CGUIDialogVideoInfo::Play(bool resume)
     g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
     return;
   }
-
-  CFileItem movie(*m_movieItem->GetVideoInfoTag());
-  if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.empty())
-    movie.SetPath(m_movieItem->GetPath());
+  
+// not sure why we have this below, we recreate the Item and in the process loose all the info we set.
+// disabled for now, lets see if this has any downside. Plex client works fine now  
+//  CFileItem movie(*m_movieItem->GetVideoInfoTag());
+//  if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.empty())
+//    movie.SetPath(m_movieItem->GetPath());
+  CFileItem movie(*m_movieItem);
   CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
   if (pWindow)
   {

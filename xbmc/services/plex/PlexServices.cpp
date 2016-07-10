@@ -171,16 +171,17 @@ void CPlexServices::GetClients(std::vector<CPlexClientPtr> &clients) const
   clients = m_clients;
 }
 
-bool CPlexServices::CacheClient(const CURL& url)
+CPlexClientPtr CPlexServices::FindClient(const std::string &path)
 {
+  CURL url(path);
   CSingleLock lock(m_criticalClients);
   for (const auto &client : m_clients)
   {
-    if (client->IsLocal() && client->IsMe(url))
-      return false;
+    if (client->IsSameClientHostName(url))
+      return client;
   }
 
-  return m_updateMins != 0;
+  return nullptr;
 }
 
 void CPlexServices::OnSettingAction(const CSetting *setting)
@@ -423,24 +424,28 @@ void CPlexServices::Process()
 {
   GetUserSettings();
 
-  SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
-
   while (!m_bStop)
   {
-    if (g_application.getNetwork().IsConnected())
-      break;
+    CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+    if (iface && iface->IsConnected())
+    {
+      in_addr_t router = inet_addr(iface->GetCurrentDefaultGateway().c_str());
+      if (g_application.getNetwork().PingHost(router, 0, 1000))
+        break;
+    }
 
     m_processSleep.WaitMSec(250);
     m_processSleep.Reset();
   }
+
+  int plextvTimeoutSeconds = 5;
 
   // try plex.tv first
   if (MyPlexSignedIn())
   {
     bool includeHttps = true;
     GetMyPlexServers(includeHttps);
-    //includeHttps = false;
-    //GetMyPlexServers(includeHttps);
+    plextvTimeoutSeconds = 60 * 15;
   }
   // the via GDM
   CheckForGDMServers();
@@ -449,7 +454,6 @@ void CPlexServices::Process()
   gdmTimer.StartZero();
   plextvTimer.StartZero();
   checkUpdatesTimer.StartZero();
-  int plextvTimeoutSeconds = 5;
   while (!m_bStop)
   {
     // check for services every N seconds
@@ -576,10 +580,13 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
         std::string provides = XMLUtils::GetAttribute(DeviceNode, "provides");
         if (provides == "server")
         {
-          CPlexClientPtr newClient(new CPlexClient(DeviceNode));
-          clientsFound.push_back(newClient);
-          // always return true if we find anything
-          rtn = true;
+          CPlexClientPtr client(new CPlexClient());
+          if (client->Init(DeviceNode))
+          {
+            clientsFound.push_back(client);
+            // always return true if we find anything
+            rtn = true;
+          }
         }
         DeviceNode = DeviceNode->NextSiblingElement("Device");
       }
@@ -613,16 +620,20 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
         lostClients.push_back(client);
         CLog::Log(LOGNOTICE, "CPlexServices: Server was lost %s", client->GetServerName().c_str());
       }
+      else if (UpdateClient(client))
+      {
+        // client exists and something changed
+        CLog::Log(LOGNOTICE, "CPlexServices: Server presence changed %s", client->GetServerName().c_str());
+      }
     }
-  }
-  if (!lostClients.empty())
-  {
-    for (const auto &client : lostClients)
-      RemoveClient(client);
+    AddJob(new CPlexServiceJob(0, "FoundNewClient"));
   }
 
-  if (rtn)
-    AddJob(new CPlexServiceJob(0, "FoundNewClient"));
+  if (!lostClients.empty())
+  {
+    for (const auto &lostclient : lostClients)
+      RemoveClient(lostclient);
+  }
 
   return rtn;
 }
@@ -649,19 +660,9 @@ bool CPlexServices::GetSignInPinCode()
   std::string strMessage;
   if (plex.Post(url.Get(), "", strResponse))
   {
-    //CLog::Log(LOGDEBUG, "CPlexServices:FetchSignInPin %s", strResponse.c_str());
-
-    /*
-    <pin>
-      <client-identifier>a36023fe-930c-4f07-9dbb-88ac8cb91ccf</client-identifier>
-      <code>5YFG</code>
-      <expires-at type="datetime">2016-06-30T03:56:36Z</expires-at>
-      <id type="integer">28975394</id>
-      <user-id type="integer" nil="true"/>
-      <auth-token type="NilClass" nil="true"/>
-      <auth_token nil="true"></auth_token>
-    </pin>
-    */
+#if defined(PLEX_DEBUG_VERBOSE)
+    CLog::Log(LOGDEBUG, "CPlexServices:FetchSignInPin %s", strResponse.c_str());
+#endif
 
     TiXmlDocument xml;
     xml.Parse(strResponse.c_str());
@@ -776,8 +777,9 @@ bool CPlexServices::GetSignInByPinReply()
   std::string strResponse;
   if (plex.Get(url.Get(), strResponse))
   {
-    //CLog::Log(LOGDEBUG, "CPlexServices:WaitForSignInByPin %s", strResponse.c_str());
-
+#if defined(PLEX_DEBUG_VERBOSE)
+    CLog::Log(LOGDEBUG, "CPlexServices:WaitForSignInByPin %s", strResponse.c_str());
+#endif
     TiXmlDocument xml;
     xml.Parse(strResponse.c_str());
 
@@ -861,10 +863,23 @@ void CPlexServices::CheckForGDMServers()
         std::string buf(buffer, packetSize);
         if (buf.find("200 OK") != std::string::npos)
         {
-          CPlexClientPtr newClient(new CPlexClient(buf, sender.Address()));
-          if (AddClient(newClient))
+          CPlexClientPtr client(new CPlexClient());
+          if (client->Init(buf, sender.Address()))
           {
-            CLog::Log(LOGNOTICE, "CPlexServices:CheckforGDMServers Server found via GDM %s", sender.Address());
+            if (AddClient(client))
+            {
+              CLog::Log(LOGNOTICE, "CPlexServices:CheckforGDMServers Server found via GDM %s", client->GetServerName().c_str());
+            }
+            else if (GetClient(client->GetUuid()) == nullptr)
+            {
+              // lost client
+              CLog::Log(LOGNOTICE, "CPlexServices:CheckforGDMServers Server was lost %s", client->GetServerName().c_str());
+            }
+            else if (UpdateClient(client))
+            {
+              // client exists and something changed
+              CLog::Log(LOGNOTICE, "CPlexServices:CheckforGDMServers presence changed %s", client->GetServerName().c_str());
+            }
           }
         }
       }
@@ -882,6 +897,7 @@ CPlexClientPtr CPlexServices::GetClient(std::string uuid)
     if (client->GetUuid() == uuid)
       return client;
   }
+
   return nullptr;
 }
 
@@ -892,10 +908,11 @@ bool CPlexServices::AddClient(CPlexClientPtr foundClient)
   {
     // do not add existing clients
     if (client->GetUuid() == foundClient->GetUuid())
-    return false;
+      return false;
   }
 
-  if (foundClient->ParseSections(PlexSectionParsing::newSection))
+  // only add new clients that are present
+  if (foundClient->GetPresence() && foundClient->ParseSections(PlexSectionParsing::newSection))
   {
     m_clients.push_back(foundClient);
     m_hasClients = !m_clients.empty();
@@ -907,17 +924,56 @@ bool CPlexServices::AddClient(CPlexClientPtr foundClient)
 
 bool CPlexServices::RemoveClient(CPlexClientPtr lostClient)
 {
-  bool rtn = false;
   CSingleLock lock(m_criticalClients);
-  std::vector<CPlexClientPtr>::iterator client = std::find(m_clients.begin(), m_clients.end(), lostClient);
-  if (client != m_clients.end())
+  for (const auto &client : m_clients)
   {
-    m_clients.erase(client);
-    m_hasClients = !m_clients.empty();
-    rtn = true;
+    if (client->GetUuid() == lostClient->GetUuid())
+    {
+      // this is silly but can not figure out how to erase
+      // just given 'client' :)
+      m_clients.erase(std::find(m_clients.begin(), m_clients.end(), client));
+      m_hasClients = !m_clients.empty();
+
+      // client is gone, remove it from any gui lists here.
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+      g_windowManager.SendThreadMessage(msg);
+      return true;
+    }
   }
 
-  return rtn;
+  return false;
+}
+
+bool CPlexServices::UpdateClient(CPlexClientPtr updateClient)
+{
+  CSingleLock lock(m_criticalClients);
+  for (const auto &client : m_clients)
+  {
+    if (client->GetUuid() == updateClient->GetUuid())
+    {
+      // client needs updating
+      if (client->GetPresence() != updateClient->GetPresence())
+      {
+        client->SetPresence(updateClient->GetPresence());
+        // update any gui lists here.
+        for (const auto &item : client->GetSectionItems())
+        {
+          std::string title = client->FindSectionTitle(item->GetPath());
+          if (!title.empty())
+          {
+            item->SetLabel(client->FormatContentTitle(title));
+            CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, item);
+            g_windowManager.SendThreadMessage(msg);
+          }
+        }
+        return true;
+      }
+      // no need to look further but an update was not needed
+      return false;
+    }
+  }
+
+  return false;
 }
 
 bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)

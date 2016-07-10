@@ -1352,7 +1352,8 @@ MainController *g_xbmcController;
   [self disableBackGroundTask];
 
   [NSThread detachNewThreadSelector:@selector(enterForegroundDelayed:) toTarget:self withObject:nil];
-  CLightEffectServices::GetInstance().Start();
+  CNetworkServices::GetInstance().StartPlexServices();
+  CNetworkServices::GetInstance().StartLightEffectServices();
 }
 
 - (void)becomeInactive
@@ -1366,7 +1367,8 @@ MainController *g_xbmcController;
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
-  CLightEffectServices::GetInstance().Stop();
+  CNetworkServices::GetInstance().StopPlexServices();
+  CNetworkServices::GetInstance().StopLightEffectServices();
 }
 
 //--------------------------------------------------------------

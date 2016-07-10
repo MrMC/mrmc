@@ -835,6 +835,9 @@ void CGUIWindowVideoNav::OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper
     }
     m_database.Close();
   }
+  if (pItem->IsMediaServiceBased())
+    CServicesManager::GetInstance().GetMoreInfo(*pItem);
+    
   CGUIWindowVideoBase::OnItemInfo(pItem,scraper);
 }
 

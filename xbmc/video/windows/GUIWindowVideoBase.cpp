@@ -48,6 +48,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/dialogs/GUIDialogContentSettings.h"
+#include "services/ServicesManager.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -1207,20 +1208,27 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
   CFileItemPtr movieItem(new CFileItem(*item));
 
-  g_playlistPlayer.Reset();
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
-  playlist.Clear();
-  playlist.Add(movieItem);
+  bool playback = true;
+  if (movieItem->IsMediaServiceBased())
+    playback = CServicesManager::GetInstance().GetResolutions(*movieItem);
+  
+  if (playback)
+  {
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+    playlist.Clear();
+    playlist.Add(movieItem);
 
-  if(m_thumbLoader.IsLoading())
-    m_thumbLoader.StopAsync();
+    if(m_thumbLoader.IsLoading())
+      m_thumbLoader.StopAsync();
 
-  // play movie...
-  g_playlistPlayer.Play(0);
+    // play movie...
+    g_playlistPlayer.Play(0);
 
-  if(!g_application.m_pPlayer->IsPlayingVideo())
-    m_thumbLoader.Load(*m_vecItems);
+    if(!g_application.m_pPlayer->IsPlayingVideo())
+      m_thumbLoader.Load(*m_vecItems);
+  }
 }
 
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)

@@ -21,7 +21,6 @@
 #include <algorithm>
 
 #include "services/ServicesManager.h"
-
 #include "Application.h"
 #include "interfaces/AnnouncementManager.h"
 #include "services/plex/PlexUtils.h"
@@ -100,18 +99,17 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
     {
       case "OnPlay"_mkhash:
         CPlexUtils::SetPlayState(PlexUtilsPlayerState::playing);
-        if(g_application.m_pPlayer->GetSubtitleCount() < 1)
-        {
-          CFileItem item = g_application.CurrentFileItem();
-          CPlexUtils::GetItemSubtiles(item);
-        }
         break;
       case "OnPause"_mkhash:
         CPlexUtils::SetPlayState(PlexUtilsPlayerState::paused);
         break;
       case "OnStop"_mkhash:
+      {
+        CFileItem item = g_application.CurrentFileItem();
         CPlexUtils::SetPlayState(PlexUtilsPlayerState::stopped);
+        AddJob(new CServicesManagerJob(item, item.GetVideoInfoTag()->m_resumePoint.timeInSeconds, "SetProgress"));
         break;
+      }
       default:
         break;
     }
@@ -187,6 +185,25 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
     recentlyAdded.ClearItems();
     recentlyAdded.Append(temp);
   }
+}
+
+void CServicesManager::GetSubtitles(CFileItem &item)
+{
+  if (item.HasProperty("PlexItem"))
+    CPlexUtils::GetItemSubtiles(item);
+}
+
+void CServicesManager::GetMoreInfo(CFileItem &item)
+{
+  if (item.HasProperty("PlexItem"))
+    CPlexUtils::GetMoreItemInfo(item);
+}
+
+bool CServicesManager::GetResolutions(CFileItem &item)
+{
+  if (item.HasProperty("PlexItem"))
+    return CPlexUtils::GetMoreResolutions(item);
+  return false;
 }
 
 void CServicesManager::RegisterMediaServicesHandler(IMediaServicesHandler *mediaServicesHandler)

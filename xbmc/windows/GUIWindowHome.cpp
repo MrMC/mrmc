@@ -202,8 +202,14 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   int jobFlag = ((CRecentlyAddedJob *)job)->GetFlag();
   if (jobFlag & Video)
   {
-    m_RecentlyAddedTV->Assign(*((CRecentlyAddedJob *)job)->GetTvItems());
-    m_RecentlyAddedMovies->Assign(*((CRecentlyAddedJob *)job)->GetMovieItems());
+    CSingleLock lock(m_critsection);
+    CFileItemList recentlyAddedTV;
+    recentlyAddedTV.Copy(*((CRecentlyAddedJob *)job)->GetTvItems());
+    m_RecentlyAddedTV->Assign(recentlyAddedTV);
+
+    CFileItemList recentlyAddedMovies;
+    recentlyAddedMovies.Copy(*((CRecentlyAddedJob *)job)->GetMovieItems());
+    m_RecentlyAddedMovies->Assign(recentlyAddedMovies);
 
     CGUIMessage messageMovie(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RECENTLYADDEDMOVIES, 0, 0, m_RecentlyAddedMovies);
     OnMessage(messageMovie);
@@ -212,7 +218,11 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
   if (jobFlag & Audio)
   {
-    m_RecentlyAddedMusicAlbums->Assign(*((CRecentlyAddedJob *)job)->GetMusicAlbumItems());
+    CSingleLock lock(m_critsection);
+    CFileItemList recentlyAddedMusicAlbums;
+    recentlyAddedMusicAlbums.Copy(*((CRecentlyAddedJob *)job)->GetMusicAlbumItems());
+    m_RecentlyAddedMusicAlbums->Assign(recentlyAddedMusicAlbums);
+
     CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RECENTLYADDEDMUSICALBUMS, 0, 0, m_RecentlyAddedMusicAlbums);
     OnMessage(messageAlbums);
   }
