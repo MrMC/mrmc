@@ -18,6 +18,7 @@
  *
  */
 
+#include "GUIUserMessages.h"
 #include "GUIWindowHome.h"
 #include "input/Key.h"
 #include "guilib/WindowIDs.h"
@@ -233,6 +234,18 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       else
         m_updateRA |= updateRA;
     }
+    else if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
+    {
+      CFileItemPtr newItem = std::static_pointer_cast<CFileItem>(message.GetItem());
+      if (IsActive())
+      {
+        if (newItem->GetVideoInfoTag()->m_type == MediaTypeMovie)
+          m_RecentlyAddedMovies->UpdateItem(newItem.get());
+        else
+          m_RecentlyAddedTV->UpdateItem(newItem.get());
+      }
+    }
+
     break;
   }
   case GUI_MSG_CLICKED:
