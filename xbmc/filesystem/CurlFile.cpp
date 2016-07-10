@@ -624,6 +624,10 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
   g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_connecttimeout);
 
+  // force curl to close sockets when CurlFile is closed,
+  // rather than wait around just in case they might be opened again.
+  g_curlInterface.easy_setopt(h, CURLOPT_FORBID_REUSE, long(1));
+
   // We abort in case we transfer less than 1byte/second
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
 
