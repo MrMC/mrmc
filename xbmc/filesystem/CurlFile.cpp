@@ -1522,7 +1522,7 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
               if (httpCode != 404)
                 CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed: HTTP returned error %ld", httpCode);
             }
-            else
+            else if (msg->data.result != CURLE_OPERATION_TIMEDOUT)
             {
               CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed: %s(%d)", g_curlInterface.easy_strerror(msg->data.result), msg->data.result);
             }
