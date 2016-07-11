@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=repo-resources
-VERSION=2.0.0-16.1
+VERSION=2.0.0-16.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 BASE_URL=https://github.com/MrMC/repo-resources/archive
