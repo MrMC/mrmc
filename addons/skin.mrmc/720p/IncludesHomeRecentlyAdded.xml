@@ -231,7 +231,7 @@
 							<selectedcolor>selected</selectedcolor>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(SeasonEpisode)]</label>
+							<label>$INFO[ListItem.TVShowTitle] - $INFO[ListItem.Property(SeasonEpisode)]</label>
 						</control>
 						<control type="label">
 							<left>20</left>
@@ -289,7 +289,7 @@
 							<selectedcolor>selected</selectedcolor>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(SeasonEpisode)]</label>
+							<label>$INFO[ListItem.TVShowTitle] - $INFO[ListItem.Property(SeasonEpisode)]</label>
 						</control>
 						<control type="label">
 							<left>20</left>
