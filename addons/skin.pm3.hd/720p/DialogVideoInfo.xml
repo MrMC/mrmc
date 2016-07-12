@@ -1,5 +1,5 @@
 <window>
-	<defaultcontrol always="true">8</defaultcontrol>
+	<!-- <defaultcontrol always="true">8</defaultcontrol> -->
 	<allowoverlay>no</allowoverlay>
 	<include>dialogeffect</include>
 	<controls>

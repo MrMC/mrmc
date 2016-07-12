@@ -241,6 +241,18 @@ void CGUIDialogVideoInfo::OnInitWindow()
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
+  if (m_movieItem->IsMediaServiceBased() &&
+      (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow))
+  {
+    CONTROL_DISABLE(CONTROL_BTN_PLAY);
+    SET_CONTROL_FOCUS(CONTROL_BTN_TRACKS, 0);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_BTN_PLAY);
+    SET_CONTROL_FOCUS(CONTROL_BTN_PLAY, 0);
+  }
+  
   Update();
 
   CGUIDialog::OnInitWindow();
@@ -404,12 +416,6 @@ void CGUIDialogVideoInfo::Update()
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
   else
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
-
-  if (m_movieItem->IsMediaServiceBased() &&
-      (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow))
-    CONTROL_DISABLE(CONTROL_BTN_PLAY);
-  else
-    CONTROL_ENABLE(CONTROL_BTN_PLAY);
 
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);

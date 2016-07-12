@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog">
-  <defaultcontrol always="true">8</defaultcontrol>
+  <!-- <defaultcontrol always="true">8</defaultcontrol> -->
   <coordinates>
     <system>1</system>
     <posx>0</posx>

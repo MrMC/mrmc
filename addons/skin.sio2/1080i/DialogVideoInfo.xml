@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window id="2003">
-  <defaultcontrol always="false">8</defaultcontrol>
+  <!-- <defaultcontrol always="false">8</defaultcontrol> -->
   <allowoverlay>no</allowoverlay>
   <include>OpenClose</include>
   <controls>
