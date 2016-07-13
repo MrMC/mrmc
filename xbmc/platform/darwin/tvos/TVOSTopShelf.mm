@@ -64,8 +64,13 @@ CTVOSTopShelf &CTVOSTopShelf::GetInstance()
 void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
 {
   // save these for later
-  m_RecentlyAddedTV->Assign(tv);
-  m_RecentlyAddedMovies->Assign(movies);
+  CFileItemList recentlyAddedTV;
+  recentlyAddedTV.Copy(tv);
+  m_RecentlyAddedTV->Assign(recentlyAddedTV);
+
+  CFileItemList recentlyAddedMovies;
+  recentlyAddedMovies.Copy(movies);
+  m_RecentlyAddedMovies->Assign(recentlyAddedMovies);
 
   CVideoThumbLoader loader;
   NSMutableArray * movieArray = [[NSMutableArray alloc] init];
