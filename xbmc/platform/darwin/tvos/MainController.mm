@@ -1343,6 +1343,8 @@ MainController *g_xbmcController;
   // this handles what to do if we got pushed
   // into foreground by a topshelf item select/play
   CTVOSTopShelf::GetInstance().RunTopShelf();
+  CNetworkServices::GetInstance().StartPlexServices();
+  CNetworkServices::GetInstance().StartLightEffectServices();
 }
 
 - (void)becomeActive
@@ -1352,8 +1354,6 @@ MainController *g_xbmcController;
   [self disableBackGroundTask];
 
   [NSThread detachNewThreadSelector:@selector(enterForegroundDelayed:) toTarget:self withObject:nil];
-  CNetworkServices::GetInstance().StartPlexServices();
-  CNetworkServices::GetInstance().StartLightEffectServices();
 }
 
 - (void)becomeInactive
