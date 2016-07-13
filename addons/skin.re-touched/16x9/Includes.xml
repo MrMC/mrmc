@@ -956,7 +956,7 @@
 			<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
 			<icon>icon-movies.png</icon>
 			<thumb>-</thumb>
-			<visible>Library.HasContent(Movies)</visible>
+			<visible>Library.HasContent(Movies) | Library.HasServices</visible>
 			<visible>!Skin.HasSetting(HideHomeButtonMovies)</visible>
 		</item>
 		<item id="4">
@@ -965,7 +965,7 @@
 			<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
 			<icon>icon-tv.png</icon>
 			<thumb>-</thumb>
-			<visible>Library.HasContent(TVShows)</visible>
+			<visible>Library.HasContent(TVShows) | Library.HasServices</visible>
 			<visible>!Skin.HasSetting(HideHomeButtonTVShows)</visible>
 		</item>
 		<item id="5">

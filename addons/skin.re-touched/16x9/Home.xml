@@ -7,7 +7,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="grouplist" id="9010">
-			<visible>!Window.IsActive(PlayerControls) + [Library.HasContent(Movies) | Library.HasContent(TVShows) | Library.HasContent(MusicVideos) | Library.HasContent(Music) | IntegerGreaterThan(Container(2400).NumItems,0)]</visible>
+			<visible>!Window.IsActive(PlayerControls) + [Library.HasContent(Movies) | Library.HasContent(TVShows) | Library.HasContent(MusicVideos) | Library.HasContent(Music) | IntegerGreaterThan(Container(2400).NumItems,0) | Library.HasServices]</visible>
 			<include>VisibleFadeEffect</include>
 			<posx>0</posx>
 			<posy>100</posy>
@@ -32,23 +32,21 @@
 				<label>31013</label>
 				<onfocus>Skin.SetString(HomeContentPage,Movies)</onfocus>
 				<selected>StringCompare(Skin.String(HomeContentPage),Movies)</selected>
-				<visible>Library.HasContent(Movies)</visible>
-				<visible>Library.HasServices</visible>
+				<visible>Library.HasContent(Movies) | Library.HasServices</visible>
 			</control>
 			<control type="radiobutton">
 				<include>ButtonHomeSubCommonValues</include>
 				<label>31014</label>
 				<onfocus>Skin.SetString(HomeContentPage,TV)</onfocus>
 				<selected>StringCompare(Skin.String(HomeContentPage),TV)</selected>
-				<visible>Library.HasContent(TVShows)</visible>
-				<visible>Library.HasServices</visible>
+				<visible>Library.HasContent(TVShows) | Library.HasServices</visible>
 			</control>
 			<control type="radiobutton">
 				<include>ButtonHomeSubCommonValues</include>
 				<label>31016</label>
 				<onfocus>Skin.SetString(HomeContentPage,Albums)</onfocus>
 				<selected>StringCompare(Skin.String(HomeContentPage),Albums)</selected>
-				<visible>Library.HasContent(Music)</visible>
+				<visible>Library.HasContent(Music) | Library.HasServices</visible>
 			</control>
 			<control type="radiobutton">
 				<include>ButtonHomeSubCommonValues</include>
