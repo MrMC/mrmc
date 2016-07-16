@@ -43,7 +43,6 @@
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;
-class CVideoSyncAndroid;
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -160,8 +159,7 @@ public:
   bool getVideosurfaceInUse();
   void setVideosurfaceInUse(bool videosurfaceInUse);
 
-  static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
-  static void DeinitFrameCallback();
+  static bool WaitVSync(unsigned int milliSeconds);
 
 protected:
   // limit who can access Volume
@@ -196,8 +194,7 @@ private:
 
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
-
-  static CVideoSyncAndroid* m_syncImpl;
+  static CEvent m_vsyncEvent;
 
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
