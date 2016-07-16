@@ -240,6 +240,11 @@ RESOLUTION_INFO SysfsUtils::FireOS_ConvertResolution(int res_hdmi)
       res.iHeight = res.iScreenHeight = 1080;
       res.fRefreshRate = 25.0;
       break;
+    case HDMI_VIDEO_1920x1080p_24Hz:
+      res.iWidth = res.iScreenWidth = 1920;
+      res.iHeight = res.iScreenHeight = 1080;
+      res.fRefreshRate = 24.0;
+      break;
     case HDMI_VIDEO_1920x1080p_23Hz:
       res.iWidth = res.iScreenWidth = 1920;
       res.iHeight = res.iScreenHeight = 1080;

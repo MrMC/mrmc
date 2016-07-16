@@ -30,6 +30,7 @@ public:
   int getPhysicalHeight();
   int getPhysicalWidth();
   float getRefreshRate();
+  int getModeId();
 
 protected:
   CJNIDisplayMode();

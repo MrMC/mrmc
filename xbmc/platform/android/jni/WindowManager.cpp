@@ -37,3 +37,21 @@ void CJNIWindowManagerLayoutParams::setpreferredRefreshRate(float rate)
   if (GetSDKVersion() >= 21)
     set_field(m_object, "preferredRefreshRate", rate);
 }
+
+int CJNIWindowManagerLayoutParams::getpreferredDisplayModeId() const
+{
+  jfieldID fid = get_field_id(m_object, "preferredDisplayModeId", "I");
+  if (fid != NULL)
+    return get_field<jint>(m_object, fid);
+  else
+    return -1.0;
+}
+
+void CJNIWindowManagerLayoutParams::setpreferredDisplayModeId(int modeId)
+{
+  jfieldID fid = get_field_id(m_object, "preferredDisplayModeId", "I");
+  if (fid != NULL)
+    set_field(m_object, fid, modeId);
+  else
+    xbmc_jnienv()->ExceptionClear();
+}

@@ -77,6 +77,7 @@
 #endif
 #include "DVDPlayerAudio.h"
 #include "DVDCodecs/DVDCodecUtils.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -647,10 +648,15 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 #endif
 
   CreatePlayers();
+
+  m_displayLost = false;
+  g_Windowing.Register(this);
 }
 
 CDVDPlayer::~CDVDPlayer()
 {
+  g_Windowing.Unregister(this);
+
   CloseFile();
   DestroyPlayers();
 }
@@ -1283,6 +1289,17 @@ void CDVDPlayer::Process()
         m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
     }
 #endif
+
+    // check display lost
+    {
+      //CSingleLock lock(m_StateSection);
+      if (m_displayLost)
+      {
+        Sleep(50);
+        continue;
+      }
+    }
+
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
 
@@ -4946,4 +4963,19 @@ bool CDVDPlayer::SwitchChannel(const CPVRChannelPtr &channel)
   m_messenger.Put(new CDVDMsgType<CPVRChannelPtr>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
 
   return true;
+}
+
+// IDispResource interface
+void CDVDPlayer::OnLostDisplay()
+{
+  CLog::Log(LOGNOTICE, "CDVDPlayer: OnLostDisplay received");
+  //CSingleLock lock(m_StateSection);
+  m_displayLost = true;
+}
+
+void CDVDPlayer::OnResetDisplay()
+{
+  CLog::Log(LOGNOTICE, "CDVDPlayer: OnResetDisplay received");
+  //CSingleLock lock(m_StateSection);
+  m_displayLost = false;
 }

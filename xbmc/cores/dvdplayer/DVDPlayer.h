@@ -36,6 +36,7 @@
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/StreamDetails.h"
+#include "guilib/DispResource.h"
 
 #ifdef HAS_OMXPLAYER
 #include "OMXCore.h"
@@ -224,7 +225,7 @@ public:
   void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
 };
 
-class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
+class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer, public IDispResource
 {
 public:
   CDVDPlayer(IPlayerCallback& callback);
@@ -304,6 +305,10 @@ public:
   virtual std::string GetPlayingTitle();
 
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
+
+  // IDispResource interface
+  virtual void OnLostDisplay();
+  virtual void OnResetDisplay();
 
   enum ECacheState
   { CACHESTATE_DONE = 0

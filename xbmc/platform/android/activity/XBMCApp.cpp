@@ -508,6 +508,26 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
   }
 }
 
+void CXBMCApp::SetDisplayModeIdCallback(CVariant* rateVariant)
+{
+  int modeId = rateVariant->asInteger();
+  delete rateVariant;
+
+  CJNIWindow window = getWindow();
+  if (window)
+  {
+    CJNIWindowManagerLayoutParams params = window.getAttributes();
+    if (params.getpreferredDisplayModeId() != modeId)
+    {
+      params.setpreferredDisplayModeId(modeId);
+      if (params.getpreferredDisplayModeId() > 0.0)
+        window.setAttributes(params);
+      else
+        android_printf("CXBMCApp::SetDisplayModeIdCallback: failed");
+    }
+  }
+}
+
 bool CXBMCApp::getVideosurfaceInUse()
 {
   return m_videosurfaceInUse;
@@ -525,6 +545,15 @@ void CXBMCApp::SetRefreshRate(float rate)
 
   CVariant *variant = new CVariant(rate);
   runNativeOnUiThread(SetRefreshRateCallback, variant);
+}
+
+void CXBMCApp::SetDisplayModeId(int modeId)
+{
+  if (modeId < 0)
+    return;
+
+  CVariant *variant = new CVariant(modeId);
+  runNativeOnUiThread(SetDisplayModeIdCallback, variant);
 }
 
 int CXBMCApp::android_printf(const char *format, ...)

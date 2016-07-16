@@ -171,10 +171,17 @@ std::vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen, float 
 {
   std::vector<RESOLUTION_WHR> resolutions;
 
-  for (unsigned int idx = RES_DESKTOP; idx < CDisplaySettings::GetInstance().ResolutionInfoSize(); idx++)
+  RESOLUTION_INFO desktop = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+  AddResolution(resolutions, RES_DESKTOP, refreshrate);
+
+  for (size_t idx = RES_DESKTOP + 1; idx < CDisplaySettings::GetInstance().ResolutionInfoSize(); idx++)
   {
     RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(idx);
-    if (info.iScreen == screen)
+    // do not duplicate RES_DESKTOP
+    if (info.iScreen == screen &&
+       (info.iWidth  != desktop.iWidth ||
+        info.iHeight != desktop.iHeight ||
+        info.dwFlags != desktop.dwFlags))
       AddResolution(resolutions, idx, refreshrate);
   }
 

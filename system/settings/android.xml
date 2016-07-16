@@ -44,13 +44,13 @@
     <category id="videoscreen">
       <group id="1">
         <setting id="videoscreen.resolution">
-          <visible>false</visible>
+          <visible>true</visible>
         </setting>
         <setting id="videoscreen.screen">
           <visible>false</visible>
         </setting>
         <setting id="videoscreen.screenmode">
-          <visible>false</visible>
+          <visible>true</visible>
         </setting>
         <setting id="videoscreen.fakefullscreen">
           <visible>false</visible>
@@ -69,7 +69,7 @@
             <option label="37030">9999</option> <!-- unlimited -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
           <control type="edit" format="integer" />
         </setting>
       </group>

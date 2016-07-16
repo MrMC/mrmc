@@ -2727,7 +2727,7 @@
             <dependency type="update" setting="videoscreen.screen" />
             <dependency type="update" setting="videoscreen.resolution" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videoscreen.fakefullscreen" type="boolean" parent="videoscreen.screen" label="14083" help="36354">
           <level>2</level>

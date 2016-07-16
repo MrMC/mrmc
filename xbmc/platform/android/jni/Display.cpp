@@ -26,49 +26,49 @@ using namespace jni;
 
 int CJNIDisplayMode::getPhysicalHeight()
 {
-  if (GetSDKVersion() >= 23)
-  {
-    return call_method<jint>(m_object, "getPhysicalHeight", "()I");
-  }
+  jmethodID mid = get_method_id(m_object, "getPhysicalHeight", "()I");
+  if (mid != NULL)
+    return call_method<jint>(m_object, mid);
   else
   {
-    jmethodID mid = get_method_id(m_object, "getPhysicalHeight", "()I");
-    if (mid != NULL)
-      return call_method<jint>(m_object, mid);
-    else
-      return 1080;
+    xbmc_jnienv()->ExceptionClear();
+    return 1080;
   }
 }
 
 int CJNIDisplayMode::getPhysicalWidth()
 {
-  if (GetSDKVersion() >= 23)
-  {
-    return call_method<jint>(m_object, "getPhysicalWidth", "()I");
-  }
+  jmethodID mid = get_method_id(m_object, "getPhysicalWidth", "()I");
+  if (mid != NULL)
+    return call_method<jint>(m_object, mid);
   else
   {
-    jmethodID mid = get_method_id(m_object, "getPhysicalWidth", "()I");
-    if (mid != NULL)
-      return call_method<jint>(m_object, mid);
-    else
-      return 1920;
+    xbmc_jnienv()->ExceptionClear();
+    return 1920;
   }
 }
 
 float CJNIDisplayMode::getRefreshRate()
 {
-  if (GetSDKVersion() >= 23)
-  {
-    return call_method<jfloat>(m_object, "getRefreshRate", "()F");
-  }
+  jmethodID mid = get_method_id(m_object, "getRefreshRate", "()F");
+  if (mid != NULL)
+    return call_method<jfloat>(m_object, mid);
   else
   {
-    jmethodID mid = get_method_id(m_object, "getRefreshRate", "()F");
-    if (mid != NULL)
-      return call_method<jfloat>(m_object, mid);
-    else
-      return 60.0f;
+    xbmc_jnienv()->ExceptionClear();
+    return 60.0f;
+  }
+}
+
+int CJNIDisplayMode::getModeId()
+{
+  jmethodID mid = get_method_id(m_object, "getModeId", "()I");
+  if (mid != NULL)
+    return call_method<jint>(m_object, mid);
+  else
+  {
+    xbmc_jnienv()->ExceptionClear();
+    return 1080;
   }
 }
 
@@ -87,27 +87,31 @@ float CJNIDisplay::getRefreshRate()
 
 std::vector<float> CJNIDisplay::getSupportedRefreshRates()
 {
-  if (GetSDKVersion() >= 21)
-    return jcast<std::vector<float>>(
-      call_method<jhfloatArray>(m_object, "getSupportedRefreshRates", "()[F"));
-  else
-    return std::vector<float>();
+  return jcast<std::vector<float>>(
+    call_method<jhfloatArray>(m_object, "getSupportedRefreshRates", "()[F"));
 }
 
 CJNIDisplayMode CJNIDisplay::getMode()
 {
-  if (GetSDKVersion() >= 23)
-  {
-    return call_method<jhobject>(m_object,
-      "getMode", "()Landroid/view/Display$Mode;");
-  }
+  jmethodID mid = get_method_id(m_object, "getMode", "()Landroid/view/Display$Mode;");
+  if (mid != NULL)
+    return call_method<jhobject>(m_object, mid);
   else
   {
-    jmethodID mid = get_method_id(m_object, "getMode", "()Landroid/view/Display$Mode;");
-    if (mid != NULL)
-      return call_method<jhobject>(m_object, mid);
-    else
-      return jhobject();
+    xbmc_jnienv()->ExceptionClear();
+    return jhobject();
+  }
+}
+
+std::vector<CJNIDisplayMode> CJNIDisplay::getSupportedModes()
+{
+  jmethodID mid = get_method_id(m_object, "getSupportedModes", "()[Landroid/view/Display$Mode;");
+  if (mid != NULL)
+    return jcast<CJNIDisplayModes>(call_method<jhobjectArray>(m_object, mid));
+  else
+  {
+    xbmc_jnienv()->ExceptionClear();
+    return CJNIDisplayModes();
   }
 }
 
@@ -121,22 +125,5 @@ int CJNIDisplay::getHeight()
 {
   return call_method<jint>(m_object,
     "getHeight", "()I");
-}
-
-std::vector<CJNIDisplayMode> CJNIDisplay::getSupportedModes()
-{
-  if (GetSDKVersion() >= 23)
-  {
-    return jcast<CJNIDisplayModes>(call_method<jhobjectArray>(m_object,
-      "getSupportedModes", "()[Landroid/view/Display$Mode;"));
-  }
-  else
-  {
-    jmethodID mid = get_method_id(m_object, "getSupportedModes", "()[Landroid/view/Display$Mode;");
-    if (mid != NULL)
-      return jcast<CJNIDisplayModes>(call_method<jhobjectArray>(m_object, mid));
-    else
-      return CJNIDisplayModes();
-  }
 }
 

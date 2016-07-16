@@ -144,6 +144,7 @@ public:
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);
 
+  static void SetDisplayModeId(int modeId);
   static void SetRefreshRate(float rate);
   static int GetDPI();
 
@@ -176,6 +177,7 @@ private:
   void run();
   void stop();
   void SetupEnv();
+  static void SetDisplayModeIdCallback(CVariant *rate);
   static void SetRefreshRateCallback(CVariant *rate);
   static ANativeActivity *m_activity;
   static CJNIWakeLock *m_wakeLock;
