@@ -575,6 +575,8 @@ void CCurlFile::SetCommonOptions(CReadState* state)
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
     else if( m_httpauth == "ntlm" )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
+    else if( m_httpauth == "basic" )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
   }
 
   // allow passive mode for ftp
