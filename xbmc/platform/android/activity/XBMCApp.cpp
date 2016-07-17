@@ -189,6 +189,7 @@ void CXBMCApp::onResume()
   intentFilter.addAction("android.intent.action.SCREEN_ON");
   intentFilter.addAction("android.intent.action.SCREEN_OFF");
   intentFilter.addAction("android.intent.action.HEADSET_PLUG");
+  intentFilter.addAction("android.intent.action.HDMI_PLUGGED");
   registerReceiver(*this, intentFilter);
 
   if (!g_application.IsInScreenSaver())
@@ -845,6 +846,14 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       m_headsetPlugged = newstate;
       CAEFactory::DeviceChange();
     }
+  }
+  else if (action == "android.intent.action.HDMI_PLUGGED")
+  {
+    bool pluggedIn = intent.getBooleanExtra("state", false);
+    if (pluggedIn)
+      CLog::Log(LOGINFO, "Got HDMI_PLUGGED intent attached");
+    else
+      CLog::Log(LOGINFO, "Got HDMI_PLUGGED intent detached");
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {
