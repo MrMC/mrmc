@@ -60,6 +60,9 @@ public:
 
   virtual void  Register(IDispResource *resource);
   virtual void  Unregister(IDispResource *resource);
+          void  OnLostDevice();
+          void  OnResetDevice();
+          void  OnAppFocusChange(bool focus);
 
   virtual bool  Support3D(int width, int height, uint32_t mode)     const;
   virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
@@ -84,8 +87,9 @@ protected:
 
   CEGLWrapper           *m_egl;
   std::string           m_extensions;
-  CCriticalSection             m_resourceSection;
-  std::vector<IDispResource*>  m_resources;
+  bool                  m_resourceLost;
+  CCriticalSection      m_resourceSection;
+  std::vector<IDispResource*> m_resources;
 };
 
 XBMC_GLOBAL_REF(CWinSystemEGL,g_Windowing);

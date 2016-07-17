@@ -84,6 +84,7 @@
 #include "filesystem/VideoDatabaseFile.h"
 #include "video/videosync/VideoSyncAndroid.h"
 #include "interfaces/AnnouncementManager.h"
+#include "windowing/WindowingFactory.h"
 
 #define GIGABYTES       1073741824
 
@@ -523,9 +524,16 @@ void CXBMCApp::SetDisplayModeIdCallback(CVariant* rateVariant)
     {
       params.setpreferredDisplayModeId(modeId);
       if (params.getpreferredDisplayModeId() > 0.0)
+      {
+        // we know the display is going away
+        // give windowing advanced notice.
+        g_Windowing.OnLostDevice();
         window.setAttributes(params);
+      }
       else
-        android_printf("CXBMCApp::SetDisplayModeIdCallback: failed");
+      {
+        CLog::Log(LOGERROR, "CXBMCApp::SetDisplayModeIdCallback: failed");
+      }
     }
   }
 }

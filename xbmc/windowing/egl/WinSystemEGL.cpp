@@ -36,6 +36,7 @@
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
 #endif
 #include "utils/log.h"
+#include "utils/Stopwatch.h"
 #include "EGLWrapper.h"
 #include "EGLQuirks.h"
 #include <vector>
@@ -44,6 +45,47 @@
 #ifdef TARGET_ANDROID
 #include "platform/android/activity/XBMCApp.h"
 #endif
+
+class CDeviceDelayedReset : public CThread
+{
+  public:
+    CDeviceDelayedReset(CWinSystemEGL *owner, int delay)
+    : CThread("DeviceDelayedReset")
+    , m_delay(delay)
+    , m_owner(owner)
+    {
+    }
+    virtual void OnExit()
+    {
+      delete this;
+    }
+    virtual void Process() override
+    {
+      if (m_delay > 0)
+      {
+        CStopWatch resetTimer;
+        resetTimer.StartZero();
+        while(!m_bStop)
+        {
+          if (resetTimer.GetElapsedMilliseconds() > m_delay)
+          {
+            m_owner->OnResetDevice();
+            break;
+          }
+         Sleep(50);
+        }
+      }
+      else
+      {
+        // no delays, issue reset now
+        m_owner->OnResetDevice();
+      }
+    }
+
+  private:
+    int m_delay;
+    CWinSystemEGL *m_owner;
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
@@ -60,6 +102,8 @@ CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
 
   m_egl               = NULL;
   m_iVSyncMode        = 0;
+  // by default, resources are always lost on starup
+  m_resourceLost      = true;
 }
 
 CWinSystemEGL::~CWinSystemEGL()
@@ -295,7 +339,9 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
 //xxx    return true;
   }
 
-  m_bFullScreen   = fullScreen;
+  OnLostDevice();
+
+  m_bFullScreen = fullScreen;
   // Destroy any existing window
   if (m_surface != EGL_NO_SURFACE)
     DestroyWindow();
@@ -307,12 +353,13 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
     CLog::Log(LOGERROR, "%s: Could not create new window",__FUNCTION__);
     return false;
   }
-  Show();
 
-  CSingleLock lock(m_resourceSection);
-  // tell any shared resources
-  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-    (*i)->OnResetDevice();
+  int resetDelay = CSettings::GetInstance().GetInt("videoplayer.pauseafterrefreshchange");
+  // CDeviceDelayedReset is a fire and forget message, it will self delete
+  CDeviceDelayedReset *delayedDeviceReset = new CDeviceDelayedReset(this, resetDelay * 100);
+  delayedDeviceReset->Create(true);
+
+  Show();
 
   return true;
 }
@@ -528,6 +575,38 @@ void CWinSystemEGL::Unregister(IDispResource* resource)
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
+}
+
+void CWinSystemEGL::OnLostDevice()
+{
+  CSingleLock lock(m_resourceSection);
+  if (!m_resourceLost)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemEGL::OnLostDevice");
+    m_resourceLost = true;
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+      (*i)->OnLostDevice();
+  }
+}
+
+void CWinSystemEGL::OnResetDevice()
+{
+  CSingleLock lock(m_resourceSection);
+  if (m_resourceLost)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemEGL::OnResetDevice");
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+      (*i)->OnResetDevice();
+    m_resourceLost = false;
+  }
+}
+
+void CWinSystemEGL::OnAppFocusChange(bool focus)
+{
+  CLog::Log(LOGDEBUG, "CWinSystemEGL::OnAppFocusChange");
+  CSingleLock lock(m_resourceSection);
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnAppFocusChange(focus);
 }
 
 EGLDisplay CWinSystemEGL::GetEGLDisplay()

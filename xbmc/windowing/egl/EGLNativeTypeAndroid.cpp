@@ -34,6 +34,7 @@
 #include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/jni/SystemProperties.h"
 #include "platform/android/jni/View.h"
+#include "platform/android/jni/Display.h"
 #include "platform/android/jni/Window.h"
 #include "platform/android/jni/WindowManager.h"
 #include "platform/android/jni/Build.h"
@@ -41,7 +42,9 @@
 
 
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()
-  : m_width(0), m_height(0)
+: m_width(0)
+, m_height(0)
+, m_hasDisplayMode(false)
 {
 }
 
@@ -64,25 +67,29 @@ void CEGLNativeTypeAndroid::Initialize()
   {
     CJNIView view(window.getDecorView());
     if (view)
-      m_display = view.getDisplay();
-  }
-
-  if (m_display)
-  {
-    std::vector<CJNIDisplayMode> modes = m_display.getSupportedModes();
-    for (auto m : modes)
     {
-      CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: available display mode: %dx%d@%f %d",
-        m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate(), m.getModeId());
-      if (m.getPhysicalWidth() > m_width || m.getPhysicalHeight() > m_height)
+      CJNIDisplay display = view.getDisplay();
+      if (display)
       {
-        m_width = m.getPhysicalWidth();
-        m_height = m.getPhysicalHeight();
+        m_hasDisplayMode = display.getMode() != NULL;
+        CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: hasDisplayMode = %d", m_hasDisplayMode);
+        if (m_hasDisplayMode)
+        {
+          CJNIDisplayMode mode = display.getMode();
+          m_width = mode.getPhysicalWidth();
+          m_height = mode.getPhysicalHeight();
+          CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: current display mode: %dx%d@%f",
+            m_width, m_height, mode.getRefreshRate());
+        }
+        else
+        {
+          m_width = display.getWidth();
+          m_height = display.getHeight();
+          CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: current display: %dx%d@%f",
+            m_width, m_height, display.getRefreshRate());
+        }
       }
     }
-
-    CJNIDisplayMode mode = m_display.getMode();
-    CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: current display mode: %dx%d@%f", mode.getPhysicalWidth(), mode.getPhysicalHeight(), mode.getRefreshRate());
   }
 
   if (!m_width || !m_height)
@@ -175,7 +182,7 @@ bool CEGLNativeTypeAndroid::DestroyNativeWindow()
   return true;
 }
 
-static float currentRefreshRate()
+static float CurrentRefreshRate()
 {
   CJNIWindow window = CXBMCApp::getWindow();
   if (window)
@@ -183,7 +190,7 @@ static float currentRefreshRate()
     float preferredRate = window.getAttributes().getpreferredRefreshRate();
     if (preferredRate > 20.0 && preferredRate < 70.0)
     {
-      CLog::Log(LOGINFO, "CEGLNativeTypeAndroid:currentRefreshRate Preferred refresh rate: %f", preferredRate);
+      CLog::Log(LOGINFO, "CEGLNativeTypeAndroid:CurrentRefreshRate Preferred refresh rate: %f", preferredRate);
       return preferredRate;
     }
     CJNIView view(window.getDecorView());
@@ -191,10 +198,15 @@ static float currentRefreshRate()
       CJNIDisplay display(view.getDisplay());
       if (display)
       {
-        float reportedRate = display.getMode().getRefreshRate();
+        float reportedRate;
+        if (display.getMode() != NULL)
+          reportedRate = display.getMode().getRefreshRate();
+        else
+          reportedRate = display.getRefreshRate();
+
         if (reportedRate > 20.0 && reportedRate < 70.0)
         {
-          CLog::Log(LOGINFO, "CEGLNativeTypeAndroid:currentRefreshRate Current display refresh rate: %f", reportedRate);
+          CLog::Log(LOGINFO, "CEGLNativeTypeAndroid:CurrentRefreshRate Current display refresh rate: %f", reportedRate);
           return reportedRate;
         }
       }
@@ -224,7 +236,7 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
     res->iHeight = m_height;
   }
 
-  res->fRefreshRate = currentRefreshRate();
+  res->fRefreshRate = CurrentRefreshRate();
   res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
   res->iScreen       = 0;
   res->bFullScreen   = true;
@@ -240,18 +252,16 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 {
-  // find the matching modeId
   CJNIWindow window = CXBMCApp::getWindow();
   if (window)
   {
-    CJNIView view = window.getDecorView();
+    CJNIView view(window.getDecorView());
     if (view)
     {
       CJNIDisplay display = view.getDisplay();
-      if (display)
+      if (display.getMode() != NULL)
       {
         int curModeId = display.getMode().getModeId();
-
         std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
         for (auto m : modes)
         {
@@ -265,7 +275,6 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           {
             m_width = res.iWidth;
             m_height = res.iHeight;
-            CXBMCApp::SetBuffersGeometry(m_width, m_height, 0);
             if (modeId != curModeId)
               CXBMCApp::SetDisplayModeId(modeId);
             CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: SetNativeResolution: %dx%d@%f %i", res.iWidth, res.iHeight, res.fRefreshRate, modeId);
@@ -273,6 +282,12 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           }
         }
       }
+      else
+      {
+        m_width = display.getWidth();
+        m_height = display.getHeight();
+      }
+      CXBMCApp::SetBuffersGeometry(m_width, m_height, 0);
     }
   }
 
@@ -282,28 +297,32 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
   resolutions.clear();
+
   CJNIWindow window = CXBMCApp::getWindow();
   if (window)
   {
-    CJNIView view = window.getDecorView();
+    CJNIView view(window.getDecorView());
     if (view)
     {
       CJNIDisplay display = view.getDisplay();
       if (display)
       {
-        std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
-        for (auto m : modes)
+        if (display.getMode() != NULL)
         {
-          RESOLUTION_INFO found_res(m.getPhysicalWidth(), m.getPhysicalHeight());
-          found_res.iScreenWidth = found_res.iWidth;
-          found_res.iScreenHeight = found_res.iHeight;
-          found_res.iSubtitles = (int)(0.965 * found_res.iHeight);
-          found_res.fRefreshRate = m.getRefreshRate();
-          found_res.strMode = StringUtils::Format("%dx%d @ %.2f%s - Full Screen",
-            found_res.iScreenWidth, found_res.iScreenHeight, found_res.fRefreshRate,
-            found_res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-          CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid:ProbeResolutions: %s", found_res.strMode.c_str());
-          resolutions.push_back(found_res);
+          std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
+          for (auto m : modes)
+          {
+            RESOLUTION_INFO found_res(m.getPhysicalWidth(), m.getPhysicalHeight());
+            found_res.iScreenWidth = found_res.iWidth;
+            found_res.iScreenHeight = found_res.iHeight;
+            found_res.iSubtitles = (int)(0.965 * found_res.iHeight);
+            found_res.fRefreshRate = m.getRefreshRate();
+            found_res.strMode = StringUtils::Format("%dx%d @ %.2f%s - Full Screen",
+              found_res.iScreenWidth, found_res.iScreenHeight, found_res.fRefreshRate,
+              found_res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+            CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid:ProbeResolutions: %s", found_res.strMode.c_str());
+            resolutions.push_back(found_res);
+          }
         }
       }
     }
@@ -313,6 +332,7 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
   {
     RESOLUTION_INFO res;
     GetNativeResolution(&res);
+    resolutions.push_back(res);
   }
 
   return true;

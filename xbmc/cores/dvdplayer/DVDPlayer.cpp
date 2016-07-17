@@ -650,7 +650,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 
   CreatePlayers();
 
-  m_displayLost = false;
   g_Windowing.Register(this);
 }
 
@@ -1299,16 +1298,6 @@ void CDVDPlayer::Process()
         m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
     }
 #endif
-
-    // check display lost
-    {
-      //CSingleLock lock(m_StateSection);
-      if (m_displayLost)
-      {
-        Sleep(50);
-        continue;
-      }
-    }
 
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
@@ -5008,16 +4997,18 @@ bool CDVDPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 }
 
 // IDispResource interface
-void CDVDPlayer::OnLostDisplay()
+void CDVDPlayer::OnLostDevice()
 {
-  CLog::Log(LOGNOTICE, "CDVDPlayer: OnLostDisplay received");
-  //CSingleLock lock(m_StateSection);
-  m_displayLost = true;
+  CLog::Log(LOGNOTICE, "CDVDPlayer: OnLostDevice received");
+  // no clue what thread called us, send a message
+  if (HasVideo() && IsPlaying())
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PAUSE);
 }
 
-void CDVDPlayer::OnResetDisplay()
+void CDVDPlayer::OnResetDevice()
 {
-  CLog::Log(LOGNOTICE, "CDVDPlayer: OnResetDisplay received");
-  //CSingleLock lock(m_StateSection);
-  m_displayLost = false;
+  CLog::Log(LOGNOTICE, "CDVDPlayer: OnResetDevice received");
+  // no clue what thread called us, send a message
+  if (HasVideo() && IsPaused())
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PAUSE);
 }

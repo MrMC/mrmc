@@ -20,7 +20,6 @@
  *
  */
 
-#include <atomic>
 #include <utility>
 #include "cores/IPlayer.h"
 #include "DVDClock.h"
@@ -308,8 +307,8 @@ public:
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
 
   // IDispResource interface
-  virtual void OnLostDisplay();
-  virtual void OnResetDisplay();
+  virtual void OnLostDevice();
+  virtual void OnResetDevice();
 
   enum ECacheState
   { CACHESTATE_DONE = 0
@@ -518,8 +517,6 @@ protected:
 
   bool m_HasVideo;
   bool m_HasAudio;
-
-  std::atomic<bool> m_displayLost;
 
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;

@@ -79,6 +79,18 @@ CJNIDisplay::CJNIDisplay()
 {
 }
 
+int CJNIDisplay::getWidth()
+{
+  return call_method<jint>(m_object,
+    "getWidth", "()I");
+}
+
+int CJNIDisplay::getHeight()
+{
+  return call_method<jint>(m_object,
+    "getHeight", "()I");
+}
+
 float CJNIDisplay::getRefreshRate()
 {
   return call_method<jfloat>(m_object,
@@ -114,16 +126,3 @@ std::vector<CJNIDisplayMode> CJNIDisplay::getSupportedModes()
     return CJNIDisplayModes();
   }
 }
-
-int CJNIDisplay::getWidth()
-{
-  return call_method<jint>(m_object,
-    "getWidth", "()I");
-}
-
-int CJNIDisplay::getHeight()
-{
-  return call_method<jint>(m_object,
-    "getHeight", "()I");
-}
-

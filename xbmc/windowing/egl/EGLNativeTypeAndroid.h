@@ -21,7 +21,6 @@
  */
 
 #include "EGLNativeType.h"
-#include "platform/android/jni/Display.h"
 
 class CEGLNativeTypeAndroid : public CEGLNativeType
 {
@@ -51,7 +50,7 @@ public:
   virtual bool  BringToFront();
 
 protected:
-  CJNIDisplay m_display;
   int m_width;
   int m_height;
+  bool m_hasDisplayMode;
 };
