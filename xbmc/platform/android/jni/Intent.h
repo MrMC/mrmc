@@ -37,6 +37,7 @@ public:
 
   int getIntExtra(const std::string &name, int defaultValue) const;
   std::string getStringExtra(const std::string &name) const;
+  bool getBooleanExtra(const std::string &name, bool defaultValue) const;
   jni::jhobject getParcelableExtra(const std::string &name) const;
 
   bool hasExtra(const std::string &name) const;

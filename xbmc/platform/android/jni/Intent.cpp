@@ -84,6 +84,13 @@ std::string CJNIIntent::getStringExtra(const std::string &name) const
     jcast<jhstring>(name)));
 }
 
+bool CJNIIntent::getBooleanExtra(const std::string &name, bool defaultValue) const
+{
+  return call_method<jboolean>(m_object,
+    "getBooleanExtra", "(Ljava/lang/String;Z)Z",
+    jcast<jhstring>(name), defaultValue);
+}
+
 jni::jhobject CJNIIntent::getParcelableExtra(const std::string &name) const
 {
   return call_method<jhobject>(m_object,
