@@ -996,7 +996,7 @@
 						<visible>System.HasMediaDVD</visible>
 					</item>
 					<item id="5">
-						<label>31959</label>
+						<label>[UPPERCASE]$LOCALIZE[5][/UPPERCASE]</label>
 						<onclick>ActivateWindow(Settings)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
