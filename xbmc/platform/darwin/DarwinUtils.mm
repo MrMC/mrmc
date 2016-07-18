@@ -787,48 +787,6 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
   return ret;
 }
 
-bool CDarwinUtils::AudioCodecLicenseCheck(const std::string &name)
-{
-  NSString *tzName = [[NSTimeZone systemTimeZone] name];
-  NSArray *tzNames = @[@"America/Adak", @"America/Anchorage", @"America/Boise", @"America/Chicago", @"America/Denver", @"America/Detroit", @"America/Indiana/Indianapolis", @"America/Indiana/Knox", @"America/Indiana/Marengo", @"America/Indiana/Petersburg", @"America/Indiana/Tell_City", @"America/Indiana/Vevay", @"America/Indiana/Vincennes", @"America/Indiana/Winamac", @"America/Juneau", @"America/Kentucky/Louisville", @"America/Kentucky/Monticello", @"America/Los_Angeles", @"America/Menominee", @"America/Metlakatla", @"America/New_York", @"America/Nome", @"America/North_Dakota/Beulah", @"America/North_Dakota/Center", @"America/North_Dakota/New_Salem", @"America/Phoenix", @"America/Puerto_Rico", @"America/Shiprock", @"America/Sitka", @"America/St_Thomas", @"America/Thule", @"America/Yakutat", @"Pacific/Guam", @"Pacific/Honolulu", @"Pacific/Johnston", @"Pacific/Kwajalein", @"Pacific/Midway", @"Pacific/Pago_Pago", @"Pacific/Saipan", @"Pacific/Wake"];
-
-  if ([tzNames containsObject:tzName] || [[tzName stringByDeletingLastPathComponent] isEqualToString:@"US"])
-  {
-  #if defined(TARGET_DARWIN_IOS)
-    #if defined(TARGET_DARWIN_TVOS)
-      // permit transcode to ac3 under tvOS only
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE))
-        return true;
-    #endif
-
-    // cripple DTS/DTSHD decode under ios/tvos app store (pending license)
-    if (name == "dts" || name == "dca")
-    {
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
-        return true;
-      return false;
-    }
-    if (name == "dtshd")
-    {
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH))
-        return true;
-      return false;
-    }
-    #if !defined(TARGET_DARWIN_TVOS)
-      // cripple TrueHD decode under ios app store (pending license)
-      if (name == "truehd")
-      {
-        if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH))
-          return true;
-        return false;
-      }
-    #endif
-  #endif
-  }
-
-  return true;
-}
-
 bool CDarwinUtils::OpenAppWithOpenURL(const std::string& path)
 {
   bool ret = false;
