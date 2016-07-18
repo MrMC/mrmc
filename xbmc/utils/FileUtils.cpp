@@ -27,6 +27,7 @@
 #include "FileOperationJob.h"
 #include "URIUtils.h"
 #include "filesystem/StackDirectory.h"
+#include "filesystem/SpecialProtocol.h"
 #include "filesystem/MultiPathDirectory.h"
 #include <vector>
 #include "settings/MediaSourceSettings.h"
@@ -253,7 +254,6 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
     }
   }
 
-#if defined(TARGET_DARWIN)
   char *fullpath = realpath(filePath.c_str(), nullptr);
   if (fullpath)
   {
@@ -261,7 +261,7 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
     free(fullpath);
 
     // if this is a real path and accesses into user home, allow.
-    std::string userHome = CDarwinUtils::GetUserHomeDirectory();
+    std::string userHome = CSpecialProtocol::TranslatePath("special://home");
     if (testpath.find(userHome) != std::string::npos)
       return true;
 
@@ -274,7 +274,6 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
       return false;
     }
   }
-#endif
 
   return true;
 }
