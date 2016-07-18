@@ -547,17 +547,17 @@ bool CNetworkLinux::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
 {
 #if defined(TARGET_DARWIN_IOS)
   return darwinICMPPing(remote_ip, timeout_ms) == 0;
-#elif !defined(TARGET_ANDROID)
+#else
   char cmd_line [64];
 
-  struct in_addr host_ip; 
+  struct in_addr host_ip;
   host_ip.s_addr = remote_ip;
 
-#if defined (TARGET_DARWIN_OSX) || defined (TARGET_FREEBSD)
-  sprintf(cmd_line, "ping -c 1 -t %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
-#else
-  sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
-#endif
+  #if defined (TARGET_DARWIN_OSX) || defined (TARGET_FREEBSD)
+    sprintf(cmd_line, "ping -c 1 -t %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  #else
+    sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  #endif
 
   int status = system (cmd_line);
 
@@ -572,8 +572,6 @@ bool CNetworkLinux::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
     CLog::Log(LOGERROR, "Ping fail : status = %d, errno = %d : '%s'", status, errno, cmd_line);
 
   return result == 0;
-#else
-  return false;
 #endif
 }
 
