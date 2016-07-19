@@ -76,6 +76,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 
   m_bRenderSubs = false;
   m_stalled = false;
+  m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_iVideoDelay = 0;
   m_iSubtitleDelay = 0;
@@ -276,6 +277,9 @@ void CDVDPlayerVideo::Process()
     if (m_syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
       iPriority = 1;
 
+    if (m_paused)
+      iPriority = 1;
+
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
 
@@ -427,6 +431,11 @@ void CDVDPlayerVideo::Process()
         if (decoderState & VC_BUFFER)
           break;
       }
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_PAUSE))
+    {
+      m_paused = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_PAUSE: %d", m_paused);
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {

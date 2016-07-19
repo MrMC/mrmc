@@ -70,6 +70,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_audioClock = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = true;
+  m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_silence = false;
   m_synctype = SYNC_DISCON;
@@ -274,9 +275,12 @@ void CDVDPlayerAudio::Process()
     if (m_syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
       priority = 1;
 
+    if (m_paused)
+      priority = 1;
+
     // consider stream stalled if queue is empty
     // we can't sync audio to clock with an empty queue
-    if (ALLOW_AUDIO(m_speed) && !m_stalled)
+    if (ALLOW_AUDIO(m_speed) && !m_stalled && !m_paused)
     {
       timeout = 0;
     }
@@ -373,6 +377,11 @@ void CDVDPlayerAudio::Process()
       m_silence = static_cast<CDVDMsgBool*>(pMsg)->m_value;
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, %d)"
                 , m_audioClock, m_silence);
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_PAUSE))
+    {
+      m_paused = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_PAUSE: %d", m_paused);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {

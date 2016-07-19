@@ -48,6 +48,7 @@ public:
     GENERAL_RESYNC,                 //
     GENERAL_FLUSH,                  // flush all buffers
     GENERAL_RESET,                  // reset codecs for new data
+    GENERAL_PAUSE,
     GENERAL_STREAMCHANGE,           //
     GENERAL_SYNCHRONIZE,            //
     GENERAL_GUI_ACTION,             // gui action of some sort

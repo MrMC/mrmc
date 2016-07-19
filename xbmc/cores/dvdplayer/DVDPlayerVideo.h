@@ -169,6 +169,7 @@ protected:
   int m_iNrOfPicturesNotToSkip;
   int m_speed;
   bool m_stalled;
+  bool m_paused;
   IDVDStreamPlayer::ESyncState m_syncState;
   std::string m_codecname;
   std::atomic_bool m_bAbortOutput;

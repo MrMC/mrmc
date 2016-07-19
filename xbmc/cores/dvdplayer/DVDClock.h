@@ -67,6 +67,8 @@ public:
   static double GetFrequency() { return (double)m_systemFrequency ; }
   static double WaitAbsoluteClock(double target);
 
+  void Pause(bool pause);
+
 protected:
   static void CheckSystemClock();
   static double SystemToAbsolute(int64_t system);
@@ -79,6 +81,8 @@ protected:
   int64_t m_pauseClock;
   double m_iDisc;
   bool m_bReset;
+  bool m_paused;
+  int m_speedAfterPause;
 
   static int64_t m_systemFrequency;
   static int64_t m_systemOffset;

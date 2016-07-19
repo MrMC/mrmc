@@ -20,7 +20,9 @@
  *
  */
 
+#include <atomic>
 #include <utility>
+
 #include "cores/IPlayer.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
@@ -517,6 +519,8 @@ protected:
 
   bool m_HasVideo;
   bool m_HasAudio;
+
+  std::atomic<bool> m_displayLost;
 
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;

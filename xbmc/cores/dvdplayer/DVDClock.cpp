@@ -113,10 +113,37 @@ double CDVDClock::GetClock(double& absolute, bool interpolated /*= true*/)
   return GetClock(interpolated);
 }
 
+void CDVDClock::Pause(bool pause)
+{
+  CSingleLock lock(m_critSection);
+
+  if (pause && !m_paused)
+  {
+    if (!m_pauseClock)
+      m_speedAfterPause = m_systemFrequency * DVD_PLAYSPEED_NORMAL / m_systemUsed;
+    else
+      m_speedAfterPause = DVD_PLAYSPEED_PAUSE;
+
+    SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_paused = true;
+  }
+  else if (!pause && m_paused)
+  {
+    m_paused = false;
+    SetSpeed(m_speedAfterPause);
+  }
+}
+
 void CDVDClock::SetSpeed(int iSpeed)
 {
   // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
   CSingleLock lock(m_critSection);
+
+  if (m_paused)
+  {
+    m_speedAfterPause = iSpeed;
+    return;
+  }
 
   if(iSpeed == DVD_PLAYSPEED_PAUSE)
   {
