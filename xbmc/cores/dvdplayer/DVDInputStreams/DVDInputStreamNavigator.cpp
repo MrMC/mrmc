@@ -1181,7 +1181,7 @@ int CDVDInputStreamNavigator::GetAngleCount()
 
 int CDVDInputStreamNavigator::GetActiveAngle()
 {
-  if (!m_dvdnav) return 0;
+  if (!m_dvdnav) return -1;
 
   int number_of_angles;
   int current_angle;
