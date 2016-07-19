@@ -61,24 +61,19 @@ class CDeviceDelayedReset : public CThread
     }
     virtual void Process() override
     {
-      if (m_delay > 0)
+      if (m_delay < 750)
+        m_delay = 750;
+
+      CStopWatch resetTimer;
+      resetTimer.StartZero();
+      while(!m_bStop)
       {
-        CStopWatch resetTimer;
-        resetTimer.StartZero();
-        while(!m_bStop)
+        if (resetTimer.GetElapsedMilliseconds() > m_delay)
         {
-          if (resetTimer.GetElapsedMilliseconds() > m_delay)
-          {
-            m_owner->OnResetDevice();
-            break;
-          }
-         Sleep(50);
+          m_owner->OnResetDevice();
+          break;
         }
-      }
-      else
-      {
-        // no delays, issue reset now
-        m_owner->OnResetDevice();
+       Sleep(50);
       }
     }
 
