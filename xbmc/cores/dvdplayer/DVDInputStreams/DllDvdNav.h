@@ -21,8 +21,14 @@
  */
 
 extern "C" {
-#define DVDNAV_COMPILE
+ #define DVDNAV_COMPILE
+
  #include <stdint.h>
+
+ // dvdnav_internal can redefine these,
+ // save them to restore after including dvdnav files
+ #define saved_off_t off_t
+ #define saved_lseek lseek
 
  #include <dvdnav/dvdnav.h>
 
@@ -35,9 +41,10 @@ extern "C" {
  #include <dvdnav/dvdnav_internal.h>
  #include <dvdnav/dvd_types.h>
 
- #ifdef WIN32 // WIN32INCLUDES
- #undef HAVE_CONFIG_H
- #endif
+ #undef  off_t
+ #define off_t saved_off_t
+ #undef  lseek
+ #define lseek saved_lseek
 }
 #include "DynamicDll.h"
 
