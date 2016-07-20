@@ -38,11 +38,10 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(TARBALLS_LOCATION)/$(ARCHIVE)
-ifeq ($(NATIVE_OS),osx)
 	cd $(PLATFORM); patch -p1 < ../silence-stderr-spew.patch
-	# shut up clang warnings about gcc_struct
-	sed -ie "s|,gcc_struct||" "$(PLATFORM)/src/dvdread/ifo_types.h"
-endif
+	cd $(PLATFORM); patch -p1 < ../silence-gcc_struc-spew.patch
+	cd $(PLATFORM); patch -p1 < ../fallback2iso9660.patch
+	cd $(PLATFORM); patch -p1 < ../betterUnicode.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 

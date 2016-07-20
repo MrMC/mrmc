@@ -1,0 +1,12 @@
+--- a/src/dvdread/ifo_types.h	2016-07-20 23:21:57.089602606 -0400
++++ b/src/dvdread/ifo_types.h	2016-07-20 23:22:19.645602603 -0400
+@@ -33,7 +33,7 @@
+ #if defined(__GNUC__)
+ #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
+ #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)
+-#define ATTRIBUTE_PACKED __attribute__ ((packed,gcc_struct))
++#define ATTRIBUTE_PACKED __attribute__ ((packed))
+ #else
+ #define ATTRIBUTE_PACKED __attribute__ ((packed))
+ #endif
+

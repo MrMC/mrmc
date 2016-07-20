@@ -1,0 +1,37 @@
+diff -up a/src/dvd_udf.c.unicode b/src/dvd_udf.c
+--- a/src/dvd_udf.c.unicode	2011-10-06 14:10:01.000000000 +0200
++++ b/src/dvd_udf.c	2012-04-19 14:58:49.574462443 +0200
+@@ -328,17 +328,24 @@ static int SetUDFCache(dvd_reader_t *dev
+ 
+ static int Unicodedecode( uint8_t *data, int len, char *target )
+ {
+-  int p = 1, i = 0;
+   int err = 0;
+-
+-  if( ( data[ 0 ] == 8 ) || ( data[ 0 ] == 16 ) ) do {
+-    if( data[ 0 ] == 16 ) err |= data[p++];  /* character cannot be converted to 8bit, return error */
+-    if( p < len ) {
+-      target[ i++ ] = data[ p++ ];
++  len--;
++  data++;
++  if (data[-1] == 8)
++    memcpy(target, data, len);
++  else if (data[-1] == 16) {
++    int i;
++    for (i=0; i<len; i++) {
++      if (data[2*i] == 0)
++        target[i] = data[i*2+1];
++      else {
++        err = 1; /* character cannot be converted to 8bit, return error */
++        target[i] = 0;
++      }
+     }
+-  } while( p < len );
++  }
++  target[len] = '\0';
+ 
+-  target[ i ] = '\0';
+   return !err;
+ }
+ 
+
