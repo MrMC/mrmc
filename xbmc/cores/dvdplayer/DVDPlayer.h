@@ -520,7 +520,16 @@ protected:
   bool m_HasVideo;
   bool m_HasAudio;
 
-  std::atomic<bool> m_displayLost;
+  enum
+  {
+    AV_DISPLAY_LOST,
+    AV_DISPLAY_RESET,
+    AV_DISPLAY_PRESENT
+  } AV_DISPLAY_STATE;
+
+  std::atomic<int>  m_displayState;
+  std::atomic<int>  m_displayResetDelay;
+  CStopWatch        m_displayResetTimer;
 
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;

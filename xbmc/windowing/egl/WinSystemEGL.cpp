@@ -46,42 +46,6 @@
 #include "platform/android/activity/XBMCApp.h"
 #endif
 
-class CDeviceDelayedReset : public CThread
-{
-  public:
-    CDeviceDelayedReset(CWinSystemEGL *owner, int delay)
-    : CThread("DeviceDelayedReset")
-    , m_delay(delay)
-    , m_owner(owner)
-    {
-    }
-    virtual void OnExit()
-    {
-      delete this;
-    }
-    virtual void Process() override
-    {
-      if (m_delay < 750)
-        m_delay = 750;
-
-      CStopWatch resetTimer;
-      resetTimer.StartZero();
-      while(!m_bStop)
-      {
-        if (resetTimer.GetElapsedMilliseconds() > m_delay)
-        {
-          m_owner->OnResetDevice();
-          break;
-        }
-       Sleep(50);
-      }
-    }
-
-  private:
-    int m_delay;
-    CWinSystemEGL *m_owner;
-};
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
 {
@@ -349,10 +313,7 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
     return false;
   }
 
-  int resetDelay = CSettings::GetInstance().GetInt("videoplayer.pauseafterrefreshchange");
-  // CDeviceDelayedReset is a fire and forget message, it will self delete
-  CDeviceDelayedReset *delayedDeviceReset = new CDeviceDelayedReset(this, resetDelay * 100);
-  delayedDeviceReset->Create(true);
+  OnResetDevice();
 
   Show();
 
@@ -589,10 +550,10 @@ void CWinSystemEGL::OnResetDevice()
   CSingleLock lock(m_resourceSection);
   if (m_resourceLost)
   {
+    m_resourceLost = false;
     CLog::Log(LOGDEBUG, "CWinSystemEGL::OnResetDevice");
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDevice();
-    m_resourceLost = false;
   }
 }
 
