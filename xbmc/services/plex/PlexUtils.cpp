@@ -24,6 +24,7 @@
 #include "ContextMenuManager.h"
 #include "Util.h"
 #include "URL.h"
+#include "filesystem/StackDirectory.h"
 #include "network/Network.h"
 #include "utils/Base64.h"
 #include "utils/log.h"
@@ -313,7 +314,11 @@ void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* m
 void CPlexUtils::SetWatched(CFileItem &item)
 {
   std::string id = item.GetVideoInfoTag()->m_strServiceId;
-  std::string url = URIUtils::GetParentPath(item.GetPath());
+  std::string url = item.GetPath();
+  if (URIUtils::IsStack(url))
+    url = XFILE::CStackDirectory::GetFirstStackedFile(url);
+  else
+    url   = URIUtils::GetParentPath(url);
   if (StringUtils::StartsWithNoCase(url, "plex://"))
       url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
 
@@ -324,7 +329,11 @@ void CPlexUtils::SetWatched(CFileItem &item)
 void CPlexUtils::SetUnWatched(CFileItem &item)
 {
   std::string id = item.GetVideoInfoTag()->m_strServiceId;
-  std::string url = URIUtils::GetParentPath(item.GetPath());
+  std::string url = item.GetPath();
+  if (URIUtils::IsStack(url))
+    url = XFILE::CStackDirectory::GetFirstStackedFile(url);
+  else
+    url   = URIUtils::GetParentPath(url);
   if (StringUtils::StartsWithNoCase(url, "plex://"))
     url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
 
@@ -349,7 +358,11 @@ void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
 
     if (!status.empty())
     {
-      std::string url   = URIUtils::GetParentPath(item.GetPath());
+      std::string url = item.GetPath();
+      if (URIUtils::IsStack(url))
+        url = XFILE::CStackDirectory::GetFirstStackedFile(url);
+      else
+        url   = URIUtils::GetParentPath(url);
       if (StringUtils::StartsWithNoCase(url, "plex://"))
         url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
 
@@ -948,6 +961,12 @@ bool CPlexUtils::GetMoreResolutions(CFileItem &item)
 {
   std::string url = item.GetVideoInfoTag()->m_strFileNameAndPath;
   std::string id  = item.GetVideoInfoTag()->m_strServiceId;
+  
+  if (URIUtils::IsStack(url))
+    url = XFILE::CStackDirectory::GetFirstStackedFile(url);
+  else
+    url   = URIUtils::GetParentPath(url);
+
   CURL url2(url);
   url2.SetFileName("library/metadata/" + id);
   CContextButtons choices;
