@@ -3126,7 +3126,6 @@
             <dependency type="visible">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.eac3passthrough</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.eac3passthrough</condition>
               </and>
             </dependency>
             <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
@@ -3149,7 +3148,6 @@
             <dependency type="visible">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.truehdpassthrough</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.truehdpassthrough</condition>
               </and>
             </dependency>
             <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
@@ -3163,7 +3161,6 @@
             <dependency type="visible">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.dtshdpassthrough</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.dtshdpassthrough</condition>
               </and>
             </dependency>
             <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
