@@ -95,23 +95,26 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
   //CLog::Log(LOGDEBUG, "CServicesManager::Announce [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
   if ((flag & Player) && strcmp(sender, "xbmc") == 0)
   {
-    switch(mkhash(message))
+    CFileItem item = g_application.CurrentFileItem();
+    if (item.HasProperty("PlexItem"))
     {
-      case "OnPlay"_mkhash:
-        CPlexUtils::SetPlayState(PlexUtilsPlayerState::playing);
-        break;
-      case "OnPause"_mkhash:
-        CPlexUtils::SetPlayState(PlexUtilsPlayerState::paused);
-        break;
-      case "OnStop"_mkhash:
+      switch(mkhash(message))
       {
-        CFileItem item = g_application.CurrentFileItem();
-        CPlexUtils::SetPlayState(PlexUtilsPlayerState::stopped);
-        AddJob(new CServicesManagerJob(item, item.GetVideoInfoTag()->m_resumePoint.timeInSeconds, "SetProgress"));
-        break;
+        case "OnPlay"_mkhash:
+          CPlexUtils::SetPlayState(PlexUtilsPlayerState::playing);
+          break;
+        case "OnPause"_mkhash:
+          CPlexUtils::SetPlayState(PlexUtilsPlayerState::paused);
+          break;
+        case "OnStop"_mkhash:
+        {
+          CPlexUtils::SetPlayState(PlexUtilsPlayerState::stopped);
+          AddJob(new CServicesManagerJob(item, item.GetVideoInfoTag()->m_resumePoint.timeInSeconds, "SetProgress"));
+          break;
+        }
+        default:
+          break;
       }
-      default:
-        break;
     }
   }
 }
