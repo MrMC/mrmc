@@ -42,7 +42,7 @@ using namespace jni;
 // is the max TrueHD package
 const unsigned int MAX_RAW_AUDIO_BUFFER = 16384;
 const unsigned int MAX_RAW_AUDIO_BUFFER_HD = 61440;
-const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 20;
+const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 5;
 
 /*
  * ADT-1 on L preview as of 2014-10 downmixes all non-5.1/7.1 content
@@ -61,12 +61,6 @@ static bool Has71Support()
 {
   /* Android 5.0 introduced side channels */
   return CJNIAudioManager::GetSDKVersion() >= 21;
-}
-
-// AMLogic helper for HD Audio
-bool CAESinkAUDIOTRACK::HasAmlHD()
-{
-  return ((CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1) && (CJNIAudioFormat::ENCODING_DTS_HD != -1));
 }
 
 static void DumpPossibleATFormats()
@@ -240,6 +234,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   if (m_format.m_dataFormat == AE_FMT_RAW && !CXBMCApp::IsHeadsetPlugged())
   {
     m_passthrough = true;
+    m_wantsIECPacking = m_info.m_wantsIECPassthrough;
 
     // setup defaults
     m_format.m_dataFormat = AE_FMT_S16LE;
@@ -268,7 +263,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         case CAEStreamInfo::STREAM_TYPE_TRUEHD:
           m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
           m_encoding = CJNIAudioFormat::ENCODING_DOLBY_TRUEHD;
-          if (m_info.m_wantsIECPassthrough)
+          if (m_wantsIECPacking)
             m_sink_sampleRate = 192000;
           else
           {
@@ -288,7 +283,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         case CAEStreamInfo::STREAM_TYPE_DTSHD:
           m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
           m_encoding = CJNIAudioFormat::ENCODING_DTS_HD;
-          if (m_info.m_wantsIECPassthrough)
+          if (m_wantsIECPacking)
             m_sink_sampleRate = 192000;
           else
           {
@@ -305,6 +300,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     if (m_encoding == -1)
     {
       // defaults if the encoding is not supported
+      m_wantsIECPacking = true;
       m_format.m_sampleRate = m_sink_sampleRate;
       m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
       m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
@@ -340,7 +336,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       return false;
     }
 
-    if (m_passthrough && !m_info.m_wantsIECPassthrough)
+    if (m_passthrough && !m_wantsIECPacking)
     {
       m_format.m_frameSize = 1;
       m_sink_frameSize = m_format.m_frameSize;
@@ -463,7 +459,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   }
   uint32_t normHead_pos = head_pos - m_offset;
 
-  if (m_passthrough && !m_info.m_wantsIECPassthrough)
+  if (m_passthrough && !m_wantsIECPacking)
   {
     if (m_extTimer.MillisLeft() > 0)
     {
@@ -551,7 +547,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         {
           retried = true;
           double sleep_time = 0;
-          if (m_passthrough && !m_info.m_wantsIECPassthrough)
+          if (m_passthrough && !m_wantsIECPacking)
           {
             sleep_time = m_format.m_streamInfo.GetDuration();
             usleep(sleep_time * 1000);
@@ -572,7 +568,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         }
       }
       retried = false; // at least one time there was more than zero data written
-      if (m_passthrough && !m_info.m_wantsIECPassthrough)
+      if (m_passthrough && !m_wantsIECPacking)
       {
         if (written == size)
           m_duration_written += m_format.m_streamInfo.GetDuration() / 1000;
@@ -596,7 +592,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   }
   unsigned int written_frames = (unsigned int) (written/m_format.m_frameSize);
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
-  if (m_passthrough && !m_info.m_wantsIECPassthrough)
+  if (m_passthrough && !m_wantsIECPacking)
   {
     // AT does not consume in a blocking way - it runs ahead and blocks
     // exactly once with the last package for some 100 ms
@@ -702,7 +698,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
 
     // check for dts capabilities
-    if (CJNIAudioFormat::ENCODING_DTS != -1)
+    //if (CJNIAudioFormat::ENCODING_DTS != -1)
     {
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);

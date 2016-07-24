@@ -85,4 +85,5 @@ private:
   bool               m_passthrough;
   double             m_audiotrackbuffer_sec;
   int                m_encoding;
+  bool               m_wantsIECPacking;
 };
