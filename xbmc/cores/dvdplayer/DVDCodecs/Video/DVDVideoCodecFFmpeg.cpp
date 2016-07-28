@@ -257,7 +257,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     else
     {
 #if defined(TARGET_ANDROID)
-      int num_threads = CAndroidFeatures::GetCPUCount() * 3 / 2;
+      //int num_threads = CAndroidFeatures::GetCPUCount() * 3 / 2;
+      int num_threads = (CAndroidFeatures::GetCPUCount() > 2) ? 3 : CAndroidFeatures::GetCPUCount() * 3 / 2;
 #else
       int num_threads = av_cpu_count() * 3 / 2;
 #endif
