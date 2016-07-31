@@ -200,6 +200,11 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
           m_displayWidth = mode.getPhysicalWidth();
           m_displayHeight = mode.getPhysicalHeight();
         }
+        else
+        {
+          m_displayWidth = display.getWidth();
+          m_displayHeight = display.getHeight();
+        }
       }
     }
   }
