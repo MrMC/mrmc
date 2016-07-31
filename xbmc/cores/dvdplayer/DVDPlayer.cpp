@@ -2054,7 +2054,7 @@ void CDVDPlayer::HandlePlaySpeed()
       {
         m_SpeedState.lastpts  = m_dvdPlayerVideo->GetCurrentPts();
         m_SpeedState.lasttime = GetTime();
-        m_SpeedState.lastabstime = CDVDClock::GetAbsoluteClock();
+        m_SpeedState.lastabstime = m_clock.GetAbsoluteClock();
         // check how much off clock video is when ff/rw:ing
         // a problem here is that seeking isn't very accurate
         // and since the clock will be resynced after seek
@@ -2697,13 +2697,13 @@ void CDVDPlayer::HandleMessages()
         if(m_State.timestamp > 0)
         {
           double offset;
-          offset  = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
+          offset  = m_clock.GetAbsoluteClock() - m_State.timestamp;
           offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
           offset  = DVD_TIME_TO_MSEC(offset);
           if(offset >  1000) offset =  1000;
           if(offset < -1000) offset = -1000;
           m_State.time     += offset;
-          m_State.timestamp =  CDVDClock::GetAbsoluteClock();
+          m_State.timestamp =  m_clock.GetAbsoluteClock();
         }
 
         if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
@@ -3510,7 +3510,7 @@ int64_t CDVDPlayer::GetTime()
   const double limit = DVD_MSEC_TO_TIME(500);
   if (m_State.timestamp > 0)
   {
-    offset  = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
+    offset  = m_clock.GetAbsoluteClock() - m_State.timestamp;
     offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
     if (offset > limit)
       offset = limit;
@@ -4762,7 +4762,7 @@ int CDVDPlayer::AddSubtitleStreamInfo(const SPlayerSubtitleStreamInfo& info)
 void CDVDPlayer::UpdatePlayState(double timeout)
 {
   if(m_State.timestamp != 0
-  && m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+  && m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > m_clock.GetAbsoluteClock())
     return;
 
   SPlayerState state(m_State);
@@ -4915,7 +4915,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 void CDVDPlayer::UpdateApplication(double timeout)
 {
   if(m_UpdateApplication != 0
-  && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+  && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > m_clock.GetAbsoluteClock())
     return;
 
   CDVDInputStreamPVRManager* pStream = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
