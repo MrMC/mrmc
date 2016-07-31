@@ -410,7 +410,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
 
   m_drop = false;
-  m_codecControlFlags = 0;
   m_hints = hints;
 
   switch(m_hints.codec)
@@ -731,7 +730,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dts, double pts)
 {
   if (!m_opened)
-    return VC_ERROR;
+    return VC_BUFFER;
 
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
@@ -848,14 +847,10 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   int rtn = VC_BUFFER;
   if (gotPicture)
   {
-    if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
+    rtn |= VC_PICTURE;
+    if (m_demux.size() > 25)
       rtn &= ~VC_BUFFER;
-    else
-      rtn |= VC_PICTURE;
   }
-
-  if (m_demux.size() > 25)
-    rtn &= ~VC_BUFFER;
 /*
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Decode, "
     "rtn(%d), m_demux.size(%d)", rtn, m_demux.size());
@@ -897,8 +892,6 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     if (!m_render_sw)
       m_videobuffer.mediacodec = NULL;
   }
-  m_codecControlFlags = 0;
-
 }
 
 bool CDVDVideoCodecAndroidMediaCodec::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -935,16 +928,6 @@ void CDVDVideoCodecAndroidMediaCodec::SetDropState(bool bDrop)
   }
   else
     m_videobuffer.iFlags &= ~DVP_FLAG_DROPPED;
-}
-
-void CDVDVideoCodecAndroidMediaCodec::SetCodecControl(int flags)
-{
-  if (m_codecControlFlags != flags)
-  {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::SetDropState %x->%x", m_codecControlFlags, flags);
-    m_codecControlFlags = flags;
-  }
 }
 
 int CDVDVideoCodecAndroidMediaCodec::GetDataSize(void)
