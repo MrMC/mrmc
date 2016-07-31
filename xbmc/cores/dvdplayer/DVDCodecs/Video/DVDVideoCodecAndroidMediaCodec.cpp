@@ -208,6 +208,17 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
       }
     }
   }
+  if (!CAndroidFeatures::HasTouchScreen())
+  {
+    // hack for firetv under 720p display, gui is right but mediacodec surface is wrong
+    // should be 720p size but that shows wrong video playback size.
+    // forcing to 1080p fixes it but really need to track down the real issue.
+    CLog::Log(LOGDEBUG, "CDVDMediaCodecInfo: display(%dx%d)", m_displayWidth, m_displayHeight);
+    if (m_displayWidth < 1920)
+      m_displayWidth = 1920;
+    if (m_displayHeight < 1080)
+    m_displayHeight = 1080;
+  }
 }
 
 CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
