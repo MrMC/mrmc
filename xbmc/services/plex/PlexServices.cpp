@@ -430,7 +430,7 @@ void CPlexServices::Process()
     if (iface && iface->IsConnected())
     {
       in_addr_t router = inet_addr(iface->GetCurrentDefaultGateway().c_str());
-      if (g_application.getNetwork().PingHost(router, 0, 1000))
+      if (router != INADDR_NONE && g_application.getNetwork().PingHost(router, 0, 1000))
         break;
     }
 
