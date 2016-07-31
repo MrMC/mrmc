@@ -651,6 +651,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   CreatePlayers();
 
   m_displayState = AV_DISPLAY_PRESENT;
+  m_displayResetDelay = 0;
   g_Windowing.Register(this);
 }
 
