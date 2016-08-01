@@ -68,6 +68,13 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+#ifndef SA_SIZE
+#define SA_SIZE(sa)						\
+    (  (!(sa) || ((struct sockaddr *)(sa))->sa_len == 0) ?	\
+	sizeof(long)		:				\
+	1 + ( (((struct sockaddr *)(sa))->sa_len - 1) | (sizeof(long) - 1) ) )
+#endif
+
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]):
   m_interfaceName(interfaceName),
   m_interfaceMacAdr(StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
@@ -206,7 +213,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
 {
    std::string result;
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
   FILE* pipe = popen("echo \"show State:/Network/Global/IPv4\" | scutil | grep Router", "r");
   Sleep(100);
   if (pipe)
@@ -223,7 +230,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
   }
   if (result.empty())
     CLog::Log(LOGWARNING, "Unable to determine gateway");
-#elif defined(TARGET_FREEBSD)
+#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_IOS)
    size_t needed;
    int mib[6];
    char *buf, *next, *lim;
