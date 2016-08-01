@@ -213,24 +213,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
 {
    std::string result;
 
-#if defined(TARGET_DARWIN_OSX)
-  FILE* pipe = popen("echo \"show State:/Network/Global/IPv4\" | scutil | grep Router", "r");
-  Sleep(100);
-  if (pipe)
-  {
-    std::string tmpStr;
-    char buffer[256] = {'\0'};
-    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
-    {
-      tmpStr = buffer;
-      if (tmpStr.length() >= 11)
-        result = tmpStr.substr(11);
-    }
-    pclose(pipe);
-  }
-  if (result.empty())
-    CLog::Log(LOGWARNING, "Unable to determine gateway");
-#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_FREEBSD) || defined(TARGET_DARWIN)
    size_t needed;
    int mib[6];
    char *buf, *next, *lim;
