@@ -118,10 +118,6 @@ void CGUIWindowHome::OnInitWindow()
 
 void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  int ra_flag = 0;
-
-  CLog::Log(LOGDEBUG, "GOT ANNOUNCEMENT, type: %i, from %s, message %s",(int)flag, sender, message);
-
   // we are only interested in library changes
   if ((flag & (VideoLibrary | AudioLibrary)) == 0)
     return;
@@ -133,8 +129,11 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
       strcmp(message, "OnCleanStarted") == 0)
     return;
 
+  CLog::Log(LOGDEBUG, "CGUIWindowHome::Announce, type: %i, from %s, message %s",(int)flag, sender, message);
+
   bool onUpdate = strcmp(message, "OnUpdate") == 0;
   // always update Totals except on an OnUpdate with no playcount update
+  int ra_flag = 0;
   if (!onUpdate || data.isMember("playcount"))
     ra_flag |= Totals;
 
