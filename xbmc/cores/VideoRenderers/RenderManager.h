@@ -82,8 +82,6 @@ public:
 
   void SetViewMode(int iViewMode);
 
-  void SetDVDClock(CDVDClock *clock);
-
   // Functions called from mplayer
   /**
    * Called by video player to configure renderer
@@ -118,7 +116,7 @@ public:
    * @param sync signals frame, top, or bottom field
    */
   void FlipPage(volatile std::atomic_bool& bStop, double timestamp = 0.0, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
-  unsigned int PreInit();
+  unsigned int PreInit(CDVDClock *clock);
   void UnInit();
   bool Flush();
 
@@ -154,7 +152,7 @@ public:
 
   EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);
 
-  static double GetPresentTime();
+  double GetPresentTime();
   void  WaitPresentTime(double presenttime);
 
   std::string GetVSyncState();

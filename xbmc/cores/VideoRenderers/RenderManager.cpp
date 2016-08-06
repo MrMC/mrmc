@@ -148,7 +148,7 @@ float CXBMCRenderManager::GetAspectRatio()
 /* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
-  return CDVDClock::GetAbsoluteClock(false) / DVD_TIME_BASE;
+  return m_dvdClock->GetAbsoluteClock(false) / DVD_TIME_BASE;
 }
 
 static double wrap(double x, double minimum, double maximum)
@@ -171,19 +171,19 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if(fps <= 0)
   {
     /* smooth video not enabled */
-    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+    m_dvdClock->WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
     return;
   }
 
   if(m_dvdClock && m_dvdClock->GetSpeedAdjust() != 0.0)
   {
-    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+    m_dvdClock->WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
     m_presenterr = 0;
     m_presentcorr = 0;
     return;
   }
 
-  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
+  double clock     = m_dvdClock->WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
 
@@ -233,11 +233,6 @@ std::string CXBMCRenderManager::GetVSyncState()
                                          ,     MathUtils::round_int(avgerror      * 100)
                                          , abs(MathUtils::round_int(m_presenterr  * 100)));
   return state;
-}
-
-void CXBMCRenderManager::SetDVDClock(CDVDClock *clock)
-{
-  m_dvdClock = clock;
 }
 
 bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation, int buffers)
@@ -439,10 +434,11 @@ void CXBMCRenderManager::FrameFinish()
   }
 }
 
-unsigned int CXBMCRenderManager::PreInit()
+unsigned int CXBMCRenderManager::PreInit(CDVDClock *clock)
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
+  m_dvdClock = clock;
   m_presentcorr = 0.0;
   m_presenterr  = 0.0;
   m_errorindex  = 0;
@@ -484,6 +480,8 @@ void CXBMCRenderManager::UnInit()
   // TODO: we may also want to release the renderer here.
   if (m_pRenderer)
     m_pRenderer->UnInit();
+
+  m_dvdClock = nullptr;
 }
 
 bool CXBMCRenderManager::Flush()

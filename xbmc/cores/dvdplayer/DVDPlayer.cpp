@@ -690,7 +690,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_ready.Reset();
 
 #if defined(HAS_VIDEO_PLAYBACK)
-    g_renderManager.PreInit();
+    g_renderManager.PreInit(&m_clock);
 #endif
 
   Create();
@@ -4896,7 +4896,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   else
     state.cache_bytes = 0;
 
-  state.timestamp = CDVDClock::GetAbsoluteClock();
+  state.timestamp = m_clock.GetAbsoluteClock();
 
   CSingleLock lock(m_StateSection);
   m_State = state;
@@ -4918,7 +4918,7 @@ void CDVDPlayer::UpdateApplication(double timeout)
       CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
     }
   }
-  m_UpdateApplication = CDVDClock::GetAbsoluteClock();
+  m_UpdateApplication = m_clock.GetAbsoluteClock();
 }
 
 bool CDVDPlayer::CanRecord()

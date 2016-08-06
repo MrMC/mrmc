@@ -68,7 +68,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 , m_messageParent(parent)
 {
   m_pClock = pClock;
-  g_renderManager.SetDVDClock(m_pClock);
   m_pOverlayContainer = pOverlayContainer;
   m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
@@ -106,7 +105,6 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   m_bAbortOutput = true;
   StopThread();
   g_VideoReferenceClock.Stop();
-  g_renderManager.SetDVDClock((CDVDClock*)nullptr);
 }
 
 double CDVDPlayerVideo::GetOutputDelay()
@@ -1079,7 +1077,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   // video device might not be done yet
   while (index < 0 && !m_bAbortOutput &&
-         CDVDClock::GetAbsoluteClock(false) < iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500) )
+         m_pClock->GetAbsoluteClock(false) < iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500) )
   {
     Sleep(1);
     index = g_renderManager.AddVideoPicture(*pPicture);

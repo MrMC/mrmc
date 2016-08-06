@@ -37,6 +37,7 @@ CDVDClock::CDVDClock()
   m_systemUsed = m_systemFrequency;
   m_pauseClock = 0;
   m_bReset = true;
+  m_paused = false;
   m_iDisc = 0;
   m_maxspeedadjust = 0.0;
   m_lastSystemTime = g_VideoReferenceClock.GetTime();
