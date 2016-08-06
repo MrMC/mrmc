@@ -60,6 +60,11 @@
 
 using namespace KODI::MESSAGING;
 
+static void LogDebugRectSize(const char* prompt, const CRect& rect)
+{
+  CLog::Log(LOGDEBUG, "%s(%f,%f,%f,%f)", prompt, rect.x1, rect.y1, rect.Width(), rect.Height());
+}
+
 static bool CanSurfaceRenderBlackList(const std::string &name)
 {
   // All devices 'should' be capiable of surface rendering
@@ -179,46 +184,6 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
   // paranoid checks
   assert(m_index >= 0);
   assert(m_codec != NULL);
-
-  // default display width/height
-  m_displayWidth = CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth;
-  m_displayHeight = CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight;
-
-  // now find the real display width/height
-  CJNIWindow window = CXBMCApp::getWindow();
-  if (window)
-  {
-    CJNIView view(window.getDecorView());
-    if (view)
-    {
-      CJNIDisplay display = view.getDisplay();
-      if (display)
-      {
-        CJNIDisplayMode mode = display.getMode();
-        if (mode)
-        {
-          m_displayWidth = mode.getPhysicalWidth();
-          m_displayHeight = mode.getPhysicalHeight();
-        }
-        else
-        {
-          m_displayWidth = display.getWidth();
-          m_displayHeight = display.getHeight();
-        }
-      }
-    }
-  }
-  if (!CAndroidFeatures::HasTouchScreen())
-  {
-    // hack for firetv under 720p display, gui is right but mediacodec surface is wrong
-    // should be 720p size but that shows wrong video playback size.
-    // forcing to 1080p fixes it but really need to track down the real issue.
-    CLog::Log(LOGDEBUG, "CDVDMediaCodecInfo: display(%dx%d)", m_displayWidth, m_displayHeight);
-    if (m_displayWidth < 1920)
-      m_displayWidth = 1920;
-    if (m_displayHeight < 1080)
-    m_displayHeight = 1080;
-  }
 }
 
 CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
@@ -350,12 +315,59 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
   if (DestRect != cur_rect)
   {
+    // default gui/display width/height
+    const RESOLUTION_INFO &rez = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
+    m_displayWidth = rez.iWidth;
+    m_displayHeight = rez.iHeight;
+    CLog::Log(LOGDEBUG, "RenderUpdate: display1(%dx%d)", m_displayWidth, m_displayHeight);
+
+    // now find the real display width/height
+    CJNIWindow window = CXBMCApp::getWindow();
+    if (window)
+    {
+      CJNIView view(window.getDecorView());
+      if (view)
+      {
+        CJNIDisplay display = view.getDisplay();
+        if (display)
+        {
+          CJNIDisplayMode mode = display.getMode();
+          if (mode)
+          {
+            m_displayWidth = mode.getPhysicalWidth();
+            m_displayHeight = mode.getPhysicalHeight();
+          }
+          else
+          {
+            m_displayWidth = display.getWidth();
+            m_displayHeight = display.getHeight();
+          }
+        }
+      }
+    }
+    CLog::Log(LOGDEBUG, "RenderUpdate: display2(%dx%d)", m_displayWidth, m_displayHeight);
+    if (!CAndroidFeatures::HasTouchScreen())
+    {
+      // hack for firetv under 720p display, gui is right but mediacodec surface is wrong
+      // should be 720p size but that shows wrong video playback size.
+      // forcing to 1080p fixes it but really need to track down the real issue.
+      if (m_displayWidth < 1920)
+        m_displayWidth = 1920;
+      if (m_displayHeight < 1080)
+      m_displayHeight = 1080;
+    }
+    CLog::Log(LOGDEBUG, "RenderUpdate: display3(%dx%d)", m_displayWidth, m_displayHeight);
+
     CRect SrcRect, DestRect, ViewRect;
     g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect);
 
-    CRect ScreenRect(0, 0, m_displayWidth, m_displayHeight);
+    LogDebugRectSize("RenderUpdate: SrcRect", SrcRect);
+    LogDebugRectSize("RenderUpdate: DestRect", DestRect);
+    LogDebugRectSize("RenderUpdate: ViewRect", ViewRect);
+
+    CRect DisplayRect(0, 0, m_displayWidth, m_displayHeight);
     CRect MappedRect = DestRect;
-    MappedRect.MapRect(ViewRect, ScreenRect);
+    MappedRect.MapRect(ViewRect, DisplayRect);
 
     CXBMCApp::get()->setVideoViewSurfaceRect(MappedRect.x1, MappedRect.y1, MappedRect.x2, MappedRect.y2);
     cur_rect = DestRect;
@@ -363,8 +375,8 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     {
       CLog::Log(LOGDEBUG, "RenderUpdate: display(%dx%d)", m_displayWidth, m_displayHeight);
-      CLog::Log(LOGDEBUG, "RenderUpdate: DestRect(%f,%f,%f,%f)", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height());
-      CLog::Log(LOGDEBUG, "RenderUpdate: MappedRect(%f,%f,%f,%f)", MappedRect.x1, MappedRect.y1, MappedRect.Width(), MappedRect.Height());
+      LogDebugRectSize("RenderUpdate: DestRect", DestRect);
+      LogDebugRectSize("RenderUpdate: MappedRect", MappedRect);
     }
 
     // setVideoViewSurfaceRect is async, so skip rendering this frame
