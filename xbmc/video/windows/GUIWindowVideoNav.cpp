@@ -252,16 +252,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_UPDATE_LIBRARY)
       {
         if (!g_application.IsVideoScanning())
-        {
-          if (m_vecItems->IsVideoDb())
-          {
             OnScan("");
-          }
-          else if (CServicesManager::GetInstance().IsMediaServicesItem(*m_vecItems))
-          {
-            CServicesManager::GetInstance().UpdateMediaServicesLibray(*m_vecItems);
-          }
-        }
         else
           g_application.StopVideoScan();
         return true;
