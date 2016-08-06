@@ -132,7 +132,7 @@ bool CServicesManager::IsMediaServicesItem(const CFileItem &item)
   return false;
 }
 
-bool CServicesManager::UpdateMediaServicesLibray(const CFileItem &item)
+bool CServicesManager::UpdateMediaServicesLibraries(const CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))
   {

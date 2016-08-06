@@ -55,7 +55,7 @@ public:
 
   bool HasServices();
   bool IsMediaServicesItem(const CFileItem &item);
-  bool UpdateMediaServicesLibray(const CFileItem &item);
+  bool UpdateMediaServicesLibraries(const CFileItem &item);
 
   void SetItemWatched(CFileItem &item);
   void SetItemUnWatched(CFileItem &item);
