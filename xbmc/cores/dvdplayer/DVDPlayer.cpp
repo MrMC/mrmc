@@ -1359,11 +1359,6 @@ void CDVDPlayer::Process()
       if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) ||
           !m_SelectionStreams.m_Streams.empty())
         OpenDefaultStreams();
-/*
-      // never allow first frames after open to be skipped
-      if( m_dvdPlayerVideo->IsInited() )
-        m_dvdPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
-*/
 
       UpdateApplication(0);
       UpdatePlayState(0);
@@ -4162,12 +4157,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         if (m_dvd.state != DVDSTATE_STILL)
           m_dvd.state = DVDSTATE_NORMAL;
-/*
-        m_dvd.state = DVDSTATE_NORMAL;
-
-        if( m_dvdPlayerVideo->IsInited() )
-          m_dvdPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
-*/
       }
       break;
     case DVDNAV_NAV_PACKET:

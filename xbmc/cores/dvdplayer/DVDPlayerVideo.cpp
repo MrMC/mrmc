@@ -85,7 +85,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iLateFrames = 0;
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
-  m_iNrOfPicturesNotToSkip = 0;
   m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
@@ -323,10 +322,6 @@ void CDVDPlayerVideo::Process()
       if(((CDVDMsgGeneralSynchronize*)pMsg)->Wait(100, SYNCSOURCE_VIDEO))
       {
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
-
-        /* we may be very much off correct pts here, but next picture may be a still*/
-        /* make sure it isn't dropped */
-        m_iNrOfPicturesNotToSkip = 5;
       }
       else
         m_messageQueue.Put(pMsg->Acquire(), 1); /* push back as prio message, to process other prio messages */
@@ -377,19 +372,9 @@ void CDVDPlayerVideo::Process()
 
       g_renderManager.DiscardBuffer();
     }
-    else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
-    {
-      // libmpeg2 is also returning incomplete frames after a dvd cell change
-      // so the first few pictures are not the correct ones to display in some cases
-      // just display those together with the correct one.
-      // (setting it to 2 will skip some menu stills, 5 is working ok for me).
-      m_iNrOfPicturesNotToSkip = 5;
-    }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
-      if(m_speed == DVD_PLAYSPEED_PAUSE)
-        m_iNrOfPicturesNotToSkip = 0;
       if (m_pVideoCodec)
         m_pVideoCodec->SetSpeed(m_speed);
       m_droppingStats.Reset();
@@ -446,15 +431,6 @@ void CDVDPlayerVideo::Process()
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");
         m_stalled = false;
-
-        //don't allow the first frames after a still to be dropped
-        //sometimes we get multiple stills (long duration frames) after each other
-        //in normal mpegs
-        m_iNrOfPicturesNotToSkip = 5;
-      }
-      else if( iDropped*frametime > DVD_MSEC_TO_TIME(100) && m_iNrOfPicturesNotToSkip == 0 )
-      { // if we dropped too many pictures in a row, insert a forced picture
-        m_iNrOfPicturesNotToSkip = 1;
       }
 
       bRequestDrop = false;
@@ -604,11 +580,6 @@ bool CDVDPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametime,
 
       if (m_picture.iDuration == 0.0)
         m_picture.iDuration = frametime;
-
-      if (m_iNrOfPicturesNotToSkip > 0)
-      {
-        m_iNrOfPicturesNotToSkip--;
-      }
 
       // validate picture timing,
       // if both dts/pts invalid, use pts calulated from picture.iDuration
