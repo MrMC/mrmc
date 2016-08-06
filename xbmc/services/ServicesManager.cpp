@@ -93,10 +93,9 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
 {
   using namespace StringHasher;
   //CLog::Log(LOGDEBUG, "CServicesManager::Announce [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
-  if ((flag & Player) && strcmp(sender, "xbmc") == 0)
+  if ((flag & AnnouncementFlag::Player) && strcmp(sender, "xbmc") == 0)
   {
-    CFileItem item = g_application.CurrentFileItem();
-    if (item.HasProperty("PlexItem"))
+    if (g_application.CurrentFileItem().HasProperty("PlexItem"))
     {
       switch(mkhash(message))
       {
@@ -109,6 +108,8 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
         case "OnStop"_mkhash:
         {
           CPlexUtils::SetPlayState(PlexUtilsPlayerState::stopped);
+
+          CFileItem item(g_application.CurrentFileItem());
           AddJob(new CServicesManagerJob(item, item.GetVideoInfoTag()->m_resumePoint.timeInSeconds, "SetProgress"));
           break;
         }
@@ -126,7 +127,9 @@ bool CServicesManager::HasServices()
 
 bool CServicesManager::IsMediaServicesItem(const CFileItem &item)
 {
-  return item.GetProperty("MediaServicesItem").asBoolean();
+  if (item.HasProperty("MediaServicesItem"))
+    return item.GetProperty("MediaServicesItem").asBoolean();
+  return false;
 }
 
 bool CServicesManager::UpdateMediaServicesLibray(const CFileItem &item)

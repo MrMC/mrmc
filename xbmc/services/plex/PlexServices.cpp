@@ -369,7 +369,7 @@ void CPlexServices::OnSettingChanged(const CSetting *setting)
         // switch to no caching
         g_directoryCache.Clear();
       }
-      if (m_playState != PlexServicePlayerState::playing)
+      if (m_playState == PlexServicePlayerState::stopped)
       {
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
         g_windowManager.SendThreadMessage(msg);
@@ -407,7 +407,7 @@ void CPlexServices::UpdateLibraries(bool forced)
   if (clearDirCache)
   {
     g_directoryCache.Clear();
-    if (m_playState != PlexServicePlayerState::playing)
+    if (m_playState == PlexServicePlayerState::stopped)
     {
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
       g_windowManager.SendThreadMessage(msg);
@@ -422,6 +422,8 @@ bool CPlexServices::MyPlexSignedIn()
 
 void CPlexServices::Process()
 {
+  SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
+
   GetUserSettings();
 
   while (!m_bStop)
@@ -462,7 +464,7 @@ void CPlexServices::Process()
       // try plex.tv
       if (MyPlexSignedIn())
       {
-        if (m_playState != PlexServicePlayerState::playing)
+        if (m_playState == PlexServicePlayerState::stopped)
         {
           // if we get back servers, then
           // reduce the initial polling time
@@ -478,7 +480,7 @@ void CPlexServices::Process()
 
     if (gdmTimer.GetElapsedSeconds() > 5)
     {
-      if (m_playState != PlexServicePlayerState::playing)
+      if (m_playState == PlexServicePlayerState::stopped)
         CheckForGDMServers();
       gdmTimer.Reset();
     }
