@@ -654,7 +654,7 @@ void CActiveAESink::EnumerateSinkList(bool force)
     // retry the enumeration
     CAESinkFactory::EnumerateEx(m_sinkInfoList, true);
   }
-  CLog::Log(LOGNOTICE, "Found %lu Lists of Devices", m_sinkInfoList.size());
+  CLog::Log(LOGNOTICE, "Found %d Lists of Devices", (int)m_sinkInfoList.size());
   PrintSinks();
 }
 

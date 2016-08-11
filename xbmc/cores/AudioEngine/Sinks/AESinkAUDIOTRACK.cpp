@@ -218,8 +218,11 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_lastPlaybackHeadPosition = 0;
   m_linearmovingaverage.clear();
   m_extTimer.SetExpired();
-  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s; channels: %d",
-    format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_channelLayout.Count());
+  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s; type: %s; channels: %d",
+    format.m_sampleRate,
+    CAEUtil::DataFormatToStr(format.m_dataFormat),
+    CAEUtil::StreamTypeToStr(format.m_streamInfo.m_type),
+    format.m_channelLayout.Count());
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
 

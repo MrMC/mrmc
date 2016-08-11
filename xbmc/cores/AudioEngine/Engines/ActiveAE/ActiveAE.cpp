@@ -576,7 +576,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           if (m_extLastDeviceChange.size() > 2)
           {
-            CLog::Log(LOGWARNING,"CActiveAE - received %ld device change events within one second", m_extLastDeviceChange.size());
+            CLog::Log(LOGWARNING,"CActiveAE - received %d device change events within one second", (int)m_extLastDeviceChange.size());
             return;
           }
           m_extLastDeviceChange.push(now);
@@ -2649,8 +2649,11 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
 bool CActiveAE::SupportsRaw(AEAudioFormat &format)
 {
   if (!m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format))
+  {
+    CLog::Log(LOGDEBUG, "sink does not support %s",
+      CAEUtil::StreamTypeToStr(format.m_streamInfo.m_type));
     return false;
-
+  }
   return true;
 }
 

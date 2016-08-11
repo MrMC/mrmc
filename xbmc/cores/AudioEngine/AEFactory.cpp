@@ -29,6 +29,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 IAE* CAEFactory::AE = NULL;
 static float  g_fVolume = 1.0f;
@@ -174,29 +175,59 @@ bool CAEFactory::SupportsRaw(AEAudioFormat &format)
 {
   // check if passthrough is enabled
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_PASSTHROUGH is false");
     return false;
+  }
 
   // fixed config disabled passthrough
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED)
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_CONFIG is AE_CONFIG_FIXED");
     return false;
+  }
 
   // check if the format is enabled in settings
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_AC3PASSTHROUGH is false");
     return false;
+  }
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_512 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_DTSPASSTHROUGH is false");
     return false;
+  }
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_1024 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_DTSPASSTHROUGH is false");
     return false;
+  }
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_2048 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_DTSPASSTHROUGH is false");
     return false;
+  }
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_DTSPASSTHROUGH is false");
     return false;
+  }
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH is false");
     return false;
+  }
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH is false");
     return false;
+  }
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH is false");
     return false;
+  }
 
   if(AE)
     return AE->SupportsRaw(format);
