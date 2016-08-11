@@ -669,7 +669,7 @@ bool CAESinkAUDIOTRACK::FormatNeedsIECPacked(const AEAudioFormat &format)
       break;
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
-        return false;
+        needsIECPacked = false;
       break;
     case CAEStreamInfo::STREAM_TYPE_DTS_512:
     case CAEStreamInfo::STREAM_TYPE_DTS_2048:
