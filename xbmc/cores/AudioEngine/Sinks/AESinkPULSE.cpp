@@ -399,7 +399,6 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
     defaultDevice.m_channels = CAEChannelInfo(AE_CH_LAYOUT_2_0);
     defaultDevice.m_sampleRates.assign(defaultSampleRates, defaultSampleRates + ARRAY_SIZE(defaultSampleRates));
     defaultDevice.m_deviceType = AE_DEVTYPE_PCM;
-    defaultDevice.m_wantsIECPassthrough = true;
     sinkStruct->list->push_back(defaultDevice);
   }
   if (i && i->name)
@@ -456,8 +455,6 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
     }
     else
       device.m_deviceType = AE_DEVTYPE_PCM;
-
-    device.m_wantsIECPassthrough = true;
 
     if(valid)
     {

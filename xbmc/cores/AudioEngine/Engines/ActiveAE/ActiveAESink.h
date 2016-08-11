@@ -111,7 +111,6 @@ protected:
   void OpenSink();
   void ReturnBuffers();
   void SetSilenceTimer();
-  bool NeedIECPacking();
 
   unsigned int OutputSamples(CSampleBuffer* samples);
   void SwapInit(CSampleBuffer* samples);

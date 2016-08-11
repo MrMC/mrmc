@@ -128,7 +128,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
           // PCM sample rate
           unsigned int samplerate = format.m_sampleRate;
 
-          if (isRaw && info.m_wantsIECPassthrough)
+          if (isRaw && CAESinkFactory::FormatNeedsIECPacked(format))
           {
             switch (format.m_streamInfo.m_type)
             {
@@ -154,7 +154,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
             iit3 = find(info.m_streamTypes.begin(), info.m_streamTypes.end(), format.m_streamInfo.m_type);
             formatExists = (iit3 != info.m_streamTypes.end());
           }
-          else if (isRaw && !info.m_wantsIECPassthrough)
+          else if (isRaw && !CAESinkFactory::FormatNeedsIECPacked(format))
           {
             samplerate = 48000;
             AEDataTypeList::iterator iit3;
@@ -187,29 +187,6 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
     }
   }
   return false;
-}
-
-bool CActiveAESink::NeedIECPacking()
-{
-  std::string dev = m_device;
-  std::string dri;
-
-  CAESinkFactory::ParseDevice(dev, dri);
-  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
-  {
-    if (dri == itt->m_sinkName)
-    {
-      for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
-      {
-        CAEDeviceInfo& info = *itt2;
-        if (info.m_deviceName == dev)
-        {
-          return info.m_wantsIECPassthrough;
-        }
-      }
-    }
-  }
-  return true;
 }
 
 enum SINK_STATES
@@ -761,12 +738,16 @@ void CActiveAESink::OpenSink()
   // iec packing or raw
   if (passthrough)
   {
-    m_needIecPack = NeedIECPacking();
+    m_needIecPack = CAESinkFactory::FormatNeedsIECPacked(m_requestedFormat);
     if (m_needIecPack)
     {
       m_packer = new CAEBitstreamPacker();
       m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
       m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
+    }
+    else
+    {
+      SAFE_DELETE(m_packer);
     }
   }
 

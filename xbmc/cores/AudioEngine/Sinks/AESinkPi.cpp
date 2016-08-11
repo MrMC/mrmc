@@ -524,7 +524,6 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
   m_info.m_dataFormats.push_back(AE_FMT_RAW);
 
-  m_info.m_wantsIECPassthrough = true;
   list.push_back(m_info);
 
   m_info.m_channels.Reset();
@@ -546,7 +545,6 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_dataFormats.push_back(AE_FMT_S32NEP);
   m_info.m_dataFormats.push_back(AE_FMT_S16NEP);
 
-  m_info.m_wantsIECPassthrough = true;
   list.push_back(m_info);
 
   m_info.m_channels.Reset();
@@ -567,8 +565,7 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_dataFormats.push_back(AE_FMT_FLOATP);
   m_info.m_dataFormats.push_back(AE_FMT_S32NEP);
   m_info.m_dataFormats.push_back(AE_FMT_S16NEP);
-  
-  m_info.m_wantsIECPassthrough = true;
+
   list.push_back(m_info);
 }
 

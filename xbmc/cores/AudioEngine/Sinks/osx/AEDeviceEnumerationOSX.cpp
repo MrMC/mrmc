@@ -210,7 +210,7 @@ CADeviceList AEDeviceEnumerationOSX::GetDeviceInfoList() const
     devInstance.audioDeviceId = m_deviceID;
     devInstance.streamIndex = streamIdx;
     devInstance.sourceId = INT_MAX;//don't set audio source by default
-    
+
     deviceInfo.m_deviceName = getDeviceNameForStream(streamIdx);
     deviceInfo.m_displayName = m_deviceName;
     deviceInfo.m_displayNameExtra = getExtraDisplayNameForStream(streamIdx);
@@ -219,8 +219,7 @@ CADeviceList AEDeviceEnumerationOSX::GetDeviceInfoList() const
     deviceInfo.m_dataFormats = getFormatListForStream(streamIdx);
     deviceInfo.m_streamTypes = getTypeListForStream(streamIdx);
     deviceInfo.m_deviceType = m_caStreamInfos[streamIdx].deviceType;
-    deviceInfo.m_wantsIECPassthrough = true;
-    
+
     CoreAudioDataSourceList sourceList;
     // if this enumerator contains multiple devices with more then 1 source we add :source suffixes to the
     // device names and overwrite the extraname with the source name

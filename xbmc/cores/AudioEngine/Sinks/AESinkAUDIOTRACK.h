@@ -50,11 +50,11 @@ public:
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
   virtual void         AddPause        (unsigned int millis);
   virtual void         Drain           ();
+  static bool          FormatNeedsIECPacked(const AEAudioFormat &format);
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 protected:
   static bool IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
-  static bool HasAmlHD();
 
 private:
   jni::CJNIAudioTrack  *m_at_jni;
@@ -85,5 +85,4 @@ private:
   bool               m_passthrough;
   double             m_audiotrackbuffer_sec;
   int                m_encoding;
-  bool               m_wantsIECPacking;
 };

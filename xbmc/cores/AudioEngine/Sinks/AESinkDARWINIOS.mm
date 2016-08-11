@@ -516,7 +516,6 @@ static void EnumerateDevices(AEDeviceInfoList &list)
 
   // if not hdmi,  CAESinkDARWINIOS::Initialize will kick back to 2 channel PCM
   device.m_deviceType = AE_DEVTYPE_HDMI;
-  device.m_wantsIECPassthrough = true;
 
   device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
   device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);

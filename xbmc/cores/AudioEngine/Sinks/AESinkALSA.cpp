@@ -1563,7 +1563,6 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   }
 
   snd_pcm_close(pcmhandle);
-  info.m_wantsIECPassthrough = true;
   list.push_back(info);
 }
 

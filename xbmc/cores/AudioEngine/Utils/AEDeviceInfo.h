@@ -51,8 +51,6 @@ public:
   AEDataFormatList m_dataFormats;	/* the dataformats the device is capable of rendering */
   AEDataTypeList m_streamTypes;
 
-  bool m_wantsIECPassthrough;           /* if sink supports passthrough encapsulation is done when set to true */
-
   operator std::string();
   static std::string DeviceTypeToString(enum AEDeviceType deviceType);
 };

@@ -233,14 +233,11 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   else
     m_sink_sampleRate = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
 
-
   if (m_format.m_dataFormat == AE_FMT_RAW && !CXBMCApp::IsHeadsetPlugged())
   {
     m_passthrough = true;
-    m_wantsIECPacking = m_info.m_wantsIECPassthrough;
 
     // setup defaults
-    m_format.m_dataFormat = AE_FMT_S16LE;
     m_format.m_sampleRate = m_sink_sampleRate;
     m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
     m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
@@ -257,16 +254,21 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       {
         // Digital Dolby
         case CAEStreamInfo::STREAM_TYPE_AC3:
-          m_encoding = CJNIAudioFormat::ENCODING_AC3;
+          if (CJNIAudioFormat::ENCODING_AC3 != -1)
+            m_encoding = CJNIAudioFormat::ENCODING_AC3;
           break;
         case CAEStreamInfo::STREAM_TYPE_EAC3:
-          m_encoding = CJNIAudioFormat::ENCODING_E_AC3;
           m_sink_sampleRate = m_format.m_streamInfo.m_sampleRate;
+          if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
+            m_encoding = CJNIAudioFormat::ENCODING_E_AC3;
           break;
         case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-          m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-          m_encoding = CJNIAudioFormat::ENCODING_DOLBY_TRUEHD;
-          if (m_wantsIECPacking)
+          if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+          {
+            m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
+            m_encoding = CJNIAudioFormat::ENCODING_DOLBY_TRUEHD;
+          }
+          if (FormatNeedsIECPacked(m_format))
             m_sink_sampleRate = 192000;
           else
           {
@@ -280,13 +282,16 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         case CAEStreamInfo::STREAM_TYPE_DTS_1024:
         case CAEStreamInfo::STREAM_TYPE_DTS_2048:
         case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-          m_encoding = CJNIAudioFormat::ENCODING_DTS;
-          m_format.m_sampleRate = m_sink_sampleRate;
+          if (CJNIAudioFormat::ENCODING_DTS != -1)
+            m_encoding = CJNIAudioFormat::ENCODING_DTS;
           break;
         case CAEStreamInfo::STREAM_TYPE_DTSHD:
-          m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-          m_encoding = CJNIAudioFormat::ENCODING_DTS_HD;
-          if (m_wantsIECPacking)
+          if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
+          {
+            m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
+            m_encoding = CJNIAudioFormat::ENCODING_DTS_HD;
+          }
+          if (FormatNeedsIECPacked(m_format))
             m_sink_sampleRate = 192000;
           else
           {
@@ -296,17 +301,11 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
           break;
 
         default:
+          CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize unknown stream type %s",
+            CAEUtil::StreamTypeToStr(m_format.m_streamInfo.m_type));
+          return false;
           break;
       }
-    }
-
-    if (m_encoding == -1)
-    {
-      // defaults if the encoding is not supported
-      m_wantsIECPacking = true;
-      m_format.m_sampleRate = m_sink_sampleRate;
-      m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-      m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
     }
   }
   else
@@ -339,7 +338,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       return false;
     }
 
-    if (m_passthrough && !m_wantsIECPacking)
+    if (m_passthrough)
     {
       m_format.m_frameSize = 1;
       m_sink_frameSize = m_format.m_frameSize;
@@ -388,8 +387,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   }
   format = m_format;
 
-  // Force volume to 100% for IEC passthrough
-  //if (m_passthrough && m_info.m_wantsIECPassthrough)
+  // Force volume to 100% for passthrough (raw or IEC packed)
   if (m_passthrough)
   {
     CXBMCApp::AcquireAudioFocus();
@@ -462,7 +460,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   }
   uint32_t normHead_pos = head_pos - m_offset;
 
-  if (m_passthrough && !m_wantsIECPacking)
+  if (m_passthrough)
   {
     if (m_extTimer.MillisLeft() > 0)
     {
@@ -550,7 +548,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         {
           retried = true;
           double sleep_time = 0;
-          if (m_passthrough && !m_wantsIECPacking)
+          if (m_passthrough)
           {
             sleep_time = m_format.m_streamInfo.GetDuration();
             usleep(sleep_time * 1000);
@@ -571,7 +569,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         }
       }
       retried = false; // at least one time there was more than zero data written
-      if (m_passthrough && !m_wantsIECPacking)
+      if (m_passthrough)
       {
         if (written == size)
           m_duration_written += m_format.m_streamInfo.GetDuration() / 1000;
@@ -595,7 +593,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   }
   unsigned int written_frames = (unsigned int) (written/m_format.m_frameSize);
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
-  if (m_passthrough && !m_wantsIECPacking)
+  if (m_passthrough)
   {
     // AT does not consume in a blocking way - it runs ahead and blocks
     // exactly once with the last package for some 100 ms
@@ -652,6 +650,46 @@ void CAESinkAUDIOTRACK::Drain()
   m_linearmovingaverage.clear();
 }
 
+bool CAESinkAUDIOTRACK::FormatNeedsIECPacked(const AEAudioFormat &format)
+{
+  // ENCODING_IEC61937 mean all bitstreamed formats are ICE packed
+  if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+    return true;
+
+  bool needsIECPacked = true;
+  switch (format.m_streamInfo.m_type)
+  {
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+      if (CJNIAudioFormat::ENCODING_AC3 != -1)
+        needsIECPacked = false;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
+        needsIECPacked = false;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+        return false;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      if (CJNIAudioFormat::ENCODING_DTS != -1)
+        needsIECPacked = false;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
+        needsIECPacked = false;
+      break;
+
+    default:
+      break;
+  }
+
+  return needsIECPacked;
+}
+
 void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
   m_info.m_channels.Reset();
@@ -678,38 +716,24 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_sink_sampleRates.clear();
   m_sink_sampleRates.insert(CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC));
 
-  m_info.m_wantsIECPassthrough = false;
-
   if (!CXBMCApp::IsHeadsetPlugged())
   {
     m_info.m_deviceType = AE_DEVTYPE_HDMI;
 
-    // really means that we want IEC Packing for passthrough
-    // some (amlogic) have special modes to pass IEC packed as 2-chan Stereo
-    // but in general, no flag present, no IEC packing
-    if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
-      m_info.m_wantsIECPassthrough = true;
     // enable passthrough (raw or IEC packed)
     m_info.m_dataFormats.push_back(AE_FMT_RAW);
 
-    // check for digital dolby capabilities
-    if (CJNIAudioFormat::ENCODING_AC3 != -1)
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-    if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-    if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+    // digital dolby capabilities
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
 
-    // check for dts capabilities
-    //if (CJNIAudioFormat::ENCODING_DTS != -1)
-    {
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-    }
-    if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+    // dts capabilities
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
 
     // check encoding capabilities
     int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
@@ -733,7 +757,6 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     // Nvidia Shield
     if (StringUtils::StartsWithNoCase(CJNIBuild::DEVICE, "foster")) // SATV is ahead of API
     {
-      m_info.m_wantsIECPassthrough = false;
       if (CJNIAudioManager::GetSDKVersion() == 22)
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);

@@ -159,6 +159,16 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   return NULL;
 }
 
+bool CAESinkFactory::FormatNeedsIECPacked(const AEAudioFormat &format)
+{
+#if defined(TARGET_ANDROID)
+  // only android supports split non-IEC and IEC packed passthrough formats
+  return CAESinkAUDIOTRACK::FormatNeedsIECPacked(format);
+#else
+  return true;
+#endif
+}
+
 void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
 {
   AESinkInfo info;
