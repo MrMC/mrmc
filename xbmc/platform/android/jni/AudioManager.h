@@ -59,6 +59,8 @@ public:
 
   static int AUDIOFOCUS_GAIN;
   static int AUDIOFOCUS_LOSS;
+  static int AUDIOFOCUS_GAIN_TRANSIENT;
+  static int AUDIOFOCUS_LOSS_TRANSIENT;
   static int AUDIOFOCUS_REQUEST_GRANTED;
   static int AUDIOFOCUS_REQUEST_FAILED;
 

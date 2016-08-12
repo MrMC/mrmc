@@ -33,6 +33,8 @@ int CJNIAudioManager::STREAM_MUSIC(3);
 
 int CJNIAudioManager::AUDIOFOCUS_GAIN(0x00000001);
 int CJNIAudioManager::AUDIOFOCUS_LOSS(0xffffffff);
+int CJNIAudioManager::AUDIOFOCUS_GAIN_TRANSIENT(0x00000002);
+int CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT(0xfffffffe);
 int CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED(0x00000001);
 int CJNIAudioManager::AUDIOFOCUS_REQUEST_FAILED(0x00000000);
 
@@ -42,6 +44,8 @@ void CJNIAudioManager::PopulateStaticFields()
   STREAM_MUSIC  = (get_static_field<int>(clazz, "STREAM_MUSIC"));
   AUDIOFOCUS_GAIN  = (get_static_field<int>(clazz, "AUDIOFOCUS_GAIN"));
   AUDIOFOCUS_LOSS  = (get_static_field<int>(clazz, "AUDIOFOCUS_LOSS"));
+  AUDIOFOCUS_GAIN_TRANSIENT  = (get_static_field<int>(clazz, "AUDIOFOCUS_GAIN_TRANSIENT"));
+  AUDIOFOCUS_LOSS_TRANSIENT  = (get_static_field<int>(clazz, "AUDIOFOCUS_LOSS_TRANSIENT"));
   AUDIOFOCUS_REQUEST_GRANTED  = (get_static_field<int>(clazz, "AUDIOFOCUS_REQUEST_GRANTED"));
   AUDIOFOCUS_REQUEST_FAILED  = (get_static_field<int>(clazz, "AUDIOFOCUS_REQUEST_FAILED"));
 }
