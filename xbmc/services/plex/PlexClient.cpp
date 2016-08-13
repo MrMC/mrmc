@@ -151,6 +151,10 @@ bool CPlexClient::Init(const TiXmlElement* DeviceNode)
       int timeout = connection.external ? 5 : 1;
       if (CPlexUtils::GetIdentity(url, timeout))
       {
+        CLog::Log(LOGDEBUG, "CPlexClient::Init "
+          "serverName(%s), ipAddress(%s), protocol(%s)",
+          m_serverName.c_str(), connection.address.c_str(), connection.protocol.c_str());
+
         m_url = url.Get();
         m_protocol = url.GetProtocol();
         m_local = (connection.external == 0);
@@ -368,7 +372,17 @@ bool CPlexClient::ParseSections(PlexSectionParsing parser)
         }
         DirectoryNode = DirectoryNode->NextSiblingElement("Directory");
       }
+
+      CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %s found %d movie sections",
+        m_serverName.c_str(), (int)m_movieSectionsContents.size());
+      CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %s found %d shows sections",
+        m_serverName.c_str(), (int)m_showSectionsContents.size());
+
       rtn = true;
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CPlexClient::ParseSections no MediaContainer found");
     }
   }
   else

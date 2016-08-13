@@ -28,6 +28,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 #include "video/VideoDatabase.h"
 
@@ -41,6 +42,8 @@ CPlexDirectory::~CPlexDirectory()
 
 bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory");
+
   items.ClearItems();
   std::string strUrl = url.Get();
   std::string section = URIUtils::GetFileName(strUrl);
@@ -72,6 +75,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->SetLabel(title);
         items.Add(pItem);
       }
+
       //look through all plex clients and pull content data for "movie" type
       std::vector<CPlexClientPtr> clients;
       CPlexServices::GetInstance().GetClients(clients);
@@ -115,6 +119,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           CPlexUtils::SetPlexItemProperties(items, client);
           for (int item = 0; item < items.Size(); ++item)
             CPlexUtils::SetPlexItemProperties(*items[item], client);
+          CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory '/all' client(%s), movies(%d)", client->GetServerName().c_str(), items.Size());
         }
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedmovies")
@@ -167,6 +172,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(path);
         items.SetContent("movies");
       }
+      CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d movies", client->GetServerName().c_str(), items.Size());
     }
     return true;
   }
@@ -193,6 +199,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->SetLabel(title);
         items.Add(pItem);
       }
+
       //look through all plex servers and pull content data for "show" type
       std::vector<CPlexClientPtr> clients;
       CPlexServices::GetInstance().GetClients(clients);
@@ -236,6 +243,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           CPlexUtils::SetPlexItemProperties(items, client);
           for (int item = 0; item < items.Size(); ++item)
             CPlexUtils::SetPlexItemProperties(*items[item], client);
+          CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory '/all' client(%s), shows(%d)", client->GetServerName().c_str(), items.Size());
         }
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedepisodes")
@@ -292,6 +300,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(path);
         items.SetContent("tvshows");
       }
+      CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d shows", client->GetServerName().c_str(), items.Size());
     }
     return true;
   }
