@@ -104,10 +104,10 @@ void CJNIMainActivity::clearVideoView()
                     "clearVideoView", "()V");
 }
 
-void CJNIMainActivity::setVideoViewSurfaceRect(int l, int t, int r, int b)
+void CJNIMainActivity::setVideoViewSurfaceRect(int w, int h, int l, int t, int r, int b)
 {
   call_method<void>(m_context,
-                    "setVideoViewSurfaceRect", "(IIII)V", l, t, r, b);
+                    "setVideoViewSurfaceRect", "(IIIIII)V", w, h, l, t, r, b);
 }
 
 void CJNIMainActivity::registerMediaButtonEventReceiver()

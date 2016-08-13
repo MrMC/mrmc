@@ -329,6 +329,7 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
       if (view)
       {
         CJNIDisplay display = view.getDisplay();
+        CLog::Log(LOGDEBUG, "RenderUpdate: display2a(%dx%d)", display.getWidth(), display.getHeight());
         if (display)
         {
           CJNIDisplayMode mode = display.getMode();
@@ -345,15 +346,13 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
         }
       }
     }
-    CLog::Log(LOGDEBUG, "RenderUpdate: display2(%dx%d)", m_displayWidth, m_displayHeight);
+    CLog::Log(LOGDEBUG, "RenderUpdate: display2b(%dx%d)", m_displayWidth, m_displayHeight);
     if (!CAndroidFeatures::HasTouchScreen())
     {
-      // hack for firetv under 720p display, gui is right but mediacodec surface is wrong
-      // should be 720p size but that shows wrong video playback size.
+      // hack for firetv gui is right but mediacodec surface is wrong
+      // should track display size but does not, seems fixed to 1080p.
       // forcing to 1080p fixes it but really need to track down the real issue.
-      if (m_displayWidth < 1920)
-        m_displayWidth = 1920;
-      if (m_displayHeight < 1080)
+      m_displayWidth = 1920;
       m_displayHeight = 1080;
     }
     CLog::Log(LOGDEBUG, "RenderUpdate: display3(%dx%d)", m_displayWidth, m_displayHeight);
@@ -369,7 +368,8 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
     CRect MappedRect = DestRect;
     MappedRect.MapRect(ViewRect, DisplayRect);
 
-    CXBMCApp::get()->setVideoViewSurfaceRect(MappedRect.x1, MappedRect.y1, MappedRect.x2, MappedRect.y2);
+    CXBMCApp::get()->setVideoViewSurfaceRect(m_displayWidth, m_displayHeight,
+      MappedRect.x1, MappedRect.y1, MappedRect.x2, MappedRect.y2);
     cur_rect = DestRect;
 
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))

@@ -44,7 +44,7 @@ public:
 
   CJNISurface getVideoViewSurface();
   void clearVideoView();
-  void setVideoViewSurfaceRect(int l, int t, int r, int b);
+  void setVideoViewSurfaceRect(int w, int h, int l, int t, int r, int b);
 
 private:
   static CJNIMainActivity *m_appInstance;
