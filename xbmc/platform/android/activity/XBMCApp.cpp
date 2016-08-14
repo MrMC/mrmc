@@ -424,6 +424,9 @@ bool CXBMCApp::IsHeadsetPlugged()
 
 void CXBMCApp::run()
 {
+  std::string threadname = "MCRuntimeLib";
+  pthread_setname_np(pthread_self(), threadname.c_str());
+
   int status = 0;
 
   SetupEnv();

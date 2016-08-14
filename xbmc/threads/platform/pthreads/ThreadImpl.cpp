@@ -22,7 +22,6 @@
 #include <limits.h>
 #if defined(TARGET_ANDROID)
 #include <unistd.h>
-#include <sys/prctl.h>                         // for prctl()
 #else
 #include <sys/syscall.h>
 #endif
@@ -85,12 +84,10 @@ void CThread::SetThreadInfo()
 #endif
 #elif defined(HAVE_PTHREAD_SET_NAME_NP)
   pthread_set_name_np(m_ThreadId, m_ThreadName.c_str());
-#else
-  #if defined(TARGET_ANDROID)
-  prctl(PR_SET_NAME, (long)m_ThreadName.c_str(), 0, 0, 0 );
-  #endif
+#elif defined(TARGET_ANDROID)
+  pthread_setname_np(pthread_self(), m_ThreadName.c_str());
 #endif
-    
+
 #ifdef RLIMIT_NICE
   // get user max prio
   struct rlimit limit;

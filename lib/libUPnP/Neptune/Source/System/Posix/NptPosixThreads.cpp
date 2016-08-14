@@ -467,11 +467,16 @@ NPT_PosixThread::EntryPoint(void* argument)
     // ensure there is the top level autorelease pool for each thread
     NPT_AutoreleasePool pool;
 #endif
-    
+
+#if defined(__ANDROID__)
+    pthread_setname_np(pthread_self(), "NPTThreads");
+#elif defined (__APPLE__)
+    pthread_setname_np("NPTThreads");
+#endif
     // get the thread ID from this context, because m_ThreadId may not yet
     // have been set by the parent thread in the Start() method
     thread->m_ThreadId = pthread_self();
-    
+
     // set random seed per thread
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
