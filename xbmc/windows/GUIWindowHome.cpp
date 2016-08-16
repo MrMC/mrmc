@@ -334,7 +334,15 @@ bool CGUIWindowHome::PlayRecentlyAddedItem(CFileItem itemPtr)
       if (value == SELECT_ACTION_RESUME)
         itemPtr.m_lStartOffset = STARTOFFSET_RESUME;
     }
-    g_application.PlayFile(itemPtr);
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+    PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+    playlist.Clear();
+    CFileItemPtr movieItem(new CFileItem(itemPtr));
+    playlist.Add(movieItem);
+    
+    // play movie...
+    g_playlistPlayer.Play(0);
   }
   return true;
 }
