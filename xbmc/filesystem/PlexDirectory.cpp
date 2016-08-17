@@ -132,7 +132,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     else
     {
       CPlexClientPtr client = CPlexServices::GetInstance().FindClient(strUrl);
-      if (client && !client->GetPresence())
+      if (!client || !client->GetPresence())
         return false;
 
       std::string path = URIUtils::GetParentPath(strUrl);
@@ -256,7 +256,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     else
     {
       CPlexClientPtr client = CPlexServices::GetInstance().FindClient(strUrl);
-      if (client && !client->GetPresence())
+      if (!client || !client->GetPresence())
         return false;
 
       std::string path = URIUtils::GetParentPath(strUrl);
