@@ -304,6 +304,10 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     }
     return true;
   }
+  else
+  {
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory got nothing from %s", CURL::GetRedacted(strUrl).c_str());
+  }
 
   return false;
 }
