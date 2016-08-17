@@ -3,7 +3,6 @@ package @APP_PACKAGE@;
 import android.app.NativeActivity;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -167,12 +166,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
               }
             }
           });
-  }
-
-  @Override
-  public void onConfigurationChanged(Configuration newConfig)
-  {
-    Log.d(TAG, "onConfigurationChanged");
   }
 
   @Override
