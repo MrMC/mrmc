@@ -370,6 +370,11 @@ bool CPlexClient::ParseSections(PlexSectionParsing parser)
             m_showSectionsContents.push_back(content);
           }
         }
+        else
+        {
+          CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %s found unhandled content type %s",
+            m_serverName.c_str(), content.type.c_str());
+        }
         DirectoryNode = DirectoryNode->NextSiblingElement("Directory");
       }
 
