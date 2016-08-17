@@ -106,6 +106,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             pItem->SetIconImage(curl.Get());
             items.Add(pItem);
             client->AddSectionItem(pItem);
+            CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory client(%s), title(%s)", client->GetServerName().c_str(), title.c_str());
           }
         }
         else if (contents.size() == 1)
@@ -134,7 +135,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       CPlexClientPtr client = CPlexServices::GetInstance().FindClient(strUrl);
       if (!client || !client->GetPresence())
       {
-        CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory no client or client not present");
+        CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory no client or client not present %s", CURL::GetRedacted(strUrl).c_str());
         return false;
       }
 
@@ -233,6 +234,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             pItem->SetIconImage(curl.Get());
             items.Add(pItem);
             client->AddSectionItem(pItem);
+            CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory client(%s), title(%s)", client->GetServerName().c_str(), title.c_str());
           }
         }
         else if (contents.size() == 1)
@@ -261,7 +263,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       CPlexClientPtr client = CPlexServices::GetInstance().FindClient(strUrl);
       if (!client || !client->GetPresence())
       {
-        CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory no client or client not present");
+        CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory no client or client not present %s", CURL::GetRedacted(strUrl).c_str());
         return false;
       }
 
