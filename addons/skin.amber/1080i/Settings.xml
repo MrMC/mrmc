@@ -1385,18 +1385,18 @@
               <label>$LOCALIZE[31978]</label>
               <label2>$LOCALIZE[106]</label2>
               <onclick>Skin.ToggleSetting(Show_Library_Count)</onclick>
-			</item>
-			<item id="3" description="Static Menu">
-              <visible>Skin.HasSetting(Show_Library_Count)</visible>
+			      </item>
+            <item id="3" description="Static Vertical Home">
+              <visible>Skin.HasSetting(StaticVerticalHome) + Skin.HasSetting(VerticalHome)</visible>
               <label>$LOCALIZE[31363]</label>
               <label2>$LOCALIZE[107]</label2>
-              <onclick>Skin.ToggleSetting(Show_Library_Count)</onclick>
+              <onclick>Skin.ToggleSetting(StaticVerticalHome)</onclick>
             </item>
-            <item id="3" description="Static Menu">
-              <visible>!Skin.HasSetting(Show_Library_Count)</visible>
+            <item id="3" description="Static Vertical Home">
+              <visible>!Skin.HasSetting(StaticVerticalHome) + Skin.HasSetting(VerticalHome)</visible>
               <label>$LOCALIZE[31363]</label>
               <label2>$LOCALIZE[106]</label2>
-              <onclick>Skin.ToggleSetting(Show_Library_Count)</onclick>
+              <onclick>Skin.ToggleSetting(StaticVerticalHome)</onclick>
             </item>
           </content>
         </control>

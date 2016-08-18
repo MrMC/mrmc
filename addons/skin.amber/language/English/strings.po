@@ -257,7 +257,7 @@ msgid "Enabled"
 msgstr ""
 
 msgctxt "#31363"
-msgid "Static Horizontal/Vertical Menu"
+msgid "Static Vertical Menu"
 msgstr ""
 
 #empty strings from id 31364 to 31388

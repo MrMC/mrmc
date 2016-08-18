@@ -637,6 +637,9 @@
       </control>
     </focusedlayout>
   </include>
+  <include name="StaticSettings">
+    <movement>5</movement>
+  </include>
   <include name="Vertical_Home_Layout">
     <control type="group" id="700">
       <include condition="Skin.HasSetting(Shelf.Delay)">Shelf_Delay</include>
@@ -718,6 +721,7 @@
         <onback>9001</onback>
         <pagecontrol>-</pagecontrol>
         <focusposition>5</focusposition>
+        <include condition="Skin.HasSetting(StaticVerticalHome)">StaticSettings</include>
         <movement>0</movement>
 				<!--<defaultcontrol always="true">1</defaultcontrol>-->
         <preloaditems>4</preloaditems>
