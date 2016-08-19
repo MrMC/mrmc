@@ -124,7 +124,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedmovies")
-          label = "Recently added movies";
+          label = g_localizeStrings.Get(20386);
         else
           StringUtils::ToCapitalize(label);
         items.SetLabel(label);
@@ -166,7 +166,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       else if (path == "recentlyaddedmovies")
       {
         CPlexUtils::GetPlexRecentlyAddedMovies(items, Base64::Decode(section));
-        items.SetLabel("Recently added movies");
+        items.SetLabel(g_localizeStrings.Get(20386));
         items.SetContent("movies");
       }
       else
@@ -252,7 +252,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedepisodes")
-          label = "Recently added episodes";
+          label = g_localizeStrings.Get(20387);
         else
           StringUtils::ToCapitalize(label);
         items.SetLabel(label);
@@ -298,7 +298,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       else if (path == "recentlyaddedepisodes")
       {
         CPlexUtils::GetPlexRecentlyAddedEpisodes(items, Base64::Decode(section));
-        items.SetLabel("Recently added episodes");
+        items.SetLabel(g_localizeStrings.Get(20387));
         items.SetContent("episodes");
       }
       else
