@@ -1329,6 +1329,12 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
       return "plex://tvshows/recentlyaddedepisodes/";
     return "videodb://recentlyaddedepisodes/";
   }
+  else if (lower == "inprogressshows")
+  {
+    if (CServicesManager::GetInstance().HasServices())
+      return "plex://tvshows/inprogressshows/";
+    return "library://video/inprogressshows.xml/";
+  }
   else if (lower == "tvshowtags")
     return "videodb://tvshows/tags/";
   else if (lower == "tvshows")

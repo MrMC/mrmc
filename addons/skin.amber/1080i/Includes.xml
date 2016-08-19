@@ -974,7 +974,7 @@
     <item id="7" description="RA TV">
       <visible>Container(300).HasFocus(5)</visible>
       <label>$LOCALIZE[575]</label>
-      <onclick>ActivateWindow(Videos,"library://video/inprogressshows.xml/",return)</onclick>
+      <onclick>ActivateWindow(Videos,InProgressShows,return)</onclick>
     </item>
     <item id="8" description="RA TV">
       <visible>Container(300).HasFocus(5)</visible>

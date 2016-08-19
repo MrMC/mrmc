@@ -387,7 +387,7 @@ void CPlexUtils::SetPlayState(PlexUtilsPlayerState state)
   g_playbackState = state;
 }
 
-bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* rootXmlNode, std::string type, int season /* = -1 */)
+bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* rootXmlNode, std::string type, bool formatLabel, int season /* = -1 */)
 {
   bool rtn = false;
   const TiXmlElement* videoNode = rootXmlNode->FirstChildElement("Video");
@@ -495,9 +495,12 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
     const TiXmlElement* mediaNode = videoNode->FirstChildElement("Media");
     GetMediaDetals(*plexItem, url, mediaNode);
 
-    CLabelFormatter formatter("%H. %T", "");
-    formatter.FormatLabel(plexItem.get());
-    plexItem->SetLabelPreformated(true);
+    if (formatLabel)
+    {
+      CLabelFormatter formatter("%H. %T", "");
+      formatter.FormatLabel(plexItem.get());
+      plexItem->SetLabelPreformated(true);
+    }
     
     items.Add(plexItem);
     videoNode = videoNode->NextSiblingElement("Video");
@@ -520,7 +523,7 @@ bool CPlexUtils::GetPlexMovies(CFileItemList &items, std::string url, std::strin
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeMovie);
+    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeMovie, false);
   }
 
   return rtn;
@@ -698,7 +701,7 @@ bool CPlexUtils::GetPlexEpisodes(CFileItemList &items, const std::string url)
   if (rootXmlNode)
   {
     int season = atoi(XMLUtils::GetAttribute(rootXmlNode, "parentIndex").c_str());
-    rtn = GetVideoItems(items,url2,rootXmlNode, MediaTypeEpisode, season);
+    rtn = GetVideoItems(items,url2,rootXmlNode, MediaTypeEpisode, true, season);
     items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
   }
 
@@ -738,11 +741,52 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeEpisode);
+    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeEpisode, false);
     items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
     items.Sort(SortByDateAdded, SortOrderDescending);
   }
 
+  return rtn;
+}
+
+bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string url, int limit)
+{
+  bool rtn = false;
+  
+  CURL url2(url);
+  std::string strXML;
+  XFILE::CCurlFile http;
+  http.SetBufferSize(32768*10);
+  http.SetRequestHeader("Accept-Encoding", "gzip");
+  
+  url2.SetFileName(url2.GetFileName() + "onDeck");
+  url2.SetProtocolOptions(url2.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
+  // this is key to get back gzip encoded content
+  url2.SetProtocolOption("seekable", "0");
+  
+  http.Get(url2.Get(), strXML);
+  if (http.GetContentEncoding() == "gzip")
+  {
+    std::string buffer;
+    if (XFILE::CZipFile::DecompressGzip(strXML, buffer))
+      strXML = std::move(buffer);
+    else
+      return false;
+  }
+  // remove the seakable option as we propigate the url
+  url2.RemoveProtocolOption("seekable");
+  
+  TiXmlDocument xml;
+  xml.Parse(strXML.c_str());
+  
+  TiXmlElement* rootXmlNode = xml.RootElement();
+  if (rootXmlNode)
+  {
+    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeEpisode, false);
+    items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
+    items.Sort(SortByDateAdded, SortOrderDescending);
+  }
+  
   return rtn;
 }
 
@@ -751,7 +795,7 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
   bool rtn = false;
 
   CURL url2(url);
-    url2.SetFileName(url2.GetFileName() + "recentlyAdded");
+  url2.SetFileName(url2.GetFileName() + "recentlyAdded");
   url2.SetProtocolOptions(url2.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
   // this is key to get back gzip encoded content
   url2.SetProtocolOption("seekable", "0");
@@ -779,7 +823,7 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    rtn = GetVideoItems(items, url2,rootXmlNode, MediaTypeMovie);
+    rtn = GetVideoItems(items, url2,rootXmlNode, MediaTypeMovie, false);
     items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
     items.Sort(SortByDateAdded, SortOrderDescending);
   }

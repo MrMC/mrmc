@@ -54,6 +54,7 @@ public:
   static void ReportProgress(CFileItem &item, double currentSeconds);
   static void SetPlayState(PlexUtilsPlayerState state);
   static bool GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit=25);
+  static bool GetPlexInProgressShows(CFileItemList &items, const std::string url, int limit=25);
   static bool GetPlexRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit=25);
   static bool GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow=false);
 
@@ -68,7 +69,7 @@ public:
 
 private:
   static void ReportToServer(std::string url, std::string filename);
-  static bool GetVideoItems(CFileItemList &items,CURL url, TiXmlElement* rootXmlNode, std::string type, int season = -1);
+  static bool GetVideoItems(CFileItemList &items,CURL url, TiXmlElement* rootXmlNode, std::string type, bool formatLabel, int season = -1);
   static void GetVideoDetails(CFileItem &item, const TiXmlElement* videoNode);
   static void GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* videoNode, std::string id = "0");
   static TiXmlDocument GetPlexXML(std::string url, std::string filter = "");
