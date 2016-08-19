@@ -1012,6 +1012,11 @@
       <label>$LOCALIZE[31020]</label>
       <onclick>ActivateWindow(Videos,RecentlyAddedMovies,return)</onclick>
     </item>
+      <item id="7" description="RA TV">
+      <visible>Container(300).HasFocus(4) + !Skin.HasSetting(Movies2)</visible>
+      <label>$LOCALIZE[575]</label>
+      <onclick>ActivateWindow(Videos,InProgressMovies,return)</onclick>
+    </item>
     <item id="14" description="RA Movies">
       <visible>Container(300).HasFocus(4) + !Skin.HasSetting(Movies2)</visible>
       <label>$LOCALIZE[20459]</label>

@@ -831,6 +831,47 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
   return rtn;
 }
 
+bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string url, int limit)
+{
+  bool rtn = false;
+  
+  CURL url2(url);
+  std::string strXML;
+  XFILE::CCurlFile http;
+  http.SetBufferSize(32768*10);
+  http.SetRequestHeader("Accept-Encoding", "gzip");
+  
+  url2.SetFileName(url2.GetFileName() + "onDeck");
+  url2.SetProtocolOptions(url2.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
+  // this is key to get back gzip encoded content
+  url2.SetProtocolOption("seekable", "0");
+  
+  http.Get(url2.Get(), strXML);
+  if (http.GetContentEncoding() == "gzip")
+  {
+    std::string buffer;
+    if (XFILE::CZipFile::DecompressGzip(strXML, buffer))
+      strXML = std::move(buffer);
+    else
+      return false;
+  }
+  // remove the seakable option as we propigate the url
+  url2.RemoveProtocolOption("seekable");
+  
+  TiXmlDocument xml;
+  xml.Parse(strXML.c_str());
+  
+  TiXmlElement* rootXmlNode = xml.RootElement();
+  if (rootXmlNode)
+  {
+    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeMovie, false);
+    items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
+    items.Sort(SortByDateAdded, SortOrderDescending);
+  }
+  
+  return rtn;
+}
+
 bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow)
 {
   bool rtn = false;

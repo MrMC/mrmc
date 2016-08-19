@@ -70,6 +70,8 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->m_bIsShareOrDrive = false;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedmovies")
           pItem->SetPath("videodb://recentlyaddedmovies/");
+        else if (URIUtils::GetFileName(basePath) == "inprogressmovies")
+          pItem->SetPath("library://video/inprogressmovies.xml/");
         else
           pItem->SetPath("videodb://movies/" + basePath + "/");
         pItem->SetLabel(title);
@@ -125,6 +127,8 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedmovies")
           label = g_localizeStrings.Get(20386);
+        else if (URIUtils::GetFileName(basePath) == "inprogressmovies")
+          label = g_localizeStrings.Get(627);
         else
           StringUtils::ToCapitalize(label);
         items.SetLabel(label);
@@ -166,6 +170,12 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       else if (path == "recentlyaddedmovies")
       {
         CPlexUtils::GetPlexRecentlyAddedMovies(items, Base64::Decode(section));
+        items.SetLabel(g_localizeStrings.Get(20386));
+        items.SetContent("movies");
+      }
+      else if (path == "inprogressmovies")
+      {
+        CPlexUtils::GetPlexInProgressMovies(items, Base64::Decode(section));
         items.SetLabel(g_localizeStrings.Get(20386));
         items.SetContent("movies");
       }
