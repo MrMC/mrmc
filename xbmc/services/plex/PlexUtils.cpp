@@ -495,6 +495,10 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
     const TiXmlElement* mediaNode = videoNode->FirstChildElement("Media");
     GetMediaDetals(*plexItem, url, mediaNode);
 
+    CLabelFormatter formatter("%H. %T", "");
+    formatter.FormatLabel(plexItem.get());
+    plexItem->SetLabelPreformated(true);
+    
     items.Add(plexItem);
     videoNode = videoNode->NextSiblingElement("Video");
   }
