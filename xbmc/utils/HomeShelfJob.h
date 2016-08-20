@@ -21,32 +21,32 @@
 
 #include "Job.h"
 
-enum ERecentlyAddedFlag
+enum EHomeShelfFlag
 {
   Audio = 0x1,
   Video = 0x2,
   Totals = 0x4
 };
 
-class CRecentlyAddedJob : public CJob
+class CHomeShelfJob : public CJob
 {
 public:
-  CRecentlyAddedJob(int flag);
+  CHomeShelfJob(int flag);
   bool UpdateVideo();
   bool UpdateMusic();
   bool UpdateTotal();
-  const CFileItemList *GetMovieItems() const { return m_RecentlyAddedMovies; };
-  const CFileItemList *GetMusicSongItems() const { return m_RecentlyAddedMusicSongs; };
-  const CFileItemList *GetMusicAlbumItems() const { return m_RecentlyAddedMusicAlbums; };
-  const CFileItemList *GetMusicVideoItems() const { return m_RecentlyAddedMusicVideos; };
-  const CFileItemList *GetTvItems() const { return m_RecentlyAddedTV; };
+  const CFileItemList *GetMovieItems() const { return m_HomeShelfMovies; };
+  const CFileItemList *GetMusicSongItems() const { return m_HomeShelfMusicSongs; };
+  const CFileItemList *GetMusicAlbumItems() const { return m_HomeShelfMusicAlbums; };
+  const CFileItemList *GetMusicVideoItems() const { return m_HomeShelfMusicVideos; };
+  const CFileItemList *GetTvItems() const { return m_HomeShelfTV; };
   const int GetFlag() const { return m_flag; };
   virtual bool DoWork();
 private:
   int m_flag;
-  CFileItemList* m_RecentlyAddedTV;
-  CFileItemList* m_RecentlyAddedMovies;
-  CFileItemList* m_RecentlyAddedMusicAlbums;
-  CFileItemList* m_RecentlyAddedMusicSongs;
-  CFileItemList* m_RecentlyAddedMusicVideos;
+  CFileItemList* m_HomeShelfTV;
+  CFileItemList* m_HomeShelfMovies;
+  CFileItemList* m_HomeShelfMusicAlbums;
+  CFileItemList* m_HomeShelfMusicSongs;
+  CFileItemList* m_HomeShelfMusicVideos;
 };

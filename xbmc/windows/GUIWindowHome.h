@@ -41,16 +41,16 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 private:
-  int m_updateRA; // flag for which recently added items needs to be queried
-  void AddRecentlyAddedJobs(int flag);
-  bool PlayRecentlyAddedItem(CFileItem itemPtr);
-  bool m_recentlyAddedRunning;
+  int m_updateHS; // flag for which home shelf items needs to be queried
+  void AddHomeShelfJobs(int flag);
+  bool PlayHomeShelfItem(CFileItem itemPtr);
+  bool m_HomeShelfRunning;
   int m_cumulativeUpdateFlag;
   int m_countBackCalled;
   CCriticalSection             m_critsection;
-  CFileItemList*               m_RecentlyAddedTV;
-  CFileItemList*               m_RecentlyAddedMovies;
-  CFileItemList*               m_RecentlyAddedMusicSongs;
-  CFileItemList*               m_RecentlyAddedMusicVideos;
-  CFileItemList*               m_RecentlyAddedMusicAlbums;
+  CFileItemList*               m_HomeShelfTV;
+  CFileItemList*               m_HomeShelfMovies;
+  CFileItemList*               m_HomeShelfMusicSongs;
+  CFileItemList*               m_HomeShelfMusicVideos;
+  CFileItemList*               m_HomeShelfMusicAlbums;
 };

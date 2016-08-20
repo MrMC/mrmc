@@ -22,7 +22,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
-#include "RecentlyAddedJob.h"
+#include "HomeShelfJob.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -42,24 +42,24 @@
 
 #define NUM_ITEMS 10
 
-CRecentlyAddedJob::CRecentlyAddedJob(int flag)
+CHomeShelfJob::CHomeShelfJob(int flag)
 {
   m_flag = flag;
-  m_RecentlyAddedTV = new CFileItemList;
-  m_RecentlyAddedMovies = new CFileItemList;
-  m_RecentlyAddedMusicAlbums = new CFileItemList;
-  m_RecentlyAddedMusicSongs = new CFileItemList;
-  m_RecentlyAddedMusicVideos = new CFileItemList;
+  m_HomeShelfTV = new CFileItemList;
+  m_HomeShelfMovies = new CFileItemList;
+  m_HomeShelfMusicAlbums = new CFileItemList;
+  m_HomeShelfMusicSongs = new CFileItemList;
+  m_HomeShelfMusicVideos = new CFileItemList;
 } 
 
-bool CRecentlyAddedJob::UpdateVideo()
+bool CHomeShelfJob::UpdateVideo()
 {
   CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
 
   if ( home == NULL )
     return false;
 
-  CLog::Log(LOGDEBUG, "CRecentlyAddedJob::UpdateVideos() - Running RecentlyAdded home screen update");
+  CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateVideos() - Running HomeShelf screen update");
   
   CVideoDatabase videodatabase;
   std::string path;
@@ -76,11 +76,11 @@ bool CRecentlyAddedJob::UpdateVideo()
   }
 
   videodatabase.Open();
-  videodatabase.GetRecentlyAddedMoviesNav(path, *m_RecentlyAddedMovies, NUM_ITEMS);
+  videodatabase.GetRecentlyAddedMoviesNav(path, *m_HomeShelfMovies, NUM_ITEMS);
 
-  for (int i = 0; i < m_RecentlyAddedMovies->Size(); i++)
+  for (int i = 0; i < m_HomeShelfMovies->Size(); i++)
   {
-    CFileItemPtr item          = m_RecentlyAddedMovies->Get(i);
+    CFileItemPtr item          = m_HomeShelfMovies->Get(i);
     item->SetProperty("ItemType", g_localizeStrings.Get(20386));
     if (!item->HasArt("thumb"))
     {
@@ -97,11 +97,11 @@ bool CRecentlyAddedJob::UpdateVideo()
     path = url.ToString();
   }
 
-  videodatabase.GetRecentlyAddedEpisodesNav(path, *m_RecentlyAddedTV, NUM_ITEMS);
+  videodatabase.GetRecentlyAddedEpisodesNav(path, *m_HomeShelfTV, NUM_ITEMS);
   std::string seasonThumb;
-  for (int i = 0; i < m_RecentlyAddedTV->Size(); i++)
+  for (int i = 0; i < m_HomeShelfTV->Size(); i++)
   {
-    CFileItemPtr item = m_RecentlyAddedTV->Get(i);
+    CFileItemPtr item = m_HomeShelfTV->Get(i);
     std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
     item->SetProperty("SeasonEpisode", seasonEpisode);
     item->SetProperty("ItemType", g_localizeStrings.Get(20387));
@@ -112,20 +112,20 @@ bool CRecentlyAddedJob::UpdateVideo()
   }
 
   // get recently added TVSHOWS and MOVIES from any enabled service
-  CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_RecentlyAddedTV, NUM_ITEMS);
-  CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_RecentlyAddedMovies, NUM_ITEMS);
+  CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTV, NUM_ITEMS);
+  CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMovies, NUM_ITEMS);
 
 #if defined(TARGET_DARWIN_TVOS)
   // send recently added Movies and TvShows to TopShelf
-  CTVOSTopShelf::GetInstance().SetTopShelfItems(*m_RecentlyAddedMovies,*m_RecentlyAddedTV);
+  CTVOSTopShelf::GetInstance().SetTopShelfItems(*m_HomeShelfMovies,*m_HomeShelfTV);
 #endif
 
   return true;
 }
 
-bool CRecentlyAddedJob::UpdateMusic()
+bool CHomeShelfJob::UpdateMusic()
 {
-  CLog::Log(LOGDEBUG, "CRecentlyAddedJob::UpdateMusic() - Running RecentlyAdded home screen update");
+  CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateMusic() - Running HomeShelf screen update");
   
   CMusicDatabase musicdatabase;
 
@@ -144,20 +144,20 @@ bool CRecentlyAddedJob::UpdateMusic()
     pItem->SetProperty("fanart", strFanart);
     pItem->SetProperty("artist", album.GetAlbumArtistString());
     pItem->SetProperty("ItemType", g_localizeStrings.Get(359));
-    m_RecentlyAddedMusicAlbums->Add(pItem);
+    m_HomeShelfMusicAlbums->Add(pItem);
   }
   musicdatabase.Close();
   return true;
 }
 
-bool CRecentlyAddedJob::UpdateTotal()
+bool CHomeShelfJob::UpdateTotal()
 {
   CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
   
   if ( home == NULL )
     return false;
   
-  CLog::Log(LOGDEBUG, "CRecentlyAddedJob::UpdateTotal() - Running RecentlyAdded home screen update");
+  CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateTotal() - Running HomeShelf home screen update");
   
   CVideoDatabase videodatabase;  
   CMusicDatabase musicdatabase;
@@ -199,7 +199,7 @@ bool CRecentlyAddedJob::UpdateTotal()
 }
 
 
-bool CRecentlyAddedJob::DoWork()
+bool CHomeShelfJob::DoWork()
 {
   bool ret = true;
   if (m_flag & Audio)

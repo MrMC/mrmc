@@ -23,7 +23,7 @@
 #include "input/Key.h"
 #include "guilib/WindowIDs.h"
 #include "utils/JobManager.h"
-#include "utils/RecentlyAddedJob.h"
+#include "utils/HomeShelfJob.h"
 #include "interfaces/AnnouncementManager.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
@@ -39,29 +39,29 @@
 #include "services/ServicesManager.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
-#define CONTROL_RECENTLYADDEDMOVIES      8000
-#define CONTROL_RECENTLYADDEDTVSHOWS     8001
-#define CONTROL_RECENTLYADDEDMUSICALBUMS 8002
-#define CONTROL_RECENTLYADDEDMUSICVIDEOS 8003
-#define CONTROL_RECENTLYADDEDMUSICSONGS  8004
+#define CONTROL_HOMESHELFMOVIES      8000
+#define CONTROL_HOMESHELFTVSHOWS     8001
+#define CONTROL_HOMESHELFMUSICALBUMS 8002
+#define CONTROL_HOMESHELFMUSICVIDEOS 8003
+#define CONTROL_HOMESHELFMUSICSONGS  8004
 
 
 using namespace ANNOUNCEMENT;
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), 
-                                       m_recentlyAddedRunning(false),
+                                       m_HomeShelfRunning(false),
                                        m_cumulativeUpdateFlag(0),
                                        m_countBackCalled(0)
 {
-  m_updateRA = (Audio | Video | Totals);
+  m_updateHS = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
   
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
-  m_RecentlyAddedTV = new CFileItemList;
-  m_RecentlyAddedMovies = new CFileItemList;
-  m_RecentlyAddedMusicAlbums = new CFileItemList;
-  m_RecentlyAddedMusicSongs = new CFileItemList;
-  m_RecentlyAddedMusicVideos = new CFileItemList;
+  m_HomeShelfTV = new CFileItemList;
+  m_HomeShelfMovies = new CFileItemList;
+  m_HomeShelfMusicAlbums = new CFileItemList;
+  m_HomeShelfMusicSongs = new CFileItemList;
+  m_HomeShelfMusicVideos = new CFileItemList;
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -110,8 +110,8 @@ void CGUIWindowHome::OnInitWindow()
   if (StringUtils::EqualsNoCase(g_advancedSettings.m_databaseVideo.type, "mysql") ||
       StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql") ||
       CServicesManager::GetInstance().HasServices())
-    m_updateRA = (Audio | Video | Totals);
-  AddRecentlyAddedJobs( m_updateRA );
+    m_updateHS = (Audio | Video | Totals);
+  AddHomeShelfJobs( m_updateHS );
 
   CGUIWindow::OnInitWindow();
 }
@@ -150,7 +150,7 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
   g_windowManager.SendThreadMessage(reload, GetID());
 }
 
-void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
+void CGUIWindowHome::AddHomeShelfJobs(int flag)
 {
   bool getAJob = false;
 
@@ -158,18 +158,18 @@ void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
   // and keeps track of the flag
   {
     CSingleLock lockMe(*this);
-    if (!m_recentlyAddedRunning)
+    if (!m_HomeShelfRunning)
     {
       getAJob = true;
 
-      flag |= m_cumulativeUpdateFlag; // add the flags from previous calls to AddRecentlyAddedJobs
+      flag |= m_cumulativeUpdateFlag; // add the flags from previous calls to AddHomeShelfJob
 
       m_cumulativeUpdateFlag = 0; // now taken care of in flag.
                                   // reset this since we're going to execute a job
 
       // we're about to add one so set the indicator
       if (flag)
-        m_recentlyAddedRunning = true; // this will happen in the if clause below
+        m_HomeShelfRunning = true; // this will happen in the if clause below
     }
     else
       // since we're going to skip a job, mark that one came in and ...
@@ -177,9 +177,9 @@ void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
   }
 
   if (flag && getAJob)
-    CJobManager::GetInstance().AddJob(new CRecentlyAddedJob(flag), this);
+    CJobManager::GetInstance().AddJob(new CHomeShelfJob(flag), this);
 
-  m_updateRA = 0;
+  m_updateHS = 0;
 }
 
 void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
@@ -192,37 +192,37 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     // the job is finished.
     // did one come in in the meantime?
     flag = m_cumulativeUpdateFlag;
-    m_recentlyAddedRunning = false; /// we're done.
+    m_HomeShelfRunning = false; /// we're done.
   }
 
   if (flag)
-    AddRecentlyAddedJobs(0 /* the flag will be set inside AddRecentlyAddedJobs via m_cumulativeUpdateFlag */ );
+    AddHomeShelfJobs(0 /* the flag will be set inside AddHomeShelfJobs via m_cumulativeUpdateFlag */ );
 
-  int jobFlag = ((CRecentlyAddedJob *)job)->GetFlag();
+  int jobFlag = ((CHomeShelfJob *)job)->GetFlag();
   if (jobFlag & Video)
   {
     CSingleLock lock(m_critsection);
-    CFileItemList recentlyAddedTV;
-    recentlyAddedTV.Copy(*((CRecentlyAddedJob *)job)->GetTvItems());
-    m_RecentlyAddedTV->Assign(recentlyAddedTV);
+    CFileItemList HomeShelfTV;
+    HomeShelfTV.Copy(*((CHomeShelfJob *)job)->GetTvItems());
+    m_HomeShelfTV->Assign(HomeShelfTV);
 
-    CFileItemList recentlyAddedMovies;
-    recentlyAddedMovies.Copy(*((CRecentlyAddedJob *)job)->GetMovieItems());
-    m_RecentlyAddedMovies->Assign(recentlyAddedMovies);
+    CFileItemList HomeShelfMovies;
+    HomeShelfMovies.Copy(*((CHomeShelfJob *)job)->GetMovieItems());
+    m_HomeShelfMovies->Assign(HomeShelfMovies);
 
-    CGUIMessage messageMovie(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RECENTLYADDEDMOVIES, 0, 0, m_RecentlyAddedMovies);
+    CGUIMessage messageMovie(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIES, 0, 0, m_HomeShelfMovies);
     OnMessage(messageMovie);
-    CGUIMessage messageTV(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RECENTLYADDEDTVSHOWS, 0, 0, m_RecentlyAddedTV);
+    CGUIMessage messageTV(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWS, 0, 0, m_HomeShelfTV);
     OnMessage(messageTV);
   }
   if (jobFlag & Audio)
   {
     CSingleLock lock(m_critsection);
-    CFileItemList recentlyAddedMusicAlbums;
-    recentlyAddedMusicAlbums.Copy(*((CRecentlyAddedJob *)job)->GetMusicAlbumItems());
-    m_RecentlyAddedMusicAlbums->Assign(recentlyAddedMusicAlbums);
+    CFileItemList HomeShelfMusicAlbums;
+    HomeShelfMusicAlbums.Copy(*((CHomeShelfJob *)job)->GetMusicAlbumItems());
+    m_HomeShelfMusicAlbums->Assign(HomeShelfMusicAlbums);
 
-    CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RECENTLYADDEDMUSICALBUMS, 0, 0, m_RecentlyAddedMusicAlbums);
+    CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMUSICALBUMS, 0, 0, m_HomeShelfMusicAlbums);
     OnMessage(messageAlbums);
   }
 }
@@ -239,9 +239,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       int updateRA = (message.GetSenderId() == GetID()) ? message.GetParam2() : (Video | Audio | Totals);
 
       if (IsActive())
-        AddRecentlyAddedJobs(updateRA);
+        AddHomeShelfJobs(updateRA);
       else
-        m_updateRA |= updateRA;
+        m_updateHS |= updateRA;
     }
     else if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
     {
@@ -249,9 +249,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (IsActive())
       {
         if (newItem->GetVideoInfoTag()->m_type == MediaTypeMovie)
-          m_RecentlyAddedMovies->UpdateItem(newItem.get());
+          m_HomeShelfMovies->UpdateItem(newItem.get());
         else
-          m_RecentlyAddedTV->UpdateItem(newItem.get());
+          m_HomeShelfTV->UpdateItem(newItem.get());
       }
     }
 
@@ -263,42 +263,42 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     bool selectAction = (message.GetParam1() == ACTION_SELECT_ITEM ||
                          message.GetParam1() == ACTION_MOUSE_LEFT_CLICK);
 
-    if (selectAction && iControl == CONTROL_RECENTLYADDEDMOVIES)
+    if (selectAction && iControl == CONTROL_HOMESHELFMOVIES)
     {
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_RECENTLYADDEDMOVIES);
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMOVIES);
       OnMessage(msg);
 
       int item = msg.GetParam1();
-      if (item >= 0 && item < m_RecentlyAddedMovies->Size())
+      if (item >= 0 && item < m_HomeShelfMovies->Size())
       {
-        CFileItemPtr itemPtr = m_RecentlyAddedMovies->Get(item);
-        PlayRecentlyAddedItem(*itemPtr);
+        CFileItemPtr itemPtr = m_HomeShelfMovies->Get(item);
+        PlayHomeShelfItem(*itemPtr);
       }
       return true;
     }
-    else if (selectAction && iControl == CONTROL_RECENTLYADDEDTVSHOWS)
+    else if (selectAction && iControl == CONTROL_HOMESHELFTVSHOWS)
     {
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_RECENTLYADDEDTVSHOWS);
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFTVSHOWS);
       OnMessage(msg);
 
       int item = msg.GetParam1();
-      if (item >= 0 && item < m_RecentlyAddedTV->Size())
+      if (item >= 0 && item < m_HomeShelfTV->Size())
       {
-        CFileItemPtr itemPtr = m_RecentlyAddedTV->Get(item);
-        PlayRecentlyAddedItem(*itemPtr);
+        CFileItemPtr itemPtr = m_HomeShelfTV->Get(item);
+        PlayHomeShelfItem(*itemPtr);
       }
       return true;
     }
-    else if (selectAction && iControl == CONTROL_RECENTLYADDEDMUSICALBUMS)
+    else if (selectAction && iControl == CONTROL_HOMESHELFMUSICALBUMS)
     {
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_RECENTLYADDEDMUSICALBUMS);
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMUSICALBUMS);
       OnMessage(msg);
 
       int item = msg.GetParam1();
-      if (item >= 0 && item < m_RecentlyAddedMusicAlbums->Size())
+      if (item >= 0 && item < m_HomeShelfMusicAlbums->Size())
       {
-        CFileItemPtr itemPtr = m_RecentlyAddedMusicAlbums->Get(item);
-        PlayRecentlyAddedItem(*itemPtr);
+        CFileItemPtr itemPtr = m_HomeShelfMusicAlbums->Get(item);
+        PlayHomeShelfItem(*itemPtr);
       }
       return true;
     }
@@ -311,7 +311,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-bool CGUIWindowHome::PlayRecentlyAddedItem(CFileItem itemPtr)
+bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
 {
   // play media
   if (itemPtr.IsAudio())

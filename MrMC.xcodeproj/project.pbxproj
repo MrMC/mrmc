@@ -25,7 +25,7 @@
 		18AC31F01C49445D00AE9433 /* TVServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AC31EF1C49445D00AE9433 /* TVServices.framework */; };
 		18AC31F41C49445D00AE9433 /* ServiceProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC31F31C49445D00AE9433 /* ServiceProvider.m */; };
 		18AC31F81C49445D00AE9433 /* TopShelf.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 18AC31ED1C49445D00AE9433 /* TopShelf.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
+		18ACF84313596C9B00B67371 /* HomeShelfJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* HomeShelfJob.cpp */; };
 		18B4A0021152BFA5001AF8A6 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF11152BFA5001AF8A6 /* Addon.cpp */; };
 		18B4A0051152BFA5001AF8A6 /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */; };
 		18B4A0061152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
@@ -1547,7 +1547,7 @@
 		E4991464174E605900741B6D /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
 		E4991465174E605900741B6D /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828FF156CFE4B005A996F /* Observer.cpp */; };
 		E4991468174E605900741B6D /* POUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908C15538E2300842059 /* POUtils.cpp */; };
-		E4991469174E605900741B6D /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
+		E4991469174E605900741B6D /* HomeShelfJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* HomeShelfJob.cpp */; };
 		E499146A174E605900741B6D /* RegExp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E730D25F9FD00618676 /* RegExp.cpp */; };
 		E499146B174E605900741B6D /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
 		E499146C174E605900741B6D /* RssManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAF6A4D16EBAE3800D6AE12 /* RssManager.cpp */; };
@@ -2780,7 +2780,7 @@
 		F5D141251BAF0B6D0075A95C /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
 		F5D141261BAF0B6D0075A95C /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828FF156CFE4B005A996F /* Observer.cpp */; };
 		F5D141271BAF0B6D0075A95C /* POUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908C15538E2300842059 /* POUtils.cpp */; };
-		F5D141281BAF0B6D0075A95C /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
+		F5D141281BAF0B6D0075A95C /* HomeShelfJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* HomeShelfJob.cpp */; };
 		F5D141291BAF0B6D0075A95C /* RegExp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E730D25F9FD00618676 /* RegExp.cpp */; };
 		F5D1412A1BAF0B6D0075A95C /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
 		F5D1412B1BAF0B6D0075A95C /* RssManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAF6A4D16EBAE3800D6AE12 /* RssManager.cpp */; };
@@ -3182,8 +3182,8 @@
 		18AC31F21C49445D00AE9433 /* ServiceProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceProvider.h; sourceTree = "<group>"; };
 		18AC31F31C49445D00AE9433 /* ServiceProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceProvider.m; sourceTree = "<group>"; };
 		18AC31F51C49445D00AE9433 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
-		18ACF84213596C9B00B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
+		18ACF84113596C9B00B67371 /* HomeShelfJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HomeShelfJob.cpp; sourceTree = "<group>"; };
+		18ACF84213596C9B00B67371 /* HomeShelfJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeShelfJob.h; sourceTree = "<group>"; };
 		18B49FF11152BFA5001AF8A6 /* Addon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Addon.cpp; sourceTree = "<group>"; };
 		18B49FF21152BFA5001AF8A6 /* Addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Addon.h; sourceTree = "<group>"; };
 		18B49FF31152BFA5001AF8A6 /* AddonDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonDll.h; sourceTree = "<group>"; };
@@ -4987,7 +4987,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* darwin_codesign_internals.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = darwin_codesign_internals.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MrMC.app; path = MemberNetTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E49910D0174E2DFF00741B6D /* App-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-iOS.xcconfig"; sourceTree = "<group>"; };
 		E49910D1174E2E0000741B6D /* App-OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-OSX.xcconfig"; sourceTree = "<group>"; };
@@ -8653,6 +8653,8 @@
 				18C1D22C13033F6A00CFFE59 /* GLUtils.h */,
 				F5EDC48A1651A6F900B852D8 /* GroupUtils.cpp */,
 				F5EDC48B1651A6F900B852D8 /* GroupUtils.h */,
+				18ACF84113596C9B00B67371 /* HomeShelfJob.cpp */,
+				18ACF84213596C9B00B67371 /* HomeShelfJob.h */,
 				E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */,
 				E38E1E430D25F9FD00618676 /* HTMLUtil.h */,
 				E38E1E460D25F9FD00618676 /* HttpHeader.cpp */,
@@ -8696,8 +8698,6 @@
 				F5ED908D15538E2300842059 /* POUtils.h */,
 				399442591A8DD8D0006C39E9 /* ProgressJob.cpp */,
 				3994425A1A8DD8D0006C39E9 /* ProgressJob.h */,
-				18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */,
-				18ACF84213596C9B00B67371 /* RecentlyAddedJob.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
 				E38E1E740D25F9FD00618676 /* RegExp.h */,
 				F5B722C51C7BC186006432AE /* rfft.cpp */,
@@ -10515,7 +10515,7 @@
 				F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */,
 				C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */,
 				384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */,
-				18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */,
+				18ACF84313596C9B00B67371 /* HomeShelfJob.cpp in Sources */,
 				C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */,
 				C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */,
 				F5B724D91C7E150C006432AE /* match.cpp in Sources */,
@@ -11674,7 +11674,7 @@
 				E4991464174E605900741B6D /* Mime.cpp in Sources */,
 				E4991465174E605900741B6D /* Observer.cpp in Sources */,
 				E4991468174E605900741B6D /* POUtils.cpp in Sources */,
-				E4991469174E605900741B6D /* RecentlyAddedJob.cpp in Sources */,
+				E4991469174E605900741B6D /* HomeShelfJob.cpp in Sources */,
 				E499146A174E605900741B6D /* RegExp.cpp in Sources */,
 				E499146B174E605900741B6D /* RingBuffer.cpp in Sources */,
 				E499146C174E605900741B6D /* RssManager.cpp in Sources */,
@@ -12690,7 +12690,7 @@
 				F5D141261BAF0B6D0075A95C /* Observer.cpp in Sources */,
 				F5D141271BAF0B6D0075A95C /* POUtils.cpp in Sources */,
 				F5B723AF1C7C9C1A006432AE /* AudioDSPSettings.cpp in Sources */,
-				F5D141281BAF0B6D0075A95C /* RecentlyAddedJob.cpp in Sources */,
+				F5D141281BAF0B6D0075A95C /* HomeShelfJob.cpp in Sources */,
 				F5D141291BAF0B6D0075A95C /* RegExp.cpp in Sources */,
 				F5B723021C7C894F006432AE /* GUIContainerBuiltins.cpp in Sources */,
 				F5D1412A1BAF0B6D0075A95C /* RingBuffer.cpp in Sources */,

@@ -22,6 +22,7 @@
 
 #include "services/ServicesManager.h"
 #include "Application.h"
+#include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "services/plex/PlexUtils.h"
 #include "utils/JobManager.h"
@@ -172,7 +173,11 @@ void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, i
     CFileItemList temp;
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
     for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
-      temp.Add(recentlyAdded.Get(i));
+    {
+      CFileItemPtr item = recentlyAdded.Get(i);
+      item->SetProperty("ItemType", g_localizeStrings.Get(20386));
+      temp.Add(item);
+    }
 
     recentlyAdded.ClearItems();
     recentlyAdded.Append(temp);
@@ -186,7 +191,11 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
     CFileItemList temp;
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
     for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
-      temp.Add(recentlyAdded.Get(i));
+    {
+      CFileItemPtr item = recentlyAdded.Get(i);
+      item->SetProperty("ItemType", g_localizeStrings.Get(20387));
+      temp.Add(item);
+    }
 
     recentlyAdded.ClearItems();
     recentlyAdded.Append(temp);
