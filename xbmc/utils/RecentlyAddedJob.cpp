@@ -81,6 +81,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   for (int i = 0; i < m_RecentlyAddedMovies->Size(); i++)
   {
     CFileItemPtr item          = m_RecentlyAddedMovies->Get(i);
+    item->SetProperty("ItemType", g_localizeStrings.Get(20386));
     if (!item->HasArt("thumb"))
     {
       loader.LoadItem(item.get());
@@ -103,6 +104,7 @@ bool CRecentlyAddedJob::UpdateVideo()
     CFileItemPtr item = m_RecentlyAddedTV->Get(i);
     std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
     item->SetProperty("SeasonEpisode", seasonEpisode);
+    item->SetProperty("ItemType", g_localizeStrings.Get(20387));
     if (!item->HasArt("thumb"))
     {
       loader.LoadItem(item.get());
@@ -141,6 +143,7 @@ bool CRecentlyAddedJob::UpdateMusic()
     pItem->SetProperty("thumb", strThumb);
     pItem->SetProperty("fanart", strFanart);
     pItem->SetProperty("artist", album.GetAlbumArtistString());
+    pItem->SetProperty("ItemType", g_localizeStrings.Get(359));
     m_RecentlyAddedMusicAlbums->Add(pItem);
   }
   musicdatabase.Close();

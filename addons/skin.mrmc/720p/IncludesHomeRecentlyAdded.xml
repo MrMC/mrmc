@@ -22,7 +22,7 @@
 					<top>220</top>
 					<height>20</height>
 					<width>540</width>
-					<label>20386</label>
+					<label>$INFO[Container(8000).ListItem.Property(ItemType)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
@@ -177,7 +177,7 @@
 					<top>220</top>
 					<height>20</height>
 					<width>480</width>
-					<label>20387</label>
+					<label>$INFO[Container(8001).ListItem.Property(ItemType)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
@@ -357,7 +357,7 @@
 					<top>220</top>
 					<height>20</height>
 					<width>480</width>
-					<label>359</label>
+					<label>$INFO[Container(8002).ListItem.Property(ItemType)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
