@@ -147,8 +147,9 @@ namespace XFILE
 
         // if we retrieve a list of episodes and we didn't receive
         // a pre-defined base path, we need to fix it
-        if (strBaseDir.empty() && mediaType == MediaTypeEpisode && !isGrouped)
-          videoUrl.AppendPath("-1/-1/");
+        // amet edit: it is unclear why this is here... removing it helps with getting smartplaylist to parse correctly.
+//        if (strBaseDir.empty() && mediaType == MediaTypeEpisode && !isGrouped)
+//          videoUrl.AppendPath("-1/-1/");
         items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
       }
     }
