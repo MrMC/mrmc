@@ -451,6 +451,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.showinprogress" type="boolean" label="703" help="704">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.actorthumbs" type="boolean" label="20402" help="36143">
           <level>1</level>
           <default>true</default>

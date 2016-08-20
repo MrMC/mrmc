@@ -87,12 +87,15 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
   NSMutableArray *filePaths = (NSMutableArray *)[fileManager contentsOfDirectoryAtPath:storeUrl.path error:nil];
   std::string raPath = [storeUrl.path UTF8String];
   
+  NSString *movieTitle;
+  NSString *tvTitle;
   
   if (movies.Size() > 0)
   {
     for (int i = 0; i < movies.Size() && i < 5; ++i)
     {
       CFileItemPtr item          = movies.Get(i);
+      movieTitle                 = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
       NSMutableDictionary * movieDict = [[NSMutableDictionary alloc] init];
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());
@@ -118,8 +121,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       [movieArray addObject:movieDict];
     }
     [shared setObject:movieArray forKey:@"movies"];
-    NSString *tvTitle = [NSString stringWithUTF8String:g_localizeStrings.Get(20386).c_str()];
-    [shared setObject:tvTitle forKey:@"moviesTitle"];
+    [shared setObject:movieTitle forKey:@"moviesTitle"];
   }
   else
   {
@@ -135,6 +137,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       std::string fileName;
       std::string seasonThumb;
       CFileItemPtr item = tv.Get(i);
+      tvTitle = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
       NSMutableDictionary * tvDict = [[NSMutableDictionary alloc] init];
       std::string title = StringUtils::Format("%s s%02de%02d",
                                               item->GetVideoInfoTag()->m_strShowTitle.c_str(),
@@ -175,7 +178,6 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
       [tvArray addObject:tvDict];
     }
     [shared setObject:tvArray forKey:@"tv"];
-    NSString *tvTitle = [NSString stringWithUTF8String:g_localizeStrings.Get(20387).c_str()];
     [shared setObject:tvTitle forKey:@"tvTitle"];
   }
   else

@@ -4987,7 +4987,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* darwin_codesign_internals.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = darwin_codesign_internals.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MrMC.app; path = MemberNetTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E49910D0174E2DFF00741B6D /* App-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-iOS.xcconfig"; sourceTree = "<group>"; };
 		E49910D1174E2E0000741B6D /* App-OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-OSX.xcconfig"; sourceTree = "<group>"; };

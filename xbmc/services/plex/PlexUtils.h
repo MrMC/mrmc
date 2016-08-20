@@ -57,6 +57,7 @@ public:
   static bool GetPlexInProgressShows(CFileItemList &items, const std::string url, int limit=25);
   static bool GetPlexRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit=25);
   static bool GetPlexInProgressMovies(CFileItemList &items, const std::string url, int limit=25);
+  static bool GetAllPlexInProgress(CFileItemList &items, bool tvShow);
   static bool GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow=false);
 
   static bool GetPlexMovies(CFileItemList &items, std::string url, std::string filter = "");

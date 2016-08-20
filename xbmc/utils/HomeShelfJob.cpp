@@ -22,6 +22,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
+#include "filesystem/Directory.h"
 #include "HomeShelfJob.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
@@ -61,60 +62,96 @@ bool CHomeShelfJob::UpdateVideo()
 
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateVideos() - Running HomeShelf screen update");
   
-  CVideoDatabase videodatabase;
-  std::string path;
-  CVideoThumbLoader loader;
-  loader.OnLoaderStart();
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWINPROGRESS))
+  {
+    CVideoThumbLoader loader;
+    
+    XFILE::CDirectory::GetDirectory("library://video/inprogressmovies.xml/", *m_HomeShelfMovies);
+    XFILE::CDirectory::GetDirectory("library://video/inprogressshows.xml/", *m_HomeShelfTV);
+    
+    for (int i = 0; i < m_HomeShelfMovies->Size(); i++)
+    {
+      CFileItemPtr item          = m_HomeShelfMovies->Get(i);
+      item->SetProperty("ItemType", g_localizeStrings.Get(20386));
+      if (!item->HasArt("thumb"))
+      {
+        loader.LoadItem(item.get());
+      }
+    }
+    
+    for (int i = 0; i < m_HomeShelfTV->Size(); i++)
+    {
+      CFileItemPtr item = m_HomeShelfTV->Get(i);
+      std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
+      item->SetProperty("SeasonEpisode", seasonEpisode);
+      item->SetProperty("ItemType", g_localizeStrings.Get(20387));
+      if (!item->HasArt("thumb"))
+      {
+        loader.LoadItem(item.get());
+      }
+    }
+    
+    // get InProgress TVSHOWS and MOVIES from any enabled service
+    CServicesManager::GetInstance().GetAllInProgressShows(*m_HomeShelfTV, NUM_ITEMS);
+    CServicesManager::GetInstance().GetAllInProgressMovies(*m_HomeShelfMovies, NUM_ITEMS);
+  }
+  else
+  {
+    CVideoDatabase videodatabase;
+    std::string path;
+    CVideoThumbLoader loader;
+    loader.OnLoaderStart();
+    
+    path = g_advancedSettings.m_recentlyAddedMoviePath;
+    if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
+    {
+      CVideoDbUrl url;
+      url.FromString(path);
+      url.AddOption("filter", "{\"type\":\"movies\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
+      path = url.ToString();
+    }
+
+    videodatabase.Open();
+    videodatabase.GetRecentlyAddedMoviesNav(path, *m_HomeShelfMovies, NUM_ITEMS);
+
+    for (int i = 0; i < m_HomeShelfMovies->Size(); i++)
+    {
+      CFileItemPtr item          = m_HomeShelfMovies->Get(i);
+      item->SetProperty("ItemType", g_localizeStrings.Get(20386));
+      if (!item->HasArt("thumb"))
+      {
+        loader.LoadItem(item.get());
+      }
+    }
+
+    path = g_advancedSettings.m_recentlyAddedEpisodePath;
+    if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
+    {
+      CVideoDbUrl url;
+      url.FromString(path);
+      url.AddOption("filter", "{\"type\":\"episodes\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
+      path = url.ToString();
+    }
+
+    videodatabase.GetRecentlyAddedEpisodesNav(path, *m_HomeShelfTV, NUM_ITEMS);
+    std::string seasonThumb;
+    for (int i = 0; i < m_HomeShelfTV->Size(); i++)
+    {
+      CFileItemPtr item = m_HomeShelfTV->Get(i);
+      std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
+      item->SetProperty("SeasonEpisode", seasonEpisode);
+      item->SetProperty("ItemType", g_localizeStrings.Get(20387));
+      if (!item->HasArt("thumb"))
+      {
+        loader.LoadItem(item.get());
+      }
+    }
+
+    // get recently added TVSHOWS and MOVIES from any enabled service
+    CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTV, NUM_ITEMS);
+    CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMovies, NUM_ITEMS);
+  }
   
-  path = g_advancedSettings.m_recentlyAddedMoviePath;
-  if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
-  {
-    CVideoDbUrl url;
-    url.FromString(path);
-    url.AddOption("filter", "{\"type\":\"movies\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
-    path = url.ToString();
-  }
-
-  videodatabase.Open();
-  videodatabase.GetRecentlyAddedMoviesNav(path, *m_HomeShelfMovies, NUM_ITEMS);
-
-  for (int i = 0; i < m_HomeShelfMovies->Size(); i++)
-  {
-    CFileItemPtr item          = m_HomeShelfMovies->Get(i);
-    item->SetProperty("ItemType", g_localizeStrings.Get(20386));
-    if (!item->HasArt("thumb"))
-    {
-      loader.LoadItem(item.get());
-    }
-  }
-
-  path = g_advancedSettings.m_recentlyAddedEpisodePath;
-  if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
-  {
-    CVideoDbUrl url;
-    url.FromString(path);
-    url.AddOption("filter", "{\"type\":\"episodes\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
-    path = url.ToString();
-  }
-
-  videodatabase.GetRecentlyAddedEpisodesNav(path, *m_HomeShelfTV, NUM_ITEMS);
-  std::string seasonThumb;
-  for (int i = 0; i < m_HomeShelfTV->Size(); i++)
-  {
-    CFileItemPtr item = m_HomeShelfTV->Get(i);
-    std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
-    item->SetProperty("SeasonEpisode", seasonEpisode);
-    item->SetProperty("ItemType", g_localizeStrings.Get(20387));
-    if (!item->HasArt("thumb"))
-    {
-      loader.LoadItem(item.get());
-    }
-  }
-
-  // get recently added TVSHOWS and MOVIES from any enabled service
-  CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTV, NUM_ITEMS);
-  CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMovies, NUM_ITEMS);
-
 #if defined(TARGET_DARWIN_TVOS)
   // send recently added Movies and TvShows to TopShelf
   CTVOSTopShelf::GetInstance().SetTopShelfItems(*m_HomeShelfMovies,*m_HomeShelfTV);

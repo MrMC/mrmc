@@ -910,6 +910,42 @@ bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, boo
   return rtn;
 }
 
+bool CPlexUtils::GetAllPlexInProgress(CFileItemList &items, bool tvShow)
+{
+  if (CPlexServices::GetInstance().HasClients())
+  {
+    //look through all plex clients and pull recently added for each library section
+    std::vector<CPlexClientPtr> clients;
+    CPlexServices::GetInstance().GetClients(clients);
+    for (const auto &client : clients)
+    {
+      std::vector<PlexSectionsContent> contents;
+      if (tvShow)
+        contents = client->GetTvContent();
+      else
+        contents = client->GetMovieContent();
+      for (const auto &content : contents)
+      {
+        CURL curl(client->GetUrl());
+        curl.SetProtocol(client->GetProtocol());
+        curl.SetFileName(curl.GetFileName() + content.section + "/");
+        
+        if (tvShow)
+          GetPlexInProgressShows(items, curl.Get(), 10);
+        else
+          GetPlexInProgressMovies(items, curl.Get(), 10);
+        
+        for (int item = 0; item < items.Size(); ++item)
+          CPlexUtils::SetPlexItemProperties(*items[item], client);
+      }
+    }
+    items.SetProperty("PlexItem", true);
+    items.SetProperty("MediaServicesItem", true);
+  }
+  
+  return items.Size() > 0;
+}
+
 bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::string parentPath, std::string filter)
 {
   bool rtn = false;

@@ -202,6 +202,42 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
   }
 }
 
+void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int itemLimit)
+{
+  if (CPlexUtils::GetAllPlexInProgress(inProgress, true))
+  {
+    CFileItemList temp;
+    inProgress.Sort(SortByDateAdded, SortOrderDescending);
+    for (int i = 0; i < inProgress.Size() && i < itemLimit; i++)
+    {
+      CFileItemPtr item = inProgress.Get(i);
+      item->SetProperty("ItemType", g_localizeStrings.Get(626));
+      temp.Add(item);
+    }
+    
+    inProgress.ClearItems();
+    inProgress.Append(temp);
+  }
+}
+
+void CServicesManager::GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit)
+{
+  if (CPlexUtils::GetAllPlexInProgress(inProgress, false))
+  {
+    CFileItemList temp;
+    inProgress.Sort(SortByDateAdded, SortOrderDescending);
+    for (int i = 0; i < inProgress.Size() && i < itemLimit; i++)
+    {
+      CFileItemPtr item = inProgress.Get(i);
+      item->SetProperty("ItemType", g_localizeStrings.Get(627));
+      temp.Add(item);
+    }
+    
+    inProgress.ClearItems();
+    inProgress.Append(temp);
+  }
+}
+
 void CServicesManager::GetSubtitles(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))

@@ -3020,7 +3020,13 @@ msgctxt "#702"
 msgid "This path has been scanned before"
 msgstr ""
 
-#empty strings from id 703 to 704
+msgctxt "#703"
+msgid "Display In Progress items on home screen"
+msgstr ""
+
+msgctxt "#704"
+msgid "Selecting this will display In Progress items on home screen instead of Recently Added"
+msgstr ""
 
 msgctxt "#705"
 msgid "Network"

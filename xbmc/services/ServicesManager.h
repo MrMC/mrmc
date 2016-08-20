@@ -62,6 +62,8 @@ public:
   void UpdateItemState(CFileItem &item, double currentTime);
   void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit);
+  void GetAllInProgressShows(CFileItemList &inProgress, int itemLimit);
+  void GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit);
   void GetSubtitles(CFileItem &item);
   void GetMoreInfo(CFileItem &item);
   bool GetResolutions(CFileItem &item);
