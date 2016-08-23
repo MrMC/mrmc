@@ -116,6 +116,29 @@ bool CMusicDatabase::Open()
   return CDatabase::Open(g_advancedSettings.m_databaseMusic);
 }
 
+bool CMusicDatabase::HasContent()
+{
+  bool result = false;
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    
+    std::string sql = "select count(1) from song";
+    m_pDS->query( sql );
+    
+    if (!m_pDS->eof())
+      result = (m_pDS->fv(0).get_asInt() > 0);
+    
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return result;
+}
+
 void CMusicDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "create artist table");

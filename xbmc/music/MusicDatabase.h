@@ -97,6 +97,7 @@ public:
   virtual ~CMusicDatabase(void);
 
   virtual bool Open();
+  bool HasContent();
   virtual bool CommitTransaction();
   void EmptyCache();
   void Clean();
