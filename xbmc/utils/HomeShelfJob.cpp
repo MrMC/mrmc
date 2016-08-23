@@ -173,6 +173,11 @@ bool CHomeShelfJob::UpdateMusic()
 
   VECALBUMS albums;
   musicdatabase.Open();
+  if (!musicdatabase.HasContent())
+  {
+    musicdatabase.Close();
+    return true;
+  }
   musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS);
   
   for (int i=0; i<(int)albums.size(); ++i)
@@ -205,38 +210,43 @@ bool CHomeShelfJob::UpdateTotal()
   CMusicDatabase musicdatabase;
   
   musicdatabase.Open();
-  int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
-  int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
-  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
-  musicdatabase.Close();
- 
+  if (musicdatabase.HasContent())
+  {
+    int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
+    int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
+    int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
+    home->SetProperty("Music.SongsCount"      , MusSongTotals);
+    home->SetProperty("Music.AlbumsCount"     , MusAlbumTotals);
+    home->SetProperty("Music.ArtistsCount"    , MusArtistTotals);
+  }
+
   videodatabase.Open();
-  int tvShowCount     = atoi(videodatabase.GetSingleValue("tvshow_view"     , "count(1)").c_str());
-  int movieTotals     = atoi(videodatabase.GetSingleValue("movie_view"      , "count(1)").c_str());
-  int movieWatched    = atoi(videodatabase.GetSingleValue("movie_view"      , "count(playCount)").c_str());
-  int MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(1)").c_str());
-  int MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(playCount)").c_str());
-  int EpWatched       = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount)").c_str());
-  int EpCount         = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(totalcount)").c_str());
-  int TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount = totalcount)").c_str());
+  if (videodatabase.HasContent())
+  {
+    int tvShowCount     = atoi(videodatabase.GetSingleValue("tvshow_view"     , "count(1)").c_str());
+    int movieTotals     = atoi(videodatabase.GetSingleValue("movie_view"      , "count(1)").c_str());
+    int movieWatched    = atoi(videodatabase.GetSingleValue("movie_view"      , "count(playCount)").c_str());
+    int MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(1)").c_str());
+    int MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(playCount)").c_str());
+    int EpWatched       = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount)").c_str());
+    int EpCount         = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(totalcount)").c_str());
+    int TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount = totalcount)").c_str());
+
+    home->SetProperty("TVShows.Count"         , tvShowCount);
+    home->SetProperty("TVShows.Watched"       , TvShowsWatched);
+    home->SetProperty("TVShows.UnWatched"     , tvShowCount - TvShowsWatched);
+    home->SetProperty("Episodes.Count"        , EpCount);
+    home->SetProperty("Episodes.Watched"      , EpWatched);
+    home->SetProperty("Episodes.UnWatched"    , EpCount-EpWatched);  
+    home->SetProperty("Movies.Count"          , movieTotals);
+    home->SetProperty("Movies.Watched"        , movieWatched);
+    home->SetProperty("Movies.UnWatched"      , movieTotals - movieWatched);
+    home->SetProperty("MusicVideos.Count"     , MusVidTotals);
+    home->SetProperty("MusicVideos.Watched"   , MusVidWatched);
+    home->SetProperty("MusicVideos.UnWatched" , MusVidTotals - MusVidWatched);
+  }
+  musicdatabase.Close();
   videodatabase.Close();
-  
-  home->SetProperty("TVShows.Count"         , tvShowCount);
-  home->SetProperty("TVShows.Watched"       , TvShowsWatched);
-  home->SetProperty("TVShows.UnWatched"     , tvShowCount - TvShowsWatched);
-  home->SetProperty("Episodes.Count"        , EpCount);
-  home->SetProperty("Episodes.Watched"      , EpWatched);
-  home->SetProperty("Episodes.UnWatched"    , EpCount-EpWatched);  
-  home->SetProperty("Movies.Count"          , movieTotals);
-  home->SetProperty("Movies.Watched"        , movieWatched);
-  home->SetProperty("Movies.UnWatched"      , movieTotals - movieWatched);
-  home->SetProperty("MusicVideos.Count"     , MusVidTotals);
-  home->SetProperty("MusicVideos.Watched"   , MusVidWatched);
-  home->SetProperty("MusicVideos.UnWatched" , MusVidTotals - MusVidWatched);
-  home->SetProperty("Music.SongsCount"      , MusSongTotals);
-  home->SetProperty("Music.AlbumsCount"     , MusAlbumTotals);
-  home->SetProperty("Music.ArtistsCount"    , MusArtistTotals);
-  
   return true;
 }
 
