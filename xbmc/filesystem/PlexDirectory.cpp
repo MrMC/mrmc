@@ -52,6 +52,8 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   URIUtils::RemoveSlashAtEnd(basePath);
   basePath = URIUtils::GetFileName(basePath);
 
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory strURL = %s", strUrl.c_str());
+
   if (StringUtils::StartsWithNoCase(strUrl, "plex://movies/"))
   {
     if (section.empty())
