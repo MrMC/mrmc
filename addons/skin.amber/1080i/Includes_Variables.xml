@@ -148,6 +148,26 @@
     <value condition="!IsEmpty(Skin.String(Default.Background))">$INFO[Skin.String(Default.Background)]</value>
     <value>special://skin/backgrounds/default/</value>
   </variable>
+    <variable name="TVShows.Art" description="Calculate BG to show">
+    <value condition="!String.IsEmpty(Skin.String(TVShows.Background))">$INFO[Skin.String(TVShows.Background)]</value>
+    <value>special://skin/backgrounds/TVShows.jpg</value>
+  </variable>
+  <variable name="Movies.Art" description="Calculate BG to show">
+    <value condition="!String.IsEmpty(Skin.String(Movies.Background))">$INFO[Skin.String(Movies.Background)]</value>
+    <value>special://skin/backgrounds/Movies.jpg</value>
+  </variable>
+  <variable name="MusicVideos.Art" description="Calculate BG to show">
+    <value condition="!String.IsEmpty(Skin.String(MusicVideos.Background))">$INFO[Skin.String(MusicVideos.Background)]</value>
+    <value>special://skin/backgrounds/MusicVideos.jpg</value>
+  </variable>
+  <variable name="Videos.Art" description="Calculate BG to show">
+    <value condition="!String.IsEmpty(Skin.String(Videos.Background))">$INFO[Skin.String(Videos.Background)]</value>
+    <value>special://skin/backgrounds/Videos.jpg</value>
+  </variable>
+  <variable name="Music.Art" description="Calculate BG to show">
+    <value condition="!String.IsEmpty(Skin.String(Music.Background))">$INFO[Skin.String(Music.Background)]</value>
+    <value>special://skin/backgrounds/Music.jpg</value>
+  </variable>
   <variable name="Settings.Art" description="Calculate BG to show">
     <value condition="!IsEmpty(Skin.String(Settings.Background))">$INFO[Skin.String(Settings.Background)]</value>
     <value>special://skin/backgrounds/System.jpg</value>

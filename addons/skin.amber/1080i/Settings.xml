@@ -845,15 +845,14 @@
                 <thumb>$INFO[Skin.String(Videos.Background)]</thumb>
               </item>
               <item id="2">
-                <visible>!Skin.HasSetting(plexbmc)</visible>
-                <visible>!Skin.HasSetting(Movies.Hide) + Library.HasContent(Movies)</visible>
+                <visible>[!Skin.HasSetting(Movies.Hide) + Library.HasContent(Movies)] | Library.HasServices</visible>
                 <label>$LOCALIZE[20342]</label>
                 <onclick>Control.Move(9004,-1)</onclick>
                 <icon>special://skin/backgrounds/Movies.jpg</icon>
                 <thumb>$INFO[Skin.String(Movies.Background)]</thumb>
               </item>
               <item id="3">
-                <visible>!Skin.HasSetting(TVShows.Hide) + Library.HasContent(TVShows)</visible>
+                <visible>[!Skin.HasSetting(TVShows.Hide) + Library.HasContent(TVShows)] | Library.HasServices</visible>
                 <label>$LOCALIZE[20343]</label>
                 <onclick>Control.Move(9004,-1)</onclick>
                 <icon>special://skin/backgrounds/TVShows.jpg</icon>
