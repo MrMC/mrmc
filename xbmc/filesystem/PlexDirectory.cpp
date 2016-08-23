@@ -164,7 +164,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if (path == "titles" || path == "filter")
       {
         CPlexUtils::GetPlexMovies(items, Base64::Decode(section));
-        items.SetLabel("Titles");
+        items.SetLabel(g_localizeStrings.Get(369));
         items.SetContent("movies");
       }
       else if (path == "recentlyaddedmovies")
@@ -296,7 +296,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if (path == "titles" || path == "filter")
       {
         CPlexUtils::GetPlexTvshows(items,Base64::Decode(section));
-        items.SetLabel("Title");
+        items.SetLabel(g_localizeStrings.Get(369));
         items.SetContent("tvshows");
       }
       else if (path == "shows")
