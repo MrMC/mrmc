@@ -93,6 +93,10 @@ bool CHomeShelfJob::UpdateVideo()
         {
           loader.LoadItem(item.get());
         }
+        if (!item->HasArt("tvshow.thumb"))
+        {
+          item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
+        }
       }
     }
     // get InProgress TVSHOWS and MOVIES from any enabled service
@@ -148,6 +152,10 @@ bool CHomeShelfJob::UpdateVideo()
         if (!item->HasArt("thumb"))
         {
           loader.LoadItem(item.get());
+        }
+        if (!item->HasArt("tvshow.thumb"))
+        {
+          item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
         }
       }
     }
