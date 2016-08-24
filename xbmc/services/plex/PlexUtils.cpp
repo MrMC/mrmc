@@ -409,6 +409,7 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
         StringUtils::TrimLeft(value, "/");
       url.SetFileName(value);
       plexItem->SetArt("thumb", url.Get());
+      plexItem->SetArt("tvshow.thumb", url.Get());
       plexItem->SetIconImage(url.Get());
       fanart = XMLUtils::GetAttribute(rootXmlNode, "art");
       plexItem->GetVideoInfoTag()->m_strShowTitle = XMLUtils::GetAttribute(rootXmlNode, "grandparentTitle");
@@ -429,6 +430,8 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
       plexItem->SetArt("thumb", url.Get());
 
       value = XMLUtils::GetAttribute(videoNode, "parentThumb");
+      if (value.empty())
+        value = XMLUtils::GetAttribute(videoNode, "grandparentThumb");
       if (!value.empty() && (value[0] == '/'))
         StringUtils::TrimLeft(value, "/");
       url.SetFileName(value);
