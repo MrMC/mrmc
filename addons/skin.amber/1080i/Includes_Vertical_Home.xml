@@ -178,13 +178,20 @@
         <include>PosterThumbEpisodes</include>
       </control>
       <control type="group">
-        <posy>240</posy>
+        <posy>220</posy>
         <control type="image">
           <posx>21</posx>
           <posy>12</posy>
           <width>189</width>
           <height>44</height>
           <texture>img/OverlayStripe.png</texture>
+        </control>
+        <control type="image">
+          <posx>175</posx>
+          <posy>18</posy>
+          <width>33</width>
+          <height>33</height>
+          <texture>$VAR[Overlay]</texture>
         </control>
         <control type="label">
           <posx>23</posx>
@@ -211,7 +218,7 @@
         <posy>21</posy>
         <width>189</width>
         <height>285</height>
-		<include>PosterThumbFO</include>
+		    <include>PosterThumbFO</include>
       </control>
       <control type="image">
         <posx>21</posx>
@@ -221,13 +228,20 @@
         <include>PosterThumbEpisodes</include>
       </control>
       <control type="group">
-        <posy>240</posy>
+        <posy>220</posy>
         <control type="image">
           <posx>21</posx>
           <posy>12</posy>
           <width>189</width>
           <height>44</height>
           <texture>img/OverlayStripe.png</texture>
+        </control>
+        <control type="image">
+          <posx>175</posx>
+          <posy>18</posy>
+          <width>33</width>
+          <height>33</height>
+          <texture>$VAR[Overlay]</texture>
         </control>
         <control type="label">
           <posx>23</posx>
