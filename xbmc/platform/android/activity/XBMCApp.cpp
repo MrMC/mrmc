@@ -106,8 +106,12 @@ CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
 bool CXBMCApp::m_hasFocus = false;
-bool CXBMCApp::m_isResumed = false;
-bool CXBMCApp::m_hasAudioFocus = false;
+bool CXBMCApp::m_hasResumed = false;
+bool CXBMCApp::m_audioFocusGranted = false;
+int  CXBMCApp::m_lastAudioFocusChange = -1;
+bool CXBMCApp::m_wasPlayingVideoWhenPaused = false;
+double CXBMCApp::m_wasPlayingVideoWhenPausedTime = 0.0;
+bool CXBMCApp::m_wasPlayingWhenTransientLoss = false;
 bool CXBMCApp::m_headsetPlugged = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
@@ -117,7 +121,6 @@ CEvent CXBMCApp::m_vsyncEvent;
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIMainActivity(nativeActivity)
   , CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver")
-  , m_videosurfaceInUse(false)
 {
   m_xbmcappinstance = this;
   m_activity = nativeActivity;
@@ -208,8 +211,24 @@ void CXBMCApp::onResume()
     CSingleLock lock(m_applicationsMutex);
     m_applications.clear();
   }
-  
-  m_isResumed = true;
+
+  if (m_wasPlayingVideoWhenPaused)
+  {
+    m_wasPlayingVideoWhenPaused = false;
+    if (!g_application.LastProgressTrackingItem().GetPath().empty())
+    {
+      CFileItem *fileitem = new CFileItem(g_application.LastProgressTrackingItem());
+      if (!fileitem->IsLiveTV())
+      {
+        // m_lStartOffset always gets multiplied by 75, magic numbers :)
+        fileitem->m_lStartOffset = m_wasPlayingVideoWhenPausedTime * 75;
+      }
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(fileitem));
+      //CLog::Log(LOGDEBUG, "CXBMCApp::onResume - m_wasPlayingVideoWhenPausedTime [%f], fileitem [%s]", m_wasPlayingVideoWhenPausedTime, fileitem->GetPath().c_str());
+    }
+  }
+
+  m_hasResumed = true;
 }
 
 void CXBMCApp::onPause()
@@ -220,11 +239,10 @@ void CXBMCApp::onPause()
   {
     if (g_application.m_pPlayer->IsPlayingVideo())
     {
-      if (getVideosurfaceInUse())
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
-      else
-        if (!g_application.m_pPlayer->IsPaused())
-          CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+      m_wasPlayingVideoWhenPaused = true;
+      // get the current playing time but backup a little, it looks better
+      m_wasPlayingVideoWhenPausedTime = g_application.GetTime() - 1.50;
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
     }
     else
       registerMediaButtonEventReceiver();
@@ -240,7 +258,7 @@ void CXBMCApp::onPause()
 #endif
 
   EnableWakeLock(false);
-  m_isResumed = false;
+  m_hasResumed = false;
 }
 
 void CXBMCApp::onStop()
@@ -365,7 +383,7 @@ bool CXBMCApp::AcquireAudioFocus()
   if (!m_xbmcappinstance)
     return false;
 
-  if (m_hasAudioFocus)
+  if (m_audioFocusGranted)
     return true;
 
   CJNIAudioManager audioManager(getSystemService("audio"));
@@ -377,17 +395,17 @@ bool CXBMCApp::AcquireAudioFocus()
 
   // Request audio focus for playback
   int result = audioManager.requestAudioFocus(*m_xbmcappinstance,
-                                              // Use the music stream.
-                                              CJNIAudioManager::STREAM_MUSIC,
-                                              // Request permanent focus.
-                                              CJNIAudioManager::AUDIOFOCUS_GAIN);
-
+    // Use the music stream.
+    CJNIAudioManager::STREAM_MUSIC,
+    // Request permanent focus.
+    CJNIAudioManager::AUDIOFOCUS_GAIN);
+  // A successful focus change request returns AUDIOFOCUS_REQUEST_GRANTED
   if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
   {
     CXBMCApp::android_printf("Audio Focus request failed");
     return false;
   }
-  m_hasAudioFocus = true;
+  //m_audioFocusGranted = true;
   return true;
 }
 
@@ -396,7 +414,7 @@ bool CXBMCApp::ReleaseAudioFocus()
   if (!m_xbmcappinstance)
     return false;
 
-  if (!m_hasAudioFocus)
+  if (!m_audioFocusGranted)
     return true;
 
   CJNIAudioManager audioManager(getSystemService("audio"));
@@ -408,12 +426,13 @@ bool CXBMCApp::ReleaseAudioFocus()
 
   // Release audio focus after playback
   int result = audioManager.abandonAudioFocus(*m_xbmcappinstance);
+  // A successful focus change request returns AUDIOFOCUS_REQUEST_GRANTED
   if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
   {
     CXBMCApp::android_printf("Audio Focus abandon failed");
     return false;
   }
-  m_hasAudioFocus = false;
+  //m_audioFocusGranted = false;
   return true;
 }
 
@@ -541,16 +560,6 @@ void CXBMCApp::SetDisplayModeIdCallback(CVariant* rateVariant)
   }
 }
 
-bool CXBMCApp::getVideosurfaceInUse()
-{
-  return m_videosurfaceInUse;
-}
-
-void CXBMCApp::setVideosurfaceInUse(bool videosurfaceInUse)
-{
-  m_videosurfaceInUse = videosurfaceInUse;
-}
-
 void CXBMCApp::SetRefreshRate(float rate)
 {
   if (rate < 1.0)
@@ -581,7 +590,7 @@ int CXBMCApp::android_printf(const char *format, ...)
 
 void CXBMCApp::BringToFront()
 {
-  if (!m_isResumed)
+  if (!m_hasResumed)
   {
     CLog::Log(LOGERROR, "CXBMCApp::BringToFront");
     StartActivity(getPackageName());
@@ -836,7 +845,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     m_batteryLevel = intent.getIntExtra("level",-1);
   else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
   {
-    if (HasFocus())
+    if (m_hasFocus)
       g_application.WakeUpScreenSaverAndDPMS();
   }
   else if (action == "android.intent.action.SCREEN_OFF")
@@ -973,25 +982,31 @@ void CXBMCApp::onVolumeChanged(int volume)
 
 void CXBMCApp::onAudioFocusChange(int focusChange)
 {
-  CXBMCApp::android_printf("Audio Focus changed: %d", focusChange);
-  if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS ||
-      focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT)
+  CLog::Log(LOGDEBUG, "CXBMCApp::onAudioFocusChange: %d", focusChange);
+  if (focusChange == CJNIAudioManager::AUDIOFOCUS_GAIN)
   {
-    m_hasAudioFocus = false;
-    unregisterMediaButtonEventReceiver();
-
-    if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
-  }
-/*
-  else if (focusChange == CJNIAudioManager::AUDIOFOCUS_GAIN)
-  {
-    m_hasAudioFocus = true;
+    m_audioFocusGranted = true;
     registerMediaButtonEventReceiver();
-    if (g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+    if (m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS ||
+        m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT)
+    {
+      if (m_wasPlayingWhenTransientLoss && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+      m_wasPlayingWhenTransientLoss = false;
+    }
   }
-*/
+  else if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS ||
+           focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT)
+  {
+    m_audioFocusGranted = false;
+    unregisterMediaButtonEventReceiver();
+    if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    {
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+      m_wasPlayingWhenTransientLoss = true;
+    }
+  }
+  m_lastAudioFocusChange = focusChange;
 }
 
 void CXBMCApp::doFrame(int64_t frameTimeNanos)
