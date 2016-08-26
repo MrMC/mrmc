@@ -253,6 +253,7 @@ CApplication::CApplication(void)
   , m_stackFileItemToUpdate(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
+  , m_lastProgressTrackingItem(new CFileItem)
   , m_musicInfoScanner(new CMusicInfoScanner)
   , m_fallbackLanguageLoaded(false)
 {
@@ -3128,7 +3129,6 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
           seconds = item.GetVideoInfoTag()->m_resumePoint.timeInSeconds;
     }
 
-
     *m_itemCurrentFile = item;
     m_currentStackPosition = 0;
     m_pPlayer->ResetPlayer(); // must be reset on initial play otherwise last player will be used
@@ -3671,7 +3671,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
       m_progressTrackingPlayCountUpdate,
       CMediaSettings::GetInstance().GetCurrentVideoSettings(),
       CMediaSettings::GetInstance().GetCurrentAudioSettings());
-  
+
   if (bForeground)
   {
     // Run job in the foreground to make sure it finishes
@@ -3685,7 +3685,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
 void CApplication::UpdateFileState()
 {
   // Did the file change?
-  if (m_progressTrackingItem->GetPath() != "" && m_progressTrackingItem->GetPath() != CurrentFile())
+  if (!m_progressTrackingItem->GetPath().empty() && m_progressTrackingItem->GetPath() != CurrentFile())
   {
     // Ignore for PVR channels, PerformChannelSwitch takes care of this.
     // Also ignore video playlists containing multiple items: video settings have already been saved in PlayFile()
@@ -3703,7 +3703,7 @@ void CApplication::UpdateFileState()
   {
     if (m_pPlayer->IsPlaying())
     {
-      if (m_progressTrackingItem->GetPath() == "")
+      if (m_progressTrackingItem->GetPath().empty())
       {
         // Init some stuff
         *m_progressTrackingItem = CurrentFileItem();
@@ -4223,6 +4223,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
       }
 
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED)
+        *m_lastProgressTrackingItem = *m_progressTrackingItem;
+
       // reset the current playing file
       m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
@@ -4537,7 +4540,6 @@ const std::string& CApplication::CurrentFile()
 {
   return m_itemCurrentFile->GetPath();
 }
-
 CFileItem& CApplication::CurrentFileItem()
 {
   return *m_itemCurrentFile;
@@ -4549,6 +4551,12 @@ CFileItem& CApplication::CurrentUnstackedItem()
     return *(*m_currentStack)[m_currentStackPosition];
   else
     return *m_itemCurrentFile;
+}
+
+
+CFileItem& CApplication::LastProgressTrackingItem()
+{
+  return *m_lastProgressTrackingItem;
 }
 
 void CApplication::ShowVolumeBar(const CAction *action)

@@ -156,6 +156,7 @@ public:
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
   CFileItem& CurrentUnstackedItem();
+  CFileItem& LastProgressTrackingItem();
   virtual bool OnMessage(CGUIMessage& message) override;
   PLAYERCOREID GetCurrentPlayer();
   virtual void OnPlayBackEnded() override;
@@ -448,6 +449,7 @@ protected:
 
   CBookmark& m_progressTrackingVideoResumeBookmark;
   CFileItemPtr m_progressTrackingItem;
+  CFileItemPtr m_lastProgressTrackingItem;
   bool m_progressTrackingPlayCountUpdate;
 
   int m_currentStackPosition;
