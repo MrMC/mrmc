@@ -881,6 +881,7 @@ bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, boo
 
   if (CPlexServices::GetInstance().HasClients())
   {
+    CFileItemList plexItems;
     //look through all plex clients and pull recently added for each library section
     std::vector<CPlexClientPtr> clients;
     CPlexServices::GetInstance().GetClients(clients);
@@ -898,16 +899,19 @@ bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, boo
         curl.SetFileName(curl.GetFileName() + content.section + "/");
 
         if (tvShow)
-          rtn = GetPlexRecentlyAddedEpisodes(items, curl.Get(), 10);
+          rtn = GetPlexRecentlyAddedEpisodes(plexItems, curl.Get(), 10);
         else
-          rtn = GetPlexRecentlyAddedMovies(items, curl.Get(), 10);
+          rtn = GetPlexRecentlyAddedMovies(plexItems, curl.Get(), 10);
 
-        for (int item = 0; item < items.Size(); ++item)
-          CPlexUtils::SetPlexItemProperties(*items[item], client);
+        for (int item = 0; item < plexItems.Size(); ++item)
+          CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
       }
+      plexItems.SetProperty("PlexItem", true);
+      plexItems.SetProperty("MediaServicesItem", true);
+      items.Append(plexItems);
+      plexItems.ClearItems();
     }
-    items.SetProperty("PlexItem", true);
-    items.SetProperty("MediaServicesItem", true);
+
   }
 
   return rtn;
@@ -917,6 +921,7 @@ bool CPlexUtils::GetAllPlexInProgress(CFileItemList &items, bool tvShow)
 {
   if (CPlexServices::GetInstance().HasClients())
   {
+    CFileItemList plexItems;
     //look through all plex clients and pull recently added for each library section
     std::vector<CPlexClientPtr> clients;
     CPlexServices::GetInstance().GetClients(clients);
@@ -934,16 +939,19 @@ bool CPlexUtils::GetAllPlexInProgress(CFileItemList &items, bool tvShow)
         curl.SetFileName(curl.GetFileName() + content.section + "/");
         
         if (tvShow)
-          GetPlexInProgressShows(items, curl.Get(), 10);
+          GetPlexInProgressShows(plexItems, curl.Get(), 10);
         else
-          GetPlexInProgressMovies(items, curl.Get(), 10);
+          GetPlexInProgressMovies(plexItems, curl.Get(), 10);
         
-        for (int item = 0; item < items.Size(); ++item)
-          CPlexUtils::SetPlexItemProperties(*items[item], client);
+        for (int item = 0; item < plexItems.Size(); ++item)
+          CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
       }
+      plexItems.SetProperty("PlexItem", true);
+      plexItems.SetProperty("MediaServicesItem", true);
+      items.Append(plexItems);
+      plexItems.ClearItems();
     }
-    items.SetProperty("PlexItem", true);
-    items.SetProperty("MediaServicesItem", true);
+
   }
   
   return items.Size() > 0;
