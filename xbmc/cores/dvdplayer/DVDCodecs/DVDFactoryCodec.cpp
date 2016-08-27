@@ -185,7 +185,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(TARGET_DARWIN_OSX)
-  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA) && !g_advancedSettings.m_useFfmpegVda)
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
   {
     if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
     {
