@@ -159,6 +159,7 @@ public:
   uint8_t*          GetExtraData(void) const;
   int               GetExtraSize() const;
 
+  static bool       MaybeInterlaced(AVCodecID codec, uint8_t *extradata, int extrasize);
   static bool       ExtractH264_SPS_PPS(const uint8_t *data, int len,
                       uint8_t **sps, int *spssize, uint8_t **pps, int *ppssize);
 

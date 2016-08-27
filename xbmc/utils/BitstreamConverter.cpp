@@ -156,6 +156,17 @@ static int nal_bs_read_ue(nal_bitstream *bs)
   return ((1 << i) - 1 + nal_bs_read(bs, i));
 }
 
+// read signed Exp-Golomb code
+static int nal_bs_read_se(nal_bitstream *bs)
+{
+  int r = nal_bs_read_ue(bs);
+  if (r & 0x01)
+    r = (r + 1) / 2;
+  else
+    r = - (r / 2);
+  return r;
+}
+
 static const uint8_t* avc_find_startcode_internal(const uint8_t *p, const uint8_t *end)
 {
   const uint8_t *a = p + 4 - ((intptr_t)p & 3);
@@ -848,6 +859,75 @@ bool CBitstreamConverter::IsSlice(uint8_t unit_type)
   }
 }
 
+bool CBitstreamConverter::MaybeInterlaced(AVCodecID codec, uint8_t *extradata, int extrasize)
+{
+  if (extradata == nullptr)
+    return false;
+  if (extrasize <= 0)
+    return false;
+
+  switch (codec)
+  {
+    case AV_CODEC_ID_H264:
+      if (extradata[0] == 1)
+      {
+        // extradata is bitstream (avcC) format
+        // skip over avcC header (six bytes) and spc size field (2 bytes)
+        extradata += 6 + 2;
+        extrasize -= 6 + 2;
+        bool interlaced = false;
+        int max_ref_frames = 0;
+        parseh264_sps(extradata, extrasize, &interlaced, &max_ref_frames);
+        return interlaced;
+      }
+      else
+      {
+        // extradata is bytestream (annex-b) format
+        // find sps and check for interlaced flag
+        if (extrasize > 6)
+        {
+          // check for valid h264 start code
+          if (BS_RB32(extradata) == 0x00000001 || BS_RB24(extradata) == 0x000001)
+          {
+            uint8_t *buf = nullptr;
+            int ret = avc_parse_nal_units_buf(extradata, &buf, &extrasize);
+            if (ret < 0)
+              return false;
+
+            // look for sps
+            uint8_t *end = buf + extrasize;
+            while (end - buf > 4)
+            {
+              uint32_t size = FFMIN(BS_RB32(buf), end - buf - 4);
+              buf += 4;
+              uint8_t nal_type = buf[0] & 0x1f;
+              if (nal_type == AVC_NAL_SPS)
+              {
+                bool interlaced = false;
+                int max_ref_frames = 0;
+                parseh264_sps(buf+1, size-1, &interlaced, &max_ref_frames);
+                return interlaced;
+              }
+              buf += size;
+            }
+          }
+        }
+      }
+      return false;
+
+    case AV_CODEC_ID_HEVC:
+      return false;
+
+    case AV_CODEC_ID_MPEG2VIDEO:
+      // only 720p is never interlaced, all others can be.
+      // generally we always have the ponies to handle mpeg2
+      return true;
+
+    default:
+      return false;
+  }
+}
+
 bool CBitstreamConverter::ExtractH264_SPS_PPS(const uint8_t *data, int len,
   uint8_t **sps, int *spssize, uint8_t **pps, int *ppssize)
 {
@@ -1465,15 +1545,15 @@ void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_s
   }
   else if (sps_info.pic_order_cnt_type == 1)
   { // TODO: unfinished
-    /*
-    delta_pic_order_always_zero_flag = gst_nal_bs_read (bs, 1);
-    offset_for_non_ref_pic = gst_nal_bs_read_se (bs);
-    offset_for_top_to_bottom_field = gst_nal_bs_read_se (bs);
+/*
+    int delta_pic_order_always_zero_flag = nal_bs_read(&bs, 1);
+    int offset_for_non_ref_pic = nal_bs_read_se(&bs);
+    int offset_for_top_to_bottom_field = nal_bs_read_se(&bs);
 
-    num_ref_frames_in_pic_order_cnt_cycle = gst_nal_bs_read_ue (bs);
-    for( i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++ )
-    offset_for_ref_frame[i] = gst_nal_bs_read_se (bs);
-    */
+    int num_ref_frames_in_pic_order_cnt_cycle = nal_bs_read_se(&bs);
+    for(int i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++ )
+      int offset_for_ref_frame = nal_bs_read_se(&bs);
+*/
   }
 
   sps_info.max_num_ref_frames             = nal_bs_read_ue(&bs);
