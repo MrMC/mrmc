@@ -67,6 +67,7 @@ void CDVDStreamInfo::Clear()
   bitsperpixel = 0;
   pid = 0;
   stereo_mode.clear();
+  maybe_interlaced = false;
 
   channels   = 0;
   samplerate = 0;
@@ -111,6 +112,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  bitsperpixel != right.bitsperpixel
   ||  pid != right.pid
   ||  vfr      != right.vfr
+  ||  maybe_interlaced != right.maybe_interlaced
   ||  stereo_mode != right.stereo_mode ) return false;
 
   // AUDIO
@@ -241,6 +243,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     bitsperpixel = stream->iBitsPerPixel;
     pid = stream->iPhysicalId;
     stereo_mode = stream->stereo_mode;
+    maybe_interlaced = stream->bMaybeInterlaced;
   }
   else if(  right.type == STREAM_SUBTITLE )
   {

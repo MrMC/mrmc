@@ -38,6 +38,7 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/BitstreamConverter.h"
 
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
@@ -1216,6 +1217,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->fAspect = SelectAspect(pStream, st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
+        st->bMaybeInterlaced = CBitstreamConverter::MaybeInterlaced(
+          pStream->codec->codec_id,
+          pStream->codec->extradata,
+          pStream->codec->extradata_size);
 
         AVDictionaryEntry *rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 
