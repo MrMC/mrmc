@@ -334,6 +334,10 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
       if (value == SELECT_ACTION_RESUME)
         itemPtr.m_lStartOffset = STARTOFFSET_RESUME;
     }
+    
+    if (itemPtr.IsMediaServiceBased() && !CServicesManager::GetInstance().GetResolutions(itemPtr))
+        return false;
+
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
     PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
