@@ -32,6 +32,8 @@ class CHomeShelfJob : public CJob
 {
 public:
   CHomeShelfJob(int flag);
+ ~CHomeShelfJob();
+
   bool UpdateVideo();
   bool UpdateMusic();
   bool UpdateTotal();
@@ -41,12 +43,14 @@ public:
   const CFileItemList *GetMusicVideoItems() const { return m_HomeShelfMusicVideos; };
   const CFileItemList *GetTvItems() const { return m_HomeShelfTV; };
   const int GetFlag() const { return m_flag; };
+
   virtual bool DoWork();
+
 private:
   int m_flag;
-  CFileItemList* m_HomeShelfTV;
-  CFileItemList* m_HomeShelfMovies;
-  CFileItemList* m_HomeShelfMusicAlbums;
-  CFileItemList* m_HomeShelfMusicSongs;
-  CFileItemList* m_HomeShelfMusicVideos;
+  CFileItemList *m_HomeShelfTV;
+  CFileItemList *m_HomeShelfMovies;
+  CFileItemList *m_HomeShelfMusicAlbums;
+  CFileItemList *m_HomeShelfMusicSongs;
+  CFileItemList *m_HomeShelfMusicVideos;
 };

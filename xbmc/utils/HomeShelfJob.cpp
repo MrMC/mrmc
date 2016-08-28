@@ -51,7 +51,16 @@ CHomeShelfJob::CHomeShelfJob(int flag)
   m_HomeShelfMusicAlbums = new CFileItemList;
   m_HomeShelfMusicSongs = new CFileItemList;
   m_HomeShelfMusicVideos = new CFileItemList;
-} 
+}
+
+CHomeShelfJob::~CHomeShelfJob()
+{
+  SAFE_DELETE(m_HomeShelfTV);
+  SAFE_DELETE(m_HomeShelfMovies);
+  SAFE_DELETE(m_HomeShelfMusicAlbums);
+  SAFE_DELETE(m_HomeShelfMusicSongs);
+  SAFE_DELETE(m_HomeShelfMusicVideos);
+}
 
 bool CHomeShelfJob::UpdateVideo()
 {
@@ -61,22 +70,22 @@ bool CHomeShelfJob::UpdateVideo()
     return false;
 
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateVideos() - Running HomeShelf screen update");
-  
+
   CVideoDatabase videodatabase;
   videodatabase.Open();
-  
+
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWINPROGRESS))
   {
     if (videodatabase.HasContent())
     {
       CVideoThumbLoader loader;
-      
+
       XFILE::CDirectory::GetDirectory("library://video/inprogressmovies.xml/", *m_HomeShelfMovies);
       XFILE::CDirectory::GetDirectory("library://video/inprogressshows.xml/", *m_HomeShelfTV);
-      
+
       for (int i = 0; i < m_HomeShelfMovies->Size(); i++)
       {
-        CFileItemPtr item          = m_HomeShelfMovies->Get(i);
+        CFileItemPtr item = m_HomeShelfMovies->Get(i);
         item->SetProperty("ItemType", g_localizeStrings.Get(20386));
         if (!item->HasArt("thumb"))
         {
@@ -110,7 +119,7 @@ bool CHomeShelfJob::UpdateVideo()
       std::string path;
       CVideoThumbLoader loader;
       loader.OnLoaderStart();
-      
+
       path = g_advancedSettings.m_recentlyAddedMoviePath;
       if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
       {
@@ -119,12 +128,12 @@ bool CHomeShelfJob::UpdateVideo()
         url.AddOption("filter", "{\"type\":\"movies\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
         path = url.ToString();
       }
-      
+
       videodatabase.GetRecentlyAddedMoviesNav(path, *m_HomeShelfMovies, NUM_ITEMS);
 
       for (int i = 0; i < m_HomeShelfMovies->Size(); i++)
       {
-        CFileItemPtr item          = m_HomeShelfMovies->Get(i);
+        CFileItemPtr item = m_HomeShelfMovies->Get(i);
         item->SetProperty("ItemType", g_localizeStrings.Get(20386));
         if (!item->HasArt("thumb"))
         {
@@ -159,7 +168,7 @@ bool CHomeShelfJob::UpdateVideo()
         }
       }
     }
-    
+
     // get recently added TVSHOWS and MOVIES from any enabled service
     CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTV, NUM_ITEMS);
     CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMovies, NUM_ITEMS);
@@ -176,21 +185,20 @@ bool CHomeShelfJob::UpdateVideo()
 bool CHomeShelfJob::UpdateMusic()
 {
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateMusic() - Running HomeShelf screen update");
-  
-  CMusicDatabase musicdatabase;
 
-  VECALBUMS albums;
+  CMusicDatabase musicdatabase;
   musicdatabase.Open();
   if (!musicdatabase.HasContent())
   {
     musicdatabase.Close();
     return true;
   }
+
+  VECALBUMS albums;
   musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS);
-  
-  for (int i=0; i<(int)albums.size(); ++i)
+  for (size_t i = 0; i < albums.size(); ++i)
   {
-    CAlbum& album=albums[i];
+    CAlbum &album = albums[i];
     std::string strDir = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
     CFileItemPtr pItem(new CFileItem(strDir, album));
     std::string strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
@@ -208,53 +216,56 @@ bool CHomeShelfJob::UpdateMusic()
 bool CHomeShelfJob::UpdateTotal()
 {
   CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
-  
-  if ( home == NULL )
+  if (home == NULL)
     return false;
-  
+
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateTotal() - Running HomeShelf home screen update");
-  
-  CVideoDatabase videodatabase;  
-  CMusicDatabase musicdatabase;
-  
-  musicdatabase.Open();
-  if (musicdatabase.HasContent())
+
   {
-    int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
-    int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
-    int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
-    home->SetProperty("Music.SongsCount"      , MusSongTotals);
-    home->SetProperty("Music.AlbumsCount"     , MusAlbumTotals);
-    home->SetProperty("Music.ArtistsCount"    , MusArtistTotals);
+    CMusicDatabase musicdatabase;
+    musicdatabase.Open();
+    if (musicdatabase.HasContent())
+    {
+      int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
+      int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
+      int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
+      home->SetProperty("Music.SongsCount"      , MusSongTotals);
+      home->SetProperty("Music.AlbumsCount"     , MusAlbumTotals);
+      home->SetProperty("Music.ArtistsCount"    , MusArtistTotals);
+    }
+    musicdatabase.Close();
   }
 
-  videodatabase.Open();
-  if (videodatabase.HasContent())
   {
-    int tvShowCount     = atoi(videodatabase.GetSingleValue("tvshow_view"     , "count(1)").c_str());
-    int movieTotals     = atoi(videodatabase.GetSingleValue("movie_view"      , "count(1)").c_str());
-    int movieWatched    = atoi(videodatabase.GetSingleValue("movie_view"      , "count(playCount)").c_str());
-    int MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(1)").c_str());
-    int MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(playCount)").c_str());
-    int EpWatched       = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount)").c_str());
-    int EpCount         = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(totalcount)").c_str());
-    int TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount = totalcount)").c_str());
+    CVideoDatabase videodatabase;
+    videodatabase.Open();
+    if (videodatabase.HasContent())
+    {
+      int tvShowCount     = atoi(videodatabase.GetSingleValue("tvshow_view"     , "count(1)").c_str());
+      int movieTotals     = atoi(videodatabase.GetSingleValue("movie_view"      , "count(1)").c_str());
+      int movieWatched    = atoi(videodatabase.GetSingleValue("movie_view"      , "count(playCount)").c_str());
+      int MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(1)").c_str());
+      int MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(playCount)").c_str());
+      int EpWatched       = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount)").c_str());
+      int EpCount         = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(totalcount)").c_str());
+      int TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount = totalcount)").c_str());
 
-    home->SetProperty("TVShows.Count"         , tvShowCount);
-    home->SetProperty("TVShows.Watched"       , TvShowsWatched);
-    home->SetProperty("TVShows.UnWatched"     , tvShowCount - TvShowsWatched);
-    home->SetProperty("Episodes.Count"        , EpCount);
-    home->SetProperty("Episodes.Watched"      , EpWatched);
-    home->SetProperty("Episodes.UnWatched"    , EpCount-EpWatched);  
-    home->SetProperty("Movies.Count"          , movieTotals);
-    home->SetProperty("Movies.Watched"        , movieWatched);
-    home->SetProperty("Movies.UnWatched"      , movieTotals - movieWatched);
-    home->SetProperty("MusicVideos.Count"     , MusVidTotals);
-    home->SetProperty("MusicVideos.Watched"   , MusVidWatched);
-    home->SetProperty("MusicVideos.UnWatched" , MusVidTotals - MusVidWatched);
+      home->SetProperty("TVShows.Count"         , tvShowCount);
+      home->SetProperty("TVShows.Watched"       , TvShowsWatched);
+      home->SetProperty("TVShows.UnWatched"     , tvShowCount - TvShowsWatched);
+      home->SetProperty("Episodes.Count"        , EpCount);
+      home->SetProperty("Episodes.Watched"      , EpWatched);
+      home->SetProperty("Episodes.UnWatched"    , EpCount-EpWatched);
+      home->SetProperty("Movies.Count"          , movieTotals);
+      home->SetProperty("Movies.Watched"        , movieWatched);
+      home->SetProperty("Movies.UnWatched"      , movieTotals - movieWatched);
+      home->SetProperty("MusicVideos.Count"     , MusVidTotals);
+      home->SetProperty("MusicVideos.Watched"   , MusVidWatched);
+      home->SetProperty("MusicVideos.UnWatched" , MusVidTotals - MusVidWatched);
+    }
+    videodatabase.Close();
   }
-  musicdatabase.Close();
-  videodatabase.Close();
+
   return true;
 }
 
@@ -264,12 +275,12 @@ bool CHomeShelfJob::DoWork()
   bool ret = true;
   if (m_flag & Audio)
     ret &= UpdateMusic();
-  
+
   if (m_flag & Video)
     ret &= UpdateVideo();
-  
+
   if (m_flag & Totals)
     ret &= UpdateTotal();
-    
-  return ret; 
+
+  return ret;
 }
