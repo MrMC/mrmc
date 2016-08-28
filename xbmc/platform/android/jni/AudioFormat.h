@@ -61,7 +61,7 @@ class CJNIAudioFormat
     static int ENCODING_TRUEHD;
 
 protected:
-    static void GetStaticValue(jhclass &c, int &field, char *value);
+    static void GetStaticValue(jhclass &c, int &field, const char *value);
 };
 
 };
