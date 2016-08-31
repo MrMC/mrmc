@@ -1875,7 +1875,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     URIUtils::RemoveExtension(strCandidate);
     if (StringUtils::StartsWithNoCase(strCandidate, strSubtitle))
     {
-      if (URIUtils::IsZIP(pItem->GetPath()))
+      if (URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath()))
         CUtil::ScanArchiveForSubtitles(pItem->GetPath(), "", vecSubtitles);
       else
       {
@@ -1885,7 +1885,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     }
     else
     {
-      if (URIUtils::IsZIP(pItem->GetPath()))
+      if (URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath()))
         CUtil::ScanArchiveForSubtitles(pItem->GetPath(), strSubtitle, vecSubtitles);
     }
   }

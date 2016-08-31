@@ -407,7 +407,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(std::vector<std::string> items, CFi
      TODO: We need some way to avoid special casing this all over the place
      for rar/zip (perhaps modify GetDirectory?)
      */
-    if (URIUtils::IsInZIP(strCurrentFile))
+    if (URIUtils::IsInRAR(strCurrentFile) || URIUtils::IsInZIP(strCurrentFile))
       strCurrentFilePath = URIUtils::GetDirectory(CURL(strCurrentFile).GetHostName());
     else
       strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
