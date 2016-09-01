@@ -39,7 +39,6 @@ bool CAndroidFeatures::HasNeon()
 int CAndroidFeatures::GetVersion()
 {
   static int version = -1;
-
   if (version == -1)
   {
     version = 0;
@@ -71,7 +70,6 @@ int CAndroidFeatures::GetVersion()
 int CAndroidFeatures::GetCPUCount()
 {
   static int count = -1;
-
   if (count == -1)
   {
     count = android_getCpuCount();
@@ -89,18 +87,22 @@ bool CAndroidFeatures::HasTouchScreen()
     else
       hastouchscreen = 0;
   }
-
   return (hastouchscreen == 1);
 }
 
 bool CAndroidFeatures::IsFireTVDevice()
 {
-  if (StringUtils::StartsWith(CJNIBuild::MODEL, "AFT") &&
-      StringUtils::StartsWithNoCase(CJNIBuild::MANUFACTURER, "Amazon"))
+  static int isfiretv = -1;
+  if (isfiretv == -1)
   {
-    CLog::Log(LOGDEBUG, "CAndroidFeatures::IsFireTVDevice = yes");
-    return true;
+    if (StringUtils::StartsWith(CJNIBuild::MODEL, "AFT") &&
+        StringUtils::StartsWithNoCase(CJNIBuild::MANUFACTURER, "Amazon"))
+    {
+      CLog::Log(LOGDEBUG, "CAndroidFeatures::IsFireTVDevice = yes");
+      isfiretv = 1;
+    }
+    else
+      isfiretv = 0;
   }
-  else
-    return false;
+  return (isfiretv == 1);
 }
