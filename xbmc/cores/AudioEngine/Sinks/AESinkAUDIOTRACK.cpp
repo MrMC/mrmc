@@ -21,6 +21,7 @@
 #include "AESinkAUDIOTRACK.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "platform/android/activity/XBMCApp.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -720,7 +721,13 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
     // digital dolby capabilities
     m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+    if (!CAndroidFeatures::IsFireTVDevice())
+    {
+      // FireTV has problems with eac3, 7.1, but we cannot seem to
+      // only disable for 7.1. eac3 also can be 5.1 and below.
+      // So just disable it for passthrough until we get smarter.
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+    }
     m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
 
     // dts capabilities
