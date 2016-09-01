@@ -2650,8 +2650,8 @@ bool CActiveAE::SupportsRaw(AEAudioFormat &format)
 {
   if (!m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format))
   {
-    CLog::Log(LOGDEBUG, "sink does not support %s",
-      CAEUtil::StreamTypeToStr(format.m_streamInfo.m_type));
+    CLog::Log(LOGDEBUG, "sink does not support passthrough of %s for %d channels at %d sample rate",
+      CAEUtil::StreamTypeToStr(format.m_streamInfo.m_type), format.m_channelLayout.Count(), format.m_streamInfo.m_sampleRate);
     return false;
   }
   return true;
