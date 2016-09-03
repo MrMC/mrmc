@@ -44,7 +44,6 @@
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()
 : m_width(0)
 , m_height(0)
-, m_hasDisplayMode(false)
 {
 }
 
@@ -71,11 +70,10 @@ void CEGLNativeTypeAndroid::Initialize()
       CJNIDisplay display = view.getDisplay();
       if (display)
       {
-        m_hasDisplayMode = display.getMode() != NULL;
-        CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: hasDisplayMode = %d", m_hasDisplayMode);
-        if (m_hasDisplayMode)
+        CJNIDisplayMode mode = display.getMode();
+        CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: has display.getMode = %d", mode != NULL);
+        if (mode != NULL)
         {
-          CJNIDisplayMode mode = display.getMode();
           m_width = mode.getPhysicalWidth();
           m_height = mode.getPhysicalHeight();
           CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: current display mode: %dx%d@%f",
