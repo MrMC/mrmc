@@ -487,7 +487,8 @@ void CPlexServices::Process()
 
     if (m_updateMins > 0 && (checkUpdatesTimer.GetElapsedSeconds() > (60 * m_updateMins)))
     {
-      UpdateLibraries(false);
+      if (m_playState == PlexServicePlayerState::stopped)
+        UpdateLibraries(false);
       checkUpdatesTimer.Reset();
     }
 
