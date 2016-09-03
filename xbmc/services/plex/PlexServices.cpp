@@ -30,7 +30,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "filesystem/CurlFile.h"
 #include "filesystem/DirectoryCache.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
@@ -113,6 +112,10 @@ CPlexServices::CPlexServices()
     CURL::SetProtocolOptionsRedacted("X-Plex-Token", "PLEXTOKEN");
 
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
+
+  m_plextv.SetTimeout(10);
+  m_plextv.SetBufferSize(32768*10);
+  CPlexUtils::GetDefaultHeaders(m_plextv);
 }
 
 CPlexServices::~CPlexServices()
@@ -146,6 +149,7 @@ void CPlexServices::Stop()
   if (IsRunning())
   {
     m_bStop = true;
+    m_plextv.Cancel();
     m_processSleep.Set();
     StopThread();
   }
@@ -426,6 +430,9 @@ void CPlexServices::Process()
 
   GetUserSettings();
 
+  // reset any canceled state
+  m_plextv.Reset();
+
   while (!m_bStop)
   {
     CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
@@ -512,6 +519,7 @@ bool CPlexServices::GetPlexToken(std::string user, std::string pass)
 {
   bool rtn = false;
   XFILE::CCurlFile plex;
+  plex.SetTimeout(10);
   CPlexUtils::GetDefaultHeaders(plex);
 
   CURL url(NS_PLEXTV_URL + "/users/sign_in.json");
@@ -552,12 +560,8 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
 
   std::vector<CPlexClientPtr> clientsFound;
 
-  XFILE::CCurlFile plex;
-  plex.SetBufferSize(32768*10);
-
-  CPlexUtils::GetDefaultHeaders(plex);
   if (MyPlexSignedIn())
-    plex.SetRequestHeader("X-Plex-Token", m_authToken);
+    m_plextv.SetRequestHeader("X-Plex-Token", m_authToken);
 
   std::string strResponse;
   CURL url(NS_PLEXTV_URL);
@@ -566,7 +570,7 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
   else
     url.SetFileName("pms/resources?includeHttps=0");
 
-  if (plex.Get(url.Get(), strResponse))
+  if (m_plextv.Get(url.Get(), strResponse))
   {
 #if defined(PLEX_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "CPlexServices:GetMyPlexServers %d, %s", includeHttps, strResponse.c_str());
@@ -654,7 +658,7 @@ bool CPlexServices::GetSignInPinCode()
 
   XFILE::CCurlFile plex;
   // use a lower default timeout
-  plex.SetTimeout(3);
+  plex.SetTimeout(10);
   CPlexUtils::GetDefaultHeaders(plex);
 
   CURL url(NS_PLEXTV_URL + "/pins.xml");
@@ -772,6 +776,7 @@ bool CPlexServices::GetSignInByPinReply()
   bool rtn = false;
   std::string strMessage;
   XFILE::CCurlFile plex;
+  plex.SetTimeout(10);
   CPlexUtils::GetDefaultHeaders(plex);
 
   std::string path = NS_PLEXTV_URL + "/pins/" + m_signInByPinId + ".xml";
@@ -816,23 +821,30 @@ void CPlexServices::CheckForGDMServers()
       SOCKETS::CUDPSocket *socket = SOCKETS::CSocketFactory::CreateUDPSocket();
       if (socket)
       {
-        SOCKETS::CAddress my_addr;
-        CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
-        my_addr.SetAddress(iface->GetCurrentIPAddress().c_str());
-        if (!socket->Bind(my_addr, NS_PLEX_MEDIA_SERVER_PORT, 0))
+        CNetworkInterface *iface = g_application.getNetwork().GetFirstConnectedInterface();
+        if (iface && iface->IsConnected())
         {
-          CLog::Log(LOGERROR, "CPlexServices:CheckforGDMServers Could not listen on port %d", NS_PLEX_MEDIA_SERVER_PORT);
-          SAFE_DELETE(m_gdmListener);
-          m_useGDMServer = false;
-          return;
-        }
+          SOCKETS::CAddress my_addr;
+          my_addr.SetAddress(iface->GetCurrentIPAddress().c_str());
+          if (!socket->Bind(my_addr, NS_PLEX_MEDIA_SERVER_PORT, 0))
+          {
+            CLog::Log(LOGERROR, "CPlexServices:CheckforGDMServers Could not listen on port %d", NS_PLEX_MEDIA_SERVER_PORT);
+            SAFE_DELETE(m_gdmListener);
+            m_useGDMServer = false;
+            return;
+          }
 
-        if (socket)
+          if (socket)
+          {
+            socket->SetBroadCast(true);
+            // create and add our socket to the 'select' listener
+            m_gdmListener = new SOCKETS::CSocketListener();
+            m_gdmListener->AddSocket(socket);
+          }
+        }
+        else
         {
-          socket->SetBroadCast(true);
-          // create and add our socket to the 'select' listener
-          m_gdmListener = new SOCKETS::CSocketListener();
-          m_gdmListener->AddSocket(socket);
+          SAFE_DELETE(socket);
         }
       }
       else
@@ -985,6 +997,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
 
   std::string strMessage;
   XFILE::CCurlFile plex;
+  plex.SetTimeout(10);
   plex.SetBufferSize(32768*10);
   CPlexUtils::GetDefaultHeaders(plex);
   if (MyPlexSignedIn())
@@ -1067,6 +1080,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
     }
 
     XFILE::CCurlFile plex;
+    plex.SetTimeout(10);
     CPlexUtils::GetDefaultHeaders(plex);
     if (MyPlexSignedIn())
       plex.SetRequestHeader("X-Plex-Token", m_authToken);

@@ -24,6 +24,7 @@
 
 #include "PlexClient.h"
 #include "URL.h"
+#include "filesystem/CurlFile.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "settings/lib/ISettingCallback.h"
@@ -111,6 +112,7 @@ private:
   std::string       m_signInByPinCode;
   std::string       m_myHomeUser;
   int               m_updateMins;
+  XFILE::CCurlFile  m_plextv;
 
   PlexServicePlayerState m_playState;
   CCriticalSection  m_criticalClients;
