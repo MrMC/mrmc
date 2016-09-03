@@ -124,6 +124,16 @@ extern "C" size_t header_callback(void *ptr, size_t size, size_t nmemb, void *st
   return state->HeaderCallback(ptr, size, nmemb);
 }
 
+extern "C" int transfer_canceled_callback(void *clientp,
+               curl_off_t dltotal,
+               curl_off_t dlnow,
+               curl_off_t ultotal,
+               curl_off_t ulnow)
+{
+  CCurlFile::CReadState *readstate = (CCurlFile::CReadState*)clientp;
+  return readstate->m_cancelled ? 1:0;
+}
+
 /* used only by CCurlFile::Stat to bail out of unwanted transfers */
 extern "C" int transfer_abort_callback(void *clientp,
                curl_off_t dltotal,
@@ -534,6 +544,10 @@ void CCurlFile::SetCommonOptions(CReadState* state)
 
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_URL, m_url.c_str());
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, 0l);
+
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_XFERINFOFUNCTION, transfer_canceled_callback);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_XFERINFODATA, m_state);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOPROGRESS, 0);
 
   // setup POST data if it is set (and it may be empty)
   if (m_postdataset)
