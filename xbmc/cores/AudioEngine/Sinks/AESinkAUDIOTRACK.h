@@ -21,7 +21,6 @@
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
-#include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
 #include <deque>
@@ -29,7 +28,7 @@
 
 namespace jni
 {
-class CJNIAudioTrack;
+  class CJNIAudioTrack;
 };
 
 class CAESinkAUDIOTRACK : public IAESink
@@ -40,49 +39,65 @@ public:
   CAESinkAUDIOTRACK();
   virtual ~CAESinkAUDIOTRACK();
 
-  virtual bool Initialize(AEAudioFormat &format, std::string &device);
-  virtual void Deinitialize();
-  bool IsInitialized();
+  virtual bool          Initialize(AEAudioFormat &format, std::string &device);
+  virtual void          Deinitialize();
+  bool                  IsInitialized();
 
-  virtual void         GetDelay        (AEDelayStatus& status);
-  virtual double       GetLatency      ();
-  virtual double       GetCacheTotal   ();
-  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
-  virtual void         AddPause        (unsigned int millis);
-  virtual void         Drain           ();
-  static bool          FormatNeedsIECPacked(const AEAudioFormat &format);
-  static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
+  virtual void          GetDelay        (AEDelayStatus& status);
+  virtual double        GetLatency      ();
+  virtual double        GetCacheTotal   ();
+  virtual unsigned int  AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
+  virtual void          AddPause        (unsigned int millis);
+  virtual void          Drain           ();
+
+  static bool           FormatNeedsIECPacked(const AEAudioFormat &format);
+  static void           EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 protected:
-  static bool IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
+  static bool           IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
 
 private:
-  jni::CJNIAudioTrack  *m_at_jni;
-  double                m_duration_written;
-  unsigned int          m_buffer_size;
-  unsigned int          m_lastPlaybackHeadPosition;
-  int64_t               m_offset;
+          void          GetDelaySDK22   (AEDelayStatus& status);
+          void          GetDelaySDK23   (AEDelayStatus& status);
+  double                GetPresentedDelay();
+  uint64_t              GetPlaybackHeadPosition();
   // Moving Average computes the weighted average delay over
   // a fixed size of delay values - current size: 20 values
   double                GetMovingAverageDelay(double newestdelay);
-  // When AddPause is called the m_pause_time is increased
-  // by the package duration. This is only used for non IEC passthrough
-  XbmcThreads::EndTime  m_extTimer;
+
+  static int            m_sdk;
+  static CAEDeviceInfo  m_info;
+  static std::set<int>  m_sink_sampleRates;
+
+  jni::CJNIAudioTrack  *m_at_jni;
+  AEAudioFormat         m_format;
+  double                m_volume;
+  int                   m_encoding;
+  bool                  m_passthrough;
+  bool                  m_passthroughIsIECPacked;
+
+  int                   m_sink_frameSize;
+  int                   m_sink_sampleRate;
+  int                   m_sink_bufferSize;
+  double                m_sink_bufferSeconds;
+  int                   m_sink_sleepOnWriteStall;
+  // the effective bytes per second, pcm is simple frames/samplerate
+  // passthrough is more complicated to figure out as android wants obscure it.
+  double                m_sink_bufferBytesPerSecond;
+
+  // sink buffer filled handling
+  uint64_t              m_writeBytes;
+  double                m_writeSeconds;
+  uint64_t              m_playbackHead;
+  int64_t               m_playbackHeadOffset;
+
+  // When AddPause is called the pause time is increased by the
+  // package duration. This is only used for non IEC passthrough
+  // as IEC packed will get an IEC packed pause burst injected.
+  XbmcThreads::EndTime  m_nonIECPauseTimer;
 
   // We maintain our linear weighted average delay counter in here
   // The n-th value (timely oldest value) is weighted with 1/n
   // the newest value gets a weight of 1
-  std::deque<double>   m_linearmovingaverage;
-
-  static CAEDeviceInfo m_info;
-  static std::set<unsigned int>       m_sink_sampleRates;
-
-  AEAudioFormat      m_format;
-  double             m_volume;
-  int16_t           *m_alignedS16;
-  unsigned int       m_sink_frameSize;
-  unsigned int       m_sink_sampleRate;
-  bool               m_passthrough;
-  double             m_audiotrackbuffer_sec;
-  int                m_encoding;
+  std::deque<double>    m_linearmovingaverage;
 };
