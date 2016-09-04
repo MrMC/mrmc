@@ -1900,7 +1900,7 @@ void CDVDPlayer::HandlePlaySpeed()
           }
           else if (m_CurrentAudio.id >= 0 && m_CurrentAudio.inited &&
                    m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
-                   m_dvdPlayerVideo->GetLevel() > 50)
+                   m_dvdPlayerAudio->GetLevel() == 0)
           {
             CLog::Log(LOGDEBUG,"CDVDPlayer::HandlePlaySpeed - audio stream stalled, triggering re-sync");
             FlushBuffers(false);
