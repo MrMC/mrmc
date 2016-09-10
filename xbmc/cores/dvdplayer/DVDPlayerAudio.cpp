@@ -261,7 +261,7 @@ void CDVDPlayerAudio::Process()
   while (!m_bStop)
   {
     CDVDMsg* pMsg;
-    int timeout  = (int)(1000 * m_dvdAudio.GetCacheTime()) + 100;
+    int timeout  = (int)(1000 * m_dvdAudio.GetCacheTime());
 
     // read next packet and return -1 on error
     int priority = 1;
@@ -277,13 +277,6 @@ void CDVDPlayerAudio::Process()
 
     if (m_paused)
       priority = 1;
-
-    // consider stream stalled if queue is empty
-    // we can't sync audio to clock with an empty queue
-    if (ALLOW_AUDIO(m_speed) && !m_stalled && !m_paused)
-    {
-      timeout = 0;
-    }
 
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
 
@@ -573,17 +566,12 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 {
   double syncerror = m_dvdAudio.GetSyncError();
 
-  if (m_synctype == SYNC_DISCON && fabs(syncerror) > DVD_MSEC_TO_TIME(32))
+  if (m_synctype == SYNC_DISCON && fabs(syncerror) > DVD_MSEC_TO_TIME(10))
   {
-    double limit, error;
-    limit = DVD_MSEC_TO_TIME(32);
-    error = syncerror;
-
-    double absolute;
-    double clock = m_pClock->GetClock(absolute);
-    if (m_pClock->Update(clock + error, absolute, limit - 0.001, "CDVDPlayerAudio::OutputPacket"))
+    double correction = m_pClock->ErrorAdjust(syncerror, "CDVDPlayerAudio::OutputPacket");
+    if (correction != 0)
     {
-      m_dvdAudio.SetSyncErrorCorrection(-error);
+      m_dvdAudio.SetSyncErrorCorrection(-correction);
     }
   }
   m_dvdAudio.AddPackets(audioframe);

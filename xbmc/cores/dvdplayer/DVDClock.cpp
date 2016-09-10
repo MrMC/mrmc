@@ -43,6 +43,8 @@ CDVDClock::CDVDClock()
   m_lastSystemTime = g_VideoReferenceClock.GetTime();
   m_systemAdjust = 0;
   m_speedAdjust = 0;
+  m_vSyncAdjust = 0;
+  m_frameTime = DVD_TIME_BASE / 60.0;
 
   m_startClock = 0;
 }
@@ -114,6 +116,18 @@ double CDVDClock::GetClock(double& absolute, bool interpolated /*= true*/)
   return GetClock(interpolated);
 }
 
+void CDVDClock::SetVsyncAdjust(double adjustment)
+{
+  CSingleLock lock(m_critSection);
+  m_vSyncAdjust = adjustment;
+}
+
+double CDVDClock::GetVsyncAdjust()
+{
+  CSingleLock lock(m_critSection);
+  return m_vSyncAdjust;
+}
+
 void CDVDClock::Pause(bool pause)
 {
   CSingleLock lock(m_critSection);
@@ -179,38 +193,44 @@ double CDVDClock::GetSpeedAdjust()
   return m_speedAdjust;
 }
 
-bool CDVDClock::Update(double clock, double absolute, double limit, const char* log)
+double CDVDClock::ErrorAdjust(double error, const char* log)
 {
-  double was_absolute;
-  double was_clock;
+  CSingleLock lock(m_critSection);
 
-  {
-    CSingleLock lock(m_critSection);
-    was_absolute = SystemToAbsolute(m_startClock);
-    was_clock = m_iDisc + absolute - was_absolute;
-  }
-
-  double error = std::abs(clock - was_clock);
+  double clock, absolute, adjustment;
+  clock = GetClock(absolute);
 
   // skip minor updates while speed adjust is active
   // -> adjusting buffer levels
   if (m_speedAdjust != 0 && error < DVD_MSEC_TO_TIME(100))
   {
-    return false;
+    return 0;
   }
-  else if (error > limit)
-  {
-    Discontinuity(clock, absolute);
 
-    CLog::Log(LOGDEBUG, "CDVDClock::Discontinuity - %s - was:%f, should be:%f, error:%f"
-                      , log
-                      , was_clock
-                      , clock
-                      , clock - was_clock);
-    return true;
+  adjustment = error;
+
+  if (m_vSyncAdjust != 0)
+  {
+    // Audio ahead is more noticeable then audio behind video.
+    // Correct if audio is more than 20ms ahead or more then
+    // 27ms behind. In a worst case scenario we switch from
+    // 20ms ahead to 21ms behind (for fps of 23.976)
+    if (error > 0.02 * DVD_TIME_BASE)
+      adjustment = m_frameTime;
+    else if (error < -0.027 * DVD_TIME_BASE)
+      adjustment = -m_frameTime;
+    else
+      adjustment = 0;
   }
-  else
-    return false;
+
+  if (adjustment == 0)
+    return 0;
+
+  Discontinuity(clock+adjustment, absolute);
+
+  CLog::Log(LOGDEBUG, "CDVDClock::ErrorAdjust - %s - error:%f, adjusted:%f",
+                      log, error, adjustment);
+  return adjustment;
 }
 
 void CDVDClock::Discontinuity(double clock, double absolute)
@@ -238,6 +258,8 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
   //sent with fps of 0 means we are not playing video
   if(fps == 0.0)
     return -1;
+
+  m_frameTime = 1/fps * DVD_TIME_BASE;
 
   //check if the videoreferenceclock is running, will return -1 if not
   double rate = g_VideoReferenceClock.GetRefreshRate(interval);
@@ -296,6 +318,7 @@ double CDVDClock::SystemToPlaying(int64_t system)
     m_iDisc = 0;
     m_systemAdjust = 0;
     m_speedAdjust = 0;
+    m_vSyncAdjust = 0;
     m_bReset = false;
   }
   

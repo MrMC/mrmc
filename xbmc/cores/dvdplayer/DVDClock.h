@@ -44,7 +44,7 @@ public:
   double GetClock(bool interpolated = true);
   double GetClock(double& absolute, bool interpolated = true);
 
-  bool Update(double clock, double absolute, double limit, const char* log);
+  double ErrorAdjust(double error, const char* log);
   void Discontinuity(double clock, double absolute);
   void Discontinuity(double clock = 0LL)
   {
@@ -64,16 +64,17 @@ public:
 
   void SetMaxSpeedAdjust(double speed);
 
-  static double GetAbsoluteClock(bool interpolated = true);
-  static double GetFrequency() { return (double)m_systemFrequency ; }
-  static double WaitAbsoluteClock(double target);
-
+  double GetAbsoluteClock(bool interpolated = true);
+  double GetFrequency() { return (double)m_systemFrequency ; }
+  double WaitAbsoluteClock(double target);
+  void SetVsyncAdjust(double adjustment);
+  double GetVsyncAdjust();
   void Pause(bool pause);
 
 protected:
-  static void CheckSystemClock();
-  static double SystemToAbsolute(int64_t system);
-  static int64_t AbsoluteToSystem(double absolute);
+  void CheckSystemClock();
+  double SystemToAbsolute(int64_t system);
+  int64_t AbsoluteToSystem(double absolute);
   double SystemToPlaying(int64_t system);
 
   CCriticalSection m_critSection;
@@ -92,6 +93,8 @@ protected:
   int64_t m_systemAdjust;
   int64_t m_lastSystemTime;
   double m_speedAdjust;
+  double m_vSyncAdjust;
+  double m_frameTime;
 
   double m_maxspeedadjust;
   CCriticalSection m_speedsection;
