@@ -419,8 +419,7 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
 
       /* if we get here, we can sync */
       m_hasSync = true;
-      m_info.m_channels = 8;
-      //m_info.m_channels = AC3Channels[acmod] + lfeon;
+      m_info.m_channels = AC3Channels[acmod] + lfeon;
       m_syncFunc = &CAEStreamParser::SyncAC3;
       m_info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
       m_info.m_ac3FrameSize = m_fsize;
@@ -473,7 +472,8 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
 
       // if we get here, we can sync
       m_hasSync = true;
-      m_info.m_channels = AC3Channels[acmod] + lfeon;
+      m_info.m_channels = 8;
+      //m_info.m_channels = AC3Channels[acmod] + lfeon;
       m_syncFunc = &CAEStreamParser::SyncAC3;
       m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
       m_info.m_ac3FrameSize = m_fsize;
