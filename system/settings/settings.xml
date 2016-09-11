@@ -3128,11 +3128,7 @@
           <level>2</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible">
-              <and>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.eac3passthrough</condition>
-              </and>
-            </dependency>
+            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</dependency>
             <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
