@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "cores/dvdplayer/DVDClock.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "guilib/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -315,6 +316,9 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
   if (DestRect != cur_rect)
   {
+    RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
+    CLog::Log(LOGDEBUG, "RenderUpdate: renderRes(%dx%d)", renderRes.iWidth, renderRes.iHeight);
+
     // default gui/display width/height
     const RESOLUTION_INFO &rez = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
     m_displayWidth = rez.iWidth;
