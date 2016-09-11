@@ -861,7 +861,7 @@ double CAESinkAUDIOTRACK::GetPresentedDelay()
       {
         // we only care about framePosition on start up, it should
         // never wrap so use it directly.
-        m_playbackHeadOffset = (uint32_t)ts.get_framePosition();
+        m_playbackHeadOffset = ts.get_framePosition();
         //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetPlaybackHeadPositionSeconds: "
         //  "m_playbackHeadOffset=%lld", m_playbackHeadOffset);
       }
