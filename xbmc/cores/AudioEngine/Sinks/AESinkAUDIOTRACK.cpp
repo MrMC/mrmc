@@ -267,7 +267,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
           m_format.m_frames = m_format.m_streamInfo.m_ac3FrameSize;
           if (m_format.m_frames == 0)
             m_format.m_frames = 1536;
-          m_format.m_frames *= 8;
+          m_format.m_frames *= 4;
           if (CJNIAudioFormat::ENCODING_AC3 != -1)
             m_encoding = CJNIAudioFormat::ENCODING_AC3;
           break;
@@ -412,7 +412,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       Deinitialize();
       return false;
     }
-    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sampleRate %u; format:%s; m_sink_bufferSize %d; m_frames %u; m_frameSize %u; channels: %d", m_sink_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), m_sink_bufferSize, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count());
+    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sink_sampleRate %u; format:%s; m_sink_bufferSize %d; m_frames %u; m_frameSize %u; channels: %d; m_sampleRate: %u", m_sink_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), m_sink_bufferSize, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count(), format.m_sampleRate);
   }
 
   format = m_format;
@@ -717,14 +717,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
     // digital dolby capabilities
     m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-    // FireTV has problems with passthrough of eac3, 7.1 channels, kick it back to pcm.
-    if (!CAndroidFeatures::IsFireTVDevice())
-    {
-      // FireTV has problems with eac3, 7.1, but we cannot seem to
-      // only disable for 7.1. eac3 also can be 5.1 and below.
-      // So just disable it for passthrough until we get smarter.
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-    }
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
     m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
 
     // dts capabilities
