@@ -40,6 +40,8 @@ class CJNIAudioFormat
 
     static int CHANNEL_OUT_STEREO;
     static int CHANNEL_OUT_5POINT1;
+    static int CHANNEL_OUT_7POINT1;
+    static int CHANNEL_OUT_7POINT1_SURROUND;
 
     static int CHANNEL_OUT_FRONT_LEFT;
     static int CHANNEL_OUT_FRONT_LEFT_OF_CENTER;
@@ -53,12 +55,8 @@ class CJNIAudioFormat
     static int CHANNEL_OUT_BACK_CENTER;
     static int CHANNEL_OUT_BACK_RIGHT;
 
+    static int CHANNEL_OUT_DEFAULT;
     static int CHANNEL_INVALID;
-
-    // AML
-    static int ENCODING_DTSHD;
-    static int ENCODING_DTSHD_MA;
-    static int ENCODING_TRUEHD;
 
 protected:
     static void GetStaticValue(jhclass &c, int &field, const char *value);
