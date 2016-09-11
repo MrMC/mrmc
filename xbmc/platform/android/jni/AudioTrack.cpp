@@ -77,6 +77,8 @@ CJNIAudioTrack::CJNIAudioTrack(int streamType, int sampleRateInHz, int channelCo
   m_audioFormat = audioFormat;
   if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
     m_buffer = jharray(xbmc_jnienv()->NewFloatArray(bufferSizeInBytes / sizeof(float)));
+  else if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
+    m_buffer = jharray(xbmc_jnienv()->NewShortArray(bufferSizeInBytes / sizeof(uint16_t)));
   else
     m_buffer = jharray(xbmc_jnienv()->NewByteArray(bufferSizeInBytes));
 
