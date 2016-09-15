@@ -34,6 +34,7 @@ MediaLibrary.prototype = {
     $('#remoteControl').click(jQuery.proxy(this.remoteControlOpen, this));
     $('#profiles').click(jQuery.proxy(this.profilesOpen, this));
     $('#log').click(jQuery.proxy(this.logOpen, this));
+    $('#logold').click(jQuery.proxy(this.oldLogOpen, this));
     $('#overlay').click(jQuery.proxy(this.hideOverlay, this));
     $(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
     $(document).on('keydown', jQuery.proxy(this.handleKeyPress, this));
@@ -47,6 +48,7 @@ MediaLibrary.prototype = {
     $('#pictureLibrary').removeClass('selected');
     $('#profiles').removeClass('selected');
     $('#log').removeClass('selected');
+    $('#logold').removeClass('selected');
     this.hideOverlay();
   },
   replaceAll: function (haystack, needle, thread) {
@@ -126,6 +128,12 @@ MediaLibrary.prototype = {
     $('#log').addClass('selected');
     $('.contentContainer').hide();
     w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.log');
+  },  
+  oldLogOpen: function (event) {
+    this.resetPage();
+    $('#log').addClass('selected');
+    $('.contentContainer').hide();
+    w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.old.log');
   },  
   shouldHandleEvent: function (event) {
     var inRemoteControl = $('#remoteControl').hasClass('selected');
