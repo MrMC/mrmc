@@ -131,7 +131,7 @@ MediaLibrary.prototype = {
   },  
   oldLogOpen: function (event) {
     this.resetPage();
-    $('#log').addClass('selected');
+    $('#logold').addClass('selected');
     $('.contentContainer').hide();
     w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.old.log');
   },  
