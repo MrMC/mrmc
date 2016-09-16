@@ -127,13 +127,23 @@ MediaLibrary.prototype = {
     this.resetPage();
     $('#log').addClass('selected');
     $('.contentContainer').hide();
-    w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.log');
+    var w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.log');
+    w.onload = function(){
+    setTimeout(function(){
+       $(w.document).find('html').append('<head><title>MrMC log</title></head>');
+      }, 500);
+    }
   },  
   oldLogOpen: function (event) {
     this.resetPage();
     $('#logold').addClass('selected');
     $('.contentContainer').hide();
-    w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.old.log');
+    var w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.old.log');
+    w.onload = function(){
+    setTimeout(function(){
+       $(w.document).find('html').append('<head><title>MrMC old log</title></head>');
+    }, 500);
+  }
   },  
   shouldHandleEvent: function (event) {
     var inRemoteControl = $('#remoteControl').hasClass('selected');
