@@ -38,6 +38,7 @@
 #include "settings/Settings.h"
 
 #include "video/VideoInfoTag.h"
+#include "video/windows/GUIWindowVideoBase.h"
 
 static int  g_progressSec = 0;
 static CFileItem m_curItem = *new CFileItem;
@@ -140,6 +141,11 @@ void CPlexUtils::ReportToServer(std::string url, std::string filename)
 
 void CPlexUtils::GetVideoDetails(CFileItem &item, const TiXmlElement* videoNode)
 {
+  if(item.GetVideoInfoTag()->m_strPlotOutline.empty())
+    item.GetVideoInfoTag()->SetPlotOutline(XMLUtils::GetAttribute(videoNode, "tagline"));
+  if(item.GetVideoInfoTag()->m_strPlot.empty())
+    item.GetVideoInfoTag()->SetPlot(XMLUtils::GetAttribute(videoNode, "summary"));
+  
   // looks like plex is sending only one studio?
   std::vector<std::string> studios;
   studios.push_back(XMLUtils::GetAttribute(videoNode, "studio"));
@@ -1149,4 +1155,74 @@ void CPlexUtils::RemoveSubtitleProperties(CFileItem &item)
     item.ClearProperty(key);
     item.ClearProperty(StringUtils::Format("subtitle:%i_language", s));
   }
+}
+
+bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
+{
+  if (CPlexServices::GetInstance().HasClients())
+  {
+    StringUtils::Replace(strSearchString, " ","%20");
+    CFileItemList plexItems;
+    std::vector<CPlexClientPtr> clients;
+    CPlexServices::GetInstance().GetClients(clients);
+    for (const auto &client : clients)
+    {
+      CURL url(client->GetUrl());
+      url.SetFileName("hubs/search?sectionId=&query=" + strSearchString);
+      TiXmlDocument xml = GetPlexXML(url.Get());
+      TiXmlElement* rootXmlNode = xml.RootElement();
+      if (rootXmlNode)
+      {
+        TiXmlElement* hubNode = rootXmlNode->FirstChildElement("Hub");
+        while (hubNode)
+        {
+          if(((TiXmlElement*) hubNode)->Attribute("type"))
+          {
+            std::string type = XMLUtils::GetAttribute(hubNode, "type");
+            if (type == "show")
+            {
+              CFileItemList plexShow;
+              const TiXmlElement* directoryNode = hubNode->FirstChildElement("Directory");
+              std::string ratingKey = XMLUtils::GetAttribute(directoryNode, "ratingKey");
+              url.SetFileName("library/metadata/"+ ratingKey + "/allLeaves");
+              TiXmlDocument xml = GetPlexXML(url.Get());
+              TiXmlElement* rootXmlNode = xml.RootElement();
+              if(rootXmlNode)
+                GetVideoItems(plexShow, url, rootXmlNode, MediaTypeEpisode, false);
+              
+              for (int i = 0; i < plexShow.Size(); ++i)
+              {
+                std::string label = plexShow[i]->GetVideoInfoTag()->m_strTitle + " (" +  plexShow[i]->GetVideoInfoTag()->m_strShowTitle + ")";
+                plexShow[i]->SetLabel(label);
+              }
+              CGUIWindowVideoBase::AppendAndClearSearchItems(plexShow, "[" + g_localizeStrings.Get(20359) + "] ", plexItems);
+            }
+            else if (type == "movie")
+            {
+              CFileItemList plexMovies;
+              GetVideoItems(plexMovies, url, hubNode, MediaTypeMovie, false);
+              for (int i = 0; i < plexMovies.Size(); ++i)
+              {
+                std::string label = plexMovies[i]->GetVideoInfoTag()->m_strTitle;
+                if (plexMovies[i]->GetVideoInfoTag()->m_iYear > 0)
+                  label += StringUtils::Format(" (%i)", plexMovies[i]->GetVideoInfoTag()->m_iYear);
+                plexMovies[i]->SetLabel(label);
+              }
+              CGUIWindowVideoBase::AppendAndClearSearchItems(plexMovies, "[" + g_localizeStrings.Get(20338) + "] ", plexItems);
+            }
+          }
+          hubNode = hubNode->NextSiblingElement("Hub");
+        }
+      }
+      
+      for (int item = 0; item < plexItems.Size(); ++item)
+        CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
+      plexItems.SetProperty("PlexItem", true);
+      plexItems.SetProperty("MediaServicesItem", true);
+      items.Append(plexItems);
+      plexItems.ClearItems();
+    }
+  }
+  
+  return items.Size() > 0;
 }

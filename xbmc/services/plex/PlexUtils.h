@@ -68,6 +68,7 @@ public:
   static bool GetItemSubtiles(CFileItem &item);
   static bool GetMoreItemInfo(CFileItem &item);
   static bool GetMoreResolutions(CFileItem &item);
+  static bool SearchPlex(CFileItemList &items, std::string strSearchString);
 
 private:
   static void ReportToServer(std::string url, std::string filename);

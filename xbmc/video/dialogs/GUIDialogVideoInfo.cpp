@@ -41,6 +41,7 @@
 #include "FileItem.h"
 #include "storage/MediaManager.h"
 #include "profiles/ProfilesManager.h"
+#include "services/ServicesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -230,7 +231,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   m_hasUpdatedUserrating = false;
   m_bViewReview = true;
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber, "xx"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber, "xx") && !m_movieItem->IsMediaServiceBased());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.c_str() + 2, "plugin") && !m_movieItem->IsMediaServiceBased());
   // Disable video user rating button for plugins as they don't have tables to save this
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin());
@@ -498,6 +499,9 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
 /// \param items Items Found
 void CGUIDialogVideoInfo::DoSearch(std::string& strSearch, CFileItemList& items)
 {
+  if (CServicesManager::GetInstance().HasServices())
+    CServicesManager::GetInstance().SearchService(items, strSearch);
+  
   CVideoDatabase db;
   if (!db.Open())
     return;
@@ -553,19 +557,25 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   if (!db.Open())
     return;
 
-  CVideoInfoTag movieDetails;
-  if (type == VIDEODB_CONTENT_MOVIES)
-    db.GetMovieInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_EPISODES)
-    db.GetEpisodeInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_TVSHOWS)
-    db.GetTvShowInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
-    db.GetMusicVideoInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  db.Close();
-
   CFileItem item(*pItem);
-  *item.GetVideoInfoTag() = movieDetails;
+  if (pItem->IsMediaServiceBased())
+  {
+    CServicesManager::GetInstance().GetMoreInfo(item);
+  }
+  else
+  {
+    CVideoInfoTag movieDetails;
+    if (type == VIDEODB_CONTENT_MOVIES)
+      db.GetMovieInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    if (type == VIDEODB_CONTENT_EPISODES)
+      db.GetEpisodeInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    if (type == VIDEODB_CONTENT_TVSHOWS)
+      db.GetTvShowInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+      db.GetMusicVideoInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.Close();
+    *item.GetVideoInfoTag() = movieDetails;
+  }
   SetMovie(&item);
   // refresh our window entirely
   Close();

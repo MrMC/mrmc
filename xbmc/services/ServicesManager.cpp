@@ -257,6 +257,14 @@ bool CServicesManager::GetResolutions(CFileItem &item)
   return false;
 }
 
+void CServicesManager::SearchService(CFileItemList &items, std::string strSearchString)
+{
+  if(CPlexUtils::HasClients())
+  {
+    CPlexUtils::SearchPlex(items, strSearchString);
+  }
+}
+
 void CServicesManager::RegisterMediaServicesHandler(IMediaServicesHandler *mediaServicesHandler)
 {
   if (mediaServicesHandler == nullptr)
