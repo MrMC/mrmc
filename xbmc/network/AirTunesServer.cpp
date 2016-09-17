@@ -53,9 +53,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
 
-#if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
-#endif
 
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"

@@ -465,7 +465,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
 void CAutorun::HandleAutorun()
 {
-#ifndef TARGET_WINDOWS
   if (!m_bEnable)
   {
     CDetectDVDMedia::m_evAutorun.Reset();
@@ -477,7 +476,6 @@ void CAutorun::HandleAutorun()
     ExecuteAutorun();
     CDetectDVDMedia::m_evAutorun.Reset();
   }
-#endif
 }
 
 void CAutorun::Enable()

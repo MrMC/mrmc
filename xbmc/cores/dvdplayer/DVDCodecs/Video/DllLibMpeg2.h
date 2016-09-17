@@ -20,17 +20,13 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+#if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
 extern "C" {
-#if defined(TARGET_WINDOWS)
-  #include "libmpeg2/mpeg2.h"
-  #include "libmpeg2/mpeg2convert.h"
-#else
-  #include <mpeg2dec/mpeg2.h>
-  #include <mpeg2dec/mpeg2convert.h>
-#endif
+
+#include <mpeg2dec/mpeg2.h>
+#include <mpeg2dec/mpeg2convert.h>
 }
 #include "DynamicDll.h"
 

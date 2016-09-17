@@ -52,11 +52,7 @@ using namespace CDDB;
 
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb()
-#if defined(TARGET_WINDOWS)
-    : m_cddb_socket(closesocket, INVALID_SOCKET)
-#else
     : m_cddb_socket(close, -1)
-#endif
     , m_cddb_ip_adress(g_advancedSettings.m_cddbAddress)
 {
   m_lastError = 0;

@@ -25,15 +25,7 @@
 #include <vector>
 #include <string>
 #include "system.h" // for win32 types
-
-#ifdef TARGET_WINDOWS
-// Ideally we should just be including iso9660.h, but it's not win32-ified at this point,
-// and these are all we need
-typedef uint32_t iso723_t;
-typedef uint64_t iso733_t;
-#else
 #include <cdio/iso9660.h>
-#endif
 
 #pragma pack(1)
 struct iso9660_VolumeDescriptor

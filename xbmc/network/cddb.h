@@ -92,11 +92,7 @@ public:
 
 protected:
   std::string m_strNull;
-#if defined(TARGET_WINDOWS)
-  using CAutoPtrSocket = KODI::UTILS::CScopeGuard<SOCKET, INVALID_SOCKET, decltype(closesocket)>;
-#else
   using CAutoPtrSocket = KODI::UTILS::CScopeGuard<int, -1, decltype(close)>;
-#endif
   CAutoPtrSocket m_cddb_socket;
   const static int recv_buffer = 4096;
   int m_lastError;

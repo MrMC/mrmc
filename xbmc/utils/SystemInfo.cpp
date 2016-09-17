@@ -739,28 +739,6 @@ bool CSysInfo::IsWindowsVersionAtLeast(WindowsVersion ver)
 
 CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
 {
-#ifdef TARGET_WINDOWS
-  if (m_WinVer == WindowsVersionUnknown)
-  {
-    OSVERSIONINFOEXW osvi = {};
-    if (sysGetVersionExWByRef(osvi))
-    {
-      if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
-        m_WinVer = WindowsVersionVista;
-      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1)
-        m_WinVer = WindowsVersionWin7;
-      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
-        m_WinVer = WindowsVersionWin8;
-      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) 
-        m_WinVer = WindowsVersionWin8_1;
-      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0)
-        m_WinVer = WindowsVersionWin10;
-      /* Insert checks for new Windows versions here */
-      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 6)
-        m_WinVer = WindowsVersionFuture;
-    }
-  }
-#endif // TARGET_WINDOWS
   return m_WinVer;
 }
 

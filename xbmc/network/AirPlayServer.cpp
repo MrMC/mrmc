@@ -51,10 +51,6 @@
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
-#ifdef TARGET_WINDOWS
-#define close closesocket
-#endif
-
 #define RECEIVEBUFFER 1024
 
 #define AIRPLAY_STATUS_OK                  200
