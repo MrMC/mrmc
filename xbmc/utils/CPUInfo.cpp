@@ -28,9 +28,9 @@
 #if defined(TARGET_DARWIN)
 #include <sys/types.h>
 #include <sys/sysctl.h>
-#if defined(__ppc__) || defined (TARGET_DARWIN_IOS)
+#if defined (TARGET_DARWIN_IOS)
 #include <mach-o/arch.h>
-#endif // defined(__ppc__) || defined (TARGET_DARWIN_IOS)
+#endif // defined (TARGET_DARWIN_IOS)
 #ifdef TARGET_DARWIN_OSX
 #include "platform/darwin/osx/smc.h"
 #endif
@@ -83,7 +83,7 @@ CCPUInfo::CCPUInfo(void)
       m_cpuCount = 1;
 
   // The model.
-#if defined(__ppc__) || defined (TARGET_DARWIN_IOS)
+#if defined (TARGET_DARWIN_IOS)
   const NXArchInfo *info = NXGetLocalArchInfo();
   if (info != NULL)
     m_cpuModel = info->description;
@@ -665,9 +665,7 @@ std::string CCPUInfo::GetCoresUsageString() const
 void CCPUInfo::ReadCPUFeatures()
 {
 #if defined(TARGET_DARWIN)
-  #if defined(__ppc__)
-    m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
-  #elif defined(TARGET_DARWIN_IOS)
+  #if defined(TARGET_DARWIN_IOS)
   #else
     size_t len = 512 - 1; // '-1' for trailing space
     char buffer[512] ={0};
@@ -701,10 +699,8 @@ void CCPUInfo::ReadCPUFeatures()
   #endif
 #elif defined(LINUX)
 // empty on purpose, the implementation is in the constructor
-#elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__) && !defined(__arm64__) && !defined(__aarch64__)
+#elif !defined(__arm__) && !defined(__arm64__) && !defined(__aarch64__)
   m_cpuFeatures |= CPU_FEATURE_MMX;
-#elif defined(__powerpc__) || defined(__ppc__)
-  m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
 #endif
 }
 

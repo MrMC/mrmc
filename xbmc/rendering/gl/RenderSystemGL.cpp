@@ -67,14 +67,6 @@ void CRenderSystemGL::CheckOpenGLQuirks()
       }
     }
   }
-#ifdef __ppc__
-  // ATI Radeon 9600 on osx PPC cannot do NPOT
-  if (m_RenderRenderer.find("ATI Radeon 9600") != std::string::npos)
-  {
-    m_renderCaps &= ~ RENDER_CAPS_NPOT;
-    m_renderCaps &= ~ RENDER_CAPS_DXT_NPOT;
-  }
-#endif
 #endif
   if (StringUtils::EqualsNoCase(m_RenderVendor, "nouveau"))
     m_renderQuirks |= RENDER_QUIRKS_YV12_PREFERED;
