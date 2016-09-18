@@ -8,9 +8,14 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
+ifeq ($(OS),osx)
+CONFIGURE_EXTRAS=ac_cv_func_mkostemp=no
+fi
+
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --with-freetype-config=$(PREFIX)/bin/freetype-config \
-  --disable-libxml2 --disable-docs --with-arch=$(PLATFORM) --disable-shared
+  --disable-libxml2 --disable-docs --with-arch=$(PLATFORM) --disable-shared \
+  $(CONFIGURE_EXTRAS)
 
 LIBDYLIB=$(PLATFORM)/src/.libs/lib$(LIBNAME).a
 
