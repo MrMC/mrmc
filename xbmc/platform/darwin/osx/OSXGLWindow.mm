@@ -50,7 +50,7 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 
 -(id) initWithContentRect:(NSRect)box styleMask:(uint)style
 {
-  self = [super initWithContentRect:box styleMask:style backing:NSBackingStoreBuffered defer:YES];
+  self = [super initWithContentRect:box styleMask:style backing:NSBackingStoreBuffered defer:NO];
   [self setDelegate:self];
   [self setAcceptsMouseMovedEvents:YES];
   // autosave the window position/size
