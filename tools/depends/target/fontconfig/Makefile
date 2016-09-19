@@ -9,8 +9,8 @@ ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 ifeq ($(OS),osx)
-CONFIGURE_EXTRAS=ac_cv_func_mkostemp=no
-fi
+	CONFIGURE_EXTRAS=ac_cv_func_mkostemp=no
+endif
 
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --with-freetype-config=$(PREFIX)/bin/freetype-config \
