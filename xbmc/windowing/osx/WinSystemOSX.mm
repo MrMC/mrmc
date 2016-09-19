@@ -439,8 +439,9 @@ bool CWinSystemOSX::DestroyWindow()
 
 bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop)
 {
+/*
   NSRect myNewFrame = NSMakeRect(newLeft, newTop, newWidth, newHeight);
-  
+
   NSDictionary* windowResize = [NSDictionary dictionaryWithObjectsAndKeys: (NSWindow*)m_appWindow, NSViewAnimationTargetKey, [NSValue valueWithRect: myNewFrame], NSViewAnimationEndFrameKey, nil];
   NSArray* animations = [NSArray arrayWithObjects:windowResize, nil];
   NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations: animations];
@@ -449,23 +450,35 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
   [animation setAnimationCurve: NSAnimationEaseIn];
   [animation setDuration: 0.5];
   [animation startAnimation];
-  
-  OSXGLView *view = [(NSWindow*)m_appWindow contentView];
-  NSOpenGLContext *context = [view getGLContext];
+*/
   NSWindow* window = (NSWindow*)m_appWindow;
-
 
   NSRect rect = [window contentRectForFrameRect:[window frame]];
   CLog::Log(LOGDEBUG, "newTop(%d)", newTop);
   CLog::Log(LOGDEBUG, "newTop(%f)", rect.origin.y);
 
   if (m_bFullScreen)
+  {
     [window setFrameOrigin:NSMakePoint(newLeft, newTop)];
-  [window setContentSize:NSMakeSize(newWidth, newHeight)];
+    [window setContentSize:NSMakeSize(newWidth, newHeight)];
+  }
+  else if ([window inLiveResize] == NO)
+  {
+    // during live resize, we are getting callbacks from windowDidResize
+    // which propigate here, if we setFrame, that will trigger another
+    // windowDidResize callback and all hell breaks lose. Do not setFrame
+    // when live resize is active.
+    NSRect myNewFrame = NSMakeRect(newLeft, newTop, newWidth, newHeight);
+    NSRect rect_tmp = [window frameRectForContentRect:myNewFrame];
+    [window setFrame:rect_tmp display:YES animate:NO];
+  }
   [window update];
 
+  OSXGLView *view = [(NSWindow*)m_appWindow contentView];
   [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
   [view setFrameSize:NSMakeSize(newWidth, newHeight)];
+
+  NSOpenGLContext *context = [view getGLContext];
   [context update];
   
   m_nWidth = newWidth;
