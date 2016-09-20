@@ -66,13 +66,6 @@ void SetMenuBarVisible(bool visible)
   if ([NSApplication sharedApplication] == nil)
     printf("[NSApplication sharedApplication] nil %d\n" , visible);
   
-  NSApplicationPresentationOptions options = 0;
-  
-  if (visible)
-    options = NSApplicationPresentationDefault;
-  else
-    options = NSApplicationPresentationHideMenuBar | NSApplicationPresentationHideDock;
-
   @try
   {
     if (visible)
