@@ -985,9 +985,7 @@ void CWinSystemOSX::HandlePossibleRefreshrateChange()
   {
     oldRefreshRate = m_refreshRate;
     // send a message so that videoresolution (and refreshrate) is changed
-    NSWindow *win = (NSWindow *)m_appWindow;
-    NSRect frame = [[win contentView] frame];
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_VIDEORESIZE, frame.size.width, frame.size.height);
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SETVIDEORESOLUTION, m_refreshRate, 0);
   }
 }
 
