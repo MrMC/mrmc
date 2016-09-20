@@ -79,8 +79,8 @@ public:
   void        StopLostDeviceTimer();
 
   
-  void         SetMovedToOtherScreen(bool moved) { m_movedToOtherScreen = moved; }
-  int          CheckDisplayChanging(uint32_t flags);
+  void         SetMovedToOtherScreen(bool moved);
+  int          CheckDisplayChanging();
   void         SetFullscreenWillToggle(bool toggle){ m_fullscreenWillToggle = toggle; }
   bool         GetFullscreenWillToggle(){ return m_fullscreenWillToggle; }
   

@@ -1157,7 +1157,7 @@ int CWinSystemOSX::GetCurrentScreen()
   return 0;
 }
 
-int CWinSystemOSX::CheckDisplayChanging(u_int32_t flags)
+int CWinSystemOSX::CheckDisplayChanging()
 {
   NSOpenGLContext* context = [NSOpenGLContext currentContext];
   
@@ -1188,13 +1188,19 @@ int CWinSystemOSX::CheckDisplayChanging(u_int32_t flags)
   return 0;
 }
 
+void CWinSystemOSX::SetMovedToOtherScreen(bool moved)
+{
+  m_movedToOtherScreen = moved;
+  WindowChangedScreen();
+}
 void CWinSystemOSX::WindowChangedScreen()
 {
   // user has moved the window to a
   // different screen
   m_movedToOtherScreen = true;
   Cocoa_CVDisplayLinkUpdate();
-  HandlePossibleRefreshrateChange();
+//  HandlePossibleRefreshrateChange();
+  CheckDisplayChanging();
 }
 
 void CWinSystemOSX::AnnounceOnLostDevice()
