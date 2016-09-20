@@ -446,8 +446,17 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
 
   if (m_bFullScreen)
   {
-    [window setFrameOrigin:NSMakePoint(newLeft, newTop)];
-    [window setContentSize:NSMakeSize(newWidth, newHeight)];
+    NSRect myNewFrame = NSMakeRect(newLeft, newTop, newWidth, newHeight);
+    
+    NSDictionary* windowResize = [NSDictionary dictionaryWithObjectsAndKeys: (NSWindow*)m_appWindow, NSViewAnimationTargetKey, [NSValue valueWithRect: myNewFrame], NSViewAnimationEndFrameKey, nil];
+    NSArray* animations = [NSArray arrayWithObjects:windowResize, nil];
+    NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations: animations];
+    
+    [animation setAnimationBlockingMode: NSAnimationBlocking];
+    [animation setAnimationCurve: NSAnimationEaseIn];
+    [animation setDuration: 0.5];
+    [animation startAnimation];
+    [animation release];
   }
   else if ([window inLiveResize] == NO)
   {
@@ -458,7 +467,6 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
     NSRect myNewFrame = NSMakeRect(newLeft, newTop, newWidth, newHeight);
     NSRect rect_tmp = [window frameRectForContentRect:myNewFrame];
     [window setFrame:rect_tmp display:YES animate:YES];
-    [NSApp setPresentationOptions:NSApplicationPresentationDefault];
   }
   [window update];
 
@@ -532,25 +540,17 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   if (m_bFullScreen)
   {
+    ResizeWindowInternal(m_nWidth, m_nHeight, 0, 0);
+    
     // switch videomode
     SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
     m_lastDisplayNr = res.iScreen;
-    
-    // hide the menu bar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
-      SetMenuBarVisible(false);
-
-    ResizeWindowInternal(m_nWidth, m_nHeight, 0, 0);
     
     // hide the OS mouse
     Cocoa_HideMouse();
   }
   else
   {
-    // exit fullscreen
-    // Hide the menu bar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
-      SetMenuBarVisible(true);
 
     ResizeWindowInternal(
       CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_WIDTH),
