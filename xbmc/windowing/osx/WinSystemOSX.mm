@@ -76,9 +76,9 @@ void SetMenuBarVisible(bool visible)
   @try
   {
     if (visible)
-      [OSXGLWindow performSelectorOnMainThread:@selector(SetMenuBarVisible) withObject:nil waitUntilDone:TRUE];
+      [OSXGLWindow performSelectorOnMainThread:@selector(SetMenuBarVisible) withObject:nil waitUntilDone:YES];
     else
-      [OSXGLWindow performSelectorOnMainThread:@selector(SetMenuBarInvisible) withObject:nil waitUntilDone:TRUE];
+      [OSXGLWindow performSelectorOnMainThread:@selector(SetMenuBarInvisible) withObject:nil waitUntilDone:YES];
   }
   
   @catch(NSException *exception)
