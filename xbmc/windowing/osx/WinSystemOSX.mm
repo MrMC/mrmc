@@ -470,7 +470,8 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
     // when live resize is active.
     NSRect myNewFrame = NSMakeRect(newLeft, newTop, newWidth, newHeight);
     NSRect rect_tmp = [window frameRectForContentRect:myNewFrame];
-    [window setFrame:rect_tmp display:YES animate:NO];
+    [window setFrame:rect_tmp display:YES animate:YES];
+    [NSApp setPresentationOptions:NSApplicationPresentationDefault];
   }
   [window update];
 
