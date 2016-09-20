@@ -57,7 +57,6 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
   [[self windowController] setShouldCascadeWindows:NO]; // Tell the controller to not cascade its windows.
   [self setFrameAutosaveName:kOSXGLWindowPositionHeightWidth];  // Specify the autosave name for the window.
   [self setFrameUsingName:[self frameAutosaveName] force:YES];
-  
   return self;
 }
 
@@ -95,6 +94,8 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
     return;
 
   NSRect rect = [self contentRectForFrameRect:[self frame]];
+  //NSLog(@"windowDidResize %f, %f, %f, %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+
   if (!g_Windowing.IsFullScreen())
   {
     int RES_SCREEN = g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
@@ -106,16 +107,8 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
   // send a message so that videoresolution (and refreshrate) is changed
   if (rect.size.width != 0 && rect.size.height != 0)
   {
-    XBMC_Event newEvent;
-    newEvent.type = XBMC_VIDEORESIZE;
-    newEvent.resize.w = (int)rect.size.width;
-    newEvent.resize.h = (int)rect.size.height;
-
-    // check for valid sizes cause in some cases
-    // we are hit during fullscreen transition from osx
-    // and might be technically "zero" sized
-    if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
-      g_application.OnEvent(newEvent);
+    // in main thread but not app's main thread, we have to post here
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_VIDEORESIZE, rect.size.width, rect.size.height);
   }
 
   g_windowManager.MarkDirty();
@@ -147,6 +140,7 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
     return;
 
   NSRect rect = [self contentRectForFrameRect:[self frame]];
+  //NSLog(@"windowDidEndLiveResize %f, %f, %f, %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 
   if(!g_Windowing.IsFullScreen())
   {
@@ -159,16 +153,8 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
   // send a message so that videoresolution (and refreshrate) is changed
   if (rect.size.width != 0 && rect.size.height != 0)
   {
-    XBMC_Event newEvent;
-    newEvent.type = XBMC_VIDEORESIZE;
-    newEvent.resize.w = (int)rect.size.width;
-    newEvent.resize.h = (int)rect.size.height;
-
-    // check for valid sizes cause in some cases
-    // we are hit during fullscreen transition from osx
-    // and might be technically "zero" sized
-    if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
-      g_application.OnEvent(newEvent);
+    // in main thread but not app's main thread, we have to post here
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_VIDEORESIZE, rect.size.width, rect.size.height);
   }
 
   g_windowManager.MarkDirty();
@@ -176,10 +162,13 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 
 -(void)windowDidEnterFullScreen: (NSNotification*)notification
 {
+  //NSLog(@"windowDidEnterFullScreen");
 }
 
 -(void)windowWillEnterFullScreen: (NSNotification*)notification
 {
+  //NSLog(@"windowWillEnterFullScreen");
+
   // if osx is the issuer of the toggle
   // call XBMCs toggle function
   if (!g_Windowing.GetFullscreenWillToggle())
@@ -201,6 +190,7 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 
 -(void)windowDidExitFullScreen: (NSNotification*)notification
 {
+  //NSLog(@"windowDidExitFullScreen");
   // if osx is the issuer of the toggle
   // call XBMCs toggle function
   if (!g_Windowing.GetFullscreenWillToggle())
@@ -210,7 +200,6 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
     // called from XBMCs gui thread
     g_Windowing.SetFullscreenWillToggle(true);
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
-    
   }
   else
   {
@@ -223,7 +212,7 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 
 -(void)windowWillExitFullScreen: (NSNotification*)notification
 {
-  
+  //NSLog(@"windowWillExitFullScreen");
 }
 
 - (NSApplicationPresentationOptions) window:(NSWindow *)window willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions

@@ -374,6 +374,16 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_WIDTH,  rect.size.width);
       CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_HEIGHT, rect.size.height);
     }
+    else
+    {
+      // set the toggle flag so that the
+      // native "willenterfullscreen" et al callbacks
+      // know that they are "called" by xbmc and not osx
+      // toggle cocoa fullscreen mode
+      m_fullscreenWillToggle = true;
+      // toggleFullScreen is very nasty and really should be done on main thread
+      [appWindow performSelectorOnMainThread:@selector(toggleFullScreen:) withObject:nil waitUntilDone:YES];
+    }
 
     m_appWindow = appWindow;
     m_bWindowCreated = true;
@@ -439,23 +449,7 @@ bool CWinSystemOSX::DestroyWindow()
 
 bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop)
 {
-/*
-  NSRect myNewFrame = NSMakeRect(newLeft, newTop, newWidth, newHeight);
-
-  NSDictionary* windowResize = [NSDictionary dictionaryWithObjectsAndKeys: (NSWindow*)m_appWindow, NSViewAnimationTargetKey, [NSValue valueWithRect: myNewFrame], NSViewAnimationEndFrameKey, nil];
-  NSArray* animations = [NSArray arrayWithObjects:windowResize, nil];
-  NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations: animations];
-  
-  [animation setAnimationBlockingMode: NSAnimationNonblocking];
-  [animation setAnimationCurve: NSAnimationEaseIn];
-  [animation setDuration: 0.5];
-  [animation startAnimation];
-*/
   NSWindow* window = (NSWindow*)m_appWindow;
-
-  NSRect rect = [window contentRectForFrameRect:[window frame]];
-  CLog::Log(LOGDEBUG, "newTop(%d)", newTop);
-  CLog::Log(LOGDEBUG, "newTop(%f)", rect.origin.y);
 
   if (m_bFullScreen)
   {
@@ -478,9 +472,8 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
   OSXGLView *view = [(NSWindow*)m_appWindow contentView];
   [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
   [view setFrameSize:NSMakeSize(newWidth, newHeight)];
-
-  NSOpenGLContext *context = [view getGLContext];
-  [context update];
+  [[view getGLContext] update];
+  view.needsDisplay = YES;
   
   m_nWidth = newWidth;
   m_nHeight = newHeight;
@@ -493,6 +486,8 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
     CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_WIDTH,  rect.size.width);
     CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_HEIGHT, rect.size.height);
   }
+
+  g_windowManager.MarkDirty();
 
   return true;
 }
@@ -523,15 +518,23 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   if (m_lastDisplayNr == -1)
     m_lastDisplayNr = res.iScreen;
 
-  
-  if (m_lastDisplayNr == -1)
-    m_lastDisplayNr = res.iScreen;
-
-  m_nWidth      = res.iWidth;
-  m_nHeight     = res.iHeight;
+  m_nWidth = res.iWidth;
+  m_nHeight = res.iHeight;
+  bool needToggle = m_bFullScreen || fullScreen;
   m_bFullScreen = fullScreen;
   
   NSWindow *window = (NSWindow *)m_appWindow;
+  if (needToggle)
+  {
+    // set the toggle flag so that the
+    // native "willenterfullscreen" et al callbacks
+    // know that they are "called" by xbmc and not osx
+    // toggle cocoa fullscreen mode
+    m_fullscreenWillToggle = true;
+    // toggleFullScreen is very nasty and really should be done on main thread
+    [window performSelectorOnMainThread:@selector(toggleFullScreen:) withObject:nil waitUntilDone:YES];
+  }
+
   [window setAllowsConcurrentViewDrawing:NO];
 
   if (m_bFullScreen)
@@ -540,68 +543,33 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
     m_lastDisplayNr = res.iScreen;
     
-    // FullScreen Mode
-    // Save info about the windowed context so we can restore it when returning to windowed.
-    NSRect rect = [window contentRectForFrameRect:[window frame]];
-    CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_LEFT,   rect.origin.x);
-    CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_TOP ,   rect.origin.y);
-    CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_WIDTH,  rect.size.width);
-    CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_HEIGHT, rect.size.height);
-    
-    // This is Cocca Windowed FullScreen Mode
-    // Get the screen rect of our current display
-    NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
-    NSRect    screenRect = [pScreen frame];
-
-    // remove frame origin offset of orginal display
-    screenRect.origin = NSZeroPoint;
-
-    // Hide the menu bar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
+    // hide the menu bar.
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
       SetMenuBarVisible(false);
-    if (m_appWindow == NULL)
-      CreateNewWindow(m_name, true, res, NULL);
-    else
-      ResizeWindowInternal(m_nWidth, m_nHeight, 0, 0);
+
+    ResizeWindowInternal(m_nWidth, m_nHeight, 0, 0);
     
-    // Hide the mouse.
+    // hide the OS mouse
     Cocoa_HideMouse();
   }
   else
   {
-    // Windowed Mode, exit fullscreen
-
+    // exit fullscreen
     // Hide the menu bar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
-      SetMenuBarVisible(false);
-    if (m_appWindow == NULL)
-      CreateNewWindow(m_name, true, res, NULL);
-    else
-    {
-      ResizeWindowInternal(
-        CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_WIDTH),
-        CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_HEIGHT),
-        CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_LEFT),
-        CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_TOP));
-    }
-    
-    m_fullscreenWillToggle = false;
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
+      SetMenuBarVisible(true);
+
+    ResizeWindowInternal(
+      CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_WIDTH),
+      CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_HEIGHT),
+      CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_LEFT),
+      CSettings::GetInstance().GetInt(CSettings::SETTING_WINDOW_TOP));
+
+    // show the OS mouse
+    Cocoa_ShowMouse();
   }
 
   [window setAllowsConcurrentViewDrawing:YES];
-
-  // set the toggle flag so that the
-  // native "willenterfullscreen" et al callbacks
-  // know that they are "called" by xbmc and not osx
-  // toggle cocoa fullscreen mode
-  if ([window respondsToSelector:@selector(toggleFullScreen:)] && m_fullscreenWillToggle)
-  {
-    m_fullscreenWillToggle = true;
-    // does not seem to work, wonder why ?
-    //[(NSWindow*)m_appWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
-    // toggleFullScreen is very nasty and really should be done on main thread
-    [window performSelectorOnMainThread:@selector(toggleFullScreen:) withObject:nil waitUntilDone:NO];
-  }
 
   return true;
 }
@@ -885,7 +853,8 @@ bool CWinSystemOSX::IsObscured(void)
     // the whole XBMC window and therefore would make the framerate limiter
     // kicking in. Unfortunatly even the alpha of these windows is 1.0 so
     // we have to check the ownerName.
-    if (CFStringCompare(ownerName, CFSTR("Shades"), 0)            == kCFCompareEqualTo ||
+    if (CFStringCompare(ownerName, CFSTR("MrMC"), 0)              == kCFCompareEqualTo ||
+        CFStringCompare(ownerName, CFSTR("Shades"), 0)            == kCFCompareEqualTo ||
         CFStringCompare(ownerName, CFSTR("SmartSaver"), 0)        == kCFCompareEqualTo ||
         CFStringCompare(ownerName, CFSTR("Brightness Slider"), 0) == kCFCompareEqualTo ||
         CFStringCompare(ownerName, CFSTR("Displaperture"), 0)     == kCFCompareEqualTo ||

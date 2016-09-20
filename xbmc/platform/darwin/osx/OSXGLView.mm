@@ -71,6 +71,11 @@
   [super dealloc];
 }
 
+- (BOOL)preservesContentDuringLiveResize
+{
+  return YES;
+}
+
 - (void)drawRect:(NSRect)rect
 {
   static BOOL firstRender = YES;

@@ -31,6 +31,7 @@
 
 - (id)initWithFrame: (NSRect)frameRect;
 - (void)dealloc;
+- (BOOL)preservesContentDuringLiveResize;
 - (NSOpenGLContext *)getGLContext;
 
 @end
