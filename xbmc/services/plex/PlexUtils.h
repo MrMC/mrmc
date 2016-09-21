@@ -69,11 +69,17 @@ public:
   static bool GetMoreItemInfo(CFileItem &item);
   static bool GetMoreResolutions(CFileItem &item);
   static bool SearchPlex(CFileItemList &items, std::string strSearchString);
+  
+  // Plex Music
+  static bool GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bool album);
+  static bool GetPlexSongs(CFileItemList &items, std::string url);
+  static bool ShowMusicInfo(CFileItem item);
 
 private:
   static void ReportToServer(std::string url, std::string filename);
   static bool GetVideoItems(CFileItemList &items,CURL url, TiXmlElement* rootXmlNode, std::string type, bool formatLabel, int season = -1);
   static void GetVideoDetails(CFileItem &item, const TiXmlElement* videoNode);
+  static void GetMusicDetails(CFileItem &item, const TiXmlElement* videoNode);
   static void GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* videoNode, std::string id = "0");
   static TiXmlDocument GetPlexXML(std::string url, std::string filter = "");
   static void RemoveSubtitleProperties(CFileItem &item);

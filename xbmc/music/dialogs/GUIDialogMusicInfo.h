@@ -38,7 +38,9 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   void SetAlbum(const CAlbum& album, const std::string &path);
+  void SetAlbum(CFileItem pItem);
   void SetArtist(const CArtist& artist, const std::string &path);
+  void SetArtist(CFileItem pItem);
   bool NeedRefresh() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 

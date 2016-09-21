@@ -90,6 +90,8 @@ public:
 
   const PlexSectionsContentVector GetTvContent() const;
   const PlexSectionsContentVector GetMovieContent() const;
+  const PlexSectionsContentVector GetArtistContent() const;
+  const PlexSectionsContentVector GetPhotoContent() const;
   const std::string FormatContentTitle(const std::string contentTitle) const;
   std::string FindSectionTitle(const std::string &path);
 
@@ -118,6 +120,10 @@ private:
   std::vector<CFileItemPtr> m_section_items;
   CCriticalSection  m_criticalMovies;
   CCriticalSection  m_criticalTVShow;
+  CCriticalSection  m_criticalArtist;
+  CCriticalSection  m_criticalPhoto;
   std::vector<PlexSectionsContent> m_movieSectionsContents;
   std::vector<PlexSectionsContent> m_showSectionsContents;
+  std::vector<PlexSectionsContent> m_artistSectionsContents;
+  std::vector<PlexSectionsContent> m_photoSectionsContents;
 };

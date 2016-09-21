@@ -60,6 +60,7 @@ public:
   void SetItemWatched(CFileItem &item);
   void SetItemUnWatched(CFileItem &item);
   void UpdateItemState(CFileItem &item, double currentTime);
+  void ShowMusicInfo(CFileItem item);
   void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllInProgressShows(CFileItemList &inProgress, int itemLimit);

@@ -195,6 +195,18 @@ const PlexSectionsContentVector CPlexClient::GetMovieContent() const
   return m_movieSectionsContents;
 }
 
+const PlexSectionsContentVector CPlexClient::GetArtistContent() const
+{
+  CSingleLock lock(m_criticalArtist);
+  return m_artistSectionsContents;
+}
+
+const PlexSectionsContentVector CPlexClient::GetPhotoContent() const
+{
+  CSingleLock lock(m_criticalPhoto);
+  return m_photoSectionsContents;
+}
+
 const std::string CPlexClient::FormatContentTitle(const std::string contentTitle) const
 {
   std::string owned = (GetOwned() == "1") ? "O":"S";
@@ -370,6 +382,58 @@ bool CPlexClient::ParseSections(PlexSectionParsing parser)
             m_showSectionsContents.push_back(content);
           }
         }
+        else if (content.type == "artist")
+        {
+          if (parser == PlexSectionParsing::checkSection)
+          {
+            CSingleLock lock(m_criticalArtist);
+            for (const auto &contents : m_artistSectionsContents)
+            {
+              if (contents.uuid == content.uuid)
+              {
+                if (contents.updatedAt != content.updatedAt)
+                {
+#if defined(PLEX_DEBUG_VERBOSE)
+                  CLog::Log(LOGDEBUG, "CPlexClient::ParseSections need update on %s:%s",
+                            m_serverName.c_str(), content.title.c_str());
+#endif
+                  m_needUpdate = true;
+                }
+              }
+            }
+          }
+          else
+          {
+            CSingleLock lock(m_criticalArtist);
+            m_artistSectionsContents.push_back(content);
+          }
+        }
+        else if (content.type == "photo")
+        {
+          if (parser == PlexSectionParsing::checkSection)
+          {
+            CSingleLock lock(m_criticalPhoto);
+            for (const auto &contents : m_photoSectionsContents)
+            {
+              if (contents.uuid == content.uuid)
+              {
+                if (contents.updatedAt != content.updatedAt)
+                {
+#if defined(PLEX_DEBUG_VERBOSE)
+                  CLog::Log(LOGDEBUG, "CPlexClient::ParseSections need update on %s:%s",
+                            m_serverName.c_str(), content.title.c_str());
+#endif
+                  m_needUpdate = true;
+                }
+              }
+            }
+          }
+          else
+          {
+            CSingleLock lock(m_criticalPhoto);
+            m_photoSectionsContents.push_back(content);
+          }
+        }
         else
         {
           CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %s found unhandled content type %s",
@@ -382,6 +446,10 @@ bool CPlexClient::ParseSections(PlexSectionParsing parser)
         m_serverName.c_str(), (int)m_movieSectionsContents.size());
       CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %s found %d shows sections",
         m_serverName.c_str(), (int)m_showSectionsContents.size());
+      CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %s found %d artist sections",
+                m_serverName.c_str(), (int)m_artistSectionsContents.size());
+      CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %s found %d photo sections",
+                m_serverName.c_str(), (int)m_photoSectionsContents.size());
 
       rtn = true;
     }

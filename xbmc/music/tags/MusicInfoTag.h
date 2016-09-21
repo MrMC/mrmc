@@ -182,6 +182,7 @@ public:
   std::string m_strMood;
   std::string m_strLyrics;
   std::string m_cuesheet;
+  std::string m_strServiceId;
   CDateTime m_lastPlayed;
   CDateTime m_dateAdded;
   bool m_bCompilation;

@@ -64,7 +64,7 @@
 #include "cores/IPlayer.h"
 #include "CueDocument.h"
 #include "Autorun.h"
-
+#include "services/ServicesManager.h"
 
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
@@ -371,6 +371,12 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem, bool bShowInfo)
 
 void CGUIWindowMusicBase::OnItemInfo(CFileItem *pItem, bool bShowInfo)
 {
+  if (pItem->IsMediaServiceBased())
+  {
+    CServicesManager::GetInstance().ShowMusicInfo(*pItem);
+    return;
+  }
+
   if ((pItem->IsMusicDb() && !pItem->HasMusicInfoTag()) || pItem->IsParentFolder() ||
        URIUtils::IsSpecial(pItem->GetPath()) || StringUtils::StartsWithNoCase(pItem->GetPath(), "musicsearch://"))
     return; // nothing to do
@@ -892,7 +898,8 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
           !item->IsPlugin() && !item->IsMusicDb()         &&
           !item->IsLibraryFolder() &&
           !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
-          (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+          (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
+          !item->IsMediaServiceBased())
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
@@ -920,7 +927,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
 void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
 {
-  if (!m_vecItems->IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsMediaServiceBased())
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
     buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);
@@ -953,7 +960,13 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_SONG_INFO:
     {
-      ShowSongInfo(item.get());
+      CFileItem songItem = *item.get();
+      if (songItem.IsMediaServiceBased())
+      {
+        CServicesManager::GetInstance().ShowMusicInfo(songItem);
+        return true;
+      }
+      ShowSongInfo(&songItem);
       return true;
     }
 
@@ -1310,7 +1323,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 {
   items.ClearArt();
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory, items);
-  if (bResult)
+  if (bResult && !items.IsMediaServiceBased())
   {
     CMusicThumbLoader loader;
     loader.FillThumb(items);

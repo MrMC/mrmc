@@ -974,8 +974,7 @@
 					</item>
 					<item id="3">
 						<label>31956</label>
-						<onclick condition="StringCompare(Window.Property(MusicDirectLink),True)">ActivateWindow(Music)</onclick>
-						<onclick condition="!StringCompare(Window.Property(MusicDirectLink),True)">ActivateWindow(Music,root)</onclick>
+						<onclick>ActivateWindow(Music,root)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>

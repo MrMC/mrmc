@@ -187,7 +187,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       }
     }
   }
-  else if (item->HasMusicInfoTag())
+  else if (item->HasMusicInfoTag() && !item->IsMediaServiceBased() )
   {
     id = item->GetMusicInfoTag()->GetDatabaseId();
     type = MediaTypeSong;

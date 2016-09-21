@@ -40,6 +40,11 @@
 #include "video/VideoInfoTag.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
+#include "music/tags/MusicInfoTag.h"
+#include "music/dialogs/GUIDialogSongInfo.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
+#include "guilib/GUIWindowManager.h"
+
 static int  g_progressSec = 0;
 static CFileItem m_curItem = *new CFileItem;
 static PlexUtilsPlayerState g_playbackState = PlexUtilsPlayerState::stopped;
@@ -223,6 +228,37 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const TiXmlElement* videoNode)
     }
   }
   item.GetVideoInfoTag()->m_cast = roles;
+}
+
+void CPlexUtils::GetMusicDetails(CFileItem &item, const TiXmlElement* videoNode)
+{
+  // get all genres
+  std::vector<std::string> genres;
+  const TiXmlElement* genreNode = videoNode->FirstChildElement("Genre");
+  if (genreNode)
+  {
+    while (genreNode)
+    {
+      std::string genre = XMLUtils::GetAttribute(genreNode, "tag");
+      genres.push_back(genre);
+      genreNode = genreNode->NextSiblingElement("Genre");
+    }
+  }
+  item.GetMusicInfoTag()->SetGenre(genres);
+  
+  // get all countries
+//  std::vector<std::string> countries;
+//  const TiXmlElement* countryNode = videoNode->FirstChildElement("Country");
+//  if (countryNode)
+//  {
+//    while (countryNode)
+//    {
+//      std::string country = XMLUtils::GetAttribute(countryNode, "tag");
+//      countries.push_back(country);
+//      countryNode = countryNode->NextSiblingElement("Country");
+//    }
+//  }
+//  item.GetMusicInfoTag()->SetCountry(countries);
 }
 
 void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* mediaNode, std::string id)
@@ -1226,3 +1262,296 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
   
   return items.Size() > 0;
 }
+
+/// Plex Music Below
+
+bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bool album)
+{
+  bool rtn = false;
+  std::string value;
+  TiXmlDocument xml = GetPlexXML(url);
+  
+  std::string strMediaType = album ? MediaTypeAlbum : MediaTypeArtist;
+  std::string strMediaTypeUrl = album ? "plex://music/songs/" : "plex://music/albums/";
+  
+  TiXmlElement* rootXmlNode = xml.RootElement();
+  if (rootXmlNode)
+  {
+    /*
+    <Directory
+       ratingKey="5453"
+       key="/library/metadata/5453/children"
+       guid="com.plexapp.agents.plexmusic://gracenote/artist/05CCBFDB0877C16F?lang=en"
+       type="artist"
+       title="Amy MacDonald"
+       summary="Amy Macdonald (born 25 August 1987 in Bishopbriggs, East Dunbartonshire) is a Scottish recording artist. Macdonald rose to fame in 2007 with her debut album, This Is the Life (2007) and its fourth single, &#34;This Is the Life&#34;. The single charted at number one in six countries, while reaching the top ten in another eleven countries. Her third album, Life in a Beautiful Light, was released on June 11, 2012."
+       index="1"
+       thumb="/library/metadata/5453/thumb/1473727903"
+       art="/library/metadata/5453/art/1473727903"
+       addedAt="1355585491"
+       updatedAt="1473727903">
+     
+    <Genre tag="Adult Alternative Rock" />
+    <Genre tag="Pop" />
+    <Country tag="United Kingdom" />
+    </Directory>
+     
+     /// Album
+     
+     <Directory ratingKey="5752" key="/library/metadata/5752/children" guid="local://5752" parentRatingKey="5508" type="album" title="Atomska trilogija" parentKey="/library/metadata/5508" parentTitle="Atomsko skloniste" summary="" index="1" year="1980" thumb="/library/metadata/5752/thumb/1467464126" originallyAvailableAt="1980-01-01" addedAt="1355587058" updatedAt="1467464126">
+     <Genre tag="Other" />
+     </Directory>
+    */
+    const TiXmlElement* directoryNode = rootXmlNode->FirstChildElement("Directory");
+    while (directoryNode)
+    {
+      /*
+       void SetURL(const std::string& strURL);
+       void SetTitle(const std::string& strTitle);
+       void SetArtist(const std::string& strArtist);
+       void SetArtist(const std::vector<std::string>& artists, bool FillDesc = false);
+       void SetArtistDesc(const std::string& strArtistDesc);
+       void SetDateAdded(const std::string& strDateAdded);
+       void SetDateAdded(const CDateTime& strDateAdded);
+       */
+      rtn = true;
+      CFileItemPtr plexItem(new CFileItem());
+      // set m_bIsFolder to true to indicate we are artist list
+      plexItem->m_bIsFolder = true;
+      plexItem->SetProperty("PlexItem", true);
+      plexItem->SetProperty("MediaServicesItem", true);
+      plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
+      CURL url1(url);
+      url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
+      plexItem->SetPath(strMediaTypeUrl + Base64::Encode(url1.Get()));
+      plexItem->GetMusicInfoTag()->m_strServiceId = XMLUtils::GetAttribute(directoryNode, "ratingKey");
+      plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
+      plexItem->GetMusicInfoTag()->m_type = strMediaType;
+      plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(directoryNode, "title"));
+      if (album)
+        plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(directoryNode, "parentTitle"));
+      else
+        plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(directoryNode, "title"));
+      plexItem->GetMusicInfoTag()->SetAlbum(XMLUtils::GetAttribute(directoryNode, "title"));
+      plexItem->GetMusicInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(directoryNode, "title").c_str()));
+
+      
+      value = XMLUtils::GetAttribute(directoryNode, "thumb");
+      if (!value.empty() && (value[0] == '/'))
+        StringUtils::TrimLeft(value, "/");
+      url1.SetFileName(value);
+      plexItem->SetArt("thumb", url1.Get());
+      
+      value = XMLUtils::GetAttribute(directoryNode, "art");
+      if (!value.empty() && (value[0] == '/'))
+        StringUtils::TrimLeft(value, "/");
+      url1.SetFileName(value);
+      plexItem->SetArt("fanart", url1.Get());
+      
+      
+      time_t addedTime = atoi(XMLUtils::GetAttribute(directoryNode, "addedAt").c_str());
+      CDateTime aTime(addedTime);
+      plexItem->GetMusicInfoTag()->SetDateAdded(aTime);
+      
+      GetMusicDetails(*plexItem, directoryNode);
+
+      items.Add(plexItem);
+      directoryNode = directoryNode->NextSiblingElement("Directory");
+    }
+  }
+  items.SetProperty("library.filter", "true");
+  items.GetVideoInfoTag()->m_type = strMediaType;
+  items.SetProperty("MediaServicesItem", true);
+  
+  return rtn;
+}
+
+bool CPlexUtils::GetPlexSongs(CFileItemList &items, std::string url)
+{
+  /*
+   song.strTitle,
+   song.strMusicBrainzTrackID,
+   song.strFileName,
+   song.strComment,
+   song.strMood,
+   song.strThumb,
+   song.GetArtistString(), // NOTE: Don't call this function internally!!!
+   song.genre,
+   song.iTrack,
+   song.iDuration,
+   song.iYear,
+   song.iTimesPlayed,
+   song.iStartOffset,
+   song.iEndOffset,
+   song.lastPlayed,
+   song.rating
+   
+   void SetURL(const std::string& strURL);
+   void SetTitle(const std::string& strTitle);
+   void SetArtist(const std::string& strArtist);
+   void SetArtist(const std::vector<std::string>& artists, bool FillDesc = false);
+   void SetArtistDesc(const std::string& strArtistDesc);
+   void SetAlbum(const std::string& strAlbum);
+   void SetAlbumId(const int iAlbumId);
+   void SetAlbumArtist(const std::string& strAlbumArtist);
+   void SetAlbumArtist(const std::vector<std::string>& albumArtists, bool FillDesc = false);
+   void SetAlbumArtistDesc(const std::string& strAlbumArtistDesc);
+   void SetGenre(const std::string& strGenre);
+   void SetGenre(const std::vector<std::string>& genres);
+   void SetYear(int year);
+   void SetDatabaseId(long id, const std::string &type);
+   void SetReleaseDate(SYSTEMTIME& dateTime);
+   void SetTrackNumber(int iTrack);
+   void SetDiscNumber(int iDiscNumber);
+   void SetTrackAndDiscNumber(int iTrackAndDisc);
+   void SetDuration(int iSec);
+   void SetLoaded(bool bOnOff = true);
+   void SetArtist(const CArtist& artist);
+   void SetAlbum(const CAlbum& album);
+   void SetSong(const CSong& song);
+   
+   <Track
+   ratingKey="5455"
+   key="/library/metadata/5455"
+   guid="com.plexapp.agents.plexmusic://gracenote/track/142066031-CCBFDBA3584154C8D3B9AC5A5DB18C2C/142066032-861BDFE03C20AA0E1189DCD803EA6F27?lang=en"
+   parentRatingKey="5454"
+   grandparentRatingKey="5453"
+   type="track"
+   title="Mr. Rock &amp; Roll"
+   grandparentKey="/library/metadata/5453"
+   parentKey="/library/metadata/5454"
+   grandparentTitle="Amy MacDonald"
+   parentTitle="This Is The Life"
+   summary=""
+   index="1"
+   parentIndex="1"
+   ratingCount="210254"
+   year="2007"
+   thumb="/library/metadata/5454/thumb/1467464063"
+   art="/library/metadata/5453/art/1474411502"
+   parentThumb="/library/metadata/5454/thumb/1467464063"
+   grandparentThumb="/library/metadata/5453/thumb/1474411502"
+   grandparentArt="/library/metadata/5453/art/1474411502"
+   duration="213856"
+   addedAt="1355585491"
+   updatedAt="1467464062"
+   chapterSource="">
+     <Media id="5058" duration="213856" bitrate="284" audioChannels="2" audioCodec="aac" container="mp4" optimizedForStreaming="1" audioProfile="lc" has64bitOffsets="0">
+     <Part
+   id="5062"
+   key="/library/parts/5062/1355585491/file.m4a"
+   duration="213856"
+   file="/share/CACHEDEV1_DATA/Music/Amy MacDonald/This Is The Life/01 Mr. Rock &amp; Roll.m4a"
+   size="7604634"
+   audioProfile="lc"
+   container="mp4"
+   has64bitOffsets="0"
+   hasThumbnail="1"
+   optimizedForStreaming="1" />
+     </Media>
+   </Track>
+   */
+  bool rtn = false;
+  std::string value;
+  TiXmlDocument xml = GetPlexXML(url);
+  TiXmlElement* rootXmlNode = xml.RootElement();
+  if (rootXmlNode)
+  {
+    const TiXmlElement* trackNode = rootXmlNode->FirstChildElement("Track");
+    while (trackNode)
+    {
+      rtn = true;
+      CFileItemPtr plexItem(new CFileItem());
+//      plexItem->m_bIsFolder = true;
+      plexItem->SetProperty("PlexItem", true);
+      plexItem->SetProperty("MediaServicesItem", true);
+      plexItem->SetLabel(XMLUtils::GetAttribute(trackNode, "title"));
+      
+      CURL url1(url);
+      const TiXmlElement* mediaNode = trackNode->FirstChildElement("Media");
+      if(mediaNode)
+      {
+        const TiXmlElement* partNode = mediaNode->FirstChildElement("Part");
+        if(partNode)
+        {
+          XMLUtils::GetAttribute(partNode, "id");
+          std::string key = ((TiXmlElement*) partNode)->Attribute("key");
+          if (!key.empty() && (key[0] == '/'))
+            StringUtils::TrimLeft(key, "/");
+          url1.SetFileName(key);
+          plexItem->SetPath(url1.Get());
+          plexItem->GetMusicInfoTag()->m_strServiceId = XMLUtils::GetAttribute(trackNode, "ratingKey");
+          plexItem->SetProperty("PlexSongKey", XMLUtils::GetAttribute(trackNode, "ratingKey"));
+          plexItem->GetMusicInfoTag()->m_type = MediaTypeSong;
+          plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(trackNode, "title"));
+//          plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(mediaNode, "summary"));
+          plexItem->SetLabel(XMLUtils::GetAttribute(trackNode, "title"));
+          plexItem->GetMusicInfoTag()->SetArtist(XMLUtils::GetAttribute(trackNode, "grandparentTitle"));
+          plexItem->GetMusicInfoTag()->SetAlbum(XMLUtils::GetAttribute(trackNode, "parentTitle"));
+          int year = atoi(XMLUtils::GetAttribute(trackNode, "year").c_str());
+          plexItem->GetMusicInfoTag()->SetYear(year);
+          plexItem->GetMusicInfoTag()->SetTrackNumber(atoi(XMLUtils::GetAttribute(trackNode, "index").c_str()));
+          plexItem->GetMusicInfoTag()->SetDuration(atoi(XMLUtils::GetAttribute(trackNode, "duration").c_str())/1000);
+          
+          value = XMLUtils::GetAttribute(trackNode, "thumb");
+          if (!value.empty() && (value[0] == '/'))
+            StringUtils::TrimLeft(value, "/");
+          url1.SetFileName(value);
+          plexItem->SetArt("thumb", url1.Get());
+          
+          value = XMLUtils::GetAttribute(trackNode, "art");
+          if (!value.empty() && (value[0] == '/'))
+            StringUtils::TrimLeft(value, "/");
+          url1.SetFileName(value);
+          plexItem->SetArt("fanart", url1.Get());
+          
+          
+          time_t addedTime = atoi(XMLUtils::GetAttribute(trackNode, "addedAt").c_str());
+          CDateTime aTime(addedTime);
+          plexItem->GetMusicInfoTag()->SetDateAdded(aTime);
+          plexItem->GetMusicInfoTag()->SetLoaded(true);
+          items.Add(plexItem);
+        }
+      }
+      trackNode = trackNode->NextSiblingElement("Track");
+    }
+  }
+  items.SetProperty("library.filter", "true");
+  items.GetMusicInfoTag()->m_type = MediaTypeSong;
+  items.SetProperty("MediaServicesItem", true);
+  return rtn;
+}
+
+bool CPlexUtils::ShowMusicInfo(CFileItem item)
+{
+  std::string type = item.GetMusicInfoTag()->m_type;
+  if (type == MediaTypeSong)
+  {
+    CGUIDialogSongInfo *dialog = (CGUIDialogSongInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_SONG_INFO);
+    if (dialog)
+    {
+      dialog->SetSong(&item);
+      dialog->Open();
+    }
+  }
+  else if (type == MediaTypeAlbum)
+  {
+    CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
+    if (pDlgAlbumInfo)
+    {
+      pDlgAlbumInfo->SetAlbum(item);
+      pDlgAlbumInfo->Open();
+    }
+  }
+  else if (type == MediaTypeArtist)
+  {
+    CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
+    if (pDlgArtistInfo)
+    {
+      pDlgArtistInfo->SetArtist(item);
+      pDlgArtistInfo->Open();
+    }
+  }
+  return true;
+}
+/// End of Plex Music

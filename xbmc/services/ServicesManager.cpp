@@ -166,6 +166,14 @@ void CServicesManager::UpdateItemState(CFileItem &item, double currentTime)
   }
 }
 
+void CServicesManager::ShowMusicInfo(CFileItem item)
+{
+  if (item.HasProperty("PlexItem"))
+  {
+    CPlexUtils::ShowMusicInfo(item);
+  }
+}
+
 void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit)
 {
   if (CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, false))

@@ -56,6 +56,7 @@
 #include "URL.h"
 #include "ContextMenuManager.h"
 #include "storage/MediaManager.h"
+#include "services/ServicesManager.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -277,6 +278,9 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   if (strDirectory.empty())
     AddSearchFolder();
 
+  // we need to remove cache
+  items.RemoveDiscCache(GetID());
+  
   bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
@@ -393,7 +397,7 @@ void CGUIWindowMusicNav::UpdateButtons()
     URIUtils::Split(m_vecItems->GetPath(), strDummy, strLabel);
   }
   // everything else is from a musicdb:// path
-  else
+  else if (!m_vecItems->IsMediaServiceBased())
   {
     CMusicDatabaseDirectory dir;
     dir.GetLabel(m_vecItems->GetPath(), strLabel);
@@ -502,7 +506,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                !item->IsPlugin() && !item->IsScript() &&
                !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
       {
-        if (dir.IsArtistDir(item->GetPath()))
+        if ((item->IsMediaServiceBased() && item->GetMusicInfoTag()->m_type == MediaTypeArtist) ||
+            dir.IsArtistDir(item->GetPath()))
           buttons.Add(CONTEXT_BUTTON_INFO, 21891);
         else
           buttons.Add(CONTEXT_BUTTON_INFO, 13351);
@@ -511,7 +516,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       // enable query all albums button only in album view
       if (dir.HasAlbumInfo(item->GetPath()) && !dir.IsAllItem(item->GetPath()) &&
           item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   &&
-         !item->IsPlugin() && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
+         !item->IsPlugin() && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://") &&
+         !item->IsMediaServiceBased())
       {
         buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
       }
@@ -541,12 +547,13 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
       }
       NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
-      if (childtype == NODE_TYPE_ALBUM ||
+      if (!item->IsMediaServiceBased() &&
+          (childtype == NODE_TYPE_ALBUM ||
           childtype == NODE_TYPE_ARTIST ||
           nodetype == NODE_TYPE_GENRE ||
           nodetype == NODE_TYPE_ALBUM ||
           nodetype == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
-          nodetype == NODE_TYPE_ALBUM_COMPILATIONS)
+          nodetype == NODE_TYPE_ALBUM_COMPILATIONS))
       {
         // we allow the user to set content for
         // 1. general artist and album nodes
@@ -879,9 +886,22 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
   if (lower == "genres")
     return "musicdb://genres/";
   else if (lower == "artists")
+  {
+    if (CServicesManager::GetInstance().HasServices())
+      return "plex://music/" + lower + "/";
     return "musicdb://artists/";
+  }
   else if (lower == "albums")
+  {
+    if (CServicesManager::GetInstance().HasServices())
+      return "plex://music/" + lower + "/";
     return "musicdb://albums/";
+  }
+  else if (lower == "root")
+  {
+    if (CServicesManager::GetInstance().HasServices())
+      return "plex://music/" + lower + "/";
+  }
   else if (lower == "singles")
     return "musicdb://singles/";
   else if (lower == "songs")

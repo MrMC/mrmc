@@ -31,6 +31,7 @@
 #include "utils/log.h"
 
 #include "video/VideoDatabase.h"
+#include "music/MusicDatabase.h"
 
 using namespace XFILE;
 
@@ -331,6 +332,119 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetContent("tvshows");
       }
       CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d shows", client->GetServerName().c_str(), items.Size());
+    }
+    return true;
+  }
+  else if (StringUtils::StartsWithNoCase(strUrl, "plex://music/"))
+  {
+    if (section.empty())
+    {
+      CMusicDatabase database;
+      database.Open();
+      bool hasMusic = database.HasContent();
+      database.Close();
+      
+      if (hasMusic)
+      {
+        //add local Music
+        std::string title = StringUtils::Format("MrMC - %s", g_localizeStrings.Get(249).c_str());
+        CFileItemPtr pItem(new CFileItem(title));
+        pItem->m_bIsFolder = true;
+        pItem->m_bIsShareOrDrive = false;
+//        if (URIUtils::GetFileName(basePath) == "recentlyaddedepisodes")
+//          pItem->SetPath("videodb://recentlyaddedepisodes/");
+//        else if (URIUtils::GetFileName(basePath) == "inprogressshows")
+//          pItem->SetPath("library://video/inprogressshows.xml/");
+//        else
+//          pItem->SetPath("videodb://tvshows/" + basePath + "/");
+        pItem->SetPath("");
+        pItem->SetLabel(title);
+        items.Add(pItem);
+      }
+      
+      //look through all plex servers and pull content data for "show" type
+      std::vector<CPlexClientPtr> clients;
+      CPlexServices::GetInstance().GetClients(clients);
+      for (const auto &client : clients)
+      {
+        client->ClearSectionItems();
+        std::vector<PlexSectionsContent> contents = client->GetArtistContent();
+        if (contents.size() > 1 || ((hasMusic || clients.size() > 1) && contents.size() == 1))
+        {
+          for (const auto &content : contents)
+          {
+            std::string title = client->FormatContentTitle(content.title);
+            CFileItemPtr pItem(new CFileItem(title));
+            pItem->m_bIsFolder = true;
+            pItem->m_bIsShareOrDrive = true;
+            CPlexUtils::SetPlexItemProperties(*pItem, client);
+            // have to do it this way because raw url has authToken as protocol option
+            CURL curl(client->GetUrl());
+            curl.SetProtocol(client->GetProtocol());
+            std::string filename = StringUtils::Format("%s/%s", content.section.c_str(), (basePath == "root" || basePath == "artists"? "all":basePath.c_str()));
+            curl.SetFileName(filename);
+            pItem->SetPath("plex://music/" + basePath + "/" + Base64::Encode(curl.Get()));
+            pItem->SetLabel(title);
+            std::string value = content.thumb;
+            if (!value.empty() && (value[0] == '/'))
+              StringUtils::TrimLeft(value, "/");
+            curl.SetFileName(value);
+            pItem->SetIconImage(curl.Get());
+            items.Add(pItem);
+            client->AddSectionItem(pItem);
+            CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory client(%s), title(%s)", client->GetServerName().c_str(), title.c_str());
+          }
+        }
+        else if (contents.size() == 1)
+        {
+          CURL curl(client->GetUrl());
+          curl.SetProtocol(client->GetProtocol());
+          curl.SetFileName(contents[0].section + "/all");
+          CPlexUtils::GetPlexArtistsOrAlbum(items, curl.Get(), false);
+          items.SetContent("artists");
+          items.SetPath("plex://music/albums/");
+          CPlexUtils::SetPlexItemProperties(items, client);
+          for (int item = 0; item < items.Size(); ++item)
+            CPlexUtils::SetPlexItemProperties(*items[item], client);
+          CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory '/all' client(%s), shows(%d)", client->GetServerName().c_str(), items.Size());
+        }
+      }
+    }
+    else
+    {
+      CPlexClientPtr client = CPlexServices::GetInstance().FindClient(strUrl);
+      if (!client || !client->GetPresence())
+      {
+        CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory no client or client not present %s", CURL::GetRedacted(strUrl).c_str());
+        return false;
+      }
+      
+      std::string path = URIUtils::GetParentPath(strUrl);
+      URIUtils::RemoveSlashAtEnd(path);
+      path = URIUtils::GetFileName(path);
+      
+      std::string filter = "all";
+      if (path == "albums")
+        filter = "albums";
+      
+      if (path == "root" || path == "artists")
+      {
+        CPlexUtils::GetPlexArtistsOrAlbum(items,Base64::Decode(section), false);
+        items.SetLabel(g_localizeStrings.Get(36917));
+        items.SetContent("artist");
+      }
+      if (path == "albums")
+      {
+        CPlexUtils::GetPlexArtistsOrAlbum(items,Base64::Decode(section), true);
+        items.SetLabel(g_localizeStrings.Get(36919));
+        items.SetContent("albums");
+      }
+      if (path == "songs")
+      {
+        CPlexUtils::GetPlexSongs(items,Base64::Decode(section));
+        items.SetLabel(g_localizeStrings.Get(36921));
+        items.SetContent("songs");
+      }
     }
     return true;
   }
