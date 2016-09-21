@@ -41,7 +41,8 @@
 #define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
 #define HOLDMODE_DATA 3 /* set after hold mode has been exited, and action that inited it has been executed */
 
-CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInputStream(DVDSTREAM_TYPE_DVD)
+CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player, CFileItem& fileitem)
+  : CDVDInputStream(DVDSTREAM_TYPE_DVD, fileitem)
 {
   m_dvdnav = 0;
   m_pDVDPlayer = player;
@@ -87,9 +88,10 @@ int CDVDInputStreamNavigator::stream_cb_read(void *s, void* buffer, int size)
   return bytesread == size ? bytesread : -1;
 }
 
-bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& content, bool contentLookup)
+bool CDVDInputStreamNavigator::Open()
 {
-  if (!CDVDInputStream::Open(strFile, "video/x-dvd-mpeg", contentLookup))
+  m_item.SetMimeType("video/x-dvd-mpeg");
+  if (!CDVDInputStream::Open())
     return false;
 
   // load libdvdnav.dll
@@ -99,13 +101,13 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // load the dvd language codes
   // g_LangCodeExpander.LoadStandardCodes();
 
-  bool is_iso_container = URIUtils::HasExtension(strFile, ".iso|.img");
+  bool is_iso_container = URIUtils::HasExtension(m_item.GetPath(), ".iso|.img");
   if (is_iso_container)
   {
     // no flags options, caching and others do not work well
     // with libdvdnav streaming API.
     m_stream = new XFILE::CFile();
-    if (!m_stream || !m_stream->Open(strFile))
+    if (!m_stream || !m_stream->Open(m_item.GetPath()))
     {
       SAFE_DELETE(m_stream);
       return false;
@@ -120,7 +122,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   }
   else
   {
-    std::string path = strFile;
+    std::string path = m_item.GetPath();
     // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
     // libdvdnav is still able to play without, so strip them.
     if(URIUtils::GetFileName(path) == "VIDEO_TS.IFO")
