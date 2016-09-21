@@ -179,6 +179,34 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const std::string &path)
   m_albumSongs->SetContent("albums");
 }
 
+void CGUIDialogMusicInfo::SetAlbum(CFileItem pItem)
+{
+//  SetSongs(m_album.infoSongs);
+  *m_albumItem = CFileItem(pItem);
+//  CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem,m_album);
+  
+  CMusicThumbLoader loader;
+  loader.LoadItem(m_albumItem.get());
+  
+  // set the artist thumb, fanart
+  if (!m_album.GetAlbumArtist().empty())
+  {
+    CMusicDatabase db;
+    db.Open();
+    std::map<std::string, std::string> artwork;
+    if (db.GetArtistArtForItem(m_album.idAlbum, MediaTypeAlbum, artwork))
+    {
+      if (artwork.find("thumb") != artwork.end())
+        m_albumItem->SetProperty("artistthumb", artwork["thumb"]);
+      if (artwork.find("fanart") != artwork.end())
+        m_albumItem->SetArt("fanart",artwork["fanart"]);
+    }
+  }
+  m_hasUpdatedThumb = false;
+  m_bArtistInfo = false;
+  m_albumSongs->SetContent("albums");
+}
+
 void CGUIDialogMusicInfo::SetArtist(const CArtist& artist, const std::string &path)
 {
   m_artist = artist;
@@ -195,6 +223,20 @@ void CGUIDialogMusicInfo::SetArtist(const CArtist& artist, const std::string &pa
   CMusicThumbLoader loader;
   loader.LoadItem(m_albumItem.get());
 
+  m_hasUpdatedThumb = false;
+  m_bArtistInfo = true;
+  m_albumSongs->SetContent("artists");
+}
+
+void CGUIDialogMusicInfo::SetArtist(CFileItem pItem)
+{
+//  SetDiscography();
+  *m_albumItem = CFileItem(pItem);
+//  CMusicDatabase::SetPropertiesFromArtist(*m_albumItem,m_artist);
+  
+  CMusicThumbLoader loader;
+  loader.LoadItem(m_albumItem.get());
+  
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;
   m_albumSongs->SetContent("artists");
