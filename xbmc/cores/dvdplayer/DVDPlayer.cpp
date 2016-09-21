@@ -2020,6 +2020,18 @@ void CDVDPlayer::HandlePlaySpeed()
 
       m_syncTimer.Set(3000);
     }
+    else
+    {
+      // exceptions for which stream players won't start properly
+      // 1. videoplayer has not detected a keyframe within lenght of demux buffers
+      if (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0 &&
+          !m_dvdPlayerAudio->AcceptsData() &&
+          m_dvdPlayerVideo->IsStalled())
+      {
+        CLog::Log(LOGWARNING, "CDVDPlayer::Sync - stream player video does not start, flushing buffers");
+        FlushBuffers(false);
+      }
+    }
   }
 
   // handle ff/rw
