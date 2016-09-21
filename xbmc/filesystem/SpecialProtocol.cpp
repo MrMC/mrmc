@@ -82,6 +82,11 @@ void CSpecialProtocol::SetLogsPath(const std::string &dir)
   SetPath("logs", dir);
 }
 
+void CSpecialProtocol::SetCustomPath(const std::string &name, const std::string &dir)
+{
+  SetPath(name, dir);
+}
+
 bool CSpecialProtocol::ComparePath(const std::string &path1, const std::string &path2)
 {
   return TranslatePath(path1) == TranslatePath(path2);
@@ -156,21 +161,17 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
 
 
   // from here on, we have our "real" special paths
-  else if (RootDir == "xbmc" ||
-           RootDir == "xbmcbin" ||
-           RootDir == "home" ||
-           RootDir == "userhome" ||
-           RootDir == "temp" ||
-           RootDir == "logs" ||
-           RootDir == "profile" ||
-           RootDir == "masterprofile" ||
-           RootDir == "frameworks")
+  else
   {
-    std::string basePath = GetPath(RootDir);
-    if (!basePath.empty())
-      translatedPath = URIUtils::AddFileToFolder(basePath, FileName);
-    else
-      translatedPath.clear();
+    auto rootName = m_pathMap.find(RootDir);
+    if (rootName != m_pathMap.end())
+    {
+      std::string basePath = GetPath(RootDir);
+      if (!basePath.empty())
+        translatedPath = URIUtils::AddFileToFolder(basePath, FileName);
+      else
+        translatedPath.clear();
+    }
   }
 
   // check if we need to recurse in
