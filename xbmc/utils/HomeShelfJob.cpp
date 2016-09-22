@@ -195,28 +195,29 @@ bool CHomeShelfJob::UpdateMusic()
 
   CMusicDatabase musicdatabase;
   musicdatabase.Open();
-  if (!musicdatabase.HasContent())
+  if (musicdatabase.HasContent())
   {
+    VECALBUMS albums;
+    musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS);
+    for (size_t i = 0; i < albums.size(); ++i)
+    {
+      CAlbum &album = albums[i];
+      std::string strDir = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
+      CFileItemPtr pItem(new CFileItem(strDir, album));
+      std::string strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
+      std::string strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
+      pItem->SetProperty("thumb", strThumb);
+      pItem->SetProperty("fanart", strFanart);
+      pItem->SetProperty("artist", album.GetAlbumArtistString());
+      pItem->SetProperty("ItemType", g_localizeStrings.Get(359));
+      m_HomeShelfMusicAlbums->Add(pItem);
+    }
     musicdatabase.Close();
-    return true;
   }
 
-  VECALBUMS albums;
-  musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS);
-  for (size_t i = 0; i < albums.size(); ++i)
-  {
-    CAlbum &album = albums[i];
-    std::string strDir = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
-    CFileItemPtr pItem(new CFileItem(strDir, album));
-    std::string strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
-    std::string strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
-    pItem->SetProperty("thumb", strThumb);
-    pItem->SetProperty("fanart", strFanart);
-    pItem->SetProperty("artist", album.GetAlbumArtistString());
-    pItem->SetProperty("ItemType", g_localizeStrings.Get(359));
-    m_HomeShelfMusicAlbums->Add(pItem);
-  }
-  musicdatabase.Close();
+  // get recently added ALBUMS from any enabled service
+  CServicesManager::GetInstance().GetPlexRecentlyAddedAlbums(*m_HomeShelfMusicAlbums, NUM_ITEMS);
+  
   return true;
 }
 

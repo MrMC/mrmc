@@ -63,13 +63,14 @@ public:
   void ShowMusicInfo(CFileItem item);
   void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit);
+  void GetPlexRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllInProgressShows(CFileItemList &inProgress, int itemLimit);
   void GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit);
   void GetSubtitles(CFileItem &item);
   void GetMoreInfo(CFileItem &item);
   bool GetResolutions(CFileItem &item);
   void SearchService(CFileItemList &items, std::string strSearchString);
-
+  bool GetAlbumSongs(CFileItem item, CFileItemList &items);
   bool GetDirectory(const CURL& url, CFileItemList &items);
   XFILE::DIR_CACHE_TYPE GetCacheType(const CURL& url);
 

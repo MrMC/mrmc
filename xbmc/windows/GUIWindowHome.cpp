@@ -316,9 +316,25 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
   // play media
   if (itemPtr.IsAudio())
   {
-    // its a bit ugly, but only way to get full album to play
-    std::string cmd = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(itemPtr.GetPath().c_str()).c_str());
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+    if (itemPtr.IsMediaServiceBased())
+    {
+      CFileItemList &items = *new CFileItemList;
+      CServicesManager::GetInstance().GetAlbumSongs(itemPtr, items);
+      g_playlistPlayer.Reset();
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+      PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+      playlist.Clear();
+      playlist.Add(items);
+      
+      // play full album, starting with first song...
+      g_playlistPlayer.Play(0);
+    }
+    else
+    {
+      // its a bit ugly, but only way to get full album to play
+      std::string cmd = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(itemPtr.GetPath().c_str()).c_str());
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+    }
   }
   else
   {

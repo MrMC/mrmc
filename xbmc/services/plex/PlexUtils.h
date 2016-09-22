@@ -74,6 +74,8 @@ public:
   static bool GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bool album);
   static bool GetPlexSongs(CFileItemList &items, std::string url);
   static bool ShowMusicInfo(CFileItem item);
+  static bool GetPlexRecentlyAddedAlbums(CFileItemList &items,int limit);
+  static bool GetPlexAlbumSongs(CFileItem item, CFileItemList &items);
 
 private:
   static void ReportToServer(std::string url, std::string filename);

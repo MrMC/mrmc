@@ -210,6 +210,24 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
   }
 }
 
+void CServicesManager::GetPlexRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit)
+{
+  if (CPlexUtils::GetPlexRecentlyAddedAlbums(recentlyAdded, itemLimit))
+  {
+    CFileItemList temp;
+    recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
+    for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
+    {
+      CFileItemPtr item = recentlyAdded.Get(i);
+      item->SetProperty("ItemType", g_localizeStrings.Get(359));
+      temp.Add(item);
+    }
+    
+    recentlyAdded.ClearItems();
+    recentlyAdded.Append(temp);
+  }
+}
+
 void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int itemLimit)
 {
   if (CPlexUtils::GetAllPlexInProgress(inProgress, true))
@@ -271,6 +289,13 @@ void CServicesManager::SearchService(CFileItemList &items, std::string strSearch
   {
     CPlexUtils::SearchPlex(items, strSearchString);
   }
+}
+
+bool CServicesManager::GetAlbumSongs(CFileItem item, CFileItemList &items)
+{
+  if (item.HasProperty("PlexItem"))
+    return CPlexUtils::GetPlexAlbumSongs(item, items);
+  return false;
 }
 
 void CServicesManager::RegisterMediaServicesHandler(IMediaServicesHandler *mediaServicesHandler)

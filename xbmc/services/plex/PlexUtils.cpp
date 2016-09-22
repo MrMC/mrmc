@@ -1325,13 +1325,20 @@ bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bo
       url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
       plexItem->SetPath(strMediaTypeUrl + Base64::Encode(url1.Get()));
       plexItem->GetMusicInfoTag()->m_strServiceId = XMLUtils::GetAttribute(directoryNode, "ratingKey");
-      plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
+      
       plexItem->GetMusicInfoTag()->m_type = strMediaType;
       plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(directoryNode, "title"));
       if (album)
+      {
         plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(directoryNode, "parentTitle"));
+        plexItem->SetProperty("artist", XMLUtils::GetAttribute(directoryNode, "parentTitle"));
+        plexItem->SetProperty("PlexAlbumKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
+      }
       else
+      {
         plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(directoryNode, "title"));
+        plexItem->SetProperty("PlexArtistKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
+      }
       plexItem->GetMusicInfoTag()->SetAlbum(XMLUtils::GetAttribute(directoryNode, "title"));
       plexItem->GetMusicInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(directoryNode, "title").c_str()));
 
@@ -1341,13 +1348,14 @@ bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bo
         StringUtils::TrimLeft(value, "/");
       url1.SetFileName(value);
       plexItem->SetArt("thumb", url1.Get());
+      plexItem->SetProperty("thumb", url1.Get());
       
       value = XMLUtils::GetAttribute(directoryNode, "art");
       if (!value.empty() && (value[0] == '/'))
         StringUtils::TrimLeft(value, "/");
       url1.SetFileName(value);
       plexItem->SetArt("fanart", url1.Get());
-      
+      plexItem->SetProperty("fanart", url1.Get());
       
       time_t addedTime = atoi(XMLUtils::GetAttribute(directoryNode, "addedAt").c_str());
       CDateTime aTime(addedTime);
@@ -1553,5 +1561,55 @@ bool CPlexUtils::ShowMusicInfo(CFileItem item)
     }
   }
   return true;
+}
+
+bool CPlexUtils::GetPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
+{
+  if (CPlexServices::GetInstance().HasClients())
+  {
+    CFileItemList plexItems;
+    //look through all plex clients and pull recently added for each library section
+    std::vector<CPlexClientPtr> clients;
+    CPlexServices::GetInstance().GetClients(clients);
+    for (const auto &client : clients)
+    {
+      std::vector<PlexSectionsContent> contents;
+      contents = client->GetArtistContent();
+      for (const auto &content : contents)
+      {
+        CURL curl(client->GetUrl());
+        curl.SetProtocol(client->GetProtocol());
+        curl.SetFileName(curl.GetFileName() + content.section + "/recentlyAdded");
+//        curl.SetFileName(curl.GetFileName() + "recentlyAdded");
+        curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
+        
+        GetPlexArtistsOrAlbum(items, curl.Get(), true);
+        
+        for (int item = 0; item < plexItems.Size(); ++item)
+          CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
+      }
+      plexItems.SetProperty("PlexItem", true);
+      plexItems.SetProperty("MediaServicesItem", true);
+      items.Append(plexItems);
+      items.SetLabel("Recently Added Albums");
+      items.Sort(SortByDateAdded, SortOrderDescending);
+      plexItems.ClearItems();
+    }
+    
+  }
+  return true;
+}
+
+bool CPlexUtils::GetPlexAlbumSongs(CFileItem item, CFileItemList &items)
+{
+  std::string url = item.GetPath();
+  if (StringUtils::StartsWithNoCase(url, "plex://"))
+    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+  CURL url1(url);
+  url1.SetFileName("library/metadata/" + item.GetProperty("PlexAlbumKey").asString() + "/children");
+  url1.RemoveProtocolOption("X-Plex-Container-Start");
+  url1.RemoveProtocolOption("X-Plex-Container-Size");
+  return GetPlexSongs(items, url1.Get());
+  
 }
 /// End of Plex Music
