@@ -24,7 +24,6 @@
 #include "Application.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
-#include "services/plex/PlexUtils.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/StringHasher.h"
@@ -295,6 +294,13 @@ bool CServicesManager::GetAlbumSongs(CFileItem item, CFileItemList &items)
 {
   if (item.HasProperty("PlexItem"))
     return CPlexUtils::GetPlexAlbumSongs(item, items);
+  return false;
+}
+
+bool CServicesManager::GetMediaTotals(PlexMediaCount &totals)
+{
+  if (HasServices())
+    return CPlexUtils::GetPlexMediaTotals(totals);
   return false;
 }
 

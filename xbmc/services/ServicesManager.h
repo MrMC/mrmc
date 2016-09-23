@@ -25,6 +25,7 @@
 #include "threads/SharedSection.h"
 #include "filesystem/IDirectory.h"
 #include "interfaces/IAnnouncer.h"
+#include "services/plex/PlexUtils.h"
 
 
 class CURL;
@@ -73,6 +74,7 @@ public:
   bool GetAlbumSongs(CFileItem item, CFileItemList &items);
   bool GetDirectory(const CURL& url, CFileItemList &items);
   XFILE::DIR_CACHE_TYPE GetCacheType(const CURL& url);
+  bool GetMediaTotals(PlexMediaCount &totals);
 
   void RegisterMediaServicesHandler(IMediaServicesHandler *mediaServicesHandler);
   void UnregisterSettingsHandler(IMediaServicesHandler *mediaServicesHandler);

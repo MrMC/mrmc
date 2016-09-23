@@ -41,6 +41,20 @@ enum class PlexUtilsPlayerState
   stopped = 3,
 };
 
+typedef struct PlexMediaCount
+{
+  int iMovieTotal = 0;
+  int iMovieUnwatched = 0;
+  int iEpisodeTotal = 0;
+  int iEpisodeUnwatched = 0;
+  int iShowTotal = 0;
+  int iShowUnwatched = 0;
+  int iMusicSongs = 0;
+  int iMusicAlbums = 0;
+  int iMusicArtist = 0;
+  
+} PlexMediaCount;
+
 class CPlexUtils
 {
 public:
@@ -76,6 +90,7 @@ public:
   static bool ShowMusicInfo(CFileItem item);
   static bool GetPlexRecentlyAddedAlbums(CFileItemList &items,int limit);
   static bool GetPlexAlbumSongs(CFileItem item, CFileItemList &items);
+  static bool GetPlexMediaTotals(PlexMediaCount &totals);
 
 private:
   static void ReportToServer(std::string url, std::string filename);
@@ -84,5 +99,6 @@ private:
   static void GetMusicDetails(CFileItem &item, const TiXmlElement* videoNode);
   static void GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* videoNode, std::string id = "0");
   static TiXmlDocument GetPlexXML(std::string url, std::string filter = "");
+  static int ParsePlexMediaXML(TiXmlDocument xml);
   static void RemoveSubtitleProperties(CFileItem &item);
 };

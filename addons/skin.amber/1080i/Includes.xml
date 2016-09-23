@@ -853,12 +853,12 @@
       <onclick>$INFO[Skin.String(CustomHome.6.Path)]</onclick>
     </item>
     <item id="6" description="Music">
-      <visible>!Skin.HasSetting(Music.Hide)</visible>
+      <visible>!Skin.HasSetting(Music.Hide) | Library.HasServices</visible>
       <label>$LOCALIZE[2]</label>
       <thumb fallback="special://skin/backgrounds/Music.jpg">$INFO[Skin.String(Music.Background)]</thumb>
-      <onclick condition="Library.HasContent(Music) + !Skin.HasSetting(ArtistView)">ActivateWindow(Music,Artists,root)</onclick>
-      <onclick condition="!Library.HasContent(Music)">ActivateWindow(Music,Files,return)</onclick>
-      <onclick condition="Library.HasContent(Music) + Skin.HasSetting(ArtistView)">ActivateWindow(Music,Artists)</onclick>
+      <onclick condition="[Library.HasContent(Music) | Library.HasServices] + !Skin.HasSetting(ArtistView)">ActivateWindow(Music,Artists,root)</onclick>
+      <onclick condition="![Library.HasContent(Music) | Library.HasServices]">ActivateWindow(Music,Files,return)</onclick>
+      <onclick condition="[Library.HasContent(Music) | Library.HasServices] + Skin.HasSetting(ArtistView)">ActivateWindow(Music,Artists)</onclick>
     </item>
     <item id="27" description="Custom.7">
       <visible>!IsEmpty(Skin.String(CustomHome.7.Path))</visible>
@@ -1204,7 +1204,7 @@
   </include>
   <include name="Library_Count">
     <control type="group" description="Library stats">
-      <animation effect="slide" tween="cubic" easing="inout" start="0,0" end="0,120" time="240" condition="![[[Container(300).HasFocus(13) | Container(300).HasFocus(14)] + Library.HasContent(MusicVideos)] | Container(300).HasFocus(4) | Container(300).HasFocus(5) | [Container(300).HasFocus(6) + Library.HasContent(music)]]">Conditional</animation>
+      <animation effect="slide" tween="cubic" easing="inout" start="0,0" end="0,120" time="240" condition="![[[Container(300).HasFocus(13) | Container(300).HasFocus(14)] + Library.HasContent(MusicVideos)] | Container(300).HasFocus(4) | Container(300).HasFocus(5) | [Container(300).HasFocus(6) + [Library.HasContent(music) | Library.HasServices]]]">Conditional</animation>
       <control type="image">
         <posx>630r</posx>
         <posy>990</posy>

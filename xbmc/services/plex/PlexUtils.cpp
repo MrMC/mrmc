@@ -77,7 +77,7 @@ void CPlexUtils::GetDefaultHeaders(XFILE::CCurlFile &curl)
 {
   curl.SetRequestHeader("Content-Type", "application/xml; charset=utf-8");
   curl.SetRequestHeader("Content-Length", "0");
-
+  curl.SetRequestHeader("Connection", "Keep-Alive");
   curl.SetUserAgent(CSysInfo::GetUserAgent());
   curl.SetRequestHeader("X-Plex-Client-Identifier", CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID));
   curl.SetRequestHeader("X-Plex-Product", "MrMC");
@@ -90,6 +90,9 @@ void CPlexUtils::GetDefaultHeaders(XFILE::CCurlFile &curl)
   curl.SetRequestHeader("X-Plex-Device-Name", hostname);
   curl.SetRequestHeader("X-Plex-Platform", CSysInfo::GetOsName());
   curl.SetRequestHeader("X-Plex-Platform-Version", CSysInfo::GetOsVersion());
+  curl.SetRequestHeader("Cache-Control", "no-cache");
+  curl.SetRequestHeader("Pragma", "no-cache");
+  curl.SetRequestHeader("Expires", "Sat, 26 Jul 1997 05:00:00 GMT");
 }
 
 void CPlexUtils::SetPlexItemProperties(CFileItem &item, const CPlexClientPtr &client)
@@ -105,6 +108,7 @@ TiXmlDocument CPlexUtils::GetPlexXML(std::string url, std::string filter)
   XFILE::CCurlFile http;
   http.SetBufferSize(32768*10);
   http.SetRequestHeader("Accept-Encoding", "gzip");
+  GetDefaultHeaders(http);
 
   CURL url2(url);
   // this is key to get back gzip encoded content
@@ -131,6 +135,18 @@ TiXmlDocument CPlexUtils::GetPlexXML(std::string url, std::string filter)
   xml.Parse(strXML.c_str());
 
   return xml;
+}
+
+int CPlexUtils::ParsePlexMediaXML(TiXmlDocument xml)
+{
+  int result = 0;
+  TiXmlElement* rootXmlNode = xml.RootElement();
+  if (rootXmlNode)
+  {
+    result = atoi(XMLUtils::GetAttribute(rootXmlNode, "totalSize").c_str());
+  }
+  
+  return result;
 }
 
 void CPlexUtils::ReportToServer(std::string url, std::string filename)
@@ -1612,4 +1628,87 @@ bool CPlexUtils::GetPlexAlbumSongs(CFileItem item, CFileItemList &items)
   return GetPlexSongs(items, url1.Get());
   
 }
+
+bool CPlexUtils::GetPlexMediaTotals(PlexMediaCount &totals)
+{
+  std::vector<CPlexClientPtr> clients;
+  CPlexServices::GetInstance().GetClients(clients);
+  for (const auto &client : clients)
+  {
+    /// Only do this for "owned" servers, getting totals from large servers can take up to 1 minute. setting for this maybe?
+    if (client->GetOwned() == "1")
+    {
+      std::vector<PlexSectionsContent> contents;
+      // movie totals
+      contents = client->GetMovieContent();
+      for (const auto &content : contents)
+      {
+        TiXmlDocument xml;
+        CURL curl(client->GetUrl());
+        curl.SetProtocol(client->GetProtocol());
+        curl.SetFileName(content.section + "/all?type=1&unwatched=1");
+        curl.SetProtocolOption("X-Plex-Container-Start", "0");
+        curl.SetProtocolOption("X-Plex-Container-Size", "0");
+        // get movie unwatched totals
+        xml = GetPlexXML(curl.Get());
+        totals.iMovieUnwatched = totals.iMovieUnwatched + ParsePlexMediaXML(xml);
+        // get movie totals
+        curl.SetFileName(content.section + "/all?type=1");
+        xml = GetPlexXML(curl.Get());
+        totals.iMovieTotal = totals.iMovieTotal + ParsePlexMediaXML(xml);
+      }
+      // Show Totals
+      contents = client->GetTvContent();
+      for (const auto &content : contents)
+      {
+        TiXmlDocument xml;
+        CURL curl(client->GetUrl());
+        curl.SetProtocol(client->GetProtocol());
+        curl.SetFileName(content.section + "/all?type=4&unwatched=1");
+        curl.SetProtocolOption("X-Plex-Container-Start", "0");
+        curl.SetProtocolOption("X-Plex-Container-Size", "0");
+        // get episode unwatched totals
+        xml = GetPlexXML(curl.Get());
+        totals.iEpisodeUnwatched = totals.iEpisodeUnwatched + ParsePlexMediaXML(xml);
+        // get episode totals
+        curl.SetFileName(content.section + "/all?type=4");
+        xml = GetPlexXML(curl.Get());
+        totals.iEpisodeTotal = totals.iEpisodeTotal + ParsePlexMediaXML(xml);
+        // get show totals
+        curl.SetFileName(content.section + "/all?type=2");
+        xml = GetPlexXML(curl.Get());
+        totals.iShowTotal = totals.iShowTotal + ParsePlexMediaXML(xml);
+        // get show unwatched totals
+        curl.SetFileName(content.section + "/all?type=2&unwatched=1");
+        xml = GetPlexXML(curl.Get());
+        totals.iShowUnwatched = totals.iShowUnwatched + ParsePlexMediaXML(xml);
+      }
+      // Music Totals
+      contents = client->GetArtistContent();
+      for (const auto &content : contents)
+      {
+        TiXmlDocument xml;
+        CURL curl(client->GetUrl());
+        curl.SetProtocol(client->GetProtocol());
+        curl.SetFileName(content.section + "/all?type=8");
+        curl.SetProtocolOption("X-Plex-Container-Start", "0");
+        curl.SetProtocolOption("X-Plex-Container-Size", "0");
+        // get artist totals
+        xml = GetPlexXML(curl.Get());
+        totals.iMusicArtist = totals.iMusicArtist + ParsePlexMediaXML(xml);
+        // get Album totals
+        curl.SetFileName(content.section + "/all?type=9");
+        xml = GetPlexXML(curl.Get());
+        totals.iMusicAlbums = totals.iMusicAlbums + ParsePlexMediaXML(xml);
+        // get Song totals
+        curl.SetFileName(content.section + "/all?type=10");
+        xml = GetPlexXML(curl.Get());
+        totals.iMusicSongs = totals.iMusicSongs + ParsePlexMediaXML(xml);
+      }
+    }
+  }
+  return true;
+}
+
+
 /// End of Plex Music
