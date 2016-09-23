@@ -35,7 +35,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq ($(OS),android)
 	sed -ie "s|HAVE_LANGINFO_H|HAVE_BALONEY|" "$(PLATFORM)/src/smb_utils.c"
 endif
-ifeq ($(OS),osx)
+ifeq (darwin, $(findstring darwin, $(HOST)))
 	sed -ie "s|!defined HAVE_CLOCK_GETTIME|defined HAVE_BALONEY|" "$(PLATFORM)/compat/compat.h"
 endif
 	cd $(PLATFORM); $(CONFIGURE)

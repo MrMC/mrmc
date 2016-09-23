@@ -34,13 +34,6 @@ LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
 NATIVE_ROOT=@prefix@/@tool_dir@
 
-if test "@platform_os@" = "osx" ; then
-  # Xcode 8 + 10.11, clock_gettime is present
-  # in 10.12 but will get wrongly detected if building on 10.11
-  ac_cv_search_clock_gettime=no
-  ac_cv_func_clock_gettime=no
-fi
-
 #libomxil-bellagio
 ac_cv_func_malloc_0_nonnull=yes
 
@@ -116,7 +109,18 @@ if test "@platform_os@" = "android"; then
   ac_cv_func_rand=yes
 fi
 
+if test "@platform_os@" = "osx" ; then
+  # Xcode 8 + 10.11, clock_gettime is present
+  # in 10.12 but will get wrongly detected if building on 10.11
+  ac_cv_search_clock_gettime=no
+  ac_cv_func_clock_gettime=no
+  ac_cv_func_getentropy=no
+fi
+
 if test "@platform_os@" = "ios"; then
+  ac_cv_search_clock_gettime=no
+  ac_cv_func_clock_gettime=no
+  ac_cv_func_getentropy=no
   # tweaks for libffi (ios must use llvm-gcc-4.2)
   if test "${PACKAGE_NAME}" = "libffi" ; then
       case "@use_xcode@" in
