@@ -401,6 +401,10 @@ void CPlexUtils::SetUnWatched(CFileItem &item)
 
 void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
 {
+  // if we are Plex music, do not report
+  if (item.IsAudio())
+    return;
+  
   // we get called from Application.cpp every 500ms
   if ((g_playbackState == PlexUtilsPlayerState::stopped || g_progressSec == 0 || g_progressSec > 120))
   {
