@@ -107,11 +107,14 @@ void CGUIWindowHome::OnInitWindow()
 {  
   // for shared databases (ie mysql) always force an update on return to home
   // this is a temporary solution until remote announcements can be delivered
-  if (StringUtils::EqualsNoCase(g_advancedSettings.m_databaseVideo.type, "mysql") ||
-      StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql") ||
+  if ((StringUtils::EqualsNoCase(g_advancedSettings.m_databaseVideo.type, "mysql") ||
+      StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql")) ||
       CServicesManager::GetInstance().HasServices())
-    m_updateHS = (Audio | Video | Totals);
-  AddHomeShelfJobs( m_updateHS );
+  {
+    // totals will be done after these jobs are finished
+    m_updateHS = (Audio | Video);
+    AddHomeShelfJobs( m_updateHS );
+  }
 
   CGUIWindow::OnInitWindow();
 }
@@ -134,8 +137,8 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
   bool onUpdate = strcmp(message, "OnUpdate") == 0;
   // always update Totals except on an OnUpdate with no playcount update
   int ra_flag = 0;
-  if (!onUpdate || data.isMember("playcount"))
-    ra_flag |= Totals;
+//  if (!onUpdate || data.isMember("playcount"))
+//    ra_flag |= Totals;
 
   // always update the full list except on an OnUpdate
   if (!onUpdate)
@@ -195,10 +198,13 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     m_HomeShelfRunning = false; /// we're done.
   }
 
+  int jobFlag = ((CHomeShelfJob *)job)->GetFlag();
+  
   if (flag)
     AddHomeShelfJobs(0 /* the flag will be set inside AddHomeShelfJobs via m_cumulativeUpdateFlag */ );
+  else if(jobFlag != Totals)
+    AddHomeShelfJobs(Totals);
 
-  int jobFlag = ((CHomeShelfJob *)job)->GetFlag();
   if (jobFlag & Video)
   {
     CSingleLock lock(m_critsection);
