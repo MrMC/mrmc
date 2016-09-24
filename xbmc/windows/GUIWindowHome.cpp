@@ -38,6 +38,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "services/ServicesManager.h"
 #include "video/windows/GUIWindowVideoBase.h"
+#include "music/MusicDatabase.h"
 
 #define CONTROL_HOMESHELFMOVIES      8000
 #define CONTROL_HOMESHELFTVSHOWS     8001
@@ -322,25 +323,28 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
   // play media
   if (itemPtr.IsAudio())
   {
+    CFileItemList &items = *new CFileItemList;
+    
+    // if we are Service based, get it from there... if not, check music database
     if (itemPtr.IsMediaServiceBased())
-    {
-      CFileItemList &items = *new CFileItemList;
       CServicesManager::GetInstance().GetAlbumSongs(itemPtr, items);
-      g_playlistPlayer.Reset();
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-      PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
-      playlist.Clear();
-      playlist.Add(items);
-      
-      // play full album, starting with first song...
-      g_playlistPlayer.Play(0);
-    }
     else
     {
-      // its a bit ugly, but only way to get full album to play
-      std::string cmd = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(itemPtr.GetPath().c_str()).c_str());
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+      CMusicDatabase musicdatabase;
+      if (!musicdatabase.Open())
+        return false;
+      musicdatabase.GetItems(itemPtr.GetPath(),items);
+      musicdatabase.Close();
     }
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+    playlist.Clear();
+    playlist.Add(items);
+    // play full album, starting with first song...
+    g_playlistPlayer.Play(0);
+    // activate visualisation screen
+    g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
   }
   else
   {
