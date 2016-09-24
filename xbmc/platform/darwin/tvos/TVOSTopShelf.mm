@@ -61,16 +61,19 @@ CTVOSTopShelf &CTVOSTopShelf::GetInstance()
   return sTopShelf;
 }
 
-void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
+void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies1, CFileItemList& tv1)
 {
-  // save these for later
-  CFileItemList recentlyAddedTV;
-  recentlyAddedTV.Copy(tv);
-  m_RecentlyAddedTV->Assign(recentlyAddedTV);
+  {
+    CSingleLock lock (m_cs);
+    // save these for later
+    CFileItemList recentlyAddedTV;
+    recentlyAddedTV.Copy(tv1);
+    m_RecentlyAddedTV->Assign(recentlyAddedTV);
 
-  CFileItemList recentlyAddedMovies;
-  recentlyAddedMovies.Copy(movies);
-  m_RecentlyAddedMovies->Assign(recentlyAddedMovies);
+    CFileItemList recentlyAddedMovies;
+    recentlyAddedMovies.Copy(movies1);
+    m_RecentlyAddedMovies->Assign(recentlyAddedMovies);
+  }
 
   CVideoThumbLoader loader;
   NSMutableArray * movieArray = [[NSMutableArray alloc] init];
@@ -90,11 +93,11 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
   NSString *movieTitle;
   NSString *tvTitle;
   
-  if (movies.Size() > 0)
+  if (m_RecentlyAddedMovies->Size() > 0)
   {
-    for (int i = 0; i < movies.Size() && i < 5; ++i)
+    for (int i = 0; i < m_RecentlyAddedMovies->Size() && i < 5; ++i)
     {
-      CFileItemPtr item          = movies.Get(i);
+      CFileItemPtr item          = m_RecentlyAddedMovies->Get(i);
       movieTitle                 = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
       NSMutableDictionary * movieDict = [[NSMutableDictionary alloc] init];
       if (!item->HasArt("thumb"))
@@ -130,13 +133,13 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
     [shared removeObjectForKey:@"moviesTitle"];
   }
   
-  if (tv.Size() > 0)
+  if (m_RecentlyAddedTV->Size() > 0)
   {
-    for (int i = 0; i < tv.Size() && i < 5; ++i)
+    for (int i = 0; i < m_RecentlyAddedTV->Size() && i < 5; ++i)
     {
       std::string fileName;
       std::string seasonThumb;
-      CFileItemPtr item = tv.Get(i);
+      CFileItemPtr item = m_RecentlyAddedTV->Get(i);
       tvTitle = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
       NSMutableDictionary * tvDict = [[NSMutableDictionary alloc] init];
       std::string title = StringUtils::Format("%s s%02de%02d",
