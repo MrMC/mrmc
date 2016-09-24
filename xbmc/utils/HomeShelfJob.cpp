@@ -73,15 +73,14 @@ bool CHomeShelfJob::UpdateVideo()
 
   CVideoDatabase videodatabase;
   videodatabase.Open();
-
+  CFileItemList *homeShelfTV = new CFileItemList;
+  CFileItemList *homeShelfMovies = new CFileItemList;
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWINPROGRESS))
   {
     if (videodatabase.HasContent())
     {
       CVideoThumbLoader loader;
-      CFileItemList *homeShelfTV = new CFileItemList;
-      CFileItemList *homeShelfMovies = new CFileItemList;
-      
+
       XFILE::CDirectory::GetDirectory("library://video/inprogressmovies.xml/", *homeShelfMovies);
       XFILE::CDirectory::GetDirectory("library://video/inprogressepisodes.xml/", *homeShelfTV);
       homeShelfMovies->Sort(SortByLastPlayed, SortOrderDescending);
@@ -134,16 +133,17 @@ bool CHomeShelfJob::UpdateVideo()
         path = url.ToString();
       }
 
-      videodatabase.GetRecentlyAddedMoviesNav(path, *m_HomeShelfMovies, NUM_ITEMS);
+      videodatabase.GetRecentlyAddedMoviesNav(path, *homeShelfMovies, NUM_ITEMS);
 
-      for (int i = 0; i < m_HomeShelfMovies->Size(); i++)
+      for (int i = 0; i < homeShelfMovies->Size(); i++)
       {
-        CFileItemPtr item = m_HomeShelfMovies->Get(i);
+        CFileItemPtr item = homeShelfMovies->Get(i);
         item->SetProperty("ItemType", g_localizeStrings.Get(20386));
         if (!item->HasArt("thumb"))
         {
           loader.LoadItem(item.get());
         }
+        m_HomeShelfMovies->Add(item);
       }
 
       path = g_advancedSettings.m_recentlyAddedEpisodePath;
@@ -155,11 +155,11 @@ bool CHomeShelfJob::UpdateVideo()
         path = url.ToString();
       }
 
-      videodatabase.GetRecentlyAddedEpisodesNav(path, *m_HomeShelfTV, NUM_ITEMS);
+      videodatabase.GetRecentlyAddedEpisodesNav(path, *homeShelfTV, NUM_ITEMS);
       std::string seasonThumb;
-      for (int i = 0; i < m_HomeShelfTV->Size(); i++)
+      for (int i = 0; i < homeShelfTV->Size(); i++)
       {
-        CFileItemPtr item = m_HomeShelfTV->Get(i);
+        CFileItemPtr item = homeShelfTV->Get(i);
         std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
         item->SetProperty("SeasonEpisode", seasonEpisode);
         item->SetProperty("ItemType", g_localizeStrings.Get(20387));
@@ -171,6 +171,7 @@ bool CHomeShelfJob::UpdateVideo()
         {
           item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
         }
+        m_HomeShelfTV->Add(item);
       }
     }
 
