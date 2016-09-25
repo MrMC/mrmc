@@ -64,6 +64,7 @@ public:
   static bool        OpenAppWithOpenURL(const std::string& path);
   static std::string GetAudioRoute();
   static void        DumpAudioDescriptions(const std::string& why);
+  static std::string GetHardwareUUID();
 
 };
 

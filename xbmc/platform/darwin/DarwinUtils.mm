@@ -858,4 +858,31 @@ void CDarwinUtils::DumpAudioDescriptions(const std::string& why)
 #endif
 }
 
+std::string CDarwinUtils::GetHardwareUUID()
+{
+  static std::string uuid = "NOUUID";
+  if (uuid == "NOUUID")
+  {
+#if defined(TARGET_DARWIN_OSX)
+    io_registry_entry_t ioRegistryRoot = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/");
+    CFStringRef uuidCf = (CFStringRef) IORegistryEntryCreateCFProperty(ioRegistryRoot, CFSTR(kIOPlatformUUIDKey), kCFAllocatorDefault, 0);
+    IOObjectRelease(ioRegistryRoot);
+    CFStringRefToString(uuidCf, uuid);
+    CFRelease(uuidCf);
+#elif defined(TARGET_DARWIN_IOS)
+    NSString *nsuuid = nullptr;
+    // all info about identifiers can be found here:
+    // http://nshipster.com/uuid-udid-unique-identifier/
+    // apple doesn't want us to call uniqueIdentifier and deprecated it
+    if([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)])
+      nsuuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+    
+    if (nsuuid != nullptr)
+      uuid = [nsuuid UTF8String];
+#endif
+  }
+
+  return uuid;
+}
+
 #endif
