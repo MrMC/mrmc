@@ -607,7 +607,7 @@ MainController *g_xbmcController;
       if (g_windowManager.GetFocusedWindow() == WINDOW_FULLSCREEN_VIDEO)
       {
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK))
-          CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
         else
           [self sendKeyDownUp:XBMCK_ESCAPE];
       }
