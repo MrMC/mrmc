@@ -1010,9 +1010,9 @@ XBMCController *g_xbmcController;
   NSString *album = [item objectForKey:@"album"];
   if (album && album.length > 0)
     [dict setObject:album forKey:MPMediaItemPropertyAlbumTitle];
-  NSArray *artists = [item objectForKey:@"artist"];
-  if (artists && artists.count > 0)
-    [dict setObject:[artists componentsJoinedByString:@" "] forKey:MPMediaItemPropertyArtist];
+  NSString *artists = [item objectForKey:@"artist"];
+  if (artists && artists.length > 0)
+    [dict setObject:artists forKey:MPMediaItemPropertyArtist];
   NSNumber *track = [item objectForKey:@"track"];
   if (track)
     [dict setObject:track forKey:MPMediaItemPropertyAlbumTrackNumber];
@@ -1025,18 +1025,14 @@ XBMCController *g_xbmcController;
 
   if (NSClassFromString(@"MPNowPlayingInfoCenter"))
   {
-    NSString *thumb = [item objectForKey:@"thumb"];
-    if (thumb && thumb.length > 0)
+    UIImage *image = [item objectForKey:@"thumb"];
+    if (image)
     {
-      UIImage *image = [UIImage imageWithContentsOfFile:thumb];
-      if (image)
+      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+      if (mArt)
       {
-        MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
-        if (mArt)
-        {
-          [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-          [mArt release];
-        }
+        [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+        [mArt release];
       }
     }
     // these proprity keys are ios5+ only

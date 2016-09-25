@@ -24,7 +24,9 @@
 
 #import "Application.h"
 #import "FileItem.h"
-#import "MusicInfoTag.h"
+#import "music/tags/MusicInfoTag.h"
+#import "video/VideoInfoTag.h"
+#import "music/MusicDatabase.h"
 #import "TextureCache.h"
 #import "SpecialProtocol.h"
 #import "PlayList.h"
@@ -36,6 +38,7 @@
 #else
 #import "platform/darwin/ios/XBMCController.h"
 #endif
+#import "utils/StringUtils.h"
 #import "utils/Variant.h"
 
 
@@ -89,10 +92,14 @@ id objectFromVariant(const CVariant &data)
 
 void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  //LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
-  NSDictionary *dict = dictionaryFromVariantMap(data);
-  //LOG(@"data: %@", dict.description);
+  std::string item_type = "";
+  CVariant nonConstData = data;
   const std::string msg(message);
+  CFileItem curItem(g_application.CurrentFileItem());
+  // handle data which only has a database id and not the metadata inside
+  
+  NSDictionary *dict = dictionaryFromVariantMap(nonConstData);
+  //LOG(@"data: %@", dict.description);
   if (msg == "OnPlay")
   {
     NSDictionary *item = [dict valueForKey:@"item"];
@@ -107,20 +114,23 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
       if (!cachedThumb.empty())
       {
         std::string thumbRealPath = CSpecialProtocol::TranslatePath(cachedThumb);
-        [item setValue:[NSString stringWithUTF8String:thumbRealPath.c_str()] forKey:@"thumb"];
+        UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithUTF8String:thumbRealPath.c_str()]];
+        [item setValue:image forKey:@"thumb"];
       }
     }
     double duration = g_application.GetTotalTime();
     if (duration > 0)
       [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
-    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
+    double elapsed = g_application.GetTime();
+    if (elapsed >= 0)
+      [item setValue:[NSNumber numberWithDouble:elapsed] forKey:@"elapsed"];
     int current = g_playlistPlayer.GetCurrentSong();
     if (current >= 0)
     {
       [item setValue:[NSNumber numberWithInt:current] forKey:@"current"];
       [item setValue:[NSNumber numberWithInt:g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size()] forKey:@"total"];
     }
-    if (g_application.CurrentFileItem().HasMusicInfoTag())
+    if (curItem.HasMusicInfoTag())
     {
       const std::vector<std::string> &genre = g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
       if (!genre.empty())
@@ -131,6 +141,27 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
           [genreArray addObject:[NSString stringWithUTF8String:it->c_str()]];
         }
         [item setValue:genreArray forKey:@"genre"];
+      }
+      std::string strTrack = StringUtils::Format("%i", curItem.GetMusicInfoTag()->GetTrackNumber());
+      std::string strArtist = StringUtils::Join(curItem.GetMusicInfoTag()->GetArtist(), ",");
+      [item setValue:[NSString stringWithUTF8String:curItem.GetMusicInfoTag()->GetTitle().c_str()] forKey:@"title"];
+      [item setValue:[NSString stringWithUTF8String:strTrack.c_str()] forKey:@"track"];
+      [item setValue:[NSString stringWithUTF8String:curItem.GetMusicInfoTag()->GetAlbum().c_str()] forKey:@"album"];
+      [item setValue:[NSString stringWithUTF8String:strArtist.c_str()] forKey:@"artist"];
+    }
+    else if(curItem.HasVideoInfoTag())
+    {
+      if(curItem.GetVideoInfoTag()->m_type == MediaTypeMovie)
+      {
+        [item setValue:[NSString stringWithUTF8String:curItem.GetVideoInfoTag()->m_strTitle.c_str()] forKey:@"title"];
+        [item setValue:[NSString stringWithUTF8String:StringUtils::Format("(%i)", curItem.GetVideoInfoTag()->m_iYear).c_str()] forKey:@"artist"];
+      }
+      else if(curItem.GetVideoInfoTag()->m_type == MediaTypeEpisode)
+      {
+        std::string seasonEpisode = StringUtils::Format("S%02iE%02i", curItem.GetVideoInfoTag()->m_iSeason, curItem.GetVideoInfoTag()->m_iEpisode);
+        [item setValue:[NSString stringWithUTF8String:seasonEpisode.c_str()] forKey:@"album"];
+        [item setValue:[NSString stringWithUTF8String:curItem.GetVideoInfoTag()->m_strShowTitle.c_str()] forKey:@"title"];
+        [item setValue:[NSString stringWithUTF8String:curItem.GetVideoInfoTag()->m_strTitle.c_str()] forKey:@"artist"];
       }
     }
     //LOG(@"item: %@", item.description);

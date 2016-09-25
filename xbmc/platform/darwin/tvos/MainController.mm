@@ -1542,9 +1542,9 @@ MainController *g_xbmcController;
   NSString *album = [item objectForKey:@"album"];
   if (album && album.length > 0)
     [dict setObject:album forKey:MPMediaItemPropertyAlbumTitle];
-  NSArray *artists = [item objectForKey:@"artist"];
-  if (artists && artists.count > 0)
-    [dict setObject:[artists componentsJoinedByString:@" "] forKey:MPMediaItemPropertyArtist];
+  NSString *artists = [item objectForKey:@"artist"];
+  if (artists && artists.length > 0)
+    [dict setObject:artists forKey:MPMediaItemPropertyArtist];
   NSNumber *track = [item objectForKey:@"track"];
   if (track)
     [dict setObject:track forKey:MPMediaItemPropertyAlbumTrackNumber];
@@ -1557,6 +1557,17 @@ MainController *g_xbmcController;
 
   if (NSClassFromString(@"MPNowPlayingInfoCenter"))
   {
+    UIImage *image = [item objectForKey:@"thumb"];
+    if (image)
+    {
+      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+      if (mArt)
+      {
+        [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+        [mArt release];
+      }
+    }
+    
     NSNumber *elapsed = [item objectForKey:@"elapsed"];
     if (elapsed)
       [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
