@@ -101,7 +101,8 @@ std::string& CNetworkInterfaceLinux::GetName(void)
 bool CNetworkInterfaceLinux::IsWireless()
 {
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-  return false;
+  if(GetCurrentWirelessEssId().empty())
+    return false;
 #else
   struct iwreq wrq;
    strcpy(wrq.ifr_name, m_interfaceName.c_str());
@@ -190,8 +191,28 @@ std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
 std::string CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
 {
    std::string result;
-
-#if defined(TARGET_LINUX)
+#if defined(TARGET_DARWIN)
+  std::string cmd = "networksetup -getairportnetwork " + m_interfaceName + " | grep \"Current Wi-Fi Network\"";
+  FILE* pipe = popen(cmd.c_str(), "r");
+  Sleep(100);
+  if (pipe)
+  {
+    std::vector<std::string> tmpStr;
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    {
+      tmpStr = StringUtils::Split(buffer, "\n");
+      for (unsigned int i = 0; i < tmpStr.size(); i ++)
+      {
+        // result looks like this - > 'Current Wi-Fi Network: SomeNetworkName'
+        // Current Wi-Fi Network:  == 23 :)
+        if (tmpStr[i].length() >= 23)
+          result = tmpStr[i].substr(23);
+      }
+    }
+    pclose(pipe);
+  }
+#elif defined(TARGET_LINUX)
    char essid[IW_ESSID_MAX_SIZE + 1];
    memset(&essid, 0, sizeof(essid));
 
