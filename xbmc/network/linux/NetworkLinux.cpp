@@ -419,6 +419,10 @@ void CNetworkLinux::queryInterfaceList()
      if(cur->ifa_addr->sa_family != AF_INET)
        continue;
 
+     // ignore loopback interfaces
+     if (StringUtils::StartsWith(cur->ifa_name, "lo"))
+       continue;
+
      GetMacAddress(cur->ifa_name, macAddrRaw);
      // Add the interface.
      m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddrRaw));
