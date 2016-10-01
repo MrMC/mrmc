@@ -23,6 +23,6 @@
 	<key>CFBundleVersion</key>
 	<string>@APP_VERSION_BUNDLE_VERSION@</string>
 	<key>CFBundleSignature</key>
-	<string>@APP_NAME@</string>
+	<string>????</string>
 </dict>
 </plist>
