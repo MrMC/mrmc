@@ -4345,7 +4345,8 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
     {
       //At this point we have given up to translate, so even though
       //there may be insecure information, we log it.
-      CLog::LogF(LOGDEBUG,"Tried translating, but failed to understand %s", in_actionStr.c_str());
+      if (in_actionStr != "-")
+        CLog::LogF(LOGDEBUG,"Tried translating, but failed to understand %s", in_actionStr.c_str());
       return false;
     }
   }

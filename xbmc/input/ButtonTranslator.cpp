@@ -1361,7 +1361,8 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
 
   if (action == ACTION_NONE)
   {
-    CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
+    if (strAction != "-")
+     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
     return false;
   }
 
