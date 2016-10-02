@@ -330,8 +330,12 @@ void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* m
     if(resolution.empty())
       label = StringUtils::Format("%.2f Mbps", bitrate);
     else
-      label = StringUtils::Format("%s, %.2f Mbps",resolution.c_str(),bitrate);
-
+    {
+      if (bitrate > 0)
+        label = StringUtils::Format("%s, %.2f Mbps",resolution.c_str(),bitrate);
+      else
+        label = resolution;
+    }
     item.SetProperty("PlexResolutionChoice", label);
     item.SetProperty("PlexMediaID", XMLUtils::GetAttribute(mediaNode, "id"));
     item.GetVideoInfoTag()->m_streamDetails = details;
