@@ -1082,6 +1082,11 @@ bool CFileItem::IsMediaServiceBased() const
   return CServicesManager::GetInstance().IsMediaServicesItem(*this);
 }
 
+bool CFileItem::IsMediaServicesCloudItem() const
+{
+  return CServicesManager::GetInstance().IsMediaServicesCloudItem(*this);
+}
+
 bool CFileItem::IsHD() const
 {
   return URIUtils::IsHD(m_strPath);

@@ -95,11 +95,38 @@ void CPlexUtils::GetDefaultHeaders(XFILE::CCurlFile &curl)
   curl.SetRequestHeader("Expires", "Sat, 26 Jul 1997 05:00:00 GMT");
 }
 
+void CPlexUtils::SetPlexItemProperties(CFileItem &item)
+{
+  CPlexClientPtr client = CPlexServices::GetInstance().FindClient(item.GetPath());
+  SetPlexItemProperties(item, client);
+}
+
 void CPlexUtils::SetPlexItemProperties(CFileItem &item, const CPlexClientPtr &client)
 {
   item.SetProperty("PlexItem", true);
   item.SetProperty("MediaServicesItem", true);
+  if (!client)
+    return;
+  if (client->IsCloud())
+    item.SetProperty("MediaServicesCloudItem", true);
   item.SetProperty("MediaServicesClientID", client->GetUuid());
+}
+
+void CPlexUtils::SetPlexItemsProperties(CFileItemList &items)
+{
+  CPlexClientPtr client = CPlexServices::GetInstance().FindClient(items.GetPath());
+  SetPlexItemsProperties(items, client);
+}
+
+void CPlexUtils::SetPlexItemsProperties(CFileItemList &items, const CPlexClientPtr &client)
+{
+  items.SetProperty("PlexItem", true);
+  items.SetProperty("MediaServicesItem", true);
+  if (!client)
+    return;
+  if (client->IsCloud())
+    items.SetProperty("MediaServicesCloudItem", true);
+  items.SetProperty("MediaServicesClientID", client->GetUuid());
 }
 
 TiXmlDocument CPlexUtils::GetPlexXML(std::string url, std::string filter)
@@ -457,8 +484,6 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
   {
     rtn = true;
     CFileItemPtr plexItem(new CFileItem());
-    plexItem->SetProperty("PlexItem", true);
-    plexItem->SetProperty("MediaServicesItem", true);
 
     std::string fanart;
     std::string value;
@@ -566,15 +591,14 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
       formatter.FormatLabel(plexItem.get());
       plexItem->SetLabelPreformated(true);
     }
-    
+    SetPlexItemProperties(*plexItem);
     items.Add(plexItem);
     videoNode = videoNode->NextSiblingElement("Video");
   }
   // this is needed to display movies/episodes properly ... dont ask
   // good thing it didnt take 2 days to figure it out
   items.SetProperty("library.filter", "true");
-  items.SetProperty("MediaServicesItem", true);
-  items.SetProperty("PlexItem", true);
+  SetPlexItemsProperties(items);
 
   return rtn;
 }
@@ -610,8 +634,6 @@ bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
       CFileItemPtr plexItem(new CFileItem());
       // set m_bIsFolder to true to indicate we are tvshow list
       plexItem->m_bIsFolder = true;
-      plexItem->SetProperty("PlexItem", true);
-      plexItem->SetProperty("MediaServicesItem", true);
       plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
       CURL url1(url);
       url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
@@ -666,7 +688,7 @@ bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
       plexItem->GetVideoInfoTag()->m_firstAired = firstAired;
 
       GetVideoDetails(*plexItem, directoryNode);
-
+      SetPlexItemProperties(*plexItem);
       items.Add(plexItem);
       directoryNode = directoryNode->NextSiblingElement("Directory");
     }
@@ -695,8 +717,6 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
         rtn = true;
         CFileItemPtr plexItem(new CFileItem());
         plexItem->m_bIsFolder = true;
-        plexItem->SetProperty("PlexItem", true);
-        plexItem->SetProperty("MediaServicesItem", true);
         plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
         CURL url1(url);
         url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
@@ -741,6 +761,7 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
 
         plexItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode);
 
+        SetPlexItemProperties(*plexItem);
         items.Add(plexItem);
       }
       directoryNode = directoryNode->NextSiblingElement("Directory");
@@ -749,8 +770,7 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
 
   items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
   items.SetProperty("library.filter", "true");
-  items.SetProperty("PlexItem", true);
-  items.SetProperty("MediaServicesItem", true);
+  SetPlexItemsProperties(items);
 
   return rtn;
 }
@@ -968,8 +988,7 @@ bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, boo
         for (int item = 0; item < plexItems.Size(); ++item)
           CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
       }
-      plexItems.SetProperty("PlexItem", true);
-      plexItems.SetProperty("MediaServicesItem", true);
+      SetPlexItemsProperties(plexItems);
       items.Append(plexItems);
       plexItems.ClearItems();
     }
@@ -1008,8 +1027,7 @@ bool CPlexUtils::GetAllPlexInProgress(CFileItemList &items, bool tvShow)
         for (int item = 0; item < plexItems.Size(); ++item)
           CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
       }
-      plexItems.SetProperty("PlexItem", true);
-      plexItems.SetProperty("MediaServicesItem", true);
+      SetPlexItemsProperties(plexItems);
       items.Append(plexItems);
       plexItems.ClearItems();
     }
@@ -1037,14 +1055,12 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
       CFileItemPtr pItem(new CFileItem(title));
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
-      pItem->SetProperty("PlexItem", true);
-      pItem->SetProperty("MediaServicesItem", true);
-
       CURL plex(url);
       plex.SetFileName(plex.GetFileName() + "all?" + filter + "=" + key);
       pItem->SetPath(parentPath + Base64::Encode(plex.Get()));
       pItem->SetLabel(title);
       pItem->SetProperty("SkipLocalArt", true);
+      SetPlexItemProperties(*pItem);
       items.Add(pItem);
       directoryNode = directoryNode->NextSiblingElement("Directory");
     }
@@ -1273,8 +1289,8 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
       
       for (int item = 0; item < plexItems.Size(); ++item)
         CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
-      plexItems.SetProperty("PlexItem", true);
-      plexItems.SetProperty("MediaServicesItem", true);
+      
+      SetPlexItemsProperties(plexItems);
       items.Append(plexItems);
       plexItems.ClearItems();
     }
@@ -1338,8 +1354,6 @@ bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bo
       CFileItemPtr plexItem(new CFileItem());
       // set m_bIsFolder to true to indicate we are artist list
       plexItem->m_bIsFolder = true;
-      plexItem->SetProperty("PlexItem", true);
-      plexItem->SetProperty("MediaServicesItem", true);
       plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
       CURL url1(url);
       url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
@@ -1382,14 +1396,14 @@ bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bo
       plexItem->GetMusicInfoTag()->SetDateAdded(aTime);
       
       GetMusicDetails(*plexItem, directoryNode);
-
+      SetPlexItemProperties(*plexItem);
       items.Add(plexItem);
       directoryNode = directoryNode->NextSiblingElement("Directory");
     }
   }
   items.SetProperty("library.filter", "true");
   items.GetVideoInfoTag()->m_type = strMediaType;
-  items.SetProperty("MediaServicesItem", true);
+  SetPlexItemsProperties(items);
   
   return rtn;
 }
@@ -1490,9 +1504,6 @@ bool CPlexUtils::GetPlexSongs(CFileItemList &items, std::string url)
     {
       rtn = true;
       CFileItemPtr plexItem(new CFileItem());
-//      plexItem->m_bIsFolder = true;
-      plexItem->SetProperty("PlexItem", true);
-      plexItem->SetProperty("MediaServicesItem", true);
       plexItem->SetLabel(XMLUtils::GetAttribute(trackNode, "title"));
       
       CURL url1(url);
@@ -1538,6 +1549,7 @@ bool CPlexUtils::GetPlexSongs(CFileItemList &items, std::string url)
           CDateTime aTime(addedTime);
           plexItem->GetMusicInfoTag()->SetDateAdded(aTime);
           plexItem->GetMusicInfoTag()->SetLoaded(true);
+          SetPlexItemProperties(*plexItem);
           items.Add(plexItem);
         }
       }
@@ -1546,7 +1558,7 @@ bool CPlexUtils::GetPlexSongs(CFileItemList &items, std::string url)
   }
   items.SetProperty("library.filter", "true");
   items.GetMusicInfoTag()->m_type = MediaTypeSong;
-  items.SetProperty("MediaServicesItem", true);
+  SetPlexItemsProperties(items);
   return rtn;
 }
 
@@ -1608,8 +1620,7 @@ bool CPlexUtils::GetPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
         for (int item = 0; item < plexItems.Size(); ++item)
           CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
       }
-      plexItems.SetProperty("PlexItem", true);
-      plexItems.SetProperty("MediaServicesItem", true);
+      SetPlexItemsProperties(plexItems);
       items.Append(plexItems);
       items.SetLabel("Recently Added Albums");
       items.Sort(SortByDateAdded, SortOrderDescending);

@@ -132,6 +132,13 @@ bool CServicesManager::IsMediaServicesItem(const CFileItem &item)
   return false;
 }
 
+bool CServicesManager::IsMediaServicesCloudItem(const CFileItem &item)
+{
+  if (item.HasProperty("MediaServicesCloudItem"))
+    return item.GetProperty("MediaServicesCloudItem").asBoolean();
+  return false;
+}
+
 bool CServicesManager::UpdateMediaServicesLibraries(const CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))

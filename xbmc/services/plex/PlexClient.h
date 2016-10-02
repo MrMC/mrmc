@@ -83,6 +83,7 @@ public:
   bool GetPresence() const                  { return m_presence; }
   const std::string &GetProtocol() const    { return m_protocol; }
   const bool &IsLocal() const               { return m_local; }
+  const bool IsCloud() const                { return (m_platform == "Cloud"); }
 
   void  AddSectionItem(CFileItemPtr root)   { m_section_items.push_back(root); };
   std::vector<CFileItemPtr> GetSectionItems()  { return m_section_items; };
@@ -115,6 +116,7 @@ private:
   std::string m_accessToken;
   std::string m_httpsRequired;
   std::string m_protocol;
+  std::string m_platform;
   std::atomic<bool> m_presence;
   std::atomic<bool> m_needUpdate;
   std::vector<CFileItemPtr> m_section_items;

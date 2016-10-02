@@ -28,6 +28,7 @@
 #include "Application.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
+#include "filesystem/StackDirectory.h"
 #include "network/Network.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -120,6 +121,7 @@ bool CPlexClient::Init(const TiXmlElement* DeviceNode)
   m_serverName = XMLUtils::GetAttribute(DeviceNode, "name");
   m_accessToken = XMLUtils::GetAttribute(DeviceNode, "accessToken");
   m_httpsRequired = XMLUtils::GetAttribute(DeviceNode, "httpsRequired");
+  m_platform = XMLUtils::GetAttribute(DeviceNode, "platform");
 
   std::vector<PlexConnection> connections;
   const TiXmlElement* ConnectionNode = DeviceNode->FirstChildElement("Connection");
@@ -250,6 +252,9 @@ bool CPlexClient::IsSameClientHostName(const CURL& url)
   if (real_url.GetProtocol() == "plex")
     real_url = CURL(Base64::Decode(URIUtils::GetFileName(real_url)));
 
+  if (URIUtils::IsStack(real_url.Get()))
+    real_url = CURL(XFILE::CStackDirectory::GetFirstStackedFile(real_url.Get()));
+  
   return GetHost() == real_url.GetHostName();
 }
 

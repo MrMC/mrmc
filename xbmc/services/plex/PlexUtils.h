@@ -61,7 +61,10 @@ public:
   static bool HasClients();
   static bool GetIdentity(CURL url, int timeout);
   static void GetDefaultHeaders(XFILE::CCurlFile &curl);
+  static void SetPlexItemProperties(CFileItem &item);
   static void SetPlexItemProperties(CFileItem &item, const CPlexClientPtr &client);
+  static void SetPlexItemsProperties(CFileItemList &items);
+  static void SetPlexItemsProperties(CFileItemList &items, const CPlexClientPtr &client);
 
   static void SetWatched(CFileItem &item);
   static void SetUnWatched(CFileItem &item);
