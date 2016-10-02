@@ -221,7 +221,8 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
     }
 
     // now filter for allowed files
-    if (!pDirectory->AllowAll())
+    // Plex Cloud does not return extension for the file, do not filter if we are Service based
+    if (!items.IsMediaServiceBased() && !pDirectory->AllowAll())
     {
       pDirectory->SetMask(hints.mask);
       for (int i = 0; i < items.Size(); ++i)
