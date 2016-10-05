@@ -231,7 +231,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
   else if (item->IsVideo())
   {
     // video item but has no video info tag.
-    type = "movies";
+    type = "movie";
     object["item"]["title"] = item->GetLabel();
   }
   else if (item->HasPictureInfoTag())
