@@ -148,6 +148,12 @@ bool CServicesManager::UpdateMediaServicesLibraries(const CFileItem &item)
   return true;
 }
 
+bool CServicesManager::ReloadProfiles()
+{
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "plex", "ReloadProfiles");
+  return true;
+}
+
 void CServicesManager::SetItemWatched(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))

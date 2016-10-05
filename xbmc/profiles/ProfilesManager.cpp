@@ -41,6 +41,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
+#include "services/ServicesManager.h"
 #include "settings/Settings.h"
 #if defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
@@ -296,6 +297,9 @@ bool CProfilesManager::LoadProfile(size_t index)
   CUtil::DeleteDirectoryCache();
   g_directoryCache.Clear();
 
+  if (CServicesManager::GetInstance().HasServices())
+    CServicesManager::GetInstance().ReloadProfiles();
+  
   return true;
 }
 

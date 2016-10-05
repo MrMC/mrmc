@@ -335,6 +335,12 @@ void CPlexServices::Announce(AnnouncementFlag flag, const char *sender, const ch
     {
       AddJob(new CPlexServiceJob(0, "UpdateLibraries"));
     }
+    else if (strcmp(message, "ReloadProfiles") == 0)
+    {
+      // restart if we MrMC profiles has changed
+      Stop();
+      Start();
+    }
   }
 }
 
