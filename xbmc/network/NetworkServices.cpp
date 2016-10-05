@@ -510,6 +510,7 @@ void CNetworkServices::Stop(bool bWait)
     StopWebserver();
     StopRss();
     StopLightEffectServices();
+    StopPlexServices();
   }
 
   StopEventServer(bWait, false);
@@ -1043,6 +1044,9 @@ bool CNetworkServices::StopLightEffectServices()
 
 bool CNetworkServices::StartPlexServices()
 {
+  if(!CPlexServices::GetInstance().IsEnabled())
+    return true;
+  
   if (IsPlexServicesRunning())
     return true;
 

@@ -164,6 +164,12 @@ bool CPlexServices::IsActive()
   return IsRunning();
 }
 
+bool CPlexServices::IsEnabled()
+{
+  return (!CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER).empty() ||
+          !CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXGDMSERVER).empty());
+}
+
 bool CPlexServices::HasClients() const
 {
   return m_hasClients;

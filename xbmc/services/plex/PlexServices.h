@@ -61,6 +61,7 @@ public:
   void Start();
   void Stop();
   bool IsActive();
+  bool IsEnabled();
   bool HasClients() const;
   void GetClients(std::vector<CPlexClientPtr> &clients) const;
   CPlexClientPtr FindClient(const std::string &path);
