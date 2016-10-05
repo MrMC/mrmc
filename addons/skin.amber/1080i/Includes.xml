@@ -1136,27 +1136,32 @@
       <onclick condition="Library.HasContent(music)">ActivateWindow(10501,"videodb://musicvideos/1")</onclick>
       <onclick condition="!Library.HasContent(music)">ActivateWindow(10502,"videodb://musicvideos/1")</onclick>
     </item>
-	<item id="41" description="Add-ons">
-	  <visible>Container(300).HasFocus(10)</visible>
-	  <label>$LOCALIZE[24001]</label>
+  	<item id="41" description="Add-ons">
+      <visible>Container(300).HasFocus(10)</visible>
+      <label>$LOCALIZE[24001]</label>
       <onclick>ActivateWindow(AddonBrowser,root)</onclick>
     </item>
     <item id="42" description="Appearance">
-		<visible>Container(300).HasFocus(10)</visible>
-        <label>$LOCALIZE[480]</label>
-        <onclick>activatewindow(AppearanceSettings)</onclick>
+      <visible>Container(300).HasFocus(10)</visible>
+      <label>$LOCALIZE[480]</label>
+      <onclick>activatewindow(AppearanceSettings)</onclick>
     </item>
     <item id="43" description="System">
-		<visible>Container(300).HasFocus(10)</visible>
-        <label>$LOCALIZE[13000]</label>
-        <onclick>ActivateWindow(SystemSettings)</onclick>
+      <visible>Container(300).HasFocus(10)</visible>
+      <label>$LOCALIZE[13000]</label>
+      <onclick>ActivateWindow(SystemSettings)</onclick>
     </item>
     <item id="44" description="System information">
-		<visible>Container(300).HasFocus(10)</visible>
-        <label>$LOCALIZE[130]</label>
-        <onclick>ActivateWindow(SystemInfo)</onclick>
-	</item>
-	<item id="50" description="Reload skin">
+      <visible>Container(300).HasFocus(10)</visible>
+      <label>$LOCALIZE[130]</label>
+      <onclick>ActivateWindow(SystemInfo)</onclick>
+  	</item>
+    <item id="45" description="Profiles">
+      <visible>Container(300).HasFocus(10)</visible>
+      <label>13200</label>
+      <onclick>ActivateWindow(Profiles)</onclick>
+    </item>
+  	<item id="50" description="Reload skin">
       <visible>Container(300).HasFocus(10)</visible>
       <label>$LOCALIZE[20183]</label>
       <onclick>XBMC.ReloadSkin()</onclick>
