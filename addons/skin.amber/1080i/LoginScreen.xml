@@ -89,6 +89,7 @@
         <texture fallback="unknown-user.png">$INFO[Container(52).ListItem.thumb]</texture>
       </control>
       <control type="button" id="11" description="Quit xbmc">
+        <visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
         <animation effect="fade" start="100" end="60" time="0" condition="!Control.HasFocus(11)">Conditional</animation>
         <animation effect="zoom" start="100" end="130" time="200" center="auto" condition="Control.HasFocus(11)">Conditional</animation>
         <posx>48</posx>
