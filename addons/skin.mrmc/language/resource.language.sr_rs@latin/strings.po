@@ -481,8 +481,8 @@ msgid "Login"
 msgstr "Prijava"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Izaberite vaš Kodi korisnički profil[CR]za prijavu, a potom nastavite dalje"
+msgid "Select your MrMC user profile[CR]to login and continue"
+msgstr "Izaberite vaš MrMC korisnički profil[CR]za prijavu, a potom nastavite dalje"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

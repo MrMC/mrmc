@@ -481,8 +481,8 @@ msgid "Login"
 msgstr "Teken In"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Selekteer jou Kodi gebruiker profiel[CR]om in te teken en voort te gaan"
+msgid "Select your MrMC user profile[CR]to login and continue"
+msgstr "Selekteer jou MrMC gebruiker profiel[CR]om in te teken en voort te gaan"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

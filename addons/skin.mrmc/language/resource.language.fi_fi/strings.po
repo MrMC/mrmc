@@ -473,8 +473,8 @@ msgid "Login"
 msgstr "Kirjaudu"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Valitse Kodi-käyttäjäprofiili[CR]kirjautuaksesi sisään"
+msgid "Select your MrMC user profile[CR]to login and continue"
+msgstr "Valitse MrMC-käyttäjäprofiili[CR]kirjautuaksesi sisään"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

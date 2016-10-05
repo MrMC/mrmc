@@ -437,8 +437,8 @@ msgid "Login"
 msgstr "Inicia sessió"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Seleccioni el seu perfil d'usuari de Kodi[CR]per ingressar i continuar"
+msgid "Select your MrMC user profile[CR]to login and continue"
+msgstr "Seleccioni el seu perfil d'usuari de MrMC[CR]per ingressar i continuar"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

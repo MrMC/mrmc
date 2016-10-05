@@ -481,7 +481,7 @@ msgid "Login"
 msgstr "Login"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
+msgid "Select your MrMC user profile[CR]to login and continue"
 msgstr "Scegli il tuo profilo utente Kodi[CR]per fare login e continuare"
 
 msgctxt "#31422"

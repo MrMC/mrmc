@@ -477,7 +477,7 @@ msgid "Login"
 msgstr "Влизане"
 
 msgctxt "#31421"
-msgid "Select your Kodi user profile[CR]to login and continue"
+msgid "Select your MrMC user profile[CR]to login and continue"
 msgstr "Изберете потребителски профил,[CR]за да продължите"
 
 msgctxt "#31422"
