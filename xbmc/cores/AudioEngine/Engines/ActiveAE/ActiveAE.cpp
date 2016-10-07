@@ -2048,7 +2048,7 @@ bool CActiveAE::RunStages()
 
               for(int j=0; j<out->pkt->planes; j++)
               {
-#ifdef __SSE__
+#if defined(HAVE_SSE) && defined(__SSE__)
                 CAEUtil::SSEMulArray((float*)out->pkt->data[j]+i*nb_floats, volume, nb_floats);
 #else
                 float* fbuffer = (float*) out->pkt->data[j]+i*nb_floats;
@@ -2117,7 +2117,7 @@ bool CActiveAE::RunStages()
               {
                 float *dst = (float*)out->pkt->data[j]+i*nb_floats;
                 float *src = (float*)mix->pkt->data[j]+i*nb_floats;
-#ifdef __SSE__
+#if defined(HAVE_SSE) && defined(__SSE__)
                 CAEUtil::SSEMulAddArray(dst, src, volume, nb_floats);
                 for (int k = 0; k < nb_floats; ++k)
                 {
@@ -2317,10 +2317,13 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   double threshold = 100;
   if (stream->m_resampleMode)
   {
-    if (stream->m_pClock && stream->m_pClock->GetClockSpeed() > 1.1)
-      threshold *= 10;
-    else
-      threshold *= 2;
+    threshold *= 2;
+    if (stream->m_pClock)
+    {
+      double clockspeed = stream->m_pClock->GetClockSpeed();
+      if (clockspeed >= 1.05 || clockspeed <= 0.95)
+        threshold *= 5;
+    }
   }
 
   int timeout = (stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC) ? 100 : (int)stream->m_errorInterval;
@@ -2506,7 +2509,7 @@ void CActiveAE::MixSounds(CSoundPacket &dstSample)
       out = (float*)dstSample.data[j];
       sample_buffer = (float*)(it->sound->GetSound(false)->data[j]+start);
       int nb_floats = mix_samples * dstSample.config.channels / dstSample.planes;
-#ifdef __SSE__
+#if defined(HAVE_SSE) && defined(__SSE__)
       CAEUtil::SSEMulAddArray(out, sample_buffer, volume, nb_floats);
 #else
       for (int k = 0; k < nb_floats; ++k)
@@ -2537,7 +2540,7 @@ void CActiveAE::Deamplify(CSoundPacket &dstSample)
     for(int j=0; j<dstSample.planes; j++)
     {
       buffer = (float*)dstSample.data[j];
-#ifdef __SSE__
+#if defined(HAVE_SSE) && defined(__SSE__)
       CAEUtil::SSEMulArray(buffer, volume, nb_floats);
 #else
       float *fbuffer = buffer;
@@ -2586,7 +2589,7 @@ bool CActiveAE::Initialize()
   Message *reply;
   if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
                                                  &reply,
-                                                 60000))
+                                                 10000))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
@@ -3197,6 +3200,11 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
 
 IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int options, IAEClockCallback *clock)
 {
+  if (audioFormat.m_dataFormat <= AE_FMT_INVALID || audioFormat.m_dataFormat >= AE_FMT_MAX)
+  {
+    return nullptr;
+  }
+
   if (IsSuspended())
     return NULL;
 

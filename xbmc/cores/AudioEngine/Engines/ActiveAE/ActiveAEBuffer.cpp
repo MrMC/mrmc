@@ -180,6 +180,8 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
 
 CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
 {
+  Flush();
+
   SAFE_DELETE(m_resampler);
   if (m_useDSP)
     CActiveAEDSP::GetInstance().DestroyDSPs(m_streamId);
@@ -435,6 +437,7 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
 
         if (m_dspSample && m_processor->Process(in, m_dspSample))
         {
+          m_dspSample->timestamp = in->timestamp;
           in->Return();
           in = m_dspSample;
           m_dspSample = NULL;
