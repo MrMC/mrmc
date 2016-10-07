@@ -1064,7 +1064,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   }
 
   // make sure waiting time is not negative
-  int maxWaitTime = std::min(std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50), 500);
+  //int maxWaitTime = std::min(std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50), 500);
+  int maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50);
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
     maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime), 0);
@@ -1326,7 +1327,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
 
     // if lateness is smaller than frametime, we observe this state
     // for 10 cycles
-    if (m_droppingStats.m_lateFrames > 10 || iLateness < -2*DVD_TIME_BASE/m_fFrameRate)
+    if (m_droppingStats.m_lateFrames > 2 || iLateness < -2/m_fFrameRate)
     {
       result |= EOS_VERYLATE;
       m_droppingStats.m_dropRequests++;
