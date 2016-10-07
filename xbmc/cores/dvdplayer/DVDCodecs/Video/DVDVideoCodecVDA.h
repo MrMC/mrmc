@@ -41,6 +41,8 @@ public:
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   virtual unsigned GetAllowedReferences();
+  virtual void SetCodecControl(int flags);
+
 protected:
   void DisplayQueuePop(void);
   void UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture);
@@ -54,6 +56,7 @@ protected:
   int32_t           m_format;
   const char        *m_pFormatName;
   bool              m_DropPictures;
+  int               m_codecControlFlags;
   bool              m_decode_async;
 
   int64_t           m_sort_time;

@@ -145,6 +145,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   m_bitstream = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
   m_DropPictures = false;
+  m_codecControlFlags = 0;
   m_decode_async = false;
   m_sort_time = 0;
   m_use_cvBufferRef = false;
@@ -409,7 +410,13 @@ void CDVDVideoCodecVDA::SetDropState(bool bDrop)
 int CDVDVideoCodecVDA::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   CCocoaAutoPool pool;
-  //
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
+  {
+    if (m_queue_depth > 0)
+      return VC_PICTURE;
+  }
+
   if (pData)
   {
     m_bitstream->Convert(pData, iSize);
@@ -519,6 +526,9 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   DisplayQueuePop();
   //CLog::Log(LOGNOTICE, "%s - VDADecoderDecode dts(%f), pts(%f)", __FUNCTION__,
   //  pDvdVideoPicture->dts, pDvdVideoPicture->pts);
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
+    pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
 
   return true;
 }
@@ -669,5 +679,11 @@ unsigned CDVDVideoCodecVDA::GetAllowedReferences()
   else
     return 0;
 }
+
+void CDVDVideoCodecVDA::SetCodecControl(int flags)
+{
+  m_codecControlFlags = flags;
+}
+
 
 #endif
