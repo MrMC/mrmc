@@ -19,6 +19,9 @@
  */
 
 #include "AudioFormat.h"
+#include "Build.h"
+#include "utils/StringUtils.h"
+
 #include "JNIBase.h"
 #include "jutils/jutils-details.hpp"
 
@@ -93,8 +96,12 @@ void CJNIAudioFormat::PopulateStaticFields()
         GetStaticValue(c, CJNIAudioFormat::CHANNEL_OUT_SIDE_RIGHT, "CHANNEL_OUT_SIDE_RIGHT");
         GetStaticValue(c, CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND, "CHANNEL_OUT_7POINT1_SURROUND");
 
-        GetStaticValue(c, CJNIAudioFormat::ENCODING_AC3, "ENCODING_AC3");
-        GetStaticValue(c, CJNIAudioFormat::ENCODING_E_AC3, "ENCODING_E_AC3");
+        if (!StringUtils::StartsWithNoCase(CJNIBuild::MANUFACTURER, "Amazon"))
+        {
+          // Amazon platforms say they support native (non-IEC) AC3/EAC3 but some do not, exclude them all
+          GetStaticValue(c, CJNIAudioFormat::ENCODING_AC3, "ENCODING_AC3");
+          GetStaticValue(c, CJNIAudioFormat::ENCODING_E_AC3, "ENCODING_E_AC3");
+        }
         GetStaticValue(c, CJNIAudioFormat::ENCODING_DTS, "ENCODING_DTS");
         GetStaticValue(c, CJNIAudioFormat::ENCODING_DTS_HD, "ENCODING_DTS_HD");
         GetStaticValue(c, CJNIAudioFormat::ENCODING_DOLBY_TRUEHD, "ENCODING_DOLBY_TRUEHD");

@@ -74,6 +74,7 @@ CJNIContext::~CJNIContext()
 void CJNIContext::PopulateStaticFields()
 {
   CJNIBaseColumns::PopulateStaticFields();
+  CJNIBuild::PopulateStaticFields();
   CJNIMediaStoreMediaColumns::PopulateStaticFields();
   CJNIPowerManager::PopulateStaticFields();
   CJNIPackageManager::PopulateStaticFields();
@@ -90,7 +91,6 @@ void CJNIContext::PopulateStaticFields()
   CJNIMediaCodecInfoCodecCapabilities::PopulateStaticFields();
   CJNIMediaFormat::PopulateStaticFields();
   CJNIView::PopulateStaticFields();
-  CJNIBuild::PopulateStaticFields();
   CJNIDisplayMetrics::PopulateStaticFields();
   CJNIIntent::PopulateStaticFields();
   CJNIKeyEvent::PopulateStaticFields();
