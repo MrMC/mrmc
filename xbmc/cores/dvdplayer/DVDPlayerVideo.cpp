@@ -265,6 +265,7 @@ void CDVDPlayerVideo::Process()
 
   m_videoStats.Start();
   m_droppingStats.Reset();
+  m_iDroppedFrames = 0;
 
   while (!m_bStop)
   {
@@ -437,7 +438,6 @@ void CDVDPlayerVideo::Process()
       {
         if (m_bAllowDrop)
         {
-          m_pullupCorrection.Flush();
           bRequestDrop = true;
         }
       }
@@ -455,6 +455,7 @@ void CDVDPlayerVideo::Process()
       {
         m_iDroppedFrames++;
         iDropped++;
+        m_pullupCorrection.Flush();
       }
 
       if (m_messageQueue.GetDataSize() == 0
@@ -653,7 +654,10 @@ bool CDVDPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametime,
       }
 
       if ((iResult & EOS_DROPPED) && !(m_picture.iFlags & DVP_FLAG_DROPPED))
+      {
         m_iDroppedFrames++;
+        m_pullupCorrection.Flush();
+      }
     }
     else
     {
@@ -943,8 +947,9 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     pts += m_pullupCorrection.GetCorrection();
   }
 
-  //try to calculate the framerate
-  CalcFrameRate();
+  //try to calculate the framerate if not stalled
+  if (!m_stalled)
+    CalcFrameRate();
 
   // remember original pts, we need it later for overlaying subtitles
   double pts_org = pts;
