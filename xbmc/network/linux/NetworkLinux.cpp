@@ -103,6 +103,15 @@ bool CNetworkInterfaceLinux::IsWireless()
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   if(GetCurrentWirelessEssId().empty())
     return false;
+
+#elif defined(TARGET_ANDROID)
+  char dhcpWlan0[PROP_VALUE_MAX];
+  if (__system_property_get("dhcp.wlan0.result", dhcpWlan0))
+  {
+    std::string result = dhcpWlan0;
+    return result == "ok";
+  }
+
 #else
   struct iwreq wrq;
    strcpy(wrq.ifr_name, m_interfaceName.c_str());
@@ -110,7 +119,7 @@ bool CNetworkInterfaceLinux::IsWireless()
       return false;
 #endif
 
-   return true;
+   return false;
 }
 
 bool CNetworkInterfaceLinux::IsEnabled()
@@ -275,6 +284,14 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
       break;
    }
    free(buf);
+#elif defined(TARGET_ANDROID)
+  char gateway[PROP_VALUE_MAX];
+
+  if (__system_property_get("dhcp.eth0.gateway", gateway))
+    result = gateway;
+  else if (__system_property_get("dhcp.wlan0.gateway", gateway))
+    result = gateway;
+
 #else
    FILE* fp = fopen("/proc/net/route", "r");
    if (!fp)
