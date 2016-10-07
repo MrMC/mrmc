@@ -188,6 +188,8 @@ class CAAudioUnitSink
     AudioStreamBasicDescription m_outputFormat;
     AERingBuffer       *m_buffer;
 
+    Float32             m_totalLatency;
+    Float32             m_inputLatency;
     Float32             m_outputLatency;
     Float32             m_bufferDuration;
 
@@ -218,6 +220,8 @@ bool CAAudioUnitSink::open(AudioStreamBasicDescription outputFormat, size_t buff
 {
   m_setup         = false;
   m_outputFormat  = outputFormat;
+  m_totalLatency = 0.0;
+  m_inputLatency = 0.0;
   m_outputLatency = 0.0;
   m_bufferDuration= 0.0;
   m_sampleRate    = (unsigned int)outputFormat.mSampleRate;
@@ -282,27 +286,32 @@ void CAAudioUnitSink::updatedelay(AEDelayStatus &status)
   // return the number of audio frames in buffer, in seconds
   // use internal framesize, once written,
   // bytes in buffer are owned by CAAudioUnitSink.
+  unsigned int size;
   CAESpinLock lock(m_render_section);
   do
   {
     status.tick = m_render_timestamp;
-    status.delay = m_buffer->GetReadSize();
+    status.delay = 0;
+    if(m_buffer)
+      size = m_buffer->GetReadSize();
+    else
+      size = 0;
   } while(lock.retry());
 
   // bytes to seconds
-  status.delay /= m_frameSize * m_sampleRate;
-
-  // add in hw delay and latency (in seconds)
-  status.delay += m_bufferDuration + m_outputLatency;
+  status.delay += (double)size / (double)m_frameSize / (double)m_sampleRate;
+  // add in hw delay and total latency (in seconds)
+  status.delay += m_totalLatency;
+  //CLog::Log(LOGDEBUG, "%s size %f sec", __FUNCTION__, status.delay);
 }
 
 double CAAudioUnitSink::buffertime()
 {
   // return the number of audio frames for the total buffer size, in seconds
   // use internal framesize, buffer is owned by CAAudioUnitSink.
-  double buffertime = m_buffer->GetMaxSize();
-  buffertime /= m_frameSize * m_sampleRate;
-
+  double buffertime;
+  buffertime = (double)m_buffer->GetMaxSize() / (double)(m_frameSize * m_sampleRate);
+  //CLog::Log(LOGDEBUG, "%s total %f bytes", __FUNCTION__, buffertime);
   return buffertime;
 }
 
@@ -436,8 +445,11 @@ bool CAAudioUnitSink::setupAudio()
   }
 
   AVAudioSession *mySession = [AVAudioSession sharedInstance];
+  m_inputLatency  = [mySession inputLatency];
   m_outputLatency  = [mySession outputLatency];
   m_bufferDuration = [mySession IOBufferDuration];
+  m_totalLatency   = (m_inputLatency + m_bufferDuration) + (m_outputLatency + m_bufferDuration);
+  CLog::Log(LOGNOTICE, "%s total latency = %f", __PRETTY_FUNCTION__, m_totalLatency);
 
   m_setup = true;
   std::string formatString;
