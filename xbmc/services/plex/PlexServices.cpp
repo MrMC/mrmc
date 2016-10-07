@@ -438,6 +438,7 @@ bool CPlexServices::MyPlexSignedIn()
 
 void CPlexServices::Process()
 {
+  CLog::Log(LOGDEBUG, "CPlexServices::Process bgn");
   SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 
   GetUserSettings();
@@ -452,7 +453,10 @@ void CPlexServices::Process()
     {
       in_addr_t router = inet_addr(iface->GetCurrentDefaultGateway().c_str());
       if (router != INADDR_NONE && g_application.getNetwork().PingHost(router, 0, 1000))
+      {
+        CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway");
         break;
+      }
     }
 
     m_processSleep.WaitMSec(250);
@@ -525,6 +529,7 @@ void CPlexServices::Process()
     SAFE_DELETE(socket);
     SAFE_DELETE(m_gdmListener);
   }
+  CLog::Log(LOGDEBUG, "CPlexServices::Process bgn");
 }
 
 bool CPlexServices::GetPlexToken(std::string user, std::string pass)
@@ -613,13 +618,9 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
   }
   else
   {
-    // 401 Unauthorized
-    //if (plex.GetResponseCode() == 401)
-    //  m_authToken.clear();
-
     std::string strMessage = "Error getting Plex servers";
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Plex Services", strMessage, 3000, true);
-    CLog::Log(LOGDEBUG, "CPlexServices:FetchMyPlexServers failed %s", strResponse.c_str());
+    CLog::Log(LOGDEBUG, "CPlexServices::GetMyPlexServers failed %s, code %d", strResponse.c_str(), m_plextv.GetResponseCode());
     return false;
   }
 
