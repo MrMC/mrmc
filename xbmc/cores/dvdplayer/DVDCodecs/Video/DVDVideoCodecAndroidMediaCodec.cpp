@@ -432,6 +432,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   switch(m_hints.codec)
   {
     case AV_CODEC_ID_MPEG2VIDEO:
+      return false;
       m_mime = "video/mpeg2";
       m_formatname = "amc-mpeg2";
       break;
@@ -472,11 +473,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           if (hints.level >= 52)
             return false;
           break;
-      }
-      if (CJNIBuild::DEVICE == "foster" && hints.stereo_mode != "mono")   // SATV buggy with HTAB/HSBS
-      {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - SATV does not support stereo mode (%s)", hints.stereo_mode.c_str());
-        return false;
       }
 
       m_mime = "video/avc";
@@ -761,8 +757,10 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   if (gotPicture)
   {
     rtn |= VC_PICTURE;
+    /*
     if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
       rtn &= ~VC_BUFFER;
+    */
   }
 
   if (pData)
@@ -957,12 +955,14 @@ void CDVDVideoCodecAndroidMediaCodec::SetDropState(bool bDrop)
 
 void CDVDVideoCodecAndroidMediaCodec::SetCodecControl(int flags)
 {
+/*
   if (m_codecControlFlags != flags)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s %x->%x", "CDVDVideoCodecAndroidMediaCodec", __func__, m_codecControlFlags, flags);
     m_codecControlFlags = flags;
   }
+*/
 }
 
 int CDVDVideoCodecAndroidMediaCodec::GetDataSize(void)
@@ -1039,7 +1039,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
           int sps_size, pps_size;
           uint8_t *sps = nullptr, *pps = nullptr;
           m_bitstream->ExtractH264_SPS_PPS((uint8_t*)src_ptr, size, &sps, &sps_size, &pps, &pps_size);
-
+/*
           // most mediacodec inplementations barf on interlaced h264.
           if (sps)
           {
@@ -1054,7 +1054,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
               return false;
             }
           }
-
+*/
           if (sps)
           {
             //CLog::MemDump((char*)sps, sps_size);
