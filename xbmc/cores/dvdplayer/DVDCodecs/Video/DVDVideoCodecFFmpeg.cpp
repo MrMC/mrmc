@@ -567,6 +567,12 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
   }
 
+  if (!m_started)
+  {
+    av_frame_unref(m_pDecodedFrame);
+    return VC_BUFFER;
+  }
+
   if (m_pDecodedFrame->interlaced_frame)
     m_interlaced = true;
   else
@@ -577,8 +583,7 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
     m_iLastKeyframe = 300;
 
   /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
-  if(m_pCodecContext->codec_id == AV_CODEC_ID_H264 ||
-     m_pCodecContext->codec_id == AV_CODEC_ID_SVQ3)
+  if(m_pCodecContext->codec_id == AV_CODEC_ID_SVQ3)
     m_started = true;
 
   if (m_pHardware == nullptr)
@@ -782,9 +787,6 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 
   m_requestSkipDeint = false;
   pDvdVideoPicture->iFlags |= m_codecControlFlags;
-
-  if (!m_started)
-    pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
 
   return true;
 }
