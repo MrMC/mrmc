@@ -217,8 +217,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(TARGET_ANDROID)
-  // Only give priority to Surface in 4K
-  if (!hint.software && hint.height > 1080 && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
   {
     switch(hint.codec)
     {
