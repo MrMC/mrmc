@@ -623,7 +623,14 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
     }
   }
 
-  CLog::Log(LOGERROR, "CGUITextureManager::GetTexturePath: could not find texture '%s'", textureName.c_str());
+  // some skins do not have these, so do not log them
+  if (textureName != "OverlayUnwatched.png" &&
+      textureName != "OSDRadioRDSFO.png" &&
+      textureName != "OSDRadioRDSNF.png")
+  {
+    CLog::Log(LOGERROR, "CGUITextureManager::GetTexturePath: could not find texture '%s'", textureName.c_str());
+  }
+
   return "";
 }
 
