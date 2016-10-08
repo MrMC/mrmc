@@ -66,7 +66,7 @@ double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/)
   if (interpolated) //only compare interpolated time, clock might go backwards otherwise
   {
     static int64_t old;
-    if(old > current)
+    if(old - current > 1)
       CLog::Log(LOGWARNING, "CurrentHostCounter() moving backwords by %" PRId64" ticks with freq of %" PRId64, old - current, m_systemFrequency);
     old = current;
   }
