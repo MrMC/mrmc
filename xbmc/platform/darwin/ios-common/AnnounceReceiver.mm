@@ -165,7 +165,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
       }
     }
     //LOG(@"item: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(onPlay:) withObject:item  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onPlayDelayed:) withObject:item  waitUntilDone:NO];
   }
   else if (msg == "OnSpeedChanged" || msg == "OnPause")
   {
@@ -174,13 +174,17 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
     [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
     //LOG(@"item: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(OnSpeedChanged:) withObject:item  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onSpeedChanged:) withObject:item  waitUntilDone:NO];
     if (msg == "OnPause")
       [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
   }
   else if (msg == "OnStop")
   {
     [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
+  }
+  else if (msg == "OnSeek")
+  {
+    [g_xbmcController performSelectorOnMainThread:@selector(onSeekDelayed) withObject:nil  waitUntilDone:NO];
   }
 }
 

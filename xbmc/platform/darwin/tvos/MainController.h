@@ -34,14 +34,6 @@ typedef enum
   DEVICE_SUSPENDED
 } IOSDeviceState;
 
-
-typedef enum
-{
-  IOS_PLAYBACK_STOPPED,
-  IOS_PLAYBACK_PAUSED,
-  IOS_PLAYBACK_PLAYING
-} IOSPlaybackState;
-
 typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 {
   UIPanGestureRecognizerDirectionUndefined,
@@ -67,7 +59,6 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 
   bool                        m_isPlayingBeforeInactive;
   UIBackgroundTaskIdentifier  m_bgTask;
-  IOSPlaybackState            m_playbackState;
   NSDictionary               *m_nowPlayingInfo;
 
   BOOL                        m_pause;

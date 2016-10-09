@@ -46,7 +46,11 @@
 #import "services/lighteffects/LightEffectServices.h"
 
 #import <MediaPlayer/MPMediaItem.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
+
+#import <AVFoundation/AVAudioPlayer.h>
+#import <AudioToolbox/AudioToolbox.h>
 
 using namespace KODI::MESSAGING;
 
@@ -1119,6 +1123,8 @@ MainController *g_xbmcController;
   [self createPanGestureRecognizers];
   [self createPressGesturecognizers];
   [self createTapGesturecognizers];
+  [self createCustomControlCenter];
+  
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
@@ -1531,6 +1537,14 @@ MainController *g_xbmcController;
   [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.m_nowPlayingInfo];
 }
 //--------------------------------------------------------------
+- (void)onPlayDelayed:(NSDictionary *)item
+{
+  // we want to delay playback report, helps us get the current timeline
+  PRINT_SIGNATURE();
+  SEL singleParamSelector = @selector(onPlay:);
+  [g_xbmcController performSelector:singleParamSelector withObject:item afterDelay:2];
+}
+
 - (void)onPlay:(NSDictionary *)item
 {
   //PRINT_SIGNATURE();
@@ -1555,32 +1569,29 @@ MainController *g_xbmcController;
   if (genres && genres.count > 0)
     [dict setObject:[genres componentsJoinedByString:@" "] forKey:MPMediaItemPropertyGenre];
 
-  if (NSClassFromString(@"MPNowPlayingInfoCenter"))
+  UIImage *image = [item objectForKey:@"thumb"];
+  if (image)
   {
-    UIImage *image = [item objectForKey:@"thumb"];
-    if (image)
+    MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+    if (mArt)
     {
-      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
-      if (mArt)
-      {
-        [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-        [mArt release];
-      }
+      [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+      [mArt release];
     }
-    
-    NSNumber *elapsed = [item objectForKey:@"elapsed"];
-    if (elapsed)
-      [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-    NSNumber *speed = [item objectForKey:@"speed"];
-    if (speed)
-      [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
-    NSNumber *current = [item objectForKey:@"current"];
-    if (current)
-      [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
-    NSNumber *total = [item objectForKey:@"total"];
-    if (total)
-      [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
   }
+  
+  NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
+  if (elapsed)
+    [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [item objectForKey:@"speed"];
+  if (speed)
+    [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+  NSNumber *current = [item objectForKey:@"current"];
+  if (current)
+    [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
+  NSNumber *total = [item objectForKey:@"total"];
+  if (total)
+    [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
   /*
    other properities can be set:
    MPMediaItemPropertyAlbumTrackCount
@@ -1595,38 +1606,142 @@ MainController *g_xbmcController;
    */
 
   [self setIOSNowPlayingInfo:dict];
+  [[AVAudioSession sharedInstance] setActive:YES error:nil];
   [dict release];
 
-  m_playbackState = IOS_PLAYBACK_PLAYING;
 }
 //--------------------------------------------------------------
-- (void)OnSpeedChanged:(NSDictionary *)item
+- (void)onSpeedChanged:(NSDictionary *)item
 {
-  //PRINT_SIGNATURE();
-  if (NSClassFromString(@"MPNowPlayingInfoCenter"))
-  {
-    NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
-    NSNumber *elapsed = [item objectForKey:@"elapsed"];
-    if (elapsed)
-      [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-    NSNumber *speed = [item objectForKey:@"speed"];
-    if (speed)
-      [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+  NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
+  NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [item objectForKey:@"speed"];
+  if (speed)
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
 
-    [self setIOSNowPlayingInfo:info];
-  }
+  [self setIOSNowPlayingInfo:info];
+}
+
+- (void)onSeekDelayed
+{
+  // we want to delay seek report, helps us get the current timeline
+  PRINT_SIGNATURE();
+  [[AVAudioSession sharedInstance] setActive:NO error:nil];
+  SEL singleParamSelector = @selector(onSeek);
+  [g_xbmcController performSelector:singleParamSelector withObject:nil afterDelay:3];
+}
+
+- (void)onSeek
+{
+  PRINT_SIGNATURE();
+  NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
+  NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  
+  [self setIOSNowPlayingInfo:info];
+  [[AVAudioSession sharedInstance] setActive:YES error:nil];
 }
 //--------------------------------------------------------------
 - (void)onPause:(NSDictionary *)item
 {
-  m_playbackState = IOS_PLAYBACK_PAUSED;
+  PRINT_SIGNATURE();
+  NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
+  NSNumber *speed = [NSNumber numberWithDouble:0.0f];
+  if (speed)
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+  [[AVAudioSession sharedInstance] setActive:NO error:nil];
+  [self setIOSNowPlayingInfo:info];
 }
 //--------------------------------------------------------------
 - (void)onStop:(NSDictionary *)item
 {
+  PRINT_SIGNATURE();
   [self setIOSNowPlayingInfo:nil];
-
-  m_playbackState = IOS_PLAYBACK_STOPPED;
 }
 
+#pragma mark - control center
+
+- (void)observeDefaultCenterStuff: (NSNotification *) notification
+{
+  //  LOG(@"default: %@", [notification name]);
+  //  LOG(@"userInfo: %@", [notification userInfo]);
+}
+
+- (void)createCustomControlCenter
+{
+  //PRINT_SIGNATURE();
+  
+  MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+
+  // disable stop button
+  commandCenter.stopCommand.enabled = NO;
+  [commandCenter.stopCommand addTarget:self action:@selector(onCCREW:)];
+  // enable play button
+  commandCenter.playCommand.enabled = YES;
+  [commandCenter.playCommand addTarget:self action:@selector(onCCPlay:)];
+ 
+  // enable next/previous
+  MPRemoteCommand *previousTrackIntervalCommand = [commandCenter previousTrackCommand];
+  [previousTrackIntervalCommand setEnabled:YES];
+  [previousTrackIntervalCommand addTarget:self action:@selector(onCCREW:)];
+  
+  MPRemoteCommand *nextTrackIntervalCommand = [commandCenter nextTrackCommand];
+  [nextTrackIntervalCommand setEnabled:YES];
+  [nextTrackIntervalCommand addTarget:self action:@selector(onCCFF:)];
+  
+  // disable seek
+  MPRemoteCommand *seekBackwardIntervalCommand = [commandCenter seekForwardCommand];
+  [seekBackwardIntervalCommand setEnabled:NO];
+  [seekBackwardIntervalCommand addTarget:self action:@selector(onCCFF:)];
+  
+  MPRemoteCommand *seekForwardIntervalCommand = [commandCenter seekBackwardCommand];
+  [seekForwardIntervalCommand setEnabled:NO];
+  [seekForwardIntervalCommand addTarget:self action:@selector(onCCREW:)];
+  
+  // Skip, but interval doesnt work... WTF? 10 is always shown
+  commandCenter.skipBackwardCommand.preferredIntervals = @[@(30)];
+  commandCenter.skipBackwardCommand.enabled = NO;
+  [commandCenter.skipBackwardCommand addTarget:self action:@selector(onCCREW:)];
+  commandCenter.skipForwardCommand.preferredIntervals = @[@(30)];
+  commandCenter.skipForwardCommand.enabled = NO;
+  [commandCenter.skipForwardCommand addTarget:self action:@selector(onCCFF:)];
+  
+  // seek bar
+  [commandCenter.changePlaybackPositionCommand addTarget:self action:@selector(onCCPlaybackPossition:)];
+
+}
+- (MPRemoteCommandHandlerStatus)onCCPlaybackPossition:(MPChangePlaybackPositionCommandEvent *) event
+{
+  // davilla , have a look here... I cant get the player timeline on ios remote for appletv to update all teh time... its hit and miss
+  [[AVAudioSession sharedInstance] setActive:NO error:nil];
+  
+  g_application.SeekTime(event.positionTime);
+  
+  [[AVAudioSession sharedInstance] setActive:YES error:nil];
+  
+  return MPRemoteCommandHandlerStatusSuccess;
+}
+- (void)onCCFF:(MPRemoteCommandHandlerStatus*)event
+{
+  // if we dont have chapters, we skip forward
+  if(g_application.m_pPlayer->GetChapterCount() == 0)
+    [self sendKeyDownUp:XBMCK_RIGHT];
+  [self onSeekDelayed];
+  PRINT_SIGNATURE();
+}
+- (void)onCCREW:(MPRemoteCommandHandlerStatus*)event
+{
+  // if we dont have chapters, we skip backward
+  if(g_application.m_pPlayer->GetChapterCount() == 0)
+    [self sendKeyDownUp:XBMCK_LEFT];
+  [self onSeekDelayed];
+  PRINT_SIGNATURE();
+}
+- (void)onCCPlay:(MPRemoteCommandHandlerStatus*)event
+{
+  PRINT_SIGNATURE();
+}
 @end
