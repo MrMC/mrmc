@@ -114,8 +114,8 @@ void CGUIWindowHome::OnInitWindow()
   {
     // totals will be done after these jobs are finished
     m_updateHS = (Audio | Video);
-    AddHomeShelfJobs( m_updateHS );
   }
+  AddHomeShelfJobs( m_updateHS );
 
   CGUIWindow::OnInitWindow();
 }
