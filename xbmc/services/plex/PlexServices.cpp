@@ -157,6 +157,10 @@ void CPlexServices::Stop()
   g_directoryCache.Clear();
   CSingleLock lock2(m_criticalClients);
   m_clients.clear();
+  m_gdmListener = nullptr;
+  m_updateMins = 0;
+  m_playState = PlexServicePlayerState::stopped;
+  m_hasClients = false;
 }
 
 bool CPlexServices::IsActive()
