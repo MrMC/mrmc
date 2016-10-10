@@ -41,7 +41,9 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "services/ServicesManager.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #if defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
@@ -265,7 +267,10 @@ bool CProfilesManager::LoadProfile(size_t index)
 
   CreateProfileFolders();
 
-  CDatabaseManager::GetInstance().Initialize();
+  // check if we have set internal MYSQL settings and load, we will initialize databases there by setting that call to true
+  g_advancedSettings.setInternalMYSQL(CSettings::GetInstance().GetBool(CSettings::SETTING_MYSQL_ENABLED), true);
+
+  
   CButtonTranslator::GetInstance().Load(true);
 
   CInputManager::GetInstance().SetMouseEnabled(CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
