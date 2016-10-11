@@ -460,14 +460,16 @@ std::string CUtil::GetFileMD5(const std::string& strPath)
   if (file.Open(strPath))
   {
     XBMC::XBMC_MD5 md5;
-    char temp[1024];
+    int readSize = 1024 * 1024;
+    char *temp = (char*)malloc(readSize);
     while (true)
     {
-      ssize_t read = file.Read(temp,1024);
+      ssize_t read = file.Read(temp, readSize);
       if (read <= 0)
         break;
-      md5.append(temp,read);
+      md5.append(temp, read);
     }
+    free(temp);
     result = md5.getDigest();
     file.Close();
   }
