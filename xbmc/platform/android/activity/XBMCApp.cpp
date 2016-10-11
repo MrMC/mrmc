@@ -614,6 +614,9 @@ int CXBMCApp::GetDPI()
 
 void CXBMCApp::OnPlayBackStarted()
 {
+  if (getPackageName() != CCompileInfo::GetPackage())
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+
   AcquireAudioFocus();
   registerMediaButtonEventReceiver();
   CAndroidKey::SetHandleMediaKeys(true);
