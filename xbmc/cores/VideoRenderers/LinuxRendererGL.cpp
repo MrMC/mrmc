@@ -3472,7 +3472,7 @@ CRenderInfo CLinuxRendererGL::GetRenderInfo()
            m_format == RENDER_FMT_VDPAU_420)
     info.optimal_buffer_size = 5;
   else
-    info.optimal_buffer_size = 3;
+    info.optimal_buffer_size = 5;
   return info;
 }
 
