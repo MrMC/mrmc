@@ -80,6 +80,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/Environment.h"
+#include <openssl/md5.h>
 
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
@@ -455,23 +456,50 @@ int CUtil::GetDVDIfoTitle(const std::string& strFile)
 
 std::string CUtil::GetFileMD5(const std::string& strPath)
 {
-  CFile file;
   std::string result;
-  if (file.Open(strPath))
+
+  std::string path = CSpecialProtocol::TranslatePath(strPath);
+  FILE *inFile = fopen(path.c_str(), "rb");
+  if (inFile)
   {
-    XBMC::XBMC_MD5 md5;
+    unsigned char c[MD5_DIGEST_LENGTH];
+    MD5_CTX mdContext;
     int readSize = 1024 * 1024;
-    char *temp = (char*)malloc(readSize);
-    while (true)
+    unsigned char *data = (unsigned char*)malloc(readSize);
+    MD5_Init(&mdContext);
+    int bytes;
+    while ((bytes = fread(data, 1, readSize, inFile)) != 0)
+      MD5_Update(&mdContext, data, bytes);
+    MD5_Final(c,&mdContext);
+
+    free(data);
+
+    result = StringUtils::Format("%02X%02X%02X%02X%02X%02X%02X%02X"\
+    "%02X%02X%02X%02X%02X%02X%02X%02X",
+    c[0], c[1], c[2],
+    c[3], c[4], c[5], c[6], c[7], c[8],
+    c[9], c[10], c[11], c[12], c[13], c[14],
+    c[15]);
+  }
+  else
+  {
+    CFile file;
+    if (file.Open(strPath))
     {
-      ssize_t read = file.Read(temp, readSize);
-      if (read <= 0)
-        break;
-      md5.append(temp, read);
+      XBMC::XBMC_MD5 md5;
+      int readSize = 1024 * 1024;
+      char *temp = (char*)malloc(readSize);
+      while (true)
+      {
+        ssize_t read = file.Read(temp, readSize);
+        if (read <= 0)
+          break;
+        md5.append(temp, read);
+      }
+      free(temp);
+      result = md5.getDigest();
+      file.Close();
     }
-    free(temp);
-    result = md5.getDigest();
-    file.Close();
   }
 
   return result;
