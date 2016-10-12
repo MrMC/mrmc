@@ -19,6 +19,7 @@
  */
 
 #include <cstdlib>
+#include <random>
 
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
@@ -2046,7 +2047,8 @@ void CFileItemList::Sort(SortDescription sortDescription)
 void CFileItemList::Randomize()
 {
   CSingleLock lock(m_lock);
-  std::random_shuffle(m_items.begin(), m_items.end());
+  std::mt19937 r{std::random_device{}()};
+  std::shuffle(m_items.begin(), m_items.end(), r);
 }
 
 void CFileItemList::Archive(CArchive& ar)

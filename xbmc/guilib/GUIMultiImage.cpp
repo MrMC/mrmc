@@ -30,6 +30,8 @@
 #include "WindowIDs.h"
 #include "utils/StringUtils.h"
 
+#include <random>
+
 using namespace XFILE;
 
 CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd)
@@ -247,7 +249,10 @@ void CGUIMultiImage::OnDirectoryLoaded()
 {
   // Randomize or sort our images if necessary
   if (m_randomized)
-    random_shuffle(m_files.begin(), m_files.end());
+  {
+    std::mt19937 r{std::random_device{}()};
+    std::shuffle(m_files.begin(), m_files.end(), r);
+  }
   else
     sort(m_files.begin(), m_files.end());
 
