@@ -101,7 +101,7 @@ MainController *m_xbmcController;
   m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
   [m_xbmcController startAnimation];
 
-  [self registerAudioRouteNotifications: YES];
+  [self performSelector:@selector(registerAudioRouteNotifications:) withObject:@YES afterDelay:1];
 }
 
 - (BOOL)application:(UIApplication *)app
