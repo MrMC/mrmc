@@ -402,6 +402,10 @@ void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* m
 
 void CPlexUtils::SetWatched(CFileItem &item)
 {
+  // if we are Plex music, do not report
+  if (item.IsAudio())
+    return;
+
   std::string id = item.GetVideoInfoTag()->m_strServiceId;
   std::string url = item.GetPath();
   if (URIUtils::IsStack(url))
@@ -417,6 +421,10 @@ void CPlexUtils::SetWatched(CFileItem &item)
 
 void CPlexUtils::SetUnWatched(CFileItem &item)
 {
+  // if we are Plex music, do not report
+  if (item.IsAudio())
+    return;
+
   std::string id = item.GetVideoInfoTag()->m_strServiceId;
   std::string url = item.GetPath();
   if (URIUtils::IsStack(url))
