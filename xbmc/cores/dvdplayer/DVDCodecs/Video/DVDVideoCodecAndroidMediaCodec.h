@@ -138,6 +138,7 @@ protected:
   bool            m_opened;
   bool            m_drop;
   int             m_codecControlFlags;
+  int             m_state;
 
   std::shared_ptr<CJNIXBMCVideoView> m_jnivideoview;
   CJNISurface*    m_jnisurface;
@@ -159,7 +160,7 @@ protected:
   bool            m_render_interlaced;
   int             m_src_offset[4];
   int             m_src_stride[4];
-  
+
   // CJNISurfaceHolderCallback interface
 public:
   virtual void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
