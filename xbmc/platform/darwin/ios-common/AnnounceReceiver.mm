@@ -184,9 +184,10 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
   }
   else if (msg == "OnSeek")
   {
-    [g_xbmcController performSelectorOnMainThread:@selector(onSeekDelayed) withObject:nil  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onSeek) withObject:nil  waitUntilDone:NO];
   }
 }
+
 
 static std::atomic<long> sg_singleton_lock_variable {0};
 CAnnounceReceiver* CAnnounceReceiver::m_instance = nullptr;

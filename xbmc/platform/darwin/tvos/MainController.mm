@@ -44,6 +44,7 @@
 #import "windowing/WindowingFactory.h"
 #import "settings/Settings.h"
 #import "services/lighteffects/LightEffectServices.h"
+#import "utils/SeekHandler.h"
 
 #import <MediaPlayer/MPMediaItem.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -1082,6 +1083,9 @@ MainController *g_xbmcController;
   g_xbmcController = self;  
 
   CAnnounceReceiver::GetInstance().Initialize();
+  //NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  //[center addObserver: self
+  //   selector: @selector(observeDefaultCenterStuff:) name: nil object: nil];
 
   return self;
 }
@@ -1136,8 +1140,8 @@ MainController *g_xbmcController;
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
-  [self becomeFirstResponder];
   [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+  [self becomeFirstResponder];
 }
 //--------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
@@ -1283,7 +1287,7 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)enterBackground
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
   // We have 5 seconds before the OS will force kill us for delaying too long.
   XbmcThreads::EndTime timer(4500);
 
@@ -1355,7 +1359,7 @@ MainController *g_xbmcController;
 
 - (void)becomeActive
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
   // stop background task (if running)
   [self disableBackGroundTask];
 
@@ -1364,7 +1368,7 @@ MainController *g_xbmcController;
 
 - (void)becomeInactive
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
   // if we were interrupted, already paused here
   // else if user background us or lock screen, only pause video here, audio keep playing.
   if (g_application.m_pPlayer->IsPlayingVideo() &&
@@ -1477,6 +1481,7 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)remoteControlReceivedWithEvent:(UIEvent*)receivedEvent
 {
+  //PRINT_SIGNATURE();
   if (receivedEvent.type == UIEventTypeRemoteControl)
   {
     switch (receivedEvent.subtype)
@@ -1520,7 +1525,7 @@ MainController *g_xbmcController;
           CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       default:
-        //LOG(@"unhandled subtype: %d", (int)receivedEvent.subtype);
+        LOG(@"unhandled subtype: %d", (int)receivedEvent.subtype);
         break;
     }
     // start remote timeout
@@ -1534,13 +1539,16 @@ MainController *g_xbmcController;
 {
   //PRINT_SIGNATURE();
   self.m_nowPlayingInfo = info;
-  [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.m_nowPlayingInfo];
+  dispatch_async(dispatch_get_main_queue(),^{
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.m_nowPlayingInfo];
+    //LOG(@"setIOSNowPlayingInfo: after  %@", [[MPNowPlayingInfoCenter defaultCenter]  nowPlayingInfo]);
+  });
 }
 //--------------------------------------------------------------
 - (void)onPlayDelayed:(NSDictionary *)item
 {
   // we want to delay playback report, helps us get the current timeline
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
   SEL singleParamSelector = @selector(onPlay:);
   [g_xbmcController performSelector:singleParamSelector withObject:item afterDelay:2];
 }
@@ -1585,7 +1593,7 @@ MainController *g_xbmcController;
     [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
   NSNumber *speed = [item objectForKey:@"speed"];
   if (speed)
-    [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+    [dict setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
   NSNumber *current = [item objectForKey:@"current"];
   if (current)
     [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
@@ -1606,53 +1614,59 @@ MainController *g_xbmcController;
    */
 
   [self setIOSNowPlayingInfo:dict];
-  [[AVAudioSession sharedInstance] setActive:YES error:nil];
   [dict release];
 
 }
 //--------------------------------------------------------------
 - (void)onSpeedChanged:(NSDictionary *)item
 {
+  //PRINT_SIGNATURE();
   NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
   NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
   if (elapsed)
     [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
   NSNumber *speed = [item objectForKey:@"speed"];
   if (speed)
-    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
 
   [self setIOSNowPlayingInfo:info];
 }
 
-- (void)onSeekDelayed
+- (void)onSeekDelayed:(id)arg
 {
-  // we want to delay seek report, helps us get the current timeline
-  PRINT_SIGNATURE();
-  [[AVAudioSession sharedInstance] setActive:NO error:nil];
-  SEL singleParamSelector = @selector(onSeek);
-  [g_xbmcController performSelector:singleParamSelector withObject:nil afterDelay:3];
+  // wait until any delayed seek fires and we come out of paused and are really playing again.
+  while(CSeekHandler::GetInstance().InProgress() || g_application.m_pPlayer->IsPaused())
+    usleep(50*1000);
+
+  //PRINT_SIGNATURE();
+  NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
+
+  NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [NSNumber numberWithDouble:1.0f];
+  if (speed)
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
+
+  [self setIOSNowPlayingInfo:info];
 }
 
 - (void)onSeek
 {
   PRINT_SIGNATURE();
-  NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
-  NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
-  if (elapsed)
-    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-  
-  [self setIOSNowPlayingInfo:info];
-  [[AVAudioSession sharedInstance] setActive:YES error:nil];
+  [NSThread detachNewThreadSelector:@selector(onSeekDelayed:) toTarget:self withObject:nil];
 }
 //--------------------------------------------------------------
 - (void)onPause:(NSDictionary *)item
 {
   PRINT_SIGNATURE();
   NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
-  NSNumber *speed = [NSNumber numberWithDouble:0.0f];
+  NSNumber *speed = [NSNumber numberWithDouble:0.000001f];
   if (speed)
-    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
-  [[AVAudioSession sharedInstance] setActive:NO error:nil];
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
+  NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
   [self setIOSNowPlayingInfo:info];
 }
 //--------------------------------------------------------------
@@ -1666,8 +1680,8 @@ MainController *g_xbmcController;
 
 - (void)observeDefaultCenterStuff: (NSNotification *) notification
 {
-  //  LOG(@"default: %@", [notification name]);
-  //  LOG(@"userInfo: %@", [notification userInfo]);
+  //LOG(@"default: %@", [notification name]);
+  //LOG(@"userInfo: %@", [notification userInfo]);
 }
 
 - (void)createCustomControlCenter
@@ -1715,33 +1729,28 @@ MainController *g_xbmcController;
 }
 - (MPRemoteCommandHandlerStatus)onCCPlaybackPossition:(MPChangePlaybackPositionCommandEvent *) event
 {
-  // davilla , have a look here... I cant get the player timeline on ios remote for appletv to update all teh time... its hit and miss
-  [[AVAudioSession sharedInstance] setActive:NO error:nil];
-  
   g_application.SeekTime(event.positionTime);
-  
-  [[AVAudioSession sharedInstance] setActive:YES error:nil];
   
   return MPRemoteCommandHandlerStatusSuccess;
 }
 - (void)onCCFF:(MPRemoteCommandHandlerStatus*)event
 {
+  //PRINT_SIGNATURE();
   // if we dont have chapters, we skip forward
   if(g_application.m_pPlayer->GetChapterCount() == 0)
     [self sendKeyDownUp:XBMCK_RIGHT];
-  [self onSeekDelayed];
-  PRINT_SIGNATURE();
+  [self onSeekDelayed:nil];
 }
 - (void)onCCREW:(MPRemoteCommandHandlerStatus*)event
 {
+  //PRINT_SIGNATURE();
   // if we dont have chapters, we skip backward
   if(g_application.m_pPlayer->GetChapterCount() == 0)
     [self sendKeyDownUp:XBMCK_LEFT];
-  [self onSeekDelayed];
-  PRINT_SIGNATURE();
+  [self onSeekDelayed:nil];
 }
 - (void)onCCPlay:(MPRemoteCommandHandlerStatus*)event
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
 }
 @end
