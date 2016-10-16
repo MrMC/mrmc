@@ -533,7 +533,7 @@ void CPlexServices::Process()
     SAFE_DELETE(socket);
     SAFE_DELETE(m_gdmListener);
   }
-  CLog::Log(LOGDEBUG, "CPlexServices::Process bgn");
+  CLog::Log(LOGDEBUG, "CPlexServices::Process end");
 }
 
 bool CPlexServices::GetPlexToken(std::string user, std::string pass)
