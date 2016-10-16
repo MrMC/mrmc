@@ -156,6 +156,7 @@ public:
   static void OnPlayBackEnded();
 
   static bool WaitVSync(unsigned int milliSeconds);
+  static uint64_t GetVsyncTime() { return m_vsynctime; }
 
 protected:
   // limit who can access Volume
@@ -198,5 +199,6 @@ private:
 
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
+  static uint64_t m_vsynctime;
   static CEvent m_vsyncEvent;
 };

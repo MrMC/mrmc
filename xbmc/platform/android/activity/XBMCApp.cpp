@@ -116,6 +116,7 @@ bool CXBMCApp::m_headsetPlugged = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
+uint64_t CXBMCApp::m_vsynctime = 0;
 CEvent CXBMCApp::m_vsyncEvent;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
@@ -1020,6 +1021,7 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
 
 void CXBMCApp::doFrame(int64_t frameTimeNanos)
 {
+  m_vsynctime = frameTimeNanos;
   m_vsyncEvent.Set();
 }
 
