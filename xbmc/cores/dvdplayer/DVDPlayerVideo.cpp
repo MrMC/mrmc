@@ -1327,7 +1327,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
 
     // if lateness is smaller than frametime, we observe this state
     // for 10 cycles
-    if (m_droppingStats.m_lateFrames > 2 || iLateness < -2/m_fFrameRate)
+    if (m_droppingStats.m_lateFrames > 10 || iLateness < -2/m_fFrameRate)
     {
       result |= EOS_VERYLATE;
       m_droppingStats.m_dropRequests++;
