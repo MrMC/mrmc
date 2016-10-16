@@ -991,7 +991,7 @@ void* CWebServer::UriRequestLogger(void *cls, const char *uri)
   conHandler->requestHandler = NULL;
 
   // log the full URI
-  CLog::Log(LOGDEBUG, "webserver: request received for %s", uri);
+  // CLog::Log(LOGDEBUG, "webserver: request received for %s", uri);
 
   // return the connection handler so that we can access it in AnswerToConnection as con_cls
   return conHandler;
