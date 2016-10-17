@@ -1001,6 +1001,16 @@ XBMCController *g_xbmcController;
   [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.m_nowPlayingInfo];
 }
 //--------------------------------------------------------------
+
+//--------------------------------------------------------------
+- (void)onPlayDelayed:(NSDictionary *)item
+{
+  // we want to delay playback report, helps us get the current timeline
+  //PRINT_SIGNATURE();
+  SEL singleParamSelector = @selector(onPlay:);
+  [g_xbmcController performSelector:singleParamSelector withObject:item afterDelay:2];
+}
+
 - (void)onPlay:(NSDictionary *)item
 {
   NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
@@ -1069,7 +1079,7 @@ XBMCController *g_xbmcController;
   [self disableNetworkAutoSuspend];
 }
 //--------------------------------------------------------------
-- (void)OnSpeedChanged:(NSDictionary *)item
+- (void)onSpeedChanged:(NSDictionary *)item
 {
   if (NSClassFromString(@"MPNowPlayingInfoCenter"))
   {
@@ -1101,6 +1111,32 @@ XBMCController *g_xbmcController;
   [self rescheduleNetworkAutoSuspend];
 }
 //--------------------------------------------------------------
+- (void)onSeek
+{
+  PRINT_SIGNATURE();
+  [NSThread detachNewThreadSelector:@selector(onSeekDelayed:) toTarget:self withObject:nil];
+}
+//--------------------------------------------------------------
+
+- (void)onSeekDelayed:(id)arg
+{
+  // wait until any delayed seek fires and we come out of paused and are really playing again.
+  while(CSeekHandler::GetInstance().InProgress() || g_application.m_pPlayer->IsPaused())
+    usleep(50*1000);
+  
+  //PRINT_SIGNATURE();
+  NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
+  
+  NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [NSNumber numberWithDouble:1.0f];
+  if (speed)
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
+  
+  [self setIOSNowPlayingInfo:info];
+}
+
 - (void)rescheduleNetworkAutoSuspend
 {
   //LOG(@"%s: playback state: %d", __PRETTY_FUNCTION__,  m_playbackState);
