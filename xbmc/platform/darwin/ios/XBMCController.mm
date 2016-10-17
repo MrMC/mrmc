@@ -46,6 +46,7 @@
 #import "platform/MCRuntimeLib.h"
 #import "platform/MCRuntimeLibContext.h"
 #import "windowing/WindowingFactory.h"
+#import "utils/SeekHandler.h"
 
 #import <MediaPlayer/MPMediaItem.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
