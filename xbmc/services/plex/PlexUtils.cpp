@@ -46,7 +46,7 @@
 #include "guilib/GUIWindowManager.h"
 
 static int  g_progressSec = 0;
-static CFileItem m_curItem = *new CFileItem;
+static CFileItem m_curItem;
 static PlexUtilsPlayerState g_playbackState = PlexUtilsPlayerState::stopped;
 
 bool CPlexUtils::HasClients()
