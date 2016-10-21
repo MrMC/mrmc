@@ -21,6 +21,7 @@
 #include "AudioDecoder.h"
 #include "CodecFactory.h"
 #include "Application.h"
+#include "URL.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "music/tags/MusicInfoTag.h"
@@ -87,7 +88,7 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
 
   if (!m_codec || !m_codec->Init(file.GetPath(), filecache * 1024))
   {
-    CLog::Log(LOGERROR, "CAudioDecoder: Unable to Init Codec while loading file %s", file.GetPath().c_str());
+    CLog::Log(LOGERROR, "CAudioDecoder: Unable to Init Codec while loading file %s", file.GetURL().GetRedacted().c_str());
     Destroy();
     return false;
   }

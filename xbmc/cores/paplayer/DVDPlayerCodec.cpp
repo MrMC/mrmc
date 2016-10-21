@@ -95,7 +95,7 @@ bool DVDPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, fileitem);
   if (!m_pInputStream)
   {
-    CLog::Log(LOGERROR, "%s: Error creating input stream for %s", __FUNCTION__, strFileToOpen.c_str());
+    CLog::Log(LOGERROR, "%s: Error creating input stream for %s", __FUNCTION__, urlFile.GetRedacted().c_str());
     return false;
   }
 
@@ -103,7 +103,7 @@ bool DVDPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   // convey CFileItem::ContentLookup() into Open()
   if (!m_pInputStream->Open())
   {
-    CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, strFileToOpen.c_str());
+    CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, urlFile.GetRedacted().c_str());
     if (m_pInputStream)
       delete m_pInputStream;
     m_pInputStream = NULL;
