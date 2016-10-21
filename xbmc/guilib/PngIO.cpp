@@ -34,9 +34,9 @@ static bool ReScaleImage(
   uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch)
 {
   struct SwsContext *context = sws_getContext(
-    in_width, in_height, PIX_FMT_BGRA,
-    out_width, out_height, PIX_FMT_BGRA,
-    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+    in_width, in_height, AV_PIX_FMT_BGRA,
+    out_width, out_height, AV_PIX_FMT_BGRA,
+    SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
   uint8_t *src[] = { in_pixels, 0, 0, 0 };
   int     srcStride[] = { (int)in_pitch, 0, 0, 0 };

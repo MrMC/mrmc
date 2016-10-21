@@ -149,17 +149,19 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--enable-encoder=ac3 \
 	--enable-encoder=aac \
 	--enable-encoder=wmav2 \
+	--enable-encoder=png \
+	--enable-encoder=mjpeg \
 	--enable-protocol=http \
 	--enable-libvorbis \
 	--enable-muxer=ogg \
 	--enable-encoder=libvorbis \
 	--enable-nonfree \
 	--enable-pthreads \
+	--enable-pic \
 	--enable-zlib \
 	--disable-mips32r2 \
 	--disable-mipsdspr1 \
 	--disable-mipsdspr2 \
-	--enable-libdcadec \
         ${FLAGS}
 
 make -j ${BUILDTHREADS} 

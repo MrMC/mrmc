@@ -59,11 +59,15 @@
 #endif
 #include "utils/StringUtils.h"
 
+// turn off ffmpeg deprecated warning spew
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 extern "C" {
 #include "libavutil/opt.h"
 #include "libavfilter/avfilter.h"
 #include "libavfilter/buffersink.h"
 #include "libavfilter/buffersrc.h"
+#include "libavutil/pixdesc.h"
 }
 
 enum DecoderState
@@ -97,7 +101,8 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
 
   // fix an ffmpeg issue here, it calls us with an invalid profile
   // then a 2nd call with a valid one
-  if (avctx->codec_id == AV_CODEC_ID_VC1 && avctx->profile == FF_PROFILE_UNKNOWN)
+  if(ctx->m_decoderState != STATE_HW_SINGLE ||
+     (avctx->codec_id == AV_CODEC_ID_VC1 && avctx->profile == FF_PROFILE_UNKNOWN))
   {
     return avcodec_default_get_format(avctx, fmt);
   }
@@ -227,6 +232,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
 
   m_pCodecContext = avcodec_alloc_context3(pCodec);
+  if (!m_pCodecContext)
+    return false;
+
   m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
@@ -317,20 +325,33 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
+    avcodec_free_context(&m_pCodecContext);
     return false;
   }
 
   m_pFrame = av_frame_alloc();
   if (!m_pFrame)
+  {
+    avcodec_free_context(&m_pCodecContext);
     return false;
+  }
 
   m_pDecodedFrame = av_frame_alloc();
   if (!m_pDecodedFrame)
+  {
+    av_frame_free(&m_pFrame);
+    avcodec_free_context(&m_pCodecContext);
     return false;
+  }
 
   m_pFilterFrame = av_frame_alloc();
   if (!m_pFilterFrame)
+  {
+    av_frame_free(&m_pFrame);
+    av_frame_free(&m_pDecodedFrame);
+    avcodec_free_context(&m_pCodecContext);
     return false;
+  }
 
   UpdateName();
   return true;
@@ -341,21 +362,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
   av_frame_free(&m_pFrame);
   av_frame_free(&m_pDecodedFrame);
   av_frame_free(&m_pFilterFrame);
-
-  if (m_pCodecContext)
-  {
-    if (m_pCodecContext->codec)
-      avcodec_close(m_pCodecContext);
-
-    if (m_pCodecContext->extradata)
-    {
-      av_free(m_pCodecContext->extradata);
-      m_pCodecContext->extradata = NULL;
-      m_pCodecContext->extradata_size = 0;
-    }
-    av_free(m_pCodecContext);
-    m_pCodecContext = NULL;
-  }
+  avcodec_free_context(&m_pCodecContext);
   SAFE_RELEASE(m_pHardware);
 
   FilterClose();
@@ -578,11 +585,11 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   else
     m_interlaced = false;
 
-  /* put a limit on convergence count to avoid huge mem usage on streams without keyframes */
+  // put a limit on convergence count to avoid huge mem usage on streams without keyframes
   if (m_iLastKeyframe > 300)
     m_iLastKeyframe = 300;
 
-  /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
+  //! @todo check if this work-around is still required
   if(m_pCodecContext->codec_id == AV_CODEC_ID_SVQ3)
     m_started = true;
 

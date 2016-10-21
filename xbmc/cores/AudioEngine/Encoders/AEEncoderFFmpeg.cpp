@@ -120,6 +120,9 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     return false;
 
   m_CodecCtx = avcodec_alloc_context3(codec);
+  if (!m_CodecCtx)
+    return false;
+
   m_CodecCtx->bit_rate = m_BitRate;
   m_CodecCtx->sample_rate = format.m_sampleRate;
   m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
@@ -195,6 +198,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     else
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Unable to find a suitable data format for the codec (%s)", m_CodecName.c_str());
+      avcodec_free_context(&m_CodecCtx);
       return false;
     }
   }
@@ -204,7 +208,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
   /* open the codec */
   if (avcodec_open2(m_CodecCtx, codec, NULL))
   {
-    av_freep(&m_CodecCtx);
+    avcodec_free_context(&m_CodecCtx);
     return false;
   }
 
@@ -226,6 +230,8 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     if (!m_SwrCtx || swr_init(m_SwrCtx) < 0)
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Failed to initialise resampler.");
+      swr_free(&m_SwrCtx);
+      avcodec_free_context(&m_CodecCtx);
       return false;
     }
   }
@@ -281,6 +287,8 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   m_Pkt.size = out_size;
   m_Pkt.data = out;
 
+  // turn off ffmpeg deprecated warning spew
+  #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   /* encode it */
   int ret = avcodec_encode_audio2(m_CodecCtx, &m_Pkt, frame, &got_output);
 
@@ -296,7 +304,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   int size = m_Pkt.size;
 
   /* free the packet */
-  av_free_packet(&m_Pkt);
+  av_packet_unref(&m_Pkt);
 
   /* return the number of frames used */
   return size;

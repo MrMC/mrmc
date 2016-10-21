@@ -31,6 +31,9 @@
 #include "guilib/DispResource.h"
 #include <queue>
 
+// turn off ffmpeg deprecated warning spew
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 // ffmpeg
 extern "C" {
 #include "libavformat/avformat.h"

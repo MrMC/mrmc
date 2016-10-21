@@ -35,6 +35,8 @@ class CDVDInputStream;
   #include "config.h"
 #endif
 
+// turn off ffmpeg deprecated warning spew.
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 extern "C" {
 #include "libavcodec/avcodec.h"
 }

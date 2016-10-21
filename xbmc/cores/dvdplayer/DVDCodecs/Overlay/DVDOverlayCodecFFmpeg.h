@@ -22,6 +22,9 @@
 
 #include "DVDOverlayCodec.h"
 
+// turn off ffmpeg deprecated warning spew.
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavutil/avutil.h"
@@ -43,8 +46,6 @@ public:
   virtual CDVDOverlay* GetOverlay();
 
 private:
-  void FreeSubtitle(AVSubtitle &sub);
-
   AVCodecContext* m_pCodecContext;
   AVSubtitle      m_Subtitle;
   int             m_SubtitleIndex;
