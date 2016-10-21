@@ -85,6 +85,7 @@ namespace RenderManager {
 
   unsigned int GetStereoModeFlags(const std::string& mode)
   {
+    unsigned int ret = 0u;
     if (!mode.empty())
     {
       static std::map<std::string, unsigned int> convert;
@@ -107,10 +108,11 @@ namespace RenderManager {
         convert["block_lr"]               = 0u;
         convert["block_rl"]               = 0u;
       }
-      return convert[mode];
+      if ( convert.find(mode) != convert.end())
+        ret = convert[mode];
     }
-    else
-      return 0u;
+
+    return ret;
   }
 
   std::string GetStereoModeInvert(const std::string& mode)
