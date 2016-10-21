@@ -1706,6 +1706,9 @@ MainController *g_xbmcController;
   [nextTrackIntervalCommand setEnabled:YES];
   [nextTrackIntervalCommand addTarget:self action:@selector(onCCFF:)];
   
+  /*  disable below, looks like we are setting a selector even if setEnabled is NO
+      that screws up our remote learned buttons on tvOS 
+   
   // disable seek
   MPRemoteCommand *seekBackwardIntervalCommand = [commandCenter seekForwardCommand];
   [seekBackwardIntervalCommand setEnabled:NO];
@@ -1722,6 +1725,7 @@ MainController *g_xbmcController;
   commandCenter.skipForwardCommand.preferredIntervals = @[@(30)];
   commandCenter.skipForwardCommand.enabled = NO;
   [commandCenter.skipForwardCommand addTarget:self action:@selector(onCCFF:)];
+  */
   
   // seek bar
   [commandCenter.changePlaybackPositionCommand addTarget:self action:@selector(onCCPlaybackPossition:)];
