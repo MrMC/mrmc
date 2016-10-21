@@ -277,18 +277,21 @@ void* CAndroidDyload::Open_Internal(string filename, bool checkSystem)
 
   handle = dlopen(path.c_str(), RTLD_LOCAL);
 
-  recursivelibdep dep;
-  dep.handle = handle;
-  dep.filename = filename.substr(filename.find_last_of('/') +1);
-  m_lib.deps.push_back(dep);
-
-  lib.refcount = 1;
-  lib.handle = handle;
-  lib.system = checkSystem;
-
-  CSingleLock lock(m_libLock);
-  m_libs[filename] = lib;
-
+  if (handle)
+  {
+      recursivelibdep dep;
+      dep.handle = handle;
+      dep.filename = filename.substr(filename.find_last_of('/') +1);
+      m_lib.deps.push_back(dep);
+    
+      lib.refcount = 1;
+      lib.handle = handle;
+      lib.system = checkSystem;
+    
+      CSingleLock lock(m_libLock);
+      m_libs[filename] = lib;
+  }
+  
   return handle;
 }
 
