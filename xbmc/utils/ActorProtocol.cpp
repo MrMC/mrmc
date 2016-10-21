@@ -179,6 +179,12 @@ bool Protocol::SendOutMessage(int signal, void *data /* = NULL */, int size /* =
 
   if (data)
   {
+    // outMsg might or might not have a allocated buff
+    // but we alloc it here, so just nuke it rather than
+    // figure out if we can resuse it.
+    if (outMsg && msg->data && msg->data != msg->buffer)
+      delete [] msg->data;
+
     if (size > MSG_INTERNAL_BUFFER_SIZE)
       msg->data = new uint8_t[size];
     else
@@ -208,6 +214,12 @@ bool Protocol::SendInMessage(int signal, void *data /* = NULL */, int size /* = 
 
   if (data)
   {
+    // outMsg might or might not have a allocated buff
+    // but we alloc it here, so just nuke it rather than
+    // figure out if we can resuse it.
+    if (outMsg && msg->data && msg->data != msg->buffer)
+      delete [] msg->data;
+
     if (size > MSG_INTERNAL_BUFFER_SIZE)
       msg->data = new uint8_t[size];
     else

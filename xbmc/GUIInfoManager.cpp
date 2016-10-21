@@ -4677,7 +4677,7 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
 
 void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
-  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.GetPath().c_str());
+  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)", item.GetURL().GetRedacted().c_str());
   *m_currentFile = item;
 
   m_currentFile->LoadMusicTag();
