@@ -789,7 +789,7 @@ void CActiveAESink::OpenSink()
   }
 
   // open NULL sink
-  // TODO: should not be required by ActiveAE
+  //! @todo should not be required by ActiveAE
   if (!m_sink)
   {
     device = "NULL:NULL";

@@ -1726,6 +1726,9 @@
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
+		F58558191DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58558171DBA7CD200641870 /* ActiveAEFilter.cpp */; };
+		F585581A1DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58558171DBA7CD200641870 /* ActiveAEFilter.cpp */; };
+		F585581B1DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58558171DBA7CD200641870 /* ActiveAEFilter.cpp */; };
 		F58BF96A1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
 		F58BF96B1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
 		F58BF96C1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */; };
@@ -5131,6 +5134,8 @@
 		F57B6F7F1071B8B500079ACB /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
 		F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPDirectory.h; sourceTree = "<group>"; };
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPDirectory.cpp; sourceTree = "<group>"; };
+		F58558171DBA7CD200641870 /* ActiveAEFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ActiveAEFilter.cpp; sourceTree = "<group>"; };
+		F58558181DBA7CD200641870 /* ActiveAEFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveAEFilter.h; sourceTree = "<group>"; };
 		F58BF9681CD51257005BB003 /* VideoDatabaseFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDatabaseFile.cpp; sourceTree = "<group>"; };
 		F58BF9691CD51257005BB003 /* VideoDatabaseFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDatabaseFile.h; sourceTree = "<group>"; };
 		F58BF96F1CD83FAF005BB003 /* LightEffectServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LightEffectServices.cpp; sourceTree = "<group>"; };
@@ -9385,6 +9390,8 @@
 				F5CC22D41814FF3B006B5E91 /* ActiveAE.h */,
 				F5CC22D51814FF3B006B5E91 /* ActiveAEBuffer.cpp */,
 				F5CC22D61814FF3B006B5E91 /* ActiveAEBuffer.h */,
+				F58558171DBA7CD200641870 /* ActiveAEFilter.cpp */,
+				F58558181DBA7CD200641870 /* ActiveAEFilter.h */,
 				DF32466019E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp */,
 				DF32466119E931A8005E8CFB /* ActiveAEResampleFFMPEG.h */,
 				F5CC22D91814FF3B006B5E91 /* ActiveAESink.cpp */,
@@ -9945,6 +9952,7 @@
 			files = (
 				E38E1F370D25F9FD00618676 /* Application.cpp in Sources */,
 				399442771A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */,
+				F58558191DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */,
 				E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */,
 				E38E1F3E0D25F9FD00618676 /* BackgroundInfoLoader.cpp in Sources */,
 				DF4BF0151A4EF30F0053AC56 /* cc_decoder.c in Sources */,
@@ -11209,6 +11217,7 @@
 				E4991286174E5D9900741B6D /* DirectoryNodeArtist.cpp in Sources */,
 				DF29BCEF1B5D911800904347 /* BaseEvent.cpp in Sources */,
 				E4991287174E5D9900741B6D /* DirectoryNodeGrouped.cpp in Sources */,
+				F585581A1DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */,
 				E4991288174E5D9900741B6D /* DirectoryNodeOverview.cpp in Sources */,
 				E4991289174E5D9900741B6D /* DirectoryNodeRoot.cpp in Sources */,
 				E499128A174E5D9900741B6D /* DirectoryNodeSingles.cpp in Sources */,
@@ -12153,6 +12162,7 @@
 				F5D13F521BAF0B6D0075A95C /* GUIDialogCache.cpp in Sources */,
 				F5D13F531BAF0B6D0075A95C /* GUIDialogContextMenu.cpp in Sources */,
 				F5D13F541BAF0B6D0075A95C /* GUIDialogExtendedProgressBar.cpp in Sources */,
+				F585581B1DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */,
 				F5D13F551BAF0B6D0075A95C /* GUIDialogFavourites.cpp in Sources */,
 				F5B723BE1C7C9CFD006432AE /* Weather.cpp in Sources */,
 				F5D13F561BAF0B6D0075A95C /* GUIDialogFileBrowser.cpp in Sources */,

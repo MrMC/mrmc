@@ -37,19 +37,15 @@ CAEEncoderFFmpeg::CAEEncoderFFmpeg():
   m_OutputRatio   (0.0  ),
   m_SampleRateMul (0.0  ),
   m_NeededFrames  (0    ),
-  m_NeedConversion(false),
-  m_ResampBuffer  (NULL ),
-  m_ResampBufferSize(0  )
+  m_NeedConversion(false)
 {
 }
 
 CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
-  av_freep(&m_CodecCtx);
-  av_freep(&m_ResampBuffer);
-  if (m_SwrCtx)
-    swr_free(&m_SwrCtx);
+  swr_free(&m_SwrCtx);
+  avcodec_free_context(&m_CodecCtx);
 }
 
 bool CAEEncoderFFmpeg::IsCompatible(const AEAudioFormat& format)

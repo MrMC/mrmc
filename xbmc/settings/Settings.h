@@ -324,6 +324,7 @@ public:
   static const std::string SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME;
   static const std::string SETTING_AUDIOOUTPUT_NORMALIZELEVELS;
   static const std::string SETTING_AUDIOOUTPUT_PROCESSQUALITY;
+  static const std::string SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD;
   static const std::string SETTING_AUDIOOUTPUT_STREAMSILENCE;
   static const std::string SETTING_AUDIOOUTPUT_DSPADDONSENABLED;
   static const std::string SETTING_AUDIOOUTPUT_DSPSETTINGS;

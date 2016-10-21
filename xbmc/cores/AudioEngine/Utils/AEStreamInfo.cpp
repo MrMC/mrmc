@@ -78,8 +78,6 @@ CAEStreamParser::CAEStreamParser() :
 
 CAEStreamInfo::CAEStreamInfo() :
   m_type(STREAM_TYPE_NULL),
-  m_sampleRate(0),
-  m_channels(0),
   m_dataIsLE(true),
   m_dtsPeriod(0),
   m_repeat(0),
@@ -410,7 +408,7 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
       /* if we have enough data, validate the entire packet, else try to validate crc2 (5/8 of the packet) */
       if (framesize <= size - skip)
         crc_size = framesize - 1;
-      else
+      else 
         crc_size = (framesize >> 1) + (framesize >> 3) - 1;
 
       if (crc_size <= size - skip)
