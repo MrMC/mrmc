@@ -1692,7 +1692,7 @@ MainController *g_xbmcController;
 
   // disable stop button
   commandCenter.stopCommand.enabled = NO;
-  [commandCenter.stopCommand addTarget:self action:@selector(onCCREW:)];
+  [commandCenter.stopCommand addTarget:self action:@selector(onCCStop:)];
   // enable play button
   commandCenter.playCommand.enabled = YES;
   [commandCenter.playCommand addTarget:self action:@selector(onCCPlay:)];
@@ -1750,6 +1750,10 @@ MainController *g_xbmcController;
   [self onSeekDelayed:nil];
 }
 - (void)onCCPlay:(MPRemoteCommandHandlerStatus*)event
+{
+  //PRINT_SIGNATURE();
+}
+- (void)onCCStop:(MPRemoteCommandHandlerStatus*)event
 {
   //PRINT_SIGNATURE();
 }
