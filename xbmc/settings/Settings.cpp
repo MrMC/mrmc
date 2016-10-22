@@ -707,11 +707,13 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingsHandler(&CUPnPSettings::GetInstance());
 #endif
   m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::GetInstance());
+  m_settingsManager->UnregisterSettingsHandler(&CRssManager::GetInstance());
   m_settingsManager->UnregisterSettingsHandler(&g_langInfo);
   m_settingsManager->UnregisterSettingsHandler(&g_application);
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
   m_settingsManager->UnregisterSettingsHandler(&g_timezone);
 #endif
+  m_settingsManager->UnregisterSettingsHandler(&CMediaSettings::GetInstance());
 
   m_initialized = false;
 }
