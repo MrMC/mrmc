@@ -20,7 +20,7 @@
 
 #include "ActorProtocol.h"
 
-#define USE_FREE_MESSAGE_QUEUE 0
+#define USE_FREE_MESSAGE_QUEUE 1
 
 using namespace Actor;
 
