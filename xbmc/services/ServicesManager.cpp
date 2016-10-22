@@ -35,9 +35,9 @@ class CServicesManagerJob: public CJob
 {
 public:
   CServicesManagerJob(CFileItem &item, double currentTime, std::string strFunction)
-  :m_item(*new CFileItem(item)),
-  m_function(strFunction),
-  m_currentTime(currentTime)
+  : m_item(item)
+  , m_function(strFunction)
+  , m_currentTime(currentTime)
   {
   }
   virtual ~CServicesManagerJob()
@@ -67,7 +67,7 @@ public:
     return true;
   }
 private:
-  CFileItem      &m_item;
+  CFileItem      m_item;
   std::string    m_function;
   double         m_currentTime;
 };
@@ -109,8 +109,8 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
         {
           CPlexUtils::SetPlayState(PlexUtilsPlayerState::stopped);
 
-          CFileItem item(g_application.CurrentFileItem());
-          AddJob(new CServicesManagerJob(item, item.GetVideoInfoTag()->m_resumePoint.timeInSeconds, "SetProgress"));
+          CFileItem &item = g_application.CurrentFileItem();
+          AddJob(new CServicesManagerJob(g_application.CurrentFileItem(), item.GetVideoInfoTag()->m_resumePoint.timeInSeconds, "SetProgress"));
           break;
         }
         default:

@@ -323,8 +323,8 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
   // play media
   if (itemPtr.IsAudio())
   {
-    CFileItemList &items = *new CFileItemList;
-    
+    CFileItemList items;
+
     // if we are Service based, get it from there... if not, check music database
     if (itemPtr.IsMediaServiceBased())
       CServicesManager::GetInstance().GetAlbumSongs(itemPtr, items);
