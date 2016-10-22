@@ -862,6 +862,7 @@ void CActiveAESink::ReturnBuffers()
     {
       samples = *((CSampleBuffer**)msg->data);
       msg->Reply(CSinkDataProtocol::RETURNSAMPLE, &samples, sizeof(CSampleBuffer*));
+      msg->Release();
     }
   }
 }
