@@ -1421,7 +1421,7 @@ MainController *g_xbmcController;
 - (void)stopAnimation
 {
   //PRINT_SIGNATURE();
-  if (m_animating == NO && [m_glView getContext])
+  if ([m_glView getContext])
   {
     m_appAlive = FALSE;
     m_animating = FALSE;
