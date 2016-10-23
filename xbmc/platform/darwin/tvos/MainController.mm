@@ -1630,6 +1630,7 @@ MainController *g_xbmcController;
     [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
 
   [self setIOSNowPlayingInfo:info];
+  [info release];
 }
 
 - (void)onSeekDelayed:(id)arg
@@ -1649,6 +1650,7 @@ MainController *g_xbmcController;
     [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
 
   [self setIOSNowPlayingInfo:info];
+  [info release];
 }
 
 - (void)onSeek
@@ -1668,6 +1670,7 @@ MainController *g_xbmcController;
   if (elapsed)
     [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
   [self setIOSNowPlayingInfo:info];
+  [info release];
 }
 //--------------------------------------------------------------
 - (void)onStop:(NSDictionary *)item

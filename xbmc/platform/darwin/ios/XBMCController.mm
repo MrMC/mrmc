@@ -1093,6 +1093,7 @@ XBMCController *g_xbmcController;
       [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
 
     [self setIOSNowPlayingInfo:info];
+    [info release];
   }
 }
 //--------------------------------------------------------------
@@ -1136,6 +1137,7 @@ XBMCController *g_xbmcController;
     [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
   
   [self setIOSNowPlayingInfo:info];
+  [info release];
 }
 
 - (void)rescheduleNetworkAutoSuspend
