@@ -102,6 +102,8 @@ void CRssManager::Stop()
 
 bool CRssManager::Load()
 {
+  CSingleLock lock(m_critical);
+
   RssSet set;
   m_mapRssUrls.clear();
   set.rtl = CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_RSSRTL);
