@@ -83,6 +83,9 @@ void CSectionLoader::UnloadDLL(const std::string &dllname)
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
+    if (dll.m_strDllName.empty())
+      continue;
+
     if (StringUtils::EqualsNoCase(dll.m_strDllName, dllname))
     {
       dll.m_lReferenceCount--;
