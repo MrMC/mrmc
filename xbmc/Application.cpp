@@ -2862,6 +2862,7 @@ void CApplication::Stop(int exitCode)
 
 #if defined(HAS_FILESYSTEM_SMB)
     smb.Deinit();
+    smb.UnLoad();
 #endif
 
 #if defined(HAS_FILESYSTEM_DSM)

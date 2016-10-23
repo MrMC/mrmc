@@ -60,6 +60,8 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
 
 bool CSMB::m_IsFirstInit = true;
 
+CSMB smb;
+
 CSMB::CSMB()
 {
   m_IdleTimeout = 0;
@@ -72,7 +74,12 @@ CSMB::CSMB()
 CSMB::~CSMB()
 {
   Deinit();
-  delete m_lib;
+  UnLoad();
+}
+
+void CSMB::UnLoad()
+{
+  SAFE_DELETE(m_lib);
 }
 
 bool CSMB::CheckLibLoadedAndLoad()
@@ -97,8 +104,11 @@ void CSMB::Deinit()
   // samba goes loco if deinited while it has some files opened
   if (m_context)
   {
-    smb.GetImpl()->smbc_set_context(NULL);
-    smb.GetImpl()->smbc_free_context(m_context, 1);
+    if (m_lib)
+    {
+      m_lib->smbc_set_context(NULL);
+      m_lib->smbc_free_context(m_context, 1);
+    }
     m_context = NULL;
   }
 }
@@ -291,7 +301,7 @@ void CSMB::CheckIfIdle()
 	  else
 	  {
         CLog::Log(LOGNOTICE, "Samba is idle. Closing the remaining connections");
-        smb.Deinit();
+        Deinit();
       }
     }
   }
@@ -319,8 +329,6 @@ void CSMB::AddIdleConnection()
   // leaves the movie paused for a long while and then press stop.
   m_IdleTimeout = 180;
 }
-
-CSMB smb;
 
 CSMBFile::CSMBFile()
 {

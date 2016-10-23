@@ -38,6 +38,7 @@ public:
   CSMB();
  ~CSMB();
 
+  void UnLoad();
   bool CheckLibLoadedAndLoad();
   DllLibSMB *GetImpl() { return m_lib; }
 
