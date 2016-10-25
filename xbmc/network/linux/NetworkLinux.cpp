@@ -200,7 +200,7 @@ std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
 std::string CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
 {
    std::string result;
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
   std::string cmd = "networksetup -getairportnetwork " + m_interfaceName + " | grep \"Current Wi-Fi Network\"";
   FILE* pipe = popen(cmd.c_str(), "r");
   Sleep(100);
