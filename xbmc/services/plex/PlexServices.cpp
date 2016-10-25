@@ -45,6 +45,7 @@
 #include "utils/JobManager.h"
 
 #include "utils/JSONVariantParser.h"
+#include "utils/SystemInfo.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
@@ -461,6 +462,19 @@ void CPlexServices::Process()
         CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway");
         break;
       }
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+      /*
+       this is dumb, but if we are on iOS and on 3g/LTE we dont
+       get "iface->GetCurrentDefaultGateway()" and cant ping Host.
+       Fallback in here and check if we have internet, if yes that
+       means that 3g/LTE works and we can get to plex server.
+       */
+      else
+      {
+        if (g_sysinfo.HasInternet())
+          break;
+      }
+#endif
     }
 
     m_processSleep.WaitMSec(250);
