@@ -45,9 +45,9 @@ public:
   virtual bool  GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual void  SetDropState(bool bDrop);
   virtual void  SetSpeed(int iSpeed);
-  virtual int   GetDataSize(void);
-  virtual double GetTimeSize(void);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
+  virtual unsigned GetAllowedReferences();
+  virtual void SetCodecControl(int flags);
 
 protected:
   virtual void  Process();
@@ -71,6 +71,7 @@ protected:
 
   int32_t                 m_format;
   const char             *m_pFormatName;
+  int                     m_codecControlFlags;
   double                  m_dts;
   double                  m_pts;
   int                     m_speed;

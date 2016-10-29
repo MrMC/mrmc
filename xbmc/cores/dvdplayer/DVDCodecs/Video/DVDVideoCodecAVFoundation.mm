@@ -314,6 +314,14 @@ void CDVDVideoCodecAVFoundation::Dispose()
 
 int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
+  {
+    if (!m_trackerQueue.empty())
+      return VC_PICTURE;
+    else
+      return VC_BUFFER;
+  }
+
   if (pData)
   {
     m_bitstream->Convert(pData, iSize);
@@ -353,7 +361,7 @@ int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, do
     Sleep(10);
   }
 
-  if (m_trackerQueue.size() < (2* m_max_ref_frames))
+  if (m_trackerQueue.size() < m_max_ref_frames)
     return VC_BUFFER;
 
   return VC_PICTURE;
@@ -365,12 +373,25 @@ void CDVDVideoCodecAVFoundation::Reset(void)
   m_messages->enqueue(START);
 }
 
+unsigned CDVDVideoCodecAVFoundation::GetAllowedReferences()
+{
+  return 3;
+}
+
+void CDVDVideoCodecAVFoundation::SetCodecControl(int flags)
+{
+  m_codecControlFlags = flags;
+}
+
+
 bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   if (m_framerate_ms > 0.0)
     pDvdVideoPicture->iDuration     = 1.0 / m_framerate_ms * DVD_TIME_BASE;
   pDvdVideoPicture->format          = RENDER_FMT_BYPASS;
   pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
+    pDvdVideoPicture->iFlags       |= DVP_FLAG_DROPPED;
   pDvdVideoPicture->color_range     = 0;
   pDvdVideoPicture->color_matrix    = 4;
   pDvdVideoPicture->iWidth          = m_width;
@@ -378,7 +399,7 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iDisplayWidth   = pDvdVideoPicture->iWidth;
   pDvdVideoPicture->iDisplayHeight  = pDvdVideoPicture->iHeight;
 
-  if (m_trackerQueue.size() > 0)
+  if (!m_trackerQueue.empty())
   {
     pthread_mutex_lock(&m_trackerQueueMutex);
     pktTracker *tracker = m_trackerQueue.front();
@@ -408,20 +429,8 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
 void CDVDVideoCodecAVFoundation::SetDropState(bool bDrop)
 {
-  // this gets called before 'Decode',
-  // it tells us to drop the next picture frame.
-  // so pretend to drop the next picture frame.
-  if (bDrop)
-  {
-    if (m_trackerQueue.size() >= m_max_ref_frames)
-    {
-      pthread_mutex_lock(&m_trackerQueueMutex);
-      pktTracker *tracker = m_trackerQueue.front();
-      m_trackerQueue.pop_front();
-      pthread_mutex_unlock(&m_trackerQueueMutex);
-      delete tracker;
-    }
-  }
+  // more a message to decoder to hurry up.
+  // AVSampleBufferDisplayLayer has no such ability so ignore it.
 }
 
 void CDVDVideoCodecAVFoundation::SetSpeed(int iSpeed)
@@ -440,42 +449,6 @@ void CDVDVideoCodecAVFoundation::SetSpeed(int iSpeed)
       break;
   }
   m_speed = iSpeed;
-}
-
-int CDVDVideoCodecAVFoundation::GetDataSize(void)
-{
-  pthread_mutex_lock(&m_trackerQueueMutex);
-
-  int datasize = 0;
-  std::list<pktTracker*>::iterator it;
-  for(it = m_trackerQueue.begin(); it != m_trackerQueue.end(); ++it)
-    datasize += (*it)->size;
-
-  pthread_mutex_unlock(&m_trackerQueueMutex);
-
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAVFoundation::GetDataSize(%d)", datasize);
-
-  return datasize;
-}
-
-double CDVDVideoCodecAVFoundation::GetTimeSize(void)
-{
-  double timesize = 0.0;
-
-  pthread_mutex_lock(&m_trackerQueueMutex);
-  if (m_framerate_ms > 0.0)
-    timesize = m_trackerQueue.size() * (m_framerate_ms / 1000.0);
-  pthread_mutex_unlock(&m_trackerQueueMutex);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAVFoundation::GetTimeSize(%f)", timesize);
-
-  // lie to DVDPlayer, it is hardcoded to a max of 8 seconds,
-  // if you buffer more than 8 seconds, it goes nuts.
-  if (timesize < 0.0)
-    timesize = 0.0;
-  else if (timesize > 7.0)
-    timesize = 7.0;
-
-  return timesize;
 }
 
 void CDVDVideoCodecAVFoundation::Process()
