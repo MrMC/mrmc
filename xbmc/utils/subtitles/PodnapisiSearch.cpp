@@ -103,7 +103,7 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
   {
     searchString = StringUtils::Format(searchUrl.c_str() ,strLang.c_str()
                                                          ,tag->m_strShowTitle.c_str()
-                                                         ,tag->m_iYear
+                                                         ,0
                                                          ,tag->m_iSeason
                                                          ,tag->m_iEpisode
                                                          ,strHash.c_str()
