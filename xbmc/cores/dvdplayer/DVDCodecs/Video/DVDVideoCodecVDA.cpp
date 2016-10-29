@@ -404,6 +404,8 @@ void CDVDVideoCodecVDA::Dispose()
 
 void CDVDVideoCodecVDA::SetDropState(bool bDrop)
 {
+  // more a message to decoder to hurry up.
+  // VDA has no such ability so ignore it.
   m_DropPictures = bDrop;
 }
 
@@ -415,6 +417,8 @@ int CDVDVideoCodecVDA::Decode(uint8_t* pData, int iSize, double dts, double pts)
   {
     if (m_queue_depth > 0)
       return VC_PICTURE;
+    else
+      return VC_BUFFER;
   }
 
   if (pData)
@@ -426,9 +430,6 @@ int CDVDVideoCodecVDA::Decode(uint8_t* pData, int iSize, double dts, double pts)
     CFDictionaryRef avc_time = CreateDictionaryWithDisplayTime(m_sort_time++, dts, pts);
 
     uint32_t avc_flags = 0;
-    if (m_DropPictures)
-      avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
-
     OSStatus status = VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_time);
     CFRelease(avc_time);
     CFRelease(avc_demux);
@@ -461,6 +462,7 @@ void CDVDVideoCodecVDA::Reset(void)
     DisplayQueuePop();
 
   m_sort_time = 0;
+  m_codecControlFlags = 0;
 }
 
 bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
