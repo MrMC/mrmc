@@ -62,7 +62,7 @@ static ulxr::MethodResponse ServerChat(ulxr::MethodCall methodcall)
   std::string method = methodcall.getMethodName();
   try
   {
-    std::unique_ptr<ulxr::TcpIpConnection> connection(new ulxr::TcpIpConnection(false, ULXR_PCHAR(strServerUrl), 80));
+    std::unique_ptr<ulxr::SSLConnection> connection(new ulxr::SSLConnection(false, ULXR_PCHAR(strServerUrl), 443));
     ulxr::HttpProtocol    protocol(connection.get());
     ulxr::Requester       client(&protocol);
     response = client.call(methodcall, ULXR_PCHAR("/xml-rpc"));

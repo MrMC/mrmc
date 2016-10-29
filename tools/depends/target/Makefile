@@ -145,6 +145,7 @@ libdsm: libtasn1
 libcpluff: expat
 libdvdread: libdvdcss
 libdvdnav: libdvdread
+libulxmlrpcpp: libgcrypt openssl $(ZLIB)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@

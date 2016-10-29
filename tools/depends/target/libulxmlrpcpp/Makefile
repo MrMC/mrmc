@@ -9,13 +9,13 @@ ARCHIVE=$(SOURCE).tar.bz2
 
 CXXFLAGS_EXTRA = -D__unix__
 ifeq ($(OS),android)
-CONFIG_EXTRA = ac_cv_func_realloc_0_nonnull=yes
+CONFIG_EXTRA = LDFLAGS="-lz" ac_cv_func_realloc_0_nonnull=yes
 else ifeq ($(OS),linux)
 CONFIG_EXTRA = LDFLAGS="-lz -ldl"
 endif
 ifeq ($(NATIVE_OS),osx)
 CXXFLAGS_EXTRA += -Wno-error=c++11-narrowing
-CONFIG_EXTRA = LDFLAGS="-lc++"
+CONFIG_EXTRA = LDFLAGS="-lz -lc++"
 endif
 
 # configuration settings
@@ -44,8 +44,8 @@ ifeq ($(OS),android)
 	sed -ie "s|#include <sys/timeb.h>||" "$(PLATFORM)/ulxmlrpcpp/ulxr_log4j.cpp"
 	cd $(PLATFORM); patch -p1 < ../01-droid-no-domainname.patch
 	cd $(PLATFORM); patch -p1 < ../02-droid-missing-libc-bits.patch
-	cd $(PLATFORM); patch -p0 < ../03-const_correct.patch
 endif
+	cd $(PLATFORM); patch -p0 < ../03-const_correct.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
