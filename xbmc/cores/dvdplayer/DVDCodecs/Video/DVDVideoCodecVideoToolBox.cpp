@@ -312,7 +312,7 @@ static CFDataRef hevCCreate(const uint8_t *p_buf, int i_buf_size)
 //-----------------------------------------------------------------------------------
 // helper function that wraps dts/pts into a dictionary
 static CFDictionaryRef
-CreateDictionaryWithDisplayTime(double time, double dts, double pts)
+CreateDictionaryWithDisplayTime(int64_t time, double dts, double pts)
 {
   CFStringRef key[3] = {
     CFSTR("VideoDisplay_TIME"),
@@ -321,7 +321,7 @@ CreateDictionaryWithDisplayTime(double time, double dts, double pts)
   CFNumberRef value[3];
   CFDictionaryRef display_time;
 
-  value[0] = CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &time);
+  value[0] = CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &time);
   value[1] = CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &dts);
   value[2] = CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &pts);
 
@@ -341,7 +341,7 @@ GetFrameDisplayTimeFromDictionary(
   CFDictionaryRef inFrameInfoDictionary, frame_queue *frame)
 {
   // default to DVD_NOPTS_VALUE
-  frame->sort_time = -1.0;
+  frame->sort_time = -1;
   frame->dts = DVD_NOPTS_VALUE;
   frame->pts = DVD_NOPTS_VALUE;
   if (inFrameInfoDictionary == NULL)
@@ -351,7 +351,7 @@ GetFrameDisplayTimeFromDictionary(
   //
   value[0] = (CFNumberRef)CFDictionaryGetValue(inFrameInfoDictionary, CFSTR("VideoDisplay_TIME"));
   if (value[0])
-    CFNumberGetValue(value[0], kCFNumberDoubleType, &frame->sort_time);
+    CFNumberGetValue(value[0], kCFNumberLongLongType, &frame->sort_time);
   value[1] = (CFNumberRef)CFDictionaryGetValue(inFrameInfoDictionary, CFSTR("VideoDisplay_DTS"));
   if (value[1])
     CFNumberGetValue(value[1], kCFNumberDoubleType, &frame->dts);
@@ -493,7 +493,8 @@ CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
 
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
   m_DropPictures = false;
-  m_sort_time_offset = 0.0;
+  m_codecControlFlags = 0;
+  m_sort_time = 0;
   
   m_dll = new DllVideoToolBox();
 }
@@ -668,7 +669,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_DropPictures = false;
     // default to 5 min, this helps us feed correct pts to the player.
     m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
-    m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
+    m_sort_time = 0;
 
     return true;
   }
@@ -698,11 +699,21 @@ void CDVDVideoCodecVideoToolBox::Dispose()
 
 void CDVDVideoCodecVideoToolBox::SetDropState(bool bDrop)
 {
+  // more a message to decoder to hurry up.
+  // VideoToolBox has no such ability so ignore it.
   m_DropPictures = bDrop;
 }
 
 int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
+  {
+    if (m_queue_depth > 0)
+      return VC_PICTURE;
+    else
+      return VC_BUFFER;
+  }
+
   if (pData)
   {
     if (m_bitstream)
@@ -719,14 +730,9 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       return VC_ERROR;
     }
     
-    double sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
-    CFDictionaryRef frameInfo = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
+    CFDictionaryRef frameInfo = CreateDictionaryWithDisplayTime(m_sort_time++, dts, pts);
 
     uint32_t decoderFlags = 0;
-    if (m_DropPictures)
-      decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
-
-    // submit for decoding
     OSStatus status = m_dll->VTDecompressionSessionDecodeFrame(m_vt_session, sampleBuff, decoderFlags, frameInfo, 0);
     if (status != kVTDecoderNoErr)
     {
@@ -757,7 +763,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     CFRelease(sampleBuff);
   }
 
-  if (m_queue_depth < (2 * m_max_ref_frames))
+  if (m_queue_depth < m_max_ref_frames)
     return VC_BUFFER;
 
   return VC_PICTURE;
@@ -771,8 +777,20 @@ void CDVDVideoCodecVideoToolBox::Reset(void)
   while (m_queue_depth)
     DisplayQueuePop();
   
-  m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
+  m_sort_time = 0;
+  m_codecControlFlags = 0;
 }
+
+unsigned CDVDVideoCodecVideoToolBox::GetAllowedReferences()
+{
+  return 3;
+}
+
+void CDVDVideoCodecVideoToolBox::SetCodecControl(int flags)
+{
+  m_codecControlFlags = flags;
+}
+
 
 bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
@@ -787,6 +805,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pthread_mutex_lock(&m_queue_mutex);
   pDvdVideoPicture->dts             = m_display_queue->dts;
   pDvdVideoPicture->pts             = m_display_queue->pts;
+  pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iWidth          = (unsigned int)m_display_queue->width;
   pDvdVideoPicture->iHeight         = (unsigned int)m_display_queue->height;
   pDvdVideoPicture->iDisplayWidth   = (unsigned int)m_display_queue->width;
@@ -806,6 +825,9 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   
 //  CLog::Log(LOGDEBUG, "%s - VTBDecoderDecode dts(%f), pts(%f), cvBufferRef(%p)", __FUNCTION__,
 //    pDvdVideoPicture->dts, pDvdVideoPicture->pts, pDvdVideoPicture->cvBufferRef);
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
+    pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
 
   return true;
 }
@@ -847,7 +869,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   VTDecompressionOutputCallback outputCallback;
   OSStatus status;
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
   double scale = 0.0;
 
   // decoding, scaling and rendering above 1920 x 800 runs into
@@ -992,47 +1014,30 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
   newFrame->pixel_buffer_ref = CVBufferRetain(imageBuffer);
   GetFrameDisplayTimeFromDictionary(frameInfo, newFrame);
 
-  // if both dts or pts are good we use those, else use decoder insert time for frame sort
-  if ((newFrame->pts != DVD_NOPTS_VALUE) || (newFrame->dts != DVD_NOPTS_VALUE))
-  {
-    // if pts is borked (stupid avi's), use dts for frame sort
-    if (newFrame->pts == DVD_NOPTS_VALUE)
-      newFrame->sort_time = newFrame->dts;
-    else
-      newFrame->sort_time = newFrame->pts;
-  }
-
   // since the frames we get may be in decode order rather than presentation order
   // our hypothetical callback places them in a queue of frames which will
   // hold them in display order for display on another thread
   pthread_mutex_lock(&ctx->m_queue_mutex);
-  //
-  frame_queue *queueWalker = ctx->m_display_queue;
-  if (!queueWalker || (newFrame->sort_time < queueWalker->sort_time))
+
+  frame_queue base;
+  base.nextframe = ctx->m_display_queue;
+  frame_queue *ptr = &base;
+  for(; ptr->nextframe; ptr = ptr->nextframe)
   {
-    // we have an empty queue, or this frame earlier than the current queue head.
-    newFrame->nextframe = queueWalker;
+    if(ptr->nextframe->pts == DVD_NOPTS_VALUE
+    || newFrame->pts       == DVD_NOPTS_VALUE)
+      continue;
+    if(ptr->nextframe->pts > newFrame->pts)
+      break;
+  }
+  /* insert after ptr */
+  newFrame->nextframe = ptr->nextframe;
+  ptr->nextframe = newFrame;
+
+  /* update anchor if needed */
+  if(newFrame->nextframe == ctx->m_display_queue)
     ctx->m_display_queue = newFrame;
-  }
-  else
-  {
-    // walk the queue and insert this frame where it belongs in display order.
-    bool frameInserted = false;
-    frame_queue *nextFrame = NULL;
-    //
-    while (!frameInserted)
-    {
-      nextFrame = queueWalker->nextframe;
-      if (!nextFrame || (newFrame->sort_time < nextFrame->sort_time))
-      {
-        // if the next frame is the tail of the queue, or our new frame is earlier.
-        newFrame->nextframe = nextFrame;
-        queueWalker->nextframe = newFrame;
-        frameInserted = true;
-      }
-      queueWalker = nextFrame;
-    }
-  }
+
   ctx->m_queue_depth++;
   //
   pthread_mutex_unlock(&ctx->m_queue_mutex);	

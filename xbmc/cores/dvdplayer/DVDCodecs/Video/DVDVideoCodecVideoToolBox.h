@@ -21,6 +21,7 @@
 
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 
+#include <atomic>
 #include <queue>
 
 #include "DVDVideoCodec.h"
@@ -37,7 +38,7 @@ typedef struct frame_queue {
   double              pts;
   size_t              width;
   size_t              height;
-  double              sort_time;
+  int64_t             sort_time;
   FourCharCode        pixel_buffer_format;
   CVPixelBufferRef    pixel_buffer_ref;
   struct frame_queue  *nextframe;
@@ -58,6 +59,8 @@ public:
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
+  virtual unsigned GetAllowedReferences();
+  virtual void SetCodecControl(int flags);
 
 protected:
   void DisplayQueuePop(void);
@@ -78,12 +81,13 @@ protected:
 
   const char        *m_pFormatName;
   bool              m_DropPictures;
+  int               m_codecControlFlags;
   DVDVideoPicture   m_videobuffer;
 
-  double            m_sort_time_offset;
+  double            m_sort_time;
   pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
-  int32_t           m_queue_depth;    // we will try to keep the queue depth at m_max_ref_frames
+  std::atomic<int>  m_queue_depth;    // we will try to keep the queue depth at m_max_ref_frames
   int32_t           m_max_ref_frames;
 };
 
