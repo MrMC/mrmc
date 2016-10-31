@@ -30,7 +30,7 @@
       </group>
     </category>
     <category id="videoacceleration">
-      <visible>false</visible>
+      <visible>true</visible>
       <group id="1">
         <setting id="videoplayer.hqscalers">
           <visible>false</visible>
@@ -41,6 +41,7 @@
           <default>false</default>
         </setting>
         <setting id="videoplayer.useavf" type="boolean">
+          <visible>false</visible>
           <default>false</default>
         </setting>
       </group>

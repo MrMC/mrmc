@@ -1670,6 +1670,7 @@
 		F51063421BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
 		F51063431BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
 		F51063441BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
+		F51777BF1DC509B700302A71 /* DVDVideoCodecVideoToolBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */; };
 		F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52A733C1560BC34005B1A0B /* CoreFoundation.framework */; };
 		F52B063B11869862004B1D66 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
 		F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
@@ -12435,6 +12436,7 @@
 				F557CD9A1CFDE37000DC3D50 /* TCPClient.cpp in Sources */,
 				F5D140411BAF0B6D0075A95C /* FavouritesOperations.cpp in Sources */,
 				F5D140421BAF0B6D0075A95C /* FileItemHandler.cpp in Sources */,
+				F51777BF1DC509B700302A71 /* DVDVideoCodecVideoToolBox.cpp in Sources */,
 				F5D140431BAF0B6D0075A95C /* FileOperations.cpp in Sources */,
 				F5D140441BAF0B6D0075A95C /* GUIOperations.cpp in Sources */,
 				F5D140451BAF0B6D0075A95C /* InputOperations.cpp in Sources */,

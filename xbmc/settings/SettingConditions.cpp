@@ -288,7 +288,7 @@ void CSettingConditions::Initialize()
 #ifdef HAS_LIBSTAGEFRIGHT
   m_simpleConditions.insert("have_libstagefrightdecoder");
 #endif
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_IOS)
   m_simpleConditions.insert("have_videotoolboxdecoder");
   m_simpleConditions.insert("hasvideotoolboxdecoder");
 #endif

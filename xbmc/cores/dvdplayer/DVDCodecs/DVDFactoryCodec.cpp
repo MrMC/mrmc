@@ -31,10 +31,8 @@
   #include "Video/DVDVideoCodecVDA.h"
 #endif
 #if defined(TARGET_DARWIN_IOS)
-  #if !defined(TARGET_DARWIN_TVOS)
-    #include "Video/DVDVideoCodecVideoToolBox.h"
-	#include "utils/SystemInfo.h"
-  #endif
+  #include "Video/DVDVideoCodecVideoToolBox.h"
+  #include "utils/SystemInfo.h"
   #include "Video/DVDVideoCodecAVFoundation.h"
 #endif
 #include "Video/DVDVideoCodecFFmpeg.h"
@@ -203,10 +201,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
       case AV_CODEC_ID_MPEG4:
         if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
           break;
-        #if !defined(TARGET_DARWIN_TVOS)
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
           if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
-        #endif
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAVF))
           if ( (pCodec = OpenCodec(new CDVDVideoCodecAVFoundation(), hint, options)) ) return pCodec;
         break;
