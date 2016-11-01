@@ -1072,14 +1072,9 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   ssize_t index = AMediaCodec_dequeueOutputBuffer(m_codec, &bufferInfo, timeout_us);
   if (index >= 0)
   {
-    if (m_drop)
-    {
-      AMediaCodec_releaseOutputBuffer(m_codec, index, false);
-      return 0;
-    }
+    int64_t pts= bufferInfo.presentationTimeUs;
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
-    int64_t pts = bufferInfo.presentationTimeUs;
     if (pts != AV_NOPTS_VALUE)
       m_videobuffer.pts = pts;
 
@@ -1089,6 +1084,11 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_END_OF_STREAM");
       AMediaCodec_releaseOutputBuffer(m_codec, index, false);
       return -1;
+    }
+    if (m_drop)
+    {
+      AMediaCodec_releaseOutputBuffer(m_codec, index, false);
+      return 1;
     }
 
     if (!m_render_sw)
