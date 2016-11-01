@@ -101,7 +101,7 @@ MainController *m_xbmcController;
   m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
   [m_xbmcController startAnimation];
 
-  [self performSelector:@selector(registerAudioRouteNotifications:) withObject:@YES afterDelay:1];
+  [self performSelector:@selector(registerAudioRouteNotifications) withObject:nil afterDelay:1];
 }
 
 - (BOOL)application:(UIApplication *)app
@@ -131,7 +131,7 @@ MainController *m_xbmcController;
 
 - (void)dealloc
 {
-  [self registerAudioRouteNotifications: NO];
+  [self unregisterAudioRouteNotifications];
   [m_xbmcController stopAnimation];
   [m_xbmcController release];
 
@@ -180,19 +180,18 @@ MainController *m_xbmcController;
   }
 }
 
-- (void)registerAudioRouteNotifications:(BOOL)bRegister
+- (void)registerAudioRouteNotifications
 {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-  if (bRegister)
-  {
-    //register to audio route notifications
-    [nc addObserver:self selector:@selector(audioRouteChanged:) name:AVAudioSessionRouteChangeNotification object:nil];
-  }
-  else
-  {
-    //unregister faudio route notifications
-    [nc removeObserver:self name:AVAudioSessionRouteChangeNotification object:nil];
-  }
+  //register to audio route notifications
+  [nc addObserver:self selector:@selector(audioRouteChanged:) name:AVAudioSessionRouteChangeNotification object:nil];
+}
+
+- (void)unregisterAudioRouteNotifications
+{
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  //unregister faudio route notifications
+  [nc removeObserver:self name:AVAudioSessionRouteChangeNotification object:nil];
 }
 
 @end
