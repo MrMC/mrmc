@@ -1699,62 +1699,45 @@ MainController *g_xbmcController;
   // enable play button
   commandCenter.playCommand.enabled = YES;
   [commandCenter.playCommand addTarget:self action:@selector(onCCPlay:)];
- 
-  // enable next/previous
-  MPRemoteCommand *previousTrackIntervalCommand = [commandCenter previousTrackCommand];
-  [previousTrackIntervalCommand setEnabled:YES];
-  [previousTrackIntervalCommand addTarget:self action:@selector(onCCREW:)];
-  
-  MPRemoteCommand *nextTrackIntervalCommand = [commandCenter nextTrackCommand];
-  [nextTrackIntervalCommand setEnabled:YES];
-  [nextTrackIntervalCommand addTarget:self action:@selector(onCCFF:)];
-  
-  /*  disable below, looks like we are setting a selector even if setEnabled is NO
-      that screws up our remote learned buttons on tvOS 
    
-  // disable seek
+  // enable seek
   MPRemoteCommand *seekBackwardIntervalCommand = [commandCenter seekForwardCommand];
-  [seekBackwardIntervalCommand setEnabled:NO];
+  [seekBackwardIntervalCommand setEnabled:YES];
   [seekBackwardIntervalCommand addTarget:self action:@selector(onCCFF:)];
   
   MPRemoteCommand *seekForwardIntervalCommand = [commandCenter seekBackwardCommand];
-  [seekForwardIntervalCommand setEnabled:NO];
+  [seekForwardIntervalCommand setEnabled:YES];
   [seekForwardIntervalCommand addTarget:self action:@selector(onCCREW:)];
   
-  // Skip, but interval doesnt work... WTF? 10 is always shown
-  commandCenter.skipBackwardCommand.preferredIntervals = @[@(30)];
-  commandCenter.skipBackwardCommand.enabled = NO;
-  [commandCenter.skipBackwardCommand addTarget:self action:@selector(onCCREW:)];
-  commandCenter.skipForwardCommand.preferredIntervals = @[@(30)];
-  commandCenter.skipForwardCommand.enabled = NO;
-  [commandCenter.skipForwardCommand addTarget:self action:@selector(onCCFF:)];
-  */
+  // enable next/previous
+  MPRemoteCommand *previousTrackIntervalCommand = [commandCenter previousTrackCommand];
+  [previousTrackIntervalCommand setEnabled:YES];
+  [previousTrackIntervalCommand addTarget:self action:@selector(onCCPrev:)];
+  
+  MPRemoteCommand *nextTrackIntervalCommand = [commandCenter nextTrackCommand];
+  [nextTrackIntervalCommand setEnabled:YES];
+  [nextTrackIntervalCommand addTarget:self action:@selector(onCCNext:)];
+  
+  // disable skip but set selector
+  MPSkipIntervalCommand *skipBackwardIntervalCommand = [commandCenter skipBackwardCommand];
+  [skipBackwardIntervalCommand setEnabled:NO];
+  [skipBackwardIntervalCommand addTarget:self action:@selector(onCCSkipPrev:)];
+  skipBackwardIntervalCommand.preferredIntervals = @[@(42)];  // Set your own interval
+  
+  MPSkipIntervalCommand *skipForwardIntervalCommand = [commandCenter skipForwardCommand];
+  skipForwardIntervalCommand.preferredIntervals = @[@(42)];  // Max 99
+  [skipForwardIntervalCommand setEnabled:NO];
+  [skipForwardIntervalCommand addTarget:self action:@selector(onCCSkipNext:)];
   
   // seek bar
   [commandCenter.changePlaybackPositionCommand addTarget:self action:@selector(onCCPlaybackPossition:)];
-
+  
 }
 - (MPRemoteCommandHandlerStatus)onCCPlaybackPossition:(MPChangePlaybackPositionCommandEvent *) event
 {
   g_application.SeekTime(event.positionTime);
   
   return MPRemoteCommandHandlerStatusSuccess;
-}
-- (void)onCCFF:(MPRemoteCommandHandlerStatus*)event
-{
-  //PRINT_SIGNATURE();
-  // if we dont have chapters, we skip forward
-  if(g_application.m_pPlayer->GetChapterCount() == 0)
-    [self sendKeyDownUp:XBMCK_RIGHT];
-  [self onSeekDelayed:nil];
-}
-- (void)onCCREW:(MPRemoteCommandHandlerStatus*)event
-{
-  //PRINT_SIGNATURE();
-  // if we dont have chapters, we skip backward
-  if(g_application.m_pPlayer->GetChapterCount() == 0)
-    [self sendKeyDownUp:XBMCK_LEFT];
-  [self onSeekDelayed:nil];
 }
 - (void)onCCPlay:(MPRemoteCommandHandlerStatus*)event
 {
@@ -1764,4 +1747,31 @@ MainController *g_xbmcController;
 {
   //PRINT_SIGNATURE();
 }
+- (void)onCCFF:(MPRemoteCommandHandlerStatus*)event
+{
+  //PRINT_SIGNATURE();
+}
+- (void)onCCREW:(MPRemoteCommandHandlerStatus*)event
+{
+  //PRINT_SIGNATURE();
+}
+- (void)onCCNext:(MPRemoteCommandHandlerStatus*)event
+{
+ // PRINT_SIGNATURE();
+}
+- (void)onCCPrev:(MPRemoteCommandHandlerStatus*)event
+{
+ // PRINT_SIGNATURE();
+}
+- (void)onCCSkipNext:(MPRemoteCommandHandlerStatus*)event
+{
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STEP_FORWARD)));
+ // PRINT_SIGNATURE();
+}
+- (void)onCCSkipPrev:(MPRemoteCommandHandlerStatus*)event
+{
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STEP_BACK)));
+ // PRINT_SIGNATURE();
+}
+
 @end
