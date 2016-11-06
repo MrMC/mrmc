@@ -829,7 +829,7 @@
       <onclick>$INFO[Skin.String(CustomHome.4.Path)]</onclick>
     </item>
     <item id="4" description="MyMovies">
-      <visible>[!Skin.HasSetting(Movies.Hide) + Library.HasContent(Movies)] | Library.HasServices</visible>
+      <visible>!Skin.HasSetting(Movies.Hide) + [Library.HasContent(Movies) | Library.HasServices]</visible>
       <label fallback="20342">$VAR[MovieEntryPointLabel2]</label>
       <thumb fallback="special://skin/backgrounds/Movies.jpg">$INFO[Skin.String(Movies.Background)]</thumb>
       <onclick>$VAR[MovieEntryPoint]</onclick>
@@ -841,7 +841,7 @@
       <onclick>$INFO[Skin.String(CustomHome.5.Path)]</onclick>
     </item>
     <item id="5" description="MyTV">
-      <visible>[!Skin.HasSetting(TVShows.Hide) + Library.HasContent(TVShows)] | Library.HasServices</visible>
+      <visible>!Skin.HasSetting(TVShows.Hide) + [Library.HasContent(TVShows) | Library.HasServices]</visible>
       <label fallback="20343">$VAR[TVEntryPointLabel2]</label>
       <thumb fallback="special://skin/backgrounds/TVShows.jpg">$INFO[Skin.String(TVShows.Background)]</thumb>
       <onclick>$VAR[TVEntryPoint]</onclick>
@@ -853,7 +853,7 @@
       <onclick>$INFO[Skin.String(CustomHome.6.Path)]</onclick>
     </item>
     <item id="6" description="Music">
-      <visible>!Skin.HasSetting(Music.Hide) | Library.HasServices</visible>
+      <visible>!Skin.HasSetting(Music.Hide) + [Library.HasContent(Music) | Library.HasServices]</visible>
       <label>$LOCALIZE[2]</label>
       <thumb fallback="special://skin/backgrounds/Music.jpg">$INFO[Skin.String(Music.Background)]</thumb>
       <onclick condition="[Library.HasContent(Music) | Library.HasServices] + !Skin.HasSetting(ArtistView)">ActivateWindow(Music,Artists,root)</onclick>
@@ -1055,17 +1055,17 @@
       <onclick>SendClick(8)</onclick>
     </item>
     <item id="21" description="Music Videos">
-      <visible>Container(300).HasFocus(6) + !Skin.HasSetting(Music2) + Library.HasContent(Music)</visible>
+      <visible>Container(300).HasFocus(6) + !Skin.HasSetting(Music2) + [Library.HasContent(Music)| Library.HasServices]</visible>
       <label>$LOCALIZE[132]</label>
       <onclick>ActivateWindow(Music,Albums)</onclick>
     </item>
     <item id="22" description="Artists">
-      <visible>Container(300).HasFocus(6) + !Skin.HasSetting(Music1) + Library.HasContent(Music)</visible>
+      <visible>Container(300).HasFocus(6) + !Skin.HasSetting(Music1) + [Library.HasContent(Music)| Library.HasServices]</visible>
       <label>$LOCALIZE[133]</label>
       <onclick>ActivateWindow(Music,Artists)</onclick>
     </item>
     <item id="23" description="Top 100">
-      <visible>Container(300).HasFocus(6) + !Skin.HasSetting(Music1) + Library.HasContent(Music)</visible>
+      <visible>Container(300).HasFocus(6) + !Skin.HasSetting(Music1) + [Library.HasContent(Music)| Library.HasServices]</visible>
       <label>$LOCALIZE[271]</label>
       <onclick>ActivateWindow(Music,top100,return)</onclick>
     </item>
@@ -1076,7 +1076,7 @@
       <onclick condition="!Library.HasContent(music)">ActivateWindow(10502,"videodb://musicvideos/")</onclick>
     </item>
     <item id="24" description="Recently added">
-      <visible>Container(300).HasFocus(6) + !Skin.HasSetting(Music1) + Library.HasContent(Music)</visible>
+      <visible>Container(300).HasFocus(6) + !Skin.HasSetting(Music1) + [Library.HasContent(Music)| Library.HasServices]</visible>
       <label>$LOCALIZE[31020]</label>
       <onclick>ActivateWindow(Music,recentlyaddedalbums,return)</onclick>
     </item>

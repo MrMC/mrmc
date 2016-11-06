@@ -650,42 +650,42 @@
               <onclick>Skin.ToggleSetting(Videos.Hide)</onclick>
             </item>
             <item id="4" description="MyMovies">
-              <visible>!Skin.HasSetting(Movies.Hide) + Library.HasContent(Movies)</visible>
+              <visible>!Skin.HasSetting(Movies.Hide) + [Library.HasContent(Movies) | Library.HasServices]</visible>
               <label>[COLOR=Highlight]$LOCALIZE[20342][/COLOR]</label>
               <label2>[COLOR=Highlight]$LOCALIZE[305][/COLOR]</label2>
               <thumb fallback="special://skin/backgrounds/Movies.jpg">$INFO[Skin.String(Movies.Background)]</thumb>
               <onclick>Skin.ToggleSetting(Movies.Hide)</onclick>
             </item>
             <item id="4" description="MyMovies">
-              <visible>Skin.HasSetting(Movies.Hide) + Library.HasContent(Movies)</visible>
+              <visible>Skin.HasSetting(Movies.Hide) + [Library.HasContent(Movies)  | Library.HasServices]</visible>
               <label>[COLOR=Grey]$LOCALIZE[20342][/COLOR]</label>
               <label2>$LOCALIZE[1223]</label2>
               <thumb fallback="special://skin/backgrounds/Movies.jpg">$INFO[Skin.String(Movies.Background)]</thumb>
               <onclick>Skin.ToggleSetting(Movies.Hide)</onclick>
             </item>
             <item id="5" description="MyTV">
-              <visible>!Skin.HasSetting(TVShows.Hide) + Library.HasContent(TVShows)</visible>
+              <visible>!Skin.HasSetting(TVShows.Hide) + [Library.HasContent(TVShows) | Library.HasServices]</visible>
               <label>[COLOR=Highlight]$LOCALIZE[20343][/COLOR]</label>
               <label2>[COLOR=Highlight]$LOCALIZE[305][/COLOR]</label2>
               <thumb fallback="special://skin/backgrounds/TVShows.jpg">$INFO[Skin.String(TVShows.Background)]</thumb>
               <onclick>Skin.ToggleSetting(TVShows.Hide)</onclick>
             </item>
             <item id="5" description="MyTV">
-              <visible>Skin.HasSetting(TVShows.Hide) + Library.HasContent(TVShows)</visible>
+              <visible>Skin.HasSetting(TVShows.Hide) + [Library.HasContent(TVShows) | Library.HasServices]</visible>
               <label>[COLOR=Grey]$LOCALIZE[20343][/COLOR]</label>
               <label2>$LOCALIZE[1223]</label2>
               <thumb fallback="special://skin/backgrounds/TVShows.jpg">$INFO[Skin.String(TVShows.Background)]</thumb>
               <onclick>Skin.ToggleSetting(TVShows.Hide)</onclick>
             </item>
             <item id="6" description="Music">
-              <visible>!Skin.HasSetting(Music.Hide)</visible>
+              <visible>!Skin.HasSetting(Music.Hide) + [Library.HasContent(Music) | Library.HasServices]</visible>
               <label>[COLOR=Highlight]$LOCALIZE[2][/COLOR]</label>
               <label2>[COLOR=Highlight]$LOCALIZE[305][/COLOR]</label2>
               <thumb fallback="special://skin/backgrounds/Music.jpg">$INFO[Skin.String(Music.Background)]</thumb>
               <onclick>Skin.ToggleSetting(Music.Hide)</onclick>
             </item>
             <item id="6" description="Music">
-              <visible>Skin.HasSetting(Music.Hide)</visible>
+              <visible>Skin.HasSetting(Music.Hide) + [Library.HasContent(Music) | Library.HasServices]</visible>
               <label>[COLOR=Grey]$LOCALIZE[2][/COLOR]</label>
               <label2>$LOCALIZE[1223]</label2>
               <thumb fallback="special://skin/backgrounds/Music.jpg">$INFO[Skin.String(Music.Background)]</thumb>
@@ -845,21 +845,21 @@
                 <thumb>$INFO[Skin.String(Videos.Background)]</thumb>
               </item>
               <item id="2">
-                <visible>[!Skin.HasSetting(Movies.Hide) + Library.HasContent(Movies)] | Library.HasServices</visible>
+                <visible>!Skin.HasSetting(Movies.Hide) + [Library.HasContent(Movies) | Library.HasServices]</visible>
                 <label>$LOCALIZE[20342]</label>
                 <onclick>Control.Move(9004,-1)</onclick>
                 <icon>special://skin/backgrounds/Movies.jpg</icon>
                 <thumb>$INFO[Skin.String(Movies.Background)]</thumb>
               </item>
               <item id="3">
-                <visible>[!Skin.HasSetting(TVShows.Hide) + Library.HasContent(TVShows)] | Library.HasServices</visible>
+                <visible>!Skin.HasSetting(TVShows.Hide) + [Library.HasContent(TVShows) | Library.HasServices]</visible>
                 <label>$LOCALIZE[20343]</label>
                 <onclick>Control.Move(9004,-1)</onclick>
                 <icon>special://skin/backgrounds/TVShows.jpg</icon>
                 <thumb>$INFO[Skin.String(TVShows.Background)]</thumb>
               </item>
               <item id="4">
-                <visible>!Skin.HasSetting(Music.Hide)</visible>
+                <visible>!Skin.HasSetting(Music.Hide) + [Library.HasContent(Music) | Library.HasServices]</visible>
                 <label>$LOCALIZE[2]</label>
                 <onclick>Control.Move(9004,-1)</onclick>
                 <icon>special://skin/backgrounds/Music.jpg</icon>
