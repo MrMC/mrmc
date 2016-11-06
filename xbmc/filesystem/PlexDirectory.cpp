@@ -348,12 +348,6 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CFileItemPtr pItem(new CFileItem(title));
         pItem->m_bIsFolder = true;
         pItem->m_bIsShareOrDrive = false;
-//        if (URIUtils::GetFileName(basePath) == "recentlyaddedepisodes")
-//          pItem->SetPath("videodb://recentlyaddedepisodes/");
-//        else if (URIUtils::GetFileName(basePath) == "inprogressshows")
-//          pItem->SetPath("library://video/inprogressshows.xml/");
-//        else
-//          pItem->SetPath("videodb://tvshows/" + basePath + "/");
         pItem->SetPath("");
         pItem->SetLabel(title);
         items.Add(pItem);
