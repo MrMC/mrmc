@@ -118,14 +118,13 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         {
           CURL curl(client->GetUrl());
           curl.SetProtocol(client->GetProtocol());
-          curl.SetFileName(contents[0].section + "/all");
-          CPlexUtils::GetPlexMovies(items, curl.Get());
+          std::string filename = StringUtils::Format("%s/%s", contents[0].section.c_str(), (basePath == "titles"? "all":""));
+          curl.SetFileName(filename);
+          CDirectory::GetDirectory("plex://movies/" + basePath + "/" + Base64::Encode(curl.Get()), items);
           items.SetContent("movies");
-          items.SetPath("plex://movies/");
           CPlexUtils::SetPlexItemProperties(items, client);
           for (int item = 0; item < items.Size(); ++item)
             CPlexUtils::SetPlexItemProperties(*items[item], client);
-          CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory '/all' client(%s), movies(%d)", client->GetServerName().c_str(), items.Size());
         }
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedmovies")
@@ -256,14 +255,12 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         {
           CURL curl(client->GetUrl());
           curl.SetProtocol(client->GetProtocol());
-          curl.SetFileName(contents[0].section + "/all");
-          CPlexUtils::GetPlexTvshows(items, curl.Get());
-          items.SetContent("tvshows");
-          items.SetPath("plex://tvshows/");
+          std::string filename = StringUtils::Format("%s/%s", contents[0].section.c_str(), (basePath == "titles"? "all":""));
+          curl.SetFileName(filename);
+          CDirectory::GetDirectory("plex://tvshows/" + basePath + "/" + Base64::Encode(curl.Get()), items);
           CPlexUtils::SetPlexItemProperties(items, client);
           for (int item = 0; item < items.Size(); ++item)
             CPlexUtils::SetPlexItemProperties(*items[item], client);
-          CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory '/all' client(%s), shows(%d)", client->GetServerName().c_str(), items.Size());
         }
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedepisodes")
