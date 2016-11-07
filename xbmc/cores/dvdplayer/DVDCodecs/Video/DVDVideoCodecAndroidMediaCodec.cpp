@@ -418,6 +418,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
     return false;
   }
+  else if (hints.stills || hints.dvd)
+  {
+    // Won't work reliably
+    return false;
+  }
 
   if (hints.orientation && m_render_surface && CJNIMediaFormat::GetSDKVersion() < 23)
   {
@@ -1164,6 +1169,12 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_CODEC_CONFIG");
     */
 
+    m_videobuffer.dts = DVD_NOPTS_VALUE;
+    m_videobuffer.pts = DVD_NOPTS_VALUE;
+    int64_t pts = bufferInfo.presentationTimeUs();
+    if (pts != AV_NOPTS_VALUE)
+      m_videobuffer.pts = pts;
+
     if (flags & CJNIMediaCodec::BUFFER_FLAG_END_OF_STREAM)
     {
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_END_OF_STREAM");
@@ -1239,12 +1250,6 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         xbmc_jnienv()->ExceptionClear();
       }
     }
-
-    m_videobuffer.dts = DVD_NOPTS_VALUE;
-    m_videobuffer.pts = DVD_NOPTS_VALUE;
-    int64_t pts = bufferInfo.presentationTimeUs();
-    if (pts != AV_NOPTS_VALUE)
-      m_videobuffer.pts = pts;
 
 /*
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture "
