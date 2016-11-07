@@ -2247,6 +2247,9 @@ bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void *device)
 
 void CGUIAddonRenderingControl::Render()
 {
+  if (!g_application.GetRenderGUI())
+    return;
+
   if (CBRender)
   {
     g_graphicsContext.BeginPaint();

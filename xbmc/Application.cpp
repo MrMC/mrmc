@@ -4433,7 +4433,9 @@ void CApplication::ProcessSlow()
 
   g_largeTextureManager.CleanupUnusedImages();
 
-  g_TextureManager.FreeUnusedTextures(5000);
+  // if we don't render the gui there is no reason to free textures.
+  if (m_renderGUI)
+    g_TextureManager.FreeUnusedTextures(5000);
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)

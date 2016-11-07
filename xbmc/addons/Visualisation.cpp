@@ -152,6 +152,9 @@ void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, fl
 
 void CVisualisation::Render()
 {
+  if (!g_application.GetRenderGUI())
+    return;
+
   // ask visz. to render itself
   g_graphicsContext.BeginPaint();
   if (Initialized())

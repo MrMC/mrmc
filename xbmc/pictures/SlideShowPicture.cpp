@@ -20,6 +20,7 @@
 
 #include "SlideShowPicture.h"
 #include "system.h"
+#include "Application.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "settings/AdvancedSettings.h"
@@ -742,6 +743,9 @@ void CSlideShowPic::Render()
 
 void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t color)
 {
+  if (!g_application.GetRenderGUI())
+    return;
+
 #if defined(HAS_GL)
   g_graphicsContext.BeginPaint();
   if (pTexture)
