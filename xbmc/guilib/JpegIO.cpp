@@ -182,6 +182,8 @@ bool CJpegIO::LoadImageFromMemory(unsigned char *buffer, unsigned int bufSize, u
     jpeg_calc_output_dimensions(m_cinfo);
     m_width  = m_cinfo->output_width;
     m_height = m_cinfo->output_height;
+    m_originalWidth = m_cinfo->image_width;
+    m_originalHeight = m_cinfo->image_height;
 
     if (m_cinfo->marker_list)
       m_orientation = GetExifOrientation(m_cinfo->marker_list->data, m_cinfo->marker_list->data_length);
