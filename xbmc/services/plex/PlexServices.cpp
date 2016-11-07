@@ -116,7 +116,6 @@ CPlexServices::CPlexServices()
 
   m_plextv.SetTimeout(10);
   m_plextv.SetBufferSize(32768*10);
-  CPlexUtils::GetDefaultHeaders(m_plextv);
 }
 
 CPlexServices::~CPlexServices()
@@ -477,6 +476,7 @@ void CPlexServices::Process()
 #endif
     }
 
+    CPlexUtils::GetDefaultHeaders(m_plextv);
     m_processSleep.WaitMSec(250);
     m_processSleep.Reset();
   }
