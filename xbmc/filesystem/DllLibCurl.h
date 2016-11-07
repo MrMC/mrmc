@@ -88,7 +88,7 @@ namespace XCURL
     DEFINE_METHOD2(struct curl_slist*, slist_append, (struct curl_slist * p1, const char * p2))
     DEFINE_METHOD1(void, slist_free_all, (struct curl_slist * p1))
     DEFINE_METHOD1(const char *, easy_strerror, (CURLcode p1))
-#if defined(HAS_CURL_STATIC)
+#if defined(HAS_CURL_STATIC) && !defined(TARGET_DARWIN_OSX)
     DEFINE_METHOD1(void, crypto_set_id_callback, (unsigned long (*p1)(void)))
     DEFINE_METHOD1(void, crypto_set_locking_callback, (void (*p1)(int, int, const char *, int)))
 #endif
@@ -114,7 +114,7 @@ namespace XCURL
       RESOLVE_METHOD_RENAME(curl_multi_cleanup, multi_cleanup)
       RESOLVE_METHOD_RENAME(curl_slist_append, slist_append)
       RESOLVE_METHOD_RENAME(curl_slist_free_all, slist_free_all)
-#if defined(HAS_CURL_STATIC)
+#if defined(HAS_CURL_STATIC) && !defined(TARGET_DARWIN_OSX)
       RESOLVE_METHOD_RENAME(CRYPTO_set_id_callback, crypto_set_id_callback)
       RESOLVE_METHOD_RENAME(CRYPTO_set_locking_callback, crypto_set_locking_callback)
 #endif

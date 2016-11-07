@@ -91,7 +91,7 @@ bool DllLibCurlGlobal::Load()
   /* check idle will clean up the last one */
   g_curlReferences = 2;
 
-#if defined(HAS_CURL_STATIC)
+#if defined(HAS_CURL_STATIC) && !defined(TARGET_DARWIN_OSX)
   // Initialize ssl locking array
   m_sslLockArray = new CCriticalSection*[CRYPTO_num_locks()];
   for (int i=0; i<CRYPTO_num_locks(); i++)
@@ -115,7 +115,7 @@ void DllLibCurlGlobal::Unload()
     // close libcurl
     global_cleanup();
 
-#if defined(HAS_CURL_STATIC)
+#if defined(HAS_CURL_STATIC) && !defined(TARGET_DARWIN_OSX)
     // Cleanup ssl locking array
     crypto_set_id_callback(NULL);
     crypto_set_locking_callback(NULL);
