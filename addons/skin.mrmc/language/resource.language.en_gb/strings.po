@@ -569,7 +569,11 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr ""
 
-#empty strings from id 31414 to 31419
+msgctxt "#31414"
+msgid "[B]CONFIGURE PROFILES[/B][CR][CR]Setup profiles · Auto login"
+msgstr "[B]CONFIGURE PROFILES[/B][CR][CR]Setup profiles · Auto login"
+
+#empty strings from id 31415 to 31419
 
 msgctxt "#31420"
 msgid "Login"

@@ -1158,8 +1158,8 @@
   	</item>
     <item id="45" description="Profiles">
       <visible>Container(300).HasFocus(10)</visible>
-      <label>13200</label>
-      <onclick>ActivateWindow(Profiles)</onclick>
+      <label>20092</label>
+      <onclick>ActivateWindow(Loginscreen)</onclick>
     </item>
   	<item id="50" description="Reload skin">
       <visible>Container(300).HasFocus(10)</visible>

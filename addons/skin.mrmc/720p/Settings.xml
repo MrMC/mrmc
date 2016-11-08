@@ -145,6 +145,12 @@
 						<onclick>ActivateWindow(PicturesSettings)</onclick>
 						<icon>-</icon>
 					</item>
+					<item id="11">
+						<label>13200</label>
+						<label2>31414</label2>
+						<onclick>ActivateWindow(Profiles)</onclick>
+						<icon>-</icon>
+					</item>
 					<item id="6">
 						<label>8</label>
 						<label2>31404</label2>

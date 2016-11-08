@@ -197,8 +197,8 @@
 		</control>
 		<control type="button" id="90124">
 			<include>ButtonHomeSubCommonValues</include>
-			<label>13200</label>
-			<onclick>ActivateWindow(Profiles)</onclick>
+			<label>20092</label>
+			<onclick>ActivateWindow(Loginscreen)</onclick>
 		</control>
 		<control type="button" id="90125">
 			<include>ButtonHomeSubCommonValues</include>
