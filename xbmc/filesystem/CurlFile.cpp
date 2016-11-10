@@ -969,25 +969,50 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
 {
   CLog::Log(LOGINFO, "CCurlFile::Download - %s->%s", strURL.c_str(), strFileName.c_str());
 
-  std::string strData;
-  if (!Get(strURL, strData))
-    return false;
-
-  XFILE::CFile file;
-  if (!file.OpenForWrite(strFileName, true))
+  bool rtn = false;
+  ssize_t written = 0;
+  try
   {
-    CLog::Log(LOGERROR, "CCurlFile::Download - Unable to open file %s: %u",
-    strFileName.c_str(), GetLastError());
+    m_postdata = "";
+    m_postdataset = false;
+    const CURL pathToUrl(strURL);
+    if (Open(pathToUrl))
+    {
+      XFILE::CFile file;
+      if (!file.OpenForWrite(strFileName, true))
+      {
+        CLog::Log(LOGERROR, "CCurlFile::Download - Unable to open file for write %s: %u",
+          strFileName.c_str(), GetLastError());
+        return false;
+      }
+
+      int size_read;
+      const int size_read_max = 128 * 1024;
+      char *buffer = (char*)malloc(size_read_max);
+      while( (size_read = Read(buffer, size_read_max)) > 0 )
+        written += file.Write(buffer, size_read);
+      free(buffer);
+
+      Close();
+      file.Close();
+      if (m_state->m_cancelled)
+      {
+        written = 0;
+        XFILE::CFile::Delete(strFileName);
+      }
+    }
+
+    if (pdwSize != NULL)
+      *pdwSize = written > 0 ? written : 0;
+
+    rtn = written > 0;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s - Exception thrown while trying to download %s", __FUNCTION__, strURL.c_str());
     return false;
   }
-  ssize_t written = 0;
-  if (strData.size() > 0)
-    written = file.Write(strData.c_str(), strData.size());
-
-  if (pdwSize != NULL)
-    *pdwSize = written > 0 ? written : 0;
-
-  return written == static_cast<ssize_t>(strData.size());
+  return rtn;
 }
 
 // Detect whether we are "online" or not! Very simple and dirty!
