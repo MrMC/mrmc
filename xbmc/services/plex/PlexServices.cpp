@@ -36,6 +36,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "network/Network.h"
 #include "network/Socket.h"
+#include "network/DNSNameCache.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
@@ -452,35 +453,28 @@ void CPlexServices::Process()
 
   while (!m_bStop)
   {
-    CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
-    if (iface && iface->IsConnected())
+    if (g_sysinfo.HasInternet())
     {
-      in_addr_t router = inet_addr(iface->GetCurrentDefaultGateway().c_str());
-      if (router != INADDR_NONE && g_application.getNetwork().PingHost(router, 0, 1000))
-      {
-        CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway");
-        break;
-      }
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
-      /*
-       this is dumb, but if we are on iOS and on 3g/LTE we dont
-       get "iface->GetCurrentDefaultGateway()" and cant ping Host.
-       Fallback in here and check if we have internet, if yes that
-       means that 3g/LTE works and we can get to plex server.
-       */
-      else
-      {
-        if (g_sysinfo.HasInternet())
-          break;
-      }
-#endif
+      CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway1");
+      break;
     }
 
-    CPlexUtils::GetDefaultHeaders(m_plextv);
+    std::string ip;
+    if (CDNSNameCache::Lookup("plex.com", ip))
+    {
+      in_addr_t plexdotcom = inet_addr(ip.c_str());
+      if (g_application.getNetwork().PingHost(plexdotcom, 0, 1000))
+      {
+        CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway2");
+        break;
+      }
+    }
+
     m_processSleep.WaitMSec(250);
     m_processSleep.Reset();
   }
 
+  CPlexUtils::GetDefaultHeaders(m_plextv);
   int plextvTimeoutSeconds = 5;
 
   // try plex.tv first
