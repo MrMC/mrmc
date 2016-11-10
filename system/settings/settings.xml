@@ -3435,6 +3435,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="debug.logmemcpu" type="boolean" label="20246" help="36464">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="debug.extralogging" type="boolean" label="666" help="36394">
           <level>1</level>
           <default>true</default>

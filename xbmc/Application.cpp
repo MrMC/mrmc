@@ -4392,6 +4392,23 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
+#if defined(TARGET_DARWIN)
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_DEBUG_MEMORYCPU))
+  {
+    static int skipcount = 0;
+    if (skipcount++ > 3)
+    {
+      skipcount = 0;
+      int64_t free, delta;
+      CDarwinUtils::GetAppMemory(free, delta);
+
+      const double unit = 1024.0 * 1024.0;
+      CLog::Log(LOGDEBUG, "CPU used = %d/%d percent, App Memory: %4.2f MBs, delta = %lld bytes",
+        g_cpuInfo.getUsedPercentage(), 100 * g_cpuInfo.getCPUCount(), (double)free/unit, delta);
+    }
+  }
+#endif
+
   g_powerManager.ProcessEvents();
 
   // Temporarely pause pausable jobs when viewing video/picture

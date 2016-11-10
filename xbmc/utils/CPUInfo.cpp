@@ -34,6 +34,8 @@
 #ifdef TARGET_DARWIN_OSX
 #include "platform/darwin/osx/smc.h"
 #endif
+#include "linux/LinuxResourceCounter.h"
+static CLinuxResourceCounter static_resourceCounter;
 #endif
 
 #if defined(TARGET_FREEBSD)
@@ -351,6 +353,10 @@ int CCPUInfo::getUsedPercentage()
   if (!m_nextUsedReadTime.IsTimePast())
     return m_lastUsedPercentage;
 
+  int result;
+#if defined(TARGET_DARWIN)
+  result = static_resourceCounter.GetCPUUsage();
+#else
   unsigned long long userTicks;
   unsigned long long niceTicks;
   unsigned long long systemTicks;
@@ -368,7 +374,7 @@ int CCPUInfo::getUsedPercentage()
 
   if(userTicks + niceTicks + systemTicks + idleTicks + ioTicks == 0)
     return m_lastUsedPercentage;
-  int result = (int) (double(userTicks + niceTicks + systemTicks) * 100.0 / double(userTicks + niceTicks + systemTicks + idleTicks + ioTicks) + 0.5);
+  result = (int) (double(userTicks + niceTicks + systemTicks) * 100.0 / double(userTicks + niceTicks + systemTicks + idleTicks + ioTicks) + 0.5);
 
   m_userTicks += userTicks;
   m_niceTicks += niceTicks;
@@ -376,6 +382,7 @@ int CCPUInfo::getUsedPercentage()
   m_idleTicks += idleTicks;
   m_ioTicks += ioTicks;
 
+#endif
   m_lastUsedPercentage = result;
   m_nextUsedReadTime.Set(MINIMUM_TIME_BETWEEN_READS);
 

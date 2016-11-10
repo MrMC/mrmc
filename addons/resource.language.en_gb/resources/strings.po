@@ -11491,7 +11491,7 @@ msgctxt "#20199"
 msgid "Downloading artist information failed"
 msgstr ""
 
-#empty strings from id 20200 to 20219
+#empty strings from id 20201 to 20219
 #string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)
 
 #: system/settings/settings.xml
@@ -11540,7 +11540,13 @@ msgctxt "#20245"
 msgid "Android Settings"
 msgstr ""
 
-#empty strings from id 20246 to 20249
+#: system/settings/settings.xml
+msgctxt "#20246"
+msgid "Enable debug logging of memory/cpu usage"
+msgstr ""
+
+
+#empty strings from id 20247 to 20249
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -17930,7 +17936,13 @@ msgctxt "#36463"
 msgid "Overwrite the SMB client configuration (smb.conf) on restart"
 msgstr ""
 
-#empty strings from id 36464 to 36499
+#. Description of setting "System -> Logging -> Enable debug logging of memory/cpu usage" with label #20246
+#: system/settings/settings.xml
+msgctxt "#36464"
+msgid "Turn debug logging of cpu/memory usage on or off. Useful for troubleshooting."
+msgstr ""
+
+#empty strings from id 36465 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied

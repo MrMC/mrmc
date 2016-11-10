@@ -369,6 +369,7 @@ public:
   static const std::string SETTING_POWERMANAGEMENT_SHUTDOWNSTATE;
   static const std::string SETTING_POWERMANAGEMENT_WAKEONACCESS;
   static const std::string SETTING_DEBUG_SHOWLOGINFO;
+  static const std::string SETTING_DEBUG_MEMORYCPU;
   static const std::string SETTING_DEBUG_EXTRALOGGING;
   static const std::string SETTING_DEBUG_SETEXTRALOGLEVEL;
   static const std::string SETTING_DEBUG_SCREENSHOTPATH;

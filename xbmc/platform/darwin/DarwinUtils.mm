@@ -885,4 +885,20 @@ std::string CDarwinUtils::GetHardwareUUID()
   return uuid;
 }
 
+void CDarwinUtils::GetAppMemory(int64_t &free, int64_t &delta)
+{
+  mach_task_basic_info_data_t taskinfo = {0};
+  mach_msg_type_number_t outCount = MACH_TASK_BASIC_INFO_COUNT;
+  kern_return_t error = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&taskinfo, &outCount);
+  if (error == KERN_SUCCESS)
+  {
+    // resident_size includes ALL app memory impact, kernel, drivers and app.
+    // it will be higher than what Activity Monitor or Xcode shows.
+    static mach_vm_size_t old_resident_size = 0;
+    free = taskinfo.resident_size;
+    delta = taskinfo.resident_size - old_resident_size;
+    old_resident_size = taskinfo.resident_size;
+  }
+}
+
 #endif
