@@ -442,8 +442,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_formatname = "amc-mpeg2";
       break;
     case AV_CODEC_ID_MPEG4:
-      if (hints.width <= 800)
-        return false;
       m_mime = "video/mp4v-es";
       m_formatname = "amc-mpeg4";
       break;
@@ -472,14 +470,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         case FF_PROFILE_H264_HIGH_10:
         case FF_PROFILE_H264_HIGH_10_INTRA:
           // No known h/w decoder supporting Hi10P
+          CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - no known h/w decoder supports Hi10P");
           return false;
-          break;
-        case FF_PROFILE_H264_HIGH:
-          if (hints.level >= 52)
-            return false;
-          break;
       }
-
       m_mime = "video/avc";
       m_formatname = "amc-h264";
       // check for h264-avcC and convert to h264-annex-b
