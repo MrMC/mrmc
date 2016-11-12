@@ -436,8 +436,9 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
       unsigned int framesize = (((data[2] & 0x7) << 8) | data[3]) + 1;
       uint8_t fscod = (data[4] >> 6) & 0x3;
       uint8_t cod = (data[4] >> 4) & 0x3;
-      uint8_t acmod = (data[4] >> 1) & 0x7;
-      uint8_t lfeon = data[4] & 0x1;
+      // m_info.m_channels below doesnt need these.. uncomment once needed
+      //uint8_t acmod = (data[4] >> 1) & 0x7;
+      //uint8_t lfeon = data[4] & 0x1;
       uint8_t blocks;
 
       if (fscod == 0x3)
