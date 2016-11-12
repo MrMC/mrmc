@@ -106,7 +106,11 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies1, CFileItemList& tv1)
       // srcPath == full path to the thumb
       std::string srcPath = item->GetArt("thumb");
       // make the destfilename different for distinguish files with the same name
-      std::string fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(srcPath);
+      std::string fileName;
+      if(item->IsMediaServiceBased())
+        fileName = item->GetVideoInfoTag()->m_strServiceId + URIUtils::GetFileName(srcPath);
+      else
+        fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(srcPath);
       std::string destPath = URIUtils::AddFileToFolder(raPath, fileName);
       if (!XFILE::CFile::Exists(destPath))
         XFILE::CFile::Copy(srcPath,destPath);
