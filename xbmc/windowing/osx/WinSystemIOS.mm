@@ -404,7 +404,6 @@ bool CWinSystemIOS::InitDisplayLink(CVideoSyncIos *syncImpl)
   [m_pDisplayLink->callbackClass SetVideoSyncImpl:syncImpl];
   m_pDisplayLink->impl = [currentScreen displayLinkWithTarget:m_pDisplayLink->callbackClass selector:@selector(runDisplayLink)];
   
-  [m_pDisplayLink->impl setFrameInterval:1];
   [m_pDisplayLink->impl addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
   return m_pDisplayLink->impl != nil;
 }
