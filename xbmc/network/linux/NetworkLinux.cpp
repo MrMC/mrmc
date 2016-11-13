@@ -18,6 +18,8 @@
  *
  */
 
+#if !defined(TARGET_ANDROID)
+
 #include <cstdlib>
 
 #include <sys/ioctl.h>
@@ -28,11 +30,6 @@
   #include <linux/if.h>
   #include <linux/wireless.h>
   #include <linux/sockios.h>
-#endif
-#ifdef TARGET_ANDROID
-#include "platform/android/bionic_supplement/bionic_supplement.h"
-#include "sys/system_properties.h"
-#include <sys/wait.h>
 #endif
 #include <errno.h>
 #include <resolv.h>
@@ -104,14 +101,6 @@ bool CNetworkInterfaceLinux::IsWireless()
   if(GetCurrentWirelessEssId().empty())
     return false;
 
-#elif defined(TARGET_ANDROID)
-  char dhcpWlan0[PROP_VALUE_MAX];
-  if (__system_property_get("dhcp.wlan0.result", dhcpWlan0))
-  {
-    std::string result = dhcpWlan0;
-    return result == "ok";
-  }
-
 #else
   struct iwreq wrq;
    strcpy(wrq.ifr_name, m_interfaceName.c_str());
@@ -134,12 +123,6 @@ bool CNetworkInterfaceLinux::IsEnabled()
 
 bool CNetworkInterfaceLinux::IsConnected()
 {
-#ifdef TARGET_ANDROID
-   // ignore wifi direct interfaces
-  if (StringUtils::StartsWithNoCase(m_interfaceName, "p2p"))
-    return false;
-#endif
-
    struct ifreq ifr;
    int zero = 0;
    memset(&ifr,0,sizeof(struct ifreq));
@@ -284,14 +267,6 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
       break;
    }
    free(buf);
-#elif defined(TARGET_ANDROID)
-  char gateway[PROP_VALUE_MAX];
-
-  if (__system_property_get("dhcp.eth0.gateway", gateway))
-    result = gateway;
-  else if (__system_property_get("dhcp.wlan0.gateway", gateway))
-    result = gateway;
-
 #else
    FILE* fp = fopen("/proc/net/route", "r");
    if (!fp)
@@ -532,18 +507,6 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
   } 
   if (result.empty())
     CLog::Log(LOGWARNING, "Unable to determine nameserver");
-#elif defined(TARGET_ANDROID)
-  char nameserver[PROP_VALUE_MAX];
-
-  if (__system_property_get("net.dns1",nameserver))
-    result.push_back(nameserver);
-  if (__system_property_get("net.dns2",nameserver))
-    result.push_back(nameserver);
-  if (__system_property_get("net.dns3",nameserver))
-    result.push_back(nameserver);
-
-  if (!result.size())
-       CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #else
    res_init();
 
@@ -558,7 +521,6 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
 
 void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
 {
-#if !defined(TARGET_ANDROID)
    FILE* fp = fopen("/etc/resolv.conf", "w");
    if (fp != NULL)
    {
@@ -572,7 +534,6 @@ void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
    {
       // TODO:
    }
-#endif
 }
 
 bool CNetworkLinux::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
@@ -1158,4 +1119,4 @@ void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignmen
       fprintf(fw, "auto %s\n\n", GetName().c_str());
 }
 
-
+#endif

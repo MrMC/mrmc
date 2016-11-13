@@ -396,7 +396,9 @@ void CApplication::Preflight()
 
 bool CApplication::SetupNetwork()
 {
-#if defined(HAS_LINUX_NETWORK)
+#if defined(TARGET_ANDROID)
+  m_network = new CNetworkAndroid();
+#elif defined(HAS_LINUX_NETWORK)
   m_network = new CNetworkLinux();
 #else
   m_network = new CNetwork();
