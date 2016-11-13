@@ -763,7 +763,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     CFRelease(sampleBuff);
   }
 
-  if (m_queue_depth < m_max_ref_frames)
+  if (m_queue_depth < (2 * m_max_ref_frames))
     return VC_BUFFER;
 
   return VC_PICTURE;
@@ -783,7 +783,7 @@ void CDVDVideoCodecVideoToolBox::Reset(void)
 
 unsigned CDVDVideoCodecVideoToolBox::GetAllowedReferences()
 {
-  return 3;
+  return 5;
 }
 
 void CDVDVideoCodecVideoToolBox::SetCodecControl(int flags)
