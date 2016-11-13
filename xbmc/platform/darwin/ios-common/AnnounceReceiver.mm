@@ -176,15 +176,15 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     //LOG(@"item: %@", item.description);
     [g_xbmcController performSelectorOnMainThread:@selector(onSpeedChanged:) withObject:item  waitUntilDone:NO];
     if (msg == "OnPause")
-      [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
+      [g_xbmcController performSelectorOnMainThread:@selector(onPausePlaying:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
   }
   else if (msg == "OnStop")
   {
-    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onStopPlaying:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
   }
   else if (msg == "OnSeek")
   {
-    [g_xbmcController performSelectorOnMainThread:@selector(onSeek) withObject:nil  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onSeekPlaying) withObject:nil  waitUntilDone:NO];
   }
 }
 

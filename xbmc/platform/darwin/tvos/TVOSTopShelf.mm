@@ -201,10 +201,12 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies1, CFileItemList& tv1)
   [shared synchronize];
 }
 
-void CTVOSTopShelf::RunTopShelf()
+bool CTVOSTopShelf::RunTopShelf()
 {
+  bool rtn = false;
   if (m_handleUrl)
   {
+    rtn = true;
     m_handleUrl = false;
     CFileItemPtr itemPtr;
     std::vector<std::string> split = StringUtils::Split(m_url, "/");
@@ -233,6 +235,7 @@ void CTVOSTopShelf::RunTopShelf()
       }
     }
   }
+  return rtn;
 }
 
 void CTVOSTopShelf::HandleTopShelfUrl(const std::string& url, const bool run)

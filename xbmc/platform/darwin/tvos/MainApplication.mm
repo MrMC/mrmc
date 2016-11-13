@@ -30,11 +30,11 @@
 #import "platform/darwin/tvos/PreflightHandler.h"
 
 @implementation MainApplicationDelegate
-MainController *m_xbmcController;
+std::atomic<MainController*> m_xbmcController;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
 
   [m_xbmcController pauseAnimation];
   [m_xbmcController becomeInactive];
@@ -42,7 +42,7 @@ MainController *m_xbmcController;
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
 
   [m_xbmcController resumeAnimation];
   [m_xbmcController becomeActive];
@@ -50,7 +50,7 @@ MainController *m_xbmcController;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
 
   if (application.applicationState == UIApplicationStateBackground)
   {
@@ -61,19 +61,19 @@ MainController *m_xbmcController;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-  //PRINT_SIGNATURE();
-
+  PRINT_SIGNATURE();
   [m_xbmcController stopAnimation];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
+  [m_xbmcController enterForeground];
 }
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
   // applicationDidFinishLaunching is the very first callback that we get
 
   // This needs to run before anything does any CLog::Log calls
@@ -101,36 +101,39 @@ MainController *m_xbmcController;
   m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
   [m_xbmcController startAnimation];
 
-  [self performSelector:@selector(registerAudioRouteNotifications) withObject:nil afterDelay:1];
+  [self registerScreenNotifications];
+  [self registerAudioRouteNotifications];
 }
 
 - (BOOL)application:(UIApplication *)app
   openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options
 {
+  PRINT_SIGNATURE();
   NSArray *urlComponents = [[url absoluteString] componentsSeparatedByString:@"/"];
   NSString *action = urlComponents[2];
   if ([action isEqualToString:@"display"] || [action isEqualToString:@"play"])
   {
     std::string cleanURL = *new std::string([[url absoluteString] UTF8String]);
-    CTVOSTopShelf::GetInstance().HandleTopShelfUrl(cleanURL,true);
+    CTVOSTopShelf::GetInstance().HandleTopShelfUrl(cleanURL, true);
   }
   return YES;
 }
 
 -(BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
   return YES;
 }
 
 -(BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
   return YES;
 }
 
 - (void)dealloc
 {
+  [self unregisterScreenNotifications];
   [self unregisterAudioRouteNotifications];
   [m_xbmcController stopAnimation];
   [m_xbmcController release];
@@ -139,7 +142,7 @@ MainController *m_xbmcController;
 }
 
 #pragma mark private methods
-- (void)audioRouteChanged:(NSNotification *)notification
+- (void)handleAudioRouteChange:(NSNotification *)notification
 {
   // Your tests on the Audio Output changes will go here
   NSInteger routeChangeReason = [notification.userInfo[AVAudioSessionRouteChangeReasonKey] integerValue];
@@ -150,28 +153,32 @@ MainController *m_xbmcController;
         break;
     case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
         // an audio device was added
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNewDeviceAvailable");
         [m_xbmcController audioRouteChanged];
         CDarwinUtils::DumpAudioDescriptions("AVAudioSessionRouteChangeReasonNewDeviceAvailable");
         break;
     case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
         // a audio device was removed
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOldDeviceUnavailable");
         [m_xbmcController audioRouteChanged];
         CDarwinUtils::DumpAudioDescriptions("AVAudioSessionRouteChangeReasonOldDeviceUnavailable");
         break;
     case AVAudioSessionRouteChangeReasonCategoryChange:
         // called at start - also when other audio wants to play
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonCategoryChange");
         CDarwinUtils::DumpAudioDescriptions("AVAudioSessionRouteChangeReasonCategoryChange");
         break;
     case AVAudioSessionRouteChangeReasonOverride:
-        //NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOverride");
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonOverride");
         break;
     case AVAudioSessionRouteChangeReasonWakeFromSleep:
-        //NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonWakeFromSleep");
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonWakeFromSleep");
         break;
     case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
-        //NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory");
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory");
         break;
     case AVAudioSessionRouteChangeReasonRouteConfigurationChange:
+        NSLog(@"routeChangeReason : AVAudioSessionRouteChangeReasonRouteConfigurationChange");
         CDarwinUtils::DumpAudioDescriptions("AVAudioSessionRouteChangeReasonRouteConfigurationChange");
         break;
     default:
@@ -179,19 +186,101 @@ MainController *m_xbmcController;
         break;
   }
 }
+- (void)handleAudioInterrupted:(NSNotification *)notification
+{
+  PRINT_SIGNATURE();
+  NSNumber *interruptionType = notification.userInfo[AVAudioSessionInterruptionTypeKey];
+  switch (interruptionType.integerValue)
+  {
+    case AVAudioSessionInterruptionTypeBegan:
+      // • Audio has stopped, already inactive
+      // • Change state of UI, etc., to reflect non-playing state
+      NSLog(@"audioInterrupted : AVAudioSessionInterruptionTypeBegan");
+      // pausedForAudioSessionInterruption = YES;
+      break;
+    case AVAudioSessionInterruptionTypeEnded:
+      {
+        // • Make session active
+        // • Update user interface
+        NSNumber *interruptionOption = notification.userInfo[AVAudioSessionInterruptionOptionKey];
+        BOOL shouldResume = interruptionOption.integerValue == AVAudioSessionInterruptionOptionShouldResume;
+        if (shouldResume == YES)
+        {
+          // if shouldResume you should continue playback.
+          NSLog(@"audioInterrupted : AVAudioSessionInterruptionTypeEnded: resume=yes");
+        }
+        else
+        {
+          NSLog(@"audioInterrupted : AVAudioSessionInterruptionTypeEnded: resume=no");
+        }
+        // pausedForAudioSessionInterruption = NO;
+      }
+      break;
+    default:
+      break;
+  }
+}
+- (void)handleMediaServicesReset:(NSNotification *)notification
+{
+  PRINT_SIGNATURE();
+  // Dispose orphaned audio objects and create new audio objects
+  // Reset any internal audio state being tracked, including all properties of AVAudioSession
+  // When appropriate, reactivate the AVAudioSession using the setActive:error: method
+  // test by choosing the "Reset Media Services" selection in the Settings app
+}
 
 - (void)registerAudioRouteNotifications
 {
+  PRINT_SIGNATURE();
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   //register to audio route notifications
-  [nc addObserver:self selector:@selector(audioRouteChanged:) name:AVAudioSessionRouteChangeNotification object:nil];
+  [nc addObserver:self selector:@selector(handleAudioRouteChange:) name:AVAudioSessionRouteChangeNotification object:nil];
+  [nc addObserver:self selector:@selector(handleAudioInterrupted:) name:AVAudioSessionInterruptionNotification object:nil];
+  [nc addObserver:self selector:@selector(handleMediaServicesReset:) name:AVAudioSessionMediaServicesWereResetNotification object:nil];
 }
 
 - (void)unregisterAudioRouteNotifications
 {
+  PRINT_SIGNATURE();
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   //unregister faudio route notifications
   [nc removeObserver:self name:AVAudioSessionRouteChangeNotification object:nil];
+  [nc removeObserver:self name:AVAudioSessionInterruptionNotification object:nil];
+  [nc removeObserver:self name:AVAudioSessionMediaServicesWereResetNotification object:nil];
+}
+
+- (void)screenDidConnect:(NSNotification *)aNotification
+{
+  PRINT_SIGNATURE();
+}
+
+- (void)screenDidDisconnect:(NSNotification *)aNotification
+{
+  PRINT_SIGNATURE();
+}
+
+- (void)screenModeDidChange:(NSNotification *)aNotification
+{
+  PRINT_SIGNATURE();
+}
+
+- (void)registerScreenNotifications
+{
+  PRINT_SIGNATURE();
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  //register to screen notifications
+  [nc addObserver:self selector:@selector(screenDidConnect:) name:UIScreenDidConnectNotification object:nil];
+  [nc addObserver:self selector:@selector(screenDidDisconnect:) name:UIScreenDidDisconnectNotification object:nil]; 
+  [nc addObserver:self selector:@selector(screenModeDidChange:) name:UIScreenModeDidChangeNotification object:nil];
+}
+
+- (void)unregisterScreenNotifications
+{
+  PRINT_SIGNATURE();
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  //unregister from screen notifications
+  [nc removeObserver:self name:UIScreenDidConnectNotification object:nil];
+  [nc removeObserver:self name:UIScreenDidDisconnectNotification object:nil];
 }
 
 @end

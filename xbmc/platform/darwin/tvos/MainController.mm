@@ -1065,8 +1065,8 @@ MainController *g_xbmcController;
   m_pause = FALSE;
   m_appAlive = FALSE;
   m_animating = FALSE;
+  m_controllerState = MC_NONE;
 
-  m_isPlayingBeforeInactive = NO;
   m_bgTask = UIBackgroundTaskInvalid;
 
   m_window = [[UIWindow alloc] initWithFrame:frame];
@@ -1285,25 +1285,129 @@ MainController *g_xbmcController;
   return true;
 }
 //--------------------------------------------------------------
+- (void)enterForeground
+{
+  PRINT_SIGNATURE();
+}
+//--------------------------------------------------------------
+- (void)enterActiveDelayed:(id)arg
+{
+  // the only way to tell if we are really going active is to delay for
+  // two seconds, then test. Otherwise we might be doing a forced sleep
+  // and that will blip us active for a short time before going inactive/background.
+  if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive)
+    return;
+
+  PRINT_SIGNATURE();
+
+  // MCRuntimeLib_Initialized is only true if
+  // we were running and got moved to background
+  while(!MCRuntimeLib_Initialized())
+    usleep(50*1000);
+
+  g_Windowing.OnAppFocusChange(true);
+
+  // this will fire only if we are already alive and have 'menu'ed out and back
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::System, "xbmc", "OnWake");
+
+  // restart ZeroConfig (if stopped)
+  CNetworkServices::GetInstance().StartZeroconf();
+  CNetworkServices::GetInstance().StartPlexServices();
+  CNetworkServices::GetInstance().StartLightEffectServices();
+
+  // wait for AE to wake
+  XbmcThreads::EndTime timer(2000);
+  while (CAEFactory::IsSuspended() && !timer.IsTimePast())
+    usleep(250*1000);
+
+  // handles a push into foreground by a topshelf item select/play
+  // returns false if there is no topshelf item
+  if (!CTVOSTopShelf::GetInstance().RunTopShelf())
+  {
+    // no topshelf item, check others
+    switch(m_controllerState)
+    {
+      default:
+      case MC_INACTIVE:
+        // do nothing
+        break;
+      case MC_INACTIVE_PAUSED:
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
+        break;
+      case MC_BACKGOUND_RESTORE:
+        if (!g_application.LastProgressTrackingItem().GetPath().empty())
+        {
+          CFileItem *fileitem = new CFileItem(g_application.LastProgressTrackingItem());
+          if (!fileitem->IsLiveTV())
+          {
+            // m_lStartOffset always gets multiplied by 75, magic numbers :)
+            fileitem->m_lStartOffset = m_wasPlayingTime * 75;
+          }
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(fileitem));
+        }
+        break;
+    }
+  }
+  m_controllerState = MC_ACTIVE;
+
+}
+- (void)becomeActive
+{
+  PRINT_SIGNATURE();
+  // stop background task (if running)
+  [self disableBackGroundTask];
+
+  SEL singleParamSelector = @selector(enterActiveDelayed:);
+  [g_xbmcController performSelector:singleParamSelector withObject:nil afterDelay:2.0];
+}
+//--------------------------------------------------------------
+- (void)becomeInactive
+{
+  PRINT_SIGNATURE();
+
+  m_controllerState = MC_INACTIVE;
+  if (g_application.m_pPlayer->IsPlaying())
+  {
+    m_controllerState = MC_INACTIVE_PAUSED;
+    // we might or might not be paused.
+    if (!g_application.m_pPlayer->IsPaused())
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+  }
+}
+//--------------------------------------------------------------
 - (void)enterBackground
 {
-  //PRINT_SIGNATURE();
   // We have 5 seconds before the OS will force kill us for delaying too long.
   XbmcThreads::EndTime timer(4500);
 
-  // this should not be required as we 'should' get becomeInactive before enterBackground
-  if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+  switch(m_controllerState)
   {
-    m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+    default:
+    case MC_INACTIVE:
+      m_controllerState = MC_BACKGOUND;
+      break;
+    case MC_INACTIVE_PAUSED:
+      {
+        m_controllerState = MC_BACKGOUND_RESTORE;
+        // get the current playing time but backup a little, it seems better
+        m_wasPlayingTime = g_application.GetTime() - 1.50;
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+        // wait until we stop playing.
+        XbmcThreads::EndTime timer2(2000);
+        while(g_application.m_pPlayer->IsPlaying() && !timer2.IsTimePast())
+          usleep(50*1000);
+      }
+      break;
   }
 
   g_Windowing.OnAppFocusChange(false);
 
   // Apple says to disable ZeroConfig when moving to background
   CNetworkServices::GetInstance().StopZeroconf();
+  CNetworkServices::GetInstance().StopPlexServices();
+  CNetworkServices::GetInstance().StopLightEffectServices();
 
-  if (m_isPlayingBeforeInactive)
+  if (m_controllerState == MC_BACKGOUND)
   {
     // if we were playing and have paused, then
     // enable a background task to keep the network alive
@@ -1325,65 +1429,10 @@ MainController *g_xbmcController;
     usleep(250*1000);
 }
 
-- (void)enterForegroundDelayed:(id)arg
-{
-  // MCRuntimeLib_Initialized is only true if
-  // we were running and got moved to background
-  while(!MCRuntimeLib_Initialized())
-    usleep(50*1000);
-
-  g_Windowing.OnAppFocusChange(true);
-
-  // when we come back, restore playing if we were.
-  if (m_isPlayingBeforeInactive)
-  {
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
-    m_isPlayingBeforeInactive = NO;
-  }
-  // restart ZeroConfig (if stopped)
-  CNetworkServices::GetInstance().StartZeroconf();
-
-  // do not update if we are already updating
-  if (!(g_application.IsVideoScanning() || g_application.IsMusicScanning()))
-    g_application.UpdateLibraries();
-
-  // this will fire only if we are already alive and have 'menu'ed out and back
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::System, "xbmc", "OnWake");
-
-  // this handles what to do if we got pushed
-  // into foreground by a topshelf item select/play
-  CTVOSTopShelf::GetInstance().RunTopShelf();
-  CNetworkServices::GetInstance().StartPlexServices();
-  CNetworkServices::GetInstance().StartLightEffectServices();
-}
-
-- (void)becomeActive
-{
-  //PRINT_SIGNATURE();
-  // stop background task (if running)
-  [self disableBackGroundTask];
-
-  [NSThread detachNewThreadSelector:@selector(enterForegroundDelayed:) toTarget:self withObject:nil];
-}
-
-- (void)becomeInactive
-{
-  //PRINT_SIGNATURE();
-  // if we were interrupted, already paused here
-  // else if user background us or lock screen, only pause video here, audio keep playing.
-  if (g_application.m_pPlayer->IsPlayingVideo() &&
-     !g_application.m_pPlayer->IsPaused())
-  {
-    m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
-  }
-  CNetworkServices::GetInstance().StopPlexServices();
-  CNetworkServices::GetInstance().StopLightEffectServices();
-}
-
 //--------------------------------------------------------------
 - (void)audioRouteChanged
 {
+  PRINT_SIGNATURE();
   if (MCRuntimeLib_Initialized())
     CAEFactory::DeviceChange();
 }
@@ -1481,13 +1530,15 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)remoteControlReceivedWithEvent:(UIEvent*)receivedEvent
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
   if (receivedEvent.type == UIEventTypeRemoteControl)
   {
     switch (receivedEvent.subtype)
     {
       case UIEventSubtypeRemoteControlTogglePlayPause:
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
+        // check if not in background, we can get this if sleep is forced
+        if (m_controllerState < MC_BACKGOUND)
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlPlay:
         CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
@@ -1497,7 +1548,9 @@ MainController *g_xbmcController;
         //CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
         // warning, something is wacky, in tvOS we only get this if play/pause button is pushed
         // the playPausePressed method should be getting called and it does, sometimes. WTF ?
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
+        // check if not in background, we can get this if sleep is forced
+        if (m_controllerState < MC_BACKGOUND)
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlStop:
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
@@ -1653,13 +1706,13 @@ MainController *g_xbmcController;
   [info release];
 }
 
-- (void)onSeek
+- (void)onSeekPlaying
 {
   PRINT_SIGNATURE();
   [NSThread detachNewThreadSelector:@selector(onSeekDelayed:) toTarget:self withObject:nil];
 }
 //--------------------------------------------------------------
-- (void)onPause:(NSDictionary *)item
+- (void)onPausePlaying:(NSDictionary *)item
 {
   PRINT_SIGNATURE();
   NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
@@ -1673,7 +1726,7 @@ MainController *g_xbmcController;
   [info release];
 }
 //--------------------------------------------------------------
-- (void)onStop:(NSDictionary *)item
+- (void)onStopPlaying:(NSDictionary *)item
 {
   PRINT_SIGNATURE();
   [self setIOSNowPlayingInfo:nil];

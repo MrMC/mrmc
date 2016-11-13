@@ -27,12 +27,13 @@
 
 typedef enum
 {
-  DEVICE_UNKNOWN,
-  DEVICE_BACKGROUND,
-  DEVICE_FOREGROUND,
-  DEVICE_SCREENSAVER,
-  DEVICE_SUSPENDED
-} IOSDeviceState;
+  MC_NONE = 0,
+  MC_ACTIVE,
+  MC_INACTIVE,
+  MC_INACTIVE_PAUSED,
+  MC_BACKGOUND,
+  MC_BACKGOUND_RESTORE,
+} MC_STATES;
 
 typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 {
@@ -57,13 +58,15 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   int                         m_screenIdx;
   int                         m_currentClick;
 
-  bool                        m_isPlayingBeforeInactive;
+
   UIBackgroundTaskIdentifier  m_bgTask;
   NSDictionary               *m_nowPlayingInfo;
+  double                      m_wasPlayingTime;
 
   BOOL                        m_pause;
   BOOL                        m_appAlive;
   BOOL                        m_animating;
+  MC_STATES                   m_controllerState;
   BOOL                        m_disableIdleTimer;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
@@ -100,9 +103,11 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (void) startAnimation;
 - (void) stopAnimation;
 
-- (void) enterBackground;
+- (void) enterForeground;
 - (void) becomeActive;
 - (void) becomeInactive;
+- (void) enterBackground;
+
 - (void) audioRouteChanged;
 
 - (void) sendKeyDownUp:(XBMCKey)key;

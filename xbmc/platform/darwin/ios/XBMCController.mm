@@ -514,7 +514,7 @@ XBMCController *g_xbmcController;
   m_animating = FALSE;
   m_readyToRun = FALSE;
 
-  m_isPlayingBeforeInactive = NO;
+  m_isPlayingBeforeInactive = FALSE;
   m_bgTask = UIBackgroundTaskInvalid;
   m_playbackState = IOS_PLAYBACK_STOPPED;
 
@@ -750,7 +750,7 @@ XBMCController *g_xbmcController;
 {
   if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
   {
-    m_isPlayingBeforeInactive = YES;
+    m_isPlayingBeforeInactive = TRUE;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   g_Windowing.OnAppFocusChange(false);
@@ -763,7 +763,7 @@ XBMCController *g_xbmcController;
   if (m_isPlayingBeforeInactive)
   {
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
-    m_isPlayingBeforeInactive = NO;
+    m_isPlayingBeforeInactive = FALSE;
   }
   CNetworkServices::GetInstance().StartPlexServices();
 }
@@ -775,7 +775,7 @@ XBMCController *g_xbmcController;
   if (g_application.m_pPlayer->IsPlayingVideo() &&
      !g_application.m_pPlayer->IsPaused())
   {
-    m_isPlayingBeforeInactive = YES;
+    m_isPlayingBeforeInactive = TRUE;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   // check whether we need disable network auto suspend.
@@ -1097,14 +1097,14 @@ XBMCController *g_xbmcController;
   }
 }
 //--------------------------------------------------------------
-- (void)onPause:(NSDictionary *)item
+- (void)onPausePlaying:(NSDictionary *)item
 {
   m_playbackState = IOS_PLAYBACK_PAUSED;
   // schedule set network auto suspend state for save power if idle.
   [self rescheduleNetworkAutoSuspend];
 }
 //--------------------------------------------------------------
-- (void)onStop:(NSDictionary *)item
+- (void)onStopPlaying:(NSDictionary *)item
 {
   [self setIOSNowPlayingInfo:nil];
 
@@ -1113,7 +1113,7 @@ XBMCController *g_xbmcController;
   [self rescheduleNetworkAutoSuspend];
 }
 //--------------------------------------------------------------
-- (void)onSeek
+- (void)onSeekPlaying
 {
   PRINT_SIGNATURE();
   [NSThread detachNewThreadSelector:@selector(onSeekDelayed:) toTarget:self withObject:nil];
