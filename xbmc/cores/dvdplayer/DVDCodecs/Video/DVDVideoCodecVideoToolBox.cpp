@@ -671,6 +671,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
     m_sort_time = 0;
 
+    CLog::Log(LOGDEBUG,"VideoToolBox: opened width(%d), height(%d)", hints.width, hints.height);
+
     return true;
   }
 
