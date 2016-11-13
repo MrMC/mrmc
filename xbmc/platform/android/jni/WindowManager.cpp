@@ -19,10 +19,17 @@
  */
 
 #include "WindowManager.h"
+#include "Display.h"
 
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
+
+CJNIDisplay CJNIWindowManager::getDefaultDisplay()
+{
+  return call_method<jhobject>(m_object,
+    "getDefaultDisplay", "()Landroid/view/Display;");
+}
 
 float CJNIWindowManagerLayoutParams::getpreferredRefreshRate() const
 {
@@ -40,18 +47,26 @@ void CJNIWindowManagerLayoutParams::setpreferredRefreshRate(float rate)
 
 int CJNIWindowManagerLayoutParams::getpreferredDisplayModeId() const
 {
-  jfieldID fid = get_field_id(m_object, "preferredDisplayModeId", "I");
+  jhclass clazz = get_class(m_object);
+  jfieldID fid = get_field_id<jclass>(clazz, "preferredDisplayModeId", "I");
+
   if (fid != NULL)
     return get_field<jint>(m_object, fid);
   else
-    return -1.0;
+  {
+    xbmc_jnienv()->ExceptionClear();
+    return -1;
+  }
 }
 
-void CJNIWindowManagerLayoutParams::setpreferredDisplayModeId(int modeId)
+void CJNIWindowManagerLayoutParams::setpreferredDisplayModeId(int modeid)
 {
-  jfieldID fid = get_field_id(m_object, "preferredDisplayModeId", "I");
+  jhclass clazz = get_class(m_object);
+  jfieldID fid = get_field_id<jclass>(clazz, "preferredDisplayModeId", "I");
+
   if (fid != NULL)
-    set_field(m_object, fid, modeId);
+    return set_field(m_object, fid, modeid);
   else
     xbmc_jnienv()->ExceptionClear();
 }
+

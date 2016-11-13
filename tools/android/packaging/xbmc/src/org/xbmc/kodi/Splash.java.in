@@ -11,21 +11,17 @@ import java.io.OutputStream;
 import java.lang.System;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.ArrayList;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -444,7 +440,7 @@ public class Splash extends Activity {
 
   private void SetupEnvironment()
   {
-    sXbmcHome = System.getProperty("xbmc.home", "");
+    sXbmcHome = XBMCProperties.getStringProperty("xbmc.home", "");
     if (!sXbmcHome.isEmpty())
     {
       fXbmcHome = new File(sXbmcHome);
@@ -473,7 +469,7 @@ public class Splash extends Activity {
       fXbmcHome = new File(sXbmcHome);
     }
 
-    sXbmcdata = System.getProperty("xbmc.data", "");
+    sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
     if (!sXbmcdata.isEmpty())
     {
       File fXbmcData = new File(sXbmcdata);
@@ -503,7 +499,7 @@ public class Splash extends Activity {
     String obbfn = "";
     if (fPackagePath.length() < 40 * 1024 * 1024)
     {
-      sPackagePath = System.getProperty("@APP_NAME_LC@.obb", "");
+      sPackagePath = XBMCProperties.getStringProperty("@APP_NAME_LC@.obb", "");
       if (sPackagePath.equals(""))
       {
         try
@@ -677,6 +673,9 @@ public class Splash extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    // Be sure properties are initialized for native
+    XBMCProperties.initializeProperties();
+
     // Check if @APP_NAME_LC@ is not already running
     ActivityManager activityManager = (ActivityManager) getBaseContext()
         .getSystemService(Context.ACTIVITY_SERVICE);
@@ -690,77 +689,47 @@ public class Splash extends Activity {
         return;
       }
 
-    String propfn = Environment.getExternalStorageDirectory().getAbsolutePath() + "/@APP_NAME_LC@_env.properties";
-    File fProp = new File(propfn);
-    if (!fProp.exists())
-    {
-      propfn = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mrmc_env.properties";
-      fProp = new File(propfn);
-    }
-    if (fProp.exists())
-    {
-      Log.i(TAG, "Loading " + propfn);
-      try
-      {
-        Properties sysProp = new Properties(System.getProperties());
-        FileInputStream xbmcenvprop = new FileInputStream(fProp);
-        sysProp.load(xbmcenvprop);
-        System.setProperties(sysProp);
-      } catch (Exception e)
-      {
-        Log.e(TAG, "Error loading " + propfn + " (" + e.getMessage() + ")");
-      }
-    }
-
     mStateMachine.sendEmptyMessage(Checking);
 
-    String curArch = "";
-    String curArch2 = "";
-    try
-    {
-      curArch = Build.CPU_ABI.substring(0,3);
-    } catch (IndexOutOfBoundsException e)
-    {
-      mErrorMsg = "Error! Unexpected architecture: " + Build.CPU_ABI;
+    String pkg_arch = "";
+    // Read the properties
+    try {
+      Resources resources = this.getResources();
+      InputStream xbmcprop = resources.openRawResource(R.raw.xbmc);
+      Properties properties = new Properties();
+      properties.load(xbmcprop);
+      pkg_arch = properties.getProperty("native_arch");
+    } catch (NotFoundException e) {
+      mErrorMsg = "Cannot find properties file";
+      Log.e(TAG, mErrorMsg);
+      mState = InError;
+    } catch (IOException e) {
+      mErrorMsg = "Failed to open properties file";
       Log.e(TAG, mErrorMsg);
       mState = InError;
     }
-    try
+
+    boolean arch_ok = false;
+    String[] abis = Build.SUPPORTED_ABIS;
+    for (int i=0; i<abis.length; ++i)
     {
-      curArch2 = Build.CPU_ABI2.substring(0,3);
-    } catch (IndexOutOfBoundsException e) {}
-
-    if (mState != InError)
-    {
-      // Check if we are on the proper arch
-
-      // Read the properties
-      try {
-        Resources resources = this.getResources();
-        InputStream xbmcprop = resources.openRawResource(R.raw.xbmc);
-        Properties properties = new Properties();
-        properties.load(xbmcprop);
-
-        if (!curArch.equalsIgnoreCase(properties.getProperty("native_arch"))
-              && !curArch2.equalsIgnoreCase(properties.getProperty("native_arch")))
-        {
-          mErrorMsg = "This @APP_NAME@ package is not compatible with your device (device=" + curArch + " vs. package=" + properties.getProperty("native_arch") +").\nPlease check the <a href=\"http://wiki.kodi.tv/index.php?title=XBMC_for_Android_specific_FAQ\">Kodi Android wiki</a> for more information.";
-          Log.e(TAG, mErrorMsg);
-          mState = InError;
-        }
-      } catch (NotFoundException e) {
-        mErrorMsg = "Cannot find properties file";
-        Log.e(TAG, mErrorMsg);
-        mState = InError;
-      } catch (IOException e) {
-        mErrorMsg = "Failed to open properties file";
-        Log.e(TAG, mErrorMsg);
-        mState = InError;
+      Log.i(TAG, "ABI: " + abis[i]);
+      if (abis[i].equalsIgnoreCase(pkg_arch))
+      {
+        arch_ok = true;
+        //break;
       }
     }
 
+    if (!arch_ok)
+    {
+      mErrorMsg = "This package is not compatible with your device (" + pkg_arch +").\nPlease check the <a href=\"http://wiki.kodi.tv/index.php?title=XBMC_for_Android_specific_FAQ\">Kodi Android wiki</a> for more information.";
+      Log.e(TAG, mErrorMsg);
+      mState = InError;
+    }
+
     if (mState != InError) {
-      if (curArch.equalsIgnoreCase("arm")) {
+      if (pkg_arch.equalsIgnoreCase("arm")) {
         // arm arch: check if the cpu supports neon
         boolean ret = ParseCpuFeature();
         //Log.d(TAG, "/proc/cpuinfo = " + mCpuinfo);
@@ -783,8 +752,7 @@ public class Splash extends Activity {
     if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
       mExternalStorageChecked = true;
 
-    String sXbmcWaitNetwork = System.getProperty("xbmc.waitnetwork", "");
-    if (sXbmcWaitNetwork.equalsIgnoreCase("yes"))
+    if (XBMCProperties.getBoolProperty("xbmc.waitnetwork"))
     {
       if (IsNetworkReady())
         mNetworkReady = true;

@@ -20,17 +20,17 @@
 /*
  * Copyright (c) 2011-2012 Dmitry Moskalchuk <dm@crystax.net>.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY Dmitry Moskalchuk ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Dmitry Moskalchuk OR
@@ -40,13 +40,15 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
  * or implied, of Dmitry Moskalchuk.
  */
 
 #pragma once
+#define HAVE_INTTYPES_H 1
+
 #include <jni.h>
 #include <string>
 #include "jutils.hpp"
@@ -75,6 +77,52 @@ template <typename T>
 struct jcast_helper<std::vector<T>, jobjectArray>
 {
     static std::vector<T> cast(jobjectArray const &v);
+};
+
+template <>
+struct jcast_helper<std::vector<int>, jintArray>
+{
+    static std::vector<int> cast(jintArray const &v)
+    {
+        JNIEnv *env = xbmc_jnienv();
+        jsize size = 0;
+        if(v)
+            size = env->GetArrayLength(v);
+
+        std::vector<int> vec;
+        vec.reserve(size);
+
+        int *elements = env->GetIntArrayElements(v, NULL);
+        for (int i = 0; i < size; i++)
+        {
+            vec.emplace_back(elements[i]);
+        }
+        env->ReleaseIntArrayElements(v, elements, JNI_ABORT);
+        return vec;
+    }
+};
+
+template <>
+struct jcast_helper<std::vector<int64_t>, jlongArray>
+{
+    static std::vector<int64_t> cast(jlongArray const &v)
+    {
+        JNIEnv *env = xbmc_jnienv();
+        jsize size = 0;
+        if(v)
+            size = env->GetArrayLength(v);
+
+        std::vector<int64_t> vec;
+        vec.reserve(size);
+
+        int64_t *elements = env->GetLongArrayElements(v, NULL);
+        for (int i = 0; i < size; i++)
+        {
+            vec.emplace_back(elements[i]);
+        }
+        env->ReleaseLongArrayElements(v, elements, JNI_ABORT);
+        return vec;
+    }
 };
 
 template <>
@@ -136,6 +184,24 @@ struct jcast_helper<std::vector<T>, jhobjectArray>
     static std::vector<T> cast(jhobjectArray const &v)
     {
         return jcast_helper<std::vector<T>, jobjectArray>::cast(v.get());
+    }
+};
+
+template <>
+struct jcast_helper<std::vector<int>, jhintArray>
+{
+    static std::vector<int> cast(jhintArray const &v)
+    {
+        return jcast_helper<std::vector<int>, jintArray>::cast(v.get());
+    }
+};
+
+template <>
+struct jcast_helper<std::vector<int64_t>, jhlongArray>
+{
+    static std::vector<int64_t> cast(jhlongArray const &v)
+    {
+        return jcast_helper<std::vector<int64_t>, jlongArray>::cast(v.get());
     }
 };
 
@@ -479,6 +545,12 @@ Ret get_field(const char *clsname, const char *name)
 // Get static field
 
 template <typename Ret>
+Ret get_static_field(JNIEnv *env, jhclass const &cls, jfieldID fid)
+{
+    return details::jni_helper<Ret>::get_static_field(env, cls, fid);
+}
+
+template <typename Ret>
 Ret get_static_field(JNIEnv *env, jhobject const &obj, const char *name, const char *signature)
 {
     return details::jni_helper<Ret>::get_static_field(env, get_class(env, obj), get_static_field_id(env, obj, name, signature));
@@ -487,7 +559,7 @@ Ret get_static_field(JNIEnv *env, jhobject const &obj, const char *name, const c
 template <typename Ret>
 Ret get_static_field(JNIEnv *env, jhclass const &cls, const char *name, const char *signature)
 {
-    return details::jni_helper<Ret>::get_static_field(env, cls, get_static_field_id(env, cls, name, signature));
+    return get_static_field<Ret>(env, cls, get_static_field_id(env, cls, name, signature));
 }
 
 template <typename Ret, typename T>
@@ -531,6 +603,13 @@ Ret get_static_field(const char *clsname, const char *name)
 {
     return get_static_field<Ret>(xbmc_jnienv(), clsname, name);
 }
+
+template <typename Ret>
+Ret get_static_field(jhclass const &cls, jfieldID fid)
+{
+    return details::jni_helper<Ret>::get_static_field(xbmc_jnienv(), cls, fid);
+}
+
 
 // Set field
 

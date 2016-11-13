@@ -61,11 +61,73 @@ void CJNIMainActivity::_callNative(JNIEnv *env, jobject context, jlong funcAddr,
   (void)context;
   ((void (*)(CVariant *))funcAddr)((CVariant *)variantAddr);
 }
+/*
+void CJNIMainActivity::_onAudioDeviceAdded(JNIEnv *env, jobject context, jobjectArray devices)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+  {
+    m_appInstance->onAudioDeviceAdded(jcast<CJNIAudioDeviceInfos>(jhobjectArray(devices)));
+  }
+}
+
+void CJNIMainActivity::_onAudioDeviceRemoved(JNIEnv *env, jobject context, jobjectArray devices)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onAudioDeviceRemoved(jcast<CJNIAudioDeviceInfos>(jhobjectArray(devices)));
+}
+*/
+void CJNIMainActivity::_onVideoViewAcquired(JNIEnv *env, jobject context)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onVideoViewAcquired();
+}
+
+void CJNIMainActivity::_onVideoViewLost(JNIEnv *env, jobject context)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onVideoViewLost();
+}
+
+void CJNIMainActivity::_onCaptureAvailable(JNIEnv *env, jobject context, jobject image)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onCaptureAvailable(CJNIImage(jhobject(image)));
+}
+
+void CJNIMainActivity::_onScreenshotAvailable(JNIEnv* env, jobject context, jobject image)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onScreenshotAvailable(CJNIImage(jhobject(image)));
+}
 
 void CJNIMainActivity::runNativeOnUiThread(void (*callback)(CVariant *), CVariant* variant)
 {
   call_method<void>(m_context,
                     "runNativeOnUiThread", "(JJ)V", (jlong)callback, (jlong)variant);
+}
+
+void CJNIMainActivity::startCrashHandler()
+{
+  call_method<void>(m_context,
+                    "startCrashHandler", "()V");
+}
+
+void CJNIMainActivity::uploadLog()
+{
+  call_method<void>(m_context,
+                    "uploadLog", "()V");
 }
 
 void CJNIMainActivity::_onVolumeChanged(JNIEnv *env, jobject context, jint volume)
@@ -104,10 +166,16 @@ void CJNIMainActivity::clearVideoView()
                     "clearVideoView", "()V");
 }
 
-void CJNIMainActivity::setVideoViewSurfaceRect(int w, int h, int l, int t, int r, int b)
+CJNIRect CJNIMainActivity::getVideoViewSurfaceRect()
+{
+  return call_method<jhobject>(m_context,
+                               "getVideoViewSurfaceRect", "()Landroid/graphics/Rect;");
+}
+
+void CJNIMainActivity::setVideoViewSurfaceRect(int l, int t, int r, int b)
 {
   call_method<void>(m_context,
-                    "setVideoViewSurfaceRect", "(IIIIII)V", w, h, l, t, r, b);
+                    "setVideoViewSurfaceRect", "(IIII)V", l, t, r, b);
 }
 
 void CJNIMainActivity::registerMediaButtonEventReceiver()
@@ -126,4 +194,28 @@ void CJNIMainActivity::screenOn()
 {
   call_method<void>(m_context,
                     "screenOn", "()V");
+}
+
+void CJNIMainActivity::takeScreenshot()
+{
+  call_method<void>(m_context,
+                    "takeScreenshot", "()V");
+}
+
+void CJNIMainActivity::startProjection()
+{
+  call_method<void>(m_context,
+                    "startProjection", "()V");
+}
+
+void CJNIMainActivity::startCapture(int width, int height)
+{
+  call_method<void>(m_context,
+                    "startCapture", "(II)V", width, height);
+}
+
+void CJNIMainActivity::stopCapture()
+{
+  call_method<void>(m_context,
+                    "stopCapture", "()V");
 }

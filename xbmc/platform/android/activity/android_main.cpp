@@ -18,6 +18,8 @@
  *
  */
 
+#include "system.h"
+
 #include <stdlib.h>
 #include <errno.h>
 #include <android_native_app_glue.h>
@@ -28,6 +30,47 @@
 #include "CompileInfo.h"
 
 #include "platform/android/activity/JNIMainActivity.h"
+
+// redirect stdout / stderr to logcat
+// https://codelab.wordpress.com/2014/11/03/how-to-use-standard-output-streams-for-logging-in-android-apps/
+static int pfd[2];
+static pthread_t thr;
+static const char *tag = "myapp";
+
+static void *thread_logger(void*)
+{
+  ssize_t rdsz;
+  char buf[128];
+  while((rdsz = read(pfd[0], buf, sizeof buf - 1)) > 0)
+  {
+    if(buf[rdsz - 1] == '\n')
+      --rdsz;
+    buf[rdsz] = 0;  /* add null-terminator */
+    __android_log_write(ANDROID_LOG_DEBUG, tag, buf);
+  }
+  return 0;
+}
+
+int start_logger(const char *app_name)
+{
+  tag = app_name;
+
+  /* make stdout line-buffered and stderr unbuffered */
+  setvbuf(stdout, 0, _IOLBF, 0);
+  setvbuf(stderr, 0, _IONBF, 0);
+
+  /* create the pipe and redirect stdout and stderr */
+  pipe(pfd);
+  dup2(pfd[1], 1);
+  dup2(pfd[1], 2);
+
+  /* spawn the logging thread */
+  if(pthread_create(&thr, 0, thread_logger, 0) == -1)
+    return -1;
+  pthread_detach(thr);
+  return 0;
+}
+
 
 // copied from new android_native_app_glue.c
 static void process_input(struct android_app* app, struct android_poll_source* source) {
@@ -63,6 +106,8 @@ extern void android_main(struct android_app* state)
     CXBMCApp xbmcApp(state->activity);
     if (xbmcApp.isValid())
     {
+      start_logger("MRMC_STD");
+
       IInputHandler inputHandler;
       eventLoop.run(xbmcApp, inputHandler);
     }
@@ -127,7 +172,49 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNIMainActivity::_callNative
     };
     env->RegisterNatives(cMain, &mCallNative, 1);
+/*
+    JNINativeMethod mAudioDeviceAdded = {
+      "_onAudioDeviceAdded",
+      "([Landroid/media/AudioDeviceInfo;)V",
+      (void*)&CJNIMainActivity::_onAudioDeviceAdded
+    };
+    env->RegisterNatives(cMain, &mAudioDeviceAdded, 1);
+
+    JNINativeMethod mAudioDeviceRemoved = {
+      "_onAudioDeviceRemoved",
+      "([Landroid/media/AudioDeviceInfo;)V",
+      (void*)&CJNIMainActivity::_onAudioDeviceRemoved
+    };
+    env->RegisterNatives(cMain, &mAudioDeviceRemoved, 1);
+*/
+    JNINativeMethod mVideoViewAcquired = {
+      "_onVideoViewAcquired",
+      "()V",
+      (void*)&CJNIMainActivity::_onVideoViewAcquired
+    };
+    env->RegisterNatives(cMain, &mVideoViewAcquired, 1);
+
+    JNINativeMethod mVideoViewLost = {
+      "_onVideoViewLost",
+      "()V",
+      (void*)&CJNIMainActivity::_onVideoViewLost
+    };
+    env->RegisterNatives(cMain, &mVideoViewLost, 1);
   }
+
+  JNINativeMethod mOnCaptureAvailable = {
+    "_onCaptureAvailable",
+    "(Landroid/media/Image;)V",
+    (void*)&CJNIMainActivity::_onCaptureAvailable
+  };
+  env->RegisterNatives(cMain, &mOnCaptureAvailable, 1);
+
+  JNINativeMethod mOnScreenshotAvailable = {
+    "_onScreenshotAvailable",
+    "(Landroid/media/Image;)V",
+    (void*)&CJNIMainActivity::_onScreenshotAvailable
+  };
+  env->RegisterNatives(cMain, &mOnScreenshotAvailable, 1);
 
   jclass cBroadcastReceiver = env->FindClass(bcReceiver.c_str());
   if(cBroadcastReceiver)

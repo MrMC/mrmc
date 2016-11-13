@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "JNIBase.h"
 
 class CJNIDisplayMode : public CJNIBase
@@ -27,10 +29,10 @@ public:
   ~CJNIDisplayMode() {};
   CJNIDisplayMode(const jni::jhobject &object) : CJNIBase(object) {};
 
+  int getModeId();
   int getPhysicalHeight();
   int getPhysicalWidth();
   float getRefreshRate();
-  int getModeId();
 
 protected:
   CJNIDisplayMode();
@@ -43,12 +45,11 @@ public:
   CJNIDisplay(const jni::jhobject &object) : CJNIBase(object) {};
   ~CJNIDisplay() {};
 
-  int getWidth();
-  int getHeight();
   float getRefreshRate();
   std::vector<float> getSupportedRefreshRates();
-
   CJNIDisplayMode getMode();
+  int getWidth();
+  int getHeight();
   std::vector<CJNIDisplayMode> getSupportedModes();
 };
 

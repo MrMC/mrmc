@@ -20,6 +20,7 @@
 
 #include "Activity.h"
 #include "Intent.h"
+#include "WindowManager.h"
 
 #include "jutils/jutils-details.hpp"
 
@@ -33,6 +34,12 @@ CJNIActivity::CJNIActivity(const ANativeActivity *nativeActivity) : CJNIContext(
 
 CJNIActivity::~CJNIActivity()
 {
+}
+
+CJNIWindowManager CJNIActivity::getWindowManager()
+{
+  return call_method<jhobject>(m_context,
+    "getWindowManager", "()Landroid/view/WindowManager;");
 }
 
 bool CJNIActivity::moveTaskToBack(bool nonRoot)

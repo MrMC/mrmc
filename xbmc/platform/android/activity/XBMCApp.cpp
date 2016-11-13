@@ -18,6 +18,8 @@
  *
  */
 
+#include "XBMCApp.h"
+
 #include <sstream>
 
 #include <unistd.h>
@@ -28,8 +30,6 @@
 #include <android/native_window.h>
 #include <android/configuration.h>
 #include <jni.h>
-
-#include "XBMCApp.h"
 
 #include "input/MouseStat.h"
 #include "input/XBMC_keysym.h"
@@ -43,14 +43,18 @@
 #include "platform/MCRuntimeLibContext.h"
 #include "windowing/WinEvents.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GraphicContext.h"
+#include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/URIUtils.h"
+#include "utils/SysfsUtils.h"
 #include "AppParamParser.h"
 #include <android/bitmap.h>
 #include "cores/AudioEngine/AEFactory.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #include "platform/android/jni/JNIThreading.h"
 #include "platform/android/jni/BroadcastReceiver.h"
 #include "platform/android/jni/Intent.h"
@@ -72,13 +76,12 @@
 #include "platform/android/jni/ContentResolver.h"
 #include "platform/android/jni/MediaStore.h"
 #include "platform/android/jni/Build.h"
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif
 #include "platform/android/jni/Window.h"
 #include "platform/android/jni/WindowManager.h"
 #include "platform/android/jni/KeyEvent.h"
-#include "AndroidKey.h"
+#include "platform/android/jni/SystemProperties.h"
+#include "platform/android/jni/Display.h"
+#include "platform/android/activity//AndroidKey.h"
 
 #include "CompileInfo.h"
 #include "filesystem/VideoDatabaseFile.h"
@@ -87,8 +90,10 @@
 #include "windowing/WindowingFactory.h"
 
 #define GIGABYTES       1073741824
+#define CAPTURE_QUEUE_MAXDEPTH 3
 
 using namespace std;
+using namespace jni;
 using namespace KODI::MESSAGING;
 using namespace ANNOUNCEMENT;
 
@@ -116,8 +121,49 @@ bool CXBMCApp::m_headsetPlugged = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
+
+CCriticalSection CXBMCApp::m_captureMutex;
+CCaptureEvent CXBMCApp::m_captureEvent;
+std::queue<CJNIImage> CXBMCApp::m_captureQueue;
+
 uint64_t CXBMCApp::m_vsynctime = 0;
 CEvent CXBMCApp::m_vsyncEvent;
+CJNIAudioDeviceInfos CXBMCApp::m_audiodevices;
+
+void LogAudoDevices(const char* stage, const CJNIAudioDeviceInfos& devices)
+{
+  CLog::Log(LOGDEBUG, "--- Audio device list: %s", stage);
+  for (auto dev : devices)
+  {
+    CLog::Log(LOGDEBUG, "--- Found device: %s", dev.getProductName().toString().c_str());
+    CLog::Log(LOGDEBUG, "    id: %d, type: %d, isSink: %s, isSource: %s", dev.getId(), dev.getType(), dev.isSink() ? "true" : "false", dev.isSource() ? "true" : "false");
+
+    std::ostringstream oss;
+    for (auto i : dev.getChannelCounts())
+      oss << i << " / ";
+    CLog::Log(LOGDEBUG, "    channel counts: %s", oss.str().c_str());
+
+    oss.clear(); oss.str("");
+    for (auto i : dev.getChannelIndexMasks())
+      oss << i << " / ";
+    CLog::Log(LOGDEBUG, "    channel index masks: %s", oss.str().c_str());
+
+    oss.clear(); oss.str("");
+    for (auto i : dev.getChannelMasks())
+      oss << i << " / ";
+    CLog::Log(LOGDEBUG, "    channel masks: %s", oss.str().c_str());
+
+    oss.clear(); oss.str("");
+    for (auto i : dev.getEncodings())
+      oss << i << " / ";
+    CLog::Log(LOGDEBUG, "    encodings: %s", oss.str().c_str());
+
+    oss.clear(); oss.str("");
+    for (auto i : dev.getSampleRates())
+      oss << i << " / ";
+    CLog::Log(LOGDEBUG, "    sample rates: %s", oss.str().c_str());
+  }
+}
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIMainActivity(nativeActivity)
@@ -148,13 +194,9 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
   if ((flag & Input) && strcmp(sender, "xbmc") == 0)
   {
     if (strcmp(message, "OnInputRequested") == 0)
-    {
       CAndroidKey::SetHandleSearchKeys(true);
-    }
     else if (strcmp(message, "OnInputFinished") == 0)
-    {
-      CAndroidKey::SetHandleSearchKeys(true);
-    }
+      CAndroidKey::SetHandleSearchKeys(false);
   }
 }
 
@@ -202,8 +244,14 @@ void CXBMCApp::onResume()
   else
     g_application.WakeUpScreenSaverAndDPMS();
 
-  CJNIAudioManager audioManager(getSystemService("audio"));
-  m_headsetPlugged = audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
+  m_audiodevices.clear();
+  if (CJNIAudioManager::GetSDKVersion() >= 23)
+  {
+    CJNIAudioManager audioManager(getSystemService("audio"));
+    m_audiodevices = audioManager.getDevices(CJNIAudioManager::GET_DEVICES_OUTPUTS);
+    LogAudoDevices("OnResume", m_audiodevices);
+  }
+  CheckHeadsetPlugged();
 
   unregisterMediaButtonEventReceiver();
 
@@ -235,7 +283,7 @@ void CXBMCApp::onResume()
 void CXBMCApp::onPause()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-  
+
   if (g_application.m_pPlayer->IsPlaying())
   {
     if (g_application.m_pPlayer->IsPlayingVideo())
@@ -437,6 +485,31 @@ bool CXBMCApp::ReleaseAudioFocus()
   return true;
 }
 
+void CXBMCApp::CheckHeadsetPlugged()
+{
+  bool oldstate = m_headsetPlugged;
+
+  CLog::Log(LOGDEBUG, "CXBMCApp::CheckHeadsetPlugged");
+  CJNIAudioManager audioManager(getSystemService("audio"));
+  m_headsetPlugged = audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
+
+  if (!m_audiodevices.empty())
+  {
+    for (auto dev : m_audiodevices)
+    {
+      if (dev.getType() == CJNIAudioDeviceInfo::TYPE_DOCK && dev.isSink() && StringUtils::CompareNoCase(dev.getProductName().toString(), "SHIELD Android TV") == 0)
+      {
+        // SHIELD specifics: Gamepad headphone is inserted
+        m_headsetPlugged = true;
+        CLog::Log(LOGINFO, "SHIELD: Wifi direct headset inserted");
+      }
+    }
+  }
+
+  if (m_headsetPlugged != oldstate)
+    CAEFactory::DeviceChange();
+}
+
 bool CXBMCApp::IsHeadsetPlugged()
 {
   return m_headsetPlugged;
@@ -476,7 +549,7 @@ void CXBMCApp::run()
   android_printf(" => running MCRuntimeLib...");
   try
   {
-    nice(10);
+    //nice(10);
     status = MCRuntimeLib_Run(true);
     android_printf(" => App_Run finished with %d", status);
   }
@@ -613,6 +686,58 @@ int CXBMCApp::GetDPI()
   return dpi;
 }
 
+CPointInt CXBMCApp::GetMaxDisplayResolution()
+{
+  // Find larger possible resolution
+  RESOLUTION_INFO res_info = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+  for (unsigned int i=0; i<CDisplaySettings::GetInstance().ResolutionInfoSize(); ++i)
+  {
+    RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(i);
+    if (res.iWidth > res_info.iWidth || res.iHeight > res_info.iHeight)
+      res_info = res;
+  }
+
+  // Android might go even higher via surface
+  std::string displaySize = CJNISystemProperties::get("sys.display-size", "");
+  if (!displaySize.empty())
+  {
+    std::vector<std::string> aSize = StringUtils::Split(displaySize, "x");
+    if (aSize.size() == 2)
+    {
+      res_info.iWidth = StringUtils::IsInteger(aSize[0]) ? atoi(aSize[0].c_str()) : 0;
+      res_info.iHeight = StringUtils::IsInteger(aSize[1]) ? atoi(aSize[1].c_str()) : 0;
+    }
+  }
+
+  return CPointInt(res_info.iWidth, res_info.iHeight);
+}
+
+CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
+{
+  float scaleX = 1.0;
+  float scaleY = 1.0;
+
+  CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
+  RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
+  scaleX = (double)r.width() / renderRes.iWidth;
+  scaleY = (double)r.height() / renderRes.iHeight;
+
+  return CRect(srcRect.x1 * scaleX, srcRect.y1 * scaleY, srcRect.x2 * scaleX, srcRect.y2 * scaleY);
+}
+
+CPoint CXBMCApp::GetDroidToGuiRatio()
+{
+  float scaleX = 1.0;
+  float scaleY = 1.0;
+
+  CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
+  CRect gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
+  scaleX = gui.Width() / (double)r.width();
+  scaleY = gui.Height() / (double)r.height();
+
+  return CPoint(scaleX, scaleY);
+}
+
 void CXBMCApp::OnPlayBackStarted()
 {
   if (getPackageName() != CCompileInfo::GetPackage())
@@ -655,7 +780,7 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
     CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
     int numPackages = packageList.size();
     for (int i = 0; i < numPackages; i++)
-    {            
+    {
       CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(packageList.get(i).packageName);
       if (!intent && CJNIBuild::SDK_INT >= 21)
         intent = GetPackageManager().getLeanbackLaunchIntentForPackage(packageList.get(i).packageName);
@@ -697,7 +822,7 @@ bool CXBMCApp::StartActivity(const string &package, const string &intent, const 
     if (!jniURI)
       return false;
 
-    newIntent.setDataAndType(jniURI, dataType); 
+    newIntent.setDataAndType(jniURI, dataType);
   }
 
   newIntent.setPackage(package);
@@ -824,7 +949,7 @@ float CXBMCApp::GetSystemVolume()
   CJNIAudioManager audioManager(getSystemService("audio"));
   if (audioManager)
     return (float)audioManager.getStreamVolume() / GetMaxSystemVolume();
-  else 
+  else
   {
     android_printf("CXBMCApp::GetSystemVolume: Could not get Audio Manager");
     return 0;
@@ -849,7 +974,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     m_batteryLevel = intent.getIntExtra("level",-1);
   else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
   {
-    if (m_hasFocus)
+    if (HasFocus())
       g_application.WakeUpScreenSaverAndDPMS();
   }
   else if (action == "android.intent.action.SCREEN_OFF")
@@ -859,17 +984,14 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   }
   else if (action == "android.intent.action.HEADSET_PLUG" || action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
   {
-    bool newstate;
-    if (action == "android.intent.action.HEADSET_PLUG")
-      newstate = (intent.getIntExtra("state", 0) != 0);
-    else
-      newstate = (intent.getIntExtra("android.bluetooth.profile.extra.STATE", 0) == 2 /* STATE_CONNECTED */);
-
-    if (newstate != m_headsetPlugged)
+    m_audiodevices.clear();
+    if (CJNIAudioManager::GetSDKVersion() >= 23)
     {
-      m_headsetPlugged = newstate;
-      CAEFactory::DeviceChange();
+      CJNIAudioManager audioManager(getSystemService("audio"));
+      m_audiodevices = audioManager.getDevices(CJNIAudioManager::GET_DEVICES_OUTPUTS);
+      LogAudoDevices("Connectivity changed", m_audiodevices);
     }
+    CheckHeadsetPlugged();
   }
   else if (action == "android.intent.action.HDMI_PLUGGED")
   {
@@ -886,7 +1008,6 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       CLog::Log(LOGINFO, "Ignore MEDIA_BUTTON intent: no media playing");
       return;
     }
-
     CJNIKeyEvent keyevt = (CJNIKeyEvent)intent.getParcelableExtra(CJNIIntent::EXTRA_KEY_EVENT);
 
     int keycode = keyevt.getKeyCode();
@@ -967,6 +1088,77 @@ void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resu
   }
 }
 
+bool CXBMCApp::GetCapture(CJNIImage& img)
+{
+  CSingleLock lock(m_captureMutex);
+  if (m_captureQueue.empty())
+    return false;
+
+  img = m_captureQueue.front();
+  m_captureQueue.pop();
+  return true;
+}
+
+void CXBMCApp::TakeScreenshot()
+{
+  takeScreenshot();
+}
+
+void CXBMCApp::StopCapture()
+{
+  CSingleLock lock(m_captureMutex);
+  while (!m_captureQueue.empty())
+  {
+    CJNIImage img = m_captureQueue.front();
+    img.close();
+    m_captureQueue.pop();
+  }
+  CJNIMainActivity::stopCapture();
+}
+
+void CXBMCApp::onCaptureAvailable(CJNIImage image)
+{
+  CSingleLock lock(m_captureMutex);
+
+  m_captureQueue.push(image);
+  if (m_captureQueue.size() > CAPTURE_QUEUE_MAXDEPTH)
+  {
+    CJNIImage img = m_captureQueue.front();
+    img.close();
+    m_captureQueue.pop();
+  }
+}
+
+void CXBMCApp::onScreenshotAvailable(CJNIImage image)
+{
+  CSingleLock lock(m_captureMutex);
+
+  m_captureEvent.SetImage(image);
+  m_captureEvent.Set();
+}
+
+void CXBMCApp::onAudioDeviceAdded(CJNIAudioDeviceInfos devices)
+{
+  m_audiodevices = devices;
+  LogAudoDevices("onAudioDeviceAdded", m_audiodevices);
+  CheckHeadsetPlugged();
+}
+
+void CXBMCApp::onAudioDeviceRemoved(CJNIAudioDeviceInfos devices)
+{
+  m_audiodevices = devices;
+  LogAudoDevices("onAudioDeviceRemoved", m_audiodevices);
+  CheckHeadsetPlugged();
+}
+
+void CXBMCApp::onVideoViewAcquired()
+{
+}
+
+void CXBMCApp::onVideoViewLost()
+{
+}
+
 int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
 {
   int ret = 0;
@@ -979,6 +1171,18 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
     ret = event->GetResultCode();
   }
   delete event;
+  return ret;
+}
+
+bool CXBMCApp::WaitForCapture(CJNIImage& image)
+{
+  bool ret = false;
+  if (m_captureEvent.WaitMSec(2000))
+  {
+    image = m_captureEvent.GetImage();
+    ret = true;
+  }
+  m_captureEvent.Reset();
   return ret;
 }
 
@@ -1010,6 +1214,7 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   {
     m_audioFocusGranted = false;
     unregisterMediaButtonEventReceiver();
+
     if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));

@@ -6,7 +6,6 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import android.R.bool;
 import android.opengl.GLES20;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,14 +13,17 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
+import android.view.View;
 
 public class XBMCVideoView extends SurfaceView implements
     SurfaceHolder.Callback
 {
+  private Main mActivity;
   private static final String TAG = "XBMCVideoPlayView";
+
   public boolean mHasHolder = false;
+  public int mWidth = -1;
+  public int mHeight = -1;
 
   public XBMCVideoView(Context context)
   {
@@ -39,6 +41,11 @@ public class XBMCVideoView extends SurfaceView implements
   {
     super(context, attrs, defStyle);
     getHolder().addCallback(this);
+  }
+
+  public void setActivity(Main act)
+  {
+    mActivity = act;
   }
 
   /**
@@ -102,14 +109,29 @@ public class XBMCVideoView extends SurfaceView implements
   @Override
   public void surfaceCreated(SurfaceHolder holder)
   {
+    if (holder != getHolder())
+      return;
+
+    View v = getRootView();
+    mWidth = v.getWidth();
+    mHeight = v.getHeight();
+
     Log.d(TAG, "Created");
     mHasHolder = true;
+    mActivity._onVideoViewAcquired();
   }
 
   @Override
   public void surfaceChanged(SurfaceHolder holder, int format, int width,
       int height)
   {
+    if (holder != getHolder())
+      return;
+
+    View v = getRootView();
+    mWidth = v.getWidth();
+    mHeight = v.getHeight();
+
     Log.d(TAG, "Changed, format:" + format + ", width:" + width
         + ", height:" + height);
   }
@@ -117,7 +139,11 @@ public class XBMCVideoView extends SurfaceView implements
   @Override
   public void surfaceDestroyed(SurfaceHolder holder)
   {
+    if (holder != getHolder())
+      return;
+
     Log.d(TAG, "Destroyed");
     mHasHolder = false;
+    mActivity._onVideoViewLost();
   }
 }

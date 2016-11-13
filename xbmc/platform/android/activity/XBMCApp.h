@@ -19,11 +19,14 @@
  *
  */
 
+#include "system.h"
+
 #include <math.h>
 #include <pthread.h>
 #include <string>
 #include <vector>
 #include <map>
+#include <queue>
 
 #include <android/native_activity.h>
 
@@ -34,8 +37,11 @@
 #include "platform/android/jni/Activity.h"
 #include "platform/android/jni/BroadcastReceiver.h"
 #include "platform/android/jni/AudioManager.h"
+#include "platform/android/jni/AudioDeviceInfo.h"
+#include "platform/android/jni/Image.h"
 #include "threads/Event.h"
 #include "interfaces/IAnnouncer.h"
+#include "guilib/Geometry.h"
 
 #include "JNIMainActivity.h"
 
@@ -43,6 +49,7 @@
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;
+class CVideoSyncAndroid;
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -77,6 +84,17 @@ protected:
   int m_resultcode;
 };
 
+class CCaptureEvent : public CEvent
+{
+public:
+  CCaptureEvent() {}
+  jni::CJNIImage GetImage() const { return m_image; }
+  void SetImage(const jni::CJNIImage &image) { m_image = image; }
+
+protected:
+  jni::CJNIImage m_image;
+};
+
 class CXBMCApp
     : public IActivityHandler
     , public CJNIMainActivity
@@ -95,9 +113,15 @@ public:
   virtual void onReceive(CJNIIntent intent);
   virtual void onNewIntent(CJNIIntent intent);
   virtual void onActivityResult(int requestCode, int resultCode, CJNIIntent resultData);
+  virtual void onCaptureAvailable(jni::CJNIImage image);
+  virtual void onScreenshotAvailable(jni::CJNIImage image);
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
   virtual void doFrame(int64_t frameTimeNanos);
+  virtual void onAudioDeviceAdded(CJNIAudioDeviceInfos devices);
+  virtual void onAudioDeviceRemoved(CJNIAudioDeviceInfos devices);
+  virtual void onVideoViewAcquired();
+  virtual void onVideoViewLost();
 
   bool isValid() { return m_activity != NULL; }
 
@@ -119,12 +143,15 @@ public:
 
 
   static const ANativeWindow** GetNativeWindow(int timeout);
-  static int  SetBuffersGeometry(int width, int height, int format);
-  static int  android_printf(const char *format, ...);
+  static int SetBuffersGeometry(int width, int height, int format);
+  static int android_printf(const char *format, ...);
   static void BringToFront();
-  
-  static int  GetBatteryLevel();
+
+  static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
+  static bool HasFocus() { return m_hasFocus; }
+  static bool IsResumed() { return m_hasResumed; }
+  static void CheckHeadsetPlugged();
   static bool IsHeadsetPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
@@ -138,15 +165,23 @@ public:
    */
   static bool GetExternalStorage(std::string &path, const std::string &type = "");
   static bool GetStorageUsage(const std::string &path, std::string &usage);
-  static int  GetMaxSystemVolume();
+  static int GetMaxSystemVolume();
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);
 
-  static void SetDisplayModeId(int modeId);
   static void SetRefreshRate(float rate);
-  static int  GetDPI();
+  static void SetDisplayModeId(int mode);
+  static int GetDPI();
+  static CPointInt GetMaxDisplayResolution();
 
-  static int  WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
+  static CRect MapRenderToDroid(const CRect& srcRect);
+  static CPoint GetDroidToGuiRatio();
+
+  static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
+  static bool WaitForCapture(jni::CJNIImage& image);
+  static bool GetCapture(jni::CJNIImage& img);
+  static void TakeScreenshot();
+  static void StopCapture();
 
   // Playback callbacks
   static void OnPlayBackStarted();
@@ -167,21 +202,14 @@ protected:
   static bool ReleaseAudioFocus();
 
 private:
+  static CXBMCApp* m_xbmcappinstance;
+  static bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
   void run();
   void stop();
   void SetupEnv();
-  bool XBMC_SetupDisplay();
-  bool XBMC_DestroyDisplay();
-
-  bool m_firstrun;
-  bool m_exiting;
-  pthread_t m_thread;
-
-  static CXBMCApp* m_xbmcappinstance;
-  static bool HasLaunchIntent(const std::string &package);
-  static void SetDisplayModeIdCallback(CVariant *rate);
   static void SetRefreshRateCallback(CVariant *rate);
+  static void SetDisplayModeIdCallback(CVariant *mode);
   static ANativeActivity *m_activity;
   static CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;
@@ -193,12 +221,26 @@ private:
   static double m_wasPlayingVideoWhenPausedTime;
   static bool m_wasPlayingWhenTransientLoss;
   static bool m_headsetPlugged;
+  bool m_videosurfaceInUse;
+  bool m_firstrun;
+  bool m_exiting;
+  pthread_t m_thread;
   static CCriticalSection m_applicationsMutex;
   static std::vector<androidPackage> m_applications;
   static std::vector<CActivityResultEvent*> m_activityResultEvents;
 
+  static CCriticalSection m_captureMutex;
+  static CCaptureEvent m_captureEvent;
+  static std::queue<jni::CJNIImage> m_captureQueue;
+
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
+
+  static CJNIAudioDeviceInfos m_audiodevices;
+
   static uint64_t m_vsynctime;
   static CEvent m_vsyncEvent;
+
+  bool XBMC_DestroyDisplay();
+  bool XBMC_SetupDisplay();
 };

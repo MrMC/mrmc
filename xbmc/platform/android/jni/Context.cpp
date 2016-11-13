@@ -36,6 +36,7 @@
 #include "Cursor.h"
 #include "ConnectivityManager.h"
 #include "AudioFormat.h"
+#include "AudioAttributes.h"
 #include "AudioManager.h"
 #include "AudioTrack.h"
 #include "Surface.h"
@@ -52,6 +53,8 @@
 #include "Environment.h"
 #include "Document.h"
 #include "RecognizerIntent.h"
+#include "AudioDeviceInfo.h"
+#include "MediaSync.h"
 #include "SettingsSecure.h"
 
 #include <android/native_activity.h>
@@ -59,6 +62,8 @@
 using namespace jni;
 
 jhobject CJNIContext::m_context(0);
+
+std::string CJNIContext::CONNECTIVITY_SERVICE;
 
 CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
 {
@@ -74,6 +79,9 @@ CJNIContext::~CJNIContext()
 
 void CJNIContext::PopulateStaticFields()
 {
+  jhclass clazz = find_class("android/content/Context");
+  CONNECTIVITY_SERVICE = jcast<std::string>(get_static_field<jhstring>(clazz,"CONNECTIVITY_SERVICE"));
+
   CJNIBaseColumns::PopulateStaticFields();
   CJNIBuild::PopulateStaticFields();
   CJNIMediaStoreMediaColumns::PopulateStaticFields();
@@ -84,6 +92,7 @@ void CJNIContext::PopulateStaticFields()
   CJNIContentResolver::PopulateStaticFields();
   CJNIConnectivityManager::PopulateStaticFields();
   CJNIAudioFormat::PopulateStaticFields();
+  CJNIAudioAttributes::PopulateStaticFields();
   CJNIAudioManager::PopulateStaticFields();
   CJNIAudioTrack::PopulateStaticFields();
   CJNISurface::PopulateStaticFields();
@@ -99,6 +108,9 @@ void CJNIContext::PopulateStaticFields()
   CJNIEnvironment::PopulateStaticFields();
   CJNIDocument::PopulateStaticFields();
   CJNIRecognizerIntent::PopulateStaticFields();
+  CJNIAudioDeviceInfo::PopulateStaticFields();
+  CJNIViewInputDevice::PopulateStaticFields();
+  CJNIMediaSync::PopulateStaticFields();
   CJNISettingsSecure::PopulateStaticFields();
 }
 

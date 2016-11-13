@@ -4,7 +4,6 @@
 
 #include "jutils/jutils-details.hpp"
 
-#include "platform/android/activity/JNIMainActivity.h"
 #include <string>
 
 
@@ -155,10 +154,6 @@ void CJNINotification::PopulateStaticFields()
 CJNINotification::CJNINotification()
 : CJNIBase(CJNINotification::m_classname)
 {
-  CJNIMainActivity *appInstance = CJNIMainActivity::GetAppInstance();
-  if (!appInstance)
-    return;
-
-  m_object = new_object(appInstance->getClassLoader().loadClass(GetDotClassName()));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName()));
   m_object.setGlobal();
 }

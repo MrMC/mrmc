@@ -21,6 +21,17 @@
 
 #include "JNIBase.h"
 
+class CJNIDisplay;
+
+class CJNIWindowManager : public CJNIBase
+{
+public:
+  CJNIWindowManager(const jni::jhobject &object) : CJNIBase(object) {}
+  ~CJNIWindowManager() {}
+
+  CJNIDisplay getDefaultDisplay();
+};
+
 class CJNIWindowManagerLayoutParams : public CJNIBase
 {
 public:
@@ -29,7 +40,6 @@ public:
 
   float getpreferredRefreshRate() const;
   void setpreferredRefreshRate(float rate);
-
   int getpreferredDisplayModeId() const;
-  void setpreferredDisplayModeId(int modeId);
+  void setpreferredDisplayModeId(int modeid);
 };

@@ -23,6 +23,7 @@
 #include "Context.h"
 #include "Intent.h"
 
+class CJNIWindowManager;
 class CVariant;
 struct ANativeActivity;
 
@@ -32,6 +33,7 @@ public:
   CJNIActivity(const ANativeActivity *nativeActivity);
   ~CJNIActivity();
 
+  static CJNIWindowManager getWindowManager();
   static bool moveTaskToBack(bool nonRoot);
   static void startActivityForResult(const CJNIIntent &intent, int requestCode);
 

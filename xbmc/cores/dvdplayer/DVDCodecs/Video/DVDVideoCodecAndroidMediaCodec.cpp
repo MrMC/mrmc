@@ -61,11 +61,6 @@
 
 using namespace KODI::MESSAGING;
 
-static void LogDebugRectSize(const char* prompt, const CRect& rect)
-{
-  CLog::Log(LOGDEBUG, "%s(%f,%f,%f,%f)", prompt, rect.x1, rect.y1, rect.Width(), rect.Height());
-}
-
 static bool CanSurfaceRenderBlackList(const std::string &name)
 {
   // All devices 'should' be capiable of surface rendering
@@ -133,7 +128,7 @@ public:
   CNULL_Listener() : CJNISurfaceTextureOnFrameAvailableListener(jni::jhobject(NULL)) {};
 
 protected:
-  virtual void OnFrameAvailable(CJNISurfaceTexture &surface) {};
+  virtual void OnFrameAvailable() {};
 };
 
 class CDVDMediaCodecOnFrameAvailable : public CEvent, CJNISurfaceTextureOnFrameAvailableListener
@@ -153,7 +148,7 @@ public:
   }
 
 protected:
-  virtual void OnFrameAvailable(CJNISurfaceTexture &surface)
+  virtual void OnFrameAvailable()
   {
     Set();
   }
@@ -316,72 +311,11 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
   if (DestRect != cur_rect)
   {
-    RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
-    CLog::Log(LOGDEBUG, "RenderUpdate: renderRes(%dx%d)", renderRes.iWidth, renderRes.iHeight);
-
-    // default gui/display width/height
-    const RESOLUTION_INFO &rez = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
-    m_displayWidth = rez.iWidth;
-    m_displayHeight = rez.iHeight;
-    CLog::Log(LOGDEBUG, "RenderUpdate: display1(%dx%d)", m_displayWidth, m_displayHeight);
-
-    // now find the real display width/height
-    CJNIWindow window = CXBMCApp::getWindow();
-    if (window)
-    {
-      CJNIView view(window.getDecorView());
-      if (view)
-      {
-        CJNIDisplay display = view.getDisplay();
-        CLog::Log(LOGDEBUG, "RenderUpdate: display2a(%dx%d)", display.getWidth(), display.getHeight());
-        if (display)
-        {
-          CJNIDisplayMode mode = display.getMode();
-          if (mode)
-          {
-            m_displayWidth = mode.getPhysicalWidth();
-            m_displayHeight = mode.getPhysicalHeight();
-          }
-          else
-          {
-            m_displayWidth = display.getWidth();
-            m_displayHeight = display.getHeight();
-          }
-        }
-      }
-    }
-    CLog::Log(LOGDEBUG, "RenderUpdate: display2b(%dx%d)", m_displayWidth, m_displayHeight);
-    if (!CAndroidFeatures::HasTouchScreen())
-    {
-      // hack for firetv gui is right but mediacodec surface is wrong
-      // should track display size but does not, seems fixed to 1080p.
-      // forcing to 1080p fixes it but really need to track down the real issue.
-      m_displayWidth = 1920;
-      m_displayHeight = 1080;
-    }
-    CLog::Log(LOGDEBUG, "RenderUpdate: display3(%dx%d)", m_displayWidth, m_displayHeight);
-
-    CRect SrcRect, DestRect, ViewRect;
-    g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect);
-
-    LogDebugRectSize("RenderUpdate: SrcRect", SrcRect);
-    LogDebugRectSize("RenderUpdate: DestRect", DestRect);
-    LogDebugRectSize("RenderUpdate: ViewRect", ViewRect);
-
-    CRect DisplayRect(0, 0, m_displayWidth, m_displayHeight);
-    CRect MappedRect = DestRect;
-    MappedRect.MapRect(ViewRect, DisplayRect);
-
-    CXBMCApp::get()->setVideoViewSurfaceRect(m_displayWidth, m_displayHeight,
-      MappedRect.x1, MappedRect.y1, MappedRect.x2, MappedRect.y2);
+    CRect adjRect = CXBMCApp::MapRenderToDroid(DestRect);
+    CXBMCApp::get()->setVideoViewSurfaceRect(adjRect.x1, adjRect.y1, adjRect.x2, adjRect.y2);
+    CLog::Log(LOGDEBUG, "RenderUpdate: Dest - %f+%f-%fx%f", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height());
+    CLog::Log(LOGDEBUG, "RenderUpdate: Adj  - %f+%f-%fx%f", adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
     cur_rect = DestRect;
-
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    {
-      CLog::Log(LOGDEBUG, "RenderUpdate: display(%dx%d)", m_displayWidth, m_displayHeight);
-      LogDebugRectSize("RenderUpdate: DestRect", DestRect);
-      LogDebugRectSize("RenderUpdate: MappedRect", MappedRect);
-    }
 
     // setVideoViewSurfaceRect is async, so skip rendering this frame
     ReleaseOutputBuffer(false);

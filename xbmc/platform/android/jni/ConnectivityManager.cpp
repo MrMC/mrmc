@@ -19,7 +19,10 @@
  */
 
 #include "ConnectivityManager.h"
+#include "Network.h"
 #include "NetworkInfo.h"
+#include "LinkProperties.h"
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
@@ -69,7 +72,13 @@ void CJNIConnectivityManager::setNetworkPreference(int preference)
 int CJNIConnectivityManager::getNetworkPreference()
 {
   return call_method<jint>(m_object,
-    "getNetworkPreference", "()I");
+                           "getNetworkPreference", "()I");
+}
+
+CJNINetwork CJNIConnectivityManager::getActiveNetwork()
+{
+  return call_method<jhobject>(m_object,
+    "getActiveNetwork", "()Landroid/net/Network;");
 }
 
 CJNINetworkInfo CJNIConnectivityManager::getActiveNetworkInfo()
@@ -82,8 +91,29 @@ CJNINetworkInfo CJNIConnectivityManager::getNetworkInfo(int networkType)
 {
   return call_method<jhobject>(m_object,
     "getNetworkInfo", "(I)Landroid/net/NetworkInfo;",
-    networkType);
+                               networkType);
 }
+
+CJNINetworkInfo CJNIConnectivityManager::getNetworkInfo(const CJNINetwork& network)
+{
+  return call_method<jhobject>(m_object,
+    "getNetworkInfo", "(Landroid/net/Network;)Landroid/net/NetworkInfo;",
+                               network.get_raw());
+}
+
+CJNILinkProperties CJNIConnectivityManager::getLinkProperties(const CJNINetwork& network)
+{
+  return call_method<jhobject>(m_object,
+    "getLinkProperties", "(Landroid/net/Network;)Landroid/net/LinkProperties;",
+                               network.get_raw());
+}
+
+std::vector<CJNINetwork> CJNIConnectivityManager::getAllNetworks()
+{
+  return jcast<CJNINetworks>(call_method<jhobjectArray>(m_object,
+    "getAllNetworks", "()[Landroid/net/Network;"));
+}
+
 
 std::vector<CJNINetworkInfo> CJNIConnectivityManager::getAllNetworkInfo()
 {

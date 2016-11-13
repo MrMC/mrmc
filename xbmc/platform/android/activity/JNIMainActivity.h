@@ -21,6 +21,10 @@
 
 #include "platform/android/jni/Activity.h"
 #include "platform/android/jni/Surface.h"
+#include "platform/android/jni/Intent.h"
+#include "platform/android/jni/AudioDeviceInfo.h"
+#include "platform/android/jni/Image.h"
+#include "platform/android/jni/Rect.h"
 
 class CJNIMainActivity : public CJNIActivity
 {
@@ -35,16 +39,30 @@ public:
   static void _onVolumeChanged(JNIEnv *env, jobject context, jint volume);
   static void _onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange);
   static void _doFrame(JNIEnv *env, jobject context, jlong frameTimeNanos);
+  static void _onAudioDeviceAdded(JNIEnv *env, jobject context, jobjectArray devices);
+  static void _onAudioDeviceRemoved(JNIEnv *env, jobject context, jobjectArray devices);
+  static void _onVideoViewAcquired(JNIEnv *env, jobject context);
+  static void _onVideoViewLost(JNIEnv *env, jobject context);
+  static void _onCaptureAvailable(JNIEnv *env, jobject context, jobject image);
+  static void _onScreenshotAvailable(JNIEnv *env, jobject context, jobject image);
 
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
   static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
   static void registerMediaButtonEventReceiver();
   static void unregisterMediaButtonEventReceiver();
   static void screenOn();
+  static void startCrashHandler();
+  static void uploadLog();
 
   CJNISurface getVideoViewSurface();
   void clearVideoView();
-  void setVideoViewSurfaceRect(int w, int h, int l, int t, int r, int b);
+  CJNIRect getVideoViewSurfaceRect();
+  void setVideoViewSurfaceRect(int l, int t, int r, int b);
+
+  static void takeScreenshot();
+  static void startProjection();
+  static void startCapture(int width, int height);
+  static void stopCapture();
 
 private:
   static CJNIMainActivity *m_appInstance;
@@ -52,7 +70,13 @@ private:
 protected:
   virtual void onNewIntent(CJNIIntent intent)=0;
   virtual void onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)=0;
+  virtual void onCaptureAvailable(jni::CJNIImage image)=0;
+  virtual void onScreenshotAvailable(jni::CJNIImage image)=0;
   virtual void onVolumeChanged(int volume)=0;
   virtual void onAudioFocusChange(int focusChange)=0;
   virtual void doFrame(int64_t frameTimeNanos)=0;
+  virtual void onAudioDeviceAdded(CJNIAudioDeviceInfos devices)=0;
+  virtual void onAudioDeviceRemoved(CJNIAudioDeviceInfos devices)=0;
+  virtual void onVideoViewAcquired() = 0;
+  virtual void onVideoViewLost() = 0;
 };

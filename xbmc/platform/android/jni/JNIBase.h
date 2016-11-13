@@ -36,6 +36,7 @@ public:
   static int RESULT_OK;
 
 protected:
+  CJNIBase() {}
   CJNIBase(jni::jhobject const& object);
   CJNIBase(std::string classname);
   ~CJNIBase();

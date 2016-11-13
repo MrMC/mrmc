@@ -34,7 +34,7 @@ public:
 protected:
   CJNISurfaceTextureOnFrameAvailableListener();
 
-  virtual void OnFrameAvailable(CJNISurfaceTexture &surface)=0;
+  virtual void OnFrameAvailable()=0;
 
 private:
   static CJNISurfaceTextureOnFrameAvailableListener *m_listenerInstance;

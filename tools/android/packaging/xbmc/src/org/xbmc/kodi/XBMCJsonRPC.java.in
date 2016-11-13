@@ -1,19 +1,13 @@
 package @APP_PACKAGE@;
 
+import android.util.Base64;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -49,20 +43,23 @@ public class XBMCJsonRPC
   public final static String REQ_ID_SHOWS = "2";
   public final static String REQ_ID_ALBUMS = "3";
   public final static String REQ_ID_ARTISTS = "4";
+  public final static String REQ_ID_MOVIES_ACTOR = "5";
+  public final static String REQ_ID_SHOWS_ACTOR = "6";
 
   private static String TAG = "@APP_NAME@json";
 
   private String m_jsonURL = "http://localhost:8080";
+
   private int MAX_RECOMMENDATIONS = 3;
 
   // {"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "limits": { "start" : 0, "end": 3}, "properties" : ["imdbnumber", "title", "tagline", "thumbnail", "fanart"], "sort": { "order": "descending", "method": "dateadded", "ignorearticle": true } }, "id": "1"}
   private String RECOMMENDATION_MOVIES_JSON =
-		  "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
-		  + "\"params\": { \"filter\": {\"field\": \"playcount\", \"operator\": \"is\", \"value\": \"0\"}, "
-		  + "\"limits\": { \"start\" : 0, \"end\": 10}, "
-		  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\"], "
-		  + "\"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, "
-		  + "\"id\": \"1\"}";
+                  "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
+                  + "\"params\": { \"filter\": {\"field\": \"playcount\", \"operator\": \"is\", \"value\": \"0\"}, "
+                  + "\"limits\": { \"start\" : 0, \"end\": 10}, "
+                  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\"], "
+                  + "\"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, "
+                  + "\"id\": \"1\"}";
 
   private String RECOMMENDATIONS_SHOWS_JSON =
                  "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{\"and\":[{\"field\":\"playcount\",\"operator\":\"is\",\"value\":\"0\"},{\"field\":\"plot\",\"operator\":\"isnot\",\"value\":\"\"}]},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"thumbnail\",\"fanart\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"1\"}";
@@ -71,15 +68,15 @@ public class XBMCJsonRPC
                  "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": { \"limits\": { \"start\" : 0, \"end\": 3}, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, \"id\": \"1\"}";
 
   private String SEARCH_MOVIES_JSON =
-		  "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
-		  + "\"params\": { \"filter\": {%s}, "
+                  "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
+                  + "\"params\": { \"filter\": {%s}, "
                   + "\"limits\": { \"start\" : 0, \"end\": 10}, "
-		  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\"], "
-		  + "\"sort\": { \"order\": \"ascending\", \"method\": \"title\", \"ignorearticle\": true } }, "
-		  + "\"id\": \"%s\"}";
+                  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\"], "
+                  + "\"sort\": { \"order\": \"ascending\", \"method\": \"title\", \"ignorearticle\": true } }, "
+                  + "\"id\": \"%s\"}";
 
   private String SEARCH_SHOWS_JSON =
-           "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{%s},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"thumbnail\",\"fanart\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"%s\"}";
+           "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{%s},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"thumbnail\",\"fanart\",\"year\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"%s\"}";
 
   private String SEARCH_ALBUMS_JSON =
                  "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": {\"filter\":{%s},\"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, \"id\": \"%s\"}";
@@ -89,48 +86,69 @@ public class XBMCJsonRPC
 
   private NotificationManager mNotificationManager;
 
+  public XBMCJsonRPC()
+  {
+    String jsonPort = XBMCProperties.getStringProperty("xbmc.jsonPort", "8080");
+    m_jsonURL = "http://localhost:" + jsonPort;
+  }
+
   public String request_string(String jsonRequest)
   {
     try
     {
       Log.d(TAG, "JSON in: " + jsonRequest);
+      Log.d(TAG, "JSON url: " + m_jsonURL);
 
+      String returnStr = null;
       StringBuilder strbuilder = new StringBuilder();
-      HttpClient client = new DefaultHttpClient();
-      HttpPost httpPost = new HttpPost(m_jsonURL + "/jsonrpc");
-      httpPost.setHeader(HTTP.CONTENT_TYPE, "application/json");
-      httpPost.setEntity(new StringEntity(jsonRequest));
+
+      URL url = new URL(m_jsonURL + "/jsonrpc");
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      connection.setDoOutput(true);
+      connection.setDoInput(true);
+      connection.setRequestProperty("Content-Type", "application/json");
+      String auth = XBMCProperties.getJsonAuthorization();
+      if (!auth.isEmpty())
+        connection.setRequestProperty("Authorization", auth);
+      connection.setRequestMethod("POST");
+
+      OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+      writer.write(jsonRequest);
+      writer.close();
+
       try
       {
-        HttpResponse response = client.execute(httpPost);
-        StatusLine statusLine = response.getStatusLine();
-        int statusCode = statusLine.getStatusCode();
+        int statusCode = connection.getResponseCode();
         if (statusCode == 200)
         {
-          HttpEntity entity = response.getEntity();
-          InputStream content = entity.getContent();
-
-          BufferedReader reader = new BufferedReader(new InputStreamReader(
-              content));
+          InputStream content = connection.getInputStream();
+          BufferedReader reader = new BufferedReader(new InputStreamReader(content, "UTF-8"));
           String line;
           while ((line = reader.readLine()) != null)
           {
             strbuilder.append(line);
           }
+          reader.close();
+          connection.disconnect();
 
           Log.d(TAG, "JSON out: " + strbuilder.toString());
-          return strbuilder.toString();
+          returnStr = strbuilder.toString();
 
         } else
         {
           Log.e(TAG, "Failed to read JSON");
-          return null;
         }
-      } catch (Exception e)
+      }
+      catch (Exception e)
       {
         e.printStackTrace();
-        return null;
       }
+      finally
+      {
+        connection.disconnect();
+        return returnStr;
+      }
+
     } catch (Exception e)
     {
       Log.e(TAG, "Failed to read JSON");
@@ -181,6 +199,9 @@ public class XBMCJsonRPC
 
       URL url = new URL(m_jsonURL + "/" + surl);
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      String auth = XBMCProperties.getJsonAuthorization();
+      if (!auth.isEmpty())
+        connection.setRequestProperty("Authorization", auth);
       connection.setDoInput(true);
       connection.connect();
       InputStream input = connection.getInputStream();
@@ -229,6 +250,7 @@ public class XBMCJsonRPC
         JSONObject req = request_object(String.format(SEARCH_MOVIES_JSON, /*"\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"", limit));*/
         "\"or\": [" +
         "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
+        "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}," +
         "{\"operator\": \"contains\", \"field\": \"set\", \"value\": \"" + query + "\"}," +
         "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
         "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]"));
@@ -288,7 +310,11 @@ public class XBMCJsonRPC
         SearchManager.SUGGEST_COLUMN_TEXT_1,
         SearchManager.SUGGEST_COLUMN_TEXT_2,
         SearchManager.SUGGEST_COLUMN_ICON_1,
+        SearchManager.SUGGEST_COLUMN_RESULT_CARD_IMAGE,
         SearchManager.SUGGEST_COLUMN_INTENT_DATA,
+        SearchManager.SUGGEST_COLUMN_CONTENT_TYPE,
+        SearchManager.SUGGEST_COLUMN_PRODUCTION_YEAR,
+        SearchManager.SUGGEST_COLUMN_DURATION
     };
     MatrixCursor mc = new MatrixCursor(menuCols);
 
@@ -296,15 +322,13 @@ public class XBMCJsonRPC
       String.format(SEARCH_MOVIES_JSON,
         "\"or\": [" +
         "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"set\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]", REQ_ID_MOVIES) +
-    "," +
+        "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}," +
+        "{\"operator\": \"contains\", \"field\": \"set\", \"value\": \"" + query + "\"}]", REQ_ID_MOVIES) +
+      "," +
       String.format(SEARCH_SHOWS_JSON,
         "\"or\": [" +
         "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]", REQ_ID_SHOWS) +
+        "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}]", REQ_ID_SHOWS) +
     "," +
       String.format(SEARCH_ALBUMS_JSON,
         "\"or\": [" +
@@ -313,12 +337,24 @@ public class XBMCJsonRPC
     "," +
       String.format(SEARCH_ARTISTS_JSON,
         "\"operator\": \"contains\", \"field\": \"artist\", \"value\": \"" + query + "\"", REQ_ID_ARTISTS) +
+    "," +
+      String.format(SEARCH_MOVIES_JSON,
+        "\"or\": [" +
+         "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
+        "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]", REQ_ID_MOVIES_ACTOR) +
+    "," +
+      String.format(SEARCH_SHOWS_JSON,
+        "\"or\": [" +
+        "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
+        "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]", REQ_ID_SHOWS_ACTOR) +
     "]";
 
     JSONArray res_array = request_array(str_req);
     if (res_array == null)
       return null;
 
+    int nb_movies = 0;
+    int nb_shows = 0;
     for (int j = 0; j < res_array.length(); ++j)
     {
       String id;
@@ -337,7 +373,7 @@ public class XBMCJsonRPC
         continue;
       }
 
-      if (id.equals(REQ_ID_MOVIES))
+      if (id.equals(REQ_ID_MOVIES) || ((nb_movies + nb_shows) < 3 && id.equals(REQ_ID_MOVIES_ACTOR)))
       {
         searchmovies: try
         {
@@ -349,14 +385,31 @@ public class XBMCJsonRPC
           for (int i = 0; i < movies.length() && totCount < limit; ++i)
           {
             JSONObject movie = movies.getJSONObject(i);
+
+            int rYear = 0;
+            long rDur = 0;
+            try
+            {
+              rYear = movie.getInt("year");
+              rDur = movie.getLong("runtime") * 1000;
+            }
+            catch (Exception e)
+            {
+              e.printStackTrace();
+            }
             mc.addRow(new Object[]
             {
-                movie.getString("movieid"),
-                movie.getString("title"),
-                movie.getString("tagline"),
-                XBMCImageContentProvider.GetImageUri(getBitmapUrl(movie.getString("thumbnail"))).toString(),
-                Uri.parse("videodb://movies/titles/" + movie.getString("movieid") + "?showinfo=true"),
+              movie.getString("movieid"),
+              movie.getString("title"),
+              movie.getString("tagline"),
+              XBMCImageContentProvider.GetImageUri(getBitmapUrl(movie.getString("thumbnail"))).toString(),
+              XBMCImageContentProvider.GetImageUri(getBitmapUrl(movie.getString("thumbnail"))).toString(),
+              Uri.parse("videodb://movies/titles/" + movie.getString("movieid") + "?showinfo=true"),
+              "video/x-matroska",
+              rYear,
+              rDur
             });
+            nb_movies++;
             totCount++;
           }
         } catch (Exception e)
@@ -364,7 +417,7 @@ public class XBMCJsonRPC
           e.printStackTrace();
         }
       }
-      else if (id.equals(REQ_ID_SHOWS))
+      else if (id.equals(REQ_ID_SHOWS) || ((nb_movies + nb_shows) < 3 && id.equals(REQ_ID_SHOWS_ACTOR)))
       {
         searchtv: try
         {
@@ -376,14 +429,30 @@ public class XBMCJsonRPC
           for (int i = 0; i < tvshows.length() && totCount < limit; ++i)
           {
             JSONObject tvshow = tvshows.getJSONObject(i);
+
+            int rYear = 0;
+            long rDur = 0;
+            try
+            {
+              rYear = tvshow.getInt("year");
+            }
+            catch (Exception e)
+            {
+              e.printStackTrace();
+            }
             mc.addRow(new Object[]
             {
-                tvshow.getString("tvshowid"),
-                tvshow.getString("title"),
-                tvshow.getString("plot"),
-                XBMCImageContentProvider.GetImageUri(getBitmapUrl(tvshow.getString("thumbnail"))).toString(),
-                Uri.parse("videodb://tvshows/titles/" + tvshow.getString("tvshowid") + "?showinfo=true"),
+              tvshow.getString("tvshowid"),
+              tvshow.getString("title"),
+              tvshow.getString("plot"),
+              XBMCImageContentProvider.GetImageUri(getBitmapUrl(tvshow.getString("thumbnail"))).toString(),
+              XBMCImageContentProvider.GetImageUri(getBitmapUrl(tvshow.getString("thumbnail"))).toString(),
+              Uri.parse("videodb://tvshows/titles/" + tvshow.getString("tvshowid") + "?showinfo=true"),
+              "video/x-matroska",
+              rYear,
+              0
             });
+            nb_shows++;
             totCount++;
           }
         } catch (Exception e)
@@ -405,11 +474,15 @@ public class XBMCJsonRPC
             JSONObject album = albums.getJSONObject(i);
             mc.addRow(new Object[]
             {
-                album.getString("albumid"),
-                album.getString("title"),
-                album.getString("displayartist"),
-                XBMCImageContentProvider.GetImageUri(getBitmapUrl(album.getString("thumbnail"))).toString(),
-                Uri.parse("musicdb://albums/" + album.getString("albumid") + "/"),
+              album.getString("albumid"),
+              album.getString("title"),
+              album.getString("displayartist"),
+              XBMCImageContentProvider.GetImageUri(getBitmapUrl(album.getString("thumbnail"))).toString(),
+              XBMCImageContentProvider.GetImageUri(getBitmapUrl(album.getString("thumbnail"))).toString(),
+              Uri.parse("musicdb://albums/" + album.getString("albumid") + "/"),
+              "audio/mpeg",
+              0,
+              0
             });
             totCount++;
           }
@@ -432,11 +505,15 @@ public class XBMCJsonRPC
             JSONObject artist = artists.getJSONObject(i);
             mc.addRow(new Object[]
             {
-                artist.getString("artistid"),
-                artist.getString("artist"),
-                artist.getString("description"),
-                XBMCImageContentProvider.GetImageUri(getBitmapUrl(artist.getString("thumbnail"))).toString(),
-                Uri.parse("musicdb://artists/" + artist.getString("artistid") + "/"),
+              artist.getString("artistid"),
+              artist.getString("artist"),
+              artist.getString("description"),
+              XBMCImageContentProvider.GetImageUri(getBitmapUrl(artist.getString("thumbnail"))).toString(),
+              XBMCImageContentProvider.GetImageUri(getBitmapUrl(artist.getString("thumbnail"))).toString(),
+              Uri.parse("musicdb://artists/" + artist.getString("artistid") + "/"),
+              "",
+              0,
+              0
             });
             totCount++;
           }
@@ -475,7 +552,7 @@ public class XBMCJsonRPC
           try
           {
             JSONObject movie = movies.getJSONObject(i);
-            int id = Integer.parseInt(movie.getString("imdbnumber").replace("tt", ""));
+            int id = Integer.parseInt(movie.getString("movieid"));
 
             final XBMCRecommendationBuilder notificationBuilder = builder
                 .setBackground(
@@ -516,7 +593,7 @@ public class XBMCJsonRPC
           try
           {
             JSONObject tvshow = tvshows.getJSONObject(i);
-            int id = Integer.parseInt(tvshow.getString("imdbnumber").replace("tt", ""));
+            int id = Integer.parseInt(tvshow.getString("tvshowid"));
 
             final XBMCRecommendationBuilder notificationBuilder = builder
                 .setBackground(
