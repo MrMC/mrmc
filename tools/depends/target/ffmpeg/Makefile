@@ -12,7 +12,7 @@ ffmpg_config += --cc=$(CC) --cxx=$(CXX) --ar=$(AR) --ranlib=$(RANLIB)
 ffmpg_config += --disable-devices --disable-doc
 ffmpg_config += --disable-ffplay --disable-ffmpeg --disable-sdl
 ffmpg_config += --disable-ffprobe --disable-ffserver
-ffmpg_config += --enable-gpl --enable-runtime-cpudetect
+ffmpg_config += --enable-gpl --disable-runtime-cpudetect
 ffmpg_config += --enable-postproc --enable-pthreads
 ffmpg_config += --enable-muxer=spdif --enable-muxer=adts
 ffmpg_config += --enable-muxer=asf --enable-muxer=ipod
@@ -30,10 +30,14 @@ ifeq ($(OS), linux)
   ffmpg_config += --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis
 endif
 ifeq ($(OS), android)
-  ifeq ($(findstring arm, $(CPU)), arm)
-    ffmpg_config += --cpu=cortex-a9
+  ifeq ($(findstring arm64, $(CPU)), arm64)
+    ffmpg_config += --arch=aarch64 --cpu=cortex-a53
   else
-    ffmpg_config += --cpu=i686 --disable-mmx
+    ifeq ($(findstring arm, $(CPU)), arm)
+      ffmpg_config += --cpu=cortex-a9
+    else
+      ffmpg_config += --cpu=i686 --disable-mmx
+    endif
   endif
   ffmpg_config += --target-os=linux
 endif
@@ -48,7 +52,7 @@ endif
 ifeq ($(OS), osx)
   # disable asm if under the simulator, xcode linker gets angry
   ffmpg_config += --disable-outdev=sdl
-  ffmpg_config += --disable-decoder=mpeg_xvmc --enable-vda --disable-crystalhd --disable-videotoolbox
+  ffmpg_config += --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --disable-videotoolbox
   ffmpg_config += --target-os=darwin
   ffmpg_config += --disable-securetransport
 endif
@@ -58,9 +62,9 @@ endif
 ifeq ($(findstring mips, $(CPU)), mips)
   ffmpg_config += --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2
 endif
-ifeq ($(Configuration), Release)
+#ifeq ($(Configuration), Release)
   ffmpg_config += --disable-debug
-endif
+#endif
 
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
