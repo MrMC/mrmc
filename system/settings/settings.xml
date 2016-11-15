@@ -3091,9 +3091,9 @@
         </setting>
         <setting id="audiooutput.passthroughiecpacked" type="boolean" label="13272" help="20247">
           <level>2</level>
+          <visible>false</visible>
           <default>true</default>
           <dependencies>
-            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</dependency>
             <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />

@@ -2692,13 +2692,6 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
     if (m_sink.HasPassthroughDevice() && CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }
-  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED)
-  {
-#if defined(TARGET_ANDROID)
-    if (m_sink.HasPassthroughDevice() && CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
-      return true;
-#endif
-  }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH)
   {
     AEAudioFormat format;
