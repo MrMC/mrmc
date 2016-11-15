@@ -253,6 +253,7 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
         CDemuxStreamVideoPVRClient* stv = static_cast<CDemuxStreamVideoPVRClient*>(st);
         CHECK_UPDATE(stv, iWidth        , pvr->m_context->width , 0);
         CHECK_UPDATE(stv, iHeight       , pvr->m_context->height, 0);
+        stv->CheckForInterlaced(pvr->m_parser);
         break;
       }
 

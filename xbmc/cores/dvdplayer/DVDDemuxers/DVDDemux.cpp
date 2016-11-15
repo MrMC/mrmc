@@ -213,3 +213,39 @@ void CDemuxStream::SetDiscard(AVDiscard discard)
   return;
 }
 
+void CDemuxStream::CheckForInterlaced(const AVCodecParserContext *parser)
+{
+  CDemuxStreamVideo *vstream = dynamic_cast<CDemuxStreamVideo*>(this);
+  // paranoid check to make sure we are a video stream
+  if (vstream == nullptr)
+    return;
+
+  // check for interlaced content, the check in AddStream might
+  // be by-passed if parser is null, we do it in both places
+  // (ParsePacket and AddStream) in case one gets missed.
+  if (parser)
+  {
+    switch(parser->field_order)
+    {
+      default:
+      case AV_FIELD_PROGRESSIVE:
+        // default value for bMaybeInterlaced but we set it anyway
+        vstream->bMaybeInterlaced = false;
+        break;
+      case AV_FIELD_TT: //< Top coded_first, top displayed first
+      case AV_FIELD_BB: //< Bottom coded first, bottom displayed first
+      case AV_FIELD_TB: //< Top coded first, bottom displayed first
+      case AV_FIELD_BT: //< Bottom coded first, top displayed first
+        vstream->bMaybeInterlaced = true;
+        break;
+      case AV_FIELD_UNKNOWN:
+        {
+          // if picture_structure is AV_PICTURE_STRUCTURE_UNKNOWN, no clue so assume progressive
+          bool interlaced = parser->picture_structure == AV_PICTURE_STRUCTURE_TOP_FIELD;
+          interlaced |= parser->picture_structure == AV_PICTURE_STRUCTURE_BOTTOM_FIELD;
+          vstream->bMaybeInterlaced = interlaced;
+        }
+        break;
+    }
+  }
+}

@@ -38,7 +38,8 @@ class CDVDInputStream;
 // turn off ffmpeg deprecated warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 extern "C" {
-#include "libavcodec/avcodec.h"
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 }
 
 #ifndef __GNUC__
@@ -111,6 +112,7 @@ public:
 
   virtual void      SetDiscard(AVDiscard discard);
   virtual AVDiscard GetDiscard();
+  virtual void CheckForInterlaced(const AVCodecParserContext *parser);
 
   int iId;         // most of the time starting from 0
   int iPhysicalId; // id
