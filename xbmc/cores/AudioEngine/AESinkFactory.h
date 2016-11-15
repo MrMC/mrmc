@@ -39,7 +39,7 @@ class CAESinkFactory
 {
 public:
   static void     ParseDevice(std::string &device, std::string &driver);
-  static IAESink *Create(std::string &device, AEAudioFormat &desiredFormat, bool rawPassthrough);
+  static IAESink *Create(std::string &device, AEAudioFormat &desiredFormat);
   static bool     FormatNeedsIECPacked(const AEAudioFormat &format);
   static void     EnumerateEx(AESinkInfoList &list, bool force = false); /* The force flag can be used to indicate the rescan devices */
 

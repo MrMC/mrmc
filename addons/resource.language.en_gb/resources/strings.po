@@ -6227,7 +6227,12 @@ msgctxt "#13271"
 msgid "CPU usage:"
 msgstr ""
 
-#empty strings from id 13272 to 13273
+#: system/settings/settings.xml
+msgctxt "#13272"
+msgid "Passthrough format is IEC Packed"
+msgstr ""
+
+#empty strings from id 13273 to 13273
 
 msgctxt "#13274"
 msgid "Connected, but no DNS is available."
@@ -11545,8 +11550,12 @@ msgctxt "#20246"
 msgid "Enable debug logging of memory/cpu usage"
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#20247"
+msgid "Use IEC packed format for passthrough"
+msgstr ""
 
-#empty strings from id 20247 to 20249
+#empty strings from id 20248 to 20249
 
 msgctxt "#20250"
 msgid "Party on! (videos)"

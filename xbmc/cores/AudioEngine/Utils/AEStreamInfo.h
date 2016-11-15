@@ -51,6 +51,7 @@ public:
     STREAM_TYPE_TRUEHD
   };
   DataType m_type;
+  bool m_IECPacked;
   unsigned int m_sampleRate;
   unsigned int m_channels;
   bool m_dataIsLE;

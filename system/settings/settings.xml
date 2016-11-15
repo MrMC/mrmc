@@ -3089,6 +3089,15 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.passthroughiecpacked" type="boolean" label="13272" help="20247">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</dependency>
+            <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
           <level>2</level>
           <default>Default</default> <!-- will be properly set on startup -->

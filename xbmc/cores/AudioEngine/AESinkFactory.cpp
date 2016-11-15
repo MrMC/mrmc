@@ -139,7 +139,7 @@ IAESink *CAESinkFactory::TrySink(std::string &driver, std::string &device, AEAud
   return NULL;
 }
 
-IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredFormat, bool rawPassthrough)
+IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredFormat)
 {
   // extract the driver from the device string if it exists
   std::string driver;

@@ -127,8 +127,10 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
 
           // PCM sample rate
           unsigned int samplerate = format.m_sampleRate;
-
-          if (isRaw && CAESinkFactory::FormatNeedsIECPacked(format))
+          format.m_streamInfo.m_IECPacked = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED);
+          // FormatNeedsIECPacked might switch noIEC to IEC
+          format.m_streamInfo.m_IECPacked = CAESinkFactory::FormatNeedsIECPacked(format);
+          if (isRaw && format.m_streamInfo.m_IECPacked)
           {
             switch (format.m_streamInfo.m_type)
             {
@@ -154,7 +156,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
             iit3 = find(info.m_streamTypes.begin(), info.m_streamTypes.end(), format.m_streamInfo.m_type);
             formatExists = (iit3 != info.m_streamTypes.end());
           }
-          else if (isRaw && !CAESinkFactory::FormatNeedsIECPacked(format))
+          else if (isRaw && !format.m_streamInfo.m_IECPacked)
           {
             if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3)
               samplerate = format.m_streamInfo.m_sampleRate;
@@ -741,8 +743,10 @@ void CActiveAESink::OpenSink()
   // iec packing or raw
   if (passthrough)
   {
-    m_needIecPack = CAESinkFactory::FormatNeedsIECPacked(m_requestedFormat);
-    if (m_needIecPack)
+    m_requestedFormat.m_streamInfo.m_IECPacked = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED);
+    // FormatNeedsIECPacked might switch noIEC to IEC
+    m_requestedFormat.m_streamInfo.m_IECPacked = CAESinkFactory::FormatNeedsIECPacked(m_requestedFormat);
+    if (m_requestedFormat.m_streamInfo.m_IECPacked)
     {
       m_packer = new CAEBitstreamPacker();
       m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
@@ -773,7 +777,7 @@ void CActiveAESink::OpenSink()
   // WARNING: this changes format and does not use passthrough
   m_sinkFormat = m_requestedFormat;
   CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device %s", device.c_str());
-  m_sink = CAESinkFactory::Create(device, m_sinkFormat, passthrough);
+  m_sink = CAESinkFactory::Create(device, m_sinkFormat);
 
   // try first device in out list
   if (!m_sink && !m_sinkInfoList.empty())
@@ -785,7 +789,7 @@ void CActiveAESink::OpenSink()
       device = driver + ":" + device;
     m_sinkFormat = m_requestedFormat;
     CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device %s", device.c_str());
-    m_sink = CAESinkFactory::Create(device, m_sinkFormat, passthrough);
+    m_sink = CAESinkFactory::Create(device, m_sinkFormat);
   }
 
   // open NULL sink
@@ -795,7 +799,7 @@ void CActiveAESink::OpenSink()
     device = "NULL:NULL";
     m_sinkFormat = m_requestedFormat;
     CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - open NULL sink");
-    m_sink = CAESinkFactory::Create(device, m_sinkFormat, passthrough);
+    m_sink = CAESinkFactory::Create(device, m_sinkFormat);
   }
 
   if (!m_sink)
@@ -882,7 +886,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
 
   if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
   {
-    if (m_needIecPack)
+    if (m_requestedFormat.m_streamInfo.m_IECPacked)
     {
       if (frames > 0)
       {
