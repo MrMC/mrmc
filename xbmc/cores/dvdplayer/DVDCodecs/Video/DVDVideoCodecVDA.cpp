@@ -163,13 +163,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   {
     CCocoaAutoPool pool;
 
-    //
-    int width  = hints.width;
-    int height = hints.height;
-    int level  = hints.level;
-    int profile = hints.profile;
-    
-    switch(profile)
+    switch(hints.profile)
     {
       case FF_PROFILE_H264_HIGH_10:
       case FF_PROFILE_H264_HIGH_10_INTRA:
@@ -183,6 +177,17 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         break;
     }
 
+    if (hints.maybe_interlaced)
+    {
+      CLog::Log(LOGNOTICE, "%s - interlaced content.", __FUNCTION__);
+      return false;
+    }
+
+    //
+    int width  = hints.width;
+    int height = hints.height;
+    int level  = hints.level;
+    int profile = hints.profile;
     if (width <= 0 || height <= 0)
     {
       CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d)",
@@ -216,7 +221,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
 
     // check the avcC atom's sps for number of reference frames and
-    // bail if interlaced, VDA does not handle interlaced h264.
+    // ignore if interlaced, it's handled in hints check above (until we get it working :)
     uint32_t avcc_len = CFDataGetLength(avcCData);
     if (avcc_len < 8)
     {
@@ -232,12 +237,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       uint32_t sps_size = BS_RB16(spc);
       if (sps_size)
         m_bitstream->parseh264_sps(spc+3, sps_size-1, &interlaced, &m_max_ref_frames);
-      if (interlaced)
-      {
-        CLog::Log(LOGNOTICE, "%s - possible interlaced content.", __FUNCTION__);
-        CFRelease(avcCData);
-        return false;
-      }
     }
 
     if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)

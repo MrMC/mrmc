@@ -524,6 +524,12 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 {
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX) && !hints.software)
   {
+    if (hints.maybe_interlaced)
+    {
+      CLog::Log(LOGNOTICE, "%s - interlaced content.", __FUNCTION__);
+      return false;
+    }
+
     int width  = hints.width;
     int height = hints.height;
     int level  = hints.level;
@@ -609,19 +615,13 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           }
           else
           {
-            // check the avcC atom's sps for number of reference frames and
-            // bail if interlaced, VTB does not handle interlaced h264.
+            // check the avcC atom's sps for number of reference frames
+            // ignore if interlaced, it's handled in hints check above (until we get it working :)
             bool interlaced = true;
             uint8_t *spc = m_bitstream->GetExtraData() + 6;
             uint32_t sps_size = BS_RB16(spc);
             if (sps_size)
               m_bitstream->parseh264_sps(spc+3, sps_size-1, &interlaced, &m_max_ref_frames);
-            if (interlaced)
-            {
-              m_enable_temporal_processing = true;
-              CLog::Log(LOGNOTICE, "%s - possible interlaced content.", __FUNCTION__);
-              return false;
-            }
           }
 
           if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)

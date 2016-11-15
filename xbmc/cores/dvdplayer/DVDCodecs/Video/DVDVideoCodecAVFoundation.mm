@@ -185,9 +185,6 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
   {
     CCocoaAutoPool pool;
 
-    int width  = hints.width;
-    int height = hints.height;
-
     switch(hints.profile)
     {
       case FF_PROFILE_H264_HIGH_10:
@@ -202,6 +199,14 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         break;
     }
 
+    if (hints.maybe_interlaced)
+    {
+      CLog::Log(LOGNOTICE, "%s - interlaced content.", __FUNCTION__);
+      return false;
+    }
+
+    int width  = hints.width;
+    int height = hints.height;
     if (width <= 0 || height <= 0)
     {
       CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d)",
@@ -241,18 +246,12 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     // pointer to picture parameter set data
     uint8_t *pps_ptr = spc_ptr;
 
-    // check if we are possibly interlaced and how many reference frames are present.
-    // note that this is not a definative check for interlaced, there are other
-    // flags that can signal interlaced but these are inside NALs.
+    // check the avcC atom's sps for number of reference frames and
+    // ignore if interlaced, it's handled in hints check above (until we get it working :)
     bool interlaced = true;
     int max_ref_frames = 0;
     if (sps_size)
       m_bitstream->parseh264_sps(sps_ptr+1, sps_size-1, &interlaced, &max_ref_frames);
-    if (interlaced)
-    {
-      CLog::Log(LOGNOTICE, "%s - possible interlaced content.", __FUNCTION__);
-      return false;
-    }
     // default to 5 min, this helps us feed correct pts to the player.
     m_max_ref_frames = std::max(max_ref_frames + 1, 5);
 
