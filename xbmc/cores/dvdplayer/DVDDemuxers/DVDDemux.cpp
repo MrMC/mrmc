@@ -220,9 +220,6 @@ void CDemuxStream::CheckForInterlaced(const AVCodecParserContext *parser)
   if (vstream == nullptr)
     return;
 
-  // check for interlaced content, the check in AddStream might
-  // be by-passed if parser is null, we do it in both places
-  // (ParsePacket and AddStream) in case one gets missed.
   if (parser)
   {
     switch(parser->field_order)
