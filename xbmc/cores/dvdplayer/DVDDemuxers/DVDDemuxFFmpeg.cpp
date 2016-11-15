@@ -1223,10 +1223,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->fAspect = SelectAspect(pStream, st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
-        st->bMaybeInterlaced = CBitstreamConverter::MaybeInterlaced(
-          pStream->codec->codec_id,
-          pStream->codec->extradata,
-          pStream->codec->extradata_size);
+        // check for interlaced content
+        CheckForInterlaced(st, pStream);
 
         AVDictionaryEntry *rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 
@@ -1607,6 +1605,38 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
   return false;
 }
 
+void CDVDDemuxFFmpeg::CheckForInterlaced(CDemuxStream* stream, AVStream *avstream)
+{
+  // check for interlaced content, the check in AddStream might
+  // be by-passed if parser is null, we do it in both places
+  // (ParsePacket and AddStream) in case one gets missed.
+  if (avstream->parser)
+  {
+    switch(avstream->parser->field_order)
+    {
+      default:
+      case AV_FIELD_PROGRESSIVE:
+        // default value for bMaybeInterlaced but we set it anyway
+        ((CDemuxStreamVideo*)stream)->bMaybeInterlaced = false;
+        break;
+      case AV_FIELD_TT: //< Top coded_first, top displayed first
+      case AV_FIELD_BB: //< Bottom coded first, bottom displayed first
+      case AV_FIELD_TB: //< Top coded first, bottom displayed first
+      case AV_FIELD_BT: //< Bottom coded first, top displayed first
+        ((CDemuxStreamVideo*)stream)->bMaybeInterlaced = true;
+        break;
+      case AV_FIELD_UNKNOWN:
+        {
+          // if picture_structure is AV_PICTURE_STRUCTURE_UNKNOWN, no clue so assume progressive
+          bool interlaced = avstream->parser->picture_structure == AV_PICTURE_STRUCTURE_TOP_FIELD;
+          interlaced |= avstream->parser->picture_structure == AV_PICTURE_STRUCTURE_BOTTOM_FIELD;
+          ((CDemuxStreamVideo*)stream)->bMaybeInterlaced = interlaced;
+        }
+        break;
+    }
+  }
+}
+
 std::string CDVDDemuxFFmpeg::GetStereoModeFromMetadata(AVDictionary *pMetadata)
 {
   std::string stereoMode;
@@ -1715,6 +1745,10 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
     int got_picture = 0;
     avcodec_decode_video2(st->codec, &picture, &got_picture, pkt);
     av_frame_unref(&picture);
+
+    // check for interlaced content, the check in AddStream might
+    // be by-passed if parser is null, we do it in both places
+    CheckForInterlaced(stream, st);
   }
 }
 
