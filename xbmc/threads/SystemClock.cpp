@@ -39,7 +39,7 @@ namespace XbmcThreads
     now_time = CVGetCurrentHostTime() *  1000 / CVGetHostClockFrequency();
 #else
     struct timespec ts = {};
-#ifdef CLOCK_MONOTONIC_RAW
+#if defined(CLOCK_MONOTONIC_RAW) && !defined(TARGET_ANDROID)
     clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 #else
     clock_gettime(CLOCK_MONOTONIC, &ts);

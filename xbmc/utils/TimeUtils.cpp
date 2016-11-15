@@ -40,7 +40,7 @@ int64_t CurrentHostCounter(void)
   return( (int64_t)CVGetCurrentHostTime() );
 #else
   struct timespec now;
-#ifdef CLOCK_MONOTONIC_RAW
+#if defined(CLOCK_MONOTONIC_RAW) and !defined(TARGET_ANDROID)
   clock_gettime(CLOCK_MONOTONIC_RAW, &now);
 #else
   clock_gettime(CLOCK_MONOTONIC, &now);
