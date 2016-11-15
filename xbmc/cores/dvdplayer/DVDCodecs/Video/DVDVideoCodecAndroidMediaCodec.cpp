@@ -349,7 +349,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // mediacodec crashes with null size. Trap this...
   if (!hints.width || !hints.height)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - null size, cannot handle");
     return false;
   }
   else if (hints.stills || hints.dvd)
@@ -357,10 +357,17 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     // Won't work reliably
     return false;
   }
+  else if (hints.codec == AV_CODEC_ID_HEVC && hints.width == 1936 && hints.height == 1086)
+  {
+    // Won't work reliably under fireOS but shield will support it.
+    // As both can sw decode it, put to ffmpeg.
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - HEVC@1936x1086, punt");
+    return false;
+  }
 
   if (hints.orientation && m_render_surface && CJNIMediaFormat::GetSDKVersion() < 23)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "Surface does not support orientation before API 23");
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - Surface does not support orientation before API 23");
     return false;
   }
 
