@@ -1334,7 +1334,7 @@ MainController *g_xbmcController;
       case MC_INACTIVE_PAUSED:
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
         break;
-      case MC_BACKGOUND_RESTORE:
+      case MC_BACKGROUND_RESTORE:
         if (!g_application.LastProgressTrackingItem().GetPath().empty())
         {
           CFileItem *fileitem = new CFileItem(g_application.LastProgressTrackingItem());
@@ -1384,11 +1384,11 @@ MainController *g_xbmcController;
   {
     default:
     case MC_INACTIVE:
-      m_controllerState = MC_BACKGOUND;
+      m_controllerState = MC_BACKGROUND;
       break;
     case MC_INACTIVE_PAUSED:
       {
-        m_controllerState = MC_BACKGOUND_RESTORE;
+        m_controllerState = MC_BACKGROUND_RESTORE;
         // get the current playing time but backup a little, it seems better
         m_wasPlayingTime = g_application.GetTime() - 1.50;
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
@@ -1407,7 +1407,7 @@ MainController *g_xbmcController;
   CNetworkServices::GetInstance().StopPlexServices();
   CNetworkServices::GetInstance().StopLightEffectServices();
 
-  if (m_controllerState == MC_BACKGOUND)
+  if (m_controllerState == MC_BACKGROUND)
   {
     // if we were playing and have paused, then
     // enable a background task to keep the network alive
@@ -1537,7 +1537,7 @@ MainController *g_xbmcController;
     {
       case UIEventSubtypeRemoteControlTogglePlayPause:
         // check if not in background, we can get this if sleep is forced
-        if (m_controllerState < MC_BACKGOUND)
+        if (m_controllerState < MC_BACKGROUND)
           CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlPlay:
@@ -1549,7 +1549,7 @@ MainController *g_xbmcController;
         // warning, something is wacky, in tvOS we only get this if play/pause button is pushed
         // the playPausePressed method should be getting called and it does, sometimes. WTF ?
         // check if not in background, we can get this if sleep is forced
-        if (m_controllerState < MC_BACKGOUND)
+        if (m_controllerState < MC_BACKGROUND)
           CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlStop:

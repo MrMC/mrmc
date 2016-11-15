@@ -31,8 +31,8 @@ typedef enum
   MC_ACTIVE,
   MC_INACTIVE,
   MC_INACTIVE_PAUSED,
-  MC_BACKGOUND,
-  MC_BACKGOUND_RESTORE,
+  MC_BACKGROUND,
+  MC_BACKGROUND_RESTORE,
 } MC_STATES;
 
 typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
