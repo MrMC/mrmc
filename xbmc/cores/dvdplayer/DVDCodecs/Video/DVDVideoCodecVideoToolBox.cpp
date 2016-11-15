@@ -64,7 +64,9 @@ enum {
 };
 enum {
   kVTDecodeInfo_Asynchronous = 1UL << 0,
-  kVTDecodeInfo_FrameDropped = 1UL << 1
+  kVTDecodeInfo_FrameDropped = 1UL << 1,
+  kVTDecodeInfo_1xRealTimePlayback = 1<<2,
+  kVTDecodeInfo_EnableTemporalProcessing = 1<<3
 };
 enum {
   // tells the decoder not to bother returning a CVPixelBuffer
@@ -84,7 +86,9 @@ typedef void (*VTDecompressionOutputCallbackFunc)(
   CFDictionaryRef frameInfo,
   OSStatus        status,
   UInt32          infoFlags,
-  CVBufferRef     imageBuffer);
+  CVBufferRef     imageBuffer,
+  CMTime          pts,
+  CMTime          duration);
 
 typedef struct _VTDecompressionOutputCallback VTDecompressionOutputCallback;
 struct _VTDecompressionOutputCallback {
@@ -383,7 +387,7 @@ CreateFormatDescription(VTFormatId format_id, int width, int height)
 }
 // helper function to create a avcC/hevC/esds atom format descriptor
 static CMFormatDescriptionRef
-CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height, const uint8_t *extradata, int extradata_size)
+CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height, const uint8_t *extradata, int extradata_size, bool interlaced)
 {
   CFMutableDictionaryRef pixelAspectRatio = CFDictionaryCreateMutable (NULL, 0, &kCFTypeDictionaryKeyCallBacks,
     &kCFTypeDictionaryValueCallBacks);
@@ -423,6 +427,13 @@ CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height
   CFDictionarySetValue(extensions, CFSTR("FullRangeVideo"), kCFBooleanFalse);
   CFMutableDictionarySetObject(extensions, CFSTR("CVPixelAspectRatio"), (CFTypeRef*)pixelAspectRatio);
   CFMutableDictionarySetObject(extensions, CFSTR("SampleDescriptionExtensionAtoms"), (CFTypeRef*)atoms);
+  if (interlaced)
+  {
+    //CFDictionarySetValue(decoderConfiguration, kVTDecompressionPropertyKey_FieldMode, kVTDecompressionProperty_FieldMode_DeinterlaceFields);
+    //CFDictionarySetValue(decoderConfiguration, kVTDecompressionPropertyKey_DeinterlaceMode, kVTDecompressionProperty_DeinterlaceMode_Temporal);
+    CFMutableDictionarySetString(extensions, CFSTR("FieldMode"), "DeinterlaceFields");
+    CFMutableDictionarySetString(extensions, CFSTR("DeinterlaceMode"), "Temporal");
+  }
 
   CMFormatDescriptionRef fmt_desc = NULL;
   OSStatus status = CMVideoFormatDescriptionCreate(NULL, format_id, width, height, extensions, &fmt_desc);
@@ -433,47 +444,49 @@ CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height
 }
 // helper function to create a CMSampleBufferRef from demuxer data
 static CMSampleBufferRef
-CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc, void *demux_buff, size_t demux_size)
+CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc,
+  CMSampleTimingInfo *timingInfo, void *demux_buff, size_t demux_size)
 {
-  OSStatus status;
-  CMBlockBufferRef newBBufOut = NULL;
-  CMSampleBufferRef sBufOut = NULL;
+  // need to retain the demux data until decoder is done with it.
+  // the best way to do this is malloc/memcpy and use a kCFAllocatorMalloc.
+  size_t demuxSize = demux_size;
+  uint8_t *demuxData = (uint8_t*)malloc(demuxSize);
+  memcpy(demuxData, demux_buff, demuxSize);
 
-  status = CMBlockBufferCreateWithMemoryBlock(
-    NULL,             // CFAllocatorRef structureAllocator
-    demux_buff,       // void *memoryBlock
-    demux_size,       // size_t blockLengt
-    kCFAllocatorNull, // CFAllocatorRef blockAllocator
-    NULL,             // const CMBlockBufferCustomBlockSource *customBlockSource
-    0,                // size_t offsetToData
-    demux_size,       // size_t dataLength
-    FALSE,            // CMBlockBufferFlags flags
-    &newBBufOut);     // CMBlockBufferRef *newBBufOut
+  CMBlockBufferRef videoBlock = nullptr;
+  CMBlockBufferFlags flags = 0;
+  OSStatus status = CMBlockBufferCreateWithMemoryBlock(
+    kCFAllocatorDefault,  // CFAllocatorRef structureAllocator
+    demuxData,            // void *memoryBlock
+    demuxSize,            // size_t blockLength
+    kCFAllocatorMalloc,   // CFAllocatorRef blockAllocator
+    nullptr,              // const CMBlockBufferCustomBlockSource *customBlockSource
+    0,                    // size_t offsetToData
+    demux_size,           // size_t dataLength
+    flags,                // CMBlockBufferFlags flags
+    &videoBlock);         // CMBlockBufferRef
 
-  if (!status)
+  CMSampleBufferRef sBufOut = nullptr;
+  const size_t sampleSizeArray[] = {demuxSize};
+
+  if (status == noErr)
   {
     status = CMSampleBufferCreate(
-      NULL,           // CFAllocatorRef allocator
-      newBBufOut,     // CMBlockBufferRef dataBuffer
-      TRUE,           // Boolean dataReady
-      0,              // CMSampleBufferMakeDataReadyCallback makeDataReadyCallback
-      0,              // void *makeDataReadyRefcon
-      fmt_desc,       // CMFormatDescriptionRef formatDescription
-      1,              // CMItemCount numSamples
-      0,              // CMItemCount numSampleTimingEntries
-      NULL,           // const CMSampleTimingInfo *sampleTimingArray
-      0,              // CMItemCount numSampleSizeEntries
-      NULL,           // const size_t *sampleSizeArray
-      &sBufOut);      // CMSampleBufferRef *sBufOut
+      kCFAllocatorDefault,// CFAllocatorRef allocator
+      videoBlock,         // CMBlockBufferRef dataBuffer
+      true,               // Boolean dataReady
+      nullptr,            // CMSampleBufferMakeDataReadyCallback makeDataReadyCallback
+      nullptr,            // void *makeDataReadyRefcon
+      fmt_desc,           // CMFormatDescriptionRef formatDescription
+      1,                  // CMItemCount numSamples
+      1,                  // CMItemCount numSampleTimingEntries
+      timingInfo,         // const CMSampleTimingInfo *sampleTimingArray
+      1,                  // CMItemCount numSampleSizeEntries
+      sampleSizeArray,    // const size_t *sampleSizeArray
+      &sBufOut);          // CMSampleBufferRef *sBufOut
   }
+  CFRelease(videoBlock);
 
-  CFRelease(newBBufOut);
-
-  /*
-  CLog::Log(LOGDEBUG, "%s - CreateSampleBufferFrom size %ld demux_buff [0x%08x] sBufOut [0x%08x]",
-            __FUNCTION__, demux_size, (unsigned int)demux_buff, (unsigned int)sBufOut);
-  */
-  
   return sBufOut;
 }
 
@@ -495,6 +508,7 @@ CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
   m_DropPictures = false;
   m_codecControlFlags = 0;
   m_sort_time = 0;
+  m_enable_temporal_processing = false;
   
   m_dll = new DllVideoToolBox();
 }
@@ -555,7 +569,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     {
       case AV_CODEC_ID_MPEG4:
         m_fmt_desc = CreateFormatDescriptionFromCodecData(
-          kVTFormatMPEG4Video, width, height, extradata, extrasize);
+          kVTFormatMPEG4Video, width, height, extradata, extrasize, false);
         m_pFormatName = "vtb-mpeg4";
       break;
 
@@ -570,7 +584,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
           return false;
         m_fmt_desc = CreateFormatDescriptionFromCodecData(
-          kVTFormatH265, width, height, extradata, extrasize);
+          kVTFormatH265, width, height, extradata, extrasize, false);
         m_pFormatName = "vtb-h265";
       break;
 
@@ -604,6 +618,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
               m_bitstream->parseh264_sps(spc+3, sps_size-1, &interlaced, &m_max_ref_frames);
             if (interlaced)
             {
+              m_enable_temporal_processing = true;
               CLog::Log(LOGNOTICE, "%s - possible interlaced content.", __FUNCTION__);
               return false;
             }
@@ -617,7 +632,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           }
 
           m_fmt_desc = CreateFormatDescriptionFromCodecData(
-            kVTFormatH264, width, height, extradata, extrasize);
+            kVTFormatH264, width, height, extradata, extrasize, m_enable_temporal_processing);
 
           CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, extrasize, m_max_ref_frames);
         }
@@ -725,7 +740,13 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       pData = m_bitstream->GetConvertBuffer();
     }
 
-    CMSampleBufferRef sampleBuff = CreateSampleBufferFrom(m_fmt_desc, pData, iSize);
+    CMSampleTimingInfo sampleTimingInfo = kCMTimingInfoInvalid;
+    if (dts != DVD_NOPTS_VALUE)
+      sampleTimingInfo.decodeTimeStamp = CMTimeMake(dts, DVD_TIME_BASE);
+    if (pts != DVD_NOPTS_VALUE)
+      sampleTimingInfo.presentationTimeStamp = CMTimeMake(pts, DVD_TIME_BASE);
+
+    CMSampleBufferRef sampleBuff = CreateSampleBufferFrom(m_fmt_desc, &sampleTimingInfo, pData, iSize);
     if (!sampleBuff)
     {
       CLog::Log(LOGNOTICE, "%s - CreateSampleBufferFrom failed", __FUNCTION__);
@@ -735,6 +756,9 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     CFDictionaryRef frameInfo = CreateDictionaryWithDisplayTime(m_sort_time++, dts, pts);
 
     uint32_t decoderFlags = 0;
+    if (m_enable_temporal_processing)
+      decoderFlags |= kVTDecodeInfo_EnableTemporalProcessing;
+
     OSStatus status = m_dll->VTDecompressionSessionDecodeFrame(m_vt_session, sampleBuff, decoderFlags, frameInfo, 0);
     if (status != kVTDecoderNoErr)
     {
@@ -749,7 +773,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       // VTDecompressionSessionDecodeFrame returned -12909 (kVTVideoDecoderBadDataErr)
       // VTDecompressionSessionDecodeFrame returned -12911 (kVTVideoDecoderMalfunctionErr)
     }
-
+/*
     // wait for decoding to finish
     status = m_dll->VTDecompressionSessionWaitForAsynchronousFrames(m_vt_session);
     if (status != kVTDecoderNoErr)
@@ -760,7 +784,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       CFRelease(sampleBuff);
       return VC_ERROR;
     }
-
+*/
     CFRelease(frameInfo);
     CFRelease(sampleBuff);
   }
@@ -991,7 +1015,9 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
   CFDictionaryRef    frameInfo,
   OSStatus           status,
   UInt32             infoFlags,
-  CVBufferRef        imageBuffer)
+  CVBufferRef        imageBuffer,
+  CMTime             pts,
+  CMTime             duration)
 {
   // This is an sync callback due to VTDecompressionSessionWaitForAsynchronousFrames
   CDVDVideoCodecVideoToolBox *ctx = (CDVDVideoCodecVideoToolBox*)refcon;

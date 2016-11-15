@@ -68,7 +68,7 @@ protected:
   void DestroyVTSession(void);
   static void VTDecoderCallback(
     void *refcon, CFDictionaryRef frameInfo,
-    OSStatus status, UInt32 infoFlags, CVBufferRef imageBuffer);
+    OSStatus status, UInt32 infoFlags, CVBufferRef imageBuffer, CMTime pts, CMTime duration);
 
   static void vtdec_session_dump_property(
     CFStringRef prop_name, CFDictionaryRef prop_attrs, CDVDVideoCodecVideoToolBox *ctx);
@@ -89,6 +89,7 @@ protected:
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
   std::atomic<int>  m_queue_depth;    // we will try to keep the queue depth at m_max_ref_frames
   int32_t           m_max_ref_frames;
+  bool              m_enable_temporal_processing;
 };
 
 #endif
