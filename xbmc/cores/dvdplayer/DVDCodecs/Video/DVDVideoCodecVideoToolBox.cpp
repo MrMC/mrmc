@@ -25,7 +25,6 @@
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "DynamicDll.h"
 #include "DVDClock.h"
-#include "DVDStreamInfo.h"
 #include "DVDCodecUtils.h"
 #include "DVDVideoCodecVideoToolBox.h"
 #include "settings/Settings.h"
@@ -61,6 +60,8 @@ enum {
   kVTDecoderFormatNotSupportedErr = -12471,
   kVTDecoderConfigurationError = -12472,
   kVTDecoderDecoderFailedErr = -12473,
+  kVTVideoDecoderMalfunctionErr = -12911,
+  kVTInvalidSessionErr = -12903,
 };
 enum {
   kVTDecodeInfo_Asynchronous = 1UL << 0,
@@ -508,6 +509,11 @@ CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
   m_DropPictures = false;
   m_codecControlFlags = 0;
   m_sort_time = 0;
+  m_started = false;
+  m_lastIDRframe = 0;
+  m_sessionRestart = false;
+  m_sessionRestartDTS = DVD_NOPTS_VALUE;
+  m_sessionRestartPTS = DVD_NOPTS_VALUE;
   m_enable_temporal_processing = false;
   
   m_dll = new DllVideoToolBox();
@@ -687,6 +693,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_sort_time = 0;
 
     CLog::Log(LOGDEBUG,"VideoToolBox: opened width(%d), height(%d)", hints.width, hints.height);
+    m_hintsForReopen = hints;
+    m_optionsForReopen = options;
 
     return true;
   }
@@ -712,6 +720,13 @@ void CDVDVideoCodecVideoToolBox::Dispose()
   
   while (m_queue_depth)
     DisplayQueuePop();
+}
+
+void CDVDVideoCodecVideoToolBox::Reopen()
+{
+  m_started = false;
+  Dispose();
+  Open(m_hintsForReopen, m_optionsForReopen);
 }
 
 void CDVDVideoCodecVideoToolBox::SetDropState(bool bDrop)
@@ -740,6 +755,21 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       pData = m_bitstream->GetConvertBuffer();
     }
 
+    // VideoToolBox is picky about starting up with 1st frame as IDR slice
+    // Check and skip until we hit one. m_lastIDRframe tracks how many
+    // frames back was the last IDR + max ref frames. It is used during
+    // reset and reopen.
+    if ((pData[4] & 0x1F) == 5)
+    {
+      //CLog::Log(LOGNOTICE, "%s - IDR Slice found, m_lastIDRframe %d", __FUNCTION__, m_lastIDRframe);
+      m_started = true;
+      m_lastIDRframe = 0;
+    }
+    m_lastIDRframe++;
+
+    if (!m_started)
+      return VC_BUFFER;
+
     CMSampleTimingInfo sampleTimingInfo = kCMTimingInfoInvalid;
     if (dts != DVD_NOPTS_VALUE)
       sampleTimingInfo.decodeTimeStamp = CMTimeMake(dts, DVD_TIME_BASE);
@@ -762,14 +792,33 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     OSStatus status = m_dll->VTDecompressionSessionDecodeFrame(m_vt_session, sampleBuff, decoderFlags, frameInfo, 0);
     if (status != kVTDecoderNoErr)
     {
-      CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned(%d)",
-        __FUNCTION__, (int)status);
       CFRelease(frameInfo);
       CFRelease(sampleBuff);
-      return VC_ERROR;
+      // might not really be an error (could have been force inactive)
+      // so do not log it.
+      if (status == kVTInvalidSessionErr)
+      {
+        m_sessionRestart = true;
+        m_sessionRestartDTS = dts;
+        m_sessionRestartPTS = pts;
+        if (m_display_queue)
+        {
+          m_sessionRestartDTS = m_display_queue->dts;
+          m_sessionRestartPTS = m_display_queue->pts;
+        }
+        return VC_REOPEN;
+      }
+
+      CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned(%d)",
+        __FUNCTION__, (int)status);
+      if (status == kVTVideoDecoderMalfunctionErr)
+        return VC_REOPEN;
+      else
+        return VC_ERROR;
       // VTDecompressionSessionDecodeFrame returned 8969 (codecBadDataErr)
       // VTDecompressionSessionDecodeFrame returned -12350
       // VTDecompressionSessionDecodeFrame returned -12902 (kVTParameterErr)
+      // VTDecompressionSessionDecodeFrame returned -12903 (kVTInvalidSessionErr)
       // VTDecompressionSessionDecodeFrame returned -12909 (kVTVideoDecoderBadDataErr)
       // VTDecompressionSessionDecodeFrame returned -12911 (kVTVideoDecoderMalfunctionErr)
     }
@@ -787,6 +836,14 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
 */
     CFRelease(frameInfo);
     CFRelease(sampleBuff);
+
+    // put a limit on convergence count to avoid
+    // huge mem usage on streams without keyframes
+    if (m_lastIDRframe > 300)
+    {
+      CLog::Log(LOGNOTICE, "%s - m_lastIDRframe clamped", __FUNCTION__, m_lastIDRframe);
+      m_lastIDRframe = 300;
+    }
   }
 
   if (m_queue_depth < (2 * m_max_ref_frames))
@@ -803,8 +860,15 @@ void CDVDVideoCodecVideoToolBox::Reset(void)
   while (m_queue_depth)
     DisplayQueuePop();
   
+  m_started = false;
   m_sort_time = 0;
+  m_lastIDRframe = 0;
   m_codecControlFlags = 0;
+}
+
+unsigned CDVDVideoCodecVideoToolBox::GetConvergeCount()
+{
+  return m_lastIDRframe;
 }
 
 unsigned CDVDVideoCodecVideoToolBox::GetAllowedReferences()
@@ -816,7 +880,6 @@ void CDVDVideoCodecVideoToolBox::SetCodecControl(int flags)
 {
   m_codecControlFlags = flags;
 }
-
 
 bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
@@ -854,6 +917,23 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
     pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+
+  // if vtb session restarts, we start decoding at last IDR frame
+  // but dvdplay/renderer will show frames in fast forward style
+  // until we hit sync point. Visually anoying so we force those
+  // frames to get dropped and not shown.
+  if (m_sessionRestart)
+  {
+    if (m_sessionRestartDTS == pDvdVideoPicture->dts &&
+        m_sessionRestartPTS == pDvdVideoPicture->pts)
+    {
+      m_sessionRestart = false;
+    }
+    else
+    {
+      pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+    }
+  }
 
   return true;
 }
