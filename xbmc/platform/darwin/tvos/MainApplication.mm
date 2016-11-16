@@ -262,6 +262,8 @@ std::atomic<MainController*> m_xbmcController;
 - (void)screenModeDidChange:(NSNotification *)aNotification
 {
   PRINT_SIGNATURE();
+  UIScreen *someScreen = [aNotification object];
+  NSLog(@"The screen mode for a screen did change: %@", [someScreen currentMode]);
 }
 
 - (void)registerScreenNotifications
