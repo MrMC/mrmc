@@ -1009,12 +1009,12 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       {
         Sleep(50);
       }
-      CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 1", __FUNCTION__);
+      //CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 1", __FUNCTION__);
       return result | EOS_DROPPED;
     }
     else if (pts_org < iPlayingClock)
     {
-      CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 2", __FUNCTION__);
+      //CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 2", __FUNCTION__);
       return result | EOS_DROPPED;
     }
 
@@ -1035,7 +1035,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     if (diff < mindiff)
     {
       m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
-      CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 3", __FUNCTION__);
+      //CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 3", __FUNCTION__);
       return result | EOS_DROPPED;
     }
   }
@@ -1048,8 +1048,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   if ((pPicture->iFlags & DVP_FLAG_DROPPED))
   {
     m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
-    CLog::Log(LOGDEBUG,"%s - dropped in output", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 4", __FUNCTION__);
+    //CLog::Log(LOGDEBUG,"%s - dropped in output", __FUNCTION__);
+    //CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 4", __FUNCTION__);
     return result | EOS_DROPPED;
   }
 
@@ -1073,7 +1073,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   if (buffer < 0)
   {
     m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
-    CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 5", __FUNCTION__);
+    //CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 5", __FUNCTION__);
     return EOS_DROPPED;
   }
 
@@ -1092,7 +1092,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   if (index < 0)
   {
     m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
-    CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 6", __FUNCTION__);
+    //CLog::Log(LOGDEBUG, "%s - EOS_DROPPED 6", __FUNCTION__);
     return EOS_DROPPED;
   }
 
