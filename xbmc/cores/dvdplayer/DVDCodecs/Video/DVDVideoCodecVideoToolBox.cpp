@@ -407,7 +407,7 @@ CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height
   else if (format_id == kVTFormatH265)
   {
     CFDataRef hevCData = hevCCreate(extradata, extradata_size);
-    CFDictionarySetValue(atoms, CFSTR ("hevC"), hevCData);
+    CFDictionarySetValue(atoms, CFSTR ("hvcC"), hevCData);
     CFRelease(hevCData);
   }
   else if (format_id == kVTFormatMPEG4Video)
