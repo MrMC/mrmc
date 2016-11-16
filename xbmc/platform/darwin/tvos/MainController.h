@@ -30,7 +30,8 @@ typedef enum
   MC_NONE = 0,
   MC_ACTIVE,
   MC_INACTIVE,
-  MC_INACTIVE_PAUSED,
+  MC_INACTIVE_ISPAUSED,   // player was in pause state
+  MC_INACTIVE_WASPAUSED,  // player was playing and we paused it
   MC_BACKGROUND,
   MC_BACKGROUND_RESTORE,
 } MC_STATES;

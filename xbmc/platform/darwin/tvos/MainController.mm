@@ -1331,7 +1331,7 @@ MainController *g_xbmcController;
       case MC_INACTIVE:
         // do nothing
         break;
-      case MC_INACTIVE_PAUSED:
+      case MC_INACTIVE_WASPAUSED:
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
         break;
       case MC_BACKGROUND_RESTORE:
@@ -1368,10 +1368,13 @@ MainController *g_xbmcController;
   m_controllerState = MC_INACTIVE;
   if (g_application.m_pPlayer->IsPlaying())
   {
-    m_controllerState = MC_INACTIVE_PAUSED;
+    m_controllerState = MC_INACTIVE_ISPAUSED;
     // we might or might not be paused.
     if (!g_application.m_pPlayer->IsPaused())
+    {
+      m_controllerState = MC_INACTIVE_WASPAUSED;
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+    }
   }
 }
 //--------------------------------------------------------------
@@ -1386,7 +1389,8 @@ MainController *g_xbmcController;
     case MC_INACTIVE:
       m_controllerState = MC_BACKGROUND;
       break;
-    case MC_INACTIVE_PAUSED:
+    case MC_INACTIVE_ISPAUSED:
+    case MC_INACTIVE_WASPAUSED:
       {
         m_controllerState = MC_BACKGROUND_RESTORE;
         // get the current playing time but backup a little, it seems better
