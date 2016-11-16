@@ -841,7 +841,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     // huge mem usage on streams without keyframes
     if (m_lastIDRframe > 300)
     {
-      CLog::Log(LOGNOTICE, "%s - m_lastIDRframe clamped", __FUNCTION__, m_lastIDRframe);
+      CLog::Log(LOGNOTICE, "%s - m_lastIDRframe (%i) clamped ", __FUNCTION__, m_lastIDRframe);
       m_lastIDRframe = 300;
     }
   }
