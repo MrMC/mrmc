@@ -758,15 +758,11 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       pData = m_bitstream->GetConvertBuffer();
     }
 
-    // VideoToolBox is picky about starting up with 1st frame as IDR slice
-    // Check and skip until we hit one. m_lastIDRframe tracks how many frames back
-    // was the last IDR + max ref frames. It is used during reset and reopen.
-    //CLog::Log(LOGDEBUG, "%s - Slice type %d", __FUNCTION__, pData[4] & 0x1F);
-    int type = (pData[4] & 0x1F);
-    if (type == 5 || type == 6|| type == 7 || type == 8)
+    if (CBitstreamParser::FindIdrSlice(pData, iSize, false))
     {
-      // treat SEI/SPS/PPS as IDR as frames with those occurs before each IDR
-      // and might be combined slices. Too slack to parse the frame to find the IDR.
+      // VideoToolBox is picky about starting up with 1st frame as IDR slice
+      // Check and skip until we hit one. m_lastIDRframe tracks how many frames back
+      // was the last IDR + max ref frames. It is used during reset and reopen.
       //CLog::Log(LOGDEBUG, "%s - IDR Slice found, m_lastIDRframe %d", __FUNCTION__, m_lastIDRframe);
       m_started = true;
       m_lastIDRframe = 0;
