@@ -266,49 +266,61 @@ const uint8_t* CBitstreamParser::find_start_code(const uint8_t *p,
   return p + 4;
 }
 
-bool CBitstreamParser::FindIdrSlice(const uint8_t *buf, int buf_size)
+bool CBitstreamParser::FindIdrSlice(const uint8_t *buf, int buf_size, bool annexb)
 {
   if (!buf)
     return false;
 
   bool rtn = false;
-  uint32_t state = -1;
   const uint8_t *buf_end = buf + buf_size;
 
   for(;;)
   {
-    buf = find_start_code(buf, buf_end, &state);
-    if (buf >= buf_end)
+    int src_length;
+    uint32_t state = -1;
+    if (annexb)
     {
-      //CLog::Log(LOGDEBUG, "FindIdrSlice: buf(%p), buf_end(%p)", buf, buf_end);
-      break;
+      // annexB, find_start_code return pointer to one byte past NAL type
+      buf = find_start_code(buf, buf_end, &state) - 1;
+      src_length = buf_end - buf;
+    }
+    else
+    {
+      // avcC, 1st four byte are the nal size in big endian
+      src_length = BS_RB32(buf);
+      buf += 4;
+      state = buf[0];
     }
 
-    --buf;
-    int src_length = buf_end - buf;
-    switch (state & 0x1f)
+    int nal_type = state & 0x1f;
+    switch (nal_type)
     {
       default:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found nal_type(%d)", state & 0x1f);
+        //CLog::Log(LOGDEBUG, "FindIdrSlice: found nal_type(%d)", state & 0x1f);
         break;
       case AVC_NAL_SLICE:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SLICE");
+        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SLICE");
         break;
       case AVC_NAL_IDR_SLICE:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_IDR_SLICE");
+        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_IDR_SLICE");
         rtn = true;
         break;
       case AVC_NAL_SEI:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SEI");
+        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SEI");
         break;
       case AVC_NAL_SPS:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SPS");
+        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SPS");
         break;
       case AVC_NAL_PPS:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_PPS");
+        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_PPS");
+        break;
+      case AVC_NAL_AUD:
+        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_AUD");
         break;
     }
     buf += src_length;
+    if (rtn || buf >= buf_end)
+      break;
   }
 
   return rtn;
