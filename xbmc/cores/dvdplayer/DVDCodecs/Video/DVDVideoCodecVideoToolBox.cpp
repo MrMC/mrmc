@@ -641,7 +641,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           }
 
           m_fmt_desc = CreateFormatDescriptionFromCodecData(
-            kVTFormatH264, width, height, extradata, extrasize, m_enable_temporal_processing);
+            kVTFormatH264, width, height, m_bitstream->GetExtraData(), m_bitstream->GetExtraSize(), m_enable_temporal_processing);
 
           CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, extrasize, m_max_ref_frames);
         }
