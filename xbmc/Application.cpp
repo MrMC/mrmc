@@ -3524,7 +3524,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 void CApplication::OnPlayBackEnded()
 {
   CSingleLock lock(m_playStateMutex);
-  CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
+  CLog::LogF(LOGDEBUG,"play state was %d, ended %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_ENDED;
   if(m_bPlaybackStarting)
     return;
