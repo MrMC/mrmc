@@ -368,7 +368,7 @@ BuildObject(CFileItem&                    item,
     PLT_MediaObject*      object = NULL;
     std::string thumb;
 
-    CLog::Log(LOGDEBUG, "UPnP: Building didl for object '%s'", item.GetPath().c_str());
+    CLog::Log(LOGDEBUG, "UPnP: Building didl for object '%s'", CURL::GetRedacted(item.GetPath()).c_str());
 
     EClientQuirks quirks = GetClientQuirks(context);
 
