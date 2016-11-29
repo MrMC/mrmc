@@ -1674,7 +1674,8 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
       }
       // check for interlaced content, the check in AddStream might
       // be skipped if parser is null, we do it in both places
-      stream->CheckForInterlaced(st->parser);
+      if (stream)
+        stream->CheckForInterlaced(st->parser);
     }
   }
 
