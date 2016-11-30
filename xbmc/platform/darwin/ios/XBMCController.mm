@@ -1162,6 +1162,10 @@ XBMCController *g_xbmcController;
 //  LOG(@"default: %@", [notification name]);
 //  LOG(@"userInfo: %@", [notification userInfo]);
 }
+- (void*) getEAGLContextObj
+{
+  return [m_glView getContext];
+}
 - (BOOL)shouldAutorotate
 {
   UIInterfaceOrientation orient = [[UIApplication sharedApplication] statusBarOrientation];

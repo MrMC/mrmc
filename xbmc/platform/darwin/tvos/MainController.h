@@ -110,6 +110,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (void) enterBackground;
 
 - (void) audioRouteChanged;
+- (void*) getEAGLContextObj;
 
 - (void) sendKeyDownUp:(XBMCKey)key;
 - (void) setFramebuffer;

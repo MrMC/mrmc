@@ -2874,6 +2874,7 @@
           <requirement>
             <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_GLESv2</condition>
               <condition>HAS_DX</condition>
             </or>
           </requirement>

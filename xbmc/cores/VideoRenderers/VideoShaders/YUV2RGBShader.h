@@ -28,7 +28,8 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
                         , ERenderFormat format
                         , float         black
-                        , float         contrast);
+                        , float         contrast
+                        , bool          limited);
 
 #if defined(HAS_GL) || HAS_GLES == 2
 
@@ -62,6 +63,10 @@ namespace Shaders {
     virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
     virtual void SetAlpha(GLfloat alpha)             {};
 #endif
+    void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
+
+  protected:
+    bool m_convertFullRange;
   };
 
 

@@ -155,6 +155,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
+  m_fullRange = !g_Windowing.UseLimitedColor();
 
   // default texture handlers to YUV
   m_textureUpload = &CLinuxRendererGL::UploadYV12Texture;
@@ -760,7 +761,7 @@ unsigned int CLinuxRendererGL::PreInit()
 #endif
 
   // setup the background colour
-  m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
+  m_clearColour = g_Windowing.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
   return true;
 }
@@ -955,6 +956,8 @@ void CLinuxRendererGL::LoadShaders(int field)
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
+        m_pYUVShader->SetConvertFullColorRange(m_fullRange);
+
         if (m_pYUVShader && m_pYUVShader->CompileAndLink())
         {
           m_renderMethod = RENDER_GLSL;
@@ -980,6 +983,8 @@ void CLinuxRendererGL::LoadShaders(int field)
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format);
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
+
+        m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
         if (m_pYUVShader && m_pYUVShader->CompileAndLink())
         {

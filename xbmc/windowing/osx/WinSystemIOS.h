@@ -73,6 +73,7 @@ public:
           void DeinitDisplayLink(void);
           void OnAppFocusChange(bool focus);
           bool IsBackgrounded() const { return m_bIsBackgrounded; }
+          void* GetEAGLContextObj();
 
 protected:
   virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);

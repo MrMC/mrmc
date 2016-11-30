@@ -107,9 +107,6 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
 #ifdef HAVE_LIBOPENMAX
   openMaxBufferHolder = NULL;
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  cvBufferRef = NULL;
-#endif
 #ifdef HAS_LIBSTAGEFRIGHT
   stf = NULL;
   eglimg = EGL_NO_IMAGE_KHR;
@@ -310,7 +307,7 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
   }
 
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  if (m_renderMethod & RENDER_CVREF )
+  if (m_format == RENDER_FMT_CVBREF)
   {
     return source;
   }
@@ -765,7 +762,20 @@ unsigned int CLinuxRendererGLES::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   m_bValidated = false;
+
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  m_textureCache = nullptr;
+  for (auto &buf : m_vtbBuffers)
+  {
+    buf.textureY = nullptr;
+    buf.textureUV = nullptr;
+    buf.videoBuffer = nullptr;
+    buf.fence = nullptr;
+  }
+#endif
+
   UnInit();
+
   m_resolution = CDisplaySettings::GetInstance().GetCurrentResolution();
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
@@ -793,9 +803,16 @@ unsigned int CLinuxRendererGLES::PreInit()
 #ifdef HAS_IMXVPU
   m_formats.push_back(RENDER_FMT_IMXMAP);
 #endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  CVReturn ret = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
+    NULL, g_Windowing.GetEAGLContextObj(), NULL, &m_textureCache);
+  if (ret != kCVReturnSuccess)
+    CLog::Log(LOGERROR, "CLinuxRendererGLES::PreInit - Error creating texture cache (err: %d)", ret);
+
+#endif
 
   // setup the background colour
-  m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
+  m_clearColour = g_Windowing.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
   return true;
 }
@@ -911,12 +928,6 @@ void CLinuxRendererGLES::LoadShaders(int field)
       {
         CLog::Log(LOGNOTICE, "GL: Using BYPASS render method");
         m_renderMethod = RENDER_BYPASS;
-        break;
-      }
-      else if (m_format == RENDER_FMT_CVBREF)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using CoreVideoRef RGBA render method");
-        m_renderMethod = RENDER_CVREF;
         break;
       }
       #if defined(TARGET_DARWIN_IOS)
@@ -1073,38 +1084,41 @@ void CLinuxRendererGLES::UnInit()
   m_RenderUpdateCallBackCtx = NULL;
   m_RenderFeaturesCallBackFn = NULL;
   m_RenderFeaturesCallBackCtx = NULL;
+
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  if (m_textureCache)
+    CFRelease(m_textureCache), m_textureCache = nullptr;
+
+  for (int i = 0; i < NUM_BUFFERS; ++i)
+    DeleteCVRefTexture(i);
+#endif
 }
 
 inline void CLinuxRendererGLES::ReorderDrawPoints()
 {
-
   CBaseRenderer::ReorderDrawPoints();//call base impl. for rotating the points
-
-  //corevideo and EGL are flipped in y
-  if(m_renderMethod & RENDER_CVREF)
-  {
-    CPoint tmp;
-    tmp = m_rotatedDestCoords[0];
-    m_rotatedDestCoords[0] = m_rotatedDestCoords[3];
-    m_rotatedDestCoords[3] = tmp;
-    tmp = m_rotatedDestCoords[1];
-    m_rotatedDestCoords[1] = m_rotatedDestCoords[2];
-    m_rotatedDestCoords[2] = tmp;
-  }
 }
 
 void CLinuxRendererGLES::ReleaseBuffer(int idx)
 {
-  YUVBUFFER &buf = m_buffers[idx];
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  if (m_renderMethod & RENDER_CVREF )
+  if (m_format == RENDER_FMT_CVBREF)
   {
-    if (buf.cvBufferRef)
-      CVBufferRelease(buf.cvBufferRef);
-    buf.cvBufferRef = NULL;
+    CRenderBuffer &buf = m_vtbBuffers[idx];
+    if (buf.videoBuffer)
+      CVBufferRelease(buf.videoBuffer);
+    buf.videoBuffer = nullptr;
+/*
+    if (buf.fence && glIsSyncAPPLE(buf.fence))
+    {
+      glDeleteSyncAPPLE(buf.fence);
+      buf.fence = nullptr;
+    }
+*/
   }
 #endif
 #if defined(TARGET_ANDROID)
+  YUVBUFFER &buf = m_buffers[idx];
   if ( m_renderMethod & RENDER_MEDIACODEC )
   {
     if (buf.mediacodec)
@@ -1119,8 +1133,35 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
     SAFE_RELEASE(buf.mediacodec);
 #endif
 #ifdef HAS_IMXVPU
+  YUVBUFFER &buf = m_buffers[idx];
   if (m_renderMethod & RENDER_IMXMAP)
     SAFE_RELEASE(buf.IMXBuffer);
+#endif
+}
+
+bool CLinuxRendererGLES::NeedBufferForRef(int idx)
+{
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+/* ignore fence for now, causes video studdering and our frames are in sync.
+  if (m_format == RENDER_FMT_CVBREF)
+  {
+    CRenderBuffer &buf = m_vtbBuffers[idx];
+    if (buf.fence && glIsSyncAPPLE(buf.fence))
+    {
+      int syncState = GL_UNSIGNALED_APPLE;
+      glGetSyncivAPPLE(buf.fence, GL_SYNC_STATUS_APPLE, 1, nullptr, &syncState);
+      if (syncState == GL_SIGNALED_APPLE)
+        return false;
+    }
+    return true;
+  }
+  else
+*/
+  {
+    return false;
+  }
+#else
+  return false;
 #endif
 }
 
@@ -1174,11 +1215,6 @@ void CLinuxRendererGLES::Render(uint32_t flags, int index)
     RenderEglImage(index, m_currentField);
     VerifyGLState();
   }
-  else if (m_renderMethod & RENDER_CVREF)
-  {
-    RenderCoreVideoRef(index, m_currentField);
-    VerifyGLState();
-  }
   else if (m_renderMethod & RENDER_MEDIACODEC)
   {
     RenderSurfaceTexture(index, m_currentField);
@@ -1193,6 +1229,8 @@ void CLinuxRendererGLES::Render(uint32_t flags, int index)
     RenderSoftware(index, m_currentField);
     VerifyGLState();
   }
+
+  AfterRenderHook(index);
 }
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)
@@ -1244,6 +1282,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
     pYUVShader->SetField(0);
 
   pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
+  pYUVShader->SetConvertFullColorRange(!g_Windowing.UseLimitedColor());
   pYUVShader->Enable();
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
@@ -1836,72 +1875,18 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
 #endif
 }
 
-void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
-{
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  YUVPLANE &plane = m_buffers[index].fields[field][0];
-
-  glDisable(GL_DEPTH_TEST);
-
-  glEnable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, plane.id);
-
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
-
-  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
-  glUniform1f(contrastLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
-  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
-  glUniform1f(brightnessLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-  GLfloat ver[4][4];
-  GLfloat tex[4][2];
-  GLfloat col[3] = {1.0f, 1.0f, 1.0f};
-
-  GLint   posLoc = g_Windowing.GUIShaderGetPos();
-  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
-  GLint   colLoc = g_Windowing.GUIShaderGetCol();
-
-  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
-  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(texLoc);
-  glEnableVertexAttribArray(colLoc);
-
-  // Set vertex coordinates
-  for(int i = 0; i < 4; i++)
-  {
-    ver[i][0] = m_rotatedDestCoords[i].x;
-    ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;// set z to 0
-    ver[i][3] = 1.0f;
-  }
-
-  // Set texture coordinates (corevideo is flipped in y)
-  tex[0][0] = tex[3][0] = plane.rect.x1;
-  tex[0][1] = tex[1][1] = plane.rect.y2;
-  tex[1][0] = tex[2][0] = plane.rect.x2;
-  tex[2][1] = tex[3][1] = plane.rect.y1;
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(texLoc);
-  glDisableVertexAttribArray(colLoc);
-
-  g_Windowing.DisableGUIShader();
-  VerifyGLState();
-
-  glDisable(m_textureTarget);
-  VerifyGLState();
-#endif
-}
-
 void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
 {
+}
+
+void CLinuxRendererGLES::AfterRenderHook(int index)
+{
+/*
+  CRenderBuffer &buf = m_vtbBuffers[index];
+  if (buf.fence && glIsSyncAPPLE(buf.fence))
+    glDeleteSyncAPPLE(buf.fence);
+  buf.fence = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
+*/
 }
 
 bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
@@ -1945,7 +1930,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   // but somehow this also effects the rendercapture here
   // therefore we have to skip the flip here or we get upside down
   // images
-  if (m_renderMethod != RENDER_CVREF)
+  if (m_format == RENDER_FMT_CVBREF)
   {
     glMatrixModview->Translatef(0.0f, capture->GetHeight(), 0.0f);
     glMatrixModview->Scalef(1.0f, -1.0f, 1.0f);
@@ -2491,79 +2476,100 @@ void CLinuxRendererGLES::DeleteNV12Texture(int index)
 void CLinuxRendererGLES::UploadCVRefTexture(int index)
 {
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  CVBufferRef cvBufferRef = m_buffers[index].cvBufferRef;
+  CRenderBuffer &buf = m_vtbBuffers[index];
+  if (!buf.videoBuffer)
+    return;
 
-  if (cvBufferRef)
+  CVOpenGLESTextureCacheFlush(m_textureCache, 0);
+
+  if (buf.textureY)
+    CFRelease(buf.textureY);
+  buf.textureY = nullptr;
+
+  if (buf.textureUV)
+    CFRelease(buf.textureUV);
+  buf.textureUV = nullptr;
+
+  YV12Image &im = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANES &planes = fields[FIELD_FULL];
+
+  CVReturn ret = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+    m_textureCache,
+    buf.videoBuffer, NULL, GL_TEXTURE_2D, GL_LUMINANCE,
+    im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+    0,
+    &buf.textureY);
+
+  if (ret != kCVReturnSuccess)
   {
-    YUVPLANE &plane = m_buffers[index].fields[0][0];
-
-    CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-    #if !TARGET_OS_IPHONE
-      int rowbytes = CVPixelBufferGetBytesPerRow(cvBufferRef);
-    #endif
-    int bufferWidth = CVPixelBufferGetWidth(cvBufferRef);
-    int bufferHeight = CVPixelBufferGetHeight(cvBufferRef);
-    unsigned char *bufferBase = (unsigned char *)CVPixelBufferGetBaseAddress(cvBufferRef);
-
-    glEnable(m_textureTarget);
-    VerifyGLState();
-
-    glBindTexture(m_textureTarget, plane.id);
-    #if !TARGET_OS_IPHONE
-      #ifdef GL_UNPACK_ROW_LENGTH
-        // Set row pixels
-        glPixelStorei( GL_UNPACK_ROW_LENGTH, rowbytes);
-      #endif
-      #ifdef GL_TEXTURE_STORAGE_HINT_APPLE
-        // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-        glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-      #endif
-    #endif
-
-    // Using BGRA extension to pull in video frame data directly
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, bufferWidth, bufferHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bufferBase);
-
-    #if !TARGET_OS_IPHONE
-      #ifdef GL_UNPACK_ROW_LENGTH
-        // Unset row pixels
-        glPixelStorei( GL_UNPACK_ROW_LENGTH, 0);
-      #endif
-    #endif
-    glBindTexture(m_textureTarget, 0);
-
-    glDisable(m_textureTarget);
-    VerifyGLState();
-
-    CVPixelBufferUnlockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-    CVBufferRelease(m_buffers[index].cvBufferRef);
-    m_buffers[index].cvBufferRef = NULL;
-
-    plane.flipindex = m_buffers[index].flipindex;
+    CLog::Log(LOGERROR, "CLinuxRendererGLES::UploadCVRefTexture - Error uploading texture Y (err: %d)", ret);
+    return;
   }
 
-  CalculateTextureSourceRects(index, 1);
+  ret = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+    m_textureCache,
+    buf.videoBuffer, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA,
+    im.width/2, im.height/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
+    1,
+    &buf.textureUV);
+
+  if (ret != kCVReturnSuccess)
+  {
+    CLog::Log(LOGERROR, "CLinuxRendererGLES::UploadCVRefTexture - Error uploading texture UV (err: %d)", ret);
+    return;
+  }
+
+  // set textures
+  planes[0].id = CVOpenGLESTextureGetName(buf.textureY);
+  planes[1].id = CVOpenGLESTextureGetName(buf.textureUV);
+  planes[2].id = CVOpenGLESTextureGetName(buf.textureUV);
+
+  glEnable(m_textureTarget);
+
+  for (int p=0; p<2; p++)
+  {
+    glBindTexture(m_textureTarget, planes[p].id);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(m_textureTarget, 0);
+    VerifyGLState();
+  }
+
+  CalculateTextureSourceRects(index, 3);
 #endif
 }
 void CLinuxRendererGLES::DeleteCVRefTexture(int index)
 {
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  YUVPLANE &plane = m_buffers[index].fields[0][0];
+  CRenderBuffer &buf = m_vtbBuffers[index];
 
-  if (m_buffers[index].cvBufferRef)
-    CVBufferRelease(m_buffers[index].cvBufferRef);
-  m_buffers[index].cvBufferRef = NULL;
+  if (buf.textureY)
+    CFRelease(buf.textureY);
+  buf.textureY = nullptr;
 
-  if(plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id);
-  plane.id = 0;
+  if (buf.textureUV)
+    CFRelease(buf.textureUV);
+  buf.textureUV = nullptr;
+
+  ReleaseBuffer(index);
+
+  YUVFIELDS &fields = m_buffers[index].fields;
+  fields[FIELD_FULL][0].id = 0;
+  fields[FIELD_FULL][1].id = 0;
+  fields[FIELD_FULL][2].id = 0;
 #endif
 }
+
 bool CLinuxRendererGLES::CreateCVRefTexture(int index)
 {
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  YV12Image &im     = m_buffers[index].image;
+  YV12Image &im = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
+  YUVPLANES &planes = fields[FIELD_FULL];
 
   DeleteCVRefTexture(index);
 
@@ -2571,52 +2577,26 @@ bool CLinuxRendererGLES::CreateCVRefTexture(int index)
   memset(&fields, 0, sizeof(fields));
 
   im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
+  im.width = m_sourceWidth;
 
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
+  planes[0].texwidth  = im.width;
+  planes[0].texheight = im.height;
+  planes[1].texwidth  = planes[0].texwidth >> im.cshift_x;
+  planes[1].texheight = planes[0].texheight >> im.cshift_y;
+  planes[2].texwidth  = planes[1].texwidth;
+  planes[2].texheight = planes[1].texheight;
 
-  if(m_renderMethod & RENDER_POT)
+  for (int p = 0; p < 3; p++)
   {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
+    planes[p].pixpertex_x = 1;
+    planes[p].pixpertex_y = 1;
   }
-  glEnable(m_textureTarget);
-  glGenTextures(1, &plane.id);
-  VerifyGLState();
 
-  glBindTexture(m_textureTarget, plane.id);
-  #if !TARGET_OS_IPHONE
-    #ifdef GL_UNPACK_ROW_LENGTH
-      // Set row pixels
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, m_sourceWidth);
-    #endif
-    #ifdef GL_TEXTURE_STORAGE_HINT_APPLE
-      // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-      glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-      // Set client storage
-    #endif
-    glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
-  #endif
-
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// This is necessary for non-power-of-two textures
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, NULL);
-
-  #if !TARGET_OS_IPHONE
-    // turn off client storage so it doesn't get picked up for the next texture
-    glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_FALSE);
-  #endif
-  glBindTexture(m_textureTarget, 0);
-  glDisable(m_textureTarget);
-#endif
+  planes[0].id = 1;
   return true;
+#else
+  return false;
+#endif
 }
 
 //********************************************************************************************************
@@ -2965,7 +2945,7 @@ bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
   if(m_renderMethod & RENDER_OMXEGL)
     return false;
 
-  if(m_renderMethod & RENDER_CVREF)
+  if(m_format == RENDER_FMT_CVBREF)
     return false;
 
   if(mode == VS_DEINTERLACEMODE_AUTO
@@ -3006,7 +2986,7 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
   if(m_renderMethod & RENDER_MEDIACODECSURFACE)
     return false;
 
-  if(m_renderMethod & RENDER_CVREF)
+  if(m_format == RENDER_FMT_CVBREF)
     return false;
 
   if(method == VS_INTERLACEMETHOD_AUTO)
@@ -3080,7 +3060,7 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_MEDIACODECSURFACE)
     return VS_INTERLACEMETHOD_NONE;
 
-  if(m_renderMethod & RENDER_CVREF)
+  if(m_format == RENDER_FMT_CVBREF)
     return VS_INTERLACEMETHOD_NONE;
 
   if(m_renderMethod & RENDER_IMXMAP)
@@ -3130,14 +3110,14 @@ void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *pictur
 }
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef, int index)
+void CLinuxRendererGLES::AddProcessor(CVBufferRef cvBufferRef, int index)
 {
-  YUVBUFFER &buf = m_buffers[index];
-  if (buf.cvBufferRef)
-    CVBufferRelease(buf.cvBufferRef);
-  buf.cvBufferRef = cvBufferRef;
-  // retain another reference, this way dvdplayer and renderer can issue releases.
-  CVBufferRetain(buf.cvBufferRef);
+  CRenderBuffer &buf = m_vtbBuffers[index];
+  if (buf.videoBuffer)
+    CVBufferRelease(buf.videoBuffer);
+  buf.videoBuffer = cvBufferRef;
+  // retain another reference, this way VideoPlayer and renderer can issue releases.
+  CVBufferRetain(cvBufferRef);
 }
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT

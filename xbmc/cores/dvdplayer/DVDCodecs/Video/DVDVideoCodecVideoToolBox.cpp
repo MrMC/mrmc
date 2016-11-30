@@ -32,6 +32,7 @@
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "windowing/WindowingFactory.h"
 #include "platform/darwin/DarwinUtils.h"
 #include "platform/darwin/DictionaryUtils.h"
 
@@ -425,7 +426,7 @@ CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height
     0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   CFMutableDictionarySetString(extensions, CFSTR("CVImageBufferChromaLocationBottomField"), "left");
   CFMutableDictionarySetString(extensions, CFSTR("CVImageBufferChromaLocationTopField"), "left");
-  CFDictionarySetValue(extensions, CFSTR("FullRangeVideo"), kCFBooleanFalse);
+  //CFDictionarySetValue(extensions, CFSTR("FullRangeVideo"), kCFBooleanFalse);
   CFMutableDictionarySetObject(extensions, CFSTR("CVPixelAspectRatio"), (CFTypeRef*)pixelAspectRatio);
   CFMutableDictionarySetObject(extensions, CFSTR("SampleDescriptionExtensionAtoms"), (CFTypeRef*)atoms);
   if (interlaced)
@@ -682,7 +683,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
     m_videobuffer.format = RENDER_FMT_CVBREF;
-    m_videobuffer.color_range  = 0;
+    m_videobuffer.color_range  = 1;
     m_videobuffer.color_matrix = 4;
     m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
     m_videobuffer.iWidth  = hints.width;
@@ -1041,17 +1042,25 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     &kCFTypeDictionaryKeyCallBacks,
     &kCFTypeDictionaryValueCallBacks);
 
-  // The recommended pixel format choices are 
-  //  kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange or kCVPixelFormatType_32BGRA.
-  //  TODO: figure out what we need.
-  CFDictionarySetSInt32(destinationPixelBufferAttributes,
-    kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_32BGRA);
+  // this seems strange, like it should be swapped
+  if (g_Windowing.UseLimitedColor())
+    CFDictionarySetSInt32(destinationPixelBufferAttributes,
+      kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange);
+  else
+    CFDictionarySetSInt32(destinationPixelBufferAttributes,
+      kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange);
+
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
     kCVPixelBufferWidthKey, width);
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
     kCVPixelBufferHeightKey, height);
   //CFDictionarySetValue(destinationPixelBufferAttributes,
   //  kCVPixelBufferOpenGLCompatibilityKey, kCFBooleanTrue);
+
+  CFMutableDictionaryRef io_surface_properties = CFDictionaryCreateMutable(kCFAllocatorDefault,
+    0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+  CFDictionarySetValue(destinationPixelBufferAttributes, kCVPixelBufferIOSurfacePropertiesKey, io_surface_properties);
+
 
   outputCallback.callback = VTDecoderCallback;
   outputCallback.refcon = this;
@@ -1075,6 +1084,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     m_vt_session = (void*)vt_session;
   }
 
+  CFRelease(io_surface_properties);
   CFRelease(destinationPixelBufferAttributes);
 }
 
@@ -1112,13 +1122,6 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
     //CLog::Log(LOGDEBUG, "%s - imageBuffer is NULL", __FUNCTION__);
     return;
   }
-  OSType format_type = CVPixelBufferGetPixelFormatType(imageBuffer);
-  if (format_type != kCVPixelFormatType_32BGRA)
-  {
-    CLog::Log(LOGERROR, "%s - imageBuffer format is not 'BGRA',is reporting 0x%x",
-      "VTDecoderCallback", (int)format_type);
-    //return;
-  }
   if (kVTDecodeInfo_FrameDropped & infoFlags)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -1142,7 +1145,7 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
     newFrame->width  = CVPixelBufferGetWidth(imageBuffer);
     newFrame->height = CVPixelBufferGetHeight(imageBuffer);
   }  
-  newFrame->pixel_buffer_format = format_type;
+  newFrame->pixel_buffer_format = CVPixelBufferGetPixelFormatType(imageBuffer);;
   newFrame->pixel_buffer_ref = CVBufferRetain(imageBuffer);
   GetFrameDisplayTimeFromDictionary(frameInfo, newFrame);
 

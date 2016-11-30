@@ -33,6 +33,10 @@
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#if defined(TARGET_DARWIN_IOS)
+#include <CoreVideo/CVOpenGLESTexture.h>
+#include <CoreVideo/CVOpenGLESTextureCache.h>
+#endif
 
 class CRenderCapture;
 
@@ -145,6 +149,7 @@ public:
   virtual void         Flush();
   virtual void         ReorderDrawPoints();
   virtual void         ReleaseBuffer(int idx);
+  virtual bool         NeedBufferForRef(int idx);
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual bool         IsGuiLayer();
 
@@ -165,7 +170,7 @@ public:
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture, int index);
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef, int index);
+  virtual void         AddProcessor(CVBufferRef cvBufferRef, int index);
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT
   virtual void         AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index);
@@ -234,9 +239,10 @@ protected:
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderEglImage(int index, int field);       // Android OES texture
-  void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
   void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
   void RenderIMXMAPTexture(int index, int field); // IMXMAP rendering
+
+  void AfterRenderHook(int idx);
 
   CFrameBufferObject m_fbo;
 
@@ -292,9 +298,6 @@ protected:
 #ifdef HAVE_LIBOPENMAX
     OpenMaxVideoBufferHolder *openMaxBufferHolder;
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-    struct __CVBuffer *cvBufferRef;
-#endif
 #ifdef HAS_LIBSTAGEFRIGHT
     CDVDVideoCodecStageFright* stf;
     EGLImageKHR eglimg;
@@ -307,6 +310,18 @@ protected:
     CDVDVideoCodecIMXBuffer *IMXBuffer;
 #endif
   };
+
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  struct CRenderBuffer
+  {
+    CVOpenGLESTextureRef textureY;
+    CVOpenGLESTextureRef textureUV;
+    CVBufferRef videoBuffer;
+    GLsync fence;
+  };
+  CRenderBuffer m_vtbBuffers[NUM_BUFFERS];
+  CVOpenGLESTextureCacheRef m_textureCache;
+#endif
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
 

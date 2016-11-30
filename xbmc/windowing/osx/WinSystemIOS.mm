@@ -480,6 +480,12 @@ bool CWinSystemIOS::Show(bool raise)
 {
   return true;
 }
+
+void* CWinSystemIOS::GetEAGLContextObj()
+{
+  return [g_xbmcController getEAGLContextObj];
+}
+
 #endif
 
 #endif

@@ -1440,6 +1440,10 @@ MainController *g_xbmcController;
   if (MCRuntimeLib_Initialized())
     CAEFactory::DeviceChange();
 }
+- (void*) getEAGLContextObj
+{
+  return [m_glView getContext];
+}
 
 #pragma mark - MCRuntimeLib routines
 //--------------------------------------------------------------
