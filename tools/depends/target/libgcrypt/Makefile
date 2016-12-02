@@ -3,9 +3,10 @@ DEPS= ../../Makefile.include 03-gcrypt-android-select.patch Makefile
 
 # lib name, version
 LIBNAME=libgcrypt
-VERSION=1.6.2
+VERSION=1.7.3
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
+BASE_URL=ftp://ftp.gnupg.org/gcrypt/libgcrypt
 
 ifeq ($(OS),osx)
 CONFIGURE_FLAGS+= --disable-asm --disable-avx-support --disable-avx2-support
@@ -31,13 +32,11 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../01-asm-Allow-building-x86-and-amd64-using-old-compilers.patch 
-	#cd $(PLATFORM); patch -p0 < ../02-armasm.patch
 	cd $(PLATFORM); patch -p0 < ../03-gcrypt-android-select.patch
 	#cd $(PLATFORM); patch -p0 < ../04-oflagmunging.patch
 	# do not build the tests or docs
-	sed -ie "s|doc tests||" "$(PLATFORM)/Makefile.am"
-	sed -ie "s|!defined (__arm__)|!defined (__arm__) \&\& !defined (__arm64__)|" "$(PLATFORM)/src/hwf-arm.c"
+	sed -ie "s| tests||" "$(PLATFORM)/Makefile.am"
+	sed -ie "s|serial-tests ||" "$(PLATFORM)/configure.ac"
 	cp config.sub $(PLATFORM)/config.sub
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
