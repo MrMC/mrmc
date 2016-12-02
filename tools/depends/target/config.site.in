@@ -56,6 +56,13 @@ if test "${PACKAGE_NAME}" = "libgcrypt"; then
   ac_cv_sys_symbol_underscore=no
   CFLAGS="$CFLAGS -std=gnu99"
 fi
+#libgpg-error
+if test "${PACKAGE_NAME}" = "libgpg-error"; then
+if test "@platform_os@" = "ios"; then
+  host=aarch64-apple-darwin
+  host_alias=aarch64-apple-darwin
+fi
+fi
 
 #gnutls
 gl_cv_func_gettimeofday_clobber=no
