@@ -36,6 +36,7 @@ std::atomic<MainController*> m_xbmcController;
 {
   PRINT_SIGNATURE();
 
+  [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
   [m_xbmcController pauseAnimation];
   [m_xbmcController becomeInactive];
 }
