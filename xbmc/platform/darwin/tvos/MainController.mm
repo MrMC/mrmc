@@ -1395,7 +1395,7 @@ MainController *g_xbmcController;
         m_controllerState = MC_BACKGROUND_RESTORE;
         // get the current playing time but backup a little, it seems better
         m_wasPlayingTime = g_application.GetTime() - 1.50;
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
         // wait until we stop playing.
         XbmcThreads::EndTime timer2(2000);
         while(g_application.m_pPlayer->IsPlaying() && !timer2.IsTimePast())
