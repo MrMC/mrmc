@@ -46,7 +46,11 @@ public:
 
 class DllLibRTMP : public DllDynamic, DllLibRTMPInterface
 {
+#if defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllLibRTMP, "librtmp.framework/librtmp")
+#else
   DECLARE_DLL_WRAPPER(DllLibRTMP, DLL_PATH_LIBRTMP)
+#endif
   DEFINE_METHOD1(void, LogSetLevel,    (int p1))
   DEFINE_METHOD1(void, LogSetCallback, (RTMP_LogCallback* p1))
   DEFINE_METHOD0(RTMP *, Alloc         )
