@@ -199,6 +199,8 @@ openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find OpenMax headers. OpenMax support disabled. =="
 ssh_not_found="== Could not find libssh. =="
 ssh_disabled="== SSH SFTP disabled. =="
+librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
+librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
 libshairplay_not_found="== Could not find libshairplay. =="
@@ -344,6 +346,12 @@ AC_ARG_ENABLE([ssh],
   [disable SSH SFTP support (default is enabled)])],
   [use_ssh=$enableval],
   [use_ssh=yes])
+
+AC_ARG_ENABLE([rtmp],
+  [AS_HELP_STRING([--enable-rtmp],
+  [enable RTMP support via librtmp (default is auto)])],
+  [use_librtmp=$enableval],
+  [use_librtmp=auto])
 
 AC_ARG_ENABLE([samba],
   [AS_HELP_STRING([--disable-samba],
@@ -1288,6 +1296,26 @@ else
   AC_DEFINE([HAVE_LIBSSH], [1], [Whether to use libSSH library.])
 fi
 
+# libRTMP
+if test "$use_librtmp" != "no"; then
+  AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
+   [if test "$use_librtmp" = "yes"; then
+      AC_MSG_ERROR($librtmp_not_found)
+    elif test "$use_librtmp" != "no"; then
+      AC_MSG_NOTICE($librtmp_not_found)
+      use_librtmp="no"
+    fi
+   ])
+  if test "$use_librtmp" != "no"; then
+    XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
+  fi
+  if test "$use_librtmp" != "no"; then
+    AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
+  fi
+else
+  AC_MSG_NOTICE($librtmp_disabled)
+fi
+
 # samba
 if test "x$use_samba" != "xno"; then
   AC_CHECK_HEADER([libsmbclient.h],, [use_samba=no;AC_MSG_ERROR($missing_library)])
@@ -2025,6 +2053,12 @@ if test "$use_libssh" != "no"; then
   final_message="$final_message\n  libssh support:\tYes"
 else
   final_message="$final_message\n  libssh support:\tNo"
+fi
+
+if test "$use_librtmp" != "no"; then
+  final_message="$final_message\n  libRTMP support:\tYes"
+else
+  final_message="$final_message\n  libRTMP support:\tNo"
 fi
 
 if test "x$use_samba" != "xno"; then

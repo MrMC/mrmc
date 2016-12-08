@@ -25,6 +25,7 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamPVRManager.h"
+#include "DVDInputStreamRTMP.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
 #endif
@@ -84,6 +85,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 7) == "mmst://"
        || file.substr(0, 7) == "mmsh://")
     return new CDVDInputStreamFFmpeg(fileitem);
+#ifdef HAS_LIBRTMP
+  else if(file.substr(0, 7) == "rtmp://"
+       || file.substr(0, 8) == "rtmpt://"
+       || file.substr(0, 8) == "rtmpe://"
+       || file.substr(0, 9) == "rtmpte://"
+       || file.substr(0, 8) == "rtmps://")
+    return new CDVDInputStreamRTMP(fileitem);
+#endif
 #ifdef ENABLE_DVDINPUTSTREAM_STACK
   else if(file.substr(0, 8) == "stack://")
     return new CDVDInputStreamStack(fileitem);

@@ -1666,6 +1666,9 @@
 		F5024C0E1BB433F700134B16 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142DD1BAF882F0075A95C /* OpenGLES.framework */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F5071906175A26AD004C87D1 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5071905175A26AD004C87D1 /* VideoDecodeAcceleration.framework */; };
+		F507F5711DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */; };
+		F507F5721DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */; };
+		F507F5731DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F51063421BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
 		F51063431BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
@@ -5049,6 +5052,9 @@
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F5071905175A26AD004C87D1 /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = SDKROOT; };
+		F507F56E1DF9E2EC0099917C /* DllLibRTMP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DllLibRTMP.h; sourceTree = "<group>"; };
+		F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamRTMP.cpp; sourceTree = "<group>"; };
+		F507F5701DF9E3030099917C /* DVDInputStreamRTMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamRTMP.h; sourceTree = "<group>"; };
 		F50FDC58119B4B2C00C8B8CD /* GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTextViewer.h; sourceTree = "<group>"; };
 		F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTextViewer.cpp; sourceTree = "<group>"; };
 		F51063401BDAA11D00BBCED6 /* DarwinNSUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinNSUserDefaults.h; sourceTree = "<group>"; };
@@ -8109,6 +8115,7 @@
 			isa = PBXGroup;
 			children = (
 				F5B7227C1C7BBE22006432AE /* DllDvdNav.h */,
+				F507F56E1DF9E2EC0099917C /* DllLibRTMP.h */,
 				E38E15590D25F9FA00618676 /* DVDFactoryInputStream.cpp */,
 				E38E155A0D25F9FA00618676 /* DVDFactoryInputStream.h */,
 				E38E155B0D25F9FA00618676 /* DVDInputStream.cpp */,
@@ -8127,6 +8134,8 @@
 				F5B7226E1C7BBDE9006432AE /* DVDInputStreamNavigator.h */,
 				C848290E156CFFA0005A996F /* DVDInputStreamPVRManager.cpp */,
 				C848290F156CFFA0005A996F /* DVDInputStreamPVRManager.h */,
+				F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */,
+				F507F5701DF9E3030099917C /* DVDInputStreamRTMP.h */,
 				F5B722721C7BBDF6006432AE /* DVDInputStreamStack.cpp */,
 				F5B722731C7BBDF6006432AE /* DVDInputStreamStack.h */,
 				F5B722771C7BBE04006432AE /* DVDStateSerializer.cpp */,
@@ -10907,6 +10916,7 @@
 				7CCDA7A3192756250074CF51 /* NptCrypto.cpp in Sources */,
 				7CCDA7A6192756250074CF51 /* NptDataBuffer.cpp in Sources */,
 				DF4BF0161A4EF30F0053AC56 /* cc_decoder708.cpp in Sources */,
+				F507F5711DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */,
 				7CCDA7AF192756250074CF51 /* NptDebug.cpp in Sources */,
 				7CCDA7B8192756250074CF51 /* NptDigest.cpp in Sources */,
 				399442741A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */,
@@ -11351,6 +11361,7 @@
 				F5B7238D1C7C9AF6006432AE /* RarFile.cpp in Sources */,
 				F5B7230F1C7C894F006432AE /* PictureBuiltins.cpp in Sources */,
 				E4991303174E5DAD00741B6D /* GUIMessage.cpp in Sources */,
+				F507F5721DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */,
 				E4991304174E5DAD00741B6D /* GUIMoverControl.cpp in Sources */,
 				399442751A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */,
 				F5B723581C7C99A6006432AE /* GUIDialogVisualisationPresetList.cpp in Sources */,
@@ -12960,6 +12971,7 @@
 				F5D142051BAF0B6D0075A95C /* NptCommon.cpp in Sources */,
 				F5D142061BAF0B6D0075A95C /* NptConsole.cpp in Sources */,
 				F5D142071BAF0B6D0075A95C /* NptCrypto.cpp in Sources */,
+				F507F5731DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */,
 				F5D142081BAF0B6D0075A95C /* NptDataBuffer.cpp in Sources */,
 				F5D142091BAF0B6D0075A95C /* NptDebug.cpp in Sources */,
 				F5D1420A1BAF0B6D0075A95C /* NptDigest.cpp in Sources */,

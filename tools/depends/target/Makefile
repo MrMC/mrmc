@@ -31,6 +31,7 @@ DEPENDS += fribidi
 DEPENDS += libmpeg2
 DEPENDS += libass
 DEPENDS += libsquish
+DEPENDS += librtmp
 DEPENDS += libxml2
 DEPENDS += yajl
 DEPENDS += libmicrohttpd
@@ -124,6 +125,7 @@ jasper: libjpeg-turbo
 libvorbis: libogg
 libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
+librtmp: openssl
 libmicrohttpd: openssl libgpg-error libgcrypt
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
