@@ -58,7 +58,7 @@ void CGUITextureGLES::Begin(color_t color)
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
 
-  texture->BindToUnit(0);
+  texture->BindToUnit(unit++);
 
   bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[3] < 255;
 
@@ -75,7 +75,7 @@ void CGUITextureGLES::Begin(color_t color)
 
     hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
 
-    m_diffuse.m_textures[0]->BindToUnit(1);
+    m_diffuse.m_textures[0]->BindToUnit(unit++);
 
   }
   else

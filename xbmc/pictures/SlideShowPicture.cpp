@@ -746,11 +746,11 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   if (!g_application.GetRenderGUI())
     return;
 
+  int unit = 0;
 #if defined(HAS_GL)
   g_graphicsContext.BeginPaint();
   if (pTexture)
   {
-    int unit = 0;
     pTexture->LoadToGPU();
     pTexture->BindToUnit(unit++);
 
@@ -832,7 +832,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    pTexture->BindToUnit(0);
+    pTexture->BindToUnit(unit++);
 
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
