@@ -2284,7 +2284,6 @@ OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/strings.xml"
 
 OUTPUT_FILES="$OUTPUT_FILES xbmc/DllPaths_generated_android.h"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/activity/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/loader/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/jni/Makefile"
 fi
 
