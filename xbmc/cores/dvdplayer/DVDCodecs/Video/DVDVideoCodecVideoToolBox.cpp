@@ -426,7 +426,7 @@ CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height
     0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   CFMutableDictionarySetString(extensions, CFSTR("CVImageBufferChromaLocationBottomField"), "left");
   CFMutableDictionarySetString(extensions, CFSTR("CVImageBufferChromaLocationTopField"), "left");
-  //CFDictionarySetValue(extensions, CFSTR("FullRangeVideo"), kCFBooleanFalse);
+  CFDictionarySetValue(extensions, CFSTR("FullRangeVideo"), g_Windowing.UseLimitedColor() ? kCFBooleanFalse:kCFBooleanTrue);
   CFMutableDictionarySetObject(extensions, CFSTR("CVPixelAspectRatio"), (CFTypeRef*)pixelAspectRatio);
   CFMutableDictionarySetObject(extensions, CFSTR("SampleDescriptionExtensionAtoms"), (CFTypeRef*)atoms);
   if (interlaced)
@@ -641,8 +641,38 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             return false;
           }
 
-          m_fmt_desc = CreateFormatDescriptionFromCodecData(
-            kVTFormatH264, width, height, m_bitstream->GetExtraData(), m_bitstream->GetExtraSize(), m_enable_temporal_processing);
+          if (false)
+          {
+            m_fmt_desc = CreateFormatDescriptionFromCodecData(
+              kVTFormatH264, width, height, m_bitstream->GetExtraData(), m_bitstream->GetExtraSize(), m_enable_temporal_processing);
+          }
+          else
+          {
+            uint8_t *spc = m_bitstream->GetExtraData() + 6;
+            uint32_t sps_size = BS_RB16(spc);
+            spc += 2;
+            uint8_t *pps = spc + sps_size;
+            pps++;  // skip pps count, it is always one.
+            uint32_t pps_size = BS_RB16(pps);
+            pps += 2;
+            const uint8_t* const parameterSetPointers[] = { spc, pps };
+            const size_t parameterSetSizes[] = { sps_size, pps_size };
+
+            CLog::Log(LOGNOTICE, "Constructing new format description");
+            OSStatus status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
+              2, parameterSetPointers, parameterSetSizes, 4, &m_fmt_desc);
+            if (status != noErr)
+            {
+              CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
+              return false;
+            }
+            const Boolean useCleanAperture = true;
+            const Boolean usePixelAspectRatio = false;
+            auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
+
+            hints.width = videoSize.width;
+            hints.height = videoSize.height;
+          }
 
           CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, extrasize, m_max_ref_frames);
         }
@@ -683,7 +713,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
     m_videobuffer.format = RENDER_FMT_CVBREF;
-    m_videobuffer.color_range  = 1;
+    m_videobuffer.color_range  = g_Windowing.UseLimitedColor() ? 0:1;
     m_videobuffer.color_matrix = 4;
     m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
     m_videobuffer.iWidth  = hints.width;
@@ -1042,13 +1072,8 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     &kCFTypeDictionaryKeyCallBacks,
     &kCFTypeDictionaryValueCallBacks);
 
-  // this seems strange, like it should be swapped
-  if (g_Windowing.UseLimitedColor())
-    CFDictionarySetSInt32(destinationPixelBufferAttributes,
-      kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange);
-  else
-    CFDictionarySetSInt32(destinationPixelBufferAttributes,
-      kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange);
+  CFDictionarySetSInt32(destinationPixelBufferAttributes,
+    kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange);
 
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
     kCVPixelBufferWidthKey, width);
