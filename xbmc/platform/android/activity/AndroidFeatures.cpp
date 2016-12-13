@@ -30,7 +30,7 @@
 
 bool CAndroidFeatures::HasNeon()
 {
-  if (android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM) 
+  if (android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM)
     return ((android_getCpuFeatures() & ANDROID_CPU_ARM_FEATURE_NEON) != 0);
   return false;
 }
@@ -38,15 +38,13 @@ bool CAndroidFeatures::HasNeon()
 int CAndroidFeatures::GetVersion()
 {
   static int version = -1;
-
   if (version == -1)
   {
     version = 0;
 
     JNIEnv *jenv = xbmc_jnienv();
-
     jclass jcOsBuild = jenv->FindClass("android/os/Build$VERSION");
-    if (jcOsBuild == NULL) 
+    if (jcOsBuild == NULL)
     {
       CLog::Log(LOGERROR, "%s: Error getting class android.os.Build.VERSION", __PRETTY_FUNCTION__);
       return version;
@@ -70,10 +68,29 @@ int CAndroidFeatures::GetVersion()
 int CAndroidFeatures::GetCPUCount()
 {
   static int count = -1;
-
   if (count == -1)
   {
     count = android_getCpuCount();
+  }
+  return count;
+}
+
+int CAndroidFeatures::GetActualCPUCount()
+{
+  static int count = -1;
+  if (count == -1)
+  {
+    count = android_getCpuCount();
+#if !defined (__aarch64__)
+    if (StringUtils::StartsWith(CJNIBuild::MODEL, "AFTS") &&
+        StringUtils::StartsWithNoCase(CJNIBuild::MANUFACTURER, "Amazon"))
+    {
+      CLog::Log(LOGDEBUG, "CAndroidFeatures::GetActualCPUCount firetv2 detected cpu = 2 for 32 bit");
+      // MediaTek 8173C, 2xA72 + 2xA53, returns 4 cores
+      // but there are really only two A7s when built as 32 bit
+      count = 2;
+    }
+#endif
   }
   return count;
 }

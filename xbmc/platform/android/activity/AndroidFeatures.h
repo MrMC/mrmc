@@ -28,6 +28,7 @@ class CAndroidFeatures
   static bool         HasNeon();
   static int          GetVersion();
   static int          GetCPUCount();
+  static int          GetActualCPUCount();
   static bool         HasTouchScreen();
   static bool         IsFireTVDevice();
 };
