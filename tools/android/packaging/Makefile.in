@@ -12,6 +12,7 @@ OBJS+= libdvdnav.so
 OBJS+= libbluray.so
 OBJS+= libplist.so
 OBJS+= libshairplay.so
+OBJS+= librtmp.so
 
 PLATFORM_OBJS =
 EXCLUDED_ADDONS =
