@@ -425,6 +425,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           SAFE_DELETE(m_bitstream);
         }
       }
+      else
+        return false;
       break;
     case AV_CODEC_ID_HEVC:
       m_mime = "video/hevc";
@@ -438,6 +440,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           SAFE_DELETE(m_bitstream);
         }
       }
+      else
+        return false;
       break;
     case AV_CODEC_ID_WMV3:
       if (m_hints.extrasize == 4 || m_hints.extrasize == 5)
