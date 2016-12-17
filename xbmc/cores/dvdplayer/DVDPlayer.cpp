@@ -1554,9 +1554,9 @@ void CDVDPlayer::Process()
       if (CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream))
       {
         double correction = menu->GetTimeStampCorrection();
-        if (pPacket->dts > correction)
+        if (pPacket->dts != DVD_NOPTS_VALUE && pPacket->dts > correction)
           pPacket->dts -= correction;
-        if (pPacket->pts > correction)
+        if (pPacket->pts != DVD_NOPTS_VALUE && pPacket->pts > correction)
           pPacket->pts -= correction;
       }
       if (m_dvd.syncClock)
