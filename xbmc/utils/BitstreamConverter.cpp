@@ -72,6 +72,34 @@ enum {
     HEVC_NAL_SEI_SUFFIX = 40
 };
 
+enum {
+  SEI_BUFFERING_PERIOD = 0,
+  SEI_PIC_TIMING,
+  SEI_PAN_SCAN_RECT,
+  SEI_FILLER_PAYLOAD,
+  SEI_USER_DATA_REGISTERED_ITU_T_T35,
+  SEI_USER_DATA_UNREGISTERED,
+  SEI_RECOVERY_POINT,
+  SEI_DEC_REF_PIC_MARKING_REPETITION,
+  SEI_SPARE_PIC,
+  SEI_SCENE_INFO,
+  SEI_SUB_SEQ_INFO,
+  SEI_SUB_SEQ_LAYER_CHARACTERISTICS,
+  SEI_SUB_SEQ_CHARACTERISTICS,
+  SEI_FULL_FRAME_FREEZE,
+  SEI_FULL_FRAME_FREEZE_RELEASE,
+  SEI_FULL_FRAME_SNAPSHOT,
+  SEI_PROGRESSIVE_REFINEMENT_SEGMENT_START,
+  SEI_PROGRESSIVE_REFINEMENT_SEGMENT_END,
+  SEI_MOTION_CONSTRAINED_SLICE_GROUP_SET,
+  SEI_FILM_GRAIN_CHARACTERISTICS,
+  SEI_DEBLOCKING_FILTER_DISPLAY_PREFERENCE,
+  SEI_STEREO_VIDEO_INFO,
+  SEI_POST_FILTER_HINTS,
+  SEI_TONE_MAPPING
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 // GStreamer h264 parser
@@ -216,6 +244,35 @@ static const uint8_t* avc_find_startcode(const uint8_t *p, const uint8_t *end)
   return out;
 }
 
+static bool has_sei_recovery_point(const uint8_t *p, const uint8_t *end)
+{
+  int ptype(0), psize(0), offset(1);
+
+  do
+  {
+    ptype = 0;
+    do {
+      ptype += p[offset];
+    } while (p[offset++] == 0xFF);
+
+    psize = 0;
+    do {
+      psize += p[offset];
+    } while (p[offset++] == 0xFF);
+
+    if (ptype == SEI_RECOVERY_POINT)
+    {
+      nal_bitstream bs;
+      nal_bs_init(&bs, p + offset, psize);
+      // read recovery_frame_cnt
+      return nal_bs_read_ue(&bs) >= 0;
+    }
+    offset += psize;
+  } while(p + offset < end && p[offset] != 0x80);
+
+  return false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 CBitstreamParser::CBitstreamParser()
@@ -265,8 +322,52 @@ const uint8_t* CBitstreamParser::find_start_code(const uint8_t *p,
 
   return p + 4;
 }
+/*
+bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size)
+{
+  if (!buf)
+    return false;
 
-bool CBitstreamParser::FindIdrSlice(const uint8_t *buf, int buf_size, bool annexb)
+  bool rtn = false;
+  uint32_t state = -1;
+  const uint8_t *buf_begin, *buf_end = buf + buf_size;
+
+  for(;rtn == false;)
+  {
+    buf = find_start_code(buf, buf_end, &state);
+    if (buf >= buf_end)
+    {
+      break;
+    }
+
+    switch (state & 0x1f)
+    {
+      case AVC_NAL_SLICE:
+        break;
+      case AVC_NAL_IDR_SLICE:
+        rtn = true;
+        break;
+      case AVC_NAL_SEI:
+        buf_begin = buf - 1;
+        // the next start code is the SEI end point
+        buf = find_start_code(buf, buf_end, &state) - 4;
+        if (has_sei_recovery_point(buf_begin, buf))
+          rtn = true;
+        break;
+      case AVC_NAL_SPS:
+        break;
+      case AVC_NAL_PPS:
+        break;
+      default:
+        break;
+    }
+  }
+
+  return rtn;
+}
+*/
+
+bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size, bool annexb)
 {
   if (!buf)
     return false;
@@ -274,7 +375,7 @@ bool CBitstreamParser::FindIdrSlice(const uint8_t *buf, int buf_size, bool annex
   bool rtn = false;
   const uint8_t *buf_end = buf + buf_size;
 
-  for(;;)
+  for(;rtn == false;)
   {
     int src_length;
     uint32_t state = -1;
@@ -295,27 +396,29 @@ bool CBitstreamParser::FindIdrSlice(const uint8_t *buf, int buf_size, bool annex
     int nal_type = state & 0x1f;
     switch (nal_type)
     {
-      default:
-        //CLog::Log(LOGDEBUG, "FindIdrSlice: found nal_type(%d)", state & 0x1f);
-        break;
       case AVC_NAL_SLICE:
-        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SLICE");
         break;
       case AVC_NAL_IDR_SLICE:
-        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_IDR_SLICE");
         rtn = true;
         break;
       case AVC_NAL_SEI:
-        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SEI");
+        {
+          const uint8_t *sei_end;
+          if (annexb)
+            sei_end = find_start_code(buf, buf_end, &state) - 4;
+          else
+            sei_end = buf + src_length;
+          if (has_sei_recovery_point(buf, sei_end))
+            rtn = true;
+        }
         break;
       case AVC_NAL_SPS:
-        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SPS");
         break;
       case AVC_NAL_PPS:
-        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_PPS");
         break;
       case AVC_NAL_AUD:
-        //CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_AUD");
+        break;
+      default:
         break;
     }
     buf += src_length;
@@ -341,6 +444,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_convert_3byteTo4byteNALSize = false;
   m_convert_bytestream = false;
   m_sps_pps_context.sps_pps_data = NULL;
+  m_has_keyframe = true;
 }
 
 CBitstreamConverter::~CBitstreamConverter()
@@ -373,6 +477,8 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
           m_convert_bitstream = BitstreamConvertInitAVC(m_extradata, m_extrasize);
           return true;
         }
+        else
+          CLog::Log(LOGINFO, "CBitstreamConverter::Open Invalid avcC");
       }
       else
       {
@@ -418,7 +524,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
             // are valid, setup to convert 3 byte NAL sizes to 4 byte.
             in_extradata[4] = 0xFF;
             m_convert_3byteTo4byteNALSize = true;
-           
+
             m_extradata = (uint8_t *)av_malloc(in_extrasize);
             memcpy(m_extradata, in_extradata, in_extrasize);
             m_extrasize = in_extrasize;
@@ -442,11 +548,12 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
       // valid hvcC data (bitstream) always starts with the value 1 (version)
       if(m_to_annexb)
       {
-        // TODO: from Amlogic
-        /* It seems the extradata is encoded as hvcC format.
-         * Temporarily, we support configurationVersion==0 until 14496-15 3rd
-         * is finalized. When finalized, configurationVersion will be 1 and we
-         * can recognize hvcC by checking if extradata[0]==1 or not. */
+       /** @todo from Amlogic
+        * It seems the extradata is encoded as hvcC format.
+        * Temporarily, we support configurationVersion==0 until 14496-15 3rd
+        * is finalized. When finalized, configurationVersion will be 1 and we
+        * can recognize hvcC by checking if extradata[0]==1 or not.
+        */
 
         if (in_extradata[0] || in_extradata[1] || in_extradata[2] > 1)
         {
@@ -469,7 +576,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
                (in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 1) )
           {
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init");
-            // TODO: convert annexb to bitstream format
+            //! @todo convert annexb to bitstream format
             return false;
           }
           else
@@ -528,7 +635,7 @@ void CBitstreamConverter::Close(void)
 bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 {
   if (m_convertBuffer)
-  {  
+  {
     av_free(m_convertBuffer);
     m_convertBuffer = NULL;
   }
@@ -578,7 +685,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
       {
         m_inputSize = iSize;
         m_inputBuffer = pData;
-  
+
         if (m_convert_bytestream)
         {
           if(m_convertBuffer)
@@ -664,6 +771,16 @@ int CBitstreamConverter::GetExtraSize() const
     return m_sps_pps_context.size;
   else
     return m_extrasize;
+}
+
+void CBitstreamConverter::ResetKeyframe(void)
+{
+  m_has_keyframe = false;
+}
+
+bool CBitstreamConverter::HasKeyframe() const
+{
+  return m_has_keyframe;
 }
 
 bool CBitstreamConverter::BitstreamConvertInitAVC(void *in_extradata, int in_extrasize)
@@ -928,7 +1045,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   int i;
   uint8_t *buf = pData;
   uint32_t buf_size = iSize;
-  uint8_t  unit_type, nal_sps, nal_pps;
+  uint8_t  unit_type, nal_sps, nal_pps, nal_sei;
   int32_t  nal_size;
   uint32_t cumul_size = 0;
   const uint8_t *buf_end = buf + buf_size;
@@ -938,10 +1055,12 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     case AV_CODEC_ID_H264:
       nal_sps = AVC_NAL_SPS;
       nal_pps = AVC_NAL_PPS;
+      nal_sei = AVC_NAL_SEI;
       break;
     case AV_CODEC_ID_HEVC:
       nal_sps = HEVC_NAL_SPS;
       nal_pps = HEVC_NAL_PPS;
+      nal_sei = HEVC_NAL_SEI_PREFIX;
       break;
     default:
       return false;
@@ -972,7 +1091,10 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (m_sps_pps_context.first_idr && (unit_type == nal_sps || unit_type == nal_pps))
       m_sps_pps_context.idr_sps_pps_seen = 1;
 
-      // prepend only to the first access unit of an IDR picture, if no sps/pps already present
+    if (!m_has_keyframe && (IsIDR(unit_type) || (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))
+      m_has_keyframe = true;
+
+    // prepend only to the first access unit of an IDR picture, if no sps/pps already present
     if (m_sps_pps_context.first_idr && IsIDR(unit_type) && !m_sps_pps_context.idr_sps_pps_seen)
     {
       BitstreamAllocAndCopy(poutbuf, poutbuf_size,
@@ -1473,7 +1595,7 @@ void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_s
     sps_info.seq_scaling_matrix_present_flag = nal_bs_read (&bs, 1);
     if (sps_info.seq_scaling_matrix_present_flag)
     {
-      /* TODO: unfinished */
+      //! @todo unfinished
     }
   }
   sps_info.log2_max_frame_num_minus4 = nal_bs_read_ue(&bs);
@@ -1487,16 +1609,16 @@ void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_s
     sps_info.log2_max_pic_order_cnt_lsb_minus4 = nal_bs_read_ue(&bs);
   }
   else if (sps_info.pic_order_cnt_type == 1)
-  { // TODO: unfinished
-/*
-    int delta_pic_order_always_zero_flag = nal_bs_read(&bs, 1);
-    int offset_for_non_ref_pic = nal_bs_read_se(&bs);
-    int offset_for_top_to_bottom_field = nal_bs_read_se(&bs);
+  { //! @todo unfinished
+    /*
+    delta_pic_order_always_zero_flag = gst_nal_bs_read (bs, 1);
+    offset_for_non_ref_pic = gst_nal_bs_read_se (bs);
+    offset_for_top_to_bottom_field = gst_nal_bs_read_se (bs);
 
-    int num_ref_frames_in_pic_order_cnt_cycle = nal_bs_read_se(&bs);
-    for(int i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++ )
-      int offset_for_ref_frame = nal_bs_read_se(&bs);
-*/
+    num_ref_frames_in_pic_order_cnt_cycle = gst_nal_bs_read_ue (bs);
+    for( i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++ )
+    offset_for_ref_frame[i] = gst_nal_bs_read_se (bs);
+    */
   }
 
   sps_info.max_num_ref_frames             = nal_bs_read_ue(&bs);

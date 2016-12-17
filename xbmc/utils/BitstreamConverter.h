@@ -1,6 +1,8 @@
+#pragma once
+
 /*
- *      Copyright (C) 2010-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2010-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,13 +15,10 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifndef _BITSTREAMCONVERTER_H_
-#define _BITSTREAMCONVERTER_H_
 
 #include <stdint.h>
 
@@ -44,8 +43,8 @@ typedef struct {
 } bits_reader_t;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// TODO: refactor this so as not to need these ffmpeg routines.
-// These are not exposed in ffmpeg's API so we dupe them here.
+//! @todo refactor this so as not to need these ffmpeg routines.
+//! These are not exposed in ffmpeg's API so we dupe them here.
 // AVC helper functions for muxers,
 //  * Copyright (c) 2006 Baptiste Coudurier <baptiste.coudurier@smartjog.com>
 // This is part of FFmpeg
@@ -138,7 +137,7 @@ public:
 
   static bool Open();
   static void Close();
-  static bool FindIdrSlice(const uint8_t *buf, int buf_size, bool annexb = true);
+  static bool HasKeyframe(const uint8_t *buf, int buf_size, bool annexb = true);
 
 protected:
   static const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
@@ -158,6 +157,8 @@ public:
   int               GetConvertSize() const;
   uint8_t*          GetExtraData(void) const;
   int               GetExtraSize() const;
+  void              ResetKeyframe(void);
+  bool              HasKeyframe() const;
 
   static bool       ExtractH264_SPS_PPS(const uint8_t *data, int len,
                       uint8_t **sps, int *spssize, uint8_t **pps, int *ppssize);
@@ -211,6 +212,6 @@ protected:
   bool              m_convert_3byteTo4byteNALSize;
   bool              m_convert_bytestream;
   AVCodecID         m_codec;
+  bool              m_has_keyframe;
 };
 
-#endif

@@ -97,7 +97,7 @@ protected:
   std::atomic<int>  m_queue_depth;    // we will try to keep the queue depth at m_max_ref_frames
   int32_t           m_max_ref_frames;
   bool              m_started;
-  int               m_lastIDRframe;
+  int               m_lastKeyframe;
   bool              m_sessionRestart;
   double            m_sessionRestartDTS;
   double            m_sessionRestartPTS;

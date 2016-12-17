@@ -511,7 +511,7 @@ CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
   m_codecControlFlags = 0;
   m_sort_time = 0;
   m_started = false;
-  m_lastIDRframe = 0;
+  m_lastKeyframe = 0;
   m_sessionRestart = false;
   m_sessionRestartDTS = DVD_NOPTS_VALUE;
   m_sessionRestartPTS = DVD_NOPTS_VALUE;
@@ -789,16 +789,16 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       pData = m_bitstream->GetConvertBuffer();
     }
 
-    if (CBitstreamParser::FindIdrSlice(pData, iSize, false))
+    if (CBitstreamParser::HasKeyframe(pData, iSize, false))
     {
-      // VideoToolBox is picky about starting up with 1st frame as IDR slice
-      // Check and skip until we hit one. m_lastIDRframe tracks how many frames back
-      // was the last IDR + max ref frames. It is used during reset and reopen.
-      //CLog::Log(LOGDEBUG, "%s - IDR Slice found, m_lastIDRframe %d", __FUNCTION__, m_lastIDRframe);
+      // VideoToolBox is picky about starting up with a keyframe
+      // Check and skip until we hit one. m_lastKeyframe tracks how many frames back
+      // was the last one. It is used during reset and reopen.
+      //CLog::Log(LOGDEBUG, "%s - Keyframe found, m_lastKeyframe %d", __FUNCTION__, m_lastKeyframe);
       m_started = true;
-      m_lastIDRframe = 0;
+      m_lastKeyframe = 0;
     }
-    m_lastIDRframe++;
+    m_lastKeyframe++;
 
     if (!m_started)
       return VC_BUFFER;
@@ -872,10 +872,10 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
 
     // put a limit on convergence count to avoid
     // huge mem usage on streams without keyframes
-    if (m_lastIDRframe > 300)
+    if (m_lastKeyframe > 300)
     {
-      CLog::Log(LOGNOTICE, "%s - m_lastIDRframe (%i) clamped ", __FUNCTION__, m_lastIDRframe);
-      m_lastIDRframe = 300;
+      CLog::Log(LOGNOTICE, "%s - m_lastKeyframe (%i) clamped ", __FUNCTION__, m_lastKeyframe);
+      m_lastKeyframe = 300;
     }
   }
 
@@ -899,7 +899,7 @@ void CDVDVideoCodecVideoToolBox::Reset(void)
 
 unsigned CDVDVideoCodecVideoToolBox::GetConvergeCount()
 {
-  return m_lastIDRframe;
+  return m_lastKeyframe;
 }
 
 unsigned CDVDVideoCodecVideoToolBox::GetAllowedReferences()
