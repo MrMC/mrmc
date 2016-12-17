@@ -41,6 +41,7 @@ public:
   void UnLoad();
   bool CheckLibLoadedAndLoad();
   DllLibSMB *GetImpl() { return m_lib; }
+  bool HasContext() { return m_context != NULL; };
 
   void Init();
   void Deinit();

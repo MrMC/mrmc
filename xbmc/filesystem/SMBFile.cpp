@@ -590,7 +590,10 @@ void CSMBFile::Close()
   {
     CLog::Log(LOGDEBUG,"CSMBFile::Close closing fd %d", m_fd);
     CSingleLock lock(smb);
-    smb.GetImpl()->smbc_close(m_fd);
+    if (smb.HasContext())
+    {
+      smb.GetImpl()->smbc_close(m_fd);
+    }
     m_fd = -1;
   }
 }
