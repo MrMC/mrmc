@@ -1329,7 +1329,7 @@ MainController *g_xbmcController;
     {
       default:
       case MC_INACTIVE:
-        // do nothing
+        CAEFactory::DeviceChange();
         break;
       case MC_INACTIVE_WASPAUSED:
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
@@ -1366,7 +1366,7 @@ MainController *g_xbmcController;
   PRINT_SIGNATURE();
 
   m_controllerState = MC_INACTIVE;
-  if (g_application.m_pPlayer->IsPlaying())
+  if (g_application.m_pPlayer->IsPlayingVideo())
   {
     m_controllerState = MC_INACTIVE_ISPAUSED;
     // we might or might not be paused.
