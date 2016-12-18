@@ -4142,7 +4142,7 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
     {
       std::string strBitrate = "";
       if (m_audioInfo.bitrate > 0)
-        strBitrate = StringUtils::Format("%i", roundf((double)m_audioInfo.bitrate / 1000.0));
+        strBitrate = StringUtils::Format("%i", (int)roundf((double)m_audioInfo.bitrate / 1000.0));
       return strBitrate;
     }
     break;
