@@ -266,17 +266,12 @@ XBMCController *m_xbmcController;
 }
 @end
 
-static void SigPipeHandler(int s)
-{
-  NSLog(@"We Got a Pipe Single :%d____________", s);
-}
-
 int main(int argc, char *argv[]) {
   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];	
   int retVal = 0;
   
-  signal(SIGPIPE, SigPipeHandler);
-  
+  signal(SIGPIPE, SIG_IGN);
+
   @try
   {
     retVal = UIApplicationMain(argc,argv,@"UIApplication",@"XBMCApplicationDelegate");

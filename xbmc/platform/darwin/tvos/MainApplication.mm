@@ -288,16 +288,11 @@ std::atomic<MainController*> m_xbmcController;
 
 @end
 
-static void SigPipeHandler(int s)
-{
-  NSLog(@"We Got a Pipe Single :%d____________", s);
-}
-
 int main(int argc, char *argv[])
 {
   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];	
   
-  signal(SIGPIPE, SigPipeHandler);
+  signal(SIGPIPE, SIG_IGN);
   
   int retVal = 0;
   @try
