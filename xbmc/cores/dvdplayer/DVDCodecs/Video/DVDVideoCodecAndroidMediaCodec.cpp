@@ -406,6 +406,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
+      if (hints.maybe_interlaced && CAndroidFeatures::IsFireTVDevice())
+      {
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - possible interlaced h264");
+        return false;
+      }
       switch(hints.profile)
       {
         case FF_PROFILE_H264_HIGH_10:
@@ -973,22 +978,6 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
           int sps_size, pps_size;
           uint8_t *sps = nullptr, *pps = nullptr;
           m_bitstream->ExtractH264_SPS_PPS((uint8_t*)src_ptr, size, &sps, &sps_size, &pps, &pps_size);
-/*
-          // most mediacodec inplementations barf on interlaced h264.
-          if (sps)
-          {
-            bool interlaced = true;
-            int max_ref_frames;
-            m_bitstream->parseh264_sps(sps+1, sps_size-1, &interlaced, &max_ref_frames);
-            if (interlaced)
-            {
-              CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec - detected interlaced h264.");
-              free(sps);
-              free(pps);
-              return false;
-            }
-          }
-*/
           if (sps)
           {
             //CLog::MemDump((char*)sps, sps_size);
@@ -1405,14 +1394,11 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
     }
   }
 
-  if (width)
-    m_videobuffer.iWidth  = width;
-  if (height)
-    m_videobuffer.iHeight = height;
+  m_videobuffer.iWidth  = crop_right  + 1 - crop_left;
+  m_videobuffer.iHeight = crop_bottom + 1 - crop_top;
+  m_videobuffer.iDisplayWidth  = width;
+  m_videobuffer.iDisplayHeight = height;
 
-  // picture display width/height include the cropping.
-  m_videobuffer.iDisplayWidth  = crop_right  + 1 - crop_left;
-  m_videobuffer.iDisplayHeight = crop_bottom + 1 - crop_top;
   if (m_hints.aspect > 1.0 && !m_hints.forced_aspect)
   {
     m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * m_hints.aspect)) & ~3;
