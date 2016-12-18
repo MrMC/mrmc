@@ -18,6 +18,8 @@
  *
  */
 
+#include <math.h>
+
 #include "network/Network.h"
 #include "system.h"
 #include "CompileInfo.h"
@@ -2300,16 +2302,16 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
             {
               const CEpgInfoTagPtr tag(GetEpgInfoTag());
               if (tag)
-                value = MathUtils::round_int(tag->ProgressPercentage());
+                value = roundf(tag->ProgressPercentage());
               else
-                value = MathUtils::round_int(g_application.GetPercentage());
+                value = roundf(g_application.GetPercentage());
               break;
             }
           case PLAYER_PROGRESS_CACHE:
-            value = MathUtils::round_int(g_application.GetCachePercentage());
+            value = roundf(g_application.GetCachePercentage());
             break;
           case PLAYER_SEEKBAR:
-            value = MathUtils::round_int(GetSeekPercent());
+            value = roundf(GetSeekPercent());
             break;
           case PLAYER_CACHELEVEL:
             value = (int)(g_application.m_pPlayer->GetCacheLevel());
@@ -3821,7 +3823,7 @@ std::string CGUIInfoManager::GetDuration(TIME_FORMAT format) const
   }
   if (g_application.m_pPlayer->IsPlayingVideo() && !m_currentMovieDuration.empty())
     return m_currentMovieDuration;
-  unsigned int iTotal = MathUtils::round_int(g_application.GetTotalTime());
+  unsigned int iTotal = roundf(g_application.GetTotalTime());
   if (iTotal > 0)
     return StringUtils::SecondsToTimeString(iTotal, format);
   return "";
@@ -4140,7 +4142,7 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
     {
       std::string strBitrate = "";
       if (m_audioInfo.bitrate > 0)
-        strBitrate = StringUtils::Format("%i", MathUtils::round_int((double)m_audioInfo.bitrate / 1000.0));
+        strBitrate = StringUtils::Format("%i", roundf((double)m_audioInfo.bitrate / 1000.0));
       return strBitrate;
     }
     break;
@@ -4583,7 +4585,7 @@ std::string CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
   if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
     format = TIME_FORMAT_HH_MM_SS;
   if (g_application.m_pPlayer->IsPlaying())
-    return StringUtils::SecondsToTimeString(MathUtils::round_int(GetPlayTime()/1000.0), format);
+    return StringUtils::SecondsToTimeString(roundf(GetPlayTime()/1000.0), format);
   return "";
 }
 
@@ -4596,13 +4598,13 @@ std::string CGUIInfoManager::GetCurrentSeekTime(TIME_FORMAT format) const
 
 int CGUIInfoManager::GetTotalPlayTime() const
 {
-  int iTotalTime = MathUtils::round_int(g_application.GetTotalTime());
+  int iTotalTime = roundf(g_application.GetTotalTime());
   return iTotalTime > 0 ? iTotalTime : 0;
 }
 
 int CGUIInfoManager::GetPlayTimeRemaining() const
 {
-  int iReverse = GetTotalPlayTime() - MathUtils::round_int(g_application.GetTime());
+  int iReverse = GetTotalPlayTime() - roundf(g_application.GetTime());
   return iReverse > 0 ? iReverse : 0;
 }
 
