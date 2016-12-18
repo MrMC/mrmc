@@ -284,8 +284,11 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
 
     Params params;
     std::string tagName;
-    // determine which form of include call we have
-    const char *name = include->Attribute("name");
+    // determine which form of include call we have, if its "content" it targets new skins after f084ad5bd3461999982f32b81cc9e832a8be75e7
+    const char *name = include->Attribute("content");
+    if (!name)
+      name = include->Attribute("name");
+    
     if (name)
     {
       // 1. <include name="MyControl" />
