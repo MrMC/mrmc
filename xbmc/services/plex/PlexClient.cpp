@@ -113,8 +113,8 @@ bool CPlexClient::Init(const TiXmlElement* DeviceNode)
 {
   m_url = "";
   m_presence = XMLUtils::GetAttribute(DeviceNode, "presence") == "1";
-  if (!m_presence)
-    return false;
+  //if (!m_presence)
+  //  return false;
 
   m_uuid = XMLUtils::GetAttribute(DeviceNode, "clientIdentifier");
   m_owned = XMLUtils::GetAttribute(DeviceNode, "owned");

@@ -80,7 +80,8 @@ public:
   const std::string &GetServerName() const  { return m_serverName; }
   const std::string &GetUuid() const        { return m_uuid; }
   const std::string &GetOwned() const       { return m_owned; }
-  bool GetPresence() const                  { return m_presence; }
+  // bool GetPresence() const                  { return m_presence; }
+  bool GetPresence() const                  { return true; }
   const std::string &GetProtocol() const    { return m_protocol; }
   const bool &IsLocal() const               { return m_local; }
   const bool IsCloud() const                { return (m_platform == "Cloud"); }
