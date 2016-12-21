@@ -970,7 +970,8 @@
 		</item>
 		<item id="5">
 			<label>2</label>
-			<onclick>ActivateWindow(Music)</onclick>
+			<onclick condition="![Library.HasContent(Music) | Library.HasServices]">ActivateWindow(Music)</onclick>
+			<onclick condition="[Library.HasContent(Music) | Library.HasServices]">ActivateWindow(Music,Artists)</onclick>
 			<icon>icon-music.png</icon>
 			<thumb>-</thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonMusic)</visible>
