@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<strings>
+    <string id="30000">Felhasználónév</string>
+    <string id="30001">Jelszó</string>
+    <string id="30002">Lemezadat használata a filmadat helyett</string>
+    <string id="30003">Nyelv, filmadat</string>
+    <string id="30004">Ország, lemezadat</string>
+    <string id="30005">Fanartképek engedélyezése</string>
+    <string id="30006">Előnyben részesített filmelőzetes-bitarány</string>
+    <string id="30007">Felnőtt filmek bevonása</string>
+</strings>

@@ -1,0 +1,47 @@
+1.2.6
+Misc changes
+
+1.2.5
+
+Added:
+
+- Danish translation
+
+Changes:
+
+- Fixed covers with Disc based info.
+- Fixed search result with Disc based info.
+
+1.2.3
+
+Added:
+
+- Hungarian translation
+
+1.2
+
+Added:
+
+- Disc data. Support for loading from Disc database rather than Movie database.
+- Support for uniquely matching titles via barcode. NFO file must contain a barcode in the following format; barcode://027616704429.
+- Loading movie data via barcode. Alternative to using IMDb ID.
+
+Changed:
+
+- Support for URL encoding of username, password and country. No more needs for doing this manually. NB! Requires a new SVN build later than r26777 of XBMC.
+- IMDb rating is now shown with decimals.
+
+
+1.1
+
+Added:
+
+- Support for trailers from partner filmtrailer.com.
+- Added support for SortTitle.
+
+Changed:
+- MPAA rating now just shows PG-13 instead of longer localized text. This means a rating should always be visible for all languages.
+
+1.0
+
+- Initial version.

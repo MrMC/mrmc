@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+    <string id="30000">아이디</string>
+    <string id="30001">암호</string>
+    <string id="30002">영화 정보 대신 디스크 정보 사용</string>
+    <string id="30003">언어, 영화 정보</string>
+    <string id="30004">국가, 디스크 정보</string>
+    <string id="30005">팬아트 가져오기</string>
+    <string id="30006">선호하는 예고편 화질</string>
+    <string id="30007">성인 영화 포함</string>
+</strings>

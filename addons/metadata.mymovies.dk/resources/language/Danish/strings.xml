@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<strings>
+  <string id="30000">Brugernavn</string>
+  <string id="30001">Kodeord</string>
+  <string id="30002">Brug Disk data i stedet for Film data</string>
+  <string id="30003">Sprog, Film data</string>
+  <string id="30004">Land, Disk data</string>
+  <string id="30005">Aktiver Fanart/Backdrops</string>
+  <string id="30006">Foretrukne trailer bitrate</string>
+  <string id="30007">Inkludér voksen film</string>
+</strings>

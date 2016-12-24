@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+    <string id="30000">Użytkownik</string>
+    <string id="30001">Hasło</string>
+    <string id="30002">Użyj danych płyty zamiast danych filmu</string>
+    <string id="30003">Język, dane filmu</string>
+    <string id="30004">Kraj, dane płyty</string>
+    <string id="30005">Włącz fanart</string>
+    <string id="30006">Preferowany bitrate zwiastunu</string>
+    <string id="30007">Uwzględnij filmy dla dorosłych</string>
+</strings>

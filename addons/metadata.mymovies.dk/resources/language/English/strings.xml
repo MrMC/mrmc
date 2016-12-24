@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+    <string id="30000">Username</string>
+    <string id="30001">Password</string>
+    <string id="30002">Use Disc data instead of Movie data</string>
+    <string id="30003">Language, Movie data</string>
+    <string id="30004">Country, Disc data</string>
+    <string id="30005">Enable Fanart</string>
+    <string id="30006">Preferred trailer bitrate</string>
+    <string id="30007">Include adult movies</string>
+</strings>

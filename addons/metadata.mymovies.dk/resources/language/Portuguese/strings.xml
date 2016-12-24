@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+    <string id="30000">Utilizador</string>
+    <string id="30001">Palavra-passe</string>
+    <string id="30002">Usar informação do disco em vez de informação do filme</string>
+    <string id="30003">Linguagem, informação do filme</string>
+    <string id="30004">País, Informação do disco</string>
+    <string id="30005">Ligar Fanart</string>
+    <string id="30006">Bitrate preferida do trailer</string>
+    <string id="30007">Incluir filmes para adultos</string>
+</strings>

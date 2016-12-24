@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<settings>
+  <setting label="30000" type="text" id="username" option="urlencoded" default="" />
+  <setting label="30001" type="text" option="hidden|urlencoded" id="password" default="" />
+  <setting type="sep" />
+  <setting label="30002" type="bool" id="discdata" default="false" />
+  <setting type="sep" />
+  <setting label="30003" type="labelenum" values="Arabic|Bulgarian|Cantonese|Mandarin|Czech|Croatian|Danish|Dutch|English|Estonian|Faroese|Farsi|Finnish|Flemish|French|German|Greek|Hebrew|Hindi|Hungarian|Icelandic|Indonesian|Italian|Japanese|Korean|Lithuanian|Norwegian|Polish|Portuguese|Romanian|Russian|Serbian|Slovakian|Slovene|Spanish|Swedish|Tagalog|Thai|Turkish|Malay|Latvian|Ukrainian|Tamil|Catalan|Telugu|Malayalam|Kannada|Bengali|Serbo-Croatian|Gujarati|Esperanto|Vietnamese|Kazakh|Ancient Greek|Mandar|Braj|Macedonian|Zulu|Twi|Volapük|Albanian|Khmer|Basque" id="language" default="English" option="urlencoded" />
+  <setting label="30004" type="labelenum" values="Argentina|Australia|Austria|Belgium|Bosnia and Herzegovina|Brazil|Bulgaria|Canada|China|Croatia|Cyprus|Czech Republic|Denmark|Estonia|Faroe Islands|Finland|France|Georgia|Germany|Greece|Hong Kong SAR|Hungary|Iceland|India|Indonesia|Iran|Ireland|Israel|Italy|Japan|Korea|Latvia|Lebanon|Lithuania|Luxembourg|Macedonia, F.Y.R.O.|Mexico|Netherlands|New Zealand|Norway|Poland|Portugal|Romania|Russia|San Marino|Slovakia|Slovenia|South Africa|Spain|Sweden|Switzerland|Syria|Taiwan|Turkey|Ukraine|United Arab Emirates|United Kingdom|United States" id="country" default="United States" option="urlencoded" />
+  <setting type="sep" />
+  <setting label="30005" type="bool" id="fanart" default="true" />
+  <setting label="30006" type="labelenum" values="2048|1024|512|256|128" id="trailerbitrate" default="2048" />
+  <setting type="sep" />
+  <setting label="30007" type="bool" id="includeadult" default="false" />
+</settings>
