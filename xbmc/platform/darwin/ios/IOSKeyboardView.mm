@@ -47,7 +47,6 @@ static CEvent keyboardFinishedEvent;
   if (self) 
   {
     _iosKeyboard = nil;
-    _keyboardIsShowing = 0;
     _confirmed = NO;
     _canceled = NULL;
     _deactivated = NO;
@@ -144,12 +143,10 @@ static CEvent keyboardFinishedEvent;
   LOG(@"keyboardWillShow: keyboard frame: %@", NSStringFromCGRect(kbRect));
   _kbRect = kbRect;
   [self setNeedsLayout];
-  _keyboardIsShowing = 1;
 }
 
 -(void)keyboardDidShow:(NSNotification *) notification{
   LOG(@"keyboardDidShow: deactivated: %d", _deactivated);
-  _keyboardIsShowing = 2;
   if (_deactivated)
     [self doDeactivate:nil];
 }
@@ -162,10 +159,7 @@ static CEvent keyboardFinishedEvent;
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
-  LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
-  // Do not break the keyboard show up process, else we will lost
-  // keyboard did hide notifaction.
-  return _keyboardIsShowing != 1;
+  return YES;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -213,8 +207,6 @@ static CEvent keyboardFinishedEvent;
 {
   PRINT_SIGNATURE();
   
-  _keyboardIsShowing = 0;
-
   if (_textField.editing)
   {
     LOG(@"kb hide when editing, it could be a language switch");
@@ -264,13 +256,7 @@ static CEvent keyboardFinishedEvent;
 
 - (void) doDeactivate:(NSDictionary *)dict
 {
-  LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
   _deactivated = YES;
-  
-  // Do not break keyboard show up process, if so there's a bug of ios4 will not
-  // notify us keyboard hide.
-  if (_keyboardIsShowing == 1)
-    return;
 
   // invalidate our callback object
   if(_iosKeyboard)
@@ -284,15 +270,10 @@ static CEvent keyboardFinishedEvent;
   // allways calld in the mainloop context
   // detach the keyboard view from our main controller
   [g_xbmcController deactivateKeyboard:self];
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
   
-  // until keyboard did hide, we let the calling thread break loop
-  if (0 == _keyboardIsShowing)
-  {
-    // no more notification we want to receive.
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-    
-    keyboardFinishedEvent.Set();
-  }
+  keyboardFinishedEvent.Set();
+
 }
 
 - (void) deactivate
