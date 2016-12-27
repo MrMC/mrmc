@@ -96,9 +96,17 @@ XBMCController *g_xbmcController;
 
 - (void)insertText:(NSString *)text
 {
+  unichar currentKey = [text characterAtIndex:0];
+  // handle return
+  if (currentKey == '\n' || currentKey == '\r')
+    return;
+  // This was passed to us from keyboard, we do not want
+  // to handle "return" from onscreen keyboard
+  // keeping it here just in case something goes wrong
+  //  currentKey = XBMCK_RETURN;
+  
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));
-  unichar currentKey = [text characterAtIndex:0];
 
   // handle upper case letters
   if (currentKey >= 'A' && currentKey <= 'Z')
@@ -106,10 +114,6 @@ XBMCController *g_xbmcController;
     newEvent.key.keysym.mod = XBMCKMOD_LSHIFT;
     currentKey += 0x20;// convert to lower case
   }
-
-  // handle return
-  if (currentKey == '\n' || currentKey == '\r')
-    currentKey = XBMCK_RETURN;
 
   newEvent.key.keysym.sym = (XBMCKey)currentKey;
   newEvent.key.keysym.unicode = currentKey;
