@@ -80,22 +80,6 @@ void CJNIMainActivity::_onAudioDeviceRemoved(JNIEnv *env, jobject context, jobje
     m_appInstance->onAudioDeviceRemoved(jcast<CJNIAudioDeviceInfos>(jhobjectArray(devices)));
 }
 */
-void CJNIMainActivity::_onVideoViewAcquired(JNIEnv *env, jobject context)
-{
-  (void)env;
-  (void)context;
-  if (m_appInstance)
-    m_appInstance->onVideoViewAcquired();
-}
-
-void CJNIMainActivity::_onVideoViewLost(JNIEnv *env, jobject context)
-{
-  (void)env;
-  (void)context;
-  if (m_appInstance)
-    m_appInstance->onVideoViewLost();
-}
-
 void CJNIMainActivity::_onCaptureAvailable(JNIEnv *env, jobject context, jobject image)
 {
   (void)env;
@@ -136,14 +120,6 @@ void CJNIMainActivity::_onVolumeChanged(JNIEnv *env, jobject context, jint volum
   (void)context;
   if(m_appInstance)
     m_appInstance->onVolumeChanged(volume);
-}
-
-void CJNIMainActivity::_onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange)
-{
-  (void)env;
-  (void)context;
-  if(m_appInstance)
-    m_appInstance->onAudioFocusChange(focusChange);
 }
 
 void CJNIMainActivity::_doFrame(JNIEnv *env, jobject context, jlong frameTimeNanos)

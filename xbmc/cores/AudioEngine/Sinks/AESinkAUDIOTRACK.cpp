@@ -449,7 +449,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   // except if using ENCODING_IEC61937
   if (m_passthrough && CJNIAudioFormat::ENCODING_IEC61937 != -1)
   {
-    CXBMCApp::AcquireAudioFocus();
+    CXBMCApp::get()->AcquireAudioFocus();
     m_volume = CXBMCApp::GetSystemVolume();
     CXBMCApp::SetSystemVolume(1.0);
   }
@@ -474,7 +474,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
   if (m_volume != -1)
   {
     CXBMCApp::SetSystemVolume(m_volume);
-    CXBMCApp::ReleaseAudioFocus();
+    CXBMCApp::get()->ReleaseAudioFocus();
     m_volume = -1;
   }
 
