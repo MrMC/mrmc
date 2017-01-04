@@ -14057,7 +14057,9 @@ msgctxt "#24093"
 msgid "Checking %s..."
 msgstr ""
 
-#empty string with id 24094
+msgctxt "#24094"
+msgid "Database migration in progress - please wait"
+msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24095"

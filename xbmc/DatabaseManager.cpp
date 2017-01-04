@@ -40,7 +40,7 @@ CDatabaseManager &CDatabaseManager::GetInstance()
   return s_manager;
 }
 
-CDatabaseManager::CDatabaseManager()
+CDatabaseManager::CDatabaseManager(): m_bIsUpgrading(false)
 {
 }
 
@@ -66,6 +66,7 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CEpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
   { CActiveAEDSPDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseADSP); }
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
+  m_bIsUpgrading = false;
 }
 
 void CDatabaseManager::Deinitialize()
@@ -86,6 +87,7 @@ bool CDatabaseManager::CanOpen(const std::string &name)
 void CDatabaseManager::UpdateDatabase(CDatabase &db, DatabaseSettings *settings)
 {
   std::string name = db.GetBaseDBName();
+  m_bIsUpgrading = true;
   UpdateStatus(name, DB_UPDATING);
   if (db.Update(settings ? *settings : DatabaseSettings()))
     UpdateStatus(name, DB_READY);

@@ -216,6 +216,7 @@ public:
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
   bool WakeUpScreenSaver(bool bPowerOffKeyPressed = false);
+  void DisableScreensaver(bool disable);
   /*!
    \brief Returns the total time in fractional seconds of the currently playing media
 

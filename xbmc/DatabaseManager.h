@@ -63,6 +63,7 @@ public:
    \return true if the database can be opened, false otherwise.
    */ 
   bool CanOpen(const std::string &name);
+  std::atomic<bool> m_bIsUpgrading;
 
 private:
   // private construction, and no assignements; use the provided singleton methods

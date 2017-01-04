@@ -25,6 +25,7 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "interfaces/builtins/Builtins.h"
+#include "utils/JobManager.h"
 #include "utils/Variant.h"
 #include "utils/Splash.h"
 #include "LangInfo.h"
@@ -1008,10 +1009,30 @@ bool CApplication::Initialize()
     CSplash::GetInstance().Show(g_localizeStrings.Get(12374));
     g_advancedSettings.setInternalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
   }
+  
 
+  DisableScreensaver(true);
   // initialize (and update as needed) our databases
-  CDatabaseManager::GetInstance().Initialize();
+  CEvent event(true);
+  CJobManager::GetInstance().Submit([&event]() {
+    CDatabaseManager::GetInstance().Initialize();
+    event.Set();
+  });
+  
+  std::string localizedStr = g_localizeStrings.Get(24094);
+  int iDots = 1;
+  while (!event.WaitMSec(1000))
+  {
+    if (CDatabaseManager::GetInstance().m_bIsUpgrading)
+      CSplash::GetInstance().Show(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
+    if (iDots == 3)
+      iDots = 1;
+    else
+      ++iDots;
+  }
 
+  DisableScreensaver(false);
+  
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
@@ -3999,6 +4020,15 @@ void CApplication::CheckScreenSaverAndDPMS()
   {
     ActivateScreenSaver();
   }
+}
+
+void CApplication::DisableScreensaver(bool disable)
+{
+#if defined(TARGET_ANDROID)
+  CXBMCApp::EnableWakeLock(disable);
+#elif defined(TARGET_DARWIN_TVOS)
+  CDarwinUtils::EnableOSScreenSaver(!disable);
+#endif
 }
 
 // activate the screensaver.
