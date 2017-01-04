@@ -338,8 +338,9 @@ void CSocketListener::Clear()
 
 CBaseSocket* CSocketListener::GetFirstSocket()
 {
-  for (size_t i = 0 ; i < m_sockets.size(); ++i)
-    return m_sockets[i];
+  if (m_sockets.size() > 0)
+    return m_sockets[0];
+
   return NULL;
 }
 

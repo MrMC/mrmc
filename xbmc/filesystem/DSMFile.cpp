@@ -77,11 +77,9 @@ static std::string extract_share_name_convert(const std::string &path)
   std::vector<std::string> parts;
   std::vector<std::string>::iterator it;
   StringUtils::Tokenize(path, parts, "/");
-  for( it = parts.begin(); it != parts.end(); ++it )
-  {
-    sharename = *it;
-    break;
-  }
+  if (parts.size() > 0)
+    sharename = parts[0];
+
   // libdsm does not like an ending slash, remove it
   URIUtils::RemoveSlashAtEnd(sharename);
   // paths are posix style on entry,

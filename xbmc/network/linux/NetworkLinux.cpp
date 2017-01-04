@@ -253,18 +253,19 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
    }
 
    lim  = buf + needed;
-   for (next = buf; next < lim; next += rtm->rtm_msglen) {
+   next = buf;
+   if (next < lim)
+   {
       rtm = (struct rt_msghdr *)next;
       sa = (struct sockaddr *)(rtm + 1);
       sa = (struct sockaddr *)(SA_SIZE(sa) + (char *)sa);	
       sockin = (struct sockaddr_in *)sa;
-      if (inet_ntop(AF_INET, &sockin->sin_addr.s_addr,
-         line, sizeof(line)) == NULL) {
-            free(buf);
-            return result;
-	  }
-	  result = line;
-      break;
+      if (inet_ntop(AF_INET, &sockin->sin_addr.s_addr, line, sizeof(line)) == NULL)
+      {
+        free(buf);
+        return result;
+      }
+      result = line;
    }
    free(buf);
 #else
