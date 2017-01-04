@@ -139,8 +139,11 @@ static void setupApplicationMenu(void)
   [menuItem release];
 }
 
+// The main class of the application, the application's delegate
+@implementation XBMCDelegate
+
 // Create a window menu
-static void setupWindowMenu(void)
+- (void)setupWindowMenu
 {
   NSMenu      *windowMenu;
   NSMenuItem  *windowMenuItem;
@@ -149,6 +152,7 @@ static void setupWindowMenu(void)
   windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
 
   // "Full/Windowed Toggle" item
+
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
   [windowMenu addItem:menuItem];
   [menuItem release];
@@ -175,9 +179,6 @@ static void setupWindowMenu(void)
   [windowMenu release];
   [windowMenuItem release];
 }
-
-// The main class of the application, the application's delegate
-@implementation XBMCDelegate
 
 // Set the working directory to the .app's parent directory
 - (void) setupWorkingDirectory:(BOOL)shouldChdir
@@ -459,10 +460,11 @@ int main(int argc, char *argv[])
   // Set up the menubars
   [NSApp setMainMenu:[[NSMenu alloc] init]];
   setupApplicationMenu();
-  setupWindowMenu();
 
   // Create XBMCDelegate and make it the app delegate
   xbmc_delegate = [[XBMCDelegate alloc] init];
+  [xbmc_delegate setupWindowMenu];
+
   [[NSApplication sharedApplication] setDelegate:xbmc_delegate];
 
   // Start the main event loop

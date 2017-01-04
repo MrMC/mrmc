@@ -279,7 +279,6 @@ NPT_NibbleToHex(unsigned int nibble, bool uppercase /* = true */)
     } else {
         return (nibble < 10) ? ('0' + nibble) : ('a' + (nibble-10));
     }
-    return (nibble < 10) ? ('0' + nibble) : ('A' + (nibble-10));
 }
 
 /*----------------------------------------------------------------------
@@ -510,7 +509,7 @@ NPT_ParseInteger64(const char* str, NPT_Int64& result, bool relaxed, NPT_Cardina
     NPT_Int64 max = NPT_INT64_MAX/10;
 
     // adjust the max for overflows when the value is negative
-    if (negative && ((NPT_INT64_MAX%10) == 9)) ++max;
+    if (negative && ((NPT_INT64_MAX%10) == /* DISABLES CODE */ (9))) ++max;
 
     // parse the digits
     bool      empty = true;

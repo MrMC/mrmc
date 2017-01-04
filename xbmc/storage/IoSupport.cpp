@@ -111,9 +111,6 @@ void CIoSupport::FreeReadBuffer()
 int CIoSupport::ReadSector(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer)
 
 {
-  uint32_t dwRead;
-  uint32_t dwSectorSize = 2048;
-
 #if defined(TARGET_DARWIN) && defined(HAS_DVD_DRIVE)
   dk_cd_read_t cd_read;
   memset( &cd_read, 0, sizeof(cd_read) );
@@ -132,6 +129,9 @@ int CIoSupport::ReadSector(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer)
   }
   return 2048;
 #elif defined(TARGET_POSIX)
+  uint32_t dwRead;
+  uint32_t dwSectorSize = 2048;
+
   if (hDevice->m_bCDROM)
   {
     int fd = hDevice->fd;
@@ -161,7 +161,7 @@ int CIoSupport::ReadSector(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer)
 
     return MODE1_DATA_SIZE;
   }
-#endif
+
   LARGE_INTEGER Displacement;
   Displacement.QuadPart = ((int64_t)dwSector) * dwSectorSize;
 
@@ -179,6 +179,7 @@ int CIoSupport::ReadSector(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer)
 
   CLog::Log(LOGERROR, "%s: CD Read error", __FUNCTION__);
   return -1;
+#endif
 }
 
 

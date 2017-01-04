@@ -644,12 +644,12 @@ done:
     
     delete xml;
     return NPT_SUCCESS;
-
+/*
 bad_request:
     // generic 500 now unused
     response.SetStatus(500, "Bad Request");
     goto bad_request_end;
-
+*/
 bad_request_find_service:
     response.SetStatus(500, "Bad Request: Service by URL");
     goto bad_request_end;

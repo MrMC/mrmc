@@ -44,7 +44,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
   {
     Render(pPicture, (CDVDOverlaySSA*)pOverlay, pts);
   }
-  else if (false && pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
+  else if (/* DISABLES CODE */ (false) && pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
   {
     CDVDOverlayText* pOverlayText = (CDVDOverlayText*)pOverlay;
 

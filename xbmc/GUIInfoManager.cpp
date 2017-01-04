@@ -4808,13 +4808,12 @@ std::string CGUIInfoManager::GetSystemHeatInfo(int info)
 
 CTemperature CGUIInfoManager::GetGPUTemperature()
 {
-  int  value = 0;
-  char scale = 0;
 
 #if defined(TARGET_DARWIN_OSX)
-  value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
+  int value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
   return CTemperature::CreateFromCelsius(value);
 #else
+  char scale = 0;
   std::string  cmd   = g_advancedSettings.m_gpuTempCmd;
   int         ret   = 0;
   FILE        *p    = NULL;
@@ -4822,18 +4821,13 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
   if (cmd.empty() || !(p = popen(cmd.c_str(), "r")))
     return CTemperature();
 
+  int value = 0;
   ret = fscanf(p, "%d %c", &value, &scale);
   pclose(p);
 
   if (ret != 2)
     return CTemperature();
 #endif
-
-  if (scale == 'C' || scale == 'c')
-    return CTemperature::CreateFromCelsius(value);
-  if (scale == 'F' || scale == 'f')
-    return CTemperature::CreateFromFahrenheit(value);
-  return CTemperature();
 }
 
 
