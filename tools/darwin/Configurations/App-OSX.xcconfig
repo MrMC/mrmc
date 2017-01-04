@@ -20,6 +20,9 @@
 
 #include "App.xcconfig"
 
+PRODUCT_NAME = $(APP_NAME)
+PRODUCT_BUNDLE_IDENTIFIER = $(APP_PACKAGE).osx
+
 SDKROOT = macosx
 MACOSX_DEPLOYMENT_TARGET = 10.9
 INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/osx/Info.plist

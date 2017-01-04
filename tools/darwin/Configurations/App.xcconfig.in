@@ -20,6 +20,9 @@
 
 // Settings here will OVERRIDE those in project panel unless inherited
 
+APP_NAME = @APP_NAME@
+APP_PACKAGE = @APP_PACKAGE@
+
 XBMC_DEPENDS_ROOT = @DEPENDS_ROOT_FOR_XCODE@
 
 // This setting is for devs that do not understand the difference
