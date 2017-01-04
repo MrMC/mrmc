@@ -154,7 +154,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
       if(curItem.GetVideoInfoTag()->m_type == MediaTypeMovie)
       {
         [item setValue:[NSString stringWithUTF8String:curItem.GetVideoInfoTag()->m_strTitle.c_str()] forKey:@"title"];
-        [item setValue:[NSString stringWithUTF8String:StringUtils::Format("(%i)", curItem.GetVideoInfoTag()->m_iYear).c_str()] forKey:@"artist"];
+        [item setValue:[NSString stringWithUTF8String:StringUtils::Format("(%i)", curItem.GetVideoInfoTag()->GetYear()).c_str()] forKey:@"artist"];
       }
       else if(curItem.GetVideoInfoTag()->m_type == MediaTypeEpisode)
       {

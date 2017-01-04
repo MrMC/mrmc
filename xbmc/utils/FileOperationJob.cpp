@@ -192,7 +192,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
           CVideoInfoTag* tag = pItem->GetVideoInfoTag();
           if (tag->m_type == "movie")
           {
-            strFileName = StringUtils::Format("%s (%d)", tag->m_strTitle.c_str(), tag->m_iYear);
+            strFileName = StringUtils::Format("%s (%d)", tag->m_strTitle.c_str(), tag->GetYear());
           }
           else if (tag->m_type == "episode")
           {
@@ -330,13 +330,6 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
     case ActionCopy:
     case ActionReplace:
       bResult = CFile::Copy(m_strFileA, m_strFileB, this, &data);
-      if (bResult && URIUtils::IsVideoDb(m_strFileA))
-      {
-        // For VideoDb files, also export the metadata
-        CVideoDatabase videoDatabase;
-        if (videoDatabase.Open())
-          videoDatabase.ExportSingleVideoToXML(m_strFileA, true, true, m_strFileB);
-      }
       break;
 
     case ActionMove:

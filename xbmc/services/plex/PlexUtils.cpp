@@ -575,8 +575,8 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
     url.SetFileName(fanart);
     plexItem->SetArt("fanart", url.Get());
 
-    plexItem->GetVideoInfoTag()->m_iYear = atoi(XMLUtils::GetAttribute(videoNode, "year").c_str());
-    plexItem->GetVideoInfoTag()->m_fRating = atof(XMLUtils::GetAttribute(videoNode, "rating").c_str());
+    plexItem->GetVideoInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(videoNode, "year").c_str()));
+    plexItem->GetVideoInfoTag()->SetRating(atof(XMLUtils::GetAttribute(videoNode, "rating").c_str()));
     plexItem->GetVideoInfoTag()->m_strMPAARating = XMLUtils::GetAttribute(videoNode, "contentRating");
 
     // lastViewedAt means that it was watched, if so we set m_playCount to 1 and set overlay
@@ -674,8 +674,8 @@ bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
       url1.SetFileName(value);
       plexItem->SetArt("fanart", url1.Get());
 
-      plexItem->GetVideoInfoTag()->m_iYear = atoi(XMLUtils::GetAttribute(directoryNode, "year").c_str());
-      plexItem->GetVideoInfoTag()->m_fRating = atof(XMLUtils::GetAttribute(directoryNode, "rating").c_str());
+      plexItem->GetVideoInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(directoryNode, "year").c_str()));
+      plexItem->GetVideoInfoTag()->SetRating(atof(XMLUtils::GetAttribute(directoryNode, "rating").c_str()));
       plexItem->GetVideoInfoTag()->m_strMPAARating = XMLUtils::GetAttribute(directoryNode, "contentRating");
 
       time_t addedTime = atoi(XMLUtils::GetAttribute(directoryNode, "addedAt").c_str());
@@ -740,7 +740,7 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
         plexItem->GetVideoInfoTag()->m_strShowTitle = XMLUtils::GetAttribute(rootXmlNode, "parentTitle");
         plexItem->GetVideoInfoTag()->SetPlotOutline(XMLUtils::GetAttribute(rootXmlNode, "tagline"));
         plexItem->GetVideoInfoTag()->SetPlot(XMLUtils::GetAttribute(rootXmlNode, "summary"));
-        plexItem->GetVideoInfoTag()->m_iYear = atoi(XMLUtils::GetAttribute(rootXmlNode, "parentYear").c_str());
+        plexItem->GetVideoInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(rootXmlNode, "parentYear").c_str()));
         plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(rootXmlNode, "key"));
         value = XMLUtils::GetAttribute(rootXmlNode, "art");
         if (!value.empty() && (value[0] == '/'))
@@ -1288,8 +1288,8 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
               for (int i = 0; i < plexMovies.Size(); ++i)
               {
                 std::string label = plexMovies[i]->GetVideoInfoTag()->m_strTitle;
-                if (plexMovies[i]->GetVideoInfoTag()->m_iYear > 0)
-                  label += StringUtils::Format(" (%i)", plexMovies[i]->GetVideoInfoTag()->m_iYear);
+                if (plexMovies[i]->GetVideoInfoTag()->GetYear() > 0)
+                  label += StringUtils::Format(" (%i)", plexMovies[i]->GetVideoInfoTag()->GetYear());
                 plexMovies[i]->SetLabel(label);
               }
               CGUIWindowVideoBase::AppendAndClearSearchItems(plexMovies, "[" + g_localizeStrings.Get(20338) + "] ", plexItems);

@@ -178,9 +178,9 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     }
     else
     {
-      if (tag->m_iYear > 0)
+      if (tag->GetYear() > 0)
       {
-        int year = tag->m_iYear;
+        int year = tag->GetYear();
         std::string title = tag->m_strTitle;
         searchString = StringUtils::Format("%s (%i)",title.c_str(), year);
       }

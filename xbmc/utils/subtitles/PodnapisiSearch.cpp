@@ -111,11 +111,11 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
   }
   else
   {
-    if (tag->m_iYear > 0)
+    if (tag->GetYear() > 0)
     {
       searchString = StringUtils::Format(searchUrl.c_str() ,strLang.c_str()
                                                            ,tag->m_strTitle.c_str()
-                                                           ,tag->m_iYear
+                                                           ,tag->GetYear()
                                                            ,0
                                                            ,0
                                                            ,strHash.c_str()
