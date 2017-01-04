@@ -38,6 +38,7 @@
 #include <string>
 #include <sstream>
 
+/*
 static bool IsInSubNet(CURL url)
 {
   bool rtn = false;
@@ -56,6 +57,7 @@ static bool IsInSubNet(CURL url)
   }
   return rtn;
 }
+*/
 
 CPlexClient::CPlexClient()
 {

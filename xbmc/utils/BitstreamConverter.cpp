@@ -184,6 +184,7 @@ static int nal_bs_read_ue(nal_bitstream *bs)
   return ((1 << i) - 1 + nal_bs_read(bs, i));
 }
 
+/*
 // read signed Exp-Golomb code
 static int nal_bs_read_se(nal_bitstream *bs)
 {
@@ -194,6 +195,7 @@ static int nal_bs_read_se(nal_bitstream *bs)
     r = - (r / 2);
   return r;
 }
+*/
 
 static const uint8_t* avc_find_startcode_internal(const uint8_t *p, const uint8_t *end)
 {
