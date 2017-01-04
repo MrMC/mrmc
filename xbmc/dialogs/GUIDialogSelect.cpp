@@ -195,7 +195,12 @@ int CGUIDialogSelect::GetSelectedLabel() const
   return m_selectedItems.size() > 0 ? m_selectedItems[0] : -1;
 }
 
-const CFileItemPtr CGUIDialogSelect::GetSelectedItem() const
+int CGUIDialogSelect::GetSelectedItem() const
+{
+  return m_selectedItems.size() > 0 ? m_selectedItems[0] : -1;
+}
+
+const CFileItemPtr CGUIDialogSelect::GetSelectedFileItem() const
 {
   if (m_selectedItem)
     return m_selectedItem;
@@ -204,7 +209,7 @@ const CFileItemPtr CGUIDialogSelect::GetSelectedItem() const
 
 const std::string& CGUIDialogSelect::GetSelectedLabelText() const
 {
-  return GetSelectedItem()->GetLabel();
+  return GetSelectedFileItem()->GetLabel();
 }
 
 const std::vector<int>& CGUIDialogSelect::GetSelectedItems() const

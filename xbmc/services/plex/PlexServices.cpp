@@ -1090,7 +1090,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
     if (!dialog->IsConfirmed())
       return false;
 
-    const CFileItemPtr item = dialog->GetSelectedItem();
+    const CFileItemPtr item = dialog->GetSelectedFileItem();
 
     if (item == NULL || !item->HasProperty("id"))
       return false;

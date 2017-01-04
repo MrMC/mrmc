@@ -125,7 +125,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
     dialog->SetUseDetails(true);
     dialog->Open();
 
-    CFileItemPtr item_new = dialog->GetSelectedItem();
+    CFileItemPtr item_new = dialog->GetSelectedFileItem();
     if (!item_new || dialog->GetSelectedLabel() < 0)
     {
       CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted %s", directory.c_str());
