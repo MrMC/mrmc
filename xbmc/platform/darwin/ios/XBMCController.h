@@ -70,6 +70,12 @@ typedef enum
 @property CGSize              m_screensize;
 
 // message from which our instance is obtained
+- (void)onPlayDelayed:(NSDictionary *)item;
+- (void)onSpeedChanged:(NSDictionary *)item;
+- (void)onPausePlaying:(NSDictionary *)item;
+- (void)onStopPlaying:(NSDictionary *)item;
+- (void)onSeekPlaying;
+
 - (void) pauseAnimation;
 - (void) resumeAnimation;
 - (void) startAnimation;

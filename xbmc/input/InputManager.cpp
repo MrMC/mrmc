@@ -652,7 +652,7 @@ bool CInputManager::OnKey(const CKey& key)
           if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_META)
 #else
           // Placeholder for other operating systems
-          if (false)
+          if (/* DISABLES CODE */ (false))
 #endif
             action = CAction(ACTION_PASTE);
           // If the unicode is non-zero the keypress is a non-printing character

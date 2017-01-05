@@ -4812,6 +4812,8 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 #if defined(TARGET_DARWIN_OSX)
   int value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
   return CTemperature::CreateFromCelsius(value);
+#elif defined(TARGET_DARWIN_IOS)
+  return CTemperature();
 #else
   char scale = 0;
   std::string  cmd   = g_advancedSettings.m_gpuTempCmd;

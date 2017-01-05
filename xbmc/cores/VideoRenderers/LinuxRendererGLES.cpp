@@ -940,7 +940,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
       }
       #endif
       // Try GLSL shaders if supported and user requested auto or GLSL.
-      if (glCreateProgram)
+      if (&glCreateProgram)
       {
         // create regular scan shader
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
@@ -1350,7 +1350,8 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 {
   // TODO: Multipass rendering does not currently work! FIX!
   CLog::Log(LOGERROR, "GLES: MULTIPASS rendering was called! But it doesnt work!!!");
-  return;
+  if (/* DISABLES CODE */ (true))
+    return;
 
   YV12Image &im     = m_buffers[index].image;
   YUVPLANES &planes = m_buffers[index].fields[field];

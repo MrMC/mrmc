@@ -541,8 +541,6 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     int height = hints.height;
     int level  = hints.level;
     int profile = hints.profile;
-    unsigned int extrasize = hints.extrasize; // extra data for codec to use
-    uint8_t *extradata = (uint8_t*)hints.extradata; // size of extra data
  
 #if defined(TARGET_DARWIN_IOS)
     if (CDarwinUtils::GetIOSVersion() < 6.0)
@@ -581,31 +579,34 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     switch (hints.codec)
     {
       case AV_CODEC_ID_MPEG4:
-        return false;
+        if (/* DISABLES CODE */ (true))
+          return false;
         m_fmt_desc = CreateFormatDescriptionFromCodecData(
-          kVTFormatMPEG4Video, width, height, extradata, extrasize, false);
+          kVTFormatMPEG4Video, width, height, (uint8_t*)hints.extradata, hints.extrasize, false);
         m_pFormatName = "vtb-mpeg4";
       break;
 
       case AV_CODEC_ID_MPEG2VIDEO:
-        return false;
+        if (/* DISABLES CODE */ (true))
+          return false;
         m_fmt_desc = CreateFormatDescription(kVTFormatMPEG2Video, width, height);
         m_pFormatName = "vtb-mpeg2";
       break;
 
       case AV_CODEC_ID_H265:
-        return false;
+        if (/* DISABLES CODE */ (true))
+          return false;
         // use a bitstream converter for all flavors
         m_bitstream = new CBitstreamConverter;
         if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
           return false;
         m_fmt_desc = CreateFormatDescriptionFromCodecData(
-          kVTFormatH265, width, height, extradata, extrasize, false);
+          kVTFormatH265, width, height, (uint8_t*)hints.extradata, hints.extrasize, false);
         m_pFormatName = "vtb-h265";
       break;
 
       case AV_CODEC_ID_H264:
-        if (extrasize < 7 || extradata == NULL)
+        if (hints.extrasize < 7 || hints.extradata == NULL)
         {
           CLog::Log(LOGNOTICE, "%s - avcC atom too data small or missing", __FUNCTION__);
           return false;
@@ -641,7 +642,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             return false;
           }
 
-          if (false)
+          if (/* DISABLES CODE */ (false))
           {
             m_fmt_desc = CreateFormatDescriptionFromCodecData(
               kVTFormatH264, width, height, m_bitstream->GetExtraData(), m_bitstream->GetExtraSize(), m_enable_temporal_processing);
@@ -674,7 +675,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             hints.height = videoSize.height;
           }
 
-          CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, extrasize, m_max_ref_frames);
+          CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, m_bitstream->GetExtraSize(), m_max_ref_frames);
         }
         m_pFormatName = "vtb-h264";
       break;

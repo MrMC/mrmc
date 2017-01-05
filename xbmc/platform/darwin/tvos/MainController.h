@@ -99,6 +99,12 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 @property BOOL                m_RemoteOSDSwipes;
 @property UIPanGestureRecognizerDirection m_direction;
 
+- (void)onPlayDelayed:(NSDictionary *)item;
+- (void)onSpeedChanged:(NSDictionary *)item;
+- (void)onPausePlaying:(NSDictionary *)item;
+- (void)onStopPlaying:(NSDictionary *)item;
+- (void)onSeekPlaying;
+
 - (void) pauseAnimation;
 - (void) resumeAnimation;
 - (void) startAnimation;
