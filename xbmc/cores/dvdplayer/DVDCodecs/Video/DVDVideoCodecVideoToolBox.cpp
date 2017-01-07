@@ -649,19 +649,30 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           }
           else
           {
-            uint8_t *spc = m_bitstream->GetExtraData() + 6;
-            uint32_t sps_size = BS_RB16(spc);
-            spc += 2;
-            uint8_t *pps = spc + sps_size;
-            pps++;  // skip pps count, it is always one.
-            uint32_t pps_size = BS_RB16(pps);
-            pps += 2;
-            const uint8_t* const parameterSetPointers[] = { spc, pps };
-            const size_t parameterSetSizes[] = { sps_size, pps_size };
+            uint8_t *sps_ptr = m_bitstream->GetExtraData();
+            sps_ptr += 6; // skip over header and assume sps count of one
+            uint32_t sps_size = BS_RB16(sps_ptr);
+            sps_ptr += 2;
+
+            uint8_t *pps_ptr = sps_ptr + sps_size;
+            size_t parameterSetCount = 1 + *pps_ptr++;
+            size_t parameterSetSizes[parameterSetCount];
+            uint8_t *parameterSetPointers[parameterSetCount];
+
+            parameterSetSizes[0] = sps_size;
+            parameterSetPointers[0] = sps_ptr;
+            for (size_t i = 1; i < parameterSetCount; i++)
+            {
+              uint32_t pps_size = BS_RB16(pps_ptr);
+              parameterSetSizes[i] = pps_size;
+              pps_ptr += 2;
+              parameterSetPointers[i] = pps_ptr;
+              pps_ptr += pps_size;
+            }
 
             CLog::Log(LOGNOTICE, "Constructing new format description");
             OSStatus status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
-              2, parameterSetPointers, parameterSetSizes, 4, &m_fmt_desc);
+              parameterSetCount, parameterSetPointers, parameterSetSizes, 4, &m_fmt_desc);
             if (status != noErr)
             {
               CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
@@ -671,8 +682,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             const Boolean usePixelAspectRatio = false;
             auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
 
-            hints.width = videoSize.width;
-            hints.height = videoSize.height;
+            width = hints.width = videoSize.width;
+            height = hints.height = videoSize.height;
           }
 
           CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, m_bitstream->GetExtraSize(), m_max_ref_frames);
