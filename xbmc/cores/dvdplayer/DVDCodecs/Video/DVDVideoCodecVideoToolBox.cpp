@@ -839,8 +839,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     {
       CFRelease(frameInfo);
       CFRelease(sampleBuff);
-      // might not really be an error (could have been force inactive)
-      // so do not log it.
+      // might not really be an error (could have been force inactive) so do not log it.
       if (status == kVTInvalidSessionErr)
       {
         m_sessionRestart = true;
@@ -854,18 +853,22 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
         return VC_REOPEN;
       }
 
-      CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned(%d)",
-        __FUNCTION__, (int)status);
       if (status == kVTVideoDecoderMalfunctionErr)
-        return VC_REOPEN;
+      {
+        CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned kVTVideoDecoderMalfunctionErr", __FUNCTION__);
+        return VC_SWFALLBACK;
+      }
       else
+      {
+        // VTDecompressionSessionDecodeFrame returned 8969 (codecBadDataErr)
+        // VTDecompressionSessionDecodeFrame returned -12350
+        // VTDecompressionSessionDecodeFrame returned -12902 (kVTParameterErr)
+        // VTDecompressionSessionDecodeFrame returned -12903 (kVTInvalidSessionErr)
+        // VTDecompressionSessionDecodeFrame returned -12909 (kVTVideoDecoderBadDataErr)
+        // VTDecompressionSessionDecodeFrame returned -12911 (kVTVideoDecoderMalfunctionErr)
+        CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned(%d)", __FUNCTION__, (int)status);
         return VC_ERROR;
-      // VTDecompressionSessionDecodeFrame returned 8969 (codecBadDataErr)
-      // VTDecompressionSessionDecodeFrame returned -12350
-      // VTDecompressionSessionDecodeFrame returned -12902 (kVTParameterErr)
-      // VTDecompressionSessionDecodeFrame returned -12903 (kVTInvalidSessionErr)
-      // VTDecompressionSessionDecodeFrame returned -12909 (kVTVideoDecoderBadDataErr)
-      // VTDecompressionSessionDecodeFrame returned -12911 (kVTVideoDecoderMalfunctionErr)
+      }
     }
 /*
     // wait for decoding to finish
