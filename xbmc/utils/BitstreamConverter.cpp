@@ -1006,6 +1006,7 @@ bool CBitstreamConverter::ExtractH264_SPS_PPS(const uint8_t *data, int len,
     {
       uint8_t *buf = nullptr;
       int ret = avc_parse_nal_units_buf(data, &buf, &len);
+      uint8_t *savedbuf = buf;
       if (ret < 0)
         return ret;
 
@@ -1032,6 +1033,7 @@ bool CBitstreamConverter::ExtractH264_SPS_PPS(const uint8_t *data, int len,
         }
         buf += size;
       }
+      av_free(savedbuf);
     }
   }
 
@@ -1197,67 +1199,89 @@ const int CBitstreamConverter::avc_parse_nal_units_buf(const uint8_t *buf_in, ui
 const int CBitstreamConverter::isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len)
 {
   // extradata from bytestream h264, convert to avcC atom data for bitstream
-  if (len > 6)
+  if (len <= 6)
+    return 0;
+/*
+  if (BS_RB32(data) != 0x00000001 && BS_RB24(data) != 0x000001)
   {
-    /* check for h264 start code */
-    if (BS_RB32(data) == 0x00000001 || BS_RB24(data) == 0x000001)
-    {
-      uint8_t *buf=NULL, *end, *start;
-      uint32_t sps_size=0, pps_size=0;
-      uint8_t *sps=0, *pps=0;
-
-      int ret = avc_parse_nal_units_buf(data, &buf, &len);
-      if (ret < 0)
-        return ret;
-      start = buf;
-      end = buf + len;
-
-      /* look for sps and pps */
-      while (end - buf > 4)
-      {
-        uint32_t size;
-        uint8_t  nal_type;
-        size = FFMIN(BS_RB32(buf), end - buf - 4);
-        buf += 4;
-        nal_type = buf[0] & 0x1f;
-        if (nal_type == 7) /* SPS */
-        {
-          sps = buf;
-          sps_size = size;
-        }
-        else if (nal_type == 8) /* PPS */
-        {
-          pps = buf;
-          pps_size = size;
-        }
-        buf += size;
-      }
-      if (!sps || !pps || sps_size < 4 || sps_size > UINT16_MAX || pps_size > UINT16_MAX)
-        assert(0);
-
-      avio_w8(pb, 1); /* version */
-      avio_w8(pb, sps[1]); /* profile */
-      avio_w8(pb, sps[2]); /* profile compat */
-      avio_w8(pb, sps[3]); /* level */
-      avio_w8(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
-      avio_w8(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
-
-      avio_wb16(pb, sps_size);
-      avio_write(pb, sps, sps_size);
-      if (pps)
-      {
-        avio_w8(pb, 1); /* number of pps */
-        avio_wb16(pb, pps_size);
-        avio_write(pb, pps, pps_size);
-      }
-      av_free(start);
-    }
-    else
-    {
-      avio_write(pb, data, len);
-    }
+    avio_write(pb, data, len);
+    return 0;
   }
-  return 0;
+*/
+  uint8_t *buf = NULL, *end;
+  int ret = avc_parse_nal_units_buf(data, &buf, &len);
+  uint8_t *savedbuf = buf;
+  if (ret < 0)
+    return ret;
+  end = buf + len;
+
+  uint32_t *sps_size_array = NULL, *pps_size_array = NULL;
+  uint32_t pps_count = 0, sps_count = 0;
+  uint8_t **sps_array = NULL, **pps_array = NULL;
+
+  // look for sps and pps
+  while (end - buf > 4)
+  {
+    unsigned int size;
+    uint8_t nal_type;
+    size = FFMIN(BS_RB32(buf), end - buf - 4);
+    buf += 4;
+    nal_type = buf[0] & 0x1f;
+    if ((nal_type == 7) && (size >= 4) && (size <= UINT16_MAX))
+    { // SPS
+      sps_array = (uint8_t**)realloc(sps_array, sizeof(uint8_t*) * (sps_count+1));
+      sps_size_array = (uint32_t*)realloc(sps_size_array, sizeof(uint32_t) * (sps_count+1));
+      sps_array[sps_count] = buf;
+      sps_size_array[sps_count] = size;
+      sps_count++;
+    } else if ((nal_type == 8) && (size <= UINT16_MAX))
+    { // PPS
+      pps_size_array = (uint32_t*)realloc(pps_size_array, sizeof(uint32_t) * (pps_count+1));
+      pps_array = (uint8_t**)realloc(pps_array, sizeof (uint8_t*) * (pps_count+1));
+      pps_array[pps_count] = buf;
+      pps_size_array[pps_count] = size;
+      pps_count++;
+    }
+    buf += size;
+  }
+
+  if (!sps_count || !pps_count)
+  {
+    ret = -1;
+    goto end;
+  }
+  avio_w8(pb, 1); // version
+  avio_w8(pb, sps_array[0][1]); // profile
+  avio_w8(pb, sps_array[0][2]); // profile compat
+  avio_w8(pb, sps_array[0][3]); // level
+  avio_w8(pb, 0xff); // 6 bits reserved (111111) + 2 bits nal size length - 1 (11)
+  avio_w8(pb, 0xe0 + sps_count); // 3 bits reserved (111) + 5 bits number of sps (00001)
+  for (uint32_t i=0; i < sps_count; i++)
+  {
+    avio_wb16(pb, sps_size_array[i]);
+    avio_write(pb, sps_array[i], sps_size_array[i]);
+  }
+  avio_w8(pb, pps_count); // number of pps
+  for (uint32_t i=0; i < pps_count; i++)
+  {
+    avio_wb16(pb, pps_size_array[i]);
+    avio_write(pb, pps_array[i], pps_size_array[i]);
+  }
+end:
+  if (sps_count)
+  {
+    free(sps_array);
+    free(sps_size_array);
+  }
+  if (pps_count)
+  {
+    free(pps_array);
+    free(pps_size_array);
+  }
+
+  av_free(savedbuf);
+
+  return ret;
 }
 
 void CBitstreamConverter::bits_reader_set( bits_reader_t *br, uint8_t *buf, int len )
