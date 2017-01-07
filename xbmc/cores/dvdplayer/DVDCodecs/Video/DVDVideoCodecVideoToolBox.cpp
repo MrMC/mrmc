@@ -1091,8 +1091,12 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     kCVPixelBufferWidthKey, width);
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
     kCVPixelBufferHeightKey, height);
-  //CFDictionarySetValue(destinationPixelBufferAttributes,
-  //  kCVPixelBufferOpenGLCompatibilityKey, kCFBooleanTrue);
+  CFDictionarySetValue(destinationPixelBufferAttributes,
+    kCVPixelBufferIOSurfacePropertiesKey, kCFBooleanTrue);
+  CFDictionarySetValue(destinationPixelBufferAttributes,
+    kCVPixelBufferOpenGLESCompatibilityKey, kCFBooleanTrue);
+  CFDictionarySetValue(destinationPixelBufferAttributes,
+    kCVPixelBufferOpenGLESTextureCacheCompatibilityKey, kCFBooleanTrue);
 
   CFMutableDictionaryRef io_surface_properties = CFDictionaryCreateMutable(kCFAllocatorDefault,
     0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
