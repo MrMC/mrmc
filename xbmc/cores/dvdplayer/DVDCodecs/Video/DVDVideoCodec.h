@@ -175,6 +175,7 @@ class CDVDCodecOptions;
 #define VC_DROPPED                  0x00000020  //< needed to identify if a picture was dropped
 #define VC_NOBUFFER                 0x00000040  //< last FFmpeg GetBuffer failed
 #define VC_REOPEN                   0x00000080  //< decoder request to re-open
+#define VC_SWFALLBACK               0x00000100  //< decoder request to fallback to sw decode
 
 class CDVDVideoCodec
 {

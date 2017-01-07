@@ -388,7 +388,6 @@ void CDVDPlayerVideo::Process()
         int decoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
 
         bool cont = ProcessDecoderOutput(decoderState, frametime, pts);
-
         if (!cont)
           break;
 
@@ -523,6 +522,24 @@ bool CDVDPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametime,
   std::string sPostProcessType;
   bool bPostProcessDeint = false;
   CDVDVideoPPFFmpeg mPostProcess("");
+
+  if (decoderState & VC_SWFALLBACK)
+  {
+    CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder failed, fallback to software decode");
+    m_hints.software = true;
+    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(m_hints, g_renderManager.GetRenderInfo());
+    m_messageQueue.Put(new CDVDMsgVideoCodecChange(m_hints, codec), 20);
+
+    while (!m_packets.empty())
+    {
+      CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
+      m_packets.pop_front();
+      m_messageQueue.Put(msg, 10);
+    }
+    m_packets.clear();
+
+    return false;
+  }
 
   // if decoder was flushed, we need to seek back again to resume rendering
   if (decoderState & VC_FLUSHED)
