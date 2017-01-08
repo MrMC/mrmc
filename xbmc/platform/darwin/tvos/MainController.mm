@@ -1204,6 +1204,7 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)enableBackGroundTask
 {
+  PRINT_SIGNATURE();
   if (m_bgTask != UIBackgroundTaskInvalid)
   {
     [[UIApplication sharedApplication] endBackgroundTask: m_bgTask];
@@ -1211,11 +1212,14 @@ MainController *g_xbmcController;
   }
   LOG(@"%s: beginBackgroundTask", __PRETTY_FUNCTION__);
   // we have to alloc the background task for keep network working after screen lock and dark.
-  m_bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+  m_bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+    [self disableBackGroundTask];
+  }];
 }
 //--------------------------------------------------------------
 - (void)disableBackGroundTask
 {
+  PRINT_SIGNATURE();
   if (m_bgTask != UIBackgroundTaskInvalid)
   {
     LOG(@"%s: endBackgroundTask", __PRETTY_FUNCTION__);
@@ -1377,12 +1381,12 @@ MainController *g_xbmcController;
     }
   }
 }
-//--------------------------------------------------------------
-- (void)enterBackground
-{
-  // We have 5 seconds before the OS will force kill us for delaying too long.
-  XbmcThreads::EndTime timer(4500);
 
+
+//--------------------------------------------------------------
+- (void)enterBackgroundDetached:(id)arg
+{
+  PRINT_SIGNATURE();
   switch(m_controllerState)
   {
     default:
@@ -1397,8 +1401,7 @@ MainController *g_xbmcController;
         m_wasPlayingTime = g_application.GetTime() - 1.50;
         CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
         // wait until we stop playing.
-        XbmcThreads::EndTime timer2(2000);
-        while(g_application.m_pPlayer->IsPlaying() && !timer2.IsTimePast())
+        while(g_application.m_pPlayer->IsPlaying())
           usleep(50*1000);
       }
       break;
@@ -1411,17 +1414,12 @@ MainController *g_xbmcController;
   CNetworkServices::GetInstance().StopPlexServices();
   CNetworkServices::GetInstance().StopLightEffectServices();
 
-  if (m_controllerState == MC_BACKGROUND)
-  {
-    // if we were playing and have paused, then
-    // enable a background task to keep the network alive
-    [self enableBackGroundTask];
-  }
-  else
+  if (m_controllerState != MC_BACKGROUND)
   {
     // if we are not playing/pause when going to background
     // close out network shares as we can get fully suspended.
     g_application.CloseNetworkShares();
+    [self disableBackGroundTask];
   }
 
   // OnAppFocusChange triggers an AE suspend.
@@ -1429,8 +1427,16 @@ MainController *g_xbmcController;
   // AudioOutputUnitStop to complete.
   // Note that to user, we moved into background to user but we
   // are really waiting here for AE to suspend.
-  while (!CAEFactory::IsSuspended() && !timer.IsTimePast())
+  while (!CAEFactory::IsSuspended())
     usleep(250*1000);
+}
+
+- (void)enterBackground
+{
+  PRINT_SIGNATURE();
+  if (m_controllerState != MC_INACTIVE)
+    [self enableBackGroundTask];
+  [NSThread detachNewThreadSelector:@selector(enterBackgroundDetached:) toTarget:self withObject:nil];
 }
 
 //--------------------------------------------------------------
