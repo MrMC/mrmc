@@ -119,6 +119,7 @@ bool CXBMCApp::m_wasPlayingVideoWhenPaused = false;
 double CXBMCApp::m_wasPlayingVideoWhenPausedTime = 0.0;
 bool CXBMCApp::m_wasPlayingWhenTransientLoss = false;
 bool CXBMCApp::m_headsetPlugged = false;
+bool CXBMCApp::m_hasReqVisible = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
@@ -254,6 +255,7 @@ void CXBMCApp::onResume()
     m_applications.clear();
   }
 
+/*
   if (m_wasPlayingVideoWhenPaused)
   {
     m_wasPlayingVideoWhenPaused = false;
@@ -269,7 +271,11 @@ void CXBMCApp::onResume()
       //CLog::Log(LOGDEBUG, "CXBMCApp::onResume - m_wasPlayingVideoWhenPausedTime [%f], fileitem [%s]", m_wasPlayingVideoWhenPausedTime, fileitem->GetPath().c_str());
     }
   }
-
+*/
+  // Re-request Visible Behind
+  if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
+    RequestVisibleBehind(true);
+  
   m_hasResumed = true;
 }
 
@@ -292,13 +298,14 @@ void CXBMCApp::onPause()
     */
     if (g_application.m_pPlayer->HasVideo())
     {
-      if (!g_application.m_pPlayer->IsPaused())
+      if (!g_application.m_pPlayer->IsPaused() && !m_hasReqVisible)
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
   }
 
   EnableWakeLock(false);
   m_hasResumed = false;
+  m_hasReqVisible = false;
 }
 
 void CXBMCApp::onStop()
@@ -509,6 +516,15 @@ void CXBMCApp::CheckHeadsetPlugged()
 
   if (m_headsetPlugged != oldstate)
     CAEFactory::DeviceChange();
+}
+
+void CXBMCApp::RequestVisibleBehind(bool requested)
+{
+  if (requested == m_hasReqVisible)
+    return;
+
+  m_hasReqVisible = requestVisibleBehind(requested);
+  CLog::Log(LOGDEBUG, "Visible Behind request: %s", m_hasReqVisible ? "true" : "false");
 }
 
 bool CXBMCApp::IsHeadsetPlugged()
@@ -762,26 +778,42 @@ CPoint CXBMCApp::GetDroidToGuiRatio()
 
 void CXBMCApp::OnPlayBackStarted()
 {
+<<<<<<< HEAD
   if (getPackageName() != CCompileInfo::GetPackage())
     CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 
   AcquireAudioFocus();
+=======
+  RequestVisibleBehind(true);
+  m_xbmcappinstance->AcquireAudioFocus();
+>>>>>>> e05ab0d... ADD: [droid] Implement "Visible Behind"
   registerMediaButtonEventReceiver();
   CAndroidKey::SetHandleMediaKeys(true);
 }
 
 void CXBMCApp::OnPlayBackPaused()
 {
+<<<<<<< HEAD
   ReleaseAudioFocus();
+=======
+  RequestVisibleBehind(false);
+  m_xbmcappinstance->ReleaseAudioFocus();
+>>>>>>> e05ab0d... ADD: [droid] Implement "Visible Behind"
 }
 
 void CXBMCApp::OnPlayBackResumed()
 {
+<<<<<<< HEAD
   AcquireAudioFocus();
+=======
+  RequestVisibleBehind(true);
+  m_xbmcappinstance->AcquireAudioFocus();
+>>>>>>> e05ab0d... ADD: [droid] Implement "Visible Behind"
 }
 
 void CXBMCApp::OnPlayBackStopped()
 {
+  RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(false);
   unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
@@ -789,6 +821,7 @@ void CXBMCApp::OnPlayBackStopped()
 
 void CXBMCApp::OnPlayBackEnded()
 {
+  RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(false);
   unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
@@ -1174,6 +1207,7 @@ void CXBMCApp::onScreenshotAvailable(CJNIImage image)
   m_captureEvent.Set();
 }
 
+<<<<<<< HEAD
 void CXBMCApp::onAudioDeviceAdded(CJNIAudioDeviceInfos devices)
 {
   m_audiodevices = devices;
@@ -1194,6 +1228,16 @@ void CXBMCApp::onVideoViewAcquired()
 
 void CXBMCApp::onVideoViewLost()
 {
+=======
+void CXBMCApp::onVisibleBehindCanceled()
+{
+  CLog::Log(LOGDEBUG, "Visible Behind Cancelled");
+  m_hasReqVisible = false;
+
+  // Pressing the pause button calls OnStop() (cf. https://code.google.com/p/android/issues/detail?id=186469)
+  if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+>>>>>>> e05ab0d... ADD: [droid] Implement "Visible Behind"
 }
 
 int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
