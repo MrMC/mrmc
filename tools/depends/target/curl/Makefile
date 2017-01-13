@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.bz2
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
-          --without-libssh2 --disable-ntlm-wb
+          --without-libssh2 --disable-ntlm-wb --enable-ipv6 --without-librtmp
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
