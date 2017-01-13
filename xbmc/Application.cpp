@@ -3629,9 +3629,7 @@ void CApplication::OnPlayBackEnded()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackEnded();
 #endif
-#if defined(TARGET_ANDROID)
-  CXBMCApp::get()->OnPlayBackEnded();
-#elif defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_TVOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
 
@@ -3656,9 +3654,7 @@ void CApplication::OnPlayBackStarted()
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted();
 #endif
-#if defined(TARGET_ANDROID)
-  CXBMCApp::get()->OnPlayBackStarted();
-#elif defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_TVOS)
   if (!m_pPlayer->IsPlayingAudio())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
@@ -3703,9 +3699,7 @@ void CApplication::OnPlayBackStopped()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackStopped();
 #endif
-#if defined(TARGET_ANDROID)
-  CXBMCApp::get()->OnPlayBackStopped();
-#elif defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_TVOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
 
@@ -3722,9 +3716,7 @@ void CApplication::OnPlayBackPaused()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackPaused();
 #endif
-#if defined(TARGET_ANDROID)
-  CXBMCApp::get()->OnPlayBackPaused();
-#elif defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_TVOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
 
@@ -3739,9 +3731,7 @@ void CApplication::OnPlayBackResumed()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackResumed();
 #endif
-#if defined(TARGET_ANDROID)
-  CXBMCApp::get()->OnPlayBackResumed();
-#elif defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_TVOS)
   if (!m_pPlayer->IsPlayingAudio())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif

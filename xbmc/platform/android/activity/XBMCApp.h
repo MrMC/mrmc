@@ -193,9 +193,7 @@ public:
   // Playback callbacks
   void OnPlayBackStarted();
   void OnPlayBackPaused();
-  void OnPlayBackResumed();
   void OnPlayBackStopped();
-  void OnPlayBackEnded();
 
   //PIP
   static void RequestPictureInPictureMode();
