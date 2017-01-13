@@ -2035,7 +2035,7 @@ void CDVDPlayer::HandlePlaySpeed()
       // 1. videoplayer has not detected a keyframe within lenght of demux buffers
       if (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0 &&
           !m_dvdPlayerAudio->AcceptsData() &&
-          m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_STARTING &&
+          //breaks dvd iso playback m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_STARTING &&
           m_dvdPlayerVideo->IsStalled())
       {
         CLog::Log(LOGWARNING, "CDVDPlayer::Sync - stream player video does not start, flushing buffers");
