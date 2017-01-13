@@ -2276,6 +2276,7 @@ OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCJ
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSearchableActivity.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCProjection.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCProperties.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCMediaSession.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/activity_main.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/searchable.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/strings.xml"

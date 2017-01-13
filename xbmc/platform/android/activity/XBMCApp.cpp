@@ -83,6 +83,11 @@
 #include "platform/android/jni/SystemProperties.h"
 #include "platform/android/jni/Display.h"
 #include "platform/android/activity//AndroidKey.h"
+#include <androidjni/BitmapFactory.h>
+#include <androidjni/SystemClock.h>
+#include "GUIInfoManager.h"
+#include "guiinfo/GUIInfoLabels.h"
+#include "TextureCache.h"
 
 #include "CompileInfo.h"
 #include "filesystem/VideoDatabaseFile.h"
@@ -93,10 +98,12 @@
 #define GIGABYTES       1073741824
 #define CAPTURE_QUEUE_MAXDEPTH 3
 
-using namespace std;
-using namespace jni;
+#define ACTION_XBMC_RESUME "android.intent.XBMC_RESUME"
+
 using namespace KODI::MESSAGING;
 using namespace ANNOUNCEMENT;
+using namespace std;
+using namespace jni;
 
 template<class T, void(T::*fn)()>
 void* thread_run(void* obj)
@@ -207,31 +214,31 @@ void CXBMCApp::onStart()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if (!m_firstrun)
+  if (m_firstrun)
   {
-    android_printf("%s: Already running, ignoring request to start", __PRETTY_FUNCTION__);
-    return;
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    pthread_create(&m_thread, &attr, thread_run<CXBMCApp, &CXBMCApp::run>, this);
+    pthread_attr_destroy(&attr);
+
+    // Some intent filters MUST be registered in code rather than through the manifest
+    CJNIIntentFilter intentFilter;
+    intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
+    intentFilter.addAction("android.intent.action.SCREEN_ON");
+    intentFilter.addAction("android.intent.action.SCREEN_OFF");
+    intentFilter.addAction("android.intent.action.HEADSET_PLUG");
+    intentFilter.addAction("android.intent.action.HDMI_PLUGGED");
+    intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+    registerReceiver(*this, intentFilter);
+
+    m_mediaSession.reset(new CJNIXBMCMediaSession());
   }
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-  pthread_create(&m_thread, &attr, thread_run<CXBMCApp, &CXBMCApp::run>, this);
-  pthread_attr_destroy(&attr);
 }
 
 void CXBMCApp::onResume()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-
-  // Some intent filters MUST be registered in code rather than through the manifest
-  CJNIIntentFilter intentFilter;
-  intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
-  intentFilter.addAction("android.intent.action.SCREEN_ON");
-  intentFilter.addAction("android.intent.action.SCREEN_OFF");
-  intentFilter.addAction("android.intent.action.HEADSET_PLUG");
-  intentFilter.addAction("android.intent.action.HDMI_PLUGGED");
-  intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-  registerReceiver(*this, intentFilter);
 
   if (!g_application.IsInScreenSaver())
     EnableWakeLock(true);
@@ -247,7 +254,7 @@ void CXBMCApp::onResume()
   }
   CheckHeadsetPlugged();
 
-  unregisterMediaButtonEventReceiver();
+  m_mediaSession->activate(false);
 
   // Clear the applications cache. We could have installed/deinstalled apps
   {
@@ -301,6 +308,7 @@ void CXBMCApp::onPause()
       if (!g_application.m_pPlayer->IsPaused() && !m_hasReqVisible)
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
+    m_mediaSession->activate(true);
   }
 
   EnableWakeLock(false);
@@ -316,6 +324,11 @@ void CXBMCApp::onStop()
 void CXBMCApp::onDestroy()
 {
   android_printf("%s", __PRETTY_FUNCTION__);
+
+  unregisterReceiver(*this);
+
+  if (m_mediaSession)
+    m_mediaSession.release();
 
   // If android is forcing us to stop, ask XBMC to exit then wait until it's
   // been destroyed.
@@ -778,37 +791,68 @@ CPoint CXBMCApp::GetDroidToGuiRatio()
 
 void CXBMCApp::OnPlayBackStarted()
 {
-<<<<<<< HEAD
   if (getPackageName() != CCompileInfo::GetPackage())
     CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 
   AcquireAudioFocus();
-=======
   RequestVisibleBehind(true);
-  m_xbmcappinstance->AcquireAudioFocus();
->>>>>>> e05ab0d... ADD: [droid] Implement "Visible Behind"
   registerMediaButtonEventReceiver();
-  CAndroidKey::SetHandleMediaKeys(true);
+  
+  m_mediaSession->activate(true);
+  CJNIMediaMetadataBuilder builder;
+  builder
+      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
+      .putString(CJNIMediaMetadata::METADATA_KEY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
+      .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION, g_application.m_pPlayer->GetTotalTime())
+//      .putString(CJNIMediaMetadata::METADATA_KEY_ART_URI, thumb)
+//      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_ICON_URI, thumb)
+//      .putString(CJNIMediaMetadata::METADATA_KEY_ALBUM_ART_URI, thumb)
+      ;
+  
+  std::string thumb;
+  if (g_application.m_pPlayer->HasVideo())
+  {
+    builder
+        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, g_infoManager.GetLabel(VIDEOPLAYER_TAGLINE))
+        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, g_infoManager.GetLabel(VIDEOPLAYER_DIRECTOR))
+        ;
+    thumb = g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+
+    RequestVisibleBehind(true);
+  }
+  else
+  {
+    builder
+        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, g_infoManager.GetLabel(MUSICPLAYER_ARTIST))
+        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, g_infoManager.GetLabel(MUSICPLAYER_ARTIST))
+        ;
+    thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1);
+  }
+  bool needrecaching = false;
+  std::string cachefile = CTextureCache::GetInstance().CheckCachedImage(thumb, needrecaching);
+  if (!cachefile.empty())
+  {
+    std::string actualfile = CSpecialProtocol::TranslatePath(cachefile);
+    CJNIBitmap bmp = CJNIBitmapFactory::decodeFile(actualfile);
+    if (bmp)
+      builder.putBitmap(CJNIMediaMetadata::METADATA_KEY_ART, bmp);
+  }
+  m_mediaSession->updateMetadata(builder.build());
+
+  CJNIIntent intent(ACTION_XBMC_RESUME, CJNIURI::EMPTY, *this, get_class(CJNIContext::get_raw()));
+  m_mediaSession->updateIntent(intent);
 }
 
 void CXBMCApp::OnPlayBackPaused()
 {
-<<<<<<< HEAD
   ReleaseAudioFocus();
-=======
   RequestVisibleBehind(false);
-  m_xbmcappinstance->ReleaseAudioFocus();
->>>>>>> e05ab0d... ADD: [droid] Implement "Visible Behind"
 }
 
 void CXBMCApp::OnPlayBackResumed()
 {
-<<<<<<< HEAD
   AcquireAudioFocus();
-=======
   RequestVisibleBehind(true);
-  m_xbmcappinstance->AcquireAudioFocus();
->>>>>>> e05ab0d... ADD: [droid] Implement "Visible Behind"
 }
 
 void CXBMCApp::OnPlayBackStopped()
@@ -817,6 +861,7 @@ void CXBMCApp::OnPlayBackStopped()
   CAndroidKey::SetHandleMediaKeys(false);
   unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
+  m_mediaSession->activate(false);
 }
 
 void CXBMCApp::OnPlayBackEnded()
@@ -825,6 +870,34 @@ void CXBMCApp::OnPlayBackEnded()
   CAndroidKey::SetHandleMediaKeys(false);
   unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
+}
+
+void CXBMCApp::ProcessSlow()
+{
+  if (m_mediaSession && m_mediaSession->isActive())
+  {
+    CJNIPlaybackStateBuilder builder;
+    int state = CJNIPlaybackState::STATE_NONE;
+    int64_t pos = 0;
+    float speed = 0.0;
+    if (g_application.m_pPlayer->IsPlaying())
+    {
+      pos = g_application.m_pPlayer->GetTime();
+      speed = g_application.m_pPlayer->GetPlaySpeed();
+      if (g_application.m_pPlayer->IsPaused())
+        state = CJNIPlaybackState::STATE_PAUSED;
+      else
+        state = CJNIPlaybackState::STATE_PLAYING;
+    }
+    else
+      state = CJNIPlaybackState::STATE_STOPPED;
+    builder
+        .setState(state, pos, speed, CJNISystemClock::elapsedRealtime())
+        .setActions(0xffffffffffffffff)
+        ;
+    m_mediaSession->updatePlaybackState(builder.build());
+  }
+>>>>>>> c52a970... ADD: [droid] MediaSession handling (Now Playing)
 }
 
 std::vector<androidPackage> CXBMCApp::GetApplications()
@@ -1141,6 +1214,16 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
       CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
     }
   }
+  else if (action == ACTION_XBMC_RESUME)
+  {
+    if (g_application.m_pPlayer->IsPlaying())
+    {
+      if (g_application.m_pPlayer->HasVideo())
+        RequestVisibleBehind(true);
+      if (g_application.m_pPlayer->IsPaused())
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+    }
+  }
 }
 
 void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)
@@ -1207,28 +1290,6 @@ void CXBMCApp::onScreenshotAvailable(CJNIImage image)
   m_captureEvent.Set();
 }
 
-<<<<<<< HEAD
-void CXBMCApp::onAudioDeviceAdded(CJNIAudioDeviceInfos devices)
-{
-  m_audiodevices = devices;
-  LogAudoDevices("onAudioDeviceAdded", m_audiodevices);
-  CheckHeadsetPlugged();
-}
-
-void CXBMCApp::onAudioDeviceRemoved(CJNIAudioDeviceInfos devices)
-{
-  m_audiodevices = devices;
-  LogAudoDevices("onAudioDeviceRemoved", m_audiodevices);
-  CheckHeadsetPlugged();
-}
-
-void CXBMCApp::onVideoViewAcquired()
-{
-}
-
-void CXBMCApp::onVideoViewLost()
-{
-=======
 void CXBMCApp::onVisibleBehindCanceled()
 {
   CLog::Log(LOGDEBUG, "Visible Behind Cancelled");
@@ -1237,7 +1298,6 @@ void CXBMCApp::onVisibleBehindCanceled()
   // Pressing the pause button calls OnStop() (cf. https://code.google.com/p/android/issues/detail?id=186469)
   if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
->>>>>>> e05ab0d... ADD: [droid] Implement "Visible Behind"
 }
 
 int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
@@ -1295,6 +1355,7 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   {
     m_audioFocusGranted = false;
     unregisterMediaButtonEventReceiver();
+    m_mediaSession->activate(false);
 
     if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {

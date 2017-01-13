@@ -27,6 +27,7 @@
 #include <vector>
 #include <map>
 #include <queue>
+#include <memory>
 
 #include <android/native_activity.h>
 
@@ -44,6 +45,9 @@
 #include "guilib/Geometry.h"
 
 #include "JNIMainActivity.h"
+#include "JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
+#include "JNIXBMCMediaSession.h"
+#include "platform/xbmc.h"
 
 // forward delares
 class CJNIWakeLock;
@@ -208,6 +212,7 @@ protected:
 
 private:
   static CXBMCApp* m_xbmcappinstance;
+  std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   static bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
   void run();
