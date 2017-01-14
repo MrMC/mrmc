@@ -327,7 +327,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   }
 
   unsigned int nTotalTime = XbmcThreads::SystemClockMillis() - nTime;
-  CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb from file <%s> in %d packets. ", __FUNCTION__, nTotalTime, redactPath.c_str(), packetsTried);
+  CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb from file <%s> in %d packets to <%s>. %s", __FUNCTION__, nTotalTime, redactPath.c_str(), packetsTried, CTextureCache::GetCachedPath(details.file).c_str(), bOk ? "OK" : "Failed");
   return bOk;
 }
 

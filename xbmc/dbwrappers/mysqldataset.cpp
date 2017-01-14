@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -504,7 +505,8 @@ void MysqlDatabase::start_transaction() {
   if (active)
   {
     mysql_autocommit(conn, false);
-    CLog::Log(LOGDEBUG,"Mysql Start transaction");
+    if (g_advancedSettings.CanLogComponent(LOGDATABASE))
+      CLog::Log(LOGDEBUG,"Mysql Start transaction");
     _in_transaction = true;
   }
 }
@@ -514,7 +516,8 @@ void MysqlDatabase::commit_transaction() {
   {
     mysql_commit(conn);
     mysql_autocommit(conn, true);
-    CLog::Log(LOGDEBUG,"Mysql commit transaction");
+    if (g_advancedSettings.CanLogComponent(LOGDATABASE))
+      CLog::Log(LOGDEBUG,"Mysql commit transaction");
     _in_transaction = false;
   }
 }
@@ -524,7 +527,8 @@ void MysqlDatabase::rollback_transaction() {
   {
     mysql_rollback(conn);
     mysql_autocommit(conn, true);
-    CLog::Log(LOGDEBUG,"Mysql rollback transaction");
+    if (g_advancedSettings.CanLogComponent(LOGDATABASE))
+      CLog::Log(LOGDEBUG,"Mysql rollback transaction");
     _in_transaction = false;
   }
 }
