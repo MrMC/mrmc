@@ -34,6 +34,7 @@
 #define NAVRESULT_DATA              0x00000002 // return data to demuxer
 #define NAVRESULT_ERROR             0x00000003 // return read error to demuxer
 #define NAVRESULT_HOLD              0x00000004 // return eof to demuxer
+#define NAVRESULT_CSS               0x00000006 // return read error to demuxer
 
 #define LIBDVDNAV_BUTTON_NORMAL 0
 #define LIBDVDNAV_BUTTON_CLICKED 1
@@ -168,13 +169,6 @@ protected:
 
   static void SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t &audio_attributes);
   static void SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes);
-
-  // libdvdxxx streaminng API support
-  XFILE::CFile *m_stream;
-  dvdnav_stream_cb m_stream_cb = {stream_cb_seek, stream_cb_read, nullptr};
-
-  static int stream_cb_seek(void *s, uint64_t pos);
-  static int stream_cb_read(void *s, void* buffer, int size);
 
   DllDvdNav m_dll;
   bool m_bCheckButtons;

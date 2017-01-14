@@ -58,7 +58,6 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player, CFileItem
   m_iTime = m_iTotalTime = 0;
   m_bEOF = false;
   m_lastevent = DVDNAV_NOP;
-  m_stream = nullptr;
 
   memset(m_lastblock, 0, sizeof(m_lastblock));
 }
@@ -66,26 +65,6 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player, CFileItem
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
 {
   Close();
-}
-
-int CDVDInputStreamNavigator::stream_cb_seek(void *s, uint64_t pos)
-{
-  XFILE::CFile *file = static_cast<XFILE::CFile*>(s);
-  int64_t cur_pos = file->Seek(pos, SEEK_SET);
-
-  // zero on success, a negative value on error
-  return cur_pos == (int64_t)pos ? 0 : -1;
-}
-
-int CDVDInputStreamNavigator::stream_cb_read(void *s, void* buffer, int size)
-{
-  XFILE::CFile *file = static_cast<XFILE::CFile*>(s);
-  ssize_t bytesread = file->Read(buffer, size);
-  if (bytesread < 0)
-    return -1;
-
-  // the number of bytes read or a negative value on error.
-  return bytesread == size ? bytesread : -1;
 }
 
 bool CDVDInputStreamNavigator::Open()
@@ -98,55 +77,30 @@ bool CDVDInputStreamNavigator::Open()
   if (!m_dll.Load())
     return false;
 
-  // load the dvd language codes
-  // g_LangCodeExpander.LoadStandardCodes();
-
-  bool is_iso_container = URIUtils::HasExtension(m_item.GetPath(), ".iso|.img");
-  if (is_iso_container)
-  {
-    // no flags options, caching and others do not work well
-    // with libdvdnav streaming API.
-    m_stream = new XFILE::CFile();
-    if (!m_stream || !m_stream->Open(m_item.GetPath()))
-    {
-      SAFE_DELETE(m_stream);
-      return false;
-    }
-    // open up iso/dvd using streaming API
-    if (m_dll.dvdnav_open_stream(&m_dvdnav, m_stream, &m_stream_cb) != DVDNAV_STATUS_OK)
-    {
-      CLog::Log(LOGERROR,"Error on dvdnav_open_stream");
-      Close();
-      return false;
-    }
-  }
-  else
-  {
-    std::string path = m_item.GetPath();
-    // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
-    // libdvdnav is still able to play without, so strip them.
-    if(URIUtils::GetFileName(path) == "VIDEO_TS.IFO")
-      path = URIUtils::GetParentPath(path);
-    URIUtils::RemoveSlashAtEnd(path);
-    if(URIUtils::GetFileName(path) == "VIDEO_TS")
-      path = URIUtils::GetParentPath(path);
-    URIUtils::RemoveSlashAtEnd(path);
+  std::string path = m_item.GetPath();
+  // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
+  // libdvdnav is still able to play without, so strip them.
+  if (URIUtils::GetFileName(path) == "VIDEO_TS.IFO")
+    path = URIUtils::GetParentPath(path);
+  URIUtils::RemoveSlashAtEnd(path);
+  if (URIUtils::GetFileName(path) == "VIDEO_TS")
+    path = URIUtils::GetParentPath(path);
+  URIUtils::RemoveSlashAtEnd(path);
 
 #if defined(TARGET_DARWIN_OSX)
-    // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
-    // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
-    char* strDVDFile = Cocoa_MountPoint2DeviceName(strdup(path.c_str()));
-    path = strDVDFile;
-    free(strDVDFile);
+  // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
+  // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
+  char* strDVDFile = Cocoa_MountPoint2DeviceName(strdup(path.c_str()));
+  path = strDVDFile;
+  free(strDVDFile);
 #endif
 
-    // open up the DVD device
-    if (m_dll.dvdnav_open(&m_dvdnav, path.c_str()) != DVDNAV_STATUS_OK)
-    {
-      CLog::Log(LOGERROR,"Error on dvdnav_open\n");
-      Close();
-      return false;
-    }
+  // open up the DVD device
+  if (m_dll.dvdnav_open(&m_dvdnav, path.c_str()) != DVDNAV_STATUS_OK)
+  {
+    CLog::Log(LOGERROR,"Error on dvdnav_open\n");
+    Close();
+    return false;
   }
 
   int region = CSettings::GetInstance().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
@@ -207,7 +161,7 @@ bool CDVDInputStreamNavigator::Open()
   }
 
   // set read ahead cache usage
-  int32_t readahead_flag = is_iso_container ? 0 : 1;
+  int32_t readahead_flag = URIUtils::HasExtension(m_item.GetPath(), ".iso|.img") ? 0 : 1;
   if (m_dll.dvdnav_set_readahead_flag(m_dvdnav, readahead_flag) != DVDNAV_STATUS_OK)
   {
     CLog::Log(LOGERROR,"Error on dvdnav_set_readahead_flag: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
@@ -271,12 +225,6 @@ void CDVDInputStreamNavigator::Close()
     return ;
   }
 
-  if (m_stream)
-  {
-    m_stream->Close();
-    SAFE_DELETE(m_stream);
-  }
-
   CDVDInputStream::Close();
   m_dvdnav = NULL;
   m_bEOF = true;
@@ -302,6 +250,11 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
       return 0; // return 0 bytes read;
     else if (navresult == NAVRESULT_ERROR)
       return -1;
+    else if (navresult == NAVRESULT_CSS)
+    {
+      //m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
+      return -1;
+    }
     else if (navresult == NAVRESULT_DATA)
       return iBytesRead;
     else if (navresult == NAVRESULT_NOP)
@@ -358,6 +311,12 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
     CLog::Log(LOGERROR,"Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     m_bEOF = true;
     return NAVRESULT_ERROR;
+  }
+  else if (result == DVDNAV_STATUS_CSS)
+  {
+    CLog::Log(LOGERROR,"CSS Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    m_bEOF = true;
+    return NAVRESULT_CSS;
   }
 
     switch (m_lastevent)
@@ -555,7 +514,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
             {
               m_mapTitleChapters[m_iTitle][i + 2] = times[i] / 90000;
             }
-            m_dll.dvdnav_free(times);
+            free(times);
           }
         }
         CLog::Log(LOGDEBUG, "%s - Cell change: Title %d, Chapter %d\n", __FUNCTION__, m_iTitle, m_iPart);
