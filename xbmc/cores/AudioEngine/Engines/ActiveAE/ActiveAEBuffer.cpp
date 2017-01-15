@@ -115,6 +115,9 @@ void CActiveAEBufferPool::ReturnBuffer(CSampleBuffer *buffer)
 
 bool CActiveAEBufferPool::Create(unsigned int totaltime)
 {
+  if (m_format.m_frames < 1)
+    return false;
+
   CSampleBuffer *buffer;
   SampleConfig config;
   config.fmt = CAEUtil::GetAVSampleFormat(m_format.m_dataFormat);
