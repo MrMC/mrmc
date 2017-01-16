@@ -1830,7 +1830,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
     m_channelLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("channellayout");
   }
@@ -1838,7 +1838,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true, m_width, m_height);
     m_focusedChannelLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedchannellayout");
   }
@@ -1848,7 +1848,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true, m_width, m_height);
     m_focusedProgrammeLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
@@ -1856,7 +1856,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
     m_programmeLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
@@ -1866,7 +1866,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
     m_rulerLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("rulerlayout");
   }
