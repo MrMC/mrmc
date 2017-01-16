@@ -1935,12 +1935,6 @@ else
   final_message="$final_message\n  Bluray:\tNo"
 fi
 
-# we don't compile with default upstream squish, so we use our own one
-# even on non unified deps platforms
-if test "$cross_compiling" != "yes"; then
-  make -C ${abs_top_srcdir}/tools/depends/native/libsquish-native CXX=${CXX}
-  export PKG_CONFIG_PATH="${abs_top_srcdir}/tools/depends/native/libsquish-native/squish-install/lib/pkgconfig:$PKG_CONFIG_PATH"
-fi
 PKG_CHECK_MODULES([SQUISH], [squish],
  [INCLUDES="$INCLUDES $SQUISH_CFLAGS" LIBS="$LIBS $SQUISH_LIBS"],
  AC_MSG_ERROR("squish not found"))
@@ -1948,10 +1942,6 @@ PKG_CHECK_MODULES([SQUISH], [squish],
 if test "x$use_texturepacker" != "xno"; then
   AC_PATH_PROG([TEXTUREPACKER], [TexturePacker], ["none"],
     [$PATH$PATH_SEPARATOR${abs_top_srcdir}/tools/depends/native/TexturePacker/bin])
-  if test "$TEXTUREPACKER" = "none"; then
-    make -C ${abs_top_srcdir}/tools/depends/native/TexturePacker
-    TEXTUREPACKER="${abs_top_srcdir}/tools/depends/native/TexturePacker/bin/TexturePacker"
-  fi
   if test -x "$TEXTUREPACKER"; then
     final_message="$final_message\n  TexturePacker:Yes"
     USE_TEXTUREPACKER=1
