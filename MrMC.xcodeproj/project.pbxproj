@@ -1660,6 +1660,43 @@
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
 		F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
+		F5022F171E2D41D5001BBF75 /* hdhomerun_channels.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EF81E2D41D5001BBF75 /* hdhomerun_channels.c */; };
+		F5022F181E2D41D5001BBF75 /* hdhomerun_channels.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EF81E2D41D5001BBF75 /* hdhomerun_channels.c */; };
+		F5022F191E2D41D5001BBF75 /* hdhomerun_channels.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EF81E2D41D5001BBF75 /* hdhomerun_channels.c */; };
+		F5022F1A1E2D41D5001BBF75 /* hdhomerun_channelscan.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFA1E2D41D5001BBF75 /* hdhomerun_channelscan.c */; };
+		F5022F1B1E2D41D5001BBF75 /* hdhomerun_channelscan.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFA1E2D41D5001BBF75 /* hdhomerun_channelscan.c */; };
+		F5022F1C1E2D41D5001BBF75 /* hdhomerun_channelscan.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFA1E2D41D5001BBF75 /* hdhomerun_channelscan.c */; };
+		F5022F201E2D41D5001BBF75 /* hdhomerun_control.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFD1E2D41D5001BBF75 /* hdhomerun_control.c */; };
+		F5022F211E2D41D5001BBF75 /* hdhomerun_control.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFD1E2D41D5001BBF75 /* hdhomerun_control.c */; };
+		F5022F221E2D41D5001BBF75 /* hdhomerun_control.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFD1E2D41D5001BBF75 /* hdhomerun_control.c */; };
+		F5022F231E2D41D5001BBF75 /* hdhomerun_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFF1E2D41D5001BBF75 /* hdhomerun_debug.c */; };
+		F5022F241E2D41D5001BBF75 /* hdhomerun_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFF1E2D41D5001BBF75 /* hdhomerun_debug.c */; };
+		F5022F251E2D41D5001BBF75 /* hdhomerun_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022EFF1E2D41D5001BBF75 /* hdhomerun_debug.c */; };
+		F5022F261E2D41D5001BBF75 /* hdhomerun_device.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F011E2D41D5001BBF75 /* hdhomerun_device.c */; };
+		F5022F271E2D41D5001BBF75 /* hdhomerun_device.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F011E2D41D5001BBF75 /* hdhomerun_device.c */; };
+		F5022F281E2D41D5001BBF75 /* hdhomerun_device.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F011E2D41D5001BBF75 /* hdhomerun_device.c */; };
+		F5022F291E2D41D5001BBF75 /* hdhomerun_dhcp.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F031E2D41D5001BBF75 /* hdhomerun_dhcp.c */; };
+		F5022F2A1E2D41D5001BBF75 /* hdhomerun_dhcp.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F031E2D41D5001BBF75 /* hdhomerun_dhcp.c */; };
+		F5022F2B1E2D41D5001BBF75 /* hdhomerun_dhcp.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F031E2D41D5001BBF75 /* hdhomerun_dhcp.c */; };
+		F5022F2C1E2D41D5001BBF75 /* hdhomerun_discover.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F051E2D41D5001BBF75 /* hdhomerun_discover.c */; };
+		F5022F2D1E2D41D5001BBF75 /* hdhomerun_discover.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F051E2D41D5001BBF75 /* hdhomerun_discover.c */; };
+		F5022F2E1E2D41D5001BBF75 /* hdhomerun_discover.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F051E2D41D5001BBF75 /* hdhomerun_discover.c */; };
+		F5022F2F1E2D41D5001BBF75 /* hdhomerun_pkt.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0A1E2D41D5001BBF75 /* hdhomerun_pkt.c */; };
+		F5022F301E2D41D5001BBF75 /* hdhomerun_pkt.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0A1E2D41D5001BBF75 /* hdhomerun_pkt.c */; };
+		F5022F311E2D41D5001BBF75 /* hdhomerun_pkt.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0A1E2D41D5001BBF75 /* hdhomerun_pkt.c */; };
+		F5022F321E2D41D5001BBF75 /* hdhomerun_video.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0D1E2D41D5001BBF75 /* hdhomerun_video.c */; };
+		F5022F331E2D41D5001BBF75 /* hdhomerun_video.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0D1E2D41D5001BBF75 /* hdhomerun_video.c */; };
+		F5022F341E2D41D5001BBF75 /* hdhomerun_video.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0D1E2D41D5001BBF75 /* hdhomerun_video.c */; };
+		F5022F351E2D41D5001BBF75 /* lgpl.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5022F0F1E2D41D5001BBF75 /* lgpl.txt */; };
+		F5022F361E2D41D5001BBF75 /* lgpl.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5022F0F1E2D41D5001BBF75 /* lgpl.txt */; };
+		F5022F3C1E2D41D5001BBF75 /* README in Resources */ = {isa = PBXBuildFile; fileRef = F5022F121E2D41D5001BBF75 /* README */; };
+		F5022F3D1E2D41D5001BBF75 /* README in Resources */ = {isa = PBXBuildFile; fileRef = F5022F121E2D41D5001BBF75 /* README */; };
+		F5022F421E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F3E1E2D4404001BBF75 /* HDHomeRunDirectory.cpp */; };
+		F5022F431E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F3E1E2D4404001BBF75 /* HDHomeRunDirectory.cpp */; };
+		F5022F441E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F3E1E2D4404001BBF75 /* HDHomeRunDirectory.cpp */; };
+		F5022F451E2D4404001BBF75 /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F401E2D4404001BBF75 /* HDHomeRunFile.cpp */; };
+		F5022F461E2D4404001BBF75 /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F401E2D4404001BBF75 /* HDHomeRunFile.cpp */; };
+		F5022F471E2D4404001BBF75 /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F401E2D4404001BBF75 /* HDHomeRunFile.cpp */; };
 		F5024C0B1BB433EC00134B16 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142E31BAF88880075A95C /* MediaPlayer.framework */; };
 		F5024C0C1BB433F000134B16 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142E11BAF88760075A95C /* CoreGraphics.framework */; };
 		F5024C0D1BB433F400134B16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142DF1BAF88630075A95C /* UIKit.framework */; };
@@ -5133,6 +5170,36 @@
 		EC720A8E155091BB00FFD782 /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ilog.h; path = commons/ilog.h; sourceTree = "<group>"; };
 		F500E35517F3412C004FC217 /* WinEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEvents.cpp; sourceTree = "<group>"; };
 		F500E35917F34132004FC217 /* WinEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEvents.h; sourceTree = "<group>"; };
+		F5022EF71E2D41D5001BBF75 /* hdhomerun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun.h; sourceTree = "<group>"; };
+		F5022EF81E2D41D5001BBF75 /* hdhomerun_channels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_channels.c; sourceTree = "<group>"; };
+		F5022EF91E2D41D5001BBF75 /* hdhomerun_channels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_channels.h; sourceTree = "<group>"; };
+		F5022EFA1E2D41D5001BBF75 /* hdhomerun_channelscan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_channelscan.c; sourceTree = "<group>"; };
+		F5022EFB1E2D41D5001BBF75 /* hdhomerun_channelscan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_channelscan.h; sourceTree = "<group>"; };
+		F5022EFD1E2D41D5001BBF75 /* hdhomerun_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_control.c; sourceTree = "<group>"; };
+		F5022EFE1E2D41D5001BBF75 /* hdhomerun_control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_control.h; sourceTree = "<group>"; };
+		F5022EFF1E2D41D5001BBF75 /* hdhomerun_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_debug.c; sourceTree = "<group>"; };
+		F5022F001E2D41D5001BBF75 /* hdhomerun_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_debug.h; sourceTree = "<group>"; };
+		F5022F011E2D41D5001BBF75 /* hdhomerun_device.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_device.c; sourceTree = "<group>"; };
+		F5022F021E2D41D5001BBF75 /* hdhomerun_device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_device.h; sourceTree = "<group>"; };
+		F5022F031E2D41D5001BBF75 /* hdhomerun_dhcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_dhcp.c; sourceTree = "<group>"; };
+		F5022F041E2D41D5001BBF75 /* hdhomerun_dhcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_dhcp.h; sourceTree = "<group>"; };
+		F5022F051E2D41D5001BBF75 /* hdhomerun_discover.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_discover.c; sourceTree = "<group>"; };
+		F5022F061E2D41D5001BBF75 /* hdhomerun_discover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_discover.h; sourceTree = "<group>"; };
+		F5022F071E2D41D5001BBF75 /* hdhomerun_os.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_os.h; sourceTree = "<group>"; };
+		F5022F081E2D41D5001BBF75 /* hdhomerun_os_posix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_os_posix.h; sourceTree = "<group>"; };
+		F5022F091E2D41D5001BBF75 /* hdhomerun_os_windows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_os_windows.h; sourceTree = "<group>"; };
+		F5022F0A1E2D41D5001BBF75 /* hdhomerun_pkt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_pkt.c; sourceTree = "<group>"; };
+		F5022F0B1E2D41D5001BBF75 /* hdhomerun_pkt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_pkt.h; sourceTree = "<group>"; };
+		F5022F0C1E2D41D5001BBF75 /* hdhomerun_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_types.h; sourceTree = "<group>"; };
+		F5022F0D1E2D41D5001BBF75 /* hdhomerun_video.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hdhomerun_video.c; sourceTree = "<group>"; };
+		F5022F0E1E2D41D5001BBF75 /* hdhomerun_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_video.h; sourceTree = "<group>"; };
+		F5022F0F1E2D41D5001BBF75 /* lgpl.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lgpl.txt; sourceTree = "<group>"; };
+		F5022F121E2D41D5001BBF75 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		F5022F3E1E2D4404001BBF75 /* HDHomeRunDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HDHomeRunDirectory.cpp; sourceTree = "<group>"; };
+		F5022F3F1E2D4404001BBF75 /* HDHomeRunDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDHomeRunDirectory.h; sourceTree = "<group>"; };
+		F5022F401E2D4404001BBF75 /* HDHomeRunFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HDHomeRunFile.cpp; sourceTree = "<group>"; };
+		F5022F411E2D4404001BBF75 /* HDHomeRunFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDHomeRunFile.h; sourceTree = "<group>"; };
+		F5022F481E2D4BD2001BBF75 /* DllHDHomeRun.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DllHDHomeRun.h; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F5071905175A26AD004C87D1 /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = SDKROOT; };
@@ -8419,6 +8486,7 @@
 				DF93D6701444A8B0007C6459 /* DirectoryFactory.h */,
 				E38E16B00D25F9FA00618676 /* DirectoryHistory.cpp */,
 				E38E16B10D25F9FA00618676 /* DirectoryHistory.h */,
+				F5022F481E2D4BD2001BBF75 /* DllHDHomeRun.h */,
 				F5B724121C7DECDA006432AE /* DllLibbluray.h */,
 				E38E16B40D25F9FA00618676 /* DllLibCurl.cpp */,
 				E38E16B50D25F9FA00618676 /* DllLibCurl.h */,
@@ -8447,6 +8515,10 @@
 				E38E16E50D25F9FA00618676 /* FTPDirectory.h */,
 				E38E16E60D25F9FA00618676 /* FTPParse.cpp */,
 				E38E16E70D25F9FA00618676 /* FTPParse.h */,
+				F5022F3E1E2D4404001BBF75 /* HDHomeRunDirectory.cpp */,
+				F5022F3F1E2D4404001BBF75 /* HDHomeRunDirectory.h */,
+				F5022F401E2D4404001BBF75 /* HDHomeRunFile.cpp */,
+				F5022F411E2D4404001BBF75 /* HDHomeRunFile.h */,
 				F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */,
 				F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */,
 				DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */,
@@ -8673,6 +8745,7 @@
 				F51D16961E29950600A03C93 /* libdvd */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
 				F5B724131C7E150C006432AE /* UnrarXLib */,
+				F5022EF31E2D41D5001BBF75 /* libhdhomerun */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -9074,6 +9147,38 @@
 				EC720A8E155091BB00FFD782 /* ilog.h */,
 			);
 			name = commons;
+			sourceTree = "<group>";
+		};
+		F5022EF31E2D41D5001BBF75 /* libhdhomerun */ = {
+			isa = PBXGroup;
+			children = (
+				F5022EF71E2D41D5001BBF75 /* hdhomerun.h */,
+				F5022EF81E2D41D5001BBF75 /* hdhomerun_channels.c */,
+				F5022EF91E2D41D5001BBF75 /* hdhomerun_channels.h */,
+				F5022EFA1E2D41D5001BBF75 /* hdhomerun_channelscan.c */,
+				F5022EFB1E2D41D5001BBF75 /* hdhomerun_channelscan.h */,
+				F5022EFD1E2D41D5001BBF75 /* hdhomerun_control.c */,
+				F5022EFE1E2D41D5001BBF75 /* hdhomerun_control.h */,
+				F5022EFF1E2D41D5001BBF75 /* hdhomerun_debug.c */,
+				F5022F001E2D41D5001BBF75 /* hdhomerun_debug.h */,
+				F5022F011E2D41D5001BBF75 /* hdhomerun_device.c */,
+				F5022F021E2D41D5001BBF75 /* hdhomerun_device.h */,
+				F5022F031E2D41D5001BBF75 /* hdhomerun_dhcp.c */,
+				F5022F041E2D41D5001BBF75 /* hdhomerun_dhcp.h */,
+				F5022F051E2D41D5001BBF75 /* hdhomerun_discover.c */,
+				F5022F061E2D41D5001BBF75 /* hdhomerun_discover.h */,
+				F5022F071E2D41D5001BBF75 /* hdhomerun_os.h */,
+				F5022F081E2D41D5001BBF75 /* hdhomerun_os_posix.h */,
+				F5022F091E2D41D5001BBF75 /* hdhomerun_os_windows.h */,
+				F5022F0A1E2D41D5001BBF75 /* hdhomerun_pkt.c */,
+				F5022F0B1E2D41D5001BBF75 /* hdhomerun_pkt.h */,
+				F5022F0C1E2D41D5001BBF75 /* hdhomerun_types.h */,
+				F5022F0D1E2D41D5001BBF75 /* hdhomerun_video.c */,
+				F5022F0E1E2D41D5001BBF75 /* hdhomerun_video.h */,
+				F5022F0F1E2D41D5001BBF75 /* lgpl.txt */,
+				F5022F121E2D41D5001BBF75 /* README */,
+			);
+			path = libhdhomerun;
 			sourceTree = "<group>";
 		};
 		F51D16961E29950600A03C93 /* libdvd */ = {
@@ -9956,11 +10061,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5022F3C1E2D41D5001BBF75 /* README in Resources */,
 				F59045631BA372A600DB589A /* Default-568h@2x.png in Resources */,
 				F59045661BA372A600DB589A /* Default-Landscape-736h@3x.png in Resources */,
 				F59045641BA372A600DB589A /* Default-667h@2x.png in Resources */,
 				183CB23B1C0B4C5A004218C2 /* Images.xcassets in Resources */,
 				F59045671BA372A600DB589A /* InfoPlist.strings in Resources */,
+				F5022F351E2D41D5001BBF75 /* lgpl.txt in Resources */,
 				F59045651BA372A600DB589A /* Default-736h@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -9971,6 +10078,8 @@
 			files = (
 				F5D142B01BAF31FB0075A95C /* InfoPlist.strings in Resources */,
 				F5D142AB1BAF31FB0075A95C /* Assets.xcassets in Resources */,
+				F5022F361E2D41D5001BBF75 /* lgpl.txt in Resources */,
+				F5022F3D1E2D41D5001BBF75 /* README in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10260,6 +10369,7 @@
 				E38E1FA90D25F9FD00618676 /* DVDPlayerSubtitle.cpp in Sources */,
 				395C2A141A9F072400EBC7AD /* ResourceFile.cpp in Sources */,
 				E38E1FAA0D25F9FD00618676 /* DVDPlayerVideo.cpp in Sources */,
+				F5022F201E2D41D5001BBF75 /* hdhomerun_control.c in Sources */,
 				E38E1FAB0D25F9FD00618676 /* DVDStreamInfo.cpp in Sources */,
 				E38E1FAC0D25F9FD00618676 /* DVDFactorySubtitle.cpp in Sources */,
 				F5B724B91C7E150C006432AE /* file.cpp in Sources */,
@@ -10281,6 +10391,7 @@
 				E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */,
 				E38E1FFC0D25F9FD00618676 /* DynamicDll.cpp in Sources */,
 				E38E1FFF0D25F9FD00618676 /* FileItem.cpp in Sources */,
+				F5022F451E2D4404001BBF75 /* HDHomeRunFile.cpp in Sources */,
 				E38E20010D25F9FD00618676 /* MemBufferCache.cpp in Sources */,
 				E38E20020D25F9FD00618676 /* CacheStrategy.cpp in Sources */,
 				E38E20070D25F9FD00618676 /* Directory.cpp in Sources */,
@@ -10312,6 +10423,7 @@
 				E38E203C0D25F9FD00618676 /* DirectoryNodeAlbumTop100.cpp in Sources */,
 				E38E203D0D25F9FD00618676 /* DirectoryNodeAlbumTop100Song.cpp in Sources */,
 				E38E203E0D25F9FD00618676 /* DirectoryNodeArtist.cpp in Sources */,
+				F5022F231E2D41D5001BBF75 /* hdhomerun_debug.c in Sources */,
 				F51D170C1E29950600A03C93 /* md5.c in Sources */,
 				E38E20400D25F9FD00618676 /* DirectoryNodeOverview.cpp in Sources */,
 				E38E20410D25F9FD00618676 /* DirectoryNodeRoot.cpp in Sources */,
@@ -10471,6 +10583,7 @@
 				E38E22C20D25F9FE00618676 /* URL.cpp in Sources */,
 				E38E22C30D25F9FE00618676 /* Util.cpp in Sources */,
 				E38E22C40D25F9FE00618676 /* AlarmClock.cpp in Sources */,
+				F5022F2F1E2D41D5001BBF75 /* hdhomerun_pkt.c in Sources */,
 				E38E22C50D25F9FE00618676 /* Archive.cpp in Sources */,
 				E38E22C60D25F9FE00618676 /* BitstreamStats.cpp in Sources */,
 				E38E22C70D25F9FE00618676 /* CharsetConverter.cpp in Sources */,
@@ -10491,6 +10604,7 @@
 				E38E22EB0D25F9FE00618676 /* RegExp.cpp in Sources */,
 				E38E22EC0D25F9FE00618676 /* RssReader.cpp in Sources */,
 				E38E22ED0D25F9FE00618676 /* ScraperParser.cpp in Sources */,
+				F5022F421E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */,
 				E38E22F10D25F9FE00618676 /* Splash.cpp in Sources */,
 				E38E22F20D25F9FE00618676 /* Stopwatch.cpp in Sources */,
 				E38E22F30D25F9FE00618676 /* SystemInfo.cpp in Sources */,
@@ -10820,6 +10934,7 @@
 				F59045781BA372A600DB589A /* CocoaInterface.mm in Sources */,
 				F558F29613ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */,
 				DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */,
+				F5022F171E2D41D5001BBF75 /* hdhomerun_channels.c in Sources */,
 				7C89619213B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
 				F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
@@ -10867,6 +10982,7 @@
 				DFCA6AC8152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */,
 				DFCA6AC9152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
 				DFCA6ACA152245CD000BFAAE /* HTTPWebinterfaceHandler.cpp in Sources */,
+				F5022F291E2D41D5001BBF75 /* hdhomerun_dhcp.c in Sources */,
 				F5B7235C1C7C99E3006432AE /* PVRRadioRDSInfoTag.cpp in Sources */,
 				42E2E1C91B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */,
 				DFCA6ACB152245CD000BFAAE /* IHTTPRequestHandler.cpp in Sources */,
@@ -10934,6 +11050,7 @@
 				C84828D9156CFCD8005A996F /* PVRRecordings.cpp in Sources */,
 				C84828DB156CFCD8005A996F /* PVRTimerInfoTag.cpp in Sources */,
 				F5B722FA1C7C894F006432AE /* CECBuiltins.cpp in Sources */,
+				F5022F321E2D41D5001BBF75 /* hdhomerun_video.c in Sources */,
 				C84828DC156CFCD8005A996F /* PVRTimers.cpp in Sources */,
 				189448B41CD905B70036E391 /* LightEffectClient.cpp in Sources */,
 				C84828DD156CFCD8005A996F /* GUIViewStatePVR.cpp in Sources */,
@@ -10976,6 +11093,7 @@
 				DF29BCE81B5D911700904347 /* AddonEvent.cpp in Sources */,
 				36A9466A15CF1FED00727135 /* UrlOptions.cpp in Sources */,
 				F51D16FA1E29950600A03C93 /* dvd_input.c in Sources */,
+				F5022F1A1E2D41D5001BBF75 /* hdhomerun_channelscan.c in Sources */,
 				36A9466D15CF201F00727135 /* VideoDbUrl.cpp in Sources */,
 				DF2345E115FA639500A934F6 /* UPnP.cpp in Sources */,
 				DF2345E215FA639500A934F6 /* UPnPInternal.cpp in Sources */,
@@ -11005,6 +11123,7 @@
 				F58BF9711CD83FAF005BB003 /* LightEffectServices.cpp in Sources */,
 				F5EDC48C1651A6F900B852D8 /* GroupUtils.cpp in Sources */,
 				7C7CEAF1165629530059C9EB /* AELimiter.cpp in Sources */,
+				F5022F261E2D41D5001BBF75 /* hdhomerun_device.c in Sources */,
 				395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
 				DF64FE3D16C07AAA00D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */,
@@ -11038,6 +11157,7 @@
 				DF28EDA7170E1A11005FA9D2 /* ProfilesManager.cpp in Sources */,
 				DF28EDA8170E1A11005FA9D2 /* GUIWindowSettingsProfile.cpp in Sources */,
 				F51D17211E29950600A03C93 /* play.c in Sources */,
+				F5022F2C1E2D41D5001BBF75 /* hdhomerun_discover.c in Sources */,
 				DF28EE03170E1E51005FA9D2 /* DisplaySettings.cpp in Sources */,
 				F5B723251C7C9561006432AE /* MusicInfoTagLoaderFFmpeg.cpp in Sources */,
 				7C87B2CE162CE39600EF897D /* PlayerController.cpp in Sources */,
@@ -11397,6 +11517,7 @@
 				E499121B174E5D5A00741B6D /* PlayerCoreFactory.cpp in Sources */,
 				F590455F1BA372A600DB589A /* AutoPool.mm in Sources */,
 				E499121C174E5D5A00741B6D /* PlayerSelectionRule.cpp in Sources */,
+				F5022F211E2D41D5001BBF75 /* hdhomerun_control.c in Sources */,
 				E499121D174E5D5A00741B6D /* ConvolutionKernels.cpp in Sources */,
 				E499121E174E5D5A00741B6D /* VideoFilterShader.cpp in Sources */,
 				E499121F174E5D5A00741B6D /* YUV2RGBShader.cpp in Sources */,
@@ -11472,6 +11593,7 @@
 				E499125B174E5D8F00741B6D /* DAVCommon.cpp in Sources */,
 				E499125C174E5D8F00741B6D /* DAVDirectory.cpp in Sources */,
 				F51D17011E29950600A03C93 /* dvd_reader.c in Sources */,
+				F5022F271E2D41D5001BBF75 /* hdhomerun_device.c in Sources */,
 				E499125D174E5D8F00741B6D /* DAVFile.cpp in Sources */,
 				F59045701BA372A600DB589A /* IOSKeyboardView.mm in Sources */,
 				F5B724B11C7E150C006432AE /* extinfo.cpp in Sources */,
@@ -11533,6 +11655,7 @@
 				E4991292174E5D9900741B6D /* MusicDatabaseFile.cpp in Sources */,
 				E4991293174E5D9900741B6D /* MusicFileDirectory.cpp in Sources */,
 				E4991294174E5D9900741B6D /* MusicSearchDirectory.cpp in Sources */,
+				F5022F331E2D41D5001BBF75 /* hdhomerun_video.c in Sources */,
 				E4991298174E5D9900741B6D /* NFSDirectory.cpp in Sources */,
 				E4991299174E5D9900741B6D /* NFSFile.cpp in Sources */,
 				E499129A174E5D9900741B6D /* NptXbmcFile.cpp in Sources */,
@@ -11673,6 +11796,7 @@
 				E4991309174E5DAD00741B6D /* GUIRadioButtonControl.cpp in Sources */,
 				E499130A174E5DAD00741B6D /* GUIRenderingControl.cpp in Sources */,
 				E499130B174E5DAD00741B6D /* GUIResizeControl.cpp in Sources */,
+				F5022F181E2D41D5001BBF75 /* hdhomerun_channels.c in Sources */,
 				395897161AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */,
 				395C2A251AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */,
 				E499130C174E5DAD00741B6D /* GUIRSSControl.cpp in Sources */,
@@ -11751,6 +11875,7 @@
 				E499136D174E5EF700741B6D /* LinuxTimezone.cpp in Sources */,
 				E499136E174E5EF700741B6D /* PosixMountProvider.cpp in Sources */,
 				E499136F174E5EF700741B6D /* XFileUtils.cpp in Sources */,
+				F5022F431E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */,
 				E4991370174E5EF700741B6D /* XHandle.cpp in Sources */,
 				DF6A0D851A4584E80075BBFC /* OverrideFile.cpp in Sources */,
 				F5B724BD1C7E150C006432AE /* filefn.cpp in Sources */,
@@ -11811,6 +11936,7 @@
 				E49913B3174E5F3700741B6D /* WebSocketManager.cpp in Sources */,
 				E49913B4174E5F3700741B6D /* WebSocketV13.cpp in Sources */,
 				E49913B5174E5F3700741B6D /* WebSocketV8.cpp in Sources */,
+				F5022F461E2D4404001BBF75 /* HDHomeRunFile.cpp in Sources */,
 				E49913B6174E5F3C00741B6D /* AirPlayServer.cpp in Sources */,
 				E49913B7174E5F3C00741B6D /* AirTunesServer.cpp in Sources */,
 				E49913B9174E5F3C00741B6D /* DNSNameCache.cpp in Sources */,
@@ -11860,6 +11986,7 @@
 				E49913E0174E5F8D00741B6D /* PlayListB4S.cpp in Sources */,
 				E49913E1174E5F8D00741B6D /* PlayListFactory.cpp in Sources */,
 				E49913E2174E5F8D00741B6D /* PlayListM3U.cpp in Sources */,
+				F5022F2D1E2D41D5001BBF75 /* hdhomerun_discover.c in Sources */,
 				E49913E3174E5F8D00741B6D /* PlayListPLS.cpp in Sources */,
 				E49913E4174E5F8D00741B6D /* PlayListURL.cpp in Sources */,
 				F5B725081C7E150C006432AE /* scantree.cpp in Sources */,
@@ -11925,9 +12052,11 @@
 				E4991418174E603C00741B6D /* GUIDialogContentSettings.cpp in Sources */,
 				F5B7230C1C7C894F006432AE /* OpticalBuiltins.cpp in Sources */,
 				E499141A174E603C00741B6D /* GUIWindowSettings.cpp in Sources */,
+				F5022F1B1E2D41D5001BBF75 /* hdhomerun_channelscan.c in Sources */,
 				E499141B174E603C00741B6D /* GUIWindowSettingsCategory.cpp in Sources */,
 				E499141C174E603C00741B6D /* GUIWindowSettingsScreenCalibration.cpp in Sources */,
 				E499141D174E603C00741B6D /* GUIWindowTestPattern.cpp in Sources */,
+				F5022F2A1E2D41D5001BBF75 /* hdhomerun_dhcp.c in Sources */,
 				E499141E174E603C00741B6D /* AdvancedSettings.cpp in Sources */,
 				E499141F174E603C00741B6D /* DisplaySettings.cpp in Sources */,
 				E4991421174E603C00741B6D /* MediaSettings.cpp in Sources */,
@@ -12120,6 +12249,7 @@
 				E4991574174E661400741B6D /* WinEventsIOS.mm in Sources */,
 				F5B723991C7C9B50006432AE /* iso9660.cpp in Sources */,
 				E4991575174E661400741B6D /* WinSystemIOS.mm in Sources */,
+				F5022F301E2D41D5001BBF75 /* hdhomerun_pkt.c in Sources */,
 				DF56EF251A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */,
 				F59045621BA372A600DB589A /* DarwinUtils.mm in Sources */,
 				E499158A174E68D800741B6D /* LinuxRendererGLES.cpp in Sources */,
@@ -12137,6 +12267,7 @@
 				DFBB4308178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */,
 				F55BA70B17AB2264002A36D1 /* StereoscopicsManager.cpp in Sources */,
 				F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */,
+				F5022F241E2D41D5001BBF75 /* hdhomerun_debug.c in Sources */,
 				F59EED7F17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 				F5B7239C1C7C9B50006432AE /* ISO9660Directory.cpp in Sources */,
 				DF28DF4E17B8379E0077F41A /* ProfilesOperations.cpp in Sources */,
@@ -12371,6 +12502,7 @@
 				F5D13EF11BAF0B6D0075A95C /* LibraryLoader.cpp in Sources */,
 				F5D13EF21BAF0B6D0075A95C /* SoLoader.cpp in Sources */,
 				F5D13EF31BAF0B6D0075A95C /* DVDAudioCodecFFmpeg.cpp in Sources */,
+				F5022F221E2D41D5001BBF75 /* hdhomerun_control.c in Sources */,
 				F5D13EF41BAF0B6D0075A95C /* DVDAudioCodecPassthrough.cpp in Sources */,
 				F5D13EF51BAF0B6D0075A95C /* InputManager.cpp in Sources */,
 				F5B723FD1C7CA0E4006432AE /* RepositoryUpdater.cpp in Sources */,
@@ -12392,6 +12524,7 @@
 				F5D13F041BAF0B6D0075A95C /* DVDDemuxShoutcast.cpp in Sources */,
 				F5D13F051BAF0B6D0075A95C /* DVDDemuxUtils.cpp in Sources */,
 				F5B7237F1C7C9AC8006432AE /* BlurayDirectory.cpp in Sources */,
+				F5022F471E2D4404001BBF75 /* HDHomeRunFile.cpp in Sources */,
 				F5D13F061BAF0B6D0075A95C /* MCRuntimeLibStartupLogger.cpp in Sources */,
 				F5D13F071BAF0B6D0075A95C /* DVDDemuxVobsub.cpp in Sources */,
 				F5D13F081BAF0B6D0075A95C /* DVDFactoryDemuxer.cpp in Sources */,
@@ -12423,6 +12556,7 @@
 				F5D13F1D1BAF0B6D0075A95C /* DVDSubtitleTagSami.cpp in Sources */,
 				F5D13F1E1BAF0B6D0075A95C /* DVDAudio.cpp in Sources */,
 				F5B725061C7E150C006432AE /* savepos.cpp in Sources */,
+				F5022F251E2D41D5001BBF75 /* hdhomerun_debug.c in Sources */,
 				F51D170E1E29950600A03C93 /* md5.c in Sources */,
 				F5D13F1F1BAF0B6D0075A95C /* DVDClock.cpp in Sources */,
 				F5D13F201BAF0B6D0075A95C /* DVDDemuxSPU.cpp in Sources */,
@@ -12582,6 +12716,7 @@
 				F5D13F9D1BAF0B6D0075A95C /* DirectoryNodeTop100.cpp in Sources */,
 				F5D13F9E1BAF0B6D0075A95C /* DirectoryNodeYearAlbum.cpp in Sources */,
 				F5D13F9F1BAF0B6D0075A95C /* DirectoryNodeYearSong.cpp in Sources */,
+				F5022F311E2D41D5001BBF75 /* hdhomerun_pkt.c in Sources */,
 				F5D13FA01BAF0B6D0075A95C /* QueryParams.cpp in Sources */,
 				F5D13FA11BAF0B6D0075A95C /* MusicDatabaseDirectory.cpp in Sources */,
 				F5D13FA21BAF0B6D0075A95C /* MusicDatabaseFile.cpp in Sources */,
@@ -12602,6 +12737,7 @@
 				F5D13FAE1BAF0B6D0075A95C /* PVRFile.cpp in Sources */,
 				F5D13FAF1BAF0B6D0075A95C /* RSSDirectory.cpp in Sources */,
 				F5D13FB01BAF0B6D0075A95C /* SAPDirectory.cpp in Sources */,
+				F5022F441E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */,
 				F5D13FB11BAF0B6D0075A95C /* SAPFile.cpp in Sources */,
 				F5D13FB21BAF0B6D0075A95C /* SFTPDirectory.cpp in Sources */,
 				F5D13FB31BAF0B6D0075A95C /* SFTPFile.cpp in Sources */,
@@ -12931,6 +13067,7 @@
 				F5D140C71BAF0B6D0075A95C /* GUIWindowPrograms.cpp in Sources */,
 				F5D140C81BAF0B6D0075A95C /* PVRClient.cpp in Sources */,
 				F5D140C91BAF0B6D0075A95C /* PVRClients.cpp in Sources */,
+				F5022F191E2D41D5001BBF75 /* hdhomerun_channels.c in Sources */,
 				F5B724951C7E150C006432AE /* arcread.cpp in Sources */,
 				F5D140CA1BAF0B6D0075A95C /* PVRChannel.cpp in Sources */,
 				F5D140CB1BAF0B6D0075A95C /* PVRChannelGroup.cpp in Sources */,
@@ -12978,6 +13115,7 @@
 				F5D140EE1BAF0B6D0075A95C /* DisplaySettings.cpp in Sources */,
 				F5D140EF1BAF0B6D0075A95C /* MediaSettings.cpp in Sources */,
 				F5D140F01BAF0B6D0075A95C /* MediaSourceSettings.cpp in Sources */,
+				F5022F2B1E2D41D5001BBF75 /* hdhomerun_dhcp.c in Sources */,
 				F58BF9731CD83FAF005BB003 /* LightEffectServices.cpp in Sources */,
 				F5D140F11BAF0B6D0075A95C /* SettingAddon.cpp in Sources */,
 				F5D140F21BAF0B6D0075A95C /* SettingControl.cpp in Sources */,
@@ -13045,6 +13183,7 @@
 				F5D141251BAF0B6D0075A95C /* Mime.cpp in Sources */,
 				F5D141261BAF0B6D0075A95C /* Observer.cpp in Sources */,
 				F5D141271BAF0B6D0075A95C /* POUtils.cpp in Sources */,
+				F5022F341E2D41D5001BBF75 /* hdhomerun_video.c in Sources */,
 				F5B723AF1C7C9C1A006432AE /* AudioDSPSettings.cpp in Sources */,
 				F5D141281BAF0B6D0075A95C /* HomeShelfJob.cpp in Sources */,
 				F5D141291BAF0B6D0075A95C /* RegExp.cpp in Sources */,
@@ -13087,6 +13226,7 @@
 				F5D141491BAF0B6D0075A95C /* GUIDialogVideoBookmarks.cpp in Sources */,
 				F5D1414A1BAF0B6D0075A95C /* GUIDialogVideoInfo.cpp in Sources */,
 				F51D16FC1E29950600A03C93 /* dvd_input.c in Sources */,
+				F5022F1C1E2D41D5001BBF75 /* hdhomerun_channelscan.c in Sources */,
 				F5D1414B1BAF0B6D0075A95C /* GUIDialogVideoOSD.cpp in Sources */,
 				F5D1414C1BAF0B6D0075A95C /* GUIDialogVideoSettings.cpp in Sources */,
 				F5D1414D1BAF0B6D0075A95C /* GUIWindowFullScreen.cpp in Sources */,
@@ -13116,6 +13256,7 @@
 				F5D1415F1BAF0B6D0075A95C /* ViewStateSettings.cpp in Sources */,
 				F5B723CF1C7C9F5C006432AE /* AddonCallbacksAudioDSP.cpp in Sources */,
 				F5D141601BAF0B6D0075A95C /* WinSystem.cpp in Sources */,
+				F5022F281E2D41D5001BBF75 /* hdhomerun_device.c in Sources */,
 				F5D141611BAF0B6D0075A95C /* GUIMediaWindow.cpp in Sources */,
 				F5D141621BAF0B6D0075A95C /* GUIWindowDebugInfo.cpp in Sources */,
 				F5D141631BAF0B6D0075A95C /* GUIWindowFileManager.cpp in Sources */,
@@ -13149,6 +13290,7 @@
 				F5D1417A1BAF0B6D0075A95C /* NfoFile.cpp in Sources */,
 				F5D1417B1BAF0B6D0075A95C /* PartyModeManager.cpp in Sources */,
 				F51D17231E29950600A03C93 /* play.c in Sources */,
+				F5022F2E1E2D41D5001BBF75 /* hdhomerun_discover.c in Sources */,
 				F58BF97D1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */,
 				F5D1417C1BAF0B6D0075A95C /* PasswordManager.cpp in Sources */,
 				F5D1417D1BAF0B6D0075A95C /* PlayListPlayer.cpp in Sources */,

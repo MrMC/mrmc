@@ -713,6 +713,9 @@ bool CFileItem::IsVideo() const
   if (IsPVRRecording())
     return true;
 
+  if (IsHDHomeRun())
+    return true;
+
   if (URIUtils::IsDVD(m_strPath))
     return true;
 
@@ -1066,6 +1069,11 @@ bool CFileItem::IsSmb() const
 bool CFileItem::IsURL() const
 {
   return URIUtils::IsURL(m_strPath);
+}
+
+bool CFileItem::IsHDHomeRun() const
+{
+  return URIUtils::IsHDHomeRun(m_strPath);
 }
 
 bool CFileItem::IsPVR() const

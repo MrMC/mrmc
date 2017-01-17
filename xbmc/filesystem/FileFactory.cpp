@@ -83,6 +83,7 @@
 #include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
 #include "UDFFile.h"
+#include "HDHomeRunFile.h"
 #include "ImageFile.h"
 #include "ResourceFile.h"
 #include "Application.h"
@@ -173,6 +174,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (url.IsProtocol("sftp") || url.IsProtocol("ssh")) return new CSFTPFile();
 #endif
     else if (url.IsProtocol("shout")) return new CShoutcastFile();
+    else if (url.IsProtocol("hdhomerun")) return new CHomeRunFile();
 #ifdef HAS_FILESYSTEM_DSM
     else if (url.IsProtocol("smb") && CSettings::GetInstance().GetBool(CSettings::SETTING_SMB_ENABLEDSM))
       return new CDSMFile();

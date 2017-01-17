@@ -162,6 +162,10 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     }
   }
 
+  // HDHomerun Devices
+  else if (url.IsProtocol("hdhomerun") && strFilename.empty())
+    strFilename = "HDHomerun Devices";
+
   // SAP Streams
   else if (url.IsProtocol("sap") && strFilename.empty())
     strFilename = "SAP Streams";
@@ -394,6 +398,9 @@ bool CUtil::IsPVR(const std::string& strFile)
 bool CUtil::IsLiveTV(const std::string& strFile)
 {
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
+    return true;
+
+  if (URIUtils::IsHDHomeRun(strFile))
     return true;
 
   if(StringUtils::StartsWithNoCase(strFile, "sap:"))
@@ -1817,6 +1824,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   
   CFileItem item(strMovie, false);
   if ( item.IsInternetStream()
+    || item.IsHDHomeRun()
     || item.IsPlayList()
     || item.IsLiveTV()
     || !item.IsVideo())

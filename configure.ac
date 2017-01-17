@@ -2153,6 +2153,7 @@ OUTPUT_FILES="$OUTPUT_FILES addons/skin.pm3.hd/media/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.sio2/media/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES lib/libUPnP/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES lib/libhdhomerun/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.pvr/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.addon/Makefile"
