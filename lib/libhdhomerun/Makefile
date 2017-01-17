@@ -1,4 +1,4 @@
-ARCH=x86-osx
+ARCH=arm-osx
 
 OBJS += hdhomerun_pkt.o
 OBJS += hdhomerun_debug.o

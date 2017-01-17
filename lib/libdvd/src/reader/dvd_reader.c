@@ -21,7 +21,7 @@
  */
 
 #define _XBMC
-#include "libDVD/src/reader/config/config.h"
+//#include "libDVD/src/reader/config/config.h"
 
 #include <sys/stat.h>       /* stat */
 #include <stdlib.h>         /* free */

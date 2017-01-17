@@ -24,22 +24,6 @@
 extern "C" {
  #include <stdint.h>
 
- #define savedPACKAGE PACKAGE
- #define savedPACKAGE_BUGREPORT PACKAGE_BUGREPORT
- #define savedPACKAGE_NAME PACKAGE_NAME
- #define savedPACKAGE_STRING PACKAGE_STRING
- #define savedPACKAGE_TARNAME PACKAGE_TARNAME
- #define savedPACKAGE_VERSION PACKAGE_VERSION
- #define savedVERSION VERSION
-
- #undef PACKAGE
- #undef PACKAGE_BUGREPORT
- #undef PACKAGE_NAME
- #undef PACKAGE_STRING
- #undef PACKAGE_TARNAME
- #undef PACKAGE_VERSION
- #undef VERSION
-
  #ifndef HAVE_CONFIG_H
  #define HAVE_CONFIG_H
  #endif
@@ -54,20 +38,6 @@ extern "C" {
 
  extern vm_t* dvdnav_get_vm(dvdnav_t *ctx);
  extern int dvdnav_get_button_info(dvdnav_t* ctx, int alpha[2][4], int color[2][4]);
-
- #undef PACKAGE
- #undef PACKAGE_BUGREPORT
- #undef PACKAGE_NAME
- #undef PACKAGE_STRING
- #undef PACKAGE_TARNAME
- #undef PACKAGE_VERSION
- #undef VERSION
- #define PACKAGE savedPACKAGE
- #define PACKAGE_BUGREPORT savedPACKAGE_BUGREPORT
- #define PACKAGE_STRING savedPACKAGE_STRING
- #define PACKAGE_TARNAME savedPACKAGE_TARNAME
- #define PACKAGE_VERSION savedPACKAGE_VERSION
- #define VERSION savedVERSION
 }
 
 #include "FileItem.h"

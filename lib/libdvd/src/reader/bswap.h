@@ -22,7 +22,7 @@
 #ifndef LIBDVD_BSWAP_H
 #define LIBDVD_BSWAP_H
 
-#include "libDVD/src/reader/config/config.h"
+//#include "libDVD/src/reader/config/config.h"
 
 #if defined(WORDS_BIGENDIAN)
 /* All bigendian systems are fine, just ignore the swaps. */

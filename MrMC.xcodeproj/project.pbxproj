@@ -5218,7 +5218,6 @@
 		F51D16B41E29950600A03C93 /* bitreader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitreader.c; sourceTree = "<group>"; };
 		F51D16B51E29950600A03C93 /* bitreader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitreader.h; sourceTree = "<group>"; };
 		F51D16B61E29950600A03C93 /* bswap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bswap.h; sourceTree = "<group>"; };
-		F51D16B81E29950600A03C93 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		F51D16B91E29950600A03C93 /* dvd_input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dvd_input.c; sourceTree = "<group>"; };
 		F51D16BA1E29950600A03C93 /* dvd_input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dvd_input.h; sourceTree = "<group>"; };
 		F51D16BB1E29950600A03C93 /* dvd_iso9660.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dvd_iso9660.c; sourceTree = "<group>"; };
@@ -5257,7 +5256,6 @@
 		F51D172E1E299A2A00A03C93 /* libdvd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libdvd.h; sourceTree = "<group>"; };
 		F51D172F1E299A3800A03C93 /* libdvd_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libdvd_types.h; sourceTree = "<group>"; };
 		F51D17301E299A3800A03C93 /* libdvd_events.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libdvd_events.h; sourceTree = "<group>"; };
-		F51D17331E299D8800A03C93 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = config/config.h; sourceTree = "<group>"; };
 		F52A733C1560BC34005B1A0B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		F52B063911869862004B1D66 /* Skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skin.h; sourceTree = "<group>"; };
 		F52B063A11869862004B1D66 /* Skin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skin.cpp; sourceTree = "<group>"; };
@@ -9192,7 +9190,6 @@
 		F51D169B1E29950600A03C93 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				F51D17321E299D3400A03C93 /* config */,
 				F51D16AD1E29950600A03C93 /* highlight.c */,
 				F51D172E1E299A2A00A03C93 /* libdvd.h */,
 				F51D16AE1E29950600A03C93 /* libdvd.c */,
@@ -9229,7 +9226,6 @@
 				F51D16B41E29950600A03C93 /* bitreader.c */,
 				F51D16B51E29950600A03C93 /* bitreader.h */,
 				F51D16B61E29950600A03C93 /* bswap.h */,
-				F51D16B71E29950600A03C93 /* config */,
 				F51D16B91E29950600A03C93 /* dvd_input.c */,
 				F51D16BA1E29950600A03C93 /* dvd_input.h */,
 				F51D16BB1E29950600A03C93 /* dvd_iso9660.c */,
@@ -9255,14 +9251,6 @@
 			path = reader;
 			sourceTree = "<group>";
 		};
-		F51D16B71E29950600A03C93 /* config */ = {
-			isa = PBXGroup;
-			children = (
-				F51D16B81E29950600A03C93 /* config.h */,
-			);
-			path = config;
-			sourceTree = "<group>";
-		};
 		F51D16D01E29950600A03C93 /* vm */ = {
 			isa = PBXGroup;
 			children = (
@@ -9279,14 +9267,6 @@
 				F51D16DB1E29950600A03C93 /* vmget.c */,
 			);
 			path = vm;
-			sourceTree = "<group>";
-		};
-		F51D17321E299D3400A03C93 /* config */ = {
-			isa = PBXGroup;
-			children = (
-				F51D17331E299D8800A03C93 /* config.h */,
-			);
-			name = config;
 			sourceTree = "<group>";
 		};
 		F55BD2FF1D0A14ED0072FE3A /* plex */ = {

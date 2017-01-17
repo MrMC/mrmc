@@ -19,7 +19,7 @@
  */
 
 #if HAVE_CONFIG_H
-#include "config.h"
+//#include "libDVD/src/config/config.h"
 #endif
 
 #include "file.h"

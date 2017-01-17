@@ -22,7 +22,7 @@
 #define LIBDVD_DVDNAV_INTERNAL_H
 
 #ifdef HAVE_CONFIG_H
-#include "libDVD/src/config/config.h"
+//#include "libDVD/src/config/config.h"
 #endif
 
 #include "vm/vm.h"

@@ -28,7 +28,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "libDVD/src/reader/config/config.h"
+//#include "libDVD/src/reader/config/config.h"
 
 #include <stdio.h>
 #include <stdlib.h>

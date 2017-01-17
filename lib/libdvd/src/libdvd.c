@@ -19,7 +19,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "libDVD/src/config/config.h"
+//#include "libDVD/src/config/config.h"
 #endif
 
 /*
@@ -154,7 +154,7 @@ dvdnav_status_t dvdnav_open(dvdnav_t** dest, const char *path) {
   struct timeval time;
 
   /* Create a new structure */
-  DVD_DEBUG(DBG_DVD, "libdvdnav: Using dvdnav version %s\n", VERSION);
+  DVD_DEBUG(DBG_DVD, "libdvdnav: Using dvdnav version %s\n", "5.90.0");
 
   (*dest) = NULL;
   ctx = (dvdnav_t*)calloc(1, sizeof(dvdnav_t));

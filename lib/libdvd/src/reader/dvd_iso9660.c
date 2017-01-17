@@ -23,7 +23,7 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#include "libDVD/src/reader/config/config.h"
+//#include "libDVD/src/reader/config/config.h"
 
 #include <stdio.h>
 #include <stdlib.h>

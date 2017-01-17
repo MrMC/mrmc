@@ -21,7 +21,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "libDVD/src/config/config.h"
+//#include "libDVD/src/config/config.h"
 #endif
 
 #include <stdio.h>
