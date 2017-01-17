@@ -21,6 +21,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
+#include "Application.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "HomeShelfJob.h"
@@ -307,11 +308,21 @@ bool CHomeShelfJob::UpdateTotal()
 bool CHomeShelfJob::DoWork()
 {
   bool ret = true;
+
+  if (g_application.m_bStop)
+    return ret;
+
   if (m_flag & Audio)
     ret &= UpdateMusic();
 
+  if (g_application.m_bStop)
+    return ret;
+
   if (m_flag & Video)
     ret &= UpdateVideo();
+
+  if (g_application.m_bStop)
+    return ret;
 
   if (m_flag & Totals)
     ret &= UpdateTotal();
