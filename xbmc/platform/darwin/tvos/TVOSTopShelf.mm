@@ -82,6 +82,9 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies1, CFileItemList& tv1)
   
   NSFileManager* fileManager = [NSFileManager defaultManager];
   NSURL* storeUrl = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.tv.mrmc.shared"];
+  if (!storeUrl)
+    return;
+
   storeUrl = [storeUrl URLByAppendingPathComponent:@"Library" isDirectory:TRUE];
   storeUrl = [storeUrl URLByAppendingPathComponent:@"Caches" isDirectory:TRUE];
   storeUrl = [storeUrl URLByAppendingPathComponent:@"RA" isDirectory:TRUE];
