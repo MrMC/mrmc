@@ -478,6 +478,11 @@ const std::string CSettings::SETTING_SERVICES_PLEXSIGNINPIN = "plex.signinpin";
 const std::string CSettings::SETTING_SERVICES_PLEXHOMEUSER  = "plex.homeuser";
 const std::string CSettings::SETTING_SERVICES_PLEXGDMSERVER = "plex.gdmserver";
 const std::string CSettings::SETTING_SERVICES_PLEXUPDATEMINS = "plex.updatetime";
+const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODE = "plex.transcode";
+const std::string CSettings::SETTING_SERVICES_PLEXQUALITY = "plex.quality";
+const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCAL = "plex.transcodelocal";
+const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODEAUDIO = "plex.transcodeaudio";
+const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION = "plex.transcodelocalexclusions";
 const std::string CSettings::SETTING_SERVICES_PLEXMYPLEXAUTH = "plex.myplexauthtoken";
 
 CSettings::CSettings()

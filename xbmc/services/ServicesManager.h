@@ -72,6 +72,7 @@ public:
   void GetSubtitles(CFileItem &item);
   void GetMoreInfo(CFileItem &item);
   bool GetResolutions(CFileItem &item);
+  bool GetURL(CFileItem &item);
   void SearchService(CFileItemList &items, std::string strSearchString);
   bool GetAlbumSongs(CFileItem item, CFileItemList &items);
   bool GetDirectory(const CURL& url, CFileItemList &items);

@@ -1210,8 +1210,10 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 
   bool playback = true;
   if (movieItem->IsMediaServiceBased())
+  {
     playback = CServicesManager::GetInstance().GetResolutions(*movieItem);
-  
+    CServicesManager::GetInstance().GetURL(*movieItem);
+  }
   if (playback)
   {
     g_playlistPlayer.Reset();

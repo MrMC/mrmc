@@ -463,7 +463,13 @@ void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
       if (URIUtils::IsStack(url))
         url = XFILE::CStackDirectory::GetFirstStackedFile(url);
       else
-        url   = URIUtils::GetParentPath(url);
+      {
+        CURL url1(item.GetPath());
+        CURL url2(URIUtils::GetParentPath(url));
+        CURL url3(url2.GetWithoutFilename());
+        url3.SetProtocolOptions(url1.GetProtocolOptions());
+        url = url3.Get();
+      }
       if (StringUtils::StartsWithNoCase(url, "plex://"))
         url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
 
@@ -1736,6 +1742,126 @@ bool CPlexUtils::GetPlexMediaTotals(PlexMediaCount &totals)
   }
   return true;
 }
-
-
 /// End of Plex Music
+
+bool CPlexUtils::GetURL(CFileItem &item)
+{
+  
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODE))
+    return true;
+  
+  CURL url(item.GetPath());
+  std::string cleanUrl = url.GetWithoutFilename();
+  CURL curl(cleanUrl);
+  
+  if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODELOCAL)) &&
+        CPlexServices::GetInstance().ClientIsLocal(cleanUrl))
+  {
+    /// always transcode h265 and VC1
+    if (!(CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION) &&
+          (item.GetVideoInfoTag()->m_streamDetails.GetVideoCodec() == "hevc" ||
+          item.GetVideoInfoTag()->m_streamDetails.GetVideoCodec() == "vc1")))
+        return true;
+  }
+  
+  
+  int res = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_PLEXQUALITY);
+  
+  std::string maxBitrate;
+  std::string resolution;
+  
+  switch (res)
+  {
+    case  1:
+      maxBitrate = "320";
+      resolution = "576x320";
+      break;
+    case  2:
+      maxBitrate = "720";
+      resolution = "720x480";
+      break;
+    case  3:
+      maxBitrate = "1500";
+      resolution = "1024x768";
+      break;
+    case  4:
+      maxBitrate = "2000";
+      resolution = "1280x720";
+      break;
+    case  5:
+      maxBitrate = "3000";
+      resolution = "1280x720";
+      break;
+    case  6:
+      maxBitrate = "4000";
+      resolution = "1920x1080";
+      break;
+    case  7:
+      maxBitrate = "8000";
+      resolution = "1920x1080";
+      break;
+    case  8:
+      maxBitrate = "10000";
+      resolution = "1920x1080";
+      break;
+    case  9:
+      maxBitrate = "12000";
+      resolution = "1920x1080";
+      break;
+    case  10:
+      maxBitrate = "20000";
+      resolution = "1920x1080";
+      break;
+    case  11:
+      maxBitrate = "40000";
+      resolution = "1920x1080";
+      break;
+    default:
+      maxBitrate = "2000";
+      resolution = "1280x720";
+      break;
+  }
+  
+  CLog::Log(LOGDEBUG, "CPlexUtils::GetURL - bitrate [%s] res [%s]", maxBitrate.c_str(), resolution.c_str());
+  
+  std::string plexID = item.GetVideoInfoTag()->m_strServiceId;
+  std::string uuidStr = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
+  
+  curl.SetFileName("video/:/transcode/universal/start.m3u8");
+  curl.SetOption("hasMDE", "1");
+  curl.SetOption("maxVideoBitrate", maxBitrate);
+  curl.SetOption("protocol", "hls");
+  curl.SetOption("session", uuidStr);
+  curl.SetOption("offset", "0");
+  curl.SetOption("videoQuality", "100");
+  curl.SetOption("videoResolution", resolution);
+  curl.SetOption("directStream", "1");
+  curl.SetOption("directPlay", "0");
+  curl.SetOption("audioBoost", "0");
+  curl.SetOption("fastSeek", "1");
+  curl.SetOption("subtitleSize", "100");
+  if (CPlexServices::GetInstance().ClientIsLocal(cleanUrl))
+    curl.SetOption("location", "lan");
+  curl.SetOption("path", "http://127.0.0.1:32400/library/metadata/" + plexID);
+  
+  // do we want audio transcoded?
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODEAUDIO))
+  {
+    curl.SetOption("X-Plex-Client-Profile-Extra", "append-transcode-target-audio-codec(type=videoProfile&context=streaming&codec=h264&protocol=hls&container=mpegts&audioCodec=dts,ac3,dca,mp3,eac3,truehd)");
+    curl.SetOption("X-Plex-Client-Capabilities","protocols=http-live-streaming,http-mp4-streaming,http-mp4-video,http-mp4-video-720p,http-mp4-video-1080p,http-streaming-video,http-streaming-video-720p,http-streaming-video-1080p;videoDecoders=mpeg1video,mpeg2video,mpeg4,h264{profile:high&resolution:1080&level:51};audioDecoders=*");
+  }
+  //+add-limitation(scope=videoAudioCodec&scopeName=dca&type=upperBound&name=audio.channels&value=6&isRequired=false)
+ // +add-direct-play-profile(type=videoProfile&container=mkv&codec=mpeg1video,mpeg2video,mpeg4,h264&audioCodec=pcm,mp3,ac3,dts,dca,eac3,mp2,flac,truehd,lpcm)
+  else
+  {
+    curl.SetOption("X-Plex-Client-Capabilities","protocols=http-live-streaming,http-mp4-streaming,http-mp4-video,http-mp4-video-720p,http-mp4-video-1080p,http-streaming-video,http-streaming-video-720p,http-streaming-video-1080p;videoDecoders=mpeg4,h264{profile:high&resolution:1080&level:51};audioDecoders=aac");
+    curl.SetOption("X-Plex-Client-Profile-Extra", "append-transcode-target-audio-codec(type=videoProfile&context=streaming&protocol=hls&container=mpegts&audioCodec=aac)");
+  }
+  curl.SetProtocolOption("X-Plex-Token", url.GetProtocolOption("X-Plex-Token"));
+  curl.SetProtocolOption("X-Plex-Platform", "MrMC");
+  curl.SetProtocolOption("X-Plex-Device","Plex Home Theater");
+  curl.SetProtocolOption("X-Plex-Client-Identifier", uuidStr);
+
+  item.SetPath(curl.Get());
+  return true;
+}

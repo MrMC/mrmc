@@ -4349,8 +4349,27 @@ msgctxt "#1251"
 msgid "Amount of time (in mins) that Plex servers are checked for updates"
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#1252"
+msgid "Enable Transcode"
+msgstr ""
 
-#empty strings from id 1252 to 1258
+#: system/settings/settings.xml
+msgctxt "#1253"
+msgid "Request transcoded stream from Plex Server"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1254"
+msgid "Transcode quality"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1255"
+msgid "Set transcode quality that matches your server or internet speed"
+msgstr ""
+
+#empty strings from id 1256 to 1258
 
 #: system/settings/settings.xml
 msgctxt "#1259"
@@ -4438,7 +4457,97 @@ msgctxt "#1275"
 msgid "Filter %s"
 msgstr ""
 
-#empty strings from id 1276 to 1299
+#: system/settings/settings.xml
+msgctxt "#1276"
+msgid "320Kbps|576x320"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1277"
+msgid "720Kbps|720x480"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1278"
+msgid "1.5Mbps|1024x768"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1279"
+msgid "2Mbps|1280x720"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1280"
+msgid "3Mbps|1280x720"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1281"
+msgid "4Mbps|1920x1080"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1282"
+msgid "8Mbps|1920x1080"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1283"
+msgid "10Mbps|1920x1080"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1284"
+msgid "12Mbps|1920x1080"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1285"
+msgid "20Mbps|1920x1080"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1286"
+msgid "40Mbps|1920x1080"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1287"
+msgid "Unlimited"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1288"
+msgid "Transcode local files"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1289"
+msgid "Transcode Plex videos over local LAN network"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1290"
+msgid "Transcode local H265 or VC-1 files"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1291"
+msgid "Force transcode of H265 or VC-1 files over local network, helps with some hardware limitations"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1292"
+msgid "Transcode audio to AAC"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1293"
+msgid "Force transcode of all audio to AAC, disabling this will keep audio intact"
+msgstr ""
+
+#empty strings from id 1294 to 1299
 
 msgctxt "#1300"
 msgid "Custom audio device"

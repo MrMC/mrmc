@@ -427,6 +427,11 @@ public:
   static const std::string SETTING_SERVICES_PLEXHOMEUSER;
   static const std::string SETTING_SERVICES_PLEXGDMSERVER;
   static const std::string SETTING_SERVICES_PLEXUPDATEMINS;
+  static const std::string SETTING_SERVICES_PLEXTRANSCODE;
+  static const std::string SETTING_SERVICES_PLEXQUALITY;
+  static const std::string SETTING_SERVICES_PLEXTRANSCODELOCAL;
+  static const std::string SETTING_SERVICES_PLEXTRANSCODEAUDIO;
+  static const std::string SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION;
   static const std::string SETTING_SERVICES_PLEXMYPLEXAUTH;
 
   /*!

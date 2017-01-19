@@ -2204,6 +2204,61 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
+      </group>
+      <group id="2">
+        <setting id="plex.transcode" type="boolean" label="1252" help="1253">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="plex.quality" type="integer" parent="plex.transcode" label="1254" help="1255">
+          <level>0</level>
+          <default>4</default>
+          <dependencies>
+            <dependency type="visible" setting="plex.transcode">true</dependency>
+          </dependencies>  
+          <constraints>
+            <options>
+              <option label="1276">1</option>  <!--320Kbps|576x320 -->
+              <option label="1277">2</option>  <!--720Kbps|720x480 -->
+              <option label="1278">3</option>  <!--1.5Mbps|1024x768 -->
+              <option label="1279">4</option>  <!--  2Mbps|1280x720 -->
+              <option label="1280">5</option>  <!--  3Mbps|1280x720 -->
+              <option label="1281">6</option>  <!--  4Mbps|1920x1080 -->
+              <option label="1282">7</option>  <!--  8Mbps|1920x1080 -->
+              <option label="1283">8</option>  <!-- 10Mbps|1920x1080 -->
+              <option label="1284">9</option>  <!-- 12Mbps|1920x1080 -->
+              <option label="1285">10</option> <!-- 20Mbps|1920x1080 -->
+              <option label="1286">11</option> <!-- 40Mbps|1920x1080 -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="plex.transcodeaudio" type="boolean" parent="plex.transcode" label="1292" help="1293">
+          <level>0</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="plex.transcode">true</dependency>
+          </dependencies>  
+          <control type="toggle" />
+        </setting>
+        <setting id="plex.transcodelocal" type="boolean" parent="plex.transcode" label="1288" help="1289">
+          <level>0</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="plex.transcode">true</dependency>
+          </dependencies>  
+          <control type="toggle" />
+        </setting>
+        <setting id="plex.transcodelocalexclusions" type="boolean" parent="plex.transcode" label="1290" help="1291">
+          <level>0</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible" setting="plex.transcode">true</dependency>
+            <dependency type="visible" setting="plex.transcodelocal">false</dependency>
+          </dependencies>  
+          <control type="toggle" />
+        </setting>
         <setting id="plex.myplexauthtoken" type="string" label="" help="">
           <level>0</level>
           <default></default>

@@ -295,6 +295,13 @@ bool CServicesManager::GetResolutions(CFileItem &item)
   return false;
 }
 
+bool CServicesManager::GetURL(CFileItem &item)
+{
+  if (item.HasProperty("PlexItem"))
+    return CPlexUtils::GetURL(item);
+  return false;
+}
+
 void CServicesManager::SearchService(CFileItemList &items, std::string strSearchString)
 {
   if(CPlexUtils::HasClients())
