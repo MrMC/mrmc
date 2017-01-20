@@ -314,7 +314,7 @@ void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* m
     p->m_fAspect = atof(XMLUtils::GetAttribute(mediaNode, "aspectRatio").c_str());
     p->m_iWidth = atoi(XMLUtils::GetAttribute(mediaNode, "width").c_str());
     p->m_iHeight = atoi(XMLUtils::GetAttribute(mediaNode, "height").c_str());
-    p->m_iDuration = atoi(XMLUtils::GetAttribute(mediaNode, "videoCodec").c_str());
+    p->m_iDuration = atoi(XMLUtils::GetAttribute(mediaNode, "duration").c_str())/1000;
     details.AddStream(p);
     
     CStreamDetailAudio *a = new CStreamDetailAudio();
