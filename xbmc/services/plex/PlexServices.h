@@ -65,6 +65,7 @@ public:
   bool HasClients() const;
   void GetClients(std::vector<CPlexClientPtr> &clients) const;
   CPlexClientPtr FindClient(const std::string &path);
+  bool ClientIsLocal(std::string path);
 
   // ISettingCallback
   virtual void OnSettingAction(const CSetting *setting) override;

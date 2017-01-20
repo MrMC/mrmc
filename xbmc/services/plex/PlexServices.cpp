@@ -941,6 +941,18 @@ CPlexClientPtr CPlexServices::GetClient(std::string uuid)
   return nullptr;
 }
 
+bool CPlexServices::ClientIsLocal(std::string path)
+{
+  CSingleLock lock(m_criticalClients);
+  for (const auto &client : m_clients)
+  {
+    if (StringUtils::StartsWithNoCase(client->GetUrl(), path))
+      return client->IsLocal();
+  }
+  
+  return false;
+}
+
 bool CPlexServices::AddClient(CPlexClientPtr foundClient)
 {
   CSingleLock lock(m_criticalClients);
