@@ -3,9 +3,10 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=1.9.6
+VERSION=1.10.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=https://github.com/sahlberg/libnfs/archive
 
 # configuration settings
 CONFIGURE=CFLAGS="-DHAVE_NET_IF_H" ./configure --prefix=$(PREFIX)
@@ -23,8 +24,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); ./bootstrap
-	cd $(PLATFORM); patch -p1 < ../readahead.patch
-	cd $(PLATFORM); patch -p1 < ../android_statvfs.patch
+	cd $(PLATFORM); patch -p1 < ../vfstat_redefine.patch
 	sed -ie "s|utils||" "$(PLATFORM)/Makefile.am"
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
