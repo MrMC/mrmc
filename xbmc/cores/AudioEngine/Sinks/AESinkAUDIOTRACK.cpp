@@ -514,9 +514,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   }
   format = m_format;
 
-  // Force volume to 100% for all passthrough (non-IEC packed or IEC packed)
-  // except if using ENCODING_IEC61937
-  if (m_passthrough && CJNIAudioFormat::ENCODING_IEC61937 != -1)
+  // Force volume to 100% for passthrough
+  if (m_passthrough && (m_passthroughIsIECPacked && m_encoding != CJNIAudioFormat::ENCODING_IEC61937))
   {
     CXBMCApp::get()->AcquireAudioFocus();
     m_volume = CXBMCApp::GetSystemVolume();
