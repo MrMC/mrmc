@@ -30,8 +30,8 @@ extern "C" {
 #include "libavutil/avutil.h"
 }
 
-class CDVDOverlaySpu;
-class CDVDOverlayText;
+class CDVDStreamInfo;
+class CDVDOverlayCodecSSA;
 
 class CDVDOverlayCodecFFmpeg : public CDVDOverlayCodec
 {
@@ -46,6 +46,8 @@ public:
   virtual CDVDOverlay* GetOverlay();
 
 private:
+  CDVDStreamInfo  *m_SSAHints;
+  CDVDOverlayCodecSSA *m_CodecSSA;
   AVCodecContext* m_pCodecContext;
   AVSubtitle      m_Subtitle;
   int             m_SubtitleIndex;
@@ -54,4 +56,5 @@ private:
 
   int             m_width;
   int             m_height;
+
 };

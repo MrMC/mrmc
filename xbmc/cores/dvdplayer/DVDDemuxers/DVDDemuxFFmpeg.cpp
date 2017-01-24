@@ -819,12 +819,37 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           m_pkt.pkt.pts = AV_NOPTS_VALUE;
         }
 
-        // copy contents into our own packet
-        pPacket->iSize = m_pkt.pkt.size;
-
-        // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
         if (m_pkt.pkt.data)
-          memcpy(pPacket->pData, m_pkt.pkt.data, pPacket->iSize);
+        {
+          if (stream->codec && stream->codec->codec_id == AV_CODEC_ID_EIA_608 &&
+              m_pkt.pkt.size > 8 && !strncmp((char*)m_pkt.pkt.data+4, "cdat", 4))
+          {
+            // cdat atom detected. cdat atoms are EIA608 with two byte chucks.
+            // the EIA608/EIA709 decoding routines expect three byte chucks with
+            // 1st byte indicating flags for valid and type. So convert it.
+            // ffmpeg should do this for us, as it does for extradata and any other mp4 atoms.
+            CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+            int newSize = 3 * (m_pkt.pkt.size - 8) / 2;
+            pPacket = CDVDDemuxUtils::AllocateDemuxPacket(newSize);
+            pPacket->iSize = newSize;
+            uint8_t *src = m_pkt.pkt.data + 8;  // skip over atom size/type
+            uint8_t *dst = pPacket->pData;
+            for (int i = 0; i < pPacket->iSize; i+=3)
+            {
+              *dst++ = 0x04; // mark valid (bit 4 = 1) and type 608 (bit 3 = 0)
+              *dst++ = *src++;
+              *dst++ = *src++;
+            }
+          }
+          else
+          {
+            // copy contents into our own packet
+            pPacket->iSize = m_pkt.pkt.size;
+            // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
+            memcpy(pPacket->pData, m_pkt.pkt.data, pPacket->iSize);
+          }
+        }
+
 
         pPacket->pts = ConvertTimestamp(m_pkt.pkt.pts, stream->time_base.den, stream->time_base.num);
         pPacket->dts = ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
