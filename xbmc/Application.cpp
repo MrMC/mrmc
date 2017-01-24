@@ -916,11 +916,11 @@ bool CApplication::InitDirectoriesDarwin()
   std::string frameworksPath = CUtil::GetFrameworksPath();
   CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN)
   std::string fontconfigFilePath;
-  fontconfigFilePath = appPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
+  fontconfigFilePath = appPath + "/system/players/dvdplayer/etc/fonts";
   // the location of the fonts.conf file
-  setenv("FONTCONFIG_FILE", fontconfigFilePath.c_str(), 1);
+  setenv("FONTCONFIG_PATH", fontconfigFilePath.c_str(), 1);
   setenv("MRMC_IOS_FRAMEWORKS", frameworksPath.c_str(), 1);
   CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesDarwin: fontconfigFilePath(%s)", fontconfigFilePath.c_str());
 #endif
