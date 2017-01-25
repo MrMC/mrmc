@@ -824,7 +824,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           if (stream->codec && stream->codec->codec_id == AV_CODEC_ID_EIA_608 &&
               m_pkt.pkt.size > 8 && !strncmp((char*)m_pkt.pkt.data+4, "cdat", 4))
           {
-            // cdat atom detected. cdat atoms are EIA608 with two byte chucks.
+            // cdat atom detected. cdat atoms are CEA608-E with two byte chucks.
             // the EIA608/EIA709 decoding routines expect three byte chucks with
             // 1st byte indicating flags for valid and type. So convert it.
             // ffmpeg should do this for us, as it does for extradata and any other mp4 atoms.
@@ -836,7 +836,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
             uint8_t *dst = pPacket->pData;
             for (int i = 0; i < pPacket->iSize; i+=3)
             {
-              *dst++ = 0x04; // mark valid (bit 4 = 1) and type 608 (bit 3 = 0)
+              *dst++ = 0x04; // mark valid (bit 2 = 1) and type 608 (bit 0,1 = 0)
               *dst++ = *src++;
               *dst++ = *src++;
             }
