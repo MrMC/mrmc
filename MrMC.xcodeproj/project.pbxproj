@@ -1884,6 +1884,12 @@
 		F599CD74108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */; };
 		F59EED7E17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */; };
 		F59EED7F17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */; };
+		F5A0E2511E3A63050086B1D1 /* BitstreamReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A0E24F1E3A63050086B1D1 /* BitstreamReader.cpp */; };
+		F5A0E2521E3A63050086B1D1 /* BitstreamReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A0E24F1E3A63050086B1D1 /* BitstreamReader.cpp */; };
+		F5A0E2531E3A63050086B1D1 /* BitstreamReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A0E24F1E3A63050086B1D1 /* BitstreamReader.cpp */; };
+		F5A0E2561E3A63190086B1D1 /* BitstreamWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A0E2541E3A63190086B1D1 /* BitstreamWriter.cpp */; };
+		F5A0E2571E3A63190086B1D1 /* BitstreamWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A0E2541E3A63190086B1D1 /* BitstreamWriter.cpp */; };
+		F5A0E2581E3A63190086B1D1 /* BitstreamWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A0E2541E3A63190086B1D1 /* BitstreamWriter.cpp */; };
 		F5A4F29E1BB086FE0083FC69 /* ExifParse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A4F2951BB086FE0083FC69 /* ExifParse.cpp */; };
 		F5A4F29F1BB086FE0083FC69 /* ExifParse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A4F2951BB086FE0083FC69 /* ExifParse.cpp */; };
 		F5A4F2A01BB086FE0083FC69 /* ExifParse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A4F2951BB086FE0083FC69 /* ExifParse.cpp */; };
@@ -5406,6 +5412,10 @@
 		F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DarwinStorageProvider.cpp; sourceTree = "<group>"; };
 		F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationPlayer.cpp; sourceTree = "<group>"; };
 		F59EED7D17AD5174005BB7C6 /* ApplicationPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationPlayer.h; sourceTree = "<group>"; };
+		F5A0E24F1E3A63050086B1D1 /* BitstreamReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BitstreamReader.cpp; sourceTree = "<group>"; };
+		F5A0E2501E3A63050086B1D1 /* BitstreamReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitstreamReader.h; sourceTree = "<group>"; };
+		F5A0E2541E3A63190086B1D1 /* BitstreamWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BitstreamWriter.cpp; sourceTree = "<group>"; };
+		F5A0E2551E3A63190086B1D1 /* BitstreamWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitstreamWriter.h; sourceTree = "<group>"; };
 		F5A4F2951BB086FE0083FC69 /* ExifParse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExifParse.cpp; sourceTree = "<group>"; };
 		F5A4F2961BB086FE0083FC69 /* ExifParse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExifParse.h; sourceTree = "<group>"; };
 		F5A4F2971BB086FE0083FC69 /* IptcParse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IptcParse.cpp; sourceTree = "<group>"; };
@@ -8853,8 +8863,12 @@
 				DF52769B151BAEDA00B5B63B /* Base64.h */,
 				F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */,
 				F56353BE16E9BB3500D21BAD /* BitstreamConverter.h */,
+				F5A0E24F1E3A63050086B1D1 /* BitstreamReader.cpp */,
+				F5A0E2501E3A63050086B1D1 /* BitstreamReader.h */,
 				E38E1E270D25F9FD00618676 /* BitstreamStats.cpp */,
 				E38E1E280D25F9FD00618676 /* BitstreamStats.h */,
+				F5A0E2541E3A63190086B1D1 /* BitstreamWriter.cpp */,
+				F5A0E2551E3A63190086B1D1 /* BitstreamWriter.h */,
 				DFECFB1A172D9D0100A43CF7 /* BooleanLogic.cpp */,
 				DFECFB1B172D9D0100A43CF7 /* BooleanLogic.h */,
 				E38E1E290D25F9FD00618676 /* CharsetConverter.cpp */,
@@ -11325,6 +11339,7 @@
 				7CCDA833192756250074CF51 /* NptSystem.cpp in Sources */,
 				F5B724FB1C7E150C006432AE /* resource.cpp in Sources */,
 				7CCDA83C192756250074CF51 /* NptThreads.cpp in Sources */,
+				F5A0E2511E3A63050086B1D1 /* BitstreamReader.cpp in Sources */,
 				7CCDA845192756250074CF51 /* NptTime.cpp in Sources */,
 				7CCDA84E192756250074CF51 /* NptTls.cpp in Sources */,
 				7CCDA851192756250074CF51 /* NptUri.cpp in Sources */,
@@ -11360,6 +11375,7 @@
 				DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */,
 				7C525DF5195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 				7C908894196358A8003D0619 /* auto_buffer.cpp in Sources */,
+				F5A0E2561E3A63190086B1D1 /* BitstreamWriter.cpp in Sources */,
 				7CF80DC919710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
 				B179BD6B1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
 				B179BD6E1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
@@ -11835,6 +11851,7 @@
 				E4991351174E5EBE00741B6D /* FavouritesOperations.cpp in Sources */,
 				F5B723731C7C9A51006432AE /* ActiveAEDSPDatabase.cpp in Sources */,
 				E4991352174E5EBE00741B6D /* FileItemHandler.cpp in Sources */,
+				F5A0E2521E3A63050086B1D1 /* BitstreamReader.cpp in Sources */,
 				E4991353174E5EBE00741B6D /* FileOperations.cpp in Sources */,
 				E4991354174E5EBE00741B6D /* GUIOperations.cpp in Sources */,
 				F51D17221E29950600A03C93 /* play.c in Sources */,
@@ -12222,6 +12239,7 @@
 				E499154F174E64F200741B6D /* MouseStat.cpp in Sources */,
 				E499156A174E65AB00741B6D /* ButtonTranslator.cpp in Sources */,
 				E499156B174E65AB00741B6D /* InertialScrollingHandler.cpp in Sources */,
+				F5A0E2571E3A63190086B1D1 /* BitstreamWriter.cpp in Sources */,
 				E499156D174E65AB00741B6D /* KeyboardStat.cpp in Sources */,
 				4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */,
 				E499156E174E65AB00741B6D /* SDLJoystick.cpp in Sources */,
@@ -13458,6 +13476,7 @@
 				F5B723741C7C9A51006432AE /* ActiveAEDSPDatabase.cpp in Sources */,
 				F5D1421C1BAF0B6D0075A95C /* NptSystem.cpp in Sources */,
 				F5B722FC1C7C894F006432AE /* CECBuiltins.cpp in Sources */,
+				F5A0E2531E3A63050086B1D1 /* BitstreamReader.cpp in Sources */,
 				F5D1421D1BAF0B6D0075A95C /* NptThreads.cpp in Sources */,
 				F5D1421E1BAF0B6D0075A95C /* NptTime.cpp in Sources */,
 				F5D1421F1BAF0B6D0075A95C /* NptTls.cpp in Sources */,
@@ -13493,6 +13512,7 @@
 				F5D142371BAF0B6D0075A95C /* auto_buffer.cpp in Sources */,
 				F5B724C41C7E150C006432AE /* find.cpp in Sources */,
 				F5D142381BAF0B6D0075A95C /* KeyboardLayout.cpp in Sources */,
+				F5A0E2581E3A63190086B1D1 /* BitstreamWriter.cpp in Sources */,
 				F5B723591C7C99A6006432AE /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				F5D142391BAF0B6D0075A95C /* InputCodingTableBaiduPY.cpp in Sources */,
 				F5D1423A1BAF0B6D0075A95C /* InputCodingTableBasePY.cpp in Sources */,
