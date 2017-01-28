@@ -6968,11 +6968,6 @@ msgid "Prefer VDPAU video mixer"
 msgstr ""
 
 #: system/settings/settings.xml
-msgctxt "#13438"
-msgid "Allow hardware acceleration - amcodec"
-msgstr ""
-
-#: system/settings/settings.xml
 msgctxt "#13439"
 msgid "Allow hardware acceleration - MediaCodec"
 msgstr ""
@@ -17913,12 +17908,6 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
-msgstr ""
-
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (amcodec)" with label #13438
-#: system/settings/settings.xml
-msgctxt "#36422"
-msgid "Enable hardware video decode using Amlogic decoder."
 msgstr ""
 
 #. Description of setting "TV -> Recording -> Prevent duplicate episodes" with label #812

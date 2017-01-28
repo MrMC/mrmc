@@ -488,7 +488,7 @@ AC_ARG_ENABLE([player],
 
 AC_ARG_ENABLE([codec],
   [AS_HELP_STRING([--enable-codec],
-  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec, libstagefright and imxvpu)])],
+  [enable additional codecs from a list of comma separated names, (default is none, choices are imxvpu)])],
   [add_codecs=$enableval],
   [add_codecs=no])
 
@@ -1727,13 +1727,6 @@ esac
 # remember to convert commas to spaces
 for codecs in `echo $add_codecs | sed 's/,/ /g'`; do
   case $codecs in
-    *amcodec*)
-        AC_CHECK_HEADER([amcodec/codec_error.h],, AC_MSG_ERROR($missing_headers))
-        XB_ADD_CODEC([LIBAMCODEC], [amcodec], [$codecs])
-        ;;
-    *libstagefright*)
-        XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright], [$codecs])
-        ;;
     *imxvpu*)
       AC_CHECK_HEADER([imx-mm/vpu/vpu_wrapper.h],, AC_MSG_ERROR($missing_headers))
       AC_CHECK_LIB([vpu], main, LIBS="$LIBS -lfslvpuwrap -lvpu -lg2d", AC_MSG_ERROR($missing_library))
@@ -2153,7 +2146,6 @@ OUTPUT_FILES="$OUTPUT_FILES addons/skin.pm3.hd/media/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.sio2/media/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES lib/libUPnP/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES lib/libhdhomerun/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.pvr/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES lib/addons/library.xbmc.addon/Makefile"
@@ -2255,10 +2247,6 @@ fi
 
 if test "$use_touch_skin" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
-fi
-
-if test "$use_codec_libstagefright" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile"
 fi
 
 if test "$use_sse4" = "yes"; then

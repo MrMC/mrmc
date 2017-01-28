@@ -52,10 +52,6 @@
 #include "settings/Settings.h"
 #include "settings/windows/GUIControlSettings.h"
 
-#if defined(HAS_LIBAMCODEC)
-#include "utils/ScreenshotAML.h"
-#endif
-
 using namespace XFILE;
 
 CScreenshotSurface::CScreenshotSurface()
@@ -183,11 +179,6 @@ bool CScreenshotSurface::capture()
 
   delete [] surface;
   
-#if defined(HAS_LIBAMCODEC)
-  // Captures the current visible videobuffer and blend it into m_buffer (captured overlay)
-  CScreenshotAML::CaptureVideoFrame(m_buffer, m_width, m_height);
-#endif
-
 #ifdef HAS_IMXVPU
   // Captures the current visible framebuffer page and blends it into the
   // captured GL overlay

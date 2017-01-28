@@ -48,7 +48,6 @@
 #if defined(TARGET_ANDROID)
 #include "platform/android/jni/Build.h"
 #include "utils/SysfsUtils.h"
-#include "utils/AMLUtils.h"
 #endif
 
 /* Platform identification */
@@ -689,19 +688,13 @@ bool CSysInfo::IsAeroDisabled()
 
 bool CSysInfo::HasHW3DInterlaced()
 {
-#if defined(TARGET_ANDROID)
-  if (aml_hw3d_present())
-    return true;
-#endif
   return false;
 }
 
 bool CSysInfo::HWSupportsStereo(const int mode)
 {
 #if defined(TARGET_ANDROID)
-  if (aml_present())
-    return aml_supports_stereo(mode);
-  else if (SysfsUtils::Has("/sys/class/graphics/fb0/3d_present"))  // AFTV
+  if (SysfsUtils::Has("/sys/class/graphics/fb0/3d_present"))  // AFTV
     return true;
 #endif
   return false;
@@ -710,9 +703,7 @@ bool CSysInfo::HWSupportsStereo(const int mode)
 void CSysInfo::HWSetStereoMode(const int mode, const int view)
 {
 #if defined(TARGET_ANDROID)
-  if (aml_present())
-    aml_set_stereo_mode(mode, view);
-  else if (SysfsUtils::Has("/sys/class/graphics/fb0/3d_present"))  // AFTV
+  if (SysfsUtils::Has("/sys/class/graphics/fb0/3d_present"))  // AFTV
   {
     switch(mode)
     {

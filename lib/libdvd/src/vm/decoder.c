@@ -31,6 +31,7 @@
 #include <string.h>  /* For memset */
 #include <sys/time.h>
 #include <assert.h>
+#include <pthread.h>
 
 #include "../libdvd.h"
 #include "../libdvd_internal.h"

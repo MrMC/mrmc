@@ -41,11 +41,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#include <sys/timeb.h>
 #include <sys/wait.h>
 #if defined(__ANDROID__)
 #include <signal.h>
 #else
+#include <sys/timeb.h>
 #include <sys/signal.h>
 #endif
 #include <netinet/in.h>

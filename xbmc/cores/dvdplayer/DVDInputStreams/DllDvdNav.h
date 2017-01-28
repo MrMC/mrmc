@@ -23,18 +23,19 @@
 #if 1
 extern "C" {
  #include <stdint.h>
+ #include <pthread.h>
 
  #ifndef HAVE_CONFIG_H
  #define HAVE_CONFIG_H
  #endif
 
- #include "libDVD/src/libdvd.h"
- #include "libDVD/src/vm/decoder.h"
- #include "libDVD/src/vm/vm.h"
- #include "libDVD/src/libdvd_types.h"
- #include "libDVD/src/libdvd_internal.h"
- #include "libDVD/src/libdvd_filesystem.h"
- #include "libDVD/src/log_control.h"
+ #include "libdvd/src/libdvd.h"
+ #include "libdvd/src/vm/decoder.h"
+ #include "libdvd/src/vm/vm.h"
+ #include "libdvd/src/libdvd_types.h"
+ #include "libdvd/src/libdvd_internal.h"
+ #include "libdvd/src/libdvd_filesystem.h"
+ #include "libdvd/src/log_control.h"
 
  extern vm_t* dvdnav_get_vm(dvdnav_t *ctx);
  extern int dvdnav_get_button_info(dvdnav_t* ctx, int alpha[2][4], int color[2][4]);

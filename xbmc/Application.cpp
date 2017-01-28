@@ -206,10 +206,6 @@
 #include "platform/android/jni/Build.h"
 #endif
 
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif
-
 #include "cores/FFmpeg.h"
 #include "utils/CharsetConverter.h"
 #include "pictures/GUIWindowSlideShow.h"
@@ -1387,19 +1383,6 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   if (setting == NULL)
     return false;
 
-#if defined(HAS_LIBAMCODEC)
-  if (setting->GetId() == CSettings::SETTING_VIDEOPLAYER_USEAMCODEC)
-  {
-    // Do not permit amcodec to be used on non-aml platforms.
-    // The setting will be hidden but the default value is true,
-    // so change it to false.
-    if (!aml_present())
-    {
-      CSettingBool *useamcodec = (CSettingBool*)setting;
-      return useamcodec->SetValue(false);
-    }
-  }
-#endif
 #if defined(TARGET_ANDROID)
   if (setting->GetId() == CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT)
   {

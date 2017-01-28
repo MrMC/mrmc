@@ -1,9 +1,7 @@
 SRCS  = WinSystemEGL.cpp
-SRCS += EGLNativeTypeAmlogic.cpp
 
 ifeq (@USE_ANDROID@,1)
 SRCS += EGLNativeTypeAndroid.cpp
-SRCS += EGLNativeTypeAmlAndroid.cpp
 SRCS += EGLNativeTypeRKAndroid.cpp
 endif
 

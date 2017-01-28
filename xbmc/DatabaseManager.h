@@ -21,6 +21,7 @@
 #pragma once
 
 #include <map>
+#include <atomic>
 #include <string>
 #include "threads/CriticalSection.h"
 
@@ -61,7 +62,7 @@ public:
 
    \param name the name of the database to check.
    \return true if the database can be opened, false otherwise.
-   */ 
+   */
   bool CanOpen(const std::string &name);
   std::atomic<bool> m_bIsUpgrading;
 

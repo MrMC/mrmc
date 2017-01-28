@@ -52,8 +52,12 @@ static void _file_close(DVD_FILEIO_H *file)
 
 static int64_t _file_seek(DVD_FILEIO_H *file, int64_t offset, int32_t origin)
 {
-    off_t result = lseek((int)(intptr_t)file->internal, offset, origin);
-    if (result == (off_t)-1) {
+#ifdef __APPLE__
+    int64_t result = lseek((int)(intptr_t)file->internal, offset, origin);
+#else
+    int64_t result = lseek64((int)(intptr_t)file->internal, offset, origin);
+#endif
+    if (result == (int64_t)-1) {
         DVD_DEBUG(DBG_FILE, "lseek() failed (%p)\n", (void*)file);
         return -1;
     }

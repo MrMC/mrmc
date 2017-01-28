@@ -36,10 +36,6 @@
 #include "utils/SystemInfo.h"
 #include "threads/SingleLock.h"
 #include "settings/AdvancedSettings.h"
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif
-
 
 #define AE_MIN_PERIODSIZE 256
 #define ALSA_CHMAP_KERNEL_BLACKLIST
@@ -530,13 +526,6 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   {
     m_passthrough   = false;
   }
-#if defined(HAS_LIBAMCODEC)
-  if (aml_present())
-  {
-    aml_set_audio_passthrough(m_passthrough);
-    device = "default";
-  }
-#endif
 
   if (inconfig.channels == 0)
   {

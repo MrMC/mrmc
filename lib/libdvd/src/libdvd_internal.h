@@ -25,14 +25,8 @@
 //#include "libDVD/src/config/config.h"
 #endif
 
+#include <pthread.h>
 #include "vm/vm.h"
-
-#ifdef __ANDROID__
-# undef  lseek
-# define lseek lseek64
-# undef  off_t
-# define off_t off64_t
-#endif
 
 /* where should libdvdnav write its messages (stdout/stderr) */
 #define MSG_OUT stderr

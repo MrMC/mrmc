@@ -42,11 +42,6 @@
   #include "Video/DVDVideoCodecIMX.h"
 #endif
 #include "Video/MMALCodec.h"
-#include "Video/DVDVideoCodecStageFright.h"
-#if defined(HAS_LIBAMCODEC)
-  #include "utils/AMLUtils.h"
-  #include "Video/DVDVideoCodecAmlogic.h"
-#endif
 #if defined(TARGET_ANDROID)
   #include "Video/DVDVideoCodecAndroidMediaCodec.h"
   #include "platform/android/activity/AndroidFeatures.h"
@@ -153,27 +148,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
      // If dvd is an mpeg2 and hint.stills
      if ( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
-
-#if defined(HAS_LIBAMCODEC)
-  // amcodec can handle dvd playback.
-  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC))
-  {
-    switch(hint.codec)
-    {
-      case AV_CODEC_ID_MPEG4:
-      case AV_CODEC_ID_MSMPEG4V2:
-      case AV_CODEC_ID_MSMPEG4V3:
-      case AV_CODEC_ID_MPEG1VIDEO:
-      case AV_CODEC_ID_MPEG2VIDEO:
-        // Avoid h/w decoder for SD; Those files might use features
-        // not supported and can easily be soft-decoded
-        if (hint.width <= 800)
-          break;
-      default:
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;
-    }
-  }
-#endif
 
 #if defined(HAS_IMXVPU)
   if (!hint.software)

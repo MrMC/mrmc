@@ -123,7 +123,11 @@ static int dvd_read_name(char *name, char *serial, const char *device) {
     goto fail;
   }
 
+#ifdef __APPLE__
   if ((off = lseek( fd, 32 * (int64_t) DVD_VIDEO_LB_LEN, SEEK_SET )) == (int64_t) - 1) {
+#else
+  if ((off = lseek64( fd, 32 * (int64_t) DVD_VIDEO_LB_LEN, SEEK_SET )) == (int64_t) - 1) {
+#endif
     DVD_DEBUG(DBG_DVD, "libdvdnav: Unable to seek to the title block %u.\n", 32);
     goto fail;
   }

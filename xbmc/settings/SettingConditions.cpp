@@ -37,9 +37,6 @@
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingAddon.h"
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif // defined(HAS_LIBAMCODEC)
 #include "utils/SystemInfo.h"
 #include "windowing/WindowingFactory.h"
 #if defined(TARGET_DARWIN_OSX)
@@ -285,19 +282,12 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_ANDROID
   m_simpleConditions.insert("has_mediacodec");
 #endif
-#ifdef HAS_LIBSTAGEFRIGHT
-  m_simpleConditions.insert("have_libstagefrightdecoder");
-#endif
 #if defined(TARGET_DARWIN_IOS)
   m_simpleConditions.insert("have_videotoolboxdecoder");
   m_simpleConditions.insert("hasvideotoolboxdecoder");
 #endif
 #ifdef TARGET_DARWIN_OSX
   m_simpleConditions.insert("HasVDA");
-#endif
-#ifdef HAS_LIBAMCODEC
-  if (aml_present())
-    m_simpleConditions.insert("have_amcodec");
 #endif
 #ifdef TARGET_DARWIN_OSX
   if (CDarwinUtils::IsSnowLeopard())

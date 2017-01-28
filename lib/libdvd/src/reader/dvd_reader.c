@@ -1074,8 +1074,9 @@ ssize_t DVDReadBlocks( dvd_file_t *dvd_file, int offset,
 
   if (ret)
   {
+    int i_index;
     unsigned char *buf = data;
-    for (int i_index = 0; i_index < ret; i_index++)
+    for (i_index = 0; i_index < ret; i_index++)
     {
       if (buf[0x14] & 0x30)
       {

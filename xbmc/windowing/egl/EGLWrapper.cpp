@@ -27,7 +27,6 @@
 #endif
 #if defined(TARGET_ANDROID)
   #include "EGLNativeTypeAndroid.h"
-  #include "EGLNativeTypeAmlAndroid.h"
   #include "EGLNativeTypeRKAndroid.h"
 #endif
 #if defined(TARGET_RASPBERRY_PI)
@@ -36,7 +35,6 @@
 #if defined(HAS_IMXVPU)
   #include "EGLNativeTypeIMX.h"
 #endif
-#include "EGLNativeTypeAmlogic.h"
 #include "EGLWrapper.h"
 
 #define CheckError() m_result = eglGetError(); if(m_result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, m_result);
@@ -95,9 +93,8 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeWayland>(implementation)) ||
 #endif
 #if defined(TARGET_ANDROID)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlAndroid>(implementation)) ||
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRKAndroid>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRKAndroid>(implementation)) ||
 #endif
 #if defined(TARGET_RASPBERRY_PI)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation)) ||
@@ -105,8 +102,8 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
 #if defined(HAS_IMXVPU)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation)) ||
 #endif
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation))
-      )
+      (nativeGuess = NULL)
+     )
   {
     m_nativeTypes = nativeGuess;
 

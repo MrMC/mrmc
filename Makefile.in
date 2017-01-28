@@ -13,10 +13,6 @@ NWAOBJSXBMC += xbmc/commons/commons.a
 
 DVDPCODECS_DIRS  = lib
 
-ifeq (@USE_LIBSTAGEFRIGHT@,1)
-DVDPCODECS_DIRS += xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
-endif
-
 DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/dvdplayer.a \
                    xbmc/cores/dvdplayer/DVDCodecs/dvdcodecs.a \
                    xbmc/cores/dvdplayer/DVDCodecs/Audio/audio.a \
@@ -168,6 +164,8 @@ DIRECTORY_ARCHIVES += xbmc/freebsd/freebsd.a
 endif
 
 DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
+DIRECTORY_ARCHIVES += lib/libhdhomerun/hdhomerun.a
+DIRECTORY_ARCHIVES += lib/libdvd/libdvd.a
 
 ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
@@ -279,13 +277,6 @@ libaddon:
 	$(MAKE) -C lib/addons/library.kodi.guilib
 	$(MAKE) -C lib/addons/library.xbmc.pvr
 dvdpcodecs: dllloader
-
-ifeq (@USE_LIBSTAGEFRIGHT@,1)
-dvdpextcodecs: lib@APP_NAME_LC@.so
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
-else
-dvdpextcodecs:
-endif
 
 eventclients:
 ifeq ($(findstring osx,@ARCH@), osx)

@@ -44,7 +44,6 @@ class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
-class CDVDVideoCodecStageFright;
 class CDVDMediaCodecInfo;
 #ifdef HAS_IMXVPU
 class CDVDVideoCodecIMXBuffer;
@@ -172,9 +171,6 @@ public:
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   virtual void         AddProcessor(CVBufferRef cvBufferRef, int index);
 #endif
-#ifdef HAS_LIBSTAGEFRIGHT
-  virtual void         AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index);
-#endif
 #if defined(TARGET_ANDROID)
   // mediaCodec
   virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
@@ -297,10 +293,6 @@ protected:
 
 #ifdef HAVE_LIBOPENMAX
     OpenMaxVideoBufferHolder *openMaxBufferHolder;
-#endif
-#ifdef HAS_LIBSTAGEFRIGHT
-    CDVDVideoCodecStageFright* stf;
-    EGLImageKHR eglimg;
 #endif
 #if defined(TARGET_ANDROID)
     // mediacodec
