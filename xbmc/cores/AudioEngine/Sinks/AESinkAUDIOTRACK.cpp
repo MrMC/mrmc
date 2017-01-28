@@ -260,7 +260,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
     m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
 
-    if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+    if (false && CJNIAudioFormat::ENCODING_IEC61937 != -1)
     {
       // wait until we have a device that support IEC packed passthrough then fix...
       m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
@@ -363,6 +363,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   while (!m_at_jni)
   {
     m_sink_bufferSize = CJNIAudioTrack::getMinBufferSize(m_sink_sampleRate, atChannelMask, m_encoding);
+    m_sink_bufferSize *= 2;
     if (m_sink_bufferSize < 0)
     {
       CLog::Log(LOGERROR, "Minimum Buffer Size was: %d - disable passthrough (?) your hw does not support it", m_sink_bufferSize);
@@ -651,7 +652,7 @@ void CAESinkAUDIOTRACK::Drain()
 bool CAESinkAUDIOTRACK::FormatNeedsIECPacked(const AEAudioFormat &format)
 {
   // ENCODING_IEC61937 mean all bitstreamed formats are IEC packed
-  if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+  if (false && CJNIAudioFormat::ENCODING_IEC61937 != -1)
     return true;
 
   bool needsIECPacked = true;
