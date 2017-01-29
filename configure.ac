@@ -508,7 +508,7 @@ PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
 AC_PROG_CXX
 AX_PROG_CXX_FOR_BUILD
 CXXFLAGS="$PASSED_CXXFLAGS $DEFAULT_COMPILE_FLAGS"
-AX_CXX_COMPILE_STDCXX_11(,[optional])
+AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 AC_PROG_LIBTOOL
 AC_PROG_AWK
 AC_PROG_LN_S
@@ -625,6 +625,19 @@ case $host in
      use_arch="arm"
      use_cpu=cortex-a9
      ARCH="arm"
+     use_joystick=no
+     use_neon=yes
+     use_gles=yes
+     use_optical_drive=no
+     use_x11=no
+     use_wayland=no
+     build_shared_lib=yes
+     ;;
+  aarch64*-*linux-android*)
+     target_platform=target_android
+     use_arch="aarch64"
+     use_cpu=arm64
+     ARCH="aarch64"
      use_joystick=no
      use_neon=yes
      use_gles=yes

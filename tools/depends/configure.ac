@@ -7,7 +7,7 @@ AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include t
 AC_CANONICAL_HOST
 m4_include([../../m4/xbmc_arch.m4])
 m4_include([../../m4/ax_cxx_compile_stdcxx_11.m4])
-AX_CXX_COMPILE_STDCXX_11(,[optional])
+AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 
 # check for not same cpu value
 AC_DEFUN([MC_CHECK_NOT_CPU],
@@ -60,7 +60,7 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [spcify sdk platform version (optional for android). default is android-17])],
+  [spcify sdk platform version (optional for android). default is android-21])],
   [use_sdk=$withval])
 
 AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
@@ -123,9 +123,9 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
-    use_sdk="${use_sdk:-android-17}"
+    use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
-    platform_cflags="-DANDROID -Os -fexceptions"
+    platform_cflags="-DANDROID -Os -fexceptions -fPIC"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
       platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
     fi
@@ -136,13 +136,28 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;
+  aarch64*-*linux-android*)
+    if test "x$use_cpu" = "xauto"; then
+      use_cpu="arm64"
+    fi
+    use_sdk="${use_sdk:-android-23}"
+    deps_dir="$use_host-$use_sdk"
+    platform_cflags="-DANDROID -Os -fexceptions -fPIC -DPIC"
+    platform_cflags+=" -mfix-cortex-a53-835769"
+    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
+    platform_cxxflags="$platform_cflags -frtti -Wno-reorder"
+    platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
+    platform_os="android"
+    #android builds are always cross
+    cross_compiling="yes"
+  ;;
   i*86*-linux-android*)
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
-    use_sdk="${use_sdk:-android-17}"
+    use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
-    platform_cflags="-DANDROID -Os -fexceptions"
+    platform_cflags="-DANDROID -Os -fexceptions -fPIC"
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
@@ -456,7 +471,7 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR("NDK path is required for android")
   fi
 
-  if ! test -f "$use_ndk/RELEASE.TXT" ; then
+  if ([! test -f "$use_ndk/source.properties"] && [! test -f "$use_ndk/RELEASE.TXT"]) ; then
     AC_MSG_ERROR("$use_ndk is not an NDK directory")
   fi
 
@@ -470,10 +485,6 @@ if test "$platform_os" == "android"; then
 
   if [ ! test -f $use_ndk/sources/android/native_app_glue/android_native_app_glue.h ]; then
     AC_MSG_ERROR(verify ndk path)
-  fi
-
-  if [ ! test -f $prefix/$deps_dir/include/langinfo.h ]; then
-    touch $prefix/$deps_dir/include/langinfo.h
   fi
 
   #not all sort versions support -V - probe it...
@@ -502,6 +513,12 @@ if [ ! `mkdir -p $prefix/$deps_dir/include` ]; then
   AC_MSG_ERROR(unable to create $prefix/$deps_dir/include. verify that the path and permissions are correct.)
 fi
 
+if test "$platform_os" == "android"; then
+  if [ ! test -f $prefix/$deps_dir/include/langinfo.h ]; then
+    touch $prefix/$deps_dir/include/langinfo.h
+  fi
+fi
+
 if [ ! `mkdir -p $prefix/$deps_dir/lib` ]; then
   AC_MSG_ERROR(unable to create $prefix/$deps_dir/lib. verify that the path and permissions are correct.)
 fi
@@ -520,6 +537,10 @@ fi
 
 if [ ! `mkdir -p $prefix/$tool_dir/share` ]; then
   AC_MSG_ERROR(unable to create $prefix/$tool_dir/share. verify that the path and permissions are correct.)
+fi
+
+if [ ! `mkdir -p $prefix/$tool_dir/system` ]; then
+  AC_MSG_ERROR(unable to create $prefix/$tool_dir/system. verify that the path and permissions are correct.)
 fi
 
 if [ ! `mkdir -p $prefix/$tool_dir/bin` ]; then

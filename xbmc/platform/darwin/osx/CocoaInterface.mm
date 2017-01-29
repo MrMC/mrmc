@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#if !defined(__arm__) && !defined(__arm64__)
+#if !defined(__arm__) && !defined(__arm64__) && !defined(__aarch64__)
 #import <unistd.h>
 #import <sys/mount.h>
 

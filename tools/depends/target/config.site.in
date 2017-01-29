@@ -21,7 +21,7 @@ if test "@platform_os@" = "ios" ; then
 fi
 
 CFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CFLAGS"
-LDFLAGS="-L@prefix@/@deps_dir@/lib @platform_ldflags@ $LDFLAGS"
+LDFLAGS="-L@prefix@/@deps_dir@/lib -L@prefix@/@deps_dir@/lib64 @platform_ldflags@ $LDFLAGS"
 CXXFLAGS="@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CXXFLAGS"
 CPPFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CPPFLAGS"
 

@@ -105,7 +105,7 @@ sharedobb: shared
 	@echo "$(XBMCROOT)/main.@APP_NAME@.obb created"
 
 res:
-	mkdir -p xbmc/gen/@APP_PACKAGE_DIR@ xbmc/res xbmc/res/raw xbmc/res/values images
+	mkdir -p xbmc/gen/@APP_PACKAGE_DIR@ xbmc/res xbmc/res/raw xbmc/res/values xbmc/res/xml images
 	@echo "native_arch=$(ABI)" > xbmc/res/raw/xbmc.properties
 	cp -fp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
@@ -174,6 +174,7 @@ apk-clean:
 	rm -rf xbmc/obj
 	rm -rf xbmc/res/raw
 	rm -rf xbmc/res/values
+	rm -rf xbmc/res/xml
 	rm -rf tmp
 	rm -f xbmc/res/drawable/splash.png
 	rm -f xbmc/classes.dex

@@ -701,7 +701,7 @@ void CCPUInfo::ReadCPUFeatures()
   #endif
 #elif defined(LINUX)
 // empty on purpose, the implementation is in the constructor
-#elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__) && !defined(__arm64__)
+#elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__) && !defined(__arm64__) && !defined(__aarch64__)
   m_cpuFeatures |= CPU_FEATURE_MMX;
 #elif defined(__powerpc__) || defined(__ppc__)
   m_cpuFeatures |= CPU_FEATURE_ALTIVEC;

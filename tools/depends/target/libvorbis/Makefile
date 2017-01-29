@@ -26,7 +26,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	sed -ie "s|SUBDIRS = m4 include vq lib examples test doc|SUBDIRS = m4 include lib|" "$(PLATFORM)/Makefile.in"
 ifeq ($(CPU), arm64)
-	sed -ie "s|-force_cpusubtype_ALL||" "$(PLATFORM)/Configure"
+	sed -ie "s|-force_cpusubtype_ALL||" "$(PLATFORM)/configure"
 	sed -ie "s|-force_cpusubtype_ALL||" "$(PLATFORM)/Makefile.in"
 endif
 	cd $(PLATFORM); $(CONFIGURE)

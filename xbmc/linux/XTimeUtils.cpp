@@ -26,7 +26,7 @@
 #include "threads/Atomics.h"
 #endif
 
-#if defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID) && !defined(__aarch64__)
 #include <time64.h>
 #endif
 
@@ -121,7 +121,7 @@ int   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTim
   CAtomicSpinLock lock(timegm_lock);
 #endif
 
-#if defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID) && !defined(__aarch64__)
   time64_t t = timegm64(&sysTime);
 #else
   time_t t = timegm(&sysTime);
