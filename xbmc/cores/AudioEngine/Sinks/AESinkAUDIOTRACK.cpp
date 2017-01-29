@@ -363,7 +363,6 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   while (!m_at_jni)
   {
     m_sink_bufferSize = CJNIAudioTrack::getMinBufferSize(m_sink_sampleRate, atChannelMask, m_encoding);
-    m_sink_bufferSize *= 2;
     if (m_sink_bufferSize < 0)
     {
       CLog::Log(LOGERROR, "Minimum Buffer Size was: %d - disable passthrough (?) your hw does not support it", m_sink_bufferSize);
