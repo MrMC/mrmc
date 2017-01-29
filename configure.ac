@@ -994,8 +994,8 @@ AC_CHECK_LIB([ulxmlrpcpp],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([cpluff.h],, AC_MSG_ERROR($missing_library))
 XB_FIND_SONAME([CPLUFF], [cpluff])
 
-PKG_CHECK_MODULES([DVDNAV], [dvdnav],, AC_MSG_ERROR([dvdnav not found]))
-XB_FIND_SONAME([DVDNAV], [dvdnav])
+#PKG_CHECK_MODULES([DVDNAV], [dvdnav],, AC_MSG_ERROR([dvdnav not found]))
+#XB_FIND_SONAME([DVDNAV], [dvdnav])
 
 if echo "$ARCH" | grep -q freebsd; then
 AC_CHECK_LIB([pthread],     [main],LIBS="-pthread $LIBS", AC_MSG_ERROR($missing_library))

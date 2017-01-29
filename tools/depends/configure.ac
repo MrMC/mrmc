@@ -539,10 +539,6 @@ if [ ! `mkdir -p $prefix/$tool_dir/share` ]; then
   AC_MSG_ERROR(unable to create $prefix/$tool_dir/share. verify that the path and permissions are correct.)
 fi
 
-if [ ! `mkdir -p $prefix/$tool_dir/system` ]; then
-  AC_MSG_ERROR(unable to create $prefix/$tool_dir/system. verify that the path and permissions are correct.)
-fi
-
 if [ ! `mkdir -p $prefix/$tool_dir/bin` ]; then
   AC_MSG_ERROR(unable to create $prefix/$tool_dir/share. verify that the path and permissions are correct.)
 fi

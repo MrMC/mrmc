@@ -8,7 +8,7 @@ OBJS+= libmpeg2.so libmpeg2convert.so
 OBJS+= libnfs.so
 OBJS+= libdsm.so
 OBJS+= libsmbclient.so
-OBJS+= libdvdnav.so
+#OBJS+= libdvdnav.so
 OBJS+= libbluray.so
 OBJS+= libplist.so
 OBJS+= libshairplay.so
@@ -130,7 +130,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(ABI)/
 	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
 	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
+	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \; | true
 	cd xbmc/obj/local/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(ABI)/*.so xbmc/lib/$(ABI)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(ABI)/*.so

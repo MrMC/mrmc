@@ -117,20 +117,6 @@ config.log
 /addons/audiodecoder.*
 /addons/visualization.*
 
-# /lib/
-/lib/Makefile
-/lib/*/1
-/lib/*/win32/1
-
-# /lib/asap/
-/lib/asap/Makefile
-/lib/asap/players.h
-/lib/asap/players/*.obx
-/lib/asap/win32/xbmc_asap.dll
-/lib/asap/win32/xbmc_asap.lib
-/lib/asap/xbmc/xbmc_asap.res
-
-
 # /lib/addons/
 /lib/addons/library.kodi.guilib/Makefile
 /lib/addons/library.kodi.guilib/project/VS2010Express/Release

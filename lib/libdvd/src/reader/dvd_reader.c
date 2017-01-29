@@ -58,7 +58,7 @@
 #include "dvd_input.h"
 #include "dvdread_internal.h"
 #include "md5.h"
-#include "dvdread/ifo_read.h"
+#include "ifo_read.h"
 #include "dvd_iso9660.h"
 
 #define DEFAULT_UDF_CACHE_LEVEL 1
