@@ -81,7 +81,6 @@ int CAndroidFeatures::GetActualCPUCount()
   if (count == -1)
   {
     count = android_getCpuCount();
-#if !defined (__aarch64__)
     if (StringUtils::StartsWith(CJNIBuild::MODEL, "AFTS") &&
         StringUtils::StartsWithNoCase(CJNIBuild::MANUFACTURER, "Amazon"))
     {
@@ -90,7 +89,6 @@ int CAndroidFeatures::GetActualCPUCount()
       // but there are really only two A7s when built as 32 bit
       count = 2;
     }
-#endif
   }
   return count;
 }
