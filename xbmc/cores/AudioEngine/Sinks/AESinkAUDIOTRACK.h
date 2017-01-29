@@ -57,8 +57,6 @@ protected:
   static bool           IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
 
 private:
-          void          GetDelaySDK22   (AEDelayStatus& status);
-          void          GetDelaySDK23   (AEDelayStatus& status);
   double                GetPresentedDelay();
   uint64_t              GetPlaybackHeadPosition();
   // Moving Average computes the weighted average delay over
