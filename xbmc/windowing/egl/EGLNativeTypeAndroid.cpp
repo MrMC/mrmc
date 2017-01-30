@@ -81,10 +81,22 @@ void CEGLNativeTypeAndroid::Initialize()
         }
         else
         {
-          m_width = display.getWidth();
-          m_height = display.getHeight();
-          CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: current display: %dx%d@%f",
-            m_width, m_height, display.getRefreshRate());
+          if (CAndroidFeatures::HasTouchScreen())
+          {
+            // if touchscreen device, video surface will be same size as display
+            CJNIRect rect = CXBMCApp::get()->getVideoViewSurfaceRect();
+            m_width = rect.width();
+            m_height = rect.height();
+            CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: current display1: %dx%d@%f",
+              m_width, m_height, CXBMCApp::getWindowManager().getDefaultDisplay().getRefreshRate());
+          }
+          else
+          {
+            m_width = display.getWidth();
+            m_height = display.getHeight();
+            CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: current display2: %dx%d@%f",
+              m_width, m_height, display.getRefreshRate());
+          }
         }
       }
     }
@@ -105,7 +117,7 @@ void CEGLNativeTypeAndroid::Initialize()
       CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: sys.display-size reports: %s(%dx%d)", displaySize.c_str(), m_width, m_height);
     }
   }
-
+/*
   CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: maximum/current resolution: %dx%d", m_width, m_height);
   int limit = CSettings::GetInstance().GetInt("videoscreen.limitgui");
   switch (limit)
@@ -135,6 +147,7 @@ void CEGLNativeTypeAndroid::Initialize()
       break;
   }
   CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: selected limitgui resolution: %dx%d", m_width, m_height);
+*/
 }
 
 void CEGLNativeTypeAndroid::Destroy()
@@ -223,6 +236,7 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
 
   if (!m_width || !m_height)
   {
+    CLog::Log(LOGDEBUG, "Using ANativeWindow_getWidth, ANativeWindow_getHeight");
     ANativeWindow_acquire(*nativeWindow);
     res->iWidth = ANativeWindow_getWidth(*nativeWindow);
     res->iHeight= ANativeWindow_getHeight(*nativeWindow);
@@ -244,7 +258,7 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
   res->iScreenHeight = res->iHeight;
   res->strMode       = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
                                            res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-  CLog::Log(LOGNOTICE,"CEGLNativeTypeAndroid: GetNativeResolution: %s\n",res->strMode.c_str());
+  CLog::Log(LOGNOTICE,"CEGLNativeTypeAndroid: GetNativeResolution: %s",res->strMode.c_str());
   return true;
 }
 
@@ -282,9 +296,20 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
       }
       else
       {
-        m_width = display.getWidth();
-        m_height = display.getHeight();
+        if (CAndroidFeatures::HasTouchScreen())
+        {
+          // if touchscreen device, video surface will be same size as display
+          CJNIRect rect = CXBMCApp::get()->getVideoViewSurfaceRect();
+          m_width = rect.width();
+          m_height = rect.height();
+        }
+        else
+        {
+          m_width = display.getWidth();
+          m_height = display.getHeight();
+        }
       }
+      CLog::Log(LOGNOTICE,"CEGLNativeTypeAndroid: SetNativeResolution: %dx%d", m_width, m_height);
       CXBMCApp::SetBuffersGeometry(m_width, m_height, 0);
     }
   }
