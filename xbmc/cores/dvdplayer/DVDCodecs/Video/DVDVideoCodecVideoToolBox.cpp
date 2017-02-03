@@ -599,7 +599,10 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         // use a bitstream converter for all flavors
         m_bitstream = new CBitstreamConverter;
         if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
+        {
+          SAFE_DELETE(m_bitstream);
           return false;
+        }
         m_fmt_desc = CreateFormatDescriptionFromCodecData(
           kVTFormatH265, width, height, (uint8_t*)hints.extradata, hints.extrasize, false);
         m_pFormatName = "vtb-h265";
@@ -617,7 +620,10 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           // even avcC with silly 3-byte nals are covered.
           m_bitstream = new CBitstreamConverter;
           if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
+          {
+            SAFE_DELETE(m_bitstream);
             return false;
+          }
 
           if (m_bitstream->GetExtraSize() < 8)
           {
