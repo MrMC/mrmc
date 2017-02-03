@@ -12,7 +12,7 @@ ffmpg_config += --cc=$(CC) --cxx=$(CXX) --ar=$(AR) --ranlib=$(RANLIB)
 ffmpg_config += --disable-devices --disable-doc
 ffmpg_config += --disable-ffplay --disable-ffmpeg --disable-sdl
 ffmpg_config += --disable-ffprobe --disable-ffserver
-ffmpg_config += --enable-gpl --disable-runtime-cpudetect
+ffmpg_config += --enable-gpl --enable-runtime-cpudetect
 ffmpg_config += --enable-postproc --enable-pthreads
 ffmpg_config += --enable-muxer=spdif --enable-muxer=adts
 ffmpg_config += --enable-muxer=asf --enable-muxer=ipod
