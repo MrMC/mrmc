@@ -18,11 +18,13 @@
  *
  */
 
+#include <limits.h>
+
 #include "DVDInputStreamFFmpeg.h"
 #include "playlists/PlayListM3U.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
-#include <limits.h>
+#include "URL.h"
 
 using namespace XFILE;
 
@@ -60,8 +62,8 @@ bool CDVDInputStreamFFmpeg::Open()
     selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(m_item.GetPath(), bandwidth);
     if (selected.compare(m_item.GetPath()) != 0)
     {
-      CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", selected.c_str());
       m_item.SetPath(selected.c_str());
+      CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", CURL::GetRedacted(m_item.GetPath()).c_str());
     }
   }
 
