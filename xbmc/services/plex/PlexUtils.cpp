@@ -1831,6 +1831,7 @@ bool CPlexUtils::GetURL(CFileItem &item)
   curl.SetOption("hasMDE", "1");
   curl.SetOption("maxVideoBitrate", maxBitrate);
   curl.SetOption("protocol", "hls");
+  curl.SetOption("secondsPerSegment", "10");
   curl.SetOption("session", uuidStr);
   curl.SetOption("offset", "0");
   curl.SetOption("videoQuality", "100");
