@@ -470,7 +470,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
       // valid avcC data (bitstream) always starts with the value 1 (version)
       if(m_to_annexb)
       {
-        if ( in_extradata[0] == 1 )
+        if (in_extradata[0] == 1)
         {
           CLog::Log(LOGINFO, "CBitstreamConverter::Open bitstream to annexb init");
           m_extrasize = in_extrasize;
@@ -479,16 +479,20 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
           m_convert_bitstream = BitstreamConvertInitAVC(m_extradata, m_extrasize);
           return true;
         }
-        else
-          CLog::Log(LOGINFO, "CBitstreamConverter::Open Invalid avcC");
+        else if ((in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 0 && in_extradata[3] == 1) ||
+                 (in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 1))
+        {
+          CLog::Log(LOGINFO, "CBitstreamConverter::Open valid annexb");
+          return true;
+        }
       }
       else
       {
         // valid avcC atom data always starts with the value 1 (version)
-        if ( in_extradata[0] != 1 )
+        if (in_extradata[0] != 1)
         {
-          if ( (in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 0 && in_extradata[3] == 1) ||
-               (in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 1) )
+          if ((in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 0 && in_extradata[3] == 1) ||
+              (in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 1))
           {
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init");
             // video content is from x264 or from bytestream h264 (AnnexB format)
