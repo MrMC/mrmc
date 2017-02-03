@@ -42,14 +42,14 @@
 CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
  : m_hasAlpha( true )
 {
-  m_pixels = NULL;
+  m_pixels = nullptr;
   m_loadedToGPU = false;
   Allocate(width, height, format);
 }
 
 CBaseTexture::~CBaseTexture()
 {
-  delete[] m_pixels;
+  SAFE_DELETE_ARRAY(m_pixels);
 }
 
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
@@ -98,11 +98,13 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   CLAMP(m_imageWidth, m_textureWidth);
   CLAMP(m_imageHeight, m_textureHeight);
 
-  delete[] m_pixels;
-  m_pixels = NULL;
+  SAFE_DELETE_ARRAY(m_pixels);
   if (GetPitch() * GetRows() > 0)
   {
-    m_pixels = new unsigned char[GetPitch() * GetRows()];
+    size_t size = GetPitch() * GetRows();
+    m_pixels = new unsigned char[size];
+    if (m_pixels == nullptr)
+      CLog::Log(LOGERROR, "%s - Could not allocate %zu bytes. Out of memory.", __FUNCTION__, size);
   }
 }
 
@@ -119,6 +121,9 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
   else
   {
     Allocate(width, height, format);
+
+    if (m_pixels == nullptr)
+      return;
 
     unsigned int srcPitch = pitch ? pitch : GetPitch(width);
     unsigned int srcRows = GetRows(height);
@@ -147,6 +152,9 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
 
 void CBaseTexture::ClampToEdge()
 {
+  if (m_pixels == nullptr)
+    return;
+
   unsigned int imagePitch = GetPitch(m_imageWidth);
   unsigned int imageRows = GetRows(m_imageHeight);
   unsigned int texturePitch = GetPitch(m_textureWidth);
