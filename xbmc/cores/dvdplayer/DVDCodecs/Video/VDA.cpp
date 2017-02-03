@@ -198,7 +198,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
 
   switch(avctx->profile)
   {
-    case FF_PROFILE_H264_HIGH_10:
+    //case FF_PROFILE_H264_HIGH_10:
     case FF_PROFILE_H264_HIGH_10_INTRA:
     case FF_PROFILE_H264_HIGH_422:
     case FF_PROFILE_H264_HIGH_422_INTRA:

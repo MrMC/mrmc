@@ -187,7 +187,7 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 
     switch(hints.profile)
     {
-      case FF_PROFILE_H264_HIGH_10:
+      //case FF_PROFILE_H264_HIGH_10:
       case FF_PROFILE_H264_HIGH_10_INTRA:
       case FF_PROFILE_H264_HIGH_422:
       case FF_PROFILE_H264_HIGH_422_INTRA:

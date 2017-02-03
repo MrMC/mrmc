@@ -557,7 +557,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 
     switch(profile)
     {
-      case FF_PROFILE_H264_HIGH_10:
+      //case FF_PROFILE_H264_HIGH_10:
       case FF_PROFILE_H264_HIGH_10_INTRA:
       case FF_PROFILE_H264_HIGH_422:
       case FF_PROFILE_H264_HIGH_422_INTRA:
