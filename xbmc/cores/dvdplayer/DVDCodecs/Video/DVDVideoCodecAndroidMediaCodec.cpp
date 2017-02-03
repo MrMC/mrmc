@@ -406,7 +406,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
-      if (hints.maybe_interlaced && CAndroidFeatures::IsFireTVDevice())
+      if (hints.maybe_interlaced)
       {
         CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - possible interlaced h264");
         return false;
@@ -421,13 +421,14 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
       m_mime = "video/avc";
       m_formatname = "amc-h264";
-      // check for h264-avcC and convert to h264-annex-b
+      // check for h264-avcC and convert to h264-annex-b if needed
       if (m_hints.extradata)
       {
         m_bitstream = new CBitstreamConverter;
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
         {
           SAFE_DELETE(m_bitstream);
+          return false;
         }
       }
       else
