@@ -1965,7 +1965,8 @@ void CDVDPlayer::HandlePlaySpeed()
                  (m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold);
 
     if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
-        m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT)
+        (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT ||
+         m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC))
     {
       m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
@@ -2035,7 +2036,7 @@ void CDVDPlayer::HandlePlaySpeed()
       // 1. videoplayer has not detected a keyframe within lenght of demux buffers
       if (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0 &&
           !m_dvdPlayerAudio->AcceptsData() &&
-          //breaks dvd iso playback m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_STARTING &&
+          m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_STARTING &&
           m_dvdPlayerVideo->IsStalled())
       {
         CLog::Log(LOGWARNING, "CDVDPlayer::Sync - stream player video does not start, flushing buffers");
