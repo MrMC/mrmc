@@ -735,7 +735,10 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     demux_pkt.pData = (uint8_t*)malloc(iSize);
     memcpy(demux_pkt.pData, pData, iSize);
     m_demux.push(demux_pkt);
+  }
 
+  if (!m_demux.empty())
+  {
     // try to fetch an input buffer
     int64_t timeout_us = 5000;
     int index = m_codec->dequeueInputBuffer(timeout_us);
@@ -756,7 +759,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
       amc_demux &demux_pkt = m_demux.front();
       if (demux_pkt.iSize > size)
       {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode, iSize(%d) > size(%d)", iSize, size);
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode, iSize(%d) > size(%d)", demux_pkt.iSize, size);
         demux_pkt.iSize = size;
       }
       // fetch a pointer to the ByteBuffer backing store
@@ -768,11 +771,11 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         {
           case AV_CODEC_ID_VC1:
           {
-            if (iSize >= 4 &&
-                pData[0] == 0x00 &&
-                pData[1] == 0x00 &&
-                pData[2] == 0x01 &&
-               (pData[3] == 0x0d || pData[3] == 0x0f))
+            if (demux_pkt.iSize >= 4 &&
+                demux_pkt.pData[0] == 0x00 &&
+                demux_pkt.pData[1] == 0x00 &&
+                demux_pkt.pData[2] == 0x01 &&
+               (demux_pkt.pData[3] == 0x0d || demux_pkt.pData[3] == 0x0f))
               memcpy(dst_ptr, demux_pkt.pData, demux_pkt.iSize);
             else
             {
@@ -781,7 +784,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
               dst_ptr[2] = 0x01;
               dst_ptr[3] = 0x0d;
               memcpy(dst_ptr+4, demux_pkt.pData, demux_pkt.iSize);
-              iSize += 4;
+              demux_pkt.iSize += 4;
             }
             break;
           }
@@ -806,7 +809,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         presentationTimeUs = demux_pkt.dts;
 /*
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
-        "pts(%lld), iSize(%d)", presentationTimeUs, iSize);
+        "pts(%lld), demux_pkt.iSize(%d)", presentationTimeUs, demux_pkt.iSize);
 */
       int flags = 0;
       int offset = 0;
@@ -827,9 +830,8 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     rtn |= VC_BUFFER;
 /*
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Decode, "
-    "rtn(%d), m_demux.size(%d)", rtn, m_demux.size());
+    "rtn(%d), m_demux.size(%ld)", rtn, m_demux.size());
 */
-
   return rtn;
 }
 
