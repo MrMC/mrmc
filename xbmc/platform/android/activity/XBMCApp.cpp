@@ -281,7 +281,7 @@ void CXBMCApp::onPause()
       m_wasPlayingVideoWhenPaused = true;
       // get the current playing time but backup a little, it looks better
       m_wasPlayingVideoWhenPausedTime = g_application.GetTime() - 1.50;
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
     }
     else
       registerMediaButtonEventReceiver();
@@ -550,7 +550,7 @@ bool CXBMCApp::XBMC_SetupDisplay()
 {
   android_printf("XBMC_SetupDisplay()");
   bool result;
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_DISPLAY_SETUP, -1, -1, static_cast<void*>(&result));
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DISPLAY_SETUP, -1, -1, static_cast<void*>(&result));
   return result;
 }
 
@@ -558,7 +558,7 @@ bool CXBMCApp::XBMC_DestroyDisplay()
 {
   android_printf("XBMC_DestroyDisplay()");
   bool result;
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_DISPLAY_DESTROY, -1, -1, static_cast<void*>(&result));
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DISPLAY_DESTROY, -1, -1, static_cast<void*>(&result));
   return result;
 }
 
@@ -961,7 +961,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   else if (action == "android.intent.action.SCREEN_OFF")
   {
     if (g_application.m_pPlayer->IsPlayingVideo())
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
   }
   else if (action == "android.intent.action.HEADSET_PLUG" || action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
   {
@@ -1186,7 +1186,7 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
         m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT)
     {
       if (m_wasPlayingWhenTransientLoss && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
       m_wasPlayingWhenTransientLoss = false;
     }
   }
@@ -1198,7 +1198,7 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
 
     if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
       m_wasPlayingWhenTransientLoss = true;
     }
   }
