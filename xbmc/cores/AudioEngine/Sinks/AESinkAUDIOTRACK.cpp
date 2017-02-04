@@ -400,10 +400,10 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     }
     else
     {
+      m_sink_bufferSize *= 2;
       m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
       m_format.m_frames = (m_sink_bufferSize / m_format.m_frameSize) / 2;
       m_sink_frameSize = m_format.m_frameSize;
-      m_sink_bufferSize *= 2;
       m_sink_sleepOnWriteStall = (double) m_format.m_frames / m_sink_frameSize / 2.0 / (double) m_format.m_sampleRate * 1000;
     }
 
