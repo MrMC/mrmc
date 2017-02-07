@@ -602,6 +602,11 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
           srcRect.x2 *= 2.0;
         break;
 
+        case RENDER_STEREO_MODE_MONO:
+          dstRect.y2 = dstRect.y2 * (dstRect.y2 / m_sourceRect.y2);
+          dstRect.x2 = dstRect.x2 * (dstRect.x2 / m_sourceRect.x2);
+        break;
+
         default:
         break;
       }
@@ -659,6 +664,11 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
         case RENDER_STEREO_MODE_SPLIT_VERTICAL:
           dstRect.x2 *= 2.0;
           srcRect.x2 *= 2.0;
+        break;
+
+        case RENDER_STEREO_MODE_MONO:
+          dstRect.y2 = dstRect.y2 * (dstRect.y2 / m_sourceRect.y2);
+          dstRect.x2 = dstRect.x2 * (dstRect.x2 / m_sourceRect.x2);
         break;
 
         default:
