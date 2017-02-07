@@ -381,8 +381,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
-        CFileItemPtr newItem = std::static_pointer_cast<CFileItem>(message.GetItem());
-        if (IsActive())
+        CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
+        if (newItem && IsActive())
         {
           if (m_vecItems->UpdateItem(newItem.get()) && message.GetParam2() == 1)
           { // need the list updated as well

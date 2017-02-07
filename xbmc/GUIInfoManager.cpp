@@ -151,7 +151,7 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
     if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
     {
       CFileItemPtr item = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
-      if (m_currentFile->IsSamePath(item.get()))
+      if (item && m_currentFile->IsSamePath(item.get()))
       {
         m_currentFile->UpdateInfo(*item);
         return true;

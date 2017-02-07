@@ -287,22 +287,25 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
 
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
-  CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
-  std::string target = fileItem.GetProperty("node.target").asString();
-  if (target.empty())
-    target = m_currentTarget;
-  if (target.empty())
-    target = m_target.GetLabel(m_parentID, false);
-  if (fileItem.HasProperty("node.target_url"))
-    fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
-  // grab the execute string
-  std::string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
-  if (!execute.empty())
+  if (item->IsFileItem())
   {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
-    message.SetStringParam(execute);
-    g_windowManager.SendMessage(message);
-    return true;
+    CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
+    std::string target = fileItem.GetProperty("node.target").asString();
+    if (target.empty())
+      target = m_currentTarget;
+    if (target.empty())
+      target = m_target.GetLabel(m_parentID, false);
+    if (fileItem.HasProperty("node.target_url"))
+      fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
+    // grab the execute string
+    std::string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
+    if (!execute.empty())
+    {
+      CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
+      message.SetStringParam(execute);
+      g_windowManager.SendMessage(message);
+      return true;
+    }
   }
   return false;
 }
