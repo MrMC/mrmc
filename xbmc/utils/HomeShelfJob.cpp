@@ -72,6 +72,8 @@ bool CHomeShelfJob::UpdateVideo()
 
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateVideos() - Running HomeShelf screen update");
 
+  CSingleLock lock(m_critsection);
+
   CVideoDatabase videodatabase;
   videodatabase.Open();
   CFileItemList homeShelfTV;
@@ -195,6 +197,8 @@ bool CHomeShelfJob::UpdateMusic()
 {
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateMusic() - Running HomeShelf screen update");
 
+  CSingleLock lock(m_critsection);
+
   CMusicDatabase musicdatabase;
   musicdatabase.Open();
   if (musicdatabase.HasContent())
@@ -304,6 +308,35 @@ bool CHomeShelfJob::UpdateTotal()
   return true;
 }
 
+void CHomeShelfJob::UpdateTvItems(CFileItemList *list)
+{
+  CSingleLock lock(m_critsection);
+  list->Assign(*m_HomeShelfTV);
+}
+
+void CHomeShelfJob::UpdateMovieItems(CFileItemList *list)
+{
+  CSingleLock lock(m_critsection);
+  list->Assign(*m_HomeShelfMovies);
+}
+
+void CHomeShelfJob::UpdateMusicSongItems(CFileItemList *list)
+{
+  CSingleLock lock(m_critsection);
+  list->Assign(*m_HomeShelfMusicSongs);
+}
+
+void CHomeShelfJob::UpdateMusicAlbumItems(CFileItemList *list)
+{
+  CSingleLock lock(m_critsection);
+  list->Assign(*m_HomeShelfMusicAlbums);
+}
+
+void CHomeShelfJob::UpdateMusicVideoItems(CFileItemList *list)
+{
+  CSingleLock lock(m_critsection);
+  list->Assign(*m_HomeShelfMusicVideos);
+}
 
 bool CHomeShelfJob::DoWork()
 {

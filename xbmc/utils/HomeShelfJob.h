@@ -37,17 +37,18 @@ public:
   bool UpdateVideo();
   bool UpdateMusic();
   bool UpdateTotal();
-  const CFileItemList *GetMovieItems() const { return m_HomeShelfMovies; };
-  const CFileItemList *GetMusicSongItems() const { return m_HomeShelfMusicSongs; };
-  const CFileItemList *GetMusicAlbumItems() const { return m_HomeShelfMusicAlbums; };
-  const CFileItemList *GetMusicVideoItems() const { return m_HomeShelfMusicVideos; };
-  const CFileItemList *GetTvItems() const { return m_HomeShelfTV; };
+  void UpdateTvItems(CFileItemList *list);
+  void UpdateMovieItems(CFileItemList *list);
+  void UpdateMusicSongItems(CFileItemList *list);
+  void UpdateMusicAlbumItems(CFileItemList *list);
+  void UpdateMusicVideoItems(CFileItemList *list);
   const int GetFlag() const { return m_flag; };
 
   virtual bool DoWork();
 
 private:
   int m_flag;
+  CCriticalSection m_critsection;
   CFileItemList *m_HomeShelfTV;
   CFileItemList *m_HomeShelfMovies;
   CFileItemList *m_HomeShelfMusicAlbums;

@@ -20,6 +20,8 @@
  *
  */
 
+#include <atomic>
+
 #include "guilib/GUIWindow.h"
 #include "interfaces/IAnnouncer.h"
 #include "utils/Job.h"
@@ -44,8 +46,8 @@ private:
   int m_updateHS; // flag for which home shelf items needs to be queried
   void AddHomeShelfJobs(int flag);
   bool PlayHomeShelfItem(CFileItem itemPtr);
-  bool m_HomeShelfRunning;
-  int m_cumulativeUpdateFlag;
+  std::atomic<bool> m_HomeShelfRunning;
+  std::atomic<int> m_cumulativeUpdateFlag;
   int m_countBackCalled;
   CCriticalSection             m_critsection;
   CFileItemList*               m_HomeShelfTV;

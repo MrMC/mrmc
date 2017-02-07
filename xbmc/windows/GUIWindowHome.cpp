@@ -57,12 +57,13 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
   m_updateHS = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
   
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
   m_HomeShelfTV = new CFileItemList;
   m_HomeShelfMovies = new CFileItemList;
   m_HomeShelfMusicAlbums = new CFileItemList;
   m_HomeShelfMusicSongs = new CFileItemList;
   m_HomeShelfMusicVideos = new CFileItemList;
+
+  CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -196,11 +197,10 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     // the job is finished.
     // did one come in in the meantime?
     flag = m_cumulativeUpdateFlag;
-    m_HomeShelfRunning = false; /// we're done.
   }
 
   int jobFlag = ((CHomeShelfJob *)job)->GetFlag();
-  
+
   if (flag)
     AddHomeShelfJobs(0 /* the flag will be set inside AddHomeShelfJobs via m_cumulativeUpdateFlag */ );
   else if(jobFlag != Totals)
@@ -209,31 +209,30 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   if (jobFlag & Video)
   {
     CSingleLock lock(m_critsection);
-    CFileItemList HomeShelfTV;
-    HomeShelfTV.Copy(*((CHomeShelfJob *)job)->GetTvItems());
-    m_HomeShelfTV->Assign(HomeShelfTV);
 
-    CFileItemList HomeShelfMovies;
-    HomeShelfMovies.Copy(*((CHomeShelfJob *)job)->GetMovieItems());
-    m_HomeShelfMovies->Assign(HomeShelfMovies);
-
-    CGUIMessage messageMovie(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIES, 0, 0, m_HomeShelfMovies);
-    OnMessage(messageMovie);
+    ((CHomeShelfJob *)job)->UpdateTvItems(m_HomeShelfTV);
     CGUIMessage messageTV(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWS, 0, 0, m_HomeShelfTV);
-    OnMessage(messageTV);
+    g_windowManager.SendThreadMessage(messageTV);
+
+    ((CHomeShelfJob *)job)->UpdateMovieItems(m_HomeShelfMovies);
+    CGUIMessage messageMovie(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIES, 0, 0, m_HomeShelfMovies);
+    g_windowManager.SendThreadMessage(messageMovie);
   }
+
   if (jobFlag & Audio)
   {
     CSingleLock lock(m_critsection);
-    CFileItemList HomeShelfMusicAlbums;
-    HomeShelfMusicAlbums.Copy(*((CHomeShelfJob *)job)->GetMusicAlbumItems());
-    m_HomeShelfMusicAlbums->Assign(HomeShelfMusicAlbums);
 
+    ((CHomeShelfJob *)job)->UpdateMusicAlbumItems(m_HomeShelfMusicAlbums);
     CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMUSICALBUMS, 0, 0, m_HomeShelfMusicAlbums);
-    OnMessage(messageAlbums);
+    g_windowManager.SendThreadMessage(messageAlbums);
+  }
+
+  {
+    CSingleLock lockMe(*this);
+    m_HomeShelfRunning = false; /// we're done.
   }
 }
-
 
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {
@@ -252,9 +251,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     }
     else if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
     {
-      CFileItemPtr newItem = std::static_pointer_cast<CFileItem>(message.GetItem());
-      if (IsActive())
+      CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
+      if (newItem && IsActive())
       {
+        CSingleLock lock(m_critsection);
         if (newItem->GetVideoInfoTag()->m_type == MediaTypeMovie)
           m_HomeShelfMovies->UpdateItem(newItem.get());
         else
@@ -275,6 +275,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMOVIES);
       OnMessage(msg);
 
+      CSingleLock lock(m_critsection);
+
       int item = msg.GetParam1();
       if (item >= 0 && item < m_HomeShelfMovies->Size())
       {
@@ -288,6 +290,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFTVSHOWS);
       OnMessage(msg);
 
+      CSingleLock lock(m_critsection);
+
       int item = msg.GetParam1();
       if (item >= 0 && item < m_HomeShelfTV->Size())
       {
@@ -300,6 +304,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMUSICALBUMS);
       OnMessage(msg);
+
+      CSingleLock lock(m_critsection);
 
       int item = msg.GetParam1();
       if (item >= 0 && item < m_HomeShelfMusicAlbums->Size())
