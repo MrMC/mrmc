@@ -125,6 +125,9 @@ void CSMB::Init()
     char smb_conf[MAX_PATH];
     std::string home = CSpecialProtocol::TranslatePath("special://home");
     URIUtils::RemoveSlashAtEnd(home);
+    // patched in samba, replace getenv("HOME") with getenv("LIBSMBCLIENT_CONF_HOME")
+    // to make sure that we are fetching smb.conf from the desired place.
+    setenv("LIBSMBCLIENT_CONF_HOME", home.c_str(), 1);
 
     snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", home.c_str());
     int ret = mkdir(smb_conf, 0755);

@@ -85,6 +85,7 @@ ifeq ($(NATIVE_OS),osx)
 	sed -ie "s|fork()|-1|" "$(PLATFORM)/source/lib/sock_exec.c"
 	sed -ie "s|system(prog)|-1|" "$(PLATFORM)/source/lib/sock_exec.c"
 endif
+	sed -ie "s|"HOME"|"LIBSMBCLIENT_CONF_HOME"|" "$(PLATFORM)/source/libsmb/libsmbclient.c"
 	cd $(PLATFORM)/source && ./autogen.sh
 	cd $(PLATFORM)/source; $(CONFIGURE)
 
