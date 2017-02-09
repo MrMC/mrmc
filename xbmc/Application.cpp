@@ -960,6 +960,18 @@ void CApplication::CreateUserDirs()
   CDirectory::Create("special://temp/");
   CDirectory::Create("special://logs");
   CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
+
+  // purge any *.fi archive files in the temp directory on startup
+  // they might be stale depending if any archiving formats have changed.
+  CFileItemList fiFiles;
+  int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
+  CDirectory::GetDirectory("special://temp", fiFiles, ".fi", flags);
+  for (int i = 0; i < fiFiles.Size(); ++i)
+  {
+    // we still get directories even passig extension filter, WTF ?
+    if (!fiFiles[i]->m_bIsFolder)
+      CFile::Delete( fiFiles[i]->GetPath() );
+  }
 }
 
 bool CApplication::Initialize()
