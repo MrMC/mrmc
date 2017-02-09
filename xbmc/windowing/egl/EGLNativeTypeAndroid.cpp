@@ -310,7 +310,9 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
         }
       }
       CLog::Log(LOGNOTICE,"CEGLNativeTypeAndroid: SetNativeResolution: %dx%d", m_width, m_height);
-      CXBMCApp::SetBuffersGeometry(m_width, m_height, 0);
+      EGLNativeWindowType *nativeWindow = (EGLNativeWindowType*)CXBMCApp::GetNativeWindow(30000);
+      if (nativeWindow)
+        CXBMCApp::SetBuffersGeometry(m_width, m_height, 0);
     }
   }
 
