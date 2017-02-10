@@ -30,12 +30,6 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libass.la $(PREFIX)/lib/libass.so $(PREFIX)/lib/libass.so.5
-	mv -f $(PREFIX)/lib/libass.so.5.1.0 $(PREFIX)/lib/libass.so
-	$(RPL) -e "libass.so.5" "libass.so\x00\x00" $(PREFIX)/lib/libass.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libass.so | grep ibrary
-endif
 	touch $@
 
 clean:
