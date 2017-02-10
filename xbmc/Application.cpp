@@ -2874,19 +2874,6 @@ void CApplication::Stop(int exitCode)
     g_RarManager.ClearCache(true);
 #endif
 
-#ifdef HAS_FILESYSTEM_SFTP
-    CSFTPSessionManager::DisconnectAllSessions();
-#endif
-
-#if defined(HAS_FILESYSTEM_SMB)
-    smb.Deinit();
-    smb.UnLoad();
-#endif
-
-#if defined(HAS_FILESYSTEM_DSM)
-    CDSMSessionManager::Disconnect();
-#endif
-
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
@@ -2908,6 +2895,8 @@ void CApplication::Stop(int exitCode)
     // not before some windows still need it when deinitializing during skin
     // unloading
     CScriptInvocationManager::GetInstance().Uninitialize();
+
+    CloseNetworkShares();
 
     g_Windowing.DestroyRenderSystem();
     g_Windowing.DestroyWindow();
@@ -5155,6 +5144,7 @@ void CApplication::CloseNetworkShares()
 
 #if defined(HAS_FILESYSTEM_SMB)
   smb.Deinit();
+  smb.UnLoad();
 #endif
   
 #if defined(HAS_FILESYSTEM_DSM)
