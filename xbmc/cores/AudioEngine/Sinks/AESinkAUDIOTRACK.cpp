@@ -236,7 +236,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   int stream = CJNIAudioManager::STREAM_MUSIC;
 
   // Get equal or lower supported sample rate
-  uint32_t distance = 192000; // max upper distance
+  uint32_t distance = UINT32_MAX; // max upper distance, update at least ones to use one of our samplerates
   for (auto& s : m_sink_sampleRates)
   {
     // prefer best match or alternatively something that divides nicely and is not too far away
@@ -829,7 +829,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
 
     // check sample rate capabilities
-    int test_sample[] = { 32000, 44100, 48000, 96000, 192000 };
+    int test_sample[] = { 32000, 44100, 48000, 88200, 96000, 176400, 192000 };
     int test_sample_sz = sizeof(test_sample) / sizeof(int);
     for (int i = 0; i < test_sample_sz; ++i)
     {
