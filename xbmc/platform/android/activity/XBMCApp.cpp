@@ -550,7 +550,7 @@ bool CXBMCApp::XBMC_SetupDisplay()
 {
   android_printf("XBMC_SetupDisplay()");
   bool result;
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_DISPLAY_SETUP, -1, -1, static_cast<void*>(&result));
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_DISPLAY_SETUP, -1, -1, static_cast<void*>(&result));
   return result;
 }
 
@@ -558,7 +558,7 @@ bool CXBMCApp::XBMC_DestroyDisplay()
 {
   android_printf("XBMC_DestroyDisplay()");
   bool result;
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_DISPLAY_DESTROY, -1, -1, static_cast<void*>(&result));
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_DISPLAY_DESTROY, -1, -1, static_cast<void*>(&result));
   return result;
 }
 
@@ -701,9 +701,12 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   float scaleY = 1.0;
 
   CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
-  RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-  scaleX = (double)r.width() / renderRes.iWidth;
-  scaleY = (double)r.height() / renderRes.iHeight;
+  if (r.width() && r.height())
+  {
+    RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+    scaleX = (double)r.width() / renderRes.iWidth;
+    scaleY = (double)r.height() / renderRes.iHeight;
+  }
 
   return CRect(srcRect.x1 * scaleX, srcRect.y1 * scaleY, srcRect.x2 * scaleX, srcRect.y2 * scaleY);
 }
@@ -714,9 +717,12 @@ CPoint CXBMCApp::GetDroidToGuiRatio()
   float scaleY = 1.0;
 
   CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
-  CRect gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
-  scaleX = gui.Width() / (double)r.width();
-  scaleY = gui.Height() / (double)r.height();
+  if (r.width() && r.height())
+  {
+    CRect gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
+    scaleX = gui.Width() / (double)r.width();
+    scaleY = gui.Height() / (double)r.height();
+  }
 
   return CPoint(scaleX, scaleY);
 }
