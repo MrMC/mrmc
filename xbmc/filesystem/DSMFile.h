@@ -112,5 +112,6 @@ namespace XFILE
     std::unique_ptr<CDSMSession> m_dsmSession;
     smb_fd          m_smb_fd;
     int64_t         m_fileSize;
+    int64_t         m_maxReadBytes;
   };
 }

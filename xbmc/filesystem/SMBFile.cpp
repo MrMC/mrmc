@@ -337,6 +337,7 @@ CSMBFile::CSMBFile()
 {
   smb.Init();
   m_fd = -1;
+  m_maxReadBytes = 0;
   smb.AddActiveConnection();
 }
 
@@ -546,15 +547,6 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
 
   smb.SetActivityTime();
-  /* work around stupid bug in samba */
-  /* some samba servers has a bug in it where the */
-  /* 17th bit will be ignored in a request of data */
-  /* this can lead to a very small return of data */
-  /* also worse, a request of exactly 64k will return */
-  /* as if eof, client has a workaround for windows */
-  /* thou it seems other servers are affected too */
-  if (uiBufSize >= 64*1024-2)
-    uiBufSize = 64*1024-2;
 
   ssize_t bytesRead = smb.GetImpl()->smbc_read(m_fd, lpBuf, (int)uiBufSize);
   if (bytesRead < 0 && errno == EINVAL)
@@ -565,6 +557,12 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
 
   if (bytesRead < 0)
     CLog::Log(LOGERROR, "%s - Error( %" PRIdS ", %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
+
+  if (bytesRead > m_maxReadBytes)
+  {
+    m_maxReadBytes = bytesRead;
+    CLog::Log(LOGDEBUG, "%s - max read bytes = %lld", __FUNCTION__, m_maxReadBytes);
+  }
 
   return bytesRead;
 }

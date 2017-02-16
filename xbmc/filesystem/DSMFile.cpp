@@ -929,6 +929,7 @@ CDSMFile::CDSMFile()
 : m_dsmSession(nullptr)
 , m_smb_fd(0)
 , m_fileSize(0)
+, m_maxReadBytes(0)
 {
 }
 
@@ -1028,17 +1029,6 @@ ssize_t CDSMFile::Read(void* lpBuf, size_t uiBufSize)
   if (uiBufSize == 0 && lpBuf == nullptr)
     return 0;
 
-  // TODO: check this for libdsm, might not be needed
-  // work around stupid bug in samba
-  // some samba servers has a bug in it where the
-  // 17th bit will be ignored in a request of data
-  // this can lead to a very small return of data
-  // also worse, a request of exactly 64k will return
-  // as if eof, client has a workaround for windows
-  // thou it seems other servers are affected too
-  if (uiBufSize >= 64*1024-2)
-    uiBufSize = 64*1024-2;
-
   if (m_dsmSession && m_smb_fd)
   {
     if (uiBufSize > SSIZE_MAX)
@@ -1046,7 +1036,14 @@ ssize_t CDSMFile::Read(void* lpBuf, size_t uiBufSize)
 
     int rc = m_dsmSession->Read(m_smb_fd, lpBuf, uiBufSize);
     if (rc >= 0)
+    {
+      if (rc > m_maxReadBytes)
+      {
+        m_maxReadBytes = rc;
+        CLog::Log(LOGDEBUG, "%s - max read bytes = %lld", __FUNCTION__, m_maxReadBytes);
+      }
       return rc;
+    }
     else
     {
       CLog::Log(LOGERROR, "CDSMFile: Read failed - Retrying");
