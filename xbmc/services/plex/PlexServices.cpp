@@ -116,7 +116,7 @@ CPlexServices::CPlexServices()
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 
   m_plextv.SetTimeout(10);
-  m_plextv.SetBufferSize(32768*10);
+  //m_plextv.SetBufferSize(32768*10);
 }
 
 CPlexServices::~CPlexServices()
@@ -1035,7 +1035,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
   std::string strMessage;
   XFILE::CCurlFile plex;
   plex.SetTimeout(10);
-  plex.SetBufferSize(32768*10);
+  //plex.SetBufferSize(32768*10);
   CPlexUtils::GetDefaultHeaders(plex);
   if (MyPlexSignedIn())
     plex.SetRequestHeader("X-Plex-Token", m_authToken);

@@ -289,7 +289,7 @@ bool CPlexClient::ParseSections(PlexSectionParsing parser)
 {
   bool rtn = false;
   XFILE::CCurlFile plex;
-  plex.SetBufferSize(32768*10);
+  //plex.SetBufferSize(32768*10);
   plex.SetTimeout(10);
 
   CURL curl(m_url);

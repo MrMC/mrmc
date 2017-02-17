@@ -133,7 +133,7 @@ TiXmlDocument CPlexUtils::GetPlexXML(std::string url, std::string filter)
 {
   std::string strXML;
   XFILE::CCurlFile http;
-  http.SetBufferSize(32768*10);
+  //http.SetBufferSize(32768*10);
   http.SetRequestHeader("Accept-Encoding", "gzip");
   GetDefaultHeaders(http);
 
@@ -818,7 +818,7 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
   CURL url2(url);
   std::string strXML;
   XFILE::CCurlFile http;
-  http.SetBufferSize(32768*10);
+  //http.SetBufferSize(32768*10);
   http.SetRequestHeader("Accept-Encoding", "gzip");
 
   url2.SetFileName(url2.GetFileName() + "recentlyAdded");
@@ -859,7 +859,7 @@ bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string 
   CURL url2(url);
   std::string strXML;
   XFILE::CCurlFile http;
-  http.SetBufferSize(32768*10);
+  //http.SetBufferSize(32768*10);
   http.SetRequestHeader("Accept-Encoding", "gzip");
   
   url2.SetFileName(url2.GetFileName() + "onDeck");
@@ -905,7 +905,7 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
 
   std::string strXML;
   XFILE::CCurlFile http;
-  http.SetBufferSize(32768*10);
+  //http.SetBufferSize(32768*10);
   http.SetRequestHeader("Accept-Encoding", "gzip");
 
   http.Get(url2.Get(), strXML);
@@ -941,7 +941,7 @@ bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string
   CURL url2(url);
   std::string strXML;
   XFILE::CCurlFile http;
-  http.SetBufferSize(32768*10);
+  //http.SetBufferSize(32768*10);
   http.SetRequestHeader("Accept-Encoding", "gzip");
   
   url2.SetFileName(url2.GetFileName() + "onDeck");
