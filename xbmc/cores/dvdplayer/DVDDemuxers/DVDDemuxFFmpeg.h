@@ -81,6 +81,7 @@ public:
 };
 
 #define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg
+#define FFMPEG_FILE_BUFFER_MAXSIZE (512*1024)
 #define FFMPEG_DVDNAV_BUFFER_SIZE 2048  // for dvd's
 
 struct StereoModeConversionMap;
