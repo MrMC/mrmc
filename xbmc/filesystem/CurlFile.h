@@ -197,6 +197,8 @@ namespace XFILE
       bool            m_postdataset;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
+      char           *m_readbuffer;
+      int             m_readbuffersize;
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
       unsigned int    m_overflowSize;     // size of the overflow buffer
 

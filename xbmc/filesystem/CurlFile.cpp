@@ -412,6 +412,7 @@ CCurlFile::~CCurlFile()
   delete m_state;
   delete m_oldState;
   g_curlInterface.Unload();
+  SAFE_DELETE(m_readbuffer);
 }
 
 CCurlFile::CCurlFile()
@@ -431,7 +432,7 @@ CCurlFile::CCurlFile()
   m_ftpauth = "";
   m_ftpport = "";
   m_ftppasvip = false;
-  m_bufferSize = 32768;
+  m_bufferSize = 512 * 1024;
   m_postdata = "";
   m_postdataset = false;
   m_username = "";
@@ -444,6 +445,9 @@ CCurlFile::CCurlFile()
   m_skipshout = false;
   m_httpresponse = -1;
   m_acceptCharset = "UTF-8,*;q=0.8"; /* prefer UTF-8 if available */
+  m_readbuffer = (char*)malloc(512 * 1024);
+  m_readbuffersize = 512 * 1024;
+
 }
 
 //Has to be called before Open()
@@ -953,11 +957,10 @@ bool CCurlFile::ReadData(std::string& strHTML)
   int size_read = 0;
   int data_size = 0;
   strHTML = "";
-  char buffer[16384];
-  while( (size_read = Read(buffer, sizeof(buffer)-1) ) > 0 )
+
+  while( (size_read = Read(m_readbuffer, m_readbuffersize) ) > 0 )
   {
-    buffer[size_read] = 0;
-    strHTML.append(buffer, size_read);
+    strHTML.append(m_readbuffer, size_read);
     data_size += size_read;
   }
   if (m_state->m_cancelled)
