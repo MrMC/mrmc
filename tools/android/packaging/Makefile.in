@@ -15,7 +15,7 @@ OBJS+= libshairplay.so
 OBJS+= librtmp.so
 
 PLATFORM_OBJS =
-EXCLUDED_ADDONS =
+EXCLUDED_ADDONS += $(PKG_EXCLUDED_ADDONS)
 
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
 COPYDIRS = system addons media
