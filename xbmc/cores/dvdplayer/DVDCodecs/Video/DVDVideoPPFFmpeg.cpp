@@ -54,7 +54,7 @@ void CDVDVideoPPFFmpeg::Dispose()
     {
       if( m_FrameBuffer.data[i] )
       {
-        _aligned_free(m_FrameBuffer.data[i]);
+        av_freep(&(m_FrameBuffer.data[i]));
         m_FrameBuffer.data[i] = NULL;
         m_FrameBuffer.iLineSize[i] = 0;
       }
@@ -182,9 +182,9 @@ bool CDVDVideoPPFFmpeg::CheckFrameBuffer(const DVDVideoPicture* pSource)
     m_FrameBuffer.iWidth = pSource->iWidth;
     m_FrameBuffer.iHeight = pSource->iHeight;
 
-    m_FrameBuffer.data[0] = (uint8_t*)_aligned_malloc(m_FrameBuffer.iLineSize[0] * m_FrameBuffer.iHeight  , 16);
-    m_FrameBuffer.data[1] = (uint8_t*)_aligned_malloc(m_FrameBuffer.iLineSize[1] * m_FrameBuffer.iHeight/2, 16);
-    m_FrameBuffer.data[2] = (uint8_t*)_aligned_malloc(m_FrameBuffer.iLineSize[2] * m_FrameBuffer.iHeight/2, 16);
+    m_FrameBuffer.data[0] = (uint8_t*)av_malloc(m_FrameBuffer.iLineSize[0] * m_FrameBuffer.iHeight);
+    m_FrameBuffer.data[1] = (uint8_t*)av_malloc(m_FrameBuffer.iLineSize[1] * m_FrameBuffer.iHeight/2);
+    m_FrameBuffer.data[2] = (uint8_t*)av_malloc(m_FrameBuffer.iLineSize[2] * m_FrameBuffer.iHeight/2);
 
     if( !m_FrameBuffer.data[0] || !m_FrameBuffer.data[1] || !m_FrameBuffer.data[2])
     {
