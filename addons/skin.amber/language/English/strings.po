@@ -264,22 +264,26 @@ msgstr ""
 #Skin Fontsets
 
 msgctxt "#31389"
-msgid "(2/4) Skin default - no caps"
+msgid "(2/5) Skin default - no caps"
 msgstr ""
 
 msgctxt "#31390"
-msgid "(1/4) Skin default"
+msgid "(1/5) Skin default"
 msgstr ""
 
 msgctxt "#31391"
-msgid "(4/4) Arial - no caps"
+msgid "(4/5) Arial - no caps"
 msgstr ""
 
 msgctxt "#31392"
-msgid "(3/4) Arial based"
+msgid "(3/5) Arial based"
 msgstr ""
 
-#empty strings from id 31393 to 31498
+msgctxt "#31393"
+msgid "(5/5) Unicode based"
+msgstr ""
+
+#empty strings from id 31394 to 31498
 #Extra Unified PVR labels
 
 msgctxt "#31499"

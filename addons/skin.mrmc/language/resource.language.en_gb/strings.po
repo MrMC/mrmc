@@ -514,7 +514,11 @@ msgctxt "#31392"
 msgid "Arial based"
 msgstr ""
 
-#empty strings from id 31393 to 31399
+msgctxt "#31393"
+msgid "Unicode based"
+msgstr ""
+
+#empty strings from id 31394 to 31399
 #Description Labels
 
 msgctxt "#31400"

@@ -278,6 +278,10 @@ msgctxt "#31391"
 msgid "Arial based"
 msgstr ""
 
+msgctxt "#31392"
+msgid "Unicode based"
+msgstr ""
+
 #empty strings from id 31392 to 31399
 #Description Labels
 
