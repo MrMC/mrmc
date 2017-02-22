@@ -2027,6 +2027,7 @@ void CDVDPlayer::HandlePlaySpeed()
       m_dvdPlayerAudio->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, clock), 1);
       m_dvdPlayerVideo->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, clock), 1);
       SetCaching(CACHESTATE_DONE);
+      UpdatePlayState(0);
 
       m_syncTimer.Set(3000);
     }
