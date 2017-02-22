@@ -34,6 +34,7 @@
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
 #include <memory>
+#include <cstdlib>
 
 #ifndef TARGET_POSIX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -87,6 +88,60 @@ enum EFilterFlags {
   FILTER_DEINTERLACE_HALFED  = 0x20,  //< do half rate deinterlacing
   FILTER_ROTATE              = 0x40,  //< rotate image according to the codec hints
 };
+
+CDVDVideoCodecFFmpeg::CDropControl::CDropControl()
+{
+  Reset(true);
+}
+
+void CDVDVideoCodecFFmpeg::CDropControl::Reset(bool init)
+{
+  m_lastPTS = AV_NOPTS_VALUE;
+
+  if (init || m_state != VALID)
+  {
+    m_count = 0;
+    m_diffPTS = 0;
+    m_state = INIT;
+  }
+}
+
+void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
+{
+  if (m_state == INIT)
+  {
+    if (pts != AV_NOPTS_VALUE && m_lastPTS != AV_NOPTS_VALUE)
+    {
+      m_diffPTS += pts - m_lastPTS;
+      m_count++;
+    }
+    if (m_count > 10)
+    {
+      m_diffPTS = m_diffPTS / m_count;
+      if (m_diffPTS > 0)
+      {
+        CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: %lld", m_diffPTS);
+        m_state = CDropControl::VALID;
+        m_count = 0;
+      }
+    }
+  }
+  else if (m_state == VALID && !drop)
+  {
+    if (std::abs(pts - m_lastPTS - m_diffPTS) > m_diffPTS * 0.2)
+    {
+      m_count++;
+      if (m_count > 5)
+      {
+        CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::CDropControl: lost diff");
+        Reset(true);
+      }
+    }
+    else
+      m_count = 0;
+  }
+  m_lastPTS = pts;
+}
 
 enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const AVPixelFormat * fmt )
@@ -353,6 +408,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   UpdateName();
+  m_dropCtrl.Reset(true);
+
   return true;
 }
 
@@ -550,13 +607,6 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if (!iGotPicture)
   {
-    if (pData && m_pCodecContext->skip_frame > AVDISCARD_DEFAULT)
-    {
-      m_droppedFrames++;
-      if (m_interlaced)
-        m_droppedFrames++;
-    }
-
     if (m_pHardware && (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
     {
       int result;
@@ -566,6 +616,22 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
     else
       return VC_BUFFER;
   }
+
+  int64_t framePTS = av_frame_get_best_effort_timestamp(m_pDecodedFrame);
+
+  if (m_pCodecContext->skip_frame > AVDISCARD_DEFAULT)
+  {
+    if (m_dropCtrl.m_state == CDropControl::VALID &&
+        m_dropCtrl.m_lastPTS != AV_NOPTS_VALUE &&
+        framePTS != AV_NOPTS_VALUE &&
+        framePTS > (m_dropCtrl.m_lastPTS + m_dropCtrl.m_diffPTS * 1.5))
+    {
+      m_droppedFrames++;
+      if (m_interlaced)
+        m_droppedFrames++;
+    }
+  }
+  m_dropCtrl.Process(framePTS, m_pCodecContext->skip_frame > AVDISCARD_DEFAULT);
 
   if (m_pDecodedFrame->key_frame)
   {
@@ -665,6 +731,7 @@ void CDVDVideoCodecFFmpeg::Reset()
 
   m_filters = "";
   FilterClose();
+  m_dropCtrl.Reset(false);
 }
 
 void CDVDVideoCodecFFmpeg::Reopen()
