@@ -407,18 +407,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
       if (hints.maybe_interlaced)
-      {
         CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - possible interlaced h264, profile(%d), level(%d)",
           hints.profile, hints.level);
-        // we know firetv has issues with h264/interlaced
-        if (CAndroidFeatures::IsFireTVDevice())
-          return false;
 
-        // High@L4.1 interlaced works on shield,
-        // everything else fails.
-        if (hints.profile != FF_PROFILE_H264_HIGH || hints.level != 41)
-          return false;
-      }
       switch(hints.profile)
       {
         case FF_PROFILE_H264_HIGH_10:
