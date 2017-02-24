@@ -26,10 +26,7 @@
 #include <deque>
 #include <set>
 
-namespace jni
-{
-  class CJNIAudioTrack;
-};
+#include <androidjni/AudioTrack.h>
 
 class CAESinkAUDIOTRACK : public IAESink
 {
@@ -54,11 +51,16 @@ public:
   static void           EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 protected:
+  jni::CJNIAudioTrack *CreateAudioTrack(int stream, int sampleRate, int channelMask, int encoding, int bufferSize);
   static bool           IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
+
+  int AudioTrackWrite(char* audioData, int offsetInBytes, int sizeInBytes);
+  int AudioTrackWrite(char* audioData, int sizeInBytes, int64_t timestamp);
 
 private:
   double                GetPresentedDelay();
   uint64_t              GetPlaybackHeadPosition();
+  
   // Moving Average computes the weighted average delay over
   // a fixed size of delay values - current size: 20 values
   double                GetMovingAverageDelay(double newestdelay);
@@ -68,6 +70,7 @@ private:
   static std::set<int>  m_sink_sampleRates;
 
   jni::CJNIAudioTrack  *m_at_jni;
+  int                   m_jniAudioFormat;
   AEAudioFormat         m_format;
   double                m_volume;
   int                   m_encoding;
@@ -98,4 +101,8 @@ private:
   // The n-th value (timely oldest value) is weighted with 1/n
   // the newest value gets a weight of 1
   std::deque<double>    m_linearmovingaverage;
+
+  std::vector<float> m_floatbuf;
+  std::vector<int16_t> m_shortbuf;
+  std::vector<char> m_charbuf;
 };
