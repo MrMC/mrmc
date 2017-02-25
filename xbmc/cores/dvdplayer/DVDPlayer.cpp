@@ -3604,6 +3604,7 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     if(!m_pSubtitleDemuxer || m_pSubtitleDemuxer->GetFileName() != st.filename)
     {
       CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", st.filename.c_str());
+      SAFE_DELETE(m_pSubtitleDemuxer);
       std::unique_ptr<CDVDDemuxVobsub> demux(new CDVDDemuxVobsub());
       if(!demux->Open(st.filename, source, st.filename2))
         return false;
