@@ -122,3 +122,20 @@ bool CAndroidFeatures::IsFireTVDevice()
   }
   return (isfiretv == 1);
 }
+
+bool CAndroidFeatures::IsShieldTVDevice()
+{
+  static int isshieldtv = -1;
+  if (isshieldtv == -1)
+  {
+    if (StringUtils::StartsWith(CJNIBuild::MODEL, "SHIELD Android TV") &&
+        StringUtils::StartsWithNoCase(CJNIBuild::MANUFACTURER, "NVIDIA"))
+    {
+      CLog::Log(LOGDEBUG, "CAndroidFeatures::IsShieldTVDevice = yes");
+      isshieldtv = 1;
+    }
+    else
+      isshieldtv = 0;
+  }
+  return (isshieldtv == 1);
+}

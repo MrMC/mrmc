@@ -31,4 +31,5 @@ class CAndroidFeatures
   static int          GetActualCPUCount();
   static bool         HasTouchScreen();
   static bool         IsFireTVDevice();
+  static bool         IsShieldTVDevice();
 };
