@@ -334,16 +334,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   else
     m_decoderState = STATE_SW_SINGLE;
 
-#if defined(TARGET_DARWIN_IOS)
-  // ffmpeg with enabled neon will crash and burn if this is enabled
-  m_pCodecContext->flags &= CODEC_FLAG_EMU_EDGE;
-#else
-  if (pCodec->id != AV_CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
-      && pCodec->id != AV_CODEC_ID_VP8
-     )
-    m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
-#endif
-
   // if we don't do this, then some codecs seem to fail.
   m_pCodecContext->coded_height = hints.height;
   m_pCodecContext->coded_width = hints.width;
