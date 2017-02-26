@@ -134,46 +134,79 @@ void CNetworkInterfaceAndroid::GetMacAddressRaw(char rawMac[6])
 
 bool CNetworkInterfaceAndroid::GetHostMacAddress(in_addr_t host_ip, std::string& mac)
 {
-  struct arpreq areq;
-  struct sockaddr_in* sin;
-
-  memset(&areq, 0x0, sizeof(areq));
-
-  sin = (struct sockaddr_in *) &areq.arp_pa;
-  sin->sin_family = AF_INET;
-  sin->sin_addr.s_addr = host_ip;
-
-  sin = (struct sockaddr_in *) &areq.arp_ha;
-  sin->sin_family = ARPHRD_ETHER;
-
-  strncpy(areq.arp_dev, m_name.c_str(), sizeof(areq.arp_dev));
-  areq.arp_dev[sizeof(areq.arp_dev)-1] = '\0';
-
-  int sock = socket(AF_INET, SOCK_DGRAM, 0);
-  if (sock != -1)
+  CLog::Log(LOGDEBUG, "CNetworkInterfaceAndroid::GetHostMacAddress");
+  if (CJNIAudioManager::GetSDKVersion() < 23)
   {
-    int result = ioctl(sock, SIOCGARP, (caddr_t) &areq);
-    close(sock);
+    struct arpreq areq;
+    struct sockaddr_in* sin;
 
-    if (result < 0)
+    memset(&areq, 0x0, sizeof(areq));
+
+    sin = (struct sockaddr_in *) &areq.arp_pa;
+    sin->sin_family = AF_INET;
+    sin->sin_addr.s_addr = host_ip;
+
+    sin = (struct sockaddr_in *) &areq.arp_ha;
+    sin->sin_family = ARPHRD_ETHER;
+
+    strncpy(areq.arp_dev, m_name.c_str(), sizeof(areq.arp_dev));
+    areq.arp_dev[sizeof(areq.arp_dev)-1] = '\0';
+
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock != -1)
     {
-      CLog::Log(LOGERROR, "%s - GetHostMacAddress/ioctl failed with errno (%d)", __FUNCTION__, errno);
+      int result = ioctl(sock, SIOCGARP, (caddr_t) &areq);
+      close(sock);
+
+      if (result < 0)
+      {
+        CLog::Log(LOGERROR, "%s - GetHostMacAddress/ioctl failed with errno (%d)", __FUNCTION__, errno);
+        return false;
+      }
+    }
+    else
+    {
       return false;
     }
+
+    struct sockaddr* res = &areq.arp_ha;
+    mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
+      (uint8_t) res->sa_data[0], (uint8_t) res->sa_data[1], (uint8_t) res->sa_data[2],
+      (uint8_t) res->sa_data[3], (uint8_t) res->sa_data[4], (uint8_t) res->sa_data[5]);
+
+    for (int i=0; i<6; ++i)
+      if (res->sa_data[i])
+        return true;
   }
   else
   {
-    return false;
-  }
+    // SIOCGARP is forbidden for API24+, use ip neigh show and pray
+    struct in_addr hostIP;
+    hostIP.s_addr = host_ip;
+    char *remoteIP = inet_ntoa(hostIP);
 
-  struct sockaddr* res = &areq.arp_ha;
-  mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
-    (uint8_t) res->sa_data[0], (uint8_t) res->sa_data[1], (uint8_t) res->sa_data[2],
-    (uint8_t) res->sa_data[3], (uint8_t) res->sa_data[4], (uint8_t) res->sa_data[5]);
+    char buffer[512];
+    std::vector<std::string> result;
 
-  for (int i=0; i<6; ++i)
-    if (res->sa_data[i])
+    FILE *pipe = popen("ip neigh show", "r");
+    while (fgets(buffer, sizeof(buffer), pipe))
+    {
+      // 192.168.2.124 dev wlan0 lladdr f8:04:2e:e7:47:c2 STALE
+      if (std::string(buffer).find(remoteIP) != std::string::npos)
+      {
+        result = StringUtils::Split(buffer, " ");
+        if (result.size() > 4)
+        {
+          mac = result[4];
+          CLog::Log(LOGDEBUG, "%s - IP(%s), MAC(%s)", __FUNCTION__, result[0].c_str(), mac.c_str());
+          break;
+        }
+      }
+    }
+    pclose(pipe);
+    if (result.size())
       return true;
+  }
 
   return false;
 }
