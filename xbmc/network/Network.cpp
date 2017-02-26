@@ -314,7 +314,7 @@ bool CNetwork::WakeOnLan(const char* mac)
     closesocket(packet);
     return false;
   }
- 
+
   // Build the magic packet (6 x 0xff + 16 x MAC address)
   ptr = buf;
   for (i = 0; i < 6; i++)
@@ -323,7 +323,7 @@ bool CNetwork::WakeOnLan(const char* mac)
   for (j = 0; j < 16; j++)
     for (i = 0; i < 6; i++)
       *ptr++ = ethaddr[i];
- 
+
   // Send the magic packet
   if (sendto (packet, (char *)buf, 102, 0, (struct sockaddr *)&saddr, sizeof (saddr)) < 0)
   {
@@ -355,8 +355,8 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
 
     { // wait for connect to complete
       fd_set wset;
-      FD_ZERO(&wset); 
-      FD_SET(soc, &wset); 
+      FD_ZERO(&wset);
+      FD_SET(soc, &wset);
 
       result = select(FD_SETSIZE, 0, &wset, 0, &timeOut);
     }
@@ -384,7 +384,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   if (tryRead)
   {
     fd_set rset;
-    FD_ZERO(&rset); 
+    FD_ZERO(&rset);
     FD_SET(soc, &rset); 
 
     result = select(FD_SETSIZE, &rset, 0, 0, &timeOut);
@@ -409,26 +409,28 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
 bool CNetwork::PingHost(in_addr_t ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
 {
   if (port == 0) // use icmp ping
-    return PingHost (ipaddr, timeOutMs);
+    return PingHost(ipaddr, timeOutMs);
 
-  struct sockaddr_in addr; 
-  addr.sin_family = AF_INET; 
-  addr.sin_port = htons(port); 
-  addr.sin_addr.s_addr = ipaddr; 
+  struct sockaddr_in addr;
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(port);
+  addr.sin_addr.s_addr = ipaddr;
 
-  SOCKET soc = socket(AF_INET, SOCK_STREAM, 0); 
+  //CLog::Log(LOGDEBUG, "CNetwork::PingHost: '%s'", inet_ntoa(addr.sin_addr));
+
+  SOCKET soc = socket(AF_INET, SOCK_STREAM, 0);
 
   const char* err_msg = "invalid socket";
 
   if (soc != INVALID_SOCKET)
   {
-    struct timeval tmout; 
-    tmout.tv_sec = timeOutMs / 1000; 
-    tmout.tv_usec = (timeOutMs % 1000) * 1000; 
+    struct timeval tmout;
+    tmout.tv_sec = timeOutMs / 1000;
+    tmout.tv_usec = (timeOutMs % 1000) * 1000;
 
-    err_msg = ConnectHostPort (soc, addr, tmout, readability_check);
+    err_msg = ConnectHostPort(soc, addr, tmout, readability_check);
 
-    (void) closesocket (soc);
+    (void) closesocket(soc);
   }
 
   if (err_msg && *err_msg)
@@ -450,7 +452,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
   int    sock = -1;
   unsigned int yes = 1;
   unsigned int no = 0;
-  
+
   // first try ipv6
   if ((sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) >= 0)
   {
@@ -480,7 +482,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
       CLog::Log(LOGDEBUG, "%s Server: Failed to bind ipv6 serversocket, trying ipv4", callerName);
     }
   }
-  
+
   // ipv4 fallback
   if (sock < 0 && (sock = socket(PF_INET, SOCK_STREAM, 0)) >= 0)
   {
@@ -518,4 +520,3 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
 
   return sock;
 }
-

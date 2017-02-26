@@ -264,18 +264,14 @@ CNetworkInterface* CNetworkAndroid::GetFirstConnectedInterface()
 
 bool CNetworkAndroid::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
 {
-  char cmd_line [64];
 
   struct in_addr host_ip;
   host_ip.s_addr = remote_ip;
+  CLog::Log(LOGDEBUG, "CNetworkAndroid::PingHost: '%s'", inet_ntoa(host_ip));
 
-  #if defined (TARGET_DARWIN_OSX) || defined (TARGET_FREEBSD)
-    sprintf(cmd_line, "ping -c 1 -t %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
-  #else
-    sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
-  #endif
-
-  int status = system (cmd_line);
+  char cmd_line [64];
+  sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  int status = system(cmd_line);
 
   int result = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
 
