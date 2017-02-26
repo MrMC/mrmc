@@ -38,6 +38,7 @@
 #include <android/log.h>
 
 #include "Application.h"
+#include "network/android/NetworkAndroid.h"
 #include "settings/AdvancedSettings.h"
 #include "platform/MCRuntimeLib.h"
 #include "platform/MCRuntimeLibContext.h"
@@ -227,6 +228,7 @@ void CXBMCApp::onResume()
   intentFilter.addAction("android.intent.action.SCREEN_OFF");
   intentFilter.addAction("android.intent.action.HEADSET_PLUG");
   intentFilter.addAction("android.intent.action.HDMI_PLUGGED");
+  intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
   registerReceiver(*this, intentFilter);
 
   if (!g_application.IsInScreenSaver())
@@ -995,6 +997,12 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       CLog::Log(LOGINFO, "Got HDMI_PLUGGED intent attached");
     else
       CLog::Log(LOGINFO, "Got HDMI_PLUGGED intent detached");
+  }
+  else if (action == "android.net.conn.CONNECTIVITY_CHANGE")
+  {
+    CNetwork& net = g_application.getNetwork();
+    CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
+    netdroid->RetrieveInterfaces();
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {

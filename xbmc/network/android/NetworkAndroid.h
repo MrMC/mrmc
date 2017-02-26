@@ -20,6 +20,7 @@
  */
 
 #include "network/Network.h"
+#include "threads/CriticalSection.h"
 
 #include "platform/android/jni/Network.h"
 #include "platform/android/jni/NetworkInfo.h"
@@ -32,7 +33,7 @@ class CNetworkAndroid;
 class CNetworkInterfaceAndroid : public CNetworkInterface
 {
 public:
-  CNetworkInterfaceAndroid(CJNINetwork network, const CJNINetworkInfo& ni, const CJNILinkProperties& lp, const CJNINetworkInterface& intf);
+  CNetworkInterfaceAndroid(CJNINetwork network, const CJNILinkProperties& lp, const CJNINetworkInterface& intf);
   std::vector<std::string> GetNameServers();
   
   // CNetworkInterface interface
@@ -55,7 +56,6 @@ public:
 protected:
   std::string m_name;
   CJNINetwork m_network;
-  CJNINetworkInfo m_ni;
   CJNILinkProperties m_lp;
   CJNINetworkInterface m_intf;
 };
@@ -63,20 +63,25 @@ protected:
 
 class CNetworkAndroid : public CNetwork
 {
+friend class CXBMCApp;
+
 public:
   CNetworkAndroid();
-  
+ ~CNetworkAndroid();
+
   // CNetwork interface
 public:
   virtual bool GetHostName(std::string& hostname);
   virtual std::vector<CNetworkInterface*>& GetInterfaceList();
   virtual CNetworkInterface* GetFirstConnectedInterface();
-  virtual bool PingHost(in_addr_t host, unsigned int timeout_ms = 2000);
+  virtual bool PingHost(in_addr_t remote_ip, unsigned int timeout_ms = 2000);
   virtual std::vector<std::string> GetNameServers();
   virtual void SetNameServers(const std::vector<std::string>& nameServers);
   
 protected:
   void RetrieveInterfaces();
   std::vector<CNetworkInterface*> m_interfaces;  
+  std::vector<CNetworkInterface*> m_oldInterfaces;
+  CCriticalSection m_refreshMutex;
 };
 
