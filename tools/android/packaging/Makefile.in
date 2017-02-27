@@ -80,10 +80,6 @@ xbmc/assets:
 	mkdir -p xbmc/assets
 
 symbols: libs
-ifeq (1,@USE_BREAKPAD@)
-	for f in xbmc/obj/local/$(ABI)/*.so; do sh ./make_symbols.sh $$f; done
-	tar -cjf spmc.symbols-$(ABI)-`$(XBMCROOT)/tools/darwin/packaging/gitrev-posix`.tar.bz2 symbols
-endif
 
 shared:
 	mkdir -p assets
