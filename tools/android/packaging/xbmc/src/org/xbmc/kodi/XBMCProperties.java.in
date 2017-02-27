@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class XBMCProperties
 { 
-  private static final String TAG = "SPMCproperties";
+  private static final String TAG = "XBMCproperties";
 
   private static boolean isInitialized()
   {
@@ -19,7 +19,7 @@ public class XBMCProperties
 
   public static void initializeProperties()
   {
-    String propfn = Environment.getExternalStorageDirectory().getAbsolutePath() + "/spmc_env.properties";
+    String propfn = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mrmc_env.properties";
     File fProp = new File(propfn);
     if (!fProp.exists())
     {
