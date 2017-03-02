@@ -72,6 +72,7 @@ namespace XFILE
     virtual ssize_t       Read(void* lpBuf, size_t uiBufSize);
     virtual ssize_t       Write(const void* lpBuf, size_t uiBufSize);
     virtual int64_t       Seek(int64_t iFilePosition, int iWhence=SEEK_SET);
+    virtual int           GetChunkSize() {return 32768;};
     virtual void          Close();
     virtual void          Flush();
 
