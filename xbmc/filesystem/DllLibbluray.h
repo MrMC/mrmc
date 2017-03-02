@@ -21,6 +21,11 @@
 #include "system.h"
 #ifdef HAVE_LIBBLURAY
 
+namespace XFILE
+{
+  class CFile;
+}
+
 #include "DynamicDll.h"
 
 
@@ -191,6 +196,9 @@ public:
   static int       dir_read(BD_DIR_H *dir, BD_DIRENT *entry);
   static BD_DIR_H *dir_open(const char* dirname);
   static void      bluray_logger(const char* msg);
+
+  static std::vector<XFILE::CFile*> m_cached_m2ts_files;
+  static CCriticalSection  m_cached_m2ts_files_lock;
 };
 
 #endif

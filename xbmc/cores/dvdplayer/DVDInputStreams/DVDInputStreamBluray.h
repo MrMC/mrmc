@@ -57,6 +57,7 @@ public:
   void Abort();
   virtual bool IsEOF();
   virtual int64_t GetLength();
+  virtual bool GetCacheStatus(XFILE::SCacheStatus *status);
   virtual int GetBlockSize() { return 6144; }
   virtual ENextStream NextStream();
 

@@ -30,6 +30,7 @@
 #include "LangInfo.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DllLibbluray.h"
@@ -65,11 +66,22 @@
 
 using namespace XFILE;
 
+std::vector<XFILE::CFile*> DllLibbluray::m_cached_m2ts_files;
+CCriticalSection  DllLibbluray::m_cached_m2ts_files_lock;
+
 void DllLibbluray::file_close(BD_FILE_H *file)
 {
   if (file)
   {
-    delete static_cast<CFile*>(file->internal);
+    CFile *cfile = static_cast<CFile*>(file->internal);
+    if (cfile)
+    {
+      CSingleLock lock(m_cached_m2ts_files_lock);
+      auto file = std::find(m_cached_m2ts_files.begin(), m_cached_m2ts_files.end(), cfile);
+      if (file != m_cached_m2ts_files.end())
+        m_cached_m2ts_files.erase(file);
+      delete cfile;
+    }
     delete file;
   }
 }
@@ -113,9 +125,23 @@ BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
     file->tell  = file_tell;
     file->eof   = file_eof;
 
+    int flags = 0;
+    std::string extension = URIUtils::GetExtension(filename);
+    StringUtils::ToLower(extension);
+    if (extension == ".m2ts")
+      flags |= READ_BITRATE | READ_CHUNKED | READ_CACHED;
+
     CFile* fp = new CFile();
-    if(fp->Open(filename))
+    if(fp->Open(filename, flags))
     {
+      if (extension == ".m2ts")
+      {
+        // only save cfile pointers for m2ts files,
+        // it is the only thing we are interested in caching for bluray
+        CSingleLock lock(m_cached_m2ts_files_lock);
+        m_cached_m2ts_files.push_back(fp);
+        CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - file_open caching (%s)", filename);
+      }
       file->internal = (void*)fp;
       return file;
     }
@@ -1001,6 +1027,23 @@ int64_t CDVDInputStreamBluray::Seek(int64_t offset, int whence)
 int64_t CDVDInputStreamBluray::GetLength()
 {
   return m_dll->bd_get_title_size(m_bd);
+}
+
+bool CDVDInputStreamBluray::GetCacheStatus(XFILE::SCacheStatus *status)
+{
+  if (m_dll)
+  {
+    CSingleLock lock(m_dll->m_cached_m2ts_files_lock);
+    if (!m_dll->m_cached_m2ts_files.empty())
+    {
+      CFile *cfile = m_dll->m_cached_m2ts_files[0];
+      if (cfile->IoControl(IOCTRL_CACHE_STATUS, status) >= 0)
+        return true;
+      else
+        return false;
+    }
+  }
+  return false;
 }
 
 static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, char* language)
