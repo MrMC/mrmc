@@ -33,6 +33,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "threads/CriticalSection.h"
+
 typedef int SOCKET;
 
 namespace SOCKETS
@@ -208,6 +210,7 @@ namespace SOCKETS
     CBaseSocket* GetNextReadySocket();
 
   protected:
+    CCriticalSection          m_sockets_lock;
     std::vector<CBaseSocket*> m_sockets;
     int                       m_iReadyCount;
     int                       m_iMaxSockets;

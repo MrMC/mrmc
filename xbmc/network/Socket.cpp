@@ -24,6 +24,7 @@
 
 #include "Socket.h"
 #include "utils/log.h"
+#include "threads/SingleLock.h"
 
 #include <vector>
 
@@ -278,8 +279,7 @@ CSocketListener::CSocketListener()
 
 void CSocketListener::AddSocket(CBaseSocket *sock)
 {
-  // WARNING: not threadsafe (which is ok for now)
-
+  CSingleLock lock(m_sockets_lock);
   if (sock && sock->Ready())
   {
     m_sockets.push_back(sock);
@@ -291,6 +291,7 @@ void CSocketListener::AddSocket(CBaseSocket *sock)
 
 bool CSocketListener::Listen(int timeout)
 {
+  CSingleLock lock(m_sockets_lock);
   if (m_sockets.size()==0)
   {
     CLog::Log(LOGERROR, "SOCK: No sockets to listen for");
@@ -329,6 +330,7 @@ bool CSocketListener::Listen(int timeout)
 
 void CSocketListener::Clear()
 {
+  CSingleLock lock(m_sockets_lock);
   m_sockets.clear();
   FD_ZERO(&m_fdset);
   m_iReadyCount = 0;
@@ -338,6 +340,7 @@ void CSocketListener::Clear()
 
 CBaseSocket* CSocketListener::GetFirstSocket()
 {
+  CSingleLock lock(m_sockets_lock);
   if (m_sockets.size() > 0)
     return m_sockets[0];
 
@@ -346,6 +349,7 @@ CBaseSocket* CSocketListener::GetFirstSocket()
 
 CBaseSocket* CSocketListener::GetFirstReadySocket()
 {
+  CSingleLock lock(m_sockets_lock);
   if (m_iReadyCount<=0)
     return NULL;
 
@@ -362,6 +366,7 @@ CBaseSocket* CSocketListener::GetFirstReadySocket()
 
 CBaseSocket* CSocketListener::GetNextReadySocket()
 {
+  CSingleLock lock(m_sockets_lock);
   if (m_iReadyCount<=0)
     return NULL;
 
