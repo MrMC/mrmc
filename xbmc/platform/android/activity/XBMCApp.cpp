@@ -1000,9 +1000,12 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   }
   else if (action == "android.net.conn.CONNECTIVITY_CHANGE")
   {
-    CNetwork& net = g_application.getNetwork();
-    CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
-    netdroid->RetrieveInterfaces();
+    if (g_application.IsAppInitialized())
+    {
+      CNetwork& net = g_application.getNetwork();
+      CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
+      netdroid->RetrieveInterfaces();
+    }
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {
