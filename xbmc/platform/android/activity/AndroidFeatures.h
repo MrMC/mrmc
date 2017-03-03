@@ -33,4 +33,5 @@ class CAndroidFeatures
   static bool         IsAmazonDevice();
   static bool         IsFireTVDevice();
   static bool         IsShieldTVDevice();
+  static bool         IsLeanback();
 };

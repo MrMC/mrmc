@@ -83,9 +83,11 @@
 #include <androidjni/KeyEvent.h>
 #include <androidjni/SystemProperties.h>
 #include <androidjni/Display.h>
-#include "platform/android/activity//AndroidKey.h"
 #include <androidjni/BitmapFactory.h>
 #include <androidjni/SystemClock.h>
+
+#include "platform/android/activity/AndroidKey.h"
+#include "AndroidFeatures.h"
 #include "GUIInfoManager.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "TextureCache.h"
@@ -923,9 +925,11 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
     int numPackages = packageList.size();
     for (int i = 0; i < numPackages; i++)
     {
-      CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(packageList.get(i).packageName);
-      if (!intent && CJNIBuild::SDK_INT >= 21)
+      CJNIIntent intent;
+      if (CAndroidFeatures::IsLeanback())
         intent = GetPackageManager().getLeanbackLaunchIntentForPackage(packageList.get(i).packageName);
+      if (!intent)
+        intent = GetPackageManager().getLaunchIntentForPackage(packageList.get(i).packageName);
       if (!intent)
         continue;
 
@@ -948,12 +952,17 @@ bool CXBMCApp::HasLaunchIntent(const string &package)
 // Note intent, dataType, dataURI all default to ""
 bool CXBMCApp::StartActivity(const string &package, const string &intent, const string &dataType, const string &dataURI)
 {
-  CJNIIntent newIntent = intent.empty() ?
-    GetPackageManager().getLaunchIntentForPackage(package) :
-    CJNIIntent(intent);
+  CJNIIntent newIntent;
+  if (intent.empty())
+  {
+    if (CAndroidFeatures::IsLeanback())
+      newIntent = GetPackageManager().getLeanbackLaunchIntentForPackage(package);
+    if (!newIntent)
+      newIntent = GetPackageManager().getLaunchIntentForPackage(package);
+  }
+  else
+    newIntent = CJNIIntent(intent);
 
-  if (!newIntent && CJNIBuild::SDK_INT >= 21)
-    newIntent = GetPackageManager().getLeanbackLaunchIntentForPackage(package);
   if (!newIntent)
     return false;
 
