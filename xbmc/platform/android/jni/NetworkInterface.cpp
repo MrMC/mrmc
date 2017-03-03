@@ -63,12 +63,14 @@ std::vector<char> CJNINetworkInterface::getHardwareAddress()
   jhbyteArray array = call_method<jhbyteArray>(m_object,
     "getHardwareAddress", "()[B");
 
-  jsize size = env->GetArrayLength(array.get());
-
   std::vector<char> result;
-  result.resize(size);
-  env->GetByteArrayRegion(array.get(), 0, size, (jbyte*)result.data());
+  if (array.get())
+  {
+    jsize size = env->GetArrayLength(array.get());
 
+    result.resize(size);
+    env->GetByteArrayRegion(array.get(), 0, size, (jbyte*)result.data());
+  }
   return result;
 }
 
