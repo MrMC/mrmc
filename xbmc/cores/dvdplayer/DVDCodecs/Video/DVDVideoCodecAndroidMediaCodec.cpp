@@ -621,6 +621,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_videobuffer.color_range  = 0;
   m_videobuffer.color_matrix = 4;
   m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
+  if (!m_render_surface && hints.maybe_interlaced)
+  {
+    m_videobuffer.iFlags |= DVP_FLAG_INTERLACED;
+    // should be DVP_FLAG_TOP_FIELD_FIRST but android seems to be inverted ?
+    //m_videobuffer.iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+  }
   m_videobuffer.iWidth  = m_hints.width;
   m_videobuffer.iHeight = m_hints.height;
   // these will get reset to crop values later
