@@ -327,7 +327,7 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
 /*****************************************************************************/
 /*****************************************************************************/
-CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(bool surface_render)
+CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(bool surface_render, bool render_interlaced)
 : m_formatname("mediacodec")
 , m_opened(false)
 , m_surface(NULL)
@@ -335,6 +335,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(bool surface_re
 , m_bitstream(NULL)
 , m_render_sw(false)
 , m_render_surface(surface_render)
+, m_render_interlaced(render_interlaced)
 {
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
 }
@@ -407,8 +408,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
       if (hints.maybe_interlaced)
+      {
         CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - possible interlaced h264, profile(%d), level(%d)",
           hints.profile, hints.level);
+        if (!m_render_interlaced)
+          return false;
+      }
 
       switch(hints.profile)
       {

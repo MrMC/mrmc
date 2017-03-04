@@ -95,7 +95,7 @@ private:
 class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecAndroidMediaCodec(bool surface_render = false);
+  CDVDVideoCodecAndroidMediaCodec(bool surface_render = false, bool render_interlaced = false);
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
   // required overrides
@@ -150,6 +150,7 @@ protected:
 
   bool            m_render_sw;
   bool            m_render_surface;
+  bool            m_render_interlaced;
   int             m_src_offset[4];
   int             m_src_stride[4];
 };

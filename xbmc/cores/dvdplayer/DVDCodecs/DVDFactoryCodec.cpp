@@ -189,6 +189,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #if defined(TARGET_ANDROID)
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
   {
+    bool render_interlaced = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_INTERLACED);
     switch(hint.codec)
     {
       case AV_CODEC_ID_MPEG4:
@@ -200,11 +201,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
           break;
       default:
         CLog::Log(LOGINFO, "MediaCodec (Surface) Video Decoder...");
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true), hint, options)) ) return pCodec;
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true, render_interlaced), hint, options)) ) return pCodec;
     }
   }
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC))
   {
+    bool render_interlaced = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC_INTERLACED);
     switch(hint.codec)
     {
       case AV_CODEC_ID_MPEG4:
@@ -216,7 +218,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
           break;
       default:
         CLog::Log(LOGINFO, "MediaCodec Video Decoder...");
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false), hint, options)) ) return pCodec;
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false, render_interlaced), hint, options)) ) return pCodec;
     }
   }
 #endif

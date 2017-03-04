@@ -7073,7 +7073,12 @@ msgctxt "#13459"
 msgid "Use OMXPlayer for decoding of video files."
 msgstr ""
 
-#empty strings from id 13460 to 13504
+#: system/settings/settings.xml
+msgctxt "#13460"
+msgid "Allow interlaced content"
+msgstr ""
+
+#empty strings from id 13461 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -18471,7 +18476,12 @@ msgctxt "#36630"
 msgid "This can help on bad connections to keep the cache filled. It will also greatly speed up buffering"
 msgstr ""
 
-#empty strings from id 36609 to 36899
+#: system/settings/settings.xml
+msgctxt "#36631"
+msgid "Allow hardware decoding of interlaced files."
+msgstr ""
+
+#empty strings from id 36632 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"
