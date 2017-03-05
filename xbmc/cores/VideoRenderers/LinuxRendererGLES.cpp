@@ -2788,9 +2788,12 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 
   if(m_renderMethod & RENDER_MEDIACODEC)
   {
-    if (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+#if defined(TARGET_ANDROID)
+    if (!CAndroidFeatures::IsShieldTVDevice() &&
+       (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED))
       return true;
     else
+#endif
       return false;
   }
 

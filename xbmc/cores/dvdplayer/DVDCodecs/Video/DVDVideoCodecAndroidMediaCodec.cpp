@@ -626,11 +626,17 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_videobuffer.color_range  = 0;
   m_videobuffer.color_matrix = 4;
   m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
-  if (!m_render_surface && hints.maybe_interlaced)
+  if (!m_render_surface && !CAndroidFeatures::IsShieldTVDevice())
   {
-    m_videobuffer.iFlags |= DVP_FLAG_INTERLACED;
-    // should be DVP_FLAG_TOP_FIELD_FIRST but android seems to be inverted ?
-    //m_videobuffer.iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+    // for FireOS, MediaCodec returns the interlaced frames as is,
+    // for Shield, MediaCodec will kick in an internal deinterlacer
+    // and return progressive frames.
+    if (hints.maybe_interlaced)
+    {
+      m_videobuffer.iFlags |= DVP_FLAG_INTERLACED;
+      // should be DVP_FLAG_TOP_FIELD_FIRST but android seems to be inverted ?
+      //m_videobuffer.iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+    }
   }
   m_videobuffer.iWidth  = m_hints.width;
   m_videobuffer.iHeight = m_hints.height;
