@@ -505,7 +505,7 @@
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
  					<control type="radiobutton" id="226">
-						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton) + !System.Platform.IOS + !System.Platform.TVOS</visible>
+						<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 						<description>Hide Programs Button</description>
 						<width>750</width>
 						<height>40</height>
