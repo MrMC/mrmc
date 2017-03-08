@@ -824,7 +824,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   
   if (bOverWrite)
   {
-    CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - %s", filename.c_str());
+    CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - %s", CURL::GetRedacted(filename).c_str());
     //create file with proper permissions
     ret = gNfsConnection.GetImpl()->nfs_creat(m_pNfsContext, filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);    
     //if file was created the file handle isn't valid ... so close it and open later
