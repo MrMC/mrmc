@@ -277,14 +277,25 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   else
   {
     int blocksize = m_pInput->GetBlockSize();
-    if (blocksize <= 0)
-      blocksize = FFMPEG_FILE_BUFFER_SIZE;
-    if (blocksize > 0 && blocksize <= FFMPEG_FILE_BUFFER_MAXSIZE)
-      blocksize *= FFMPEG_FILE_BUFFER_MAXSIZE / blocksize;
-
-    unsigned char* buffer = (unsigned char*)av_malloc(blocksize);
-    m_ioContext = avio_alloc_context(buffer, blocksize, 0, this, dvd_file_read, NULL, dvd_file_seek);
-    m_ioContext->max_packet_size = blocksize;
+    if (blocksize <= FFMPEG_FILE_BUFFER_SIZE)
+    {
+      // orignal behavior.
+      // max_packet_size can be zero (default value)
+      unsigned char* buffer = (unsigned char*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
+      m_ioContext = avio_alloc_context(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, this, dvd_file_read, NULL, dvd_file_seek);
+      m_ioContext->max_packet_size = m_pInput->GetBlockSize();
+      if(m_ioContext->max_packet_size)
+        m_ioContext->max_packet_size *= FFMPEG_FILE_BUFFER_SIZE / m_ioContext->max_packet_size;
+      CLog::Log(LOGDEBUG, "%s - m_ioContext->max_packet_size(1) = %d", __FUNCTION__, m_ioContext->max_packet_size);
+    }
+    else
+    {
+      // large blocksize buffer transfers
+      unsigned char* buffer = (unsigned char*)av_malloc(blocksize);
+      m_ioContext = avio_alloc_context(buffer, blocksize, 0, this, dvd_file_read, NULL, dvd_file_seek);
+      m_ioContext->max_packet_size = blocksize;
+      CLog::Log(LOGDEBUG, "%s - m_ioContext->max_packet_size(2) = %d", __FUNCTION__, m_ioContext->max_packet_size);
+    }
 
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->seekable = 0;

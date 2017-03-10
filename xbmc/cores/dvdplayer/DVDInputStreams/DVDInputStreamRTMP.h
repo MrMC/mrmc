@@ -42,6 +42,7 @@ public:
   virtual bool    Pause(double dTime);
   virtual bool    IsEOF();
   virtual int64_t GetLength();
+  virtual int GetBlockSize() { return 32768; }
 
   CCriticalSection m_RTMPSection;
 

@@ -1046,6 +1046,11 @@ bool CDVDInputStreamBluray::GetCacheStatus(XFILE::SCacheStatus *status)
   return false;
 }
 
+int CDVDInputStreamBluray::GetBlockSize()
+{
+  return 100 * 6144;
+}
+
 static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, char* language)
 {
   int i=0;

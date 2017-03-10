@@ -51,6 +51,7 @@ public:
   virtual bool Pause(double dTime) { return false; }
   virtual bool IsEOF();
   virtual int64_t GetLength();
+  virtual int GetBlockSize();
 
   virtual ENextStream NextStream();
   virtual bool IsRealtime();

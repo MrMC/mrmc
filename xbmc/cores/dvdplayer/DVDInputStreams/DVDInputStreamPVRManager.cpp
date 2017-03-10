@@ -218,6 +218,11 @@ int64_t CDVDInputStreamPVRManager::GetLength()
     return m_pFile->GetLength();
 }
 
+int CDVDInputStreamPVRManager::GetBlockSize()
+{
+  return 32768;
+}
+
 int CDVDInputStreamPVRManager::GetTotalTime()
 {
   if (m_pLiveTV)
