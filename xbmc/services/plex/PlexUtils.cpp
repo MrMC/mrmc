@@ -585,8 +585,9 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
     plexItem->GetVideoInfoTag()->SetRating(atof(XMLUtils::GetAttribute(videoNode, "rating").c_str()));
     plexItem->GetVideoInfoTag()->m_strMPAARating = XMLUtils::GetAttribute(videoNode, "contentRating");
 
-    // lastViewedAt means that it was watched, if so we set m_playCount to 1 and set overlay
-    if (((TiXmlElement*) videoNode)->Attribute("lastViewedAt"))
+    // lastViewedAt means that it was watched, if so we set m_playCount to 1 and set overlay.
+    // If we have "viewOffset" that means we are partially watched and shoudl not set m_playCount to 1
+    if (((TiXmlElement*) videoNode)->Attribute("lastViewedAt") && !((TiXmlElement*) videoNode)->Attribute("viewOffset"))
     {
       plexItem->GetVideoInfoTag()->m_playCount = 1;
     }
