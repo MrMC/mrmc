@@ -104,7 +104,8 @@ MediaLibrary.prototype = {
         {name:'cleanlib_a',width:'46px',height:'26px',top:'47px',left:'553px'},
         {name:'updatelib_a',width:'46px',height:'26px',top:'47px',left:'492px'},
         {name:'cleanlib_v',width:'46px',height:'26px',top:'111px',left:'553px'},
-        {name:'updatelib_v',width:'46px',height:'26px',top:'111px',left:'492px'}
+        {name:'updatelib_v',width:'46px',height:'26px',top:'111px',left:'492px'},
+        {name:'codec',width:'40px',height:'30px',top:'154px',left:'600px'},
       ];
       for (var akey in keys) {
         var aremotekey=$('<p>').attr('id',keys[akey]['name']);
@@ -222,6 +223,7 @@ MediaLibrary.prototype = {
       case 'updatelib_v': return this.rpcCall('VideoLibrary.Scan');
       case 'back': return this.rpcCall('Input.Back');
       case 'home': return this.rpcCall('Input.Home');
+      case 'codec': return this.rpcCall('Input.ShowCodec');
       case 'power': return this.rpcCall('System.Shutdown');
       case 'contextmenu': return this.rpcCall('Input.ContextMenu');
       case 'mute':
