@@ -50,8 +50,10 @@ private:
   std::atomic<int> m_cumulativeUpdateFlag;
   int m_countBackCalled;
   CCriticalSection             m_critsection;
-  CFileItemList*               m_HomeShelfTV;
-  CFileItemList*               m_HomeShelfMovies;
+  CFileItemList*               m_HomeShelfTVRA;
+  CFileItemList*               m_HomeShelfTVPR;
+  CFileItemList*               m_HomeShelfMoviesRA;
+  CFileItemList*               m_HomeShelfMoviesPR;
   CFileItemList*               m_HomeShelfMusicSongs;
   CFileItemList*               m_HomeShelfMusicVideos;
   CFileItemList*               m_HomeShelfMusicAlbums;

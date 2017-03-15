@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
   <include name="RecentlyAdded_Header">
-    <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + [Control.IsVisible(312) | Control.IsVisible(413) | Control.IsVisible(513) | Control.IsVisible(515)]">Conditional</animation>
-	<animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + [IntegerGreaterThan(Container(312).NumItems,0) | IntegerGreaterThan(Container(413).NumItems,0)]">Conditional</animation>
+    <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + [Control.IsVisible(8010) | Control.IsVisible(8011) | Control.IsVisible(513) | Control.IsVisible(515)]">Conditional</animation>
+	<animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + [IntegerGreaterThan(Container(8010).NumItems,0) | IntegerGreaterThan(Container(8011).NumItems,0)]">Conditional</animation>
     <align>right</align>
     <posx>20r</posx>
     <posy>339</posy>
@@ -23,8 +23,8 @@
     <font>ListDetails</font>
   </include>
   <include name="RecentlyAdded_Label">
-    <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + [Control.IsVisible(312) | Control.IsVisible(413) | Control.IsVisible(513) | Control.IsVisible(515)]">Conditional</animation>
-	<animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + [IntegerGreaterThan(Container(312).NumItems,0) | IntegerGreaterThan(Container(413).NumItems,0)]">Conditional</animation>
+    <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + [Control.IsVisible(8010) | Control.IsVisible(8011) | Control.IsVisible(513) | Control.IsVisible(515)]">Conditional</animation>
+	<animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + [IntegerGreaterThan(Container(8010).NumItems,0) | IntegerGreaterThan(Container(8011).NumItems,0)]">Conditional</animation>
     <posx>558</posx>
     <posy>339</posy>
     <height>45</height>
@@ -45,8 +45,8 @@
     <font>ListDetails</font>
   </include>
   <include name="RecentlyAdded_Posters">
-    <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + [Control.IsVisible(312) | Control.IsVisible(515)]">Conditional</animation>
-	  <animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + IntegerGreaterThan(Container(312).NumItems,0)">Conditional</animation>
+    <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + [Control.IsVisible(8010) | Control.IsVisible(515)]">Conditional</animation>
+	  <animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + IntegerGreaterThan(Container(8010).NumItems,0)">Conditional</animation>
     <include>VisibleFadeEffectDelayShelf</include>
     <posx>540</posx>
     <posy>378</posy>
@@ -127,7 +127,7 @@
     </itemlayout>
     <focusedlayout height="345" width="228">
       <control type="image">
-        <visible>Control.HasFocus(312) | Control.HasFocus(515)</visible>
+        <visible>Control.HasFocus(8010) | Control.HasFocus(515)</visible>
         <posx>21</posx>
         <posy>21</posy>
         <width>189</width>
@@ -151,8 +151,8 @@
     </focusedlayout>
   </include>
   <include name="RecentlyAdded_Episodes">
-    <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + Control.IsVisible(413)">Conditional</animation>
-	<animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + IntegerGreaterThan(Container(413).NumItems,0)">Conditional</animation>
+    <animation effect="slide" start="0,0" end="0,-162" time="0" condition="!Skin.HasSetting(plexbmc) + Control.IsVisible(8011)">Conditional</animation>
+	<animation effect="slide" start="0,0" end="0,-162" time="0" condition="Skin.HasSetting(plexbmc) + IntegerGreaterThan(Container(8011).NumItems,0)">Conditional</animation>
     <include>VisibleFadeEffectDelayShelf</include>
     <posx>540</posx>
     <posy>378</posy>
@@ -279,7 +279,7 @@
         <posy>21</posy>
         <width>189</width>
         <height>285</height>
-        <include>PosterThumb</include>
+        <include>PosterThumbEpisodes</include>
       </control>
       <control type="group">
         <posy>240</posy>
@@ -302,7 +302,7 @@
     </itemlayout>
     <focusedlayout height="345" width="228">
       <!--<control type="image">
-        <visible>!Control.HasFocus(413)</visible>
+        <visible>!Control.HasFocus(8011)</visible>
         <posx>21</posx>
         <posy>21</posy>
         <width>189</width>
@@ -310,7 +310,7 @@
         <include>PosterThumbBG</include>
       </control>-->
       <control type="image">
-        <visible>Control.HasFocus(413)</visible>
+        <visible>Control.HasFocus(8011)</visible>
         <posx>21</posx>
         <posy>21</posy>
         <width>189</width>
@@ -322,7 +322,7 @@
         <posy>21</posy>
         <width>189</width>
         <height>285</height>
-        <include>PosterThumb</include>
+        <include>PosterThumbEpisodes</include>
       </control>
       <control type="group">
         <posy>240</posy>
@@ -658,7 +658,7 @@
     <control type="group" id="700">
       <include condition="Skin.HasSetting(Shelf.Delay)">Shelf_Delay</include>
 	  <control type="image" description="RA BG XBMC only">
-        <visible>!Skin.HasSetting(plexbmc) + [Control.IsVisible(111) | Control.IsVisible(211) | Control.IsVisible(212) | [Control.IsVisible(8000) + !Control.IsVisible(312)] | [!Control.IsVisible(8000) + Control.IsVisible(312)] | [Control.IsVisible(8001) + !Control.IsVisible(413)] | [!Control.IsVisible(8001) + Control.IsVisible(413)] | [Control.IsVisible(8002) + !Control.IsVisible(513)] | [!Control.IsVisible(8002) + Control.IsVisible(513)] | [Control.IsVisible(514) + !Control.IsVisible(515)] | [!Control.IsVisible(514) + Control.IsVisible(515)] | Control.IsVisible(412) | Control.IsVisible(512)]</visible>
+        <visible>!Skin.HasSetting(plexbmc) + [Control.IsVisible(111) | Control.IsVisible(211) | Control.IsVisible(212) | [Control.IsVisible(8000) + !Control.IsVisible(8010)] | [!Control.IsVisible(8000) + Control.IsVisible(8010)] | [Control.IsVisible(8001) + !Control.IsVisible(8011)] | [!Control.IsVisible(8001) + Control.IsVisible(8011)] | [Control.IsVisible(8002) + !Control.IsVisible(513)] | [!Control.IsVisible(8002) + Control.IsVisible(513)] | [Control.IsVisible(514) + !Control.IsVisible(515)] | [!Control.IsVisible(514) + Control.IsVisible(515)] | Control.IsVisible(412) | Control.IsVisible(512)]</visible>
         <posx>530</posx>
         <posy>345</posy>
         <width>1390</width>
@@ -666,7 +666,7 @@
         <texture border="0,40,0,40">home/OverlayRA2T.png</texture>
       </control>
       <control type="image" description="RA BG 2 XBMC only">
-        <visible>!Skin.HasSetting(plexbmc) + [[Control.IsVisible(8000) + Control.IsVisible(312)] | [Control.IsVisible(8001) + Control.IsVisible(413)] | [Control.IsVisible(8002) + Control.IsVisible(513)] | [Control.IsVisible(514) + Control.IsVisible(515)]]</visible>
+        <visible>!Skin.HasSetting(plexbmc) + [[Control.IsVisible(8000) + Control.IsVisible(8010)] | [Control.IsVisible(8001) + Control.IsVisible(8011)] | [Control.IsVisible(8002) + Control.IsVisible(513)] | [Control.IsVisible(514) + Control.IsVisible(515)]]</visible>
         <posx>530</posx>
         <posy>183</posy>
         <width>1390</width>
@@ -687,6 +687,7 @@
       <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Movies.List</include>
       <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Concerts.List</include>
       <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Episodes.List</include>
+      <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recommended.Episodes.List</include>
       <include condition="!Skin.HasSetting(Hide.RecentlyAdded)">Recent.Albums.List</include>
     </control>
     <control type="group">

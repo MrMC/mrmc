@@ -3006,7 +3006,19 @@ msgctxt "#680"
 msgid "Verbose logging for the [B]Video[/B] component"
 msgstr ""
 
-#empty strings from id 681 to 699
+msgctxt "#681"
+msgid "Recently added"
+msgstr ""
+
+msgctxt "#682"
+msgid "In Progress"
+msgstr ""
+
+msgctxt "#683"
+msgid "Both if possible"
+msgstr ""
+
+#empty strings from id 684 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3021,11 +3033,11 @@ msgid "This path has been scanned before"
 msgstr ""
 
 msgctxt "#703"
-msgid "Display In Progress items on home screen"
+msgid "Home screen items"
 msgstr ""
 
 msgctxt "#704"
-msgid "Selecting this will display In Progress items on home screen instead of Recently Added"
+msgid "Select which items should be shown on home screen. Recently added, In Progress or Both if possible. Both can only be shown on certain skins"
 msgstr ""
 
 msgctxt "#705"

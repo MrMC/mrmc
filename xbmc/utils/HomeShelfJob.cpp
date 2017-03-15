@@ -47,8 +47,10 @@
 CHomeShelfJob::CHomeShelfJob(int flag)
 {
   m_flag = flag;
-  m_HomeShelfTV = new CFileItemList;
-  m_HomeShelfMovies = new CFileItemList;
+  m_HomeShelfTVRA = new CFileItemList;
+  m_HomeShelfTVPR = new CFileItemList;
+  m_HomeShelfMoviesRA = new CFileItemList;
+  m_HomeShelfMoviesPR = new CFileItemList;
   m_HomeShelfMusicAlbums = new CFileItemList;
   m_HomeShelfMusicSongs = new CFileItemList;
   m_HomeShelfMusicVideos = new CFileItemList;
@@ -56,8 +58,10 @@ CHomeShelfJob::CHomeShelfJob(int flag)
 
 CHomeShelfJob::~CHomeShelfJob()
 {
-  SAFE_DELETE(m_HomeShelfTV);
-  SAFE_DELETE(m_HomeShelfMovies);
+  SAFE_DELETE(m_HomeShelfTVRA);
+  SAFE_DELETE(m_HomeShelfTVPR);
+  SAFE_DELETE(m_HomeShelfMoviesRA);
+  SAFE_DELETE(m_HomeShelfMoviesPR);
   SAFE_DELETE(m_HomeShelfMusicAlbums);
   SAFE_DELETE(m_HomeShelfMusicSongs);
   SAFE_DELETE(m_HomeShelfMusicVideos);
@@ -76,31 +80,41 @@ bool CHomeShelfJob::UpdateVideo()
 
   CVideoDatabase videodatabase;
   videodatabase.Open();
-  CFileItemList homeShelfTV;
-  CFileItemList homeShelfMovies;
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWINPROGRESS))
+  CFileItemList homeShelfTVRA;
+  CFileItemList homeShelfTVPR;
+  CFileItemList homeShelfMoviesRA;
+  CFileItemList homeShelfMoviesPR;
+  
+  m_HomeShelfTVRA->ClearItems();
+  m_HomeShelfTVPR->ClearItems();
+  m_HomeShelfMoviesRA->ClearItems();
+  m_HomeShelfMoviesPR->ClearItems();
+
+  int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
+  
+  if (homeScreenItemSelector > 1) // 2 and 3 are in progress and both
   {
     if (videodatabase.HasContent())
     {
       CVideoThumbLoader loader;
 
-      XFILE::CDirectory::GetDirectory("library://video/inprogressmovies.xml/", homeShelfMovies);
-      XFILE::CDirectory::GetDirectory("library://video/inprogressepisodes.xml/", homeShelfTV);
-      homeShelfMovies.Sort(SortByLastPlayed, SortOrderDescending);
-      homeShelfTV.Sort(SortByLastPlayed, SortOrderDescending);
-      for (int i = 0; i < homeShelfMovies.Size() && i < NUM_ITEMS; i++)
+      XFILE::CDirectory::GetDirectory("library://video/inprogressmovies.xml/", homeShelfMoviesPR);
+      XFILE::CDirectory::GetDirectory("library://video/inprogressepisodes.xml/", homeShelfTVPR);
+      homeShelfMoviesPR.Sort(SortByLastPlayed, SortOrderDescending);
+      homeShelfTVPR.Sort(SortByLastPlayed, SortOrderDescending);
+      for (int i = 0; i < homeShelfMoviesPR.Size() && i < NUM_ITEMS; i++)
       {
-        CFileItemPtr item = homeShelfMovies.Get(i);
+        CFileItemPtr item = homeShelfMoviesPR.Get(i);
         item->SetProperty("ItemType", g_localizeStrings.Get(20386));
         if (!item->HasArt("thumb"))
         {
           loader.LoadItem(item.get());
         }
-        m_HomeShelfMovies->Add(item);
+        m_HomeShelfMoviesPR->Add(item);
       }
-      for (int i = 0; i < homeShelfTV.Size() && i < NUM_ITEMS; i++)
+      for (int i = 0; i < homeShelfTVPR.Size() && i < NUM_ITEMS; i++)
       {
-        CFileItemPtr item = homeShelfTV.Get(i);
+        CFileItemPtr item = homeShelfTVPR.Get(i);
         std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
         item->SetProperty("SeasonEpisode", seasonEpisode);
         item->SetProperty("ItemType", g_localizeStrings.Get(20387));
@@ -112,14 +126,15 @@ bool CHomeShelfJob::UpdateVideo()
         {
           item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
         }
-        m_HomeShelfTV->Add(item);
+        m_HomeShelfTVPR->Add(item);
       }
     }
     // get InProgress TVSHOWS and MOVIES from any enabled service
-    CServicesManager::GetInstance().GetAllInProgressShows(*m_HomeShelfTV, NUM_ITEMS);
-    CServicesManager::GetInstance().GetAllInProgressMovies(*m_HomeShelfMovies, NUM_ITEMS);
+    CServicesManager::GetInstance().GetAllInProgressShows(*m_HomeShelfTVPR, NUM_ITEMS);
+    CServicesManager::GetInstance().GetAllInProgressMovies(*m_HomeShelfMoviesPR, NUM_ITEMS);
   }
-  else
+  
+  if (homeScreenItemSelector == 1 || homeScreenItemSelector == 3) // 1 is recently added, 3 is both
   {
     if (videodatabase.HasContent())
     {
@@ -136,17 +151,17 @@ bool CHomeShelfJob::UpdateVideo()
         path = url.ToString();
       }
 
-      videodatabase.GetRecentlyAddedMoviesNav(path, homeShelfMovies, NUM_ITEMS);
+      videodatabase.GetRecentlyAddedMoviesNav(path, homeShelfMoviesRA, NUM_ITEMS);
 
-      for (int i = 0; i < homeShelfMovies.Size(); i++)
+      for (int i = 0; i < homeShelfMoviesRA.Size(); i++)
       {
-        CFileItemPtr item = homeShelfMovies.Get(i);
+        CFileItemPtr item = homeShelfMoviesRA.Get(i);
         item->SetProperty("ItemType", g_localizeStrings.Get(20386));
         if (!item->HasArt("thumb"))
         {
           loader.LoadItem(item.get());
         }
-        m_HomeShelfMovies->Add(item);
+        m_HomeShelfMoviesRA->Add(item);
       }
 
       path = g_advancedSettings.m_recentlyAddedEpisodePath;
@@ -158,11 +173,11 @@ bool CHomeShelfJob::UpdateVideo()
         path = url.ToString();
       }
 
-      videodatabase.GetRecentlyAddedEpisodesNav(path, homeShelfTV, NUM_ITEMS);
+      videodatabase.GetRecentlyAddedEpisodesNav(path, homeShelfTVRA, NUM_ITEMS);
       std::string seasonThumb;
-      for (int i = 0; i < homeShelfTV.Size(); i++)
+      for (int i = 0; i < homeShelfTVRA.Size(); i++)
       {
-        CFileItemPtr item = homeShelfTV.Get(i);
+        CFileItemPtr item = homeShelfTVRA.Get(i);
         std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
         item->SetProperty("SeasonEpisode", seasonEpisode);
         item->SetProperty("ItemType", g_localizeStrings.Get(20387));
@@ -174,20 +189,23 @@ bool CHomeShelfJob::UpdateVideo()
         {
           item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
         }
-        m_HomeShelfTV->Add(item);
+        m_HomeShelfTVRA->Add(item);
       }
     }
 
     // get recently added TVSHOWS and MOVIES from any enabled service
-    CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTV, NUM_ITEMS);
-    CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMovies, NUM_ITEMS);
+    CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS);
+    CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS);
   }
+  
   videodatabase.Close();
-  m_HomeShelfTV->SetContent("episodes");
-  m_HomeShelfMovies->SetContent("movies");
+  m_HomeShelfTVRA->SetContent("episodes");
+  m_HomeShelfTVPR->SetContent("episodes");
+  m_HomeShelfMoviesRA->SetContent("movies");
+  m_HomeShelfMoviesPR->SetContent("movies");
 #if defined(TARGET_DARWIN_TVOS)
   // send recently added Movies and TvShows to TopShelf
-  CTVOSTopShelf::GetInstance().SetTopShelfItems(*m_HomeShelfMovies,*m_HomeShelfTV);
+  CTVOSTopShelf::GetInstance().SetTopShelfItems(*m_HomeShelfMoviesRA,*m_HomeShelfTVRA,*m_HomeShelfMoviesPR,*m_HomeShelfTVPR);
 #endif
 
   return true;
@@ -308,16 +326,28 @@ bool CHomeShelfJob::UpdateTotal()
   return true;
 }
 
-void CHomeShelfJob::UpdateTvItems(CFileItemList *list)
+void CHomeShelfJob::UpdateTvItemsRA(CFileItemList *list)
 {
   CSingleLock lock(m_critsection);
-  list->Assign(*m_HomeShelfTV);
+  list->Assign(*m_HomeShelfTVRA);
 }
 
-void CHomeShelfJob::UpdateMovieItems(CFileItemList *list)
+void CHomeShelfJob::UpdateTvItemsPR(CFileItemList *list)
 {
   CSingleLock lock(m_critsection);
-  list->Assign(*m_HomeShelfMovies);
+  list->Assign(*m_HomeShelfTVPR);
+}
+
+void CHomeShelfJob::UpdateMovieItemsRA(CFileItemList *list)
+{
+  CSingleLock lock(m_critsection);
+  list->Assign(*m_HomeShelfMoviesRA);
+}
+
+void CHomeShelfJob::UpdateMovieItemsPR(CFileItemList *list)
+{
+  CSingleLock lock(m_critsection);
+  list->Assign(*m_HomeShelfMoviesPR);
 }
 
 void CHomeShelfJob::UpdateMusicSongItems(CFileItemList *list)

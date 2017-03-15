@@ -40,11 +40,13 @@
 #include "video/windows/GUIWindowVideoBase.h"
 #include "music/MusicDatabase.h"
 
-#define CONTROL_HOMESHELFMOVIES      8000
-#define CONTROL_HOMESHELFTVSHOWS     8001
-#define CONTROL_HOMESHELFMUSICALBUMS 8002
-#define CONTROL_HOMESHELFMUSICVIDEOS 8003
-#define CONTROL_HOMESHELFMUSICSONGS  8004
+#define CONTROL_HOMESHELFMOVIESRA      8000
+#define CONTROL_HOMESHELFTVSHOWSRA     8001
+#define CONTROL_HOMESHELFMUSICALBUMS   8002
+#define CONTROL_HOMESHELFMUSICVIDEOS   8003
+#define CONTROL_HOMESHELFMUSICSONGS    8004
+#define CONTROL_HOMESHELFMOVIESPR      8010
+#define CONTROL_HOMESHELFTVSHOWSPR     8011
 
 
 using namespace ANNOUNCEMENT;
@@ -57,8 +59,10 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
   m_updateHS = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
   
-  m_HomeShelfTV = new CFileItemList;
-  m_HomeShelfMovies = new CFileItemList;
+  m_HomeShelfTVRA = new CFileItemList;
+  m_HomeShelfTVPR = new CFileItemList;
+  m_HomeShelfMoviesRA = new CFileItemList;
+  m_HomeShelfMoviesPR = new CFileItemList;
   m_HomeShelfMusicAlbums = new CFileItemList;
   m_HomeShelfMusicSongs = new CFileItemList;
   m_HomeShelfMusicVideos = new CFileItemList;
@@ -210,13 +214,42 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   {
     CSingleLock lock(m_critsection);
 
-    ((CHomeShelfJob *)job)->UpdateTvItems(m_HomeShelfTV);
-    CGUIMessage messageTV(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWS, 0, 0, m_HomeShelfTV);
-    g_windowManager.SendThreadMessage(messageTV);
+    ((CHomeShelfJob *)job)->UpdateTvItemsRA(m_HomeShelfTVRA);
+    ((CHomeShelfJob *)job)->UpdateTvItemsPR(m_HomeShelfTVPR);
+    ((CHomeShelfJob *)job)->UpdateMovieItemsRA(m_HomeShelfMoviesRA);
+    ((CHomeShelfJob *)job)->UpdateMovieItemsPR(m_HomeShelfMoviesPR);
+    
+    int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
+    
+    if (homeScreenItemSelector == 1 || homeScreenItemSelector == 3)
+    {
+      CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVRA);
+      g_windowManager.SendThreadMessage(messageTVRA);
 
-    ((CHomeShelfJob *)job)->UpdateMovieItems(m_HomeShelfMovies);
-    CGUIMessage messageMovie(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIES, 0, 0, m_HomeShelfMovies);
-    g_windowManager.SendThreadMessage(messageMovie);
+      
+      CGUIMessage messageTVPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSPR, 0, 0, m_HomeShelfTVPR);
+      g_windowManager.SendThreadMessage(messageTVPR);
+      
+      
+      CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesRA);
+      g_windowManager.SendThreadMessage(messageMovieRA);
+      
+      
+      CGUIMessage messageMoviePR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, m_HomeShelfMoviesPR);
+      g_windowManager.SendThreadMessage(messageMoviePR);
+    }
+    else
+    {
+      
+      // if we are set to only do in Progress, push progress items into recently added shelf items
+      // this is a hack for skins that only have one line
+      CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVPR);
+      g_windowManager.SendThreadMessage(messageTVRA);
+      
+      CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesPR);
+      g_windowManager.SendThreadMessage(messageMovieRA);
+    }
+    
   }
 
   if (jobFlag & Audio)
@@ -256,9 +289,15 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       {
         CSingleLock lock(m_critsection);
         if (newItem->GetVideoInfoTag()->m_type == MediaTypeMovie)
-          m_HomeShelfMovies->UpdateItem(newItem.get());
+        {
+          m_HomeShelfMoviesRA->UpdateItem(newItem.get());
+          m_HomeShelfMoviesPR->UpdateItem(newItem.get());
+        }
         else
-          m_HomeShelfTV->UpdateItem(newItem.get());
+        {
+          m_HomeShelfTVRA->UpdateItem(newItem.get());
+          m_HomeShelfTVPR->UpdateItem(newItem.get());
+        }
       }
     }
 
@@ -270,32 +309,62 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     bool selectAction = (message.GetParam1() == ACTION_SELECT_ITEM ||
                          message.GetParam1() == ACTION_MOUSE_LEFT_CLICK);
 
-    if (selectAction && iControl == CONTROL_HOMESHELFMOVIES)
+    if (selectAction && iControl == CONTROL_HOMESHELFMOVIESRA)
     {
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMOVIES);
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMOVIESRA);
       OnMessage(msg);
 
       CSingleLock lock(m_critsection);
 
       int item = msg.GetParam1();
-      if (item >= 0 && item < m_HomeShelfMovies->Size())
+      if (item >= 0 && item < m_HomeShelfMoviesRA->Size())
       {
-        CFileItemPtr itemPtr = m_HomeShelfMovies->Get(item);
+        CFileItemPtr itemPtr = m_HomeShelfMoviesRA->Get(item);
         PlayHomeShelfItem(*itemPtr);
       }
       return true;
     }
-    else if (selectAction && iControl == CONTROL_HOMESHELFTVSHOWS)
+    if (selectAction && iControl == CONTROL_HOMESHELFMOVIESPR)
     {
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFTVSHOWS);
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMOVIESPR);
+      OnMessage(msg);
+      
+      CSingleLock lock(m_critsection);
+      
+      int item = msg.GetParam1();
+      if (item >= 0 && item < m_HomeShelfMoviesPR->Size())
+      {
+        CFileItemPtr itemPtr = m_HomeShelfMoviesPR->Get(item);
+        PlayHomeShelfItem(*itemPtr);
+      }
+      return true;
+    }
+    else if (selectAction && iControl == CONTROL_HOMESHELFTVSHOWSRA)
+    {
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFTVSHOWSRA);
       OnMessage(msg);
 
       CSingleLock lock(m_critsection);
 
       int item = msg.GetParam1();
-      if (item >= 0 && item < m_HomeShelfTV->Size())
+      if (item >= 0 && item < m_HomeShelfTVRA->Size())
       {
-        CFileItemPtr itemPtr = m_HomeShelfTV->Get(item);
+        CFileItemPtr itemPtr = m_HomeShelfTVRA->Get(item);
+        PlayHomeShelfItem(*itemPtr);
+      }
+      return true;
+    }
+    else if (selectAction && iControl == CONTROL_HOMESHELFTVSHOWSPR)
+    {
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFTVSHOWSPR);
+      OnMessage(msg);
+      
+      CSingleLock lock(m_critsection);
+      
+      int item = msg.GetParam1();
+      if (item >= 0 && item < m_HomeShelfTVPR->Size())
+      {
+        CFileItemPtr itemPtr = m_HomeShelfTVPR->Get(item);
         PlayHomeShelfItem(*itemPtr);
       }
       return true;

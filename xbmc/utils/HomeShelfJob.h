@@ -37,8 +37,10 @@ public:
   bool UpdateVideo();
   bool UpdateMusic();
   bool UpdateTotal();
-  void UpdateTvItems(CFileItemList *list);
-  void UpdateMovieItems(CFileItemList *list);
+  void UpdateTvItemsRA(CFileItemList *list);
+  void UpdateTvItemsPR(CFileItemList *list);
+  void UpdateMovieItemsRA(CFileItemList *list);
+  void UpdateMovieItemsPR(CFileItemList *list);
   void UpdateMusicSongItems(CFileItemList *list);
   void UpdateMusicAlbumItems(CFileItemList *list);
   void UpdateMusicVideoItems(CFileItemList *list);
@@ -49,8 +51,10 @@ public:
 private:
   int m_flag;
   CCriticalSection m_critsection;
-  CFileItemList *m_HomeShelfTV;
-  CFileItemList *m_HomeShelfMovies;
+  CFileItemList *m_HomeShelfTVRA;
+  CFileItemList *m_HomeShelfTVPR;
+  CFileItemList *m_HomeShelfMoviesRA;
+  CFileItemList *m_HomeShelfMoviesPR;
   CFileItemList *m_HomeShelfMusicAlbums;
   CFileItemList *m_HomeShelfMusicSongs;
   CFileItemList *m_HomeShelfMusicVideos;

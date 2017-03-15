@@ -317,39 +317,35 @@
       <onup>300</onup>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
       <onleft condition="!Skin.HasSetting(VerticalHome)">8000</onleft>
-      <ondown condition="Control.IsVisible(312)">312</ondown>
-      <ondown condition="!Control.IsVisible(312)">300</ondown>
+      <ondown condition="Control.IsVisible(8010)">8010</ondown>
+      <ondown condition="!Control.IsVisible(8010)">300</ondown>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Shelf_Commons</include>
       <include>RecentlyAdded_Posters</include>
     </control>
   </include>
   <include name="Recommended.And.Random.Movies.List">
     <control type="label" description="Header">
-      <visible>Control.IsVisible(312)</visible>
+      <visible>Control.IsVisible(8010)</visible>
       <include>Recommended_Header</include>
-      <label>$INFO[Container(312).ListItem.Property(ItemType)]</label>
+      <label>$INFO[Container(8010).ListItem.Property(ItemType)]</label>
     </control>
     <control type="label" description="Label">
-      <visible>Control.HasFocus(312)</visible>
+      <visible>Control.HasFocus(8010)</visible>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Label_Commons</include>
       <include>Recommended_Label</include>
-      <label>$INFO[Container(312).ListItem.Label]</label>
+      <label>$INFO[Container(8010).ListItem.Label]</label>
     </control>
-    <control type="fixedlist" id="312" description="TOP Shortcuts">
-      <visible>![IsEmpty(Window(Home).Property(RecommendedMovie.1.Title)) + IsEmpty(Window(Home).Property(RandomMovie.1.Title))]</visible>
+    <control type="fixedlist" id="8010" description="TOP Shortcuts">
+      <visible>IntegerGreaterThan(Container(8010).NumItems,1)</visible>
       <visible>Container(300).HasFocus(4)</visible>
-      <onright>312</onright>
+      <onright>8010</onright>
       <onup condition="Control.IsVisible(8000)">8000</onup>
       <onup condition="!Control.IsVisible(8000)">300</onup>
       <ondown>300</ondown>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
-      <onleft condition="!Skin.HasSetting(VerticalHome)">312</onleft>
+      <onleft condition="!Skin.HasSetting(VerticalHome)">8010</onleft>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Shelf_Commons</include>
       <include>Recommended_Posters</include>
-      <content>
-        <include condition="SubString(Window(Home).Property(SkinWidgets_Recommended),t,left)">RecommendedMovieContent</include>
-        <include condition="SubString(Window(Home).Property(SkinWidgets_RandomItems),t,left)">RandomMovieContent</include>
-      </content>
     </control>
   </include>
   <include name="Recent.Concerts.List">
@@ -426,8 +422,8 @@
       <visible>Container(300).HasFocus(5)</visible>
       <onright>8001</onright>
       <onup>300</onup>
-      <ondown condition="Control.IsVisible(413)">413</ondown>
-      <ondown condition="!Control.IsVisible(413)">300</ondown>
+      <ondown condition="Control.IsVisible(8011)">8011</ondown>
+      <ondown condition="!Control.IsVisible(8011)">300</ondown>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
       <onleft condition="!Skin.HasSetting(VerticalHome)">8001</onleft>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Shelf_Commons</include>
@@ -436,30 +432,27 @@
   </include>
   <include name="Recommended.Episodes.List">
     <control type="label" description="Header">
-      <visible>Control.IsVisible(413)</visible>
+      <visible>Control.IsVisible(8011)</visible>
       <include>Recommended_Header</include>
-      <label>$INFO[Container(413).ListItem.Property(ItemType)]</label>
+      <label>$INFO[Container(8011).ListItem.Property(ItemType)]</label>
     </control>
     <control type="label" description="Label">
-      <visible>Control.HasFocus(413)</visible>
+      <visible>Control.HasFocus(8011)</visible>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Label_Commons</include>
       <include>Recommended_Label</include>
-      <label>$INFO[Container(413).ListItem.Label2,,[COLOR=Highlight]  •  [/COLOR]]$INFO[Container(413).ListItem.Label]</label>
+      <label>$INFO[Container(8011).ListItem.Label][COLOR=White]$INFO[Container(8011).ListItem.TVShowTitle, • ]$INFO[Container(8011).ListItem.Property(SeasonEpisode), • ]$INFO[Container(8011).ListItem.Duration, • , $LOCALIZE[12391]][/COLOR]</label>
     </control>
-    <control type="fixedlist" id="413" description="TV Shows XBMC Widgets">
-      <visible>!IsEmpty(Window(Home).Property(RecommendedEpisode.1.Title))</visible>
+    <control type="fixedlist" id="8011" description="TV Shows XBMC Widgets">
+      <visible>IntegerGreaterThan(Container(8011).NumItems,1)</visible>
       <visible>Container(300).HasFocus(5)</visible>
-      <onright>413</onright>
+      <onright>8011</onright>
       <onup condition="Control.IsVisible(8001)">8001</onup>
       <onup condition="!Control.IsVisible(8001)">300</onup>
       <ondown>300</ondown>
       <onleft condition="Skin.HasSetting(VerticalHome)">300</onleft>
-      <onleft condition="!Skin.HasSetting(VerticalHome)">413</onleft>
+      <onleft condition="!Skin.HasSetting(VerticalHome)">8011</onleft>
       <include condition="!Skin.HasSetting(VerticalHome)">Horizontal_Shelf_Commons</include>
       <include>Recommended_Episodes</include>
-      <content>
-        <include>RecommendedEpisodeContent</include>
-      </content>
     </control>
   </include>
   <include name="Recent.Albums.List">

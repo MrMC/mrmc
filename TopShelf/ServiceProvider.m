@@ -58,16 +58,16 @@
     storeUrl = [storeUrl URLByAppendingPathComponent:@"Caches" isDirectory:TRUE];
     storeUrl = [storeUrl URLByAppendingPathComponent:@"RA" isDirectory:TRUE];
   
-    NSMutableArray *movieArray = [shared objectForKey:@"movies"];
+    NSMutableArray *movieArrayRA = [shared objectForKey:@"moviesRA"];
   
-    if ([movieArray count] > 0)
+    if ([movieArrayRA count] > 0)
     {
       TVContentItem *itemMovie = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
       NSMutableArray *ContentItems = [[NSMutableArray alloc] init];
-      for (NSUInteger i = 0; i < [movieArray count]; i++)
+      for (NSUInteger i = 0; i < [movieArrayRA count]; i++)
       {
         NSMutableDictionary * movieDict = [[NSMutableDictionary alloc] init];
-        movieDict = [movieArray objectAtIndex:i];
+        movieDict = [movieArrayRA objectAtIndex:i];
         
         TVContentIdentifier *identifier = [[TVContentIdentifier alloc] initWithIdentifier:@"VOD" container:wrapperIdentifier];
         TVContentItem *contentItem = [[TVContentItem alloc] initWithContentIdentifier:identifier];
@@ -80,21 +80,21 @@
         contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
         [ContentItems addObject:contentItem];
       }
-      itemMovie.title = [shared stringForKey:@"moviesTitle"];;
+      itemMovie.title = [shared stringForKey:@"moviesTitleRA"];
       itemMovie.topShelfItems = ContentItems;
       [topShelfItems addObject:itemMovie];
     }
   
-    NSArray * tvArray = [shared valueForKey:@"tv"];
+    NSArray * tvArrayRA = [shared valueForKey:@"tvRA"];
   
-    if ([tvArray count] > 0)
+    if ([tvArrayRA count] > 0)
     {
       TVContentItem *itemTv = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
       NSMutableArray *ContentItemsTv = [[NSMutableArray alloc] init];
-      for (NSUInteger i = 0; i < [tvArray count]; i++)
+      for (NSUInteger i = 0; i < [tvArrayRA count]; i++)
       {
         NSMutableDictionary * tvDict = [[NSMutableDictionary alloc] init];
-        tvDict = [tvArray objectAtIndex:i];
+        tvDict = [tvArrayRA objectAtIndex:i];
         
         TVContentIdentifier *identifier = [[TVContentIdentifier alloc] initWithIdentifier:@"VOD" container:wrapperIdentifier];
         TVContentItem *contentItem = [[TVContentItem alloc] initWithContentIdentifier:identifier];
@@ -107,10 +107,65 @@
         contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
         [ContentItemsTv addObject:contentItem];
       }
-      itemTv.title = [shared stringForKey:@"tvTitle"];
+      itemTv.title = [shared stringForKey:@"tvTitleRA"];
       itemTv.topShelfItems = ContentItemsTv;
       [topShelfItems addObject:itemTv];
     }
+  
+    NSMutableArray *movieArrayPR = [shared objectForKey:@"moviesPR"];
+    
+    if ([movieArrayPR count] > 0)
+    {
+      TVContentItem *itemMovie = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
+      NSMutableArray *ContentItems = [[NSMutableArray alloc] init];
+      for (NSUInteger i = 0; i < [movieArrayPR count]; i++)
+      {
+        NSMutableDictionary * movieDict = [[NSMutableDictionary alloc] init];
+        movieDict = [movieArrayPR objectAtIndex:i];
+        
+        TVContentIdentifier *identifier = [[TVContentIdentifier alloc] initWithIdentifier:@"VOD" container:wrapperIdentifier];
+        TVContentItem *contentItem = [[TVContentItem alloc] initWithContentIdentifier:identifier];
+        
+        contentItem.imageURL = [storeUrl URLByAppendingPathComponent:[movieDict valueForKey:@"thumb"] isDirectory:FALSE];
+        contentItem.imageShape = TVContentItemImageShapePoster;
+        contentItem.title = [movieDict valueForKey:@"title"];
+        NSString *url = [movieDict valueForKey:@"url"];
+        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/%@",url]];
+        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
+        [ContentItems addObject:contentItem];
+      }
+      itemMovie.title = [shared stringForKey:@"moviesTitlePR"];
+      itemMovie.topShelfItems = ContentItems;
+      [topShelfItems addObject:itemMovie];
+    }
+    
+    NSArray * tvArrayPR = [shared valueForKey:@"tvPR"];
+    
+    if ([tvArrayPR count] > 0)
+    {
+      TVContentItem *itemTv = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
+      NSMutableArray *ContentItemsTv = [[NSMutableArray alloc] init];
+      for (NSUInteger i = 0; i < [tvArrayPR count]; i++)
+      {
+        NSMutableDictionary * tvDict = [[NSMutableDictionary alloc] init];
+        tvDict = [tvArrayPR objectAtIndex:i];
+        
+        TVContentIdentifier *identifier = [[TVContentIdentifier alloc] initWithIdentifier:@"VOD" container:wrapperIdentifier];
+        TVContentItem *contentItem = [[TVContentItem alloc] initWithContentIdentifier:identifier];
+        
+        contentItem.imageURL = [storeUrl URLByAppendingPathComponent:[tvDict valueForKey:@"thumb"] isDirectory:FALSE];
+        contentItem.imageShape = TVContentItemImageShapePoster;
+        contentItem.title = [tvDict valueForKey:@"title"];
+        NSString *url = [tvDict valueForKey:@"url"];
+        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/%@",url]];
+        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
+        [ContentItemsTv addObject:contentItem];
+      }
+      itemTv.title = [shared stringForKey:@"tvTitlePR"];
+      itemTv.topShelfItems = ContentItemsTv;
+      [topShelfItems addObject:itemTv];
+    }
+  
     return (NSArray *)topShelfItems;
 }
 

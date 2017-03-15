@@ -47,8 +47,10 @@ bool        CTVOSTopShelf::m_handleUrl;
 
 CTVOSTopShelf::CTVOSTopShelf()
 {
-  m_RecentlyAddedTV = new CFileItemList;
-  m_RecentlyAddedMovies = new CFileItemList;
+  m_HomeShelfTVRA = new CFileItemList;
+  m_HomeShelfTVPR = new CFileItemList;
+  m_HomeShelfMoviesRA = new CFileItemList;
+  m_HomeShelfMoviesPR = new CFileItemList;
 }
 
 CTVOSTopShelf::~CTVOSTopShelf()
@@ -61,23 +63,33 @@ CTVOSTopShelf &CTVOSTopShelf::GetInstance()
   return sTopShelf;
 }
 
-void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies1, CFileItemList& tv1)
+void CTVOSTopShelf::SetTopShelfItems(CFileItemList& moviesRA, CFileItemList& tvRA, CFileItemList& moviesPR, CFileItemList& tvPR)
 {
   {
     CSingleLock lock (m_cs);
     // save these for later
-    CFileItemList recentlyAddedTV;
-    recentlyAddedTV.Copy(tv1);
-    m_RecentlyAddedTV->Assign(recentlyAddedTV);
+    CFileItemList homeShelfTVRA;
+    homeShelfTVRA.Copy(tvRA);
+    m_HomeShelfTVRA->Assign(homeShelfTVRA);
 
-    CFileItemList recentlyAddedMovies;
-    recentlyAddedMovies.Copy(movies1);
-    m_RecentlyAddedMovies->Assign(recentlyAddedMovies);
+    CFileItemList homeShelfTVPR;
+    homeShelfTVPR.Copy(tvPR);
+    m_HomeShelfTVPR->Assign(homeShelfTVPR);
+    
+    CFileItemList homeShelfMoviesRA;
+    homeShelfMoviesRA.Copy(moviesRA);
+    m_HomeShelfMoviesRA->Assign(homeShelfMoviesRA);
+    
+    CFileItemList homeShelfMoviesPR;
+    homeShelfMoviesPR.Copy(moviesPR);
+    m_HomeShelfMoviesPR->Assign(homeShelfMoviesPR);
   }
 
   CVideoThumbLoader loader;
-  NSMutableArray * movieArray = [[NSMutableArray alloc] init];
-  NSMutableArray * tvArray = [[NSMutableArray alloc] init];
+  NSMutableArray * movieArrayRA = [[NSMutableArray alloc] init];
+  NSMutableArray * tvArrayRA = [[NSMutableArray alloc] init];
+  NSMutableArray * movieArrayPR = [[NSMutableArray alloc] init];
+  NSMutableArray * tvArrayPR = [[NSMutableArray alloc] init];
   NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:@"group.tv.mrmc.shared"];
   
   NSFileManager* fileManager = [NSFileManager defaultManager];
@@ -93,16 +105,19 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies1, CFileItemList& tv1)
   NSMutableArray *filePaths = (NSMutableArray *)[fileManager contentsOfDirectoryAtPath:storeUrl.path error:nil];
   std::string raPath = [storeUrl.path UTF8String];
   
-  NSString *movieTitle;
-  NSString *tvTitle;
+  NSString *movieTitleRA;
+  NSString *tvTitleRA;
+  NSString *movieTitlePR;
+  NSString *tvTitlePR;
   
-  if (m_RecentlyAddedMovies->Size() > 0)
+  // in progress items, if they exist
+  if (m_HomeShelfMoviesRA->Size() > 0)
   {
-    for (int i = 0; i < m_RecentlyAddedMovies->Size() && i < 5; ++i)
+    for (int i = 0; i < m_HomeShelfMoviesRA->Size() && i < 5; ++i)
     {
-      CFileItemPtr item          = m_RecentlyAddedMovies->Get(i);
-      movieTitle                 = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
-      NSMutableDictionary * movieDict = [[NSMutableDictionary alloc] init];
+      CFileItemPtr item          = m_HomeShelfMoviesRA->Get(i);
+      movieTitleRA               = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
+      NSMutableDictionary * movieDictRA = [[NSMutableDictionary alloc] init];
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());
       
@@ -123,32 +138,32 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies1, CFileItemList& tv1)
           [filePaths removeObject:[NSString stringWithUTF8String:fileName.c_str()]];
         
       
-      [movieDict setValue:[NSString stringWithUTF8String:item->GetLabel().c_str()] forKey:@"title"];
-      [movieDict setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
-      std::string fullPath = StringUtils::Format("movie/%i", i);
-      [movieDict setValue:[NSString stringWithUTF8String:fullPath.c_str()] forKey:@"url"];
+      [movieDictRA setValue:[NSString stringWithUTF8String:item->GetLabel().c_str()] forKey:@"title"];
+      [movieDictRA setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
+      std::string fullPath = StringUtils::Format("movieRA/%i", i);
+      [movieDictRA setValue:[NSString stringWithUTF8String:fullPath.c_str()] forKey:@"url"];
       
-      [movieArray addObject:movieDict];
+      [movieArrayRA addObject:movieDictRA];
     }
-    [shared setObject:movieArray forKey:@"movies"];
-    [shared setObject:movieTitle forKey:@"moviesTitle"];
+    [shared setObject:movieArrayRA forKey:@"moviesRA"];
+    [shared setObject:movieTitleRA forKey:@"moviesTitleRA"];
   }
   else
   {
     // cleanup if there is no RA
-    [shared removeObjectForKey:@"movies"];
-    [shared removeObjectForKey:@"moviesTitle"];
+    [shared removeObjectForKey:@"moviesRA"];
+    [shared removeObjectForKey:@"moviesTitleRA"];
   }
   
-  if (m_RecentlyAddedTV->Size() > 0)
+  if (m_HomeShelfTVRA->Size() > 0)
   {
-    for (int i = 0; i < m_RecentlyAddedTV->Size() && i < 5; ++i)
+    for (int i = 0; i < m_HomeShelfTVRA->Size() && i < 5; ++i)
     {
       std::string fileName;
       std::string seasonThumb;
-      CFileItemPtr item = m_RecentlyAddedTV->Get(i);
-      tvTitle = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
-      NSMutableDictionary * tvDict = [[NSMutableDictionary alloc] init];
+      CFileItemPtr item = m_HomeShelfTVRA->Get(i);
+      tvTitleRA = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
+      NSMutableDictionary * tvDictRA = [[NSMutableDictionary alloc] init];
       std::string title = StringUtils::Format("%s s%02de%02d",
                                               item->GetVideoInfoTag()->m_strShowTitle.c_str(),
                                               item->GetVideoInfoTag()->m_iSeason,
@@ -181,26 +196,128 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies1, CFileItemList& tv1)
         if ([filePaths containsObject:[NSString stringWithUTF8String:fileName.c_str()]])
           [filePaths removeObject:[NSString stringWithUTF8String:fileName.c_str()]];
       
-      [tvDict setValue:[NSString stringWithUTF8String:title.c_str()] forKey:@"title"];
-      [tvDict setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
-      std::string fullPath = StringUtils::Format("tv/%i", i);
-      [tvDict setValue:[NSString stringWithUTF8String:fullPath.c_str()] forKey:@"url"];
-      [tvArray addObject:tvDict];
+      [tvDictRA setValue:[NSString stringWithUTF8String:title.c_str()] forKey:@"title"];
+      [tvDictRA setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
+      std::string fullPath = StringUtils::Format("tvRA/%i", i);
+      [tvDictRA setValue:[NSString stringWithUTF8String:fullPath.c_str()] forKey:@"url"];
+      [tvArrayRA addObject:tvDictRA];
     }
-    [shared setObject:tvArray forKey:@"tv"];
-    [shared setObject:tvTitle forKey:@"tvTitle"];
+    [shared setObject:tvArrayRA forKey:@"tvRA"];
+    [shared setObject:tvTitleRA forKey:@"tvTitleRA"];
   }
   else
   {
     // cleanup if there is no RA
-    [shared removeObjectForKey:@"tv"];
-    [shared removeObjectForKey:@"tvTitle"];
+    [shared removeObjectForKey:@"tvRA"];
+    [shared removeObjectForKey:@"tvTitleRA"];
+  }
+  
+  // in progress items, if they exist
+  if (m_HomeShelfMoviesPR->Size() > 0)
+  {
+    for (int i = 0; i < m_HomeShelfMoviesPR->Size() && i < 5; ++i)
+    {
+      CFileItemPtr item          = m_HomeShelfMoviesPR->Get(i);
+      movieTitlePR               = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
+      NSMutableDictionary * movieDictPR = [[NSMutableDictionary alloc] init];
+      if (!item->HasArt("thumb"))
+        loader.LoadItem(item.get());
+      
+      // srcPath == full path to the thumb
+      std::string srcPath = item->GetArt("thumb");
+      // make the destfilename different for distinguish files with the same name
+      std::string fileName;
+      if(item->IsMediaServiceBased())
+        fileName = item->GetVideoInfoTag()->m_strServiceId + URIUtils::GetFileName(srcPath);
+      else
+        fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(srcPath);
+      std::string destPath = URIUtils::AddFileToFolder(raPath, fileName);
+      if (!XFILE::CFile::Exists(destPath))
+        XFILE::CFile::Copy(srcPath,destPath);
+      else
+        // remove from array so it doesnt get deleted at the end
+        if ([filePaths containsObject:[NSString stringWithUTF8String:fileName.c_str()]])
+          [filePaths removeObject:[NSString stringWithUTF8String:fileName.c_str()]];
+      
+      
+      [movieDictPR setValue:[NSString stringWithUTF8String:item->GetLabel().c_str()] forKey:@"title"];
+      [movieDictPR setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
+      std::string fullPath = StringUtils::Format("moviePR/%i", i);
+      [movieDictPR setValue:[NSString stringWithUTF8String:fullPath.c_str()] forKey:@"url"];
+      
+      [movieArrayPR addObject:movieDictPR];
+    }
+    [shared setObject:movieArrayPR forKey:@"moviesPR"];
+    [shared setObject:movieTitlePR forKey:@"moviesTitlePR"];
+  }
+  else
+  {
+    // cleanup if there is no PR
+    [shared removeObjectForKey:@"moviesPR"];
+    [shared removeObjectForKey:@"moviesTitlePR"];
+  }
+  
+  if (m_HomeShelfTVPR->Size() > 0)
+  {
+    for (int i = 0; i < m_HomeShelfTVPR->Size() && i < 5; ++i)
+    {
+      std::string fileName;
+      std::string seasonThumb;
+      CFileItemPtr item = m_HomeShelfTVPR->Get(i);
+      tvTitlePR = [NSString stringWithUTF8String:item->GetProperty("ItemType").asString().c_str()];
+      NSMutableDictionary * tvDictPR = [[NSMutableDictionary alloc] init];
+      std::string title = StringUtils::Format("%s s%02de%02d",
+                                              item->GetVideoInfoTag()->m_strShowTitle.c_str(),
+                                              item->GetVideoInfoTag()->m_iSeason,
+                                              item->GetVideoInfoTag()->m_iEpisode);
+      
+      if (item->IsMediaServiceBased())
+      {
+        seasonThumb = item->GetArt("tvshow.poster");
+        fileName = URIUtils::GetFileName(seasonThumb);
+      }
+      else
+      {
+        if (!item->HasArt("thumb"))
+          loader.LoadItem(item.get());
+        if (item->GetVideoInfoTag()->m_iIdSeason > 0)
+        {
+          CVideoDatabase videodatabase;
+          videodatabase.Open();
+          seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, MediaTypeSeason, "poster");
+          
+          videodatabase.Close();
+        }
+        fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(seasonThumb);
+      }
+      std::string destPath = URIUtils::AddFileToFolder(raPath, fileName);
+      if (!XFILE::CFile::Exists(destPath))
+        XFILE::CFile::Copy(seasonThumb ,destPath);
+      else
+        // remove from array so it doesnt get deleted at the end
+        if ([filePaths containsObject:[NSString stringWithUTF8String:fileName.c_str()]])
+          [filePaths removeObject:[NSString stringWithUTF8String:fileName.c_str()]];
+      
+      [tvDictPR setValue:[NSString stringWithUTF8String:title.c_str()] forKey:@"title"];
+      [tvDictPR setValue:[NSString stringWithUTF8String:fileName.c_str()] forKey:@"thumb"];
+      std::string fullPath = StringUtils::Format("tvPR/%i", i);
+      [tvDictPR setValue:[NSString stringWithUTF8String:fullPath.c_str()] forKey:@"url"];
+      [tvArrayPR addObject:tvDictPR];
+    }
+    [shared setObject:tvArrayPR forKey:@"tvPR"];
+    [shared setObject:tvTitlePR forKey:@"tvTitlePR"];
+  }
+  else
+  {
+    // cleanup if there is no RA
+    [shared removeObjectForKey:@"tvPR"];
+    [shared removeObjectForKey:@"tvTitlePR"];
   }
   
   // remove unused thumbs from cache folder
   for (NSString *strFiles in filePaths)
     [fileManager removeItemAtURL:[storeUrl URLByAppendingPathComponent:strFiles isDirectory:FALSE] error:nil];
-  
+
   [shared synchronize];
 }
 
@@ -215,10 +332,14 @@ bool CTVOSTopShelf::RunTopShelf()
     std::vector<std::string> split = StringUtils::Split(m_url, "/");
     int item = std::atoi(split[4].c_str());
 
-    if (split[3] == "movie")
-      itemPtr = m_RecentlyAddedMovies->Get(item);
+    if (split[3] == "movieRA")
+      itemPtr = m_HomeShelfMoviesRA->Get(item);
+    else if (split[3] == "moviePR")
+      itemPtr = m_HomeShelfMoviesPR->Get(item);
+    else if (split[3] == "tvRA")
+      itemPtr = m_HomeShelfTVRA->Get(item);
     else
-      itemPtr = m_RecentlyAddedTV->Get(item);
+      itemPtr = m_HomeShelfTVPR->Get(item);
 
     if (split[2] == "display")
     {
