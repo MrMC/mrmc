@@ -259,8 +259,8 @@ static void setupApplicationMenu(void)
   gStatus = MCRuntimeLib_Run(renderGUI);
 
   MCRuntimeLib_SetRenderGUI(false);
-  [pool release];
   [self performSelectorOnMainThread:@selector(stopRunLoop) withObject:nil waitUntilDone:false];
+  [pool release];
 }
 
 // Called after the internal event loop has started running.
