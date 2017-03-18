@@ -630,9 +630,13 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
   if (stereoMode.empty())
   {
     std::string path = item.GetPath();
-    if (item.IsVideoDb() && item.HasVideoInfoTag())
-      path = item.GetVideoInfoTag()->GetPath();
-
+    if (item.HasVideoInfoTag())
+    {
+      if (item.IsMediaServiceBased())
+        path = item.GetVideoInfoTag()->m_strServiceFile;
+      else if (item.IsVideoDb())
+        path = item.GetVideoInfoTag()->GetPath();
+    }
     // check for custom stereomode setting in video settings
     CVideoSettings itemVideoSettings;
     m_videoDatabase->Open();
@@ -643,7 +647,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     // still empty, try grabbing from filename
     // TODO: in case of too many false positives due to using the full path, extract the filename only using string utils
     if (stereoMode.empty())
-      stereoMode = CStereoscopicsManager::GetInstance().DetectStereoModeByString( path );
+      stereoMode = CStereoscopicsManager::GetInstance().DetectStereoModeByString(path);
   }
   if (!stereoMode.empty())
     item.SetProperty("stereomode", CStereoscopicsManager::GetInstance().NormalizeStereoMode(stereoMode));
