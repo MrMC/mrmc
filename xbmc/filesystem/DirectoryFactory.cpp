@@ -104,6 +104,7 @@
 #include "ResourceDirectory.h"
 #include "EmbyDirectory.h"
 #include "PlexDirectory.h"
+#include "ServicesDirectory.h"
 
 using namespace XFILE;
 
@@ -185,6 +186,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVDirectory();
     if (url.IsProtocol("plex")) return new CPlexDirectory();
     if (url.IsProtocol("emby")) return new CEmbyDirectory();
+    if (url.IsProtocol("services")) return new CServicesDirectory();
 #ifdef HAS_FILESYSTEM_SFTP
     if (url.IsProtocol("sftp") || url.IsProtocol("ssh")) return new CSFTPDirectory();
 #endif

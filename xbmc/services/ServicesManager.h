@@ -86,7 +86,8 @@ public:
   static CServicesManager &GetInstance();
 
   bool HasServices();
-  bool GetStartFolder(std::string &path);
+  bool HasPlexServices();
+  bool HasEmbyServices();
   bool IsMediaServicesItem(const CFileItem &item);
   bool IsMediaServicesCloudItem(const CFileItem &item);
   bool UpdateMediaServicesLibraries(const CFileItem &item);

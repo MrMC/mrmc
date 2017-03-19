@@ -66,6 +66,7 @@ SRCS += SAPDirectory.cpp
 SRCS += SAPFile.cpp
 SRCS += SFTPDirectory.cpp
 SRCS += SFTPFile.cpp
+SRCS += ServicesDirectory.cpp
 SRCS += ShoutcastFile.cpp
 SRCS += SmartPlaylistDirectory.cpp
 SRCS += SourcesDirectory.cpp

@@ -22,6 +22,7 @@
 #include "FileItem.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
+#include "guilib/LocalizeStrings.h"
 #include "services/plex/PlexUtils.h"
 #include "services/plex/PlexServices.h"
 #include "utils/Base64.h"
@@ -29,9 +30,6 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
-
-#include "video/VideoDatabase.h"
-#include "music/MusicDatabase.h"
 
 using namespace XFILE;
 
@@ -45,7 +43,6 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory");
 
-  items.ClearItems();
   std::string strUrl = url.Get();
   std::string section = URIUtils::GetFileName(strUrl);
   items.SetPath(strUrl);
@@ -59,28 +56,6 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     if (section.empty())
     {
-      CVideoDatabase database;
-      database.Open();
-      bool hasMovies = database.HasContent(VIDEODB_CONTENT_MOVIES);
-      database.Close();
-
-      if (hasMovies)
-      {
-        //add local Movies
-        std::string title = StringUtils::Format("MrMC - %s", g_localizeStrings.Get(342).c_str());
-        CFileItemPtr pItem(new CFileItem(title));
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        if (URIUtils::GetFileName(basePath) == "recentlyaddedmovies")
-          pItem->SetPath("videodb://recentlyaddedmovies/");
-        else if (URIUtils::GetFileName(basePath) == "inprogressmovies")
-          pItem->SetPath("library://video/inprogressmovies.xml/");
-        else
-          pItem->SetPath("videodb://movies/" + basePath + "/");
-        pItem->SetLabel(title);
-        items.Add(pItem);
-      }
-
       //look through all plex clients and pull content data for "movie" type
       std::vector<CPlexClientPtr> clients;
       CPlexServices::GetInstance().GetClients(clients);
@@ -88,7 +63,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         client->ClearSectionItems();
         std::vector<PlexSectionsContent> contents = client->GetMovieContent();
-        if (contents.size() > 1 || ((hasMovies || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasEmbyServices() || clients.size() > 1) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
@@ -145,6 +120,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         return false;
       }
 
+      items.ClearItems();
       std::string path = URIUtils::GetParentPath(strUrl);
       URIUtils::RemoveSlashAtEnd(path);
       path = URIUtils::GetFileName(path);
@@ -196,28 +172,6 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     if (section.empty())
     {
-      CVideoDatabase database;
-      database.Open();
-      bool hasTvShows = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
-      database.Close();
-
-      if (hasTvShows)
-      {
-        //add local Shows
-        std::string title = StringUtils::Format("MrMC - %s", g_localizeStrings.Get(20343).c_str());
-        CFileItemPtr pItem(new CFileItem(title));
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        if (URIUtils::GetFileName(basePath) == "recentlyaddedepisodes")
-          pItem->SetPath("videodb://recentlyaddedepisodes/");
-        else if (URIUtils::GetFileName(basePath) == "inprogressshows")
-          pItem->SetPath("library://video/inprogressshows.xml/");
-        else
-          pItem->SetPath("videodb://tvshows/" + basePath + "/");
-        pItem->SetLabel(title);
-        items.Add(pItem);
-      }
-
       //look through all plex servers and pull content data for "show" type
       std::vector<CPlexClientPtr> clients;
       CPlexServices::GetInstance().GetClients(clients);
@@ -225,7 +179,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         client->ClearSectionItems();
         std::vector<PlexSectionsContent> contents = client->GetTvContent();
-        if (contents.size() > 1 || ((hasTvShows || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasEmbyServices() || clients.size() > 1) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
@@ -281,6 +235,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         return false;
       }
 
+      items.ClearItems();
       std::string path = URIUtils::GetParentPath(strUrl);
       URIUtils::RemoveSlashAtEnd(path);
       path = URIUtils::GetFileName(path);
@@ -336,23 +291,6 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     if (section.empty())
     {
-      CMusicDatabase database;
-      database.Open();
-      bool hasMusic = database.HasContent();
-      database.Close();
-      
-      if (hasMusic)
-      {
-        //add local Music
-        std::string title = StringUtils::Format("MrMC - %s", g_localizeStrings.Get(249).c_str());
-        CFileItemPtr pItem(new CFileItem(title));
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        pItem->SetPath("");
-        pItem->SetLabel(title);
-        items.Add(pItem);
-      }
-      
       //look through all plex servers and pull content data for "show" type
       std::vector<CPlexClientPtr> clients;
       CPlexServices::GetInstance().GetClients(clients);
@@ -360,7 +298,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         client->ClearSectionItems();
         std::vector<PlexSectionsContent> contents = client->GetArtistContent();
-        if (contents.size() > 1 || ((hasMusic || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasEmbyServices() || clients.size() > 1) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
@@ -409,7 +347,8 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory no client or client not present %s", CURL::GetRedacted(strUrl).c_str());
         return false;
       }
-      
+
+      items.ClearItems();
       std::string path = URIUtils::GetParentPath(strUrl);
       URIUtils::RemoveSlashAtEnd(path);
       path = URIUtils::GetFileName(path);

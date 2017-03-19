@@ -384,7 +384,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
   items.ClearProperties();
 
   // we need to remove cache
-  if (!URIUtils::IsEmby(strDirectory))
+  if (!URIUtils::IsEmby(strDirectory) || URIUtils::IsServices(strDirectory))
     items.RemoveDiscCache(GetID());
 
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
@@ -1300,11 +1300,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   {
     StringUtils::Replace(lower, "movie", "");
     if (CServicesManager::GetInstance().HasServices())
-    {
-      std::string checkdir = "movies/" + lower + "/";
-      if (CServicesManager::GetInstance().GetStartFolder(checkdir))
-        return checkdir;
-    }
+      return "services://movies/" + lower + "/";
     return "videodb://movies/" + lower + "/";
   }
   else if (lower == "movietags")
@@ -1319,51 +1315,31 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   {
     StringUtils::Replace(lower, "tvshow", "");
     if (CServicesManager::GetInstance().HasServices())
-    {
-      std::string checkdir = "tvshows/" + lower + "/";
-      if (CServicesManager::GetInstance().GetStartFolder(checkdir))
-        return checkdir;
-    }
+      return "services://tvshows/" + lower + "/";
     return "videodb://tvshows/" + lower + "/";
   }
   else if (lower == "recentlyaddedmovies")
   {
     if (CServicesManager::GetInstance().HasServices())
-    {
-      std::string checkdir = "movies/recentlyaddedmovies/";
-      if (CServicesManager::GetInstance().GetStartFolder(checkdir))
-        return checkdir;
-    }
+      return "services://movies/recentlyaddedmovies/";
     return "videodb://recentlyaddedmovies/";
   }
   else if (lower == "recentlyaddedepisodes")
   {
     if (CServicesManager::GetInstance().HasServices())
-    {
-      std::string checkdir = "tvshows/recentlyaddedepisodes/";
-      if (CServicesManager::GetInstance().GetStartFolder(checkdir))
-        return checkdir;
-    }
+      return "services://tvshows/recentlyaddedepisodes/";
     return "videodb://recentlyaddedepisodes/";
   }
   else if (lower == "inprogressshows")
   {
     if (CServicesManager::GetInstance().HasServices())
-    {
-      std::string checkdir = "tvshows/inprogressshows/";
-      if (CServicesManager::GetInstance().GetStartFolder(checkdir))
-        return checkdir;
-    }
+      return "services://tvshows/inprogressshows/";
     return "library://video/inprogressshows.xml/";
   }
   else if (lower == "inprogressmovies")
   {
     if (CServicesManager::GetInstance().HasServices())
-    {
-      std::string checkdir = "movies/inprogressmovies/";
-      if (CServicesManager::GetInstance().GetStartFolder(checkdir))
-        return checkdir;
-    }
+      return "services://movies/inprogressmovies/";
     return "library://video/inprogressmovies.xml/";
   }
   else if (lower == "tvshowtags")

@@ -1095,6 +1095,11 @@ bool URIUtils::IsEmby(const std::string& strFile)
   return IsProtocol(strFile, "emby");
 }
 
+bool URIUtils::IsServices(const std::string& strFile)
+{
+  return IsProtocol(strFile, "services");
+}
+
 void URIUtils::AddSlashAtEnd(std::string& strFolder)
 {
   if (IsURL(strFolder))

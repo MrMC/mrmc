@@ -888,19 +888,19 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
   else if (lower == "artists")
   {
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://music/" + lower + "/";
+      return "services://music/" + lower + "/";
     return "musicdb://artists/";
   }
   else if (lower == "albums")
   {
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://music/" + lower + "/";
+      return "services://music/" + lower + "/";
     return "musicdb://albums/";
   }
   else if (lower == "root")
   {
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://music/" + lower + "/";
+      return "services://music/" + lower + "/";
   }
   else if (lower == "singles")
     return "musicdb://singles/";

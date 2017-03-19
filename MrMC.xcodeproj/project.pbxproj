@@ -135,6 +135,9 @@
 		18B7C938129428CA009E7A26 /* SmartPlayList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C92D129428CA009E7A26 /* SmartPlayList.cpp */; };
 		18B7C97C1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C97A12943809009E7A26 /* GUIWindowAddonBrowser.cpp */; };
 		18B7C9831294385F009E7A26 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
+		18BBE8DF1E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */; };
+		18BBE8E01E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */; };
+		18BBE8E11E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */; };
 		18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */; };
 		18D18CE81D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
 		18D18CE91D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
@@ -3574,6 +3577,8 @@
 		18B7C9811294385F009E7A26 /* XMLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLUtils.cpp; sourceTree = "<group>"; };
 		18B7C9821294385F009E7A26 /* XMLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLUtils.h; sourceTree = "<group>"; };
 		18B7C9E7129447B9009E7A26 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtils.h; sourceTree = "<group>"; };
+		18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServicesDirectory.cpp; sourceTree = "<group>"; };
+		18BBE8DE1E7EEBDE00B36525 /* ServicesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServicesDirectory.h; sourceTree = "<group>"; };
 		18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLUtils.cpp; sourceTree = "<group>"; };
 		18C1D22C13033F6A00CFFE59 /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
 		18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexUtils.cpp; sourceTree = "<group>"; };
@@ -8638,6 +8643,8 @@
 				E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */,
 				E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */,
 				E4DC97530FFE5BA8008E0C07 /* SAPFile.h */,
+				18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */,
+				18BBE8DE1E7EEBDE00B36525 /* ServicesDirectory.h */,
 				F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */,
 				F5A7B37D113AFB900059D6AA /* SFTPDirectory.h */,
 				DF93D6851444A8B0007C6459 /* SFTPFile.cpp */,
@@ -10577,6 +10584,7 @@
 				E38E20B20D25F9FD00618676 /* GUIWindowLoginScreen.cpp in Sources */,
 				E38E20B30D25F9FD00618676 /* GUIWindowMusicBase.cpp in Sources */,
 				E38E20B40D25F9FD00618676 /* GUIDialogMusicInfo.cpp in Sources */,
+				18BBE8DF1E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */,
 				E38E20B50D25F9FD00618676 /* GUIWindowMusicNav.cpp in Sources */,
 				F5B724961C7E150C006432AE /* cmddata.cpp in Sources */,
 				F5B723061C7C894F006432AE /* LibraryBuiltins.cpp in Sources */,
@@ -12185,6 +12193,7 @@
 				E4991453174E605900741B6D /* FileUtils.cpp in Sources */,
 				F5B723151C7C894F006432AE /* ProfileBuiltins.cpp in Sources */,
 				E4991454174E605900741B6D /* GLUtils.cpp in Sources */,
+				18BBE8E01E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */,
 				E4991455174E605900741B6D /* GroupUtils.cpp in Sources */,
 				E4991457174E605900741B6D /* HTMLUtil.cpp in Sources */,
 				E4991458174E605900741B6D /* HttpHeader.cpp in Sources */,
@@ -12728,6 +12737,7 @@
 				F5D13F641BAF0B6D0075A95C /* GUIDialogSlider.cpp in Sources */,
 				F5D13F651BAF0B6D0075A95C /* GUIDialogSmartPlaylistEditor.cpp in Sources */,
 				F5D13F661BAF0B6D0075A95C /* GUIDialogSmartPlaylistRule.cpp in Sources */,
+				18BBE8E11E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */,
 				F5D13F671BAF0B6D0075A95C /* GUIDialogSubMenu.cpp in Sources */,
 				F5D13F681BAF0B6D0075A95C /* HTTPFileHandler.cpp in Sources */,
 				F5D13F691BAF0B6D0075A95C /* GUIDialogTextViewer.cpp in Sources */,

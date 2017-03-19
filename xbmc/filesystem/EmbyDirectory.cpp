@@ -26,6 +26,7 @@
 #include "network/Network.h"
 #include "network/Socket.h"
 #include "filesystem/Directory.h"
+#include "guilib/LocalizeStrings.h"
 #include "services/emby/EmbyUtils.h"
 #include "services/emby/EmbyServices.h"
 #include "utils/log.h"
@@ -34,9 +35,6 @@
 #include "utils/JSONVariantParser.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-
-#include "video/VideoDatabase.h"
-#include "music/MusicDatabase.h"
 
 using namespace XFILE;
 
@@ -76,7 +74,6 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     }
   }
 
-  items.ClearItems();
   std::string strUrl = url.Get();
   std::string section = URIUtils::GetFileName(strUrl);
   items.SetPath(strUrl);
@@ -90,35 +87,13 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     if (section.empty())
     {
-      CVideoDatabase database;
-      database.Open();
-      bool hasMovies = database.HasContent(VIDEODB_CONTENT_MOVIES);
-      database.Close();
-
-      if (hasMovies)
-      {
-        //add local Movies
-        std::string title = StringUtils::Format("MrMC - %s", g_localizeStrings.Get(342).c_str());
-        CFileItemPtr pItem(new CFileItem(title));
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        if (URIUtils::GetFileName(basePath) == "recentlyaddedmovies")
-          pItem->SetPath("videodb://recentlyaddedmovies/");
-        else if (URIUtils::GetFileName(basePath) == "inprogressmovies")
-          pItem->SetPath("library://video/inprogressmovies.xml/");
-        else
-          pItem->SetPath("videodb://movies/" + basePath + "/");
-        pItem->SetLabel(title);
-        items.Add(pItem);
-      }
-
       //look through all emby clients and pull content data for "movie" type
       std::vector<CEmbyClientPtr> clients;
       CEmbyServices::GetInstance().GetClients(clients);
       for (const auto &client : clients)
       {
         std::vector<EmbyViewContent> contents = client->GetMoviesContent();
-        if (contents.size() > 1 || ((hasMovies || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasPlexServices() || clients.size() > 1) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
@@ -176,6 +151,7 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         return false;
       }
 
+      items.ClearItems();
       std::string path = URIUtils::GetParentPath(strUrl);
       URIUtils::RemoveSlashAtEnd(path);
       path = URIUtils::GetFileName(path);
@@ -226,35 +202,13 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     if (section.empty())
     {
-      CVideoDatabase database;
-      database.Open();
-      bool hasTvShows = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
-      database.Close();
-
-      if (hasTvShows)
-      {
-        //add local Shows
-        std::string title = StringUtils::Format("MrMC - %s", g_localizeStrings.Get(20343).c_str());
-        CFileItemPtr pItem(new CFileItem(title));
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        if (URIUtils::GetFileName(basePath) == "recentlyaddedepisodes")
-          pItem->SetPath("videodb://recentlyaddedepisodes/");
-        else if (URIUtils::GetFileName(basePath) == "inprogressshows")
-          pItem->SetPath("library://video/inprogressshows.xml/");
-        else
-          pItem->SetPath("videodb://tvshows/" + basePath + "/");
-        pItem->SetLabel(title);
-        items.Add(pItem);
-      }
-
       //look through all emby servers and pull content data for "show" type
       std::vector<CEmbyClientPtr> clients;
       CEmbyServices::GetInstance().GetClients(clients);
       for (const auto &client : clients)
       {
         std::vector<EmbyViewContent> contents = client->GetTvShowContent();
-        if (contents.size() > 1 || ((hasTvShows || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasPlexServices() || clients.size() > 1) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
@@ -312,6 +266,7 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         return false;
       }
 
+      items.ClearItems();
       std::string path = URIUtils::GetParentPath(strUrl);
       URIUtils::RemoveSlashAtEnd(path);
       path = URIUtils::GetFileName(path);
@@ -371,30 +326,13 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     if (section.empty())
     {
-      CMusicDatabase database;
-      database.Open();
-      bool hasMusic = database.HasContent();
-      database.Close();
-      
-      if (hasMusic)
-      {
-        //add local Music
-        std::string title = StringUtils::Format("MrMC - %s", g_localizeStrings.Get(249).c_str());
-        CFileItemPtr pItem(new CFileItem(title));
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        pItem->SetPath("");
-        pItem->SetLabel(title);
-        items.Add(pItem);
-      }
-      
       //look through all emby servers and pull content data for "show" type
       std::vector<CEmbyClientPtr> clients;
       CEmbyServices::GetInstance().GetClients(clients);
       for (const auto &client : clients)
       {
         std::vector<EmbyViewContent> contents = client->GetArtistContent();
-        if (contents.size() > 1 || ((hasMusic || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasPlexServices() || clients.size() > 1) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
@@ -445,7 +383,8 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory no client or client not present %s", CURL::GetRedacted(strUrl).c_str());
         return false;
       }
-      
+
+      items.ClearItems();
       std::string path = URIUtils::GetParentPath(strUrl);
       URIUtils::RemoveSlashAtEnd(path);
       path = URIUtils::GetFileName(path);
@@ -485,7 +424,9 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
 DIR_CACHE_TYPE CEmbyDirectory::GetCacheType(const CURL& url) const
 {
+  // testing only
   return DIR_CACHE_ALWAYS;
+  //return DIR_CACHE_NEVER;
 }
 
 bool CEmbyDirectory::FindByBroadcast(CFileItemList &items)
