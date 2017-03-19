@@ -160,6 +160,25 @@ bool CServicesManager::HasServices()
   return rtn;
 }
 
+bool CServicesManager::GetStartFolder(std::string &path)
+{
+  bool rtn = false;
+  // prefer plex over emby if both are enabled.
+  // TODO, get more clever later
+  if (CPlexUtils::HasClients())
+  {
+    path = "plex://" + path;
+    rtn = true;
+  }
+  else if (CEmbyUtils::HasClients())
+  {
+    path = "emby://" + path;
+    rtn = true;
+  }
+
+  return rtn;
+}
+
 bool CServicesManager::IsMediaServicesItem(const CFileItem &item)
 {
   if (item.HasProperty("MediaServicesItem"))
