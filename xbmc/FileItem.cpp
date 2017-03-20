@@ -1368,6 +1368,14 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       return ((m_videoInfoTag->m_iDbId == item->m_videoInfoTag->m_iDbId) &&
         (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));        
   }
+  if (HasMusicInfoTag() && item->HasMusicInfoTag())
+  {
+    if (item->IsMediaServiceBased())
+    {
+      if (!m_musicInfoTag->m_strServiceId.empty() && !item->m_musicInfoTag->m_strServiceId.empty())
+        return (m_musicInfoTag->m_strServiceId == item->m_musicInfoTag->m_strServiceId);
+    }
+  }
   if (IsMusicDb() && HasMusicInfoTag())
   {
     CFileItem dbItem(m_musicInfoTag->GetURL(), false);
