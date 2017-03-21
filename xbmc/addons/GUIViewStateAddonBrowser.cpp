@@ -76,6 +76,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24043); // "Available updates"
     m_sources.push_back(share);
   }
+/* MrMC does not support 'Install from zip file'
   if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY, true))
   {
     CMediaSource share;
@@ -84,7 +85,9 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24033);
     m_sources.push_back(share);
   }
+*/
 #if !defined(TARGET_DARWIN_IOS)
+/* MrMC does not support 'Install from zip file'
   {
     CMediaSource share;
     share.strPath = "addons://install/";
@@ -92,6 +95,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24041);
     m_sources.push_back(share);
   }
+*/
   {
     CMediaSource share;
     share.strPath = "addons://search/";

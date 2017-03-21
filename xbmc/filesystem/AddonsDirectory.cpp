@@ -396,6 +396,9 @@ static bool Browse(const CURL& path, CFileItemList &items)
 
 static bool Repos(const CURL& path, CFileItemList &items)
 {
+  // MrMC does not support 'Install from repository'
+  return false;
+  /*
   items.SetLabel(g_localizeStrings.Get(24033));
 
   VECADDONS addons;
@@ -417,6 +420,7 @@ static bool Repos(const CURL& path, CFileItemList &items)
   }
   items.SetContent("addons");
   return true;
+  */
 }
 
 static void Manage(CFileItemList &items)

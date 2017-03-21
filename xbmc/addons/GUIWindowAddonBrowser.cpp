@@ -237,6 +237,7 @@ class UpdateAddons : public IRunnable
 bool CGUIWindowAddonBrowser::OnClick(int iItem)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
+/* MrMC does not support 'Install from zip file'
   if (item->GetPath() == "addons://install/")
   {
     // pop up filebrowser to grab an installed folder
@@ -248,6 +249,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
       CAddonInstaller::GetInstance().InstallFromZip(path);
     return true;
   }
+*/
   if (item->GetPath() == "addons://update_all/")
   {
     UpdateAddons updater;
