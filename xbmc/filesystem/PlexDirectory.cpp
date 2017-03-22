@@ -178,7 +178,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       else if (path == "inprogressmovies")
       {
         CPlexUtils::GetPlexInProgressMovies(items, Base64::Decode(section));
-        items.SetLabel(g_localizeStrings.Get(20386));
+        items.SetLabel(g_localizeStrings.Get(627));
         items.SetContent("movies");
       }
       else
