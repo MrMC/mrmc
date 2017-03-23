@@ -123,8 +123,11 @@ void CEmbyClientSync::Process()
     m_websocket->dispatch(
       [this](const std::string& msg)
       {
-        const auto msgObject = CJSONVariantParser::Parse(msg);
-        if (!msgObject.isObject() || !msgObject.isMember(NotificationMessageType) || !msgObject.isMember(NotificationData))
+        CVariant msgObject;
+        if (!CJSONVariantParser::Parse(msg, msgObject) ||
+          !msgObject.isObject() ||
+          !msgObject.isMember(NotificationMessageType)
+          || !msgObject.isMember(NotificationData))
         {
           CLog::Log(LOGERROR, "CEmbyClientSync: invalid websocket notification from %s", m_name.c_str());
           return;

@@ -1414,14 +1414,10 @@ bool CJSONServiceDescription::prepareDescription(std::string &description, CVari
   }
 
   if (description.at(0) != '{')
-  {
     description = StringUtils::Format("{%s}", description.c_str());
-  }
-
-  descriptionObject = CJSONVariantParser::Parse(description);
 
   // Make sure the method description actually exists and represents an object
-  if (!descriptionObject.isObject())
+  if (!CJSONVariantParser::Parse(description, descriptionObject) || !descriptionObject.isObject())
   {
     CLog::Log(LOGERROR, "JSONRPC: Unable to parse JSON Schema definition for \"%s\"", name.c_str());
     return false;

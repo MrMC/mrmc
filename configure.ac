@@ -948,6 +948,9 @@ if test "$use_mysql" = "yes"; then
     AC_MSG_ERROR($missing_program)
   fi
 fi
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADER([rapidjson/rapidjson.h],, AC_MSG_ERROR($missing_library))
+AC_LANG_POP([C++])
 AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
@@ -957,8 +960,8 @@ AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([LIBDCADEC], [dcadec],, AC_MSG_ERROR([libdcadec not found]))
-
 PKG_CHECK_MODULES([LIBCURL], [libcurl],, AC_MSG_ERROR([libcurl not found]))
+
 XB_FIND_SONAME([CURL], [curl])
 AC_MSG_CHECKING([for CRYPTO_set_locking_callback(0) in $CURL_SONAME])
 if test "$host_vendor" = "apple" ; then
@@ -1051,22 +1054,6 @@ AC_LINK_IFELSE(
   [AC_MSG_ERROR(crossguid not found)])
 LIBS="$SAVED_LIBS"
 AC_LANG_POP([C++])
-
-PKG_CHECK_MODULES([YAJL], [yajl >= 2],
-  [INCLUDES="$INCLUDES $YAJL_CFLAGS"; LIBS="$LIBS $YAJL_LIBS"; YAJL_FOUND="true"],
-  [AC_COMPILE_IFELSE(
-    [AC_LANG_SOURCE([[
-#include <yajl/yajl_version.h>
-#if !defined YAJL_MAJOR || YAJL_MAJOR < 2
-#error yajl version < 2;
-#endif
-    ]])],, [AC_MSG_ERROR([libyajl >= 2.0.0 not found])]
-  )])
-
-if test "$YAJL_FOUND" != "true"; then
-  AC_CHECK_LIB([yajl], [main],, [AC_MSG_ERROR("libyajl >= 2.0.0 not found")])
-  AC_CHECK_HEADERS([yajl/yajl_common.h], [AC_MSG_NOTICE(libyajl2 found)], [AC_MSG_ERROR("yajl/yajl_common.h not found")])
-fi
 
 if test "$target_platform" = "target_android" ; then
   AC_CHECK_LIB([android],     [main],, AC_MSG_ERROR($missing_library))

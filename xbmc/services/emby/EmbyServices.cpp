@@ -496,7 +496,9 @@ bool CEmbyServices::AuthenticateByName(const CURL& url)
   body["Username"] = url.GetUserName();
   body["password"] = passwordSha1;
   body["passwordMd5"] = passwordMd5;
-  const std::string requestBody = CJSONVariantWriter::Write(body, true);
+  std::string requestBody;
+  if (!CJSONVariantWriter::Write(body, requestBody, true))
+    return false;
 
   CURL curl("emby/Users/AuthenticateByName");
   curl.SetPort(url.GetPort());
@@ -516,7 +518,9 @@ bool CEmbyServices::AuthenticateByName(const CURL& url)
     return false;
   }
 
-  CVariant responseObj = CJSONVariantParser::Parse(response);
+  CVariant responseObj;
+  if (!CJSONVariantParser::Parse(response, responseObj))
+    return false;
   if (!responseObj.isObject() ||
       !responseObj.isMember("AccessToken") ||
       !responseObj.isMember("User") ||
@@ -565,7 +569,9 @@ EmbyServerInfo CEmbyServices::GetEmbyLocalServerInfo(const std::string url)
   static const std::string ServerPropertyWanAddress = "WanAddress";
   static const std::string ServerPropertyLocalAddress = "LocalAddress";
   static const std::string ServerPropertyOperatingSystem = "OperatingSystem";
-  CVariant responseObj = CJSONVariantParser::Parse(response);
+  CVariant responseObj;
+  if (!CJSONVariantParser::Parse(response, responseObj))
+    return serverInfo;
   if (!responseObj.isObject() ||
       !responseObj.isMember(ServerPropertyId) ||
       !responseObj.isMember(ServerPropertyName) ||
@@ -633,7 +639,9 @@ bool CEmbyServices::PostSignInPinCode()
 
   CVariant data;
   data["deviceId"] = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
-  std::string jsonBody = CJSONVariantWriter::Write(data, false);
+  std::string jsonBody;
+  if (!CJSONVariantWriter::Write(data, jsonBody, false))
+    return rtn;
   std::string response;
   if (curlfile.Post(curl.Get(), jsonBody, response))
   {
@@ -641,7 +649,8 @@ bool CEmbyServices::PostSignInPinCode()
     CLog::Log(LOGDEBUG, "CEmbyServices:FetchSignInPin %s", response.c_str());
 #endif
     CVariant reply;
-    reply = CJSONVariantParser::Parse(response);
+    if (!CJSONVariantParser::Parse(response, reply))
+      return rtn;
     if (reply.isObject() && reply.isMember("Pin"))
     {
       m_signInByPinCode = reply["Pin"].asString();
@@ -734,7 +743,8 @@ bool CEmbyServices::GetSignInByPinReply()
     CLog::Log(LOGDEBUG, "CEmbyServices:WaitForSignInByPin %s", response.c_str());
 #endif
     CVariant reply;
-    reply = CJSONVariantParser::Parse(response);
+    if (!CJSONVariantParser::Parse(response, reply))
+      return rtn;
     if (reply.isObject() && reply.isMember("IsConfirmed") && reply["IsConfirmed"].asString() == "true")
     {
       std::string pin = reply["Pin"].asString();
@@ -771,7 +781,9 @@ bool CEmbyServices::AuthenticatePinReply(const std::string &deviceId, const std:
   CVariant data;
   data["pin"] = pin;
   data["deviceId"] = deviceId;
-  std::string jsondata = CJSONVariantWriter::Write(data, false);
+  std::string jsondata;
+  if (!CJSONVariantWriter::Write(data, jsondata, false))
+    return rtn;
   std::string response;
   if (curlfile.Post(curl.Get(), jsondata, response))
   {
@@ -779,7 +791,8 @@ bool CEmbyServices::AuthenticatePinReply(const std::string &deviceId, const std:
     CLog::Log(LOGDEBUG, "CEmbyServices:AuthenticatePinReply %s", response.c_str());
 #endif
     CVariant reply;
-    reply = CJSONVariantParser::Parse(response);
+    if (!CJSONVariantParser::Parse(response, reply))
+      return rtn;
     if (reply.isObject() && reply.isMember("AccessToken"))
     {
       // pin connects are parsed as UserId/AccessToken
@@ -818,7 +831,9 @@ bool CEmbyServices::GetConnectServerList(const std::string &connectUserId, const
 #if defined(EMBY_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "CEmbyServices:GetConnectServerList %s", response.c_str());
 #endif
-    auto servers = CJSONVariantParser::Parse(response);
+    CVariant servers;
+    if (!CJSONVariantParser::Parse(response, servers))
+      return rtn;
     if (servers.isArray())
     {
       for (auto serverObjectIt = servers.begin_array(); serverObjectIt != servers.end_array(); ++serverObjectIt)
@@ -870,7 +885,9 @@ bool CEmbyServices::ExchangeAccessKeyForAccessToken(EmbyServerInfo &connectServe
 #if defined(EMBY_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "CEmbyServices:ExchangeAccessKeyForAccessToken %s", response.c_str());
 #endif
-    auto reply = CJSONVariantParser::Parse(response);
+    CVariant reply;
+    if (!CJSONVariantParser::Parse(response, reply))
+      return rtn;
     if (reply.isObject() && reply.isMember("AccessToken"))
     {
       connectServerInfo.UserId = reply["LocalUserId"].asString();

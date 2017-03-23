@@ -562,7 +562,8 @@ bool CPlexServices::GetPlexToken(std::string user, std::string pass)
     //CLog::Log(LOGDEBUG, "CPlexServices: myPlex %s", strResponse.c_str());
 
     CVariant reply;
-    reply = CJSONVariantParser::Parse(response);
+    if (!CJSONVariantParser::Parse(response, reply))
+      return rtn;
 
     CVariant user = reply["user"];
     m_authToken = user["authentication_token"].asString();

@@ -170,7 +170,7 @@ bool CPlexClient::Init(const TiXmlElement* DeviceNode)
     }
   }
 
-  if (m_owned == "1")
+  //if (m_owned == "1")
   {
     // websockets will 401 on servers you do not own
     m_clientSync = new CPlexClientSync(this, m_serverName,

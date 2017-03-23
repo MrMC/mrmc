@@ -135,7 +135,9 @@ void CPlexClientSync::Process()
 //#if defined(PLEX_DEBUG_VERBOSE)
         CLog::Log(LOGDEBUG, "CPlexClientSync: %s", msg.c_str());
 //#endif
-        const auto msgObject = CJSONVariantParser::Parse(msg);
+        CVariant msgObject;
+        if (!CJSONVariantParser::Parse(msg, msgObject))
+          return;
         if (!msgObject.isObject() || !msgObject.isMember(NotificationContainer))
         {
           CLog::Log(LOGERROR, "CPlexClientSync: invalid websocket notification from %s", m_name.c_str());

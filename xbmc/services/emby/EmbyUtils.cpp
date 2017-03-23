@@ -1276,6 +1276,9 @@ bool CEmbyUtils::GetVideoItems(CFileItemList &items, CURL url, const CVariant &o
     return false;
   }
 
+#if defined(EMBY_DEBUG_VERBOSE)
+  unsigned int currentTime = XbmcThreads::SystemClockMillis();
+#endif
   const auto& objectItems = object["Items"];
   for (auto objectItemIt = objectItems.begin_array(); objectItemIt != objectItems.end_array(); ++objectItemIt)
   {
@@ -1396,6 +1399,11 @@ bool CEmbyUtils::GetVideoItems(CFileItemList &items, CURL url, const CVariant &o
   items.SetProperty("library.filter", "true");
   SetEmbyItemProperties(items);
 
+#if defined(EMBY_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "CEmbyUtils::GetVideoItems %d(msec) for %d items",
+    XbmcThreads::SystemClockMillis() - currentTime, objectItems.size());
+#endif
+
   return rtn;
 }
 
@@ -1493,6 +1501,10 @@ void CEmbyUtils::GetMediaDetals(CFileItem &fileitem, const CVariant &cvariant, s
 
 CVariant CEmbyUtils::GetEmbyCVariant(std::string url, std::string filter)
 {
+#if defined(EMBY_DEBUG_VERBOSE)
+  unsigned int currentTime = XbmcThreads::SystemClockMillis();
+#endif
+
   XFILE::CCurlFile emby;
   emby.SetRequestHeader("Cache-Control", "no-cache");
   emby.SetRequestHeader("Content-Type", "application/json");
@@ -1504,6 +1516,10 @@ CVariant CEmbyUtils::GetEmbyCVariant(std::string url, std::string filter)
   std::string response;
   if (emby.Get(curl.Get(), response))
   {
+#if defined(EMBY_DEBUG_VERBOSE)
+    CLog::Log(LOGDEBUG, "CEmbyUtils::GetEmbyCVariant %d(msec) for %lu bytes",
+      XbmcThreads::SystemClockMillis() - currentTime, response.size());
+#endif
     if (emby.GetContentEncoding() == "gzip")
     {
       std::string buffer;
@@ -1515,11 +1531,19 @@ CVariant CEmbyUtils::GetEmbyCVariant(std::string url, std::string filter)
 #if defined(EMBY_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "CEmbyUtils::GetEmbyCVariant %s", curl.Get().c_str());
     CLog::Log(LOGDEBUG, "CEmbyUtils::GetEmbyCVariant %s", response.c_str());
+    currentTime = XbmcThreads::SystemClockMillis();
 #endif
-    auto resultObject = CJSONVariantParser::Parse(response);
-    // recently added does not return proper object, we make one up later
-    if (resultObject.isObject() || resultObject.isArray())
-      return resultObject;
+    CVariant resultObject;
+    if (CJSONVariantParser::Parse(response, resultObject))
+    {
+#if defined(EMBY_DEBUG_VERBOSE)
+      CLog::Log(LOGDEBUG, "CEmbyUtils::GetEmbyCVariant parsed in %d(msec)",
+        XbmcThreads::SystemClockMillis() - currentTime);
+#endif
+      // recently added does not return proper object, we make one up later
+      if (resultObject.isObject() || resultObject.isArray())
+        return resultObject;
+    }
   }
   return CVariant(CVariant::VariantTypeNull);
 }

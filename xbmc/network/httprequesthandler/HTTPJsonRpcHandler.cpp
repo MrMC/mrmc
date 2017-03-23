@@ -91,7 +91,13 @@ int CHTTPJsonRpcHandler::HandleRequest()
     // get the whole output of JSONRPC.Introspect
     CVariant result;
     JSONRPC::CJSONServiceDescription::Print(result, m_request.webserver, &client);
-    m_responseData = CJSONVariantWriter::Write(result, false);
+    if (!CJSONVariantWriter::Write(result, m_responseData, false))
+    {
+      m_response.type = HTTPError;
+      m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;
+
+      return MHD_YES;
+    }
   }
   else
   {

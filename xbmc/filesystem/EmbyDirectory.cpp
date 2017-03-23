@@ -490,15 +490,17 @@ bool CEmbyDirectory::FindByBroadcast(CFileItemList &items)
   // listen for broadcast reply until we timeout
   if (socket && m_broadcastListener->Listen(DiscoveryTimeoutMs))
   {
-    char buffer[1024] = {0};
+    char buffer[8192] = {0};
     SOCKETS::CAddress sender;
-    int packetSize = socket->Read(sender, 1024, buffer);
+    int packetSize = socket->Read(sender, 8192, buffer);
     if (packetSize > -1)
     {
       if (packetSize > 0)
       {
         CVariant data;
-        data = CJSONVariantParser::Parse((const unsigned char*)buffer, packetSize);
+        std::string jsonpacket = buffer;
+        if (!CJSONVariantParser::Parse(jsonpacket, data))
+          return rtn;
         static const std::string ServerPropertyAddress = "Address";
         if (data.isObject() && data.isMember(ServerPropertyAddress))
         {

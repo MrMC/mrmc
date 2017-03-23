@@ -45,7 +45,7 @@ LIBRARY_SEARCH_PATHS = $(inherited) $(XBMC_DEPENDS)/lib $(XBMC_DEPENDS)/lib/mysq
 APP_SYSTEM_LIBS = -lz -lm -liconv -lresolv -lbz2
 APP_FFMPEG_LIBS = -lavfilter -lavcodec -lavformat -lpostproc -lavutil -lswresample -lswscale
 // -Wl,-all_load is a hammer, todo: remove it
-APP_OTHER_LDFLAGS_COMMON = $(APP_SYSTEM_LIBS) -lintl -lexpat -lssl -lgpg-error -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -lyajl -ljpeg -lpng -lgif -lcrypto -lgcrypt -ldcadec -ltag -lmysqlclient -lxml2 -lxslt -lnettle -lgmp -lhogweed -ltasn1 -lgnutls -lsquish -lcrossguid -lulxmlrpcpp $(APP_FFMPEG_LIBS)
+APP_OTHER_LDFLAGS_COMMON = $(APP_SYSTEM_LIBS) -lintl -lexpat -lssl -lgpg-error -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -ljpeg -lpng -lgif -lcrypto -lgcrypt -ldcadec -ltag -lmysqlclient -lxml2 -lxslt -lnettle -lgmp -lhogweed -ltasn1 -lgnutls -lsquish -lcrossguid -lulxmlrpcpp $(APP_FFMPEG_LIBS)
 
 CLANG_CXX_LANGUAGE_STANDARD = c++0x
 CLANG_CXX_LIBRARY = libc++
