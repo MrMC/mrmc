@@ -16,6 +16,7 @@ SRCS += DirectoryHistory.cpp
 SRCS += DllLibCurl.cpp
 SRCS += DSMDirectory.cpp
 SRCS += DSMFile.cpp
+SRCS += EmbyDirectory.cpp
 SRCS += EventsDirectory.cpp
 SRCS += FavouritesDirectory.cpp
 SRCS += File.cpp

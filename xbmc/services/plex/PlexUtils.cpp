@@ -47,7 +47,7 @@
 
 static int  g_progressSec = 0;
 static CFileItem m_curItem;
-static PlexUtilsPlayerState g_playbackState = PlexUtilsPlayerState::stopped;
+static MediaServicesPlayerState g_playbackState = MediaServicesPlayerState::stopped;
 
 bool CPlexUtils::HasClients()
 {
@@ -445,16 +445,16 @@ void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
     return;
   
   // we get called from Application.cpp every 500ms
-  if ((g_playbackState == PlexUtilsPlayerState::stopped || g_progressSec == 0 || g_progressSec > 120))
+  if ((g_playbackState == MediaServicesPlayerState::stopped || g_progressSec == 0 || g_progressSec > 120))
   {
     g_progressSec = 0;
 
     std::string status;
-    if (g_playbackState == PlexUtilsPlayerState::playing )
+    if (g_playbackState == MediaServicesPlayerState::playing )
       status = "playing";
-    else if (g_playbackState == PlexUtilsPlayerState::paused )
+    else if (g_playbackState == MediaServicesPlayerState::paused )
       status = "paused";
-    else if (g_playbackState == PlexUtilsPlayerState::stopped)
+    else if (g_playbackState == MediaServicesPlayerState::stopped)
       status = "stopped";
 
     if (!status.empty())
@@ -488,7 +488,7 @@ void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
   g_progressSec++;
 }
 
-void CPlexUtils::SetPlayState(PlexUtilsPlayerState state)
+void CPlexUtils::SetPlayState(MediaServicesPlayerState state)
 {
   g_progressSec = 0;
   g_playbackState = state;
@@ -1663,8 +1663,9 @@ bool CPlexUtils::GetPlexAlbumSongs(CFileItem item, CFileItemList &items)
   
 }
 
-bool CPlexUtils::GetPlexMediaTotals(PlexMediaCount &totals)
+bool CPlexUtils::GetPlexMediaTotals(MediaServicesMediaCount &totals)
 {
+  // totals might or might not be reset to zero so add to it
   std::vector<CPlexClientPtr> clients;
   CPlexServices::GetInstance().GetClients(clients);
   for (const auto &client : clients)
@@ -1685,11 +1686,11 @@ bool CPlexUtils::GetPlexMediaTotals(PlexMediaCount &totals)
         curl.SetProtocolOption("X-Plex-Container-Size", "0");
         // get movie unwatched totals
         xml = GetPlexXML(curl.Get());
-        totals.iMovieUnwatched = totals.iMovieUnwatched + ParsePlexMediaXML(xml);
+        totals.iMovieUnwatched += ParsePlexMediaXML(xml);
         // get movie totals
         curl.SetFileName(content.section + "/all?type=1");
         xml = GetPlexXML(curl.Get());
-        totals.iMovieTotal = totals.iMovieTotal + ParsePlexMediaXML(xml);
+        totals.iMovieTotal +=ParsePlexMediaXML(xml);
       }
       // Show Totals
       contents = client->GetTvContent();
@@ -1703,19 +1704,19 @@ bool CPlexUtils::GetPlexMediaTotals(PlexMediaCount &totals)
         curl.SetProtocolOption("X-Plex-Container-Size", "0");
         // get episode unwatched totals
         xml = GetPlexXML(curl.Get());
-        totals.iEpisodeUnwatched = totals.iEpisodeUnwatched + ParsePlexMediaXML(xml);
+        totals.iEpisodeUnwatched += ParsePlexMediaXML(xml);
         // get episode totals
         curl.SetFileName(content.section + "/all?type=4");
         xml = GetPlexXML(curl.Get());
-        totals.iEpisodeTotal = totals.iEpisodeTotal + ParsePlexMediaXML(xml);
+        totals.iEpisodeTotal += ParsePlexMediaXML(xml);
         // get show totals
         curl.SetFileName(content.section + "/all?type=2");
         xml = GetPlexXML(curl.Get());
-        totals.iShowTotal = totals.iShowTotal + ParsePlexMediaXML(xml);
+        totals.iShowTotal += ParsePlexMediaXML(xml);
         // get show unwatched totals
         curl.SetFileName(content.section + "/all?type=2&unwatched=1");
         xml = GetPlexXML(curl.Get());
-        totals.iShowUnwatched = totals.iShowUnwatched + ParsePlexMediaXML(xml);
+        totals.iShowUnwatched += ParsePlexMediaXML(xml);
       }
       // Music Totals
       contents = client->GetArtistContent();
@@ -1729,15 +1730,15 @@ bool CPlexUtils::GetPlexMediaTotals(PlexMediaCount &totals)
         curl.SetProtocolOption("X-Plex-Container-Size", "0");
         // get artist totals
         xml = GetPlexXML(curl.Get());
-        totals.iMusicArtist = totals.iMusicArtist + ParsePlexMediaXML(xml);
+        totals.iMusicArtist += ParsePlexMediaXML(xml);
         // get Album totals
         curl.SetFileName(content.section + "/all?type=9");
         xml = GetPlexXML(curl.Get());
-        totals.iMusicAlbums = totals.iMusicAlbums + ParsePlexMediaXML(xml);
+        totals.iMusicAlbums += ParsePlexMediaXML(xml);
         // get Song totals
         curl.SetFileName(content.section + "/all?type=10");
         xml = GetPlexXML(curl.Get());
-        totals.iMusicSongs = totals.iMusicSongs + ParsePlexMediaXML(xml);
+        totals.iMusicSongs += ParsePlexMediaXML(xml);
       }
     }
   }

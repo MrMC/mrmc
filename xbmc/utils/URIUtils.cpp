@@ -291,7 +291,9 @@ bool URIUtils::HasEncodedHostname(const CURL& url)
 
 bool URIUtils::HasRedactedHostname(const CURL& url)
 {
-  return url.HasProtocolOption("X-Plex-Token");
+  bool redacted = url.HasProtocolOption("X-Plex-Token") ||
+                  url.HasProtocolOption("X-MediaBrowser-Token");
+  return redacted;
 }
 
 bool URIUtils::HasEncodedFilename(const CURL& url)
@@ -1081,6 +1083,16 @@ bool URIUtils::IsDOSPath(const std::string &path)
     return true;
 
   return false;
+}
+
+bool URIUtils::IsPlex(const std::string& strFile)
+{
+  return IsProtocol(strFile, "plex");
+}
+
+bool URIUtils::IsEmby(const std::string& strFile)
+{
+  return IsProtocol(strFile, "emby");
 }
 
 void URIUtils::AddSlashAtEnd(std::string& strFolder)

@@ -28,6 +28,9 @@
 #include "utils/log.h"
 #include "utils/StringHasher.h"
 #include "video/VideoInfoTag.h"
+#include "services/plex/PlexUtils.h"
+#include "services/emby/EmbyUtils.h"
+
 
 using namespace ANNOUNCEMENT;
 
@@ -48,14 +51,23 @@ public:
     using namespace StringHasher;
     switch(mkhash(m_function.c_str()))
     {
-      case "SetWatched"_mkhash:
+      case "PlexSetWatched"_mkhash:
         CPlexUtils::SetWatched(m_item);
         break;
-      case "SetUnWatched"_mkhash:
+      case "PlexSetUnWatched"_mkhash:
         CPlexUtils::SetUnWatched(m_item);
         break;
-      case "SetProgress"_mkhash:
+      case "PlexSetProgress"_mkhash:
         CPlexUtils::ReportProgress(m_item, m_currentTime);
+        break;
+      case "EmbySetWatched"_mkhash:
+        CEmbyUtils::SetWatched(m_item);
+        break;
+      case "EmbySetUnWatched"_mkhash:
+        CEmbyUtils::SetUnWatched(m_item);
+        break;
+      case "EmbySetProgress"_mkhash:
+        CEmbyUtils::ReportProgress(m_item, m_currentTime);
         break;
       default:
         return false;
@@ -95,22 +107,43 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
   //CLog::Log(LOGDEBUG, "CServicesManager::Announce [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
   if ((flag & AnnouncementFlag::Player) && strcmp(sender, "xbmc") == 0)
   {
-    if (g_application.CurrentFileItem().HasProperty("PlexItem"))
+    if (g_application.CurrentFileItem().HasProperty("MediaServicesItem"))
     {
-      switch(mkhash(message))
+     bool isPlex = g_application.CurrentFileItem().HasProperty("PlexItem");
+     bool isEmby = g_application.CurrentFileItem().HasProperty("EmbyItem");
+
+     switch(mkhash(message))
       {
         case "OnPlay"_mkhash:
-          CPlexUtils::SetPlayState(PlexUtilsPlayerState::playing);
+          if (isPlex)
+            CPlexUtils::SetPlayState(MediaServicesPlayerState::playing);
+          else if (isEmby)
+            CEmbyUtils::SetPlayState(MediaServicesPlayerState::playing);
           break;
         case "OnPause"_mkhash:
-          CPlexUtils::SetPlayState(PlexUtilsPlayerState::paused);
+          if (isPlex)
+            CPlexUtils::SetPlayState(MediaServicesPlayerState::paused);
+          else if (isEmby)
+            CEmbyUtils::SetPlayState(MediaServicesPlayerState::paused);
           break;
         case "OnStop"_mkhash:
         {
-          CPlexUtils::SetPlayState(PlexUtilsPlayerState::stopped);
-
-          CFileItem &item = g_application.CurrentFileItem();
-          AddJob(new CServicesManagerJob(g_application.CurrentFileItem(), item.GetVideoInfoTag()->m_resumePoint.timeInSeconds, "SetProgress"));
+          std::string msg;
+          if (isPlex)
+          {
+            msg = "PlexSetProgress";
+            CPlexUtils::SetPlayState(MediaServicesPlayerState::stopped);
+          }
+          else if (isEmby)
+          {
+            msg = "EmbySetProgress";
+            CEmbyUtils::SetPlayState(MediaServicesPlayerState::stopped);
+          }
+          if (!msg.empty())
+          {
+            CFileItem &item = g_application.CurrentFileItem();
+            AddJob(new CServicesManagerJob(g_application.CurrentFileItem(), item.GetVideoInfoTag()->m_resumePoint.timeInSeconds, msg));
+          }
           break;
         }
         default:
@@ -122,7 +155,9 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
 
 bool CServicesManager::HasServices()
 {
-  return CPlexUtils::HasClients();
+  bool rtn = CPlexUtils::HasClients() ||
+             CEmbyUtils::HasClients();
+  return rtn;
 }
 
 bool CServicesManager::IsMediaServicesItem(const CFileItem &item)
@@ -142,53 +177,62 @@ bool CServicesManager::IsMediaServicesCloudItem(const CFileItem &item)
 bool CServicesManager::UpdateMediaServicesLibraries(const CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))
-  {
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "plex", "UpdateLibrary");
-  }
+  if (item.HasProperty("EmbyItem"))
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "emby", "UpdateLibrary");
   return true;
 }
 
 bool CServicesManager::ReloadProfiles()
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "plex", "ReloadProfiles");
+  if (CPlexUtils::HasClients())
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "plex", "ReloadProfiles");
+  if (CEmbyUtils::HasClients())
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "emby", "ReloadProfiles");
   return true;
 }
 
 void CServicesManager::SetItemWatched(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))
-  {
-    AddJob(new CServicesManagerJob(item, 0, "SetWatched"));
-  }
+    AddJob(new CServicesManagerJob(item, 0, "PlexSetWatched"));
+  else if (item.HasProperty("EmbyItem"))
+    AddJob(new CServicesManagerJob(item, 0, "EmbySetWatched"));
 }
 
 void CServicesManager::SetItemUnWatched(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))
-  {
-    AddJob(new CServicesManagerJob(item, 0, "SetUnWatched"));
-  }
+    AddJob(new CServicesManagerJob(item, 0, "PlexSetUnWatched"));
+  else if (item.HasProperty("EmbyItem"))
+    AddJob(new CServicesManagerJob(item, 0, "EmbySetUnWatched"));
 }
 
 void CServicesManager::UpdateItemState(CFileItem &item, double currentTime)
 {
   if (item.HasProperty("PlexItem"))
-  {
-    AddJob(new CServicesManagerJob(item, currentTime, "SetProgress"));
-  }
+    AddJob(new CServicesManagerJob(item, currentTime, "PlexSetProgress"));
+  else if (item.HasProperty("EmbyItem"))
+    AddJob(new CServicesManagerJob(item, currentTime, "EmbySetProgress"));
 }
 
 void CServicesManager::ShowMusicInfo(CFileItem item)
 {
   if (item.HasProperty("PlexItem"))
-  {
     CPlexUtils::ShowMusicInfo(item);
-  }
+  else if (item.HasProperty("EmbyItem"))
+    CEmbyUtils::ShowMusicInfo(item);
 }
 
 void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit)
 {
-  if (CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, false))
+  bool hasRecentlyAdded = false;
+  if (CPlexUtils::HasClients())
+    hasRecentlyAdded |= CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, false);
+  if (CEmbyUtils::HasClients())
+    hasRecentlyAdded |= CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(recentlyAdded, false);
+
+  if (hasRecentlyAdded)
   {
     CFileItemList temp;
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
@@ -206,7 +250,13 @@ void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, i
 
 void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit)
 {
-  if (CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, true))
+  bool hasRecentlyAdded = false;
+  if (CPlexUtils::HasClients())
+    hasRecentlyAdded |= CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, true);
+  if (CEmbyUtils::HasClients())
+    hasRecentlyAdded |= CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(recentlyAdded, true);
+
+  if (hasRecentlyAdded)
   {
     CFileItemList temp;
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
@@ -222,9 +272,15 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
   }
 }
 
-void CServicesManager::GetPlexRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit)
+void CServicesManager::GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit)
 {
-  if (CPlexUtils::GetPlexRecentlyAddedAlbums(recentlyAdded, itemLimit))
+  bool hasRecentlyAdded = false;
+  if (CPlexUtils::HasClients())
+    hasRecentlyAdded |= CPlexUtils::GetPlexRecentlyAddedAlbums(recentlyAdded, itemLimit);
+  if (CEmbyUtils::HasClients())
+    hasRecentlyAdded |= CEmbyUtils::GetEmbyRecentlyAddedAlbums(recentlyAdded, itemLimit);
+
+  if (hasRecentlyAdded)
   {
     CFileItemList temp;
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
@@ -242,7 +298,13 @@ void CServicesManager::GetPlexRecentlyAddedAlbums(CFileItemList &recentlyAdded, 
 
 void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int itemLimit)
 {
-  if (CPlexUtils::GetAllPlexInProgress(inProgress, true))
+  bool hasInProgress= false;
+  if (CPlexUtils::HasClients())
+    hasInProgress |= CPlexUtils::GetAllPlexInProgress(inProgress, true);
+  if (CEmbyUtils::HasClients())
+    hasInProgress |= CEmbyUtils::GetAllEmbyInProgress(inProgress, true);
+
+  if (hasInProgress)
   {
     CFileItemList temp;
     inProgress.Sort(SortByDateAdded, SortOrderDescending);
@@ -260,7 +322,13 @@ void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int item
 
 void CServicesManager::GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit)
 {
-  if (CPlexUtils::GetAllPlexInProgress(inProgress, false))
+  bool hasInProgress= false;
+  if (CPlexUtils::HasClients())
+    hasInProgress |= CPlexUtils::GetAllPlexInProgress(inProgress, false);
+  if (CEmbyUtils::HasClients())
+    hasInProgress |= CEmbyUtils::GetAllEmbyInProgress(inProgress, false);
+
+  if (hasInProgress)
   {
     CFileItemList temp;
     inProgress.Sort(SortByDateAdded, SortOrderDescending);
@@ -280,18 +348,24 @@ void CServicesManager::GetSubtitles(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))
     CPlexUtils::GetItemSubtiles(item);
+  else if (item.HasProperty("EmbyItem"))
+    CEmbyUtils::GetItemSubtiles(item);
 }
 
 void CServicesManager::GetMoreInfo(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))
     CPlexUtils::GetMoreItemInfo(item);
+  else if (item.HasProperty("EmbyItem"))
+    CEmbyUtils::GetMoreItemInfo(item);
 }
 
 bool CServicesManager::GetResolutions(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))
     return CPlexUtils::GetMoreResolutions(item);
+  else if (item.HasProperty("EmbyItem"))
+    return CEmbyUtils::GetMoreResolutions(item);
   return false;
 }
 
@@ -299,29 +373,40 @@ bool CServicesManager::GetURL(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))
     return CPlexUtils::GetURL(item);
+  else if (item.HasProperty("EmbyItem"))
+    return CEmbyUtils::GetURL(item);
   return false;
 }
 
 void CServicesManager::SearchService(CFileItemList &items, std::string strSearchString)
 {
-  if(CPlexUtils::HasClients())
-  {
+  if (CPlexUtils::HasClients())
     CPlexUtils::SearchPlex(items, strSearchString);
-  }
+  if (CEmbyUtils::HasClients())
+    CEmbyUtils::SearchEmby(items, strSearchString);
 }
 
 bool CServicesManager::GetAlbumSongs(CFileItem item, CFileItemList &items)
 {
   if (item.HasProperty("PlexItem"))
     return CPlexUtils::GetPlexAlbumSongs(item, items);
+  else if (item.HasProperty("EmbyItem"))
+    return CEmbyUtils::GetEmbyAlbumSongs(item, items);
   return false;
 }
 
-bool CServicesManager::GetMediaTotals(PlexMediaCount &totals)
+bool CServicesManager::GetMediaTotals(MediaServicesMediaCount &totals)
 {
+  bool rtn = false;
+  totals.reset();
   if (HasServices())
-    return CPlexUtils::GetPlexMediaTotals(totals);
-  return false;
+  {
+    if (CPlexUtils::HasClients())
+      rtn |= CPlexUtils::GetPlexMediaTotals(totals);
+    if (CEmbyUtils::HasClients())
+      rtn |= CEmbyUtils::GetEmbyMediaTotals(totals);
+  }
+  return rtn;
 }
 
 void CServicesManager::RegisterMediaServicesHandler(IMediaServicesHandler *mediaServicesHandler)

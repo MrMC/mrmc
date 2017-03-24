@@ -2268,6 +2268,88 @@
         </setting>
       </group>
     </category>
+    <category id="emby" label="2105" help="2106">
+      <group id="1">
+        <setting id="emby.signin" type="string" label="2107" help="2108">
+          <level>0</level>
+          <default>Sign-in</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition on="property" name="embysignin" setting="emby.signinpin" />
+            </dependency>
+          </dependencies>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="emby.userid" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
+        </setting>
+        <setting id="emby.serverurl" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
+        </setting>
+        <setting id="emby.accesstoken" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
+        </setting>
+        <setting id="emby.signinpin" type="string" label="2115" help="2116">
+          <level>0</level>
+          <default>Sign-in</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition on="property" name="embysigninpin" setting="emby.signin" />
+            </dependency>
+          </dependencies>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="emby.homeuser" type="string" label="2113" help="2114">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition on="property" name="embyhomeuser" setting="emby.signinpin" />
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="emby.embyauthtoken" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="emby.limithometolocal" type="boolean" label="37050" help="37051">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
     <category id="smb" label="1200" help="36346">
       <group id="1">
         <setting id="smb.winsserver" type="string" label="1207" help="36347">

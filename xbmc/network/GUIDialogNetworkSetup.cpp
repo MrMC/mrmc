@@ -67,10 +67,6 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_PROTOCOL)
       {
-        m_server.clear();
-        m_path.clear();
-        m_username.clear();
-        m_password.clear();
         OnProtocolChange();
       }
       else if (iControl == CONTROL_SERVER_BROWSE)
@@ -118,22 +114,32 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 
   // Add our protocols
   std::vector< std::pair<std::string, int> > labels;
-#if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_DSM)
-  labels.push_back(make_pair(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB));
-#endif
-  labels.push_back(make_pair(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS));
-  labels.push_back(make_pair(g_localizeStrings.Get(20300), NET_PROTOCOL_HTTP));
-  labels.push_back(make_pair(g_localizeStrings.Get(20254), NET_PROTOCOL_DAVS));
-  labels.push_back(make_pair(g_localizeStrings.Get(20253), NET_PROTOCOL_DAV));
-  labels.push_back(make_pair(g_localizeStrings.Get(20173), NET_PROTOCOL_FTP));
-  labels.push_back(make_pair(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP));
-  labels.push_back(make_pair(g_localizeStrings.Get(20304), NET_PROTOCOL_RSS));
-#ifdef HAS_FILESYSTEM_NFS
-  labels.push_back(make_pair(g_localizeStrings.Get(20259), NET_PROTOCOL_NFS));
-#endif
-#ifdef HAS_FILESYSTEM_SFTP
-  labels.push_back(make_pair(g_localizeStrings.Get(20260), NET_PROTOCOL_SFTP));
-#endif
+  if (m_protocol == NET_PROTOCOL_EMBY || m_protocol == NET_PROTOCOL_EMBYS)
+  {
+    // only enable emby/embys if m_protocol was setup
+    //  at ShowAndGetNetworkAddress function call
+    labels.push_back(make_pair(g_localizeStrings.Get(20174), NET_PROTOCOL_EMBY));
+    //labels.push_back(make_pair(g_localizeStrings.Get(20184), NET_PROTOCOL_EMBYS));
+  }
+  else
+  {
+  #if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_DSM)
+    labels.push_back(make_pair(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB));
+  #endif
+    labels.push_back(make_pair(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS));
+    labels.push_back(make_pair(g_localizeStrings.Get(20300), NET_PROTOCOL_HTTP));
+    labels.push_back(make_pair(g_localizeStrings.Get(20254), NET_PROTOCOL_DAVS));
+    labels.push_back(make_pair(g_localizeStrings.Get(20253), NET_PROTOCOL_DAV));
+    labels.push_back(make_pair(g_localizeStrings.Get(20173), NET_PROTOCOL_FTP));
+    labels.push_back(make_pair(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP));
+    labels.push_back(make_pair(g_localizeStrings.Get(20304), NET_PROTOCOL_RSS));
+  #ifdef HAS_FILESYSTEM_NFS
+    labels.push_back(make_pair(g_localizeStrings.Get(20259), NET_PROTOCOL_NFS));
+  #endif
+  #ifdef HAS_FILESYSTEM_SFTP
+    labels.push_back(make_pair(g_localizeStrings.Get(20260), NET_PROTOCOL_SFTP));
+  #endif
+  }
 
   SET_CONTROL_LABELS(CONTROL_PROTOCOL, m_protocol, &labels);
   UpdateButtons();
@@ -188,6 +194,14 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROTOCOL);
   if (!OnMessage(msg))
     return;
+
+  if ((NET_PROTOCOL)msg.GetParam1() == m_protocol)
+    return;
+
+  m_server.clear();
+  m_path.clear();
+  m_username.clear();
+  m_password.clear();
   m_protocol = (NET_PROTOCOL)msg.GetParam1();
   // set defaults for the port
   if (m_protocol == NET_PROTOCOL_FTP)
@@ -200,6 +214,10 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "443";
   else if (m_protocol == NET_PROTOCOL_SFTP)
     m_port = "22";
+  else if (m_protocol == NET_PROTOCOL_EMBY)
+    m_port = "8096";
+  else if (m_protocol == NET_PROTOCOL_EMBYS)
+    m_port = "8920";
   else
     m_port = "0";
 
@@ -219,9 +237,13 @@ void CGUIDialogNetworkSetup::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_SERVER_ADDRESS, 1009);  // Server Address
   }
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_SERVER_ADDRESS, CGUIEditControl::INPUT_TYPE_TEXT, 1016);
+
   // remote path
   SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_UPNP);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH,
+    m_protocol != NET_PROTOCOL_UPNP &&
+    m_protocol != NET_PROTOCOL_EMBY &&
+    m_protocol != NET_PROTOCOL_EMBYS);
   if (m_protocol == NET_PROTOCOL_FTP ||
       m_protocol == NET_PROTOCOL_HTTP ||
       m_protocol == NET_PROTOCOL_HTTPS ||
@@ -249,6 +271,8 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   // port
   SET_CONTROL_LABEL2(CONTROL_PORT_NUMBER, m_port);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_PORT_NUMBER, m_protocol == NET_PROTOCOL_FTP ||
+                                                   m_protocol == NET_PROTOCOL_EMBY ||
+                                                   m_protocol == NET_PROTOCOL_EMBYS ||
                                                    m_protocol == NET_PROTOCOL_HTTP ||
                                                    m_protocol == NET_PROTOCOL_HTTPS ||
                                                    m_protocol == NET_PROTOCOL_DAV ||
@@ -280,6 +304,10 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
   CURL url;
   if (m_protocol == NET_PROTOCOL_SMB)
     url.SetProtocol("smb");
+  else if (m_protocol == NET_PROTOCOL_EMBY)
+    url.SetProtocol("emby");
+  else if (m_protocol == NET_PROTOCOL_EMBYS)
+    url.SetProtocol("embys");
   else if (m_protocol == NET_PROTOCOL_FTP)
     url.SetProtocol("ftp");
   else if (m_protocol == NET_PROTOCOL_HTTP)
@@ -314,6 +342,8 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_DAVS) ||
        (m_protocol == NET_PROTOCOL_RSS) ||
        (m_protocol == NET_PROTOCOL_SFTP) ||
+       (m_protocol == NET_PROTOCOL_EMBY) ||
+       (m_protocol == NET_PROTOCOL_EMBYS) ||
        (m_protocol == NET_PROTOCOL_NFS))
       && !m_port.empty() && atoi(m_port.c_str()) > 0)
   {
@@ -327,28 +357,43 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
 void CGUIDialogNetworkSetup::SetPath(const std::string &path)
 {
   CURL url(path);
-  if (url.IsProtocol("smb"))
-    m_protocol = NET_PROTOCOL_SMB;
-  else if (url.IsProtocol("ftp"))
-    m_protocol = NET_PROTOCOL_FTP;
-  else if (url.IsProtocol("http"))
-    m_protocol = NET_PROTOCOL_HTTP;
-  else if (url.IsProtocol("https"))
-    m_protocol = NET_PROTOCOL_HTTPS;
-  else if (url.IsProtocol("dav"))
-    m_protocol = NET_PROTOCOL_DAV;
-  else if (url.IsProtocol("davs"))
-    m_protocol = NET_PROTOCOL_DAVS;
-  else if (url.IsProtocol("upnp"))
-    m_protocol = NET_PROTOCOL_UPNP;
-  else if (url.IsProtocol("rss"))
-    m_protocol = NET_PROTOCOL_RSS;
-  else if (url.IsProtocol("nfs"))
-    m_protocol = NET_PROTOCOL_NFS;
-  else if (url.IsProtocol("sftp") || url.IsProtocol("ssh"))
-    m_protocol = NET_PROTOCOL_SFTP;
+  if (url.IsProtocol("emby"))
+  {
+    m_protocol = NET_PROTOCOL_EMBY;
+    if (!url.HasPort())
+      url.SetPort(8096);
+  }
+  else if (url.IsProtocol("embys"))
+  {
+    m_protocol = NET_PROTOCOL_EMBYS;
+    if (!url.HasPort())
+      url.SetPort(8920);
+  }
   else
-    m_protocol = NET_PROTOCOL_SMB;  // default to smb
+  {
+    if (url.IsProtocol("smb"))
+      m_protocol = NET_PROTOCOL_SMB;
+    else if (url.IsProtocol("ftp"))
+      m_protocol = NET_PROTOCOL_FTP;
+    else if (url.IsProtocol("http"))
+      m_protocol = NET_PROTOCOL_HTTP;
+    else if (url.IsProtocol("https"))
+      m_protocol = NET_PROTOCOL_HTTPS;
+    else if (url.IsProtocol("dav"))
+      m_protocol = NET_PROTOCOL_DAV;
+    else if (url.IsProtocol("davs"))
+      m_protocol = NET_PROTOCOL_DAVS;
+    else if (url.IsProtocol("upnp"))
+      m_protocol = NET_PROTOCOL_UPNP;
+    else if (url.IsProtocol("rss"))
+      m_protocol = NET_PROTOCOL_RSS;
+    else if (url.IsProtocol("nfs"))
+      m_protocol = NET_PROTOCOL_NFS;
+    else if (url.IsProtocol("sftp") || url.IsProtocol("ssh"))
+      m_protocol = NET_PROTOCOL_SFTP;
+    else
+      m_protocol = NET_PROTOCOL_SMB;  // default to smb
+  }
   m_username = url.GetUserName();
   m_password = url.GetPassWord();
   m_port = StringUtils::Format("%i", url.GetPort());

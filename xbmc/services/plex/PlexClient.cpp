@@ -260,32 +260,7 @@ bool CPlexClient::IsSameClientHostName(const CURL& url)
   return GetHost() == real_url.GetHostName();
 }
 
-std::string CPlexClient::LookUpUuid(const std::string path) const
-{
-  std::string uuid;
-
-  CURL url(path);
-  {
-    CSingleLock lock(m_criticalMovies);
-    for (const auto &contents : m_movieSectionsContents)
-    {
-      if (contents.section == url.GetFileName())
-        return m_uuid;
-    }
-  }
-  {
-    CSingleLock lock(m_criticalTVShow);
-    for (const auto &contents : m_showSectionsContents)
-    {
-      if (contents.section == url.GetFileName())
-        return m_uuid;
-    }
-  }
-
-  return uuid;
-}
-
-bool CPlexClient::ParseSections(PlexSectionParsing parser)
+bool CPlexClient::ParseSections(enum PlexSectionParsing parser)
 {
   bool rtn = false;
   XFILE::CCurlFile plex;
@@ -325,7 +300,7 @@ bool CPlexClient::ParseSections(PlexSectionParsing parser)
       {
         PlexSectionsContent content;
         content.uuid = XMLUtils::GetAttribute(DirectoryNode, "uuid");
-        content.path = XMLUtils::GetAttribute(DirectoryNode, "path");
+        //content.path = XMLUtils::GetAttribute(DirectoryNode, "path");
         content.type = XMLUtils::GetAttribute(DirectoryNode, "type");
         content.title = XMLUtils::GetAttribute(DirectoryNode, "title");
         content.updatedAt = XMLUtils::GetAttribute(DirectoryNode, "updatedAt");

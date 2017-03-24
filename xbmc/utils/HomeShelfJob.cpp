@@ -240,7 +240,7 @@ bool CHomeShelfJob::UpdateMusic()
   }
 
   // get recently added ALBUMS from any enabled service
-  CServicesManager::GetInstance().GetPlexRecentlyAddedAlbums(*m_HomeShelfMusicAlbums, NUM_ITEMS);
+  CServicesManager::GetInstance().GetAllRecentlyAddedAlbums(*m_HomeShelfMusicAlbums, NUM_ITEMS);
   
   return true;
 }
@@ -292,18 +292,18 @@ bool CHomeShelfJob::UpdateTotal()
   if(CServicesManager::GetInstance().HasServices())
   {
     // Pull up all plex totals and add to existing ones
-    PlexMediaCount plexTotals;
-    CServicesManager::GetInstance().GetMediaTotals(plexTotals);
+    MediaServicesMediaCount mediaTotals;
+    CServicesManager::GetInstance().GetMediaTotals(mediaTotals);
     
-    MusSongTotals   = MusSongTotals + plexTotals.iMusicSongs;
-    MusAlbumTotals  = MusAlbumTotals + plexTotals.iMusicAlbums;
-    MusArtistTotals = MusArtistTotals + plexTotals.iMusicArtist;
-    tvShowCount     = tvShowCount + plexTotals.iShowTotal;
-    movieTotals     = movieTotals + plexTotals.iMovieTotal;
-    movieWatched    = movieWatched + (plexTotals.iMovieTotal - plexTotals.iMovieUnwatched);
-    EpWatched       = EpWatched + (plexTotals.iEpisodeTotal - plexTotals.iEpisodeUnwatched);
-    EpCount         = EpCount + plexTotals.iEpisodeTotal;
-    TvShowsWatched  = TvShowsWatched + (plexTotals.iShowTotal - plexTotals.iShowUnwatched);
+    MusSongTotals   = MusSongTotals + mediaTotals.iMusicSongs;
+    MusAlbumTotals  = MusAlbumTotals + mediaTotals.iMusicAlbums;
+    MusArtistTotals = MusArtistTotals + mediaTotals.iMusicArtist;
+    tvShowCount     = tvShowCount + mediaTotals.iShowTotal;
+    movieTotals     = movieTotals + mediaTotals.iMovieTotal;
+    movieWatched    = movieWatched + (mediaTotals.iMovieTotal - mediaTotals.iMovieUnwatched);
+    EpWatched       = EpWatched + (mediaTotals.iEpisodeTotal - mediaTotals.iEpisodeUnwatched);
+    EpCount         = EpCount + mediaTotals.iEpisodeTotal;
+    TvShowsWatched  = TvShowsWatched + (mediaTotals.iShowTotal - mediaTotals.iShowUnwatched);
   }
   
   home->SetProperty("Music.SongsCount"      , MusSongTotals);

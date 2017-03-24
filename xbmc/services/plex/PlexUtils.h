@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "services/ServicesManager.h"
 
 //#define PLEX_DEBUG_VERBOSE
 
@@ -33,27 +34,6 @@ namespace XFILE
 class CPlexClient;
 typedef std::shared_ptr<CPlexClient> CPlexClientPtr;
 
-
-enum class PlexUtilsPlayerState
-{
-  paused = 1,
-  playing = 2,
-  stopped = 3,
-};
-
-typedef struct PlexMediaCount
-{
-  int iMovieTotal = 0;
-  int iMovieUnwatched = 0;
-  int iEpisodeTotal = 0;
-  int iEpisodeUnwatched = 0;
-  int iShowTotal = 0;
-  int iShowUnwatched = 0;
-  int iMusicSongs = 0;
-  int iMusicAlbums = 0;
-  int iMusicArtist = 0;
-  
-} PlexMediaCount;
 
 class CPlexUtils
 {
@@ -69,7 +49,7 @@ public:
   static void SetWatched(CFileItem &item);
   static void SetUnWatched(CFileItem &item);
   static void ReportProgress(CFileItem &item, double currentSeconds);
-  static void SetPlayState(PlexUtilsPlayerState state);
+  static void SetPlayState(MediaServicesPlayerState state);
   static bool GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit=25);
   static bool GetPlexInProgressShows(CFileItemList &items, const std::string url, int limit=25);
   static bool GetPlexRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit=25);
@@ -94,7 +74,7 @@ public:
   static bool ShowMusicInfo(CFileItem item);
   static bool GetPlexRecentlyAddedAlbums(CFileItemList &items,int limit);
   static bool GetPlexAlbumSongs(CFileItem item, CFileItemList &items);
-  static bool GetPlexMediaTotals(PlexMediaCount &totals);
+  static bool GetPlexMediaTotals(MediaServicesMediaCount &totals);
 
 private:
   static void ReportToServer(std::string url, std::string filename);

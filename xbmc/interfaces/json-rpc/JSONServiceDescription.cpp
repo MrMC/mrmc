@@ -1418,7 +1418,7 @@ bool CJSONServiceDescription::prepareDescription(std::string &description, CVari
     description = StringUtils::Format("{%s}", description.c_str());
   }
 
-  descriptionObject = CJSONVariantParser::Parse((const unsigned char *)description.c_str(), description.size());
+  descriptionObject = CJSONVariantParser::Parse(description);
 
   // Make sure the method description actually exists and represents an object
   if (!descriptionObject.isObject())

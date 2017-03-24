@@ -30,6 +30,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "network/Network.h"
 #include "services/lighteffects/LightEffectServices.h"
+#include "services/emby/EmbyServices.h"
 #include "services/plex/PlexServices.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -495,6 +496,9 @@ void CNetworkServices::Start()
   if (!StartPlexServices())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 
+  if (!StartEmbyServices())
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
+
   // note - airtunesserver has to start before airplay server (ios7 client detection bug)
   StartAirTunesServer();
   StartAirPlayServer();
@@ -511,6 +515,7 @@ void CNetworkServices::Stop(bool bWait)
     StopRss();
     StopLightEffectServices();
     StopPlexServices();
+    StopEmbyServices();
   }
 
   StopEventServer(bWait, false);
@@ -1065,6 +1070,32 @@ bool CNetworkServices::StopPlexServices()
     return true;
 
   CPlexServices::GetInstance().Stop();
+  return true;
+}
+
+bool CNetworkServices::StartEmbyServices()
+{
+  if(!CEmbyServices::GetInstance().IsEnabled())
+    return true;
+
+  if (IsEmbyServicesRunning())
+    return true;
+
+  CEmbyServices::GetInstance().Start();
+  return true;
+}
+
+bool CNetworkServices::IsEmbyServicesRunning()
+{
+  return CEmbyServices::GetInstance().IsActive();
+}
+
+bool CNetworkServices::StopEmbyServices()
+{
+  if (!IsEmbyServicesRunning())
+    return true;
+
+  CEmbyServices::GetInstance().Stop();
   return true;
 }
 

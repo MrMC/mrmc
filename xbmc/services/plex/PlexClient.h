@@ -25,7 +25,7 @@
 #include "utils/XMLUtils.h"
 #include "threads/CriticalSection.h"
 
-enum PlexSectionParsing
+enum class PlexSectionParsing
 {
   newSection,
   checkSection,
@@ -42,21 +42,19 @@ struct PlexConnection
 
 struct PlexSectionsContent
 {
-  int port;
+  //int port;
   std::string type;
   std::string title;
-  std::string agent;
-  std::string scanner;
-  std::string language;
+  //std::string agent; // not used
+  //std::string scanner; // not used
+  //std::string language; // not used
   std::string uuid;
   std::string updatedAt;
-  std::string address;
-  //std::string serverName;
-  //std::string serverVersion;
-  std::string path;
+  //std::string address; // not used
+  //std::string path; // not used
   std::string section;
-  std::string art;
-  std::string thumb;
+  std::string art; // not used
+  std::string thumb; // not used
 };
 
 class CFileItem;
@@ -103,8 +101,7 @@ public:
 
 protected:
   bool        IsSameClientHostName(const CURL& url);
-  std::string LookUpUuid(const std::string path) const;
-  bool        ParseSections(PlexSectionParsing parser);
+  bool        ParseSections(enum PlexSectionParsing parser);
   void        SetPresence(bool presence);
 
 private:

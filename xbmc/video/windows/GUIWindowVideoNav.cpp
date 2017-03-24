@@ -384,7 +384,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
   items.ClearProperties();
 
   // we need to remove cache
-  items.RemoveDiscCache(GetID());
+  if (!URIUtils::IsEmby(strDirectory))
+    items.RemoveDiscCache(GetID());
 
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
@@ -1299,7 +1300,8 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   {
     StringUtils::Replace(lower, "movie", "");
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://movies/" + lower + "/";
+      return "emby://movies/" + lower + "/";
+      //return "plex://movies/" + lower + "/";
     return "videodb://movies/" + lower + "/";
   }
   else if (lower == "movietags")
@@ -1314,31 +1316,36 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   {
     StringUtils::Replace(lower, "tvshow", "");
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://tvshows/" + lower + "/";
+      return "emby://tvshows/" + lower + "/";
+      //return "plex://tvshows/" + lower + "/";
     return "videodb://tvshows/" + lower + "/";
   }
   else if (lower == "recentlyaddedmovies")
   {
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://movies/recentlyaddedmovies/";
+      return "emby://movies/recentlyaddedmovies/";
+      //return "plex://movies/recentlyaddedmovies/";
     return "videodb://recentlyaddedmovies/";
   }
   else if (lower == "recentlyaddedepisodes")
   {
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://tvshows/recentlyaddedepisodes/";
+      return "emby://tvshows/recentlyaddedepisodes/";
+      //return "plex://tvshows/recentlyaddedepisodes/";
     return "videodb://recentlyaddedepisodes/";
   }
   else if (lower == "inprogressshows")
   {
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://tvshows/inprogressshows/";
+      return "emby://tvshows/inprogressshows/";
+      //return "plex://tvshows/inprogressshows/";
     return "library://video/inprogressshows.xml/";
   }
   else if (lower == "inprogressmovies")
   {
     if (CServicesManager::GetInstance().HasServices())
-      return "plex://movies/inprogressmovies/";
+      return "emby://movies/inprogressmovies/";
+      //return "plex://movies/inprogressmovies/";
     return "library://video/inprogressmovies.xml/";
   }
   else if (lower == "tvshowtags")

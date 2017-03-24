@@ -25,12 +25,43 @@
 #include "threads/SharedSection.h"
 #include "filesystem/IDirectory.h"
 #include "interfaces/IAnnouncer.h"
-#include "services/plex/PlexUtils.h"
-
 
 class CURL;
 class CFileItem;
 class CFileItemList;
+
+enum class MediaServicesPlayerState
+{
+  paused = 1,
+  playing = 2,
+  stopped = 3,
+};
+
+typedef struct MediaServicesMediaCount
+{
+  int iMovieTotal = 0;
+  int iMovieUnwatched = 0;
+  int iEpisodeTotal = 0;
+  int iEpisodeUnwatched = 0;
+  int iShowTotal = 0;
+  int iShowUnwatched = 0;
+  int iMusicSongs = 0;
+  int iMusicAlbums = 0;
+  int iMusicArtist = 0;
+
+  void reset()
+  {
+    iMovieTotal = 0;
+    iMovieUnwatched = 0;
+    iEpisodeTotal = 0;
+    iEpisodeUnwatched = 0;
+    iShowTotal = 0;
+    iShowUnwatched = 0;
+    iMusicSongs = 0;
+    iMusicAlbums = 0;
+    iMusicArtist = 0;
+  }
+} MediaServicesMediaCount;
 
 class IMediaServicesHandler: public XFILE::IDirectory
 {
@@ -66,7 +97,7 @@ public:
   void ShowMusicInfo(CFileItem item);
   void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit);
-  void GetPlexRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit);
+  void GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllInProgressShows(CFileItemList &inProgress, int itemLimit);
   void GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit);
   void GetSubtitles(CFileItem &item);
@@ -77,7 +108,7 @@ public:
   bool GetAlbumSongs(CFileItem item, CFileItemList &items);
   bool GetDirectory(const CURL& url, CFileItemList &items);
   XFILE::DIR_CACHE_TYPE GetCacheType(const CURL& url);
-  bool GetMediaTotals(PlexMediaCount &totals);
+  bool GetMediaTotals(MediaServicesMediaCount &totals);
 
   void RegisterMediaServicesHandler(IMediaServicesHandler *mediaServicesHandler);
   void UnregisterSettingsHandler(IMediaServicesHandler *mediaServicesHandler);

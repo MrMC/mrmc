@@ -105,7 +105,7 @@ CPlexServices::CPlexServices()
 : CThread("PlexServices")
 , m_gdmListener(nullptr)
 , m_updateMins(0)
-, m_playState(PlexServicePlayerState::stopped)
+, m_playState(MediaServicesPlayerState::stopped)
 , m_hasClients(false)
 {
   // register our redacted protocol options with CURL
@@ -160,7 +160,7 @@ void CPlexServices::Stop()
   m_clients.clear();
   m_gdmListener = nullptr;
   m_updateMins = 0;
-  m_playState = PlexServicePlayerState::stopped;
+  m_playState = MediaServicesPlayerState::stopped;
   m_hasClients = false;
 }
 
@@ -328,13 +328,13 @@ void CPlexServices::Announce(AnnouncementFlag flag, const char *sender, const ch
     switch(mkhash(message))
     {
       case "OnPlay"_mkhash:
-        m_playState = PlexServicePlayerState::playing;
+        m_playState = MediaServicesPlayerState::playing;
         break;
       case "OnPause"_mkhash:
-        m_playState = PlexServicePlayerState::paused;
+        m_playState = MediaServicesPlayerState::paused;
         break;
       case "OnStop"_mkhash:
-        m_playState = PlexServicePlayerState::stopped;
+        m_playState = MediaServicesPlayerState::stopped;
         break;
       default:
         break;
@@ -390,7 +390,7 @@ void CPlexServices::OnSettingChanged(const CSetting *setting)
         // switch to no caching
         g_directoryCache.Clear();
       }
-      if (m_playState == PlexServicePlayerState::stopped)
+      if (m_playState == MediaServicesPlayerState::stopped)
       {
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
         g_windowManager.SendThreadMessage(msg);
@@ -428,7 +428,7 @@ void CPlexServices::UpdateLibraries(bool forced)
   if (clearDirCache)
   {
     g_directoryCache.Clear();
-    if (m_playState == PlexServicePlayerState::stopped)
+    if (m_playState == MediaServicesPlayerState::stopped)
     {
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
       g_windowManager.SendThreadMessage(msg);
@@ -499,7 +499,7 @@ void CPlexServices::Process()
       // try plex.tv
       if (MyPlexSignedIn())
       {
-        if (m_playState == PlexServicePlayerState::stopped)
+        if (m_playState == MediaServicesPlayerState::stopped)
         {
           // if we get back servers, then
           // reduce the initial polling time
@@ -515,14 +515,14 @@ void CPlexServices::Process()
 
     if (gdmTimer.GetElapsedSeconds() > 5)
     {
-      if (m_playState == PlexServicePlayerState::stopped)
+      if (m_playState == MediaServicesPlayerState::stopped)
         CheckForGDMServers();
       gdmTimer.Reset();
     }
 
     if (m_updateMins > 0 && (checkUpdatesTimer.GetElapsedSeconds() > (60 * m_updateMins)))
     {
-      if (m_playState == PlexServicePlayerState::stopped)
+      if (m_playState == MediaServicesPlayerState::stopped)
         UpdateLibraries(false);
       checkUpdatesTimer.Reset();
     }
@@ -555,14 +555,14 @@ bool CPlexServices::GetPlexToken(std::string user, std::string pass)
   url.SetUserName(user);
   url.SetPassword(pass);
 
-  std::string strResponse;
+  std::string response;
   std::string strPostData;
-  if (plex.Post(url.Get(), strPostData, strResponse))
+  if (plex.Post(url.Get(), strPostData, response))
   {
     //CLog::Log(LOGDEBUG, "CPlexServices: myPlex %s", strResponse.c_str());
 
     CVariant reply;
-    reply = CJSONVariantParser::Parse((const unsigned char*)strResponse.c_str(), strResponse.size());
+    reply = CJSONVariantParser::Parse(response);
 
     CVariant user = reply["user"];
     m_authToken = user["authentication_token"].asString();
@@ -577,7 +577,7 @@ bool CPlexServices::GetPlexToken(std::string user, std::string pass)
   {
     std::string strMessage = "Could not connect to retreive PlexToken";
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Plex Services", strMessage, 3000, true);
-    CLog::Log(LOGERROR, "CPlexServices:FetchPlexToken failed %s", strResponse.c_str());
+    CLog::Log(LOGERROR, "CPlexServices:FetchPlexToken failed %s", response.c_str());
   }
 
   return rtn;

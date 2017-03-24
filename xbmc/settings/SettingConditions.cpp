@@ -134,6 +134,53 @@ bool PlexHomeUserEnable(const std::string &condition, const std::string &value, 
   return enable;
 }
 
+bool EmbySignInEnable(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  // if signed in by pin, disable manual sign-in
+  std::string strSignIn = g_localizeStrings.Get(1240);
+  std::string strSignOut = g_localizeStrings.Get(1241);
+  bool enable = true;
+
+  if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNIN) == strSignIn &&
+      CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignIn)
+  {
+    enable = true;
+  }
+  else if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignOut)
+  {
+    enable = false;
+  }
+  return enable;
+}
+
+bool EmbySignInPinEnable(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  // if signed in manually, disable pin sign-in
+  std::string strSignIn = g_localizeStrings.Get(1240);
+  std::string strSignOut = g_localizeStrings.Get(1241);
+  bool enable = true;
+
+  if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNIN) == strSignIn &&
+      CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignIn)
+  {
+    enable = true;
+  }
+  else if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNIN) == strSignOut)
+  {
+    enable = false;
+  }
+  return enable;
+}
+
+bool EmbyHomeUserEnable(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  // what this, we are signed in when settings string says sign-out
+  std::string strSignOut = g_localizeStrings.Get(1241);
+  bool enable = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNIN) == strSignOut;
+  enable = enable || CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignOut;
+  return enable;
+}
+
 bool IsUsingTTFSubtitles(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CUtil::IsUsingTTFSubtitles();
@@ -334,6 +381,9 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("plexsignin",                    PlexSignInEnable));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("plexsigninpin",                 PlexSignInPinEnable));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("plexhomeuser",                  PlexHomeUserEnable));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("embysignin",                    EmbySignInEnable));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("embysigninpin",                 EmbySignInPinEnable));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("embyhomeuser",                  EmbyHomeUserEnable));
 }
 
 bool CSettingConditions::Check(const std::string &condition, const std::string &value /* = "" */, const CSetting *setting /* = NULL */)

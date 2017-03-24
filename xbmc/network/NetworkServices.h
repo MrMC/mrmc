@@ -95,6 +95,10 @@ public:
   bool IsPlexServicesRunning();
   bool StopPlexServices();
 
+  bool StartEmbyServices();
+  bool IsEmbyServicesRunning();
+  bool StopEmbyServices();
+
   bool StartZeroconf();
   bool IsZeroconfRunning();
   bool StopZeroconf();

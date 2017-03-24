@@ -1194,7 +1194,7 @@ bool CSmartPlaylist::LoadFromJson(const std::string &json)
   if (json.empty())
     return false;
 
-  CVariant obj = CJSONVariantParser::Parse((const unsigned char *)json.c_str(), json.size());
+  CVariant obj = CJSONVariantParser::Parse(json);
   return Load(obj);
 }
 
