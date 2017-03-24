@@ -55,7 +55,6 @@ CPlexClientSync::CPlexClientSync(CPlexClient *client, const std::string &name, c
   else if (curl.GetProtocol() == "https")
     curl.SetProtocol("wss");
   curl.SetFileName(":/websockets/notifications?X-Plex-Token=" + accessToken);
-  //curl.SetProtocolOptions("&X-Plex-Token=" + accessToken);
 
   m_address = curl.Get();
 }
@@ -81,6 +80,7 @@ void CPlexClientSync::Stop()
 
   m_stop = true;
   CThread::StopThread();
+  SAFE_DELETE(m_websocket);
 }
 
 void CPlexClientSync::Process()
@@ -117,7 +117,7 @@ void CPlexClientSync::Process()
     MediaImportChangesetType changesetType;
   };
 
-  m_websocket.reset(easywsclient::WebSocket::from_url(m_address /* TODO: , origin */));
+  m_websocket = easywsclient::WebSocket::from_url(m_address /* TODO: , origin */);
   if (!m_websocket)
   {
     CLog::Log(LOGERROR, "CPlexClientSync: failed websocket connection to %s", m_name.c_str());
@@ -267,9 +267,6 @@ void CPlexClientSync::Process()
   }
 
   if (m_websocket)
-  {
     m_websocket->close();
-    m_websocket.reset();
-  }
   m_stop = true;
 }

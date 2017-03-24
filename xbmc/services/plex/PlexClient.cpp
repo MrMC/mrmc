@@ -69,6 +69,7 @@ CPlexClient::CPlexClient()
   m_presence = true;
   m_protocol = "http";
   m_needUpdate = false;
+  m_clientSync = nullptr;
 }
 
 CPlexClient::~CPlexClient()
@@ -170,6 +171,8 @@ bool CPlexClient::Init(const TiXmlElement* DeviceNode)
     }
   }
 
+  if (m_clientSync)
+    SAFE_DELETE(m_clientSync);
   //if (m_owned == "1")
   {
     // websockets will 401 on servers you do not own
