@@ -3248,6 +3248,9 @@
 		F5FBE7DC1E2AB65F001B85EE /* strutl.c in Sources */ = {isa = PBXBuildFile; fileRef = F5FBE7DA1E2AB65F001B85EE /* strutl.c */; };
 		F5FBE7DD1E2AB65F001B85EE /* strutl.c in Sources */ = {isa = PBXBuildFile; fileRef = F5FBE7DA1E2AB65F001B85EE /* strutl.c */; };
 		F5FBE7DE1E2AB65F001B85EE /* strutl.c in Sources */ = {isa = PBXBuildFile; fileRef = F5FBE7DA1E2AB65F001B85EE /* strutl.c */; };
+		F5FC88E31E61E44D00449E85 /* easywsclient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FC88E01E61E44D00449E85 /* easywsclient.cpp */; };
+		F5FC88E41E61E44D00449E85 /* easywsclient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FC88E01E61E44D00449E85 /* easywsclient.cpp */; };
+		F5FC88E51E61E44D00449E85 /* easywsclient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FC88E01E61E44D00449E85 /* easywsclient.cpp */; };
 		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
 /* End PBXBuildFile section */
 
@@ -5868,6 +5871,8 @@
 		F5FBE7DA1E2AB65F001B85EE /* strutl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strutl.c; sourceTree = "<group>"; };
 		F5FBE7DB1E2AB65F001B85EE /* strutl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strutl.h; sourceTree = "<group>"; };
 		F5FBE7DF1E2AC87A001B85EE /* log_control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = log_control.h; sourceTree = "<group>"; };
+		F5FC88E01E61E44D00449E85 /* easywsclient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = easywsclient.cpp; sourceTree = "<group>"; };
+		F5FC88E11E61E44D00449E85 /* easywsclient.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = easywsclient.hpp; sourceTree = "<group>"; };
 		F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -9539,6 +9544,7 @@
 		F5B722B11C7BC10B006432AE /* contrib */ = {
 			isa = PBXGroup;
 			children = (
+				F5FC88DF1E61E44D00449E85 /* easywsclient */,
 				F5B722B21C7BC10B006432AE /* kissfft */,
 			);
 			path = contrib;
@@ -9881,6 +9887,15 @@
 				43348AAB1077486D00F859CF /* PlayerSelectionRule.h */,
 			);
 			name = playercorefactory;
+			sourceTree = "<group>";
+		};
+		F5FC88DF1E61E44D00449E85 /* easywsclient */ = {
+			isa = PBXGroup;
+			children = (
+				F5FC88E01E61E44D00449E85 /* easywsclient.cpp */,
+				F5FC88E11E61E44D00449E85 /* easywsclient.hpp */,
+			);
+			path = easywsclient;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -10705,6 +10720,7 @@
 				7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */,
 				F5B723F01C7CA014006432AE /* cdioSupport.cpp in Sources */,
 				F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */,
+				F5FC88E31E61E44D00449E85 /* easywsclient.cpp in Sources */,
 				F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */,
 				F5B7233E1C7C9870006432AE /* GUIWindowWeather.cpp in Sources */,
 				F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
@@ -12099,6 +12115,7 @@
 				F5B725201C7E150C006432AE /* timefn.cpp in Sources */,
 				E4991447174E605900741B6D /* CharsetConverter.cpp in Sources */,
 				E4991448174E605900741B6D /* CPUInfo.cpp in Sources */,
+				F5FC88E41E61E44D00449E85 /* easywsclient.cpp in Sources */,
 				E4991449174E605900741B6D /* Crc32.cpp in Sources */,
 				E499144A174E605900741B6D /* CryptThreading.cpp in Sources */,
 				F51D16FB1E29950600A03C93 /* dvd_input.c in Sources */,
@@ -12842,6 +12859,7 @@
 				F5D140081BAF0B6D0075A95C /* VideoLibraryMarkWatchedJob.cpp in Sources */,
 				F5D140091BAF0B6D0075A95C /* GUIMultiImage.cpp in Sources */,
 				F5D1400A1BAF0B6D0075A95C /* GUIMultiSelectText.cpp in Sources */,
+				F5FC88E51E61E44D00449E85 /* easywsclient.cpp in Sources */,
 				F5D1400B1BAF0B6D0075A95C /* VideoLibraryScanningJob.cpp in Sources */,
 				F5D1400C1BAF0B6D0075A95C /* GUIPanelContainer.cpp in Sources */,
 				F5D1400D1BAF0B6D0075A95C /* GUIProgressControl.cpp in Sources */,
