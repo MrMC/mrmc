@@ -60,6 +60,7 @@ struct PlexSectionsContent
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 typedef std::vector<PlexSectionsContent> PlexSectionsContentVector;
+class CPlexClientSync;
 
 
 class CPlexClient
@@ -87,6 +88,7 @@ public:
   void  AddSectionItem(CFileItemPtr root)   { m_section_items.push_back(root); };
   std::vector<CFileItemPtr> GetSectionItems()  { return m_section_items; };
   void ClearSectionItems()                  { m_section_items.clear(); };
+  CFileItemPtr FindViewItemByServiceId(const std::string &Id);
 
   const PlexSectionsContentVector GetTvContent() const;
   const PlexSectionsContentVector GetMovieContent() const;
@@ -117,6 +119,8 @@ private:
   std::string m_platform;
   std::atomic<bool> m_presence;
   std::atomic<bool> m_needUpdate;
+  CPlexClientSync *m_clientSync;
+
   std::vector<CFileItemPtr> m_section_items;
   CCriticalSection  m_criticalMovies;
   CCriticalSection  m_criticalTVShow;

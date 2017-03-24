@@ -1800,6 +1800,9 @@
 		F5471B2D1E8562C100570A53 /* EmbyUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B221E8562C100570A53 /* EmbyUtils.cpp */; };
 		F5471B2E1E8562C100570A53 /* EmbyUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B221E8562C100570A53 /* EmbyUtils.cpp */; };
 		F5471B2F1E8562C100570A53 /* EmbyUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B221E8562C100570A53 /* EmbyUtils.cpp */; };
+		F5471B321E85647800570A53 /* PlexClientSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B301E85647800570A53 /* PlexClientSync.cpp */; };
+		F5471B331E85647800570A53 /* PlexClientSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B301E85647800570A53 /* PlexClientSync.cpp */; };
+		F5471B341E85647800570A53 /* PlexClientSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B301E85647800570A53 /* PlexClientSync.cpp */; };
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */; };
 		F557CD981CFDE37000DC3D50 /* TCPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F557CD961CFDE37000DC3D50 /* TCPClient.cpp */; };
@@ -5308,6 +5311,8 @@
 		F5471B211E8562C100570A53 /* EmbyServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbyServices.h; sourceTree = "<group>"; };
 		F5471B221E8562C100570A53 /* EmbyUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmbyUtils.cpp; sourceTree = "<group>"; };
 		F5471B231E8562C100570A53 /* EmbyUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbyUtils.h; sourceTree = "<group>"; };
+		F5471B301E85647800570A53 /* PlexClientSync.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexClientSync.cpp; sourceTree = "<group>"; };
+		F5471B311E85647800570A53 /* PlexClientSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexClientSync.h; sourceTree = "<group>"; };
 		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
 		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
 		F5487B4A0FE6F02700E506FD /* StreamDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamDetails.h; sourceTree = "<group>"; };
@@ -9335,6 +9340,8 @@
 			children = (
 				F55BD30A1D18C70B0072FE3A /* PlexClient.cpp */,
 				F55BD30B1D18C70B0072FE3A /* PlexClient.h */,
+				F5471B301E85647800570A53 /* PlexClientSync.cpp */,
+				F5471B311E85647800570A53 /* PlexClientSync.h */,
 				F55BD3001D0A14ED0072FE3A /* PlexServices.cpp */,
 				F55BD3011D0A14ED0072FE3A /* PlexServices.h */,
 				18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */,
@@ -11381,6 +11388,7 @@
 				7CCDA7BE192756250074CF51 /* NptFile.cpp in Sources */,
 				F5B723361C7C9681006432AE /* ContextMenuItem.cpp in Sources */,
 				7CCDA7C7192756250074CF51 /* NptHash.cpp in Sources */,
+				F5471B321E85647800570A53 /* PlexClientSync.cpp in Sources */,
 				DF1D2DED1B6E85EE002BB9DB /* XbtDirectory.cpp in Sources */,
 				7CCDA7D0192756250074CF51 /* NptHttp.cpp in Sources */,
 				7CCDA7D9192756250074CF51 /* NptJson.cpp in Sources */,
@@ -11665,6 +11673,7 @@
 				E4991263174E5D8F00741B6D /* File.cpp in Sources */,
 				E4991264174E5D8F00741B6D /* FileCache.cpp in Sources */,
 				E4991265174E5D8F00741B6D /* FileDirectoryFactory.cpp in Sources */,
+				F5471B331E85647800570A53 /* PlexClientSync.cpp in Sources */,
 				E4991266174E5D8F00741B6D /* FileFactory.cpp in Sources */,
 				DF29BCEC1B5D911800904347 /* AddonManagementEvent.cpp in Sources */,
 				F5B722FE1C7C894F006432AE /* GUIBuiltins.cpp in Sources */,
@@ -13530,6 +13539,7 @@
 				F5D1420C1BAF0B6D0075A95C /* NptFile.cpp in Sources */,
 				F5D1420D1BAF0B6D0075A95C /* NptHash.cpp in Sources */,
 				F5D1420E1BAF0B6D0075A95C /* NptHttp.cpp in Sources */,
+				F5471B341E85647800570A53 /* PlexClientSync.cpp in Sources */,
 				F5B724CA1C7E150C006432AE /* global.cpp in Sources */,
 				F5D1420F1BAF0B6D0075A95C /* NptJson.cpp in Sources */,
 				F5B724AF1C7E150C006432AE /* errhnd.cpp in Sources */,

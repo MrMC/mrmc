@@ -24,16 +24,19 @@
 
 #include "PlexClient.h"
 #include "PlexUtils.h"
+#include "PlexClientSync.h"
 
 #include "Application.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/StackDirectory.h"
 #include "network/Network.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Base64.h"
+#include "video/VideoInfoTag.h"
 
 #include <string>
 #include <sstream>
@@ -167,7 +170,30 @@ bool CPlexClient::Init(const TiXmlElement* DeviceNode)
     }
   }
 
+  if (m_owned == "1")
+  {
+    // websockets will 401 on servers you do not own
+    m_clientSync = new CPlexClientSync(this, m_serverName,
+      url.GetWithoutFilename(), CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID).c_str(), m_accessToken);
+    m_clientSync->Start();
+  }
+
   return !m_url.empty();
+}
+
+CFileItemPtr CPlexClient::FindViewItemByServiceId(const std::string &serviceId)
+{
+  //CSingleLock lock(m_viewItemsLock);
+  for (const auto &item : m_section_items)
+  {
+    if (item->GetVideoInfoTag()->m_strServiceId == serviceId)
+    {
+      CLog::Log(LOGDEBUG, "CPlexClient::FindViewItemByServiceId: \"%s\"", item->GetLabel().c_str());
+      return item;
+    }
+  }
+  CLog::Log(LOGERROR, "CPlexClient::FindViewItemByServiceId: failed to get details for item with id \"%s\"", serviceId.c_str());
+  return nullptr;
 }
 
 std::string CPlexClient::GetUrl()
