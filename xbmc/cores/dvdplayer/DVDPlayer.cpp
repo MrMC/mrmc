@@ -3781,7 +3781,7 @@ bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   {
     std::string filepath;
     if (m_item.HasVideoInfoTag() && m_item.IsMediaServiceBased())
-      filepath = m_item.GetVideoInfoTag()->m_strServiceFile;
+      filepath = m_item.GetMediaServiceFile();
     else
       filepath = m_item.GetPath();
     hint.stereo_mode = CStereoscopicsManager::GetInstance().DetectStereoModeByString(filepath);

@@ -633,7 +633,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     if (item.HasVideoInfoTag())
     {
       if (item.IsMediaServiceBased())
-        path = item.GetVideoInfoTag()->m_strServiceFile;
+        path = item.GetMediaServiceFile();
       else if (item.IsVideoDb())
         path = item.GetVideoInfoTag()->GetPath();
     }

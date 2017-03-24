@@ -405,6 +405,9 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
   m_doContentLookup = item.m_doContentLookup;
+  m_strServiceId = item.m_strServiceId;
+  m_strServiceFile = item.m_strServiceFile;
+
   return *this;
 }
 
@@ -460,6 +463,9 @@ void CFileItem::Reset()
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.clear();
+  m_strServiceId.clear();
+  m_strServiceFile.clear();
+
   ClearProperties();
 
   Initialize();
@@ -495,6 +501,8 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_extrainfo;
     ar << m_specialSort;
     ar << m_doContentLookup;
+    ar << m_strServiceId;
+    ar << m_strServiceFile;
 
     if (m_musicInfoTag)
     {
@@ -553,6 +561,8 @@ void CFileItem::Archive(CArchive& ar)
     ar >> temp;
     m_specialSort = (SortSpecial)temp;
     ar >> m_doContentLookup;
+    ar >> m_strServiceId;
+    ar >> m_strServiceFile;
 
     int iType;
     ar >> iType;
@@ -1361,8 +1371,8 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   {
     if (item->IsMediaServiceBased())
     {
-      if (!m_videoInfoTag->m_strServiceId.empty() && !item->m_videoInfoTag->m_strServiceId.empty())
-        return (m_videoInfoTag->m_strServiceId == item->m_videoInfoTag->m_strServiceId);
+      if (!m_strServiceId.empty() && !item->GetMediaServiceId().empty())
+        return (m_strServiceId == item->GetMediaServiceId());
     }
     if (m_videoInfoTag->m_iDbId != -1 && item->m_videoInfoTag->m_iDbId != -1)
       return ((m_videoInfoTag->m_iDbId == item->m_videoInfoTag->m_iDbId) &&
@@ -1372,8 +1382,8 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   {
     if (item->IsMediaServiceBased())
     {
-      if (!m_musicInfoTag->m_strServiceId.empty() && !item->m_musicInfoTag->m_strServiceId.empty())
-        return (m_musicInfoTag->m_strServiceId == item->m_musicInfoTag->m_strServiceId);
+      if (!m_strServiceId.empty() && !item->GetMediaServiceId().empty())
+        return (m_strServiceId == item->GetMediaServiceId());
     }
   }
   if (IsMusicDb() && HasMusicInfoTag())

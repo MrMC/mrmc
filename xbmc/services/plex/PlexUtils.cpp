@@ -384,7 +384,7 @@ void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* m
       if (!key.empty() && (key[0] == '/'))
         StringUtils::TrimLeft(key, "/");
       url.SetFileName(key);
-      item.GetVideoInfoTag()->m_strServiceFile = XMLUtils::GetAttribute(partNode, "file");
+      item.SetMediaServiceFile(XMLUtils::GetAttribute(partNode, "file"));
       std::string propertyKey = StringUtils::Format("stack:%i_time", part);
       item.SetProperty(propertyKey, atoi(XMLUtils::GetAttribute(partNode, "duration").c_str())/1000 );
       if(part > 1)
@@ -406,7 +406,7 @@ void CPlexUtils::SetWatched(CFileItem &item)
   if (item.IsAudio())
     return;
 
-  std::string id = item.GetVideoInfoTag()->m_strServiceId;
+  std::string id = item.GetMediaServiceId();
   std::string url = item.GetPath();
   if (URIUtils::IsStack(url))
     url = XFILE::CStackDirectory::GetFirstStackedFile(url);
@@ -425,7 +425,7 @@ void CPlexUtils::SetUnWatched(CFileItem &item)
   if (item.IsAudio())
     return;
 
-  std::string id = item.GetVideoInfoTag()->m_strServiceId;
+  std::string id = item.GetMediaServiceId();
   std::string url = item.GetPath();
   if (URIUtils::IsStack(url))
     url = XFILE::CStackDirectory::GetFirstStackedFile(url);
@@ -473,7 +473,7 @@ void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
       if (StringUtils::StartsWithNoCase(url, "plex://"))
         url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
 
-      std::string id    = item.GetVideoInfoTag()->m_strServiceId;
+      std::string id    = item.GetMediaServiceId();
       int totalSeconds  = item.GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds;
 
       std::string filename = StringUtils::Format(":/timeline?ratingKey=%s&",id.c_str());
@@ -562,7 +562,7 @@ bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* roo
     std::string title = XMLUtils::GetAttribute(videoNode, "title");
     plexItem->SetLabel(title);
     plexItem->GetVideoInfoTag()->m_strTitle = title;
-    plexItem->GetVideoInfoTag()->m_strServiceId = XMLUtils::GetAttribute(videoNode, "ratingKey");
+    plexItem->SetMediaServiceId(XMLUtils::GetAttribute(videoNode, "ratingKey"));
     plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(rootXmlNode, "grandparentRatingKey"));
     plexItem->GetVideoInfoTag()->m_type = type;
     plexItem->GetVideoInfoTag()->SetPlotOutline(XMLUtils::GetAttribute(videoNode, "tagline"));
@@ -657,7 +657,7 @@ bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
       CURL url1(url);
       url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
       plexItem->SetPath("plex://tvshows/shows/" + Base64::Encode(url1.Get()));
-      plexItem->GetVideoInfoTag()->m_strServiceId = XMLUtils::GetAttribute(directoryNode, "ratingKey");
+      plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
       plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
       plexItem->GetVideoInfoTag()->m_type = MediaTypeTvShow;
       plexItem->GetVideoInfoTag()->m_strTitle = XMLUtils::GetAttribute(directoryNode, "title");
@@ -740,7 +740,7 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
         CURL url1(url);
         url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
         plexItem->SetPath("plex://tvshows/seasons/" + Base64::Encode(url1.Get()));
-        plexItem->GetVideoInfoTag()->m_strServiceId = XMLUtils::GetAttribute(directoryNode, "ratingKey");
+        plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
         plexItem->GetVideoInfoTag()->m_type = MediaTypeTvShow;
         plexItem->GetVideoInfoTag()->m_strTitle = XMLUtils::GetAttribute(directoryNode, "title");
         // we get these from rootXmlNode, where all show info is
@@ -1094,7 +1094,7 @@ bool CPlexUtils::GetItemSubtiles(CFileItem &item)
   if (StringUtils::StartsWithNoCase(url, "plex://"))
     url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
   
-  std::string id = item.GetVideoInfoTag()->m_strServiceId;
+  std::string id = item.GetMediaServiceId();
   std::string filename = StringUtils::Format("library/metadata/%s", id.c_str());
   
   CURL url2(url);
@@ -1144,7 +1144,7 @@ bool CPlexUtils::GetMoreItemInfo(CFileItem &item)
   if (StringUtils::StartsWithNoCase(url, "plex://"))
     url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
   
-  std::string id = item.GetVideoInfoTag()->m_strServiceId;
+  std::string id = item.GetMediaServiceId();
   std::string childElement = "Video";
   if (item.HasProperty("PlexShowKey") && item.GetVideoInfoTag()->m_type != MediaTypeMovie)
   {
@@ -1192,8 +1192,8 @@ bool CPlexUtils::GetMoreItemInfo(CFileItem &item)
 
 bool CPlexUtils::GetMoreResolutions(CFileItem &item)
 {
+  std::string id  = item.GetMediaServiceId();
   std::string url = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  std::string id  = item.GetVideoInfoTag()->m_strServiceId;
   
   if (URIUtils::IsStack(url))
     url = XFILE::CStackDirectory::GetFirstStackedFile(url);
@@ -1377,7 +1377,7 @@ bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bo
       CURL url1(url);
       url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
       plexItem->SetPath(strMediaTypeUrl + Base64::Encode(url1.Get()));
-      plexItem->GetMusicInfoTag()->m_strServiceId = XMLUtils::GetAttribute(directoryNode, "ratingKey");
+      plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
       
       plexItem->GetMusicInfoTag()->m_type = strMediaType;
       plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(directoryNode, "title"));
@@ -1538,7 +1538,7 @@ bool CPlexUtils::GetPlexSongs(CFileItemList &items, std::string url)
             StringUtils::TrimLeft(key, "/");
           url1.SetFileName(key);
           plexItem->SetPath(url1.Get());
-          plexItem->GetMusicInfoTag()->m_strServiceId = XMLUtils::GetAttribute(trackNode, "ratingKey");
+          plexItem->SetMediaServiceId(XMLUtils::GetAttribute(trackNode, "ratingKey"));
           plexItem->SetProperty("PlexSongKey", XMLUtils::GetAttribute(trackNode, "ratingKey"));
           plexItem->GetMusicInfoTag()->m_type = MediaTypeSong;
           plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(trackNode, "title"));
@@ -1826,7 +1826,7 @@ bool CPlexUtils::GetURL(CFileItem &item)
   
   CLog::Log(LOGDEBUG, "CPlexUtils::GetURL - bitrate [%s] res [%s]", maxBitrate.c_str(), resolution.c_str());
   
-  std::string plexID = item.GetVideoInfoTag()->m_strServiceId;
+  std::string plexID = item.GetMediaServiceId();
   std::string uuidStr = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
   
   curl.SetFileName("video/:/transcode/universal/start.m3u8");

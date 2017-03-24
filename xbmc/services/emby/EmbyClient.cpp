@@ -90,21 +90,18 @@ void CEmbyClient::ClearViewItems()
 
 static bool IsSameEmbyID(const CFileItemPtr &a, const CFileItemPtr &b)
 {
-  if (a->GetVideoInfoTag() && !a->GetVideoInfoTag()->m_strServiceId.empty() &&
-      b->GetVideoInfoTag() && !b->GetVideoInfoTag()->m_strServiceId.empty())
-    return (a->GetVideoInfoTag()->m_strServiceId == b->GetVideoInfoTag()->m_strServiceId);
-  if (a->GetMusicInfoTag() && !a->GetMusicInfoTag()->m_strServiceId.empty() &&
-      b->GetMusicInfoTag() && !b->GetMusicInfoTag()->m_strServiceId.empty())
-    return (a->GetMusicInfoTag()->m_strServiceId == b->GetMusicInfoTag()->m_strServiceId);
+  const std::string testIdA = a->GetMediaServiceId();
+  const std::string testIdB = b->GetMediaServiceId();
+  if (!testIdA.empty() && !testIdB.empty())
+    return (testIdA == testIdB);
   return false;
 }
 
 static bool IsSameEmbyID(const CFileItemPtr &a, const std::string &serviceId)
 {
-  if (a->GetVideoInfoTag() && !a->GetVideoInfoTag()->m_strServiceId.empty())
-    return (a->GetVideoInfoTag()->m_strServiceId == serviceId);
-  if (a->GetMusicInfoTag() && !a->GetMusicInfoTag()->m_strServiceId.empty())
-    return (a->GetMusicInfoTag()->m_strServiceId == serviceId);
+  const std::string testId = a->GetMediaServiceId();
+  if (!testId.empty())
+    return (testId == serviceId);
   return false;
 }
 

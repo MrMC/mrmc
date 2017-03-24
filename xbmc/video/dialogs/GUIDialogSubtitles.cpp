@@ -231,7 +231,7 @@ void CGUIDialogSubtitles::OnInitWindow()
 
   std::string file;
   if (g_application.CurrentFileItem().IsMediaServiceBased())
-    file = g_application.CurrentFileItem().GetVideoInfoTag()->m_strServiceFile;
+    file = g_application.CurrentFileItem().GetMediaServiceFile();
   else
     file = g_application.CurrentFileItem().GetPath();
   SET_CONTROL_LABEL(CONTROL_FILENAME, URIUtils::GetFileName(file));

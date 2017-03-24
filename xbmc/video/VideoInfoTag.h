@@ -184,8 +184,6 @@ public:
   std::string m_strFileNameAndPath;
   std::string m_strOriginalTitle;
   std::string m_strEpisodeGuide;
-  std::string m_strServiceFile;
-  std::string m_strServiceId;
   CDateTime m_premiered;
   bool m_bHasPremiered;
   std::string m_strStatus;

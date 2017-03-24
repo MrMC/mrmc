@@ -186,7 +186,7 @@ CFileItemPtr CPlexClient::FindViewItemByServiceId(const std::string &serviceId)
   //CSingleLock lock(m_viewItemsLock);
   for (const auto &item : m_section_items)
   {
-    if (item->GetVideoInfoTag()->m_strServiceId == serviceId)
+    if (item->GetMediaServiceId() == serviceId)
     {
       CLog::Log(LOGDEBUG, "CPlexClient::FindViewItemByServiceId: \"%s\"", item->GetLabel().c_str());
       return item;
