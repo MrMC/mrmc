@@ -40,6 +40,19 @@ struct PlexConnection
   int external;
 };
 
+typedef struct PlexServerInfo
+{
+
+  std::string uuid;
+  std::string owned;
+  std::string presence;
+  std::string platform;
+  std::string serverName;
+  std::string accessToken;
+  std::string httpsRequired;
+  std::vector<PlexConnection> connections;
+} PlexServerInfo;
+
 struct PlexSectionsContent
 {
   //int port;
@@ -66,12 +79,13 @@ class CPlexClientSync;
 class CPlexClient
 {
   friend class CPlexServices;
+  friend class CPlexClientSync;
 
 public:
   CPlexClient();
  ~CPlexClient();
 
-  bool Init(const TiXmlElement* DeviceNode);
+  bool Init(const PlexServerInfo &serverInfo);
   bool Init(std::string data, std::string ip);
 
   const bool NeedUpdate() const             { return m_needUpdate; }
@@ -84,6 +98,7 @@ public:
   const std::string &GetProtocol() const    { return m_protocol; }
   const bool &IsLocal() const               { return m_local; }
   const bool IsCloud() const                { return (m_platform == "Cloud"); }
+  const bool IsOwned() const                { return (m_owned == "1"); }
 
   void  AddSectionItem(CFileItemPtr root)   { m_section_items.push_back(root); };
   std::vector<CFileItemPtr> GetSectionItems()  { return m_section_items; };
