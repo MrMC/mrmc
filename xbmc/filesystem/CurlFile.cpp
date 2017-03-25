@@ -472,6 +472,7 @@ void CCurlFile::Close()
   m_opened = false;
   m_forWrite = false;
   m_inError = false;
+  m_silent = false;
 }
 
 void CCurlFile::SetCommonOptions(CReadState* state)
@@ -1079,7 +1080,8 @@ bool CCurlFile::Open(const CURL& url)
   m_httpresponse = m_state->Connect(m_bufferSize);
   if (m_httpresponse <= 0 || m_httpresponse >= 400)
   {
-    CLog::Log(LOGERROR, "CCurlFile::Open failed with code %li for %s", m_httpresponse, url.GetRedacted().c_str());
+    if (!m_silent)
+      CLog::Log(LOGERROR, "CCurlFile::Open failed with code %li for %s", m_httpresponse, url.GetRedacted().c_str());
     return false;
   }
 
