@@ -145,3 +145,6 @@
 
 // Message sent to tell the GUI to remove a single item
 #define GUI_MSG_REMOVE_ITEM           GUI_MSG_USER + 42
+
+// Message sent to tell the GUI to add a single item
+#define GUI_MSG_ADD_ITEM           GUI_MSG_USER + 43

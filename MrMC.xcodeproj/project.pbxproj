@@ -1786,6 +1786,9 @@
 		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F52CC5F01713AAA200113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */; };
 		F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */; };
+		F534EDA21E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */; };
+		F534EDA31E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */; };
+		F534EDA41E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */; };
 		F5364D34155B3B270016D00B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364D33155B3B270016D00B /* CoreVideo.framework */; };
 		F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364E04155B3CAF0016D00B /* IOSurface.framework */; };
 		F5471B181E8562AA00570A53 /* EmbyDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B161E8562AA00570A53 /* EmbyDirectory.cpp */; };
@@ -5299,6 +5302,8 @@
 		F52CC5EF1713AAA200113454 /* DirectoryNodeGrouped.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGrouped.h; sourceTree = "<group>"; };
 		F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGrouped.cpp; sourceTree = "<group>"; };
 		F52CC6A91713BD2B00113454 /* DirectoryNodeGrouped.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGrouped.h; sourceTree = "<group>"; };
+		F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmbyViewCache.cpp; sourceTree = "<group>"; };
+		F534EDA11E8D8BD60009D1A1 /* EmbyViewCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbyViewCache.h; sourceTree = "<group>"; };
 		F536166E1B94E61200BD5776 /* sha1.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = sha1.hpp; sourceTree = "<group>"; };
 		F5364D33155B3B270016D00B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		F5364E04155B3CAF0016D00B /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = /System/Library/Frameworks/IOSurface.framework; sourceTree = "<absolute>"; };
@@ -9330,6 +9335,8 @@
 		F5471B1B1E8562C100570A53 /* emby */ = {
 			isa = PBXGroup;
 			children = (
+				F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */,
+				F534EDA11E8D8BD60009D1A1 /* EmbyViewCache.h */,
 				F5471B1C1E8562C100570A53 /* EmbyClient.cpp */,
 				F5471B1D1E8562C100570A53 /* EmbyClient.h */,
 				F5471B1E1E8562C100570A53 /* EmbyClientSync.cpp */,
@@ -11300,6 +11307,7 @@
 				F5CC22EE1814FF3B006B5E91 /* ActiveAESink.cpp in Sources */,
 				F5CC22EF1814FF3B006B5E91 /* ActiveAESound.cpp in Sources */,
 				F5B723A81C7C9B77006432AE /* CDDAFile.cpp in Sources */,
+				F534EDA21E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */,
 				F5CC22F01814FF3B006B5E91 /* ActiveAEStream.cpp in Sources */,
 				F5CC22FF18150065006B5E91 /* ActorProtocol.cpp in Sources */,
 				F5CC2305181500B1006B5E91 /* EndianSwap.cpp in Sources */,
@@ -12390,6 +12398,7 @@
 				F5B723F11C7CA014006432AE /* cdioSupport.cpp in Sources */,
 				7C1409AA184015C9009F9411 /* InfoExpression.cpp in Sources */,
 				AE4E87A717354C4A00D15206 /* XSLTUtils.cpp in Sources */,
+				F534EDA31E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */,
 				7C15DCBD1892481400FCE564 /* InfoBool.cpp in Sources */,
 				F5CC228E1814F7F7006B5E91 /* AESinkDARWINIOS.mm in Sources */,
 				F5CC22DF1814FF3B006B5E91 /* ActiveAE.cpp in Sources */,
@@ -13453,6 +13462,7 @@
 				F5B7226C1C7BBDD2006432AE /* DVDInputStreamBluray.cpp in Sources */,
 				F5D141B91BAF0B6D0075A95C /* SettingRequirement.cpp in Sources */,
 				F5D141BA1BAF0B6D0075A95C /* SettingSection.cpp in Sources */,
+				F534EDA41E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */,
 				F5D141BB1BAF0B6D0075A95C /* SettingsManager.cpp in Sources */,
 				F5D141BC1BAF0B6D0075A95C /* SettingUpdate.cpp in Sources */,
 				F5D141BD1BAF0B6D0075A95C /* Utf8Utils.cpp in Sources */,

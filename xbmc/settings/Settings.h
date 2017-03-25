@@ -438,12 +438,12 @@ public:
 
   // emby services
   static const std::string SETTING_SERVICES_EMBYSIGNIN;
+  static const std::string SETTING_SERVICES_EMBYSIGNINPIN;
+  static const std::string SETTING_SERVICES_EMBYSERVERSOURCES;
   static const std::string SETTING_SERVICES_EMBYUSERID;
   static const std::string SETTING_SERVICES_EMBYSERVERURL;
   static const std::string SETTING_SERVICES_EMBYACESSTOKEN;
-  static const std::string SETTING_SERVICES_EMBYSIGNINPIN;
-  static const std::string SETTING_SERVICES_EMBYHOMEUSER;
-  static const std::string SETTING_SERVICES_EMBYBROADCAST;
+  static const std::string SETTING_SERVICES_EMBYSAVEDSOURCES;
   static const std::string SETTING_SERVICES_EMBYLIMITHOMETOLOCAL;
 
   /*!

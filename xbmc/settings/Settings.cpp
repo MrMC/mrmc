@@ -487,12 +487,12 @@ const std::string CSettings::SETTING_SERVICES_PLEXLIMITHOMETOLOCAL  = "plex.limi
 
 // emby services
 const std::string CSettings::SETTING_SERVICES_EMBYSIGNIN = "emby.signin";
+const std::string CSettings::SETTING_SERVICES_EMBYSIGNINPIN = "emby.signinpin";
+const std::string CSettings::SETTING_SERVICES_EMBYSERVERSOURCES = "emby.serversources";
 const std::string CSettings::SETTING_SERVICES_EMBYUSERID = "emby.userid";
 const std::string CSettings::SETTING_SERVICES_EMBYSERVERURL = "emby.serverurl";
+const std::string CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES = "emby.savedsources";
 const std::string CSettings::SETTING_SERVICES_EMBYACESSTOKEN = "emby.accesstoken";
-const std::string CSettings::SETTING_SERVICES_EMBYSIGNINPIN = "emby.signinpin";
-const std::string CSettings::SETTING_SERVICES_EMBYHOMEUSER  = "emby.homeuser";
-const std::string CSettings::SETTING_SERVICES_EMBYBROADCAST  = "emby.broadcast";
 const std::string CSettings::SETTING_SERVICES_EMBYLIMITHOMETOLOCAL  = "emby.limithometolocal";
 
 CSettings::CSettings()
@@ -1364,12 +1364,13 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYSIGNIN);
+  settingSet.insert(CSettings::SETTING_SERVICES_EMBYSIGNINPIN);
+  settingSet.insert(CSettings::SETTING_SERVICES_EMBYSERVERSOURCES);
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYUSERID);
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYSERVERURL);
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYACESSTOKEN);
-  settingSet.insert(CSettings::SETTING_SERVICES_EMBYSIGNINPIN);
-  settingSet.insert(CSettings::SETTING_SERVICES_EMBYHOMEUSER);
-  settingSet.insert(CSettings::SETTING_SERVICES_EMBYBROADCAST);
+  settingSet.insert(CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES);
+  settingSet.insert(CSettings::SETTING_SERVICES_EMBYLIMITHOMETOLOCAL);
   m_settingsManager->RegisterCallback(&CEmbyServices::GetInstance(), settingSet);
 }
 

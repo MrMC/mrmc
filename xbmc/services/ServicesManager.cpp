@@ -186,10 +186,16 @@ bool CServicesManager::IsMediaServicesCloudItem(const CFileItem &item)
 
 bool CServicesManager::UpdateMediaServicesLibraries(const CFileItem &item)
 {
-  if (item.HasProperty("PlexItem"))
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "plex", "UpdateLibrary");
-  if (item.HasProperty("EmbyItem"))
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "emby", "UpdateLibrary");
+  if (item.HasProperty("MediaServicesItem"))
+  {
+    CVariant data;
+    data["MediaServicesContent"] = item.GetProperty("MediaServicesContent").asString();
+    data["MediaServicesClientID"] = item.GetProperty("MediaServicesClientID").asString();
+    if (item.HasProperty("PlexItem"))
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "plex", "UpdateLibrary", data);
+    if (item.HasProperty("EmbyItem"))
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "emby", "UpdateLibrary", data);
+  }
   return true;
 }
 

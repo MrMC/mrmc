@@ -312,6 +312,18 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           m_HomeShelfTV->Remove(newItem.get());
       }
     }
+    else if (message.GetParam1()==GUI_MSG_ADD_ITEM && message.GetItem())
+    {
+      CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
+      if (newItem && IsActive())
+      {
+        CSingleLock lock(m_critsection);
+        if (newItem->GetVideoInfoTag()->m_type == MediaTypeMovie)
+          m_HomeShelfMovies->Add(newItem);
+        else
+          m_HomeShelfTV->Add(newItem);
+      }
+    }
     break;
   }
   case GUI_MSG_CLICKED:

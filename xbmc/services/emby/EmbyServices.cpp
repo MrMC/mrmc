@@ -26,8 +26,10 @@
 #include "URL.h"
 #include "Util.h"
 #include "GUIUserMessages.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "filesystem/DirectoryCache.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
@@ -175,8 +177,7 @@ bool CEmbyServices::IsActive()
 
 bool CEmbyServices::IsEnabled()
 {
-  return (!CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYACESSTOKEN).empty() ||
-           CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_EMBYBROADCAST));
+  return (!CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYACESSTOKEN).empty());
 }
 
 bool CEmbyServices::HasClients() const
@@ -203,6 +204,18 @@ CEmbyClientPtr CEmbyServices::FindClient(const std::string &path)
   return nullptr;
 }
 
+CEmbyClientPtr CEmbyServices::FindClient(const CEmbyClient *testclient)
+{
+  CSingleLock lock(m_clients_lock);
+  for (const auto &client : m_clients)
+  {
+    if (testclient == client.get())
+      return client;
+  }
+
+  return nullptr;
+}
+
 void CEmbyServices::OnSettingAction(const CSetting *setting)
 {
   if (setting == nullptr)
@@ -210,8 +223,8 @@ void CEmbyServices::OnSettingAction(const CSetting *setting)
 
   bool startThread = false;
   std::string strMessage;
-  std::string strSignIn = g_localizeStrings.Get(2109);
-  std::string strSignOut = g_localizeStrings.Get(2110);
+  std::string strSignIn = g_localizeStrings.Get(2115);
+  std::string strSignOut = g_localizeStrings.Get(2116);
   const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_SERVICES_EMBYSIGNIN)
   {
@@ -274,7 +287,6 @@ void CEmbyServices::OnSettingAction(const CSetting *setting)
       {
         // change prompt to 'sign-out'
         CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN, strSignOut);
-        CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYHOMEUSER, m_myHomeUser);
         CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction pin sign-in ok");
         startThread = true;
       }
@@ -291,11 +303,9 @@ void CEmbyServices::OnSettingAction(const CSetting *setting)
       m_userId.clear();
       m_accessToken.clear();
       CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN, strSignIn);
-      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYHOMEUSER, "");
       CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction sign-out ok");
     }
     SetUserSettings();
-
 
     if (startThread)
       Start();
@@ -306,25 +316,65 @@ void CEmbyServices::OnSettingAction(const CSetting *setting)
       Stop();
     }
   }
-  else if (settingId == CSettings::SETTING_SERVICES_EMBYHOMEUSER)
+  else if (settingId == CSettings::SETTING_SERVICES_EMBYSERVERSOURCES)
   {
-/*
-    // user must be in 'sign-in' state so check for 'sign-out' label
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNIN) == strSignOut ||
-        CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignOut)
+    CFileItemList embyServers;
+    EmbyServerInfoVector serverInfos;
+
+    std::vector<CVariant> embySavedSources;
+    embySavedSources = CSettings::GetInstance().GetList(CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES);
+
+    serverInfos = GetConnectServerList(m_userId, m_accessToken);
+    if (!serverInfos.empty())
     {
-      std::string homeUserName;
-      if (GetMyHomeUsers(homeUserName))
+      for (auto &serverInfo : serverInfos)
       {
-        m_myHomeUser = homeUserName;
-        CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYHOMEUSER, m_myHomeUser);
-        SetUserSettings();
-        CSingleLock lock(m_clients_lock);
-        m_clients.clear();
-        Start();
+        CFileItemPtr embyServer(new CFileItem());
+        // set m_bIsFolder to true to indicate we are a folder
+        embyServer->m_bIsFolder = true;
+        embyServer->SetProperty("title", serverInfo.ServerName);
+        embyServer->SetProperty("id", serverInfo.ServerId);
+        embyServer->SetLabel(serverInfo.ServerName);
+        //embyServer->SetIconImage();
+        //embyServer->SetArt("thumb", );
+        // search saved sources for a match by server id.
+        for (auto &embySavedSource : embySavedSources)
+        {
+          std::string sourceId = embySavedSource.asString();
+          if (sourceId == "None" || sourceId == serverInfo.ServerId)
+            embyServer->Select(true);
+        }
+        embyServers.Add(embyServer);
       }
     }
-*/
+
+    CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    if (dialog == NULL)
+      return;
+
+    dialog->Reset();
+    dialog->SetHeading("Choose Emby Servers");
+    dialog->SetItems(embyServers);
+    dialog->SetMultiSelection(true);
+    dialog->SetUseDetails(true);
+    dialog->Open();
+
+    if (!dialog->IsConfirmed())
+      return;
+
+    embySavedSources.clear();
+    for (int i : dialog->GetSelectedItems())
+      embySavedSources.push_back(CVariant(serverInfos[i].ServerId));
+    CSettings::GetInstance().SetList(CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES, embySavedSources);
+
+    if (embySavedSources.size() == serverInfos.size())
+      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSERVERSOURCES, "All Sources");
+    else if (embySavedSources.size() == 0)
+      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSERVERSOURCES, "None");
+    else
+      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSERVERSOURCES, "Selected Sources");
+
+    Start();
   }
 }
 
@@ -350,7 +400,17 @@ void CEmbyServices::Announce(AnnouncementFlag flag, const char *sender, const ch
   }
   else if ((flag & AnnouncementFlag::Other) && strcmp(sender, "emby") == 0)
   {
-    if (strcmp(message, "ReloadProfiles") == 0)
+    if (strcmp(message, "UpdateLibrary") == 0)
+    {
+      std::string content = data["MediaServicesContent"].asString();
+      std::string clientId = data["MediaServicesClientID"].asString();
+      for (const auto &client : m_clients)
+      {
+        if (client->GetUuid() == clientId)
+          client->UpdateLibrary(content);
+      }
+    }
+    else if (strcmp(message, "ReloadProfiles") == 0)
     {
       // restart if we MrMC profiles has changed
       Stop();
@@ -369,7 +429,6 @@ void CEmbyServices::OnSettingChanged(const CSetting *setting)
   static const std::string SETTING_SERVICES_EMBYACESSTOKEN;
 
   static const std::string SETTING_SERVICES_EMBYSIGNINPIN;
-  static const std::string SETTING_SERVICES_EMBYHOMEUSER;
   static const std::string SETTING_SERVICES_EMBYUPDATEMINS;
   */
 
@@ -422,8 +481,7 @@ void CEmbyServices::Process()
   }
 
   int serviceTimeoutSeconds = 5;
-  std::string strSignOut = g_localizeStrings.Get(2110);
-
+  std::string strSignOut = g_localizeStrings.Get(2116);
 
   if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNIN) == strSignOut)
   {
@@ -439,9 +497,28 @@ void CEmbyServices::Process()
     // if set to strSignOut, we are signed in by pin
     if (!m_accessToken.empty() && !m_userId.empty())
     {
-      if (GetConnectServerList(m_userId, m_accessToken))
+      // fetch our saved emby servers sources
+      std::vector<CVariant> embySavedSources;
+      embySavedSources = CSettings::GetInstance().GetList(CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES);
+      // fetch a list of emby servers from emby
+      EmbyServerInfoVector embySources;
+      embySources = GetConnectServerList(m_userId, m_accessToken);
+
+      EmbyServerInfoVector servers;
+      for (auto &embySource : embySources)
       {
-        for (const auto &server : m_servers)
+        for (auto &embySavedSource : embySavedSources)
+        {
+          std::string sourceId = embySavedSource.asString();
+          // if matches, use this emby server
+          if (sourceId == "None" || sourceId == embySource.ServerId)
+            servers.push_back(embySource);
+        }
+      }
+      if (!servers.empty())
+      {
+        // create a clients and assign them to a server.
+        for (const auto &server : servers)
         {
           CEmbyClientPtr client(new CEmbyClient());
           if (client->Init(server))
@@ -474,7 +551,6 @@ void CEmbyServices::Process()
 bool CEmbyServices::AuthenticateByName(const CURL& url)
 {
   XFILE::CCurlFile emby;
-  emby.SetTimeout(10);
   emby.SetRequestHeader("Cache-Control", "no-cache");
   emby.SetRequestHeader("Content-Type", "application/json");
   CEmbyUtils::PrepareApiCall("", "", emby);
@@ -538,7 +614,6 @@ EmbyServerInfo CEmbyServices::GetEmbyLocalServerInfo(const std::string url)
   EmbyServerInfo serverInfo;
 
   XFILE::CCurlFile emby;
-  emby.SetTimeout(10);
   emby.SetRequestHeader("Cache-Control", "no-cache");
   emby.SetRequestHeader("Content-Type", "application/json");
 
@@ -628,8 +703,6 @@ bool CEmbyServices::PostSignInPinCode()
   std::string strMessage;
 
   XFILE::CCurlFile curlfile;
-  // use a lower default timeout
-  curlfile.SetTimeout(10);
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
 
@@ -726,7 +799,6 @@ bool CEmbyServices::GetSignInByPinReply()
   std::string strMessage;
 
   XFILE::CCurlFile curlfile;
-  curlfile.SetTimeout(10000);
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
 
@@ -757,7 +829,7 @@ bool CEmbyServices::GetSignInByPinReply()
         rtn = AuthenticatePinReply(deviceId, pin);
     }
   }
-  
+
   if (!rtn)
   {
     CLog::Log(LOGERROR, "CEmbyServices:WaitForSignInByPin failed %s", response.c_str());
@@ -770,7 +842,6 @@ bool CEmbyServices::AuthenticatePinReply(const std::string &deviceId, const std:
   bool rtn = false;
 
   XFILE::CCurlFile curlfile;
-  curlfile.SetTimeout(10000);
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
 
@@ -799,7 +870,9 @@ bool CEmbyServices::AuthenticatePinReply(const std::string &deviceId, const std:
       // user/pass connects are parsed as ConnectUserId/ConnectAccessToken
       const std::string connectUserId = reply["UserId"].asString();
       const std::string connectAccessToken = reply["AccessToken"].asString();
-      if (GetConnectServerList(connectUserId, connectAccessToken))
+      EmbyServerInfoVector servers;
+      servers = GetConnectServerList(connectUserId, connectAccessToken);
+      if (!servers.empty())
       {
         m_userId = connectUserId;
         m_accessToken = connectAccessToken;
@@ -810,12 +883,15 @@ bool CEmbyServices::AuthenticatePinReply(const std::string &deviceId, const std:
   return rtn;
 }
 
-bool CEmbyServices::GetConnectServerList(const std::string &connectUserId, const std::string &connectAccessToken)
+EmbyServerInfoVector CEmbyServices::GetConnectServerList(const std::string &connectUserId, const std::string &connectAccessToken)
 {
-  bool rtn = false;
+  EmbyServerInfoVector servers;
 
+  CGUIDialogBusy *busyDialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  if (busyDialog)
+    busyDialog->Open();
+  
   XFILE::CCurlFile curlfile;
-  curlfile.SetTimeout(10000);
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
 
@@ -831,12 +907,16 @@ bool CEmbyServices::GetConnectServerList(const std::string &connectUserId, const
 #if defined(EMBY_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "CEmbyServices:GetConnectServerList %s", response.c_str());
 #endif
-    CVariant servers;
-    if (!CJSONVariantParser::Parse(response, servers))
-      return rtn;
-    if (servers.isArray())
+    CVariant vservers;
+    if (!CJSONVariantParser::Parse(response, vservers))
     {
-      for (auto serverObjectIt = servers.begin_array(); serverObjectIt != servers.end_array(); ++serverObjectIt)
+      if (busyDialog)
+        busyDialog->Close();
+      return servers;
+    }
+    if (vservers.isArray())
+    {
+      for (auto serverObjectIt = vservers.begin_array(); serverObjectIt != vservers.end_array(); ++serverObjectIt)
       {
         const auto server = *serverObjectIt;
         EmbyServerInfo serverInfo;
@@ -854,14 +934,13 @@ bool CEmbyServices::GetConnectServerList(const std::string &connectUserId, const
         else
           serverInfo.ServerURL= serverInfo.WanAddress;
         if (ExchangeAccessKeyForAccessToken(serverInfo))
-        {
-          m_servers.push_back(serverInfo);
-          rtn = true;
-        }
+          servers.push_back(serverInfo);
       }
     }
   }
-  return rtn;
+  if (busyDialog)
+    busyDialog->Close();
+  return servers;
 }
 
 bool CEmbyServices::ExchangeAccessKeyForAccessToken(EmbyServerInfo &connectServerInfo)
@@ -869,7 +948,6 @@ bool CEmbyServices::ExchangeAccessKeyForAccessToken(EmbyServerInfo &connectServe
   bool rtn = false;
 
   XFILE::CCurlFile curlfile;
-  curlfile.SetTimeout(10000);
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
   CEmbyUtils::PrepareApiCall(connectServerInfo.UserId, connectServerInfo.AccessKey, curlfile);
@@ -919,7 +997,7 @@ bool CEmbyServices::ClientIsLocal(std::string path)
     if (StringUtils::StartsWithNoCase(client->GetUrl(), path))
       return client->IsLocal();
   }
-  
+
   return false;
 }
 
@@ -934,10 +1012,11 @@ bool CEmbyServices::AddClient(CEmbyClientPtr foundClient)
   }
 
   // only add new clients that are present
-  if (foundClient->GetPresence() && foundClient->ParseViews())
+  if (foundClient->GetPresence() && foundClient->FetchViews())
   {
     m_clients.push_back(foundClient);
     m_hasClients = !m_clients.empty();
+    AddJob(new CEmbyServiceJob(0, "FoundNewClient"));
     return true;
   }
 

@@ -2287,6 +2287,24 @@
           </dependencies>
           <control type="button" format="action"/>
         </setting>
+        <setting id="emby.signinpin" type="string" label="2109" help="2110">
+          <level>0</level>
+          <default>Sign-in</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition on="property" name="embysigninpin" setting="emby.signin" />
+            </dependency>
+          </dependencies>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="emby.serversources" type="string" parent="emby.signinpin" label="2111" help="2112">
+          <level>0</level>
+          <default>All Sources</default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="action"/>
+        </setting>
         <setting id="emby.userid" type="string" label="" help="">
           <level>0</level>
           <default></default>
@@ -2314,43 +2332,22 @@
           <control type="edit" format="string" />
           <visible>false</visible>
         </setting>
-        <setting id="emby.signinpin" type="string" label="2115" help="2116">
+        <setting id="emby.savedsources" type="list[string]" label="" help="">
           <level>0</level>
-          <default>Sign-in</default>
-          <dependencies>
-            <dependency type="enable">
-              <condition on="property" name="embysigninpin" setting="emby.signin" />
-            </dependency>
-          </dependencies>
-          <control type="button" format="action"/>
-        </setting>
-        <setting id="emby.homeuser" type="string" label="2113" help="2114">
-          <level>0</level>
-          <default></default>
+          <default>None</default>
           <constraints>
             <allowempty>true</allowempty>
+            <delimiter>|</delimiter>
+            <minimumitems>0</minimumitems>
           </constraints>
-          <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition on="property" name="embyhomeuser" setting="emby.signinpin" />
-              </or>
-            </dependency>
-          </dependencies>
-          <control type="button" format="action"/>
-        </setting>
-        <setting id="emby.embyauthtoken" type="string" label="" help="">
-          <level>0</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string" />
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
           <visible>false</visible>
         </setting>
       </group>
       <group id="2">
-        <setting id="emby.limithometolocal" type="boolean" label="37050" help="37051">
+        <setting id="emby.limithometolocal" type="boolean" label="2113" help="2114">
           <level>0</level>
           <default>false</default>
           <control type="toggle" />

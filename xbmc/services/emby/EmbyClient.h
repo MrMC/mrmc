@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2016 Team MrMC
+ *      Copyright (C) 2017 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -37,6 +37,16 @@ Transcode - The client streams the file from the server with encoding
 
 #include "URL.h"
 #include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
+
+class CFileItem;
+class CFileItemList;
+class CEmbyViewCache;
+class CEmbyClientSync;
+typedef struct EmbyViewInfo EmbyViewInfo;
+typedef struct EmbyViewContent EmbyViewContent;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
+typedef std::shared_ptr<CEmbyViewCache> CEmbyViewCachePtr;
 
 typedef struct EmbyServerInfo
 {
@@ -51,26 +61,13 @@ typedef struct EmbyServerInfo
   std::string WanAddress;
   std::string LocalAddress;
 } EmbyServerInfo;
+typedef std::vector<EmbyServerInfo> EmbyServerInfoVector;
 
-struct EmbyViewContent
-{
-  std::string id;
-  std::string name;
-  std::string etag;
-  std::string serverid;
-  std::string mediaType;
-  std::string viewprefix;
-};
-
-class CFileItem;
-class CFileItemList;
-class CEmbyClientSync;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
-typedef std::vector<EmbyViewContent> EmbyViewContentVector;
 
 class CEmbyClient
 {
   friend class CEmbyServices;
+  friend class CThreadedFetchViewItems;
 
 public:
   CEmbyClient();
@@ -88,20 +85,27 @@ public:
   const bool IsCloud() const                { return (m_platform == "Cloud"); }
   const bool IsOwned() const                { return m_owned; }
 
-  void  ClearViewItems();
-  void  AddViewItem(const CFileItemPtr &item);
-  void  AddViewItems(const CFileItemList &items);
-  void  AddNewViewItem(const std::string &serviceId);
-  void  UpdateViewItem(const std::string &serviceId);
-  void  RemoveViewItem(const std::string &serviceId);
-  CFileItemPtr FindViewItem(const std::string &serviceId);
+  void  SetWatched(CFileItem &item);
+  void  SetUnWatched(CFileItem &item);
 
-  const EmbyViewContentVector GetTvShowContent() const;
-  const EmbyViewContentVector GetMoviesContent() const;
-  const EmbyViewContentVector GetArtistContent() const;
-  const EmbyViewContentVector GetPhotoContent() const;
+  void  UpdateLibrary(const std::string &content);
+
+  // main view entry points (from CEmbyDirectory)
+  bool  GetMovies(CFileItemList &items, std::string url, bool fromfilter);
+  bool  GetMoviesFilter(CFileItemList &items, std::string url, std::string filter);
+  bool  GetTVShows(CFileItemList &items, std::string url, bool fromfilter);
+  bool  GetTVShowsFilter(CFileItemList &items, std::string url, std::string filter);
+  bool  GetMusicArtists(CFileItemList &items, std::string url);
+
+  void  AddNewViewItems(const std::vector<std::string> &ids);
+  void  UpdateViewItems(const std::vector<std::string> &ids);
+  void  RemoveViewItems(const std::vector<std::string> &ids);
+
+  const std::vector<EmbyViewInfo> GetViewInfoForMovieContent() const;
+  const std::vector<EmbyViewInfo> GetViewInfoForMusicContent() const;
+  const std::vector<EmbyViewInfo> GetViewInfoForPhotoContent() const;
+  const std::vector<EmbyViewInfo> GetViewInfoForTVShowContent() const;
   const std::string FormatContentTitle(const std::string contentTitle) const;
-  std::string FindViewName(const std::string &path);
 
   std::string GetUrl();
   std::string GetHost();
@@ -110,11 +114,19 @@ public:
 
 protected:
   bool        IsSameClientHostName(const CURL& url);
-  bool        ParseViews();
+  bool        FetchViews();
+  bool        FetchViewItems(CEmbyViewCachePtr &view, const CURL& url, const std::string &type);
+  bool        DoThreadedFetchViewItems(CEmbyViewCachePtr &view, const CURL& url, const std::string &type);
+  bool        FetchFilterItems(CEmbyViewCachePtr &view, const CURL &url, const std::string &type, const std::string &filter);
   void        SetPresence(bool presence);
   const CVariant FetchItemById(const std::string &Id);
+  const CVariant FetchItemByIds(const std::vector<std::string> &Ids);
 
 private:
+  bool        AppendItemToCache(const CVariant &variant);
+  bool        UpdateItemInCache(const CVariant &variant);
+  bool        RemoveItemFromCache(const CVariant &variant);
+
   bool m_local;
   std::string m_url;
   bool m_owned;
@@ -123,17 +135,20 @@ private:
   EmbyServerInfo m_serverInfo;
   std::atomic<bool> m_presence;
   std::atomic<bool> m_needUpdate;
-  CEmbyClientSync *m_clientSync;
+  CEmbyClientSync  *m_clientSync;
 
-  CFileItemList *m_viewItems;
-  CCriticalSection m_viewItemsLock;
+  CEmbyViewCachePtr m_viewMoviesFilter;
+  CEmbyViewCachePtr m_viewTVShowsFilter;
+  CCriticalSection m_viewMoviesFilterLock;
+  CCriticalSection m_viewTVShowsFilterLock;
 
-  CCriticalSection  m_viewMoviesContentsLock;
-  CCriticalSection  m_viewTVshowContentsLock;
-  CCriticalSection  m_viewArtistContentsLock;
-  CCriticalSection  m_viewPhotosContentsLock;
-  std::vector<EmbyViewContent> m_viewMoviesContents;
-  std::vector<EmbyViewContent> m_viewTVshowContents;
-  std::vector<EmbyViewContent> m_viewArtistContents;
-  std::vector<EmbyViewContent> m_viewPhotosContents;
+  CCriticalSection m_viewMusicLock;
+  CCriticalSection m_viewMoviesLock;
+  CCriticalSection m_viewPhotosLock;
+  CCriticalSection m_viewTVShowsLock;
+  std::vector<CEmbyViewCachePtr> m_viewMusic;
+  std::vector<CEmbyViewCachePtr> m_viewMovies;
+  std::vector<CEmbyViewCachePtr> m_viewPhotos;
+  std::vector<CEmbyViewCachePtr> m_viewTVShows;
+
 };

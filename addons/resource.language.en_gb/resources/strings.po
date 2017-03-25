@@ -5014,44 +5014,52 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2107"
-msgid "Emby Manual Sign-in"
+msgid "Emby Manual Sign-in (local)"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2108"
-msgid "Emby Manual Sign-in"
+msgid "Emby Manual Sign-in (via local broadcast)"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2109"
-msgid "Sign-in"
+msgid "Emby Pin Request Sign-in"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2110"
-msgid "Sign-out"
+msgid "Emby Pin Request Sign-in (via https://emby.media/pin)"
 msgstr ""
 
-#empty strings from id 2111 to 2112
+#: system/settings/settings.xml
+msgctxt "#2111"
+msgid "Emby Servers Sources"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#2112"
+msgid "Emby Servers Sources"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2113"
-msgid "Emby User"
+msgid "Limit Home Shelf to local Emby server only"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2114"
-msgid "Change the Emby User"
+msgid "If enabled, this setting will limit Recently Added and In Progres item collection to a local server only."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2115"
-msgid "Emby Pin Request Sign-in"
+msgid "Sign-in"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2116"
-msgid "Emby Pin Request Sign-in"
+msgid "Sign-out"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18901,15 +18909,7 @@ msgctxt "#37049"
 msgid "Remove dangling thumbnails."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#37050"
-msgid "Limit Home Shelf to local Emby server only"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#37051"
-msgid "If enabled, this setting will limit Recently Added and In Progres item collection to a local server only."
-msgstr ""
+#empty strings from id 37050 to 37051
 
 #: system/settings/settings.xml
 msgctxt "#37052"

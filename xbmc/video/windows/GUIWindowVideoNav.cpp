@@ -384,8 +384,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
   items.ClearProperties();
 
   // we need to remove cache
-  if (!URIUtils::IsEmby(strDirectory) || URIUtils::IsServices(strDirectory))
-    items.RemoveDiscCache(GetID());
+  //if (!URIUtils::IsEmby(strDirectory) || URIUtils::IsServices(strDirectory))
+  items.RemoveDiscCache(GetID());
 
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)

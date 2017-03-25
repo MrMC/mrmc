@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2016 Team MrMC
+ *      Copyright (C) 2017 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -59,6 +59,7 @@ public:
   bool HasClients() const;
   void GetClients(std::vector<CEmbyClientPtr> &clients) const;
   CEmbyClientPtr FindClient(const std::string &path);
+  CEmbyClientPtr FindClient(const CEmbyClient *client);
   bool ClientIsLocal(std::string path);
   EmbyServerInfo GetEmbyLocalServerInfo(const std::string url);
 
@@ -96,7 +97,7 @@ private:
   bool              PostSignInPinCode();
   bool              GetSignInByPinReply();
   bool              AuthenticatePinReply(const std::string &deviceId, const std::string &pin);
-  bool              GetConnectServerList(const std::string &connectUserId, const std::string &connectAccessToken);
+  EmbyServerInfoVector GetConnectServerList(const std::string &connectUserId, const std::string &connectAccessToken);
   bool              ExchangeAccessKeyForAccessToken(EmbyServerInfo &connectServerInfo);
 
   CEmbyClientPtr    GetClient(std::string uuid);
@@ -121,5 +122,4 @@ private:
   std::atomic<bool> m_hasClients;
   CCriticalSection  m_clients_lock;
   std::vector<CEmbyClientPtr> m_clients;
-  std::vector<EmbyServerInfo> m_servers;
 };
