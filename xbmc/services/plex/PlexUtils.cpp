@@ -59,6 +59,7 @@ bool CPlexUtils::GetIdentity(CURL url, int timeout)
   // all (local and remote) plex server respond to identity
   XFILE::CCurlFile plex;
   plex.SetTimeout(timeout);
+  plex.SetSilent(true);
 
   url.SetFileName(url.GetFileName() + "identity");
   std::string strResponse;
