@@ -40,6 +40,9 @@
 
 #include "contrib/easywsclient/easywsclient.hpp"
 
+static const std::string _elementType = "_elementType";
+static const std::string _children = "_children";
+
 static const std::string NotificationContainer = "NotificationContainer";
 static const std::string TimelineEntry = "TimelineEntry";
 static const std::string StatusNotification = "StatusNotification";
@@ -171,56 +174,64 @@ void CPlexClientSync::ProcessSyncByWebSockets()
       [this](const std::string& msg)
       {
         CVariant msgObject;
-        if (!CJSONVariantParser::Parse(msg, msgObject) ||
-          !msgObject.isObject() ||
-          !msgObject.isMember(NotificationContainer))
+        if (!CJSONVariantParser::Parse(msg, msgObject))
         {
-          CLog::Log(LOGERROR, "CPlexClientSync:ProcessSyncByWebSockets invalid notification from %s", m_name.c_str());
+          CLog::Log(LOGERROR, "CPlexClientSync:ProcessSyncByWebSockets invalid msg %s from %s",
+            msg.c_str(), m_name.c_str());
           return;
         }
 
-        CVariant variant = msgObject[NotificationContainer];
-        if (variant.isMember(TimelineEntry))
+        if (msgObject.isMember(_elementType))
         {
-          // "metadataState":"loading"
-          // "metadataState":"processing"
-          // "metadataState":"created"
-          // "metadataState":"created","mediaState":"analyzing"
-          // "metadataState":"created","mediaState":"analyzing"
-          // "metadataState":"created","mediaState":"thumbnailing"
-          CVariant timelineEntry = variant[TimelineEntry];
-          std::string metadataState = timelineEntry["metadataState"].asString();
-          CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets TimelineEntry:metadataState = %s", metadataState.c_str());
+          // old style messages
+          CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets old style msg %s", msg.c_str());
         }
-        else if (variant.isMember(StatusNotification))
+        else if (msgObject.isMember(NotificationContainer))
         {
-          // messages we do not care about
-          // "notificationName":"LIBRARY_UPDATE"
-          CVariant status = variant[StatusNotification];
-        }
-        else if (variant.isMember(ProgressNotification))
-        {
-          // more messages we do not care about
-          CVariant progress = variant[ProgressNotification];
-        }
-        else if (variant.isMember(PlaySessionStateNotification))
-        {
-          CVariant playSessionState = variant[PlaySessionStateNotification]; // is array
-          if (playSessionState.isArray())
+          // new style messages
+          CVariant variant = msgObject[NotificationContainer];
+          if (variant.isMember(TimelineEntry))
           {
-            for (auto item = playSessionState.begin_array(); item != playSessionState.end_array(); ++item)
+            // "metadataState":"loading"
+            // "metadataState":"processing"
+            // "metadataState":"created"
+            // "metadataState":"created","mediaState":"analyzing"
+            // "metadataState":"created","mediaState":"analyzing"
+            // "metadataState":"created","mediaState":"thumbnailing"
+            CVariant timelineEntry = variant[TimelineEntry];
+            std::string metadataState = timelineEntry["metadataState"].asString();
+            CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets TimelineEntry:metadataState = %s", metadataState.c_str());
+          }
+          else if (variant.isMember(StatusNotification))
+          {
+            // messages we do not care about
+            // "notificationName":"LIBRARY_UPDATE"
+            CVariant status = variant[StatusNotification];
+          }
+          else if (variant.isMember(ProgressNotification))
+          {
+            // more messages we do not care about
+            CVariant progress = variant[ProgressNotification];
+          }
+          else if (variant.isMember(PlaySessionStateNotification))
+          {
+            CVariant playSessionState = variant[PlaySessionStateNotification]; // is array
+            if (playSessionState.isArray())
             {
-              const std::string key = (*item)["key"].asString();
-              const std::string state = (*item)["state"].asString();
-              const std::string sessionKey = (*item)["sessionKey"].asString();
-              CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets PlaySessionStateNotification:sessionKey=%s, state=%s",
-                sessionKey.c_str(), state.c_str());
+              for (auto item = playSessionState.begin_array(); item != playSessionState.end_array(); ++item)
+              {
+                const std::string key = (*item)["key"].asString();
+                const std::string state = (*item)["state"].asString();
+                const std::string sessionKey = (*item)["sessionKey"].asString();
+                CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets PlaySessionStateNotification:sessionKey=%s, state=%s",
+                  sessionKey.c_str(), state.c_str());
+              }
             }
           }
-        }
-        else
-        {
-          CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets unknown %s", msg.c_str());
+          else
+          {
+            CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets unknown %s", msg.c_str());
+          }
         }
       });
   }

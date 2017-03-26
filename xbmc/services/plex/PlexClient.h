@@ -110,7 +110,6 @@ public:
   const PlexSectionsContentVector GetArtistContent() const;
   const PlexSectionsContentVector GetPhotoContent() const;
   const std::string FormatContentTitle(const std::string contentTitle) const;
-  std::string FindSectionTitle(const std::string &path);
 
   std::string GetHost();
   int         GetPort();

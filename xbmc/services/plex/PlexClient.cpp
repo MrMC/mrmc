@@ -227,35 +227,6 @@ const std::string CPlexClient::FormatContentTitle(const std::string contentTitle
   return title;
 }
 
-std::string CPlexClient::FindSectionTitle(const std::string &path)
-{
-  CURL real_url(path);
-  if (real_url.GetProtocol() == "plex")
-    real_url = CURL(Base64::Decode(URIUtils::GetFileName(real_url)));
-
-  if (!real_url.GetFileName().empty())
-  {
-    {
-      CSingleLock lock(m_criticalMovies);
-      for (const auto &contents : m_movieSectionsContents)
-      {
-        if (real_url.GetFileName().find(contents.section) != std::string::npos)
-          return contents.title;
-      }
-    }
-    {
-      CSingleLock lock(m_criticalTVShow);
-      for (const auto &contents : m_showSectionsContents)
-      {
-        if (real_url.GetFileName().find(contents.section) != std::string::npos)
-          return contents.title;
-      }
-    }
-  }
-
-  return "";
-}
-
 bool CPlexClient::IsSameClientHostName(const CURL& url)
 {
   CURL real_url(url);
