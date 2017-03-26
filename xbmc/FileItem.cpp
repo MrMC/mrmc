@@ -407,6 +407,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_doContentLookup = item.m_doContentLookup;
   m_strServiceId = item.m_strServiceId;
   m_strServiceFile = item.m_strServiceFile;
+  m_strServiceExtras = item.m_strServiceExtras;
 
   return *this;
 }
@@ -465,6 +466,8 @@ void CFileItem::Reset()
   m_extrainfo.clear();
   m_strServiceId.clear();
   m_strServiceFile.clear();
+  m_strServiceExtras.clear();
+
 
   ClearProperties();
 
@@ -503,6 +506,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_doContentLookup;
     ar << m_strServiceId;
     ar << m_strServiceFile;
+    ar << m_strServiceExtras;
 
     if (m_musicInfoTag)
     {
@@ -563,6 +567,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_doContentLookup;
     ar >> m_strServiceId;
     ar >> m_strServiceFile;
+    ar >> m_strServiceExtras;
 
     int iType;
     ar >> iType;
