@@ -142,3 +142,6 @@
 
 // Send to RDS Radiotext handlers to inform about changed data
 #define GUI_MSG_UPDATE_RADIOTEXT      GUI_MSG_USER + 41
+
+// Message sent to tell the GUI to remove a single item
+#define GUI_MSG_REMOVE_ITEM           GUI_MSG_USER + 42

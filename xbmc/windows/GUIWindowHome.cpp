@@ -300,7 +300,18 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         }
       }
     }
-
+    else if (message.GetParam1()==GUI_MSG_REMOVE_ITEM && message.GetItem())
+    {
+      CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
+      if (newItem && IsActive())
+      {
+        CSingleLock lock(m_critsection);
+        if (newItem->GetVideoInfoTag()->m_type == MediaTypeMovie)
+          m_HomeShelfMovies->Remove(newItem.get());
+        else
+          m_HomeShelfTV->Remove(newItem.get());
+      }
+    }
     break;
   }
   case GUI_MSG_CLICKED:
