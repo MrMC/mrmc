@@ -184,7 +184,8 @@ void CPlexClientSync::ProcessSyncByWebSockets()
         if (msgObject.isMember(_elementType))
         {
           // old style messages
-          CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets old style msg %s", msg.c_str());
+          //CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets old style msg %s", msg.c_str());
+          return;
         }
         else if (msgObject.isMember(NotificationContainer))
         {
