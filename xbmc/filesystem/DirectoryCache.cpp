@@ -281,6 +281,7 @@ void CDirectoryCache::PrintStats() const
   unsigned int numDirs = 0;
   for (ciCache i = m_cache.begin(); i != m_cache.end(); i++)
   {
+    CLog::Log(LOGDEBUG, "%s - name %s", __FUNCTION__, i->first.c_str());
     CDir *dir = i->second;
     oldest = std::min(oldest, dir->GetLastAccess());
     numItems += dir->m_Items->Size();
