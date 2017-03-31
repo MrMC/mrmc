@@ -161,32 +161,24 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
 
 void CGUIWindowHome::AddHomeShelfJobs(int flag)
 {
-  bool getAJob = false;
-
-  // this block checks to see if another one is running
-  // and keeps track of the flag
+  CSingleLock lockMe(*this);
+  if (!m_HomeShelfRunning)
   {
-    CSingleLock lockMe(*this);
-    if (!m_HomeShelfRunning)
+    flag |= m_cumulativeUpdateFlag; // add the flags from previous calls to AddHomeShelfJob
+
+    m_cumulativeUpdateFlag = 0; // now taken care of in flag.
+                                // reset this since we're going to execute a job
+
+    // we're about to add one so set the indicator
+    if (flag)
     {
-      getAJob = true;
-
-      flag |= m_cumulativeUpdateFlag; // add the flags from previous calls to AddHomeShelfJob
-
-      m_cumulativeUpdateFlag = 0; // now taken care of in flag.
-                                  // reset this since we're going to execute a job
-
-      // we're about to add one so set the indicator
-      if (flag)
-        m_HomeShelfRunning = true; // this will happen in the if clause below
+      m_HomeShelfRunning = true; // this will happen in the if clause below
+      CJobManager::GetInstance().AddJob(new CHomeShelfJob(flag), this);
     }
-    else
-      // since we're going to skip a job, mark that one came in and ...
-      m_cumulativeUpdateFlag |= flag; // this will be used later
   }
-
-  if (flag && getAJob)
-    CJobManager::GetInstance().AddJob(new CHomeShelfJob(flag), this);
+  else
+    // since we're going to skip a job, mark that one came in and ...
+    m_cumulativeUpdateFlag |= flag; // this will be used later
 
   m_updateHS = 0;
 }
@@ -201,6 +193,7 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     // the job is finished.
     // did one come in in the meantime?
     flag = m_cumulativeUpdateFlag;
+    m_HomeShelfRunning = false; /// we're done.
   }
 
   int jobFlag = ((CHomeShelfJob *)job)->GetFlag();
@@ -261,10 +254,6 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     g_windowManager.SendThreadMessage(messageAlbums);
   }
 
-  {
-    CSingleLock lockMe(*this);
-    m_HomeShelfRunning = false; /// we're done.
-  }
 }
 
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
