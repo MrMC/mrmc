@@ -2203,6 +2203,13 @@
           </control>
         </setting>
       </group>
+      <group id="3">
+        <setting id="plex.limithometolocal" type="boolean" label="37052" help="37051">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
       <group id="2">
         <setting id="plex.transcode" type="boolean" label="1252" help="1253">
           <level>0</level>

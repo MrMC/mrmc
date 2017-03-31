@@ -483,6 +483,7 @@ const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCAL = "plex.transco
 const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODEAUDIO = "plex.transcodeaudio";
 const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION = "plex.transcodelocalexclusions";
 const std::string CSettings::SETTING_SERVICES_PLEXMYPLEXAUTH = "plex.myplexauthtoken";
+const std::string CSettings::SETTING_SERVICES_PLEXLIMITHOMETOLOCAL  = "plex.limithometolocal";
 
 // emby services
 const std::string CSettings::SETTING_SERVICES_EMBYSIGNIN = "emby.signin";

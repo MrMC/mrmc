@@ -18911,7 +18911,12 @@ msgctxt "#37051"
 msgid "If enabled, this setting will limit Recently Added and In Progres item collection to a local server only."
 msgstr ""
 
-#empty strings from id 37052 to 38009
+#: system/settings/settings.xml
+msgctxt "#37052"
+msgid "Limit Home Shelf to local Plex server only"
+msgstr ""
+
+#empty strings from id 37053 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

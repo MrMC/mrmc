@@ -434,6 +434,7 @@ public:
   static const std::string SETTING_SERVICES_PLEXTRANSCODEAUDIO;
   static const std::string SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION;
   static const std::string SETTING_SERVICES_PLEXMYPLEXAUTH;
+  static const std::string SETTING_SERVICES_PLEXLIMITHOMETOLOCAL;
 
   // emby services
   static const std::string SETTING_SERVICES_EMBYSIGNIN;
