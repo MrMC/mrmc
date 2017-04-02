@@ -647,6 +647,7 @@ const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "isactive",         WINDOW_IS_ACTIVE },
                                   { "istopmost",        WINDOW_IS_TOPMOST },
+                                  { "istopmostmodal",   WINDOW_IS_TOPMOST_MODAL },
                                   { "isvisible",        WINDOW_IS_VISIBLE },
                                   { "previous",         WINDOW_PREVIOUS },
                                   { "next",             WINDOW_NEXT }};
@@ -3188,6 +3189,12 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = g_windowManager.IsWindowTopMost(info.GetData1());
         else
           bReturn = g_windowManager.IsWindowTopMost(m_stringParameters[info.GetData2()]);
+        break;
+      case WINDOW_IS_TOPMOST_MODAL:
+        if (info.GetData1())
+          bReturn = g_windowManager.IsWindowTopMost(info.GetData1(), true);
+        else
+          bReturn = g_windowManager.IsWindowTopMost(m_stringParameters[info.GetData2()], true);
         break;
       case WINDOW_IS_ACTIVE:
         if (info.GetData1())

@@ -545,6 +545,7 @@
 #define RDS_CHANNEL_COUNTRY         (RDS_DATA_START + 44)
 #define RDS_DATA_END                RDS_CHANNEL_COUNTRY
 
+#define WINDOW_IS_TOPMOST_MODAL     9992
 #define WINDOW_PROPERTY             9993
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995

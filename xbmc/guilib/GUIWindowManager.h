@@ -165,10 +165,10 @@ public:
   bool HasDialogOnScreen() const;
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;
-  bool IsWindowTopMost(int id) const;
+  bool IsWindowTopMost(int id, bool onlyModal = false) const;
   bool IsWindowActive(const std::string &xmlFile, bool ignoreClosing = true) const;
   bool IsWindowVisible(const std::string &xmlFile) const;
-  bool IsWindowTopMost(const std::string &xmlFile) const;
+  bool IsWindowTopMost(const std::string &xmlFile, bool onlyModal = false) const;
   /*! \brief Checks if the given window is an addon window.
    *
    * \return true if the given window is an addon window, otherwise false.
@@ -192,6 +192,7 @@ private:
   void ClearWindowHistory();
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
   CGUIWindow *GetTopMostDialog() const;
+  CGUIWindow *GetTopMostModalDialog() const;
 
   friend class KODI::MESSAGING::CApplicationMessenger;
   

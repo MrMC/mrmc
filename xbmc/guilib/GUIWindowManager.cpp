@@ -1508,17 +1508,29 @@ CGUIWindow *CGUIWindowManager::GetTopMostDialog() const
   return *renderList.rbegin();
 }
 
-bool CGUIWindowManager::IsWindowTopMost(int id) const
+CGUIWindow *CGUIWindowManager::GetTopMostModalDialog() const
 {
-  CGUIWindow *topMost = GetTopMostDialog();
+  CSingleLock lock(g_graphicsContext);
+  for (crDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
+  {
+    CGUIWindow *dialog = *it;
+    if (dialog->IsModalDialog())
+      return dialog;
+  }
+  return NULL;
+}
+
+bool CGUIWindowManager::IsWindowTopMost(int id, bool onlyModal /*= false*/) const
+{
+  CGUIWindow *topMost = onlyModal ? GetTopMostModalDialog() : GetTopMostDialog();
   if (topMost && (topMost->GetID() & WINDOW_ID_MASK) == id)
     return true;
   return false;
 }
 
-bool CGUIWindowManager::IsWindowTopMost(const std::string &xmlFile) const
+bool CGUIWindowManager::IsWindowTopMost(const std::string &xmlFile, bool onlyModal /*= false*/) const
 {
-  CGUIWindow *topMost = GetTopMostDialog();
+  CGUIWindow *topMost = onlyModal ? GetTopMostModalDialog() : GetTopMostDialog();
   if (topMost && StringUtils::EqualsNoCase(URIUtils::GetFileName(topMost->GetProperty("xmlfile").asString()), xmlFile))
     return true;
   return false;
