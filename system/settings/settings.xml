@@ -145,6 +145,12 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="lookandfeel.newskinchecked" type="boolean" label="" help="">
+          <level>0</level>
+          <default>false</default>
+          <visible>false</visible>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="locale" label="14090" help="36113">

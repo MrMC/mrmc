@@ -1061,12 +1061,20 @@ bool CApplication::Initialize()
 
     // Make sure we have at least the default skin
     std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
-    if (!LoadSkin(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)) && !LoadSkin(defaultSkin))
+    std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    if (!LoadSkin(skin) && !LoadSkin(defaultSkin))
     {
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
       return false;
     }
 
+    if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)) &&
+        CSkinSettings::GetInstance().MigrateToNewSkin(skin))
+    {
+      skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+      LoadSkin(skin);
+    }
+    
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
        !CProfilesManager::GetInstance().GetMasterProfile().getLockCode().empty())
@@ -1519,7 +1527,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 {
   if (!skin)
     return false;
-
+    
   // start/prepare the skin
   skin->Start();
 

@@ -11800,7 +11800,23 @@ msgctxt "#20262"
 msgid "Zeroconf browser"
 msgstr ""
 
-#empty strings from id 20263 to 20299
+msgctxt "#20263"
+msgid "New Skin"
+msgstr ""
+
+msgctxt "#20264"
+msgid "MrMC has new default skin, would you like to switch to it?"
+msgstr ""
+
+msgctxt "#20265"
+msgid "In future, if you would like to go back to %s skin,"
+msgstr ""
+
+msgctxt "#20266"
+msgid "please use System -> Apearance menu"
+msgstr ""
+
+#empty strings from id 20267 to 20299
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20300"

@@ -38,6 +38,8 @@ public:
   virtual void Clear() override;
 
   void MigrateSettings(const ADDON::SkinPtr& skin);
+  
+  bool MigrateToNewSkin(const std::string skin);
 
   int TranslateString(const std::string &setting);
   const std::string& GetString(int setting) const;

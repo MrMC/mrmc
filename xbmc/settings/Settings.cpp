@@ -108,6 +108,7 @@ const std::string CSettings::SETTING_LOOKANDFEEL_RSSHOST = "lookandfeel.rsshost"
 const std::string CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL = "lookandfeel.rssinterval";
 const std::string CSettings::SETTING_LOOKANDFEEL_RSSRTL = "lookandfeel.rssrtl";
 const std::string CSettings::SETTING_LOOKANDFEEL_STEREOSTRENGTH = "lookandfeel.stereostrength";
+const std::string CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED = "lookandfeel.newskinchecked";
 const std::string CSettings::SETTING_LOCALE_LANGUAGE = "locale.language";
 const std::string CSettings::SETTING_LOCALE_COUNTRY = "locale.country";
 const std::string CSettings::SETTING_LOCALE_CHARSET = "locale.charset";

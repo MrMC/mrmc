@@ -23,7 +23,10 @@
 
 #include "SkinSettings.h"
 #include "GUIInfoManager.h"
+#include "addons/AddonManager.h"
 #include "addons/Skin.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -31,6 +34,7 @@
 #include "utils/XBMCTinyXML.h"
 
 #define XML_SKINSETTINGS  "skinsettings"
+#define NEW_SKIN          "skin.opacity"
 
 CSkinSettings::CSkinSettings()
 {
@@ -194,3 +198,48 @@ void CSkinSettings::MigrateSettings(const ADDON::SkinPtr& skin)
   }
 }
 
+bool CSkinSettings::MigrateToNewSkin(const std::string skin)
+{
+  ADDON::AddonPtr addon;
+  
+  // if current skin is same as new skin, return false
+  if (skin == NEW_SKIN)
+    return false;
+  
+  // if we dont have new skin installed, return false
+  if (!ADDON::CAddonMgr::GetInstance().GetAddon(NEW_SKIN, addon, ADDON::ADDON_SKIN))
+    return false;
+  
+  CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (!pDialogYesNo)
+    return false;
+  
+  
+  std::string surrentSkinName;
+  if (ADDON::CAddonMgr::GetInstance().GetAddon(skin, addon, ADDON::ADDON_SKIN))
+    surrentSkinName = addon->Name();
+  else
+    surrentSkinName = "Unknown";
+  
+  pDialogYesNo->SetHeading(CVariant{20263});
+  pDialogYesNo->SetLine(1, CVariant{20264});
+  pDialogYesNo->SetLine(2, StringUtils::Format(g_localizeStrings.Get(20265).c_str(), surrentSkinName.c_str()));
+  pDialogYesNo->SetLine(3, CVariant{20266});
+  pDialogYesNo->Open();
+  
+  // dont ask again
+  CSettings::GetInstance().SetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED, true);
+  CSettings::GetInstance().Save();
+
+  if (!pDialogYesNo->IsConfirmed())
+    return false;
+
+  if (ADDON::CAddonMgr::GetInstance().GetAddon(NEW_SKIN, addon, ADDON::ADDON_SKIN))
+  {
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, addon->ID());
+    CSettings::GetInstance().Save();
+    return true;
+  }
+  
+  return false;
+}
