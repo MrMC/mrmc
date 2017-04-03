@@ -97,14 +97,13 @@ bool CServicesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if(CServicesManager::GetInstance().HasPlexServices())
       {
         url2.SetProtocol("plex");
-        CDirectory::GetDirectory(url2,items);
+        CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       // check for emby
       if(CServicesManager::GetInstance().HasEmbyServices())
       {
         url2.SetProtocol("emby");
-        g_directoryCache.ClearDirectory(url2.Get());
-        CDirectory::GetDirectory(url2,items);
+        CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       items.SetPath(url.Get());
     }
@@ -144,14 +143,13 @@ bool CServicesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if(CServicesManager::GetInstance().HasPlexServices())
       {
         url2.SetProtocol("plex");
-        CDirectory::GetDirectory(url2,items);
+        CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       // check for emby
       if(CServicesManager::GetInstance().HasEmbyServices())
       {
         url2.SetProtocol("emby");
-        g_directoryCache.ClearDirectory(url2.Get());
-        CDirectory::GetDirectory(url2,items);
+        CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       items.SetPath(url.Get());
     }
@@ -186,14 +184,13 @@ bool CServicesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if(CServicesManager::GetInstance().HasPlexServices())
       {
         url2.SetProtocol("plex");
-        CDirectory::GetDirectory(url2,items);
+        CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       // check for emby
       if(CServicesManager::GetInstance().HasEmbyServices())
       {
         url2.SetProtocol("emby");
-        g_directoryCache.ClearDirectory(url2.Get());
-        CDirectory::GetDirectory(url2,items);
+        CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       items.SetPath(url.Get());
     }
