@@ -420,7 +420,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_ADD_ITEM && message.GetItem())
       {
-        CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_ADD_ITEM");
+        CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_UPDATE_ITEMS");
         CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
         if (newItem && IsActive())
         {
@@ -442,6 +442,25 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
                 UpdateFileList();
                 Refresh();
               }
+            }
+          }
+        }
+      }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_PROPERTYMATCH && IsActive())
+      {
+        CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_UPDATE_PROPERTYMATCH");
+        std::string itemProperty = message.GetStringParam();
+        if (!itemProperty.empty())
+        {
+          for (int i = 0; i < m_vecItems->Size(); ++i)
+          {
+            CFileItemPtr pItem = m_vecItems->Get(i);
+            if (itemProperty == pItem->GetProperty("MediaServicesContent").asString())
+            {
+              CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_UPDATE_PROPERTYMATCH Matched");
+              CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), GUI_MSG_UPDATE);
+              OnMessage(msg);
+              break;
             }
           }
         }
