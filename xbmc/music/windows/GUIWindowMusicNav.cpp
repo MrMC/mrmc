@@ -152,10 +152,17 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_UPDATE_LIBRARY)
       {
-        if (!g_application.IsMusicScanning())
-          g_application.StartMusicScan("");
+        if (m_vecItems->IsMediaServiceBased())
+        {
+          CServicesManager::GetInstance().UpdateMediaServicesLibraries(*m_vecItems);
+        }
         else
-          g_application.StopMusicScan();
+        {
+          if (!g_application.IsMusicScanning())
+            g_application.StartMusicScan("");
+          else
+            g_application.StopMusicScan();
+        }
         return true;
       }
     }

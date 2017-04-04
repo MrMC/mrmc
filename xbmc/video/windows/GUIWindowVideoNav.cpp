@@ -40,6 +40,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
+#include "services/ServicesManager.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -251,10 +252,17 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_UPDATE_LIBRARY)
       {
-        if (!g_application.IsVideoScanning())
-            OnScan("");
+        if (m_vecItems->IsMediaServiceBased())
+        {
+          CServicesManager::GetInstance().UpdateMediaServicesLibraries(*m_vecItems);
+        }
         else
-          g_application.StopVideoScan();
+        {
+          if (!g_application.IsVideoScanning())
+              OnScan("");
+          else
+            g_application.StopVideoScan();
+        }
         return true;
       }
     }
