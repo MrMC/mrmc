@@ -1463,6 +1463,8 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetArt("thumb", item.GetArt("thumb"));
   if (!item.GetIconImage().empty())
     SetIconImage(item.GetIconImage());
+  if (item.HasArt("fanart"))
+    SetArt("fanart", item.GetArt("fanart"));
   AppendProperties(item);
 }
 
