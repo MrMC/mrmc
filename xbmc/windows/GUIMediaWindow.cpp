@@ -379,13 +379,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
-        CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
+        CFileItemPtr newItem = std::static_pointer_cast<CFileItem>(message.GetItem());
         if (newItem && IsActive())
         {
           if (m_vecItems->UpdateItem(newItem.get()) && message.GetParam2() == 1)
           { // need the list updated as well
             UpdateFileList();
-            Refresh();
           }
         }
         else if (newItem)
@@ -393,74 +392,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           CFileItemList items;
           items.SetPath(URIUtils::GetDirectory(newItem->GetPath()));
           items.RemoveDiscCache(GetID());
-        }
-      }
-      else if (message.GetParam1()==GUI_MSG_REMOVE_ITEM && message.GetItem())
-      {
-        CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_REMOVE_ITEM");
-        CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
-        if (newItem && IsActive())
-        {
-          CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_REMOVE_ITEM IsActive/removed");
-          m_vecItems->Remove(newItem.get());
-          if (message.GetParam2() == 1)
-          {
-            UpdateFileList();
-            Refresh();
-          }
-        }
-        else if (newItem)
-        { // need to remove the disc cache
-          CFileItemList items;
-          items.SetPath(URIUtils::GetDirectory(newItem->GetPath()));
-          items.RemoveDiscCache(GetID());
-        }
-      }
-      else if (message.GetParam1()==GUI_MSG_ADD_ITEM && message.GetItem())
-      {
-        CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_UPDATE_ITEMS");
-        CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
-        if (newItem && IsActive())
-        {
-          CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_ADD_ITEM IsActive");
-          if (m_vecItems->IsMediaServiceBased() && newItem->IsMediaServiceBased())
-          {
-            CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_ADD_ITEM IsMediaServiceBased"
-              " content %s, proptery %s, item content %s, item property%s",
-              m_vecItems->GetContent().c_str(), m_vecItems->GetProperty("MediaServicesClientID").asString().c_str(),
-              newItem->GetProperty("MediaServicesContent").asString().c_str(), newItem->GetProperty("MediaServicesClientID").asString().c_str());
-            // item must match view type and client id.
-            if (m_vecItems->GetContent() == newItem->GetProperty("MediaServicesContent").asString() &&
-                m_vecItems->GetProperty("MediaServicesClientID").asString() == newItem->GetProperty("MediaServicesClientID").asString())
-            {
-              CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_ADD_ITEM match");
-              m_vecItems->Add(newItem);
-              if (message.GetParam2() == 1)
-              {
-                UpdateFileList();
-                Refresh();
-              }
-            }
-          }
-        }
-      }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_PROPERTYMATCH && IsActive())
-      {
-        CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_UPDATE_PROPERTYMATCH");
-        std::string itemProperty = message.GetStringParam();
-        if (!itemProperty.empty())
-        {
-          for (int i = 0; i < m_vecItems->Size(); ++i)
-          {
-            CFileItemPtr pItem = m_vecItems->Get(i);
-            if (itemProperty == pItem->GetProperty("MediaServicesContent").asString())
-            {
-              CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage GUI_MSG_UPDATE_PROPERTYMATCH Matched");
-              CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), GUI_MSG_UPDATE);
-              OnMessage(msg);
-              break;
-            }
-          }
         }
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
