@@ -1759,17 +1759,6 @@ void CGUIMediaWindow::UpdateFilterPath(const std::string &strDirectory, const CF
 
 void CGUIMediaWindow::OnFilterItems(const std::string &filter)
 {
-  CFileItemPtr currentItem;
-  std::string currentItemPath;
-  int item = m_viewControl.GetSelectedItem();
-  if (item >= 0 && item < m_vecItems->Size())
-  {
-    currentItem = m_vecItems->Get(item);
-    currentItemPath = currentItem->GetPath();
-  }
-  
-  m_viewControl.Clear();
-  
   CFileItemList items;
   items.Copy(*m_vecItems, false); // use the original path - it'll likely be relied on for other things later.
   items.Append(*m_unfilteredItems);
@@ -1795,6 +1784,10 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   
   GetGroupedItems(*m_vecItems);
   FormatAndSort(*m_vecItems);
+
+  // now we are in sync (m_vecItems) with those in m_viewControl
+  int item = m_viewControl.GetSelectedItem();
+  std::string currentItemPath = m_viewControl.GetSelectedItemPath();
 
   // get the "filter" option
   std::string filterOption;
@@ -1823,6 +1816,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   SetProperty("filter", filter);
   if (filtered && m_canFilterAdvanced)
   {
+    CFileItemPtr currentItem = m_vecItems->Get(item);
     // to be able to select the same item as before we need to adjust
     // the path of the item i.e. add or remove the "filter=" URL option
     // but that's only necessary for folder items
@@ -1850,7 +1844,8 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
     m_vecItems->AddFront(pItem, 0);
   }
 
-  // and update our view control + buttons
+  // very last, update our view control + buttons
+  m_viewControl.Clear();
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(currentItemPath);
   UpdateButtons();
