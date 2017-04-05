@@ -680,7 +680,8 @@ void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
     viewState->GetSortMethodLabelMasks(labelMasks);
     FormatItemLabels(items, labelMasks);
 
-    items.Sort(viewState->GetSortMethod().sortBy, viewState->GetSortOrder(), viewState->GetSortMethod().sortAttributes);
+    SortDescription sorted = viewState->GetSortMethod();
+    items.Sort(sorted.sortBy, sorted.sortOrder, sorted.sortAttributes);
   }
 }
 
