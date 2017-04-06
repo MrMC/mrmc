@@ -312,11 +312,6 @@ bool CEmbyUtils::GetURL(CFileItem &item)
 
 bool CEmbyUtils::SearchEmby(CFileItemList &items, std::string strSearchString)
 {
-  
-  // http://94.203.10.174:8096/emby/Search/Hints?userId=cf28f6d51dd54c63a27fed6600c5b6cb&searchTerm=mila%20kunis
-  
-  // http://94.203.10.174:8096/emby/Users/cf28f6d51dd54c63a27fed6600c5b6cb/Items?IncludeItemTypes=Movie,Series&Recursive=true&Fields=AudioInfo%2CSeriesInfo%2CParentId%2CPrimaryImageAspectRatio%2CBasicSyncInfo%2CAudioInfo%2CSeriesInfo%2CParentId%2CPrimaryImageAspectRatio%2CBasicSyncInfo&PersonIds=5f632dedc5d8a965d8c57daf50763c41
-  
   bool rtn = false;
   
   if (CEmbyServices::GetInstance().HasClients())
@@ -388,7 +383,6 @@ bool CEmbyUtils::GetEmbyRecentlyAddedEpisodes(CFileItemList &items, const std::s
 
 bool CEmbyUtils::GetEmbyInProgressShows(CFileItemList &items, const std::string url, int limit)
 {
-  // SortBy=DatePlayed&SortOrder=Descending&Filters=IsResumable&Limit=5
   CURL url2(url);
 
   url2.SetOption("IncludeItemTypes", EmbyTypeEpisode);
@@ -407,7 +401,6 @@ bool CEmbyUtils::GetEmbyInProgressShows(CFileItemList &items, const std::string 
 bool CEmbyUtils::GetEmbyRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit)
 {
   CURL url2(url);
-
   url2.SetFileName(url2.GetFileName() + "/Latest");
 
   url2.SetOption("IncludeItemTypes", EmbyTypeMovie);
@@ -426,7 +419,6 @@ bool CEmbyUtils::GetEmbyRecentlyAddedMovies(CFileItemList &items, const std::str
 
 bool CEmbyUtils::GetEmbyInProgressMovies(CFileItemList &items, const std::string url, int limit)
 {
-  // SortBy=DatePlayed&SortOrder=Descending&Filters=IsResumable&Limit=5
   CURL url2(url);
 
   url2.SetOption("IncludeItemTypes", EmbyTypeMovie);
@@ -566,7 +558,6 @@ bool CEmbyUtils::GetEmbyRecentlyAddedAlbums(CFileItemList &items,int limit)
 #pragma mark - Emby TV
 bool CEmbyUtils::GetEmbySeasons(CFileItemList &items, const std::string url)
 {
-  // "Shows/\(query.seriesId)/Seasons"
   bool rtn = false;
   
   CURL url2(url);
@@ -872,7 +863,7 @@ bool CEmbyUtils::ParseEmbySeries(CFileItemList &items, const CURL &url, const CV
       const auto item = *variantItemIt;
       rtn = true;
 
-    // local vars for common fields
+      // local vars for common fields
       std::string itemId = item["Id"].asString();
       std::string seriesId = item["SeriesId"].asString();
       // clear url options
@@ -880,7 +871,7 @@ bool CEmbyUtils::ParseEmbySeries(CFileItemList &items, const CURL &url, const CV
       curl.SetOption("ParentId", itemId);
 
       CFileItemPtr newItem(new CFileItem());
-      // set m_bIsFolder to true to indicate we are tvshow list
+      // set m_bIsFolder to true to indicate we are series list
       newItem->m_bIsFolder = true;
 
       std::string title = item["Name"].asString();
@@ -986,7 +977,7 @@ bool CEmbyUtils::ParseEmbySeasons(CFileItemList &items, const CURL &url, const C
     curl.SetOption("ParentId", itemId);
 
     CFileItemPtr newItem(new CFileItem());
-    // set m_bIsFolder to true to indicate we are tvshow list
+    // set m_bIsFolder to true to indicate we are seasons list
     newItem->m_bIsFolder = true;
 
     newItem->SetLabel(item["Name"].asString());
@@ -1457,7 +1448,6 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
   item->SetMediaServiceFile(variant["Path"].asString());
   item->GetVideoInfoTag()->m_strFileNameAndPath = url2.Get();
 
-  //newItem->SetProperty("EmbyShowKey", XMLUtils::GetAttribute(rootXmlNode, "grandparentRatingKey"));
   item->GetVideoInfoTag()->m_type = type;
   item->GetVideoInfoTag()->SetPlot(variant["Overview"].asString());
   item->GetVideoInfoTag()->SetPlotOutline(variant["ShortOverview"].asString());
@@ -1519,7 +1509,6 @@ void CEmbyUtils::GetVideoDetails(CFileItem &item, const CVariant &variant)
         SActorInfo role;
         role.strName = peep["Name"].asString();
         role.strRole = peep["Role"].asString();
-        // Items/acae838242b43ad786c2cae52ff412d2/Images/Primary
         std::string urlStr = URIUtils::GetParentPath(item.GetPath());
         if (StringUtils::StartsWithNoCase(urlStr, "emby://"))
           urlStr = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
@@ -1599,7 +1588,6 @@ void CEmbyUtils::GetMediaDetals(CFileItem &item, const CVariant &variant, std::s
       }
       else if (streamType == "Subtitle")
       {
-        // http://94.203.10.174:8096/Videos/d922997f1b64da588f885ec7b4275222/d922997f1b64da588f885ec7b4275222/Subtitles/2/Stream.srt 
         CStreamDetailSubtitle* subtitleStream = new CStreamDetailSubtitle();
         subtitleStream->m_strLanguage = stream["Language"].asString();
 
