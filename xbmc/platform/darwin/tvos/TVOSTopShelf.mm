@@ -126,7 +126,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& moviesRA, CFileItemList& tvR
       // make the destfilename different for distinguish files with the same name
       std::string fileName;
       if(item->IsMediaServiceBased())
-        fileName = item->GetVideoInfoTag()->m_strServiceId + URIUtils::GetFileName(srcPath);
+        fileName = item->GetMediaServiceId() + URIUtils::GetFileName(srcPath);
       else
         fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(srcPath);
       std::string destPath = URIUtils::AddFileToFolder(raPath, fileName);
@@ -228,7 +228,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& moviesRA, CFileItemList& tvR
       // make the destfilename different for distinguish files with the same name
       std::string fileName;
       if(item->IsMediaServiceBased())
-        fileName = item->GetVideoInfoTag()->m_strServiceId + URIUtils::GetFileName(srcPath);
+        fileName = item->GetMediaServiceId() + URIUtils::GetFileName(srcPath);
       else
         fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) + URIUtils::GetFileName(srcPath);
       std::string destPath = URIUtils::AddFileToFolder(raPath, fileName);
