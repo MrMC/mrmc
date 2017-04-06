@@ -399,7 +399,9 @@ bool CEmbyClient::GetMusicArtists(CFileItemList &items, std::string url)
 
 void CEmbyClient::AddNewViewItems(const std::vector<std::string> &ids)
 {
+#if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyClient::AddNewViewItem");
+#endif
   const CVariant variant = FetchItemByIds(ids);
   if (variant.isNull() || !variant.isObject() || !variant.isMember("Items"))
   {
@@ -424,7 +426,9 @@ void CEmbyClient::AddNewViewItems(const std::vector<std::string> &ids)
 
 void CEmbyClient::UpdateViewItems(const std::vector<std::string> &ids)
 {
+#if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyClient::UpdateViewItems");
+#endif
   const CVariant variant = FetchItemByIds(ids);
   if (variant.isNull() || !variant.isObject() || !variant.isMember("Items"))
   {
@@ -489,7 +493,9 @@ void CEmbyClient::UpdateViewItems(const std::vector<std::string> &ids)
 
 void CEmbyClient::RemoveViewItems(const std::vector<std::string> &ids)
 {
+#if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyClient::RemoveViewItems");
+#endif
   const CVariant variant = FetchItemByIds(ids);
   if (variant.isNull() || !variant.isObject() || !variant.isMember("Items"))
   {
@@ -592,7 +598,9 @@ bool CEmbyClient::IsSameClientHostName(const CURL& url)
 
 bool CEmbyClient::FetchViews()
 {
+#if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyClient::FetchViews");
+#endif
   bool rtn = false;
   XFILE::CCurlFile emby;
   emby.SetRequestHeader("Cache-Control", "no-cache");
@@ -724,8 +732,9 @@ bool CEmbyClient::FetchViews()
 
 bool CEmbyClient::FetchViewItems(CEmbyViewCachePtr &view, const CURL &url, const std::string &type)
 {
+#if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyClient::FetchViewItems");
-
+#endif
   bool rtn = false;
   CURL curl(url);
   if (type == EmbyTypeMovie)
@@ -794,7 +803,9 @@ bool CEmbyClient::DoThreadedFetchViewItems(CEmbyViewCachePtr &view, const CURL &
 
 bool CEmbyClient::FetchFilterItems(CEmbyViewCachePtr &view, const CURL &url, const std::string &type, const std::string &filter)
 {
+#if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyClient::FetchFilterItems");
+#endif
   bool rtn = false;
 
   CURL curl(url);

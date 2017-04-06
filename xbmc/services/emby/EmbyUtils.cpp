@@ -733,20 +733,26 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
 
     if (type == EmbyTypeMovie)
     {
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Movie: %s",
         variantItem["Name"].asString().c_str());
+#endif
       ParseEmbyVideos(items, url2, variant, MediaTypeMovie);
     }
     else if (type == EmbyTypeSeries)
     {
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Series: %s",
         variantItem["Name"].asString().c_str());
+#endif
       ParseEmbySeries(items, url2, variant);
     }
     else if (type == EmbyTypeSeason)
     {
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Season: %s",
         variantItem["Name"].asString().c_str());
+#endif
       CURL url3(url2);
       std::string seriesID = variantItem["ParentId"].asString();
       url3.SetOptions("");
@@ -757,26 +763,34 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
     }
     else if (type == EmbyTypeEpisode)
     {
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Episode: %s",
         variantItem["Name"].asString().c_str());
+#endif
       ParseEmbyVideos(items, url2, variant, MediaTypeEpisode);
     }
     else if (type == EmbyTypeAudio)
     {
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Music: %s",
         variantItem["Name"].asString().c_str());
+#endif
       ParseEmbyAudio(items, url2, variant);
     }
     else if (type == EmbyTypeMusicAlbum)
     {
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Music: %s",
         variantItem["Name"].asString().c_str());
+#endif
       ParseEmbyAlbum(items, url2, variant);
     }
     else if (type == EmbyTypeMusicArtist)
     {
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Music: %s",
         variantItem["Name"].asString().c_str());
+#endif
       ParseEmbyArtists(items, url2, variant);
     }
     else
