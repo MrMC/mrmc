@@ -1,8 +1,10 @@
 #### About
 
-MrMC is an award-winning free and open source (GPL) software media player and
-entertainment hub for digital media. MrMC is available for multiple platforms,
-in more than 65 languages.
+MrMC is a software media center for playing videos, music, and pictures. 
+MrMC, featuring a 10-foot user interface for use with televisions and
+remote controls. It allows users to play and view most videos, music,
+and other digital media files from local storage media and media
+devices/servers such as Emby, Plex, HDHomerun, TVHeadend and more.
 
 While MrMC functions very well as a standard media player application for your
 computer, it has been designed to be the perfect companion for your HTPC.
@@ -15,7 +17,7 @@ around. It was designed for network playback, so you can stream your multimedia
 from anywhere in the house or directly from the internet using practically any
 protocol available.
 
-Use your media as-is: MrMC can play CD's and DVD's directly
+Use your media as-is: MrMC can play decrypted CD's, DVD's and Bluray's directly
 from the disk or image file, almost all popular archive formats from your hard
 drive, and even files inside ZIP and RAR archives. It will even scan all of
 your media and automatically create a personalized library complete with box
@@ -31,10 +33,8 @@ See [docs/README.xxx] (https://github.com/mrmc/mrmc/tree/master/docs) for specif
 
 ##### Quick MrMC development links
 
-* [Contributing] FEEDME
-* [Submitting a patch] FEEDME 
-* [Code guidelines] FEEDME
-* [MrMC development] FEEDME
+* [Submitting a patch] https://github.com/MrMC/mrmc/pulls 
+* [MrMC development] https://github.com/MrMC/mrmc
 
 ##### Useful links
 
