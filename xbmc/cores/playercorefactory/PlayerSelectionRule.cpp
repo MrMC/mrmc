@@ -112,7 +112,7 @@ bool CPlayerSelectionRule::MatchesRegExp(const std::string& str, CRegExp& regExp
 
 void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vecCores)
 {
-  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: considering rule: %s", m_name.c_str());
+  //CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: considering rule: %s", m_name.c_str());
 
   if (m_bStreamDetails && !item.HasVideoInfoTag()) return;
   if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio()) return;
