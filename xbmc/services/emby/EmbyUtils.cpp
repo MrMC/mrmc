@@ -1082,7 +1082,7 @@ bool CEmbyUtils::ParseEmbyAudio(CFileItemList &items, const CURL &url, const CVa
     std::string albumId = item["AlbumId"].asString();
 
     CFileItemPtr embyItem(new CFileItem());
-    embyItem->SetLabel(itemId);
+    embyItem->SetLabel(item["Name"].asString());
     curl.SetFileName("Audio/" + itemId +"/stream?static=true");
     embyItem->SetPath(curl.Get());
     embyItem->SetMediaServiceId(itemId);
