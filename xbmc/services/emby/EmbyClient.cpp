@@ -633,7 +633,7 @@ bool CEmbyClient::FetchViews()
     static const std::string PropertyViewCollectionType = "CollectionType";
 
     std::vector<EmbyViewContent> views;
-    std::vector<const std::string> mediaTypes = {
+    const std::vector<std::string> mediaTypes = {
     "movies",
   // musicvideos,
   // homevideos,

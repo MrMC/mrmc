@@ -34,7 +34,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/StopWatch.h"
+#include "utils/Stopwatch.h"
 #include "utils/JSONVariantParser.h"
 #include "video/VideoInfoTag.h"
 

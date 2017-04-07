@@ -41,6 +41,7 @@
     #define SOCKET_EAGAIN_EINPROGRESS WSAEINPROGRESS
     #define SOCKET_EWOULDBLOCK WSAEWOULDBLOCK
 #else
+    #include <arpa/inet.h>
     #include <fcntl.h>
     #include <netdb.h>
     #include <netinet/tcp.h>

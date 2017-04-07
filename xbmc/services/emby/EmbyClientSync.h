@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <atomic>
+
 #include "EmbyClient.h"
 #include "EmbyUtils.h"
 #include "threads/Thread.h"

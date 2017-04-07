@@ -726,10 +726,10 @@ if test "$use_debug" = "yes"; then
   final_message="$final_message\n  Debugging:\tYes"
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
-    DEBUG_FLAGS="-g -pg -D_DEBUG -Wall"
+    DEBUG_FLAGS="-g -pg -D_DEBUG -Wall -Wno-unknown-pragmas"
   else
     final_message="$final_message\n  Profiling:\tNo"
-    DEBUG_FLAGS="-g -D_DEBUG -Wall"
+    DEBUG_FLAGS="-g -D_DEBUG -Wall -Wno-unknown-pragmas"
   fi
 else
   final_message="$final_message\n  Debugging:\tNo"

@@ -34,6 +34,8 @@ Transcode - The client streams the file from the server with encoding
 
 
 #include <string>
+#include <vector>
+#include <memory>
 
 #include "URL.h"
 #include "threads/CriticalSection.h"

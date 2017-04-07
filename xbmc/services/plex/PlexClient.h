@@ -19,7 +19,10 @@
  *
  */
 
+#include <atomic>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "URL.h"
 #include "utils/XMLUtils.h"
