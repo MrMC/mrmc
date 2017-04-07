@@ -54,7 +54,7 @@ static const std::string StandardFields = {
 };
 
 static const std::string MoviesFields = {
-  "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount"
+  "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount,ProviderIds"
 };
 
 static const std::string TVShowsFields = {
@@ -1293,7 +1293,7 @@ bool CEmbyUtils::ParseEmbyMoviesFilter(CFileItemList &items, CURL url, const CVa
     newItem->m_bIsShareOrDrive = false;
 
     CURL curl1(url);
-    curl1.SetOption("Fields", "DateCreated,Genres,MediaStreams,Overview,Path");
+    curl1.SetOption("Fields", "DateCreated,Genres,MediaStreams,Overview,Path,ProviderIds");
     if (filter == "Genres")
       curl1.SetOption("Genres", itemName);
     else if (filter == "Years")
@@ -1449,6 +1449,17 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
     item->SetIconImage(url2.Get());
     url2.SetFileName("Items/" + itemId + "/Images/Backdrop");
     fanart = url2.Get();
+    
+    CVariant paramsProvID = variant["ProviderIds"];
+    if (paramsProvID.isObject())
+    {
+      for (CVariant::iterator_map it = paramsProvID.begin_map(); it != paramsProvID.end_map(); it++)
+      {
+        std::string strFirst = it->first;
+        StringUtils::ToLower(strFirst);
+        item->GetVideoInfoTag()->SetUniqueID(it->second.asString(),strFirst);
+      }
+    }
   }
 
   std::string title = variant["Name"].asString();

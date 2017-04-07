@@ -109,6 +109,8 @@ public:
   const std::vector<EmbyViewInfo> GetViewInfoForTVShowContent() const;
   const std::string FormatContentTitle(const std::string contentTitle) const;
 
+  const CVariant FetchItemById(const std::string &Id);
+  
   std::string GetUrl();
   std::string GetHost();
   int         GetPort();
@@ -121,7 +123,6 @@ protected:
   bool        DoThreadedFetchViewItems(CEmbyViewCachePtr &view, const CURL& url, const std::string &type);
   bool        FetchFilterItems(CEmbyViewCachePtr &view, const CURL &url, const std::string &type, const std::string &filter);
   void        SetPresence(bool presence);
-  const CVariant FetchItemById(const std::string &Id);
   const CVariant FetchItemByIds(const std::vector<std::string> &Ids);
 
 private:
