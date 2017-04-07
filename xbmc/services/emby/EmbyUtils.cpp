@@ -913,15 +913,17 @@ bool CEmbyUtils::ParseEmbySeries(CFileItemList &items, const CURL &url, const CV
       newItem->SetArt("fanart", imagePath);
 
       newItem->GetVideoInfoTag()->m_playCount = static_cast<int>(item["UserData"]["PlayCount"].asInteger());
-      newItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, item["UserData"]["Played"].asBoolean());
+      newItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, newItem->GetVideoInfoTag()->m_playCount > 0);
 
       newItem->GetVideoInfoTag()->m_strTitle = title;
       newItem->GetVideoInfoTag()->m_strStatus = item["Status"].asString();
 
       newItem->GetVideoInfoTag()->m_type = MediaTypeTvShow;
       newItem->GetVideoInfoTag()->m_strFileNameAndPath = newItem->GetPath();
-      newItem->GetVideoInfoTag()->SetSortTitle(item["SortName"].asString());
-      newItem->GetVideoInfoTag()->SetOriginalTitle(item["OriginalTitle"].asString());
+      newItem->GetVideoInfoTag()->SetSortTitle(title);
+      newItem->GetVideoInfoTag()->SetOriginalTitle(title);
+      //newItem->GetVideoInfoTag()->SetSortTitle(item["SortName"].asString());
+      //newItem->GetVideoInfoTag()->SetOriginalTitle(item["OriginalTitle"].asString());
       newItem->SetProperty("EmbySeriesID", seriesId);
       newItem->GetVideoInfoTag()->SetPlot(item["Overview"].asString());
       newItem->GetVideoInfoTag()->SetPlotOutline(item["ShortOverview"].asString());
@@ -1453,8 +1455,10 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
   item->SetArt("fanart", fanart);
 
   item->GetVideoInfoTag()->m_strTitle = title;
-  item->GetVideoInfoTag()->SetSortTitle(variant["SortName"].asString());
-  item->GetVideoInfoTag()->SetOriginalTitle(variant["OriginalTitle"].asString());
+  item->GetVideoInfoTag()->SetSortTitle(title);
+  item->GetVideoInfoTag()->SetOriginalTitle(title);
+  //item->GetVideoInfoTag()->SetSortTitle(variant["SortName"].asString());
+  //item->GetVideoInfoTag()->SetOriginalTitle(variant["OriginalTitle"].asString());
 
   url2.SetFileName("Videos/" + itemId +"/stream?static=true");
   item->SetPath(url2.Get());
@@ -1481,7 +1485,7 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
   item->GetVideoInfoTag()->m_duration = static_cast<int>(TicksToSeconds(variant["RunTimeTicks"].asInteger()));
   item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds = item->GetVideoInfoTag()->m_duration;
   item->GetVideoInfoTag()->m_playCount = static_cast<int>(variant["UserData"]["PlayCount"].asInteger());
-  item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, variant["UserData"]["Played"].asBoolean());
+  item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, item->GetVideoInfoTag()->m_playCount > 0);
   item->GetVideoInfoTag()->m_resumePoint.timeInSeconds = static_cast<int>(TicksToSeconds(variant["UserData"]["PlaybackPositionTicks"].asUnsignedInteger()));
 
   GetMediaDetals(*item, variant, itemId);
