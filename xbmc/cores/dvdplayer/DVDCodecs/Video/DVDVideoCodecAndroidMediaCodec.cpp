@@ -1413,8 +1413,15 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
     }
   }
 
-  m_videobuffer.iWidth  = crop_right  + 1 - crop_left;
-  m_videobuffer.iHeight = crop_bottom + 1 - crop_top;
+  // Refering to the mediacodec API documentation the size of a frame is computed by:
+  // 1.) Retrieve mediaFormat wich / height
+  // 2.) Check if crop rect is given and overwrite values in 1.)
+  if (crop_right)
+    width = crop_right  + 1 - crop_left;
+  if (crop_bottom)
+    height = crop_bottom + 1 - crop_top;
+  m_videobuffer.iWidth  = width;
+  m_videobuffer.iHeight = height;
   m_videobuffer.iDisplayWidth  = width;
   m_videobuffer.iDisplayHeight = height;
 
