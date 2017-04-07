@@ -1109,6 +1109,7 @@ bool CEmbyUtils::ParseEmbyAudio(CFileItemList &items, const CURL &url, const CVa
     GetMusicDetails(*embyItem, item);
 
     embyItem->GetMusicInfoTag()->m_dateAdded.SetFromW3CDateTime(item["DateCreated"].asString());
+    embyItem->GetMusicInfoTag()->m_lastPlayed.SetFromW3CDateTime(item["LastPlayedDate"].asString());
     embyItem->GetMusicInfoTag()->SetLoaded(true);
     SetEmbyItemProperties(*embyItem, MediaTypeSong);
     items.Add(embyItem);
@@ -1180,6 +1181,7 @@ bool CEmbyUtils::ParseEmbyAlbum(CFileItemList &items, const CURL &url, const CVa
     embyItem->SetProperty("fanart", imagePath);
 
     embyItem->GetMusicInfoTag()->m_dateAdded.SetFromW3CDateTime(item["DateCreated"].asString());
+    embyItem->GetMusicInfoTag()->m_lastPlayed.SetFromW3CDateTime(item["LastPlayedDate"].asString());
 
     GetMusicDetails(*embyItem, item);
     SetEmbyItemProperties(*embyItem, MediaTypeAlbum);
@@ -1248,6 +1250,7 @@ bool CEmbyUtils::ParseEmbyArtists(CFileItemList &items, const CURL &url, const C
     embyItem->SetProperty("fanart", imagePath);
 
     embyItem->GetMusicInfoTag()->m_dateAdded.SetFromW3CDateTime(item["DateCreated"].asString());
+    embyItem->GetMusicInfoTag()->m_lastPlayed.SetFromW3CDateTime(item["LastPlayedDate"].asString());
 
     GetMusicDetails(*embyItem, item);
 
