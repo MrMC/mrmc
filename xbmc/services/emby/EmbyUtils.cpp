@@ -734,7 +734,7 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
     if (type == EmbyTypeMovie)
     {
 #if defined(EMBY_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Movie: %s",
+      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr EmbyTypeMovie: %s",
         variantItem["Name"].asString().c_str());
 #endif
       ParseEmbyVideos(items, url2, variant, MediaTypeMovie);
@@ -742,7 +742,7 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
     else if (type == EmbyTypeSeries)
     {
 #if defined(EMBY_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Series: %s",
+      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr EmbyTypeSeries: %s",
         variantItem["Name"].asString().c_str());
 #endif
       ParseEmbySeries(items, url2, variant);
@@ -750,7 +750,7 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
     else if (type == EmbyTypeSeason)
     {
 #if defined(EMBY_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Season: %s",
+      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr EmbyTypeSeason: %s",
         variantItem["Name"].asString().c_str());
 #endif
       CURL url3(url2);
@@ -764,7 +764,7 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
     else if (type == EmbyTypeEpisode)
     {
 #if defined(EMBY_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Episode: %s",
+      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr EmbyTypeEpisode: %s",
         variantItem["Name"].asString().c_str());
 #endif
       ParseEmbyVideos(items, url2, variant, MediaTypeEpisode);
@@ -772,7 +772,7 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
     else if (type == EmbyTypeAudio)
     {
 #if defined(EMBY_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Music: %s",
+      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr EmbyTypeAudio: %s",
         variantItem["Name"].asString().c_str());
 #endif
       ParseEmbyAudio(items, url2, variant);
@@ -780,7 +780,7 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
     else if (type == EmbyTypeMusicAlbum)
     {
 #if defined(EMBY_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Music: %s",
+      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr EmbyTypeMusicAlbum: %s",
         variantItem["Name"].asString().c_str());
 #endif
       ParseEmbyAlbum(items, url2, variant);
@@ -788,7 +788,7 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
     else if (type == EmbyTypeMusicArtist)
     {
 #if defined(EMBY_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr Music: %s",
+      CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr EmbyTypeMusicArtist: %s",
         variantItem["Name"].asString().c_str());
 #endif
       ParseEmbyArtists(items, url2, variant);
