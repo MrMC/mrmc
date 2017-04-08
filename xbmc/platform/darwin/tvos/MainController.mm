@@ -1240,6 +1240,7 @@ MainController *g_xbmcController;
 {
   m_disableIdleTimer = YES;
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+  [self resetSystemIdleTimer];
 }
 //--------------------------------------------------------------
 - (void)enableScreenSaver
