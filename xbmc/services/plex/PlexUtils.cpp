@@ -725,7 +725,7 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
         url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
         plexItem->SetPath("plex://tvshows/seasons/" + Base64::Encode(url1.Get()));
         plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
-        plexItem->GetVideoInfoTag()->m_type = MediaTypeTvShow;
+        plexItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
         plexItem->GetVideoInfoTag()->m_strTitle = XMLUtils::GetAttribute(directoryNode, "title");
         // we get these from rootXmlNode, where all show info is
         plexItem->GetVideoInfoTag()->m_strShowTitle = XMLUtils::GetAttribute(rootXmlNode, "parentTitle");
