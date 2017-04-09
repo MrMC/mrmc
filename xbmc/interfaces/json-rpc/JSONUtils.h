@@ -72,6 +72,24 @@ namespace JSONRPC
       result["hours"] = time;
     }
 
+    static double TimeObjectToMilliseconds(const CVariant &time)
+    {
+      double seconds = 0.0;
+      if (time.isObject())
+      {
+        if (time.isMember("hours"))
+          seconds += time["hours"].asInteger() * 60 * 60;
+        if (time.isMember("minutes"))
+          seconds += time["minutes"].asInteger() * 60;
+        if (time.isMember("seconds"))
+          seconds += time["seconds"].asInteger();
+        if (time.isMember("milliseconds"))
+          seconds += time["milliseconds"].asDouble() / 1000.0;
+      }
+
+      return seconds;
+    }
+
   protected:
     static void HandleLimits(const CVariant &parameterObject, CVariant &result, int size, int &start, int &end)
     {
