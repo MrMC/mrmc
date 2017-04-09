@@ -46,6 +46,7 @@ static const std::string _children = "_children";
 static const std::string NotificationContainer = "NotificationContainer";
 static const std::string TimelineEntry = "TimelineEntry";
 static const std::string StatusNotification = "StatusNotification";
+static const std::string ActivityNotification = "ActivityNotification";
 static const std::string ProgressNotification = "ProgressNotification";
 static const std::string PlaySessionStateNotification = "PlaySessionStateNotification";
 
@@ -206,13 +207,17 @@ void CPlexClientSync::ProcessSyncByWebSockets()
           else if (variant.isMember(StatusNotification))
           {
             // messages we do not care about
-            // "notificationName":"LIBRARY_UPDATE"
             CVariant status = variant[StatusNotification];
           }
           else if (variant.isMember(ProgressNotification))
           {
             // more messages we do not care about
             CVariant progress = variant[ProgressNotification];
+          }
+          else if (variant.isMember(ActivityNotification))
+          {
+            // even more messages we do not care about
+            CVariant progress = variant[ActivityNotification];
           }
           else if (variant.isMember(PlaySessionStateNotification))
           {
