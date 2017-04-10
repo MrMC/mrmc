@@ -48,6 +48,7 @@ static const std::string TimelineEntry = "TimelineEntry";
 static const std::string StatusNotification = "StatusNotification";
 static const std::string ActivityNotification = "ActivityNotification";
 static const std::string ProgressNotification = "ProgressNotification";
+static const std::string TranscodeSession = "TranscodeSession";
 static const std::string PlaySessionStateNotification = "PlaySessionStateNotification";
 
 typedef enum MediaImportChangesetType
@@ -218,6 +219,11 @@ void CPlexClientSync::ProcessSyncByWebSockets()
           {
             // even more messages we do not care about
             CVariant progress = variant[ActivityNotification];
+          }
+          else if (variant.isMember(TranscodeSession))
+          {
+            // even more messages we do not care about
+            CVariant progress = variant[TranscodeSession];
           }
           else if (variant.isMember(PlaySessionStateNotification))
           {
