@@ -2626,6 +2626,9 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
   }
+
+  if (setting == CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCENOISEINDEX)
+    m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECHANGE);
 }
 
 bool CActiveAE::SupportsRaw(AEAudioFormat &format)

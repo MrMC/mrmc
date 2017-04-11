@@ -147,6 +147,7 @@ protected:
   int m_sinkLatency;
   CAEBitstreamPacker *m_packer;
   bool m_needIecPack;
+  int m_silenceNoiseFactorIndex;
 };
 
 }

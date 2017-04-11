@@ -15808,7 +15808,41 @@ msgctxt "#34128"
 msgid "192.0"
 msgstr ""
 
-#empty strings from id 34129 to 34200
+#. Stream Silence Noise Factor Index
+#: system/settings/settings.xml
+msgctxt "#34129"
+msgid "Default"
+msgstr ""
+
+#. Stream Silence Noise Factor Index
+#: system/settings/settings.xml
+msgctxt "#34130"
+msgid "2 times less"
+msgstr ""
+
+#. Stream Silence Noise Factor Index
+#: system/settings/settings.xml
+msgctxt "#34131"
+msgid "10 times less"
+msgstr ""
+
+#. Stream Silence Noise Factor Index
+#: system/settings/settings.xml
+msgctxt "#34132"
+msgid "100 times less"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#34133"
+msgid "Level of inaudible silence"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#34134"
+msgid "Select the level of inaudible signal is output to keep the receiveing audio device alive"
+msgstr ""
+
+#empty strings from id 34135 to 34200
 #34129-34200 reserved for future use
 
 #: xbmc\PlayListPlayer.cpp
