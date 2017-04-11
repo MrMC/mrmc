@@ -65,6 +65,7 @@ bool CDVDInputStreamFFmpeg::Open()
       m_item.SetPath(selected.c_str());
       CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", CURL::GetRedacted(m_item.GetPath()).c_str());
     }
+    m_realtime = true;
   }
 
   if (!CDVDInputStream::Open())
