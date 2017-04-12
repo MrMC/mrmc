@@ -153,12 +153,14 @@ bool CPlexClient::Init(const PlexServerInfo &serverInfo)
     }
   }
 
+/*
   if (m_clientSync)
     SAFE_DELETE(m_clientSync);
 
   m_clientSync = new CPlexClientSync(IsOwned(), m_serverName, url.GetWithoutFilename(),
     CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID).c_str(), m_accessToken);
   m_clientSync->Start();
+*/
 
   return !m_url.empty();
 }
