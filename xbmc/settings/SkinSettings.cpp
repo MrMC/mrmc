@@ -202,9 +202,13 @@ bool CSkinSettings::MigrateToNewSkin(const std::string skin)
 {
   ADDON::AddonPtr addon;
   
-  // if current skin is same as new skin, return false
+  // if current skin is same as new skin return false but set SETTING_LOOKANDFEEL_NEWSKINCHECKED to true
+  // corner case but possible to hit
   if (skin == NEW_SKIN)
+  {
+    CSettings::GetInstance().SetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED, true);
     return false;
+  }
   
   // if we dont have new skin installed, return false
   if (!ADDON::CAddonMgr::GetInstance().GetAddon(NEW_SKIN, addon, ADDON::ADDON_SKIN))
