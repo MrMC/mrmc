@@ -485,7 +485,7 @@ const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCAL = "plex.transco
 const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODEAUDIO = "plex.transcodeaudio";
 const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION = "plex.transcodelocalexclusions";
 const std::string CSettings::SETTING_SERVICES_PLEXMYPLEXAUTH = "plex.myplexauthtoken";
-const std::string CSettings::SETTING_SERVICES_PLEXLIMITHOMETOLOCAL  = "plex.limithometolocal";
+const std::string CSettings::SETTING_SERVICES_PLEXLIMITHOMETO  = "plex.limithometo";
 
 // emby services
 const std::string CSettings::SETTING_SERVICES_EMBYSIGNIN = "emby.signin";
@@ -495,7 +495,7 @@ const std::string CSettings::SETTING_SERVICES_EMBYUSERID = "emby.userid";
 const std::string CSettings::SETTING_SERVICES_EMBYSERVERURL = "emby.serverurl";
 const std::string CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES = "emby.savedsources";
 const std::string CSettings::SETTING_SERVICES_EMBYACESSTOKEN = "emby.accesstoken";
-const std::string CSettings::SETTING_SERVICES_EMBYLIMITHOMETOLOCAL  = "emby.limithometolocal";
+const std::string CSettings::SETTING_SERVICES_EMBYLIMITHOMETO  = "emby.limithometo";
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -1373,7 +1373,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYSERVERURL);
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYACESSTOKEN);
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES);
-  settingSet.insert(CSettings::SETTING_SERVICES_EMBYLIMITHOMETOLOCAL);
   m_settingsManager->RegisterCallback(&CEmbyServices::GetInstance(), settingSet);
 }
 

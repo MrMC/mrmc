@@ -5044,12 +5044,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2113"
-msgid "Limit Home Shelf to local Emby server only"
+msgid "Limit Home Shelf to selected Emby servers"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#2114"
-msgid "If enabled, this setting will limit Recently Added and In Progres item collection to a local server only."
+msgid "Only selected Emby servers will be displayed in Home Shelf, recently added and in progress"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18959,11 +18959,24 @@ msgctxt "#37049"
 msgid "Remove dangling thumbnails."
 msgstr ""
 
-#empty strings from id 37050 to 37051
+#: system/settings/settings.xml
+msgctxt "#37050"
+msgid "Local server only"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#37051"
+msgid "All servers"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#37052"
-msgid "Limit Home Shelf to local Plex server only"
+msgid "Limit Home Shelf to selected Plex servers"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#37053"
+msgid "Only selected Plex servers will be displayed in Home Shelf, recently added and in progress"
 msgstr ""
 
 #empty strings from id 37053 to 38009

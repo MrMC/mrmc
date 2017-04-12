@@ -2210,10 +2210,17 @@
         </setting>
       </group>
       <group id="3">
-        <setting id="plex.limithometolocal" type="boolean" label="37052" help="37051">
+        <setting id="plex.limithometo" type="integer" label="37052" help="37053">
           <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
+          <default>2</default>
+          <constraints>
+            <options>
+              <option label="231">1</option>  <!-- None -->
+              <option label="37050">2</option>  <!--Local server only-->
+              <option label="37051">3</option>  <!--All servers-->
+            </options>
+          </constraints>
+          <control type="list" format="integer" />
         </setting>
       </group>
       <group id="2">
@@ -2353,10 +2360,17 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="emby.limithometolocal" type="boolean" label="2113" help="2114">
+        <setting id="emby.limithometo" type="integer" label="2113" help="2114">
           <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
+          <default>2</default>
+          <constraints>
+            <options>
+              <option label="231">1</option>  <!-- None -->
+              <option label="37050">2</option>  <!--Local server only-->
+              <option label="37051">3</option>  <!--All servers-->
+            </options>
+          </constraints>
+          <control type="list" format="integer" />
         </setting>
       </group>
     </category>

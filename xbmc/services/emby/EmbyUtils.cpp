@@ -441,13 +441,15 @@ bool CEmbyUtils::GetAllEmbyInProgress(CFileItemList &items, bool tvShow)
   if (CEmbyServices::GetInstance().HasClients())
   {
     CFileItemList embyItems;
-    bool limitToLocal = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_EMBYLIMITHOMETOLOCAL);
+    int limitTo = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_EMBYLIMITHOMETO);
+    if (limitTo < 2)
+      return false;
     //look through all emby clients and pull in progress for each library section
     std::vector<CEmbyClientPtr> clients;
     CEmbyServices::GetInstance().GetClients(clients);
     for (const auto &client : clients)
     {
-      if (limitToLocal && !client->IsOwned())
+      if (limitTo == 2 && !client->IsOwned())
         continue;
 
       std::vector<EmbyViewInfo> viewinfos;
@@ -483,13 +485,15 @@ bool CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(CFileItemList &items, boo
   if (CEmbyServices::GetInstance().HasClients())
   {
     CFileItemList embyItems;
-    bool limitToLocal = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_EMBYLIMITHOMETOLOCAL);
+    int limitTo = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_EMBYLIMITHOMETO);
+    if (limitTo < 2)
+      return false;
     //look through all emby clients and pull recently added for each library section
     std::vector<CEmbyClientPtr> clients;
     CEmbyServices::GetInstance().GetClients(clients);
     for (const auto &client : clients)
     {
-      if (limitToLocal && !client->IsOwned())
+      if (limitTo == 2 && !client->IsOwned())
         continue;
 
       std::vector<EmbyViewInfo> contents;
@@ -526,13 +530,15 @@ bool CEmbyUtils::GetEmbyRecentlyAddedAlbums(CFileItemList &items,int limit)
   if (CEmbyServices::GetInstance().HasClients())
   {
     CFileItemList embyItems;
-    bool limitToLocal = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_EMBYLIMITHOMETOLOCAL);
+    int limitTo = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_EMBYLIMITHOMETO);
+    if (limitTo < 2)
+      return false;
     //look through all emby clients and pull recently added for each library section
     std::vector<CEmbyClientPtr> clients;
     CEmbyServices::GetInstance().GetClients(clients);
     for (const auto &client : clients)
     {
-      if (limitToLocal && !client->IsOwned())
+      if (limitTo == 2 && !client->IsOwned())
         continue;
       
       std::vector<EmbyViewInfo> viewinfos;

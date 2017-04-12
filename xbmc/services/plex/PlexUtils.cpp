@@ -967,13 +967,15 @@ bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, boo
   if (CPlexServices::GetInstance().HasClients())
   {
     CFileItemList plexItems;
-    bool limitToLocal = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXLIMITHOMETOLOCAL);
+    int limitTo = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_PLEXLIMITHOMETO);
+    if (limitTo < 2)
+      return false;
     //look through all plex clients and pull recently added for each library section
     std::vector<CPlexClientPtr> clients;
     CPlexServices::GetInstance().GetClients(clients);
     for (const auto &client : clients)
     {
-      if (limitToLocal && !client->IsOwned())
+      if (limitTo == 2 && !client->IsOwned())
         continue;
       
       std::vector<PlexSectionsContent> contents;
@@ -1010,13 +1012,15 @@ bool CPlexUtils::GetAllPlexInProgress(CFileItemList &items, bool tvShow)
   if (CPlexServices::GetInstance().HasClients())
   {
     CFileItemList plexItems;
-    bool limitToLocal = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXLIMITHOMETOLOCAL);
+    int limitTo = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_PLEXLIMITHOMETO);
+    if (limitTo < 2)
+      return false;
     //look through all plex clients and pull recently added for each library section
     std::vector<CPlexClientPtr> clients;
     CPlexServices::GetInstance().GetClients(clients);
     for (const auto &client : clients)
     {
-      if (limitToLocal && !client->IsOwned())
+      if (limitTo == 2 && !client->IsOwned())
         continue;
       
       std::vector<PlexSectionsContent> contents;
@@ -1611,13 +1615,15 @@ bool CPlexUtils::GetPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
   if (CPlexServices::GetInstance().HasClients())
   {
     CFileItemList plexItems;
-    bool limitToLocal = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXLIMITHOMETOLOCAL);
+    int limitTo = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_PLEXLIMITHOMETO);
+    if (limitTo < 2)
+      return false;
     //look through all plex clients and pull recently added for each library section
     std::vector<CPlexClientPtr> clients;
     CPlexServices::GetInstance().GetClients(clients);
     for (const auto &client : clients)
     {
-      if (limitToLocal && !client->IsOwned())
+      if (limitTo == 2 && !client->IsOwned())
         continue;
       
       std::vector<PlexSectionsContent> contents;
