@@ -93,7 +93,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
           mJsonRPC.updateLeanback(Main.this);
         }
       }.start();
-      handler.postDelayed(this, 60*60*1000);
+      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60*60) * 1000);
     }
   };
 
@@ -228,12 +228,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
-/*
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      AudioManager audioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-      audioManager.registerAudioDeviceCallback(new MyAudioDeviceCallback(), null);
-    }
-*/
     mJsonRPC = new XBMCJsonRPC();
 
     // Delayed Intent
