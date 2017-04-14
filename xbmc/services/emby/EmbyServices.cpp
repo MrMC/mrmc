@@ -236,7 +236,7 @@ void CEmbyServices::OnSettingAction(const CSetting *setting)
       if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(path))
       {
         CURL curl2(path);
-        if (!curl2.GetHostName().empty() && !curl2.GetUserName().empty() && !curl2.GetPassWord().empty())
+        if (!curl2.GetHostName().empty() && !curl2.GetUserName().empty())
         {
           if (AuthenticateByName(curl2))
           {
@@ -257,7 +257,7 @@ void CEmbyServices::OnSettingAction(const CSetting *setting)
         else
         {
           // opps, nuke'em all
-          CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction host/user/pass are empty");
+          CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction host/user are empty");
           m_userId.clear();
           m_accessToken.clear();
         }
