@@ -81,7 +81,7 @@ void CLightEffectServices::Announce(AnnouncementFlag flag, const char *sender, c
 void CLightEffectServices::Start()
 {
   CSingleLock lock(m_critical);
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE) && !IsRunning())
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE))
   {
     if (IsRunning())
       StopThread();
