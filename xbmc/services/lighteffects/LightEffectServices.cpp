@@ -269,7 +269,8 @@ bool CLightEffectServices::InitConnection()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
       g_localizeStrings.Get(882), g_localizeStrings.Get(883), 3000, true);
     const CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE);
-    ((CSettingBool*)setting)->SetValue(false);
+    if (setting != NULL)
+      ((CSettingBool*)setting)->SetValue(false);
     
     SAFE_DELETE(m_lighteffect);
     return false;
