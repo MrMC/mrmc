@@ -19,6 +19,7 @@
  */
 
 #include "TCPClient.h"
+#include "linux/XTimeUtils.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -125,6 +126,7 @@ int CTCPClient::Read(std::string &data)
 
     buff[size] = 0x00;
     data += buff;
+    Sleep(10);
   }
 
   return SUCCESS;
