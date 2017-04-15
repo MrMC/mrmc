@@ -26,7 +26,7 @@
 #include "URL.h"
 #include "filesystem/StackDirectory.h"
 #include "network/Network.h"
-#include "utils/Base64.h"
+#include "utils/Base64URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -397,7 +397,7 @@ void CPlexUtils::SetWatched(CFileItem &item)
   else
     url   = URIUtils::GetParentPath(url);
   if (StringUtils::StartsWithNoCase(url, "plex://"))
-      url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+      url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
 
   std::string filename = StringUtils::Format(":/scrobble?identifier=com.plexapp.plugins.library&key=%s", id.c_str());
   ReportToServer(url, filename);
@@ -416,7 +416,7 @@ void CPlexUtils::SetUnWatched(CFileItem &item)
   else
     url   = URIUtils::GetParentPath(url);
   if (StringUtils::StartsWithNoCase(url, "plex://"))
-    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+    url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
 
   std::string filename = StringUtils::Format(":/unscrobble?identifier=com.plexapp.plugins.library&key=%s", id.c_str());
   ReportToServer(url, filename);
@@ -455,7 +455,7 @@ void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
         url = url3.Get();
       }
       if (StringUtils::StartsWithNoCase(url, "plex://"))
-        url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+        url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
 
       std::string id    = item.GetMediaServiceId();
       int totalSeconds  = item.GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds;
@@ -640,7 +640,7 @@ bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
       plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
       CURL url1(url);
       url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
-      plexItem->SetPath("plex://tvshows/shows/" + Base64::Encode(url1.Get()));
+      plexItem->SetPath("plex://tvshows/shows/" + Base64URL::Encode(url1.Get()));
       plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
       plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
       plexItem->GetVideoInfoTag()->m_type = MediaTypeTvShow;
@@ -723,7 +723,7 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
         plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
         CURL url1(url);
         url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
-        plexItem->SetPath("plex://tvshows/seasons/" + Base64::Encode(url1.Get()));
+        plexItem->SetPath("plex://tvshows/seasons/" + Base64URL::Encode(url1.Get()));
         plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
         plexItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
         plexItem->GetVideoInfoTag()->m_strTitle = XMLUtils::GetAttribute(directoryNode, "title");
@@ -1072,7 +1072,7 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
       pItem->m_bIsShareOrDrive = false;
       CURL plex(url);
       plex.SetFileName(plex.GetFileName() + "all?" + filter + "=" + key);
-      pItem->SetPath(parentPath + Base64::Encode(plex.Get()));
+      pItem->SetPath(parentPath + Base64URL::Encode(plex.Get()));
       pItem->SetLabel(title);
       pItem->SetProperty("SkipLocalArt", true);
       SetPlexItemProperties(*pItem);
@@ -1088,7 +1088,7 @@ bool CPlexUtils::GetItemSubtiles(CFileItem &item)
 {
   std::string url = URIUtils::GetParentPath(item.GetPath());
   if (StringUtils::StartsWithNoCase(url, "plex://"))
-    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+    url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
   
   std::string id = item.GetMediaServiceId();
   std::string filename = StringUtils::Format("library/metadata/%s", id.c_str());
@@ -1138,7 +1138,7 @@ bool CPlexUtils::GetMoreItemInfo(CFileItem &item)
 {
   std::string url = URIUtils::GetParentPath(item.GetPath());
   if (StringUtils::StartsWithNoCase(url, "plex://"))
-    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+    url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
   
   std::string id = item.GetMediaServiceId();
   std::string childElement = "Video";
@@ -1372,7 +1372,7 @@ bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bo
       plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
       CURL url1(url);
       url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
-      plexItem->SetPath(strMediaTypeUrl + Base64::Encode(url1.Get()));
+      plexItem->SetPath(strMediaTypeUrl + Base64URL::Encode(url1.Get()));
       plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
       
       plexItem->GetMusicInfoTag()->m_type = strMediaType;
@@ -1656,7 +1656,7 @@ bool CPlexUtils::GetPlexAlbumSongs(CFileItem item, CFileItemList &items)
 {
   std::string url = item.GetPath();
   if (StringUtils::StartsWithNoCase(url, "plex://"))
-    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+    url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
   CURL url1(url);
   url1.SetFileName("library/metadata/" + item.GetProperty("PlexAlbumKey").asString() + "/children");
   url1.RemoveProtocolOption("X-Plex-Container-Start");
