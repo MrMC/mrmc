@@ -12,6 +12,9 @@
 		183CB23B1C0B4C5A004218C2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 183CB23A1C0B4C5A004218C2 /* Images.xcassets */; };
 		1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B74B13993D8A007C848B /* JSONVariantParser.cpp */; };
 		1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B75113993DA0007C848B /* JSONVariantWriter.cpp */; };
+		184565C21EA1F45400C5DABB /* Base64URL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184565C01EA1F45400C5DABB /* Base64URL.cpp */; };
+		184565C31EA1F45400C5DABB /* Base64URL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184565C01EA1F45400C5DABB /* Base64URL.cpp */; };
+		184565C41EA1F45400C5DABB /* Base64URL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184565C01EA1F45400C5DABB /* Base64URL.cpp */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		18690DCE1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
 		18690DCF1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
@@ -3321,6 +3324,8 @@
 		1840B74C13993D8A007C848B /* JSONVariantParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantParser.h; sourceTree = "<group>"; };
 		1840B75113993DA0007C848B /* JSONVariantWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantWriter.cpp; sourceTree = "<group>"; };
 		1840B75213993DA0007C848B /* JSONVariantWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantWriter.h; sourceTree = "<group>"; };
+		184565C01EA1F45400C5DABB /* Base64URL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Base64URL.cpp; sourceTree = "<group>"; };
+		184565C11EA1F45400C5DABB /* Base64URL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64URL.h; sourceTree = "<group>"; };
 		184C472D1296BC6E0006DB3E /* Service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Service.cpp; sourceTree = "<group>"; };
 		184C472E1296BC6E0006DB3E /* Service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Service.h; sourceTree = "<group>"; };
 		18576525156ED3710088C35A /* README.osx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.osx; path = docs/README.osx; sourceTree = "<group>"; };
@@ -8910,6 +8915,8 @@
 				7C908893196358A8003D0619 /* auto_buffer.h */,
 				DF52769A151BAEDA00B5B63B /* Base64.cpp */,
 				DF52769B151BAEDA00B5B63B /* Base64.h */,
+				184565C01EA1F45400C5DABB /* Base64URL.cpp */,
+				184565C11EA1F45400C5DABB /* Base64URL.h */,
 				F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */,
 				F56353BE16E9BB3500D21BAD /* BitstreamConverter.h */,
 				F5A0E24F1E3A63050086B1D1 /* BitstreamReader.cpp */,
@@ -11128,6 +11135,7 @@
 				C84828DB156CFCD8005A996F /* PVRTimerInfoTag.cpp in Sources */,
 				F5B722FA1C7C894F006432AE /* CECBuiltins.cpp in Sources */,
 				F5022F321E2D41D5001BBF75 /* hdhomerun_video.c in Sources */,
+				184565C21EA1F45400C5DABB /* Base64URL.cpp in Sources */,
 				C84828DC156CFCD8005A996F /* PVRTimers.cpp in Sources */,
 				189448B41CD905B70036E391 /* LightEffectClient.cpp in Sources */,
 				C84828DD156CFCD8005A996F /* GUIViewStatePVR.cpp in Sources */,
@@ -11929,6 +11937,7 @@
 				E4991330174E5DAD00741B6D /* XBTF.cpp in Sources */,
 				E4991331174E5DAD00741B6D /* XBTFReader.cpp in Sources */,
 				E4991345174E5E5C00741B6D /* GenericTouchActionHandler.cpp in Sources */,
+				184565C31EA1F45400C5DABB /* Base64URL.cpp in Sources */,
 				F5F23CD21C4D479E004B223A /* AnnounceReceiver.mm in Sources */,
 				E499134B174E5E5C00741B6D /* ITouchInputHandling.cpp in Sources */,
 				E499134D174E5EB700741B6D /* SkinVariable.cpp in Sources */,
@@ -13283,6 +13292,7 @@
 				F5D141261BAF0B6D0075A95C /* Observer.cpp in Sources */,
 				F5D141271BAF0B6D0075A95C /* POUtils.cpp in Sources */,
 				F5022F341E2D41D5001BBF75 /* hdhomerun_video.c in Sources */,
+				184565C41EA1F45400C5DABB /* Base64URL.cpp in Sources */,
 				F5B723AF1C7C9C1A006432AE /* AudioDSPSettings.cpp in Sources */,
 				F5D141281BAF0B6D0075A95C /* HomeShelfJob.cpp in Sources */,
 				F5D141291BAF0B6D0075A95C /* RegExp.cpp in Sources */,

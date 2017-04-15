@@ -6,6 +6,7 @@ SRCS += Archive.cpp
 SRCS += AsyncFileCopy.cpp
 SRCS += auto_buffer.cpp
 SRCS += Base64.cpp
+SRCS += Base64URL.cpp
 SRCS += BitstreamConverter.cpp
 SRCS += BitstreamReader.cpp
 SRCS += BitstreamStats.cpp
