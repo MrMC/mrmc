@@ -31,7 +31,7 @@
 #include "services/emby/EmbyViewCache.h"
 #include "services/emby/EmbyServices.h"
 #include "utils/log.h"
-#include "utils/Base64.h"
+#include "utils/Base64URL.h"
 #include "utils/StringUtils.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/URIUtils.h"
@@ -108,7 +108,7 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             CURL curl(client->GetUrl());
             curl.SetProtocol(client->GetProtocol());
             curl.SetFileName(content.prefix);
-            pItem->SetPath("emby://movies/" + basePath + "/" + Base64::Encode(curl.Get()));
+            pItem->SetPath("emby://movies/" + basePath + "/" + Base64URL::Encode(curl.Get()));
             pItem->SetLabel(title);
             curl.SetFileName("Items/" + content.id + "/Images/Primary");
             pItem->SetArt("thumb", curl.Get());
@@ -123,7 +123,7 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           curl.SetProtocol(client->GetProtocol());
           curl.SetFileName(contents[0].prefix);
           //client->GetMovies(items, curl.Get()); ????
-          CDirectory::GetDirectory("emby://movies/" + basePath + "/" + Base64::Encode(curl.Get()), items);
+          CDirectory::GetDirectory("emby://movies/" + basePath + "/" + Base64URL::Encode(curl.Get()), items);
           items.SetContent("movies");
           CEmbyUtils::SetEmbyItemProperties(items, "movies", client);
           for (int item = 0; item < items.Size(); ++item)
@@ -167,25 +167,25 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       if (path == "" || path == "titles" || path == "filter")
       {
-        client->GetMovies(items, Base64::Decode(section), path == "filter");
+        client->GetMovies(items, Base64URL::Decode(section), path == "filter");
         items.SetLabel(g_localizeStrings.Get(369));
         items.SetContent("movies");
       }
       else if (path == "recentlyaddedmovies")
       {
-        CEmbyUtils::GetEmbyRecentlyAddedMovies(items, Base64::Decode(section));
+        CEmbyUtils::GetEmbyRecentlyAddedMovies(items, Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(20386));
         items.SetContent("movies");
       }
       else if (path == "inprogressmovies")
       {
-        CEmbyUtils::GetEmbyInProgressMovies(items, Base64::Decode(section));
+        CEmbyUtils::GetEmbyInProgressMovies(items, Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(627));
         items.SetContent("movies");
       }
       else if(!filter.empty())
       {
-        client->GetMoviesFilter(items, Base64::Decode(section), filter);
+        client->GetMoviesFilter(items, Base64URL::Decode(section), filter);
         StringUtils::ToCapitalize(path);
         items.SetLabel(path);
         items.SetContent("movies");
@@ -217,7 +217,7 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             CURL curl(client->GetUrl());
             curl.SetProtocol(client->GetProtocol());
             curl.SetFileName(content.prefix);
-            pItem->SetPath("emby://tvshows/" + basePath + "/" + Base64::Encode(curl.Get()));
+            pItem->SetPath("emby://tvshows/" + basePath + "/" + Base64URL::Encode(curl.Get()));
             pItem->SetLabel(title);
             curl.SetFileName("Items/" + content.id + "/Images/Primary");
             pItem->SetArt("thumb", curl.Get());
@@ -232,7 +232,7 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           curl.SetProtocol(client->GetProtocol());
           curl.SetFileName(contents[0].prefix);
           //client->GetTVShows(items, curl.Get()); ????
-          CDirectory::GetDirectory("emby://tvshows/" + basePath + "/" + Base64::Encode(curl.Get()), items);
+          CDirectory::GetDirectory("emby://tvshows/" + basePath + "/" + Base64URL::Encode(curl.Get()), items);
           CEmbyUtils::SetEmbyItemProperties(items, "tvshows", client);
           for (int item = 0; item < items.Size(); ++item)
             CEmbyUtils::SetEmbyItemProperties(*items[item], "tvshows", client);
@@ -275,35 +275,35 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       if (path == "" || path == "titles" || path == "filter")
       {
-        client->GetTVShows(items, Base64::Decode(section), path == "filter");
+        client->GetTVShows(items, Base64URL::Decode(section), path == "filter");
         items.SetLabel(g_localizeStrings.Get(369));
         items.SetContent("tvshows");
       }
       else if (path == "shows")
       {
-        CEmbyUtils::GetEmbySeasons(items,Base64::Decode(section));
+        CEmbyUtils::GetEmbySeasons(items,Base64URL::Decode(section));
         items.SetContent("seasons");
       }
       else if (path == "seasons")
       {
-        CEmbyUtils::GetEmbyEpisodes(items,Base64::Decode(section));
+        CEmbyUtils::GetEmbyEpisodes(items,Base64URL::Decode(section));
         items.SetContent("episodes");
       }
       else if (path == "recentlyaddedepisodes")
       {
-        CEmbyUtils::GetEmbyRecentlyAddedEpisodes(items, Base64::Decode(section));
+        CEmbyUtils::GetEmbyRecentlyAddedEpisodes(items, Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(20387));
         items.SetContent("episodes");
       }
       else if (path == "inprogressshows")
       {
-        CEmbyUtils::GetEmbyInProgressShows(items, Base64::Decode(section));
+        CEmbyUtils::GetEmbyInProgressShows(items, Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(626));
         items.SetContent("episodes");
       }
       else if(!filter.empty())
       {
-        client->GetTVShowsFilter(items, Base64::Decode(section), filter);
+        client->GetTVShowsFilter(items, Base64URL::Decode(section), filter);
         StringUtils::ToCapitalize(path);
         items.SetLabel(path);
         items.SetContent("tvshows");
@@ -335,7 +335,7 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             CURL curl(client->GetUrl());
             curl.SetProtocol(client->GetProtocol());
             curl.SetFileName(content.prefix);
-            pItem->SetPath("emby://music/" + basePath + "/" + Base64::Encode(curl.Get()));
+            pItem->SetPath("emby://music/" + basePath + "/" + Base64URL::Encode(curl.Get()));
             pItem->SetLabel(title);
             curl.SetFileName("Items/" + content.id + "/Images/Primary");
             pItem->SetArt("thumb", curl.Get());
@@ -379,31 +379,31 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       
       if (path == "" || path == "root" || path == "artists")
       {
-        client->GetMusicArtists(items, Base64::Decode(section));
+        client->GetMusicArtists(items, Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36917));
         items.SetContent("artist");
       }
       if (path == "albums")
       {
-        CEmbyUtils::GetEmbyAlbum(items,Base64::Decode(section));
+        CEmbyUtils::GetEmbyAlbum(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36919));
         items.SetContent("albums");
       }
       if (path == "artistalbums")
       {
-        CEmbyUtils::GetEmbyArtistAlbum(items,Base64::Decode(section));
+        CEmbyUtils::GetEmbyArtistAlbum(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36919));
         items.SetContent("albums");
       }
       if (path == "songs")
       {
-        CEmbyUtils::GetEmbySongs(items,Base64::Decode(section));
+        CEmbyUtils::GetEmbySongs(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36921));
         items.SetContent("songs");
       }
       if (path == "albumsongs")
       {
-        CEmbyUtils::GetEmbyAlbumSongs(items,Base64::Decode(section));
+        CEmbyUtils::GetEmbyAlbumSongs(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36921));
         items.SetContent("songs");
       }

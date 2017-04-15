@@ -42,7 +42,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Base64.h"
+#include "utils/Base64URL.h"
 #include "utils/JobManager.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/Variant.h"
@@ -588,7 +588,7 @@ bool CEmbyClient::IsSameClientHostName(const CURL& url)
 {
   CURL real_url(url);
   if (real_url.GetProtocol() == "emby")
-    real_url = CURL(Base64::Decode(URIUtils::GetFileName(real_url)));
+    real_url = CURL(Base64URL::Decode(URIUtils::GetFileName(real_url)));
 
   if (URIUtils::IsStack(real_url.Get()))
     real_url = CURL(XFILE::CStackDirectory::GetFirstStackedFile(real_url.Get()));

@@ -29,7 +29,7 @@
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/StackDirectory.h"
 #include "network/Network.h"
-#include "utils/Base64.h"
+#include "utils/Base64URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -148,7 +148,7 @@ void CEmbyUtils::SetWatched(CFileItem &item)
   else
     url = URIUtils::GetParentPath(url);
   if (StringUtils::StartsWithNoCase(url, "emby://"))
-    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+    url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
 
   CEmbyClientPtr client = CEmbyServices::GetInstance().FindClient(url);
   if (!client || !client->GetPresence())
@@ -165,7 +165,7 @@ void CEmbyUtils::SetUnWatched(CFileItem &item)
   else
     url = URIUtils::GetParentPath(url);
   if (StringUtils::StartsWithNoCase(url, "emby://"))
-    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+    url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
 
   CEmbyClientPtr client = CEmbyServices::GetInstance().FindClient(url);
   if (!client || !client->GetPresence())
@@ -205,7 +205,7 @@ void CEmbyUtils::ReportProgress(CFileItem &item, double currentSeconds)
         url = curl3.Get();
       }
       if (StringUtils::StartsWithNoCase(url, "emby://"))
-        url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+        url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
 
       /*
       # Postdata structure to send to Emby server
@@ -277,7 +277,7 @@ bool CEmbyUtils::GetMoreItemInfo(CFileItem &item)
 {
   std::string url = URIUtils::GetParentPath(item.GetPath());
   if (StringUtils::StartsWithNoCase(url, "emby://"))
-    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+    url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
   
   CURL url2(url);
   CEmbyClientPtr client = CEmbyServices::GetInstance().FindClient(url2.Get());
@@ -703,7 +703,7 @@ bool CEmbyUtils::GetEmbyAlbumSongs(CFileItem item, CFileItemList &items)
 {
   std::string url = URIUtils::GetParentPath(item.GetPath());
   if (StringUtils::StartsWithNoCase(url, "emby://"))
-    url = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+    url = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
   
   return GetEmbyAlbumSongs(items, url);
 }
@@ -901,7 +901,7 @@ bool CEmbyUtils::ParseEmbySeries(CFileItemList &items, const CURL &url, const CV
       premiereDate.SetFromW3CDateTime(item["PremiereDate"].asString());
       newItem->m_dateTime = premiereDate;
 
-      newItem->SetPath("emby://tvshows/shows/" + Base64::Encode(curl.Get()));
+      newItem->SetPath("emby://tvshows/shows/" + Base64URL::Encode(curl.Get()));
       newItem->SetMediaServiceId(itemId);
       newItem->SetMediaServiceFile(item["Path"].asString());
 
@@ -1003,7 +1003,7 @@ bool CEmbyUtils::ParseEmbySeasons(CFileItemList &items, const CURL &url, const C
     newItem->m_bIsFolder = true;
 
     newItem->SetLabel(item["Name"].asString());
-    newItem->SetPath("emby://tvshows/seasons/" + Base64::Encode(curl.Get()));
+    newItem->SetPath("emby://tvshows/seasons/" + Base64URL::Encode(curl.Get()));
     newItem->SetMediaServiceId(itemId);
     newItem->SetMediaServiceFile(item["Path"].asString());
 
@@ -1160,7 +1160,7 @@ bool CEmbyUtils::ParseEmbyAlbum(CFileItemList &items, const CURL &url, const CVa
     embyItem->m_bIsFolder = true;
     embyItem->SetLabel(item["Name"].asString());
     curl.SetOption("ParentId", itemId);
-    embyItem->SetPath("emby://music/albumsongs/" + Base64::Encode(curl.Get()));
+    embyItem->SetPath("emby://music/albumsongs/" + Base64URL::Encode(curl.Get()));
     embyItem->SetMediaServiceId(itemId);
 
     embyItem->GetMusicInfoTag()->m_type = MediaTypeAlbum;
@@ -1234,7 +1234,7 @@ bool CEmbyUtils::ParseEmbyArtists(CFileItemList &items, const CURL &url, const C
     embyItem->SetLabel(item["Name"].asString());
     curl.SetProtocolOption("ArtistIds", itemId);
     curl.SetFileName("Items");
-    embyItem->SetPath("emby://music/artistalbums/" + Base64::Encode(curl.Get()));
+    embyItem->SetPath("emby://music/artistalbums/" + Base64URL::Encode(curl.Get()));
     embyItem->SetMediaServiceId(itemId);
 
     embyItem->GetMusicInfoTag()->m_type = MediaTypeArtist;
@@ -1307,7 +1307,7 @@ bool CEmbyUtils::ParseEmbyMoviesFilter(CFileItemList &items, CURL url, const CVa
     else if (filter == "Collections")
       curl1.SetOption("ParentId", itemId);
 
-    newItem->SetPath("emby://movies/filter/" + Base64::Encode(curl1.Get()));
+    newItem->SetPath("emby://movies/filter/" + Base64URL::Encode(curl1.Get()));
     newItem->SetLabel(itemName);
     newItem->SetProperty("SkipLocalArt", true);
     items.Add(newItem);
@@ -1351,7 +1351,7 @@ bool CEmbyUtils::ParseEmbyTVShowsFilter(CFileItemList &items, const CURL url, co
     else if (filter == "Collections")
       curl1.SetOption("ParentId", itemId);
 
-    newItem->SetPath("emby://tvshows/filter/" + Base64::Encode(curl1.Get()));
+    newItem->SetPath("emby://tvshows/filter/" + Base64URL::Encode(curl1.Get()));
     newItem->SetLabel(itemName);
     newItem->SetProperty("SkipLocalArt", true);
     items.Add(newItem);
@@ -1549,7 +1549,7 @@ void CEmbyUtils::GetVideoDetails(CFileItem &item, const CVariant &variant)
         role.strRole = peep["Role"].asString();
         std::string urlStr = URIUtils::GetParentPath(item.GetPath());
         if (StringUtils::StartsWithNoCase(urlStr, "emby://"))
-          urlStr = Base64::Decode(URIUtils::GetFileName(item.GetPath()));
+          urlStr = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
         CURL url(urlStr);
         url.SetFileName("Items/" + peep["Id"].asString() + "/Images/Primary");
         role.thumb = url.Get();
