@@ -24,6 +24,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderCapture.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "interfaces/AnnouncementManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -42,10 +43,14 @@ CLightEffectServices::CLightEffectServices()
 , m_staticON(false)
 , m_lightsON(true)
 {
+  CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
 
 CLightEffectServices::~CLightEffectServices()
 {
+  if (m_lighteffect)
+    m_lighteffect->SetPriority(255);
+  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
   if (IsRunning())
     Stop();
 }
@@ -58,23 +63,21 @@ CLightEffectServices& CLightEffectServices::GetInstance()
 
 void CLightEffectServices::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
+  // if setting is disabled, there is no need to even check these
+  if(!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER))
+    return;
+  
   // this is not used on tvOS, needs testing on droid
   if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated"))
   {
-    if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER))
-    {
-      m_staticON = false;
-      SetAllLightsToStaticRGB();
-    }
+    m_staticON = false;
+    SetAllLightsToStaticRGB();
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated"))
   {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER))
-    {
-      m_staticON = true;
-      if (m_lighteffect)
-        m_lighteffect->SetPriority(255);
-    }
+    m_staticON = true;
+    if (m_lighteffect)
+      m_lighteffect->SetPriority(255);
   }
 }
 
