@@ -3893,7 +3893,7 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
 #endif
 #ifdef TARGET_ANDROID
   // Screensaver deactivated -> acquire wake lock
-  CXBMCApp::EnableWakeLock(true);
+  result = CXBMCApp::EnableWakeLock(true);
 #endif
 
 
