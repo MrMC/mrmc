@@ -149,6 +149,7 @@ public:
 
   static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
+  static bool ResetSystemIdleTimer();
   static bool HasFocus() { return m_hasFocus; }
   static bool IsResumed() { return m_hasResumed; }
   static void CheckHeadsetPlugged();

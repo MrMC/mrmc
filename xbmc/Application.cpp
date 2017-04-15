@@ -3892,8 +3892,7 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
   result = CDarwinUtils::ResetSystemIdleTimer();
 #endif
 #ifdef TARGET_ANDROID
-  // Screensaver deactivated -> acquire wake lock
-  result = CXBMCApp::EnableWakeLock(true);
+  result = CXBMCApp::ResetSystemIdleTimer();
 #endif
 
 

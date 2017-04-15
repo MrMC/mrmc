@@ -410,6 +410,17 @@ bool CXBMCApp::EnableWakeLock(bool on)
   return true;
 }
 
+bool CXBMCApp::ResetSystemIdleTimer()
+{
+  if (!m_wakeLock->isHeld())
+  {
+    m_wakeLock->acquire();
+    return true;
+  }
+
+  return false;
+}
+
 bool CXBMCApp::AcquireAudioFocus()
 {
   if (!m_xbmcappinstance)
