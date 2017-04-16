@@ -58,7 +58,7 @@ public:
   CVariant &GetItems() { return m_cache.items; };
   bool  AppendItem(const CVariant &variant);
   bool  UpdateItem(const CVariant &variant);
-  bool  RemoveItem(const CVariant &variant);
+  bool  RemoveItem(const std::string &itemId);
 
   bool  SetWatched(const std::string id, int playcount, double resumetime);
   bool  SetUnWatched(const std::string id);

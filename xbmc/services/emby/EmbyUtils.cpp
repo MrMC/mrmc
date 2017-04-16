@@ -837,6 +837,8 @@ bool CEmbyUtils::ParseEmbyVideos(CFileItemList &items, CURL url, const CVariant 
     // and we do not do that yet.
     if (objectItem["VideoType"].asString() == "BluRay")
       continue;
+    if (objectItem["VideoType"].asString() == "Dvd")
+      continue;
 
     CFileItemPtr item = ToVideoFileItemPtr(url, objectItem, type);
     items.Add(item);

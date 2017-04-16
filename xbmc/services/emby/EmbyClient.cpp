@@ -305,9 +305,16 @@ bool CEmbyClient::GetMovies(CFileItemList &items, std::string url, bool fromfilt
   }
   else
   {
+    std::string parentId;
+    if (curl.HasOption("ParentId"))
+      curl.GetOption("ParentId", parentId);
+
     CSingleLock lock(m_viewMoviesLock);
     for (auto &view : m_viewMovies)
     {
+      if (!parentId.empty() && parentId != view->GetId())
+        continue;
+
       if (view->GetItems().isNull())
         FetchViewItems(view, curl, EmbyTypeMovie);
       if (!view->GetItems().isNull())
@@ -349,9 +356,16 @@ bool CEmbyClient::GetTVShows(CFileItemList &items, std::string url, bool fromfil
   }
   else
   {
+    std::string parentId;
+    if (curl.HasOption("ParentId"))
+      curl.GetOption("ParentId", parentId);
+
     CSingleLock lock(m_viewTVShowsLock);
     for (auto &view : m_viewTVShows)
     {
+      if (!parentId.empty() && parentId != view->GetId())
+        continue;
+
       if (view->GetItems().isNull())
         FetchViewItems(view, curl, EmbyTypeSeries);
       if (!view->GetItems().isNull())
@@ -381,12 +395,18 @@ bool CEmbyClient::GetTVShowsFilter(CFileItemList &items, std::string url, std::s
 
 bool CEmbyClient::GetMusicArtists(CFileItemList &items, std::string url)
 {
-  //TODO: fix this for multiple view contents
   bool rtn = false;
   CURL curl(url);
+  std::string parentId;
+  if (curl.HasOption("ParentId"))
+    curl.GetOption("ParentId", parentId);
+
   CSingleLock lock(m_viewMusicLock);
   for (auto &view : m_viewMusic)
   {
+    if (!parentId.empty() && parentId != view->GetId())
+      continue;
+
     if (view->GetItems().isNull())
       FetchViewItems(view, curl, EmbyTypeMusicArtist);
     if (!view->GetItems().isNull())
@@ -413,7 +433,8 @@ void CEmbyClient::AddNewViewItems(const std::vector<std::string> &ids)
   const auto& variantItems = variant["Items"];
   for (auto variantItemIt = variantItems.begin_array(); variantItemIt != variantItems.end_array(); ++variantItemIt)
   {
-    itemsAdded += AppendItemToCache(*variantItemIt) ? 1:0;
+    const std::string viewId = FetchViewIdByItemId((*variantItemIt)["Id"].asString());
+    itemsAdded += AppendItemToCache(viewId, *variantItemIt) ? 1:0;
   }
   if (itemsAdded)
   {
@@ -496,20 +517,11 @@ void CEmbyClient::RemoveViewItems(const std::vector<std::string> &ids)
 #if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyClient::RemoveViewItems");
 #endif
-  const CVariant variant = FetchItemByIds(ids);
-  if (variant.isNull() || !variant.isObject() || !variant.isMember("Items"))
-  {
-    CLog::Log(LOGERROR, "CEmbyClient::RemoveViewItems invalid response");
-    return;
-  }
+  int itemsRemoved = 0;
+  for (auto &id : ids)
+    itemsRemoved += RemoveItemFromCache(id) ? 1:0;
 
-  int itemsAdded = 0;
-  const auto& variantItems = variant["Items"];
-  for (auto variantItemIt = variantItems.begin_array(); variantItemIt != variantItems.end_array(); ++variantItemIt)
-  {
-    itemsAdded += RemoveItemFromCache(*variantItemIt) ? 1:0;
-  }
-  if (itemsAdded)
+  if (itemsRemoved)
   {
     // GUI_MSG_UPDATE will Refresh and that will pull a new list of items for display
     // and keep the same selection point.
@@ -880,92 +892,130 @@ const CVariant CEmbyClient::FetchItemByIds(const std::vector<std::string> &Ids)
   return variant;
 }
 
-bool CEmbyClient::AppendItemToCache(const CVariant &variant)
+const std::string CEmbyClient::FetchViewIdByItemId(const std::string &Id)
 {
-  std::string type = variant["Type"].asString();
+  CURL curl(m_url);
+  curl.SetFileName("emby/Items/" + Id + "/Ancestors");
+  curl.SetOptions("");
+  curl.SetOption("UserId", GetUserID());
+  const CVariant views = CEmbyUtils::GetEmbyCVariant(curl.Get());
+
+  std::string ViewId;
+  for (auto variantItemIt = views.begin_array(); variantItemIt != views.end_array(); ++variantItemIt)
   {
-    CSingleLock lock(m_viewMoviesLock);
-    for (auto &view : m_viewMovies)
+    if ((*variantItemIt)["Type"].asString() == "CollectionFolder")
     {
-      if (type == EmbyTypeMovie)
-        return view->AppendItem(variant);
+      ViewId = (*variantItemIt)["Id"].asString();
+      break;
     }
   }
-  {
-    CSingleLock lock(m_viewTVShowsLock);
-    for (auto &view : m_viewTVShows)
-    {
-      if (type == EmbyTypeSeries)
-        return view->AppendItem(variant);
-    }
-  }
-  {
-    CSingleLock lock(m_viewMusicLock);
-    for (auto &view : m_viewMusic)
-    {
-      if (type == EmbyTypeMusicArtist)
-        return view->AppendItem(variant);
-    }
-  }
-  return false;
+  return ViewId;
 }
 
 bool CEmbyClient::UpdateItemInCache(const CVariant &variant)
 {
   std::string type = variant["Type"].asString();
+  if (type == EmbyTypeMovie)
   {
     CSingleLock lock(m_viewMoviesLock);
     for (auto &view : m_viewMovies)
     {
-      if (type == EmbyTypeMovie)
-        return view->UpdateItem(variant);
+      if (view->UpdateItem(variant))
+        return true;
     }
   }
+  else if (type == EmbyTypeSeries)
   {
     CSingleLock lock(m_viewTVShowsLock);
     for (auto &view : m_viewTVShows)
     {
-      if (type == EmbyTypeSeries)
-        return view->UpdateItem(variant);
+      if (view->UpdateItem(variant))
+        return true;
     }
   }
+  else if (type == EmbyTypeMusicArtist)
   {
     CSingleLock lock(m_viewMusicLock);
     for (auto &view : m_viewMusic)
     {
-      if (type == EmbyTypeMusicArtist)
-        return view->UpdateItem(variant);
+      if (view->UpdateItem(variant))
+        return true;
     }
   }
   return false;
 }
 
-bool CEmbyClient::RemoveItemFromCache(const CVariant &variant)
+bool CEmbyClient::AppendItemToCache(const std::string &viewId, const CVariant &variant)
 {
+  if (viewId.empty())
+  {
+    CLog::Log(LOGDEBUG, "CEmbyClient::AppendItemToCache viewId is null: %s",
+      variant["Type"].asString().c_str());
+    return false;
+  }
+
   std::string type = variant["Type"].asString();
-  std::string itemId = variant["Id"].asString();
+  if (type == EmbyTypeMovie)
   {
     CSingleLock lock(m_viewMoviesLock);
     for (auto &view : m_viewMovies)
     {
-      if (type == EmbyTypeMovie)
-        return view->RemoveItem(itemId);
+      if (viewId == view->GetId() && !view->GetItems().isNull())
+        return view->AppendItem(variant);
+    }
+  }
+  else if (type == EmbyTypeSeries)
+  {
+    CSingleLock lock(m_viewTVShowsLock);
+    for (auto &view : m_viewTVShows)
+    {
+      if (viewId == view->GetId() && !view->GetItems().isNull())
+        return view->AppendItem(variant);
+    }
+  }
+  else if (type == EmbyTypeMusicArtist)
+  {
+    CSingleLock lock(m_viewMusicLock);
+    for (auto &view : m_viewMusic)
+    {
+      if (viewId == view->GetId() && !view->GetItems().isNull())
+        return view->AppendItem(variant);
+    }
+  }
+  return false;
+}
+
+bool CEmbyClient::RemoveItemFromCache(const std::string &itemId)
+{
+  if (itemId.empty())
+  {
+    CLog::Log(LOGDEBUG, "CEmbyClient::RemoveItemFromCache itemId is null");
+    return false;
+  }
+  // unfortunately, we only have the item Id and will
+  // have to search over all cached views.
+  {
+    CSingleLock lock(m_viewMoviesLock);
+    for (auto &view : m_viewMovies)
+    {
+      if (view->RemoveItem(itemId))
+        return true;
     }
   }
   {
     CSingleLock lock(m_viewTVShowsLock);
     for (auto &view : m_viewTVShows)
     {
-      if (type == EmbyTypeSeries)
-        return view->RemoveItem(variant);
+      if (view->RemoveItem(itemId))
+        return true;
     }
   }
   {
     CSingleLock lock(m_viewMusicLock);
     for (auto &view : m_viewMusic)
     {
-      if (type == EmbyTypeMusicArtist)
-        return view->RemoveItem(variant);
+      if (view->RemoveItem(itemId))
+        return true;
     }
   }
   return false;

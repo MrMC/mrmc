@@ -52,8 +52,10 @@ bool CEmbyViewCache::AppendItem(const CVariant &variant)
     }
   }
   if (!exists)
+  {
     m_cache.items["Items"].push_back(variant);
-        return true;
+    return true;
+  }
 
   return false;
 }
@@ -72,9 +74,8 @@ bool CEmbyViewCache::UpdateItem(const CVariant &variant)
   return false;
 }
 
-bool CEmbyViewCache::RemoveItem(const CVariant &variant)
+bool CEmbyViewCache::RemoveItem(const std::string &itemId)
 {
-  std::string itemId = variant["Id"].asString();
   CSingleLock lock(m_cacheLock);
   for (size_t k = 0; k < m_cache.items["Items"].size(); ++k)
   {

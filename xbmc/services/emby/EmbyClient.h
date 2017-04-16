@@ -124,11 +124,12 @@ protected:
   bool        FetchFilterItems(CEmbyViewCachePtr &view, const CURL &url, const std::string &type, const std::string &filter);
   void        SetPresence(bool presence);
   const CVariant FetchItemByIds(const std::vector<std::string> &Ids);
+  const std::string FetchViewIdByItemId(const std::string &Id);
 
 private:
-  bool        AppendItemToCache(const CVariant &variant);
   bool        UpdateItemInCache(const CVariant &variant);
-  bool        RemoveItemFromCache(const CVariant &variant);
+  bool        AppendItemToCache(const std::string &viewId, const CVariant &variant);
+  bool        RemoveItemFromCache(const std::string &itemId);
 
   bool m_local;
   std::string m_url;
