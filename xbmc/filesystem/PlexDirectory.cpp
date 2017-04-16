@@ -30,6 +30,8 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
+#include "music/MusicDatabase.h"
 
 using namespace XFILE;
 
@@ -52,6 +54,12 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory strURL = %s", strUrl.c_str());
 
+  CVideoDatabase database;
+  database.Open();
+  bool hasMovies = database.HasContent(VIDEODB_CONTENT_MOVIES);
+  bool hasShows = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
+  database.Close();
+  
   if (StringUtils::StartsWithNoCase(strUrl, "plex://movies/"))
   {
     if (section.empty())
@@ -63,7 +71,9 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         client->ClearSectionItems();
         std::vector<PlexSectionsContent> contents = client->GetMovieContent();
-        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasEmbyServices() || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 ||
+            ((items.Size() > 0 || hasMovies || CServicesManager::GetInstance().HasEmbyServices() ||
+              clients.size() > 1) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
@@ -179,7 +189,9 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         client->ClearSectionItems();
         std::vector<PlexSectionsContent> contents = client->GetTvContent();
-        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasEmbyServices() || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 ||
+            ((items.Size() > 0 || hasShows || CServicesManager::GetInstance().HasEmbyServices() ||
+              clients.size() > 1) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
