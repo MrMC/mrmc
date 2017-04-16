@@ -651,7 +651,10 @@ void CGUIWindowFullScreen::ToggleOSD()
     if (pOSD->IsDialogRunning())
       pOSD->Close();
     else
+    {
+      pOSD->SetAutoClose(3000);
       pOSD->Open();
+    }
   }
 
   MarkDirtyRegion();
