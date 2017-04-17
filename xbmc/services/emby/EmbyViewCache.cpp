@@ -38,6 +38,17 @@ void CEmbyViewCache::Init(const EmbyViewContent &content)
   m_cache = content;
 }
 
+int CEmbyViewCache::GetItemCount()
+{
+  if (m_cache.items.isNull())
+    return 0;
+
+  if (!m_cache.items.isObject())
+    return 0;
+
+  return m_cache.items.size();
+}
+
 bool CEmbyViewCache::AppendItem(const CVariant &variant)
 {
   bool exists = false;
