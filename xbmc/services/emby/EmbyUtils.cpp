@@ -1610,6 +1610,7 @@ void CEmbyUtils::GetMediaDetals(CFileItem &item, const CVariant &variant, std::s
       {
         CStreamDetailVideo* videoStream = new CStreamDetailVideo();
         videoStream->m_strCodec = stream["Codec"].asString();
+        videoStream->m_fAspect = (float)stream["Width"].asInteger()/stream["Height"].asInteger();
         videoStream->m_strLanguage = stream["Language"].asString();
         videoStream->m_iWidth = static_cast<int>(stream["Width"].asInteger());
         videoStream->m_iHeight = static_cast<int>(stream["Height"].asInteger());
