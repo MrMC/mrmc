@@ -157,6 +157,7 @@ public:
   static bool IsResumed() { return m_hasResumed; }
   static void CheckHeadsetPlugged();
   static bool IsHeadsetPlugged();
+  static bool IsHDMIPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
@@ -232,6 +233,7 @@ private:
   static bool m_wasPlayingWhenTransientLoss;
   static bool m_headsetPlugged;
   static bool m_hasReqVisible;
+  static bool m_hdmiPlugged;
   bool m_videosurfaceInUse;
   bool m_firstrun;
   bool m_exiting;

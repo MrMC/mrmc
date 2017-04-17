@@ -853,7 +853,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_sink_sampleRates.clear();
   m_sink_sampleRates.insert(CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC));
 
-  if (!CXBMCApp::IsHeadsetPlugged())
+  if (CXBMCApp::IsHDMIPlugged() && !CXBMCApp::IsHeadsetPlugged())
   {
     m_info.m_deviceType = AE_DEVTYPE_HDMI;
 
