@@ -151,7 +151,6 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \;
 	cd build/lib/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	$(STRIP) --strip-unneeded build/lib/$(ABI)/*.so
-	cp -fp $(SDKROOT)/extras/android/support/v4/android-support-v4.jar build/lib
 	install -p $(GDBPATH) ./build/lib/$(ABI)/gdbserver
 	install -p $(STLLIB) ./build/lib/$(ABI)/
 	echo "set solib-search-path ./obj/local/$(ABI)" > ./build/lib/$(ABI)/gdb.setup
@@ -161,7 +160,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 xbmc/classes.dex: res
 	mkdir -p obj
 	cd xbmc/src; find . -name "*.java" -exec cp -fp {} ../../build/src/@APP_PACKAGE_DIR@/{} \;
-	@javac -source 1.7 -target 1.7 -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:$(SDKROOT)/extras/android/support/v4/android-support-v4.jar:obj -d obj -sourcepath build/src build/src/@APP_PACKAGE_DIR@/*.java xbmc/src/@APP_PACKAGE_DIR@/interfaces/*.java
+	@javac -source 1.7 -target 1.7 -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:obj -d obj -sourcepath build/src build/src/@APP_PACKAGE_DIR@/*.java xbmc/src/@APP_PACKAGE_DIR@/interfaces/*.java
 	@$(DX) --dex --output=build/classes.dex obj build/lib
 
 package: libs symbols python xbmc/classes.dex
