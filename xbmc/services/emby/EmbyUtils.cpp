@@ -1506,9 +1506,18 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
 
   item->GetVideoInfoTag()->m_duration = static_cast<int>(TicksToSeconds(variant["RunTimeTicks"].asInteger()));
   item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds = item->GetVideoInfoTag()->m_duration;
-  item->GetVideoInfoTag()->m_playCount = static_cast<int>(variant["UserData"]["PlayCount"].asInteger());
-  item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, item->GetVideoInfoTag()->m_playCount > 0);
   item->GetVideoInfoTag()->m_resumePoint.timeInSeconds = static_cast<int>(TicksToSeconds(variant["UserData"]["PlaybackPositionTicks"].asUnsignedInteger()));
+  
+  // ["UserData"]["PlayCount"] means that it was watched, if so we set m_playCount to 1 and set overlay.
+  // If we have ["UserData"]["PlaybackPositionTicks"]/m_resumePoint.timeInSeconds that means we are partially watched and should not set m_playCount to 1
+  
+  if (variant["UserData"]["PlayCount"].asInteger() && item->GetVideoInfoTag()->m_resumePoint.timeInSeconds <= 0)
+  {
+    item->GetVideoInfoTag()->m_playCount = static_cast<int>(variant["UserData"]["PlayCount"].asInteger());
+  }
+  
+  item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, item->GetVideoInfoTag()->m_playCount > 0);
+
 
   GetMediaDetals(*item, variant, itemId);
 
