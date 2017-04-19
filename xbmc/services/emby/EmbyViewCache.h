@@ -52,11 +52,11 @@ public:
  ~CEmbyViewCache();
 
   void  Init(const EmbyViewContent &content);
-  const std::string GetId() const { return m_cache.id; };
-  const std::string GetName() const { return m_cache.name; };
-  void  SetItems(CVariant &variant) {m_cache.items = std::move(variant);};
-  CVariant &GetItems() { return m_cache.items; };
-  int   GetItemCount();
+  const std::string GetId() const;
+  const std::string GetName() const;
+  void  SetItems(CVariant &variant);
+  CVariant &GetItems();
+  bool  ItemsValid();
   bool  AppendItem(const CVariant &variant);
   bool  UpdateItem(const CVariant &variant);
   bool  RemoveItem(const std::string &itemId);

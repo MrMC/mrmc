@@ -35,18 +35,50 @@ CEmbyViewCache::~CEmbyViewCache()
 
 void CEmbyViewCache::Init(const EmbyViewContent &content)
 {
+  CSingleLock lock(m_cacheLock);
   m_cache = content;
 }
 
-int CEmbyViewCache::GetItemCount()
+const std::string CEmbyViewCache::GetId() const
 {
+  CSingleLock lock(m_cacheLock);
+  return m_cache.id;
+}
+
+const std::string CEmbyViewCache::GetName() const
+{
+  CSingleLock lock(m_cacheLock);
+  return m_cache.name;
+}
+
+void CEmbyViewCache::SetItems(CVariant &variant)
+{
+  CSingleLock lock(m_cacheLock);
+  m_cache.items = std::move(variant);
+}
+
+CVariant& CEmbyViewCache::GetItems()
+{
+  CSingleLock lock(m_cacheLock);
+  return m_cache.items;
+}
+
+bool CEmbyViewCache::ItemsValid()
+{
+  CSingleLock lock(m_cacheLock);
   if (m_cache.items.isNull())
-    return 0;
+    return false;
 
   if (!m_cache.items.isObject())
-    return 0;
+    return false;
 
-  return m_cache.items.size();
+  if (!m_cache.items.isMember("Items"))
+    return false;
+
+  if (!m_cache.items["Items"].isArray())
+    return false;
+
+  return m_cache.items["Items"].size() > 0;
 }
 
 bool CEmbyViewCache::AppendItem(const CVariant &variant)
