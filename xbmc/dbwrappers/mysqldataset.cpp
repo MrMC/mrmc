@@ -170,7 +170,10 @@ int MysqlDatabase::connect(bool create_new) {
 
     if (!CWakeOnAccess::GetInstance().WakeUpHost(host, "MySQL : " + db))
       return DB_CONNECTION_NONE;
-
+    
+    unsigned int conn_timeout=5;
+    mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &conn_timeout);
+    
     // establish connection with just user credentials
     if (mysql_real_connect(conn, host.c_str(),
                                  login.c_str(),
