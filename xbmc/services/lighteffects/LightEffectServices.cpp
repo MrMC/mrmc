@@ -71,7 +71,10 @@ void CLightEffectServices::Announce(AnnouncementFlag flag, const char *sender, c
   if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated"))
   {
     m_staticON = false;
-    SetAllLightsToStaticRGB();
+    if (g_application.m_pPlayer->IsPlayingVideo() && m_lighteffect)
+      m_lighteffect->SetPriority(128);
+    else
+      SetAllLightsToStaticRGB();
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated"))
   {
