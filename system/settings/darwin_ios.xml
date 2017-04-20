@@ -80,5 +80,12 @@
         <visible>false</visible>
       </group>
     </category>
+    <category id="mysql">
+      <group id="1">
+        <setting id="mysql.timeout" type="integer" label="36609" help="36632">
+          <default>5</default>
+        </setting>                     
+      </group>
+    </category>
   </section>
 </settings>

@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "system.h" // for GetLastError()
 #include "network/WakeOnAccess.h"
+#include "settings/Settings.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
 
@@ -171,7 +172,7 @@ int MysqlDatabase::connect(bool create_new) {
     if (!CWakeOnAccess::GetInstance().WakeUpHost(host, "MySQL : " + db))
       return DB_CONNECTION_NONE;
     
-    unsigned int conn_timeout=5;
+    unsigned int conn_timeout=CSettings::GetInstance().GetInt(CSettings::SETTING_MYSQL_TIMEOUT);
     mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &conn_timeout);
     
     // establish connection with just user credentials

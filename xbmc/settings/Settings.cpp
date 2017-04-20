@@ -453,6 +453,7 @@ const std::string CSettings::SETTING_MYSQL_HOST = "mysql.host";
 const std::string CSettings::SETTING_MYSQL_PORT = "mysql.port";
 const std::string CSettings::SETTING_MYSQL_USER = "mysql.user";
 const std::string CSettings::SETTING_MYSQL_PASS = "mysql.pass";
+const std::string CSettings::SETTING_MYSQL_TIMEOUT = "mysql.timeout";
 const std::string CSettings::SETTING_MYSQL_VIDEO = "mysql.video";
 const std::string CSettings::SETTING_MYSQL_MUSIC = "mysql.music";
 const std::string CSettings::SETTING_THUMBNAILS_CLEANUP = "thumbnails.cleanup";

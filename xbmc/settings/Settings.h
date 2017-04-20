@@ -404,6 +404,7 @@ public:
   static const std::string SETTING_MYSQL_PORT;
   static const std::string SETTING_MYSQL_USER;
   static const std::string SETTING_MYSQL_PASS;
+  static const std::string SETTING_MYSQL_TIMEOUT;
   static const std::string SETTING_MYSQL_VIDEO;
   static const std::string SETTING_MYSQL_MUSIC;
   static const std::string SETTING_THUMBNAILS_CLEANUP;

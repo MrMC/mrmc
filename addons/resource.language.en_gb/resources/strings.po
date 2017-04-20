@@ -18620,7 +18620,12 @@ msgctxt "#36631"
 msgid "Allow hardware decoding of interlaced files."
 msgstr ""
 
-#empty strings from id 36632 to 36899
+#: system/settings/settings.xml
+msgctxt "#36632"
+msgid "Timeout in seconds for MySQL connections"
+msgstr ""
+
+#empty strings from id 36633 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

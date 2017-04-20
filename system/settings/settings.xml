@@ -2481,7 +2481,17 @@
             <allowempty>true</allowempty>
           </constraints>
           <control type="edit" format="string" />
-        </setting>                        
+        </setting>
+        <setting id="mysql.timeout" type="integer" label="36609" help="36632">
+          <level>1</level>
+          <default>60</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>60</maximum>
+          </constraints>
+          <control type="edit" format="integer" />
+        </setting>                     
       </group>
       <group id="2">
         <setting id="mysql.video" type="string" label="1265" help="1267">
