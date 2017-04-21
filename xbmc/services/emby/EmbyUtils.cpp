@@ -256,7 +256,12 @@ void CEmbyUtils::ReportProgress(CFileItem &item, double currentSeconds)
           CLog::Log(LOGDEBUG, "CEmbyUtils::ReportProgress %s", response.c_str());
 #endif
       }
-      g_progressSec = 0;
+      // mrmc assumes that less than 3 min, we want to start at beginning
+      // but emby see stop with zero PositionTicks as a completed play
+      // and we will get the item marked watched when we get an emby update msg.
+      // so we need to followup and fixup emby server side.
+      if (g_playbackState == MediaServicesPlayerState::stopped && currentSeconds <= 0.0)
+        CEmbyUtils::SetUnWatched(item);
     }
   }
   g_progressSec++;
