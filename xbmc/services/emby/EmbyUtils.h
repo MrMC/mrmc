@@ -24,7 +24,7 @@
 #include "services/ServicesManager.h"
 
 //#define EMBY_DEBUG_VERBOSE
-#define EMBY_DEBUG_TIMING
+//#define EMBY_DEBUG_TIMING
 
 namespace XFILE
 {
@@ -47,6 +47,7 @@ static const std::string EmbyTypeEpisode = "Episode";
 static const std::string EmbyTypeMusicArtist = "MusicArtist";
 static const std::string EmbyTypeMusicAlbum = "MusicAlbum";
 static const std::string EmbyTypeBoxSet = "BoxSet";
+static const std::string EmbyTypeFolder = "Folder";
 
 class CEmbyUtils
 {

@@ -804,6 +804,10 @@ CFileItemPtr CEmbyUtils::ToFileItemPtr(CEmbyClient *client, const CVariant &vari
 #endif
       ParseEmbyArtists(items, url2, variant);
     }
+    else if (type == EmbyTypeFolder)
+    {
+      // ignore these, useless info
+    }
     else
     {
       CLog::Log(LOGDEBUG, "CEmbyUtils::ToFileItemPtr unknown type: %s with name %s",

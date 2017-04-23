@@ -47,7 +47,9 @@ CEmbyDirectory::~CEmbyDirectory()
 
 bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
+#if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory");
+#endif
   {
     assert(url.IsProtocol("emby"));
     std::string path = url.Get();
@@ -83,8 +85,9 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   URIUtils::RemoveSlashAtEnd(basePath);
   basePath = URIUtils::GetFileName(basePath);
 
+#if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory strURL = %s", strUrl.c_str());
-
+#endif
   if (StringUtils::StartsWithNoCase(strUrl, "emby://movies/"))
   {
     if (section.empty())
@@ -114,7 +117,9 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             pItem->SetArt("thumb", curl.Get());
             pItem->SetIconImage(curl.Get());
             items.Add(pItem);
+#if defined(EMBY_DEBUG_VERBOSE)
             CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory client(%s), title(%s)", client->GetServerName().c_str(), title.c_str());
+#endif
           }
         }
         else if (contents.size() == 1)
@@ -190,7 +195,9 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(path);
         items.SetContent("movies");
       }
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory' client(%s), found %d movies", client->GetServerName().c_str(), items.Size());
+#endif
     }
     return true;
   }
@@ -223,7 +230,9 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             pItem->SetArt("thumb", curl.Get());
             pItem->SetIconImage(curl.Get());
             items.Add(pItem);
-            CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory client(%s), title(%s)", client->GetServerName().c_str(), title.c_str());
+#if defined(EMBY_DEBUG_VERBOSE)
+           CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory client(%s), title(%s)", client->GetServerName().c_str(), title.c_str());
+#endif
           }
         }
         else if (contents.size() == 1)
@@ -308,7 +317,9 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(path);
         items.SetContent("tvshows");
       }
+#if defined(EMBY_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory' client(%s), found %d shows", client->GetServerName().c_str(), items.Size());
+#endif
     }
     return true;
   }
@@ -341,7 +352,9 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             pItem->SetArt("thumb", curl.Get());
             pItem->SetIconImage(curl.Get());
             items.Add(pItem);
+#if defined(EMBY_DEBUG_VERBOSE)
             CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory client(%s), title(%s)", client->GetServerName().c_str(), title.c_str());
+#endif
           }
         }
         else if (contents.size() == 1)
@@ -355,7 +368,9 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           CEmbyUtils::SetEmbyItemProperties(items, "music", client);
           for (int item = 0; item < items.Size(); ++item)
             CEmbyUtils::SetEmbyItemProperties(*items[item], "music", client);
+#if defined(EMBY_DEBUG_VERBOSE)
           CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory '/all' client(%s), shows(%d)", client->GetServerName().c_str(), items.Size());
+#endif
         }
       }
     }
