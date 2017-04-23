@@ -1357,11 +1357,7 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
     return;
 
   CGUIDialogOK::ShowAndGetInput(CVariant{19240}, CVariant{19241});
-
-  std::vector<std::string> params;
-  params.push_back("addons://disabled/xbmc.pvrclient");
-  params.push_back("return");
-  g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
+  g_windowManager.ActivateWindow(WINDOW_PVRCLIENT_BROWSER);
 }
 
 bool CPVRClients::UpdateAddons(void)

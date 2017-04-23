@@ -394,7 +394,9 @@ static const ActionMapping windows[] =
     { "extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS },
     { "mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER },
     { "addon"                    , WINDOW_ADDON_START },
-    { "eventlog"                 , WINDOW_EVENT_LOG}
+    { "eventlog"                 , WINDOW_EVENT_LOG},
+    { "pvrclientbrowser"         , WINDOW_PVRCLIENT_BROWSER },
+    { "informationproviderbrowser", WINDOW_INFOPROVIDER_BROWSER },
 };
 
 static const ActionMapping mousekeys[] =

@@ -229,6 +229,10 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
     if (IsStarted())
       m_addons->ProcessMenuHooks(-1, PVR_MENUHOOK_SETTING, NULL);
   }
+  else if (settingId == CSettings::SETTING_PVRCLIENT_BROWSER)
+  {
+    g_windowManager.ActivateWindow(WINDOW_PVRCLIENT_BROWSER);
+  }
 }
 
 bool CPVRManager::IsPVRWindowActive(void) const

@@ -183,7 +183,9 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowLoginScreen);
   Add(new CGUIWindowSettingsProfile);
   Add(new CGUIWindow(WINDOW_SKIN_SETTINGS, "SkinSettings.xml"));
-  Add(new CGUIWindowAddonBrowser);
+  Add(new CGUIWindowAddonBrowser(WINDOW_ADDON_BROWSER));
+  Add(new CGUIWindowAddonBrowser(WINDOW_PVRCLIENT_BROWSER));
+  Add(new CGUIWindowAddonBrowser(WINDOW_INFOPROVIDER_BROWSER));
   Add(new CGUIWindowScreensaverDim);
   //Add(new CGUIWindowDebugInfo);
   Add(new CGUIWindowPointer);
@@ -373,6 +375,8 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_VIDEO_OSD);
     Delete(WINDOW_SLIDESHOW);
     Delete(WINDOW_ADDON_BROWSER);
+    Delete(WINDOW_PVRCLIENT_BROWSER);
+    Delete(WINDOW_INFOPROVIDER_BROWSER);
     Delete(WINDOW_SKIN_SETTINGS);
 
     Delete(WINDOW_HOME);

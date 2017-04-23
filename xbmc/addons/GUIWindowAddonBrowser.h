@@ -30,7 +30,7 @@ class CFileItemList;
 class CGUIWindowAddonBrowser : public CGUIMediaWindow
 {
 public:
-  CGUIWindowAddonBrowser(void);
+  CGUIWindowAddonBrowser(int id);
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
 

@@ -55,6 +55,8 @@
 #define WINDOW_SKIN_SETTINGS              10035
 
 #define WINDOW_ADDON_BROWSER              10040
+#define WINDOW_PVRCLIENT_BROWSER          10041
+#define WINDOW_INFOPROVIDER_BROWSER       10042
 
 #define WINDOW_EVENT_LOG                  10050
 

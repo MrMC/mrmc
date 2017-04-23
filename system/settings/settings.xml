@@ -1719,6 +1719,10 @@
     </category>
     <category id="pvrclient" label="19279" help="36251">
       <group id="1">
+        <setting id="pvrclient.broswer" type="action" label="24019" help="24019">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
         <setting id="pvrclient.menuhook" type="action" label="19280" help="36252">
           <level>1</level>
           <control type="button" format="action" />

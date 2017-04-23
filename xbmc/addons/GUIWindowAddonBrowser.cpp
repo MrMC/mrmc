@@ -58,8 +58,23 @@
 using namespace ADDON;
 using namespace XFILE;
 
-CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
-: CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
+static char ADDONS_PVRCLIENT_PATH[] = "addons://user/xbmc.pvrclient";
+static char ADDONS_INFOPROVIDER_PATH[] = "addons://user/category.infoproviders";
+
+static void RemoveBackPath(CFileItemList& items)
+{
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    if (items[i]->GetLabel() == "..")
+    {
+      items.Remove(i);
+      break;
+    }
+  }
+}
+
+CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(int id)
+: CGUIMediaWindow(id, "AddonBrowser.xml")
 {
 }
 
@@ -83,7 +98,29 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
+      {
         m_vecItems->SetPath("");
+        // WINDOW_PVRCLIENT_BROWSER and WINDOW_INFOPROVIDERS_BROWSER
+        // are special versions that vector direct to the specific addon
+        // category. The ".." is also removed in GetDirectory to prevent
+        // escaping to the higher addon browser levels.
+        std::vector<std::string> params;
+        switch(GetID())
+        {
+          case WINDOW_PVRCLIENT_BROWSER:
+            params.push_back(ADDONS_PVRCLIENT_PATH);
+            params.push_back("return");
+            message.SetStringParams(params);
+            break;
+          case WINDOW_INFOPROVIDER_BROWSER:
+            params.push_back(ADDONS_INFOPROVIDER_PATH);
+            params.push_back("return");
+            message.SetStringParams(params);
+            break;
+          default:
+            break;
+        }
+      }
 
       SetProperties();
     }
@@ -357,6 +394,19 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
   else
   {
     result = CGUIMediaWindow::GetDirectory(strDirectory, items);
+    switch(GetID())
+    {
+      case WINDOW_PVRCLIENT_BROWSER:
+        if (items.GetPath() == ADDONS_PVRCLIENT_PATH)
+          RemoveBackPath(items);
+        break;
+      case WINDOW_INFOPROVIDER_BROWSER:
+        if (items.GetPath() == ADDONS_INFOPROVIDER_PATH)
+          RemoveBackPath(items);
+        break;
+      default:
+        break;
+    }
 
     if (result && CAddonsDirectory::IsRepoDirectory(CURL(strDirectory)))
     {
