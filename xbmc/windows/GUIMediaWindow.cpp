@@ -682,11 +682,14 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().empty())
   {
-    CFileItemPtr pItem(new CFileItem(".."));
-    pItem->SetPath(strParentPath);
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.AddFront(pItem, 0);
+    if (items.GetLabel() != "Services")
+    {
+      CFileItemPtr pItem(new CFileItem(".."));
+      pItem->SetPath(strParentPath);
+      pItem->m_bIsFolder = true;
+      pItem->m_bIsShareOrDrive = false;
+      items.AddFront(pItem, 0);
+    }
   }
 
   int iWindow = GetID();

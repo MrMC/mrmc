@@ -106,6 +106,7 @@ bool CServicesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       items.SetPath(url.Get());
+      items.SetLabel("Services");
     }
     return true;
   }
@@ -152,6 +153,7 @@ bool CServicesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       items.SetPath(url.Get());
+      items.SetLabel("Services");
     }
     return true;
   }
@@ -193,6 +195,7 @@ bool CServicesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CDirectory::GetDirectory(url2, items, m_strFileMask, m_flags, true);
       }
       items.SetPath(url.Get());
+      items.SetLabel("Services");
     }
     return true;
   }
