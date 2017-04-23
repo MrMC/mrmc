@@ -228,7 +228,7 @@ void CGUIListItemLayout::FreeResources(bool immediately)
   m_group.FreeResources(immediately);
 }
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
 void CGUIListItemLayout::DumpTextureUse()
 {
   m_group.DumpTextureUse();

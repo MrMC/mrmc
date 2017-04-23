@@ -1155,7 +1155,7 @@ bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPo
   return true;
 }
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
 void CGUIBaseContainer::DumpTextureUse()
 {
   CLog::Log(LOGDEBUG, "%s for container %u", __FUNCTION__, GetID());

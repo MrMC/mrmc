@@ -98,7 +98,7 @@ public:
 
   virtual CRect CalcRenderRegion() const;
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();
 #endif
 protected:

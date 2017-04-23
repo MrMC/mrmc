@@ -34,6 +34,9 @@
 #include "DirtyRegion.h"
 #include "GUIAction.h"
 
+//#define DEBUG_CGUI_TEXTUREUSE
+
+
 class CGUIListItem; // forward
 class CAction;
 class CMouseEvent;
@@ -289,7 +292,7 @@ public:
 
   enum GUISCROLLVALUE { FOCUS = 0, NEVER, ALWAYS };
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse() {};
 #endif
 protected:

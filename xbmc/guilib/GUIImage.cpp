@@ -350,7 +350,7 @@ void CGUIImage::SetFileName(const std::string& strFileName, bool setConstant, co
   }
 }
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
 void CGUIImage::DumpTextureUse()
 {
   if (m_texture.IsAllocated())

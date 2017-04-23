@@ -99,7 +99,7 @@ public:
   void ResetAutoScrolling();
   void UpdateAutoScrolling(unsigned int currentTime);
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();
 #endif
 protected:

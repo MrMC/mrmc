@@ -690,7 +690,7 @@ void CGUIControlGroup::GetContainers(std::vector<CGUIControl *> &containers) con
   }
 }
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
 void CGUIControlGroup::DumpTextureUse()
 {
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)

@@ -1549,7 +1549,7 @@ void CGUIWindowManager::CloseWindowSync(CGUIWindow *window, int nextWindowID /*=
     ProcessRenderLoop(true);
 }
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
 void CGUIWindowManager::DumpTextureUse()
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());

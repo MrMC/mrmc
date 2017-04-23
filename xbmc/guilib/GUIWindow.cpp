@@ -80,7 +80,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
   if (m_windowLoaded || g_SkinInfo == NULL)
     return true;      // no point loading if it's already there
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUIWindow
   int64_t start;
   start = CurrentHostCounter();
 #endif
@@ -116,7 +116,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
 
   bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUIWindow
   int64_t end, freq;
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
@@ -748,7 +748,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   CSingleLock lock(g_graphicsContext);
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUIWindow
   int64_t start;
   start = CurrentHostCounter();
 #endif
@@ -775,7 +775,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   // and now allocate resources
   CGUIControlGroup::AllocResources();
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUIWindow
   int64_t end, freq;
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
@@ -1030,7 +1030,7 @@ bool CGUIWindow::SendMessage(int message, int id, int param1 /* = 0*/, int param
 
 void CGUIWindow::DumpTextureUse()
 {
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
   CLog::Log(LOGDEBUG, "%s for window %u", __FUNCTION__, GetID());
   CGUIControlGroup::DumpTextureUse();
 #endif

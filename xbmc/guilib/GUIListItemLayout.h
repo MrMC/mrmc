@@ -55,7 +55,7 @@ public:
   bool MoveLeft();
   bool MoveRight();
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();
 #endif
   bool CheckCondition();

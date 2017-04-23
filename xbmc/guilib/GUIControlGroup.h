@@ -84,7 +84,7 @@ public:
 
   virtual bool IsGroup() const { return true; };
 
-#ifdef _DEBUG
+#ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();
 #endif
 protected:
