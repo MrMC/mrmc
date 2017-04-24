@@ -371,6 +371,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
     m_DropPictures = false;
     m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
+    // some VUI bitstream restrictions lie (GoPro mp4)
+    m_max_ref_frames+= 4;
     m_sort_time = 0;
     return true;
   }

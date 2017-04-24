@@ -742,6 +742,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_DropPictures = false;
     // default to 5 min, this helps us feed correct pts to the player.
     m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
+    // some VUI bitstream restrictions lie (GoPro mp4)
+    m_max_ref_frames+=4;
     m_sort_time = 0;
 
     CLog::Log(LOGDEBUG,"VideoToolBox: opened width(%d), height(%d)", hints.width, hints.height);
