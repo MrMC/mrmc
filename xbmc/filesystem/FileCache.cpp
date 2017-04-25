@@ -35,7 +35,7 @@
 
 using namespace XFILE;
 
-#define READ_CACHE_CHUNK_SIZE (512*1024)
+#define READ_CACHE_CHUNK_SIZE (128*1024)
 
 class CWriteRate
 {
