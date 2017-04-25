@@ -1053,14 +1053,15 @@ bool CEmbyUtils::ParseEmbySeasons(CFileItemList &items, const CURL &url, const C
     int iSeason = item["IndexNumber"].asInteger();
     newItem->GetVideoInfoTag()->m_iSeason = iSeason;
     newItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
-    newItem->GetVideoInfoTag()->m_playCount = item["UserData"]["PlayCount"].asInteger();
+    newItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
 
     newItem->SetProperty("totalepisodes", totalEpisodes);
     newItem->SetProperty("numepisodes", totalEpisodes);
     newItem->SetProperty("watchedepisodes", watchedEpisodes);
     newItem->SetProperty("unwatchedepisodes", unWatchedEpisodes);
 
-    newItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, item["UserData"]["Played"].asBoolean());
+    newItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (newItem->GetVideoInfoTag()->m_playCount > 0) && (newItem->GetVideoInfoTag()->m_iEpisode > 0));
+
     SetEmbyItemProperties(*newItem, "seasons");
     items.Add(newItem);
   }
