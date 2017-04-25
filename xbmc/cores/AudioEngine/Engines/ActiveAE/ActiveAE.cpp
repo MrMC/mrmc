@@ -2408,14 +2408,14 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       }
       else
       {
-        int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample;
-        for(int i=0; i<buf->pkt->planes; i++)
+        int bytesToSkip = framesToSkip * buf->pkt->bytes_per_sample / buf->pkt->planes;
+        for (int i=0; i<buf->pkt->planes; i++)
         {
           memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
         }
         buf->pkt->nb_samples -= framesToSkip;
-        stream->m_syncError.Correction(framesToSkip*1000/buf->pkt->config.sample_rate);
-        error += framesToSkip*1000/buf->pkt->config.sample_rate;
+        stream->m_syncError.Correction((double)framesToSkip * 1000 / buf->pkt->config.sample_rate);
+        error += (double)framesToSkip * 1000 / buf->pkt->config.sample_rate;
       }
     }
 
