@@ -118,7 +118,7 @@
             <dependency type="visible" setting="lookandfeel.enablerssfeeds">true</dependency>
           </dependencies>
           <level>0</level>
-          <default>http://forum.mrmc.tv/feed.php?mode=topics</default>
+          <default>https://mrmc.tv/feed/</default>
           <constraints>
             <allowempty>false</allowempty>
           </constraints>
