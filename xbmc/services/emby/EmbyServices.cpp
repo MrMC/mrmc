@@ -777,7 +777,7 @@ bool CEmbyServices::PostSignInPinCode()
     if (m_accessToken.empty())
     {
       strMessage = "Error extracting AcessToken";
-      CLog::Log(LOGERROR, "CPlexServices:FetchSignInPin failed to get authToken");
+      CLog::Log(LOGERROR, "CEmbyServices::PostSignInPinCode failed to get authToken");
       m_signInByPinCode = "";
       rtn = false;
     }
