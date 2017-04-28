@@ -287,6 +287,7 @@ void CDVDPlayerAudio::Process()
     }
     else if (ret == MSGQ_TIMEOUT)
     {
+/*
       // Flush as the audio output may keep looping if we don't
       if (ALLOW_AUDIO(m_speed) && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
       {
@@ -297,6 +298,7 @@ void CDVDPlayerAudio::Process()
           m_stalled = true;
         }
       }
+*/
       if (timeout == 0)
         Sleep(10);
       continue;
