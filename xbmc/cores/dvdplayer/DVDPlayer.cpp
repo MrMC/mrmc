@@ -3323,10 +3323,10 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
           strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
       }
 
-      strGeneralInfo = StringUtils::Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
-                                           , dDelay
+      strGeneralInfo = StringUtils::Format("C(a/v:% 6.3f%s, ad:% 6.3f, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
                                            , dDiff
                                            , strEDL.c_str()
+                                           , dDelay
                                            , (int)(CThread::GetRelativeUsage()*100)
                                            , (int)(m_dvdPlayerAudio->GetRelativeUsage()*100)
                                            , (int)(m_dvdPlayerVideo->GetRelativeUsage()*100)
