@@ -375,8 +375,6 @@ protected:
   int64_t GetTotalTimeInMsec();
 
   double GetQueueTime();
-  bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
-
 
   void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true, bool sync = true);
 
