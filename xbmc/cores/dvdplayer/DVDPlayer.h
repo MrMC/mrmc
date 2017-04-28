@@ -314,13 +314,13 @@ public:
 
   enum ECacheState
   { CACHESTATE_DONE = 0
-  , CACHESTATE_FULL     // player is filling up the demux queue
-  , CACHESTATE_INIT     // player is waiting for first packet of each stream
-  , CACHESTATE_PLAY     // player is waiting for players to not be stalled
-  , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
+  , CACHESTATE_WAITFILL     // player is filling up the demux queue
+  , CACHESTATE_WAITSTREAM   // player is waiting for first packet of each stream
+  , CACHESTATE_WAITCODEC    // player is waiting for players to not be stalled
+  , CACHESTATE_FLUSH        // temporary state player will choose startup between init or full
   };
 
-  virtual bool IsCaching() const { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
+  virtual bool IsCaching() const { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_WAITCODEC; }
   virtual int GetCacheLevel() const ;
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
