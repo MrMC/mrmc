@@ -752,7 +752,7 @@ unsigned int CLinuxRendererGL::PreInit()
     m_formats.push_back(RENDER_FMT_YUV420P10);
     m_formats.push_back(RENDER_FMT_YUV420P16);
   }
-  CLog::Log(LOGDEBUG, "CLinuxRendererGL::PreInit - precision of luminance 16 is %d", size);
+  //CLog::Log(LOGDEBUG, "CLinuxRendererGL::PreInit - precision of luminance 16 is %d", size);
   m_formats.push_back(RENDER_FMT_NV12);
   m_formats.push_back(RENDER_FMT_YUYV422);
   m_formats.push_back(RENDER_FMT_UYVY422);
