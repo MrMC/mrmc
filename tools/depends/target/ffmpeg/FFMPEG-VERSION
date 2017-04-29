@@ -1,4 +1,4 @@
 LIBNAME=ffmpeg
 BASE_URL=https://github.com/xbmc/FFmpeg/archive
-VERSION=release/3.2-xbmc
+VERSION=release/3.3-kodi
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
