@@ -170,9 +170,6 @@ void CAdvancedSettings::Initialize()
 
   m_seekSteps = { 10, 30, 60, 180, 300, 600, 1800 };
 
-  m_omxHWAudioDecode = false;
-  m_omxDecodeStartWithValidFrame = true;
-
   m_audioDefaultPlayer = "paplayer";
   m_audioPlayCountMinimumPercent = 90.0f;
 
@@ -548,13 +545,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
     XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "limiterrelease", m_limiterRelease, 0.001f, 100.0f);
-  }
-
-  pElement = pRootElement->FirstChildElement("omx");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "omxhwaudiodecode", m_omxHWAudioDecode);
-    XMLUtils::GetBoolean(pElement, "omxdecodestartwithvalidframe", m_omxDecodeStartWithValidFrame);
   }
 
   pElement = pRootElement->FirstChildElement("video");

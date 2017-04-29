@@ -39,13 +39,6 @@
 #include "utils/StreamDetails.h"
 #include "guilib/DispResource.h"
 
-#ifdef HAS_OMXPLAYER
-#include "OMXCore.h"
-#include "OMXClock.h"
-#include "linux/RBP.h"
-#else
-
-
 // dummy class to avoid ifdefs where calls are made
 class OMXClock
 {
@@ -67,20 +60,6 @@ public:
   void OMXStateIdle(bool lock = true) {}
   bool HDMIClockSync(bool lock = true) { return false; }
   void OMXSetSpeedAdjust(double adjust, bool lock = true) {}
-};
-#endif
-
-struct SOmxPlayerState
-{
-  OMXClock av_clock;              // openmax clock component
-  EDEINTERLACEMODE current_deinterlace; // whether deinterlace is currently enabled
-  EINTERLACEMETHOD interlace_method; // current deinterlace method
-  bool bOmxWaitVideo;             // whether we need to wait for video to play out on EOS
-  bool bOmxWaitAudio;             // whether we need to wait for audio to play out on EOS
-  bool bOmxSentEOFs;              // flag if we've send EOFs to audio/video players
-  float threshold;                // current fifo threshold required to come out of buffering
-  double last_check_time;         // we periodically check for gpu underrun
-  double stamp;                   // last media timestamp
 };
 
 class CDVDInputStream;
@@ -325,7 +304,7 @@ public:
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
 
-  virtual bool ControlsVolume() {return m_omxplayer_mode;}
+  virtual bool ControlsVolume() {return false;}
 
 protected:
   friend class CSelectionStreams;
@@ -480,10 +459,6 @@ protected:
 
   friend class CDVDPlayerVideo;
   friend class CDVDPlayerAudio;
-#ifdef HAS_OMXPLAYER
-  friend class OMXPlayerVideo;
-  friend class OMXPlayerAudio;
-#endif
 
   SPlayerState m_State;
   CCriticalSection m_StateSection;
@@ -527,10 +502,6 @@ protected:
   std::atomic<int>  m_displayState;
   std::atomic<int>  m_displayResetDelay;
   CStopWatch        m_displayResetTimer;
-
-  // omxplayer variables
-  struct SOmxPlayerState m_OmxPlayerState;
-  bool m_omxplayer_mode;            // using omxplayer acceleration
 
   XbmcThreads::EndTime m_player_status_timer;
 };

@@ -130,10 +130,7 @@ protected:
   bool m_hasAlpha;
 };
 
-#if defined(HAS_OMXPLAYER)
-#include "TexturePi.h"
-#define CTexture CPiTexture
-#elif defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_GL) || defined(HAS_GLES)
 #include "TextureGL.h"
 #define CTexture CGLTexture
 #endif
