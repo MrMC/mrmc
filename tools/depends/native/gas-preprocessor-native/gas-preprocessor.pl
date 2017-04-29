@@ -71,11 +71,11 @@ while (@ARGV) {
         usage();
         exit 0;
     } elsif ($opt eq "--" ) {
-	@gcc_cmd = @ARGV;
+        @gcc_cmd = @ARGV;
     } elsif ($opt =~ /^-/) {
         die "option '$opt' is not known. See '$0 -help' for usage information\n";
     } else {
-	push @gcc_cmd, $opt, @ARGV;
+        push @gcc_cmd, $opt, @ARGV;
     }
     last if (@gcc_cmd);
 }
