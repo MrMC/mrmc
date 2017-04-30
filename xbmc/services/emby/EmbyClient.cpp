@@ -501,7 +501,7 @@ void CEmbyClient::UpdateViewItems(const std::vector<std::string> &ids)
       }
 
       // -------------
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 1, item);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, item);
       g_windowManager.SendThreadMessage(msg);
     }
   }
