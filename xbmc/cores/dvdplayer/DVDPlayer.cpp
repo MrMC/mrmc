@@ -2867,12 +2867,6 @@ void CDVDPlayer::Pause()
     return;
   lock.Leave();
 
-  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && IsCaching())
-  {
-    SetCaching(CACHESTATE_DONE);
-    return;
-  }
-
   // return to normal speed if it was paused before, pause otherwise
   if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
   {
@@ -2888,7 +2882,7 @@ void CDVDPlayer::Pause()
 
 bool CDVDPlayer::IsPaused() const
 {
-  return m_playSpeed == DVD_PLAYSPEED_PAUSE || IsCaching();
+  return m_playSpeed == DVD_PLAYSPEED_PAUSE;
 }
 
 bool CDVDPlayer::HasVideo() const
