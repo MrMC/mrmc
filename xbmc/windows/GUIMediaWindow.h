@@ -80,6 +80,7 @@ protected:
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual void FormatItemLabel(CFileItemPtr pItem, const CLabelFormatter &fileFormatter, const CLabelFormatter &folderFormatter);
   virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
   virtual void SaveControlStates();

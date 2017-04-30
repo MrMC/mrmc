@@ -382,8 +382,23 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         CFileItemPtr newItem = std::static_pointer_cast<CFileItem>(message.GetItem());
         if (newItem && IsActive())
         {
+          if (message.GetParam2() == 0)
+          {
+            // single item, no list refresh. need to match current label format
+            std::unique_ptr<CGUIViewState> viewState(CGUIViewState::GetViewState(GetID(), *m_vecItems));
+            if (viewState.get())
+            {
+              LABEL_MASKS labelMasks;
+              viewState->GetSortMethodLabelMasks(labelMasks);
+              CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
+              CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
+              FormatItemLabel(newItem, fileFormatter, folderFormatter);
+            }
+          }
           if (m_vecItems->UpdateItem(newItem.get()) && message.GetParam2() == 1)
-          { // need the list updated as well
+          {
+            // single item but also update the list as well
+            // label format will get handled there
             UpdateFileList();
           }
         }
@@ -595,23 +610,24 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
   }
 }
 
+void CGUIMediaWindow::FormatItemLabel(CFileItemPtr pItem, const CLabelFormatter &fileFormatter, const CLabelFormatter &folderFormatter)
+{
+  if (pItem->IsLabelPreformated())
+    return;
+
+  if (pItem->m_bIsFolder)
+    folderFormatter.FormatLabels(pItem.get());
+  else
+    fileFormatter.FormatLabels(pItem.get());
+}
+
 // \brief Formats item labels based on the formatting provided by guiViewState
 void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks)
 {
   CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
   CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
   for (int i=0; i<items.Size(); ++i)
-  {
-    CFileItemPtr pItem=items[i];
-
-    if (pItem->IsLabelPreformated())
-      continue;
-
-    if (pItem->m_bIsFolder)
-      folderFormatter.FormatLabels(pItem.get());
-    else
-      fileFormatter.FormatLabels(pItem.get());
-  }
+    FormatItemLabel(items[i], fileFormatter, folderFormatter);
 
   if (items.GetSortMethod() == SortByLabel)
     items.ClearSortState();
