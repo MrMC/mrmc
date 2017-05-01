@@ -170,5 +170,6 @@ protected:
 
   bool m_streaminfo;
   bool m_checkvideo;
+  bool m_retainStartTime;
 };
 

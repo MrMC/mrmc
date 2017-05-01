@@ -186,6 +186,7 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   memset(&m_pkt.pkt, 0, sizeof(AVPacket));
   m_streaminfo = true; /* set to true if we want to look for streams before playback */
   m_checkvideo = false;
+  m_retainStartTime = false;
 }
 
 CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
@@ -520,7 +521,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 
   // print some extra information
   av_dump_format(m_pFormatContext, 0, strFile.c_str(), 0);
-
+/*
+  CURL url(strFile);
+  if (StringUtils::StartsWithNoCase(url.GetFileName(), "video/:/transcode/universal"))
+    m_retainStartTime = true;
+*/
   UpdateCurrentPTS();
 
   // in case of mpegts and we have not seen pat/pmt, defer creation of streams
@@ -694,7 +699,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 */
   CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput);
-  if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !m_retainStartTime)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
   if(timestamp > starttime)
@@ -881,7 +886,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         {
           int64_t duration;
           duration = m_pkt.pkt.dts;
-          if(stream->start_time != (int64_t)AV_NOPTS_VALUE)
+          if(stream->start_time != (int64_t)AV_NOPTS_VALUE && !m_retainStartTime)
             duration -= stream->start_time;
 
           if(duration > stream->duration)

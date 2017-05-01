@@ -1862,6 +1862,11 @@ bool CPlexUtils::GetURL(CFileItem &item)
   curl.SetOption("protocol", "hls");
   curl.SetOption("secondsPerSegment", "10");
   curl.SetOption("session", uuidStr);
+  /*
+  std::string resumeTime = StringUtils::Format("%f", item.GetVideoInfoTag()->m_resumePoint.timeInSeconds);
+  CLog::Log(LOGNOTICE, "resumeTime: %s seconds", resumeTime.c_str());
+  curl.SetOption("offset", resumeTime);
+  */
   curl.SetOption("offset", "0");
   curl.SetOption("videoQuality", "100");
   curl.SetOption("videoResolution", resolution);
