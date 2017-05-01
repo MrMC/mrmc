@@ -1831,47 +1831,49 @@ bool CPlexUtils::GetURL(CFileItem &item)
   std::string plexID = item.GetMediaServiceId();
   std::string uuidStr = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
   
-  if (0)
-  {
-    curl.SetFileName("video/:/transcode/universal/start.m3u8");
-    curl.SetOption("hasMDE", "1");
-    curl.SetOption("maxVideoBitrate", maxBitrate);
-    curl.SetOption("protocol", "hls");
-    curl.SetOption("secondsPerSegment", "10");
-    curl.SetOption("session", uuidStr);
-    curl.SetOption("offset", "0");
-    curl.SetOption("videoQuality", "100");
-    curl.SetOption("videoResolution", resolution);
-    curl.SetOption("directStream", "1");
-    curl.SetOption("directPlay", "0");
-    curl.SetOption("audioBoost", "0");
-    curl.SetOption("fastSeek", "1");
-    curl.SetOption("subtitleSize", "100");
-    if (CPlexServices::GetInstance().ClientIsLocal(cleanUrl))
-      curl.SetOption("location", "lan");
-    curl.SetOption("path", "http://127.0.0.1:32400/library/metadata/" + plexID);
-  }
-  else
-  {
-    curl.SetFileName("video/:/transcode/universal/start.mkv");
-    curl.SetOption("hasMDE", "1");
-    curl.SetOption("maxVideoBitrate", maxBitrate);
- //   curl.SetOption("protocol", "http");
-  //  curl.SetOption("secondsPerSegment", "10");
-    curl.SetOption("session", uuidStr);
-    curl.SetOption("offset", StringUtils::Format("%f",item.GetVideoInfoTag()->m_resumePoint.timeInSeconds));
-    curl.SetOption("videoQuality", "100");
-    curl.SetOption("videoResolution", resolution);
-    curl.SetOption("directStream", "1");
-    curl.SetOption("directPlay", "0");
-    curl.SetOption("audioBoost", "0");
-    curl.SetOption("fastSeek", "1");
-    curl.SetOption("subtitleSize", "100");
-    curl.SetOption("copyts", "1");
-    if (CPlexServices::GetInstance().ClientIsLocal(cleanUrl))
-      curl.SetOption("location", "lan");
-    curl.SetOption("path", "http://127.0.0.1:32400/library/metadata/" + plexID);
-  }
+#if 1
+  curl.SetFileName("video/:/transcode/universal/start.m3u8");
+  curl.SetOption("hasMDE", "1");
+  curl.SetOption("maxVideoBitrate", maxBitrate);
+  curl.SetOption("protocol", "hls");
+  curl.SetOption("secondsPerSegment", "10");
+  curl.SetOption("session", uuidStr);
+  curl.SetOption("offset", "0");
+  curl.SetOption("videoQuality", "100");
+  curl.SetOption("videoResolution", resolution);
+  curl.SetOption("directStream", "1");
+  curl.SetOption("directPlay", "0");
+  curl.SetOption("audioBoost", "0");
+  curl.SetOption("fastSeek", "1");
+  curl.SetOption("subtitleSize", "100");
+  curl.SetOption("location", CPlexServices::GetInstance().ClientIsLocal(cleanUrl) ? "lan" : "wan");
+  curl.SetOption("path", "library/metadata/" + plexID);
+#else
+  curl.SetFileName("video/:/transcode/universal/start.mkv");
+  curl.SetOption("hasMDE", "1");
+  curl.SetOption("maxVideoBitrate", maxBitrate);
+  curl.SetOption("session", uuidStr);
+  std::string resumeTime = StringUtils::Format("%f", item.GetVideoInfoTag()->m_resumePoint.timeInSeconds);
+  CLog::Log(LOGNOTICE, "resumeTime: %s seconds", resumeTime.c_str());
+  curl.SetOption("offset", resumeTime);
+  curl.SetOption("videoQuality", "100");
+  curl.SetOption("videoResolution", resolution);
+  curl.SetOption("directStream", "1");
+  curl.SetOption("directPlay", "0");
+  curl.SetOption("audioBoost", "0");
+  curl.SetOption("fastSeek", "1");
+  curl.SetOption("subtitleSize", "100");
+  curl.SetOption("copyts", "1");
+  curl.SetOption("partIndex", "0");
+  curl.SetOption("mediaIndex", "0");
+  int bufferSize = 8 * 1024 * 124;
+  curl.SetOption("mediaBufferSize", StringUtils::Format("%d", bufferSize));
+  // plex has duration in milliseconds
+  std::string duration = StringUtils::Format("%i", item.GetVideoInfoTag()->m_duration * 1000);
+  curl.SetOption("duration", duration);
+  curl.SetOption("location", CPlexServices::GetInstance().ClientIsLocal(cleanUrl) ? "lan" : "wan");
+  curl.SetOption("path", "library/metadata/" + plexID);
+#endif
   
   // do we want audio transcoded?
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODEAUDIO))
