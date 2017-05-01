@@ -65,6 +65,7 @@ public:
   static bool GetMoreResolutions(CFileItem &item);
   static bool GetURL(CFileItem &item);
   static void StopTranscode(CFileItem &item);
+  static void PingTranscoder(CFileItem &item);
   static bool SearchPlex(CFileItemList &items, std::string strSearchString);
   
   // Plex Music

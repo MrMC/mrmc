@@ -46,6 +46,7 @@
 #include "guilib/GUIWindowManager.h"
 
 static int  g_progressSec = 0;
+static int  g_pingSec = 0;
 static CFileItem m_curItem;
 static MediaServicesPlayerState g_playbackState = MediaServicesPlayerState::stopped;
 
@@ -111,6 +112,8 @@ void CPlexUtils::SetPlexItemProperties(CFileItem &item, const CPlexClientPtr &cl
   if (client->IsCloud())
     item.SetProperty("MediaServicesCloudItem", true);
   item.SetProperty("MediaServicesClientID", client->GetUuid());
+  if (client->IsLocal())
+    item.SetProperty("MediaServicesLocalItem", true);
 }
 
 TiXmlDocument CPlexUtils::GetPlexXML(std::string url, std::string filter)
@@ -476,10 +479,25 @@ void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
     
   }
   g_progressSec++;
+  
+  if (g_playbackState == MediaServicesPlayerState::paused &&
+      item.GetProperty("PlexTranscoder").asBoolean())
+  {
+    // if item is on a local server, we ping the server every 10 seconds... otherwise every 30 sec
+    int pingSec = item.GetProperty("MediaServicesLocalItem").asBoolean() ? 20 : 60;
+    if (g_pingSec > pingSec)
+    {
+      PingTranscoder(item);
+      g_pingSec = 0;
+    }
+    g_pingSec++;
+  }
+  
 }
 
 void CPlexUtils::SetPlayState(MediaServicesPlayerState state)
 {
+  g_pingSec = 0;
   g_progressSec = 0;
   g_playbackState = state;
 }
@@ -1922,5 +1940,26 @@ void CPlexUtils::StopTranscode(CFileItem &item)
     cleanUrl = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
   
   std::string filename = StringUtils::Format("video/:/transcode/universal/stop?session=%s",uuidStr.c_str());
+  ReportToServer(cleanUrl, filename);
+}
+
+void CPlexUtils::PingTranscoder(CFileItem &item)
+{
+  CURL url(item.GetPath());
+  std::string cleanUrl = url.Get();
+  CURL curl(cleanUrl);
+  
+  std::string uuidStr = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
+  
+  CURL url1(item.GetPath());
+  CURL url2(URIUtils::GetParentPath(cleanUrl));
+  CURL url3(url2.GetWithoutFilename());
+  url3.SetProtocolOption("X-Plex-Token",url1.GetProtocolOption("X-Plex-Token"));
+  cleanUrl = url3.Get();
+  
+  if (StringUtils::StartsWithNoCase(cleanUrl, "plex://"))
+    cleanUrl = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
+  
+  std::string filename = StringUtils::Format("video/:/transcode/universal/ping?session=%s",uuidStr.c_str());
   ReportToServer(cleanUrl, filename);
 }
