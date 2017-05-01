@@ -468,6 +468,12 @@ void CPlexUtils::ReportProgress(CFileItem &item, double currentSeconds)
       ReportToServer(url, filename);
       //CLog::Log(LOGDEBUG, "CPlexUtils::ReportProgress %s", filename.c_str());
     }
+    if (g_playbackState == MediaServicesPlayerState::stopped &&
+        item.GetProperty("PlexTranscoder").asBoolean())
+    {
+      StopTranscode(item);
+    }
+    
   }
   g_progressSec++;
 }
@@ -1894,5 +1900,27 @@ bool CPlexUtils::GetURL(CFileItem &item)
   curl.SetProtocolOption("X-Plex-Client-Identifier", uuidStr);
 
   item.SetPath(curl.Get());
+  item.SetProperty("PlexTranscoder", true);
   return true;
+}
+
+void CPlexUtils::StopTranscode(CFileItem &item)
+{
+  CURL url(item.GetPath());
+  std::string cleanUrl = url.Get();
+  CURL curl(cleanUrl);
+  
+  std::string uuidStr = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
+  
+  CURL url1(item.GetPath());
+  CURL url2(URIUtils::GetParentPath(cleanUrl));
+  CURL url3(url2.GetWithoutFilename());
+  url3.SetProtocolOption("X-Plex-Token",url1.GetProtocolOption("X-Plex-Token"));
+  cleanUrl = url3.Get();
+  
+  if (StringUtils::StartsWithNoCase(cleanUrl, "plex://"))
+    cleanUrl = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
+  
+  std::string filename = StringUtils::Format("video/:/transcode/universal/stop?session=%s",uuidStr.c_str());
+  ReportToServer(cleanUrl, filename);
 }
