@@ -87,7 +87,7 @@
 					<posy>15</posy>
 					<width>60</width>
 					<height>40</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 				</control>
 				<control type="image">
 					<posx>670</posx>
@@ -198,7 +198,7 @@
 					<posy>15</posy>
 					<width>60</width>
 					<height>40</height>
-					<texture>$INFO[ListItem.VideoResolution,dark/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVar]</texture>
 				</control>
 				<control type="image">
 					<posx>670</posx>
@@ -319,7 +319,7 @@
 					<posy>185</posy>
 					<width>60</width>
 					<height>40</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 				</control>
 				<control type="image">
 					<posx>730</posx>
@@ -422,7 +422,7 @@
 					<posy>185</posy>
 					<width>60</width>
 					<height>40</height>
-					<texture>$INFO[ListItem.VideoResolution,dark/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVar]</texture>
 				</control>
 				<control type="image">
 					<posx>730</posx>

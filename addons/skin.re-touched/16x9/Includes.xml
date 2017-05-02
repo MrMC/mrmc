@@ -36,7 +36,14 @@
 		<value condition="Window.IsVisible(TVChannels) | Window.IsVisible(TVGuide) | Window.IsVisible(TVRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(TVSearch)">$LOCALIZE[19021]</value>
 		<value condition="Window.IsVisible(RadioChannels) | Window.IsVisible(RadioGuide) | Window.IsVisible(RadioRecordings) | Window.IsVisible(RadioTimers) | Window.IsVisible(RadioSearch)">$LOCALIZE[31556]</value>
 	</variable>
-
+	<variable name="MediaInfoOverlayVar">
+		<value condition="!ListItem.IsStereoscopic">$INFO[ListItem.VideoResolution,dark/,.png]</value>
+		<value>flagging/video/3D.png</value>
+	</variable>
+	<variable name="MediaInfoOverlayVarLight">
+		<value condition="!ListItem.IsStereoscopic">$INFO[ListItem.VideoResolution,light/,.png]</value>
+		<value>flagging/video/3D.png</value>
+	</variable>
 	<include name="BackgroundWidth">
 		<include condition="StringCompare(Skin.AspectRatio,16:9)">BackgroundWidth-16x9</include>
 		<include condition="StringCompare(Skin.AspectRatio,4:3)">BackgroundWidth-4x3</include>

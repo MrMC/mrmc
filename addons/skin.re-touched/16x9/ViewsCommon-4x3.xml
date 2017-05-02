@@ -208,7 +208,7 @@
 					<posy>10</posy>
 					<width>60</width>
 					<height>40</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 				</control>
 				<control type="image">
@@ -317,7 +317,7 @@
 					<posy>10</posy>
 					<width>60</width>
 					<height>40</height>
-					<texture>$INFO[ListItem.VideoResolution,dark/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVar]</texture>
 					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 				</control>
 				<control type="image">
@@ -395,7 +395,7 @@
 					<posy>11</posy>
 					<width>40</width>
 					<height>30</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 					<visible>Container.Content(MusicVideos)</visible>
 				</control>
 				<control type="image">
@@ -446,7 +446,7 @@
 					<posy>11</posy>
 					<width>40</width>
 					<height>30</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 					<visible>Container.Content(MusicVideos)</visible>
 				</control>
 				<control type="image">
@@ -496,7 +496,7 @@
 					<posy>11</posy>
 					<width>40</width>
 					<height>30</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 				</control>
 				<control type="image">
 					<posx>170</posx>
@@ -553,7 +553,7 @@
 					<posy>11</posy>
 					<width>40</width>
 					<height>30</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 				</control>
 				<control type="image">
 					<posx>170</posx>
@@ -610,7 +610,7 @@
 					<posy>10</posy>
 					<width>40</width>
 					<height>30</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 				</control>
 				<control type="image">
 					<posx>230</posx>
@@ -659,7 +659,7 @@
 					<posy>10</posy>
 					<width>40</width>
 					<height>30</height>
-					<texture>$INFO[ListItem.VideoResolution,light/,.png]</texture>
+					<texture>$VAR[MediaInfoOverlayVarLight]</texture>
 				</control>
 				<control type="image">
 					<posx>230</posx>
