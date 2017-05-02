@@ -529,12 +529,45 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   UpdateCurrentPTS();
 
   // in case of mpegts and we have not seen pat/pmt, defer creation of streams
+// in case of mpegts and we have not seen pat/pmt, defer creation of streams
   if (!skipCreateStreams || m_pFormatContext->nb_programs > 0)
-    CreateStreams();
+  {
+    unsigned int nProgram = UINT_MAX;
+    if (m_pFormatContext->nb_programs > 0)
+    {
+      // select the corrrect program if requested
+      CVariant programProp(pInput->GetProperty("program"));
+      if (!programProp.isNull())
+      {
+        int programNumber = programProp.asInteger();
+
+        for (unsigned int i = 0; i < m_pFormatContext->nb_programs; ++i)
+        {
+          if (m_pFormatContext->programs[i]->program_num == programNumber)
+          {
+            nProgram = i;
+            break;
+          }
+        }
+      }
+      else if (m_pFormatContext->iformat && strcmp(m_pFormatContext->iformat->name, "hls,applehttp") == 0)
+      {
+        nProgram = HLSSelectProgram();
+      }
+    }
+    CreateStreams(nProgram);
+  }
 
   // allow IsProgramChange to return true
   if (skipCreateStreams && GetNrOfStreams() == 0)
     m_program = 0;
+
+  // seems to be a bug in ffmpeg, hls jumps back to start after a couple of seconds
+  // this cures the issue
+  if (m_pFormatContext->iformat && strcmp(m_pFormatContext->iformat->name, "hls,applehttp") == 0)
+  {
+    SeekTime(0);
+  }
 
   return true;
 }
@@ -1158,6 +1191,13 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
       for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
         AddStream(m_pFormatContext->programs[m_program]->stream_index[i]);
     }
+
+    // discard all unneeded streams
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    {
+      if (GetStream(i) == nullptr)
+        m_pFormatContext->streams[i]->discard = AVDISCARD_ALL;
+    }
   }
   else
     m_program = UINT_MAX;
@@ -1647,6 +1687,63 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
       return true;
   }
   return false;
+}
+
+unsigned int CDVDDemuxFFmpeg::HLSSelectProgram()
+{
+  unsigned int prog = UINT_MAX;
+
+  int bandwidth = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH) * 1000;
+  if (bandwidth <= 0)
+    bandwidth = INT_MAX;
+
+  int selectedBitrate = 0;
+  int selectedRes = 0;
+  for (unsigned int i = 0; i < m_pFormatContext->nb_programs; ++i)
+  {
+    int strBitrate = 0;
+    AVDictionaryEntry *tag = av_dict_get(m_pFormatContext->programs[i]->metadata, "variant_bitrate", NULL, 0);
+    if (tag)
+      strBitrate = atoi(tag->value);
+    else
+      continue;
+
+    int strRes = 0;
+    for (unsigned int j = 0; j < m_pFormatContext->programs[i]->nb_stream_indexes; j++)
+    {
+      int idx = m_pFormatContext->programs[i]->stream_index[j];
+      AVStream* pStream = m_pFormatContext->streams[idx];
+      if (pStream && pStream->codecpar &&
+          pStream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+      {
+        strRes = pStream->codecpar->width * pStream->codecpar->height;
+      }
+    }
+
+    if (strRes < selectedRes && selectedBitrate < bandwidth)
+      continue;
+
+    bool want = false;
+
+    if (strBitrate <= bandwidth)
+    {
+      if (strBitrate > selectedBitrate || strRes > selectedRes)
+        want = true;
+    }
+    else
+    {
+      if (strBitrate < selectedBitrate)
+        want = true;
+    }
+
+    if (want)
+    {
+      selectedRes = strRes;
+      selectedBitrate = strBitrate;
+      prog = i;
+    }
+  }
+  return prog;
 }
 
 std::string CDVDDemuxFFmpeg::GetStereoModeFromMetadata(AVDictionary *pMetadata)

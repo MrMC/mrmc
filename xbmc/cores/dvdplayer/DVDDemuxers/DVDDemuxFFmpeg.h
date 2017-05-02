@@ -140,6 +140,8 @@ protected:
   void UpdateCurrentPTS();
   bool IsProgramChange();
 
+  unsigned int HLSSelectProgram();
+
   std::string GetStereoModeFromMetadata(AVDictionary *pMetadata);
   std::string ConvertCodecToInternalStereoMode(const std::string &mode, const StereoModeConversionMap *conversionMap);
 
