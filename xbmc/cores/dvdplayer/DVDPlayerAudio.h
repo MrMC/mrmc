@@ -68,7 +68,7 @@ public:
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
 
-  double GetCurrentPts()                            { CSingleLock lock(m_info_section); return m_info.pts; }
+  double GetCurrentPts()                            { return m_info.pts; }
 
   bool IsStalled() const                            { return m_stalled;  }
   bool IsEOS()                                      { return false; }
@@ -80,7 +80,6 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
-  void UpdatePlayerInfo();
   void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
   //! Switch codec if needed. Called when the sample rate gotten from the
   //! codec changes, in which case we may want to switch passthrough on/off.
@@ -163,15 +162,18 @@ protected:
   {
     SInfo()
     : pts(DVD_NOPTS_VALUE)
+    , bitrate(0.0)
+    , resamplerate(1.0)
+    , attenuation(1.0)
     , passthrough(false)
     {}
-
-    std::string      info;
-    double           pts;
-    bool             passthrough;
+    double pts;
+    double bitrate;
+    double resamplerate;
+    double attenuation;
+    bool   passthrough;
   };
 
-  CCriticalSection m_info_section;
-  SInfo            m_info;
+  SInfo m_info;
 };
 
