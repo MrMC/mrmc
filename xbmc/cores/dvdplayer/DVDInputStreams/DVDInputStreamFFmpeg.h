@@ -22,6 +22,8 @@
 
 #include "DVDInputStream.h"
 
+typedef struct AVFormatContext AVFormatContext;
+
 class CDVDInputStreamFFmpeg
   : public CDVDInputStream
   , public CDVDInputStream::ISeekable
@@ -36,6 +38,7 @@ public:
   virtual bool Pause(double dTime) { return false; };
   virtual bool IsEOF();
   virtual int64_t GetLength();
+  virtual bool GetCacheStatus(XFILE::SCacheStatus *status);
 
   virtual void    Abort()    { m_aborted = true;  }
   bool            Aborted()  { return m_aborted;  }
@@ -43,8 +46,10 @@ public:
   bool            CanSeek()  { return m_can_seek; }
   bool            CanPause() { return m_can_pause; }
 
+  bool            UseHLSCustomIO(AVFormatContext *formatContext);
 protected:
   bool m_can_pause;
   bool m_can_seek;
   bool m_aborted;
+  bool m_usingHLSCustomIO;
 };

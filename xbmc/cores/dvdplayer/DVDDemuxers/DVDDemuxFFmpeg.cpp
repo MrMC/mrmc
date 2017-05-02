@@ -266,6 +266,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
         strFile = url.Get();
       } 
     }
+ #if 0
+    if (url.IsFileType("m3u8"))
+    {
+      static_cast<CDVDInputStreamFFmpeg*>(m_pInput)->UseHLSCustomIO(m_pFormatContext);
+    }
+#endif
     if (result < 0 && avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0 )
     {
       CLog::Log(LOGDEBUG, "Error, could not open file %s", CURL::GetRedacted(strFile).c_str());
