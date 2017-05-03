@@ -33,8 +33,8 @@ MediaLibrary.prototype = {
     $('#pictureLibrary').click(jQuery.proxy(this.pictureLibraryOpen, this));
     $('#remoteControl').click(jQuery.proxy(this.remoteControlOpen, this));
     $('#profiles').click(jQuery.proxy(this.profilesOpen, this));
-    $('#log').click(jQuery.proxy(this.logOpen, this));
-    $('#logold').click(jQuery.proxy(this.oldLogOpen, this));
+    $('#log').click(jQuery.proxy(this.logOpen, this, "log"));
+    $('#logold').click(jQuery.proxy(this.logOpen, this, "logOld"));
     $('#overlay').click(jQuery.proxy(this.hideOverlay, this));
     $(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
     $(document).on('keydown', jQuery.proxy(this.handleKeyPress, this));
@@ -49,6 +49,8 @@ MediaLibrary.prototype = {
     $('#profiles').removeClass('selected');
     $('#log').removeClass('selected');
     $('#logold').removeClass('selected');
+    $('iframe').remove();
+    $('button').remove();
     this.hideOverlay();
   },
   replaceAll: function (haystack, needle, thread) {
@@ -126,26 +128,43 @@ MediaLibrary.prototype = {
   },
   logOpen: function (event) {
     this.resetPage();
-    $('#log').addClass('selected');
-    $('.contentContainer').hide();
-    var w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.log');
-    w.onload = function(){
-    setTimeout(function(){
-       $(w.document).find('html').append('<head><title>MrMC log</title></head>');
-      }, 500);
+    var logUrl;
+    var btnLabel;
+    if(event == "log")
+    {
+      logUrl = 'vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.log?';
+      $('#log').addClass('selected');
+      btnLabel = "Copy Log Content";
     }
-  },  
-  oldLogOpen: function (event) {
-    this.resetPage();
-    $('#logold').addClass('selected');
+    else
+    {
+      logUrl = 'vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.old.log?';
+      $('#logold').addClass('selected');
+      btnLabel = "Copy Log (Old) Content";
+    }
+
     $('.contentContainer').hide();
-    var w = window.open('vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.old.log');
-    w.onload = function(){
-    setTimeout(function(){
-       $(w.document).find('html').append('<head><title>MrMC old log</title></head>');
-    }, 500);
-  }
-  },  
+    var html = document.documentElement;
+    var body = document.getElementsByTagName("body")[0];
+    var height = Math.max( body.scrollHeight, body.offsetHeight, 
+                       html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+    var button = document.createElement('button');
+    button.innerHTML = btnLabel;
+    button.style.marginTop = "5px";
+
+    $('#content').append(button);
+
+    button.addEventListener ("click", jQuery.proxy(this.pressLogKey,this, event));
+
+    var iframe = document.createElement('iframe');
+    iframe.src = logUrl + new Date().getTime();
+    iframe.width="95%";
+    iframe.height=height - 115;
+    iframe.name=event;
+    iframe.id=event;
+    $('#content').append(iframe);
+  },
   shouldHandleEvent: function (event) {
     var inRemoteControl = $('#remoteControl').hasClass('selected');
     return (!event.ctrlKey && !event.altKey && inRemoteControl);
@@ -205,6 +224,69 @@ MediaLibrary.prototype = {
     var callObj = {'method': method};
     if (params) { callObj.params = params; }
     return xbmc.rpc.request(callObj);
+  },
+  pressLogKey: function (iframeName) {
+    $('#spinner').show();
+
+    if (window.frames && window.frames[iframeName] &&
+      window.frames[iframeName].document &&
+      window.frames[iframeName].document.body &&
+      window.frames[iframeName].document.body.innerText)
+      {
+        var txt = window.frames[iframeName].document.body.innerText;
+        var logDetail;
+        if(iframeName == "log")
+        {
+            logDetail = "MrMC Log";
+        }
+        else
+        {
+            logDetail = "MrMC (Old) Log";
+        }
+
+        var textAreaHeader = "##############################################################\nContent of " + logDetail +"\n##############################################################\n\n"
+        var textArea = document.createElement("textarea");
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = 0;
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        textArea.value = textAreaHeader + txt;
+        document.body.appendChild(textArea);
+
+        // below from http://stackoverflow.com/questions/34045777/copy-to-clipboard-using-javascript-in-ios
+        var editable = textArea.contentEditable; // Record contentEditable status of element
+        var readOnly = textArea.readOnly; // Record readOnly status of element
+        textArea.contentEditable = true; // iOS will only select text on non-form elements if contentEditable = true;
+        textArea.readOnly = false; // iOS will not select in a read only form element
+        var range = document.createRange();
+        range.selectNodeContents(textArea);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range); // Does not work for Firefox if a textarea or input
+        if (textArea.nodeName == "TEXTAREA" || textArea.nodeName == "INPUT") 
+          textArea.select(); // Firefox will only select a form element with select()
+        if (textArea.setSelectionRange && navigator.userAgent.match(/ipad|ipod|iphone/i))
+          textArea.setSelectionRange(0, 999999); // iOS only selects "form" elements with SelectionRange
+        textArea.contentEditable = editable; // Restore previous contentEditable status
+        textArea.readOnly = readOnly; // Restore previous readOnly status
+        try
+        {
+          var successful = document.execCommand('copy');
+          window.alert(logDetail + " was copied to clipboard");
+        }
+        catch (err)
+        {
+          window.alert(logDetail + " was NOT copied to clipboard, select all content and copy manually");
+        }
+        document.body.removeChild(textArea);
+    }
+    $('#spinner').hide();
   },
   pressRemoteKey: function (event) {
     var player = -1,
