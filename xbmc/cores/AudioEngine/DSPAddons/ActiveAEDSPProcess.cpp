@@ -1119,7 +1119,6 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
   CSingleLock lock(m_restartSection);
 
   bool needDSPAddonsReinit  = m_forceInit;
-  uint64_t iTime            = static_cast<uint64_t>(XbmcThreads::SystemClockMillis()) * 10000;
   int64_t hostFrequency     = CurrentHostFrequency();
   unsigned int frames       = in->pkt->nb_samples;
 
@@ -1424,12 +1423,6 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
   }
   out->pkt->nb_samples = frames;
 
-  /**
-   * Update cpu process percent usage values for modes and total (every second)
-   */
-  if (iTime >= m_iLastProcessTime + 1000*10000)
-    CalculateCPUUsage(iTime);
-
   return true;
 }
 
@@ -1501,56 +1494,6 @@ bool CActiveAEDSPProcess::ReallocProcessArray(unsigned int requestSize)
     }
   }
   return true;
-}
-
-// in this function the usage for each adsp-mode in percent is calculated
-void CActiveAEDSPProcess::CalculateCPUUsage(uint64_t iTime)
-{
-  int64_t iUsage = CThread::GetCurrentThread()->GetAbsoluteUsage();
-
-  if (iTime != m_iLastProcessTime)
-  {
-    // calculate usage only if we don't divide by zero
-    if (m_iLastProcessUsage > 0 && m_iLastProcessTime > 0)
-    {
-      m_fLastProcessUsage = (float)(iUsage - m_iLastProcessUsage) / (float)(iTime - m_iLastProcessTime) * 100.0f;
-    }
-
-    float dTFactor = 100.0f / (float)(iTime - m_iLastProcessTime);
-
-    if(m_addon_InputResample.pMode)
-    {
-      m_addon_InputResample.pMode->SetCPUUsage((float)(m_addon_InputResample.iLastTime)*dTFactor);
-      m_addon_InputResample.iLastTime = 0;
-    }
-
-    for (unsigned int i = 0; i < m_addons_PreProc.size(); ++i)
-    {
-      m_addons_PreProc[i].pMode->SetCPUUsage((float)(m_addons_PreProc[i].iLastTime)*dTFactor);
-      m_addons_PreProc[i].iLastTime = 0;
-    }
-
-    if (m_addons_MasterProc[m_activeMode].pMode)
-    {
-      m_addons_MasterProc[m_activeMode].pMode->SetCPUUsage((float)(m_addons_MasterProc[m_activeMode].iLastTime)*dTFactor);
-      m_addons_MasterProc[m_activeMode].iLastTime = 0;
-    }
-
-    for (unsigned int i = 0; i < m_addons_PostProc.size(); ++i)
-    {
-      m_addons_PostProc[i].pMode->SetCPUUsage((float)(m_addons_PostProc[i].iLastTime)*dTFactor);
-      m_addons_PostProc[i].iLastTime = 0;
-    }
-
-    if (m_addon_OutputResample.pMode)
-    {
-      m_addon_OutputResample.pMode->SetCPUUsage((float)(m_addon_OutputResample.iLastTime)*dTFactor);
-      m_addon_OutputResample.iLastTime = 0;
-    }
-  }
-
-  m_iLastProcessUsage = iUsage;
-  m_iLastProcessTime  = iTime;
 }
 
 void CActiveAEDSPProcess::SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_DSP_CH_MAX], float **array_in, float **array_out)

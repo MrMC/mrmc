@@ -49,9 +49,6 @@ CThread::CThread(const char* ThreadName)
 
   m_bAutoDelete = false;
   m_ThreadId = 0;
-  m_iLastTime = 0;
-  m_iLastUsage = 0;
-  m_fLastUsage = 0.0f;
 
   m_pRunnable=NULL;
 
@@ -66,9 +63,6 @@ CThread::CThread(IRunnable* pRunnable, const char* ThreadName)
 
   m_bAutoDelete = false;
   m_ThreadId = 0;
-  m_iLastTime = 0;
-  m_iLastUsage = 0;
-  m_fLastUsage = 0.0f;
 
   m_pRunnable=pRunnable;
 
@@ -88,9 +82,6 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
     LOG(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
     exit(1);
   }
-  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
-  m_iLastUsage = 0;
-  m_fLastUsage = 0.0f;
   m_bAutoDelete = bAutoDelete;
   m_bStop = false;
   m_StopEvent.Reset();
