@@ -36,6 +36,7 @@
 #include "utils/JSONVariantParser.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "video/VideoInfoTag.h"
 
 using namespace XFILE;
 
@@ -291,7 +292,11 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       else if (path == "shows")
       {
         CEmbyUtils::GetEmbySeasons(items,Base64URL::Decode(section));
-        items.SetContent("seasons");
+        if(items.Size() > 0 && items[0]->GetVideoInfoTag()->m_type == MediaTypeSeason)
+          items.SetContent("seasons");
+        else
+          items.SetContent("episodes");
+        
       }
       else if (path == "seasons")
       {

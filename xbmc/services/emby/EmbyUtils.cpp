@@ -39,6 +39,7 @@
 #include "filesystem/CurlFile.h"
 #include "filesystem/ZipFile.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "utils/JobManager.h"
 
 #include "video/VideoInfoTag.h"
@@ -990,6 +991,7 @@ bool CEmbyUtils::ParseEmbySeasons(CFileItemList &items, const CURL &url, const C
   bool rtn = false;
   std::string imagePath;
   std::string seriesName;
+  std::string seriesId;
   const auto& seriesItem = series["Items"][0];
 
   const auto& variantItems = variant["Items"];
@@ -1003,7 +1005,7 @@ bool CEmbyUtils::ParseEmbySeasons(CFileItemList &items, const CURL &url, const C
 
     // local vars for common fields
     std::string itemId = item["Id"].asString();
-    std::string seriesId = item["SeriesId"].asString();
+    seriesId = item["SeriesId"].asString();
     // clear url options
     CURL curl(url);
     curl.SetOptions("");
@@ -1065,9 +1067,52 @@ bool CEmbyUtils::ParseEmbySeasons(CFileItemList &items, const CURL &url, const C
     SetEmbyItemProperties(*newItem, "seasons");
     items.Add(newItem);
   }
-  items.SetLabel(seriesName);
+  
   SetEmbyItemProperties(items, "seasons");
   items.SetProperty("showplot", seriesItem["Overview"].asString());
+  
+  if (!items.IsEmpty())
+  {
+    int iFlatten = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
+    int itemsSize = items.GetObjectCount();
+    int firstIndex = items.Size() - itemsSize;
+    // check if the last item is the "All seasons" item which should be ignored for flattening
+    if (!items[items.Size() - 1]->HasVideoInfoTag() || items[items.Size() - 1]->GetVideoInfoTag()->m_iSeason < 0)
+      itemsSize -= 1;
+    
+    bool bFlatten = (itemsSize == 1 && iFlatten == 1) || iFlatten == 2 ||                              // flatten if one one season or if always flatten is enabled
+    (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
+     (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
+    
+    if (iFlatten > 0 && !bFlatten && (WatchedMode)CMediaSettings::GetInstance().GetWatchedMode("tvshows") == WatchedModeUnwatched)
+    {
+      int count = 0;
+      for(int i = 0; i < items.Size(); i++)
+      {
+        const CFileItemPtr item = items.Get(i);
+        if (item->GetProperty("unwatchedepisodes").asInteger() != 0 && item->GetVideoInfoTag()->m_iSeason > 0)
+          count++;
+      }
+      bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)
+    }
+    
+    if (bFlatten)
+    { // flatten if one season or flatten always
+      CFileItemList tempItems;
+      
+      // clear url options
+      CURL curl(url);
+      curl.SetOptions("");
+      curl.SetOption("ParentId", seriesId);
+      curl.SetOption("Recursive", "true");
+      
+      XFILE::CDirectory::GetDirectory("emby://tvshows/seasons/" + Base64URL::Encode(curl.Get()),tempItems);
+      
+      items.Clear();
+      items.Assign(tempItems);
+    }
+  }
+  items.SetLabel(seriesName);
   items.SetProperty("library.filter", "true");
   items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
 
