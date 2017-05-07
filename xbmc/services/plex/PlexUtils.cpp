@@ -32,10 +32,12 @@
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/ZipFile.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 
 #include "video/VideoInfoTag.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -796,6 +798,56 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
   }
 
   items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
+
+  
+  if (!items.IsEmpty())
+  {
+    int iFlatten = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
+    int itemsSize = items.GetObjectCount();
+    int firstIndex = items.Size() - itemsSize;
+    
+    std::string showTitle;
+    
+    // check if the last item is the "All seasons" item which should be ignored for flattening
+    if (!items[items.Size() - 1]->HasVideoInfoTag() || items[items.Size() - 1]->GetVideoInfoTag()->m_iSeason < 0)
+      itemsSize -= 1;
+    
+    bool bFlatten = (itemsSize == 1 && iFlatten == 1) || iFlatten == 2 ||                              // flatten if one one season or if always flatten is enabled
+    (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
+     (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
+    
+    if (iFlatten > 0 && !bFlatten && (WatchedMode)CMediaSettings::GetInstance().GetWatchedMode("tvshows") == WatchedModeUnwatched)
+    {
+      int count = 0;
+      for(int i = 0; i < items.Size(); i++)
+      {
+        const CFileItemPtr item = items.Get(i);
+        if (item->GetProperty("unwatchedepisodes").asInteger() != 0 && item->GetVideoInfoTag()->m_iSeason > 0)
+          count++;
+      }
+      bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)
+    }
+    
+    if (bFlatten)
+    { // flatten if one season or flatten always
+      CFileItemList tempItems;
+      
+      for(int i = 0; i < items.Size(); i++)
+      {
+        const CFileItemPtr item = items.Get(i);
+        showTitle = item->GetVideoInfoTag()->m_strShowTitle;
+        CURL url1(url);
+        CFileItemList temp;
+        url1.SetFileName("library/metadata/" + item->GetMediaServiceId() + "/children");
+        XFILE::CDirectory::GetDirectory("plex://tvshows/seasons/" + Base64URL::Encode(url1.Get()),temp);
+        tempItems.Assign(temp, true);
+      }
+
+      items.Clear();
+      items.Assign(tempItems);
+      items.SetLabel(showTitle);
+    }
+  }
   items.SetProperty("library.filter", "true");
   SetPlexItemProperties(items);
 
