@@ -1847,11 +1847,20 @@ void CDVDPlayer::HandlePlaySpeed()
         else
           clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetime;
 
-        if (m_CurrentVideo.starttime != DVD_NOPTS_VALUE &&
-            (m_CurrentVideo.packets > 0) &&
-            m_CurrentVideo.starttime - m_CurrentVideo.cachetotal < clock)
+        if (m_CurrentVideo.starttime != DVD_NOPTS_VALUE && (m_CurrentVideo.packets > 0))
         {
-          clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
+          if (m_CurrentVideo.starttime - m_CurrentVideo.cachetotal < clock)
+            clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
+          else if (m_CurrentVideo.starttime > m_CurrentAudio.starttime)
+          {
+            int audioLevel = m_dvdPlayerAudio->GetLevel();
+            //@todo hardcoded 8 seconds in message queue
+            double maxAudioTime = clock + DVD_MSEC_TO_TIME(80 * audioLevel);
+            if ((m_CurrentVideo.starttime - m_CurrentVideo.cachetotal) > maxAudioTime)
+              clock = maxAudioTime;
+            else
+              clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
+          }
         }
       }
       else if (m_CurrentVideo.starttime != DVD_NOPTS_VALUE && m_CurrentVideo.packets > 0)
