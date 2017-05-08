@@ -174,6 +174,11 @@ bool CDVDInputStreamFFmpeg::Open()
   m_can_seek  = true;
   m_aborted   = false;
 
+  if (m_item.IsInternetStream() && (m_item.IsType(".m3u8") || m_item.GetMimeType() == "application/vnd.apple.mpegurl"))
+  {
+    m_realtime = true;
+  }
+
   if(strnicmp(m_item.GetPath().c_str(), "udp://", 6) == 0
   || strnicmp(m_item.GetPath().c_str(), "rtp://", 6) == 0)
   {
