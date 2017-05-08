@@ -2375,10 +2375,10 @@ void CDVDPlayer::HandleMessages()
         if(dynamic_cast<CDVDInputStream::ISeekTime*>(m_pInputStream) == NULL)
           time += DVD_TIME_TO_MSEC(m_offset_pts - m_State.time_offset);
 
-        CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
+        CLog::Log(LOGDEBUG, "demuxer seek to: %d (ms)", time);
         if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
         {
-          CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", time);
+          CLog::Log(LOGDEBUG, "demuxer seek to: %d (ms), success", time);
           if(m_pSubtitleDemuxer)
           {
             if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
