@@ -504,7 +504,7 @@ void CPlexUtils::SetPlayState(MediaServicesPlayerState state)
   g_playbackState = state;
 }
 
-bool CPlexUtils::GetVideoItems(CFileItemList &items, CURL url, TiXmlElement* rootXmlNode, std::string type, bool formatLabel, int season /* = -1 */)
+bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, TiXmlElement* rootXmlNode, std::string type, bool formatLabel, int season /* = -1 */)
 {
   bool rtn = false;
   const TiXmlElement* videoNode = rootXmlNode->FirstChildElement("Video");
@@ -641,7 +641,7 @@ bool CPlexUtils::GetPlexMovies(CFileItemList &items, std::string url, std::strin
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeMovie, false);
+    rtn = ParsePlexVideos(items, url2, rootXmlNode, MediaTypeMovie, false);
   }
 
   return rtn;
@@ -650,80 +650,17 @@ bool CPlexUtils::GetPlexMovies(CFileItemList &items, std::string url, std::strin
 bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
 {
   bool rtn = false;
-  std::string value;
   TiXmlDocument xml = GetPlexXML(url);
-
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
     const TiXmlElement* directoryNode = rootXmlNode->FirstChildElement("Directory");
-    while (directoryNode)
+    if (directoryNode)
     {
-      rtn = true;
-      CFileItemPtr plexItem(new CFileItem());
-      // set m_bIsFolder to true to indicate we are tvshow list
-      plexItem->m_bIsFolder = true;
-      plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
-      CURL url1(url);
-      url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
-      plexItem->SetPath("plex://tvshows/shows/" + Base64URL::Encode(url1.Get()));
-      plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
-      plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
-      plexItem->GetVideoInfoTag()->m_type = MediaTypeTvShow;
-      plexItem->GetVideoInfoTag()->m_strTitle = XMLUtils::GetAttribute(directoryNode, "title");
-      plexItem->GetVideoInfoTag()->SetPlotOutline(XMLUtils::GetAttribute(directoryNode, "tagline"));
-      plexItem->GetVideoInfoTag()->SetPlot(XMLUtils::GetAttribute(directoryNode, "summary"));
-      value = XMLUtils::GetAttribute(directoryNode, "thumb");
-      if (!value.empty() && (value[0] == '/'))
-        StringUtils::TrimLeft(value, "/");
-      url1.SetFileName(value);
-      plexItem->SetArt("thumb", url1.Get());
-
-      value = XMLUtils::GetAttribute(directoryNode, "banner");
-      if (!value.empty() && (value[0] == '/'))
-        StringUtils::TrimLeft(value, "/");
-      url1.SetFileName(value);
-      plexItem->SetArt("banner", url1.Get());
-      
-      value = XMLUtils::GetAttribute(directoryNode, "art");
-      if (!value.empty() && (value[0] == '/'))
-        StringUtils::TrimLeft(value, "/");
-      url1.SetFileName(value);
-      plexItem->SetArt("fanart", url1.Get());
-
-      plexItem->GetVideoInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(directoryNode, "year").c_str()));
-      plexItem->GetVideoInfoTag()->SetRating(atof(XMLUtils::GetAttribute(directoryNode, "rating").c_str()));
-      plexItem->GetVideoInfoTag()->m_strMPAARating = XMLUtils::GetAttribute(directoryNode, "contentRating");
-
-      time_t addedTime = atoi(XMLUtils::GetAttribute(directoryNode, "addedAt").c_str());
-      CDateTime aTime(addedTime);
-      int watchedEpisodes = atoi(XMLUtils::GetAttribute(directoryNode, "viewedLeafCount").c_str());
-      int iSeasons        = atoi(XMLUtils::GetAttribute(directoryNode, "childCount").c_str());
-      plexItem->GetVideoInfoTag()->m_dateAdded = aTime;
-      plexItem->GetVideoInfoTag()->m_iSeason = iSeasons;
-      plexItem->GetVideoInfoTag()->m_iEpisode = atoi(XMLUtils::GetAttribute(directoryNode, "leafCount").c_str());
-      plexItem->GetVideoInfoTag()->m_playCount = (int)watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode;
-
-      plexItem->SetProperty("totalseasons", iSeasons);
-      plexItem->SetProperty("totalepisodes", plexItem->GetVideoInfoTag()->m_iEpisode);
-      plexItem->SetProperty("numepisodes", plexItem->GetVideoInfoTag()->m_iEpisode);
-      plexItem->SetProperty("watchedepisodes", watchedEpisodes);
-      plexItem->SetProperty("unwatchedepisodes", plexItem->GetVideoInfoTag()->m_iEpisode - watchedEpisodes);
-
-      plexItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode);
-
-      CDateTime firstAired;
-      firstAired.SetFromDBDate(XMLUtils::GetAttribute(directoryNode, "originallyAvailableAt"));
-      plexItem->GetVideoInfoTag()->m_firstAired = firstAired;
-
-      GetVideoDetails(*plexItem, directoryNode);
-      SetPlexItemProperties(*plexItem);
-      items.Add(plexItem);
-      directoryNode = directoryNode->NextSiblingElement("Directory");
+      CURL curl(url);
+      rtn = ParsePlexSeries(items, curl, directoryNode);
     }
   }
-  items.SetProperty("library.filter", "true");
-  items.GetVideoInfoTag()->m_type = MediaTypeTvShow;
 
   return rtn;
 }
@@ -732,124 +669,16 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
 {
   bool rtn = false;
   TiXmlDocument xml = GetPlexXML(url);
-  std::string value;
-
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
     const TiXmlElement* directoryNode = rootXmlNode->FirstChildElement("Directory");
-    while (directoryNode)
+    if (directoryNode)
     {
-      // only get the seasons listing, the one with "ratingKey"
-      if (((TiXmlElement*) directoryNode)->Attribute("ratingKey"))
-      {
-        rtn = true;
-        CFileItemPtr plexItem(new CFileItem());
-        plexItem->m_bIsFolder = true;
-        plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
-        CURL url1(url);
-        url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
-        plexItem->SetPath("plex://tvshows/seasons/" + Base64URL::Encode(url1.Get()));
-        plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
-        plexItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
-        plexItem->GetVideoInfoTag()->m_strTitle = XMLUtils::GetAttribute(directoryNode, "title");
-        // we get these from rootXmlNode, where all show info is
-        plexItem->GetVideoInfoTag()->m_strShowTitle = XMLUtils::GetAttribute(rootXmlNode, "parentTitle");
-        plexItem->GetVideoInfoTag()->SetPlotOutline(XMLUtils::GetAttribute(rootXmlNode, "tagline"));
-        plexItem->GetVideoInfoTag()->SetPlot(XMLUtils::GetAttribute(rootXmlNode, "summary"));
-        plexItem->GetVideoInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(rootXmlNode, "parentYear").c_str()));
-        plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(rootXmlNode, "key"));
-        value = XMLUtils::GetAttribute(rootXmlNode, "art");
-        if (!value.empty() && (value[0] == '/'))
-          StringUtils::TrimLeft(value, "/");
-        url1.SetFileName(value);
-        plexItem->SetArt("fanart", url1.Get());
-        
-        value = XMLUtils::GetAttribute(rootXmlNode, "banner");
-        if (!value.empty() && (value[0] == '/'))
-          StringUtils::TrimLeft(value, "/");
-        url1.SetFileName(value);
-        plexItem->SetArt("banner", url1.Get());
-        
-        /// -------
-        value = XMLUtils::GetAttribute(directoryNode, "thumb");
-        if (!value.empty() && (value[0] == '/'))
-          StringUtils::TrimLeft(value, "/");
-        url1.SetFileName(value);
-        plexItem->SetArt("thumb", url1.Get());
-        int watchedEpisodes = atoi(XMLUtils::GetAttribute(directoryNode, "viewedLeafCount").c_str());
-        int iSeason = atoi(XMLUtils::GetAttribute(directoryNode, "index").c_str());
-        plexItem->GetVideoInfoTag()->m_iSeason = iSeason;
-        plexItem->GetVideoInfoTag()->m_iEpisode = atoi(XMLUtils::GetAttribute(directoryNode, "leafCount").c_str());
-        plexItem->GetVideoInfoTag()->m_playCount = (int)watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode;
-
-        plexItem->SetProperty("totalepisodes", plexItem->GetVideoInfoTag()->m_iEpisode);
-        plexItem->SetProperty("numepisodes", plexItem->GetVideoInfoTag()->m_iEpisode);
-        plexItem->SetProperty("watchedepisodes", watchedEpisodes);
-        plexItem->SetProperty("unwatchedepisodes", plexItem->GetVideoInfoTag()->m_iEpisode - watchedEpisodes);
-
-        plexItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode);
-
-        SetPlexItemProperties(*plexItem);
-        items.Add(plexItem);
-      }
-      directoryNode = directoryNode->NextSiblingElement("Directory");
+      CURL curl(url);
+      rtn = ParsePlexSeasons(items, curl, rootXmlNode, directoryNode);
     }
   }
-
-  items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
-
-  
-  if (!items.IsEmpty())
-  {
-    int iFlatten = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
-    int itemsSize = items.GetObjectCount();
-    int firstIndex = items.Size() - itemsSize;
-    
-    std::string showTitle;
-    
-    // check if the last item is the "All seasons" item which should be ignored for flattening
-    if (!items[items.Size() - 1]->HasVideoInfoTag() || items[items.Size() - 1]->GetVideoInfoTag()->m_iSeason < 0)
-      itemsSize -= 1;
-    
-    bool bFlatten = (itemsSize == 1 && iFlatten == 1) || iFlatten == 2 ||                              // flatten if one one season or if always flatten is enabled
-    (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
-     (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
-    
-    if (iFlatten > 0 && !bFlatten && (WatchedMode)CMediaSettings::GetInstance().GetWatchedMode("tvshows") == WatchedModeUnwatched)
-    {
-      int count = 0;
-      for(int i = 0; i < items.Size(); i++)
-      {
-        const CFileItemPtr item = items.Get(i);
-        if (item->GetProperty("unwatchedepisodes").asInteger() != 0 && item->GetVideoInfoTag()->m_iSeason > 0)
-          count++;
-      }
-      bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)
-    }
-    
-    if (bFlatten)
-    { // flatten if one season or flatten always
-      CFileItemList tempItems;
-      
-      for(int i = 0; i < items.Size(); i++)
-      {
-        const CFileItemPtr item = items.Get(i);
-        showTitle = item->GetVideoInfoTag()->m_strShowTitle;
-        CURL url1(url);
-        CFileItemList temp;
-        url1.SetFileName("library/metadata/" + item->GetMediaServiceId() + "/children");
-        XFILE::CDirectory::GetDirectory("plex://tvshows/seasons/" + Base64URL::Encode(url1.Get()),temp);
-        tempItems.Assign(temp, true);
-      }
-
-      items.Clear();
-      items.Assign(tempItems);
-      items.SetLabel(showTitle);
-    }
-  }
-  items.SetProperty("library.filter", "true");
-  SetPlexItemProperties(items);
 
   return rtn;
 }
@@ -857,15 +686,13 @@ bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
 bool CPlexUtils::GetPlexEpisodes(CFileItemList &items, const std::string url)
 {
   bool rtn = false;
-
   CURL url2(url);
   TiXmlDocument xml = GetPlexXML(url);
-
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
     int season = atoi(XMLUtils::GetAttribute(rootXmlNode, "parentIndex").c_str());
-    rtn = GetVideoItems(items,url2,rootXmlNode, MediaTypeEpisode, true, season);
+    rtn = ParsePlexVideos(items, url2, rootXmlNode, MediaTypeEpisode, true, season);
     items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
   }
 
@@ -905,7 +732,7 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeEpisode, false);
+    rtn = ParsePlexVideos(items, url2, rootXmlNode, MediaTypeEpisode, false);
     items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
     items.Sort(SortByDateAdded, SortOrderDescending);
   }
@@ -946,7 +773,7 @@ bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string 
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeEpisode, false);
+    rtn = ParsePlexVideos(items, url2, rootXmlNode, MediaTypeEpisode, false);
     items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
     items.Sort(SortByDateAdded, SortOrderDescending);
   }
@@ -987,7 +814,7 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    rtn = GetVideoItems(items, url2,rootXmlNode, MediaTypeMovie, false);
+    rtn = ParsePlexVideos(items, url2, rootXmlNode, MediaTypeMovie, false);
     items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
     items.Sort(SortByDateAdded, SortOrderDescending);
   }
@@ -1028,7 +855,7 @@ bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    rtn = GetVideoItems(items, url2, rootXmlNode, MediaTypeMovie, false);
+    rtn = ParsePlexVideos(items, url2, rootXmlNode, MediaTypeMovie, false);
     items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
     items.Sort(SortByDateAdded, SortOrderDescending);
   }
@@ -1351,7 +1178,7 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
               TiXmlDocument xml = GetPlexXML(url.Get());
               TiXmlElement* rootXmlNode = xml.RootElement();
               if(rootXmlNode)
-                GetVideoItems(plexShow, url, rootXmlNode, MediaTypeEpisode, false);
+                ParsePlexVideos(plexShow, url, rootXmlNode, MediaTypeEpisode, false);
               
               for (int i = 0; i < plexShow.Size(); ++i)
               {
@@ -1363,7 +1190,7 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
             else if (type == "movie")
             {
               CFileItemList plexMovies;
-              GetVideoItems(plexMovies, url, hubNode, MediaTypeMovie, false);
+              ParsePlexVideos(plexMovies, url, hubNode, MediaTypeMovie, false);
               for (int i = 0; i < plexMovies.Size(); ++i)
               {
                 std::string label = plexMovies[i]->GetVideoInfoTag()->m_strTitle;
@@ -1395,261 +1222,34 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
 bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bool album)
 {
   bool rtn = false;
-  std::string value;
   TiXmlDocument xml = GetPlexXML(url);
-  
-  std::string strMediaType = album ? MediaTypeAlbum : MediaTypeArtist;
-  std::string strMediaTypeUrl = album ? "plex://music/songs/" : "plex://music/albums/";
-  
-  TiXmlElement* rootXmlNode = xml.RootElement();
+  TiXmlElement *rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
-    /*
-    <Directory
-       ratingKey="5453"
-       key="/library/metadata/5453/children"
-       guid="com.plexapp.agents.plexmusic://gracenote/artist/05CCBFDB0877C16F?lang=en"
-       type="artist"
-       title="Amy MacDonald"
-       summary="Amy Macdonald (born 25 August 1987 in Bishopbriggs, East Dunbartonshire) is a Scottish recording artist. Macdonald rose to fame in 2007 with her debut album, This Is the Life (2007) and its fourth single, &#34;This Is the Life&#34;. The single charted at number one in six countries, while reaching the top ten in another eleven countries. Her third album, Life in a Beautiful Light, was released on June 11, 2012."
-       index="1"
-       thumb="/library/metadata/5453/thumb/1473727903"
-       art="/library/metadata/5453/art/1473727903"
-       addedAt="1355585491"
-       updatedAt="1473727903">
-     
-    <Genre tag="Adult Alternative Rock" />
-    <Genre tag="Pop" />
-    <Country tag="United Kingdom" />
-    </Directory>
-     
-     /// Album
-     
-     <Directory ratingKey="5752" key="/library/metadata/5752/children" guid="local://5752" parentRatingKey="5508" type="album" title="Atomska trilogija" parentKey="/library/metadata/5508" parentTitle="Atomsko skloniste" summary="" index="1" year="1980" thumb="/library/metadata/5752/thumb/1467464126" originallyAvailableAt="1980-01-01" addedAt="1355587058" updatedAt="1467464126">
-     <Genre tag="Other" />
-     </Directory>
-    */
     const TiXmlElement* directoryNode = rootXmlNode->FirstChildElement("Directory");
-    while (directoryNode)
+    if (directoryNode)
     {
-      /*
-       void SetURL(const std::string& strURL);
-       void SetTitle(const std::string& strTitle);
-       void SetArtist(const std::string& strArtist);
-       void SetArtist(const std::vector<std::string>& artists, bool FillDesc = false);
-       void SetArtistDesc(const std::string& strArtistDesc);
-       void SetDateAdded(const std::string& strDateAdded);
-       void SetDateAdded(const CDateTime& strDateAdded);
-       */
-      rtn = true;
-      CFileItemPtr plexItem(new CFileItem());
-      // set m_bIsFolder to true to indicate we are artist list
-      plexItem->m_bIsFolder = true;
-      plexItem->SetLabel(XMLUtils::GetAttribute(directoryNode, "title"));
-      CURL url1(url);
-      url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(directoryNode, "ratingKey") + "/children");
-      plexItem->SetPath(strMediaTypeUrl + Base64URL::Encode(url1.Get()));
-      plexItem->SetMediaServiceId(XMLUtils::GetAttribute(directoryNode, "ratingKey"));
-      
-      plexItem->GetMusicInfoTag()->m_type = strMediaType;
-      plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(directoryNode, "title"));
-      if (album)
-      {
-        plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(directoryNode, "parentTitle"));
-        plexItem->SetProperty("artist", XMLUtils::GetAttribute(directoryNode, "parentTitle"));
-        plexItem->SetProperty("PlexAlbumKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
-      }
-      else
-      {
-        plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(directoryNode, "title"));
-        plexItem->SetProperty("PlexArtistKey", XMLUtils::GetAttribute(directoryNode, "ratingKey"));
-      }
-      plexItem->GetMusicInfoTag()->SetAlbum(XMLUtils::GetAttribute(directoryNode, "title"));
-      plexItem->GetMusicInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(directoryNode, "title").c_str()));
-
-      
-      value = XMLUtils::GetAttribute(directoryNode, "thumb");
-      if (!value.empty() && (value[0] == '/'))
-        StringUtils::TrimLeft(value, "/");
-      url1.SetFileName(value);
-      plexItem->SetArt("thumb", url1.Get());
-      plexItem->SetProperty("thumb", url1.Get());
-      
-      value = XMLUtils::GetAttribute(directoryNode, "art");
-      if (!value.empty() && (value[0] == '/'))
-        StringUtils::TrimLeft(value, "/");
-      url1.SetFileName(value);
-      plexItem->SetArt("fanart", url1.Get());
-      plexItem->SetProperty("fanart", url1.Get());
-      
-      time_t addedTime = atoi(XMLUtils::GetAttribute(directoryNode, "addedAt").c_str());
-      CDateTime aTime(addedTime);
-      plexItem->GetMusicInfoTag()->SetDateAdded(aTime);
-      
-      GetMusicDetails(*plexItem, directoryNode);
-      SetPlexItemProperties(*plexItem);
-      items.Add(plexItem);
-      directoryNode = directoryNode->NextSiblingElement("Directory");
+      CURL curl(url);
+      rtn = ParseEmbyArtistsAlbum(items, curl, directoryNode, album);
     }
   }
-  items.SetProperty("library.filter", "true");
-  items.GetVideoInfoTag()->m_type = strMediaType;
-  SetPlexItemProperties(items);
-  
   return rtn;
 }
 
 bool CPlexUtils::GetPlexSongs(CFileItemList &items, std::string url)
 {
-  /*
-   song.strTitle,
-   song.strMusicBrainzTrackID,
-   song.strFileName,
-   song.strComment,
-   song.strMood,
-   song.strThumb,
-   song.GetArtistString(), // NOTE: Don't call this function internally!!!
-   song.genre,
-   song.iTrack,
-   song.iDuration,
-   song.iYear,
-   song.iTimesPlayed,
-   song.iStartOffset,
-   song.iEndOffset,
-   song.lastPlayed,
-   song.rating
-   
-   void SetURL(const std::string& strURL);
-   void SetTitle(const std::string& strTitle);
-   void SetArtist(const std::string& strArtist);
-   void SetArtist(const std::vector<std::string>& artists, bool FillDesc = false);
-   void SetArtistDesc(const std::string& strArtistDesc);
-   void SetAlbum(const std::string& strAlbum);
-   void SetAlbumId(const int iAlbumId);
-   void SetAlbumArtist(const std::string& strAlbumArtist);
-   void SetAlbumArtist(const std::vector<std::string>& albumArtists, bool FillDesc = false);
-   void SetAlbumArtistDesc(const std::string& strAlbumArtistDesc);
-   void SetGenre(const std::string& strGenre);
-   void SetGenre(const std::vector<std::string>& genres);
-   void SetYear(int year);
-   void SetDatabaseId(long id, const std::string &type);
-   void SetReleaseDate(SYSTEMTIME& dateTime);
-   void SetTrackNumber(int iTrack);
-   void SetDiscNumber(int iDiscNumber);
-   void SetTrackAndDiscNumber(int iTrackAndDisc);
-   void SetDuration(int iSec);
-   void SetLoaded(bool bOnOff = true);
-   void SetArtist(const CArtist& artist);
-   void SetAlbum(const CAlbum& album);
-   void SetSong(const CSong& song);
-   
-   <Track
-   ratingKey="5455"
-   key="/library/metadata/5455"
-   guid="com.plexapp.agents.plexmusic://gracenote/track/142066031-CCBFDBA3584154C8D3B9AC5A5DB18C2C/142066032-861BDFE03C20AA0E1189DCD803EA6F27?lang=en"
-   parentRatingKey="5454"
-   grandparentRatingKey="5453"
-   type="track"
-   title="Mr. Rock &amp; Roll"
-   grandparentKey="/library/metadata/5453"
-   parentKey="/library/metadata/5454"
-   grandparentTitle="Amy MacDonald"
-   parentTitle="This Is The Life"
-   summary=""
-   index="1"
-   parentIndex="1"
-   ratingCount="210254"
-   year="2007"
-   thumb="/library/metadata/5454/thumb/1467464063"
-   art="/library/metadata/5453/art/1474411502"
-   parentThumb="/library/metadata/5454/thumb/1467464063"
-   grandparentThumb="/library/metadata/5453/thumb/1474411502"
-   grandparentArt="/library/metadata/5453/art/1474411502"
-   duration="213856"
-   addedAt="1355585491"
-   updatedAt="1467464062"
-   chapterSource="">
-     <Media id="5058" duration="213856" bitrate="284" audioChannels="2" audioCodec="aac" container="mp4" optimizedForStreaming="1" audioProfile="lc" has64bitOffsets="0">
-     <Part
-   id="5062"
-   key="/library/parts/5062/1355585491/file.m4a"
-   duration="213856"
-   file="/share/CACHEDEV1_DATA/Music/Amy MacDonald/This Is The Life/01 Mr. Rock &amp; Roll.m4a"
-   size="7604634"
-   audioProfile="lc"
-   container="mp4"
-   has64bitOffsets="0"
-   hasThumbnail="1"
-   optimizedForStreaming="1" />
-     </Media>
-   </Track>
-   */
   bool rtn = false;
-  std::string value;
   TiXmlDocument xml = GetPlexXML(url);
   TiXmlElement* rootXmlNode = xml.RootElement();
   if (rootXmlNode)
   {
     const TiXmlElement* trackNode = rootXmlNode->FirstChildElement("Track");
-    while (trackNode)
+    if (trackNode)
     {
-      rtn = true;
-      CFileItemPtr plexItem(new CFileItem());
-      plexItem->SetLabel(XMLUtils::GetAttribute(trackNode, "title"));
-      
-      CURL url1(url);
-      const TiXmlElement* mediaNode = trackNode->FirstChildElement("Media");
-      if(mediaNode)
-      {
-        const TiXmlElement* partNode = mediaNode->FirstChildElement("Part");
-        if(partNode)
-        {
-          XMLUtils::GetAttribute(partNode, "id");
-          std::string key = ((TiXmlElement*) partNode)->Attribute("key");
-          if (!key.empty() && (key[0] == '/'))
-            StringUtils::TrimLeft(key, "/");
-          url1.SetFileName(key);
-          plexItem->SetPath(url1.Get());
-          plexItem->SetMediaServiceId(XMLUtils::GetAttribute(trackNode, "ratingKey"));
-          plexItem->SetProperty("PlexSongKey", XMLUtils::GetAttribute(trackNode, "ratingKey"));
-          plexItem->GetMusicInfoTag()->m_type = MediaTypeSong;
-          plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(trackNode, "title"));
-//          plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(mediaNode, "summary"));
-          plexItem->SetLabel(XMLUtils::GetAttribute(trackNode, "title"));
-          plexItem->GetMusicInfoTag()->SetArtist(XMLUtils::GetAttribute(trackNode, "grandparentTitle"));
-          plexItem->GetMusicInfoTag()->SetAlbum(XMLUtils::GetAttribute(trackNode, "parentTitle"));
-          int year = atoi(XMLUtils::GetAttribute(trackNode, "year").c_str());
-          plexItem->GetMusicInfoTag()->SetYear(year);
-          plexItem->GetMusicInfoTag()->SetTrackNumber(atoi(XMLUtils::GetAttribute(trackNode, "index").c_str()));
-          plexItem->GetMusicInfoTag()->SetDuration(atoi(XMLUtils::GetAttribute(trackNode, "duration").c_str())/1000);
-          
-          value = XMLUtils::GetAttribute(trackNode, "thumb");
-          if (!value.empty() && (value[0] == '/'))
-            StringUtils::TrimLeft(value, "/");
-          url1.SetFileName(value);
-          plexItem->SetArt("thumb", url1.Get());
-          
-          value = XMLUtils::GetAttribute(trackNode, "art");
-          if (!value.empty() && (value[0] == '/'))
-            StringUtils::TrimLeft(value, "/");
-          url1.SetFileName(value);
-          plexItem->SetArt("fanart", url1.Get());
-          
-          
-          time_t addedTime = atoi(XMLUtils::GetAttribute(trackNode, "addedAt").c_str());
-          CDateTime aTime(addedTime);
-          plexItem->GetMusicInfoTag()->SetDateAdded(aTime);
-          plexItem->GetMusicInfoTag()->SetLoaded(true);
-          SetPlexItemProperties(*plexItem);
-          items.Add(plexItem);
-        }
-      }
-      trackNode = trackNode->NextSiblingElement("Track");
+      CURL curl(url);
+      rtn = CPlexUtils::ParseEmbySongs(items, curl, trackNode);
     }
   }
-  items.SetProperty("library.filter", "true");
-  items.GetMusicInfoTag()->m_type = MediaTypeSong;
-  SetPlexItemProperties(items);
   return rtn;
 }
 
@@ -1824,16 +1424,343 @@ bool CPlexUtils::GetPlexMediaTotals(MediaServicesMediaCount &totals)
 }
 /// End of Plex Music
 
+bool CPlexUtils::ParsePlexSeries(CFileItemList  &items, const CURL &curl, const TiXmlElement* node)
+{
+  bool rtn = false;
+  std::string value;
+  CURL url1(curl);
+  while (node)
+  {
+    rtn = true;
+    CFileItemPtr plexItem(new CFileItem());
+
+    // set m_bIsFolder to true to indicate we are tvshow list
+    plexItem->m_bIsFolder = true;
+    plexItem->SetLabel(XMLUtils::GetAttribute(node, "title"));
+    url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(node, "ratingKey") + "/children");
+    plexItem->SetPath("plex://tvshows/shows/" + Base64URL::Encode(url1.Get()));
+    plexItem->SetMediaServiceId(XMLUtils::GetAttribute(node, "ratingKey"));
+    plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(node, "ratingKey"));
+    plexItem->GetVideoInfoTag()->m_type = MediaTypeTvShow;
+    plexItem->GetVideoInfoTag()->m_strTitle = XMLUtils::GetAttribute(node, "title");
+    plexItem->GetVideoInfoTag()->SetPlotOutline(XMLUtils::GetAttribute(node, "tagline"));
+    plexItem->GetVideoInfoTag()->SetPlot(XMLUtils::GetAttribute(node, "summary"));
+    value = XMLUtils::GetAttribute(node, "thumb");
+    if (!value.empty() && (value[0] == '/'))
+      StringUtils::TrimLeft(value, "/");
+    url1.SetFileName(value);
+    plexItem->SetArt("thumb", url1.Get());
+
+    value = XMLUtils::GetAttribute(node, "banner");
+    if (!value.empty() && (value[0] == '/'))
+      StringUtils::TrimLeft(value, "/");
+    url1.SetFileName(value);
+    plexItem->SetArt("banner", url1.Get());
+
+    value = XMLUtils::GetAttribute(node, "art");
+    if (!value.empty() && (value[0] == '/'))
+      StringUtils::TrimLeft(value, "/");
+    url1.SetFileName(value);
+    plexItem->SetArt("fanart", url1.Get());
+
+    plexItem->GetVideoInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(node, "year").c_str()));
+    plexItem->GetVideoInfoTag()->SetRating(atof(XMLUtils::GetAttribute(node, "rating").c_str()));
+    plexItem->GetVideoInfoTag()->m_strMPAARating = XMLUtils::GetAttribute(node, "contentRating");
+
+    time_t addedTime = atoi(XMLUtils::GetAttribute(node, "addedAt").c_str());
+    CDateTime aTime(addedTime);
+    int watchedEpisodes = atoi(XMLUtils::GetAttribute(node, "viewedLeafCount").c_str());
+    int iSeasons        = atoi(XMLUtils::GetAttribute(node, "childCount").c_str());
+    plexItem->GetVideoInfoTag()->m_dateAdded = aTime;
+    plexItem->GetVideoInfoTag()->m_iSeason = iSeasons;
+    plexItem->GetVideoInfoTag()->m_iEpisode = atoi(XMLUtils::GetAttribute(node, "leafCount").c_str());
+    plexItem->GetVideoInfoTag()->m_playCount = (int)watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode;
+
+    plexItem->SetProperty("totalseasons", iSeasons);
+    plexItem->SetProperty("totalepisodes", plexItem->GetVideoInfoTag()->m_iEpisode);
+    plexItem->SetProperty("numepisodes", plexItem->GetVideoInfoTag()->m_iEpisode);
+    plexItem->SetProperty("watchedepisodes", watchedEpisodes);
+    plexItem->SetProperty("unwatchedepisodes", plexItem->GetVideoInfoTag()->m_iEpisode - watchedEpisodes);
+
+    plexItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode);
+
+    CDateTime firstAired;
+    firstAired.SetFromDBDate(XMLUtils::GetAttribute(node, "originallyAvailableAt"));
+    plexItem->GetVideoInfoTag()->m_firstAired = firstAired;
+
+    GetVideoDetails(*plexItem, node);
+    SetPlexItemProperties(*plexItem);
+    items.Add(plexItem);
+
+    node = node->NextSiblingElement("Directory");
+  }
+  items.SetProperty("library.filter", "true");
+  items.GetVideoInfoTag()->m_type = MediaTypeTvShow;
+
+  return rtn;
+}
+
+bool CPlexUtils::ParsePlexSeasons(CFileItemList &items, const CURL &url, const TiXmlElement* root, const TiXmlElement* node)
+{
+  bool rtn = false;
+  std::string value;
+  CURL url1(url);
+  while (node)
+  {
+    // only get the seasons listing, the one with "ratingKey"
+    if (((TiXmlElement*) node)->Attribute("ratingKey"))
+    {
+      rtn = true;
+      CFileItemPtr plexItem(new CFileItem());
+
+      plexItem->m_bIsFolder = true;
+      plexItem->SetLabel(XMLUtils::GetAttribute(node, "title"));
+      url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(node, "ratingKey") + "/children");
+      plexItem->SetPath("plex://tvshows/seasons/" + Base64URL::Encode(url1.Get()));
+      plexItem->SetMediaServiceId(XMLUtils::GetAttribute(node, "ratingKey"));
+      plexItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
+      plexItem->GetVideoInfoTag()->m_strTitle = XMLUtils::GetAttribute(node, "title");
+      // we get these from rootXmlNode, where all show info is
+      plexItem->GetVideoInfoTag()->m_strShowTitle = XMLUtils::GetAttribute(root, "parentTitle");
+      plexItem->GetVideoInfoTag()->SetPlotOutline(XMLUtils::GetAttribute(root, "tagline"));
+      plexItem->GetVideoInfoTag()->SetPlot(XMLUtils::GetAttribute(root, "summary"));
+      plexItem->GetVideoInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(root, "parentYear").c_str()));
+      plexItem->SetProperty("PlexShowKey", XMLUtils::GetAttribute(root, "key"));
+      value = XMLUtils::GetAttribute(root, "art");
+      if (!value.empty() && (value[0] == '/'))
+        StringUtils::TrimLeft(value, "/");
+      url1.SetFileName(value);
+      plexItem->SetArt("fanart", url1.Get());
+
+      value = XMLUtils::GetAttribute(root, "banner");
+      if (!value.empty() && (value[0] == '/'))
+        StringUtils::TrimLeft(value, "/");
+      url1.SetFileName(value);
+      plexItem->SetArt("banner", url1.Get());
+
+      /// -------
+      value = XMLUtils::GetAttribute(node, "thumb");
+      if (!value.empty() && (value[0] == '/'))
+        StringUtils::TrimLeft(value, "/");
+      url1.SetFileName(value);
+      plexItem->SetArt("thumb", url1.Get());
+      int watchedEpisodes = atoi(XMLUtils::GetAttribute(node, "viewedLeafCount").c_str());
+      int iSeason = atoi(XMLUtils::GetAttribute(node, "index").c_str());
+      plexItem->GetVideoInfoTag()->m_iSeason = iSeason;
+      plexItem->GetVideoInfoTag()->m_iEpisode = atoi(XMLUtils::GetAttribute(node, "leafCount").c_str());
+      plexItem->GetVideoInfoTag()->m_playCount = (int)watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode;
+
+      plexItem->SetProperty("totalepisodes", plexItem->GetVideoInfoTag()->m_iEpisode);
+      plexItem->SetProperty("numepisodes", plexItem->GetVideoInfoTag()->m_iEpisode);
+      plexItem->SetProperty("watchedepisodes", watchedEpisodes);
+      plexItem->SetProperty("unwatchedepisodes", plexItem->GetVideoInfoTag()->m_iEpisode - watchedEpisodes);
+
+      plexItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watchedEpisodes >= plexItem->GetVideoInfoTag()->m_iEpisode);
+
+      SetPlexItemProperties(*plexItem);
+      items.Add(plexItem);
+    }
+    node = node->NextSiblingElement("Directory");
+  }
+  items.SetLabel(XMLUtils::GetAttribute(root, "title2"));
+
+  if (!items.IsEmpty())
+  {
+    int iFlatten = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
+    int itemsSize = items.GetObjectCount();
+    int firstIndex = items.Size() - itemsSize;
+
+    std::string showTitle;
+
+    // check if the last item is the "All seasons" item which should be ignored for flattening
+    if (!items[items.Size() - 1]->HasVideoInfoTag() || items[items.Size() - 1]->GetVideoInfoTag()->m_iSeason < 0)
+      itemsSize -= 1;
+
+    bool bFlatten = (itemsSize == 1 && iFlatten == 1) || iFlatten == 2 ||                              // flatten if one one season or if always flatten is enabled
+    (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
+     (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
+
+    if (iFlatten > 0 && !bFlatten && (WatchedMode)CMediaSettings::GetInstance().GetWatchedMode("tvshows") == WatchedModeUnwatched)
+    {
+      int count = 0;
+      for(int i = 0; i < items.Size(); i++)
+      {
+        const CFileItemPtr item = items.Get(i);
+        if (item->GetProperty("unwatchedepisodes").asInteger() != 0 && item->GetVideoInfoTag()->m_iSeason > 0)
+          count++;
+      }
+      bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)
+    }
+
+    if (bFlatten)
+    { // flatten if one season or flatten always
+      CFileItemList tempItems;
+
+      for(int i = 0; i < items.Size(); i++)
+      {
+        const CFileItemPtr item = items.Get(i);
+        showTitle = item->GetVideoInfoTag()->m_strShowTitle;
+        CURL url1(url);
+        CFileItemList temp;
+        url1.SetFileName("library/metadata/" + item->GetMediaServiceId() + "/children");
+        XFILE::CDirectory::GetDirectory("plex://tvshows/seasons/" + Base64URL::Encode(url1.Get()),temp);
+        tempItems.Assign(temp, true);
+      }
+
+      items.Clear();
+      items.Assign(tempItems);
+      items.SetLabel(showTitle);
+    }
+  }
+  items.SetProperty("library.filter", "true");
+  SetPlexItemProperties(items);
+
+  return rtn;
+}
+
+bool CPlexUtils::ParseEmbySongs(CFileItemList &items, const CURL &url, const TiXmlElement* node)
+{
+  bool rtn = false;
+  std::string value;
+  while (node)
+  {
+    rtn = true;
+    CFileItemPtr plexItem(new CFileItem());
+    plexItem->SetLabel(XMLUtils::GetAttribute(node, "title"));
+
+    CURL url1(url);
+    const TiXmlElement* mediaNode = node->FirstChildElement("Media");
+    if(mediaNode)
+    {
+      const TiXmlElement* partNode = node->FirstChildElement("Part");
+      if(partNode)
+      {
+        XMLUtils::GetAttribute(partNode, "id");
+        std::string key = ((TiXmlElement*) partNode)->Attribute("key");
+        if (!key.empty() && (key[0] == '/'))
+          StringUtils::TrimLeft(key, "/");
+        url1.SetFileName(key);
+        plexItem->SetPath(url1.Get());
+        plexItem->SetMediaServiceId(XMLUtils::GetAttribute(node, "ratingKey"));
+        plexItem->SetProperty("PlexSongKey", XMLUtils::GetAttribute(node, "ratingKey"));
+        plexItem->GetMusicInfoTag()->m_type = MediaTypeSong;
+        plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(node, "title"));
+//          plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(mediaNode, "summary"));
+        plexItem->SetLabel(XMLUtils::GetAttribute(node, "title"));
+        plexItem->GetMusicInfoTag()->SetArtist(XMLUtils::GetAttribute(node, "grandparentTitle"));
+        plexItem->GetMusicInfoTag()->SetAlbum(XMLUtils::GetAttribute(node, "parentTitle"));
+        int year = atoi(XMLUtils::GetAttribute(node, "year").c_str());
+        plexItem->GetMusicInfoTag()->SetYear(year);
+        plexItem->GetMusicInfoTag()->SetTrackNumber(atoi(XMLUtils::GetAttribute(node, "index").c_str()));
+        plexItem->GetMusicInfoTag()->SetDuration(atoi(XMLUtils::GetAttribute(node, "duration").c_str())/1000);
+
+        value = XMLUtils::GetAttribute(node, "thumb");
+        if (!value.empty() && (value[0] == '/'))
+          StringUtils::TrimLeft(value, "/");
+        url1.SetFileName(value);
+        plexItem->SetArt("thumb", url1.Get());
+
+        value = XMLUtils::GetAttribute(node, "art");
+        if (!value.empty() && (value[0] == '/'))
+          StringUtils::TrimLeft(value, "/");
+        url1.SetFileName(value);
+        plexItem->SetArt("fanart", url1.Get());
+
+
+        time_t addedTime = atoi(XMLUtils::GetAttribute(node, "addedAt").c_str());
+        CDateTime aTime(addedTime);
+        plexItem->GetMusicInfoTag()->SetDateAdded(aTime);
+        plexItem->GetMusicInfoTag()->SetLoaded(true);
+        SetPlexItemProperties(*plexItem);
+        items.Add(plexItem);
+      }
+    }
+    node = node->NextSiblingElement("Track");
+  }
+  items.SetProperty("library.filter", "true");
+  items.GetMusicInfoTag()->m_type = MediaTypeSong;
+  SetPlexItemProperties(items);
+
+  return rtn;
+}
+
+bool CPlexUtils::ParseEmbyArtistsAlbum(CFileItemList &items, const CURL &url, const TiXmlElement* node, bool album)
+{
+  bool rtn = false;
+  std::string value;
+
+  std::string strMediaType = album ? MediaTypeAlbum : MediaTypeArtist;
+  std::string strMediaTypeUrl = album ? "plex://music/songs/" : "plex://music/albums/";
+
+  while (node)
+  {
+    rtn = true;
+    CFileItemPtr plexItem(new CFileItem());
+    // set m_bIsFolder to true to indicate we are artist list
+    plexItem->m_bIsFolder = true;
+    plexItem->SetLabel(XMLUtils::GetAttribute(node, "title"));
+    CURL url1(url);
+    url1.SetFileName("library/metadata/" + XMLUtils::GetAttribute(node, "ratingKey") + "/children");
+    plexItem->SetPath(strMediaTypeUrl + Base64URL::Encode(url1.Get()));
+    plexItem->SetMediaServiceId(XMLUtils::GetAttribute(node, "ratingKey"));
+
+    plexItem->GetMusicInfoTag()->m_type = strMediaType;
+    plexItem->GetMusicInfoTag()->SetTitle(XMLUtils::GetAttribute(node, "title"));
+    if (album)
+    {
+      plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(node, "parentTitle"));
+      plexItem->SetProperty("artist", XMLUtils::GetAttribute(node, "parentTitle"));
+      plexItem->SetProperty("PlexAlbumKey", XMLUtils::GetAttribute(node, "ratingKey"));
+    }
+    else
+    {
+      plexItem->GetMusicInfoTag()->SetArtistDesc(XMLUtils::GetAttribute(node, "title"));
+      plexItem->SetProperty("PlexArtistKey", XMLUtils::GetAttribute(node, "ratingKey"));
+    }
+    plexItem->GetMusicInfoTag()->SetAlbum(XMLUtils::GetAttribute(node, "title"));
+    plexItem->GetMusicInfoTag()->SetYear(atoi(XMLUtils::GetAttribute(node, "title").c_str()));
+
+
+    value = XMLUtils::GetAttribute(node, "thumb");
+    if (!value.empty() && (value[0] == '/'))
+      StringUtils::TrimLeft(value, "/");
+    url1.SetFileName(value);
+    plexItem->SetArt("thumb", url1.Get());
+    plexItem->SetProperty("thumb", url1.Get());
+
+    value = XMLUtils::GetAttribute(node, "art");
+    if (!value.empty() && (value[0] == '/'))
+      StringUtils::TrimLeft(value, "/");
+    url1.SetFileName(value);
+    plexItem->SetArt("fanart", url1.Get());
+    plexItem->SetProperty("fanart", url1.Get());
+
+    time_t addedTime = atoi(XMLUtils::GetAttribute(node, "addedAt").c_str());
+    CDateTime aTime(addedTime);
+    plexItem->GetMusicInfoTag()->SetDateAdded(aTime);
+
+    GetMusicDetails(*plexItem, node);
+    SetPlexItemProperties(*plexItem);
+    items.Add(plexItem);
+    node = node->NextSiblingElement("Directory");
+  }
+  items.SetProperty("library.filter", "true");
+  items.GetVideoInfoTag()->m_type = strMediaType;
+  SetPlexItemProperties(items);
+
+  return rtn;
+}
+
 bool CPlexUtils::GetURL(CFileItem &item)
 {
   
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODE))
     return true;
-  
+
   CURL url(item.GetPath());
   std::string cleanUrl = url.GetWithoutFilename();
   CURL curl(cleanUrl);
-  
+
   if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODELOCAL)) &&
         CPlexServices::GetInstance().ClientIsLocal(cleanUrl))
   {
@@ -1843,13 +1770,13 @@ bool CPlexUtils::GetURL(CFileItem &item)
           item.GetVideoInfoTag()->m_streamDetails.GetVideoCodec() == "vc1")))
         return true;
   }
-  
-  
+
+
   int res = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_PLEXQUALITY);
-  
+
   std::string maxBitrate;
   std::string resolution;
-  
+
   switch (res)
   {
     case  1:
@@ -1901,12 +1828,12 @@ bool CPlexUtils::GetURL(CFileItem &item)
       resolution = "1280x720";
       break;
   }
-  
+
   CLog::Log(LOGDEBUG, "CPlexUtils::GetURL - bitrate [%s] res [%s]", maxBitrate.c_str(), resolution.c_str());
-  
+
   std::string plexID = item.GetMediaServiceId();
   std::string uuidStr = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
-  
+
 #if 1
   curl.SetFileName("video/:/transcode/universal/start.m3u8");
   curl.SetOption("hasMDE", "1");
@@ -1955,7 +1882,7 @@ bool CPlexUtils::GetURL(CFileItem &item)
   curl.SetOption("location", CPlexServices::GetInstance().ClientIsLocal(cleanUrl) ? "lan" : "wan");
   curl.SetOption("path", "library/metadata/" + plexID);
 #endif
-  
+
   // do we want audio transcoded?
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODEAUDIO))
   {
@@ -1984,18 +1911,18 @@ void CPlexUtils::StopTranscode(CFileItem &item)
   CURL url(item.GetPath());
   std::string cleanUrl = url.Get();
   CURL curl(cleanUrl);
-  
+
   std::string uuidStr = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
-  
+
   CURL url1(item.GetPath());
   CURL url2(URIUtils::GetParentPath(cleanUrl));
   CURL url3(url2.GetWithoutFilename());
   url3.SetProtocolOption("X-Plex-Token",url1.GetProtocolOption("X-Plex-Token"));
   cleanUrl = url3.Get();
-  
+
   if (StringUtils::StartsWithNoCase(cleanUrl, "plex://"))
     cleanUrl = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
-  
+
   std::string filename = StringUtils::Format("video/:/transcode/universal/stop?session=%s",uuidStr.c_str());
   ReportToServer(cleanUrl, filename);
 }
