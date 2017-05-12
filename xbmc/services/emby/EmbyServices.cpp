@@ -458,6 +458,13 @@ void CEmbyServices::Process()
 
   GetUserSettings();
 
+  bool signInByPin, signInByManual;
+  std::string strSignOut = g_localizeStrings.Get(2116);
+    // if set to strSignOut, we are signed in by pin
+  signInByPin = (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignOut);
+  // if set to strSignOut, we are signed in by user/pass
+  signInByManual = (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNIN) == strSignOut);
+
   while (!m_bStop)
   {
     if (g_sysinfo.HasInternet())
@@ -465,15 +472,17 @@ void CEmbyServices::Process()
       CLog::Log(LOGDEBUG, "CEmbyServices::Process has gateway1");
       break;
     }
-
-    std::string ip;
-    if (CDNSNameCache::Lookup("connect.mediabrowser.tv", ip))
+    if (signInByPin)
     {
-      in_addr_t embydotcom = inet_addr(ip.c_str());
-      if (g_application.getNetwork().PingHost(embydotcom, 0, 1000))
+      std::string ip;
+      if (CDNSNameCache::Lookup("connect.mediabrowser.tv", ip))
       {
-        CLog::Log(LOGDEBUG, "CEmbyServices::Process has gateway2");
-        break;
+        in_addr_t embydotcom = inet_addr(ip.c_str());
+        if (g_application.getNetwork().PingHost(embydotcom, 0, 1000))
+        {
+          CLog::Log(LOGDEBUG, "CEmbyServices::Process has gateway2");
+          break;
+        }
       }
     }
     m_processSleep.WaitMSec(250);
@@ -481,20 +490,16 @@ void CEmbyServices::Process()
   }
 
   int serviceTimeoutSeconds = 5;
-  std::string strSignOut = g_localizeStrings.Get(2116);
-
-  if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNIN) == strSignOut)
+  if (signInByManual)
   {
-    // if set to strSignOut, we are signed in by user/pass
     if (!m_accessToken.empty() && !m_userId.empty())
     {
       GetEmbyLocalServers(m_serverURL, m_userId, m_accessToken);
       serviceTimeoutSeconds = 60 * 15;
     }
   }
-  else if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignOut)
+  else if (signInByPin)
   {
-    // if set to strSignOut, we are signed in by pin
     if (!m_accessToken.empty() && !m_userId.empty())
     {
       // fetch our saved emby servers sources
