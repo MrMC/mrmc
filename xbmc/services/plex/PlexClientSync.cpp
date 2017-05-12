@@ -97,7 +97,7 @@ void CPlexClientSync::Stop()
 
 void CPlexClientSync::ProcessSyncByPolling()
 {
-  CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByPolling to %s", m_name.c_str());
+  CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByPolling connected to %s", m_name.c_str());
   CStopWatch checkUpdatesTimer;
   checkUpdatesTimer.StartZero();
   while (!m_stop)
@@ -186,7 +186,7 @@ void CPlexClientSync::ProcessSyncByWebSockets()
         if (msgObject.isMember(_elementType))
         {
           // old style messages
-          //CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets old style msg %s", msg.c_str());
+          CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets ignoring old style msg %s", msg.c_str());
           return;
         }
         else if (msgObject.isMember(NotificationContainer))
