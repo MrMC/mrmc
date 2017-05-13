@@ -40,12 +40,15 @@
 #include <androidjni/AudioManager.h>
 #include <androidjni/AudioDeviceInfo.h>
 #include <androidjni/Image.h>
+#include <androidjni/SurfaceHolder.h>
+
 #include "threads/Event.h"
 #include "interfaces/IAnnouncer.h"
 #include "guilib/Geometry.h"
 
 #include "JNIMainActivity.h"
 #include "JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
+#include "JNIXBMCMainView.h"
 #include "JNIXBMCMediaSession.h"
 
 // forward delares
@@ -104,6 +107,7 @@ class CXBMCApp
     , public CJNIBroadcastReceiver
     , public CJNIAudioManagerAudioFocusChangeListener
     , public ANNOUNCEMENT::IAnnouncer
+    , public CJNISurfaceHolderCallback
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
@@ -218,6 +222,7 @@ protected:
 
 private:
   static CXBMCApp* m_xbmcappinstance;
+  static std::unique_ptr<CJNIXBMCMainView> m_mainView;
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   static bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
@@ -253,8 +258,6 @@ private:
   static std::queue<jni::CJNIImage> m_captureQueue;
 
   static ANativeWindow* m_window;
-  static CEvent m_windowCreated;
-
   static CJNIAudioDeviceInfos m_audiodevices;
 
   static uint64_t m_vsynctime;
@@ -262,4 +265,10 @@ private:
 
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
+
+  // CJNISurfaceHolderCallback interface
+public:
+  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
+  void surfaceCreated(CJNISurfaceHolder holder) override;
+  void surfaceDestroyed(CJNISurfaceHolder holder) override;
 };

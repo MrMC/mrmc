@@ -18,6 +18,7 @@ SRCS      += GraphicBuffer.cpp
 SRCS      += EventLoop.cpp
 SRCS      += XBMCApp.cpp
 SRCS      += JNIMainActivity.cpp
+SRCS      += JNIXBMCMainView.cpp
 SRCS      += JNIXBMCVideoView.cpp
 SRCS      += JNIXBMCAudioManagerOnAudioFocusChangeListener.cpp
 SRCS      += JNIXBMCSurfaceTextureOnFrameAvailableListener.cpp
