@@ -177,14 +177,15 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool isInstalled = NULL != m_localAddon.get();
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
   bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
-  bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
+ // bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
-
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
-  SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, canDisable);
   SET_CONTROL_LABEL(CONTROL_BTN_ENABLE, isEnabled ? 24021 : 24022);
+  
+  /*
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
+  SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isInstalled);
 
@@ -193,10 +194,17 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn &&
       !CAddonMgr::GetInstance().IsBlacklisted(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
-
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, isEnabled && (CanOpen() ||
       CanRun() || (CanUse() && !m_localAddon->IsInUse())));
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
+   */
+
+  // remove below (and uncomment above) if we need (un)install and update of addons ///////////
+  SET_CONTROL_HIDDEN(CONTROL_BTN_INSTALL);
+  SET_CONTROL_HIDDEN(CONTROL_BTN_UPDATE);
+  SET_CONTROL_HIDDEN(CONTROL_BTN_AUTOUPDATE);
+  SET_CONTROL_HIDDEN(CONTROL_BTN_SELECT);
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG, !isRepo);
