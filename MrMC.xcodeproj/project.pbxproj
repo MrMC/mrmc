@@ -5240,6 +5240,11 @@
 		F5022F401E2D4404001BBF75 /* HDHomeRunFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HDHomeRunFile.cpp; sourceTree = "<group>"; };
 		F5022F411E2D4404001BBF75 /* HDHomeRunFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDHomeRunFile.h; sourceTree = "<group>"; };
 		F5022F481E2D4BD2001BBF75 /* DllHDHomeRun.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DllHDHomeRun.h; sourceTree = "<group>"; };
+		F503EEA21EC6166400102CBA /* xml2json.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xml2json.hpp; sourceTree = "<group>"; };
+		F503EEAB1EC6167600102CBA /* rapidxml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rapidxml.hpp; sourceTree = "<group>"; };
+		F503EEAC1EC6167600102CBA /* rapidxml_iterators.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rapidxml_iterators.hpp; sourceTree = "<group>"; };
+		F503EEAD1EC6167600102CBA /* rapidxml_print.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rapidxml_print.hpp; sourceTree = "<group>"; };
+		F503EEAE1EC6167600102CBA /* rapidxml_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rapidxml_utils.hpp; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F5071905175A26AD004C87D1 /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = SDKROOT; };
@@ -9249,6 +9254,25 @@
 			path = libhdhomerun;
 			sourceTree = "<group>";
 		};
+		F503EE9F1EC6166400102CBA /* xml2json */ = {
+			isa = PBXGroup;
+			children = (
+				F503EEA21EC6166400102CBA /* xml2json.hpp */,
+			);
+			path = xml2json;
+			sourceTree = "<group>";
+		};
+		F503EEA81EC6167600102CBA /* rapidxml */ = {
+			isa = PBXGroup;
+			children = (
+				F503EEAB1EC6167600102CBA /* rapidxml.hpp */,
+				F503EEAC1EC6167600102CBA /* rapidxml_iterators.hpp */,
+				F503EEAD1EC6167600102CBA /* rapidxml_print.hpp */,
+				F503EEAE1EC6167600102CBA /* rapidxml_utils.hpp */,
+			);
+			path = rapidxml;
+			sourceTree = "<group>";
+		};
 		F51D16961E29950600A03C93 /* libdvd */ = {
 			isa = PBXGroup;
 			children = (
@@ -9615,6 +9639,8 @@
 		F5B722B11C7BC10B006432AE /* contrib */ = {
 			isa = PBXGroup;
 			children = (
+				F503EEA81EC6167600102CBA /* rapidxml */,
+				F503EE9F1EC6166400102CBA /* xml2json */,
 				F5FC88DF1E61E44D00449E85 /* easywsclient */,
 				F5B722B21C7BC10B006432AE /* kissfft */,
 			);
