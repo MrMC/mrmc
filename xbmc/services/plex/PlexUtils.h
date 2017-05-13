@@ -26,6 +26,7 @@
 #include "services/ServicesManager.h"
 
 //#define PLEX_DEBUG_VERBOSE
+//#define PLEX_DEBUG_TIMING
 
 namespace XFILE
 {
@@ -44,13 +45,14 @@ public:
   static void SetPlexItemProperties(CFileItem &item);
   static void SetPlexItemProperties(CFileItem &item, const CPlexClientPtr &client);
 
-#pragma mark - Plex Server Utils
+  // Plex Server Utils
   static void SetWatched(CFileItem &item);
   static void SetUnWatched(CFileItem &item);
   static void ReportProgress(CFileItem &item, double currentSeconds);
   static void SetPlayState(MediaServicesPlayerState state);
+  static bool GetPlexMediaTotals(MediaServicesMediaCount &totals);
 
-#pragma mark - Plex Recently Added and InProgress
+  // Plex Recently Added and InProgress
   static bool GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit=25);
   static bool GetPlexInProgressShows(CFileItemList &items, const std::string url, int limit=25);
   static bool GetPlexRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit=25);
@@ -58,9 +60,10 @@ public:
   static bool GetAllPlexInProgress(CFileItemList &items, bool tvShow);
   static bool GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow=false);
 
+  // Plex Movies
   static bool GetPlexMovies(CFileItemList &items, std::string url, std::string filter = "");
 
-#pragma mark - Plex TV
+  // Plex TV
   static bool GetPlexTvshows(CFileItemList &items, std::string url);
   static bool GetPlexSeasons(CFileItemList &items, const std::string url);
   static bool GetPlexEpisodes(CFileItemList &items, const std::string url);
@@ -74,29 +77,38 @@ public:
   static void PingTranscoder(CFileItem &item);
   static bool SearchPlex(CFileItemList &items, std::string strSearchString);
   
-#pragma mark - Plex Music
-  static bool GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bool album);
-  static bool GetPlexSongs(CFileItemList &items, std::string url);
+  // Plex Music
   static bool ShowMusicInfo(CFileItem item);
-  static bool GetPlexRecentlyAddedAlbums(CFileItemList &items,int limit);
+  static bool GetPlexSongs(CFileItemList &items, std::string url);
   static bool GetPlexAlbumSongs(CFileItem item, CFileItemList &items);
-  static bool GetPlexMediaTotals(MediaServicesMediaCount &totals);
+  static bool GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bool album);
+  static bool GetPlexRecentlyAddedAlbums(CFileItemList &items,int limit);
 
-  #pragma mark - Plex parsers
-  static bool ParsePlexVideos(CFileItemList &items,CURL url, TiXmlElement* rootXmlNode, std::string type, bool formatLabel, int season = -1);
+  // Plex parsers
+  static bool ParsePlexVideos(CFileItemList &items, CURL url, const CVariant &video, std::string type, bool formatLabel, int season = -1);
+  static bool ParsePlexVideos(CFileItemList &items, CURL url, TiXmlElement* rootXmlNode, std::string type, bool formatLabel, int season = -1);
+  static bool ParsePlexSeries(CFileItemList &items, const CURL &url, const CVariant &directory);
   static bool ParsePlexSeries(CFileItemList  &items, const CURL &url, const TiXmlElement* node);
+  static bool ParsePlexSeasons(CFileItemList &items, const CURL &url, const CVariant &mediacontainer, const CVariant &directory);
   static bool ParsePlexSeasons(CFileItemList &items, const CURL &url, const TiXmlElement* root, const TiXmlElement* node);
-  static bool ParseEmbySongs(CFileItemList &items, const CURL &url, const TiXmlElement* node);
-  static bool ParseEmbyArtistsAlbum(CFileItemList &items, const CURL &url, const TiXmlElement* node, bool album);
+  static bool ParsePlexSongs(CFileItemList &items, const CURL &url, const CVariant &track);
+  static bool ParsePlexSongs(CFileItemList &items, const CURL &url, const TiXmlElement* node);
+  static bool ParsePlexArtistsAlbum(CFileItemList &items, const CURL &url, const CVariant &directory, bool album);
+  static bool ParsePlexArtistsAlbum(CFileItemList &items, const CURL &url, const TiXmlElement* node, bool album);
   static bool ParsePlexMoviesFilter(CFileItemList  &items, const CURL url, const TiXmlElement* node, const std::string &filter);
   static bool ParsePlexTVShowsFilter(CFileItemList &items, const CURL url, const TiXmlElement* node, const std::string &filter);
 
 private:
   static void ReportToServer(std::string url, std::string filename);
+  static void GetVideoDetails(CFileItem &item, const CVariant &variant);
   static void GetVideoDetails(CFileItem &item, const TiXmlElement* videoNode);
+  static void GetMusicDetails(CFileItem &item, const CVariant &video);
   static void GetMusicDetails(CFileItem &item, const TiXmlElement* videoNode);
-  static void GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* videoNode, std::string id = "0");
+  static void GetMediaDetals(CFileItem &item, CURL url, const CVariant &media, std::string id = "0");
+  static void GetMediaDetals(CFileItem &item, CURL url, const TiXmlElement* mediaNode, std::string id = "0");
+  static CVariant GetPlexCVariant(std::string url, std::string filter = "");
   static TiXmlDocument GetPlexXML(std::string url, std::string filter = "");
+  static int ParsePlexCVariant(const CVariant &item);
   static int ParsePlexMediaXML(TiXmlDocument xml);
   static void RemoveSubtitleProperties(CFileItem &item);
 };

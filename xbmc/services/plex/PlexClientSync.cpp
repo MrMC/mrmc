@@ -50,6 +50,9 @@ static const std::string ActivityNotification = "ActivityNotification";
 static const std::string ProgressNotification = "ProgressNotification";
 static const std::string TranscodeSession = "TranscodeSession";
 static const std::string PlaySessionStateNotification = "PlaySessionStateNotification";
+static const std::string BackgroundProcessingQueueEventNotification = "BackgroundProcessingQueueEventNotification";
+static const std::string AutoUpdateNotification = "AutoUpdateNotification";
+static const std::string AccountUpdateNotification = "AccountUpdateNotification";
 
 typedef enum MediaImportChangesetType
 {
@@ -195,35 +198,55 @@ void CPlexClientSync::ProcessSyncByWebSockets()
           CVariant variant = msgObject[NotificationContainer];
           if (variant.isMember(TimelineEntry))
           {
-            // "metadataState":"loading"
-            // "metadataState":"processing"
-            // "metadataState":"created"
-            // "metadataState":"created","mediaState":"analyzing"
-            // "metadataState":"created","mediaState":"analyzing"
-            // "metadataState":"created","mediaState":"thumbnailing"
+            // "identifier" contains tv.plex, ignore them.
+
+            // "type":"1" -> movie
+            // "type":"2" -> series
+            // "type":"3" -> season ?
+            // "type":"4" -> episode
+            // "type":"8" -> artist (band)
+            // "type":"9" -> album
+            // "type":"10" -> track (song)
+            // "type":"12" -> trailer, extras?
+            // "type":"14" -> photo
+
+            // 'itemID'
+            // some state get reported before they actually happen (wtf?)
+            // "state":"0" -> created
+            // "state":"1" -> ???
+            // "state":"2" -> matching
+            // "state":"3" -> downloading
+            // "state":"4" -> loading
+            // "state":"5" -> finished
+            // "state":"6" -> analyzing
+            // "state":"9" -> deleted
             CVariant timelineEntry = variant[TimelineEntry];
-            std::string metadataState = timelineEntry["metadataState"].asString();
-            CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets TimelineEntry:metadataState = %s", metadataState.c_str());
-          }
-          else if (variant.isMember(StatusNotification))
-          {
-            // messages we do not care about
-            CVariant status = variant[StatusNotification];
-          }
-          else if (variant.isMember(ProgressNotification))
-          {
-            // more messages we do not care about
-            CVariant progress = variant[ProgressNotification];
+            if (!timelineEntry.isNull())
+            {
+              for (auto variantIt = timelineEntry.begin_array(); variantIt != timelineEntry.end_array(); ++variantIt)
+              {
+                if (*variantIt != CVariant::VariantTypeNull)
+                {
+                  const CVariant timeline = *variantIt;
+                  std::string itemID = timeline["itemID"].asString();
+                  std::string sectionID = timeline["sectionID"].asString();
+                  std::string type = timeline["type"].asString();
+                  std::string state = timeline["state"].asString();
+                  std::string title = timeline["title"].asString();
+                  std::string identifier = timeline["identifier"].asString();
+                  std::string updatedAt = timeline["updatedAt"].asString();
+                  CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets TimelineEntry: "
+                    "sectionID(%s), itemID(%s), type(%s), state(%s), title(%s), identifier(%s)",
+                    sectionID.c_str(), itemID.c_str(), type.c_str(), state.c_str(), title.c_str(), identifier.c_str());
+                }
+              }
+            }
           }
           else if (variant.isMember(ActivityNotification))
           {
             // even more messages we do not care about
             CVariant progress = variant[ActivityNotification];
-          }
-          else if (variant.isMember(TranscodeSession))
-          {
-            // even more messages we do not care about
-            CVariant progress = variant[TranscodeSession];
+            CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets ActivityNotification: msg %s", msg.c_str());
           }
           else if (variant.isMember(PlaySessionStateNotification))
           {
@@ -239,6 +262,42 @@ void CPlexClientSync::ProcessSyncByWebSockets()
                   sessionKey.c_str(), state.c_str());
               }
             }
+          }
+          else if (variant.isMember(StatusNotification))
+          {
+            // messages we do not care about
+            CVariant status = variant[StatusNotification];
+          }
+          else if (variant.isMember(StatusNotification))
+          {
+            // more messages we do not care about
+            CVariant progress = variant[StatusNotification];
+          }
+          else if (variant.isMember(ProgressNotification))
+          {
+            // even more messages we do not care about
+            CVariant progress = variant[ProgressNotification];
+          }
+          else if (variant.isMember(TranscodeSession))
+          {
+            // even more messages we do not care about
+            CVariant progress = variant[TranscodeSession];
+            //CLog::Log(LOGDEBUG, "CPlexClientSync:ProcessSyncByWebSockets TranscodeSession: msg %s", msg.c_str());
+          }
+          else if (variant.isMember(BackgroundProcessingQueueEventNotification))
+          {
+            // even more messages we do not care about
+            CVariant progress = variant[BackgroundProcessingQueueEventNotification];
+          }
+          else if (variant.isMember(AutoUpdateNotification))
+          {
+            // even more messages we do not care about
+            CVariant progress = variant[AutoUpdateNotification];
+          }
+          else if (variant.isMember(AccountUpdateNotification))
+          {
+            // even more messages we do not care about
+            CVariant progress = variant[AccountUpdateNotification];
           }
           else
           {
