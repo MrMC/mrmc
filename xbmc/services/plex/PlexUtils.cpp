@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team MrMC
+ *      Copyright (C) 2016-2017 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -362,19 +362,7 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
   CURL curl(url);
   curl.SetFileName(curl.GetFileName() + "recentlyAdded");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
-#if 0
-  TiXmlDocument xml = GetPlexXML(curl.Get());
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    rtn = ParsePlexVideos(items, curl, rootXmlNode, MediaTypeEpisode, false);
-    if (rtn)
-    {
-      items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
-      items.Sort(SortByDateAdded, SortOrderDescending);
-    }
-  }
-#else
+
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -385,7 +373,6 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
       items.Sort(SortByDateAdded, SortOrderDescending);
     }
   }
-#endif
 
   return rtn;
 }
@@ -397,19 +384,7 @@ bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string 
   std::string strXML;
   curl.SetFileName(curl.GetFileName() + "onDeck");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
-#if 0
-  TiXmlDocument xml = GetPlexXML(curl.Get());
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    rtn = ParsePlexVideos(items, curl, rootXmlNode, MediaTypeEpisode, false);
-    if (rtn)
-    {
-      items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
-      items.Sort(SortByDateAdded, SortOrderDescending);
-    }
-  }
-#else
+
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -420,7 +395,6 @@ bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string 
       items.Sort(SortByDateAdded, SortOrderDescending);
     }
   }
-#endif
 
   return rtn;
 }
@@ -431,19 +405,7 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
   CURL curl(url);
   curl.SetFileName(curl.GetFileName() + "recentlyAdded");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
-#if 0
-  TiXmlDocument xml = GetPlexXML(curl.Get());
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    rtn = ParsePlexVideos(items, curl, rootXmlNode, MediaTypeMovie, false);
-    if (rtn)
-    {
-      items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
-      items.Sort(SortByDateAdded, SortOrderDescending);
-    }
-  }
-#else
+
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -454,7 +416,6 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
       items.Sort(SortByDateAdded, SortOrderDescending);
     }
   }
-#endif
 
   return rtn;
 }
@@ -465,19 +426,7 @@ bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string
   CURL curl(url);
   curl.SetFileName(curl.GetFileName() + "onDeck");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
-#if 0
-  TiXmlDocument xml = GetPlexXML(curl.Get());
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    rtn = ParsePlexVideos(items, curl, rootXmlNode, MediaTypeMovie, false);
-    if (rtn)
-    {
-      items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
-      items.Sort(SortByDateAdded, SortOrderDescending);
-    }
-  }
-#else
+
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -488,7 +437,6 @@ bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string
       items.Sort(SortByDateAdded, SortOrderDescending);
     }
   }
-#endif
 
   return rtn;
 }
@@ -585,32 +533,6 @@ bool CPlexUtils::GetAllPlexInProgress(CFileItemList &items, bool tvShow)
 bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::string parentPath, std::string filter)
 {
   bool rtn = false;
-#if 0
-  TiXmlDocument xml = GetPlexXML(url, filter);
-
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    const TiXmlElement* directoryNode = rootXmlNode->FirstChildElement("Directory");
-    while (directoryNode)
-    {
-      rtn = true;
-      std::string title = XMLUtils::GetAttribute(directoryNode, "title");
-      std::string key = XMLUtils::GetAttribute(directoryNode, "key");
-      CFileItemPtr pItem(new CFileItem(title));
-      pItem->m_bIsFolder = true;
-      pItem->m_bIsShareOrDrive = false;
-      CURL plex(url);
-      plex.SetFileName(plex.GetFileName() + "all?" + filter + "=" + key);
-      pItem->SetPath(parentPath + Base64URL::Encode(plex.Get()));
-      pItem->SetLabel(title);
-      pItem->SetProperty("SkipLocalArt", true);
-      SetPlexItemProperties(*pItem);
-      items.Add(pItem);
-      directoryNode = directoryNode->NextSiblingElement("Directory");
-    }
-  }
-#else
   CVariant variant = GetPlexCVariant(url, filter);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -638,7 +560,7 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
       }
     }
   }
-#endif
+
   return rtn;
 }
 
@@ -653,23 +575,7 @@ bool CPlexUtils::GetItemSubtiles(CFileItem &item)
   
   CURL curl(url);
   curl.SetFileName(filename);
-#if 0
-  TiXmlDocument xml = GetPlexXML(curl.Get());
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    const TiXmlElement* videoNode = rootXmlNode->FirstChildElement("Video");
-    if(videoNode)
-    {
-      const TiXmlElement* mediaNode = videoNode->FirstChildElement("Media");
-      while (mediaNode)
-      {
-        GetMediaDetals(item, curl, mediaNode, item.GetProperty("PlexMediaID").asString());
-        mediaNode = mediaNode->NextSiblingElement("Media");
-      }
-    }
-  }
-#else
+
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -684,7 +590,7 @@ bool CPlexUtils::GetItemSubtiles(CFileItem &item)
       }
     }
   }
-#endif
+
   return true;
 }
 
@@ -704,17 +610,7 @@ bool CPlexUtils::GetMoreItemInfo(CFileItem &item)
   
   CURL curl(url);
   curl.SetFileName("library/metadata/" + id);
-#if 0
-  TiXmlDocument xml = GetPlexXML(curl.Get());
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  
-  if (rootXmlNode)
-  {
-    const TiXmlElement* videoNode = rootXmlNode->FirstChildElement(childElement);
-    if(videoNode)
-      GetVideoDetails(item, videoNode);
-  }
-#else
+
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -722,7 +618,7 @@ bool CPlexUtils::GetMoreItemInfo(CFileItem &item)
     if (!video.isNull())
       GetVideoDetails(item, video);
   }
-#endif
+
   return true;
 }
 
@@ -741,38 +637,7 @@ bool CPlexUtils::GetMoreResolutions(CFileItem &item)
 
   CContextButtons choices;
   std::vector<CFileItem> resolutionList;
-#if 0
-  RemoveSubtitleProperties(item);
-  TiXmlDocument xml = GetPlexXML(curl.Get());
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    const TiXmlElement* videoNode = rootXmlNode->FirstChildElement("Video");
-    if (videoNode)
-    {
-      const TiXmlElement* mediaNode = videoNode->FirstChildElement("Media");
-      while (mediaNode)
-      {
-        CFileItem mediaItem(item);
-        GetMediaDetals(mediaItem, curl, mediaNode);
-        resolutionList.push_back(mediaItem);
-        choices.Add(resolutionList.size(), mediaItem.GetProperty("PlexResolutionChoice").c_str());
-        mediaNode = mediaNode->NextSiblingElement("Media");
-      }
-    }
-    if (resolutionList.size() < 2)
-      return true;
-    
-    int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-    if (button > -1)
-    {
-      m_curItem = resolutionList[button - 1];
-      item.UpdateInfo(m_curItem, false);
-      item.SetPath(m_curItem.GetPath());
-      return true;
-    }
-  }
-#else
+
   RemoveSubtitleProperties(item);
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
@@ -804,7 +669,7 @@ bool CPlexUtils::GetMoreResolutions(CFileItem &item)
       return true;
     }
   }
-#endif
+
   return false;
 }
 
@@ -820,53 +685,7 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
     {
       CURL url(client->GetUrl());
       url.SetFileName("hubs/search?sectionId=&query=" + strSearchString);
-#if 0
-      TiXmlDocument xml = GetPlexXML(url.Get());
-      TiXmlElement* rootXmlNode = xml.RootElement();
-      if (rootXmlNode)
-      {
-        TiXmlElement* hubNode = rootXmlNode->FirstChildElement("Hub");
-        while (hubNode)
-        {
-          if(((TiXmlElement*) hubNode)->Attribute("type"))
-          {
-            std::string type = XMLUtils::GetAttribute(hubNode, "type");
-            if (type == "show")
-            {
-              CFileItemList plexShow;
-              const TiXmlElement* directoryNode = hubNode->FirstChildElement("Directory");
-              std::string ratingKey = XMLUtils::GetAttribute(directoryNode, "ratingKey");
-              url.SetFileName("library/metadata/"+ ratingKey + "/allLeaves");
-              TiXmlDocument xml = GetPlexXML(url.Get());
-              TiXmlElement* rootXmlNode = xml.RootElement();
-              if(rootXmlNode)
-                ParsePlexVideos(plexShow, url, rootXmlNode, MediaTypeEpisode, false);
-              
-              for (int i = 0; i < plexShow.Size(); ++i)
-              {
-                std::string label = plexShow[i]->GetVideoInfoTag()->m_strTitle + " (" +  plexShow[i]->GetVideoInfoTag()->m_strShowTitle + ")";
-                plexShow[i]->SetLabel(label);
-              }
-              CGUIWindowVideoBase::AppendAndClearSearchItems(plexShow, "[" + g_localizeStrings.Get(20359) + "] ", plexItems);
-            }
-            else if (type == "movie")
-            {
-              CFileItemList plexMovies;
-              ParsePlexVideos(plexMovies, url, hubNode, MediaTypeMovie, false);
-              for (int i = 0; i < plexMovies.Size(); ++i)
-              {
-                std::string label = plexMovies[i]->GetVideoInfoTag()->m_strTitle;
-                if (plexMovies[i]->GetVideoInfoTag()->GetYear() > 0)
-                  label += StringUtils::Format(" (%i)", plexMovies[i]->GetVideoInfoTag()->GetYear());
-                plexMovies[i]->SetLabel(label);
-              }
-              CGUIWindowVideoBase::AppendAndClearSearchItems(plexMovies, "[" + g_localizeStrings.Get(20338) + "] ", plexItems);
-            }
-          }
-          hubNode = hubNode->NextSiblingElement("Hub");
-        }
-      }
-#else
+
       CVariant variant = GetPlexCVariant(url.Get());
       if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
       {
@@ -915,7 +734,7 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
           }
         }
       }
-#endif
+
       for (int item = 0; item < plexItems.Size(); ++item)
         CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
       
@@ -933,17 +752,9 @@ bool CPlexUtils::GetPlexMovies(CFileItemList &items, std::string url, std::strin
 {
   bool rtn = false;
   CURL curl(url);
-#if 0
-  TiXmlDocument xml = GetPlexXML(url);
-
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-    rtn = ParsePlexVideos(items, curl, rootXmlNode, MediaTypeMovie, false);
-#else
   CVariant variant = GetPlexCVariant(url);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
     rtn = ParsePlexVideos(items, curl, variant["MediaContainer"]["Video"], MediaTypeMovie, false);
-#endif
 
   return rtn;
 }
@@ -952,26 +763,12 @@ bool CPlexUtils::GetPlexMovies(CFileItemList &items, std::string url, std::strin
 bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
 {
   bool rtn = false;
-#if 0
-  TiXmlDocument xml = GetPlexXML(url);
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    const TiXmlElement* directoryNode = rootXmlNode->FirstChildElement("Directory");
-    if (directoryNode)
-    {
-      CURL curl(url);
-      rtn = ParsePlexSeries(items, curl, directoryNode);
-    }
-  }
-#else
   CVariant variant = GetPlexCVariant(url);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
     CURL curl(url);
     rtn = ParsePlexSeries(items, curl, variant["MediaContainer"]["Directory"]);
   }
-#endif
 
   return rtn;
 }
@@ -979,26 +776,12 @@ bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
 bool CPlexUtils::GetPlexSeasons(CFileItemList &items, const std::string url)
 {
   bool rtn = false;
-#if 0
-  TiXmlDocument xml = GetPlexXML(url);
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    const TiXmlElement* directoryNode = rootXmlNode->FirstChildElement("Directory");
-    if (directoryNode)
-    {
-      CURL curl(url);
-      rtn = ParsePlexSeasons(items, curl, rootXmlNode, directoryNode);
-    }
-  }
-#else
   CVariant variant = GetPlexCVariant(url);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
     CURL curl(url);
     rtn = ParsePlexSeasons(items, curl, variant["MediaContainer"], variant["MediaContainer"]["Directory"]);
   }
-#endif
 
   return rtn;
 }
@@ -1007,16 +790,6 @@ bool CPlexUtils::GetPlexEpisodes(CFileItemList &items, const std::string url)
 {
   bool rtn = false;
   CURL curl(url);
-#if 0
-  TiXmlDocument xml = GetPlexXML(url);
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    int season = atoi(XMLUtils::GetAttribute(rootXmlNode, "parentIndex").c_str());
-    rtn = ParsePlexVideos(items, curl, rootXmlNode, MediaTypeEpisode, true, season);
-    items.SetLabel(XMLUtils::GetAttribute(rootXmlNode, "title2"));
-  }
-#else
   CVariant variant = GetPlexCVariant(url);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -1025,7 +798,6 @@ bool CPlexUtils::GetPlexEpisodes(CFileItemList &items, const std::string url)
     if (rtn)
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
   }
-#endif
 
   return rtn;
 }
@@ -1261,26 +1033,12 @@ bool CPlexUtils::ShowMusicInfo(CFileItem item)
 bool CPlexUtils::GetPlexSongs(CFileItemList &items, std::string url)
 {
   bool rtn = false;
-#if 0
-  TiXmlDocument xml = GetPlexXML(url);
-  TiXmlElement* rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    const TiXmlElement* trackNode = rootXmlNode->FirstChildElement("Track");
-    if (trackNode)
-    {
-      CURL curl(url);
-      rtn = ParsePlexSongs(items, curl, trackNode);
-    }
-  }
-#else
   CVariant variant = GetPlexCVariant(url);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
     CURL curl(url);
     rtn = ParsePlexSongs(items, curl, variant["MediaContainer"]["Track"]);
   }
-#endif
 
   return rtn;
 }
@@ -1301,26 +1059,13 @@ bool CPlexUtils::GetPlexAlbumSongs(CFileItem item, CFileItemList &items)
 bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bool album)
 {
   bool rtn = false;
-#if 0
-  TiXmlDocument xml = GetPlexXML(url);
-  TiXmlElement *rootXmlNode = xml.RootElement();
-  if (rootXmlNode)
-  {
-    const TiXmlElement* directoryNode = rootXmlNode->FirstChildElement("Directory");
-    if (directoryNode)
-    {
-      CURL curl(url);
-      rtn = ParsePlexArtistsAlbum(items, curl, directoryNode, album);
-    }
-  }
-#else
   CVariant variant = GetPlexCVariant(url);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
     CURL curl(url);
     rtn = ParsePlexArtistsAlbum(items, curl, variant["MediaContainer"]["Directory"], album);
   }
-#endif
+
   return rtn;
 }
 
