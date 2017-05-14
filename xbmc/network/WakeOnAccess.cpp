@@ -33,6 +33,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
+#include "services/ServicesManager.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/JobManager.h"
@@ -64,6 +65,13 @@ static in_addr_t HostToIP(const std::string& host)
   std::string ip;
   CDNSNameCache::Lookup(host, ip);
   return inet_addr(ip.c_str());
+}
+
+static std::string HostToIPString(const std::string& host)
+{
+  std::string ip;
+  CDNSNameCache::Lookup(host, ip);
+  return ip;
 }
 
 CWakeOnAccess::WakeUpEntry::WakeUpEntry (bool isAwake)
@@ -364,12 +372,12 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 {
   std::string heading = StringUtils::Format(LOCALIZED(13027).c_str(), server.host.c_str());
 
-  ProgressDialogHelper dlg (heading);
+  ProgressDialogHelper dlg(heading);
 
   {
-    NetworkStartWaiter waitObj (m_netsettle_ms, server.host); // wait until network connected before sending wake-on-lan
+    NetworkStartWaiter waitObj(m_netsettle_ms, server.host); // wait until network connected before sending wake-on-lan
 
-    if (dlg.ShowAndWait (waitObj, m_netinit_sec, LOCALIZED(13028)) != ProgressDialogHelper::Success)
+    if (dlg.ShowAndWait(waitObj, m_netinit_sec, LOCALIZED(13028)) != ProgressDialogHelper::Success)
     {
       if (g_application.getNetwork().IsConnected() && HostToIP(server.host) == INADDR_NONE)
       {
@@ -394,13 +402,21 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
     }
   }
 
-  if (!g_application.getNetwork().WakeOnLan(server.mac.c_str()))
   {
-    CLog::Log(LOGERROR,"WakeOnAccess failed to send. (Is it blocked by firewall?)");
+    // wake on lan works by broadcast and that is limited to same subnet
+    // if not on same subnet, fail.
+    std::string ipaddress = HostToIPString(server.host);
+    if (!g_application.getNetwork().IsSameSubNet(ipaddress.c_str()))
+      return false;
 
-    if (g_application.IsCurrentThread() || !g_application.m_pPlayer->IsPlaying())
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, LOCALIZED(13029));
-    return false;
+    if (!g_application.getNetwork().WakeOnLan(server.mac.c_str()))
+    {
+      CLog::Log(LOGERROR,"WakeOnAccess failed to send. (Is it blocked by firewall?)");
+
+      if (g_application.IsCurrentThread() || !g_application.m_pPlayer->IsPlaying())
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, LOCALIZED(13029));
+      return false;
+    }
   }
 
   {
@@ -545,6 +561,9 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   AddHostFromDatabase(g_advancedSettings.m_databaseMusic, hosts);
   AddHostFromDatabase(g_advancedSettings.m_databaseEpg, hosts);
   AddHostFromDatabase(g_advancedSettings.m_databaseTV, hosts);
+
+  // add media services
+  CServicesManager::GetInstance().GetMediaServicesHosts(hosts);
 
   // add from path substitutions ..
   for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); i != g_advancedSettings.m_pathSubstitutions.end(); ++i)
