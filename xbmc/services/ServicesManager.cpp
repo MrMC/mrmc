@@ -199,6 +199,14 @@ bool CServicesManager::UpdateMediaServicesLibraries(const CFileItem &item)
   return true;
 }
 
+void CServicesManager::GetMediaServicesHosts(std::vector<std::string>& hosts)
+{
+  if (CPlexUtils::HasClients())
+    CPlexUtils::GetClientHosts(hosts);
+  if (CEmbyUtils::HasClients())
+    CEmbyUtils::GetClientHosts(hosts);
+}
+
 bool CServicesManager::ReloadProfiles()
 {
   if (CPlexUtils::HasClients())

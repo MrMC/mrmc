@@ -75,6 +75,14 @@ bool CEmbyUtils::HasClients()
   return CEmbyServices::GetInstance().HasClients();
 }
 
+void CEmbyUtils::GetClientHosts(std::vector<std::string>& hosts)
+{
+  std::vector<CEmbyClientPtr> clients;
+  CEmbyServices::GetInstance().GetClients(clients);
+  for (const auto &client : clients)
+    hosts.push_back(client->GetHost());
+}
+
 bool CEmbyUtils::GetIdentity(CURL url, int timeout)
 {
   XFILE::CCurlFile curlfile;

@@ -91,6 +91,7 @@ public:
   bool IsMediaServicesItem(const CFileItem &item);
   bool IsMediaServicesCloudItem(const CFileItem &item);
   bool UpdateMediaServicesLibraries(const CFileItem &item);
+  void GetMediaServicesHosts(std::vector<std::string>& hosts);
   bool ReloadProfiles();
 
   void SetItemWatched(CFileItem &item);

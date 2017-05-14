@@ -96,6 +96,14 @@ bool CPlexUtils::HasClients()
   return CPlexServices::GetInstance().HasClients();
 }
 
+void CPlexUtils::GetClientHosts(std::vector<std::string>& hosts)
+{
+  std::vector<CPlexClientPtr> clients;
+  CPlexServices::GetInstance().GetClients(clients);
+  for (const auto &client : clients)
+    hosts.push_back(client->GetHost());
+}
+
 bool CPlexUtils::GetIdentity(CURL url, int timeout)
 {
   // all (local and remote) plex server respond to identity

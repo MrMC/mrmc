@@ -41,27 +41,6 @@
 #include <string>
 #include <sstream>
 
-/*
-static bool IsInSubNet(CURL url)
-{
-  bool rtn = false;
-  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
-  in_addr_t localMask = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
-  in_addr_t testAddress = ntohl(inet_addr(url.GetHostName().c_str()));
-  in_addr_t localAddress = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
-
-  in_addr_t temp1 = testAddress & localMask;
-  in_addr_t temp2 = localAddress & localMask;
-  if (temp1 == temp2)
-  {
-    // we are on the same subnet
-    // now make sure it is a plex server
-    rtn = CPlexUtils::GetIdentity(url, 1);
-  }
-  return rtn;
-}
-*/
-
 CPlexClient::CPlexClient()
 {
   m_local = true;
