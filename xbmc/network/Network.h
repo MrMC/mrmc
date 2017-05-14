@@ -129,6 +129,9 @@ public:
    // Return true if there's at least one interface which is connected
    bool IsConnected(void);
 
+   // Return true if passed address is on same subnet as us
+   bool IsSameSubNet(const char *ipAddress);
+
    // Return true if the magic packet was send
    bool WakeOnLan(const char *mac);
 

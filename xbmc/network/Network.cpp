@@ -247,6 +247,20 @@ bool CNetwork::IsConnected()
    return GetFirstConnectedInterface() != NULL;
 }
 
+bool CNetwork::IsSameSubNet(const char *ipAddress)
+{
+  CNetworkInterface* iface = GetFirstConnectedInterface();
+  if (iface != nullptr)
+  {
+    in_addr_t hostMask = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
+    in_addr_t hostAddress = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
+    in_addr_t testAddress = ntohl(inet_addr(ipAddress));
+    if ((testAddress & hostMask) == (hostAddress & hostMask))
+      return true;
+  }
+  return false;
+}
+
 CNetworkInterface* CNetwork::GetInterfaceByName(const std::string& name)
 {
    std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
