@@ -64,7 +64,7 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel setTextAlignment:NSTextAlignmentCenter];
     [descriptionLabel setContentMode:UIViewContentModeCenter];
     //setup multiline behaviour
-    [descriptionLabel setLineBreakMode:(NSLineBreakMode)UILineBreakModeTailTruncation];
+    [descriptionLabel setLineBreakMode:(NSLineBreakMode)NSLineBreakByTruncatingTail];
 
     [descriptionLabel setNumberOfLines:5];
     std::string descText    = g_localizeStrings.Get(34404) + "\n";
@@ -111,7 +111,7 @@ const CGFloat timeFadeSecs                    = 2.0;
     [_internalWindow makeKeyAndVisible];
     [_internalWindow setRootViewController:self];
 
-    [self setWantsFullScreenLayout:YES];
+    self.edgesForExtendedLayout = UIRectEdgeAll;
 
     [self startSleepTimer];//will fade from black too
   }
