@@ -566,6 +566,10 @@ bool CDSMSession::FileExists(const char *path)
     }
     else
     {
+      uint32_t i_status = m_dsmlib->smb_session_get_nt_status(m_smb_session);
+      if (i_status == NT_STATUS_OBJECT_NAME_NOT_FOUND)
+        return -1;
+
       // smb_fstat on a directory can fail, so do it the hard way
       // we should never hit this for a directory (FileExists) but check it anyway.
       smb_stat_list stats = m_dsmlib->smb_find(m_smb_session, m_smb_tid, pathname.c_str());
@@ -685,6 +689,10 @@ int CDSMSession::Stat(const char *path, struct __stat64* buffer)
     }
     else
     {
+      uint32_t i_status = m_dsmlib->smb_session_get_nt_status(m_smb_session);
+      if (i_status == NT_STATUS_OBJECT_NAME_NOT_FOUND)
+        return -1;
+
       // smb_fstat on a directory can fail, so do it the hard way
       smb_stat_list stats = m_dsmlib->smb_find(m_smb_session, m_smb_tid, pathname.c_str());
       if (stats != NULL)

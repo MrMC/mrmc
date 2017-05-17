@@ -1,13 +1,12 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile \
-	lib-includepath.patch
+DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=dsm
-VERSION=0.2.2_4
+VERSION=0.2.7_5
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-REALARCHIVE=mrmc-jarvis-16.0-4.tar.gz
+REALARCHIVE=mrmc-jarvis-16.0-5.tar.gz
 BASE_URL=https://github.com/MrMC/libdsm/archive
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
@@ -31,7 +30,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); ./bootstrap
-	cd $(PLATFORM); patch -p1 < ../lib-includepath.patch
 ifeq ($(OS),android)
 	sed -ie "s|HAVE_LANGINFO_H|HAVE_BALONEY|" "$(PLATFORM)/src/smb_utils.c"
 endif
