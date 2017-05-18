@@ -3703,6 +3703,16 @@ msgctxt "#885"
 msgid "Stops playback in full screen mode when backing out with 'menu' button."
 msgstr ""
 
+#: settings.xml
+msgctxt "#886"
+msgid "Auto hide OSD"
+msgstr ""
+
+#: settings.xml
+msgctxt "#887"
+msgid "Time in seconds after which OSD will auto hide"
+msgstr ""
+
 #empty strings from id 853 to 996
 
 #: lighteffects
@@ -5532,7 +5542,11 @@ msgctxt "#12022"
 msgid "Resume from %s"
 msgstr ""
 
-#empty strings from id 12023 to 12309
+#empty strings from id 12023 to 12308
+
+msgctxt "#12309"
+msgid "10"
+msgstr ""
 
 #: skin.confluence
 #: skin.retouched

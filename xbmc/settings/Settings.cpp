@@ -103,6 +103,7 @@ const std::string CSettings::SETTING_LOOKANDFEEL_FONT = "lookandfeel.font";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINZOOM = "lookandfeel.skinzoom";
 const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW = "lookandfeel.startupwindow";
 const std::string CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN = "lookandfeel.soundskin";
+const std::string CSettings::SETTING_LOOKANDFEEL_AUTOHIDEOSD = "lookandfeel.autohideosd";
 const std::string CSettings::SETTING_LOOKANDFEEL_ENABLERSSFEEDS = "lookandfeel.enablerssfeeds";
 const std::string CSettings::SETTING_LOOKANDFEEL_RSSHOST = "lookandfeel.rsshost";
 const std::string CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL = "lookandfeel.rssinterval";

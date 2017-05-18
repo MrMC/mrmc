@@ -55,6 +55,7 @@ public:
   static const std::string SETTING_LOOKANDFEEL_SKINZOOM;
   static const std::string SETTING_LOOKANDFEEL_STARTUPWINDOW;
   static const std::string SETTING_LOOKANDFEEL_SOUNDSKIN;
+  static const std::string SETTING_LOOKANDFEEL_AUTOHIDEOSD;
   static const std::string SETTING_LOOKANDFEEL_ENABLERSSFEEDS;
   static const std::string SETTING_LOOKANDFEEL_RSSHOST;
   static const std::string SETTING_LOOKANDFEEL_RSSINTERVAL;

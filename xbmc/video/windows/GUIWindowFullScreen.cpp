@@ -652,7 +652,9 @@ void CGUIWindowFullScreen::ToggleOSD()
       pOSD->Close();
     else
     {
-      pOSD->SetAutoClose(3000);
+      int iSec = CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_AUTOHIDEOSD);
+      if (iSec > 0)
+        pOSD->SetAutoClose(iSec * 1000);
       pOSD->Open();
     }
   }
@@ -665,7 +667,9 @@ void CGUIWindowFullScreen::TriggerOSD()
   CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
   if (pOSD && !pOSD->IsDialogRunning())
   {
-    pOSD->SetAutoClose(3000);
+    int iSec = CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_AUTOHIDEOSD);
+    if (iSec > 0)
+      pOSD->SetAutoClose(iSec * 1000);
     pOSD->Open();
   }
 }

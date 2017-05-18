@@ -93,6 +93,26 @@
             <show more="true" details="true">installed</show>
           </control>
         </setting>
+        <setting id="lookandfeel.autohideosd" type="integer" label="886" help="887">
+          <level>0</level>
+          <default>5</default> <!-- after 5 sec -->
+          <constraints>
+            <options>
+              <option label="13170">0</option> <!-- Never -->
+              <option label="12311">1</option> <!-- 1 sec -->
+              <option label="12312">2</option> <!-- 2 sec -->
+              <option label="12313">3</option> <!-- 3 sec -->
+              <option label="12314">4</option> <!-- 4 sec -->
+              <option label="12315">5</option> <!-- 5 sec -->
+              <option label="12316">6</option> <!-- 6 sec -->
+              <option label="12317">7</option> <!-- 7 sec -->
+              <option label="12318">8</option> <!-- 8 sec -->
+              <option label="12319">9</option> <!-- 9 sec -->
+              <option label="12309">10</option> <!-- 10 sec -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="lookandfeel.stereostrength" type="integer" label="36550" help="36551">
           <level>2</level>
           <default>5</default>
