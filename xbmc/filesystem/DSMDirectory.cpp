@@ -19,12 +19,19 @@
  */
 
 #include "system.h"
+#include <cassert>
+#include <arpa/inet.h>
 
 #include "DSMDirectory.h"
 
 #include "FileItem.h"
+#include "Directory.h"
+#include "GUIUserMessages.h"
 #include "PasswordManager.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -41,18 +48,74 @@ CDSMDirectory::~CDSMDirectory(void)
 
 bool CDSMDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
-  if (session)
-    return session->GetDirectory(url.GetWithoutFilename().c_str(), url.GetFileName().c_str(), items);
-  else
-    RequireAuthentication(url);
+  assert(url.IsProtocol("smb"));
 
-  return false;
+  bool rtn = false;
+  std::string rootpath = url.Get();
+  if (rootpath == "smb://")
+  {
+    // we are browsing for clients
+    // startup ns share discovery
+    CDSMSessionManager::NSDiscoverStart();
+    std::vector<std::string> serverNames;
+    CDSMSessionManager::NSDiscoverServerList(serverNames);
+    // serverNames might or might not be populated yet
+    // if not CDSMSessionManager/DllLibDSM will post a GUI_MSG_UPDATE_PATH msg
+    // when a server shows up and we get called again to provide an updated list.
+    if (!serverNames.empty())
+    {
+      for (auto &serverName : serverNames)
+      {
+        CFileItemPtr pItem(new CFileItem(serverName));
+        std::string path(rootpath);
+        path = URIUtils::AddFileToFolder(path, serverName);
+        URIUtils::AddSlashAtEnd(path);
+        pItem->SetPath(path);
+        pItem->m_bIsFolder = true;
+        pItem->m_bIsShareOrDrive = true;
+        // set the default folder icon
+        pItem->FillInDefaultIcon();
+        items.Add(pItem);
+      }
+    }
+    rtn = true;
+  }
+  else
+  {
+    // try to connect to the smb://<share>... path. if all is good
+    // we get a non-null session back. Toss it into a std::unique_ptr
+    // and it will take care of itself.
+    ConnectSessionErrors sessionError;
+    std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
+    if (session)
+      rtn = session->GetDirectory(url.GetWithoutFilename().c_str(), url.GetFileName().c_str(), items);
+    else
+    {
+      // this is critical to get an user/pass dialog up. session will be null as there was
+      // an INVALID_AUTHORIZATION error. So check for it, set up for authorization and
+      // (most important) return false so we get called again on main thread for user/pass.
+      if (sessionError == ConnectSessionErrors::INVALID_AUTHORIZATION)
+      {
+        if (m_flags & DIR_FLAG_ALLOW_PROMPT)
+          RequireAuthentication(url);
+      }
+      else
+      {
+        // anything else is a real error (most common is wrong user/pass)
+        std::string errorString;
+        errorString = StringUtils::Format(g_localizeStrings.Get(771).c_str(), (int)sessionError);
+        if (m_flags & DIR_FLAG_ALLOW_PROMPT)
+          SetErrorDialog(257, errorString.c_str());
+      }
+    }
+  }
+  return rtn;
 }
 
 bool CDSMDirectory::Create(const CURL& url)
 {
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->CreateDirectory(url.GetFileName().c_str());
   else
@@ -64,7 +127,8 @@ bool CDSMDirectory::Create(const CURL& url)
 
 bool CDSMDirectory::Exists(const CURL& url)
 {
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->DirectoryExists(url.GetFileName().c_str());
   else
@@ -76,7 +140,8 @@ bool CDSMDirectory::Exists(const CURL& url)
 
 bool CDSMDirectory::Remove(const CURL& url)
 {
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->RemoveDirectory(url.GetFileName().c_str());
   else

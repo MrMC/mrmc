@@ -197,13 +197,9 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     CMediaSource share;
     share.m_ignore = true;
 #if defined(HAS_FILESYSTEM_SMB)
-    // CDSMDirectory does not support netbios browsing shares
-    if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SMB_ENABLEDSM))
-    {
-      share.strPath = "smb://";
-      share.strName = g_localizeStrings.Get(20171);
-      locations.push_back(share);
-    }
+    share.strPath = "smb://";
+    share.strName = g_localizeStrings.Get(20171);
+    locations.push_back(share);
 #endif
 
 #ifdef HAS_FILESYSTEM_NFS

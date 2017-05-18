@@ -26,13 +26,24 @@
 
 #include "threads/CriticalSection.h"
 
+enum class ConnectSessionErrors
+{
+  NONE,
+  INVALID_HOSTNAME,
+  INVALID_AUTHORIZATION,
+  FAILED_AUTHORIZATION,
+  FAILED_LOOKUP_HOSTNAME,
+  FAILED_NEW_SESSION,
+  FAILED_CONNECT_SESSION,
+};
+
 class CDSMSession
 {
 public:
   CDSMSession(DllLibDSM *lib);
  ~CDSMSession();
 
-  int     ConnectSession(const CURL &url);
+  ConnectSessionErrors ConnectSession(const CURL &url);
   void    DisconnectSession();
   smb_fd  CreateFileHande(const std::string &file);
   smb_fd  CreateFileHandeForWrite(const std::string &file, bool bOverWrite);
@@ -69,14 +80,21 @@ private:
 class CDSMSessionManager
 {
 public:
-  static CDSMSession* CreateSession(const CURL &url);
+  static CDSMSession* CreateSession(const CURL &url, ConnectSessionErrors &error);
   static void         Disconnect();
   static bool         HostNameToIP(std::string &hostname);
   static const char*  IPAddressToNetBiosName(const std::string &ip);
+  static int          NSDiscoverStart();
+  static void         NSDiscoverStop();
+  static void         NSDiscoverServerList(std::vector<std::string> &servers);
+  static const char*  NSEntryName(netbios_ns_entry *p_entry);
+  static const char*  NSEntryGroup(netbios_ns_entry *p_entry);
+  static char         NSEntryType(netbios_ns_entry *p_entry);
+  static uint32_t     NSEntryIPAddress(netbios_ns_entry *p_entry);
 
 private:
-  static DllLibDSM        *m_dsmlib;
-  static CCriticalSection  m_critSect;
+  static DllLibDSM   *m_dsmlib;
+  static CCriticalSection m_critSect;
 };
 
 namespace XFILE

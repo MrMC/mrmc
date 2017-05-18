@@ -106,10 +106,10 @@ CDSMSession::~CDSMSession()
   DisconnectSession();
 }
 
-int CDSMSession::ConnectSession(const CURL &url)
+ConnectSessionErrors CDSMSession::ConnectSession(const CURL &url)
 {
   if (url.GetHostName().empty())
-    return NT_STATUS_INVALID_SMB;
+    return ConnectSessionErrors::INVALID_HOSTNAME;
 
   CSingleLock lock(m_critSect);
 
@@ -117,7 +117,7 @@ int CDSMSession::ConnectSession(const CURL &url)
   if (m_smb_session == nullptr)
   {
     CLog::Log(LOGERROR, "CDSMSession: Failed to initialize session for host '%s'", url.GetHostName().c_str());
-    return NT_STATUS_INVALID_SMB;
+    return ConnectSessionErrors::FAILED_NEW_SESSION;
   }
 
   //CLog::Log(LOGDEBUG, "CDSMSession: Creating new session on host '%s' with session %p", url.GetHostName().c_str(), m_smb_session);
@@ -126,9 +126,9 @@ int CDSMSession::ConnectSession(const CURL &url)
   CDNSNameCache::Lookup(url.GetHostName(), ip);
   if (ip.empty())
   {
-    CLog::Log(LOGERROR, "CDSMSession: Failed to connect");
+    CLog::Log(LOGERROR, "CDSMSession: Failed to Lookup HostName");
     DisconnectSession();
-    return NT_STATUS_INVALID_SMB;
+    return ConnectSessionErrors::FAILED_LOOKUP_HOSTNAME;
   }
 
   // we need an in_addr for netbios_ns_inverse lookup.
@@ -150,7 +150,7 @@ int CDSMSession::ConnectSession(const CURL &url)
     {
       CLog::Log(LOGERROR, "CDSMSession: Failed to connect");
       DisconnectSession();
-      return NT_STATUS_INVALID_SMB;
+      return ConnectSessionErrors::FAILED_CONNECT_SESSION;
     }
   }
 
@@ -162,7 +162,7 @@ int CDSMSession::ConnectSession(const CURL &url)
   std::string login = url.GetUserName();
   std::string password = url.GetPassWord();
   if (login.empty())
-    return NT_STATUS_LOGON_FAILURE;
+    return ConnectSessionErrors::INVALID_AUTHORIZATION;
 
 
   // setup credentials and login.
@@ -175,7 +175,7 @@ int CDSMSession::ConnectSession(const CURL &url)
     {
       uint32_t reason = m_dsmlib->smb_session_get_nt_status(m_smb_session);
       CLog::Log(LOGERROR, "CDSMSession: not logged in, invalid session, etc. reason(%d)", reason);
-      return NT_STATUS_LOGON_FAILURE;
+      return ConnectSessionErrors::FAILED_AUTHORIZATION;
     }
     /*
     else if (response == 0)
@@ -186,14 +186,15 @@ int CDSMSession::ConnectSession(const CURL &url)
   }
   else
   {
-    CLog::Log(LOGERROR, "CDSMSession: Auth failed");
+    uint32_t reason = m_dsmlib->smb_session_get_nt_status(m_smb_session);
+    CLog::Log(LOGERROR, "CDSMSession: Auth failed, reason(%d)", reason);
     DisconnectSession();
-    return NT_STATUS_LOGON_FAILURE;
+    return ConnectSessionErrors::FAILED_AUTHORIZATION;
   }
 
   m_timeout_sec = (time_t)CSettings::GetInstance().GetInt(CSettings::SETTING_SMB_CLIENTTIMEOUT);
 
-  return NT_STATUS_SUCCESS;
+  return ConnectSessionErrors::NONE;
 }
 
 void CDSMSession::DisconnectSession()
@@ -855,7 +856,7 @@ int64_t CDSMSession::GetPosition(const smb_fd fd)
 DllLibDSM* CDSMSessionManager::m_dsmlib = nullptr;
 CCriticalSection CDSMSessionManager::m_critSect;
 
-CDSMSession* CDSMSessionManager::CreateSession(const CURL &url)
+CDSMSession* CDSMSessionManager::CreateSession(const CURL &url, ConnectSessionErrors &error)
 {
   CSingleLock lock(m_critSect);
 
@@ -876,7 +877,8 @@ CDSMSession* CDSMSessionManager::CreateSession(const CURL &url)
 
   // create a new session if the session key does not exist
   CDSMSession *session = new CDSMSession(m_dsmlib);
-  if (session->ConnectSession(authURL) == NT_STATUS_SUCCESS)
+  error = session->ConnectSession(authURL);
+  if (error == ConnectSessionErrors::NONE)
     return session;
 
   return nullptr;
@@ -929,6 +931,82 @@ const char* CDSMSessionManager::IPAddressToNetBiosName(const std::string &ip)
 
   return netbios_name;
 }
+int CDSMSessionManager::NSDiscoverStart()
+{
+  CSingleLock lock(m_critSect);
+  if (!m_dsmlib)
+  {
+    m_dsmlib = new DllLibDSM();
+    m_dsmlib->Load();
+  }
+  return m_dsmlib->netbios_ns_discover_start();
+}
+
+void CDSMSessionManager::NSDiscoverStop()
+{
+  CSingleLock lock(m_critSect);
+  if (!m_dsmlib)
+  {
+    m_dsmlib = new DllLibDSM();
+    m_dsmlib->Load();
+  }
+  m_dsmlib->netbios_ns_discover_stop();
+}
+
+void CDSMSessionManager::NSDiscoverServerList(std::vector<std::string> &servers)
+{
+  CSingleLock lock(m_critSect);
+  if (!m_dsmlib)
+  {
+    m_dsmlib = new DllLibDSM();
+    m_dsmlib->Load();
+  }
+  m_dsmlib->netbios_ns_discover_servers(servers);
+}
+
+const char* CDSMSessionManager::NSEntryName(netbios_ns_entry *p_entry)
+{
+  CSingleLock lock(m_critSect);
+  if (!m_dsmlib)
+  {
+    m_dsmlib = new DllLibDSM();
+    m_dsmlib->Load();
+  }
+  return m_dsmlib->netbios_ns_entry_name(p_entry);
+}
+
+const char* CDSMSessionManager::NSEntryGroup(netbios_ns_entry *p_entry)
+{
+  CSingleLock lock(m_critSect);
+  if (!m_dsmlib)
+  {
+    m_dsmlib = new DllLibDSM();
+    m_dsmlib->Load();
+  }
+  return m_dsmlib->netbios_ns_entry_group(p_entry);
+}
+
+char CDSMSessionManager::NSEntryType(netbios_ns_entry *p_entry)
+{
+  CSingleLock lock(m_critSect);
+  if (!m_dsmlib)
+  {
+    m_dsmlib = new DllLibDSM();
+    m_dsmlib->Load();
+  }
+  return m_dsmlib->netbios_ns_entry_type(p_entry);
+}
+
+uint32_t CDSMSessionManager::NSEntryIPAddress(netbios_ns_entry *p_entry)
+{
+  CSingleLock lock(m_critSect);
+  if (!m_dsmlib)
+  {
+    m_dsmlib = new DllLibDSM();
+    m_dsmlib->Load();
+  }
+  return m_dsmlib->netbios_ns_entry_ip(p_entry);
+}
 
 #pragma mark - CDSMFile
 /********************************************************************************************/
@@ -956,7 +1034,8 @@ bool CDSMFile::Open(const CURL& url)
       return false;
   }
 
-  m_dsmSession.reset(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  m_dsmSession.reset(CDSMSessionManager::CreateSession(url, sessionError));
   if (m_dsmSession)
   {
     m_file = url.GetFileName().c_str();
@@ -1097,7 +1176,8 @@ bool CDSMFile::Exists(const CURL& url)
   if (!IsValidFile(url.GetFileName()))
     return false;
 
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->FileExists(url.GetFileName().c_str());
   else
@@ -1109,7 +1189,8 @@ bool CDSMFile::Exists(const CURL& url)
 
 int CDSMFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->Stat(url.GetFileName().c_str(), buffer);
   else
@@ -1157,7 +1238,8 @@ int CDSMFile::IoControl(EIoControl request, void* param)
 
 bool CDSMFile::Delete(const CURL& url)
 {
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->RemoveFile(url.GetFileName().c_str());
   else
@@ -1174,7 +1256,8 @@ bool CDSMFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (!IsValidFile(url.GetFileName()))
     return false;
 
-  m_dsmSession.reset(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  m_dsmSession.reset(CDSMSessionManager::CreateSession(url, sessionError));
   if (m_dsmSession)
   {
     m_file = url.GetFileName().c_str();
@@ -1209,7 +1292,8 @@ ssize_t CDSMFile::Write(const void* lpBuf, size_t uiBufSize)
 
 bool CDSMFile::Rename(const CURL& url, const CURL& urlnew)
 {
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url));
+  ConnectSessionErrors sessionError;
+  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
   {
     // the session url will be authenticated,

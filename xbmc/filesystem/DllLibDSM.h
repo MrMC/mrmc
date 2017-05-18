@@ -20,8 +20,15 @@
  */
 
 #include "DynamicDll.h"
+#include "GUIUserMessages.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
+#include "utils/log.h"
+#include "utils/Stopwatch.h"
+
+#include <arpa/inet.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,6 +37,12 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct DSMServerInfo
+{
+  std::string name;
+  std::string address;
+} DSMServerInfo;
 
 class DllLibDSMInterface
 {
@@ -45,9 +58,11 @@ public:
   virtual char            netbios_ns_entry_type(netbios_ns_entry *entry)=0;
   virtual int             netbios_ns_resolve(const char *name, char type, uint32_t *addr)=0;
   virtual const char     *netbios_ns_inverse(uint32_t ip)=0;
+  /*
   virtual int             netbios_ns_discover_start(unsigned int broadcast_timeout,
                             netbios_ns_discover_callbacks *callbacks)=0;
   virtual int             netbios_ns_discover_stop()=0;
+  */
 
   // smb_session.h
   // functions to connect and authenticate to an SMB server
@@ -205,14 +220,22 @@ class DllLibDSM : public DllDynamic, DllLibDSMInterface
   END_METHOD_RESOLVE()
 
 public:
+  virtual ~DllLibDSM()
+  {
+    if (m_netbios_ns)
+      netbios_ns_destroy(m_netbios_ns), m_netbios_ns = nullptr;
+    netbios_ns_discover_stop();
+  }
+
   virtual bool Load()
   {
     if (!DllDynamic::Load())
       return false;
 
-    // we do not need a lock here, we are not
+    // we do not need a locks here, we are not
     // loaded and ready yet to the outside world.
     m_netbios_ns = netbios_ns_new();
+    m_netbios_ns_discover = nullptr;
     return true;
   }
 
@@ -221,6 +244,7 @@ public:
     CSingleLock lock(m_netbios_ns_lock);
     if (m_netbios_ns)
       netbios_ns_destroy(m_netbios_ns), m_netbios_ns = nullptr;
+    netbios_ns_discover_stop();
   }
 
   // the following two are special, they will start/stop internal thread
@@ -229,7 +253,6 @@ public:
   virtual int netbios_ns_resolve(const char *name, char type, uint32_t *addr)
   {
     CSingleLock lock(m_netbios_ns_lock);
-
     // startup netbios_ns if not running
     if (!m_netbios_ns)
       m_netbios_ns = netbios_ns_new();
@@ -239,7 +262,6 @@ public:
   virtual const char *netbios_ns_inverse(uint32_t ip)
   {
     CSingleLock lock(m_netbios_ns_lock);
-
     // startup netbios_ns if not running
     if (!m_netbios_ns)
       m_netbios_ns = netbios_ns_new();
@@ -251,28 +273,104 @@ public:
   // above two. If started, calling the above two will assert :) nice.
   // best we can do now is lock over start/stop life cycle. This can
   // hang threads that use the above two so be quick about it :)
-  virtual int netbios_ns_discover_start(unsigned int broadcast_timeout,
-    netbios_ns_discover_callbacks *callbacks)
+  virtual int netbios_ns_discover_start()
   {
-    m_netbios_ns_lock.lock();
+    CSingleLock lock(m_netbios_ns_discover_lock);
+    // startup netbios_ns if not running
+    if (!m_netbios_ns_discover)
+      m_netbios_ns_discover = netbios_ns_new();
 
-    // stop netbios_ns if running
-    if (m_netbios_ns)
-      netbios_ns_destroy(m_netbios_ns), m_netbios_ns = nullptr;
-
-    return netbios_ns_discover_start(m_netbios_ns, broadcast_timeout, callbacks);
+    netbios_ns_discover_callbacks callbacks;
+    callbacks.p_opaque = this;
+    callbacks.pf_on_entry_added = ns_discover_on_entry_added;
+    callbacks.pf_on_entry_removed = ns_discover_on_entry_removed;
+    return netbios_ns_discover_start(m_netbios_ns_discover, 60, &callbacks);
   }
-  virtual int netbios_ns_discover_stop()
+
+  virtual void netbios_ns_discover_stop()
   {
-    int rtn = netbios_ns_discover_stop(m_netbios_ns);
-    // unlock AFTER we stop please.
-    m_netbios_ns_lock.unlock();
-    return rtn;
+    CSingleLock lock(m_netbios_ns_discover_lock);
+    if (m_netbios_ns_discover)
+    {
+      netbios_ns_discover_stop(m_netbios_ns_discover);
+      netbios_ns_destroy(m_netbios_ns_discover), m_netbios_ns_discover = nullptr;
+    }
+  }
+
+  virtual void netbios_ns_discover_servers(std::vector<std::string> &servers)
+  {
+    CSingleLock lock(m_netbios_ns_discover_lock);
+    for (auto &server : m_servers)
+      servers.push_back(server.name);
   }
 
 private:
+  static void ns_discover_on_entry_added(void *p_opaque, netbios_ns_entry *p_entry)
+  {
+    DllLibDSM *ctx = static_cast<DllLibDSM*>(p_opaque);
+    char type = ctx->netbios_ns_entry_type(p_entry);
+    if (ctx && (type == NETBIOS_FILESERVER))
+    {
+      DSMServerInfo addedServer;
+      addedServer.name = ctx->netbios_ns_entry_name(p_entry);
+      struct in_addr addr;
+      addr.s_addr = ctx->netbios_ns_entry_ip(p_entry);
+      addedServer.address = inet_ntoa(addr);
+      CLog::Log(LOGDEBUG, "DllLibDSM:ns_discover_on_entry_added name(%s), address(%s)",
+        addedServer.name.c_str(), addedServer.address.c_str());
+
+      CSingleLock lock(ctx->m_netbios_ns_discover_lock);
+      auto foundServer = std::find_if(ctx->m_servers.begin(), ctx->m_servers.end(),
+          [&](DSMServerInfo server)
+          { return server.name == addedServer.name &&
+              server.address == addedServer.address;
+      });
+      if (foundServer == ctx->m_servers.end())
+      {
+        ctx->m_servers.push_back(addedServer);
+        lock.unlock();
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+        message.SetStringParam("smb://");
+        g_windowManager.SendThreadMessage(message);
+      }
+    }
+  }
+
+  static void ns_discover_on_entry_removed(void *p_opaque, netbios_ns_entry *p_entry)
+  {
+    DllLibDSM *ctx = static_cast<DllLibDSM*>(p_opaque);
+    if (ctx)
+    {
+      DSMServerInfo removedServer;
+      removedServer.name = ctx->netbios_ns_entry_name(p_entry);
+      struct in_addr addr;
+      addr.s_addr = ctx->netbios_ns_entry_ip(p_entry);
+      removedServer.address = inet_ntoa(addr);
+      CLog::Log(LOGDEBUG, "DllLibDSM:ns_discover_on_entry_added name(%s), address(%s)",
+        removedServer.name.c_str(), removedServer.address.c_str());
+
+      CSingleLock lock(ctx->m_netbios_ns_discover_lock);
+      auto foundServer = std::find_if(ctx->m_servers.begin(), ctx->m_servers.end(),
+          [&](DSMServerInfo server)
+          { return server.name == removedServer.name &&
+              server.address == removedServer.address;
+      });
+      if (foundServer != ctx->m_servers.end())
+      {
+        ctx->m_servers.erase(foundServer);
+        lock.unlock();
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+        message.SetStringParam("smb://");
+        g_windowManager.SendThreadMessage(message);
+      }
+    }
+  }
+
   // use a private global netbios_ns object and
   // persist it over lifetime of libdsm Load/Unload
   netbios_ns       *m_netbios_ns;
   CCriticalSection  m_netbios_ns_lock;
+  netbios_ns       *m_netbios_ns_discover;
+  CCriticalSection  m_netbios_ns_discover_lock;
+  std::vector<DSMServerInfo> m_servers;
 };

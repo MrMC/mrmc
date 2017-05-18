@@ -3290,7 +3290,9 @@ msgctxt "#770"
 msgid "Error %i: share not available"
 msgstr ""
 
-#empty string with id 771
+msgctxt "#771"
+msgid " Login authorization failed with error code: %i"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#772"

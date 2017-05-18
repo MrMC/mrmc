@@ -22,6 +22,7 @@
 #include "IDirectory.h"
 
 #include "DSMFile.h"
+#include "utils/Stopwatch.h"
 
 namespace XFILE
 {
@@ -32,7 +33,7 @@ namespace XFILE
     virtual ~CDSMDirectory(void);
 
     virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-    virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; };
+    virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_NEVER; };
     virtual bool Create(const CURL& url);
     virtual bool Exists(const CURL& url);
     virtual bool Remove(const CURL& url);
