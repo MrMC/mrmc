@@ -452,7 +452,10 @@ bool CDSMSession::GetDirectory(const std::string &base, const std::string &folde
           if (fstat)
           {
             name = m_dsmlib->smb_stat_name(fstat);
-            if (name == nullptr || strcmp(name, "..") == 0 || strcmp(name, ".") == 0)
+            if (name == nullptr ||
+              strcmp(name, ".") == 0 ||
+              strcmp(name, "..") == 0 ||
+              strcmp(name, "lost+found") == 0)
               continue;
 
             size  = m_dsmlib->smb_stat_get(fstat, SMB_STAT_SIZE);
