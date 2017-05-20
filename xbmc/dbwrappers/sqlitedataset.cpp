@@ -215,6 +215,9 @@ int SqliteDatabase::connect(bool create) {
     int flags = SQLITE_OPEN_READWRITE;
     if (create)
       flags |= SQLITE_OPEN_CREATE;
+    if (conn)
+      sqlite3_close(conn), conn = nullptr;
+
     if (sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL)==SQLITE_OK)
     {
       sqlite3_busy_handler(conn, busy_callback, NULL);
@@ -226,6 +229,9 @@ int SqliteDatabase::connect(bool create) {
       active = true;
       return DB_CONNECTION_OK;
     }
+    // According to SQLite documentation, a database connection handle
+    // is usually returned, even if an error occurs
+    sqlite3_close(conn), conn = nullptr;
 
     return DB_CONNECTION_NONE;
   }

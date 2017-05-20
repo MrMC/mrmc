@@ -42,7 +42,7 @@ namespace dbiplus {
 class SqliteDatabase: public Database {
 protected:
 /* connect descriptor */
-  sqlite3 *conn;
+  sqlite3 *conn = nullptr;
   bool _in_transaction;
   int last_err;
 
