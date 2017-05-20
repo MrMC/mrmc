@@ -794,25 +794,6 @@ bool CEmbyClient::FetchViewItems(CEmbyViewCachePtr &view, const CURL &url, const
   return rtn;
 }
 
-bool CEmbyClient::DoThreadedFetchViewItems(CEmbyViewCachePtr &view, const CURL &url, const std::string &type)
-{
-  CEvent threadDone;
-  threadDone.Reset();
-  CThreadedFetchViewItems threadedFetchViewItems(this, threadDone, view, url, type);
-
-  CGUIDialogBusy *busyDialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-  if (busyDialog)
-  {
-    busyDialog->Open();
-    while(!threadDone.WaitMSec(10))
-    {
-      g_windowManager.ProcessRenderLoop(false);
-    }
-    busyDialog->Close();
-  }
-  return true;
-}
-
 bool CEmbyClient::FetchFilterItems(CEmbyViewCachePtr &view, const CURL &url, const std::string &type, const std::string &filter)
 {
 #if defined(EMBY_DEBUG_VERBOSE)

@@ -120,7 +120,6 @@ protected:
   bool        IsSameClientHostName(const CURL& url);
   bool        FetchViews();
   bool        FetchViewItems(CEmbyViewCachePtr &view, const CURL& url, const std::string &type);
-  bool        DoThreadedFetchViewItems(CEmbyViewCachePtr &view, const CURL& url, const std::string &type);
   bool        FetchFilterItems(CEmbyViewCachePtr &view, const CURL &url, const std::string &type, const std::string &filter);
   void        SetPresence(bool presence);
   const CVariant FetchItemByIds(const std::vector<std::string> &Ids);
