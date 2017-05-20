@@ -244,7 +244,7 @@ bool CDSMSession::ConnectShare(const std::string &path)
       }
       if (response != DSM_SUCCESS)
       {
-        CLog::Log(LOGERROR, "CDSMSession: Unable to connect to share");
+        CLog::Log(LOGERROR, "CDSMSession: Unable to connect to share for '%s'", path.c_str());
         return false;
       }
     }
@@ -253,7 +253,7 @@ bool CDSMSession::ConnectShare(const std::string &path)
   return true;
 }
 
-smb_fd CDSMSession::CreateFileHande(const std::string &file)
+smb_fd CDSMSession::CreateFileHandle(const std::string &file)
 {
   smb_fd fd = 0;
   CSingleLock lock(m_critSect);
@@ -266,13 +266,15 @@ smb_fd CDSMSession::CreateFileHande(const std::string &file)
 
     // paths are relative to the m_smb_tid, which is the share name
     std::string filepath = strip_share_name_convert(file);
+
     smb_stat attributes = m_dsmlib->smb_fstat(m_smb_session, m_smb_tid, filepath.c_str());
     if (!attributes)
     {
+      //CLog::Log(LOGERROR, "CDSMSession:CreateFileHandle does not exist '%s'", filepath.c_str());
       uint32_t i_status = m_dsmlib->smb_session_get_nt_status(m_smb_session);
       if (i_status == NT_STATUS_OBJECT_NAME_NOT_FOUND)
         return 0;
-      CLog::Log(LOGERROR, "CDSMSession:CreateFileHande smb_session_get_nt_status failed with status(%d)", i_status);
+      CLog::Log(LOGERROR, "CDSMSession:CreateFileHandle smb_session_get_nt_status failed with status(%d)", i_status);
       return 0;
     }
     m_dsmlib->smb_stat_destroy(attributes);
@@ -291,7 +293,7 @@ smb_fd CDSMSession::CreateFileHande(const std::string &file)
       {
         if (time(NULL) - start >= m_timeout_sec)
         {
-          CLog::Log(LOGERROR, "CDSMSession:CreateFileHande timeout");
+          CLog::Log(LOGERROR, "CDSMSession:CreateFileHandle timeout");
           break;
         }
       }
@@ -309,7 +311,7 @@ smb_fd CDSMSession::CreateFileHande(const std::string &file)
   return fd;
 }
 
-smb_fd CDSMSession::CreateFileHandeForWrite(const std::string &file, bool bOverWrite)
+smb_fd CDSMSession::CreateFileHandleForWrite(const std::string &file, bool bOverWrite)
 {
   smb_fd fd = 0;
   CSingleLock lock(m_critSect);
@@ -325,10 +327,11 @@ smb_fd CDSMSession::CreateFileHandeForWrite(const std::string &file, bool bOverW
     smb_stat attributes = m_dsmlib->smb_fstat(m_smb_session, m_smb_tid, filepath.c_str());
     if (!attributes)
     {
+      //CLog::Log(LOGERROR, "CDSMSession:CreateFileHandleForWrite does not exist '%s'", filepath.c_str());
       uint32_t i_status = m_dsmlib->smb_session_get_nt_status(m_smb_session);
       if (i_status == NT_STATUS_OBJECT_NAME_NOT_FOUND)
         return 0;
-      CLog::Log(LOGERROR, "CDSMSession:CreateFileHande smb_session_get_nt_status failed with status(%d)", i_status);
+      CLog::Log(LOGERROR, "CDSMSession:CreateFileHandle smb_session_get_nt_status failed with status(%d)", i_status);
       return 0;
     }
     m_dsmlib->smb_stat_destroy(attributes);
@@ -347,7 +350,7 @@ smb_fd CDSMSession::CreateFileHandeForWrite(const std::string &file, bool bOverW
       {
         if (time(NULL) - start >= m_timeout_sec)
         {
-          CLog::Log(LOGERROR, "CDSMSession:CreateFileHandeForWrite timeout");
+          CLog::Log(LOGERROR, "CDSMSession:CreateFileHandleForWrite timeout");
           break;
         }
       }
@@ -578,7 +581,7 @@ bool CDSMSession::FileExists(const char *path)
     // always check that we are connected to a share,
     // this will make sure m_smb_tid is always setup
     if (!ConnectShare(path))
-      return -1;
+      return false;
 
     // paths are relative to the m_smb_tid, which is the share name
     std::string pathname = strip_share_name_convert(path);
@@ -1063,7 +1066,7 @@ bool CDSMFile::Open(const CURL& url)
   if (m_dsmSession)
   {
     m_file = url.GetFileName().c_str();
-    m_smb_fd = m_dsmSession->CreateFileHande(m_file);
+    m_smb_fd = m_dsmSession->CreateFileHandle(m_file);
     if (m_smb_fd)
     {
       // cache file size
@@ -1285,7 +1288,7 @@ bool CDSMFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (m_dsmSession)
   {
     m_file = url.GetFileName().c_str();
-    m_smb_fd = m_dsmSession->CreateFileHandeForWrite(m_file, bOverWrite);
+    m_smb_fd = m_dsmSession->CreateFileHandleForWrite(m_file, bOverWrite);
     return (m_smb_fd != 0);
   }
   else

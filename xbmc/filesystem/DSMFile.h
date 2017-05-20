@@ -45,8 +45,8 @@ public:
 
   ConnectSessionErrors ConnectSession(const CURL &url);
   void    DisconnectSession();
-  smb_fd  CreateFileHande(const std::string &file);
-  smb_fd  CreateFileHandeForWrite(const std::string &file, bool bOverWrite);
+  smb_fd  CreateFileHandle(const std::string &file);
+  smb_fd  CreateFileHandleForWrite(const std::string &file, bool bOverWrite);
   void    CloseFileHandle(smb_fd handle);
 
   bool    GetDirectory(const std::string &base, const std::string &folder, CFileItemList &items);
