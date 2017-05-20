@@ -38,14 +38,17 @@ CGUIWindowSplash::~CGUIWindowSplash(void)
 
 void CGUIWindowSplash::OnInitWindow()
 {
-  std::string splashImage = "special://home/media/Splash.png";
-  if (!XFILE::CFile::Exists(splashImage))
-    splashImage = "special://xbmc/media/Splash.png";
+  if (!m_image)
+  {
+    std::string splashImage = "special://home/media/Splash.png";
+    if (!XFILE::CFile::Exists(splashImage))
+      splashImage = "special://xbmc/media/Splash.png";
 
-  CLog::Log(LOGINFO, "load splash image: %s", CSpecialProtocol::TranslatePath(splashImage).c_str());
+    CLog::Log(LOGINFO, "load splash image: %s", CSpecialProtocol::TranslatePath(splashImage).c_str());
 
-  m_image = new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CTextureInfo(splashImage));
-  m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
+    m_image = new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CTextureInfo(splashImage));
+    m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
+  }
 }
 
 void CGUIWindowSplash::Render()
