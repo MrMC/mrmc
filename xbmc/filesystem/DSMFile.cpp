@@ -31,7 +31,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-#include "arpa/inet.h"
+#include <algorithm>
+#include <arpa/inet.h>
 
 using namespace XFILE;
 
@@ -812,13 +813,22 @@ ssize_t CDSMSession::Write(const smb_fd fd, const void *buffer, size_t size)
 {
   CSingleLock lock(m_critSect);
 
-  ssize_t byteswritten = 0;
+  // magic value (62k), decrease if we crash
+  size_t DSM_MAX_WRITE_SIZE = 63488;
+  char *buffer_ptr = (char*)buffer;
+  size_t totalBytesWritten = 0;
   time_t start = 0;
   while(1)
   {
-    byteswritten = m_dsmlib->smb_fwrite(m_smb_session, fd, buffer, size);
-    if (byteswritten >= 0)
-      break;
+    size_t writeSize = std::min(DSM_MAX_WRITE_SIZE, size - totalBytesWritten);
+    ssize_t bytesWritten = m_dsmlib->smb_fwrite(m_smb_session, fd, buffer_ptr + totalBytesWritten, writeSize);
+    if (bytesWritten >= 0)
+    {
+      totalBytesWritten += bytesWritten;
+      if (totalBytesWritten >= size)
+        break;
+      continue;
+    }
 
     if (!start)
       start = time(NULL);
@@ -833,7 +843,7 @@ ssize_t CDSMSession::Write(const smb_fd fd, const void *buffer, size_t size)
     // 100ms retry
       usleep(100 * 1000);
   }
-  return byteswritten;
+  return totalBytesWritten;
 }
 
 int64_t CDSMSession::GetPosition(const smb_fd fd)
