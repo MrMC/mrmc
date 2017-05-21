@@ -192,6 +192,8 @@ void CEmbyUtils::ReportProgress(CFileItem &item, double currentSeconds)
   // we get called from Application.cpp every 500ms
   if ((g_playbackState == MediaServicesPlayerState::stopped || g_progressSec <= 0 || g_progressSec > 30))
   {
+    g_progressSec = 0;
+    
     std::string status;
     if (g_playbackState == MediaServicesPlayerState::playing )
       status = "playing";
