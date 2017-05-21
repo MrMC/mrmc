@@ -77,7 +77,7 @@ CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
 
 CWinSystemIOS::~CWinSystemIOS()
 {
-  [m_pDisplayLink->callbackClass release];
+  m_pDisplayLink->callbackClass = nil;
   delete m_pDisplayLink;
 }
 
@@ -373,12 +373,10 @@ void CWinSystemIOS::OnAppFocusChange(bool focus)
 //--------------------------------------------------------------
 - (void) runDisplayLink;
 {
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   if (_videoSyncImpl != nil)
   {
     _videoSyncImpl->IosVblankHandler();
   }
-  [pool release];
 }
 @end
 
@@ -481,7 +479,7 @@ bool CWinSystemIOS::Show(bool raise)
   return true;
 }
 
-void* CWinSystemIOS::GetEAGLContextObj()
+EAGLContext* CWinSystemIOS::GetEAGLContextObj()
 {
   return [g_xbmcController getEAGLContextObj];
 }

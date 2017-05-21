@@ -579,13 +579,13 @@ void CWinEventsOSXImp::DisableInput()
   delete WinEvents, WinEvents = NULL;
 }
 
-void CWinEventsOSXImp::HandleInputEvent(void *event)
+void CWinEventsOSXImp::HandleInputEvent(NSEvent *event)
 {
   if (!WinEvents)
     return;
 
   if(event && WinEvents->mLocalMonitorId != nil)
-    InputEventHandler((NSEvent*)event);
+    InputEventHandler(event);
 }
 
 // from hotkeycontroller - tapping events in its own thread

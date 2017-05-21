@@ -20,7 +20,6 @@
 
 #import "platform/darwin/ios/IOSKeyboard.h"
 
-#import "platform/darwin/AutoPool.h"
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/ios/XBMCController.h"
@@ -31,10 +30,7 @@ KeyboardView *g_pIosKeyboard = nil;
 
 bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
-  // we are in xbmc main thread.
-
-  CCocoaAutoPool pool;
-  
+  // we are in xbmc main thread.  
   @synchronized([KeyboardView class])
   {
     // in case twice open keyboard.
@@ -73,7 +69,6 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
     if (confirmed)
       typedString = [g_pIosKeyboard.text UTF8String];
   }
-  [g_pIosKeyboard release]; // bye bye native keyboard
   @synchronized([KeyboardView class])
   {
     g_pIosKeyboard = nil;

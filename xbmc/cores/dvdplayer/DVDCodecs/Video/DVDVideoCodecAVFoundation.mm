@@ -26,7 +26,6 @@
 #import "cores/dvdplayer/DVDClock.h"
 #import "cores/dvdplayer/DVDStreamInfo.h"
 #import "cores/VideoRenderers/RenderManager.h"
-#import "platform/darwin/AutoPool.h"
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/ios-common/VideoLayerView.h"
 #if defined(TARGET_DARWIN_TVOS)
@@ -183,8 +182,6 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 {
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAVF) && !hints.software)
   {
-    CCocoaAutoPool pool;
-
     switch(hints.profile)
     {
       //case FF_PROFILE_H264_HIGH_10:
@@ -296,14 +293,13 @@ void CDVDVideoCodecAVFoundation::Dispose()
     StopSampleProvider();
     DrainQueues();
 
-    dispatch_release(m_providerQueue);
+    m_providerQueue = nil;
     pthread_mutex_destroy(&m_trackerQueueMutex);
     pthread_mutex_destroy(&m_sampleBuffersMutex);
 
     dispatch_sync(dispatch_get_main_queue(),^{
       VideoLayerView *mcview = (VideoLayerView*)m_decoder;
       [g_xbmcController removeVideoView:mcview];
-      [mcview release];
     });
     m_decoder = nullptr;
   }

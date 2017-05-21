@@ -63,7 +63,6 @@ NSString * const kOSXGLWindowPositionHeightWidth = @"OSXGLWindowPositionHeightWi
 -(void) dealloc
 {
   [self setDelegate:nil];
-  [super dealloc];
 }
 
 - (BOOL)windowShouldClose:(id)sender

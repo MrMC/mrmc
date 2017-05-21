@@ -27,6 +27,12 @@
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "threads/Thread.h"
 
+#ifdef __OBJC__
+  @class VideoLayerView;
+#else
+  class VideoLayerView;
+#endif
+
 struct pktTracker;
 class CAVFCodecMessage;
 class CBitstreamConverter;
@@ -59,7 +65,7 @@ protected:
   double        GetRenderPtsSeconds();
   void          UpdateFrameRateTracking(double pts);
 
-  void                   *m_decoder;        // opaque decoder reference
+  VideoLayerView         *m_decoder;        // opaque decoder reference
 	dispatch_queue_t        m_providerQueue;
   CMFormatDescriptionRef  m_fmt_desc;
   pthread_mutex_t         m_sampleBuffersMutex;    // mutex protecting queue manipulation

@@ -30,7 +30,6 @@
 
   unsigned int  _screenIdx;
   bool _externalScreen;
-  IOSEAGLView *_glView;
   IOSExternalTouchController *_externalTouchController;
   UIInterfaceOrientation _lastTouchControllerOrientation;
 }

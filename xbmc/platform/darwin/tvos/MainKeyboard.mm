@@ -25,15 +25,10 @@
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/MainKeyboardView.h"
 
-#import "AutoPool.h"
-
 KeyboardView *g_pTvosKeyboard = nil;
 
 bool CMainKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
-  // we are in the MCRuntimeLib thread so we need a pool
-  CCocoaAutoPool pool;
-  
   @synchronized([KeyboardView class])
   {
     // in case twice open keyboard.
@@ -68,7 +63,6 @@ bool CMainKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string
     if (confirmed)
       typedString = [g_pTvosKeyboard._text UTF8String];
   }
-  [g_pTvosKeyboard release]; // bye bye native keyboard
   @synchronized([KeyboardView class])
   {
     g_pTvosKeyboard = nil;

@@ -36,8 +36,6 @@
 #import "CocoaInterface.h"
 #import "DllPaths_generated.h"
 
-#import "platform/darwin/AutoPool.h"
-
 // extern this so we do not have to make a include for cocoa_monitor.m
 extern io_service_t IOServicePortFromCGDisplayID(CGDirectDisplayID displayID);
 
@@ -164,14 +162,11 @@ double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
 
 void Cocoa_DoAppleScript(const char* scriptSource)
 {
-  CCocoaAutoPool pool;
-
   NSDictionary* errorDict;
   NSAppleEventDescriptor* returnDescriptor = NULL;
   NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
     [NSString stringWithUTF8String:scriptSource]];
   returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-  [scriptObject release];
 }
   
 void Cocoa_DoAppleScriptFile(const char* filePath)
@@ -209,7 +204,6 @@ void Cocoa_DoAppleScriptFile(const char* filePath)
 
   NSAppleScript* appleScript = [[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:scriptFile] error:nil];
   [appleScript executeAndReturnError:nil];
-  [appleScript release];
 }
 
 const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName)
@@ -238,15 +232,12 @@ const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconNa
     NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithData:[icon TIFFRepresentation]];
     NSData* png = [rep representationUsingType:NSPNGFileType properties:@{}];
     [png writeToFile:pngFile atomically:YES];
-    [rep release];
-    [icon release];
   }
   return [pngFile UTF8String];
 }
 
 char* Cocoa_MountPoint2DeviceName(char *path)
 {
-  CCocoaAutoPool pool;
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // path will get realloc'ed and replaced IF this is a physical DVD.
   char* strDVDDevice;
@@ -276,7 +267,6 @@ char* Cocoa_MountPoint2DeviceName(char *path)
 
 bool Cocoa_GetVolumeNameFromMountPoint(const std::string &mountPoint, std::string &volumeName)
 {
-  CCocoaAutoPool pool;
   NSFileManager *fm = [NSFileManager defaultManager];
   NSArray *mountedVolumeUrls = [fm mountedVolumeURLsIncludingResourceValuesForKeys:@[ NSURLVolumeNameKey, NSURLPathKey ] options:0];
   bool resolved = false;

@@ -161,8 +161,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA) && !hints.software)
   {
-    CCocoaAutoPool pool;
-
     switch(hints.profile)
     {
       //case FF_PROFILE_H264_HIGH_10:
@@ -382,7 +380,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
 void CDVDVideoCodecVDA::Dispose()
 {
-  CCocoaAutoPool pool;
   if (m_vda_decoder)
     VDADecoderDestroy((VDADecoder)m_vda_decoder), m_vda_decoder = NULL;
 
@@ -412,8 +409,6 @@ void CDVDVideoCodecVDA::SetDropState(bool bDrop)
 
 int CDVDVideoCodecVDA::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
-  CCocoaAutoPool pool;
-
   if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
   {
     if (m_queue_depth > 0)
@@ -456,7 +451,6 @@ int CDVDVideoCodecVDA::Decode(uint8_t* pData, int iSize, double dts, double pts)
 
 void CDVDVideoCodecVDA::Reset(void)
 {
-  CCocoaAutoPool pool;
   VDADecoderFlush((VDADecoder)m_vda_decoder, 0);
 
   while (m_queue_depth)
@@ -548,7 +542,6 @@ bool CDVDVideoCodecVDA::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 
 void CDVDVideoCodecVDA::DisplayQueuePop(void)
 {
-  CCocoaAutoPool pool;
   if (!m_display_queue || m_queue_depth == 0)
     return;
 
@@ -612,7 +605,6 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   uint32_t           infoFlags,
   CVImageBufferRef   imageBuffer)
 {
-  CCocoaAutoPool pool;
   // Warning, this is an async callback. There can be multiple frames in flight.
   CDVDVideoCodecVDA *ctx = (CDVDVideoCodecVDA*)decompressionOutputRefCon;
 

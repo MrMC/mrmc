@@ -116,22 +116,17 @@ int GetDisplayIndex(CGDirectDisplayID display)
 
 NSString* screenNameForDisplay(CGDirectDisplayID displayID)
 {
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
   NSString *screenName = nil;
 
   // IODisplayCreateInfoDictionary leaks IOCFUnserializeparse, nothing we can do about it.
-  NSDictionary *deviceInfo = (NSDictionary *)IODisplayCreateInfoDictionary(CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName);
+  NSDictionary *deviceInfo = (NSDictionary *)CFBridgingRelease(IODisplayCreateInfoDictionary(CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName));
   NSDictionary *localizedNames = [deviceInfo objectForKey:[NSString stringWithUTF8String:kDisplayProductName]];
 
   if ([localizedNames count] > 0) {
-      screenName = [[localizedNames objectForKey:[[localizedNames allKeys] objectAtIndex:0]] retain];
+      screenName = [localizedNames objectForKey:[[localizedNames allKeys] objectAtIndex:0]];
   }
 
-  [deviceInfo release];
-  [pool release];
-
-  return [screenName autorelease];
+  return screenName;
 }
 
 // try to find mode that matches the desired size, refreshrate
@@ -316,8 +311,6 @@ bool CWinSystemOSX::DestroyWindowSystem()
 
 bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  
   m_name = name;
   m_nWidth = res.iWidth;
   m_nHeight = res.iHeight;
@@ -385,7 +378,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   // warning, we can order front but not become
   // key window or risk starting up with bad flicker
   // becoming key window must happen in completion block.
-  [(NSWindow*)m_appWindow orderFront:nil];
+  [m_appWindow orderFront:nil];
 
   [NSAnimationContext endGrouping];
 
@@ -394,10 +387,10 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   // the tracking area mouseenter, mouseexit are not called
   // so we have to decide here to initial hide the os cursor
   NSPoint mouse = [NSEvent mouseLocation];
-  if ([NSWindow windowNumberAtPoint:mouse belowWindowWithWindowNumber:0] == ((NSWindow *)m_appWindow).windowNumber)
+  if ([NSWindow windowNumberAtPoint:mouse belowWindowWithWindowNumber:0] == (m_appWindow).windowNumber)
   {
     // warp XBMC cursor to our position
-    NSPoint locationInWindowCoords = [(NSWindow *)m_appWindow mouseLocationOutsideOfEventStream];
+    NSPoint locationInWindowCoords = [m_appWindow mouseLocationOutsideOfEventStream];
     XBMC_Event newEvent;
     memset(&newEvent, 0, sizeof(newEvent));
     newEvent.type = XBMC_MOUSEMOTION;
@@ -406,29 +399,23 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
     newEvent.motion.y =  locationInWindowCoords.y;
     g_application.OnEvent(newEvent);
   }
-  [pool release];
 
   return true;
 }
 
 bool CWinSystemOSX::DestroyWindowInternal()
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
   // set this 1st, we should really mutex protext m_appWindow in this class
   m_bWindowCreated = false;
   if (m_appWindow)
   {
-    NSWindow *oldAppWindow = (NSWindow*)m_appWindow;
+    NSWindow *oldAppWindow = m_appWindow;
     m_appWindow = NULL;
     dispatch_sync(dispatch_get_main_queue(), ^{
       [oldAppWindow setContentView:nil];
-      [oldAppWindow release];
     });
   }
 
-  [pool release];
-  
   return true;
 }
 
@@ -442,13 +429,13 @@ bool CWinSystemOSX::DestroyWindow()
 
 bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  NSWindow* window = (NSWindow*)m_appWindow;
+  NSWindow* window = m_appWindow;
 
   if (m_bFullScreen)
   {
     NSRect myNewFrame = NSMakeRect(newLeft, newTop, newWidth, newHeight);
     
-    NSDictionary* windowResize = [NSDictionary dictionaryWithObjectsAndKeys: (NSWindow*)m_appWindow, NSViewAnimationTargetKey, [NSValue valueWithRect: myNewFrame], NSViewAnimationEndFrameKey, nil];
+    NSDictionary* windowResize = [NSDictionary dictionaryWithObjectsAndKeys: m_appWindow, NSViewAnimationTargetKey, [NSValue valueWithRect: myNewFrame], NSViewAnimationEndFrameKey, nil];
     NSArray* animations = [NSArray arrayWithObjects:windowResize, nil];
     NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations: animations];
     
@@ -456,7 +443,6 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
     [animation setAnimationCurve: NSAnimationEaseIn];
     [animation setDuration: 0.5];
     [animation startAnimation];
-    [animation release];
   }
   else if ([window inLiveResize] == NO)
   {
@@ -470,7 +456,7 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
   }
   [window update];
 
-  OSXGLView *view = [(NSWindow*)m_appWindow contentView];
+  OSXGLView *view = [m_appWindow contentView];
   [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
   [view setFrameSize:NSMakeSize(newWidth, newHeight)];
   [[view getGLContext] update];
@@ -524,7 +510,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   bool needToggle = m_bFullScreen || fullScreen;
   m_bFullScreen = fullScreen;
   
-  NSWindow *window = (NSWindow *)m_appWindow;
+  NSWindow *window = m_appWindow;
   if (needToggle)
   {
     // set the toggle flag so that the
@@ -605,7 +591,7 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenI
   CGDirectDisplayID display_id = (CGDirectDisplayID)GetDisplayID(screenIdx);
  
   if (m_appWindow)
-    display_id = GetDisplayIDFromScreen( [(NSWindow *)m_appWindow screen] );
+    display_id = GetDisplayIDFromScreen( [m_appWindow screen] );
   CGDisplayModeRef mode  = CGDisplayCopyDisplayMode(display_id);
   *w = CGDisplayModeGetWidth(mode);
   *h = CGDisplayModeGetHeight(mode);
@@ -741,7 +727,7 @@ bool CWinSystemOSX::FlushBuffer(void)
 {
   if (m_appWindow)
   {
-    OSXGLView *contentView = [(NSWindow *)m_appWindow contentView];
+    OSXGLView *contentView = [m_appWindow contentView];
     NSOpenGLContext *glcontex = [contentView getGLContext];
     [glcontex flushBuffer];
   }
@@ -750,8 +736,6 @@ bool CWinSystemOSX::FlushBuffer(void)
 
 bool CWinSystemOSX::IsObscured(void)
 {
-  CCocoaAutoPool pool;
-
   if (m_bFullScreen && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
     return false;// in true fullscreen mode - we can't be obscured by anyone...
 
@@ -907,8 +891,6 @@ bool CWinSystemOSX::IsObscured(void)
 
 void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
 {
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
   if (m_bFullScreen && bGaining)
   {
     // find the window
@@ -936,7 +918,6 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
       }
     }
   }
-  [pool release];
 }
 
 void CWinSystemOSX::ShowOSMouse(bool show)
@@ -945,31 +926,19 @@ void CWinSystemOSX::ShowOSMouse(bool show)
 
 bool CWinSystemOSX::Minimize()
 {
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
   [[NSApplication sharedApplication] miniaturizeAll:nil];
-
-  [pool release];
   return true;
 }
 
 bool CWinSystemOSX::Restore()
 {
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
   [[NSApplication sharedApplication] unhide:nil];
-
-  [pool release];
   return true;
 }
 
 bool CWinSystemOSX::Hide()
 {
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
   [[NSApplication sharedApplication] hide:nil];
-
-  [pool release];
   return true;
 }
 
@@ -1097,7 +1066,6 @@ void CWinSystemOSX::StopTextInput()
 {
   if (g_textInputResponder) {
     [g_textInputResponder removeFromSuperview];
-    [g_textInputResponder release];
     g_textInputResponder = nil;
   }
 }
@@ -1118,8 +1086,6 @@ void CWinSystemOSX::Unregister(IDispResource* resource)
 
 bool CWinSystemOSX::Show(bool raise)
 {
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
   if (raise)
   {
     [[NSApplication sharedApplication] unhide:nil];
@@ -1131,7 +1097,6 @@ bool CWinSystemOSX::Show(bool raise)
     [[NSApplication sharedApplication] unhideWithoutActivation];
   }
 
-  [pool release];
   return true;
 }
 

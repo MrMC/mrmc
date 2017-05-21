@@ -749,6 +749,7 @@ void CActiveAESink::OpenSink()
     m_requestedFormat.m_streamInfo.m_IECPacked = CAESinkFactory::FormatNeedsIECPacked(m_requestedFormat);
     if (m_requestedFormat.m_streamInfo.m_IECPacked)
     {
+      SAFE_DELETE(m_packer);
       m_packer = new CAEBitstreamPacker();
       m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
       m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);

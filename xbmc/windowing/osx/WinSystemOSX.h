@@ -26,6 +26,14 @@
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 
+#ifdef __OBJC__
+  @class NSWindow;
+  @class OSXGLView;
+#else
+  class NSWindow;
+  class OSXGLView;
+#endif
+
 typedef struct _CGLContextObject *CGLContextObj;
 class IDispResource;
 
@@ -103,8 +111,8 @@ protected:
   void  StartTextInput();
   void  StopTextInput();
 
-  void                        *m_appWindow;
-  void                        *m_glView;
+  NSWindow                    *m_appWindow;
+  OSXGLView                   *m_glView;
   static void                 *m_lastOwnedContext;
   bool                         m_obscured;
   unsigned int                 m_obscured_timecheck;

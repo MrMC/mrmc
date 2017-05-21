@@ -133,10 +133,6 @@ static void setupApplicationMenu(void)
 
   // Tell the application object that this is now the application menu
   [[NSApplication sharedApplication] setAppleMenu:appleMenu];
-
-  // Finally give up our references to the objects
-  [appleMenu release];
-  [menuItem release];
 }
 
 // The main class of the application, the application's delegate
@@ -155,17 +151,14 @@ static void setupApplicationMenu(void)
 
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
   [windowMenu addItem:menuItem];
-  [menuItem release];
 
   // "Full/Windowed Toggle" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top" action:@selector(floatOnTopToggle:) keyEquivalent:@"t"];
   [windowMenu addItem:menuItem];
-  [menuItem release];
 
   // "Minimize" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
   [windowMenu addItem:menuItem];
-  [menuItem release];
 
   // Put menu into the menubar
   windowMenuItem = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
@@ -174,10 +167,6 @@ static void setupApplicationMenu(void)
 
   // Tell the application object that this is now the window menu
   [[NSApplication sharedApplication] setWindowsMenu:windowMenu];
-
-  // Finally give up our references to the objects
-  [windowMenu release];
-  [windowMenuItem release];
 }
 
 // Set the working directory to the .app's parent directory
@@ -202,9 +191,6 @@ static void setupApplicationMenu(void)
 // is not required anymore, who knows ?
 - (void) kickstartMultiThreaded:(id)arg;
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  // empty
-  [pool release];
 }
 
 - (void) stopRunLoop
@@ -235,9 +221,6 @@ static void setupApplicationMenu(void)
 
 - (void) mainLoopThread:(id)arg
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  // empty
-  
   [[NSThread currentThread] setName:@"MCRuntimeLib"];
 
 #if defined(DEBUG)
@@ -260,7 +243,6 @@ static void setupApplicationMenu(void)
 
   MCRuntimeLib_SetRenderGUI(false);
   [self performSelectorOnMainThread:@selector(stopRunLoop) withObject:nil waitUntilDone:false];
-  [pool release];
 }
 
 // Called after the internal event loop has started running.
@@ -391,27 +373,18 @@ static void setupApplicationMenu(void)
 
 - (void) deviceDidMountNotification:(NSNotification *) note
 {
-  // calling into c++ code, need to use autorelease pools
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
   CDarwinStorageProvider::SetEvent();
-  [pool release];
 }
 
 - (void) deviceDidUnMountNotification:(NSNotification *) note 
 {
-  // calling into c++ code, need to use autorelease pools
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
   CDarwinStorageProvider::SetEvent();
-  [pool release];
 }
 
 @end
 
 int main(int argc, char *argv[])
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   XBMCDelegate *xbmc_delegate;
 
   // Block SIGPIPE
@@ -469,9 +442,6 @@ int main(int argc, char *argv[])
 
   // Start the main event loop
   [[NSApplication sharedApplication] run];
-
-  [xbmc_delegate release];
-  [pool release];
 
   return gStatus;
 }

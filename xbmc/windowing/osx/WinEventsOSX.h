@@ -23,6 +23,12 @@
 #include "windowing/WinEvents.h"
 #include "threads/Thread.h"
 
+#ifdef __OBJC__
+  @class NSEvent;
+#else
+  class NSEvent;
+#endif
+
 class CWinEventsOSX : public IWinEvents
 {
 public:
@@ -42,7 +48,7 @@ public:
 
   static void EnableInput();
   static void DisableInput();
-  static void HandleInputEvent(void *event);
+  static void HandleInputEvent(NSEvent *event);
 
   void *GetEventTap(){return mEventTap;}
   bool TapVolumeKeys(){return mTapVolumeKeys;}
@@ -58,7 +64,11 @@ private:
   void *mRunLoopSource;
   void *mRunLoop;
   void *mEventTap;
+#ifdef __OBJC__
+  id   mLocalMonitorId;
+#else
   void *mLocalMonitorId;
+#endif
   bool mHotKeysEnabled;
   bool mTapVolumeKeys;
   bool mTapPowerKey;

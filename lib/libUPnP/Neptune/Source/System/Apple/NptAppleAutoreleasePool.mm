@@ -23,7 +23,7 @@ public:
     virtual ~AppleAutoreleasePool();
 
 private:
-    NSAutoreleasePool* m_Pool;
+    //NSAutoreleasePool* m_Pool;
 };
 
 /*----------------------------------------------------------------------
@@ -31,7 +31,7 @@ private:
 +---------------------------------------------------------------------*/
 AppleAutoreleasePool::AppleAutoreleasePool() 
 {
-    m_Pool = [[NSAutoreleasePool alloc] init];
+    //m_Pool = [[NSAutoreleasePool alloc] init];
 }
 
 /*----------------------------------------------------------------------
@@ -39,8 +39,8 @@ AppleAutoreleasePool::AppleAutoreleasePool()
 +---------------------------------------------------------------------*/
 AppleAutoreleasePool::~AppleAutoreleasePool() 
 {
-    [m_Pool drain];
-    m_Pool = NULL;
+    //[m_Pool drain];
+    //m_Pool = NULL;
 }
 
 /*----------------------------------------------------------------------

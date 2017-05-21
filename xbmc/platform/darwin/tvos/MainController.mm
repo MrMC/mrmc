@@ -32,7 +32,6 @@
 #import "interfaces/AnnouncementManager.h"
 #import "network/NetworkServices.h"
 #import "messaging/ApplicationMessenger.h"
-#import "platform/darwin/AutoPool.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainEAGLView.h"
 #import "platform/darwin/tvos/MainController.h"
@@ -142,7 +141,6 @@ MainController *g_xbmcController;
   if (self.remoteIdleTimer != nil)
   {
     [self.remoteIdleTimer invalidate];
-    [self.remoteIdleTimer release];
     self.remoteIdleTimer = nil;
   }
   m_remoteIdleState = false;
@@ -198,7 +196,6 @@ MainController *g_xbmcController;
   if (self.pressAutoRepeatTimer != nil)
   {
     [self.pressAutoRepeatTimer invalidate];
-    [self.pressAutoRepeatTimer release];
     self.pressAutoRepeatTimer = nil;
   }
 }
@@ -434,7 +431,6 @@ MainController *g_xbmcController;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
   swipeLeft.delegate = self;
   [m_glView addGestureRecognizer:swipeLeft];
-  [swipeLeft release];
 
   //single finger swipe right
   UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
@@ -444,7 +440,6 @@ MainController *g_xbmcController;
   swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
   swipeRight.delegate = self;
   [m_glView addGestureRecognizer:swipeRight];
-  [swipeRight release];
 
   //single finger swipe up
   UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
@@ -454,7 +449,6 @@ MainController *g_xbmcController;
   swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
   swipeUp.delegate = self;
   [m_glView addGestureRecognizer:swipeUp];
-  [swipeUp release];
 
   //single finger swipe down
   UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
@@ -464,7 +458,6 @@ MainController *g_xbmcController;
   swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
   swipeDown.delegate = self;
   [m_glView addGestureRecognizer:swipeDown];
-  [swipeDown release];
 }
   
 //--------------------------------------------------------------
@@ -476,7 +469,6 @@ MainController *g_xbmcController;
     initWithTarget:self action:@selector(handlePan:)];
   pan.delegate = self;
   [m_glView addGestureRecognizer:pan];
-  [pan release];
   m_clickResetPan = false;
 }
 //--------------------------------------------------------------
@@ -489,28 +481,24 @@ MainController *g_xbmcController;
   upRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeUpArrow]];
   upRecognizer.delegate = self;
   [m_glView addGestureRecognizer: upRecognizer];
-  [upRecognizer release];
   
   auto downRecognizer = [[UITapGestureRecognizer alloc]
                          initWithTarget: self action: @selector(tapDownArrowPressed:)];
   downRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeDownArrow]];
   downRecognizer.delegate = self;
   [m_glView addGestureRecognizer: downRecognizer];
-  [downRecognizer release];
   
   auto leftRecognizer = [[UITapGestureRecognizer alloc]
                          initWithTarget: self action: @selector(tapLeftArrowPressed:)];
   leftRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeLeftArrow]];
   leftRecognizer.delegate = self;
   [m_glView addGestureRecognizer: leftRecognizer];
-  [leftRecognizer release];
   
   auto rightRecognizer = [[UITapGestureRecognizer alloc]
                           initWithTarget: self action: @selector(tapRightArrowPressed:)];
   rightRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
   rightRecognizer.delegate = self;
   [m_glView addGestureRecognizer: rightRecognizer];
-  [rightRecognizer release];
 }
 //--------------------------------------------------------------
 - (void)createPressGesturecognizers
@@ -526,7 +514,6 @@ MainController *g_xbmcController;
   upRecognizer.minimumPressDuration = 0.01;
   upRecognizer.delegate = self;
   [self.view addGestureRecognizer: upRecognizer];
-  [upRecognizer release];
 
   auto downRecognizer = [[UILongPressGestureRecognizer alloc]
     initWithTarget: self action: @selector(IRRemoteDownArrowPressed:)];
@@ -534,7 +521,6 @@ MainController *g_xbmcController;
   downRecognizer.minimumPressDuration = 0.01;
   downRecognizer.delegate = self;
   [self.view addGestureRecognizer: downRecognizer];
-  [downRecognizer release];
 
   auto leftRecognizer = [[UILongPressGestureRecognizer alloc]
     initWithTarget: self action: @selector(IRRemoteLeftArrowPressed:)];
@@ -542,7 +528,6 @@ MainController *g_xbmcController;
   leftRecognizer.minimumPressDuration = 0.01;
   leftRecognizer.delegate = self;
   [self.view addGestureRecognizer: leftRecognizer];
-  [leftRecognizer release];
 
   auto rightRecognizer = [[UILongPressGestureRecognizer alloc]
     initWithTarget: self action: @selector(IRRemoteRightArrowPressed:)];
@@ -550,7 +535,6 @@ MainController *g_xbmcController;
   rightRecognizer.minimumPressDuration = 0.01;
   rightRecognizer.delegate = self;
   [self.view addGestureRecognizer: rightRecognizer];
-  [rightRecognizer release];
   
   // we always have these under tvos
   auto menuRecognizer = [[UITapGestureRecognizer alloc]
@@ -558,14 +542,12 @@ MainController *g_xbmcController;
   menuRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeMenu]];
   menuRecognizer.delegate  = self;
   [m_glView addGestureRecognizer: menuRecognizer];
-  [menuRecognizer release];
   
   auto playPauseRecognizer = [[UITapGestureRecognizer alloc]
                               initWithTarget: self action: @selector(playPausePressed:)];
   playPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
   playPauseRecognizer.delegate  = self;
   [m_glView addGestureRecognizer: playPauseRecognizer];
-  [playPauseRecognizer release];
   
   auto selectRecognizer = [[UILongPressGestureRecognizer alloc]
                           initWithTarget: self action: @selector(selectPressed:)];
@@ -573,7 +555,6 @@ MainController *g_xbmcController;
   selectRecognizer.minimumPressDuration = 0.001;
   selectRecognizer.delegate = self;
   [self.view addGestureRecognizer: selectRecognizer];
-  [selectRecognizer release];
   
 }
 
@@ -1098,10 +1079,6 @@ MainController *g_xbmcController;
   CAnnounceReceiver::GetInstance().DeInitialize();
 
   [self stopAnimation];
-  [m_glView release];
-  [m_window release];
-  
-  [super dealloc];
 }
 //--------------------------------------------------------------
 - (void)loadView
@@ -1164,7 +1141,7 @@ MainController *g_xbmcController;
   // which would be shown whenever this UIResponder
   // becomes the first responder (which is always the case!)
   // caused by implementing the UIKeyInput protocol
-  return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+  return [[UIView alloc] initWithFrame:CGRectZero];
 }
 //--------------------------------------------------------------
 - (BOOL)canBecomeFirstResponder
@@ -1279,7 +1256,7 @@ MainController *g_xbmcController;
 {
   // tvOS only support one mode, the current one,
   // pass back an array with this inside.
-  NSMutableArray *array = [[[NSMutableArray alloc] initWithCapacity:1] autorelease];
+  NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:1];
   [array addObject:[screen currentMode]];
   return array;
 }
@@ -1447,7 +1424,7 @@ MainController *g_xbmcController;
   if (MCRuntimeLib_Initialized())
     CAEFactory::DeviceChange();
 }
-- (void*) getEAGLContextObj
+- (EAGLContext*) getEAGLContextObj
 {
   return [m_glView getContext];
 }
@@ -1500,7 +1477,6 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)runAnimation:(id)arg
 {
-  CCocoaAutoPool outerpool;
   [[NSThread currentThread] setName:@"MCRuntimeLib"];
   [[NSThread currentThread] setThreadPriority:0.75];
 
@@ -1652,7 +1628,6 @@ MainController *g_xbmcController;
     if (mArt)
     {
       [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-      [mArt release];
     }
   }
   
@@ -1682,7 +1657,6 @@ MainController *g_xbmcController;
    */
 
   [self setIOSNowPlayingInfo:dict];
-  [dict release];
 
 }
 //--------------------------------------------------------------
@@ -1698,7 +1672,6 @@ MainController *g_xbmcController;
     [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
 
   [self setIOSNowPlayingInfo:info];
-  [info release];
 }
 
 - (void)onSeekDelayed:(id)arg
@@ -1718,7 +1691,6 @@ MainController *g_xbmcController;
     [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
 
   [self setIOSNowPlayingInfo:info];
-  [info release];
 }
 
 - (void)onSeekPlaying
@@ -1738,7 +1710,6 @@ MainController *g_xbmcController;
   if (elapsed)
     [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
   [self setIOSNowPlayingInfo:info];
-  [info release];
 }
 //--------------------------------------------------------------
 - (void)onStopPlaying:(NSDictionary *)item

@@ -48,7 +48,6 @@
   #import <IOKit/ps/IOPSKeys.h>
 #endif
 
-#import "AutoPool.h"
 #import "DarwinUtils.h"
 
 #ifndef NSAppKitVersionNumber10_5
@@ -343,13 +342,11 @@ const char *CDarwinUtils::GetOSReleaseString(void)
 
 const char *CDarwinUtils::GetOSVersionString(void)
 {
-  CCocoaAutoPool pool;
   return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
 }
 
 float CDarwinUtils::GetIOSVersion(void)
 {
-  CCocoaAutoPool pool;
   float version;
 #if defined(TARGET_DARWIN_IOS)
   version = [[[UIDevice currentDevice] systemVersion] floatValue];
@@ -366,7 +363,6 @@ const char *CDarwinUtils::GetIOSVersionString(void)
   static std::string iOSVersionString;
   if (iOSVersionString.empty())
   {
-    CCocoaAutoPool pool;
     iOSVersionString.assign((const char*)[[[UIDevice currentDevice] systemVersion] UTF8String]);
   }
   return iOSVersionString.c_str();
@@ -381,7 +377,6 @@ const char *CDarwinUtils::GetOSXVersionString(void)
   static std::string OSXVersionString;
   if (OSXVersionString.empty())
   {
-    CCocoaAutoPool pool;
     OSXVersionString.assign((const char*)[[[NSDictionary dictionaryWithContentsOfFile:
                          @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
   }
@@ -394,7 +389,6 @@ const char *CDarwinUtils::GetOSXVersionString(void)
 
 int  CDarwinUtils::GetFrameworkPath(char* path, size_t *pathsize)
 {
-  CCocoaAutoPool pool;
   // see if we can figure out who we are
   NSString *pathname;
 
@@ -448,7 +442,6 @@ int  CDarwinUtils::GetFrameworkPath(char* path, size_t *pathsize)
 
 int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
 {
-  CCocoaAutoPool pool;
   // see if we can figure out who we are
   NSString *pathname;
 
@@ -561,7 +554,6 @@ int CDarwinUtils::BatteryLevel(void)
 #if defined(TARGET_DARWIN_IOS)
   batteryLevel = [[UIDevice currentDevice] batteryLevel];
 #else
-  CCocoaAutoPool pool;
   CFTypeRef powerSourceInfo = IOPSCopyPowerSourcesInfo();
   CFArrayRef powerSources = IOPSCopyPowerSourcesList(powerSourceInfo);
 
@@ -641,7 +633,6 @@ void CDarwinUtils::SetScheduling(int message)
 
 bool CFStringRefToStringWithEncoding(CFStringRef source, std::string &destination, CFStringEncoding encoding)
 {
-  CCocoaAutoPool pool;
   const char *cstr = CFStringGetCStringPtr(source, encoding);
   if (!cstr)
   {
@@ -676,13 +667,11 @@ void CDarwinUtils::PrintDebugString(std::string debugString)
 
 bool CDarwinUtils::CFStringRefToString(CFStringRef source, std::string &destination)
 {
-  CCocoaAutoPool pool;
   return CFStringRefToStringWithEncoding(source, destination, CFStringGetSystemEncoding());
 }
 
 bool CDarwinUtils::CFStringRefToUTF8String(CFStringRef source, std::string &destination)
 {
-  CCocoaAutoPool pool;
   return CFStringRefToStringWithEncoding(source, destination, kCFStringEncodingUTF8);
 }
 
@@ -696,8 +685,6 @@ const std::string& CDarwinUtils::GetManufacturer(void)
 	// until other than Apple devices with iOS will be released
     manufName = "Apple Inc.";
 #elif defined(TARGET_DARWIN_OSX)
-    CCocoaAutoPool pool;
-
     const CFMutableDictionaryRef matchExpDev = IOServiceMatching("IOPlatformExpertDevice");
     if (matchExpDev)
     {
@@ -708,7 +695,7 @@ const std::string& CDarwinUtils::GetManufacturer(void)
         if (manufacturer)
         {
           if (CFGetTypeID(manufacturer) == CFStringGetTypeID())
-            manufName = (const char*)[[NSString stringWithString:(NSString *)manufacturer] UTF8String];
+            manufName = (const char*)[[NSString stringWithString:(__bridge NSString*)manufacturer] UTF8String];
           else if (CFGetTypeID(manufacturer) == CFDataGetTypeID())
           {
             manufName.assign((const char*)CFDataGetBytePtr((CFDataRef)manufacturer), CFDataGetLength((CFDataRef)manufacturer));
@@ -729,8 +716,6 @@ bool CDarwinUtils::IsAliasShortcut(const std::string& path, bool isdirectory)
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_OSX)
-  CCocoaAutoPool pool;
-
   NSURL *nsUrl;
   if (isdirectory)
   {
@@ -762,8 +747,6 @@ bool CDarwinUtils::IsAliasShortcut(const std::string& path, bool isdirectory)
 void CDarwinUtils::TranslateAliasShortcut(std::string& path)
 {
 #if defined(TARGET_DARWIN_OSX)
-  CCocoaAutoPool pool;
-
   NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
   NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
   
@@ -796,8 +779,6 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_OSX)
-  CCocoaAutoPool pool;
-
   NSString *nsToPath = [NSString stringWithUTF8String:toPath.c_str()];
   NSURL *toUrl = [NSURL fileURLWithPath:nsToPath];
   NSString *nsFromPath = [NSString stringWithUTF8String:fromPath.c_str()];

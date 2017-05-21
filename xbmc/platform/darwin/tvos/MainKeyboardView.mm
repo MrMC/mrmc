@@ -262,6 +262,5 @@ static CEvent keyboardFinishedEvent;
 {
   //PRINT_SIGNATURE();
   self._text = nil;
-  [super dealloc];
 }
 @end

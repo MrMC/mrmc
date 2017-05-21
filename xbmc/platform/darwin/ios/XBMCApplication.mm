@@ -260,14 +260,10 @@ XBMCController *m_xbmcController;
 {
   [self registerScreenNotifications:NO];
   [m_xbmcController stopAnimation];
-  [m_xbmcController release];
-
-  [super dealloc];
 }
 @end
 
 int main(int argc, char *argv[]) {
-  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];	
   int retVal = 0;
   
   signal(SIGPIPE, SIG_IGN);
@@ -284,9 +280,5 @@ int main(int argc, char *argv[]) {
   {
     ILOG(@"This always happens.");
   }
-    
-  [pool release];
-	
   return retVal;
-
 }

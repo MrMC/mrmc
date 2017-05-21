@@ -20,8 +20,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class IOSEAGLView;
-
 #import "input/XBMC_keysym.h"
 #import "windowing/XBMC_events.h"
 
@@ -111,7 +109,7 @@ typedef enum
 - (void) activateScreen: (UIScreen *)screen withOrientation:(UIInterfaceOrientation)newOrientation;
   // message from which our instance is obtained
 - (id)   initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
-- (void*) getEAGLContextObj;
+- (EAGLContext*) getEAGLContextObj;
 
 - (void) insertVideoView:(UIView*)view;
 - (void) removeVideoView:(UIView*)view;

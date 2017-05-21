@@ -30,7 +30,7 @@
 #import "platform/darwin/tvos/PreflightHandler.h"
 
 @implementation MainApplicationDelegate
-std::atomic<MainController*> m_xbmcController;
+MainController* m_xbmcController;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -137,9 +137,7 @@ std::atomic<MainController*> m_xbmcController;
   [self unregisterScreenNotifications];
   [self unregisterAudioRouteNotifications];
   [m_xbmcController stopAnimation];
-  [m_xbmcController release];
-
-  [super dealloc];
+  m_xbmcController = nil;
 }
 
 #pragma mark private methods
@@ -290,8 +288,6 @@ std::atomic<MainController*> m_xbmcController;
 
 int main(int argc, char *argv[])
 {
-  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];	
-  
   signal(SIGPIPE, SIG_IGN);
   
   int retVal = 0;
@@ -307,8 +303,6 @@ int main(int argc, char *argv[])
   {
     ILOG(@"This always happens.");
   }
-    
-  [pool release];
 	
   return retVal;
 

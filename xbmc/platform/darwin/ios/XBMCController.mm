@@ -36,7 +36,6 @@
 #import "input/touch/generic/GenericTouchActionHandler.h"
 #import "messaging/ApplicationMessenger.h"
 #import "network/NetworkServices.h"
-#import "platform/darwin/AutoPool.h"
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/ios/IOSEAGLView.h"
@@ -166,7 +165,6 @@ XBMCController *g_xbmcController;
   singleFingerSingleTap.numberOfTouchesRequired = 1;
 
   [m_glView addGestureRecognizer:singleFingerSingleTap];
-  [singleFingerSingleTap release];
 
   //2 finger single tab - right mouse
   //single finger double tab delays single finger single tab - so we
@@ -178,7 +176,6 @@ XBMCController *g_xbmcController;
   doubleFingerSingleTap.numberOfTapsRequired = 1;
   doubleFingerSingleTap.numberOfTouchesRequired = 2;
   [m_glView addGestureRecognizer:doubleFingerSingleTap];
-  [doubleFingerSingleTap release];
 
   //1 finger single long tab - right mouse - alernative
   UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
@@ -187,7 +184,6 @@ XBMCController *g_xbmcController;
   singleFingerSingleLongTap.delaysTouchesBegan = NO;
   singleFingerSingleLongTap.delaysTouchesEnded = NO;
   [m_glView addGestureRecognizer:singleFingerSingleLongTap];
-  [singleFingerSingleLongTap release];
 
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
   UISwipeGestureRecognizer *swipeLeft2 = [[UISwipeGestureRecognizer alloc]
@@ -198,7 +194,6 @@ XBMCController *g_xbmcController;
   swipeLeft2.direction = UISwipeGestureRecognizerDirectionLeft;
   swipeLeft2.delegate = self;
   [m_glView addGestureRecognizer:swipeLeft2];
-  [swipeLeft2 release];
 
   //single finger swipe left
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
@@ -209,7 +204,6 @@ XBMCController *g_xbmcController;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
   swipeLeft.delegate = self;
   [m_glView addGestureRecognizer:swipeLeft];
-  [swipeLeft release];
   
   //single finger swipe right
   UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
@@ -220,7 +214,6 @@ XBMCController *g_xbmcController;
   swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
   swipeRight.delegate = self;
   [m_glView addGestureRecognizer:swipeRight];
-  [swipeRight release];
   
   //single finger swipe up
   UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
@@ -231,7 +224,6 @@ XBMCController *g_xbmcController;
   swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
   swipeUp.delegate = self;
   [m_glView addGestureRecognizer:swipeUp];
-  [swipeUp release];
 
   //single finger swipe down
   UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
@@ -242,7 +234,6 @@ XBMCController *g_xbmcController;
   swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
   swipeDown.delegate = self;
   [m_glView addGestureRecognizer:swipeDown];
-  [swipeDown release];
   
   //for pan gestures with one finger
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
@@ -251,7 +242,6 @@ XBMCController *g_xbmcController;
   pan.delaysTouchesBegan = NO;
   pan.maximumNumberOfTouches = 1;
   [m_glView addGestureRecognizer:pan];
-  [pan release];
 
   //for zoom gesture
   UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc]
@@ -260,7 +250,6 @@ XBMCController *g_xbmcController;
   pinch.delaysTouchesBegan = NO;
   pinch.delegate = self;
   [m_glView addGestureRecognizer:pinch];
-  [pinch release];
 
   //for rotate gesture
   UIRotationGestureRecognizer *rotate = [[UIRotationGestureRecognizer alloc]
@@ -269,7 +258,6 @@ XBMCController *g_xbmcController;
   rotate.delaysTouchesBegan = NO;
   rotate.delegate = self;
   [m_glView addGestureRecognizer:rotate];
-  [rotate release];
 }
 //--------------------------------------------------------------
 - (void) activateKeyboard:(UIView *)view
@@ -581,15 +569,13 @@ XBMCController *g_xbmcController;
   CAnnounceReceiver::GetInstance().DeInitialize();
 
   [self stopAnimation];
-  [m_glView release];
-  [m_window release];
+  m_glView = nil;
+  m_window = nil;
 
   NSNotificationCenter *center;
   // take us off the default center for our app
   center = [NSNotificationCenter defaultCenter];
   [center removeObserver: self];
-  
-  [super dealloc];
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
@@ -621,7 +607,7 @@ XBMCController *g_xbmcController;
   // which would be shown whenever this UIResponder
   // becomes the first responder (which is always the case!)
   // caused by implementing the UIKeyInput protocol
-  return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+  return [[UIView alloc] initWithFrame:CGRectZero];
 }
 //--------------------------------------------------------------
 - (BOOL) canBecomeFirstResponder
@@ -871,7 +857,6 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)runAnimation:(id)arg
 {
-  CCocoaAutoPool outerpool;
   [[NSThread currentThread] setName:@"MCRuntimeLib"];
   [[NSThread currentThread] setThreadPriority:0.75];
 
@@ -1045,10 +1030,7 @@ XBMCController *g_xbmcController;
     {
       MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
       if (mArt)
-      {
         [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-        [mArt release];
-      }
     }
     // these proprity keys are ios5+ only
     NSNumber *elapsed = [item objectForKey:@"elapsed"];
@@ -1078,7 +1060,6 @@ XBMCController *g_xbmcController;
    */
 
   [self setIOSNowPlayingInfo:dict];
-  [dict release];
 
   m_playbackState = IOS_PLAYBACK_PLAYING;
   [self disableNetworkAutoSuspend];
@@ -1097,7 +1078,6 @@ XBMCController *g_xbmcController;
       [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
 
     [self setIOSNowPlayingInfo:info];
-    [info release];
   }
 }
 //--------------------------------------------------------------
@@ -1141,7 +1121,6 @@ XBMCController *g_xbmcController;
     [info setObject:speed forKey:MPNowPlayingInfoPropertyDefaultPlaybackRate];
   
   [self setIOSNowPlayingInfo:info];
-  [info release];
 }
 
 - (void)rescheduleNetworkAutoSuspend
@@ -1166,7 +1145,7 @@ XBMCController *g_xbmcController;
 //  LOG(@"default: %@", [notification name]);
 //  LOG(@"userInfo: %@", [notification userInfo]);
 }
-- (void*) getEAGLContextObj
+- (EAGLContext*) getEAGLContextObj
 {
   return [m_glView getContext];
 }

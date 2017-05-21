@@ -60,15 +60,11 @@
   if (m_trackingArea != nullptr)
   {
     [self removeTrackingArea:m_trackingArea];
-    [m_trackingArea release], m_trackingArea = nullptr;
+    m_trackingArea = nullptr;
   }
 
   [NSOpenGLContext clearCurrentContext];
   [m_glcontext clearDrawable];
-  [m_glcontext release];
-  [m_pixFmt release];
-
-  [super dealloc];
 }
 
 - (BOOL)preservesContentDuringLiveResize
@@ -98,10 +94,7 @@
 {
   //NSLog(@"updateTrackingAreas");
   if (m_trackingArea != nullptr)
-  {
     [self removeTrackingArea:m_trackingArea];
-    [m_trackingArea release];
-  }
   
   const int opts = (NSTrackingMouseEnteredAndExited |
                     NSTrackingMouseMoved |

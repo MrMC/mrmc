@@ -18,7 +18,7 @@
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		18690DCE1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
 		18690DCF1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
-		18700F671C4A724B000A0007 /* TVOSTopShelf.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18700F651C4A724B000A0007 /* TVOSTopShelf.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18700F671C4A724B000A0007 /* TVOSTopShelf.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18700F651C4A724B000A0007 /* TVOSTopShelf.mm */; };
 		188F75FE152217BC009870CE /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
 		188F7602152217DF009870CE /* GUIOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F7600152217DF009870CE /* GUIOperations.cpp */; };
 		189448B41CD905B70036E391 /* LightEffectClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189448B21CD905B70036E391 /* LightEffectClient.cpp */; };
@@ -1872,8 +1872,6 @@
 		F58BF97B1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */; };
 		F58BF97C1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */; };
 		F58BF97D1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */; };
-		F590455E1BA372A600DB589A /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045291BA372A600DB589A /* AutoPool.mm */; };
-		F590455F1BA372A600DB589A /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045291BA372A600DB589A /* AutoPool.mm */; };
 		F59045611BA372A600DB589A /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F590452C1BA372A600DB589A /* DarwinUtils.mm */; };
 		F59045621BA372A600DB589A /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F590452C1BA372A600DB589A /* DarwinUtils.mm */; };
 		F59045631BA372A600DB589A /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F590452E1BA372A600DB589A /* Default-568h@2x.png */; };
@@ -1934,8 +1932,8 @@
 		F5A7B37E113AFB900059D6AA /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
 		F5A7B42C113CBB950059D6AA /* AddonsDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B42B113CBB950059D6AA /* AddonsDirectory.cpp */; };
 		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
-		F5AA30F11BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		F5AA30F21BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		F5AA30F11BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; };
+		F5AA30F21BE5643A00693976 /* VideoLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F01BE5643A00693976 /* VideoLayerView.mm */; };
 		F5AA30FA1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */; };
 		F5AA30FB1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */; };
 		F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */; };
@@ -2431,7 +2429,6 @@
 		F5D13F341BAF0B6D0075A95C /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */; };
 		F5D13F351BAF0B6D0075A95C /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */; };
 		F5D13F361BAF0B6D0075A95C /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AA81077486D00F859CF /* PlayerCoreFactory.cpp */; };
-		F5D13F371BAF0B6D0075A95C /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F59045291BA372A600DB589A /* AutoPool.mm */; };
 		F5D13F381BAF0B6D0075A95C /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */; };
 		F5D13F391BAF0B6D0075A95C /* ConvolutionKernels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */; };
 		F5D13F3A1BAF0B6D0075A95C /* VideoFilterShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E166F0D25F9FA00618676 /* VideoFilterShader.cpp */; };
@@ -3214,10 +3211,10 @@
 		F5D142E01BAF88630075A95C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142DF1BAF88630075A95C /* UIKit.framework */; };
 		F5D142E21BAF88760075A95C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142E11BAF88760075A95C /* CoreGraphics.framework */; };
 		F5D142E41BAF88880075A95C /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D142E31BAF88880075A95C /* MediaPlayer.framework */; };
-		F5D5F2EC1C2083B700E3FE8B /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		F5D5F2ED1C2083B700E3FE8B /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		F5D5F2F01C2083C600E3FE8B /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		F5D5F2F11C2083C600E3FE8B /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		F5D5F2EC1C2083B700E3FE8B /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */; };
+		F5D5F2ED1C2083B700E3FE8B /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */; };
+		F5D5F2F01C2083C600E3FE8B /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */; };
+		F5D5F2F11C2083C600E3FE8B /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */; };
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
@@ -5405,8 +5402,6 @@
 		F58BF9701CD83FAF005BB003 /* LightEffectServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightEffectServices.h; sourceTree = "<group>"; };
 		F58BF9791CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecAudioConverter.cpp; sourceTree = "<group>"; };
 		F58BF97A1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecAudioConverter.h; sourceTree = "<group>"; };
-		F59045281BA372A600DB589A /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
-		F59045291BA372A600DB589A /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
 		F590452B1BA372A600DB589A /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F590452C1BA372A600DB589A /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		F590452E1BA372A600DB589A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -9475,8 +9470,6 @@
 				F5AA30EE1BE5643A00693976 /* ios-common */,
 				F59045451BA372A600DB589A /* osx */,
 				F5D142911BAF31FB0075A95C /* tvos */,
-				F59045281BA372A600DB589A /* AutoPool.h */,
-				F59045291BA372A600DB589A /* AutoPool.mm */,
 				F51063401BDAA11D00BBCED6 /* DarwinNSUserDefaults.h */,
 				F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */,
 				F590452B1BA372A600DB589A /* DarwinUtils.h */,
@@ -11291,7 +11284,6 @@
 				DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */,
 				DF529BAE1741697B00523FB4 /* Environment.cpp in Sources */,
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
-				F590455E1BA372A600DB589A /* AutoPool.mm in Sources */,
 				0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
 				551C3A45175A12010051AAAD /* VDA.cpp in Sources */,
 				DFBB431B178B5E6F006CC20A /* CompileInfo.cpp in Sources */,
@@ -11633,7 +11625,6 @@
 				E499120C174E5D5A00741B6D /* DVDPlayerCodec.cpp in Sources */,
 				E4991213174E5D5A00741B6D /* PAPlayer.cpp in Sources */,
 				E499121B174E5D5A00741B6D /* PlayerCoreFactory.cpp in Sources */,
-				F590455F1BA372A600DB589A /* AutoPool.mm in Sources */,
 				E499121C174E5D5A00741B6D /* PlayerSelectionRule.cpp in Sources */,
 				F5022F211E2D41D5001BBF75 /* hdhomerun_control.c in Sources */,
 				E499121D174E5D5A00741B6D /* ConvolutionKernels.cpp in Sources */,
@@ -12715,7 +12706,6 @@
 				F5D13F341BAF0B6D0075A95C /* DVDPlayerCodec.cpp in Sources */,
 				F5D13F351BAF0B6D0075A95C /* PAPlayer.cpp in Sources */,
 				F5D13F361BAF0B6D0075A95C /* PlayerCoreFactory.cpp in Sources */,
-				F5D13F371BAF0B6D0075A95C /* AutoPool.mm in Sources */,
 				F5D13F381BAF0B6D0075A95C /* PlayerSelectionRule.cpp in Sources */,
 				F5B724F31C7E150C006432AE /* rdwrfn.cpp in Sources */,
 				F5D13F391BAF0B6D0075A95C /* ConvolutionKernels.cpp in Sources */,
@@ -13797,6 +13787,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -13833,6 +13824,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -13953,6 +13945,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -13985,6 +13978,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -14017,6 +14011,7 @@
 			baseConfigurationReference = F5D142901BAF29E20075A95C /* App-TVOS.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -14050,6 +14045,7 @@
 			baseConfigurationReference = F5D142901BAF29E20075A95C /* App-TVOS.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;

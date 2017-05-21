@@ -76,13 +76,11 @@ const CGFloat timeFadeSecs                    = 2.0;
     NSString *stringFromUTFString = [[NSString alloc] initWithUTF8String:descText.c_str()];
     
     [descriptionLabel setText:stringFromUTFString];
-    [stringFromUTFString release];
 
     //resize it to full view
     [descriptionLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     [descriptionLabel setAutoresizesSubviews:YES];
     [_touchView addSubview:descriptionLabel];
-    [descriptionLabel release];
 
     //load the splash image
     std::string strUserSplash = CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png");
@@ -99,7 +97,6 @@ const CGFloat timeFadeSecs                    = 2.0;
     [_touchView addSubview:xbmcLogoView];
     //send the image to the background
     [_touchView sendSubviewToBack:xbmcLogoView];
-    [xbmcLogoView release];
   
     [[self view] addSubview: _touchView];
 
@@ -140,7 +137,6 @@ const CGFloat timeFadeSecs                    = 2.0;
   if(_sleepTimer != nil)
   {
     [_sleepTimer invalidate];
-    [_sleepTimer release];
     _sleepTimer = nil;
   }
 }
@@ -192,7 +188,6 @@ const CGFloat timeFadeSecs                    = 2.0;
   [doubleFingerSingleTap setNumberOfTapsRequired:1];
   [doubleFingerSingleTap setNumberOfTouchesRequired:2];
   [[self view] addGestureRecognizer:doubleFingerSingleTap];
-  [doubleFingerSingleTap release];
   
   //1 finger single long tab - right mouse - alernative
   UITapGestureRecognizer *singleFingerSingleLongTap = (UITapGestureRecognizer*)[[UILongPressGestureRecognizer alloc]
@@ -201,14 +196,12 @@ const CGFloat timeFadeSecs                    = 2.0;
   singleFingerSingleLongTap.delaysTouchesEnded = YES;  
   singleFingerSingleLongTap.numberOfTouchesRequired = 1;
   [self.view addGestureRecognizer:singleFingerSingleLongTap];
-  [singleFingerSingleLongTap release];
   
   //1 finger single tab - left mouse
   UITapGestureRecognizer *singleFingerSingleTap = [[UITapGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleFingerSingleTap:)];  
   [singleFingerSingleTap setDelaysTouchesBegan:NO];
   [[self view] addGestureRecognizer:singleFingerSingleTap];
-  [singleFingerSingleTap release];
   
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
   UISwipeGestureRecognizer *swipeDoubleLeft = [[UISwipeGestureRecognizer alloc]
@@ -216,7 +209,6 @@ const CGFloat timeFadeSecs                    = 2.0;
   [swipeDoubleLeft setNumberOfTouchesRequired:2];
   [swipeDoubleLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
   [[self view] addGestureRecognizer:swipeDoubleLeft];
-  [swipeDoubleLeft release];
   
   //single finger swipe left for left
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
@@ -224,7 +216,6 @@ const CGFloat timeFadeSecs                    = 2.0;
   [swipeLeft setNumberOfTouchesRequired:1];
   [swipeLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
   [[self view] addGestureRecognizer:swipeLeft];
-  [swipeLeft release];
 
   //single finger swipe right for right
   UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
@@ -232,7 +223,6 @@ const CGFloat timeFadeSecs                    = 2.0;
   [swipeRight setNumberOfTouchesRequired:1];
   [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
   [[self view] addGestureRecognizer:swipeRight];
-  [swipeRight release];
 
   //single finger swipe up for up
   UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
@@ -240,7 +230,6 @@ const CGFloat timeFadeSecs                    = 2.0;
   [swipeUp setNumberOfTouchesRequired:1];
   [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
   [[self view] addGestureRecognizer:swipeUp];  
-  [swipeUp release];
 
   //single finger swipe down for down
   UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
@@ -248,7 +237,6 @@ const CGFloat timeFadeSecs                    = 2.0;
   [swipeDown setNumberOfTouchesRequired:1];
   [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
   [[self view] addGestureRecognizer:swipeDown];
-  [swipeDown release];
   
 }
 //--------------------------------------------------------------
@@ -328,9 +316,6 @@ const CGFloat timeFadeSecs                    = 2.0;
 - (void)dealloc
 {
   [self stopSleepTimer];
-  [_touchView release];  
-  [_internalWindow release];
-  [super dealloc];  
 }
 //--------------------------------------------------------------
 - (BOOL)shouldAutorotate

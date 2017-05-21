@@ -72,7 +72,6 @@
       ELOG(@"Failed to set ES context current");
     
     m_context = aContext;
-    [aContext release];
 
     [self createFramebuffer];
     [self setFramebuffer];
@@ -85,9 +84,7 @@
 - (void) dealloc
 {
   [self deleteFramebuffer];    
-  [m_context release];
-  
-  [super dealloc];
+  m_context = nil;
 }
 
 //--------------------------------------------------------------
@@ -103,10 +100,7 @@
   if (m_context != newContext)
   {
     [self deleteFramebuffer];
-    
-    [m_context release];
-    m_context = [newContext retain];
-    
+    m_context = newContext;
     [EAGLContext setCurrentContext:nil];
   }
 }

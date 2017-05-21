@@ -139,10 +139,7 @@ void SendEditingText(const char *text, unsigned int location, unsigned int lengt
   }
 
   if (_markedText != aString)
-  {
-    [_markedText release];
-    _markedText = [aString retain];
-  }
+    _markedText = aString;
 
   _selectedRange = selRange;
 //  _markedRange = NSMakeRange(0, [aString length]);
@@ -153,10 +150,8 @@ void SendEditingText(const char *text, unsigned int location, unsigned int lengt
 
 - (void) unmarkText
 {
-  [_markedText release];
   _markedText = nil;
   _markedRange = NSMakeRange(NSNotFound, 0);
-
   SendEditingText("", 0, 0);
 }
 

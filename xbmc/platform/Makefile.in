@@ -3,7 +3,6 @@ SRCS += MCRuntimeLib.cpp
 SRCS += MCRuntimeLibContext.cpp
 
 ifeq ($(findstring osx,@ARCH@), osx)
-SRCS += darwin/AutoPool.mm
 SRCS += darwin/DarwinUtils.mm
 SRCS += darwin/DictionaryUtils.mm
 SRCS += darwin/OSXGNUReplacements.c

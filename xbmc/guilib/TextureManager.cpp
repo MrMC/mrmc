@@ -499,8 +499,13 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
   // sanity check before delete in that case.
 #if defined(TARGET_DARWIN_IOS)
     if (!g_Windowing.IsBackgrounded() || glIsTexture(m_unusedHwTextures[i]))
+#else
+    if (glIsTexture(m_unusedHwTextures[i]))
 #endif
-      glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);
+    {
+      GLuint unusedHwTexture = m_unusedHwTextures[i];
+      glDeleteTextures(1, &unusedHwTexture);
+    }
   }
 #endif
   m_unusedHwTextures.clear();

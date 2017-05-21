@@ -203,7 +203,6 @@ bool CCocoaPowerSyscall::HasBattery(void)
 
   if (m_HasBattery == -1)
   {
-    CCocoaAutoPool autopool;
     CFArrayRef battery_info = NULL;
 
     if (IOPMCopyBatteryInfo(kIOMasterPortDefault, &battery_info) != kIOReturnSuccess)
@@ -254,7 +253,6 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
 {
 #if !defined(TARGET_DARWIN_IOS)
-  CCocoaAutoPool autopool;
   // we want sleep/wake notifications, register to receive system power notifications
   m_root_port = IORegisterForSystemPower(this, &m_notify_port, OSPowerCallBack, &m_notifier_object);
   if (m_root_port)
@@ -283,7 +281,6 @@ void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
 void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
 {
 #if !defined(TARGET_DARWIN_IOS)
-  CCocoaAutoPool autopool;
   // we no longer want sleep/wake notifications
   // remove the sleep notification port from the application runloop
   CFRunLoopRemoveSource( CFRunLoopGetCurrent(),
@@ -311,7 +308,6 @@ void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
 void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg)
 {
 #if !defined(TARGET_DARWIN_IOS)
-  CCocoaAutoPool autopool;
   CCocoaPowerSyscall  *ctx;
   
   ctx = (CCocoaPowerSyscall*)refcon;
@@ -365,7 +361,6 @@ void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
 #if !defined(TARGET_DARWIN_IOS)
   // Called whenever any power source is added, removed, or changes. 
   // When on battery, we get called periodically as battery level changes.
-  CCocoaAutoPool autopool;
   CCocoaPowerSyscall  *ctx = (CCocoaPowerSyscall*)refcon;
 
   CFTypeRef power_sources_info = IOPSCopyPowerSourcesInfo();
