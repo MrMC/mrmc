@@ -324,23 +324,10 @@ smb_fd CDSMSession::CreateFileHandleForWrite(const std::string &file, bool bOver
 
     // paths are relative to the m_smb_tid, which is the share name.
     std::string filepath = strip_share_name_convert(file);
-    smb_stat attributes = m_dsmlib->smb_fstat(m_smb_session, m_smb_tid, filepath.c_str());
-    if (!attributes)
-    {
-      //CLog::Log(LOGERROR, "CDSMSession:CreateFileHandleForWrite does not exist '%s'", filepath.c_str());
-      uint32_t i_status = m_dsmlib->smb_session_get_nt_status(m_smb_session);
-      if (i_status == NT_STATUS_OBJECT_NAME_NOT_FOUND)
-        return 0;
-      CLog::Log(LOGERROR, "CDSMSession:CreateFileHandle smb_session_get_nt_status failed with status(%d)", i_status);
-      return 0;
-    }
-    m_dsmlib->smb_stat_destroy(attributes);
-
-    int response = DSM_SUCCESS;
     time_t start = 0;
     while(1)
     {
-      response = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RW, &fd);
+      int response = m_dsmlib->smb_fopen(m_smb_session, m_smb_tid, filepath.c_str(), SMB_MOD_RW, &fd);
       if (response == DSM_SUCCESS)
         break;
 
