@@ -163,8 +163,7 @@ ConnectSessionErrors CDSMSession::ConnectSession(const CURL &url)
   std::string login = url.GetUserName();
   std::string password = url.GetPassWord();
   if (login.empty())
-    return ConnectSessionErrors::INVALID_AUTHORIZATION;
-
+    login = "Guest";
 
   // setup credentials and login.
   m_dsmlib->smb_session_set_creds(m_smb_session,
@@ -210,6 +209,17 @@ void CDSMSession::DisconnectSession()
     // just null it, it is just a copy from CDSMSessionManager
     m_dsmlib = nullptr;
   }
+}
+
+ConnectSessionErrors CDSMSession::GetSessionError()
+{
+  uint32_t reason = m_dsmlib->smb_session_get_nt_status(m_smb_session);
+  CLog::Log(LOGERROR, "CDSMSession: GetSessionError reason(%d)", reason);
+  if (reason == NT_STATUS_ACCESS_DENIED)
+    return ConnectSessionErrors::FAILED_AUTHORIZATION;
+  if (reason == NT_STATUS_LOGON_FAILURE)
+    return ConnectSessionErrors::FAILED_AUTHORIZATION;
+  return ConnectSessionErrors::UNKNOWN;
 }
 
 bool CDSMSession::ConnectShare(const std::string &path)

@@ -29,8 +29,8 @@
 enum class ConnectSessionErrors
 {
   NONE,
+  UNKNOWN,
   INVALID_HOSTNAME,
-  INVALID_AUTHORIZATION,
   FAILED_AUTHORIZATION,
   FAILED_LOOKUP_HOSTNAME,
   FAILED_NEW_SESSION,
@@ -45,6 +45,7 @@ public:
 
   ConnectSessionErrors ConnectSession(const CURL &url);
   void    DisconnectSession();
+  ConnectSessionErrors GetSessionError();
   smb_fd  CreateFileHandle(const std::string &file);
   smb_fd  CreateFileHandleForWrite(const std::string &file, bool bOverWrite);
   void    CloseFileHandle(smb_fd handle);

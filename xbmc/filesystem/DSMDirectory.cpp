@@ -84,17 +84,22 @@ bool CDSMDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     // try to connect to the smb://<share>... path. if all is good
     // we get a non-null session back. Toss it into a std::unique_ptr
-    // and it will take care of itself.
+    // and it will take care of itself. Errors creating the session will
+    // get reported in passed sessionError.
     ConnectSessionErrors sessionError;
     std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
     if (session)
       rtn = session->GetDirectory(url.GetWithoutFilename().c_str(), url.GetFileName().c_str(), items);
-    else
+
+    if (!session || !rtn)
     {
+      // if we have a session, error came from GetDirectory, so fetch session error.
+      if (session && sessionError == ConnectSessionErrors::NONE)
+        sessionError = session->GetSessionError();
       // this is critical to get an user/pass dialog up. session will be null as there was
-      // an INVALID_AUTHORIZATION error. So check for it, set up for authorization and
+      // an FAILED_AUTHORIZATION error. So check for it, set up for authorization and
       // (most important) return false so we get called again on main thread for user/pass.
-      if (sessionError == ConnectSessionErrors::INVALID_AUTHORIZATION)
+      if (sessionError == ConnectSessionErrors::FAILED_AUTHORIZATION)
       {
         if (m_flags & DIR_FLAG_ALLOW_PROMPT)
           RequireAuthentication(url);
