@@ -1090,7 +1090,7 @@ bool CDSMFile::Open(const CURL& url)
   }
   else
   {
-    CLog::Log(LOGERROR, "DSMFile: Failed to allocate session");
+    CLog::Log(LOGERROR, "DSMFile: Failed to allocate session, error = %d", (int)sessionError);
     return false;
   }
 }
@@ -1290,7 +1290,7 @@ bool CDSMFile::OpenForWrite(const CURL& url, bool bOverWrite)
   }
   else
   {
-    CLog::Log(LOGERROR, "DSMFile: Failed to allocate session");
+    CLog::Log(LOGERROR, "DSMFile: Failed to allocate session, error = %d", (int)sessionError);
     return false;
   }
 }
