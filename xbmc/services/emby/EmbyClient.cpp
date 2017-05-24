@@ -299,7 +299,7 @@ bool CEmbyClient::GetMovies(CFileItemList &items, std::string url, bool fromfilt
   if (fromfilter)
   {
     CSingleLock lock(m_viewMoviesFilterLock);
-    FetchViewItems(m_viewMoviesFilter, curl, EmbyTypeMovie);
+    FetchViewItems(m_viewMoviesFilter, curl, "");
     if (m_viewMoviesFilter->ItemsValid())
       rtn = CEmbyUtils::ParseEmbyVideos(items, curl, m_viewMoviesFilter->GetItems(), MediaTypeMovie);
   }
@@ -780,7 +780,7 @@ bool CEmbyClient::FetchViewItems(CEmbyViewCachePtr &view, const CURL &url, const
   else
   {
     CLog::Log(LOGDEBUG, "CEmbyClient::FetchViewItems unknown type: %s", type.c_str());
-    return false;
+    //return false;
   }
   std::string path = curl.Get();
   CVariant variant = CEmbyUtils::GetEmbyCVariant(path);
