@@ -790,7 +790,8 @@ bool CEmbyClient::FetchViewItems(CEmbyViewCachePtr &view, const CURL &url, const
     return false;
   }
 
-  view->SetItems(variant);
+  if (view)
+    view->SetItems(variant);
   return rtn;
 }
 
