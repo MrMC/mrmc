@@ -37,6 +37,8 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoDatabase.h"
+#include "music/MusicDatabase.h"
 
 using namespace XFILE;
 
@@ -85,6 +87,12 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string basePath = strUrl;
   URIUtils::RemoveSlashAtEnd(basePath);
   basePath = URIUtils::GetFileName(basePath);
+  
+  CVideoDatabase database;
+  database.Open();
+  bool hasMovies = database.HasContent(VIDEODB_CONTENT_MOVIES);
+  bool hasShows = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
+  database.Close();
 
 #if defined(EMBY_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "CEmbyDirectory::GetDirectory strURL = %s", strUrl.c_str());
@@ -99,7 +107,8 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       for (const auto &client : clients)
       {
         const std::vector<EmbyViewInfo> contents = client->GetViewInfoForMovieContent();
-        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasPlexServices() || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasPlexServices() ||
+                                     clients.size() > 1 || hasMovies) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
@@ -212,7 +221,8 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       for (const auto &client : clients)
       {
         const std::vector<EmbyViewInfo> contents = client->GetViewInfoForTVShowContent();
-        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasPlexServices() || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasPlexServices() ||
+                                     clients.size() > 1 || hasShows) && contents.size() == 1))
         {
           for (const auto &content : contents)
           {
