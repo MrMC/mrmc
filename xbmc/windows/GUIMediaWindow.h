@@ -203,4 +203,6 @@ protected:
    \sa Update
    */
   std::string m_strFilterPath;
+  std::string m_parentRedirect;
+  bool m_hideRootDotDot;
 };

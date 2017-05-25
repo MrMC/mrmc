@@ -97,6 +97,7 @@ CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
   m_vecItems->SetPath("?");
   m_iLastControl = -1;
   m_canFilterAdvanced = false;
+  m_hideRootDotDot = false;
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
 }
@@ -320,6 +321,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
       {
         m_vecItems->SetPath("?");
+        m_parentRedirect = "";
+        m_hideRootDotDot = false;
         return true;
       }
       else if ( message.GetParam1() == GUI_MSG_REFRESH_THUMBS )
@@ -499,8 +502,20 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       URIUtils::Split(dir, path, fileName);
       if (StringUtils::IsInteger(fileName))
         dir = path;
-      const std::string &ret = message.GetStringParam(1);
-      bool returning = StringUtils::EqualsNoCase(ret, "return");
+      bool returning = false;
+      // 1st string param is always the path
+      // search for "return", "hiderootdotdot" and/or "parent_redirect="
+      int stringParamCount = message.GetNumStringParams();
+      for (int i = 1; i < stringParamCount; ++i)
+      {
+        const std::string &testString = message.GetStringParam(i);
+        if (StringUtils::EqualsNoCase(testString, "return"))
+          returning = true;
+        else if (StringUtils::EqualsNoCase(testString, "hiderootdotdot"))
+          m_hideRootDotDot = true;
+        else if (testString.find("parent_redirect=") != std::string::npos)
+          m_parentRedirect = testString.substr(testString.find("=") + 1);
+      }
       if (!dir.empty())
       {
         // ensure our directory is valid
@@ -524,6 +539,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       { // first time to this window - make sure we set the root path
         m_startDirectory = returning ? dir : "";
       }
+      if (!m_parentRedirect.empty())
+        m_history.AddPathFront(m_parentRedirect);
     }
     break;
   }
@@ -698,10 +715,18 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().empty())
   {
-    if (items.GetLabel() != "Services")
+    bool hideRootDotDot = false;
+    if (m_hideRootDotDot && URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true))
+      hideRootDotDot = true;
+
+    std::string parentPath = strParentPath;
+    if (!m_parentRedirect.empty() && URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true))
+        parentPath = m_parentRedirect;
+
+    if (!hideRootDotDot && items.GetLabel() != "Services")
     {
       CFileItemPtr pItem(new CFileItem(".."));
-      pItem->SetPath(strParentPath);
+      pItem->SetPath(parentPath);
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
       items.AddFront(pItem, 0);
@@ -1154,6 +1179,12 @@ void CGUIMediaWindow::GoParentFolder()
   // if vector is empty, parent is root source listing
   m_strFilterPath = m_history.GetParentPath(true);
   strParent = m_history.RemoveParentPath();
+  if (strParent.empty())
+  {
+    if (!m_parentRedirect.empty())
+      strParent = m_parentRedirect;
+  }
+
   if (!Update(strParent, false))
     return;
 

@@ -1622,6 +1622,9 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   // leave the graphics lock
   lock.Leave();
 
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESET);
+  g_windowManager.SendMessage(msg);
+
   // restore windows
   if (currentWindow != WINDOW_INVALID)
   {

@@ -397,6 +397,7 @@ static const ActionMapping windows[] =
     { "eventlog"                 , WINDOW_EVENT_LOG},
     { "pvrclientbrowser"         , WINDOW_PVRCLIENT_BROWSER },
     { "informationproviderbrowser", WINDOW_INFOPROVIDER_BROWSER },
+    { "mediasources"             , WINDOW_MEDIA_SOURCES },
 };
 
 static const ActionMapping mousekeys[] =

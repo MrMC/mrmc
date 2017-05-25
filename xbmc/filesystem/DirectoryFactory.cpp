@@ -103,6 +103,7 @@
 #endif
 #include "ResourceDirectory.h"
 #include "EmbyDirectory.h"
+#include "MediaDirectory.h"
 #include "PlexDirectory.h"
 #include "ServicesDirectory.h"
 
@@ -162,6 +163,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("videodb")) return new CVideoDatabaseDirectory();
   if (url.IsProtocol("library")) return new CLibraryDirectory();
   if (url.IsProtocol("favourites")) return new CFavouritesDirectory();
+  if (url.IsProtocol("mediasources")) return new CMediaDirectory();
   if (url.IsProtocol("filereader"))
   {
     CURL url2(url.GetFileName());

@@ -3,6 +3,7 @@ SRCS += GUIWindowDebugInfo.cpp
 SRCS += GUIWindowFileManager.cpp
 SRCS += GUIWindowHome.cpp
 SRCS += GUIWindowLoginScreen.cpp
+SRCS += GUIWindowMediaSources.cpp
 SRCS += GUIWindowPointer.cpp
 SRCS += GUIWindowScreensaver.cpp
 SRCS += GUIWindowScreensaverDim.cpp

@@ -67,6 +67,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "windows/GUIWindowSplash.h"
 #include "windows/GUIWindowStartup.h"
+#include "windows/GUIWindowMediaSources.h"
 #include "video/windows/GUIWindowFullScreen.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
 
@@ -239,6 +240,8 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowMusicPlayList);
   Add(new CGUIWindowMusicNav);
   Add(new CGUIWindowMusicPlaylistEditor);
+  
+  Add(new CGUIWindowMediaSources);
 
   /* Load PVR related Windows and Dialogs */
   Add(new CGUIDialogTeletext);
@@ -332,6 +335,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_SLIDER);
     Delete(WINDOW_DIALOG_MEDIA_FILTER);
     Delete(WINDOW_DIALOG_SUBTITLES);
+    Delete(WINDOW_MEDIA_SOURCES);
 
     /* Delete PVR related windows and dialogs */
     Delete(WINDOW_TV_CHANNELS);
