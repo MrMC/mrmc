@@ -53,16 +53,23 @@ static time_t convertWindowsTimeToPosixTime(const uint64_t input)
 
 static std::string strip_share_name_convert(const std::string &path)
 {
+  std::string pathname = path;
   // strip off leading name, that is the share name
   // and dsm has that already planted via m_smb_tid
-  std::string pathname = path;
   size_t pos = pathname.find("/");
-  pathname.erase(0, pos+1);
-  // libdsm does not like an ending slash, remove it
-  URIUtils::RemoveSlashAtEnd(pathname);
+  pathname.erase(0, pos + 1);
+  // and make sure there are not strange double slashes
+  std::vector<std::string> parts;
+  std::vector<std::string>::iterator it;
+  StringUtils::Tokenize(pathname, parts, "/");
+  pathname = "";
+  for( it = parts.begin(); it != parts.end(); ++it )
+    pathname = URIUtils::AddFileToFolder(pathname, *it);
+
   // paths are posix style on entry,
   // windows style on return.
-  StringUtils::Replace(pathname, '/', '\\');
+  if (!pathname.empty())
+    StringUtils::Replace(pathname, '/', '\\');
 
   //CLog::Log(LOGDEBUG, "strip_share_name_convert path '%s', pathname '%s'", path.c_str(), pathname.c_str());
   return pathname;
@@ -77,13 +84,10 @@ static std::string extract_share_name_convert(const std::string &path)
   // then use the original.
   std::string sharename = path;
   std::vector<std::string> parts;
-  std::vector<std::string>::iterator it;
   StringUtils::Tokenize(path, parts, "/");
   if (parts.size() > 0)
     sharename = parts[0];
 
-  // libdsm does not like an ending slash, remove it
-  URIUtils::RemoveSlashAtEnd(sharename);
   // paths are posix style on entry,
   // windows style on return.
   StringUtils::Replace(sharename, '/', '\\');
