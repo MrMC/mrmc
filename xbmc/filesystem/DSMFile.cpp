@@ -240,6 +240,16 @@ bool CDSMSession::ConnectShare(const std::string &path)
         if (response == DSM_SUCCESS)
           break;
 
+        if (response == DSM_ERROR_NT)
+        {
+          uint32_t i_status = m_dsmlib->smb_session_get_nt_status(m_smb_session);
+          if (i_status == NT_STATUS_OBJECT_NAME_NOT_FOUND)
+            return false;
+          // NT_STATUS_ACCESS_DENIED
+          CLog::Log(LOGERROR, "CDSMSession:ConnectShare smb_session_get_nt_status failed with status(%d)", i_status);
+          return false;
+        }
+
         if (!start)
           start = time(NULL);
         else
