@@ -911,7 +911,31 @@ CDSMSession* CDSMSessionManager::CreateSession(const CURL &url, ConnectSessionEr
   }
 
   CURL authURL(url);
-  CPasswordManager::GetInstance().AuthenticateURL(authURL);
+
+  if (!CPasswordManager::GetInstance().AuthenticateURL(authURL))
+  {
+    // no user/pass match found.
+    // 1) is ok
+    // 2) hostname missmatch.
+    //  is ip and we used host or is host and we used ip
+    // first see if this is already an ip address
+    unsigned long address = inet_addr(authURL.GetHostName().c_str());
+    if (address == INADDR_NONE)
+    {
+      // GetHostName is netbios name. flip and try again.
+      std::string hostname = authURL.GetHostName();
+      if (HostNameToIP(hostname))
+        authURL.SetHostName(hostname);
+    }
+    else
+    {
+      // GetHostName is ip address. flip and try again.
+      const char *netbios_name = IPAddressToNetBiosName(authURL.GetHostName());
+      if (netbios_name != nullptr)
+        authURL.SetHostName(netbios_name);
+    }
+    CPasswordManager::GetInstance().AuthenticateURL(authURL);
+  }
 
   // libdsm wants IPs and does not understand hostname
   // make sure the session sig matches this format.
