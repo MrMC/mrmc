@@ -231,7 +231,6 @@ CGUITextureManager::CGUITextureManager(void)
 
 CGUITextureManager::~CGUITextureManager(void)
 {
-  Cleanup();
 }
 
 /************************************************************************/
