@@ -2843,6 +2843,7 @@ void CApplication::Stop(int exitCode)
       CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
 
     m_bStop = true;
+    m_renderGUI = false;
     m_AppFocused = false;
     m_ExitCode = exitCode;
     CLog::Log(LOGNOTICE, "stop all");
