@@ -680,6 +680,6 @@ bool CSMBFile::IsValidFile(const std::string& strFileName)
 std::string CSMBFile::GetAuthenticatedPath(const CURL &url)
 {
   CURL authURL(url);
-  CPasswordManager::GetInstance().AuthenticateURL(authURL);
+  CSMBDirectory::AuthenticateURL(authURL);
   return smb.URLEncode(authURL);
 }
