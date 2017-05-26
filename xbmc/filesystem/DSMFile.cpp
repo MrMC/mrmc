@@ -64,6 +64,7 @@ static std::string strip_share_name_convert(const std::string &path)
   // windows style on return.
   StringUtils::Replace(pathname, '/', '\\');
 
+  //CLog::Log(LOGDEBUG, "strip_share_name_convert path '%s', pathname '%s'", path.c_str(), pathname.c_str());
   return pathname;
 }
 
@@ -87,6 +88,7 @@ static std::string extract_share_name_convert(const std::string &path)
   // windows style on return.
   StringUtils::Replace(sharename, '/', '\\');
 
+  //CLog::Log(LOGDEBUG, "extract_share_name_convert path '%s', sharename '%s'", path.c_str(), sharename.c_str());
   return sharename;
 }
 
@@ -480,7 +482,7 @@ bool CDSMSession::GetDirectory(const std::string &base, const std::string &folde
         {
           std::string itemName = name;
           std::string localPath = folder;
-          localPath.append(itemName);
+          localPath = URIUtils::AddFileToFolder(folder, itemName);
 
           CFileItemPtr pItem(new CFileItem);
           pItem->m_dwSize = size;
@@ -492,7 +494,7 @@ bool CDSMSession::GetDirectory(const std::string &base, const std::string &folde
 
           if (isdir)
           {
-            localPath.append("/");
+            URIUtils::AddSlashAtEnd(localPath);
             pItem->m_dwSize = 0;
             pItem->m_bIsFolder = true;
           }
@@ -911,31 +913,7 @@ CDSMSession* CDSMSessionManager::CreateSession(const CURL &url, ConnectSessionEr
   }
 
   CURL authURL(url);
-
-  if (!CPasswordManager::GetInstance().AuthenticateURL(authURL))
-  {
-    // no user/pass match found.
-    // 1) is ok
-    // 2) hostname missmatch.
-    //  is ip and we used host or is host and we used ip
-    // first see if this is already an ip address
-    unsigned long address = inet_addr(authURL.GetHostName().c_str());
-    if (address == INADDR_NONE)
-    {
-      // GetHostName is netbios name. flip and try again.
-      std::string hostname = authURL.GetHostName();
-      if (HostNameToIP(hostname))
-        authURL.SetHostName(hostname);
-    }
-    else
-    {
-      // GetHostName is ip address. flip and try again.
-      const char *netbios_name = IPAddressToNetBiosName(authURL.GetHostName());
-      if (netbios_name != nullptr)
-        authURL.SetHostName(netbios_name);
-    }
-    CPasswordManager::GetInstance().AuthenticateURL(authURL);
-  }
+  CDSMDirectory::AuthenticateURL(authURL);
 
   // libdsm wants IPs and does not understand hostname
   // make sure the session sig matches this format.
@@ -1119,6 +1097,8 @@ bool CDSMFile::Open(const CURL& url)
       }
       else
       {
+        CLog::Log(LOGDEBUG,"CDSMFile::Open - opened %s, fd=%d",url.GetFileName().c_str(), m_smb_fd);
+
         m_fileSize = stat_buffer.st_size;
         // test for seeking, if we can not seek, fail the open
         int64_t ret = m_dsmSession->Seek(m_smb_fd, 0, SMB_SEEK_SET);
@@ -1143,6 +1123,7 @@ void CDSMFile::Close()
 {
   if (m_dsmSession && m_smb_fd)
   {
+    CLog::Log(LOGDEBUG,"CDSMFile::Close closing fd %d", m_smb_fd);
     m_dsmSession->CloseFileHandle(m_smb_fd);
     m_dsmSession = nullptr;
     m_smb_fd = 0;
@@ -1367,7 +1348,7 @@ bool CDSMFile::Rename(const CURL& url, const CURL& urlnew)
     // the session url will be authenticated,
     // also authenticate the new url
     CURL newAuthURL(urlnew);
-    CPasswordManager::GetInstance().AuthenticateURL(newAuthURL);
+    CDSMDirectory::AuthenticateURL(newAuthURL);
     return session->RenameFile(url.GetFileName().c_str(), newAuthURL.GetFileName().c_str());
   }
   else

@@ -155,3 +155,32 @@ bool CDSMDirectory::Remove(const CURL& url)
     return false;
   }
 }
+
+bool CDSMDirectory::AuthenticateURL(CURL &url)
+{
+  if (!CPasswordManager::GetInstance().AuthenticateURL(url))
+  {
+    // no user/pass match found.
+    // 1) is ok
+    // 2) hostname missmatch.
+    //  is ip and we used host or is host and we used ip
+    // first see if this is already an ip address
+    unsigned long address = inet_addr(url.GetHostName().c_str());
+    if (address == INADDR_NONE)
+    {
+      // GetHostName is netbios name. flip and try again.
+      std::string hostname = url.GetHostName();
+      if (CDSMSessionManager::HostNameToIP(hostname))
+        url.SetHostName(hostname);
+    }
+    else
+    {
+      // GetHostName is ip address. flip and try again.
+      const char *netbios_name = CDSMSessionManager::IPAddressToNetBiosName(url.GetHostName());
+      if (netbios_name != nullptr)
+        url.SetHostName(netbios_name);
+    }
+    CPasswordManager::GetInstance().AuthenticateURL(url);
+  }
+  return CPasswordManager::GetInstance().AuthenticateURL(url);
+}
