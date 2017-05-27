@@ -2505,7 +2505,7 @@
         </setting>
         <setting id="smb.enabledsm" type="boolean" label="24164" help="24165">
           <level>0</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="smb.forcev1" type="boolean" label="1209" help="36462">
