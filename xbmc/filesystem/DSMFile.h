@@ -76,12 +76,16 @@ private:
   smb_session        *m_smb_session;
   smb_tid             m_smb_tid;
   time_t              m_timeout_sec;
+  int                 m_lastActive;
 };
+
+typedef std::shared_ptr<CDSMSession> CDSMSessionPtr;
 
 class CDSMSessionManager
 {
 public:
-  static CDSMSession* CreateSession(const CURL &url, ConnectSessionErrors &error);
+  static CDSMSessionPtr CreateSession(const CURL &url, ConnectSessionErrors &error);
+  static void         ClearOutIdleSessions();
   static void         Disconnect();
   static bool         HostNameToIP(std::string &hostname);
   static const char*  IPAddressToNetBiosName(const std::string &ip);
@@ -96,6 +100,7 @@ public:
 private:
   static DllLibDSM   *m_dsmlib;
   static CCriticalSection m_critSect;
+  static std::map<std::string, CDSMSessionPtr> m_dsmSessions;
 };
 
 namespace XFILE
@@ -128,7 +133,7 @@ namespace XFILE
     bool IsValidFile(const std::string& strFileName);
 
     std::string     m_file;
-    std::unique_ptr<CDSMSession> m_dsmSession;
+    CDSMSessionPtr  m_dsmSession;
     smb_fd          m_smb_fd;
     int64_t         m_fileSize;
     int64_t         m_maxReadBytes;

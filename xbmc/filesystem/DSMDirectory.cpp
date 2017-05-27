@@ -87,7 +87,7 @@ bool CDSMDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     // and it will take care of itself. Errors creating the session will
     // get reported in passed sessionError.
     ConnectSessionErrors sessionError;
-    std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
+    CDSMSessionPtr session(CDSMSessionManager::CreateSession(url, sessionError));
     if (session)
       rtn = session->GetDirectory(url.GetWithoutFilename().c_str(), url.GetFileName().c_str(), items);
 
@@ -120,7 +120,7 @@ bool CDSMDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 bool CDSMDirectory::Create(const CURL& url)
 {
   ConnectSessionErrors sessionError;
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
+  CDSMSessionPtr session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->CreateDirectory(url.GetFileName().c_str());
   else
@@ -133,7 +133,7 @@ bool CDSMDirectory::Create(const CURL& url)
 bool CDSMDirectory::Exists(const CURL& url)
 {
   ConnectSessionErrors sessionError;
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
+  CDSMSessionPtr session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->DirectoryExists(url.GetFileName().c_str());
   else
@@ -146,7 +146,7 @@ bool CDSMDirectory::Exists(const CURL& url)
 bool CDSMDirectory::Remove(const CURL& url)
 {
   ConnectSessionErrors sessionError;
-  std::unique_ptr<CDSMSession> session(CDSMSessionManager::CreateSession(url, sessionError));
+  CDSMSessionPtr session(CDSMSessionManager::CreateSession(url, sessionError));
   if (session)
     return session->RemoveDirectory(url.GetFileName().c_str());
   else

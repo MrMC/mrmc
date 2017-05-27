@@ -4513,6 +4513,10 @@ void CApplication::ProcessSlow()
   smb.CheckIfIdle();
 #endif
 
+#if defined(HAS_FILESYSTEM_DSM)
+  CDSMSessionManager::ClearOutIdleSessions();
+#endif
+ 
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.CheckIfIdle();
 #endif
