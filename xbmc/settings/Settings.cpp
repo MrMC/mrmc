@@ -352,6 +352,7 @@ const std::string CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT = "services.ai
 const std::string CSettings::SETTING_SMB_WINSSERVER = "smb.winsserver";
 const std::string CSettings::SETTING_SMB_WORKGROUP = "smb.workgroup";
 const std::string CSettings::SETTING_SMB_ENABLEDSM = "smb.enabledsm";
+const std::string CSettings::SETTING_SMB_FORCEV1 = "smb.forcev1";
 const std::string CSettings::SETTING_SMB_OVERWRITECONF = "smb.overwriteconf";
 const std::string CSettings::SETTING_SMB_STATFILES = "smb.statfiles";
 const std::string CSettings::SETTING_SMB_CLIENTTIMEOUT = "smb.clienttimeout";
@@ -1269,6 +1270,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SMB_WINSSERVER);
   settingSet.insert(CSettings::SETTING_SMB_WORKGROUP);
   settingSet.insert(CSettings::SETTING_SMB_ENABLEDSM);
+  settingSet.insert(CSettings::SETTING_SMB_FORCEV1);
   settingSet.insert(CSettings::SETTING_SMB_OVERWRITECONF);
   m_settingsManager->RegisterCallback(&CNetworkServices::GetInstance(), settingSet);
 
