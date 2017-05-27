@@ -148,6 +148,7 @@ void CSMB::Init()
         fprintf(f, "\tclient lanman auth = yes\n");
         fprintf(f, "\tlanman auth = yes\n");
 
+        fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=524288 SO_SNDBUF=524288\n");
         fprintf(f, "\tlock directory = %s/.smb/\n", home.c_str());
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
