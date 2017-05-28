@@ -167,17 +167,28 @@ bool CDVDInputStreamFFmpeg::IsEOF()
 
 bool CDVDInputStreamFFmpeg::Open()
 {
+  std::string selected;
+  if (m_item.IsInternetStream() && (m_item.IsType(".m3u8") || m_item.GetMimeType() == "application/vnd.apple.mpegurl"))
+  {
+    // get the available bandwidth and  determine the most appropriate stream
+    int bandwidth = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH);
+    if(bandwidth <= 0)
+      bandwidth = INT_MAX;
+    selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(m_item.GetPath(), bandwidth);
+    if (selected.compare(m_item.GetPath()) != 0)
+    {
+      CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", selected.c_str());
+      m_item.SetPath(selected.c_str());
+    }
+    m_realtime = true;
+  }
+
   if (!CDVDInputStream::Open())
     return false;
 
   m_can_pause = true;
   m_can_seek  = true;
   m_aborted   = false;
-
-  if (m_item.IsInternetStream() && (m_item.IsType(".m3u8") || m_item.GetMimeType() == "application/vnd.apple.mpegurl"))
-  {
-    m_realtime = true;
-  }
 
   if(strnicmp(m_item.GetPath().c_str(), "udp://", 6) == 0
   || strnicmp(m_item.GetPath().c_str(), "rtp://", 6) == 0)
