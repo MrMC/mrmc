@@ -52,8 +52,8 @@ template<class Position>
 struct CGUIFontCacheKey
 {
   Position m_pos;
-  vecColors &m_colors;
-  vecText &m_text;
+  vecColors m_colors;
+  vecText m_text;
   uint32_t m_alignment;
   float m_maxPixelWidth;
   bool m_scrolling;
@@ -62,7 +62,7 @@ struct CGUIFontCacheKey
   float m_scaleY;
 
   CGUIFontCacheKey(Position pos,
-                   vecColors &colors, vecText &text,
+                   const vecColors &colors, const vecText &text,
                    uint32_t alignment, float maxPixelWidth,
                    bool scrolling, const TransformMatrix &matrix,
                    float scaleX, float scaleY) :
@@ -85,7 +85,7 @@ struct CGUIFontCacheEntry
 
   CGUIFontCacheEntry(const CGUIFontCacheKey<Position> &key, unsigned int nowMillis) :
     m_key(key.m_pos,
-          *new vecColors, *new vecText,
+          key.m_colors, key.m_text,
           key.m_alignment, key.m_maxPixelWidth,
           key.m_scrolling, m_matrix,
           key.m_scaleX, key.m_scaleY),
@@ -98,7 +98,7 @@ struct CGUIFontCacheEntry
 
   CGUIFontCacheEntry(const CGUIFontCacheEntry &other) :
     m_key(other.m_key.m_pos,
-          *new vecColors, *new vecText,
+          other.m_colors, other.m_text,
           other.m_key.m_alignment, other.m_key.m_maxPixelWidth,
           other.m_key.m_scrolling, m_matrix,
           other.m_key.m_scaleX, other.m_key.m_scaleY),

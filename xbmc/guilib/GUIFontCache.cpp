@@ -65,8 +65,6 @@ public:
 template<class Position, class Value>
 CGUIFontCacheEntry<Position, Value>::~CGUIFontCacheEntry()
 {
-  delete &m_key.m_colors;
-  delete &m_key.m_text;
 }
 
 template<class Position, class Value>
