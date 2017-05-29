@@ -61,7 +61,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     struct addrinfo hints = {0};
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
-    struct addrinfo *servinfo;
+    struct addrinfo *servinfo = nullptr;
 
     if (getaddrinfo(strHostName.c_str(), NULL, &hints, &servinfo) == 0)
     {
