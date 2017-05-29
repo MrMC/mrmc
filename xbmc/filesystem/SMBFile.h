@@ -97,7 +97,7 @@ namespace XFILE
     CURL    m_url;
     int64_t m_fileSize;
     int     m_fd;
-    int64_t m_maxReadBytes;
+    int     m_maxReadBytes;
   };
 }
 

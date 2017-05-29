@@ -189,18 +189,18 @@ void CSMB::Init()
     // setup our context
     m_context = m_lib->smbc_new_context();
 #ifdef DEPRECATED_SMBC_INTERFACE
-    smbc_setDebug(m_context, g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
-    smbc_setFunctionAuthData(m_context, xb_smbc_auth);
-    orig_cache = smbc_getFunctionGetCachedServer(m_context);
-    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
-    smbc_setOptionOneSharePerServer(m_context, false);
-    smbc_setOptionBrowseMaxLmbCount(m_context, 0);
-    smbc_setTimeout(m_context, CSettings::GetInstance().GetInt(CSettings::SETTING_SMB_CLIENTTIMEOUT) * 1000);
+    m_lib->smbc_setDebug(m_context, g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
+    m_lib->smbc_setFunctionAuthData(m_context, xb_smbc_auth);
+    orig_cache = m_lib->smbc_getFunctionGetCachedServer(m_context);
+    m_lib->smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
+    m_lib->smbc_setOptionOneSharePerServer(m_context, false);
+    m_lib->smbc_setOptionBrowseMaxLmbCount(m_context, 0);
+    m_lib->smbc_setTimeout(m_context, CSettings::GetInstance().GetInt(CSettings::SETTING_SMB_CLIENTTIMEOUT) * 1000);
     // we do not need to strdup these, smbc_setXXX below will make their own copies
     if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      smbc_setWorkgroup(m_context, (char*)CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+      m_lib->smbc_setWorkgroup(m_context, (char*)CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
     std::string guest = "guest";
-    smbc_setUser(m_context, (char*)guest.c_str());
+    m_lib->smbc_setUser(m_context, (char*)guest.c_str());
 #else
     m_context->debug = (g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
@@ -561,7 +561,7 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   if (bytesRead > m_maxReadBytes)
   {
     m_maxReadBytes = bytesRead;
-    CLog::Log(LOGDEBUG, "%s - max read bytes = %lld", __FUNCTION__, m_maxReadBytes);
+    CLog::Log(LOGDEBUG, "%s - max read bytes = %d", __FUNCTION__, m_maxReadBytes);
   }
 
   return bytesRead;

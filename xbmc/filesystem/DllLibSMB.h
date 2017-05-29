@@ -60,6 +60,18 @@ public:
   virtual int       smbc_stat(const char *url, struct stat *st)=0;
   virtual int       smbc_fstat(int fd, struct stat *st)=0;
   virtual int       smbc_getxattr(const char *url, const char *name, const void *value, size_t size)=0;
+
+#ifdef DEPRECATED_SMBC_INTERFACE
+  virtual void      smbc_setDebug(SMBCCTX *c, int debug)=0;
+  virtual void      smbc_setFunctionAuthData(SMBCCTX *c, smbc_get_auth_data_fn fn)=0;
+  virtual smbc_get_cached_srv_fn smbc_getFunctionGetCachedServer(SMBCCTX *c)=0;
+  virtual void      smbc_setFunctionGetCachedServer(SMBCCTX *c, smbc_get_cached_srv_fn fn)=0;
+  virtual void      smbc_setOptionOneSharePerServer(SMBCCTX *c, smbc_bool b)=0;
+  virtual void      smbc_setOptionBrowseMaxLmbCount(SMBCCTX *c, int count)=0;
+  virtual void      smbc_setTimeout(SMBCCTX *c, int timeout)=0;
+  virtual void      smbc_setWorkgroup(SMBCCTX *c, char * workgroup)=0;
+  virtual void      smbc_setUser(SMBCCTX *c, char * user)=0;
+#endif
 };
 
 class DllLibSMB : public DllDynamic, DllLibSMBInterface
@@ -91,6 +103,17 @@ class DllLibSMB : public DllDynamic, DllLibSMBInterface
   DEFINE_METHOD2(int,       smbc_fstat,        (int p1, struct stat *p2))
   DEFINE_METHOD4(int,       smbc_getxattr,     (const char *p1, const char *p2, const void *p3, size_t p4))
 
+#ifdef DEPRECATED_SMBC_INTERFACE
+  DEFINE_METHOD2(void,      smbc_setDebug,     (SMBCCTX *p1, int p2))
+  DEFINE_METHOD2(void,      smbc_setFunctionAuthData, (SMBCCTX *p1, smbc_get_auth_data_fn p2))
+  DEFINE_METHOD1(smbc_get_cached_srv_fn, smbc_getFunctionGetCachedServer, (SMBCCTX *p1))
+  DEFINE_METHOD2(void,      smbc_setFunctionGetCachedServer, (SMBCCTX *p1, smbc_get_cached_srv_fn p2))
+  DEFINE_METHOD2(void,      smbc_setOptionOneSharePerServer, (SMBCCTX *p1, smbc_bool p2))
+  DEFINE_METHOD2(void,      smbc_setOptionBrowseMaxLmbCount, (SMBCCTX *p1, int p2))
+  DEFINE_METHOD2(void,      smbc_setTimeout,   (SMBCCTX *p1, int p2))
+  DEFINE_METHOD2(void,      smbc_setWorkgroup, (SMBCCTX *p1, char* p2))
+  DEFINE_METHOD2(void,      smbc_setUser,      (SMBCCTX *p1, char* p2))
+#endif
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(smbc_new_context,   smbc_new_context)
     RESOLVE_METHOD_RENAME(smbc_free_context,  smbc_free_context)
@@ -113,5 +136,15 @@ class DllLibSMB : public DllDynamic, DllLibSMBInterface
     RESOLVE_METHOD_RENAME(smbc_stat,          smbc_stat)
     RESOLVE_METHOD_RENAME(smbc_fstat,         smbc_fstat)
     RESOLVE_METHOD_RENAME(smbc_getxattr,      smbc_getxattr)
+
+    RESOLVE_METHOD_RENAME(smbc_setDebug,      smbc_setDebug)
+    RESOLVE_METHOD_RENAME(smbc_setFunctionAuthData, smbc_setFunctionAuthData)
+    RESOLVE_METHOD_RENAME(smbc_getFunctionGetCachedServer, smbc_getFunctionGetCachedServer)
+    RESOLVE_METHOD_RENAME(smbc_setFunctionGetCachedServer, smbc_setFunctionGetCachedServer)
+    RESOLVE_METHOD_RENAME(smbc_setOptionOneSharePerServer, smbc_setOptionOneSharePerServer)
+    RESOLVE_METHOD_RENAME(smbc_setOptionBrowseMaxLmbCount, smbc_setOptionBrowseMaxLmbCount)
+    RESOLVE_METHOD_RENAME(smbc_setTimeout,    smbc_setTimeout)
+    RESOLVE_METHOD_RENAME(smbc_setWorkgroup,  smbc_setWorkgroup)
+    RESOLVE_METHOD_RENAME(smbc_setUser,       smbc_setUser)
   END_METHOD_RESOLVE()
 };
