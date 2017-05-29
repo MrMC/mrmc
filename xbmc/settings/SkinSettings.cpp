@@ -207,6 +207,7 @@ bool CSkinSettings::MigrateToNewSkin(const std::string skin)
   if (skin == NEW_SKIN)
   {
     CSettings::GetInstance().SetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED, true);
+    CSettings::GetInstance().Save();
     return false;
   }
   
