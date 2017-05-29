@@ -58,12 +58,12 @@ DEPENDS += libcdio
 #DEPENDS += libdvdcss
 #DEPENDS += libdvdnav
 #DEPENDS += libdvdread
-DEPENDS += samba
 DEPENDS += libtasn1
 DEPENDS += libdsm
 
 EXCLUDED_DEPENDS =
 ifeq ($(OS),ios)
+  DEPENDS += samba
   DEPENDS += mrmc-repo-resources
   EXCLUDED_DEPENDS += libcec
   EXCLUDED_DEPENDS += libusb
@@ -72,12 +72,14 @@ ifeq ($(OS),ios)
 endif
 
 ifeq ($(OS),osx)
+  DEPENDS += samba
   DEPENDS += libGLEW
   EXCLUDED_DEPENDS += libcec
   EXCLUDED_DEPENDS += libusb
 endif
 
 ifeq ($(OS),android)
+  DEPENDS += samba-gplv3
   DEPENDS += mrmc-repo-resources
   DEPENDS += mdnsresponder libuuid
   CROSSGUID_DEPS = libuuid
