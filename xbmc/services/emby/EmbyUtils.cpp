@@ -1586,10 +1586,10 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
 
   GetMediaDetals(*item, variant, itemId);
 
-  if (type == MediaTypeTvShow)
-    SetEmbyItemProperties(*item, "episodes");
-  else
+  if (type == MediaTypeMovie )
     SetEmbyItemProperties(*item, "movies");
+  else
+    SetEmbyItemProperties(*item, "episodes");
   return item;
 }
 
