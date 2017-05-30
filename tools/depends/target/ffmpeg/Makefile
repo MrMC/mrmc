@@ -44,8 +44,6 @@ endif
 ifeq ($(OS), ios)
   ifneq ($(CPU), arm64)
     ffmpg_config += --cpu=cortex-a8
-  else
-    ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
   endif
   ffmpg_config += --yasmexe=$(NATIVEPREFIX)/bin/yasm
   ffmpg_config += --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --disable-videotoolbox
@@ -79,6 +77,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 < ../0001-lavc-aarch64-simple_idct-fix-iOS-build-without-gas-p.patch
 	cd $(PLATFORM); sed -i".bak" -e "s%pkg_config_default=pkg-config%export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig \&\& pkg_config_default=$(NATIVEPREFIX)/bin/pkg-config%" configure
 	cd $(PLATFORM);\
 	CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" \
