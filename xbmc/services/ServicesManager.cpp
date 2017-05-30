@@ -76,7 +76,15 @@ public:
   }
   virtual bool operator==(const CJob *job) const
   {
-    return true;
+    if (strcmp(job->GetType(),GetType()) == 0)
+    {
+      const CServicesManagerJob* rjob = dynamic_cast<const CServicesManagerJob*>(job);
+      if (rjob)
+      {
+        return m_function == rjob->m_function;
+      }
+    }
+    return false;
   }
 private:
   CFileItem      m_item;
