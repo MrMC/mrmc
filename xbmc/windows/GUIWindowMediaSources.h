@@ -36,6 +36,7 @@ public:
   static CGUIWindowMediaSources &GetInstance();
 
   virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual bool OnMessage(CGUIMessage& message);
 
 protected:

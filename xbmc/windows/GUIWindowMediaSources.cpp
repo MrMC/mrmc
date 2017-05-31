@@ -99,6 +99,13 @@ bool CGUIWindowMediaSources::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
+bool CGUIWindowMediaSources::OnBack(int actionID)
+{
+  if (actionID == ACTION_NAV_BACK || actionID == ACTION_PREVIOUS_MENU)
+    return CGUIMediaWindow::OnBack(ACTION_PREVIOUS_MENU);
+  return CGUIMediaWindow::OnBack(actionID);
+}
+
 bool CGUIWindowMediaSources::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
