@@ -137,6 +137,7 @@ class DllLibSMB : public DllDynamic, DllLibSMBInterface
     RESOLVE_METHOD_RENAME(smbc_fstat,         smbc_fstat)
     RESOLVE_METHOD_RENAME(smbc_getxattr,      smbc_getxattr)
 
+#ifdef DEPRECATED_SMBC_INTERFACE
     RESOLVE_METHOD_RENAME(smbc_setDebug,      smbc_setDebug)
     RESOLVE_METHOD_RENAME(smbc_setFunctionAuthData, smbc_setFunctionAuthData)
     RESOLVE_METHOD_RENAME(smbc_getFunctionGetCachedServer, smbc_getFunctionGetCachedServer)
@@ -146,5 +147,6 @@ class DllLibSMB : public DllDynamic, DllLibSMBInterface
     RESOLVE_METHOD_RENAME(smbc_setTimeout,    smbc_setTimeout)
     RESOLVE_METHOD_RENAME(smbc_setWorkgroup,  smbc_setWorkgroup)
     RESOLVE_METHOD_RENAME(smbc_setUser,       smbc_setUser)
+#endif
   END_METHOD_RESOLVE()
 };
