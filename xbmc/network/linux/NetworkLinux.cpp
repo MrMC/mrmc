@@ -37,15 +37,15 @@
   #include <sys/sockio.h>
   #include <net/if.h>
   #include <net/if_dl.h>
-#if defined(TARGET_DARWIN_OSX)
-  #include <net/if_types.h>
-  #include <net/route.h>
-  #include <netinet/if_ether.h>
-#else //IOS
-  #include "network/osx/ioshacks.h"
-  #include "network/osx/darwinICMPPing.h"
-#endif
   #include <ifaddrs.h>
+  #if defined(TARGET_DARWIN_OSX)
+    #include <net/if_types.h>
+    #include <net/route.h>
+    #include <netinet/if_ether.h>
+  #else //IOS
+    #include "network/osx/ioshacks.h"
+  #endif
+  #include "network/osx/darwinICMPPing.h"
 #elif defined(TARGET_FREEBSD)
   #include <sys/sockio.h>
   #include <sys/wait.h>
@@ -539,7 +539,7 @@ void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
 
 bool CNetworkLinux::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
 {
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN)
   return darwinICMPPing(remote_ip, timeout_ms) == 0;
 #else
   char cmd_line [64];
@@ -547,7 +547,7 @@ bool CNetworkLinux::PingHost(in_addr_t remote_ip, unsigned int timeout_ms)
   struct in_addr host_ip;
   host_ip.s_addr = remote_ip;
 
-  #if defined (TARGET_DARWIN_OSX) || defined (TARGET_FREEBSD)
+  #if defined (TARGET_FREEBSD)
     sprintf(cmd_line, "ping -c 1 -t %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
   #else
     sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));

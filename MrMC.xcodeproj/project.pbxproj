@@ -1953,6 +1953,8 @@
 		F5AE40A613415D9E0004BD79 /* SystemOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409613415D9E0004BD79 /* SystemOperations.cpp */; };
 		F5AE40A713415D9E0004BD79 /* VideoLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409813415D9E0004BD79 /* VideoLibrary.cpp */; };
 		F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */; };
+		F5AFC1DF1EDF551000AD2149 /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EA1C2083B700E3FE8B /* darwinICMPPing.m */; };
+		F5AFC1E01EDF551D00AD2149 /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = F5D5F2EE1C2083C600E3FE8B /* SimplePing.m */; };
 		F5B721FF1C52917D006432AE /* TVOSFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B721FD1C52917D006432AE /* TVOSFile.cpp */; };
 		F5B722021C52962F006432AE /* NSData+GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = F5B722011C52962F006432AE /* NSData+GZIP.m */; };
 		F5B722051C584C80006432AE /* PreflightHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B722041C584C80006432AE /* PreflightHandler.mm */; };
@@ -11111,6 +11113,7 @@
 				F5FBE7DC1E2AB65F001B85EE /* strutl.c in Sources */,
 				DF93D69F1444A8B1007C6459 /* DirectoryFactory.cpp in Sources */,
 				DF93D6A01444A8B1007C6459 /* FileDirectoryFactory.cpp in Sources */,
+				F5AFC1DF1EDF551000AD2149 /* darwinICMPPing.m in Sources */,
 				DF2401261B41A26F001E02DA /* ImageResource.cpp in Sources */,
 				DF93D6A11444A8B1007C6459 /* FileReaderFile.cpp in Sources */,
 				DF93D6A51444A8B1007C6459 /* MusicDatabaseFile.cpp in Sources */,
@@ -11410,6 +11413,7 @@
 				7CCDA1AF192753E30074CF51 /* X_MS_MediaReceiverRegistrarSCPD.cpp in Sources */,
 				7CCDA1BA192753E30074CF51 /* AVTransportSCPD.cpp in Sources */,
 				F5632F991CB947FB002027D9 /* cddb.cpp in Sources */,
+				F5AFC1E01EDF551D00AD2149 /* SimplePing.m in Sources */,
 				7CCDA1C7192753E30074CF51 /* PltMediaController.cpp in Sources */,
 				7CCDA1D0192753E30074CF51 /* PltMediaRenderer.cpp in Sources */,
 				3961C4391ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */,
