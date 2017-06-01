@@ -41,8 +41,10 @@ CPasswordManager::CPasswordManager()
 
 bool CPasswordManager::AuthenticateURL(CURL &url)
 {
+  static CURL debugUrl;
   CSingleLock lock(m_critSection);
 
+  bool hasUserPass = false;
   if (!m_loaded)
     Load();
   std::string lookup(GetLookupPath(url));
@@ -56,9 +58,15 @@ bool CPasswordManager::AuthenticateURL(CURL &url)
     CURL auth(it->second);
     url.SetPassword(auth.GetPassWord());
     url.SetUserName(auth.GetUserName());
-    return true;
+    hasUserPass = true;
   }
-  return false;
+  if (url.GetWithoutFilename() != debugUrl.GetWithoutFilename())
+  {
+    CLog::Log(LOGDEBUG, "CPasswordManager:AuthenticateURL hasUserPass(%d), path(%s)", hasUserPass, url.GetRedacted().c_str());
+    debugUrl = url;
+  }
+
+  return hasUserPass;
 }
 
 bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
