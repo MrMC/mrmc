@@ -125,8 +125,9 @@ CXBMCRenderManager::CXBMCRenderManager()
 
 CXBMCRenderManager::~CXBMCRenderManager()
 {
-  delete m_pRenderer;
-  m_pRenderer = NULL;
+  // is global created/destroyed (g_renderManager)
+  // might be off gl context thread so forget about
+  // trying to destroy m_pRenderer here.
 }
 
 void CXBMCRenderManager::GetVideoRect(CRect &source, CRect &dest, CRect &view)
