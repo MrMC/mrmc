@@ -87,7 +87,7 @@ public:
   static CDSMSessionPtr CreateSession(const CURL &url, ConnectSessionErrors &error);
   static void         ClearOutIdleSessions();
   static void         Disconnect();
-  static bool         HostNameToIP(std::string &hostname);
+  static bool         HostNameToIP(std::string &hostname, bool skipCacheLookUp);
   static const char*  IPAddressToNetBiosName(const std::string &ip);
   static int          NSDiscoverStart();
   static void         NSDiscoverStop();

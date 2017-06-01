@@ -37,7 +37,5 @@ namespace XFILE
     virtual bool Create(const CURL& url);
     virtual bool Exists(const CURL& url);
     virtual bool Remove(const CURL& url);
-
-    static bool AuthenticateURL(CURL &url);
   };
 }

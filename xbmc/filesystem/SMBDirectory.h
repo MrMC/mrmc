@@ -37,7 +37,6 @@ public:
   virtual bool Remove(const CURL& url);
 
   int Open(const CURL &url);
-  static bool AuthenticateURL(CURL &url);
 
 private:
   int OpenDir(const CURL &url, std::string& strAuth);

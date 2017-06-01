@@ -231,7 +231,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   /* make a writeable copy */
   CURL urlIn(url);
 
-  AuthenticateURL(urlIn);
+  CPasswordManager::GetInstance().AuthenticateURL(urlIn);
   strAuth = smb.URLEncode(urlIn);
 
   // remove the / or \ at the end. the samba library does not strip them off
@@ -287,7 +287,7 @@ bool CSMBDirectory::Create(const CURL& url2)
   smb.Init();
 
   CURL url(url2);
-  AuthenticateURL(url);
+  CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
   int result = smb.GetImpl()->smbc_mkdir(strFileName.c_str(), 0);
@@ -304,7 +304,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
   smb.Init();
 
   CURL url(url2);
-  AuthenticateURL(url);
+  CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
   int result = smb.GetImpl()->smbc_rmdir(strFileName.c_str());
@@ -324,7 +324,7 @@ bool CSMBDirectory::Exists(const CURL& url2)
   smb.Init();
 
   CURL url(url2);
-  AuthenticateURL(url);
+  CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
   if (strFileName.empty())
     return false;
@@ -334,36 +334,4 @@ bool CSMBDirectory::Exists(const CURL& url2)
     return false;
 
   return S_ISDIR(info.st_mode);
-}
-
-bool CSMBDirectory::AuthenticateURL(CURL &url)
-{
-  if (!CPasswordManager::GetInstance().AuthenticateURL(url))
-  {
-    // no user/pass match found.
-    // 1) is ok
-    // 2) hostname missmatch.
-    //  is ip and we used host or is host and we used ip
-    // first see if this is already an ip address
-    unsigned long address = inet_addr(url.GetHostName().c_str());
-    if (address == INADDR_NONE)
-    {
-      // GetHostName is netbios name. flip and try again.
-      std::string ip;
-      CDNSNameCache::Lookup(url.GetHostName(), ip);
-      if (!ip.empty())
-        url.SetHostName(ip);
-    }
-    else
-    {
-      // GetHostName is ip address. flip and try again.
-      // this is so silly, using libdsm to try and get netbios name
-      // but there is no way via libsmbclient
-      const char *netbios_name = CDSMSessionManager::IPAddressToNetBiosName(url.GetHostName().c_str());
-      if (netbios_name != nullptr)
-        url.SetHostName(netbios_name);
-    }
-    return CPasswordManager::GetInstance().AuthenticateURL(url);
-  }
-  return CPasswordManager::GetInstance().AuthenticateURL(url);
 }

@@ -949,12 +949,12 @@ CDSMSessionPtr CDSMSessionManager::CreateSession(const CURL &url, ConnectSession
   }
 
   CURL authURL(url);
-  CDSMDirectory::AuthenticateURL(authURL);
+  CPasswordManager::GetInstance().AuthenticateURL(authURL);
 
   // libdsm wants IPs and does not understand hostname
   // make sure the session sig matches this format.
   std::string hostname = authURL.GetHostName();
-  if (HostNameToIP(hostname))
+  if (HostNameToIP(hostname, false))
     authURL.SetHostName(hostname);
 
   std::string key = authURL.GetHostName()
@@ -1024,12 +1024,20 @@ void CDSMSessionManager::Disconnect()
   CLog::Log(LOGDEBUG, "CDSMSessionManager:Disconnect");
 }
 
-bool CDSMSessionManager::HostNameToIP(std::string &hostname)
+bool CDSMSessionManager::HostNameToIP(std::string &hostname, bool skipCacheLookUp)
 {
   std::string ip;
-  CDNSNameCache::Lookup(hostname, ip);
+  if (!skipCacheLookUp)
+    CDNSNameCache::Lookup(hostname, ip);
+
   if (ip.empty())
   {
+    if (!m_dsmlib)
+    {
+      m_dsmlib = new DllLibDSM();
+      m_dsmlib->Load();
+    }
+
     // this might be a netbios name.
     uint32_t s_addr = INADDR_NONE;
     if (m_dsmlib->netbios_ns_resolve(hostname.c_str(), NETBIOS_FILESERVER, &s_addr) != 0)
@@ -1439,7 +1447,7 @@ bool CDSMFile::Rename(const CURL& url, const CURL& urlnew)
     // the session url will be authenticated,
     // also authenticate the new url
     CURL newAuthURL(urlnew);
-    CDSMDirectory::AuthenticateURL(newAuthURL);
+    CPasswordManager::GetInstance().AuthenticateURL(newAuthURL);
     return session->RenameFile(url.GetFileName().c_str(), newAuthURL.GetFileName().c_str());
   }
   else
