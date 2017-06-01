@@ -19,6 +19,7 @@
  */
 
 #include "DNSNameCache.h"
+#include "filesystem/DSMFile.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -56,7 +57,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   if(g_DNSCache.GetCached(strHostName, strIpAddress))
     return true;
 
-  //CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by getaddrinfo");
+  CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by getaddrinfo");
   {
     struct addrinfo hints = {0};
     hints.ai_family = AF_UNSPEC;
@@ -81,7 +82,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     }
   }
 
-  //CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by gethostbyname.local");
+  CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by gethostbyname.local");
   // perform dns name lookup with .local appended
   {
     struct hostent *host = gethostbyname(std::string(strHostName + ".local").c_str());
@@ -97,37 +98,13 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     }
   }
 
-#if !defined(TARGET_DARWIN) || !defined(TARGET_ANDROID)
-  // CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by nmblookup");
-  // perform netbios lookup (nmblookup does not exist for darwin/android)
-  // netbios names are always less than 16 chars (plus service byte) and never has a dot
-  if (strHostName.length() <= 16 && strHostName.find(".") == std::string::npos)
-  {
-    char nmb_ip[100];
-    char line[200];
-
-    std::string cmd = "nmblookup " + strHostName;
-    FILE* fp = popen(cmd.c_str(), "r");
-    if (fp)
-    {
-      while (fgets(line, sizeof line, fp))
-      {
-        if (sscanf(line, "%99s *<00>\n", nmb_ip))
-        {
-          if (inet_addr(nmb_ip) != INADDR_NONE)
-            strIpAddress = nmb_ip;
-        }
-      }
-      pclose(fp);
-    }
-
-    if (!strIpAddress.empty())
-    {
-      g_DNSCache.Add(strHostName, strIpAddress);
-      return true;
-    }
-  }
-#endif
+CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by CDSMSessionManager::HostNameToIP");
+std::string ipaddress = strHostName;
+if (CDSMSessionManager::HostNameToIP(ipaddress, true))
+{
+  g_DNSCache.Add(strHostName, ipaddress);
+  return true;
+}
 
   CLog::Log(LOGERROR, "Unable to lookup host: '%s'", strHostName.c_str());
   return false;
