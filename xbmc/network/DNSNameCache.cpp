@@ -98,13 +98,11 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     }
   }
 
-CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by CDSMSessionManager::HostNameToIP");
-std::string ipaddress = strHostName;
-if (CDSMSessionManager::HostNameToIP(ipaddress, true))
-{
-  g_DNSCache.Add(strHostName, ipaddress);
-  return true;
-}
+  CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by CDSMSessionManager::HostNameToIP");
+  std::string ipaddress = strHostName;
+  // HostNameToIP will do the g_DNSCache.Add if found
+  if (CDSMSessionManager::HostNameToIP(ipaddress, true))
+    return true;
 
   CLog::Log(LOGERROR, "Unable to lookup host: '%s'", strHostName.c_str());
   return false;
