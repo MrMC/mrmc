@@ -266,6 +266,8 @@ private:
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
 
+  static CRect m_surface_rect;
+
   // CJNISurfaceHolderCallback interface
 public:
   void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
