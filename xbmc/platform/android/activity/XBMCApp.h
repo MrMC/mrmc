@@ -279,4 +279,5 @@ private:
   static CRect m_droid2guiRatio;
 
   static CRect m_surface_rect;
+  static uint32_t m_playback_state;
 };
