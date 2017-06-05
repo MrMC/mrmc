@@ -296,6 +296,7 @@ void CXBMCApp::onResume()
     }
   }
 */
+  m_hasReqVisible = false;
   // Re-request Visible Behind
   if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
     RequestVisibleBehind(true);
