@@ -78,6 +78,7 @@ public:
 
   virtual bool GetCondition(int condition, int data) const;
   virtual std::string GetLabel(int info) const;
+  virtual CGUIControl *GetSelectionControl();
   virtual const CRect GetSelectionRenderRect();
 
   /*! \brief Set the list provider for this container (for python).

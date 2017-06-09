@@ -419,10 +419,12 @@ void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
 const CRect CGUIControlGroup::GetSelectionRenderRect()
 {
   CRect selectionRenderRect = GetRenderRect();
-  CGUIControl *control = GetFocusedControl();
-  if (control)
-    selectionRenderRect = control->GetSelectionRenderRect();
   return selectionRenderRect;
+}
+
+CGUIControl *CGUIControlGroup::GetSelectionControl()
+{
+  return this;
 }
 
 bool CGUIControlGroup::HasID(int id) const

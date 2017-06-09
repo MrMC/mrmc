@@ -99,17 +99,25 @@
         <setting id="input.appleremotesequencetime">
           <visible>false</visible>
         </setting>
-        <setting id="input.applesiri" type="boolean" label="24152" help="24153">
+        <setting id="input.applesiriswipe" type="boolean" label="888" help="889">
           <level>1</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="input.applesiriosdswipe" type="boolean" parent="input.applesiri" label="24162" help="24163">
+        <setting id="input.applesirifocuszoom" type="boolean" parent="input.applesiriswipe" label="890" help="891">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
           <dependencies>
-            <dependency type="visible" setting="input.applesiri">true</dependency>
+            <dependency type="visible" setting="input.applesiriswipe">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="input.applesirifocusslide" type="boolean" parent="input.applesiriswipe" label="892" help="893">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="visible" setting="input.applesiriswipe">true</dependency>
           </dependencies>
         </setting>
         <setting id="input.applesiriback" type="boolean" label="884" help="885">

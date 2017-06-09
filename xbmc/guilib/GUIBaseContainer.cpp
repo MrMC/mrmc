@@ -1284,6 +1284,16 @@ const CRect CGUIBaseContainer::GetSelectionRenderRect()
   return selectionRenderRect;
 }
 
+CGUIControl *CGUIBaseContainer::GetSelectionControl()
+{
+  CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+  if (focusedLayout)
+    return focusedLayout->GetSelectionControl();
+  if (m_bAllocated)
+    return this;
+  return nullptr;
+}
+
 int CGUIBaseContainer::GetCurrentPage() const
 {
   if (GetOffset() + m_itemsPerPage >= (int)GetRows())  // last page

@@ -55,6 +55,7 @@ public:
   virtual EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UnfocusFromPoint(const CPoint &point);
   virtual const CRect GetSelectionRenderRect();
+  virtual CGUIControl *GetSelectionControl();
 
   virtual void SetInitialVisibility();
 

@@ -419,6 +419,15 @@ const CRect CGUIMultiSelectTextControl::GetSelectionRenderRect()
   return selectionRenderRect;
 }
 
+CGUIControl *CGUIMultiSelectTextControl::GetSelectionControl()
+{
+  if (m_selectedItem > 0)
+    return m_buttons[m_selectedItem].GetSelectionControl();
+  if (m_bAllocated)
+    return this;
+  return nullptr;
+}
+
 // overrides to allow anims to translate down to the focus image
 void CGUIMultiSelectTextControl::SetAnimations(const std::vector<CAnimation> &animations)
 {

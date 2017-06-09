@@ -55,6 +55,7 @@ public:
   bool MoveLeft();
   bool MoveRight();
   const CRect GetSelectionRenderRect();
+  CGUIControl *GetSelectionControl();
 
 #ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();

@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2017 Team MrMC
  *      https://github.com/MrMC
@@ -18,21 +20,69 @@
  *
  */
 
-#include "guilib/Geometry.h"
+#include "guilib/GUIControl.h"
+#include "threads/CriticalSection.h"
+
+class CAnimation;
+class CGUIWindow;
+
+typedef enum FocusEngineState
+{
+  Idle,
+  Clear,
+  Update,
+} FocusEngineState;
+
+typedef struct
+{
+  int windowID = 0;
+  CGUIWindow  *window = nullptr;
+  CGUIControl *rootFocus = nullptr;
+  CGUIControl *itemFocus = nullptr;
+} FocusEngineFocus;
+
+typedef struct
+{
+  float zoomX = 0.0f;
+  float zoomY = 0.0f;
+  float slideX = 0.0f;
+  float slideY = 0.0f;
+  // amx amount (screen pixels) that control slides
+  float maxScreenSlideX = 15.0f;
+  float maxScreenSlideY = 15.0f;
+} FocusEngineAnimate;
 
 class CFocusEngineHandler
 {
  public:
   static CFocusEngineHandler& GetInstance();
 
-  const CRect   GetFocusedItemRect();
-  const CPoint  GetFocusedItemCenter();
+  void          Process();
+  void          ClearAnimation();
+  void          UpdateAnimation(FocusEngineAnimate &focusAnimate);
+  void          EnableFocusZoom(bool enable);
+  void          EnableFocusSlide(bool enable);
+  void          InvalidateFocus(CGUIControl *control);
+  const int     GetFocusWindowID();
+  const CRect   GetFocusRect();
+  bool          ShowFocusRect();
+  ORIENTATION   GetFocusOrientation();
 
 private:
+  void          UpdateFocus(FocusEngineFocus &focus);
+
   CFocusEngineHandler();
-  CFocusEngineHandler(CFocusEngineHandler const& );
+  CFocusEngineHandler(CFocusEngineHandler const&);
   CFocusEngineHandler& operator=(CFocusEngineHandler const&);
 
-  CRect m_focusedItem;
+  bool m_focusZoom;
+  bool m_focusSlide;
+  bool m_showFocusRect;
+  FocusEngineState m_state;
+  CCriticalSection m_stateLock;
+  FocusEngineFocus m_focus;
+  CCriticalSection m_focusLock;
+  ORIENTATION m_focusedOrientation;
+  FocusEngineAnimate m_focusAnimate;
   static CFocusEngineHandler* m_instance;
 };

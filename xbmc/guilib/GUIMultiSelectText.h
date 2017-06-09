@@ -60,6 +60,7 @@ public:
   virtual void SetAnimations(const std::vector<CAnimation> &animations);
   virtual void SetFocus(bool focus);
   virtual const CRect GetSelectionRenderRect();
+  virtual CGUIControl *GetSelectionControl();
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();

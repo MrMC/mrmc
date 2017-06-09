@@ -635,6 +635,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   else if (StringUtils::EqualsNoCase(type, "unfocus"))  m_type = ANIM_TYPE_UNFOCUS;
   else if (StringUtils::EqualsNoCase(type, "windowopen"))  m_type = ANIM_TYPE_WINDOW_OPEN;
   else if (StringUtils::EqualsNoCase(type, "windowclose"))  m_type = ANIM_TYPE_WINDOW_CLOSE;
+  else if (StringUtils::EqualsNoCase(type, "dynamic"))  m_type = ANIM_TYPE_DYNAMIC;
   // sanity check
   if (m_type == ANIM_TYPE_CONDITIONAL)
   {

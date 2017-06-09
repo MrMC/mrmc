@@ -140,7 +140,7 @@
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 #include "addons/AddonCallbacksGUI.h"
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_TVOS)
 #include "platform/darwin/FocusEngineHandler.h"
 #endif
 
@@ -1091,14 +1091,21 @@ bool CGUIWindowManager::Render()
     for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); ++i)
       CGUITexture::DrawQuad(*i, 0x4c00ff00);
   }
-/*
-#if defined(TARGET_DARWIN)
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-  // osx debugging for CFocusEngineHandler
-  CRect focusedItem = CFocusEngineHandler::GetInstance().GetFocusedItemRect();
-  CGUITexture::DrawQuad(focusedItem, 0x4c00ff00);
+
+#if defined(TARGET_DARWIN_TVOS)
+  if (g_application.IsAppFocused())
+  {
+    if (CFocusEngineHandler::GetInstance().ShowFocusRect())
+    {
+      g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
+      // osx debugging for CFocusEngineHandler
+      CRect focusedItem = CFocusEngineHandler::GetInstance().GetFocusRect();
+      if (!focusedItem.IsEmpty())
+        CGUITexture::DrawQuad(focusedItem, 0x4c00ff00);
+    }
+  }
 #endif
-*/
+
   return hasRendered;
 }
 
@@ -1511,6 +1518,15 @@ void CGUIWindowManager::GetActiveModelessWindows(std::vector<int> &ids)
     if (!(*it)->IsModalDialog())
       ids.push_back((*it)->GetID());
   }
+}
+
+void CGUIWindowManager::InvalidateFocus(CGUIControl *control)
+{
+#if defined(TARGET_DARWIN_TVOS)
+  // called when a control is destroyed, there is no
+  // other way to track down a control in a window that vanishes.
+  CFocusEngineHandler::GetInstance().InvalidateFocus(control);
+#endif
 }
 
 CGUIWindow *CGUIWindowManager::GetTopMostDialog() const

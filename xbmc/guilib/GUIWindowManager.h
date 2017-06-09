@@ -180,6 +180,8 @@ public:
    */
   bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
   void GetActiveModelessWindows(std::vector<int> &ids);
+  void InvalidateFocus(CGUIControl *control);
+
 #ifdef DEBUG_CGUI_TEXTUREUSE
   void DumpTextureUse();
 #endif

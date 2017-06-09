@@ -148,6 +148,11 @@ const CRect CGUIListItemLayout::GetSelectionRenderRect()
   return m_group.GetSelectionRenderRect();
 }
 
+CGUIControl *CGUIListItemLayout::GetSelectionControl()
+{
+  return m_group.GetSelectionControl();
+}
+
 void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)
 {
   if (!group) return;

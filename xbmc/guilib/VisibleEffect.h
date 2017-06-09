@@ -46,7 +46,8 @@ enum ANIMATION_TYPE
   ANIM_TYPE_WINDOW_OPEN,
   ANIM_TYPE_VISIBLE,
   ANIM_TYPE_FOCUS,
-  ANIM_TYPE_CONDITIONAL       // for animations triggered by a condition change
+  ANIM_TYPE_CONDITIONAL,       // for animations triggered by a condition change
+  ANIM_TYPE_DYNAMIC
 };
 
 class CAnimEffect

@@ -22,19 +22,14 @@
 
 #include "FocusEngineHandler.h"
 
-#include "guilib/GUIBaseContainer.h"
 #include "guilib/GUIControl.h"
-#include "guilib/GUIListItem.h"
-#include "guilib/GUIScrollBarControl.h"
-#include "guilib/GUIControlGroupList.h"
-#include "guilib/GUIMultiSelectText.h"
-#include "guilib/GUIListLabel.h"
 #include "guilib/GUIWindowManager.h"
-#include "guiinfo/GUIInfoLabels.h"
-
 #include "threads/Atomics.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML.h"
+
 
 static std::atomic<long> sg_focusenginehandler_lock {0};
 CFocusEngineHandler* CFocusEngineHandler::m_instance = nullptr;
@@ -45,28 +40,250 @@ CFocusEngineHandler::GetInstance()
   CAtomicSpinLock lock(sg_focusenginehandler_lock);
   if (!m_instance)
     m_instance = new CFocusEngineHandler();
-
   return *m_instance;
 }
 
 CFocusEngineHandler::CFocusEngineHandler()
+: m_focusZoom(true)
+, m_focusSlide(true)
+, m_showFocusRect(false)
+, m_state(FocusEngineState::Idle)
+, m_focusedOrientation(UNDEFINED)
 {
 }
 
-const CRect
-CFocusEngineHandler::GetFocusedItemRect()
+void CFocusEngineHandler::Process()
 {
-  CGUIWindow* pWindow = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
-  if (!pWindow)
-    return CRect();
-
-  CGUIControl *focusedControl = pWindow->GetFocusedControl();
-  if (!focusedControl)
-    return CRect();
-
-  CRect focusedItem;
-  switch(focusedControl->GetControlType())
+  FocusEngineFocus focus;
+  UpdateFocus(focus);
+  if (m_focus.itemFocus != focus.itemFocus ||
+      m_focus.window != focus.window       ||
+      m_focus.windowID != focus.windowID)
   {
+    if (m_focus.itemFocus)
+    {
+      m_focus.itemFocus->ResetAnimation(ANIM_TYPE_DYNAMIC);
+      m_focus.itemFocus->ClearDynamicAnimations();
+    }
+    CSingleLock lock(m_focusLock);
+    m_focus = focus;
+  }
+
+  if (m_focus.itemFocus)
+  {
+    CSingleLock lock(m_stateLock);
+    switch(m_state)
+    {
+      case FocusEngineState::Idle:
+        break;
+      case FocusEngineState::Clear:
+        m_focus.itemFocus->ResetAnimation(ANIM_TYPE_DYNAMIC);
+        m_focus.itemFocus->ClearDynamicAnimations();
+        m_focusAnimate = FocusEngineAnimate();
+        m_state = FocusEngineState::Idle;
+        break;
+      case FocusEngineState::Update:
+        {
+          CRect rect = focus.itemFocus->GetSelectionRenderRect();
+          if (!rect.IsEmpty())
+          {
+            FocusEngineAnimate focusAnimate = m_focusAnimate;
+            std::vector<CAnimation> animations;
+            // handle control slide
+            if (m_focusSlide && (fabs(focusAnimate.slideX) > 0.0f || fabs(focusAnimate.slideY) > 0.0f))
+            {
+              float screenDX =   focusAnimate.slideX  * focusAnimate.maxScreenSlideX;
+              float screenDY = (-focusAnimate.slideY) * focusAnimate.maxScreenSlideY;
+              TiXmlElement node("animation");
+              node.SetAttribute("reversible", "false");
+              node.SetAttribute("effect", "slide");
+              node.SetAttribute("start", "0, 0");
+              std::string temp = StringUtils::Format("%f, %f", screenDX, screenDY);
+              node.SetAttribute("end", temp);
+              //node.SetAttribute("time", "10");
+              node.SetAttribute("condition", "true");
+              TiXmlText text("dynamic");
+              node.InsertEndChild(text);
+
+              CAnimation anim;
+              anim.Create(&node, rect, 0);
+              animations.push_back(anim);
+            }
+            // handle control zoom
+            if (m_focusZoom && (focusAnimate.zoomX > 0.0f && focusAnimate.zoomY > 0.0f))
+            {
+              TiXmlElement node("animation");
+              node.SetAttribute("reversible", "false");
+              node.SetAttribute("effect", "zoom");
+              node.SetAttribute("start", "100, 100");
+              float aspectRatio = rect.Width()/ rect.Height();
+              //CLog::Log(LOGDEBUG, "FocusEngineState::Update: aspectRatio(%f)", aspectRatio);
+              if (aspectRatio > 2.5f)
+              {
+                CRect newRect(rect);
+                newRect.x1 -= 2;
+                newRect.y1 -= 2;
+                newRect.x2 += 8;
+                newRect.y2 += 8;
+                // format is end="x,y,width,height"
+                std::string temp = StringUtils::Format("%f, %f, %f, %f",
+                  newRect.x1, newRect.y1, newRect.Width(), newRect.Height());
+                node.SetAttribute("end", temp);
+              }
+              else
+              {
+                std::string temp = StringUtils::Format("%f, %f", focusAnimate.zoomX, focusAnimate.zoomY);
+                node.SetAttribute("end", temp);
+              }
+              node.SetAttribute("center", "auto");
+              node.SetAttribute("condition", "true");
+              TiXmlText text("dynamic");
+              node.InsertEndChild(text);
+
+              CAnimation anim;
+              anim.Create(&node, rect, 0);
+              animations.push_back(anim);
+            }
+            m_focus.itemFocus->ResetAnimation(ANIM_TYPE_DYNAMIC);
+            m_focus.itemFocus->SetDynamicAnimations(animations);
+          }
+          m_state = FocusEngineState::Idle;
+        }
+        break;
+    }
+  }
+}
+
+void CFocusEngineHandler::ClearAnimation()
+{
+  CSingleLock lock(m_stateLock);
+  m_state = FocusEngineState::Clear;
+}
+
+void CFocusEngineHandler::UpdateAnimation(FocusEngineAnimate &focusAnimate)
+{
+  CSingleLock lock(m_stateLock);
+  m_focusAnimate = focusAnimate;
+  m_state = FocusEngineState::Update;
+}
+
+void CFocusEngineHandler::EnableFocusZoom(bool enable)
+{
+  CSingleLock lock(m_stateLock);
+  m_focusZoom = enable;
+}
+
+void CFocusEngineHandler::EnableFocusSlide(bool enable)
+{
+  CSingleLock lock(m_stateLock);
+  m_focusSlide = enable;
+}
+
+void CFocusEngineHandler::InvalidateFocus(CGUIControl *control)
+{
+  CSingleLock lock(m_focusLock);
+  if (m_focus.rootFocus == control || m_focus.itemFocus == control)
+    m_focus = FocusEngineFocus();
+}
+
+const int
+CFocusEngineHandler::GetFocusWindowID()
+{
+  CSingleLock lock(m_focusLock);
+  return m_focus.windowID;
+}
+
+const CRect
+CFocusEngineHandler::GetFocusRect()
+{
+  FocusEngineFocus focus;
+  // skip finding focused window, use current
+  CSingleLock lock(m_focusLock);
+  focus.window = m_focus.window;
+  focus.windowID = m_focus.windowID;
+  lock.Leave();
+  if (focus.window && focus.windowID != 0 && focus.windowID != WINDOW_INVALID)
+  {
+    UpdateFocus(focus);
+    if (focus.itemFocus)
+    {
+      CRect focusedRenderRect = focus.itemFocus->GetSelectionRenderRect();
+      return focusedRenderRect;
+    }
+  }
+  return CRect();
+}
+
+bool CFocusEngineHandler::ShowFocusRect()
+{
+  return m_showFocusRect;
+}
+
+ORIENTATION CFocusEngineHandler::GetFocusOrientation()
+{
+  FocusEngineFocus focus;
+  // skip finding focused window, use current
+  CSingleLock lock(m_focusLock);
+  focus.window = m_focus.window;
+  focus.windowID = m_focus.windowID;
+  lock.Leave();
+  if (focus.window && focus.windowID != 0 && focus.windowID != WINDOW_INVALID)
+  {
+    UpdateFocus(focus);
+    if (focus.itemFocus)
+    {
+      switch(focus.itemFocus->GetControlType())
+      {
+        case CGUIControl::GUICONTROL_LISTGROUP:
+          return focus.rootFocus->GetOrientation();
+          break;
+        case CGUIControl::GUICONTROL_BUTTON:
+        case CGUIControl::GUICONTROL_IMAGE:
+          {
+            CGUIControl *parentFocusedControl = focus.itemFocus->GetParentControl();
+            if (parentFocusedControl)
+              return parentFocusedControl->GetOrientation();
+          }
+          break;
+        default:
+          break;
+      }
+      return focus.itemFocus->GetOrientation();
+    }
+  }
+  return UNDEFINED;
+}
+
+void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
+{
+  // if focus.window is valid, use it and
+  // skip finding focused window else invalidate focus
+  if (!focus.window || focus.windowID == 0 || focus.windowID == WINDOW_INVALID)
+  {
+    focus.windowID = g_windowManager.GetFocusedWindow();
+    focus.window = g_windowManager.GetWindow(focus.windowID);
+    if (!focus.window || focus.windowID == 0 || focus.windowID == WINDOW_INVALID)
+    {
+      focus = FocusEngineFocus();
+      return;
+    }
+  }
+
+  focus.rootFocus = focus.window->GetFocusedControl();
+  if (!focus.rootFocus)
+    return;
+
+  if (focus.rootFocus->GetControlType() == CGUIControl::GUICONTROL_UNKNOWN)
+    return;
+
+  if (!focus.rootFocus->HasFocus())
+    return;
+
+  switch(focus.rootFocus->GetControlType())
+  {
+    // include all known types of controls
+    // we do not really need to do this but compiler
+    // will generate a warning if a new one is added.
     case CGUIControl::GUICONTROL_UNKNOWN:
       CLog::Log(LOGDEBUG, "GetFocusedItem: GUICONTROL_UNKNOWN");
       break;
@@ -97,32 +314,21 @@ CFocusEngineHandler::GetFocusedItemRect()
     case CGUIControl::GUICONTROL_LISTGROUP:
     case CGUIControl::GUICONTROL_GROUPLIST:
     case CGUIControl::GUICONTROL_LISTLABEL:
-    case CGUIControl::GUICONTAINER_LIST:
-    case CGUIControl::GUICONTAINER_WRAPLIST:
-    case CGUIControl::GUICONTAINER_FIXEDLIST:
-    case CGUIControl::GUICONTAINER_EPGGRID:
-    case CGUIControl::GUICONTAINER_PANEL:
     case CGUIControl::GUICONTROL_GROUP:
     case CGUIControl::GUICONTROL_SCROLLBAR:
     case CGUIControl::GUICONTROL_MULTISELECT:
+    case CGUIControl::GUICONTAINER_LIST:
+    case CGUIControl::GUICONTAINER_WRAPLIST:
+    case CGUIControl::GUICONTAINER_EPGGRID:
+    case CGUIControl::GUICONTAINER_PANEL:
       {
-        // returned rect is in screen coordinates.
-        focusedItem = focusedControl->GetSelectionRenderRect();
-        if (focusedItem != m_focusedItem)
-        {
-          m_focusedItem = focusedItem;
-          //CLog::Log(LOGDEBUG, "GetFocusedItem: itemRect, t(%f) l(%f) w(%f) h(%f)",
-          //  focusedItem.x1, focusedItem.y1, focusedItem.Width(), focusedItem.Height());
-        }
+        focus.itemFocus = focus.rootFocus->GetSelectionControl();
+      }
+      break;
+    case CGUIControl::GUICONTAINER_FIXEDLIST:
+      {
+        focus.itemFocus = focus.rootFocus->GetSelectionControl();
       }
       break;
   }
-
-  return m_focusedItem;
-}
-
-const CPoint
-CFocusEngineHandler::GetFocusedItemCenter()
-{
-  return GetFocusedItemRect().Center();
 }
