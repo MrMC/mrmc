@@ -372,6 +372,22 @@ static void CopyUserDataIfNeeded(const std::string &strPath, const std::string &
   }
 }
 
+#if defined(TARGET_DARWIN_TVOS)
+// Utility function used to copy keymaps from the application bundle
+// over to the masterprofile keymaps directory in Application Support/Kodi.
+//
+static void CopyKeymapIfNeeded(const std::string &strPath, const std::string &file)
+{
+  std::string destPath = URIUtils::AddFileToFolder(strPath, file);
+  if (!CFile::Exists(destPath))
+  {
+    // need to copy it across
+    std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/system/keymaps", file);
+    CFile::Copy(srcPath, destPath);
+  }
+}
+#endif
+
 void CApplication::Preflight()
 {
 #ifdef HAS_DBUS
@@ -438,6 +454,10 @@ bool CApplication::Create()
   // copy required files
   CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+#if defined(TARGET_DARWIN_TVOS)
+  // copy the sire remote keymap to the userdata folder if needed
+  CopyKeymapIfNeeded("special://masterprofile/keymaps", "customcontroller.SiriRemote.xml");
+#endif
 
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str()))

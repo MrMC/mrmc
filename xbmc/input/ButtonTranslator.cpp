@@ -731,6 +731,50 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
   return TranslateRemoteString((*it2).second.c_str());
 }
 
+int CButtonTranslator::GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const
+{
+  int action = 0;
+  auto it = windowMap->find(windowId);
+  if (it != windowMap->end())
+  {
+    const CustomControllerButtonMap &buttonMap = it->second;
+    auto it2 = buttonMap.find(buttonId);
+    if (it2 != buttonMap.end())
+    {
+      strAction = it2->second;
+      TranslateActionString(strAction.c_str(), action);
+    }
+  }
+
+  return action;
+}
+
+bool CButtonTranslator::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction)
+{
+  // resolve the correct custom controller
+  auto it = m_customControllersMap.find(controllerName);
+  if (it == m_customControllersMap.end())
+    return false;
+
+  const CustomControllerWindowMap *wmap = &it->second;
+
+  // try to get the action from the current window
+  action = GetCustomControllerActionCode(windowId, buttonId, wmap, strAction);
+
+  // if it's invalid, try to get it from a fallback window or the global map
+  if (action == 0)
+  {
+    int fallbackWindow = GetFallbackWindow(windowId);
+    if (fallbackWindow > -1)
+      action = GetCustomControllerActionCode(fallbackWindow, buttonId, wmap, strAction);
+    // still no valid action? use global map
+    if (action == 0)
+      action = GetCustomControllerActionCode(-1, buttonId, wmap, strAction);
+  }
+
+  return (action > 0);
+}
+
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 void CButtonTranslator::MapJoystickFamily(TiXmlNode *pNode)
 {
@@ -1253,6 +1297,50 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
   }
 }
 
+void CButtonTranslator::MapCustomControllerActions(int windowID, TiXmlNode *pCustomController)
+{
+  CustomControllerButtonMap buttonMap;
+  std::string controllerName;
+
+  TiXmlElement *pController = pCustomController->ToElement();
+  if (pController)
+  {
+    // transform loose name to new family, including altnames
+    if(pController->Attribute("name"))
+    {
+      controllerName = pController->Attribute("name");
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Missing attribute \"name\" for tag \"customcontroller\"");
+      return;
+    }
+  }
+
+  // parse map
+  TiXmlElement *pButton = pCustomController->FirstChildElement();
+  int id = 0;
+  while (pButton)
+  {
+    std::string action;
+    if (!pButton->NoChildren())
+      action = pButton->FirstChild()->ValueStr();
+
+    if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id >= 0)
+    {
+      buttonMap[id] = action;
+    }
+    else
+      CLog::Log(LOGERROR, "Error reading customController map element, Invalid id: %d", id);
+
+    pButton = pButton->NextSiblingElement();
+  }
+
+  // add/overwrite button with mapped actions
+  for (auto button : buttonMap)
+    m_customControllersMap[controllerName][windowID][button.first] = button.second;
+}
+
 bool CButtonTranslator::HasDeviceType(TiXmlNode *pWindow, std::string type)
 {
   return pWindow->FirstChild(type) != NULL;
@@ -1341,6 +1429,16 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     {
       MapTouchActions(windowID, pDevice);
       pDevice = pDevice->NextSibling("touch");
+    }
+  }
+
+  if ((pDevice = pWindow->FirstChild("customcontroller")) != NULL)
+  {
+    // map custom controller actions
+    while (pDevice)
+    {
+      MapCustomControllerActions(windowID, pDevice);
+      pDevice = pDevice->NextSibling("customcontroller");
     }
   }
 }
@@ -1674,6 +1772,8 @@ void CButtonTranslator::Clear()
   ClearLircButtonMapEntries();
   lircRemotesMap.clear();
 #endif
+
+  m_customControllersMap.clear();
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   m_joystickButtonMap.clear();

@@ -48,8 +48,6 @@ void CTVOSInputSettings::Initialize()
 {
   bool enable = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRI);
   [g_xbmcController setSiriRemote:enable];
-  bool enableOsdSwipes = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIOSDSWIPE);
-  [g_xbmcController setSiriRemoteOSDSwipes:enableOsdSwipes];
   bool enableTimeout = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
   [g_xbmcController setShouldRemoteIdle:enableTimeout];
   int timeout = CSettings::GetInstance().GetInt(CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
@@ -66,11 +64,6 @@ void CTVOSInputSettings::OnSettingChanged(const CSetting *setting)
   {
     bool enable = dynamic_cast<const CSettingBool*>(setting)->GetValue();
     [g_xbmcController setSiriRemote:enable];
-  }
-  else if (settingId == CSettings::SETTING_INPUT_APPLESIRIOSDSWIPE)
-  {
-    bool enableOsdSwipes = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIOSDSWIPE);
-    [g_xbmcController setSiriRemoteOSDSwipes:enableOsdSwipes];
   }
   else if (settingId == CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED)
   {

@@ -47,9 +47,9 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
   SYNC="rsync -aq ${PLATFORM} ${BUILDSYS} ${BUILDDBG}"
 
   if [ "$PLATFORM_NAME" == "appletvos" ] ; then
-    # clean keymaps folder, not even sure this is needed
-    SYNC="${SYNC} --include *keymaps/keyboard.xml --include *keymaps/joystick.AppleRemote.xml --exclude *keymaps/* --exclude *nyxboard*"
-    # clean settings folder, only use stuff for tvos
+    # clean keymaps folder, only include required items for tvos
+    SYNC="${SYNC} --include *keymaps/keyboard.xml --include *keymaps/customcontroller.SiriRemote.xml --exclude *keymaps/* --exclude *nyxboard*"
+    # clean settings folder, only include required items for tvos
     SYNC="${SYNC} --include *settings/settings.xml --include *settings/darwin_tvos.xml --include *settings/darwin.xml --exclude *settings/*"
   fi
 

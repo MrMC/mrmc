@@ -311,30 +311,52 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
   }
 
   // now handle any buttons or axis
-  std::string joystickName;
+  std::string strMapName;
   bool isAxis = false;
   float fAmount = 0.0;
+  bool isJoystick = false;
 
   // es->ExecuteNextAction() invalidates the ref to the CEventServer instance
   // when the action exits XBMC
   es = CEventServer::GetInstance();
   if (!es || !es->Running() || es->GetNumberOfClients() == 0)
     return false;
-  unsigned int wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
+  unsigned int wKeyID = es->GetButtonCode(strMapName, isAxis, fAmount);
 
   if (wKeyID)
   {
-    if (joystickName.length() > 0)
+    if (strMapName.length() > 0)
     {
-      if (isAxis == true)
+      // joysticks are not supported via eventserver
+      if (isJoystick)
       {
-        if (fabs(fAmount) >= 0.08)
-          m_lastAxisMap[joystickName][wKeyID] = fAmount;
-        else
-          m_lastAxisMap[joystickName].erase(wKeyID);
+        return false;
       }
+      else // it is a customcontroller
+      {
+        int actionID;
+        std::string actionName;
 
-      return ProcessJoystickEvent(windowId, joystickName, wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, fAmount);
+        // Translate using custom controller translator.
+        if (CButtonTranslator::GetInstance().TranslateCustomControllerString(windowId, strMapName, wKeyID, actionID, actionName))
+        {
+          // break screensaver
+          g_application.ResetSystemIdleTimer();
+          g_application.ResetScreenSaver();
+
+          // in case we wokeup the screensaver or screen - eat that action...
+          if (g_application.WakeUpScreenSaverAndDPMS())
+            return true;
+
+          m_Mouse.SetActive(false);
+
+          return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName));
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "ProcessEventServer, ERROR mapping customcontroller action. CustomController: %s %i", strMapName.c_str(), wKeyID);
+        }
+      }
     }
     else
     {
@@ -414,8 +436,48 @@ bool CInputManager::Process(int windowId, float frameTime)
   ProcessGamepad(windowId);
   ProcessEventServer(windowId, frameTime);
   ProcessPeripherals(frameTime);
-  
+  ProcessQueuedActions();
+
   return true;
+}
+
+void CInputManager::ProcessQueuedActions()
+{
+  std::vector<struct ActionWithSound> queuedActions;
+  {
+    CSingleLock lock(m_actionMutex);
+    queuedActions.swap(m_queuedActions);
+  }
+
+  for (auto& actionWithSound : queuedActions)
+  {
+    if (actionWithSound.playActionSound)
+    {
+      ExecuteInputAction(actionWithSound.action);
+    }
+    else
+    {
+      g_application.OnAction(actionWithSound.action);
+    }
+  }
+}
+
+void CInputManager::QueueAction(const CAction& action, bool shouldPlayActionSound)
+{
+  CSingleLock lock(m_actionMutex);
+  struct ActionWithSound actionWithSound = {.action = action, .playActionSound = shouldPlayActionSound };
+/*
+  // Avoid dispatching multiple analog actions per frame with the same ID
+  if (action.IsAnalog())
+  {
+    m_queuedActions.erase(std::remove_if(m_queuedActions.begin(), m_queuedActions.end(),
+      [&actionWithSound](const struct ActionWithSound& queuedAction)
+      {
+        return actionWithSound.action.GetID() == queuedAction.action.GetID();
+      }), m_queuedActions.end());
+  }
+*/
+  m_queuedActions.push_back(actionWithSound);
 }
 
 bool CInputManager::ProcessJoystickEvent(int windowId, const std::string& joystickName, int wKeyID, short inputType, float fAmount, unsigned int holdTime /*=0*/)

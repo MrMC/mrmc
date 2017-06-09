@@ -37,6 +37,7 @@
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
 #include "settings/lib/ISettingCallback.h"
+#include "threads/CriticalSection.h"
 
 class CKey;
 
@@ -88,6 +89,14 @@ public:
   \return true if event is handled, false otherwise
   */
   bool ProcessPeripherals(float frameTime);
+
+  /*! \brief Dispatch actions queued since the last call to Process()
+   */
+  void ProcessQueuedActions();
+
+  /*! \brief Queue an action to be processed on the next call to Process()
+   */
+  void QueueAction(const CAction& action, bool shouldPlayActionSound = false);
 
   /*! \brief Process all inputs
    *
@@ -262,6 +271,15 @@ private:
 #if defined(HAS_EVENT_SERVER)
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
+
+  struct ActionWithSound
+  {
+    CAction action;
+    bool playActionSound;
+  };
+
+  std::vector<struct ActionWithSound> m_queuedActions;
+  CCriticalSection     m_actionMutex;
 
 #if defined(HAS_SDL_JOYSTICK) 
   CJoystick m_Joystick;
