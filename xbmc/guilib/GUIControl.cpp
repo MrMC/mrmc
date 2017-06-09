@@ -341,6 +341,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     switch (message.GetMessage() )
     {
     case GUI_MSG_SETFOCUS:
+      CLog::Log(LOGERROR, "Control %u in window %u has been asked to focus", GetID(), GetParentID());
       // if control is disabled then move 2 the next control
       if ( !CanFocus() )
       {
@@ -943,6 +944,16 @@ void CGUIControl::SetHitRect(const CRect &rect, const color_t &color)
 {
   m_hitRect = rect;
   m_hitColor = color;
+}
+
+const CRect CGUIControl::GetRenderRect()
+{
+  return m_renderRegion;
+}
+
+const CRect CGUIControl::GetSelectionRenderRect()
+{
+  return m_renderRegion;
 }
 
 void CGUIControl::SetCamera(const CPoint &camera)

@@ -59,6 +59,7 @@ public:
   // overrides to allow all focus anims to translate down to the focus image
   virtual void SetAnimations(const std::vector<CAnimation> &animations);
   virtual void SetFocus(bool focus);
+  virtual const CRect GetSelectionRenderRect();
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();

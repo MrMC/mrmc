@@ -410,6 +410,15 @@ void CGUIMultiSelectTextControl::SetFocus(bool focus)
   CGUIControl::SetFocus(focus);
 }
 
+const CRect CGUIMultiSelectTextControl::GetSelectionRenderRect()
+{
+  CRect selectionRenderRect = GetRenderRect();
+  if (m_selectedItem > 0)
+    selectionRenderRect = m_buttons[m_selectedItem].GetSelectionRenderRect();
+
+  return selectionRenderRect;
+}
+
 // overrides to allow anims to translate down to the focus image
 void CGUIMultiSelectTextControl::SetAnimations(const std::vector<CAnimation> &animations)
 {

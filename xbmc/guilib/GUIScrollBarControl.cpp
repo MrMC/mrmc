@@ -377,3 +377,17 @@ bool CGUIScrollBar::IsVisible() const
     return false;
   return CGUIControl::IsVisible();
 }
+
+const CRect CGUIScrollBar::GetSelectionRenderRect()
+{
+  float z = 0;
+  float x1 = m_guiBarFocus.GetXPosition();
+  float y1 = m_guiBarFocus.GetYPosition();
+  float x2 = x1 + m_guiBarFocus.GetWidth();
+  float y2 = y1 + m_guiBarFocus.GetHeight();
+  m_cachedTransform.TransformPosition(x1, y1, z);
+  m_cachedTransform.TransformPosition(x2, y2, z);
+  CRect selectionRenderRect(x1, y1, x2, y2);
+
+  return selectionRenderRect;
+}

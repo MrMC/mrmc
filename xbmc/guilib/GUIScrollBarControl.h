@@ -61,6 +61,7 @@ public:
   int GetValue() const;
   virtual std::string GetDescription() const;
   virtual bool IsVisible() const;
+  virtual const CRect GetSelectionRenderRect();
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();

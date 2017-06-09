@@ -58,6 +58,7 @@ public:
   }
 
   virtual CRect CalcRenderRegion() const;
+  virtual const CRect GetSelectionRenderRect();
 
 protected:
   virtual bool UpdateColors();

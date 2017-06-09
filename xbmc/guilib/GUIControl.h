@@ -168,6 +168,8 @@ public:
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect, const color_t &color);
+  virtual const CRect GetRenderRect();
+  virtual const CRect GetSelectionRenderRect();
   virtual void SetCamera(const CPoint &camera);
   virtual void SetStereoFactor(const float &factor);
   bool SetColorDiffuse(const CGUIInfoColor &color);

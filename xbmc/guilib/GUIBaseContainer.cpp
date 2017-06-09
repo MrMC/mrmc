@@ -1274,6 +1274,16 @@ std::string CGUIBaseContainer::GetLabel(int info) const
   return label;
 }
 
+const CRect CGUIBaseContainer::GetSelectionRenderRect()
+{
+  CRect selectionRenderRect = GetRenderRect();
+  CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+  if (focusedLayout)
+    selectionRenderRect = focusedLayout->GetSelectionRenderRect();
+
+  return selectionRenderRect;
+}
+
 int CGUIBaseContainer::GetCurrentPage() const
 {
   if (GetOffset() + m_itemsPerPage >= (int)GetRows())  // last page

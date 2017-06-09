@@ -199,6 +199,12 @@ public:
   bool HasSaveLastControl() const { return !m_defaultAlways; };
 
   virtual void OnDeinitWindow(int nextWindowID);
+  /*! \brief Grabs the window's top,left position in skin coordinates
+   The window origin may change based on <origin> tag conditions in the skin.
+
+   \return the window's origin in skin coordinates
+   */
+  virtual CPoint GetPosition() const;
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const std::string& strPath, const std::string &strLowerPath);  ///< Loads from the given file
@@ -251,12 +257,6 @@ protected:
 
   int m_renderOrder;      // for render order of dialogs
 
-  /*! \brief Grabs the window's top,left position in skin coordinates
-   The window origin may change based on <origin> tag conditions in the skin.
-
-   \return the window's origin in skin coordinates
-   */
-  virtual CPoint GetPosition() const;
   std::vector<COrigin> m_origins;  // positions of dialogs depending on base window
 
   // control states

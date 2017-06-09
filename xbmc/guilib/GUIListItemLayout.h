@@ -54,6 +54,7 @@ public:
   void SelectItemFromPoint(const CPoint &point);
   bool MoveLeft();
   bool MoveRight();
+  const CRect GetSelectionRenderRect();
 
 #ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();

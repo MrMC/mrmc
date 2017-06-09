@@ -70,6 +70,11 @@ CRect CGUIListLabel::CalcRenderRegion() const
   return m_label.GetRenderRect();
 }
 
+const CRect CGUIListLabel::GetSelectionRenderRect()
+{
+  return m_label.GetRenderRect();
+}
+
 bool CGUIListLabel::UpdateColors()
 {
   bool changed = CGUIControl::UpdateColors();

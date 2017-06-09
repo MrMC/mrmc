@@ -143,6 +143,11 @@ bool CGUIListItemLayout::CheckCondition()
   return !m_condition || m_condition->Get();
 }
 
+const CRect CGUIListItemLayout::GetSelectionRenderRect()
+{
+  return m_group.GetSelectionRenderRect();
+}
+
 void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)
 {
   if (!group) return;
