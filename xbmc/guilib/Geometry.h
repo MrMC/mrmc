@@ -207,6 +207,11 @@ public:
     return y2 - y1;
   };
 
+  inline CPointGen<T> Center() const XBMC_FORCE_INLINE
+  {
+    return CPointGen<T>(x1 + (x2 - x1) / 2.0f, y1 + (y2 - y1) / 2.0f);
+  };
+
   inline T Area() const XBMC_FORCE_INLINE
   {
     return Width() * Height();
