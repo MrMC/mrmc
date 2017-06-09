@@ -1718,6 +1718,9 @@
 		F507F5711DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */; };
 		F507F5721DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */; };
 		F507F5731DF9E3030099917C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */; };
+		F50F8E841EE578AB00C8F93B /* FocusEngineHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */; };
+		F50F8E851EE578AB00C8F93B /* FocusEngineHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */; };
+		F50F8E871EE8714500C8F93B /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E861EE8714500C8F93B /* GameController.framework */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F51063421BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
 		F51063431BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
@@ -5260,6 +5263,9 @@
 		F507F56E1DF9E2EC0099917C /* DllLibRTMP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DllLibRTMP.h; sourceTree = "<group>"; };
 		F507F56F1DF9E3030099917C /* DVDInputStreamRTMP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamRTMP.cpp; sourceTree = "<group>"; };
 		F507F5701DF9E3030099917C /* DVDInputStreamRTMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamRTMP.h; sourceTree = "<group>"; };
+		F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FocusEngineHandler.cpp; sourceTree = "<group>"; };
+		F50F8E831EE578AB00C8F93B /* FocusEngineHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusEngineHandler.h; sourceTree = "<group>"; };
+		F50F8E861EE8714500C8F93B /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/GameController.framework; sourceTree = DEVELOPER_DIR; };
 		F50FDC58119B4B2C00C8B8CD /* GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTextViewer.h; sourceTree = "<group>"; };
 		F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTextViewer.cpp; sourceTree = "<group>"; };
 		F51063401BDAA11D00BBCED6 /* DarwinNSUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinNSUserDefaults.h; sourceTree = "<group>"; };
@@ -5997,6 +6003,7 @@
 				F5D142431BAF0B6D0075A95C /* CoreMedia.framework in Frameworks */,
 				F5D142421BAF0B6D0075A95C /* CoreVideo.framework in Frameworks */,
 				F5D142E21BAF88760075A95C /* CoreGraphics.framework in Frameworks */,
+				F50F8E871EE8714500C8F93B /* GameController.framework in Frameworks */,
 				F5D142DE1BAF882F0075A95C /* OpenGLES.framework in Frameworks */,
 				F5D142401BAF0B6D0075A95C /* ImageIO.framework in Frameworks */,
 				F5D142E41BAF88880075A95C /* MediaPlayer.framework in Frameworks */,
@@ -9144,6 +9151,7 @@
 				F5D142E11BAF88760075A95C /* CoreGraphics.framework */,
 				F5D142DF1BAF88630075A95C /* UIKit.framework */,
 				F5D142DD1BAF882F0075A95C /* OpenGLES.framework */,
+				F50F8E861EE8714500C8F93B /* GameController.framework */,
 				E49910EC174E54D200741B6D /* AudioToolbox.framework */,
 				E49910F2174E54FB00741B6D /* AVFoundation.framework */,
 				E49910F0174E54EC00741B6D /* CFNetwork.framework */,
@@ -9492,6 +9500,8 @@
 				F590452C1BA372A600DB589A /* DarwinUtils.mm */,
 				F5D13EBA1BAA17890075A95C /* DictionaryUtils.h */,
 				F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */,
+				F50F8E831EE578AB00C8F93B /* FocusEngineHandler.h */,
+				F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */,
 				F5B722001C52962F006432AE /* NSData+GZIP.h */,
 				F5B722011C52962F006432AE /* NSData+GZIP.m */,
 				F59045431BA372A600DB589A /* NSLogDebugHelpers.h */,
@@ -10802,6 +10812,7 @@
 				F5987F050FBDF274008EF4FB /* DPMSSupport.cpp in Sources */,
 				F5987FDB0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */,
 				F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */,
+				F50F8E841EE578AB00C8F93B /* FocusEngineHandler.cpp in Sources */,
 				F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */,
 				7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */,
 				F5B722791C7BBE04006432AE /* DVDStateSerializer.cpp in Sources */,
@@ -13634,6 +13645,7 @@
 				F5D1421D1BAF0B6D0075A95C /* NptThreads.cpp in Sources */,
 				F5D1421E1BAF0B6D0075A95C /* NptTime.cpp in Sources */,
 				F5D1421F1BAF0B6D0075A95C /* NptTls.cpp in Sources */,
+				F50F8E851EE578AB00C8F93B /* FocusEngineHandler.cpp in Sources */,
 				F5D142201BAF0B6D0075A95C /* NptUri.cpp in Sources */,
 				F5D142211BAF0B6D0075A95C /* NptUtils.cpp in Sources */,
 				F5B722FF1C7C894F006432AE /* GUIBuiltins.cpp in Sources */,
