@@ -1,0 +1,39 @@
+[B]1.3.2[/B]
+- fixed: broken search results after API changes
+[B]1.3.1[/B]
+- added: scraping of mpaa certifications
+
+[B]1.3.0[/B]
+- Update
+
+[B]1.2.2[/B]
+- Update author name
+
+[B]1.2.1[/B]
+- fixed: broken search results after API changes
+
+[B]1.2.0[/B]
+- added: scraping of ratings and votes
+
+[B]1.1.2[/B]
+- fixed: broken search and art scraping
+
+[B]1.1.1[/B]
+- fixed: scraping of episode names in certain languages
+
+[B]1.1.0[/B]
+- added extra languages for selection
+- changed language to a selection list
+
+[B]1.0.3[/B]
+- updated language files from Transifex
+
+[B]1.0.2[/B]
+- fixed: broken scraping
+
+[B]1.0.1[/B]
+- updated language files from Transifex
+
+[B]1.0.0[/B]
+
+- Initial version
