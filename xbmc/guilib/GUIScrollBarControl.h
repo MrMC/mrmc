@@ -80,6 +80,5 @@ protected:
   int m_offset;
 
   bool m_showOnePage;
-  ORIENTATION m_orientation;
 };
 #endif

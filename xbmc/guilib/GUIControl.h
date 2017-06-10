@@ -41,7 +41,7 @@ class CGUIListItem; // forward
 class CAction;
 class CMouseEvent;
 
-enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
+enum ORIENTATION { HORIZONTAL = 0, VERTICAL, UNDEFINED = -1 };
 
 class CControlState
 {
@@ -178,6 +178,7 @@ public:
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
   virtual float GetHeight() const;
+  virtual ORIENTATION GetOrientation () const;
 
   void MarkDirtyRegion();
 
@@ -331,6 +332,7 @@ protected:
   float m_posY;
   float m_height;
   float m_width;
+  ORIENTATION m_orientation;
   CRect m_hitRect;
   color_t m_hitColor;
   CGUIInfoColor m_diffuseColor;

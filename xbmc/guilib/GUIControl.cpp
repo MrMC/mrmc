@@ -45,6 +45,7 @@ CGUIControl::CGUIControl() :
   m_posY = 0;
   m_width = 0;
   m_height = 0;
+  m_orientation = UNDEFINED;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -65,6 +66,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_posY = posY;
   m_width = width;
   m_height = height;
+  m_orientation = UNDEFINED;
   m_bHasFocus = false;
   m_controlID = controlID;
   m_parentID = parentID;
@@ -473,6 +475,11 @@ float CGUIControl::GetWidth() const
 float CGUIControl::GetHeight() const
 {
   return m_height;
+}
+
+ORIENTATION CGUIControl::GetOrientation () const
+{
+  return m_orientation;
 }
 
 void CGUIControl::MarkDirtyRegion()

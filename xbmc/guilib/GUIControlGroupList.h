@@ -85,7 +85,6 @@ protected:
   CScroller m_scroller;
 
   bool m_useControlPositions;
-  ORIENTATION m_orientation;
   uint32_t m_alignment;
 
   // for autosizing

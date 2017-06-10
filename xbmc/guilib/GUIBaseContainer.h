@@ -144,7 +144,6 @@ protected:
   float m_analogScrollCount;
   unsigned int m_lastHoldTime;
 
-  ORIENTATION m_orientation;
   int m_itemsPerPage;
 
   std::vector< CGUIListItemPtr > m_items;
