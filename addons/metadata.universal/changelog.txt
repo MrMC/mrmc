@@ -1,3 +1,15 @@
+[B]2.8.3[/B]
+- fixed: copy-paste issue in previous fix
+
+[B]2.8.2[/B]
+- fixed: broken TMDB search results due to API changes
+
+[B]2.8.1[/B]
+- added: pt-br and sr languages on user request
+
+[B]2.8.0[/B]
+- Update
+
 [B]2.7.2[/B]
 - Update author name
 
