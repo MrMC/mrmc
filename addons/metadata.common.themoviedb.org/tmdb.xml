@@ -215,10 +215,10 @@
 				<expression clear="yes" noclean="1">&quot;cast&quot;:\[([^\]]*)</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;thumb&gt;$$20original\4&lt;/thumb&gt;&lt;/actor&gt;" dest="2">
-				<expression repeat="yes" fixchars="1,2">&quot;character&quot;:&quot;((?:[^&quot;]|(?&lt;=\\)&quot;)*)&quot;,&quot;credit_id&quot;:&quot;[^&quot;]*&quot;,&quot;id&quot;:[0-9]*,&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:([0-9]*),&quot;profile_path&quot;:&quot;([^&quot;]*)&quot;</expression>
+				<expression repeat="yes" fixchars="1,2">&quot;character&quot;:&quot;((?:[^&quot;]|(?&lt;=\\)&quot;)*)&quot;,&quot;credit_id&quot;:&quot;[^&quot;]*&quot;,&quot;gender&quot;:[0-9]*,&quot;id&quot;:[0-9]*,&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:([0-9]*),&quot;profile_path&quot;:&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;/actor&gt;" dest="2+">
-				<expression repeat="yes" fixchars="1,2">&quot;character&quot;:&quot;((?:[^&quot;]|(?&lt;=\\)&quot;)*)&quot;,&quot;credit_id&quot;:&quot;[^&quot;]*&quot;,&quot;id&quot;:[0-9]*,&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:([0-9]*),&quot;profile_path&quot;:null</expression>
+				<expression repeat="yes" fixchars="1,2">&quot;character&quot;:&quot;((?:[^&quot;]|(?&lt;=\\)&quot;)*)&quot;,&quot;credit_id&quot;:&quot;[^&quot;]*&quot;,&quot;gender&quot;:[0-9]*,&quot;id&quot;:[0-9]*,&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:([0-9]*),&quot;profile_path&quot;:null</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -238,7 +238,7 @@
 				<expression clear="yes" noclean="1">&quot;crew&quot;:\[([^\]]*)</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="2">
-				<expression repeat="yes" fixchars="1">&quot;department&quot;:&quot;Directing&quot;,&quot;id&quot;:[0-9]*,&quot;job&quot;:&quot;Director&quot;,&quot;name&quot;:&quot;([^&quot;]*)&quot;</expression>
+				<expression repeat="yes" fixchars="1">&quot;department&quot;:&quot;Directing&quot;,&quot;gender&quot;:[0-9]*,&quot;id&quot;:[0-9]*,&quot;job&quot;:&quot;Director&quot;,&quot;name&quot;:&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -258,7 +258,7 @@
 				<expression clear="yes" noclean="1">&quot;crew&quot;:\[([^\]]*)</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2">
-				<expression repeat="yes" fixchars="1">&quot;department&quot;:&quot;Writing&quot;,&quot;id&quot;:[0-9]*,&quot;job&quot;:&quot;(?:Screenplay|Writer|Author)?&quot;,&quot;name&quot;:&quot;([^&quot;]*)&quot;</expression>
+				<expression repeat="yes" fixchars="1">&quot;department&quot;:&quot;Writing&quot;,&quot;gender&quot;:[0-9]*,&quot;id&quot;:[0-9]*,&quot;job&quot;:&quot;(?:Screenplay|Writer|Author)?&quot;,&quot;name&quot;:&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
