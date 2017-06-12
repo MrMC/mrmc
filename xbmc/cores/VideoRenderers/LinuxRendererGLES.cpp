@@ -1820,7 +1820,6 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   // but somehow this also effects the rendercapture here
   // therefore we have to skip the flip here or we get upside down
   // images
-  if (m_format == RENDER_FMT_CVBREF)
   {
     glMatrixModview->Translatef(0.0f, capture->GetHeight(), 0.0f);
     glMatrixModview->Scalef(1.0f, -1.0f, 1.0f);
