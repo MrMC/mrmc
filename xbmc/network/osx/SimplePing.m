@@ -166,6 +166,8 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
 - (void)didFailWithError:(NSError *)error
     // Shut down the pinger object and tell the delegate about the error.
 {
+    id<SimplePingDelegate> strongDelegate;
+
     assert(error != nil);
     
     // We retain ourselves temporarily because it's common for the delegate method 
@@ -174,11 +176,12 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
     // that happens currently, but I've got into the habit of doing this as a 
     // defensive measure.
     
-    [self performSelector:@selector(noop) withObject:nil afterDelay:0.0];
-    
+    CFAutorelease( CFBridgingRetain( self ));
+
     [self stop];
-    if ( (self.delegate != nil) && [self.delegate respondsToSelector:@selector(simplePing:didFailWithError:)] ) {
-        [self.delegate simplePing:self didFailWithError:error];
+    strongDelegate = self.delegate;
+    if ( (strongDelegate != nil) && [strongDelegate respondsToSelector:@selector(simplePing:didFailWithError:)] ) {
+        [strongDelegate simplePing:self didFailWithError:error];
     }
 }
 
@@ -212,7 +215,8 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
     NSMutableData * packet;
     ICMPHeader *    icmpPtr;
     ssize_t         bytesSent;
-    
+    id<SimplePingDelegate>  strongDelegate;
+
     // Construct the ping packet.
     payload = data;
     if (payload == nil) {
@@ -261,12 +265,13 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
 
     // Handle the results of the send.
     
+    strongDelegate = self.delegate;
     if ( (bytesSent > 0) && (((NSUInteger) bytesSent) == [packet length]) ) {
 
         // Complete success.  Tell the client.
 
-        if ( (self.delegate != nil) && [self.delegate respondsToSelector:@selector(simplePing:didSendPacket:)] ) {
-            [self.delegate simplePing:self didSendPacket:packet];
+        if ( (strongDelegate != nil) && [strongDelegate respondsToSelector:@selector(simplePing:didSendPacket:)] ) {
+            [strongDelegate simplePing:self didSendPacket:packet];
         }
     } else {
         NSError *   error;
@@ -277,8 +282,8 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
             err = ENOBUFS;          // This is not a hugely descriptor error, alas.
         }
         error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:nil];
-        if ( (self.delegate != nil) && [self.delegate respondsToSelector:@selector(simplePing:didFailToSendPacket:error:)] ) {
-            [self.delegate simplePing:self didFailToSendPacket:packet error:error];
+        if ( (strongDelegate != nil) && [strongDelegate respondsToSelector:@selector(simplePing:didFailToSendPacket:error:)] ) {
+            [strongDelegate simplePing:self didFailToSendPacket:packet error:error];
         }
     }
     
@@ -384,19 +389,21 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
     
     if (bytesRead > 0) {
         NSMutableData *     packet;
+        id<SimplePingDelegate>  strongDelegate;
 
         packet = [NSMutableData dataWithBytes:buffer length:(NSUInteger) bytesRead];
         assert(packet != nil);
 
         // We got some data, pass it up to our client.
 
+        strongDelegate = self.delegate;
         if ( [self isValidPingResponsePacket:packet] ) {
-            if ( (self.delegate != nil) && [self.delegate respondsToSelector:@selector(simplePing:didReceivePingResponsePacket:)] ) {
-                [self.delegate simplePing:self didReceivePingResponsePacket:packet];
+            if ( (strongDelegate != nil) && [strongDelegate respondsToSelector:@selector(simplePing:didReceivePingResponsePacket:)] ) {
+                [strongDelegate simplePing:self didReceivePingResponsePacket:packet];
             }
         } else {
-            if ( (self.delegate != nil) && [self.delegate respondsToSelector:@selector(simplePing:didReceiveUnexpectedPacket:)] ) {
-                [self.delegate simplePing:self didReceiveUnexpectedPacket:packet];
+            if ( (strongDelegate != nil) && [strongDelegate respondsToSelector:@selector(simplePing:didReceiveUnexpectedPacket:)] ) {
+                [strongDelegate simplePing:self didReceiveUnexpectedPacket:packet];
             }
         }
     } else {
@@ -471,7 +478,8 @@ static void SocketReadCallback(CFSocketRef s, CFSocketCallBackType type, CFDataR
     } else {
         CFSocketContext     context = {0, (__bridge void *)(self), NULL, NULL, NULL};
         CFRunLoopSourceRef  rls;
-        
+        id<SimplePingDelegate>  strongDelegate;
+
         // Wrap it in a CFSocket and schedule it on the runloop.
         
         self->_socket = CFSocketCreateWithNative(NULL, fd, kCFSocketReadCallBack, SocketReadCallback, &context);
@@ -489,8 +497,9 @@ static void SocketReadCallback(CFSocketRef s, CFSocketCallBackType type, CFDataR
         
         CFRelease(rls);
 
-        if ( (self.delegate != nil) && [self.delegate respondsToSelector:@selector(simplePing:didStartWithAddress:)] ) {
-            [self.delegate simplePing:self didStartWithAddress:self.hostAddress];
+        strongDelegate = self.delegate;
+        if ( (strongDelegate != nil) && [strongDelegate respondsToSelector:@selector(simplePing:didStartWithAddress:)] ) {
+            [strongDelegate simplePing:self didStartWithAddress:self.hostAddress];
         }
     }
     assert(fd == -1);
