@@ -1069,13 +1069,6 @@ bool CApplication::Initialize()
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
       return false;
     }
-
-    if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)) &&
-        CSkinSettings::GetInstance().MigrateToNewSkin(skin))
-    {
-      skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-      LoadSkin(skin);
-    }
     
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
@@ -1165,6 +1158,14 @@ bool CApplication::Initialize()
     g_windowManager.SendThreadMessage(msg);
   }
 
+  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+  if ((CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)) &&
+      CSkinSettings::GetInstance().MigrateToNewSkin(skin))
+  {
+    skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    LoadSkin(skin);
+  }
+  
   return true;
 }
 
