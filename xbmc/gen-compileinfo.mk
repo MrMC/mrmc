@@ -1,7 +1,6 @@
-# This file is sourced from xbmc/Makefile and tools/darwin/Support/makepythoninterface.command
+# This file is sourced from xbmc/Makefile and tools/darwin/Support/makeinterfaces.command
 
 FILEPATH := $(abspath $(dir $(MAKEFILE_LIST)))
-VERSION.TXT := $(FILEPATH)/../version.txt
 GITVERFILE := ../VERSION
 GIT = $(notdir $(shell which git))
 
@@ -31,13 +30,7 @@ $(FILEPATH)/.GitRevision:
         fi
 
 
-$(FILEPATH)/CompileInfo.cpp: $(VERSION.TXT) $(FILEPATH)/CompileInfo.cpp.in $(FILEPATH)/.GitRevision
+$(FILEPATH)/CompileInfo.cpp: $(FILEPATH)/CompileInfoTemplate.cpp $(FILEPATH)/.GitRevision
 	@GITREV=$$(cat $(FILEPATH)/.GitRevision) ;\
-	APP_NAME=$$(awk '/APP_NAME/ {print $$2}' $(VERSION.TXT)) ;\
-	APP_PACKAGE=$$(awk '/APP_PACKAGE/ {print $$2}' $(VERSION.TXT)) ;\
-	MAJOR=$$(awk '/VERSION_MAJOR/ {print $$2}' $(VERSION.TXT)) ;\
-	MINOR=$$(awk '/VERSION_MINOR/ {print $$2}' $(VERSION.TXT)) ;\
-	TAG=$$(awk '/VERSION_TAG/ {print $$2}' $(VERSION.TXT)) ;\
-	sed -e "s/\@APP_NAME\@/$$APP_NAME/" -e "s/\@APP_PACKAGE\@/$$APP_PACKAGE/" -e "s/\@APP_VERSION_MAJOR\@/$$MAJOR/" -e "s/\@APP_VERSION_MINOR\@/$$MINOR/" -e "s/\@APP_VERSION_TAG\@/$$TAG/" -e "s/\@APP_SCMID\@/$$GITREV/" $@.in > $@ ;\
-	#cd $(FILEPATH)/../media; convert Splash_orig.png -background black -fill white -pointsize 12 -gravity NorthEast -annotate +10+10 "$$APP_NAME $$MAJOR.$$MINOR.$$TAG" Splash.png
+	sed -e "s/\@APP_SCMID\@/$$GITREV/" $(FILEPATH)/CompileInfoTemplate.cpp > $(FILEPATH)/CompileInfo.cpp ;\
 

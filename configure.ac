@@ -2186,6 +2186,7 @@ OUTPUT_FILES="$OUTPUT_FILES xbmc/linux/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/DllPaths_generated.h"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/CompileInfoTemplate.cpp"
 
 if test "$host_vendor" = "apple"; then
 OUTPUT_FILES="$OUTPUT_FILES tools/EventClients/Clients/OSXRemote/Makefile"
