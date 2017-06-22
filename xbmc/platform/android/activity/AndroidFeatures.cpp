@@ -106,6 +106,22 @@ bool CAndroidFeatures::HasTouchScreen()
   return (hastouchscreen == 1);
 }
 
+bool CAndroidFeatures::IsAmazonDevice()
+{
+  static int isamazon = -1;
+  if (isamazon == -1)
+  {
+    if (StringUtils::StartsWithNoCase(CJNIBuild::MANUFACTURER, "Amazon"))
+    {
+      CLog::Log(LOGDEBUG, "CAndroidFeatures::IsAmazonDevice = yes");
+      isamazon = 1;
+    }
+    else
+      isamazon = 0;
+  }
+  return (isamazon == 1);
+}
+
 bool CAndroidFeatures::IsFireTVDevice()
 {
   static int isfiretv = -1;
