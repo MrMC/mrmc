@@ -26,6 +26,7 @@
 
 #import "Application.h"
 
+#import "CompileInfo.h"
 #import "cores/AudioEngine/AEFactory.h"
 #import "guilib/GUIWindowManager.h"
 #import "input/Key.h"
@@ -2203,6 +2204,8 @@ static SiriRemoteInfo siriRemoteInfo;
 
   [self setIOSNowPlayingInfo:dict];
 
+  if (![[[NSBundle mainBundle] bundleIdentifier] hasPrefix:[NSString stringWithUTF8String:CCompileInfo::GetPackage()]])
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 }
 //--------------------------------------------------------------
 - (void)onSpeedChanged:(NSDictionary *)item

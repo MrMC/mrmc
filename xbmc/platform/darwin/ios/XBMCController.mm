@@ -25,6 +25,7 @@
 #import "system.h"
 
 #import "Application.h"
+#import "CompileInfo.h"
 #import "FileItem.h"
 #import "MusicInfoTag.h"
 #import "SpecialProtocol.h"
@@ -1063,6 +1064,9 @@ XBMCController *g_xbmcController;
 
   m_playbackState = IOS_PLAYBACK_PLAYING;
   [self disableNetworkAutoSuspend];
+
+  if (![[[NSBundle mainBundle] bundleIdentifier] hasPrefix:[NSString stringWithUTF8String:CCompileInfo::GetPackage()]])
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 }
 //--------------------------------------------------------------
 - (void)onSpeedChanged:(NSDictionary *)item
