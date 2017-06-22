@@ -1699,10 +1699,6 @@
 		F5022F321E2D41D5001BBF75 /* hdhomerun_video.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0D1E2D41D5001BBF75 /* hdhomerun_video.c */; };
 		F5022F331E2D41D5001BBF75 /* hdhomerun_video.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0D1E2D41D5001BBF75 /* hdhomerun_video.c */; };
 		F5022F341E2D41D5001BBF75 /* hdhomerun_video.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022F0D1E2D41D5001BBF75 /* hdhomerun_video.c */; };
-		F5022F351E2D41D5001BBF75 /* lgpl.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5022F0F1E2D41D5001BBF75 /* lgpl.txt */; };
-		F5022F361E2D41D5001BBF75 /* lgpl.txt in Resources */ = {isa = PBXBuildFile; fileRef = F5022F0F1E2D41D5001BBF75 /* lgpl.txt */; };
-		F5022F3C1E2D41D5001BBF75 /* README in Resources */ = {isa = PBXBuildFile; fileRef = F5022F121E2D41D5001BBF75 /* README */; };
-		F5022F3D1E2D41D5001BBF75 /* README in Resources */ = {isa = PBXBuildFile; fileRef = F5022F121E2D41D5001BBF75 /* README */; };
 		F5022F421E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F3E1E2D4404001BBF75 /* HDHomeRunDirectory.cpp */; };
 		F5022F431E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F3E1E2D4404001BBF75 /* HDHomeRunDirectory.cpp */; };
 		F5022F441E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5022F3E1E2D4404001BBF75 /* HDHomeRunDirectory.cpp */; };
@@ -10186,13 +10182,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5022F3C1E2D41D5001BBF75 /* README in Resources */,
 				F59045631BA372A600DB589A /* Default-568h@2x.png in Resources */,
 				F59045661BA372A600DB589A /* Default-Landscape-736h@3x.png in Resources */,
 				F59045641BA372A600DB589A /* Default-667h@2x.png in Resources */,
 				183CB23B1C0B4C5A004218C2 /* Images.xcassets in Resources */,
 				F59045671BA372A600DB589A /* InfoPlist.strings in Resources */,
-				F5022F351E2D41D5001BBF75 /* lgpl.txt in Resources */,
 				F59045651BA372A600DB589A /* Default-736h@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -10203,8 +10197,6 @@
 			files = (
 				F5D142B01BAF31FB0075A95C /* InfoPlist.strings in Resources */,
 				F5D142AB1BAF31FB0075A95C /* Assets.xcassets in Resources */,
-				F5022F361E2D41D5001BBF75 /* lgpl.txt in Resources */,
-				F5022F3D1E2D41D5001BBF75 /* README in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
