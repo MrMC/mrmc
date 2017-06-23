@@ -36,6 +36,7 @@
         <setting id="videoscreen.vsync" type="integer" label="13105" help="36356">
           <default>2</default> <!-- VSYNC_ALWAYS -->
           <visible>false</visible>
+          <control type="list" format="string" />
         </setting>
       </group>
     </category>
@@ -84,7 +85,8 @@
       <group id="1">
         <setting id="mysql.timeout" type="integer" label="36609" help="36632">
           <default>5</default>
-        </setting>                     
+          <control type="edit" format="integer" />
+        </setting>                 
       </group>
     </category>
   </section>
