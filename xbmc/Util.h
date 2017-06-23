@@ -182,6 +182,7 @@ public:
    * \brief Thread-safe random number generation
    */
   static int GetRandomNumber();
+  static int GetRandomNumber(int min, int max);
 
 private:
   static unsigned int s_randomSeed;
