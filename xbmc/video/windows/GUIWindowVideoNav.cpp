@@ -843,6 +843,20 @@ void CGUIWindowVideoNav::OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper
 
 void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 {
+  if (pItem->IsMediaServiceBased())
+  {
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    pDialog->SetHeading(CVariant{432});
+    std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(),pItem->GetLabel().c_str());
+    pDialog->SetLine(1, CVariant{std::move(strLabel)});
+    pDialog->SetLine(2, CVariant{""});
+    pDialog->Open();
+    if (pDialog->IsConfirmed())
+    {
+      CServicesManager::GetInstance().DeleteMediaItem(*pItem);
+    }
+    return;
+  }
   if (m_vecItems->IsParentFolder())
     return;
 
@@ -1070,10 +1084,13 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if ((CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
             CUtil::SupportsWriteFileOperations(item->GetPath())) ||
             (inPlaylists && URIUtils::GetFileName(item->GetPath()) != "PartyMode-Video.xsp"
-                         && (item->IsPlayList() || item->IsSmartPlayList())))
+                         && (item->IsPlayList() || item->IsSmartPlayList())) ||
+            (item->IsMediaServiceBased() && (item->GetVideoInfoTag()->m_type == MediaTypeEpisode ||
+                                             item->GetVideoInfoTag()->m_type == MediaTypeMovie)))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-          buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+          if (!item->IsMediaServiceBased())
+            buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
         if (item->m_bIsFolder && !item->IsVideoDb() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()) &&

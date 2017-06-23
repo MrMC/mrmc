@@ -363,6 +363,20 @@ bool CPlexUtils::GetPlexMediaTotals(MediaServicesMediaCount &totals)
   return true;
 }
 
+bool CPlexUtils::DeletePlexMedia(CFileItem &item)
+{
+//  library/metadata/
+  CURL url2(item.GetURL());
+  url2.SetFileName("library/metadata/" + item.GetMediaServiceId());
+  std::string strXML;
+  XFILE::CCurlFile plex;
+  CPlexUtils::GetDefaultHeaders(plex);
+  std::string data;
+  std::string response;
+  plex.Delete(url2.Get(),data,response);
+  return true;
+}
+
 #pragma mark - Plex Recently Added and InProgress
 bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit)
 {

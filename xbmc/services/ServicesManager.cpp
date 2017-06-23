@@ -441,6 +441,19 @@ bool CServicesManager::GetMediaTotals(MediaServicesMediaCount &totals)
   return rtn;
 }
 
+bool CServicesManager::DeleteMediaItem(CFileItem item)
+{
+  bool rtn = false;
+  if (HasServices())
+  {
+    if (CPlexUtils::HasClients())
+      rtn |= CPlexUtils::DeletePlexMedia(item);
+//    if (CEmbyUtils::HasClients())
+//      rtn |= CEmbyUtils::GetEmbyMediaTotals(totals);
+  }
+  return rtn;
+}
+
 void CServicesManager::RegisterMediaServicesHandler(IMediaServicesHandler *mediaServicesHandler)
 {
   if (mediaServicesHandler == nullptr)

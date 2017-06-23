@@ -52,6 +52,7 @@ public:
   static void ReportProgress(CFileItem &item, double currentSeconds);
   static void SetPlayState(MediaServicesPlayerState state);
   static bool GetPlexMediaTotals(MediaServicesMediaCount &totals);
+  static bool DeletePlexMedia(CFileItem &item);
 
   // Plex Recently Added and InProgress
   static bool GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit=25);
