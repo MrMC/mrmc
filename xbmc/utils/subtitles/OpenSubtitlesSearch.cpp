@@ -103,11 +103,10 @@ bool COpenSubtitlesSearch::LogIn()
 {
   if (!m_authenticated)
   {
-    m_authenticated = CPasswordManager::GetInstance().SetUserPass(ModuleName(), m_strUser, m_strPass);
+    CPasswordManager::GetInstance().SetUserPass(ModuleName(), m_strUser, m_strPass);
   }
   
-  std::string strUA = StringUtils::Format("%s_v%i.%i" , CCompileInfo::GetAppName(),
-                                          CCompileInfo::GetMajor(),CCompileInfo::GetMinor());
+  std::string strUA = StringUtils::Format("mrmc_v%i.%i",CCompileInfo::GetMajor(),CCompileInfo::GetMinor());
   StringUtils::ToLower(strUA);
   ulxr::MethodCall      methodcall(ULXR_PCHAR("LogIn"));
   methodcall.addParam(ulxr::RpcString(ULXR_PCHAR(m_strUser)));         // username
@@ -124,9 +123,11 @@ bool COpenSubtitlesSearch::LogIn()
     {
       ulxr::RpcString token = cap.getMember(ULXR_PCHAR("token"));
       m_strToken = token.getString();
+      m_authenticated = true;
       return true;
     }
   }
+  m_authenticated = false;
   return false;
 }
 
