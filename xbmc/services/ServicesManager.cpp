@@ -446,10 +446,10 @@ bool CServicesManager::DeleteMediaItem(CFileItem item)
   bool rtn = false;
   if (HasServices())
   {
-    if (CPlexUtils::HasClients())
-      rtn |= CPlexUtils::DeletePlexMedia(item);
-//    if (CEmbyUtils::HasClients())
-//      rtn |= CEmbyUtils::GetEmbyMediaTotals(totals);
+    if (CPlexUtils::HasClients() && item.HasProperty("PlexItem"))
+      rtn = CPlexUtils::DeletePlexMedia(item);
+    else if (CEmbyUtils::HasClients() && item.HasProperty("EmbyItem"))
+      rtn = CEmbyUtils::DeleteEmbyMedia(item);
   }
   return rtn;
 }

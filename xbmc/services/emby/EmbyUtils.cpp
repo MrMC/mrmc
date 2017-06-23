@@ -376,6 +376,18 @@ bool CEmbyUtils::SearchEmby(CFileItemList &items, std::string strSearchString)
   return rtn;
 }
 
+bool CEmbyUtils::DeleteEmbyMedia(CFileItem &item)
+{
+  CURL curl(item.GetURL());
+  curl.SetFileName("emby/Items/" + item.GetMediaServiceId());
+  curl.SetOptions("");
+  std::string response;
+  std::string data;
+  XFILE::CCurlFile emby;
+  emby.Delete(curl.Get(), data, response);
+  return true;
+}
+
 #pragma mark - Emby Recently Added and InProgress
 bool CEmbyUtils::GetEmbyRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit)
 {

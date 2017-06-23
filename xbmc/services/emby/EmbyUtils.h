@@ -71,6 +71,7 @@ public:
   static bool GetMoreResolutions(CFileItem &item);
   static bool GetURL(CFileItem &item);
   static bool SearchEmby(CFileItemList &items, std::string strSearchString);
+  static bool DeleteEmbyMedia(CFileItem &item);
 
   #pragma mark - Emby Recently Added and InProgress
   static bool GetEmbyRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit=25);
