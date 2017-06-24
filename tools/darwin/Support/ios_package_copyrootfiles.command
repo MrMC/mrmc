@@ -13,20 +13,9 @@ function package_skin
   if [ -f "$SKIN_PATH/addon.xml" ]; then
     SYNCSKIN_CMD=${SYNC_CMD}
     if [ -f "$SKIN_PATH/media/Textures.xbt" ]; then
-      SYNCSKIN_CMD="${SYNC_CMD} --exclude *.png --exclude *.jpg --exclude *.gif --exclude media/Makefile*"
+      SYNCSKIN_CMD="${SYNC_CMD} --include *${SKIN_NAME}/media/Textures.xbt --exclude *${SKIN_NAME}/media/*"
     fi
     ${SYNCSKIN_CMD} "$SKIN_PATH" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-    # these might have image files so just sync them
-    # look for both background and backgrounds, skins do not seem to follow a dir naming convention
-    if [ -d "$SKIN_PATH/background" ]; then
-      ${SYNC_CMD} "$SKIN_PATH/background" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/$SKIN_NAME"
-    fi
-    if [ -d "$SKIN_PATH/backgrounds" ]; then
-      ${SYNC_CMD} "$SKIN_PATH/backgrounds" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/$SKIN_NAME"
-    fi
-    if [ -f "$SKIN_PATH/icon.png" ]; then
-      ${SYNC_CMD} "$SKIN_PATH/icon.png" "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/$SKIN_NAME"
-    fi
   fi
 }
 
