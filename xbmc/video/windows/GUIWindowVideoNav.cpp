@@ -846,8 +846,14 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   if (pItem->IsMediaServiceBased())
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    pDialog->SetHeading(CVariant{432});
-    std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(),pItem->GetLabel().c_str());
+    std::string strServer = pItem->HasProperty("PlexItem")? "Plex":"Emby";
+    std::string strHeader = StringUtils::Format(g_localizeStrings.Get(471).c_str(),
+                                                pItem->GetVideoInfoTag()->m_type == MediaTypeMovie ? g_localizeStrings.Get(36900).c_str() : g_localizeStrings.Get(36906).c_str(),
+                                                strServer.c_str());
+    std::string strLabel = StringUtils::Format(g_localizeStrings.Get(472).c_str(),
+                                               pItem->GetLabel().c_str(),
+                                               strServer.c_str());
+    pDialog->SetHeading(CVariant{std::move(strHeader)});
     pDialog->SetLine(1, CVariant{std::move(strLabel)});
     pDialog->SetLine(2, CVariant{""});
     pDialog->Open();
@@ -1082,11 +1088,11 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (!m_vecItems->IsVideoDb() && !m_vecItems->IsVirtualDirectoryRoot())
       { // non-video db items, file operations are allowed
         if ((CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
-            CUtil::SupportsWriteFileOperations(item->GetPath())) ||
+             (CUtil::SupportsWriteFileOperations(item->GetPath()) ||
+              (item->IsMediaServiceBased() && (item->GetVideoInfoTag()->m_type == MediaTypeEpisode ||
+                                               item->GetVideoInfoTag()->m_type == MediaTypeMovie)))) ||
             (inPlaylists && URIUtils::GetFileName(item->GetPath()) != "PartyMode-Video.xsp"
-                         && (item->IsPlayList() || item->IsSmartPlayList())) ||
-            (item->IsMediaServiceBased() && (item->GetVideoInfoTag()->m_type == MediaTypeEpisode ||
-                                             item->GetVideoInfoTag()->m_type == MediaTypeMovie)))
+             && (item->IsPlayList() || item->IsSmartPlayList())))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           if (!item->IsMediaServiceBased())

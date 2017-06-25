@@ -2091,7 +2091,15 @@ msgctxt "#470"
 msgid "Credits"
 msgstr ""
 
-#empty strings from id 471 to 473
+msgctxt "#471"
+msgid "Delete %s from %"
+msgstr ""
+
+msgctxt "#472"
+msgid "Would you really like to permanently delete '%s' from %s?[CR]Warning - this action can't be undone!"
+msgstr ""
+
+#empty strings from id 473 to 473
 
 msgctxt "#474"
 msgid "Off"
