@@ -38,10 +38,9 @@
       </group>
       <group id="3">
         <setting id="videoplayer.usevideotoolbox" type="boolean">
-          <default>false</default>
+          <default>true</default>
         </setting>
         <setting id="videoplayer.useavf" type="boolean">
-          <visible>false</visible>
           <default>false</default>
         </setting>
       </group>
