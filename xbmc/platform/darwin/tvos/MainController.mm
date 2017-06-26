@@ -852,7 +852,7 @@ typedef enum SiriRemoteState
 typedef struct
 {
   float dt, dx, dy;
-  bool  debug = true;
+  bool  debug = false;
   CGPoint startPoint;
   CGPoint movedPoint;
   float   tapbounts = 0.18f;
