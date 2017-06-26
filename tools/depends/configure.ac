@@ -302,12 +302,12 @@ case $host in
           found_sdk_version=[`$use_xcodebuild -showsdks | grep appletvos | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
           sdk_name=appletvos$use_sdk
-          platform_min_version="appletvos-version-min=9.0"
+          platform_min_version="appletvos-version-min=10.2"
         else
           found_sdk_version=[`$use_xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
           sdk_name=iphoneos$use_sdk
-          platform_min_version="iphoneos-version-min=9.0"
+          platform_min_version="iphoneos-version-min=10.2"
         fi
         platform_cflags+=" -fembed-bitcode"
         platform_cxxflags+=" -fembed-bitcode"
@@ -321,6 +321,7 @@ case $host in
           8.*);;
           9.*);;
           10.*);;
+          11.*);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;
