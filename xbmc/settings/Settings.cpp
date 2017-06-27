@@ -400,6 +400,7 @@ const std::string CSettings::SETTING_INPUT_APPLEREMOTEMODE = "input.appleremotem
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON = "input.appleremotealwayson";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME = "input.appleremotesequencetime";
 const std::string CSettings::SETTING_INPUT_APPLESIRISWIPE = "input.applesiriswipe";
+const std::string CSettings::SETTING_INPUT_APPLESIRISWIPEONCE = "input.applesiriswipeonce";
 const std::string CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM = "input.applesirifocuszoom";
 const std::string CSettings::SETTING_INPUT_APPLESIRIFOCUSLIDE = "input.applesirifocusslide";
 const std::string CSettings::SETTING_INPUT_APPLESIRIBACK = "input.applesiriback";

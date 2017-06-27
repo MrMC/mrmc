@@ -352,6 +352,7 @@ public:
   static const std::string SETTING_INPUT_APPLEREMOTEALWAYSON;
   static const std::string SETTING_INPUT_APPLEREMOTESEQUENCETIME;
   static const std::string SETTING_INPUT_APPLESIRISWIPE;
+  static const std::string SETTING_INPUT_APPLESIRISWIPEONCE;
   static const std::string SETTING_INPUT_APPLESIRIFOCUSZOOM;
   static const std::string SETTING_INPUT_APPLESIRIFOCUSLIDE;
   static const std::string SETTING_INPUT_APPLESIRIBACK;

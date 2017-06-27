@@ -1113,7 +1113,8 @@ static SiriRemoteInfo siriRemoteInfo;
   // check for swipe left/right or up/down ?
   if (remote.dx >= remote.dy)
   {
-    if ([self getFocusedOrientation] != HORIZONTAL)
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRISWIPEONCE) ||
+        [self getFocusedOrientation] != HORIZONTAL)
     {
       cycles = 1;
       delaySeconds = 0.0f;
@@ -1128,7 +1129,7 @@ static SiriRemoteInfo siriRemoteInfo;
           remote.dt, remote.dx, remote.dy, vx);
       }
       int keyId = SiriRemote_LeftSwipe;
-      if (!CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
+      if (remote.dx < 2.0f && !CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
           !CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint) &&
           !CGRectContainsPoint(remote.panningPinnedHorzRect, remote.movedPoint))
       {
@@ -1148,7 +1149,7 @@ static SiriRemoteInfo siriRemoteInfo;
           remote.dt, remote.dx, remote.dy, vx);
       }
       int keyId = SiriRemote_RightSwipe;
-      if (!CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
+      if (remote.dx < 2.0f && !CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
           !CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint) &&
           !CGRectContainsPoint(remote.panningPinnedHorzRect, remote.movedPoint))
       {
@@ -1163,7 +1164,8 @@ static SiriRemoteInfo siriRemoteInfo;
   }
   else
   {
-    if ([self getFocusedOrientation] != VERTICAL)
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRISWIPEONCE) ||
+        [self getFocusedOrientation] != VERTICAL)
     {
       cycles = 1;
       delaySeconds = 0.0f;
@@ -1178,7 +1180,7 @@ static SiriRemoteInfo siriRemoteInfo;
           remote.dt, remote.dx, remote.dy, vy);
       }
       int keyId = SiriRemote_UpSwipe;
-      if (!CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
+      if (remote.dy < 2.0f && !CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
           !CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint) &&
           !CGRectContainsPoint(remote.panningPinnedVertRect, remote.movedPoint))
       {
@@ -1198,7 +1200,7 @@ static SiriRemoteInfo siriRemoteInfo;
           remote.dt, remote.dx, remote.dy, vy);
       }
       int keyId = SiriRemote_DownSwipe;
-      if (!CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
+      if (remote.dy < 2.0f && !CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
           !CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint) &&
           !CGRectContainsPoint(remote.panningPinnedVertRect, remote.movedPoint))
       {
