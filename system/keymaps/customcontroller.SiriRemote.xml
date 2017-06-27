@@ -64,8 +64,8 @@
   </Home>
   <FullscreenVideo>
     <customcontroller name="SiriRemote">
-      <button id="1">BigStepForward</button>
-      <button id="2">BigStepBack</button>
+      <button id="1">ChapterOrBigStepForward</button>
+      <button id="2">ChapterOrBigStepBack</button>
       <button id="3">StepBack</button>
       <button id="4">StepForward</button>
       <button id="5">OSD</button>
@@ -79,8 +79,9 @@
   </FullscreenVideo>
   <FullscreenLiveTV>
     <customcontroller name="SiriRemote">
-      <button id="3">ChannelDown</button>
-      <button id="4">ChannelUp</button>
+      <button id="1">ChannelUp</button>
+      <button id="2">ChannelDown</button>
+      <button id="5">OSD</button>
       <button id="8">noop</button>
       <button id="9">noop</button>                                
       <button id="10">noop</button>
