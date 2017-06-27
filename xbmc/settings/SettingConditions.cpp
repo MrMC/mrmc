@@ -326,7 +326,7 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_ANDROID
   m_simpleConditions.insert("has_mediacodec");
 #endif
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN)
   m_simpleConditions.insert("have_videotoolboxdecoder");
   m_simpleConditions.insert("hasvideotoolboxdecoder");
 #endif

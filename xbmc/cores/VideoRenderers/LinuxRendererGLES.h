@@ -168,7 +168,7 @@ public:
 #ifdef HAVE_LIBOPENMAX
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture, int index);
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   virtual void         AddProcessor(CVBufferRef cvBufferRef, int index);
 #endif
 #if defined(TARGET_ANDROID)
@@ -303,7 +303,7 @@ protected:
 #endif
   };
 
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   struct CRenderBuffer
   {
     CVOpenGLESTextureRef textureY;

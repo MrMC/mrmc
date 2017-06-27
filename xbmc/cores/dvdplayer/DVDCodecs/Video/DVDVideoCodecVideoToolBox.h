@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(HAVE_VIDEOTOOLBOXDECODER)
-
 #include <atomic>
 #include <queue>
 
@@ -29,6 +27,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include <CoreVideo/CoreVideo.h>
 #include <CoreMedia/CoreMedia.h>
+#include <VideoToolBox/VideoToolBox.h>
 
 class DllVideoToolBox;
 class CBitstreamParser;
@@ -72,14 +71,9 @@ protected:
   void CreateVTSession(int width, int height, CMFormatDescriptionRef fmt_desc);
   void DestroyVTSession(void);
   static void VTDecoderCallback(
-    void *refcon, CFDictionaryRef frameInfo,
+    void *refcon, void *frameInfo,
     OSStatus status, UInt32 infoFlags, CVBufferRef imageBuffer, CMTime pts, CMTime duration);
 
-  static void vtdec_session_dump_property(
-    CFStringRef prop_name, CFDictionaryRef prop_attrs, CDVDVideoCodecVideoToolBox *ctx);
-  void vtdec_session_dump_properties();
-
-  DllVideoToolBox   *m_dll;
   CDVDStreamInfo     m_hintsForReopen;
   CDVDCodecOptions   m_optionsForReopen;
   void              *m_vt_session;    // opaque videotoolbox session
@@ -103,5 +97,3 @@ protected:
   double            m_sessionRestartPTS;
   bool              m_enable_temporal_processing;
 };
-
-#endif

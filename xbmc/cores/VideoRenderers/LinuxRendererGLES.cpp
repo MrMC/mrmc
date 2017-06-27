@@ -58,7 +58,7 @@ extern "C" {
 #include "yuv2rgb.neon.h"
 #include "utils/CPUInfo.h"
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
 #include "DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
 #include <CoreVideo/CoreVideo.h>
 #endif
@@ -277,7 +277,7 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
     return source;
   }
 
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   if (m_format == RENDER_FMT_CVBREF)
   {
     return source;
@@ -744,7 +744,7 @@ unsigned int CLinuxRendererGLES::PreInit()
   m_bConfigured = false;
   m_bValidated = false;
 
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   m_textureCache = nullptr;
   for (auto &buf : m_vtbBuffers)
   {
@@ -771,7 +771,7 @@ unsigned int CLinuxRendererGLES::PreInit()
 #if defined(HAVE_LIBOPENMAX)
   m_formats.push_back(RENDER_FMT_OMXEGL);
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   m_formats.push_back(RENDER_FMT_CVBREF);
 #endif
 #if defined(TARGET_ANDROID)
@@ -781,7 +781,7 @@ unsigned int CLinuxRendererGLES::PreInit()
 #ifdef HAS_IMXVPU
   m_formats.push_back(RENDER_FMT_IMXMAP);
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   CVReturn ret = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
     NULL, g_Windowing.GetEAGLContextObj(), NULL, &m_textureCache);
   if (ret != kCVReturnSuccess)
@@ -1064,7 +1064,7 @@ void CLinuxRendererGLES::UnInit()
   m_RenderFeaturesCallBackFn = NULL;
   m_RenderFeaturesCallBackCtx = NULL;
 
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   if (m_textureCache)
     CFRelease(m_textureCache), m_textureCache = nullptr;
 
@@ -1080,7 +1080,7 @@ inline void CLinuxRendererGLES::ReorderDrawPoints()
 
 void CLinuxRendererGLES::ReleaseBuffer(int idx)
 {
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   if (m_format == RENDER_FMT_CVBREF)
   {
     CRenderBuffer &buf = m_vtbBuffers[idx];
@@ -1120,7 +1120,7 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 
 bool CLinuxRendererGLES::NeedBufferForRef(int idx)
 {
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
 /* ignore fence for now, causes video studdering and our frames are in sync.
   if (m_format == RENDER_FMT_CVBREF)
   {
@@ -2364,7 +2364,7 @@ void CLinuxRendererGLES::DeleteNV12Texture(int index)
 //********************************************************************************************************
 void CLinuxRendererGLES::UploadCVRefTexture(int index)
 {
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   CRenderBuffer &buf = m_vtbBuffers[index];
   if (!buf.videoBuffer)
     return;
@@ -2433,7 +2433,7 @@ void CLinuxRendererGLES::UploadCVRefTexture(int index)
 }
 void CLinuxRendererGLES::DeleteCVRefTexture(int index)
 {
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   CRenderBuffer &buf = m_vtbBuffers[index];
 
   if (buf.textureY)
@@ -2455,7 +2455,7 @@ void CLinuxRendererGLES::DeleteCVRefTexture(int index)
 
 bool CLinuxRendererGLES::CreateCVRefTexture(int index)
 {
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
   YV12Image &im = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[FIELD_FULL];
@@ -2917,7 +2917,7 @@ void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *pictur
   }
 }
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+#ifdef TARGET_DARWIN
 void CLinuxRendererGLES::AddProcessor(CVBufferRef cvBufferRef, int index)
 {
   CRenderBuffer &buf = m_vtbBuffers[index];

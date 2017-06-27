@@ -29,10 +29,11 @@
 
 #if defined(TARGET_DARWIN_OSX)
   #include "Video/DVDVideoCodecVDA.h"
+  #include "Video/DVDVideoCodecVideoToolBox.h"
 #endif
 #if defined(TARGET_DARWIN_IOS)
-  #include "Video/DVDVideoCodecVideoToolBox.h"
   #include "utils/SystemInfo.h"
+  #include "Video/DVDVideoCodecVideoToolBox.h"
   #include "Video/DVDVideoCodecAVFoundation.h"
 #endif
 #include "Video/DVDVideoCodecFFmpeg.h"
@@ -166,7 +167,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
   }
 #endif
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN)
   if (!hint.software)
   {
     switch(hint.codec)
@@ -177,8 +178,10 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
           break;
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
           if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
+#if defined(TARGET_DARWIN_IOS)
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAVF))
           if ( (pCodec = OpenCodec(new CDVDVideoCodecAVFoundation(), hint, options)) ) return pCodec;
+#endif
         break;
       default:
         break;

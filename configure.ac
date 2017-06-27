@@ -1682,24 +1682,6 @@ else
   USE_VAAPI=0
 fi
 
-# VTBDecoder
-if test "x$use_vtbdecoder" != "xno"; then
-  if test "$host_vendor" = "apple" ; then
-    HAVE_VIDEOTOOLBOXDECODER=1
-    AC_DEFINE([HAVE_VIDEOTOOLBOXDECODER], [1], [Define to 1 if you have the 'VTBDecoder' library.])
-    AC_MSG_NOTICE($vtbdecoder_enabled)
-  else
-    if test "x$use_vtbdecoder" = "xyes"; then
-      AC_MSG_ERROR([VTB Decoder not supported on this platform])
-    else
-      use_vtbdecoder="no"
-      AC_MSG_NOTICE($vtbdecoder_disabled)
-    fi
-  fi
-else
-  AC_MSG_NOTICE($vtbdecoder_disabled)
-fi
-
 # OpenMax
 if test "$use_gles" = "yes" && test "$use_openmax" = "auto"; then
 

@@ -1717,6 +1717,11 @@
 		F50F8E841EE578AB00C8F93B /* FocusEngineHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */; };
 		F50F8E851EE578AB00C8F93B /* FocusEngineHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */; };
 		F50F8E871EE8714500C8F93B /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E861EE8714500C8F93B /* GameController.framework */; };
+		F50F8E991F02BD2D00C8F93B /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E981F02BD2D00C8F93B /* VideoToolbox.framework */; };
+		F50F8E9B1F02BD3C00C8F93B /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E9A1F02BD3C00C8F93B /* VideoToolbox.framework */; };
+		F50F8E9D1F02BD4E00C8F93B /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E9C1F02BD4E00C8F93B /* VideoToolbox.framework */; };
+		F50F8E9E1F02D4DB00C8F93B /* DVDVideoCodecVideoToolBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */; };
+		F50F8E9F1F02D66900C8F93B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E6174E54B300741B6D /* CoreMedia.framework */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F51063421BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
 		F51063431BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
@@ -5262,6 +5267,9 @@
 		F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FocusEngineHandler.cpp; sourceTree = "<group>"; };
 		F50F8E831EE578AB00C8F93B /* FocusEngineHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusEngineHandler.h; sourceTree = "<group>"; };
 		F50F8E861EE8714500C8F93B /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/GameController.framework; sourceTree = DEVELOPER_DIR; };
+		F50F8E981F02BD2D00C8F93B /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS10.2.sdk/System/Library/Frameworks/VideoToolbox.framework; sourceTree = DEVELOPER_DIR; };
+		F50F8E9A1F02BD3C00C8F93B /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/VideoToolbox.framework; sourceTree = DEVELOPER_DIR; };
+		F50F8E9C1F02BD4E00C8F93B /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		F50FDC58119B4B2C00C8B8CD /* GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTextViewer.h; sourceTree = "<group>"; };
 		F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTextViewer.cpp; sourceTree = "<group>"; };
 		F51063401BDAA11D00BBCED6 /* DarwinNSUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinNSUserDefaults.h; sourceTree = "<group>"; };
@@ -5949,8 +5957,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F50F8E9D1F02BD4E00C8F93B /* VideoToolbox.framework in Frameworks */,
 				F5ED9BFB155EC77400842059 /* ApplicationServices.framework in Frameworks */,
 				E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */,
+				F50F8E9F1F02D66900C8F93B /* CoreMedia.framework in Frameworks */,
 				E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */,
 				E38E23940D2626E600618676 /* Cocoa.framework in Frameworks */,
 				F5ED9A0C155EBDC000842059 /* CoreAudio.framework in Frameworks */,
@@ -5971,6 +5981,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F50F8E9B1F02BD3C00C8F93B /* VideoToolbox.framework in Frameworks */,
 				E49910F3174E54FB00741B6D /* AVFoundation.framework in Frameworks */,
 				F5024C0D1BB433F400134B16 /* UIKit.framework in Frameworks */,
 				E49910F1174E54ED00741B6D /* CFNetwork.framework in Frameworks */,
@@ -5991,6 +6002,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F50F8E991F02BD2D00C8F93B /* VideoToolbox.framework in Frameworks */,
 				F5D142411BAF0B6D0075A95C /* AudioToolbox.framework in Frameworks */,
 				F5D1423E1BAF0B6D0075A95C /* AVFoundation.framework in Frameworks */,
 				F5D142451BAF0B6D0075A95C /* Foundation.framework in Frameworks */,
@@ -6064,6 +6076,9 @@
 		18AC31EE1C49445D00AE9433 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F50F8E9C1F02BD4E00C8F93B /* VideoToolbox.framework */,
+				F50F8E9A1F02BD3C00C8F93B /* VideoToolbox.framework */,
+				F50F8E981F02BD2D00C8F93B /* VideoToolbox.framework */,
 				18AC31EF1C49445D00AE9433 /* TVServices.framework */,
 			);
 			name = Frameworks;
@@ -11119,6 +11134,7 @@
 				F5AFC1DF1EDF551000AD2149 /* darwinICMPPing.m in Sources */,
 				DF2401261B41A26F001E02DA /* ImageResource.cpp in Sources */,
 				DF93D6A11444A8B1007C6459 /* FileReaderFile.cpp in Sources */,
+				F50F8E9E1F02D4DB00C8F93B /* DVDVideoCodecVideoToolBox.cpp in Sources */,
 				DF93D6A51444A8B1007C6459 /* MusicDatabaseFile.cpp in Sources */,
 				DF93D6A61444A8B1007C6459 /* NFSFile.cpp in Sources */,
 				DF93D6A71444A8B1007C6459 /* PipeFile.cpp in Sources */,
