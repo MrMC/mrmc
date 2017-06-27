@@ -860,7 +860,7 @@ typedef struct
   CGRect  panningRect;
   // default panning rect size, this will
   // get offset as user pans across items.
-  CGRect  panningRectStart = {0.0f, 0.0f, 0.75f, 0.75f};
+  CGRect  panningRectStart = {0.0f, 0.0f, 0.85f, 0.85f};
   // points outside are in 'pinned' area
   CGRect  panningPinnedRect = {0.25f, 0.25f, 1.50f, 1.50f};
   // points outside are in horizontal 'pinned' area.
@@ -1217,6 +1217,15 @@ static SiriRemoteInfo siriRemoteInfo;
 
 -(void)processTapEvent:(SiriRemoteInfo&)remote
 {
+  if (remote.startPoint.x == 0.0f ||
+      remote.startPoint.y == 0.0f ||
+      remote.startPoint.x == 2.0f ||
+      remote.startPoint.y == 2.0f)
+  {
+    //apple remote app deadzone
+    return;
+  }
+
   // absolute coordinate system is 0 to +2 with left/bottom = (0,0)
   // transform coordinates to left/bottom = (-1, -1) to make checks easy
   CGPoint centerStart = CGPointMake(
