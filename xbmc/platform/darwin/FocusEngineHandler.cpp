@@ -260,9 +260,11 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
   // skip finding focused window else invalidate focus
   if (!focus.window || focus.windowID == 0 || focus.windowID == WINDOW_INVALID)
   {
-    focus.windowID = g_windowManager.GetFocusedWindow();
+    focus.windowID = g_windowManager.GetActiveWindowID();
     focus.window = g_windowManager.GetWindow(focus.windowID);
-    if (!focus.window || focus.windowID == 0 || focus.windowID == WINDOW_INVALID)
+    if (!focus.window)
+      return;
+    if(focus.windowID == 0 || focus.windowID == WINDOW_INVALID)
     {
       focus = FocusEngineFocus();
       return;
