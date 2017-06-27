@@ -1800,7 +1800,7 @@ static SiriRemoteInfo siriRemoteInfo;
   if (inActive)
   {
     NSURL *url = [NSURL URLWithString:@"mrmc://wakeup"];
-    [[UIApplication sharedApplication] openURL:url];
+    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
   }
 
   return inActive;

@@ -809,7 +809,7 @@ bool CDarwinUtils::OpenAppWithOpenURL(const std::string& path)
   if ([[UIApplication sharedApplication] canOpenURL:ns_url])
   {
     // Can open the youtube app URL so launch the youTube app with this URL
-    [[UIApplication sharedApplication] openURL:ns_url];
+    [[UIApplication sharedApplication] openURL:ns_url options:@{} completionHandler:nil];
     return true;
   }
 #endif
