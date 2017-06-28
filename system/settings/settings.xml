@@ -2491,6 +2491,64 @@
         </setting> 
       </group>	
     </category>
+    <category id="trakt" label="2120" help="2121">
+      <group id="1">
+        <setting id="trakt.signinpin" type="string" label="2122" help="2123">
+          <level>0</level>
+          <default>Sign-in</default>
+          <dependencies>
+            <dependency type="visible" on="property" name="traktsigninpin" operator="is">0</dependency>
+          </dependencies>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="trakt.actionafterlibraryupdate" type="integer" label="36638" help="36639">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="36640">0</option> <!-- No action -->
+              <option label="36641">1</option> <!-- Push -->
+              <option label="36642">2</option> <!-- Pull -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="trakt.pullwatched" type="string" label="36633" help="36634">
+          <level>0</level>
+          <default>Idle</default>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="trakt.pushwatched" type="string" label="36635" help="36636">
+          <level>0</level>
+          <default>Idle</default>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="trakt.accesstoken" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
+        </setting>
+        <setting id="trakt.accessrefreshtoken" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
+        </setting>
+        <setting id="trakt.accesstokenvalidity" type="integer" label="" help="">
+          <level>0</level>
+          <default>0</default>
+          <control type="edit" format="integer" />
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
     <category id="smb" label="1200" help="36346">
       <group id="1">
         <setting id="smb.winsserver" type="string" label="1207" help="36347">

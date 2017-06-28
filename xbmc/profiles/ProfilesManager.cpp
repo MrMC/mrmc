@@ -43,6 +43,7 @@
 #include "input/InputManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "services/ServicesManager.h"
+#include "services/trakt/TraktServices.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #if defined(HAS_DVD_DRIVE)
@@ -304,6 +305,9 @@ bool CProfilesManager::LoadProfile(size_t index)
 
   if (CServicesManager::GetInstance().HasServices())
     CServicesManager::GetInstance().ReloadProfiles();
+  
+  if (CTraktServices::GetInstance().IsEnabled())
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "trakt", "ReloadProfiles");
   
   return true;
 }

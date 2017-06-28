@@ -5133,7 +5133,32 @@ msgctxt "#2118"
 msgid "https://emby.media/pin and enter this code -> "
 msgstr ""
 
-#empty strings from id 2119 to 9999
+#: system/settings/settings.xml
+msgctxt "#2119"
+msgid " and enter this code -> "
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#2120"
+msgid "Trakt.tv client"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#2121"
+msgid "Enable Trakt.tv server sign-in"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#2122"
+msgid "Trakt.tv Pin Request Sign-in"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#2123"
+msgid "Trakt.tv Pin Request Sign-in (via https://trakt.tv/activate)"
+msgstr ""
+
+#empty strings from id 2124 to 9999
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10000"
@@ -18690,7 +18715,54 @@ msgctxt "#36632"
 msgid "Timeout in seconds for MySQL connections"
 msgstr ""
 
-#empty strings from id 36633 to 36899
+#: system/settings/settings.xml services/TraktServices.cpp
+msgctxt "#36633"
+msgid "Pull watched status from Trakt.tv server"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36634"
+msgid "Function to retreive watched status for items on Trakt.tv server, MySql and sqlite(internal MrMC database) only."
+msgstr ""
+
+#: system/settings/settings.xml services/TraktServices.cpp
+msgctxt "#36635"
+msgid "Push watched status to Trakt.tv server"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36636"
+msgid "Function to send watched status to Trakt.tv server, MySql and sqlite(internal MrMC database) only."
+
+#: services/TraktServices.cpp
+msgctxt "#36637"
+msgid "This might cause some duplicate entries in trakt.tv and/or MrMC database. Do you want to proceed?"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36638"
+msgid "Action to take after Libarary Scan has completed"
+
+#: system/settings/settings.xml
+msgctxt "#36639"
+msgid "This setting will trigger push or pull trakt action after Library Scan has been completed."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36640"
+msgid "No Action"
+
+#: system/settings/settings.xml
+msgctxt "#36641"
+msgid "Push watched status"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36642"
+msgid "Pull watched status"
+msgstr ""
+
+#empty strings from id 36643 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

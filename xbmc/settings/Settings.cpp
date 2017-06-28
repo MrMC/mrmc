@@ -89,6 +89,7 @@
 #include "services/lighteffects/LightEffectServices.h"
 #include "services/emby/EmbyServices.h"
 #include "services/plex/PlexServices.h"
+#include "services/trakt/TraktServices.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 #define SETTINGS_XML_ROOT   "settings"
@@ -501,6 +502,14 @@ const std::string CSettings::SETTING_SERVICES_EMBYSERVERURL = "emby.serverurl";
 const std::string CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES = "emby.savedsources";
 const std::string CSettings::SETTING_SERVICES_EMBYACESSTOKEN = "emby.accesstoken";
 const std::string CSettings::SETTING_SERVICES_EMBYLIMITHOMETO  = "emby.limithometo";
+
+const std::string CSettings::SETTING_SERVICES_TRAKTSIGNINPIN = "trakt.signinpin";
+const std::string CSettings::SETTING_SERVICES_TRAKTACTIONAFTERLIBRARYUPDATE = "trakt.actionafterlibraryupdate";
+const std::string CSettings::SETTING_SERVICES_TRAKTPULLWATCHED = "trakt.pullwatched";
+const std::string CSettings::SETTING_SERVICES_TRAKTPUSHWATCHED = "trakt.pushwatched";
+const std::string CSettings::SETTING_SERVICES_TRAKTACESSTOKEN = "trakt.accesstoken";
+const std::string CSettings::SETTING_SERVICES_TRAKTACESSREFRESHTOKEN = "trakt.accessrefreshtoken";
+const std::string CSettings::SETTING_SERVICES_TRAKTACESSTOKENVALIDITY = "trakt.accesstokenvalidity";
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -1382,6 +1391,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYACESSTOKEN);
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES);
   m_settingsManager->RegisterCallback(&CEmbyServices::GetInstance(), settingSet);
+  
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_SERVICES_TRAKTSIGNINPIN);
+  settingSet.insert(CSettings::SETTING_SERVICES_TRAKTPUSHWATCHED);
+  settingSet.insert(CSettings::SETTING_SERVICES_TRAKTPULLWATCHED);
+  m_settingsManager->RegisterCallback(&CTraktServices::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()

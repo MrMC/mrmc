@@ -36,9 +36,29 @@
 #include "music/MusicDatabase.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "services/ServicesManager.h"
+#include "services/trakt/TraktServices.h"
 
 bool CSaveFileStateJob::DoWork()
 {
+  if (!m_item.GetPath().empty() && CTraktServices::GetInstance().IsEnabled())
+  {
+    double total_s = m_bookmark.totalTimeInSeconds;
+    double total_s_90percent = total_s * 0.9;
+    double total_s_minus_5mins = total_s - (60 * 5);
+    if (total_s_minus_5mins < 0)
+      total_s_minus_5mins = 0;
+    double resume_s =  m_bookmark.timeInSeconds;
+    
+    CTraktServices::GetInstance().SaveFileState(m_item, resume_s, total_s);
+    
+    if (resume_s < 0 || resume_s > std::min(total_s_90percent, total_s_minus_5mins))
+    {
+      m_item.GetVideoInfoTag()->m_playCount++;
+      m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds = 0;
+      CTraktServices::GetInstance().SetItemWatched(m_item);
+    }
+  }
+
   // if its serivces item, skip database update for it
   if (m_item.IsMediaServiceBased())
   {

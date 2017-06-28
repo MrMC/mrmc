@@ -31,6 +31,9 @@
 		189448B51CD905B70036E391 /* LightEffectClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189448B21CD905B70036E391 /* LightEffectClient.cpp */; };
 		189448B61CD905B70036E391 /* LightEffectClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189448B21CD905B70036E391 /* LightEffectClient.cpp */; };
 		18968DC814155D7C005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DC614155D7C005BA742 /* ApplicationOperations.cpp */; };
+		189DFAB41E96760C00002CA4 /* TraktServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189DFAB21E96760C00002CA4 /* TraktServices.cpp */; };
+		189DFAB51E96760C00002CA4 /* TraktServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189DFAB21E96760C00002CA4 /* TraktServices.cpp */; };
+		189DFAB61E96760C00002CA4 /* TraktServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189DFAB21E96760C00002CA4 /* TraktServices.cpp */; };
 		18AC31F01C49445D00AE9433 /* TVServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AC31EF1C49445D00AE9433 /* TVServices.framework */; };
 		18AC31F41C49445D00AE9433 /* ServiceProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC31F31C49445D00AE9433 /* ServiceProvider.m */; };
 		18AC31F81C49445D00AE9433 /* TopShelf.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 18AC31ED1C49445D00AE9433 /* TopShelf.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -3356,6 +3359,8 @@
 		189448B31CD905B70036E391 /* LightEffectClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightEffectClient.h; sourceTree = "<group>"; };
 		18968DC614155D7C005BA742 /* ApplicationOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationOperations.cpp; sourceTree = "<group>"; };
 		18968DC714155D7C005BA742 /* ApplicationOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationOperations.h; sourceTree = "<group>"; };
+		189DFAB21E96760C00002CA4 /* TraktServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TraktServices.cpp; sourceTree = "<group>"; };
+		189DFAB31E96760C00002CA4 /* TraktServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TraktServices.h; sourceTree = "<group>"; };
 		18AC31ED1C49445D00AE9433 /* TopShelf.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TopShelf.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		18AC31EF1C49445D00AE9433 /* TVServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TVServices.framework; path = Library/Frameworks/TVServices.framework; sourceTree = DEVELOPER_DIR; };
 		18AC31F21C49445D00AE9433 /* ServiceProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceProvider.h; sourceTree = "<group>"; };
@@ -6071,6 +6076,15 @@
 				18FD1CAD1BC8E63000027005 /* SubtitleUtilities.h */,
 			);
 			path = subtitles;
+			sourceTree = "<group>";
+		};
+		189DFAAC1E96747800002CA4 /* trakt */ = {
+			isa = PBXGroup;
+			children = (
+				189DFAB21E96760C00002CA4 /* TraktServices.cpp */,
+				189DFAB31E96760C00002CA4 /* TraktServices.h */,
+			);
+			path = trakt;
 			sourceTree = "<group>";
 		};
 		18AC31EE1C49445D00AE9433 /* Frameworks */ = {
@@ -9469,6 +9483,7 @@
 				F5471B1B1E8562C100570A53 /* emby */,
 				F55BD2FF1D0A14ED0072FE3A /* plex */,
 				F58BF96E1CD83FAF005BB003 /* lighteffects */,
+				189DFAAC1E96747800002CA4 /* trakt */,
 			);
 			path = services;
 			sourceTree = "<group>";
@@ -11446,6 +11461,7 @@
 				7CCDA21D192753E30074CF51 /* PltFileMediaServer.cpp in Sources */,
 				7CCDA226192753E30074CF51 /* PltMediaBrowser.cpp in Sources */,
 				7CCDA22F192753E30074CF51 /* PltMediaCache.cpp in Sources */,
+				189DFAB41E96760C00002CA4 /* TraktServices.cpp in Sources */,
 				7CCDA238192753E30074CF51 /* PltMediaItem.cpp in Sources */,
 				7CCDA241192753E30074CF51 /* PltMediaServer.cpp in Sources */,
 				F5FBE7C31E2AAF6B001B85EE /* filesystem.c in Sources */,
@@ -12506,6 +12522,7 @@
 				7CCDA136192753E30074CF51 /* PltHttpClientTask.cpp in Sources */,
 				7CCDA13F192753E30074CF51 /* PltHttpServer.cpp in Sources */,
 				7CCDA148192753E30074CF51 /* PltHttpServerTask.cpp in Sources */,
+				189DFAB51E96760C00002CA4 /* TraktServices.cpp in Sources */,
 				DF32466319E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp in Sources */,
 				7CCDA151192753E30074CF51 /* PltIconsData.cpp in Sources */,
 				7CCDA15A192753E30074CF51 /* PltMimeType.cpp in Sources */,
@@ -13605,6 +13622,7 @@
 				F5D141F91BAF0B6D0075A95C /* PltDidl.cpp in Sources */,
 				F5D141FA1BAF0B6D0075A95C /* PltFileMediaServer.cpp in Sources */,
 				F5D141FB1BAF0B6D0075A95C /* DataCacheCore.cpp in Sources */,
+				189DFAB61E96760C00002CA4 /* TraktServices.cpp in Sources */,
 				F5D141FC1BAF0B6D0075A95C /* PltMediaBrowser.cpp in Sources */,
 				F5B724B21C7E150C006432AE /* extinfo.cpp in Sources */,
 				F5FBE7C51E2AAF6B001B85EE /* filesystem.c in Sources */,

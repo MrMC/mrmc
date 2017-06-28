@@ -90,6 +90,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/SkinSettings.h"
 #include "services/ServicesManager.h"
+#include "services/trakt/TraktServices.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/SeekHandler.h"
