@@ -22,6 +22,7 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
+#include "utils/log.h"
 
 CAndroidTouch::CAndroidTouch() : m_dpi(160)
 {
@@ -105,7 +106,7 @@ void CAndroidTouch::setDPI(uint32_t dpi)
   if (dpi != 0)
   {
     m_dpi = dpi;
-
+    CLog::Log(LOGDEBUG, "%s - %d", __PRETTY_FUNCTION__, m_dpi);
     CGenericTouchInputHandler::GetInstance().SetScreenDPI(m_dpi);
   }
 }
