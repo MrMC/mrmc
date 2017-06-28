@@ -736,7 +736,7 @@ bool CPlexServices::GetSignInPinCode()
     waitPinReplyDialog->SetLine(1, prompt);
 
     waitPinReplyDialog->Open();
-    waitPinReplyDialog->ShowProgressBar(false);
+    waitPinReplyDialog->ShowProgressBar(true);
 
     CStopWatch dieTimer;
     dieTimer.StartZero();
@@ -749,7 +749,7 @@ bool CPlexServices::GetSignInPinCode()
     while (!waitPinReplyDialog->IsCanceled())
     {
       waitPinReplyDialog->SetPercentage(int(float(dieTimer.GetElapsedSeconds())/float(timeToDie)*100));
-
+      waitPinReplyDialog->Progress();
       if (pingTimer.GetElapsedSeconds() > 1)
       {
         // wait for user to run and enter pin code
@@ -764,7 +764,6 @@ bool CPlexServices::GetSignInPinCode()
         rtn = false;
         break;
       }
-      waitPinReplyDialog->Progress();
     }
     waitPinReplyDialog->Close();
 
