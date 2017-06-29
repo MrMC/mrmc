@@ -1403,6 +1403,8 @@ bool CPlexUtils::ParsePlexSeries(CFileItemList &items, const CURL &url, const CV
   }
 
   CURL curl(url);
+  if (curl.HasOption("genre"))
+    curl.RemoveOption("genre");
   std::string value;
   for (auto variantIt = directory.begin_array(); variantIt != directory.end_array(); ++variantIt)
   {
