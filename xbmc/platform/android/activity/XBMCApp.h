@@ -131,6 +131,11 @@ public:
   virtual void onMultiWindowModeChanged(bool isInMultiWindowMode);
   virtual void onPictureInPictureModeChanged(bool isInPictureInPictureMode);
 
+  // CJNISurfaceHolderCallback interface
+  virtual void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
+  virtual void surfaceCreated(CJNISurfaceHolder holder) override;
+  virtual void surfaceDestroyed(CJNISurfaceHolder holder) override;
+
   bool isValid() { return m_activity != NULL; }
 
   void onStart();
@@ -185,8 +190,9 @@ public:
   static bool IsNightMode();
   static CPointInt GetMaxDisplayResolution();
 
+  static CRect GetSurfaceRect();
   static CRect MapRenderToDroid(const CRect& srcRect);
-  static CPoint GetDroidToGuiRatio();
+  static CPoint MapDroidToGui(const CPoint& src);
 
   static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
   static bool WaitForCapture(jni::CJNIImage& image);
@@ -211,6 +217,8 @@ public:
   bool getVideosurfaceInUse();
   void setVideosurfaceInUse(bool videosurfaceInUse);
 
+  void onLayoutChange(int left, int top, int width, int height);
+
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
@@ -222,6 +230,8 @@ protected:
 
 private:
   static CXBMCApp* m_xbmcappinstance;
+  static CCriticalSection m_AppMutex;
+
   static std::unique_ptr<CJNIXBMCMainView> m_mainView;
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   static bool HasLaunchIntent(const std::string &package);
@@ -265,12 +275,8 @@ private:
 
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
+  static void CalculateGUIRatios();
+  static CRect m_droid2guiRatio;
 
   static CRect m_surface_rect;
-
-  // CJNISurfaceHolderCallback interface
-public:
-  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
-  void surfaceCreated(CJNISurfaceHolder holder) override;
-  void surfaceDestroyed(CJNISurfaceHolder holder) override;
 };

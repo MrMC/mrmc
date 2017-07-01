@@ -115,6 +115,8 @@ void* thread_run(void* obj)
 }
 
 CXBMCApp* CXBMCApp::m_xbmcappinstance = NULL;
+CCriticalSection CXBMCApp::m_AppMutex;
+
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 ANativeActivity *CXBMCApp::m_activity = NULL;
 CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
@@ -177,6 +179,7 @@ void LogAudoDevices(const char* stage, const CJNIAudioDeviceInfos& devices)
     CLog::Log(LOGDEBUG, "    sample rates: %s", oss.str().c_str());
   }
 }
+CRect CXBMCApp::m_droid2guiRatio(0.0, 0.0, 1.0, 1.0);
 CRect CXBMCApp::m_surface_rect;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
@@ -226,6 +229,11 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
       OnPlayBackPaused();
     else if (strcmp(message, "OnStop") == 0)
       OnPlayBackStopped();
+  }
+  else if (flag & GUI)
+  {
+     if (strcmp(message, "OnVideoResolutionChanged") == 0)
+      CalculateGUIRatios();
   }
 }
 
@@ -778,34 +786,25 @@ CPointInt CXBMCApp::GetMaxDisplayResolution()
   return CPointInt(res_info.iWidth, res_info.iHeight);
 }
 
-CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
+CRect CXBMCApp::GetSurfaceRect()
 {
-  float scaleX = 1.0;
-  float scaleY = 1.0;
+  CSingleLock lock(m_AppMutex);
 
-  if(m_xbmcappinstance && m_surface_rect.x2 && m_surface_rect.y2)
-  {
-    RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-    scaleX = (double)m_surface_rect.x2 / renderRes.iWidth;
-    scaleY = (double)m_surface_rect.y2 / renderRes.iHeight;
-  }
-
-  return CRect(srcRect.x1 * scaleX, srcRect.y1 * scaleY, srcRect.x2 * scaleX, srcRect.y2 * scaleY);
+  return m_surface_rect;
 }
 
-CPoint CXBMCApp::GetDroidToGuiRatio()
+CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
 {
-  float scaleX = 1.0;
-  float scaleY = 1.0;
+  CSingleLock lock(m_AppMutex);
 
-  if(m_xbmcappinstance && m_surface_rect.x2 && m_surface_rect.y2)
-  {
-    CRect gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
-    scaleX = gui.Width() / (double)m_surface_rect.x2;
-    scaleY = gui.Height() / (double)m_surface_rect.y2;
-  }
+  return CRect(srcRect.x1 / m_droid2guiRatio.x2, srcRect.y1 / m_droid2guiRatio.y2, srcRect.x2 / m_droid2guiRatio.x2, srcRect.y2 / m_droid2guiRatio.y2);
+}
 
-  return CPoint(scaleX, scaleY);
+CPoint CXBMCApp::MapDroidToGui(const CPoint& src)
+{
+  CSingleLock lock(m_AppMutex);
+
+  return CPoint((src.x - m_droid2guiRatio.x1) * m_droid2guiRatio.x2, (src.y - m_droid2guiRatio.y1) * m_droid2guiRatio.y2);
 }
 
 void CXBMCApp::OnPlayBackStarted()
@@ -1315,7 +1314,8 @@ void CXBMCApp::onVisibleBehindCanceled()
 
 void CXBMCApp::onMultiWindowModeChanged(bool isInMultiWindowMode)
 {
-  android_printf("%s: %s", __PRETTY_FUNCTION__, isInMultiWindowMode ? "true" : "false");
+  CLog::Log(LOGDEBUG, "%s: %s", __PRETTY_FUNCTION__, isInMultiWindowMode ? "true" : "false");
+
 }
 
 void CXBMCApp::onPictureInPictureModeChanged(bool isInPictureInPictureMode)
@@ -1484,10 +1484,32 @@ const ANativeWindow** CXBMCApp::GetNativeWindow(int timeout)
   return (const ANativeWindow**)&m_window;
 }
 
+void CXBMCApp::CalculateGUIRatios()
+{
+  m_droid2guiRatio = CRect(0.0, 0.0, 1.0, 1.0);
+
+  if(!m_xbmcappinstance || !m_surface_rect.Width() || !m_surface_rect.Height())
+    return;
+
+  RESOLUTION_INFO res_info = g_graphicsContext.GetResInfo();
+  float curRatio = (float)res_info.iWidth / res_info.iHeight;
+  float newRatio = (float)m_surface_rect.Width() / m_surface_rect.Height();
+
+  res_info.fPixelRatio = newRatio / curRatio;
+  g_graphicsContext.SetResInfo(g_graphicsContext.GetVideoResolution(), res_info);
+
+  CRect gui = CRect(0, 0, res_info.iWidth, res_info.iHeight);
+  m_droid2guiRatio.x1 = m_surface_rect.x1;
+  m_droid2guiRatio.y1 = m_surface_rect.y1;
+  m_droid2guiRatio.x2 = gui.Width() / (double)m_surface_rect.Width();
+  m_droid2guiRatio.y2 = gui.Height() / (double)m_surface_rect.Height();
+
+  CLog::Log(LOGDEBUG, "%s(gui scaling) - %f, %f", __PRETTY_FUNCTION__, m_droid2guiRatio.x2, m_droid2guiRatio.y2);
+}
+
 void CXBMCApp::surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height)
 {
-  m_surface_rect.x2 = width;
-  m_surface_rect.y2 = height;
+  CLog::Log(LOGDEBUG, "%s: %d x %d", __PRETTY_FUNCTION__, width, height);
 }
 
 void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
@@ -1512,4 +1534,20 @@ void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
     XBMC_DestroyDisplay();
     m_window = NULL;
   }
+}
+
+void CXBMCApp::onLayoutChange(int left, int top, int width, int height)
+{
+  CSingleLock lock(m_AppMutex);
+
+  // Ignore left/top. We are zero-based
+  m_surface_rect.x1 = 0;
+  m_surface_rect.y1 = 0;
+  m_surface_rect.x2 = width;
+  m_surface_rect.y2 = height;
+
+  CLog::Log(LOGDEBUG, "%s: %f + %f - %f x %f", __PRETTY_FUNCTION__, m_surface_rect.x1, m_surface_rect.y1, m_surface_rect.Width(), m_surface_rect.Height());
+
+  if (g_application.GetRenderGUI())
+    CalculateGUIRatios();
 }
