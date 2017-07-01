@@ -72,6 +72,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   BOOL                        m_remoteIdleState;
   CGFloat                     m_remoteIdleTimeout;
   BOOL                        m_enableRemoteIdle;
+  BOOL                        m_allowTap;
 }
 // why are these properties ?
 @property (nonatomic, strong) NSTimer *m_holdTimer;
@@ -83,6 +84,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 @property BOOL                m_remoteIdleState;
 @property CGFloat             m_remoteIdleTimeout;
 @property BOOL                m_enableRemoteIdle;
+@property BOOL                m_allowTap;
 
 - (void)onPlayDelayed:(NSDictionary *)item;
 - (void)onSpeedChanged:(NSDictionary *)item;

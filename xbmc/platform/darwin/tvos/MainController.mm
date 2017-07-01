@@ -109,6 +109,7 @@ MainController *g_xbmcController;
 @synthesize m_remoteIdleState;
 @synthesize m_remoteIdleTimeout;
 @synthesize m_enableRemoteIdle;
+@synthesize m_allowTap;
 
 #pragma mark - internal key press methods
 - (void)sendButtonPressed:(int)buttonId
@@ -738,6 +739,9 @@ static int keyPressTimerFiredCount = 0;
 {
   //if (!m_remoteIdleState)
   NSLog(@"microGamepad: tapUpArrowPressed");
+  if (m_allowTap)
+    [self sendButtonPressed:SiriRemote_UpTap];
+  m_allowTap = true;
   [self startRemoteTimer];
 }
 //--------------------------------------------------------------
@@ -745,6 +749,9 @@ static int keyPressTimerFiredCount = 0;
 {
   //if (!m_remoteIdleState)
   NSLog(@"microGamepad: tapDownArrowPressed");
+  if (m_allowTap)
+    [self sendButtonPressed:SiriRemote_DownTap];
+  m_allowTap = true;
   [self startRemoteTimer];
 }
 //--------------------------------------------------------------
@@ -752,6 +759,9 @@ static int keyPressTimerFiredCount = 0;
 {
   //if (!m_remoteIdleState)
   NSLog(@"microGamepad: tapLeftArrowPressed");
+  if (m_allowTap)
+    [self sendButtonPressed:SiriRemote_LeftTap];
+  m_allowTap = true;
   [self startRemoteTimer];
 }
 //--------------------------------------------------------------
@@ -759,6 +769,9 @@ static int keyPressTimerFiredCount = 0;
 {
   //if (!m_remoteIdleState)
   NSLog(@"microGamepad: tapRightArrowPressed");
+  if (m_allowTap)
+    [self sendButtonPressed:SiriRemote_RightTap];
+  m_allowTap = true;
   [self startRemoteTimer];
 }
 
@@ -1372,6 +1385,7 @@ static SiriRemoteInfo siriRemoteInfo;
 #else
       self.gcController.microGamepad.valueChangedHandler = ^(GCMicroGamepad *gamepad, GCControllerElement *element)
       {
+        m_allowTap = false;
         // buttonA is the 'select' button,
         // if pressed bypass any touch handling
         if (gamepad.buttonA.pressed)
