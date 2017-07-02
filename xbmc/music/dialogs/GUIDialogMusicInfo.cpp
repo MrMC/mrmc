@@ -205,6 +205,7 @@ void CGUIDialogMusicInfo::SetAlbum(CFileItem pItem)
   }
   m_hasUpdatedThumb = false;
   m_bArtistInfo = false;
+  m_album.strReview = pItem.GetProperty("album_description").asString();
   m_albumSongs->SetContent("albums");
 }
 
