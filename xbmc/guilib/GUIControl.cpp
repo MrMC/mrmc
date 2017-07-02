@@ -344,7 +344,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     switch (message.GetMessage() )
     {
     case GUI_MSG_SETFOCUS:
-      CLog::Log(LOGERROR, "Control %u in window %u has been asked to focus", GetID(), GetParentID());
+      CLog::Log(LOGNOTICE, "Control %u in window %u has been asked to focus", GetID(), GetParentID());
       // if control is disabled then move 2 the next control
       if ( !CanFocus() )
       {
