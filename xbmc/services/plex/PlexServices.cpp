@@ -37,6 +37,7 @@
 #include "network/Network.h"
 #include "network/Socket.h"
 #include "network/DNSNameCache.h"
+#include "network/WakeOnAccess.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
@@ -451,6 +452,8 @@ void CPlexServices::Process()
   // reset any canceled state
   m_plextv.Reset();
 
+  CStopWatch gdmTimer;
+  gdmTimer.StartZero();
   while (!m_bStop)
   {
     if (g_sysinfo.HasInternet())
@@ -467,6 +470,12 @@ void CPlexServices::Process()
       {
         CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway2");
         break;
+      }
+      if (gdmTimer.GetElapsedSeconds() > 5)
+      {
+        if (m_playState == MediaServicesPlayerState::stopped)
+          CheckForGDMServers();
+        gdmTimer.Reset();
       }
     }
 
@@ -487,7 +496,7 @@ void CPlexServices::Process()
   // the via GDM
   CheckForGDMServers();
 
-  CStopWatch gdmTimer, plextvTimer, checkUpdatesTimer;
+  CStopWatch plextvTimer, checkUpdatesTimer;
   gdmTimer.StartZero();
   plextvTimer.StartZero();
   checkUpdatesTimer.StartZero();
@@ -988,6 +997,8 @@ bool CPlexServices::AddClient(CPlexClientPtr foundClient)
     if (client->GetUuid() == foundClient->GetUuid())
       return false;
   }
+
+  CWakeOnAccess::GetInstance().WakeUpHost(foundClient->GetHost(), "Plex Server");
 
   // only add new clients that are present
   if (foundClient->GetPresence() && foundClient->ParseSections(PlexSectionParsing::newSection))

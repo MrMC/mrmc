@@ -37,6 +37,7 @@
 #include "network/Network.h"
 #include "network/DNSNameCache.h"
 #include "network/GUIDialogNetworkSetup.h"
+#include "network/WakeOnAccess.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/md5.h"
@@ -494,6 +495,8 @@ void CEmbyServices::Process()
   {
     if (!m_accessToken.empty() && !m_userId.empty())
     {
+      CURL curl(m_serverURL);
+      CWakeOnAccess::GetInstance().WakeUpHost(curl.GetHostName(), "Emby Server");
       GetEmbyLocalServers(m_serverURL, m_userId, m_accessToken);
       serviceTimeoutSeconds = 60 * 15;
     }
@@ -530,6 +533,8 @@ void CEmbyServices::Process()
           {
             if (AddClient(client))
             {
+              CURL curl(server.ServerURL);
+              CWakeOnAccess::GetInstance().WakeUpHost(curl.GetHostName(), "Emby Server");
               CLog::Log(LOGNOTICE, "CEmbyServices::CheckEmbyServers Server found %s", client->GetServerName().c_str());
             }
             else if (GetClient(client->GetUuid()) == nullptr)
