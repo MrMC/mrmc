@@ -345,11 +345,11 @@ void CRssReader::GetAtomItems(TiXmlElement* channelXmlNode,int iFeed)
   if (m_tagSet.empty())
     AddTag("title");
 
-  while (itemNode > 0)
+  while (itemNode != nullptr)
   {
     TiXmlNode* childNode = itemNode->FirstChild();
     mTagElements.clear();
-    while (childNode > 0)
+    while (childNode != nullptr)
     {
       std::string strName = childNode->ValueStr();
 
@@ -480,7 +480,7 @@ void CRssReader::UpdateObserver()
 
   vecText feed;
   getFeed(feed);
-  if (feed.size() > 0)
+  if (!feed.empty())
   {
     CSingleLock lock(g_graphicsContext);
     if (m_pObserver) // need to check again when locked to make sure observer wasnt removed

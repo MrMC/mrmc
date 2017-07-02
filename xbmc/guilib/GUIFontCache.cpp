@@ -23,37 +23,72 @@
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
 
-inline bool Match(const CGUIFontCacheStaticPosition &a, const TransformMatrix &a_m,
-  const CGUIFontCacheStaticPosition &b, const TransformMatrix &b_m,
-  bool scrolling)
-{
-  return a.m_x == b.m_x && a.m_y == b.m_y && a_m == b_m;
-}
-
-inline bool Match(const CGUIFontCacheDynamicPosition &a, const TransformMatrix &a_m,
-  const CGUIFontCacheDynamicPosition &b, const TransformMatrix &b_m,
-  bool scrolling)
-{
-  float diffX = a.m_x - b.m_x + FONT_CACHE_DIST_LIMIT;
-  float diffY = a.m_y - b.m_y + FONT_CACHE_DIST_LIMIT;
-  float diffZ = a.m_z - b.m_z + FONT_CACHE_DIST_LIMIT;
-  return (scrolling || diffX - floorf(diffX) < 2 * FONT_CACHE_DIST_LIMIT) &&
-    diffY - floorf(diffY) < 2 * FONT_CACHE_DIST_LIMIT &&
-    diffZ - floorf(diffZ) < 2 * FONT_CACHE_DIST_LIMIT &&
-    a_m.m[0][0] == b_m.m[0][0] &&
-    a_m.m[1][1] == b_m.m[1][1] &&
-    a_m.m[2][2] == b_m.m[2][2];
-  // We already know the first 3 columns of both matrices are diagonal, so no need to check the other elements
-}
-
 template<class Position, class Value>
 class CGUIFontCacheImpl
 {
-  std::list<CGUIFontCacheEntry<Position, Value>*> m_list;
+  struct EntryList
+  {
+    using HashMap = std::multimap<size_t, CGUIFontCacheEntry<Position, Value>*>;
+    using HashIter = typename HashMap::iterator;
+    using AgeMap = std::multimap<size_t, HashIter>;
+
+    ~EntryList()
+    {
+      Flush();
+    }
+    HashIter Insert(size_t hash, CGUIFontCacheEntry<Position, Value> *v)
+    {
+      auto r (hashMap.insert(typename HashMap::value_type(hash, v)));
+      if (r->second)
+        ageMap.insert(typename AgeMap::value_type(r->second->m_lastUsedMillis, r));
+      return r;
+    }
+    void Flush()
+    {
+      ageMap.clear();
+      for (auto it = hashMap.begin(); it != hashMap.end(); ++it)
+        delete(it->second);
+      hashMap.clear();
+    }
+    typename HashMap::iterator FindKey(CGUIFontCacheKey<Position> key)
+    {
+      CGUIFontCacheHash<Position> hashGen;
+      CGUIFontCacheKeysMatch<Position> keyMatch;
+      auto range = hashMap.equal_range(hashGen(key));
+      for (auto ret = range.first; ret != range.second; ++ret)
+      {
+        if (keyMatch(ret->second->m_key, key))
+        {
+          return ret;
+        }
+      }
+      return hashMap.end();
+    }
+    void UpdateAge(HashIter it, size_t millis)
+    {
+      auto range = ageMap.equal_range(it->second->m_lastUsedMillis);
+      for (auto ageit = range.first; ageit != range.second; ++ageit)
+      {
+        if (ageit->second == it)
+        {
+          ageMap.erase(ageit);
+          ageMap.insert(typename AgeMap::value_type(millis, it));
+          it->second->m_lastUsedMillis = millis;
+          return;
+        }
+      }
+    }
+
+    HashMap hashMap;
+    AgeMap ageMap;
+  };
+
+  EntryList m_list;
+  CGUIFontCache<Position, Value> *m_parent;
 
 public:
 
-  CGUIFontCacheImpl() {}
+  CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
   Value &Lookup(Position &pos,
                 const vecColors &colors, const vecText &text,
                 uint32_t alignment, float maxPixelWidth,
@@ -65,11 +100,30 @@ public:
 template<class Position, class Value>
 CGUIFontCacheEntry<Position, Value>::~CGUIFontCacheEntry()
 {
+  delete &m_key.m_colors;
+  delete &m_key.m_text;
+  m_value.clear();
+}
+
+template<class Position, class Value>
+void CGUIFontCacheEntry<Position, Value>::Assign(const CGUIFontCacheKey<Position> &key, unsigned int nowMillis)
+{
+  m_key.m_pos = key.m_pos;
+  m_key.m_colors.assign(key.m_colors.begin(), key.m_colors.end());
+  m_key.m_text.assign(key.m_text.begin(), key.m_text.end());
+  m_key.m_alignment = key.m_alignment;
+  m_key.m_maxPixelWidth = key.m_maxPixelWidth;
+  m_key.m_scrolling = key.m_scrolling;
+  m_matrix = key.m_matrix;
+  m_key.m_scaleX = key.m_scaleX;
+  m_key.m_scaleY = key.m_scaleY;
+  m_lastUsedMillis = nowMillis;
+  m_value.clear();
 }
 
 template<class Position, class Value>
 CGUIFontCache<Position, Value>::CGUIFontCache(CGUIFontTTFBase &font)
-: m_impl(new CGUIFontCacheImpl<Position, Value>())
+: m_impl(new CGUIFontCacheImpl<Position, Value>(this))
 , m_font(font)
 {
 }
@@ -88,7 +142,7 @@ Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
                                               unsigned int nowMillis, bool &dirtyCache)
 {
   if (m_impl == nullptr)
-    m_impl = new CGUIFontCacheImpl<Position, Value>();
+    m_impl = new CGUIFontCacheImpl<Position, Value>(this);
 
   return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis, dirtyCache);
 }
@@ -105,52 +159,40 @@ Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
                                        alignment, maxPixelWidth,
                                        scrolling, g_graphicsContext.GetGUIMatrix(),
                                        g_graphicsContext.GetGUIScaleX(), g_graphicsContext.GetGUIScaleY());
-  auto i = std::find_if(m_list.begin(), m_list.end(), [&key](CGUIFontCacheEntry<Position, Value>* entry) 
-  {
-    return key.m_text ==          entry->m_key.m_text &&
-           key.m_colors ==        entry->m_key.m_colors &&
-           key.m_alignment ==     entry->m_key.m_alignment &&
-           key.m_scrolling ==     entry->m_key.m_scrolling &&
-           key.m_maxPixelWidth == entry->m_key.m_maxPixelWidth &&
-           key.m_scaleX ==        entry->m_key.m_scaleX &&
-           key.m_scaleY ==        entry->m_key.m_scaleY &&
-           Match(entry->m_key.m_pos, entry->m_key.m_matrix, key.m_pos, key.m_matrix, entry->m_key.m_scrolling);
-  });
 
-  if (i == m_list.end())
+  auto i = m_list.FindKey(key);
+  if (i == m_list.hashMap.end())
   {
-    /* Cache miss */
-    auto oldest = m_list.back();
-    if (!m_list.empty() && nowMillis - oldest->m_lastUsedMillis > FONT_CACHE_TIME_LIMIT)
-    {
-      /* The oldest existing entry is old enough to expire and reuse */
-      m_list.pop_back();
-      delete oldest;
-      m_list.push_front(new CGUIFontCacheEntry<Position, Value>(key, nowMillis));
-    }
-    else
-    {
-      /* We need a new entry instead */
-      /* Yes, this causes the creation an destruction of a temporary entry, but
-       * this code ought to only be used infrequently, when the cache needs to grow */
-      m_list.push_front(new CGUIFontCacheEntry<Position, Value>(key, nowMillis));
-    }
+    // Cache miss
     dirtyCache = true;
-    return m_list.back()->m_value;
+    CGUIFontCacheEntry<Position, Value> *entry = nullptr;
+    if (!m_list.ageMap.empty() && (nowMillis - m_list.ageMap.begin()->first) > FONT_CACHE_TIME_LIMIT)
+    {
+      entry = m_list.ageMap.begin()->second->second;
+      m_list.hashMap.erase(m_list.ageMap.begin()->second);
+      m_list.ageMap.erase(m_list.ageMap.begin());
+    }
+
+    // add new entry
+    CGUIFontCacheHash<Position> hashgen;
+    if (!entry)
+      entry = new CGUIFontCacheEntry<Position, Value>(*m_parent, key, nowMillis);
+    else
+      entry->Assign(key, nowMillis);
+    return m_list.Insert(hashgen(key), entry)->second->m_value;
   }
   else
   {
-    auto* entry = (*i);
-    /* Cache hit */
-    /* Update the translation arguments so that they hold the offset to apply
-     * to the cached values (but only in the dynamic case) */
-    pos.UpdateWithOffsets(entry->m_key.m_pos, scrolling);
-    /* Update time in entry and move to the back of the list */
-    entry->m_lastUsedMillis = nowMillis;
-    m_list.remove(*i);
-    m_list.push_front(entry);
+    // Cache hit
+    // Update the translation arguments so that they hold the offset to apply
+    // to the cached values (but only in the dynamic case)
+    pos.UpdateWithOffsets(i->second->m_key.m_pos, scrolling);
+
+    // Update time in entry and move to the back of the list
+    m_list.UpdateAge(i, nowMillis);
+
     dirtyCache = false;
-    return entry->m_value;
+    return i->second->m_value;
   }
 }
 
@@ -163,9 +205,7 @@ void CGUIFontCache<Position, Value>::Flush()
 template<class Position, class Value>
 void CGUIFontCacheImpl<Position, Value>::Flush()
 {
-  for (auto* i : m_list)
-    delete i;
-  m_list.clear();
+  m_list.Flush();
 }
 
 template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::CGUIFontCache(CGUIFontTTFBase &font);
@@ -182,6 +222,6 @@ template void CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicVa
 
 void CVertexBuffer::clear()
 {
-  if (m_font != nullptr)
+  if (m_font != NULL)
     m_font->DestroyVertexBuffer(*this);
 }

@@ -34,10 +34,10 @@
 #include <algorithm>
 #include <vector>
 #include <memory>
-#include <list>
 #include <cassert>
 
 #include "TransformMatrix.h"
+#include "system.h"
 
 #define FONT_CACHE_TIME_LIMIT (1000)
 #define FONT_CACHE_DIST_LIMIT (0.01f)
@@ -52,8 +52,8 @@ template<class Position>
 struct CGUIFontCacheKey
 {
   Position m_pos;
-  vecColors m_colors;
-  vecText m_text;
+  vecColors &m_colors;
+  vecText &m_text;
   uint32_t m_alignment;
   float m_maxPixelWidth;
   bool m_scrolling;
@@ -62,7 +62,7 @@ struct CGUIFontCacheKey
   float m_scaleY;
 
   CGUIFontCacheKey(Position pos,
-                   const vecColors &colors, const vecText &text,
+                   vecColors &colors, vecText &text,
                    uint32_t alignment, float maxPixelWidth,
                    bool scrolling, const TransformMatrix &matrix,
                    float scaleX, float scaleY) :
@@ -77,15 +77,16 @@ struct CGUIFontCacheKey
 template<class Position, class Value>
 struct CGUIFontCacheEntry
 {
+  const CGUIFontCache<Position, Value> &m_cache;
   CGUIFontCacheKey<Position> m_key;
   TransformMatrix m_matrix;
-
   unsigned int m_lastUsedMillis;
   Value m_value;
 
-  CGUIFontCacheEntry(const CGUIFontCacheKey<Position> &key, unsigned int nowMillis) :
+  CGUIFontCacheEntry(const CGUIFontCache<Position, Value> &cache, const CGUIFontCacheKey<Position> &key, unsigned int nowMillis) :
+    m_cache(cache),
     m_key(key.m_pos,
-          key.m_colors, key.m_text,
+          *new vecColors, *new vecText,
           key.m_alignment, key.m_maxPixelWidth,
           key.m_scrolling, m_matrix,
           key.m_scaleX, key.m_scaleY),
@@ -96,22 +97,43 @@ struct CGUIFontCacheEntry
     m_matrix = key.m_matrix;
   }
 
-  CGUIFontCacheEntry(const CGUIFontCacheEntry &other) :
-    m_key(other.m_key.m_pos,
-          other.m_colors, other.m_text,
-          other.m_key.m_alignment, other.m_key.m_maxPixelWidth,
-          other.m_key.m_scrolling, m_matrix,
-          other.m_key.m_scaleX, other.m_key.m_scaleY),
-    m_lastUsedMillis(other.m_lastUsedMillis),
-    m_value(other.m_value)
-  {
-    m_key.m_colors.assign(other.m_key.m_colors.begin(), other.m_key.m_colors.end());
-    m_key.m_text.assign(other.m_key.m_text.begin(), other.m_key.m_text.end());
-    m_matrix = other.m_key.m_matrix;
-  }
-
   ~CGUIFontCacheEntry();
+
+  void Assign(const CGUIFontCacheKey<Position> &key, unsigned int nowMillis);
 };
+
+template<class Position>
+struct CGUIFontCacheHash
+{
+  size_t operator()(const CGUIFontCacheKey<Position> &key) const
+  {
+    /* Not much effort has gone into choosing this hash function */
+    size_t hash = 0, i;
+    for (i = 0; i < 3 && i < key.m_text.size(); ++i)
+      hash += key.m_text[i];
+    if (key.m_colors.size())
+      hash += key.m_colors[0];
+    hash += MatrixHashContribution(key);
+    return hash;
+  }
+};
+
+template<class Position>
+struct CGUIFontCacheKeysMatch
+{
+  bool operator()(const CGUIFontCacheKey<Position> &a, const CGUIFontCacheKey<Position> &b) const
+  {
+    return a.m_text == b.m_text &&
+           a.m_colors == b.m_colors &&
+           a.m_alignment == b.m_alignment &&
+           a.m_scrolling == b.m_scrolling &&
+           a.m_maxPixelWidth == b.m_maxPixelWidth &&
+           Match(a.m_pos, a.m_matrix, b.m_pos, b.m_matrix, a.m_scrolling) &&
+           a.m_scaleX == b.m_scaleX &&
+           a.m_scaleY == b.m_scaleY;
+  }
+};
+
 
 template<class Position, class Value>
 class CGUIFontCache
@@ -150,6 +172,19 @@ struct CGUIFontCacheStaticValue : public std::shared_ptr<std::vector<SVertex> >
   }
 };
 
+inline bool Match(const CGUIFontCacheStaticPosition &a, const TransformMatrix &a_m,
+                  const CGUIFontCacheStaticPosition &b, const TransformMatrix &b_m,
+                  bool scrolling)
+{
+  return a.m_x == b.m_x && a.m_y == b.m_y && a_m == b_m;
+}
+
+inline float MatrixHashContribution(const CGUIFontCacheKey<CGUIFontCacheStaticPosition> &a)
+{
+  /* Ensure horizontally translated versions end up in different buckets */
+  return a.m_matrix.m[0][3];
+}
+
 struct CGUIFontCacheDynamicPosition
 {
   float m_x;
@@ -170,10 +205,17 @@ struct CGUIFontCacheDynamicPosition
 
 struct CVertexBuffer
 {
-  unsigned int bufferHandle; // this is really a GLuint
+#if defined(HAS_GL) || defined(HAS_GLES)
+  typedef unsigned int BufferHandleType;
+#define  BUFFER_HANDLE_INIT 0
+#elif defined(HAS_DX)
+  typedef void* BufferHandleType;
+#define BUFFER_HANDLE_INIT nullptr
+#endif
+  BufferHandleType bufferHandle; // this is really a GLuint
   size_t size;
-  CVertexBuffer() : bufferHandle(NULL), size(0), m_font(NULL) {}
-  CVertexBuffer(unsigned int bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
+  CVertexBuffer() : bufferHandle(BUFFER_HANDLE_INIT), size(0), m_font(NULL) {}
+  CVertexBuffer(BufferHandleType bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
   CVertexBuffer(const CVertexBuffer &other) : bufferHandle(other.bufferHandle), size(other.size), m_font(other.m_font)
   {
     /* In practice, the copy constructor is only called before a vertex buffer
@@ -197,4 +239,26 @@ private:
 };
 
 typedef CVertexBuffer CGUIFontCacheDynamicValue;
+
+inline bool Match(const CGUIFontCacheDynamicPosition &a, const TransformMatrix &a_m,
+                  const CGUIFontCacheDynamicPosition &b, const TransformMatrix &b_m,
+                  bool scrolling)
+{
+  float diffX = a.m_x - b.m_x + FONT_CACHE_DIST_LIMIT;
+  float diffY = a.m_y - b.m_y + FONT_CACHE_DIST_LIMIT;
+  float diffZ = a.m_z - b.m_z + FONT_CACHE_DIST_LIMIT;
+  return (scrolling || diffX - floorf(diffX) < 2 * FONT_CACHE_DIST_LIMIT) &&
+          diffY - floorf(diffY) < 2 * FONT_CACHE_DIST_LIMIT &&
+          diffZ - floorf(diffZ) < 2 * FONT_CACHE_DIST_LIMIT &&
+          a_m.m[0][0] == b_m.m[0][0] &&
+          a_m.m[1][1] == b_m.m[1][1] &&
+          a_m.m[2][2] == b_m.m[2][2];
+          // We already know the first 3 columns of both matrices are diagonal, so no need to check the other elements
+}
+
+inline float MatrixHashContribution(const CGUIFontCacheKey<CGUIFontCacheDynamicPosition> &a)
+{
+  return 0;
+}
+
 #endif
