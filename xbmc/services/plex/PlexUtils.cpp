@@ -1961,6 +1961,8 @@ bool CPlexUtils::ParsePlexArtistsAlbum(CFileItemList &items, const CURL &url, co
     plexItem->GetMusicInfoTag()->SetTitle(item["title"].asString());
     if (album)
     {
+      if (item.isMember("summary") && item["summary"].size() > 1)
+        plexItem->SetProperty("album_description", item["summary"].asString());
       plexItem->GetMusicInfoTag()->SetArtistDesc(item["parentTitle"].asString());
       plexItem->SetProperty("artist", item["parentTitle"].asString());
       plexItem->SetProperty("PlexAlbumKey", item["ratingKey"].asString());
