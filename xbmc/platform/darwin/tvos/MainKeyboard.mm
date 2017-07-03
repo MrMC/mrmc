@@ -49,7 +49,7 @@ bool CMainKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string
   m_pCharCallback = pCallback;
 
   // init keyboard stuff
-  [g_pTvosKeyboard setDefault:[NSString stringWithUTF8String:initialString.c_str()]];
+  SetTextToKeyboard(initialString);
   [g_pTvosKeyboard setHidden:bHiddenInput];
   [g_pTvosKeyboard setHeading:[NSString stringWithUTF8String:heading.c_str()]];
   [g_pTvosKeyboard registerKeyboard:this]; // for calling back
