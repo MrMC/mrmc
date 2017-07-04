@@ -96,6 +96,13 @@ XBMCController *g_xbmcController;
 
 - (void)insertText:(NSString *)text
 {
+  // in case the native touch keyboard is active
+  // don't do anything here
+  // we are only supposed to be called when
+  // using an external bt keyboard...
+  if (m_nativeKeyboardActive)
+    return;
+
   unichar currentKey = [text characterAtIndex:0];
   // handle return
   if (currentKey == '\n' || currentKey == '\r')
@@ -272,6 +279,11 @@ XBMCController *g_xbmcController;
   [view removeFromSuperview];
   m_glView.userInteractionEnabled = YES; 
   [self becomeFirstResponder];
+}
+//--------------------------------------------------------------
+- (void) nativeKeyboardActive: (bool)active;
+{
+  m_nativeKeyboardActive = active;
 }
 //--------------------------------------------------------------
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event

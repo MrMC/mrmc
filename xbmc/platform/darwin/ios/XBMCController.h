@@ -58,6 +58,7 @@ typedef enum
   BOOL                        m_readyToRun;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
+  bool                        m_nativeKeyboardActive;
 }
 @property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
 @property (nonatomic, retain) NSTimer      *m_networkAutoSuspendTimer;
@@ -94,6 +95,7 @@ typedef enum
 - (void) createGestureRecognizers;
 - (void) activateKeyboard:(UIView *)view;
 - (void) deactivateKeyboard:(UIView *)view;
+- (void) nativeKeyboardActive: (bool)active;
 
 - (void) disableNetworkAutoSuspend;
 - (void) enableNetworkAutoSuspend:(id)obj;
