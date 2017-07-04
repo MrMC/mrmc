@@ -73,6 +73,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   CGFloat                     m_remoteIdleTimeout;
   BOOL                        m_enableRemoteIdle;
   BOOL                        m_allowTap;
+  BOOL                        m_nativeKeyboardActive;
 }
 // why are these properties ?
 @property (nonatomic, strong) NSTimer *m_holdTimer;
@@ -110,6 +111,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (CGSize) getScreenSize;
 - (void) activateKeyboard:(UIView *)view;
 - (void) deactivateKeyboard:(UIView *)view;
+- (void) nativeKeyboardActive:(bool)active;
 
 - (void) enableBackGroundTask;
 - (void) disableBackGroundTask;

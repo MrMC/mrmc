@@ -46,6 +46,10 @@ bool CMainKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string
       return false;
   }
 
+  // inform the controller that the native keyboard is active
+  // basically as long as g_pTvosKeyboard exists...
+  [g_xbmcController nativeKeyboardActive:true];
+  
   m_pCharCallback = pCallback;
 
   // init keyboard stuff
@@ -66,6 +70,7 @@ bool CMainKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string
   @synchronized([KeyboardView class])
   {
     g_pTvosKeyboard = nil;
+    [g_xbmcController nativeKeyboardActive:false];
   }
   return confirmed;
 }

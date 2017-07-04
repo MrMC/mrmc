@@ -114,6 +114,10 @@ MainController *g_xbmcController;
 #pragma mark - internal key press methods
 - (void)sendButtonPressed:(int)buttonId
 {
+  // if native keyboard is up, we don't want to send any button presses to MrMC
+  if (m_nativeKeyboardActive)
+    return;
+  
   int actionID;
   std::string actionName;
   // Translate using custom controller translator.
@@ -556,6 +560,11 @@ static int keyPressTimerFiredCount = 0;
   [self becomeFirstResponder];
 }
 
+//--------------------------------------------------------------
+- (void) nativeKeyboardActive: (bool)active;
+{
+  m_nativeKeyboardActive = active;
+}
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 #pragma mark - gesture handlers
