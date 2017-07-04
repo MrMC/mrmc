@@ -1041,7 +1041,7 @@ XBMCController *g_xbmcController;
     UIImage *image = [item objectForKey:@"thumb"];
     if (image)
     {
-      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:image.size requestHandler:^UIImage * _Nonnull(CGSize size) { return image;}];
       if (mArt)
         [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
     }
