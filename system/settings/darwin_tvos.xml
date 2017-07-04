@@ -42,6 +42,7 @@
         </setting>
         <setting id="videoplayer.useavf" type="boolean">
           <default>false</default>
+          <visible>false</visible>
         </setting>
       </group>
     </category>
