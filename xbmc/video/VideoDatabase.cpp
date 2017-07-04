@@ -925,13 +925,24 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
+    std::string file = strFileNameAndPath;
+    if (URIUtils::IsStack(strFileNameAndPath))
+      file = CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
+
+    if (URIUtils::IsInArchive(file))
+      file = CURL(file).GetHostName();
+
+    CDateTime dateAdded;
+    // Skip looking at the files ctime/mtime if defined by the user through as.xml
+    int VideoLibraryDateAdded = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_DATEADDED);
+    
     if (!finalDateAdded.IsValid())
     {
-      // 1 prefering to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
-      if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
+      // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
+      if (VideoLibraryDateAdded == 1)
         finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
       //2 using the newer datetime of the file's mtime and ctime
-      else if (g_advancedSettings.m_iVideoLibraryDateAdded == 2)
+      else if (VideoLibraryDateAdded == 2)
         finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, true);
       //0 using the current datetime if non of the above matches or one returns an invalid datetime
       if (!finalDateAdded.IsValid())
@@ -1311,7 +1322,8 @@ bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, const 
   {
     CDateTime finalDateAdded = dateAdded;
     // Skip looking at the files ctime/mtime if defined by the user through as.xml
-    if (!finalDateAdded.IsValid() && g_advancedSettings.m_iVideoLibraryDateAdded > 0)
+
+    if (!finalDateAdded.IsValid() && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_DATEADDED) > 0)
     {
       struct __stat64 buffer;
       if (XFILE::CFile::Stat(path, &buffer) == 0)

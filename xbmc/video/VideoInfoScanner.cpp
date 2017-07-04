@@ -1687,7 +1687,7 @@ namespace VIDEO
             time_t now = time(NULL);
             time_t addedTime;
             // Prefer the modification time if it's valid
-            if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
+            if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_DATEADDED) == 1)
             {
               if (buffer.st_mtime != 0 && (time_t)buffer.st_mtime <= now)
                 addedTime = (time_t)buffer.st_mtime;

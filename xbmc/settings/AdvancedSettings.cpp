@@ -344,7 +344,6 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryImportWatchedState = false;
   m_bVideoLibraryImportResumePoint = false;
   m_bVideoScannerIgnoreErrors = false;
-  m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
   m_recentlyAddedMusicPath = "musicdb://songs/";
   m_recentlyAddedMoviePath = "videodb://recentlyaddedmovies/";
@@ -779,7 +778,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
-    XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
 
     TiXmlElement *pSubElement = pElement->FirstChildElement("recentlyaddedpath");
     if (pSubElement)

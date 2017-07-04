@@ -285,7 +285,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     bool m_bVideoLibraryImportResumePoint;
 
     bool m_bVideoScannerIgnoreErrors;
-    int m_iVideoLibraryDateAdded;
 
     std::set<std::string> m_vecTokens;
 
