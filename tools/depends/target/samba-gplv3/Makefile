@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile autotools41.patch configureEndian.patch samba_android.patch samba_off64_t.patch no_fork_and_exec.patch
+DEPS= ../../Makefile.include Makefile autotools41.patch configureEndian.patch samba_android.patch no_fork_and_exec.patch
 
 # lib name, version
 LIBNAME=samba
