@@ -1200,6 +1200,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_FONT);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);

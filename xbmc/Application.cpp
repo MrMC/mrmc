@@ -1180,9 +1180,9 @@ bool CApplication::Initialize()
   }
 
   std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-  if ((CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)) &&
-      CSkinSettings::GetInstance().MigrateToNewSkin(skin))
+  if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)))
   {
+    CSkinSettings::GetInstance().MigrateToNewSkin(skin);
     skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     LoadSkin(skin);
   }
@@ -1346,6 +1346,10 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
       builtin += "(confirm)";
     CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+  }
+  else if (settingId == CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)
+  {
+    m_skinReverting = true;
   }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
   {
