@@ -2134,9 +2134,13 @@ static SiriRemoteInfo siriRemoteInfo;
         [self sendButtonPressed:SiriRemote_IR_PreviousTrack];
         break;
       case UIEventSubtypeRemoteControlBeginSeekingForward:
+        // use 4X speed forward.
+        [self sendButtonPressed:SiriRemote_IR_FastForward];
         [self sendButtonPressed:SiriRemote_IR_FastForward];
         break;
       case UIEventSubtypeRemoteControlBeginSeekingBackward:
+        // use 4X speed rewind.
+        [self sendButtonPressed:SiriRemote_IR_Rewind];
         [self sendButtonPressed:SiriRemote_IR_Rewind];
         break;
       case UIEventSubtypeRemoteControlEndSeekingForward:
