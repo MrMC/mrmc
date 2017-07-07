@@ -37,7 +37,6 @@ CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float po
   m_pReader = NULL;
   m_rtl = false;
   m_stopped = false;
-  m_urlset = 1;
   ControlType = GUICONTROL_RSS;
 }
 
@@ -48,24 +47,21 @@ CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
   m_label(from.m_label),
   m_channelColor(from.m_channelColor),
   m_headlineColor(from.m_headlineColor),
-  m_vecUrls(),
-  m_vecIntervals(),
+  m_vecUrl(),
+  m_vecInterval(),
   m_scrollInfo(from.m_scrollInfo),
   m_dirty(true)
 {
   m_pReader = NULL;
   m_rtl = from.m_rtl;
   m_stopped = from.m_stopped;
-  m_urlset = 1;
   ControlType = GUICONTROL_RSS;
 }
 
 CGUIRSSControl::~CGUIRSSControl(void)
 {
   CSingleLock lock(m_criticalSection);
-  if (m_pReader)
-    m_pReader->SetObserver(NULL);
-  m_pReader = NULL;
+  SAFE_DELETE(m_pReader);
 }
 
 void CGUIRSSControl::OnFocus()
@@ -76,11 +72,6 @@ void CGUIRSSControl::OnFocus()
 void CGUIRSSControl::OnUnFocus()
 {
   m_stopped = false;
-}
-
-void CGUIRSSControl::SetUrlSet(const int urlset)
-{
-  m_urlset = urlset;
 }
 
 bool CGUIRSSControl::UpdateColors()
@@ -102,33 +93,27 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
     if (m_pReader == NULL)
     {
 
-      RssUrls::const_iterator iter = CRssManager::GetInstance().GetUrls().find(m_urlset);
-      if (iter != CRssManager::GetInstance().GetUrls().end())
-      {
-        m_rtl = iter->second.rtl;
-        m_vecUrls = iter->second.url;
-        m_vecIntervals = iter->second.interval;
-        m_scrollInfo.SetSpeed(m_label.scrollSpeed * (m_rtl ? -1 : 1));
-      }
+      RssSet rssSet = CRssManager::GetInstance().GetUrl();
 
+      m_rtl = rssSet.rtl;
+      m_vecUrl = rssSet.url;
+      m_vecInterval = rssSet.interval;
+      m_scrollInfo.SetSpeed(m_label.scrollSpeed * (m_rtl ? -1 : 1));
+      
       dirty = true;
+      if (m_pReader)
+        delete m_pReader;
+      m_pReader = new CRssReader;
 
-      if (CRssManager::GetInstance().GetReader(GetID(), GetParentID(), this, m_pReader))
+      if (m_strRSSTags != "")
       {
-        m_scrollInfo.pixelPos = m_pReader->m_savedScrollPixelPos;
+        std::vector<std::string> tags = StringUtils::Split(m_strRSSTags, ",");
+        for (std::vector<std::string>::const_iterator i = tags.begin(); i != tags.end(); ++i)
+          m_pReader->AddTag(*i);
       }
-      else
-      {
-        if (m_strRSSTags != "")
-        {
-          std::vector<std::string> tags = StringUtils::Split(m_strRSSTags, ",");
-          for (std::vector<std::string>::const_iterator i = tags.begin(); i != tags.end(); ++i)
-            m_pReader->AddTag(*i);
-        }
-        // use half the width of the control as spacing between feeds, and double this between feed sets
-        float spaceWidth = (m_label.font) ? m_label.font->GetCharWidth(L' ') : 15;
-        m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int)(0.5f*GetWidth() / spaceWidth) + 1, m_rtl);
-      }
+      // use half the width of the control as spacing between feeds, and double this between feed sets
+      float spaceWidth = (m_label.font) ? m_label.font->GetCharWidth(L' ') : 15;
+      m_pReader->Create(this, m_vecUrl, m_vecInterval, (int)(0.5f*GetWidth() / spaceWidth) + 1, m_rtl);
     }
 
     if(m_dirty)
@@ -190,10 +175,3 @@ void CGUIRSSControl::OnFeedUpdate(const vecText &feed)
   m_feed = feed;
   m_dirty = true;
 }
-
-void CGUIRSSControl::OnFeedRelease()
-{
-  m_pReader = NULL;
-}
-
-

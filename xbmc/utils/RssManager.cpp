@@ -92,24 +92,15 @@ void CRssManager::Stop()
 {
   CSingleLock lock(m_critical);
   m_bActive = false;
-  for (unsigned int i = 0; i < m_readers.size(); i++)
-  {
-    if (m_readers[i].reader)
-      delete m_readers[i].reader;
-  }
-  m_readers.clear();
 }
 
 bool CRssManager::Load()
 {
   CSingleLock lock(m_critical);
 
-  RssSet set;
-  m_mapRssUrls.clear();
-  set.rtl = CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_RSSRTL);
-  set.url.push_back(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_RSSHOST));
-  set.interval.push_back(CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL));
-  m_mapRssUrls.insert(std::make_pair(1,set));
+  m_mapRssUrl.rtl = CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_RSSRTL);
+  m_mapRssUrl.url = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_RSSHOST);
+  m_mapRssUrl.interval = CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL);
   return true;
 }
 
@@ -126,29 +117,5 @@ bool CRssManager::Reload()
 void CRssManager::Clear()
 {
   CSingleLock lock(m_critical);
-  m_mapRssUrls.clear();
-}
-
-// returns true if the reader doesn't need creating, false otherwise
-bool CRssManager::GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader)
-{
-  CSingleLock lock(m_critical);
-  // check to see if we've already created this reader
-  for (unsigned int i = 0; i < m_readers.size(); i++)
-  {
-    if (m_readers[i].controlID == controlID && m_readers[i].windowID == windowID)
-    {
-      reader = m_readers[i].reader;
-      reader->SetObserver(observer);
-      reader->UpdateObserver();
-      return true;
-    }
-  }
-  // need to create a new one
-  READERCONTROL readerControl;
-  readerControl.controlID = controlID;
-  readerControl.windowID = windowID;
-  reader = readerControl.reader = new CRssReader;
-  m_readers.push_back(readerControl);
-  return false;
+  m_mapRssUrl = *new RssSet();
 }

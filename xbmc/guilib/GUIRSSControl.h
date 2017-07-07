@@ -52,14 +52,11 @@ public:
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual void OnFeedUpdate(const vecText &feed);
-  virtual void OnFeedRelease();
   virtual bool CanFocus() const { return true; };
   virtual CRect CalcRenderRegion() const;
 
   virtual void OnFocus();
   virtual void OnUnFocus();
-
-  void SetUrlSet(const int urlset);
 
 protected:
   virtual bool UpdateColors();
@@ -75,12 +72,11 @@ protected:
   CGUIInfoColor m_channelColor;
   CGUIInfoColor m_headlineColor;
 
-  std::vector<std::string> m_vecUrls;
-  std::vector<int> m_vecIntervals;
+  std::string m_vecUrl;
+  int m_vecInterval;
   bool m_rtl;
   CScrollInfo m_scrollInfo;
   bool m_dirty;
   bool m_stopped;
-  int  m_urlset;
 };
 #endif

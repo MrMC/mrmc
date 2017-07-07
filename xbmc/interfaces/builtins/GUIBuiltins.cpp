@@ -422,7 +422,7 @@ CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
            {"clearproperty",                  {"Clears a window property for the current focused window/dialog (key,value)", 1, ClearProperty}},
            {"dialog.close",                   {"Close a dialog", 1, CloseDialog}},
            {"notification",                   {"Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.", 2, Notification}},
-           {"refreshrss",                     {"Reload RSS feeds from RSSFeeds.xml", 0, RefreshRSS}},
+           {"refreshrss",                     {"Reload RSS feeds", 0, RefreshRSS}},
            {"replacewindow",                  {"Replaces the current window with the new one and sets focus to the specified id", 1, ActivateWindow<true>}},
            {"replacewindowandfocus",          {"Replaces the current window with the new one and sets focus to the specified id", 1, ActivateAndFocus<true>}},
            {"resolution",                     {"Change Kodi's Resolution", 1, SetResolution}},

@@ -34,10 +34,9 @@ class IRssObserver;
 typedef struct
 {
   bool rtl;
-  std::vector<int> interval;
-  std::vector<std::string> url;
+  int interval;
+  std::string url;
 } RssSet;
-typedef std::map<int, RssSet> RssUrls;
 
 class CRssManager : public ISettingCallback, public ISettingsHandler
 {
@@ -56,8 +55,7 @@ public:
   void Clear();
   bool IsActive() const { return m_bActive; }
 
-  bool GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader);
-  const RssUrls& GetUrls() const { return m_mapRssUrls; }
+  const RssSet& GetUrl() const { return m_mapRssUrl; }
 
 protected:
   CRssManager();
@@ -73,8 +71,7 @@ private:
     CRssReader *reader;
   };
 
-  std::vector<READERCONTROL> m_readers;
-  RssUrls m_mapRssUrls;
+  RssSet m_mapRssUrl;
   bool m_bActive;
   CCriticalSection m_critical;
 };

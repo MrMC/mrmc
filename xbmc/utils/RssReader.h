@@ -34,11 +34,11 @@ public:
   CRssReader();
   virtual ~CRssReader();
 
-  void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<int>& times, int spacesBetweenFeeds, bool rtl);
-  bool Parse(const std::string& data, int iFeed, const std::string& charset);
+  void Create(IRssObserver* aObserver, const std::string& aUrl, const int& time, int spacesBetweenFeeds, bool rtl);
+  bool Parse(const std::string& data, const std::string& charset);
   void getFeed(vecText &text);
   void AddTag(const std::string &addTag);
-  void AddToQueue(int iAdd);
+  void Start();
   void UpdateObserver();
   void SetObserver(IRssObserver* observer);
   void CheckForUpdates();
@@ -47,25 +47,23 @@ public:
 
 private:
   void Process();
-  bool Parse(int iFeed);
-  void GetNewsItems(TiXmlElement* channelXmlNode, int iFeed);
-  void GetAtomItems(TiXmlElement* channelXmlNode, int iFeed);
-  void AddString(std::wstring aString, int aColour, int iFeed);
+  bool Parse();
+  void GetNewsItems(TiXmlElement* channelXmlNode);
+  void GetAtomItems(TiXmlElement* channelXmlNode);
+  void AddString(std::wstring aString, int aColour);
   void UpdateFeed();
   virtual void OnExit();
-  int GetQueueSize();
 
   IRssObserver* m_pObserver;
 
-  std::vector<std::wstring> m_strFeed;
-  std::vector<std::wstring> m_strColors;
-  std::vector<SYSTEMTIME *> m_vecTimeStamps;
-  std::vector<int> m_vecUpdateTimes;
+  std::wstring m_strFeed;
+  std::wstring m_strColor;
+  SYSTEMTIME* m_vecTimeStamp;
+  int m_vecUpdateTime;
   int m_spacesBetweenFeeds;
   CXBMCTinyXML m_xml;
   std::list<std::string> m_tagSet;
-  std::vector<std::string> m_vecUrls;
-  std::vector<int> m_vecQueue;
+  std::string m_vecUrl;
   bool m_bIsRunning;
   bool m_rtlText;
   bool m_requestRefresh;

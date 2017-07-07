@@ -681,7 +681,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   std::string strTmp;
   int singleInfo = 0;
   std::string strLabel;
-  int iUrlSet=0;
   std::string toggleSelect;
 
   float spinWidth = 16;
@@ -992,7 +991,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetString(pControlNode, "label2", strLabel2);
 
   XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
-  XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
 
   if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
   {
@@ -1196,9 +1194,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       control = new CGUIRSSControl(
         parentID, id, posX, posY, width, height,
         labelInfo, textColor3, headlineColor, strRSSTags);
-      RssUrls::const_iterator iter = CRssManager::GetInstance().GetUrls().find(iUrlSet);
-      if (iter != CRssManager::GetInstance().GetUrls().end())
-        ((CGUIRSSControl *)control)->SetUrlSet(iUrlSet);
     }
     break;
   case CGUIControl::GUICONTROL_BUTTON:
