@@ -663,6 +663,8 @@ bool CApplication::Create()
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
   m_lastRenderTime = m_lastFrameTime;
+
+  CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnCreated");
   return true;
 }
 
