@@ -1831,8 +1831,8 @@ float CApplication::GetDimScreenSaverLevel() const
 
 void CApplication::Render()
 {
-  // do not render if we are stopped or in background
-  if (m_bStop)
+  // do not render if we are stopped or are flagged to not render
+  if (m_bStop || !m_renderGUI)
     return;
 
   int vsync_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
