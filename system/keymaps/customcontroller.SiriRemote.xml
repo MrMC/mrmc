@@ -82,6 +82,7 @@
       <button id="1">ChannelUp</button>
       <button id="2">ChannelDown</button>
       <button id="5">OSD</button>
+      <button id="7">ActivateWindow(PVROSDChannels)</button>
       <button id="8">noop</button>
       <button id="9">noop</button>                                
       <button id="10">noop</button>
