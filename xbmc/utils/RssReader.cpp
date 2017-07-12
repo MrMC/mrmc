@@ -119,6 +119,7 @@ void CRssReader::Process()
 
   int nRetries = 3;
   CURL url(m_vecUrl);
+  url.SetProtocolOption("seekable", "0");
   std::string fileCharset;
 
   // we wait for the network to come up
@@ -152,7 +153,7 @@ void CRssReader::Process()
       }
       else
       {
-        if (http.Get(m_vecUrl, strXML))
+        if (http.Get(url.Get(), strXML))
         {
           fileCharset = http.GetServerReportedCharset();
           CLog::Log(LOGDEBUG, "Got rss feed: %s", m_vecUrl.c_str());
