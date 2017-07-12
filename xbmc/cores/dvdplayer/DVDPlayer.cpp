@@ -598,7 +598,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 
   m_dvd.Clear();
   m_State.Clear();
-  m_EdlAutoSkipMarkers.Clear();
   m_UpdateApplication = 0;
 
   m_bAbortRequest = false;
@@ -612,6 +611,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
+  m_SkipCommercials = true;
   CreatePlayers();
 
   m_displayState = AV_DISPLAY_PRESENT;
@@ -692,7 +692,6 @@ bool CDVDPlayer::CloseFile(bool reopen)
   StopThread();
 
   m_Edl.Clear();
-  m_EdlAutoSkipMarkers.Clear();
 
   m_HasVideo = false;
   m_HasAudio = false;
@@ -1162,7 +1161,6 @@ void CDVDPlayer::Process()
 
   // look for any EDL files
   m_Edl.Clear();
-  m_EdlAutoSkipMarkers.Clear();
   if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
   {
     float fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
@@ -1176,7 +1174,7 @@ void CDVDPlayer::Process()
    */
   CEdl::Cut cut;
   int starttime = 0;
-  if(m_PlayerOptions.starttime > 0 || m_PlayerOptions.startpercent > 0)
+  if (m_PlayerOptions.starttime > 0 || m_PlayerOptions.startpercent > 0)
   {
     if (m_PlayerOptions.startpercent > 0 && m_pDemuxer)
     {
@@ -1189,26 +1187,29 @@ void CDVDPlayer::Process()
     }
     CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
   }
-  else if(m_Edl.InCut(0, &cut)
-      && (cut.action == CEdl::CUT || cut.action == CEdl::COMM_BREAK))
+  else if (m_Edl.InCut(starttime, &cut))
   {
-    starttime = cut.end;
-    CLog::Log(LOGDEBUG, "%s - Start position set to end of first cut or commercial break: %d", __FUNCTION__, starttime);
-    if(cut.action == CEdl::COMM_BREAK)
+    if (cut.action == CEdl::CUT)
     {
-      /*
-       * Setup auto skip markers as if the commercial break had been skipped using standard
-       * detection.
-       */
-      m_EdlAutoSkipMarkers.commbreak_start = cut.start;
-      m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
-      m_EdlAutoSkipMarkers.seek_to_start   = true;
+      starttime = cut.end;
+      CLog::Log(LOGDEBUG, "%s - Start position set to end of first cut: %d", __FUNCTION__, starttime);
+    }
+    else if (cut.action == CEdl::COMM_BREAK)
+    {
+      if (m_SkipCommercials)
+      {
+        starttime = cut.end;
+        CLog::Log(LOGDEBUG, "%s - Start position set to end of first commercial break: %d", __FUNCTION__, starttime);
+      }
+
+      std::string strTimeString = StringUtils::SecondsToTimeString(cut.end / 1000, TIME_FORMAT_MM_SS);
+      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
     }
   }
-  if(starttime > 0)
+  if (starttime > 0)
   {
     double startpts = DVD_NOPTS_VALUE;
-    if(m_pDemuxer)
+    if (m_pDemuxer)
     {
       if (m_pDemuxer->SeekTime(starttime, true, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
@@ -1216,20 +1217,22 @@ void CDVDPlayer::Process()
         CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
     }
 
-    if(m_pSubtitleDemuxer)
+    if (m_pSubtitleDemuxer)
     {
       if(m_pSubtitleDemuxer->SeekTime(starttime, true, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %d", __FUNCTION__, starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
     }
+
+    m_clock.Discontinuity(DVD_MSEC_TO_TIME(starttime));
   }
 
   // make sure application know our info
   UpdateApplication(0);
   UpdatePlayState(0);
 
-  if(m_PlayerOptions.identify == false)
+  if (m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
 
   // we are done initializing now, set the readyevent
@@ -1260,6 +1263,9 @@ void CDVDPlayer::Process()
         continue;
       }
     }
+
+    // check if in a cut or commercial break that should be automatically skipped
+    CheckAutoSceneSkip();
 
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
@@ -1482,9 +1488,6 @@ void CDVDPlayer::Process()
     // process the packet
     ProcessPacket(pStream, pPacket);
 
-    // check if in a cut or commercial break that should be automatically skipped
-    CheckAutoSceneSkip();
-
     // update the player info for streams
     if (m_player_status_timer.IsTimePast())
     {
@@ -1581,24 +1584,13 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   /*
    * If CheckSceneSkip() returns true then demux point is inside an EDL cut and the packets are dropped.
-   * If not inside a hard cut, but the demux point has reached an EDL mute section then trigger the
-   * AUDIO_SILENCE state. The AUDIO_SILENCE state is reverted as soon as the demux point is outside
-   * of any EDL section while EDL mute is still active.
    */
   CEdl::Cut cut;
   if (CheckSceneSkip(m_CurrentAudio))
     drop = true;
-  else if (m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts), &cut) && cut.action == CEdl::MUTE // Inside EDL mute
-  &&      !m_EdlAutoSkipMarkers.mute) // Mute not already triggered
+  else if (m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts), &cut) && cut.action == CEdl::MUTE)
   {
-    m_dvdPlayerAudio->SendMessage(new CDVDMsgBool(CDVDMsg::AUDIO_SILENCE, true));
-    m_EdlAutoSkipMarkers.mute = true;
-  }
-  else if (!m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts), &cut) // Outside of any EDL
-  &&        m_EdlAutoSkipMarkers.mute) // But the mute hasn't been removed yet
-  {
-    m_dvdPlayerAudio->SendMessage(new CDVDMsgBool(CDVDMsg::AUDIO_SILENCE, false));
-    m_EdlAutoSkipMarkers.mute = false;
+    drop = true;
   }
 
   m_dvdPlayerAudio->SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
@@ -1737,7 +1729,7 @@ void CDVDPlayer::HandlePlaySpeed()
           {
             CLog::Log(LOGDEBUG, "Stream stalled, start buffering. Audio: %d - Video: %d",
                                  m_dvdPlayerAudio->GetLevel(),m_dvdPlayerVideo->GetLevel());
-            FlushBuffers(false);
+            FlushBuffers(DVD_NOPTS_VALUE, true, true);
           }
         }
         else
@@ -1753,7 +1745,7 @@ void CDVDPlayer::HandlePlaySpeed()
                    m_dvdPlayerAudio->GetLevel() == 0)
           {
             CLog::Log(LOGDEBUG,"CDVDPlayer::HandlePlaySpeed - audio stream stalled, triggering re-sync");
-            FlushBuffers(false);
+            FlushBuffers(DVD_NOPTS_VALUE, true, true);
             m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), false, true, true, true, true));
           }
         }
@@ -1889,7 +1881,7 @@ void CDVDPlayer::HandlePlaySpeed()
           m_dvdPlayerVideo->IsStalled())
       {
         CLog::Log(LOGWARNING, "CDVDPlayer::Sync - stream player video does not start, flushing buffers");
-        FlushBuffers(false);
+        FlushBuffers(DVD_NOPTS_VALUE, true, true);
       }
     }
   }
@@ -1961,7 +1953,7 @@ void CDVDPlayer::HandlePlaySpeed()
             m_SpeedState.lastseekpts = (int)DVD_TIME_TO_MSEC(m_clock.GetClock());
             int direction = (m_playSpeed > 0) ? 1 : -1;
             int iTime = DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 1000000.0 * direction);
-            m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false, false, true, false));
+            m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), false, false, true, false));
           }
         }
       }
@@ -2172,74 +2164,60 @@ bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
 
 void CDVDPlayer::CheckAutoSceneSkip()
 {
-  if(!m_Edl.HasCut())
+  if (!m_Edl.HasCut())
     return;
 
-  /*
-   * Check that there is an audio and video stream.
-   */
-  if(m_CurrentAudio.id < 0
-  || m_CurrentVideo.id < 0)
+  // Check that there is an audio and video stream.
+  if((m_CurrentAudio.id < 0 || m_CurrentAudio.syncState != IDVDStreamPlayer::SYNC_INSYNC) ||
+     (m_CurrentVideo.id < 0 || m_CurrentVideo.syncState != IDVDStreamPlayer::SYNC_INSYNC))
     return;
 
-  /*
-   * If there is a startpts defined for either the audio or video stream then dvdplayer is still
-   * still decoding frames to get to the previously requested seek point.
-   */
-  if(m_CurrentAudio.inited == false
-  || m_CurrentVideo.inited == false)
+  // If there is a startpts defined for either the audio or video stream then VideoPlayer is still
+  // still decoding frames to get to the previously requested seek point.
+  if (m_CurrentAudio.inited == false ||
+      m_CurrentVideo.inited == false)
     return;
 
-  if(m_CurrentAudio.dts == DVD_NOPTS_VALUE
-  || m_CurrentVideo.dts == DVD_NOPTS_VALUE)
-    return;
-
-  const int64_t clock = DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
+  const int64_t clock = GetTime();
+  int lastPos = m_Edl.GetLastQueryTime();
 
   CEdl::Cut cut;
-  if(!m_Edl.InCut(clock, &cut))
+  if (!m_Edl.InCut(clock, &cut))
     return;
 
-  if(cut.action == CEdl::CUT
-  && !(cut.end == m_EdlAutoSkipMarkers.cut || cut.start == m_EdlAutoSkipMarkers.cut)) // To prevent looping if same cut again
+  if (cut.action == CEdl::CUT)
   {
-    CLog::Log(LOGDEBUG, "%s - Clock in EDL cut [%s - %s]: %s. Automatically skipping over.",
-              __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
-              CEdl::MillisecondsToTimeString(cut.end).c_str(), CEdl::MillisecondsToTimeString(clock).c_str());
-    /*
-     * Seeking either goes to the start or the end of the cut depending on the play direction.
-     */
-    int seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
-    /*
-     * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
-     */
-    m_messenger.Put(new CDVDMsgPlayerSeek(seek, true, false, false, true, false, true));
-    /*
-     * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
-     * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
-     * cut. The cut automatic skip marker is reset every 500ms allowing another attempt at the seek.
-     */
-    m_EdlAutoSkipMarkers.cut = GetPlaySpeed() >= 0 ? cut.end : cut.start;
+    if ((GetPlaySpeed() > 0 && clock < cut.end - 1000) ||
+        (GetPlaySpeed() < 0 && clock < cut.start + 1000))
+    {
+      CLog::Log(LOGDEBUG, "%s - Clock in EDL cut [%s - %s]: %s. Automatically skipping over.",
+                __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
+                CEdl::MillisecondsToTimeString(cut.end).c_str(), CEdl::MillisecondsToTimeString(clock).c_str());
+
+      //Seeking either goes to the start or the end of the cut depending on the play direction.
+      int seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
+
+      m_messenger.Put(new CDVDMsgPlayerSeek(seek, true, true, true, false, true));
+    }
   }
-  else if(cut.action == CEdl::COMM_BREAK
-  &&      GetPlaySpeed() >= 0
-  &&      cut.start > m_EdlAutoSkipMarkers.commbreak_end)
+  else if (cut.action == CEdl::COMM_BREAK)
   {
-    CLog::Log(LOGDEBUG, "%s - Clock in commercial break [%s - %s]: %s. Automatically skipping to end of commercial break (only done once per break)",
-              __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
-              CEdl::MillisecondsToTimeString(clock).c_str());
-    /*
-     * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
-     */
-    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, false, true, false, true));
-    /*
-     * Each commercial break is only skipped once so poorly detected commercial breaks can be
-     * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
-     * to the start of the commercial break if incorrectly flagged.
-     */
-    m_EdlAutoSkipMarkers.commbreak_start = cut.start;
-    m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
-    m_EdlAutoSkipMarkers.seek_to_start   = true; // Allow backwards Seek() to go directly to the start
+    // marker for commbrak may be inaccurate. allow user to skip into break from the back
+    if (GetPlaySpeed() >= 0 && lastPos <= cut.start && clock < cut.end - 1000)
+    {
+      std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
+      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
+
+      if (m_SkipCommercials)
+      {
+        CLog::Log(LOGDEBUG, "%s - Clock in commercial break [%s - %s]: %s. Automatically skipping to end of commercial break",
+                  __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
+                  CEdl::MillisecondsToTimeString(cut.end).c_str(),
+                  CEdl::MillisecondsToTimeString(clock).c_str());
+
+        m_messenger.Put(new CDVDMsgPlayerSeek(cut.end, true, true, false, false, true));
+      }
+    }
   }
 }
 
@@ -2367,8 +2345,7 @@ void CDVDPlayer::HandleMessages()
         if(!msg.GetTrickPlay())
         {
           g_infoManager.SetDisplayAfterSeek(100000);
-          if(msg.GetFlush())
-            SetCaching(CACHESTATE_FLUSH, __FUNCTION__);
+          SetCaching(CACHESTATE_FLUSH, __FUNCTION__);
         }
 
         double start = DVD_NOPTS_VALUE;
@@ -2402,7 +2379,7 @@ void CDVDPlayer::HandleMessages()
             m_State.dts = start;
           }
 
-          FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate(), msg.GetSync());
+          FlushBuffers(start, msg.GetAccurate(), msg.GetSync());
         }
         else if (m_pDemuxer)
         {
@@ -2413,7 +2390,7 @@ void CDVDPlayer::HandleMessages()
 
           m_State.dts = start;
 
-          FlushBuffers(false, start, false, true);
+          FlushBuffers(start, false, true);
           if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
           {
             SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
@@ -2444,7 +2421,7 @@ void CDVDPlayer::HandleMessages()
         {
           if (start != DVD_NOPTS_VALUE)
             start -= m_offset_pts;
-          FlushBuffers(false, start, true);
+          FlushBuffers(start, true, true);
           offset = DVD_TIME_TO_MSEC(start) - beforeSeek;
           m_callback.OnPlayBackSeek(beforeSeek, offset);
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
@@ -2569,7 +2546,7 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
       {
-        FlushBuffers(false);
+        FlushBuffers(DVD_NOPTS_VALUE, true, true);
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
       {
@@ -2624,7 +2601,7 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
-        FlushBuffers(false);
+        FlushBuffers(DVD_NOPTS_VALUE, true, true);
         CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         // TODO find a better solution for the "otherStreaHack"
         // a stream is not sopposed to be terminated before demuxer
@@ -2649,7 +2626,7 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
-        FlushBuffers(false);
+        FlushBuffers(DVD_NOPTS_VALUE, true, true);
         CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         if (input && input->IsOtherStreamHack())
         {
@@ -2680,7 +2657,7 @@ void CDVDPlayer::HandleMessages()
           if (!bShowPreview)
           {
             g_infoManager.SetDisplayAfterSeek(100000);
-            FlushBuffers(false);
+            FlushBuffers(DVD_NOPTS_VALUE, true, true);
             if (input->IsOtherStreamHack())
             {
               SAFE_DELETE(m_pDemuxer);
@@ -2979,52 +2956,6 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   }
 
   bool restore = true;
-  if (m_Edl.HasCut())
-  {
-    /*
-     * Alter the standard seek position based on whether any commercial breaks have been
-     * automatically skipped.
-     */
-    const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
-    /*
-     * If a large backwards seek occurs within 10 seconds of the end of the last automated
-     * commercial skip, then seek back to the start of the commercial break under the assumption
-     * it was flagged incorrectly. 10 seconds grace period is allowed in case the watcher has to
-     * fumble around finding the remote. Only happens once per commercial break.
-     *
-     * Small skip does not trigger this in case the start of the commercial break was in fact fine
-     * but it skipped too far into the program. In that case small skip backwards behaves as normal.
-     */
-    if (!bPlus && bLargeStep
-    &&  m_EdlAutoSkipMarkers.seek_to_start
-    &&  clock >= m_EdlAutoSkipMarkers.commbreak_end
-    &&  clock <= m_EdlAutoSkipMarkers.commbreak_end + 10*1000) // Only if within 10 seconds of the end (in msec)
-    {
-      CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as large backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
-                __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
-                CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
-      seek = m_EdlAutoSkipMarkers.commbreak_start;
-      restore = false;
-      m_EdlAutoSkipMarkers.seek_to_start = false; // So this will only happen within the 10 second grace period once.
-    }
-    /*
-     * If big skip forward within the last "reverted" commercial break, seek to the end of the
-     * commercial break under the assumption that the break was incorrectly flagged and playback has
-     * now reached the actual start of the commercial break. Assume that the end is flagged more
-     * correctly than the landing point for a standard big skip (ends seem to be flagged more
-     * accurately than the start).
-     */
-    else if (bPlus && bLargeStep
-    &&       clock >= m_EdlAutoSkipMarkers.commbreak_start
-    &&       clock <= m_EdlAutoSkipMarkers.commbreak_end)
-    {
-      CLog::Log(LOGDEBUG, "%s - Seeking to end of previously skipped commercial break [%s - %s] as big forwards skip activated within the break.",
-                __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
-                CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
-      seek = m_EdlAutoSkipMarkers.commbreak_end;
-      restore = false;
-    }
-  }
 
   int64_t time = GetTime();
   if(g_application.CurrentFileItem().IsStack()
@@ -3728,7 +3659,7 @@ bool CDVDPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
   return true;
 }
 
-void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool sync)
+void CDVDPlayer::FlushBuffers(double pts, bool accurate, bool sync)
 {
   CLog::Log(LOGDEBUG, "CDVDPlayer::FlushBuffers - flushing buffers");
 
@@ -3767,57 +3698,45 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool sync)
   m_CurrentRadioRDS.startpts = startpts;
   m_CurrentRadioRDS.packets = 0;
 
-  if (queued)
-  {
-    m_dvdPlayerAudio->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-    m_dvdPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-    m_dvdPlayerSubtitle->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-    m_dvdPlayerTeletext->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-    m_dvdPlayerRadioRDS->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-    SynchronizePlayers(SYNCSOURCE_ALL);
-  }
-  else
-  {
-    m_dvdPlayerAudio->Flush(sync);
-    m_dvdPlayerVideo->Flush(sync);
-    m_dvdPlayerSubtitle->Flush();
-    m_dvdPlayerTeletext->Flush();
-    m_dvdPlayerRadioRDS->Flush();
+  m_dvdPlayerAudio->Flush(sync);
+  m_dvdPlayerVideo->Flush(sync);
+  m_dvdPlayerSubtitle->Flush();
+  m_dvdPlayerTeletext->Flush();
+  m_dvdPlayerRadioRDS->Flush();
 
-    // clear subtitle and menu overlays
-    m_overlayContainer.Clear();
+  // clear subtitle and menu overlays
+  m_overlayContainer.Clear();
 
-    if(m_playSpeed == DVD_PLAYSPEED_NORMAL
-    || m_playSpeed == DVD_PLAYSPEED_PAUSE)
+  if(m_playSpeed == DVD_PLAYSPEED_NORMAL
+  || m_playSpeed == DVD_PLAYSPEED_PAUSE)
+  {
+    // make sure players are properly flushed, should put them in stalled state
+    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
+    m_dvdPlayerAudio->SendMessage(msg->Acquire(), 1);
+    m_dvdPlayerVideo->SendMessage(msg->Acquire(), 1);
+    msg->Wait(&m_bStop, 0);
+    msg->Release();
+
+    // purge any pending PLAYER_STARTED messages
+    m_messenger.Flush(CDVDMsg::PLAYER_STARTED);
+
+    // we should now wait for init cache
+    SetCaching(CACHESTATE_FLUSH, __FUNCTION__);
+    if (sync)
     {
-      // make sure players are properly flushed, should put them in stalled state
-      CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
-      m_dvdPlayerAudio->SendMessage(msg->Acquire(), 1);
-      m_dvdPlayerVideo->SendMessage(msg->Acquire(), 1);
-      msg->Wait(&m_bStop, 0);
-      msg->Release();
-
-      // purge any pending PLAYER_STARTED messages
-      m_messenger.Flush(CDVDMsg::PLAYER_STARTED);
-
-      // we should now wait for init cache
-      SetCaching(CACHESTATE_FLUSH, __FUNCTION__);
-      if (sync)
-      {
-        m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_STARTING;
-        m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
-      }
+      m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_STARTING;
+      m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
     }
-
-    if(pts != DVD_NOPTS_VALUE && sync)
-      m_clock.Discontinuity(pts);
-    UpdatePlayState(0);
-
-    // update state, buffers are flushed and it may take some time until
-    // we get an update from players
-    CSingleLock lock(m_StateSection);
-    m_State = m_State;
   }
+
+  if(pts != DVD_NOPTS_VALUE && sync)
+    m_clock.Discontinuity(pts);
+  UpdatePlayState(0);
+
+  // update state, buffers are flushed and it may take some time until
+  // we get an update from players
+  CSingleLock lock(m_StateSection);
+  m_State = m_State;
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
@@ -4005,7 +3924,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         else
         {
           bool sync = !IsInMenuInternal();
-          FlushBuffers(false, DVD_NOPTS_VALUE, false, sync);
+          FlushBuffers(DVD_NOPTS_VALUE, false, sync);
           m_dvd.syncClock = true;
           m_dvd.state = DVDSTATE_NORMAL;
           if (m_pDemuxer)
@@ -4101,6 +4020,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
       }
       break;
 #endif
+    case ACTION_TOGGLE_COMMSKIP:
+      m_SkipCommercials = !m_SkipCommercials;
+      CGUIDialogKaiToast::QueueNotification(
+        g_localizeStrings.Get(25011),
+        g_localizeStrings.Get(m_SkipCommercials ? 25013 : 25012));
+      break;
     case ACTION_SHOW_VIDEOMENU:   // start button
       {
         THREAD_ACTION(action);

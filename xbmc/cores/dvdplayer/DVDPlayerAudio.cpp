@@ -72,7 +72,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_stalled = true;
   m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
-  m_silence = false;
   m_synctype = SYNC_DISCON;
   m_setsynctype = SYNC_DISCON;
   m_prevsynctype = -1;
@@ -173,7 +172,6 @@ void CDVDPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
   m_prevsynctype = -1;
 
   m_prevskipped = false;
-  m_silence = false;
 
   m_maxspeedadjust = 5.0;
 
@@ -347,12 +345,6 @@ void CDVDPlayerAudio::Process()
       }
       m_speed = speed;
     }
-    else if (pMsg->IsType(CDVDMsg::AUDIO_SILENCE))
-    {
-      m_silence = static_cast<CDVDMsgBool*>(pMsg)->m_value;
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, %d)"
-                , m_audioClock, m_silence);
-    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
       CDVDMsgAudioCodecChange* msg(static_cast<CDVDMsgAudioCodecChange*>(pMsg));
@@ -459,14 +451,6 @@ void CDVDPlayerAudio::Process()
           m_streaminfo.channels = audioframe.format.m_channelLayout.Count();
 
           m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
-        }
-
-        // Zero out the frame data if we are supposed to silence the audio
-        if (m_silence)
-        {
-          int size = audioframe.nb_frames * audioframe.framesize / audioframe.planes;
-          for (unsigned int i=0; i<audioframe.planes; i++)
-            memset(audioframe.data[i], 0, size);
         }
 
         SetSyncType(audioframe.passthrough);

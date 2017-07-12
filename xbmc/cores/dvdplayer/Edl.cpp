@@ -51,6 +51,7 @@ void CEdl::Clear()
   m_vecCuts.clear();
   m_vecSceneMarkers.clear();
   m_iTotalCutTime = 0;
+  m_lastQueryTime = 0;
 }
 
 bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrameRate, const int iHeight)
@@ -827,8 +828,10 @@ std::string CEdl::GetInfo() const
   return strInfo.empty() ? "-" : strInfo;
 }
 
-bool CEdl::InCut(const int iSeek, Cut *pCut) const
+bool CEdl::InCut(int iSeek, Cut *pCut)
 {
+  m_lastQueryTime = iSeek;
+
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (iSeek < m_vecCuts[i].start) // Early exit if not even up to the cut start time.
@@ -845,7 +848,57 @@ bool CEdl::InCut(const int iSeek, Cut *pCut) const
   return false;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker) const
+int CEdl::GetLastQueryTime() const
+{
+  return m_lastQueryTime;
+}
+
+bool CEdl::GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const
+{
+  if (bPlus)
+  {
+    // Searching forwards
+    for (auto &cut : m_vecCuts)
+    {
+      if (iSeek >= cut.start && iSeek <= cut.end) // Inside cut.
+      {
+        if (pCut)
+          *pCut = cut;
+        return true;
+      }
+      else if (iSeek < cut.start) // before this cut
+      {
+        if (pCut)
+          *pCut = cut;
+        return true;
+      }
+    }
+    return false;
+  }
+  else
+  {
+    // Searching backwards
+    for (int i = (int)m_vecCuts.size() - 1; i >= 0; i--)
+    {
+      if (iSeek - 20000 >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end)
+        // Inside cut. We ignore if we're closer to 20 seconds inside
+      {
+        if (pCut)
+          *pCut = m_vecCuts[i];
+        return true;
+      }
+      else if (iSeek > m_vecCuts[i].end) // after this cut
+      {
+        if (pCut)
+          *pCut = m_vecCuts[i];
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 {
   if (!HasSceneMarker())
     return false;
