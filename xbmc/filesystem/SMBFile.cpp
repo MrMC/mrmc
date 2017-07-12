@@ -86,6 +86,9 @@ bool CSMB::CheckLibLoadedAndLoad()
 {
   bool ret = true;
   
+  if (!m_lib)
+    m_lib = new DllLibSMB();
+  
   if (!m_lib->IsLoaded())
   {
     if (!m_lib->Load())
