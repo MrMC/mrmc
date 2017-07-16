@@ -14857,7 +14857,22 @@ msgctxt "#25012"
 msgid "Open subtitle search window if video doesn't have any available subtitles"
 msgstr ""
 
-#empty strings from id 25013 to 29799
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25013"
+msgid "Commercial"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25014"
+msgid "Auto-skip off"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25015"
+msgid "Auto-skip on"
+msgstr ""
+
+#empty strings from id 25016 to 29799
 
 #: unused
 msgctxt "#29801"
