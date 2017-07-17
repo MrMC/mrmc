@@ -1,0 +1,11 @@
+--- a/taglib/toolkit/taglib.h	2017-07-17 13:22:50.000000000 -0400
++++ b/taglib/toolkit/taglib.h	2017-07-17 13:23:10.000000000 -0400
+@@ -45,6 +45,7 @@
+ #include <string>
+ 
+ #ifdef __APPLE__
++#  define OSATOMIC_DEPRECATED 0
+ #  include <libkern/OSAtomic.h>
+ #  define TAGLIB_ATOMIC_MAC
+ #elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
+
