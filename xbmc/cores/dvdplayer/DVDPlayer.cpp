@@ -186,7 +186,9 @@ public:
         return false;
     }
 
-    return true;
+    // last resort, m_SubtitleOn is set in guisettings.xml and if its set to "true" we should not ignore that.
+    // in some cases, embeded subtitles would not trigger any of the above checks and subtitles would not be enabled.
+    return !CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn;
   }
 };
 
