@@ -241,10 +241,7 @@ CWebSocketFrame::~CWebSocketFrame()
     return;
 
   if (m_free && m_data != NULL)
-  {
-    delete m_data;
-    m_data = NULL;
-  }
+    SAFE_DELETE_ARRAY(m_data);
 }
 
 void CWebSocketFrame::reset()
