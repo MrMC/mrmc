@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>3</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="3" time="200" tween="sine" condition="System.HasModalDialog">Conditional</animation>
+			<control type="group">
+				<include>OpenClose_Right</include>
+				<control type="grouplist" id="5">
+					<description>control area</description>
+					<top>90</top>
+					<left>520</left>
+					<pagecontrol>60</pagecontrol>
+					<right>50</right>
+					<bottom>90</bottom>
+					<onleft>3</onleft>
+					<onright>60</onright>
+					<onup>5</onup>
+					<ondown>5</ondown>
+				</control>
+			</control>
+			<control type="button" id="7">
+				<description>Default Button</description>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="radiobutton" id="8">
+				<description>Default RadioButton</description>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="spincontrolex" id="9">
+				<description>Default SpinControlex</description>
+				<include>DefaultSettingButton</include>
+				<aligny>center</aligny>
+			</control>
+			<control type="sliderex" id="13">
+				<description>Default Slider</description>
+				<include>DefaultSettingButton</include>
+				<aligny>center</aligny>
+			</control>
+			<control type="image" id="11">
+				<description>separator image</description>
+				<height>3</height>
+				<texture colordiffuse="primary_color_30" border="3">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="label" id="14">
+				<description>Default Label</description>
+				<width>1450</width>
+				<textoffsetx>45</textoffsetx>
+				<top>0</top>
+				<height>50</height>
+				<label></label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font25_title</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<include>OpenClose_Left</include>
+				<include content="ContentPanel">
+					<param name="width" value="530" />
+				</include>
+				<control type="grouplist" id="3">
+					<description>button area</description>
+					<left>0</left>
+					<top>160</top>
+					<width>470</width>
+					<height>720</height>
+					<usecontrolcoords>true</usecontrolcoords>
+					<onleft>5</onleft>
+					<onright>5</onright>
+					<onup>3</onup>
+					<ondown>20</ondown>
+				</control>
+				<control type="button" id="10">
+					<description>Default Category Button</description>
+					<left>0</left>
+					<height>90</height>
+					<width>470</width>
+					<textoffsetx>40</textoffsetx>
+					<aligny>center</aligny>
+					<font>font37</font>
+					<texturefocus colordiffuse="primary_color" border="5">buttons/focus.png</texturefocus>
+					<texturenofocus />
+				</control>
+				<control type="button" id="20">
+					<width>470</width>
+					<left>0</left>
+					<bottom>110</bottom>
+					<height>90</height>
+					<onclick>SettingsLevelChange</onclick>
+					<textoffsetx>30</textoffsetx>
+					<align>center</align>
+					<font>font30_title</font>
+					<texturefocus colordiffuse="primary_color">colors/white.png</texturefocus>
+					<texturenofocus />
+					<onleft>5</onleft>
+					<onright>5</onright>
+					<onup>3</onup>
+					<ondown>3</ondown>
+				</control>
+			</control>
+			<control type="scrollbar" id="60">
+				<right>10</right>
+				<top>86</top>
+				<width>18</width>
+				<bottom>86</bottom>
+				<orientation>vertical</orientation>
+				<texturesliderbackground />
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			</control>
+			<control type="textbox" id="6">
+				<include>OpenClose_Right</include>
+				<description>description area</description>
+				<left>20</left>
+				<bottom>0</bottom>
+				<right>20</right>
+				<height>75</height>
+				<font>font12</font>
+				<align>center</align>
+				<textcolor>grey</textcolor>
+				<visible>!Window.IsVisible(infodialog) + !Window.IsVisible(extendedprogressdialog)</visible>
+				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+			</control>
+			<control type="label" id="2">
+				<description>breadcrumbs label</description>
+				<visible>False</visible>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[5]$INFO[Control.GetLabel(2), / ]" />
+			</include>
+			<include>BottomBar</include>
+		</control>
+	</controls>
+</window>

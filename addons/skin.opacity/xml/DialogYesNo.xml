@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	<defaultcontrol always="true">10</defaultcontrol>
+	<controls>
+		<control type="group">
+			<height>390</height>
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>915</width>
+			<visible>Window.IsTopMostModal(yesnodialog)</visible>
+			<include>Visible_Fade</include>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="915" />
+				<param name="height" value="380" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="textbox" id="9">
+				<left>30</left>
+				<top>82</top>
+				<width>855</width>
+				<height>165</height>
+				<align>center</align>
+				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+			</control>
+			<control type="grouplist" id="9000">
+				<orientation>horizontal</orientation>
+				<left>0</left>
+				<top>280</top>
+				<width>915</width>
+				<align>center</align>
+				<include content="DefaultDialogButton">
+					<param name="id" value="11" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="10" />
+					<param name="label" value="" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>
+

@@ -1001,18 +1001,6 @@ void CSettings::InitializeVisibility()
 
 void CSettings::InitializeDefaults()
 {
-#if defined(HAS_TOUCH_SKIN)
-  bool default_touch_skin = false;
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
-  default_touch_skin = true;
-#endif
-#if defined(TARGET_ANDROID)
-  default_touch_skin = CAndroidFeatures::HasTouchScreen();
-#endif
-  if (default_touch_skin)
-    ((CSettingAddon*)m_settingsManager->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->SetDefault("skin.re-touched");
-#endif
-
 #if defined(TARGET_POSIX)
   CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
   CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE);

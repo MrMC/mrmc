@@ -188,10 +188,12 @@ LIBADDON_DIRS=\
 	lib/addons/library.kodi.guilib \
 
 MRMC_MEDIA=addons/skin.mrmc/media
+OPACITY_MEDIA=addons/skin.opacity/media
 AMBER_MEDIA=addons/skin.amber/media
 PM3_MEDIA=addons/skin.pm3.hd/media
 SIO2_MEDIA=addons/skin.sio2/media
 SKIN_DIRS=$(MRMC_MEDIA)
+SKIN_DIRS+=$(OPACITY_MEDIA)
 SKIN_DIRS+=$(AMBER_MEDIA)
 SKIN_DIRS+=$(PM3_MEDIA)
 SKIN_DIRS+=$(SIO2_MEDIA)
@@ -254,6 +256,7 @@ config.status: configure
 ifeq (@USE_TEXTUREPACKER@,1)
 skins: @TEXTUREPACKER@
 	 $(MAKE) -C $(MRMC_MEDIA)
+	 $(MAKE) -C $(OPACITY_MEDIA)
 	 $(MAKE) -C $(AMBER_MEDIA)
 	 $(MAKE) -C $(PM3_MEDIA)
 	 $(MAKE) -C $(SIO2_MEDIA)

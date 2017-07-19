@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<menucontrol>9000</menucontrol>
+	<views>50</views>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="3" time="200" tween="sine" condition="System.HasModalDialog">Conditional</animation>
+						<control type="group">
+				<animation type="Conditional" condition="ControlGroup(9000).HasFocus | Control.HasFocus(6130)" reversible="true">
+					<effect type="slide" start="0" end="520" time="400" tween="sine" easing="inout" />
+				</animation>
+				<control type="group">
+					<include>OpenClose_Left</include>
+					<control type="list" id="50">
+						<left>80</left>
+						<top>list_top_offset</top>
+						<right>910</right>
+						<bottom>list_bottom_offset</bottom>
+						<onup>50</onup>
+						<ondown>50</ondown>
+						<onleft>9000</onleft>
+						<onright>73</onright>
+						<pagecontrol>73</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="list_item_height">
+							<control type="label">
+								<left>30</left>
+								<top>0</top>
+								<right>30</right>
+								<bottom>0</bottom>
+								<font>font36_title</font>
+								<aligny>center</aligny>
+								<visible>IsEmpty(ListItem.Date)</visible>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
+							<control type="group">
+								<visible>!IsEmpty(ListItem.Date)</visible>
+								<control type="label">
+									<left>30</left>
+									<top>10</top>
+									<right>30</right>
+									<height>30</height>
+									<aligny>top</aligny>
+									<label>$INFO[ListItem.ChannelName][COLOR grey]$INFO[ListItem.Label, - ][/COLOR]</label>
+								</control>
+								<control type="label">
+									<left>30</left>
+									<top>53</top>
+									<width>680</width>
+									<height>30</height>
+									<font>font12</font>
+									<aligny>top</aligny>
+									<label>$VAR[TimersSubLabel]</label>
+								</control>
+								<control type="label">
+									<right>20</right>
+									<top>13</top>
+									<width>900</width>
+									<height>70</height>
+									<font>font12</font>
+									<align>right</align>
+									<aligny>top</aligny>
+									<label>$INFO[ListItem.Comment]</label>
+								</control>
+								<control type="label">
+									<right>20</right>
+									<top>53</top>
+									<width>900</width>
+									<height>75</height>
+									<font>font12</font>
+									<align>right</align>
+									<aligny>top</aligny>
+									<label>$INFO[ListItem.Date]</label>
+								</control>
+							</control>
+						</itemlayout>
+						<focusedlayout height="list_item_height">
+							<control type="image">
+								<left>0</left>
+								<top>0</top>
+								<right>0</right>
+								<bottom>0</bottom>
+								<texture colordiffuse="primary_color" border="5">buttons/focus.png</texture>
+								<visible>Control.HasFocus(50)</visible>
+							</control>
+							<control type="label">
+								<left>30</left>
+								<top>0</top>
+								<right>30</right>
+								<bottom>0</bottom>
+								<font>font36_title</font>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label]</label>
+								<visible>IsEmpty(ListItem.Date)</visible>
+							</control>
+							<control type="group">
+								<visible>!IsEmpty(ListItem.Date)</visible>
+								<control type="label">
+									<left>30</left>
+									<top>10</top>
+									<right>30</right>
+									<bottom>0</bottom>
+									<aligny>top</aligny>
+									<label>$INFO[ListItem.ChannelName]$INFO[ListItem.Label, - ]</label>
+								</control>
+								<control type="label">
+									<left>30</left>
+									<top>53</top>
+									<width>680</width>
+									<bottom>0</bottom>
+									<font>font12</font>
+									<aligny>top</aligny>
+									<label>$VAR[TimersSubLabel]</label>
+								</control>
+								<control type="label">
+									<right>20</right>
+									<top>13</top>
+									<width>900</width>
+									<height>70</height>
+									<font>font12</font>
+									<align>right</align>
+									<aligny>top</aligny>
+									<label>$INFO[ListItem.Comment]</label>
+								</control>
+								<control type="label">
+									<right>20</right>
+									<top>53</top>
+									<width>900</width>
+									<height>75</height>
+									<font>font12</font>
+									<align>right</align>
+									<aligny>top</aligny>
+									<label>$INFO[ListItem.Date]</label>
+								</control>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+				<control type="group">
+					<depth>DepthContentPanel</depth>
+					<include>OpenClose_Right</include>
+					<width>810</width>
+					<right>0</right>
+					<include content="ContentPanel">
+						<param name="left" value="-72" />
+						<param name="width" value="970" />
+						<param name="top" value="68" />
+						<param name="flipx" value="true" />
+					</include>
+					<control type="scrollbar" id="73">
+						<left>-50</left>
+						<top>list_top_offset</top>
+						<width>18</width>
+						<bottom>list_bottom_offset</bottom>
+						<onleft>50</onleft>
+						<onright>50</onright>
+						<orientation>vertical</orientation>
+					</control>
+					<include>PVRInfoPanel</include>
+				</control>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRTimersVar]" />
+			</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
+			<control type="label">
+				<right>20</right>
+				<description>Disk usage text</description>
+				<include>OpenClose_Right</include>
+				<visible>!Window.IsActive(extendedprogressdialog)</visible>
+				<bottom>10</bottom>
+				<width>800</width>
+				<height>60</height>
+				<label>$INFO[PVR.NextTimer]</label>
+				<shadowcolor>black</shadowcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<wrapmultiline>true</wrapmultiline>
+				<font>font27</font>
+			</control>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<include>PVRSideBar</include>
+			</control>
+		</control>
+		<control type="label" id="29">
+			<font>-</font>
+			<include>HiddenObject</include>
+		</control>
+		<control type="label" id="30">
+			<font>-</font>
+			<include>HiddenObject</include>
+		</control>
+	</controls>
+</window>

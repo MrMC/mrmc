@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<zorder>3</zorder>
+	<controls>
+		<control type="group">
+			<depth>DepthMax</depth>
+			<bottom>0</bottom>
+			<animation effect="slide" end="0,-950" time="300" tween="sine" easing="inout" condition="Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)">conditional</animation>
+			<height>110</height>
+			<right>0</right>
+			<left>0</left>
+			<include>OpenClose_Right</include>
+			<control type="image" id="400">
+				<description>avatar</description>
+				<left>15</left>
+				<top>30</top>
+				<width>80</width>
+				<height>80</height>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<control type="fadelabel" id="401">
+				<description>Line 1 Label</description>
+				<left>110</left>
+				<top>44</top>
+				<width>1100</width>
+				<height>18</height>
+				<font>font14</font>
+				<aligny>center</aligny>
+				<scrollout>false</scrollout>
+				<pauseatend>2000</pauseatend>
+			</control>
+			<control type="label" id="402">
+				<description>Line 2 Label</description>
+				<left>111</left>
+				<top>55</top>
+				<width>1100</width>
+				<height>60</height>
+				<font>font27_narrow</font>
+				<aligny>center</aligny>
+			</control>
+		</control>
+	</controls>
+</window>

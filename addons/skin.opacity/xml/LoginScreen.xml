@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">52</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="3" time="200" tween="sine" condition="System.HasModalDialog">Conditional</animation>
+						<control type="group">
+				<include>OpenClose_Right</include>
+				<control type="image">
+					<description>LOGO</description>
+					<left>1200</left>
+					<top>280</top>
+					<width>400</width>
+					<height>300</height>
+					<aspectratio aligny="top" align="center">keep</aspectratio>
+					<texture>icons/logo.png</texture>
+				</control>
+				<control type="textbox">
+					<left>1015</left>
+					<top>390</top>
+					<width>750</width>
+					<height>300</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font14</font>
+					<label>$LOCALIZE[31098]</label>
+				</control>
+				<control type="button" id="20">
+					<description>Power push button</description>
+					<left>1150</left>
+					<top>690</top>
+					<width>500</width>
+					<height>130</height>
+					<label>$LOCALIZE[31072]</label>
+					<font>font12</font>
+					<align>center</align>
+					<onclick>ActivateWindow(ShutdownMenu)</onclick>
+					<onleft>52</onleft>
+					<onright>52</onright>
+					<onup>52</onup>
+					<ondown>52</ondown>
+					<colordiffuse>CCFFFFFF</colordiffuse>
+				</control>
+			</control>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<include content="ContentPanel">
+					<param name="width" value="820" />
+					<param name="left" value="-24" />
+				</include>
+				<control type="list" id="52">
+					<left>20</left>
+					<top>list_top_offset</top>
+					<width>735</width>
+					<bottom>list_bottom_offset</bottom>
+					<onleft>20</onleft>
+					<onright>20</onright>
+					<onup>52</onup>
+					<ondown>52</ondown>
+					<pagecontrol>60</pagecontrol>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<itemlayout height="130">
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>110</width>
+							<height>110</height>
+							<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>130</left>
+							<top>14</top>
+							<right>20</right>
+							<height>60</height>
+							<font>font37</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="label">
+							<left>130</left>
+							<top>58</top>
+							<right>20</right>
+							<height>50</height>
+							<font>font12</font>
+							<textcolor>grey</textcolor>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label2]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="130">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<right>0</right>
+							<bottom>0</bottom>
+							<texture colordiffuse="primary_color" border="5">buttons/focus.png</texture>
+							<visible>Control.HasFocus(52)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>110</width>
+							<height>110</height>
+							<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>130</left>
+							<top>14</top>
+							<right>20</right>
+							<height>60</height>
+							<font>font37</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="label">
+							<left>130</left>
+							<top>58</top>
+							<right>20</right>
+							<height>50</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label2]</label>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+			<include>TopBar</include>
+			<include>BottomBar</include>
+		</control>
+	</controls>
+</window>

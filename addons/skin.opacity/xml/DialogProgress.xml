@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	<defaultcontrol>10</defaultcontrol>
+	<controls>
+		<control type="group">
+			<height>500</height>
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>915</width>
+			<visible>Window.IsTopMostModal(progressdialog)</visible>
+			<include>Visible_Fade</include>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="915" />
+				<param name="height" value="380" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="textbox" id="9">
+				<left>30</left>
+				<top>82</top>
+				<width>855</width>
+				<height>165</height>
+				<align>center</align>
+				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+			</control>
+			<control type="image">
+				<centerleft>50%</centerleft>
+				<top>230</top>
+				<width>100</width>
+				<height>100</height>
+				<aspectratio>keep</aspectratio>
+				<animation effect="rotate" end="-360" center="auto" time="1000" loop="true" reversible="false" condition="true">Conditional</animation>
+				<texture colordiffuse="primary_color">spinner.png</texture>
+			</control>
+			<control type="label" id="20">
+				<left>0</left>
+				<top>260</top>
+				<right>0</right>
+				<height>24</height>
+				<align>center</align>
+				<info>System.Progressbar</info>
+			</control>
+			<control type="grouplist" id="9000">
+				<orientation>horizontal</orientation>
+				<left>0</left>
+				<top>340</top>
+				<width>915</width>
+				<align>center</align>
+				<include content="DefaultDialogButton">
+					<param name="id" value="10" />
+					<param name="label" value="" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>
+

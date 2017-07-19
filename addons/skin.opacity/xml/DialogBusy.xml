@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<animation effect="fade" end="100" time="560">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="240">WindowClose</animation>
+	<controls>
+		<control type="group">
+			<animation effect="fade" time="400">VisibleChange</animation>
+			<visible>!Window.IsActive(startup)</visible>
+			<control type="image">
+				<texture colordiffuse="77FFFFFF">colors/black.png</texture>
+				<include>FullScreenDimensions</include>
+				<animation effect="fade" start="100" end="0" time="240" condition="Window.IsVisible(fullscreenvideo)">Conditional</animation>
+			</control>
+			<control type="group">
+				<depth>DepthMax</depth>
+				<centerleft>50%</centerleft>
+				<centertop>50%</centertop>
+				<width>80</width>
+				<height>80</height>
+				<control type="image">
+					<centerleft>50%</centerleft>
+					<centertop>50%</centertop>
+					<width>150</width>
+					<height>150</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="-360" center="auto" time="1000" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture colordiffuse="primary_color">spinner.png</texture>
+				</control>
+				<control type="image">
+					<centerleft>50%</centerleft>
+					<centertop>50%</centertop>
+					<width>100</width>
+					<height>100</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="360" center="auto" time="1000" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture flipx="true" colordiffuse="primary_color">spinner.png</texture>
+				</control>
+				<control type="image">
+					<centerleft>50%</centerleft>
+					<centertop>50%</centertop>
+					<width>75</width>
+					<height>75</height>
+					<texture colordiffuse="primary_color">$INFO[Control.GetLabel(10),dialogs/volume/progress/p,.png]</texture>
+				</control>
+				<control type="progress" id="10">
+					<include>HiddenObject</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

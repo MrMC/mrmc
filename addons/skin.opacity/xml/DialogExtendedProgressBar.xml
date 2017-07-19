@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<zorder>3</zorder>
+	<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+	<controls>
+		<control type="group">
+			<depth>DepthBars</depth>
+			<right>20</right>
+			<width>80</width>
+			<bottom>0</bottom>
+			<height>75</height>
+			<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="System.HasModalDialog">conditional</animation>
+			<animation effect="slide" end="0,80" time="150" condition="Window.IsVisible(FullscreenVideo)">conditional</animation>
+			<control type="group">
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<control type="image">
+					<left>20</left>
+					<top>10</top>
+					<width>60</width>
+					<height>60</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="-360" center="auto" time="1000" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture colordiffuse="primary_color">spinner.png</texture>
+				</control>
+				<control type="label">
+					<description>Header label</description>
+					<left>15</left>
+					<top>20</top>
+					<width>65</width>
+					<height>60</height>
+					<font>font12</font>
+					<align>center</align>
+					<textcolor>grey</textcolor>
+					<label>$INFO[Control.GetLabel(32)]</label>
+				</control>
+			</control>
+			<control type="grouplist">
+				<left>-800</left>
+				<top>7</top>
+				<width>800</width>
+				<height>120</height>
+				<align>right</align>
+				<orientation>horizontal</orientation>
+				<control type="label" id="30">
+					<description>Header label</description>
+					<width min="0" max="680">auto</width>
+					<height>120</height>
+					<font>font12</font>
+				</control>
+			</control>
+			<control type="label" id="31">
+				<description>Title label</description>
+				<left>-750</left>
+				<top>33</top>
+				<width>750</width>
+				<height>120</height>
+				<font>font12</font>
+				<textcolor>80FFFFFF</textcolor>
+				<align>right</align>
+			</control>
+			<control type="progress" id="32">
+				<left>3000</left>
+				<description>progress control</description>
+				<height>15</height>
+			</control>
+		</control>
+	</controls>
+</window>

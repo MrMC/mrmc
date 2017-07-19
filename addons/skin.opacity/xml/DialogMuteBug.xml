@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<zorder>4</zorder>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsActive(startup)</visible>
+			<animation effect="fade" start="100" end="0" time="200" delay="1000" condition="Player.Muted">Conditional</animation>
+			<animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			<control type="image">
+				<right>260</right>
+				<top>15</top>
+				<width>60</width>
+				<height>60</height>
+				<texture colordiffuse="white">dialogs/volume/mute.png</texture>
+			</control>
+		</control>
+	</controls>
+</window>

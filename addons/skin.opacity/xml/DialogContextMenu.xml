@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>996</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<coordinates>
+		<left>0</left>
+		<top>0</top>
+		<origin x="50%" y="300">true</origin>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<left>-300</left>
+			<include>Visible_Fade</include>
+			<visible>Window.IsTopMostModal(contextmenu)</visible>
+			<control type="image">
+				<left>-1920</left>
+				<top>-1080</top>
+				<width>5760</width>
+				<height>3240</height>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<texture></texture>
+			</control>
+			<control type="button">
+				<left>-1920</left>
+				<top>-1080</top>
+				<width>5760</width>
+				<height>3240</height>
+				<texturefocus />
+				<texturenofocus />
+				<onclick>Action(close)</onclick>
+			</control>
+			<control type="textbox">
+				<left>-400</left>
+				<top>-150</top>
+				<width>1400</width>
+				<height>130</height>
+				<font>font45_title</font>
+				<label>$INFO[ListItem.Label]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="image" id="999">
+				<description>background image</description>
+				<left>0</left>
+				<top>0</top>
+				<width>600</width>
+				<height>780</height>
+				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+			</control>
+			<control type="grouplist" id="996">
+				<description>grouplist for context buttons</description>
+				<left>0</left>
+				<top>0</top>
+				<width>600</width>
+				<height max="780">auto</height>
+				<usecontrolcoords>true</usecontrolcoords>
+			</control>
+			<control type="button" id="1000">
+				<description>button template</description>
+				<left>0</left>
+				<top></top>
+				<width>600</width>
+				<height>80</height>
+				<align>center</align>
+				<texturefocus colordiffuse="primary_color" border="5">buttons/focus.png</texturefocus>
+				<texturenofocus />
+			</control>
+		</control>
+	</controls>
+</window>

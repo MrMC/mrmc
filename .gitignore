@@ -606,3 +606,5 @@ addons/skin.pm3.hd/media/Textures.xbt
 addons/skin.pm3.hd/media/Makefile
 addons/skin.sio2/media/Textures.xbt
 addons/skin.sio2/media/Makefile
+/addons/skin.opacity/media/Makefile
+/addons/skin.opacity/media/Textures.xbt

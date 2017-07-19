@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<onload condition="!ListItem.Property(Addon.Installed) + Window.IsActive(addonbrowser)">SetFocus(6)</onload>
+	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
+	<onunload>ClearProperty(infobackground,home)</onunload>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<height>1080</height>
+			<centerleft>50%</centerleft>
+			<width>1920</width>
+			<visible>Window.IsTopMostModal(addoninformation)</visible>
+			<include>Visible_Fade</include>
+			<control type="group">
+				<include>OpenClose_Right</include>
+				<control type="textbox">
+					<left>670</left>
+					<top>180</top>
+					<width>1050</width>
+					<height>365</height>
+					<label>$INFO[ListItem.Property(Addon.Description)]</label>
+					<autoscroll delay="5000" repeat="7500" time="5000">true</autoscroll>
+				</control>
+				<include content="LeftRightArrows">
+					<param name="list_id" value="50" />
+					<param name="left_posx" value="590" />
+					<param name="right_posx" value="1840" />
+					<param name="posy" value="280" />
+					<param name="visible" value="true" />
+				</include>
+				<control type="grouplist" id="9000">
+					<left>90</left>
+					<top>840</top>
+					<width>1740</width>
+					<height>300</height>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>9000</onup>
+					<ondown>9000</ondown>
+					<align>center</align>
+					<itemgap>-18</itemgap>
+					<orientation>horizontal</orientation>
+					<include content="InfoDialogButton">
+						<param name="id" value="12" />
+						<param name="icon" value="icons/infodialogs/launch.png" />
+						<param name="label" value="$LOCALIZE[518]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="9" />
+						<param name="icon" value="icons/infodialogs/configure.png" />
+						<param name="label" value="$LOCALIZE[24020]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="8" />
+						<param name="icon" value="icons/infodialogs/update.png" />
+						<param name="label" value="$LOCALIZE[24069]" />
+					</include>
+					<control type="radiobutton" id="13">
+						<width>290</width>
+						<height>100</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textoffsetx>35</textoffsetx>
+						<radioposy>13</radioposy>
+						<radiowidth>100</radiowidth>
+						<font>font12</font>
+						<visible>Control.IsEnabled(13)</visible>
+					</control>
+					<include content="InfoDialogToggleButton">
+						<param name="id" value="7" />
+						<param name="icon_on" value="icons/infodialogs/disable.png" />
+						<param name="icon_off" value="icons/infodialogs/enabled.png" />
+						<param name="selected" value="!SubString(Control.GetLabel(7),$LOCALIZE[24022],left) | !Window.IsActive(addonbrowser)" />
+						<param name="label" value="" />
+					</include>
+					<include content="InfoDialogToggleButton">
+						<param name="id" value="6" />
+						<param name="icon_on" value="icons/infodialogs/uninstall.png" />
+						<param name="icon_off" value="icons/infodialogs/install.png" />
+						<param name="selected" value="ListItem.Property(Addon.Installed) | !Window.IsActive(addonbrowser)" />
+						<param name="label" value="" />
+					</include>
+				</control>
+			</control>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<top>158</top>
+				<left>80</left>
+				<control type="image">
+					<left>-6</left>
+					<top>4</top>
+					<width>540</width>
+					<height>540</height>
+					<aspectratio>scale</aspectratio>
+					<texture>dialogs/dialog-bg-nobo.png</texture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+				</control>
+				<control type="image">
+					<left>14</left>
+					<top>24</top>
+					<width>500</width>
+					<height>500</height>
+					<aspectratio aligny="top">scale</aspectratio>
+					<fadetime>300</fadetime>
+					<texture fallback="DefaultAddon.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				</control>
+				<control type="group">
+					<visible>!IsEmpty(ListItem.Property(Addon.Broken))</visible>
+					<control type="image">
+						<left>14</left>
+						<top>24</top>
+						<width>500</width>
+						<height>500</height>
+						<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+					</control>
+					<control type="textbox">
+						<left>34</left>
+						<top>24</top>
+						<width>460</width>
+						<height>500</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[24096]</label>
+						<font>font36_title</font>
+					</control>
+				</control>
+			</control>
+			<control type="textbox">
+				<left>150</left>
+				<top>975</top>
+				<width>1620</width>
+				<height>82</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<label>[I]$INFO[ListItem.Property(Addon.Disclaimer)][/I]</label>
+				<textcolor>88FFFFFF</textcolor>
+				<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
+			</control>
+			<control type="image">
+				<description>separator image</description>
+				<top>105</top>
+				<height>4</height>
+				<texture colordiffuse="primary_color" border="3">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="image">
+				<description>separator image</description>
+				<bottom>105</bottom>
+				<height>4</height>
+				<texture colordiffuse="primary_color" border="3">dialogs/separator-grey.png</texture>
+			</control>
+			<include content="InfoDialogTopBarInfo">
+				<param name="main_label" value="$INFO[ListItem.Property(Addon.Name)]" />
+				<param name="sub_label" value="$INFO[ListItem.Property(Addon.Version),[COLOR grey],[/COLOR]]$INFO[ListItem.Property(Addon.Creator), $LOCALIZE[31071] ]" />
+			</include>
+		</control>
+	</controls>
+</window>

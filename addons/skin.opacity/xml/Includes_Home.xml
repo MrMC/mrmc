@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="SubMenuList">
+		<top>105</top>
+		<left>-400</left>
+		<bottom>100</bottom>
+		<width>400</width>
+		<ondown>$PARAM[list_id]</ondown>
+		<onup>$PARAM[list_id]</onup>
+		<visible>$PARAM[visible]</visible>
+		<onleft>9000</onleft>
+		<onright>9000</onright>
+		<orientation>vertical</orientation>
+		<scrolltime tween="cubic" easing="out">500</scrolltime>
+		<itemlayout height="100">
+			<control type="group">
+				<control type="label">
+					<left>50</left>
+					<right>40</right>
+					<height>100</height>
+					<label>$INFO[ListItem.Label]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font35</font>
+				</control>
+			</control>
+		</itemlayout>
+		<focusedlayout height="100">
+			<control type="group">
+				<left>0</left>
+				<right>0</right>
+				<control type="image">
+					<left>0</left>
+					<right>25</right>
+					<height>100%</height>
+					<visible>Control.HasFocus($PARAM[list_id])</visible>
+					<texture colordiffuse="primary_color" border="5">buttons/focus.png</texture>
+				</control>
+				<control type="label">
+					<left>50</left>
+					<right>45</right>
+					<height>100</height>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+					<align>left</align>
+					<scroll>true</scroll>
+					<font>font35</font>
+				</control>
+			</control>
+		</focusedlayout>
+	</include>
+	<include name="HomeSubMenuVideos">
+		<item id="90102">
+			<label>342</label>
+			<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
+			<visible>[Library.HasServices | Library.HasContent(Movies)] + Skin.HasSetting(HomeMenuNoMovieButton)</visible>
+		</item>
+		<item id="90103">
+			<label>20343</label>
+			<onclick>ActivateWindow(Videos,TvShowTitles,return)</onclick>
+			<visible>[Library.HasServices | Library.HasContent(TVShows)] + Skin.HasSetting(HomeMenuNoTVShowButton)</visible>
+		</item>
+		<item id="90104">
+			<label>20389</label>
+			<onclick>ActivateWindow(Videos,MusicVideoTitles,return)</onclick>
+			<visible>[Library.HasServices | Library.HasContent(MusicVideos)] + Skin.HasSetting(HomeMenuNoMusicVideoButton)</visible>
+		</item>
+		<item id="90105">
+			<label>744</label>
+			<onclick>ActivateWindow(Videos,Files,return)</onclick>
+		</item>
+		<item id="90106">
+			<label>14022</label>
+			<onclick>ActivateWindow(Videos,Root)</onclick>
+			<visible>Library.HasContent(Video)</visible>
+		</item>
+		<item id="90107">
+			<label>$LOCALIZE[136]</label>
+			<onclick>ActivateWindow(Videos,playlists,return)</onclick>
+		</item>
+	</include>
+	<include name="HomeSubMenuMovies">
+		<item id="90162">
+			<label>$LOCALIZE[31008]</label>
+			<onclick>ActivateWindow(Videos,RecentlyAddedMovies,return)</onclick>
+		</item>
+		<item id="90169">
+			<label>575</label>
+			<onclick>ActivateWindow(Videos,InProgressMovies,return)</onclick>
+		</item>
+		<item id="90163">
+			<label>20434</label>
+			<onclick>ActivateWindow(Videos,MovieSets,return)</onclick>
+			<visible>Library.HasContent(MovieSets) | Library.HasServices</visible>
+		</item>
+		<item id="90164">
+			<label>369</label>
+			<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
+		</item>
+		<item id="90165">
+			<label>135</label>
+			<onclick>ActivateWindow(Videos,MovieGenres,return)</onclick>
+		</item>
+		<item id="90166">
+			<label>652</label>
+			<onclick>ActivateWindow(Videos,MovieYears,return)</onclick>
+		</item>
+		<item id="90167">
+			<label>344</label>
+			<onclick>ActivateWindow(Videos,MovieActors,return)</onclick>
+		</item>
+	</include>
+	<include name="HomeSubMenuTVShows">
+		<item id="90172">
+			<label>$LOCALIZE[31008]</label>
+			<onclick>ActivateWindow(Videos,RecentlyAddedEpisodes,return)</onclick>
+		</item>
+		<item id="90178">
+			<label>575</label>
+			<onclick>ActivateWindow(Videos,InProgressShows,return)</onclick>
+		</item>
+		<item id="90173">
+			<label>369</label>
+			<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
+		</item>
+		<item id="90174">
+			<label>135</label>
+			<onclick>ActivateWindow(Videos,TVShowGenres,return)</onclick>
+		</item>
+		<item id="90175">
+			<label>652</label>
+			<onclick>ActivateWindow(Videos,TVShowYears,return)</onclick>
+		</item>
+		<item id="90176">
+			<label>344</label>
+			<onclick>ActivateWindow(Videos,TVShowActors,return)</onclick>
+		</item>
+	</include>
+	<include name="HomeSubMenuMusic">
+		<item id="90112">
+			<label>133</label>
+			<onclick>ActivateWindow(Music,Artists,return)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</item>
+		<item id="90113">
+			<label>132</label>
+			<onclick>ActivateWindow(Music,Albums,return)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</item>
+		<item id="90114">
+			<label>134</label>
+			<onclick>ActivateWindow(Music,Songs,return)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</item>
+		<item id="90115">
+			<label>744</label>
+			<onclick>ActivateWindow(Music,Files,return)</onclick>
+		</item>
+		<item id="90116">
+			<label>14022</label>
+			<onclick>ActivateWindow(Music,Root)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</item>
+		<item id="90117">
+			<label>$LOCALIZE[136]</label>
+			<onclick>ActivateWindow(Music,playlists,return)</onclick>
+		</item>
+	</include>
+	<include name="HomeSubMenuSystem">
+		<item id="90124">
+			<label>20092</label>
+			<onclick>ActivateWindow(Loginscreen)</onclick>
+		</item>
+		<item id="90125">
+			<label>130</label>
+			<onclick>ActivateWindow(SystemInfo)</onclick>
+		</item>
+		<item id="90123">
+			<label>7</label>
+			<onclick>ActivateWindow(FileManager)</onclick>
+		</item>
+<!-- 		<item id="90126">
+			<label>14111</label>
+			<onclick>ActivateWindow(EventLog,events://,return)</onclick>
+			<visible>system.getbool(eventlog.enabled)</visible>
+		</item> -->
+	</include>
+	<include name="HomeSubMenuPlayDisc">
+		<item id="90132">
+			<label>13391</label>
+			<onclick>SetFocus(9000)</onclick>
+			<onclick>EjectTray()</onclick>
+		</item>
+	</include>
+	<include name="HomeSubMenuTV">
+		<item id="90143">
+			<label>19019</label>
+			<onclick>ActivateWindow(TVChannels)</onclick>
+		</item>
+		<item id="90144">
+			<label>22020</label>
+			<onclick>ActivateWindow(TVGuide)</onclick>
+		</item>
+		<item id="90145">
+			<label>19163</label>
+			<onclick>ActivateWindow(TVRecordings)</onclick>
+		</item>
+		<item id="90146">
+			<label>19040</label>
+			<onclick>ActivateWindow(TVTimers)</onclick>
+		</item>
+		<item id="90147">
+			<label>137</label>
+			<onclick>ActivateWindow(TVSearch)</onclick>
+		</item>
+	</include>
+	<include name="HomeSubMenuRadio">
+		<item id="90243">
+			<label>19019</label>
+			<onclick>ActivateWindow(RadioChannels)</onclick>
+		</item>
+		<item id="90244">
+			<label>22020</label>
+			<onclick>ActivateWindow(RadioGuide)</onclick>
+		</item>
+		<item id="90245">
+			<label>19163</label>
+			<onclick>ActivateWindow(RadioRecordings)</onclick>
+		</item>
+		<item id="90246">
+			<label>19040</label>
+			<onclick>ActivateWindow(RadioTimers)</onclick>
+		</item>
+		<item id="90247">
+			<label>137</label>
+			<onclick>ActivateWindow(RadioSearch)</onclick>
+		</item>
+	</include>
+</includes>

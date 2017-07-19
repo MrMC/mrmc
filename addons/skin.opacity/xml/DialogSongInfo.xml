@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
+	<onunload>ClearProperty(infobackground,home)</onunload>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<height>1080</height>
+			<centerleft>50%</centerleft>
+			<width>1920</width>
+			<visible>Window.IsTopMostModal(DialogSongInfo.xml)</visible>
+			<include>Visible_Fade</include>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<top>158</top>
+				<left>90</left>
+				<control type="image">
+					<left>4</left>
+					<top>4</top>
+					<width>607</width>
+					<height>607</height>
+					<aspectratio>scale</aspectratio>
+					<texture>dialogs/dialog-bg-nobo.png</texture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+				</control>
+				<control type="image">
+					<depth>DepthContentPopout</depth>
+					<left>24</left>
+					<top>24</top>
+					<width>567</width>
+					<height>567</height>
+					<aspectratio aligny="top">scale</aspectratio>
+					<fadetime>300</fadetime>
+					<texture background="true" fallback="DefaultAudio.png">$INFO[ListItem.Art(thumb)]</texture>
+				</control>
+			</control>
+			<control type="group">
+				<include>OpenClose_Right</include>
+				<include>Visible_Right</include>
+				<left>80</left>
+				<control type="label" id="400">
+					<left>690</left>
+					<top>550</top>
+					<width>1100</width>
+					<height>240</height>
+					<wrapmultiline>true</wrapmultiline>
+					<label>$INFO[ListItem.Comment,[B]$LOCALIZE[569][/B][CR][COLOR=white],[/COLOR]]</label>
+					<textcolor>grey</textcolor>
+				</control>
+				<control type="grouplist" id="9000">
+					<left>10</left>
+					<top>820</top>
+					<width>1740</width>
+					<height>300</height>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>130</onup>
+					<ondown>50</ondown>
+					<align>center</align>
+					<itemgap>0</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="group" id="420">
+						<width>262</width>
+						<control type="button" id="7">
+							<include content="VideoInfoButtonsCommon">
+								<param name="icon" value="" />
+							</include>
+							<label>$LOCALIZE[31033]$INFO[ListItem.UserRating,: ]</label>
+							<onup>130</onup>
+							<onleft>12</onleft>
+							<onright>120</onright>
+							<onup condition="IntegerGreaterThan(Container(5000).CurrentItem,3)">210</onup>
+							<onup condition="!IntegerGreaterThan(Container(5000).CurrentItem,3)">138</onup>
+						</control>
+					</control>
+					<include content="InfoDialogButton">
+						<param name="id" value="6" />
+						<param name="icon" value="icons/infodialogs/update.png" />
+						<param name="label" value="$LOCALIZE[184]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="10" />
+						<param name="icon" value="icons/infodialogs/choose_image.png" />
+						<param name="label" value="$LOCALIZE[13405]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="12" />
+						<param name="icon" value="icons/infodialogs/info.png" />
+						<param name="label" value="$LOCALIZE[20413]" />
+					</include>
+				</control>
+		<control type="grouplist" id="4000">
+			<orientation>vertical</orientation>
+			<left>650</left>
+			<top>180</top>
+			<width>1120</width>
+			<height>380</height>
+			<itemgap>-7</itemgap>
+			<ondown>5000</ondown>
+			<onup>50</onup>
+			<onright>140</onright>
+			<onleft>140</onleft>
+			<include>OpenClose_Right</include>
+			<include>Visible_Fade</include>
+			<include content="InfoDialogMetadata">
+				<param name="control_id" value="147" />
+				<param name="label" value="$INFO[ListItem.Artist,[COLOR grey]$LOCALIZE[557]: [/COLOR]]" />
+				<param name="visible" value="!IsEmpty(ListItem.Artist)" />
+			</include>
+			<include content="InfoDialogMetadata">
+				<param name="control_id" value="148" />
+				<param name="label" value="$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]: [/COLOR]]" />
+				<param name="visible" value="!IsEmpty(ListItem.Genre)" />
+			</include>
+			<include content="InfoDialogMetadata">
+				<param name="control_id" value="149" />
+				<param name="label" value="[COLOR grey]$LOCALIZE[558]: [/COLOR]$INFO[ListItem.Album]$INFO[listitem.discnumber, - $LOCALIZE[427] ]" />
+				<param name="visible" value="!IsEmpty(ListItem.Album)" />
+			</include>
+			<include content="InfoDialogMetadata">
+				<param name="control_id" value="150" />
+				<param name="label" value="[COLOR grey]$LOCALIZE[562]: [/COLOR]$INFO[ListItem.Year]" />
+				<param name="visible" value="!IsEmpty(ListItem.Year)" />
+			</include>
+			<include content="InfoDialogMetadata">
+				<param name="control_id" value="152" />
+				<param name="label" value="[COLOR grey]$LOCALIZE[554]: [/COLOR]$INFO[ListItem.TrackNumber]" />
+				<param name="visible" value="!IsEmpty(ListItem.TrackNumber)" />
+			</include>
+			<include content="InfoDialogMetadata">
+				<param name="control_id" value="152" />
+				<param name="label" value="[COLOR grey]$LOCALIZE[180]: [/COLOR]$INFO[ListItem.Duration]" />
+				<param name="visible" value="!IsEmpty(ListItem.Duration)" />
+			</include>
+			<include content="InfoDialogMetadata">
+				<param name="control_id" value="153" />
+				<param name="label" value="[COLOR grey]$LOCALIZE[563]: [/COLOR]$INFO[ListItem.Rating]" />
+				<param name="visible" value="!IsEmpty(ListItem.Rating)" />
+			</include>
+		</control>
+
+			</control>
+			<control type="group">
+				<include content="InfoDialogTopBarInfo">
+					<param name="main_label" value="$INFO[ListItem.Title]" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>
