@@ -14,11 +14,21 @@ CONFIGURE = cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
   ./configure --prefix=$(PREFIX) $(DEBUG)
 
 ifeq ($(OS),android)
-CONFIGURE += --disable-libcec
+  CONFIGURE += --disable-libcec
 endif
 
-ifeq ($(Configuration),Release)
-DEBUG = --enable-debug=no
+ifeq ($(lite),yes)
+  CONFIGURE += --with-bundle_extension=lite
+else
+  ifeq ($(OS),osx)
+    CONFIGURE += --with-bundle_extension=osx
+  else ifeq ($(OS),ios)
+    ifeq ($(TARGET_PLATFORM),tvos)
+      CONFIGURE += --with-bundle_extension=tvos
+    else
+     CONFIGURE += --with-bundle_extension=ios
+    endif
+  endif
 endif
 
 CONFIGURE += $(CONFIG_EXTRA)
@@ -33,7 +43,7 @@ debug: $(SOURCE)/lib$(APP_NAME).so
 
 $(SOURCE)/lib$(APP_NAME).so:
 	cd $(SOURCE); BOOTSTRAP_FROM_DEPENDS=yes ./bootstrap
-	cd $(SOURCE); echo $(CONFIGURE)
+	cd $(SOURCE); echo $(EXPORTS) echo $(CONFIGURE)
 
 ../../Makefile.include:
 	$(error Please run configure)

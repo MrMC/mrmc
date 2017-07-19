@@ -20,6 +20,19 @@
 
 #import "ServiceProvider.h"
 
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
+
+
+#if defined(APP_PACKAGE_LITE)
+  #define GROUPID "group.tv.mrmc.lite.shared"
+  #define URL "mrmclite"
+#else
+  #define GROUPID "group.tv.mrmc.shared"
+  #define URL "mrmc"
+#endif
+
 @interface ServiceProvider ()
 
 @end
@@ -44,13 +57,16 @@
 
 - (NSArray *)topShelfItems
 {
+    NSString* groupid = [NSString stringWithUTF8String:GROUPID];
+    NSString* groupURL = [NSString stringWithUTF8String:URL];
+    NSLog(@"TopShelf ID: %@", groupid);
     NSMutableArray *topShelfItems = [[NSMutableArray alloc] init];;
-    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:@"group.tv.mrmc.shared"];
+    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:groupid];
   
     TVContentIdentifier *wrapperIdentifier = [[TVContentIdentifier alloc] initWithIdentifier:@"shelf-wrapper" container:nil];
   
     NSFileManager* fileManager = [NSFileManager defaultManager];
-    NSURL* storeUrl = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.tv.mrmc.shared"];
+    NSURL* storeUrl = [fileManager containerURLForSecurityApplicationGroupIdentifier:groupid];
     if (!storeUrl)
       return (NSArray *)topShelfItems;
 
@@ -76,8 +92,8 @@
         contentItem.imageShape = TVContentItemImageShapePoster;
         contentItem.title = [movieDict valueForKey:@"title"];
         NSString *url = [movieDict valueForKey:@"url"];
-        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/%@",url]];
-        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
+        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://display/%@",groupURL,url]];
+        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://play/%@",groupURL,url]];
         [ContentItems addObject:contentItem];
       }
       itemMovie.title = [shared stringForKey:@"moviesTitleRA"];
@@ -103,8 +119,8 @@
         contentItem.imageShape = TVContentItemImageShapePoster;
         contentItem.title = [tvDict valueForKey:@"title"];
         NSString *url = [tvDict valueForKey:@"url"];
-        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/%@",url]];
-        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
+        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://display/%@",groupURL,url]];
+        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://play/%@",groupURL,url]];
         [ContentItemsTv addObject:contentItem];
       }
       itemTv.title = [shared stringForKey:@"tvTitleRA"];
@@ -130,8 +146,8 @@
         contentItem.imageShape = TVContentItemImageShapePoster;
         contentItem.title = [movieDict valueForKey:@"title"];
         NSString *url = [movieDict valueForKey:@"url"];
-        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/%@",url]];
-        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
+        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://display/%@",groupURL,url]];
+        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://play/%@",groupURL,url]];
         [ContentItems addObject:contentItem];
       }
       itemMovie.title = [shared stringForKey:@"moviesTitlePR"];
@@ -157,8 +173,8 @@
         contentItem.imageShape = TVContentItemImageShapePoster;
         contentItem.title = [tvDict valueForKey:@"title"];
         NSString *url = [tvDict valueForKey:@"url"];
-        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://display/%@",url]];
-        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"mrmc://play/%@",url]];
+        contentItem.displayURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://display/%@",groupURL,url]];
+        contentItem.playURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://play/%@",groupURL,url]];
         [ContentItemsTv addObject:contentItem];
       }
       itemTv.title = [shared stringForKey:@"tvTitlePR"];

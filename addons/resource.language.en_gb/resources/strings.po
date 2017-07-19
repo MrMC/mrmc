@@ -3916,8 +3916,22 @@ msgctxt "#895"
 msgid "Enabling this will force Siri swipes to move only one place, disabling it will go maximum 5 depending on the swipe speed"
 msgstr ""
 
-#empty strings from id 896 to 996
+#: CGUIWindowVideoNav
+msgctxt "#896"
+msgid "You are currently using Lite version of MrMC,"
+msgstr ""
 
+#: CGUIWindowVideoNav
+msgctxt "#897"
+msgid "Your list has been trimmed down from %i items to %i,"
+msgstr ""
+
+#: CGUIWindowVideoNav
+msgctxt "#898"
+msgid "please consider upgrading to full version on %s store."
+msgstr ""
+
+#empty strings from id 898 to 996
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#997"

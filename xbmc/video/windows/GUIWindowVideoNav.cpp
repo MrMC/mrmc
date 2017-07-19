@@ -32,6 +32,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
+
 #include "FileItem.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
@@ -575,6 +576,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       items.Add(newTag);
     }
   }
+  
   return bResult;
 }
 

@@ -7,13 +7,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>@APP_NAME_DISPLAY@</string>
 	<key>CFBundleDocumentTypes</key>
 	<array/>
 	<key>CFBundleExecutable</key>
 	<string>@APP_NAME@</string>
 	<key>CFBundleIdentifier</key>
-	<string>tv.mrmc.@APP_NAME_LC@.tvos</string>
+	<string>@APP_PACKAGE@</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -37,16 +37,16 @@
 	<array>
 	<dict>
 		<key>CFBundleURLName</key>
-		<string>tv.mrmc.mrmc</string>
+		<string>@APP_PACKAGE@</string>
 		<key>CFBundleURLSchemes</key>
 		<array>
-			<string>mrmc</string>
+			<string>@URL_SCHEME@</string>
 		</array>
 	</dict>
 	</array>
   <key>LSApplicationQueriesSchemes</key>
   <array>
-    <string>tv.mrmc.@APP_NAME_LC@.tvos</string>
+    <string>@APP_PACKAGE@</string>
     <string>youtube</string>
   </array>
 </dict>

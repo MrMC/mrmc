@@ -115,50 +115,6 @@ AC_DEFUN([XB_PUSH_FLAGS], [
   INCLUDES="$SAVE_INCLUDES"
 ])
 
-# version can be overridden by setting the following as ENV vars when running configure
-APP_PACKAGE=${APP_PACKAGE-$(${AWK} '/APP_PACKAGE/ {print $2}' version.txt)}
-APP_NAME=${APP_NAME-$(${AWK} '/APP_NAME/ {print $2}' version.txt)}
-APP_NAME_LC=$(echo $APP_NAME | ${AWK} '{print tolower($0)}')
-APP_NAME_UC=$(echo $APP_NAME | ${AWK} '{print toupper($0)}')
-APP_VERSION_MAJOR=${APP_VERSION_MAJOR-$(${AWK} '/VERSION_MAJOR/ {print $2}' version.txt)}
-APP_VERSION_MINOR=${APP_VERSION_MINOR-$(${AWK} '/VERSION_MINOR/ {print $2}' version.txt)}
-APP_VERSION_PATCH=${APP_VERSION_PATCH-$(${AWK} '/VERSION_PATCH/ {print $2}' version.txt)}
-APP_VERSION_TAG=${APP_VERSION_TAG-$(${AWK} '/VERSION_TAG/ {print $2}' version.txt)}
-APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
-APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
-APP_VERSION_BUNDLE_VERSION=$(date -u +%y%m%d.%H%M)
-APP_VERSION_ANDROID_VERSION=$(date -u +%y%m%d%H)
-APP_ADDON_API=${APP_ADDON_API-$(${AWK} '/ADDON_API/ {print $2}' version.txt)}
-if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSION_MINOR" != "" \
-&& test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != ""; then
-  APP_VERSION=${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
-  if test "$APP_VERSION_TAG" != ""; then
-    APP_VERSION=${APP_VERSION}-${APP_VERSION_TAG}
-  fi
-
-  AC_SUBST(APP_PACKAGE)
-  AC_SUBST(APP_NAME)
-  AC_SUBST(APP_NAME_LC)
-  AC_SUBST(APP_NAME_UC)
-  AC_SUBST(APP_VERSION)
-  AC_SUBST(APP_VERSION_MAJOR)
-  AC_SUBST(APP_VERSION_MINOR)
-  AC_SUBST(APP_VERSION_PATCH)
-  AC_SUBST(APP_VERSION_TAG)
-  AC_SUBST(APP_VERSION_TAG_LC)
-  AC_SUBST(APP_VERSION_CODE)
-  AC_SUBST(APP_VERSION_BUNDLE_VERSION)
-  AC_SUBST(APP_VERSION_ANDROID_VERSION)
-  AC_SUBST(APP_ADDON_API)
-
-  dashes="------------------------"
-  final_message="\n  ${APP_NAME} Configuration:"
-  final_message="\n$dashes$final_message\n$dashes"
-  final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION}"
-else
-  AC_MSG_ERROR(could not detect application Version, make sure version.txt is complete)
-fi
-
 # check for GIT_REV
 AC_CHECK_PROG(HAVE_GIT,git,"yes","no",)
 if test "$GIT_REV" = ""; then
@@ -492,7 +448,76 @@ AC_ARG_ENABLE([codec],
   [add_codecs=$enableval],
   [add_codecs=no])
 
-### End of external library options
+AC_ARG_WITH([bundle_extension],
+  [AS_HELP_STRING([--with-bundle_extension=file],
+  [specify a bundle extension (darwin only, if required)])],
+  [bundle_extension=$withval])
+if test "x$bundle_extension" = "xlite"; then
+  AC_DEFINE(APP_PACKAGE_LITE, [1], [Define if building a lite version])
+fi
+
+### End of external options
+
+# version can be overridden by setting the following as ENV vars when running configure
+APP_NAME=${APP_NAME-$(${AWK} '/APP_NAME/ {print $2}' version.txt)}
+APP_NAME_DISPLAY=${APP_NAME}
+URL_SCHEME="mrmc"
+if test "x$bundle_extension" = "xlite"; then
+  APP_NAME_DISPLAY="${APP_NAME} Lite"
+  APP_NAME="${APP_NAME}Lite"
+  URL_SCHEME="${URL_SCHEME}lite"
+fi
+APP_NAME_LC=$(echo $APP_NAME | ${AWK} '{print tolower($0)}')
+APP_NAME_UC=$(echo $APP_NAME | ${AWK} '{print toupper($0)}')
+APP_PACKAGE=${APP_PACKAGE-$(${AWK} '/APP_PACKAGE/ {print $2}' version.txt)}
+if test "$bundle_extension" != ""; then
+  APP_PACKAGE="$APP_PACKAGE.$bundle_extension"
+fi
+APP_VERSION_MAJOR=${APP_VERSION_MAJOR-$(${AWK} '/VERSION_MAJOR/ {print $2}' version.txt)}
+APP_VERSION_MINOR=${APP_VERSION_MINOR-$(${AWK} '/VERSION_MINOR/ {print $2}' version.txt)}
+APP_VERSION_PATCH=${APP_VERSION_PATCH-$(${AWK} '/VERSION_PATCH/ {print $2}' version.txt)}
+APP_VERSION_TAG=${APP_VERSION_TAG-$(${AWK} '/VERSION_TAG/ {print $2}' version.txt)}
+APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
+APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
+APP_VERSION_BUNDLE_VERSION=$(date -u +%y%m%d.%H%M)
+APP_VERSION_ANDROID_VERSION=$(date -u +%y%m%d%H)
+TOPSHELF_BUNDLE_IDENTIFIER=$APP_PACKAGE.ts
+APP_ADDON_API=${APP_ADDON_API-$(${AWK} '/ADDON_API/ {print $2}' version.txt)}
+if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSION_MINOR" != "" \
+&& test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != ""; then
+  APP_VERSION=${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
+  if test "$APP_VERSION_TAG" != ""; then
+    APP_VERSION=${APP_VERSION}-${APP_VERSION_TAG}
+  fi
+
+  AC_SUBST(APP_NAME)
+  AC_SUBST(APP_NAME_LC)
+  AC_SUBST(APP_NAME_UC)
+  AC_SUBST(APP_NAME_DISPLAY)
+  AC_SUBST(APP_PACKAGE)
+  AC_SUBST(APP_VERSION)
+  AC_SUBST(APP_VERSION_MAJOR)
+  AC_SUBST(APP_VERSION_MINOR)
+  AC_SUBST(APP_VERSION_PATCH)
+  AC_SUBST(APP_VERSION_TAG)
+  AC_SUBST(APP_VERSION_TAG_LC)
+  AC_SUBST(APP_VERSION_CODE)
+  AC_SUBST(APP_VERSION_BUNDLE_VERSION)
+  AC_SUBST(APP_VERSION_ANDROID_VERSION)
+  AC_SUBST(TOPSHELF_BUNDLE_IDENTIFIER)
+  AC_SUBST(URL_SCHEME)
+  AC_SUBST(APP_ADDON_API)
+
+  dashes="------------------------"
+  final_message="\n  ${APP_NAME} Configuration:"
+  final_message="\n$dashes$final_message\n$dashes"
+  final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION}"
+  final_message="$final_message\n  ${APP_NAME} Package:\t${APP_PACKAGE}"
+else
+  AC_MSG_ERROR(could not detect application Version, make sure version.txt is complete)
+fi
+
+### End of env options
 
 if test "x$host_vendor" != "xapple"; then
   DEFAULT_COMPILE_FLAGS="-fPIC -DPIC -D_REENTRANT"

@@ -62,6 +62,10 @@
 #include "Autorun.h"
 #include "URL.h"
 
+#if defined(APP_PACKAGE_LITE)
+#include "utils/LiteUtils.h"
+#endif
+
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
@@ -906,7 +910,18 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, st
 bool CGUIWindowFileManager::GetDirectory(int iList, const std::string &strDirectory, CFileItemList &items)
 {
   const CURL pathToUrl(strDirectory);
-  return m_rootDir.GetDirectory(pathToUrl, items, false);
+  bool result = m_rootDir.GetDirectory(pathToUrl, items, false);
+  
+#if defined(APP_PACKAGE_LITE)
+  int preTrimSize = items.Size();
+  int trimSize = CLiteUtils::GetItemSizeLimit();
+  if (preTrimSize > trimSize)
+  {
+    items.Sort(SortByTitle, SortOrderAscending);
+    items.Trim(trimSize);
+  }
+#endif
+  return result;
 }
 
 bool CGUIWindowFileManager::CanRename(int iList)

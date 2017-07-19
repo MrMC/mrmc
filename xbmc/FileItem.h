@@ -610,6 +610,7 @@ public:
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
+  void Trim(int iTrim);
   CFileItemPtr Get(int iItem);
   const CFileItemPtr Get(int iItem) const;
   const VECFILEITEMS GetList() const { return m_items; }

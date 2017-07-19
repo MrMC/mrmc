@@ -42,6 +42,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIEditControl.h"
 #include "GUIUserMessages.h"
+#include "CompileInfo.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
@@ -57,6 +58,10 @@
 #include "ContextMenuManager.h"
 #include "storage/MediaManager.h"
 #include "services/ServicesManager.h"
+
+#if defined(APP_PACKAGE_LITE)
+#include "utils/LiteUtils.h"
+#endif
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -363,6 +368,21 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() && !items.IsLibraryFolder())
     items.SetContent("files");
 
+#if defined(APP_PACKAGE_LITE)
+  int preTrimSize = items.Size();
+  int trimSize = CLiteUtils::GetItemSizeLimit();
+  if (preTrimSize > trimSize)
+  {
+    items.Sort(SortByTitle, SortOrderAscending);
+    items.Trim(trimSize);
+    
+    if (preTrimSize > items.Size())
+    {
+      CLiteUtils::ShowIsLiteDialog(preTrimSize);
+    }
+  }
+#endif
+  
   return bResult;
 }
 

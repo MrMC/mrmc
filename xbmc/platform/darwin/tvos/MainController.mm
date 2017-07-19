@@ -1822,7 +1822,11 @@ static SiriRemoteInfo siriRemoteInfo;
   bool inActive = [UIApplication sharedApplication].applicationState == UIApplicationStateInactive;
   if (inActive)
   {
+#if defined(APP_PACKAGE_LITE)
+    NSURL *url = [NSURL URLWithString:@"mrmclite://wakeup"];
+#else
     NSURL *url = [NSURL URLWithString:@"mrmc://wakeup"];
+#endif
     [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
   }
 

@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "ContextMenuManager.h"
+#include "CompileInfo.h"
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -71,6 +72,10 @@
 #include "utils/Variant.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoInfoTag.h"
+
+#if defined(APP_PACKAGE_LITE)
+#include "utils/LiteUtils.h"
+#endif
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -760,6 +765,26 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   SetProperty("filter", "");
   m_canFilterAdvanced = false;
   m_filter.Reset();
+  
+#if defined(APP_PACKAGE_LITE)
+  // if we are listing addons we should not limit them
+  // any other "safe" urls could be added here
+  if (StringUtils::StartsWithNoCase(strDirectory, "addons://"))
+      return true;
+  int preTrimSize = items.Size();
+  int trimSize = CLiteUtils::GetItemSizeLimit();
+  if (preTrimSize > trimSize)
+  {
+    items.Sort(SortByTitle, SortOrderAscending);
+    items.Trim(trimSize);
+    
+    if (preTrimSize > items.Size())
+    {
+      CLiteUtils::ShowIsLiteDialog(preTrimSize);
+    }
+  }
+#endif
+  
   return true;
 }
 

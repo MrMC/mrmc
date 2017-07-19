@@ -13,9 +13,11 @@
 	<key>CFBundleIconFile</key>
 	<string>@APP_NAME_LC@.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>tv.mrmc.@APP_NAME_LC@.osx</string>
+	<string>@APP_PACKAGE@</string>
 	<key>CFBundleName</key>
 	<string>@APP_NAME@</string>
+	<key>CFBundleDisplayName</key>
+	<string>@APP_NAME_DISPLAY@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

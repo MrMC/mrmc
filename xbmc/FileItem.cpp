@@ -1865,6 +1865,13 @@ void CFileItemList::Remove(int iItem)
   }
 }
 
+void CFileItemList::Trim(int iTrim)
+{
+  CSingleLock lock(m_lock);
+  if ((int)m_items.size() > iTrim)
+    m_items.resize(iTrim);
+}
+
 void CFileItemList::Append(const CFileItemList& itemlist)
 {
   CSingleLock lock(m_lock);

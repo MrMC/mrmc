@@ -1264,7 +1264,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_VIDEO:
       {
-#if !defined(HAS_DIVX_LICENSE)
+#if !defined(HAS_DIVX_LICENSE) || defined(APP_PACKAGE_LITE)
         if (pStream->codec->codec_id == AV_CODEC_ID_MPEG4)
         {
           // DivX formats 0.4 and 0.5 requires a DivX license.
@@ -1374,7 +1374,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_SUBTITLE:
       {
-#if !defined(HAS_DIVX_LICENSE)
+#if !defined(HAS_DIVX_LICENSE) || defined(APP_PACKAGE_LITE)
         // use of subtitles in an avi requires a DivX license
         if (strcmp(m_pFormatContext->iformat->name, "avi") == 0)
           return NULL;

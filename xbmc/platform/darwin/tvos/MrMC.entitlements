@@ -4,6 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
+		<string>group.tv.mrmc.lite.shared</string>
 		<string>group.tv.mrmc.shared</string>
 	</array>
 </dict>
