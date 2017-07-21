@@ -125,7 +125,7 @@ MainController *g_xbmcController;
     CFocusEngineHandler::GetInstance().GetFocusWindowID(),
     "SiriRemote", buttonId, actionID, actionName))
   {
-    CInputManager::GetInstance().QueueAction(CAction(actionID, 1.0f, 0.0f, actionName), true);
+    CInputManager::GetInstance().QueueAction(CAction(actionID,actionName,buttonId), true);
   }
   else
     CLog::Log(LOGDEBUG, "sendButtonPressed, ERROR mapping customcontroller action. CustomController: %s %i", "SiriRemote", buttonId);

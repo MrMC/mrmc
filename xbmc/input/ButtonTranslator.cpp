@@ -732,6 +732,35 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
   return TranslateRemoteString((*it2).second.c_str());
 }
 
+int CButtonTranslator::GetCustomControllerActionCode(int windowId, int buttonId, std::string strAction) const
+{
+  std::string strCustomController;
+#if defined(TARGET_DARWIN_TVOS)
+  // this is for later, if we add more custom controllers
+  strCustomController = "SiriRemote";
+#endif
+  // resolve the correct custom controller
+  auto itCm = m_customControllersMap.find(strCustomController);
+  if (itCm == m_customControllersMap.end())
+    return 0;
+  
+  const CustomControllerWindowMap *wmap = &itCm->second;
+  
+  int action = 0;
+  auto it = wmap->find(windowId);
+  if (it != wmap->end())
+  {
+    const CustomControllerButtonMap &buttonMap = it->second;
+    auto it2 = buttonMap.find(buttonId);
+    if (it2 != buttonMap.end())
+    {
+      strAction = it2->second;
+      TranslateActionString(strAction.c_str(), action);
+    }
+  }
+  return action;
+}
+
 int CButtonTranslator::GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const
 {
   int action = 0;
@@ -1181,6 +1210,8 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   std::string strAction;
   // try to get the action from the current window
   int actionID = GetActionCode(window, key, strAction);
+  if (actionID == 0)
+    actionID = GetCustomControllerActionCode(window, key.GetButtonCode(), strAction);
   // if it's invalid, try to get it from the global map
   if (actionID == 0 && fallback)
   {
@@ -1190,6 +1221,9 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
     // still no valid action? use global map
     if (actionID == 0)
       actionID = GetActionCode( -1, key, strAction);
+    // try custom controller global map
+    if (actionID == 0)
+      actionID = GetCustomControllerActionCode(-1, key.GetButtonCode(), strAction);
   }
   // Now fill our action structure
   CAction action(actionID, strAction, key);

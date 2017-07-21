@@ -192,6 +192,7 @@ private:
   // maps custom controller name to controller Window map
   std::map<std::string, CustomControllerWindowMap> m_customControllersMap;
   int GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const;
+  int GetCustomControllerActionCode(int windowId, int buttonId, std::string strAction) const;
 
   void MapTouchActions(int windowID, TiXmlNode *pTouch);
   static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
