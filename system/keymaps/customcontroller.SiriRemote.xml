@@ -79,8 +79,8 @@
   </FullscreenVideo>
   <FullscreenLiveTV>
     <customcontroller name="SiriRemote">
-      <button id="1">ChannelUp</button>
-      <button id="2">ChannelDown</button>
+      <button id="1">Up</button>
+      <button id="2">Down</button>
       <button id="5">OSD</button>
       <button id="7">ActivateWindow(PVROSDChannels)</button>
       <button id="8">noop</button>
@@ -91,8 +91,8 @@
   </FullscreenLiveTV>
   <FullscreenRadio>
     <customcontroller name="SiriRemote">
-      <button id="3">ChannelDown</button>
-      <button id="4">ChannelUp</button>
+      <button id="1">Up</button>
+      <button id="2">Down</button>
     </customcontroller>
   </FullscreenRadio>
   <Visualisation>
