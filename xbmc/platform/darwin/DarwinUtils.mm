@@ -800,7 +800,7 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
 bool CDarwinUtils::OpenAppWithOpenURL(const std::string& path)
 {
   bool ret = false;
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
   NSString *ns_path = [NSString stringWithUTF8String:path.c_str()];
   NSCharacterSet *set = [NSCharacterSet URLQueryAllowedCharacterSet];
   NSString *ns_encoded_path = [ns_path stringByAddingPercentEncodingWithAllowedCharacters:set];
