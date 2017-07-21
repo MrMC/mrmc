@@ -407,6 +407,7 @@ public:
   CAction(int actionID, wchar_t unicode);
   CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const std::string &name = "");
   CAction(int actionID, const std::string &name, const CKey &key);
+  CAction(int actionID, const std::string &name, unsigned int buttonCode);
   CAction(int actionID, const std::string &name);
 
   /*! \brief Identifier of the action

@@ -267,3 +267,14 @@ CAction::CAction(int actionID, const std::string &name):
   m_unicode = 0;
   m_holdTime = 0;
 }
+
+CAction::CAction(int actionID, const std::string &name, unsigned int buttonCode)
+{
+  m_id = actionID;
+  for (unsigned int i = 0; i < max_amounts; i++)
+    m_amount[i] = 0;
+  m_repeat = 0;
+  m_buttonCode = buttonCode;
+  m_unicode = 0;
+  m_holdTime = 0;
+}
