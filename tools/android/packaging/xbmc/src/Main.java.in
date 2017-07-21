@@ -1,8 +1,11 @@
 package @APP_PACKAGE@;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.UiModeManager;
 import android.content.ActivityNotFoundException;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.app.NativeActivity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -43,6 +46,9 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private static final String TAG = "@APP_NAME_UC@";
   private static final int INTENT_RESULT_PROJECT_CODE = 34658;
   private static final int INTENT_MAKE_BROWSABLE_REQUEST_CODE = 39001;
+  private static final int XBMC_EXITCODE_POWERDOWN = 64;
+  private static final int XBMC_EXITCODE_RESTARTAPP= 65;
+  private static final int XBMC_EXITCODE_REBOOT    = 66;
 
   public static Main MainActivity = null;
   public XBMCMainView mMainView = null;
@@ -59,6 +65,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private MediaProjection mMediaProjection;
   private int mProjectionIntentId = 0;
 
+  public int mExitCode = 0;
   native void _onNewIntent(Intent intent);
   native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
   native void _doFrame(long frameTimeNanos);
@@ -384,6 +391,17 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
         } catch (Exception e) {}
       }
     }.start();
+
+    Log.i(TAG, "onDestroy: exit code = " + mExitCode);
+    if (mExitCode == XBMC_EXITCODE_RESTARTAPP)
+    {
+      Intent mStartActivity = new Intent(this, Main.class);
+      int mPendingIntentId = 123456;
+      PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+      AlarmManager mgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+      mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+    }
+
     super.onDestroy();
   }
 
