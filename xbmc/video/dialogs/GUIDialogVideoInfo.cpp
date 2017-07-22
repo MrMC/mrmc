@@ -919,12 +919,12 @@ void CGUIDialogVideoInfo::PlayTrailer()
 {
   std::string path = m_movieItem->GetVideoInfoTag()->m_strTrailer;
   // std::string ytPath = "vnd.youtube://" + videoID; // android
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN)
 
   if (StringUtils::StartsWith(path, "plugin://plugin.video.youtube"))
   {
     std::string videoID = StringUtils::Split(path,"videoid=")[1];
-    std::string ytPath = "youtube://http://youtube.com/watch?v=" + videoID;
+    std::string ytPath = "http://youtube.com/watch?v=" + videoID;
     CDarwinUtils::OpenAppWithOpenURL(ytPath);
   }
 #else
