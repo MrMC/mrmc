@@ -543,7 +543,7 @@ void CTraktServices::SetPlayState(CFileItem &item, const MediaServicesPlayerStat
 void CTraktServices::SetItemWatchedJob(CFileItem &item, bool watched, bool setLastWatched)
 {
   CVariant data;
-  CDateTime now = CDateTime::GetUTCDateTime();
+  CDateTime now = CDateTime::GetCurrentDateTime();
   CDateTime lastPlayed = item.GetVideoInfoTag()->m_lastPlayed;
 
   if (setLastWatched && lastPlayed.IsValid())
@@ -782,7 +782,7 @@ void CTraktServices::PullWatchedStatus()
         {
           CLog::Log(LOGDEBUG, "CTraktServices::PullWatchedStatus() - Matched movie [%s]", items[i]->GetVideoInfoTag()->m_strTitle.c_str());
           CDateTime date;
-          date.SetFromW3CDate(movieItem["last_watched_at"].asString());
+          date.SetFromW3CDateTime(movieItem["last_watched_at"].asString());
           videodb.ClearBookMarksOfFile(items[i]->GetVideoInfoTag()->GetPath(), CBookmark::RESUME);
           videodb.SetPlayCount(*items[i], movieItem["plays"].asInteger(), date);
         }
@@ -836,7 +836,7 @@ void CTraktServices::PullWatchedStatus()
                   if (episodeItem["number"].asInteger() == episodes[i]->GetVideoInfoTag()->m_iEpisode)
                   {
                     CDateTime date;
-                    date.SetFromW3CDate(episodeItem["last_watched_at"].asString());
+                    date.SetFromW3CDateTime(episodeItem["last_watched_at"].asString());
                     videodb.ClearBookMarksOfFile(episodes[i]->GetVideoInfoTag()->GetPath(), CBookmark::RESUME);
                     videodb.SetPlayCount(*episodes[i], episodeItem["plays"].asInteger() , date);
                   }
