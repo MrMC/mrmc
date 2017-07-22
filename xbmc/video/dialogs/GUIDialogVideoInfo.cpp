@@ -920,14 +920,14 @@ void CGUIDialogVideoInfo::PlayTrailer()
   std::string path = m_movieItem->GetVideoInfoTag()->m_strTrailer;
   // std::string ytPath = "vnd.youtube://" + videoID; // android
 #if defined(TARGET_DARWIN)
-
   if (StringUtils::StartsWith(path, "plugin://plugin.video.youtube"))
   {
     std::string videoID = StringUtils::Split(path,"videoid=")[1];
     std::string ytPath = "http://youtube.com/watch?v=" + videoID;
     CDarwinUtils::OpenAppWithOpenURL(ytPath);
+    return;
   }
-#else
+#endif
   CFileItem item;
   item.SetPath(path);
   *item.GetVideoInfoTag() = *m_movieItem->GetVideoInfoTag();
@@ -950,7 +950,7 @@ void CGUIDialogVideoInfo::PlayTrailer()
   }
   else
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(item)));
-#endif
+
 }
 
 void CGUIDialogVideoInfo::SetLabel(int iControl, const std::string &strLabel)
