@@ -8,7 +8,6 @@ OBJS+= libmpeg2.so libmpeg2convert.so
 OBJS+= libnfs.so
 OBJS+= libdsm.so
 OBJS+= libsmbclient.so
-#OBJS+= libdvdnav.so
 OBJS+= libbluray.so
 OBJS+= libplist.so
 OBJS+= libshairplay.so
@@ -17,8 +16,13 @@ OBJS+= librtmp.so
 PLATFORM_OBJS =
 EXCLUDED_ADDONS += $(PKG_EXCLUDED_ADDONS)
 
+ifeq ($(lite),yes)
+  MEDIAROOT = media.lite
+else
+  MEDIAROOT = media
+endif
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
-COPYDIRS = system addons media
+COPYDIRS = system addons $(MEDIAROOT)
 GCC_VERSION=$(shell $(CC) -dumpversion)
 ZIP=zip
 
@@ -84,7 +88,10 @@ symbols: libs
 shared:
 	mkdir -p assets
 	cp -rfp $(PREFIX)/share/@APP_NAME_LC@/* ./assets
-	cp -rfp $(PREFIX)/@APP_NAME_LC@/repo-resources/* ./assets/addons
+	# depends build of binary pvr hardcodes path to mrmc
+	cp -rfp $(PREFIX)/share/mrmc/addons/pvr.* ./assets/addons
+	# depends build of repo-resources hardcodes path to mrmc
+	cp -rfp $(PREFIX)/mrmc/repo-resources/* ./assets/addons
 	find `pwd`/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/assets/ -name "*.so" -exec rm {} \;
 	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
@@ -104,12 +111,12 @@ res:
 	mkdir -p xbmc/gen/@APP_PACKAGE_DIR@ xbmc/res xbmc/res/raw xbmc/res/values xbmc/res/xml images
 	@echo "native_arch=$(ABI)" > xbmc/res/raw/xbmc.properties
 	cp -fp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
-	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
-	cp -fp media/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
-	cp -fp media/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
-	cp -fp media/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
-	cp -fp media/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
-	cp -fp media/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
 	cp xbmc/strings.xml xbmc/res/values/
 	cp xbmc/colors.xml xbmc/res/values/
@@ -124,9 +131,11 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	mkdir -p xbmc/lib/$(ABI) xbmc/libs/$(ABI) xbmc/obj/local/$(ABI)
 	cp -fp $(SRCLIBS) xbmc/obj/local/$(ABI)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(ABI)/
+	# depends build of binary pvr hardcodes path to mrmc
+	find $(PREFIX)/lib/mrmc/addons/pvr* -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
 	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
-	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \; | true
+	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
 	cd xbmc/obj/local/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(ABI)/*.so xbmc/lib/$(ABI)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(ABI)/*.so

@@ -437,9 +437,12 @@ lib/cpluff/stamp-h1
 /tools/darwin/runtime/XBMCHelper
 
 # /tools/Linux/
-/tools/Linux/kodi.sh
-/tools/Linux/kodi-standalone.sh
-/tools/Linux/kodi-xsession.desktop
+/tools/Linux/mrmc.sh
+/tools/Linux/mrmc-standalone.sh
+/tools/Linux/mrmc-xsession.desktop
+/tools/Linux/mrmclite.sh
+/tools/Linux/mrmclite-standalone.sh
+/tools/Linux/mrmclite-xsession.desktop
 
 # /tools/osx
 /tools/osx/XBMCHelper
