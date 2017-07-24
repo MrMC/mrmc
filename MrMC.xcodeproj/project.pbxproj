@@ -1721,14 +1721,14 @@
 		F50F8E841EE578AB00C8F93B /* FocusEngineHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */; };
 		F50F8E851EE578AB00C8F93B /* FocusEngineHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */; };
 		F50F8E871EE8714500C8F93B /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E861EE8714500C8F93B /* GameController.framework */; };
+		F50F8E951EFD859F00C8F93B /* LiteUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E931EFD859F00C8F93B /* LiteUtils.cpp */; };
+		F50F8E961EFD859F00C8F93B /* LiteUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E931EFD859F00C8F93B /* LiteUtils.cpp */; };
+		F50F8E971EFD859F00C8F93B /* LiteUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E931EFD859F00C8F93B /* LiteUtils.cpp */; };
 		F50F8E991F02BD2D00C8F93B /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E981F02BD2D00C8F93B /* VideoToolbox.framework */; };
 		F50F8E9B1F02BD3C00C8F93B /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E9A1F02BD3C00C8F93B /* VideoToolbox.framework */; };
 		F50F8E9D1F02BD4E00C8F93B /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F50F8E9C1F02BD4E00C8F93B /* VideoToolbox.framework */; };
 		F50F8E9E1F02D4DB00C8F93B /* DVDVideoCodecVideoToolBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */; };
 		F50F8E9F1F02D66900C8F93B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E6174E54B300741B6D /* CoreMedia.framework */; };
-		F50F8E951EFD859F00C8F93B /* LiteUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E931EFD859F00C8F93B /* LiteUtils.cpp */; };
-		F50F8E961EFD859F00C8F93B /* LiteUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E931EFD859F00C8F93B /* LiteUtils.cpp */; };
-		F50F8E971EFD859F00C8F93B /* LiteUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E931EFD859F00C8F93B /* LiteUtils.cpp */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F51063421BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
 		F51063431BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
@@ -5177,7 +5177,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* darwin_codesign_internals.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = darwin_codesign_internals.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* MrMCLite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMCLite.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E49910D0174E2DFF00741B6D /* App-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-iOS.xcconfig"; sourceTree = "<group>"; };
 		E49910D1174E2E0000741B6D /* App-OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-OSX.xcconfig"; sourceTree = "<group>"; };
@@ -5276,11 +5276,11 @@
 		F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FocusEngineHandler.cpp; sourceTree = "<group>"; };
 		F50F8E831EE578AB00C8F93B /* FocusEngineHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusEngineHandler.h; sourceTree = "<group>"; };
 		F50F8E861EE8714500C8F93B /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/GameController.framework; sourceTree = DEVELOPER_DIR; };
+		F50F8E931EFD859F00C8F93B /* LiteUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LiteUtils.cpp; sourceTree = "<group>"; };
+		F50F8E941EFD859F00C8F93B /* LiteUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiteUtils.h; sourceTree = "<group>"; };
 		F50F8E981F02BD2D00C8F93B /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS10.2.sdk/System/Library/Frameworks/VideoToolbox.framework; sourceTree = DEVELOPER_DIR; };
 		F50F8E9A1F02BD3C00C8F93B /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/VideoToolbox.framework; sourceTree = DEVELOPER_DIR; };
 		F50F8E9C1F02BD4E00C8F93B /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
-		F50F8E931EFD859F00C8F93B /* LiteUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LiteUtils.cpp; sourceTree = "<group>"; };
-		F50F8E941EFD859F00C8F93B /* LiteUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiteUtils.h; sourceTree = "<group>"; };
 		F50FDC58119B4B2C00C8B8CD /* GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTextViewer.h; sourceTree = "<group>"; };
 		F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTextViewer.cpp; sourceTree = "<group>"; };
 		F51063401BDAA11D00BBCED6 /* DarwinNSUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinNSUserDefaults.h; sourceTree = "<group>"; };
@@ -5843,7 +5843,7 @@
 		F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DictionaryUtils.mm; sourceTree = "<group>"; };
 		F5D13EBA1BAA17890075A95C /* DictionaryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DictionaryUtils.h; sourceTree = "<group>"; };
 		F5D13EC01BAE3C060075A95C /* GUIInfoLabels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GUIInfoLabels.h; sourceTree = "<group>"; };
-		F5D142651BAF0B6D0075A95C /* MrMCLite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMCLite.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5D142651BAF0B6D0075A95C /* MrMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5D142901BAF29E20075A95C /* App-TVOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-TVOS.xcconfig"; sourceTree = "<group>"; };
 		F5D142931BAF31FB0075A95C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5D142991BAF31FB0075A95C /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -6513,8 +6513,8 @@
 			children = (
 				8DD76F7E0486A8DE00D96B5E /* MrMC */,
 				D6299ABB1AFC2A9F00E3059D /* MrMC.app */,
-				E4991089174D0D2600741B6D /* MrMCLite.app */,
-				F5D142651BAF0B6D0075A95C /* MrMCLite.app */,
+				E4991089174D0D2600741B6D /* MrMC.app */,
+				F5D142651BAF0B6D0075A95C /* MrMC.app */,
 				18AC31ED1C49445D00AE9433 /* TopShelf.appex */,
 			);
 			name = Products;
@@ -10124,7 +10124,7 @@
 			);
 			name = "MrMC-iOS";
 			productName = "Kodi-iOS";
-			productReference = E4991089174D0D2600741B6D /* MrMCLite.app */;
+			productReference = E4991089174D0D2600741B6D /* MrMC.app */;
 			productType = "com.apple.product-type.application";
 		};
 		F5D13EC51BAF0B6D0075A95C /* MrMC-TVOS */ = {
@@ -10148,7 +10148,7 @@
 			);
 			name = "MrMC-TVOS";
 			productName = MrMC;
-			productReference = F5D142651BAF0B6D0075A95C /* MrMCLite.app */;
+			productReference = F5D142651BAF0B6D0075A95C /* MrMC.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
