@@ -59,7 +59,7 @@
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN)
 #include "platform/darwin/DarwinUtils.h"
 #endif
 
