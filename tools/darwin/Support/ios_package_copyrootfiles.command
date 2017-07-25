@@ -42,6 +42,13 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
     SYNC="${SYNC} --include *settings/settings.xml --include *settings/darwin_tvos.xml --include *settings/darwin.xml --exclude *settings/*"
   fi
 
+  if [ "$PLATFORM_NAME" == "iphoneos" ] ; then
+    # clean keymaps folder, only include required items for ios
+    SYNC="${SYNC} --include *keymaps/keyboard.xml --include *keymaps/touchscreen.xml --exclude *keymaps/* --exclude *nyxboard*"
+    # clean settings folder, only include required items for ios
+    SYNC="${SYNC} --include *settings/settings.xml --include *settings/settings.lite.xml --include *settings/darwin_ios.xml --include *settings/darwin.xml --exclude *settings/*"
+  fi  
+
   # rsync command for language pacs
   LANGSYNC="rsync -aq ${PLATFORM} ${BUILDSRC} ${BUILDSYS} --exclude resource.uisounds*"
 
