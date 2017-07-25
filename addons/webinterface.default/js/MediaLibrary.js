@@ -130,40 +130,52 @@ MediaLibrary.prototype = {
     this.resetPage();
     var logUrl;
     var btnLabel;
-    if(event == "log")
-    {
-      logUrl = 'vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.log?';
-      $('#log').addClass('selected');
-      btnLabel = "Copy Log Content";
-    }
-    else
-    {
-      logUrl = 'vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc.old.log?';
-      $('#logold').addClass('selected');
-      btnLabel = "Copy Log (Old) Content";
-    }
+    var logSufix = '';
+    xbmc.rpc.request({
+      'context': this,
+      'method': 'System.IsLite',
+      'params': {},
+      'success': function (data) {
+        if (data) {
+          if (data.result) {
+            logSufix = 'lite';
+          }
+        }
+        if(event == "log")
+        {
+          logUrl = 'vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc' + logSufix + '.log?';
+          $('#log').addClass('selected');
+          btnLabel = "Copy Log Content";
+        }
+        else
+        {
+          logUrl = 'vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc' + logSufix + '.old.log?';
+          $('#logold').addClass('selected');
+          btnLabel = "Copy Log (Old) Content";
+        }
+        $('.contentContainer').hide();
+        var html = document.documentElement;
+        var body = document.getElementsByTagName("body")[0];
+        var height = Math.max( body.scrollHeight, body.offsetHeight, 
+                           html.clientHeight, html.scrollHeight, html.offsetHeight );
 
-    $('.contentContainer').hide();
-    var html = document.documentElement;
-    var body = document.getElementsByTagName("body")[0];
-    var height = Math.max( body.scrollHeight, body.offsetHeight, 
-                       html.clientHeight, html.scrollHeight, html.offsetHeight );
+        var button = document.createElement('button');
+        button.innerHTML = btnLabel;
+        button.style.marginTop = "5px";
 
-    var button = document.createElement('button');
-    button.innerHTML = btnLabel;
-    button.style.marginTop = "5px";
+        $('#content').append(button);
 
-    $('#content').append(button);
+        button.addEventListener ("click", jQuery.proxy(this.pressLogKey,this, event));
 
-    button.addEventListener ("click", jQuery.proxy(this.pressLogKey,this, event));
-
-    var iframe = document.createElement('iframe');
-    iframe.src = logUrl + new Date().getTime();
-    iframe.width="95%";
-    iframe.height=height - 115;
-    iframe.name=event;
-    iframe.id=event;
-    $('#content').append(iframe);
+        var iframe = document.createElement('iframe');
+        iframe.src = logUrl + new Date().getTime();
+        iframe.width="95%";
+        iframe.height=height - 115;
+        iframe.name=event;
+        iframe.id=event;
+        $('#content').append(iframe);
+      }
+    });
   },
   shouldHandleEvent: function (event) {
     var inRemoteControl = $('#remoteControl').hasClass('selected');

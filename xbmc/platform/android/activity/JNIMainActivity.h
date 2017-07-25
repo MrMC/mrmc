@@ -64,6 +64,9 @@ public:
   static void startCapture(int width, int height);
   static void stopCapture();
 
+  static void openAmazonStore();
+  static void openGooglePlayStore();
+  static void openYouTubeVideo(const std::string key);
 private:
   static CJNIMainActivity *m_appInstance;
 

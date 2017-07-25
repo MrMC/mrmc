@@ -39,7 +39,7 @@ if [ "$ACTION" == build ] || [ "$ACTION" == install ]; then
     # clean keymaps folder, only include required items for tvos
     SYNC="${SYNC} --include *keymaps/keyboard.xml --include *keymaps/customcontroller.SiriRemote.xml --exclude *keymaps/* --exclude *nyxboard*"
     # clean settings folder, only include required items for tvos
-    SYNC="${SYNC} --include *settings/settings.xml --include *settings/darwin_tvos.xml --include *settings/darwin.xml --exclude *settings/*"
+    SYNC="${SYNC} --include *settings/settings.xml --include *settings/settings.lite.xml --include *settings/darwin_tvos.xml --include *settings/darwin.xml --exclude *settings/*"
   fi
 
   if [ "$PLATFORM_NAME" == "iphoneos" ] ; then

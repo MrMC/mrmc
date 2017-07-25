@@ -50,6 +50,7 @@
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"
+#include "utils/LiteUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -58,10 +59,6 @@
 #include "ContextMenuManager.h"
 #include "storage/MediaManager.h"
 #include "services/ServicesManager.h"
-
-#if defined(APP_PACKAGE_LITE)
-#include "utils/LiteUtils.h"
-#endif
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -368,21 +365,21 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() && !items.IsLibraryFolder())
     items.SetContent("files");
 
-#if defined(APP_PACKAGE_LITE)
-  int preTrimSize = items.Size();
-  int trimSize = CLiteUtils::GetItemSizeLimit();
-  if (preTrimSize > trimSize)
+  if (CLiteUtils::IsLite())
   {
-    items.Sort(SortByTitle, SortOrderAscending);
-    items.Trim(trimSize);
-    
-    if (preTrimSize > items.Size())
+    int preTrimSize = items.Size();
+    int trimSize = CLiteUtils::GetItemSizeLimit();
+    if (preTrimSize > trimSize)
     {
-      CLiteUtils::ShowIsLiteDialog(preTrimSize);
+      items.Sort(SortByTitle, SortOrderAscending);
+      items.Trim(trimSize);
+      
+      if (preTrimSize > items.Size())
+      {
+        CLiteUtils::ShowIsLiteDialog(preTrimSize);
+      }
     }
   }
-#endif
-  
   return bResult;
 }
 

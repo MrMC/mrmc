@@ -49,6 +49,7 @@
 #import "windowing/WindowingFactory.h"
 #import "settings/Settings.h"
 #import "services/lighteffects/LightEffectServices.h"
+#include "utils/LiteUtils.h"
 #import "utils/SeekHandler.h"
 #import "utils/log.h"
 
@@ -1822,11 +1823,9 @@ static SiriRemoteInfo siriRemoteInfo;
   bool inActive = [UIApplication sharedApplication].applicationState == UIApplicationStateInactive;
   if (inActive)
   {
-#if defined(APP_PACKAGE_LITE)
-    NSURL *url = [NSURL URLWithString:@"mrmclite://wakeup"];
-#else
     NSURL *url = [NSURL URLWithString:@"mrmc://wakeup"];
-#endif
+    if (CLiteUtils::IsLite())
+      url = [NSURL URLWithString:@"mrmclite://wakeup"];
     [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
   }
 

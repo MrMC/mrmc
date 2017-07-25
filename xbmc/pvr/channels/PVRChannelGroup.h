@@ -144,7 +144,11 @@ namespace PVR
      * @param bUpdateDb If true, update the changed values in the database.
      */
     void SearchAndSetChannelIcons(bool bUpdateDb = false);
-
+    
+    /*!
+     * @brief limit imported channels if we are built as lite.
+     */
+    void  LimitIfLite(void);
     /*!
      * @brief Remove a channel from this container.
      * @param channel The channel to remove.

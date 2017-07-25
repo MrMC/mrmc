@@ -24,6 +24,7 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIFontManager.h"
 #include "filesystem/File.h"
+#include "utils/LiteUtils.h"
 #include "windowing/WindowingFactory.h"
 #include "log.h"
 
@@ -57,9 +58,12 @@ void CSplash::Show(const std::string& message)
 {
   if (!m_image)
   {
+    std::string splashName = "Splash.png";
+    if (CLiteUtils::IsLite())
+      splashName = "Splash.lite.png";
     std::string splashImage = "special://home/media/Splash.png";
     if (!XFILE::CFile::Exists(splashImage))
-      splashImage = "special://xbmc/media/Splash.png";
+      splashImage = "special://xbmc/media/" + splashName;
 
     m_image = new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CTextureInfo(splashImage));
     m_image->SetAspectRatio(CAspectRatio::AR_SCALE);

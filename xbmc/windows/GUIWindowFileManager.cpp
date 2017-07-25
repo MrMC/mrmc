@@ -55,16 +55,13 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 
 #include "utils/JobManager.h"
+#include "utils/LiteUtils.h"
 #include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "Autorun.h"
 #include "URL.h"
-
-#if defined(APP_PACKAGE_LITE)
-#include "utils/LiteUtils.h"
-#endif
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -912,15 +909,16 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const std::string &strDirect
   const CURL pathToUrl(strDirectory);
   bool result = m_rootDir.GetDirectory(pathToUrl, items, false);
   
-#if defined(APP_PACKAGE_LITE)
-  int preTrimSize = items.Size();
-  int trimSize = CLiteUtils::GetItemSizeLimit();
-  if (preTrimSize > trimSize)
+  if (CLiteUtils::IsLite())
   {
-    items.Sort(SortByTitle, SortOrderAscending);
-    items.Trim(trimSize);
+    int preTrimSize = items.Size();
+    int trimSize = CLiteUtils::GetItemSizeLimit();
+    if (preTrimSize > trimSize)
+    {
+      items.Sort(SortByTitle, SortOrderAscending);
+      items.Trim(trimSize);
+    }
   }
-#endif
   return result;
 }
 

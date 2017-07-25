@@ -219,3 +219,21 @@ void CJNIMainActivity::stopCapture()
   call_method<void>(m_context,
                     "stopCapture", "()V");
 }
+
+void CJNIMainActivity::openAmazonStore()
+{
+  call_method<void>(m_context,
+                    "openAmazonStore", "()V");
+}
+
+void CJNIMainActivity::openGooglePlayStore()
+{
+  call_method<void>(m_context,
+                    "openGooglePlayStore", "()V");
+}
+
+void CJNIMainActivity::openYouTubeVideo(const std::string key)
+{
+  call_method<void>(m_context,
+                    "openYouTubeVideo", "(Ljava/lang/String;)V", jcast<jhstring>(key));
+}

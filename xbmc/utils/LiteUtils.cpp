@@ -31,6 +31,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #if defined(TARGET_ANDROID)
+#include "platform/android/activity/XBMCApp.h"
 #include "platform/android/activity/AndroidFeatures.h"
 #elif defined(TARGET_DARWIN)
 #include "platform/darwin/DarwinUtils.h"
@@ -92,8 +93,20 @@ void CLiteUtils::ShowIsLiteDialog(int preTruncateSize)
 #if defined(TARGET_DARWIN)
       CDarwinUtils::OpenAppWithOpenURL(path);
 #elif defined(TARGET_ANDROID)
-      // some android call to open store
+      if (CAndroidFeatures::IsAmazonDevice())
+        CXBMCApp::get()->openAmazonStore();
+      else
+        CXBMCApp::get()->openGooglePlayStore();
 #endif
     }
   }
+}
+
+bool CLiteUtils::IsLite()
+{
+  bool res = false;
+#if defined(APP_PACKAGE_LITE)
+  res = true;
+#endif
+  return res;
 }

@@ -65,6 +65,7 @@
 #include "threads/SystemClock.h"
 #include "utils/FileUtils.h"
 #include "utils/LabelFormatter.h"
+#include "utils/LiteUtils.h"
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -72,10 +73,6 @@
 #include "utils/Variant.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoInfoTag.h"
-
-#if defined(APP_PACKAGE_LITE)
-#include "utils/LiteUtils.h"
-#endif
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -766,25 +763,25 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   m_canFilterAdvanced = false;
   m_filter.Reset();
   
-#if defined(APP_PACKAGE_LITE)
-  // if we are listing addons we should not limit them
-  // any other "safe" urls could be added here
-  if (StringUtils::StartsWithNoCase(strDirectory, "addons://"))
-      return true;
-  int preTrimSize = items.Size();
-  int trimSize = CLiteUtils::GetItemSizeLimit();
-  if (preTrimSize > trimSize)
+  if (CLiteUtils::IsLite())
   {
-    items.Sort(SortByTitle, SortOrderAscending);
-    items.Trim(trimSize);
-    
-    if (preTrimSize > items.Size())
+    // if we are listing addons we should not limit them
+    // any other "safe" urls could be added here
+    if (StringUtils::StartsWithNoCase(strDirectory, "addons://"))
+        return true;
+    int preTrimSize = items.Size();
+    int trimSize = CLiteUtils::GetItemSizeLimit();
+    if (preTrimSize > trimSize)
     {
-      CLiteUtils::ShowIsLiteDialog(preTrimSize);
+      items.Sort(SortByTitle, SortOrderAscending);
+      items.Trim(trimSize);
+      
+      if (preTrimSize > items.Size())
+      {
+        CLiteUtils::ShowIsLiteDialog(preTrimSize);
+      }
     }
   }
-#endif
-  
   return true;
 }
 

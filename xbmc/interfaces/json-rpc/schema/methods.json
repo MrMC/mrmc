@@ -2066,6 +2066,14 @@
     "params": [],
     "returns": "string"
   },
+  "System.IsLite": {
+    "type": "method",
+    "description": "Check if we are Lite",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": "boolean"
+  },
   "Input.SendText": {
     "type": "method",
     "description": "Send a generic (unicode) text",

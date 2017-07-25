@@ -18,8 +18,10 @@ EXCLUDED_ADDONS += $(PKG_EXCLUDED_ADDONS)
 
 ifeq ($(lite),yes)
   MEDIAROOT = media.lite
+  SPLASHPNG = Splash.lite.png
 else
   MEDIAROOT = media
+  SPLASHPNG = Splash.png
 endif
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
 COPYDIRS = system addons $(MEDIAROOT)
@@ -110,14 +112,14 @@ sharedobb: shared
 res:
 	mkdir -p xbmc/gen/@APP_PACKAGE_DIR@ xbmc/res xbmc/res/raw xbmc/res/values xbmc/res/xml images
 	@echo "native_arch=$(ABI)" > xbmc/res/raw/xbmc.properties
-	cp -fp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
+	cp -fp $(XBMCROOT)/media/$(SPLASHPNG) xbmc/res/drawable/splash.png
 	cp -fp $(MEDIAROOT)/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
 	cp -fp $(MEDIAROOT)/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
 	cp -fp $(MEDIAROOT)/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
 	cp -fp $(MEDIAROOT)/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
 	cp -fp $(MEDIAROOT)/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
 	cp -fp $(MEDIAROOT)/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
-	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
+	cp -fp $(MEDIAROOT)/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
 	cp xbmc/strings.xml xbmc/res/values/
 	cp xbmc/colors.xml xbmc/res/values/
 	cp xbmc/activity_main.xml xbmc/res/layout/

@@ -76,6 +76,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
+#include "utils/LiteUtils.h"
 #include "utils/log.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
@@ -953,6 +954,12 @@ bool CSettings::InitializeDefinitions()
     CLog::Log(LOGFATAL, "Unable to load ios-specific settings definitions");
 #endif
 #endif
+  if (CLiteUtils::IsLite())
+  {
+    if (CFile::Exists(SETTINGS_XML_FOLDER "settings.lite.xml") &&
+        !Initialize(SETTINGS_XML_FOLDER "settings.lite.xml"))
+      CLog::Log(LOGFATAL, "Unable to load Lite specific settings definitions");
+  }
 
   // load any custom visibility and default values before loading the special
   // appliance.xml so that appliances are able to overwrite even those values

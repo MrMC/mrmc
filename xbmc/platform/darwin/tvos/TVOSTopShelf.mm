@@ -33,7 +33,7 @@
 #include "video/windows/GUIWindowVideoNav.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "filesystem/File.h"
-
+#include "utils/LiteUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -41,12 +41,6 @@
 #import <UIKit/UIKit.h>
 #import <mach/mach_host.h>
 #import <sys/sysctl.h>
-
-#if defined(APP_PACKAGE_LITE)
-  #define GROUPID "group.tv.mrmc.lite.shared"
-#else
-  #define GROUPID "group.tv.mrmc.shared"
-#endif
 
 std::string CTVOSTopShelf::m_url;
 bool        CTVOSTopShelf::m_handleUrl;
@@ -96,7 +90,11 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& moviesRA, CFileItemList& tvR
   NSMutableArray * tvArrayRA = [[NSMutableArray alloc] init];
   NSMutableArray * movieArrayPR = [[NSMutableArray alloc] init];
   NSMutableArray * tvArrayPR = [[NSMutableArray alloc] init];
-  NSString* groupid = [NSString stringWithUTF8String:GROUPID];
+  NSString* groupid;
+  if (CLiteUtils::IsLite())
+    groupid = [NSString stringWithUTF8String:"group.tv.mrmc.lite.shared"];
+  else
+    groupid = [NSString stringWithUTF8String:"group.tv.mrmc.shared"];
   NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:groupid];
   
   NSFileManager* fileManager = [NSFileManager defaultManager];

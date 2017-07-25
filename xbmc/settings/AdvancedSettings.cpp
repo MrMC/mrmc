@@ -47,6 +47,7 @@
 #include "settings/SettingUtils.h"
 #include "video/VideoDatabase.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/LiteUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -412,6 +413,8 @@ void CAdvancedSettings::Initialize()
 
   m_jsonOutputCompact = true;
   m_jsonTcpPort = 9090;
+  if (CLiteUtils::IsLite())
+    m_jsonTcpPort = 9990;
 
   m_enableMultimediaKeys = false;
 

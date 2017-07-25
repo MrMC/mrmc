@@ -22,6 +22,7 @@
 #include "WindowingFactory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/LiteUtils.h"
 
 #import "IOSExternalTouchController.h"
 #import "XBMCController.h"
@@ -83,7 +84,10 @@ const CGFloat timeFadeSecs                    = 2.0;
     [_touchView addSubview:descriptionLabel];
 
     //load the splash image
-    std::string strUserSplash = CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png");
+    std::string splashName = "Splash.png";
+    if (CLiteUtils::IsLite())
+      splashName = "Splash.lite.png";
+    std::string strUserSplash = CSpecialProtocol::TranslatePath("special://xbmc/media/" + splashName);
     xbmcLogo = [UIImage imageWithContentsOfFile:[NSString stringWithUTF8String:strUserSplash.c_str()]];
     
     //make a view with the image

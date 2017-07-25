@@ -28,6 +28,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.net.Uri;
 
 import java.text.MessageFormat;
 
@@ -211,6 +212,43 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void stopCapture()
   {
     mCaptureProjection.stopCapture();
+  }
+
+  public void openAmazonStore()
+  {
+    // string below is linking to our full app on Amazon Store
+    final String appPackageName = "B01ENT3I1Q";
+    try {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("amzn://apps/android?asin=" + appPackageName)));
+    } catch (android.content.ActivityNotFoundException anfe) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.amazon.com/gp/mas/dl/android?asin=" + appPackageName)));
+    }
+  }
+
+  public void openGooglePlayStore()
+  {
+    // string below is linking to our full app on Google Play store
+    final String appPackageName = "tv.mrmc.mrmc";
+    try {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+    } catch (android.content.ActivityNotFoundException anfe) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+    }
+  }
+
+  public void openYouTubeVideo(final String key)
+  {
+    try
+    {
+      Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + key));
+      // Check if the youtube app exists on the device
+      if (intent.resolveActivity(getPackageManager()) == null) {
+          // If the youtube app doesn't exist, then use the browser
+          intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + key));
+      }
+      startActivity(intent);
+    }
+    catch (Exception e) {}
   }
 
   @Override

@@ -26,6 +26,7 @@ public:
   static bool NeedReminding();
   static int  GetItemSizeLimit();
   static void ShowIsLiteDialog(int preTruncateSize);
+  static bool IsLite();
 
 private:
   static int nextReminderTrigger;

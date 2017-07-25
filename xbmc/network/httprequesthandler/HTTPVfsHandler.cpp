@@ -41,7 +41,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
     {
       bool accessible = false;
       // special logs file path
-      if (file.substr(0, 8) == "image://" || StringUtils::StartsWithNoCase(file, "special://logs/mrmc."))
+      if (file.substr(0, 8) == "image://" || StringUtils::StartsWithNoCase(file, "special://logs/mrmc"))
         accessible = true;
       else
       {

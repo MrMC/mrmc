@@ -23,6 +23,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIWindowManager.h"
+#include "utils/LiteUtils.h"
 #include "utils/log.h"
 
 CGUIWindowSplash::CGUIWindowSplash(void) : CGUIWindow(WINDOW_SPLASH, "")
@@ -40,9 +41,12 @@ void CGUIWindowSplash::OnInitWindow()
 {
   if (!m_image)
   {
+    std::string splashName = "Splash.png";
+    if (CLiteUtils::IsLite())
+      splashName = "Splash.lite.png";
     std::string splashImage = "special://home/media/Splash.png";
     if (!XFILE::CFile::Exists(splashImage))
-      splashImage = "special://xbmc/media/Splash.png";
+      splashImage = "special://xbmc/media/" + splashName;
 
     CLog::Log(LOGINFO, "load splash image: %s", CSpecialProtocol::TranslatePath(splashImage).c_str());
 

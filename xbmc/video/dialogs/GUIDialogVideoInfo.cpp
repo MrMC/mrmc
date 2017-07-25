@@ -62,6 +62,9 @@
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/DarwinUtils.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "platform/android/activity/XBMCApp.h"
+#endif
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
@@ -918,13 +921,17 @@ void CGUIDialogVideoInfo::OnSetUserrating()
 void CGUIDialogVideoInfo::PlayTrailer()
 {
   std::string path = m_movieItem->GetVideoInfoTag()->m_strTrailer;
-  // std::string ytPath = "vnd.youtube://" + videoID; // android
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) || defined(TARGET_ANDROID)
   if (StringUtils::StartsWith(path, "plugin://plugin.video.youtube"))
   {
     std::string videoID = StringUtils::Split(path,"videoid=")[1];
     std::string ytPath = "http://youtube.com/watch?v=" + videoID;
-    CDarwinUtils::OpenAppWithOpenURL(ytPath);
+    #if defined(TARGET_DARWIN)
+      CDarwinUtils::OpenAppWithOpenURL(ytPath);
+    #else
+      CXBMCApp::get()->openYouTubeVideo(videoID);
+    #endif
+
     return;
   }
 #endif

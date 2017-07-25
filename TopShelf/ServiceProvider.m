@@ -21,16 +21,7 @@
 #import "ServiceProvider.h"
 
 #if (defined HAVE_CONFIG_H)
-  #include "config.h"
-#endif
-
-
-#if defined(APP_PACKAGE_LITE)
-  #define GROUPID "group.tv.mrmc.lite.shared"
-  #define URL "mrmclite"
-#else
-  #define GROUPID "group.tv.mrmc.shared"
-  #define URL "mrmc"
+#include "config.h"
 #endif
 
 @interface ServiceProvider ()
@@ -57,8 +48,13 @@
 
 - (NSArray *)topShelfItems
 {
-    NSString* groupid = [NSString stringWithUTF8String:GROUPID];
-    NSString* groupURL = [NSString stringWithUTF8String:URL];
+#if defined(APP_PACKAGE_LITE)
+      NSString* groupid = [NSString stringWithUTF8String:"group.tv.mrmc.lite.shared"];
+      NSString* groupURL = [NSString stringWithUTF8String:"mrmclite"];
+#else
+      NSString* groupid = [NSString stringWithUTF8String:"group.tv.mrmc.shared"];
+      NSString* groupURL = [NSString stringWithUTF8String:"mrmc"];
+#endif
     NSLog(@"TopShelf ID: %@", groupid);
     NSMutableArray *topShelfItems = [[NSMutableArray alloc] init];;
     NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:groupid];

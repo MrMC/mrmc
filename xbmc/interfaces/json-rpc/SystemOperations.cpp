@@ -21,6 +21,7 @@
 #include "SystemOperations.h"
 #include "messaging/ApplicationMessenger.h"
 #include "interfaces/builtins/Builtins.h"
+#include "utils/LiteUtils.h"
 #include "utils/Variant.h"
 #include "powermanagement/PowerManager.h"
 
@@ -93,6 +94,12 @@ JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLa
   }
   else
     return FailedToExecute;
+}
+
+JSONRPC_STATUS CSystemOperations::IsLite(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  result = CLiteUtils::IsLite();
+  return OK;
 }
 
 JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const std::string &property, CVariant &result)
