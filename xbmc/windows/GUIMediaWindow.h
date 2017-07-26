@@ -205,4 +205,5 @@ protected:
   std::string m_strFilterPath;
   std::string m_parentRedirect;
   bool m_hideRootDotDot;
+  bool m_firstTime = true;
 };

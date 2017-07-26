@@ -538,9 +538,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (resetHistory)
           SetHistoryForPath(m_vecItems->GetPath());
       }
-      if (message.GetParam1() != WINDOW_INVALID)
+      if (m_firstTime)
       { // first time to this window - make sure we set the root path
         m_startDirectory = returning ? dir : "";
+        m_firstTime = false;
       }
       if (!m_parentRedirect.empty())
         m_history.AddPathFront(m_parentRedirect);
