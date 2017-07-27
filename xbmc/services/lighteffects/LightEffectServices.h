@@ -65,8 +65,8 @@ private:
   int               m_height;
   CCriticalSection  m_critical;
   CLightEffectClient *m_lighteffect;
-  bool              m_staticON;
-  bool              m_lightsON;
+  bool              m_turnStaticON;
   CEvent            m_blingEvent;
+  int               m_priority;
 
 };

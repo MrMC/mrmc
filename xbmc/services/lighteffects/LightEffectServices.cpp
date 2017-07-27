@@ -40,8 +40,8 @@ CLightEffectServices::CLightEffectServices()
 , m_width(32)
 , m_height(32)
 , m_lighteffect(nullptr)
-, m_staticON(false)
-, m_lightsON(true)
+, m_turnStaticON(false)
+, m_priority(128)
 {
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
@@ -63,27 +63,36 @@ CLightEffectServices& CLightEffectServices::GetInstance()
 
 void CLightEffectServices::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
+  if (flag == Player && !strcmp(sender, "xbmc"))
+  {
+    if (!strcmp(message, "OnStop"))
+    {
+      m_turnStaticON = true;
+    }
+    else if (!strcmp(message, "OnPlay"))
+    {
+      m_priority = 128;
+    }
+  }
+
   // if setting is disabled, there is no need to even check these
-  if(!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER))
+  if(!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICON) ||
+     !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER))
     return;
   
-  // this is not used on tvOS, needs testing on droid
-  if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated"))
+  if (flag == GUI && !strcmp(sender, "xbmc"))
   {
-    m_staticON = false;
-    if (m_lighteffect)
-      m_lighteffect->SetPriority(128);
-  }
-  else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated"))
-  {
-    m_staticON = true;
-    if (m_lighteffect)
-      m_lighteffect->SetPriority(255);
-  }
-  else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
-  {
-    m_staticON = true;
-    SetAllLightsToStaticRGB();
+    if (!strcmp(message, "OnScreensaverDeactivated"))
+    {
+      CLog::Log(LOGDEBUG, "CLightEffectServices::Announce() [OnScreensaverDeactivated]");
+      m_priority = 128;
+      m_turnStaticON = true;
+    }
+    else if (!strcmp(message, "OnScreensaverActivated"))
+    {
+      CLog::Log(LOGDEBUG, "CLightEffectServices::Announce() [OnScreensaverActivated]");
+      m_priority = 255;
+    }
   }
 }
 
@@ -154,9 +163,9 @@ void CLightEffectServices::OnSettingChanged(const CSetting *setting)
            settingId == CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICB ||
            settingId == CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICON)
   {
-    m_staticON = false;
+    m_turnStaticON = true;
     if (settingId == CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICON)
-      m_staticON = !static_cast<const CSettingBool*>(setting)->GetValue();
+      m_turnStaticON = static_cast<const CSettingBool*>(setting)->GetValue();
   }
 
   CSettings::GetInstance().Save();
@@ -171,12 +180,21 @@ void CLightEffectServices::Process()
 
     SetBling();
 
-    int priority = -1;
     CRenderCapture *capture = nullptr;
+    int curPriority = -1;
     while (!m_bStop)
     {
+      if (m_priority != curPriority)
+      {
+        curPriority = m_priority;
+        m_lighteffect->SetPriority(curPriority);
+      }
+        
       if (g_application.m_pPlayer->IsPlayingVideo())
       {
+        if (m_priority != 128)
+          continue;
+        m_turnStaticON = false;
         // if starting, alloc a rendercapture and start capturing
         if (capture == nullptr)
         {
@@ -184,15 +202,6 @@ void CLightEffectServices::Process()
           g_renderManager.Capture(capture, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
         }
 
-        // reset static bool for later
-        m_staticON = false;
-        m_lightsON = true;
-        if (priority != 128)
-        {
-          priority = 128;
-          m_lighteffect->SetPriority(priority);
-        }
-        
         capture->GetEvent().WaitMSec(1000);
         if (capture->GetUserState() == CAPTURESTATE_DONE)
         {
@@ -226,25 +235,17 @@ void CLightEffectServices::Process()
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICON))
         {
           // only set static colour once, no point doing it over and over again
-          if (!m_staticON)
+          if (m_turnStaticON)
           {
-            m_staticON = true;
-            m_lightsON = true;
+            m_turnStaticON = false;
+            m_priority = 128;
             SetAllLightsToStaticRGB();
           }
         }
         // or kill the lights
         else
         {
-          if (m_lightsON)
-          {
-            m_lightsON = false;
-            if (priority != 255)
-            {
-              priority = 255;
-              m_lighteffect->SetPriority(priority);
-            }
-          }
+          m_priority = 255;
         }
         usleep(50 * 1000);
       }
@@ -264,7 +265,7 @@ void CLightEffectServices::Process()
 
 bool CLightEffectServices::InitConnection()
 {
-  m_staticON = false;
+  m_turnStaticON = true;
   m_lighteffect = new CLightEffectClient();
   
   // boblightd server IP address and port
@@ -274,7 +275,7 @@ bool CLightEffectServices::InitConnection()
   // timeout is in microseconds, so 5 seconds.
   if (!m_lighteffect->Connect(IP, port, 5000000))
   {
-    m_staticON = true;
+    m_turnStaticON = false;
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
       g_localizeStrings.Get(882), g_localizeStrings.Get(883), 3000, true);
     const CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE);
@@ -330,7 +331,7 @@ void CLightEffectServices::SetOption(std::string setting)
     CLog::Log(LOGDEBUG, "CLightEffectServices::SetOption - option '%s' and value '%s' - Done!",
       option.c_str(), value.c_str());
     // this will refresh static colours once options are changed
-    m_staticON = false;
+    m_turnStaticON = true;
   }
 }
 
