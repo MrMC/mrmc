@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colors>
+    <color name="primary_color">FF00ffff</color>
+    <color name="primary_color_30">5000ffff</color>
+    <color name="selected">FF00e6e6</color>
+</colors>

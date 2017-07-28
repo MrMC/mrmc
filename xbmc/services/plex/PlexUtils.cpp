@@ -2092,7 +2092,7 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
 
   // get all genres
   std::vector<std::string> genres;
-  const CVariant variantGenre = video["Genre"];
+  const CVariant variantGenre = makeVariantArrayIfSingleItem(video["Genre"]);
   if (!variantGenre.isNull())
   {
     for (auto variantIt = variantGenre.begin_array(); variantIt != variantGenre.end_array(); ++variantIt)
@@ -2105,7 +2105,7 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
 
   // get all writers
   std::vector<std::string> writers;
-  const CVariant variantWriter = video["Writer"];
+  const CVariant variantWriter = makeVariantArrayIfSingleItem(video["Writer"]);
   if (!variantWriter.isNull())
   {
     for (auto variantIt = variantWriter.begin_array(); variantIt != variantWriter.end_array(); ++variantIt)
@@ -2118,23 +2118,24 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
 
   // get all directors
   std::vector<std::string> directors;
-  const CVariant variantDirector = video["Director"];
+  const CVariant variantDirector = makeVariantArrayIfSingleItem(video["Director"]);
   if (!variantDirector.isNull())
   {
     for (auto variantIt = variantDirector.begin_array(); variantIt != variantDirector.end_array(); ++variantIt)
     {
-      if (*variantIt != CVariant::VariantTypeNull)
-        directors.push_back((*variantIt)["tag"].asString());
+      CVariant dir = *variantIt;
+      if (dir != CVariant::VariantTypeNull)
+        directors.push_back(dir["tag"].asString());
     }
   }
   item.GetVideoInfoTag()->SetDirector(directors);
 
   // get all countries
   std::vector<std::string> countries;
-  const CVariant variantCountry = video["Country"];
+  const CVariant variantCountry = makeVariantArrayIfSingleItem(video["Country"]);
   if (!variantCountry.isNull())
   {
-    for (auto variantIt = variantDirector.begin_array(); variantIt != variantDirector.end_array(); ++variantIt)
+    for (auto variantIt = variantCountry.begin_array(); variantIt != variantCountry.end_array(); ++variantIt)
     {
       if (*variantIt != CVariant::VariantTypeNull)
         countries.push_back((*variantIt)["tag"].asString());
@@ -2144,7 +2145,7 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
 
   // get all roles
   std::vector< SActorInfo > roles;
-  const CVariant variantRoles = video["Role"];
+  const CVariant variantRoles = makeVariantArrayIfSingleItem(video["Role"]);
   if (!variantRoles.isNull())
   {
     for (auto variantIt = variantRoles.begin_array(); variantIt != variantRoles.end_array(); ++variantIt)
@@ -2152,8 +2153,11 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
       if (*variantIt != CVariant::VariantTypeNull)
       {
         SActorInfo role;
+        std::string strRole;
+        if ((*variantIt)["role"].asString() != "0")
+          strRole =(*variantIt)["role"].asString();
         role.strName = (*variantIt)["tag"].asString();
-        role.strRole = (*variantIt)["role"].asString();
+        role.strRole = strRole;
         role.thumb   = (*variantIt)["thumb"].asString();
         roles.push_back(role);
       }

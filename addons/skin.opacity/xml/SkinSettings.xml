@@ -32,6 +32,19 @@
 						<onclick>Skin.ToggleSetting(alternative_watched_icons)</onclick>
 						<selected>Skin.HasSetting(alternative_watched_icons)</selected>
 					</control>
+					<control type="radiobutton" id="607">
+						<label>$LOCALIZE[21389]</label>
+						<include>DefaultSettingButton</include>
+						<onclick>Skin.ToggleSetting(enable_custom_background)</onclick>
+						<selected>Skin.HasSetting(enable_custom_background)</selected>
+					</control>
+					<control type="button" id="608">
+						<description>Single Image button</description>
+						<include>DefaultSettingButton</include>
+						<label>$LOCALIZE[33070]</label>
+						<onclick>Skin.SetImage(Custom.Background)</onclick>
+						<visible>Skin.HasSetting(enable_custom_background)</visible>
+		            </control>
 				</control>
 				<control type="grouplist" id="610">
 					<top>90</top>

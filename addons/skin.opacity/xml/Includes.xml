@@ -190,6 +190,14 @@
 				<label>$VAR[ResolutionFlagVar]</label>
 			</control>
 			<control type="image">
+              <visible>!IsEmpty(ListItem.VideoCodec)</visible>
+              <height>36</height>
+              <width>102</width>
+              <aspectratio>keep</aspectratio>
+              <colordiffuse>grey</colordiffuse>
+              <texture>$INFO[ListItem.VideoCodec,badges/video/,.png]</texture>
+            </control>
+			<control type="image">
 				<visible>!IsEmpty(ListItem.AudioChannels)</visible>
 				<height>36</height>
 				<width>102</width>
@@ -445,6 +453,11 @@
 		<param name="sublabel">$INFO[Container.CurrentItem,, / ]$INFO[Container.NumItems]</param>
 		<definition>
 			<control type="image">
+				<texture flipx="$PARAM[flipx]">lists/panel.png</texture>
+ 				<height>82</height>
+				<top>0</top>
+			</control>
+			<control type="image">
 				<description>separator image</description>
 				<top>82</top>
 				<height>4</height>
@@ -454,14 +467,6 @@
 				<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="System.HasModalDialog">conditional</animation>
 				<depth>DepthBars</depth>
 				<animation effect="fade" start="0" end="100" time="300" condition="[Window.Previous(fullscreenvideo) | Window.Previous(startup)]">WindowOpen</animation>
-				<!-- 				<control type="image">
-																					<left>0</left>
-																					<top>0</top>
-																					<width>110%</width>
-																					<height>60</height>
-																					<texture>frame/InfoBar.png</texture>
-																					<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
-																				</control> -->
 				<control type="grouplist">
 					<left>35</left>
 					<description>Left side of top bar</description>
@@ -609,6 +614,11 @@
 		<param name="info_visible">False</param>
 		<definition>
 			<control type="image">
+				<texture flipx="$PARAM[flipx]">lists/panel.png</texture>
+ 				<height>82</height>
+				<bottom>0</bottom>
+			</control>
+			<control type="image">
 				<description>separator image</description>
 				<bottom>82</bottom>
 				<height>4</height>
@@ -698,8 +708,7 @@
 		<param name="flipx">false</param>
 		<definition>
 			<control type="image">
-				<texture flipx="$PARAM[flipx]">lists/panel.png</texture>
-				<bordertexture border="21">overlays/shadow.png</bordertexture>
+				<texture flipx="$PARAM[flipx]">lists/panel_80.png</texture>
 				<bordersize>20</bordersize>
 				<width>$PARAM[width]</width>
 				<left>$PARAM[left]</left>
