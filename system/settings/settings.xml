@@ -479,7 +479,7 @@
         </setting>
         <setting id="videolibrary.homeshelfitems" type="integer" label="703" help="704">
           <level>0</level>
-          <default>1</default>
+          <default>3</default>
           <constraints>
             <options>
               <option label="681">1</option> <!-- Recently added -->
