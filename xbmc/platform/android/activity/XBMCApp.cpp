@@ -831,6 +831,7 @@ void CXBMCApp::OnPlayBackStarted()
 
   AcquireAudioFocus();
   RequestVisibleBehind(true);
+  CAndroidKey::SetHandleMediaKeys(false);
 
   m_mediaSession->activate(true);
   CJNIMediaMetadataBuilder builder;
@@ -883,7 +884,6 @@ void CXBMCApp::OnPlayBackPaused()
   
   ReleaseAudioFocus();
   RequestVisibleBehind(false);
-  CAndroidKey::SetHandleMediaKeys(true);
 }
 
 void CXBMCApp::OnPlayBackStopped()
@@ -891,7 +891,7 @@ void CXBMCApp::OnPlayBackStopped()
   CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
   RequestVisibleBehind(false);
-  CAndroidKey::SetHandleMediaKeys(false);
+  CAndroidKey::SetHandleMediaKeys(true);
   ReleaseAudioFocus();
   m_mediaSession->activate(false);
 }
