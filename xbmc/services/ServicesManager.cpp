@@ -271,7 +271,7 @@ void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, i
     for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
     {
       CFileItemPtr item = recentlyAdded.Get(i);
-      item->SetProperty("ItemType", g_localizeStrings.Get(20386));
+      item->SetProperty("ItemType", g_localizeStrings.Get(681));
       temp.Add(item);
     }
 
@@ -295,7 +295,7 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
     for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
     {
       CFileItemPtr item = recentlyAdded.Get(i);
-      item->SetProperty("ItemType", g_localizeStrings.Get(20387));
+      item->SetProperty("ItemType", g_localizeStrings.Get(681));
       temp.Add(item);
     }
 
@@ -319,7 +319,7 @@ void CServicesManager::GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, i
     for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
     {
       CFileItemPtr item = recentlyAdded.Get(i);
-      item->SetProperty("ItemType", g_localizeStrings.Get(359));
+      item->SetProperty("ItemType", g_localizeStrings.Get(681));
       temp.Add(item);
     }
     
@@ -343,7 +343,7 @@ void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int item
     for (int i = 0; i < inProgress.Size() && i < itemLimit; i++)
     {
       CFileItemPtr item = inProgress.Get(i);
-      item->SetProperty("ItemType", g_localizeStrings.Get(626));
+      item->SetProperty("ItemType", g_localizeStrings.Get(682));
       temp.Add(item);
     }
     
@@ -367,7 +367,7 @@ void CServicesManager::GetAllInProgressMovies(CFileItemList &inProgress, int ite
     for (int i = 0; i < inProgress.Size() && i < itemLimit; i++)
     {
       CFileItemPtr item = inProgress.Get(i);
-      item->SetProperty("ItemType", g_localizeStrings.Get(627));
+      item->SetProperty("ItemType", g_localizeStrings.Get(682));
       temp.Add(item);
     }
     

@@ -269,7 +269,7 @@
 					<left>570</left>
 					<visible>Container(9000).HasFocus(1)</visible>
 					<control type="label">
-						<top>80</top>
+						<top>105</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -277,10 +277,23 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[UPPERCASE]$INFO[Container(8000).ListItem.Property(ItemType)][/UPPERCASE]</label>
+						<label>[B]$INFO[Container(8000).ListItem.Property(ItemType)][/B]</label>
+						<visible>!Control.HasFocus(8000)</visible>
+					</control>
+					<control type="label">
+						<top>105</top>
+						<width>1270</width>
+						<textoffsetx>20</textoffsetx>
+						<textoffsety>15</textoffsety>
+						<height>50</height>
+						<font>font25_title</font>
+						<aligny>top</aligny>
+						<textcolor>grey</textcolor>
+						<label>[B]$INFO[Container(8000).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8000).ListItem.Label] $INFO[Container(8000).ListItem.Year, (,)]</label>
+						<visible>Control.HasFocus(8000)</visible>
 					</control>
 					<control type="list" id="8000">
-						<top>130</top>
+						<top>185</top>
 						<width>1270</width>
 						<height>600</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
@@ -305,17 +318,6 @@
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
 								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>$INFO[ListItem.Label]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-								</control>
 							</control>
 						</itemlayout>
 						<focusedlayout width="260" height="400">
@@ -344,35 +346,11 @@
 									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8000)</visible>
 								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>$INFO[ListItem.Label]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>!Control.HasFocus(8000)</visible>
-								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>[B]$INFO[ListItem.Label][/B]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>Control.HasFocus(8000)</visible>
-								</control>
 							</control>
 						</focusedlayout>
 					</control>
 					<control type="label">
-						<top>515</top>
+						<top>545</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -380,10 +358,23 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[UPPERCASE]$INFO[Container(8010).ListItem.Property(ItemType)][/UPPERCASE]</label>
+						<label>[B]$INFO[Container(8010).ListItem.Property(ItemType)][/B]</label>
+						<visible>!Control.HasFocus(8010)</visible>
+					</control>
+					<control type="label">
+						<top>545</top>
+						<width>1270</width>
+						<textoffsetx>20</textoffsetx>
+						<textoffsety>15</textoffsety>
+						<height>50</height>
+						<font>font25_title</font>
+						<aligny>top</aligny>
+						<textcolor>grey</textcolor>
+						<label>[B]$INFO[Container(8010).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8010).ListItem.Label] $INFO[Container(8010).ListItem.Year, (,)]</label>
+						<visible>Control.HasFocus(8010)</visible>
 					</control>
 					<control type="list" id="8010">
-						<top>570</top>
+						<top>625</top>
 						<width>1270</width>
 						<height>600</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
@@ -408,17 +399,6 @@
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
 								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>$INFO[ListItem.Label]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-								</control>
 							</control>
 						</itemlayout>
 						<focusedlayout width="260" height="400">
@@ -447,30 +427,6 @@
 									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8010)</visible>
 								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>$INFO[ListItem.Label]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>!Control.HasFocus(8010)</visible>
-								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>[B]$INFO[ListItem.Label][/B]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>Control.HasFocus(8010)</visible>
-								</control>
 							</control>
 						</focusedlayout>
 					</control>
@@ -481,7 +437,7 @@
 					<left>570</left>
 					<visible>Container(9000).HasFocus(2)</visible>
 					<control type="label">
-						<top>80</top>
+						<top>105</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -489,10 +445,23 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[UPPERCASE]$INFO[Container(8001).ListItem.Property(ItemType)][/UPPERCASE]</label>
+						<label>[B]$INFO[Container(8001).ListItem.Property(ItemType)][/B]</label>
+						<visible>!Control.HasFocus(8001)</visible>
+					</control>
+					<control type="label">
+						<top>105</top>
+						<width>1270</width>
+						<textoffsetx>20</textoffsetx>
+						<textoffsety>15</textoffsety>
+						<height>50</height>
+						<font>font25_title</font>
+						<aligny>top</aligny>
+						<textcolor>grey</textcolor>
+						<label>[B]$INFO[Container(8001).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8001).ListItem.TVShowTitle] - $INFO[Container(8001).ListItem.Property(SeasonEpisode)]</label>
+						<visible>Control.HasFocus(8001)</visible>
 					</control>
 					<control type="list" id="8001">
-						<top>130</top>
+						<top>185</top>
 						<width>1270</width>
 						<height>600</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
@@ -517,17 +486,6 @@
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
 								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>$INFO[ListItem.TVShowTitle] - $INFO[ListItem.Property(SeasonEpisode)]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-								</control>
 							</control>
 						</itemlayout>
 						<focusedlayout width="260" height="400">
@@ -556,35 +514,11 @@
 									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8001)</visible>
 								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>$INFO[ListItem.TVShowTitle] - $INFO[ListItem.Property(SeasonEpisode)]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>!Control.HasFocus(8001)</visible>
-								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>[B]$INFO[ListItem.TVShowTitle] - $INFO[ListItem.Property(SeasonEpisode)][/B]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>Control.HasFocus(8001)</visible>
-								</control>
 							</control>
 						</focusedlayout>
 					</control>
 					<control type="label">
-						<top>515</top>
+						<top>545</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -592,10 +526,23 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[UPPERCASE]$INFO[Container(8011).ListItem.Property(ItemType)][/UPPERCASE]</label>
+						<label>[B]$INFO[Container(8011).ListItem.Property(ItemType)][/B]</label>
+						<visible>!Control.HasFocus(8011)</visible>
+					</control>
+					<control type="label">
+						<top>545</top>
+						<width>1270</width>
+						<textoffsetx>20</textoffsetx>
+						<textoffsety>15</textoffsety>
+						<height>50</height>
+						<font>font25_title</font>
+						<aligny>top</aligny>
+						<textcolor>grey</textcolor>
+						<label>[B]$INFO[Container(8011).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8011).ListItem.TVShowTitle] - $INFO[Container(8011).ListItem.Property(SeasonEpisode)]</label>
+						<visible>Control.HasFocus(8011)</visible>
 					</control>
 					<control type="list" id="8011">
-						<top>570</top>
+						<top>625</top>
 						<width>1270</width>
 						<height>600</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
@@ -620,17 +567,6 @@
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
 								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>$INFO[ListItem.TVShowTitle] - $INFO[ListItem.Property(SeasonEpisode)]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-								</control>
 							</control>
 						</itemlayout>
 						<focusedlayout width="260" height="400">
@@ -659,30 +595,6 @@
 									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8011)</visible>
 								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>[B]$INFO[ListItem.TVShowTitle] - $INFO[ListItem.Property(SeasonEpisode)][/B]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>Control.HasFocus(8011)</visible>
-								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>200</width>
-									<height>120</height>
-									<label>$INFO[ListItem.TVShowTitle] - $INFO[ListItem.Property(SeasonEpisode)]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>!Control.HasFocus(8011)</visible>
-								</control>
 							</control>
 						</focusedlayout>
 					</control>
@@ -693,7 +605,7 @@
 					<left>570</left>
 					<visible>Container(9000).HasFocus(3)</visible>
 					<control type="label">
-						<top>80</top>
+						<top>105</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -701,10 +613,23 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[UPPERCASE]$INFO[Container(8002).ListItem.Property(ItemType)][/UPPERCASE]</label>
+						<label>[B]$INFO[Container(8002).ListItem.Property(ItemType)][/B]</label>
+						<visible>!Control.HasFocus(8002)</visible>
+					</control>
+					<control type="label">
+						<top>105</top>
+						<width>1270</width>
+						<textoffsetx>20</textoffsetx>
+						<textoffsety>15</textoffsety>
+						<height>50</height>
+						<font>font25_title</font>
+						<aligny>top</aligny>
+						<textcolor>grey</textcolor>
+						<label>[B]$INFO[Container(8002).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8002).ListItem.Album]</label>
+						<visible>Control.HasFocus(8002)</visible>
 					</control>
 					<control type="list" id="8002">
-						<top>130</top>
+						<top>180</top>
 						<width>1210</width>
 						<height>600</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
@@ -729,17 +654,6 @@
 									<aspectratio aligny="top">stretch</aspectratio>
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
-								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>290</width>
-									<height>100</height>
-									<label>$INFO[ListItem.Album]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
 								</control>
 							</control>
 						</itemlayout>
@@ -768,30 +682,6 @@
 									<width>306</width>
 									<height>306</height>
 									<texture>overlays/frameAlbum.png</texture>
-									<visible>Control.HasFocus(8002)</visible>
-								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>290</width>
-									<height>100</height>
-									<label>$INFO[ListItem.Album]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
-									<visible>!Control.HasFocus(8002)</visible>
-								</control>
-								<control type="textbox">
-									<left>8</left>
-									<top>280</top>
-									<width>290</width>
-									<height>100</height>
-									<label>[B]$INFO[ListItem.Album][/B]</label>
-									<font>font12</font>
-									<shadowcolor>text_shadow</shadowcolor>
-									<align>center</align>
-									<aligny>center</aligny>
 									<visible>Control.HasFocus(8002)</visible>
 								</control>
 							</control>

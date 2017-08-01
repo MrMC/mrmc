@@ -105,7 +105,7 @@ bool CHomeShelfJob::UpdateVideo()
       for (int i = 0; i < homeShelfMoviesPR.Size() && i < NUM_ITEMS; i++)
       {
         CFileItemPtr item = homeShelfMoviesPR.Get(i);
-        item->SetProperty("ItemType", g_localizeStrings.Get(627));
+        item->SetProperty("ItemType", g_localizeStrings.Get(682));
         if (!item->HasArt("thumb"))
         {
           loader.LoadItem(item.get());
@@ -117,7 +117,7 @@ bool CHomeShelfJob::UpdateVideo()
         CFileItemPtr item = homeShelfTVPR.Get(i);
         std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
         item->SetProperty("SeasonEpisode", seasonEpisode);
-        item->SetProperty("ItemType", g_localizeStrings.Get(626));
+        item->SetProperty("ItemType", g_localizeStrings.Get(682));
         if (!item->HasArt("thumb"))
         {
           loader.LoadItem(item.get());
@@ -156,7 +156,7 @@ bool CHomeShelfJob::UpdateVideo()
       for (int i = 0; i < homeShelfMoviesRA.Size(); i++)
       {
         CFileItemPtr item = homeShelfMoviesRA.Get(i);
-        item->SetProperty("ItemType", g_localizeStrings.Get(20386));
+        item->SetProperty("ItemType", g_localizeStrings.Get(681));
         if (!item->HasArt("thumb"))
         {
           loader.LoadItem(item.get());
@@ -180,7 +180,7 @@ bool CHomeShelfJob::UpdateVideo()
         CFileItemPtr item = homeShelfTVRA.Get(i);
         std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
         item->SetProperty("SeasonEpisode", seasonEpisode);
-        item->SetProperty("ItemType", g_localizeStrings.Get(20387));
+        item->SetProperty("ItemType", g_localizeStrings.Get(681));
         if (!item->HasArt("thumb"))
         {
           loader.LoadItem(item.get());
@@ -233,7 +233,7 @@ bool CHomeShelfJob::UpdateMusic()
       pItem->SetProperty("thumb", strThumb);
       pItem->SetProperty("fanart", strFanart);
       pItem->SetProperty("artist", album.GetAlbumArtistString());
-      pItem->SetProperty("ItemType", g_localizeStrings.Get(359));
+      pItem->SetProperty("ItemType", g_localizeStrings.Get(681));
       m_HomeShelfMusicAlbums->Add(pItem);
     }
     musicdatabase.Close();

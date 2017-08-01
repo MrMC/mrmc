@@ -3015,7 +3015,7 @@ msgid "Verbose logging for the [B]Video[/B] component"
 msgstr ""
 
 msgctxt "#681"
-msgid "Recently added"
+msgid "Recently Added"
 msgstr ""
 
 msgctxt "#682"
