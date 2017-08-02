@@ -1385,7 +1385,9 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   {
     m_audioFocusGranted = true;
     if (m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS ||
-        m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT)
+        m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT ||
+        m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK
+       )
     {
       if (m_wasPlayingWhenTransientLoss && m_playback_state != PLAYBACK_STATE_STOPPED)
         CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
@@ -1393,7 +1395,9 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
     }
   }
   else if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS ||
-           focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT)
+           focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT ||
+           focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK
+          )
   {
     m_audioFocusGranted = false;
     if (m_playback_state & PLAYBACK_STATE_PLAYING)
