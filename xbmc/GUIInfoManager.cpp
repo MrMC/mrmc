@@ -106,6 +106,11 @@
 #include "platform/darwin/osx/smc.h"
 #endif
 #include "linux/LinuxResourceCounter.h"
+
+#if defined(TARGET_ANDROID)
+#include "platform/android/activity/AndroidFeatures.h"
+#endif
+
 static CLinuxResourceCounter m_resourceCounter;
 
 #define SYSHEATUPDATEINTERVAL 60000
@@ -262,6 +267,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "cansuspend",       SYSTEM_CAN_SUSPEND },
                                   { "canhibernate",     SYSTEM_CAN_HIBERNATE },
                                   { "canreboot",        SYSTEM_CAN_REBOOT },
+                                  { "istouch",          SYSTEM_IS_TOUCH },
                                   { "screensaveractive",SYSTEM_SCREENSAVER_ACTIVE },
                                   { "dpmsactive",       SYSTEM_DPMS_ACTIVE },
                                   { "cputemperature",   SYSTEM_CPU_TEMPERATURE },     // labels from here
@@ -2545,6 +2551,14 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case SYSTEM_CAN_REBOOT:
       bReturn = g_powerManager.CanReboot();
+      break;
+    case SYSTEM_IS_TOUCH:
+      bReturn = false;
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+      bReturn = true;
+#elif defined(TARGET_ANDROID)
+      bReturn = CAndroidFeatures::HasTouchScreen();
+#endif
       break;
     case SYSTEM_SCREENSAVER_ACTIVE:
       bReturn = g_application.IsInScreenSaver();
