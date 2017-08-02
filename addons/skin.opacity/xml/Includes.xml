@@ -7,6 +7,7 @@
 	<include file="Includes_Buttons.xml" />
 	<include file="Includes_PVR.xml" />
 	<include file="View_50_WideList.xml" />
+	<include file="View_51_Poster.xml" />
 	<include file="Variables.xml" />
 	<constant name="DepthDialog">0.50</constant>
 	<constant name="DepthDialog+">0.52</constant>
@@ -190,13 +191,13 @@
 				<label>$VAR[ResolutionFlagVar]</label>
 			</control>
 			<control type="image">
-              <visible>!IsEmpty(ListItem.VideoCodec)</visible>
-              <height>36</height>
-              <width>102</width>
-              <aspectratio>keep</aspectratio>
-              <colordiffuse>grey</colordiffuse>
-              <texture>$INFO[ListItem.VideoCodec,badges/video/,.png]</texture>
-            </control>
+				<visible>!IsEmpty(ListItem.VideoCodec)</visible>
+				<height>36</height>
+				<width>102</width>
+				<aspectratio>keep</aspectratio>
+				<colordiffuse>grey</colordiffuse>
+				<texture>$INFO[ListItem.VideoCodec,badges/video/,.png]</texture>
+			</control>
 			<control type="image">
 				<visible>!IsEmpty(ListItem.AudioChannels)</visible>
 				<height>36</height>
@@ -450,11 +451,10 @@
 		</control>
 	</include>
 	<include name="TopBar">
-		<param name="sublabel">$INFO[Container.CurrentItem,, / ]$INFO[Container.NumItems]</param>
 		<definition>
 			<control type="image">
 				<texture flipx="$PARAM[flipx]">lists/panel.png</texture>
- 				<height>82</height>
+				<height>82</height>
 				<top>0</top>
 			</control>
 			<control type="image">
@@ -605,6 +605,7 @@
 					<include>FullScreenDimensions</include>
 					<aspectratio>scale</aspectratio>
 					<fadetime>400</fadetime>
+					<visible>Window.IsMedia</visible>
 					<texture background="true" colordiffuse="37FFFFFF">$VAR[MediaFanartVar]</texture>
 				</control>
 			</control>
@@ -615,7 +616,7 @@
 		<definition>
 			<control type="image">
 				<texture flipx="$PARAM[flipx]">lists/panel.png</texture>
- 				<height>82</height>
+				<height>82</height>
 				<bottom>0</bottom>
 			</control>
 			<control type="image">
@@ -638,7 +639,32 @@
 					<include>BreadcrumbsLabel</include>
 				</control>
 			</control>
+				<include>BackButton</include>
 		</definition>
+	</include>
+	<include name="BackButton">
+		<control type="radiobutton" id="701">
+			<left>10</left>
+			<bottom>5</bottom>
+			<width>70</width>
+			<height>70</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<onclick>Action(Back)</onclick>
+			<animation effect="fade" start="0" end="100" time="400" condition="Window.Previous(home)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(home)">WindowClose</animation>
+			<texturefocus colordiffuse="primary_color">osd/fullscreen/buttons/button-fo.png</texturefocus>
+			<texturenofocus />
+			<radioposx>5</radioposx>
+			<radiowidth>60</radiowidth>
+			<radioheight>60</radioheight>
+			<textureradioonfocus>icons/back.png</textureradioonfocus>
+			<textureradioonnofocus colordiffuse="grey">icons/back.png</textureradioonnofocus>
+			<textureradioofffocus>icons/back.png</textureradioofffocus>
+			<textureradiooffnofocus colordiffuse="grey">icons/back.png</textureradiooffnofocus>
+			<visible>!Window.IsActive(home) + !Window.IsActive(loginscreen) + !Window.IsActive(infodialog)</visible>
+			<visible>System.IsTouch</visible>
+		</control>
 	</include>
 	<include name="BottomBarTwoListInfo">
 		<control type="group">
@@ -738,11 +764,21 @@
 						<top>150</top>
 						<left>30</left>
 						<width>470</width>
-						<height>50</height>
+						<height>30</height>
+						<font>font30_title</font>
+						<aligny>top</aligny>
+						<textcolor>grey</textcolor>
+						<label>$INFO[ListItem.TVShowTitle]</label>
+					</control>
+					<control type="label">
+						<top>190</top>
+						<left>30</left>
+						<width>470</width>
+						<height>25</height>
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>$INFO[ListItem.TVShowTitle][CR]$INFO[ListItem.Title]</label>
+						<label>$INFO[ListItem.Title]</label>
 					</control>
 					<control type="image">
 						<left>30</left>

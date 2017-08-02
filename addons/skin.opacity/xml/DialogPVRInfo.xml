@@ -117,6 +117,7 @@
 				<param name="sub_label" value="$INFO[ListItem.ChannelName]" />
 				<param name="posy" value="40" />
 			</include>
+			<include>BackButton</include>
 		</control>
 	</controls>
 </window>

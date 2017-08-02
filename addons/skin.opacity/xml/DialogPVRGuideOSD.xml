@@ -13,7 +13,7 @@
 					<param name="bottom" value="-40" />
 					<param name="width" value="840" />
 				</include>
-				<control type="list" id="11">
+				<control type="fixedlist" id="11">
 					<left>0</left>
 					<width>1600</width>
 					<height>100%</height>
@@ -23,6 +23,8 @@
 					<ondown>11</ondown>
 					<pagecontrol>60</pagecontrol>
 					<scrolltime>200</scrolltime>
+					<movement>4</movement>
+					<focusposition>5</focusposition>
 					<itemlayout height="90" width="1600">
 						<control type="label">
 							<left>20</left>
@@ -34,7 +36,7 @@
 						</control>
 						<control type="label">
 							<left>150</left>
-							<width>610</width>
+							<width>600</width>
 							<bottom>0</bottom>
 							<align>right</align>
 							<aligny>center</aligny>
@@ -59,7 +61,7 @@
 						</control>
 						<control type="label">
 							<left>150</left>
-							<width>610</width>
+							<width>600</width>
 							<bottom>0</bottom>
 							<align>right</align>
 							<aligny>center</aligny>
@@ -86,7 +88,7 @@
 					</focusedlayout>
 				</control>
 				<control type="scrollbar" id="60">
-					<left>768</left>
+					<left>762</left>
 					<width>18</width>
 					<height>100%</height>
 					<onleft>11</onleft>

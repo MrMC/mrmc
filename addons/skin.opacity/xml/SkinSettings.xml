@@ -20,31 +20,39 @@
 					<onup>600</onup>
 					<ondown>600</ondown>
 					<visible>Container(9000).HasFocus(3)</visible>
+					<control type="radiobutton" id="604">
+						<label>$LOCALIZE[35505]</label>
+						<include>DefaultSettingButton</include>
+						<onclick>Skin.ToggleSetting(dark_theme)</onclick>
+						<selected>Skin.HasSetting(dark_theme)</selected>
+					</control>
 					<control type="radiobutton" id="605">
 						<label>$LOCALIZE[31002]</label>
 						<include>DefaultSettingButton</include>
 						<onclick>Skin.ToggleSetting(no_fanart)</onclick>
 						<selected>!Skin.HasSetting(no_fanart)</selected>
-					</control>
-					<control type="radiobutton" id="606">
-						<label>$LOCALIZE[31024]</label>
-						<include>DefaultSettingButton</include>
-						<onclick>Skin.ToggleSetting(alternative_watched_icons)</onclick>
-						<selected>Skin.HasSetting(alternative_watched_icons)</selected>
+						<visible>!Skin.HasSetting(dark_theme)</visible>
 					</control>
 					<control type="radiobutton" id="607">
 						<label>$LOCALIZE[21389]</label>
 						<include>DefaultSettingButton</include>
 						<onclick>Skin.ToggleSetting(enable_custom_background)</onclick>
 						<selected>Skin.HasSetting(enable_custom_background)</selected>
+						<visible>!Skin.HasSetting(dark_theme)</visible>
 					</control>
 					<control type="button" id="608">
 						<description>Single Image button</description>
 						<include>DefaultSettingButton</include>
 						<label>$LOCALIZE[33070]</label>
 						<onclick>Skin.SetImage(Custom.Background)</onclick>
-						<visible>Skin.HasSetting(enable_custom_background)</visible>
+						<visible>Skin.HasSetting(enable_custom_background) + !Skin.HasSetting(dark_theme)</visible>
 		            </control>
+					<control type="radiobutton" id="606">
+						<label>$LOCALIZE[31024]</label>
+						<include>DefaultSettingButton</include>
+						<onclick>Skin.ToggleSetting(alternative_watched_icons)</onclick>
+						<selected>Skin.HasSetting(alternative_watched_icons)</selected>
+					</control>
 				</control>
 				<control type="grouplist" id="610">
 					<top>90</top>
@@ -112,6 +120,24 @@
 						<onclick>Skin.ToggleSetting(HomeMenuNoFavButton)</onclick>
 					</control>
 				</control>
+				<control type="grouplist" id="620">
+					<top>90</top>
+					<left>0</left>
+					<right>50</right>
+					<bottom>90</bottom>
+					<onleft>9000</onleft>
+					<onright>60</onright>
+					<onup>610</onup>
+					<pagecontrol>60</pagecontrol>
+					<ondown>600</ondown>
+					<visible>Container(9000).HasFocus(4)</visible>
+					<control type="radiobutton" id="621">
+						<label>$LOCALIZE[35507]</label>
+						<include>DefaultSettingButton</include>
+						<selected>Skin.HasSetting(tv_to_gude)</selected>
+						<onclick>Skin.ToggleSetting(tv_to_gude)</onclick>
+					</control>
+				</control>
 			</control>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
@@ -161,6 +187,10 @@
 							<label>$LOCALIZE[31061]</label>
 							<onclick>noop</onclick>
 						</item>
+						<item id="4">
+							<label>$LOCALIZE[35506]</label>
+							<onclick>noop</onclick>
+						</item>
 						<item id="3">
 							<label>$LOCALIZE[31159]</label>
 							<onclick>noop</onclick>
@@ -183,6 +213,10 @@
 				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 				<visible>Control.IsVisible(610)</visible>
 			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[5] / $LOCALIZE[20077]" />
+			</include>
+			<include>BottomBar</include>
 			<control type="textbox" id="6">
 				<include>OpenClose_Right</include>
 				<description>description area</description>
@@ -197,10 +231,6 @@
 				<visible>!Window.IsVisible(infodialog) + !Window.IsVisible(extendedprogressdialog)</visible>
 				<label>$VAR[SkinSettingsHelpTextVar]</label>
 			</control>
-			<include content="TopBar">
-				<param name="breadcrumbs_label" value="$LOCALIZE[5] / $LOCALIZE[20077]" />
-			</include>
-			<include>BottomBar</include>
 		</control>
 	</controls>
 </window>

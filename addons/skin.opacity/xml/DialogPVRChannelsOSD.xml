@@ -13,7 +13,7 @@
 					<param name="bottom" value="-40" />
 					<param name="width" value="941" />
 				</include>
-				<control type="list" id="11">
+				<control type="fixedlist" id="11">
 					<left>0</left>
 					<width>875</width>
 					<height>100%</height>
@@ -21,9 +21,11 @@
 					<onright>60</onright>
 					<onup>11</onup>
 					<ondown>11</ondown>
+					<movement>4</movement>
+					<focusposition>5</focusposition>
 					<pagecontrol>60</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<focusedlayout height="90" width="1000">
+					<focusedlayout height="90">
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
@@ -32,7 +34,7 @@
 							<visible>Control.hasFocus(11)</visible>
 						</control>
 						<control type="image">
-							<left>770</left>
+							<left>760</left>
 							<top>10</top>
 							<width>90</width>
 							<bottom>10</bottom>
@@ -49,7 +51,7 @@
 							<info>ListItem.Progress</info>
 						</control>
 						<control type="image">
-							<right>95</right>
+							<right>100</right>
 							<top>22</top>
 							<width>40</width>
 							<height>40</height>
@@ -89,7 +91,7 @@
 					</focusedlayout>
 					<itemlayout height="90">
 						<control type="image">
-							<left>770</left>
+							<left>760</left>
 							<top>10</top>
 							<width>90</width>
 							<bottom>10</bottom>
@@ -106,7 +108,7 @@
 							<info>ListItem.Progress</info>
 						</control>
 						<control type="image">
-							<right>95</right>
+							<right>100</right>
 							<top>22</top>
 							<width>40</width>
 							<height>40</height>
@@ -148,7 +150,7 @@
 					</itemlayout>
 				</control>
 				<control type="scrollbar" id="60">
-					<left>868</left>
+					<left>860</left>
 					<width>18</width>
 					<height>100%</height>
 					<onleft>11</onleft>

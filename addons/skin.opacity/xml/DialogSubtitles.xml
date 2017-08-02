@@ -19,13 +19,6 @@
 			<include>Animation_DialogPopupVisible</include>
 			<visible>Window.IsTopMostModal(subtitlesearch)</visible>
 			<control type="group" id="250">
-				<control type="image" id="110" description="Service Logo">
-		          <posx>30</posx>
-		          <posy>0</posy>
-		          <width>375</width>
-		          <height>60</height>
-		          <aspectratio>keep</aspectratio>
-		        </control>
 				<control type="group">
 					<left>1320</left>
 					<control type="grouplist">
@@ -259,14 +252,6 @@
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
 				</control>
-				<control type="image" id="110">
-					<description>Service Logo</description>
-					<top>500</top>
-					<width>320</width>
-					<height>80</height>
-					<fadetime>200</fadetime>
-					<aspectratio>keep</aspectratio>
-				</control>
 				<control type="list" id="150">
 					<width>320</width>
 					<height>480</height>
@@ -282,6 +267,13 @@
 						<param name="align" value="center" />
 					</include>
 				</control>
+				<control type="image" id="110" description="Service Logo">
+		          <posx>-20</posx>
+		          <top>520</top>
+		          <width>375</width>
+		          <height>60</height>
+		          <aspectratio>keep</aspectratio>
+		        </control>
 			</control>
 		</control>
 	</controls>

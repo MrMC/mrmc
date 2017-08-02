@@ -2,13 +2,14 @@
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
-	<views>50</views>
+	<views>50,51</views>
 	<menucontrol>9000</menucontrol>
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
 			<animation effect="fade" start="100" end="3" time="200" tween="sine" condition="System.HasModalDialog">Conditional</animation>
 			<include>View_50_WideList</include>
+			<include>View_51_Poster</include>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Right</include>
@@ -34,6 +35,14 @@
 			<control type="group">
 				<include>MediaMenuCommon</include>
 				<control type="grouplist" id="9000">
+					<control type="button" id="1022">
+						<description>Watched Toggle</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31023]</label>
+						<label2>$INFO[Container.ViewMode]</label2>
+						<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.content(seasons)</visible>
+						<onclick>Container.NextViewMode</onclick>
+					</control>
 					<include>MediaMenuListCommon</include>
 					<control type="button" id="10">
 						<description>Watched Toggle</description>

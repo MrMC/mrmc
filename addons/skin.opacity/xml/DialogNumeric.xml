@@ -31,7 +31,7 @@
 				<width>477</width>
 				<height>80</height>
 				<font>font37</font>
-				<textcolor>primary_color</textcolor>
+				<textcolor>white</textcolor>
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>

@@ -14,6 +14,12 @@
 		<scrolltime tween="cubic" easing="out">500</scrolltime>
 		<itemlayout height="100">
 			<control type="group">
+				<control type="image">
+					<description>separator image</description>
+					<height>3</height>
+					<visible>!IsEmpty(ListItem.Property(separator))</visible>
+					<texture colordiffuse="primary_color_30" border="3">dialogs/separator-grey.png</texture>
+				</control>
 				<control type="label">
 					<left>50</left>
 					<right>40</right>
@@ -26,58 +32,31 @@
 			</control>
 		</itemlayout>
 		<focusedlayout height="100">
-			<control type="group">
+			<control type="image">
+				<description>separator image</description>
+				<height>3</height>
+				<visible>!IsEmpty(ListItem.Property(separator))</visible>
+				<visible>!Control.HasFocus($PARAM[list_id])</visible>
+				<texture colordiffuse="primary_color_30" border="3">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="image">
 				<left>0</left>
-				<right>0</right>
-				<control type="image">
-					<left>0</left>
-					<right>25</right>
-					<height>100%</height>
-					<visible>Control.HasFocus($PARAM[list_id])</visible>
-					<texture colordiffuse="primary_color" border="5">buttons/focus.png</texture>
-				</control>
-				<control type="label">
-					<left>50</left>
-					<right>45</right>
-					<height>100</height>
-					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
-					<align>left</align>
-					<scroll>true</scroll>
-					<font>font35</font>
-				</control>
+				<right>25</right>
+				<height>100%</height>
+				<visible>Control.HasFocus($PARAM[list_id])</visible>
+				<texture colordiffuse="primary_color" border="5">buttons/focus.png</texture>
+			</control>
+			<control type="label">
+				<left>50</left>
+				<right>45</right>
+				<height>100</height>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<align>left</align>
+				<scroll>true</scroll>
+				<font>font35</font>
 			</control>
 		</focusedlayout>
-	</include>
-	<include name="HomeSubMenuVideos">
-		<item id="90102">
-			<label>342</label>
-			<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
-			<visible>[Library.HasServices | Library.HasContent(Movies)] + Skin.HasSetting(HomeMenuNoMovieButton)</visible>
-		</item>
-		<item id="90103">
-			<label>20343</label>
-			<onclick>ActivateWindow(Videos,TvShowTitles,return)</onclick>
-			<visible>[Library.HasServices | Library.HasContent(TVShows)] + Skin.HasSetting(HomeMenuNoTVShowButton)</visible>
-		</item>
-		<item id="90104">
-			<label>20389</label>
-			<onclick>ActivateWindow(Videos,MusicVideoTitles,return)</onclick>
-			<visible>[Library.HasServices | Library.HasContent(MusicVideos)] + Skin.HasSetting(HomeMenuNoMusicVideoButton)</visible>
-		</item>
-		<item id="90105">
-			<label>744</label>
-			<onclick>ActivateWindow(Videos,Files,return)</onclick>
-		</item>
-		<item id="90106">
-			<label>14022</label>
-			<onclick>ActivateWindow(Videos,Root)</onclick>
-			<visible>Library.HasContent(Video)</visible>
-		</item>
-		<item id="90107">
-			<label>$LOCALIZE[136]</label>
-			<onclick>ActivateWindow(Videos,playlists,return)</onclick>
-		</item>
 	</include>
 	<include name="HomeSubMenuMovies">
 		<item id="90162">
@@ -109,6 +88,131 @@
 			<label>344</label>
 			<onclick>ActivateWindow(Videos,MovieActors,return)</onclick>
 		</item>
+		<item id="90168">
+			<label>653</label>
+			<property name="separator">true</property>
+			<onclick>UpdateLibrary(video)</onclick>
+		</item>
+	</include>
+	<include name="PosterLayout">
+		<param name="list_id">8011</param>
+		<param name="label">$INFO[ListItem.Label]</param>
+		<param name="thumb">$INFO[ListItem.Thumb]</param>
+		<param name="item_width">260</param>
+		<param name="y_offset">2</param>
+		<param name="condition">True</param>
+		<definition>
+			<itemlayout width="$PARAM[item_width]" height="412" condition="$PARAM[condition]">
+				<control type="group">
+					<depth>DepthContentPopout</depth>
+					<top>$PARAM[y_offset]</top>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>216</width>
+						<height>306</height>
+						<texture fallback="DefaultVideo.png" background="true">$PARAM[thumb]</texture>
+						<bordertexture border="20">overlays/shadow.png</bordertexture>
+						<bordersize>20</bordersize>
+					</control>
+					<control type="progress">
+						<left>20</left>
+						<top>270</top>
+						<width>176</width>
+						<height>10</height>
+						<texturebg>-</texturebg>
+						<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+						<info>ListItem.PercentPlayed</info>
+						<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+					</control>
+					<control type="progress">
+						<left>20</left>
+						<top>276</top>
+						<width>176</width>
+						<height>10</height>
+						<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+						<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+						<info>100</info>
+						<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+					</control>
+					<control type="textbox">
+						<left>8</left>
+						<top>292</top>
+						<width>200</width>
+						<height>120</height>
+						<label>$PARAM[label]</label>
+						<font>font12</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+					</control>
+				</control>
+			</itemlayout>
+			<focusedlayout width="$PARAM[item_width]" height="412" condition="$PARAM[condition]">
+				<control type="group">
+					<depth>DepthContentPopout</depth>
+					<animation type="Focus" reversible="false">
+						<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+					</animation>
+					<animation type="UnFocus" reversible="false">
+						<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
+					</animation>
+					<top>$PARAM[y_offset]</top>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>216</width>
+						<height>306</height>
+						<texture fallback="DefaultVideo.png" background="true">$PARAM[thumb]</texture>
+						<bordertexture border="20">overlays/shadow.png</bordertexture>
+						<bordersize>20</bordersize>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>216</width>
+						<height>306</height>
+						<texture fallback="DefaultVideo.png" background="true">$PARAM[thumb]</texture>
+						<bordertexture border="20">overlays/frameRA.png</bordertexture>
+						<animation effect="fade" start="0" end="100" time="200">Focus</animation>
+						<animation effect="fade" start="100" end="0" time="200">UnFocus</animation>
+						<bordersize>20</bordersize>
+					</control>
+					<control type="progress">
+						<left>20</left>
+						<top>270</top>
+						<width>176</width>
+						<height>10</height>
+						<texturebg>-</texturebg>
+						<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+						<info>ListItem.PercentPlayed</info>
+						<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+					</control>
+					<control type="progress">
+						<left>20</left>
+						<top>276</top>
+						<width>176</width>
+						<height>10</height>
+						<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+						<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+						<info>100</info>
+						<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+					</control>
+					<control type="textbox">
+						<left>8</left>
+						<top>292</top>
+						<width>200</width>
+						<height>120</height>
+						<label>$PARAM[label]</label>
+						<font>font12</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<!-- <visible>!Control.HasFocus($PARAM[list_id])</visible> -->
+					</control>
+				</control>
+			</focusedlayout>
+		</definition>
 	</include>
 	<include name="HomeSubMenuTVShows">
 		<item id="90172">
@@ -135,24 +239,29 @@
 			<label>344</label>
 			<onclick>ActivateWindow(Videos,TVShowActors,return)</onclick>
 		</item>
+		<item id="90177">
+			<label>653</label>
+			<property name="separator">true</property>
+			<onclick>UpdateLibrary(video)</onclick>
+		</item>
 	</include>
 	<include name="HomeSubMenuMusic">
 		<item id="90112">
 			<label>133</label>
 			<onclick>ActivateWindow(Music,Artists,return)</onclick>
-			<visible>Library.HasContent(Music)</visible>
+			<visible>Library.HasContent(Music) | Library.HasServices</visible>
 		</item>
 		<item id="90113">
 			<label>132</label>
 			<onclick>ActivateWindow(Music,Albums,return)</onclick>
-			<visible>Library.HasContent(Music)</visible>
+			<visible>Library.HasContent(Music) | Library.HasServices</visible>
 		</item>
 		<item id="90114">
 			<label>134</label>
 			<onclick>ActivateWindow(Music,Songs,return)</onclick>
-			<visible>Library.HasContent(Music)</visible>
+			<visible>Library.HasContent(Music) | Library.HasServices</visible>
 		</item>
-		<item id="90115">
+<!-- 		<item id="90115">
 			<label>744</label>
 			<onclick>ActivateWindow(Music,Files,return)</onclick>
 		</item>
@@ -160,10 +269,21 @@
 			<label>14022</label>
 			<onclick>ActivateWindow(Music,Root)</onclick>
 			<visible>Library.HasContent(Music)</visible>
-		</item>
+		</item> -->
 		<item id="90117">
 			<label>$LOCALIZE[136]</label>
 			<onclick>ActivateWindow(Music,playlists,return)</onclick>
+		</item>
+		<item id="90118">
+			<label>653</label>
+			<property name="separator">true</property>
+			<onclick>UpdateLibrary(music)</onclick>
+		</item>
+		<item id="90119">
+			<label>Player controls</label>
+			<property name="separator">true</property>
+			<onclick>ActivateWindow(playercontrols)</onclick>
+			<visible>Player.HasAudio</visible>
 		</item>
 	</include>
 	<include name="HomeSubMenuSystem">
@@ -179,18 +299,11 @@
 			<label>7</label>
 			<onclick>ActivateWindow(FileManager)</onclick>
 		</item>
-<!-- 		<item id="90126">
-			<label>14111</label>
-			<onclick>ActivateWindow(EventLog,events://,return)</onclick>
-			<visible>system.getbool(eventlog.enabled)</visible>
-		</item> -->
-	</include>
-	<include name="HomeSubMenuPlayDisc">
-		<item id="90132">
-			<label>13391</label>
-			<onclick>SetFocus(9000)</onclick>
-			<onclick>EjectTray()</onclick>
-		</item>
+		<!-- 		<item id="90126">
+									<label>14111</label>
+									<onclick>ActivateWindow(EventLog,events://,return)</onclick>
+									<visible>system.getbool(eventlog.enabled)</visible>
+								</item> -->
 	</include>
 	<include name="HomeSubMenuTV">
 		<item id="90143">

@@ -258,13 +258,12 @@ void CServicesManager::ShowMusicInfo(CFileItem item)
 
 void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit)
 {
-  bool hasRecentlyAdded = false;
   if (CPlexUtils::HasClients())
-    hasRecentlyAdded |= CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, false);
+    CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, false);
   if (CEmbyUtils::HasClients())
-    hasRecentlyAdded |= CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(recentlyAdded, false);
+    CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(recentlyAdded, false);
 
-  if (hasRecentlyAdded)
+  if (recentlyAdded.Size() > 0)
   {
     CFileItemList temp;
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
@@ -282,13 +281,12 @@ void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, i
 
 void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit)
 {
-  bool hasRecentlyAdded = false;
   if (CPlexUtils::HasClients())
-    hasRecentlyAdded |= CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, true);
+    CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, true);
   if (CEmbyUtils::HasClients())
-    hasRecentlyAdded |= CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(recentlyAdded, true);
+    CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(recentlyAdded, true);
 
-  if (hasRecentlyAdded)
+  if (recentlyAdded.Size() > 0)
   {
     CFileItemList temp;
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
@@ -306,13 +304,12 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
 
 void CServicesManager::GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit)
 {
-  bool hasRecentlyAdded = false;
   if (CPlexUtils::HasClients())
-    hasRecentlyAdded |= CPlexUtils::GetPlexRecentlyAddedAlbums(recentlyAdded, itemLimit);
+    CPlexUtils::GetPlexRecentlyAddedAlbums(recentlyAdded, itemLimit);
   if (CEmbyUtils::HasClients())
-    hasRecentlyAdded |= CEmbyUtils::GetEmbyRecentlyAddedAlbums(recentlyAdded, itemLimit);
+    CEmbyUtils::GetEmbyRecentlyAddedAlbums(recentlyAdded, itemLimit);
 
-  if (hasRecentlyAdded)
+  if (recentlyAdded.Size() > 0)
   {
     CFileItemList temp;
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
@@ -330,13 +327,12 @@ void CServicesManager::GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, i
 
 void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int itemLimit)
 {
-  bool hasInProgress= false;
   if (CPlexUtils::HasClients())
-    hasInProgress |= CPlexUtils::GetAllPlexInProgress(inProgress, true);
+    CPlexUtils::GetAllPlexInProgress(inProgress, true);
   if (CEmbyUtils::HasClients())
-    hasInProgress |= CEmbyUtils::GetAllEmbyInProgress(inProgress, true);
+    CEmbyUtils::GetAllEmbyInProgress(inProgress, true);
 
-  if (hasInProgress)
+  if (inProgress.Size() > 0)
   {
     CFileItemList temp;
     inProgress.Sort(SortByDateAdded, SortOrderDescending);
@@ -354,13 +350,12 @@ void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int item
 
 void CServicesManager::GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit)
 {
-  bool hasInProgress= false;
   if (CPlexUtils::HasClients())
-    hasInProgress |= CPlexUtils::GetAllPlexInProgress(inProgress, false);
+    CPlexUtils::GetAllPlexInProgress(inProgress, false);
   if (CEmbyUtils::HasClients())
-    hasInProgress |= CEmbyUtils::GetAllEmbyInProgress(inProgress, false);
+    CEmbyUtils::GetAllEmbyInProgress(inProgress, false);
 
-  if (hasInProgress)
+  if (inProgress.Size() > 0)
   {
     CFileItemList temp;
     inProgress.Sort(SortByDateAdded, SortOrderDescending);

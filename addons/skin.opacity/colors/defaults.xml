@@ -2,7 +2,7 @@
 <colors>
 	<color name="primary_background">FF202020</color>
 	<color name="secondary_background">80808080</color>
-	<color name="dialog_tint">FF151515</color>
+	<color name="dialog_tint">99151515</color>
 	<color name="primary_color">FFFF0800</color>
 	<color name="primary_color_30">50FF0800</color>
 	<color name="selected">FF54FFFF</color>

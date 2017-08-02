@@ -202,7 +202,8 @@
 							<item id="5">
 								<label>$LOCALIZE[19020]</label>
 								<property name="menu_id">$NUMBER[12000]</property>
-								<onclick>ActivateWindow(TVChannels)</onclick>
+								<onclick condition="Skin.HasSetting(tv_to_gude)">ActivateWindow(TvGuide)</onclick>
+								<onclick condition="!Skin.HasSetting(tv_to_gude)">ActivateWindow(TVChannels)</onclick>
 								<thumb>icons/sidemenu/livetv.png</thumb>
 								<property name="id">livetv</property>
 								<property name="submenu">true</property>
@@ -267,6 +268,8 @@
 					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 					<left>570</left>
+					<centertop>50%</centertop>
+					<height>1050</height>
 					<visible>Container(9000).HasFocus(1)</visible>
 					<control type="label">
 						<top>105</top>
@@ -289,13 +292,13 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[B]$INFO[Container(8000).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8000).ListItem.Label] $INFO[Container(8000).ListItem.Year, (,)]</label>
+						<label>[B]$INFO[Container(8000).ListItem.Property(ItemType)] :[/B] $INFO[Container(8000).ListItem.Label] $INFO[Container(8000).ListItem.Year, (,)]</label>
 						<visible>Control.HasFocus(8000)</visible>
 					</control>
 					<control type="list" id="8000">
 						<top>185</top>
 						<width>1270</width>
-						<height>600</height>
+						<height>308</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -303,9 +306,8 @@
 						<ondown>8010</ondown>
 						<onright>8000</onright>
 						<preloaditems>1</preloaditems>
-						<viewtype label="31100">icon</viewtype>
 						<visible>IntegerGreaterThan(Container(8000).NumItems,0)</visible>
-						<itemlayout width="260">
+						<itemlayout width="260" height="308">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<top>2</top>
@@ -318,9 +320,29 @@
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
 								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>270</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg>-</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>ListItem.PercentPlayed</info>
+									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>276</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>100</info>
+									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="260" height="400">
+						<focusedlayout width="260" height="308">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<animation type="Focus" reversible="false">
@@ -346,6 +368,26 @@
 									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8000)</visible>
 								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>270</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg>-</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>ListItem.PercentPlayed</info>
+									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>276</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>100</info>
+									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
 							</control>
 						</focusedlayout>
 					</control>
@@ -370,13 +412,13 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[B]$INFO[Container(8010).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8010).ListItem.Label] $INFO[Container(8010).ListItem.Year, (,)]</label>
+						<label>[B]$INFO[Container(8010).ListItem.Property(ItemType)] :[/B] $INFO[Container(8010).ListItem.Label] $INFO[Container(8010).ListItem.Year, (,)]</label>
 						<visible>Control.HasFocus(8010)</visible>
 					</control>
 					<control type="list" id="8010">
 						<top>625</top>
 						<width>1270</width>
-						<height>600</height>
+						<height>308</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -384,9 +426,8 @@
 						<ondown>8000</ondown>
 						<onright>8010</onright>
 						<preloaditems>1</preloaditems>
-						<viewtype label="31100">icon</viewtype>
 						<visible>IntegerGreaterThan(Container(8010).NumItems,0)</visible>
-						<itemlayout width="260" height="400">
+						<itemlayout width="260" height="308">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<top>2</top>
@@ -399,9 +440,29 @@
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
 								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>270</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg>-</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>ListItem.PercentPlayed</info>
+									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>276</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>100</info>
+									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="260" height="400">
+						<focusedlayout width="260" height="308">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<animation type="Focus" reversible="false">
@@ -427,6 +488,26 @@
 									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8010)</visible>
 								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>270</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg>-</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>ListItem.PercentPlayed</info>
+									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>276</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>100</info>
+									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
 							</control>
 						</focusedlayout>
 					</control>
@@ -435,6 +516,8 @@
 					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 					<left>570</left>
+					<centertop>50%</centertop>
+					<height>1050</height>
 					<visible>Container(9000).HasFocus(2)</visible>
 					<control type="label">
 						<top>105</top>
@@ -457,13 +540,25 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[B]$INFO[Container(8001).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8001).ListItem.TVShowTitle] - $INFO[Container(8001).ListItem.Property(SeasonEpisode)]</label>
-						<visible>Control.HasFocus(8001)</visible>
+						<label>[B]$INFO[Container(8001).ListItem.Property(ItemType)] :[/B] $INFO[Container(8001).ListItem.TVShowTitle] - $INFO[Container(8001).ListItem.Label]</label>
+						<visible>Control.HasFocus(8001) + !Container(8001).ListItem.Property(MediaServicesItem)</visible>
 					</control>
+					<control type="label">
+						<top>105</top>
+						<width>1270</width>
+						<textoffsetx>20</textoffsetx>
+						<textoffsety>15</textoffsety>
+						<height>50</height>
+						<font>font25_title</font>
+						<aligny>top</aligny>
+						<textcolor>grey</textcolor>
+						<label>[B]$INFO[Container(8001).ListItem.Property(ItemType)] :[/B] $INFO[Container(8001).ListItem.TVShowTitle] - $INFO[Container(8001).ListItem.Property(SeasonEpisode)] - $INFO[Container(8001).ListItem.Label]</label>
+						<visible>Control.HasFocus(8001) + Container(8001).ListItem.Property(MediaServicesItem)</visible>
+					</control>	
 					<control type="list" id="8001">
 						<top>185</top>
 						<width>1270</width>
-						<height>600</height>
+						<height>308</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -471,9 +566,8 @@
 						<ondown>8011</ondown>
 						<onright>8001</onright>
 						<preloaditems>1</preloaditems>
-						<viewtype label="31100">icon</viewtype>
 						<visible>IntegerGreaterThan(Container(8001).NumItems,0)</visible>
-						<itemlayout width="260">
+						<itemlayout width="260" height="306">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<top>2</top>
@@ -486,9 +580,29 @@
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
 								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>270</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg>-</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>ListItem.PercentPlayed</info>
+									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>276</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>100</info>
+									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="260" height="400">
+						<focusedlayout width="260" height="306">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<animation type="Focus" reversible="false">
@@ -514,6 +628,26 @@
 									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8001)</visible>
 								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>270</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg>-</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>ListItem.PercentPlayed</info>
+									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>276</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>100</info>
+									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
 							</control>
 						</focusedlayout>
 					</control>
@@ -538,13 +672,25 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[B]$INFO[Container(8011).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8011).ListItem.TVShowTitle] - $INFO[Container(8011).ListItem.Property(SeasonEpisode)]</label>
-						<visible>Control.HasFocus(8011)</visible>
+						<label>[B]$INFO[Container(8011).ListItem.Property(ItemType)] :[/B] $INFO[Container(8011).ListItem.TVShowTitle] - $INFO[Container(8011).ListItem.Property(SeasonEpisode)] - $INFO[Container(8011).ListItem.Label]</label>
+						<visible>Control.HasFocus(8011) + Container(8011).ListItem.Property(MediaServicesItem)</visible>
 					</control>
+					<control type="label">
+						<top>545</top>
+						<width>1270</width>
+						<textoffsetx>20</textoffsetx>
+						<textoffsety>15</textoffsety>
+						<height>50</height>
+						<font>font25_title</font>
+						<aligny>top</aligny>
+						<textcolor>grey</textcolor>
+						<label>[B]$INFO[Container(8011).ListItem.Property(ItemType)] :[/B] $INFO[Container(8011).ListItem.TVShowTitle] - $INFO[Container(8011).ListItem.Label]</label>
+						<visible>Control.HasFocus(8011) + !Container(8011).ListItem.Property(MediaServicesItem)</visible>
+					</control>	
 					<control type="list" id="8011">
 						<top>625</top>
 						<width>1270</width>
-						<height>600</height>
+						<height>308</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -552,9 +698,8 @@
 						<ondown>8001</ondown>
 						<onright>8011</onright>
 						<preloaditems>1</preloaditems>
-						<viewtype label="31100">icon</viewtype>
 						<visible>IntegerGreaterThan(Container(8011).NumItems,0)</visible>
-						<itemlayout width="260">
+						<itemlayout width="260" height="306">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<top>2</top>
@@ -567,9 +712,29 @@
 									<bordertexture border="20">overlays/shadow.png</bordertexture>
 									<bordersize>20</bordersize>
 								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>270</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg>-</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>ListItem.PercentPlayed</info>
+									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>276</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>100</info>
+									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="260" height="400">
+						<focusedlayout width="260" height="306">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<animation type="Focus" reversible="false">
@@ -595,6 +760,26 @@
 									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8011)</visible>
 								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>270</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg>-</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>ListItem.PercentPlayed</info>
+									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
+								<control type="progress">
+									<left>20</left>
+									<top>276</top>
+									<width>176</width>
+									<height>10</height>
+									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
+									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+									<info>100</info>
+									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+								</control>
 							</control>
 						</focusedlayout>
 					</control>
@@ -603,6 +788,8 @@
 					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 					<left>570</left>
+					<centertop>50%</centertop>
+					<height>650</height>
 					<visible>Container(9000).HasFocus(3)</visible>
 					<control type="label">
 						<top>105</top>
@@ -625,13 +812,13 @@
 						<font>font25_title</font>
 						<aligny>top</aligny>
 						<textcolor>grey</textcolor>
-						<label>[B]$INFO[Container(8002).ListItem.Property(ItemType)] [COLOR primary_color]:[/COLOR][/B] $INFO[Container(8002).ListItem.Album]</label>
+						<label>[B]$INFO[Container(8002).ListItem.Property(ItemType)] :[/B] $INFO[Container(8002).ListItem.Album]</label>
 						<visible>Control.HasFocus(8002)</visible>
 					</control>
 					<control type="list" id="8002">
 						<top>180</top>
 						<width>1210</width>
-						<height>600</height>
+						<height>308</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -639,9 +826,8 @@
 						<ondown>8002</ondown>
 						<onright>8002</onright>
 						<preloaditems>1</preloaditems>
-						<viewtype label="31100">icon</viewtype>
 						<visible>IntegerGreaterThan(Container(8002).NumItems,0)</visible>
-						<itemlayout width="306">
+						<itemlayout width="306" height="306">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<top>2</top>
@@ -657,7 +843,7 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="306" height="400">
+						<focusedlayout width="306" height="306">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<animation type="Focus" reversible="false">

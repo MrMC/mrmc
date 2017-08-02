@@ -113,10 +113,11 @@
 					</control>
 				</control>
 			</control>
+			<include content="InfoDialogTopBarInfo">
+				<param name="main_label" value="$INFO[ListItem.Label]" />
+				<param name="sub_label" value="$INFO[ListItem.PictureDateTime]" />
+			</include>
+			<include>BackButton</include>
 		</control>
-		<include content="InfoDialogTopBarInfo">
-			<param name="main_label" value="$INFO[ListItem.Label]" />
-			<param name="sub_label" value="$INFO[ListItem.PictureDateTime]" />
-		</include>
 	</controls>
 </window>

@@ -156,6 +156,7 @@
 				<param name="main_label" value="$INFO[ListItem.Property(Addon.Name)]" />
 				<param name="sub_label" value="$INFO[ListItem.Property(Addon.Version),[COLOR grey],[/COLOR]]$INFO[ListItem.Property(Addon.Creator), $LOCALIZE[31071] ]" />
 			</include>
+			<include>BackButton</include>
 		</control>
 	</controls>
 </window>

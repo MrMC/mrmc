@@ -36,8 +36,8 @@
 				<orientation>horizontal</orientation>
 				<onup>87</onup>
 				<ondown>noop</ondown>
-				<onleft>5000</onleft>
-				<onright>699</onright>
+				<onleft>201</onleft>
+				<onright>201</onright>
 				<align>center</align>
 				<control type="radiobutton" id="600">
 					<include content="OSDButton">
@@ -139,12 +139,11 @@
 				</control>
 			</control>
 			<control type="label">
-				<right>30</right>
-				<top>-60</top>
-				<textoffsetx>20</textoffsetx>
+				<left>0</left>
+				<right>0</right>
+				<top>-53</top>
 				<aligny>center</aligny>
-				<align>right</align>
-				<width>1858</width>
+				<align>center</align>
 				<height>60</height>
 				<label>$VAR[MusicOSDHelpTextVar]</label>
 			</control>

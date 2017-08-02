@@ -22,7 +22,7 @@
 				<description>Line 1 Label</description>
 				<left>110</left>
 				<top>44</top>
-				<width>1100</width>
+				<width>930</width>
 				<height>18</height>
 				<font>font14</font>
 				<aligny>center</aligny>
@@ -33,7 +33,7 @@
 				<description>Line 2 Label</description>
 				<left>111</left>
 				<top>55</top>
-				<width>1100</width>
+				<width>930</width>
 				<height>60</height>
 				<font>font27_narrow</font>
 				<aligny>center</aligny>

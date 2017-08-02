@@ -47,13 +47,6 @@
 				</itemlayout>
 				<focusedlayout height="175" width="860">
 					<control type="group">
-						<depth>DepthContentPopout</depth>
-						<animation type="Focus" reversible="false">
-							<effect type="zoom" center="430,145" start="100" end="106" time="250" tween="sine" />
-						</animation>
-						<animation type="UnFocus" reversible="false">
-							<effect type="zoom" center="430,145" start="106" end="100" time="250" tween="sine" />
-						</animation>
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
@@ -67,7 +60,6 @@
 							<bottom>0</bottom>
 							<texture colordiffuse="primary_color">colors/grey.png</texture>
 							<bordersize>20</bordersize>
-							<include>Animation_FocusTextureFade</include>
 						</control>
 						<control type="image">
 							<left>20</left>

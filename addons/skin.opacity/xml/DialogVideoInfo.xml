@@ -224,7 +224,7 @@
 				<left>40</left>
 				<bottom>10</bottom>
 				<align>left</align>
-				<right>700</right>
+				<right>900</right>
 				<height>44</height>
 				<font>font20_title</font>
 				<textcolor>99FFFFFF</textcolor>
@@ -232,11 +232,13 @@
 				<haspath>true</haspath>
 				<label>$INFO[ListItem.FileNameAndPath]</label>
 				<visible>!Window.IsVisible(infodialog)</visible>
+				<animation effect="slide" start="0,0" end="40,0" time="0" condition="System.IsTouch">Conditional</animation>
 				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 				<animation effect="fade" start="0" end="100" time="300">Visible</animation>
 				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
 			</control>
+			<include>BackButton</include>
 			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="$VAR[VideoInfoMainLabelVar]" />
 				<param name="sub_label" value="$VAR[VideoInfoSubLabelVar]" />

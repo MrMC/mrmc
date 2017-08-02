@@ -315,6 +315,7 @@
 					<param name="visible" value="!IsEmpty(ListItem.Property(Artist_YearsActive))" />
 				</include>
 			</control>
+			<include>BackButton</include>
 		</control>
 	</controls>
 </window>
