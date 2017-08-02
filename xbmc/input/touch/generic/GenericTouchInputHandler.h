@@ -85,6 +85,7 @@ private:
   void saveLastTouch();
   void setGestureState(TouchGestureState gestureState) { m_gestureStateOld = m_gestureState; m_gestureState = gestureState; }
   void triggerDetectors(TouchInput event, int32_t pointer);
+  float AdjustPointerSize(float size);
 
   CCriticalSection m_critical;
   CTimer *m_holdTimer;

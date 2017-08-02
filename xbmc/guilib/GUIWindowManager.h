@@ -230,6 +230,8 @@ private:
   typedef std::vector<CGUIWindow*>::reverse_iterator rDialog;
   typedef std::vector<CGUIWindow*>::const_reverse_iterator crDialog;
 
+  bool HandleAction(const CAction &action) const;
+
   std::stack<int> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
@@ -239,6 +241,8 @@ private:
 
   int  m_iNested;
   bool m_initialized;
+  mutable bool m_touchGestureActive{false};
+  mutable bool m_inhibitTouchGestureEvents{false};
 
   CDirtyRegionTracker m_tracker;
   bool m_wrapOverride = false;

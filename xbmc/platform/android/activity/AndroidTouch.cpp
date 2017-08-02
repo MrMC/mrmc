@@ -84,7 +84,6 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
       break;
   }
 
-  float size = m_dpi / 16.0f;
   int64_t time = AMotionEvent_getEventTime(event);
 
   // first update all touch pointers
@@ -92,13 +91,13 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
   {
     CPoint in(AMotionEvent_getX(event, pointer), AMotionEvent_getY(event, pointer));
     CPoint out = CXBMCApp::MapDroidToGui(in);
-    CGenericTouchInputHandler::GetInstance().UpdateTouchPointer(pointer, out.x, out.y, time, size);
+    CGenericTouchInputHandler::GetInstance().UpdateTouchPointer(pointer, out.x, out.y, time);
   }
 
   // now send the event
   CPoint in(x, y);
   CPoint out = CXBMCApp::MapDroidToGui(in);
-  return CGenericTouchInputHandler::GetInstance().HandleTouchInput(touchEvent, out.x, out.y, time, touchPointer, size);
+  return CGenericTouchInputHandler::GetInstance().HandleTouchInput(touchEvent, out.x, out.y, time, touchPointer);
 }
 
 void CAndroidTouch::setDPI(uint32_t dpi)
