@@ -942,11 +942,6 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="myvideos.extractflags" type="boolean" label="20433" help="36178">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="myvideos.extractchapterthumbs" type="boolean" label="37044" help="37045">
           <level>1</level>
           <default>true</default>
@@ -954,11 +949,6 @@
         </setting>
         <setting id="myvideos.replacelabels" type="boolean" label="20419" help="36179">
           <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="myvideos.extractthumb" type="boolean" label="20433" help="36180">
-          <level>4</level>
           <default>true</default>
           <control type="toggle" />
         </setting>

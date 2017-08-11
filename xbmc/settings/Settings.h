@@ -149,10 +149,8 @@ public:
   static const std::string SETTING_VIDEOPLAYER_USESTAGEFRIGHT;
   static const std::string SETTING_VIDEOPLAYER_LIMITGUIUPDATE;
   static const std::string SETTING_MYVIDEOS_SELECTACTION;
-  static const std::string SETTING_MYVIDEOS_EXTRACTFLAGS;
   static const std::string SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS;
   static const std::string SETTING_MYVIDEOS_REPLACELABELS;
-  static const std::string SETTING_MYVIDEOS_EXTRACTTHUMB;
   static const std::string SETTING_MYVIDEOS_STACKVIDEOS;
   static const std::string SETTING_LOCALE_SUBTITLELANGUAGE;
   static const std::string SETTING_SUBTITLES_PARSECAPTIONS;
