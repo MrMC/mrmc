@@ -43,6 +43,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "TextureCacheJob.h"
 #include "TextureDatabase.h"
 #include "TextureCache.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
@@ -375,19 +376,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   else if (settingId == CSettings::SETTING_THUMBCACHE_CLEAR)
   {
     // clear thumb database
-    CVariant items;
-    CTextureDatabase db;
-    if (db.Open())
-    {
-      db.GetTextures(items, "");
-      db.Close();
-      for (unsigned int index = 0; index < items.size(); index++)
-      {
-        int id = (int)items[index]["textureid"].asInteger();
-        CTextureCache::GetInstance().ClearCachedImage(id);
-      }
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(617),"", 3000, true);
-    }
+    CTextureCache::GetInstance().AddJob(new CTextureRemoveJob());
   }
 }
 

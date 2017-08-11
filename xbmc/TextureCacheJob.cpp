@@ -20,8 +20,10 @@
 
 #include "TextureCacheJob.h"
 #include "TextureCache.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
 #include "guilib/DDSImage.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -366,6 +368,40 @@ bool CTextureCleanupJob::DoWork()
     while (fileIdx < files.Size())
       deleteFile();
     CLog::Log(LOGDEBUG, "CTextureCleanupJob: %d thumbnails deleted / %d db entries removed", totFileDel, totDbDel);
+  }
+  return true;
+}
+
+CTextureRemoveJob::CTextureRemoveJob()
+{
+}
+
+bool CTextureRemoveJob::operator==(const CJob* job) const
+{
+  if (strcmp(job->GetType(),GetType()) == 0)
+  {
+    const CTextureRemoveJob* useJob = dynamic_cast<const CTextureRemoveJob*>(job);
+    if (useJob)
+      return true;
+  }
+  return false;
+}
+
+bool CTextureRemoveJob::DoWork()
+{
+  // clear thumb database
+  CVariant items;
+  CTextureDatabase db;
+  if (db.Open())
+  {
+    db.GetTextures(items, "");
+    db.Close();
+    for (unsigned int index = 0; index < items.size(); index++)
+    {
+      int id = (int)items[index]["textureid"].asInteger();
+      CTextureCache::GetInstance().ClearCachedImage(id);
+    }
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(617),"", 3000, true);
   }
   return true;
 }

@@ -167,3 +167,17 @@ public:
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
 };
+
+/* \brief Job class for storing the use count of textures
+ */
+class CTextureRemoveJob : public CJob
+{
+public:
+  CTextureRemoveJob();
+  
+  virtual const char* GetType() const { return "remove"; };
+  virtual bool operator==(const CJob *job) const;
+  virtual bool DoWork();
+private:
+  int m_iId;
+};
