@@ -380,6 +380,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     if (db.Open())
     {
       db.GetTextures(items, "");
+      db.Close();
       for (unsigned int index = 0; index < items.size(); index++)
       {
         int id = (int)items[index]["textureid"].asInteger();
