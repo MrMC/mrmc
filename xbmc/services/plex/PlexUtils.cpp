@@ -1836,7 +1836,8 @@ bool CPlexUtils::ParsePlexSeasons(CFileItemList &items, const CURL &url, const T
 bool CPlexUtils::ParsePlexSongs(CFileItemList &items, const CURL &url, const CVariant &track)
 {
   bool rtn = false;
-  if (track.isNull() || !track.isArray())
+  const CVariant variantTrack = makeVariantArrayIfSingleItem(track);
+  if (variantTrack.isNull() || !variantTrack.isArray())
   {
     CLog::Log(LOGERROR, "CPlexUtils::ParsePlexSongs invalid response from %s", url.GetRedacted().c_str());
     return rtn;
@@ -1844,7 +1845,7 @@ bool CPlexUtils::ParsePlexSongs(CFileItemList &items, const CURL &url, const CVa
 
   CURL curl(url);
   std::string value;
-  for (auto variantTrackIt = track.begin_array(); variantTrackIt != track.end_array(); ++variantTrackIt)
+  for (auto variantTrackIt = variantTrack.begin_array(); variantTrackIt != variantTrack.end_array(); ++variantTrackIt)
   {
     if (*variantTrackIt == CVariant::VariantTypeNull)
       continue;
