@@ -439,4 +439,16 @@ const char *Cocoa_Paste()
   return NULL;
 }
 
+void Cocoa_RunBlockOnMainQueue(void (^block)(void))
+{
+  if ([NSThread isMainThread])
+  {
+    block();
+  }
+  else
+  {
+    dispatch_sync(dispatch_get_main_queue(), block);
+  }
+}
+
 #endif

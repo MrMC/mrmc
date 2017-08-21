@@ -54,6 +54,10 @@ extern "C"
   bool Cocoa_IsMouseHidden();
   void Cocoa_HideDock();
 
+  // threading
+  void Cocoa_RunBlockOnMainQueue(void (^block)(void));
+
+
   // Version.
   //
   bool Cocoa_GPUForDisplayIsNvidiaPureVideo3();
