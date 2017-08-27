@@ -96,7 +96,12 @@ public:
   const std::string GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
-  
+
+  /*! \brief Add info from another tag
+   \param other the tag to enrich from
+   */
+  void Enrich(const CVideoInfoTag& other);
+
   const std::string& GetPath() const
   {
     if (m_strFileNameAndPath.empty())
