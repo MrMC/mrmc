@@ -376,7 +376,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         CPlexUtils::GetPlexArtistsOrAlbum(items,Base64URL::Decode(section), false);
         items.SetLabel(g_localizeStrings.Get(36917));
-        items.SetContent("artist");
+        items.SetContent("artists");
       }
       if (path == "albums")
       {

@@ -411,7 +411,7 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         client->GetMusicArtists(items, Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36917));
-        items.SetContent("artist");
+        items.SetContent("artists");
       }
       if (path == "albums")
       {
