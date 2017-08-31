@@ -86,18 +86,18 @@ apk-obb-unsigned: apk-clean sharedobb package
 apk-noobb: apk-clean package apk-sign
 
 xbmc/assets:
-	mkdir -p build/assets
+	mkdir -p packaging/assets
 
 symbols: libs
 
 shared:
 	mkdir -p assets
 	cp -rfp $(PREFIX)/share/@APP_NAME_LC@/* ./assets
-	# depends build of binary pvr hardcodes path to mrmc
+	# depends packaging of binary pvr hardcodes path to mrmc
 	cp -rfp $(PREFIX)/share/mrmc/addons/pvr.* ./assets/addons
-	# depends build of repo-resources hardcodes path to mrmc
+	# depends packaging of repo-resources hardcodes path to mrmc
 	cp -rfp $(PREFIX)/mrmc/repo-resources/* ./assets/addons
-	# depends build of addons hardcodes path to mrmc
+	# depends packaging of addons hardcodes path to mrmc
 	cp -rfp $(PREFIX)/mrmc/addons/* ./assets/addons
 	find `pwd`/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/assets/ -name "*.so" -exec rm {} \;
@@ -107,7 +107,7 @@ shared:
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
 
 sharedapk: shared | xbmc/assets
-	cp -rfp assets/* ./build/assets
+	cp -rfp assets/* ./packaging/assets
 
 sharedobb: shared
 	rm -f $(XBMCROOT)/main.@APP_NAME@.obb
@@ -115,64 +115,58 @@ sharedobb: shared
 	@echo "$(XBMCROOT)/main.@APP_NAME@.obb created"
 
 python: | xbmc/assets
-	mkdir -p build/assets/python2.7/lib/
-	cp -rfp $(PREFIX)/lib/python2.7 build/assets/python2.7/lib/
-	cd build/assets/python2.7/lib/python2.7/; rm -rf test config lib-dynload
+	mkdir -p packaging/assets/python2.7/lib/
+	cp -rfp $(PREFIX)/lib/python2.7 packaging/assets/python2.7/lib/
+	cd packaging/assets/python2.7/lib/python2.7/; rm -rf test config lib-dynload
 
 res:
-	mkdir -p build/src/@APP_PACKAGE_DIR@ build/res build/res/raw build/res/values build/res/xml images
-	cp -rfp xbmc/res/* build/res/
-	cp -rfp xbmc/jni build/
-	@echo "native_arch=$(ABI)" > build/res/raw/xbmc.properties
-	cp -fp $(XBMCROOT)/media/$(SPLASHPNG) build/res/drawable/splash.png
-	cp -fp $(MEDIAROOT)/drawable-hdpi/ic_launcher.png build/res/drawable-hdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-ldpi/ic_launcher.png build/res/drawable-ldpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-mdpi/ic_launcher.png build/res/drawable-mdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-xhdpi/ic_launcher.png build/res/drawable-xhdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-xxhdpi/ic_launcher.png build/res/drawable-xxhdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-xxxhdpi/ic_launcher.png build/res/drawable-xxxhdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-xhdpi/banner.png build/res/drawable-xhdpi/banner.png
-	cp xbmc/strings.xml build/res/values/
-	cp xbmc/colors.xml build/res/values/
-	cp xbmc/activity_main.xml build/res/layout/
-	cp xbmc/searchable.xml build/res/xml/
-	mkdir -p tmp/res; $(AAPT) c -S build/res -C tmp/res; cp -r -n build/res tmp/ || true
-	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME@app-debug-skeleton.apk -J build/src/@APP_PACKAGE_DIR@
-	@rm -rf tmp/
+	mkdir -p packaging/java/@APP_PACKAGE_DIR@ packaging/res packaging/res/raw packaging/res/values packaging/res/xml images
+	cp -rfp xbmc/res/* packaging/res/
+	cp -rfp xbmc/jni packaging/
+	@echo "native_arch=$(ABI)" > packaging/res/raw/xbmc.properties
+	cp -fp $(XBMCROOT)/media/$(SPLASHPNG) packaging/res/drawable/splash.png
+	cp -fp $(MEDIAROOT)/drawable-hdpi/ic_launcher.png packaging/res/drawable-hdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-ldpi/ic_launcher.png packaging/res/drawable-ldpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-mdpi/ic_launcher.png packaging/res/drawable-mdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xhdpi/ic_launcher.png packaging/res/drawable-xhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xxhdpi/ic_launcher.png packaging/res/drawable-xxhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xxxhdpi/ic_launcher.png packaging/res/drawable-xxxhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xhdpi/banner.png packaging/res/drawable-xhdpi/banner.png
+	cp xbmc/strings.xml packaging/res/values/
+	cp xbmc/colors.xml packaging/res/values/
+	cp xbmc/activity_main.xml packaging/res/layout/
+	cp xbmc/searchable.xml packaging/res/xml/
 
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
-	mkdir -p build/lib/$(ABI) build/assets/python2.7/lib/
-	cp -fp $(SRCLIBS) build/lib/$(ABI)/
-	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so build/lib/$(ABI)/
-	# depends build of binary pvr hardcodes path to mrmc
-	find $(PREFIX)/lib/mrmc/addons/pvr* -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \; | true
-	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \;
-	cd build/lib/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
-	$(STRIP) --strip-unneeded build/lib/$(ABI)/*.so
-	install -p $(GDBPATH) ./build/lib/$(ABI)/gdbserver
-	install -p $(STLLIB) ./build/lib/$(ABI)/
-	echo "set solib-search-path ./obj/local/$(ABI)" > ./build/lib/$(ABI)/gdb.setup
+	mkdir -p packaging/lib/$(ABI) packaging/assets/python2.7/lib/
+	cp -fp $(SRCLIBS) packaging/lib/$(ABI)/
+	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so packaging/lib/$(ABI)/
+	# depends packaging of binary pvr hardcodes path to mrmc
+	find $(PREFIX)/lib/mrmc/addons/pvr* -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \;
+	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \;
+	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; | true
+	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \;
+	cd packaging/lib/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
+	$(STRIP) --strip-unneeded packaging/lib/$(ABI)/*.so
+	install -p $(GDBPATH) ./packaging/lib/$(ABI)/gdbserver
+	install -p $(STLLIB) ./packaging/lib/$(ABI)/
+	echo "set solib-search-path ./obj/local/$(ABI)" > ./packaging/lib/$(ABI)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
-	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./build/lib/$(ABI)/gdb.setup
+	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./packaging/lib/$(ABI)/gdb.setup
 
-xbmc/classes.dex: res
-	mkdir -p obj
-	cd xbmc/src; find . -name "*.java" -exec cp -fp {} ../../build/src/@APP_PACKAGE_DIR@/{} \;
-	@javac -source 1.7 -target 1.7 -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:obj -d obj -sourcepath build/src build/src/@APP_PACKAGE_DIR@/*.java xbmc/src/@APP_PACKAGE_DIR@/interfaces/*.java
-	@$(DX) --dex --output=build/classes.dex obj build/lib
+java: res
+	cp -fp xbmc/AndroidManifest.xml packaging/
+	cp -fp xbmc/build.gradle packaging/
+	cd xbmc/src; find . -name "*.java" -exec cp -fp {} ../../packaging/java/@APP_PACKAGE_DIR@/{} \;
 
-package: libs symbols python xbmc/classes.dex
-	@echo "Creating package..."
-	@cp images/@APP_NAME@app-debug-skeleton.apk images/@APP_NAME@app-debug-$(ABI)-unaligned.apk
-	@cd build; $(ZIP) -r -q ../images/@APP_NAME@app-debug-$(ABI)-unaligned.apk lib/$(ABI) assets classes.dex
+package: libs python java
+	@echo "Gradle packaging..."
+	ANDROID_HOME=$(SDKROOT) ./gradlew --no-daemon assembleDebugUnsigned
 
 apk-sign:
 	@echo "Signing..."
-	@jarsigner -sigalg SHA1withRSA -digestalg SHA1 -tsa http://timestamp.digicert.com -keystore $(SIGN_STORE) -storepass $(SIGN_STOREPASS) $(SIGN_KEYPASS_OPT) images/@APP_NAME@app-debug-$(ABI)-unaligned.apk $(SIGN_KEY)
-	@$(ZIPALIGN) -f 4 images/@APP_NAME@app-debug-$(ABI)-unaligned.apk $(XBMCROOT)/@APP_NAME@app-$(ABI)-debug.apk
-	@rm images/@APP_NAME@app-debug-$(ABI)-unaligned.apk
+	@jarsigner -sigalg SHA1withRSA -digestalg SHA1 -tsa http://timestamp.digicert.com -keystore $(SIGN_STORE) -storepass $(SIGN_STOREPASS) $(SIGN_KEYPASS_OPT) packaging/build/outputs/apk/debugUnsigned/packaging-debugUnsigned-unsigned.apk $(SIGN_KEY)
+	@$(ZIPALIGN) -f 4 packaging/build/outputs/apk/debugUnsigned/packaging-debugUnsigned-unsigned.apk $(XBMCROOT)/@APP_NAME@app-$(ABI)-debug.apk
 	@echo "$(XBMCROOT)/@APP_NAME_LC@app-$(ABI)-debug.apk created"
 
 $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
@@ -181,8 +175,8 @@ $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 $(SRCLIBS):
 
 apk-clean:
-	rm -rf build
+	rm -rf packaging
 	rm -rf assets
-	mkdir -p build
+	mkdir -p packaging
 
 .PHONY: force libs assets python sharedapk sharedobb res package

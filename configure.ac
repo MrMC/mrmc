@@ -2283,6 +2283,7 @@ OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/searchable.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/strings.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/interfaces/XBMCAudioManagerOnAudioFocusChangeListener.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/interfaces/XBMCSurfaceTextureOnFrameAvailableListener.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/build.gradle"
 
 OUTPUT_FILES="$OUTPUT_FILES xbmc/DllPaths_generated_android.h"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/activity/Makefile"

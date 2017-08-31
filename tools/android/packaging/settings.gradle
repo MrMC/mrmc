@@ -1,0 +1,5 @@
+include 'packaging'
+
+rootProject.name = "MrMC"
+
+project(':packaging').projectDir = new File('packaging')

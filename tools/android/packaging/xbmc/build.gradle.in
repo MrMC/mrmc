@@ -1,0 +1,44 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "26.0.2"
+    defaultConfig {
+        applicationId "@APP_PACKAGE@"
+        minSdkVersion 21
+        targetSdkVersion 22
+        versionCode @APP_VERSION_ANDROID_VERSION@
+        versionName "@APP_VERSION@"
+    }
+    buildTypes {
+        releaseUnsigned.initWith(buildTypes.release)
+        releaseUnsigned {
+            signingConfig null
+        }
+
+        debugUnsigned.initWith(buildTypes.debug)
+        debugUnsigned {
+            signingConfig null
+        }
+        
+    }
+    aaptOptions {
+        ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['java']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['lib']
+        }
+    }
+
+}
+
+project.afterEvaluate {
+    preBuild.dependsOn
+}
+
