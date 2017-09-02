@@ -413,25 +413,25 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(g_localizeStrings.Get(36917));
         items.SetContent("artists");
       }
-      if (path == "albums")
+      else if (path == "albums")
       {
         CEmbyUtils::GetEmbyAlbum(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36919));
         items.SetContent("albums");
       }
-      if (path == "artistalbums")
+      else if (path == "artistalbums")
       {
         CEmbyUtils::GetEmbyArtistAlbum(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36919));
         items.SetContent("albums");
       }
-      if (path == "songs")
+      else if (path == "songs")
       {
         CEmbyUtils::GetEmbySongs(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36921));
         items.SetContent("songs");
       }
-      if (path == "albumsongs")
+      else if (path == "albumsongs")
       {
         CEmbyUtils::GetEmbyAlbumSongs(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36921));

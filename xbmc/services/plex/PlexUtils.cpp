@@ -1117,7 +1117,7 @@ bool CPlexUtils::GetPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
 //        curl.SetFileName(curl.GetFileName() + "recentlyAdded");
         curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
 
-        GetPlexArtistsOrAlbum(items, curl.Get(), true);
+        GetPlexArtistsOrAlbum(plexItems, curl.Get(), true);
 
         for (int item = 0; item < plexItems.Size(); ++item)
           CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
