@@ -937,7 +937,11 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
   else if (lower == "top100albums")
     return "musicdb://top100/albums/";
   else if (lower == "recentlyaddedalbums")
+  {
+    if (CServicesManager::GetInstance().HasServices())
+      return "services://music/" + lower + "/";
     return "musicdb://recentlyaddedalbums/";
+  }
   else if (lower == "recentlyplayedalbums")
    return "musicdb://recentlyplayedalbums/";
   else if (lower == "compilations")

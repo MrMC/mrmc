@@ -1091,7 +1091,7 @@ bool CPlexUtils::GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bo
   return rtn;
 }
 
-bool CPlexUtils::GetPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
+bool CPlexUtils::GetAllPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
 {
   if (CPlexServices::GetInstance().HasClients())
   {
@@ -1128,6 +1128,42 @@ bool CPlexUtils::GetPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
       items.Sort(SortByDateAdded, SortOrderDescending);
       plexItems.ClearItems();
     }
+  }
+  return true;
+}
+
+bool CPlexUtils::GetPlexRecentlyAddedAlbums(CFileItemList &items, const std::string url, int limit)
+{
+  if (CPlexServices::GetInstance().HasClients())
+  {
+
+    bool rtn = false;
+//    CURL curl(url);
+    CFileItemList plexItems;
+    CPlexClientPtr client = CPlexServices::GetInstance().FindClient(url);
+    std::vector<PlexSectionsContent> contents;
+    contents = client->GetArtistContent();
+    for (const auto &content : contents)
+    {
+      CURL curl(client->GetUrl());
+      curl.SetProtocol(client->GetProtocol());
+      curl.SetFileName(curl.GetFileName() + content.section + "/recentlyAdded");
+      //        curl.SetFileName(curl.GetFileName() + "recentlyAdded");
+      curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
+      
+      rtn = GetPlexArtistsOrAlbum(plexItems, curl.Get(), true);
+      
+      for (int item = 0; item < plexItems.Size(); ++item)
+        CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
+    }
+    SetPlexItemProperties(plexItems);
+    items.Append(plexItems);
+    items.SetLabel("Recently Added Albums");
+    items.Sort(SortByDateAdded, SortOrderDescending);
+    plexItems.ClearItems();
+    items.SetProperty("library.filter", "true");
+    items.GetMusicInfoTag()->m_type = MediaTypeAlbum;
+    return rtn;
   }
   return true;
 }

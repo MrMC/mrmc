@@ -437,6 +437,12 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(g_localizeStrings.Get(36921));
         items.SetContent("songs");
       }
+      else if (path == "recentlyaddedalbums")
+      {
+        CEmbyUtils::GetEmbyRecentlyAddedAlbums(items, Base64URL::Decode(section));
+        items.SetLabel(g_localizeStrings.Get(359));
+        items.SetContent("albums");
+      }
     }
     return true;
   }

@@ -61,6 +61,7 @@ public:
   static bool GetPlexInProgressMovies(CFileItemList &items, const std::string url, int limit=25);
   static bool GetAllPlexInProgress(CFileItemList &items, bool tvShow);
   static bool GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow=false);
+  static bool GetPlexRecentlyAddedAlbums(CFileItemList &items, const std::string url, int limit=25);
 
   // Plex Movies
   static bool GetPlexMovies(CFileItemList &items, std::string url, std::string filter = "");
@@ -84,7 +85,7 @@ public:
   static bool GetPlexSongs(CFileItemList &items, std::string url);
   static bool GetPlexAlbumSongs(CFileItem item, CFileItemList &items);
   static bool GetPlexArtistsOrAlbum(CFileItemList &items, std::string url, bool album);
-  static bool GetPlexRecentlyAddedAlbums(CFileItemList &items,int limit);
+  static bool GetAllPlexRecentlyAddedAlbums(CFileItemList &items,int limit);
 
   // Plex parsers
   static bool ParsePlexVideos(CFileItemList &items, CURL url, const CVariant &video, std::string type, bool formatLabel, int season = -1);

@@ -352,6 +352,10 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             CPlexUtils::SetPlexItemProperties(*items[item], client);
           CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory '/all' client(%s), shows(%d)", client->GetServerName().c_str(), items.Size());
         }
+        std::string label = basePath;
+        if (URIUtils::GetFileName(basePath) == "recentlyaddedalbums")
+          label = g_localizeStrings.Get(359);
+        items.SetLabel(label);
       }
     }
     else
@@ -389,6 +393,12 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CPlexUtils::GetPlexSongs(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(36921));
         items.SetContent("songs");
+      }
+      else if (path == "recentlyaddedalbums")
+      {
+        CPlexUtils::GetPlexRecentlyAddedAlbums(items, Base64URL::Decode(section));
+        items.SetLabel(g_localizeStrings.Get(359));
+        items.SetContent("albums");
       }
     }
     return true;

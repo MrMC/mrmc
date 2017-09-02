@@ -550,7 +550,7 @@ bool CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(CFileItemList &items, boo
   return rtn;
 }
 
-bool CEmbyUtils::GetEmbyRecentlyAddedAlbums(CFileItemList &items,int limit)
+bool CEmbyUtils::GetAllEmbyRecentlyAddedAlbums(CFileItemList &items,int limit)
 {
   
   bool rtn = false;
@@ -584,6 +584,36 @@ bool CEmbyUtils::GetEmbyRecentlyAddedAlbums(CFileItemList &items,int limit)
         items.Append(embyItems);
         embyItems.ClearItems();
       }
+    }
+  }
+  return rtn;
+}
+
+bool CEmbyUtils::GetEmbyRecentlyAddedAlbums(CFileItemList &items, const std::string url, int limit)
+{
+  bool rtn = false;
+  if (CEmbyServices::GetInstance().HasClients())
+  {
+    CFileItemList embyItems;
+
+    CEmbyClientPtr client = CEmbyServices::GetInstance().FindClient(url);
+    std::vector<EmbyViewInfo> viewinfos;
+    viewinfos = client->GetViewInfoForMusicContent();
+    for (const auto &viewinfo : viewinfos)
+    {
+      std::string userId = client->GetUserID();
+      CURL curl(client->GetUrl());
+      curl.SetProtocol(client->GetProtocol());
+      curl.SetOption("ParentId", viewinfo.id);
+      curl.SetFileName("emby/Users/" + userId + "/Items/Latest");
+      
+      rtn = GetEmbyAlbum(embyItems, curl.Get(), limit);
+      
+      items.Append(embyItems);
+//      items.Sort(SortByDateAdded, SortOrderDescending);
+      items.SetProperty("library.filter", "true");
+      items.GetMusicInfoTag()->m_type = MediaTypeAlbum;
+      embyItems.ClearItems();
     }
   }
   return rtn;

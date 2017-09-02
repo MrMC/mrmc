@@ -80,7 +80,8 @@ public:
   static bool GetEmbyInProgressMovies(CFileItemList &items, const std::string url, int limit=25);
   static bool GetAllEmbyInProgress(CFileItemList &items, bool tvShow);
   static bool GetAllEmbyRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow=false);
-  static bool GetEmbyRecentlyAddedAlbums(CFileItemList &items,int limit);
+  static bool GetAllEmbyRecentlyAddedAlbums(CFileItemList &items,int limit);
+  static bool GetEmbyRecentlyAddedAlbums(CFileItemList &items, const std::string url, int limit=25);
 
   #pragma mark - Emby TV
   static bool GetEmbySeasons(CFileItemList &items, const std::string url);

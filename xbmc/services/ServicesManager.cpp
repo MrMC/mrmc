@@ -305,9 +305,9 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
 void CServicesManager::GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit)
 {
   if (CPlexUtils::HasClients())
-    CPlexUtils::GetPlexRecentlyAddedAlbums(recentlyAdded, itemLimit);
+    CPlexUtils::GetAllPlexRecentlyAddedAlbums(recentlyAdded, itemLimit);
   if (CEmbyUtils::HasClients())
-    CEmbyUtils::GetEmbyRecentlyAddedAlbums(recentlyAdded, itemLimit);
+    CEmbyUtils::GetAllEmbyRecentlyAddedAlbums(recentlyAdded, itemLimit);
 
   if (recentlyAdded.Size() > 0)
   {

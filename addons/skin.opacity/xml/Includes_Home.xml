@@ -246,6 +246,11 @@
 		</item>
 	</include>
 	<include name="HomeSubMenuMusic">
+		<item id="90111">
+			<label>$LOCALIZE[31008]</label>
+			<onclick>ActivateWindow(Music,RecentlyAddedAlbums,return)</onclick>
+			<visible>Library.HasContent(Music) | Library.HasServices</visible>
+		</item>
 		<item id="90112">
 			<label>133</label>
 			<onclick>ActivateWindow(Music,Artists,return)</onclick>
