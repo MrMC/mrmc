@@ -14003,7 +14003,7 @@
 				SDKROOT = appletvos;
 				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.1;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
 			};
 			name = DebugLite;
 		};
@@ -14053,7 +14053,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				TVOS_DEPLOYMENT_TARGET = 9.1;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
 			};
 			name = DebugLite;
 		};
@@ -14203,7 +14203,7 @@
 				SKIP_INSTALL = NO;
 				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.1;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = ReleaseLite;
@@ -14249,7 +14249,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				TVOS_DEPLOYMENT_TARGET = 9.1;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = ReleaseLite;
