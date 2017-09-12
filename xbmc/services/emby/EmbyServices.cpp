@@ -473,7 +473,7 @@ void CEmbyServices::Process()
       CLog::Log(LOGDEBUG, "CEmbyServices::Process has gateway1");
       break;
     }
-    if (signInByPin)
+    if (signInByPin && g_application.getNetwork().IsConnected())
     {
       std::string ip;
       if (CDNSNameCache::Lookup("connect.mediabrowser.tv", ip))
