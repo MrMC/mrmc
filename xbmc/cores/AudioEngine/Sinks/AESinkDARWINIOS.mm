@@ -29,7 +29,7 @@
 #include "windowing/WindowingFactory.h"
 
 #include <AudioToolbox/AudioToolbox.h>
-#import  <AVFoundation/AVFoundation.h>
+#import  <AVFoundation/AVAudioSession.h>
 
 enum CAChannelIndex {
   CAChannel_PCM_6CHAN = 0,

@@ -287,7 +287,7 @@ public:
 /* status active is OK query */
   virtual bool isActive(void) { return active; }
 
-  virtual void setSqlParams(const char *sqlFrmt, sqlType t, ...);
+  virtual void setSqlParams(const char *sqlFrmt, int t, ...);
 
 
 /* error handling */
