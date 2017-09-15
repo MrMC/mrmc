@@ -35,6 +35,11 @@ extern "C" {
 #include "libavformat/avformat.h"
 }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 110000 || __TV_OS_VERSION_MAX_ALLOWED < 110000
+extern OSStatus CMVideoFormatDescriptionCreateFromHEVCParameterSets(CFAllocatorRef allocator, size_t parameterSetCount, const uint8_t *const  _Nonnull *parameterSetPointers, const size_t *parameterSetSizes, int NALUnitHeaderLength, CFDictionaryRef extensions, CMFormatDescriptionRef  _Nullable *formatDescriptionOut) __attribute__((weak_import));
+#endif
+
+
 #if !defined(TARGET_DARWIN_OSX)
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
@@ -49,114 +54,6 @@ static int CheckNP2( unsigned x )
     return ++x;
 }
 #endif
-
-//-----------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------
-static void write_mp4_description_length(AVIOContext *context, int length)
-{
-  for (int i = 3; i >= 0; i--)
-  {
-    uint8_t byte = (length >> (i * 7)) & 0x7F;
-    if (i != 0)
-        byte |= 0x80;
-
-    avio_w8(context, byte);
-  }
-}
-
-static CFDataRef ESDSCreate(const uint8_t *p_buf, int i_buf_size)
-{
-  int full_size = 3 + 5 + 13 + 5 + i_buf_size + 3;
-  int config_size = 13 + 5 + i_buf_size;
-  int padding = 12;
-
-  AVIOContext *context;
-  int status = avio_open_dyn_buf(&context);
-  if (status != noErr)
-    CLog::Log(LOGERROR,"VideoToolBox: opening dyn buf failed (%i).", status);
-
-  avio_w8(context, 0);        // Version
-  avio_wb24(context, 0);      // Flags
-
-  // elementary stream description tag
-  avio_w8(context, 0x03);     // ES description tag
-  write_mp4_description_length(context, full_size);
-  avio_wb16(context, 0);      // esid
-  avio_w8(context, 0);        // stream priority (0-3)
-
-  // decoder configuration description tag
-  avio_w8(context, 0x04);
-  write_mp4_description_length(context, config_size);
-  avio_w8(context, 32);       // object type identification (32 = MPEG4)
-  avio_w8(context, 0x11);     // stream type
-  avio_wb24(context, 0);      // buffer size
-  avio_wb32(context, 0);      // max bitrate
-  avio_wb32(context, 0);      // avg bitrate
-
-  // decoder specific description tag
-  avio_w8(context, 0x05);     // dec specific info tag
-  write_mp4_description_length(context, i_buf_size);
-  avio_write(context, p_buf, i_buf_size);
-
-  // sync layer configuration description tag
-  avio_w8(context, 0x06);     // tag
-  avio_w8(context, 0x01);     // length
-  avio_w8(context, 0x02);     // no SL
-
-  uint8_t *rw_extradata = (uint8_t*)malloc(full_size + padding);
-  avio_close_dyn_buf(context, &rw_extradata);
-
-  CFDataRef data = CFDataCreate(kCFAllocatorDefault,
-    rw_extradata, full_size + padding);
-
-  return data;
-}
-
-static CFDataRef avvCCreate(const uint8_t *p_buf, int i_buf_size)
-{
-  CFDataRef data;
-  // each NAL sent to the decoder is preceded by a 4 byte header
-  // we need to change the avcC header to signal headers of 4 bytes, if needed
-  if (i_buf_size >= 4 && (p_buf[4] & 0x03) != 0x03)
-  {
-    uint8_t *p_fixed_buf = (uint8_t*)malloc(i_buf_size);
-    if (!p_fixed_buf)
-        return NULL;
-
-    memcpy(p_fixed_buf, p_buf, i_buf_size);
-    p_fixed_buf[4] |= 0x03;
-    data = CFDataCreate(kCFAllocatorDefault, p_fixed_buf, i_buf_size);
-  }
-  else
-  {
-    data = CFDataCreate(kCFAllocatorDefault, p_buf, i_buf_size);
-  }
-
-  return data;
-}
-
-static CFDataRef hevCCreate(const uint8_t *p_buf, int i_buf_size)
-{
-  CFDataRef data;
-  // each NAL sent to the decoder is preceded by a 4 byte header
-  // we need to change the hevC header to signal headers of 4 bytes, if needed
-  if (i_buf_size >= 4 && (p_buf[4] & 0x03) != 0x03)
-  {
-    uint8_t *p_fixed_buf = (uint8_t*)malloc(i_buf_size);
-    if (!p_fixed_buf)
-        return NULL;
-
-    memcpy(p_fixed_buf, p_buf, i_buf_size);
-    p_fixed_buf[4] |= 0x03;
-    data = CFDataCreate(kCFAllocatorDefault, p_fixed_buf, i_buf_size);
-  }
-  else
-  {
-    data = CFDataCreate(kCFAllocatorDefault, p_buf, i_buf_size);
-  }
-
-  return data;
-}
 
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
@@ -212,83 +109,6 @@ GetFrameDisplayTimeFromDictionary(
   return;
 }
 
-// helper function to create a format descriptor
-static CMFormatDescriptionRef
-CreateFormatDescription(CMVideoCodecType format_id, int width, int height)
-{
-  CMFormatDescriptionRef fmt_desc;
-  OSStatus status;
-
-  status = CMVideoFormatDescriptionCreate(
-    NULL,             // CFAllocatorRef allocator
-    format_id,
-    width,
-    height,
-    NULL,             // CFDictionaryRef extensions
-    &fmt_desc);
-
-  if (status == noErr)
-    return fmt_desc;
-  else
-    return NULL;
-}
-// helper function to create a avcC/hevC/esds atom format descriptor
-static CMFormatDescriptionRef
-CreateFormatDescriptionFromCodecData(CMVideoCodecType format_id, int width, int height, const uint8_t *extradata, int extradata_size, bool interlaced)
-{
-  CFMutableDictionaryRef pixelAspectRatio = CFDictionaryCreateMutable (NULL, 0, &kCFTypeDictionaryKeyCallBacks,
-    &kCFTypeDictionaryValueCallBacks);
-  CFDictionarySetSInt32(pixelAspectRatio, CFSTR("HorizontalSpacing"), width);
-  CFDictionarySetSInt32(pixelAspectRatio, CFSTR("VerticalSpacing")  , height);
-
-  CFMutableDictionaryRef atoms = CFDictionaryCreateMutable(NULL,
-    0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-
-  if (format_id == kCMVideoCodecType_H264)
-  {
-    CFDataRef avcCData = avvCCreate(extradata, extradata_size);
-    CFDictionarySetValue(atoms, CFSTR ("avcC"), avcCData);
-    CFRelease(avcCData);
-  }
-  else if (format_id == kCMVideoCodecType_HEVC)
-  {
-    CFDataRef hevCData = hevCCreate(extradata, extradata_size);
-    CFDictionarySetValue(atoms, CFSTR ("hvcC"), hevCData);
-    CFRelease(hevCData);
-  }
-  else if (format_id == kCMVideoCodecType_MPEG4Video)
-  {
-    CFDataRef esdsData = ESDSCreate(extradata, extradata_size);
-    CFDictionarySetValue(atoms, CFSTR ("esds"), esdsData);
-    CFRelease(esdsData);
-  }
-  else
-  {
-    return NULL;
-  }
-
-  CFMutableDictionaryRef extensions = CFDictionaryCreateMutable (NULL,
-    0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-  CFMutableDictionarySetString(extensions, CFSTR("CVImageBufferChromaLocationBottomField"), "left");
-  CFMutableDictionarySetString(extensions, CFSTR("CVImageBufferChromaLocationTopField"), "left");
-  CFDictionarySetValue(extensions, CFSTR("FullRangeVideo"), g_Windowing.UseLimitedColor() ? kCFBooleanFalse:kCFBooleanTrue);
-  CFMutableDictionarySetObject(extensions, CFSTR("CVPixelAspectRatio"), (CFTypeRef*)pixelAspectRatio);
-  CFMutableDictionarySetObject(extensions, CFSTR("SampleDescriptionExtensionAtoms"), (CFTypeRef*)atoms);
-  if (interlaced)
-  {
-    //CFDictionarySetValue(decoderConfiguration, kVTDecompressionPropertyKey_FieldMode, kVTDecompressionProperty_FieldMode_DeinterlaceFields);
-    //CFDictionarySetValue(decoderConfiguration, kVTDecompressionPropertyKey_DeinterlaceMode, kVTDecompressionProperty_DeinterlaceMode_Temporal);
-    CFMutableDictionarySetString(extensions, CFSTR("FieldMode"), "DeinterlaceFields");
-    CFMutableDictionarySetString(extensions, CFSTR("DeinterlaceMode"), "Temporal");
-  }
-
-  CMFormatDescriptionRef fmt_desc = NULL;
-  OSStatus status = CMVideoFormatDescriptionCreate(NULL, format_id, width, height, extensions, &fmt_desc);
-  if (status == noErr)
-    return fmt_desc;
-  else
-    return NULL;
-}
 // helper function to create a CMSampleBufferRef from demuxer data
 static CMSampleBufferRef
 CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc,
@@ -407,34 +227,82 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     
     switch (hints.codec)
     {
-      case AV_CODEC_ID_MPEG4:
-        if (/* DISABLES CODE */ (true))
-          return false;
-        m_fmt_desc = CreateFormatDescriptionFromCodecData(
-          kCMVideoCodecType_MPEG4Video, width, height, (uint8_t*)hints.extradata, hints.extrasize, false);
-        m_pFormatName = "vtb-mpeg4";
-      break;
 
+      default:
+      case AV_CODEC_ID_MPEG4:
       case AV_CODEC_ID_MPEG2VIDEO:
-        if (/* DISABLES CODE */ (true))
-          return false;
-        m_fmt_desc = CreateFormatDescription(kCMVideoCodecType_MPEG2Video, width, height);
-        m_pFormatName = "vtb-mpeg2";
+        return false;
       break;
 
       case AV_CODEC_ID_H265:
-        if (/* DISABLES CODE */ (true))
-          return false;
-        // use a bitstream converter for all flavors
-        m_bitstream = new CBitstreamConverter;
-        if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
+        if (hints.extrasize < 7 || hints.extradata == NULL)
         {
-          SAFE_DELETE(m_bitstream);
+          CLog::Log(LOGNOTICE, "%s - avcC atom too data small or missing", __FUNCTION__);
           return false;
         }
-        m_fmt_desc = CreateFormatDescriptionFromCodecData(
-          kCMVideoCodecType_HEVC, width, height, (uint8_t*)hints.extradata, hints.extrasize, false);
-        m_pFormatName = "vtb-h265";
+        else
+        {
+         // use a bitstream converter for all flavors
+          m_bitstream = new CBitstreamConverter;
+          if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
+          {
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+          if (m_bitstream->GetExtraSize() < 8)
+          {
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+
+          uint8_t *sps_ptr = m_bitstream->GetExtraData();
+          sps_ptr += 6; // skip over header and assume sps count of one
+          uint32_t sps_size = BS_RB16(sps_ptr);
+          sps_ptr += 2;
+
+          uint8_t *pps_ptr = sps_ptr + sps_size;
+          size_t parameterSetCount = 1 + *pps_ptr++;
+          size_t parameterSetSizes[parameterSetCount];
+          uint8_t *parameterSetPointers[parameterSetCount];
+
+          parameterSetSizes[0] = sps_size;
+          parameterSetPointers[0] = sps_ptr;
+          for (size_t i = 1; i < parameterSetCount; i++)
+          {
+            uint32_t pps_size = BS_RB16(pps_ptr);
+            parameterSetSizes[i] = pps_size;
+            pps_ptr += 2;
+            parameterSetPointers[i] = pps_ptr;
+            pps_ptr += pps_size;
+          }
+
+          OSStatus status = noErr;
+          CLog::Log(LOGNOTICE, "Constructing new format description");
+          // check availability at runtime
+          if (__builtin_available(macOS 10.13, ios 11, tvos 11, *))
+          {
+            status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(kCFAllocatorDefault,
+              parameterSetCount, parameterSetPointers, parameterSetSizes, (size_t)4, nullptr, &m_fmt_desc);
+          }
+          else
+          {
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+          if (status != noErr)
+          {
+            CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromHEVCParameterSets failed status(%d)", __FUNCTION__, status);
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+          const Boolean useCleanAperture = true;
+          const Boolean usePixelAspectRatio = false;
+          auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
+
+          width = hints.width = videoSize.width;
+          height = hints.height = videoSize.height;
+          m_pFormatName = "vtb-h265";
+        }
       break;
 
       case AV_CODEC_ID_H264:
@@ -474,60 +342,49 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           {
             // Main@L3.2, VTB cannot handle greater than 4 reference frames
             CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode.", __FUNCTION__);
+            SAFE_DELETE(m_bitstream);
             return false;
           }
 
-          if (/* DISABLES CODE */ (false))
+          uint8_t *sps_ptr = m_bitstream->GetExtraData();
+          sps_ptr += 6; // skip over header and assume sps count of one
+          uint32_t sps_size = BS_RB16(sps_ptr);
+          sps_ptr += 2;
+
+          uint8_t *pps_ptr = sps_ptr + sps_size;
+          size_t parameterSetCount = 1 + *pps_ptr++;
+          size_t parameterSetSizes[parameterSetCount];
+          uint8_t *parameterSetPointers[parameterSetCount];
+
+          parameterSetSizes[0] = sps_size;
+          parameterSetPointers[0] = sps_ptr;
+          for (size_t i = 1; i < parameterSetCount; i++)
           {
-            m_fmt_desc = CreateFormatDescriptionFromCodecData(
-              kCMVideoCodecType_H264, width, height, m_bitstream->GetExtraData(), m_bitstream->GetExtraSize(), m_enable_temporal_processing);
-          }
-          else
-          {
-            uint8_t *sps_ptr = m_bitstream->GetExtraData();
-            sps_ptr += 6; // skip over header and assume sps count of one
-            uint32_t sps_size = BS_RB16(sps_ptr);
-            sps_ptr += 2;
-
-            uint8_t *pps_ptr = sps_ptr + sps_size;
-            size_t parameterSetCount = 1 + *pps_ptr++;
-            size_t parameterSetSizes[parameterSetCount];
-            uint8_t *parameterSetPointers[parameterSetCount];
-
-            parameterSetSizes[0] = sps_size;
-            parameterSetPointers[0] = sps_ptr;
-            for (size_t i = 1; i < parameterSetCount; i++)
-            {
-              uint32_t pps_size = BS_RB16(pps_ptr);
-              parameterSetSizes[i] = pps_size;
-              pps_ptr += 2;
-              parameterSetPointers[i] = pps_ptr;
-              pps_ptr += pps_size;
-            }
-
-            CLog::Log(LOGNOTICE, "Constructing new format description");
-            OSStatus status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
-              parameterSetCount, parameterSetPointers, parameterSetSizes, 4, &m_fmt_desc);
-            if (status != noErr)
-            {
-              CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
-              return false;
-            }
-            const Boolean useCleanAperture = true;
-            const Boolean usePixelAspectRatio = false;
-            auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
-
-            width = hints.width = videoSize.width;
-            height = hints.height = videoSize.height;
+            uint32_t pps_size = BS_RB16(pps_ptr);
+            parameterSetSizes[i] = pps_size;
+            pps_ptr += 2;
+            parameterSetPointers[i] = pps_ptr;
+            pps_ptr += pps_size;
           }
 
-          CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, m_bitstream->GetExtraSize(), m_max_ref_frames);
+          CLog::Log(LOGNOTICE, "Constructing new format description");
+          OSStatus status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
+            parameterSetCount, parameterSetPointers, parameterSetSizes, 4, &m_fmt_desc);
+          if (status != noErr)
+          {
+            CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+          const Boolean useCleanAperture = true;
+          const Boolean usePixelAspectRatio = false;
+          auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
+
+          width = hints.width = videoSize.width;
+          height = hints.height = videoSize.height;
         }
+        CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, m_bitstream->GetExtraSize(), m_max_ref_frames);
         m_pFormatName = "vtb-h264";
-      break;
-
-      default:
-        return false;
       break;
     }
 
