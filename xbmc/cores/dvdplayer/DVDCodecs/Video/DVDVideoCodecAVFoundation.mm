@@ -20,7 +20,7 @@
 
 #import "config.h"
 
-#if defined(TARGET_DARWIN_IOS)
+#if false && defined(TARGET_DARWIN_IOS)
 #import "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecAVFoundation.h"
 
 #import "cores/dvdplayer/DVDClock.h"

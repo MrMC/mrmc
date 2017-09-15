@@ -20,6 +20,8 @@
  */
 
 
+#if false && defined(TARGET_DARWIN_IOS)
+
 #include <list>
 #include <queue>
 #include <CoreMedia/CoreMedia.h>
@@ -91,3 +93,5 @@ protected:
   uint64_t                m_framecount;
   double                  m_framerate_ms;
 };
+#endif
+
