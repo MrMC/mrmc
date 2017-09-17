@@ -1669,8 +1669,7 @@ static SiriRemoteInfo siriRemoteInfo;
   m_glView = [[MainEAGLView alloc] initWithFrame:self.view.bounds withScreen:[UIScreen mainScreen]];
 
   // Check if screen is Retina
-  // m_screenScale = [[UIScreen mainScreen] nativeScale];
-  m_screenScale = 1.0;
+  m_screenScale = [[UIScreen mainScreen] nativeScale];
   [self.view addSubview: m_glView];
 }
 //--------------------------------------------------------------
@@ -1751,8 +1750,10 @@ static SiriRemoteInfo siriRemoteInfo;
 //--------------------------------------------------------------
 - (CGSize)getScreenSize
 {
-  m_screensize.width  = m_glView.bounds.size.width  * m_screenScale;
-  m_screensize.height = m_glView.bounds.size.height * m_screenScale;
+  dispatch_sync(dispatch_get_main_queue(),^{
+    m_screensize.width  = m_glView.bounds.size.width  * m_screenScale;
+    m_screensize.height = m_glView.bounds.size.height * m_screenScale;
+  });
   return m_screensize;
 }
 
@@ -1801,15 +1802,36 @@ static SiriRemoteInfo siriRemoteInfo;
 //--------------------------------------------------------------
 - (void)disableScreenSaver
 {
-  m_disableIdleTimer = YES;
-  [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-  [self resetSystemIdleTimer];
+  if ([NSThread currentThread] != [NSThread mainThread])
+  {
+    dispatch_sync(dispatch_get_main_queue(),^{
+      m_disableIdleTimer = YES;
+      [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+      [self resetSystemIdleTimer];
+    });
+  }
+  else
+  {
+    m_disableIdleTimer = YES;
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    [self resetSystemIdleTimer];
+  }
 }
 //--------------------------------------------------------------
 - (void)enableScreenSaver
 {
-  m_disableIdleTimer = NO;
-  [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+  if ([NSThread currentThread] != [NSThread mainThread])
+  {
+    dispatch_sync(dispatch_get_main_queue(),^{
+      m_disableIdleTimer = NO;
+      [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    });
+  }
+  else
+  {
+    m_disableIdleTimer = NO;
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+  }
 }
 
 //--------------------------------------------------------------

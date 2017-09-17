@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libgpg-error
-VERSION=1.25
+VERSION=1.27
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 BASE_URL=ftp://ftp.gnupg.org/gcrypt/libgpg-error
@@ -29,9 +29,11 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 
 $(LIBDYLIB): $(PLATFORM)
 ifeq ($(OS),osx)
-	$(MAKE) -C $(PLATFORM)/src gen-posix-lock-obj
-	$(PLATFORM)/src/gen-posix-lock-obj > $(PLATFORM)/src/syscfg/tmp.h
-	mv $(PLATFORM)/src/syscfg/tmp.h $(PLATFORM)/src/syscfg/$$(awk 'NR==1 {print $$2}' $(PLATFORM)/src/syscfg/tmp.h)
+  ifneq ($(USE_SIMULATOR),yes)
+	  $(MAKE) -C $(PLATFORM)/src gen-posix-lock-obj
+	  $(PLATFORM)/src/gen-posix-lock-obj > $(PLATFORM)/src/syscfg/tmp.h
+	  mv $(PLATFORM)/src/syscfg/tmp.h $(PLATFORM)/src/syscfg/$$(awk 'NR==1 {print $$2}' $(PLATFORM)/src/syscfg/tmp.h)
+  endif
 endif
 ifeq ($(OS),android)
 ifeq ($(CPU),arm64)

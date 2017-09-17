@@ -27,6 +27,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq (darwin, $(findstring darwin, $(HOST)))
 	cd $(PLATFORM); sed -ie "s/elif defined(HAVE_CLOCK_GETTIME_MONOTONIC)/#elif defined(HAVE_CLOCK_GETTIME_MONOTONIC_NOPE)/" lib/timeval.c
+	cd $(PLATFORM); patch -p1 < ../PR1336.patch
 endif
 	cd $(PLATFORM); $(CONFIGURE)
 ifeq ($(OS),ios)

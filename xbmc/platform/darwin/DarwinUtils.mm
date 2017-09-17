@@ -600,7 +600,18 @@ bool CDarwinUtils::ResetSystemIdleTimer()
 {
 #if defined(TARGET_DARWIN_TVOS)
   //CLog::Log(LOGDEBUG, "CDarwinUtils::ResetSystemIdleTimer");
-  return [g_xbmcController resetSystemIdleTimer];
+  if ([NSThread currentThread] != [NSThread mainThread])
+  {
+    __block bool rtn;
+    dispatch_sync(dispatch_get_main_queue(),^{
+      rtn = [g_xbmcController resetSystemIdleTimer];
+    });
+    return rtn;
+  }
+  else
+  {
+    return [g_xbmcController resetSystemIdleTimer];
+  }
 #else
   return false;
 #endif
