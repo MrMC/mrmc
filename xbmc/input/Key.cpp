@@ -271,7 +271,7 @@ CAction::CAction(int actionID, const std::string &name):
 CAction::CAction(int actionID, const std::string &name, unsigned int buttonCode)
 {
   m_id = actionID;
-  for (unsigned int i = 2; i < max_amounts; i++)
+  for (unsigned int i = 0; i < max_amounts; i++)
     m_amount[i] = 0;
   m_repeat = 0;
   m_buttonCode = buttonCode;
