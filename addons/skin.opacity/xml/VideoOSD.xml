@@ -84,7 +84,7 @@
 			<control type="group" id="200">
 				<control type="grouplist" id="201">
 					<left>20</left>
-					<top>90</top>
+					<top>95</top>
 					<width>100%</width>
 					<height>135</height>
 					<itemgap>20</itemgap>
@@ -205,6 +205,17 @@
 						<visible>VideoPlayer.HasTeletext</visible>
 					</control>
 				</control>
+			</control>
+			<control type="slider">
+				<left>100</left>
+				<top>63</top>
+				<right>100</right>
+				<height>10</height>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
+				<textureslidernib colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</textureslidernibfocus>
+				<info>Player.Progress</info>
+				<action>seek</action>
 			</control>
 		</control>
 	</controls>
