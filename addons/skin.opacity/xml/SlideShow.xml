@@ -4,10 +4,10 @@
 	<controls>
 		<control type="button">
 			<description>Hidden button to close the keyboard when its focused</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<include>ScreenWidth</include>
-			<height>ScreenHeight</height>
+			<left>0</left>
+			<top>0</top>
+			<right>0</right>
+			<bottom>0</bottom>
 			<texturenofocus>-</texturenofocus>
 			<texturefocus>-</texturefocus>
 			<onclick>Skin.ToggleSetting(SlideShowShowOSD)</onclick>
