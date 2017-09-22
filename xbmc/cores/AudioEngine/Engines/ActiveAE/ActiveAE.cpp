@@ -219,7 +219,7 @@ float CEngineStats::GetCacheTotal()
 
 float CEngineStats::GetMaxDelay()
 {
-  return MAX_CACHE_LEVEL + m_sinkCacheTotal;
+  return MAX_CACHE_LEVEL + MAX_WATER_LEVEL + m_sinkCacheTotal;
 }
 
 float CEngineStats::GetWaterLevel()
@@ -1912,6 +1912,16 @@ bool CActiveAE::RunStages()
         double delay = status.GetDelay() * 1000;
         double playingPts = pts - delay;
         double error = playingPts - (*it)->m_pClock->GetClock();
+        if (error > 1000)
+        {
+          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %f", error);
+          error = 1000;
+        }
+        else if (error < -1000)
+        {
+          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %f", error);
+          error = -1000;
+        }
         (*it)->m_syncError.Add(error);
       }
     }
@@ -2413,8 +2423,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       }
       else
       {
-        int bytesToSkip = framesToSkip * buf->pkt->bytes_per_sample *
-                                  buf->pkt->config.channels / buf->pkt->planes;
+        int bytesToSkip = framesToSkip * buf->pkt->bytes_per_sample / buf->pkt->planes;
         for (int i=0; i<buf->pkt->planes; i++)
         {
           memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
