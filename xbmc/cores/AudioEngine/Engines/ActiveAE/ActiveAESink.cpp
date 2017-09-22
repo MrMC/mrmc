@@ -891,6 +891,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
 
   if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
   {
+    bool skipSwap = false;
     if (m_requestedFormat.m_streamInfo.m_IECPacked)
     {
       if (frames > 0)
@@ -924,7 +925,8 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       {
         // construct a pause burst if we have already output valid audio
         bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
-        m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst);
+        if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst))
+          skipSwap = true;
       }
       else
         m_packer->Reset();
@@ -940,7 +942,8 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         case SKIP_SWAP:
           break;
         case NEED_BYTESWAP:
-          Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], size / 2);
+          if (!skipSwap)
+            Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], size / 2);
           break;
         case CHECK_SWAP:
           SwapInit(samples);
