@@ -32,6 +32,7 @@
 #if defined(TARGET_DARWIN)
 
 #if defined(TARGET_DARWIN_IOS)
+  #include "utils/StringHasher.h"
   #import <Foundation/Foundation.h>
   #import <AVFoundation/AVFoundation.h>
   #import <UIKit/UIKit.h>
@@ -603,7 +604,7 @@ bool CDarwinUtils::ResetSystemIdleTimer()
   if ([NSThread currentThread] != [NSThread mainThread])
   {
     __block bool rtn;
-    dispatch_sync(dispatch_get_main_queue(),^{
+    dispatch_async(dispatch_get_main_queue(),^{
       rtn = [g_xbmcController resetSystemIdleTimer];
     });
     return rtn;

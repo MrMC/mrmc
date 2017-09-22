@@ -279,7 +279,7 @@ case $host in
           use_simulator=yes
           sdk_name=iphonesimulator$use_sdk
           platform_cflags+=" -Wno-error=implicit-function-declaration"
-          platform_min_version="ios-simulator-version-min=8.4"
+          platform_min_version="ios-simulator-version-min=10.2"
         elif test "$use_platform" = "tvos-simulator"; then
           case $use_sdk in
             9.0);;
@@ -292,7 +292,7 @@ case $host in
           use_simulator=yes
           sdk_name=appletvsimulator$use_sdk
           platform_cflags+=" -Wno-error=implicit-function-declaration"
-          platform_min_version="tvos-simulator-version-min=9.0"
+          platform_min_version="tvos-simulator-version-min=10.2"
         else
           case $use_sdk in
             10.5);;

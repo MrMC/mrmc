@@ -378,7 +378,8 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   // warning, we can order front but not become
   // key window or risk starting up with bad flicker
   // becoming key window must happen in completion block.
-  [m_appWindow orderFront:nil];
+  [(NSWindow*)m_appWindow performSelectorOnMainThread:@selector(orderFront:) withObject:nil waitUntilDone:YES];
+
 
   [NSAnimationContext endGrouping];
 
@@ -456,12 +457,13 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
   }
   [window update];
 
-  OSXGLView *view = [m_appWindow contentView];
-  [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
-  [view setFrameSize:NSMakeSize(newWidth, newHeight)];
-  [[view getGLContext] update];
-  view.needsDisplay = YES;
-  
+  Cocoa_RunBlockOnMainQueue(^{
+    OSXGLView *view = [m_appWindow contentView];
+    [view setFrameOrigin:NSMakePoint(0.0, 0.0)];
+    [view setFrameSize:NSMakeSize(newWidth, newHeight)];
+    [[view getGLContext] update];
+    view.needsDisplay = YES;
+  });
   m_nWidth = newWidth;
   m_nHeight = newHeight;
 
@@ -1023,7 +1025,18 @@ void CWinSystemOSX::ResetOSScreensaver()
 
 bool CWinSystemOSX::EnableFrameLimiter()
 {
-  return IsObscured();
+  if ([NSThread currentThread] != [NSThread mainThread])
+  {
+    __block bool rtn;
+    dispatch_sync(dispatch_get_main_queue(),^{
+      rtn = IsObscured();
+    });
+    return rtn;
+  }
+  else
+  {
+    return IsObscured();
+  }
 }
 
 void CWinSystemOSX::EnableTextInput(bool bEnable)

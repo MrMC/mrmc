@@ -1804,7 +1804,7 @@ static SiriRemoteInfo siriRemoteInfo;
 {
   if ([NSThread currentThread] != [NSThread mainThread])
   {
-    dispatch_sync(dispatch_get_main_queue(),^{
+    dispatch_async(dispatch_get_main_queue(),^{
       m_disableIdleTimer = YES;
       [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
       [self resetSystemIdleTimer];
@@ -1822,7 +1822,7 @@ static SiriRemoteInfo siriRemoteInfo;
 {
   if ([NSThread currentThread] != [NSThread mainThread])
   {
-    dispatch_sync(dispatch_get_main_queue(),^{
+    dispatch_async(dispatch_get_main_queue(),^{
       m_disableIdleTimer = NO;
       [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     });
