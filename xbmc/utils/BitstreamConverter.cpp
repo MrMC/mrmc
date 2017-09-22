@@ -27,6 +27,11 @@
 
 #include "BitstreamConverter.h"
 
+extern "C" {
+extern int ff_isom_write_hvcc(AVIOContext *pb, const uint8_t *data,
+                       int size, int ps_array_completeness);
+}
+
 enum {
     AVC_NAL_SLICE=1,
     AVC_NAL_DPA,
@@ -582,7 +587,25 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
                (in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 1) )
           {
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init");
-            //! @todo convert annexb to bitstream format
+            // video content is from x264 or from bytestream h264 (AnnexB format)
+            // NAL reformating to bitstream format needed
+            AVIOContext *pb;
+            if (avio_open_dyn_buf(&pb) < 0)
+              return false;
+            m_convert_bytestream = true;
+            // create a valid avcC atom data from ffmpeg's extradata
+            ff_isom_write_hvcc(pb, in_extradata, in_extrasize, 1);
+            // unhook from ffmpeg's extradata
+            in_extradata = NULL;
+            // extract the avcC atom data into extradata then write it into avcCData for VDADecoder
+            in_extrasize = avio_close_dyn_buf(pb, &in_extradata);
+            // make a copy of extradata contents
+            m_extradata = (uint8_t *)av_malloc(in_extrasize);
+            memcpy(m_extradata, in_extradata, in_extrasize);
+            m_extrasize = in_extrasize;
+            // done with the converted extradata, we MUST free using av_free
+            av_free(in_extradata);
+            return true;
             return false;
           }
           else

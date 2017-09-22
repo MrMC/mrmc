@@ -235,9 +235,9 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
 
       case AV_CODEC_ID_H265:
-        if (hints.extrasize < 7 || hints.extradata == NULL)
+        if (hints.extrasize < 23 || hints.extradata == NULL)
         {
-          CLog::Log(LOGNOTICE, "%s - avcC atom too data small or missing", __FUNCTION__);
+          CLog::Log(LOGNOTICE, "%s - hvcC atom too data small or missing", __FUNCTION__);
           return false;
         }
         else
@@ -249,34 +249,42 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             SAFE_DELETE(m_bitstream);
             return false;
           }
-          if (m_bitstream->GetExtraSize() < 8)
+          if (m_bitstream->GetExtraSize() < 23)
           {
             SAFE_DELETE(m_bitstream);
             return false;
           }
 
-          uint8_t *sps_ptr = m_bitstream->GetExtraData();
-          sps_ptr += 6; // skip over header and assume sps count of one
-          uint32_t sps_size = BS_RB16(sps_ptr);
-          sps_ptr += 2;
+          uint8_t *ps_ptr = m_bitstream->GetExtraData();
+          ps_ptr += 22; // skip over fixed length header
 
-          uint8_t *pps_ptr = sps_ptr + sps_size;
-          size_t parameterSetCount = 1 + *pps_ptr++;
-          size_t parameterSetSizes[parameterSetCount];
-          uint8_t *parameterSetPointers[parameterSetCount];
+          // number of arrays
+          size_t numberOfArrays = *ps_ptr++;
+          size_t parameterSetCount = 0;
+          size_t *parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * parameterSetCount);
+          uint8_t **parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * parameterSetCount);
 
-          parameterSetSizes[0] = sps_size;
-          parameterSetPointers[0] = sps_ptr;
-          for (size_t i = 1; i < parameterSetCount; i++)
+          size_t NALIndex = 0;
+          for (size_t i = 0; i < numberOfArrays; i++)
           {
-            uint32_t pps_size = BS_RB16(pps_ptr);
-            parameterSetSizes[i] = pps_size;
-            pps_ptr += 2;
-            parameterSetPointers[i] = pps_ptr;
-            pps_ptr += pps_size;
+            // skip byte = array_completeness/reserved/NAL type
+            ps_ptr++;
+            size_t numberOfNALs = BS_RB16(ps_ptr);
+            ps_ptr += 2;
+            parameterSetCount += numberOfNALs;
+            parameterSetSizes = (size_t*)realloc(parameterSetSizes, sizeof(size_t*) * parameterSetCount);
+            parameterSetPointers = (uint8_t**)realloc(parameterSetPointers, sizeof(uint8_t*) * parameterSetCount);
+            for (size_t i = 0; i < numberOfNALs; i++)
+            {
+              uint32_t ps_size = BS_RB16(ps_ptr);
+              ps_ptr += 2;
+              parameterSetSizes[NALIndex] = ps_size;
+              parameterSetPointers[NALIndex++] = ps_ptr;
+              ps_ptr += ps_size;
+            }
           }
 
-          OSStatus status = noErr;
+          OSStatus status = -1;
           CLog::Log(LOGNOTICE, "Constructing new format description");
           // check availability at runtime
           if (__builtin_available(macOS 10.13, ios 11, tvos 11, *))
@@ -284,11 +292,9 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(kCFAllocatorDefault,
               parameterSetCount, parameterSetPointers, parameterSetSizes, (size_t)4, nullptr, &m_fmt_desc);
           }
-          else
-          {
-            SAFE_DELETE(m_bitstream);
-            return false;
-          }
+          free(parameterSetSizes);
+          free(parameterSetPointers);
+
           if (status != noErr)
           {
             CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromHEVCParameterSets failed status(%d)", __FUNCTION__, status);
@@ -495,7 +501,8 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       pData = m_bitstream->GetConvertBuffer();
     }
 
-    if (CBitstreamParser::HasKeyframe(pData, iSize, false))
+    // exclude AV_CODEC_ID_H265 until we update CBitstreamParser::HasKeyframe
+    if (m_hintsForReopen.codec == AV_CODEC_ID_H265 || CBitstreamParser::HasKeyframe(pData, iSize, false))
     {
       // VideoToolBox is picky about starting up with a keyframe
       // Check and skip until we hit one. m_lastKeyframe tracks how many frames back
@@ -715,29 +722,31 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
 #if defined(TARGET_DARWIN_TVOS)
-  // decoding, scaling and rendering 4k h264 runs into
-  // some bandwidth limit. detect and scale down to reduce
-  // the bandwidth requirements.
-  int width_clamp = 1920;
-  int new_width = CheckNP2(width);
-  if (width != new_width)
+  if (std::string(CDarwinUtils::getIosPlatformString()) == "AppleTV5,3")
   {
-    // force picture width to power of two and scale up height
-    // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
-    // and the CVPixelBufferPixel gets created using some
-    // strange alignment when width is non-standard.
-    double w_scaler = (double)new_width / width;
-    width = new_width;
-    height = height * w_scaler;
+    // decoding, scaling and rendering 4k h264 runs into
+    // some bandwidth limit. detect and scale down to reduce
+    // the bandwidth requirements.
+    int width_clamp = 1920;
+    int new_width = CheckNP2(width);
+    if (width != new_width)
+    {
+      // force picture width to power of two and scale up height
+      // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
+      // and the CVPixelBufferPixel gets created using some
+      // strange alignment when width is non-standard.
+      double w_scaler = (double)new_width / width;
+      width = new_width;
+      height = height * w_scaler;
+    }
+    // scale output pictures down to 1080p size for display
+    if (width > width_clamp)
+    {
+      double w_scaler = (float)width_clamp / width;
+      width = width_clamp;
+      height = height * w_scaler;
+    }
   }
-  // scale output pictures down to 1080p size for display
-  if (width > width_clamp)
-  {
-    double w_scaler = (float)width_clamp / width;
-    width = width_clamp;
-    height = height * w_scaler;
-  }
-
 #elif defined(TARGET_DARWIN_IOS)
   double scale = 0.0;
 

@@ -173,8 +173,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
     switch(hint.codec)
     {
       case AV_CODEC_ID_H264:
+      case AV_CODEC_ID_HEVC:
       case AV_CODEC_ID_MPEG4:
         if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
+          break;
+        if (hint.codec == AV_CODEC_ID_HEVC && hint.ptsinvalid)
           break;
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
           if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
