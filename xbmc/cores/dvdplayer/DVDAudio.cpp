@@ -106,7 +106,7 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
   CSingleLock lock (m_critSection);
 
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0;
 
   CAESyncInfo info = m_pAudioStream->GetSyncInfo();
@@ -243,7 +243,7 @@ void CDVDAudio::AbortAddPackets()
 
 bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
 {
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return false;
 
   if(audioframe.passthrough != m_bPassthrough)
@@ -268,7 +268,7 @@ void CDVDAudio::SetResampleRatio(double ratio)
 double CDVDAudio::GetCacheTime()
 {
   CSingleLock lock (m_critSection);
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0.0;
 
   double delay = 0.0;
@@ -281,9 +281,17 @@ double CDVDAudio::GetCacheTime()
 double CDVDAudio::GetCacheTotal()
 {
   CSingleLock lock (m_critSection);
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0.0;
   return m_pAudioStream->GetCacheTotal();
+}
+
+double CDVDAudio::GetMaxDelay()
+{
+  CSingleLock lock (m_critSection);
+  if (!m_pAudioStream)
+    return 0.0;
+  return m_pAudioStream->GetMaxDelay();
 }
 
 double CDVDAudio::GetPlayingPts()
