@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/StringHasher.h"
 
 #include "CompileInfo.h"
 
@@ -82,6 +83,8 @@ enum iosPlatform
   iPadMiniGSMCDMA,
   iPadMiniWIFI,
   AppleTV2,
+  AppleTV4,
+  AppleTV4K,
   iPhone4,            //from here on list devices with retina support (e.x. mainscreen scale == 2.0)
   iPhone4CDMA,
   iPhone4S,
@@ -100,6 +103,8 @@ enum iosPlatform
   iPad4WIFI,
   iPad4,
   iPad4GSMCDMA,
+  iPad5Wifi,
+  iPad5Cellular,
   iPadAirWifi,
   iPadAirCellular,
   iPadAirTDLTE,
@@ -109,12 +114,17 @@ enum iosPlatform
   iPhone6s,
   iPhoneSE,
   iPhone7,
+  iPhone8,
   iPadAir2Wifi,
   iPadAir2Cellular,
   iPadPro9_7InchWifi,
   iPadPro9_7InchCellular,
   iPadPro12_9InchWifi,
   iPadPro12_9InchCellular,
+  iPadPro2_12_9InchWifi,
+  iPadPro2_12_9InchCellular,
+  iPadPro_10_5InchWifi,
+  iPadPro_10_5InchCellular,
   iPadMini3Wifi,
   iPadMini3Cellular,
   iPadMini4Wifi,
@@ -122,7 +132,8 @@ enum iosPlatform
   iPhone6Plus,        //from here on list devices with retina support which have scale == 3.0
   iPhone6sPlus,
   iPhone7Plus,
-  AppleTV4,
+  iPhone8Plus,
+  iPhoneX,
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
@@ -156,70 +167,85 @@ enum iosPlatform getIosPlatform()
 #if defined(TARGET_DARWIN_IOS)
   if (eDev == iDeviceUnknown)
   {
-    std::string devStr(CDarwinUtils::getIosPlatformString());
-    
-    if (devStr == "iPhone1,1") eDev = iPhone2G;
-    else if (devStr == "iPhone1,2") eDev = iPhone3G;
-    else if (devStr == "iPhone2,1") eDev = iPhone3GS;
-    else if (devStr == "iPhone3,1") eDev = iPhone4;
-    else if (devStr == "iPhone3,2") eDev = iPhone4;
-    else if (devStr == "iPhone3,3") eDev = iPhone4CDMA;    
-    else if (devStr == "iPhone4,1") eDev = iPhone4S;
-    else if (devStr == "iPhone5,1") eDev = iPhone5;
-    else if (devStr == "iPhone5,2") eDev = iPhone5GSMCDMA;
-    else if (devStr == "iPhone5,3") eDev = iPhone5CGSM;
-    else if (devStr == "iPhone5,4") eDev = iPhone5CGlobal;
-    else if (devStr == "iPhone6,1") eDev = iPhone5SGSM;
-    else if (devStr == "iPhone6,2") eDev = iPhone5SGlobal;
-    else if (devStr == "iPhone7,1") eDev = iPhone6Plus;
-    else if (devStr == "iPhone7,2") eDev = iPhone6;
-    else if (devStr == "iPhone8,1") eDev = iPhone6s;
-    else if (devStr == "iPhone8,2") eDev = iPhone6sPlus;
-    else if (devStr == "iPhone8,4") eDev = iPhoneSE;
-    else if (devStr == "iPhone9,1") eDev = iPhone7;
-    else if (devStr == "iPhone9,2") eDev = iPhone7Plus;
-    else if (devStr == "iPhone9,3") eDev = iPhone7;
-    else if (devStr == "iPhone9,4") eDev = iPhone7Plus;
-    else if (devStr == "iPod1,1") eDev = iPodTouch1G;
-    else if (devStr == "iPod2,1") eDev = iPodTouch2G;
-    else if (devStr == "iPod3,1") eDev = iPodTouch3G;
-    else if (devStr == "iPod4,1") eDev = iPodTouch4G;
-    else if (devStr == "iPod5,1") eDev = iPodTouch5G;
-    else if (devStr == "iPod7,1") eDev = iPodTouch6G;
-    else if (devStr == "iPad1,1") eDev = iPad;
-    else if (devStr == "iPad1,2") eDev = iPad;
-    else if (devStr == "iPad2,1") eDev = iPad2WIFI;
-    else if (devStr == "iPad2,2") eDev = iPad2;
-    else if (devStr == "iPad2,3") eDev = iPad2CDMA;
-    else if (devStr == "iPad2,4") eDev = iPad2;
-    else if (devStr == "iPad2,5") eDev = iPadMiniWIFI;
-    else if (devStr == "iPad2,6") eDev = iPadMini;
-    else if (devStr == "iPad2,7") eDev = iPadMiniGSMCDMA;
-    else if (devStr == "iPad3,1") eDev = iPad3WIFI;
-    else if (devStr == "iPad3,2") eDev = iPad3GSMCDMA;
-    else if (devStr == "iPad3,3") eDev = iPad3;
-    else if (devStr == "iPad3,4") eDev = iPad4WIFI;
-    else if (devStr == "iPad3,5") eDev = iPad4;
-    else if (devStr == "iPad3,6") eDev = iPad4GSMCDMA;
-    else if (devStr == "iPad4,1") eDev = iPadAirWifi;
-    else if (devStr == "iPad4,2") eDev = iPadAirCellular;
-    else if (devStr == "iPad4,3") eDev = iPadAirTDLTE;
-    else if (devStr == "iPad4,4") eDev = iPadMini2Wifi;
-    else if (devStr == "iPad4,5") eDev = iPadMini2Cellular;
-    else if (devStr == "iPad4,6") eDev = iPadMini2Cellular;
-    else if (devStr == "iPad4,7") eDev = iPadMini3Wifi;
-    else if (devStr == "iPad4,8") eDev = iPadMini3Cellular;
-    else if (devStr == "iPad4,9") eDev = iPadMini3Cellular;
-    else if (devStr == "iPad5,1") eDev = iPadMini4Wifi;
-    else if (devStr == "iPad5,2") eDev = iPadMini4Cellular;
-    else if (devStr == "iPad5,3") eDev = iPadAir2Wifi;
-    else if (devStr == "iPad5,4") eDev = iPadAir2Cellular;
-    else if (devStr == "iPad6,3") eDev = iPadPro9_7InchWifi;
-    else if (devStr == "iPad6,4") eDev = iPadPro9_7InchCellular;
-    else if (devStr == "iPad6,7") eDev = iPadPro12_9InchWifi;
-    else if (devStr == "iPad6,8") eDev = iPadPro12_9InchCellular;
-    else if (devStr == "AppleTV2,1") eDev = AppleTV2;
-    else if (devStr == "AppleTV5,3") eDev = AppleTV4;
+    using namespace StringHasher;
+    switch(mkhash(CDarwinUtils::getIosPlatformString()))
+    {
+      case "iPhone1,1"_mkhash: eDev = iPhone2G; break;
+      case "iPhone1,2"_mkhash: eDev = iPhone3G; break;
+      case "iPhone2,1"_mkhash: eDev = iPhone3GS; break;
+      case "iPhone3,1"_mkhash: eDev = iPhone4; break;
+      case "iPhone3,2"_mkhash: eDev = iPhone4; break;
+      case "iPhone3,3"_mkhash: eDev = iPhone4CDMA; break;
+      case "iPhone4,1"_mkhash: eDev = iPhone4S; break;
+      case "iPhone5,1"_mkhash: eDev = iPhone5; break;
+      case "iPhone5,2"_mkhash: eDev = iPhone5GSMCDMA; break;
+      case "iPhone5,3"_mkhash: eDev = iPhone5GSMCDMA; break;
+      case "iPhone5,4"_mkhash: eDev = iPhone5CGSM; break;
+      case "iPhone6,1"_mkhash: eDev = iPhone5CGlobal; break;
+      case "iPhone6,2"_mkhash: eDev = iPhone5SGlobal; break;
+      case "iPhone7,1"_mkhash: eDev = iPhone6Plus; break;
+      case "iPhone7,2"_mkhash: eDev = iPhone6; break;
+      case "iPhone8,1"_mkhash: eDev = iPhone6s; break;
+      case "iPhone8,2"_mkhash: eDev = iPhone6sPlus; break;
+      case "iPhone8,4"_mkhash: eDev = iPhoneSE; break;
+      case "iPhone9,1"_mkhash: eDev = iPhone7; break;
+      case "iPhone9,2"_mkhash: eDev = iPhone7Plus; break;
+      case "iPhone9,3"_mkhash: eDev = iPhone6Plus; break;
+      case "iPhone9,4"_mkhash: eDev = iPhone7Plus; break;
+      case "iPhone10,1"_mkhash: eDev = iPhone8; break;
+      case "iPhone10,2"_mkhash: eDev = iPhone8Plus; break;
+      case "iPhone10,3"_mkhash: eDev = iPhoneX; break;
+      case "iPhone10,4"_mkhash: eDev = iPhone8; break;
+      case "iPhone10,5"_mkhash: eDev = iPhone8Plus; break;
+      case "iPhone10,6"_mkhash: eDev = iPhoneX; break;
+      case "iPod1,1"_mkhash: eDev = iPodTouch1G; break;
+      case "iPod2,1"_mkhash: eDev = iPodTouch2G; break;
+      case "iPod3,1"_mkhash: eDev = iPodTouch3G; break;
+      case "iPod4,1"_mkhash: eDev = iPodTouch4G; break;
+      case "iPod5,1"_mkhash: eDev = iPodTouch5G; break;
+      case "iPod7,1"_mkhash: eDev = iPodTouch6G; break;
+      case "iPad1,1"_mkhash: eDev = iPad; break;
+      case "iPad1,2"_mkhash: eDev = iPad; break;
+      case "iPad2,1"_mkhash: eDev = iPad2WIFI; break;
+      case "iPad2,2"_mkhash: eDev = iPad2; break;
+      case "iPad2,3"_mkhash: eDev = iPad2CDMA; break;
+      case "iPad2,4"_mkhash: eDev = iPad2; break;
+      case "iPad2,5"_mkhash: eDev = iPadMiniWIFI; break;
+      case "iPad2,6"_mkhash: eDev = iPadMini; break;
+      case "iPad2,7"_mkhash: eDev = iPadMiniGSMCDMA; break;
+      case "iPad3,1"_mkhash: eDev = iPad3WIFI; break;
+      case "iPad3,2"_mkhash: eDev = iPad3GSMCDMA; break;
+      case "iPad3,3"_mkhash: eDev = iPad3; break;
+      case "iPad3,4"_mkhash: eDev = iPad4WIFI; break;
+      case "iPad3,5"_mkhash: eDev = iPad4; break;
+      case "iPad3,6"_mkhash: eDev = iPad4GSMCDMA; break;
+      case "iPad4,1"_mkhash: eDev = iPadAirWifi; break;
+      case "iPad4,2"_mkhash: eDev = iPadAirCellular; break;
+      case "iPad4,3"_mkhash: eDev = iPadAirTDLTE; break;
+      case "iPad4,4"_mkhash: eDev = iPadMini2Wifi; break;
+      case "iPad4,5"_mkhash: eDev = iPadMini2Cellular; break;
+      case "iPad4,6"_mkhash: eDev = iPadMini2Cellular; break;
+      case "iPad4,7"_mkhash: eDev = iPadMini3Wifi; break;
+      case "iPad4,8"_mkhash: eDev = iPadMini3Cellular; break;
+      case "iPad4,9"_mkhash: eDev = iPadMini3Cellular; break;
+      case "iPad5,1"_mkhash: eDev = iPadMini4Wifi; break;
+      case "iPad5,2"_mkhash: eDev = iPadMini4Cellular; break;
+      case "iPad5,3"_mkhash: eDev = iPadAir2Wifi; break;
+      case "iPad5,4"_mkhash: eDev = iPadAir2Cellular; break;
+      case "iPad6,3"_mkhash: eDev = iPadPro9_7InchWifi; break;
+      case "iPad6,4"_mkhash: eDev = iPadPro9_7InchCellular; break;
+      case "iPad6,7"_mkhash: eDev = iPadPro12_9InchWifi; break;
+      case "iPad6,8"_mkhash: eDev = iPadPro12_9InchCellular; break;
+      case "iPad6,11"_mkhash: eDev = iPad5Wifi; break;
+      case "iPad6,12"_mkhash: eDev = iPad5Cellular; break;
+      case "iPad7,1"_mkhash: eDev = iPadPro2_12_9InchWifi; break;
+      case "iPad7,2"_mkhash: eDev = iPadPro2_12_9InchCellular; break;
+      case "iPad7,3"_mkhash: eDev = iPadPro_10_5InchWifi; break;
+      case "iPad7,4"_mkhash: eDev = iPadPro_10_5InchCellular; break;
+      case "AppleTV2,1"_mkhash: eDev = AppleTV2; break;
+      case "AppleTV5,3"_mkhash: eDev = AppleTV4; break;
+      case "AppleTV6,2"_mkhash: eDev = AppleTV4K; break;
+    }
   }
 #endif
   return eDev;
