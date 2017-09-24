@@ -256,10 +256,10 @@ void CServicesManager::ShowMusicInfo(CFileItem item)
     CEmbyUtils::ShowMusicInfo(item);
 }
 
-void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit)
+void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit, bool watched)
 {
   if (CPlexUtils::HasClients())
-    CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, false);
+    CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, false, watched);
   if (CEmbyUtils::HasClients())
     CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(recentlyAdded, false);
 
@@ -279,10 +279,10 @@ void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, i
   }
 }
 
-void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit)
+void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit, bool watched)
 {
   if (CPlexUtils::HasClients())
-    CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, true);
+    CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(recentlyAdded, true, watched);
   if (CEmbyUtils::HasClients())
     CEmbyUtils::GetAllEmbyRecentlyAddedMoviesAndShows(recentlyAdded, true);
 

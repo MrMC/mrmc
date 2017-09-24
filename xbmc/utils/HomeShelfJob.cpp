@@ -91,6 +91,7 @@ bool CHomeShelfJob::UpdateVideo()
   m_HomeShelfMoviesPR->ClearItems();
 
   int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
+  bool homeScreenWatched = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_WATCHEDHOMESHELFITEMS);
   
   if (homeScreenItemSelector > 1) // 2 and 3 are in progress and both
   {
@@ -143,7 +144,7 @@ bool CHomeShelfJob::UpdateVideo()
       loader.OnLoaderStart();
 
       path = g_advancedSettings.m_recentlyAddedMoviePath;
-      if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
+      if (!homeScreenWatched)
       {
         CVideoDbUrl url;
         url.FromString(path);
@@ -165,7 +166,7 @@ bool CHomeShelfJob::UpdateVideo()
       }
 
       path = g_advancedSettings.m_recentlyAddedEpisodePath;
-      if (g_advancedSettings.m_iVideoLibraryRecentlyAddedUnseen)
+      if (!homeScreenWatched)
       {
         CVideoDbUrl url;
         url.FromString(path);
@@ -194,8 +195,8 @@ bool CHomeShelfJob::UpdateVideo()
     }
 
     // get recently added TVSHOWS and MOVIES from any enabled service
-    CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS);
-    CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS);
+    CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS, homeScreenWatched);
+    CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS, homeScreenWatched);
   }
   
   videodatabase.Close();

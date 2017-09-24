@@ -71,8 +71,8 @@ public:
   virtual void SetItemWatched(CFileItem &item) { }
   virtual void SetItemUnWatched(CFileItem &item) { }
   virtual void UpdateItemState(CFileItem &item, double currentTime) { }
-  virtual void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit) { }
-  virtual void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit){ }
+  virtual void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit, bool watched) { }
+  virtual void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit, bool watched){ }
 
   virtual bool GetDirectory(const CURL& url, CFileItemList &items);
   virtual XFILE::DIR_CACHE_TYPE GetCacheType(const CURL& url);
@@ -98,8 +98,8 @@ public:
   void SetItemUnWatched(CFileItem &item);
   void UpdateItemState(CFileItem &item, double currentTime);
   void ShowMusicInfo(CFileItem item);
-  void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit);
-  void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit);
+  void GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit, bool watched);
+  void GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit, bool watched);
   void GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllInProgressShows(CFileItemList &inProgress, int itemLimit);
   void GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit);

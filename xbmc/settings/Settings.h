@@ -92,6 +92,7 @@ public:
   static const std::string SETTING_WINDOW_HEIGHT;
   static const std::string SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS;
   static const std::string SETTING_VIDEOLIBRARY_HOMESHELFITEMS;
+  static const std::string SETTING_VIDEOLIBRARY_WATCHEDHOMESHELFITEMS;
   static const std::string SETTING_VIDEOLIBRARY_ACTORTHUMBS;
   static const std::string SETTING_MYVIDEOS_FLATTEN;
   static const std::string SETTING_VIDEOLIBRARY_FLATTENTVSHOWS;

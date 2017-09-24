@@ -4180,7 +4180,17 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr ""
 
-#empty strings from id 1052 to 1179
+#empty strings from id 1052 to 1177
+
+#: system/settings/settings.xml
+msgctxt "#1178"
+msgid "Show watched items on home screen"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1179"
+msgid "Show or hide watched items in Recntly Added home screen"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1180"

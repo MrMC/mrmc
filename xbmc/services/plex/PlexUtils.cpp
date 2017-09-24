@@ -378,13 +378,15 @@ bool CPlexUtils::DeletePlexMedia(CFileItem &item)
 }
 
 #pragma mark - Plex Recently Added and InProgress
-bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit)
+bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit, bool watched)
 {
   bool rtn = false;
   CURL curl(url);
   curl.SetFileName(curl.GetFileName() + "recentlyAdded");
+  if (!watched)
+    curl.SetOption("unwatched","1");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
-
+  
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -421,13 +423,15 @@ bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string 
   return rtn;
 }
 
-bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit)
+bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit, bool watched)
 {
   bool rtn = false;
   CURL curl(url);
   curl.SetFileName(curl.GetFileName() + "recentlyAdded");
+  if (!watched)
+    curl.SetOption("unwatched","1");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
-
+  
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -463,7 +467,7 @@ bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string
   return rtn;
 }
 
-bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow)
+bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow, bool unWatched)
 {
   bool rtn = false;
   if (CPlexServices::GetInstance().HasClients())
@@ -492,9 +496,9 @@ bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, boo
         curl.SetFileName(curl.GetFileName() + content.section + "/");
 
         if (tvShow)
-          rtn = GetPlexRecentlyAddedEpisodes(plexItems, curl.Get(), 10);
+          rtn = GetPlexRecentlyAddedEpisodes(plexItems, curl.Get(), 10, unWatched);
         else
-          rtn = GetPlexRecentlyAddedMovies(plexItems, curl.Get(), 10);
+          rtn = GetPlexRecentlyAddedMovies(plexItems, curl.Get(), 10, unWatched);
 
         for (int item = 0; item < plexItems.Size(); ++item)
           CPlexUtils::SetPlexItemProperties(*plexItems[item], client);

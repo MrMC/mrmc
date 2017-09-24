@@ -55,12 +55,12 @@ public:
   static bool DeletePlexMedia(CFileItem &item);
 
   // Plex Recently Added and InProgress
-  static bool GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit=25);
+  static bool GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit, bool unWatched);
   static bool GetPlexInProgressShows(CFileItemList &items, const std::string url, int limit=25);
-  static bool GetPlexRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit=25);
+  static bool GetPlexRecentlyAddedMovies(CFileItemList &items, const std::string url, int limit, bool unWatched);
   static bool GetPlexInProgressMovies(CFileItemList &items, const std::string url, int limit=25);
   static bool GetAllPlexInProgress(CFileItemList &items, bool tvShow);
-  static bool GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow=false);
+  static bool GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow, bool unWatched);
   static bool GetPlexRecentlyAddedAlbums(CFileItemList &items, const std::string url, int limit=25);
 
   // Plex Movies
