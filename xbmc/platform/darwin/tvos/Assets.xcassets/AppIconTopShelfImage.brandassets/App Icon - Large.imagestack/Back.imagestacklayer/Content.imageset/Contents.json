@@ -4,6 +4,10 @@
       "idiom" : "tv",
       "filename" : "MrMC_AppIcon_1280x768_back_noTransparency.png",
       "scale" : "1x"
+    },
+    {
+      "idiom" : "tv",
+      "scale" : "2x"
     }
   ],
   "info" : {
