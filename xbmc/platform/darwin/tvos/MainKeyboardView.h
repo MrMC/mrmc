@@ -31,11 +31,13 @@
   UITextField *_textField;
   UITextField *_heading;
   CGRect _kbRect;
+  CGRect _frame;
 }
 
 @property (nonatomic, retain) NSMutableString *_text;
 @property (getter = isConfirmed) BOOL _confirmed;
 @property (assign, setter = registerKeyboard:) CMainKeyboard *_tvosKeyboard;
+@property CGRect _frame;
 
 - (void) setHeading:(NSString *)heading;
 - (void) setHidden:(BOOL)hidden;
@@ -45,4 +47,6 @@
 - (void) textChanged:(NSNotification*)aNotification;
 - (void) setCancelFlag:(bool *)cancelFlag;
 - (void) doDeactivate:(NSDictionary *)dict;
+- (id)initWithFrameInternal;
+
 @end
