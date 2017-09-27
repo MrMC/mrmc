@@ -1669,7 +1669,7 @@ static SiriRemoteInfo siriRemoteInfo;
   m_glView = [[MainEAGLView alloc] initWithFrame:self.view.bounds withScreen:[UIScreen mainScreen]];
 
   // Check if screen is Retina
-  m_screenScale = [[UIScreen mainScreen] nativeScale];
+  m_screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
   [self.view addSubview: m_glView];
 }
 //--------------------------------------------------------------

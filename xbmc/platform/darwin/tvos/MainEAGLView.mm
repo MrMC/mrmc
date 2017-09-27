@@ -50,8 +50,16 @@
   if ((self = [super initWithFrame:frame]))
   {
     // Get the layer
-    CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
+    CAEAGLLayer *eaglLayer = (CAEAGLLayer*)self.layer;
 
+    m_currentScreen = [UIScreen mainScreen];
+    CGFloat scaleFactor = [self getScreenScale: m_currentScreen];
+    // this will activate retina on supported devices
+    if (scaleFactor > 1.0)
+      ILOG(@"Enabling 4K for AppleTV4 4k %f", scaleFactor);
+    [eaglLayer setContentsScale:scaleFactor];
+    [self setContentScaleFactor:scaleFactor];
+    
     eaglLayer.opaque = NO;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
@@ -63,8 +71,10 @@
 
     // Fallback to OpenGL ES 2.0
     if (aContext == nullptr)
+    {
       aContext = [[EAGLContext alloc]
         initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    }
 
     if (!aContext)
       ELOG(@"Failed to create ES context");
@@ -199,6 +209,13 @@
   }
   
   return success;
+}
+
+//--------------------------------------------------------------
+- (CGFloat) getScreenScale:(UIScreen *)screen
+{
+  CGFloat scale = screen.scale;
+  return scale;
 }
 
 @end

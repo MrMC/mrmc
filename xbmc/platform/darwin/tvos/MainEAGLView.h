@@ -47,4 +47,6 @@
 - (id)          initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
 - (void)        setFramebuffer;
 - (bool)        presentFramebuffer;
+- (CGFloat)     getScreenScale:(UIScreen *)screen;
+
 @end
