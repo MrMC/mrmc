@@ -112,7 +112,7 @@
 						<width>216</width>
 						<height>306</height>
 						<texture fallback="DefaultVideo.png" background="true">$PARAM[thumb]</texture>
-						<bordertexture border="20">overlays/shadow.png</bordertexture>
+						<bordertexture border="20" colordiffuse="primary_color">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="progress">
@@ -173,7 +173,7 @@
 						<width>216</width>
 						<height>306</height>
 						<texture fallback="DefaultVideo.png" background="true">$PARAM[thumb]</texture>
-						<bordertexture border="20">overlays/frameRA.png</bordertexture>
+						<bordertexture border="20" colordiffuse="primary_color">overlays/frameRA.png</bordertexture>
 						<animation effect="fade" start="0" end="100" time="200">Focus</animation>
 						<animation effect="fade" start="100" end="0" time="200">UnFocus</animation>
 						<bordersize>20</bordersize>

@@ -79,7 +79,7 @@
 						<width>315</width>
 						<height>315</height>
 						<texture fallback="DefaultAudio.png" background="true">$INFO[ListItem.thumb]</texture>
-						<bordertexture border="20">overlays/frameRA.png</bordertexture>
+						<bordertexture border="20" colordiffuse="primary_color">overlays/frameRA.png</bordertexture>
 						<animation effect="fade" start="0" end="100" time="200">Focus</animation>
 						<animation effect="fade" start="100" end="0" time="200">UnFocus</animation>
 						<bordersize>20</bordersize>

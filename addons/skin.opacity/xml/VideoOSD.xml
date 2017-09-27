@@ -208,9 +208,9 @@
 			</control>
 			<control type="slider">
 				<left>100</left>
-				<top>63</top>
+				<top>53</top>
 				<right>100</right>
-				<height>10</height>
+				<height>25</height>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
 				<textureslidernib colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</textureslidernibfocus>
