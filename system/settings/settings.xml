@@ -2287,9 +2287,18 @@
           </dependencies>  
           <control type="toggle" />
         </setting>
-        <setting id="plex.transcodelocalexclusions" type="boolean" parent="plex.transcode" label="1290" help="1291">
+        <setting id="plex.transcodelocalexclusions" type="boolean" parent="plex.transcodelocal" label="1294" help="1291">
           <level>0</level>
           <default>true</default>
+          <dependencies>
+            <dependency type="visible" setting="plex.transcode">true</dependency>
+            <dependency type="visible" setting="plex.transcodelocal">false</dependency>
+          </dependencies>  
+          <control type="toggle" />
+        </setting>
+        <setting id="plex.transcodelocalexclusionshevc" type="boolean" parent="plex.transcodelocal" label="1295" help="1291">
+          <level>0</level>
+          <default>false</default>
           <dependencies>
             <dependency type="visible" setting="plex.transcode">true</dependency>
             <dependency type="visible" setting="plex.transcodelocal">false</dependency>

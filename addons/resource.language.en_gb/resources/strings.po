@@ -4642,7 +4642,17 @@ msgctxt "#1293"
 msgid "Force transcode of all audio to AAC, disabling this will keep audio intact"
 msgstr ""
 
-#empty strings from id 1294 to 1299
+#: system/settings/settings.xml
+msgctxt "#1294"
+msgid "Transcode local VC-1 files"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1295"
+msgid "Transcode local H265 files"
+msgstr ""
+
+#empty strings from id 1296 to 1299
 
 msgctxt "#1300"
 msgid "Custom audio device"

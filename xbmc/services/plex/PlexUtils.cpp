@@ -836,16 +836,24 @@ bool CPlexUtils::GetURL(CFileItem &item)
   std::string cleanUrl = url.GetWithoutFilename();
   CURL curl(cleanUrl);
 
+  bool transcode = true;
   if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODELOCAL)) &&
         CPlexServices::GetInstance().ClientIsLocal(cleanUrl))
   {
-    /// always transcode h265 and VC1
-    if (!(CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION) &&
-          (item.GetVideoInfoTag()->m_streamDetails.GetVideoCodec() == "hevc" ||
-          item.GetVideoInfoTag()->m_streamDetails.GetVideoCodec() == "vc1")))
-        return true;
+    transcode = false;
+    /// transcode h265 or VC1 if user selected it
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION) &&
+          item.GetVideoInfoTag()->m_streamDetails.GetVideoCodec() == "vc1")
+        transcode = true;
+    
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSIONHEVC) &&
+          item.GetVideoInfoTag()->m_streamDetails.GetVideoCodec() == "hevc")
+      transcode = true;
   }
 
+  if (!transcode)
+    return true;
+  
   int res = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_PLEXQUALITY);
 
   std::string maxBitrate;

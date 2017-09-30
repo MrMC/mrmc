@@ -490,6 +490,7 @@ const std::string CSettings::SETTING_SERVICES_PLEXQUALITY = "plex.quality";
 const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCAL = "plex.transcodelocal";
 const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODEAUDIO = "plex.transcodeaudio";
 const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSION = "plex.transcodelocalexclusions";
+const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODELOCALEXCLUSIONHEVC = "plex.transcodelocalexclusionshevc";
 const std::string CSettings::SETTING_SERVICES_PLEXMYPLEXAUTH = "plex.myplexauthtoken";
 const std::string CSettings::SETTING_SERVICES_PLEXLIMITHOMETO  = "plex.limithometo";
 
