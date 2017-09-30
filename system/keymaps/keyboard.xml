@@ -190,6 +190,9 @@
       <browser_back mod="longpress">PreviousMenu</browser_back>
       <browser_search>VoiceRecognizer</browser_search>
       <menu>VoiceRecognizer</menu>
+      <return mod="longpress">VoiceRecognizer</return>
+      <enter mod="longpress">VoiceRecognizer</enter>
+      <play_pause>VoiceRecognizer</play_pause>
     </keyboard>
   </VirtualKeyboard>
   <MyTVChannels>
