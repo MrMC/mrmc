@@ -26,7 +26,6 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/StringHasher.h"
 
 #include "CompileInfo.h"
 
