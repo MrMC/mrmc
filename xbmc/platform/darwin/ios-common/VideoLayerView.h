@@ -20,8 +20,11 @@
  */
 
 #import <UIKit/UIKit.h>
-#undef __TVOS_PROHIBITED
+// AVMediaType conflicts with avutil.h enum AVMediaType from ffmpeg
+// dirty dirty hack ...
+#define AVMediaType AVMediaType_fooo
 #import <AVFoundation/AVFoundation.h>
+#undef AVMediaType
 
 @interface VideoLayerView : UIView
 

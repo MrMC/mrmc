@@ -20,7 +20,7 @@
 
 #import "config.h"
 
-#if false && defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
 #import "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecAVFoundation.h"
 
 #import "cores/dvdplayer/DVDClock.h"
@@ -214,53 +214,141 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     switch (hints.codec)
     {
       case AV_CODEC_ID_H264:
+      {
         // we want avcC, not annex-b. use a bitstream converter for all flavors,
         // that way even avcC with silly 3-byte nals are covered.
         m_bitstream = new CBitstreamConverter;
         if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
           return false;
 
+        // create a CMVideoFormatDescription from avcC extradata.
+        // skip over avcC header (six bytes)
+        uint8_t *spc_ptr = m_bitstream->GetExtraData() + 6;
+        // length of sequence parameter set data
+        uint32_t sps_size = BS_RB16(spc_ptr); spc_ptr += 2;
+        // pointer to sequence parameter set data
+        uint8_t *sps_ptr = spc_ptr; spc_ptr += sps_size;
+        // number of picture parameter sets
+        //uint32_t pps_cnt = *spc_ptr++;
+        spc_ptr++;
+        // length of picture parameter set data
+        uint32_t pps_size = BS_RB16(spc_ptr); spc_ptr += 2;
+        // pointer to picture parameter set data
+        uint8_t *pps_ptr = spc_ptr;
+
+        // check the avcC atom's sps for number of reference frames and
+        // ignore if interlaced, it's handled in hints check above (until we get it working :)
+        bool interlaced = true;
+        int max_ref_frames = 0;
+        if (sps_size)
+          m_bitstream->parseh264_sps(sps_ptr+1, sps_size-1, &interlaced, &max_ref_frames);
+        // default to 5 min, this helps us feed correct pts to the player.
+        m_max_ref_frames = std::max(max_ref_frames + 1, 5);
+
+        // bitstream converter avcC's always have 4 byte NALs.
+        int nalUnitHeaderLength  = 4;
+        size_t parameterSetCount = 2;
+        const uint8_t* const parameterSetPointers[2] = {
+          (const uint8_t*)sps_ptr, (const uint8_t*)pps_ptr };
+        const size_t parameterSetSizes[2] = {
+          sps_size, pps_size };
+        CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
+         parameterSetCount, parameterSetPointers, parameterSetSizes, nalUnitHeaderLength, &m_fmt_desc);
+
+        const Boolean useCleanAperture = true;
+        const Boolean usePixelAspectRatio = false;
+        auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
+
+        width = hints.width = videoSize.width;
+        height = hints.height = videoSize.height;
+
         m_format = 'avc1';
         m_pFormatName = "avf-h264";
+      }
       break;
-      default:
+      case AV_CODEC_ID_H265:
+      {
+        if (hints.extrasize < 23 || hints.extradata == NULL)
+        {
+          CLog::Log(LOGNOTICE, "%s - hvcC atom too data small or missing", __FUNCTION__);
+          return false;
+        }
+        else
+        {
+         // use a bitstream converter for all flavors
+          m_bitstream = new CBitstreamConverter;
+          if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
+          {
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+          if (m_bitstream->GetExtraSize() < 23)
+          {
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+
+          uint8_t *ps_ptr = m_bitstream->GetExtraData();
+          ps_ptr += 22; // skip over fixed length header
+
+          // number of arrays
+          size_t numberOfArrays = *ps_ptr++;
+          size_t parameterSetCount = 0;
+          size_t *parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * parameterSetCount);
+          uint8_t **parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * parameterSetCount);
+
+          size_t NALIndex = 0;
+          for (size_t i = 0; i < numberOfArrays; i++)
+          {
+            // skip byte = array_completeness/reserved/NAL type
+            ps_ptr++;
+            size_t numberOfNALs = BS_RB16(ps_ptr);
+            ps_ptr += 2;
+            parameterSetCount += numberOfNALs;
+            parameterSetSizes = (size_t*)realloc(parameterSetSizes, sizeof(size_t*) * parameterSetCount);
+            parameterSetPointers = (uint8_t**)realloc(parameterSetPointers, sizeof(uint8_t*) * parameterSetCount);
+            for (size_t i = 0; i < numberOfNALs; i++)
+            {
+              uint32_t ps_size = BS_RB16(ps_ptr);
+              ps_ptr += 2;
+              parameterSetSizes[NALIndex] = ps_size;
+              parameterSetPointers[NALIndex++] = ps_ptr;
+              ps_ptr += ps_size;
+            }
+          }
+
+          OSStatus status = -1;
+          CLog::Log(LOGNOTICE, "Constructing new format description");
+          // check availability at runtime
+          if (__builtin_available(macOS 10.13, ios 11, tvos 11, *))
+          {
+            status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(kCFAllocatorDefault,
+              parameterSetCount, parameterSetPointers, parameterSetSizes, (size_t)4, nullptr, &m_fmt_desc);
+          }
+          free(parameterSetSizes);
+          free(parameterSetPointers);
+
+          if (status != noErr)
+          {
+            CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromHEVCParameterSets failed status(%d)", __FUNCTION__, status);
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+          const Boolean useCleanAperture = true;
+          const Boolean usePixelAspectRatio = false;
+          auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
+
+          width = hints.width = videoSize.width;
+          height = hints.height = videoSize.height;
+          m_pFormatName = "vtb-h265";
+        }
+      }
+      break;
+     default:
         return false;
       break;
     }
 
-    // create a CMVideoFormatDescription from avcC extradata.
-    // skip over avcC header (six bytes)
-    uint8_t *spc_ptr = m_bitstream->GetExtraData() + 6;
-    // length of sequence parameter set data
-    uint32_t sps_size = BS_RB16(spc_ptr); spc_ptr += 2;
-    // pointer to sequence parameter set data
-    uint8_t *sps_ptr = spc_ptr; spc_ptr += sps_size;
-    // number of picture parameter sets
-    //uint32_t pps_cnt = *spc_ptr++;
-    spc_ptr++;
-    // length of picture parameter set data
-    uint32_t pps_size = BS_RB16(spc_ptr); spc_ptr += 2;
-    // pointer to picture parameter set data
-    uint8_t *pps_ptr = spc_ptr;
-
-    // check the avcC atom's sps for number of reference frames and
-    // ignore if interlaced, it's handled in hints check above (until we get it working :)
-    bool interlaced = true;
-    int max_ref_frames = 0;
-    if (sps_size)
-      m_bitstream->parseh264_sps(sps_ptr+1, sps_size-1, &interlaced, &max_ref_frames);
-    // default to 5 min, this helps us feed correct pts to the player.
-    m_max_ref_frames = std::max(max_ref_frames + 1, 5);
-
-    // bitstream converter avcC's always have 4 byte NALs.
-    int nalUnitHeaderLength  = 4;
-    size_t parameterSetCount = 2;
-    const uint8_t* const parameterSetPointers[2] = {
-      (const uint8_t*)sps_ptr, (const uint8_t*)pps_ptr };
-    const size_t parameterSetSizes[2] = {
-      sps_size, pps_size };
-    CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
-     parameterSetCount, parameterSetPointers, parameterSetSizes, nalUnitHeaderLength, &m_fmt_desc);
 
     // VideoLayerView create MUST be done on main thread or
     // it will not get updates when a new video frame is decoded and presented.
