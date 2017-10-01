@@ -110,6 +110,7 @@
 #define PLAYBACK_STATE_PLAYING  0x0001
 #define PLAYBACK_STATE_VIDEO    0x0100
 #define PLAYBACK_STATE_AUDIO    0x0200
+#define PLAYBACK_STATE_CANNOT_PAUSE 0x0400
 
 using namespace KODI::MESSAGING;
 using namespace ANNOUNCEMENT;
@@ -344,7 +345,12 @@ void CXBMCApp::onStop()
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO) && !m_hasPIP)
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+  {
+    if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+    else if (m_playback_state & PLAYBACK_STATE_VIDEO)
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+  }
 }
 
 void CXBMCApp::onDestroy()
@@ -802,6 +808,8 @@ void CXBMCApp::OnPlayBackStarted()
     m_playback_state |= PLAYBACK_STATE_VIDEO;
   if (g_application.m_pPlayer->HasAudio())
     m_playback_state |= PLAYBACK_STATE_AUDIO;
+  if (!g_application.m_pPlayer->CanPause())
+    m_playback_state |= PLAYBACK_STATE_CANNOT_PAUSE;
 
   m_mediaSession->activate(true);
   CJNIMediaMetadataBuilder builder;
@@ -1422,11 +1430,16 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
           )
   {
     m_audioFocusGranted = false;
-    if (m_playback_state & PLAYBACK_STATE_PLAYING)
+    if ((m_playback_state & PLAYBACK_STATE_PLAYING))
     {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
-      m_wasPlayingWhenTransientLoss = true;
-    }
+      if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+      else
+      {
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+        m_wasPlayingWhenTransientLoss = true;
+      }
+    } 
   }
   m_lastAudioFocusChange = focusChange;
 }
