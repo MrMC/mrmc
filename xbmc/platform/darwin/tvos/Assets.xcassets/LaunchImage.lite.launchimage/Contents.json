@@ -3,6 +3,7 @@
     {
       "orientation" : "landscape",
       "idiom" : "tv",
+      "filename" : "MrMC_Launch_3840x2160@2x.png",
       "extent" : "full-screen",
       "minimum-system-version" : "11.0",
       "scale" : "2x"
