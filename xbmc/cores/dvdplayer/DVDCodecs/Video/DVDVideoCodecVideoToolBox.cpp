@@ -857,6 +857,8 @@ CDVDVideoCodecVideoToolBox::DestroyVTSession(void)
 {
   if (m_vt_session)
   {
+    // Prevent deadlocks in VTDecompressionSessionInvalidate by waiting for the frames to complete manually.
+    // Seems to have appeared in iOS11
     VTDecompressionSessionInvalidate((VTDecompressionSessionRef)m_vt_session);
     CFRelease((VTDecompressionSessionRef)m_vt_session);
     m_vt_session = NULL;
