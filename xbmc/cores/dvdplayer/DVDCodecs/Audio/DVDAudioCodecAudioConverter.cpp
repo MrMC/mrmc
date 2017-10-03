@@ -76,6 +76,43 @@ static const AEChannel DolbyChannels[10][9] = {
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL}
 };
 
+static int ParseFrameSize(uint8_t *data, int datasize)
+{
+  static const uint16_t AC3Bitrates [] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
+
+  // data chunk better be greater than 256
+  if (datasize < 256)
+    return 0;
+
+  // no sync at start, bad header
+  if (data[0] != 0x0b || data[1] != 0x77)
+    return 0;
+
+  unsigned frame_size = 0;
+  if (data[5] >> 3 <= 10)
+  {
+    // Normal AC-3
+    uint8_t fscod = data[4] >> 6;
+    uint8_t frmsizecod = data[4] & 0x3F;
+    if (fscod == 3 || frmsizecod > 37)
+      return 0;
+
+    int bitRate  = AC3Bitrates[frmsizecod >> 1];
+    switch (fscod)
+    {
+      case 0: frame_size = bitRate * 2; break;
+      case 1: frame_size = (320 * bitRate / 147 + (frmsizecod & 1 ? 1 : 0)); break;
+      case 2: frame_size = bitRate * 4; break;
+    }
+  }
+  else
+  {
+    // Enhanced AC-3
+    frame_size = (((data[2] & 0x7) << 8) | data[3]) + 1;
+  }
+
+  return frame_size << 1;
+}
 typedef struct AudioBufferIO
 {
 	char *buffer;
@@ -167,7 +204,7 @@ static OSStatus converterCallback(AudioConverterRef inAudioConverter,
   }
 
 #ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "%s - ioNumberDataPackets(%d)", __FUNCTION__, *ioNumberDataPackets);
+  CLog::Log(LOGDEBUG, "%s - ioNumberDataPackets1(%d)", __FUNCTION__, *ioNumberDataPackets);
 #endif
 
   AudioBufferIO *buff = abuff->dequeue();
@@ -175,10 +212,14 @@ static OSStatus converterCallback(AudioConverterRef inAudioConverter,
 	if (*ioNumberDataPackets > (UInt32)buff->packets)
     *ioNumberDataPackets = buff->packets;
 
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "%s - ioNumberDataPackets2(%d)", __FUNCTION__, *ioNumberDataPackets);
+#endif
   // assign the data pointer into the buffer list
   // note:  the callback is responsible for not freeing
   // or altering this buffer until it is called again.
   // CAudioIBufferQueue will take care of this
+  ioData->mNumberBuffers = 1;
   ioData->mBuffers[0].mData = buff->buffer;
   ioData->mBuffers[0].mDataByteSize = buff->framesize;
   ioData->mBuffers[0].mNumberChannels = buff->channels;
@@ -351,9 +392,21 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
   if (!pData || iSize <= 0)
     return 0;
 
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "%s - pData(%p), iSize(%d)", __FUNCTION__, pData, iSize);
-#endif
+  // some ac3/eac3 has 14 byte padding (seems to come from ts files)
+  // ffmpeg strips it internally during decode
+  // but autotoolbox does not like it, so we strip it (only if padded).
+  int sizeInternal = iSize;
+	float fSize = (float)sizeInternal / 256;
+  if ((sizeInternal - ((int)fSize * 256)) == 14)
+  {
+    sizeInternal = (int)fSize * 256;
+    if (!m_paddingDetected)
+    {
+      m_paddingDetected = true;
+      CLog::Log(LOGDEBUG, "%s - AC3 padding detected, iSize(%d), sizeInternal(%d)", __FUNCTION__, iSize, sizeInternal);
+    }
+  }
+
   if (!m_oBuffer)
   {
     // set up our output buffer
@@ -364,7 +417,7 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
     m_oBuffer = new uint8_t[m_oBufferSize * 4];
   }
 
-  //CLog::MemDump((char*)pData, iSize);
+  //CLog::MemDump((char*)pData, sizeInternal);
 
   // set up a input buffer for reading
   // need to do it this way as some eac3 seems to
@@ -372,11 +425,11 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
   // is very picky that ac3/eac3 frame sizes are correct.
   AudioBufferIO *converter_buff = new AudioBufferIO;
   converter_buff->packets = 1;
-  converter_buff->framesize = iSize;
-  converter_buff->buffer = (char*)calloc(iSize, 1);
+  converter_buff->framesize = sizeInternal;
+  converter_buff->buffer = (char*)calloc(sizeInternal, 1);
   converter_buff->channels = m_hints.channels;
   converter_buff->packet_desciption = {0};
-  memcpy(converter_buff->buffer, pData, iSize);
+  memcpy(converter_buff->buffer, pData, sizeInternal);
   m_iBuffer->enqueue(converter_buff);
   m_currentPts = pts;
 

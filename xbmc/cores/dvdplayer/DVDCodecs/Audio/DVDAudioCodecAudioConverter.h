@@ -56,5 +56,6 @@ private:
   int             m_oBufferSize;
   bool            m_gotFrame;
   double          m_currentPts;
+  bool            m_paddingDetected = false;
 };
 
