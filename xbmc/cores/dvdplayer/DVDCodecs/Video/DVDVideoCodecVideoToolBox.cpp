@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2015 Team XBMC
+ *      Copyright (C) 2010-2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,15 +21,12 @@
 #include "DVDVideoCodecVideoToolBox.h"
 
 #include "cores/dvdplayer/DVDClock.h"
-#include "cores/dvdplayer/DVDCodecs/DVDCodecUtils.h"
+#include "platform/darwin/DictionaryUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "windowing/WindowingFactory.h"
-#include "platform/darwin/DarwinUtils.h"
-#include "platform/darwin/DictionaryUtils.h"
 
 extern "C" {
 #include "libavformat/avformat.h"
@@ -57,62 +54,10 @@ static int CheckNP2( unsigned x )
 
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
-// helper function that wraps dts/pts into a dictionary
-static CFDictionaryRef
-CreateDictionaryWithDisplayTime(int64_t time, double dts, double pts)
-{
-  CFStringRef key[3] = {
-    CFSTR("VideoDisplay_TIME"),
-    CFSTR("VideoDisplay_DTS"),
-    CFSTR("VideoDisplay_PTS")};
-  CFNumberRef value[3];
-  CFDictionaryRef display_time;
-
-  value[0] = CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &time);
-  value[1] = CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &dts);
-  value[2] = CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &pts);
-
-  display_time = CFDictionaryCreate(
-    kCFAllocatorDefault, (const void **)&key, (const void **)&value, 3,
-    &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-  
-  CFRelease(value[0]);
-  CFRelease(value[1]);
-  CFRelease(value[2]);
-
-  return display_time;
-}
-// helper function to extract dts/pts from a dictionary
-static void
-GetFrameDisplayTimeFromDictionary(
-  CFDictionaryRef inFrameInfoDictionary, frame_queue *frame)
-{
-  // default to DVD_NOPTS_VALUE
-  frame->sort_time = -1;
-  frame->dts = DVD_NOPTS_VALUE;
-  frame->pts = DVD_NOPTS_VALUE;
-  if (inFrameInfoDictionary == NULL)
-    return;
-
-  CFNumberRef value[3];
-  //
-  value[0] = (CFNumberRef)CFDictionaryGetValue(inFrameInfoDictionary, CFSTR("VideoDisplay_TIME"));
-  if (value[0])
-    CFNumberGetValue(value[0], kCFNumberLongLongType, &frame->sort_time);
-  value[1] = (CFNumberRef)CFDictionaryGetValue(inFrameInfoDictionary, CFSTR("VideoDisplay_DTS"));
-  if (value[1])
-    CFNumberGetValue(value[1], kCFNumberDoubleType, &frame->dts);
-  value[2] = (CFNumberRef)CFDictionaryGetValue(inFrameInfoDictionary, CFSTR("VideoDisplay_PTS"));
-  if (value[2])
-    CFNumberGetValue(value[2], kCFNumberDoubleType, &frame->pts);
-
-  return;
-}
-
 // helper function to create a CMSampleBufferRef from demuxer data
 static CMSampleBufferRef
 CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc,
-  CMSampleTimingInfo *timingInfo, void *demux_buff, size_t demux_size)
+  CMSampleTimingInfo &timingInfo, void *demux_buff, size_t demux_size)
 {
   // need to retain the demux data until decoder is done with it.
   // the best way to do this is malloc/memcpy and use a kCFAllocatorMalloc.
@@ -135,6 +80,7 @@ CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc,
 
   CMSampleBufferRef sBufOut = nullptr;
   const size_t sampleSizeArray[] = {demuxSize};
+  const CMSampleTimingInfo timingInfoArray[] = {timingInfo};
 
   if (status == noErr)
   {
@@ -147,7 +93,7 @@ CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc,
       fmt_desc,           // CMFormatDescriptionRef formatDescription
       1,                  // CMItemCount numSamples
       1,                  // CMItemCount numSampleTimingEntries
-      timingInfo,         // const CMSampleTimingInfo *sampleTimingArray
+      timingInfoArray,    // const CMSampleTimingInfo *sampleTimingArray
       1,                  // CMItemCount numSampleSizeEntries
       sampleSizeArray,    // const size_t *sampleSizeArray
       &sBufOut);          // CMSampleBufferRef *sBufOut
@@ -174,11 +120,9 @@ CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
   m_DropPictures = false;
   m_codecControlFlags = 0;
-  m_sort_time = 0;
   m_started = false;
   m_lastKeyframe = 0;
   m_sessionRestart = false;
-  m_sessionRestartDTS = DVD_NOPTS_VALUE;
   m_sessionRestartPTS = DVD_NOPTS_VALUE;
   m_enable_temporal_processing = false;
 }
@@ -436,7 +380,6 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
     // some VUI bitstream restrictions lie (GoPro mp4)
     m_max_ref_frames+=4;
-    m_sort_time = 0;
 
     CLog::Log(LOGDEBUG,"VideoToolBox: opened width(%d), height(%d)", hints.width, hints.height);
     m_hintsForReopen = hints;
@@ -522,41 +465,38 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     if (pts != DVD_NOPTS_VALUE)
       sampleTimingInfo.presentationTimeStamp = CMTimeMake(pts, DVD_TIME_BASE);
 
-    CMSampleBufferRef sampleBuff = CreateSampleBufferFrom(m_fmt_desc, &sampleTimingInfo, pData, iSize);
+    CMSampleBufferRef sampleBuff = CreateSampleBufferFrom(m_fmt_desc, sampleTimingInfo, pData, iSize);
     if (!sampleBuff)
     {
       CLog::Log(LOGNOTICE, "%s - CreateSampleBufferFrom failed", __FUNCTION__);
       return VC_ERROR;
     }
     
-    CFDictionaryRef frameInfo = CreateDictionaryWithDisplayTime(m_sort_time++, dts, pts);
-
     VTDecodeFrameFlags decoderFlags = 0;
     if (m_enable_temporal_processing)
       decoderFlags |= kVTDecodeFrame_EnableTemporalProcessing;
 
-    OSStatus status = VTDecompressionSessionDecodeFrame((VTDecompressionSessionRef)m_vt_session, sampleBuff, decoderFlags, (void*)frameInfo, nullptr);
+    OSStatus status = VTDecompressionSessionDecodeFrame((VTDecompressionSessionRef)m_vt_session, sampleBuff, decoderFlags, nullptr, nullptr);
     if (status != noErr)
     {
-      CFRelease(frameInfo);
       CFRelease(sampleBuff);
       // might not really be an error (could have been force inactive) so do not log it.
       if (status == kVTInvalidSessionErr)
       {
         m_sessionRestart = true;
-        m_sessionRestartDTS = dts;
         m_sessionRestartPTS = pts;
         if (m_display_queue)
         {
-          m_sessionRestartDTS = m_display_queue->dts;
           m_sessionRestartPTS = m_display_queue->pts;
         }
+        CFRelease(sampleBuff);
         return VC_REOPEN;
       }
 
       if (status == kVTVideoDecoderMalfunctionErr)
       {
         CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned kVTVideoDecoderMalfunctionErr", __FUNCTION__);
+        CFRelease(sampleBuff);
         return VC_SWFALLBACK;
       }
       else
@@ -568,6 +508,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
         // VTDecompressionSessionDecodeFrame returned -12909 (kVTVideoDecoderBadDataErr)
         // VTDecompressionSessionDecodeFrame returned -12911 (kVTVideoDecoderMalfunctionErr)
         CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned(%d)", __FUNCTION__, (int)status);
+        CFRelease(sampleBuff);
         return VC_ERROR;
       }
     }
@@ -578,12 +519,10 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     {
       CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionWaitForAsynchronousFrames returned(%d)",
         __FUNCTION__, (int)status);
-      CFRelease(frameInfo);
       CFRelease(sampleBuff);
       return VC_ERROR;
     }
 */
-    CFRelease(frameInfo);
     CFRelease(sampleBuff);
 
     // put a limit on convergence count to avoid
@@ -609,7 +548,6 @@ void CDVDVideoCodecVideoToolBox::Reset(void)
   while (m_queue_depth)
     DisplayQueuePop();
   
-  m_sort_time = 0;
   m_codecControlFlags = 0;
 }
 
@@ -639,7 +577,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // will never change and we can just grab a ref to the top frame. This way
   // we don't lockout the vdadecoder while doing color format convert.
   pthread_mutex_lock(&m_queue_mutex);
-  pDvdVideoPicture->dts             = m_display_queue->dts;
+  pDvdVideoPicture->dts             = DVD_NOPTS_VALUE;
   pDvdVideoPicture->pts             = m_display_queue->pts;
   pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iWidth          = (unsigned int)m_display_queue->width;
@@ -671,15 +609,10 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // frames to get dropped and not shown.
   if (m_sessionRestart)
   {
-    if (m_sessionRestartDTS == pDvdVideoPicture->dts &&
-        m_sessionRestartPTS == pDvdVideoPicture->pts)
-    {
+    if (m_sessionRestartPTS == pDvdVideoPicture->pts)
       m_sessionRestart = false;
-    }
     else
-    {
       pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
-    }
   }
 
   return true;
@@ -717,10 +650,6 @@ void CDVDVideoCodecVideoToolBox::DisplayQueuePop(void)
 void
 CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescriptionRef fmt_desc)
 {
-  VTDecompressionSessionRef vt_session = NULL;
-  CFMutableDictionaryRef destinationPixelBufferAttributes;
-  OSStatus status;
-
 #if defined(TARGET_DARWIN_TVOS)
   if (std::string(CDarwinUtils::getIosPlatformString()) == "AppleTV5,3")
   {
@@ -783,7 +712,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   }
 #endif
 #endif
-  destinationPixelBufferAttributes = CFDictionaryCreateMutable(
+  CFMutableDictionaryRef destinationPixelBufferAttributes = CFDictionaryCreateMutable(
     NULL, // CFAllocatorRef allocator
     0,    // CFIndex capacity
     &kCFTypeDictionaryKeyCallBacks,
@@ -819,10 +748,10 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
 
 VT_EXPORT OSStatus 
 VTDecompressionSessionCreate(
-	CM_NULLABLE CFAllocatorRef                              allocator,
-	CM_NONNULL CMVideoFormatDescriptionRef					videoFormatDescription,
-	CM_NULLABLE CFDictionaryRef								videoDecoderSpecification,
-	CM_NULLABLE CFDictionaryRef                             destinationImageBufferAttributes,
+	CM_NULLABLE CFAllocatorRef allocator,
+	CM_NONNULL CMVideoFormatDescriptionRef videoFormatDescription,
+	CM_NULLABLE CFDictionaryRef videoDecoderSpecification,
+	CM_NULLABLE CFDictionaryRef destinationImageBufferAttributes,
 	const VTDecompressionOutputCallbackRecord * CM_NULLABLE outputCallback,
 	CM_RETURNS_RETAINED_PARAMETER CM_NULLABLE VTDecompressionSessionRef * CM_NONNULL decompressionSessionOut) API_AVAILABLE(macosx(10.8), ios(8.0), tvos(10.2));
 
@@ -830,7 +759,8 @@ VTDecompressionSessionCreate(
   outputCallback.decompressionOutputCallback = VTDecoderCallback;
   outputCallback.decompressionOutputRefCon = this;
 
-  status = VTDecompressionSessionCreate(
+  VTDecompressionSessionRef vt_session = NULL;
+  OSStatus status = VTDecompressionSessionCreate(
     NULL, // CFAllocatorRef allocator
     fmt_desc,
     NULL, // CFTypeRef sessionOptions
@@ -859,6 +789,7 @@ CDVDVideoCodecVideoToolBox::DestroyVTSession(void)
   {
     // Prevent deadlocks in VTDecompressionSessionInvalidate by waiting for the frames to complete manually.
     // Seems to have appeared in iOS11
+    VTDecompressionSessionWaitForAsynchronousFrames((VTDecompressionSessionRef)m_vt_session);
     VTDecompressionSessionInvalidate((VTDecompressionSessionRef)m_vt_session);
     CFRelease((VTDecompressionSessionRef)m_vt_session);
     m_vt_session = NULL;
@@ -886,7 +817,6 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
 {
   // This is an sync callback due to VTDecompressionSessionWaitForAsynchronousFrames
   CDVDVideoCodecVideoToolBox *ctx = (CDVDVideoCodecVideoToolBox*)refcon;
-
   if (status != noErr)
   {
     //CLog::Log(LOGDEBUG, "%s - status error (%d)", __FUNCTION__, (int)status);
@@ -911,7 +841,7 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
 
   // allocate a new frame and populate it with some information.
   // this pointer to a frame_queue type keeps track of the newest decompressed frame
-  // and is then inserted into a linked list of frame pointers depending on the display time
+  // and is then inserted into a linked list of frame pointers depending on the display time (pts)
   // parsed out of the bitstream and stored in the frameInfo dictionary by the client
   frame_queue *newFrame = (frame_queue*)calloc(sizeof(frame_queue), 1);
   newFrame->nextframe = NULL;
@@ -927,7 +857,7 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
   }  
   newFrame->pixel_buffer_format = CVPixelBufferGetPixelFormatType(imageBuffer);;
   newFrame->pixel_buffer_ref = CVBufferRetain(imageBuffer);
-  GetFrameDisplayTimeFromDictionary((CFDictionaryRef)frameInfo, newFrame);
+  newFrame->pts = (double)pts.value;
 
   // since the frames we get may be in decode order rather than presentation order
   // our hypothetical callback places them in a queue of frames which will
@@ -939,21 +869,19 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
   frame_queue *ptr = &base;
   for(; ptr->nextframe; ptr = ptr->nextframe)
   {
-    if(ptr->nextframe->pts == DVD_NOPTS_VALUE
-    || newFrame->pts       == DVD_NOPTS_VALUE)
+    if (ptr->nextframe->pts == DVD_NOPTS_VALUE || newFrame->pts == DVD_NOPTS_VALUE)
       continue;
-    if(ptr->nextframe->pts > newFrame->pts)
+    if (ptr->nextframe->pts > newFrame->pts)
       break;
   }
-  /* insert after ptr */
+  // insert after ptr
   newFrame->nextframe = ptr->nextframe;
   ptr->nextframe = newFrame;
 
-  /* update anchor if needed */
-  if(newFrame->nextframe == ctx->m_display_queue)
+  // update anchor if needed
+  if (newFrame->nextframe == ctx->m_display_queue)
     ctx->m_display_queue = newFrame;
 
   ctx->m_queue_depth++;
-  //
-  pthread_mutex_unlock(&ctx->m_queue_mutex);	
+  pthread_mutex_unlock(&ctx->m_queue_mutex);
 }

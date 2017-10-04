@@ -30,17 +30,14 @@
 #include <VideoToolBox/VideoToolBox.h>
 
 class DllVideoToolBox;
-class CBitstreamParser;
 class CBitstreamConverter;
 struct VTDumpDecompressionPropCtx;
 
 // tracks a frame in and output queue in display order
 typedef struct frame_queue {
-  double              dts;
   double              pts;
   size_t              width;
   size_t              height;
-  int64_t             sort_time;
   FourCharCode        pixel_buffer_format;
   CVPixelBufferRef    pixel_buffer_ref;
   struct frame_queue  *nextframe;
@@ -77,23 +74,21 @@ protected:
   CDVDStreamInfo     m_hintsForReopen;
   CDVDCodecOptions   m_optionsForReopen;
   void              *m_vt_session;    // opaque videotoolbox session
-  CBitstreamConverter    *m_bitstream;
+  CBitstreamConverter *m_bitstream;
   CMFormatDescriptionRef  m_fmt_desc;
 
-  const char        *m_pFormatName;
+  const char       *m_pFormatName;
   bool              m_DropPictures;
   int               m_codecControlFlags;
   DVDVideoPicture   m_videobuffer;
 
-  double            m_sort_time;
   pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation
-  frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
+  frame_queue      *m_display_queue;  // display-order queue - next display frame is always at the queue head
   std::atomic<int>  m_queue_depth;    // we will try to keep the queue depth at m_max_ref_frames
   int32_t           m_max_ref_frames;
   bool              m_started;
   int               m_lastKeyframe;
   bool              m_sessionRestart;
-  double            m_sessionRestartDTS;
   double            m_sessionRestartPTS;
   bool              m_enable_temporal_processing;
 };
