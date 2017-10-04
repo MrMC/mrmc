@@ -68,7 +68,7 @@
 					<left>0</left>
 					<top>160</top>
 					<width>470</width>
-					<height>720</height>
+					<bottom>200</bottom>
 					<usecontrolcoords>true</usecontrolcoords>
 					<onleft>5</onleft>
 					<onright>5</onright>
