@@ -250,9 +250,9 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     }
     else
     {
-      CLog::Log(LOGERROR, "%s, Unable to find suitable stream", __FUNCTION__);
-      return false;
-    }
+      CLog::Log(LOGERROR, "%s, Unable to find suitable virtual stream", __FUNCTION__);
+      //return false;
+      numOutputChannelsVirt = 0;    }
   }
 
   /* Update our AE format */
@@ -276,7 +276,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   CLog::Log(LOGDEBUG, "%s: Previous Physical Format: %s", __FUNCTION__, StreamDescriptionToString(previousPhysicalFormat, formatString));
 
   m_outputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
-  if (passthrough)
+  if (passthrough && numOutputChannelsVirt > 0)
     m_outputStream.SetVirtualFormat(&outputFormatVirt);
 
   m_outputStream.GetVirtualFormat(&virtualFormat);
