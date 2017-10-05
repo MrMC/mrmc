@@ -56,15 +56,17 @@
 
 - (void)dealloc
 {
-  //NSLog(@"OSXGLView dealoc");
-  if (m_trackingArea != nullptr)
-  {
-    [self removeTrackingArea:m_trackingArea];
-    m_trackingArea = nullptr;
-  }
+  Cocoa_RunBlockOnMainQueue(^{
+    //NSLog(@"OSXGLView dealoc");
+    if (m_trackingArea != nullptr)
+    {
+      [self removeTrackingArea:m_trackingArea];
+      m_trackingArea = nullptr;
+    }
 
-  [NSOpenGLContext clearCurrentContext];
-  [m_glcontext clearDrawable];
+    [NSOpenGLContext clearCurrentContext];
+    [m_glcontext clearDrawable];
+  });
 }
 
 - (BOOL)preservesContentDuringLiveResize
@@ -92,19 +94,21 @@
 
 -(void)updateTrackingAreas
 {
-  //NSLog(@"updateTrackingAreas");
-  if (m_trackingArea != nullptr)
-    [self removeTrackingArea:m_trackingArea];
-  
-  const int opts = (NSTrackingMouseEnteredAndExited |
-                    NSTrackingMouseMoved |
-                    NSTrackingActiveAlways);
-  m_trackingArea = [ [NSTrackingArea alloc] initWithRect:[self bounds]
-                                                 options:opts
-                                                   owner:self
-                                                userInfo:nil];
-  [self addTrackingArea:m_trackingArea];
-  [super updateTrackingAreas];
+   Cocoa_RunBlockOnMainQueue(^{
+    if (m_trackingArea != nullptr)
+      [self removeTrackingArea:m_trackingArea];
+    
+    const int opts = (NSTrackingMouseEnteredAndExited |
+                      NSTrackingMouseMoved |
+                      NSTrackingActiveAlways);
+    m_trackingArea = [ [NSTrackingArea alloc] initWithRect:[self bounds]
+                                                   options:opts
+                                                     owner:self
+                                                  userInfo:nil];
+    [self addTrackingArea:m_trackingArea];
+    [super updateTrackingAreas];
+  });
+ //NSLog(@"updateTrackingAreas");
 }
 
 - (void)mouseEntered:(NSEvent*)theEvent
