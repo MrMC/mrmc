@@ -37,6 +37,12 @@ extern OSStatus CMVideoFormatDescriptionCreateFromHEVCParameterSets(CFAllocatorR
 #endif
 
 
+const uint8_t AVC_NAL_SPS = 7;
+const uint8_t AVC_NAL_PPS = 8;
+const uint8_t HEVC_NAL_VPS = 32;
+const uint8_t HEVC_NAL_SPS = 33;
+const uint8_t HEVC_NAL_PPS = 34;
+
 #if !defined(TARGET_DARWIN_OSX)
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
@@ -107,13 +113,13 @@ CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc,
 //-----------------------------------------------------------------------------------
 CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
 {
-  m_fmt_desc    = NULL;
-  m_bitstream   = NULL;
-  m_vt_session  = NULL;
+  m_fmt_desc    = nullptr;
+  m_bitstream   = nullptr;
+  m_vt_session  = nullptr;
   m_pFormatName = "vtb";
 
   m_queue_depth = 0;
-  m_display_queue = NULL;
+  m_display_queue = nullptr;
   m_max_ref_frames = 4;
   pthread_mutex_init(&m_queue_mutex, NULL);
 
@@ -143,12 +149,10 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       return false;
     }
 
-    int width  = hints.width;
-    int height = hints.height;
-    int level  = hints.level;
-    int profile = hints.profile;
+    m_hints = hints;
+    m_options = options;
  
-    switch(profile)
+    switch(m_hints.profile)
     {
       //case FF_PROFILE_H264_HIGH_10:
       case FF_PROFILE_H264_HIGH_10_INTRA:
@@ -157,106 +161,28 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
       case FF_PROFILE_H264_HIGH_444_INTRA:
       case FF_PROFILE_H264_CAVLC_444:
-        CLog::Log(LOGNOTICE, "%s - unsupported h264 profile(%d)", __FUNCTION__, hints.profile);
+        CLog::Log(LOGNOTICE, "%s - unsupported h264 profile(%d)", __FUNCTION__, m_hints.profile);
         return false;
         break;
     }
 
-    if (width <= 0 || height <= 0)
+    if (m_hints.width <= 0 || m_hints.height <= 0)
     {
       CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d)",
-        __FUNCTION__, width, height);
+        __FUNCTION__, m_hints.width, m_hints.height);
       return false;
     }
     
-    switch (hints.codec)
+    switch (m_hints.codec)
     {
-
       default:
       case AV_CODEC_ID_MPEG4:
       case AV_CODEC_ID_MPEG2VIDEO:
         return false;
       break;
 
-      case AV_CODEC_ID_H265:
-        if (hints.extrasize < 23 || hints.extradata == NULL)
-        {
-          CLog::Log(LOGNOTICE, "%s - hvcC atom too data small or missing", __FUNCTION__);
-          return false;
-        }
-        else
-        {
-         // use a bitstream converter for all flavors
-          m_bitstream = new CBitstreamConverter;
-          if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
-          {
-            SAFE_DELETE(m_bitstream);
-            return false;
-          }
-          if (m_bitstream->GetExtraSize() < 23)
-          {
-            SAFE_DELETE(m_bitstream);
-            return false;
-          }
-
-          uint8_t *ps_ptr = m_bitstream->GetExtraData();
-          ps_ptr += 22; // skip over fixed length header
-
-          // number of arrays
-          size_t numberOfArrays = *ps_ptr++;
-          size_t parameterSetCount = 0;
-          size_t *parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * parameterSetCount);
-          uint8_t **parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * parameterSetCount);
-
-          size_t NALIndex = 0;
-          for (size_t i = 0; i < numberOfArrays; i++)
-          {
-            // skip byte = array_completeness/reserved/NAL type
-            ps_ptr++;
-            size_t numberOfNALs = BS_RB16(ps_ptr);
-            ps_ptr += 2;
-            parameterSetCount += numberOfNALs;
-            parameterSetSizes = (size_t*)realloc(parameterSetSizes, sizeof(size_t*) * parameterSetCount);
-            parameterSetPointers = (uint8_t**)realloc(parameterSetPointers, sizeof(uint8_t*) * parameterSetCount);
-            for (size_t i = 0; i < numberOfNALs; i++)
-            {
-              uint32_t ps_size = BS_RB16(ps_ptr);
-              ps_ptr += 2;
-              parameterSetSizes[NALIndex] = ps_size;
-              parameterSetPointers[NALIndex++] = ps_ptr;
-              ps_ptr += ps_size;
-            }
-          }
-
-          OSStatus status = -1;
-          CLog::Log(LOGNOTICE, "Constructing new format description");
-          // check availability at runtime
-          if (__builtin_available(macOS 10.13, ios 11, tvos 11, *))
-          {
-            status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(kCFAllocatorDefault,
-              parameterSetCount, parameterSetPointers, parameterSetSizes, (size_t)4, nullptr, &m_fmt_desc);
-          }
-          free(parameterSetSizes);
-          free(parameterSetPointers);
-
-          if (status != noErr)
-          {
-            CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromHEVCParameterSets failed status(%d)", __FUNCTION__, status);
-            SAFE_DELETE(m_bitstream);
-            return false;
-          }
-          const Boolean useCleanAperture = true;
-          const Boolean usePixelAspectRatio = false;
-          auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
-
-          width = hints.width = videoSize.width;
-          height = hints.height = videoSize.height;
-          m_pFormatName = "vtb-h265";
-        }
-      break;
-
       case AV_CODEC_ID_H264:
-        if (hints.extrasize < 7 || hints.extradata == NULL)
+        if (m_hints.extrasize < 7 || m_hints.extradata == NULL)
         {
           CLog::Log(LOGNOTICE, "%s - avcC atom too data small or missing", __FUNCTION__);
           return false;
@@ -266,7 +192,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           // use a bitstream converter for all flavors, that way
           // even avcC with silly 3-byte nals are covered.
           m_bitstream = new CBitstreamConverter;
-          if (!m_bitstream->Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
+          if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, false))
           {
             SAFE_DELETE(m_bitstream);
             return false;
@@ -287,103 +213,70 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             if (sps_size)
               m_bitstream->parseh264_sps(spc+3, sps_size-1, &interlaced, &m_max_ref_frames);
           }
+          if (m_max_ref_frames == 0)
+            m_max_ref_frames = 2;
 
-          if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+          if (m_hints.profile == FF_PROFILE_H264_MAIN && m_hints.level == 32 && m_max_ref_frames > 4)
           {
             // Main@L3.2, VTB cannot handle greater than 4 reference frames
             CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode.", __FUNCTION__);
             SAFE_DELETE(m_bitstream);
             return false;
           }
+        }
+        m_pFormatName = "vtb-h264";
+      break;
 
-          uint8_t *sps_ptr = m_bitstream->GetExtraData();
-          sps_ptr += 6; // skip over header and assume sps count of one
-          uint32_t sps_size = BS_RB16(sps_ptr);
-          sps_ptr += 2;
-
-          uint8_t *pps_ptr = sps_ptr + sps_size;
-          size_t parameterSetCount = 1 + *pps_ptr++;
-          size_t parameterSetSizes[parameterSetCount];
-          uint8_t *parameterSetPointers[parameterSetCount];
-
-          parameterSetSizes[0] = sps_size;
-          parameterSetPointers[0] = sps_ptr;
-          for (size_t i = 1; i < parameterSetCount; i++)
+      case AV_CODEC_ID_HEVC:
+        if (m_hints.extrasize < 23 || m_hints.extradata == NULL)
+        {
+          CLog::Log(LOGNOTICE, "%s - hvcC atom too data small or missing", __FUNCTION__);
+          return false;
+        }
+        else
+        {
+         // use a bitstream converter for all flavors
+          m_bitstream = new CBitstreamConverter;
+          if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, false))
           {
-            uint32_t pps_size = BS_RB16(pps_ptr);
-            parameterSetSizes[i] = pps_size;
-            pps_ptr += 2;
-            parameterSetPointers[i] = pps_ptr;
-            pps_ptr += pps_size;
-          }
-
-          CLog::Log(LOGNOTICE, "Constructing new format description");
-          OSStatus status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
-            parameterSetCount, parameterSetPointers, parameterSetSizes, 4, &m_fmt_desc);
-          if (status != noErr)
-          {
-            CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
             SAFE_DELETE(m_bitstream);
             return false;
           }
-          const Boolean useCleanAperture = true;
-          const Boolean usePixelAspectRatio = false;
-          auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
-
-          width = hints.width = videoSize.width;
-          height = hints.height = videoSize.height;
+          if (m_bitstream->GetExtraSize() < 23)
+          {
+            SAFE_DELETE(m_bitstream);
+            return false;
+          }
+          m_pFormatName = "vtb-h265";
         }
-        CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, m_bitstream->GetExtraSize(), m_max_ref_frames);
-        m_pFormatName = "vtb-h264";
       break;
     }
 
-    if (m_fmt_desc == NULL)
+    if (!CreateParameterSetArraysFromExtraData())
     {
-      CLog::Log(LOGNOTICE, "%s - created format descriptor", __FUNCTION__);
-      m_pFormatName = "";
+      Dispose();
       return false;
     }
 
-    if (m_max_ref_frames == 0)
-      m_max_ref_frames = 2;
-
-    CreateVTSession(width, height, m_fmt_desc);
-    if (m_vt_session == NULL)
+    if (!CreateFormatDescriptorFromParameterSetArrays())
     {
-      if (m_fmt_desc)
-      {
-        CFRelease(m_fmt_desc);
-        m_fmt_desc = NULL;
-      }
-      m_pFormatName = "";
+      Dispose();
       return false;
     }
 
-    // setup a DVDVideoPicture buffer.
-    // first make sure all properties are reset.
-    memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
-
-    m_videobuffer.dts = DVD_NOPTS_VALUE;
-    m_videobuffer.pts = DVD_NOPTS_VALUE;
-    m_videobuffer.format = RENDER_FMT_CVBREF;
-    m_videobuffer.color_range  = 0;
-    m_videobuffer.color_matrix = 4;
-    m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
-    m_videobuffer.iWidth  = hints.width;
-    m_videobuffer.iHeight = hints.height;
-    m_videobuffer.iDisplayWidth  = hints.width;
-    m_videobuffer.iDisplayHeight = hints.height;
+    if (!CreateVTSessionAndInitPictureFrame())
+    {
+      Dispose();
+      return false;
+    }
 
     m_DropPictures = false;
     // default to 5 min, this helps us feed correct pts to the player.
     m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
     // some VUI bitstream restrictions lie (GoPro mp4)
-    m_max_ref_frames+=4;
+    m_max_ref_frames += 4;
 
-    CLog::Log(LOGDEBUG,"VideoToolBox: opened width(%d), height(%d)", hints.width, hints.height);
-    m_hintsForReopen = hints;
-    m_optionsForReopen = options;
+    CLog::Log(LOGDEBUG,"VideoToolBox: opened width(%d), height(%d)", m_hints.width, m_hints.height);
 
     return true;
   }
@@ -395,15 +288,23 @@ void CDVDVideoCodecVideoToolBox::Dispose()
 {
   DestroyVTSession();
   if (m_fmt_desc)
-    CFRelease(m_fmt_desc), m_fmt_desc = NULL;
+    CFRelease(m_fmt_desc), m_fmt_desc = nullptr;
   SAFE_DELETE(m_bitstream);
- 
+
+  if (m_parameterSetCount)
+  {
+    free(m_parameterSetSizes), m_parameterSetSizes = nullptr;
+    free(m_parameterSetTypes), m_parameterSetTypes = nullptr;
+    free(m_SavedParameterSets), m_SavedParameterSets = nullptr;
+    free(m_parameterSetPointers), m_parameterSetPointers = nullptr;
+  }
+
   if (m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
   {
     // release any previous retained cvbuffer reference
     if (m_videobuffer.cvBufferRef)
       CVBufferRelease(m_videobuffer.cvBufferRef);
-    m_videobuffer.cvBufferRef = NULL;
+    m_videobuffer.cvBufferRef = nullptr;
     m_videobuffer.iFlags = 0;
   }
   
@@ -415,7 +316,7 @@ void CDVDVideoCodecVideoToolBox::Reopen()
 {
   m_started = false;
   Dispose();
-  Open(m_hintsForReopen, m_optionsForReopen);
+  Open(m_hints, m_options);
 }
 
 void CDVDVideoCodecVideoToolBox::SetDropState(bool bDrop)
@@ -443,9 +344,10 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       iSize = m_bitstream->GetConvertSize();
       pData = m_bitstream->GetConvertBuffer();
     }
+    ValidateVTSessionParameterSetsForRestart(pData, iSize);
 
     // exclude AV_CODEC_ID_H265 until we update CBitstreamParser::HasKeyframe
-    if (m_hintsForReopen.codec == AV_CODEC_ID_H265 || CBitstreamParser::HasKeyframe(pData, iSize, false))
+    if (m_hints.codec == AV_CODEC_ID_H265 || CBitstreamParser::HasKeyframe(pData, iSize, false))
     {
       // VideoToolBox is picky about starting up with a keyframe
       // Check and skip until we hit one. m_lastKeyframe tracks how many frames back
@@ -489,14 +391,12 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
         {
           m_sessionRestartPTS = m_display_queue->pts;
         }
-        CFRelease(sampleBuff);
         return VC_REOPEN;
       }
 
       if (status == kVTVideoDecoderMalfunctionErr)
       {
         CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned kVTVideoDecoderMalfunctionErr", __FUNCTION__);
-        CFRelease(sampleBuff);
         return VC_SWFALLBACK;
       }
       else
@@ -508,13 +408,13 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
         // VTDecompressionSessionDecodeFrame returned -12909 (kVTVideoDecoderBadDataErr)
         // VTDecompressionSessionDecodeFrame returned -12911 (kVTVideoDecoderMalfunctionErr)
         CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned(%d)", __FUNCTION__, (int)status);
-        CFRelease(sampleBuff);
         return VC_ERROR;
       }
     }
-/*
+
     // wait for decoding to finish
-    status = VTDecompressionSessionWaitForAsynchronousFrames(m_vt_session);
+    status = VTDecompressionSessionWaitForAsynchronousFrames((VTDecompressionSessionRef)m_vt_session);
+/*
     if (status != kVTDecoderNoErr)
     {
       CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionWaitForAsynchronousFrames returned(%d)",
@@ -534,7 +434,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     }
   }
 
-  if (m_queue_depth < (2 * m_max_ref_frames))
+  if (m_queue_depth < m_max_ref_frames)
     return VC_BUFFER;
 
   return VC_PICTURE;
@@ -585,7 +485,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iDisplayWidth   = (unsigned int)m_display_queue->width;
   pDvdVideoPicture->iDisplayHeight  = (unsigned int)m_display_queue->height;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
-  m_display_queue->pixel_buffer_ref = NULL;
+  m_display_queue->pixel_buffer_ref = nullptr;
   pthread_mutex_unlock(&m_queue_mutex);
 
   // now we can pop the top frame
@@ -646,10 +546,337 @@ void CDVDVideoCodecVideoToolBox::DisplayQueuePop(void)
   free(top_frame);
 }
 
-
-void
-CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescriptionRef fmt_desc)
+bool
+CDVDVideoCodecVideoToolBox::CreateParameterSetArraysFromExtraData()
 {
+  bool rtn = false;
+  switch (m_hints.codec)
+  {
+    default:
+    break;
+    case AV_CODEC_ID_H264:
+    {
+      uint8_t *ps_ptr = m_bitstream->GetExtraData();
+      ps_ptr += 5; // skip over fixed length header
+      size_t numberOfSPSs = 0x001F & *ps_ptr++; // sps count is lower five bits;
+
+      size_t parameterSetIndex = 0;
+
+      m_parameterSetCount = numberOfSPSs;
+      m_parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * m_parameterSetCount);
+      m_parameterSetTypes = (uint8_t*)malloc(sizeof(uint8_t*) * m_parameterSetCount);
+      m_parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * m_parameterSetCount);
+      // handle sps's
+      for (size_t i = 0; i < numberOfSPSs; i++)
+      {
+        uint32_t ps_size = BS_RB16(ps_ptr);
+        ps_ptr += 2;
+        m_parameterSetSizes[parameterSetIndex] = ps_size;
+        m_parameterSetTypes[parameterSetIndex] = AVC_NAL_SPS;
+        m_parameterSetPointers[parameterSetIndex++] = ps_ptr;
+        ps_ptr += ps_size;
+      }
+
+      size_t numberOfPPSs = *ps_ptr++;
+      m_parameterSetCount += numberOfPPSs;
+      m_parameterSetSizes = (size_t*)realloc(m_parameterSetSizes, sizeof(size_t*) * m_parameterSetCount);
+      m_parameterSetTypes = (uint8_t*)realloc(m_parameterSetTypes, sizeof(uint8_t*) * m_parameterSetCount);
+      m_parameterSetPointers = (uint8_t**)realloc(m_parameterSetPointers, sizeof(uint8_t*) * m_parameterSetCount);
+      for (size_t i = 0; i < numberOfPPSs; i++)
+      {
+        uint32_t ps_size = BS_RB16(ps_ptr);
+        ps_ptr += 2;
+        m_parameterSetSizes[parameterSetIndex] = ps_size;
+        m_parameterSetTypes[parameterSetIndex] = AVC_NAL_PPS;
+        m_parameterSetPointers[parameterSetIndex++] = ps_ptr;
+        ps_ptr += ps_size;
+      }
+      // h264 only requires sps
+      if (m_parameterSetCount >= 1)
+        rtn = true;
+    }
+    break;
+    case AV_CODEC_ID_HEVC:
+    {
+      uint8_t *ps_ptr = m_bitstream->GetExtraData();
+      ps_ptr += 22; // skip over fixed length header
+
+      // number of arrays
+      size_t numberOfArrays = *ps_ptr++;
+      m_parameterSetCount = 0;
+      m_parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * m_parameterSetCount);
+      m_parameterSetTypes = (uint8_t*)malloc(sizeof(uint8_t*) * m_parameterSetCount);
+      m_parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * m_parameterSetCount);
+
+      size_t NALIndex = 0;
+      for (size_t i = 0; i < numberOfArrays; i++)
+      {
+        // bit(1) array_completeness;
+        // bit(1) reserved = 0;
+        // bit(6) NAL_unit_type;
+        int nal_type = 0x3F & *ps_ptr++;
+        size_t numberOfNALs = BS_RB16(ps_ptr);
+        ps_ptr += 2;
+        m_parameterSetCount += numberOfNALs;
+        m_parameterSetSizes = (size_t*)realloc(m_parameterSetSizes, sizeof(size_t*) * m_parameterSetCount);
+        m_parameterSetTypes = (uint8_t*)realloc(m_parameterSetTypes, sizeof(uint8_t*) * m_parameterSetCount);
+        m_parameterSetPointers = (uint8_t**)realloc(m_parameterSetPointers, sizeof(uint8_t*) * m_parameterSetCount);
+        for (size_t i = 0; i < numberOfNALs; i++)
+        {
+          uint32_t ps_size = BS_RB16(ps_ptr);
+          ps_ptr += 2;
+          m_parameterSetSizes[NALIndex] = ps_size;
+          m_parameterSetTypes[NALIndex] = nal_type;
+          m_parameterSetPointers[NALIndex++] = ps_ptr;
+          ps_ptr += ps_size;
+        }
+      }
+      // h265 requires sps, pps and vps
+      if (m_parameterSetCount >= 3)
+        rtn = true;
+    }
+    break;
+  }
+
+  if (rtn)
+  {
+    // copy over parameter sets and setup pointers to them
+    int totalsize = 0;
+    for (size_t i = 0; i < m_parameterSetCount; i++)
+      totalsize += m_parameterSetSizes[i];
+    m_SavedParameterSets = (uint8_t*)malloc(totalsize);
+    uint8_t *savedParameterSets = m_SavedParameterSets;
+    for (size_t i = 0; i < m_parameterSetCount; i++)
+    {
+      memcpy((void*)savedParameterSets, (void*)m_parameterSetPointers[i], m_parameterSetSizes[i]);
+      // change ps pointer from pointing to extradata to our saved location
+      m_parameterSetPointers[i] = savedParameterSets;
+      savedParameterSets += m_parameterSetSizes[i];
+    }
+  }
+
+  return rtn;
+}
+
+bool
+CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
+{
+  bool rtn = false;
+  OSStatus status = -1;
+  switch (m_hints.codec)
+  {
+    default:
+    break;
+    case AV_CODEC_ID_H264:
+    {
+      CLog::Log(LOGNOTICE, "Constructing new format description");
+      status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
+        m_parameterSetCount, m_parameterSetPointers, m_parameterSetSizes, 4, &m_fmt_desc);
+      if (status != noErr)
+        CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
+    }
+    break;
+    case AV_CODEC_ID_HEVC:
+    {
+      CLog::Log(LOGNOTICE, "Constructing new format description");
+      // check availability at runtime
+      if (__builtin_available(macOS 10.13, ios 11, tvos 11, *))
+      {
+        status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(kCFAllocatorDefault,
+          m_parameterSetCount, m_parameterSetPointers, m_parameterSetSizes, (size_t)4, nullptr, &m_fmt_desc);
+      }
+      if (status != noErr)
+        CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromHEVCParameterSets failed status(%d)", __FUNCTION__, status);
+    }
+    break;
+  }
+
+  if (status == noErr && m_fmt_desc != nullptr)
+  {
+    const Boolean useCleanAperture = true;
+    const Boolean usePixelAspectRatio = false;
+    auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
+
+    m_hints.width = videoSize.width;
+    m_hints.height = videoSize.height;
+    rtn = true;
+  }
+
+  return rtn;
+}
+
+bool
+CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize)
+{
+  bool rtn = true;
+
+  // pData is in bit stream format, 32 size (big endian), followed by NAL
+  size_t parameterSetCount = 0;
+  uint8_t *data = pData;
+  uint8_t *dataEnd = data + iSize;
+  // do a quick search for parameter sets in this frame
+  while (data < dataEnd)
+  {
+    int nal_size = BS_RB32(data);
+    data += 4;
+    int nal_type = data[0] & 0x1f;
+    if (m_hints.codec == AV_CODEC_ID_H264)
+    {
+      switch(nal_type)
+      {
+        case AVC_NAL_SPS:
+          parameterSetCount++;
+          //CLog::Log(LOGDEBUG, "%s - found sps of size(%d)", __FUNCTION__, nal_size);
+        break;
+        case AVC_NAL_PPS:
+          parameterSetCount++;
+          //CLog::Log(LOGDEBUG, "%s - found pps of size(%d)", __FUNCTION__, nal_size);
+        break;
+      }
+    }
+    else if (m_hints.codec == AV_CODEC_ID_HEVC)
+    {
+      switch(nal_type)
+      {
+        case HEVC_NAL_SPS:
+          parameterSetCount++;
+          //CLog::Log(LOGDEBUG, "%s - found sps of size(%d)", __FUNCTION__, nal_size);
+        break;
+        case HEVC_NAL_PPS:
+          parameterSetCount++;
+          //CLog::Log(LOGDEBUG, "%s - found pps of size(%d)", __FUNCTION__, nal_size);
+        break;
+        case HEVC_NAL_VPS:
+          parameterSetCount++;
+          //CLog::Log(LOGDEBUG, "%s - found vps of size(%d)", __FUNCTION__, nal_size);
+        break;
+      }
+    }
+    data += nal_size;
+  }
+  // found some parameter sets, now we can compare them to the original parameter sets
+  // we do it this way to avoid churning memory with malloc/reallocs for each frame
+  if (parameterSetCount)
+  {
+    size_t parameterSetIndex = 0;
+    size_t parameterSetSizes[parameterSetCount];
+    uint8_t parameterSetTypes[parameterSetCount];
+    uint8_t *parameterSetPointers[parameterSetCount];
+    data = pData;
+    while (data < dataEnd)
+    {
+      int nal_size = BS_RB32(data);
+      data += 4;
+      int nal_type = data[0] & 0x1f;
+      if (m_hints.codec == AV_CODEC_ID_H264)
+      {
+        switch(nal_type)
+        {
+          case AVC_NAL_SPS:
+          case AVC_NAL_PPS:
+            parameterSetSizes[parameterSetIndex] = nal_size;
+            parameterSetTypes[parameterSetIndex] = nal_type;
+            parameterSetPointers[parameterSetIndex++] = data;
+        }
+      }
+      else if (m_hints.codec == AV_CODEC_ID_HEVC)
+      {
+        switch(nal_type)
+        {
+          case HEVC_NAL_SPS:
+          case HEVC_NAL_PPS:
+          case HEVC_NAL_VPS:
+            parameterSetSizes[parameterSetIndex] = nal_size;
+            parameterSetTypes[parameterSetIndex] = nal_type;
+            parameterSetPointers[parameterSetIndex++] = data;
+        }
+      }
+      data += nal_size;
+    }
+
+    // quick test of parameter set count
+    if (parameterSetCount != m_parameterSetCount)
+    {
+      rtn = ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
+    }
+    else
+    {
+      for (size_t i = 0; i < parameterSetCount; i++)
+      {
+        if (parameterSetSizes[i] != m_parameterSetSizes[i])
+        {
+          // some parameter size changed, recreate the vtsession
+          CLog::Log(LOGDEBUG, "%s - ps type(%d), changed size(%zu), orignal size(%zu)", __FUNCTION__, parameterSetTypes[i], parameterSetSizes[i], m_parameterSetSizes[i]);
+          rtn = ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
+          break;
+        }
+        if (parameterSetTypes[i] != parameterSetTypes[i])
+        {
+          if (0 != memcmp(parameterSetPointers[i], m_parameterSetPointers[i], parameterSetSizes[i]))
+          {
+            // some parameter size changed, recreate the vtsession
+            rtn = ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  return rtn;
+}
+
+bool
+CDVDVideoCodecVideoToolBox::ResetVTSession(size_t count, size_t *sizes, uint8_t *types, uint8_t **pointers)
+{
+  m_parameterSetCount = 0;
+  free(m_parameterSetSizes), m_parameterSetSizes = nullptr;
+  free(m_parameterSetTypes), m_parameterSetTypes = nullptr;
+  free(m_SavedParameterSets), m_SavedParameterSets = nullptr;
+  free(m_parameterSetPointers), m_parameterSetPointers = nullptr;
+
+  // parameter set changed, recreate the vtsession
+  m_parameterSetCount = count;
+  m_parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * m_parameterSetCount);
+  m_parameterSetTypes = (uint8_t*)malloc(sizeof(uint8_t*) * m_parameterSetCount);
+  m_parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * m_parameterSetCount);
+  int totalsize = 0;
+  for (size_t i = 0; i < m_parameterSetCount; i++)
+  {
+    totalsize += sizes[i];
+    m_parameterSetSizes[i] = sizes[i];
+    m_parameterSetTypes[i] = types[i];
+    m_parameterSetPointers[i] = pointers[i];
+  }
+  m_SavedParameterSets = (uint8_t*)malloc(totalsize);
+  // copy over parameter sets and setup pointers to them
+  uint8_t *savedParameterSets = m_SavedParameterSets;
+  for (size_t i = 0; i < count; i++)
+  {
+    memcpy((void*)savedParameterSets, (void*)pointers[i], sizes[i]);
+    // change ps pointer from pointing to ps in frame to our saved location
+    m_parameterSetPointers[i] = savedParameterSets;
+    savedParameterSets += m_parameterSetSizes[i];
+  }
+
+  if (m_fmt_desc)
+    CFRelease(m_fmt_desc), m_fmt_desc = nullptr;
+  if (!CreateFormatDescriptorFromParameterSetArrays())
+    return false;
+
+  DestroyVTSession();
+  if (!CreateVTSessionAndInitPictureFrame())
+    return false;
+
+  CLog::Log(LOGDEBUG, "%s - width(%d), height(%d)", __FUNCTION__, m_hints.width, m_hints.height);
+  return true;
+}
+
+bool
+CDVDVideoCodecVideoToolBox::CreateVTSessionAndInitPictureFrame()
+{
+  int width = m_hints.width;
+  int height = m_hints.height;
 #if defined(TARGET_DARWIN_TVOS)
   if (std::string(CDarwinUtils::getIosPlatformString()) == "AppleTV5,3")
   {
@@ -713,7 +940,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
 #endif
 #endif
   CFMutableDictionaryRef destinationPixelBufferAttributes = CFDictionaryCreateMutable(
-    NULL, // CFAllocatorRef allocator
+    nullptr, // CFAllocatorRef allocator
     0,    // CFIndex capacity
     &kCFTypeDictionaryKeyCallBacks,
     &kCFTypeDictionaryValueCallBacks);
@@ -746,30 +973,21 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   CFDictionarySetValue(destinationPixelBufferAttributes, kCVPixelBufferIOSurfacePropertiesKey, io_surface_properties);
 
-VT_EXPORT OSStatus 
-VTDecompressionSessionCreate(
-	CM_NULLABLE CFAllocatorRef allocator,
-	CM_NONNULL CMVideoFormatDescriptionRef videoFormatDescription,
-	CM_NULLABLE CFDictionaryRef videoDecoderSpecification,
-	CM_NULLABLE CFDictionaryRef destinationImageBufferAttributes,
-	const VTDecompressionOutputCallbackRecord * CM_NULLABLE outputCallback,
-	CM_RETURNS_RETAINED_PARAMETER CM_NULLABLE VTDecompressionSessionRef * CM_NONNULL decompressionSessionOut) API_AVAILABLE(macosx(10.8), ios(8.0), tvos(10.2));
-
   VTDecompressionOutputCallbackRecord outputCallback;
   outputCallback.decompressionOutputCallback = VTDecoderCallback;
   outputCallback.decompressionOutputRefCon = this;
 
-  VTDecompressionSessionRef vt_session = NULL;
+  VTDecompressionSessionRef vt_session = nullptr;
   OSStatus status = VTDecompressionSessionCreate(
-    NULL, // CFAllocatorRef allocator
-    fmt_desc,
-    NULL, // CFTypeRef sessionOptions
+    nullptr, // CFAllocatorRef allocator
+    m_fmt_desc,
+    nullptr, // CFTypeRef sessionOptions
     destinationPixelBufferAttributes,
     &outputCallback,
     &vt_session);
   if (status != noErr)
   {
-    m_vt_session = NULL;
+    m_vt_session = nullptr;
     CLog::Log(LOGERROR, "%s - failed with status = (%d)", __FUNCTION__, (int)status);
     // -12906, kVTCouldNotFindVideoDecoderErr
   }
@@ -780,10 +998,27 @@ VTDecompressionSessionCreate(
 
   CFRelease(io_surface_properties);
   CFRelease(destinationPixelBufferAttributes);
+
+  // setup a DVDVideoPicture buffer.
+  // first make sure all properties are reset.
+  memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
+
+  m_videobuffer.dts = DVD_NOPTS_VALUE;
+  m_videobuffer.pts = DVD_NOPTS_VALUE;
+  m_videobuffer.format = RENDER_FMT_CVBREF;
+  m_videobuffer.color_range  = 0;
+  m_videobuffer.color_matrix = 4;
+  m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
+  m_videobuffer.iWidth  = m_hints.width;
+  m_videobuffer.iHeight = m_hints.height;
+  m_videobuffer.iDisplayWidth  = m_hints.width;
+  m_videobuffer.iDisplayHeight = m_hints.height;
+
+  return m_vt_session != nullptr;
 }
 
 void
-CDVDVideoCodecVideoToolBox::DestroyVTSession(void)
+CDVDVideoCodecVideoToolBox::DestroyVTSession()
 {
   if (m_vt_session)
   {
@@ -792,7 +1027,7 @@ CDVDVideoCodecVideoToolBox::DestroyVTSession(void)
     VTDecompressionSessionWaitForAsynchronousFrames((VTDecompressionSessionRef)m_vt_session);
     VTDecompressionSessionInvalidate((VTDecompressionSessionRef)m_vt_session);
     CFRelease((VTDecompressionSessionRef)m_vt_session);
-    m_vt_session = NULL;
+    m_vt_session = nullptr;
   }
 }
 
@@ -822,9 +1057,9 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
     //CLog::Log(LOGDEBUG, "%s - status error (%d)", __FUNCTION__, (int)status);
     return;
   }
-  if (imageBuffer == NULL)
+  if (imageBuffer == nullptr)
   {
-    //CLog::Log(LOGDEBUG, "%s - imageBuffer is NULL", __FUNCTION__);
+    //CLog::Log(LOGDEBUG, "%s - imageBuffer is nullptr", __FUNCTION__);
     return;
   }
 
@@ -844,7 +1079,7 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
   // and is then inserted into a linked list of frame pointers depending on the display time (pts)
   // parsed out of the bitstream and stored in the frameInfo dictionary by the client
   frame_queue *newFrame = (frame_queue*)calloc(sizeof(frame_queue), 1);
-  newFrame->nextframe = NULL;
+  newFrame->nextframe = nullptr;
   if (CVPixelBufferIsPlanar(imageBuffer) )
   {
     newFrame->width  = CVPixelBufferGetWidthOfPlane(imageBuffer, 0);

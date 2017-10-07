@@ -64,18 +64,23 @@ public:
   virtual void Reopen();
 
 protected:
-  void DisplayQueuePop(void);
-  void CreateVTSession(int width, int height, CMFormatDescriptionRef fmt_desc);
-  void DestroyVTSession(void);
+  void DisplayQueuePop();
+  bool CreateParameterSetArraysFromExtraData();
+  bool CreateFormatDescriptorFromParameterSetArrays();
+  bool ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize);
+	bool ResetVTSession(size_t count, size_t *sizes, uint8_t *types, uint8_t **pointers);
+  bool CreateVTSessionAndInitPictureFrame();
+  void DestroyVTSession();
   static void VTDecoderCallback(
     void *refcon, void *frameInfo,
     OSStatus status, UInt32 infoFlags, CVBufferRef imageBuffer, CMTime pts, CMTime duration);
 
-  CDVDStreamInfo     m_hintsForReopen;
-  CDVDCodecOptions   m_optionsForReopen;
-  void              *m_vt_session;    // opaque videotoolbox session
-  CBitstreamConverter *m_bitstream;
-  CMFormatDescriptionRef  m_fmt_desc;
+  CDVDStreamInfo     m_hints;
+  CDVDCodecOptions   m_options;
+  void              *m_vt_session = nullptr;    // opaque videotoolbox session
+  CBitstreamConverter *m_bitstream = nullptr;
+
+  CMFormatDescriptionRef m_fmt_desc = nullptr;
 
   const char       *m_pFormatName;
   bool              m_DropPictures;
@@ -90,5 +95,10 @@ protected:
   int               m_lastKeyframe;
   bool              m_sessionRestart;
   double            m_sessionRestartPTS;
+  size_t            m_parameterSetCount = 0;
+  size_t           *m_parameterSetSizes = nullptr;
+  uint8_t          *m_parameterSetTypes = nullptr;
+  uint8_t          *m_SavedParameterSets = nullptr;
+  uint8_t         **m_parameterSetPointers = nullptr;
   bool              m_enable_temporal_processing;
 };
