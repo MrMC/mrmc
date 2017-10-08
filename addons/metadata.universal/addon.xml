@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.universal"
        name="Universal Movie Scraper"
-       version="2.8.3"
+       version="2.8.6"
        provider-name="Olympia, Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
     <import addon="metadata.common.fanart.tv" version="3.1.0"/>
     <import addon="metadata.common.imdb.com" version="2.8.0"/>
-    <import addon="metadata.common.movieposterdb.com" version="1.1.1"/>
     <import addon="metadata.common.ofdb.de" version="1.0.3"/>
-    <import addon="metadata.common.port.hu" version="1.0.3"/>
-    <import addon="metadata.common.omdbapi.com" version="1.0.0"/>
     <import addon="metadata.common.themoviedb.org" version="2.12.1"/>
   </requires>
   <extension point="xbmc.metadata.scraper.movies"
@@ -75,7 +72,7 @@
     <description lang="el">Αυτό το scraper συλλέγει πληροφορίες από τις ακόλουθες ιστοσελίδες: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. Η αρχική αναζήτηση γίνεται πάντα στο TMDb, αλλά έπειτα μπορεί να ρυθμιστεί πεδίο ανά πεδίο από ποια σελίδα να λαμβάνονται πληροφορίες.</description>
     <description lang="en">Universal Scraper is currently the most customizable scraper by collecting information from the following supported sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. This scraper is currently the flagship of the Team-Kodi scrapers. The initial search can be done either on TMDb or IMDb (according to the settings), but following that it can be set field by field that from which site you want that specific information.</description>
     <description lang="en_NZ">Universal Scraper is currently the most customisable scraper by collecting information from the following supported sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. This scraper is currently the flagship of the Team-Kodi scrapers. The initial search can be done either on TMDb or IMDb (according to the settings), but following that it can be set field by field that from which site you want that specific information.</description>
-    <description lang="en_US">Universal Scraper is currently the most customizable scraper by collecting information from the following supported sites: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de, port.hu. This scraper is currently the flagship of the Team-Kodi scrapers. The initial search can be done either on TMDb or IMDb (according to the settings), but following that it can be set field by field that from which site you want that specific information.</description>
+    <description lang="en_US">Universal Scraper is currently the most customizable scraper by collecting information from the following supported sites: IMDb, TMDb, OFDb.de. This scraper is currently the flagship of the Team-Kodi scrapers. The initial search can be done either on TMDb or IMDb (according to the settings), but following that it can be set field by field that from which site you want that specific information.</description>
     <description lang="es">Este buscador obtiene información de los siguientes sitios: IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. La primera búsqueda siempre se realiza en TMDb, pero se puede elegir, campo por campo, de qué sitio se tiene que obtener la información.</description>
     <description lang="es_AR">Este buscador obtiene información de los siguientes sitios: IMDb, TMDb, Rotten tomatoes, Trakt.tv, OFDb.de. Realiza la búsqueda inicial en TMDb, pero a partir de allí se puede especificar desde que sitio se desea obtener cada campo.</description>
     <description lang="fr">Ce scraper collecte les informations depuis les sites supportés suivants : IMDb, TMDb, Rotten Tomatoes, Trakt.tv, OFDb.de. La recherche initiale est toujours effectuée depuis TMDb, mais vous pouvez indiquer les sites sources des champs un par un pour avoir une information plus spécifique.</description>

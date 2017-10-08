@@ -19,13 +19,13 @@
   <category label="30400">
     <setting type="lsep" label="30401"/>
     <setting type="sep"/>
-    <setting label="30014" type="labelenum" values="IMDb|themoviedb.org|Rotten Tomatoes|OFDb.de|port.hu|Rotten Tomatoes / Critics' Consensus|IMDb Outline" id="plotsource" default="IMDb"/>
+    <setting label="30014" type="labelenum" values="IMDb|themoviedb.org|OFDb.de|IMDb Outline" id="plotsource" default="IMDb"/>
     <setting label="30020" subsetting="true" type="select" values="bg|cs|da|de|el|en|es|fi|fr|he|hr|hu|it|ja|ko|nl|no|pl|pt|pt-br|ru|sl|sr|sv|tr|zh" id="tmdbplotlanguage" default="en" visible="eq(-1,1)"/>
     <setting type="sep"/>
     <setting label="30042" type="labelenum" values="IMDb|themoviedb.org|None" id="taglinesource" default="IMDb"/>
     <setting label="30043" subsetting="true" type="select" values="bg|cs|da|de|el|en|es|fi|fr|he|hr|hu|it|ja|ko|nl|no|pl|pt|pt-br|ru|sl|sr|sv|tr|zh" id="tmdbtaglinelanguage" default="en" visible="eq(-1,1)"/>
     <setting type="sep"/>
-    <setting label="30045" type="labelenum" values="IMDb|Rotten Tomatoes / Critics' Consensus|None" id="outlinesource" default="IMDb"/>
+    <setting label="30045" type="labelenum" values="IMDb|None" id="outlinesource" default="IMDb"/>
     <setting type="sep"/>
   </category>
 
@@ -47,8 +47,7 @@
     <setting label="30002" type="bool" id="tmdbthumbs" default="true"/>
     <setting label="30034" subsetting="true" type="select" values="bg|cs|da|de|el|en|es|fi|fr|he|hr|hu|it|ja|ko|nl|no|pl|pt|pt-br|ru|sl|sr|sv|tr|zh" id="tmdbthumblanguage" default="en" enable="eq(-1,true)"/>
     <setting type="sep"/>
-    <setting label="30004" type="bool" id="movieposterdb" default="false"/>
-    <setting type="sep"/>
+
   </category>
 
   <category label="30500">
@@ -71,9 +70,7 @@
   <category label="30100">
     <setting type="lsep" label="30030"/>
     <setting type="sep"/>
-    <setting label="30021" type="labelenum" values="IMDb|Rotten Tomatoes|MetaCritic|themoviedb.org" id="mratingsource" default="IMDb"/>
-    <setting label="30110" subsetting="true" type="labelenum" values="TomatoMeter|Average Rating" id="tomato" default="TomatoMeter" visible="eq(-1,1)"/>
-    <setting label="30115" subsetting="true" type="labelenum" values="All Critics|Audience Score" id="allcritics" default="All Critics" visible="eq(-2,1)"/>
+    <setting label="30021" type="labelenum" values="IMDb|MetaCritic|themoviedb.org" id="mratingsource" default="IMDb"/>
     <setting type="sep"/>
     <setting label="30044" type="bool" id="imdbtop250" default="true"/>
     <setting type="sep"/>

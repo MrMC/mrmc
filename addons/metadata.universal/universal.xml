@@ -88,13 +88,13 @@
 					<expression noclean="1">&lt;table class=&quot;findList&quot;(.*?)&lt;/div</expression>
 				</RegExp>
 				<RegExp conditional="fullimdbsearch" input="$$4" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;\1-main.html&quot;&gt;http://akas.imdb.com/title/\1/|accept-language=en-us&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-					<expression repeat="yes" noclean="1,2">&lt;td\sclass=&quot;result_text&quot;&gt;\s&lt;a\shref=&quot;/title/([t0-9]*)/[^&gt;]*&gt;(?:&amp;#x22;)?([^&lt;]*?)(?:&amp;#x22;)?&lt;/a&gt;\s*(?:\([IV]+\) )?\([^\(]*?([0-9]{4})[^\)]*\)\s(?:\(TV\sMovie\)\s|\(TV\sSpecial\)\s|\(Video\)\s|\(Short\)\s|\(TV\sMini-Series\)\s|\(TV\sSeries\)\s|\(TV\sShort\)\s|\(Short\)\s|\(Short\)\s)?&lt;</expression>
+					<expression repeat="yes" noclean="1,2">&lt;td\sclass=&quot;result_text&quot;&gt;\s&lt;a\shref=&quot;/title/([t0-9]*)/[^&gt;]*&gt;(?:&amp;#x22;)?([^&lt;]*?)(?:&amp;#x22;)?&lt;/a&gt;\s*(?:\([IVX]+\) )?\([^\(]*?([0-9]{4})[^\)]*\)\s(?:\(TV\sMovie\)\s|\(TV\sSpecial\)\s|\(Video\)\s|\(Short\)\s|\(TV\sMini-Series\)\s|\(TV\sSeries\)\s|\(TV\sShort\)\s|\(Short\)\s|\(Short\)\s)?&lt;</expression>
 				</RegExp>
 				<RegExp conditional="!fullimdbsearch" input="$$4" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;\1-main.html&quot;&gt;http://akas.imdb.com/title/\1/|accept-language=en-us&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-					<expression repeat="yes" noclean="1,2">&lt;td\sclass=&quot;result_text&quot;&gt;\s&lt;a\shref=&quot;/title/([t0-9]*)/[^&gt;]*&gt;(?:&amp;#x22;)?([^&lt;]*?)(?:&amp;#x22;)?&lt;/a&gt;\s*(?:\([IV]+\) )?\([^\(]*?([0-9]{4})[^\)]*\)\s(?:\(TV\sMovie\)\s|\(TV\sSpecial\)\s|\(Video\)\s)?&lt;</expression>
+					<expression repeat="yes" noclean="1,2">&lt;td\sclass=&quot;result_text&quot;&gt;\s&lt;a\shref=&quot;/title/([t0-9]*)/[^&gt;]*&gt;(?:&amp;#x22;)?([^&lt;]*?)(?:&amp;#x22;)?&lt;/a&gt;\s*(?:\([IVX]+\) )?\([^\(]*?([0-9]{4})[^\)]*\)\s(?:\(TV\sMovie\)\s|\(TV\sSpecial\)\s|\(Video\)\s)?&lt;</expression>
 				</RegExp>
 				<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\4&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;\1-main.html&quot;&gt;http://akas.imdb.com/title/\1/|accept-language=en-us&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-					<expression repeat="yes" noclean="1,2">&lt;td\sclass=&quot;result_text&quot;&gt;\s&lt;a\shref=&quot;/title/([t0-9]*)/[^&gt;]*&gt;(?:&amp;#x22;)?([^&lt;]*?)(?:&amp;#x22;)?&lt;/a&gt;\s*(?:\([IV]+\) )?\([^\(]*?([0-9]{4})[^\)]*\)\s&lt;br/&gt;aka\s&lt;i&gt;&quot;([^&quot;]*)</expression>
+					<expression repeat="yes" noclean="1,2">&lt;td\sclass=&quot;result_text&quot;&gt;\s&lt;a\shref=&quot;/title/([t0-9]*)/[^&gt;]*&gt;(?:&amp;#x22;)?([^&lt;]*?)(?:&amp;#x22;)?&lt;/a&gt;\s*(?:\([IVX]+\) )?\([^\(]*?([0-9]{4})[^\)]*\)\s&lt;br/&gt;aka\s&lt;i&gt;&quot;([^&quot;]*)</expression>
 				</RegExp>
 				<RegExp input="$INFO[imdbsearchlanguage]" output="&lt;url function=&quot;GetAKASearchResults&quot;&gt;http://akas.imdb.com/find?q=$$9&amp;s=tt|accept-language=$INFO[imdbsearchlanguage]&lt;/url&gt;" dest="5+">
 					<expression>^(?:bg-bg|cs-cz|el-gr|es-ar|da-dk|de-at|de-de|fi-fi|fr-fr|hr-hr|he-il|hu-hu|it-it|ja-jp|nb-no|nl-nl|pl-pl|pt-pt|ro-ro|ru-ru|se-se|sl-si|sr-rs|th-th|tr-tr)$</expression>
@@ -238,9 +238,6 @@
 			</RegExp>
 			<RegExp input="$INFO[plotsource]" output="&lt;chain function=&quot;GetOFDbPlotByIMDBId&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
 				<expression>OFDb.de</expression>
-			</RegExp>
-			<RegExp input="$INFO[plotsource]" output="&lt;chain function=&quot;GetPortHUPlotByTitleAndYear&quot;&gt;$$19::$$20::$$2&lt;/chain&gt;" dest="5+">
-				<expression>port.hu</expression>
 			</RegExp>
 			<RegExp input="$INFO[creditssource]" output="&lt;chain function=&quot;GetIMDBCastById&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
 				<expression>^IMDb$</expression>
