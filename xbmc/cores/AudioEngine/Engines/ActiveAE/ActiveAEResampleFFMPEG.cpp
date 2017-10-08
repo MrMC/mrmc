@@ -177,9 +177,10 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
     }
   }
 
-  if(swr_init(m_pContext) < 0)
+  int status = swr_init(m_pContext);
+  if (status < 0)
   {
-    CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - init resampler failed");
+    CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - init resampler failed with %d", status);
     return false;
   }
   return true;
