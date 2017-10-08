@@ -269,11 +269,11 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes" noclean="1">"cast":\[([^\]]+)\]</expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;order&gt;\4&lt;/order&gt;&lt;thumb&gt;$$20original\3&lt;/thumb&gt;&lt;/actor&gt;" dest="5">
-				<expression clear="yes" repeat="yes" fixchars="1,2">"character":"((?:[^"]|(?&lt;=\\)")*)","credit_id":"[^"]*","id":[0-9]*,"name":"([^"]*)","profile_path":"([^"]*)","order":([0-9]*)</expression>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;thumb&gt;$$20original\4&lt;/thumb&gt;&lt;/actor&gt;" dest="5">
+				<expression clear="yes" repeat="yes" fixchars="1,2">"character":"((?:[^"]|(?&lt;=\\)")*)","credit_id":"[^"]*","gender":[^,]*,"id":[0-9]*,"name":"([^"]*)","order":([0-9]*),"profile_path":"([^"]*)"</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;/actor&gt;" dest="5+">
-				<expression repeat="yes" fixchars="1,2">"character":"((?:[^"]|(?&lt;=\\)")*)","credit_id":"[^"]*","id":[0-9]*,"name":"([^"]*)","profile_path":null,"order":([0-9]*)</expression>
+				<expression repeat="yes" fixchars="1,2">"character":"((?:[^"]|(?&lt;=\\)")*)","credit_id":"[^"]*","gender":[^,]*,"id":[0-9]*,"name":"([^"]*)","order":([0-9]*),"profile_path":null</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes" noclean="1">"guest_stars":\[([^\]]+)\]</expression>
@@ -384,7 +384,7 @@
 
 	<GetTVDBWideBanners dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTVDBWideBanners&quot; cache=&quot;tvdb-\1-banners.xml&quot;&gt;http://thetvdb.com/api/1D62F2F90030C444/series/\1/banners.xml&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTVDBWideBanners&quot; cache=&quot;tvdb-\1-banners.xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/banners.xml&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />

@@ -1,5 +1,12 @@
+[B]1.3.4[/B]
+- Really fixed after API layout changes
+
+[B]1.3.3[/B]
+- Fixed after API layout changes
+
 [B]1.3.2[/B]
 - fixed: broken search results after API changes
+
 [B]1.3.1[/B]
 - added: scraping of mpaa certifications
 
