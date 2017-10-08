@@ -1,6 +1,12 @@
 [B]2.0.0[/B]
  - Rename to MrMC and add new API key
  
+[B]1.8.4[/B]
+- Added: Runtime for tvshows - needs Krypton or newer
+
+[B]1.8.3[/B]
+- Update author name
+
 [B]1.8.2[/B]
 - Fixed: Runtime being zero in some cases
 
