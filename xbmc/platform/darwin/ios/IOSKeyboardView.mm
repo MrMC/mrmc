@@ -40,9 +40,88 @@ static CEvent keyboardFinishedEvent;
 @synthesize text;
 @synthesize _confirmed;
 @synthesize _iosKeyboard;
+@synthesize _frame;
+
+- (id)initWithFrameInternal
+{
+  CGRect frame = _frame;
+  self = [super initWithFrame:frame];
+  if (self)
+  {
+    _iosKeyboard = nil;
+    _confirmed = NO;
+    _canceled = NULL;
+    _deactivated = NO;
+    
+    self.text = [NSMutableString stringWithString:@""];
+    
+    // default input box position above the half screen.
+    CGRect textFieldFrame = CGRectMake(frame.size.width/2,
+                                       frame.size.height/2-INPUT_BOX_HEIGHT-SPACE_BETWEEN_INPUT_AND_KEYBOARD,
+                                       frame.size.width/2,
+                                       INPUT_BOX_HEIGHT);
+    _textField = [[UITextField alloc] initWithFrame:textFieldFrame];
+    _textField.clearButtonMode = UITextFieldViewModeAlways;
+    // UITextBorderStyleRoundedRect; - with round rect we can't control backgroundcolor
+    _textField.borderStyle = UITextBorderStyleNone;
+    _textField.returnKeyType = UIReturnKeyDone;
+    _textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    _textField.backgroundColor = [UIColor whiteColor];
+    _textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _textField.delegate = self;
+    
+    CGRect labelFrame = textFieldFrame;
+    labelFrame.origin.x = 0;
+    _heading = [[UITextField alloc] initWithFrame:labelFrame];
+    _heading.borderStyle = UITextBorderStyleNone;
+    _heading.backgroundColor = [UIColor whiteColor];
+    _heading.adjustsFontSizeToFitWidth = YES;
+    _heading.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _heading.enabled = NO;
+    
+    [self addSubview:_heading];
+    [self addSubview:_textField];
+    
+    self.userInteractionEnabled = YES;
+    
+    [self setAlpha:0.9];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textChanged:)
+                                                 name:UITextFieldTextDidChangeNotification
+                                               object:_textField];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidHide:)
+                                                 name:UIKeyboardDidHideNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidChangeFrame:)
+                                                 name:UIKeyboardDidChangeFrameNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShow:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+  }
+  
+  return self;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
+  _frame = frame;
+  if ([NSThread currentThread] != [NSThread mainThread])
+  {
+    [self performSelectorOnMainThread:@selector(initWithFrameInternal) withObject:nil  waitUntilDone:YES];
+  }
+  else
+  {
+    return [self initWithFrameInternal];
+  }
+  /*
   self = [super initWithFrame:frame];
   if (self) 
   {
@@ -103,7 +182,7 @@ static CEvent keyboardFinishedEvent;
                                              selector:@selector(keyboardDidShow:)
                                                  name:UIKeyboardDidShowNotification
                                                object:nil];
-  }
+  }*/
   return self;
 }
 
