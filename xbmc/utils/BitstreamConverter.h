@@ -137,7 +137,7 @@ public:
 
   static bool Open();
   static void Close();
-  static bool HasKeyframe(const uint8_t *buf, int buf_size, bool annexb = true);
+  static bool HasKeyframe(enum AVCodecID codec, const uint8_t *buf, int buf_size, bool annexb = true);
 
 protected:
   static const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);

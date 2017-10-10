@@ -347,7 +347,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     ValidateVTSessionParameterSetsForRestart(pData, iSize);
 
     // exclude AV_CODEC_ID_H265 until we update CBitstreamParser::HasKeyframe
-    if (m_hints.codec == AV_CODEC_ID_H265 || CBitstreamParser::HasKeyframe(pData, iSize, false))
+    if (CBitstreamParser::HasKeyframe(m_hints.codec, pData, iSize, false))
     {
       // VideoToolBox is picky about starting up with a keyframe
       // Check and skip until we hit one. m_lastKeyframe tracks how many frames back
@@ -358,7 +358,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     }
     m_lastKeyframe++;
 
-    if (!m_started)
+    if (!m_started && m_lastKeyframe < 64)
       return VC_BUFFER;
 
     CMSampleTimingInfo sampleTimingInfo = kCMTimingInfoInvalid;
@@ -412,9 +412,9 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       }
     }
 
+/*
     // wait for decoding to finish
     status = VTDecompressionSessionWaitForAsynchronousFrames((VTDecompressionSessionRef)m_vt_session);
-/*
     if (status != kVTDecoderNoErr)
     {
       CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionWaitForAsynchronousFrames returned(%d)",
@@ -434,7 +434,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     }
   }
 
-  if (m_queue_depth < m_max_ref_frames)
+  if (m_queue_depth < (2 * m_max_ref_frames))
     return VC_BUFFER;
 
   return VC_PICTURE;
@@ -708,6 +708,10 @@ CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
 bool
 CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize)
 {
+  // temp bypass of hevc
+  if (m_hints.codec == AV_CODEC_ID_HEVC)
+    return true;
+
   bool rtn = true;
 
   // pData is in bit stream format, 32 size (big endian), followed by NAL
@@ -719,9 +723,9 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
   {
     int nal_size = BS_RB32(data);
     data += 4;
-    int nal_type = data[0] & 0x1f;
     if (m_hints.codec == AV_CODEC_ID_H264)
     {
+      int nal_type = data[0] & 0x1f;
       switch(nal_type)
       {
         case AVC_NAL_SPS:
@@ -736,6 +740,7 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
     }
     else if (m_hints.codec == AV_CODEC_ID_HEVC)
     {
+      int nal_type = (data[0] >> 1) & 0x3f;
       switch(nal_type)
       {
         case HEVC_NAL_SPS:
@@ -767,9 +772,9 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
     {
       int nal_size = BS_RB32(data);
       data += 4;
-      int nal_type = data[0] & 0x1f;
       if (m_hints.codec == AV_CODEC_ID_H264)
       {
+        int nal_type = data[0] & 0x1f;
         switch(nal_type)
         {
           case AVC_NAL_SPS:
@@ -781,6 +786,7 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
       }
       else if (m_hints.codec == AV_CODEC_ID_HEVC)
       {
+        int nal_type = (data[0] >> 1) & 0x3f;
         switch(nal_type)
         {
           case HEVC_NAL_SPS:
@@ -803,6 +809,9 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
     {
       for (size_t i = 0; i < parameterSetCount; i++)
       {
+        if (parameterSetTypes[i] == HEVC_NAL_PPS)
+          continue;
+
         if (parameterSetSizes[i] != m_parameterSetSizes[i])
         {
           // some parameter size changed, recreate the vtsession
@@ -810,11 +819,14 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
           rtn = ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
           break;
         }
-        if (parameterSetTypes[i] != parameterSetTypes[i])
+        if (parameterSetTypes[i] == parameterSetTypes[i])
         {
           if (0 != memcmp(parameterSetPointers[i], m_parameterSetPointers[i], parameterSetSizes[i]))
           {
             // some parameter size changed, recreate the vtsession
+            CLog::Log(LOGDEBUG, "%s - ps type(%d), contents differ size(%zu), orignal size(%zu)", __FUNCTION__, parameterSetTypes[i], parameterSetSizes[i], m_parameterSetSizes[i]);
+            CLog::MemDump((char*)parameterSetPointers[i], parameterSetSizes[i]);
+            CLog::MemDump((char*)m_parameterSetPointers[i], parameterSetSizes[i]);
             rtn = ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
             break;
           }

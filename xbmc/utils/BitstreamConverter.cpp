@@ -66,6 +66,8 @@ enum {
     HEVC_NAL_IDR_W_RADL = 19,
     HEVC_NAL_IDR_N_LP   = 20,
     HEVC_NAL_CRA_NUT    = 21,
+    HEVC_NAL_RESERVED_IRAP_VCL22 = 22,
+    HEVC_NAL_RESERVED_IRAP_VCL23 = 23,
     HEVC_NAL_VPS        = 32,
     HEVC_NAL_SPS        = 33,
     HEVC_NAL_PPS        = 34,
@@ -374,7 +376,7 @@ bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size)
 }
 */
 
-bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size, bool annexb)
+bool CBitstreamParser::HasKeyframe(enum AVCodecID codec, const uint8_t *buf, int buf_size, bool annexb)
 {
   if (!buf)
     return false;
@@ -400,33 +402,60 @@ bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size, bool annexb
       state = buf[0];
     }
 
-    int nal_type = state & 0x1f;
-    switch (nal_type)
+    if (codec == AV_CODEC_ID_H264)
     {
-      case AVC_NAL_SLICE:
-        break;
-      case AVC_NAL_IDR_SLICE:
-        rtn = true;
-        break;
-      case AVC_NAL_SEI:
-        {
-          const uint8_t *sei_end;
-          if (annexb)
-            sei_end = find_start_code(buf, buf_end, &state) - 4;
-          else
-            sei_end = buf + src_length;
-          if (has_sei_recovery_point(buf, sei_end))
-            rtn = true;
-        }
-        break;
-      case AVC_NAL_SPS:
-        break;
-      case AVC_NAL_PPS:
-        break;
-      case AVC_NAL_AUD:
-        break;
-      default:
-        break;
+      int nal_type = state & 0x1f;
+      switch (nal_type)
+      {
+        case AVC_NAL_SLICE:
+          break;
+        case AVC_NAL_IDR_SLICE:
+          rtn = true;
+          break;
+        case AVC_NAL_SEI:
+          {
+            const uint8_t *sei_end;
+            if (annexb)
+              sei_end = find_start_code(buf, buf_end, &state) - 4;
+            else
+              sei_end = buf + src_length;
+            if (has_sei_recovery_point(buf, sei_end))
+              rtn = true;
+          }
+          break;
+        case AVC_NAL_SPS:
+          break;
+        case AVC_NAL_PPS:
+          break;
+        case AVC_NAL_AUD:
+          break;
+        default:
+          break;
+      }
+    }
+    else if (codec == AV_CODEC_ID_H265)
+    {
+      int nal_type = (state >> 1) & 0x3f;
+      switch (nal_type)
+      {
+        // IS_IRAP in ffmpeg source code
+        case HEVC_NAL_BLA_W_LP ... HEVC_NAL_RESERVED_IRAP_VCL23:
+          rtn = true;
+          break;
+        case HEVC_NAL_SEI_PREFIX:
+          {
+            const uint8_t *sei_end;
+            if (annexb)
+              sei_end = find_start_code(buf, buf_end, &state) - 4;
+            else
+              sei_end = buf + src_length;
+            if (has_sei_recovery_point(buf, sei_end))
+              rtn = true;
+          }
+          break;
+        default:
+          break;
+      }
     }
     buf += src_length;
     if (rtn || buf >= buf_end)
