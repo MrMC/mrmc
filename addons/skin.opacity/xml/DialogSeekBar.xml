@@ -26,6 +26,7 @@
 					<height>40</height>
 					<texture>$INFO[MusicPlayer.UserRating,flags/starrating/,.png]</texture>
 					<aspectratio>keep</aspectratio>
+					<visible>!IsEmpty(MusicPlayer.UserRating)</visible>
 				</control>
 				<control type="group">
 					<visible>Player.Recording</visible>
