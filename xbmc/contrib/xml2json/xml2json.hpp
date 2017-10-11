@@ -120,15 +120,23 @@ void xml2json_add_attributes(rapidxml::xml_node<> *xmlnode, rapidjson::Value &js
             }
             else
             {
+                char *bgnptr = myattr->value();
+                char *endptr = bgnptr;
                 if (hasDecimal)
                 {
-                    double value = std::strtod(myattr->value(),nullptr);
-                    jv.SetDouble(value);
+                    double value = std::strtod(bgnptr, &endptr);
+                    if (bgnptr != endptr)
+                      jv.SetDouble(value);
+                    else
+                      jv.SetString(myattr->value(), allocator);
                 }
                 else
                 {
-                    long int value = std::strtol(myattr->value(), nullptr, 0);
-                    jv.SetInt(value);
+                    long int value = std::strtol(bgnptr, &endptr, 0);
+                    if (bgnptr != endptr)
+                      jv.SetInt(value);
+                    else
+                      jv.SetString(myattr->value(), allocator);
                 }
             }
         }
@@ -195,15 +203,23 @@ void xml2json_traverse_node(rapidxml::xml_node<> *xmlnode, rapidjson::Value &jsv
                     }
                     else
                     {
+                        char *bgnptr = xmlnode->first_node()->value();
+                        char *endptr = bgnptr;
                         if (hasDecimal)
                         {
-                            double value = std::strtod(xmlnode->first_node()->value(), nullptr);
-                            jsvalue.SetDouble(value);
+                            double value = std::strtod(bgnptr, &endptr);
+                            if (bgnptr != endptr)
+                              jsvalue.SetDouble(value);
+                            else
+                              jsvalue.SetString(rapidjson::StringRef(bgnptr), allocator);
                         }
                         else
                         {
-                            long int value = std::strtol(xmlnode->first_node()->value(), nullptr, 0);
-                            jsvalue.SetInt(value);
+                            long int value = std::strtol(bgnptr, &endptr, 0);
+                            if (bgnptr != endptr)
+                              jsvalue.SetInt(value);
+                            else
+                              jsvalue.SetString(rapidjson::StringRef(bgnptr), allocator);
                         }
                     }
                 }
