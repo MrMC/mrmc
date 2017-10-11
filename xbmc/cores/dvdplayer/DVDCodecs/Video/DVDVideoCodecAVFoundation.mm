@@ -761,7 +761,7 @@ void CDVDVideoCodecAVFoundation::StartSampleProviderWithBlock()
         {
           [videolayer enqueueSampleBuffer:nextSampleBuffer];
           CFRelease(nextSampleBuffer);
-          [mcview setNeedsDisplay];
+          [mcview performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil  waitUntilDone:YES];
 
           if ([videolayer status] == AVQueuedSampleBufferRenderingStatusFailed)
           {
