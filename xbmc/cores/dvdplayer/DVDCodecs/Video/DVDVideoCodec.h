@@ -57,7 +57,7 @@ class CDVDMediaCodecInfo;
 class CDVDVideoCodecIMXBuffer;
 class CMMALVideoBuffer;
 typedef void* EGLImageKHR;
-
+class CDVDClock;
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
@@ -318,4 +318,9 @@ public:
    * Decoder request to re-open
    */
   virtual void Reopen() {};
+
+  /**
+   * Some decoders (bypass) need access to the player clock for a/v sync
+   */
+  virtual void SetClock(CDVDClock *clock) {} ;
 };

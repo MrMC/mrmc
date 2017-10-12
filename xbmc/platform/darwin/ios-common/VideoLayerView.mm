@@ -36,41 +36,13 @@
 
     self.hidden = YES;
     self.videolayer = nullptr;
-    std::string neveryyoumind;
-    neveryyoumind += 'A';
-    neveryyoumind += 'V';
-    neveryyoumind += 'S';
-    neveryyoumind += 'a';
-    neveryyoumind += 'm';
-    neveryyoumind += 'p';
-    neveryyoumind += 'l';
-    neveryyoumind += 'e';
-    neveryyoumind += 'B';
-    neveryyoumind += 'u';
-    neveryyoumind += 'f';
-    neveryyoumind += 'f';
-    neveryyoumind += 'e';
-    neveryyoumind += 'r';
-    neveryyoumind += 'D';
-    neveryyoumind += 'i';
-    neveryyoumind += 's';
-    neveryyoumind += 'p';
-    neveryyoumind += 'l';
-    neveryyoumind += 'a';
-    neveryyoumind += 'y';
-    neveryyoumind += 'L';
-    neveryyoumind += 'a';
-    neveryyoumind += 'y';
-    neveryyoumind += 'e';
-    neveryyoumind += 'r';
-    Class AVSampleBufferDisplayLayerClass = NSClassFromString([NSString stringWithUTF8String: neveryyoumind.c_str()]);
-		AVSampleBufferDisplayLayer *videolayer = [[AVSampleBufferDisplayLayerClass alloc] init];
+		AVSampleBufferDisplayLayer *videolayer = [[AVSampleBufferDisplayLayer alloc] init];
     videolayer.bounds = self.bounds;
 		videolayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
 		videolayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 #if defined(TARGET_DARWIN_IOS)
-		videolayer.backgroundColor = [[UIColor blackColor] CGColor];
-		//videolayer.backgroundColor = [[UIColor clearColor] CGColor];
+		//videolayer.backgroundColor = [[UIColor blackColor] CGColor];
+		videolayer.backgroundColor = [[UIColor clearColor] CGColor];
 #else
     videolayer.backgroundColor = CGColorGetConstantColor(kCGColorBlue);
 #endif
@@ -78,7 +50,7 @@
 
     // create a time base
     CMTimebaseRef controlTimebase;
-    CMTimebaseCreateWithMasterClock( CFAllocatorGetDefault(), CMClockGetHostTimeClock(), &controlTimebase );
+    CMTimebaseCreateWithMasterClock(CFAllocatorGetDefault(), CMClockGetHostTimeClock(), &controlTimebase);
 
     // setup the time base clock stopped with a zero initial time.
     videolayer.controlTimebase = controlTimebase;
@@ -134,17 +106,28 @@
 - (void)setHiddenAnimated:(BOOL)hide
   delay:(NSTimeInterval)delay duration:(NSTimeInterval)duration
 {
+  if (self.hidden == hide)
+    return;
+
+  if (hide)
+  {
+    self.alpha = 1;
+  }
+  else
+  {
+    self.alpha = 0;
+    self.hidden = NO;
+  }
   [UIView animateWithDuration:duration delay:delay
       options:UIViewAnimationOptionAllowAnimatedContent animations:^{
       if (hide) {
         self.alpha = 0;
       } else {
-        self.alpha = 0;
-        self.hidden = NO; // We need this to see the animation 0 -> 1
         self.alpha = 1;
       }
     } completion:^(BOOL finished) {
-      self.hidden = hide;
+      if (finished)
+        self.hidden = hide;
   }];
 }
 

@@ -918,6 +918,13 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.usevideotoolbox_hevc_hrd" type="boolean" parent="videoplayer.usevideotoolbox" label="13461" help="36643">
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible" setting="videoplayer.usevideotoolbox">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usevda" type="boolean" label="13429" help="36160">
           <requirement>HasVDA</requirement>
           <level>2</level>

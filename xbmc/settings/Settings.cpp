@@ -194,6 +194,7 @@ const std::string CSettings::SETTING_VIDEOPLAYER_USEDXVA2 = "videoplayer.usedxva
 const std::string CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER = "videoplayer.useomxplayer";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEOMX = "videoplayer.useomx";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX = "videoplayer.usevideotoolbox";
+const std::string CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX_HEVC_HDR = "videoplayer.usevideotoolbox_hevc_hrd";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDA = "videoplayer.usevda";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEAVF = "videoplayer.useavf";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMMAL = "videoplayer.usemmal";

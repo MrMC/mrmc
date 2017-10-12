@@ -364,7 +364,6 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_height = height;
 
     Create();
-
     m_messages->enqueue(START);
     return true;
   }
@@ -415,7 +414,7 @@ int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, do
 
     CMSampleTimingInfo sampleTimingInfo = kCMTimingInfoInvalid;
     if (m_framerate_ms > 0.0)
-      sampleTimingInfo.duration = CMTimeMake(1.0/m_framerate_ms * DVD_TIME_BASE, DVD_TIME_BASE);
+      sampleTimingInfo.duration = CMTimeMake((double)DVD_TIME_BASE / m_framerate_ms, DVD_TIME_BASE);
     if (dts != DVD_NOPTS_VALUE)
       sampleTimingInfo.decodeTimeStamp = CMTimeMake(dts, DVD_TIME_BASE);
     if (pts != DVD_NOPTS_VALUE)
@@ -444,7 +443,7 @@ int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, do
     Sleep(10);
   }
 
-  if (m_trackerQueue.size() < m_max_ref_frames)
+  if (m_trackerQueue.size() < (2 * m_max_ref_frames))
     return VC_BUFFER;
 
   return VC_PICTURE;
@@ -456,9 +455,14 @@ void CDVDVideoCodecAVFoundation::Reset(void)
   m_messages->enqueue(START);
 }
 
+void CDVDVideoCodecAVFoundation::SetClock(CDVDClock *clock)
+{
+  m_clock = clock;
+}
+
 unsigned CDVDVideoCodecAVFoundation::GetAllowedReferences()
 {
-  return 3;
+  return 0;
 }
 
 void CDVDVideoCodecAVFoundation::SetCodecControl(int flags)
@@ -469,8 +473,12 @@ void CDVDVideoCodecAVFoundation::SetCodecControl(int flags)
 
 bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
+  // need to fake the dts/pts to keep player happy so
+  // force player to use duration to calc next fake pts
+  pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
+  pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
   if (m_framerate_ms > 0.0)
-    pDvdVideoPicture->iDuration     = 1.0 / m_framerate_ms * DVD_TIME_BASE;
+    pDvdVideoPicture->iDuration     = (double)DVD_TIME_BASE / m_framerate_ms;
   pDvdVideoPicture->format          = RENDER_FMT_BYPASS;
   pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
   if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
@@ -488,23 +496,7 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pktTracker *tracker = m_trackerQueue.front();
     m_trackerQueue.pop_front();
     pthread_mutex_unlock(&m_trackerQueueMutex);
-    pDvdVideoPicture->dts = tracker->dts;
-    pDvdVideoPicture->pts = tracker->pts;
     delete tracker;
-  }
-  else
-  {
-    // we 'should' never get here as we are tracking demux passed to us
-    // and for each pkt, we ether pass a fake frame or drop it.
-    pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
-    pDvdVideoPicture->pts = m_pts;
-    if (m_speed == DVD_PLAYSPEED_NORMAL)
-    {
-      pDvdVideoPicture->pts = GetRenderPtsSeconds() * (double)DVD_TIME_BASE;
-      // video pts cannot be late or dvdplayer goes nuts,
-      // so run it one frame ahead
-      pDvdVideoPicture->pts += 1 * pDvdVideoPicture->iDuration;
-    }
   }
 
   return true;
@@ -557,17 +549,26 @@ void CDVDVideoCodecAVFoundation::Process()
 
       case START: // we are just starting up.
       {
+        while (!(GetPlayerClockSeconds() > 0.0))
+        {
+          if (m_bStop)
+            break;
+          Sleep(10);
+        }
         // player clock returns < zero if reset.
-        double player_s = GetRenderPtsSeconds();
+        double player_s = GetPlayerClockSeconds();
         if (player_s > 0.0)
         {
           // startup with video timebase matching the player clock.
-          VideoLayerView *mcview = (VideoLayerView*)m_decoder;
-          // video clock was stopped, set the starting time and crank it up.
-          AVSampleBufferDisplayLayer *videolayer = mcview.videolayer;
-          CMTimebaseSetTime(videolayer.controlTimebase, CMTimeMake(player_s, 1));
-          CMTimebaseSetRate(videolayer.controlTimebase, 1.0);
+          dispatch_sync(dispatch_get_main_queue(),^{
+            VideoLayerView *mcview = (VideoLayerView*)m_decoder;
+            // video clock was stopped, set the starting time and crank it up.
+            AVSampleBufferDisplayLayer *videolayer = mcview.videolayer;
+            CMTimebaseSetTime(videolayer.controlTimebase, CMTimeMake(player_s, 1));
+            CMTimebaseSetRate(videolayer.controlTimebase, 1.0);
+          });
           message = NONE;
+          m_messages->enqueue(PLAY);
           CLog::Log(LOGDEBUG, "%s - CDVDVideoCodecAVFoundation::Start player_s(%f)", __FUNCTION__, player_s);
         }
       }
@@ -578,14 +579,12 @@ void CDVDVideoCodecAVFoundation::Process()
         // just reset here, someone else will start us up again if needed.
         dispatch_sync(dispatch_get_main_queue(),^{
           // Flush the previous enqueued sample buffers for display while scrubbing
-          VideoLayerView *mcview = (VideoLayerView*)m_decoder;
-          // stop decoding by setting control timebase rate to zero.
-          AVSampleBufferDisplayLayer *videolayer = mcview.videolayer;
-          CMTimebaseSetRate(videolayer.controlTimebase, 0.0);
-          [videolayer stopRequestingMediaData];
-          m_withBlockRunning = false;
-          [videolayer flush];
           DrainQueues();
+          VideoLayerView *mcview = (VideoLayerView*)m_decoder;
+          AVSampleBufferDisplayLayer *videolayer = mcview.videolayer;
+          [videolayer flush];
+          //CMTimebaseSetRate(videolayer.controlTimebase, 0.0);
+          //m_withBlockRunning = false;
         });
         message = NONE;
         CLog::Log(LOGDEBUG, "%s - CDVDVideoCodecAVFoundation::Reset", __FUNCTION__);
@@ -596,9 +595,11 @@ void CDVDVideoCodecAVFoundation::Process()
       {
         // to pause, we just set the video timebase rate to zero.
         // buffers in flight are retained but not shown until the rate is non-zero.
-        VideoLayerView *mcview = (VideoLayerView*)m_decoder;
-        AVSampleBufferDisplayLayer *videolayer = mcview.videolayer;
-        CMTimebaseSetRate(videolayer.controlTimebase, 0.0);
+        dispatch_sync(dispatch_get_main_queue(),^{
+          VideoLayerView *mcview = (VideoLayerView*)m_decoder;
+          AVSampleBufferDisplayLayer *videolayer = mcview.videolayer;
+          CMTimebaseSetRate(videolayer.controlTimebase, 0.0);
+        });
         CLog::Log(LOGDEBUG, "%s - CDVDVideoCodecAVFoundation::Pause", __FUNCTION__);
         message = NONE;
       }
@@ -616,41 +617,24 @@ void CDVDVideoCodecAVFoundation::Process()
             m_withBlockRunning = true;
         }
 
-        // sync video layer time base to dvdplayer's player clock.
-        CMTime cmtime  = CMTimebaseGetTime(videolayer.controlTimebase);
-        Float64 timeBase_s = CMTimeGetSeconds(cmtime);
-
         // player clock returns < zero if reset. check it.
-        double player_s = GetRenderPtsSeconds();
+        double player_s = GetPlayerClockSeconds();
         if (player_s > 0.0)
         {
+          CMTime cmtime  = CMTimebaseGetTime(videolayer.controlTimebase);
+          Float64 timeBase_s = CMTimeGetSeconds(cmtime);
+
+          // sync video layer time base to dvdplayer's player clock.
           double error = fabs(timeBase_s - player_s);
-          if (error > 0.150 && error < 0.250)
+          if (error > 0.150)
           {
-            // if we are outside our error margin,
-            // adjust the video timebase rate to bring us back in sync.
-            if (timeBase_s > 0.0)
-            {
-              double rate = 1 * (player_s / timeBase_s);
-              CMTimebaseSetRate(videolayer.controlTimebase, rate);
+            dispatch_sync(dispatch_get_main_queue(),^{
               CLog::Log(LOGDEBUG, "adjusting playback "
-                "rate(%f) timeBase_s(%f) player_s(%f), sampleBuffers(%lu), trackerQueue(%lu)",
-                 rate, timeBase_s, player_s, m_sampleBuffers.size(), m_trackerQueue.size());
-            }
-            else
-            {
-              // video timebase value was zero, not sure why.
-              // quess and set the rate to 1, if the rate is zero,
-              // the videoLayer will not pull sample buffers to display
-              // and we see nothing.
+                "timeBase_s(%f) player_s(%f), sampleBuffers(%lu), trackerQueue(%lu)",
+                 timeBase_s, player_s, m_sampleBuffers.size(), m_trackerQueue.size());
+              CMTimebaseSetTime(videolayer.controlTimebase, CMTimeMake(player_s, 1));
               CMTimebaseSetRate(videolayer.controlTimebase, 1.0);
-            }
-          }
-          else if (error > 0.250)
-          {
-            // large diff, try a big jump
-            CMTimebaseSetTime(videolayer.controlTimebase, CMTimeMake(player_s, 1));
-            CMTimebaseSetRate(videolayer.controlTimebase, 1.0);
+            });
           }
         }
 
@@ -677,7 +661,7 @@ void CDVDVideoCodecAVFoundation::Process()
               MappedRect.MapRect(ViewRect, ScreenRect);
 
               // things that might touch iOS gui need to happen on main thread.
-              dispatch_async(dispatch_get_main_queue(),^{
+              dispatch_sync(dispatch_get_main_queue(),^{
                 CGRect frame = CGRectMake(
                   MappedRect.x1, MappedRect.y1, MappedRect.Width(), MappedRect.Height());
                 // save the offset
@@ -691,7 +675,7 @@ void CDVDVideoCodecAVFoundation::Process()
                 videolayer.frame = frame;
                 // we startup hidden, kick off an animated fade in.
                 if (mcview.hidden == YES)
-                  [mcview setHiddenAnimated:NO delay:NSTimeInterval(0.1) duration:NSTimeInterval(2.0)];
+                  [mcview setHiddenAnimated:NO delay:NSTimeInterval(0.2) duration:NSTimeInterval(2.0)];
               });
               oldSrcRect  = SrcRect;
               oldDestRect = DestRect;
@@ -790,13 +774,9 @@ void CDVDVideoCodecAVFoundation::StopSampleProvider()
   });
 }
 
-double CDVDVideoCodecAVFoundation::GetRenderPtsSeconds()
+double CDVDVideoCodecAVFoundation::GetPlayerClockSeconds()
 {
-  int queued, discard;
-  double sleepTime, renderPts;
-  g_renderManager.GetStats(sleepTime, renderPts, queued, discard);
-
-  return renderPts / DVD_TIME_BASE;
+  return m_clock->GetClock() / DVD_TIME_BASE;
 }
 
 void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double pts)

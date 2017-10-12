@@ -36,6 +36,7 @@
 #endif
 
 struct pktTracker;
+class CDVDClock;
 class CAVFCodecMessage;
 class CBitstreamConverter;
 
@@ -50,6 +51,7 @@ public:
   virtual void  Dispose(void);
   virtual int   Decode(uint8_t *pData, int iSize, double dts, double pts);
   virtual void  Reset(void);
+  virtual void  SetClock(CDVDClock *clock);
   virtual bool  GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual void  SetDropState(bool bDrop);
   virtual void  SetSpeed(int iSpeed);
@@ -64,7 +66,7 @@ protected:
   void          StartSampleProviderWithBlock();
   void          StopSampleProvider();
 
-  double        GetRenderPtsSeconds();
+  double        GetPlayerClockSeconds();
   void          UpdateFrameRateTracking(double pts);
 
   VideoLayerView         *m_decoder;        // opaque decoder reference
@@ -73,10 +75,11 @@ protected:
   pthread_mutex_t         m_sampleBuffersMutex;    // mutex protecting queue manipulation
   std::queue<CMSampleBufferRef> m_sampleBuffers;
 
-  size_t                  m_max_ref_frames;
+  size_t                  m_max_ref_frames = 4;
   pthread_mutex_t         m_trackerQueueMutex;       // mutex protecting queue manipulation
   std::list<pktTracker*>  m_trackerQueue;
 
+  CDVDClock              *m_clock = nullptr;
   int32_t                 m_format;
   const char             *m_pFormatName;
   int                     m_codecControlFlags;

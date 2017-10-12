@@ -7282,7 +7282,12 @@ msgctxt "#13460"
 msgid "Allow interlaced content"
 msgstr ""
 
-#empty strings from id 13461 to 13504
+#: system/settings/settings.xml
+msgctxt "#13461"
+msgid "Allow HEVC HDR content"
+msgstr ""
+
+#empty strings from id 13462 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -18825,7 +18830,12 @@ msgctxt "#36642"
 msgid "Pull watched status"
 msgstr ""
 
-#empty strings from id 36643 to 36899
+#: system/settings/settings.xml
+msgctxt "#36643"
+msgid "Use VideoToolBox for HEVC/HDR content but AVFoundation is preferred to get correct color mapping"
+msgstr ""
+
+#empty strings from id 36644 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

@@ -144,6 +144,7 @@ public:
   static const std::string SETTING_VIDEOPLAYER_USEOMXPLAYER;
   static const std::string SETTING_VIDEOPLAYER_USEOMX;
   static const std::string SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX;
+  static const std::string SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX_HEVC_HDR;
   static const std::string SETTING_VIDEOPLAYER_USEVDA;
   static const std::string SETTING_VIDEOPLAYER_USEAVF;
   static const std::string SETTING_VIDEOPLAYER_USEMMAL;
