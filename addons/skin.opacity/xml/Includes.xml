@@ -470,7 +470,7 @@
 				<control type="grouplist">
 					<left>35</left>
 					<description>Left side of top bar</description>
-					<width>900</width>
+					<width>1650</width>
 					<top>0</top>
 					<height>100</height>
 					<orientation>horizontal</orientation>
