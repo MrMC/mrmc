@@ -340,6 +340,7 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 
           width = hints.width = videoSize.width;
           height = hints.height = videoSize.height;
+          m_max_ref_frames = 6;
           m_pFormatName = "avf-h265";
         }
       }

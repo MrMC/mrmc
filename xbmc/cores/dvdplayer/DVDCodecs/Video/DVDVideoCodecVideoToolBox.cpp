@@ -279,6 +279,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
     // some VUI bitstream restrictions lie (GoPro mp4)
     m_max_ref_frames += 4;
+    // don't grow past 16
+    m_max_ref_frames = m_max_ref_frames > 16 ? 16 : m_max_ref_frames;
 
     CLog::Log(LOGDEBUG,"VideoToolBox: opened width(%d), height(%d)", m_hints.width, m_hints.height);
 
