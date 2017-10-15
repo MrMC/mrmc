@@ -777,6 +777,8 @@ void CDVDVideoCodecAVFoundation::StopSampleProvider()
 
 double CDVDVideoCodecAVFoundation::GetPlayerClockSeconds()
 {
+  if (!m_clock)
+    return 0.0;
   return m_clock->GetClock() / DVD_TIME_BASE;
 }
 
