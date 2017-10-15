@@ -355,6 +355,42 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     for (int i=0;i<rect.nb_colors;i++)
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
 
+    // quirk for hevc/hdr 10bit, someone scales the palette wrong
+    if (overlay->palette_colors == 256)
+    {
+      uint32_t max_color = 0x00000000;
+      for (int i = 0; i < overlay->palette_colors; i++)
+      {
+        if (max_color < (overlay->palette[i] & 0x00FFFFFF))
+          max_color = overlay->palette[i] & 0x00FFFFFF;
+      }
+      // look for a bogus max color and rescale
+      // Not a clue why but be ready for more todo here :)
+      // 0x00A0A0A0 is a guess based on a few hevc/hdr samples
+      // that have incorrect palette scaling (subs are gray instead of white)
+      if (max_color <= 0x00A0A0A0)
+      {
+        double colorscaler = 255.0/(max_color & 0xff);
+        for (int i = 0; i < overlay->palette_colors; i++)
+        {
+          uint32_t color = overlay->palette[i];
+          uint32_t a = ((color >> 24) & 0xff);
+          double r = ((color >> 16) & 0xff);
+          double g = ((color >> 8 ) & 0xff);
+          double b = ((color >> 0 ) & 0xff);
+          color  = a << 24;
+          color |= ((uint32_t)(r * colorscaler) & 0xff) << 16;
+          color |= ((uint32_t)(g * colorscaler) & 0xff) << 8;
+          color |= ((uint32_t)(b * colorscaler) & 0xff) << 0;
+          overlay->palette[i] = color;
+        }
+        if (!m_quirkPaletteScaling)
+        {
+          m_quirkPaletteScaling = true;
+          CLog::Log(LOGNOTICE, "%s - incorrect PGS palette scaling detected, colorscaler(%f)", __FUNCTION__, colorscaler);
+        }
+      }
+    }
     m_SubtitleIndex++;
 
     return overlay;

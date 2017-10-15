@@ -56,5 +56,5 @@ private:
 
   int             m_width;
   int             m_height;
-
+  bool            m_quirkPaletteScaling = false;
 };
