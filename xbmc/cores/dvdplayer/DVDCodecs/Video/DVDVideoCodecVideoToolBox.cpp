@@ -228,7 +228,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
 
       case AV_CODEC_ID_HEVC:
-        if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX_HEVC_HDR) && hints.profile == FF_PROFILE_HEVC_MAIN_10)
+        if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX_HEVC_HDR) &&
+            (hints.profile == FF_PROFILE_HEVC_MAIN_10 || hints.profile == FF_PROFILE_HEVC_REXT))
         {
           return false;
         }
