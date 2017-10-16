@@ -361,7 +361,7 @@
 									<top>0</top>
 									<width>216</width>
 									<height>306</height>
-									<texture colordiffuse="primary_color">overlays/FrameRA.png</texture>
+									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8000)</visible>
 								</control>
 								<control type="progress">
@@ -481,7 +481,7 @@
 									<top>0</top>
 									<width>216</width>
 									<height>306</height>
-									<texture colordiffuse="primary_color">overlays/FrameRA.png</texture>
+									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8010)</visible>
 								</control>
 								<control type="progress">
@@ -550,7 +550,7 @@
 						<textcolor>grey</textcolor>
 						<label>[B]$INFO[Container(8001).ListItem.Property(ItemType)] :[/B] $INFO[Container(8001).ListItem.TVShowTitle] - $INFO[Container(8001).ListItem.Property(SeasonEpisode)] - $INFO[Container(8001).ListItem.Label]</label>
 						<visible>Control.HasFocus(8001) + Container(8001).ListItem.Property(MediaServicesItem)</visible>
-					</control>
+					</control>	
 					<control type="list" id="8001">
 						<top>185</top>
 						<width>1270</width>
@@ -621,7 +621,7 @@
 									<top>0</top>
 									<width>216</width>
 									<height>306</height>
-									<texture colordiffuse="primary_color">overlays/FrameRA.png</texture>
+									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8001)</visible>
 								</control>
 								<control type="progress">
@@ -682,7 +682,7 @@
 						<textcolor>grey</textcolor>
 						<label>[B]$INFO[Container(8011).ListItem.Property(ItemType)] :[/B] $INFO[Container(8011).ListItem.TVShowTitle] - $INFO[Container(8011).ListItem.Label]</label>
 						<visible>Control.HasFocus(8011) + !Container(8011).ListItem.Property(MediaServicesItem)</visible>
-					</control>
+					</control>	
 					<control type="list" id="8011">
 						<top>625</top>
 						<width>1270</width>
@@ -753,7 +753,7 @@
 									<top>0</top>
 									<width>216</width>
 									<height>306</height>
-									<texture colordiffuse="primary_color">overlays/FrameRA.png</texture>
+									<texture>overlays/FrameRA.png</texture>
 									<visible>Control.HasFocus(8011)</visible>
 								</control>
 								<control type="progress">
