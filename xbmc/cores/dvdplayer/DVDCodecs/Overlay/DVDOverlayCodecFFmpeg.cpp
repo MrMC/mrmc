@@ -356,7 +356,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
 
     // quirk for hevc/hdr 10bit, someone scales the palette wrong
-    if (overlay->palette_colors == 256)
+    if (/* DISABLES CODE */ (false) && overlay->palette_colors == 256)
     {
       uint32_t max_color = 0x00000000;
       for (int i = 0; i < overlay->palette_colors; i++)
