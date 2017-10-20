@@ -356,7 +356,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
 
     // quirk for hevc/hdr 10bit, someone scales the palette wrong
-    if (/* DISABLES CODE */ (false) && overlay->palette_colors == 256)
+    if (overlay->palette_colors == 256)
     {
       uint32_t max_color = 0x00000000;
       for (int i = 0; i < overlay->palette_colors; i++)
@@ -368,9 +368,9 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
       // Not a clue why but be ready for more todo here :)
       // 0x00A0A0A0 is a guess based on a few hevc/hdr samples
       // that have incorrect palette scaling (subs are gray instead of white)
-      if (max_color <= 0x00A0A0A0)
+      if (max_color <= 0x00E0E0E0)
       {
-        double colorscaler = 255.0/(max_color & 0xff);
+        double colorscaler = 248.0/(max_color & 0xff);
         for (int i = 0; i < overlay->palette_colors; i++)
         {
           uint32_t color = overlay->palette[i];
@@ -378,11 +378,14 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
           double r = ((color >> 16) & 0xff);
           double g = ((color >> 8 ) & 0xff);
           double b = ((color >> 0 ) & 0xff);
-          color  = a << 24;
-          color |= ((uint32_t)(r * colorscaler) & 0xff) << 16;
-          color |= ((uint32_t)(g * colorscaler) & 0xff) << 8;
-          color |= ((uint32_t)(b * colorscaler) & 0xff) << 0;
-          overlay->palette[i] = color;
+          if (r == g && g == b)
+          {
+            color  = a << 24;
+            color |= ((uint32_t)(r * colorscaler) & 0xff) << 16;
+            color |= ((uint32_t)(g * colorscaler) & 0xff) << 8;
+            color |= ((uint32_t)(b * colorscaler) & 0xff) << 0;
+            overlay->palette[i] = color;
+          }
         }
         if (!m_quirkPaletteScaling)
         {
