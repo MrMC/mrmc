@@ -45,6 +45,7 @@ public:
 private:
   int m_updateHS; // flag for which home shelf items needs to be queried
   void AddHomeShelfJobs(int flag);
+  bool OnClickHomeShelfItem(CFileItem itemPtr, int action);
   bool PlayHomeShelfItem(CFileItem itemPtr);
   std::atomic<bool> m_HomeShelfRunning;
   std::atomic<int> m_cumulativeUpdateFlag;

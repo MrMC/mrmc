@@ -31,6 +31,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
@@ -39,6 +40,7 @@
 #include "services/ServicesManager.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "music/MusicDatabase.h"
+#include "filesystem/StackDirectory.h"
 
 #define CONTROL_HOMESHELFMOVIESRA      8000
 #define CONTROL_HOMESHELFTVSHOWSRA     8001
@@ -297,6 +299,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     bool selectAction = (message.GetParam1() == ACTION_SELECT_ITEM ||
                          message.GetParam1() == ACTION_MOUSE_LEFT_CLICK);
 
+    VideoSelectAction clickSelectAction = (VideoSelectAction)CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION);
     if (selectAction && iControl == CONTROL_HOMESHELFMOVIESRA)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMOVIESRA);
@@ -308,7 +311,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfMoviesRA->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfMoviesRA->Get(item);
-        PlayHomeShelfItem(*itemPtr);
+        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
       }
       return true;
     }
@@ -323,7 +326,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfMoviesPR->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfMoviesPR->Get(item);
-        PlayHomeShelfItem(*itemPtr);
+        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
       }
       return true;
     }
@@ -338,7 +341,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfTVRA->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfTVRA->Get(item);
-        PlayHomeShelfItem(*itemPtr);
+        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
       }
       return true;
     }
@@ -353,7 +356,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfTVPR->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfTVPR->Get(item);
-        PlayHomeShelfItem(*itemPtr);
+        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
       }
       return true;
     }
@@ -368,7 +371,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfMusicAlbums->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfMusicAlbums->Get(item);
-        PlayHomeShelfItem(*itemPtr);
+        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
       }
       return true;
     }
@@ -379,6 +382,42 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   }
 
   return CGUIWindow::OnMessage(message);
+}
+
+bool CGUIWindowHome::OnClickHomeShelfItem(CFileItem itemPtr, int action)
+{
+  switch (action)
+  {
+    case SELECT_ACTION_CHOOSE:
+    {
+      CContextButtons choices;
+      
+      if (itemPtr.IsVideoDb())
+      {
+        std::string itemPath(itemPtr.GetPath());
+        itemPath = itemPtr.GetVideoInfoTag()->m_strFileNameAndPath;
+        if (URIUtils::IsStack(itemPath) && CFileItem(XFILE::CStackDirectory::GetFirstStackedFile(itemPath),false).IsDiscImage())
+          choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
+          }
+      
+      choices.Add(SELECT_ACTION_PLAY, 208);   // Play
+      choices.Add(SELECT_ACTION_INFO, 22081); // Info
+      int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+      if (value < 0)
+        return true;
+      
+      return OnClickHomeShelfItem(itemPtr, value);
+    }
+      break;
+    case SELECT_ACTION_INFO:
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_SHOW_VIDEO_INFO, -1, -1,  static_cast<void*>(new CFileItem(itemPtr)));
+      return true;
+    case SELECT_ACTION_PLAY:
+    default:
+      PlayHomeShelfItem(itemPtr);
+      break;
+  }
+  return false;
 }
 
 bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
