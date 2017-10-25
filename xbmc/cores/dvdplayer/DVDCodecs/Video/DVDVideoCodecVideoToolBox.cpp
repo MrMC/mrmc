@@ -816,6 +816,9 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
     {
       for (size_t i = 0; i < parameterSetCount; i++)
       {
+        if (parameterSetTypes[i] == AVC_NAL_PPS)
+          continue;
+
         if (parameterSetTypes[i] == HEVC_NAL_PPS)
           continue;
 
