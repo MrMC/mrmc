@@ -253,8 +253,14 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           (const uint8_t*)sps_ptr, (const uint8_t*)pps_ptr };
         const size_t parameterSetSizes[2] = {
           sps_size, pps_size };
-        CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
+        OSStatus status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
          parameterSetCount, parameterSetPointers, parameterSetSizes, nalUnitHeaderLength, &m_fmt_desc);
+        if (status != noErr)
+        {
+          CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
+          SAFE_DELETE(m_bitstream);
+          return false;
+        }
 
         const Boolean useCleanAperture = true;
         const Boolean usePixelAspectRatio = false;
