@@ -4778,7 +4778,7 @@ bool CDVDPlayer::Record(bool bOnOff)
 
 bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
-  if (m_pDemuxer)
+  if (m_pDemuxer && !m_bAbortRequest)
   {
     std::vector<SelectionStream> subs = m_SelectionStreams.Get(STREAM_SUBTITLE);
     std::vector<CStreamDetailSubtitle> extSubDetails;
