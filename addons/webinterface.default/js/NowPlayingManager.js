@@ -80,7 +80,7 @@ NowPlayingManager.prototype = {
           this.activePlayerId = -1;
         }
 
-        if (this.activePlayerId >= 0) {
+        if (this.activePlayerId >= 0 && !($('#log').hasClass('selected') || $('#logold').hasClass('selected'))) {
           this.showFooter();
         } else {
           this.stopRefreshTime();
