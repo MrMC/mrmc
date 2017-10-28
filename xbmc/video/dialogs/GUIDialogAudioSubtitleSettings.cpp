@@ -338,7 +338,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   // audio delay setting
   if (SupportsAudioFeature(IPC_AUD_OFFSET) && !m_dspEnabled)
   {
-    CSettingNumber *settingAudioDelay = AddSlider(groupAudio, SETTING_AUDIO_DELAY, 297, 0, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
+    CSettingNumber *settingAudioDelay = AddSlider(groupAudio, SETTING_AUDIO_DELAY, 297, 0, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.005f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
     static_cast<CSettingControlSlider*>(settingAudioDelay->GetControl())->SetFormatter(SettingFormatterDelay);
   }
   
