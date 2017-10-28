@@ -379,12 +379,15 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
 
 void CGUIWindowFullScreen::FrameMove()
 {
+  static uint64_t frameIdler = 0;
+
   if (g_application.m_pPlayer->GetPlaySpeed() != 1)
     g_infoManager.SetDisplayAfterSeek();
   if (m_bShowCurrentTime)
     g_infoManager.SetDisplayAfterSeek();
 
-  if (!g_application.m_pPlayer->HasPlayer()) return;
+  if (!g_application.m_pPlayer->HasPlayer())
+    return;
 
   // this removes DialogSeekBar imediatelly on chapter skip and on ff/rew,
   // commented out for now to see if any other issue might come up
@@ -395,7 +398,7 @@ void CGUIWindowFullScreen::FrameMove()
 
   //------------------------
   m_showCodec.Update();
-  if (m_showCodec)
+  if (m_showCodec && (++frameIdler % 2))
   {
     // show audio codec info
     std::string strAudio, strVideo, strGeneral;
