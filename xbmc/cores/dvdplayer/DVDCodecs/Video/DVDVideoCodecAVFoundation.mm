@@ -408,11 +408,18 @@ int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, do
 
   if (pData)
   {
-    m_bitstream->Convert(pData, iSize);
-    int frameSize = m_bitstream->GetConvertSize();
-    uint8_t *frame = m_bitstream->GetConvertBuffer();
+    int frameSize = iSize;
+    uint8_t *frame = pData;
+    if (m_bitstream->Convert(pData, iSize))
+    {
+      frameSize = m_bitstream->GetConvertSize();
+      frame = m_bitstream->GetConvertBuffer();
+    }
 
-    UpdateFrameRateTracking(pts);
+    if (dts != DVD_NOPTS_VALUE)
+      UpdateFrameRateTracking(dts);
+    else if (pts != DVD_NOPTS_VALUE)
+      UpdateFrameRateTracking(pts);
 
     CMSampleTimingInfo sampleTimingInfo = kCMTimingInfoInvalid;
     if (m_framerate_ms > 0.0)
@@ -785,24 +792,23 @@ double CDVDVideoCodecAVFoundation::GetPlayerClockSeconds()
   return audioOffsetSeconds + (m_clock->GetClock() / DVD_TIME_BASE);
 }
 
-void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double pts)
+void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double ts)
 {
-  static double last_pts = DVD_NOPTS_VALUE;
-
+  static double last_ts = DVD_NOPTS_VALUE;
   m_framecount++;
 
-  if (pts == DVD_NOPTS_VALUE)
+  if (ts == DVD_NOPTS_VALUE)
   {
-    last_pts = DVD_NOPTS_VALUE;
+    last_ts = DVD_NOPTS_VALUE;
     return;
   }
 
-  float duration = pts - last_pts;
-  // if pts is re-ordered, the diff might be negative
+  float duration = ts - last_ts;
+  // if ts is a pts and is re-ordered, the diff might be negative
   // flip it and try.
   if (duration < 0.0)
     duration = -duration;
-  last_pts = pts;
+  last_ts = ts;
 
   // clamp duration to sensible range,
   // 66 fsp to 20 fsp

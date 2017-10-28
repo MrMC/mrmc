@@ -67,7 +67,7 @@ protected:
   void          StopSampleProvider();
 
   double        GetPlayerClockSeconds();
-  void          UpdateFrameRateTracking(double pts);
+  void          UpdateFrameRateTracking(double ts);
 
   VideoLayerView         *m_decoder;        // opaque decoder reference
 	dispatch_queue_t        m_providerQueue;
