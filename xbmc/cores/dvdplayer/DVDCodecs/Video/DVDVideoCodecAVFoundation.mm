@@ -34,6 +34,7 @@
 #import "platform/darwin/ios/XBMCController.h"
 #endif
 #import "settings/Settings.h"
+#import "settings/MediaSettings.h"
 #import "utils/BitstreamConverter.h"
 #import "utils/log.h"
 
@@ -779,7 +780,9 @@ double CDVDVideoCodecAVFoundation::GetPlayerClockSeconds()
 {
   if (!m_clock)
     return 0.0;
-  return m_clock->GetClock() / DVD_TIME_BASE;
+  // add in audio delay contribution
+  double audioOffsetSeconds = 0 - CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay;
+  return audioOffsetSeconds + (m_clock->GetClock() / DVD_TIME_BASE);
 }
 
 void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double pts)
