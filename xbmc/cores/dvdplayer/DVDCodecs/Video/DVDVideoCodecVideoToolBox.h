@@ -67,7 +67,7 @@ protected:
   void DisplayQueuePop();
   bool CreateParameterSetArraysFromExtraData();
   bool CreateFormatDescriptorFromParameterSetArrays();
-  bool ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize);
+  void ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize);
 	bool ResetVTSession(size_t count, size_t *sizes, uint8_t *types, uint8_t **pointers);
   bool CreateVTSessionAndInitPictureFrame();
   void DestroyVTSession();

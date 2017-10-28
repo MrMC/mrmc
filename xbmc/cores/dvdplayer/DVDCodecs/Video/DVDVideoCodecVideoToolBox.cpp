@@ -347,9 +347,11 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
   {
     if (m_bitstream)
     {
-      m_bitstream->Convert(pData, iSize);
-      iSize = m_bitstream->GetConvertSize();
-      pData = m_bitstream->GetConvertBuffer();
+      if (m_bitstream->Convert(pData, iSize))
+      {
+        iSize = m_bitstream->GetConvertSize();
+        pData = m_bitstream->GetConvertBuffer();
+      }
     }
     ValidateVTSessionParameterSetsForRestart(pData, iSize);
 
@@ -481,8 +483,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // get the top picture frame, we risk getting the wrong frame if the frame queue
   // depth is less than the number of encoded reference frames. If queue depth
   // is greater than the number of encoded reference frames, then the top frame
-  // will never change and we can just grab a ref to the top frame. This way
-  // we don't lockout the vdadecoder while doing color format convert.
+  // will never change and we can just grab a ref to the top frame.
   pthread_mutex_lock(&m_queue_mutex);
   pDvdVideoPicture->dts             = DVD_NOPTS_VALUE;
   pDvdVideoPicture->pts             = m_display_queue->pts;
@@ -493,10 +494,14 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iDisplayHeight  = (unsigned int)m_display_queue->height;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
   m_display_queue->pixel_buffer_ref = nullptr;
-  pthread_mutex_unlock(&m_queue_mutex);
 
   // now we can pop the top frame
-  DisplayQueuePop();
+  frame_queue *top_frame = m_display_queue;
+  m_display_queue = m_display_queue->nextframe;
+  m_queue_depth--;
+  free(top_frame);
+
+  pthread_mutex_unlock(&m_queue_mutex);
 
   static double old_pts;
   if (g_advancedSettings.CanLogComponent(LOGVIDEO) && pDvdVideoPicture->pts < old_pts)
@@ -712,14 +717,15 @@ CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
   return rtn;
 }
 
-bool
+void
 CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize)
 {
   // temp bypass of hevc
   if (m_hints.codec == AV_CODEC_ID_HEVC)
-    return true;
+    return;
 
-  bool rtn = true;
+  bool foundSPS = false;
+  bool foundPPS = false;
 
   // pData is in bit stream format, 32 size (big endian), followed by NAL
   size_t parameterSetCount = 0;
@@ -736,10 +742,12 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
       switch(nal_type)
       {
         case AVC_NAL_SPS:
+          foundSPS = true;
           parameterSetCount++;
           //CLog::Log(LOGDEBUG, "%s - found sps of size(%d)", __FUNCTION__, nal_size);
         break;
         case AVC_NAL_PPS:
+          foundPPS = true;
           parameterSetCount++;
           //CLog::Log(LOGDEBUG, "%s - found pps of size(%d)", __FUNCTION__, nal_size);
         break;
@@ -751,10 +759,12 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
       switch(nal_type)
       {
         case HEVC_NAL_SPS:
+          foundSPS = true;
           parameterSetCount++;
           //CLog::Log(LOGDEBUG, "%s - found sps of size(%d)", __FUNCTION__, nal_size);
         break;
         case HEVC_NAL_PPS:
+          foundPPS = true;
           parameterSetCount++;
           //CLog::Log(LOGDEBUG, "%s - found pps of size(%d)", __FUNCTION__, nal_size);
         break;
@@ -766,6 +776,14 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
     }
     data += nal_size;
   }
+
+  if (!foundSPS && foundPPS)
+  {
+    // pps can change per picture but
+    // if no sps is found, skip vtb restart
+    return;
+  }
+
   // found some parameter sets, now we can compare them to the original parameter sets
   // we do it this way to avoid churning memory with malloc/reallocs for each frame
   if (parameterSetCount)
@@ -810,48 +828,52 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
     // quick test of parameter set count
     if (parameterSetCount != m_parameterSetCount)
     {
-      rtn = ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
+      ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
     }
     else
     {
       for (size_t i = 0; i < parameterSetCount; i++)
       {
+        // skip pps for size/contents change. as long as sps is the same,
+        // decoder 'should' handle it internally.
         if (parameterSetTypes[i] == AVC_NAL_PPS)
           continue;
-
         if (parameterSetTypes[i] == HEVC_NAL_PPS)
           continue;
 
         if (parameterSetSizes[i] != m_parameterSetSizes[i])
         {
           // some parameter size changed, recreate the vtsession
-          CLog::Log(LOGDEBUG, "%s - ps type(%d), changed size(%zu), orignal size(%zu)", __FUNCTION__, parameterSetTypes[i], parameterSetSizes[i], m_parameterSetSizes[i]);
-          rtn = ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
+          if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+          {
+            CLog::Log(LOGDEBUG, "%s - ps type(%d), changed size(%zu), orignal size(%zu)", __FUNCTION__, parameterSetTypes[i], parameterSetSizes[i], m_parameterSetSizes[i]);
+          }
+          ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
           break;
         }
-        if (parameterSetTypes[i] == parameterSetTypes[i])
+        if (parameterSetTypes[i] == m_parameterSetTypes[i])
         {
-          if (0 != memcmp(parameterSetPointers[i], m_parameterSetPointers[i], parameterSetSizes[i]))
+          if (memcmp(parameterSetPointers[i], m_parameterSetPointers[i], parameterSetSizes[i]) != 0)
           {
             // some parameter size changed, recreate the vtsession
-            CLog::Log(LOGDEBUG, "%s - ps type(%d), contents differ size(%zu), orignal size(%zu)", __FUNCTION__, parameterSetTypes[i], parameterSetSizes[i], m_parameterSetSizes[i]);
-            CLog::MemDump((char*)parameterSetPointers[i], parameterSetSizes[i]);
-            CLog::MemDump((char*)m_parameterSetPointers[i], parameterSetSizes[i]);
-            rtn = ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
+            if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+            {
+              CLog::Log(LOGDEBUG, "%s - ps type(%d), contents differ size(%zu), orignal size(%zu)", __FUNCTION__, parameterSetTypes[i], parameterSetSizes[i], m_parameterSetSizes[i]);
+              CLog::MemDump((char*)parameterSetPointers[i], parameterSetSizes[i]);
+              CLog::MemDump((char*)m_parameterSetPointers[i], m_parameterSetSizes[i]);
+            }
+            ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
             break;
           }
         }
       }
     }
   }
-
-  return rtn;
 }
 
 bool
 CDVDVideoCodecVideoToolBox::ResetVTSession(size_t count, size_t *sizes, uint8_t *types, uint8_t **pointers)
 {
-  m_parameterSetCount = 0;
   free(m_parameterSetSizes), m_parameterSetSizes = nullptr;
   free(m_parameterSetTypes), m_parameterSetTypes = nullptr;
   free(m_SavedParameterSets), m_SavedParameterSets = nullptr;
