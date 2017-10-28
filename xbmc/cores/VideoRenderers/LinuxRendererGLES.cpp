@@ -1087,13 +1087,13 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
     if (buf.videoBuffer)
       CVBufferRelease(buf.videoBuffer);
     buf.videoBuffer = nullptr;
-/*
+
     if (buf.fence && glIsSyncAPPLE(buf.fence))
     {
       glDeleteSyncAPPLE(buf.fence);
       buf.fence = nullptr;
     }
-*/
+
   }
 #endif
 #if defined(TARGET_ANDROID)
@@ -1121,7 +1121,6 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 bool CLinuxRendererGLES::NeedBufferForRef(int idx)
 {
 #ifdef TARGET_DARWIN
-/* ignore fence for now, causes video studdering and our frames are in sync.
   if (m_format == RENDER_FMT_CVBREF)
   {
     CRenderBuffer &buf = m_vtbBuffers[idx];
@@ -1129,13 +1128,12 @@ bool CLinuxRendererGLES::NeedBufferForRef(int idx)
     {
       int syncState = GL_UNSIGNALED_APPLE;
       glGetSyncivAPPLE(buf.fence, GL_SYNC_STATUS_APPLE, 1, nullptr, &syncState);
-      if (syncState == GL_SIGNALED_APPLE)
-        return false;
+      if (syncState != GL_SIGNALED_APPLE)
+        return true;
     }
-    return true;
+    return false;
   }
   else
-*/
   {
     return false;
   }
@@ -1771,12 +1769,12 @@ void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
 
 void CLinuxRendererGLES::AfterRenderHook(int index)
 {
-/*
+#ifdef TARGET_DARWIN
   CRenderBuffer &buf = m_vtbBuffers[index];
   if (buf.fence && glIsSyncAPPLE(buf.fence))
     glDeleteSyncAPPLE(buf.fence);
   buf.fence = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
-*/
+#endif
 }
 
 bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
