@@ -4098,6 +4098,14 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 #endif
     return;
   }
+  else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.slideshow")
+  {
+    if (!m_screenSaver->GetSetting("url").empty())
+    {
+      std::string url = m_screenSaver->GetSetting("url");
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_PICTURE_SLIDESHOW, -1, -1, nullptr, url);
+    }
+  }
   else if (m_screenSaver->ID().empty())
     return;
   else

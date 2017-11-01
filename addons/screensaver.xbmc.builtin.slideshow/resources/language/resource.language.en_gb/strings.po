@@ -1,0 +1,10 @@
+# Addon Name: SlideShow
+# Addon id: screensaver.xbmc.builtin.slideshow
+# Addon Provider: Team-MrMC
+msgid ""
+msgstr ""
+
+
+msgctxt "#30000"
+msgid "Images folder"
+msgstr ""

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="screensaver.xbmc.builtin.slideshow"
+       name="SlideShow"
+       version="1.0.0"
+       provider-name="Team-MrMC">
+  <extension point="xbmc.ui.screensaver" library=""/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Slideshow Screensaver</summary>
+    <description lang="en_GB">Slideshow Screensaver displays images for given folder in a slideshow</description>
+    <platform>all</platform>
+  </extension>
+</addon>
