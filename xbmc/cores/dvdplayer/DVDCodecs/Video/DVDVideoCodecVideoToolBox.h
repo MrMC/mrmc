@@ -33,6 +33,18 @@ class DllVideoToolBox;
 class CBitstreamConverter;
 struct VTDumpDecompressionPropCtx;
 
+typedef struct VTBParameterSets {
+  size_t sps_count = 0;
+  size_t *sps_sizes = nullptr;
+  uint8_t **sps_array = nullptr;
+  size_t pps_count = 0;
+  size_t *pps_sizes = nullptr;
+  uint8_t **pps_array = nullptr;
+  size_t vps_count = 0;
+  size_t *vps_sizes = nullptr;
+  uint8_t **vps_array = nullptr;
+} VTBParameterSets;
+
 // tracks a frame in and output queue in display order
 typedef struct frame_queue {
   double              pts;
@@ -68,7 +80,7 @@ protected:
   bool CreateParameterSetArraysFromExtraData();
   bool CreateFormatDescriptorFromParameterSetArrays();
   void ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize);
-	bool ResetVTSession(size_t count, size_t *sizes, uint8_t *types, uint8_t **pointers);
+  bool ResetVTSession(VTBParameterSets &parameterSets);
   bool CreateVTSessionAndInitPictureFrame();
   void DestroyVTSession();
   static void VTDecoderCallback(
@@ -95,10 +107,6 @@ protected:
   int               m_lastKeyframe;
   bool              m_sessionRestart;
   double            m_sessionRestartPTS;
-  size_t            m_parameterSetCount = 0;
-  size_t           *m_parameterSetSizes = nullptr;
-  uint8_t          *m_parameterSetTypes = nullptr;
-  uint8_t          *m_SavedParameterSets = nullptr;
-  uint8_t         **m_parameterSetPointers = nullptr;
+  VTBParameterSets  m_parameterSets;
   bool              m_enable_temporal_processing;
 };

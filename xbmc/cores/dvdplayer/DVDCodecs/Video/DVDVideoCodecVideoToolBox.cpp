@@ -58,6 +58,39 @@ static int CheckNP2( unsigned x )
 }
 #endif
 
+static void FreeParameterSets(VTBParameterSets &parameterSets)
+{
+  // free old saved sps's
+  if (parameterSets.sps_count)
+  {
+    for (size_t i = 0; i < parameterSets.sps_count; i++)
+      free(parameterSets.sps_array[i]), parameterSets.sps_array[i] = nullptr;
+    free(parameterSets.sps_array), parameterSets.sps_array = nullptr;
+    free(parameterSets.sps_sizes), parameterSets.sps_sizes = nullptr;
+    parameterSets.sps_count = 0;
+  }
+
+  // free old saved pps's
+  if (parameterSets.pps_count)
+  {
+    for (size_t i = 0; i < parameterSets.pps_count; i++)
+      free(parameterSets.pps_array[i]), parameterSets.pps_array[i] = nullptr;
+    free(parameterSets.pps_array), parameterSets.pps_array = nullptr;
+    free(parameterSets.pps_sizes), parameterSets.pps_sizes = nullptr;
+    parameterSets.pps_count = 0;
+  }
+
+  // free old saved vps's
+  if (parameterSets.vps_count)
+  {
+    for (size_t i = 0; i < parameterSets.vps_count; i++)
+      free(parameterSets.vps_array[i]), parameterSets.vps_array[i] = nullptr;
+    free(parameterSets.vps_array), parameterSets.vps_array = nullptr;
+    free(parameterSets.vps_sizes), parameterSets.vps_sizes = nullptr;
+    parameterSets.vps_count = 0;
+  }
+}
+
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 // helper function to create a CMSampleBufferRef from demuxer data
@@ -257,6 +290,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
+    FreeParameterSets(m_parameterSets);
     if (!CreateParameterSetArraysFromExtraData())
     {
       Dispose();
@@ -297,14 +331,7 @@ void CDVDVideoCodecVideoToolBox::Dispose()
   if (m_fmt_desc)
     CFRelease(m_fmt_desc), m_fmt_desc = nullptr;
   SAFE_DELETE(m_bitstream);
-
-  if (m_parameterSetCount)
-  {
-    free(m_parameterSetSizes), m_parameterSetSizes = nullptr;
-    free(m_parameterSetTypes), m_parameterSetTypes = nullptr;
-    free(m_SavedParameterSets), m_SavedParameterSets = nullptr;
-    free(m_parameterSetPointers), m_parameterSetPointers = nullptr;
-  }
+  FreeParameterSets(m_parameterSets);
 
   if (m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
   {
@@ -355,7 +382,6 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     }
     ValidateVTSessionParameterSetsForRestart(pData, iSize);
 
-    // exclude AV_CODEC_ID_H265 until we update CBitstreamParser::HasKeyframe
     if (CBitstreamParser::HasKeyframe(m_hints.codec, pData, iSize, false))
     {
       // VideoToolBox is picky about starting up with a keyframe
@@ -572,39 +598,36 @@ CDVDVideoCodecVideoToolBox::CreateParameterSetArraysFromExtraData()
       ps_ptr += 5; // skip over fixed length header
       size_t numberOfSPSs = 0x001F & *ps_ptr++; // sps count is lower five bits;
 
-      size_t parameterSetIndex = 0;
-
-      m_parameterSetCount = numberOfSPSs;
-      m_parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * m_parameterSetCount);
-      m_parameterSetTypes = (uint8_t*)malloc(sizeof(uint8_t*) * m_parameterSetCount);
-      m_parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * m_parameterSetCount);
       // handle sps's
+      m_parameterSets.sps_count = numberOfSPSs;
+      m_parameterSets.sps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfSPSs);
+      m_parameterSets.sps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfSPSs);
       for (size_t i = 0; i < numberOfSPSs; i++)
       {
         uint32_t ps_size = BS_RB16(ps_ptr);
         ps_ptr += 2;
-        m_parameterSetSizes[parameterSetIndex] = ps_size;
-        m_parameterSetTypes[parameterSetIndex] = AVC_NAL_SPS;
-        m_parameterSetPointers[parameterSetIndex++] = ps_ptr;
+        m_parameterSets.sps_sizes[i] = ps_size;
+        m_parameterSets.sps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
+        memcpy(m_parameterSets.sps_array[i], ps_ptr, ps_size);
         ps_ptr += ps_size;
       }
 
+      // handle pps's
       size_t numberOfPPSs = *ps_ptr++;
-      m_parameterSetCount += numberOfPPSs;
-      m_parameterSetSizes = (size_t*)realloc(m_parameterSetSizes, sizeof(size_t*) * m_parameterSetCount);
-      m_parameterSetTypes = (uint8_t*)realloc(m_parameterSetTypes, sizeof(uint8_t*) * m_parameterSetCount);
-      m_parameterSetPointers = (uint8_t**)realloc(m_parameterSetPointers, sizeof(uint8_t*) * m_parameterSetCount);
+      m_parameterSets.pps_count = numberOfPPSs;
+      m_parameterSets.pps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfPPSs);
+      m_parameterSets.pps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfPPSs);
       for (size_t i = 0; i < numberOfPPSs; i++)
       {
         uint32_t ps_size = BS_RB16(ps_ptr);
         ps_ptr += 2;
-        m_parameterSetSizes[parameterSetIndex] = ps_size;
-        m_parameterSetTypes[parameterSetIndex] = AVC_NAL_PPS;
-        m_parameterSetPointers[parameterSetIndex++] = ps_ptr;
+        m_parameterSets.pps_sizes[i] = ps_size;
+        m_parameterSets.pps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
+        memcpy(m_parameterSets.pps_array[i], ps_ptr, ps_size);
         ps_ptr += ps_size;
       }
       // h264 only requires sps
-      if (m_parameterSetCount >= 1)
+      if (m_parameterSets.sps_count >= 1)
         rtn = true;
     }
     break;
@@ -614,57 +637,65 @@ CDVDVideoCodecVideoToolBox::CreateParameterSetArraysFromExtraData()
       ps_ptr += 22; // skip over fixed length header
 
       // number of arrays
-      size_t numberOfArrays = *ps_ptr++;
-      m_parameterSetCount = 0;
-      m_parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * m_parameterSetCount);
-      m_parameterSetTypes = (uint8_t*)malloc(sizeof(uint8_t*) * m_parameterSetCount);
-      m_parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * m_parameterSetCount);
-
-      size_t NALIndex = 0;
-      for (size_t i = 0; i < numberOfArrays; i++)
+      size_t numberOfParameterSetArrays = *ps_ptr++;
+      for (size_t i = 0; i < numberOfParameterSetArrays; i++)
       {
         // bit(1) array_completeness;
         // bit(1) reserved = 0;
         // bit(6) NAL_unit_type;
         int nal_type = 0x3F & *ps_ptr++;
-        size_t numberOfNALs = BS_RB16(ps_ptr);
+        size_t numberOfParameterSets = BS_RB16(ps_ptr);
         ps_ptr += 2;
-        m_parameterSetCount += numberOfNALs;
-        m_parameterSetSizes = (size_t*)realloc(m_parameterSetSizes, sizeof(size_t*) * m_parameterSetCount);
-        m_parameterSetTypes = (uint8_t*)realloc(m_parameterSetTypes, sizeof(uint8_t*) * m_parameterSetCount);
-        m_parameterSetPointers = (uint8_t**)realloc(m_parameterSetPointers, sizeof(uint8_t*) * m_parameterSetCount);
-        for (size_t i = 0; i < numberOfNALs; i++)
+        switch(nal_type)
+        {
+          case HEVC_NAL_SPS:
+            m_parameterSets.sps_count = numberOfParameterSets;
+            m_parameterSets.sps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfParameterSets);
+            m_parameterSets.sps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfParameterSets);
+            break;
+          case HEVC_NAL_PPS:
+            m_parameterSets.pps_count = numberOfParameterSets;
+            m_parameterSets.pps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfParameterSets);
+            m_parameterSets.pps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfParameterSets);
+            break;
+          case HEVC_NAL_VPS:
+            m_parameterSets.vps_count = numberOfParameterSets;
+            m_parameterSets.vps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfParameterSets);
+            m_parameterSets.vps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfParameterSets);
+            break;
+        }
+        for (size_t i = 0; i < numberOfParameterSets; i++)
         {
           uint32_t ps_size = BS_RB16(ps_ptr);
           ps_ptr += 2;
-          m_parameterSetSizes[NALIndex] = ps_size;
-          m_parameterSetTypes[NALIndex] = nal_type;
-          m_parameterSetPointers[NALIndex++] = ps_ptr;
+          switch(nal_type)
+          {
+            case HEVC_NAL_SPS:
+              m_parameterSets.sps_sizes[i] = ps_size;
+              m_parameterSets.sps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
+              memcpy(m_parameterSets.sps_array[i], ps_ptr, ps_size);
+              break;
+            case HEVC_NAL_PPS:
+              m_parameterSets.pps_sizes[i] = ps_size;
+              m_parameterSets.pps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
+              memcpy(m_parameterSets.pps_array[i], ps_ptr, ps_size);
+              break;
+            case HEVC_NAL_VPS:
+              m_parameterSets.vps_sizes[i] = ps_size;
+              m_parameterSets.vps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
+              memcpy(m_parameterSets.vps_array[i], ps_ptr, ps_size);
+              break;
+          }
           ps_ptr += ps_size;
         }
       }
-      // h265 requires sps, pps and vps
-      if (m_parameterSetCount >= 3)
+      // h265 requires at least one sps, pps and vps
+      if (m_parameterSets.sps_count >= 1 &&
+          m_parameterSets.pps_count >= 1 &&
+          m_parameterSets.vps_count >= 1)
         rtn = true;
     }
     break;
-  }
-
-  if (rtn)
-  {
-    // copy over parameter sets and setup pointers to them
-    int totalsize = 0;
-    for (size_t i = 0; i < m_parameterSetCount; i++)
-      totalsize += m_parameterSetSizes[i];
-    m_SavedParameterSets = (uint8_t*)malloc(totalsize);
-    uint8_t *savedParameterSets = m_SavedParameterSets;
-    for (size_t i = 0; i < m_parameterSetCount; i++)
-    {
-      memcpy((void*)savedParameterSets, (void*)m_parameterSetPointers[i], m_parameterSetSizes[i]);
-      // change ps pointer from pointing to extradata to our saved location
-      m_parameterSetPointers[i] = savedParameterSets;
-      savedParameterSets += m_parameterSetSizes[i];
-    }
   }
 
   return rtn;
@@ -674,7 +705,32 @@ bool
 CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
 {
   bool rtn = false;
+  int arraySize = m_parameterSets.sps_count + m_parameterSets.pps_count + m_parameterSets.vps_count;
+  if (arraySize < 1)
+    return rtn;
+
+  size_t parameterSetSizes[arraySize];
+  uint8_t *parameterSetPointers[arraySize];
+
+  size_t parameterSetCount = 0;
+  for (size_t i = 0; i < m_parameterSets.sps_count; i++)
+  {
+    parameterSetSizes[parameterSetCount] = m_parameterSets.sps_sizes[i];
+    parameterSetPointers[parameterSetCount++] = m_parameterSets.sps_array[i];
+  }
+  for (size_t i = 0; i < m_parameterSets.pps_count; i++)
+  {
+    parameterSetSizes[parameterSetCount] = m_parameterSets.pps_sizes[i];
+    parameterSetPointers[parameterSetCount++] = m_parameterSets.pps_array[i];
+  }
+  for (size_t i = 0; i < m_parameterSets.vps_count; i++)
+  {
+    parameterSetSizes[parameterSetCount] = m_parameterSets.vps_sizes[i];
+    parameterSetPointers[parameterSetCount++] = m_parameterSets.vps_array[i];
+  }
+
   OSStatus status = -1;
+  int nalUnitHeaderLength = 4;
   switch (m_hints.codec)
   {
     default:
@@ -683,7 +739,7 @@ CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
     {
       CLog::Log(LOGNOTICE, "Constructing new format description");
       status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
-        m_parameterSetCount, m_parameterSetPointers, m_parameterSetSizes, 4, &m_fmt_desc);
+        parameterSetCount, parameterSetPointers, parameterSetSizes, nalUnitHeaderLength, &m_fmt_desc);
       if (status != noErr)
         CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
     }
@@ -695,7 +751,7 @@ CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
       if (__builtin_available(macOS 10.13, ios 11, tvos 11, *))
       {
         status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(kCFAllocatorDefault,
-          m_parameterSetCount, m_parameterSetPointers, m_parameterSetSizes, (size_t)4, nullptr, &m_fmt_desc);
+          parameterSetCount, parameterSetPointers, parameterSetSizes, nalUnitHeaderLength, nullptr, &m_fmt_desc);
       }
       if (status != noErr)
         CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromHEVCParameterSets failed status(%d)", __FUNCTION__, status);
@@ -724,11 +780,13 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
   if (m_hints.codec == AV_CODEC_ID_HEVC)
     return;
 
-  bool foundSPS = false;
-  bool foundPPS = false;
+  static uint64_t frameCount = 0;
+
+  size_t spsCount = 0;
+  size_t ppsCount = 0;
+  size_t vpsCount = 0;
 
   // pData is in bit stream format, 32 size (big endian), followed by NAL
-  size_t parameterSetCount = 0;
   uint8_t *data = pData;
   uint8_t *dataEnd = data + iSize;
   // do a quick search for parameter sets in this frame
@@ -742,14 +800,12 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
       switch(nal_type)
       {
         case AVC_NAL_SPS:
-          foundSPS = true;
-          parameterSetCount++;
-          //CLog::Log(LOGDEBUG, "%s - found sps of size(%d)", __FUNCTION__, nal_size);
+          spsCount++;
+          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found sps of size(%d)", __FUNCTION__, frameCount, nal_size);
         break;
         case AVC_NAL_PPS:
-          foundPPS = true;
-          parameterSetCount++;
-          //CLog::Log(LOGDEBUG, "%s - found pps of size(%d)", __FUNCTION__, nal_size);
+          ppsCount++;
+          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found pps of size(%d)", __FUNCTION__, frameCount, nal_size);
         break;
       }
     }
@@ -759,39 +815,57 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
       switch(nal_type)
       {
         case HEVC_NAL_SPS:
-          foundSPS = true;
-          parameterSetCount++;
-          //CLog::Log(LOGDEBUG, "%s - found sps of size(%d)", __FUNCTION__, nal_size);
+          spsCount++;
+          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found sps of size(%d)", __FUNCTION__, frameCount, nal_size);
         break;
         case HEVC_NAL_PPS:
-          foundPPS = true;
-          parameterSetCount++;
-          //CLog::Log(LOGDEBUG, "%s - found pps of size(%d)", __FUNCTION__, nal_size);
+          ppsCount++;
+          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found pps of size(%d)", __FUNCTION__, frameCount, nal_size);
         break;
         case HEVC_NAL_VPS:
-          parameterSetCount++;
-          //CLog::Log(LOGDEBUG, "%s - found vps of size(%d)", __FUNCTION__, nal_size);
+          vpsCount++;
+          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found vps of size(%d)", __FUNCTION__, frameCount, nal_size);
         break;
       }
     }
     data += nal_size;
   }
+  frameCount++;
 
-  if (!foundSPS && foundPPS)
+  if (ppsCount > 0 && spsCount < 1)
   {
-    // pps can change per picture but
-    // if no sps is found, skip vtb restart
+    // if no sps is found, skip vtb restart checks
+    // pps can change per picture so ignore those.
     return;
   }
 
   // found some parameter sets, now we can compare them to the original parameter sets
-  // we do it this way to avoid churning memory with malloc/reallocs for each frame
-  if (parameterSetCount)
+  if (spsCount && ppsCount)
   {
-    size_t parameterSetIndex = 0;
-    size_t parameterSetSizes[parameterSetCount];
-    uint8_t parameterSetTypes[parameterSetCount];
-    uint8_t *parameterSetPointers[parameterSetCount];
+    VTBParameterSets parameterSets;
+    int spsIndex = 0;
+    if (spsCount)
+    {
+      parameterSets.sps_count = spsCount;
+      parameterSets.sps_sizes = (size_t*)malloc(sizeof(size_t*) * spsCount);
+      parameterSets.sps_array = (uint8_t**)malloc(sizeof(uint8_t*) * spsCount);
+    }
+
+    int ppsIndex = 0;
+    if (ppsCount)
+    {
+      parameterSets.pps_count = ppsCount;
+      parameterSets.pps_sizes = (size_t*)malloc(sizeof(size_t*) * ppsCount);
+      parameterSets.pps_array = (uint8_t**)malloc(sizeof(uint8_t*) * ppsCount);
+    }
+
+    int vpsIndex = 0;
+    if (vpsCount)
+    {
+      parameterSets.vps_count = vpsCount;
+      parameterSets.vps_sizes = (size_t*)malloc(sizeof(size_t*) * vpsCount);
+      parameterSets.vps_array = (uint8_t**)malloc(sizeof(uint8_t*) * vpsCount);
+    }
     data = pData;
     while (data < dataEnd)
     {
@@ -803,10 +877,17 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
         switch(nal_type)
         {
           case AVC_NAL_SPS:
+            parameterSets.sps_sizes[spsIndex] = nal_size;
+            parameterSets.sps_array[spsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
+            memcpy(parameterSets.sps_array[spsIndex], data, nal_size);
+            spsIndex++;
+            break;
           case AVC_NAL_PPS:
-            parameterSetSizes[parameterSetIndex] = nal_size;
-            parameterSetTypes[parameterSetIndex] = nal_type;
-            parameterSetPointers[parameterSetIndex++] = data;
+            parameterSets.pps_sizes[ppsIndex] = nal_size;
+            parameterSets.pps_array[ppsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
+            memcpy(parameterSets.pps_array[ppsIndex], data, nal_size);
+            ppsIndex++;
+            break;
         }
       }
       else if (m_hints.codec == AV_CODEC_ID_HEVC)
@@ -815,94 +896,76 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
         switch(nal_type)
         {
           case HEVC_NAL_SPS:
+            parameterSets.sps_sizes[spsIndex] = nal_size;
+            parameterSets.sps_array[spsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
+            memcpy(parameterSets.sps_array[spsIndex], data, nal_size);
+            spsIndex++;
+            break;
           case HEVC_NAL_PPS:
+            parameterSets.pps_sizes[ppsIndex] = nal_size;
+            parameterSets.pps_array[ppsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
+            memcpy(parameterSets.pps_array[ppsIndex], data, nal_size);
+            ppsIndex++;
+            break;
           case HEVC_NAL_VPS:
-            parameterSetSizes[parameterSetIndex] = nal_size;
-            parameterSetTypes[parameterSetIndex] = nal_type;
-            parameterSetPointers[parameterSetIndex++] = data;
+            parameterSets.vps_sizes[vpsIndex] = nal_size;
+            parameterSets.vps_array[vpsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
+            memcpy(parameterSets.vps_array[vpsIndex], data, nal_size);
+            vpsIndex++;
+            break;
         }
       }
       data += nal_size;
     }
 
+    bool wasReset = false;
     // quick test of parameter set count
-    if (parameterSetCount != m_parameterSetCount)
+    if (parameterSets.sps_count != m_parameterSets.sps_count ||
+        parameterSets.pps_count != m_parameterSets.pps_count ||
+        parameterSets.vps_count != m_parameterSets.vps_count)
     {
-      ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
+      ResetVTSession(parameterSets);
+      wasReset = true;
     }
     else
     {
-      for (size_t i = 0; i < parameterSetCount; i++)
+      for (size_t i = 0; i < spsCount; i++)
       {
-        // skip pps for size/contents change. as long as sps is the same,
-        // decoder 'should' handle it internally.
-        if (parameterSetTypes[i] == AVC_NAL_PPS)
-          continue;
-        if (parameterSetTypes[i] == HEVC_NAL_PPS)
-          continue;
-
-        if (parameterSetSizes[i] != m_parameterSetSizes[i])
+        if (parameterSets.sps_sizes[i] != m_parameterSets.sps_sizes[i])
         {
-          // some parameter size changed, recreate the vtsession
-          if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+          //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
           {
-            CLog::Log(LOGDEBUG, "%s - ps type(%d), changed size(%zu), orignal size(%zu)", __FUNCTION__, parameterSetTypes[i], parameterSetSizes[i], m_parameterSetSizes[i]);
+            CLog::Log(LOGDEBUG, "%s - sps changed size(%zu), orignal size(%zu)", __FUNCTION__, parameterSets.sps_sizes[i], m_parameterSets.sps_sizes[i]);
           }
-          ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
+          ResetVTSession(parameterSets);
+          wasReset = true;
           break;
         }
-        if (parameterSetTypes[i] == m_parameterSetTypes[i])
+        if (memcmp(parameterSets.sps_array[i], m_parameterSets.sps_array[i], parameterSets.sps_sizes[i]) != 0)
         {
-          if (memcmp(parameterSetPointers[i], m_parameterSetPointers[i], parameterSetSizes[i]) != 0)
+          // some parameter size changed, recreate the vtsession
+          //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
           {
-            // some parameter size changed, recreate the vtsession
-            if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-            {
-              CLog::Log(LOGDEBUG, "%s - ps type(%d), contents differ size(%zu), orignal size(%zu)", __FUNCTION__, parameterSetTypes[i], parameterSetSizes[i], m_parameterSetSizes[i]);
-              CLog::MemDump((char*)parameterSetPointers[i], parameterSetSizes[i]);
-              CLog::MemDump((char*)m_parameterSetPointers[i], m_parameterSetSizes[i]);
-            }
-            ResetVTSession(parameterSetCount, parameterSetSizes, parameterSetTypes, parameterSetPointers);
-            break;
+            CLog::Log(LOGDEBUG, "%s - sps of size(%zu) contents differ", __FUNCTION__, parameterSets.sps_sizes[i]);
+            CLog::MemDump((char*)parameterSets.sps_array[i], parameterSets.sps_sizes[i]);
+            CLog::MemDump((char*)m_parameterSets.sps_array[i], m_parameterSets.sps_sizes[i]);
           }
+          ResetVTSession(parameterSets);
+          wasReset = true;
+          break;
         }
       }
     }
+    if (!wasReset)
+      FreeParameterSets(parameterSets);
   }
 }
 
 bool
-CDVDVideoCodecVideoToolBox::ResetVTSession(size_t count, size_t *sizes, uint8_t *types, uint8_t **pointers)
+CDVDVideoCodecVideoToolBox::ResetVTSession(VTBParameterSets &parameterSets)
 {
-  free(m_parameterSetSizes), m_parameterSetSizes = nullptr;
-  free(m_parameterSetTypes), m_parameterSetTypes = nullptr;
-  free(m_SavedParameterSets), m_SavedParameterSets = nullptr;
-  free(m_parameterSetPointers), m_parameterSetPointers = nullptr;
-
-  // parameter set changed, recreate the vtsession
-  m_parameterSetCount = count;
-  m_parameterSetSizes = (size_t*)malloc(sizeof(size_t*) * m_parameterSetCount);
-  m_parameterSetTypes = (uint8_t*)malloc(sizeof(uint8_t*) * m_parameterSetCount);
-  m_parameterSetPointers = (uint8_t**)malloc(sizeof(uint8_t*) * m_parameterSetCount);
-  int totalsize = 0;
-  for (size_t i = 0; i < m_parameterSetCount; i++)
-  {
-    totalsize += sizes[i];
-    m_parameterSetSizes[i] = sizes[i];
-    m_parameterSetTypes[i] = types[i];
-    m_parameterSetPointers[i] = pointers[i];
-  }
-  m_SavedParameterSets = (uint8_t*)malloc(totalsize);
-  // copy over parameter sets and setup pointers to them
-  uint8_t *savedParameterSets = m_SavedParameterSets;
-  for (size_t i = 0; i < count; i++)
-  {
-    memcpy((void*)savedParameterSets, (void*)pointers[i], sizes[i]);
-    // change ps pointer from pointing to ps in frame to our saved location
-    m_parameterSetPointers[i] = savedParameterSets;
-    savedParameterSets += m_parameterSetSizes[i];
-  }
-
+  FreeParameterSets(m_parameterSets);
+  m_parameterSets = parameterSets;
   if (m_fmt_desc)
     CFRelease(m_fmt_desc), m_fmt_desc = nullptr;
   if (!CreateFormatDescriptorFromParameterSetArrays())
