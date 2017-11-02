@@ -47,7 +47,9 @@ typedef struct pktTracker {
 
 static bool pktTrackerSortPredicate(const pktTracker* lhs, const pktTracker* rhs)
 {
-  if (lhs->pts != DVD_NOPTS_VALUE && rhs->pts != DVD_NOPTS_VALUE)
+  if (lhs->dts != DVD_NOPTS_VALUE && rhs->dts != DVD_NOPTS_VALUE)
+    return lhs->dts < rhs->dts;
+  else if (lhs->pts != DVD_NOPTS_VALUE && rhs->pts != DVD_NOPTS_VALUE)
     return lhs->pts < rhs->pts;
   else
     return false;
@@ -163,7 +165,8 @@ CDVDVideoCodecAVFoundation::CDVDVideoCodecAVFoundation()
 , m_withBlockRunning(false)
 , m_messages(nullptr)
 , m_framecount(0)
-, m_framerate_ms(24000.0/1001.0)
+, m_fps(24000.0/1001.0)
+, m_lastTrackingTS(DVD_NOPTS_VALUE)
 {
   m_messages = new CAVFCodecMessage();
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
@@ -370,6 +373,9 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 
     m_width = width;
     m_height = height;
+    m_codec = hints.codec;
+    if (hints.fpsscale > 0 && hints.fpsrate > 0)
+      m_fps = (double)hints.fpsrate / (double)hints.fpsscale;
 
     Create();
     m_messages->enqueue(START);
@@ -422,14 +428,9 @@ int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, do
       frame = m_bitstream->GetConvertBuffer();
     }
 
-    if (dts != DVD_NOPTS_VALUE)
-      UpdateFrameRateTracking(dts);
-    else if (pts != DVD_NOPTS_VALUE)
-      UpdateFrameRateTracking(pts);
-
     CMSampleTimingInfo sampleTimingInfo = kCMTimingInfoInvalid;
-    if (m_framerate_ms > 0.0)
-      sampleTimingInfo.duration = CMTimeMake((double)DVD_TIME_BASE / m_framerate_ms, DVD_TIME_BASE);
+    if (m_fps > 0.0)
+      sampleTimingInfo.duration = CMTimeMake((double)DVD_TIME_BASE / m_fps, DVD_TIME_BASE);
     if (dts != DVD_NOPTS_VALUE)
       sampleTimingInfo.decodeTimeStamp = CMTimeMake(dts, DVD_TIME_BASE);
     if (pts != DVD_NOPTS_VALUE)
@@ -453,9 +454,19 @@ int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, do
     pthread_mutex_lock(&m_trackerQueueMutex);
     m_trackerQueue.push_back(tracker);
     m_trackerQueue.sort(pktTrackerSortPredicate);
+
+    if (m_trackerQueue.size() > (1.5 * m_max_ref_frames))
+    {
+      tracker = m_trackerQueue.front();
+      if (tracker->dts != DVD_NOPTS_VALUE)
+        UpdateFrameRateTracking(tracker->dts);
+      else if (tracker->pts != DVD_NOPTS_VALUE)
+        UpdateFrameRateTracking(tracker->pts);
+    }
     pthread_mutex_unlock(&m_trackerQueueMutex);
 
-    Sleep(10);
+    //DumpTrackingQueue();
+    Sleep(5);
   }
 
   if (m_trackerQueue.size() < (2 * m_max_ref_frames))
@@ -468,6 +479,7 @@ void CDVDVideoCodecAVFoundation::Reset(void)
 {
   m_messages->enqueue(RESET);
   m_messages->enqueue(START);
+  m_lastTrackingTS = DVD_NOPTS_VALUE;
 }
 
 void CDVDVideoCodecAVFoundation::SetClock(CDVDClock *clock)
@@ -492,8 +504,8 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // force player to use duration to calc next fake pts
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-  if (m_framerate_ms > 0.0)
-    pDvdVideoPicture->iDuration     = (double)DVD_TIME_BASE / m_framerate_ms;
+  if (m_fps > 0.0)
+    pDvdVideoPicture->iDuration     = (double)DVD_TIME_BASE / m_fps;
   pDvdVideoPicture->format          = RENDER_FMT_BYPASS;
   pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
   if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
@@ -731,6 +743,16 @@ void CDVDVideoCodecAVFoundation::DrainQueues()
   pthread_mutex_unlock(&m_sampleBuffersMutex);
 }
 
+void CDVDVideoCodecAVFoundation::DumpTrackingQueue()
+{
+  pthread_mutex_lock(&m_trackerQueueMutex);
+  int index = 0;
+	std::list<pktTracker*>::iterator it;
+	for (it = m_trackerQueue.begin(); it != m_trackerQueue.end(); ++it)
+    CLog::Log(LOGDEBUG, "DumpTrackingQueue index(%d), ts(%f)", index++, (*it)->pts);
+  pthread_mutex_unlock(&m_trackerQueueMutex);
+}
+
 void CDVDVideoCodecAVFoundation::StartSampleProviderWithBlock()
 {
   VideoLayerView *mcview = (VideoLayerView*)m_decoder;
@@ -800,57 +822,63 @@ double CDVDVideoCodecAVFoundation::GetPlayerClockSeconds()
 
 void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double ts)
 {
-  static double last_ts = DVD_NOPTS_VALUE;
   m_framecount++;
 
   if (ts == DVD_NOPTS_VALUE)
   {
-    last_ts = DVD_NOPTS_VALUE;
+    m_lastTrackingTS = DVD_NOPTS_VALUE;
+    return;
+  }
+  if (m_lastTrackingTS == DVD_NOPTS_VALUE)
+  {
+    m_lastTrackingTS = ts;
     return;
   }
 
-  float duration = ts - last_ts;
-  // if ts is a pts and is re-ordered, the diff might be negative
-  // flip it and try.
-  if (duration < 0.0)
-    duration = -duration;
-  last_ts = ts;
+  float pts_duration = ts - m_lastTrackingTS;
+  if (pts_duration < 0.0)
+    return;
+
+  //CLog::Log(LOGDEBUG, "UpdateFrameRateTracking ts(%f), last_ts(%f), diff(%f)",
+  //    ts, m_lastTrackingTS, ts - m_lastTrackingTS);
+
+  m_lastTrackingTS = ts;
 
   // clamp duration to sensible range,
   // 66 fsp to 20 fsp
-  if (duration >= 15000.0 && duration <= 50000.0)
+  if (pts_duration >= 15000.0 && pts_duration <= 50000.0)
   {
-    double framerate_ms;
-    switch((int)(0.5 + duration))
+    double fps;
+    switch((int)(0.5 + pts_duration))
     {
       // 59.940 (16683.333333)
       case 16000 ... 17000:
-        framerate_ms = 60000.0 / 1001.0;
+        fps = 60000.0 / 1001.0;
         break;
 
       // 50.000 (20000.000000)
       case 20000:
-        framerate_ms = 50000.0 / 1000.0;
+        fps = 50000.0 / 1000.0;
         break;
 
       // 49.950 (20020.000000)
       case 20020:
-        framerate_ms = 50000.0 / 1001.0;
+        fps = 50000.0 / 1001.0;
         break;
 
       // 29.970 (33366.666656)
       case 32000 ... 35000:
-        framerate_ms = 30000.0 / 1001.0;
+        fps = 30000.0 / 1001.0;
         break;
 
       // 25.000 (40000.000000)
       case 40000:
-        framerate_ms = 25000.0 / 1000.0;
+        fps = 25000.0 / 1000.0;
         break;
 
       // 24.975 (40040.000000)
       case 40040:
-        framerate_ms = 25000.0 / 1001.0;
+        fps = 25000.0 / 1001.0;
         break;
 
       /*
@@ -863,21 +891,21 @@ void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double ts)
       // 23.976 (41708.33333)
       case 40200 ... 43200:
         // 23.976 seems to have the crappiest encodings :)
-        framerate_ms = 24000.0 / 1001.0;
+        fps = 24000.0 / 1001.0;
         break;
 
       default:
-        framerate_ms = 0.0;
+        fps = 0.0;
         //CLog::Log(LOGDEBUG, "%s: unknown duration(%f), cur_pts(%f)",
         //  __MODULE_NAME__, duration, cur_pts);
         break;
     }
 
-    if (framerate_ms > 0.0 && (int)m_framerate_ms != (int)framerate_ms)
+    if (fps > 0.0 && (int)m_fps != (int)fps)
     {
-      m_framerate_ms = framerate_ms;
-      CLog::Log(LOGDEBUG, "%s: detected new framerate(%f) at frame(%llu)",
-        __FUNCTION__, m_framerate_ms, m_framecount);
+      m_fps = fps;
+      CLog::Log(LOGDEBUG, "%s: detected new fps(%f) at frame(%llu)",
+        __FUNCTION__, m_fps, m_framecount);
     }
   }
 }
