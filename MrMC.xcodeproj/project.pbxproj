@@ -2316,6 +2316,8 @@
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
 		F5C28F101FC7D19B00F63834 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5C28F0F1FC7D19B00F63834 /* AVKit.framework */; };
+		F5C28F131FC9014700F63834 /* Default-Landscape-812h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5C28F111FC9014600F63834 /* Default-Landscape-812h@3x.png */; };
+		F5C28F141FC9014700F63834 /* Default-812h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5C28F121FC9014600F63834 /* Default-812h@3x.png */; };
 		F5CC228B1814F7E9006B5E91 /* AESinkDARWINOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC22891814F7E9006B5E91 /* AESinkDARWINOSX.cpp */; };
 		F5CC228E1814F7F7006B5E91 /* AESinkDARWINIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5CC228C1814F7F7006B5E91 /* AESinkDARWINIOS.mm */; };
 		F5CC22DF1814FF3B006B5E91 /* ActiveAE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC22D31814FF3B006B5E91 /* ActiveAE.cpp */; };
@@ -5818,6 +5820,8 @@
 		F5BDB8181202032400F0B710 /* DVDSubtitleTagMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagMicroDVD.h; sourceTree = "<group>"; };
 		F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleTagMicroDVD.cpp; sourceTree = "<group>"; };
 		F5C28F0F1FC7D19B00F63834 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/AVKit.framework; sourceTree = DEVELOPER_DIR; };
+		F5C28F111FC9014600F63834 /* Default-Landscape-812h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape-812h@3x.png"; sourceTree = "<group>"; };
+		F5C28F121FC9014600F63834 /* Default-812h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-812h@3x.png"; sourceTree = "<group>"; };
 		F5CC22891814F7E9006B5E91 /* AESinkDARWINOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AESinkDARWINOSX.cpp; path = Sinks/AESinkDARWINOSX.cpp; sourceTree = "<group>"; };
 		F5CC228A1814F7E9006B5E91 /* AESinkDARWINOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AESinkDARWINOSX.h; path = Sinks/AESinkDARWINOSX.h; sourceTree = "<group>"; };
 		F5CC228C1814F7F7006B5E91 /* AESinkDARWINIOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AESinkDARWINIOS.mm; path = Sinks/AESinkDARWINIOS.mm; sourceTree = "<group>"; };
@@ -9556,6 +9560,8 @@
 				F590452F1BA372A600DB589A /* Default-667h@2x.png */,
 				F59045301BA372A600DB589A /* Default-736h@3x.png */,
 				F59045311BA372A600DB589A /* Default-Landscape-736h@3x.png */,
+				F5C28F121FC9014600F63834 /* Default-812h@3x.png */,
+				F5C28F111FC9014600F63834 /* Default-Landscape-812h@3x.png */,
 				F54570851BF5947A00432C6A /* Info.plist */,
 				F54570841BF5947A00432C6A /* Info.plist.in */,
 				F59045321BA372A600DB589A /* InfoPlist.strings */,
@@ -10226,9 +10232,11 @@
 			files = (
 				F59045631BA372A600DB589A /* Default-568h@2x.png in Resources */,
 				F59045661BA372A600DB589A /* Default-Landscape-736h@3x.png in Resources */,
+				F5C28F131FC9014700F63834 /* Default-Landscape-812h@3x.png in Resources */,
 				F59045641BA372A600DB589A /* Default-667h@2x.png in Resources */,
 				183CB23B1C0B4C5A004218C2 /* Images.xcassets in Resources */,
 				F59045671BA372A600DB589A /* InfoPlist.strings in Resources */,
+				F5C28F141FC9014700F63834 /* Default-812h@3x.png in Resources */,
 				F59045651BA372A600DB589A /* Default-736h@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
