@@ -636,7 +636,7 @@ bool CPlexUtils::GetMoreItemInfo(CFileItem &item)
   
   CURL curl(url);
   curl.SetFileName("library/metadata/" + id);
-
+  curl.SetOption("includeExtras","1");
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -2213,6 +2213,40 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
     }
   }
   item.GetVideoInfoTag()->m_cast = roles;
+  
+  // get trailers
+  std::vector<std::string> extras;
+  const CVariant variantExtras = makeVariantArrayIfSingleItem(video["Extras"]);
+  if (!variantExtras.isNull())
+  {
+    for (auto variantItE = variantExtras.begin_array(); variantItE != variantExtras.end_array(); ++variantItE)
+    {
+      const auto vItem = (*variantItE)["Video"];
+      if (vItem["extraType"].asInteger() == 1)
+      {
+        if (!vItem["Media"].isNull())
+        {
+          const CVariant variantMedia = makeVariantArrayIfSingleItem(vItem["Media"]);
+          const CVariant variantPart = makeVariantArrayIfSingleItem(vItem["Media"]["Part"]);
+          for (auto variantPartIt = variantMedia.begin_array(); variantPartIt != variantMedia.end_array(); ++variantPartIt)
+          {
+            if (*variantPartIt == CVariant::VariantTypeNull)
+              continue;
+            const auto part = *variantPartIt;
+            if (!part.isNull())
+            {
+              std::string key = part["Part"]["key"].asString();
+              CURL trailerUrl(item.GetPath());
+              removeLeadingSlash(key);
+              trailerUrl.SetFileName(key);
+              item.GetVideoInfoTag()->m_strTrailer = trailerUrl.Get();
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 void CPlexUtils::GetVideoDetails(CFileItem &item, const TiXmlElement* videoNode)
