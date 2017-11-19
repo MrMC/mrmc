@@ -2222,12 +2222,12 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
     for (auto variantItE = variantExtras.begin_array(); variantItE != variantExtras.end_array(); ++variantItE)
     {
       const auto vItem = (*variantItE)["Video"];
+      // extraType == 1 is Trailer, thats the only one we want
       if (vItem["extraType"].asInteger() == 1)
       {
         if (!vItem["Media"].isNull())
         {
           const CVariant variantMedia = makeVariantArrayIfSingleItem(vItem["Media"]);
-          const CVariant variantPart = makeVariantArrayIfSingleItem(vItem["Media"]["Part"]);
           for (auto variantPartIt = variantMedia.begin_array(); variantPartIt != variantMedia.end_array(); ++variantPartIt)
           {
             if (*variantPartIt == CVariant::VariantTypeNull)
