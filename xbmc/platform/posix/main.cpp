@@ -30,13 +30,14 @@
 #endif
 #if defined(TARGET_DARWIN_OSX)
   #include "Util.h"
-  #include <locale.h>
 #endif
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
 #include "platform/MCRuntimeLib.h"
 #include "platform/MCRuntimeLibContext.h"
+
+#include <locale.h>
 
 #ifdef __cplusplus
 extern "C"

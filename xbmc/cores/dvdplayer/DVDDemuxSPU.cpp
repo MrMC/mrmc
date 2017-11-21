@@ -18,6 +18,8 @@
  *
  */
 
+#include <stdlib.h>
+
 #include "DVDDemuxSPU.h"
 #include "DVDClock.h"
 #include "utils/log.h"
