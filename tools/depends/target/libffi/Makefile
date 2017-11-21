@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile armAssembler.patch
 
 # lib name, version
 LIBNAME=libffi
@@ -10,11 +10,6 @@ BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
 # configuration settings
 CONFIGURE= ./configure --prefix=$(PREFIX) --disable-shared --disable-builddir 
-ifeq ($(OS), ios)
-ifneq ($(CPU), arm64)
-CONFIGURE+=CCASFLAGS=-no-integrated-as
-endif
-endif
 
 
 LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME).a
@@ -27,6 +22,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../armAssembler.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
