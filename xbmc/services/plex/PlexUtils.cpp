@@ -1775,12 +1775,12 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
   
   // get trailers
   std::vector<std::string> extras;
-  const CVariant variantExtras = makeVariantArrayIfSingleItem(video["Extras"]);
+  const CVariant variantExtras = makeVariantArrayIfSingleItem(video["Extras"]["Video"]);
   if (!variantExtras.isNull())
   {
     for (auto variantItE = variantExtras.begin_array(); variantItE != variantExtras.end_array(); ++variantItE)
     {
-      const auto vItem = (*variantItE)["Video"];
+      const auto vItem = *variantItE;
       // extraType == 1 is Trailer, thats the only one we want
       if (vItem["extraType"].asInteger() == 1)
       {
