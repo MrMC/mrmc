@@ -105,6 +105,7 @@ typedef enum
 - (void) enableScreenSaver;
 - (bool) resetSystemIdleTimer;
 
+- (float)getDisplayRate;
 - (NSArray<UIScreenMode *> *) availableScreenModes:(UIScreen*) screen;
 - (UIScreenMode*) preferredScreenMode:(UIScreen*) screen;
 - (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;

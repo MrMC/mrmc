@@ -3599,18 +3599,7 @@ bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
   if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
-/*
-  // set desired refresh rate
-  if (m_PlayerOptions.fullscreen && g_graphicsContext.IsFullScreenRoot() &&
-      hint.fpsrate != 0 && hint.fpsscale != 0)
-  {
-    if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
-    {
-      float framerate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
-      g_renderManager.TriggerUpdateResolution(framerate, hint.width, RenderManager::GetStereoModeFlags(hint.stereo_mode));
-    }
-  }
-*/
+
   IDVDStreamPlayer* player = GetStreamPlayer(m_CurrentVideo.player);
   if(player == nullptr)
     return false;

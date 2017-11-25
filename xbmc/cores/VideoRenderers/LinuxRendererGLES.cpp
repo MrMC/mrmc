@@ -209,6 +209,12 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
+#ifdef TARGET_DARWIN_TVOS
+  int dynamicRange = 1;
+  if (flags & CONF_FLAGS_YUVCOEF_BT2020)
+    dynamicRange = 2;
+  g_Windowing.DisplayRateSwitch(fps, dynamicRange);
+#endif
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
@@ -1036,6 +1042,11 @@ void CLinuxRendererGLES::ReleaseShaders()
 void CLinuxRendererGLES::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
+
+#ifdef TARGET_DARWIN_TVOS
+  if (m_bConfigured)
+    g_Windowing.DisplayRateReset();
+#endif
 
   if (m_rgbBuffer != NULL)
   {

@@ -19,16 +19,6 @@
     </category>
   </section>
   <section id="videos">
-    <category id="videoplayer">
-      <group id="3">
-        <setting id="videoplayer.adjustrefreshrate">
-          <visible>false</visible>
-        </setting>
-        <setting id="videoplayer.pauseafterrefreshchange">
-          <visible>false</visible>
-        </setting>
-      </group>
-    </category>
     <category id="videoacceleration">
       <visible>true</visible>
       <group id="1">

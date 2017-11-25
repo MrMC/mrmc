@@ -28,7 +28,7 @@
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
 #include "threads/CriticalSection.h"
-
+#include "threads/Timer.h"
 
 
 #ifdef __OBJC__
@@ -41,12 +41,16 @@ class IDispResource;
 class CVideoSyncIos;
 struct CADisplayLinkWrapper;
 
-class CWinSystemIOS : public CWinSystemBase, public CRenderSystemGLES
+class CWinSystemIOS : public CWinSystemBase, public CRenderSystemGLES, public ITimerCallback
 {
 public:
   CWinSystemIOS();
   virtual ~CWinSystemIOS();
 
+  // ITimerCallback interface
+  virtual void OnTimeout();
+
+  // CWinSystemBase
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
   virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
@@ -77,11 +81,20 @@ public:
   virtual int GetNumScreens();    
   virtual int GetCurrentScreen();
   
+          void DisplayRateSwitch(float fps, int dynamicRange);
+          void DisplayRateReset();
+
+          void AnnounceOnLostDevice();
+          void AnnounceOnResetDevice();
+          void StartLostDeviceTimer();
+          void StopLostDeviceTimer();
+          void OnAppFocusChange(bool focus);
+
           bool InitDisplayLink(CVideoSyncIos *syncImpl);
           void DeinitDisplayLink(void);
-          void OnAppFocusChange(bool focus);
           bool IsBackgrounded() const { return m_bIsBackgrounded; }
           EAGLContext* GetEAGLContextObj();
+
 
 protected:
   virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);
@@ -95,7 +108,8 @@ protected:
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   bool         m_bIsBackgrounded;
-  
+  CTimer       m_lostDeviceTimer;
+
 private:
   bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
   void FillInVideoModes();

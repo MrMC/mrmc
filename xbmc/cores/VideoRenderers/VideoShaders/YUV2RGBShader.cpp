@@ -54,6 +54,14 @@ static float yuv_coef_bt709[4][4] =
     { 0.0f,      0.0f,     0.0f,     0.0f }
 };
 
+static float yuv_coef_bt2020[4][4] =
+{
+    { 1.0f,     1.0f,     1.0f,    0.0f },
+    { 0.0f,    -0.1645f,  1.8814f, 0.0f },
+    { 1.4745f, -0.5713f,  0.0f,    0.0f },
+    { 0.0f,     0.0f,     0.0f,    0.0f }
+};
+
 static float yuv_coef_ebu[4][4] = 
 {
     { 1.0f,      1.0f,     1.0f,     0.0f },
@@ -78,6 +86,8 @@ static float** PickYUVConversionMatrix(unsigned flags)
    {
      case CONF_FLAGS_YUVCOEF_240M:
        return (float**)yuv_coef_smtp240m; break;
+     case CONF_FLAGS_YUVCOEF_BT2020:
+       return reinterpret_cast<float**>(yuv_coef_bt2020);
      case CONF_FLAGS_YUVCOEF_BT709:
        return (float**)yuv_coef_bt709; break;
      case CONF_FLAGS_YUVCOEF_BT601:    

@@ -700,6 +700,11 @@ XBMCController *g_xbmcController;
   return false;
 }
 //--------------------------------------------------------------
+- (float)getDisplayRate
+{
+  return 0.0;
+}
+//--------------------------------------------------------------
 - (UIScreenMode*) preferredScreenMode:(UIScreen*) screen
 {
   // present because preferredMode is prohibited under tvOS

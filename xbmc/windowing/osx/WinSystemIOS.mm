@@ -64,7 +64,7 @@ struct CADisplayLinkWrapper
   IOSDisplayLinkCallback *callbackClass;
 };
 
-CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
+CWinSystemIOS::CWinSystemIOS() : CWinSystemBase(), m_lostDeviceTimer(this)
 {
   m_eWindowSystem = WINDOW_SYSTEM_IOS;
 
@@ -93,9 +93,7 @@ bool CWinSystemIOS::DestroyWindowSystem()
 
 bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
-	
-  if(!SetFullScreen(fullScreen, res, false))
+  if (!SetFullScreen(fullScreen, res, false))
     return false;
 
   [g_xbmcController setFramebuffer];
@@ -144,7 +142,7 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
-  CLog::Log(LOGDEBUG, "About to switch to %i x %i on screen %i",m_nWidth, m_nHeight, res.iScreen);
+  CLog::Log(LOGDEBUG, "About to switch to %i x %i on screen %i", m_nWidth, m_nHeight, res.iScreen);
   SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   
@@ -182,8 +180,7 @@ bool CWinSystemIOS::SwitchToVideoMode(int width, int height, double refreshrate,
   
   //get the mode to pass to the controller
   UIScreenMode *newMode = getModeForResolution(width, height, screenIdx);
-
-  if(newMode)
+  if (newMode)
   {
     ret = [g_xbmcController changeScreen:screenIdx withMode:newMode];
   }
@@ -210,13 +207,13 @@ int CWinSystemIOS::GetCurrentScreen()
 bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenIdx)
 {
   // Figure out the screen size. (default to main screen)
-  if(screenIdx >= GetNumScreens())
+  if (screenIdx >= GetNumScreens())
     return false;
   UIScreen *screen = [[UIScreen screens] objectAtIndex:screenIdx];
   CGSize screenSize = [screen currentMode].size;
   *w = screenSize.width;
   *h = screenSize.height;
-  *fps = 0.0;
+  *fps = [g_xbmcController getDisplayRate];
   //if current mode is 0x0 (happens with external screens which arn't active)
   //then use the preferred mode
   if(*h == 0 || *w ==0)
@@ -231,8 +228,9 @@ bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenI
   //in 90° rotated
   if(screenIdx == 0)
   {
-    *w = [g_xbmcController getScreenSize].width;
-    *h = [g_xbmcController getScreenSize].height;
+    screenSize = [g_xbmcController getScreenSize];
+    *w = screenSize.width;
+    *h = screenSize.height;
   }
   CLog::Log(LOGDEBUG,"Current resolution Screen: %i with %i x %i",screenIdx, *w, *h);  
   return true;
@@ -265,7 +263,7 @@ void CWinSystemIOS::UpdateResolutions()
     }
   }
   
-  //now just fill in the possible reolutions for the attached screens
+  //now just fill in the possible resolutions for the attached screens
   //and push to the resolution info vector
   FillInVideoModes();
 }
@@ -283,9 +281,10 @@ void CWinSystemIOS::FillInVideoModes()
     // but this may change in the future. In that case
     // we will adapt this code for filling some
     // usefull info into this local var :)
-    double refreshrate = 0.0;
+    double refreshrate = [g_xbmcController getDisplayRate];
     //screen 0 is mainscreen - 1 has to be the external one...
     UIScreen *aScreen = [[UIScreen screens]objectAtIndex:disp];
+    //refreshrate = aScreen.maximumFramesPerSecond;
     //found external screen
     for ( UIScreenMode *mode in [g_xbmcController availableScreenModes:aScreen] )
     {
@@ -294,6 +293,7 @@ void CWinSystemIOS::FillInVideoModes()
       UpdateDesktopResolution(res, disp, w, h, refreshrate);
       CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d\n", disp, w, h);      
 
+#if !defined(TARGET_DARWIN_TVOS)
       //overwrite the mode str because  UpdateDesktopResolution adds a
       //"Full Screen". Since the current resolution is there twice
       //this would lead to 2 identical resolution entrys in the guisettings.xml.
@@ -307,6 +307,7 @@ void CWinSystemIOS::FillInVideoModes()
       res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
       g_graphicsContext.ResetOverscan(res);
       CDisplaySettings::GetInstance().AddResolutionInfo(res);
+#endif
     }
   }
 }
@@ -364,6 +365,68 @@ void CWinSystemIOS::OnAppFocusChange(bool focus)
   //CLog::Log(LOGDEBUG, "CWinSystemIOS::OnAppFocusChange: %d", focus ? 1 : 0);
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
     (*i)->OnAppFocusChange(focus);
+}
+
+void CWinSystemIOS::DisplayRateSwitch(float fps, int dynamicRange)
+{
+  // on tvOS, there is no API to get a list of sizes and refresh rates
+  // which is required for normal display switching. So we have to bypass
+  // the normal methods and force a switch in gles renderer.
+  if (fps == 0.0)
+    return;
+
+  // Adjust refresh rate and dynamic range to match source fps
+#if defined(TARGET_DARWIN_TVOS)
+  [g_xbmcController displayRateSwitch:fps withDynamicRange:dynamicRange];
+#endif
+}
+
+void CWinSystemIOS::DisplayRateReset()
+{
+  // see comment in CWinSystemIOS::DisplayRateSwitch
+#if defined(TARGET_DARWIN_TVOS)
+  [g_xbmcController displayRateReset];
+#endif
+}
+
+// if there was a devicelost callback but no device reset for 3 secs
+// a timeout fires the reset callback (for ensuring that e.x. AE isn't stuck)
+#define LOST_DEVICE_TIMEOUT_MS 3000
+
+void CWinSystemIOS::AnnounceOnLostDevice()
+{
+  CSingleLock lock(m_resourceSection);
+  // tell any shared resources
+  CLog::Log(LOGDEBUG, "CWinSystemIOS::AnnounceOnLostDevice");
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnLostDevice();
+}
+
+void CWinSystemIOS::AnnounceOnResetDevice()
+{
+  CSingleLock lock(m_resourceSection);
+  // tell any shared resources
+  CLog::Log(LOGDEBUG, "CWinSystemIOS::AnnounceOnResetDevice");
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnResetDevice();
+}
+
+void CWinSystemIOS::StartLostDeviceTimer()
+{
+  if (m_lostDeviceTimer.IsRunning())
+    m_lostDeviceTimer.Restart();
+  else
+    m_lostDeviceTimer.Start(LOST_DEVICE_TIMEOUT_MS, false);
+}
+
+void CWinSystemIOS::StopLostDeviceTimer()
+{
+  m_lostDeviceTimer.Stop();
+}
+
+void CWinSystemIOS::OnTimeout()
+{
+  AnnounceOnResetDevice();
 }
 
 //--------------------------------------------------------------
