@@ -58,15 +58,33 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
 #import <GameController/GameController.h>
-#import <AVFoundation/AVDisplayCriteria.h>
-#import <AVKit/AVDisplayManager.h>
-#import <AVKit/UIWindow.h>
 
-@interface AVDisplayCriteria()
-@property(readonly) int videoDynamicRange;
-@property(readonly, nonatomic) float refreshRate;
-- (id)initWithRefreshRate:(float)arg1 videoDynamicRange:(int)arg2;
-@end
+#if __TVOS_11_2
+  #import <AVFoundation/AVDisplayCriteria.h>
+  #import <AVKit/AVDisplayManager.h>
+  #import <AVKit/UIWindow.h>
+
+  @interface AVDisplayCriteria()
+  @property(readonly) int videoDynamicRange;
+  @property(readonly, nonatomic) float refreshRate;
+  - (id)initWithRefreshRate:(float)arg1 videoDynamicRange:(int)arg2;
+  @end
+#else
+  @interface AVDisplayCriteria : NSObject <NSCopying>
+  @property(readonly) int videoDynamicRange;
+  @property(readonly, nonatomic) float refreshRate;
+  - (id)initWithRefreshRate:(float)arg1 videoDynamicRange:(int)arg2;
+  @end
+
+  @interface AVDisplayManager : NSObject
+  @property(nonatomic, readonly, getter=isDisplayModeSwitchInProgress) BOOL displayModeSwitchInProgress;
+  @property(nonatomic, copy) AVDisplayCriteria *preferredDisplayCriteria;
+  @end
+
+  @interface UIWindow (AVAdditions)
+  @property(nonatomic, readonly) AVDisplayManager *avDisplayManager;
+  @end
+#endif
 
 // these MUST match those in system/keymaps/customcontroller.SiriRemote.xml
 typedef enum SiriRemoteTypes
@@ -2125,7 +2143,13 @@ static SiriRemoteInfo siriRemoteInfo;
           // for example, currentMode = <FBSDisplayMode: 0x1c4298100; 1920x1080@2x (3840x2160/2) 24Hz p3 HDR10>
           // SDR == 0, 1
           // HDR == 2
+#if __TVOS_11_2
           auto displayCriteria = [[AVDisplayCriteria alloc] initWithRefreshRate:refreshRate videoDynamicRange:dynamicRange];
+#else
+          std::string neveryyoumind = "AVDisplayCriteria";
+          Class AVDisplayCriteriaClass = NSClassFromString([NSString stringWithUTF8String: neveryyoumind.c_str()]);
+          AVDisplayCriteria *displayCriteria = [[AVDisplayCriteriaClass alloc] initWithRefreshRate:refreshRate videoDynamicRange:dynamicRange];
+#endif
           // setting preferredDisplayCriteria will trigger a display rate switch
           avDisplayManager.preferredDisplayCriteria = displayCriteria;
         }
