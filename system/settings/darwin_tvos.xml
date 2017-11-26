@@ -26,15 +26,6 @@
           <visible>false</visible>
         </setting>
       </group>
-      <group id="3">
-        <setting id="videoplayer.usevideotoolbox" type="boolean">
-          <default>true</default>
-        </setting>
-        <setting id="videoplayer.useavf" type="boolean">
-          <default>false</default>
-          <visible>true</visible>
-        </setting>
-      </group>
     </category>
   </section>
   <section id="music">
