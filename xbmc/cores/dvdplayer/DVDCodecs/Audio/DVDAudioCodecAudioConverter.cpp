@@ -76,6 +76,7 @@ static const AEChannel DolbyChannels[10][9] = {
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL}
 };
 
+#if FALSE
 static int ParseFrameSize(uint8_t *data, int datasize)
 {
   static const uint16_t AC3Bitrates [] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
@@ -113,6 +114,7 @@ static int ParseFrameSize(uint8_t *data, int datasize)
 
   return frame_size << 1;
 }
+#endif
 typedef struct AudioBufferIO
 {
 	char *buffer;
