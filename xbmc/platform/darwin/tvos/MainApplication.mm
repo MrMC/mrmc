@@ -98,6 +98,21 @@ MainController* m_xbmcController;
     NSLog(@"AVAudioSession setActive YES failed: %ld", (long)err.code);
   }
 
+#if FALSE
+  // testing if tvOS support 192kHz Sample Rate
+  {
+    AVAudioSession* session = [AVAudioSession sharedInstance];
+    NSError *error = nil;
+    double preferredSampleRate = 192000;
+    BOOL success  = [session setPreferredSampleRate:preferredSampleRate error:&error];
+    if (success) {
+        NSLog (@"session.sampleRate = %f", session.sampleRate);
+    } else {
+        NSLog (@"error setting sample rate %@", error);
+    }
+  }
+#endif
+
   UIScreen *currentScreen = [UIScreen mainScreen];
   m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
   [m_xbmcController startAnimation];
