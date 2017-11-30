@@ -211,7 +211,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   ChooseBestResolution(fps);
 #ifdef TARGET_DARWIN_TVOS
   int dynamicRange = 1;
-  if (flags & CONF_FLAGS_YUVCOEF_BT2020)
+  if (CONF_FLAGS_YUVCOEF_MASK(flags) == CONF_FLAGS_YUVCOEF_BT2020)
     dynamicRange = 2;
   g_Windowing.DisplayRateSwitch(fps, dynamicRange);
 #endif

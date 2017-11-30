@@ -41,6 +41,10 @@
 #include <iterator>
 #include "utils/log.h"
 
+extern "C" {
+#include "libavutil/pixdesc.h"
+}
+
 using namespace RenderManager;
 
 class CDVDMsgVideoCodecChange : public CDVDMsg
@@ -894,19 +898,20 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
    || ( m_output.color_range     != pPicture->color_range )
    || ( m_output.stereo_flags    != stereo_flags))
   {
-    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i"
+    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i, colorspace: %s"
                        , config_framerate
                        , pPicture->iWidth
                        , pPicture->iHeight
                        , pPicture->iDisplayWidth
-                       , pPicture->iDisplayHeight);
+                       , pPicture->iDisplayHeight
+                       , av_color_space_name((enum AVColorSpace)pPicture->color_matrix));
 
     unsigned flags = 0;
     if(pPicture->color_range == 1)
       flags |= CONF_FLAGS_YUV_FULLRANGE;
 
     flags |= GetFlagsChromaPosition(pPicture->chroma_position)
-          |  GetFlagsColorMatrix(pPicture->color_matrix, pPicture->iWidth, pPicture->iHeight)
+          |  GetFlagsColorMatrix(pPicture->color_matrix, pPicture->iWidth, pPicture->iHeight, m_hints.codec == FF_PROFILE_HEVC_MAIN_10)
           |  GetFlagsColorPrimaries(pPicture->color_primaries)
           |  GetFlagsColorTransfer(pPicture->color_transfer);
 

@@ -166,6 +166,7 @@ public:
     type = STREAM_VIDEO;
     iOrientation = 0;
     iBitsPerPixel = 0;
+    iColorSpace = 0;
     bMaybeInterlaced = false;
   }
 
@@ -182,6 +183,7 @@ public:
   bool bForcedAspect; // aspect is forced from container
   int iOrientation; // orientation of the video in degress counter clockwise
   int iBitsPerPixel;
+  int iColorSpace;
   std::string stereo_mode; // expected stereo mode
   bool bMaybeInterlaced; // stream 'might' be interlaced, on some, we can't tell for sure unless decoding.
 };

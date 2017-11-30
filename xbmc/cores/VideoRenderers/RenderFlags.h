@@ -85,7 +85,7 @@
 
 namespace RenderManager {
 
-  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height);
+  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height, bool BT2020Override);
   unsigned int GetFlagsChromaPosition(unsigned int chroma_position);
   unsigned int GetFlagsColorPrimaries(unsigned int color_primaries);
   unsigned int GetFlagsColorTransfer(unsigned int color_transfer);

@@ -25,7 +25,7 @@
 
 namespace RenderManager {
 
-  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height)
+  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height, bool BT2020Override)
   {
     switch(color_matrix)
     {
@@ -39,11 +39,16 @@ namespace RenderManager {
       case 4: // FCC
         return CONF_FLAGS_YUVCOEF_BT601;
       case 1: // ITU-R Rec.709 (1990) -- BT.709
+        // quirk, some FF_PROFILE_HEVC_MAIN_10 signal bt709 but is really bt2020
+        if (BT2020Override)
+          return CONF_FLAGS_YUVCOEF_BT2020;
         return CONF_FLAGS_YUVCOEF_BT709;
       case 3: // RESERVED
       case 2: // UNSPECIFIED
       default:
-        if(width > 1024 || height >= 600)
+        if (BT2020Override || width > 2048 || height >= 1200)
+          return CONF_FLAGS_YUVCOEF_BT2020;
+        else if (width > 1024 || height >= 600)
           return CONF_FLAGS_YUVCOEF_BT709;
         else
           return CONF_FLAGS_YUVCOEF_BT601;

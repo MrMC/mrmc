@@ -518,6 +518,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iHeight         = (unsigned int)m_display_queue->height;
   pDvdVideoPicture->iDisplayWidth   = (unsigned int)m_display_queue->width;
   pDvdVideoPicture->iDisplayHeight  = (unsigned int)m_display_queue->height;
+  pDvdVideoPicture->color_matrix    = m_hints.colorspace;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
   m_display_queue->pixel_buffer_ref = nullptr;
 

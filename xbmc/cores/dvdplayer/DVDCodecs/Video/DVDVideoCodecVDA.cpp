@@ -478,7 +478,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->format          = RENDER_FMT_CVBREF;
     pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
     pDvdVideoPicture->color_range     = 0;
-    pDvdVideoPicture->color_matrix    = 4;
+    pDvdVideoPicture->color_matrix    = m_hints.colorspace;
     pDvdVideoPicture->iWidth          = CVPixelBufferGetWidth(pDvdVideoPicture->cvBufferRef);
     pDvdVideoPicture->iHeight         = CVPixelBufferGetHeight(pDvdVideoPicture->cvBufferRef);
     pDvdVideoPicture->iDisplayWidth   = pDvdVideoPicture->iWidth;
