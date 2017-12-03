@@ -90,6 +90,7 @@ protected:
   AVCodecID               m_codec;
   int                     m_profile;
   int                     m_colorspace;
+  int                     m_dynamicrange;
   int                     m_width;
   int                     m_height;
   DVDVideoPicture         m_videobuffer;

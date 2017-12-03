@@ -2142,7 +2142,8 @@ static SiriRemoteInfo siriRemoteInfo;
           // searches for "FBSDisplayConfiguration" and "currentMode" will show the actual
           // for example, currentMode = <FBSDisplayMode: 0x1c4298100; 1920x1080@2x (3840x2160/2) 24Hz p3 HDR10>
           // SDR == 0, 1
-          // HDR == 2
+          // HDR == 2, 3
+          // DoblyVision == 4
 #if __TVOS_11_2
           auto displayCriteria = [[AVDisplayCriteria alloc] initWithRefreshRate:refreshRate videoDynamicRange:dynamicRange];
 #else
@@ -2159,7 +2160,20 @@ static SiriRemoteInfo siriRemoteInfo;
           // zero or less than value for refreshRate. Should never happen :)
           avDisplayManager.preferredDisplayCriteria = nil;
         }
-        CLog::Log(LOGDEBUG, "displayRateSwitch request: refreshRate = %.2f, dynamicRange = %d", refreshRate, dynamicRange);
+        std::string dynamicRangeString = "Unknown";
+        switch(dynamicRange)
+        {
+          case 0 ... 1:
+            dynamicRangeString = "SDR";
+            break;
+          case 2 ... 3:
+            dynamicRangeString = "HDR10";
+            break;
+          case 4:
+            dynamicRangeString = "DolbyVision";
+            break;
+        }
+        CLog::Log(LOGDEBUG, "displayRateSwitch request: refreshRate = %.2f, dynamicRange = %s", refreshRate, dynamicRangeString.c_str());
       }
     }
   }
@@ -2229,8 +2243,21 @@ static SiriRemoteInfo siriRemoteInfo;
        }
       }
       g_graphicsContext.SetFPS(refreshRate);
-      CLog::Log(LOGDEBUG, "displayModeSwitchInProgress == %s, refreshRate = %.2f, dynamicRange = %d",
-        switchState.c_str(), refreshRate, dynamicRange);
+      std::string dynamicRangeString = "Unknown";
+      switch(dynamicRange)
+      {
+        case 0 ... 1:
+          dynamicRangeString = "SDR";
+          break;
+        case 2 ... 3:
+          dynamicRangeString = "HDR10";
+          break;
+        case 4:
+          dynamicRangeString = "DolbyVision";
+          break;
+      }
+      CLog::Log(LOGDEBUG, "displayModeSwitchInProgress == %s, refreshRate = %.2f, dynamicRange = %s",
+        switchState.c_str(), refreshRate, dynamicRangeString.c_str());
     }
   }
 }

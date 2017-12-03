@@ -913,7 +913,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     flags |= GetFlagsChromaPosition(pPicture->chroma_position)
           |  GetFlagsColorMatrix(pPicture->color_matrix, pPicture->iWidth, pPicture->iHeight, m_hints.codec == FF_PROFILE_HEVC_MAIN_10)
           |  GetFlagsColorPrimaries(pPicture->color_primaries)
-          |  GetFlagsColorTransfer(pPicture->color_transfer);
+          |  GetFlagsColorTransfer(pPicture->color_transfer)
+          |  GetFlagsDynamicRange(pPicture->dynamic_range);
 
     std::string formatstr = GetRenderFormatName(pPicture->format);
 
@@ -953,6 +954,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_output.color_primaries = pPicture->color_primaries;
     m_output.color_transfer  = pPicture->color_transfer;
     m_output.color_range     = pPicture->color_range;
+    m_output.dynamic_range   = pPicture->dynamic_range;
     m_output.stereo_flags    = stereo_flags;
   }
 

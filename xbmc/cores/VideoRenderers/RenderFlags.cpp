@@ -91,6 +91,17 @@ namespace RenderManager {
     return 0;
   }
 
+  unsigned int GetFlagsDynamicRange(unsigned int dynamic_range)
+  {
+    switch(dynamic_range)
+    {
+      case 1: return CONF_FLAGS_DYNAMIC_RANGE_SDR;
+      case 2: return CONF_FLAGS_DYNAMIC_RANGE_HDR10;
+      case 3: return CONF_FLAGS_DYNAMIC_RANGE_DOLBYVISION;
+    }
+    return CONF_FLAGS_DYNAMIC_RANGE_SDR;
+  }
+
   unsigned int GetStereoModeFlags(const std::string& mode)
   {
     unsigned int ret = 0u;

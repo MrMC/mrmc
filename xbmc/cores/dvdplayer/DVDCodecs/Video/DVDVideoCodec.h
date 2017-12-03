@@ -114,6 +114,7 @@ struct DVDVideoPicture
   unsigned int chroma_position;
   unsigned int color_primaries;
   unsigned int color_transfer;
+  unsigned int dynamic_range;
   unsigned int extended_format;
   char         stereo_mode[32];
 
@@ -155,6 +156,10 @@ struct DVDVideoUserData
 #define DVP_QSCALE_MPEG1            1
 #define DVP_QSCALE_MPEG2            2
 #define DVP_QSCALE_H264             3
+
+#define DVP_DYNAMIC_RANGE_SDR       1
+#define DVP_DYNAMIC_RANGE_HDR10     2
+#define DVP_DYNAMIC_RANGE_DOLBYYVISION 3
 
 class CDVDStreamInfo;
 class CDVDCodecOption;

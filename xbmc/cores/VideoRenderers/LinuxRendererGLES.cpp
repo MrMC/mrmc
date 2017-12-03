@@ -211,8 +211,18 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   ChooseBestResolution(fps);
 #ifdef TARGET_DARWIN_TVOS
   int dynamicRange = 1;
-  if (CONF_FLAGS_YUVCOEF_MASK(flags) == CONF_FLAGS_YUVCOEF_BT2020)
-    dynamicRange = 2;
+  switch(CONF_FLAGS_DYNAMIC_RANGE(flags))
+  {
+    case CONF_FLAGS_DYNAMIC_RANGE_SDR:
+      dynamicRange = 1;
+      break;
+    case CONF_FLAGS_DYNAMIC_RANGE_HDR10:
+      dynamicRange = 3;
+      break;
+    case CONF_FLAGS_DYNAMIC_RANGE_DOLBYVISION:
+      dynamicRange = 4;
+      break;
+  }
   g_Windowing.DisplayRateSwitch(fps, dynamicRange);
 #endif
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);

@@ -158,6 +158,7 @@ protected:
     unsigned int chroma_position;
     unsigned int color_primaries;
     unsigned int color_transfer;
+    unsigned int dynamic_range;
     unsigned int stereo_flags;
     double       framerate;
   } m_output; //holds currently configured output

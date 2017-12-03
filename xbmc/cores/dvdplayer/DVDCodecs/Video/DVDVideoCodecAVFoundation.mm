@@ -274,6 +274,7 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 
         m_format = 'avc1';
         m_pFormatName = "avf-h264";
+        m_dynamicrange = DVP_DYNAMIC_RANGE_SDR;
       }
       break;
       case AV_CODEC_ID_H265:
@@ -352,6 +353,23 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           height = hints.height = videoSize.height;
           m_max_ref_frames = 6;
           m_pFormatName = "avf-h265";
+          // start with assuming SDR
+          m_dynamicrange = DVP_DYNAMIC_RANGE_SDR;
+          // HEVC Main 10 is always HDR10. Needs verify.
+          if (hints.profile == FF_PROFILE_HEVC_MAIN_10 ||
+              hints.profile == FF_PROFILE_HEVC_REXT)
+          {
+            m_dynamicrange = DVP_DYNAMIC_RANGE_HDR10;
+          }
+          // check for DolbyVision, hints.profile will be wrong
+          // and we have to look at codec_tag
+          if (hints.codec_tag == MKTAG('d','v','h','1') ||
+              hints.codec_tag == MKTAG('d','v','h','e') ||
+              hints.codec_tag == 36)
+          {
+            m_colorspace = 9; // BT2020_NCL (Non-Constant Luminance)
+            m_dynamicrange = DVP_DYNAMIC_RANGE_DOLBYYVISION;
+          }
         }
       }
       break;
@@ -515,6 +533,7 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->iFlags       |= DVP_FLAG_DROPPED;
   pDvdVideoPicture->color_range     = 0;
   pDvdVideoPicture->color_matrix    = m_colorspace;
+  pDvdVideoPicture->dynamic_range   = m_dynamicrange;
   pDvdVideoPicture->iWidth          = m_width;
   pDvdVideoPicture->iHeight         = m_height;
   pDvdVideoPicture->iDisplayWidth   = pDvdVideoPicture->iWidth;
