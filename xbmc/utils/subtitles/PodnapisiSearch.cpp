@@ -103,7 +103,7 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
   {
     searchString = StringUtils::Format(searchUrl.c_str() ,strLang.c_str()
                                                          ,tag->m_strShowTitle.c_str()
-                                                         ,0
+                                                         ,tag->m_premiered.GetYear()
                                                          ,tag->m_iSeason
                                                          ,tag->m_iEpisode
                                                          ,strHash.c_str()
@@ -111,11 +111,11 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
   }
   else
   {
-    if (tag->GetYear() > 0)
+    if (tag->m_premiered.GetYear() > 0)
     {
       searchString = StringUtils::Format(searchUrl.c_str() ,strLang.c_str()
                                                            ,tag->m_strTitle.c_str()
-                                                           ,tag->GetYear()
+                                                           ,tag->m_premiered.GetYear()
                                                            ,0
                                                            ,0
                                                            ,strHash.c_str()
@@ -140,8 +140,7 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
   }
 
   StringUtils::Replace(searchString, " ", "+");
-  
-
+  StringUtils::Replace(searchString, "'", "");
   
   xmlDoc *doc = NULL;
   xmlNode *cur = NULL;
@@ -176,7 +175,7 @@ bool CPodnapisiSearch::SubtitleSearch(const std::string &path,const std::string 
             if (cur_node->xmlChildrenNode)
               item->SetLabel2((char *)XML_GET_CONTENT(cur_node->xmlChildrenNode));
           }
-          else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"release")))
+          else if ((!xmlStrcmp(cur_node->name, (const xmlChar *)"title")))
           {
             if (cur_node->xmlChildrenNode)
               item->SetLabel2((char *)XML_GET_CONTENT(cur_node->xmlChildrenNode));
