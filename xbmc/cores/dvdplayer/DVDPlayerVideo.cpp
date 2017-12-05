@@ -898,13 +898,14 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
    || ( m_output.color_range     != pPicture->color_range )
    || ( m_output.stereo_flags    != stereo_flags))
   {
-    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i, colorspace: %s"
+    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i, colorspace: %s, colorrange: %s"
                        , config_framerate
                        , pPicture->iWidth
                        , pPicture->iHeight
                        , pPicture->iDisplayWidth
                        , pPicture->iDisplayHeight
-                       , av_color_space_name((enum AVColorSpace)pPicture->color_matrix));
+                       , av_color_space_name((enum AVColorSpace)pPicture->color_matrix)
+                       , av_color_range_name((enum AVColorRange)pPicture->color_range));
 
     unsigned flags = 0;
     if(pPicture->color_range == 1)

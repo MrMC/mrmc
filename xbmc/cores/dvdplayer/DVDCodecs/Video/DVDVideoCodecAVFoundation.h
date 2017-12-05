@@ -89,6 +89,7 @@ protected:
   int                     m_speed;
   AVCodecID               m_codec;
   int                     m_profile;
+  int                     m_colorrange;
   int                     m_colorspace;
   int                     m_dynamicrange;
   int                     m_width;

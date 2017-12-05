@@ -25,6 +25,7 @@
 #include "platform/darwin/DarwinUtils.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "windowing/WindowingFactory.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 
@@ -521,6 +522,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iHeight         = (unsigned int)m_display_queue->height;
   pDvdVideoPicture->iDisplayWidth   = (unsigned int)m_display_queue->width;
   pDvdVideoPicture->iDisplayHeight  = (unsigned int)m_display_queue->height;
+  pDvdVideoPicture->color_range     = m_hints.colorrange;
   pDvdVideoPicture->color_matrix    = m_hints.colorspace;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
   m_display_queue->pixel_buffer_ref = nullptr;
@@ -1060,8 +1062,12 @@ CDVDVideoCodecVideoToolBox::CreateVTSessionAndInitPictureFrame()
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
     kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_422YpCbCr8);
 #else
-  CFDictionarySetSInt32(destinationPixelBufferAttributes,
-    kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange);
+  if (m_hints.colorrange > 0)
+    CFDictionarySetSInt32(destinationPixelBufferAttributes,
+      kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange);
+  else
+    CFDictionarySetSInt32(destinationPixelBufferAttributes,
+      kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange);
 #endif
 
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
