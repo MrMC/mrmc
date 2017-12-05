@@ -198,6 +198,7 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     }
 
     StringUtils::Replace(searchString, " ", "+");
+    StringUtils::Replace(searchString, "'", "");
     ulxr::Struct searchStringParam;
     
     //  title search
