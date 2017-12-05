@@ -48,10 +48,10 @@ void CGUITextureGLES::Begin(color_t color)
   else
     range = 255 -  0;
 
-  m_col[0] = GET_R(color) * range / 255;
-  m_col[1] = GET_G(color) * range / 255;
-  m_col[2] = GET_B(color) * range / 255;
-  m_col[3] = GET_A(color);
+  m_col[0] = (GLubyte)GET_R(color) * range / 255;
+  m_col[1] = (GLubyte)GET_G(color) * range / 255;
+  m_col[2] = (GLubyte)GET_B(color) * range / 255;
+  m_col[3] = (GLubyte)GET_A(color);
 
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   texture->LoadToGPU();

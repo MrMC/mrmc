@@ -129,6 +129,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
+  m_fullRange = !g_Windowing.UseLimitedColor();
 
   // default texture handlers to YUV
   m_textureUpload = &CLinuxRendererGLES::UploadYV12Texture;
@@ -940,7 +941,9 @@ void CLinuxRendererGLES::LoadShaders(int field)
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
         m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
+        m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
         m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, m_format);
+        m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
         if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
             && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
         {
@@ -1280,7 +1283,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
     pYUVShader->SetField(0);
 
   pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
-  pYUVShader->SetConvertFullColorRange(!g_Windowing.UseLimitedColor());
   pYUVShader->Enable();
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip

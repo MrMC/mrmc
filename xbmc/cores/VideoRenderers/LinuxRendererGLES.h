@@ -330,6 +330,7 @@ protected:
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
+  bool m_fullRange;
 
   Features m_renderFeatures;
   Features m_deinterlaceMethods;
