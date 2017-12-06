@@ -38,6 +38,7 @@
 #import "interfaces/AnnouncementManager.h"
 #import "network/NetworkServices.h"
 #import "messaging/ApplicationMessenger.h"
+#import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/FocusEngineHandler.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainEAGLView.h"
@@ -1676,10 +1677,15 @@ static SiriRemoteInfo siriRemoteInfo;
 
   CAnnounceReceiver::GetInstance().Initialize();
 
-  self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkTick:)];
-  // we want the native cadence of the display hardware.
-  self.displayLink.preferredFramesPerSecond = 0;
-  [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+  if (std::string(CDarwinUtils::getIosPlatformString()) != "AppleTV5,3")
+  {
+    // The AppleTV4K has a rock solid reported duration. The
+    // AppleTV4 wanders and is useless for display rate tracking.
+    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkTick:)];
+    // we want the native cadence of the display hardware.
+    self.displayLink.preferredFramesPerSecond = 0;
+    [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+  }
 
   return self;
 }
@@ -2096,6 +2102,9 @@ static SiriRemoteInfo siriRemoteInfo;
 //--------------------------------------------------------------
 - (float)getDisplayRate
 {
+  if (std::string(CDarwinUtils::getIosPlatformString()) == "AppleTV5,3")
+    return 0.0;
+
   if (self.displayRate > 0)
     return self.displayRate;
 
