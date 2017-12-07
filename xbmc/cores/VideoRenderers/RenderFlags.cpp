@@ -29,6 +29,7 @@ namespace RenderManager {
   {
     switch(color_matrix)
     {
+      case 11: // smpte2085
       case 10: // BT2020_CL (Constant Luminance)
       case  9: // BT2020_NCL (Non-Constant Luminance)
         return CONF_FLAGS_YUVCOEF_BT2020;
