@@ -1062,7 +1062,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSessionAndInitPictureFrame()
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
     kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_422YpCbCr8);
 #else
-  if (m_hints.colorrange > 0)
+  if (m_hints.colorrange == 2)
     CFDictionarySetSInt32(destinationPixelBufferAttributes,
       kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange);
   else
