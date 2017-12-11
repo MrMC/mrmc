@@ -49,7 +49,10 @@ if [ -d "$SRCROOT/extras/user" ]; then
 	${SYNC} "$SRCROOT/extras/user/" "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/extras/user"
 fi
 
- # sync pm3.hd skin on tvos
+# package items that are located in depends
+${ADDONSYNC} "$XBMC_DEPENDS/mrmc/addons/" "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons"
+
+# sync pm3.hd skin on tvos
 if [ -f "$SRCROOT/addons/skin.pm3.hd/addon.xml" ]; then
   SYNCSKIN_D=${SYNC}
   if [ -f "$SRCROOT/addons/skin.pm3.hd/media/Textures.xbt" ]; then
