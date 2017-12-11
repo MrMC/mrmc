@@ -195,6 +195,7 @@ case $host in
       prefix=/Users/Shared/xbmc-depends
     fi
     use_tarballs="${use_tarballs:-$prefix/tarballs}"
+    native_platform_min_version=-mmacosx-version-min=`sw_vers | grep ProductVersion | sed -E "s/.*:.*(10\..*)\.?.*/\1/"`
     use_xcodepath=`xcode-select -print-path`
     use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
     use_xcode=[`$use_xcodebuild -version | grep Xcode | awk '{ print $2}'`]
@@ -630,6 +631,7 @@ AC_SUBST(need_libiconv)
 AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
 AC_SUBST(use_simulator)
+AC_SUBST(native_platform_min_version)
 
 AC_OUTPUT
 echo -e "toolchain:\t $use_toolchain"
