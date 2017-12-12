@@ -936,6 +936,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
+    m_fullRange = !g_Windowing.UseLimitedColor();
     bool tryGlsl = true;
     switch(requestedMethod)
     {

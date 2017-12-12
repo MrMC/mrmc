@@ -372,6 +372,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     // some VUI bitstream restrictions lie (GoPro mp4)
     m_max_ref_frames+= 4;
     m_sort_time = 0;
+    m_hints = hints;
     return true;
   }
 
@@ -477,8 +478,11 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
     pDvdVideoPicture->format          = RENDER_FMT_CVBREF;
     pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
-    //pDvdVideoPicture->color_range     = m_hints.colorrange;
-    //pDvdVideoPicture->color_matrix    = m_hints.colorspace;
+    if (m_hints.colorrange == AVCOL_RANGE_JPEG)
+      pDvdVideoPicture->color_range = 1;
+    else
+      pDvdVideoPicture->color_range = 0;
+    pDvdVideoPicture->color_matrix    = m_hints.colorspace;
     pDvdVideoPicture->iWidth          = CVPixelBufferGetWidth(pDvdVideoPicture->cvBufferRef);
     pDvdVideoPicture->iHeight         = CVPixelBufferGetHeight(pDvdVideoPicture->cvBufferRef);
     pDvdVideoPicture->iDisplayWidth   = pDvdVideoPicture->iWidth;

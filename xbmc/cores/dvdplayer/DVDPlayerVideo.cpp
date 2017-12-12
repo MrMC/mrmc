@@ -905,7 +905,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
                        , pPicture->iDisplayWidth
                        , pPicture->iDisplayHeight
                        , av_color_space_name((enum AVColorSpace)pPicture->color_matrix)
-                       , av_color_range_name((enum AVColorRange)pPicture->color_range));
+                       , pPicture->color_range == 1 ? "Full" : "Limited");
 
     unsigned flags = 0;
     if(pPicture->color_range == 1)

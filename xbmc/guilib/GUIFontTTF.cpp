@@ -889,6 +889,9 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     r = (235 - 16) * r / 255;
     g = (235 - 16) * g / 255;
     b = (235 - 16) * b / 255;
+    //r = (235 - 16) * r / 255 + 16.0f / 255.0f;
+    //g = (235 - 16) * g / 255 + 16.0f / 255.0f;
+    //b = (235 - 16) * b / 255 + 16.0f / 255.0f;
   }
 
   for(int i = 0; i < 4; i++)

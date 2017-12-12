@@ -528,7 +528,10 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iHeight         = (unsigned int)m_display_queue->height;
   pDvdVideoPicture->iDisplayWidth   = (unsigned int)m_display_queue->width;
   pDvdVideoPicture->iDisplayHeight  = (unsigned int)m_display_queue->height;
-  pDvdVideoPicture->color_range     = m_hints.colorrange;
+  if (m_hints.colorrange == AVCOL_RANGE_JPEG)
+    pDvdVideoPicture->color_range = 1;
+  else
+    pDvdVideoPicture->color_range = 0;
   pDvdVideoPicture->color_matrix    = m_hints.colorspace;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
   m_display_queue->pixel_buffer_ref = nullptr;
@@ -1068,7 +1071,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSessionAndInitPictureFrame()
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
     kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_422YpCbCr8);
 #else
-  if (m_hints.colorrange == 2)
+  if (m_hints.colorrange == AVCOL_RANGE_JPEG)
     CFDictionarySetSInt32(destinationPixelBufferAttributes,
       kCVPixelBufferPixelFormatTypeKey, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange);
   else

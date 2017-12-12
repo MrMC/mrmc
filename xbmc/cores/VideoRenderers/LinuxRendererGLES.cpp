@@ -885,6 +885,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
   ReleaseShaders();
+  m_fullRange = !g_Windowing.UseLimitedColor();
 
   switch(requestedMethod)
   {

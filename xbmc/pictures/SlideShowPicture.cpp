@@ -868,17 +868,18 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  int range = 0;
-  if (g_Windowing.UseLimitedColor())
-    range = 235 - 16;
-  else
-    range = 255 -  0;
-
   // Setup Colour values
-  col[0] = (GLubyte)GET_R(color) * range / 255;
-  col[1] = (GLubyte)GET_G(color) * range / 255;
-  col[2] = (GLubyte)GET_B(color) * range / 255;
+  col[0] = (GLubyte)GET_R(color);
+  col[1] = (GLubyte)GET_G(color);
+  col[2] = (GLubyte)GET_B(color);
   col[3] = (GLubyte)GET_A(color);
+
+  if (g_Windowing.UseLimitedColor())
+  {
+    col[0] = (235 - 16) * col[0] / 255 + 16.0f / 255.0f;
+    col[1] = (235 - 16) * col[1] / 255 + 16.0f / 255.0f;
+    col[2] = (235 - 16) * col[2] / 255 + 16.0f / 255.0f;
+  }
 
   for (int i=0; i<4; i++)
   {

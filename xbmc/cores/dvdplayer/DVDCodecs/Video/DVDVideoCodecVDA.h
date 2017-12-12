@@ -20,6 +20,7 @@
  */
 
 #include "DVDVideoCodec.h"
+#include "DVDStreamInfo.h"
 #include <CoreVideo/CoreVideo.h>
 
 class CBitstreamConverter;
@@ -54,6 +55,7 @@ protected:
 
   void              *m_vda_decoder;   // opaque vdadecoder reference
   int32_t           m_format;
+  CDVDStreamInfo    m_hints;
   const char        *m_pFormatName;
   bool              m_DropPictures;
   int               m_codecControlFlags;
