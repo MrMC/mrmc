@@ -132,6 +132,8 @@ void CalculateYUVMatrix(TransformMatrix &matrix
 
   if (!(flags & CONF_FLAGS_YUV_FULLRANGE))
   {
+    // Typically 8-bit Y' values are quantized to the range [16-235] and Cb and
+    // Cr values to the range [16-240]. This is limited range quantization.
     matrix *= TransformMatrix::CreateScaler(255.0f / (235 - 16)
                                           , 255.0f / (240 - 16)
                                           , 255.0f / (240 - 16));

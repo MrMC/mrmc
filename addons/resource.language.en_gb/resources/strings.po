@@ -16402,7 +16402,10 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#empty string with id 36043
+#: system/settings/settings.xml
+msgctxt "#36043"
+msgid "Disable limited to full video rescaling"
+msgstr ""
 
 #. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
@@ -18353,7 +18356,13 @@ msgctxt "#36464"
 msgid "Turn debug logging of cpu/memory usage on or off. Useful for troubleshooting."
 msgstr ""
 
-#empty strings from id 36465 to 36499
+#. Description of setting "System -> Playback -> Disable limited to full video rescaling" with label #36043
+#: system/settings/settings.xml
+msgctxt "#36465"
+msgid "Disable default video rescaling from limited (16-235) to full (0-255), this might be required on hdtv displays that are set to full range"
+msgstr ""
+
+#empty strings from id 36466 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied

@@ -776,6 +776,18 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
+        <setting id="videoplayer.disablelimitedrescaling" type="boolean" label="36043" help="36465">
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_GLESv2</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2">
         <requirement>

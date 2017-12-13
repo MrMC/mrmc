@@ -908,7 +908,9 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
                        , pPicture->color_range == 1 ? "Full" : "Limited");
 
     unsigned flags = 0;
-    if(pPicture->color_range == 1)
+    if (pPicture->color_range == 1)
+      flags |= CONF_FLAGS_YUV_FULLRANGE;
+    else if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_DISABLELIMITEDTRESCALING))
       flags |= CONF_FLAGS_YUV_FULLRANGE;
 
     flags |= GetFlagsChromaPosition(pPicture->chroma_position)
