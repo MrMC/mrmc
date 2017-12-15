@@ -1,8 +1,8 @@
 TARGET=Textures.xbt
 
-IMAGES := $(shell find . -name "*jpg")
-IMAGES += $(shell find . -name "*png")
-IMAGES += $(shell find . -name "*gif")
+IMAGES := $(shell find . -name "*jpg" | sed 's/ /\\ /g')
+IMAGES += $(shell find . -name "*png" | sed 's/ /\\ /g')
+IMAGES += $(shell find . -name "*gif" | sed 's/ /\\ /g')
 
 all: $(TARGET)
 
