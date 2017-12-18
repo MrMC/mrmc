@@ -97,8 +97,8 @@
   </FullscreenRadio>
   <Visualisation>
     <customcontroller name="SiriRemote">
-      <button id="1">VolumeUp</button>
-      <button id="2">VolumeDown</button>
+      <button id="1">noop</button>
+      <button id="2">noop</button>
       <button id="3">SkipPrevious</button>
       <button id="4">SkipNext</button>
       <button id="5">Pause</button>
