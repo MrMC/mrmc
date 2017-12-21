@@ -358,8 +358,8 @@ void CSettingConditions::Initialize()
 #if defined(TARGET_DARWIN_TVOS)
   if (__builtin_available(tvOS 11.2, *))
   {
-    if (std::string(CDarwinUtils::getIosPlatformString()) == "AppleTV6,2")
-      m_simpleConditions.insert("hasDisplayRateSwitching");
+      if (CDarwinUtils::IsAppleTV4KOrAbove())
+        m_simpleConditions.insert("hasDisplayRateSwitching");
   }
 #elif !defined(TARGET_DARWIN_IOS)
   m_simpleConditions.insert("hasDisplayRateSwitching");

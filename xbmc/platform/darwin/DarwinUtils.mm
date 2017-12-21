@@ -293,6 +293,19 @@ bool CDarwinUtils::IsSnowLeopard(void)
   return isSnowLeopard == 1;
 }
 
+bool CDarwinUtils::IsAppleTV4KOrAbove(void)
+{
+  static int isAppleTV4KOrAbove = -1;
+  if (isAppleTV4KOrAbove == -1)
+  {
+    isAppleTV4KOrAbove = 0;
+#if defined(TARGET_DARWIN_TVOS)
+    if (std::string(CDarwinUtils::getIosPlatformString()) != "AppleTV5,3")
+      isAppleTV4KOrAbove = 1;
+#endif
+  }
+  return isAppleTV4KOrAbove == 1;
+}
 bool CDarwinUtils::DeviceHas10BitH264(void)
 {
   static int has10BitH264 = -1;

@@ -1000,7 +1000,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSessionAndInitPictureFrame()
   int width = m_hints.width;
   int height = m_hints.height;
 #if defined(TARGET_DARWIN_TVOS)
-  if (std::string(CDarwinUtils::getIosPlatformString()) == "AppleTV5,3")
+  if (!CDarwinUtils::IsAppleTV4KOrAbove())
   {
     // decoding, scaling and rendering 4k h264 runs into
     // some bandwidth limit. detect and scale down to reduce

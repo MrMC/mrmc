@@ -34,6 +34,7 @@ public:
   static bool        IsMavericks(void);
   static bool        IsLion(void);
   static bool        IsSnowLeopard(void);
+  static bool        IsAppleTV4KOrAbove(void);
   static bool        DeviceHasRetina(double &scale);
   static bool        DeviceHasLeakyVDA(void);
   static bool        DeviceHas10BitH264(void);
