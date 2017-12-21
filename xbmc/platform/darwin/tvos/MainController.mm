@@ -1677,15 +1677,12 @@ static SiriRemoteInfo siriRemoteInfo;
 
   CAnnounceReceiver::GetInstance().Initialize();
 
-  if (std::string(CDarwinUtils::getIosPlatformString()) != "AppleTV5,3")
-  {
-    // The AppleTV4K has a rock solid reported duration. The
-    // AppleTV4 wanders and is useless for display rate tracking.
-    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkTick:)];
-    // we want the native cadence of the display hardware.
-    self.displayLink.preferredFramesPerSecond = 0;
-    [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
-  }
+  // The AppleTV4K has a rock solid reported duration. The
+  // AppleTV4 wanders and is quantized for display rate tracking.
+  self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkTick:)];
+  // we want the native cadence of the display hardware.
+  self.displayLink.preferredFramesPerSecond = 0;
+  [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
 
   return self;
 }
@@ -2102,23 +2099,54 @@ static SiriRemoteInfo siriRemoteInfo;
 //--------------------------------------------------------------
 - (float)getDisplayRate
 {
-  if (std::string(CDarwinUtils::getIosPlatformString()) == "AppleTV5,3")
-    return 0.0;
-
-  if (self.displayRate > 0)
+  if (self.displayRate > 0.0f)
     return self.displayRate;
 
-  return 60.0;
+  return 60.0f;
 }
 
 //--------------------------------------------------------------
 - (void)displayLinkTick:(CADisplayLink *)sender
 {
-  if (self.displayLink.duration > 0.0)
+  if (self.displayLink.duration > 0.0f)
   {
-    static float oldDisplayRate = 0.00;
-    // we want fps, not duration in seconds.
-    self.displayRate = 1.0 / self.displayLink.duration;
+    static float oldDisplayRate = 0.0f;
+    if (CDarwinUtils::IsAppleTV4KOrAbove())
+    {
+      // The AppleTV4K has a rock solid reported duration.
+      // we want fps, not duration in seconds.
+      self.displayRate = 1.0f / self.displayLink.duration;
+    }
+    else
+    {
+      // AppleTV4 wanders and we have to quantize to get it.
+      float displayFPS = 0.0f;
+      int duration = 1000000.0f * self.displayLink.duration;
+      switch(duration)
+      {
+        default:
+          displayFPS = 0.0f;
+          break;
+        case 16000 ... 17000:
+          // 59.940 (16683.333333)
+          displayFPS = 60000.0f / 1001.0f;
+          break;
+        case 32000 ... 35000:
+          // 29.970 (33366.666656)
+          displayFPS = 30000.0f / 1001.0f;
+          break;
+        case 19000 ... 21000:
+          // 50.000 (20000.000000)
+          displayFPS = 50000.0f / 1000.0f;
+          break;
+        case 35500 ... 41000:
+        // 25.000 (40000.000000)
+          displayFPS = 25000.0f / 1000.0f;
+          break;
+      }
+      self.displayRate = displayFPS;
+    }
+
     if (self.displayRate != oldDisplayRate)
     {
       // track and log changes
