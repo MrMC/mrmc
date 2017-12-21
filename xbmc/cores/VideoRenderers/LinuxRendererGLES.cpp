@@ -944,7 +944,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
         m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
         m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
         m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, m_format);
-        m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
+        m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
         if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
             && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
         {
