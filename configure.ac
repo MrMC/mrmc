@@ -549,7 +549,7 @@ NM="${NM:-nm}"
 case $host in
   i*86*-linux-android*)
      target_platform=target_android
-     ARCH="i486-linux"
+     ARCH="x86"
      use_arch="x86"
      use_cpu="i686"
      use_joystick=no
@@ -837,7 +837,7 @@ if test "$host_vendor" = "apple" ; then
 elif test "$target_platform" = "target_raspberry_pi"; then
   ARCH="arm"
   use_arch="arm"
-elif test "$use_arch" = "arm"; then
+elif test "$target_platform" != "target_android" && test "$use_arch" = "arm"; then
   CFLAGS="$CFLAGS -mno-apcs-stack-check"
   CXXFLAGS="$CXXFLAGS -mno-apcs-stack-check"
   if test "$use_tegra" = "yes"; then

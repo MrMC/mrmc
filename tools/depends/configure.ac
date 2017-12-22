@@ -124,9 +124,13 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
-    use_sdk="${use_sdk:-android-21}"
-    deps_dir="$use_host-$use_sdk"
-    platform_cflags="-DANDROID -Os -fexceptions -fPIC"
+    platform_cc=clang
+    platform_cxx=clang++
+    use_sdk="${use_sdk:-android-24}"
+    use_ndk_api="${use_ndk_api:-21}"
+    deps_dir="$use_host-$use_ndk_api"
+    platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
+    optimize_flags="-Os"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
       platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
     fi
@@ -141,13 +145,19 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="arm64"
     fi
-    use_sdk="${use_sdk:-android-23}"
-    deps_dir="$use_host-$use_sdk"
-    platform_cflags="-DANDROID -Os -fexceptions -fPIC -DPIC"
-    platform_cflags+=" -mfix-cortex-a53-835769"
-    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
-    platform_cxxflags="$platform_cflags -frtti -Wno-reorder"
-    platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
+    platform_cc=clang
+    platform_cxx=clang++
+    use_sdk="${use_sdk:-android-24}"
+    use_ndk_api="${use_ndk_api:-21}"
+    deps_dir="$use_host-$use_ndk_api"
+    platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
+    optimize_flags="-Os"
+    if test "x$use_cpu" = "xarm64-v8a"; then
+      platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
+    fi
+    platform_ldflags="-L$prefix/$deps_dir/lib/android-$use_ndk_api"
+    platform_cxxflags="$platform_cflags -frtti"
+    platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
     cross_compiling="yes"
@@ -156,10 +166,14 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
-    use_sdk="${use_sdk:-android-21}"
-    deps_dir="$use_host-$use_sdk"
-    platform_cflags="-DANDROID -Os -fexceptions -fPIC"
-    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
+    platform_cc=clang
+    platform_cxx=clang++
+    use_sdk="${use_sdk:-android-24}"
+    use_ndk_api="${use_ndk_api:-21}"
+    deps_dir="$use_host-$use_ndk_api"
+    platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
+    optimize_flags="-Os"
+    platform_ldflags="-L$prefix/$deps_dir/lib/android-$use_ndk_api"
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
     platform_os="android"

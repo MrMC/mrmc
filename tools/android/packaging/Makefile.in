@@ -51,6 +51,9 @@ ARCH=arm
 ABI=armeabi-v7a
 endif
 
+# libc++
+STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.so
+
 #older ndk x86
 GDBPATH=$(NDKROOT)/toolchains/$(ARCH)-$(GCC_VERSION)/prebuilt/gdbserver
 
@@ -150,6 +153,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	$(STRIP) --strip-unneeded xbmc/lib/$(ABI)/*.so
 	cp -fp $(SDKROOT)/extras/android/support/v4/android-support-v4.jar xbmc/libs
 	install -p $(GDBPATH) ./xbmc/libs/$(ABI)/gdbserver
+	install -p $(STLLIB) ./xbmc/lib/$(ABI)/
 	echo "set solib-search-path ./obj/local/$(ABI)" > ./xbmc/libs/$(ABI)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
 	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./xbmc/libs/$(ABI)/gdb.setup
