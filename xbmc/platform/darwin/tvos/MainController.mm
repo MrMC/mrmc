@@ -52,6 +52,7 @@
 #import "settings/Settings.h"
 #import "services/lighteffects/LightEffectServices.h"
 #import "utils/LiteUtils.h"
+#import "utils/StringObfuscation.h"
 #import "utils/SeekHandler.h"
 #import "utils/log.h"
 
@@ -2181,15 +2182,16 @@ static SiriRemoteInfo siriRemoteInfo;
           // SDR == 0, 1
           // HDR == 2, 3
           // DoblyVision == 4
-#if __TVOS_11_2
-          auto displayCriteria = [[AVDisplayCriteria alloc] initWithRefreshRate:refreshRate videoDynamicRange:dynamicRange];
-#else
-          std::string neveryyoumind = "AVDisplayCriteria";
+          // infer initWithRefreshRate in case it ever changes
+          using namespace StringObfuscation;
+          std::string neveryyoumind = ObfuscateString("AVDisplayCriteria");
           Class AVDisplayCriteriaClass = NSClassFromString([NSString stringWithUTF8String: neveryyoumind.c_str()]);
           AVDisplayCriteria *displayCriteria = [[AVDisplayCriteriaClass alloc] initWithRefreshRate:refreshRate videoDynamicRange:dynamicRange];
-#endif
-          // setting preferredDisplayCriteria will trigger a display rate switch
-          avDisplayManager.preferredDisplayCriteria = displayCriteria;
+          if (displayCriteria)
+          {
+            // setting preferredDisplayCriteria will trigger a display rate switch
+            avDisplayManager.preferredDisplayCriteria = displayCriteria;
+          }
         }
         else
         {
