@@ -69,6 +69,7 @@ protected:
 
   double        GetPlayerClockSeconds();
   void          UpdateFrameRateTracking(double ts);
+  void          ProbeNALUnits(uint8_t *pData, int iSize);
 
   VideoLayerView         *m_decoder;        // opaque decoder reference
 	dispatch_queue_t        m_providerQueue;
