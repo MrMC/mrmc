@@ -191,7 +191,6 @@ static int nal_bs_read_ue(nal_bitstream *bs)
   return ((1 << i) - 1 + nal_bs_read(bs, i));
 }
 
-/*
 // read signed Exp-Golomb code
 static int nal_bs_read_se(nal_bitstream *bs)
 {
@@ -202,7 +201,6 @@ static int nal_bs_read_se(nal_bitstream *bs)
     r = - (r / 2);
   return r;
 }
-*/
 
 static const uint8_t* avc_find_startcode_internal(const uint8_t *p, const uint8_t *end)
 {
@@ -463,6 +461,27 @@ bool CBitstreamParser::HasKeyframe(enum AVCodecID codec, const uint8_t *buf, int
   }
 
   return rtn;
+}
+
+void CBitstreamParser::nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size)
+{
+  ::nal_bs_init(bs, data, size);
+}
+bool CBitstreamParser::nal_bs_eos(nal_bitstream *bs)
+{
+  return ::nal_bs_eos(bs);
+}
+uint32_t CBitstreamParser::nal_bs_read(nal_bitstream *bs, int n)
+{
+  return ::nal_bs_read(bs, n);
+}
+int CBitstreamParser::nal_bs_read_ue(nal_bitstream *bs)
+{
+  return ::nal_bs_read_ue(bs);
+}
+int CBitstreamParser::nal_bs_read_se(nal_bitstream *bs)
+{
+  return ::nal_bs_read_se(bs);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

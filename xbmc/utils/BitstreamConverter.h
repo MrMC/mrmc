@@ -138,6 +138,14 @@ public:
   static bool Open();
   static void Close();
   static bool HasKeyframe(enum AVCodecID codec, const uint8_t *buf, int buf_size, bool annexb = true);
+  // bit stream reader
+  static void nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size);
+  static bool nal_bs_eos(nal_bitstream *bs);
+  static uint32_t nal_bs_read(nal_bitstream *bs, int n);
+  static int nal_bs_read_ue(nal_bitstream *bs);
+  static int nal_bs_read_se(nal_bitstream *bs);
+
+
 
 protected:
   static const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
