@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
+#include "filesystem/CloudUtils.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "dialogs/GUIDialogOK.h"
@@ -1215,6 +1216,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 bool CGUIWindowVideoNav::OnClick(int iItem)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
+  if (item->IsCloud())
+    CCloudUtils::GetInstance().GetURL(*item);
   if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
   {
     CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());

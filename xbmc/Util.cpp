@@ -420,6 +420,11 @@ bool CUtil::IsPicture(const std::string& strFile)
                   g_advancedSettings.m_pictureExtensions + "|.tbn|.dds");
 }
 
+bool CUtil::IsCloud(const std::string& strFile)
+{
+  return StringUtils::StartsWithNoCase(strFile, "cloud://");
+}
+
 bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps)
 {
   if (strFileOrFolder.empty())

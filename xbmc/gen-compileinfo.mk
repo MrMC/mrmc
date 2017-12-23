@@ -3,9 +3,13 @@
 FILEPATH := $(abspath $(dir $(MAKEFILE_LIST)))
 GITVERFILE := ../VERSION
 GIT = $(notdir $(shell which git))
+ifneq ("$(wildcard $(FILEPATH)/OAuth2ClientInfo.json)","")
+	OAUTHCLIENTSPATH := $(FILEPATH)/OAuth2ClientInfo.json
+	OAUTHCLIENTS := $(shell cat ${OAUTHCLIENTSPATH})
+endif
 
 .PHONY: GitRevision $(FILEPATH)/.GitRevision
-all: $(FILEPATH)/CompileInfo.cpp GitRevision
+all: $(FILEPATH)/ClientPrivateInfo.cpp $(FILEPATH)/CompileInfo.cpp GitRevision
 GitRevision: $(FILEPATH)/.GitRevision
 
 $(FILEPATH)/.GitRevision:
@@ -29,6 +33,8 @@ $(FILEPATH)/.GitRevision:
           echo $$GITREV > $@ ;\
         fi
 
+$(FILEPATH)/ClientPrivateInfo.cpp: $(FILEPATH)/ClientPrivateInfo.cpp.in $(OAUTHCLIENTSPATH)
+	sed -e 's/\@APP_CLIENTPRIVATE\@/$(OAUTHCLIENTS)/' $(FILEPATH)/ClientPrivateInfo.cpp.in > $(FILEPATH)/ClientPrivateInfo.cpp
 
 $(FILEPATH)/CompileInfo.cpp: $(FILEPATH)/CompileInfoTemplate.cpp $(FILEPATH)/.GitRevision
 	@GITREV=$$(cat $(FILEPATH)/.GitRevision) ;\

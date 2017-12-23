@@ -301,6 +301,7 @@ libs: $(LIBSSE4)
 externals: codecs libs libaddon
 
 xcode_depends: libaddon skins
+	$(MAKE) -f xbmc/gen-compileinfo.mk
 
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \

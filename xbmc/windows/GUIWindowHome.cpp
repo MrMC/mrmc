@@ -40,6 +40,7 @@
 #include "services/ServicesManager.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "music/MusicDatabase.h"
+#include "filesystem/CloudUtils.h"
 #include "filesystem/StackDirectory.h"
 
 #define CONTROL_HOMESHELFMOVIESRA      8000
@@ -469,7 +470,10 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
         return false;
       CServicesManager::GetInstance().GetURL(itemPtr);
     }
-    
+    else if (itemPtr.IsCloud())
+    {
+      CCloudUtils::GetInstance().GetURL(itemPtr);
+    }
 
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);

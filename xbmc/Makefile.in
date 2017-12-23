@@ -6,6 +6,7 @@ SRCS += AutoSwitch.cpp
 SRCS += BackgroundInfoLoader.cpp
 SRCS += ContextMenuItem.cpp
 SRCS += ContextMenuManager.cpp
+SRCS += ClientPrivateInfo.cpp
 SRCS += CompileInfo.cpp
 SRCS += CueDocument.cpp
 SRCS += DatabaseManager.cpp
@@ -37,13 +38,19 @@ SRCS += XBDateTime.cpp
 
 LIB   = xbmc.a
 
-DISTCLEAN_FILES = DllPaths_generated.h DllPaths_generated_android.h CompileInfo.cpp
+DISTCLEAN_FILES = DllPaths_generated.h DllPaths_generated_android.h CompileInfo.cpp ClientPrivateInfo.cpp
 
 .PHONY: .GitRevision
 
-all: $(SRCS) $(LIB)
+all: $(SRCS) $(LIB) CompileInfoTemplate.cpp
 
-CompileInfo.cpp: ../version.txt CompileInfoTemplate.cpp GitRevision
+CompileInfo.cpp: ../version.txt GitRevision
+	$(MAKE) -f gen-compileinfo.mk
+
+CompileInfoTemplate.cpp:
+	$(MAKE) -f gen-compileinfo.mk
+
+ClientPrivateInfo.cpp:
 	$(MAKE) -f gen-compileinfo.mk
 
 GitRevision:

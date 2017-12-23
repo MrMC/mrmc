@@ -34,6 +34,7 @@
 #include "NfoFile.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
+#include "filesystem/CloudUtils.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
@@ -1220,6 +1221,10 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   {
     playback = CServicesManager::GetInstance().GetResolutions(*movieItem);
     CServicesManager::GetInstance().GetURL(*movieItem);
+  }
+  else if (movieItem->IsCloud())
+  {
+    CCloudUtils::GetInstance().GetURL(*movieItem);
   }
   if (playback)
   {

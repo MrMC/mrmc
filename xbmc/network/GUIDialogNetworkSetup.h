@@ -28,6 +28,7 @@ class CGUIDialogNetworkSetup :
 public:
   enum NET_PROTOCOL { NET_PROTOCOL_SMB = 0,
                       NET_PROTOCOL_XBMSP,
+                      NET_PROTOCOL_CLOUD,
                       NET_PROTOCOL_EMBY,
                       NET_PROTOCOL_EMBYS,
                       NET_PROTOCOL_FTP,

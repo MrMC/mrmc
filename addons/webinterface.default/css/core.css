@@ -772,6 +772,30 @@ div.imgWrapper div.inner {
 	font-weight: 700;
 	}
 
+.details
+{
+    text-align: center;
+}
+
+#user-id-div
+{
+width:200px;
+margin:auto;    
+}
+
+input[type="text"] {
+  font-family:Arial;
+  font-size:15px;
+  padding:10px 10px;
+  border-radius:10px;
+  border:2px solid #d83526;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 400px;
+  text-align: center;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+
 iframe {
   margin-top: 5px;
   margin-left: 10px;
@@ -806,7 +830,12 @@ button {
 	margin:auto;
   	display:block;
 }
-button:hover {
+button[disabled]{
+ background-color:#bfbfbf;
+ color:#bfbfbf;
+ opacity: .3;
+}
+button:hover:not([disabled]) {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ce0100), color-stop(1, #fe1a00));
 	background:-moz-linear-gradient(top, #ce0100 5%, #fe1a00 100%);
 	background:-webkit-linear-gradient(top, #ce0100 5%, #fe1a00 100%);
@@ -816,7 +845,7 @@ button:hover {
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ce0100', endColorstr='#fe1a00',GradientType=0);
 	background-color:#ce0100;
 }
-button:active {
+button:active:not([disabled]) {
 	position:relative;
 	top:1px;
 }

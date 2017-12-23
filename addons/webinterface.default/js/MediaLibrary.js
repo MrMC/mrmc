@@ -35,6 +35,7 @@ MediaLibrary.prototype = {
     $('#profiles').click(jQuery.proxy(this.profilesOpen, this));
     $('#log').click(jQuery.proxy(this.logOpen, this, "log"));
     $('#logold').click(jQuery.proxy(this.logOpen, this, "logOld"));
+    $('#authcloud').click(jQuery.proxy(this.authCloud, this));
     $('#overlay').click(jQuery.proxy(this.hideOverlay, this));
     $(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
     $(document).on('keydown', jQuery.proxy(this.handleKeyPress, this));
@@ -49,8 +50,11 @@ MediaLibrary.prototype = {
     $('#profiles').removeClass('selected');
     $('#log').removeClass('selected');
     $('#logold').removeClass('selected');
+    $('#authcloud').removeClass('selected');
     $('iframe').remove();
     $('button').remove();
+    $('label').remove();
+    $('input').remove();
     this.hideOverlay();
   },
   replaceAll: function (haystack, needle, thread) {
@@ -128,6 +132,7 @@ MediaLibrary.prototype = {
   },
   logOpen: function (event) {
     this.resetPage();
+    $('#footerPopover').hide();
     var logUrl;
     var btnLabel;
     var logSufix = '';
@@ -176,6 +181,45 @@ MediaLibrary.prototype = {
         $('#content').append(iframe);
       }
     });
+  },
+  authCloud: function () {
+    this.resetPage();
+    $('#footerPopover').hide();
+    var logUrl;
+    var btnLabel;
+    $('#authcloud').addClass('selected');
+
+    $('.contentContainer').hide();
+
+    var div = document.createElement('div');
+
+    var input = document.createElement("input");
+    input.type = "text";
+    input.value = "Paste your authourization token here";
+    input.name = "auth_text";
+    input.id = "auth_text";
+    input.disabled = true;
+    div.appendChild(input);
+
+    var buttonDB = document.createElement('button');
+    buttonDB.innerHTML = "Authorize DropBox";
+    buttonDB.name = "dropbox";
+    buttonDB.id = "dropbox";
+    buttonDB.style.marginTop = "5px";
+    buttonDB.addEventListener ("click", jQuery.proxy(this.pressAuthKey,this, buttonDB));
+    div.appendChild(buttonDB);
+
+    var buttonG = document.createElement('button');
+    buttonG.innerHTML = "Authorize Google Drive";
+    buttonG.name = "google";
+    buttonG.id = "google";
+    buttonG.style.marginTop = "5px";
+    buttonG.addEventListener ("click", jQuery.proxy(this.pressAuthKey,this, buttonG));
+    div.appendChild(buttonG);
+
+    div.style.textAlign = "center";
+
+    $('#content').append(div);
   },
   shouldHandleEvent: function (event) {
     var inRemoteControl = $('#remoteControl').hasClass('selected');
@@ -297,6 +341,110 @@ MediaLibrary.prototype = {
           window.alert(logDetail + " was NOT copied to clipboard, select all content and copy manually");
         }
         document.body.removeChild(textArea);
+    }
+    $('#spinner').hide();
+  },
+  pressAuthKey: function (button) {
+    var authToken = document.getElementById("auth_text").value;
+    document.getElementById('auth_text').value = "";
+    if (button.name == "dropbox")
+    {
+      if (button.innerHTML == "Authorize DropBox")
+      {
+        document.getElementById('google').disabled = true;
+        document.getElementById('auth_text').disabled = false;
+        $('#spinner').show();
+        xbmc.rpc.request({
+          'context': this,
+          'method': 'Cloud.GetCloudPrelogin',
+          'params': {
+              'service':'dropbox'
+          },
+          'success': function (data) {
+            var appkey = data.result.appkey
+            var csrf = data.result.csrf
+
+            var logUrl = 'https://www.dropbox.com/1/oauth2/authorize?client_id=' + appkey + '&response_type=code&state=' + csrf;
+            var strWindowFeatures = "location=yes,height=570,width=520,scrollbars=yes,status=yes";
+            var win = window.open(logUrl, "_blank", strWindowFeatures);
+            button.innerHTML = "Confirm";
+          }
+        });
+      }
+      else if (button.innerHTML == "Confirm")
+      {
+        xbmc.rpc.request({
+          'context': this,
+          'method': 'Cloud.CloudAuthorize',
+          'params': {
+              'service':'dropbox',
+              'auth_token':authToken
+          },
+          'success': function (data) {
+            var result = data.result
+            if (result)
+            {
+              document.getElementById('auth_text').value = "DropBox account successfuly linked";
+            }
+            else
+            {
+              document.getElementById('auth_text').value = "Failed to link DropBox account";
+            }            
+          }
+        });
+        document.getElementById('auth_text').disabled = true;
+        document.getElementById('google').disabled = false;
+        button.innerHTML = "Authorize DropBox";
+      }
+    }
+    else if (button.name == "google")
+    {
+      if (button.innerHTML == "Authorize Google Drive")
+      {
+        document.getElementById('dropbox').disabled = true;
+        document.getElementById('auth_text').disabled = false;
+                xbmc.rpc.request({
+          'context': this,
+          'method': 'Cloud.GetCloudPrelogin',
+          'params': {
+              'service':'google'
+          },
+          'success': function (data) {
+            var appkey = data.result.appkey
+
+            var logUrl = "https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=code&access_type=offline&client_id=" + appkey;
+            var strWindowFeatures = "location=yes,height=570,width=520,scrollbars=yes,status=yes";
+            var win = window.open(logUrl, "_blank", strWindowFeatures);
+            button.innerHTML = "Confirm";
+          }
+        });
+      }
+      else if (button.innerHTML == "Confirm")
+      {
+        xbmc.rpc.request({
+          'context': this,
+          'method': 'Cloud.CloudAuthorize',
+          'params': {
+              'service':'google',
+              'auth_token':authToken
+          },
+          'success': function (data) {
+            var result = data.result
+            if (result)
+            {
+              document.getElementById('auth_text').value = "Google Drive account successfuly linked";
+            }
+            else
+            {
+              document.getElementById('auth_text').value = "Failed to link Google Drive account";
+            }            
+          }
+        });
+        document.getElementById('auth_text').disabled = true;
+        document.getElementById('dropbox').disabled = false;
+        button.innerHTML = "Authorize Google Drive";
+      } 
+
     }
     $('#spinner').hide();
   },

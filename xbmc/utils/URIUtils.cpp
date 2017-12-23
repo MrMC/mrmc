@@ -1084,6 +1084,11 @@ bool URIUtils::IsServices(const std::string& strFile)
   return IsProtocol(strFile, "services");
 }
 
+bool URIUtils::IsCloud(const std::string& strFile)
+{
+  return IsProtocol(strFile, "cloud");
+}
+
 void URIUtils::AddSlashAtEnd(std::string& strFolder)
 {
   if (IsURL(strFolder))

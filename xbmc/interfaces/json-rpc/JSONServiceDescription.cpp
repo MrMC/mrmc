@@ -34,6 +34,7 @@
 #include "SystemOperations.h"
 #include "InputOperations.h"
 #include "XBMCOperations.h"
+#include "CloudOperations.h"
 #include "ApplicationOperations.h"
 #include "PVROperations.h"
 #include "ProfilesOperations.h"
@@ -234,7 +235,11 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
 // XBMC operations
   { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },
-  { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans }
+  { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans },
+  
+  // Cloud operations
+  { "Cloud.GetCloudPrelogin",                       CCloudOperations::GetDropboxPrelogin },
+  { "Cloud.CloudAuthorize",                         CCloudOperations::CloudAuthorize }
 };
 
 JSONSchemaTypeDefinition::JSONSchemaTypeDefinition()

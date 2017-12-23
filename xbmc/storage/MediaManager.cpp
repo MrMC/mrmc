@@ -220,6 +220,11 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     share.strName = g_localizeStrings.Get(20262);
     locations.push_back(share);
 #endif
+
+    share.strPath = "cloud://";
+    share.strName = "Cloud Based Servers";
+    //share.strName = g_localizeStrings.Get(20262);
+    locations.push_back(share);
   }
 }
 

@@ -2195,6 +2195,41 @@
         </setting>
       </group>
     </category>
+    <category id="cloud" label="" help="">
+      <visible>false</visible>
+      <group id="1">
+        <setting id="cloud.dropboxtoken" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+         <setting id="cloud.googletoken" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+        <setting id="cloud.googlerefreshtoken" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+        <setting id="cloud.googlerefreshtime" type="integer" label="" help="">
+          <level>0</level>
+          <default>0</default>
+          <control type="edit" format="integer" />
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
     <category id="plex" label="1236" help="1237">
       <group id="1">
         <setting id="plex.signin" type="string" label="1238" help="1239">

@@ -225,6 +225,7 @@ public:
   bool IsRemovable() const;
   bool IsHDHomeRun() const;
   bool IsPVR() const;
+  bool IsCloud() const;
   bool IsLiveTV() const;
   bool IsMediaServiceBased() const;
   bool IsMediaServicesCloudItem() const;

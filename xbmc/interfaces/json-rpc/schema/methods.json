@@ -2254,6 +2254,31 @@
       "additionalProperties": { "type": "string" }
     }
   },
+  "Cloud.GetCloudPrelogin": {
+    "type": "method",
+    "description": "GetCloud credentials",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "service", "type": "string", "required": true, "description": "Cloud Service Name" }
+    ],
+    "returns": {
+      "type": "object",
+      "description": "Object containing key-value pairs of the retrieved info booleans",
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "Cloud.CloudAuthorize": {
+    "type": "method",
+    "description": "GetCloud credentials",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "service", "type": "string", "required": true, "description": "Authorize Service" },
+      { "name": "auth_token", "type": "string", "required": true, "description": "Authorize Token" }
+    ],
+    "returns": "boolean"
+  },
   "Favourites.GetFavourites": {
     "type": "method",
     "description": "Retrieve all favourites",

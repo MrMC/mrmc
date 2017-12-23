@@ -685,7 +685,8 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
    || IsInternetStream()
    || IsParentFolder()
    || IsVirtualDirectoryRoot()
-   || IsPlugin())
+   || IsPlugin()
+   || IsCloud())
     return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
@@ -1094,6 +1095,19 @@ bool CFileItem::IsHDHomeRun() const
 bool CFileItem::IsPVR() const
 {
   return CUtil::IsPVR(m_strPath);
+}
+
+bool CFileItem::IsCloud() const
+{
+  if (CUtil::IsCloud(m_strPath))
+    return true;
+  
+  if (HasVideoInfoTag()) // we need to check for MusicTag?
+  {
+    if (!GetVideoInfoTag()->m_strFileNameAndPath.empty())
+      return CUtil::IsCloud(GetVideoInfoTag()->m_strFileNameAndPath);
+  }
+  return false;
 }
 
 bool CFileItem::IsLiveTV() const

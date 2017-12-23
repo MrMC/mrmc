@@ -3246,6 +3246,18 @@
 		F5D915B51B9CF191004BB28A /* GifIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D915B21B9CF191004BB28A /* GifIO.cpp */; };
 		F5DB700217322DBB00D4DF21 /* FavouritesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DB700017322DBB00D4DF21 /* FavouritesOperations.cpp */; };
 		F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
+		F5DF58791FEEBA3F00AD4C8C /* CloudUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58761FEEBA3E00AD4C8C /* CloudUtils.cpp */; };
+		F5DF587A1FEEBA3F00AD4C8C /* CloudUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58761FEEBA3E00AD4C8C /* CloudUtils.cpp */; };
+		F5DF587B1FEEBA3F00AD4C8C /* CloudUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58761FEEBA3E00AD4C8C /* CloudUtils.cpp */; };
+		F5DF587C1FEEBA3F00AD4C8C /* CloudDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58781FEEBA3F00AD4C8C /* CloudDirectory.cpp */; };
+		F5DF587D1FEEBA3F00AD4C8C /* CloudDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58781FEEBA3F00AD4C8C /* CloudDirectory.cpp */; };
+		F5DF587E1FEEBA3F00AD4C8C /* CloudDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58781FEEBA3F00AD4C8C /* CloudDirectory.cpp */; };
+		F5DF58811FEEBA8A00AD4C8C /* CloudOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58801FEEBA8900AD4C8C /* CloudOperations.cpp */; };
+		F5DF58821FEEBA8A00AD4C8C /* CloudOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58801FEEBA8900AD4C8C /* CloudOperations.cpp */; };
+		F5DF58831FEEBA8A00AD4C8C /* CloudOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58801FEEBA8900AD4C8C /* CloudOperations.cpp */; };
+		F5DF58851FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */; };
+		F5DF58861FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */; };
+		F5DF58871FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */; };
 		F5E10537140AA38100175026 /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10513140AA38000175026 /* PeripheralBusUSB.cpp */; };
 		F5E10538140AA38100175026 /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10515140AA38000175026 /* PeripheralBus.cpp */; };
 		F5E1053B140AA38100175026 /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1051C140AA38000175026 /* Peripheral.cpp */; };
@@ -5888,6 +5900,15 @@
 		F5DC87E0110A287400EE1B15 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
 		F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RingBuffer.cpp; sourceTree = "<group>"; };
 		F5DCE7CF1D6E43A600C42FD9 /* DVDFactoryDemuxer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVDFactoryDemuxer.h; sourceTree = "<group>"; };
+		F5DF58741FEEB9F100AD4C8C /* StringObfuscation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringObfuscation.h; sourceTree = "<group>"; };
+		F5DF58751FEEBA3E00AD4C8C /* CloudUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudUtils.h; sourceTree = "<group>"; };
+		F5DF58761FEEBA3E00AD4C8C /* CloudUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CloudUtils.cpp; sourceTree = "<group>"; };
+		F5DF58771FEEBA3F00AD4C8C /* CloudDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudDirectory.h; sourceTree = "<group>"; };
+		F5DF58781FEEBA3F00AD4C8C /* CloudDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CloudDirectory.cpp; sourceTree = "<group>"; };
+		F5DF587F1FEEBA8900AD4C8C /* CloudOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudOperations.h; sourceTree = "<group>"; };
+		F5DF58801FEEBA8900AD4C8C /* CloudOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CloudOperations.cpp; sourceTree = "<group>"; };
+		F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClientPrivateInfo.cpp; sourceTree = "<group>"; };
+		F5DF58881FEEC59300AD4C8C /* ClientPrivateInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClientPrivateInfo.h; sourceTree = "<group>"; };
 		F5E10513140AA38000175026 /* PeripheralBusUSB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusUSB.cpp; sourceTree = "<group>"; };
 		F5E10514140AA38000175026 /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
 		F5E10515140AA38000175026 /* PeripheralBus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBus.cpp; sourceTree = "<group>"; };
@@ -8193,6 +8214,8 @@
 				E38E14710D25F9F900618676 /* AutoSwitch.h */,
 				E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */,
 				E38E14730D25F9F900618676 /* BackgroundInfoLoader.h */,
+				F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */,
+				F5DF58881FEEC59300AD4C8C /* ClientPrivateInfo.h */,
 				F5B413131065900C0035D105 /* config.h */,
 				F5B723321C7C9681006432AE /* ContextMenuItem.cpp */,
 				F5B723331C7C9681006432AE /* ContextMenuItem.h */,
@@ -8589,6 +8612,10 @@
 				7C99B6A3133D342100FC2B16 /* CircularCache.h */,
 				DF93D66B1444A8B0007C6459 /* CurlFile.cpp */,
 				DF93D66C1444A8B0007C6459 /* CurlFile.h */,
+				F5DF58781FEEBA3F00AD4C8C /* CloudDirectory.cpp */,
+				F5DF58771FEEBA3F00AD4C8C /* CloudDirectory.h */,
+				F5DF58761FEEBA3E00AD4C8C /* CloudUtils.cpp */,
+				F5DF58751FEEBA3E00AD4C8C /* CloudUtils.h */,
 				DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */,
 				DFD5812216C8284F0008EEA0 /* DAVCommon.h */,
 				7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */,
@@ -9098,6 +9125,7 @@
 				F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */,
 				F5487B4A0FE6F02700E506FD /* StreamDetails.h */,
 				F55BD31F1D3158E50072FE3A /* StringHasher.h */,
+				F5DF58741FEEB9F100AD4C8C /* StringObfuscation.h */,
 				18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */,
 				18ECC96113CF178D00A9ED6C /* StreamUtils.h */,
 				18B7C8F11294261F009E7A26 /* StringUtils.cpp */,
@@ -9642,6 +9670,8 @@
 				18968DC714155D7C005BA742 /* ApplicationOperations.h */,
 				F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */,
 				F5AE408113415D9E0004BD79 /* AudioLibrary.h */,
+				F5DF58801FEEBA8900AD4C8C /* CloudOperations.cpp */,
+				F5DF587F1FEEBA8900AD4C8C /* CloudOperations.h */,
 				F5DB700017322DBB00D4DF21 /* FavouritesOperations.cpp */,
 				F5DB700117322DBB00D4DF21 /* FavouritesOperations.h */,
 				F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */,
@@ -10498,6 +10528,7 @@
 				DF4BF0151A4EF30F0053AC56 /* cc_decoder.c in Sources */,
 				E38E1F570D25F9FD00618676 /* DllLoaderContainer.cpp in Sources */,
 				E38E1F730D25F9FD00618676 /* LibraryLoader.cpp in Sources */,
+				F5DF58851FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */,
 				E38E1F760D25F9FD00618676 /* SoLoader.cpp in Sources */,
 				E38E1F770D25F9FD00618676 /* DummyVideoPlayer.cpp in Sources */,
 				E38E1F790D25F9FD00618676 /* DVDAudio.cpp in Sources */,
@@ -11202,6 +11233,7 @@
 				F51D17061E29950600A03C93 /* ifo_print.c in Sources */,
 				7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */,
 				7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */,
+				F5DF58791FEEBA3F00AD4C8C /* CloudUtils.cpp in Sources */,
 				7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */,
 				C84828C0156CFCD8005A996F /* PVRClient.cpp in Sources */,
 				C84828C1156CFCD8005A996F /* PVRClients.cpp in Sources */,
@@ -11298,10 +11330,12 @@
 				3994425B1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */,
 				395C2A191A9F074C00EBC7AD /* Locale.cpp in Sources */,
 				F58BF9711CD83FAF005BB003 /* LightEffectServices.cpp in Sources */,
+				F5DF58811FEEBA8A00AD4C8C /* CloudOperations.cpp in Sources */,
 				F5EDC48C1651A6F900B852D8 /* GroupUtils.cpp in Sources */,
 				7C7CEAF1165629530059C9EB /* AELimiter.cpp in Sources */,
 				F5022F261E2D41D5001BBF75 /* hdhomerun_device.c in Sources */,
 				395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
+				F5DF587C1FEEBA3F00AD4C8C /* CloudDirectory.cpp in Sources */,
 				DF64FE3D16C07AAA00D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */,
 				DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */,
@@ -11632,6 +11666,7 @@
 				E49911C9174E5D2500741B6D /* DVDOverlayCodecSSA.cpp in Sources */,
 				F5B723181C7C894F006432AE /* PVRBuiltins.cpp in Sources */,
 				E49911CA174E5D2500741B6D /* DVDOverlayCodecText.cpp in Sources */,
+				F5DF587D1FEEBA3F00AD4C8C /* CloudDirectory.cpp in Sources */,
 				E49911CB174E5D2500741B6D /* DVDOverlayCodecTX3G.cpp in Sources */,
 				E49911CE174E5D2500741B6D /* DVDVideoCodecFFmpeg.cpp in Sources */,
 				395C29BD1A94733100EBC7AD /* Key.cpp in Sources */,
@@ -12049,6 +12084,7 @@
 				F5A0E2521E3A63050086B1D1 /* BitstreamReader.cpp in Sources */,
 				E4991353174E5EBE00741B6D /* FileOperations.cpp in Sources */,
 				E4991354174E5EBE00741B6D /* GUIOperations.cpp in Sources */,
+				F5DF58821FEEBA8A00AD4C8C /* CloudOperations.cpp in Sources */,
 				F51D17221E29950600A03C93 /* play.c in Sources */,
 				E4991355174E5EBE00741B6D /* InputOperations.cpp in Sources */,
 				E4991356174E5EBE00741B6D /* JSONRPC.cpp in Sources */,
@@ -12067,6 +12103,7 @@
 				E499136D174E5EF700741B6D /* LinuxTimezone.cpp in Sources */,
 				E499136E174E5EF700741B6D /* PosixMountProvider.cpp in Sources */,
 				E499136F174E5EF700741B6D /* XFileUtils.cpp in Sources */,
+				F5DF58861FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */,
 				F5022F431E2D4404001BBF75 /* HDHomeRunDirectory.cpp in Sources */,
 				E4991370174E5EF700741B6D /* XHandle.cpp in Sources */,
 				DF6A0D851A4584E80075BBFC /* OverrideFile.cpp in Sources */,
@@ -12434,6 +12471,7 @@
 				F5B722FB1C7C894F006432AE /* CECBuiltins.cpp in Sources */,
 				F5AA30F11BE5643A00693976 /* VideoLayerView.mm in Sources */,
 				E499154B174E642900741B6D /* XBApplicationEx.cpp in Sources */,
+				F5DF587A1FEEBA3F00AD4C8C /* CloudUtils.cpp in Sources */,
 				E499154C174E642900741B6D /* XBDateTime.cpp in Sources */,
 				F5B723751C7C9A51006432AE /* ActiveAEDSPMode.cpp in Sources */,
 				E499154F174E64F200741B6D /* MouseStat.cpp in Sources */,
@@ -13195,6 +13233,7 @@
 				F5B723761C7C9A51006432AE /* ActiveAEDSPMode.cpp in Sources */,
 				F5B722C11C7BC10B006432AE /* kiss_fftr.c in Sources */,
 				F5D1408A1BAF0B6D0075A95C /* AirPlayServer.cpp in Sources */,
+				F5DF58871FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */,
 				F5D1408B1BAF0B6D0075A95C /* AirTunesServer.cpp in Sources */,
 				F5D1408C1BAF0B6D0075A95C /* DNSNameCache.cpp in Sources */,
 				F5D1408D1BAF0B6D0075A95C /* EventClient.cpp in Sources */,
@@ -13377,6 +13416,7 @@
 				F5D1411A1BAF0B6D0075A95C /* HttpResponse.cpp in Sources */,
 				F5D1411B1BAF0B6D0075A95C /* InfoLoader.cpp in Sources */,
 				F5B723DC1C7C9F76006432AE /* ContextMenuAddon.cpp in Sources */,
+				F5DF58831FEEBA8A00AD4C8C /* CloudOperations.cpp in Sources */,
 				F5D1411C1BAF0B6D0075A95C /* JobManager.cpp in Sources */,
 				F5D1411D1BAF0B6D0075A95C /* JSONVariantParser.cpp in Sources */,
 				F5D1411E1BAF0B6D0075A95C /* JSONVariantWriter.cpp in Sources */,
@@ -13531,6 +13571,7 @@
 				F5D141971BAF0B6D0075A95C /* DVDFactoryCodec.cpp in Sources */,
 				F5B7250C1C7E150C006432AE /* sha1.cpp in Sources */,
 				F5D141991BAF0B6D0075A95C /* fstrcmp.c in Sources */,
+				F5DF587B1FEEBA3F00AD4C8C /* CloudUtils.cpp in Sources */,
 				F5D1419A1BAF0B6D0075A95C /* yuv2rgb.neon.S in Sources */,
 				F5D1419B1BAF0B6D0075A95C /* FavouritesDirectory.cpp in Sources */,
 				F5B722AD1C7BBFBF006432AE /* EncoderFFmpeg.cpp in Sources */,
@@ -13572,6 +13613,7 @@
 				F5B7226C1C7BBDD2006432AE /* DVDInputStreamBluray.cpp in Sources */,
 				F5D141B91BAF0B6D0075A95C /* SettingRequirement.cpp in Sources */,
 				F5D141BA1BAF0B6D0075A95C /* SettingSection.cpp in Sources */,
+				F5DF587E1FEEBA3F00AD4C8C /* CloudDirectory.cpp in Sources */,
 				F534EDA41E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */,
 				F5D141BB1BAF0B6D0075A95C /* SettingsManager.cpp in Sources */,
 				F5D141BC1BAF0B6D0075A95C /* SettingUpdate.cpp in Sources */,

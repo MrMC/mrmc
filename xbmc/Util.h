@@ -70,6 +70,7 @@ public:
   static int GetDVDIfoTitle(const std::string& strPathFile);
 
   static bool IsPicture(const std::string& strFile);
+  static bool IsCloud(const std::string& strFile);
 
   /*! \brief retrieve MD5sum of a file
    \param strPath - path to the file to MD5sum
