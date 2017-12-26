@@ -101,6 +101,8 @@ public:
   void ResetAutoScrolling();
   void UpdateAutoScrolling(unsigned int currentTime);
 
+  CGUIListItemLayout *GetFocusedLayout() const;
+
 #ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();
 #endif
@@ -138,7 +140,6 @@ protected:
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
   void GetCurrentLayouts();
-  CGUIListItemLayout *GetFocusedLayout() const;
 
   CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
     

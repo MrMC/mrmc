@@ -3258,6 +3258,7 @@
 		F5DF58851FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */; };
 		F5DF58861FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */; };
 		F5DF58871FEEC58300AD4C8C /* ClientPrivateInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */; };
+		F5DF588B1FEF37C600AD4C8C /* FocusLayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5DF58891FEF37C500AD4C8C /* FocusLayerView.mm */; };
 		F5E10537140AA38100175026 /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10513140AA38000175026 /* PeripheralBusUSB.cpp */; };
 		F5E10538140AA38100175026 /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10515140AA38000175026 /* PeripheralBus.cpp */; };
 		F5E1053B140AA38100175026 /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1051C140AA38000175026 /* Peripheral.cpp */; };
@@ -5909,6 +5910,8 @@
 		F5DF58801FEEBA8900AD4C8C /* CloudOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CloudOperations.cpp; sourceTree = "<group>"; };
 		F5DF58841FEEC58200AD4C8C /* ClientPrivateInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClientPrivateInfo.cpp; sourceTree = "<group>"; };
 		F5DF58881FEEC59300AD4C8C /* ClientPrivateInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClientPrivateInfo.h; sourceTree = "<group>"; };
+		F5DF58891FEF37C500AD4C8C /* FocusLayerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FocusLayerView.mm; sourceTree = "<group>"; };
+		F5DF588A1FEF37C500AD4C8C /* FocusLayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusLayerView.h; sourceTree = "<group>"; };
 		F5E10513140AA38000175026 /* PeripheralBusUSB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusUSB.cpp; sourceTree = "<group>"; };
 		F5E10514140AA38000175026 /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
 		F5E10515140AA38000175026 /* PeripheralBus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBus.cpp; sourceTree = "<group>"; };
@@ -9984,6 +9987,8 @@
 				F5D1429D1BAF31FB0075A95C /* MainApplication.mm */,
 				F5D1429E1BAF31FB0075A95C /* MainController.h */,
 				F5D1429F1BAF31FB0075A95C /* MainController.mm */,
+				F5DF588A1FEF37C500AD4C8C /* FocusLayerView.h */,
+				F5DF58891FEF37C500AD4C8C /* FocusLayerView.mm */,
 				F5D142A01BAF31FB0075A95C /* MainEAGLView.h */,
 				F5D142A11BAF31FB0075A95C /* MainEAGLView.mm */,
 				F5D142A41BAF31FB0075A95C /* MainKeyboard.h */,
@@ -12759,6 +12764,7 @@
 				F5D13F001BAF0B6D0075A95C /* DVDDemuxBXA.cpp in Sources */,
 				F55BD31E1D246E240072FE3A /* ServicesManager.cpp in Sources */,
 				F5D13F021BAF0B6D0075A95C /* DVDDemuxFFmpeg.cpp in Sources */,
+				F5DF588B1FEF37C600AD4C8C /* FocusLayerView.mm in Sources */,
 				F5D13F031BAF0B6D0075A95C /* DVDDemuxPVRClient.cpp in Sources */,
 				F51063441BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */,
 				F5D13F041BAF0B6D0075A95C /* DVDDemuxShoutcast.cpp in Sources */,

@@ -996,6 +996,12 @@ void CGUIWindowManager::Process(unsigned int currentTime)
 
   for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); ++itr)
     m_tracker.MarkDirtyRegion(*itr);
+
+#if defined(TARGET_DARWIN_TVOS)
+  // update focus engine after all windows/dialogs have processed
+  if (g_application.IsAppInitialized() && g_application.IsAppFocused())
+    CFocusEngineHandler::GetInstance().Process();
+#endif
 }
 
 void CGUIWindowManager::MarkDirty()
@@ -1102,6 +1108,19 @@ bool CGUIWindowManager::Render()
       CRect focusedItem = CFocusEngineHandler::GetInstance().GetFocusRect();
       if (!focusedItem.IsEmpty())
         CGUITexture::DrawQuad(focusedItem, 0x4c00ff00);
+    }
+    if (CFocusEngineHandler::GetInstance().ShowVisibleRects())
+    {
+      g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
+      std::vector<FocusEngineItem> *items = CFocusEngineHandler::GetInstance().GetVisible();
+      if (items)
+      {
+        for (auto i = items->begin(); i != items->end(); ++i)
+        {
+          (*i).renderRect = (*i).control->GetRenderRect();
+          //CGUITexture::DrawQuad((*i).renderRect, 0x4c00ff00);
+        }
+      }
     }
   }
 #endif

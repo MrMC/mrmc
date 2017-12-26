@@ -74,6 +74,7 @@ public:
   CGUIControl *GetControl(int id);
   virtual CGUIControl *GetFirstFocusableControl(int id);
   void GetContainers(std::vector<CGUIControl *> &containers) const;
+  void GetControlsFromLookUpMap(std::vector<CGUIControl *> &controls) const;
 
   virtual void AddControl(CGUIControl *control, int position = -1);
   bool InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
@@ -86,11 +87,6 @@ public:
 
   virtual bool IsGroup() const { return true; };
 
-
-#ifdef DEBUG_CGUI_TEXTUREUSE
-  virtual void DumpTextureUse();
-#endif
-protected:
   /*!
    \brief Check whether a given control is valid
    Runs through controls and returns whether this control is valid.  Only functional
@@ -100,6 +96,11 @@ protected:
    */
   bool IsValidControl(const CGUIControl *control) const;
 
+
+#ifdef DEBUG_CGUI_TEXTUREUSE
+  virtual void DumpTextureUse();
+#endif
+protected:
   // sub controls
   std::vector<CGUIControl *> m_children;
   typedef std::vector<CGUIControl *>::iterator iControls;

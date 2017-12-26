@@ -701,6 +701,12 @@ void CGUIControlGroup::GetContainers(std::vector<CGUIControl *> &containers) con
   }
 }
 
+void CGUIControlGroup::GetControlsFromLookUpMap(std::vector<CGUIControl *> &controls) const
+{
+  for (auto it = m_lookup.begin(); it != m_lookup.end(); ++it)
+    controls.push_back(it->second);
+}
+
 #ifdef DEBUG_CGUI_TEXTUREUSE
 void CGUIControlGroup::DumpTextureUse()
 {
