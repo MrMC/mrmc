@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  *
- *  Refactored. Copyright (C) 2015-2017 Team MrMC
+ *  Refactored. Copyright (C) 2015-2018 Team MrMC
  *  https://github.com/MrMC
  *
  */
@@ -118,6 +118,13 @@ typedef enum SiriRemoteTypes
   SiriRemote_PageDown = 24
 } SiriRemoteTypes;
 
+typedef enum SwipeTimerStates
+{
+  SwipeTimerOff = 0,
+  SwipeTimerRunning = 1,
+  SwipeTimerTimedOut = 2
+} SwipeTimerStates;
+
 using namespace KODI::MESSAGING;
 
 MainController *g_xbmcController;
@@ -127,15 +134,17 @@ MainController *g_xbmcController;
 @interface MainController ()
 @property (strong, nonatomic) NSTimer *pressAutoRepeatTimer;
 @property (strong, nonatomic) NSTimer *remoteIdleTimer;
+@property (strong, nonatomic) NSTimer *swipeTimer;
+@property (nonatomic, assign) int swipeTimerState;
 @property (strong) GCController* gcController;
 @property (nonatomic, strong) CADisplayLink *displayLink;
 @property (nonatomic, assign) float displayRate;
-@property (nonatomic) FocusLayerView *View1;
-@property (nonatomic) FocusLayerView *View2;
-@property (nonatomic) FocusLayerView *View3;
-@property (nonatomic) FocusLayerView *View4;
-@property (nonatomic) UIView *preferredView;
-
+@property (nonatomic, nullable) FocusLayerView *focusView;
+@property (nonatomic, nullable) FocusLayerView *focusViewLeft;
+@property (nonatomic, nullable) FocusLayerView *focusViewRight;
+@property (nonatomic, nullable) FocusLayerView *focusViewTop;
+@property (nonatomic, nullable) FocusLayerView *focusViewBottom;
+@property (nonatomic, assign) FocusLayer focusLayer;
 @end
 
 #pragma mark - MainController implementation
@@ -149,6 +158,11 @@ MainController *g_xbmcController;
 @synthesize m_remoteIdleTimeout;
 @synthesize m_enableRemoteIdle;
 @synthesize m_allowTap;
+
+// careful, this is like a global for all MainController classes
+// we only have one so it does not matter and keeps from exposing
+// FocusEngineHandler.h all over the place.
+std::vector<FocusEngineCoreViews> m_viewItems;
 
 #pragma mark - internal key press methods
 - (void)sendButtonPressed:(int)buttonId
@@ -280,10 +294,6 @@ static int keyPressTimerFiredCount = 0;
     self.pressAutoRepeatTimer = nil;
   }
 }
-- (int)getKeyPressTimerCount
-{
-  return keyPressTimerFiredCount;
-}
 - (void)keyPressTimerCallback:(NSTimer*)theTimer
 {
   //PRINT_SIGNATURE();
@@ -370,8 +380,6 @@ static int keyPressTimerFiredCount = 0;
 
 - (void)enableRemotePanSwipe:(BOOL)enable
 {
-  //PRINT_SIGNATURE();
-  siriRemoteInfo.enablePanSwipe = enable;
 }
 
 //--------------------------------------------------------------
@@ -452,40 +460,35 @@ static int keyPressTimerFiredCount = 0;
 {
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleSwipe:)];
-
   swipeLeft.delaysTouchesBegan = NO;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
   swipeLeft.delegate = self;
-  [m_glView addGestureRecognizer:swipeLeft];
+  [self.focusView  addGestureRecognizer:swipeLeft];
 
   //single finger swipe right
   UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
                                           initWithTarget:self action:@selector(handleSwipe:)];
-
   swipeRight.delaysTouchesBegan = NO;
   swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
   swipeRight.delegate = self;
-  [m_glView addGestureRecognizer:swipeRight];
+  [self.focusView  addGestureRecognizer:swipeRight];
 
   //single finger swipe up
   UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
                                        initWithTarget:self action:@selector(handleSwipe:)];
-
   swipeUp.delaysTouchesBegan = NO;
   swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
   swipeUp.delegate = self;
-  [m_glView addGestureRecognizer:swipeUp];
+  [self.focusView  addGestureRecognizer:swipeUp];
 
   //single finger swipe down
   UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleSwipe:)];
-
   swipeDown.delaysTouchesBegan = NO;
   swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
   swipeDown.delegate = self;
-  [m_glView addGestureRecognizer:swipeDown];
+  [self.focusView  addGestureRecognizer:swipeDown];
 }
-
 //--------------------------------------------------------------
 - (void)createPanGestureRecognizers
 {
@@ -494,38 +497,8 @@ static int keyPressTimerFiredCount = 0;
   auto pan = [[UIPanGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePan:)];
   pan.delegate = self;
-  [m_glView addGestureRecognizer:pan];
+  [self.focusView addGestureRecognizer:pan];
 }
-//--------------------------------------------------------------
-- (void)createTapGestureRecognizers
-{
-  //PRINT_SIGNATURE();
-  // tap side of siri remote pad
-  auto upRecognizer = [[UITapGestureRecognizer alloc]
-                       initWithTarget: self action: @selector(tapUpArrowPressed:)];
-  upRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeUpArrow]];
-  upRecognizer.delegate = self;
-  [m_glView addGestureRecognizer: upRecognizer];
-
-  auto downRecognizer = [[UITapGestureRecognizer alloc]
-                         initWithTarget: self action: @selector(tapDownArrowPressed:)];
-  downRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeDownArrow]];
-  downRecognizer.delegate = self;
-  [m_glView addGestureRecognizer: downRecognizer];
-
-  auto leftRecognizer = [[UITapGestureRecognizer alloc]
-                         initWithTarget: self action: @selector(tapLeftArrowPressed:)];
-  leftRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeLeftArrow]];
-  leftRecognizer.delegate = self;
-  [m_glView addGestureRecognizer: leftRecognizer];
-
-  auto rightRecognizer = [[UITapGestureRecognizer alloc]
-                          initWithTarget: self action: @selector(tapRightArrowPressed:)];
-  rightRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
-  rightRecognizer.delegate = self;
-  [m_glView addGestureRecognizer: rightRecognizer];
-}
-
 //--------------------------------------------------------------
 - (void)createPressGesturecognizers
 {
@@ -539,48 +512,77 @@ static int keyPressTimerFiredCount = 0;
   upRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeUpArrow]];
   upRecognizer.minimumPressDuration = 0.01;
   upRecognizer.delegate = self;
-  [self.view addGestureRecognizer: upRecognizer];
+  [self.focusView addGestureRecognizer: upRecognizer];
 
   auto downRecognizer = [[UILongPressGestureRecognizer alloc]
     initWithTarget: self action: @selector(IRRemoteDownArrowPressed:)];
   downRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeDownArrow]];
   downRecognizer.minimumPressDuration = 0.01;
   downRecognizer.delegate = self;
-  [self.view addGestureRecognizer: downRecognizer];
+  [self.focusView addGestureRecognizer: downRecognizer];
 
   auto leftRecognizer = [[UILongPressGestureRecognizer alloc]
     initWithTarget: self action: @selector(IRRemoteLeftArrowPressed:)];
   leftRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeLeftArrow]];
   leftRecognizer.minimumPressDuration = 0.01;
   leftRecognizer.delegate = self;
-  [self.view addGestureRecognizer: leftRecognizer];
+  [self.focusView addGestureRecognizer: leftRecognizer];
 
   auto rightRecognizer = [[UILongPressGestureRecognizer alloc]
     initWithTarget: self action: @selector(IRRemoteRightArrowPressed:)];
   rightRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
   rightRecognizer.minimumPressDuration = 0.01;
   rightRecognizer.delegate = self;
-  [self.view addGestureRecognizer: rightRecognizer];
-  
+  [self.focusView addGestureRecognizer: rightRecognizer];
+
   // we always have these under tvos, both ir and siri remotes respond to these
   auto menuRecognizer = [[UITapGestureRecognizer alloc]
                          initWithTarget: self action: @selector(menuPressed:)];
   menuRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeMenu]];
   menuRecognizer.delegate  = self;
-  [m_glView addGestureRecognizer: menuRecognizer];
+  [self.focusView addGestureRecognizer: menuRecognizer];
   
   auto playPauseRecognizer = [[UITapGestureRecognizer alloc]
                               initWithTarget: self action: @selector(playPausePressed:)];
   playPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
   playPauseRecognizer.delegate  = self;
-  [m_glView addGestureRecognizer: playPauseRecognizer];
+  [self.focusView addGestureRecognizer: playPauseRecognizer];
   
   auto selectRecognizer = [[UILongPressGestureRecognizer alloc]
                           initWithTarget: self action: @selector(selectPressed:)];
   selectRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
   selectRecognizer.minimumPressDuration = 0.001;
   selectRecognizer.delegate = self;
-  [self.view addGestureRecognizer: selectRecognizer];
+  [self.focusView addGestureRecognizer: selectRecognizer];
+}
+//--------------------------------------------------------------
+- (void)createTapGestureRecognizers
+{
+  //PRINT_SIGNATURE();
+  // tap side of siri remote pad
+  auto upRecognizer = [[UITapGestureRecognizer alloc]
+                       initWithTarget: self action: @selector(tapUpArrowPressed:)];
+  upRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeUpArrow]];
+  upRecognizer.delegate = self;
+  [self.focusView addGestureRecognizer: upRecognizer];
+
+  auto downRecognizer = [[UITapGestureRecognizer alloc]
+                         initWithTarget: self action: @selector(tapDownArrowPressed:)];
+  downRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeDownArrow]];
+  downRecognizer.delegate = self;
+  [self.focusView addGestureRecognizer: downRecognizer];
+
+  auto leftRecognizer = [[UITapGestureRecognizer alloc]
+                         initWithTarget: self action: @selector(tapLeftArrowPressed:)];
+  leftRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeLeftArrow]];
+  leftRecognizer.delegate = self;
+  [self.focusView addGestureRecognizer: leftRecognizer];
+
+  auto rightRecognizer = [[UITapGestureRecognizer alloc]
+                          initWithTarget: self action: @selector(tapRightArrowPressed:)];
+  rightRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
+  rightRecognizer.delegate = self;
+  [self.focusView addGestureRecognizer: rightRecognizer];
 }
 
 //--------------------------------------------------------------
@@ -588,14 +590,14 @@ static int keyPressTimerFiredCount = 0;
 {
   //PRINT_SIGNATURE();
   [self.view addSubview:view];
-  m_glView.userInteractionEnabled = NO;
+  self.focusView.userInteractionEnabled = NO;
 }
 //--------------------------------------------------------------
 - (void) deactivateKeyboard:(UIView *)view
 {
   //PRINT_SIGNATURE();
   [view removeFromSuperview];
-  m_glView.userInteractionEnabled = YES; 
+  self.focusView.userInteractionEnabled = YES;
   [self becomeFirstResponder];
 }
 
@@ -604,9 +606,137 @@ static int keyPressTimerFiredCount = 0;
 {
   m_nativeKeyboardActive = active;
 }
+
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 #pragma mark - gesture handlers
+static const char* focusActionTypeNames[] = {
+  "none",
+  "tap",
+  "pan",
+  "press",
+  "swipe",
+  };
+
+typedef enum FocusActionTypes
+{
+  FocusActionNone = 0,
+  FocusActionTap  = 1,
+  FocusActionPan  = 2,
+  FocusActionPress = 3,
+  FocusActionSwipe = 4,
+} FocusActionTypes;
+int focusActionType = FocusActionNone;
+
+//--------------------------------------------------------------
+- (IBAction)handleSwipe:(UISwipeGestureRecognizer *)sender
+{
+  if (!m_remoteIdleState)
+  {
+    if (m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+    {
+      CGPoint location;
+      switch (sender.state)
+      {
+        case UIGestureRecognizerStatePossible:
+          CLog::Log(LOGDEBUG, "handleSwipe:StatePossible");
+          break;
+        case UIGestureRecognizerStateBegan:
+          CLog::Log(LOGDEBUG, "handleSwipe:StateBegan");
+          break;
+        case UIGestureRecognizerStateChanged:
+          CLog::Log(LOGDEBUG, "handleSwipe:StateChanged");
+          break;
+        case UIGestureRecognizerStateCancelled:
+          CLog::Log(LOGDEBUG, "handleSwipe:StateCancelled");
+          break;
+        case UIGestureRecognizerStateFailed:
+          CLog::Log(LOGDEBUG, "handleSwipe:StateFailed");
+          break;
+        case UIGestureRecognizerStateRecognized:
+          {
+            focusActionType = FocusActionSwipe;
+            FocusLayerView *parentView = [self findParentView:_focusLayer.view];
+            swipeStartingFocusLayerParentViewRect = parentView.bounds;
+            location = [sender locationInView:sender.view];
+            CLog::Log(LOGDEBUG, "handleSwipe:StateRecognized, %f, %f", location.x, location.y);
+            CLog::Log(LOGDEBUG, "handleSwipe:StateRecognized: %f, %f, %f, %f",
+              swipeStartingFocusLayerParentViewRect.origin.x,
+              swipeStartingFocusLayerParentViewRect.origin.y,
+              swipeStartingFocusLayerParentViewRect.origin.x + swipeStartingFocusLayerParentViewRect.size.width,
+              swipeStartingFocusLayerParentViewRect.origin.y + swipeStartingFocusLayerParentViewRect.size.height);
+          }
+          break;
+        default:
+          break;
+      }
+      switch ([sender direction])
+      {
+        case UISwipeGestureRecognizerDirectionRight:
+          CLog::Log(LOGDEBUG, "handleSwipe:DirectionRight");
+          break;
+        case UISwipeGestureRecognizerDirectionLeft:
+          CLog::Log(LOGDEBUG, "handleSwipe:DirectionLeft");
+          break;
+        case UISwipeGestureRecognizerDirectionUp:
+          CLog::Log(LOGDEBUG, "handleSwipe:DirectionUp");
+          break;
+        case UISwipeGestureRecognizerDirectionDown:
+          CLog::Log(LOGDEBUG, "handleSwipe:DirectionDown");
+          break;
+      }
+    }
+  }
+  // start remote idle timer
+  [self startRemoteTimer];
+}
+
+ CGRect swipeStartingFocusLayerParentViewRect;
+//--------------------------------------------------------------
+- (IBAction)handlePan:(UIPanGestureRecognizer *)sender
+{
+  if (!m_remoteIdleState)
+  {
+    if (m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
+    {
+      CGPoint location;
+      switch (sender.state)
+      {
+        case UIGestureRecognizerStateBegan:
+          {
+            focusActionType = FocusActionPan;
+            FocusLayerView *parentView = [self findParentView:_focusLayer.view];
+            swipeStartingFocusLayerParentViewRect = parentView.bounds;
+            location = [sender translationInView:sender.view];
+            CLog::Log(LOGDEBUG, "handlePan:StateBegan, %f, %f", location.x, location.y);
+            CLog::Log(LOGDEBUG, "handlePan:StateBegan: %f, %f, %f, %f",
+              swipeStartingFocusLayerParentViewRect.origin.x,
+              swipeStartingFocusLayerParentViewRect.origin.y,
+              swipeStartingFocusLayerParentViewRect.origin.x + swipeStartingFocusLayerParentViewRect.size.width,
+              swipeStartingFocusLayerParentViewRect.origin.y + swipeStartingFocusLayerParentViewRect.size.height);
+          }
+          break;
+        case UIGestureRecognizerStateChanged:
+          location = [sender translationInView:sender.view];
+          CLog::Log(LOGDEBUG, "handlePan:StateChanged, %f, %f", location.x, location.y);
+          break;
+        case UIGestureRecognizerStateEnded:
+          location = [sender translationInView:sender.view];
+          CLog::Log(LOGDEBUG, "handlePan:StateEnded,   %f, %f", location.x, location.y);
+          break;
+        case UIGestureRecognizerStateCancelled:
+          CLog::Log(LOGDEBUG, "handlePan:StateCancelled");
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  // start remote idle timer
+  [self startRemoteTimer];
+}
+
+//--------------------------------------------------------------
 - (void)menuPressed:(UITapGestureRecognizer *)sender
 {
   PRINT_SIGNATURE();
@@ -672,6 +802,7 @@ static int keyPressTimerFiredCount = 0;
   }
 }
 
+//--------------------------------------------------------------
 - (void)playPausePressed:(UITapGestureRecognizer *) sender
 {
   PRINT_SIGNATURE();
@@ -691,47 +822,34 @@ static int keyPressTimerFiredCount = 0;
   }
 }
 
-#define REPEATED_IRPRESS_DELAY_S 0.35
+//--------------------------------------------------------------
 - (IBAction)IRRemoteUpArrowPressed:(UIGestureRecognizer *)sender
 {
+  CLog::Log(LOGDEBUG, "IRRemoteUpArrowPressed");
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
-      [self sendButtonPressed:SiriRemote_UpTap];
-      if ([self shouldFastScroll] && [self getFocusedOrientation] == VERTICAL)
-      {
-        [self startKeyPressTimer:SiriRemote_UpTap doBeforeDelay:false withDelay:REPEATED_IRPRESS_DELAY_S];
-      }
+      focusActionType = FocusActionPress;
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateChanged:
     case UIGestureRecognizerStateCancelled:
-      [self stopKeyPressTimer];
-      // restart remote timeout
-      [self startRemoteTimer];
       break;
     default:
       break;
   }
 }
-//--------------------------------------------------------------
 - (IBAction)IRRemoteDownArrowPressed:(UIGestureRecognizer *)sender
 {
+  CLog::Log(LOGDEBUG, "IRRemoteDownArrowPressed");
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
-      [self sendButtonPressed:SiriRemote_DownTap];
-      if ([self shouldFastScroll] && [self getFocusedOrientation] == VERTICAL)
-      {
-        [self startKeyPressTimer:SiriRemote_DownTap doBeforeDelay:false withDelay:REPEATED_IRPRESS_DELAY_S];
-      }
+      focusActionType = FocusActionPress;
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateChanged:
     case UIGestureRecognizerStateCancelled:
-      [self stopKeyPressTimer];
-      // restart remote timeout
-      [self startRemoteTimer];
       break;
     default:
       break;
@@ -739,21 +857,15 @@ static int keyPressTimerFiredCount = 0;
 }
 - (IBAction)IRRemoteLeftArrowPressed:(UIGestureRecognizer *)sender
 {
+  CLog::Log(LOGDEBUG, "IRRemoteLeftArrowPressed");
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
-     [self sendButtonPressed:SiriRemote_LeftTap];
-      if ([self shouldFastScroll] && [self getFocusedOrientation] == HORIZONTAL)
-      {
-        [self startKeyPressTimer:SiriRemote_LeftTap doBeforeDelay:false withDelay:REPEATED_IRPRESS_DELAY_S];
-      }
+      focusActionType = FocusActionPress;
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateChanged:
     case UIGestureRecognizerStateCancelled:
-      [self stopKeyPressTimer];
-      // restart remote timeout
-      [self startRemoteTimer];
       break;
     default:
       break;
@@ -761,21 +873,15 @@ static int keyPressTimerFiredCount = 0;
 }
 - (IBAction)IRRemoteRightArrowPressed:(UIGestureRecognizer *)sender
 {
+  CLog::Log(LOGDEBUG, "IRRemoteRightArrowPressed");
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
-      [self sendButtonPressed:SiriRemote_RightTap];
-      if ([self shouldFastScroll] && [self getFocusedOrientation] == HORIZONTAL)
-      {
-        [self startKeyPressTimer:SiriRemote_RightTap doBeforeDelay:false withDelay:REPEATED_IRPRESS_DELAY_S];
-      }
+      focusActionType = FocusActionPress;
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateChanged:
     case UIGestureRecognizerStateCancelled:
-      [self stopKeyPressTimer];
-      // restart remote timeout
-      [self startRemoteTimer];
       break;
     default:
       break;
@@ -785,861 +891,23 @@ static int keyPressTimerFiredCount = 0;
 //--------------------------------------------------------------
 - (IBAction)tapUpArrowPressed:(UIGestureRecognizer *)sender
 {
-  //if (!m_remoteIdleState)
-  NSLog(@"microGamepad: tapUpArrowPressed");
-  if (m_allowTap)
-    [self sendButtonPressed:SiriRemote_UpTap];
-  m_allowTap = true;
-  [self startRemoteTimer];
+  focusActionType = FocusActionPress;
+  CLog::Log(LOGDEBUG, "tapUpArrowPressed");
 }
-//--------------------------------------------------------------
 - (IBAction)tapDownArrowPressed:(UIGestureRecognizer *)sender
 {
-  //if (!m_remoteIdleState)
-  NSLog(@"microGamepad: tapDownArrowPressed");
-  if (m_allowTap)
-    [self sendButtonPressed:SiriRemote_DownTap];
-  m_allowTap = true;
-  [self startRemoteTimer];
+  focusActionType = FocusActionPress;
+  CLog::Log(LOGDEBUG, "tapDownArrowPressed");
 }
-//--------------------------------------------------------------
 - (IBAction)tapLeftArrowPressed:(UIGestureRecognizer *)sender
 {
-  //if (!m_remoteIdleState)
-  NSLog(@"microGamepad: tapLeftArrowPressed");
-  if (m_allowTap)
-    [self sendButtonPressed:SiriRemote_LeftTap];
-  m_allowTap = true;
-  [self startRemoteTimer];
+  focusActionType = FocusActionPress;
+  CLog::Log(LOGDEBUG, "tapLeftArrowPressed");
 }
-//--------------------------------------------------------------
 - (IBAction)tapRightArrowPressed:(UIGestureRecognizer *)sender
 {
-  //if (!m_remoteIdleState)
-  NSLog(@"microGamepad: tapRightArrowPressed");
-  if (m_allowTap)
-    [self sendButtonPressed:SiriRemote_RightTap];
-  m_allowTap = true;
-  [self startRemoteTimer];
-}
-
-//--------------------------------------------------------------
-- (IBAction)handleSwipe:(UISwipeGestureRecognizer *)sender
-{
-  if (!m_remoteIdleState)
-  {
-    if (m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
-    {
-      switch (sender.state)
-      {
-        case UIGestureRecognizerStateBegan:
-          NSLog(@"microGamepad: handleSwipe:UIGestureRecognizerStateBegan");
-          break;
-        case UIGestureRecognizerStateChanged:
-          NSLog(@"microGamepad: handleSwipe:UIGestureRecognizerStateChanged");
-          break;
-        case UIGestureRecognizerStateEnded:
-          NSLog(@"microGamepad: handleSwipe:UIGestureRecognizerStateEnded");
-          break;
-        case UIGestureRecognizerStateCancelled:
-          NSLog(@"microGamepad: handleSwipe:UIGestureRecognizerStateCancelled");
-          break;
-        default:
-          break;
-      }
-      switch ([sender direction])
-      {
-        case UISwipeGestureRecognizerDirectionRight:
-          NSLog(@"microGamepad: handleSwipe:UISwipeGestureRecognizerDirectionRight");
-          break;
-        case UISwipeGestureRecognizerDirectionLeft:
-          NSLog(@"microGamepad: handleSwipe:UISwipeGestureRecognizerDirectionLeft");
-          break;
-        case UISwipeGestureRecognizerDirectionUp:
-          NSLog(@"microGamepad: handleSwipe:UISwipeGestureRecognizerDirectionUp");
-          break;
-        case UISwipeGestureRecognizerDirectionDown:
-          NSLog(@"microGamepad: handleSwipe:UISwipeGestureRecognizerDirectionDown");
-          break;
-      }
-    }
-  }
-  // start remote idle timer
-  [self startRemoteTimer];
-}
-
-//--------------------------------------------------------------
-- (IBAction)handlePan:(UIPanGestureRecognizer *)sender
-{
-  if (!m_remoteIdleState)
-  {
-    if (m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
-    {
-      switch (sender.state)
-      {
-        case UIGestureRecognizerStateBegan:
-          NSLog(@"microGamepad: handlePan:UIGestureRecognizerStateBegan");
-          break;
-        case UIGestureRecognizerStateChanged:
-          NSLog(@"microGamepad: handlePan:UIGestureRecognizerStateChanged");
-          break;
-        case UIGestureRecognizerStateEnded:
-          NSLog(@"microGamepad: handlePan:UIGestureRecognizerStateEnded");
-          break;
-        case UIGestureRecognizerStateCancelled:
-          NSLog(@"microGamepad: handlePan:UIGestureRecognizerStateCancelled");
-          break;
-        default:
-          break;
-      }
-    }
-  }
-  // start remote idle timer
-  [self startRemoteTimer];
-}
-
-//--------------------------------------------------------------
-//--------------------------------------------------------------
-#pragma mark - microGamepad methods
-typedef enum SiriRemoteState
-{
-  SiriRemoteIdle,
-  SiriRemoteSelect,
-  SiriRemoteTapTimer,
-  SiriRemotePanSwipe,
-  SiriRemotePan,
-} SiriRemoteState;
-
-typedef struct
-{
-  float dt, dx, dy;
-  bool  debug = false;
-  CGPoint startPoint;
-  CGPoint movedPoint;
-  float   tapbounts = 0.18f;
-  // // movement to outside w/2 or h/2 determines jump to next item.
-  CGRect  panningRect;
-  // default panning rect size, this will
-  // get offset as user pans across items.
-  CGRect  panningRectStart = {0.0f, 0.0f, 0.85f, 0.85f};
-  // points outside are in 'pinned' area
-  CGRect  panningPinnedRect = {0.25f, 0.25f, 1.50f, 1.50f};
-  // points outside are in horizontal 'pinned' area.
-  // strips at top and bottom that spans from left to right.
-  CGRect  panningPinnedHorzRect = {0.00f, 0.25f, 2.00f, 1.50f};
-  // points outside are in horizontal 'pinned' area.
-  // strips at left and right that spans from top to bottom.
-  CGRect  panningPinnedVertRect = {0.25f, 0.00f, 1.50f, 2.00f};
-  CFAbsoluteTime startSeconds;
-  CFAbsoluteTime movedSeconds;
-  bool enablePanSwipe;
-  float ignoreAfterSwipeSeconds;
-  FocusEngineAnimate focusAnimate;
-  SiriRemoteState state = SiriRemoteIdle;
-} SiriRemoteInfo;
-static SiriRemoteInfo siriRemoteInfo;
-
--(void)startTapRepeatTimer:(SiriRemoteInfo&)remote withPoint:(CGPoint)point withdelay:(NSTimeInterval)delayTime
-{
-  if (![self shouldFastScroll])
-    return;
-
-  // absolute coordinate system is 0 to +2 with left/bottom = (0,0)
-  // transform coordinates to left/bottom = (-1, -1) to make checks easy
-  CGPoint centerStart = CGPointMake(
-    point.x - 1.0,
-    point.y - 1.0);
-  NSLog(@"microGamepad: tap timer started");
-  // tap detected, use staring location to determine
-  // where tap occurred, ending location could be a slip of the finger
-  if (fabs(centerStart.x) >= fabs(centerStart.y))
-  {
-    if (point.x < 1.0)
-    {
-      if (remote.debug)
-        NSLog(@"microGamepad: tap repeat left");
-      if ([self shouldFastScroll] && [self getFocusedOrientation] == HORIZONTAL)
-      {
-        [self startKeyPressTimer:SiriRemote_LeftTap doBeforeDelay:false withDelay:delayTime];
-      }
-      else
-        [self startKeyPressTimer:SiriRemote_UpTap doBeforeDelay:false withDelay:delayTime];
-    }
-    else
-    {
-      if (remote.debug)
-        NSLog(@"microGamepad: tap repeat right");
-      if ([self shouldFastScroll] && [self getFocusedOrientation] == HORIZONTAL)
-      {
-        [self startKeyPressTimer:SiriRemote_RightTap doBeforeDelay:false withDelay:delayTime];
-      }
-      else
-        [self startKeyPressTimer:SiriRemote_DownTap doBeforeDelay:false withDelay:delayTime];
-    }
-  }
-  else
-  {
-    if (point.y >= 1.0)
-    {
-      if (remote.debug)
-        NSLog(@"microGamepad: tap repeat up");
-      if ([self getFocusedOrientation] == VERTICAL)
-        [self startKeyPressTimer:SiriRemote_UpTap doBeforeDelay:false withDelay:delayTime];
-    }
-    else
-    {
-      if (remote.debug)
-        NSLog(@"microGamepad: tap repeat down");
-      if ([self getFocusedOrientation] == VERTICAL)
-        [self startKeyPressTimer:SiriRemote_DownTap doBeforeDelay:false withDelay:delayTime];
-    }
-  }
-}
--(bool)isTapRepeatTimerActive
-{
-  return self.pressAutoRepeatTimer != nil;
-}
-
--(void)stopTapRepeatTimer
-{
-  if (self.pressAutoRepeatTimer != nil)
-  {
-    if (siriRemoteInfo.debug)
-      NSLog(@"microGamepad: tap timer stopped");
-    [self stopKeyPressTimer];
-  }
-}
-
--(void)processPanEvent:(SiriRemoteInfo&)remote
-{
-  if (!siriRemoteInfo.enablePanSwipe)
-    return;
-
-  if (!CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint))
-  {
-    // if outside panningPinnedRect,
-    // we are at edges of trackpad and considered 'pinned'
-    if (siriRemoteInfo.debug)
-        NSLog(@"microGamepad: processPanPinned");
-
-    if (![self isTapRepeatTimerActive])
-    {
-      // use moved point to determine direction
-      [self startTapRepeatTimer:remote withPoint:remote.movedPoint withdelay:REPEATED_KEYPRESS_DELAY_S];
-      CFocusEngineHandler::GetInstance().ClearAnimation();
-    }
-  }
-  else
-  {
-    if ([self isTapRepeatTimerActive])
-    {
-      // have been auto-repeating, kill the repeat timer
-      [self stopTapRepeatTimer];
-      // if we are fast scrolling, item focus might be on the group
-      // wait a little bit until gui catches up and sets the real item focus
-      usleep((int)(0.15f * 1000) * 1000);
-    }
-
-    // update focus engine visual effect
-    float dx = remote.movedPoint.x - CGRectGetMidX(remote.panningRect);
-    float dy = remote.movedPoint.y - CGRectGetMidY(remote.panningRect);
-    // check if focus visual effect needs updating
-    if (!CGPointEqualToPoint(remote.movedPoint, remote.startPoint))
-    {
-      remote.startPoint = remote.movedPoint;
-      if (remote.debug)
-        NSLog(@"microGamepad: focus dx(%f), dy(%f)", dx, dy);
-      remote.focusAnimate.slideX = dx;
-      remote.focusAnimate.slideY = dy;
-      CFocusEngineHandler::GetInstance().UpdateAnimation(remote.focusAnimate);
-    }
-
-    if (!CGRectContainsPoint(remote.panningRect, remote.movedPoint))
-    {
-      // check if moved point is outside panning rect
-      // absolute coordinate system is 0 to +2 with left/bottom = (0,0)
-      // use SiriRemote_xxxxSwipe here so we can block them when playing videos
-      // check if inside panning rect. if not, we moved outside and need to move focus.
-      [self stopTapRepeatTimer];
-      if (remote.debug)
-      {
-        NSLog(@"microGamepad: x(%f), y(%f), L(%f), R(%f), T(%f), B(%f)",
-          remote.movedPoint.x, remote.movedPoint.y,
-          CGRectGetMinX(remote.panningRect),
-          CGRectGetMaxX(remote.panningRect),
-          CGRectGetMaxY(remote.panningRect),
-          CGRectGetMinY(remote.panningRect));
-      }
-
-      bool moved = false;
-      float delaySeconds = 0.15f;
-      // if user pans fast, might have panned more than item
-      // check if dx or dy is some multiple the panning rect item bounds.
-      int cycleX = lround(fabs(dx) / CGRectGetWidth(remote.panningRect));
-      int cycleY = lround(fabs(dy) / CGRectGetHeight(remote.panningRect));
-      // check if moving left/right or up/down ?
-      if (fabs(dx) >= fabs(dy))
-      {
-        if (remote.movedPoint.x <= CGRectGetMinX(remote.panningRect))
-        {
-          if (remote.debug)
-          {
-            NSLog(@"microGamepad: pan left  dt(%f), dx(%f), dy(%f), cycleX(%d)",
-              remote.dt, dx, dy, cycleX);
-          }
-          moved = true;
-          for (int i = 0; i < cycleX; ++i)
-          {
-            [self sendButtonPressed:SiriRemote_LeftSwipe];
-            usleep((int)(delaySeconds * 1000) * 1000);
-          }
-        }
-        else if (remote.movedPoint.x >= CGRectGetMaxX(remote.panningRect))
-        {
-          if (remote.debug)
-          {
-            NSLog(@"microGamepad: pan right  dt(%f), dx(%f), dy(%f), cycleX(%d)",
-              remote.dt, dx, dy, cycleX);
-          }
-          moved = true;
-          for (int i = 0; i < cycleX; ++i)
-          {
-            [self sendButtonPressed:SiriRemote_RightSwipe];
-            usleep((int)(delaySeconds * 1000) * 1000);
-          }
-        }
-      }
-      else
-      {
-        if (remote.movedPoint.y >= CGRectGetMaxY(remote.panningRect))
-        {
-          if (remote.debug)
-          {
-            NSLog(@"microGamepad: pan up  dt(%f), dx(%f), dy(%f), cycleY(%d)",
-              remote.dt, dx, dy, cycleY);
-          }
-          moved = true;
-          for (int i = 0; i < cycleY; ++i)
-          {
-            [self sendButtonPressed:SiriRemote_UpSwipe];
-            usleep((int)(delaySeconds * 1000) * 1000);
-          }
-        }
-        else if (remote.movedPoint.y <= CGRectGetMinY(remote.panningRect))
-        {
-          if (remote.debug)
-          {
-            NSLog(@"microGamepad: pan down  dt(%f), dx(%f), dy(%f), cycleY(%d)",
-              remote.dt, dx, dy, cycleY);
-          }
-          moved = true;
-          for (int i = 0; i < cycleY; ++i)
-          {
-            [self sendButtonPressed:SiriRemote_DownSwipe];
-            usleep((int)(delaySeconds * 1000) * 1000);
-          }
-        }
-      }
-
-      // only update if we actually moved focus
-      if (moved)
-      {
-        remote.panningRect.origin.x += copysignf(0.5 * CGRectGetWidth(remote.panningRect) * cycleX, dx);
-        remote.panningRect.origin.y += copysignf(0.5 * CGRectGetHeight(remote.panningRect) * cycleY, dy);
-        if (remote.debug)
-        {
-          NSLog(@"microGamepad: x(%f), y(%f), L(%f), R(%f), T(%f), B(%f)",
-            remote.movedPoint.x, remote.movedPoint.y,
-            CGRectGetMinX(remote.panningRect),
-            CGRectGetMaxX(remote.panningRect),
-            CGRectGetMaxY(remote.panningRect),
-            CGRectGetMinY(remote.panningRect));
-        }
-      }
-    }
-  }
-}
-
--(void)processSwipeEvent:(SiriRemoteInfo&)remote withCycles:(int)cycles
-{
-  if (!siriRemoteInfo.enablePanSwipe)
-    return;
-
-  // absolute coordinate system is 0 to +2 with left/bottom = (0,0)
-  // use SiriRemote_xxxxSwipe here so we can block them when playing videos
-  float delaySeconds = 0.2f;
-  if ([self shouldFastScroll])
-    delaySeconds = 0.05f;
-
-  // check for swipe left/right or up/down ?
-  if (remote.dx >= remote.dy)
-  {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRISWIPEONCE) ||
-        [self getFocusedOrientation] != HORIZONTAL)
-    {
-      cycles = 1;
-      delaySeconds = 0.0f;
-    }
-
-    float vx = (remote.movedPoint.x - remote.startPoint.x) / remote.dt;
-    if (remote.movedPoint.x < remote.startPoint.x)
-    {
-      if (remote.debug)
-      {
-        NSLog(@"microGamepad: swipe left  dt(%f), dx(%f), dy(%f), vx(%f)",
-          remote.dt, remote.dx, remote.dy, vx);
-      }
-      int keyId = SiriRemote_LeftSwipe;
-      if (remote.dx < 2.0f && !CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
-          !CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint) &&
-          !CGRectContainsPoint(remote.panningPinnedHorzRect, remote.movedPoint))
-      {
-        keyId = SiriRemote_PageUp;
-      }
-      for (int i = 0; i < cycles; ++i)
-      {
-        [self sendButtonPressed:keyId];
-        usleep((int)(delaySeconds * 1000) * 1000);
-      }
-    }
-    else
-    {
-      if (remote.debug)
-      {
-        NSLog(@"microGamepad: swipe right dt(%f), dx(%f), dy(%f), vx(%f)",
-          remote.dt, remote.dx, remote.dy, vx);
-      }
-      int keyId = SiriRemote_RightSwipe;
-      if (remote.dx < 2.0f && !CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
-          !CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint) &&
-          !CGRectContainsPoint(remote.panningPinnedHorzRect, remote.movedPoint))
-      {
-        keyId = SiriRemote_PageDown;
-      }
-      for (int i = 0; i < cycles; ++i)
-      {
-        [self sendButtonPressed:keyId];
-        usleep((int)(delaySeconds * 1000) * 1000);
-      }
-    }
-  }
-  else
-  {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRISWIPEONCE) ||
-        [self getFocusedOrientation] != VERTICAL)
-    {
-      cycles = 1;
-      delaySeconds = 0.0f;
-    }
-
-    float vy = (remote.movedPoint.y - remote.startPoint.y) / remote.dt;
-    if (remote.movedPoint.y > remote.startPoint.y)
-    {
-      if (remote.debug)
-      {
-        NSLog(@"microGamepad: swipe up    dt(%f), dx(%f), dy(%f), vy(%f)",
-          remote.dt, remote.dx, remote.dy, vy);
-      }
-      int keyId = SiriRemote_UpSwipe;
-      if (remote.dy < 2.0f && !CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
-          !CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint) &&
-          !CGRectContainsPoint(remote.panningPinnedVertRect, remote.movedPoint))
-      {
-        keyId = SiriRemote_PageUp;
-      }
-      for (int i = 0; i < cycles; ++i)
-      {
-        [self sendButtonPressed:keyId];
-        usleep((int)(delaySeconds * 1000) * 1000);
-      }
-    }
-    else
-    {
-      if (remote.debug)
-      {
-        NSLog(@"microGamepad: swipe down  dt(%f), dx(%f), dy(%f), vy(%f)",
-          remote.dt, remote.dx, remote.dy, vy);
-      }
-      int keyId = SiriRemote_DownSwipe;
-      if (remote.dy < 2.0f && !CGRectContainsPoint(remote.panningPinnedRect, remote.startPoint) &&
-          !CGRectContainsPoint(remote.panningPinnedRect, remote.movedPoint) &&
-          !CGRectContainsPoint(remote.panningPinnedVertRect, remote.movedPoint))
-      {
-        keyId = SiriRemote_PageDown;
-      }
-      for (int i = 0; i < cycles; ++i)
-      {
-        [self sendButtonPressed:keyId];
-        usleep((int)(delaySeconds * 1000) * 1000);
-      }
-    }
-  }
-}
-
--(void)processTapEvent:(SiriRemoteInfo&)remote
-{
-  if (remote.startPoint.x == 0.0f ||
-      remote.startPoint.y == 0.0f ||
-      remote.startPoint.x == 2.0f ||
-      remote.startPoint.y == 2.0f)
-  {
-    //apple remote app deadzone
-    return;
-  }
-
-  // absolute coordinate system is 0 to +2 with left/bottom = (0,0)
-  // transform coordinates to left/bottom = (-1, -1) to make checks easy
-  CGPoint centerStart = CGPointMake(
-    remote.startPoint.x - 1.0,
-    remote.startPoint.y - 1.0);
-  if (fabs(centerStart.x) < remote.tapbounts && fabs(centerStart.y) < remote.tapbounts)
-  {
-    // tap in center, ignore it.
-    if (remote.debug)
-      NSLog(@"microGamepad: tap center, ignored  dt(%f)", remote.dt);
-  }
-  else
-  {
-    // tap detected, use begining location to determine
-    // where tap occurred, ending location could be a slip of the finger
-    if (fabs(centerStart.x) >= fabs(centerStart.y))
-    {
-      if (remote.startPoint.x < 1.0)
-      {
-        if (remote.debug)
-          NSLog(@"microGamepad: tap left  dt(%f)", remote.dt);
-        [self sendButtonPressed:SiriRemote_LeftTap];
-      }
-      else
-      {
-        if (remote.debug)
-          NSLog(@"microGamepad: tap right dt(%f)", remote.dt);
-        [self sendButtonPressed:SiriRemote_RightTap];
-      }
-    }
-    else
-    {
-      if (remote.startPoint.y >= 1.0)
-      {
-        if (remote.debug)
-          NSLog(@"microGamepad: tap up    dt(%f)", remote.dt);
-        [self sendButtonPressed:SiriRemote_UpTap];
-      }
-      else
-      {
-        if (remote.debug)
-          NSLog(@"microGamepad: tap down  dt(%f)", remote.dt);
-        [self sendButtonPressed:SiriRemote_DownTap];
-      }
-    }
-  }
-}
-
--(void)updateRemoteStartInfo:(SiriRemoteInfo&)remote withGamePad:(GCMicroGamepad*)gamepad
-{
-  // dpad values range from 0.0 to 1.0
-  // convert begining up/down/left/right into horizontal/vertical axis (-1, +1)
-  // and transform to 0 to +2 with left/bottom = (0,0), makes calcs easy
-  remote.startPoint = CGPointMake(
-    -gamepad.dpad.left.value + gamepad.dpad.right.value,
-    -gamepad.dpad.down.value + gamepad.dpad.up.value);
-  remote.startPoint.x += 1.0;
-  remote.startPoint.y += 1.0;
-  /*
-  NSLog(@"microGamepad: U(%d), D(%d), L(%d), R(%d), point %@",
-    gamepad.dpad.up.pressed,
-    gamepad.dpad.down.pressed,
-    gamepad.dpad.left.pressed,
-    gamepad.dpad.right.pressed,
-    NSStringFromCGPoint(remote));
-  */
-  remote.movedPoint = remote.startPoint;
-  remote.panningRect = remote.panningRectStart;
-  remote.panningRect.origin.x = remote.startPoint.x - CGRectGetWidth(remote.panningRect) / 2.0;
-  remote.panningRect.origin.y = remote.startPoint.y - CGRectGetHeight(remote.panningRect) / 2.0;
-  if (remote.debug)
-  {
-    NSLog(@"microGamepad: x(%f), y(%f), L(%f), R(%f), T(%f), B(%f)",
-      remote.movedPoint.x, remote.movedPoint.y,
-      CGRectGetMinX(remote.panningRect),
-      CGRectGetMaxX(remote.panningRect),
-      CGRectGetMaxY(remote.panningRect),
-      CGRectGetMinY(remote.panningRect));
-  }
-  remote.startSeconds = CFAbsoluteTimeGetCurrent();
-  remote.movedSeconds = remote.startSeconds;
-  remote.ignoreAfterSwipeSeconds = 0.0f;
-  remote.dt = 0.0f;
-  remote.dx = 0.0f;
-  remote.dy = 0.0f;
-}
-
--(void)updateRemoteMovedInfo:(SiriRemoteInfo&)remote withGamePad:(GCMicroGamepad*)gamepad
-{
-  // dpad values range from 0.0 to 1.0
-  // referenced from center of touchpad.
-  // convert begining up/down/left/right into horizontal/vertical axis (-1, +1)
-  // and transform to 0 to +2 with left/bottom = (0,0), makes calcs easy
-  remote.movedPoint = CGPointMake(
-    -gamepad.dpad.left.value + gamepad.dpad.right.value,
-    -gamepad.dpad.down.value + gamepad.dpad.up.value);
-  remote.movedPoint.x += 1.0;
-  remote.movedPoint.y += 1.0;
-  remote.movedSeconds = CFAbsoluteTimeGetCurrent();
-  remote.dt = remote.movedSeconds - remote.startSeconds;
-  remote.dx = fabs(remote.movedPoint.x - remote.startPoint.x);
-  remote.dy = fabs(remote.movedPoint.y - remote.startPoint.y);
-}
-
--(void)cgControllerDidDisconnect:(NSNotification *)notification
-{
-  self.gcController = nil;
-  if (siriRemoteInfo.debug)
-    NSLog(@"microGamepad: did disconnect");
-}
-
--(void)cgControllerDidConnect:(NSNotification*)notification
-{
-  if( notification.object != nil )
-  {
-    self.gcController = notification.object;
-    if (self.gcController.microGamepad)
-    {
-      siriRemoteInfo.state = SiriRemoteIdle;
-      siriRemoteInfo.startSeconds = CFAbsoluteTimeGetCurrent();
-      siriRemoteInfo.movedSeconds = siriRemoteInfo.startSeconds;
-      // Capturing 'self' strongly in this block is likely to lead to a retain cycle
-      // so creating a weak reference to self for access inside the block
-      __weak MainController *weakSelf = self;
-
-      //self.gcController.microGamepad.allowsRotation = allowsRotation ? YES : NO;
-      self.gcController.microGamepad.reportsAbsoluteDpadValues = YES;
-#if 0
-      self.gcController.microGamepad.valueChangedHandler = ^(GCMicroGamepad *gamepad, GCControllerElement *element)
-      {
-        siriRemoteInfo.startPoint = CGPointMake(
-          -gamepad.dpad.left.value + gamepad.dpad.right.value,
-          -gamepad.dpad.down.value + gamepad.dpad.up.value);
-        siriRemoteInfo.startPoint.x += 1.0;
-        siriRemoteInfo.startPoint.y += 1.0;
-        NSLog(@"microGamepad: A(%d), U(%d), D(%d), L(%d), R(%d), point %@",
-          gamepad.buttonA.pressed,
-          gamepad.dpad.up.pressed,
-          gamepad.dpad.down.pressed,
-          gamepad.dpad.left.pressed,
-          gamepad.dpad.right.pressed,
-          NSStringFromCGPoint(siriRemoteInfo.startPoint));
-      };
-#else
-      self.gcController.microGamepad.valueChangedHandler = ^(GCMicroGamepad *gamepad, GCControllerElement *element)
-      {
-        m_allowTap = false;
-        // buttonA is the 'select' button,
-        // if pressed bypass any touch handling
-        if (gamepad.buttonA.pressed)
-        {
-          [weakSelf stopTapRepeatTimer];
-          siriRemoteInfo.state = SiriRemoteSelect;
-        }
-
-        // check for other 'ignore' conditions
-        if (siriRemoteInfo.state == SiriRemoteIdle)
-        {
-          // check for spurious touch after swipe
-          // not sure why this can sometimes happen
-          if (siriRemoteInfo.ignoreAfterSwipeSeconds > 0.0f)
-          {
-            float dt = CFAbsoluteTimeGetCurrent() - siriRemoteInfo.movedSeconds;
-            if (dt > siriRemoteInfo.ignoreAfterSwipeSeconds)
-              siriRemoteInfo.ignoreAfterSwipeSeconds = 0.0f;
-            else
-              return;
-          }
-          // if siri remote idle timeout is active,
-          // ignore the 1st touch and pretend to wake up
-          if (weakSelf.m_remoteIdleState)
-          {
-            // start remote idle timer
-            [weakSelf startRemoteTimer];
-            return;
-          }
-        }
-        // we only care that some dpad is pressed or not. touch directions are
-        // determined by the dpad values. The reason for this is when a finger
-        // is down, we get two signaling down and we have to track all four.
-        // we also track buttonA.pressed so we can ignore it.
-        // when user does a select, finger down (up/down/right/left pressed),
-        // click down (buttonA.pressed), click up and finger is still
-        // down (up/down/right/left pressed), then finger goes up. Need to also eat the
-        // finger still down.
-        BOOL pressed = gamepad.buttonA.pressed ||
-                       gamepad.dpad.up.pressed ||
-                       gamepad.dpad.down.pressed ||
-                       gamepad.dpad.left.pressed ||
-                       gamepad.dpad.right.pressed;
-
-
-        if (pressed && siriRemoteInfo.state != SiriRemoteIdle)
-          [weakSelf updateRemoteMovedInfo:siriRemoteInfo withGamePad:gamepad];
-
-        switch(siriRemoteInfo.state)
-        {
-          case SiriRemoteIdle:
-            if (siriRemoteInfo.debug)
-              NSLog(@"microGamepad: idle, pressed(%d), dt(%f)", pressed, siriRemoteInfo.dt);
-            [weakSelf stopTapRepeatTimer];
-            siriRemoteInfo.focusAnimate = FocusEngineAnimate();
-            siriRemoteInfo.focusAnimate.zoomX = 105.0f;
-            siriRemoteInfo.focusAnimate.zoomY = 105.0f;
-            CFocusEngineHandler::GetInstance().ClearAnimation();
-            CFocusEngineHandler::GetInstance().UpdateAnimation(siriRemoteInfo.focusAnimate);
-            if (pressed)
-            {
-              [weakSelf updateRemoteStartInfo:siriRemoteInfo withGamePad:gamepad];
-              // absolute coordinate system is 0 to +2 with left/bottom = (0,0)
-              // transform coordinates to left/bottom = (-1, -1) to make checks easy
-              CGPoint centerStart = CGPointMake(
-                siriRemoteInfo.startPoint.x - 1.0,
-                siriRemoteInfo.startPoint.y - 1.0);
-              if (fabs(centerStart.x) < siriRemoteInfo.tapbounts && fabs(centerStart.y) < siriRemoteInfo.tapbounts)
-              {
-                // tap in center, ignore it.
-                if (siriRemoteInfo.debug)
-                  NSLog(@"microGamepad: tap center ignored");
-              }
-              else
-              {
-                // fire off tap hold/repeat timer
-                [weakSelf startTapRepeatTimer:siriRemoteInfo  withPoint:siriRemoteInfo.startPoint withdelay:0.75];
-              }
-              siriRemoteInfo.state = SiriRemoteTapTimer;
-            }
-            break;
-          case SiriRemoteSelect:
-            // Selects are handled by gesture handler, eat these
-            break;
-          case SiriRemoteTapTimer:
-            if (siriRemoteInfo.debug)
-            {
-              NSLog(@"microGamepad: tap timer, pressed(%d), dt(%f), dx(%f), dy(%f)",
-                pressed, siriRemoteInfo.dt, siriRemoteInfo.dx, siriRemoteInfo.dy);
-            }
-            // finger moved from initial start position (value changed fired)
-            if (pressed)
-            {
-              // check if we are moving and outside tap bounds
-              if (siriRemoteInfo.dx > siriRemoteInfo.tapbounts || siriRemoteInfo.dy > siriRemoteInfo.tapbounts)
-              {
-                // cancel tap hold/repeat timer
-                [weakSelf stopTapRepeatTimer];
-                // could be pan or start of swipe
-                // we can not tell which yet so update moved info and move to pan/swipe state
-                siriRemoteInfo.state = SiriRemotePanSwipe;
-              }
-            }
-            else
-            {
-              if (siriRemoteInfo.dx < siriRemoteInfo.tapbounts && siriRemoteInfo.dy < siriRemoteInfo.tapbounts)
-              {
-                // if we did not move at all, dt will not get updated and will be
-                // zero on touch release, so use guardSeconds to calc tap duration.
-                // if tap duration is longer than limit, ignore it
-                float tapSeconds = CFAbsoluteTimeGetCurrent() - siriRemoteInfo.startSeconds;
-                if (tapSeconds < 1.0f)
-                  [weakSelf processTapEvent:siriRemoteInfo];
-                else if (![weakSelf isTapRepeatTimerActive])
-                {
-                  // if pressAutoRepeatTimer is not alive, it got invalidated
-                  // during call to startTapRepeatTimer in touch pressed
-                  // from a match to [self getFocusedOrientation], i.e
-                  // tried to autorepeat in a non valid direction. Normally
-                  // we just ignore taps if tap duration is longer than limit,
-                  // but in this case, permit a tap.
-                  [weakSelf processTapEvent:siriRemoteInfo];
-                }
-              }
-            }
-            break;
-          case SiriRemotePanSwipe:
-            if (siriRemoteInfo.debug)
-            {
-              NSLog(@"microGamepad: pan or swipe?, pressed(%d), dt(%f), dx(%f), dy(%f)",
-                pressed, siriRemoteInfo.dt, siriRemoteInfo.dx, siriRemoteInfo.dy);
-            }
-            if (pressed)
-            {
-              // swipes are complete by 0.5 seconds, so this must be a pan
-              if (siriRemoteInfo.dt >= 0.50f)
-              {
-                [weakSelf processPanEvent:siriRemoteInfo];
-                siriRemoteInfo.state = SiriRemotePan;
-              }
-            }
-            else
-            {
-              // check if this looks like a swipe, which have a min distance then
-              // the finger is down. Also swipes that take longer than 1 second are ignored.
-              // should not need the time check, if touch is down longer than 0.5 seconds, it is a pan.
-              if (siriRemoteInfo.dt <= 1.0f &&
-                 (siriRemoteInfo.dx >= siriRemoteInfo.tapbounts || siriRemoteInfo.dy >= siriRemoteInfo.tapbounts))
-              {
-                // swipe
-                // vx, xy range is typically 0 to 12+
-                // swiping down is typically a slower operation so
-                // give it a little more velocity help
-                float vx = (siriRemoteInfo.movedPoint.x - siriRemoteInfo.startPoint.x) / siriRemoteInfo.dt;
-                float vy = (siriRemoteInfo.movedPoint.y - siriRemoteInfo.startPoint.y) / siriRemoteInfo.dt;
-                int vcycles = fmaxf(fabsf(vx) / 4.0f, fabsf(vy) / 2.5f);
-                // a swipe should generate repeats
-                // if swipe length is long and/or the swipe was fast
-                int cycles = vcycles + (fmaxf(fabsf(siriRemoteInfo.dx), fabsf(siriRemoteInfo.dy)) / 0.9f);
-                if (cycles <= 0) cycles = 1;
-                if (siriRemoteInfo.debug)
-                  NSLog(@"microGamepad: dt(%f), vcycles(%d), cycles(%d)", siriRemoteInfo.dt, vcycles, cycles);
-
-                [weakSelf processSwipeEvent:siriRemoteInfo withCycles:cycles];
-                siriRemoteInfo.ignoreAfterSwipeSeconds = 0.25;
-              }
-              else
-              {
-                if (siriRemoteInfo.debug)
-                  NSLog(@"microGamepad: should never get here, pressed(%d)", pressed);
-              }
-            }
-            break;
-          case SiriRemotePan:
-            if (siriRemoteInfo.debug)
-            {
-              NSLog(@"microGamepad: pan, pressed(%d), dt(%f), dx(%f), dy(%f)",
-                pressed, siriRemoteInfo.dt, siriRemoteInfo.dx, siriRemoteInfo.dy);
-            }
-            // pans only happen when pressed, we could (in future) add auto-scroll if
-            // pan is pinned to same panningRect or some other check.
-            if (pressed)
-              [weakSelf processPanEvent:siriRemoteInfo];
-            break;
-        }
-
-        // if not pressed, we are done and will not
-        // get called again until the next touch changed event
-        if (!pressed)
-        {
-          // start remote idle timer
-          [weakSelf startRemoteTimer];
-          // always cancel tap repeat timer
-          [weakSelf stopTapRepeatTimer];
-          CFocusEngineHandler::GetInstance().ClearAnimation();
-          // always return to SiriRemoteIdle2
-          siriRemoteInfo.state = SiriRemoteIdle;
-          if (siriRemoteInfo.debug)
-            NSLog(@"microGamepad: idle");
-        }
-      };
-#endif
-    }
-    if (siriRemoteInfo.debug)
-      NSLog(@"microGamepad: did connect");
-  }
+  focusActionType = FocusActionPress;
+  CLog::Log(LOGDEBUG, "tapRightArrowPressed");
 }
 
 
@@ -1717,39 +985,67 @@ static SiriRemoteInfo siriRemoteInfo;
   m_screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
   [self.view addSubview: m_glView];
 
-  CGRect  viewRect = CGRectMake(0, 0, m_glView.bounds.size.width, m_glView.bounds.size.height);
-  _View1 = [[FocusLayerView alloc] initWithFrame:viewRect];
-  [self.view insertSubview:_View1 aboveSubview:m_glView];
-#ifdef false
+  CGRect focusRect = CGRectMake(0, 0, m_glView.bounds.size.width, m_glView.bounds.size.height);
+  // virtual views, these outside focusView (display bounds)
+  // and used to detect up/down/right/left focus movements for pop/slide out views
+  // we trap/cancel the focus move in shouldUpdateFocusInContext which also posts
+  // an action message to core, if the focused core control can do the move, it will and
+  // we will get a focus update from core which we then use to adjust focus in didUpdateFocusInContext.
+  // That's the theory anyway :)
+  CGRect focusRectTop = focusRect;
+  focusRectTop.origin.y -= 200;
+  focusRectTop.size.height = 200;
+  self.focusViewTop = [[FocusLayerView alloc] initWithFrame:focusRectTop];
+  [self.focusViewTop setFocusable:true];
+  [self.focusViewTop setViewVisable:false];
 
-  viewRect = CGRectOffset(viewRect, 200, 0);
-  _View2 = [[FocusLayerView alloc] initWithFrame:viewRect];
-  [self.view insertSubview:_View2 aboveSubview:m_glView];
+  CGRect focusRectLeft = focusRect;
+  focusRectLeft.origin.x -= 200;
+  focusRectLeft.size.width = 200;
+  self.focusViewLeft = [[FocusLayerView alloc] initWithFrame:focusRectLeft];
+  [self.focusViewLeft setFocusable:true];
+  [self.focusViewLeft setViewVisable:false];
 
-  viewRect = CGRectOffset(viewRect, 200, 0);
-  _View3 = [[FocusLayerView alloc] initWithFrame:viewRect];
-  [self.view insertSubview:_View3 aboveSubview:m_glView];
+  CGRect focusRectRight = focusRect;
+  focusRectRight.origin.x += focusRect.size.width;
+  focusRectRight.size.width = 200;
+  self.focusViewRight = [[FocusLayerView alloc] initWithFrame:focusRectRight];
+  [self.focusViewRight setFocusable:true];
+  [self.focusViewRight setViewVisable:false];
 
-  viewRect = CGRectOffset(viewRect, 200, 0);
-  _View4 = [[FocusLayerView alloc] initWithFrame:viewRect];
-  [self.view insertSubview:_View4 aboveSubview:m_glView];
-#endif
+  CGRect focusRectBottom = focusRect;
+  focusRectBottom.origin.y += focusRect.size.height;
+  focusRectBottom.size.height = 200;
+  self.focusViewBottom = [[FocusLayerView alloc] initWithFrame:focusRectBottom];
+  [self.focusViewBottom setFocusable:true];
+  [self.focusViewBottom setViewVisable:false];
+
+  self.focusView = [[FocusLayerView alloc] initWithFrame:focusRect];
+  [self.focusView setFocusable:false];
+  [self.focusView setViewVisable:false];
+  // focus layer lives above m_glView
+  [self.view insertSubview:self.focusView aboveSubview:m_glView];
+
+  [self.focusView addSubview:self.focusViewTop];
+  [self.focusView addSubview:self.focusViewLeft];
+  [self.focusView addSubview:self.focusViewRight];
+  [self.focusView addSubview:self.focusViewBottom];
 }
 //--------------------------------------------------------------
 - (void)viewDidLoad
 {
   [super viewDidLoad];
 
+  m_screensize.width  = m_glView.bounds.size.width  * m_screenScale;
+  m_screensize.height = m_glView.bounds.size.height * m_screenScale;
+
+  self.swipeTimerState = SwipeTimerOff;
   [self createSwipeGestureRecognizers];
   [self createPanGestureRecognizers];
   [self createTapGestureRecognizers];
-
-  // for IR remotes
   [self createPressGesturecognizers];
   [self createCustomControlCenter];
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cgControllerDidConnect:) name:GCControllerDidConnectNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cgControllerDidDisconnect:) name:GCControllerDidDisconnectNotification object:nil];
   [GCController startWirelessControllerDiscoveryWithCompletionHandler:nil];
 
   if (__builtin_available(tvOS 11.2, *))
@@ -1760,6 +1056,7 @@ static SiriRemoteInfo siriRemoteInfo;
       [avDisplayManager addObserver:self forKeyPath:@"displayModeSwitchInProgress" options:NSKeyValueObservingOptionNew context:nullptr];
     }
   }
+  g_windowManager.SetWrapOverride(true);
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
@@ -1831,10 +1128,6 @@ static SiriRemoteInfo siriRemoteInfo;
 //--------------------------------------------------------------
 - (CGSize)getScreenSize
 {
-  dispatch_sync(dispatch_get_main_queue(),^{
-    m_screensize.width  = m_glView.bounds.size.width  * m_screenScale;
-    m_screensize.height = m_glView.bounds.size.height * m_screenScale;
-  });
   return m_screensize;
 }
 
@@ -2032,6 +1325,7 @@ static SiriRemoteInfo siriRemoteInfo;
 
   SEL singleParamSelector = @selector(enterActiveDelayed:);
   [g_xbmcController performSelector:singleParamSelector withObject:nil afterDelay:2.0];
+    [self performSelectorOnMainThread:@selector(updateFocusLayer) withObject:nil  waitUntilDone:NO];
 }
 //--------------------------------------------------------------
 - (void)becomeInactive
@@ -2120,36 +1414,511 @@ static SiriRemoteInfo siriRemoteInfo;
   return [m_glView getContext];
 }
 
-- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments
+#pragma mark - swipe idle timer (for focus)
+//--------------------------------------------------------------
+#define Swipe_DELAY_S 0.15
+- (void)startSwipeTimeOut
 {
-  return @[m_glView];
-}
+  //PRINT_SIGNATURE();
+  if (self.swipeTimer != nil)
+    [self stopSwipeTimeOut];
 
-- (void) updateFocusView
-{
-  std::vector<FocusEngineItem> *items = CFocusEngineHandler::GetInstance().GetVisible();
-  if (items && items->size() > 0)
+  if (true)
   {
-    std::vector<CGRect> cgRects;
-    for (auto it = items->begin(); it != items->end(); ++it)
-    {
-      if (!(*it).renderRect.IsEmpty())
-      {
-        CGRect rect = CGRectMake(
-          (*it).renderRect.x1/m_screenScale, (*it).renderRect.y1/m_screenScale,
-          (*it).renderRect.Width()/m_screenScale, (*it).renderRect.Height()/m_screenScale);
-        rect = CGRectInset(rect, 4, 4);
-        cgRects.push_back(rect);
-      }
-    }
-    [_View1 updateItems:cgRects];
-    [_View1 setNeedsDisplay];
+    self.swipeTimerState = SwipeTimerRunning;
+    NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:Swipe_DELAY_S];
+    NSTimer *timer = [[NSTimer alloc] initWithFireDate:fireDate
+                                      interval:0.0
+                                      target:self
+                                      selector:@selector(setSwipeIdleTimeOut)
+                                      userInfo:nil
+                                      repeats:NO];
+
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+    self.swipeTimer = timer;
   }
 }
 
--(void) changeFocus:(FocusLayerView *)view
+- (void)stopSwipeTimeOut
 {
-  PRINT_SIGNATURE();
+  //PRINT_SIGNATURE();
+  if (self.swipeTimer != nil)
+  {
+    self.swipeTimerState = SwipeTimerOff;
+    [self.swipeTimer invalidate];
+    self.swipeTimer = nil;
+  }
+}
+
+- (void)setSwipeIdleTimeOut
+{
+  CLog::Log(LOGDEBUG, "SwipeTimeOut:setSwipeIdleTimeOut");
+  self.swipeTimerState = SwipeTimerTimedOut;
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event
+{
+  // all touches begine with a tap but
+  // we can get focus moves from a quick swipe
+  // without triggering swipe gesture,
+  // so default to FocusActionSwipe
+  focusActionType = FocusActionTap;
+  CLog::Log(LOGDEBUG, "touchesBegan");
+  [super touchesBegan:touches withEvent:event];
+}
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event;
+{
+  // hit for all touch types (tap, pan, swipe)
+  CLog::Log(LOGDEBUG, "touchesMoved");
+  [super touchesEnded:touches withEvent:event];
+}
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event
+{
+  // a real touch will hit touchesEnded
+  focusActionType = FocusActionTap;
+  CLog::Log(LOGDEBUG, "touchesEnded");
+  [super touchesEnded:touches withEvent:event];
+}
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event;
+{
+  // we got cancelled when some gesture handler
+  // (like pans or swipes) takes the event
+  CLog::Log(LOGDEBUG, "touchesCancelled");
+  // sometimes we get a swipe happening but
+  // the swipe gesture handle was never called
+  // we will get touchesCancelled so check if this
+  // is a pan and if not, assume swipe.
+  if (focusActionType != FocusActionPan)
+    focusActionType = FocusActionSwipe;
+  [super touchesCancelled:touches withEvent:event];
+}
+
+#pragma mark - focus engine routines
+//--------------------------------------------------------------
+- (UIFocusSoundIdentifier)soundIdentifierForFocusUpdateInContext:(UIFocusUpdateContext *)context
+{
+  // disable focus engine sound effect when playing video
+  // it will mess up audio if passthrough is occurring.
+  if ( g_application.m_pPlayer->IsPlayingVideo() )
+  {
+    if (@available(tvOS 11.0, *))
+      return UIFocusSoundIdentifierNone;
+    else
+      return nil;
+  }
+  if (@available(tvOS 11.0, *))
+    return UIFocusSoundIdentifierDefault;
+  else
+    return nil;
+}
+
+- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments
+{
+  CLog::Log(LOGDEBUG, "preferredFocusEnvironments");
+  // The order of the items in the preferredFocusEnvironments array is the
+  // priority that the focus engine will use when picking the focused item
+
+  //return @[m_glView];
+  [self updateFocusLayerFocus];
+  if (_focusLayer.view)
+    return @[(UIView*)_focusLayer.view];
+  else
+    return [super preferredFocusEnvironments];
+}
+
+- (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
+  withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
+{
+  //CLog::Log(LOGDEBUG, "didUpdateFocusInContext");
+
+  switch (context.focusHeading)
+  {
+    case UIFocusHeadingNone:
+      //CLog::Log(LOGDEBUG, "didUpdateFocusInContext:UIFocusHeadingNone");
+      break;
+    case UIFocusHeadingUp:
+      if (focusActionType == FocusActionSwipe)
+        [self sendButtonPressed:SiriRemote_UpSwipe];
+      else
+        [self sendButtonPressed:SiriRemote_UpTap];
+      //CApplicationMessenger::GetInstance().PostMsg(
+      //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_UP)));
+      CLog::Log(LOGDEBUG, "didUpdateFocusInContext:UIFocusHeadingUp");
+      break;
+    case UIFocusHeadingDown:
+      if (focusActionType == FocusActionSwipe)
+        [self sendButtonPressed:SiriRemote_DownSwipe];
+      else
+        [self sendButtonPressed:SiriRemote_DownTap];
+      //CApplicationMessenger::GetInstance().PostMsg(
+      //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_DOWN)));
+      CLog::Log(LOGDEBUG, "didUpdateFocusInContext:UIFocusHeadingDown");
+      break;
+    case UIFocusHeadingLeft:
+      if (focusActionType == FocusActionSwipe)
+        [self sendButtonPressed:SiriRemote_LeftSwipe];
+      else
+        [self sendButtonPressed:SiriRemote_LeftTap];
+      //CApplicationMessenger::GetInstance().PostMsg(
+      //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_LEFT)));
+      CLog::Log(LOGDEBUG, "didUpdateFocusInContext:UIFocusHeadingLeft");
+      break;
+    case UIFocusHeadingRight:
+      if (focusActionType == FocusActionSwipe)
+        [self sendButtonPressed:SiriRemote_RightSwipe];
+      else
+        [self sendButtonPressed:SiriRemote_RightTap];
+      //CApplicationMessenger::GetInstance().PostMsg(
+      //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_RIGHT)));
+      CLog::Log(LOGDEBUG, "didUpdateFocusInContext:UIFocusHeadingRight");
+      break;
+    case UIFocusHeadingNext:
+      // we never get this
+      CLog::Log(LOGDEBUG, "didUpdateFocusInContext:UIFocusHeadingNext");
+      break;
+    case UIFocusHeadingPrevious:
+      // we never get this
+      CLog::Log(LOGDEBUG, "didUpdateFocusInContext:UIFocusHeadingPrevious");
+      break;
+  }
+}
+
+- (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
+{
+  // po [UIFocusDebugger help]
+  // po [UIFocusDebugger status]
+  // po [UIFocusDebugger simulateFocusUpdateRequestFromEnvironment:self]
+  // po [UIFocusDebugger checkFocusabilityForItem:(UIView *)0x155e2a040]
+  // Asks whether the system should allow a focus update to occur.
+
+  // Once we get hit from control view, we might also get one regarding parent (self.focusView)
+  // The one exception to this possible recursion is if you return NO. This stops the recursion.
+  // We can use this to handle slide out panels that are represented by hidden views
+  // Above/Below/Right/Left (self.focusViewTop and friends) which are subviews the main focus View.
+  // So detect the focus request, post direction message to core and cancel tvOS focus update.
+
+  CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: focusActionType %s", focusActionTypeNames[focusActionType]);
+
+  // previouslyFocusedItem may be nil if no item was focused.
+  CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: previous %p, next %p",
+    context.previouslyFocusedItem, context.nextFocusedItem);
+
+  if (focusActionType == FocusActionSwipe)
+  {
+    CGRect nextFocusedItemRect = ((FocusLayerView*)context.nextFocusedItem).bounds;
+    CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: nextFocusedItemRect %f, %f, %f, %f",
+      nextFocusedItemRect.origin.x, nextFocusedItemRect.origin.y,
+      nextFocusedItemRect.origin.x + nextFocusedItemRect.size.width,
+      nextFocusedItemRect.origin.y + nextFocusedItemRect.size.height);
+    if (!CGRectContainsRect(swipeStartingFocusLayerParentViewRect, nextFocusedItemRect))
+    {
+      if (context.nextFocusedItem == self.focusViewTop ||
+          context.nextFocusedItem == self.focusViewLeft ||
+          context.nextFocusedItem == self.focusViewRight ||
+          context.nextFocusedItem == self.focusViewBottom )
+      {
+        CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: Hit in borderView");
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: Not in same parent view");
+        return NO;
+      }
+    }
+  }
+
+  BOOL result = [super shouldUpdateFocusInContext:context];
+  switch (context.focusHeading)
+  {
+    case UIFocusHeadingNone:
+      // we never get here
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingNone");
+      break;
+    case UIFocusHeadingUp:
+      if (context.nextFocusedItem == self.focusViewTop)
+      {
+        [self sendButtonPressed:SiriRemote_UpTap];
+        //CApplicationMessenger::GetInstance().PostMsg(
+        //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_UP)));
+        return NO;
+      }
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingUp");
+      break;
+    case UIFocusHeadingDown:
+      if (context.nextFocusedItem == self.focusViewBottom)
+      {
+        [self sendButtonPressed:SiriRemote_DownTap];
+        //CApplicationMessenger::GetInstance().PostMsg(
+        //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_DOWN)));
+        return NO;
+      }
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingDown");
+      break;
+    case UIFocusHeadingLeft:
+      if (context.nextFocusedItem == self.focusViewLeft)
+      {
+        [self sendButtonPressed:SiriRemote_LeftTap];
+        //CApplicationMessenger::GetInstance().PostMsg(
+        //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_LEFT)));
+        return NO;
+      }
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingLeft");
+      break;
+    case UIFocusHeadingRight:
+      if (context.nextFocusedItem == self.focusViewRight)
+      {
+        [self sendButtonPressed:SiriRemote_RightTap];
+        //CApplicationMessenger::GetInstance().PostMsg(
+        //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_RIGHT)));
+        return NO;
+      }
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingRight");
+      break;
+    case UIFocusHeadingNext:
+      // we never get this
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingNext");
+      break;
+    case UIFocusHeadingPrevious:
+      // we never get this
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingPrevious");
+      break;
+  }
+  return result;
+}
+
+- (FocusLayerView*)findParentView:(FocusLayerView *)thisView
+{
+  FocusLayerView *parentView = nullptr;
+  for (auto viewIt = _focusLayer.views.begin(); viewIt != _focusLayer.views.end(); ++viewIt)
+  {
+    auto &views = *viewIt;
+    for (size_t bndx = 0; bndx < views.items.size(); ++bndx)
+    {
+      if (thisView->core == views.items[bndx].core)
+      {
+        parentView = views.view;
+        break;
+      }
+    }
+  }
+  return parentView;
+}
+
+- (void)clearSubViews
+{
+  NSArray *subviews = self.focusView.subviews;
+  if (subviews)
+  {
+    for (UIView *view in subviews)
+    {
+      if (view == self.focusViewLeft)
+        continue;
+      if (view == self.focusViewRight)
+        continue;
+      if (view == self.focusViewTop)
+        continue;
+      if (view == self.focusViewBottom)
+        continue;
+      [view removeFromSuperview];
+    }
+  }
+}
+
+- (void)debugSubViews
+{
+  NSArray *subviews = self.focusView.subviews;
+  if (subviews)
+  {
+    for (UIView *view in subviews)
+    {
+      LOG(@"debugSubViews: %@", view);
+    }
+  }
+}
+
+
+- (void) buildFocusLayerFromCore
+{
+  bool debug = true;
+  // build up new focusLayer from core items.
+  [self clearSubViews];
+
+  if (debug)
+  {
+    if (!m_viewItems.empty())
+      CLog::Log(LOGDEBUG, "buildFocusLayerFromCore: begin");
+  }
+  int viewCount = 0;
+  std::vector<FocusLayerControl> focusViews;
+  // build through our views in reverse order (so that last (window) is first)
+  for (auto viewIt = m_viewItems.rbegin(); viewIt != m_viewItems.rend(); ++viewIt)
+  {
+    auto &viewItem = *viewIt;
+    if (viewItem.items.empty() && viewItem.type != "window")
+      continue;
+
+    // m_glView.bounds does not have screen scaling
+    CGRect rect = CGRectMake(
+      viewItem.rect.x1/m_screenScale, viewItem.rect.y1/m_screenScale,
+      viewItem.rect.Width()/m_screenScale, viewItem.rect.Height()/m_screenScale);
+
+    FocusLayerView *focusLayerView = [[FocusLayerView alloc] initWithFrame:rect];
+    [focusLayerView setFocusable:true];
+    if (viewItem.type == "window")
+      [focusLayerView setViewVisable:false];
+
+    focusLayerView->core = viewItem.control;
+    [self.focusView addSubview:focusLayerView];
+
+    FocusLayerControl focusView;
+    focusView.rect = rect;
+    focusView.type = viewItem.type;
+    focusView.core = viewItem.control;
+    focusView.view = focusLayerView;
+    if (debug)
+    {
+      CLog::Log(LOGDEBUG, "buildFocusLayerFromCore: %d, %s, %f, %f, %f, %f",
+        viewCount, viewItem.type.c_str(),
+        viewItem.rect.x1, viewItem.rect.y1, viewItem.rect.x2, viewItem.rect.y2);
+    }
+    for (auto itemsIt = viewItem.items.begin(); itemsIt != viewItem.items.end(); ++itemsIt)
+    {
+      auto &item = *itemsIt;
+      if (debug)
+      {
+        CLog::Log(LOGDEBUG, "buildFocusLayerFromCore: %d, %s, %f, %f, %f, %f",
+          viewCount, item.type.c_str(),
+          item.rect.x1, item.rect.y1, item.rect.x2, item.rect.y2);
+      }
+      // m_glView.bounds does not have screen scaling
+      CGRect rect = CGRectMake(
+        item.rect.x1/m_screenScale, item.rect.y1/m_screenScale,
+        item.rect.Width()/m_screenScale, item.rect.Height()/m_screenScale);
+
+      FocusLayerView *focusLayerItem = [[FocusLayerView alloc] initWithFrame:rect];
+      [focusLayerItem setFocusable:true];
+      focusLayerItem->core = item.control;
+      [self.focusView addSubview:focusLayerItem];
+
+      FocusLayerItem control;
+      control.rect = rect;
+      control.type = item.type;
+      control.core = item.control;
+      control.view = focusLayerItem;
+      focusView.items.push_back(control);
+    }
+
+    focusViews.push_back(focusView);
+    viewCount++;
+  }
+  _focusLayer.views = focusViews;
+  [self updateFocusLayerFocus];
+}
+
+- (void) updateFocusLayerFromCore
+{
+}
+
+- (void) updateFocusLayerFocus
+{
+  CGUIControl *preferredControl = CFocusEngineHandler::GetInstance().GetFocusControl();
+  CGUIControl *foundcontrol = nullptr;
+  FocusLayerView *foundview = nullptr;
+  for (size_t andx = 0; andx < _focusLayer.views.size() && foundview == nullptr; ++andx)
+  {
+    if (preferredControl == _focusLayer.views[andx].core)
+    {
+      foundview = _focusLayer.views[andx].view;
+      foundcontrol = (CGUIControl*)_focusLayer.views[andx].core;
+      break;
+    }
+    for (size_t bndx = 0; bndx < _focusLayer.views[andx].items.size(); ++bndx)
+    {
+      if (preferredControl == _focusLayer.views[andx].items[bndx].core)
+      {
+        foundview = _focusLayer.views[andx].items[bndx].view;
+        foundcontrol = (CGUIControl*)_focusLayer.views[andx].items[bndx].core;
+        break;
+      }
+    }
+  }
+  // set the view that is in focus
+  if (foundview == nullptr)
+    foundview = self.focusView;
+  _focusLayer.view = foundview;
+  _focusLayer.core = foundcontrol;
+}
+
+- (void) updateFocusLayerMainThread
+{
+  if (m_animating)
+    [self performSelectorOnMainThread:@selector(updateFocusLayer) withObject:nil  waitUntilDone:NO];
+}
+
+- (void) updateFocusLayer
+{
+  volatile bool dumpit = false;
+  if (dumpit)
+  {
+    [self debugSubViews];
+  }
+
+  bool isAnimating = CFocusEngineHandler::GetInstance().GetFocusWindowIsAnimating();
+  std::vector<FocusEngineCoreViews> views;
+  CFocusEngineHandler::GetInstance().GetCoreViews(views);
+  if (isAnimating || views.empty())
+  {
+    m_viewItems.clear();
+    _focusLayer.Reset();
+    [self clearSubViews];
+    [self updateFocusLayerFocus];
+  }
+  else
+  {
+    // this is deep 'is equals' comparison
+    // has to match in order and content.
+    if (CFocusEngineHandler::CoreViewsIsEqual(m_viewItems, views))
+    {
+      [self updateFocusLayerFocus];
+    }
+    else
+    {
+      m_viewItems = views;
+      [self buildFocusLayerFromCore];
+      CLog::Log(LOGDEBUG, "updateFocusLayer:isAnimating(%d), rebuild", isAnimating);
+    }
+/*
+    // something is different. check size (deep check)
+    if (!CFocusEngineHandler::CoreViewsIsEqualSize(m_viewItems, views))
+    {
+      // sizes are different, punt
+      CLog::Log(LOGDEBUG, "updateFocusLayer:isAnimating(%d), Sizes are different, rebuild", isAnimating);
+      m_viewItems = views;
+      [self buildFocusLayerFromCore];
+    }
+    else if (!CFocusEngineHandler::CoreViewsIsEqualControls(m_viewItems, views))
+    {
+      //CLog::Log(LOGDEBUG, "updateFocusLayer:isAnimating(%d), Controls are different, rebuild", isAnimating");
+      // same size but core controls are different, punt
+      m_viewItems = views;
+      [self buildFocusLayerFromCore];
+    }
+    else
+    {
+      //CLog::Log(LOGDEBUG, "updateFocusLayer:isAnimating(%d), CheckRects failed, check view locations", isAnimating);
+      // same sizes, same controls, so only view rects have changed, update view position/size
+      m_viewItems = views;
+      [self buildFocusLayerFromCore];
+      //[self updateFocusLayerFromCore];
+    }
+*/
+  }
+  [self.focusView setNeedsDisplay];
+  // if the focus update is accepted by the focus engine,
+  // focus is reset to the preferred focused view
+  [self setNeedsFocusUpdate];
+  // tells the focus engine to force a focus update immediately
+  [self updateFocusIfNeeded];
 }
 
 #pragma mark - display switching routines
@@ -2212,8 +1981,8 @@ static SiriRemoteInfo siriRemoteInfo;
     }
   }
 
-  if (m_animating)
-    [self performSelectorOnMainThread:@selector(updateFocusView) withObject:nil  waitUntilDone:NO];
+  //if (m_animating)
+  //  [self performSelectorOnMainThread:@selector(updateFocusLayer) withObject:nil  waitUntilDone:NO];
 }
 
 //--------------------------------------------------------------
@@ -2657,7 +2426,6 @@ static SiriRemoteInfo siriRemoteInfo;
 }
 
 #pragma mark - control center
-
 - (void)createCustomControlCenter
 {
   //PRINT_SIGNATURE();

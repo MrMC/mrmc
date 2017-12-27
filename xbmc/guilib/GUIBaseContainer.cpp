@@ -32,6 +32,7 @@
 #include "listproviders/IListProvider.h"
 #include "settings/Settings.h"
 #include "guiinfo/GUIInfoLabels.h"
+#include "GUIWindowManager.h"
 
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000
@@ -190,6 +191,7 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItemPtr& ite
       CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
       item->SetLayout(layout);
     }
+
     if (item->GetFocusedLayout())
       item->GetFocusedLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
     if (item->GetLayout())
@@ -287,6 +289,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
     else if (item->GetLayout())
       item->GetLayout()->Render(item, m_parentID);
   }
+
   g_graphicsContext.RestoreOrigin();
 }
 
@@ -483,6 +486,8 @@ void CGUIBaseContainer::OnUp()
 {
   CGUIAction action = GetAction(ACTION_MOVE_UP);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
+  if (GetGlobalWrapDisable())
+    wrapAround = false;
   if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
@@ -493,6 +498,8 @@ void CGUIBaseContainer::OnDown()
 {
   CGUIAction action = GetAction(ACTION_MOVE_DOWN);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
+  if (GetGlobalWrapDisable())
+    wrapAround = false;
   if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
@@ -503,6 +510,8 @@ void CGUIBaseContainer::OnLeft()
 {
   CGUIAction action = GetAction(ACTION_MOVE_LEFT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
+  if (GetGlobalWrapDisable())
+    wrapAround = false;
   if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
     return;
   else if (m_orientation == VERTICAL)
@@ -518,6 +527,8 @@ void CGUIBaseContainer::OnRight()
 {
   CGUIAction action = GetAction(ACTION_MOVE_RIGHT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
+  if (GetGlobalWrapDisable())
+    wrapAround = false;
   if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
     return;
   else if (m_orientation == VERTICAL)
@@ -1340,6 +1351,19 @@ bool CGUIBaseContainer::CanFocus() const
      We allow focus if we have items available or if we have a list provider
      that's in the process of updating.
      */
+    return !m_items.empty() || (m_listProvider && m_listProvider->IsUpdating());
+  }
+  return false;
+}
+
+bool CGUIBaseContainer::HasFocusVisibility()
+{
+  if (!IsVisible() && !CGUIControl::CanFocus())
+    return false;
+  if (CGUIControl::HasFocusVisibility())
+  {
+     // We allow focus if we have items available or if we have a list provider
+     // that's in the process of updating.
     return !m_items.empty() || (m_listProvider && m_listProvider->IsUpdating());
   }
   return false;

@@ -51,6 +51,7 @@ public:
   virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool CanFocus() const;
+  virtual bool HasFocusVisibility();
 
   virtual EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UnfocusFromPoint(const CPoint &point);
@@ -96,6 +97,7 @@ public:
    */
   bool IsValidControl(const CGUIControl *control) const;
 
+  void GetChildren(std::vector<CGUIControl *> &controls) { controls = m_children;};
 
 #ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();

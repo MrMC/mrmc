@@ -80,6 +80,7 @@ public:
   virtual bool UpdateColors();
 
   virtual CRect CalcRenderRegion() const;
+  virtual bool HasFocusVisibility();
 
 protected:
   friend class CGUISpinControlEx;

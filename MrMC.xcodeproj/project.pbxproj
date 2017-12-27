@@ -1876,6 +1876,9 @@
 		F56353BF16E9BB3500D21BAD /* BitstreamConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */; };
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
+		F583BA781FF472050046A109 /* FocusabilityTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F583BA771FF472050046A109 /* FocusabilityTracker.cpp */; };
+		F583BA791FF472050046A109 /* FocusabilityTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F583BA771FF472050046A109 /* FocusabilityTracker.cpp */; };
+		F583BA7A1FF472050046A109 /* FocusabilityTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F583BA771FF472050046A109 /* FocusabilityTracker.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		F58558191DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58558171DBA7CD200641870 /* ActiveAEFilter.cpp */; };
 		F585581A1DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58558171DBA7CD200641870 /* ActiveAEFilter.cpp */; };
@@ -5441,6 +5444,8 @@
 		F57483611BFFCA7300D5F221 /* ios_package_dylibs2frameworks.command */ = {isa = PBXFileReference; lastKnownFileType = text; path = ios_package_dylibs2frameworks.command; sourceTree = "<group>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
 		F57B6F7F1071B8B500079ACB /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
+		F583BA761FF471E20046A109 /* FocusabilityTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusabilityTracker.h; sourceTree = "<group>"; };
+		F583BA771FF472050046A109 /* FocusabilityTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FocusabilityTracker.cpp; sourceTree = "<group>"; };
 		F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPDirectory.h; sourceTree = "<group>"; };
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPDirectory.cpp; sourceTree = "<group>"; };
 		F58558171DBA7CD200641870 /* ActiveAEFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ActiveAEFilter.cpp; sourceTree = "<group>"; };
@@ -6239,6 +6244,8 @@
 				F558F27A13ABD56600631E12 /* DirtyRegionSolvers.h */,
 				F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */,
 				F558F27E13ABD57400631E12 /* DirtyRegionTracker.h */,
+				F583BA771FF472050046A109 /* FocusabilityTracker.cpp */,
+				F583BA761FF471E20046A109 /* FocusabilityTracker.h */,
 				18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */,
 				18B7C6FB1294222D009E7A26 /* FrameBufferObject.h */,
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
@@ -11218,6 +11225,7 @@
 				DF6A0D811A4584E80075BBFC /* OverrideDirectory.cpp in Sources */,
 				DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */,
 				DF93D6B21444A8B1007C6459 /* UPnPFile.cpp in Sources */,
+				F583BA781FF472050046A109 /* FocusabilityTracker.cpp in Sources */,
 				DF93D6B31444A8B1007C6459 /* ZipFile.cpp in Sources */,
 				F590457F1BA372A600DB589A /* OSXTextInputResponder.mm in Sources */,
 				7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */,
@@ -12183,6 +12191,7 @@
 				F5B724911C7E150C006432AE /* archive.cpp in Sources */,
 				E49913BF174E5F3C00741B6D /* Network.cpp in Sources */,
 				E49913C0174E5F3C00741B6D /* NetworkServices.cpp in Sources */,
+				F583BA791FF472050046A109 /* FocusabilityTracker.cpp in Sources */,
 				E49913C1174E5F3C00741B6D /* Socket.cpp in Sources */,
 				F51D17101E29950600A03C93 /* nav_print.c in Sources */,
 				E49913C2174E5F3C00741B6D /* TCPServer.cpp in Sources */,
@@ -13721,6 +13730,7 @@
 				F5471B341E85647800570A53 /* PlexClientSync.cpp in Sources */,
 				F5B724CA1C7E150C006432AE /* global.cpp in Sources */,
 				F5D1420F1BAF0B6D0075A95C /* NptJson.cpp in Sources */,
+				F583BA7A1FF472050046A109 /* FocusabilityTracker.cpp in Sources */,
 				F5B724AF1C7E150C006432AE /* errhnd.cpp in Sources */,
 				F5B7238E1C7C9AF6006432AE /* RarFile.cpp in Sources */,
 				F5D142101BAF0B6D0075A95C /* NptList.cpp in Sources */,

@@ -82,6 +82,8 @@ void CGUICheckMarkControl::Render()
     m_imgCheckMarkNoFocus.Render();
   }
   CGUIControl::Render();
+  if (HasFocusVisibility())
+    CGUIControl::AppendFocusableTracker();
 }
 
 CGUILabel::COLOR CGUICheckMarkControl::GetTextColor() const

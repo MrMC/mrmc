@@ -25,6 +25,8 @@
 #import <UIKit/UIKit.h>
 #import "guilib/Geometry.h"
 
+#define SHOW_FOCUS_FRAMES 1
+
 typedef enum
 {
   MC_NONE = 0,
@@ -46,7 +48,6 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 };
 
 @class MainEAGLView;
-@class FocusLayerView;
 
 @interface MainController : UIViewController <UIGestureRecognizerDelegate>
 {
@@ -76,6 +77,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   BOOL                        m_enableRemoteIdle;
   BOOL                        m_allowTap;
   BOOL                        m_nativeKeyboardActive;
+
 }
 // why are these properties ?
 @property (nonatomic, strong) NSTimer *m_holdTimer;
@@ -108,8 +110,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (void) audioRouteChanged;
 - (EAGLContext*) getEAGLContextObj;
 
-- (void) updateFocusView;
-- (void) changeFocus:(FocusLayerView *)view;
+- (void) updateFocusLayerMainThread;
 
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;

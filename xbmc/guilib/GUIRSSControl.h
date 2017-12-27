@@ -54,6 +54,7 @@ public:
   virtual void OnFeedUpdate(const vecText &feed);
   virtual bool CanFocus() const { return true; };
   virtual CRect CalcRenderRegion() const;
+  virtual bool HasFocusVisibility();
 
   virtual void OnFocus();
   virtual void OnUnFocus();

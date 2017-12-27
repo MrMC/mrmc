@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2017 Team MrMC
+ *      Copyright (C) 2017-2018 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
  */
 
 #include "guilib/GUIControl.h"
+#include "guilib/FocusabilityTracker.h"
 #include "threads/CriticalSection.h"
 
 class CAnimation;
@@ -33,18 +34,112 @@ typedef enum FocusEngineState
   Update,
 } FocusEngineState;
 
-typedef struct
+typedef struct FocusEngineCoreItem
 {
-  CGUIControl *control;
-  CRect renderRect;
-} FocusEngineItem;
-typedef struct
+  bool IsEqual(FocusEngineCoreItem &item)
+  {
+    if (!IsEqualRect(item))
+      return false;
+    if (!IsEqualControl(item))
+      return false;
+    return true;
+  }
+  bool IsEqualRect(FocusEngineCoreItem &item)
+  {
+    if (rect != item.rect)
+      return false;
+    return true;
+  }
+  bool IsEqualControl(FocusEngineCoreItem &item)
+  {
+    if (control != item.control)
+      return false;
+    return true;
+  }
+  CRect rect;
+  std::string type;
+  CGUIControl *control = nullptr;
+} FocusEngineCoreItem;
+
+typedef struct FocusEngineCoreViews
+{
+  bool IsEqual(FocusEngineCoreViews &view)
+  {
+    if (!IsEqualSize(view))
+      return false;
+    if (!IsEqualControls(view))
+      return false;
+    if (!IsEqualRect(view))
+      return false;
+    return true;
+  }
+  bool IsEqualSize(FocusEngineCoreViews &view)
+  {
+    if (items.size() != view.items.size())
+      return false;
+    return true;
+  }
+  bool IsEqualRect(FocusEngineCoreViews &view)
+  {
+    if (rect != view.rect)
+      return false;
+    for (size_t indx = 0; indx < items.size(); ++indx)
+    {
+      // core always has the focused control last in any list
+      // which will change the order when focus changes.
+      // so we have to search for the matching control.
+      auto foundItem = std::find_if(view.items.begin(), view.items.end(),
+          [&](FocusEngineCoreItem item)
+          { return items[indx].control == item.control;
+      });
+      // grr, did not find matching control in view compare
+      // so punt, while size is same, controls are different.
+      if (foundItem == view.items.end())
+        return false;
+
+      if (items[indx].rect != (*foundItem).rect)
+        return false;
+    }
+    return true;
+  }
+  bool IsEqualControls(FocusEngineCoreViews &view)
+  {
+    if (control != view.control)
+      return false;
+    if (items.size() != view.items.size())
+      return false;
+
+    for (size_t indx = 0; indx < items.size(); ++indx)
+    {
+      // core always has the focused control last in any list
+      // which will change the order when focus changes.
+      // so we have to search for the matching control.
+      auto foundItem = std::find_if(view.items.begin(), view.items.end(),
+          [&](FocusEngineCoreItem item)
+          { return items[indx].control == item.control;
+      });
+      // grr, did not find matching control in view compare
+      // so punt, while size is same, controls are different.
+      if (foundItem == view.items.end())
+        return false;
+    }
+    return true;
+  }
+  CRect rect;
+  std::string type;
+  CGUIControl *control = nullptr;
+  std::vector<FocusEngineCoreItem> items;
+} FocusEngineCoreViews;
+
+typedef struct FocusEngineFocus
 {
   int windowID = 0;
+  bool isAnimating = false;
   CGUIWindow  *window = nullptr;
   CGUIControl *rootFocus = nullptr;
   CGUIControl *itemFocus = nullptr;
-  std::vector<FocusEngineItem> items;
+  std::vector<GUIFocusabilityItem> items;
+  std::vector<FocusEngineCoreViews> views;
 } FocusEngineFocus;
 
 typedef struct
@@ -70,17 +165,23 @@ class CFocusEngineHandler
   void          EnableFocusSlide(bool enable);
   void          InvalidateFocus(CGUIControl *control);
   const int     GetFocusWindowID();
+  const bool    GetFocusWindowIsAnimating();
   const CRect   GetFocusRect();
+  CGUIControl*  GetFocusControl();
   bool          ShowFocusRect();
   bool          ShowVisibleRects();
   ORIENTATION   GetFocusOrientation();
-  std::vector<FocusEngineItem> *GetVisible();
+  void          GetCoreViews(std::vector<FocusEngineCoreViews> &views);
+  static bool   CoreViewsIsEqual(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
+  static bool   CoreViewsIsEqualSize(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
+  static bool   CoreViewsIsEqualControls(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
+  void          GetGUIFocusabilityItems(std::vector<GUIFocusabilityItem> &items);
+  void          SetGUIFocusabilityItems(const CFocusabilityTracker &focusabilityTracker);
+  std::string   TranslateControlType(CGUIControl *control, CGUIControl *parent);
 
 private:
   void          UpdateFocus(FocusEngineFocus &focus);
-  void          UpdateVisible(FocusEngineFocus &focus);
-  void          AddVisible(FocusEngineFocus &focus, CGUIControl *visible);
-  void          RemoveVisible(CGUIControl *visible);
+  void          UpdateFocusability();
 
   CFocusEngineHandler();
   CFocusEngineHandler(CFocusEngineHandler const&);

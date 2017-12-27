@@ -1110,7 +1110,7 @@ void CGUIEPGGridContainer::OnUp()
     ScrollToChannelOffset(m_channelOffset - 1);
     SetChannel(0);
   }
-  else if (action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition()) // wrap around
+  else if (!GetGlobalWrapDisable() && (action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition())) // wrap around
   {
     int offset = m_channels - m_channelsPerPage;
 
@@ -1139,7 +1139,7 @@ void CGUIEPGGridContainer::OnDown()
       SetChannel(m_channelsPerPage - 1);
     }
   }
-  else if (action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition()) // wrap around
+  else if (!GetGlobalWrapDisable() && (action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition())) // wrap around
   {
     SetChannel(0);
     ScrollToChannelOffset(0);

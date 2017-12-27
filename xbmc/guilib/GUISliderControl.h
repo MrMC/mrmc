@@ -70,6 +70,7 @@ public:
   virtual void SetRange(int iStart, int iEnd);
   virtual void SetFloatRange(float fStart, float fEnd);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool HasFocusVisibility();
   bool ProcessSelector(CGUITexture &nib, unsigned int currentTime, float fScaleY, RangeSelector selector);
   void SetRangeSelection(bool rangeSelection);
   bool GetRangeSelection() const { return m_rangeSelection; }

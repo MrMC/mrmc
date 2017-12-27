@@ -580,6 +580,7 @@ void CGUIWindowFullScreen::Render()
   g_renderManager.Render(true, 0, 255);
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
   CGUIWindow::Render();
+  AppendFocusableTracker(this);
 }
 
 void CGUIWindowFullScreen::RenderEx()

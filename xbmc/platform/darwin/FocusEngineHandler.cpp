@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Team MrMC
+ *      Copyright (C) 2017-2018 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,16 +23,20 @@
 #include "FocusEngineHandler.h"
 
 #include "guilib/GUIControl.h"
+#include "guilib/GUIWindow.h"
+#include "guilib/GUIDialog.h"
 #include "guilib/GUIListGroup.h"
+#include "guilib/GUIListLabel.h"
 #include "guilib/GUIBaseContainer.h"
+#include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindowManager.h"
-#include "windows/GUIMediaWindow.h"
+#include "guilib/GUIControlFactory.h"
 #include "threads/Atomics.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
-
+#include "platform/darwin/DarwinUtils.h"
 
 static std::atomic<long> sg_focusenginehandler_lock {0};
 CFocusEngineHandler* CFocusEngineHandler::m_instance = nullptr;
@@ -50,7 +54,7 @@ CFocusEngineHandler::CFocusEngineHandler()
 : m_focusZoom(true)
 , m_focusSlide(true)
 , m_showFocusRect(false)
-, m_showVisibleRects(true)
+, m_showVisibleRects(false)
 , m_state(FocusEngineState::Idle)
 , m_focusedOrientation(UNDEFINED)
 {
@@ -73,7 +77,7 @@ void CFocusEngineHandler::Process()
     // itemsVisible will start cleared
     m_focus = focus;
   }
-  UpdateVisible(m_focus);
+  m_focus.isAnimating = focus.isAnimating;
 
   if (m_focus.itemFocus)
   {
@@ -191,6 +195,12 @@ void CFocusEngineHandler::InvalidateFocus(CGUIControl *control)
   if (m_focus.rootFocus == control || m_focus.itemFocus == control)
     m_focus = FocusEngineFocus();
 
+  auto foundControl = std::find_if(m_focus.items.begin(), m_focus.items.end(),
+      [&](GUIFocusabilityItem item)
+      { return item.control == control;
+  });
+  if (foundControl != m_focus.items.end())
+    m_focus.items.erase(foundControl);
 }
 
 const int
@@ -198,6 +208,13 @@ CFocusEngineHandler::GetFocusWindowID()
 {
   CSingleLock lock(m_focusLock);
   return m_focus.windowID;
+}
+
+const bool
+CFocusEngineHandler::GetFocusWindowIsAnimating()
+{
+  CSingleLock lock(m_focusLock);
+  return m_focus.isAnimating;
 }
 
 const CRect
@@ -208,6 +225,7 @@ CFocusEngineHandler::GetFocusRect()
   CSingleLock lock(m_focusLock);
   focus.window = m_focus.window;
   focus.windowID = m_focus.windowID;
+  focus.isAnimating = m_focus.isAnimating;
   lock.Leave();
   if (focus.window && focus.windowID != 0 && focus.windowID != WINDOW_INVALID)
   {
@@ -221,6 +239,19 @@ CFocusEngineHandler::GetFocusRect()
   return CRect();
 }
 
+CGUIControl*
+CFocusEngineHandler::GetFocusControl()
+{
+  CSingleLock lock(m_focusLock);
+  if (m_focus.itemFocus)
+    return m_focus.itemFocus;
+  // if we do not have a focused control
+  // kick back to the window control
+  if (m_focus.window)
+    return m_focus.window;
+  return nullptr;
+}
+
 bool CFocusEngineHandler::ShowFocusRect()
 {
   return m_showFocusRect;
@@ -231,7 +262,6 @@ bool CFocusEngineHandler::ShowVisibleRects()
   return m_showVisibleRects;
 }
 
-
 ORIENTATION CFocusEngineHandler::GetFocusOrientation()
 {
   FocusEngineFocus focus;
@@ -239,6 +269,7 @@ ORIENTATION CFocusEngineHandler::GetFocusOrientation()
   CSingleLock lock(m_focusLock);
   focus.window = m_focus.window;
   focus.windowID = m_focus.windowID;
+  focus.isAnimating = m_focus.isAnimating;
   lock.Leave();
   if (focus.window && focus.windowID != 0 && focus.windowID != WINDOW_INVALID)
   {
@@ -273,6 +304,7 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
   // skip finding focused window else invalidate focus
   if (!focus.window || focus.windowID == 0 || focus.windowID == WINDOW_INVALID)
   {
+    focus.isAnimating = false;
     focus.windowID = g_windowManager.GetActiveWindowID();
     focus.window = g_windowManager.GetWindow(focus.windowID);
     if (!focus.window)
@@ -283,7 +315,7 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
       return;
     }
   }
-
+  focus.isAnimating = false;
   focus.rootFocus = focus.window->GetFocusedControl();
   if (!focus.rootFocus)
     return;
@@ -293,6 +325,8 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
 
   if (!focus.rootFocus->HasFocus())
     return;
+
+  focus.isAnimating = focus.window->IsAnimating(ANIM_TYPE_CONDITIONAL);
 
   switch(focus.rootFocus->GetControlType())
   {
@@ -327,233 +361,326 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
     case CGUIControl::GUICONTROL_RENDERADDON:
     case CGUIControl::GUICONTROL_MULTI_IMAGE:
     case CGUIControl::GUICONTROL_LISTGROUP:
-    case CGUIControl::GUICONTROL_GROUPLIST:
     case CGUIControl::GUICONTROL_LISTLABEL:
     case CGUIControl::GUICONTROL_GROUP:
     case CGUIControl::GUICONTROL_SCROLLBAR:
     case CGUIControl::GUICONTROL_MULTISELECT:
+      {
+        focus.itemFocus = focus.rootFocus->GetSelectionControl();
+      }
+      break;
+    case CGUIControl::GUICONTROL_GROUPLIST:
+      {
+        CGUIControlGroupList *controlGroupList = (CGUIControlGroupList*)focus.rootFocus;
+        focus.isAnimating |= controlGroupList->IsScrolling();
+        focus.itemFocus = focus.rootFocus->GetSelectionControl();
+      }
+      break;
     case CGUIControl::GUICONTAINER_LIST:
     case CGUIControl::GUICONTAINER_WRAPLIST:
     case CGUIControl::GUICONTAINER_EPGGRID:
     case CGUIControl::GUICONTAINER_PANEL:
-      {
-        focus.itemFocus = focus.rootFocus->GetSelectionControl();
-      }
-      break;
     case CGUIControl::GUICONTAINER_FIXEDLIST:
       {
+        CGUIBaseContainer *baseContainer = (CGUIBaseContainer*)focus.rootFocus;
+        focus.isAnimating |= baseContainer->IsScrolling();
         focus.itemFocus = focus.rootFocus->GetSelectionControl();
       }
       break;
   }
 }
 
-std::vector<FocusEngineItem> * CFocusEngineHandler::GetVisible()
+void CFocusEngineHandler::GetCoreViews(std::vector<FocusEngineCoreViews> &views)
 {
   // skip finding focused window, use current
   CSingleLock lock(m_focusLock);
   if (m_focus.window && m_focus.windowID != 0 && m_focus.windowID != WINDOW_INVALID)
-    return &m_focus.items;
-  return nullptr;
+    views = m_focus.views;
 }
 
-void CFocusEngineHandler::UpdateVisible(FocusEngineFocus &focus)
+bool CFocusEngineHandler::CoreViewsIsEqual(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
 {
-  size_t visibilityCount = focus.items.size();
+  if (views1.size() != views2.size())
+    return false;
 
-  std::vector<CGUIControl *> controls;
-  focus.window->GetControlsFromLookUpMap(controls);
-
-  // add in missing containers
-  for (auto it = controls.begin(); it != controls.end(); ++it)
+  for (size_t indx = 0; indx < views1.size(); ++indx)
   {
-    bool  addControl = false;
-    CGUIControl *control = *it;
-    switch(control->GetControlType())
-    {
-      // include all known types of controls
-      // we do not really need to do this but compiler
-      // will generate a warning if a new one is added.
-      case CGUIControl::GUICONTROL_UNKNOWN:
-        CLog::Log(LOGDEBUG, "GetFocusedItem: GUICONTROL_UNKNOWN");
-        break;
-      case CGUIControl::GUICONTROL_BUTTON:
-      case CGUIControl::GUICONTROL_CHECKMARK:
-      case CGUIControl::GUICONTROL_FADELABEL:
-      case CGUIControl::GUICONTROL_IMAGE:
-      case CGUIControl::GUICONTROL_BORDEREDIMAGE:
-      case CGUIControl::GUICONTROL_LARGE_IMAGE:
-      case CGUIControl::GUICONTROL_LABEL:
-      case CGUIControl::GUICONTROL_PROGRESS:
-      case CGUIControl::GUICONTROL_RADIO:
-      case CGUIControl::GUICONTROL_RSS:
-      case CGUIControl::GUICONTROL_SELECTBUTTON:
-      case CGUIControl::GUICONTROL_SPIN:
-      case CGUIControl::GUICONTROL_SPINEX:
-      case CGUIControl::GUICONTROL_TEXTBOX:
-      case CGUIControl::GUICONTROL_TOGGLEBUTTON:
-      case CGUIControl::GUICONTROL_VIDEO:
-      case CGUIControl::GUICONTROL_SLIDER:
-      case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
-      case CGUIControl::GUICONTROL_MOVER:
-      case CGUIControl::GUICONTROL_RESIZE:
-      case CGUIControl::GUICONTROL_EDIT:
-      case CGUIControl::GUICONTROL_VISUALISATION:
-      case CGUIControl::GUICONTROL_RENDERADDON:
-      case CGUIControl::GUICONTROL_MULTI_IMAGE:
-      case CGUIControl::GUICONTROL_LISTLABEL:
-      case CGUIControl::GUICONTROL_SCROLLBAR:
-      case CGUIControl::GUICONTROL_MULTISELECT:
-        {
-          addControl = control->CanFocus() && control->IsVisibleFromSkin();
-        }
-        break;
-      case CGUIControl::GUICONTROL_GROUP:
-       {
-          addControl = control->CanFocus() && control->IsVisibleFromSkin();
-          if (addControl)
-          {
-            if (focus.window->IsMediaWindow())
-            {
-              int data1 = ((CGUIMediaWindow*)(focus.window))->GetViewContainerID();
-              const CGUIControl *control1 = focus.window->GetControl(data1);
-              if (control1 && control1->IsContainer())
-              {
-                std::vector<CGUIControl *> mediaControls;
-                //((IGUIContainer *)control1)->GetContainers(mediaControls);
-              }
+    // sizes are the same, so we have to compare views
+    if (!views1[indx].IsEqual(views2[indx]))
+      return false;
+  }
 
-            }
+  return true;
+}
 
-            CGUIControlGroup *groupControl = (CGUIControlGroup*)control;
-            std::vector<CGUIControl *> groupControls;
-            groupControl->GetContainers(groupControls);
-            for (auto groupIt = groupControls.begin(); groupIt != groupControls.end(); ++groupIt)
-            {
-              if ((*groupIt)->CanFocus() && (*groupIt)->IsVisibleFromSkin())
-              {
-                AddVisible(focus, *groupIt);
-                addControl = false;
-              }
-            }
-          }
-        }
-        break;
-      case CGUIControl::GUICONTROL_GROUPLIST:
-      case CGUIControl::GUICONTROL_LISTGROUP:
-       {
-          addControl = control->CanFocus() && control->IsVisibleFromSkin();
-          if (addControl)
-          {
-            CGUIControlGroup *groupControl = (CGUIControlGroup*)control;
-            std::vector<CGUIControl *> groupControls;
-            groupControl->GetContainers(groupControls);
-            for (auto groupIt = groupControls.begin(); groupIt != groupControls.end(); ++groupIt)
-            {
-              if ((*groupIt)->CanFocus() && (*groupIt)->IsVisibleFromSkin())
-              {
-                AddVisible(focus, *groupIt);
-                addControl = false;
-              }
-            }
-          }
-        }
-        break;
-      case CGUIControl::GUICONTAINER_FIXEDLIST:
-      case CGUIControl::GUICONTAINER_WRAPLIST:
-      case CGUIControl::GUICONTAINER_EPGGRID:
-      case CGUIControl::GUICONTAINER_PANEL:
-        {
-          //CGUIControl *parent = control->GetParentControl();
-          //if (parent)
-          //  control = parent;
-          addControl = control->CanFocus() && control->IsVisibleFromSkin();
-          if (addControl)
-          {
-            CGUIBaseContainer *baseContainer = (CGUIBaseContainer*)control;
-            CGUIListItemLayout *layout = baseContainer->GetFocusedLayout();
-            if (layout)
-            {
-              CGUIListGroup *group =  layout->GetGroup();
-              std::vector<CGUIControl *> groupControls;
-              group->GetContainers(groupControls);
-              for (auto groupIt = groupControls.begin(); groupIt != groupControls.end(); ++groupIt)
-              {
-                if ((*groupIt)->CanFocus() && (*groupIt)->IsVisibleFromSkin())
-                {
-                  AddVisible(focus, *groupIt);
-                  addControl = false;
-                }
-              }
-            }
-          }
-        }
-        break;
-     case CGUIControl::GUICONTAINER_LIST:
-        {
-          CGUIControl *parent = control->GetParentControl();
-          if (parent)
-            control = parent;
-          addControl = control->CanFocus() && control->IsVisibleFromSkin();
-        }
-        break;
-    }
-    if (addControl)
+bool CFocusEngineHandler::CoreViewsIsEqualSize(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
+{
+  if (views1.size() != views2.size())
+    return false;
+
+  for (size_t indx = 0; indx < views1.size(); ++indx)
+  {
+    // sizes are the same, so we have to compare views
+    if (!views1[indx].IsEqualSize(views2[indx]))
+      return false;
+  }
+
+  return true;
+}
+
+bool CFocusEngineHandler::CoreViewsIsEqualControls(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
+{
+  if (views1.size() != views2.size())
+    return false;
+
+  // sizes are the same, so we have to compare views
+  for (size_t indx = 0; indx < views1.size(); ++indx)
+  {
+    // core always has the focused control last in any list
+    // which will change the order when focus changes.
+    // so we have to search for the matching control.
+    auto foundView = std::find_if(views2.begin(), views2.end(),
+        [&](FocusEngineCoreViews view)
+        { return views1[indx].control == view.control;
+    });
+    // grr, did not find matching control in view compare
+    // so punt, while size is same, controls are different.
+    if (foundView == views2.end())
+      return false;
+
+    // now we can check if items match.
+    if (!views1[indx].IsEqualControls(*foundView))
+      return false;
+  }
+
+  return true;
+}
+
+void CFocusEngineHandler::GetGUIFocusabilityItems(std::vector<GUIFocusabilityItem> &items)
+{
+  // skip finding focused window, use current
+  CSingleLock lock(m_focusLock);
+  if (m_focus.window && m_focus.windowID != 0 && m_focus.windowID != WINDOW_INVALID)
+  {
+    if (m_focus.rootFocus)
+      items = m_focus.items;
+    else
+      items.clear();
+  }
+}
+
+void CFocusEngineHandler::SetGUIFocusabilityItems(const CFocusabilityTracker &focusabilityTracker)
+{
+  CSingleLock lock(m_focusLock);
+  if (m_focus.window && m_focus.windowID != 0 && m_focus.windowID != WINDOW_INVALID)
+  {
+    //if (m_focus.rootFocus)
     {
-      auto foundControl = std::find_if(focus.items.begin(), focus.items.end(),
-          [&](FocusEngineItem item)
-          { return item.control == control;
-      });
-      // missing from our list, add it in
-      if (foundControl == focus.items.end())
+      auto items = focusabilityTracker.GetItems();
+      // there should always something that has focus. if incoming focusabilityTracker is empty,
+      // it is a transition effect or nothing reported a dirty region and rendering was skipped.
+      if (!items.empty())
       {
-        CRect renderRect = control->GetRenderRect();
-        //CLog::Log(LOGDEBUG, "%s: add renderRect - %f,%f %f x %f", __FUNCTION__,
-        //  renderRect.x1, renderRect.y1, renderRect.Width(), renderRect.Height());
-        if (!renderRect.IsEmpty())
+        std::vector<GUIFocusabilityItem> verifiedItems;
+        for (auto it = items.begin(); it != items.end(); ++it)
         {
-          FocusEngineItem item;
-          item.control = control;
-          focus.items.push_back(item);
+          if ((*it).control->HasProcessed() && (*it).control->IsVisible())
+            verifiedItems.push_back(*it);
         }
-        //CLog::Log(LOGDEBUG, "%s: add %p %lu", __FUNCTION__, control, focus.itemsVisible.size());
+
+        if (verifiedItems.size() != m_focus.items.size())
+        {
+          m_focus.items = verifiedItems;
+          std::sort(m_focus.items.begin(), m_focus.items.end(),
+            [] (GUIFocusabilityItem const& a, GUIFocusabilityItem const& b)
+          {
+              return a.renderOrder < b.renderOrder;
+          });
+        }
+        UpdateFocusability();
       }
     }
   }
 
-  bool visibleChanged = false;
-  visibleChanged = visibilityCount != focus.items.size();
-  if (visibleChanged)
+  CDarwinUtils::UpdateFocusLayerMainThread();
+}
+
+void CFocusEngineHandler::UpdateFocusability()
+{
+  // use current focused window
+  CSingleLock lock(m_focusLock);
+  if (m_focus.window && m_focus.windowID != 0 && m_focus.windowID != WINDOW_INVALID)
   {
-    for (auto it = focus.items.begin(); it != focus.items.end(); ++it)
+    CRect boundsRect = CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+    // update all renderRects 1st, we depend on them being correct in next step.
+    for (auto it = m_focus.items.begin(); it != m_focus.items.end(); ++it)
     {
-      CRect renderRect = (*it).control->GetRenderRect();
-      CLog::Log(LOGDEBUG, "%s: add renderRect - %f,%f %f x %f", __FUNCTION__,
-        renderRect.x1, renderRect.y1, renderRect.Width(), renderRect.Height());
-      CLog::Log(LOGDEBUG, "%s: add %p %lu", __FUNCTION__, (*it).control, focus.items.size());
+      auto &item = *it;
+      item.renderRect = item.control->GetRenderRect();
+      if (item.parentView)
+        item.viewRenderRect = item.parentView->GetRenderRect();
     }
+    // qualify items and rather them into views. The enclosing
+    // view will be last in draw order.
+    std::vector<FocusEngineCoreItem> items;
+    std::vector<FocusEngineCoreViews> views;
+    for (auto it = m_focus.items.begin(); it != m_focus.items.end(); ++it)
+    {
+      auto &focusabilityItem = *it;
+      // should never be an empty render rect :)
+      if (focusabilityItem.renderRect.IsEmpty())
+        continue;
+
+#if true
+      // clip all render rects to screen bounds
+      if (focusabilityItem.renderRect.x1 < boundsRect.x1)
+        focusabilityItem.renderRect.x1 = boundsRect.x1;
+      if (focusabilityItem.renderRect.y1 < boundsRect.y1)
+        focusabilityItem.renderRect.y1 = boundsRect.y1;
+      if (focusabilityItem.renderRect.x2 > boundsRect.x2)
+        focusabilityItem.renderRect.x2 = boundsRect.x2;
+      if (focusabilityItem.renderRect.y2 > boundsRect.y2)
+        focusabilityItem.renderRect.y2 = boundsRect.y2;
+
+      //  remove zero width or zero height rects
+      if (focusabilityItem.renderRect.x1 == focusabilityItem.renderRect.x2)
+        continue;
+      if (focusabilityItem.renderRect.y1 == focusabilityItem.renderRect.y2)
+        continue;
+
+      // remove rects that might have a negative width/height
+      // with respect to bounds rect
+      if (focusabilityItem.renderRect.x2 < boundsRect.x1)
+        continue;
+      if (focusabilityItem.renderRect.y2 < boundsRect.y1)
+        continue;
+
+      // remove rects that might have a negative width/height
+      if (focusabilityItem.renderRect.x2 < focusabilityItem.renderRect.x1)
+        continue;
+      if (focusabilityItem.renderRect.y2 < focusabilityItem.renderRect.y1)
+        continue;
+#endif
+      if ((*it).control == (*it).parentView)
+      {
+        // remove view that are same size as bounds
+        // and do not have any items
+        //if (items.empty() && focusabilityItem.renderRect == boundsRect)
+        //  continue;
+
+        FocusEngineCoreViews view;
+        view.rect = (*it).renderRect;
+        view.type = TranslateControlType((*it).control, (*it).parentView);
+#if true
+        for (auto &item : items)
+        {
+          // clip all item rects to enclosing view rect
+          if (item.rect.x1 < view.rect.x1)
+            item.rect.x1 = view.rect.x1;
+          if (item.rect.y1 < view.rect.y1)
+            item.rect.y1 = view.rect.y1;
+          if (item.rect.x2 > view.rect.x2)
+            item.rect.x2 = view.rect.x2;
+          if (item.rect.y2 > view.rect.y2)
+            item.rect.y2 = view.rect.y2;
+        }
+#endif
+        view.items = items;
+        view.control = (*it).control;
+        views.push_back(view);
+        items.clear();
+      }
+      else
+      {
+        FocusEngineCoreItem item;
+        item.rect = (*it).renderRect;
+        item.type = TranslateControlType((*it).control, (*it).parentView);
+        item.control = (*it).control;
+        items.push_back(item);
+      }
+    }
+#if false
+    // the window
+    for (auto it = views.begin(); it != views.end(); )
+    {
+      auto &view = *it;
+      if (view.items.empty())
+        it = views.erase(it);
+      else
+        ++it;
+    }
+#endif
+#if false
+    // run through our views in reverse order (so that last is checked first)
+    //for (auto it = views.begin(); it != views.rend(); )
+    for (auto it = views.rbegin(); it != views.rend(); )
+    {
+      auto &view = *it;
+      // ignore a view that is obscured by the higher views
+      auto obscuredIt = it;
+      ++obscuredIt;
+      bool IsObscured = false;
+      std::vector<CRect> partialOverlaps;
+      //for (;obscuredIt != views.end(); ++obscuredIt)
+      for (;obscuredIt != views.rend(); ++obscuredIt)
+      {
+        auto &testViewItem = *obscuredIt;
+
+        // should never be an empty rect :)
+        if (testViewItem.rect.IsEmpty())
+          continue;
+        // ignore rects that are the same size as display bounds
+        if (testViewItem.rect == boundsRect)
+          continue;
+        CRect testRect = boundsRect;
+        testRect.Intersect(testViewItem.rect);
+        if (testRect == boundsRect)
+          continue;
+
+        if (testViewItem.rect.RectInRect(view.rect))
+        {
+          IsObscured = true;
+          break;
+        }
+
+        // collect intersections that overlap into obscuringRect.
+        CRect intersection = testViewItem.rect;
+        intersection.Intersect(view.rect);
+        if (!intersection.IsEmpty())
+          partialOverlaps.push_back(intersection);
+      }
+      if (!IsObscured && partialOverlaps.size() > 0)
+      {
+        std::vector<CRect> rects = view.rect.SubtractRects(partialOverlaps);
+        if (rects.size() == 0)
+          IsObscured = true;
+      }
+      if (IsObscured)
+        it = views.erase(it);
+      else
+        ++it;
+    }
+#endif
+    m_focus.views = views;
   }
 }
 
-void CFocusEngineHandler::AddVisible(FocusEngineFocus &focus, CGUIControl *control)
+std::string CFocusEngineHandler::TranslateControlType(CGUIControl *control, CGUIControl *parent)
 {
-    auto foundControl = std::find_if(focus.items.begin(), focus.items.end(),
-        [&](FocusEngineItem item)
-        { return item.control == control;
-    });
-  // missing from our list, add it in
-  if (foundControl == focus.items.end())
+  if (parent)
   {
-    CRect renderRect = control->GetRenderRect();
-    CLog::Log(LOGDEBUG, "%s: add renderRect - %f,%f %f x %f", __FUNCTION__,
-      renderRect.x1, renderRect.y1, renderRect.Width(), renderRect.Height());
-    FocusEngineItem item;
-    item.control = control;
-    focus.items.push_back(item);
-    CLog::Log(LOGDEBUG, "%s: add %p %lu", __FUNCTION__, control, focus.items.size());
+    CGUIDialog *dialog = dynamic_cast<CGUIDialog*>(parent);
+    if (dialog)
+      return "dialog";
+    CGUIWindow *window = dynamic_cast<CGUIWindow*>(parent);
+    if (window)
+      return "window";
   }
-}
+  // TranslateControlType returns 'group' for
+  // both CGUIListGroup and CGUIControlGroup
+  CGUIListGroup *listgroup = dynamic_cast<CGUIListGroup*>(control);
+  if (listgroup)
+    return "listgroup";
 
-void CFocusEngineHandler::RemoveVisible(CGUIControl *visible)
-{
+  return CGUIControlFactory::TranslateControlType(control->GetControlType());
 }

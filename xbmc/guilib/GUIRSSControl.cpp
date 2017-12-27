@@ -169,6 +169,11 @@ CRect CGUIRSSControl::CalcRenderRegion() const
   return CGUIControl::CalcRenderRegion();
 }
 
+bool CGUIRSSControl::HasFocusVisibility()
+{
+  return false;
+}
+
 void CGUIRSSControl::OnFeedUpdate(const vecText &feed)
 {
   CSingleLock lock(m_criticalSection);

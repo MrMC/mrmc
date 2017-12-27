@@ -93,6 +93,8 @@ void CGUIButtonControl::Render()
 
   RenderText();
   CGUIControl::Render();
+  if (HasFocusVisibility())
+    CGUIControl::AppendFocusableTracker();
 }
 
 void CGUIButtonControl::RenderText()
@@ -311,6 +313,13 @@ CRect CGUIButtonControl::CalcRenderRegion() const
   CRect textRect = m_label.GetRenderRect();
   buttonRect.Union(textRect);
   return buttonRect;
+}
+
+bool CGUIButtonControl::HasFocusVisibility()
+{
+  // bottons with ControlID of zero are only
+  // touch navigable, ignore them.
+  return (GetID() != 0) && CanFocus() && IsVisibleFromSkin();
 }
 
 EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)

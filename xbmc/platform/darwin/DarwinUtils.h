@@ -54,6 +54,7 @@ public:
   static int         BatteryLevel(void);
   static void        EnableOSScreenSaver(bool enable);
   static bool        ResetSystemIdleTimer();
+  static void        UpdateFocusLayerMainThread();
   static void        SetScheduling(int message);
   static void        PrintDebugString(std::string debugString);
   static bool        CFStringRefToString(CFStringRef source, std::string& destination);

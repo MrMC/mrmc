@@ -107,6 +107,7 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
     control->UpdateVisibility();
     unsigned int oldDirty = dirtyregions.size();
     control->DoProcess(currentTime, dirtyregions);
+
     if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)
       rect.Union(control->GetRenderRegion());
   }
@@ -132,6 +133,8 @@ void CGUIControlGroup::Render()
   if (focusedControl)
     focusedControl->DoRender();
   CGUIControl::Render();
+  if (HasFocusVisibility())
+    CGUIControl::AppendFocusableTracker(this);
   g_graphicsContext.RestoreOrigin();
 }
 
@@ -302,6 +305,18 @@ bool CGUIControlGroup::CanFocus() const
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     if ((*it)->CanFocus())
+      return true;
+  }
+  return false;
+}
+
+bool CGUIControlGroup::HasFocusVisibility()
+{
+  if (!CGUIControl::HasFocusVisibility()) return false;
+  // see if we have any children that can be focused
+  for (auto it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    if ((*it)->HasFocusVisibility())
       return true;
   }
   return false;

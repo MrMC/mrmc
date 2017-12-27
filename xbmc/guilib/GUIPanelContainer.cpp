@@ -259,6 +259,8 @@ void CGUIPanelContainer::OnLeft()
 {
   CGUIAction action = GetAction(ACTION_MOVE_LEFT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
+  if (GetGlobalWrapDisable())
+    wrapAround = false;
   if (m_orientation == VERTICAL && MoveLeft(wrapAround))
     return;
   if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
@@ -270,6 +272,8 @@ void CGUIPanelContainer::OnRight()
 {
   CGUIAction action = GetAction(ACTION_MOVE_RIGHT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
+  if (GetGlobalWrapDisable())
+    wrapAround = false;
   if (m_orientation == VERTICAL && MoveRight(wrapAround))
     return;
   if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
@@ -281,6 +285,8 @@ void CGUIPanelContainer::OnUp()
 {
   CGUIAction action = GetAction(ACTION_MOVE_UP);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
+  if (GetGlobalWrapDisable())
+    wrapAround = false;
   if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
   if (m_orientation == HORIZONTAL && MoveLeft(wrapAround))
@@ -292,6 +298,8 @@ void CGUIPanelContainer::OnDown()
 {
   CGUIAction action = GetAction(ACTION_MOVE_DOWN);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
+  if (GetGlobalWrapDisable())
+    wrapAround = false;
   if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
   if (m_orientation == HORIZONTAL && MoveRight(wrapAround))

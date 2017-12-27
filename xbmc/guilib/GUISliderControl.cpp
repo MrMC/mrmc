@@ -134,6 +134,10 @@ void CGUISliderControl::Render()
     nibUpper.Render();
   }
   CGUIControl::Render();
+
+  // todo: missing background area...
+  if (HasFocusVisibility())
+    CGUIControl::AppendFocusableTracker();
 }
 
 bool CGUISliderControl::OnMessage(CGUIMessage& message)
@@ -481,6 +485,13 @@ bool CGUISliderControl::HitTest(const CPoint &point) const
   if (m_guiSelectorLower.HitTest(point)) return true;
   if (m_rangeSelection && m_guiSelectorUpper.HitTest(point)) return true;
   return false;
+}
+
+bool CGUISliderControl::HasFocusVisibility()
+{
+  // slider with ControlID of zero are only
+  // touch navigable, ignore them.
+  return (GetID() != 0) && CanFocus() && IsVisibleFromSkin();
 }
 
 void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector /* = false */)

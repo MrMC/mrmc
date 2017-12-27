@@ -101,7 +101,8 @@
 - (BOOL)canBecomeFocused
 {
   // need this or we do not get GestureRecognizers under tvos.
-  return YES;
+  //return YES;
+  return NO;
 }
 
 //--------------------------------------------------------------

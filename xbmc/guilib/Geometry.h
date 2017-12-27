@@ -182,6 +182,22 @@ public:
     return *this;
   };
 
+  const this_type &ArithmeticUnion(const this_type &rect)
+  {
+    if (IsEmpty())
+      *this = rect;
+    else
+    {
+      x1 = std::min(x1,rect.x1);
+      y1 = std::min(y1,rect.y1);
+
+      x2 = std::max(x2,rect.x2);
+      y2 = std::max(y2,rect.y2);
+    }
+
+    return *this;
+  };
+
   inline bool IsEmpty() const XBMC_FORCE_INLINE
   {
     return (x2 - x1) * (y2 - y1) == 0;
@@ -276,7 +292,7 @@ public:
     return fragmentsList;
   }
 
-  void	MapRect(const this_type &src, const this_type &dst)
+  void MapRect(const this_type &src, const this_type &dst)
   {
     // given a base rect in src rect coordinates, remap the
     // base rect to dst rect coordinates. useful for scaling
@@ -291,6 +307,14 @@ public:
     y2 = dst.y2 + (double)(y2 - src.y2) * yfactor;
   }
 
+  bool RectInRect(const this_type &bigrect)
+  {
+    return (x1 >= bigrect.x1 ) &&
+           (y1 >= bigrect.y1 ) &&
+           (x2 <= bigrect.x2 ) &&
+           (y2 <= bigrect.y2 );
+  }
+
   bool operator !=(const this_type &rect) const
   {
     if (x1 != rect.x1) return true;
@@ -298,6 +322,14 @@ public:
     if (y1 != rect.y1) return true;
     if (y2 != rect.y2) return true;
     return false;
+  };
+
+  bool operator ==(const this_type &rect) const
+  {
+    return(x1 == rect.x1) &&
+          (x2 == rect.x2) &&
+          (y1 == rect.y1) &&
+          (y2 == rect.y2);
   };
 
   T x1, y1, x2, y2;

@@ -40,6 +40,7 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   
   virtual CRect CalcRenderRegion() const;
+  virtual bool HasFocusVisibility();
 
 protected:
   CGUITexture m_borderImage;

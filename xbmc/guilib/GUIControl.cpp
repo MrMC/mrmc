@@ -210,6 +210,15 @@ void CGUIControl::DoRender()
   }
 }
 
+void CGUIControl::Render()
+{
+  g_windowManager.UpdateRenderTracker(this);
+}
+
+void CGUIControl::RenderEx()
+{
+}
+
 bool CGUIControl::OnAction(const CAction &action)
 {
   if (HasFocus())
@@ -486,6 +495,30 @@ ORIENTATION CGUIControl::GetOrientation () const
 void CGUIControl::MarkDirtyRegion()
 {
   m_controlIsDirty = true;
+}
+
+bool CGUIControl::GetGlobalWrapDisable()
+{
+  return g_windowManager.GetGlobalWrapDisable();
+
+}
+
+bool CGUIControl::HasFocusVisibility()
+{
+  bool focusvisible = false;
+  if (CanFocus() && IsVisibleFromSkin())
+  {
+    focusvisible = true;
+    if (m_visibleCondition)
+      focusvisible = m_visibleCondition->Get();
+  }
+  return focusvisible;
+}
+
+void CGUIControl::AppendFocusableTracker(CGUIControl *view)
+{
+  if (m_renderRegion.Width() > 0 && m_renderRegion.Height() > 0)
+    g_windowManager.AppendFocusableTracker(this, view);
 }
 
 CRect CGUIControl::CalcRenderRegion() const

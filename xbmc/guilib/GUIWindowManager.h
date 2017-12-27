@@ -33,6 +33,7 @@
 
 #include "DirtyRegionTracker.h"
 #include "guilib/WindowIDs.h"
+#include "guilib/FocusabilityTracker.h"
 #include "GUIWindow.h"
 #include "IMsgTargetCallback.h"
 #include "IWindowManagerCallback.h"
@@ -112,9 +113,15 @@ public:
 
   void RenderEx() const;
 
+  void BeginRender();
+
   /*! \brief Do any post render activities.
    */
   void AfterRender();
+
+  /*! \brief Do any activities after all rendering is finished (Render/RenderEx/AfterRender)
+   */
+  void RenderingFinished();
 
   /*! \brief Per-frame updating of the current window and any dialogs
    FrameMove is called every frame to update the current window and any dialogs
@@ -180,13 +187,20 @@ public:
    */
   bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
   void GetActiveModelessWindows(std::vector<int> &ids);
+
+  bool GetGlobalWrapDisable();
+  void SetWrapOverride(bool focusWrap);
   void InvalidateFocus(CGUIControl *control);
+  bool FocusableTrackerIsEnabled();
+  void FocusableTrackerSetEnabled(bool enablel);
+  void AppendFocusableTracker(CGUIControl *control, CGUIControl *view = nullptr);
+  void UpdateRenderTracker(CGUIControl *control, bool remove = false);
 
 #ifdef DEBUG_CGUI_TEXTUREUSE
   void DumpTextureUse();
 #endif
 private:
-  void RenderPass() const;
+  void RenderPass();
 
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
@@ -228,6 +242,8 @@ private:
   bool m_initialized;
 
   CDirtyRegionTracker m_tracker;
+  bool m_wrapOverride = false;
+  CFocusabilityTracker m_focusableTracker;
 
 private:
   class CGUIWindowManagerIdCache

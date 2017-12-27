@@ -1014,8 +1014,20 @@ void CGUIWindowManager::MarkDirty(const CRect& rect)
   m_tracker.MarkDirtyRegion(rect);
 }
 
-void CGUIWindowManager::RenderPass() const
+void CGUIWindowManager::RenderPass()
 {
+  CGUIWindow *topDialog = nullptr;
+  std::vector<CGUIWindow *> renderList = m_activeDialogs;
+  stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
+  // find if there is a dialog running and save the top dialog.
+  for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
+  {
+    if ((*it)->IsDialogRunning())
+      topDialog = (*it);
+  }
+  // disable if we have dialogs showing
+  m_focusableTracker.SetEnabled(topDialog ? false:true);
+
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
   {
@@ -1023,14 +1035,15 @@ void CGUIWindowManager::RenderPass() const
     pWindow->DoRender();
   }
 
-  // we render the dialogs based on their render order.
-  std::vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
-  
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
+    {
+      if (*it == topDialog)
+        m_focusableTracker.SetEnabled(true);
       (*it)->DoRender();
+    }
   }
 }
 
@@ -1099,7 +1112,7 @@ bool CGUIWindowManager::Render()
   }
 
 #if defined(TARGET_DARWIN_TVOS)
-  if (g_application.IsAppFocused())
+  if (g_application.IsAppInitialized() && g_application.IsAppFocused())
   {
     if (CFocusEngineHandler::GetInstance().ShowFocusRect())
     {
@@ -1112,20 +1125,20 @@ bool CGUIWindowManager::Render()
     if (CFocusEngineHandler::GetInstance().ShowVisibleRects())
     {
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-      std::vector<FocusEngineItem> *items = CFocusEngineHandler::GetInstance().GetVisible();
-      if (items)
-      {
-        for (auto i = items->begin(); i != items->end(); ++i)
-        {
-          (*i).renderRect = (*i).control->GetRenderRect();
-          //CGUITexture::DrawQuad((*i).renderRect, 0x4c00ff00);
-        }
-      }
+      std::vector<GUIFocusabilityItem> items;
+      CFocusEngineHandler::GetInstance().GetGUIFocusabilityItems(items);
+      for (auto it = items.begin(); it != items.end(); ++it)
+        CGUITexture::DrawQuad((*it).renderRect, 0x4c00ff00);
     }
   }
 #endif
 
   return hasRendered;
+}
+
+void CGUIWindowManager::BeginRender()
+{
+  m_focusableTracker.BeginRender();
 }
 
 void CGUIWindowManager::AfterRender()
@@ -1143,6 +1156,21 @@ void CGUIWindowManager::AfterRender()
     if ((*it)->IsDialogRunning())
       (*it)->AfterRender();
   }
+  m_focusableTracker.AfterRender();
+}
+
+void CGUIWindowManager::RenderingFinished()
+{
+#if defined(TARGET_DARWIN_TVOS)
+  // update focus engine after all windows/dialogs have processed
+  if (g_application.IsAppInitialized() && g_application.IsAppFocused())
+  {
+    CFocusEngineHandler::GetInstance().SetGUIFocusabilityItems(m_focusableTracker);
+    m_focusableTracker.AfterRender();
+  }
+#endif
+  m_focusableTracker.SetEnabled(false);
+  m_focusableTracker.Clear();
 }
 
 void CGUIWindowManager::FrameMove()
@@ -1539,13 +1567,44 @@ void CGUIWindowManager::GetActiveModelessWindows(std::vector<int> &ids)
   }
 }
 
+bool CGUIWindowManager::GetGlobalWrapDisable()
+{
+  return m_wrapOverride;
+}
+
+void CGUIWindowManager::SetWrapOverride(bool wrapOverride)
+{
+  m_wrapOverride = wrapOverride;
+}
+
 void CGUIWindowManager::InvalidateFocus(CGUIControl *control)
 {
 #if defined(TARGET_DARWIN_TVOS)
   // called when a control is destroyed, there is no
   // other way to track down a control in a window that vanishes.
   CFocusEngineHandler::GetInstance().InvalidateFocus(control);
+  m_focusableTracker.UpdateRender(control, true);
 #endif
+}
+
+bool CGUIWindowManager::FocusableTrackerIsEnabled()
+{
+  return m_focusableTracker.IsEnabled();
+}
+
+void CGUIWindowManager::FocusableTrackerSetEnabled(bool enablel)
+{
+  m_focusableTracker.SetEnabled(enablel);
+}
+
+void CGUIWindowManager::AppendFocusableTracker(CGUIControl *control, CGUIControl *view)
+{
+  m_focusableTracker.Append(control, view);
+}
+
+void CGUIWindowManager::UpdateRenderTracker(CGUIControl *control, bool remove)
+{
+  m_focusableTracker.UpdateRender(control, remove);
 }
 
 CGUIWindow *CGUIWindowManager::GetTopMostDialog() const

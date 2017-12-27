@@ -656,6 +656,13 @@ bool CDarwinUtils::ResetSystemIdleTimer()
 #endif
 }
 
+void CDarwinUtils::UpdateFocusLayerMainThread()
+{
+#if defined(TARGET_DARWIN_TVOS)
+  [g_xbmcController updateFocusLayerMainThread];
+#endif
+}
+
 void CDarwinUtils::SetScheduling(int message)
 {
   int policy;

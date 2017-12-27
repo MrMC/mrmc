@@ -26,6 +26,7 @@
 #include "GUIListLabel.h"
 #include "GUIImage.h"
 #include "utils/XBMCTinyXML.h"
+#include "GUIWindowManager.h"
 
 CGUIListItemLayout::CGUIListItemLayout()
 : m_group(0, 0, 0, 0, 0, 0)
@@ -91,6 +92,7 @@ void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int 
 void CGUIListItemLayout::Render(CGUIListItem *item, int parentID)
 {
   m_group.DoRender();
+  m_group.AppendFocusableTracker();
 }
 
 void CGUIListItemLayout::SetFocusedItem(unsigned int focus)
