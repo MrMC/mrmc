@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "@APP_PACKAGE@"
@@ -42,6 +42,12 @@ project.afterEvaluate {
     preBuild.dependsOn
 }
 
+dependencies {
+    // New support library to for channels/programs development.
+    implementation 'com.android.support:support-tv-provider:26.0.1'
+    implementation 'com.google.code.gson:gson:2.8.0'
+}
+
 // https://developer.android.com/studio/build/configure-apk-splits
 // Map for the version code that gives each ABI a value.
 ext.abiCodes = ['armeabi-v7a': 01, 'arm64-v8a': 11,  x86: 21, x86_64: 31]
@@ -57,5 +63,4 @@ android.applicationVariants.all { variant ->
             variant.versionCode * 100 + baseAbiVersionCode
   }
 }
-
 
