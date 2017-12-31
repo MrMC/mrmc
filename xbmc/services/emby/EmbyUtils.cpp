@@ -313,6 +313,18 @@ bool CEmbyUtils::GetMoreItemInfo(CFileItem &item)
   const CVariant variant = GetEmbyCVariant(url2.Get());
   
   GetVideoDetails(item, variant["Items"][0]);
+  
+  if (item.HasProperty("EmbyMovieTrailer") && !item.GetProperty("EmbyMovieTrailer").asString().empty())
+  {
+    url2.SetFileName(item.GetProperty("EmbyMovieTrailer").asString());
+    url2.SetOptions("");
+    const CVariant variant = GetEmbyCVariant(url2.Get());
+    std::string testUrl = "Videos/" + variant[0]["Id"].asString() +"/stream?static=true";
+    url2.SetFileName(testUrl);
+    item.GetVideoInfoTag()->m_strTrailer = url2.Get();
+  }
+
+  
   return true;
 }
 
@@ -1763,6 +1775,13 @@ void CEmbyUtils::GetMediaDetals(CFileItem &item, const CVariant &variant, std::s
       }
     }
     item.GetVideoInfoTag()->m_streamDetails = streamDetail;
+  }
+  if (variant.isMember("LocalTrailerCount") && variant["LocalTrailerCount"].asInteger() > 0)
+  {
+    CURL url(item.GetPath());
+    CEmbyClientPtr client = CEmbyServices::GetInstance().FindClient(url.Get());
+    std::string userId = client->GetUserID();
+    item.SetProperty("EmbyMovieTrailer","Users/" + userId + "/Items/" + id +"/LocalTrailers");
   }
 }
 
