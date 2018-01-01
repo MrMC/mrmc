@@ -138,6 +138,23 @@ void CGUIControlGroupList::Render()
   CGUIControl::Render();
 }
 
+CRect CGUIControlGroupList::CalcRenderRegion() const
+{
+  CRect renderRect = CGUIControl::CalcRenderRegion();
+  float pos = GetAlignOffset();
+  if (m_orientation == VERTICAL)
+  {
+    renderRect.y1 += pos;
+    renderRect.y2 += pos;
+  }
+  else
+  {
+    renderRect.x1 += pos;
+    renderRect.x2 += pos;
+  }
+  return renderRect;
+}
+
 bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage() )

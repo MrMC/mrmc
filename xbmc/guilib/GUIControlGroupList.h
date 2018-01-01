@@ -44,6 +44,7 @@ public:
 
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
+  virtual CRect CalcRenderRegion() const;
   virtual bool OnMessage(CGUIMessage& message);
 
   virtual EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event);
