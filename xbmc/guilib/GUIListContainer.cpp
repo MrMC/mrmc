@@ -125,13 +125,16 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
 
 bool CGUIListContainer::MoveUp(bool wrapAround)
 {
-  if (GetCursor() > 0)
+  if (GetCursor() > 0 || (GetCursor() == 0 && GetOffset()))
   {
-    SetCursor(GetCursor() - 1);
-  }
-  else if (GetCursor() == 0 && GetOffset())
-  {
-    ScrollToOffset(GetOffset() - 1);
+    if (GetCursor() == 1 && GetOffset())
+    {
+      ScrollToOffset(GetOffset() - 1);
+    }
+    else
+    {
+      SetCursor(GetCursor() - 1);
+    }
   }
   else if (wrapAround)
   {
