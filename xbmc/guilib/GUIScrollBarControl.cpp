@@ -391,3 +391,17 @@ const CRect CGUIScrollBar::GetSelectionRenderRect()
 
   return selectionRenderRect;
 }
+
+const CRect CGUIScrollBar::GetBackgroundRenderRect()
+{
+  float z = 0;
+  float x1 = m_guiBackground.GetXPosition();
+  float y1 = m_guiBackground.GetYPosition();
+  float x2 = x1 + m_guiBackground.GetWidth();
+  float y2 = y1 + m_guiBackground.GetHeight();
+  m_cachedTransform.TransformPosition(x1, y1, z);
+  m_cachedTransform.TransformPosition(x2, y2, z);
+  CRect backgroundRenderRect(x1, y1, x2, y2);
+
+  return backgroundRenderRect;
+}
