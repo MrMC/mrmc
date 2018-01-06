@@ -60,6 +60,7 @@ public:
    */
   float GetTotalSize() const;
   ORIENTATION GetOrientation() const { return m_orientation; }
+  bool IsScrolling() const;
 
   // based on grouplist orientation pick one value as minSize;
   void SetMinSize(float minWidth, float minHeight);

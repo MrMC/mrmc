@@ -102,6 +102,7 @@ public:
   void UpdateAutoScrolling(unsigned int currentTime);
 
   CGUIListItemLayout *GetFocusedLayout() const;
+  bool IsScrolling() const { return m_scroller.IsScrolling(); };
 
 #ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();

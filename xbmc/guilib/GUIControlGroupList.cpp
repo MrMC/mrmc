@@ -612,3 +612,8 @@ float CGUIControlGroupList::GetTotalSize() const
   if (totalSize > 0) totalSize -= m_itemGap;
   return totalSize;
 }
+
+bool CGUIControlGroupList::IsScrolling() const
+{
+  return m_scroller.IsScrolling();
+}
