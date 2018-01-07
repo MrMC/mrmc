@@ -1,3 +1,4 @@
+
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -356,6 +357,22 @@ void CGUIControlGroup::ResetAnimations()
   CGUIControl::ResetAnimations();
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
     (*it)->ResetAnimations();
+}
+
+bool CGUIControlGroup::IsSliding()
+{
+  if (CGUIControl::IsSliding())
+    return true;
+
+  if (IsVisible())
+  {
+    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+    {
+      if ((*it)->IsSliding())
+        return true;
+    }
+  }
+  return false;
 }
 
 bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)

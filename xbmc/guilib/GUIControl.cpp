@@ -212,7 +212,6 @@ void CGUIControl::DoRender()
 
 void CGUIControl::Render()
 {
-  g_windowManager.UpdateRenderTracker(this);
 }
 
 void CGUIControl::RenderEx()
@@ -963,6 +962,21 @@ bool CGUIControl::Animate(unsigned int currentTime)
     anim.RenderAnimation(m_transform, center);
   }
   return changed;
+}
+
+bool CGUIControl::IsSliding()
+{
+  for (size_t i = 0; i < m_animations.size(); i++)
+  {
+    if (m_animations[i].IsSliding())
+      return true;
+  }
+  return false;
+}
+
+bool CGUIControl::IsScrolling() const
+{
+  return false;
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)

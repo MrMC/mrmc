@@ -101,9 +101,9 @@ public:
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
   void UpdateAutoScrolling(unsigned int currentTime);
+  virtual bool IsScrolling() const;
 
   CGUIListItemLayout *GetFocusedLayout() const;
-  bool IsScrolling() const { return m_scroller.IsScrolling(); };
 
 #ifdef DEBUG_CGUI_TEXTUREUSE
   virtual void DumpTextureUse();

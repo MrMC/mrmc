@@ -168,6 +168,7 @@ public:
   void RenderAnimation(TransformMatrix &matrix, const CPoint &center);
   void QueueAnimation(ANIMATION_PROCESS process);
 
+  inline bool IsSliding() const { return m_sliding; };
   inline bool IsReversible() const { return m_reversible; };
   inline ANIMATION_TYPE GetType() const { return m_type; };
   inline ANIMATION_STATE GetState() const { return m_currentState; };
@@ -204,6 +205,7 @@ private:
   unsigned int m_delay;
   unsigned int m_amount;
 
+  bool m_sliding = false;
   std::vector<CAnimEffect *> m_effects;
 };
 

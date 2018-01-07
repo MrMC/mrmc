@@ -244,6 +244,8 @@ public:
   const std::vector<CAnimation> &GetDynamicAnimations() const { return m_dynamicAnimations; };
 
   virtual void QueueAnimation(ANIMATION_TYPE anim);
+  virtual bool IsSliding();
+  virtual bool IsScrolling() const;
   virtual bool IsAnimating(ANIMATION_TYPE anim);
   virtual bool HasAnimation(ANIMATION_TYPE anim);
   CAnimation  *GetAnimation(ANIMATION_TYPE type, bool checkConditions = true);

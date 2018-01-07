@@ -499,6 +499,7 @@ void CAnimation::ResetAnimation()
   m_queuedProcess = ANIM_PROCESS_NONE;
   m_currentProcess = ANIM_PROCESS_NONE;
   m_currentState = ANIM_STATE_NONE;
+  m_sliding = false;
 }
 
 void CAnimation::ApplyAnimation()
@@ -541,6 +542,20 @@ void CAnimation::Calculate(const CPoint &center)
         effect->ApplyState(ANIM_STATE_NONE, center);
     }
   }
+  bool isSliding = false;
+  if (m_currentState == ANIM_STATE_IN_PROCESS)
+  {
+    for (size_t i = 0; i < m_effects.size(); ++i)
+    {
+      if (m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_SLIDE)
+      {
+        //CLog::Log(LOGDEBUG, "Control is sliding");
+        isSliding = true;
+        break;
+      }
+    }
+  }
+  m_sliding = isSliding;
 }
 
 void CAnimation::RenderAnimation(TransformMatrix &matrix, const CPoint &center)

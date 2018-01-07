@@ -52,7 +52,6 @@ public:
   void Append(CGUIControl *control, CGUIControl *view = nullptr);
   void BeginRender();
   void AfterRender();
-  void UpdateRender(CGUIControl *control, bool remove = false);
   const std::vector<GUIFocusabilityItem>& GetItems() const;
 
 private:
@@ -60,6 +59,4 @@ private:
   int m_viewOrder = 0;
   int m_renderOrder = 0;
   std::vector<GUIFocusabilityItem> m_items;
-  int m_controlOrder = 0;
-  std::vector<CGUIControl *> m_controls;
 };

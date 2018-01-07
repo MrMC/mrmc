@@ -60,6 +60,7 @@ public:
 
   virtual void SetInitialVisibility();
 
+  virtual bool IsSliding();
   virtual bool IsAnimating(ANIMATION_TYPE anim);
   virtual bool HasAnimation(ANIMATION_TYPE anim);
   virtual void QueueAnimation(ANIMATION_TYPE anim);

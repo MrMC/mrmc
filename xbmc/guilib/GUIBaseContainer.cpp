@@ -696,6 +696,7 @@ CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
   return NULL;
 }
 
+
 bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
@@ -1071,6 +1072,11 @@ void CGUIBaseContainer::UpdateAutoScrolling(unsigned int currentTime)
   }
   else
     ResetAutoScrolling();
+}
+
+bool CGUIBaseContainer::IsScrolling() const
+{
+  return m_scroller.IsScrolling();
 }
 
 void CGUIBaseContainer::SetContainerMoving(int direction)

@@ -999,8 +999,8 @@ void CGUIWindowManager::Process(unsigned int currentTime)
 
 #if defined(TARGET_DARWIN_TVOS)
   // update focus engine after all windows/dialogs have processed
-  if (g_application.IsAppInitialized() && g_application.IsAppFocused())
-    CFocusEngineHandler::GetInstance().Process();
+  //if (g_application.IsAppInitialized() && g_application.IsAppFocused())
+  //  CFocusEngineHandler::GetInstance().Process();
 #endif
 }
 
@@ -1156,7 +1156,6 @@ void CGUIWindowManager::AfterRender()
     if ((*it)->IsDialogRunning())
       (*it)->AfterRender();
   }
-  m_focusableTracker.AfterRender();
 }
 
 void CGUIWindowManager::RenderingFinished()
@@ -1165,6 +1164,7 @@ void CGUIWindowManager::RenderingFinished()
   // update focus engine after all windows/dialogs have processed
   if (g_application.IsAppInitialized() && g_application.IsAppFocused())
   {
+    CFocusEngineHandler::GetInstance().Process();
     CFocusEngineHandler::GetInstance().SetGUIFocusabilityItems(m_focusableTracker);
     m_focusableTracker.AfterRender();
   }
@@ -1583,7 +1583,6 @@ void CGUIWindowManager::InvalidateFocus(CGUIControl *control)
   // called when a control is destroyed, there is no
   // other way to track down a control in a window that vanishes.
   CFocusEngineHandler::GetInstance().InvalidateFocus(control);
-  m_focusableTracker.UpdateRender(control, true);
 #endif
 }
 
@@ -1600,11 +1599,6 @@ void CGUIWindowManager::FocusableTrackerSetEnabled(bool enablel)
 void CGUIWindowManager::AppendFocusableTracker(CGUIControl *control, CGUIControl *view)
 {
   m_focusableTracker.Append(control, view);
-}
-
-void CGUIWindowManager::UpdateRenderTracker(CGUIControl *control, bool remove)
-{
-  m_focusableTracker.UpdateRender(control, remove);
 }
 
 CGUIWindow *CGUIWindowManager::GetTopMostDialog() const
