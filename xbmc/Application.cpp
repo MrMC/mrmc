@@ -2868,6 +2868,8 @@ bool CApplication::Cleanup()
 {
   try
   {
+    m_bInitializing = true;
+
     g_windowManager.DestroyWindows();
 
     CAddonMgr::GetInstance().DeInit();

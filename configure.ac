@@ -2323,6 +2323,7 @@ OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/XBMCProjection.java
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/XBMCProperties.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/XBMCMainView.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/XBMCMediaSession.java"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/XBMCFile.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/activity_main.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/searchable.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/strings.xml"

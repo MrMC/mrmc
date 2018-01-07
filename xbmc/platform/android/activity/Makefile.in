@@ -25,6 +25,7 @@ SRCS      += JNIXBMCAudioManagerOnAudioFocusChangeListener.cpp
 SRCS      += JNIXBMCSurfaceTextureOnFrameAvailableListener.cpp
 SRCS      += JNIXBMCMediaSession.cpp
 SRCS      += JNIXBMCBroadcastReceiver.cpp
+SRCS      += JNIXBMCFile.cpp
 
 OBJS      += $(APP_GLUE) $(CPU_OBJ)
 
