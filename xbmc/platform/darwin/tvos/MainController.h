@@ -71,14 +71,12 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   BOOL                        m_disableIdleTimer;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
-  BOOL                        m_mimicAppleSiri;
   BOOL                        m_remoteIdleState;
   CGFloat                     m_remoteIdleTimeout;
   BOOL                        m_enableRemoteIdle;
-  BOOL                        m_allowTap;
   BOOL                        m_nativeKeyboardActive;
-
 }
+
 // why are these properties ?
 @property (nonatomic, strong) NSTimer *m_holdTimer;
 @property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
@@ -89,7 +87,6 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 @property BOOL                m_remoteIdleState;
 @property CGFloat             m_remoteIdleTimeout;
 @property BOOL                m_enableRemoteIdle;
-@property BOOL                m_allowTap;
 
 - (void)onPlayDelayed:(NSDictionary *)item;
 - (void)onSpeedChanged:(NSDictionary *)item;
@@ -129,7 +126,6 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (bool) resetSystemIdleTimer;
 - (void) setRemoteIdleTimeout:(int)timeout;
 - (void) enableRemoteIdle:(BOOL)enable;
-- (void) enableRemotePanSwipe:(BOOL)enable;
 
 - (NSArray<UIScreenMode *> *) availableScreenModes:(UIScreen*) screen;
 - (UIScreenMode*) preferredScreenMode:(UIScreen*) screen;

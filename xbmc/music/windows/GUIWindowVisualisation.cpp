@@ -255,3 +255,8 @@ void CGUIWindowVisualisation::FrameMove()
   }
   CGUIWindow::FrameMove();
 }
+
+bool CGUIWindowVisualisation::HasFocusVisibility()
+{
+  return true;
+}

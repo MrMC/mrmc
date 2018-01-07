@@ -38,6 +38,9 @@
 #include "utils/XBMCTinyXML.h"
 #include "platform/darwin/DarwinUtils.h"
 
+#define VALID_FOCUS_WINDOW(focus) (focus.window && focus.windowID != 0 && focus.windowID != WINDOW_INVALID)
+#define NOT_VALID_FOCUS_WINDOW(focus) (!focus.window || focus.windowID == 0 && focus.windowID == WINDOW_INVALID)
+
 static std::atomic<long> sg_focusenginehandler_lock {0};
 CFocusEngineHandler* CFocusEngineHandler::m_instance = nullptr;
 
@@ -77,7 +80,7 @@ void CFocusEngineHandler::Process()
     // itemsVisible will start cleared
     m_focus = focus;
   }
-  m_focus.isAnimating = focus.isAnimating;
+  m_focus.hideViews = focus.hideViews;
 
   if (m_focus.itemFocus)
   {
@@ -211,10 +214,10 @@ CFocusEngineHandler::GetFocusWindowID()
 }
 
 const bool
-CFocusEngineHandler::GetFocusWindowIsAnimating()
+CFocusEngineHandler::NeedToHideViews()
 {
   CSingleLock lock(m_focusLock);
-  return m_focus.isAnimating;
+  return m_focus.hideViews;
 }
 
 const CRect
@@ -225,9 +228,9 @@ CFocusEngineHandler::GetFocusRect()
   CSingleLock lock(m_focusLock);
   focus.window = m_focus.window;
   focus.windowID = m_focus.windowID;
-  focus.isAnimating = m_focus.isAnimating;
+  focus.hideViews = m_focus.hideViews;
   lock.Leave();
-  if (focus.window && focus.windowID != 0 && focus.windowID != WINDOW_INVALID)
+  if (VALID_FOCUS_WINDOW(focus))
   {
     UpdateFocus(focus);
     if (focus.itemFocus)
@@ -269,9 +272,9 @@ ORIENTATION CFocusEngineHandler::GetFocusOrientation()
   CSingleLock lock(m_focusLock);
   focus.window = m_focus.window;
   focus.windowID = m_focus.windowID;
-  focus.isAnimating = m_focus.isAnimating;
+  focus.hideViews = m_focus.hideViews;
   lock.Leave();
-  if (focus.window && focus.windowID != 0 && focus.windowID != WINDOW_INVALID)
+  if (VALID_FOCUS_WINDOW(focus))
   {
     UpdateFocus(focus);
     if (focus.itemFocus)
@@ -302,11 +305,19 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
 {
   // if focus.window is valid, use it and
   // skip finding focused window else invalidate focus
-  if (!focus.window || focus.windowID == 0 || focus.windowID == WINDOW_INVALID)
+  if (NOT_VALID_FOCUS_WINDOW(focus))
   {
-    focus.isAnimating = false;
+    focus.hideViews = false;
     focus.windowID = g_windowManager.GetActiveWindowID();
-    focus.window = g_windowManager.GetWindow(focus.windowID);
+    // handle window id aliases but we need to keep orginal
+    // window id as keymaps depend on them
+    if (focus.windowID == WINDOW_FULLSCREEN_LIVETV || focus.windowID == WINDOW_VIDEO_MENU)
+      focus.window = g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+    else if (focus.windowID == WINDOW_FULLSCREEN_RADIO)
+      focus.window = g_windowManager.GetWindow(WINDOW_VISUALISATION);
+    else
+      focus.window = g_windowManager.GetWindow(focus.windowID);
+
     if (!focus.window)
       return;
     if(focus.windowID == 0 || focus.windowID == WINDOW_INVALID)
@@ -315,7 +326,7 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
       return;
     }
   }
-  focus.isAnimating = false;
+
   focus.rootFocus = focus.window->GetFocusedControl();
   if (!focus.rootFocus)
     return;
@@ -325,8 +336,6 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
 
   if (!focus.rootFocus->HasFocus())
     return;
-
-  focus.isAnimating = focus.window->IsAnimating(ANIM_TYPE_CONDITIONAL);
 
   switch(focus.rootFocus->GetControlType())
   {
@@ -365,25 +374,13 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
     case CGUIControl::GUICONTROL_GROUP:
     case CGUIControl::GUICONTROL_SCROLLBAR:
     case CGUIControl::GUICONTROL_MULTISELECT:
-      {
-        focus.itemFocus = focus.rootFocus->GetSelectionControl();
-      }
-      break;
     case CGUIControl::GUICONTROL_GROUPLIST:
-      {
-        CGUIControlGroupList *controlGroupList = (CGUIControlGroupList*)focus.rootFocus;
-        focus.isAnimating |= controlGroupList->IsScrolling();
-        focus.itemFocus = focus.rootFocus->GetSelectionControl();
-      }
-      break;
     case CGUIControl::GUICONTAINER_LIST:
     case CGUIControl::GUICONTAINER_WRAPLIST:
     case CGUIControl::GUICONTAINER_EPGGRID:
     case CGUIControl::GUICONTAINER_PANEL:
     case CGUIControl::GUICONTAINER_FIXEDLIST:
       {
-        CGUIBaseContainer *baseContainer = (CGUIBaseContainer*)focus.rootFocus;
-        focus.isAnimating |= baseContainer->IsScrolling();
         focus.itemFocus = focus.rootFocus->GetSelectionControl();
       }
       break;
@@ -394,11 +391,11 @@ void CFocusEngineHandler::GetCoreViews(std::vector<FocusEngineCoreViews> &views)
 {
   // skip finding focused window, use current
   CSingleLock lock(m_focusLock);
-  if (m_focus.window && m_focus.windowID != 0 && m_focus.windowID != WINDOW_INVALID)
+  if (VALID_FOCUS_WINDOW(m_focus))
     views = m_focus.views;
 }
 
-bool CFocusEngineHandler::CoreViewsIsEqual(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
+bool CFocusEngineHandler::CoreViewsAreEqual(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
 {
   if (views1.size() != views2.size())
     return false;
@@ -413,7 +410,7 @@ bool CFocusEngineHandler::CoreViewsIsEqual(std::vector<FocusEngineCoreViews> &vi
   return true;
 }
 
-bool CFocusEngineHandler::CoreViewsIsEqualSize(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
+bool CFocusEngineHandler::CoreViewsHaveSameSize(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
 {
   if (views1.size() != views2.size())
     return false;
@@ -428,7 +425,7 @@ bool CFocusEngineHandler::CoreViewsIsEqualSize(std::vector<FocusEngineCoreViews>
   return true;
 }
 
-bool CFocusEngineHandler::CoreViewsIsEqualControls(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
+bool CFocusEngineHandler::CoreViewsHaveSameControls(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
 {
   if (views1.size() != views2.size())
     return false;
@@ -460,7 +457,7 @@ void CFocusEngineHandler::GetGUIFocusabilityItems(std::vector<GUIFocusabilityIte
 {
   // skip finding focused window, use current
   CSingleLock lock(m_focusLock);
-  if (m_focus.window && m_focus.windowID != 0 && m_focus.windowID != WINDOW_INVALID)
+  if (VALID_FOCUS_WINDOW(m_focus))
   {
     if (m_focus.rootFocus)
       items = m_focus.items;
@@ -472,36 +469,37 @@ void CFocusEngineHandler::GetGUIFocusabilityItems(std::vector<GUIFocusabilityIte
 void CFocusEngineHandler::SetGUIFocusabilityItems(const CFocusabilityTracker &focusabilityTracker)
 {
   CSingleLock lock(m_focusLock);
-  if (m_focus.window && m_focus.windowID != 0 && m_focus.windowID != WINDOW_INVALID)
+  if (VALID_FOCUS_WINDOW(m_focus))
   {
-    //if (m_focus.rootFocus)
+    auto items = focusabilityTracker.GetItems();
+    // there should always something that has focus. if incoming focusabilityTracker is empty,
+    // it is a transition effect or nothing reported a dirty region and rendering was skipped.
+    if (!items.empty())
     {
-      auto items = focusabilityTracker.GetItems();
-      // there should always something that has focus. if incoming focusabilityTracker is empty,
-      // it is a transition effect or nothing reported a dirty region and rendering was skipped.
-      if (!items.empty())
+      std::vector<GUIFocusabilityItem> verifiedItems;
+      for (auto it = items.begin(); it != items.end(); ++it)
       {
-        std::vector<GUIFocusabilityItem> verifiedItems;
-        for (auto it = items.begin(); it != items.end(); ++it)
-        {
-          if ((*it).control->HasProcessed() && (*it).control->IsVisible())
-            verifiedItems.push_back(*it);
-        }
-
-        if (verifiedItems.size() != m_focus.items.size())
-        {
-          m_focus.items = verifiedItems;
-          std::sort(m_focus.items.begin(), m_focus.items.end(),
-            [] (GUIFocusabilityItem const& a, GUIFocusabilityItem const& b)
-          {
-              return a.renderOrder < b.renderOrder;
-          });
-        }
-        UpdateFocusability();
+        if ((*it).control->HasProcessed() && (*it).control->IsVisible())
+          verifiedItems.push_back(*it);
       }
+
+      if (verifiedItems.size() != m_focus.items.size())
+      {
+        m_focus.items = verifiedItems;
+        std::sort(m_focus.items.begin(), m_focus.items.end(),
+          [] (GUIFocusabilityItem const& a, GUIFocusabilityItem const& b)
+        {
+            return a.renderOrder < b.renderOrder;
+        });
+      }
+      UpdateFocusability();
+      UpdateNeedToHideViews();
+      //if (m_focus.hideViews)
+      //  CLog::Log(LOGDEBUG, "Control is animating");
     }
   }
 
+  // trigger tvOS main thread to rebuild views and focus
   CDarwinUtils::UpdateFocusLayerMainThread();
 }
 
@@ -509,7 +507,7 @@ void CFocusEngineHandler::UpdateFocusability()
 {
   // use current focused window
   CSingleLock lock(m_focusLock);
-  if (m_focus.window && m_focus.windowID != 0 && m_focus.windowID != WINDOW_INVALID)
+  if (VALID_FOCUS_WINDOW(m_focus))
   {
     CRect boundsRect = CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
     // update all renderRects 1st, we depend on them being correct in next step.
@@ -571,7 +569,7 @@ void CFocusEngineHandler::UpdateFocusability()
         FocusEngineCoreViews view;
         view.rect = (*it).renderRect;
         view.type = TranslateControlType((*it).control, (*it).parentView);
-#if true
+#if false
         for (auto &item : items)
         {
           // clip all item rects to enclosing view rect
@@ -662,6 +660,91 @@ void CFocusEngineHandler::UpdateFocusability()
     }
 #endif
     m_focus.views = views;
+  }
+}
+
+void CFocusEngineHandler::UpdateNeedToHideViews()
+{
+  bool debug = false;
+  // we hide views when certain controls are animating
+  // such as slide out effects. Check for two cases.
+  // Sliding and Scrolling. This speeds up tvOS focus engine
+  // handling in that we do not keep rebuilding views while
+  // the animation effect is ocurring. Once views are stable
+  // again, then we rebuild and setup who has focus.
+  m_focus.hideViews = false;
+
+  CGUIBaseContainer *baseContainer = dynamic_cast<CGUIBaseContainer*>(m_focus.rootFocus);
+  if (baseContainer)
+  {
+    if (baseContainer->IsSliding())
+    {
+      if (debug)
+        CLog::Log(LOGDEBUG, "UpdateNeedToHideViews:CGUIBaseContainer");
+      m_focus.hideViews = true;
+      return;
+    }
+    if (baseContainer->IsScrolling())
+    {
+      if (debug)
+        CLog::Log(LOGDEBUG, "UpdateNeedToHideViews:CGUIBaseContainer");
+      m_focus.hideViews = true;
+      return;
+    }
+  }
+
+  CGUIControlGroupList *controlGroupList = dynamic_cast<CGUIControlGroupList*>(m_focus.rootFocus);
+  if (controlGroupList)
+  {
+    if (controlGroupList->IsSliding())
+    {
+      if (debug)
+        CLog::Log(LOGDEBUG, "UpdateNeedToHideViews:CGUIControlGroupList");
+      m_focus.hideViews = true;
+      return;
+    }
+    if (controlGroupList->IsScrolling())
+    {
+      if (debug)
+        CLog::Log(LOGDEBUG, "UpdateNeedToHideViews:CGUIControlGroupList");
+      m_focus.hideViews = true;
+      return;
+    }
+  }
+
+  for (auto viewIt = m_focus.views.begin(); viewIt != m_focus.views.end(); ++viewIt)
+  {
+    if ((*viewIt).control->IsSliding())
+    {
+      if (debug)
+        CLog::Log(LOGDEBUG, "UpdateNeedToHideViews:CGUIControl");
+      m_focus.hideViews = true;
+      return;
+    }
+    if ((*viewIt).control->IsScrolling())
+    {
+      if (debug)
+        CLog::Log(LOGDEBUG, "UpdateNeedToHideViews:CGUIControl");
+      m_focus.hideViews = true;
+      return;
+    }
+    for (auto itemIt = (*viewIt).items.begin(); itemIt != (*viewIt).items.end(); ++itemIt)
+    {
+      if ((*itemIt).control->IsSliding())
+      {
+        if (debug)
+          CLog::Log(LOGDEBUG, "UpdateNeedToHideViews:CGUIControl");
+        m_focus.hideViews = true;
+        return;
+      }
+      if ((*itemIt).control->IsScrolling())
+      {
+        if (debug)
+          CLog::Log(LOGDEBUG, "UpdateNeedToHideViews:CGUIControl");
+        m_focus.hideViews = true;
+        return;
+      }
+    }
   }
 }
 

@@ -27,26 +27,6 @@
 
 typedef struct FocusLayerItem
 {
-  bool IsEqual(FocusLayerItem &item)
-  {
-    if (!IsEqualRect(item))
-      return false;
-    if (!IsEqualCore(item))
-      return false;
-    return true;
-  }
-  bool IsEqualRect(FocusLayerItem &item)
-  {
-    if (!CGRectEqualToRect(rect, item.rect))
-      return false;
-    return true;
-  }
-  bool IsEqualCore(FocusLayerItem &item)
-  {
-    if (core != item.core)
-      return false;
-    return true;
-  }
   void *core;
   CGRect rect;
   std::string type;
@@ -55,38 +35,6 @@ typedef struct FocusLayerItem
 
 typedef struct FocusLayerControl
 {
-  bool IsEqual(FocusLayerControl &view)
-  {
-    if (items.size() != view.items.size())
-      return false;
-    if (!IsEqualRect(view))
-      return false;
-    if (!IsEqualCore(view))
-      return false;
-    return true;
-  }
-  bool IsEqualRect(FocusLayerControl &view)
-  {
-    if (!CGRectEqualToRect(rect, view.rect))
-      return false;
-    for (size_t indx = 0; indx < items.size(); ++indx)
-    {
-      if (!CGRectEqualToRect(items[indx].rect, view.items[indx].rect))
-        return false;
-    }
-    return true;
-  }
-  bool IsEqualCore(FocusLayerControl &view)
-  {
-    if (core != view.core)
-      return false;
-    for (size_t indx = 0; indx < items.size(); ++indx)
-    {
-      if (items[indx].core != view.items[indx].core)
-        return false;
-    }
-    return true;
-  }
   void *core;
   CGRect rect;
   std::string type;
@@ -98,13 +46,16 @@ typedef struct FocusLayer
 {
   void Reset()
   {
-    core = nullptr;
-    view = nullptr;
+    infocus.type = "";
+    infocus.core = nullptr;
+    infocus.view = nullptr;
+    infocus.items.clear();
     views.clear();
   }
   // core and view that are 'in focus'
-  void *core;
-  FocusLayerView *view;
+  // this could be enclosing view or individual item
+  FocusLayerControl infocus;
+  // array of all views attached to focus layer
   std::vector<FocusLayerControl> views;
 } FocusLayer;
 

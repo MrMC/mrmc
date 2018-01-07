@@ -80,6 +80,8 @@ void CGUIScrollBar::Render()
   }
 
   CGUIControl::Render();
+  if (HasFocusVisibility())
+    CGUIControl::AppendFocusableTracker();
 }
 
 bool CGUIScrollBar::OnMessage(CGUIMessage& message)

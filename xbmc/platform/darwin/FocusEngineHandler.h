@@ -134,7 +134,7 @@ typedef struct FocusEngineCoreViews
 typedef struct FocusEngineFocus
 {
   int windowID = 0;
-  bool isAnimating = false;
+  bool hideViews = false;
   CGUIWindow  *window = nullptr;
   CGUIControl *rootFocus = nullptr;
   CGUIControl *itemFocus = nullptr;
@@ -165,23 +165,24 @@ class CFocusEngineHandler
   void          EnableFocusSlide(bool enable);
   void          InvalidateFocus(CGUIControl *control);
   const int     GetFocusWindowID();
-  const bool    GetFocusWindowIsAnimating();
+  const bool    NeedToHideViews();
   const CRect   GetFocusRect();
   CGUIControl*  GetFocusControl();
   bool          ShowFocusRect();
   bool          ShowVisibleRects();
   ORIENTATION   GetFocusOrientation();
   void          GetCoreViews(std::vector<FocusEngineCoreViews> &views);
-  static bool   CoreViewsIsEqual(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
-  static bool   CoreViewsIsEqualSize(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
-  static bool   CoreViewsIsEqualControls(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
+  static bool   CoreViewsAreEqual(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
+  static bool   CoreViewsHaveSameSize(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
+  static bool   CoreViewsHaveSameControls(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
   void          GetGUIFocusabilityItems(std::vector<GUIFocusabilityItem> &items);
   void          SetGUIFocusabilityItems(const CFocusabilityTracker &focusabilityTracker);
-  std::string   TranslateControlType(CGUIControl *control, CGUIControl *parent);
 
 private:
   void          UpdateFocus(FocusEngineFocus &focus);
   void          UpdateFocusability();
+  void          UpdateNeedToHideViews();
+  std::string   TranslateControlType(CGUIControl *control, CGUIControl *parent);
 
   CFocusEngineHandler();
   CFocusEngineHandler(CFocusEngineHandler const&);

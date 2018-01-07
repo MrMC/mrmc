@@ -35,13 +35,10 @@
     self.layer.backgroundColor = [[UIColor clearColor] CGColor];
 
     // set to false to hide frame drawing (used for debugging)
-    self->viewVisable = true;
+    self->viewVisable = false;
     self->focusable = false;
     self->viewBounds = frame;
     self->frameColor = [UIColor whiteColor];
-
-    //[self setNeedsLayout];
-    //[self layoutIfNeeded];
   }
 	return self;
 }
@@ -49,7 +46,6 @@
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
     withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
-  //PRINT_SIGNATURE();
   // if some focus changed, we need to update ourselves
   // to show correct frame color
   if (self->viewVisable)
@@ -59,7 +55,6 @@
 //--------------------------------------------------------------
 - (BOOL)canBecomeFocused
 {
-  //PRINT_SIGNATURE();
   if (self->focusable)
     return YES;
   return NO;
@@ -67,14 +62,9 @@
 
 - (void)drawRect:(CGRect)rect
 {
-  //PRINT_SIGNATURE();
   if (self->viewVisable)
   {
     CGContextRef context = UIGraphicsGetCurrentContext();
-    // make the view transparent
-    //CGContextSetBlendMode(context, kCGBlendModeClear);
-    //CGContextFillRect(context, rect);
-
     CGContextSetBlendMode(context, kCGBlendModeCopy);
     if (self.focused)
     {
@@ -89,19 +79,6 @@
     CGContextStrokeRect(context, rect);
   }
 }
-
-/*
-- (void)layoutSubviews
-{
-  PRINT_SIGNATURE();
-  [self setNeedsDisplay];
-}
-
-- (void)viewDidLayoutSubviews
-{
-  //PRINT_SIGNATURE();
-}
-*/
 
 - (void) setFocusable:(bool)focusable
 {

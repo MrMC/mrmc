@@ -502,6 +502,8 @@ void CGUISpinControl::Render()
     m_hitRect = m_label.GetRenderRect();
   }
   CGUIControl::Render();
+  if (HasFocusVisibility())
+    CGUIControl::AppendFocusableTracker();
 }
 
 void CGUISpinControl::RenderText(float posX, float posY, float width, float height)
