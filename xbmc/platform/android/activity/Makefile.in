@@ -26,6 +26,7 @@ SRCS      += JNIXBMCSurfaceTextureOnFrameAvailableListener.cpp
 SRCS      += JNIXBMCMediaSession.cpp
 SRCS      += JNIXBMCBroadcastReceiver.cpp
 SRCS      += JNIXBMCFile.cpp
+SRCS      += JNIXBMCJsonHandler.cpp
 
 OBJS      += $(APP_GLUE) $(CPU_OBJ)
 

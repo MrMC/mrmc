@@ -24,6 +24,7 @@ set (my_SOURCES
   JNIXBMCMediaSession.cpp
   JNIXBMCBroadcastReceiver.cpp
   JNIXBMCFile.cpp
+  JNIXBMCJsonHandler.cpp
   )
 
 file(GLOB my_HEADERS *.h)

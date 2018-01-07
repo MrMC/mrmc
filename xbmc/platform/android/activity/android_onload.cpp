@@ -35,6 +35,7 @@
 #include "platform/android/activity/JNIXBMCMediaSession.h"
 #include "platform/android/activity/JNIXBMCBroadcastReceiver.h"
 #include "platform/android/activity/JNIXBMCFile.h"
+#include "platform/android/activity/JNIXBMCJsonHandler.h"
 
 extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 {
@@ -57,6 +58,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   jni::CJNIXBMCMediaSession::RegisterNatives(env);
   jni::CJNIXBMCBroadcastReceiver::RegisterNatives(env);
   jni::CJNIXBMCFile::RegisterNatives(env);
+  jni::CJNIXBMCJsonHandler::RegisterNatives(env);
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
