@@ -179,8 +179,7 @@ public class SyncProgramsJobService extends JobService
           }
           else
           {
-            String path = Uri.parse(uri).getPath();
-            String xbmcURL = "special://profile" + path;
+            String xbmcURL = Uri.parse(uri).getFragment();
             List<File> files = jsonrpc.getFiles(xbmcURL);
 
             deletePrograms(channelId, medias);

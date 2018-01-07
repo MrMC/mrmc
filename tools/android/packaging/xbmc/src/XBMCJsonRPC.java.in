@@ -44,7 +44,6 @@ import @APP_PACKAGE@.model.TVShow;
 import @APP_PACKAGE@.content.XBMCFileContentProvider;
 import @APP_PACKAGE@.model.File;
 import @APP_PACKAGE@.model.Media;
-import @APP_PACKAGE@.content.XBMCImageContentProvider;
 
 public class XBMCJsonRPC
 {
@@ -483,8 +482,8 @@ public class XBMCJsonRPC
               movie.get("movieid").getAsString(),
               movie.get("title").getAsString(),
               movie.get("tagline").getAsString(),
-              XBMCImageContentProvider.GetImageUri(getDownloadUrl(movie.get("thumbnail").getAsString())).toString(),
-              XBMCImageContentProvider.GetImageUri(getDownloadUrl(movie.get("thumbnail").getAsString())).toString(),
+              XBMCFileContentProvider.buildUri(getDownloadUrl(movie.get("thumbnail").getAsString())).toString(),
+              XBMCFileContentProvider.buildUri(getDownloadUrl(movie.get("thumbnail").getAsString())).toString(),
               Intent.ACTION_GET_CONTENT,
               Uri.parse("videodb://movies/titles/" + movie.get("movieid").getAsString() + "?showinfo=true"),
               0,
@@ -531,8 +530,8 @@ public class XBMCJsonRPC
               tvshow.get("tvshowid").getAsString(),
               tvshow.get("title").getAsString(),
               tvshow.get("plot").getAsString(),
-              XBMCImageContentProvider.GetImageUri(getDownloadUrl(tvshow.get("thumbnail").getAsString())).toString(),
-              XBMCImageContentProvider.GetImageUri(getDownloadUrl(tvshow.get("thumbnail").getAsString())).toString(),
+              XBMCFileContentProvider.buildUri(getDownloadUrl(tvshow.get("thumbnail").getAsString())).toString(),
+              XBMCFileContentProvider.buildUri(getDownloadUrl(tvshow.get("thumbnail").getAsString())).toString(),
               Intent.ACTION_GET_CONTENT,
               Uri.parse("videodb://tvshows/titles/" + tvshow.get("tvshowid").getAsString() + "?showinfo=true"),
               0,
@@ -569,8 +568,8 @@ public class XBMCJsonRPC
               album.get("albumid").getAsString(),
               album.get("title").getAsString(),
               album.get("displayartist").getAsString(),
-              XBMCImageContentProvider.GetImageUri(getDownloadUrl(album.get("thumbnail").getAsString())).toString(),
-              XBMCImageContentProvider.GetImageUri(getDownloadUrl(album.get("thumbnail").getAsString())).toString(),
+              XBMCFileContentProvider.buildUri(getDownloadUrl(album.get("thumbnail").getAsString())).toString(),
+              XBMCFileContentProvider.buildUri(getDownloadUrl(album.get("thumbnail").getAsString())).toString(),
               Intent.ACTION_GET_CONTENT,
               Uri.parse("musicdb://albums/" + album.get("albumid").getAsString() + "/"),
               0,
@@ -605,8 +604,8 @@ public class XBMCJsonRPC
               artist.get("artistid").getAsString(),
               artist.get("artist").getAsString(),
               artist.get("description").getAsString(),
-              XBMCImageContentProvider.GetImageUri(getDownloadUrl(artist.get("thumbnail").getAsString())).toString(),
-              XBMCImageContentProvider.GetImageUri(getDownloadUrl(artist.get("thumbnail").getAsString())).toString(),
+              XBMCFileContentProvider.buildUri(getDownloadUrl(artist.get("thumbnail").getAsString())).toString(),
+              XBMCFileContentProvider.buildUri(getDownloadUrl(artist.get("thumbnail").getAsString())).toString(),
               Intent.ACTION_GET_CONTENT,
               Uri.parse("musicdb://artists/" + artist.get("artistid").getAsString() + "/"),
               0,
@@ -658,7 +657,7 @@ public class XBMCJsonRPC
 
             watchNextProgramBuilder
                 .setPosterArtUri(
-                    XBMCImageContentProvider.GetImageUri(
+                    XBMCFileContentProvider.buildUri(
                         getDownloadUrl(movie.get("fanart").getAsString())))
                 .setId(id)
                 .setTitle(movie.get("title").getAsString())
@@ -759,7 +758,7 @@ public class XBMCJsonRPC
 
             final XBMCRecommendationBuilder notificationBuilder = builder
                 .setBackground(
-                    XBMCImageContentProvider.GetImageUri(
+                    XBMCFileContentProvider.buildUri(
                         getDownloadUrl(movie.get("fanart").getAsString())).toString())
                 .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
                 .setTitle(movie.get("title").getAsString())
@@ -801,7 +800,7 @@ public class XBMCJsonRPC
 
             final XBMCRecommendationBuilder notificationBuilder = builder
                 .setBackground(
-                    XBMCImageContentProvider.GetImageUri(
+                    XBMCFileContentProvider.buildUri(
                         getDownloadUrl(tvshow.get("fanart").getAsString())).toString())
                 .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
                 .setTitle(tvshow.get("title").getAsString())
@@ -844,7 +843,7 @@ public class XBMCJsonRPC
 
             final XBMCRecommendationBuilder notificationBuilder = builder
                 .setBackground(
-                    XBMCImageContentProvider.GetImageUri(
+                    XBMCFileContentProvider.buildUri(
                         getDownloadUrl(album.get("fanart").getAsString())).toString())
                 .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
                 .setTitle(album.get("title").getAsString())
@@ -939,7 +938,7 @@ public class XBMCJsonRPC
       {
         JsonObject fileO = filesA.get(i).getAsJsonObject();
         Uri uri = Uri.parse(fileO.get("file").getAsString());
-        File file = File.createFile(fileO.get("label").getAsString(), fileO.get("filetype").getAsString(), XBMCFileContentProvider.buildUri(uri.getPath()).toString());
+        File file = File.createFile(fileO.get("label").getAsString(), fileO.get("filetype").getAsString(), XBMCFileContentProvider.buildUri(uri.toString()).toString());
         if (fileO.has("id"))
           file.setId(fileO.get("id").getAsInt());
         if (fileO.has("type") && !fileO.get("type").getAsString().equals("unknown"))
@@ -966,15 +965,15 @@ public class XBMCJsonRPC
       if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (!url.isEmpty())
-          med.setCardImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setCardImageAspectRatio("2:3");
       if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (!url.isEmpty())
-          med.setBackgroundImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setXbmcUrl("videodb://movies/titles/" + details.get("movieid").getAsString() + "?showinfo=true");
 
@@ -1022,15 +1021,15 @@ public class XBMCJsonRPC
       if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (!url.isEmpty())
-          med.setCardImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setCardImageAspectRatio("2:3");
       if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (!url.isEmpty())
-          med.setBackgroundImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/");
       med.setCategory(Media.MEDIA_TYPE_TVSHOW);
@@ -1055,15 +1054,15 @@ public class XBMCJsonRPC
       if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (!url.isEmpty())
-          med.setCardImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setCardImageAspectRatio("16:9");
       if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (!url.isEmpty())
-          med.setBackgroundImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/" + details.get("episodeid").getAsInt() + "?showinfo=true");
 /*
@@ -1096,15 +1095,15 @@ public class XBMCJsonRPC
       if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (!url.isEmpty())
-          med.setCardImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setCardImageAspectRatio("1:1");
       if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (!url.isEmpty())
-          med.setBackgroundImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setXbmcUrl("musicdb://albums/" + details.get("albumid").getAsString() + "/");
       med.setCategory(Media.MEDIA_TYPE_ALBUM);
@@ -1129,15 +1128,15 @@ public class XBMCJsonRPC
       if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (!url.isEmpty())
-          med.setCardImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setCardImageAspectRatio("1:1");
       if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (!url.isEmpty())
-          med.setBackgroundImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
 
       String extension = "";
@@ -1182,22 +1181,22 @@ public class XBMCJsonRPC
       if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (!url.isEmpty())
-          med.setCardImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setCardImageAspectRatio("1:1");
       if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
       {
         String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (!url.isEmpty())
-          med.setBackgroundImageUrl(XBMCImageContentProvider.GetImageUri(url).toString());
+        if (url != null && !url.isEmpty())
+          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
 
       med.setXbmcUrl("videodb://musicvideos/titles/" + details.get("musicvideoid").getAsInt());
 
       String url = getDownloadUrl(details.get("file").getAsString());
-      if (!url.isEmpty())
-        med.setVideoUrl(url);
+      if (url != null && !url.isEmpty())
+        med.setVideoUrl(XBMCFileContentProvider.buildUri(url).toString());
 
       med.setCategory(Media.MEDIA_TYPE_MUSICVIDEO);
     }

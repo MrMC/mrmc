@@ -2335,7 +2335,6 @@ OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/channels/model/Subs
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/channels/model/XBMCDatabase.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/channels/util/SharedPreferencesHelper.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/channels/util/TvUtil.java"
-OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/content/XBMCImageContentProvider.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/content/XBMCMediaContentProvider.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/content/XBMCContentProvider.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/content/XBMCFileContentProvider.java"
