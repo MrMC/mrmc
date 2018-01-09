@@ -300,7 +300,7 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 
   if (s_hasModeApi && res.strId != s_res_cur_displayMode.strId)
   {
-    CXBMCApp::SetDisplayModeId(atoi(res.strId.c_str()));
+    CXBMCApp::get()->SetDisplayModeId(atoi(res.strId.c_str()));
     s_res_cur_displayMode = res;
   }
   else if (abs(currentRefreshRate() - res.fRefreshRate) > 0.0001)

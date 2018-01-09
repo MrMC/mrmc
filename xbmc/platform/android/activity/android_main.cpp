@@ -122,6 +122,8 @@ extern void android_main(struct android_app* state)
     // make sure that the linker doesn't strip out our glue
     app_dummy();
 
+    CXBMCApp xbmcApp(state->activity);
+
     // revector inputPollSource.process so we can shut up
     // its useless verbose logging on new events (see ouya)
     // and fix the error in handling multiple input events.
@@ -129,7 +131,6 @@ extern void android_main(struct android_app* state)
     state->inputPollSource.process = process_input;
 
     CEventLoop eventLoop(state);
-    CXBMCApp xbmcApp(state->activity);
     if (xbmcApp.isValid())
     {
 #if defined(HAVE_BREAKPAD)

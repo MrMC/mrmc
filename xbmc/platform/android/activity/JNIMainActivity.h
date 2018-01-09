@@ -29,7 +29,7 @@
 class CJNIMainActivity : public CJNIActivity
 {
 public:
-  CJNIMainActivity(const ANativeActivity *nativeActivity);
+  CJNIMainActivity(const jobject& clazz);
   ~CJNIMainActivity();
 
   static CJNIMainActivity* GetAppInstance() { return m_appInstance; }
@@ -48,21 +48,21 @@ public:
   static void _onUserLeaveHint(JNIEnv *env, jobject context);
 
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
-  static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
-  static void registerMediaButtonEventReceiver();
-  static void unregisterMediaButtonEventReceiver();
-  static void screenOn();
-  static void startCrashHandler();
-  static void uploadLog();
+  void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
+  void registerMediaButtonEventReceiver();
+  void unregisterMediaButtonEventReceiver();
+  void screenOn();
+  void startCrashHandler();
+  void uploadLog();
 
-  static void takeScreenshot();
-  static void startProjection();
-  static void startCapture(int width, int height);
-  static void stopCapture();
+  void takeScreenshot();
+  void startProjection();
+  void startCapture(int width, int height);
+  void stopCapture();
 
-  static void openAmazonStore();
-  static void openGooglePlayStore();
-  static void openYouTubeVideo(const std::string key);
+  void openAmazonStore();
+  void openGooglePlayStore();
+  void openYouTubeVideo(const std::string key);
 private:
   static CJNIMainActivity *m_appInstance;
 

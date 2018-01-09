@@ -1486,12 +1486,6 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
     m_textureId = texture_id;
-
-    m_surfaceTexture = std::shared_ptr<CJNISurfaceTexture>(new CJNISurfaceTexture(m_textureId));
-    // hook the surfaceTexture OnFrameAvailable callback
-    m_frameAvailable = std::shared_ptr<CDVDMediaCodecOnFrameAvailable>(new CDVDMediaCodecOnFrameAvailable(m_surfaceTexture));
-    m_jnisurface = new CJNISurface(*m_surfaceTexture);
-    m_surface = ANativeWindow_fromSurface(xbmc_jnienv(), m_jnisurface->get_raw());
   }
   else
   {
@@ -1502,6 +1496,12 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     // wait for it.
     CApplicationMessenger::GetInstance().SendMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(&callbackData));
   }
+
+  m_surfaceTexture = std::shared_ptr<CJNISurfaceTexture>(new CJNISurfaceTexture(m_textureId));
+  // hook the surfaceTexture OnFrameAvailable callback
+  m_frameAvailable = std::shared_ptr<CDVDMediaCodecOnFrameAvailable>(new CDVDMediaCodecOnFrameAvailable(m_surfaceTexture));
+  m_jnisurface = new CJNISurface(*m_surfaceTexture);
+  m_surface = ANativeWindow_fromSurface(xbmc_jnienv(), m_jnisurface->get_raw());
 
   return;
 }

@@ -1051,13 +1051,13 @@ bool CGUIMediaWindow::OnClick(int iItem)
   {
     CURL url(pItem->GetPath());
     CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnClick Trying to run: %s - %s", URIUtils::GetFileName(url.GetFileName()).c_str(), url.GetOption("class").c_str());
-    return CXBMCApp::StartAppActivity(URIUtils::GetFileName(url.GetFileName()), url.GetOption("class"));
+    return CXBMCApp::get()->StartAppActivity(URIUtils::GetFileName(url.GetFileName()), url.GetOption("class"));
   }
   else if (pItem->IsAndroidSetting())
   {
     std::string intent = URIUtils::GetFileName(pItem->GetPath());
     CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnClick Trying to launch: %s",intent.c_str());
-    return CXBMCApp::StartActivity("", intent);
+    return CXBMCApp::get()->StartActivity("", intent);
   }
 #endif
   else

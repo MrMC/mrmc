@@ -50,6 +50,7 @@
 #include "JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
 #include "JNIXBMCMainView.h"
 #include "JNIXBMCMediaSession.h"
+#include "JNIXBMCBroadcastReceiver.h"
 
 // forward delares
 class CJNIWakeLock;
@@ -160,21 +161,21 @@ public:
   static const ANativeWindow** GetNativeWindow(int timeout);
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
-  static void BringToFront();
+  void BringToFront();
 
   static int GetBatteryLevel();
-  static bool EnableWakeLock(bool on);
-  static bool ResetSystemIdleTimer();
+  bool EnableWakeLock(bool on);
+  bool ResetSystemIdleTimer();
   static bool HasFocus() { return m_hasFocus; }
   static bool IsResumed() { return m_hasResumed; }
   static CJNIAudioDeviceInfos GetAudioDeviceInfos() { return m_audiodevices; }
-  static void CheckHeadsetPlugged();
+  void CheckHeadsetPlugged();
   static bool IsHeadsetPlugged();
   static bool IsHDMIPlugged();
 
-  static bool StartAppActivity(const std::string &package, const std::string &cls);
-  static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
-  static std::vector <androidPackage> GetApplications();
+  bool StartAppActivity(const std::string &package, const std::string &cls);
+  bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
+  std::vector <androidPackage> GetApplications();
 
   /*!
    * \brief If external storage is available, it returns the path for the external storage (for the specified type)
@@ -184,25 +185,24 @@ public:
    */
   static bool GetExternalStorage(std::string &path, const std::string &type = "");
   static bool GetStorageUsage(const std::string &path, std::string &usage);
-  static int GetMaxSystemVolume();
-  static float GetSystemVolume();
-  static void SetSystemVolume(float percent);
+  int GetMaxSystemVolume();
+  float GetSystemVolume();
+  void SetSystemVolume(float percent);
 
-  static void SetRefreshRate(float rate);
-  static void SetDisplayModeId(int mode);
-  static int GetDPI();
+  void SetRefreshRate(float rate);
+  void SetDisplayModeId(int mode);
+  int GetDPI();
   static bool IsNightMode();
   static CPointInt GetMaxDisplayResolution();
-
   static CRect GetSurfaceRect();
   static CRect MapRenderToDroid(const CRect& srcRect);
   static CPoint MapDroidToGui(const CPoint& src);
 
-  static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
-  static bool WaitForCapture(jni::CJNIImage& image);
-  static bool GetCapture(jni::CJNIImage& img);
-  static void TakeScreenshot();
-  static void StopCapture();
+  int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
+  bool WaitForCapture(jni::CJNIImage& image);
+  bool GetCapture(jni::CJNIImage& img);
+  void TakeScreenshot();
+  void StopCapture();
 
   // Playback callbacks
   void UpdateSessionMetadata();
@@ -212,7 +212,7 @@ public:
   void OnPlayBackStopped();
 
   //PIP
-  static void RequestPictureInPictureMode();
+  void RequestPictureInPictureMode();
 
   // Application slow ping
   void ProcessSlow();
@@ -229,17 +229,19 @@ protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
 
-  static int GetMaxSystemVolume(JNIEnv *env);
-  static bool AcquireAudioFocus();
-  static bool ReleaseAudioFocus();
+  int GetMaxSystemVolume(JNIEnv *env);
+  bool AcquireAudioFocus();
+  bool ReleaseAudioFocus();
 
 private:
   static CXBMCApp* m_xbmcappinstance;
   static CCriticalSection m_AppMutex;
 
+  std::unique_ptr<CJNIXBMCAudioManagerOnAudioFocusChangeListener> m_audioFocusListener;
+  std::unique_ptr<jni::CJNIXBMCBroadcastReceiver> m_broadcastReceiver;
   static std::unique_ptr<CJNIXBMCMainView> m_mainView;
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
-  static bool HasLaunchIntent(const std::string &package);
+  bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
   void run();
   void stop();

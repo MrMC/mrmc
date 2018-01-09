@@ -265,9 +265,10 @@ CRect CXBMCApp::m_surface_rect;
 uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
-  : CJNIMainActivity(nativeActivity)
-  , CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver")
+  : CJNIBase()
+  , CJNIMainActivity(nativeActivity->clazz)
   , m_videosurfaceInUse(false)
+
 {
   m_xbmcappinstance = this;
   m_activity = nativeActivity;
@@ -278,6 +279,8 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
     return;
   }
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  m_audioFocusListener.reset(new CJNIXBMCAudioManagerOnAudioFocusChangeListener(this));
+  m_broadcastReceiver.reset(new CJNIXBMCBroadcastReceiver(this));
   m_mainView.reset(new CJNIXBMCMainView(this));
   m_firstrun = true;
   m_exiting = false;
@@ -347,7 +350,7 @@ void CXBMCApp::onStart()
     intentFilter.addAction("android.intent.action.HEADSET_PLUG");
     intentFilter.addAction("android.media.action.HDMI_AUDIO_PLUG");
     intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-    registerReceiver(*this, intentFilter);
+    registerReceiver(*m_broadcastReceiver, intentFilter);
 
     m_mediaSession.reset(new CJNIXBMCMediaSession());
   }
@@ -437,7 +440,7 @@ void CXBMCApp::onDestroy()
 {
   CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
-  unregisterReceiver(*this);
+  unregisterReceiver(*m_broadcastReceiver);
 
   if (m_mediaSession)
     m_mediaSession.release();
@@ -557,7 +560,7 @@ bool CXBMCApp::AcquireAudioFocus()
   }
 
   // Request audio focus for playback
-  int result = audioManager.requestAudioFocus(*m_xbmcappinstance,
+  int result = audioManager.requestAudioFocus(*m_audioFocusListener,
     // Use the music stream.
     CJNIAudioManager::STREAM_MUSIC,
     // Request permanent focus.
@@ -588,7 +591,7 @@ bool CXBMCApp::ReleaseAudioFocus()
   }
 
   // Release audio focus after playback
-  int result = audioManager.abandonAudioFocus(*m_xbmcappinstance);
+  int result = audioManager.abandonAudioFocus(*m_audioFocusListener);
   // A successful focus change request returns AUDIOFOCUS_REQUEST_GRANTED
   if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
   {
@@ -721,7 +724,7 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
   float rate = rateVariant->asFloat();
   delete rateVariant;
 
-  CJNIWindow window = getWindow();
+  CJNIWindow window = CXBMCApp::get()->getWindow();
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
@@ -739,7 +742,7 @@ void CXBMCApp::SetDisplayModeIdCallback(CVariant* rateVariant)
   int modeId = rateVariant->asInteger();
   delete rateVariant;
 
-  CJNIWindow window = getWindow();
+  CJNIWindow window = CXBMCApp::get()->getWindow();
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
@@ -1047,7 +1050,7 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
 
 bool CXBMCApp::HasLaunchIntent(const string &package)
 {
-  return GetPackageManager().getLaunchIntentForPackage(package) != NULL;
+  return (GetPackageManager().getLaunchIntentForPackage(package) != NULL);
 }
 
 bool CXBMCApp::StartAppActivity(const std::string &package, const std::string &cls)

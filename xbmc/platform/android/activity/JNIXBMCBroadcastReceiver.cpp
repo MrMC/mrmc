@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2016 Christian Browet
- *      http://xbmc.org
+ *      Copyright (C) 2018 Christian Browet
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,18 +18,23 @@
  *
  */
 
-#include "JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
+#include <algorithm>
+
+#include "JNIXBMCBroadcastReceiver.h"
+
 #include <androidjni/jutils-details.hpp>
+#include <androidjni/Intent.h>
 
 #include "XBMCApp.h"
 #include "CompileInfo.h"
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCSurfaceTextureOnFrameAvailableListener";
+static std::string s_className = std::string(CCompileInfo::GetClass()) + "/XBMCBroadcastReceiver";
 
-CJNIXBMCSurfaceTextureOnFrameAvailableListener::CJNIXBMCSurfaceTextureOnFrameAvailableListener()
+CJNIXBMCBroadcastReceiver::CJNIXBMCBroadcastReceiver(CJNIBroadcastReceiver* receiver)
   : CJNIBase(s_className)
+  , m_receiver(receiver)
 {
   // BEWARE: Having JNIBase as virtual ancestor makes it initialized last
   // never use JNIBase member variables in ctor
@@ -40,36 +45,43 @@ CJNIXBMCSurfaceTextureOnFrameAvailableListener::CJNIXBMCSurfaceTextureOnFrameAva
   add_instance(m_object, this);
 }
 
-CJNIXBMCSurfaceTextureOnFrameAvailableListener::CJNIXBMCSurfaceTextureOnFrameAvailableListener(const CJNIXBMCSurfaceTextureOnFrameAvailableListener& other)
+CJNIXBMCBroadcastReceiver::CJNIXBMCBroadcastReceiver(const CJNIXBMCBroadcastReceiver& other)
   : CJNIBase(other)
 {
   add_instance(m_object, this);
 }
 
-CJNIXBMCSurfaceTextureOnFrameAvailableListener::~CJNIXBMCSurfaceTextureOnFrameAvailableListener()
+CJNIXBMCBroadcastReceiver::~CJNIXBMCBroadcastReceiver()
 {
   remove_instance(this);
 }
 
-void CJNIXBMCSurfaceTextureOnFrameAvailableListener::RegisterNatives(JNIEnv* env)
+void CJNIXBMCBroadcastReceiver::RegisterNatives(JNIEnv* env)
 {
   jclass cClass = env->FindClass(s_className.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =
     {
-      {"_onFrameAvailable", "(Landroid/graphics/SurfaceTexture;)V", (void*)&CJNIXBMCSurfaceTextureOnFrameAvailableListener::_onFrameAvailable},
+      {"_onReceive", "(Landroid/content/Intent;)V", (void*)&CJNIXBMCBroadcastReceiver::_onReceive},
     };
 
     env->RegisterNatives(cClass, methods, sizeof(methods)/sizeof(methods[0]));
   }
 }
 
-void CJNIXBMCSurfaceTextureOnFrameAvailableListener::_onFrameAvailable(JNIEnv* env, jobject thiz, jobject surface)
+void CJNIXBMCBroadcastReceiver::_onReceive(JNIEnv *env, jobject thiz, jobject intent)
 {
   (void)env;
 
-  CJNIXBMCSurfaceTextureOnFrameAvailableListener *inst = find_instance(thiz);
+  CJNIXBMCBroadcastReceiver *inst = find_instance(thiz);
   if (inst)
-    inst->onFrameAvailable(CJNISurfaceTexture(jhobject::fromJNI(surface)));
+    inst->onReceive(CJNIIntent(jhobject::fromJNI(intent)));
 }
+
+void CJNIXBMCBroadcastReceiver::onReceive(CJNIIntent intent)
+{
+  if (m_receiver)
+    m_receiver->onReceive(intent);
+}
+

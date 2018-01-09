@@ -81,8 +81,8 @@ bool CScreenshotSurface::capture()
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE))
   {
     jni::CJNIImage image;
-    CXBMCApp::TakeScreenshot();
-    if (CXBMCApp::WaitForCapture(image))
+    CXBMCApp::get()->TakeScreenshot();
+    if (CXBMCApp::get()->WaitForCapture(image))
     {
       if (image)
       {

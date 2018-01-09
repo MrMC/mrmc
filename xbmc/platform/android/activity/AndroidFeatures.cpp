@@ -24,9 +24,10 @@
 
 #include <cpu-features.h>
 #include <androidjni/Build.h>
-#include <androidjni/Context.h>
 #include <androidjni/JNIThreading.h>
 #include <androidjni/PackageManager.h>
+
+#include "platform/android/activity/XBMCApp.h"
 
 bool CAndroidFeatures::HasNeon()
 {
@@ -98,7 +99,7 @@ bool CAndroidFeatures::HasTouchScreen()
   static int hastouchscreen = -1;
   if (hastouchscreen == -1)
   {
-    if (CJNIContext::GetPackageManager().hasSystemFeature("android.hardware.touchscreen"))
+    if (CXBMCApp::get()->GetPackageManager().hasSystemFeature("android.hardware.touchscreen"))
       hastouchscreen = 1;
     else
       hastouchscreen = 0;
@@ -161,7 +162,7 @@ bool CAndroidFeatures::IsLeanback()
   static int isleanback = -1;
   if (isleanback == -1)
   {
-    if (CJNIContext::GetPackageManager().hasSystemFeature("android.software.leanback"))
+    if (CXBMCApp::get()->GetPackageManager().hasSystemFeature("android.software.leanback"))
       isleanback = 1;
     else
       isleanback = 0;

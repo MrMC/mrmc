@@ -512,8 +512,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   if (m_passthrough && (m_passthroughIsIECPacked && m_encoding != CJNIAudioFormat::ENCODING_IEC61937))
   {
     CXBMCApp::get()->AcquireAudioFocus();
-    m_volume = CXBMCApp::GetSystemVolume();
-    CXBMCApp::SetSystemVolume(1.0);
+    m_volume = CXBMCApp::get()->GetSystemVolume();
+    CXBMCApp::get()->SetSystemVolume(1.0);
   }
 
   return true;
@@ -535,7 +535,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
   // Restore volume
   if (m_volume != -1)
   {
-    CXBMCApp::SetSystemVolume(m_volume);
+    CXBMCApp::get()->SetSystemVolume(m_volume);
     CXBMCApp::get()->ReleaseAudioFocus();
     m_volume = -1;
   }

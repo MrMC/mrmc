@@ -29,10 +29,14 @@ using namespace jni;
 
 static std::string s_className = std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCAudioManagerOnAudioFocusChangeListener";
 
-CJNIXBMCAudioManagerOnAudioFocusChangeListener::CJNIXBMCAudioManagerOnAudioFocusChangeListener()
+CJNIXBMCAudioManagerOnAudioFocusChangeListener::CJNIXBMCAudioManagerOnAudioFocusChangeListener(CJNIAudioManagerAudioFocusChangeListener* listener)
   : CJNIBase(s_className)
+  , m_listener(listener)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  // BEWARE: Having JNIBase as virtual ancestor makes it initialized last
+  // never use JNIBase member variables in ctor
+
+  m_object = new_object(CXBMCApp::get()->getClassLoader().loadClass(GetDotClassName(s_className)));
   m_object.setGlobal();
 
   add_instance(m_object, this);
@@ -74,6 +78,6 @@ void CJNIXBMCAudioManagerOnAudioFocusChangeListener::_onAudioFocusChange(JNIEnv 
 
 void CJNIXBMCAudioManagerOnAudioFocusChangeListener::onAudioFocusChange(int focusChange)
 {
-  if(CXBMCApp::get())
-    CXBMCApp::get()->onAudioFocusChange(focusChange);
+  if(m_listener)
+    m_listener->onAudioFocusChange(focusChange);
 }

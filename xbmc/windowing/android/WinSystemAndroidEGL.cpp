@@ -436,7 +436,7 @@ bool CWinSystemAndroidEGL::GetNativeResolution(RESOLUTION_INFO *res)
 
   bool iswindowed = false;
   if (CJNIBase::GetSDKVersion() >= 24)
-    iswindowed = CXBMCApp::isInMultiWindowMode();
+    iswindowed = CXBMCApp::get()->isInMultiWindowMode();
 
   if ((!m_width || !m_height) && !iswindowed)
   {
@@ -503,7 +503,7 @@ bool CWinSystemAndroidEGL::SetNativeResolution(const RESOLUTION_INFO &res)
       CLog::Log(LOGERROR, "CWinSystemAndroidEGL : Cannot find resolution %s", res.strMode.c_str());
       return false;
     }
-    CXBMCApp::SetDisplayModeId(modeid);
+    CXBMCApp::get()->SetDisplayModeId(modeid);
     s_res_cur_displayMode = res;
 
   }
@@ -784,7 +784,7 @@ void CWinSystemAndroidEGL::NotifyAppActiveChange(bool bActivated)
 
 bool CWinSystemAndroidEGL::Minimize()
 {
-  CXBMCApp::moveTaskToBack(true);
+  CXBMCApp::get()->moveTaskToBack(true);
   return true;
 }
 

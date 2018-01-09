@@ -101,7 +101,7 @@ extern "C" int MCRuntimeLib_Run(bool renderGUI)
 
 #if defined(TARGET_ANDROID)
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE))
-    CXBMCApp::startProjection();
+    CXBMCApp::get()->startProjection();
 #endif
 
   try

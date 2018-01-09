@@ -33,6 +33,7 @@
 #include "platform/android/activity/JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 #include "platform/android/activity/JNIXBMCMediaSession.h"
+#include "platform/android/activity/JNIXBMCBroadcastReceiver.h"
 
 extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 {
@@ -53,6 +54,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   CJNIXBMCMainView::RegisterNatives(env);
   CJNIXBMCVideoView::RegisterNatives(env);
   jni::CJNIXBMCMediaSession::RegisterNatives(env);
+  jni::CJNIXBMCBroadcastReceiver::RegisterNatives(env);
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
@@ -74,16 +76,6 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       {"_onUserLeaveHint", "()V", (void*)&CJNIMainActivity::_onUserLeaveHint},
     };
     env->RegisterNatives(cMain, methods, sizeof(methods)/sizeof(methods[0]));
-  }
-
-  jclass cBroadcastReceiver = env->FindClass(bcReceiver.c_str());
-  if(cBroadcastReceiver)
-  {
-    JNINativeMethod methods[] =
-    {
-      {"_onReceive", "(Landroid/content/Intent;)V", (void*)&CJNIBroadcastReceiver::_onReceive},
-    };
-    env->RegisterNatives(cBroadcastReceiver, methods, sizeof(methods)/sizeof(methods[0]));
   }
 
   jclass cSettingsObserver = env->FindClass(settingsObserver.c_str());
