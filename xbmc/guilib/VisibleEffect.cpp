@@ -30,6 +30,7 @@
 
 CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 {
+  m_active = false;
   m_effect = effect;
   // defaults
   m_delay = m_length = 0;
@@ -48,6 +49,7 @@ CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE ef
   m_delay = delay;
   m_length = length;
   m_effect = effect;
+  m_active = false;
   m_pTweener = std::shared_ptr<Tweener>(new LinearTweener());
 }
 
@@ -68,6 +70,7 @@ CAnimEffect& CAnimEffect::operator=(const CAnimEffect &src)
   m_matrix = src.m_matrix;
   m_effect = src.m_effect;
   m_length = src.m_length;
+  m_active = src.m_active;
   m_delay = src.m_delay;
 
   m_pTweener = src.m_pTweener;
@@ -85,6 +88,7 @@ void CAnimEffect::Calculate(unsigned int time, const CPoint &center)
     offset = 1.0f;
   if (m_pTweener)
     offset = m_pTweener->Tween(offset, 0.0f, 1.0f, 1.0f);
+  m_active = (offset > 0.0 && offset < 1.0);
   // and apply the effect
   ApplyEffect(offset, center);
 }
@@ -499,6 +503,7 @@ void CAnimation::ResetAnimation()
   m_queuedProcess = ANIM_PROCESS_NONE;
   m_currentProcess = ANIM_PROCESS_NONE;
   m_currentState = ANIM_STATE_NONE;
+  m_fading = false;
   m_sliding = false;
 }
 
@@ -542,6 +547,25 @@ void CAnimation::Calculate(const CPoint &center)
         effect->ApplyState(ANIM_STATE_NONE, center);
     }
   }
+
+  bool isFading = false;
+  if (m_currentState == ANIM_STATE_IN_PROCESS)
+  {
+    for (size_t i = 0; i < m_effects.size(); ++i)
+    {
+      if (m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_FADE)
+      {
+        if (m_effects[i]->IsActive())
+        {
+          //CLog::Log(LOGDEBUG, "Control is fading");
+          isFading = true;
+          break;
+        }
+      }
+    }
+  }
+  m_fading = isFading;
+
   bool isSliding = false;
   if (m_currentState == ANIM_STATE_IN_PROCESS)
   {
@@ -549,9 +573,12 @@ void CAnimation::Calculate(const CPoint &center)
     {
       if (m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_SLIDE)
       {
-        //CLog::Log(LOGDEBUG, "Control is sliding");
-        isSliding = true;
-        break;
+        if (m_effects[i]->IsActive())
+        {
+          //CLog::Log(LOGDEBUG, "Control is sliding");
+          isSliding = true;
+          break;
+        }
       }
     }
   }

@@ -359,18 +359,28 @@ void CGUIControlGroup::ResetAnimations()
     (*it)->ResetAnimations();
 }
 
+bool CGUIControlGroup::IsFading()
+{
+  if (CGUIControl::IsFading())
+    return true;
+
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    if ((*it)->IsFading())
+      return true;
+  }
+  return false;
+}
+
 bool CGUIControlGroup::IsSliding()
 {
   if (CGUIControl::IsSliding())
     return true;
 
-  if (IsVisible())
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
-    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-    {
-      if ((*it)->IsSliding())
-        return true;
-    }
+    if ((*it)->IsSliding())
+      return true;
   }
   return false;
 }

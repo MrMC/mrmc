@@ -964,6 +964,16 @@ bool CGUIControl::Animate(unsigned int currentTime)
   return changed;
 }
 
+bool CGUIControl::IsFading()
+{
+  for (size_t i = 0; i < m_animations.size(); i++)
+  {
+    if (m_animations[i].IsFading())
+      return true;
+  }
+  return false;
+}
+
 bool CGUIControl::IsSliding()
 {
   for (size_t i = 0; i < m_animations.size(); i++)
