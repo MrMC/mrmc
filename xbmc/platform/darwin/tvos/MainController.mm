@@ -272,10 +272,9 @@ std::vector<FocusEngineCoreViews> m_viewItems;
   m_screensize.width  = m_glView.bounds.size.width  * m_screenScale;
   m_screensize.height = m_glView.bounds.size.height * m_screenScale;
 
+  [self createSiriPressGesturecognizers];
   [self createSiriSwipeGestureRecognizers];
   [self createSiriPanGestureRecognizers];
-  [self createSiriTapGestureRecognizers];
-  [self createPressGesturecognizers];
   [self createCustomControlCenter];
   // startup with idle timer running
   [self startRemoteTimer];
@@ -1067,78 +1066,7 @@ std::vector<FocusEngineCoreViews> m_viewItems;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-#pragma mark - gesture methods
-//--------------------------------------------------------------
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-  // important, this lets our view get touch events
-  return YES;
-}
-
-//--------------------------------------------------------------
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-  if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-    return YES;
-  }
-  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
-    return YES;
-  }
-  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-    return YES;
-  }
-  return NO;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && ([otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] || [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]))
-  {
-    return YES;
-  }
-  return NO;
-}
-
-//--------------------------------------------------------------
-// called before pressesBegan:withEvent: is called on the gesture recognizer
-// for a new press. return NO to prevent the gesture recognizer from seeing this press
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
-{
-  //PRINT_SIGNATURE();
-  BOOL handled = YES;
-  switch (press.type)
-  {
-    // single press key, but also detect hold and back to tvos.
-    case UIPressTypeMenu:
-    {
-      // menu is special.
-      //  a) if at our home view, should return to atv home screen.
-      //  b) if not, let it pass to us.
-      int focusedWindowID = g_windowManager.GetFocusedWindow();
-      if (focusedWindowID == WINDOW_HOME)
-        handled = NO;
-      break;
-    }
-
-    // single press keys
-    case UIPressTypeSelect:
-    case UIPressTypePlayPause:
-      break;
-
-    // auto-repeat keys
-    case UIPressTypeUpArrow:
-    case UIPressTypeDownArrow:
-    case UIPressTypeLeftArrow:
-    case UIPressTypeRightArrow:
-      break;
-
-    default:
-      handled = NO;
-  }
-
-  return handled;
-}
-
+#pragma mark - gesture creators/recognizers
 //--------------------------------------------------------------
 - (void)createSiriSwipeGestureRecognizers
 {
@@ -1184,153 +1112,166 @@ std::vector<FocusEngineCoreViews> m_viewItems;
   [self.focusView addGestureRecognizer:pan];
 }
 //--------------------------------------------------------------
-- (void)createPressGesturecognizers
+- (void)createSiriPressGesturecognizers
 {
   //PRINT_SIGNATURE();
   // we always have these under tvos, both ir and siri remotes respond to these
   auto menuRecognizer = [[UITapGestureRecognizer alloc]
-    initWithTarget: self action: @selector(menuPressed:)];
+    initWithTarget: self action: @selector(SiriMenuHandler:)];
   menuRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeMenu]];
   menuRecognizer.delegate  = self;
   [self.focusView addGestureRecognizer: menuRecognizer];
   
-  auto playPauseRecognizer = [[UITapGestureRecognizer alloc]
-    initWithTarget: self action: @selector(playPausePressed:)];
-  playPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
-  playPauseRecognizer.delegate  = self;
-  [self.focusView addGestureRecognizer: playPauseRecognizer];
-  
   auto selectRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(selectPressed:)];
+    initWithTarget: self action: @selector(SiriSelectHandler:)];
   selectRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
   selectRecognizer.minimumPressDuration = 0.001;
   selectRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: selectRecognizer];
 
-  // we need UILongPressGestureRecognizer here because it will give
-  // UIGestureRecognizerStateBegan AND UIGestureRecognizerStateEnded
-  // even if we hold down for a long time. UITapGestureRecognizer
-  // will eat the ending on long holds and we never see it.
-  auto upRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(IRRemoteUpArrowPressed:)];
-  upRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeUpArrow]];
-  upRecognizer.minimumPressDuration = 0.01;
-  upRecognizer.delegate = self;
-  [self.focusView addGestureRecognizer: upRecognizer];
-
-  auto downRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(IRRemoteDownArrowPressed:)];
-  downRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeDownArrow]];
-  downRecognizer.minimumPressDuration = 0.01;
-  downRecognizer.delegate = self;
-  [self.focusView addGestureRecognizer: downRecognizer];
-
-  auto leftRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(IRRemoteLeftArrowPressed:)];
-  leftRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeLeftArrow]];
-  leftRecognizer.minimumPressDuration = 0.01;
-  leftRecognizer.delegate = self;
-  [self.focusView addGestureRecognizer: leftRecognizer];
-
-  auto rightRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(IRRemoteRightArrowPressed:)];
-  rightRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
-  rightRecognizer.minimumPressDuration = 0.01;
-  rightRecognizer.delegate = self;
-  [self.focusView addGestureRecognizer: rightRecognizer];
-}
-//--------------------------------------------------------------
-- (void)createSiriTapGestureRecognizers
-{
-  //PRINT_SIGNATURE();
-  // taps on siri remote pad
+  auto playPauseRecognizer = [[UITapGestureRecognizer alloc]
+    initWithTarget: self action: @selector(SiriPlayPauseHandler:)];
+  playPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
+  playPauseRecognizer.delegate  = self;
+  [self.focusView addGestureRecognizer: playPauseRecognizer];
+  
+  // taps on siri remote pad or presses on ir remote
+  // left/right/up/down
   auto upRecognizer = [[UITapGestureRecognizer alloc]
-    initWithTarget: self action: @selector(SiriTapUpArrowPressed:)];
+    initWithTarget: self action: @selector(SiriArrowHandler:)];
   upRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeUpArrow]];
   upRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: upRecognizer];
 
   auto downRecognizer = [[UITapGestureRecognizer alloc]
-    initWithTarget: self action: @selector(SiriTapDownArrowPressed:)];
+    initWithTarget: self action: @selector(SiriArrowHandler:)];
   downRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeDownArrow]];
   downRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: downRecognizer];
 
   auto leftRecognizer = [[UITapGestureRecognizer alloc]
-    initWithTarget: self action: @selector(SiriTapLeftArrowPressed:)];
+    initWithTarget: self action: @selector(SiriArrowHandler:)];
   leftRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeLeftArrow]];
   leftRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: leftRecognizer];
 
   auto rightRecognizer = [[UITapGestureRecognizer alloc]
-    initWithTarget: self action: @selector(SiriTapRightArrowPressed:)];
+    initWithTarget: self action: @selector(SiriArrowHandler:)];
   rightRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
   rightRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: rightRecognizer];
 }
-
 //--------------------------------------------------------------
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+  if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+    return YES;
+  }
+  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+    return YES;
+  }
+  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+    return YES;
+  }
+  return NO;
+}
 //--------------------------------------------------------------
-#pragma mark - touch/gesture handlers
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && ([otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] || [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]))
+  {
+    return YES;
+  }
+  return NO;
+}
 //--------------------------------------------------------------
+// GestureRecognizers are used to manage the focus action type state machine.
+// There are three types, tap, pan and swipe. For taps, these
+// can be menu, select, play/pause buttons or up/down/right/left taps
+// on trackpad, or up/down/right/left on IR remote. One could call
+// them presses but it's easier to just deal with them all as taps.
+// (ie directional taps on trackpad are similar to directional presses on ir remotes)
+// The tvOS focus engine will call shouldUpdateFocusInContext/didUpdateFocusInContext
+// but we need to know which focus action type so we can do the right thing.
 static const char* focusActionTypeNames[] = {
   "none",
   "tap",
   "pan",
-  "press",
   "swipe",
 };
 typedef enum FocusActionTypes
 {
-  FocusActionNone = 0,
   FocusActionTap  = 1,
   FocusActionPan  = 2,
-  FocusActionPress = 3,
-  FocusActionSwipe = 4,
+  FocusActionSwipe = 3,
 } FocusActionTypes;
-int focusActionType = FocusActionNone;
+// default action is FocusActionTap, gestureRecognizers will
+// set the correct type before shouldUpdateFocusInContext is hit
+int focusActionType = FocusActionTap;
 
+bool tapNoMore = false;
+bool panNoMore = false;
 bool swipeNoMore = false;
 CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
-//--------------------------------------------------------------
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event
+// called before touchesBegan:withEvent: is called on the gesture recognizer
+// for a new touch. return NO to prevent the gesture recognizer from seeing this touch
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-  // all touches begine with a tap but
-  // we can get focus moves from a quick swipe
-  // without triggering swipe gesture,
-  // so default to FocusActionSwipe
+  // important, this gestureRecognizer gets called before any other tap/pas/swipe handler
+  // including shouldUpdateFocusInContext/didUpdateFocusInContext. So we can
+  // setup the initial focusActionType to tap.
+  CLog::Log(LOGDEBUG, "shouldReceiveTouch:FocusActionTap");
   focusActionType = FocusActionTap;
-  CLog::Log(LOGDEBUG, "touchesBegan");
-  [super touchesBegan:touches withEvent:event];
-}
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event;
-{
-  // hit for all touch types (tap, pan, swipe)
-  CLog::Log(LOGDEBUG, "touchesMoved");
-  [super touchesEnded:touches withEvent:event];
-}
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event
-{
-  // a real touch will hit touchesEnded
-  focusActionType = FocusActionTap;
-  CLog::Log(LOGDEBUG, "touchesEnded");
-  [super touchesEnded:touches withEvent:event];
-}
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event;
-{
-  // we got cancelled when some gesture handler
-  // (like pans or swipes) takes the event
-  CLog::Log(LOGDEBUG, "touchesCancelled");
-  // sometimes we get a swipe happening but
-  // the swipe gesture handle was never called
-  // we will get touchesCancelled so check if this
-  // is a pan and if not, assume swipe.
-  if (focusActionType != FocusActionPan)
-    focusActionType = FocusActionSwipe;
-  [super touchesCancelled:touches withEvent:event];
+  return YES;
 }
 //--------------------------------------------------------------
+// called before pressesBegan:withEvent: is called on the gesture recognizer
+// for a new press. return NO to prevent the gesture recognizer from seeing this press
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
+{
+  //PRINT_SIGNATURE();
+  BOOL handled = YES;
+  // important, this gestureRecognizer gets called before any other press handler
+  // including shouldUpdateFocusInContext/didUpdateFocusInContext. So we can
+  // setup the initial focusActionType to tap.
+  CLog::Log(LOGDEBUG, "shouldReceivePress:FocusActionTap");
+  focusActionType = FocusActionTap;
+  switch (press.type)
+  {
+    // single press key, but also detect hold and back to tvos.
+    case UIPressTypeMenu:
+    {
+      // menu is special.
+      //  a) if at our home view, should return to atv home screen.
+      //  b) if not, let it pass to us.
+      int focusedWindowID = g_windowManager.GetFocusedWindow();
+      if (focusedWindowID == WINDOW_HOME)
+        handled = NO;
+      break;
+    }
+
+    // single press keys
+    case UIPressTypeSelect:
+    case UIPressTypePlayPause:
+      break;
+
+    // auto-repeat keys
+    case UIPressTypeUpArrow:
+    case UIPressTypeDownArrow:
+    case UIPressTypeLeftArrow:
+    case UIPressTypeRightArrow:
+      break;
+
+    default:
+      handled = NO;
+  }
+
+  return handled;
+}
+//--------------------------------------------------------------
+//--------------------------------------------------------------
+#pragma mark - touch/gesture handlers
 //--------------------------------------------------------------
 - (IBAction)SiriSwipeHandler:(UISwipeGestureRecognizer *)sender
 {
@@ -1342,12 +1283,11 @@ CGRect swipeStartingParentViewRect;
       {
         case UIGestureRecognizerStateRecognized:
           {
-            focusActionType = FocusActionSwipe;
-            FocusLayerView *parentView = [self findParentView:_focusLayer.infocus.view];
             swipeNoMore = false;
+            focusActionType = FocusActionSwipe;
+            CLog::Log(LOGDEBUG, "SiriSwipeHandler:StateRecognized:FocusActionSwipe");
+            FocusLayerView *parentView = [self findParentView:_focusLayer.infocus.view];
             swipeStartingParentViewRect = parentView.bounds;
-            CGPoint location = [sender locationInView:sender.view];
-            CLog::Log(LOGDEBUG, "SiriSwipeHandler:StateRecognized, %f, %f", location.x, location.y);
             CLog::Log(LOGDEBUG, "SiriSwipeHandler:StateRecognized: %f, %f, %f, %f",
               swipeStartingParentViewRect.origin.x,
               swipeStartingParentViewRect.origin.y,
@@ -1368,33 +1308,22 @@ CGRect swipeStartingParentViewRect;
   {
     if (m_appAlive == YES)//NO GESTURES BEFORE WE ARE UP AND RUNNING
     {
-      CGPoint location;
       switch (sender.state)
       {
         case UIGestureRecognizerStateBegan:
           {
+            panNoMore = false;
             focusActionType = FocusActionPan;
+            CLog::Log(LOGDEBUG, "SiriPanHandler:StateBegan:FocusActionPan");
             FocusLayerView *parentView = [self findParentView:_focusLayer.infocus.view];
             swipeStartingParentViewRect = parentView.bounds;
-            location = [sender translationInView:sender.view];
-            CLog::Log(LOGDEBUG, "SiriPanHandler:StateBegan, %f, %f", location.x, location.y);
+            swipeStartingParentViewRect = parentView.bounds;
             CLog::Log(LOGDEBUG, "SiriPanHandler:StateBegan: %f, %f, %f, %f",
               swipeStartingParentViewRect.origin.x,
               swipeStartingParentViewRect.origin.y,
               swipeStartingParentViewRect.origin.x + swipeStartingParentViewRect.size.width,
               swipeStartingParentViewRect.origin.y + swipeStartingParentViewRect.size.height);
           }
-          break;
-        case UIGestureRecognizerStateChanged:
-          location = [sender translationInView:sender.view];
-          CLog::Log(LOGDEBUG, "SiriPanHandler:StateChanged, %f, %f", location.x, location.y);
-          break;
-        case UIGestureRecognizerStateEnded:
-          location = [sender translationInView:sender.view];
-          CLog::Log(LOGDEBUG, "SiriPanHandler:StateEnded,   %f, %f", location.x, location.y);
-          break;
-        case UIGestureRecognizerStateCancelled:
-          CLog::Log(LOGDEBUG, "SiriPanHandler:StateCancelled");
           break;
         default:
           break;
@@ -1403,15 +1332,23 @@ CGRect swipeStartingParentViewRect;
   }
 }
 //--------------------------------------------------------------
-- (void)menuPressed:(UITapGestureRecognizer *)sender
+- (IBAction)SiriArrowHandler:(UIGestureRecognizer *)sender
+{
+  // we need this gesture handler to get a call into
+  // shouldReceivePress where we can set FocusActionType
+  // before any other gesture handler (pan, swap) or
+  // shouldUpdateFocusInContext/didUpdateFocusInContext
+  // but this routine will get called AFTER the above.
+  CLog::Log(LOGDEBUG, "SiriArrowHandler:FocusActionTap");
+  // start remote timeout
+  [self startRemoteTimer];
+}
+//--------------------------------------------------------------
+- (void)SiriMenuHandler:(UITapGestureRecognizer *)sender
 {
   PRINT_SIGNATURE();
   switch (sender.state)
   {
-    case UIGestureRecognizerStateBegan:
-      break;
-    case UIGestureRecognizerStateChanged:
-      break;
     case UIGestureRecognizerStateEnded:
       if (g_windowManager.GetFocusedWindow() == WINDOW_FULLSCREEN_VIDEO)
       {
@@ -1432,21 +1369,21 @@ CGRect swipeStartingParentViewRect;
   }
 }
 //--------------------------------------------------------------
-- (void)selectButtonHold
+- (void)SiriSelectHoldHandler
 {
   self.m_holdCounter++;
   [self.m_holdTimer invalidate];
   [self sendButtonPressed:SiriRemote_CenterHold];
 }
 //--------------------------------------------------------------
-- (void)selectPressed:(UITapGestureRecognizer *)sender
+- (void)SiriSelectHandler:(UITapGestureRecognizer *)sender
 {
   PRINT_SIGNATURE();
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
       self.m_holdCounter = 0;
-      self.m_holdTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(selectButtonHold) userInfo:nil repeats:YES];
+      self.m_holdTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(SiriSelectHoldHandler) userInfo:nil repeats:YES];
       break;
     case UIGestureRecognizerStateChanged:
       if (self.m_holdCounter > 1)
@@ -1467,15 +1404,11 @@ CGRect swipeStartingParentViewRect;
   }
 }
 //--------------------------------------------------------------
-- (void)playPausePressed:(UITapGestureRecognizer *) sender
+- (void)SiriPlayPauseHandler:(UITapGestureRecognizer *) sender
 {
   PRINT_SIGNATURE();
   switch (sender.state)
   {
-    case UIGestureRecognizerStateBegan:
-      break;
-    case UIGestureRecognizerStateChanged:
-      break;
     case UIGestureRecognizerStateEnded:
       [self sendButtonPressed:SiriRemote_PausePlayClick];
       // start remote timeout
@@ -1484,94 +1417,6 @@ CGRect swipeStartingParentViewRect;
     default:
       break;
   }
-}
-//--------------------------------------------------------------
-//--------------------------------------------------------------
-- (IBAction)IRRemoteUpArrowPressed:(UIGestureRecognizer *)sender
-{
-  CLog::Log(LOGDEBUG, "IRRemoteUpArrowPressed");
-  switch (sender.state)
-  {
-    case UIGestureRecognizerStateBegan:
-      focusActionType = FocusActionPress;
-      break;
-    case UIGestureRecognizerStateEnded:
-    case UIGestureRecognizerStateChanged:
-    case UIGestureRecognizerStateCancelled:
-      break;
-    default:
-      break;
-  }
-}
-- (IBAction)IRRemoteDownArrowPressed:(UIGestureRecognizer *)sender
-{
-  CLog::Log(LOGDEBUG, "IRRemoteDownArrowPressed");
-  switch (sender.state)
-  {
-    case UIGestureRecognizerStateBegan:
-      focusActionType = FocusActionPress;
-      break;
-    case UIGestureRecognizerStateEnded:
-    case UIGestureRecognizerStateChanged:
-    case UIGestureRecognizerStateCancelled:
-      break;
-    default:
-      break;
-  }
-}
-- (IBAction)IRRemoteLeftArrowPressed:(UIGestureRecognizer *)sender
-{
-  CLog::Log(LOGDEBUG, "IRRemoteLeftArrowPressed");
-  switch (sender.state)
-  {
-    case UIGestureRecognizerStateBegan:
-      focusActionType = FocusActionPress;
-      break;
-    case UIGestureRecognizerStateEnded:
-    case UIGestureRecognizerStateChanged:
-    case UIGestureRecognizerStateCancelled:
-      break;
-    default:
-      break;
-  }
-}
-- (IBAction)IRRemoteRightArrowPressed:(UIGestureRecognizer *)sender
-{
-  CLog::Log(LOGDEBUG, "IRRemoteRightArrowPressed");
-  switch (sender.state)
-  {
-    case UIGestureRecognizerStateBegan:
-      focusActionType = FocusActionPress;
-      break;
-    case UIGestureRecognizerStateEnded:
-    case UIGestureRecognizerStateChanged:
-    case UIGestureRecognizerStateCancelled:
-      break;
-    default:
-      break;
-  }
-}
-//--------------------------------------------------------------
-//--------------------------------------------------------------
-- (IBAction)SiriTapUpArrowPressed:(UIGestureRecognizer *)sender
-{
-  focusActionType = FocusActionPress;
-  CLog::Log(LOGDEBUG, "SiriTapUpArrowPressed");
-}
-- (IBAction)SiriTapDownArrowPressed:(UIGestureRecognizer *)sender
-{
-  focusActionType = FocusActionPress;
-  CLog::Log(LOGDEBUG, "SiriTapDownArrowPressed");
-}
-- (IBAction)SiriTapLeftArrowPressed:(UIGestureRecognizer *)sender
-{
-  focusActionType = FocusActionPress;
-  CLog::Log(LOGDEBUG, "SiriTapLeftArrowPressed");
-}
-- (IBAction)SiriTapRightArrowPressed:(UIGestureRecognizer *)sender
-{
-  focusActionType = FocusActionPress;
-  CLog::Log(LOGDEBUG, "SiriTapRightArrowPressed");
 }
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -2019,10 +1864,6 @@ CGRect debugView2;
   }
   _focusLayer.views = focusViews;
   [self updateFocusLayerFocus];
-}
-//--------------------------------------------------------------
-- (void) updateFocusLayerFromCore
-{
 }
 //--------------------------------------------------------------
 - (void) updateFocusLayerFocus
