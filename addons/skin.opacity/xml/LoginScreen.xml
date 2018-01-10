@@ -41,6 +41,7 @@
 					<onup>52</onup>
 					<ondown>52</ondown>
 					<colordiffuse>CCFFFFFF</colordiffuse>
+					<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 				</control>
 			</control>
 			<control type="group">
