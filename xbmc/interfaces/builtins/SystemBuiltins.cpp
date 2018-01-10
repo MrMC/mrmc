@@ -87,8 +87,10 @@ static int Powerdown(const std::vector<std::string>& params)
  */
 static int Quit(const std::vector<std::string>& params)
 {
+  // prevent skins/addons from calling quit under darwin.
+#if !defined(TARGET_DARWIN_IOS)
   CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
-
+#endif
   return 0;
 }
 
