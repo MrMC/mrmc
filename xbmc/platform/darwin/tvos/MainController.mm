@@ -363,7 +363,7 @@ std::vector<FocusEngineCoreViews> m_viewItems;
 //--------------------------------------------------------------
 - (void)didReceiveMemoryWarning
 {
-  PRINT_SIGNATURE();
+  CLog::Log(LOGDEBUG, "didReceiveMemoryWarning");
   // Releases the view if it doesn't have a superview.
   [super didReceiveMemoryWarning];
   // Release any cached data, images, etc. that aren't in use.
@@ -927,7 +927,7 @@ std::vector<FocusEngineCoreViews> m_viewItems;
 //--------------------------------------------------------------
 - (void)displayRateReset
 {
-  PRINT_SIGNATURE();
+  CLog::Log(LOGDEBUG, "displayRateReset");
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
   {
     if (__builtin_available(tvOS 11.2, *))
@@ -1370,7 +1370,7 @@ CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
 - (void)SiriMenuHandler:(UITapGestureRecognizer *)sender
 {
-  PRINT_SIGNATURE();
+  CLog::Log(LOGDEBUG, "SiriMenuHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateEnded:
@@ -1402,7 +1402,7 @@ CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
 - (void)SiriSelectHandler:(UITapGestureRecognizer *)sender
 {
-  PRINT_SIGNATURE();
+  CLog::Log(LOGDEBUG, "SiriSelectHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
@@ -1430,7 +1430,7 @@ CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
 - (void)SiriPlayPauseHandler:(UITapGestureRecognizer *) sender
 {
-  PRINT_SIGNATURE();
+  CLog::Log(LOGDEBUG, "SiriPlayPauseHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateEnded:
@@ -1446,7 +1446,7 @@ CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
 - (void)remoteControlReceivedWithEvent:(UIEvent*)receivedEvent
 {
-  PRINT_SIGNATURE();
+  CLog::Log(LOGDEBUG, "remoteControlReceivedWithEvent");
   if (receivedEvent.type == UIEventTypeRemoteControl)
   {
     switch (receivedEvent.subtype)
