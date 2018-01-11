@@ -47,6 +47,7 @@ typedef struct FocusLayer
   void Reset()
   {
     infocus.type = "";
+    infocus.rect = CGRectZero;
     infocus.core = nullptr;
     infocus.view = nullptr;
     infocus.items.clear();

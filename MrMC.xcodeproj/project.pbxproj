@@ -1806,6 +1806,7 @@
 		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F52CC5F01713AAA200113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */; };
 		F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */; };
+		F52EE1CA200662B800074569 /* FocusLayerViewSlider.mm in Sources */ = {isa = PBXBuildFile; fileRef = F52EE1C8200662B800074569 /* FocusLayerViewSlider.mm */; };
 		F534EDA21E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */; };
 		F534EDA31E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */; };
 		F534EDA41E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */; };
@@ -5361,6 +5362,8 @@
 		F52CC5EF1713AAA200113454 /* DirectoryNodeGrouped.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGrouped.h; sourceTree = "<group>"; };
 		F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGrouped.cpp; sourceTree = "<group>"; };
 		F52CC6A91713BD2B00113454 /* DirectoryNodeGrouped.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGrouped.h; sourceTree = "<group>"; };
+		F52EE1C7200662B700074569 /* FocusLayerViewSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusLayerViewSlider.h; sourceTree = "<group>"; };
+		F52EE1C8200662B800074569 /* FocusLayerViewSlider.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FocusLayerViewSlider.mm; sourceTree = "<group>"; };
 		F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmbyViewCache.cpp; sourceTree = "<group>"; };
 		F534EDA11E8D8BD60009D1A1 /* EmbyViewCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbyViewCache.h; sourceTree = "<group>"; };
 		F536166E1B94E61200BD5776 /* sha1.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = sha1.hpp; sourceTree = "<group>"; };
@@ -9996,6 +9999,8 @@
 				F5D1429F1BAF31FB0075A95C /* MainController.mm */,
 				F5DF588A1FEF37C500AD4C8C /* FocusLayerView.h */,
 				F5DF58891FEF37C500AD4C8C /* FocusLayerView.mm */,
+				F52EE1C7200662B700074569 /* FocusLayerViewSlider.h */,
+				F52EE1C8200662B800074569 /* FocusLayerViewSlider.mm */,
 				F5D142A01BAF31FB0075A95C /* MainEAGLView.h */,
 				F5D142A11BAF31FB0075A95C /* MainEAGLView.mm */,
 				F5D142A41BAF31FB0075A95C /* MainKeyboard.h */,
@@ -13340,6 +13345,7 @@
 				F5D140D11BAF0B6D0075A95C /* GUIDialogPVRGroupManager.cpp in Sources */,
 				F5D140D21BAF0B6D0075A95C /* GUIDialogPVRGuideInfo.cpp in Sources */,
 				F5D140D31BAF0B6D0075A95C /* GUIDialogPVRGuideOSD.cpp in Sources */,
+				F52EE1CA200662B800074569 /* FocusLayerViewSlider.mm in Sources */,
 				F5D140D41BAF0B6D0075A95C /* GUIDialogPVRGuideSearch.cpp in Sources */,
 				F55BD3041D0A14ED0072FE3A /* PlexServices.cpp in Sources */,
 				F5D140D51BAF0B6D0075A95C /* GUIDialogPVRRecordingInfo.cpp in Sources */,

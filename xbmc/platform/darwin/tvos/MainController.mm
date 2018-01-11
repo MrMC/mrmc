@@ -43,6 +43,7 @@
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/MainEAGLView.h"
 #import "platform/darwin/tvos/FocusLayerView.h"
+#import "platform/darwin/tvos/FocusLayerViewSlider.h"
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/MainApplication.h"
 #import "platform/darwin/tvos/TVOSTopShelf.h"
@@ -1230,6 +1231,10 @@ CGRect swipeStartingParentViewRect;
   if ( [touch.view isKindOfClass:[KeyboardView class]] )
     return NO;
 
+  // same for FocusLayerViewSlider
+  if ( [touch.view isKindOfClass:[FocusLayerViewSlider class]] )
+    return NO;
+
   // important, this gestureRecognizer gets called before any other tap/pas/swipe handler
   // including shouldUpdateFocusInContext/didUpdateFocusInContext. So we can
   // setup the initial focusActionType to tap.
@@ -1242,11 +1247,14 @@ CGRect swipeStartingParentViewRect;
 // for a new press. return NO to prevent the gesture recognizer from seeing this press
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
 {
+  //PRINT_SIGNATURE();
   // Block the recognition of press gestures from other views
   if ( [press.responder isKindOfClass:[KeyboardView class]] )
     return NO;
+  //same for FocusLayerViewSlider
+  if ( [press.responder isKindOfClass:[FocusLayerViewSlider class]] )
+    return NO;
 
-  //PRINT_SIGNATURE();
   BOOL handled = YES;
   // important, this gestureRecognizer gets called before any other press handler
   // including shouldUpdateFocusInContext/didUpdateFocusInContext. So we can
@@ -1832,7 +1840,11 @@ CGRect debugView2;
       viewItem.rect.x1/m_screenScale, viewItem.rect.y1/m_screenScale,
       viewItem.rect.Width()/m_screenScale, viewItem.rect.Height()/m_screenScale);
 
-    FocusLayerView *focusLayerView = [[FocusLayerView alloc] initWithFrame:rect];
+    FocusLayerView *focusLayerView = nil;
+    //if (viewItem.type == "slider")
+    //  focusLayerView = [[FocusLayerViewSlider alloc] initWithFrame:rect];
+    //else
+      focusLayerView = [[FocusLayerView alloc] initWithFrame:rect];
     [focusLayerView setFocusable:true];
     if (viewItem.type == "window")
     {
@@ -1868,7 +1880,11 @@ CGRect debugView2;
         item.rect.x1/m_screenScale, item.rect.y1/m_screenScale,
         item.rect.Width()/m_screenScale, item.rect.Height()/m_screenScale);
 
-      FocusLayerView *focusLayerItem = [[FocusLayerView alloc] initWithFrame:rect];
+      FocusLayerView *focusLayerItem = nil;
+      //if (item.type == "slider")
+      //  focusLayerItem = [[FocusLayerViewSlider alloc] initWithFrame:rect];
+      //else
+        focusLayerItem = [[FocusLayerView alloc] initWithFrame:rect];
       [focusLayerItem setFocusable:true];
       focusLayerItem->core = item.control;
       [self.focusView addSubview:focusLayerItem];
