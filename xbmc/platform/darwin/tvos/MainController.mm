@@ -46,6 +46,7 @@
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/MainApplication.h"
 #import "platform/darwin/tvos/TVOSTopShelf.h"
+#import "platform/darwin/tvos/MainKeyboardView.h"
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
 #import "platform/MCRuntimeLib.h"
 #import "platform/MCRuntimeLibContext.h"
@@ -253,7 +254,7 @@ std::vector<FocusEngineCoreViews> m_viewItems;
   [self.focusViewBottom setViewVisable:false];
 
   self.focusView = [[FocusLayerView alloc] initWithFrame:focusRect];
-  [self.focusView setFocusable:false];
+  [self.focusView setFocusable:true];
   [self.focusView setViewVisable:false];
   // focus layer lives above m_glView
   [self.view insertSubview:self.focusView aboveSubview:m_glView];
@@ -662,20 +663,27 @@ std::vector<FocusEngineCoreViews> m_viewItems;
 - (void) activateKeyboard:(UIView *)view
 {
   //PRINT_SIGNATURE();
-  [self.view addSubview:view];
+  [self.focusView setFocusable:true];
+  [self.focusView addSubview:view];
   self.focusView.userInteractionEnabled = NO;
 }
 //--------------------------------------------------------------
 - (void) deactivateKeyboard:(UIView *)view
 {
   //PRINT_SIGNATURE();
+  // this will remove the native keyboad
+  [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
   [view removeFromSuperview];
+  [self.focusView setFocusable:false];
   self.focusView.userInteractionEnabled = YES;
   [self becomeFirstResponder];
+  [self setNeedsFocusUpdate];
+  [self updateFocusIfNeeded];
 }
 //--------------------------------------------------------------
 - (void) nativeKeyboardActive: (bool)active;
 {
+  //PRINT_SIGNATURE();
   m_nativeKeyboardActive = active;
 }
 
@@ -1218,6 +1226,10 @@ CGRect swipeStartingParentViewRect;
 // for a new touch. return NO to prevent the gesture recognizer from seeing this touch
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
+  // Block the recognition of tap gestures from other views
+  if ( [touch.view isKindOfClass:[KeyboardView class]] )
+    return NO;
+
   // important, this gestureRecognizer gets called before any other tap/pas/swipe handler
   // including shouldUpdateFocusInContext/didUpdateFocusInContext. So we can
   // setup the initial focusActionType to tap.
@@ -1230,6 +1242,10 @@ CGRect swipeStartingParentViewRect;
 // for a new press. return NO to prevent the gesture recognizer from seeing this press
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
 {
+  // Block the recognition of press gestures from other views
+  if ( [press.responder isKindOfClass:[KeyboardView class]] )
+    return NO;
+
   //PRINT_SIGNATURE();
   BOOL handled = YES;
   // important, this gestureRecognizer gets called before any other press handler
@@ -1502,6 +1518,11 @@ CGRect debugView2;
 {
   // The order of the items in the preferredFocusEnvironments array is the
   // priority that the focus engine will use when picking the focused item
+
+  // if native keyboard is up, we don't want to send any button presses to MrMC
+  if (m_nativeKeyboardActive)
+    return [super preferredFocusEnvironments];
+
   [self updateFocusLayerFocus];
   FocusLayerView *parentView = [self findParentView:_focusLayer.infocus.view];
   if (parentView && _focusLayer.infocus.view)
@@ -1616,11 +1637,6 @@ CGRect debugView2;
   // We can use this to handle slide out panels that are represented by hidden views
   // Above/Below/Right/Left (self.focusViewTop and friends) which are subviews the main focus View.
   // So detect the focus request, post direction message to core and cancel tvOS focus update.
-  CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: focusActionType %s", focusActionTypeNames[focusActionType]);
-
-  // previouslyFocusedItem may be nil if no item was focused.
-  CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: previous %p, next %p",
-    context.previouslyFocusedItem, context.nextFocusedItem);
 
   // check remote/siri idler
   // start/restart the idle timer
@@ -1631,6 +1647,12 @@ CGRect debugView2;
   [self startRemoteTimer];
   if (remoteIdleState)
     return NO;
+
+  CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: focusActionType %s", focusActionTypeNames[focusActionType]);
+
+  // previouslyFocusedItem may be nil if no item was focused.
+  CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: previous %p, next %p",
+    context.previouslyFocusedItem, context.nextFocusedItem);
 
   if (focusActionType == FocusActionSwipe)
   {
@@ -1900,7 +1922,7 @@ CGRect debugView2;
 //--------------------------------------------------------------
 - (void) updateFocusLayerMainThread
 {
-  if (m_animating)
+  if (m_animating && !m_nativeKeyboardActive)
     [self performSelectorOnMainThread:@selector(updateFocusLayer) withObject:nil  waitUntilDone:NO];
 }
 //--------------------------------------------------------------
@@ -1911,6 +1933,11 @@ CGRect debugView2;
   CFocusEngineHandler::GetInstance().GetCoreViews(views);
   if (hideViews || views.empty())
   {
+    // if views are empty, we need a focusable focusView
+    // or we unhook from the gestureRecognizer that traps
+    // UIPressTypeMenu and we will bounce out to tvOS home.
+    if (views.empty())
+      [self.focusView setFocusable:true];
     m_viewItems.clear();
     _focusLayer.Reset();
     [self clearSubViews];
@@ -1918,6 +1945,11 @@ CGRect debugView2;
   }
   else
   {
+    // revert enable of focus for focusView (see above)
+    // if we have build views, we need focusView set
+    // to canBecomeFocused == NO
+    if ( [self.focusView canBecomeFocused] == YES )
+      [self.focusView setFocusable:false];
     // this is deep 'is equals' comparison
     // has to match in order and content.
     if (CFocusEngineHandler::CoreViewsAreEqual(m_viewItems, views))

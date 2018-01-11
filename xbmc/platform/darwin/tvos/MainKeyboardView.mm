@@ -237,8 +237,6 @@ static CEvent keyboardFinishedEvent;
     _tvosKeyboard->invalidateCallback();
     _tvosKeyboard = nil;
   }
-  // give back the control to whoever
-  [_textField resignFirstResponder];
 
   // allways calld in the mainloop context
   // detach the keyboard view from our main controller
