@@ -472,7 +472,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
     }
     ++i;
   }
-  CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
+  //CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
 }
 
 void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)

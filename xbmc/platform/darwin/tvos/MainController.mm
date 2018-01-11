@@ -1248,7 +1248,7 @@ CGRect swipeStartingParentViewRect;
   // important, this gestureRecognizer gets called before any other tap/pas/swipe handler
   // including shouldUpdateFocusInContext/didUpdateFocusInContext. So we can
   // setup the initial focusActionType to tap.
-  CLog::Log(LOGDEBUG, "shouldReceiveTouch:FocusActionTap");
+  CLog::Log(LOGDEBUG, "shouldReceiveTouch:FocusActionTap, %ld", (long)gestureRecognizer.state);
   focusActionType = FocusActionTap;
   return YES;
 }
@@ -1269,7 +1269,7 @@ CGRect swipeStartingParentViewRect;
   // important, this gestureRecognizer gets called before any other press handler
   // including shouldUpdateFocusInContext/didUpdateFocusInContext. So we can
   // setup the initial focusActionType to tap.
-  CLog::Log(LOGDEBUG, "shouldReceivePress:FocusActionTap");
+  CLog::Log(LOGDEBUG, "shouldReceivePress:FocusActionTap, %ld", (long)gestureRecognizer.state);
   focusActionType = FocusActionTap;
   switch (press.type)
   {
@@ -1329,6 +1329,9 @@ CGRect swipeStartingParentViewRect;
               swipeStartingParentViewRect.origin.y + swipeStartingParentViewRect.size.height);
           }
           break;
+        case UIGestureRecognizerStateCancelled:
+          CLog::Log(LOGDEBUG, "SiriSwipeHandler:StateCancelled");
+          break;
         default:
           break;
       }
@@ -1359,6 +1362,9 @@ CGRect swipeStartingParentViewRect;
               swipeStartingParentViewRect.origin.y + swipeStartingParentViewRect.size.height);
           }
           break;
+        case UIGestureRecognizerStateCancelled:
+          CLog::Log(LOGDEBUG, "SiriPanHandler:StateCancelled");
+          break;
         default:
           break;
       }
@@ -1380,10 +1386,10 @@ CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
 - (void)SiriMenuHandler:(UITapGestureRecognizer *)sender
 {
-  CLog::Log(LOGDEBUG, "SiriMenuHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "SiriMenuHandler:StateEnded");
       if (g_windowManager.GetFocusedWindow() == WINDOW_FULLSCREEN_VIDEO)
       {
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK))
@@ -1412,14 +1418,15 @@ CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
 - (void)SiriLongSelectHandler:(UITapGestureRecognizer *)sender
 {
-  CLog::Log(LOGDEBUG, "SiriLongSelectHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
+      CLog::Log(LOGDEBUG, "SiriLongSelectHandler:StateBegan");
       self.m_holdCounter = 0;
       self.m_holdTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(SiriSelectHoldHandler) userInfo:nil repeats:YES];
       break;
     case UIGestureRecognizerStateChanged:
+      CLog::Log(LOGDEBUG, "SiriLongSelectHandler:StateChanged");
       if (self.m_holdCounter > 1)
       {
         [self.m_holdTimer invalidate];
@@ -1427,11 +1434,15 @@ CGRect swipeStartingParentViewRect;
       }
       break;
     case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "SiriLongSelectHandler:StateEnded");
       [self.m_holdTimer invalidate];
       if (self.m_holdCounter < 1)
         [self sendButtonPressed:SiriRemote_CenterClick];
       // start remote timeout
       [self startRemoteTimer];
+      break;
+    case UIGestureRecognizerStateCancelled:
+      CLog::Log(LOGDEBUG, "SiriLongSelectHandler:StateCancelled");
       break;
     default:
       break;
@@ -1440,11 +1451,14 @@ CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
 - (void)SiriSelectHandler:(UITapGestureRecognizer *)sender
 {
-  CLog::Log(LOGDEBUG, "SiriSelectHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "SiriSelectHandler:StateEnded");
       [self sendButtonPressed:SiriRemote_CenterClick];
+      break;
+    case UIGestureRecognizerStateCancelled:
+      CLog::Log(LOGDEBUG, "SiriSelectHandler:StateCancelled");
       break;
     default:
       break;
@@ -1453,10 +1467,10 @@ CGRect swipeStartingParentViewRect;
 //--------------------------------------------------------------
 - (void)SiriPlayPauseHandler:(UITapGestureRecognizer *) sender
 {
-  CLog::Log(LOGDEBUG, "SiriPlayPauseHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "SiriPlayPauseHandler:StateEnded");
       [self sendButtonPressed:SiriRemote_PausePlayClick];
       // start remote timeout
       [self startRemoteTimer];
