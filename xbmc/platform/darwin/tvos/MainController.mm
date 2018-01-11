@@ -1131,10 +1131,16 @@ std::vector<FocusEngineCoreViews> m_viewItems;
   menuRecognizer.delegate  = self;
   [self.focusView addGestureRecognizer: menuRecognizer];
   
-  auto selectRecognizer = [[UILongPressGestureRecognizer alloc]
+  auto longSelectRecognizer = [[UILongPressGestureRecognizer alloc]
+                           initWithTarget: self action: @selector(SiriLongSelectHandler:)];
+  longSelectRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
+  longSelectRecognizer.minimumPressDuration = 0.001;
+  longSelectRecognizer.delegate = self;
+  [self.focusView addGestureRecognizer: longSelectRecognizer];
+  
+  auto selectRecognizer = [[UITapGestureRecognizer alloc]
     initWithTarget: self action: @selector(SiriSelectHandler:)];
   selectRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
-  selectRecognizer.minimumPressDuration = 0.00001;
   selectRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: selectRecognizer];
 
@@ -1188,6 +1194,10 @@ std::vector<FocusEngineCoreViews> m_viewItems;
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
   if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && ([otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] || [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]))
+  {
+    return YES;
+  }
+  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]])
   {
     return YES;
   }
@@ -1400,9 +1410,9 @@ CGRect swipeStartingParentViewRect;
   [self sendButtonPressed:SiriRemote_CenterHold];
 }
 //--------------------------------------------------------------
-- (void)SiriSelectHandler:(UITapGestureRecognizer *)sender
+- (void)SiriLongSelectHandler:(UITapGestureRecognizer *)sender
 {
-  CLog::Log(LOGDEBUG, "SiriSelectHandler");
+  CLog::Log(LOGDEBUG, "SiriLongSelectHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
@@ -1422,6 +1432,19 @@ CGRect swipeStartingParentViewRect;
         [self sendButtonPressed:SiriRemote_CenterClick];
       // start remote timeout
       [self startRemoteTimer];
+      break;
+    default:
+      break;
+  }
+}
+//--------------------------------------------------------------
+- (void)SiriSelectHandler:(UITapGestureRecognizer *)sender
+{
+  CLog::Log(LOGDEBUG, "SiriSelectHandler");
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateEnded:
+      [self sendButtonPressed:SiriRemote_CenterClick];
       break;
     default:
       break;
