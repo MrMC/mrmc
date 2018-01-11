@@ -1134,7 +1134,7 @@ std::vector<FocusEngineCoreViews> m_viewItems;
   auto selectRecognizer = [[UILongPressGestureRecognizer alloc]
     initWithTarget: self action: @selector(SiriSelectHandler:)];
   selectRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
-  selectRecognizer.minimumPressDuration = 0.001;
+  selectRecognizer.minimumPressDuration = 0.00001;
   selectRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: selectRecognizer];
 
