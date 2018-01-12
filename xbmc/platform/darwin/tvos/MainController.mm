@@ -675,7 +675,7 @@ std::vector<FocusEngineCoreViews> m_viewItems;
   // this will remove the native keyboad
   [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
   [view removeFromSuperview];
-  [self.focusView setFocusable:false];
+  // keep self.focusView focusable
   self.focusView.userInteractionEnabled = YES;
   [self becomeFirstResponder];
   [self setNeedsFocusUpdate];
@@ -1281,7 +1281,10 @@ CGRect swipeStartingParentViewRect;
       //  b) if not, let it pass to us.
       int focusedWindowID = g_windowManager.GetFocusedWindow();
       if (focusedWindowID == WINDOW_HOME)
+      {
+        CLog::Log(LOGDEBUG, "shouldReceivePress:focusedWindowID == WINDOW_HOME");
         handled = NO;
+      }
       break;
     }
 

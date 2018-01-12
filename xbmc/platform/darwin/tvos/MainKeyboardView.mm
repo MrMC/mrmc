@@ -185,6 +185,7 @@ static CEvent keyboardFinishedEvent;
   //PRINT_SIGNATURE();
   // when user hits 'done' button
   _confirmed = YES;
+  [_textField resignFirstResponder];
   return YES;
 }
 
@@ -237,6 +238,8 @@ static CEvent keyboardFinishedEvent;
     _tvosKeyboard->invalidateCallback();
     _tvosKeyboard = nil;
   }
+  // give back the control to whoever
+  [_textField resignFirstResponder];
 
   // allways calld in the mainloop context
   // detach the keyboard view from our main controller
