@@ -1554,7 +1554,12 @@ CGRect swipeStartingParentViewRect;
       return nil;
   }
   if (@available(tvOS 11.0, *))
-    return UIFocusSoundIdentifierDefault;
+  {
+    if (CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN) == "resource.uisounds.tvos")
+      return UIFocusSoundIdentifierDefault;
+    else
+      return UIFocusSoundIdentifierNone;
+  }
   else
     return nil;
 }
