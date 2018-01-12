@@ -930,7 +930,7 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
       if (*platform == "linux"
 #if defined(TARGET_FREEBSD)
         || *platform == "freebsd"
-#endif
+#endif // endif TARGET_FREEBSD
         )
 #elif defined(TARGET_DARWIN_OSX)
 // Remove this after Frodo and add an architecture filter
@@ -939,8 +939,12 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
       if (*platform == "osx64" || *platform == "osx")
 #else
       if (*platform == "osx32" || *platform == "osx")
-#endif
+#endif // endif __x86_64__
 #elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_TVOS)
+        if (*platform == "tvos")
+          return true;
+#endif
       if (*platform == "ios")
 #endif
         return true;
