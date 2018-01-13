@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
   <section id="appearance">
+    <category id="lookandfeel" label="166" help="36102">
+      <group id="1">
+        <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
+          <level>0</level>
+          <default>resource.uisounds.tvos</default>
+          <constraints>
+            <addontype>kodi.resource.uisounds</addontype>
+            <allowempty>true</allowempty>
+          </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="button" format="addon">
+            <show more="true" details="true">installed</show>
+          </control>
+        </setting>
+      </group>
+    </category>
     <category id="screensaver">
       <visible>false</visible>
       <group id="1">
