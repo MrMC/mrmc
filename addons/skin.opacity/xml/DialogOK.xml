@@ -8,7 +8,7 @@
 			<height>390</height>
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<visible>Window.IsTopMostModal(okdialog)</visible>
+			<visible>Window.IsTopMostModal(okdialog) | Window.IsTopMostModal(gamepadinput)</visible>
 			<include>Visible_Fade</include>
 			<width>915</width>
 			<include content="DialogBackgroundCommons">
