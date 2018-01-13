@@ -1737,8 +1737,9 @@ CGRect debugView2;
       nextFocusedItemRect.origin.x + nextFocusedItemRect.size.width,
       nextFocusedItemRect.origin.y + nextFocusedItemRect.size.height);
 
-    if (!CGRectContainsRect(swipeStartingParentViewRect, nextFocusedItemRect))
+    if (!CGRectIntersectsRect(swipeStartingParentViewRect, nextFocusedItemRect))
     {
+      swipeNoMore = true;
       if (context.nextFocusedItem == self.focusViewTop ||
           context.nextFocusedItem == self.focusViewLeft ||
           context.nextFocusedItem == self.focusViewRight ||
@@ -1750,7 +1751,6 @@ CGRect debugView2;
       else
       {
         CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: Not in same parent view");
-        swipeNoMore = true;
         switch (context.focusHeading)
         {
           case UIFocusHeadingUp:
@@ -1775,44 +1775,36 @@ CGRect debugView2;
   switch (context.focusHeading)
   {
     case UIFocusHeadingUp:
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingUp");
       if (context.nextFocusedItem == self.focusViewTop)
       {
         [self sendButtonPressed:SiriRemote_UpTap];
-        //CApplicationMessenger::GetInstance().PostMsg(
-        //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_UP)));
         return NO;
       }
-      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingUp");
       break;
     case UIFocusHeadingDown:
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingDown");
       if (context.nextFocusedItem == self.focusViewBottom)
       {
         [self sendButtonPressed:SiriRemote_DownTap];
-        //CApplicationMessenger::GetInstance().PostMsg(
-        //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_DOWN)));
         return NO;
       }
-      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingDown");
       break;
     case UIFocusHeadingLeft:
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingLeft");
       if (context.nextFocusedItem == self.focusViewLeft)
       {
         [self sendButtonPressed:SiriRemote_LeftTap];
-        //CApplicationMessenger::GetInstance().PostMsg(
-        //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_LEFT)));
         return NO;
       }
-      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingLeft");
       break;
     case UIFocusHeadingRight:
+      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingRight");
       if (context.nextFocusedItem == self.focusViewRight)
       {
         [self sendButtonPressed:SiriRemote_RightTap];
-        //CApplicationMessenger::GetInstance().PostMsg(
-        //  TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MOVE_RIGHT)));
         return NO;
       }
-      CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext:UIFocusHeadingRight");
       break;
     case UIFocusHeadingNone:
     case UIFocusHeadingNext:
