@@ -395,64 +395,6 @@ void CFocusEngineHandler::GetCoreViews(std::vector<FocusEngineCoreViews> &views)
     views = m_focus.views;
 }
 
-bool CFocusEngineHandler::CoreViewsAreEqual(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
-{
-  if (views1.size() != views2.size())
-    return false;
-
-  for (size_t indx = 0; indx < views1.size(); ++indx)
-  {
-    // sizes are the same, so we have to compare views
-    if (!views1[indx].IsEqual(views2[indx]))
-      return false;
-  }
-
-  return true;
-}
-
-bool CFocusEngineHandler::CoreViewsHaveSameSize(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
-{
-  if (views1.size() != views2.size())
-    return false;
-
-  for (size_t indx = 0; indx < views1.size(); ++indx)
-  {
-    // sizes are the same, so we have to compare views
-    if (!views1[indx].IsEqualSize(views2[indx]))
-      return false;
-  }
-
-  return true;
-}
-
-bool CFocusEngineHandler::CoreViewsHaveSameControls(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2)
-{
-  if (views1.size() != views2.size())
-    return false;
-
-  // sizes are the same, so we have to compare views
-  for (size_t indx = 0; indx < views1.size(); ++indx)
-  {
-    // core always has the focused control last in any list
-    // which will change the order when focus changes.
-    // so we have to search for the matching control.
-    auto foundView = std::find_if(views2.begin(), views2.end(),
-        [&](FocusEngineCoreViews view)
-        { return views1[indx].control == view.control;
-    });
-    // grr, did not find matching control in view compare
-    // so punt, while size is same, controls are different.
-    if (foundView == views2.end())
-      return false;
-
-    // now we can check if items match.
-    if (!views1[indx].IsEqualControls(*foundView))
-      return false;
-  }
-
-  return true;
-}
-
 void CFocusEngineHandler::GetGUIFocusabilityItems(std::vector<GUIFocusabilityItem> &items)
 {
   // skip finding focused window, use current

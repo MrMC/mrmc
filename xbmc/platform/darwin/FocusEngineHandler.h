@@ -36,26 +36,6 @@ typedef enum FocusEngineState
 
 typedef struct FocusEngineCoreItem
 {
-  bool IsEqual(FocusEngineCoreItem &item)
-  {
-    if (!IsEqualRect(item))
-      return false;
-    if (!IsEqualControl(item))
-      return false;
-    return true;
-  }
-  bool IsEqualRect(FocusEngineCoreItem &item)
-  {
-    if (rect != item.rect)
-      return false;
-    return true;
-  }
-  bool IsEqualControl(FocusEngineCoreItem &item)
-  {
-    if (control != item.control)
-      return false;
-    return true;
-  }
   CRect rect;
   std::string type;
   CGUIControl *control = nullptr;
@@ -63,68 +43,6 @@ typedef struct FocusEngineCoreItem
 
 typedef struct FocusEngineCoreViews
 {
-  bool IsEqual(FocusEngineCoreViews &view)
-  {
-    if (!IsEqualSize(view))
-      return false;
-    if (!IsEqualControls(view))
-      return false;
-    if (!IsEqualRect(view))
-      return false;
-    return true;
-  }
-  bool IsEqualSize(FocusEngineCoreViews &view)
-  {
-    if (items.size() != view.items.size())
-      return false;
-    return true;
-  }
-  bool IsEqualRect(FocusEngineCoreViews &view)
-  {
-    if (rect != view.rect)
-      return false;
-    for (size_t indx = 0; indx < items.size(); ++indx)
-    {
-      // core always has the focused control last in any list
-      // which will change the order when focus changes.
-      // so we have to search for the matching control.
-      auto foundItem = std::find_if(view.items.begin(), view.items.end(),
-          [&](FocusEngineCoreItem item)
-          { return items[indx].control == item.control;
-      });
-      // grr, did not find matching control in view compare
-      // so punt, while size is same, controls are different.
-      if (foundItem == view.items.end())
-        return false;
-
-      if (items[indx].rect != (*foundItem).rect)
-        return false;
-    }
-    return true;
-  }
-  bool IsEqualControls(FocusEngineCoreViews &view)
-  {
-    if (control != view.control)
-      return false;
-    if (items.size() != view.items.size())
-      return false;
-
-    for (size_t indx = 0; indx < items.size(); ++indx)
-    {
-      // core always has the focused control last in any list
-      // which will change the order when focus changes.
-      // so we have to search for the matching control.
-      auto foundItem = std::find_if(view.items.begin(), view.items.end(),
-          [&](FocusEngineCoreItem item)
-          { return items[indx].control == item.control;
-      });
-      // grr, did not find matching control in view compare
-      // so punt, while size is same, controls are different.
-      if (foundItem == view.items.end())
-        return false;
-    }
-    return true;
-  }
   CRect rect;
   std::string type;
   CGUIControl *control = nullptr;
@@ -172,9 +90,6 @@ class CFocusEngineHandler
   bool          ShowVisibleRects();
   ORIENTATION   GetFocusOrientation();
   void          GetCoreViews(std::vector<FocusEngineCoreViews> &views);
-  static bool   CoreViewsAreEqual(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
-  static bool   CoreViewsHaveSameSize(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
-  static bool   CoreViewsHaveSameControls(std::vector<FocusEngineCoreViews> &views1, std::vector<FocusEngineCoreViews> &views2);
   void          GetGUIFocusabilityItems(std::vector<GUIFocusabilityItem> &items);
   void          SetGUIFocusabilityItems(const CFocusabilityTracker &focusabilityTracker);
 
