@@ -172,6 +172,12 @@ bool CGUIDialogGamepad::OnMessage(CGUIMessage& message)
   return CGUIDialogBoxBase::OnMessage(message);
 }
 
+void CGUIDialogGamepad::Render()
+{
+  CGUIDialog::Render();
+  AppendFocusableTracker(this);
+}
+
 // \brief Show gamepad keypad and replace aTextString with user input.
 // \param aTextString String to preload into the keyboard accumulator. Overwritten with user input if return=true.
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.

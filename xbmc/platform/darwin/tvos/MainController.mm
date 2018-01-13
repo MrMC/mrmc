@@ -1932,7 +1932,7 @@ CGRect debugView2;
 #endif
       focusLayerView = [[FocusLayerView alloc] initWithFrame:view.rect];
     [focusLayerView setFocusable:false];
-    if (view.type == "window")
+    if (view.type == "window" || view.type == "dialog")
     {
       [focusLayerView setFocusable:true];
       [focusLayerView setViewVisable:false];

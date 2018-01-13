@@ -506,7 +506,7 @@ void CFocusEngineHandler::UpdateFocusability()
         FocusEngineCoreViews view;
         view.rect = (*it).renderRect;
         view.type = TranslateControlType((*it).control, (*it).parentView);
-        if (items.empty() && view.type != "window")
+        if (items.empty() && (view.type != "dialog" && view.type != "window"))
           continue;
 #if false
         for (auto &item : items)

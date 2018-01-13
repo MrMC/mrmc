@@ -29,6 +29,7 @@ public:
   CGUIDialogGamepad(void);
   virtual ~CGUIDialogGamepad(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void Render();
   bool IsCanceled() const;
   std::string m_strUserInput;
   std::string m_strPassword;
