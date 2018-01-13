@@ -561,14 +561,11 @@ void CFocusEngineHandler::UpdateFocusability()
 #endif
       if ((*it).control == (*it).parentView)
       {
-        // remove view that are same size as bounds
-        // and do not have any items
-        //if (items.empty() && focusabilityItem.renderRect == boundsRect)
-        //  continue;
-
         FocusEngineCoreViews view;
         view.rect = (*it).renderRect;
         view.type = TranslateControlType((*it).control, (*it).parentView);
+        if (items.empty() && view.type != "window")
+          continue;
 #if false
         for (auto &item : items)
         {

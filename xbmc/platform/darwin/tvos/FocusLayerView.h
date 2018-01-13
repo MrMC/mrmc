@@ -27,6 +27,26 @@
 
 typedef struct FocusLayerItem
 {
+  bool IsEqual(FocusLayerItem &item)
+  {
+    if (!IsEqualRect(item))
+      return false;
+    if (!IsEqualCore(item))
+      return false;
+    return true;
+  }
+  bool IsEqualRect(FocusLayerItem &item)
+  {
+    if (!CGRectEqualToRect(rect, item.rect))
+      return false;
+    return true;
+  }
+  bool IsEqualCore(FocusLayerItem &item)
+  {
+    if (core != item.core)
+      return false;
+    return true;
+  }
   void *core;
   CGRect rect;
   std::string type;
@@ -35,6 +55,38 @@ typedef struct FocusLayerItem
 
 typedef struct FocusLayerControl
 {
+  bool IsEqual(FocusLayerControl &view)
+  {
+    if (items.size() != view.items.size())
+      return false;
+    if (!IsEqualRect(view))
+      return false;
+    if (!IsEqualCore(view))
+      return false;
+    return true;
+  }
+  bool IsEqualRect(FocusLayerControl &view)
+  {
+    if (!CGRectEqualToRect(rect, view.rect))
+      return false;
+    for (size_t indx = 0; indx < items.size(); ++indx)
+    {
+      if (!CGRectEqualToRect(items[indx].rect, view.items[indx].rect))
+        return false;
+    }
+    return true;
+  }
+  bool IsEqualCore(FocusLayerControl &view)
+  {
+    if (core != view.core)
+      return false;
+    for (size_t indx = 0; indx < items.size(); ++indx)
+    {
+      if (items[indx].core != view.items[indx].core)
+        return false;
+    }
+    return true;
+  }
   void *core;
   CGRect rect;
   std::string type;
@@ -59,6 +111,8 @@ typedef struct FocusLayer
   // array of all views attached to focus layer
   std::vector<FocusLayerControl> views;
 } FocusLayer;
+
+bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector<FocusLayerControl> &views2);
 
 @interface FocusLayerView : UIView
 {

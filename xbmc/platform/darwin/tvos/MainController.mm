@@ -22,6 +22,9 @@
  *
  */
 
+#define slidertesting 0
+#define dumpviewsonload 0
+
 #import "system.h"
 
 #import "Application.h"
@@ -149,11 +152,6 @@ MainController *g_xbmcController;
 @synthesize m_remoteIdleState;
 @synthesize m_remoteIdleTimeout;
 @synthesize m_enableRemoteIdle;
-
-// careful, this is like a global for all MainController classes
-// we only have one so it does not matter and keeps from exposing
-// FocusEngineHandler.h all over the place.
-std::vector<FocusEngineCoreViews> m_viewItems;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -1261,9 +1259,20 @@ CGRect swipeStartingParentViewRect;
   // Block the recognition of press gestures from other views
   if ( [press.responder isKindOfClass:[KeyboardView class]] )
     return NO;
-  //same for FocusLayerViewSlider
+  // same for FocusLayerViewSlider
   if ( [press.responder isKindOfClass:[FocusLayerViewSlider class]] )
-    return NO;
+  {
+    switch (press.type)
+    {
+      // we handle those here
+      case UIPressTypeMenu:
+      case UIPressTypeSelect:
+      case UIPressTypePlayPause:
+        break;
+      default:
+      return NO;
+    }
+  }
 
   BOOL handled = YES;
   // important, this gestureRecognizer gets called before any other press handler
@@ -1412,7 +1421,7 @@ CGRect swipeStartingParentViewRect;
   }
 }
 //--------------------------------------------------------------
-- (void)SiriSelectHoldHandler
+- (void)SiriLongSelectHoldHandler
 {
   self.m_holdCounter++;
   [self.m_holdTimer invalidate];
@@ -1426,7 +1435,7 @@ CGRect swipeStartingParentViewRect;
     case UIGestureRecognizerStateBegan:
       CLog::Log(LOGDEBUG, "SiriLongSelectHandler:StateBegan");
       self.m_holdCounter = 0;
-      self.m_holdTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(SiriSelectHoldHandler) userInfo:nil repeats:YES];
+      self.m_holdTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(SiriLongSelectHoldHandler) userInfo:nil repeats:YES];
       break;
     case UIGestureRecognizerStateChanged:
       CLog::Log(LOGDEBUG, "SiriLongSelectHandler:StateChanged");
@@ -1576,7 +1585,7 @@ CGRect debugView2;
   if (m_nativeKeyboardActive)
     return [super preferredFocusEnvironments];
 
-  [self updateFocusLayerFocus];
+  [self updateFocusLayerInFocus];
   FocusLayerView *parentView = [self findParentView:_focusLayer.infocus.view];
   if (parentView && _focusLayer.infocus.view)
   {
@@ -1699,6 +1708,9 @@ CGRect debugView2;
   bool remoteIdleState = m_remoteIdleState;
   [self startRemoteTimer];
   if (remoteIdleState)
+    return NO;
+
+  if ( [context.previouslyFocusedItem isKindOfClass:[FocusLayerViewSlider class]] )
     return NO;
 
   CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: focusActionType %s", focusActionTypeNames[focusActionType]);
@@ -1859,102 +1871,138 @@ CGRect debugView2;
     }
   }
 }
-//--------------------------------------------------------------
-- (void) buildFocusLayerFromCore
-{
-  bool debug = false;
-  // build up new focusLayer from core items.
-  [self clearSubViews];
 
-  if (debug)
-  {
-    if (!m_viewItems.empty())
-      CLog::Log(LOGDEBUG, "buildFocusLayerFromCore: begin");
-  }
-  int viewCount = 0;
-  std::vector<FocusLayerControl> focusViews;
+//--------------------------------------------------------------
+- (void) initFocusLayerViews:(std::vector<FocusLayerControl>&)focusViews
+  withCoreViews:(std::vector<FocusEngineCoreViews>&)coreViews
+{
   // build through our views in reverse order (so that last (window) is first)
-  for (auto viewIt = m_viewItems.rbegin(); viewIt != m_viewItems.rend(); ++viewIt)
+  for (auto viewIt = coreViews.rbegin(); viewIt != coreViews.rend(); ++viewIt)
   {
     auto &viewItem = *viewIt;
-    if (viewItem.items.empty() && viewItem.type != "window")
-      continue;
-
     // m_glView.bounds does not have screen scaling
     CGRect rect = CGRectMake(
       viewItem.rect.x1/m_screenScale, viewItem.rect.y1/m_screenScale,
       viewItem.rect.Width()/m_screenScale, viewItem.rect.Height()/m_screenScale);
 
-    FocusLayerView *focusLayerView = nil;
-    //if (viewItem.type == "slider")
-    //  focusLayerView = [[FocusLayerViewSlider alloc] initWithFrame:rect];
-    //else
-      focusLayerView = [[FocusLayerView alloc] initWithFrame:rect];
-    [focusLayerView setFocusable:true];
-    if (viewItem.type == "window")
-    {
-      [focusLayerView setFocusable:true];
-      [focusLayerView setViewVisable:false];
-    }
-
-    focusLayerView->core = viewItem.control;
-    [self.focusView addSubview:focusLayerView];
-
     FocusLayerControl focusView;
     focusView.rect = rect;
     focusView.type = viewItem.type;
     focusView.core = viewItem.control;
-    focusView.view = focusLayerView;
-    if (debug)
-    {
-      CLog::Log(LOGDEBUG, "buildFocusLayerFromCore: %d, %s, %f, %f, %f, %f",
-        viewCount, viewItem.type.c_str(),
-        viewItem.rect.x1, viewItem.rect.y1, viewItem.rect.x2, viewItem.rect.y2);
-    }
+    focusView.view = nil;
     for (auto itemsIt = viewItem.items.begin(); itemsIt != viewItem.items.end(); ++itemsIt)
     {
       auto &item = *itemsIt;
-      if (debug)
-      {
-        CLog::Log(LOGDEBUG, "buildFocusLayerFromCore: %d, %s, %f, %f, %f, %f",
-          viewCount, item.type.c_str(),
-          item.rect.x1, item.rect.y1, item.rect.x2, item.rect.y2);
-      }
       // m_glView.bounds does not have screen scaling
       CGRect rect = CGRectMake(
         item.rect.x1/m_screenScale, item.rect.y1/m_screenScale,
         item.rect.Width()/m_screenScale, item.rect.Height()/m_screenScale);
 
-      FocusLayerView *focusLayerItem = nil;
-      //if (item.type == "slider")
-      //  focusLayerItem = [[FocusLayerViewSlider alloc] initWithFrame:rect];
-      //else
-        focusLayerItem = [[FocusLayerView alloc] initWithFrame:rect];
-      [focusLayerItem setFocusable:true];
-      focusLayerItem->core = item.control;
-      [self.focusView addSubview:focusLayerItem];
-
-      FocusLayerItem control;
-      control.rect = rect;
-      control.type = item.type;
-      control.core = item.control;
-      control.view = focusLayerItem;
-      focusView.items.push_back(control);
+      FocusLayerItem focusItem;
+      focusItem.rect = rect;
+      focusItem.type = item.type;
+      focusItem.core = item.control;
+      focusItem.view = nil;
+      focusView.items.push_back(focusItem);
     }
-
     focusViews.push_back(focusView);
+  }
+}
+
+//--------------------------------------------------------------
+- (void) loadFocusLayerViews:(std::vector<FocusLayerControl>&)focusViews
+{
+  // build up new focusLayer from core items.
+  [self clearSubViews];
+
+#if dumpviewsonload
+  if (!focusViews.empty())
+    CLog::Log(LOGDEBUG, "updateFocusLayer: begin");
+#endif
+  int viewCount = 0;
+  for (auto viewsIt = focusViews.begin(); viewsIt != focusViews.end(); ++viewsIt)
+  {
+    auto &view = *viewsIt;
+
+    FocusLayerView *focusLayerView = nil;
+#if slidertesting
+    if (view.type == "slider")
+      focusLayerView = [[FocusLayerViewSlider alloc] initWithFrame:view.rect];
+    else
+#endif
+      focusLayerView = [[FocusLayerView alloc] initWithFrame:view.rect];
+    [focusLayerView setFocusable:false];
+    if (view.type == "window")
+    {
+      [focusLayerView setFocusable:true];
+      [focusLayerView setViewVisable:false];
+    }
+    focusLayerView->core = view.core;
+    view.view = focusLayerView;
+    [self.focusView addSubview:focusLayerView];
+#if dumpviewsonload
+    CLog::Log(LOGDEBUG, "updateFocusLayer: %d, %s, %f, %f, %f, %f",
+      viewCount, view.type.c_str(),
+      view.rect.origin.x, view.rect.origin.y,
+      view.rect.origin.x + view.rect.size.width, view.rect.origin.y + view.rect.size.height);
+#endif
+    for (auto itemsIt = view.items.begin(); itemsIt != view.items.end(); ++itemsIt)
+    {
+      auto &item = *itemsIt;
+      FocusLayerView *focusLayerItem = nil;
+#if slidertesting
+      if (item.type == "slider")
+        focusLayerItem = [[FocusLayerViewSlider alloc] initWithFrame:item.rect];
+      else
+#endif
+        focusLayerItem = [[FocusLayerView alloc] initWithFrame:item.rect];
+      [focusLayerItem setFocusable:true];
+      focusLayerItem->core = item.core;
+      item.view = focusLayerItem;
+      [self.focusView addSubview:focusLayerItem];
+#if dumpviewsonload
+      CLog::Log(LOGDEBUG, "updateFocusLayer: %d, %s, %f, %f, %f, %f",
+        viewCount, item.type.c_str(),
+        item.rect.origin.x, item.rect.origin.y,
+        item.rect.origin.x + item.rect.size.width, item.rect.origin.y + item.rect.size.height);
+#endif
+    }
     viewCount++;
   }
   _focusLayer.views = focusViews;
-  [self updateFocusLayerFocus];
+  [self updateFocusLayerInFocus];
 }
 //--------------------------------------------------------------
-- (void) updateFocusLayerFocus
+- (void) updateFocusLayerInFocus
 {
   FocusLayerControl preferredItem;
   // default to focusView and in focus control
   preferredItem.view = self.focusView;
   preferredItem.core = CFocusEngineHandler::GetInstance().GetFocusControl();
+  if (preferredItem.core)
+  {
+    CGUIControl *guiControlWindow = (CGUIControl*)preferredItem.core;
+    if (guiControlWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+    {
+      if (g_windowManager.IsWindowVisible(WINDOW_DIALOG_SEEK_BAR))
+      {
+        for (size_t indx = 0; indx < _focusLayer.views[0].items.size(); ++indx)
+        {
+          CGUIControl *guiControl = (CGUIControl*)_focusLayer.views[0].items[indx].core;
+          if (guiControl->GetControlType() == CGUIControl::GUICONTROL_SLIDER)
+          {
+            preferredItem.type = _focusLayer.views[0].items[indx].type;
+            preferredItem.rect = _focusLayer.views[0].items[indx].rect;
+            preferredItem.view = _focusLayer.views[0].items[indx].view;
+            preferredItem.core = _focusLayer.views[0].items[indx].core;
+            _focusLayer.infocus = preferredItem;
+            return;
+          }
+        }
+      }
+    }
+  }
+
   bool continueLooping = true;
   for (size_t andx = 0; andx < _focusLayer.views.size() && continueLooping; ++andx)
   {
@@ -1968,6 +2016,7 @@ CGRect debugView2;
       if (preferredItem.core == _focusLayer.views[andx].items[bndx].core)
       {
         preferredItem.type = _focusLayer.views[andx].items[bndx].type;
+        preferredItem.rect = _focusLayer.views[andx].items[bndx].rect;
         preferredItem.view = _focusLayer.views[andx].items[bndx].view;
         // we don't really have to set core, but do it for completeness
         preferredItem.core = (CGUIControl*)_focusLayer.views[andx].items[bndx].core;
@@ -1990,64 +2039,39 @@ CGRect debugView2;
 - (void) updateFocusLayer
 {
   bool hideViews = CFocusEngineHandler::GetInstance().NeedToHideViews();
-  std::vector<FocusEngineCoreViews> views;
-  CFocusEngineHandler::GetInstance().GetCoreViews(views);
-  if (hideViews || views.empty())
+  std::vector<FocusEngineCoreViews> coreViews;
+  CFocusEngineHandler::GetInstance().GetCoreViews(coreViews);
+  if (hideViews || coreViews.empty())
   {
     // if views are empty, we need a focusable focusView
     // or we unhook from the gestureRecognizer that traps
     // UIPressTypeMenu and we will bounce out to tvOS home.
-    if (views.empty())
+    if (coreViews.empty())
       [self.focusView setFocusable:true];
-    m_viewItems.clear();
     _focusLayer.Reset();
     [self clearSubViews];
-    [self updateFocusLayerFocus];
+    [self updateFocusLayerInFocus];
   }
   else
   {
     // revert enable of focus for focusView (see above)
-    // if we have build views, we need focusView set
+    // if we have built views, we need focusView set
     // to canBecomeFocused == NO
     if ( [self.focusView canBecomeFocused] == YES )
       [self.focusView setFocusable:false];
     // this is deep 'is equals' comparison
     // has to match in order and content.
-    if (CFocusEngineHandler::CoreViewsAreEqual(m_viewItems, views))
+    std::vector<FocusLayerControl> focusViews;
+    [self initFocusLayerViews:focusViews withCoreViews:coreViews];
+    if (FocusLayerViewsAreEqual(focusViews, _focusLayer.views))
     {
-      [self updateFocusLayerFocus];
+      [self updateFocusLayerInFocus];
     }
     else
     {
-      m_viewItems = views;
-      [self buildFocusLayerFromCore];
+      [self loadFocusLayerViews:focusViews];
       CLog::Log(LOGDEBUG, "updateFocusLayer:hideViews(%s), rebuild", hideViews ? "yes":"no");
     }
-/*
-    // something is different. check size (deep check)
-    if (!CFocusEngineHandler::CoreViewsIsEqualSize(m_viewItems, views))
-    {
-      // sizes are different, punt
-      CLog::Log(LOGDEBUG, "updateFocusLayer:hideViews(%s), Sizes are different, rebuild", hideViews ? "yes":"no");
-      m_viewItems = views;
-      [self buildFocusLayerFromCore];
-    }
-    else if (!CFocusEngineHandler::CoreViewsIsEqualControls(m_viewItems, views))
-    {
-      //CLog::Log(LOGDEBUG, "updateFocusLayer:hideViews(%s), Controls are different, rebuild", hideViews ? "yes":"no"");
-      // same size but core controls are different, punt
-      m_viewItems = views;
-      [self buildFocusLayerFromCore];
-    }
-    else
-    {
-      //CLog::Log(LOGDEBUG, "updateFocusLayer:hideViews(%s), CheckRects failed, check view locations", hideViews ? "yes":"no");
-      // same sizes, same controls, so only view rects have changed, update view position/size
-      m_viewItems = views;
-      [self buildFocusLayerFromCore];
-      //[self updateFocusLayerFromCore];
-    }
-*/
   }
   [self.focusView setNeedsDisplay];
   // if the focus update is accepted by the focus engine,

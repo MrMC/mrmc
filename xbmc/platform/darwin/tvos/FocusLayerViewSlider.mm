@@ -20,6 +20,7 @@
 
 #import "platform/darwin/tvos/FocusLayerViewSlider.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
+#import "guilib/GUISliderControl.h"
 #import "utils/log.h"
 
 #pragma mark -
@@ -38,7 +39,7 @@
 	{
     self->min = 0.0;
     self->max = 100.0;
-    self->value = 0.0;
+    self.value = 0.0;
     self->distance = 100;
 
     auto pan = [[UIPanGestureRecognizer alloc]
@@ -48,10 +49,32 @@
 
     auto tapRecognizer = [[UITapGestureRecognizer alloc]
       initWithTarget: self action: @selector(handleTapGesture:)];
+    tapRecognizer.allowedPressTypes  = @[[NSNumber numberWithInteger:UIPressTypeUpArrow],
+                                         [NSNumber numberWithInteger:UIPressTypeDownArrow],
+                                         [NSNumber numberWithInteger:UIPressTypeLeftArrow],
+                                         [NSNumber numberWithInteger:UIPressTypeRightArrow]];
     tapRecognizer.delegate  = self;
     [self addGestureRecognizer:tapRecognizer];
   }
 	return self;
+}
+
+- (double)value
+{
+  CGUISliderControl *sliderControl = (CGUISliderControl*)self->core;
+  if (sliderControl)
+    self._value = sliderControl->GetPercentage(CGUISliderControl::RangeSelectorLower);
+  return self._value;
+}
+
+- (void)setValue:(double)newValue
+{
+  CGUISliderControl *sliderControl = (CGUISliderControl*)self->core;
+  if (sliderControl)
+    sliderControl->SetPercentage(newValue, CGUISliderControl::RangeSelectorLower);
+  self._value = newValue;
+  [self updateViews];
+  //delegate?.slider(self, didChangeValue: value)
 }
 
 - (void)set:(double)value animated:(bool)animated
@@ -59,11 +82,11 @@
   [self stopDeceleratingTimer];
   if (distance == 0.0)
   {
-    self->value = value;
+    self.value = value;
     return;
   }
-  double duration = fabs(self->value - value) / distance * animationSpeed;
-  self->value = value;
+  double duration = fabs(self.value - value) / distance * animationSpeed;
+  self.value = value;
   if (animated)
   {
     [UIView animateWithDuration:duration
@@ -75,13 +98,19 @@
   }
   else
   {
-    self->value = value;
+    self.value = value;
   }
 }
 
 - (void)drawRect:(CGRect)rect
 {
   [super drawRect:rect];
+}
+
+//--------------------------------------------------------------
+- (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
+{
+  return YES;
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
@@ -133,18 +162,19 @@
   {
     case UIGestureRecognizerStateBegan:
         [self stopDeceleratingTimer];
-        seekerViewLeadingConstraintConstant = seekerViewLeadingConstraint.constant;
+        thumbConstant = thumb;
       break;
     case UIGestureRecognizerStateChanged:
       {
-        double leading = seekerViewLeadingConstraintConstant + translation.x / 5.0;
+        double swipesForFullRange = 8.0;
+        double leading = thumbConstant + translation.x / swipesForFullRange;
         [self set:leading / self.bounds.size.width];
       }
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateCancelled:
       {
-        seekerViewLeadingConstraintConstant = seekerViewLeadingConstraint.constant;
+        thumbConstant = thumb;
         int direction = velocity.x > 0 ? 1 : -1;
         deceleratingVelocity = fabs(velocity.x) > decelerationMaxVelocity ? decelerationMaxVelocity * direction : velocity.x;
         self->deceleratingTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(handleDeceleratingTimer:) userInfo:nil repeats:YES];
@@ -157,15 +187,15 @@
 
 - (void)set:(double)percentage
 {
-  self->value = distance * (double)(percentage > 1 ? 1 : (percentage < 0 ? 0 : percentage)) + min;
-  CLog::Log(LOGDEBUG, "Slider::set percentage(%f), value(%f)", percentage, self->value);
+  self.value = distance * (double)(percentage > 1 ? 1 : (percentage < 0 ? 0 : percentage)) + min;
+  CLog::Log(LOGDEBUG, "Slider::set percentage(%f), value(%f)", percentage, self.value);
 }
 
 - (void)updateViews
 {
   if (distance == 0.0)
     return;
-  seekerViewLeadingConstraint.constant = self.bounds.size.width * (CGFloat)((value - min) / distance);
+  thumb = self.bounds.size.width * (CGFloat)((self.value - min) / distance);
   // seekerLabel.text = [delegate slider:self textWithValue:value];
   //seekerLabel.text = delegate?.slider(self, textWithValue: value) ?? "\(Int(value))"
 }
@@ -173,9 +203,9 @@
 //--------------------------------------------------------------
 - (void)handleDeceleratingTimer:(id)obj
 {
-  double leading = seekerViewLeadingConstraintConstant + deceleratingVelocity * 0.01;
+  double leading = thumbConstant + deceleratingVelocity * 0.01;
   [self set:(double)leading / self.bounds.size.width];
-  //seekerViewLeadingConstraintConstant = seekerViewLeadingConstraint.constant
+  thumbConstant = thumb;
 
   deceleratingVelocity *= decelerationRate;
   if (![self isFocused] || fabs(deceleratingVelocity) < 1.0)
@@ -189,6 +219,17 @@
   self->deceleratingVelocity = 0.0;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+  CLog::Log(LOGDEBUG, "Slider::gestureRecognizer:shouldReceiveTouch");
+  return YES;
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
+{
+  CLog::Log(LOGDEBUG, "Slider::gestureRecognizer:shouldReceivePress");
+  return YES;
+}
+
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
   CLog::Log(LOGDEBUG, "Slider::gestureRecognizerShouldBegin");
@@ -198,6 +239,10 @@
     CGPoint translation = [panGestureRecognizer translationInView:self];
     if (fabs(translation.x) > fabs(translation.y))
       return [self isFocused];
+  }
+  else if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]])
+  {
+    return [self isFocused];
   }
   return NO;
 }

@@ -21,6 +21,19 @@
 #import "platform/darwin/tvos/FocusLayerView.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 
+bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector<FocusLayerControl> &views2)
+{
+  if (views1.size() != views2.size())
+    return false;
+  for (size_t indx = 0; indx < views1.size(); ++indx)
+  {
+    // sizes are the same, so we have to compare views
+    if (!views1[indx].IsEqual(views2[indx]))
+      return false;
+  }
+  return true;
+}
+
 #pragma mark -
 @implementation FocusLayerView
 

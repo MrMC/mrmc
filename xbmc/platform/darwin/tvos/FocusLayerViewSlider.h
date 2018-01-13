@@ -37,16 +37,16 @@
 @public
   double max;
   double min;
-  double value;
 
 @private
-  double  distance;
+  double thumb;
+  double thumbConstant;
+  double distance;
   CGFloat deceleratingVelocity;
-  double seekerViewLeadingConstraintConstant;
   NSTimer *deceleratingTimer;
-  NSLayoutConstraint *seekerViewLeadingConstraint;
 
 }
+@property (nonatomic) double _value;
 @property (nonatomic, weak) id<FocusLayerViewSliderDelegate> delegate;
 
 @end
