@@ -1025,6 +1025,9 @@ void CGUIWindowManager::RenderPass()
     if ((*it)->IsDialogRunning())
       topDialog = (*it);
   }
+  if (topDialog && !topDialog->HasFocusVisibility())
+    topDialog = nullptr;
+
   // disable if we have dialogs showing
   m_focusableTracker.SetEnabled(topDialog ? false:true);
 
