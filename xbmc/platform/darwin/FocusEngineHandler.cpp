@@ -80,6 +80,7 @@ void CFocusEngineHandler::Process()
     // itemsVisible will start cleared
     m_focus = focus;
   }
+  m_focus.busy = focus.busy;
   m_focus.hideViews = focus.hideViews;
 
   if (m_focus.itemFocus)
@@ -214,6 +215,13 @@ CFocusEngineHandler::GetFocusWindowID()
 }
 
 const bool
+CFocusEngineHandler::IsBusy()
+{
+  CSingleLock lock(m_focusLock);
+  return m_focus.busy;
+}
+
+const bool
 CFocusEngineHandler::NeedToHideViews()
 {
   CSingleLock lock(m_focusLock);
@@ -228,6 +236,7 @@ CFocusEngineHandler::GetFocusRect()
   CSingleLock lock(m_focusLock);
   focus.window = m_focus.window;
   focus.windowID = m_focus.windowID;
+  focus.busy = m_focus.busy;
   focus.hideViews = m_focus.hideViews;
   lock.Leave();
   if (VALID_FOCUS_WINDOW(focus))
@@ -272,6 +281,7 @@ ORIENTATION CFocusEngineHandler::GetFocusOrientation()
   CSingleLock lock(m_focusLock);
   focus.window = m_focus.window;
   focus.windowID = m_focus.windowID;
+  focus.busy = m_focus.busy;
   focus.hideViews = m_focus.hideViews;
   lock.Leave();
   if (VALID_FOCUS_WINDOW(focus))
@@ -307,6 +317,7 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
   // skip finding focused window else invalidate focus
   if (NOT_VALID_FOCUS_WINDOW(focus))
   {
+    focus.busy = false;
     focus.hideViews = false;
     focus.windowID = g_windowManager.GetActiveWindowID();
     // handle window id aliases but we need to keep orginal
@@ -326,6 +337,10 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
       return;
     }
   }
+
+  // window exceptions, we hide views if for these windows
+  if (m_focus.windowID == WINDOW_DIALOG_BUSY)
+    focus.busy = true;
 
   focus.rootFocus = focus.window->GetFocusedControl();
   if (!focus.rootFocus)

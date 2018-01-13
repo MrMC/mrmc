@@ -52,6 +52,7 @@ typedef struct FocusEngineCoreViews
 typedef struct FocusEngineFocus
 {
   int windowID = 0;
+  bool busy = false;
   bool hideViews = false;
   CGUIWindow  *window = nullptr;
   CGUIControl *rootFocus = nullptr;
@@ -83,6 +84,7 @@ class CFocusEngineHandler
   void          EnableFocusSlide(bool enable);
   void          InvalidateFocus(CGUIControl *control);
   const int     GetFocusWindowID();
+  const bool    IsBusy();
   const bool    NeedToHideViews();
   const CRect   GetFocusRect();
   CGUIControl*  GetFocusControl();
