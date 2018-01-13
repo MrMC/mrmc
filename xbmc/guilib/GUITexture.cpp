@@ -77,7 +77,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   ResetAnimState();
 
   m_allocateDynamically = false;
-  m_isAllocated = NO;
+  m_isAllocated = NOTALLOCATED;
   m_invalid = true;
   m_use_cache = true;
 }
@@ -113,7 +113,7 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
 
   ResetAnimState();
 
-  m_isAllocated = NO;
+  m_isAllocated = NOTALLOCATED;
   m_invalid = true;
 }
 
@@ -469,7 +469,7 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   // call our implementation
   Free();
 
-  m_isAllocated = NO;
+  m_isAllocated = NOTALLOCATED;
 }
 
 void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)

@@ -119,7 +119,7 @@ public:
   bool IsLazyLoaded() const { return m_info.useLarge; };
 
   bool HitTest(const CPoint &point) const { return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point); };
-  bool IsAllocated() const { return m_isAllocated != NO; };
+  bool IsAllocated() const { return m_isAllocated != NOTALLOCATED; };
   bool FailedToAlloc() const { return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED; };
   bool ReadyToRender() const;
 protected:
@@ -164,7 +164,7 @@ protected:
   CPoint m_diffuseOffset;                 // offset into the diffuse frame (it's not always the origin)
 
   bool m_allocateDynamically;
-  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, NORMAL_FAILED, LARGE_FAILED };
+  enum ALLOCATE_TYPE { NOTALLOCATED = 0, NORMAL, LARGE, NORMAL_FAILED, LARGE_FAILED };
   ALLOCATE_TYPE m_isAllocated;
 
   CTextureInfo m_info;
