@@ -665,8 +665,10 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (CGSize) getScreenSize
 {
-  m_screensize.width  = m_glView.bounds.size.width * m_screenScale;
-  m_screensize.height = m_glView.bounds.size.height * m_screenScale;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    m_screensize.width  = m_glView.bounds.size.width  * m_screenScale;
+    m_screensize.height = m_glView.bounds.size.height * m_screenScale;
+  });
   return m_screensize;
 }
 //--------------------------------------------------------------
