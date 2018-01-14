@@ -338,8 +338,8 @@ void CFocusEngineHandler::UpdateFocus(FocusEngineFocus &focus)
     }
   }
 
-  // window exceptions, we hide views if for these windows
-  if (m_focus.windowID == WINDOW_DIALOG_BUSY)
+  // window exceptions, we hide views for these windows
+  if (focus.windowID == WINDOW_DIALOG_BUSY)
     focus.busy = true;
 
   focus.rootFocus = focus.window->GetFocusedControl();

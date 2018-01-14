@@ -26,10 +26,6 @@
 #pragma mark -
 @implementation FocusLayerViewSlider
 
-  double animationSpeed = 1.0;
-  CGFloat decelerationRate = 0.92;
-  CGFloat decelerationMaxVelocity = 1000;
-
 @synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame
@@ -37,10 +33,14 @@
 	self = [super initWithFrame:frame];
 	if (self)
 	{
+    self.value = 0.0;
+
     self->min = 0.0;
     self->max = 100.0;
-    self.value = 0.0;
     self->distance = 100;
+    self->animationSpeed = 1.0;
+    self->decelerationRate = 0.92;
+    self->decelerationMaxVelocity = 1000;
 
     auto pan = [[UIPanGestureRecognizer alloc]
       initWithTarget:self action:@selector(handlePanGesture:)];

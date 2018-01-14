@@ -59,6 +59,7 @@
 #import "services/lighteffects/LightEffectServices.h"
 #import "utils/LiteUtils.h"
 #import "utils/StringObfuscation.h"
+#import "utils/StringHasher.h"
 #import "utils/SeekHandler.h"
 #import "utils/log.h"
 
@@ -1713,6 +1714,7 @@ CGRect debugView2;
   if ( [context.previouslyFocusedItem isKindOfClass:[FocusLayerViewSlider class]] )
     return NO;
 
+
   CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: focusActionType %s", focusActionTypeNames[focusActionType]);
 
   // previouslyFocusedItem may be nil if no item was focused.
@@ -1904,6 +1906,7 @@ CGRect debugView2;
 //--------------------------------------------------------------
 - (void) loadFocusLayerViews:(std::vector<FocusLayerControl>&)focusViews
 {
+  using namespace StringHasher;
   // build up new focusLayer from core items.
   [self clearSubViews];
 
@@ -1917,12 +1920,17 @@ CGRect debugView2;
     auto &view = *viewsIt;
 
     FocusLayerView *focusLayerView = nil;
+    switch(mkhash(view.type.c_str()))
+    {
 #if slidertesting
-    if (view.type == "slider")
-      focusLayerView = [[FocusLayerViewSlider alloc] initWithFrame:view.rect];
-    else
+      case "slider"_mkhash:
+        focusLayerView = [[FocusLayerViewSlider alloc] initWithFrame:view.rect];
+        break;
 #endif
-      focusLayerView = [[FocusLayerView alloc] initWithFrame:view.rect];
+      default:
+        focusLayerView = [[FocusLayerView alloc] initWithFrame:view.rect];
+        break;
+    }
     [focusLayerView setFocusable:false];
     if (view.type == "window" || view.type == "dialog")
     {
@@ -1942,12 +1950,17 @@ CGRect debugView2;
     {
       auto &item = *itemsIt;
       FocusLayerView *focusLayerItem = nil;
+      switch(mkhash(item.type.c_str()))
+      {
 #if slidertesting
-      if (item.type == "slider")
-        focusLayerItem = [[FocusLayerViewSlider alloc] initWithFrame:item.rect];
-      else
+        case "slider"_mkhash:
+          focusLayerItem = [[FocusLayerViewSlider alloc] initWithFrame:item.rect];
+          break;
 #endif
-        focusLayerItem = [[FocusLayerView alloc] initWithFrame:item.rect];
+        default:
+          focusLayerItem = [[FocusLayerView alloc] initWithFrame:item.rect];
+          break;
+      }
       [focusLayerItem setFocusable:true];
       focusLayerItem->core = item.core;
       item.view = focusLayerItem;
@@ -1978,17 +1991,20 @@ CGRect debugView2;
     {
       if (g_windowManager.IsWindowVisible(WINDOW_DIALOG_SEEK_BAR))
       {
-        for (size_t indx = 0; indx < _focusLayer.views[0].items.size(); ++indx)
+        for (size_t andx = 0; andx < _focusLayer.views.size(); ++andx)
         {
-          CGUIControl *guiControl = (CGUIControl*)_focusLayer.views[0].items[indx].core;
-          if (guiControl->GetControlType() == CGUIControl::GUICONTROL_SLIDER)
+          for (size_t indx = 0; indx < _focusLayer.views[andx].items.size(); ++indx)
           {
-            preferredItem.type = _focusLayer.views[0].items[indx].type;
-            preferredItem.rect = _focusLayer.views[0].items[indx].rect;
-            preferredItem.view = _focusLayer.views[0].items[indx].view;
-            preferredItem.core = _focusLayer.views[0].items[indx].core;
-            _focusLayer.infocus = preferredItem;
-            return;
+            CGUIControl *guiControl = (CGUIControl*)_focusLayer.views[andx].items[indx].core;
+            if (guiControl->GetControlType() == CGUIControl::GUICONTROL_SLIDER)
+            {
+              preferredItem.type = _focusLayer.views[andx].items[indx].type;
+              preferredItem.rect = _focusLayer.views[andx].items[indx].rect;
+              preferredItem.view = _focusLayer.views[andx].items[indx].view;
+              preferredItem.core = _focusLayer.views[andx].items[indx].core;
+              _focusLayer.infocus = preferredItem;
+              return;
+            }
           }
         }
       }

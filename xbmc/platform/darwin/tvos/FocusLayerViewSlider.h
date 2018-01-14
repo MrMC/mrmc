@@ -44,7 +44,9 @@
   double distance;
   CGFloat deceleratingVelocity;
   NSTimer *deceleratingTimer;
-
+  double  animationSpeed;
+  CGFloat decelerationRate;
+  CGFloat decelerationMaxVelocity;
 }
 @property (nonatomic) double _value;
 @property (nonatomic, weak) id<FocusLayerViewSliderDelegate> delegate;
