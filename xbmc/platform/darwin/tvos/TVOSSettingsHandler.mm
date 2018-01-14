@@ -67,6 +67,9 @@ void CTVOSInputSettings::Initialize()
   CFocusEngineHandler::GetInstance().EnableFocusSlide(enableFocusEffects && enableFocusSlide);
   bool enableExpertMode = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
   [g_xbmcController enableRemoteExpertMode:enableExpertMode];
+  bool stopPlaybackOnMenu = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK);
+  [g_xbmcController stopPlaybackOnMenu:stopPlaybackOnMenu];
+  
 }
 
 void CTVOSInputSettings::OnSettingChanged(const CSetting *setting)
@@ -99,5 +102,10 @@ void CTVOSInputSettings::OnSettingChanged(const CSetting *setting)
   {
     bool enableExpertMode = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
     [g_xbmcController enableRemoteExpertMode:enableExpertMode];
+  }
+  else if (settingId == CSettings::SETTING_INPUT_APPLESIRIBACK)
+  {
+    bool stopPlaybackOnMenu = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK);
+    [g_xbmcController stopPlaybackOnMenu:stopPlaybackOnMenu];
   }
 }

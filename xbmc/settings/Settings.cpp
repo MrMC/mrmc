@@ -1344,6 +1344,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM);
   settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIFOCUSLIDE);
   settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIBACK);
   m_settingsManager->RegisterCallback(&CTVOSInputSettings::GetInstance(), settingSet);
 #endif
   

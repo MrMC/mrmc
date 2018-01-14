@@ -157,6 +157,7 @@ MainController *g_xbmcController;
 @synthesize m_focusIdleState;
 @synthesize m_focusIdleTimeout;
 @synthesize m_enableRemoteExpertMode;
+@synthesize m_stopPlaybackOnMenu;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -666,6 +667,12 @@ MainController *g_xbmcController;
 - (void)enableRemoteExpertMode:(BOOL)enable
 {
   m_enableRemoteExpertMode = enable;
+  [self startRemoteTimer];
+}
+
+- (void)stopPlaybackOnMenu:(BOOL)enable
+{
+  m_stopPlaybackOnMenu = enable;
   [self startRemoteTimer];
 }
 
@@ -1413,7 +1420,7 @@ CGRect swipeStartingParentViewRect;
       CLog::Log(LOGDEBUG, "SiriMenuHandler:StateEnded");
       if (g_windowManager.GetFocusedWindow() == WINDOW_FULLSCREEN_VIDEO)
       {
-        if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK))
+        if (m_stopPlaybackOnMenu)
           CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
         else
           [self sendButtonPressed:SiriRemote_MenuClickAtHome];
