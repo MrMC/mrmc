@@ -156,6 +156,7 @@ MainController *g_xbmcController;
 @synthesize m_enableRemoteIdle;
 @synthesize m_focusIdleState;
 @synthesize m_focusIdleTimeout;
+@synthesize m_enableRemoteExpertMode;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -659,6 +660,12 @@ MainController *g_xbmcController;
 {
   //PRINT_SIGNATURE();
   m_enableRemoteIdle = enable;
+  [self startRemoteTimer];
+}
+
+- (void)enableRemoteExpertMode:(BOOL)enable
+{
+  m_enableRemoteExpertMode = enable;
   [self startRemoteTimer];
 }
 

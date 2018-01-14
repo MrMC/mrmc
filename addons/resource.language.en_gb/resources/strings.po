@@ -3875,15 +3875,7 @@ msgctxt "#887"
 msgid "Time in seconds after which OSD will auto hide"
 msgstr ""
 
-#: settings_tvos.xml
-msgctxt "#888"
-msgid "Enable Swipe"
-msgstr ""
-
-#: settings_tvos.xml
-msgctxt "#889"
-msgid "Enable Siri remote swipe action"
-msgstr ""
+#empty strings from id 888 to 889
 
 #: settings_tvos.xml
 msgctxt "#890"
@@ -3905,15 +3897,7 @@ msgctxt "#893"
 msgid "Enable Siri remote focus slide on swipe/pan action, visual confirmation that control is moving in desired direction"
 msgstr ""
 
-#: settings_tvos.xml
-msgctxt "#894"
-msgid "Force Siri swipe to move only one place"
-msgstr ""
-
-#: settings_tvos.xml
-msgctxt "#895"
-msgid "Enabling this will force Siri swipes to move only one place, disabling it will go maximum 5 depending on the swipe speed"
-msgstr ""
+#empty strings from id 893 to 894
 
 #: CGUIWindowVideoNav
 msgctxt "#896"
@@ -3930,7 +3914,27 @@ msgctxt "#898"
 msgid "please consider upgrading to full version on %s store."
 msgstr ""
 
-#empty strings from id 898 to 996
+#: settings_tvos.xml
+msgctxt "#899"
+msgid "Enable focus effects"
+msgstr ""
+
+#: settings_tvos.xml
+msgctxt "#900"
+msgid "Enable Siri focus effects, focus slide and focus zoom"
+msgstr ""
+
+#: settings_tvos.xml
+msgctxt "#901"
+msgid "Enable Siri expert mode"
+msgstr ""
+
+#: settings_tvos.xml
+msgctxt "#902"
+msgid "Enable Siri expert mode, deselecting this will make video player behave like native tvOS player."
+msgstr ""
+
+#empty strings from id 900 to 996
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#997"

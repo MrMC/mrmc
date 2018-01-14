@@ -98,33 +98,25 @@
         <setting id="input.appleremotesequencetime">
           <visible>false</visible>
         </setting>
-        <setting id="input.applesiriswipe" type="boolean" label="888" help="889">
+        <setting id="input.applesirifocuseffects" type="boolean" label="899" help="900">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="input.applesiriswipeonce" type="boolean" parent="input.applesiriswipe" label="894" help="895">
+        <setting id="input.applesirifocuszoom" type="boolean" parent="input.applesirifocuseffects" label="890" help="891">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
           <dependencies>
-            <dependency type="visible" setting="input.applesiriswipe">true</dependency>
+            <dependency type="visible" setting="input.applesirifocuseffects">true</dependency>
           </dependencies>
         </setting>
-        <setting id="input.applesirifocuszoom" type="boolean" parent="input.applesiriswipe" label="890" help="891">
+        <setting id="input.applesirifocusslide" type="boolean" parent="input.applesirifocuseffects" label="892" help="893">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
           <dependencies>
-            <dependency type="visible" setting="input.applesiriswipe">true</dependency>
-          </dependencies>
-        </setting>
-        <setting id="input.applesirifocusslide" type="boolean" parent="input.applesiriswipe" label="892" help="893">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-          <dependencies>
-            <dependency type="visible" setting="input.applesiriswipe">true</dependency>
+            <dependency type="visible" setting="input.applesirifocuseffects">true</dependency>
           </dependencies>
         </setting>
         <setting id="input.applesiriback" type="boolean" label="884" help="885">
@@ -152,6 +144,11 @@
           <dependencies>
             <dependency type="enable" setting="input.applesiritimeoutenabled">true</dependency>
           </dependencies>
+        </setting>
+        <setting id="input.applesiriexpertmode" type="boolean" label="901" help="902">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
       <group id="2">
