@@ -141,6 +141,7 @@ MainController *g_xbmcController;
 @property (nonatomic, nullable) FocusLayerView *focusViewTop;
 @property (nonatomic, nullable) FocusLayerView *focusViewBottom;
 @property (nonatomic, assign) FocusLayer focusLayer;
+@property (strong, nonatomic) NSTimer *focusIdleTimer;
 @end
 
 #pragma mark - MainController implementation
@@ -153,6 +154,8 @@ MainController *g_xbmcController;
 @synthesize m_remoteIdleState;
 @synthesize m_remoteIdleTimeout;
 @synthesize m_enableRemoteIdle;
+@synthesize m_focusIdleState;
+@synthesize m_focusIdleTimeout;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -758,8 +761,6 @@ MainController *g_xbmcController;
   {
     // set up some MCRuntimeLib specific relationships
     MCRuntimeLib::Context run_context;
-    // turn off list items wrapping
-    g_windowManager.SetWrapOverride(true);
     m_appAlive = TRUE;
     // start up with gui enabled
     status = MCRuntimeLib_Run(true);
@@ -1550,6 +1551,47 @@ CGRect swipeStartingParentViewRect;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
+#pragma mark - focus changed idle timer
+//--------------------------------------------------------------
+- (void)startFocusTimer
+{
+  m_focusIdleState = false;
+
+  //PRINT_SIGNATURE();
+  if (self.focusIdleTimer != nil)
+    [self stopFocusTimer];
+
+  NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
+  NSTimer *timer = [[NSTimer alloc] initWithFireDate:fireDate
+                                    interval:0.0
+                                    target:self
+                                    selector:@selector(setFocusIdleState)
+                                    userInfo:nil
+                                    repeats:NO];
+
+  [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+  self.focusIdleTimer = timer;
+}
+
+- (void)stopFocusTimer
+{
+  //PRINT_SIGNATURE();
+  if (self.focusIdleTimer != nil)
+  {
+    [self.focusIdleTimer invalidate];
+    self.focusIdleTimer = nil;
+  }
+  m_focusIdleState = false;
+}
+
+- (void)setFocusIdleState
+{
+  //PRINT_SIGNATURE();
+  m_focusIdleState = true;
+}
+
+//--------------------------------------------------------------
+//--------------------------------------------------------------
 #pragma mark - remote/siri focus engine routines
 //--------------------------------------------------------------
 - (UIFocusSoundIdentifier)soundIdentifierForFocusUpdateInContext:(UIFocusUpdateContext *)context
@@ -1642,10 +1684,19 @@ CGRect debugView2;
     return [super preferredFocusEnvironments];
   }
 }
+
 //--------------------------------------------------------------
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
   withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
+  if (context.focusHeading != UIFocusHeadingNone)
+  {
+    // track focus idle time, if focus was idled,
+    // allow wrapping in lists, else no wrapping in lists
+    g_windowManager.SetWrapOverride(!m_focusIdleState);
+    [self startFocusTimer];
+  }
+
   // if we had a focus change, send the heading down to core
   switch (context.focusHeading)
   {

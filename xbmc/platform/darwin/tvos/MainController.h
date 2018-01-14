@@ -75,6 +75,8 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   CGFloat                     m_remoteIdleTimeout;
   BOOL                        m_enableRemoteIdle;
   BOOL                        m_nativeKeyboardActive;
+  BOOL                        m_focusIdleState;
+  CGFloat                     m_focusIdleTimeout;
 }
 
 // why are these properties ?
@@ -87,6 +89,8 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 @property BOOL                m_remoteIdleState;
 @property CGFloat             m_remoteIdleTimeout;
 @property BOOL                m_enableRemoteIdle;
+@property BOOL                m_focusIdleState;
+@property CGFloat             m_focusIdleTimeout;
 
 - (void)onPlayDelayed:(NSDictionary *)item;
 - (void)onSpeedChanged:(NSDictionary *)item;
