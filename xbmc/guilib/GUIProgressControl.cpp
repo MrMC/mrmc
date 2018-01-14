@@ -20,6 +20,7 @@
 
 #include "GUIProgressControl.h"
 #include "GUIInfoManager.h"
+#include "GUIInfoLabels.h"
 #include "GUIListItem.h"
 #include "utils/StringUtils.h"
 
@@ -113,14 +114,23 @@ void CGUIProgressControl::Render()
   }
 
   CGUIControl::Render();
+  if (HasFocusVisibility())
+    CGUIControl::AppendFocusableTracker();
 }
 
 
 bool CGUIProgressControl::CanFocus() const
 {
-  return false;
+  return m_iInfoCode == PLAYER_PROGRESS;
 }
 
+bool CGUIProgressControl::HasFocusVisibility()
+{
+  // slider with ControlID of zero are only
+  // touch navigable, ignore them.
+  return m_iInfoCode == PLAYER_PROGRESS;
+  //return CanFocus() && IsVisibleFromSkin();
+}
 
 bool CGUIProgressControl::OnMessage(CGUIMessage& message)
 {

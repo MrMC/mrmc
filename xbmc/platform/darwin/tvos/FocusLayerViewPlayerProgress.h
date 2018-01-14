@@ -21,18 +21,11 @@
 
 #import <UIKit/UIKit.h>
 #import "platform/darwin/tvos/FocusLayerView.h"
+#import "platform/darwin/tvos/ProgressThumbNailer.h"
 
-@class FocusLayerViewSlider;
+class CProgressThumbNailer;
 
-@protocol FocusLayerViewSliderDelegate
-  - (void)slider:(FocusLayerViewSlider*)slider textWithValue:(double)value;
-
-  - (void)sliderDidTap:(FocusLayerViewSlider*)slider;
-  - (void)slider:(FocusLayerViewSlider*)slider didChangeValue:(double)value;
-  - (void)slider:(FocusLayerViewSlider*)slider didUpdateFocusInContext:(UIFocusUpdateContext*)context withAnimationCoordinator:   (UIFocusAnimationCoordinator*)coordinator;
-@end
-
-@interface FocusLayerViewSlider  : FocusLayerView  <UIGestureRecognizerDelegate>
+@interface FocusLayerViewPlayerProgress  : FocusLayerView  <UIGestureRecognizerDelegate>
 {
 @public
   double max;
@@ -42,13 +35,24 @@
   double thumb;
   double thumbConstant;
   double distance;
-  CGFloat deceleratingVelocity;
-  NSTimer *deceleratingTimer;
-  double  animationSpeed;
   CGFloat decelerationRate;
+  CGFloat deceleratingVelocity;
   CGFloat decelerationMaxVelocity;
+  NSTimer *deceleratingTimer;
+
+  CGRect barRect;
+  CGRect thumbRect;
+  CGRect videoRect;
+  bool   videoRectIsAboveBar;
+  double seekTimeSeconds;
+  double totalTimeSeconds;
+  ThumbNailerImage thumbImage;
+  CProgressThumbNailer *thumbNailer;
+  UIView *slideDownView;
 }
 @property (nonatomic) double _value;
-@property (nonatomic, weak) id<FocusLayerViewSliderDelegate> delegate;
+
+- (double) getSeekTimePercentage;
+- (void)   updateViewMainThread;
 
 @end

@@ -1050,12 +1050,12 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     if (ret >= 0)
       UpdateCurrentPTS();
   }
-
+/*
   if(m_currentPts == DVD_NOPTS_VALUE)
     CLog::Log(LOGDEBUG, "%s - unknown position after seek", __FUNCTION__);
   else
     CLog::Log(LOGDEBUG, "%s - seek ended up on time %d (ms)", __FUNCTION__, (int)(m_currentPts / DVD_TIME_BASE * 1000));
-
+*/
   // in this case the start time is requested time
   if (startpts)
     *startpts = DVD_MSEC_TO_TIME(time);

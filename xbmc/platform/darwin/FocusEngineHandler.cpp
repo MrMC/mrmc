@@ -207,6 +207,13 @@ void CFocusEngineHandler::InvalidateFocus(CGUIControl *control)
     m_focus.items.erase(foundControl);
 }
 
+CGUIWindow*
+CFocusEngineHandler::GetFocusWindow()
+{
+  CSingleLock lock(m_focusLock);
+  return m_focus.window;
+}
+
 const int
 CFocusEngineHandler::GetFocusWindowID()
 {
@@ -436,6 +443,8 @@ void CFocusEngineHandler::SetGUIFocusabilityItems(const CFocusabilityTracker &fo
       std::vector<GUIFocusabilityItem> verifiedItems;
       for (auto it = items.begin(); it != items.end(); ++it)
       {
+        if (!(*it).control)
+          continue;
         if ((*it).control->HasProcessed() && (*it).control->IsVisible())
           verifiedItems.push_back(*it);
       }

@@ -491,7 +491,8 @@ bool CGUISliderControl::HasFocusVisibility()
 {
   // slider with ControlID of zero are only
   // touch navigable, ignore them.
-  return CanFocus() && IsVisibleFromSkin();
+  return false;
+  //return CanFocus() && IsVisibleFromSkin();
 }
 
 void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector /* = false */)
