@@ -173,93 +173,96 @@ void CLightEffectServices::OnSettingChanged(const CSetting *setting)
 
 void CLightEffectServices::Process()
 {
-  if (InitConnection())
+  while (!m_bStop)
   {
-    ApplyUserSettings();
-    m_lighteffect->SetScanRange(m_width, m_height);
-
-    SetBling();
-
-    CRenderCapture *capture = nullptr;
-    int curPriority = -1;
-    while (!m_bStop)
+    if (InitConnection())
     {
-      if (m_priority != curPriority)
-      {
-        curPriority = m_priority;
-        m_lighteffect->SetPriority(curPriority);
-      }
-        
-      if (g_application.m_pPlayer->IsPlayingVideo())
-      {
-        if (m_priority != 128)
-          continue;
-        m_turnStaticON = false;
-        // if starting, alloc a rendercapture and start capturing
-        if (capture == nullptr)
-        {
-          capture = g_renderManager.AllocRenderCapture();
-          g_renderManager.Capture(capture, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
-        }
+      ApplyUserSettings();
+      m_lighteffect->SetScanRange(m_width, m_height);
 
-        capture->GetEvent().WaitMSec(1000);
-        if (capture->GetUserState() == CAPTURESTATE_DONE)
-        {
-          //read out the pixels
-          unsigned char *pixels = capture->GetPixels();
-          for (int y = 0; y < m_height; ++y)
-          {
-            int row = m_width * y * 4;
-            for (int x = 0; x < m_width; ++x)
-            {
-              int pixel = row + (x * 4);
-              int rgb[3] = {
-                pixels[pixel + 2],
-                pixels[pixel + 1],
-                pixels[pixel]
-              };
-              m_lighteffect->SetPixel(rgb, x, y);
-            }
-          }
-          m_lighteffect->SendLights(true);
-        }
-      }
-      else
+      SetBling();
+
+      CRenderCapture *capture = nullptr;
+      int curPriority = -1;
+      while (!m_bStop)
       {
-        if (capture != nullptr)
+        if (m_priority != curPriority)
         {
-          g_renderManager.ReleaseRenderCapture(capture);
-          capture = nullptr;
+          curPriority = m_priority;
+          m_lighteffect->SetPriority(curPriority);
         }
-        // set static if its enabled
-        if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICON))
+        
+        if (g_application.m_pPlayer->IsPlayingVideo())
         {
-          // only set static colour once, no point doing it over and over again
-          if (m_turnStaticON)
+          if (m_priority != 128)
+            continue;
+          m_turnStaticON = false;
+          // if starting, alloc a rendercapture and start capturing
+          if (capture == nullptr)
           {
-            m_turnStaticON = false;
-            m_priority = 128;
-            SetAllLightsToStaticRGB();
+            capture = g_renderManager.AllocRenderCapture();
+            g_renderManager.Capture(capture, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
+          }
+
+          capture->GetEvent().WaitMSec(1000);
+          if (capture->GetUserState() == CAPTURESTATE_DONE)
+          {
+            //read out the pixels
+            unsigned char *pixels = capture->GetPixels();
+            for (int y = 0; y < m_height; ++y)
+            {
+              int row = m_width * y * 4;
+              for (int x = 0; x < m_width; ++x)
+              {
+                int pixel = row + (x * 4);
+                int rgb[3] = {
+                  pixels[pixel + 2],
+                  pixels[pixel + 1],
+                  pixels[pixel]
+                };
+                m_lighteffect->SetPixel(rgb, x, y);
+              }
+            }
+            m_lighteffect->SendLights(true);
           }
         }
-        // or kill the lights
         else
         {
-          m_priority = 255;
+          if (capture != nullptr)
+          {
+            g_renderManager.ReleaseRenderCapture(capture);
+            capture = nullptr;
+          }
+          // set static if its enabled
+          if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICON))
+          {
+            // only set static colour once, no point doing it over and over again
+            if (m_turnStaticON)
+            {
+              m_turnStaticON = false;
+              m_priority = 128;
+              SetAllLightsToStaticRGB();
+            }
+          }
+          // or kill the lights
+          else
+          {
+            m_priority = 255;
+          }
+          usleep(50 * 1000);
         }
-        usleep(50 * 1000);
       }
-    }
 
-    // have to check this in case we go
-    // right from playing to death.
-    if (capture != nullptr)
-    {
-      g_renderManager.ReleaseRenderCapture(capture);
-      capture = nullptr;
+      // have to check this in case we go
+      // right from playing to death.
+      if (capture != nullptr)
+      {
+        g_renderManager.ReleaseRenderCapture(capture);
+        capture = nullptr;
+      }
+      m_lighteffect->SetPriority(255);
+      SAFE_DELETE(m_lighteffect);
     }
-    m_lighteffect->SetPriority(255);
-    SAFE_DELETE(m_lighteffect);
   }
 }
 
@@ -278,10 +281,7 @@ bool CLightEffectServices::InitConnection()
     m_turnStaticON = false;
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
       g_localizeStrings.Get(882), g_localizeStrings.Get(883), 3000, true);
-    const CSetting *setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE);
-    if (setting != NULL)
-      ((CSettingBool*)setting)->SetValue(false);
-    
+
     SAFE_DELETE(m_lighteffect);
     return false;
   }

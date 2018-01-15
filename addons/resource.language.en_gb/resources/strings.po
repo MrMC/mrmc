@@ -3852,7 +3852,7 @@ msgstr ""
 
 #: lighteffects
 msgctxt "#883"
-msgid "Disabling LightEffects client"
+msgid "Try disabling LightEffects client"
 msgstr ""
 
 #: settings_tvos.xml
