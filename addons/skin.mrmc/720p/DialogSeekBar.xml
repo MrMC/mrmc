@@ -246,7 +246,7 @@
 				<texturesliderbar>seekslider.png</texturesliderbar>
 				<textureslidernib>osd_slider_nib.png</textureslidernib>
 				<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
-				<visible>Player.Seeking</visible>
+				<visible>!VideoPlayer.Content(livetv)</visible>
 			</control>
 		</control>
 	</controls>
