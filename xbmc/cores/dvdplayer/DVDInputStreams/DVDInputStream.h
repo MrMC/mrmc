@@ -147,6 +147,8 @@ public:
    */
   virtual void SetReadRate(unsigned rate) {}
 
+  virtual void SetNoCaching() { m_forceNoCache = true; }
+
   /*! \brief Get the cache status
    \return true when cache status was succesfully obtained
    */
@@ -171,4 +173,5 @@ protected:
   CFileItem m_item;
   bool m_contentLookup;
   bool m_realtime;
+  bool m_forceNoCache;
 };

@@ -89,15 +89,9 @@ bool CDVDInputStreamFile::Open()
   {
     flags |= READ_NO_CACHE;
   }
-  /*
-  else if (content == "video/avi" ||
-    content == "video/x-msvideo"  ||
-    content == "video/x-matroska" ||
-    content == "video/x-matroska-3d")
-  {
-    flags |= READ_MULTI_STREAM;
-  }
-  */
+
+  if (m_forceNoCache)
+    flags |= READ_NO_CACHE;
 
   // open file in binary mode
   if (!m_pFile->Open(m_item.GetPath(), flags))
