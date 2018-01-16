@@ -4926,7 +4926,7 @@ float CApplication::GetCachePercentage() const
   return 0.0f;
 }
 
-void CApplication::SeekPercentage(float percent)
+void CApplication::SeekPercentage(float percent, bool resume)
 {
   if (m_pPlayer->IsPlaying() && (percent >= 0.0))
   {
@@ -4935,6 +4935,9 @@ void CApplication::SeekPercentage(float percent)
       SeekTime(percent * 0.01 * GetTotalTime());
     else
       m_pPlayer->SeekPercentage(percent);
+    
+    if (resume && m_pPlayer->IsPaused())
+      m_pPlayer->Pause();
   }
 }
 

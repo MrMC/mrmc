@@ -234,7 +234,7 @@ public:
   // Get the percentage of data currently cached/buffered (aq/vq + FileCache) from the input stream if applicable.
   float GetCachePercentage() const;
 
-  void SeekPercentage(float percent);
+  void SeekPercentage(float percent, bool resume = false);
   void SeekTime( double dTime = 0.0 );
 
   void StopShutdownTimer();
