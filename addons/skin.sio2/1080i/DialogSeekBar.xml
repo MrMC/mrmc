@@ -5,7 +5,7 @@
     <zorder>5</zorder>
     <include>OpenClose</include>
     <visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsActive(script-XBMC-Subtitles-main.xml)]</visible>
-    <visible>Window.IsVisible(FullScreenVideo) + [Window.IsActive(videoosd.xml) | Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding | Player.Caching]</visible>
+    <visible>Window.IsVisible(FullScreenVideo) + [Window.IsActive(videoosd.xml) | Player.Paused | Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding | Player.Caching]</visible>
     <animation effect="fade" start="0" end="100" time="400">Visible</animation>
     <animation effect="fade" start="100" end="0" time="100">Hidden</animation>
     <controls>
