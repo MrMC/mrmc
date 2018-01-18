@@ -95,17 +95,17 @@ void CGUIListGroup::UpdateVisibility(const CGUIListItem *item)
 
 void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
 {
-  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     (*it)->UpdateInfo(item);
     (*it)->UpdateVisibility(item);
   }
   // now we have to check our overlapping label pairs
-  for (unsigned int i = 0; i < m_children.size(); i++)
+  for (unsigned int i = 0; i < m_children.size(); ++i)
   {
     if (m_children[i]->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL && m_children[i]->IsVisible())
     {
-      for (unsigned int j = i + 1; j < m_children.size(); j++)
+      for (unsigned int j = i + 1; j < m_children.size(); ++j)
       {
         if (m_children[j]->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL && m_children[j]->IsVisible())
           CGUIListLabel::CheckAndCorrectOverlap(*(CGUIListLabel *)m_children[i], *(CGUIListLabel *)m_children[j]);
@@ -117,7 +117,7 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
 void CGUIListGroup::EnlargeWidth(float difference)
 {
   // Alters the width of the controls that have an ID of 1 to 14
-  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
     if (child->GetID() >= 1 && child->GetID() <= 14)
@@ -139,7 +139,7 @@ void CGUIListGroup::EnlargeWidth(float difference)
 void CGUIListGroup::EnlargeHeight(float difference)
 {
   // Alters the height of the controls that have an ID of 1 to 14
-  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
     if (child->GetID() >= 1 && child->GetID() <= 14)
@@ -170,7 +170,7 @@ void CGUIListGroup::SetInvalid()
 
 void CGUIListGroup::SetFocusedItem(unsigned int focus)
 {
-  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     if ((*it)->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT)
       ((CGUIMultiSelectTextControl *)(*it))->SetFocusedItem(focus);
@@ -184,7 +184,7 @@ void CGUIListGroup::SetFocusedItem(unsigned int focus)
 
 unsigned int CGUIListGroup::GetFocusedItem() const
 {
-  for (ciControls it = m_children.begin(); it != m_children.end(); it++)
+  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     if ((*it)->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT && ((CGUIMultiSelectTextControl *)(*it))->GetFocusedItem())
       return ((CGUIMultiSelectTextControl *)(*it))->GetFocusedItem();
@@ -196,7 +196,7 @@ unsigned int CGUIListGroup::GetFocusedItem() const
 
 bool CGUIListGroup::MoveLeft()
 {
-  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     if ((*it)->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT && ((CGUIMultiSelectTextControl *)(*it))->MoveLeft())
       return true;
@@ -208,7 +208,7 @@ bool CGUIListGroup::MoveLeft()
 
 bool CGUIListGroup::MoveRight()
 {
-  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     if ((*it)->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT && ((CGUIMultiSelectTextControl *)(*it))->MoveRight())
       return true;
@@ -220,7 +220,7 @@ bool CGUIListGroup::MoveRight()
 
 void CGUIListGroup::SetState(bool selected, bool focused)
 {
-  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     if ((*it)->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL)
     {
