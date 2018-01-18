@@ -324,7 +324,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
 
-    for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
+    for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();++it) {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
 
@@ -538,7 +538,7 @@ BuildObject(CFileItem&                    item,
                   for (unsigned int index = 0; index < tag.m_genre.size(); index++)
                     container->m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
 
-                  for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
+                  for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();++it) {
                       container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
                   }
 
@@ -746,14 +746,14 @@ PopulateTagFromObject(CMusicInfoTag&         tag,
 {
     tag.SetTitle((const char*)object.m_Title);
     tag.SetArtist((const char*)object.m_Creator);
-    for(PLT_PersonRoles::Iterator it = object.m_People.artists.GetFirstItem(); it; it++) {
+    for(PLT_PersonRoles::Iterator it = object.m_People.artists.GetFirstItem(); it; ++it) {
         if     (it->role == "")            tag.SetArtist((const char*)it->name);
         else if(it->role == "Performer")   tag.SetArtist((const char*)it->name);
         else if(it->role == "AlbumArtist") tag.SetAlbumArtist((const char*)it->name);
     }
     tag.SetTrackNumber(object.m_MiscInfo.original_track_number);
 
-    for (NPT_List<NPT_String>::Iterator it = object.m_Affiliation.genres.GetFirstItem(); it; it++) {
+    for (NPT_List<NPT_String>::Iterator it = object.m_Affiliation.genres.GetFirstItem(); it; ++it) {
         // ignore single "Unknown" genre inserted by Platinum
         if (it == object.m_Affiliation.genres.GetFirstItem() && object.m_Affiliation.genres.GetItemCount() == 1 &&
             *it == "Unknown")

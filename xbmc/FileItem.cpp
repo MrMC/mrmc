@@ -668,7 +668,7 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
 {
   Fields::const_iterator it;
-  for (it = fields.begin(); it != fields.end(); it++)
+  for (it = fields.begin(); it != fields.end(); ++it)
     ToSortable(sortable, *it);
 
   /* FieldLabel is used as a fallback by all sorters and therefore has to be present as well */
@@ -2085,7 +2085,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   // apply the new order to the existing CFileItems
   VECFILEITEMS sortedFileItems;
   sortedFileItems.reserve(Size());
-  for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); it++)
+  for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); ++it)
   {
     CFileItemPtr item = m_items[(int)(*it)->at(FieldId).asInteger()];
     // Set the sort label in the CFileItem

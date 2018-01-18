@@ -1000,7 +1000,7 @@ bool CButtonTranslator::AddFamilyRegex(JoystickFamily* family, std::shared_ptr<C
   // even though family is a set, this does not prevent the same regex 
   // from being added twice, so we manually match on pattern equality
   JoystickFamily::iterator it;
-  for (it = family->begin(); it != family->end(); it++)
+  for (it = family->begin(); it != family->end(); ++it)
   {
     if ((*it)->GetPattern() == regex->GetPattern())
       return false;
@@ -1036,10 +1036,10 @@ CButtonTranslator::JoystickFamilyMap::const_iterator CButtonTranslator::FindJoys
 {
   // find the family corresponding to a joystick name
   JoystickFamilyMap::const_iterator it;
-  for (it = m_joystickFamilies.begin(); it != m_joystickFamilies.end(); it++)
+  for (it = m_joystickFamilies.begin(); it != m_joystickFamilies.end(); ++it)
   {
     JoystickFamily::const_iterator regexIt;
-    for (regexIt = it->second.begin(); regexIt != it->second.end(); regexIt++)
+    for (regexIt = it->second.begin(); regexIt != it->second.end(); ++regexIt)
     {
       if ((*regexIt)->RegFind(joyName) >= 0)
       {

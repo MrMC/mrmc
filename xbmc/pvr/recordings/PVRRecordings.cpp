@@ -112,7 +112,7 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
   std::string strUseBase = TrimSlashes(strBase);
   std::set<CFileItemPtr> unwatchedFolders;
 
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
     CPVRRecordingPtr current = it->second;
     if (current->IsDeleted())
@@ -207,7 +207,7 @@ int CPVRRecordings::GetRecordings(CFileItemList* results, bool bDeleted)
   CSingleLock lock(m_critSection);
 
   int iRecCount = 0;
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
     if (it->second->IsDeleted() != bDeleted)
       continue;
@@ -360,7 +360,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       GetSubDirectories(strDirectoryPath, &items);
 
     // get all files of the currrent directory or recursively all files starting at the current directory if in flatten mode
-    for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+    for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
     {
       CPVRRecordingPtr current = it->second;
 
@@ -405,7 +405,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
 void CPVRRecordings::GetAll(CFileItemList &items, bool bDeleted)
 {
   CSingleLock lock(m_critSection);
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
     CPVRRecordingPtr current = it->second;
     if (current->IsDeleted() != bDeleted)
@@ -428,7 +428,7 @@ CFileItemPtr CPVRRecordings::GetById(unsigned int iId) const
 {
   CFileItemPtr item;
   CSingleLock lock(m_critSection);
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
     if (iId == it->second->m_iRecordingId)
       item = CFileItemPtr(new CFileItem(it->second));
@@ -451,7 +451,7 @@ CFileItemPtr CPVRRecordings::GetByPath(const std::string &path)
     fileName.erase(0, sizeof(PVR_RECORDING_BASE_PATH));
     bool bDeleted = StringUtils::StartsWith(fileName, PVR_RECORDING_DELETED_PATH "/");
 
-    for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+    for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
     {
       CPVRRecordingPtr current = it->second;
       if (!URIUtils::PathEquals(path, current->m_strFileNameAndPath) || bDeleted != current->IsDeleted())

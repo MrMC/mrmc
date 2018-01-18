@@ -972,7 +972,7 @@ bool CTraktServices::CompareMovieToHistory(CFileItem &mItem, const CVariant &wat
     return false;
 
   // it will return true if it finds a match, same imdb/tmdb id
-  for (auto it = watchedMovies.begin_array(); it != watchedMovies.end_array(); it++)
+  for (auto it = watchedMovies.begin_array(); it != watchedMovies.end_array(); ++it)
   {
     const CVariant &movieItem = *it;
     if (itemDefault == movieItem["movie"]["ids"]["tmdb"].asString() ||

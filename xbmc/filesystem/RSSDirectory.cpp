@@ -443,7 +443,7 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
 
 static bool FindMime(SResources resources, std::string mime)
 {
-  for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
+  for(SResources::iterator it = resources.begin(); it != resources.end(); ++it)
   {
     if(StringUtils::StartsWithNoCase(it->mime, mime))
       return true;
@@ -475,7 +475,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
   SResources::iterator best = resources.end();
   for(const char** type = prio; *type && best == resources.end(); type++)
   {
-    for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
+    for(SResources::iterator it = resources.begin(); it != resources.end(); ++it)
     {
       if(!StringUtils::StartsWith(it->mime, mime))
         continue;

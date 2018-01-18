@@ -474,7 +474,7 @@ bool CDatabaseQueryRuleCombination::Load(const CVariant &obj, const IDatabaseQue
   else
     child = obj;
 
-  for (CVariant::const_iterator_array it = child.begin_array(); it != child.end_array(); it++)
+  for (CVariant::const_iterator_array it = child.begin_array(); it != child.end_array(); ++it)
   {
     if (!it->isObject())
       continue;

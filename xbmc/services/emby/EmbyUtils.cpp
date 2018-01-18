@@ -1580,7 +1580,7 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
     CVariant paramsProvID = variant["ProviderIds"];
     if (paramsProvID.isObject())
     {
-      for (CVariant::iterator_map it = paramsProvID.begin_map(); it != paramsProvID.end_map(); it++)
+      for (CVariant::iterator_map it = paramsProvID.begin_map(); it != paramsProvID.end_map(); ++it)
       {
         std::string strFirst = it->first;
         StringUtils::ToLower(strFirst);

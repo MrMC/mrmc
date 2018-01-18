@@ -241,7 +241,7 @@ namespace PERIPHERALS
   {
     bool GetDeviceOnLocation(const std::string& strLocation, PeripheralScanResult* result) const
     {
-      for (std::vector<PeripheralScanResult>::const_iterator it = m_results.begin(); it != m_results.end(); it++)
+      for (std::vector<PeripheralScanResult>::const_iterator it = m_results.begin(); it != m_results.end(); ++it)
       {
         if ((*it).m_strLocation == strLocation)
         {

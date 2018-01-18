@@ -679,7 +679,7 @@ void CCurlFile::SetRequestHeaders(CReadState* state)
   }
 
   MAPHTTPHEADERS::iterator it;
-  for(it = m_requestheaders.begin(); it != m_requestheaders.end(); it++)
+  for(it = m_requestheaders.begin(); it != m_requestheaders.end(); ++it)
   {
     std::string buffer = it->first + ": " + it->second;
     state->m_curlHeaderList = g_curlInterface.slist_append(state->m_curlHeaderList, buffer.c_str());
@@ -745,7 +745,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     /* TODO: create a tokenizer that doesn't skip empty's */
     StringUtils::Tokenize(filename, array, "/");
     filename.clear();
-    for(std::vector<std::string>::iterator it = array.begin(); it != array.end(); it++)
+    for(std::vector<std::string>::iterator it = array.begin(); it != array.end(); ++it)
     {
       if(it != array.begin())
         filename += "/";
