@@ -2903,7 +2903,7 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
 #endif
 #if defined(TARGET_DARWIN_TVOS)
   if (CDarwinUtils::IsAppleTV4KOrAbove())
-    return VS_INTERLACEMETHOD_DEINTERLACE;
+    return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 #endif
 
   return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
