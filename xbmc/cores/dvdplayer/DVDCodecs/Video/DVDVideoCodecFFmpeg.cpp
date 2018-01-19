@@ -450,10 +450,16 @@ void CDVDVideoCodecFFmpeg::SetFilters()
 {
   // ask codec to do deinterlacing if possible
   EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+
   EINTERLACEMETHOD mInt = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  if (mInt == VS_INTERLACEMETHOD_AUTO)
+  {
+    mInt = g_renderManager.AutoInterlaceMethod(
+    CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+  }
 
   if (mInt != VS_INTERLACEMETHOD_DEINTERLACE && mInt != VS_INTERLACEMETHOD_DEINTERLACE_HALF)
-    mInt = VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
+    mInt = VS_INTERLACEMETHOD_NONE;
 
   unsigned int filters = 0;
 
