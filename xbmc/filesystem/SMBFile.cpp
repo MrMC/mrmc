@@ -355,7 +355,10 @@ int64_t CSMBFile::GetPosition()
   if (m_fd == -1)
     return -1;
   CSingleLock lock(smb);
-  return smb.GetImpl()->smbc_lseek(m_fd, 0, SEEK_CUR);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return -1;
+  return smbLib->smbc_lseek(m_fd, 0, SEEK_CUR);
 }
 
 int64_t CSMBFile::GetLength()
@@ -397,21 +400,24 @@ bool CSMBFile::Open(const CURL& url)
     return false;
 
   CSingleLock lock(smb);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return false;
 
   struct stat tmpBuffer;
-  if (smb.GetImpl()->smbc_stat(strFileName.c_str(), &tmpBuffer) < 0)
+  if (smbLib->smbc_stat(strFileName.c_str(), &tmpBuffer) < 0)
   {
-    smb.GetImpl()->smbc_close(m_fd);
+    smbLib->smbc_close(m_fd);
     m_fd = -1;
     return false;
   }
 
   m_fileSize = tmpBuffer.st_size;
 
-  int64_t ret = smb.GetImpl()->smbc_lseek(m_fd, 0, SEEK_SET);
+  int64_t ret = smbLib->smbc_lseek(m_fd, 0, SEEK_SET);
   if (ret < 0)
   {
-    smb.GetImpl()->smbc_close(m_fd);
+    smbLib->smbc_close(m_fd);
     m_fd = -1;
     return false;
   }
@@ -455,7 +461,11 @@ int CSMBFile::OpenFile(const CURL &url, std::string& strAuth)
   int fd = -1;
   {
     CSingleLock lock(smb);
-    fd = smb.GetImpl()->smbc_open(strPath.c_str(), O_RDONLY, 0);
+    DllLibSMB *smbLib = smb.GetImpl();
+    if (!smbLib)
+      return -1;
+
+    fd = smbLib->smbc_open(strPath.c_str(), O_RDONLY, 0);
   }
   if (fd >= 0)
     strAuth = strPath;
@@ -475,9 +485,12 @@ bool CSMBFile::Exists(const CURL& url)
     return false;
 
   CSingleLock lock(smb);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return false;
 
   struct stat info = {0};
-  int iResult = smb.GetImpl()->smbc_stat(strFileName.c_str(), &info);
+  int iResult = smbLib->smbc_stat(strFileName.c_str(), &info);
   if (iResult < 0)
     return false;
   return true;
@@ -489,9 +502,12 @@ int CSMBFile::Stat(struct __stat64* buffer)
     return -1;
 
   CSingleLock lock(smb);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return -1;
 
   struct stat tmpBuffer = {0};
-  int iResult = smb.GetImpl()->smbc_fstat(m_fd, &tmpBuffer);
+  int iResult = smbLib->smbc_fstat(m_fd, &tmpBuffer);
   CUtil::StatToStat64(buffer, &tmpBuffer);
   return iResult;
 }
@@ -504,9 +520,12 @@ int CSMBFile::Stat(const CURL& url, struct __stat64* buffer)
     return false;
 
   CSingleLock lock(smb);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return false;
 
   struct stat tmpBuffer = {0};
-  int iResult = smb.GetImpl()->smbc_stat(strFileName.c_str(), &tmpBuffer);
+  int iResult = smbLib->smbc_stat(strFileName.c_str(), &tmpBuffer);
   CUtil::StatToStat64(buffer, &tmpBuffer);
   return iResult;
 }
@@ -520,11 +539,14 @@ int CSMBFile::Truncate(int64_t size)
  * This is only used by the TagLib writers, which are not currently in use
  * So log and warn until we implement TagLib writing & can re-implement this better.
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return 0;
 
 #if defined(TARGET_ANDROID)
   int iResult = 0;
 #else
-  int iResult = smb.GetImpl()->smbc_ftruncate(m_fd, size);
+  int iResult = smbLib->smbc_ftruncate(m_fd, size);
 #endif
 */
   CLog::Log(LOGWARNING, "%s - Warning(smbc_ftruncate called and not implemented)", __FUNCTION__);
@@ -548,14 +570,17 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
     return 0;
 
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return -1;
 
   smb.SetActivityTime();
 
-  ssize_t bytesRead = smb.GetImpl()->smbc_read(m_fd, lpBuf, (int)uiBufSize);
+  ssize_t bytesRead = smbLib->smbc_read(m_fd, lpBuf, (int)uiBufSize);
   if (bytesRead < 0 && errno == EINVAL)
   {
     CLog::Log(LOGERROR, "%s - Error( %" PRIdS ", %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
-    bytesRead = smb.GetImpl()->smbc_read(m_fd, lpBuf, (int)uiBufSize);
+    bytesRead = smbLib->smbc_read(m_fd, lpBuf, (int)uiBufSize);
   }
 
   if (bytesRead < 0)
@@ -576,9 +601,12 @@ int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
     return -1;
 
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return -1;
 
   smb.SetActivityTime();
-  int64_t pos = smb.GetImpl()->smbc_lseek(m_fd, iFilePosition, iWhence);
+  int64_t pos = smbLib->smbc_lseek(m_fd, iFilePosition, iWhence);
   if (pos < 0)
   {
     CLog::Log(LOGERROR, "%s - Error( %" PRId64", %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
@@ -594,10 +622,11 @@ void CSMBFile::Close()
   {
     CLog::Log(LOGDEBUG,"CSMBFile::Close closing fd %d", m_fd);
     CSingleLock lock(smb);
+    DllLibSMB *smbLib = smb.GetImpl();
+    if (!smbLib)
+      return;
     if (smb.HasContext())
-    {
-      smb.GetImpl()->smbc_close(m_fd);
-    }
+      smbLib->smbc_close(m_fd);
     m_fd = -1;
   }
 }
@@ -609,8 +638,11 @@ ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
 
   // lpBuf can be safely casted to void* since xbmc_write will only read from it.
   CSingleLock lock(smb);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return -1;
 
-  return smb.GetImpl()->smbc_write(m_fd, (void*)lpBuf, uiBufSize);
+  return smbLib->smbc_write(m_fd, (void*)lpBuf, uiBufSize);
 }
 
 bool CSMBFile::Delete(const CURL& url)
@@ -619,8 +651,11 @@ bool CSMBFile::Delete(const CURL& url)
   std::string strFile = GetAuthenticatedPath(url);
 
   CSingleLock lock(smb);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return false;
 
-  int result = smb.GetImpl()->smbc_unlink(strFile.c_str());
+  int result = smbLib->smbc_unlink(strFile.c_str());
   if (result != 0)
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
 
@@ -634,8 +669,11 @@ bool CSMBFile::Rename(const CURL& url, const CURL& urlnew)
   std::string strFileNew = GetAuthenticatedPath(urlnew);
 
   CSingleLock lock(smb);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return false;
 
-  int result = smb.GetImpl()->smbc_rename(strFile.c_str(), strFileNew.c_str());
+  int result = smbLib->smbc_rename(strFile.c_str(), strFileNew.c_str());
   if (result != 0)
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
 
@@ -654,15 +692,18 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
   std::string strFileName = GetAuthenticatedPath(url);
 
   CSingleLock lock(smb);
+  DllLibSMB *smbLib = smb.GetImpl();
+  if (!smbLib)
+    return false;
 
   if (bOverWrite)
   {
     CLog::Log(LOGWARNING, "SMBFile::OpenForWrite() called with overwriting enabled! - %s", CURL::GetRedacted(strFileName).c_str());
-    m_fd = smb.GetImpl()->smbc_creat(strFileName.c_str(), 0);
+    m_fd = smbLib->smbc_creat(strFileName.c_str(), 0);
   }
   else
   {
-    m_fd = smb.GetImpl()->smbc_open(strFileName.c_str(), O_RDWR, 0);
+    m_fd = smbLib->smbc_open(strFileName.c_str(), O_RDWR, 0);
   }
 
   if (m_fd == -1)
