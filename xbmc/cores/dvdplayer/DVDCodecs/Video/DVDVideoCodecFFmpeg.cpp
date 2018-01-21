@@ -448,8 +448,17 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
 
 void CDVDVideoCodecFFmpeg::SetFilters()
 {
+
   // ask codec to do deinterlacing if possible
   EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+  for (std::vector<CDVDCodecOption>::iterator it = m_options.m_keys.begin(); it != m_options.m_keys.end(); ++it)
+  {
+    if (it->m_name == "skip-deinterlacing")
+    {
+      mDeintMode = VS_DEINTERLACEMODE_OFF;
+      break;
+    }
+  }
 
   EINTERLACEMETHOD mInt = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
   if (mInt == VS_INTERLACEMETHOD_AUTO)
