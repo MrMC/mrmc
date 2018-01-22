@@ -27,6 +27,7 @@
 #import "platform/darwin/tvos/ProgressThumbNailer.h"
 #import "platform/darwin/tvos/FocusLayerViewPlayerProgressSettings.h"
 #import "guilib/GUISliderControl.h"
+#import "guilib/GUIWindowManager.h"
 #import "video/VideoInfoTag.h"
 #import "utils/MathUtils.h"
 #import "utils/StringUtils.h"
@@ -479,8 +480,7 @@
       [self setNeedsFocusUpdate];
     }];
 #else
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
-    TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_OSD)));
+  g_windowManager.ActivateWindow(11200);
 #endif
 }
 //--------------------------------------------------------------
