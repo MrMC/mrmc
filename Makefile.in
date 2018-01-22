@@ -390,6 +390,11 @@ apk24: install
 	sed -i'' -e 's|targetSdkVersion="22"|targetSdkVersion="24"|' 'tools/android/packaging/xbmc/AndroidManifest.xml'
 	PKG_EXCLUDED_ADDONS="skin.pm3.hd skin.re-touched" make -C tools/android/packaging apk
 
+apk24Obb: install
+	sed -i'' -e 's|minSdkVersion="21"|minSdkVersion="24"|' 'tools/android/packaging/xbmc/AndroidManifest.xml'
+	sed -i'' -e 's|targetSdkVersion="22"|targetSdkVersion="24"|' 'tools/android/packaging/xbmc/AndroidManifest.xml'
+	PKG_EXCLUDED_ADDONS="skin.pm3.hd skin.re-touched" make -C tools/android/packaging apk-obb
+
 apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb: install
 	make -C tools/android/packaging $@
 
