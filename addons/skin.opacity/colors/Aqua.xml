@@ -3,4 +3,5 @@
     <color name="primary_color">FF00ffff</color>
     <color name="primary_color_30">5000ffff</color>
     <color name="selected">FF00e6e6</color>
+    <color name="systemfocus">FF00ffff</color>
 </colors>

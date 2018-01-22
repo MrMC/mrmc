@@ -20,4 +20,5 @@
 	<color name="Shadow">65000000</color>
 	<color name="ShadowDark">FF262626</color>
 	<color name="Highlight">FFf6b12b</color>
+	<color name="systemfocus">FFf6b12b</color>
 </colors>

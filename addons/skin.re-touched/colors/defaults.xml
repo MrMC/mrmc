@@ -6,4 +6,5 @@
 	<color name="black">FF000000</color>
 	<color name="blue">FF0084ff</color>
 	<color name="selected">FFce8b14</color>
+	<color name="systemfocus">FF0084ff</color>
 </colors>

@@ -6,4 +6,5 @@
 	<color name="black">FF000000</color>
 	<color name="green">ffe2ff43</color>
 	<color name="dialogheader">DDced8da</color>
+	<color name="systemfocus">ffe2ff43</color>
 </colors>

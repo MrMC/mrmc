@@ -19,4 +19,5 @@
 	<color name="border_alpha">60FFFFFF</color>
 	<color name="disabled">40FFFFFF</color>
 	<color name="invalid">FFFF0000</color>
+	<color name="systemfocus">FFFF0800</color>
 </colors>
