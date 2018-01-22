@@ -8653,7 +8653,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16020"
-msgid "Deinterlace"
+msgid "Deinterlace (Yadif 2X)"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
@@ -8722,7 +8722,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16036"
-msgid "Deinterlace (half)"
+msgid "Deinterlace (half/Yadif)"
 msgstr ""
 
 msgctxt "#16037"
