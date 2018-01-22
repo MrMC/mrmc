@@ -43,6 +43,8 @@ typedef enum
   CLICK_NONE = 0,
   CLICK_LEFT,
   CLICK_RIGHT,
+  CLICK_UP,
+  CLICK_DOWN,
 } CLICK_DIRECTION;
 
 typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)

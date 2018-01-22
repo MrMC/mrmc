@@ -1733,7 +1733,6 @@
 		F51063421BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
 		F51063431BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
 		F51063441BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */; };
-		F5130C592013890C00A507E5 /* FocusLayerViewPlayerProgressSettings.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5130C572013890B00A507E5 /* FocusLayerViewPlayerProgressSettings.mm */; };
 		F51777BF1DC509B700302A71 /* DVDVideoCodecVideoToolBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */; };
 		F51D16EB1E29950600A03C93 /* highlight.c in Sources */ = {isa = PBXBuildFile; fileRef = F51D16AD1E29950600A03C93 /* highlight.c */; };
 		F51D16EC1E29950600A03C93 /* highlight.c in Sources */ = {isa = PBXBuildFile; fileRef = F51D16AD1E29950600A03C93 /* highlight.c */; };
@@ -5307,8 +5306,6 @@
 		F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTextViewer.cpp; sourceTree = "<group>"; };
 		F51063401BDAA11D00BBCED6 /* DarwinNSUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinNSUserDefaults.h; sourceTree = "<group>"; };
 		F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinNSUserDefaults.mm; sourceTree = "<group>"; };
-		F5130C572013890B00A507E5 /* FocusLayerViewPlayerProgressSettings.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FocusLayerViewPlayerProgressSettings.mm; sourceTree = "<group>"; };
-		F5130C582013890B00A507E5 /* FocusLayerViewPlayerProgressSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusLayerViewPlayerProgressSettings.h; sourceTree = "<group>"; };
 		F51D16AD1E29950600A03C93 /* highlight.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = highlight.c; sourceTree = "<group>"; };
 		F51D16AE1E29950600A03C93 /* libdvd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = libdvd.c; sourceTree = "<group>"; };
 		F51D16B01E29950600A03C93 /* navigation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = navigation.c; sourceTree = "<group>"; };
@@ -10007,8 +10004,6 @@
 				F5DF58891FEF37C500AD4C8C /* FocusLayerView.mm */,
 				F52EE1C7200662B700074569 /* FocusLayerViewPlayerProgress.h */,
 				F52EE1C8200662B800074569 /* FocusLayerViewPlayerProgress.mm */,
-				F5130C582013890B00A507E5 /* FocusLayerViewPlayerProgressSettings.h */,
-				F5130C572013890B00A507E5 /* FocusLayerViewPlayerProgressSettings.mm */,
 				F5D142A01BAF31FB0075A95C /* MainEAGLView.h */,
 				F5D142A11BAF31FB0075A95C /* MainEAGLView.mm */,
 				F5D142A41BAF31FB0075A95C /* MainKeyboard.h */,
@@ -13589,7 +13584,6 @@
 				F5D1418A1BAF0B6D0075A95C /* MouseStat.cpp in Sources */,
 				F5D1418B1BAF0B6D0075A95C /* ButtonTranslator.cpp in Sources */,
 				F5D1418C1BAF0B6D0075A95C /* InertialScrollingHandler.cpp in Sources */,
-				F5130C592013890C00A507E5 /* FocusLayerViewPlayerProgressSettings.mm in Sources */,
 				F51D16ED1E29950600A03C93 /* highlight.c in Sources */,
 				F5D1418D1BAF0B6D0075A95C /* KeyboardStat.cpp in Sources */,
 				F5D1418E1BAF0B6D0075A95C /* GUIWindowSplash.cpp in Sources */,

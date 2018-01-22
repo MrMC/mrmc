@@ -43,12 +43,12 @@ class CProgressThumbNailer;
   CGRect barRect;
   CGRect thumbRect;
   CGRect videoRect;
+  UIColor *videoRectColor;
   bool   videoRectIsAboveBar;
   double seekTimeSeconds;
   double totalTimeSeconds;
   ThumbNailerImage thumbImage;
   CProgressThumbNailer *thumbNailer;
-  UIView *slideDownView;
 }
 @property (nonatomic) double _value;
 

@@ -25,9 +25,9 @@
 #import "messaging/ApplicationMessenger.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/tvos/ProgressThumbNailer.h"
-#import "platform/darwin/tvos/FocusLayerViewPlayerProgressSettings.h"
 #import "guilib/GUISliderControl.h"
 #import "guilib/GUIWindowManager.h"
+#import "guilib/GUIColorManager.h"
 #import "video/VideoInfoTag.h"
 #import "utils/MathUtils.h"
 #import "utils/StringUtils.h"
@@ -85,11 +85,19 @@
     // ie. how fast the auto pan slows down
     self->decelerationRate = 0.50;
     self->decelerationMaxVelocity = 1000;
-    self->totalTimeSeconds = -1;
+    self->totalTimeSeconds = -1.0;
     self->seekTimeSeconds = 0.0;
     self->thumbNailer = nullptr;
-    self->slideDownView = nil;
     float percentage = 0.0;
+    color_t systemFocusColor = g_colorManager.GetColor("systemfocus");
+    if (systemFocusColor == 0)
+      self->videoRectColor = [UIColor whiteColor];
+    self->videoRectColor = [UIColor
+      colorWithRed:(float)GET_R(systemFocusColor)/255
+      green:(float)GET_G(systemFocusColor)/255
+      blue:(float)GET_B(systemFocusColor)/255
+      alpha:1.0];
+
     if (g_application.m_pPlayer->IsPlayingVideo())
     {
       CFileItem &fileitem = g_application.CurrentFileItem();
@@ -103,7 +111,7 @@
       self->thumbNailer = new CProgressThumbNailer(fileitem, 400, self);
       //TODO: grab initial thumb from renderer.
     }
-    // initial slider position and kick off a thumb image gen
+    // set initial slider position and kick off a thumb image gen
     [self setPercentage:percentage];
     thumbConstant = thumb;
 
@@ -146,7 +154,6 @@
     swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
     swipeDown.delegate = self;
     [self  addGestureRecognizer:swipeDown];
-
   }
 	return self;
 }
@@ -173,10 +180,10 @@
 
 - (void) setPercentage:(double)percentage
 {
-  if (percentage < 0)
-    percentage = 0;
-  if (percentage > 1)
-    percentage = 1;
+  if (percentage < 0.0)
+    percentage = 0.0;
+  if (percentage > 1.0)
+    percentage = 1.0;
   self.value = (distance * percentage) + min;
   CLog::Log(LOGDEBUG, "PlayerProgress::set percentage(%f), value(%f)", percentage, self.value);
   if (self->thumbNailer)
@@ -209,9 +216,6 @@
 //--------------------------------------------------------------
 - (BOOL)canBecomeFocused
 {
-  if (self->slideDownView)
-    return NO;
-
   return YES;
 }
 //--------------------------------------------------------------
@@ -242,12 +246,12 @@
   CGContextAddLineToPoint(ctx, thumbPointerEND.x, thumbPointerEND.y);
   CGContextStrokePath(ctx);
 
-  videoRect = CGRectMake(0, 0, 400, 225);
-  videoRect.origin.x = CGRectGetMidX(thumbRect) - videoRect.size.width/2;
+  videoRect = CGRectMake(0.0, 0.0, 400.0, 225.0);
+  videoRect.origin.x = CGRectGetMidX(thumbRect) - videoRect.size.width / 2.0;
   if (videoRectIsAboveBar)
-    videoRect.origin.y = thumbRect.origin.y - (videoRect.size.height + 10);
+    videoRect.origin.y = thumbRect.origin.y - (videoRect.size.height + 10.0);
   else
-    videoRect.origin.y = thumbRect.origin.y + (thumbRect.size.height + 10);
+    videoRect.origin.y = thumbRect.origin.y + (thumbRect.size.height + 10.0);
   // clamp left/right sides to left/right sides of bar
   if (CGRectGetMinX(videoRect) < CGRectGetMinX(self.bounds))
     videoRect.origin.x = self.bounds.origin.x;
@@ -287,8 +291,8 @@
     CGContextDrawImage(ctx, videoBounds, self->thumbImage.image);
 
     // draw a thin white frame around the video thumb image
-    CGContextSetStrokeColorWithColor(ctx, [[UIColor whiteColor] CGColor]);
-    CGContextSetLineWidth(ctx, 0.5);
+    CGContextSetStrokeColorWithColor(ctx, [self->videoRectColor CGColor]);
+    CGContextSetLineWidth(ctx, 1.0);
     CGContextStrokeRect(ctx, videoBounds);
   }
 
@@ -310,8 +314,8 @@
   NSString *string = [NSString stringWithUTF8String:cstring.c_str()];
 
   CGRect contextRect = videoRect;
-  contextRect.origin.y = CGRectGetMaxY(videoRect) - videoRect.size.height / 4;
-  contextRect.size.height = videoRect.size.height / 4;
+  contextRect.origin.y = CGRectGetMaxY(videoRect) - videoRect.size.height / 4.0;
+  contextRect.size.height = videoRect.size.height / 4.0;
 
   /// Make a copy of the default paragraph style
   NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -326,19 +330,19 @@
 
   CGSize size = [string sizeWithAttributes:attributes];
 
-  CGRect textRect = CGRectMake(contextRect.origin.x + floorf((contextRect.size.width - size.width) / 2),
-    contextRect.origin.y + floorf((contextRect.size.height - size.height) / 2),
+  CGRect textRect = CGRectMake(contextRect.origin.x + floorf((contextRect.size.width - size.width) / 2.0),
+    contextRect.origin.y + floorf((contextRect.size.height - size.height) / 2.0),
     size.width, size.height);
 
   textRect.origin.y = CGRectGetMaxY(videoRect) - textRect.size.height;
 
-  CGRect underRect = CGRectInset(textRect, -4, 0);
+  CGRect underRect = CGRectInset(textRect, -4.0, 0.0);
   CGContextSetFillColorWithColor(ctx, [[UIColor blackColor] CGColor]);
   CGContextFillRect(ctx, underRect);
   if (drawFrame)
   {
-    CGContextSetStrokeColorWithColor(ctx, [[UIColor whiteColor] CGColor]);
-    CGContextSetLineWidth(ctx, 0.5);
+    CGContextSetStrokeColorWithColor(ctx, [self->videoRectColor CGColor]);
+    CGContextSetLineWidth(ctx, 1.0);
     CGContextStrokeRect(ctx, underRect);
   }
   [string drawInRect:textRect withAttributes:attributes];
@@ -350,8 +354,10 @@
     return;
   thumb = barRect.size.width * (CGFloat)((self.value - min) / distance);
   CGPoint thumbPoint = CGPointMake(barRect.origin.x + thumb, barRect.origin.y);
-  thumbRect = CGRectMake(thumbPoint.x - barRect.size.height/2, thumbPoint.y, barRect.size.height, barRect.size.height);
+  thumbRect = CGRectMake(thumbPoint.x - barRect.size.height / 2.0, thumbPoint.y, barRect.size.height, barRect.size.height);
 
+  // upload happens fast if we aysnc dispatch
+  // rather than just doing it directly
   dispatch_async(dispatch_get_main_queue(),^{
     [self setNeedsDisplay];
   });
@@ -368,16 +374,11 @@
 //--------------------------------------------------------------
 - (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments
 {
-  if (self->slideDownView)
-    return @[self->slideDownView, (UIView*)self];
-
   return @[(UIView*)self];
 }
 //--------------------------------------------------------------
 - (BOOL) shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
 {
-  if (self->slideDownView)
-    return NO;
   return YES;
 }
 
@@ -392,16 +393,12 @@
 //--------------------------------------------------------------
 - (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-  if (self->slideDownView)
-    return NO;
   CLog::Log(LOGDEBUG, "PlayerProgress::gestureRecognizer:shouldReceiveTouch");
   return YES;
 }
 //--------------------------------------------------------------
 - (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
 {
-  if (self->slideDownView)
-    return NO;
   CLog::Log(LOGDEBUG, "PlayerProgress::gestureRecognizer:shouldReceivePress");
   return YES;
 }
@@ -442,19 +439,6 @@
   CLog::Log(LOGDEBUG, "PlayerProgress::handleDownSwipeGesture");
   if (self->deceleratingTimer)
     [self stopDeceleratingTimer];
-  if (self->slideDownView)
-  {
-    [UIView animateWithDuration:0.5
-      animations:^{
-        CGRect frame = CGRectOffset([self->slideDownView frame], 0.0, -100.0);
-        [self->slideDownView setFrame:frame];
-        [self->slideDownView layoutIfNeeded];
-      }
-      completion:^(BOOL finished){
-        [self->slideDownView removeFromSuperview];
-        self->slideDownView = nil;
-      }];
-  }
 }
 //--------------------------------------------------------------
 - (IBAction) handleDownSwipeGesture:(UISwipeGestureRecognizer *)sender
@@ -462,26 +446,7 @@
   CLog::Log(LOGDEBUG, "PlayerProgress::handleDownSwipeGesture");
   if (self->deceleratingTimer)
     [self stopDeceleratingTimer];
-  if (self->slideDownView)
-    [self->slideDownView removeFromSuperview];
-#if 0
-  CGRect frameRect = [UIScreen mainScreen].bounds;
-  frameRect.size.height = 100.0;
-  frameRect.origin.y = -100.0;
-  self->slideDownView = [[FocusLayerViewPlayerProgressSettings alloc] initWithFrame:frameRect];
-  [self addSubview:self->slideDownView];
-  [UIView animateWithDuration:0.5
-    animations:^{
-      CGRect frame = CGRectOffset([self->slideDownView frame], 0.0, 100.0);
-      [self->slideDownView setFrame:frame];
-      [self->slideDownView layoutIfNeeded];
-    }
-    completion:^(BOOL finished){
-      [self setNeedsFocusUpdate];
-    }];
-#else
-  g_windowManager.ActivateWindow(11200);
-#endif
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, 11200, 0);
 }
 //--------------------------------------------------------------
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender
@@ -685,8 +650,7 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
   {
     case UIGestureRecognizerStateBegan:
       CLog::Log(LOGDEBUG, "PlayerProgress::IRRemoteDownArrowPressed");
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
-        TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_OSD)));
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, 11200, 0);
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateChanged:

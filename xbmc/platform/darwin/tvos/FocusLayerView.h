@@ -121,12 +121,12 @@ bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector
 
 @private
   bool focusable;
-  bool viewVisable;
+  bool viewVisible;
   CGRect viewBounds;
   UIColor *frameColor;
 }
 
 - (void) setFocusable:(bool)focusable;
-- (void) setViewVisable:(bool)viewVisable;
+- (void) setViewVisible:(bool)viewVisible;
 
 @end

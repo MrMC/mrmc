@@ -48,7 +48,7 @@ bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector
     self.layer.backgroundColor = [[UIColor clearColor] CGColor];
 
     // set to false to hide frame drawing (used for debugging)
-    self->viewVisable = false;
+    self->viewVisible = false;
     self->focusable = false;
     self->viewBounds = frame;
     self->frameColor = [UIColor whiteColor];
@@ -61,7 +61,7 @@ bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector
 {
   // if some focus changed, we need to update ourselves
   // to show correct frame color
-  if (self->viewVisable)
+  if (self->viewVisible)
     [self setNeedsDisplay];
 }
 
@@ -75,7 +75,7 @@ bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector
 
 - (void)drawRect:(CGRect)rect
 {
-  if (self->viewVisable)
+  if (self->viewVisible)
   {
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetBlendMode(context, kCGBlendModeCopy);
@@ -102,9 +102,9 @@ bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector
     self->frameColor = [UIColor whiteColor];
 }
 
-- (void) setViewVisable:(bool)viewVisable
+- (void) setViewVisible:(bool)viewVisible
 {
-  self->viewVisable = viewVisable;
+  self->viewVisible = viewVisible;
 }
 
 @end

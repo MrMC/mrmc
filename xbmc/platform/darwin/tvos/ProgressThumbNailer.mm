@@ -69,12 +69,21 @@ CProgressThumbNailer::CProgressThumbNailer(const CFileItem& item, int width, id 
 
 CProgressThumbNailer::~CProgressThumbNailer()
 {
+  if (m_videoDemuxer)
+    m_videoDemuxer->Abort();
+  if (m_inputStream)
+    m_inputStream->Abort();
+
   if (IsRunning())
   {
     m_bStop = true;
     m_processSleep.Set();
     StopThread();
   }
+  // dispose of codec after process thread stops
+  // it might be in use
+  if (m_videoCodec)
+    m_videoCodec->Dispose();
   SAFE_DELETE(m_videoCodec);
   SAFE_DELETE(m_videoDemuxer);
   SAFE_DELETE(m_inputStream);
@@ -268,7 +277,9 @@ void CProgressThumbNailer::QueueExtractThumb(int seekTime)
         }
       }
 
-    } while (abort_index--);
+    } while (!m_bStop && abort_index--);
+    if (m_bStop)
+      return;
 
     if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
     {
@@ -332,7 +343,7 @@ void CProgressThumbNailer::QueueExtractThumb(int seekTime)
           CSingleLock lock(m_thumbImagesCritical);
           m_thumbImages.push(thumbNailerImage);
           lock.Leave();
-          if ([m_obj isKindOfClass:[FocusLayerViewPlayerProgress class]] )
+          if (!m_bStop && [m_obj isKindOfClass:[FocusLayerViewPlayerProgress class]] )
           {
             FocusLayerViewPlayerProgress *viewPlayerProgress = (FocusLayerViewPlayerProgress*)m_obj;
             [viewPlayerProgress updateViewMainThread];
