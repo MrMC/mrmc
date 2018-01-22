@@ -953,7 +953,7 @@ bool CApplication::InitDirectoriesDarwin()
   fontconfigFilePath = appPath + "/system/players/dvdplayer/etc/fonts";
   // the location of the fonts.conf file
   setenv("FONTCONFIG_PATH", fontconfigFilePath.c_str(), 1);
-  setenv("MRMC_IOS_FRAMEWORKS", frameworksPath.c_str(), 1);
+  setenv("MRMC_DARWIN_FRAMEWORKS", frameworksPath.c_str(), 1);
   CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesDarwin: fontconfigFilePath(%s)", fontconfigFilePath.c_str());
 #endif
   

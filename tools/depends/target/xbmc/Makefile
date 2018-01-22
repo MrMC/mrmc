@@ -22,6 +22,9 @@ ifeq ($(lite),yes)
 else
   ifeq ($(OS),osx)
     CONFIGURE += --with-bundle_extension=osx
+    ifeq ($(USE_SIMULATOR),yes)
+      CONFIGURE += --enable-gles
+    endif
   else ifeq ($(OS),ios)
     ifeq ($(TARGET_PLATFORM),tvos)
       CONFIGURE += --with-bundle_extension=tvos

@@ -42,8 +42,10 @@
 #ifdef _WIN32
 #define AUDIOENGINE_HELPER_DLL "\\library.kodi.audioengine\\libKODI_audioengine" ADDON_HELPER_EXT
 #else
-#define AUDIOENGINE_HELPER_DLL_NAME "libKODI_audioengine-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define AUDIOENGINE_HELPER_DLL "/library.kodi.audioengine/" AUDIOENGINE_HELPER_DLL_NAME
+#define AUDIOENGINE_NAME "libKODI_audioengine"
+#define AUDIOENGINE_DLL "/library.kodi.audioengine/" AUDIOENGINE_NAME
+#define AUDIOENGINE_HELPER_DLL_NAME AUDIOENGINE_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define AUDIOENGINE_HELPER_DLL "/library.xbmc.addon/" AUDIOENGINE_DLL
 #endif
 
 class CAddonAEStream;
@@ -86,6 +88,16 @@ public:
         std::string tempbin = getenv("XBMC_ANDROID_LIBS");
         libBasePath = tempbin + "/" + AUDIOENGINE_HELPER_DLL;
       }
+#elif defined(__APPLE__)
+  #if (defined(__arm__) || defined(__arm64__))
+      // <path>/xxx.app/Frameworks/<libname>.framework/<libname>
+      libBasePath = getenv("MRMC_DARWIN_FRAMEWORKS");
+      libBasePath += "/" AUDIOENGINE_NAME "-" ADDON_HELPER_ARCH ".framework";
+      libBasePath += "/" AUDIOENGINE_NAME "-" ADDON_HELPER_ARCH;
+  #else
+      libBasePath = getenv("MRMC_DARWIN_FRAMEWORKS");
+      libBasePath += "/" AUDIOENGINE_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT;
+  #endif
 #endif
 
     m_libKODI_audioengine = dlopen(libBasePath.c_str(), RTLD_LAZY);

@@ -84,11 +84,16 @@ public:
       std::string tempbin = getenv("XBMC_ANDROID_LIBS");
       libBasePath = tempbin + "/" + GUI_HELPER_DLL_NAME;
     }
-#elif defined(__APPLE__) && (defined(__arm__) || defined(__arm64__))
+#elif defined(__APPLE__)
+  #if (defined(__arm__) || defined(__arm64__))
     // <path>/xxx.app/Frameworks/<libname>.framework/<libname>
-    libBasePath = getenv("MRMC_IOS_FRAMEWORKS");
+    libBasePath = getenv("MRMC_DARWIN_FRAMEWORKS");
     libBasePath += "/" GUI_HELPER_NAME "-" ADDON_HELPER_ARCH ".framework";
     libBasePath += "/" GUI_HELPER_NAME "-" ADDON_HELPER_ARCH;
+  #else
+    libBasePath = getenv("MRMC_DARWIN_FRAMEWORKS");
+    libBasePath += "/" GUI_HELPER_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT;
+  #endif
 #endif
 
     m_libKODI_guilib = dlopen(libBasePath.c_str(), RTLD_LAZY);

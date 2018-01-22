@@ -102,7 +102,6 @@ void CIoSupport::FreeReadBuffer()
 }
 
 int CIoSupport::ReadSector(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer)
-
 {
 #if defined(TARGET_DARWIN) && defined(HAS_DVD_DRIVE)
   dk_cd_read_t cd_read;

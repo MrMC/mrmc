@@ -941,7 +941,10 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
       if (*platform == "osx32" || *platform == "osx")
 #endif // endif __x86_64__
 #elif defined(TARGET_DARWIN_IOS)
-#if defined(TARGET_DARWIN_TVOS)
+#if defined(__x86_64__)
+        if (*platform == "osx")
+          return true;
+#elif defined(TARGET_DARWIN_TVOS)
         if (*platform == "tvos")
           return true;
 #endif

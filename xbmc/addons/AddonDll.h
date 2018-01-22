@@ -174,16 +174,20 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     std::string tempbin = getenv("XBMC_ANDROID_LIBS");
     strFileName = tempbin + "/" + m_strLibName;
   }
-#elif defined(TARGET_DARWIN_IOS)
-  // iOS libs live in xxx.app/FrameWorks/<libname/.framework/<libname>.
+#elif defined(TARGET_DARWIN)
   if (!XFILE::CFile::Exists(strFileName))
   {
-    // ios/tvos, dylibs are repackaged into dynamic frameworks
-    // strip the .dylib and redirect the load name.
-    // format is <path>/xxx.app/Frameworks/<libname>.framework/<libname>
-    std::string strID = ID();
-    std::string m_strLibName = StringUtils::Format("%s.framework/%s",strID.c_str(),strID.c_str());
+    // OSX libs live in xxx.app/FrameWorks/<libname>.dylib
+    // default to osx location, it is the same if under iOS/tvOS simulator
     strFileName = CSpecialProtocol::TranslatePath("special://frameworks/" + m_strLibName);
+    #if defined(TARGET_DARWIN_IOS) && !defined(__x86_64__)
+      // ios/tvos, dylibs are repackaged into dynamic frameworks
+      // strip the .dylib and redirect the load name.
+      // format is <path>/xxx.app/Frameworks/<libname>.framework/<libname>
+      std::string strID = ID();
+      m_strLibName = StringUtils::Format("%s.framework/%s", strID.c_str(), strID.c_str());
+      strFileName = CSpecialProtocol::TranslatePath("special://frameworks/" + m_strLibName);
+    #endif
   }
 #endif
   if (!XFILE::CFile::Exists(strFileName))

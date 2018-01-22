@@ -790,24 +790,23 @@ fi
 if test "$host_vendor" = "apple" ; then
   # standard application paths
   INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
-  if test "$use_arch" != "arm"; then
-    LIBS="$LIBS -framework ApplicationServices"
-    LIBS="$LIBS -framework AudioUnit"
-    LIBS="$LIBS -framework AudioToolbox"
-    LIBS="$LIBS -framework Cocoa"
-    LIBS="$LIBS -framework CoreAudio"
-    LIBS="$LIBS -framework CoreVideo"
-    LIBS="$LIBS -framework CoreServices"
-    LIBS="$LIBS -framework CoreFoundation"
-    LIBS="$LIBS -framework DiskArbitration"
-    LIBS="$LIBS -framework IOKit"
-    LIBS="$LIBS -framework IOSurface"
-    LIBS="$LIBS -framework QuartzCore"
-    LIBS="$LIBS -framework SystemConfiguration"
-    LIBS="$LIBS -framework VideoDecodeAcceleration"
-  else
-    #arm/ios
-    LIBS="$LIBS -framework CoreFoundation"
+  LIBS="$LIBS -framework CoreFoundation"
+  if test "$use_gles" = "no"; then
+    if test "$use_arch" != "arm"; then
+      LIBS="$LIBS -framework ApplicationServices"
+      LIBS="$LIBS -framework AudioUnit"
+      LIBS="$LIBS -framework AudioToolbox"
+      LIBS="$LIBS -framework Cocoa"
+      LIBS="$LIBS -framework CoreAudio"
+      LIBS="$LIBS -framework CoreVideo"
+      LIBS="$LIBS -framework CoreServices"
+      LIBS="$LIBS -framework DiskArbitration"
+      LIBS="$LIBS -framework IOKit"
+      LIBS="$LIBS -framework IOSurface"
+      LIBS="$LIBS -framework QuartzCore"
+      LIBS="$LIBS -framework SystemConfiguration"
+      LIBS="$LIBS -framework VideoDecodeAcceleration"
+    fi
   fi
 elif test "$target_platform" = "target_raspberry_pi"; then
   ARCH="arm"
