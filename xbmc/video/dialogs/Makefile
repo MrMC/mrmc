@@ -6,6 +6,7 @@ SRCS += GUIDialogVideoBookmarks.cpp
 SRCS += GUIDialogVideoInfo.cpp
 SRCS += GUIDialogVideoOSD.cpp
 SRCS += GUIDialogVideoSettings.cpp
+SRCS += GUIDialogOSDSettings.cpp
 
 LIB   = videodialogs.a
 

@@ -1158,26 +1158,30 @@ MainController *g_xbmcController;
   auto singletap = [[UITapGestureRecognizer alloc]
     initWithTarget:self action:@selector(SiriSingleTapHandler:)];
   singletap.numberOfTapsRequired = 1;
-  singletap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeUpArrow],
-                            [NSNumber numberWithInteger:UIPressTypeDownArrow],
-                            [NSNumber numberWithInteger:UIPressTypeLeftArrow],
-                            [NSNumber numberWithInteger:UIPressTypeRightArrow]];
+  // The default press type is select, when this property is set to an empty array,
+  // the gesture recognizer will respond to taps like a touch pad like surface
+  singletap.allowedPressTypes = @[];
+  singletap.allowedTouchTypes = @[@(UITouchTypeIndirect)];
   singletap.delegate = self;
   [self.focusView addGestureRecognizer:singletap];
 
   auto doubletap = [[UITapGestureRecognizer alloc]
     initWithTarget:self action:@selector(SiriDoubleTapHandler:)];
   doubletap.numberOfTapsRequired = 2;
-  doubletap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeUpArrow],
-                            [NSNumber numberWithInteger:UIPressTypeDownArrow],
-                            [NSNumber numberWithInteger:UIPressTypeLeftArrow],
-                            [NSNumber numberWithInteger:UIPressTypeRightArrow]];
-  doubletap.delegate = self;
+  doubletap.allowedPressTypes = @[];
+  doubletap.allowedTouchTypes = @[@(UITouchTypeIndirect)];
   [self.focusView addGestureRecognizer:doubletap];
 
-  [singletap setDelaysTouchesBegan:YES];
-  [doubletap setDelaysTouchesBegan:YES];
+  auto tripletap = [[UITapGestureRecognizer alloc]
+    initWithTarget:self action:@selector(SiriTripleTapHandler:)];
+  tripletap.numberOfTapsRequired = 3;
+  tripletap.allowedPressTypes = @[];
+  tripletap.allowedTouchTypes = @[@(UITouchTypeIndirect)];
+  tripletap.delegate = self;
+  [self.focusView addGestureRecognizer:tripletap];
+
   [singletap requireGestureRecognizerToFail:doubletap];
+  [doubletap requireGestureRecognizerToFail:tripletap];
 }
 //--------------------------------------------------------------
 - (void)createSiriPressGesturecognizers
@@ -1502,14 +1506,13 @@ CGRect swipeStartingParentViewRect;
               swipeStartingParentViewRect.origin.y + swipeStartingParentViewRect.size.height);
           }
           break;
-        case UIGestureRecognizerStateCancelled:
-          CLog::Log(LOGDEBUG, "SiriSwipeHandler:StateCancelled");
-          break;
         default:
           break;
       }
     }
   }
+  // start remote timeout
+  [self startRemoteTimer];
 }
 //--------------------------------------------------------------
 - (IBAction)SiriPanHandler:(UIPanGestureRecognizer *)sender
@@ -1536,31 +1539,7 @@ CGRect swipeStartingParentViewRect;
               swipeStartingParentViewRect.origin.y + swipeStartingParentViewRect.size.height);
           }
           break;
-        case UIGestureRecognizerStateCancelled:
-          CLog::Log(LOGDEBUG, "SiriPanHandler:StateCancelled");
-          break;
         default:
-          break;
-      }
-    }
-  }
-}
-//--------------------------------------------------------------
-- (void)SiriSingleTapHandler:(UITapGestureRecognizer *)sender
-{
-  if (!m_remoteIdleState)
-  {
-    if (m_appAlive == YES)
-    {
-      switch (sender.state)
-      {
-        case UIGestureRecognizerStateEnded:
-          CLog::Log(LOGDEBUG, "SiriSingleTapHandler:StateEnded");
-          if ([self hasPlayerProgressScrubbing] && !g_application.m_pPlayer->IsPaused())
-            g_infoManager.SetDisplayAfterSeek(2500);
-          break;
-        default:
-          CLog::Log(LOGDEBUG, "SiriSingleTapHandler:StateOther %ld", (long)sender.state);
           break;
       }
     }
@@ -1569,26 +1548,59 @@ CGRect swipeStartingParentViewRect;
   [self startRemoteTimer];
 }
 //--------------------------------------------------------------
+- (void)SiriSingleTapHandler:(UITapGestureRecognizer *)sender
+{
+  if (m_appAlive == YES)
+  {
+    switch (sender.state)
+    {
+      case UIGestureRecognizerStateEnded:
+        CLog::Log(LOGDEBUG, "SiriSingleTapHandler:StateEnded");
+        if ([self hasPlayerProgressScrubbing] && !g_application.m_pPlayer->IsPaused())
+          g_infoManager.SetDisplayAfterSeek(2500);
+        break;
+      default:
+        break;
+    }
+  }
+  // start remote timeout
+  [self startRemoteTimer];
+}
+//--------------------------------------------------------------
 - (void)SiriDoubleTapHandler:(UITapGestureRecognizer *)sender
 {
-  if (!m_remoteIdleState)
+  if (m_appAlive == YES)
   {
-    if (m_appAlive == YES)
+    switch (sender.state)
     {
-      switch (sender.state)
-      {
-        case UIGestureRecognizerStateEnded:
-          CLog::Log(LOGDEBUG, "SiriDoubleTapHandler:StateEnded");
-          if ([self hasPlayerProgressScrubbing] && !g_application.m_pPlayer->IsPaused())
-          {
-            KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
-              TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_SUBTITLES)));
-          }
-          break;
-       default:
-          CLog::Log(LOGDEBUG, "SiriDoubleTapHandler:StateOther %ld", (long)sender.state);
-          break;
-      }
+      case UIGestureRecognizerStateEnded:
+        CLog::Log(LOGDEBUG, "SiriDoubleTapHandler:StateEnded");
+        // placeholder to alter progress bar time display
+        break;
+     default:
+        break;
+    }
+  }
+  // start remote timeout
+  [self startRemoteTimer];
+}
+//--------------------------------------------------------------
+- (void)SiriTripleTapHandler:(UITapGestureRecognizer *)sender
+{
+  if (m_appAlive == YES)
+  {
+    switch (sender.state)
+    {
+      case UIGestureRecognizerStateEnded:
+        CLog::Log(LOGDEBUG, "SiriTripleTapHandler:StateEnded");
+        if ([self hasPlayerProgressScrubbing] && !g_application.m_pPlayer->IsPaused())
+        {
+          KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_SUBTITLES)));
+        }
+        break;
+     default:
+        break;
     }
   }
   // start remote timeout

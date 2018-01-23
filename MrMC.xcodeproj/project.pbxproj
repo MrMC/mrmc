@@ -156,6 +156,9 @@
 		18D18CE91D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
 		18D18CEA1D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
+		18F123CC2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
+		18F123CD2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
+		18F123CE2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
 		18FD1CA91BC8E62600027005 /* PodnapisiSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18FD1CA71BC8E62600027005 /* PodnapisiSearch.cpp */; };
 		18FD1CAA1BC8E62600027005 /* PodnapisiSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18FD1CA71BC8E62600027005 /* PodnapisiSearch.cpp */; };
 		18FD1CAB1BC8E62600027005 /* PodnapisiSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18FD1CA71BC8E62600027005 /* PodnapisiSearch.cpp */; };
@@ -3636,6 +3639,8 @@
 		18D18CE71D0DC14400BBAB05 /* PlexUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexUtils.h; sourceTree = "<group>"; };
 		18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
+		18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogOSDSettings.cpp; sourceTree = "<group>"; };
+		18F123CB2017AD7400C82783 /* GUIDialogOSDSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogOSDSettings.h; sourceTree = "<group>"; };
 		18FD1CA31BC7DC2900027005 /* SubtitleSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubtitleSearch.h; sourceTree = "<group>"; };
 		18FD1CA71BC8E62600027005 /* PodnapisiSearch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PodnapisiSearch.cpp; sourceTree = "<group>"; };
 		18FD1CA81BC8E62600027005 /* PodnapisiSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodnapisiSearch.h; sourceTree = "<group>"; };
@@ -7025,6 +7030,8 @@
 				18B7C8FF12942761009E7A26 /* GUIDialogAudioSubtitleSettings.h */,
 				886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */,
 				886328160E07B37200BB3DAB /* GUIDialogFullScreenInfo.h */,
+				18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */,
+				18F123CB2017AD7400C82783 /* GUIDialogOSDSettings.h */,
 				7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */,
 				7C4E6F711829AA9700F1068F /* GUIDialogSubtitles.h */,
 				F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */,
@@ -11097,6 +11104,7 @@
 				18B7C8DA12942546009E7A26 /* MouseStat.cpp in Sources */,
 				18B7C8DB12942546009E7A26 /* SDLJoystick.cpp in Sources */,
 				F5B724EE1C7E150C006432AE /* rawread.cpp in Sources */,
+				18F123CC2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */,
 				18B7C8E912942603009E7A26 /* Crc32.cpp in Sources */,
 				18B7C8EE12942613009E7A26 /* URIUtils.cpp in Sources */,
 				18B7C8F31294261F009E7A26 /* StringUtils.cpp in Sources */,
@@ -12231,6 +12239,7 @@
 				E49913D8174E5F8D00741B6D /* GUIWindowPictures.cpp in Sources */,
 				E49913D9174E5F8D00741B6D /* GUIWindowSlideShow.cpp in Sources */,
 				E49913DA174E5F8D00741B6D /* Picture.cpp in Sources */,
+				18F123CD2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */,
 				E49913DB174E5F8D00741B6D /* PictureInfoLoader.cpp in Sources */,
 				F5B723041C7C894F006432AE /* GUIControlBuiltins.cpp in Sources */,
 				E49913DC174E5F8D00741B6D /* PictureInfoTag.cpp in Sources */,
@@ -13275,6 +13284,7 @@
 				F5D140951BAF0B6D0075A95C /* TCPServer.cpp in Sources */,
 				F5B722AA1C7BBFBF006432AE /* Encoder.cpp in Sources */,
 				F5D140961BAF0B6D0075A95C /* UdpClient.cpp in Sources */,
+				18F123CE2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */,
 				F5D140971BAF0B6D0075A95C /* AEResampleFactory.cpp in Sources */,
 				F5D140981BAF0B6D0075A95C /* WakeOnAccess.cpp in Sources */,
 				F5D140991BAF0B6D0075A95C /* WebServer.cpp in Sources */,

@@ -281,8 +281,6 @@
     videoBounds.size.height = videoRect.size.width / aspect;
     if (videoRectIsAboveBar)
       videoBounds.origin.y += videoRect.size.height - videoBounds.size.height;
-    else
-      videoBounds.origin.y -= videoRect.size.height - videoBounds.size.height;
 
     // clear to black the under video area, might not need this
     CGContextSetFillColorWithColor(ctx, [[UIColor blackColor] CGColor]);
@@ -334,7 +332,12 @@
     contextRect.origin.y + floorf((contextRect.size.height - size.height) / 2.0),
     size.width, size.height);
 
-  textRect.origin.y = CGRectGetMaxY(videoRect) - textRect.size.height;
+  // place time string at bottom or top depending on
+  // if video thumb image is above or below progress bar
+  if (videoRectIsAboveBar)
+    textRect.origin.y = CGRectGetMaxY(videoRect) - textRect.size.height;
+  else
+    textRect.origin.y = CGRectGetMinY(videoRect);
 
   CGRect underRect = CGRectInset(textRect, -4.0, 0.0);
   CGContextSetFillColorWithColor(ctx, [[UIColor blackColor] CGColor]);
@@ -354,10 +357,11 @@
     return;
   thumb = barRect.size.width * (CGFloat)((self.value - min) / distance);
   CGPoint thumbPoint = CGPointMake(barRect.origin.x + thumb, barRect.origin.y);
-  thumbRect = CGRectMake(thumbPoint.x - barRect.size.height / 2.0, thumbPoint.y, barRect.size.height, barRect.size.height);
+  thumbRect = CGRectMake(thumbPoint.x - barRect.size.height / 2.0, thumbPoint.y,
+    barRect.size.height, barRect.size.height);
 
-  // upload happens fast if we aysnc dispatch
-  // rather than just doing it directly
+  // update happens faster if we aysnc dispatch
+  // rather than just doing it directly, go figure
   dispatch_async(dispatch_get_main_queue(),^{
     [self setNeedsDisplay];
   });
@@ -436,7 +440,7 @@
 //--------------------------------------------------------------
 - (IBAction) handleUpSwipeGesture:(UISwipeGestureRecognizer *)sender
 {
-  CLog::Log(LOGDEBUG, "PlayerProgress::handleDownSwipeGesture");
+  CLog::Log(LOGDEBUG, "PlayerProgress::handleUpSwipeGesture");
   if (self->deceleratingTimer)
     [self stopDeceleratingTimer];
 }
@@ -446,7 +450,8 @@
   CLog::Log(LOGDEBUG, "PlayerProgress::handleDownSwipeGesture");
   if (self->deceleratingTimer)
     [self stopDeceleratingTimer];
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, 11200, 0);
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
+    TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_OSD_SETTINGS)));
 }
 //--------------------------------------------------------------
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender
@@ -650,7 +655,8 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
   {
     case UIGestureRecognizerStateBegan:
       CLog::Log(LOGDEBUG, "PlayerProgress::IRRemoteDownArrowPressed");
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, 11200, 0);
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
+        TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_OSD_SETTINGS)));
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateChanged:

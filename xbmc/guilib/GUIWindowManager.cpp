@@ -80,6 +80,7 @@
 #include "dialogs/GUIDialogMediaSource.h"
 #include "video/dialogs/GUIDialogVideoSettings.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
+#include "video/dialogs/GUIDialogOSDSettings.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
@@ -268,6 +269,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogPVRGuideSearch);
   Add(new CGUIDialogPVRChannelsOSD);
   Add(new CGUIDialogPVRGuideOSD);
+  Add(new CGUIDialogOSDSettings);
 
   Add(new ActiveAE::CGUIDialogAudioDSPManager);
   Add(new ActiveAE::CGUIDialogAudioDSPSettings);
@@ -340,6 +342,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_MEDIA_FILTER);
     Delete(WINDOW_DIALOG_SUBTITLES);
     Delete(WINDOW_MEDIA_SOURCES);
+    Delete(WINDOW_DIALOG_OSD_SETTINGS);
 
     /* Delete PVR related windows and dialogs */
     Delete(WINDOW_TV_CHANNELS);

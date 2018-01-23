@@ -139,6 +139,10 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     ToggleOSD();
     return true;
 
+  case ACTION_SHOW_OSD_SETTINGS:
+    ToggleOSDSettings();
+    return true;
+
   case ACTION_TRIGGER_OSD:
     TriggerOSD();
     return true;
@@ -676,4 +680,17 @@ void CGUIWindowFullScreen::TriggerOSD()
       pOSD->SetAutoClose(iSec * 1000);
     pOSD->Open();
   }
+}
+
+void CGUIWindowFullScreen::ToggleOSDSettings()
+{
+  CGUIDialog *pOSD = (CGUIDialog*)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_SETTINGS);
+  if (pOSD)
+  {
+    if (pOSD->IsDialogRunning())
+      pOSD->Close();
+    else
+      pOSD->Open();
+  }
+  MarkDirtyRegion();
 }

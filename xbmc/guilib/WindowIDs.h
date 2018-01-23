@@ -157,6 +157,7 @@
 #define WINDOW_DIALOG_VIDEO_OSD           12901
 
 #define WINDOW_VIDEO_MENU                 12902
+#define WINDOW_DIALOG_OSD_SETTINGS        12903
 #define WINDOW_VIDEO_TIME_SEEK            12905 // virtual window for time seeking during fullscreen video
 
 #define WINDOW_SPLASH                     12997 // splash window
