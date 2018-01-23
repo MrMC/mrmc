@@ -56,6 +56,7 @@
 			<onup>500</onup>
 			<ondown>500</ondown>
 			<include>VisibleFadeEffect</include>
+			<visible>VideoPlayer.Content(LiveTV)</visible>
 		</control>
 		<control type="group">
 			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
