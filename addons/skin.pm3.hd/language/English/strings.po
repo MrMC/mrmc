@@ -70,7 +70,15 @@ msgctxt "#31025"
 msgid "Items"
 msgstr ""
 
-#empty strings from id 31026 to 31027
+#: /xml/VideoOSD.xml
+msgctxt "#31026"
+msgid "Toggle audio stream"
+msgstr ""
+
+#: /xml/VideoOSD.xml
+msgctxt "#31027"
+msgid "Toggle language"
+msgstr ""
 
 msgctxt "#31028"
 msgid "DVD thumbs"

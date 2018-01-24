@@ -637,7 +637,7 @@
       <group id="2">
         <setting id="videoplayer.seeksteps" type="list[integer]" label="13556" help="37042">
           <level>2</level>
-          <default>-600,-300,-180,-60,-30,-10,10,30,60,180,300,600</default>
+          <default>-10,30</default>
           <constraints>
             <options>videoseeksteps</options>
             <delimiter>,</delimiter>
@@ -649,7 +649,7 @@
         </setting>
         <setting id="videoplayer.seekdelay" type="integer" label="13557" help="37043">
           <level>2</level>
-          <default>750</default>
+          <default>250</default>
           <constraints>
             <minimum label="231">0</minimum> <!-- None -->
             <step>250</step>

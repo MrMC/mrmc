@@ -189,7 +189,17 @@ msgctxt "#31061"
 msgid "Current selected"
 msgstr ""
 
-#empty strings from id 31062 to 31100
+#: /xml/VideoOSD.xml
+msgctxt "#31062"
+msgid "Toggle audio stream"
+msgstr ""
+
+#: /xml/VideoOSD.xml
+msgctxt "#31063"
+msgid "Toggle language"
+msgstr ""
+
+#empty strings from id 31064 to 31100
 #Skin Settings labels
 
 msgctxt "#31101"

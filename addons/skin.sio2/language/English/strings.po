@@ -273,3 +273,13 @@ msgstr "Toggle Debug"
 msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr ""
+
+#: /xml/VideoOSD.xml
+msgctxt "#31414"
+msgid "Toggle audio stream"
+msgstr ""
+
+#: /xml/VideoOSD.xml
+msgctxt "#31415"
+msgid "Toggle language"
+msgstr ""

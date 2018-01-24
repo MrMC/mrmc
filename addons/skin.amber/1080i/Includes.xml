@@ -1868,4 +1868,48 @@
       </control>
     </definition>  
   </include>
+  <include name="DialogBackgroundCommons">
+    <control type="image">
+      <left>-2000</left>
+      <top>-2000</top>
+      <width>6000</width>
+      <height>6000</height>
+      <texture flipy="true" border="0,30,0,30">OSD/OSDBackground.png</texture>
+      <colordiffuse>FFE2E2E2</colordiffuse>
+      <visible>Window.IsActive(fullscreenvideo)</visible>
+    </control>
+    <control type="button">
+      <left>-2000</left>
+      <top>-2000</top>
+      <width>6000</width>
+      <height>6000</height>
+      <texturefocus />
+      <texturenofocus />
+      <onclick>Action(close)</onclick>
+    </control>
+    <control type="group">
+      <width>$PARAM[width]</width>
+      <control type="label" id="$PARAM[header_id]">
+        <left>0</left>
+        <top>-40</top>
+        <right>0</right>
+        <height>70</height>
+        <font>ViewMenu</font>
+        <label>$PARAM[header_label]</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <shadowcolor>black</shadowcolor>
+      </control>
+      <control type="button" id="22002">
+        <description>button overlay to avoid closing in dialog area</description>
+        <left>0</left>
+        <top>0</top>
+        <right>0</right>
+        <height>$PARAM[height]</height>
+        <texturefocus />
+        <texturenofocus />
+        <onclick>noop</onclick>
+      </control>
+    </control>
+  </include>
 </includes>

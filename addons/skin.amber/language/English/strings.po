@@ -134,13 +134,23 @@ msgctxt "#31051"
 msgid "Sort: Descending"
 msgstr ""
 
-#empty strings from id 31052 to 31109
+#: /xml/VideoOSD.xml
+msgctxt "#31052"
+msgid "Toggle language"
+msgstr ""
+
+#empty strings from id 31053 to 31109
 
 msgctxt "#31110"
 msgid "Edit Background for Media Type"
 msgstr ""
 
-#empty strings from id 31111 to 31112
+#empty strings from id 31111 to 31111
+
+#: /xml/VideoOSD.xml
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Single Image"
