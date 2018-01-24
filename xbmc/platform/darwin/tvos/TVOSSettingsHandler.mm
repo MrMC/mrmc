@@ -56,10 +56,6 @@ void CTVOSInputSettings::Initialize()
    const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED = "input.applesiritimeoutenabled";
    const std::string CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE = "input.applesiriexpertmode";
    */
-  bool enableTimeout = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
-  [g_xbmcController enableRemoteIdle:enableTimeout];
-  int timeout = CSettings::GetInstance().GetInt(CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
-  [g_xbmcController setRemoteIdleTimeout:timeout];
   bool enableFocusEffects = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIFOCUSEFFECTS);
   bool enableFocusZoom = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM);
   CFocusEngineHandler::GetInstance().EnableFocusZoom(enableFocusEffects && enableFocusZoom);
@@ -78,17 +74,7 @@ void CTVOSInputSettings::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED)
-  {
-    bool enableTimeout = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
-    [g_xbmcController enableRemoteIdle:enableTimeout];
-  }
-  else if (settingId == CSettings::SETTING_INPUT_APPLESIRITIMEOUT)
-  {
-    int timeout = CSettings::GetInstance().GetInt(CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
-    [g_xbmcController setRemoteIdleTimeout:timeout];
-  }
-  else if (settingId == CSettings::SETTING_INPUT_APPLESIRIFOCUSEFFECTS ||
+  if (settingId == CSettings::SETTING_INPUT_APPLESIRIFOCUSEFFECTS ||
            settingId == CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM ||
            settingId == CSettings::SETTING_INPUT_APPLESIRIFOCUSLIDE)
   {

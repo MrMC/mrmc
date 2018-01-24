@@ -206,7 +206,13 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
   else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
     // Resume the video if the user has requested it
+    // Always unpause if we are not in expert OSD mode and player is paused on download completion
+#if defined(TARGET_DARWIN_TVOS)
+    if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE) && g_application.m_pPlayer->IsPaused()) ||
+        (g_application.m_pPlayer->IsPaused() && m_pausedOnRun ))
+#else
     if (g_application.m_pPlayer->IsPaused() && m_pausedOnRun)
+#endif
       g_application.m_pPlayer->Pause();
 
     CGUIDialog::OnMessage(message);

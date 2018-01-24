@@ -18,6 +18,8 @@
  *
  */
 
+#define enableDebugLogging 0
+
 #import "ProgressThumbNailer.h"
 
 #import <UIKit/UIKit.h>
@@ -215,7 +217,9 @@ void CProgressThumbNailer::Process()
         m_seekTimeMilliSeconds = 0.5 + (percent * m_totalTimeMilliSeconds) / 100;
       else
         m_seekTimeMilliSeconds = m_totalTimeMilliSeconds;
+#if enableDebugLogging
       CLog::Log(LOGDEBUG, "QueueExtractThumb - requested(%d)", m_seekTimeMilliSeconds);
+#endif
       QueueExtractThumb(m_seekTimeMilliSeconds);
     }
     m_processSleep.WaitMSec(10);
@@ -228,7 +232,9 @@ void CProgressThumbNailer::QueueExtractThumb(int seekTime)
   if (!m_videoDemuxer || !m_videoCodec)
     return;
 
+#if enableDebugLogging
   unsigned int nTime = XbmcThreads::SystemClockMillis();
+#endif
 
   // reset codec on entry, we have no
   // clue about previous state.
@@ -358,7 +364,9 @@ void CProgressThumbNailer::QueueExtractThumb(int seekTime)
     }
   }
 
+#if enableDebugLogging
   unsigned int nTotalTime = XbmcThreads::SystemClockMillis() - nTime;
   CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb at %d in %d packets. ", __FUNCTION__, nTotalTime, thumbNailerImage.time, packetsTried);
+#endif
   return;
 }

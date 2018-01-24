@@ -7,6 +7,7 @@
 		<posx>850</posx>
 		<posy>15</posy>
 	</coordinates>
+	<onunload>Dialog.Close(osdsettings)</onunload>
 	<controls>
 		<control type="group">
 			<!-- Chapter Count images -->

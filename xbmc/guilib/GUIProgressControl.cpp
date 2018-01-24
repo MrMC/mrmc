@@ -20,7 +20,7 @@
 
 #include "GUIProgressControl.h"
 #include "GUIInfoManager.h"
-#include "GUIInfoLabels.h"
+#include "guiinfo/GUIInfoLabels.h"
 #include "GUIListItem.h"
 #include "utils/StringUtils.h"
 

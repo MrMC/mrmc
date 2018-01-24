@@ -5,6 +5,7 @@
 	<animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 	<depth>DepthOSD</depth>
+	<onunload>Dialog.Close(osdsettings)</onunload>
 	<controls>
 		<control type="group">
 			<visible>player.chaptercount + Window.IsVisible(FullScreenVideo)</visible>

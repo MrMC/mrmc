@@ -3,6 +3,7 @@
   <visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsActive(script-XBMC-Subtitles-main.xml)]</visible>
   <visible>Window.IsActive(DialogFullScreenInfo.xml) | Window.IsActive(videoosd.xml) | [Window.IsVisible(FullScreenVideo) + [Player.Caching | Player.Seeking | player.forwarding | player.rewinding | Player.DisplayAfterSeek | Player.Paused]]</visible>
   <include>OSDFade</include>
+  <onunload>Dialog.Close(osdsettings)</onunload>
   <controls>
     <control type="group" description="Top Bar">
       <control type="image" description="Background">

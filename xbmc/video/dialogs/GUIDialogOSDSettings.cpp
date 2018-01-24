@@ -39,10 +39,13 @@ void CGUIDialogOSDSettings::FrameMove()
 
 bool CGUIDialogOSDSettings::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_SHOW_OSD_SETTINGS)
+  switch (action.GetID())
   {
-    Close();
-    return true;
+    case ACTION_MOVE_UP:
+    case ACTION_SHOW_OSD_SETTINGS:
+      Close();
+      return true;
+      break;
   }
 
   return CGUIDialog::OnAction(action);

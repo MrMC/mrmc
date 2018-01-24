@@ -5,6 +5,7 @@
 	<include>Animation_BottomSlide</include>
 	<depth>DepthOSD</depth>
 	<zorder>0</zorder>
+	<onunload>Dialog.Close(osdsettings)</onunload>
 	<controls>
 		<control type="group">
 			<bottom>0</bottom>

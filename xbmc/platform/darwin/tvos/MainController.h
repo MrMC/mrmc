@@ -40,12 +40,12 @@ typedef enum
 
 typedef enum
 {
-  CLICK_SELECT_OR_RELEASED = 0,
-  CLICK_LEFT,
-  CLICK_RIGHT,
-  CLICK_UP,
-  CLICK_DOWN,
-} CLICK_DIRECTION;
+  TOUCH_UP = 0,
+  TOUCH_DOWN,
+  TOUCH_LEFT,
+  TOUCH_RIGHT,
+  TOUCH_CENTER
+} TOUCH_POSITION;
 
 typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 {
@@ -80,31 +80,27 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   BOOL                        m_disableIdleTimer;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
-  BOOL                        m_remoteIdleState;
-  CGFloat                     m_remoteIdleTimeout;
-  BOOL                        m_enableRemoteIdle;
   BOOL                        m_enableRemoteExpertMode;
   BOOL                        m_stopPlaybackOnMenu;
   BOOL                        m_nativeKeyboardActive;
   BOOL                        m_focusIdleState;
-  CLICK_DIRECTION             m_clickDirection;
+  TOUCH_POSITION              m_touchPosition;
 }
 
 // why are these properties ?
-@property (nonatomic, strong) NSTimer *m_holdTimer;
+@property (nonatomic, strong) NSTimer *m_selectHoldTimer;
+@property (nonatomic, strong) NSTimer *m_irArrowHoldTimer;
 @property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
-@property int                 m_holdCounter;
+@property int                 m_selectHoldCounter;
+@property int                 m_irArrowHoldCounter;
 @property CGFloat             m_screenScale;
 @property int                 m_screenIdx;
 @property CGSize              m_screensize;
-@property BOOL                m_remoteIdleState;
-@property CGFloat             m_remoteIdleTimeout;
-@property BOOL                m_enableRemoteIdle;
 @property BOOL                m_focusIdleState;
 @property CGFloat             m_focusIdleTimeout;
 @property BOOL                m_enableRemoteExpertMode;
 @property BOOL                m_stopPlaybackOnMenu;
-@property CLICK_DIRECTION     m_clickDirection;
+@property TOUCH_POSITION      m_touchPosition;
 
 - (void)onPlayDelayed:(NSDictionary *)item;
 - (void)onSpeedChanged:(NSDictionary *)item;
@@ -142,8 +138,6 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (void) disableScreenSaver;
 - (void) enableScreenSaver;
 - (bool) resetSystemIdleTimer;
-- (void) setRemoteIdleTimeout:(int)timeout;
-- (void) enableRemoteIdle:(BOOL)enable;
 - (void) enableRemoteExpertMode:(BOOL)enable;
 - (void) stopPlaybackOnMenu:(BOOL)enable;
 

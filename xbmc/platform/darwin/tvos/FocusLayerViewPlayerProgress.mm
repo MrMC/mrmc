@@ -33,6 +33,13 @@
 #import "utils/StringUtils.h"
 #import "utils/log.h"
 
+#define enableDebugLogging 0
+
+// has to be a global as this object will get
+// destroyed when core settings window pops up.
+static bool gOSDSettingsWasUp = false;
+static double gScrubbedPercentForRestore = -1;
+
 @interface FocusLayerViewPlayerProgress ()
 @property (strong, nonatomic) NSTimer *pressAutoRepeatTimer;
 @property (strong, nonatomic) NSTimer *remoteIdleTimer;
@@ -111,6 +118,14 @@
       self->thumbNailer = new CProgressThumbNailer(fileitem, 400, self);
       //TODO: grab initial thumb from renderer.
     }
+    // restore scrubbed position if user has popped up
+    // the OSDSettings core window and backed out
+    if (gOSDSettingsWasUp)
+    {
+      gOSDSettingsWasUp = false;
+      if (gScrubbedPercentForRestore > 0)
+        percentage = gScrubbedPercentForRestore;
+    }
     // set initial slider position and kick off a thumb image gen
     [self setPercentage:percentage];
     thumbConstant = thumb;
@@ -185,12 +200,15 @@
   if (percentage > 1.0)
     percentage = 1.0;
   self.value = (distance * percentage) + min;
+#if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::set percentage(%f), value(%f)", percentage, self.value);
+#endif
   if (self->thumbNailer)
   {
     self->seekTimeSeconds = percentage * self->totalTimeSeconds;
     self->thumbNailer->RequestThumbAsPercentage(100.0 * percentage);
   }
+  gScrubbedPercentForRestore = percentage;
 }
 
 - (double) getSeekTimePercentage
@@ -207,7 +225,9 @@
     if (seekTimeMilliSeconds > totalTimeMilliSeconds)
       seekTimeMilliSeconds = totalTimeMilliSeconds;
     double percentage = (double)seekTimeMilliSeconds / totalTimeMilliSeconds;
+#if enableDebugLogging
     CLog::Log(LOGDEBUG, "PlayerProgress::getSeekTimePercentage(%f), value(%f)", percentage, self.value);
+#endif
     return 100.0 * percentage;
   }
   return -1;
@@ -265,7 +285,9 @@
     {
       CGImageRelease(self->thumbImage.image);
       self->thumbImage = newThumbImage;
+#if enableDebugLogging
       CLog::Log(LOGDEBUG, "PlayerProgress::drawRect:got newThumbImage at %d", newThumbImage.time);
+#endif
     }
   }
 
@@ -322,7 +344,7 @@
   /// Set text alignment
   paragraphStyle.alignment = NSTextAlignmentCenter;
 
-  NSDictionary *attributes = @{ NSFontAttributeName: [UIFont systemFontOfSize:32],
+  NSDictionary *attributes = @{ NSFontAttributeName: [UIFont systemFontOfSize:28],
     NSForegroundColorAttributeName: [UIColor whiteColor],
     NSParagraphStyleAttributeName: paragraphStyle };
 
@@ -335,9 +357,9 @@
   // place time string at bottom or top depending on
   // if video thumb image is above or below progress bar
   if (videoRectIsAboveBar)
-    textRect.origin.y = CGRectGetMaxY(videoRect) - textRect.size.height;
+    textRect.origin.y = CGRectGetMaxY(videoRect) - textRect.size.height - 1;
   else
-    textRect.origin.y = CGRectGetMinY(videoRect);
+    textRect.origin.y = CGRectGetMinY(videoRect) + 1.0;
 
   CGRect underRect = CGRectInset(textRect, -4.0, 0.0);
   CGContextSetFillColorWithColor(ctx, [[UIColor blackColor] CGColor]);
@@ -389,7 +411,9 @@
 - (void) didUpdateFocusInContext:(UIFocusUpdateContext *)context
     withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
+#if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::didUpdateFocusInContext");
+#endif
 }
 
 #pragma mark - touch/gesture handlers
@@ -397,24 +421,32 @@
 //--------------------------------------------------------------
 - (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
+#if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::gestureRecognizer:shouldReceiveTouch");
+#endif
   return YES;
 }
 //--------------------------------------------------------------
 - (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
 {
+#if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::gestureRecognizer:shouldReceivePress");
+#endif
   return YES;
 }
 //--------------------------------------------------------------
 - (BOOL) gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
+#if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::gestureRecognizerShouldBegin");
+#endif
   if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
   {
     UIPanGestureRecognizer *panGestureRecognizer = (UIPanGestureRecognizer*)gestureRecognizer;
     CGPoint translation = [panGestureRecognizer translationInView:self];
+#if enableDebugLogging
     CLog::Log(LOGDEBUG, "PlayerProgress::gestureRecognizerShouldBegin x(%f), y(%f)", translation.x, translation.y);
+#endif
     if (fabs(translation.x) > fabs(translation.y))
       return [self isFocused];
   }
@@ -440,23 +472,30 @@
 //--------------------------------------------------------------
 - (IBAction) handleUpSwipeGesture:(UISwipeGestureRecognizer *)sender
 {
+#if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::handleUpSwipeGesture");
+#endif
   if (self->deceleratingTimer)
     [self stopDeceleratingTimer];
 }
 //--------------------------------------------------------------
 - (IBAction) handleDownSwipeGesture:(UISwipeGestureRecognizer *)sender
 {
+#if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::handleDownSwipeGesture");
+#endif
   if (self->deceleratingTimer)
     [self stopDeceleratingTimer];
+  gOSDSettingsWasUp = true;
   KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
     TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_OSD_SETTINGS)));
 }
 //--------------------------------------------------------------
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender
 {
+#if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::handlePanGesture");
+#endif
   CGPoint translation = [sender translationInView:self];
   CGPoint velocity =  [sender velocityInView:self];
   switch (sender.state)
@@ -545,7 +584,9 @@ typedef enum IRRemoteTypes
     int totalTimeMilliSeconds = self->totalTimeSeconds * 1000;
     if (seekTimeMilliSeconds > totalTimeMilliSeconds)
       seekTimeMilliSeconds = totalTimeMilliSeconds;
+#if enableDebugLogging
     CLog::Log(LOGDEBUG, "PlayerProgress::sendButtonPressed:seekTime(%d)", seekTimeMilliSeconds);
+#endif
     double percentage = (double)seekTimeMilliSeconds / totalTimeMilliSeconds;
     [self setPercentage:percentage];
     thumbConstant = thumb;
@@ -619,7 +660,9 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
+#if enableDebugLogging
       CLog::Log(LOGDEBUG, "PlayerProgress::IRRemoteLeftArrowPressed");
+#endif
       [self startKeyPressTimer:IR_Left doBeforeDelay:true withDelay:REPEATED_KEYPRESS_DELAY_S];
       break;
     case UIGestureRecognizerStateEnded:
@@ -636,7 +679,9 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
+#if enableDebugLogging
       CLog::Log(LOGDEBUG, "PlayerProgress::IRRemoteRightArrowPressed");
+#endif
       [self startKeyPressTimer:IR_Right doBeforeDelay:true withDelay:REPEATED_KEYPRESS_DELAY_S];
       break;
     case UIGestureRecognizerStateEnded:
@@ -654,7 +699,10 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
+#if enableDebugLogging
       CLog::Log(LOGDEBUG, "PlayerProgress::IRRemoteDownArrowPressed");
+#endif
+      gOSDSettingsWasUp = true;
       KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
         TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_OSD_SETTINGS)));
       break;
