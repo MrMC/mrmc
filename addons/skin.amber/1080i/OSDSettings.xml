@@ -18,20 +18,20 @@
 		</control>
 		<control type="group">
 			<top>0</top>
-			<height>180</height>
+			<height>240</height>
 			<!-- <visible>Window.IsTopMostModal(videoosd)</visible> -->
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<include>Animation_TopSlide</include>
 			<control type="image">
 				<posy>-30</posy>
 				<width>1920</width>
-				<height>180</height>
+				<height>240</height>
 				<texture flipy="true" border="0,30,0,30">OSD/OSDBackground.png</texture>
 				<colordiffuse>FFE2E2E2</colordiffuse>
 			</control>
 			<control type="grouplist" id="202">
 				<right>50</right>
-				<top>0</top>
+				<top>65</top>
 				<left>50</left>
 				<height>135</height>
 				<align>center</align>
@@ -47,7 +47,8 @@
 					<width>300</width>
 					<height>100</height>
 					<align>center</align>
-					<texturenofocus></texturenofocus>
+					<textcolor>White</textcolor>
+					<focusedcolor>Highlight</focusedcolor>
 					<onclick>SetProperty(settingslist_content,subtitle,home)</onclick>
 					<onclick>SetProperty(settingslist_header,$LOCALIZE[24012],home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
@@ -58,7 +59,8 @@
 					<width>300</width>
 					<height>100</height>
 					<align>center</align>
-					<texturenofocus></texturenofocus>
+					<textcolor>White</textcolor>
+					<focusedcolor>Highlight</focusedcolor>
 					<visible>VideoPlayer.IsStereoscopic</visible>
 					<onclick>SetProperty(settingslist_content,3d,home)</onclick>
 					<onclick>SetProperty(settingslist_header,$LOCALIZE[36501],home)</onclick>
@@ -69,7 +71,8 @@
 					<width>300</width>
 					<height>100</height>
 					<align>center</align>
-					<texturenofocus></texturenofocus>
+					<textcolor>White</textcolor>
+					<focusedcolor>Highlight</focusedcolor>
 					<onclick>SetProperty(settingslist_content,osd,home)</onclick>
 					<onclick>SetProperty(settingslist_header,$LOCALIZE[5],home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
