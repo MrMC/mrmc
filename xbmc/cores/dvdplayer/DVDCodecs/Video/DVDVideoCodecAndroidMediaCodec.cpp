@@ -968,6 +968,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   {
     // Handle rotation
     mediaformat.setInteger(CJNIMediaFormat::KEY_ROTATION, m_hints.orientation);
+    mediaformat.setInteger("feature-tunneled-playback", 0);
   }
 
   // handle codec extradata
