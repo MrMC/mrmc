@@ -268,9 +268,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
               hints.codec_tag == MKTAG('d','v','h','1') ||
               hints.codec_tag == MKTAG('d','v','h','e') ))
         {
-          // limit to 4K HEVC Main10 as we can not tell
-          // right now what might or might not be HDR
-          if (hints.width > 2048 || hints.height >= 1200)
+          // if bt2020+, kick it to AVFoundataion
+          if (hints.colorspace >= 9 && hints.colorspace <= 11)
             return false;
           // only AVFoundataion can handle DolbyVision
           if (hints.codec_tag == MKTAG('d','v','h','1') || hints.codec_tag == MKTAG('d','v','h','e'))

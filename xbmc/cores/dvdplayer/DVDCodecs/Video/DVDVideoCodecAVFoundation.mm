@@ -354,12 +354,14 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           m_max_ref_frames = 6;
           m_pFormatName = "avf-h265";
           // start with assuming SDR
+          m_colorspace = hints.colorspace;
           m_dynamicrange = DVP_DYNAMIC_RANGE_SDR;
           // HEVC Main 10 is always HDR10. Needs verify.
           if (hints.profile == FF_PROFILE_HEVC_MAIN_10 ||
               hints.profile == FF_PROFILE_HEVC_REXT)
           {
-            m_dynamicrange = DVP_DYNAMIC_RANGE_HDR10;
+            if (hints.colorspace >= 9 && hints.colorspace <= 11)
+              m_dynamicrange = DVP_DYNAMIC_RANGE_HDR10;
           }
           // check for DolbyVision, hints.profile will be wrong
           // and we have to look at codec_tag
