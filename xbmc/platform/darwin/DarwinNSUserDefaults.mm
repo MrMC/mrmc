@@ -71,6 +71,29 @@ bool CDarwinNSUserDefaults::Synchronize()
   return [[NSUserDefaults standardUserDefaults] synchronize] == YES;
 }
 
+void CDarwinNSUserDefaults::GetDirectoryContents(const std::string &path, std::vector<std::string>& contents)
+{
+  std::string userDataDir = URIUtils::AddFileToFolder(CDarwinUtils::GetUserHomeDirectory(), "userdata");
+  if (path.find(userDataDir) != std::string::npos)
+  {
+    NSDictionary<NSString *, id> *dict = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    for( NSString *aKey in [dict allKeys] )
+    {
+      // do something like a log:
+      if ([aKey hasPrefix:@"/userdata/"])
+      {
+        std::string keypath = [aKey UTF8String];
+        std::string fullKeyPath = URIUtils::AddFileToFolder(CDarwinUtils::GetUserHomeDirectory(), keypath);
+        std::string endingDirectory = URIUtils::GetDirectory(fullKeyPath);
+        if (path == endingDirectory)
+        {
+          contents.push_back(fullKeyPath);
+        }
+      }
+    }
+  }
+}
+
 bool CDarwinNSUserDefaults::GetKey(const std::string &key, std::string &value)
 {
   if (!key.empty())

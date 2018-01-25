@@ -1849,6 +1849,7 @@
 		F55902281C35D96800349249 /* DSMDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021B1C30A2BD00349249 /* DSMDirectory.cpp */; };
 		F55902291C35D96D00349249 /* DSMFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021D1C30A2BD00349249 /* DSMFile.cpp */; };
 		F559022A1C35D96D00349249 /* DSMFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F559021D1C30A2BD00349249 /* DSMFile.cpp */; };
+		F55B37B3201988C30096E5A7 /* TVOSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E99AF12019846100D70568 /* TVOSDirectory.cpp */; };
 		F55BA70B17AB2264002A36D1 /* StereoscopicsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5558ED0E176396CD00118C35 /* StereoscopicsManager.cpp */; };
 		F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55611BA21766672F00754072 /* RenderFlags.cpp */; };
 		F55BD3021D0A14ED0072FE3A /* PlexServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55BD3001D0A14ED0072FE3A /* PlexServices.cpp */; };
@@ -5962,6 +5963,8 @@
 		F5E55B6F10741340006E788A /* TeletextDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeletextDefines.h; sourceTree = "<group>"; };
 		F5E56BA41082A675006E788A /* PosixMountProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixMountProvider.h; sourceTree = "<group>"; };
 		F5E56BA51082A675006E788A /* PosixMountProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixMountProvider.cpp; sourceTree = "<group>"; };
+		F5E99AF02019846000D70568 /* TVOSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TVOSDirectory.h; sourceTree = "<group>"; };
+		F5E99AF12019846100D70568 /* TVOSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TVOSDirectory.cpp; sourceTree = "<group>"; };
 		F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PowerManager.cpp; sourceTree = "<group>"; };
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PowerManager.h; sourceTree = "<group>"; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CocoaPowerSyscall.cpp; sourceTree = "<group>"; };
@@ -8789,6 +8792,8 @@
 				DF93D68E1444A8B0007C6459 /* SpecialProtocolFile.h */,
 				E38E17590D25F9FA00618676 /* StackDirectory.cpp */,
 				E38E175A0D25F9FA00618676 /* StackDirectory.h */,
+				F5E99AF12019846100D70568 /* TVOSDirectory.cpp */,
+				F5E99AF02019846000D70568 /* TVOSDirectory.h */,
 				F5B721FD1C52917D006432AE /* TVOSFile.cpp */,
 				F5B721FE1C52917D006432AE /* TVOSFile.h */,
 				433219D312E4C6A500CD7486 /* udf25.cpp */,
@@ -12846,6 +12851,7 @@
 				F5D13F291BAF0B6D0075A95C /* DVDPlayer.cpp in Sources */,
 				F5D13F2A1BAF0B6D0075A95C /* DVDPlayerAudio.cpp in Sources */,
 				F5D13F2B1BAF0B6D0075A95C /* DVDPlayerSubtitle.cpp in Sources */,
+				F55B37B3201988C30096E5A7 /* TVOSDirectory.cpp in Sources */,
 				F5D13F2C1BAF0B6D0075A95C /* DVDPlayerTeletext.cpp in Sources */,
 				F5D13F2D1BAF0B6D0075A95C /* DVDPlayerVideo.cpp in Sources */,
 				F5B722C91C7BC186006432AE /* rfft.cpp in Sources */,

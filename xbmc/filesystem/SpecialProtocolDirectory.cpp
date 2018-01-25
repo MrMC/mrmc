@@ -43,6 +43,7 @@ bool CSpecialProtocolDirectory::GetDirectory(const CURL& url, CFileItemList &ite
   if (CDirectory::GetDirectory(translatedPath, items, m_strFileMask, m_flags | DIR_FLAG_GET_HIDDEN))
   { // replace our paths as necessary
     items.SetURL(url);
+
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];

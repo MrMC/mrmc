@@ -26,6 +26,7 @@ class CDarwinNSUserDefaults
 public:
   static bool Synchronize();
 
+  static void GetDirectoryContents(const std::string &path, std::vector<std::string>& contents);
   static bool GetKey(const std::string &key, std::string &value);
   static bool GetKeyData(const std::string &key, void* lpBuf, size_t &uiBufSize);
   static bool SetKey(const std::string &key, const std::string &value, bool synchronize);
