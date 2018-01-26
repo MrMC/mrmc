@@ -354,14 +354,9 @@ void CSettingConditions::Initialize()
 #endif
 #ifdef TARGET_DARWIN_IOS
   m_simpleConditions.insert("hasAVF");
-#endif
-#if defined(TARGET_DARWIN_TVOS)
-  if (__builtin_available(tvOS 11.2, *))
-  {
-      if (CDarwinUtils::IsAppleTV4KOrAbove())
-        m_simpleConditions.insert("hasDisplayRateSwitching");
-  }
-#elif !defined(TARGET_DARWIN_IOS)
+  if (CDarwinUtils::HasDisplayRateSwitching())
+    m_simpleConditions.insert("hasDisplayRateSwitching");
+#else
   m_simpleConditions.insert("hasDisplayRateSwitching");
 #endif
 
