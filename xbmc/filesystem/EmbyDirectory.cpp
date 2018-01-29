@@ -198,6 +198,12 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(g_localizeStrings.Get(627));
         items.SetContent("movies");
       }
+      else if (path == "set")
+      {
+        CEmbyUtils::GetEmbySet(items, Base64URL::Decode(section));
+        //We set the items name in GetEmbySets
+        items.SetContent("movies");
+      }
       else if(!filter.empty())
       {
         client->GetMoviesFilter(items, Base64URL::Decode(section), filter);

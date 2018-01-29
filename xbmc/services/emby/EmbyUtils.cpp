@@ -62,6 +62,9 @@ static const std::string TVShowsFields = {
   "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount"
 };
 
+static const std::string MoviesSetFields = {
+  "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount,ProviderIds,ItemCounts,ParentId"
+};
 
 static int g_progressSec = 0;
 static CFileItem m_curItem;
@@ -628,6 +631,20 @@ bool CEmbyUtils::GetEmbyRecentlyAddedAlbums(CFileItemList &items, const std::str
       embyItems.ClearItems();
     }
   }
+  return rtn;
+}
+
+#pragma mark - Emby Set
+bool CEmbyUtils::GetEmbySet(CFileItemList &items, const std::string url)
+{
+  CURL url1(url);
+  std::string setName = url1.GetOption("SetName");
+  url1.SetOption("Fields", MoviesSetFields);
+  CVariant variant = GetEmbyCVariant(url1.Get());
+  
+  bool rtn = ParseEmbyVideos(items, url1, variant, MediaTypeMovie);
+  
+  items.SetLabel(setName);
   return rtn;
 }
 
@@ -1593,6 +1610,24 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
   item->SetLabel(title);
   item->m_dateTime.SetFromW3CDateTime(variant["PremiereDate"].asString());
 
+  if (variant["IsFolder"].asBoolean())
+  {
+    // clear url options
+    CURL curl(url);
+    curl.SetOptions("");
+    curl.SetOption("ParentId", itemId);
+    curl.SetOption("SetName", title);
+    item->m_bIsFolder = true;
+    std::string testURL = curl.Get();
+    std::string testURL2;
+    curl.SetOption("Fields", MoviesFields);
+    item->SetPath("emby://movies/set/" + Base64URL::Encode(curl.Get()));
+  }
+  else
+  {
+    url2.SetFileName("Videos/" + itemId +"/stream?static=true");
+    item->SetPath(url2.Get());
+  }
   item->SetArt("fanart", fanart);
 
   item->GetVideoInfoTag()->m_strTitle = title;
@@ -1601,8 +1636,6 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
   //item->GetVideoInfoTag()->SetSortTitle(variant["SortName"].asString());
   //item->GetVideoInfoTag()->SetOriginalTitle(variant["OriginalTitle"].asString());
 
-  url2.SetFileName("Videos/" + itemId +"/stream?static=true");
-  item->SetPath(url2.Get());
   item->SetMediaServiceId(itemId);
   item->SetMediaServiceFile(variant["Path"].asString());
   item->GetVideoInfoTag()->m_strFileNameAndPath = url2.Get();
