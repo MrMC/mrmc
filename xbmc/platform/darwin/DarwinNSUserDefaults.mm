@@ -46,7 +46,7 @@ static bool translatePathIntoKey(const std::string &path, std::string &key)
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSData *nsdata = [defaults dataForKey:aKey];
         size_t size = [nsdata length];
-        CLog::Log(LOGDEBUG, "nsuserdefaults: %s with size %ld", [aKey UTF8String], size);
+        CLog::Log(LOGNOTICE, "nsuserdefaults: %s with size %ld", [aKey UTF8String], size);
       }
     }
     firstLookup = false;
