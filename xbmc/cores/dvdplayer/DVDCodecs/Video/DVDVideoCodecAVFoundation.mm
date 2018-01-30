@@ -367,7 +367,7 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           // and we have to look at codec_tag
           if (hints.codec_tag == MKTAG('d','v','h','1') ||
               hints.codec_tag == MKTAG('d','v','h','e') ||
-              hints.codec_tag == 36)
+              hints.codec_tag == MKTAG('D','O','V','I'))
           {
             m_colorspace = 9; // BT2020_NCL (Non-Constant Luminance)
             m_dynamicrange = DVP_DYNAMIC_RANGE_DOLBYYVISION;

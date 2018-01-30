@@ -266,13 +266,16 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
              (hints.profile == FF_PROFILE_HEVC_MAIN_10 ||
               hints.profile == FF_PROFILE_HEVC_REXT ||
               hints.codec_tag == MKTAG('d','v','h','1') ||
-              hints.codec_tag == MKTAG('d','v','h','e') ))
+              hints.codec_tag == MKTAG('d','v','h','e') ||
+              hints.codec_tag == MKTAG('D','O','V','I')))
         {
           // if bt2020+, kick it to AVFoundataion
           if (hints.colorspace >= 9 && hints.colorspace <= 11)
             return false;
           // only AVFoundataion can handle DolbyVision
-          if (hints.codec_tag == MKTAG('d','v','h','1') || hints.codec_tag == MKTAG('d','v','h','e'))
+          if (hints.codec_tag == MKTAG('d','v','h','1') ||
+              hints.codec_tag == MKTAG('d','v','h','e') ||
+              hints.codec_tag == MKTAG('D','O','V','I'))
             return false;
         }
          if (m_hints.extrasize < 23 || m_hints.extradata == NULL)
