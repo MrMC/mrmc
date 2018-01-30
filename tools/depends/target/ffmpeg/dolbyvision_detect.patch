@@ -1,0 +1,14 @@
+--- appletvos11.2_arm64-target/libavformat/mpegts-org.c	2018-01-29 19:41:39.000000000 -0500
++++ appletvos11.2_arm64-target/libavformat/mpegts.c	2018-01-29 19:41:42.000000000 -0500
+@@ -1896,6 +1896,10 @@ int ff_parse_mpeg2_descriptor(AVFormatCo
+             }
+         }
+         break;
++    case 0xB0: /* Dolby - DOVI_video_stream */
++        st->codecpar->codec_id = AV_CODEC_ID_HEVC;
++        st->codecpar->codec_tag = MKTAG('D', 'O', 'V', 'I');
++        break;
+     default:
+         break;
+     }
+
