@@ -222,7 +222,7 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
   // wait for decode_video thread to end
   CLog::Log(LOGNOTICE, "waiting for video thread to exit");
 
-  m_pVideoCodec->Reset();
+  //m_pVideoCodec->Reset();
   m_bAbortOutput = true;
   StopThread();
 
