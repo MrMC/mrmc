@@ -763,6 +763,11 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
       }
     } while (pDialog->IsConfirmed());
   }
+  else if (settingId == CSettings::SETTING_INPUT_RELOADKEYMAP)
+  {
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_RELOAD_KEYMAPS)));
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35012), "", 5000);
+  }
 }
 
 void CPeripherals::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)

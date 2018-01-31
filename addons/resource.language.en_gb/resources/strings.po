@@ -16127,7 +16127,21 @@ msgctxt "#35009"
 msgid "Don't use the custom keymap for this device"
 msgstr ""
 
-#empty strings from id 35010 to 35099
+#: system/settings.xml
+msgctxt "#35010"
+msgid "Reload keymaps"
+msgstr ""
+
+#: system/settings.xml
+msgctxt "#35011"
+msgid "Action to reload keymaps, usefull if custom keymap has been added"
+msgstr ""
+
+msgctxt "#35012"
+msgid "Keymap files have been reloaded"
+msgstr ""
+
+#empty strings from id 35013 to 35099
 
 #: system/settings/settings.xml
 msgctxt "#35100"

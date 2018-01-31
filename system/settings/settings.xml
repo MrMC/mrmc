@@ -3517,6 +3517,12 @@
       </group>
     </category>
     <category id="input" label="14094" help="36374">
+      <group id="3">
+        <setting id="input.reloadkeymap" type="action" label="35010" help="35011">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
       <group id="1">
         <setting id="input.peripherals" type="action" label="35000" help="36375">
           <level>1</level>

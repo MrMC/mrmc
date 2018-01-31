@@ -397,6 +397,7 @@ const std::string CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH = "audiooutpu
 const std::string CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH = "audiooutput.dtshdpassthrough";
 const std::string CSettings::SETTING_AUDIOOUTPUT_SUPPORTSDTSHDCPUDECODING = "audiooutput.supportdtshdcpudecoding";
 const std::string CSettings::SETTING_INPUT_PERIPHERALS = "input.peripherals";
+const std::string CSettings::SETTING_INPUT_RELOADKEYMAP = "input.reloadkeymap";
 const std::string CSettings::SETTING_INPUT_ENABLEMOUSE = "input.enablemouse";
 const std::string CSettings::SETTING_INPUT_ENABLEJOYSTICK = "input.enablejoystick";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEMODE = "input.appleremotemode";
@@ -1327,6 +1328,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALS);
   settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
+  settingSet.insert(CSettings::SETTING_INPUT_RELOADKEYMAP);
   m_settingsManager->RegisterCallback(&PERIPHERALS::CPeripherals::GetInstance(), settingSet);
 
 #if defined(TARGET_DARWIN_OSX)
