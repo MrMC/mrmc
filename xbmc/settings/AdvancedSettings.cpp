@@ -262,6 +262,7 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("\\.AppleDouble");
   m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
   m_moviesExcludeFromScanRegExps.push_back("[\\/](proof|subs)[\\/]");
+  m_moviesExcludeFromScanRegExps.push_back("_gsdata_");
 
   m_tvshowExcludeFromScanRegExps.clear();
   m_tvshowExcludeFromScanRegExps.push_back("[\\/].+\\.ite[\\/]");  // ignore itunes extras dir
@@ -270,6 +271,7 @@ void CAdvancedSettings::Initialize()
   m_tvshowExcludeFromScanRegExps.push_back("\\.DS_Store");
   m_tvshowExcludeFromScanRegExps.push_back("\\.AppleDouble");
   m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
+  m_tvshowExcludeFromScanRegExps.push_back("_gsdata_");
 
   m_audioExcludeFromScanRegExps.clear();
   m_audioExcludeFromScanRegExps.push_back("[\\/].+\\.ite[\\/]");  // ignore itunes extras dir
@@ -277,6 +279,7 @@ void CAdvancedSettings::Initialize()
   m_audioExcludeFromScanRegExps.push_back("[\\/]\\.\\_");
   m_audioExcludeFromScanRegExps.push_back("\\.DS_Store");
   m_audioExcludeFromScanRegExps.push_back("\\.AppleDouble");
+  m_audioExcludeFromScanRegExps.push_back("_gsdata_");
 
   m_folderStackRegExps.clear();
   m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
