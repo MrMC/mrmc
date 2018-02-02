@@ -17,6 +17,7 @@ SRCS += SystemOperations.cpp
 SRCS += TextureOperations.cpp
 SRCS += VideoLibrary.cpp
 SRCS += XBMCOperations.cpp
+SRCS += CloudOperations.cpp
 
 LIB   = json-rpc.a
 
