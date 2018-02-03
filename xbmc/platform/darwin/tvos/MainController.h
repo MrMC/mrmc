@@ -85,6 +85,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   BOOL                        m_nativeKeyboardActive;
   BOOL                        m_focusIdleState;
   TOUCH_POSITION              m_touchPosition;
+  NSArray                     *m_disableOSDExtensions;
 }
 
 // why are these properties ?
@@ -101,6 +102,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 @property BOOL                m_enableRemoteExpertMode;
 @property BOOL                m_stopPlaybackOnMenu;
 @property TOUCH_POSITION      m_touchPosition;
+@property (nonatomic, retain) NSArray *m_disableOSDExtensions;
 
 - (void)onPlayDelayed:(NSDictionary *)item;
 - (void)onSpeedChanged:(NSDictionary *)item;
@@ -140,6 +142,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (bool) resetSystemIdleTimer;
 - (void) enableRemoteExpertMode:(BOOL)enable;
 - (void) stopPlaybackOnMenu:(BOOL)enable;
+- (void) disableOSDExtensions:(NSArray*)extensions;
 
 
 - (NSArray<UIScreenMode *> *) availableScreenModes:(UIScreen*) screen;

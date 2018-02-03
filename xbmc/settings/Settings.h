@@ -361,6 +361,7 @@ public:
   static const std::string SETTING_INPUT_APPLESIRITIMEOUT;
   static const std::string SETTING_INPUT_APPLESIRITIMEOUTENABLED;
   static const std::string SETTING_INPUT_APPLESIRIEXPERTMODE;
+  static const std::string SETTING_INPUT_APPLESIRIDISABLEOSD;
   static const std::string SETTING_NETWORK_USEHTTPPROXY;
   static const std::string SETTING_NETWORK_HTTPPROXYTYPE;
   static const std::string SETTING_NETWORK_HTTPPROXYSERVER;

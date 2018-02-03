@@ -410,6 +410,7 @@ const std::string CSettings::SETTING_INPUT_APPLESIRIBACK = "input.applesiriback"
 const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUT = "input.applesiritimeout";
 const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED = "input.applesiritimeoutenabled";
 const std::string CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE = "input.applesiriexpertmode";
+const std::string CSettings::SETTING_INPUT_APPLESIRIDISABLEOSD = "input.applesiridisableosd";
 const std::string CSettings::SETTING_NETWORK_USEHTTPPROXY = "network.usehttpproxy";
 const std::string CSettings::SETTING_NETWORK_HTTPPROXYTYPE = "network.httpproxytype";
 const std::string CSettings::SETTING_NETWORK_HTTPPROXYSERVER = "network.httpproxyserver";
@@ -700,6 +701,9 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("verticalsyncs");
   m_settingsManager->UnregisterSettingOptionsFiller("keyboardlayouts");
   m_settingsManager->UnregisterSettingOptionsFiller("pvrrecordmargins");
+#if defined(TARGET_DARWIN_TVOS)
+  m_settingsManager->UnregisterSettingOptionsFiller("siridisableosd");
+#endif
 
   // unregister ISettingCallback implementations
   m_settingsManager->UnregisterCallback(&CEventLog::GetInstance());
@@ -1080,6 +1084,9 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("keyboardlayouts", CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("loggingcomponents", CAdvancedSettings::SettingOptionsLoggingComponentsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("pvrrecordmargins", PVR::CPVRSettings::MarginTimeFiller);
+#if defined(TARGET_DARWIN_TVOS)
+  m_settingsManager->RegisterSettingOptionsFiller("siridisableosd", CTVOSInputSettings::SettingOptionsDisableSiriOSD);
+#endif
 }
 
 void CSettings::InitializeConditions()
@@ -1346,6 +1353,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM);
   settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIFOCUSLIDE);
   settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIDISABLEOSD);
   settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIBACK);
   m_settingsManager->RegisterCallback(&CTVOSInputSettings::GetInstance(), settingSet);
 #endif

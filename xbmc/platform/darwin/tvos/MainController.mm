@@ -157,6 +157,7 @@ MainController *g_xbmcController;
 @synthesize m_enableRemoteExpertMode;
 @synthesize m_stopPlaybackOnMenu;
 @synthesize m_touchPosition;
+@synthesize m_disableOSDExtensions;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -681,12 +682,21 @@ MainController *g_xbmcController;
   ||  fileItem.IsPlayList())
     return false;
 
+  NSString *itemExt = [NSString stringWithUTF8String:URIUtils::GetExtension(fileItem.GetPath()).c_str()];
+  if ([m_disableOSDExtensions containsObject:itemExt])
+    return false;
+
   return true;
 }
 
 - (void)stopPlaybackOnMenu:(BOOL)enable
 {
   m_stopPlaybackOnMenu = enable;
+}
+
+- (void)disableOSDExtensions:(NSArray*)extensions
+{
+  m_disableOSDExtensions = extensions;
 }
 
 //--------------------------------------------------------------
@@ -1132,6 +1142,13 @@ MainController *g_xbmcController;
   longSelectRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: longSelectRecognizer];
 
+  auto selectRecognizer = [[UITapGestureRecognizer alloc]
+    initWithTarget: self action: @selector(SiriLongSelectHandler:)];
+  selectRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
+  selectRecognizer.delegate  = self;
+  [selectRecognizer requireGestureRecognizerToFail:longSelectRecognizer];
+  [self.focusView addGestureRecognizer: selectRecognizer];
+  
   auto playPauseRecognizer = [[UITapGestureRecognizer alloc]
     initWithTarget: self action: @selector(SiriPlayPauseHandler:)];
   playPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];

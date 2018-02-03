@@ -19221,7 +19221,17 @@ msgctxt "#37053"
 msgid "Only selected Plex servers will be displayed in Home Shelf, recently added and in progress"
 msgstr ""
 
-#empty strings from id 37053 to 38009
+#: system/settings/darwin_tvos.xml
+msgctxt "#37054"
+msgid "Disable scrubbing for selected extensions"
+msgstr ""
+
+#: system/settings/darwin_tvos.xml
+msgctxt "#37055"
+msgid "Selected extensions will not show the new scrubbing OSD, selecting more than one item is possible."
+msgstr ""
+
+#empty strings from id 37056 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

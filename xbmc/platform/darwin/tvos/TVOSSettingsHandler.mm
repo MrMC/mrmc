@@ -27,6 +27,9 @@
 
 #include "threads/Atomics.h"
 #include "platform/darwin/FocusEngineHandler.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 static std::atomic<long> sg_singleton_lock_variable {0};
 CTVOSInputSettings* CTVOSInputSettings::m_instance = nullptr;
@@ -65,6 +68,16 @@ void CTVOSInputSettings::Initialize()
   [g_xbmcController enableRemoteExpertMode:enableExpertMode];
   bool stopPlaybackOnMenu = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK);
   [g_xbmcController stopPlaybackOnMenu:stopPlaybackOnMenu];
+
+  std::vector<CVariant> exts = CSettings::GetInstance().GetList(CSettings::SETTING_INPUT_APPLESIRIDISABLEOSD);
+  id nsstrings = [NSMutableArray new];
+  for (auto &ext : exts)
+  {
+    std::string strExt = ext.asString();
+    id nsstr = [NSString stringWithUTF8String:strExt.c_str()];
+    [nsstrings addObject:nsstr];
+  }
+  [g_xbmcController disableOSDExtensions:nsstrings];
   
 }
 
@@ -93,5 +106,28 @@ void CTVOSInputSettings::OnSettingChanged(const CSetting *setting)
   {
     bool stopPlaybackOnMenu = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK);
     [g_xbmcController stopPlaybackOnMenu:stopPlaybackOnMenu];
+  }
+  else if (settingId == CSettings::SETTING_INPUT_APPLESIRIDISABLEOSD)
+  {
+    std::vector<CVariant> exts = CSettings::GetInstance().GetList(CSettings::SETTING_INPUT_APPLESIRIDISABLEOSD);
+    id nsstrings = [NSMutableArray new];
+    for (auto &ext : exts)
+    {
+      std::string strExt = ext.asString();
+      id nsstr = [NSString stringWithUTF8String:strExt.c_str()];
+      [nsstrings addObject:nsstr];
+    }
+    [g_xbmcController disableOSDExtensions:nsstrings];
+  }
+}
+
+void CTVOSInputSettings::SettingOptionsDisableSiriOSD(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  std::vector<std::string> exts = StringUtils::Split(g_advancedSettings.m_videoExtensions, "|");
+  std::sort(exts.begin(), exts.end());
+  for (std::vector<std::string>::iterator it = exts.begin(); it != exts.end(); ++it)
+  {
+    std::string ext = *it;
+    list.push_back(make_pair(ext,ext));
   }
 }

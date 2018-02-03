@@ -155,6 +155,22 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="input.applesiridisableosd" type="list[string]" label="37054" help="37055">
+          <level>1</level>
+          <default>None</default>
+          <constraints>
+            <options>siridisableosd</options>
+            <allowempty>true</allowempty>
+            <delimiter>|</delimiter>
+            <minimumitems>0</minimumitems>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="input.applesiriexpertmode">false</dependency>
+          </dependencies>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
       </group>
       <group id="2">
         <setting id="input.enablemouse">
