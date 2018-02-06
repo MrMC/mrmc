@@ -3732,7 +3732,8 @@ bool CDVDPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
   if(player)
   {
     if ((current.type == STREAM_AUDIO && current.syncState != IDVDStreamPlayer::SYNC_INSYNC) ||
-        (current.type == STREAM_VIDEO && current.syncState != IDVDStreamPlayer::SYNC_INSYNC))
+        (current.type == STREAM_VIDEO && current.syncState != IDVDStreamPlayer::SYNC_INSYNC) ||
+        m_bAbortRequest)
       bWaitForBuffers = false;
     player->CloseStream(bWaitForBuffers);
   }
