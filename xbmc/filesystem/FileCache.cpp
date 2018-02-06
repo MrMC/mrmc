@@ -531,7 +531,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
   else
     m_readPos = iTarget;
 
-  return m_nSeekResult;
+  return iTarget;
 }
 
 void CFileCache::Close()
