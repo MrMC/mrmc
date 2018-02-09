@@ -1259,19 +1259,18 @@ ORIENTATION swipeStartingFocusedOrientation;
   // only had double/triple tap recognizers enabled
   // during fulscreen video playback, or they slow down tap navigation
   CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-  if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+  CFileItem &fileItem = g_application.CurrentFileItem();
+  if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO
+      && !fileItem.IsPVR() && !m_enableRemoteExpertMode)
   {
-    if (!m_enableRemoteExpertMode)
-    {
-      if (!self.doubleTapRecognizer.enabled)
-        self.doubleTapRecognizer.enabled = YES;
-      if (!self.tripleTapRecognizer.enabled)
-        self.tripleTapRecognizer.enabled = YES;
-      // disable pan recognizer so we can
-      // seek/ff/rw while keep a finger on touchpad
-      if (self.self.panRecognizer.enabled)
-        self.self.panRecognizer.enabled = NO;
-    }
+    if (!self.doubleTapRecognizer.enabled)
+      self.doubleTapRecognizer.enabled = YES;
+    if (!self.tripleTapRecognizer.enabled)
+      self.tripleTapRecognizer.enabled = YES;
+    // disable pan recognizer so we can
+    // seek/ff/rw while keep a finger on touchpad
+    if (self.self.panRecognizer.enabled)
+      self.self.panRecognizer.enabled = NO;
   }
   else
   {
@@ -1588,7 +1587,7 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
             CLog::Log(LOGDEBUG, "SiriTripleTapHandler:StateEnded");
             #endif
             KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
-              TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_SUBTITLES)));
+                TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_SUBTITLES)));
           }
         }
         break;
