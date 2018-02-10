@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/URIUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
@@ -270,6 +271,10 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   if (iSong >= playlist.size()) 
     iSong = playlist.size() - 1;
 
+  bool strmBased = false;
+  if (URIUtils::HasExtension(playlist[iSong]->GetPath(), ".strm"))
+    strmBased = true;
+
   // check if the item itself is a playlist, and can be expanded
   // only allow a few levels, this could end up in a loop
   // if they refer to each other in a loop
@@ -283,6 +288,8 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   CFileItemPtr item = playlist[m_iCurrentSong];
   if (item->IsVideoDb() && !item->HasVideoInfoTag())
     *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
+  if (strmBased)
+    item->SetProperty("strm-based", true);
 
   playlist.SetPlayed(true);
 
