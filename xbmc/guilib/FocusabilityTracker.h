@@ -50,6 +50,7 @@ public:
   bool IsEnabled();
   void SetEnabled(bool enable);
   void Append(CGUIControl *control, CGUIControl *view = nullptr);
+  void Remove(CGUIControl *control);
   void BeginRender();
   void AfterRender();
   const std::vector<GUIFocusabilityItem>& GetItems() const;

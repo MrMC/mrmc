@@ -61,6 +61,16 @@ void CFocusabilityTracker::Append(CGUIControl *control, CGUIControl *view)
   }
 }
 
+void CFocusabilityTracker::Remove(CGUIControl *control)
+{
+  auto foundControl = std::find_if(m_items.begin(), m_items.end(),
+      [&](GUIFocusabilityItem item)
+      { return item.control == control;
+  });
+  if (foundControl != m_items.end())
+    m_items.erase(foundControl);
+}
+
 void CFocusabilityTracker::BeginRender()
 {
 }

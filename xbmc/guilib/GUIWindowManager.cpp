@@ -1590,6 +1590,9 @@ void CGUIWindowManager::InvalidateFocus(CGUIControl *control)
   // other way to track down a control in a window that vanishes.
   CFocusEngineHandler::GetInstance().InvalidateFocus(control);
 #endif
+  // we also have to hit m_focusableTracker in case a control
+  // was removed during render cycle.
+  m_focusableTracker.Remove(control);
 }
 
 bool CGUIWindowManager::FocusableTrackerIsEnabled()
