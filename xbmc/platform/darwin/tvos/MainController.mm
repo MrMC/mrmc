@@ -596,7 +596,8 @@ MainController *g_xbmcController;
         m_controllerState = MC_BACKGROUND_RESTORE;
         // get the current playing time but backup a little, it seems better
         m_wasPlayingTime = g_application.GetTime() - 1.50;
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+        CApplicationMessenger::GetInstance().PostMsg(
+          TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
         // wait until we stop playing.
         while(g_application.m_pPlayer->IsPlaying())
           usleep(50*1000);
@@ -1259,9 +1260,9 @@ ORIENTATION swipeStartingFocusedOrientation;
   // only had double/triple tap recognizers enabled
   // during fulscreen video playback, or they slow down tap navigation
   CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-  CFileItem &fileItem = g_application.CurrentFileItem();
-  if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO
-      && !fileItem.IsPVR() && !m_enableRemoteExpertMode)
+  if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO &&
+      !m_enableRemoteExpertMode &&
+      !g_application.CurrentFileItem().IsPVR())
   {
     if (!self.doubleTapRecognizer.enabled)
       self.doubleTapRecognizer.enabled = YES;
@@ -1587,7 +1588,7 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
             CLog::Log(LOGDEBUG, "SiriTripleTapHandler:StateEnded");
             #endif
             KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
-                TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_SUBTITLES)));
+              TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_SUBTITLES)));
           }
         }
         break;
@@ -1831,7 +1832,10 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
             // hold timer put us into ff/rw
             // restore to normal playback speed.
             if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-              CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+            {
+              CApplicationMessenger::GetInstance().PostMsg(
+                TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+            }
           case SELECT_VIDEOPAUSED:
             // do nothing
             break;
@@ -1896,7 +1900,10 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
             // hold timer put us into ff/rw
             // restore to normal playback speed.
             if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-              CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+            {
+              CApplicationMessenger::GetInstance().PostMsg(
+                TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+            }
           }
         case UIGestureRecognizerStateCancelled:
           [self.m_irArrowHoldTimer invalidate];
@@ -1948,7 +1955,10 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
             // hold timer put us into ff/rw
             // restore to normal playback speed.
             if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-              CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+            {
+              CApplicationMessenger::GetInstance().PostMsg(
+                TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+            }
           }
           break;
         case UIGestureRecognizerStateCancelled:
@@ -2084,7 +2094,8 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
       case UIEventSubtypeRemoteControlTogglePlayPause:
         // check if not in background, we can get this if sleep is forced
         if (m_controllerState < MC_BACKGROUND)
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
+          CApplicationMessenger::GetInstance().PostMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlPlay:
         [self sendButtonPressed:SiriRemote_IR_Play];
@@ -2117,7 +2128,10 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
       case UIEventSubtypeRemoteControlEndSeekingBackward:
         // restore to normal playback speed.
         if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+        {
+          CApplicationMessenger::GetInstance().PostMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+        }
         break;
       default:
         LOG(@"unhandled subtype: %d", (int)receivedEvent.subtype);
@@ -2943,12 +2957,14 @@ CGRect debugView2;
 }
 - (void)onCCSkipNext:(MPRemoteCommandHandlerStatus*)event
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STEP_FORWARD)));
+  CApplicationMessenger::GetInstance().PostMsg(
+    TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STEP_FORWARD)));
  // PRINT_SIGNATURE();
 }
 - (void)onCCSkipPrev:(MPRemoteCommandHandlerStatus*)event
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STEP_BACK)));
+  CApplicationMessenger::GetInstance().PostMsg(
+    TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STEP_BACK)));
  // PRINT_SIGNATURE();
 }
 
