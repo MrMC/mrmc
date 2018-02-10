@@ -683,6 +683,12 @@ MainController *g_xbmcController;
   ||  fileItem.IsPlayList())
     return false;
 
+  if (fileItem.HasProperty("strm-based"))
+  {
+    if ([m_disableOSDExtensions containsObject:@".strm"])
+      return false;
+  }
+
   NSString *itemExt = [NSString stringWithUTF8String:URIUtils::GetExtension(fileItem.GetPath()).c_str()];
   if ([m_disableOSDExtensions containsObject:itemExt])
     return false;
