@@ -26,6 +26,7 @@
 #import "filesystem/TVOSFile.h"
 #import "filesystem/posix/PosixFile.h"
 #import "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/DarwinNSUserDefaults.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 
 #import <UIKit/UIKit.h>
@@ -160,6 +161,21 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
     [defaults synchronize];
 
     ILOG(@"MigrateUserdataXMLToNSUserDefaults: migration finished");
+    ILOG(@"MigrateUserdataXMLToNSUserDefaults: "
+      "NSUserDefaultsSize(%lld)", NSUserDefaultsSize());
+  }
+  else if ([[defaults objectForKey:migration_key] isEqual:@"1"])
+  {
+    // v3.5.0 fixed seeing userdata xmls via file manager and reading of keymaps from userdata
+    // but there might be an existing stale keymap present (missing chapter seeks)
+    // find and delete it, core will copy the correct one from system/keymaps/customcontroller.SiriRemote.xml
+    std::string translated_key = "/userdata/keymaps/customcontroller.SiriRemote.xml";
+    if (CDarwinNSUserDefaults::KeyExists(translated_key))
+      CDarwinNSUserDefaults::DeleteKey(translated_key, false);
+    [defaults setObject:@"2" forKey:migration_key];
+    [defaults synchronize];
+
+    ILOG(@"MigrateUserdataXMLToNSUserDefaults: migration 2 finished");
     ILOG(@"MigrateUserdataXMLToNSUserDefaults: "
       "NSUserDefaultsSize(%lld)", NSUserDefaultsSize());
   }
