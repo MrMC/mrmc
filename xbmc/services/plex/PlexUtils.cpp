@@ -394,6 +394,7 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
+      items.ClearSortState();
       items.Sort(SortByDateAdded, SortOrderDescending);
     }
   }
@@ -416,7 +417,8 @@ bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string 
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
-      items.Sort(SortByDateAdded, SortOrderDescending);
+      items.ClearSortState();
+      items.Sort(SortByLastPlayed, SortOrderDescending);
     }
   }
 
@@ -439,6 +441,7 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
+      items.ClearSortState();
       items.Sort(SortByDateAdded, SortOrderDescending);
     }
   }
@@ -460,7 +463,8 @@ bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
-      items.Sort(SortByDateAdded, SortOrderDescending);
+      items.ClearSortState();
+      items.Sort(SortByLastPlayed, SortOrderDescending);
     }
   }
 
@@ -1137,6 +1141,7 @@ bool CPlexUtils::GetAllPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
       SetPlexItemProperties(plexItems);
       items.Append(plexItems);
       items.SetLabel("Recently Added Albums");
+      items.ClearSortState();
       items.Sort(SortByDateAdded, SortOrderDescending);
       plexItems.ClearItems();
     }
@@ -1273,6 +1278,9 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
 
     time_t addedTime = item["addedAt"].asInteger();
     plexItem->GetVideoInfoTag()->m_dateAdded = CDateTime(addedTime);
+    
+    time_t lastPlayed = item["lastViewedAt"].asInteger();
+    plexItem->GetVideoInfoTag()->m_lastPlayed = CDateTime(lastPlayed);
 
     removeLeadingSlash(fanart);
     url.SetFileName(fanart);

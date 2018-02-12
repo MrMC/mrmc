@@ -266,6 +266,7 @@ void CServicesManager::GetAllRecentlyAddedMovies(CFileItemList &recentlyAdded, i
   if (recentlyAdded.Size() > 0)
   {
     CFileItemList temp;
+    recentlyAdded.ClearSortState();
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
     for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
     {
@@ -289,6 +290,7 @@ void CServicesManager::GetAllRecentlyAddedShows(CFileItemList &recentlyAdded, in
   if (recentlyAdded.Size() > 0)
   {
     CFileItemList temp;
+    recentlyAdded.ClearSortState();
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
     for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
     {
@@ -312,6 +314,7 @@ void CServicesManager::GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, i
   if (recentlyAdded.Size() > 0)
   {
     CFileItemList temp;
+    recentlyAdded.ClearSortState();
     recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
     for (int i = 0; i < recentlyAdded.Size() && i < itemLimit; i++)
     {
@@ -335,7 +338,8 @@ void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int item
   if (inProgress.Size() > 0)
   {
     CFileItemList temp;
-    inProgress.Sort(SortByDateAdded, SortOrderDescending);
+    inProgress.ClearSortState();
+    inProgress.Sort(SortByLastPlayed, SortOrderDescending);
     for (int i = 0; i < inProgress.Size() && i < itemLimit; i++)
     {
       CFileItemPtr item = inProgress.Get(i);
@@ -345,6 +349,8 @@ void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int item
     
     inProgress.ClearItems();
     inProgress.Append(temp);
+    inProgress.ClearSortState();
+    inProgress.Sort(SortByLastPlayed, SortOrderDescending);
   }
 }
 
@@ -358,7 +364,8 @@ void CServicesManager::GetAllInProgressMovies(CFileItemList &inProgress, int ite
   if (inProgress.Size() > 0)
   {
     CFileItemList temp;
-    inProgress.Sort(SortByDateAdded, SortOrderDescending);
+    inProgress.ClearSortState();
+    inProgress.Sort(SortByLastPlayed, SortOrderDescending);
     for (int i = 0; i < inProgress.Size() && i < itemLimit; i++)
     {
       CFileItemPtr item = inProgress.Get(i);
@@ -368,6 +375,8 @@ void CServicesManager::GetAllInProgressMovies(CFileItemList &inProgress, int ite
     
     inProgress.ClearItems();
     inProgress.Append(temp);
+    inProgress.ClearSortState();
+    inProgress.Sort(SortByLastPlayed, SortOrderDescending);
   }
 }
 
