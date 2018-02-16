@@ -55,8 +55,8 @@
 				</control>
 				<control type="button" id="255">
 					<include>ButtonInfoDialogsCommonValues</include>
-					<label>$LOCALIZE[14232]</label>
-					<width>150</width>
+					<label>$LOCALIZE[36501]</label>
+					<width>240</width>
 					<height>50</height>
 					<align>center</align>
 					<texturenofocus></texturenofocus>

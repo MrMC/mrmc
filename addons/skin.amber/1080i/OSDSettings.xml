@@ -55,8 +55,8 @@
 					<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasSubtitles</visible>
 				</control>
 				<control type="button" id="255">
-					<label>$LOCALIZE[14232]</label>
-					<width>300</width>
+					<label>$LOCALIZE[36501]</label>
+					<width>400</width>
 					<height>100</height>
 					<align>center</align>
 					<textcolor>White</textcolor>

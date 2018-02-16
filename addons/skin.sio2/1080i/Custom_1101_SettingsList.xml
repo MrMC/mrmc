@@ -124,7 +124,7 @@
 					<control type="button" id="13102">
 						<width>700</width>
 						<include>DialogSettingButton</include>
-						<label>$LOCALIZE[31004]</label>
+						<label>$LOCALIZE[24166]</label>
 						<label2>$INFO[VideoPlayer.StereoscopicMode]</label2>
 						<onclick>StereoMode</onclick>
 					</control>
@@ -132,7 +132,7 @@
 						<width>700</width>
 						<include>DialogSettingButton</include>
 						<radioposx>590</radioposx>
-						<label>$LOCALIZE[31005]</label>
+						<label>$LOCALIZE[24167]</label>
 						<onclick>StereoModeToMono</onclick>
 						<selected>Stringcompare(System.StereoscopicMode,9)</selected>
 					</control>

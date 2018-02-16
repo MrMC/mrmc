@@ -14784,7 +14784,17 @@ msgctxt "#24165"
 msgid "Enable libdsm instead of libsmbclient, support smbX under OSX"
 msgstr ""
 
-#empty strings from id 24166 to 24991
+#: /xml/VideoOSD.xml
+msgctxt "#24166"
+msgid "Change mode"
+msgstr ""
+
+#: /xml/VideoOSD.xml
+msgctxt "#24167"
+msgid "Watch as 2D"
+msgstr ""
+
+#empty strings from id 24168 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
