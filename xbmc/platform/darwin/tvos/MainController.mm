@@ -1668,7 +1668,7 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
 - (void)SiriLongSelectHoldHandler
 {
   self.m_selectHoldCounter++;
-  if (selectState == SELECT_VIDEOPLAY)
+  if (selectState == SELECT_VIDEOPLAY && !g_application.CurrentFileItem().IsLiveTV())
   {
     if (self.m_selectHoldCounter == 1)
     {
