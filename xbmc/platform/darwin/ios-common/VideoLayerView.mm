@@ -22,6 +22,7 @@
 #import "platform/darwin/ios-common/VideoLayerView.h"
 
 #define MCSAMPLEBUFFER_DEBUG_MESSAGES 0
+#define TVOS_HDR_ALPHA_MAX 0.99
 
 #pragma mark -
 @implementation VideoLayerView
@@ -34,15 +35,16 @@
     [self setNeedsLayout];
     [self layoutIfNeeded];
 
+    self.alpha = TVOS_HDR_ALPHA_MAX;
     self.hidden = YES;
     self.videolayer = nullptr;
-		AVSampleBufferDisplayLayer *videolayer = [[AVSampleBufferDisplayLayer alloc] init];
+    AVSampleBufferDisplayLayer *videolayer = [[AVSampleBufferDisplayLayer alloc] init];
     videolayer.bounds = self.bounds;
-		videolayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-		videolayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    videolayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    videolayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 #if defined(TARGET_DARWIN_IOS)
-		//videolayer.backgroundColor = [[UIColor blackColor] CGColor];
-		videolayer.backgroundColor = [[UIColor clearColor] CGColor];
+    //videolayer.backgroundColor = [[UIColor blackColor] CGColor];
+    videolayer.backgroundColor = [[UIColor clearColor] CGColor];
 #else
     videolayer.backgroundColor = CGColorGetConstantColor(kCGColorBlue);
 #endif
@@ -111,23 +113,26 @@
 
   if (hide)
   {
-    self.alpha = 1;
+    self.alpha = TVOS_HDR_ALPHA_MAX;
   }
   else
   {
-    self.alpha = 0;
+    self.alpha = 0.0;
     self.hidden = NO;
   }
   [UIView animateWithDuration:duration delay:delay
       options:UIViewAnimationOptionAllowAnimatedContent animations:^{
       if (hide) {
-        self.alpha = 0;
+        self.alpha = 0.0;
       } else {
-        self.alpha = 1;
+        self.alpha = TVOS_HDR_ALPHA_MAX;
       }
     } completion:^(BOOL finished) {
       if (finished)
+      {
+        self.alpha = TVOS_HDR_ALPHA_MAX;
         self.hidden = hide;
+      }
   }];
 }
 
