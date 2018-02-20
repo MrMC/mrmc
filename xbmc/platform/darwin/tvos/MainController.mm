@@ -887,6 +887,10 @@ MainController *g_xbmcController;
         default:
           displayFPS = 0.0f;
           break;
+        case 41100 ... 43200:
+          // 23.976 (41708.333333)
+          displayFPS = 24000.0f / 1001.0f;
+          break;
         case 16000 ... 17000:
           // 59.940 (16683.333333)
           displayFPS = 60000.0f / 1001.0f;
