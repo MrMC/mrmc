@@ -848,7 +848,6 @@ MainController *g_xbmcController;
   // system calls this method when the iOS interface environment changes
   CLog::Log(LOGDEBUG, "traitCollectionDidChange");
   [super traitCollectionDidChange: previousTraitCollection];
-  auto currentDisplayGamut = self.traitCollection.displayGamut;
   if (self.traitCollection.displayGamut != previousTraitCollection.displayGamut)
   {
     // your custom implementation here
