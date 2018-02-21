@@ -1270,6 +1270,9 @@ ORIENTATION swipeStartingFocusedOrientation;
 // for a new touch. return NO to prevent the gesture recognizer from seeing this touch
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
+  // disable osdsettings auto close timer.
+  [self.m_osdSettingsAutoHideTimer invalidate];
+
   // Block the recognition of tap gestures from other views
   if ( [touch.view isKindOfClass:[KeyboardView class]] )
     return NO;
@@ -1317,7 +1320,9 @@ ORIENTATION swipeStartingFocusedOrientation;
 // for a new press. return NO to prevent the gesture recognizer from seeing this press
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press
 {
-  //PRINT_SIGNATURE();
+  // disable osdsettings auto close timer.
+  [self.m_osdSettingsAutoHideTimer invalidate];
+
   // Block the recognition of press gestures from other views
   if ( [press.responder isKindOfClass:[KeyboardView class]] )
     return NO;
@@ -1479,6 +1484,18 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
 //--------------------------------------------------------------
 #pragma mark - touch/gesture handlers
 //--------------------------------------------------------------
+- (void)OSDSettingsAutoHideHandler
+{
+  if (CFocusEngineHandler::GetInstance().GetFocusWindowID() == WINDOW_DIALOG_OSD_SETTINGS)
+  {
+    // if OSD Settings window is in focus, dismiss it
+    // the msg is really a toggle.
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
+      TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_OSD_SETTINGS)));
+  }
+  [self.m_osdSettingsAutoHideTimer invalidate];
+}
+//--------------------------------------------------------------
 - (IBAction)SiriSwipeHandler:(UISwipeGestureRecognizer *)sender
 {
   // these are for tracking tap/pan/swipe state only,
@@ -1495,6 +1512,21 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
           #if logfocus
           CLog::Log(LOGDEBUG, "SiriSwipeHandler:StateRecognized:FocusActionSwipe");
           #endif
+          if ([self hasPlayerProgressScrubbing])
+          {
+            // if hasPlayerProgressScrubbing, then shouldUpdateFocusInContext will
+            // early return with NO. Handle showing OSD Settings here.
+            if (sender.direction == UISwipeGestureRecognizerDirectionDown)
+            {
+              // show OSD Settings on down swipe, up swipe to hide will get handled naturally
+              // via shouldUpdateFocusInContext/didUpdateFocusInContext routines
+              KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
+                TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_OSD_SETTINGS)));
+              // auto close OSD Settings after 10 seconds if no focus change.
+              self.m_osdSettingsAutoHideTimer = [NSTimer scheduledTimerWithTimeInterval:10
+                target:self selector:@selector(OSDSettingsAutoHideHandler) userInfo:nil repeats:YES];
+            }
+          }
           swipeStartingParent = [self findParentView:_focusLayer.infocus.view];
           swipeStartingParentViewRect = swipeStartingParent.bounds;
           swipeStartingFocusedOrientation = [self getFocusedOrientation];
@@ -2415,7 +2447,10 @@ CGRect debugView2;
   // do not allow focus changes when playing video
   // we handle those directly. Otherwise taps/swipes will cause wild seeks.
   if ([self hasPlayerProgressScrubbing])
+  {
+    swipeOrPanNoMore = true;
     return NO;
+  }
 
   // previouslyFocusedItem may be nil if no item was focused.
   #if logfocus
