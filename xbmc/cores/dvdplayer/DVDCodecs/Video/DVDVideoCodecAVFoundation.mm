@@ -753,7 +753,7 @@ void CDVDVideoCodecAVFoundation::Process()
                 videolayer.frame = frame;
                 // we startup hidden, kick off an animated fade in.
                 if (mcview.hidden == YES)
-                  [mcview setHiddenAnimated:NO delay:NSTimeInterval(0.2) duration:NSTimeInterval(2.0)];
+                  [mcview setHiddenAnimated:NO delay:NSTimeInterval(0.2) duration:NSTimeInterval(2.0) isSDR:m_dynamicrange == DVP_DYNAMIC_RANGE_SDR];
               });
               oldSrcRect  = SrcRect;
               oldDestRect = DestRect;

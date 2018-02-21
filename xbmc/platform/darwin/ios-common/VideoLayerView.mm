@@ -22,7 +22,6 @@
 #import "platform/darwin/ios-common/VideoLayerView.h"
 
 #define MCSAMPLEBUFFER_DEBUG_MESSAGES 0
-#define TVOS_HDR_ALPHA_MAX 0.99
 
 #pragma mark -
 @implementation VideoLayerView
@@ -35,7 +34,7 @@
     [self setNeedsLayout];
     [self layoutIfNeeded];
 
-    self.alpha = TVOS_HDR_ALPHA_MAX;
+    self.alpha = 0.0;
     self.hidden = YES;
     self.videolayer = nullptr;
     AVSampleBufferDisplayLayer *videolayer = [[AVSampleBufferDisplayLayer alloc] init];
@@ -106,14 +105,18 @@
 #endif
 
 - (void)setHiddenAnimated:(BOOL)hide
-  delay:(NSTimeInterval)delay duration:(NSTimeInterval)duration
+  delay:(NSTimeInterval)delay duration:(NSTimeInterval)duration isSDR:(bool)isSDR
 {
   if (self.hidden == hide)
     return;
 
+  CGFloat alphaMax = 1.0;
+  if (!isSDR)
+    alphaMax = 0.998;
+
   if (hide)
   {
-    self.alpha = TVOS_HDR_ALPHA_MAX;
+    self.alpha = alphaMax;
   }
   else
   {
@@ -121,19 +124,19 @@
     self.hidden = NO;
   }
   [UIView animateWithDuration:duration delay:delay
-      options:UIViewAnimationOptionAllowAnimatedContent animations:^{
-      if (hide) {
+    options:UIViewAnimationOptionAllowAnimatedContent animations:^{
+      if (hide)
         self.alpha = 0.0;
-      } else {
-        self.alpha = TVOS_HDR_ALPHA_MAX;
-      }
+      else
+        self.alpha = alphaMax;
     } completion:^(BOOL finished) {
       if (finished)
       {
-        self.alpha = TVOS_HDR_ALPHA_MAX;
+        self.alpha = alphaMax;
         self.hidden = hide;
       }
-  }];
+    }
+  ];
 }
 
 @end

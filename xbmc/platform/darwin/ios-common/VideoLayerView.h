@@ -32,5 +32,6 @@
 
 - (void) setHiddenAnimated:(BOOL)hide
                     delay:(NSTimeInterval)delay
-                 duration:(NSTimeInterval)duration;
+                 duration:(NSTimeInterval)duration
+                 isSDR:(bool)isSDR;
 @end
