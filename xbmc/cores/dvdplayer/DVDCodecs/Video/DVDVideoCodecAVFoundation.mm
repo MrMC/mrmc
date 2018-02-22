@@ -686,35 +686,37 @@ void CDVDVideoCodecAVFoundation::Process()
       case PLAY:
       {
         VideoLayerView *mcview = (VideoLayerView*)m_decoder;
-        AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)mcview.layer;
+        dispatch_sync(dispatch_get_main_queue(),^{
+          AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)mcview.layer;
 
-        // check if the usingBlock is running, if not, start it up.
-        if (!m_withBlockRunning && videolayer.readyForMoreMediaData == YES)
-        {
-            StartSampleProviderWithBlock();
-            m_withBlockRunning = true;
-        }
-
-        // player clock returns < zero if reset. check it.
-        double player_s = GetPlayerClockSeconds();
-        if (player_s > 0.0)
-        {
-          CMTime cmtime  = CMTimebaseGetTime(videolayer.controlTimebase);
-          Float64 timeBase_s = CMTimeGetSeconds(cmtime);
-
-          // sync video layer time base to dvdplayer's player clock.
-          double error = fabs(timeBase_s - player_s);
-          if (error > 0.150)
+          // check if the usingBlock is running, if not, start it up.
+          if (!m_withBlockRunning && videolayer.readyForMoreMediaData == YES)
           {
-            dispatch_sync(dispatch_get_main_queue(),^{
-              CLog::Log(LOGDEBUG, "adjusting playback "
-                "timeBase_s(%f) player_s(%f), sampleBuffers(%lu), trackerQueue(%lu)",
-                 timeBase_s, player_s, m_sampleBuffers.size(), m_trackerQueue.size());
-              CMTimebaseSetTime(videolayer.controlTimebase, CMTimeMake(player_s, 1));
-              CMTimebaseSetRate(videolayer.controlTimebase, 1.0);
-            });
+              StartSampleProviderWithBlock();
+              m_withBlockRunning = true;
           }
-        }
+
+          // player clock returns < zero if reset. check it.
+          double player_s = GetPlayerClockSeconds();
+          if (player_s > 0.0)
+          {
+            CMTime cmtime  = CMTimebaseGetTime(videolayer.controlTimebase);
+            Float64 timeBase_s = CMTimeGetSeconds(cmtime);
+
+            // sync video layer time base to dvdplayer's player clock.
+            double error = fabs(timeBase_s - player_s);
+            if (error > 0.150)
+            {
+              //dispatch_sync(dispatch_get_main_queue(),^{
+                CLog::Log(LOGDEBUG, "adjusting playback "
+                  "timeBase_s(%f) player_s(%f), sampleBuffers(%lu), trackerQueue(%lu)",
+                   timeBase_s, player_s, m_sampleBuffers.size(), m_trackerQueue.size());
+                CMTimebaseSetTime(videolayer.controlTimebase, CMTimeMake(player_s, 1));
+                CMTimebaseSetRate(videolayer.controlTimebase, 1.0);
+              //});
+            }
+          }
+        });
 
         // if renderer is configured, we now know size and
         // where to display the video.
@@ -748,9 +750,9 @@ void CDVDVideoCodecAVFoundation::Process()
                 frame = CGRectOffset(frame, -frame.origin.x, -frame.origin.y);
                 mcview.frame = frame;
                 mcview.center= CGPointMake(mcview.center.x + offset.x, mcview.center.y + offset.y);
-                // video layer needs to get resized too,
-                // not sure why, it should track the view.
-                videolayer.frame = frame;
+                // we startup hidden, show it now
+                if (mcview.hidden == YES)
+                  mcview.hidden = NO;
               });
               oldSrcRect  = SrcRect;
               oldDestRect = DestRect;

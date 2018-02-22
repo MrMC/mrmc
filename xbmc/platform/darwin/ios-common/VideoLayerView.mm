@@ -36,6 +36,8 @@
 	self = [super initWithFrame:frame];
 	if (self)
 	{
+    self.hidden = YES;
+    self.layer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     [self setNeedsLayout];
     [self layoutIfNeeded];
 
