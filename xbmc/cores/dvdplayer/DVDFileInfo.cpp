@@ -128,6 +128,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
       SAFE_DELETE(pInputStream);
     return false;
   }
+  pInputStream->SetNoCaching();
 
   CDVDDemux *pDemuxer = NULL;
 
@@ -211,11 +212,14 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     {
       // libmpeg2 is not thread safe so use ffmepg for mpeg2/mpeg1 thumb extraction
       CDVDCodecOptions dvdOptions;
+      dvdOptions.m_formats.push_back(RENDER_FMT_YUV420P);
       pVideoCodec = CDVDFactoryCodec::OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions);
     }
     else
     {
-      pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
+      CRenderInfo renderInfo;
+      renderInfo.formats.push_back(RENDER_FMT_YUV420P);
+      pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(hint, renderInfo);
     }
 
     if (pVideoCodec)
@@ -274,9 +278,13 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
               aspect = hint.aspect;
             unsigned int nHeight = (unsigned int)((double)g_advancedSettings.GetThumbSize() / aspect);
 
+            AVPixelFormat avPixelFormat = (AVPixelFormat)CDVDCodecUtils::PixfmtFromEFormat(picture.format);
+            if (avPixelFormat == AV_PIX_FMT_NONE)
+              avPixelFormat = AV_PIX_FMT_YUV420P;
+
             uint8_t *pOutBuf = (uint8_t*)av_malloc(nWidth * nHeight * 4);
-            struct SwsContext *context = sws_getContext(picture.iWidth, picture.iHeight,
-                  (AVPixelFormat)CDVDCodecUtils::PixfmtFromEFormat(picture.format),
+            struct SwsContext *context = sws_getContext(
+                  picture.iWidth, picture.iHeight, avPixelFormat,
                   nWidth, nHeight, AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
             if (context)
