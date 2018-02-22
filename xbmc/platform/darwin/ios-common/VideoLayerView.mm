@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015 Team MrMC
+ *      Copyright (C) 2015-2018 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -33,9 +33,9 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-	self = [super initWithFrame:frame];
-	if (self)
-	{
+  self = [super initWithFrame:frame];
+  if (self)
+  {
     self.hidden = YES;
     self.layer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     [self setNeedsLayout];
@@ -59,13 +59,13 @@
 #endif
   }
 
-	return self;
+  return self;
 }
 
 - (void)dealloc
 {
 #if MCSAMPLEBUFFER_DEBUG_MESSAGES
-  AVSampleBufferDisplayLayer *videolayer = self.videolayer;
+  AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)[self layer];
   [videoLayer removeObserver:self forKeyPath:@"error"];
   [videoLayer removeObserver:self forKeyPath:@"outputObscuredDueToInsufficientExternalProtection"];
 
@@ -77,7 +77,7 @@
 - (void)layerFailedToDecode:(NSNotification*)note
 {
   static int toggle = 0;
-  AVSampleBufferDisplayLayer *videolayer = self.videolayer;
+  AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)[self layer];
   NSError *error = [[note userInfo] valueForKey:AVSampleBufferDisplayLayerFailedToDecodeNotificationErrorKey];
   NSLog(@"Error: %@", error);
   if (toggle & 0x01)
