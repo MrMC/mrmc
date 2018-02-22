@@ -26,6 +26,7 @@
 #include <queue>
 #include <CoreMedia/CoreMedia.h>
 
+#include "cores/VideoRenderers/RenderFeatures.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "threads/Thread.h"
 
@@ -69,6 +70,8 @@ protected:
 
   double        GetPlayerClockSeconds();
   void          UpdateFrameRateTracking(double ts);
+  void          GetRenderFeatures(Features &renderFeatures);
+  static void   RenderFeaturesCallBack(const void *ctx, Features &renderFeatures);
   void          ProbeNALUnits(uint8_t *pData, int iSize);
 
   VideoLayerView         *m_decoder;        // opaque decoder reference

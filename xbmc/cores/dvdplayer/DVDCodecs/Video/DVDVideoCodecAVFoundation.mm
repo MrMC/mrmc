@@ -426,6 +426,7 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       m_fps = (double)hints.fpsrate / (double)hints.fpsscale;
 
     Create();
+    g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
     m_messages->enqueue(START);
     return true;
   }
@@ -958,6 +959,23 @@ void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double ts)
         __FUNCTION__, m_fps, m_framecount);
     }
   }
+}
+
+void CDVDVideoCodecAVFoundation::GetRenderFeatures(Features &renderFeatures)
+{
+  renderFeatures.push_back(RENDERFEATURE_ZOOM);
+  renderFeatures.push_back(RENDERFEATURE_STRETCH);
+  renderFeatures.push_back(RENDERFEATURE_NONLINSTRETCH);
+  renderFeatures.push_back(RENDERFEATURE_VERTICAL_SHIFT);
+  renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
+  return;
+}
+
+void CDVDVideoCodecAVFoundation::RenderFeaturesCallBack(const void *ctx, Features &renderFeatures)
+{
+  CDVDVideoCodecAVFoundation *codec = (CDVDVideoCodecAVFoundation*)ctx;
+  if (codec)
+    codec->GetRenderFeatures(renderFeatures);
 }
 
 /** Dolby Vision Profile enum type */
