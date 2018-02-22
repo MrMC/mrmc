@@ -27,11 +27,4 @@
 #undef AVMediaType
 
 @interface VideoLayerView : UIView
-
-@property (nonatomic, assign) id videolayer;
-
-- (void) setHiddenAnimated:(BOOL)hide
-                    delay:(NSTimeInterval)delay
-                 duration:(NSTimeInterval)duration
-                 isSDR:(bool)isSDR;
 @end

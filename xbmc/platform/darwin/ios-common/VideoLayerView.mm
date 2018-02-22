@@ -26,6 +26,11 @@
 #pragma mark -
 @implementation VideoLayerView
 
++ (Class) layerClass
+{
+  return [AVSampleBufferDisplayLayer class];
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
 	self = [super initWithFrame:frame];
@@ -34,26 +39,12 @@
     [self setNeedsLayout];
     [self layoutIfNeeded];
 
-    self.alpha = 0.0;
-    self.hidden = YES;
-    self.videolayer = nullptr;
-    AVSampleBufferDisplayLayer *videolayer = [[AVSampleBufferDisplayLayer alloc] init];
-    videolayer.bounds = self.bounds;
-    videolayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-    videolayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-#if defined(TARGET_DARWIN_IOS)
-    //videolayer.backgroundColor = [[UIColor blackColor] CGColor];
-    videolayer.backgroundColor = [[UIColor clearColor] CGColor];
-#else
-    videolayer.backgroundColor = CGColorGetConstantColor(kCGColorBlue);
-#endif
-   [[self layer] addSublayer:videolayer];
-
     // create a time base
     CMTimebaseRef controlTimebase;
     CMTimebaseCreateWithMasterClock(CFAllocatorGetDefault(), CMClockGetHostTimeClock(), &controlTimebase);
 
     // setup the time base clock stopped with a zero initial time.
+    AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)[self layer];
     videolayer.controlTimebase = controlTimebase;
     CMTimebaseSetTime(videolayer.controlTimebase, kCMTimeZero);
     CMTimebaseSetRate(videolayer.controlTimebase, 0);
@@ -64,7 +55,6 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layerFailedToDecode:) name:AVSampleBufferDisplayLayerFailedToDecodeNotification object:videoLayer];
 #endif
-    self.videolayer = (NSObject*)videolayer;
   }
 
 	return self;
@@ -72,21 +62,13 @@
 
 - (void)dealloc
 {
-  AVSampleBufferDisplayLayer *videolayer = self.videolayer;
 #if MCSAMPLEBUFFER_DEBUG_MESSAGES
+  AVSampleBufferDisplayLayer *videolayer = self.videolayer;
   [videoLayer removeObserver:self forKeyPath:@"error"];
   [videoLayer removeObserver:self forKeyPath:@"outputObscuredDueToInsufficientExternalProtection"];
 
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVSampleBufferDisplayLayerFailedToDecodeNotification object:videoLayer];
 #endif
-  [videolayer removeFromSuperlayer];
-}
-
-- (void)layoutSubviews
-{
-  AVSampleBufferDisplayLayer *videolayer = self.videolayer;
-  if (videolayer)
-    videolayer.frame = self.bounds;
 }
 
 #if MCSAMPLEBUFFER_DEBUG_MESSAGES
@@ -103,40 +85,5 @@
   toggle++;
 }
 #endif
-
-- (void)setHiddenAnimated:(BOOL)hide
-  delay:(NSTimeInterval)delay duration:(NSTimeInterval)duration isSDR:(bool)isSDR
-{
-  if (self.hidden == hide)
-    return;
-
-  CGFloat alphaMax = 1.0;
-  if (!isSDR)
-    alphaMax = 0.998;
-
-  if (hide)
-  {
-    self.alpha = alphaMax;
-  }
-  else
-  {
-    self.alpha = 0.0;
-    self.hidden = NO;
-  }
-  [UIView animateWithDuration:duration delay:delay
-    options:UIViewAnimationOptionAllowAnimatedContent animations:^{
-      if (hide)
-        self.alpha = 0.0;
-      else
-        self.alpha = alphaMax;
-    } completion:^(BOOL finished) {
-      if (finished)
-      {
-        self.alpha = alphaMax;
-        self.hidden = hide;
-      }
-    }
-  ];
-}
 
 @end
