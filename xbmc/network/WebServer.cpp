@@ -87,18 +87,6 @@ CWebServer::CWebServer()
     m_thread_stacksize(0),
     m_Credentials64Encoded("eGJtYzp4Ym1j") // xbmc:xbmc
 {
-#if defined(TARGET_DARWIN_TVOS)
-  void *stack_addr;
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-  pthread_attr_getstack(&attr, &stack_addr, &m_thread_stacksize);
-  pthread_attr_destroy(&attr);
-  // double the stack size under tvos, not sure why yet
-  // but it stoped crashing using Kodi iOS remote -> play video.
-  // non-tvos will pass a value of zero which means 'system default'
-  m_thread_stacksize *= 2;
-  CLog::Log(LOGDEBUG, "CWebServer: increasing thread stack to %zu", m_thread_stacksize);
-#endif
 }
 
 HTTPMethod CWebServer::GetMethod(const char *method)
