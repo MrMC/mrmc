@@ -911,7 +911,7 @@
 				</control>
 				<control type="progress">
 					<left>20</left>
-					<top>270</top>
+					<top>272</top>
 					<width>176</width>
 					<height>10</height>
 					<texturebg>-</texturebg>
@@ -921,7 +921,7 @@
 				</control>
 				<control type="progress">
 					<left>20</left>
-					<top>276</top>
+					<top>278</top>
 					<width>176</width>
 					<height>10</height>
 					<texturebg colordiffuse="primary_color">colors/white10px.png</texturebg>
