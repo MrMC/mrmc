@@ -837,7 +837,7 @@
 					<top>635</top>
 					<width>525</width>
 					<height>44</height>
-					<label>$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]: [/COLOR],[CR]]</label>
+					<label>$VAR[InfoLineVar,[B],[/B]]</label>
 				</control>
 				<control type="textbox" id="15500">
 					<left>30</left>
@@ -875,6 +875,59 @@
 						<visible>!StringCompare(ListItem.Label,..)</visible>
 						<visible>!Container.Content() | !IsEmpty(ListItem.Plot)</visible>
 					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<include name="HomeShelfThumb">
+		<param name="is_focused">false</param>
+		<param name="focused_ID"></param>
+		<param name="item_thumb"></param>
+		<definition>
+			<control type="group">
+				<depth>DepthContentPopout</depth>
+				<animation type="Focus" reversible="false">
+					<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+				</animation>
+				<animation type="UnFocus" reversible="false">
+					<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
+				</animation>
+				<top>2</top>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>216</width>
+					<height>306</height>
+					<texture fallback="DefaultVideo.png" background="true">$INFO[$PARAM[item_thumb]]</texture>
+					<bordersize>20</bordersize>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>216</width>
+					<height>306</height>
+					<texture>overlays/FrameRA.png</texture>
+					<visible>Control.HasFocus($PARAM[focused_ID]) + $PARAM[is_focused]</visible>
+				</control>
+				<control type="progress">
+					<left>20</left>
+					<top>270</top>
+					<width>176</width>
+					<height>10</height>
+					<texturebg>-</texturebg>
+					<midtexture colordiffuse="primary_color">colors/white10px.png</midtexture>
+					<info>ListItem.PercentPlayed</info>
+					<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
+				</control>
+				<control type="progress">
+					<left>20</left>
+					<top>276</top>
+					<width>176</width>
+					<height>10</height>
+					<texturebg colordiffuse="primary_color">colors/white10px.png</texturebg>
+					<midtexture colordiffuse="primary_color">colors/white10px.png</midtexture>
+					<info>100</info>
+					<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
 				</control>
 			</control>
 		</definition>

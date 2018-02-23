@@ -304,87 +304,19 @@
 						<preloaditems>1</preloaditems>
 						<visible>IntegerGreaterThan(Container(8000).NumItems,0)</visible>
 						<itemlayout width="260" height="308">
-							<control type="group">
-								<depth>DepthContentPopout</depth>
-								<top>2</top>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<bordertexture border="20">overlays/shadow.png</bordertexture>
-									<bordersize>20</bordersize>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>270</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg>-</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>ListItem.PercentPlayed</info>
-									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>276</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>100</info>
-									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-							</control>
+							<include content="HomeShelfThumb">
+								<param name="is_focused" value="false" />
+								<param name="focused_ID" value="8000" />
+								<param name="item_thumb" value="ListItem.Art(thumb)" />
+								
+							</include>
 						</itemlayout>
 						<focusedlayout width="260" height="308">
-							<control type="group">
-								<depth>DepthContentPopout</depth>
-								<animation type="Focus" reversible="false">
-									<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
-								</animation>
-								<animation type="UnFocus" reversible="false">
-									<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
-								</animation>
-								<top>2</top>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<bordersize>20</bordersize>
-								</control>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture>overlays/FrameRA.png</texture>
-									<visible>Control.HasFocus(8000)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>270</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg>-</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>ListItem.PercentPlayed</info>
-									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>276</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>100</info>
-									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-							</control>
+							<include content="HomeShelfThumb">
+								<param name="is_focused" value="true" />
+								<param name="focused_ID" value="8000" />
+								<param name="item_thumb" value="ListItem.Art(thumb)" />
+							</include>
 						</focusedlayout>
 					</control>
 					<control type="label">
@@ -424,87 +356,18 @@
 						<preloaditems>1</preloaditems>
 						<visible>IntegerGreaterThan(Container(8010).NumItems,0)</visible>
 						<itemlayout width="260" height="308">
-							<control type="group">
-								<depth>DepthContentPopout</depth>
-								<top>2</top>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<bordertexture border="20">overlays/shadow.png</bordertexture>
-									<bordersize>20</bordersize>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>270</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg>-</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>ListItem.PercentPlayed</info>
-									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>276</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>100</info>
-									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-							</control>
+							<include content="HomeShelfThumb">
+								<param name="is_focused" value="false" />
+								<param name="focused_ID" value="8010" />
+								<param name="item_thumb" value="ListItem.Art(thumb)" />
+							</include>
 						</itemlayout>
 						<focusedlayout width="260" height="308">
-							<control type="group">
-								<depth>DepthContentPopout</depth>
-								<animation type="Focus" reversible="false">
-									<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
-								</animation>
-								<animation type="UnFocus" reversible="false">
-									<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
-								</animation>
-								<top>2</top>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<bordersize>20</bordersize>
-								</control>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture>overlays/FrameRA.png</texture>
-									<visible>Control.HasFocus(8010)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>270</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg>-</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>ListItem.PercentPlayed</info>
-									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>276</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>100</info>
-									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-							</control>
+							<include content="HomeShelfThumb">
+								<param name="is_focused" value="true" />
+								<param name="focused_ID" value="8010" />
+								<param name="item_thumb" value="ListItem.Art(thumb)" />
+							</include>
 						</focusedlayout>
 					</control>
 				</control>
@@ -563,88 +426,19 @@
 						<onright>8001</onright>
 						<preloaditems>1</preloaditems>
 						<visible>IntegerGreaterThan(Container(8001).NumItems,0)</visible>
-						<itemlayout width="260" height="306">
-							<control type="group">
-								<depth>DepthContentPopout</depth>
-								<top>2</top>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(tvshow.thumb)]</texture>
-									<bordertexture border="20">overlays/shadow.png</bordertexture>
-									<bordersize>20</bordersize>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>270</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg>-</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>ListItem.PercentPlayed</info>
-									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>276</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>100</info>
-									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-							</control>
+						<itemlayout width="260" height="308">
+							<include content="HomeShelfThumb">
+								<param name="is_focused" value="false" />
+								<param name="focused_ID" value="8001" />
+								<param name="item_thumb" value="ListItem.Art(tvshow.thumb)" />
+							</include>
 						</itemlayout>
-						<focusedlayout width="260" height="306">
-							<control type="group">
-								<depth>DepthContentPopout</depth>
-								<animation type="Focus" reversible="false">
-									<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
-								</animation>
-								<animation type="UnFocus" reversible="false">
-									<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
-								</animation>
-								<top>2</top>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(tvshow.thumb)]</texture>
-									<bordersize>20</bordersize>
-								</control>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture>overlays/FrameRA.png</texture>
-									<visible>Control.HasFocus(8001)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>270</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg>-</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>ListItem.PercentPlayed</info>
-									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>276</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>100</info>
-									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-							</control>
+						<focusedlayout width="260" height="308">
+							<include content="HomeShelfThumb">
+								<param name="is_focused" value="true" />
+								<param name="focused_ID" value="8001" />
+								<param name="item_thumb" value="ListItem.Art(tvshow.thumb)" />
+							</include>
 						</focusedlayout>
 					</control>
 					<control type="label">
@@ -695,88 +489,19 @@
 						<onright>8011</onright>
 						<preloaditems>1</preloaditems>
 						<visible>IntegerGreaterThan(Container(8011).NumItems,0)</visible>
-						<itemlayout width="260" height="306">
-							<control type="group">
-								<depth>DepthContentPopout</depth>
-								<top>2</top>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(tvshow.thumb)]</texture>
-									<bordertexture border="20">overlays/shadow.png</bordertexture>
-									<bordersize>20</bordersize>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>270</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg>-</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>ListItem.PercentPlayed</info>
-									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>276</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>100</info>
-									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-							</control>
+						<itemlayout width="260" height="308">
+							<include content="HomeShelfThumb">
+								<param name="is_focused" value="false" />
+								<param name="focused_ID" value="8011" />
+								<param name="item_thumb" value="ListItem.Art(tvshow.thumb)" />
+							</include>
 						</itemlayout>
-						<focusedlayout width="260" height="306">
-							<control type="group">
-								<depth>DepthContentPopout</depth>
-								<animation type="Focus" reversible="false">
-									<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
-								</animation>
-								<animation type="UnFocus" reversible="false">
-									<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
-								</animation>
-								<top>2</top>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(tvshow.thumb)]</texture>
-									<bordersize>20</bordersize>
-								</control>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>216</width>
-									<height>306</height>
-									<texture>overlays/FrameRA.png</texture>
-									<visible>Control.HasFocus(8011)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>270</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg>-</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>ListItem.PercentPlayed</info>
-									<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-								<control type="progress">
-									<left>20</left>
-									<top>276</top>
-									<width>176</width>
-									<height>10</height>
-									<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-									<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
-									<info>100</info>
-									<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
-								</control>
-							</control>
+						<focusedlayout width="260" height="308">
+							<include content="HomeShelfThumb">
+								<param name="is_focused" value="true" />
+								<param name="focused_ID" value="8011" />
+								<param name="item_thumb" value="ListItem.Art(tvshow.thumb)" />
+							</include>
 						</focusedlayout>
 					</control>
 				</control>

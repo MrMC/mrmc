@@ -26,6 +26,18 @@
 		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.ChannelName]</value>
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Artist]</value>
 	</variable>
+  <variable name="InfoLineVar">
+	<value condition="!Container.content(Addons) + Window.IsActive(MyPics.xml)">$INFO[ListItem.Date,, • ]$INFO[ListItem.Size]</value>
+	<value condition="Container.content(Albums)">$INFO[ListItem.Artist]</value>
+	<value condition="Container.Content(Episodes)">$INFO[ListItem.Premiered,,  • ]$INFO[ListItem.Duration,, $LOCALIZE[12391]]</value>
+	<value condition="Container.Content(Addons)">$INFO[ListItem.Property(Addon.Creator)]</value>
+	<value condition="Container.Content(songs)">$INFO[ListItem.Duration]</value>
+	<value condition="Container.Content(MusicVideos)">$INFO[ListItem.Year,, • ]$INFO[ListItem.Duration,, $LOCALIZE[12391]]</value>
+	<value condition="Container.Content(Movies)">$INFO[ListItem.Year,, • ]$INFO[ListItem.Duration,, $LOCALIZE[12391]]</value>
+	<value condition="IntegerGreaterThan(ListItem.Property(UnWatchedEpisodes),0) + [Container.Content(Seasons) | Container.Content(TVShows)]">$INFO[ListItem.Year,, • ]$INFO[ListItem.Property(TotalEpisodes), $LOCALIZE[20360] ] [COLOR=Highlight]$INFO[ListItem.Property(UnWatchedEpisodes), (,) ][/COLOR]</value>
+	<value condition="!IntegerGreaterThan(ListItem.Property(UnWatchedEpisodes),0) + [Container.Content(Seasons) | Container.Content(TVShows)]">$INFO[ListItem.Year,, • ]$INFO[ListItem.Property(TotalEpisodes),, $LOCALIZE[20360]]</value>
+	<value>$INFO[ListItem.Label2]</value>
+  </variable>
 	<variable name="MusicInfoListLabelVar">
 		<value condition="Container.Content(artists)">$INFO[ListItem.Label]</value>
 		<value>$INFO[ListItem.TrackNumber,[COLOR grey],:[/COLOR]  ]$INFO[ListItem.Label]</value>

@@ -73,8 +73,8 @@
 			<visible>Library.HasContent(MovieSets) | Library.HasServices</visible>
 		</item>
 		<item id="90164">
-			<label>369</label>
-			<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
+			<label>16101</label>
+			<onclick>ActivateWindow(Videos,special://skin/playlists/unwatched_movies.xsp,return)</onclick>
 		</item>
 		<item id="90165">
 			<label>135</label>
@@ -224,8 +224,8 @@
 			<onclick>ActivateWindow(Videos,InProgressShows,return)</onclick>
 		</item>
 		<item id="90173">
-			<label>369</label>
-			<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
+			<label>16101</label>
+			<onclick>ActivateWindow(Videos,special://skin/playlists/unwatched_tvshows.xsp,return)</onclick>
 		</item>
 		<item id="90174">
 			<label>135</label>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.opacity" version="0.9.0" name="Opacity" provider-name="phil65">
+<addon id="skin.opacity" version="0.9.1" name="Opacity" provider-name="phil65">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
