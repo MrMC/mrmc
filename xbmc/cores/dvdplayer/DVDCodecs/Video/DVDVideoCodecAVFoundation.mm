@@ -968,7 +968,6 @@ void CDVDVideoCodecAVFoundation::GetRenderFeatures(Features &renderFeatures)
   renderFeatures.push_back(RENDERFEATURE_NONLINSTRETCH);
   renderFeatures.push_back(RENDERFEATURE_VERTICAL_SHIFT);
   renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
-  return;
 }
 
 void CDVDVideoCodecAVFoundation::RenderFeaturesCallBack(const void *ctx, Features &renderFeatures)
