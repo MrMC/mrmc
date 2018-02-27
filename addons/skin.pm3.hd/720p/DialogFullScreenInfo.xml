@@ -797,7 +797,7 @@
 				</control>
 				<control type="label">
 					<posx>230</posx>
-					<posy>70</posy>
+					<posy>55</posy>
 					<width>885</width>
 					<height>25</height>
 					<label>$INFO[VideoPlayer.PlotOutline]</label>
@@ -809,7 +809,7 @@
 				<control type="label">
 					<description>time label</description>
 					<posx>230</posx>
-					<posy>100</posy>
+					<posy>85</posy>
 					<width>280</width>
 					<height>25</height>
 					<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
@@ -818,10 +818,11 @@
 					<font>font12</font>
 					<textcolor>white</textcolor>
 				</control>
+<!--
 				<control type="label">
 					<description>time label</description>
 					<posx>1250</posx>
-					<posy>100</posy>
+					<posy>85</posy>
 					<width>280</width>
 					<height>25</height>
 					<label>$LOCALIZE[19148]: $INFO[VideoPlayer.ChannelNumber]</label>
@@ -830,11 +831,12 @@
 					<font>font14</font>
 					<textcolor>white</textcolor>
 				</control>
+-->
 				<control type="progress">
 					<description>Cache Progressbar</description>
-					<posx>230</posx>
-					<posy>130</posy>
-					<width>1020</width>
+					<posx>510</posx>
+					<posy>94</posy>
+					<width>740</width>
 					<height>8</height>
 					<info>Player.ProgressCache</info>
 					<texturebg border="4,0,4,0">ProgressBack.png</texturebg>
@@ -842,13 +844,14 @@
 				</control>
 				<control type="progress">
 					<description>Progressbar</description>
-					<posx>230</posx>
-					<posy>130</posy>
-					<width>1020</width>
+					<posx>510</posx>
+					<posy>94</posy>
+					<width>740</width>
 					<height>8</height>
 					<info>Player.Progress</info>
 					<texturebg border="4,0,4,0">ProgressBack2.png</texturebg>
 				</control>
+<!--
 				<control type="label">
 					<posx>230</posx>
 					<posy>140</posy>
@@ -870,6 +873,19 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font11</font>
+					<textcolor>grey2</textcolor>
+					<scroll>true</scroll>
+				</control>
+-->
+				<control type="label">
+					<posx>230</posx>
+					<posy>130</posy>
+					<width>1020</width>
+					<height>25</height>
+					<label>$LOCALIZE[19031]: [COLOR=white]$INFO[VideoPlayer.NextTitle][/COLOR]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
 					<textcolor>grey2</textcolor>
 					<scroll>true</scroll>
 				</control>

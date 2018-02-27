@@ -12,6 +12,13 @@
 	<constant name="FanartCrossfadeTime">400</constant>
 	<constant name="IconCrossfadeTime">400</constant>
 
+	<variable name="pcall">
+		<value>ActivateWindow(10025,&quot;</value>
+	</variable>
+	<variable name="scall">
+		<value>&quot;,return)</value>
+	</variable>
+
 	<variable name="PlaybackStateLabel">
 		<value condition="Player.Playing + !Player.Seeking">$LOCALIZE[31042]</value>
 		<value condition="[Player.Paused + !Player.Caching] + !Player.Seeking">$LOCALIZE[31043]</value>

@@ -325,6 +325,26 @@ msgctxt "#31407"
 msgid "Channels in Group"
 msgstr ""
 
-msgctxt "#39001"
+msgctxt "#49001"
 msgid "Settings Level"
+msgstr ""
+
+msgctxt "#49002"
+msgid "Use smart-playlists on home screen"
+msgstr ""
+
+msgctxt "#49003"
+msgid "Smart-playlist"
+msgstr ""
+
+msgctxt "#49004"
+msgid "Use smart-playlist"
+msgstr ""
+
+msgctxt "#49005"
+msgid "Smart-playlist"
+msgstr ""
+
+msgctxt "#49006"
+msgid "path"
 msgstr ""

@@ -228,7 +228,26 @@ msgctxt "#31405"
 msgid "Available[CR]Groups"
 msgstr "Доступные[CR]группы"
 
-msgctxt "#39001"
+msgctxt "#49001"
 msgid "Settings Level"
 msgstr "Уровень настроек"
 
+msgctxt "#49002"
+msgid "Use smart-playlists on home screen"
+msgstr "Использовать смарт-плейлисты на главном экране"
+
+msgctxt "#49003"
+msgid "Smart-playlist"
+msgstr "Имя смарт-плейлиста"
+
+msgctxt "#49004"
+msgid "Use smart-playlist"
+msgstr "Использовать смарт-плейлист"
+
+msgctxt "#49005"
+msgid "Smart-playlist"
+msgstr "Смарт-плейлист"
+
+msgctxt "#49006"
+msgid "path"
+msgstr "находится"

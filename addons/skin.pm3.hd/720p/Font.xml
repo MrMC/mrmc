@@ -1,181 +1,469 @@
 <fonts>
+		<fontset id="Arial" unicode="true">
+	 	<font>
+			<name>font10</name>
+			<filename>arial.ttf</filename>
+			<size>15</size>
+		</font>
+	 	<font>
+			<name>font11</name>
+			<filename>arial.ttf</filename>
+			<size>19</size>
+		</font>
+	 	<font>
+			<name>font12</name>
+			<filename>arial.ttf</filename>
+			<size>20</size>
+		</font>
+	 	<font>
+			<name>font12b</name>
+			<filename>arial.ttf</filename>
+			<size>20</size>
+			<aspect>.9</aspect>
+		</font>
+	 	<font>
+			<name>font13</name>
+			<filename>arial.ttf</filename>
+			<size>23</size>
+		</font>
+	 	<font>
+			<name>font18</name>
+			<filename>arial.ttf</filename>
+			<size>28</size>
+			<aspect>.8</aspect>
+		</font>
+	 	<font>
+			<name>font18b</name>
+			<filename>arial.ttf</filename>
+			<size>28</size>
+			<aspect>.8</aspect>
+		</font>
+	 	<font>
+			<name>font20</name>
+			<filename>arial.ttf</filename>
+			<size>25</size>
+		</font>
+	 	<font>
+			<name>font22</name>
+			<filename>arial.ttf</filename>
+			<size>28</size>
+		</font>
+	 	<font>
+			<name>font25</name>
+			<filename>arial.ttf</filename>
+			<size>35</size>
+		</font>
+	 	<font>
+			<name>font35b</name>
+			<filename>arial.ttf</filename>
+			<size>80</size>
+			<aspect>.8</aspect>
+		</font>
+	</fontset>
+
+		<fontset id="Arial Mid" unicode="true">
+	 	<font>
+			<name>font10</name>
+			<filename>arial.ttf</filename>
+			<size>19</size>
+		</font>
+	 	<font>
+			<name>font11</name>
+			<filename>arial.ttf</filename>
+			<size>23</size>
+		</font>
+	 	<font>
+			<name>font12</name>
+			<filename>arial.ttf</filename>
+			<size>24</size>
+		</font>
+	 	<font>
+			<name>font12b</name>
+			<filename>arial.ttf</filename>
+			<size>24</size>
+			<aspect>.9</aspect>
+		</font>
+	 	<font>
+			<name>font13</name>
+			<filename>arial.ttf</filename>
+			<size>27</size>
+		</font>
+	 	<font>
+			<name>font18</name>
+			<filename>arial.ttf</filename>
+			<size>32</size>
+			<aspect>.8</aspect>
+		</font>
+	 	<font>
+			<name>font18b</name>
+			<filename>arial.ttf</filename>
+			<size>32</size>
+			<aspect>.8</aspect>
+		</font>
+	 	<font>
+			<name>font20</name>
+			<filename>arial.ttf</filename>
+			<size>29</size>
+		</font>
+	 	<font>
+			<name>font22</name>
+			<filename>arial.ttf</filename>
+			<size>32</size>
+		</font>
+	 	<font>
+			<name>font25</name>
+			<filename>arial.ttf</filename>
+			<size>39</size>
+		</font>
+	 	<font>
+			<name>font35b</name>
+			<filename>arial.ttf</filename>
+			<size>80</size>
+			<aspect>.8</aspect>
+		</font>
+	</fontset>
+	
+		<fontset id="Arial Big" unicode="true">
+	 	<font>
+			<name>font10</name>
+			<filename>arial.ttf</filename>
+			<size>22</size>
+		</font>
+	 	<font>
+			<name>font11</name>
+			<filename>arial.ttf</filename>
+			<size>29</size>
+		</font>
+	 	<font>
+			<name>font12</name>
+			<filename>arial.ttf</filename>
+			<size>30</size>
+		</font>
+	 	<font>
+			<name>font12b</name>
+			<filename>arial.ttf</filename>
+			<size>30</size>
+			<aspect>.9</aspect>
+		</font>
+	 	<font>
+			<name>font13</name>
+			<filename>arial.ttf</filename>
+			<size>33</size>
+		</font>
+	 	<font>
+			<name>font18</name>
+			<filename>arial.ttf</filename>
+			<size>38</size>
+			<aspect>.8</aspect>
+		</font>
+	 	<font>
+			<name>font18b</name>
+			<filename>arial.ttf</filename>
+			<size>38</size>
+			<aspect>.8</aspect>
+		</font>
+	 	<font>
+			<name>font20</name>
+			<filename>arial.ttf</filename>
+			<size>35</size>
+		</font>
+	 	<font>
+			<name>font22</name>
+			<filename>arial.ttf</filename>
+			<size>38</size>
+		</font>
+	 	<font>
+			<name>font25</name>
+			<filename>arial.ttf</filename>
+			<size>45</size>
+		</font>
+	 	<font>
+			<name>font35b</name>
+			<filename>arial.ttf</filename>
+			<size>80</size>
+			<aspect>.8</aspect>
+		</font>
+	</fontset>
+	
 	<fontset id="Default" unicode="true">
 	 	<font>
 			<name>font10</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>15</size>
+			<size>17</size>
 		</font>
 	 	<font>
 			<name>font11</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>19</size>
+			<size>21</size>
 		</font>
 	 	<font>
 			<name>font12</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>20</size>
+			<size>22</size>
 		</font>
 	 	<font>
 			<name>font12b</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>20</size>
+			<size>22</size>
 			<aspect>.9</aspect>
 		</font>
 	 	<font>
 			<name>font13</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>23</size>
+			<size>25</size>
 		</font>
 	 	<font>
 			<name>font18</name>
 			<filename>humanist_521_condensed_bt.ttf</filename>
-			<size>32</size>
+			<size>34</size>
 		</font>
 	 	<font>
 			<name>font18b</name>
 			<filename>humanist_521_bt.ttf</filename>
-			<size>32</size>
+			<size>34</size>
 		</font>
 	 	<font>
 			<name>font20</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>25</size>
+			<size>27</size>
 		</font>
 	 	<font>
 			<name>font22</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>28</size>
+			<size>30</size>
 		</font>
 	 	<font>
 			<name>font25</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>35</size>
+			<size>37</size>
 		</font>
 	 	<font>
 			<name>font35b</name>
 			<filename>LiberationSans-Regular.ttf</filename>
-			<size>80</size>
+			<size>82</size>
 			<aspect>.8</aspect>
 		</font>
+
+<!-- Addon fonts -->
+
+<font>
+	<name>osmc_addon_Font60</name>
+	<filename>OpenSans-Regular.ttf</filename>
+	<size>60</size>
+</font>
+<font>
+	<name>osmc_addon_Font40</name>
+	<filename>OpenSans-Regular.ttf</filename>
+	<size>40</size>
+</font>
+<font>
+	<name>osmc_addon_Font30</name>
+	<filename>OpenSans-Regular.ttf</filename>
+	<linespacing>0.88</linespacing>
+	<size>30</size>
+</font>
+<font>
+	<name>osmc_addon_Font26</name>
+	<filename>OpenSans-Regular.ttf</filename>
+	<linespacing>0.88</linespacing>
+	<size>26</size>
+</font>
+
+<!-- Old addon fonts -->
+
+<font>
+	<name>osmc_addon_OLD_Font72</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>72</size>
+</font>
+<font>
+	<name>osmc_addon_OLD_Font48</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>48</size>
+</font>
+<font>
+	<name>osmc_addon_OLD_Font42</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>42</size>
+</font>
+<font>
+	<name>osmc_addon_OLD_Font36</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>36</size>
+	<linespacing>1.3</linespacing>
+</font>
+<font>
+	<name>osmc_addon_OLD_Font33</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>33</size>
+</font>
+<font>
+	<name>osmc_addon_OLD_Font30</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>30</size>
+</font>
+<font>
+	<name>osmc_addon_OLD_Font27</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>27</size>
+	<linespacing>1.3</linespacing>
+</font>
+<font>
+	<name>osmc_addon_OLD_Font25</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>25</size>
+	<linespacing>1.3</linespacing>
+</font>
+
+<!-- Addon 720 fonts -->
+
+<font>
+	<name>osmc_addon_720_Font60</name>
+	<filename>OpenSans-Regular.ttf</filename>
+	<size>40</size>
+</font>
+<font>
+	<name>osmc_addon_720_Font40</name>
+	<filename>OpenSans-Regular.ttf</filename>
+	<size>27</size>
+</font>
+<font>
+	<name>osmc_addon_720_Font30</name>
+	<filename>OpenSans-Regular.ttf</filename>
+	<linespacing>0.88</linespacing>
+	<size>20</size>
+</font>
+<font>
+	<name>osmc_addon_720_Font26</name>
+	<filename>OpenSans-Regular.ttf</filename>
+	<linespacing>0.88</linespacing>
+	<size>17</size>
+</font>
+
+<!-- Old addon 720 fonts -->
+
+<font>
+	<name>osmc_addon_720_OLD_Font72</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>48</size>
+</font>
+<font>
+	<name>osmc_addon_720_OLD_Font48</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>32</size>
+</font>
+<font>
+	<name>osmc_addon_720_OLD_Font42</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>28</size>
+</font>
+<font>
+	<name>osmc_addon_720_OLD_Font36</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>24</size>
+	<linespacing>1.3</linespacing>
+</font>
+<font>
+	<name>osmc_addon_720_OLD_Font33</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>22</size>
+</font>
+<font>
+	<name>osmc_addon_720_OLD_Font30</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>20</size>
+</font>
+<font>
+	<name>osmc_addon_720_OLD_Font27</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>18</size>
+	<linespacing>1.3</linespacing>
+</font>
+<font>
+	<name>osmc_addon_720_OLD_Font25</name>
+	<filename>Roboto-Light.ttf</filename>
+	<size>17</size>
+	<linespacing>1.3</linespacing>
+</font>
+
+<!-- new addon fonts -->
+	<font>
+		<name>osmc_addon_XLarge</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>48</size>
+	</font>
+	<font>
+		<name>osmc_addon_Large</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>43</size>
+	</font>
+	<font>
+		<name>osmc_addon_Med</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>38</size>
+	</font>
+	<font>
+		<name>osmc_addon_Small</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>33</size>
+	</font>
+	<font>
+		<name>osmc_addon_XSmall</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>28</size>
+	</font>
+
+	<font>
+		<name>osmc_addon_font13</name>
+		<filename>Arial.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>21</size>
+	</font>
+
+<!-- new addon 720 fonts -->
+
+	<font>
+		<name>osmc_addon_720_XLarge</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>32</size>
+	</font>
+	<font>
+		<name>osmc_addon_720_Large</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>29</size>
+	</font>
+	<font>
+		<name>osmc_addon_720_Med</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>25</size>
+	</font>
+	<font>
+		<name>osmc_addon_720_Small</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>22</size>
+	</font>
+	<font>
+		<name>osmc_addon_720_XSmall</name>
+		<filename>NotoSans-Regular.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>19</size>
+	</font>
+
+	<font>
+		<name>osmc_addon_720_font13</name>
+		<filename>Arial.ttf</filename>
+		<linespacing>0.94</linespacing>
+		<size>14</size>
+	</font>
 	</fontset>
-	<fontset id="Arial" unicode="true">
-	 	<font>
-			<name>font10</name>
-			<filename>arial.ttf</filename>
-			<size>15</size>
-		</font>
-	 	<font>
-			<name>font11</name>
-			<filename>arial.ttf</filename>
-			<size>19</size>
-		</font>
-	 	<font>
-			<name>font12</name>
-			<filename>arial.ttf</filename>
-			<size>20</size>
-		</font>
-	 	<font>
-			<name>font12b</name>
-			<filename>arial.ttf</filename>
-			<size>20</size>
-			<aspect>.9</aspect>
-		</font>
-	 	<font>
-			<name>font13</name>
-			<filename>arial.ttf</filename>
-			<size>23</size>
-		</font>
-	 	<font>
-			<name>font18</name>
-			<filename>arial.ttf</filename>
-			<size>28</size>
-			<aspect>.8</aspect>
-		</font>
-	 	<font>
-			<name>font18b</name>
-			<filename>arial.ttf</filename>
-			<size>28</size>
-			<aspect>.8</aspect>
-		</font>
-	 	<font>
-			<name>font20</name>
-			<filename>arial.ttf</filename>
-			<size>25</size>
-		</font>
-	 	<font>
-			<name>font22</name>
-			<filename>arial.ttf</filename>
-			<size>28</size>
-		</font>
-	 	<font>
-			<name>font25</name>
-			<filename>arial.ttf</filename>
-			<size>35</size>
-		</font>
-	 	<font>
-			<name>font35b</name>
-			<filename>arial.ttf</filename>
-			<size>80</size>
-			<aspect>.8</aspect>
-		</font>
-	</fontset>
-	<fontset id="Unicode" unicode="true">
-        <font>
-            <name>font10</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>15</size>
-        </font>
-        <font>
-            <name>font11</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>19</size>
-        </font>
-        <font>
-            <name>font12</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>20</size>
-        </font>
-        <font>
-            <name>font12b</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>20</size>
-            <aspect>.9</aspect>
-        </font>
-        <font>
-            <name>font13</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>23</size>
-        </font>
-        <font>
-            <name>font18</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>32</size>
-        </font>
-        <font>
-            <name>font18b</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>32</size>
-        </font>
-        <font>
-            <name>font20</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>25</size>
-        </font>
-        <font>
-            <name>font22</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>28</size>
-        </font>
-        <font>
-            <name>font25</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>35</size>
-        </font>
-        <font>
-            <name>font35b</name>
-            <filename>unifont-9.0.06.ttf</filename>
-            <size>80</size>
-            <aspect>.8</aspect>
-        </font>
-    </fontset>
+	
 </fonts>

@@ -599,7 +599,7 @@
 						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
 						<icon>special://skin/backgrounds/movies.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Movies_Folder)]</thumb>
-						<visible>Library.HasContent(Movies) | Library.HasServices</visible>
+						<visible>Library.HasContent(Movies)</visible>
 						<visible>!Skin.HasSetting(homepageHideMoviesButton)</visible>
 					</item>
 					<item id="10">
@@ -607,9 +607,39 @@
 						<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
 						<icon>special://skin/backgrounds/tvshow.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</thumb>
-						<visible>Library.HasContent(TVShows) | Library.HasServices</visible>
+						<visible>Library.HasContent(TVShows)</visible>
 						<visible>!Skin.HasSetting(homepageHideTVShowButton)</visible>
 					</item>
+<!--  -->
+					<item id="11">
+						<label>$INFO[Skin.String(homepageName1)]</label>
+						<onclick>$VAR[pcall]$INFO[Skin.String(homepageFile1)]$VAR[scall]</onclick>
+						<icon>special://skin/backgrounds/name1.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Name1_Folder)]</thumb>
+						<visible>Skin.HasSetting(homepageUse1)</visible>
+					</item>
+					<item id="12">
+						<label>$INFO[Skin.String(homepageName2)]</label>
+						<onclick>$VAR[pcall]$INFO[Skin.String(homepageFile2)]$VAR[scall]</onclick>
+						<icon>special://skin/backgrounds/name2.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Name2_Folder)]</thumb>
+						<visible>Skin.HasSetting(homepageUse2)</visible>
+					</item>
+					<item id="13">
+						<label>$INFO[Skin.String(homepageName3)]</label>
+						<onclick>$VAR[pcall]$INFO[Skin.String(homepageFile3)]$VAR[scall]</onclick>
+						<icon>special://skin/backgrounds/name3.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Name3_Folder)]</thumb>
+						<visible>Skin.HasSetting(homepageUse3)</visible>
+					</item>
+					<item id="14">
+						<label>$INFO[Skin.String(homepageName4)]</label>
+						<onclick>$VAR[pcall]$INFO[Skin.String(homepageFile4)]$VAR[scall]</onclick>
+						<icon>special://skin/backgrounds/name4.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Name4_Folder)]</thumb>
+						<visible>Skin.HasSetting(homepageUse4)</visible>
+					</item>
+<!-- -->
 					<item id="2">
 						<label>2</label>
 						<onclick>ActivateWindow(Music)</onclick>
@@ -633,6 +663,21 @@
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
 						<visible>!Skin.HasSetting(homepageHidePictureButton)</visible>
 					</item>
+					<item id="4">
+						<label>0</label>
+						<onclick condition="!System.Platform.Android">ActivateWindow(Programs,Addons,return)</onclick>
+						<onclick condition="System.Platform.Android">ActivateWindow(Programs)</onclick>
+						<icon>special://skin/backgrounds/programs.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
+						<visible>!Skin.HasSetting(homepageHideProgramButton)</visible>
+					</item>
+					<item id="5">
+						<label>8</label>
+						<onclick>ActivateWindow(Weather)</onclick>
+						<icon>special://skin/backgrounds/weather.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
+						<visible>!Skin.HasSetting(homepageHideWeatherButton) + !IsEmpty(Weather.Plugin)</visible>
+					</item>
 					<item id="7">
 						<label>5</label>
 						<onclick>ActivateWindow(Settings)</onclick>
@@ -651,9 +696,9 @@
 		</control>
 		<control type="image">
 			<posx>40</posx>
-			<posy>40</posy>
-			<width>225</width>
-			<height>66</height>
+			<posy>0</posy>
+			<width>405</width>
+			<height>120</height>
 			<texture>mrmc-logo.png</texture>
 			<include>Window_OpenClose_Animation</include>
 		</control>
@@ -661,7 +706,7 @@
 			<description>date/time label</description>
 			<posx>70r</posx>
 			<posy>65</posy>
-			<width>400</width>
+			<width>500</width>
 			<height>35</height>
 			<align>right</align>
 			<aligny>center</aligny>
@@ -735,7 +780,6 @@
 			</control>
 			<control type="button" id="20">
 				<description>Power push button</description>
-				<visible>!System.Platform.IOS + !System.Platform.TVOS</visible>
 				<posx>100</posx>
 				<posy>0</posy>
 				<width>50</width>

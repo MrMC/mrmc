@@ -114,14 +114,8 @@
 				<height>35</height>
 				<width>280</width>
 				<include>ButtonCommonValues</include>
-				<font>font11</font>
-				<align>center</align>
-				<textcolor>grey2</textcolor>
-				<focusedcolor>white</focusedcolor>
 				<label>10037</label>	
 				<onclick>SettingsLevelChange</onclick>
-				<texturefocus border="3">button-focus2.png</texturefocus>
-			<texturenofocus border="3">button-nofocus.png</texturenofocus> 
 				<onleft>5</onleft>
 				<onright>5</onright>
 				<onup>3</onup>

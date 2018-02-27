@@ -373,6 +373,199 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
+<!-- -->
+				<control type="label" id="217">
+					<width>950</width>
+					<height>45</height>
+					<font>font18</font>
+					<label>49002</label>
+					<textcolor>dialogheader</textcolor>
+					<align>center</align>
+				</control>
+				<control type="button" id="218">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>left</align>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus border="3">list-focus.png</texturefocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<label>49003</label>
+					<label2>[COLOR=green]$INFO[Skin.String(homepageName1)][/COLOR]</label2>
+					<onclick>Skin.SetString(homepageName1)</onclick>
+				</control>
+				<control type="radiobutton" id="219">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[49004] $INFO[Skin.String(homepageName1)]</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.ToggleSetting(homepageUse1)</onclick>
+					<selected>Skin.HasSetting(homepageUse1)</selected>
+					<visible>true</visible>
+				</control>			
+				<control type="button" id="220">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>left</align>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus border="3">list-focus.png</texturefocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<label>$LOCALIZE[49005] $INFO[Skin.String(homepageName1)] $LOCALIZE[49006]</label>
+					<label2>[COLOR=green]$INFO[Skin.String(homepageFile1)][/COLOR]</label2>
+					<onclick>Skin.SetFile(homepageFile1,*.xsp,special://profile/playlists/video/)</onclick>
+				</control>
+				<control type="image" id="221">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="button" id="222">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>left</align>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus border="3">list-focus.png</texturefocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<label>49003</label>
+					<label2>[COLOR=green]$INFO[Skin.String(homepageName2)][/COLOR]</label2>
+					<onclick>Skin.SetString(homepageName2)</onclick>
+				</control>
+				<control type="radiobutton" id="223">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[49004] $INFO[Skin.String(homepageName2)]</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.ToggleSetting(homepageUse2)</onclick>
+					<selected>Skin.HasSetting(homepageUse2)</selected>
+					<visible>true</visible>
+				</control>			
+				<control type="button" id="224">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>left</align>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus border="3">list-focus.png</texturefocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<label>$LOCALIZE[49005] $INFO[Skin.String(homepageName2)] $LOCALIZE[49006]</label>
+					<label2>[COLOR=green]$INFO[Skin.String(homepageFile2)][/COLOR]</label2>
+					<onclick>Skin.SetFile(homepageFile2,*.xsp,special://profile/playlists/video/)</onclick>
+				</control>
+				<control type="image" id="225">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="button" id="226">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>left</align>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus border="3">list-focus.png</texturefocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<label>49003</label>
+					<label2>[COLOR=green]$INFO[Skin.String(homepageName3)][/COLOR]</label2>
+					<onclick>Skin.SetString(homepageName3)</onclick>
+				</control>
+				<control type="radiobutton" id="227">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[49004] $INFO[Skin.String(homepageName3)]</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.ToggleSetting(homepageUse3)</onclick>
+					<selected>Skin.HasSetting(homepageUse3)</selected>
+					<visible>true</visible>
+				</control>			
+				<control type="button" id="228">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>left</align>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus border="3">list-focus.png</texturefocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<label>$LOCALIZE[49005] $INFO[Skin.String(homepageName3)] $LOCALIZE[49006]</label>
+					<label2>[COLOR=green]$INFO[Skin.String(homepageFile3)][/COLOR]</label2>
+					<onclick>Skin.SetFile(homepageFile3,*.xsp,special://profile/playlists/video/)</onclick>
+				</control>
+				<control type="image" id="229">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="button" id="230">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>left</align>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus border="3">list-focus.png</texturefocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<label>49003</label>
+					<label2>[COLOR=green]$INFO[Skin.String(homepageName4)][/COLOR]</label2>
+					<onclick>Skin.SetString(homepageName4)</onclick>
+				</control>
+				<control type="radiobutton" id="231">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[49004] $INFO[Skin.String(homepageName4)]</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.ToggleSetting(homepageUse4)</onclick>
+					<selected>Skin.HasSetting(homepageUse4)</selected>
+					<visible>true</visible>
+				</control>			
+				<control type="button" id="232">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>left</align>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus border="3">list-focus.png</texturefocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<label>$LOCALIZE[49005] $INFO[Skin.String(homepageName4)] $LOCALIZE[49006]</label>
+					<label2>[COLOR=green]$INFO[Skin.String(homepageFile4)][/COLOR]</label2>
+					<onclick>Skin.SetFile(homepageFile4,*.xsp,special://profile/playlists/video/)</onclick>
+				</control>
+<!-- -->
 			</control>
 			<!-- End Home Page Skin Settings -->
 			<!-- Start Custom Backgrounds Skin Settings -->
@@ -559,6 +752,40 @@
 								<visible>Library.HasContent(TVShows)</visible>
 								<visible>!Skin.HasSetting(homepageHideTVShowButton)</visible>
 							</item>
+<!--	-->
+							<item id="11">
+								<label>$INFO[Skin.String(homepageName1)]</label>
+								<label2>Home_Custom_Back_Name1_Folder</label2>
+								<onclick>noop</onclick>
+								<icon>special://skin/backgrounds/name1.jpg</icon>
+								<thumb>$INFO[Skin.String(Home_Custom_Back_Name1_Folder)]</thumb>
+								<visible>Skin.HasSetting(homepageUse1)</visible>
+							</item>
+							<item id="12">
+								<label>$INFO[Skin.String(homepageName2)]</label>
+								<label2>Home_Custom_Back_Name2_Folder</label2>
+								<onclick>noop</onclick>
+								<icon>special://skin/backgrounds/name2.jpg</icon>
+								<thumb>$INFO[Skin.String(Home_Custom_Back_Name2_Folder)]</thumb>
+								<visible>Skin.HasSetting(homepageUse2)</visible>
+							</item>
+							<item id="13">
+								<label>$INFO[Skin.String(homepageName3)]</label>
+								<label2>Home_Custom_Back_Name3_Folder</label2>
+								<onclick>noop</onclick>
+								<icon>special://skin/backgrounds/name3.jpg</icon>
+								<thumb>$INFO[Skin.String(Home_Custom_Back_Name3_Folder)]</thumb>
+								<visible>Skin.HasSetting(homepageUse3)</visible>
+							</item>
+							<item id="14">
+								<label>$INFO[Skin.String(homepageName4)]</label>
+								<label2>Home_Custom_Back_Name4_Folder</label2>
+								<onclick>noop</onclick>
+								<icon>special://skin/backgrounds/name4.jpg</icon>
+								<thumb>$INFO[Skin.String(Home_Custom_Back_Name4_Folder)]</thumb>
+								<visible>Skin.HasSetting(homepageUse4)</visible>
+							</item>
+<!--	-->
 							<item id="2">
 								<label>2</label>
 								<label2>Home_Custom_Back_Music_Folder</label2>
@@ -589,7 +816,7 @@
 								<onclick>noop</onclick>
 								<icon>special://skin/backgrounds/weather.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
-								<visible>!Skin.HasSetting(homepageHideWeatherButton)</visible>
+								<visible>!Skin.HasSetting(homepageHideWeatherButton) + !IsEmpty(Weather.Plugin)</visible>
 							</item>
 							<item id="7">
 								<label>5</label>

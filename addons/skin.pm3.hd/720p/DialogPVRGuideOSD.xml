@@ -2,7 +2,7 @@
 	<defaultcontrol always="true">11</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>780</posx>
+		<posx>480</posx>
 		<posy>20</posy>
 	</coordinates>
 	<include>dialogeffect</include>
@@ -11,7 +11,7 @@
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>500</width>
+			<width>800</width>
 			<height>680</height>
 			<colordiffuse>DDFFFFFF</colordiffuse>
 			<texture border="40">DialogBack.png</texture>
@@ -20,7 +20,7 @@
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>500</width>
+			<width>800</width>
 			<height>680</height>
 			<texture border="40">DialogFront.png</texture>
 		</control>
@@ -28,7 +28,7 @@
 			<description>heading label</description>
 			<posx>40</posx>
 			<posy>40</posy>
-			<width>420</width>
+			<width>720</width>
 			<height>30</height>
 			<align>center</align>
 			<aligny>center</aligny>
@@ -38,21 +38,21 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>430</posx>
+			<posx>730</posx>
 			<posy>35</posy>
 			<include>WindowCloseButtonCommons</include>
 		</control>
 		<control type="image">
 			<posx>40</posx>
 			<posy>78</posy>
-			<width>420</width>
+			<width>720</width>
 			<height>2</height>
 			<texture>separator.png</texture>
 		</control>
 		<control type="list" id="11">
 			<posx>40</posx>
 			<posy>90</posy>
-			<width>390</width>
+			<width>790</width>
 			<height>504</height>
 			<onleft>60</onleft>
 			<onright>60</onright>
@@ -65,30 +65,30 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>390</width>
+					<width>790</width>
 					<height>56</height>
 					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>
 					<posy>0</posy>
-					<width>370</width>
+					<width>670</width>
 					<height>30</height>
 					<font>font11</font>
 					<textcolor>green</textcolor>
 					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.StartTime] [COLOR=white]- $INFO[ListItem.StartDate][/COLOR]</label>
+					<label>$INFO[ListItem.StartTime] [COLOR=grey]- $INFO[ListItem.StartDate][/COLOR]</label>
 				</control>
 				<control type="label">
 					<posx>10</posx>
 					<posy>30</posy>
-					<width>370</width>
+					<width>670</width>
 					<height>20</height>
 					<font>font12</font>
-					<textcolor>grey</textcolor>
-					<selectedcolor>grey</selectedcolor>
+					<textcolor>white</textcolor>
+					<selectedcolor>white</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Title]</label>
@@ -98,7 +98,7 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>390</width>
+					<width>690</width>
 					<height>56</height>
 					<texture border="5">button-nofocus.png</texture>
 					<visible>!Control.Hasfocus(11)</visible>
@@ -107,7 +107,7 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>390</width>
+					<width>690</width>
 					<height>56</height>
 					<texture border="5">button-focus.png</texture>
 					<visible>Control.Hasfocus(11)</visible>
@@ -116,23 +116,23 @@
 				<control type="label">
 					<posx>10</posx>
 					<posy>0</posy>
-					<width>370</width>
+					<width>670</width>
 					<height>30</height>
 					<font>font11</font>
 					<textcolor>green</textcolor>
 					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.StartTime] [COLOR=white]- $INFO[ListItem.StartDate][/COLOR]</label>
+					<label>$INFO[ListItem.StartTime] [COLOR=grey]- $INFO[ListItem.StartDate][/COLOR]</label>
 				</control>
 				<control type="label">
 					<posx>10</posx>
 					<posy>30</posy>
-					<width>370</width>
+					<width>670</width>
 					<height>20</height>
 					<font>font12</font>
-					<textcolor>grey</textcolor>
-					<selectedcolor>grey</selectedcolor>
+					<textcolor>white</textcolor>
+					<selectedcolor>white</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Title]</label>
@@ -140,7 +140,7 @@
 			</focusedlayout>
 		</control>
 		<control type="scrollbar" id="60">
-			<posx>435</posx>
+			<posx>735</posx>
 			<posy>90</posy>
 			<width>20</width>
 			<height>504</height>
@@ -158,9 +158,9 @@
 		</control>
 		<control type="label">
 			<description>number of files/pages in list text label</description>
-			<posx>450</posx>
+			<posx>750</posx>
 			<posy>610</posy>
-			<width>500</width>
+			<width>800</width>
 			<height>20</height>
 			<font>font12b</font>
 			<align>right</align>
