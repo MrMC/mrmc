@@ -272,11 +272,11 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
         if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
-            unsigned int nWidth = g_advancedSettings.m_imageRes;
+            unsigned int nWidth = std::min(picture.iDisplayWidth, g_advancedSettings.m_imageRes);
             double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
             if(hint.forced_aspect && hint.aspect != 0)
               aspect = hint.aspect;
-            unsigned int nHeight = (unsigned int)((double)g_advancedSettings.m_imageRes / aspect);
+            unsigned int nHeight = (unsigned int)((double)nWidth / aspect);
 
             AVPixelFormat avPixelFormat = (AVPixelFormat)CDVDCodecUtils::PixfmtFromEFormat(picture.format);
             if (avPixelFormat == AV_PIX_FMT_NONE)
