@@ -1706,6 +1706,7 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
 typedef enum
 {
   SELECT_NAVIGATION = 0,
+  SELECT_SLIDESHOW,
   SELECT_VIDEOPLAY,
   SELECT_VIDEOPAUSED,
 } SELECT_STATE;
@@ -1764,6 +1765,10 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           if (g_application.m_pPlayer->IsPaused())
             selectState = SELECT_VIDEOPAUSED;
         }
+        else if (focusWindow && focusWindow->GetID() == WINDOW_SLIDESHOW)
+        {
+          selectState = SELECT_SLIDESHOW;
+        }
         touchPositionAtStateBegan = m_touchPosition;
         self.m_selectHoldTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(SiriLongSelectHoldHandler) userInfo:nil repeats:YES];
       }
@@ -1795,6 +1800,9 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           case SELECT_NAVIGATION:
             // user was nav'ing around in skin and clicked
             [self sendButtonPressed:SiriRemote_CenterClick];
+            break;
+          case SELECT_SLIDESHOW:
+            // do nothing
             break;
           case SELECT_VIDEOPLAY:
             // fullscreen video was playing but not paused
@@ -1879,6 +1887,9 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
         switch(selectState)
         {
           case SELECT_NAVIGATION:
+            // hold timer handled button press, do nothing
+            break;
+          case SELECT_SLIDESHOW:
             // hold timer handled button press, do nothing
             break;
           case SELECT_VIDEOPLAY:
@@ -2334,7 +2345,9 @@ CGRect debugView2;
     #endif
     // need a focusable view or risk bouncing out on menu presses
     CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-    if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+    if (focusWindow &&
+      (focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO ||
+       focusWindow->GetID() == WINDOW_SLIDESHOW))
     {
       if ( [_focusLayer.infocus.view canBecomeFocused] == NO )
         [self.focusView setFocusable:true];

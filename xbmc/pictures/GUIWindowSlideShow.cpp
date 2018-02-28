@@ -679,6 +679,7 @@ void CGUIWindowSlideShow::Render()
 
   RenderErrorMessage();
   CGUIWindow::Render();
+  AppendFocusableTracker(this);
 }
 
 int CGUIWindowSlideShow::GetNextSlide()
