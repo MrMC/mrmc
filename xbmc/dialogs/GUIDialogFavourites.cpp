@@ -224,6 +224,7 @@ void CGUIDialogFavourites::OnSetThumb(int item)
   std::string thumb;
   VECSOURCES sources;
   g_mediaManager.GetLocalDrives(sources);
+  g_mediaManager.GetNetworkLocations(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), thumb))
     return;
 
