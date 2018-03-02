@@ -1957,7 +1957,9 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           [self.m_irArrowHoldTimer invalidate];
           if (self.m_irArrowHoldCounter < 1)
           {
-            [self sendButtonPressed:SiriRemote_LeftTap];
+            // we need to check if m_enableRemoteExpertMode is active, if so do not send the tap as didUpdateFocusInContext will send one.
+            if (!m_enableRemoteExpertMode)
+              [self sendButtonPressed:SiriRemote_LeftTap];
           }
           else
           {
@@ -2012,7 +2014,9 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           [self.m_irArrowHoldTimer invalidate];
           if (self.m_irArrowHoldCounter < 1)
           {
-            [self sendButtonPressed:SiriRemote_RightTap];
+            // we need to check if m_enableRemoteExpertMode is active, if so do not send the tap as didUpdateFocusInContext will send one.
+            if (!m_enableRemoteExpertMode)
+              [self sendButtonPressed:SiriRemote_RightTap];
           }
           else
           {
