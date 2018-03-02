@@ -35,6 +35,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "utils/LiteUtils.h"
 #include "utils/log.h"
 #include "utils/RssManager.h"
 #include "utils/SystemInfo.h"
@@ -526,6 +527,8 @@ void CNetworkServices::Stop(bool bWait)
 
 bool CNetworkServices::StartWebserver()
 {
+  if(CLiteUtils::IsLite())
+    return false;
 #ifdef HAS_WEB_SERVER
   if (!g_application.getNetwork().IsAvailable())
     return false;
