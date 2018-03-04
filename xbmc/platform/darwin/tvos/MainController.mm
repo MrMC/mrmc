@@ -403,25 +403,26 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)disableSystemSleep
 {
+  PRINT_SIGNATURE();
 }
 //--------------------------------------------------------------
 - (void)enableSystemSleep
 {
+  PRINT_SIGNATURE();
 }
 //--------------------------------------------------------------
 - (void)disableScreenSaver
 {
+  PRINT_SIGNATURE();
   if ([NSThread currentThread] != [NSThread mainThread])
   {
     dispatch_async(dispatch_get_main_queue(),^{
-      m_disableIdleTimer = YES;
       [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
       [self resetSystemIdleTimer];
     });
   }
   else
   {
-    m_disableIdleTimer = YES;
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     [self resetSystemIdleTimer];
   }
@@ -429,16 +430,15 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)enableScreenSaver
 {
+  PRINT_SIGNATURE();
   if ([NSThread currentThread] != [NSThread mainThread])
   {
     dispatch_async(dispatch_get_main_queue(),^{
-      m_disableIdleTimer = NO;
       [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     });
   }
   else
   {
-    m_disableIdleTimer = NO;
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
   }
 }
