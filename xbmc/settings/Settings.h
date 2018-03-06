@@ -374,7 +374,15 @@ public:
   static const std::string SETTING_NETWORK_CURLRETRIES;
   static const std::string SETTING_NETWORK_DISABLEIPV6;
   static const std::string SETTING_NETWORK_CACHEMEMBUFFERSIZE;
+
+  // this is icky but there really needs to be some
+  // way to define named values instead of 0,1,2,3
+  #define NETWORK_BUFFERMODE_INTERNET      0
+  #define NETWORK_BUFFERMODE_ALL           1
+  #define NETWORK_BUFFERMODE_TRUE_INTERNET 2
+  #define NETWORK_BUFFERMODE_NONE          3
   static const std::string SETTING_NETWORK_BUFFERMODE;
+
   static const std::string SETTING_NETWORK_READBUFFERFACTOR;
   static const std::string SETTING_POWERMANAGEMENT_DISPLAYSOFF;
   static const std::string SETTING_POWERMANAGEMENT_SHUTDOWNTIME;

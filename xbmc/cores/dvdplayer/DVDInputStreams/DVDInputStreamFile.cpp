@@ -69,12 +69,12 @@ bool CDVDInputStreamFile::Open()
   {
     int networkBufferMode = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BUFFERMODE);
     
-    if (networkBufferMode == 0 || networkBufferMode == 2)
+    if (networkBufferMode == NETWORK_BUFFERMODE_INTERNET || networkBufferMode == NETWORK_BUFFERMODE_TRUE_INTERNET)
     {
       if (URIUtils::IsInternetStream(CURL(m_item.GetPath()), (networkBufferMode == 0) ) )
         flags |= READ_CACHED;
     }
-    else if (networkBufferMode == 1)
+    else if (networkBufferMode == NETWORK_BUFFERMODE_ALL)
     {
       flags |= READ_CACHED; // In buffer mode 1 force cache for (almost) all files
     }
