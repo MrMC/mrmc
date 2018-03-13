@@ -445,7 +445,7 @@ const char *CDarwinUtils::GetOSXVersionString(void)
 #endif
 }
 
-int  CDarwinUtils::GetFrameworkPath(char* path, size_t *pathsize)
+int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, size_t *pathsize)
 {
   // see if we can figure out who we are
   NSString *pathname;
@@ -489,11 +489,17 @@ int  CDarwinUtils::GetFrameworkPath(char* path, size_t *pathsize)
     return 0;
   }
 
-  strcpy(path, PREFIX_USR_PATH);
-  strcat(path, "/lib");
-  *pathsize = strlen(path);
-  //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(e) -> %s", path);
-  return 0;
+  // e) Kodi OSX binary running under xcode or command-line
+  // but only if it's not for python. In this case, let python
+  // use it's internal compiled paths.
+  if (!forPython)
+  {
+    strcpy(path, PREFIX_USR_PATH);
+    strcat(path, "/lib");
+    *pathsize = strlen(path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(e) -> %s", path);
+    return 0;
+  }
 
   return -1;
 }

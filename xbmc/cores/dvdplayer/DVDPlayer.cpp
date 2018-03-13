@@ -4438,16 +4438,17 @@ double CDVDPlayer::GetQueueTime()
   return std::max(a, v) * StandardDemuxerQueueTime / 100;
 }
 
-void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
+void CDVDPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info)
 {
-  int streamId = CURRENT_STREAM;
-
   CSingleLock lock(m_SelectionStreams.m_section);
   if (streamId == CURRENT_STREAM)
-    streamId = m_SelectionStreams.IndexOf(STREAM_VIDEO, *this);
+    streamId = GetVideoStream();
 
-  if (streamId < 0 || streamId > m_SelectionStreams.Count(STREAM_VIDEO) - 1)
+  if (streamId < 0 || streamId > GetVideoStreamCount() - 1)
+  {
+    //info.valid = false;
     return;
+  }
 
   SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, streamId);
   if (s.language.length() > 0)
@@ -4464,6 +4465,16 @@ void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
   info.videoCodecName = s.codec;
   info.videoAspectRatio = s.aspect_ratio;
   info.stereoMode = s.stereo_mode;
+}
+
+int CDVDPlayer::GetVideoStreamCount() const
+{
+  return m_SelectionStreams.Count(STREAM_VIDEO);
+}
+
+int CDVDPlayer::GetVideoStream() const
+{
+  return m_SelectionStreams.IndexOf(STREAM_VIDEO, *this);
 }
 
 int CDVDPlayer::GetSourceBitrate()

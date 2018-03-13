@@ -35,6 +35,8 @@ DEPENDS += libxml2
 DEPENDS += rapidjson
 DEPENDS += libmicrohttpd
 DEPENDS += mysql
+DEPENDS += libffi
+DEPENDS += python27
 DEPENDS += libshairplay
 DEPENDS += libplist
 DEPENDS += libcec
@@ -130,6 +132,7 @@ libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 librtmp: openssl
 libmicrohttpd: openssl libgpg-error libgcrypt
+python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2

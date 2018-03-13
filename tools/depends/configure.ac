@@ -218,21 +218,11 @@ case $host in
         platform_cc=llvm-gcc-4.2
         platform_cxx=llvm-g++-4.2
         ;;
-      5.* | 5.*.* | 6.* | 6.*.* | 7.* | 7.*.*)
+      *)
         platform_cc=clang
         platform_cxx=clang++
         platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp"
         platform_ldflags="-Wl,-search_paths_first"
-        platform_cxxflags="-no-cpp-precomp"
-        ;;
-      *)
-        # Xcode 8 + 10.11, should be told to fail to link against weak links
-        # Issue from Apple engineer:
-        # https://github.com/Homebrew/homebrew-core/issues/3727
-        platform_cc=clang
-        platform_cxx=clang++
-        platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp"
-        platform_ldflags="-Wl,-no_weak_imports -Wl,-search_paths_first"
         platform_cxxflags="-no-cpp-precomp"
         ;;
     esac

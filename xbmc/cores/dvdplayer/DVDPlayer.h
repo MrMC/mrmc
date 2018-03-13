@@ -276,7 +276,9 @@ public:
   virtual bool OnAction(const CAction &action);
 
   virtual int GetSourceBitrate();
-  virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
+  virtual int GetVideoStream() const;
+  virtual int GetVideoStreamCount() const;
+  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info);
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
 

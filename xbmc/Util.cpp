@@ -1651,14 +1651,14 @@ std::string CUtil::ResolveExecutablePath()
   return strExecutablePath;
 }
 
-std::string CUtil::GetFrameworksPath()
+std::string CUtil::GetFrameworksPath(bool forPython)
 {
   std::string strFrameworksPath;
 #if defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
   size_t   path_size =2*MAXPATHLEN;
 
-  CDarwinUtils::GetFrameworkPath(given_path, &path_size);
+  CDarwinUtils::GetFrameworkPath(forPython, given_path, &path_size);
   strFrameworksPath = given_path;
 #endif
   return strFrameworksPath;

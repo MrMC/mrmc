@@ -230,7 +230,10 @@ public:
    its not available in the underlaying decoder (airtunes for example)
    */
   virtual void SetTotalTime(int64_t time) { }
-  virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info){};
+  virtual int GetVideoStream() const { return -1; }
+  virtual int GetVideoStreamCount() const { return 0; }
+  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info){};
+  virtual void SetVideoStream(int iStream) {}
   virtual int GetSourceBitrate(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void ToFFRW(int iSpeed = 0){};

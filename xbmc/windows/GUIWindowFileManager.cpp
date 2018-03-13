@@ -625,6 +625,13 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     g_application.PlayFile(*pItem);
     return ;
   }
+#ifdef HAS_PYTHON
+  if (pItem->IsPythonScript())
+  {
+    CScriptInvocationManager::GetInstance().ExecuteAsync(pItem->GetPath());
+    return ;
+  }
+#endif
   if (pItem->IsPicture())
   {
     CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);

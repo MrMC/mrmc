@@ -180,6 +180,13 @@
 								<property name="submenu">true</property>
 								<visible>!Skin.HasSetting(HomeMenuNoTVShowButton) + [Library.HasServices | Library.HasContent(TVShows)]</visible>
 							</item>
+							<item id="14">
+								<label>Plex</label>
+								<onclick>RunAddon(script.plex)</onclick>
+								<property name="menu_id">$NUMBER[19001]</property>
+								<property name="id">plex</property>
+								<visible>Skin.HasSetting(HomeMenuPlexButton)</visible>
+							</item>
 							<item id="3">
 								<label>$LOCALIZE[2]</label>
 								<onclick>ActivateWindow(Music,root,return)</onclick>
@@ -234,6 +241,13 @@
 								<property name="menu_id">$NUMBER[11000]</property>
 								<property name="id">video</property>
 								<visible>!Skin.HasSetting(HomeMenuNoMediaSourceButton)</visible>
+							</item>
+							<item id="13">
+								<label>$LOCALIZE[24001]</label>
+								<onclick>ActivateWindow(Programs,Addons,return)</onclick>
+								<property name="menu_id">$NUMBER[19000]</property>
+								<property name="id">addons</property>
+								<visible>!Skin.HasSetting(HomeMenuNoAddonsButton)</visible>
 							</item>
 							<item id="11">
 								<label>$LOCALIZE[10004]</label>

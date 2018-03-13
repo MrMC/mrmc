@@ -30,10 +30,12 @@
                  "special://xbmcbin/system/players/mplayer/;" \
                  "special://xbmcbin/system/players/dvdplayer/;" \
                  "special://xbmcbin/system/players/paplayer/;" \
+                 "special://xbmcbin/system/python/;" \
                  "special://xbmc/system/;" \
                  "special://xbmc/system/players/mplayer/;" \
                  "special://xbmc/system/players/dvdplayer/;" \
-                 "special://xbmc/system/players/paplayer/;"
+                 "special://xbmc/system/players/paplayer/;" \
+                 "special://xbmc/system/python/"
 
 #if defined(TARGET_DARWIN)
 #define ENV_PATH ENV_PARTIAL_PATH \
@@ -312,4 +314,20 @@ void DllLoaderContainer::UnRegisterDll(LibraryLoader* pDll)
       }
     }
   }
+}
+
+void DllLoaderContainer::UnloadPythonDlls()
+{
+  // unload all dlls that python could have loaded
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  {
+    const char* name = m_dlls[i]->GetName();
+    if (strstr(name, ".pyd") != NULL)
+    {
+      LibraryLoader* pDll = m_dlls[i];
+      ReleaseModule(pDll);
+      i = 0;
+    }
+  }
+
 }

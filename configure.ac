@@ -8,6 +8,7 @@ AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
 m4_include([m4/ax_prog_cxx_for_build.m4])
 m4_include([m4/ax_cxx_compile_stdcxx_11.m4])
+m4_include([m4/ax_python_devel.m4])
 m4_include([m4/xbmc_arch.m4])
 
 AC_CONFIG_AUX_DIR([build-aux])
@@ -83,7 +84,7 @@ AC_DEFUN([XB_FIND_SONAME],
     for path in $gcc_lib_path $env_lib_path $host_lib_path; do
       lib=[`ls -- $path/lib$2.dylib 2>/dev/null`]
       if test x$lib != x; then
-        # we want the path/name that is embedded in the dylib 
+        # we want the path/name that is embedded in the dylib
         $1_FILENAME=[`otool -L $lib | grep -v lib$2.dylib | grep lib$2 | awk '{V=1; print $V}'`]
         $1_SONAME=[`basename $$1_FILENAME`]
       fi
@@ -203,7 +204,7 @@ AC_ARG_WITH([platform],
 
 AC_ARG_ENABLE([optimizations],
   [AS_HELP_STRING([--enable-optimizations],
-  [enable optimization (default is yes)])],
+  [enable passing -O2 to CFLAGS (default is yes)])],
   [use_optimizations=$enableval],
   [use_optimizations=yes])
 
@@ -356,7 +357,7 @@ AC_ARG_ENABLE([avahi],
   [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
   [use_avahi=$enableval],
   [use_avahi=yes])
-  
+
   AC_ARG_ENABLE([mdnsembedded],
   [AS_HELP_STRING([--disable-mdnsembedded],
   [disable mDNSEmbedded support (default is auto)])],
@@ -555,7 +556,12 @@ case $host in
      use_gles=yes
      use_optical_drive=no
      use_x11=no
-     build_shared_lib=yes    
+     build_shared_lib=yes
+     PYTHON_VERSION="2.7"
+     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.7 -lffi "
+     PYTHON_CPPFLAGS="-I${prefix}/include/python2.7"
+     PYTHON_SITE_PKG="${prefix}/lib/python2.7/site-packages"
+     PYTHON_NOVERSIONCHECK="no-check"
      ;;
   i*86*-linux-gnu*|i*86*-*-linux-uclibc*)
      target_platform=target_linux
@@ -608,6 +614,11 @@ case $host in
      use_cpu=cortex-a8
      ARCH="arm-osx"
      use_arch="arm"
+     PYTHON_VERSION="2.7"
+     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.7"
+     PYTHON_CPPFLAGS="-I${prefix}/include/python2.7"
+     PYTHON_SITE_PKG="${prefix}/lib/python2.7/site-packages"
+     PYTHON_NOVERSIONCHECK="no-check"
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
      AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
      ;;
@@ -616,6 +627,11 @@ case $host in
      use_vtbdecoder=no
      use_sdl=no
      ARCH="x86-osx"
+     PYTHON_VERSION="2.7"
+     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.7"
+     PYTHON_CPPFLAGS="-I${prefix}/include/python2.7"
+     PYTHON_SITE_PKG="${prefix}/lib/python2.7/site-packages"
+     PYTHON_NOVERSIONCHECK="no-check"
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
      AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
      ;;
@@ -657,6 +673,11 @@ case $host in
      use_x11=no
      use_wayland=no
      build_shared_lib=yes
+     PYTHON_VERSION="2.7"
+     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.7 -lffi"
+     PYTHON_CPPFLAGS="-I${prefix}/include/python2.7"
+     PYTHON_SITE_PKG="${prefix}/lib/python2.7/site-packages"
+     PYTHON_NOVERSIONCHECK="no-check"
      ;;
   aarch64*-*linux-android*)
      target_platform=target_android
@@ -670,6 +691,11 @@ case $host in
      use_x11=no
      use_wayland=no
      build_shared_lib=yes
+     PYTHON_VERSION="2.7"
+     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.7 -lffi"
+     PYTHON_CPPFLAGS="-I${prefix}/include/python2.7"
+     PYTHON_SITE_PKG="${prefix}/lib/python2.7/site-packages"
+     PYTHON_NOVERSIONCHECK="no-check"
      ;;
   mips*-*-linux-gnu*)
      target_platform=target_linux
@@ -815,7 +841,7 @@ elif test "$use_arch" = "arm"; then
   CFLAGS="$CFLAGS -mno-apcs-stack-check"
   CXXFLAGS="$CXXFLAGS -mno-apcs-stack-check"
   if test "$use_tegra" = "yes"; then
-    # Compile for ARMv7a architecture, need to test gcc for vfpv3-d16 support 
+    # Compile for ARMv7a architecture, need to test gcc for vfpv3-d16 support
     SAVE_CFLAGS="$CFLAGS"
     CFLAGS="-mfpu=vfpv3-d16"
     AC_COMPILE_IFELSE(
@@ -824,10 +850,10 @@ elif test "$use_arch" = "arm"; then
         CXXFLAGS="$CXXFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         use_cpu=cortex-a9],
       [ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
-        CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"    
+        CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
         use_cpu=cortex-a8])
   else
-    if test "$use_neon" = "yes"; then 
+    if test "$use_neon" = "yes"; then
       CFLAGS="$CFLAGS -mfpu=neon -mvectorize-with-neon-quad"
       CXXFLAGS="$CXXFLAGS -mfpu=neon -mvectorize-with-neon-quad"
     fi
@@ -917,6 +943,13 @@ if test "$use_wayland" = "yes"; then
   use_gles=yes
 else
   AC_MSG_RESULT($wayland_disabled)
+fi
+
+if test -z "$PYTHON_VERSION"; then
+  AC_MSG_ERROR([Can't find a Python version.])
+else
+  LIBS="$LIBS $PYTHON_LDFLAGS"
+  AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
 fi
 
 # Checks for platforms libraries.
@@ -1616,7 +1649,7 @@ fi
 
 if test "$FFMPEG_FOUND" != "true"; then
   PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
-    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"; FFMPEG_FOUND="true"], 
+    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"; FFMPEG_FOUND="true"],
     [AC_MSG_ERROR("ffmpeg not found")])
 fi
 
@@ -1639,10 +1672,30 @@ if test "${USE_STATIC_FFMPEG}" = "1"; then
   LIBS=$(${ECHO} ${LIBS} | ${SED} ':a;N;$!ba;s/\n/ /g')
 fi
 
+echo "Checking for SWIG installation"
+AC_PATH_PROG(SWIG_EXE, swig, "none")
+if test "$SWIG_EXE" = "none"; then
+  AC_PATH_PROG(SWIG20_EXE, swig2.0, "none")
+  if test "$SWIG20_EXE" != "none" ; then
+    SWIG_EXE=$SWIG20_EXE
+  fi
+fi
+if test "$SWIG_EXE" = "none"; then
+  AC_MSG_ERROR($missing_program)
+fi
+final_message="$final_message\n  SWIG Available:\tYes"
+
+echo "Checking for a jre installation"
+AC_PATH_PROG(JAVA_EXE, java, "none")
+if test "$JAVA_EXE" = "none"; then
+  AC_MSG_ERROR($missing_program)
+fi
+final_message="$final_message\n  JRE Available:\tYes"
+
 echo "Checking for doxygen installation"
 AC_PATH_PROG(DOXYGEN_EXE, doxygen, "none")
 if test "$DOXYGEN_EXE" = "none"; then
-  AC_MSG_WARN([Unable to find doxygen installation.])
+  AC_MSG_WARN([Unable to find doxygen installation. Will not be able to make docstrings for the python api])
   final_message="$final_message\n  Doxygen Available:\tNo"
   USE_DOXYGEN=0
 else
@@ -1955,8 +2008,8 @@ else
   final_message="$final_message\n  MID Support:\tNo"
 fi
 
-ORIGCC=$CC
-ORIGCXX=$CXX
+ORIGCC="$CC"
+ORIGCXX="$CXX"
 if test "x$use_ccache" != "xno"; then
   AC_PATH_PROG(CCACHE,ccache,none)
   if test "$ac_cv_path_CCACHE" = "none"; then
@@ -2071,7 +2124,7 @@ else
 fi
 
 if test "x$use_airtunes" != "xno"; then
-  final_message="$final_message\n  AirTunes support (libshairplay):\tYes"  
+  final_message="$final_message\n  AirTunes support (libshairplay):\tYes"
 else
   final_message="$final_message\n  AirTunes support:\tNo"
 fi
@@ -2174,6 +2227,7 @@ OUTPUT_FILES="$OUTPUT_FILES xbmc/guilib/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/input/linux/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/interfaces/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/interfaces/builtins/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/interfaces/python/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/messaging/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/messaging/helpers/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/network/Makefile"
@@ -2236,6 +2290,10 @@ OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/loader/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/jni/Makefile"
 fi
 
+if test "$use_webserver" = "yes"; then
+OUTPUT_FILES="$OUTPUT_FILES xbmc/network/httprequesthandler/python/Makefile"
+fi
+
 if test "$use_wayland" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
 fi
@@ -2289,6 +2347,10 @@ AC_SUBST(GNUTLS_ALL_LIBS)
 AC_SUBST(VORBISENC_ALL_LIBS)
 AC_SUBST(DCADEC_ALL_LIBS)
 AC_SUBST(USE_TOUCH_SKIN)
+AC_SUBST(PYTHON_VERSION)
+AC_SUBST(PYTHON_LDFLAGS)
+AC_SUBST(PYTHON_CPPFLAGS)
+AC_SUBST(PYTHON_SITE_PKG)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(LIBCURL_BASENAME)

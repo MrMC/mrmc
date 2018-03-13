@@ -40,6 +40,10 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+#ifdef HAS_PYTHON
+#include "interfaces/python/XBPython.h"
+#endif
+
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/OSXGNUReplacements.h"
 #endif
@@ -551,6 +555,9 @@ void CAddon::SaveSettings(void)
   m_userSettingsLoaded = true;
   
   CAddonMgr::GetInstance().ReloadSettings(ID());//push the settings changes to the running addon instance
+#ifdef HAS_PYTHON
+  g_pythonParser.OnSettingsChanged(ID());
+#endif
 }
 
 std::string CAddon::GetSetting(const std::string& key)

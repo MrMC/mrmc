@@ -6,10 +6,10 @@ endif
 
 NATIVE= m4-native gettext-native autoconf-native automake-native \
         libtool-native pkg-config-native yasm-native cmake-native \
-        gas-preprocessor-native zlib-native \
-        pcre-native rpl-native asn1-parser-native \
+        gas-preprocessor-native python27-native zlib-native \
+        pcre-native swig-native rpl-native asn1-parser-native \
         tiff-native libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
-        JsonSchemaBuilder TexturePacker
+        distribute-native distutilscross-native JsonSchemaBuilder TexturePacker
 
 
 ifeq ($(OS),ios)
@@ -30,13 +30,17 @@ autoconf-native: m4-native
 automake-native: autoconf-native
 libtool-native: automake-native
 libpng-native: zlib-native
+swig-native: pcre-native
+distribute-native: python27-native
+distutilscross-native: python27-native distribute-native
 tiff-native: libjpeg-turbo-native
-tar-native: xz-native
+tar-native: xz-native automake-native
+python27-native: zlib-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
 JsonSchemaBuilder: automake-native
-TexturePacker: automake-native pkg-config-native libpng-native liblzo2-native giflib-native libpng-native
+TexturePacker: automake-native pkg-config-native libpng-native liblzo2-native giflib-native libjpeg-turbo-native libpng-native
 
 native: $(NATIVE)
 $(NATIVE):
@@ -55,3 +59,4 @@ test-dependencies:
 
 distclean::
 	for d in $(NATIVE); do $(MAKE) -C $$d distclean; done
+

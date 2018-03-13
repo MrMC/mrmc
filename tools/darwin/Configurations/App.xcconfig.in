@@ -37,7 +37,7 @@ USER_HEADER_SEARCH_PATHS = $(inherited) xbmc xbmc/cores/dvdplayer lib/addons/lib
 // This is #include <some.h>
 // Normally $XBMC_DEPENDS/include is all you need but some libs
 // incude others using wacky paths, include them here to fix that.
-HEADER_SEARCH_PATHS = $(inherited) $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $(XBMC_DEPENDS)/include/libxml2
+HEADER_SEARCH_PATHS = $(inherited) $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $(XBMC_DEPENDS)/include/libxml2 $(XBMC_DEPENDS)/include/python2.7
 
 LIBRARY_SEARCH_PATHS = $(inherited) $(XBMC_DEPENDS)/lib $(XBMC_DEPENDS)/lib/mysql
 
@@ -45,7 +45,7 @@ LIBRARY_SEARCH_PATHS = $(inherited) $(XBMC_DEPENDS)/lib $(XBMC_DEPENDS)/lib/mysq
 APP_SYSTEM_LIBS = -lz -lm -liconv -lresolv -lbz2
 APP_FFMPEG_LIBS = -lavfilter -lavcodec -lavformat -lpostproc -lavutil -lswresample -lswscale
 // -Wl,-all_load is a hammer, todo: remove it
-APP_OTHER_LDFLAGS_COMMON = $(APP_SYSTEM_LIBS) -lintl -lexpat -lssl -lgpg-error -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -ljpeg -lpng -lgif -lcrypto -lgcrypt -ldcadec -ltag -lmysqlclient -lxml2 -lxslt -lnettle -lgmp -lhogweed -ltasn1 -lgnutls -lcrossguid -lulxmlrpcpp $(APP_FFMPEG_LIBS)
+APP_OTHER_LDFLAGS_COMMON = $(APP_SYSTEM_LIBS) -lintl -lexpat -lssl -lgpg-error -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -ljpeg -lpng -lgif -lcrypto -lgcrypt -ldcadec -ltag -lmysqlclient -lxml2 -lxslt -lnettle -lgmp -lhogweed -ltasn1 -lgnutls -lcrossguid -lulxmlrpcpp -lffi -lpython2.7 $(APP_FFMPEG_LIBS)
 
 CLANG_CXX_LANGUAGE_STANDARD = c++0x
 CLANG_CXX_LIBRARY = libc++

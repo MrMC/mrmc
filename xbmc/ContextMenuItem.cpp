@@ -24,6 +24,8 @@
 #include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "interfaces/python/ContextItemAddonInvoker.h"
+#include "interfaces/python/XBPython.h"
 #include "utils/StringUtils.h"
 
 
@@ -61,8 +63,9 @@ bool CContextMenuItem::Execute(const CFileItemPtr& item) const
   if (!item || !m_addon || m_library.empty() || IsGroup())
     return false;
 
-  //LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&g_pythonParser, item));
-  //return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, m_addon) != -1);
+  LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&g_pythonParser, item));
+  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, m_addon) != -1);
+
   return false;
 }
 

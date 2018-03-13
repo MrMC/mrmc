@@ -810,6 +810,12 @@
       <thumb fallback="special://skin/backgrounds/default/default.jpg">$INFO[Skin.String(CustomHome.2.Background)]</thumb>
       <onclick>$INFO[Skin.String(CustomHome.2.Path)]</onclick>
     </item>
+    <item id="2" description="Addons">
+      <visible>!Skin.HasSetting(Addons.Hide)</visible>
+      <label>$LOCALIZE[24001]</label>
+      <thumb fallback="special://skin/backgrounds/Addons.jpg">$INFO[Skin.String(Addons.Background)]</thumb>
+      <onclick>ActivateWindow(1119)</onclick>
+    </item>
     <item id="23" description="Custom3">
       <visible>!IsEmpty(Skin.String(CustomHome.3.Path))</visible>
       <label>$INFO[Skin.String(CustomHome.3.Label)]</label>

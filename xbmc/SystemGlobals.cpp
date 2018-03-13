@@ -32,6 +32,10 @@
 #include "PlayListPlayer.h"
 #include "guilib/LocalizeStrings.h"
 
+#ifdef HAS_PYTHON
+#include "interfaces/python/XBPython.h"
+#endif
+
 #if defined(HAS_FILESYSTEM_RAR)
 #include "filesystem/RarManager.h"
 #endif
@@ -56,6 +60,10 @@
 
   XCURL::DllLibCurlGlobal   g_curlInterface;
   CPartyModeManager         g_partyModeManager;
+
+#ifdef HAS_PYTHON
+  XBPython                  g_pythonParser;
+#endif
 
   CAlarmClock               g_alarmClock;
   PLAYLIST::CPlayListPlayer g_playlistPlayer;

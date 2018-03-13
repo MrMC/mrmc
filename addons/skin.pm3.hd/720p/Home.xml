@@ -633,6 +633,13 @@
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
 						<visible>!Skin.HasSetting(homepageHidePictureButton)</visible>
 					</item>
+					<item id="9">
+						<label>24001</label>
+						<onclick>ActivateWindow(Programs,Addons,return)</onclick>
+						<icon>special://skin/backgrounds/programs.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
+						<visible>!Skin.HasSetting(homepageHideAddonsButton)</visible>
+					</item>
 					<item id="7">
 						<label>5</label>
 						<onclick>ActivateWindow(Settings)</onclick>

@@ -1292,7 +1292,7 @@ void CXBMCApp::SetupEnv()
     setenv("HOME", getenv("MRMC_TEMP"), 0);
 
   std::string apkPath = getenv("XBMC_ANDROID_APK");
-  apkPath += "/assets/python2.6";
+  apkPath += "/assets/python2.7";
   setenv("PYTHONHOME", apkPath.c_str(), 1);
   setenv("PYTHONPATH", "", 1);
   setenv("PYTHONOPTIMIZE","", 1);

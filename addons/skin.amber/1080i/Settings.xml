@@ -621,7 +621,7 @@
               <thumb fallback="special://skin/backgrounds/default/default.jpg">$INFO[Skin.String(CustomHome.2.Background)]</thumb>
               <onclick>RunScript(script.favourites,changetitle=true&amp;property=CustomHome.2)</onclick>
             </item>
-<!--             <item id="2" description="Addons">
+            <item id="2" description="Addons">
               <visible>!Skin.HasSetting(Addons.Hide)</visible>
               <label>[COLOR=Highlight]$LOCALIZE[24001][/COLOR]</label>
               <label2>[COLOR=Highlight]$LOCALIZE[305][/COLOR]</label2>
@@ -634,7 +634,7 @@
               <label2>$LOCALIZE[1223]</label2>
               <thumb fallback="special://skin/backgrounds/Addons.jpg">$INFO[Skin.String(Addons.Background)]</thumb>
               <onclick>Skin.ToggleSetting(Addons.Hide)</onclick>
-            </item> -->
+            </item>
             <item id="3" description="Videos">
               <visible>!Skin.HasSetting(Videos.Hide)</visible>
               <label>[COLOR=Highlight]$LOCALIZE[3][/COLOR]</label>

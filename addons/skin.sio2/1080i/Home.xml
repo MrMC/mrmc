@@ -176,12 +176,12 @@
                     <onclick>ActivateWindow(502,$INFO[Skin.String(MusicLink)])</onclick>
                     <onclick condition="!Library.HasContent(Music)">ActivateWindow(501,root)</onclick>
                 </item>
-<!--                 <item id="343">
+                <item id="343">
                     <visible>!Skin.HasSetting(hideaddon)</visible>
                     <label>24001</label>
                     <thumb>icons/addons.png</thumb>
                     <onclick>ActivateWindow(1118)</onclick>
-                </item> -->
+                </item>
                 <item id="344">
                     <visible>!Skin.HasSetting(hidepic)</visible>
                     <label>1</label>

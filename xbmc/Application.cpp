@@ -52,6 +52,9 @@
 #include "addons/LanguageResource.h"
 #include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#ifdef HAS_PYTHON
+#include "interfaces/python/XBPython.h"
+#endif
 #include "input/ButtonTranslator.h"
 #include "guilib/GUIAudioManager.h"
 #include "GUIPassword.h"
@@ -639,6 +642,10 @@ bool CApplication::Create()
 
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
+
+#ifdef HAS_PYTHON
+  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(&g_pythonParser, ".py");
+#endif // HAS_PYTHON
 
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
@@ -2738,6 +2745,21 @@ void CApplication::HandleShutdownMessage()
   }
 }
 
+void CApplication::LockFrameMoveGuard()
+{
+  ++m_WaitingExternalCalls;
+  m_frameMoveGuard.lock();
+  ++m_ProcessedExternalCalls;
+  g_graphicsContext.Lock();
+};
+
+void CApplication::UnlockFrameMoveGuard()
+{
+  --m_WaitingExternalCalls;
+  g_graphicsContext.Unlock();
+  m_frameMoveGuard.unlock();
+};
+
 void CApplication::FrameMove(bool processEvents, bool processGUI)
 {
   if (processEvents)
@@ -3589,6 +3611,12 @@ void CApplication::OnPlayBackEnded()
   m_ePlayState = PLAY_STATE_ENDED;
   if(m_bPlaybackStarting)
     return;
+
+  // informs python script currently running playback has ended
+  // (does nothing if python is not loaded)
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackEnded();
+#endif
 #if defined(TARGET_ANDROID)
   CXBMCApp::OnPlayBackEnded();
 #elif defined(TARGET_DARWIN_TVOS)
@@ -3610,6 +3638,12 @@ void CApplication::OnPlayBackStarted()
   m_ePlayState = PLAY_STATE_PLAYING;
   if(m_bPlaybackStarting)
     return;
+
+#ifdef HAS_PYTHON
+  // informs python script currently running playback has started
+  // (does nothing if python is not loaded)
+  g_pythonParser.OnPlayBackStarted();
+#endif
 #if defined(TARGET_ANDROID)
   CXBMCApp::OnPlayBackStarted();
 #elif defined(TARGET_DARWIN_TVOS)
@@ -3634,6 +3668,11 @@ void CApplication::OnQueueNextItem()
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   if(m_bPlaybackStarting)
     return;
+  // informs python script currently running that we are requesting the next track
+  // (does nothing if python is not loaded)
+#ifdef HAS_PYTHON
+  g_pythonParser.OnQueueNextItem(); // currently unimplemented
+#endif
 
   CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3646,6 +3685,12 @@ void CApplication::OnPlayBackStopped()
   m_ePlayState = PLAY_STATE_STOPPED;
   if(m_bPlaybackStarting)
     return;
+
+  // informs python script currently running playback has ended
+  // (does nothing if python is not loaded)
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackStopped();
+#endif
 #if defined(TARGET_ANDROID)
   CXBMCApp::OnPlayBackStopped();
 #elif defined(TARGET_DARWIN_TVOS)
@@ -3662,6 +3707,9 @@ void CApplication::OnPlayBackStopped()
 
 void CApplication::OnPlayBackPaused()
 {
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackPaused();
+#endif
 #if defined(TARGET_ANDROID)
   CXBMCApp::OnPlayBackPaused();
 #elif defined(TARGET_DARWIN_TVOS)
@@ -3676,6 +3724,9 @@ void CApplication::OnPlayBackPaused()
 
 void CApplication::OnPlayBackResumed()
 {
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackResumed();
+#endif
 #if defined(TARGET_ANDROID)
   CXBMCApp::OnPlayBackResumed();
 #elif defined(TARGET_DARWIN_TVOS)
@@ -3691,6 +3742,10 @@ void CApplication::OnPlayBackResumed()
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 {
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
+#endif
+
   CVariant param;
   param["player"]["speed"] = iSpeed;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
@@ -3699,6 +3754,10 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 {
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSeek(iTime, seekOffset);
+#endif
+
   CVariant param;
   CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
   CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
@@ -3710,7 +3769,9 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
 {
-
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSeekChapter(iChapter);
+#endif
 }
 
 bool CApplication::IsPlayingFullScreenVideo() const
@@ -4417,6 +4478,13 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
       return true;
     }
     CFileItem item(actionStr, false);
+#ifdef HAS_PYTHON
+    if (item.IsPythonScript())
+    { // a python script
+      CScriptInvocationManager::GetInstance().ExecuteAsync(item.GetPath());
+    }
+    else
+#endif
     if (item.IsAudio() || item.IsVideo())
     { // an audio or video file
       PlayFile(item);

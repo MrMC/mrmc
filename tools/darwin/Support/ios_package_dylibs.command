@@ -82,6 +82,12 @@ for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | awk ' { print $1
   install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_BINARY"
 done
 
+echo "Package $EXTERNAL_LIBS/lib/python2.7"
+mkdir -p "$XBMC_HOME/system/lib"
+PYTHONSYNC="rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests --exclude plat-mac --exclude site-packages"
+${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python2.7" "$XBMC_HOME/system/lib/"
+rm -rf "$XBMC_HOME/system/lib/python2.7/config"
+
 echo "Checking addons *.dylib for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.dylib"
 echo "Moving addons *.dylib to frameworks"

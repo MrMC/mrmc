@@ -104,6 +104,12 @@ PlayBackRet CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOpt
     if (m_iPlayerOPSeq != startingSeq)
       iResult = PLAYBACK_CANCELED;
   }
+
+  // reset caching timers
+  m_audioStreamUpdate.SetExpired();
+  m_videoStreamUpdate.SetExpired();
+  m_subtitleStreamUpdate.SetExpired();
+
   return iResult;
 }
 
@@ -501,11 +507,11 @@ void CApplicationPlayer::OnNothingToQueueNotify()
     player->OnNothingToQueueNotify();
 }
 
-void CApplicationPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
+void CApplicationPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->GetVideoStreamInfo(info);
+    player->GetVideoStreamInfo(streamId, info);
 }
 
 void CApplicationPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
@@ -536,7 +542,30 @@ int  CApplicationPlayer::GetAudioStreamCount()
     return 0;
 }
 
-void CApplicationPlayer::SetAudioStream(int iStream)
+int CApplicationPlayer::GetVideoStream()
+{
+  if (!m_videoStreamUpdate.IsTimePast())
+    return m_iVideoStream;
+
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    m_iVideoStream = player->GetVideoStream();
+    m_videoStreamUpdate.Set(1000);
+    return m_iVideoStream;
+  }
+  else
+    return 0;
+}
+
+int CApplicationPlayer::GetVideoStreamCount()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetVideoStreamCount();
+  else
+    return 0;
+}void CApplicationPlayer::SetAudioStream(int iStream)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
@@ -575,6 +604,18 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
     player->SetSubtitleVisible(bVisible);
     CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
     CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleStream = player->GetSubtitle();
+  }
+}
+
+void CApplicationPlayer::SetVideoStream(int iStream)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    player->SetVideoStream(iStream);
+    m_iVideoStream = iStream;
+    m_videoStreamUpdate.Set(1000);
+    CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VideoStream = iStream;
   }
 }
 

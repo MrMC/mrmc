@@ -373,6 +373,20 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
+				<control type="radiobutton" id="217">
+					<description>Hide Addons Button Toggle</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[31120] - $LOCALIZE[24001]</label>
+					<onclick>Skin.ToggleSetting(homepageHideAddonsButton)</onclick>
+					<selected>Skin.HasSetting(homepageHideAddonsButton)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+				</control>
 			</control>
 			<!-- End Home Page Skin Settings -->
 			<!-- Start Custom Backgrounds Skin Settings -->

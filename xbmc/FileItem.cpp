@@ -921,6 +921,11 @@ bool CFileItem::IsPlayList() const
   return CPlayListFactory::IsPlaylist(*this);
 }
 
+bool CFileItem::IsPythonScript() const
+{
+  return URIUtils::HasExtension(m_strPath, ".py");
+}
+
 bool CFileItem::IsType(const char *ext) const
 {
   return URIUtils::HasExtension(m_strPath, ext);
@@ -1242,6 +1247,10 @@ void CFileItem::FillInDefaultIcon()
       {
         SetIconImage("DefaultPlaylist.png");
       }
+      else if ( IsPythonScript() )
+      {
+        SetIconImage("DefaultScript.png");
+      }
       else
       {
         // default icon for unknown file type
@@ -1534,8 +1543,13 @@ void CFileItem::SetFromSong(const CSong &song)
 {
   if (!song.strTitle.empty())
     SetLabel(song.strTitle);
-  if (!song.strFileName.empty())
-    m_strPath = song.strFileName;
+  if (song.idSong > 0)
+  {
+    std::string strExt = URIUtils::GetExtension(song.strFileName);
+    m_strPath = StringUtils::Format("musicdb://songs/%i%s", (int)song.idSong, strExt.c_str());
+  }
+  else if (!song.strFileName.empty())
+     m_strPath = song.strFileName;      m_strPath = song.strFileName;
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lStartPartNumber = 1;

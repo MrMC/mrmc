@@ -990,13 +990,13 @@
 			<thumb>-</thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonPictures)</visible>
 		</item>
-<!-- 		<item id="7">
+		<item id="7">
 			<label>0</label>
 			<onclick>ActivateWindow(Programs,Addons,return)</onclick>
 			<icon>icon-programs.png</icon>
 			<thumb>-</thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonPrograms)</visible>
-		</item> -->
+		</item>
 	</include>
 	<include name="KeyboardButton">
 		<width>95</width>

@@ -151,6 +151,19 @@
 					<onclick>Skin.ToggleSetting(HideHomeButtonPictures)</onclick>
 					<selected>!Skin.HasSetting(HideHomeButtonPictures)</selected>
 				</control>
+				<control type="radiobutton" id="108">
+					<description>Hide Addons</description>
+					<height>55</height>
+					<width>920</width>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<focusedcolor>black</focusedcolor>
+					<texturefocus border="5">ListFO.png</texturefocus>
+					<texturenofocus border="5">ListNF.png</texturenofocus>
+					<label>$LOCALIZE[24001]</label>
+					<onclick>Skin.ToggleSetting(HideHomeButtonPrograms)</onclick>
+					<selected>!Skin.HasSetting(HideHomeButtonPrograms)</selected>
+				</control>
 				<control type="label" id="110">
 					<height>50</height>
 					<width>920</width>

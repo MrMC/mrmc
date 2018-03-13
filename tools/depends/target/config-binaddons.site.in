@@ -54,6 +54,12 @@ if test "${PACKAGE_NAME}" = "libgcrypt"; then
   CFLAGS="$CFLAGS -std=gnu99"
 fi
 
+#python
+ac_cv_func_gethostbyname_r=no
+ac_cv_header_sys_un_h=yes
+ac_cv_file__dev_ptmx=no
+ac_cv_file__dev_ptc=no
+
 #gnutls
 gl_cv_func_gettimeofday_clobber=no
 

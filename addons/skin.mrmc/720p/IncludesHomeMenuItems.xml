@@ -39,7 +39,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>24001</label>
 			<onclick>ActivateWindow(Videos,Addons,return)</onclick>
-			<visible>false</visible>
+			<visible>true</visible>
 		</control>
 		<control type="image" id="90108">
 			<width>35</width>
