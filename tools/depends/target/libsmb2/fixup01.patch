@@ -1,0 +1,275 @@
+--- a/lib/alloc.c	2018-03-13 23:29:22.000000000 -0400
++++ b/lib/alloc.c	2018-03-13 23:29:41.000000000 -0400
+@@ -45,7 +45,7 @@
+ 
+ #define container_of(ptr, type, member) ({                      \
+         const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+-        (type *)( (char *)__mptr - offsetof(type,member) );})
++        (type *)(void *)( (char *)__mptr - offsetof(type,member) );})
+ 
+ struct smb2_alloc_entry {
+         struct smb2_alloc_entry *next;
+--- a/lib/errors.c	2018-03-13 23:34:03.000000000 -0400
++++ b/lib/errors.c	2018-03-13 23:30:33.000000000 -0400
+@@ -59,7 +59,7 @@ int nterror_to_errno(uint32_t status) {
+         case SMB2_STATUS_OBJECT_NAME_NOT_FOUND:
+                 return ENOENT;
+         case SMB2_STATUS_FILE_CLOSED:
+-                return EBADFD;
++                return EBADF;
+         case SMB2_STATUS_MORE_PROCESSING_REQUIRED:
+                 return EAGAIN;
+         case SMB2_STATUS_ACCESS_DENIED:
+--- a/lib/libsmb2.c	2018-03-13 23:42:40.000000000 -0400
++++ b/lib/libsmb2.c	2018-03-13 23:43:02.000000000 -0400
+@@ -56,7 +56,9 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <stdio.h>
++#ifdef HAVE_GSSAPI_GSSAPI_H
+ #include <gssapi/gssapi.h>
++#endif
+ 
+ #include "slist.h"
+ #include "smb2.h"
+@@ -1036,11 +1036,6 @@ smb2_lseek(struct smb2_context *smb2, st
+                 }
+                 return fh->offset;
+         case SEEK_CUR:
+-                if (fh->offset + offset < 0) {
+-                        smb2_set_error(smb2, "Lseek() offset would become"
+-                                       "negative");
+-                        return -EINVAL;
+-                }
+                 fh->offset += offset;
+                 if (current_offset) {
+                         *current_offset = fh->offset;
+--- appletvos11.2_arm64-target/lib/ntlmssp-org.c	2018-03-14 00:07:11.000000000 -0400
++++ appletvos11.2_arm64-target/lib/ntlmssp.c	2018-03-14 00:07:19.000000000 -0400
+@@ -54,7 +54,6 @@
+ #endif
+ 
+ #include <ctype.h>
+-#include <endian.h>
+ #include <stdio.h>
+ #include <time.h>
+ 
+@@ -63,6 +62,7 @@
+ #include "libsmb2.h"
+ #include "libsmb2-raw.h"
+ #include "libsmb2-private.h"
++#include "portable-endian.h"
+ 
+ #include "md4.h"
+ #include "md5.h"
+--- appletvos11.2_arm64-target/lib/pdu-org.c	2018-03-14 00:13:10.000000000 -0400
++++ appletvos11.2_arm64-target/lib/pdu.c	2018-03-14 00:13:41.000000000 -0400
+@@ -35,12 +35,11 @@
+ #include <string.h>
+ #endif
+ 
+-#include <endian.h>
+-
+ #include "slist.h"
+ #include "smb2.h"
+ #include "libsmb2.h"
+ #include "libsmb2-private.h"
++#include "portable-endian.h"
+ 
+ int
+ smb2_pad_to_64bit(struct smb2_context *smb2, struct smb2_io_vectors *v)
+@@ -184,7 +184,7 @@ smb2_set_uint16(struct smb2_iovec *iov, 
+         if (offset + sizeof(uint16_t) > iov->len) {
+                 return -1;
+         }
+-        *(uint16_t *)(iov->buf + offset) = htole16(value);
++        *(uint16_t *)(void*)(iov->buf + offset) = htole16(value);
+         return 0;
+ }
+ 
+@@ -194,7 +194,7 @@ smb2_set_uint32(struct smb2_iovec *iov, 
+         if (offset + sizeof(uint32_t) > iov->len) {
+                 return -1;
+         }
+-        *(uint32_t *)(iov->buf + offset) = htole32(value);
++        *(uint32_t *)(void*)(iov->buf + offset) = htole32(value);
+         return 0;
+ }
+ 
+@@ -204,7 +204,7 @@ smb2_set_uint64(struct smb2_iovec *iov, 
+         if (offset + sizeof(uint64_t) > iov->len) {
+                 return -1;
+         }
+-        *(uint64_t *)(iov->buf + offset) = htole64(value);
++        *(uint64_t *)(void*)(iov->buf + offset) = htole64(value);
+         return 0;
+ }
+ 
+--- appletvos11.2_arm64-target/lib/smb2-cmd-query-directory-org.c	2018-03-14 00:22:50.000000000 -0400
++++ appletvos11.2_arm64-target/lib/smb2-cmd-query-directory.c	2018-03-14 00:23:35.000000000 -0400
+@@ -73,7 +73,7 @@ smb2_decode_fileidfulldirectoryinformati
+         smb2_get_uint32(vec, 64, &fs->ea_size);
+         smb2_get_uint64(vec, 72, &fs->file_id);
+ 
+-        fs->name = ucs2_to_utf8((uint16_t *)&vec->buf[80], name_len / 2);
++        fs->name = ucs2_to_utf8((uint16_t *)(void*)&vec->buf[80], name_len / 2);
+ 
+         smb2_get_uint64(vec, 8, &t);
+         win_to_timeval(t, &fs->creation_time);
+--- appletvos11.2_arm64-target/lib/socket-org.c	2018-03-14 00:24:57.000000000 -0400
++++ appletvos11.2_arm64-target/lib/socket.c	2018-03-14 00:25:25.000000000 -0400
+@@ -59,7 +59,6 @@
+ #include <unistd.h>
+ #endif
+ 
+-#include <endian.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <sys/socket.h>
+@@ -68,6 +67,7 @@
+ #include "smb2.h"
+ #include "libsmb2.h"
+ #include "libsmb2-private.h"
++#include "portable-endian.h"
+ 
+ #define MAX_URL_SIZE 256
+ 
+--- appletvos11.2_arm64-target/lib/unicode-org.c	2018-03-14 00:26:24.000000000 -0400
++++ appletvos11.2_arm64-target/lib/unicode.c	2018-03-14 00:26:39.000000000 -0400
+@@ -39,11 +39,10 @@
+ #include <stddef.h>
+ #endif
+ 
+-#include <endian.h>
+-
+ #include <smb2.h>
+ #include <libsmb2.h>
+ #include "libsmb2-private.h"
++#include "portable-endian.h"
+ 
+ /* Count number of leading 1 bits in the char */
+ static int
+--- appletvos11.2_arm64-target/lib/libsmb2-org.syms	2018-03-14 00:31:53.000000000 -0400
++++ appletvos11.2_arm64-target/lib/libsmb2.syms	2018-03-14 00:32:16.000000000 -0400
+@@ -53,7 +53,6 @@ smb2_readdir
+ smb2_rewinddir
+ smb2_rmdir
+ smb2_rmdir_async
+-smb2_seek
+ smb2_seekdir
+ smb2_service
+ smb2_set_security_mode
+diff --git a/include/portable-endian.h b/include/portable-endian.h
+new file mode 100644
+index 0000000..b677f7a
+--- /dev/null
++++ b/include/portable-endian.h
+@@ -0,0 +1,108 @@
++// "License": Public Domain
++// I, Mathias Panzenbck, place this file hereby into the public domain. Use it at your own risk for whatever you like.
++// In case there are jurisdictions that don't support putting things in the public domain you can also consider it to
++// be "dual licensed" under the BSD, MIT and Apache licenses, if you want to. This code is trivial anyway. Consider it
++// an example on how to get the endian conversion functions on different platforms.
++
++#ifndef PORTABLE_ENDIAN_H__
++#define PORTABLE_ENDIAN_H__
++
++#if (defined(_WIN16) || defined(_WIN32) || defined(_WIN64)) && !defined(__WINDOWS__)
++
++#	define __WINDOWS__
++
++#endif
++
++#if defined(__linux__) || defined(__CYGWIN__)
++
++#	include <endian.h>
++
++#elif defined(__APPLE__)
++
++#	include <libkern/OSByteOrder.h>
++
++#	define htobe16(x) OSSwapHostToBigInt16(x)
++#	define htole16(x) OSSwapHostToLittleInt16(x)
++#	define be16toh(x) OSSwapBigToHostInt16(x)
++#	define le16toh(x) OSSwapLittleToHostInt16(x)
++
++#	define htobe32(x) OSSwapHostToBigInt32(x)
++#	define htole32(x) OSSwapHostToLittleInt32(x)
++#	define be32toh(x) OSSwapBigToHostInt32(x)
++#	define le32toh(x) OSSwapLittleToHostInt32(x)
++
++#	define htobe64(x) OSSwapHostToBigInt64(x)
++#	define htole64(x) OSSwapHostToLittleInt64(x)
++#	define be64toh(x) OSSwapBigToHostInt64(x)
++#	define le64toh(x) OSSwapLittleToHostInt64(x)
++
++#	define __BYTE_ORDER    BYTE_ORDER
++#	define __BIG_ENDIAN    BIG_ENDIAN
++#	define __LITTLE_ENDIAN LITTLE_ENDIAN
++#	define __PDP_ENDIAN    PDP_ENDIAN
++
++#elif defined(__OpenBSD__)
++
++#	include <sys/endian.h>
++
++#elif defined(__NetBSD__) || defined(__FreeBSD__) || defined(__DragonFly__)
++
++#	include <sys/endian.h>
++
++#	define be16toh(x) betoh16(x)
++#	define le16toh(x) letoh16(x)
++
++#	define be32toh(x) betoh32(x)
++#	define le32toh(x) letoh32(x)
++
++#	define be64toh(x) betoh64(x)
++#	define le64toh(x) letoh64(x)
++
++#elif defined(__WINDOWS__)
++
++# include <windows.h>
++
++# if defined(_MSC_VER)
++#   include <stdlib.h>
++
++#   define htobe16(x) _byteswap_ushort(x)
++#   define htole16(x) (x)
++#   define be16toh(x) _byteswap_ushort(x)
++#   define le16toh(x) (x)
++
++#   define htobe32(x) _byteswap_ulong(x)
++#   define htole32(x) (x)
++#   define be32toh(x) _byteswap_ulong(x)
++#   define le32toh(x) (x)
++
++#   define htobe64(x) _byteswap_uint64(x)
++#   define htole64(x) (x)
++#   define be64toh(x) _byteswap_uint64(x)
++#   define le64toh(x) (x)
++
++# elif defined(__GNUC__) || defined(__clang__)
++
++#   define htobe16(x) __builtin_bswap16(x)
++#   define htole16(x) (x)
++#   define be16toh(x) __builtin_bswap16(x)
++#   define le16toh(x) (x)
++
++#   define htobe32(x) __builtin_bswap32(x)
++#   define htole32(x) (x)
++#   define be32toh(x) __builtin_bswap32(x)
++#   define le32toh(x) (x)
++
++#   define htobe64(x) __builtin_bswap64(x)
++#   define htole64(x) (x)
++#   define be64toh(x) __builtin_bswap64(x)
++#   define le64toh(x) (x)
++
++#   else
++#     error platform not supported
++#   endif
++
++#else
++#  error platform not supported
++#endif
++
++#endif
