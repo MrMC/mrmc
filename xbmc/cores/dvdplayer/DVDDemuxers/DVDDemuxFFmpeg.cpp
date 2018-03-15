@@ -1304,7 +1304,9 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
 #endif
 
         //average fps is more accurate for mkv files
-        if (m_bMatroska && pStream->avg_frame_rate.den && pStream->avg_frame_rate.num)
+        // plex server sometimes gives bogus avg_frame_rate when doing buildTranscodeMkv;
+        bool badMatroska = (pStream->avg_frame_rate.den == 1 && pStream->avg_frame_rate.num == 1000);
+        if (m_bMatroska && !badMatroska && pStream->avg_frame_rate.den && pStream->avg_frame_rate.num)
         {
           st->iFpsRate = pStream->avg_frame_rate.num;
           st->iFpsScale = pStream->avg_frame_rate.den;
