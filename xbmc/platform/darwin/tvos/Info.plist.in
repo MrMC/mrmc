@@ -49,5 +49,10 @@
     <string>@APP_PACKAGE@</string>
     <string>youtube</string>
   </array>
+  <key>UIRequiredDeviceCapabilities</key>
+  <array>
+    <string>arm64</string>
+    <string>opengles-3</string>
+ </array>
 </dict>
 </plist>

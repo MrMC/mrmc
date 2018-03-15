@@ -32,5 +32,9 @@
 	<array>
 		<integer>3</integer>
 	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
 </dict>
 </plist>
