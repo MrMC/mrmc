@@ -29,6 +29,9 @@ ifeq ($(CPU), arm64)
 	sed -ie "s|-force_cpusubtype_ALL||" "$(PLATFORM)/configure"
 	sed -ie "s|-force_cpusubtype_ALL||" "$(PLATFORM)/Makefile.in"
 endif
+ifeq ($(OS),android)
+	sed -ie "s|-mno-ieee-fp||" "$(PLATFORM)/configure"
+endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
