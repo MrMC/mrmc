@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <color name="principal_color">#31AFE1</color>
-   <color name="recommendation_color">#2559a2</color>
+   <color name="principal_color">#b81c1c</color>
+   <color name="recommendation_color">#b81c1c</color>
+
+    <style name="AppTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+        <!-- Main theme colors -->
+        <item name="android:colorPrimary">@color/principal_color</item>
+    </style>
 </resources>
+
