@@ -84,6 +84,8 @@ ifeq ($(OS),android)
   DEPENDS += samba-gplv3
   DEPENDS += mdnsresponder libuuid
   CROSSGUID_DEPS = libuuid
+  EXCLUDED_DEPENDS += libcec
+  EXCLUDED_DEPENDS += libusb
 endif
 
 DEPENDS += mrmc-scripts
