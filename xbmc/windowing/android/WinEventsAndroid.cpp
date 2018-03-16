@@ -22,6 +22,8 @@
 
 #include "WinEventsAndroid.h"
 
+#include <cmath>
+
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
