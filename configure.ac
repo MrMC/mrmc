@@ -716,8 +716,6 @@ AC_SUBST([ARCH])
 if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
   webserver_checkdepends=yes
-  CFLAGS="$CFLAGS -Wno-psabi"
-  CXXFLAGS="$CXXFLAGS -Wno-psabi"
   AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
 fi
 
