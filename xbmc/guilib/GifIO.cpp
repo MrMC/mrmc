@@ -271,7 +271,6 @@ bool CGifIO::Open(GifFileType*& gif, void *dataPtr, InputFunc readFunc)
     err = GifLastError();
 #endif
 
-  gif = DGifOpen(dataPtr, readFunc, &err);
   if (!gif)
   {
     PrettyPrintError(StringUtils::Format("CGifIO::Open(): Could not open file %s", memOrFile().c_str()), err);
