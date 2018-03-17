@@ -628,8 +628,12 @@ namespace XBMCAddon
     void Window::setProperty(const char* key, const String& value)
     {
       XBMC_TRACE;
+      if (!key)
+        return;
       SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       std::string lowerKey = key;
+      if (lowerKey.empty())
+        return;
       StringUtils::ToLower(lowerKey);
 
       ref(window)->SetProperty(lowerKey, value);
@@ -638,9 +642,13 @@ namespace XBMCAddon
     String Window::getProperty(const char* key)
     {
       XBMC_TRACE;
+      if (!key)
+        return "";
       SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       std::string lowerKey = key;
       StringUtils::ToLower(lowerKey);
+      if (lowerKey.empty())
+        return "";
       std::string value = ref(window)->GetProperty(lowerKey).asString();
       return value;
     }
