@@ -65,7 +65,6 @@ DEPENDS += libdsm
 EXCLUDED_DEPENDS =
 ifeq ($(OS),ios)
   DEPENDS += samba
-  DEPENDS += mrmc-repo-resources
   EXCLUDED_DEPENDS += libcec
   EXCLUDED_DEPENDS += libusb
   EXCLUDED_DEPENDS += libplist
@@ -83,10 +82,12 @@ endif
 
 ifeq ($(OS),android)
   DEPENDS += samba-gplv3
-  DEPENDS += mrmc-repo-resources
   DEPENDS += mdnsresponder libuuid
   CROSSGUID_DEPS = libuuid
 endif
+
+DEPENDS += mrmc-scripts
+DEPENDS += mrmc-repo-resources
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
 
