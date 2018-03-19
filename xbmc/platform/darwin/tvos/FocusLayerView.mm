@@ -45,7 +45,6 @@ bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector
     self.opaque = NO;
     self.userInteractionEnabled = YES;
     self.bounds = frame;
-    self.layer.backgroundColor = [[UIColor clearColor] CGColor];
 
     // set to false to hide frame drawing (used for debugging)
     self->viewVisible = false;
@@ -54,6 +53,17 @@ bool FocusLayerViewsAreEqual(std::vector<FocusLayerControl> &views1, std::vector
     self->frameColor = [UIColor whiteColor];
   }
 	return self;
+}
+
+-(void) layerWillDraw:(CALayer *)layer
+{
+  // http://www.openradar.me/32702889
+  // an empty implementation of layerWillDraw will
+  // receive an 8 bit backed context on Wide Color devices
+  // we also add the convert for when apple fixes this bug.
+  NSString* format = layer.contentsFormat;
+  if( ![format isEqualToString:kCAContentsFormatRGBA8Uint]  )
+      layer.contentsFormat = kCAContentsFormatRGBA8Uint;
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
