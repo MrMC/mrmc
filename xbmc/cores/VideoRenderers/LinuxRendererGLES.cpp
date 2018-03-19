@@ -202,6 +202,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   m_sourceWidth = width;
   m_sourceHeight = height;
   m_renderOrientation = orientation;
+  m_readyToRender = false;
 
   // Save the flags.
   m_iFlags = flags;
@@ -512,6 +513,8 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, uint32_t flags, uint32_t alpha
   // if its first pass, just init textures and return
   if (ValidateRenderTarget())
     return;
+
+  m_readyToRender = true;
 
   if (!IsGuiLayer())
   {
@@ -2973,7 +2976,7 @@ void CLinuxRendererGLES::AddProcessor(CDVDMediaCodecInfo *mediacodec, int index)
     // releaseOutputBuffer must be in same thread as
     // dequeueOutputBuffer. We are in DVDPlayerVideo
     // thread here, so we are safe.
-    buf.mediacodec->ReleaseOutputBuffer(true);
+    buf.mediacodec->ReleaseOutputBuffer(m_readyToRender);
   }
 
 #ifdef DEBUG_VERBOSE
