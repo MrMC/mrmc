@@ -207,13 +207,6 @@ void CFocusEngineHandler::InvalidateFocus(CGUIControl *control)
     m_focus.items.erase(foundControl);
 }
 
-CGUIWindow*
-CFocusEngineHandler::GetFocusWindow()
-{
-  CSingleLock lock(m_focusLock);
-  return m_focus.window;
-}
-
 const int
 CFocusEngineHandler::GetFocusWindowID()
 {
@@ -226,6 +219,21 @@ CFocusEngineHandler::IsBusy()
 {
   CSingleLock lock(m_focusLock);
   return m_focus.busy;
+}
+
+const bool
+CFocusEngineHandler::IsWindowFullScreenVideo()
+{
+  CSingleLock lock(m_focusLock);
+  if (m_focus.window)
+  {
+    int focusWindowID = m_focus.window->GetID();
+    if (focusWindowID == WINDOW_FULLSCREEN_VIDEO ||
+        focusWindowID == WINDOW_FULLSCREEN_LIVETV ||
+        focusWindowID == WINDOW_VIDEO_MENU)
+    return true;
+  }
+  return false;
 }
 
 const bool

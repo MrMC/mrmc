@@ -664,8 +664,7 @@ MainController *g_xbmcController;
   if (m_enableRemoteExpertMode)
     return false;
 
-  CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-  if (focusWindow && focusWindow->GetID() != WINDOW_FULLSCREEN_VIDEO)
+  if (!CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
     return false;
 
   if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->CanSeek())
@@ -1283,8 +1282,7 @@ ORIENTATION swipeStartingFocusedOrientation;
 
   // only had double/triple tap recognizers enabled
   // during fulscreen video playback, or they slow down tap navigation
-  CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-  if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO &&
+  if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo() &&
       !m_enableRemoteExpertMode &&
       !g_application.CurrentFileItem().IsPVR())
   {
@@ -1588,8 +1586,8 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
     {
       case UIGestureRecognizerStateEnded:
         {
-          CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-          if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO && !g_application.m_pPlayer->IsPaused())
+          if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo() &&
+             !g_application.m_pPlayer->IsPaused())
           {
             #if logfocus
             CLog::Log(LOGDEBUG, "SiriSingleTapHandler:StateEnded");
@@ -1634,8 +1632,7 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
     {
       case UIGestureRecognizerStateEnded:
         {
-          CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-          if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO && !g_application.m_pPlayer->IsPaused())
+          if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo() && !g_application.m_pPlayer->IsPaused())
           {
             #if logfocus
             CLog::Log(LOGDEBUG, "SiriTripleTapHandler:StateEnded");
@@ -1660,8 +1657,7 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
       #if logfocus
       CLog::Log(LOGDEBUG, "SiriMenuHandler:StateEnded");
       #endif
-      CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-      if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+      if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
       {
         if ([self hasPlayerProgressScrubbing] && g_application.m_pPlayer->IsPaused())
         {
@@ -1758,14 +1754,13 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
         self.m_selectHoldCounter = 0;
         // assume we are navigating
         selectState = SELECT_NAVIGATION;
-        CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-        if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+        if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
         {
           selectState = SELECT_VIDEOPLAY;
           if (g_application.m_pPlayer->IsPaused())
             selectState = SELECT_VIDEOPAUSED;
         }
-        else if (focusWindow && focusWindow->GetID() == WINDOW_SLIDESHOW)
+        else if (CFocusEngineHandler::GetInstance().GetFocusWindowID() == WINDOW_SLIDESHOW)
         {
           selectState = SELECT_SLIDESHOW;
         }
@@ -1937,8 +1932,7 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
 {
   if (m_appAlive == YES)
   {
-    CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-    if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
     {
       switch (sender.state)
       {
@@ -1994,8 +1988,7 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
 {
   if (m_appAlive == YES)
   {
-    CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-    if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
     {
       switch (sender.state)
       {
@@ -2093,8 +2086,7 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
 {
   if (m_appAlive == YES)
   {
-    CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-    if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
     {
       switch (sender.state)
       {
@@ -2122,8 +2114,7 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
 {
   if (m_appAlive == YES)
   {
-    CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-    if (focusWindow && focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
     {
       switch (sender.state)
       {
@@ -2348,10 +2339,8 @@ CGRect debugView2;
     }
     #endif
     // need a focusable view or risk bouncing out on menu presses
-    CGUIWindow *focusWindow = CFocusEngineHandler::GetInstance().GetFocusWindow();
-    if (focusWindow &&
-      (focusWindow->GetID() == WINDOW_FULLSCREEN_VIDEO ||
-       focusWindow->GetID() == WINDOW_SLIDESHOW))
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo() ||
+        CFocusEngineHandler::GetInstance().GetFocusWindowID() == WINDOW_SLIDESHOW)
     {
       if ( [_focusLayer.infocus.view canBecomeFocused] == NO )
         [self.focusView setFocusable:true];
@@ -2638,6 +2627,13 @@ CGRect debugView2;
   {
     auto &view = *viewsIt;
 
+/*
+    if (view.type == "window")
+      continue;
+*/
+    if (view.type == "dialog")
+      continue;
+
     FocusLayerView *focusLayerView = nil;
     focusLayerView = [[FocusLayerView alloc] initWithFrame:view.rect];
     [focusLayerView setFocusable:false];
@@ -2689,8 +2685,7 @@ CGRect debugView2;
   preferredItem.core = CFocusEngineHandler::GetInstance().GetFocusControl();
   if (preferredItem.core)
   {
-    CGUIControl *guiControlWindow = (CGUIControl*)preferredItem.core;
-    if (guiControlWindow->GetID() == WINDOW_FULLSCREEN_VIDEO)
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
     {
       if (g_windowManager.IsWindowVisible(WINDOW_DIALOG_SEEK_BAR))
       {

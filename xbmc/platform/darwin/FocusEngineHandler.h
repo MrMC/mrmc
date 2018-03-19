@@ -83,12 +83,13 @@ class CFocusEngineHandler
   void          EnableFocusZoom(bool enable);
   void          EnableFocusSlide(bool enable);
   void          InvalidateFocus(CGUIControl *control);
-  CGUIWindow*   GetFocusWindow();
   const int     GetFocusWindowID();
   const bool    IsBusy();
+  const bool    IsWindowFullScreenVideo();
   const bool    NeedToHideViews();
   const CRect   GetFocusRect();
   CGUIControl*  GetFocusControl();
+
   bool          ShowFocusRect();
   bool          ShowVisibleRects();
   ORIENTATION   GetFocusOrientation();
