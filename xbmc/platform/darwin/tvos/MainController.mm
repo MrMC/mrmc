@@ -2543,20 +2543,22 @@ CGRect debugView2;
 //--------------------------------------------------------------
 - (void)clearSubViews
 {
-  NSArray *subviews = self.focusView.subviews;
-  if (subviews && [subviews count])
-  {
-    for (UIView *view in subviews)
+  @autoreleasepool {
+    NSArray *subviews = self.focusView.subviews;
+    if (subviews && [subviews count])
     {
-      if (view == self.focusViewLeft)
-        continue;
-      if (view == self.focusViewRight)
-        continue;
-      if (view == self.focusViewTop)
-        continue;
-      if (view == self.focusViewBottom)
-        continue;
-      [view removeFromSuperview];
+      for (UIView *view in subviews)
+      {
+        if (view == self.focusViewLeft)
+          continue;
+        if (view == self.focusViewRight)
+          continue;
+        if (view == self.focusViewTop)
+          continue;
+        if (view == self.focusViewBottom)
+          continue;
+        [view removeFromSuperview];
+      }
     }
   }
 }
