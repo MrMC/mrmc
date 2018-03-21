@@ -516,7 +516,7 @@ public class Splash extends Activity {
       if (!fPackagePath.exists())
       {
         mState = DownloadingObb;
-        new DownloadObb(this).execute("http://mirrors.kodi.tv/releases/android/obb/" + obbfn, sPackagePath);
+        new DownloadObb(this).execute("https://mrmc.tv/mrmc/obb/" + obbfn, sPackagePath);
       }
     }
   }
