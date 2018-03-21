@@ -9,10 +9,12 @@ ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 
-SETENV=CC=$(CC_FOR_BUILD) CXX=$(CXX_FOR_BUILD) LD=$(LD_FOR_BUILD) CFLAGS="$(NATIVE_CFLAGS) -Werror=unguarded-availability-new" \
-	CXXFLAGS="$(NATIVE_CXXFLAGS) -Werror=unguarded-availability-new" LDFLAGS="$(NATIVE_LDFLAGS) -Wl,-no_weak_imports"
+SETENV=CC=$(CC_FOR_BUILD) CXX=$(CXX_FOR_BUILD) LD=$(LD_FOR_BUILD) CFLAGS=$(NATIVE_CFLAGS) \
+	CXXFLAGS=$(NATIVE_CXXFLAGS) LDFLAGS=$(NATIVE_LDFLAGS)
 
 ifeq ($(NATIVE_OS), osx)
+  SETENV=CC=$(CC_FOR_BUILD) CXX=$(CXX_FOR_BUILD) LD=$(LD_FOR_BUILD) CFLAGS="$(NATIVE_CFLAGS) -Werror=unguarded-availability-new" \
+        CXXFLAGS="$(NATIVE_CXXFLAGS) -Werror=unguarded-availability-new" LDFLAGS="$(NATIVE_LDFLAGS) -Wl,-no_weak_imports"
   SETENV+=SDKROOT=$(shell xcrun --show-sdk-path)
 endif
 
