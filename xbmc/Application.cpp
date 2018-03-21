@@ -2745,21 +2745,6 @@ void CApplication::HandleShutdownMessage()
   }
 }
 
-void CApplication::LockFrameMoveGuard()
-{
-  ++m_WaitingExternalCalls;
-  m_frameMoveGuard.lock();
-  ++m_ProcessedExternalCalls;
-  g_graphicsContext.Lock();
-};
-
-void CApplication::UnlockFrameMoveGuard()
-{
-  --m_WaitingExternalCalls;
-  g_graphicsContext.Unlock();
-  m_frameMoveGuard.unlock();
-};
-
 void CApplication::FrameMove(bool processEvents, bool processGUI)
 {
   if (processEvents)
