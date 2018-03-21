@@ -1328,7 +1328,8 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
 bool CPlexUtils::ParsePlexSeries(CFileItemList &items, const CURL &url, const CVariant &directory)
 {
   bool rtn = false;
-  if (directory.isNull() || !directory.isArray())
+  const CVariant variantDirectory = makeVariantArrayIfSingleItem(directory);
+  if (variantDirectory.isNull() || !variantDirectory.isArray())
   {
     CLog::Log(LOGERROR, "CPlexUtils::ParsePlexSeries invalid response from %s", url.GetRedacted().c_str());
     return rtn;
@@ -1338,7 +1339,7 @@ bool CPlexUtils::ParsePlexSeries(CFileItemList &items, const CURL &url, const CV
   if (curl.HasOption("genre"))
     curl.RemoveOption("genre");
   std::string value;
-  for (auto variantIt = directory.begin_array(); variantIt != directory.end_array(); ++variantIt)
+  for (auto variantIt = variantDirectory.begin_array(); variantIt != variantDirectory.end_array(); ++variantIt)
   {
     if (*variantIt == CVariant::VariantTypeNull)
       continue;
