@@ -552,11 +552,10 @@ XBMCController *g_xbmcController;
     self.view.autoresizesSubviews = YES;
   
     m_glView = [[IOSEAGLView alloc] initWithFrame:self.view.bounds withScreen:[UIScreen mainScreen]];
+    // Check if screen is Retina
+    m_screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
     [[IOSScreenManager sharedInstance] setView:m_glView];
     [m_glView setMultipleTouchEnabled:YES];
-  
-    /* Check if screen is Retina */
-    m_screenScale = [[UIScreen mainScreen] nativeScale];
   
     m_glView.opaque = NO;
     m_glView.backgroundColor = [UIColor clearColor];
@@ -682,7 +681,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (CGFloat) getScreenScale:(UIScreen *)screen;
 {
-  return [m_glView getScreenScale:screen];
+  return m_screenScale;
 }
 //--------------------------------------------------------------
 //--------------------------------------------------------------
