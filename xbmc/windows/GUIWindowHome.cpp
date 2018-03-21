@@ -88,14 +88,13 @@ bool CGUIWindowHome::OnAction(const CAction &action)
       g_application.SwitchToFullScreen();
       return true;
     }
-/*
-    if (!g_advancedSettings.m_disableminimize)
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_MINIMIZEFROMHOME))
     {
       CLog::Log(LOGDEBUG, "CGUIWindowHome::OnBack - %d", m_countBackCalled);
       if (!m_countBackCalled)
       {
         m_countBackCalled++;
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Press again to Minimize", "", 1000, false);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36554).c_str(), "", 1000, false);
         return false;
       }
       else
@@ -105,7 +104,6 @@ bool CGUIWindowHome::OnAction(const CAction &action)
         return true;
       }
     }
-*/
   }
 
   m_countBackCalled = 0;

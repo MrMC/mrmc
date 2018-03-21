@@ -79,6 +79,11 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
+        <setting id="lookandfeel.mnimizefromhome" type="boolean" label="36552" help="36553">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
           <level>0</level>
           <default>resource.uisounds.mrmc</default>
