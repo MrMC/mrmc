@@ -65,6 +65,7 @@ public class Splash extends Activity {
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
+  private static final String OBB_DOWNLOAD_URL = "https://mrmc.tv/mrmc/obb/";
 
   private String mCpuinfo = "";
   private ArrayList<String> mMounts = new ArrayList<String>();
@@ -180,31 +181,38 @@ public class Splash extends Activity {
     }
 
     @Override
-    protected Integer doInBackground(String... sUrl) {
+    protected Integer doInBackground(String... urls) {
+      int ret = 0;
       InputStream input = null;
       OutputStream output = null;
       HttpURLConnection connection = null;
+      File fObb = null;
 
-      String src = sUrl[0];
-      String dest = sUrl[1];
-      File fObb = new File(dest);
-
-      Log.d(TAG, "Downloading " + src + " to " + dest);
-
-      if (!fObb.getParentFile().exists() && !fObb.getParentFile().mkdirs()) {
-        Log.e(TAG, "Error creating directory " + fObb.getParentFile().getAbsolutePath());
-        return -1;
-      }
-
-      int ret = 0;
       try {
-        URL url = new URL(src);
+        String src = "main." + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + "." + getPackageName() + ".obb";
+        String dest = urls[0];
+        fObb = new File(dest);
+
+        if (!fObb.getParentFile().exists() && !fObb.getParentFile().mkdirs()) {
+          Log.e(TAG, "Error creating directory " + fObb.getParentFile().getAbsolutePath());
+          return -1;
+        }
+
+        URL url = new URL(OBB_DOWNLOAD_URL + src);
+        Log.d(TAG, "Downloading " + url.toString() + " to " + dest);
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 
         // expect HTTP 200 OK, so we don't mistakenly save error report
         // instead of the file
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+          // Try fallback
+          src = "main." + getPackageManager().getPackageInfo(getPackageName(), 0).versionName + "." + getPackageName() + ".obb";
+          url = new URL(OBB_DOWNLOAD_URL + src);
+          Log.d(TAG, "Fallback: Downloading " + url.toString() + " to " + dest);
+          connection = (HttpURLConnection) url.openConnection();
+          connection.connect();
+          if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
             return -1;
         }
 
@@ -216,7 +224,7 @@ public class Splash extends Activity {
         input = connection.getInputStream();
         output = new FileOutputStream(dest);
 
-        byte data[] = new byte[4096];
+        byte data[] = new byte[8192];
         long total = 0;
         int count;
         mProgress.setProgress(0);
@@ -516,7 +524,7 @@ public class Splash extends Activity {
       if (!fPackagePath.exists())
       {
         mState = DownloadingObb;
-        new DownloadObb(this).execute("https://mrmc.tv/mrmc/obb/" + obbfn, sPackagePath);
+        new DownloadObb(this).execute(sPackagePath);
       }
     }
   }
