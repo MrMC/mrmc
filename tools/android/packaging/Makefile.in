@@ -86,7 +86,7 @@ apk-obb-unsigned: apk-clean sharedobb package
 apk-noobb: apk-clean package apk-sign
 
 xbmc/assets:
-	mkdir -p xbmc/assets
+	mkdir -p build/assets
 
 symbols: libs
 
@@ -107,7 +107,7 @@ shared:
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
 
 sharedapk: shared | xbmc/assets
-	cp -rfp assets/* ./xbmc/assets
+	cp -rfp assets/* ./build/assets
 
 sharedobb: shared
 	rm -f $(XBMCROOT)/main.@APP_NAME@.obb
@@ -115,60 +115,59 @@ sharedobb: shared
 	@echo "$(XBMCROOT)/main.@APP_NAME@.obb created"
 
 python: | xbmc/assets
-	mkdir -p xbmc/assets/python2.7/lib/
-	cp -rfp $(PREFIX)/lib/python2.7 xbmc/assets/python2.7/lib/
-	cd xbmc/assets/python2.7/lib/python2.7/; rm -rf test config lib-dynload
+	mkdir -p build/assets/python2.7/lib/
+	cp -rfp $(PREFIX)/lib/python2.7 build/assets/python2.7/lib/
+	cd build/assets/python2.7/lib/python2.7/; rm -rf test config lib-dynload
 
 res:
-	mkdir -p xbmc/gen/@APP_PACKAGE_DIR@ xbmc/res xbmc/res/raw xbmc/res/values xbmc/res/xml images
-	@echo "native_arch=$(ABI)" > xbmc/res/raw/xbmc.properties
-	cp -fp $(XBMCROOT)/media/$(SPLASHPNG) xbmc/res/drawable/splash.png
-	cp -fp $(MEDIAROOT)/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
-	cp -fp $(MEDIAROOT)/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
-	cp xbmc/strings.xml xbmc/res/values/
-	cp xbmc/colors.xml xbmc/res/values/
-	cp xbmc/activity_main.xml xbmc/res/layout/
-	cp xbmc/searchable.xml xbmc/res/xml/
-	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
-	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME@app-debug-skeleton.apk -J xbmc/gen/@APP_PACKAGE_DIR@
+	mkdir -p build/src/@APP_PACKAGE_DIR@ build/res build/res/raw build/res/values build/res/xml images
+	cp -rfp xbmc/res/* build/res/
+	cp -rfp xbmc/jni build/
+	@echo "native_arch=$(ABI)" > build/res/raw/xbmc.properties
+	cp -fp $(XBMCROOT)/media/$(SPLASHPNG) build/res/drawable/splash.png
+	cp -fp $(MEDIAROOT)/drawable-hdpi/ic_launcher.png build/res/drawable-hdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-ldpi/ic_launcher.png build/res/drawable-ldpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-mdpi/ic_launcher.png build/res/drawable-mdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xhdpi/ic_launcher.png build/res/drawable-xhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xxhdpi/ic_launcher.png build/res/drawable-xxhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xxxhdpi/ic_launcher.png build/res/drawable-xxxhdpi/ic_launcher.png
+	cp -fp $(MEDIAROOT)/drawable-xhdpi/banner.png build/res/drawable-xhdpi/banner.png
+	cp xbmc/strings.xml build/res/values/
+	cp xbmc/colors.xml build/res/values/
+	cp xbmc/activity_main.xml build/res/layout/
+	cp xbmc/searchable.xml build/res/xml/
+	mkdir -p tmp/res; $(AAPT) c -S build/res -C tmp/res; cp -r -n build/res tmp/ || true
+	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME@app-debug-skeleton.apk -J build/src/@APP_PACKAGE_DIR@
 	@rm -rf tmp/
 
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
-	rm -rf xbmc/lib/$(ABI) xbmc/libs/$(ABI) xbmc/obj/local/$(ABI)
-	mkdir -p xbmc/lib/$(ABI) xbmc/libs/$(ABI) xbmc/obj/local/$(ABI) xbmc/assets/python2.7/lib/
-	cp -fp $(SRCLIBS) xbmc/obj/local/$(ABI)/
-	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(ABI)/
+	mkdir -p build/lib/$(ABI) build/assets/python2.7/lib/
+	cp -fp $(SRCLIBS) build/lib/$(ABI)/
+	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so build/lib/$(ABI)/
 	# depends build of binary pvr hardcodes path to mrmc
-	find $(PREFIX)/lib/mrmc/addons/pvr* -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \; | true
-	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(ABI)/ \;
-	cd xbmc/obj/local/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
-	cp -fp xbmc/obj/local/$(ABI)/*.so xbmc/lib/$(ABI)/
-	$(STRIP) --strip-unneeded xbmc/lib/$(ABI)/*.so
-	cp -fp $(SDKROOT)/extras/android/support/v4/android-support-v4.jar xbmc/libs
-	install -p $(GDBPATH) ./xbmc/libs/$(ABI)/gdbserver
-	install -p $(STLLIB) ./xbmc/lib/$(ABI)/
-	echo "set solib-search-path ./obj/local/$(ABI)" > ./xbmc/libs/$(ABI)/gdb.setup
+	find $(PREFIX)/lib/mrmc/addons/pvr* -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \;
+	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \;
+	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \; | true
+	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} build/lib/$(ABI)/ \;
+	cd build/lib/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
+	$(STRIP) --strip-unneeded build/lib/$(ABI)/*.so
+	cp -fp $(SDKROOT)/extras/android/support/v4/android-support-v4.jar build/lib
+	install -p $(GDBPATH) ./build/lib/$(ABI)/gdbserver
+	install -p $(STLLIB) ./build/lib/$(ABI)/
+	echo "set solib-search-path ./obj/local/$(ABI)" > ./build/lib/$(ABI)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
-	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./xbmc/libs/$(ABI)/gdb.setup
-	cp -fp xbmc/libs/$(ABI)/* xbmc/lib/$(ABI)
+	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./build/lib/$(ABI)/gdb.setup
 
 xbmc/classes.dex: res
-	mkdir -p xbmc/obj
-	@javac -source 1.7 -target 1.7 -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:$(SDKROOT)/extras/android/support/v4/android-support-v4.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/gen/@APP_PACKAGE_DIR@/*.java
-	@javac -source 1.7 -target 1.7 -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:$(SDKROOT)/extras/android/support/v4/android-support-v4.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/kodi/*.java xbmc/src/org/xbmc/kodi/interfaces/*.java
-	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj xbmc/libs
+	mkdir -p obj
+	cd xbmc/src; find . -name "*.java" -exec cp -fp {} ../../build/src/@APP_PACKAGE_DIR@/{} \;
+	@javac -source 1.7 -target 1.7 -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:$(SDKROOT)/extras/android/support/v4/android-support-v4.jar:obj -d obj -sourcepath build/src build/src/@APP_PACKAGE_DIR@/*.java xbmc/src/@APP_PACKAGE_DIR@/interfaces/*.java
+	@$(DX) --dex --output=build/classes.dex obj build/lib
 
 package: libs symbols python xbmc/classes.dex
 	@echo "Creating package..."
 	@cp images/@APP_NAME@app-debug-skeleton.apk images/@APP_NAME@app-debug-$(ABI)-unaligned.apk
-	@cd xbmc; $(ZIP) -r -q ../images/@APP_NAME@app-debug-$(ABI)-unaligned.apk lib/$(ABI) assets classes.dex
+	@cd build; $(ZIP) -r -q ../images/@APP_NAME@app-debug-$(ABI)-unaligned.apk lib/$(ABI) assets classes.dex
 
 apk-sign:
 	@echo "Signing..."
@@ -183,19 +182,8 @@ $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 $(SRCLIBS):
 
 apk-clean:
-	rm -rf images
-	rm -rf symbols
-	rm -rf xbmc/gen
-	rm -rf xbmc/lib
-	rm -rf xbmc/libs
-	rm -rf xbmc/assets
-	rm -rf xbmc/obj
-	rm -rf xbmc/res/raw
-	rm -rf xbmc/res/values
-	rm -rf xbmc/res/xml
-	rm -rf tmp
-	rm -f xbmc/res/drawable/splash.png
-	rm -f xbmc/classes.dex
+	rm -rf build
 	rm -rf assets
+	mkdir -p build
 
 .PHONY: force libs assets python sharedapk sharedobb res package
