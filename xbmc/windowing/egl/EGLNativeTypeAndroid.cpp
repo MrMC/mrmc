@@ -32,13 +32,13 @@
 
 #include "platform/android/activity/XBMCApp.h"
 #include "platform/android/activity/AndroidFeatures.h"
-#include "platform/android/jni/SystemProperties.h"
-#include "platform/android/jni/View.h"
-#include "platform/android/jni/Display.h"
-#include "platform/android/jni/Window.h"
-#include "platform/android/jni/WindowManager.h"
-#include "platform/android/jni/Build.h"
-#include "platform/android/jni/System.h"
+#include <androidjni/SystemProperties.h>
+#include <androidjni/View.h>
+#include <androidjni/Display.h>
+#include <androidjni/Window.h>
+#include <androidjni/WindowManager.h>
+#include <androidjni/Build.h>
+#include <androidjni/System.h>
 
 
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()

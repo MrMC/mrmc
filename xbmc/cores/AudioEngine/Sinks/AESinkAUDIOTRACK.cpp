@@ -27,11 +27,11 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
-#include "platform/android/jni/AudioFormat.h"
-#include "platform/android/jni/AudioManager.h"
-#include "platform/android/jni/AudioTrack.h"
-#include "platform/android/jni/Build.h"
-#include "platform/android/jni/System.h"
+#include <androidjni/AudioFormat.h>
+#include <androidjni/AudioManager.h>
+#include <androidjni/AudioTrack.h>
+#include <androidjni/Build.h>
+#include <androidjni/System.h>
 
 /// This is an alternative to the linear weighted delay smoothing
 // advantages: only one history value needs to be stored

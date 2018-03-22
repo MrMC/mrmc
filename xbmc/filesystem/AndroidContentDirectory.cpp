@@ -31,12 +31,12 @@
 #include "URL.h"
 #include "CompileInfo.h"
 
-#include "platform/android/jni/Intent.h"
-#include "platform/android/jni/URI.h"
-#include "platform/android/jni/DocumentsContract.h"
-#include "platform/android/jni/Document.h"
-#include "platform/android/jni/ContentResolver.h"
-#include "platform/android/jni/Cursor.h"
+#include <androidjni/Intent.h>
+#include <androidjni/URI.h>
+#include <androidjni/DocumentsContract.h>
+#include <androidjni/Document.h>
+#include <androidjni/ContentResolver.h>
+#include <androidjni/Cursor.h>
 
 #define ACTION_OPEN_DOCUMENT_TREE_REQID 421
 

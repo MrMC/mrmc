@@ -23,10 +23,10 @@
 #include "utils/StringUtils.h"
 
 #include <cpu-features.h>
-#include "platform/android/jni/Build.h"
-#include "platform/android/jni/Context.h"
-#include "platform/android/jni/JNIThreading.h"
-#include "platform/android/jni/PackageManager.h"
+#include <androidjni/Build.h>
+#include <androidjni/Context.h>
+#include <androidjni/JNIThreading.h>
+#include <androidjni/PackageManager.h>
 
 bool CAndroidFeatures::HasNeon()
 {

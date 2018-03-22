@@ -35,11 +35,11 @@
 #include "IInputHandler.h"
 
 #include "platform/MCRuntimeLib.h"
-#include "platform/android/jni/Activity.h"
-#include "platform/android/jni/BroadcastReceiver.h"
-#include "platform/android/jni/AudioManager.h"
-#include "platform/android/jni/AudioDeviceInfo.h"
-#include "platform/android/jni/Image.h"
+#include <androidjni/Activity.h>
+#include <androidjni/BroadcastReceiver.h>
+#include <androidjni/AudioManager.h>
+#include <androidjni/AudioDeviceInfo.h>
+#include <androidjni/Image.h>
 #include "threads/Event.h"
 #include "interfaces/IAnnouncer.h"
 #include "guilib/Geometry.h"

@@ -29,13 +29,13 @@
 #include <arpa/inet.h>
 
 #include "platform/android/activity/XBMCApp.h"
-#include "platform/android/jni/ConnectivityManager.h"
-#include "platform/android/jni/LinkAddress.h"
-#include "platform/android/jni/InetAddress.h"
-#include "platform/android/jni/RouteInfo.h"
+#include <androidjni/ConnectivityManager.h>
+#include <androidjni/LinkAddress.h>
+#include <androidjni/InetAddress.h>
+#include <androidjni/RouteInfo.h>
 
-#include "platform/android/jni/WifiManager.h"
-#include "platform/android/jni/WifiInfo.h"
+#include <androidjni/WifiManager.h>
+#include <androidjni/WifiInfo.h>
 
 #include "utils/StringUtils.h"
 #include "utils/log.h"

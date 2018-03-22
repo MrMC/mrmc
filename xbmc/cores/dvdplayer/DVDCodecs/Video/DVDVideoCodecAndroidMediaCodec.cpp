@@ -40,18 +40,18 @@
 
 #include "platform/android/activity/XBMCApp.h"
 #include "platform/android/activity/AndroidFeatures.h"
-#include "platform/android/jni/ByteBuffer.h"
-#include "platform/android/jni/Build.h"
-#include "platform/android/jni/Display.h"
-#include "platform/android/jni/MediaCodec.h"
-#include "platform/android/jni/MediaCrypto.h"
-#include "platform/android/jni/MediaFormat.h"
-#include "platform/android/jni/MediaCodecList.h"
-#include "platform/android/jni/MediaCodecInfo.h"
-#include "platform/android/jni/Surface.h"
-#include "platform/android/jni/SurfaceTexture.h"
-#include "platform/android/jni/View.h"
-#include "platform/android/jni/Window.h"
+#include <androidjni/ByteBuffer.h>
+#include <androidjni/Build.h>
+#include <androidjni/Display.h>
+#include <androidjni/MediaCodec.h>
+#include <androidjni/MediaCrypto.h>
+#include <androidjni/MediaFormat.h>
+#include <androidjni/MediaCodecList.h>
+#include <androidjni/MediaCodecInfo.h>
+#include <androidjni/Surface.h>
+#include <androidjni/SurfaceTexture.h>
+#include <androidjni/View.h>
+#include <androidjni/Window.h>
 
 #include "android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 

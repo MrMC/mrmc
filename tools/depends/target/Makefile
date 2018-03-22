@@ -83,6 +83,7 @@ endif
 ifeq ($(OS),android)
   DEPENDS += samba-gplv3
   DEPENDS += mdnsresponder libuuid
+  DEPENDS += libandroidjni
   CROSSGUID_DEPS = libuuid
   EXCLUDED_DEPENDS += libcec
   EXCLUDED_DEPENDS += libusb
