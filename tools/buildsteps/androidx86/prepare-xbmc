@@ -4,17 +4,11 @@ XBMC_PLATFORM_DIR=android
 
 #fetch submodules
 cd $WORKSPACE
-if test -d $WORKSPACE/addons/skin.re-touched
+if test -d $WORKSPACE/addons/skin.blackglassnova
 then
-rm -r $WORKSPACE/addons/skin.re-touched
+rm -r $WORKSPACE/addons/skin.blackglassnova
 fi
-git submodule update --init $WORKSPACE/addons/skin.re-touched
-
-if test -d $WORKSPACE/addons/script.xbmc.debug.log
-then
-rm -r $WORKSPACE/addons/script.xbmc.debug.log
-fi
-git submodule update --init $WORKSPACE/addons/script.xbmc.debug.log
+git submodule update --init $WORKSPACE/addons/skin.blackglassnova
 
 #build binary addons before building xbmc...
 #make sure that binary_addons don't clean the native tools
