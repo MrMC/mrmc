@@ -1419,6 +1419,13 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     m_replayGainSettings.iNoGainPreAmp = ((CSettingInt*)setting)->GetValue();
   else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
     m_replayGainSettings.bAvoidClipping = ((CSettingBool*)setting)->GetValue();
+#ifdef TARGET_ANDROID
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE))
+  {
+    if (((CSettingBool*)setting)->GetValue())
+      CXBMCApp::startProjection();
+  }
+#endif
 }
 
 void CApplication::OnSettingAction(const CSetting *setting)

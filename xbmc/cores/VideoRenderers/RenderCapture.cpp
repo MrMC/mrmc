@@ -22,6 +22,14 @@
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+
+#if defined(TARGET_ANDROID)
+#include "platform/android/activity/XBMCApp.h"
+extern "C" {
+#include "libswscale/swscale.h"
+}
+#endif
 
 CRenderCaptureBase::CRenderCaptureBase()
 {
@@ -52,8 +60,106 @@ bool CRenderCaptureBase::UseOcclusionQuery()
     return true;
 }
 
+#if defined(TARGET_ANDROID)
+CRenderCaptureDroid::CRenderCaptureDroid()
+{
+  m_videoUseDroidProjectionCapture = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE);
+}
 
-#if defined(HAS_IMXVPU)
+CRenderCaptureDroid::~CRenderCaptureDroid()
+{
+  if (m_videoUseDroidProjectionCapture)
+    CXBMCApp::get()->StopCapture();
+  delete[] m_pixels;
+}
+
+int CRenderCaptureDroid::GetCaptureFormat()
+{
+  return CAPTUREFORMAT_BGRA;
+}
+
+void CRenderCaptureDroid::BeginRender()
+{
+  m_asyncChecked = true;
+
+  if (m_bufferSize != m_width * m_height * 4)
+  {
+    delete[] m_pixels;
+    m_bufferSize = m_width * m_height * 4;
+    m_pixels = new uint8_t[m_bufferSize];
+  }
+  if (m_videoUseDroidProjectionCapture)
+  {
+    m_asyncSupported = true;
+    CXBMCApp::get()->startCapture(m_width, m_height);
+  }
+}
+
+void CRenderCaptureDroid::EndRender()
+{
+  if (m_videoUseDroidProjectionCapture)
+  {
+    if (m_flags & CAPTUREFLAG_IMMEDIATELY)
+      ReadOut();
+    else
+      SetState(CAPTURESTATE_NEEDSREADOUT);
+  }
+  else
+    SetState(CAPTURESTATE_DONE);
+}
+
+void* CRenderCaptureDroid::GetRenderBuffer()
+{
+    return m_pixels;
+}
+
+void CRenderCaptureDroid::ReadOut()
+{
+  if (m_videoUseDroidProjectionCapture)
+  {
+    jni::CJNIImage image;
+    if (CXBMCApp::get()->GetCapture(image))
+    {
+      int iWidth = image.getWidth();
+      int iHeight = image.getHeight();
+
+      std::vector<jni::CJNIImagePlane> planes = image.getPlanes();
+      if (planes.empty())
+      {
+        SetState(CAPTURESTATE_FAILED);
+        return;
+      }
+      CJNIByteBuffer bytebuffer = planes[0].getBuffer();
+
+      struct SwsContext *context = sws_getContext(iWidth, iHeight, AV_PIX_FMT_RGBA,
+                                                  m_width, m_height, AV_PIX_FMT_BGRA,
+                                                  SWS_FAST_BILINEAR, NULL, NULL, NULL);
+      if (!context)
+      {
+        SetState(CAPTURESTATE_FAILED);
+        return;
+      }
+
+      void *buf_ptr = xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
+
+      uint8_t *src[] = { (uint8_t*)buf_ptr, 0, 0, 0 };
+      int     srcStride[] = { planes[0].getRowStride(), 0, 0, 0 };
+
+      uint8_t *dst[] = { m_pixels, 0, 0, 0 };
+      int     dstStride[] = { (int)m_width * 4, 0, 0, 0 };
+
+      sws_scale(context, src, srcStride, 0, iHeight, dst, dstStride);
+      sws_freeContext(context);
+
+      image.close();
+      SetState(CAPTURESTATE_DONE);
+    }
+    else
+      SetState(CAPTURESTATE_FAILED);
+  }
+}
+
+#elif defined(HAS_IMXVPU)
 CRenderCaptureIMX::CRenderCaptureIMX()
 {
 }

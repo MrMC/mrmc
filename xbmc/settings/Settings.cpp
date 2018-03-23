@@ -182,6 +182,7 @@ const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC = "videoplayer.us
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC_INTERLACED = "videoplayer.mediacodec_interlaced";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE = "videoplayer.usemediacodecsurface";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_INTERLACED = "videoplayer.mediacodecsurface_interlaced";
+const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE = "videoplayer.mediacodecsurface_capture";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAU = "videoplayer.usevdpau";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER = "videoplayer.usevdpaumixer";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2 = "videoplayer.usevdpaumpeg2";
@@ -1239,6 +1240,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC_INTERLACED);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_INTERLACED);
+  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE);
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();

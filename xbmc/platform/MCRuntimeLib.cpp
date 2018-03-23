@@ -22,12 +22,16 @@
 
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"
 #endif
 
+#if defined(TARGET_ANDROID)
+#include "platform/android/activity/XBMCApp.h"
+#endif
 
 extern "C" void MCRuntimeLib_Preflight()
 {
@@ -94,6 +98,11 @@ extern "C" int MCRuntimeLib_Run(bool renderGUI)
     CMCRuntimeLibStartupLogger::DisplayError("ERROR: Unable to Initialize. Exiting");
     return status;
   }
+
+#if defined(TARGET_ANDROID)
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE))
+    CXBMCApp::startProjection();
+#endif
 
   try
   {

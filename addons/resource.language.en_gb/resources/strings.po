@@ -7291,7 +7291,12 @@ msgctxt "#13461"
 msgid "Use VideoToolBox for 4K HEVC HDR content"
 msgstr ""
 
-#empty strings from id 13462 to 13504
+#: system/settings/settings.xml
+msgctxt "#13462"
+msgid "Enable capture"
+msgstr ""
+
+#empty strings from id 13463 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -19356,5 +19361,10 @@ msgstr ""
 #: system/settings/rbp.xml
 msgctxt "#38113"
 msgid "This option uses frame-packing to output full resolution for 3D through HDMI"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38114"
+msgid "Allow capturing the display for boblight, ..."
 msgstr ""
 
