@@ -228,7 +228,6 @@ void CXBMCApp::onStart()
     intentFilter.addAction("android.intent.action.SCREEN_ON");
     intentFilter.addAction("android.intent.action.SCREEN_OFF");
     intentFilter.addAction("android.intent.action.HEADSET_PLUG");
-    intentFilter.addAction("android.intent.action.HDMI_PLUGGED");
     intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
     registerReceiver(*this, intentFilter);
 
@@ -1126,14 +1125,6 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       LogAudoDevices("Connectivity changed", m_audiodevices);
     }
     CheckHeadsetPlugged();
-  }
-  else if (action == "android.intent.action.HDMI_PLUGGED")
-  {
-    bool pluggedIn = intent.getBooleanExtra("state", false);
-    if (pluggedIn)
-      CLog::Log(LOGINFO, "Got HDMI_PLUGGED intent attached");
-    else
-      CLog::Log(LOGINFO, "Got HDMI_PLUGGED intent detached");
   }
   else if (action == "android.net.conn.CONNECTIVITY_CHANGE")
   {
