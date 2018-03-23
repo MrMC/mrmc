@@ -68,9 +68,13 @@
 
 /* defines color transfer function */
 #define CONF_FLAGS_TRC_MASK(a) ((a) & 0x0c00)
-#define CONF_FLAGS_TRC_BT709      0x0400
-#define CONF_FLAGS_TRC_GAMMA22    0x0800
-#define CONF_FLAGS_TRC_GAMMA28    0x0c00
+#define CONF_FLAGS_TRC_BT709      0x0100
+#define CONF_FLAGS_TRC_GAMMA22    0x0200
+#define CONF_FLAGS_TRC_GAMMA28    0x0300
+#define CONF_FLAGS_TRC_BT2020_10  0x0400
+#define CONF_FLAGS_TRC_BT2020_12  0x0500
+#define CONF_FLAGS_TRC_SMPTE2084  0x0600
+#define CONF_FLAGS_TRC_ARIB_STD_B67 0x0700
 
 /* defines 3d modes */
 #define CONF_FLAGS_STEREO_MODE_MASK(a) ((a) & 0x007000)
@@ -88,7 +92,7 @@
 
 namespace RenderManager {
 
-  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height, bool BT2020Override);
+  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height);
   unsigned int GetFlagsChromaPosition(unsigned int chroma_position);
   unsigned int GetFlagsColorPrimaries(unsigned int color_primaries);
   unsigned int GetFlagsColorTransfer(unsigned int color_transfer);

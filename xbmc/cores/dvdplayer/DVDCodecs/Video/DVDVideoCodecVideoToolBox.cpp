@@ -291,7 +291,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
               hints.codec_tag == MKTAG('D','O','V','I')))
         {
           // if bt2020+, kick it to AVFoundataion
-          if (hints.colorspace >= 9 && hints.colorspace <= 11)
+          if (hints.colortransfer >= AVCOL_TRC_SMPTE2084)
             return false;
           // only AVFoundataion can handle DolbyVision
           if (hints.codec_tag == MKTAG('d','v','h','1') ||
@@ -556,6 +556,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
     pDvdVideoPicture->color_range = 0;
   pDvdVideoPicture->color_matrix    = m_hints.colorspace;
+  pDvdVideoPicture->color_transfer  = m_hints.colortransfer;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
   m_display_queue->pixel_buffer_ref = nullptr;
 

@@ -227,14 +227,26 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       return false;
     }
 
-    int width  = hints.width;
-    int height = hints.height;
-    if (width <= 0 || height <= 0)
+    if (hints.width <= 0 || hints.height <= 0)
     {
       CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d)",
-        __FUNCTION__, width, height);
+        __FUNCTION__, hints.width, hints.height);
       return false;
     }
+
+    m_width = hints.width;
+    m_height = hints.height;
+    m_codec = hints.codec;
+    m_profile = hints.profile;
+    if (hints.colorrange == AVCOL_RANGE_JPEG)
+      m_colorrange = 1;
+    else
+      m_colorrange = 0;
+    m_colorspace = hints.colorspace;
+    m_colortransfer = hints.colortransfer;
+
+    if (hints.fpsscale > 0 && hints.fpsrate > 0)
+      m_fps = (double)hints.fpsrate / (double)hints.fpsscale;
 
     switch (hints.codec)
     {
@@ -290,8 +302,8 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         const Boolean usePixelAspectRatio = false;
         auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
 
-        width = hints.width = videoSize.width;
-        height = hints.height = videoSize.height;
+        m_width = hints.width = videoSize.width;
+        m_height = hints.height = videoSize.height;
 
         m_format = 'avc1';
         m_pFormatName = "avf-h264";
@@ -370,18 +382,19 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           const Boolean usePixelAspectRatio = false;
           auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
 
-          width = hints.width = videoSize.width;
-          height = hints.height = videoSize.height;
+          m_width = hints.width = videoSize.width;
+          m_height = hints.height = videoSize.height;
           m_max_ref_frames = 6;
           m_pFormatName = "avf-h265";
           // start with assuming SDR
           m_colorspace = hints.colorspace;
+          m_colortransfer = hints.colortransfer;
           m_dynamicrange = DVP_DYNAMIC_RANGE_SDR;
           // HEVC Main 10 is always HDR10. Needs verify.
           if (hints.profile == FF_PROFILE_HEVC_MAIN_10 ||
               hints.profile == FF_PROFILE_HEVC_REXT)
           {
-            if (hints.colorspace >= 9 && hints.colorspace <= 11)
+            if (hints.colortransfer >= AVCOL_TRC_SMPTE2084)
               m_dynamicrange = DVP_DYNAMIC_RANGE_HDR10;
           }
           // check for DolbyVision, hints.profile will be wrong
@@ -390,7 +403,7 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
               hints.codec_tag == MKTAG('d','v','h','e') ||
               hints.codec_tag == MKTAG('D','O','V','I'))
           {
-            m_colorspace = 9; // BT2020_NCL (Non-Constant Luminance)
+            m_colorspace = AVCOL_SPC_BT2020_NCL; // BT2020_NCL (Non-Constant Luminance)
             m_dynamicrange = DVP_DYNAMIC_RANGE_DOLBYYVISION;
           }
         }
@@ -406,24 +419,11 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     // it will not get updates when a new video frame is decoded and presented.
     __block VideoLayerView *mcview = nullptr;
     dispatch_sync(dispatch_get_main_queue(),^{
-      CGRect bounds = CGRectMake(0, 0, width, height);
+      CGRect bounds = CGRectMake(0, 0, m_width, m_height);
       mcview = [[VideoLayerView alloc] initWithFrame:bounds];
       [g_xbmcController insertVideoView:mcview];
     });
     m_decoder = mcview;
-
-    m_width = width;
-    m_height = height;
-    m_codec = hints.codec;
-    m_profile = hints.profile;
-    if (hints.colorrange == AVCOL_RANGE_JPEG)
-      m_colorrange = 1;
-    else
-      m_colorrange = 0;
-    m_colorspace = hints.colorspace;
-
-    if (hints.fpsscale > 0 && hints.fpsrate > 0)
-      m_fps = (double)hints.fpsrate / (double)hints.fpsscale;
 
     Create();
     g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
@@ -563,6 +563,7 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->iFlags       |= DVP_FLAG_DROPPED;
   pDvdVideoPicture->color_range     = m_colorrange;
   pDvdVideoPicture->color_matrix    = m_colorspace;
+  pDvdVideoPicture->color_transfer  = m_colortransfer;
   pDvdVideoPicture->dynamic_range   = m_dynamicrange;
   pDvdVideoPicture->iWidth          = m_width;
   pDvdVideoPicture->iHeight         = m_height;

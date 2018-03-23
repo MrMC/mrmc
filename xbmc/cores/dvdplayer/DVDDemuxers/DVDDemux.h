@@ -185,6 +185,7 @@ public:
   int iBitsPerPixel;
   int iColorSpace;
   int iColorRange;
+  int iColorTransfer;
   std::string stereo_mode; // expected stereo mode
   bool bMaybeInterlaced; // stream 'might' be interlaced, on some, we can't tell for sure unless decoding.
 };

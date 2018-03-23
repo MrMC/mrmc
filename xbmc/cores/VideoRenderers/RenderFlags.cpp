@@ -22,34 +22,32 @@
 #include <string>
 #include <map>
 
+extern "C" {
+#include "libavutil/pixfmt.h"
+}
 
 namespace RenderManager {
 
-  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height, bool BT2020Override)
+  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height)
   {
     switch(color_matrix)
     {
-      case 11: // smpte2085
-      case 10: // BT2020_CL (Constant Luminance)
-      case  9: // BT2020_NCL (Non-Constant Luminance)
+      case AVCOL_SPC_SMPTE2085:   // smpte2085
+      case AVCOL_SPC_BT2020_CL:   // BT2020_CL (Constant Luminance)
+      case AVCOL_SPC_BT2020_NCL:  // BT2020_NCL (Non-Constant Luminance)
         return CONF_FLAGS_YUVCOEF_BT2020;
-      case 7: // SMPTE 240M (1987)
+      case AVCOL_SPC_SMPTE240M: // SMPTE 240M (1987)
         return CONF_FLAGS_YUVCOEF_240M;
-      case 6: // SMPTE 170M
-      case 5: // ITU-R BT.470-2
-      case 4: // FCC
+      case AVCOL_SPC_SMPTE170M: // SMPTE 170M
+      case AVCOL_SPC_BT470BG: // ITU-R BT.470-2
+      case AVCOL_SPC_FCC: // FCC
         return CONF_FLAGS_YUVCOEF_BT601;
-      case 1: // ITU-R Rec.709 (1990) -- BT.709
-        // quirk, some FF_PROFILE_HEVC_MAIN_10 signal bt709 but is really bt2020
-        if (BT2020Override)
-          return CONF_FLAGS_YUVCOEF_BT2020;
+      case AVCOL_SPC_BT709: // ITU-R Rec.709 (1990) -- BT.709
         return CONF_FLAGS_YUVCOEF_BT709;
-      case 3: // RESERVED
-      case 2: // UNSPECIFIED
+      case AVCOL_SPC_RESERVED: // RESERVED
+      case AVCOL_SPC_UNSPECIFIED: // UNSPECIFIED
       default:
-        if (BT2020Override || width > 2048 || height >= 1200)
-          return CONF_FLAGS_YUVCOEF_BT2020;
-        else if (width > 1024 || height >= 600)
+        if (width > 1024 || height >= 600)
           return CONF_FLAGS_YUVCOEF_BT709;
         else
           return CONF_FLAGS_YUVCOEF_BT601;
@@ -61,9 +59,9 @@ namespace RenderManager {
   {
     switch(chroma_position)
     {
-      case 1: return CONF_FLAGS_CHROMA_LEFT;
-      case 2: return CONF_FLAGS_CHROMA_CENTER;
-      case 3: return CONF_FLAGS_CHROMA_TOPLEFT;
+      case AVCHROMA_LOC_LEFT: return CONF_FLAGS_CHROMA_LEFT;
+      case AVCHROMA_LOC_CENTER: return CONF_FLAGS_CHROMA_CENTER;
+      case AVCHROMA_LOC_TOPLEFT: return CONF_FLAGS_CHROMA_TOPLEFT;
     }
     return 0;
   }
@@ -72,11 +70,11 @@ namespace RenderManager {
   {
     switch(color_primaries)
     {
-      case 1: return CONF_FLAGS_COLPRI_BT709;
-      case 4: return CONF_FLAGS_COLPRI_BT470M;
-      case 5: return CONF_FLAGS_COLPRI_BT470BG;
-      case 6: return CONF_FLAGS_COLPRI_170M;
-      case 7: return CONF_FLAGS_COLPRI_240M;
+      case AVCOL_PRI_BT709: return CONF_FLAGS_COLPRI_BT709;
+      case AVCOL_PRI_BT470M: return CONF_FLAGS_COLPRI_BT470M;
+      case AVCOL_PRI_BT470BG: return CONF_FLAGS_COLPRI_BT470BG;
+      case AVCOL_PRI_SMPTE170M: return CONF_FLAGS_COLPRI_170M;
+      case AVCOL_PRI_SMPTE240M: return CONF_FLAGS_COLPRI_240M;
     }
     return 0;
   }
@@ -85,9 +83,13 @@ namespace RenderManager {
   {
     switch(color_transfer)
     {
-      case 1: return CONF_FLAGS_TRC_BT709;
-      case 4: return CONF_FLAGS_TRC_GAMMA22;
-      case 5: return CONF_FLAGS_TRC_GAMMA28;
+      case AVCOL_TRC_BT709: return CONF_FLAGS_TRC_BT709;
+      case AVCOL_TRC_GAMMA22: return CONF_FLAGS_TRC_GAMMA22;
+      case AVCOL_TRC_GAMMA28: return CONF_FLAGS_TRC_GAMMA28;
+      case AVCOL_TRC_BT2020_10: return CONF_FLAGS_TRC_BT2020_10; // ITU-R BT2020 for 10-bit system
+      case AVCOL_TRC_BT2020_12: return CONF_FLAGS_TRC_BT2020_12; // ITU-R BT2020 for 12-bit system
+      case AVCOL_TRC_SMPTE2084: return CONF_FLAGS_TRC_SMPTE2084; // PQ/SMPTE ST 2084 for 10-, 12-, 14- and 16-bit systems
+      case AVCOL_TRC_ARIB_STD_B67: return CONF_FLAGS_TRC_ARIB_STD_B67; // ARIB STD-B67, known as "Hybrid log-gamma"
     }
     return 0;
   }

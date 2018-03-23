@@ -899,14 +899,15 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
    || ( m_output.color_range     != pPicture->color_range )
    || ( m_output.stereo_flags    != stereo_flags))
   {
-    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i, colorspace: %s, colorrange: %s"
+    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i, colorrange: %s, colorspace: %s, colortransfer: %s"
                        , config_framerate
                        , pPicture->iWidth
                        , pPicture->iHeight
                        , pPicture->iDisplayWidth
                        , pPicture->iDisplayHeight
+                       , pPicture->color_range == 1 ? "Full" : "Limited"
                        , av_color_space_name((enum AVColorSpace)pPicture->color_matrix)
-                       , pPicture->color_range == 1 ? "Full" : "Limited");
+                       , av_color_transfer_name((enum AVColorTransferCharacteristic)pPicture->color_transfer));
 
     unsigned flags = 0;
     if (pPicture->color_range == 1)
@@ -915,7 +916,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       flags |= CONF_FLAGS_YUV_FULLRANGE;
 
     flags |= GetFlagsChromaPosition(pPicture->chroma_position)
-          |  GetFlagsColorMatrix(pPicture->color_matrix, pPicture->iWidth, pPicture->iHeight, m_hints.codec == FF_PROFILE_HEVC_MAIN_10)
+          |  GetFlagsColorMatrix(pPicture->color_matrix, pPicture->iWidth, pPicture->iHeight)
           |  GetFlagsColorPrimaries(pPicture->color_primaries)
           |  GetFlagsColorTransfer(pPicture->color_transfer)
           |  GetFlagsDynamicRange(pPicture->dynamic_range);
