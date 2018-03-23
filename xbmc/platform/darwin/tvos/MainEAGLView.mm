@@ -105,6 +105,17 @@
   return NO;
 }
 
+-(void) layerWillDraw:(CALayer *)layer
+{
+  // http://www.openradar.me/32702889
+  // an empty implementation of layerWillDraw will
+  // receive an 8 bit backed context on Wide Color devices
+  // we also add the convert for when apple fixes this bug.
+  NSString* format = layer.contentsFormat;
+  if( ![format isEqualToString:kCAContentsFormatRGBA8Uint]  )
+      layer.contentsFormat = kCAContentsFormatRGBA8Uint;
+}
+
 //--------------------------------------------------------------
 - (void)setContext:(EAGLContext *)newContext
 {
