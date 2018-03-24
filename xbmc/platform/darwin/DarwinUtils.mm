@@ -21,7 +21,9 @@
 #include "system.h"
 #include "Application.h"
 #include "DllPaths.h"
+#include "URL.h"
 #include "GUIUserMessages.h"
+#include "filesystem/File.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -992,5 +994,179 @@ void CDarwinUtils::GetAppMemory(int64_t &free, int64_t &delta)
     old_resident_size = taskinfo.resident_size;
   }
 }
+
+typedef struct FontHeader {
+  int32_t version;
+  uint16_t numTables;
+  uint16_t searchRange;
+  uint16_t entrySelector;
+  uint16_t rangeShift;
+} FontHeader;
+
+typedef struct TableEntry {
+  uint32_t tag;
+  uint32_t checkSum;
+  uint32_t offset;
+  uint32_t length;
+} TableEntry;
+
+static uint32_t calcTableCheckSum(const uint32_t* table, uint32_t numberOfBytesInTable)
+{
+  uint32_t sum = 0;
+  uint32_t nLongs = (numberOfBytesInTable + 3) / 4;
+  while (nLongs-- > 0) {
+    sum += CFSwapInt32HostToBig(*table++);
+  }
+  return sum;
+}
+
+static void fontDataForCGFont(CGFontRef cgFont, unsigned char **data, size_t &size)
+{
+    if (!cgFont)
+      return;
+
+    CFRetain(cgFont);
+
+    CFArrayRef tags = CGFontCopyTableTags(cgFont);
+    int tableCount = CFArrayGetCount(tags);
+
+    std::vector<size_t> tableSizes;
+    tableSizes.resize(tableCount);
+    std::vector<CFDataRef> dataRefs;
+    dataRefs.resize(tableCount);
+
+    BOOL containsCFFTable = NO;
+
+    size_t totalSize = sizeof(FontHeader) + sizeof(TableEntry) * tableCount;
+
+    for (int index = 0; index < tableCount; ++index) {
+        size_t tableSize = 0;
+        intptr_t aTag = (intptr_t)CFArrayGetValueAtIndex(tags, index);
+
+        if (aTag == 'CFF ' && !containsCFFTable) {
+            containsCFFTable = YES;
+        }
+
+        dataRefs[index] = CGFontCopyTableForTag(cgFont, aTag);
+
+        if (dataRefs[index] != NULL) {
+            tableSize = CFDataGetLength(dataRefs[index]);
+        }
+
+        totalSize += (tableSize + 3) & ~3;
+
+        tableSizes[index] = tableSize;
+    }
+
+    unsigned char *stream = (unsigned char*)malloc(totalSize);
+
+    char* dataStart = (char*)stream;
+    char* dataPtr = dataStart;
+
+    // Write font header (also called sfnt header, offset subtable)
+    FontHeader* offsetTable = (FontHeader*)dataPtr;
+
+    // Compute font header entries
+    // c.f: Organization of an OpenType Font in:
+    // https://www.microsoft.com/typography/otspec/otff.htm
+    {
+        // (Maximum power of 2 <= numTables) x 16
+        uint16_t entrySelector = 0;
+        // Log2(maximum power of 2 <= numTables).
+        uint16_t searchRange = 1;
+
+        while (searchRange < tableCount >> 1) {
+            entrySelector++;
+            searchRange <<= 1;
+        }
+        searchRange <<= 4;
+
+        // NumTables x 16-searchRange.
+        uint16_t rangeShift = (tableCount << 4) - searchRange;
+
+        // OpenType Font contains CFF Table use 'OTTO' as version, and with .otf extension
+        // otherwise 0001 0000
+        offsetTable->version = containsCFFTable ? 'OTTO' : CFSwapInt16HostToBig(1);
+        offsetTable->numTables = CFSwapInt16HostToBig((uint16_t)tableCount);
+        offsetTable->searchRange = CFSwapInt16HostToBig((uint16_t)searchRange);
+        offsetTable->entrySelector = CFSwapInt16HostToBig((uint16_t)entrySelector);
+        offsetTable->rangeShift = CFSwapInt16HostToBig((uint16_t)rangeShift);
+    }
+
+    dataPtr += sizeof(FontHeader);
+
+    // Write tables
+    TableEntry* entry = (TableEntry*)dataPtr;
+    dataPtr += sizeof(TableEntry) * tableCount;
+
+    for (int index = 0; index < tableCount; ++index) {
+
+        intptr_t aTag = (intptr_t)CFArrayGetValueAtIndex(tags, index);
+        CFDataRef tableDataRef = dataRefs[index];
+
+        if (tableDataRef == NULL) { continue; }
+
+        size_t tableSize = CFDataGetLength(tableDataRef);
+
+        memcpy(dataPtr, CFDataGetBytePtr(tableDataRef), tableSize);
+
+        entry->tag = CFSwapInt32HostToBig((uint32_t)aTag);
+        entry->checkSum = CFSwapInt32HostToBig(calcTableCheckSum((uint32_t *)dataPtr, tableSize));
+
+        uint32_t offset = dataPtr - dataStart;
+        entry->offset = CFSwapInt32HostToBig((uint32_t)offset);
+        entry->length = CFSwapInt32HostToBig((uint32_t)tableSize);
+        dataPtr += (tableSize + 3) & ~3;
+        ++entry;
+        CFRelease(tableDataRef);
+    }
+
+    CFRelease(cgFont);
+
+    *data = stream;
+    size = totalSize;
+}
+
+void CDarwinUtils::CloneSystemFonts(std::string strPath)
+{
+  // only clone for iOS/tvOS, we are sandboxed in them
+#if defined(TARGET_DARWIN_IOS)
+  NSArray* fallbacks = [UIFont familyNames];
+  for (id fallback in fallbacks)
+  {
+    UIFont *font = [UIFont fontWithName:fallback size:1.0];
+    CGFontRef fontRef = CGFontCreateWithFontName((CFStringRef)font.fontName);
+    if (!fontRef)
+      continue;
+
+    size_t size = 0;
+    unsigned char *data = nullptr;
+    fontDataForCGFont(fontRef, &data, size);
+    CGFontRelease(fontRef);
+    if (size > 0)
+    {
+      std::string filepath = strPath + [font.fontName UTF8String] + ".ttf";
+      const CURL dtsUrl(filepath);
+      XFILE::CFile dstfile;
+      if (!dstfile.Exists(dtsUrl) && dstfile.OpenForWrite(dtsUrl, true))
+      {
+        ssize_t iread = size;
+        ssize_t iwrite = 0;
+        while (iwrite < iread)
+        {
+          ssize_t iwrite2 = dstfile.Write(data + iwrite, iread - iwrite);
+          if (iwrite2 <= 0)
+            break;
+          iwrite += iwrite2;
+        }
+      }
+      dstfile.Close();
+    }
+
+    free(data);
+  }
+#endif
+}
+
 
 #endif

@@ -981,6 +981,8 @@ bool CApplication::InitDirectoriesDarwin()
     CSpecialProtocol::SetTempPath(CDarwinUtils::GetUserTempDirectory());
 
     CreateUserDirs();
+
+    //CDarwinUtils::CloneSystemFonts(CSpecialProtocol::TranslatePath("special://temp/fonts/"));
   }
 
   return true;
