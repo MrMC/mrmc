@@ -6,7 +6,6 @@
     android:versionCode="@APP_VERSION_ANDROID_VERSION@"
     android:versionName="@APP_VERSION@" >
 
-    <uses-amzn-sdk android:minSdkVersion="4" />
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
