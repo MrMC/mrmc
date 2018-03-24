@@ -1131,10 +1131,10 @@ void CDarwinUtils::CloneSystemFonts(std::string strPath)
 {
   // only clone for iOS/tvOS, we are sandboxed in them
 #if defined(TARGET_DARWIN_IOS)
-  NSArray* fallbacks = [UIFont familyNames];
-  for (id fallback in fallbacks)
+  NSArray* fontFamilyNames = [UIFont familyNames];
+  for (NSString *familyName in fontFamilyNames)
   {
-    UIFont *font = [UIFont fontWithName:fallback size:1.0];
+    UIFont *font = [UIFont fontWithName:familyName size:1.0];
     CGFontRef fontRef = CGFontCreateWithFontName((CFStringRef)font.fontName);
     if (!fontRef)
       continue;
