@@ -1384,6 +1384,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       else if (platform == "darwin")  return SYSTEM_PLATFORM_DARWIN;
       else if (platform == "osx")  return SYSTEM_PLATFORM_DARWIN_OSX;
       else if (platform == "ios")  return SYSTEM_PLATFORM_DARWIN_IOS;
+      else if (platform == "tvos") return SYSTEM_PLATFORM_DARWIN_TVOS;
       else if (platform == "android") return SYSTEM_PLATFORM_ANDROID;
     }
     if (info[0].name == "musicplayer")
