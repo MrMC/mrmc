@@ -28,10 +28,12 @@
 #import "system.h"
 
 #import "Application.h"
+#import "Addon.h"
 
 #import "CompileInfo.h"
 #import "GUIInfoManager.h"
 #import "Util.h"
+#import "addons/AddonManager.h"
 #import "cores/AudioEngine/AEFactory.h"
 #import "guilib/GUIWindowManager.h"
 #import "input/Key.h"
@@ -58,8 +60,10 @@
 #import "services/lighteffects/LightEffectServices.h"
 #import "utils/LiteUtils.h"
 #import "utils/StringObfuscation.h"
+#import "utils/StringUtils.h"
 #import "utils/SeekHandler.h"
 #import "utils/URIUtils.h"
+#import "utils/Variant.h"
 #import "utils/log.h"
 
 #import <MediaPlayer/MPMediaItem.h>
@@ -123,6 +127,7 @@ typedef enum SiriRemoteTypes
   SiriRemote_PageDown = 24
 } SiriRemoteTypes;
 
+using namespace ADDON;
 using namespace KODI::MESSAGING;
 
 MainController *g_xbmcController;
@@ -1354,7 +1359,29 @@ ORIENTATION swipeStartingFocusedOrientation;
       //  a) if at our home view, should return to atv home screen
       //  b) if not, let it pass to us
       int focusedWindowID = CFocusEngineHandler::GetInstance().GetFocusWindowID();
-      if (focusedWindowID == WINDOW_HOME)
+      
+      // Alert!!! hack below to allow script.plex to go directly to Apple Home
+      bool exitToAppleTV = false;
+      if (focusedWindowID >= 13000 && focusedWindowID <= 13100)
+      {
+        CGUIWindow      *pWindow      = (CGUIWindow*)g_windowManager.GetWindow(focusedWindowID);
+        if (!pWindow)
+          return NULL;
+        const std::string &homeWindow = "script-plex-home.xml";
+        std::string xmlfile = pWindow->GetProperty("xmlfile").asString();
+        if (xmlfile.find(homeWindow) != std::string::npos)
+        {
+          AddonPtr addon;
+          const std::string &addonID = "script.plex";
+          CAddonMgr::GetInstance().GetAddon(addonID, addon, ADDON_SCRIPT, false);
+          if (addon && !addon->GetSetting("allow_exit").empty())
+          {
+            exitToAppleTV = (addon->GetSetting("allow_exit") == "false");
+          }
+        }
+      }
+      // End of hack!!
+      if (focusedWindowID == WINDOW_HOME || exitToAppleTV)
       {
         CLog::Log(LOGDEBUG, "shouldReceivePress:focusedWindowID == WINDOW_HOME");
         handled = NO;
