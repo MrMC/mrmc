@@ -19368,3 +19368,12 @@ msgctxt "#38114"
 msgid "Allow capturing the display for boblight, ..."
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#38115"
+msgid "Also allow resolution switch"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38116"
+msgid "Allow also the resolution to be adjusted to closely match the source material"
+msgstr ""

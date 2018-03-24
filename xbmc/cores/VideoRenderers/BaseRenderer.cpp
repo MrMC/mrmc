@@ -223,18 +223,15 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
 RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight)
 {
   RESOLUTION_INFO curr = g_graphicsContext.GetResInfo(current);
-  RESOLUTION orig_res  = CDisplaySettings::GetInstance().GetCurrentResolution();
 
-  if (orig_res <= RES_DESKTOP)
-    orig_res = RES_DESKTOP;
-
-  RESOLUTION_INFO orig = g_graphicsContext.GetResInfo(orig_res);
-
+  bool adjustReso = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_ADJUSTRESOLUTION);
   float fRefreshRate = fps;
 
-  float last_diff = fRefreshRate;
+  int curr_diff = curr.iScreenWidth - m_sourceWidth;
+  if (curr_diff < 0)
+    curr_diff = INT_MAX;
 
-  int curr_diff = std::abs((int) m_sourceWidth - curr.iScreenWidth);
+  int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 10000.0);
   int loop_diff = 0;
 
   // Find closest refresh rate
@@ -244,83 +241,58 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
 
     //discard resolutions that are not the same width and height (and interlaced/3D flags)
     //or have a too low refreshrate
-    if (info.iScreenWidth  != curr.iScreenWidth
-    ||  info.iScreenHeight != curr.iScreenHeight
-    ||  info.iScreen       != curr.iScreen
-    ||  (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK)
-    ||  info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
+    if (info.iScreenWidth != curr.iScreenWidth ||
+        info.iScreenHeight != curr.iScreenHeight ||
+        info.iScreen != curr.iScreen ||
+        (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) ||
+        info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
     {
+      // If not allowed to switch reso, ignore the ones
+      // not equal to the current one
+      if (!adjustReso && (info.iScreenWidth != curr.iScreenWidth || info.iScreenHeight != curr.iScreenHeight))
+        continue;
+
+      // If 3D, only consider 1080p
+      if (CONF_FLAGS_STEREO_MODE_MASK(m_iFlags) && (info.iScreenWidth != 1920 || info.iScreenHeight != 1080))
+        continue;
+
       // evaluate all higher modes and evalute them
       // concerning dimension and refreshrate weight
       // skip lower resolutions
-      if (((int) m_sourceWidth < orig.iScreenWidth) // orig res large enough
-      || (info.iScreenWidth < orig.iScreenWidth) // new width would be smaller
-      || (info.iScreenHeight < orig.iScreenHeight) // new height would be smaller
-      || (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK)) // don't switch to interlaced modes
-      {
+      // don't change resolutions when 3D is wanted
+      if ((info.iScreenWidth < 1280) || // ignore < 720p
+         (info.iScreenHeight < 720) || // ignore < 720p
+         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) || // don't switch to interlaced modes
+         (info.iScreen != curr.iScreen)) // skip not current displays
         continue;
-      }
     }
 
-    // Allow switching to larger resolution:
+    // Allow switching to a matching resolution:
     // e.g. if m_sourceWidth == 3840 and we have a 3840 mode - use this one
     // if it has a matching fps mode, which is evaluated below
 
-    loop_diff = std::abs((int) m_sourceWidth - info.iScreenWidth);
-    curr_diff = std::abs((int) m_sourceWidth - curr.iScreenWidth);
-
-    // For 3D choose the closest refresh rate 
-    if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
+    loop_diff = info.iScreenWidth - m_sourceWidth;
+    if (loop_diff < 0)
     {
-      float diff = (info.fRefreshRate - fRefreshRate);
-      if(diff < 0)
-        diff *= -1.0f;
-
-      if(diff < last_diff)
-      {
-        last_diff = diff;
-        current = (RESOLUTION)i;
-        curr = info;
-      }
+      // Do not allow downscaling
+      continue;
     }
-    else
+
+    int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 10000.0);
+
+    // Closer the better, prefer higher refresh rate if the same
+    if ((i_weight < c_weight) ||
+        (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate && loop_diff <= curr_diff) ||
+        (i_weight == c_weight && info.fRefreshRate == curr.fRefreshRate && loop_diff < curr_diff))
     {
-      int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
-      int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
-
-      RESOLUTION current_bak = current;
-      RESOLUTION_INFO curr_bak = curr;
-
-      // Closer the better, prefer higher refresh rate if the same
-      if ((i_weight <  c_weight)
-      ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
-      {
-        current = (RESOLUTION)i;
-        curr    = info;
-      }
-      // use case 1080p50 vs 3840x2160@25 for 3840@25 content
-      // prefer the higher resolution of 3840
-      if (i_weight == c_weight && (loop_diff < curr_diff))
-      {
-        current = (RESOLUTION)i;
-        curr    = info;
-      }
-      // same as above but iterating with 3840@25 set and overwritten
-      // by e.g. 1080@50 - restore backup in that case
-      // to give priority to the better matching width
-      if (i_weight == c_weight && (loop_diff > curr_diff))
-      {
-        current = current_bak;
-        curr    = curr_bak;
-      }
+      current = (RESOLUTION)i;
+      curr = info;
+      curr_diff = loop_diff;
+      c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 10000.0);
     }
   }
 
-  // For 3D overwrite weight
-  if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
-    weight = 0;
-  else
-    weight = RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier);
+  weight = RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier);
 
   return current;
 }

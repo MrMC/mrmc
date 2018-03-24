@@ -679,6 +679,15 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoplayer.adjustresolution" type="boolean" parent="videoplayer.adjustrefreshrate" label="38115" help="38116">
+          <requirement>hasDisplayRateSwitching</requirement>
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.adjustrefreshrate" operator="!is">0</dependency> <!-- ADJUST_REFRESHRATE_OFF -->
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.pauseafterrefreshchange" type="integer" parent="videoplayer.adjustrefreshrate" label="13550" help="36165">
           <requirement>hasDisplayRateSwitching</requirement>
           <level>2</level>
