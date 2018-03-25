@@ -22,6 +22,7 @@
 
 #include "guilib/GUIControl.h"
 #include "guilib/FocusabilityTracker.h"
+#include "guilib/WindowIDs.h"
 #include "threads/CriticalSection.h"
 
 class CAnimation;
@@ -51,7 +52,7 @@ typedef struct FocusEngineCoreViews
 
 typedef struct FocusEngineFocus
 {
-  int windowID = 0;
+  int windowID = WINDOW_INVALID;
   bool busy = false;
   bool hideViews = false;
   CGUIWindow  *window = nullptr;

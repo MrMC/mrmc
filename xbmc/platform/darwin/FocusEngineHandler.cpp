@@ -205,6 +205,12 @@ void CFocusEngineHandler::InvalidateFocus(CGUIControl *control)
   });
   if (foundControl != m_focus.items.end())
     m_focus.items.erase(foundControl);
+
+  if (m_focus.window == control)
+  {
+    m_focus.window = nullptr;
+    m_focus.windowID = WINDOW_INVALID;
+  }
 }
 
 const int
