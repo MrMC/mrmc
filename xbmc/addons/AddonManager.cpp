@@ -53,6 +53,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
 #endif
@@ -68,6 +69,171 @@ using namespace XFILE;
 namespace ADDON
 {
 
+static constexpr const char* addonWhiteList[] = {
+  "kodi.audiodecoder",
+  "kodi.guilib",
+  "kodi.resource",
+  "library.kodi.adsp",
+  "library.kodi.audioengine",
+  "library.kodi.guilib",
+  "library.xbmc.addon",
+  "library.xbmc.codec",
+  "library.xbmc.pvr",
+  "metadata.album.universal",
+  "metadata.artists.universal",
+  "metadata.common.allmusic.com",
+  "metadata.common.fanart.tv",
+  "metadata.common.htbackdrops.com",
+  "metadata.common.imdb.com",
+  "metadata.common.movieposterdb.com",
+  "metadata.common.musicbrainz.org",
+  "metadata.common.ofdb.de",
+  "metadata.common.omdbapi.com",
+  "metadata.common.port.hu",
+  "metadata.common.theaudiodb.com",
+  "metadata.common.themoviedb.org",
+  "metadata.local",
+  "metadata.musicvideos.theaudiodb.com",
+  "metadata.mymovies.dk",
+  "metadata.themoviedb.org",
+  "metadata.tvdb.com",
+  "metadata.tvshows.themoviedb.org",
+  "metadata.universal",
+  "pvr.argustv",
+  "pvr.dvblink",
+  "pvr.dvbviewer",
+  "pvr.filmon",
+  "pvr.hdhomerun",
+  "pvr.hts",
+  "pvr.iptvsimple",
+  "pvr.mediaportal.tvserver",
+  "pvr.mythtv",
+  "pvr.nextpvr",
+  "pvr.njoy",
+  "pvr.pctv",
+  "pvr.stalker",
+  "pvr.vbox",
+  "pvr.vdr.vnsi",
+  "pvr.vuplus",
+  "pvr.wmc",
+  "resource.images.weathericons.default",
+  "resource.language.af_za",
+  "resource.language.am_et",
+  "resource.language.ar_sa",
+  "resource.language.az_az",
+  "resource.language.be_by",
+  "resource.language.bg_bg",
+  "resource.language.bs_ba",
+  "resource.language.ca_es",
+  "resource.language.cs_cz",
+  "resource.language.cy_gb",
+  "resource.language.da_dk",
+  "resource.language.de_de",
+  "resource.language.el_gr",
+  "resource.language.en_au",
+  "resource.language.en_gb",
+  "resource.language.en_nz",
+  "resource.language.en_us",
+  "resource.language.eo",
+  "resource.language.es_ar",
+  "resource.language.es_es",
+  "resource.language.es_mx",
+  "resource.language.et_ee",
+  "resource.language.eu_es",
+  "resource.language.fa_af",
+  "resource.language.fa_ir",
+  "resource.language.fi_fi",
+  "resource.language.fo_fo",
+  "resource.language.fr_ca",
+  "resource.language.fr_fr",
+  "resource.language.gl_es",
+  "resource.language.he_il",
+  "resource.language.hi_in",
+  "resource.language.hr_hr",
+  "resource.language.hu_hu",
+  "resource.language.hy_am",
+  "resource.language.id_id",
+  "resource.language.is_is",
+  "resource.language.it_it",
+  "resource.language.ja_jp",
+  "resource.language.ko_kr",
+  "resource.language.lt_lt",
+  "resource.language.lv_lv",
+  "resource.language.mi",
+  "resource.language.mk_mk",
+  "resource.language.ml_in",
+  "resource.language.mn_mn",
+  "resource.language.ms_my",
+  "resource.language.mt_mt",
+  "resource.language.my_mm",
+  "resource.language.nb_no",
+  "resource.language.nl_nl",
+  "resource.language.os_os",
+  "resource.language.pl_pl",
+  "resource.language.pt_br",
+  "resource.language.pt_pt",
+  "resource.language.ro_ro",
+  "resource.language.ru_ru",
+  "resource.language.si_lk",
+  "resource.language.sk_sk",
+  "resource.language.sl_si",
+  "resource.language.sq_al",
+  "resource.language.sr_rs",
+  "resource.language.sr_rs@latin",
+  "resource.language.sv_se",
+  "resource.language.szl",
+  "resource.language.ta_in",
+  "resource.language.te_in",
+  "resource.language.tg_tj",
+  "resource.language.th_th",
+  "resource.language.tr_tr",
+  "resource.language.uk_ua",
+  "resource.language.uz_uz",
+  "resource.language.vi_vn",
+  "resource.language.zh_cn",
+  "resource.language.zh_tw",
+  "resource.uisounds.amber",
+  "resource.uisounds.mrmc",
+  "resource.uisounds.tvos",
+  "screensaver.xbmc.builtin.black",
+  "screensaver.xbmc.builtin.dim",
+  "screensaver.xbmc.builtin.slideshow",
+  "screensaver.xbmc.builtin.system",
+  "script.module.requests",
+  "script.plex",
+  "skin.amber",
+  "skin.blackglassnova",
+  "skin.mrmc",
+  "skin.opacity",
+  "skin.pm3.hd",
+  "skin.sio2",
+  "visualization.spectrum",
+  "visualization.waveform",
+  "webinterface.default",
+  "xbmc.addon",
+  "xbmc.audioencoder",
+  "xbmc.codec",
+  "xbmc.core",
+  "xbmc.gui",
+  "xbmc.json",
+  "xbmc.metadata",
+  "xbmc.pvr",
+  "xbmc.python",
+  "xbmc.webinterface",
+};
+
+static bool checkwhitelist(const char *addonName)
+{
+  const int whiteListSize = sizeof(addonWhiteList) / sizeof(addonWhiteList[0]);
+  for (int indx = 0; indx < whiteListSize; ++indx)
+  {
+    if (strcmp(addonName, addonWhiteList[indx]) == 0)
+      return true;
+  }
+  CLog::Log(LOGWARNING, "addon unsupported (%s)", addonName);
+  return false;
+}
+
 cp_log_severity_t clog_to_cp(int lvl);
 void cp_fatalErrorHandler(const char *msg);
 void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
@@ -81,6 +247,15 @@ std::map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 {
+  // only allow addons in app package
+  const std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
+  if (!StringUtils::StartsWith(props->plugin->plugin_path, systemAddonsPath))
+    return AddonPtr();
+
+  // only allow addons in the whitelist
+  if (!checkwhitelist(props->plugin->identifier))
+    return AddonPtr();
+
   if (!PlatformSupportsAddon(props->plugin))
     return AddonPtr();
 
