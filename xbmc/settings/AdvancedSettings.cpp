@@ -210,7 +210,7 @@ void CAdvancedSettings::Initialize()
   m_DXVANoDeintProcForProgressive = false;
   m_DXVAAllowHqScaling = true;
   m_videoFpsDetect = 1;
-  m_videoBusyDialogDelay_ms = 500;
+  m_videoBusyDialogDelay_ms = 1000;
   m_stagefrightConfig.useAVCcodec = -1;
   m_stagefrightConfig.useHEVCcodec = -1;
   m_stagefrightConfig.useVC1codec = -1;
@@ -718,7 +718,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
     // controls the delay, in milliseconds, until
     // the busy dialog is shown when starting video playback.
-    XMLUtils::GetInt(pElement, "busydialogdelayms", m_videoBusyDialogDelay_ms, 0, 1000);
+    XMLUtils::GetInt(pElement, "busydialogdelayms", m_videoBusyDialogDelay_ms, 0, 4000);
 
     // Store global display latency settings
     TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");
