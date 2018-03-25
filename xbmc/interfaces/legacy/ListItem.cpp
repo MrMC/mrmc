@@ -173,8 +173,13 @@ namespace XBMCAddon
     void ListItem::setProperty(const char * key, const String& value)
     {
       LOCKGUI;
+      if (key == nullptr)
+        return;
+
       String lowerKey = key;
       StringUtils::ToLower(lowerKey);
+      if (lowerKey.empty())
+        return;
       if (lowerKey == "startoffset")
       { // special case for start offset - don't actually store in a property,
         // we store it in item.m_lStartOffset instead
