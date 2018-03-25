@@ -173,7 +173,7 @@ namespace XBMCAddon
     void ListItem::setProperty(const char * key, const String& value)
     {
       LOCKGUI;
-      if (key == nullptr)
+      if (!key || !key[0])
         return;
 
       String lowerKey = key;
