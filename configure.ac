@@ -482,6 +482,8 @@ APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
 APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
 APP_VERSION_BUNDLE_VERSION=$(date -u +%y%m%d.%H%M)
 APP_VERSION_ANDROID_VERSION=$(date -u +%y%m%d%H)
+APP_WEBSITE=${APP_WEBSITE-$(${AWK} '/WEBSITE/ {print $2}' version.txt)}
+APP_COMPANY_NAME=${APP_COMPANY_NAME-$(${AWK} '/COMPANY_NAME/ {print $2}' version.txt)}
 TOPSHELF_BUNDLE_IDENTIFIER=$APP_PACKAGE.ts
 APP_ADDON_API=${APP_ADDON_API-$(${AWK} '/ADDON_API/ {print $2}' version.txt)}
 if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSION_MINOR" != "" \
@@ -505,6 +507,8 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
   AC_SUBST(APP_VERSION_CODE)
   AC_SUBST(APP_VERSION_BUNDLE_VERSION)
   AC_SUBST(APP_VERSION_ANDROID_VERSION)
+  AC_SUBST(APP_WEBSITE)
+  AC_SUBST(APP_COMPANY_NAME)
   AC_SUBST(TOPSHELF_BUNDLE_IDENTIFIER)
   AC_SUBST(URL_SCHEME)
   AC_SUBST(APP_ADDON_API)
@@ -2265,6 +2269,7 @@ fi
 if test "$target_platform" = "target_android" ; then
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/AndroidManifest.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/variables.txt"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/Splash.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/Main.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/XBMCBroadcastReceiver.java"

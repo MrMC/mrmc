@@ -65,7 +65,7 @@ public class Splash extends Activity {
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
-  private static final String OBB_DOWNLOAD_URL = "https://mrmc.tv/mrmc/obb/";
+  private static final String OBB_DOWNLOAD_URL = "@APP_WEBSITE@/@APP_NAME_LC@/obb/";
 
   private String mCpuinfo = "";
   private ArrayList<String> mMounts = new ArrayList<String>();
@@ -669,7 +669,7 @@ public class Splash extends Activity {
   }
 
   protected void startXBMC() {
-    // Run Kodi
+    // Run @APP_NAME@
     Intent intent = getIntent();
     intent.setClass(this, @APP_PACKAGE@.Main.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
