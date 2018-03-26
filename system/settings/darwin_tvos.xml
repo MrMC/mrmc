@@ -185,13 +185,4 @@
       </group>
     </category>
   </section>
-  <section id="services">
-    <category id="lighteffects">
-      <group id="3">
-        <setting id="services.lighteffectsstaticscreensaver">
-          <visible>false</visible>
-        </setting>  
-      </group>
-    </category>  
-  </section>
 </settings>
