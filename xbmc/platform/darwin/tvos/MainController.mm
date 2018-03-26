@@ -566,6 +566,8 @@ MainController *g_xbmcController;
   SEL singleParamSelector = @selector(enterActiveDelayed:);
   [g_xbmcController performSelector:singleParamSelector withObject:nil afterDelay:2.0];
     [self performSelectorOnMainThread:@selector(updateFocusLayer) withObject:nil  waitUntilDone:NO];
+  
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::GUI, "xbmc", "OnScreensaverDeactivated");
 }
 //--------------------------------------------------------------
 - (void)becomeInactive
@@ -583,6 +585,7 @@ MainController *g_xbmcController;
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
     }
   }
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::GUI, "xbmc", "OnScreensaverActivated");
 }
 
 //--------------------------------------------------------------
