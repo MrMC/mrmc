@@ -38,8 +38,8 @@ public:
   static void _onActivityResult(JNIEnv *env, jobject context, jint requestCode, jint resultCode, jobject resultData);
   static void _onVolumeChanged(JNIEnv *env, jobject context, jint volume);
   static void _doFrame(JNIEnv *env, jobject context, jlong frameTimeNanos);
-  static void _onAudioDeviceAdded(JNIEnv *env, jobject context, jobjectArray devices);
-  static void _onAudioDeviceRemoved(JNIEnv *env, jobject context, jobjectArray devices);
+//  static void _onAudioDeviceAdded(JNIEnv *env, jobject context, jobjectArray devices);
+//  static void _onAudioDeviceRemoved(JNIEnv *env, jobject context, jobjectArray devices);
   static void _onCaptureAvailable(JNIEnv *env, jobject context, jobject image);
   static void _onScreenshotAvailable(JNIEnv *env, jobject context, jobject image);
   static void _onVisibleBehindCanceled(JNIEnv *env, jobject context);
@@ -74,8 +74,8 @@ protected:
   virtual void onScreenshotAvailable(jni::CJNIImage image)=0;
   virtual void onVolumeChanged(int volume)=0;
   virtual void doFrame(int64_t frameTimeNanos)=0;
-  virtual void onAudioDeviceAdded(CJNIAudioDeviceInfos devices)=0;
-  virtual void onAudioDeviceRemoved(CJNIAudioDeviceInfos devices)=0;
+//  virtual void onAudioDeviceAdded(CJNIAudioDeviceInfos devices)=0;
+//  virtual void onAudioDeviceRemoved(CJNIAudioDeviceInfos devices)=0;
   virtual void onVisibleBehindCanceled() = 0;
   virtual void onMultiWindowModeChanged(bool isInMultiWindowMode) = 0;
   virtual void onPictureInPictureModeChanged(bool isInPictureInPictureMode) = 0;

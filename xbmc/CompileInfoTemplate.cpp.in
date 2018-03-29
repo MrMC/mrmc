@@ -19,6 +19,7 @@
  */
 
 #include "CompileInfo.h"
+#include <string>
 #include <cstddef>
 
 int CCompileInfo::GetMajor()
@@ -39,6 +40,18 @@ const char* CCompileInfo::GetSuffix()
 const char* CCompileInfo::GetPackage()
 {
   return "@APP_PACKAGE@";
+}
+
+const char* CCompileInfo::GetClass()
+{
+  static std::string s_classname;
+
+  if (s_classname.empty())
+  {
+    s_classname = CCompileInfo::GetPackage();
+    std::replace(s_classname.begin(), s_classname.end(), '.', '/');
+  }
+  return s_classname.c_str();
 }
 
 const char* CCompileInfo::GetAppName()

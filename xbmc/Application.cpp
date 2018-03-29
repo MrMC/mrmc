@@ -3630,7 +3630,7 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
 #endif
 #if defined(TARGET_ANDROID)
-  CXBMCApp::OnPlayBackEnded();
+  CXBMCApp::get()->OnPlayBackEnded();
 #elif defined(TARGET_DARWIN_TVOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
@@ -3657,7 +3657,7 @@ void CApplication::OnPlayBackStarted()
   g_pythonParser.OnPlayBackStarted();
 #endif
 #if defined(TARGET_ANDROID)
-  CXBMCApp::OnPlayBackStarted();
+  CXBMCApp::get()->OnPlayBackStarted();
 #elif defined(TARGET_DARWIN_TVOS)
   if (!m_pPlayer->IsPlayingAudio())
     CDarwinUtils::EnableOSScreenSaver(false);
@@ -3704,7 +3704,7 @@ void CApplication::OnPlayBackStopped()
   g_pythonParser.OnPlayBackStopped();
 #endif
 #if defined(TARGET_ANDROID)
-  CXBMCApp::OnPlayBackStopped();
+  CXBMCApp::get()->OnPlayBackStopped();
 #elif defined(TARGET_DARWIN_TVOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
@@ -3723,7 +3723,7 @@ void CApplication::OnPlayBackPaused()
   g_pythonParser.OnPlayBackPaused();
 #endif
 #if defined(TARGET_ANDROID)
-  CXBMCApp::OnPlayBackPaused();
+  CXBMCApp::get()->OnPlayBackPaused();
 #elif defined(TARGET_DARWIN_TVOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
@@ -3740,7 +3740,7 @@ void CApplication::OnPlayBackResumed()
   g_pythonParser.OnPlayBackResumed();
 #endif
 #if defined(TARGET_ANDROID)
-  CXBMCApp::OnPlayBackResumed();
+  CXBMCApp::get()->OnPlayBackResumed();
 #elif defined(TARGET_DARWIN_TVOS)
   if (!m_pPlayer->IsPlayingAudio())
     CDarwinUtils::EnableOSScreenSaver(false);
@@ -4626,6 +4626,11 @@ void CApplication::ProcessSlow()
   // if we don't render the gui there is no reason to free textures.
   if (m_renderGUI)
     g_TextureManager.FreeUnusedTextures(5000);
+
+#ifdef TARGET_ANDROID
+  // Pass the slow loop to droid
+  CXBMCApp::get()->ProcessSlow();
+#endif
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)

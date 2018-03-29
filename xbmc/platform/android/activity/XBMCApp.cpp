@@ -88,6 +88,7 @@
 #include "GUIInfoManager.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "TextureCache.h"
+#include "filesystem/SpecialProtocol.h"
 
 #include "CompileInfo.h"
 #include "filesystem/VideoDatabaseFile.h"
@@ -798,7 +799,7 @@ CPoint CXBMCApp::GetDroidToGuiRatio()
   float scaleX = 1.0;
   float scaleY = 1.0;
 
-  CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
+  CJNIRect r = m_xbmcappinstance->getDisplayRect();
   if (r.width() && r.height())
   {
     CRect gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
@@ -923,7 +924,6 @@ void CXBMCApp::ProcessSlow()
         ;
     m_mediaSession->updatePlaybackState(builder.build());
   }
->>>>>>> c52a970... ADD: [droid] MediaSession handling (Now Playing)
 }
 
 std::vector<androidPackage> CXBMCApp::GetApplications()

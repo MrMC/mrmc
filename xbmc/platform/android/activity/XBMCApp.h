@@ -121,8 +121,8 @@ public:
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
   virtual void doFrame(int64_t frameTimeNanos);
-  virtual void onAudioDeviceAdded(CJNIAudioDeviceInfos devices);
-  virtual void onAudioDeviceRemoved(CJNIAudioDeviceInfos devices);
+//  virtual void onAudioDeviceAdded(CJNIAudioDeviceInfos devices);
+//  virtual void onAudioDeviceRemoved(CJNIAudioDeviceInfos devices);
   virtual void onVisibleBehindCanceled();
   virtual void onMultiWindowModeChanged(bool isInMultiWindowMode);
   virtual void onPictureInPictureModeChanged(bool isInPictureInPictureMode);
@@ -191,14 +191,17 @@ public:
   static void StopCapture();
 
   // Playback callbacks
-  static void OnPlayBackStarted();
-  static void OnPlayBackPaused();
-  static void OnPlayBackResumed();
-  static void OnPlayBackStopped();
-  static void OnPlayBackEnded();
+  void OnPlayBackStarted();
+  void OnPlayBackPaused();
+  void OnPlayBackResumed();
+  void OnPlayBackStopped();
+  void OnPlayBackEnded();
 
   //PIP
   static void RequestPictureInPictureMode();
+
+  // Application slow ping
+  void ProcessSlow();
 
   static bool WaitVSync(unsigned int milliSeconds);
   static uint64_t GetVsyncTime() { return m_vsynctime; }
