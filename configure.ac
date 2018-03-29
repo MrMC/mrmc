@@ -2287,7 +2287,6 @@ OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/build.gradle"
 
 OUTPUT_FILES="$OUTPUT_FILES xbmc/DllPaths_generated_android.h"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/activity/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/android/jni/Makefile"
 fi
 
 if test "$use_webserver" = "yes"; then

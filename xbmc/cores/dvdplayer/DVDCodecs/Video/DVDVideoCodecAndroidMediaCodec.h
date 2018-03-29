@@ -136,6 +136,7 @@ protected:
   int             m_codecControlFlags;
 
   std::shared_ptr<CJNIXBMCVideoView> m_jnivideoview;
+  CJNISurface    *m_surface;
   CJNISurface*    m_jnisurface;
   CJNISurface     m_jnivideosurface;
   unsigned int    m_textureId;

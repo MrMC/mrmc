@@ -84,7 +84,7 @@ void CEGLNativeTypeAndroid::Initialize()
           if (CAndroidFeatures::HasTouchScreen())
           {
             // if touchscreen device, video surface will be same size as display
-            CJNIRect rect = CXBMCApp::get()->getVideoViewSurfaceRect();
+            CJNIRect rect = CXBMCApp::get()->getDisplayRect();
             m_width = rect.width();
             m_height = rect.height();
             CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: current display1: %dx%d@%f",
@@ -299,7 +299,7 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
         if (CAndroidFeatures::HasTouchScreen())
         {
           // if touchscreen device, video surface will be same size as display
-          CJNIRect rect = CXBMCApp::get()->getVideoViewSurfaceRect();
+          CJNIRect rect = CXBMCApp::get()->getDisplayRect();
           m_width = rect.width();
           m_height = rect.height();
         }

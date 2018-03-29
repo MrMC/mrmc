@@ -47,7 +47,6 @@
 #include "JNIMainActivity.h"
 #include "JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
 #include "JNIXBMCMediaSession.h"
-#include "platform/xbmc.h"
 
 // forward delares
 class CJNIWakeLock;

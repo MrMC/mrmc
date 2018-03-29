@@ -35,11 +35,11 @@
 #include "client/linux/handler/exception_handler.h"
 #endif
 
-#include "android/activity/JNIMainActivity.h"
-#include "android/activity/JNIXBMCVideoView.h"
-#include "android/activity/JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
-#include "android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
-#include "android/activity/JNIXBMCMediaSession.h"
+#include "platform/android/activity/JNIMainActivity.h"
+#include "platform/android/activity/JNIXBMCVideoView.h"
+#include "platform/android/activity/JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
+#include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
+#include "platform/android/activity/JNIXBMCMediaSession.h"
 
 #if defined(HAVE_BREAKPAD)
 static void *startCrashHandler(void* arg)

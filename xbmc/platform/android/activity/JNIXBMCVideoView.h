@@ -19,12 +19,12 @@
  *
  */
 
-#include "platform/android/jni/JNIBase.h"
+#include <androidjni/JNIBase.h>
 
-#include "platform/android/jni/Context.h"
-#include "platform/android/jni/Rect.h"
-#include "platform/android/jni/Surface.h"
-#include "platform/android/jni/SurfaceHolder.h"
+#include <androidjni/Context.h>
+#include <androidjni/Rect.h>
+#include <androidjni/Surface.h>
+#include <androidjni/SurfaceHolder.h>
 
 #include "guilib/Geometry.h"
 #include "threads/Event.h"

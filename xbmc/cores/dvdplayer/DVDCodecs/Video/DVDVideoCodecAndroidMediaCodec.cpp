@@ -53,7 +53,7 @@
 #include <androidjni/View.h>
 #include <androidjni/Window.h>
 
-#include "android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
+#include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -530,7 +530,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_jnivideoview.reset();
       return false;
     }
-    m_surface = ANativeWindow_fromSurface(xbmc_jnienv(), m_jnivideosurface.get_raw());
     m_formatname += "(S)";
   }
 
