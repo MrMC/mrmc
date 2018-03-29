@@ -314,7 +314,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "haspvr",           SYSTEM_HAS_PVR },
                                   { "startupwindow",    SYSTEM_STARTUP_WINDOW },
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
-                                  { "hasadsp",          SYSTEM_HAS_ADSP }};
+                                  { "hasadsp",          SYSTEM_HAS_ADSP },
+                                  { "hasappletvslider", SYSTEM_HAS_APPLETV_SLIDER }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "hascoreid",        SYSTEM_HAS_CORE_ID },
@@ -2611,6 +2612,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case SYSTEM_HAS_MODAL_DIALOG:
       bReturn = g_windowManager.HasModalDialog();
+      break;
+    case SYSTEM_HAS_APPLETV_SLIDER:
+#if defined(TARGET_DARWIN_TVOS)
+      bReturn = !CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
+#elif
+      bReturn = false;
+#endif
       break;
     case WEATHER_IS_FETCHED:
       bReturn = g_weatherManager.IsFetched();
