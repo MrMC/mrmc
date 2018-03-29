@@ -157,7 +157,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 java: res
 	cp -fp xbmc/AndroidManifest.xml packaging/
 	cp -fp xbmc/build.gradle packaging/
-	cd xbmc/src; find . -name "*.java" -exec cp -fp {} ../../packaging/java/@APP_PACKAGE_DIR@/{} \;
+	cd xbmc/src; find . -name "*.java" -exec cp --parents -fp {} ../../packaging/java/@APP_PACKAGE_DIR@/ \;
 
 package: libs python java
 	@echo "Gradle packaging..."

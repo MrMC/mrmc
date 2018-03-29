@@ -145,7 +145,7 @@ extern void android_main(struct android_app* state)
                                         true,
                                         -1);
 #endif
-      start_logger("SPMC_STD");
+      start_logger("MRMC_STD");
 
       IInputHandler inputHandler;
       eventLoop.run(xbmcApp, inputHandler);
