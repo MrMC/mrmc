@@ -114,12 +114,24 @@
 				<midtexture colordiffuse="primary_color">colors/grey.png</midtexture>
 			</control>
 			<control type="slider" id="401">
+				<visible>!System.HasAppleTVSlider</visible>
 				<left>100</left>
 				<top>66</top>
 				<right>100</right>
 				<height>24</height>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
 				<textureslidernib>osd/progress/nub_bar.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="primary_color">colors/white.png</textureslidernibfocus>
+				<visible>!VideoPlayer.Content(livetv)</visible>
+			</control>
+			<control type="slider" id="401">
+				<visible>System.HasAppleTVSlider</visible>
+				<left>100</left>
+				<top>66</top>
+				<right>100</right>
+				<height>24</height>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
+				<textureslidernib>-</textureslidernib>
 				<textureslidernibfocus colordiffuse="primary_color">colors/white.png</textureslidernibfocus>
 				<visible>!VideoPlayer.Content(livetv)</visible>
 			</control>
