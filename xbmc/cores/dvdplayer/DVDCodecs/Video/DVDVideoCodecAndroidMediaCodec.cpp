@@ -1062,7 +1062,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   else
   {
     if (m_render_surface)
-      m_codec->configure(mediaformat, m_videosurface, crypto, flags);
+      m_codec->configure(mediaformat, m_jnivideosurface, crypto, flags);
     else
       m_codec->configure(mediaformat, *m_surface, crypto, flags);
   }
