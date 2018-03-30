@@ -269,8 +269,6 @@ void CXBMCApp::onResume()
   }
   CheckHeadsetPlugged();
 
-  m_mediaSession->activate(false);
-
   // Clear the applications cache. We could have installed/deinstalled apps
   {
     CSingleLock lock(m_applicationsMutex);

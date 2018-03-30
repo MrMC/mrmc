@@ -1,15 +1,15 @@
 package @APP_PACKAGE@;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.MediaMetadata;
+import android.media.Rating;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
+import android.os.Build;
 import android.util.Log;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
+import static android.media.Rating.RATING_5_STARS;
 
 /**
  * Created by Christian BROWET on 1/10/17.
@@ -18,13 +18,22 @@ import java.util.concurrent.FutureTask;
 public class XBMCMediaSession
 {
   native void _onPlayRequested();
+
   native void _onPauseRequested();
+
   native void _onNextRequested();
+
   native void _onPreviousRequested();
+
   native void _onForwardRequested();
+
   native void _onRewindRequested();
+
   native void _onStopRequested();
+
   native void _onSeekRequested(long pos);
+
+  native void _onSetRating(float rating);
 
   private static final String TAG = "XBMCMediaSession";
 
@@ -34,6 +43,7 @@ public class XBMCMediaSession
     @Override
     public void onPlay()
     {
+      Log.d(TAG, "onPlay: ");
       super.onPlay();
       _onPlayRequested();
     }
@@ -41,6 +51,7 @@ public class XBMCMediaSession
     @Override
     public void onPause()
     {
+      Log.d(TAG, "onPause: ");
       super.onPause();
       _onPauseRequested();
     }
@@ -48,6 +59,7 @@ public class XBMCMediaSession
     @Override
     public void onSkipToNext()
     {
+      Log.d(TAG, "onSkipToNext: ");
       super.onSkipToNext();
       _onNextRequested();
     }
@@ -55,6 +67,7 @@ public class XBMCMediaSession
     @Override
     public void onSkipToPrevious()
     {
+      Log.d(TAG, "onSkipToPrevious: ");
       super.onSkipToPrevious();
       _onPreviousRequested();
     }
@@ -62,6 +75,7 @@ public class XBMCMediaSession
     @Override
     public void onFastForward()
     {
+      Log.d(TAG, "onFastForward: ");
       super.onFastForward();
       _onForwardRequested();
     }
@@ -69,6 +83,7 @@ public class XBMCMediaSession
     @Override
     public void onRewind()
     {
+      Log.d(TAG, "onRewind: ");
       super.onRewind();
       _onRewindRequested();
     }
@@ -76,6 +91,7 @@ public class XBMCMediaSession
     @Override
     public void onStop()
     {
+      Log.d(TAG, "onStop: ");
       super.onStop();
       _onStopRequested();
     }
@@ -83,8 +99,20 @@ public class XBMCMediaSession
     @Override
     public void onSeekTo(long pos)
     {
+      Log.d(TAG, "onSeekTo: ");
       super.onSeekTo(pos);
       _onSeekRequested(pos);
+    }
+
+    @Override
+    public void onSetRating(Rating rating)
+    {
+      Log.d(TAG, "onSetRating: " + rating.toString());
+      super.onSetRating(rating);
+      if (rating.getRatingStyle() == RATING_5_STARS)
+        _onSetRating(rating.getStarRating() * 2);
+      else if (rating.getRatingStyle() == Rating.RATING_PERCENTAGE)
+        _onSetRating(rating.getPercentRating());
     }
   }
 
@@ -97,6 +125,8 @@ public class XBMCMediaSession
     Log.d(TAG, "XBMCMediaSession init");
     this.mSession = new MediaSession(Main.MainActivity, "XBMC_session");
     this.mSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+      this.mSession.setRatingType(RATING_5_STARS);
 
     Main.MainActivity.runOnUiThread(new Runnable()
     {
@@ -110,9 +140,16 @@ public class XBMCMediaSession
     });
   }
 
-  public void activate(boolean state)
+  public void activate(final boolean state)
   {
-    mSession.setActive(state);
+    Main.MainActivity.runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        mSession.setActive(state);
+      }
+    });
   }
 
   private void updatePlaybackState(PlaybackState mystate)
@@ -128,7 +165,7 @@ public class XBMCMediaSession
   private void updateIntent(Intent intent)
   {
     PendingIntent pi = PendingIntent.getActivity(Main.MainActivity, 99 /*request code*/,
-        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            intent, PendingIntent.FLAG_UPDATE_CURRENT);
     mSession.setSessionActivity(pi);
   }
 
