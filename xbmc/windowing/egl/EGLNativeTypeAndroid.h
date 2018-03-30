@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2011-2013 Team XBMC
+ *      Copyright (C) 2011-2018 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -27,11 +27,11 @@ class CEGLNativeTypeAndroid : public CEGLNativeType
 public:
   CEGLNativeTypeAndroid();
   virtual ~CEGLNativeTypeAndroid();
-  virtual std::string GetNativeName() const { return "android"; };
+  virtual std::string GetNativeName() const { return "android"; }
   virtual bool  CheckCompatibility();
   virtual void  Initialize();
   virtual void  Destroy();
-  virtual int   GetQuirks() { return EGL_QUIRK_NEED_WINDOW_FOR_RES | EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE; };
+  virtual int   GetQuirks() { return EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE; }
 
   virtual bool  CreateNativeDisplay();
   virtual bool  CreateNativeWindow();
@@ -50,6 +50,7 @@ public:
   virtual bool  BringToFront();
 
 protected:
-  int m_width;
-  int m_height;
+  mutable int m_width;
+  mutable int m_height;
+
 };
