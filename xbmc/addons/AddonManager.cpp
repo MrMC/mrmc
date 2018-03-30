@@ -205,7 +205,7 @@ static constexpr const char* addonWhiteList[] = {
   "skin.blackglassnova",
   "skin.mrmc",
   "skin.opacity",
-  "skin.pm3.hd",
+  "skin.pm3-hd",
   "skin.sio2",
   "visualization.spectrum",
   "visualization.waveform",
