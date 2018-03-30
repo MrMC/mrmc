@@ -831,7 +831,6 @@ void CXBMCApp::OnPlayBackStarted()
 
   AcquireAudioFocus();
   RequestVisibleBehind(true);
-  registerMediaButtonEventReceiver();
 
   m_mediaSession->activate(true);
   CJNIMediaMetadataBuilder builder;
@@ -884,6 +883,7 @@ void CXBMCApp::OnPlayBackPaused()
   
   ReleaseAudioFocus();
   RequestVisibleBehind(false);
+  CAndroidKey::SetHandleMediaKeys(true);
 }
 
 void CXBMCApp::OnPlayBackStopped()
@@ -892,7 +892,6 @@ void CXBMCApp::OnPlayBackStopped()
 
   RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(false);
-  unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
   m_mediaSession->activate(false);
 }
@@ -1380,7 +1379,6 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   if (focusChange == CJNIAudioManager::AUDIOFOCUS_GAIN)
   {
     m_audioFocusGranted = true;
-    registerMediaButtonEventReceiver();
     if (m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS ||
         m_lastAudioFocusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT)
     {
@@ -1393,9 +1391,6 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
            focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT)
   {
     m_audioFocusGranted = false;
-    unregisterMediaButtonEventReceiver();
-    m_mediaSession->activate(false);
-
     if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {
       CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
