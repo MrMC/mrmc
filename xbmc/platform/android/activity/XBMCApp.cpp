@@ -321,7 +321,6 @@ void CXBMCApp::onSaveState(void **data, size_t *size)
 void CXBMCApp::onConfigurationChanged()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-  // ignore any configuration changes like screen rotation etc
 }
 
 void CXBMCApp::onLowMemory()
@@ -669,7 +668,7 @@ void CXBMCApp::BringToFront()
 
 int CXBMCApp::GetDPI()
 {
-  if (m_activity == NULL || m_activity->assetManager == NULL)
+  if (m_activity == nullptr || m_activity->assetManager == nullptr)
     return 0;
 
   // grab DPI from the current configuration - this is approximate
@@ -680,6 +679,19 @@ int CXBMCApp::GetDPI()
   AConfiguration_delete(config);
 
   return dpi;
+}
+
+bool CXBMCApp::IsNightMode()
+{
+  if (m_activity == nullptr || m_activity->assetManager == nullptr)
+    return false;
+
+  AConfiguration *config = AConfiguration_new();
+  AConfiguration_fromAssetManager(config, m_activity->assetManager);
+  int nm = AConfiguration_getUiModeNight(config);
+  AConfiguration_delete(config);
+
+  return (nm == ACONFIGURATION_UI_MODE_NIGHT_YES);
 }
 
 CPointInt CXBMCApp::GetMaxDisplayResolution()

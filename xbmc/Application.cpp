@@ -550,7 +550,7 @@ bool CApplication::Create()
   bool extready = CXBMCApp::GetExternalStorage(extstorage);
   CLog::Log(LOGNOTICE, "External storage path = %s; status = %s", extstorage.c_str(), extready ? "ok" : "nok");
   CLog::Log(LOGNOTICE, "HasTouchScreen = %s", CAndroidFeatures::HasTouchScreen() ? "yes" : "no");
-
+  CLog::Log(LOGNOTICE, "IsNightMode = %s", CXBMCApp::IsNightMode() ? "yes" : "no");
 #endif
 
 #if defined(__arm__) || defined(__arm64__) || defined(__aarch64__)
@@ -559,6 +559,7 @@ bool CApplication::Create()
   else
     CLog::Log(LOGNOTICE, "ARM Features: Neon disabled");
 #endif
+
   CSpecialProtocol::LogPaths();
 
   std::string executable = CUtil::ResolveExecutablePath();

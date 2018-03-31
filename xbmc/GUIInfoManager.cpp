@@ -109,6 +109,7 @@
 #include "linux/LinuxResourceCounter.h"
 
 #if defined(TARGET_ANDROID)
+#include "platform/android/activity/XBMCApp.h"
 #include "platform/android/activity/AndroidFeatures.h"
 #endif
 
@@ -2618,14 +2619,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case SYSTEM_HAS_APPLETV_SLIDER:
 #if defined(TARGET_DARWIN_TVOS)
       bReturn = !CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
-#elif
+#else
       bReturn = false;
 #endif
       break;
     case SYSTEM_IS_DARK_INTERFACE:
 #if defined(TARGET_ANDROID)
-      // koying, can we do something simmilar to Apple here? does android have that?
-      bReturn = false;
+      bReturn = CXBMCApp::IsNightMode();
 #else
       bReturn = CDarwinUtils::IsDarkInterface();
 #endif

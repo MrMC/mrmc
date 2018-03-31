@@ -173,6 +173,7 @@ public:
   static void SetRefreshRate(float rate);
   static void SetDisplayModeId(int mode);
   static int GetDPI();
+  static bool IsNightMode();
   static CPointInt GetMaxDisplayResolution();
 
   static CRect MapRenderToDroid(const CRect& srcRect);
