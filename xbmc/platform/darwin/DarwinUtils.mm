@@ -1127,10 +1127,49 @@ static void fontDataForCGFont(CGFontRef cgFont, unsigned char **data, size_t &si
     size = totalSize;
 }
 
-void CDarwinUtils::CloneSystemFonts(std::string strPath)
+static void clonefonts(const std::string &strPath)
 {
-  // only clone for iOS/tvOS, we are sandboxed in them
 #if defined(TARGET_DARWIN_IOS)
+  // Here are .plist files defining system fonts.
+  NSFileManager *fileMgr = [NSFileManager defaultManager];
+  NSArray *files = [fileMgr contentsOfDirectoryAtPath:@"/System/Library/Fonts/" error:NULL];
+  NSLog(@"%@", files);
+
+  // Choose one .plist file. The filename depends on iOS version.
+  NSDictionary *fontCache = [NSDictionary dictionaryWithContentsOfFile:@"/System/Library/Fonts/CGFontCache@2x.plist"];
+  NSLog(@"%@", fontCache);
+
+  // Copy font files to App directory for free access.
+  //NSString *appSupportPath = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  NSString *appSupportPath = [NSString stringWithUTF8String: strPath.c_str()];
+  NSLog(@"%@", appSupportPath);
+  [fileMgr createDirectoryAtPath:appSupportPath withIntermediateDirectories:YES attributes:nil error:NULL];
+  void (^copyFont)(NSString *) = ^(NSString *filename) {
+      [fileMgr copyItemAtPath:[@"/System/Library/Fonts/Cache/" stringByAppendingPathComponent:filename]
+                       toPath:[appSupportPath stringByAppendingPathComponent:filename]
+                        error:NULL];
+  };
+
+  copyFont(@"PingFang.ttc");
+  copyFont(@"Helvetica.ttc");
+  
+#endif
+}
+
+void CDarwinUtils::CloneSystemFonts(const std::string &strPath)
+{
+#if defined(TARGET_DARWIN_IOS)
+  //clonefonts(strPath);
+  std::string fontFile = URIUtils::AddFileToFolder(strPath,"PingFang.ttc");
+  XFILE::CFile::Delete(fontFile);
+  fontFile = URIUtils::AddFileToFolder(strPath,"Helvetica.ttc");
+  XFILE::CFile::Delete(fontFile);
+
+  return;
+#endif
+
+  // only clone for iOS/tvOS, we are sandboxed in them
+#if false
   NSArray* fontFamilyNames = [UIFont familyNames];
   for (NSString *familyName in fontFamilyNames)
   {

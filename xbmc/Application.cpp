@@ -983,7 +983,7 @@ bool CApplication::InitDirectoriesDarwin()
 
     CreateUserDirs();
 
-    //CDarwinUtils::CloneSystemFonts(CSpecialProtocol::TranslatePath("special://temp/fonts/"));
+    //CDarwinUtils::CloneSystemFonts(CSpecialProtocol::TranslatePath("special://home/media/Fonts/"));
   }
 
   return true;
