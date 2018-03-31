@@ -85,6 +85,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
   BOOL                        m_focusIdleState;
   TOUCH_POSITION              m_touchPosition;
   NSArray                     *m_disableOSDExtensions;
+  BOOL                        m_isDarkMode;
 }
 
 // why are these properties ?
@@ -103,6 +104,7 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 @property BOOL                m_stopPlaybackOnMenu;
 @property TOUCH_POSITION      m_touchPosition;
 @property (nonatomic, retain) NSArray *m_disableOSDExtensions;
+@property BOOL                m_isDarkMode;
 
 - (void)onPlayDelayed:(NSDictionary *)item;
 - (void)onSpeedChanged:(NSDictionary *)item;
@@ -155,6 +157,8 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection)
 - (float) getDisplayRate;
 - (void)  displayRateSwitch:(float)refreshRate withDynamicRange:(int)dynamicRange;
 - (void)  displayRateReset;
+- (bool) getIsDarkMode;
+- (void) setIsDarkMode:(BOOL)enable;
 @end
 
 extern MainController *g_xbmcController;

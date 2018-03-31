@@ -70,6 +70,7 @@ public:
   static std::string GetHardwareUUID();
   static void        GetAppMemory(int64_t &free, int64_t &delta);
   static void        CloneSystemFonts(std::string strPath);
+  static bool        IsDarkInterface();
 };
 
 #endif

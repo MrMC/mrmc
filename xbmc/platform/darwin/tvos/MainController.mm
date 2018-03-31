@@ -163,6 +163,7 @@ MainController *g_xbmcController;
 @synthesize m_stopPlaybackOnMenu;
 @synthesize m_touchPosition;
 @synthesize m_disableOSDExtensions;
+@synthesize m_isDarkMode;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -466,6 +467,18 @@ MainController *g_xbmcController;
   }
 
   return inActive;
+}
+
+//--------------------------------------------------------------
+- (bool)getIsDarkMode
+{
+  return m_isDarkMode;
+}
+
+//--------------------------------------------------------------
+- (void)setIsDarkMode:(BOOL)enable;
+{
+  m_isDarkMode = enable;
 }
 
 //--------------------------------------------------------------
@@ -859,6 +872,9 @@ MainController *g_xbmcController;
   {
     // your custom implementation here
   }
+  
+  [self setIsDarkMode:self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark];
+  
 }
 
 - (float)getDisplayRate

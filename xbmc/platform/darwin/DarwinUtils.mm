@@ -1168,5 +1168,13 @@ void CDarwinUtils::CloneSystemFonts(std::string strPath)
 #endif
 }
 
+bool CDarwinUtils::IsDarkInterface()
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_TVOS)
+  ret = [g_xbmcController m_isDarkMode];
+#endif
+  return ret;
+}
 
 #endif

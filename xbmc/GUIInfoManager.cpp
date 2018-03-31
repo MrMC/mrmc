@@ -45,6 +45,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/IGUIContainer.h"
 #include "guilib/GUIWindowManager.h"
+#include "platform/darwin/DarwinUtils.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfilesManager.h"
 #include "windowing/WindowingFactory.h"
@@ -315,7 +316,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "startupwindow",    SYSTEM_STARTUP_WINDOW },
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
                                   { "hasadsp",          SYSTEM_HAS_ADSP },
-                                  { "hasappletvslider", SYSTEM_HAS_APPLETV_SLIDER }};
+                                  { "hasappletvslider", SYSTEM_HAS_APPLETV_SLIDER },
+                                  { "isdarkinterface",  SYSTEM_IS_DARK_INTERFACE }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "hascoreid",        SYSTEM_HAS_CORE_ID },
@@ -2618,6 +2620,14 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = !CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
 #elif
       bReturn = false;
+#endif
+      break;
+    case SYSTEM_IS_DARK_INTERFACE:
+#if defined(TARGET_ANDROID)
+      // koying, can we do something simmilar to Apple here? does android have that?
+      bReturn = false;
+#else
+      bReturn = CDarwinUtils::IsDarkInterface();
 #endif
       break;
     case WEATHER_IS_FETCHED:
