@@ -2659,10 +2659,15 @@ CGRect debugView2;
   {
     auto &view = *viewsIt;
 
-/*
     if (view.type == "window")
-      continue;
-*/
+    {
+      // need to skip making UIView if it is fullscreen video
+      // prevents possible running out of memory playing 4k video.
+      CGUIControl *guiControl = (CGUIControl*)view.core;
+      if (guiControl && guiControl->GetID() == WINDOW_FULLSCREEN_VIDEO)
+        continue;
+    }
+
     if (view.type == "dialog")
       continue;
 
