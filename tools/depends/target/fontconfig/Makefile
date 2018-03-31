@@ -3,9 +3,10 @@ DEPS= ../../Makefile.include fix-aarch64_atomics.patch lconv.patch Makefile
 
 # lib name, version
 LIBNAME=fontconfig
-VERSION=2.11.1
+VERSION=2.12.4
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
+BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
 # configuration settings
 ifeq (darwin, $(findstring darwin, $(HOST)))
