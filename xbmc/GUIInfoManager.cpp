@@ -3705,7 +3705,12 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     }
 
     if (window)
-      return window->GetProperty(m_stringParameters[info.GetData2()]).asString();
+    {
+      size_t data2 = info.GetData2();
+      if (data2 >= m_stringParameters.size())
+        return "";
+      return window->GetProperty(m_stringParameters[data2]).asString();
+    }
   }
   else if (info.m_info == SYSTEM_ADDON_TITLE ||
            info.m_info == SYSTEM_ADDON_ICON ||
