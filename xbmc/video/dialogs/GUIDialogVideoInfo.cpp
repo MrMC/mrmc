@@ -378,7 +378,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   m_castList->SetContent(MediaTypes::ToPlural(type));
 
   CVideoThumbLoader loader;
-  loader.LoadItem(m_movieItem.get());
+  loader.LoadItemCached(m_movieItem.get());
+  loader.LoadItemLookup(m_movieItem.get());
 }
 
 void CGUIDialogVideoInfo::Update()
@@ -703,20 +704,23 @@ void CGUIDialogVideoInfo::OnGetArt()
     OnGetFanart();
   else
   {
+    std::string currentThumb;
     CFileItemList items;
 
     // Current thumb
     if (m_movieItem->HasArt(type))
     {
       CFileItemPtr item(new CFileItem("thumb://Current", false));
-      item->SetArt("thumb", m_movieItem->GetArt(type));
+      currentThumb = m_movieItem->GetArt(type);
+      item->SetArt("thumb", currentThumb);
       item->SetLabel(g_localizeStrings.Get(13512));
       items.Add(item);
     }
     else if ((type == "poster" || type == "banner") && currentArt.find("thumb") != currentArt.end())
     { // add the 'thumb' type in
+      currentThumb = currentArt["thumb"];
       CFileItemPtr item(new CFileItem("thumb://Thumb", false));
-      item->SetArt("thumb", currentArt["thumb"]);
+      item->SetArt("thumb", currentThumb);
       item->SetLabel(g_localizeStrings.Get(13512));
       items.Add(item);
     }
@@ -764,6 +768,12 @@ void CGUIDialogVideoInfo::OnGetArt()
     if (CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result) &&
         result != "thumb://Current") // user didn't choose the one they have
     {
+      if (!currentThumb.empty())
+      {
+        // Clear old cached art
+        CTextureCache::GetInstance().ClearCachedImage(currentThumb);
+      }
+
       std::string newThumb;
       if (StringUtils::StartsWith(result, "thumb://Remote"))
       {
@@ -807,6 +817,7 @@ void CGUIDialogVideoInfo::OnGetArt()
 // Allow user to select a Fanart
 void CGUIDialogVideoInfo::OnGetFanart()
 {
+  std::string currentFanart;
   CFileItemList items;
 
   // Ensure the fanart is unpacked
@@ -815,7 +826,8 @@ void CGUIDialogVideoInfo::OnGetFanart()
   if (m_movieItem->HasArt("fanart"))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetArt("thumb", m_movieItem->GetArt("fanart"));
+    currentFanart = m_movieItem->GetArt("fanart");
+    itemCurrent->SetArt("thumb", currentFanart);
     itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
@@ -863,6 +875,12 @@ void CGUIDialogVideoInfo::OnGetFanart()
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) ||
     StringUtils::EqualsNoCase(result, "fanart://Current"))
     return;   // user cancelled
+
+  if (!currentFanart.empty())
+  {
+    // Clear old cached fanart
+    CTextureCache::GetInstance().ClearCachedImage(currentFanart);
+  }
 
   if (StringUtils::EqualsNoCase(result, "fanart://Local"))
     result = strLocal;
@@ -1858,7 +1876,15 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
 
   if (result == "thumb://Current")
     result = currentThumb;   // user chose the one they have
-  
+  else
+  {
+    if (!currentThumb.empty())
+    {
+      // Clear old cached art
+      CTextureCache::GetInstance().ClearCachedImage(currentThumb);
+    }
+  }
+
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   if (result == "thumb://None")
