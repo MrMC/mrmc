@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
   <controls>
+    <control type="button">
+      <description>Hidden button to close the keyboard when its focused</description>
+      <left>0</left>
+      <top>0</top>
+      <right>0</right>
+      <bottom>0</bottom>
+      <texturenofocus>-</texturenofocus>
+      <texturefocus>-</texturefocus>
+      <onclick>Skin.ToggleSetting(SlideShowShowOSD)</onclick>
+    </control>
     <control type="group" id="13">
       <visible>Slideshow.IsPaused</visible>
       <include>VisibleFadeEffect</include>
