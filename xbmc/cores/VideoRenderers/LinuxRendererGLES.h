@@ -45,9 +45,6 @@ namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
 class CDVDMediaCodecInfo;
-#ifdef HAS_IMXVPU
-class CDVDVideoCodecIMXBuffer;
-#endif
 typedef std::vector<int>     Features;
 
 
@@ -91,13 +88,11 @@ enum RenderMethod
   RENDER_GLSL   = 0x001,
   RENDER_SW     = 0x004,
   RENDER_POT    = 0x010,
-  RENDER_OMXEGL = 0x040,
   RENDER_CVREF  = 0x080,
   RENDER_BYPASS = 0x100,
   RENDER_EGLIMG = 0x200,
   RENDER_MEDIACODEC = 0x400,
   RENDER_MEDIACODECSURFACE = 0x800,
-  RENDER_IMXMAP = 0x1000
 };
 
 enum RenderQuality
@@ -165,18 +160,12 @@ public:
 
   virtual CRenderInfo GetRenderInfo();
 
-#ifdef HAVE_LIBOPENMAX
-  virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture, int index);
-#endif
 #ifdef TARGET_DARWIN
   virtual void         AddProcessor(CVBufferRef cvBufferRef, int index);
 #endif
 #if defined(TARGET_ANDROID)
   // mediaCodec
   virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
-#endif
-#ifdef HAS_IMXVPU
-  virtual void         AddProcessor(CDVDVideoCodecIMXBuffer *codecinfo, int index);
 #endif
 
 protected:
@@ -219,24 +208,14 @@ protected:
   void DeleteSurfaceTexture(int index);
   bool CreateSurfaceTexture(int index);
 
-  void UploadOpenMaxTexture(int index);
-  void DeleteOpenMaxTexture(int index);
-  bool CreateOpenMaxTexture(int index);
-
-  void UploadIMXMAPTexture(int index);
-  void DeleteIMXMAPTexture(int index);
-  bool CreateIMXMAPTexture(int index);
-
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
-  void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
-  void RenderIMXMAPTexture(int index, int field); // IMXMAP rendering
 
   void AfterRenderHook(int idx);
 
@@ -292,15 +271,9 @@ protected:
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
-#ifdef HAVE_LIBOPENMAX
-    OpenMaxVideoBufferHolder *openMaxBufferHolder;
-#endif
 #if defined(TARGET_ANDROID)
     // mediacodec
     CDVDMediaCodecInfo *mediacodec;
-#endif
-#ifdef HAS_IMXVPU
-    CDVDVideoCodecIMXBuffer *IMXBuffer;
 #endif
   };
 

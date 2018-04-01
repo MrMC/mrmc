@@ -830,14 +830,11 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_DXVA:      return "DXVA";
     case RENDER_FMT_VAAPI:     return "VAAPI";
     case RENDER_FMT_VAAPINV12: return "VAAPI_NV12";
-    case RENDER_FMT_OMXEGL:    return "OMXEGL";
     case RENDER_FMT_CVBREF:    return "BGRA";
     case RENDER_FMT_EGLIMG:    return "EGLIMG";
     case RENDER_FMT_BYPASS:    return "BYPASS";
     case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
     case RENDER_FMT_MEDIACODECSURFACE:return "MEDIACODECSURFACE";
-    case RENDER_FMT_IMXMAP:    return "IMXMAP";
-    case RENDER_FMT_MMAL:      return "MMAL";
     case RENDER_FMT_NONE:      return "NONE";
   }
   return "UNKNOWN";

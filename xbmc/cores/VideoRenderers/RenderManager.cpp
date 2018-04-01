@@ -41,8 +41,6 @@
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
-#elif defined(HAS_MMAL)
-  #include "MMALRenderer.h"
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
 #elif defined(HAS_SDL)
@@ -453,8 +451,6 @@ unsigned int CXBMCRenderManager::PreInit(CDVDClock *clock)
   {
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
-#elif defined(HAS_MMAL)
-    m_pRenderer = new CMMALRenderer();
 #elif HAS_GLES == 2
     m_pRenderer = new CLinuxRendererGLES();
 #elif defined(HAS_SDL)
@@ -998,10 +994,6 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
        || pic.format == RENDER_FMT_VDPAU_420)
     m_pRenderer->AddProcessor(pic.vdpau, index);
 #endif
-#ifdef HAVE_LIBOPENMAX
-  else if(pic.format == RENDER_FMT_OMXEGL)
-    m_pRenderer->AddProcessor(pic.openMax, &pic, index);
-#endif
 #ifdef TARGET_DARWIN
   else if(pic.format == RENDER_FMT_CVBREF)
     m_pRenderer->AddProcessor(pic.cvBufferRef, index);
@@ -1018,14 +1010,6 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 #if defined(TARGET_ANDROID)
   else if(pic.format == RENDER_FMT_MEDIACODEC || pic.format == RENDER_FMT_MEDIACODECSURFACE)
     m_pRenderer->AddProcessor(pic.mediacodec, index);
-#endif
-#ifdef HAS_IMXVPU
-  else if(pic.format == RENDER_FMT_IMXMAP)
-    m_pRenderer->AddProcessor(pic.IMXBuffer, index);
-#endif
-#ifdef HAS_MMAL
-  else if(pic.format == RENDER_FMT_MMAL)
-    m_pRenderer->AddProcessor(pic.MMALBuffer, index);
 #endif
 
   m_pRenderer->ReleaseImage(index, false);

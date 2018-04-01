@@ -50,12 +50,8 @@ struct DVDCodecAvailableType
 namespace DXVA { class CRenderPicture; }
 namespace VAAPI { class CVaapiRenderPicture; }
 namespace VDPAU { class CVdpauRenderPicture; }
-class COpenMax;
-class COpenMaxVideo;
 struct OpenMaxVideoBufferHolder;
 class CDVDMediaCodecInfo;
-class CDVDVideoCodecIMXBuffer;
-class CMMALVideoBuffer;
 typedef void* EGLImageKHR;
 class CDVDClock;
 
@@ -82,24 +78,11 @@ struct DVDVideoPicture
     };
 
     struct {
-      COpenMax *openMax;
-      OpenMaxVideoBufferHolder *openMaxBufferHolder;
-    };
-
-    struct {
       struct __CVBuffer *cvBufferRef;
     };
 
     struct {
       CDVDMediaCodecInfo *mediacodec;
-    };
-
-    struct {
-      CDVDVideoCodecIMXBuffer *IMXBuffer;
-    };
-
-    struct {
-      CMMALVideoBuffer *MMALBuffer;
     };
 
   };

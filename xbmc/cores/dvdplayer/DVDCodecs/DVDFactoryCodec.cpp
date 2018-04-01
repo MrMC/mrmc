@@ -37,12 +37,7 @@
   #include "Video/DVDVideoCodecAVFoundation.h"
 #endif
 #include "Video/DVDVideoCodecFFmpeg.h"
-#include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
-#if defined(HAS_IMXVPU)
-  #include "Video/DVDVideoCodecIMX.h"
-#endif
-#include "Video/MMALCodec.h"
 #if defined(TARGET_ANDROID)
   #include "Video/DVDVideoCodecAndroidMediaCodec.h"
   #include "platform/android/activity/AndroidFeatures.h"
@@ -150,13 +145,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
      if ( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
 
-#if defined(HAS_IMXVPU)
-  if (!hint.software)
-  {
-    if ( (pCodec = OpenCodec(new CDVDVideoCodecIMX(), hint, options)) ) return pCodec;
-  }
-#endif
-
 #if defined(TARGET_DARWIN_OSX)
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
   {
@@ -227,29 +215,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
         if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false, render_interlaced), hint, options)) ) return pCodec;
     }
   }
-#endif
-
-#if defined(HAVE_LIBOPENMAX)
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMX) && !hint.software )
-    {
-      if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_VC1)
-      {
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
-      }
-    }
-#endif
-
-#if defined(HAS_MMAL)
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) && !hint.software )
-    {
-      if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_H263 || hint.codec == AV_CODEC_ID_MPEG4 ||
-          hint.codec == AV_CODEC_ID_MPEG1VIDEO || hint.codec == AV_CODEC_ID_MPEG2VIDEO ||
-          hint.codec == AV_CODEC_ID_VP6 || hint.codec == AV_CODEC_ID_VP6F || hint.codec == AV_CODEC_ID_VP6A || hint.codec == AV_CODEC_ID_VP8 ||
-          hint.codec == AV_CODEC_ID_THEORA || hint.codec == AV_CODEC_ID_MJPEG || hint.codec == AV_CODEC_ID_MJPEGB || hint.codec == AV_CODEC_ID_VC1 || hint.codec == AV_CODEC_ID_WMV3)
-      {
-        if ( (pCodec = OpenCodec(new CMMALVideo(), hint, options)) ) return pCodec;
-      }
-    }
 #endif
 
   std::string value = StringUtils::Format("%d", info.max_buffer_size);
