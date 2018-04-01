@@ -311,23 +311,17 @@ void CDVDMediaCodecInfo::UpdateTexImage()
 
 void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRect)
 {
-  CSingleLock lock(m_section);
-
-  if (!m_valid)
-    return;
-
-  if (DestRect != m_videoview->getSurfaceRect())
+  CRect surfRect = m_videoview->getSurfaceRect();
+  if (DestRect != surfRect)
   {
     CRect adjRect = CXBMCApp::MapRenderToDroid(DestRect);
-    m_videoview->setSurfaceRect(adjRect);
-    CLog::Log(LOGDEBUG, "RenderUpdate: Dest - %f+%f-%fx%f", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height());
-    CLog::Log(LOGDEBUG, "RenderUpdate: Adj  - %f+%f-%fx%f", adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
-
-    // setVideoViewSurfaceRect is async, so skip rendering this frame
-    ReleaseOutputBuffer(false);
+    if (adjRect != surfRect)
+    {
+      m_videoview->setSurfaceRect(adjRect);
+      CLog::Log(LOGDEBUG, "CMediaCodecVideoBuffer::RenderUpdate: Dest - %f+%f-%fx%f", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height());
+      CLog::Log(LOGDEBUG, "CMediaCodecVideoBuffer::RenderUpdate: Adj  - %f+%f-%fx%f", adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
+    }
   }
-  else
-    ReleaseOutputBuffer(true);
 }
 
 
