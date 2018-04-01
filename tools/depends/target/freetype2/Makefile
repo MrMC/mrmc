@@ -6,7 +6,6 @@ LIBNAME=freetype
 VERSION=2.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
-BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
 # configuration settings
 # force using internal libtool
