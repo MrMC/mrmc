@@ -94,11 +94,11 @@ shared:
 	mkdir -p assets
 	cp -rfp $(PREFIX)/share/@APP_NAME_LC@/* ./assets
 	# depends packaging of binary pvr hardcodes path to mrmc
-	cp -rfp $(PREFIX)/share/mrmc/addons/pvr.* ./assets/addons
+	cp -rfp $(PREFIX)/share/mrmc/addons/pvr.* ./assets/addons || true
 	# depends packaging of repo-resources hardcodes path to mrmc
-	cp -rfp $(PREFIX)/mrmc/repo-resources/* ./assets/addons
+	cp -rfp $(PREFIX)/mrmc/repo-resources/* ./assets/addons || true
 	# depends packaging of addons hardcodes path to mrmc
-	cp -rfp $(PREFIX)/mrmc/addons/* ./assets/addons
+	cp -rfp $(PREFIX)/mrmc/addons/* ./assets/addons || true
 	find `pwd`/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/assets/ -name "*.so" -exec rm {} \;
 	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
@@ -142,10 +142,10 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	cp -fp $(SRCLIBS) packaging/lib/$(ABI)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so packaging/lib/$(ABI)/
 	# depends packaging of binary pvr hardcodes path to mrmc
-	find $(PREFIX)/lib/mrmc/addons/pvr* -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; | true
-	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \;
+	find $(PREFIX)/lib/mrmc/addons/pvr* -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; || true
+	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; || true
+	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; || true
+	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; || true
 	cd packaging/lib/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	$(STRIP) --strip-unneeded packaging/lib/$(ABI)/*.so
 	install -p $(GDBPATH) ./packaging/lib/$(ABI)/gdbserver
