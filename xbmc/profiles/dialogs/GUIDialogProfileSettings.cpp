@@ -242,6 +242,7 @@ void CGUIDialogProfileSettings::OnSettingAction(const CSetting *setting)
   {
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
+    g_mediaManager.GetNetworkLocations(shares);
 
     CFileItemList items;
     if (!m_thumb.empty())
