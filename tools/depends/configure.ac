@@ -140,7 +140,7 @@ case $host in
       platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
     fi
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -Wl,--exclude-libs,libunwind.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
-    platform_cxxflags="$platform_cflags -std=c++11 -frtti"
+    platform_cxxflags="$platform_cflags -std=c++11 -Wno-inconsistent-missing-override -Wno-overloaded-virtual -frtti"
     platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
@@ -161,7 +161,7 @@ case $host in
       platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
     fi
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
-    platform_cxxflags="$platform_cflags -std=c++11 -frtti"
+    platform_cxxflags="$platform_cflags -std=c++11 -Wno-inconsistent-missing-override -Wno-overloaded-virtual -frtti"
     platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
@@ -179,7 +179,7 @@ case $host in
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes  -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
-    platform_cxxflags="$platform_cflags -std=c++11 -frtti"
+    platform_cxxflags="$platform_cflags -std=c++11 -Wno-inconsistent-missing-override -Wno-overloaded-virtual -frtti"
     platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
