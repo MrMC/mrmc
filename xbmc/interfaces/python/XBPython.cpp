@@ -37,9 +37,6 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "Util.h"
-#ifdef TARGET_WINDOWS
-#include "utils/Environment.h"
-#endif
 #include "settings/AdvancedSettings.h"
 
 #include "threads/SystemClock.h"
@@ -546,31 +543,22 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
-    // first we check if all necessary files are installed
-#ifndef TARGET_POSIX
-    if (!FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
-    {
-      CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
-      Finalize();
-      return false;
-    }
-#endif
-
+    //setenv("PYTHONVERBOSE", "1", 1);
+    // Info about interesting python envvars available
+    // at http://docs.python.org/using/cmdline.html#environment-variables
 
     // Darwin packs .pyo files, we need PYTHONOPTIMIZE on in order to load them.
     // linux built with unified builds only packages the pyo files so need it
 #if defined(TARGET_DARWIN) || defined(TARGET_LINUX)
     setenv("PYTHONOPTIMIZE", "1", 1);
 #endif
-    // Info about interesting python envvars available
-    // at http://docs.python.org/using/cmdline.html#environment-variables
+#if defined(TARGET_DARWIN_IOS)
+    // iOS/tvOS can have python addons inside App package
+    // if so, these are in read-only file system, so...
+    setenv("PYTHONDONTWRITEBYTECODE", "1", 1);
+#endif
 
-#if !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
+#if !defined(TARGET_ANDROID)
     /* PYTHONOPTIMIZE is set off intentionally when using external Python.
     Reason for this is because we cannot be sure what version of Python
     was used to compile the various Python object files (i.e. .pyo,
@@ -587,19 +575,6 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
       CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", CSpecialProtocol::TranslatePath("special://xbmc/system").c_str());
       CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", CSpecialProtocol::TranslatePath("special://xbmc/system").c_str());
     }
-#elif defined(TARGET_WINDOWS)
-    // because the third party build of python is compiled with vs2008 we need
-    // a hack to set the PYTHONPATH
-    std::string buf;
-    buf = "PYTHONPATH=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
-    CEnvironment::putenv(buf);
-    buf = "PYTHONOPTIMIZE=1";
-    CEnvironment::putenv(buf);
-    buf = "PYTHONHOME=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python");
-    CEnvironment::putenv(buf);
-    buf = "OS=win32";
-    CEnvironment::putenv(buf);
-
 #elif defined(TARGET_ANDROID)
     // Set earlier to avoid random crashes
 #endif
