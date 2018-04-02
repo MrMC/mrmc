@@ -98,57 +98,57 @@
 		<param name="list_id">8011</param>
 		<param name="label">$INFO[ListItem.Label]</param>
 		<param name="thumb">$INFO[ListItem.Thumb]</param>
-		<param name="item_width">260</param>
+		<param name="item_width">282</param>
 		<param name="y_offset">2</param>
 		<param name="condition">True</param>
 		<definition>
-			<itemlayout width="$PARAM[item_width]" height="412" condition="$PARAM[condition]">
+			<itemlayout width="$PARAM[item_width]" height="500" condition="$PARAM[condition]">
 				<control type="group">
 					<depth>DepthContentPopout</depth>
 					<top>$PARAM[y_offset]</top>
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>216</width>
-						<height>306</height>
+						<width>282</width>
+						<height>400</height>
 						<texture fallback="DefaultVideo.png" background="true">$PARAM[thumb]</texture>
 						<bordertexture border="20">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="progress">
 						<left>20</left>
-						<top>270</top>
-						<width>176</width>
+						<top>365</top>
+						<width>242</width>
 						<height>10</height>
 						<texturebg>-</texturebg>
-						<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+						<midtexture colordiffuse="primary_color">colors/white10px.png</midtexture>
 						<info>ListItem.PercentPlayed</info>
 						<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
 					</control>
 					<control type="progress">
 						<left>20</left>
-						<top>276</top>
-						<width>176</width>
+						<top>370</top>
+						<width>242</width>
 						<height>10</height>
-						<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-						<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+						<texturebg colordiffuse="primary_color">colors/white10px.png</texturebg>
+						<midtexture colordiffuse="primary_color">colors/white10px.png</midtexture>
 						<info>100</info>
 						<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
 					</control>
 					<control type="textbox">
-						<left>8</left>
-						<top>292</top>
-						<width>200</width>
+						<left>15</left>
+						<top>390</top>
+						<width>252</width>
 						<height>120</height>
 						<label>$PARAM[label]</label>
 						<font>font12</font>
 						<shadowcolor>text_shadow</shadowcolor>
 						<align>center</align>
-						<aligny>center</aligny>
+						<aligny>top</aligny>
 					</control>
 				</control>
 			</itemlayout>
-			<focusedlayout width="$PARAM[item_width]" height="412" condition="$PARAM[condition]">
+			<focusedlayout width="$PARAM[item_width]" height="500" condition="$PARAM[condition]">
 				<control type="group">
 					<depth>DepthContentPopout</depth>
 					<animation type="Focus" reversible="false">
@@ -161,8 +161,8 @@
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>216</width>
-						<height>306</height>
+						<width>282</width>
+						<height>400</height>
 						<texture fallback="DefaultVideo.png" background="true">$PARAM[thumb]</texture>
 						<bordertexture border="20">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
@@ -170,8 +170,8 @@
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>216</width>
-						<height>306</height>
+						<width>282</width>
+						<height>400</height>
 						<texture fallback="DefaultVideo.png" background="true">$PARAM[thumb]</texture>
 						<bordertexture border="20">overlays/frameRA.png</bordertexture>
 						<animation effect="fade" start="0" end="100" time="200">Focus</animation>
@@ -180,34 +180,34 @@
 					</control>
 					<control type="progress">
 						<left>20</left>
-						<top>270</top>
-						<width>176</width>
+						<top>365</top>
+						<width>242</width>
 						<height>10</height>
 						<texturebg>-</texturebg>
-						<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+						<midtexture colordiffuse="primary_color">colors/white10px.png</midtexture>
 						<info>ListItem.PercentPlayed</info>
 						<visible>IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
 					</control>
 					<control type="progress">
 						<left>20</left>
-						<top>276</top>
-						<width>176</width>
+						<top>370</top>
+						<width>242</width>
 						<height>10</height>
-						<texturebg colordiffuse="primary_color">colors/white12px.png</texturebg>
-						<midtexture colordiffuse="primary_color">colors/white12px.png</midtexture>
+						<texturebg colordiffuse="primary_color">colors/white10px.png</texturebg>
+						<midtexture colordiffuse="primary_color">colors/white10px.png</midtexture>
 						<info>100</info>
 						<visible>IntegerGreaterThan(ListItem.PlayCount,0) + !IntegerGreaterThan(ListItem.PercentPlayed,0)</visible>
 					</control>
 					<control type="textbox">
-						<left>8</left>
-						<top>292</top>
-						<width>200</width>
+						<left>15</left>
+						<top>390</top>
+						<width>252</width>
 						<height>120</height>
 						<label>$PARAM[label]</label>
 						<font>font12</font>
 						<shadowcolor>text_shadow</shadowcolor>
 						<align>center</align>
-						<aligny>center</aligny>
+						<aligny>top</aligny>
 						<!-- <visible>!Control.HasFocus($PARAM[list_id])</visible> -->
 					</control>
 				</control>

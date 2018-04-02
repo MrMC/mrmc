@@ -898,21 +898,21 @@
 					<top>0</top>
 					<width>216</width>
 					<height>306</height>
-					<texture fallback="DefaultVideo.png" background="true">$INFO[$PARAM[item_thumb]]</texture>
-					<bordersize>20</bordersize>
+					<texture>overlays/FrameRA.png</texture>
+					<visible>Control.HasFocus($PARAM[focused_ID]) + $PARAM[is_focused]</visible>
 				</control>
 				<control type="image">
 					<left>0</left>
 					<top>0</top>
 					<width>216</width>
 					<height>306</height>
-					<texture>overlays/FrameRA.png</texture>
-					<visible>Control.HasFocus($PARAM[focused_ID]) + $PARAM[is_focused]</visible>
+					<texture fallback="DefaultVideo.png" background="true">$INFO[$PARAM[item_thumb]]</texture>
+					<bordersize>20</bordersize>
 				</control>
 				<control type="progress">
 					<left>20</left>
-					<top>272</top>
-					<width>176</width>
+					<top>365</top>
+					<width>242</width>
 					<height>10</height>
 					<texturebg>-</texturebg>
 					<midtexture colordiffuse="primary_color">colors/white10px.png</midtexture>
@@ -921,8 +921,8 @@
 				</control>
 				<control type="progress">
 					<left>20</left>
-					<top>278</top>
-					<width>176</width>
+					<top>370</top>
+					<width>242</width>
 					<height>10</height>
 					<texturebg colordiffuse="primary_color">colors/white10px.png</texturebg>
 					<midtexture colordiffuse="primary_color">colors/white10px.png</midtexture>

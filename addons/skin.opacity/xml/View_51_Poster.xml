@@ -9,10 +9,10 @@
 			<visible>Control.IsVisible(51)</visible>
 			<include>Visible_Left</include>
 			<control type="panel" id="51">
-				<left>40</left>
-				<top>85</top>
+				<left>60</left>
+				<top>50</top>
 				<bottom>85</bottom>
-				<right>580</right>
+				<right>600</right>
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<orientation>vertical</orientation>
 				<pagecontrol>532</pagecontrol>
@@ -24,8 +24,8 @@
 				<viewtype label="$LOCALIZE[31102]">list</viewtype>
 				<include content="PosterLayout">
 					<param name="list_id" value="51" />
-					<param name="item_width" value="250" />
-					<param name="y_offset" value="25" />
+					<param name="item_width" value="300" />
+					<param name="y_offset" value="55" />
 					<param name="condition" value="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.content(seasons)" />
 				</include>
 			<itemlayout width="305" height="400" condition="Container.Content(albums) | Container.Content(artists)">

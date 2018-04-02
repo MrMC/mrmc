@@ -282,7 +282,7 @@
 					<height>1050</height>
 					<visible>Container(9000).HasFocus(1)</visible>
 					<control type="label">
-						<top>105</top>
+						<top>70</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -294,7 +294,7 @@
 						<visible>!Control.HasFocus(8000)</visible>
 					</control>
 					<control type="label">
-						<top>105</top>
+						<top>70</top>
 						<width>1270</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -306,9 +306,9 @@
 						<visible>Control.HasFocus(8000)</visible>
 					</control>
 					<control type="list" id="8000">
-						<top>185</top>
+						<top>125</top>
 						<width>1270</width>
-						<height>308</height>
+						<height>400</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -317,7 +317,7 @@
 						<onright>8000</onright>
 						<preloaditems>1</preloaditems>
 						<visible>IntegerGreaterThan(Container(8000).NumItems,0)</visible>
-						<itemlayout width="260" height="308">
+						<itemlayout width="285" height="400">
 							<include content="HomeShelfThumb">
 								<param name="is_focused" value="false" />
 								<param name="focused_ID" value="8000" />
@@ -325,7 +325,7 @@
 								
 							</include>
 						</itemlayout>
-						<focusedlayout width="260" height="308">
+						<focusedlayout width="285" height="400">
 							<include content="HomeShelfThumb">
 								<param name="is_focused" value="true" />
 								<param name="focused_ID" value="8000" />
@@ -334,7 +334,7 @@
 						</focusedlayout>
 					</control>
 					<control type="label">
-						<top>545</top>
+						<top>515</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -346,7 +346,7 @@
 						<visible>!Control.HasFocus(8010)</visible>
 					</control>
 					<control type="label">
-						<top>545</top>
+						<top>515</top>
 						<width>1270</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -358,9 +358,9 @@
 						<visible>Control.HasFocus(8010)</visible>
 					</control>
 					<control type="list" id="8010">
-						<top>625</top>
+						<top>575</top>
 						<width>1270</width>
-						<height>308</height>
+						<height>400</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -369,14 +369,14 @@
 						<onright>8010</onright>
 						<preloaditems>1</preloaditems>
 						<visible>IntegerGreaterThan(Container(8010).NumItems,0)</visible>
-						<itemlayout width="260" height="308">
+						<itemlayout width="285" height="400">
 							<include content="HomeShelfThumb">
 								<param name="is_focused" value="false" />
 								<param name="focused_ID" value="8010" />
 								<param name="item_thumb" value="ListItem.Art(thumb)" />
 							</include>
 						</itemlayout>
-						<focusedlayout width="260" height="308">
+						<focusedlayout width="285" height="400">
 							<include content="HomeShelfThumb">
 								<param name="is_focused" value="true" />
 								<param name="focused_ID" value="8010" />
@@ -393,7 +393,7 @@
 					<height>1050</height>
 					<visible>Container(9000).HasFocus(2)</visible>
 					<control type="label">
-						<top>105</top>
+						<top>70</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -405,7 +405,7 @@
 						<visible>!Control.HasFocus(8001)</visible>
 					</control>
 					<control type="label">
-						<top>105</top>
+						<top>70</top>
 						<width>1270</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -417,7 +417,7 @@
 						<visible>Control.HasFocus(8001) + !Container(8001).ListItem.Property(MediaServicesItem)</visible>
 					</control>
 					<control type="label">
-						<top>105</top>
+						<top>70</top>
 						<width>1270</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -429,9 +429,9 @@
 						<visible>Control.HasFocus(8001) + Container(8001).ListItem.Property(MediaServicesItem)</visible>
 					</control>	
 					<control type="list" id="8001">
-						<top>185</top>
+						<top>125</top>
 						<width>1270</width>
-						<height>308</height>
+						<height>400</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -440,14 +440,14 @@
 						<onright>8001</onright>
 						<preloaditems>1</preloaditems>
 						<visible>IntegerGreaterThan(Container(8001).NumItems,0)</visible>
-						<itemlayout width="260" height="308">
+						<itemlayout width="285" height="400">
 							<include content="HomeShelfThumb">
 								<param name="is_focused" value="false" />
 								<param name="focused_ID" value="8001" />
 								<param name="item_thumb" value="ListItem.Art(tvshow.thumb)" />
 							</include>
 						</itemlayout>
-						<focusedlayout width="260" height="308">
+						<focusedlayout width="285" height="400">
 							<include content="HomeShelfThumb">
 								<param name="is_focused" value="true" />
 								<param name="focused_ID" value="8001" />
@@ -456,7 +456,7 @@
 						</focusedlayout>
 					</control>
 					<control type="label">
-						<top>545</top>
+						<top>515</top>
 						<width>470</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -468,7 +468,7 @@
 						<visible>!Control.HasFocus(8011)</visible>
 					</control>
 					<control type="label">
-						<top>545</top>
+						<top>515</top>
 						<width>1270</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -480,7 +480,7 @@
 						<visible>Control.HasFocus(8011) + Container(8011).ListItem.Property(MediaServicesItem)</visible>
 					</control>
 					<control type="label">
-						<top>545</top>
+						<top>515</top>
 						<width>1270</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
@@ -492,9 +492,9 @@
 						<visible>Control.HasFocus(8011) + !Container(8011).ListItem.Property(MediaServicesItem)</visible>
 					</control>	
 					<control type="list" id="8011">
-						<top>625</top>
+						<top>575</top>
 						<width>1270</width>
-						<height>308</height>
+						<height>400</height>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>horizontal</orientation>
 						<onleft>9000</onleft>
@@ -503,14 +503,14 @@
 						<onright>8011</onright>
 						<preloaditems>1</preloaditems>
 						<visible>IntegerGreaterThan(Container(8011).NumItems,0)</visible>
-						<itemlayout width="260" height="308">
+						<itemlayout width="285" height="400">
 							<include content="HomeShelfThumb">
 								<param name="is_focused" value="false" />
 								<param name="focused_ID" value="8011" />
 								<param name="item_thumb" value="ListItem.Art(tvshow.thumb)" />
 							</include>
 						</itemlayout>
-						<focusedlayout width="260" height="308">
+						<focusedlayout width="285" height="400">
 							<include content="HomeShelfThumb">
 								<param name="is_focused" value="true" />
 								<param name="focused_ID" value="8011" />
