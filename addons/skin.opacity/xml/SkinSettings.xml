@@ -125,6 +125,12 @@
 						<selected>!Skin.HasSetting(HomeMenuNoAddonsButton)</selected>
 						<onclick>Skin.ToggleSetting(HomeMenuNoAddonsButton)</onclick>
 					</control>
+					<control type="radiobutton" id="6162">
+						<label>Plex</label>
+						<include>DefaultSettingButton</include>
+						<selected>Skin.HasSetting(HomeMenuPlexButton)</selected>
+						<onclick>Skin.ToggleSetting(HomeMenuPlexButton)</onclick>
+					</control>
 				</control>
 				<control type="grouplist" id="620">
 					<top>90</top>
