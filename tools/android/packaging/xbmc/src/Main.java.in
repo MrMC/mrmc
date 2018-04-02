@@ -310,7 +310,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void onPause()
   {
     super.onPause();
-  }
+
+    if (getPackageManager().hasSystemFeature("android.software.leanback"))
+    {
+      // Leanback
+      handler.removeCallbacks(leanbackUpdateRunnable);
+      handler.postDelayed(leanbackUpdateRunnable, 1000);
+    }
+
+}
 
   @Override
   public void onActivityResult(int requestCode, int resultCode,
