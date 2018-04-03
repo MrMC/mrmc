@@ -85,6 +85,8 @@ apk-obb-unsigned: apk-clean sharedobb package
 
 apk-noobb: apk-clean package apk-sign
 
+apk-noobb-unsigned: apk-clean package
+
 xbmc/assets:
 	mkdir -p packaging/assets
 

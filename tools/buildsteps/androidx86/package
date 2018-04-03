@@ -5,6 +5,12 @@ XBMC_PLATFORM_DIR=android
 if [ "x$BUILD_OBB" == "xtrue" ]
 then
   cd $WORKSPACE;make apk-obb-unsigned
+elif [ "x$BUILD_OBB" == "xYes" ]
+then
+  cd $WORKSPACE;make apk-obb-unsigned
+elif [ "x$BUILD_OBB" == "xNo" ]
+then
+  cd $WORKSPACE;make apk-noobb-unsigned
 else
   cd $WORKSPACE;make apk-unsigned
 fi
