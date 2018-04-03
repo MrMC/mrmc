@@ -1,10 +1,5 @@
 SRCS  = WinSystemEGL.cpp
 
-ifeq (@USE_ANDROID@,1)
-SRCS += EGLNativeTypeAndroid.cpp
-SRCS += EGLNativeTypeRKAndroid.cpp
-endif
-
 ifeq (@USE_MMAL@,1)
 SRCS += EGLNativeTypeRaspberryPI.cpp
 endif

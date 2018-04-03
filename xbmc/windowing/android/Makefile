@@ -1,5 +1,6 @@
-SRCS  = WinEventsAndroid.cpp \
-     
+SRCS  = WinEventsAndroid.cpp
+SRCS += WinSystemAndroidEGL.cpp
+
 LIB   = windowing_android.a
 
 include ../../../Makefile.include

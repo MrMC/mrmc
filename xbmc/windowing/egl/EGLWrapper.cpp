@@ -27,7 +27,6 @@
 #endif
 #if defined(TARGET_ANDROID)
   #include "EGLNativeTypeAndroid.h"
-  #include "EGLNativeTypeRKAndroid.h"
 #endif
 #if defined(TARGET_RASPBERRY_PI)
   #include "EGLNativeTypeRaspberryPI.h"

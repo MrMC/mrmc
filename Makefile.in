@@ -114,7 +114,9 @@ endif
 
 ifeq (@USE_OPENGLES@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
+ifneq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
+endif
 endif
 
 ifeq (@USE_UPNP@,1)
@@ -149,7 +151,6 @@ DIRECTORY_ARCHIVES += xbmc/network/android/network_android.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/android/powermanagement_android.a
 DIRECTORY_ARCHIVES += xbmc/storage/android/storage_android.a
-DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
 else
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
