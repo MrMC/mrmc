@@ -10,7 +10,7 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared \
-          --with-jpeg8 $(CONFIGURE_EXTRA)
+          --with-jpeg8 --with-pic=yes $(CONFIGURE_EXTRA)
 
 export CFLAGS=-O3
 
