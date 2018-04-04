@@ -75,9 +75,6 @@ public:
     libBasePath = getenv("MRMC_DARWIN_FRAMEWORKS");
     libBasePath += "/" CODEC_HELPER_NAME "-" ADDON_HELPER_ARCH ".framework";
     libBasePath += "/" CODEC_HELPER_NAME "-" ADDON_HELPER_ARCH;
-  #else
-    libBasePath = getenv("MRMC_DARWIN_FRAMEWORKS");
-    libBasePath += "/" CODEC_HELPER_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT;
   #endif
 #endif
 

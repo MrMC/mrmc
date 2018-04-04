@@ -136,9 +136,6 @@ namespace ADDON
       libBasePath = getenv("MRMC_DARWIN_FRAMEWORKS");
       libBasePath += "/" ADDON_NAME "-" ADDON_HELPER_ARCH ".framework";
       libBasePath += "/" ADDON_NAME "-" ADDON_HELPER_ARCH;
-  #else
-      libBasePath = getenv("MRMC_DARWIN_FRAMEWORKS");
-      libBasePath += "/" ADDON_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT;
   #endif
 #endif
 
