@@ -112,6 +112,7 @@ static constexpr const char* addonWhiteList[] = {
   "pvr.njoy",
   "pvr.pctv",
   "pvr.stalker",
+  "pvr.tvmosaic",
   "pvr.vbox",
   "pvr.vdr.vnsi",
   "pvr.vuplus",
