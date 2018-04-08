@@ -1337,16 +1337,6 @@ else
   AC_MSG_RESULT($x11_disabled)
 fi
 
-# touch skin
-use_touch_skin=no
-if [[ -f "addons/skin.re-touched/addon.xml" ]]; then 
-  use_touch_skin=yes
-  USE_TOUCH_SKIN=1
-  AC_DEFINE([HAS_TOUCH_SKIN], [1], [Whether to build the touch skin.])
-else
-  USE_TOUCH_SKIN=0
-fi
-
 # libssh
 if test "x$use_ssh" = "xno"; then
   AC_MSG_NOTICE($ssh_disabled)
@@ -2188,11 +2178,6 @@ fi
 
 OUTPUT_FILES="$OUTPUT_FILES Makefile"
 OUTPUT_FILES="$OUTPUT_FILES Makefile.include"
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.mrmc/media/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.opacity/media/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.amber/media/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.pm3.hd/media/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.sio2/media/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES lib/libUPnP/Makefile"
 
@@ -2299,10 +2284,6 @@ fi
 
 if test "$use_wayland" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
-fi
-
-if test "$use_touch_skin" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
 fi
 
 if test "$use_sse4" = "yes"; then
