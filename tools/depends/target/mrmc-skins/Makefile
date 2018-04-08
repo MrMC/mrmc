@@ -6,6 +6,7 @@ SUBDIRS  = skin.blackglassnova
 SUBDIRS += skin.sio2
 SUBDIRS += skin.mrmc
 SUBDIRS += skin.pm3.hd
+SUBDIRS += skin.opacity
 
 all: skins
 

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<window>
-    <onload condition="Player.HasAudio">ActivateWindow(musicosd)</onload>
-    <onload>Dialog.Close(playercontrols)</onload>
-	<controls>
-	</controls>
-</window>
