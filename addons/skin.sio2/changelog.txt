@@ -1,9 +1,0 @@
-3.0.0
-Helix Compatible Version
-Localization for Portuguese
-
-2.3.6
-Fixes for dependencies & new methods.
-
-2.3.5 GOTHAM
-* Initial Gotham Version.

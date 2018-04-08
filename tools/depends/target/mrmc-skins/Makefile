@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 
 SUBDIRS  = skin.blackglassnova
-# SUBDIRS += script.module.requests
+SUBDIRS += skin.sio2
 
 all: skins
 
