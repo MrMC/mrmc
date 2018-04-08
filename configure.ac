@@ -2193,7 +2193,6 @@ OUTPUT_FILES="$OUTPUT_FILES addons/skin.opacity/media/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.amber/media/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.pm3.hd/media/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.sio2/media/Makefile"
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.blackglassnova/media/Makefile"
 
 OUTPUT_FILES="$OUTPUT_FILES lib/libUPnP/Makefile"
 

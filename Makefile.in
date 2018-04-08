@@ -192,13 +192,11 @@ OPACITY_MEDIA=addons/skin.opacity/media
 AMBER_MEDIA=addons/skin.amber/media
 PM3_MEDIA=addons/skin.pm3.hd/media
 SIO2_MEDIA=addons/skin.sio2/media
-BLACKGLASS_MEDIA=addons/skin.blackglassnova/media
 SKIN_DIRS=$(MRMC_MEDIA)
 SKIN_DIRS+=$(OPACITY_MEDIA)
 SKIN_DIRS+=$(AMBER_MEDIA)
 SKIN_DIRS+=$(PM3_MEDIA)
 SKIN_DIRS+=$(SIO2_MEDIA)
-SKIN_DIRS+=$(BLACKGLASS_MEDIA)
 
 ifeq (@USE_TOUCH_SKIN@,1)
 TOUCH_SKIN_MEDIA=addons/skin.re-touched/media
@@ -262,7 +260,6 @@ skins: @TEXTUREPACKER@
 	 $(MAKE) -C $(AMBER_MEDIA)
 	 $(MAKE) -C $(PM3_MEDIA)
 	 $(MAKE) -C $(SIO2_MEDIA)
-	 $(MAKE) -C $(BLACKGLASS_MEDIA)
 ifeq (@USE_TOUCH_SKIN@,1)
 	 $(MAKE) -C $(TOUCH_SKIN_MEDIA)
 endif
