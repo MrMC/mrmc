@@ -5,6 +5,7 @@ DEPS= ../../Makefile.include Makefile
 SUBDIRS  = skin.blackglassnova
 SUBDIRS += skin.sio2
 SUBDIRS += skin.mrmc
+SUBDIRS += skin.pm3.hd
 
 all: skins
 
