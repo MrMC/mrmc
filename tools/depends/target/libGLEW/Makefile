@@ -31,6 +31,7 @@ $(LIBDYLIB): $(PLATFORM)
 	sed -ie "s|LD = cc|LD = $(CC)|" "$(PLATFORM)/config/Makefile.$(SYSTEM)"
 	sed -ie "s|CFLAGS.EXTRA =|CFLAGS.EXTRA = \$(CFLAGS)|" "$(PLATFORM)/config/Makefile.$(SYSTEM)"
 	sed -ie "s|LDFLAGS.EXTRA =|LDFLAGS.EXTRA = \$(LDFLAGS)|" "$(PLATFORM)/config/Makefile.$(SYSTEM)"
+	sed -ie "s|unsigned int GLhandleARB|void* GLhandleARB|" "$(PLATFORM)/include/GL/glew.h"
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
