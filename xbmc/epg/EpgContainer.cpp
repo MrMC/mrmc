@@ -175,18 +175,24 @@ void CEpgContainer::Start(bool bAsync)
 
   LoadFromDB();
 
-  CSingleLock lock(m_critSection);
-  if (!m_bStop)
+  bool bStop = false;
   {
-    CheckPlayingEvents();
+    //CSingleLock lock(m_critSection);
+    bStop = m_bStop;
+    if (!m_bStop)
+    {
+      CheckPlayingEvents();
 
-    Create();
-    SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
+      Create();
+      SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 
-    m_bStarted = true;
+      m_bStarted = true;
+    }
+  }
 
+  if (!bStop)
+  {
     g_PVRManager.TriggerEpgsCreate();
-
     CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
   }
 }
