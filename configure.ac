@@ -1946,12 +1946,6 @@ else
   final_message="$final_message\n  Joystick:\tNo"
 fi
 
-if test "$use_touch_skin" = "yes"; then
-  final_message="$final_message\n  Touch skin:\tYes"
-else
-  final_message="$final_message\n  Touch skin:\tNo"
-fi
-
 if test "$use_x11" = "yes"; then
   USE_X11=1
   final_message="$final_message\n  X11:\t\tYes"
@@ -2330,7 +2324,6 @@ AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(GNUTLS_ALL_LIBS)
 AC_SUBST(VORBISENC_ALL_LIBS)
 AC_SUBST(DCADEC_ALL_LIBS)
-AC_SUBST(USE_TOUCH_SKIN)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(PYTHON_LDFLAGS)
 AC_SUBST(PYTHON_CPPFLAGS)
