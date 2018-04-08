@@ -618,7 +618,7 @@ bool CPVRManager::StartUpdateThreads(void)
 
 void CPVRManager::StopUpdateThreads(void)
 {
-  SetState(ManagerStateInterrupted);
+  //SetState(ManagerStateInterrupted);
 
   StopThread();
   if (m_guiInfo)
@@ -1155,6 +1155,9 @@ bool CPVRManager::PlayMedia(const CFileItem& item)
 
 void CPVRManager::UpdateCurrentChannel(void)
 {
+  if (!IsStarted())
+    return;
+
   CSingleLock lock(m_critSection);
 
   CPVRChannelPtr playingChannel(GetCurrentChannel());
