@@ -1,13 +1,16 @@
 -include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile
 
+SUBDIRS  = skin.opacity
 
-SUBDIRS  = skin.blackglassnova
-SUBDIRS += skin.sio2
-SUBDIRS += skin.mrmc
-SUBDIRS += skin.pm3.hd
-SUBDIRS += skin.opacity
-SUBDIRS += skin.re-touched
+ifeq ($(findstring ios, $(TARGET_PLATFORM)), ios)
+	SUBDIRS += skin.re-touched
+else
+	SUBDIRS += skin.blackglassnova
+	SUBDIRS += skin.sio2
+	SUBDIRS += skin.mrmc
+	SUBDIRS += skin.pm3.hd
+endif
 
 all: skins
 
