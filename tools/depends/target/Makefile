@@ -89,6 +89,7 @@ ifeq ($(OS),android)
   EXCLUDED_DEPENDS += libusb
 endif
 
+DEPENDS += mrmc-skins
 DEPENDS += mrmc-scripts
 DEPENDS += mrmc-repo-resources
 
