@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<window type="dialog" id="1118">
-  <onload condition="!Window.IsActive(visualisation)">FullScreen</onload>
-  <visible>Player.HasAudio + Skin.HasSetting(FullscreenMusic)</visible>
-  <controls></controls>
-</window>

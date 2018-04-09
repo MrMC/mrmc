@@ -10,6 +10,7 @@ else
 	SUBDIRS += skin.sio2
 	SUBDIRS += skin.mrmc
 	SUBDIRS += skin.pm3.hd
+	SUBDIRS += skin.amber
 endif
 
 all: skins
