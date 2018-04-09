@@ -119,7 +119,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
     // only enable emby/embys if m_protocol was setup
     //  at ShowAndGetNetworkAddress function call
     labels.push_back(make_pair(g_localizeStrings.Get(20174), NET_PROTOCOL_EMBY));
-    //labels.push_back(make_pair(g_localizeStrings.Get(20184), NET_PROTOCOL_EMBYS));
+    labels.push_back(make_pair(g_localizeStrings.Get(20184), NET_PROTOCOL_EMBYS));
   }
   else
   {
