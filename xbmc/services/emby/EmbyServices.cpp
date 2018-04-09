@@ -579,7 +579,10 @@ bool CEmbyServices::AuthenticateByName(const CURL& url)
   std::string passwordMd5 = XBMC::XBMC_MD5::GetMD5(password);
 
   CVariant body;
-  body["Username"] = url.GetUserName();
+  body["username"] = url.GetUserName();
+  // Beginning April 1, 2018, only the "pw" param will be required.
+  // Until then, all three are needed in order to support both newer and older servers.
+  body["pw"] = password;
   body["password"] = passwordSha1;
   body["passwordMd5"] = passwordMd5;
   std::string requestBody;
