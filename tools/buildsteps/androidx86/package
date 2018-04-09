@@ -2,24 +2,30 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
+LITE_OPT=""
+if [ "$IS_LITE" == "yes" ]
+then
+  LITE_OPT="lite=yes"
+fi
+
 if [ "x$BUILD_OBB" == "xtrue" ]
 then
-  cd $WORKSPACE;make apk-obb-unsigned
+  cd $WORKSPACE; make apk-obb-unsigned $LITE_OPT
 elif [ "x$BUILD_OBB" == "xYes" ]
 then
-  cd $WORKSPACE;make apk-obb-unsigned
+  cd $WORKSPACE; make apk-obb-unsigned $LITE_OPT
 elif [ "x$BUILD_OBB" == "xNo" ]
 then
-  cd $WORKSPACE;make apk-noobb-unsigned
+  cd $WORKSPACE; make apk-noobb-unsigned $LITE_OPT
 else
-  cd $WORKSPACE;make apk-unsigned
+  cd $WORKSPACE; make apk-unsigned $LITE_OPT
 fi
 $RUN_SIGNSTEP
 
 #rename for upload
 #e.x. xbmc-20130314-8c2fb31-Frodo-x86.apk
-UPLOAD_FILENAME="$(getAppName)-$(getBuildRevDateStr)-x86"
-mv $(getAppName)app-x86-*.apk $UPLOAD_FILENAME.apk
+UPLOAD_FILENAME="$(getAppName)$(if [ "$IS_LITE" == "yes" ]; then echo Lite;fi)-$(getBuildRevDateStr)-x86"
+mv $(getAppName)*.apk $UPLOAD_FILENAME.apk
 if [ -f *.obb ] 
 then
   mv *.obb $UPLOAD_FILENAME.obb
