@@ -463,10 +463,12 @@ fi
 APP_NAME=${APP_NAME-$(${AWK} '/APP_NAME/ {print $2}' version.txt)}
 APP_NAME_DISPLAY=${APP_NAME}
 URL_SCHEME="mrmc"
+APP_SUFFIX=""
 if test "x$bundle_extension" = "xlite"; then
   APP_NAME_DISPLAY="${APP_NAME} Lite"
   APP_NAME="${APP_NAME}Lite"
   URL_SCHEME="${URL_SCHEME}lite"
+  APP_SUFFIX=".lite"
 fi
 APP_NAME_LC=$(echo $APP_NAME | ${AWK} '{print tolower($0)}')
 APP_NAME_UC=$(echo $APP_NAME | ${AWK} '{print toupper($0)}')
@@ -512,6 +514,7 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
   AC_SUBST(TOPSHELF_BUNDLE_IDENTIFIER)
   AC_SUBST(URL_SCHEME)
   AC_SUBST(APP_ADDON_API)
+  AC_SUBST(APP_SUFFIX)
 
   dashes="------------------------"
   final_message="\n  ${APP_NAME} Configuration:"
