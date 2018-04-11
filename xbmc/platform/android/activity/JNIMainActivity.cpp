@@ -120,6 +120,14 @@ void CJNIMainActivity::_onPictureInPictureModeChanged(JNIEnv* env, jobject conte
     m_appInstance->onPictureInPictureModeChanged(isInPictureInPictureMode);
 }
 
+void CJNIMainActivity::_onUserLeaveHint(JNIEnv* env, jobject context)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onUserLeaveHint();
+}
+
 void CJNIMainActivity::runNativeOnUiThread(void (*callback)(CVariant *), CVariant* variant)
 {
   call_method<void>(m_context,

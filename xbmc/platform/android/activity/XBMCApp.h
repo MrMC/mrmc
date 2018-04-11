@@ -130,6 +130,7 @@ public:
   virtual void onVisibleBehindCanceled();
   virtual void onMultiWindowModeChanged(bool isInMultiWindowMode);
   virtual void onPictureInPictureModeChanged(bool isInPictureInPictureMode);
+  virtual void onUserLeaveHint();
 
   // CJNISurfaceHolderCallback interface
   virtual void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;

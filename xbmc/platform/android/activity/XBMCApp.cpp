@@ -1334,6 +1334,15 @@ void CXBMCApp::onPictureInPictureModeChanged(bool isInPictureInPictureMode)
   m_hasPIP = isInPictureInPictureMode;
 }
 
+void CXBMCApp::onUserLeaveHint()
+{
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
+  {
+    if (CJNIBase::GetSDKVersion() >= 24)
+      RequestPictureInPictureMode();
+  }
+}
+
 int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
 {
   int ret = 0;

@@ -62,6 +62,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   native void _onVisibleBehindCanceled();
   native void _onMultiWindowModeChanged(boolean isInMultiWindowMode);
   native void _onPictureInPictureModeChanged(boolean isInPictureInPictureMode);
+  native void _onUserLeaveHint();
 /*
   private class MyAudioDeviceCallback extends AudioDeviceCallback
   {
@@ -376,6 +377,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
       _onPictureInPictureModeChanged(isInPictureInPictureMode);
       super.onPictureInPictureModeChanged(isInPictureInPictureMode);
     }
+  }
+
+  @Override
+  public void onUserLeaveHint()
+  {
+    _onUserLeaveHint();
   }
 
   @Override

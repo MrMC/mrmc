@@ -45,6 +45,7 @@ public:
   static void _onVisibleBehindCanceled(JNIEnv *env, jobject context);
   static void _onMultiWindowModeChanged(JNIEnv *env, jobject context, jboolean isInMultiWindowMode);
   static void _onPictureInPictureModeChanged(JNIEnv *env, jobject context, jboolean isInPictureInPictureMode);
+  static void _onUserLeaveHint(JNIEnv *env, jobject context);
 
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
   static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
@@ -77,4 +78,5 @@ protected:
   virtual void onVisibleBehindCanceled() = 0;
   virtual void onMultiWindowModeChanged(bool isInMultiWindowMode) = 0;
   virtual void onPictureInPictureModeChanged(bool isInPictureInPictureMode) = 0;
+  virtual void onUserLeaveHint() = 0;
 };
