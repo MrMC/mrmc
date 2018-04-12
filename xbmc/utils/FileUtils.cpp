@@ -286,6 +286,12 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
       return false;
     }
   }
+  else if (!CFileUtils::RemoteAccessAllowed(filePath))
+  {
+    // if realpath fails, then it is a vfs reference
+    // so let CFileUtils::RemoteAccessAllowed handle it.
+    return false;
+  }
 
   return true;
 }
