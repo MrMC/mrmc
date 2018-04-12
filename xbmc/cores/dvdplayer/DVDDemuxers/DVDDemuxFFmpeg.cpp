@@ -1446,13 +1446,6 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     default:
       {
-        // if analyzing streams is skipped, unknown streams may become valid later
-        if (m_streaminfo || IsVideoReady())
-        {
-          CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding unknown stream with id: %d", pStream->index);
-          pStream->discard = AVDISCARD_ALL;
-          return nullptr;
-        }
         stream = new CDemuxStream();
         stream->type = STREAM_NONE;
         break;
