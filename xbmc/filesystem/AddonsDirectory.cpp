@@ -640,7 +640,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
     items.Add(item);
   }
 
-  items.Add(GetMoreItem(content));
+//  items.Add(GetMoreItem(content));
 
   items.SetContent("addons");
   items.SetLabel(g_localizeStrings.Get(24001)); // Add-ons
