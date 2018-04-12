@@ -9,7 +9,6 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 LIBDYLIB=$(PLATFORM)/librtmp/librtmp.a
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
 SYS=posix
 ifeq ($(OS),ios)

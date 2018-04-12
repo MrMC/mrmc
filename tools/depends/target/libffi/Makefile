@@ -6,7 +6,6 @@ LIBNAME=libffi
 VERSION=3.2.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
 # configuration settings
 CONFIGURE= ./configure --prefix=$(PREFIX) --disable-shared --disable-builddir 

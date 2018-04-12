@@ -7,7 +7,6 @@ LIBNAME=Python
 VERSION=2.7.12
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
 ifeq ($(OS),osx)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"

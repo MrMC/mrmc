@@ -7,8 +7,6 @@ VERSION=1.42.13
 SOURCE=e2fsprogs-1.42.13
 ARCHIVE=$(SOURCE).tar.gz
 
-BASE_URL=https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.42.13
-
 # configuration settings
 CONFIGURE=echo "scanf_cv_type_modifier=as" > config.cache; \
 	  ./configure --prefix=$(PREFIX) \

@@ -6,7 +6,6 @@ LIBNAME=rapidjson
 VERSION=1.1.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
 CMAKE_OPTIONS=-DRAPIDJSON_HAS_STDSTRING=ON -DRAPIDJSON_BUILD_DOC=OFF -DRAPIDJSON_BUILD_EXAMPLES=OFF -DRAPIDJSON_BUILD_TESTS=OFF -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
 
@@ -19,7 +18,6 @@ else
   ifeq ($(PLATFORM),)
     PLATFORM = native
     TARBALLS_LOCATION = $(ROOT_DIR)
-    BASE_URL := http://mirrors.kodi.tv/build-deps/sources
     RETRIEVE_TOOL := curl
     RETRIEVE_TOOL_FLAGS := -Ls --create-dirs -f -O
     ARCHIVE_TOOL := tar
