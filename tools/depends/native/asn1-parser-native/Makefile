@@ -8,7 +8,6 @@ APPNAME=tasn1
 VERSION=4.7
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=lib$(SOURCE).tar.gz
-BASE_URL=http://ftp.gnu.org/gnu/libtasn1
 
 export LIBTOOL=builds/unix/libtool
 export PATH:=$(PREFIX)/bin:$(PATH)

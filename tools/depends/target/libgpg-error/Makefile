@@ -6,7 +6,6 @@ LIBNAME=libgpg-error
 VERSION=1.27
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
-BASE_URL=ftp://ftp.gnupg.org/gcrypt/libgpg-error
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \

@@ -6,7 +6,6 @@ LIBNAME=tasn1
 VERSION=4.10
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=lib$(SOURCE).tar.gz
-BASE_URL=http://ftp.gnu.org/gnu/libtasn1
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
