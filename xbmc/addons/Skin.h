@@ -117,6 +117,13 @@ public:
   void Start();
 
   bool HasSkinFile(const std::string &strFile) const;
+  
+  /*! \brief Get the full path for the specified file in the skin's include definition.
+   Try custom path first (for compatability with scripts like skinshortcuts etc.)
+   \param file XML file to look for
+   \return path to the XML file
+   */
+  std::string GetSkinIncludeFile(const std::string& strFile) const;
 
   /*! \brief Get the full path to the specified file in the skin
    We search for XML files in the skin folder that best matches the current resolution.
