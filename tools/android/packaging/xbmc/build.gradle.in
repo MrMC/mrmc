@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "@APP_PACKAGE@"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 24
         versionCode @APP_VERSION_ANDROID_VERSION@
         versionName "@APP_VERSION@"
     }
