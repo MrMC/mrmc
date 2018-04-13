@@ -1,5 +1,8 @@
 include ../../depends/Makefile.include
 
+BUILD_TYPE:=@BUILD_CONFIGURATION@
+BUILD_TYPE_LC:=$(shell echo $(BUILD_TYPE) | tr A-Z a-z)
+
 OBJS = libcurl.so
 OBJS+= libcpluff.so
 OBJS+= libass.so
@@ -163,13 +166,13 @@ java: res
 
 package: libs python java
 	@echo "Gradle packaging..."
-	ANDROID_HOME=$(SDKROOT) ./gradlew --no-daemon assembleDebugUnsigned
+	ANDROID_HOME=$(SDKROOT) ./gradlew --no-daemon assemble$(BUILD_TYPE)Unsigned
 
 apk-sign:
 	@echo "Signing..."
-	@jarsigner -sigalg SHA1withRSA -digestalg SHA1 -tsa http://timestamp.digicert.com -keystore $(SIGN_STORE) -storepass $(SIGN_STOREPASS) $(SIGN_KEYPASS_OPT) packaging/build/outputs/apk/debugUnsigned/packaging-debugUnsigned-unsigned.apk $(SIGN_KEY)
-	@$(ZIPALIGN) -f 4 packaging/build/outputs/apk/debugUnsigned/packaging-debugUnsigned-unsigned.apk $(XBMCROOT)/@APP_NAME@app-$(ABI)-debug.apk
-	@echo "$(XBMCROOT)/@APP_NAME_LC@app-$(ABI)-debug.apk created"
+	@jarsigner -sigalg SHA1withRSA -digestalg SHA1 -tsa http://timestamp.digicert.com -keystore $(SIGN_STORE) -storepass $(SIGN_STOREPASS) $(SIGN_KEYPASS_OPT) packaging/build/outputs/apk/$(BUILD_TYPE_LC)Unsigned/packaging-$(BUILD_TYPE_LC)Unsigned-unsigned.apk $(SIGN_KEY)
+	@$(ZIPALIGN) -f 4 packaging/build/outputs/apk/$(BUILD_TYPE_LC)Unsigned/packaging-$(BUILD_TYPE_LC)Unsigned-unsigned.apk $(XBMCROOT)/@APP_NAME@app-$(ABI)-$(BUILD_TYPE_LC).apk
+	@echo "$(XBMCROOT)/@APP_NAME_LC@app-$(ABI)-$(BUILD_TYPE_LC).apk created"
 
 $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 	$(MAKE) -C ../../depends/target/xbmc

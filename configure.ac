@@ -781,6 +781,7 @@ fi
 # platform debug flags
 if test "$use_debug" = "yes"; then
   final_message="$final_message\n  Debugging:\tYes"
+  BUILD_CONFIGURATION=Debug
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
     DEBUG_FLAGS="-g -pg -D_DEBUG -Wall -Wno-unknown-pragmas"
@@ -790,6 +791,7 @@ if test "$use_debug" = "yes"; then
   fi
 else
   final_message="$final_message\n  Debugging:\tNo"
+  BUILD_CONFIGURATION=Release
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
     DEBUG_FLAGS="-pg -DNDEBUG=1"
@@ -2370,6 +2372,7 @@ AC_SUBST(USE_SSE4)
 AC_SUBST(USE_MMAL)
 AC_SUBST(USE_X11)
 AC_SUBST(USE_BREAKPAD)
+AC_SUBST(BUILD_CONFIGURATION)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

@@ -38,11 +38,11 @@ CONFIGURE += $(CONFIG_EXTRA)
 
 all: $(SOURCE)/lib$(APP_NAME).so
 
-release: DEBUG=--enable-debug=no
-release: $(SOURCE)/lib$(APP_NAME).so
+Release: DEBUG=--enable-debug=no
+Release: $(SOURCE)/lib$(APP_NAME).so
 
-debug: DEBUG=--enable-debug=yes
-debug: $(SOURCE)/lib$(APP_NAME).so
+Debug: DEBUG=--enable-debug=yes
+Debug: $(SOURCE)/lib$(APP_NAME).so
 
 $(SOURCE)/lib$(APP_NAME).so:
 	cd $(SOURCE); BOOTSTRAP_FROM_DEPENDS=yes ./bootstrap

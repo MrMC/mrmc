@@ -3,4 +3,5 @@ XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 make -C $WORKSPACE/tools/depends/target/xbmc \
-   $(if [ "$IS_LITE" == "yes" ]; then echo lite=yes;fi) 
+   $(if [ "$IS_LITE" == "yes" ]; then echo lite=yes;fi) \
+   $Configuration
