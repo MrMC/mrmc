@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="6" type="folder">
+  <label>20388</label>
+  <icon>DefaultStudios.png</icon>
+  <content>movies</content>
+  <path>services://movies/studios/</path>
+</node>
