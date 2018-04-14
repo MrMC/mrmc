@@ -29,8 +29,8 @@
 #include <DiskArbitration/DiskArbitration.h>
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
-#include "platform/darwin//DarwinUtils.h"  
 #endif
+#include "platform/darwin/DarwinUtils.h"
 #include "platform/darwin/osx/CocoaInterface.h"
 
 bool CDarwinStorageProvider::m_event = false;
@@ -52,7 +52,8 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   localDrives.push_back(share);
 #endif
 
-#if defined(TARGET_DARWIN_IOS) && defined(__x86_64__)
+#if defined(TARGET_DARWIN_IOS)
+#if defined(__x86_64__)
   // User Pictures folder
   share.strPath = "/Users/davilla";
   share.strPath += "/Pictures";
@@ -73,7 +74,12 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.strName = "Music";
   share.m_ignore = true;
   localDrives.push_back(share);
-#endif
+#else
+  share.strPath = CDarwinUtils::GetOSAppRootFolder();
+  share.strName = "iTunes Shared Folder";
+  localDrives.push_back(share);
+#endif // __x86_64__
+#endif // TARGET_DARWIN_IOS
 
 #if defined(TARGET_DARWIN_OSX)
   // User desktop folder
