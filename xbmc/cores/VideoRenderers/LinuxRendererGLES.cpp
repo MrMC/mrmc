@@ -630,6 +630,7 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
       }
 
       mci->RenderUpdate(srcRect, dstRect);
+      mci->ReleaseOutputBuffer(m_readyToRender);
     }
   }
 #endif
@@ -2595,10 +2596,13 @@ void CLinuxRendererGLES::AddProcessor(CDVDMediaCodecInfo *mediacodec, int index)
 #ifdef DEBUG_VERBOSE
     mindex = buf.mediacodec->GetIndex();
 #endif
-    // releaseOutputBuffer must be in same thread as
-    // dequeueOutputBuffer. We are in DVDPlayerVideo
-    // thread here, so we are safe.
-    buf.mediacodec->ReleaseOutputBuffer(m_readyToRender);
+    if (m_renderMethod & RENDER_MEDIACODEC)
+    {
+      // releaseOutputBuffer must be in same thread as
+      // dequeueOutputBuffer. We are in DVDPlayerVideo
+      // thread here, so we are safe.
+      buf.mediacodec->ReleaseOutputBuffer(m_readyToRender);
+    }
   }
 
 #ifdef DEBUG_VERBOSE
