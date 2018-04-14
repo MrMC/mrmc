@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="2" type="folder" visible="!Library.HasContent(Music) + Library.HasServices">
+  <label>133</label>
+  <icon>DefaultMusicArtists.png</icon>
+  <content>artists</content>
+  <path>services://music/artists/</path>
+</node>

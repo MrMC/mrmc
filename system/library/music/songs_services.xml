@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="5" type="folder" visible="!Library.HasContent(Music) + Library.HasServices">
+  <label>134</label>
+  <icon>DefaultMusicSongs.png</icon>
+  <content>songs</content>
+  <path>services://music/songs/</path>
+</node>

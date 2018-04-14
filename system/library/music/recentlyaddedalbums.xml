@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="8" type="folder" visible="Library.HasContent(Music)">
+<node order="8" type="folder" visible="Library.HasContent(Music) | Library.HasServices">
   <label>359</label>
   <icon>DefaultMusicRecentlyAdded.png</icon>
-  <path>musicdb://recentlyaddedalbums/</path>
+  <path>services://music/recentlyaddedalbums/</path>
 </node>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="1" type="folder" visible="Library.HasContent(Movies) | Library.HasServices">
-  <label>342</label>
-  <icon>DefaultMovies.png</icon>
+<node order="2" type="folder">
+  <label>369</label>
+  <icon>DefaultMovieTitle.png</icon>
   <content>movies</content>
   <order direction="ascending">sorttitle</order>
   <path>services://movies/titles/</path>
