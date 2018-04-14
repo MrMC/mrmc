@@ -422,7 +422,11 @@ bool CWinSystemAndroidEGL::GetNativeResolution(RESOLUTION_INFO *res)
   if (!*nativeWindow)
     return false;
 
-  if (!m_width || !m_height)
+  bool iswindowed = false;
+  if (CJNIBase::GetSDKVersion() >= 24)
+    iswindowed = CXBMCApp::isInMultiWindowMode();
+
+  if ((!m_width || !m_height) && !iswindowed)
   {
     ANativeWindow_acquire(*nativeWindow);
     m_width = ANativeWindow_getWidth(*nativeWindow);
@@ -434,8 +438,16 @@ bool CWinSystemAndroidEGL::GetNativeResolution(RESOLUTION_INFO *res)
   if (s_hasModeApi)
   {
     *res = s_res_cur_displayMode;
-    res->iWidth = m_width;
-    res->iHeight = m_height;
+    if (!m_width || !m_height)
+    {
+      m_width = res->iWidth;
+      m_height = res->iHeight;
+    }
+    else
+    {
+      res->iWidth = m_width;
+      res->iHeight = m_height;
+    }
   }
   else
   {
