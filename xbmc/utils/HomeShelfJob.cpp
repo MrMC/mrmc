@@ -36,6 +36,7 @@
 #include "video/VideoThumbLoader.h"
 #include "settings/Settings.h"
 #include "services/ServicesManager.h"
+#include "interfaces/AnnouncementManager.h"
 
 #if defined(TARGET_DARWIN_TVOS)
   #include "platform/darwin/DarwinUtils.h"
@@ -305,6 +306,9 @@ bool CHomeShelfJob::UpdateTotal()
     EpWatched       = EpWatched + (mediaTotals.iEpisodeTotal - mediaTotals.iEpisodeUnwatched);
     EpCount         = EpCount + mediaTotals.iEpisodeTotal;
     TvShowsWatched  = TvShowsWatched + (mediaTotals.iShowTotal - mediaTotals.iShowUnwatched);
+    
+    // signal library providers that our services have been updated so lists can be refreshed if needed etc.
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::MediaService, "xbmc", "ServicesUpdated");
   }
   
   home->SetProperty("Music.SongsCount"      , MusSongTotals);
