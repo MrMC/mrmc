@@ -218,6 +218,7 @@ public:
   bool IsPVRRadioRDS() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
+  bool IsFolder() const;
   bool IsReadOnly() const;
   bool CanQueue() const;
   void SetCanQueue(bool bYesNo);

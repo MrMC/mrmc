@@ -1150,6 +1150,11 @@ bool CFileItem::IsVirtualDirectoryRoot() const
   return (m_bIsFolder && m_strPath.empty());
 }
 
+bool CFileItem::IsFolder() const
+{
+  return m_bIsFolder;
+}
+
 bool CFileItem::IsRemovable() const
 {
   return IsOnDVD() || IsCDDA() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
