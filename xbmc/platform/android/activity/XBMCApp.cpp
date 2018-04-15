@@ -139,7 +139,6 @@ bool CXBMCApp::m_wasPlayingVideoWhenPaused = false;
 double CXBMCApp::m_wasPlayingVideoWhenPausedTime = 0.0;
 bool CXBMCApp::m_wasPlayingWhenTransientLoss = false;
 bool CXBMCApp::m_headsetPlugged = false;
-bool CXBMCApp::m_hasReqVisible = false;
 bool CXBMCApp::m_hdmiPlugged = true;
 bool CXBMCApp::m_hasPIP = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
@@ -314,11 +313,6 @@ void CXBMCApp::onResume()
     }
   }
 */
-  m_hasReqVisible = false;
-  // Re-request Visible Behind
-  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
-    RequestVisibleBehind(true);
-
   m_hasResumed = true;
 }
 
@@ -343,14 +337,13 @@ void CXBMCApp::onPause()
 
   EnableWakeLock(false);
   m_hasResumed = false;
-  m_hasReqVisible = false;
 }
 
 void CXBMCApp::onStop()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO) && !m_hasReqVisible)
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO) && !m_hasPIP)
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
 }
 
@@ -545,21 +538,8 @@ void CXBMCApp::CheckHeadsetPlugged()
     CAEFactory::DeviceChange();
 }
 
-void CXBMCApp::RequestVisibleBehind(bool requested)
-{
-  if (requested == m_hasReqVisible)
-    return;
-
-  m_hasReqVisible = requestVisibleBehind(requested);
-  CLog::Log(LOGDEBUG, "Visible Behind request: %s", m_hasReqVisible ? "true" : "false");
-}
-
 void CXBMCApp::RequestPictureInPictureMode()
 {
-  // PIP and VisbleBehind are exclusive
-  if (m_hasReqVisible)
-    RequestVisibleBehind(false);
-
   enterPictureInPictureMode();
   CLog::Log(LOGDEBUG, "Entering PIP mode");
 }
@@ -815,7 +795,6 @@ void CXBMCApp::OnPlayBackStarted()
     CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 
   AcquireAudioFocus();
-  RequestVisibleBehind(true);
   CAndroidKey::SetHandleMediaKeys(false);
 
   m_playback_state = PLAYBACK_STATE_PLAYING;
@@ -843,8 +822,6 @@ void CXBMCApp::OnPlayBackStarted()
         .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, g_infoManager.GetLabel(VIDEOPLAYER_DIRECTOR))
         ;
     thumb = g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
-
-    RequestVisibleBehind(true);
   }
   else
   {
@@ -875,8 +852,6 @@ void CXBMCApp::OnPlayBackPaused()
 
   ReleaseAudioFocus();
   m_playback_state &= ~PLAYBACK_STATE_PLAYING;
-
-  RequestVisibleBehind(false);
 }
 
 void CXBMCApp::OnPlayBackStopped()
@@ -885,7 +860,6 @@ void CXBMCApp::OnPlayBackStopped()
 
   m_playback_state = PLAYBACK_STATE_STOPPED;
 
-  RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(true);
   ReleaseAudioFocus();
   m_mediaSession->activate(false);
@@ -1301,8 +1275,6 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   {
     if (m_playback_state != PLAYBACK_STATE_STOPPED)
     {
-      if (m_playback_state & PLAYBACK_STATE_VIDEO)
-        RequestVisibleBehind(true);
       if (!(m_playback_state & PLAYBACK_STATE_PLAYING))
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
@@ -1373,20 +1345,9 @@ void CXBMCApp::onScreenshotAvailable(CJNIImage image)
   m_captureEvent.Set();
 }
 
-void CXBMCApp::onVisibleBehindCanceled()
-{
-  CLog::Log(LOGDEBUG, "Visible Behind Cancelled");
-  m_hasReqVisible = false;
-
-  // Pressing the pause button calls OnStop() (cf. https://code.google.com/p/android/issues/detail?id=186469)
-  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
-}
-
 void CXBMCApp::onMultiWindowModeChanged(bool isInMultiWindowMode)
 {
   CLog::Log(LOGDEBUG, "%s: %s", __PRETTY_FUNCTION__, isInMultiWindowMode ? "true" : "false");
-
 }
 
 void CXBMCApp::onPictureInPictureModeChanged(bool isInPictureInPictureMode)
