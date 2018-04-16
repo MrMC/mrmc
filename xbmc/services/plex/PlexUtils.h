@@ -42,7 +42,7 @@ public:
   static bool HasClients();
   static void GetClientHosts(std::vector<std::string>& hosts);
   static bool GetIdentity(CURL url, int timeout);
-  static void GetDefaultHeaders(XFILE::CCurlFile &curl);
+  static void GetDefaultHeaders(XFILE::CCurlFile *curl);
   static void SetPlexItemProperties(CFileItem &item);
   static void SetPlexItemProperties(CFileItem &item, const CPlexClientPtr &client);
 

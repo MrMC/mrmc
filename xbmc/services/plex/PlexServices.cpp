@@ -106,6 +106,7 @@ CPlexServices::CPlexServices()
 : CThread("PlexServices")
 , m_gdmListener(nullptr)
 , m_updateMins(0)
+, m_plextv(new XFILE::CCurlFile())
 , m_playState(MediaServicesPlayerState::stopped)
 , m_hasClients(false)
 {
@@ -116,7 +117,7 @@ CPlexServices::CPlexServices()
 
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 
-  m_plextv.SetTimeout(10);
+  m_plextv->SetTimeout(10);
   //m_plextv.SetBufferSize(32768*10);
 }
 
@@ -151,7 +152,8 @@ void CPlexServices::Stop()
   if (IsRunning())
   {
     m_bStop = true;
-    m_plextv.Cancel();
+    m_plextv->Cancel();
+    m_plextv.reset();
     m_processSleep.Set();
     StopThread();
   }
@@ -450,7 +452,7 @@ void CPlexServices::Process()
   GetUserSettings();
 
   // reset any canceled state
-  m_plextv.Reset();
+  m_plextv->Reset();
 
   CStopWatch gdmTimer;
   gdmTimer.StartZero();
@@ -483,7 +485,7 @@ void CPlexServices::Process()
     m_processSleep.Reset();
   }
 
-  CPlexUtils::GetDefaultHeaders(m_plextv);
+  CPlexUtils::GetDefaultHeaders(m_plextv.get());
   int plextvTimeoutSeconds = 5;
 
   // try plex.tv first
@@ -557,7 +559,7 @@ bool CPlexServices::GetPlexToken(std::string user, std::string pass)
   bool rtn = false;
   XFILE::CCurlFile plex;
   plex.SetTimeout(10);
-  CPlexUtils::GetDefaultHeaders(plex);
+  CPlexUtils::GetDefaultHeaders(&plex);
 
   CURL url(NS_PLEXTV_URL + "/users/sign_in.json");
   url.SetUserName(user);
@@ -599,7 +601,7 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
   std::vector<PlexServerInfo> serversFound;
 
   if (MyPlexSignedIn())
-    m_plextv.SetRequestHeader("X-Plex-Token", m_authToken);
+    m_plextv->SetRequestHeader("X-Plex-Token", m_authToken);
 
   std::string strResponse;
   CURL url(NS_PLEXTV_URL);
@@ -608,7 +610,7 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
   else
     url.SetFileName("pms/resources?includeHttps=0");
 
-  if (m_plextv.Get(url.Get(), strResponse))
+  if (m_plextv->Get(url.Get(), strResponse))
   {
 #if defined(PLEX_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "CPlexServices:GetMyPlexServers %d, %s", includeHttps, strResponse.c_str());
@@ -636,7 +638,7 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
   {
     std::string strMessage = "Error getting Plex servers";
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Plex Services", strMessage, 3000, true);
-    CLog::Log(LOGDEBUG, "CPlexServices::GetMyPlexServers failed %s, code %d", strResponse.c_str(), m_plextv.GetResponseCode());
+    CLog::Log(LOGDEBUG, "CPlexServices::GetMyPlexServers failed %s, code %d", strResponse.c_str(), m_plextv->GetResponseCode());
     return false;
   }
 
@@ -694,7 +696,7 @@ bool CPlexServices::GetSignInPinCode()
   XFILE::CCurlFile plex;
   // use a lower default timeout
   plex.SetTimeout(10);
-  CPlexUtils::GetDefaultHeaders(plex);
+  CPlexUtils::GetDefaultHeaders(&plex);
 
   CURL url(NS_PLEXTV_URL + "/pins.xml");
 
@@ -811,7 +813,7 @@ bool CPlexServices::GetSignInByPinReply()
   std::string strMessage;
   XFILE::CCurlFile plex;
   plex.SetTimeout(10);
-  CPlexUtils::GetDefaultHeaders(plex);
+  CPlexUtils::GetDefaultHeaders(&plex);
 
   std::string path = NS_PLEXTV_URL + "/pins/" + m_signInByPinId + ".xml";
   CURL url(path);
@@ -1041,7 +1043,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
   XFILE::CCurlFile plex;
   plex.SetTimeout(10);
   //plex.SetBufferSize(32768*10);
-  CPlexUtils::GetDefaultHeaders(plex);
+  CPlexUtils::GetDefaultHeaders(&plex);
   if (MyPlexSignedIn())
     plex.SetRequestHeader("X-Plex-Token", m_authToken);
 
@@ -1123,14 +1125,14 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
 
     XFILE::CCurlFile plex;
     plex.SetTimeout(10);
-    CPlexUtils::GetDefaultHeaders(plex);
+    CPlexUtils::GetDefaultHeaders(&plex);
     if (MyPlexSignedIn())
       plex.SetRequestHeader("X-Plex-Token", m_authToken);
 
     std::string id = item->GetProperty("id").asString();
     CURL url(NS_PLEXTV_URL + "/api/home/users/" + id + pinUrl);
 
-    CPlexUtils::GetDefaultHeaders(plex);
+    CPlexUtils::GetDefaultHeaders(&plex);
     std::string strResponse;
     plex.Post(url.Get(), "", strResponse);
 

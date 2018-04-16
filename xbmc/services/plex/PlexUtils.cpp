@@ -124,26 +124,26 @@ bool CPlexUtils::GetIdentity(CURL url, int timeout)
   return false;
 }
 
-void CPlexUtils::GetDefaultHeaders(XFILE::CCurlFile &curl)
+void CPlexUtils::GetDefaultHeaders(XFILE::CCurlFile *curl)
 {
-  curl.SetRequestHeader("Content-Type", "application/xml; charset=utf-8");
-  curl.SetRequestHeader("Content-Length", "0");
-  curl.SetRequestHeader("Connection", "Keep-Alive");
-  curl.SetUserAgent(CSysInfo::GetUserAgent());
-  curl.SetRequestHeader("X-Plex-Client-Identifier", CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID));
-  curl.SetRequestHeader("X-Plex-Product", "MrMC");
-  curl.SetRequestHeader("X-Plex-Version", CSysInfo::GetVersionShort());
+  curl->SetRequestHeader("Content-Type", "application/xml; charset=utf-8");
+  curl->SetRequestHeader("Content-Length", "0");
+  curl->SetRequestHeader("Connection", "Keep-Alive");
+  curl->SetUserAgent(CSysInfo::GetUserAgent());
+  curl->SetRequestHeader("X-Plex-Client-Identifier", CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID));
+  curl->SetRequestHeader("X-Plex-Product", "MrMC");
+  curl->SetRequestHeader("X-Plex-Version", CSysInfo::GetVersionShort());
   std::string hostname;
   g_application.getNetwork().GetHostName(hostname);
   StringUtils::TrimRight(hostname, ".local");
-  curl.SetRequestHeader("X-Plex-Model", CSysInfo::GetModelName());
-  curl.SetRequestHeader("X-Plex-Device", CSysInfo::GetModelName());
-  curl.SetRequestHeader("X-Plex-Device-Name", hostname);
-  curl.SetRequestHeader("X-Plex-Platform", CSysInfo::GetOsName());
-  curl.SetRequestHeader("X-Plex-Platform-Version", CSysInfo::GetOsVersion());
-  curl.SetRequestHeader("Cache-Control", "no-cache");
-  curl.SetRequestHeader("Pragma", "no-cache");
-  curl.SetRequestHeader("Expires", "Sat, 26 Jul 1997 05:00:00 GMT");
+  curl->SetRequestHeader("X-Plex-Model", CSysInfo::GetModelName());
+  curl->SetRequestHeader("X-Plex-Device", CSysInfo::GetModelName());
+  curl->SetRequestHeader("X-Plex-Device-Name", hostname);
+  curl->SetRequestHeader("X-Plex-Platform", CSysInfo::GetOsName());
+  curl->SetRequestHeader("X-Plex-Platform-Version", CSysInfo::GetOsVersion());
+  curl->SetRequestHeader("Cache-Control", "no-cache");
+  curl->SetRequestHeader("Pragma", "no-cache");
+  curl->SetRequestHeader("Expires", "Sat, 26 Jul 1997 05:00:00 GMT");
 }
 
 void CPlexUtils::SetPlexItemProperties(CFileItem &item)
@@ -370,7 +370,7 @@ bool CPlexUtils::DeletePlexMedia(CFileItem &item)
   url2.SetFileName("library/metadata/" + item.GetMediaServiceId());
   std::string strXML;
   XFILE::CCurlFile plex;
-  CPlexUtils::GetDefaultHeaders(plex);
+  CPlexUtils::GetDefaultHeaders(&plex);
   std::string data;
   std::string response;
   plex.Delete(url2.Get(),data,response);
@@ -1691,7 +1691,7 @@ void CPlexUtils::ReportToServer(std::string url, std::string filename)
 
   std::string strXML;
   XFILE::CCurlFile plex;
-  CPlexUtils::GetDefaultHeaders(plex);
+  CPlexUtils::GetDefaultHeaders(&plex);
   plex.Get(url2.Get(), strXML);
 }
 
@@ -1957,7 +1957,7 @@ CVariant CPlexUtils::GetPlexCVariant(std::string url, std::string filter)
 #endif
   XFILE::CCurlFile curlfile;
   curlfile.SetRequestHeader("Accept-Encoding", "gzip");
-  GetDefaultHeaders(curlfile);
+  GetDefaultHeaders(&curlfile);
 
   CURL curl(url);
   // this is key to get back gzip encoded content
@@ -2016,7 +2016,7 @@ TiXmlDocument CPlexUtils::GetPlexXML(std::string url, std::string filter)
 #endif
   XFILE::CCurlFile curlfile;
   curlfile.SetRequestHeader("Accept-Encoding", "gzip");
-  GetDefaultHeaders(curlfile);
+  GetDefaultHeaders(&curlfile);
 
   CURL curl(url);
   // this is key to get back gzip encoded content

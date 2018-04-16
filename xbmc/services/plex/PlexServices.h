@@ -110,7 +110,7 @@ private:
   std::string       m_signInByPinCode;
   std::string       m_myHomeUser;
   int               m_updateMins;
-  XFILE::CCurlFile  m_plextv;
+  std::unique_ptr<XFILE::CCurlFile>  m_plextv;
 
   MediaServicesPlayerState m_playState;
   CCriticalSection  m_criticalClients;
