@@ -106,7 +106,6 @@ CPlexServices::CPlexServices()
 : CThread("PlexServices")
 , m_gdmListener(nullptr)
 , m_updateMins(0)
-, m_plextv(new XFILE::CCurlFile())
 , m_playState(MediaServicesPlayerState::stopped)
 , m_hasClients(false)
 {
@@ -116,9 +115,6 @@ CPlexServices::CPlexServices()
     CURL::SetProtocolOptionsRedacted("X-Plex-Token", "PLEXTOKEN");
 
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
-
-  m_plextv->SetTimeout(10);
-  //m_plextv.SetBufferSize(32768*10);
 }
 
 CPlexServices::~CPlexServices()
@@ -127,7 +123,6 @@ CPlexServices::~CPlexServices()
 
   if (IsRunning())
     Stop();
-  m_plextv.reset();
 
   CancelJobs();
   SAFE_DELETE(m_gdmListener);
@@ -153,7 +148,13 @@ void CPlexServices::Stop()
   if (IsRunning())
   {
     m_bStop = true;
-    m_plextv->Cancel();
+    {
+      // CPlexServices::Process controls create/delete life cycle
+      // lock access to m_plextv.
+      CSingleLock plextvLock(m_plextvCritical);
+      if (m_plextv)
+        m_plextv->Cancel();
+    }
     m_processSleep.Set();
     StopThread();
   }
@@ -451,8 +452,13 @@ void CPlexServices::Process()
 
   GetUserSettings();
 
-  // reset any canceled state
-  m_plextv->Reset();
+  {
+    // CPlexServices::Stop checks m_plextv, lock access to it during create
+    CSingleLock plextvLock(m_plextvCritical);
+    m_plextv = new XFILE::CCurlFile();
+    m_plextv->SetTimeout(10);
+  //m_plextv.SetBufferSize(32768*10);
+  }
 
   CStopWatch gdmTimer;
   gdmTimer.StartZero();
@@ -485,7 +491,7 @@ void CPlexServices::Process()
     m_processSleep.Reset();
   }
 
-  CPlexUtils::GetDefaultHeaders(m_plextv.get());
+  CPlexUtils::GetDefaultHeaders(m_plextv);
   int plextvTimeoutSeconds = 5;
 
   // try plex.tv first
@@ -550,6 +556,12 @@ void CPlexServices::Process()
     socket->Close();
     SAFE_DELETE(socket);
     SAFE_DELETE(m_gdmListener);
+  }
+
+  {
+    // CPlexServices::Stop checks m_plextv, lock access to it during delete
+    CSingleLock plextvLock(m_plextvCritical);
+    SAFE_DELETE(m_plextv);
   }
   CLog::Log(LOGDEBUG, "CPlexServices::Process end");
 }
