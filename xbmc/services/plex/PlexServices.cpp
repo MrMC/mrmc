@@ -127,6 +127,7 @@ CPlexServices::~CPlexServices()
 
   if (IsRunning())
     Stop();
+  m_plextv.reset();
 
   CancelJobs();
   SAFE_DELETE(m_gdmListener);
@@ -153,7 +154,6 @@ void CPlexServices::Stop()
   {
     m_bStop = true;
     m_plextv->Cancel();
-    m_plextv.reset();
     m_processSleep.Set();
     StopThread();
   }
