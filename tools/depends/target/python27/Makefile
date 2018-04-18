@@ -10,6 +10,9 @@ ARCHIVE=$(SOURCE).tar.xz
 
 ifeq ($(OS),osx)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
+ifeq ($(USE_SIMULATOR),yes)
+  LINK_ICONV=-framework CoreFoundation -liconv
+endif
 endif
 ifeq ($(OS),ios)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
@@ -41,14 +44,14 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../fix-ffi.patch
 	cd $(PLATFORM); patch -p1 -i ../android-binmodule.patch
 	cd $(PLATFORM); patch -p1 < ../python-android-nl_langinfo.patch
-ifeq ($(OS),ios)
+ifeq ($(NATIVE_OS),osx)
 	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
 	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-urllib.diff
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist
 
-#Add -liconv as needed, and add the _scproxy module for darwin
+#Add -liconv as needed, and add the _scproxy module for darwin osx only
 #  disable locale altogether for Android
 ifeq ($(OS),android)
 	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|#_locale _localemodule.c   -lintl|' Modules/Setup.dist
@@ -56,8 +59,10 @@ else
 	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) |' Modules/Setup.dist
 endif
 ifeq ($(OS),osx)
+ifneq ($(USE_SIMULATOR),yes)
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 	echo "_scproxy \$$(srcdir)/Mac/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup.dist
+endif
 endif
 
 ifeq ($(OS),android)
