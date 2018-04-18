@@ -396,7 +396,7 @@ bool CAAudioUnitSink::setupAudio()
   // that get rendered every time the audio callback is fired.
   double samplerate = m_outputFormat.mSampleRate;
   int channels = m_outputFormat.mChannelsPerFrame;
-  NSTimeInterval bufferseconds = 768 * m_outputFormat.mChannelsPerFrame / m_outputFormat.mSampleRate;
+  NSTimeInterval bufferseconds = 1024 * m_outputFormat.mChannelsPerFrame / m_outputFormat.mSampleRate;
   CLog::Log(LOGNOTICE, "%s setting channels %d", __PRETTY_FUNCTION__, channels);
   CLog::Log(LOGNOTICE, "%s setting samplerate %f", __PRETTY_FUNCTION__, samplerate);
   CLog::Log(LOGNOTICE, "%s setting buffer duration to %f", __PRETTY_FUNCTION__, bufferseconds);
