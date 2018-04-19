@@ -707,14 +707,34 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)disableScreenSaver
 {
-  if ([UIApplication sharedApplication].idleTimerDisabled == NO)
-    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+  if ([NSThread currentThread] != [NSThread mainThread])
+  {
+    dispatch_async(dispatch_get_main_queue(),^{
+      if ([UIApplication sharedApplication].idleTimerDisabled == NO)
+        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    });
+  }
+  else
+  {
+    if ([UIApplication sharedApplication].idleTimerDisabled == NO)
+      [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+  }
 }
 //--------------------------------------------------------------
 - (void)enableScreenSaver
 {
-  if ([UIApplication sharedApplication].idleTimerDisabled == YES)
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+  if ([NSThread currentThread] != [NSThread mainThread])
+  {
+    dispatch_async(dispatch_get_main_queue(),^{
+    if ([UIApplication sharedApplication].idleTimerDisabled == YES)
+      [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    });
+  }
+  else
+  {
+    if ([UIApplication sharedApplication].idleTimerDisabled == YES)
+      [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+  }
 }
 //--------------------------------------------------------------
 - (bool)resetSystemIdleTimer
