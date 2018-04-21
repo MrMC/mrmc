@@ -3,10 +3,10 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=dsm
-VERSION=0.2.7_5
+VERSION=0.2.8_6
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-REALARCHIVE=mrmc-jarvis-16.0-5.tar.gz
+REALARCHIVE=mrmc-jarvis-16.0-6.tar.gz
 BASE_URL=https://github.com/MrMC/libdsm/archive
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \

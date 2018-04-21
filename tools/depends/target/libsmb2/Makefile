@@ -3,10 +3,10 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libsmb2
-VERSION=1.0.0
+VERSION=1.0.0_1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-REALARCHIVE=master.tar.gz
+REALARCHIVE=mrmc-1.0.0-1.tar.gz
 BASE_URL=https://github.com/MrMC/libsmb2/archive
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
@@ -14,6 +14,7 @@ CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
         --enable-shared \
         --disable-static \
 	--without-libkrb5 \
+	--disable-werror \
         --disable-examples
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/libsmb2.dylib
@@ -29,7 +30,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../fixup01.patch
 	cd $(PLATFORM); mkdir m4
 	cd $(PLATFORM); ./bootstrap
 	cd $(PLATFORM); $(CONFIGURE)
