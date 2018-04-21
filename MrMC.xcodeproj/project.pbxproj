@@ -26,6 +26,7 @@
 		18690DCE1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
 		18690DCF1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
 		18700F671C4A724B000A0007 /* TVOSTopShelf.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18700F651C4A724B000A0007 /* TVOSTopShelf.mm */; };
+		1883CAEC2081D620004C7F52 /* IOSPlayShared.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1883CAEA2081D61F004C7F52 /* IOSPlayShared.mm */; };
 		188F75FE152217BC009870CE /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
 		188F7602152217DF009870CE /* GUIOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F7600152217DF009870CE /* GUIOperations.cpp */; };
 		189448B41CD905B70036E391 /* LightEffectClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189448B21CD905B70036E391 /* LightEffectClient.cpp */; };
@@ -3519,6 +3520,8 @@
 		18690DCD1B94DA6200E762C1 /* OpenSubtitlesSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSubtitlesSearch.h; sourceTree = "<group>"; };
 		18700F641C4A724B000A0007 /* TVOSTopShelf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TVOSTopShelf.h; sourceTree = "<group>"; };
 		18700F651C4A724B000A0007 /* TVOSTopShelf.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TVOSTopShelf.mm; sourceTree = "<group>"; };
+		1883CAEA2081D61F004C7F52 /* IOSPlayShared.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSPlayShared.mm; sourceTree = "<group>"; };
+		1883CAEB2081D61F004C7F52 /* IOSPlayShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSPlayShared.h; sourceTree = "<group>"; };
 		188F751815211733009870CE /* IJSONRPCAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJSONRPCAnnouncer.h; sourceTree = "<group>"; };
 		188F751915211743009870CE /* JSONRPCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPCUtils.h; sourceTree = "<group>"; };
 		188F75FC152217BC009870CE /* Mime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mime.cpp; sourceTree = "<group>"; };
@@ -9880,6 +9883,8 @@
 				F590453A1BA372A600DB589A /* IOSKeyboard.mm */,
 				F590453B1BA372A600DB589A /* IOSKeyboardView.h */,
 				F590453C1BA372A600DB589A /* IOSKeyboardView.mm */,
+				1883CAEB2081D61F004C7F52 /* IOSPlayShared.h */,
+				1883CAEA2081D61F004C7F52 /* IOSPlayShared.mm */,
 				F590453D1BA372A600DB589A /* IOSScreenManager.h */,
 				F590453E1BA372A600DB589A /* IOSScreenManager.mm */,
 				F590453F1BA372A600DB589A /* XBMCApplication.h */,
@@ -13169,6 +13174,7 @@
 				7CCDA852192756250074CF51 /* NptUri.cpp in Sources */,
 				7CCDA85B192756250074CF51 /* NptUtils.cpp in Sources */,
 				7CCDA864192756250074CF51 /* NptXml.cpp in Sources */,
+				1883CAEC2081D620004C7F52 /* IOSPlayShared.mm in Sources */,
 				7CCDA86D192756250074CF51 /* NptZip.cpp in Sources */,
 				F5B722F51C7C894F006432AE /* ApplicationBuiltins.cpp in Sources */,
 				B5011E4219AF3B56005ADF89 /* PosixFile.cpp in Sources */,

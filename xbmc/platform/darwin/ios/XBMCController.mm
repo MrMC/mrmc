@@ -42,6 +42,7 @@
 #import "platform/darwin/ios/IOSEAGLView.h"
 #import "platform/darwin/ios/XBMCController.h"
 #import "platform/darwin/ios/IOSScreenManager.h"
+#import "platform/darwin/ios/IOSPlayShared.h"
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
 #import "platform/MCRuntimeLib.h"
 #import "platform/MCRuntimeLibContext.h"
@@ -612,7 +613,39 @@ XBMCController *g_xbmcController;
   if ([self respondsToSelector:@selector(setNeedsUpdateOfHomeIndicatorAutoHidden)]) {
     [self performSelector:@selector(setNeedsUpdateOfHomeIndicatorAutoHidden)];
   }
+  
+  SEL singleParamSelector = @selector(enterActiveDelayed:);
+  [g_xbmcController performSelector:singleParamSelector withObject:nil afterDelay:2.0];
 }
+
+- (void)enterActiveDelayed:(id)arg
+{
+  // the only way to tell if we are really going active is to delay for
+  // two seconds, then test. Otherwise we might be doing a forced sleep
+  // and that will blip us active for a short time before going inactive/background.
+  if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive)
+    return;
+  
+  PRINT_SIGNATURE();
+  
+  // MCRuntimeLib_Initialized is only true if
+  // we were running and got moved to background
+  while(!MCRuntimeLib_Initialized())
+    usleep(50*1000);
+  
+  g_Windowing.OnAppFocusChange(true);
+  
+  // wait for AE to wake
+  XbmcThreads::EndTime timer(2000);
+  while (CAEFactory::IsSuspended() && !timer.IsTimePast())
+    usleep(250*1000);
+  
+
+  CIOSPlayShared::GetInstance().RunPlayback();
+  
+}
+
+
 //--------------------------------------------------------------
 - (BOOL)prefersHomeIndicatorAutoHidden
 {

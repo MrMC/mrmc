@@ -71,6 +71,7 @@ public:
   static void        GetAppMemory(int64_t &free, int64_t &delta);
   static bool        IsDarkInterface();
   static void        CloneSystemFonts(const std::string &strPath);
+  static void        ClearIOSInbox();
 };
 
 #endif

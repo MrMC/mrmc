@@ -1216,4 +1216,23 @@ bool CDarwinUtils::IsDarkInterface()
   return ret;
 }
 
+void CDarwinUtils::ClearIOSInbox()
+{
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+  NSFileManager *fileMgr = [[NSFileManager alloc] init];
+  NSError *error = nil;
+  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  NSString *inboxPath = [NSString stringWithFormat:@"%@/Inbox", documentsPath ];
+  NSArray *directoryContents = [fileMgr contentsOfDirectoryAtPath:inboxPath error:&error];
+  if (error == nil)
+  {
+    for (NSString *path in directoryContents)
+    {
+      NSString *fullPath = [inboxPath stringByAppendingPathComponent:path];
+      [fileMgr removeItemAtPath:fullPath error:&error];
+    }
+  }
+#endif
+}
+
 #endif

@@ -10,8 +10,45 @@
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
 	<string>@APP_NAME_DISPLAY@</string>
-	<key>CFBundleDocumentTypes</key>
-	<array/>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeIconFiles</key>
+        <array/>
+        <key>CFBundleTypeName</key>
+        <string>Video</string>
+        <key>LSHandlerRank</key>
+        <string>Default</string>
+        <key>LSItemContentTypes</key>
+        <array>
+          <string>public.movie</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleTypeIconFiles</key>
+        <array/>
+        <key>CFBundleTypeName</key>
+        <string>Audio</string>
+        <key>LSHandlerRank</key>
+        <string>Default</string>
+        <key>LSItemContentTypes</key>
+        <array>
+          <string>public.audio</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleTypeIconFiles</key>
+        <array/>
+        <key>CFBundleTypeName</key>
+        <string>Image</string>
+        <key>LSHandlerRank</key>
+        <string>Default</string>
+        <key>LSItemContentTypes</key>
+        <array>
+          <string>public.image</string>
+        </array>
+      </dict>
+    </array>
 	<key>CFBundleExecutable</key>
 	<string>@APP_NAME@</string>
 	<key>CFBundleIcons</key>

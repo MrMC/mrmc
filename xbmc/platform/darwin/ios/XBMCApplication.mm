@@ -24,6 +24,8 @@
 #import "platform/darwin/ios/XBMCApplication.h"
 #import "platform/darwin/ios/XBMCController.h"
 #import "platform/darwin/ios/IOSScreenManager.h"
+#import "platform/darwin/ios/IOSPlayShared.h"
+#import "platform/darwin/DarwinUtils.h"
 
 @implementation XBMCApplicationDelegate
 
@@ -65,6 +67,7 @@ XBMCController *m_xbmcController;
 - (void)applicationWillTerminate:(UIApplication *)application
 {
   [m_xbmcController stopAnimation];
+  CDarwinUtils::ClearIOSInbox();
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -254,6 +257,19 @@ XBMCController *m_xbmcController;
   m_xbmcController = [[XBMCController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];  
   [m_xbmcController startAnimation];
   [self registerScreenNotifications:YES];
+}
+
+- (BOOL)application:(UIApplication *)app
+            openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options
+{
+  PRINT_SIGNATURE();
+  NSString *prefixToRemove = @"file://";
+  NSString *cleanUrl = [[url absoluteString] copy];
+  if ([[url absoluteString] hasPrefix:prefixToRemove])
+    cleanUrl = [[url absoluteString] substringFromIndex:[prefixToRemove length]];
+  
+  CIOSPlayShared::GetInstance().HandlePlaybackUrl([cleanUrl UTF8String], true);
+  return YES;
 }
 
 - (void)dealloc
