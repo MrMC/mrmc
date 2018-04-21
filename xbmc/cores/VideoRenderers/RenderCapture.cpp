@@ -87,11 +87,13 @@ void CRenderCaptureDroid::BeginRender()
     delete[] m_pixels;
     m_bufferSize = m_width * m_height * 4;
     m_pixels = new uint8_t[m_bufferSize];
-  }
-  if (m_videoUseDroidProjectionCapture)
-  {
-    m_asyncSupported = true;
-    CXBMCApp::get()->startCapture(m_width, m_height);
+
+    if (m_videoUseDroidProjectionCapture)
+    {
+      CXBMCApp::get()->StopCapture();
+      m_asyncSupported = true;
+      CXBMCApp::get()->startCapture(m_width, m_height);
+    }
   }
 }
 
