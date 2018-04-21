@@ -152,6 +152,8 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
     return true;
   else if (StringUtils::StartsWithNoCase(realPath, "plugin://"))
     return true;
+  else if (StringUtils::StartsWithNoCase(realPath, "image://"))
+    return true;
   else
   {
     std::string strPlaylistsPath = CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
