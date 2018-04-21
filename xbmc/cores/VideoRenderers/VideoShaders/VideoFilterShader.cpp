@@ -21,7 +21,7 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 #include <string>
 #include <math.h>
 
@@ -55,7 +55,7 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 
   m_stretch = 0.0f;
 
-#ifdef HAS_GLES == 2
+#ifdef HAS_GLES >= 2
   m_hVertex = -1;
   m_hcoord = -1;
   m_hProj   = -1;
@@ -111,7 +111,7 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 
 void BaseVideoFilterShader::OnCompiledAndLinked()
 {
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
   m_hcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcord");
   m_hAlpha  = glGetUniformLocation(ProgramHandle(), "m_alpha");
@@ -122,7 +122,7 @@ void BaseVideoFilterShader::OnCompiledAndLinked()
 
 bool BaseVideoFilterShader::OnEnabled()
 {
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
@@ -140,7 +140,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
 
 #if defined(HAS_GL)
   m_floattex = glewIsSupported("GL_ARB_texture_float");
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   m_floattex = false;
 #endif
 
@@ -155,7 +155,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
       m_internalformat = GL_RGBA16F_ARB;
     else
       m_internalformat = GL_RGBA;
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
     shadername = "convolution-4x4_gles.glsl";
     m_internalformat = GL_RGBA;
 #endif
@@ -169,7 +169,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
       m_internalformat = GL_RGB16F_ARB;
     else
       m_internalformat = GL_RGB;
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
     shadername = "convolution-6x6_gles.glsl";
     m_internalformat = GL_RGB;
 #endif

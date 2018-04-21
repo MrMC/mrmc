@@ -976,17 +976,17 @@ if test "$use_gles" = "yes"; then
   # GLES overwrites GL if both set to yes.
   if test "$host_vendor" = "apple" ; then
     AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
-    AC_DEFINE([HAVE_LIBGLESV2],[1],["Define to 1 if you have the `GLESv2' library (-lGLESv2)."])
+    AC_DEFINE([HAVE_LIBGLESV3],[1],["Define to 1 if you have the `GLESv3' library (-lGLESv3)."])
     AC_MSG_RESULT(== WARNING: OpenGLES support is assumed.)
   else
     if test "$target_platform" = "target_raspberry_pi"; then
       AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
-      AC_DEFINE([HAVE_LIBGLESV2],[1],["Define to 1 if you have the `GLESv2' library (-lGLESv2)."])
+      AC_DEFINE([HAVE_LIBGLESV3],[1],["Define to 1 if you have the `GLESv2' library (-lGLESv3)."])
       AC_MSG_RESULT(== WARNING: OpenGLES support is assumed.)
-      LIBS="$LIBS -lEGL -lGLESv2 -lbcm_host -lvcos -lvchiq_arm -lmmal -lmmal_core -lmmal_util"
+      LIBS="$LIBS -lEGL -lGLESv3 -lbcm_host -lvcos -lvchiq_arm -lmmal -lmmal_core -lmmal_util"
     else
       AC_CHECK_LIB([EGL],   [main],, AC_MSG_ERROR($missing_library))
-      AC_CHECK_LIB([GLESv2],[main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GLESv3],[main],, AC_MSG_ERROR($missing_library))
     fi
   fi
 else

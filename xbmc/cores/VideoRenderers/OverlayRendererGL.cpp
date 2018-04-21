@@ -25,7 +25,7 @@
 #include "OverlayRendererGL.h"
 #ifdef HAS_GL
   #include "LinuxRendererGL.h"
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   #include "LinuxRendererGLES.h"
 #endif
 #include "guilib/MatrixGLES.h"
@@ -40,9 +40,9 @@
 #include "utils/GLUtils.h"
 #include "RenderManager.h"
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
 // GLES2.0 cant do CLAMP, but can do CLAMP_TO_EDGE.
 #define GL_CLAMP	GL_CLAMP_TO_EDGE
 #endif

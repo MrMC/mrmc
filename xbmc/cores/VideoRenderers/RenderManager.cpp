@@ -41,7 +41,7 @@
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   #include "LinuxRendererGLES.h"
 #elif defined(HAS_SDL)
   #include "LinuxRenderer.h"
@@ -451,7 +451,7 @@ unsigned int CXBMCRenderManager::PreInit(CDVDClock *clock)
   {
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
     m_pRenderer = new CLinuxRendererGLES();
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();

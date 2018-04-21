@@ -21,7 +21,7 @@
 
 #include "system.h"
 
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
 
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
@@ -107,6 +107,17 @@ bool CRenderSystemGLES::InitRenderSystem()
   }
 
   m_RenderExtensions += " ";
+
+  ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+  if (ver)
+  {
+    sscanf(ver, "OpenGL ES GLSL ES %d.%d", &m_glslMajor, &m_glslMinor);
+  }
+  else
+  {
+    m_glslMajor = 1;
+    m_glslMinor = 0;
+  }
 
   LogGraphicsInfo();
   

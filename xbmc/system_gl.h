@@ -47,4 +47,12 @@
     #include <GLES2/gl2.h>
     #include <GLES2/gl2ext.h>
   #endif
+#elif HAS_GLES == 3
+  #if defined(TARGET_DARWIN)
+    #include <OpenGLES/ES3/gl.h>
+    #include <OpenGLES/ES2/glext.h>  // Strange, but https://www.khronos.org/registry/OpenGL/index_es.php#headers3
+  #else
+    #include <GLES3/gl3.h>
+    #include <GLES2/gl2ext.h>        // Strange, but https://www.khronos.org/registry/OpenGL/index_es.php#headers3
+  #endif
 #endif

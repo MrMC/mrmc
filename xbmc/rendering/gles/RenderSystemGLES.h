@@ -116,6 +116,9 @@ protected:
 
   std::string m_RenderExtensions;
 
+  int m_glslMajor = 0;
+  int m_glslMinor = 0;
+
   CGUIShader  **m_pGUIshader;  // One GUI shader for each method
   ESHADERMETHOD m_method;      // Current GUI Shader method
 

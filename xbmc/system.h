@@ -179,6 +179,12 @@
 #define HAS_GLES 2
 #endif
 
+// GLES3.0 detected. Dont use GL!
+#ifdef HAVE_LIBGLESV3
+#undef HAS_GL
+#define HAS_GLES 3
+#endif
+
 // GLES1.0 detected. Dont use GL!
 #ifdef HAVE_LIBGLES
 #undef HAS_GL

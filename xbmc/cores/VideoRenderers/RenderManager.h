@@ -163,7 +163,7 @@ public:
   CLinuxRendererGL    *m_pRenderer;
 #elif defined(HAS_MMAL)
   CMMALRenderer       *m_pRenderer;
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   CLinuxRendererGLES  *m_pRenderer;
 #elif defined(HAS_SDL)
   CLinuxRenderer      *m_pRenderer;

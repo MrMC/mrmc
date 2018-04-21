@@ -23,7 +23,7 @@
 
 #include "system.h" // for HAS_GL
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 #include "system_gl.h"
 
 //

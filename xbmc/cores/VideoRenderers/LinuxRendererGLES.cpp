@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
 #include "system_gl.h"
 
 #include <locale.h>

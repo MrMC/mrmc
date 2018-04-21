@@ -345,7 +345,7 @@ bool CWinSystemAndroidEGL::CreateWindow(RESOLUTION_INFO &res)
 
   EGLint contextAttrs[] =
   {
-    EGL_CONTEXT_CLIENT_VERSION, 2,
+    EGL_CONTEXT_CLIENT_VERSION, 3,
     EGL_NONE
   };
 

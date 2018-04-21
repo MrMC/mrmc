@@ -31,7 +31,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                         , float         contrast
                         , bool          limited);
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 
 #ifndef __GNUC__
 #pragma warning( push )
@@ -54,7 +54,7 @@ namespace Shaders {
     virtual void SetBlack(float black)          {};
     virtual void SetContrast(float contrast)    {};
     virtual void SetNonLinStretch(float stretch){};
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
     virtual GLint GetVertexLoc() { return 0; };
     virtual GLint GetYcoordLoc() { return 0; };
     virtual GLint GetUcoordLoc() { return 0; };
@@ -84,7 +84,7 @@ namespace Shaders {
     virtual void SetBlack(float black)           { m_black    = black; }
     virtual void SetContrast(float contrast)     { m_contrast = contrast; }
     virtual void SetNonLinStretch(float stretch) { m_stretch = stretch; }
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
     virtual GLint GetVertexLoc() { return m_hVertex; }
     virtual GLint GetYcoordLoc() { return m_hYcoord; }
     virtual GLint GetUcoordLoc() { return m_hUcoord; }
@@ -117,7 +117,7 @@ namespace Shaders {
     GLint m_hMatrix;
     GLint m_hStretch;
     GLint m_hStep;
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
     GLint m_hVertex;
     GLint m_hYcoord;
     GLint m_hUcoord;
@@ -132,7 +132,7 @@ namespace Shaders {
 #endif
   };
 
-#if HAS_GLES != 2       // No ARB Shader when using GLES2.0
+#ifndef HAS_GLES       // No ARB Shader when using GLES2.0
   class BaseYUV2RGBARBShader 
     : public BaseYUV2RGBShader
     , public CARBShaderProgram
