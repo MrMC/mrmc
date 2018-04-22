@@ -1285,7 +1285,7 @@ bool MysqlDatabase::mysqlStrAccumAppend(StrAccum *p, const char *z, int N) {
   std::string testString(z, N);
   if (testString.find("LIKE") != std::string::npos || testString.find("like") != std::string::npos)
   {
-    CLog::Log(LOGDEBUG, "This query part contains a like, we will double backslash in the next field: %s", testString.c_str());
+    //CLog::Log(LOGDEBUG, "This query part contains a like, we will double backslash in the next field: %s", testString.c_str());
     isLike = true;
 
   }
