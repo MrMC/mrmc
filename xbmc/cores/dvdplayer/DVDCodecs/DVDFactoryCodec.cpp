@@ -183,19 +183,22 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #if defined(TARGET_ANDROID)
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
   {
-    bool render_interlaced = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_INTERLACED);
-    switch(hint.codec)
+    if (!(hint.width < 800 && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_SD)))
     {
-      case AV_CODEC_ID_MPEG4:
-      case AV_CODEC_ID_MSMPEG4V2:
-      case AV_CODEC_ID_MSMPEG4V3:
-        // Avoid h/w decoder for SD; Those files might use features
-        // not supported and can easily be soft-decoded
-        if (hint.width <= 800)
-          break;
-      default:
-        CLog::Log(LOGINFO, "MediaCodec (Surface) Video Decoder...");
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true, render_interlaced), hint, options)) ) return pCodec;
+      bool render_interlaced = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_INTERLACED);
+      switch(hint.codec)
+      {
+        case AV_CODEC_ID_MPEG4:
+        case AV_CODEC_ID_MSMPEG4V2:
+        case AV_CODEC_ID_MSMPEG4V3:
+          // Avoid h/w decoder for SD; Those files might use features
+          // not supported and can easily be soft-decoded
+          if (hint.width < 800)
+            break;
+        default:
+          CLog::Log(LOGINFO, "MediaCodec (Surface) Video Decoder...");
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(true, render_interlaced), hint, options)) ) return pCodec;
+      }
     }
   }
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC))
