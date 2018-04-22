@@ -2651,6 +2651,14 @@
           <level>2</level>
           <default>false</default>
           <control type="toggle" />
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition on="setting" setting="smb.enabledsm">false</condition>
+                <condition on="setting" setting="smb.enablesmb2">false</condition>
+              </and>
+            </dependency>
+          </dependencies>
         </setting>
         <setting id="smb.overwriteconf" type="boolean" label="1224" help="36463">
           <level>2</level>
