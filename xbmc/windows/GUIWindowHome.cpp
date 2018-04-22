@@ -207,11 +207,16 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   if (jobFlag & Video)
   {
     CSingleLock lock(m_critsection);
+    {
+      // these can alter the gui lists and cause renderer crashing
+      // if gui lists are yanked out from under rendering. Needs lock.
+      CSingleLock lock(g_graphicsContext);
 
-    ((CHomeShelfJob *)job)->UpdateTvItemsRA(m_HomeShelfTVRA);
-    ((CHomeShelfJob *)job)->UpdateTvItemsPR(m_HomeShelfTVPR);
-    ((CHomeShelfJob *)job)->UpdateMovieItemsRA(m_HomeShelfMoviesRA);
-    ((CHomeShelfJob *)job)->UpdateMovieItemsPR(m_HomeShelfMoviesPR);
+      ((CHomeShelfJob *)job)->UpdateTvItemsRA(m_HomeShelfTVRA);
+      ((CHomeShelfJob *)job)->UpdateTvItemsPR(m_HomeShelfTVPR);
+      ((CHomeShelfJob *)job)->UpdateMovieItemsRA(m_HomeShelfMoviesRA);
+      ((CHomeShelfJob *)job)->UpdateMovieItemsPR(m_HomeShelfMoviesPR);
+    }
     
     int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
     
