@@ -14799,7 +14799,17 @@ msgctxt "#24167"
 msgid "Watch as 2D"
 msgstr ""
 
-#empty strings from id 24168 to 24991
+#: pick smb2
+msgctxt "#24168"
+msgid "Use libsmb2 for smb servers"
+msgstr ""
+
+#: pick smb2
+msgctxt "#24169"
+msgid "Enable libsmb2 instead of libsmbclient, support smb2/3"
+msgstr ""
+
+#empty strings from id 24170 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp

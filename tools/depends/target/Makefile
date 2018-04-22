@@ -61,6 +61,7 @@ DEPENDS += libcdio
 #DEPENDS += libdvdread
 DEPENDS += libtasn1
 DEPENDS += libdsm
+DEPENDS += libsmb2
 
 EXCLUDED_DEPENDS =
 ifeq ($(OS),ios)

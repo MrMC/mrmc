@@ -38,6 +38,9 @@
 #ifdef HAS_FILESYSTEM_DSM
 #include "DSMFile.h"
 #endif
+#ifdef HAS_FILESYSTEM_SMB2
+#include "SMB2File.h"
+#endif
 #ifdef HAS_FILESYSTEM_CDDA
 #include "CDDAFile.h"
 #endif
@@ -178,6 +181,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_DSM
     else if (url.IsProtocol("smb") && CSettings::GetInstance().GetBool(CSettings::SETTING_SMB_ENABLEDSM))
       return new CDSMFile();
+#endif
+#ifdef HAS_FILESYSTEM_SMB2
+    else if (url.IsProtocol("smb") && CSettings::GetInstance().GetBool(CSettings::SETTING_SMB_ENABLESMB2))
+      return new CSMB2File();
 #endif
 #ifdef HAS_FILESYSTEM_SMB
     else if (url.IsProtocol("smb")) return new CSMBFile();

@@ -38,7 +38,7 @@ $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	#$(MAKE) -C $(PLATFORM) install
+	$(MAKE) -C $(PLATFORM) install
 	touch $@
 
 clean:
@@ -47,6 +47,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-
-
-# Replace EBADFD with EBADF Using EBADF is more portable and correct because EBADFD means a file descriptor in bad state, not an invalid file descriptor.

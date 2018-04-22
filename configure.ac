@@ -160,6 +160,10 @@ librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
+libdsm_not_found="== Could not find libdms. DMS(SMB1) client support disabled. =="
+libdsm_disabled="== DMS(SMB1) support disabled. =="
+libsmb2_not_found="== Could not find libsmb2. SMB2(SMB2/3) client support disabled. =="
+libsmb2_disabled="== SMB2(SMB2/3) support disabled. =="
 libshairplay_not_found="== Could not find libshairplay. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
@@ -318,9 +322,15 @@ AC_ARG_ENABLE([samba],
 
 AC_ARG_ENABLE([dsm],
   [AS_HELP_STRING([--enable-dsm],
-  [enable DSM support via libdsm (default is auto)])],
+  [enable DSM (smb1) support via libdsm (default is auto)])],
   [use_libdsm=$enableval],
   [use_libdsm=auto])
+
+AC_ARG_ENABLE([smb2],
+  [AS_HELP_STRING([--enable-smb2],
+  [enable SMB2 (smb2/3) support via libsmb2 (default is auto)])],
+  [use_libsmb2=$enableval],
+  [use_libsmb2=auto])
 
 AC_ARG_ENABLE([nfs],
   [AS_HELP_STRING([--enable-nfs],
@@ -1409,6 +1419,31 @@ else
   AC_MSG_NOTICE($libdsm_disabled)
 fi
 
+# libsmb2
+if test "x$use_libsmb2" != "xno"; then
+  AC_CHECK_HEADERS([smb2/libsmb2.h smb2/smb2.h],,
+   [if test "x$use_libsmb2" = "xyes"; then
+      AC_MSG_ERROR($libsmb2_not_found)
+      USE_LIBSMB2=0
+    elif test "x$use_libsmb2" != "xno"; then
+      AC_MSG_NOTICE($libsmb2_not_found)
+      use_libsmb2="no"
+      USE_LIBSMB2=0
+    fi
+   ])
+  if test "x$use_libsmb2" != "xno"; then
+    XB_FIND_SONAME([SMB2], [smb2], [use_libsmb2])
+  fi
+  if test "x$use_libsmb2" != "xno"; then
+    AC_DEFINE([HAVE_LIBSMB2], [1], [Whether to use libsmb2 library.])
+    USE_LIBSMB2=1
+  fi
+else
+  USE_LIBSMB2=0
+  AC_MSG_NOTICE($libsmb2_disabled)
+fi
+
+
 # libnfs
 if test "$use_libnfs" != "no"; then
   AC_CHECK_HEADERS([nfsc/libnfs.h],,
@@ -2101,6 +2136,12 @@ if test "$use_libdsm" != "no"; then
   final_message="$final_message\n  libdsm client support:Yes"
 else
   final_message="$final_message\n  libdsm client support:No"
+fi
+
+if test "$use_libsmb2" != "no"; then
+  final_message="$final_message\n  libsmb2 client support:Yes"
+else
+  final_message="$final_message\n  libsmb2 client support:No"
 fi
 
 if test "$use_libnfs" != "no"; then

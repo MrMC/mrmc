@@ -55,7 +55,7 @@ CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started
 {
   AddServiceType("_ftp._tcp.");
   AddServiceType("_webdav._tcp.");
-#if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_DSM)
+#if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_SMB2) || defined(HAS_FILESYSTEM_DSM)
   AddServiceType("_smb._tcp.");
 #endif
 #ifdef HAS_FILESYSTEM_NFS

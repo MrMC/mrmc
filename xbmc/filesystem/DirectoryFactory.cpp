@@ -56,6 +56,9 @@
 #ifdef HAS_FILESYSTEM_DSM
 #include "DSMDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_SMB2
+#include "SMB2Directory.h"
+#endif
 #ifdef HAS_FILESYSTEM_CDDA
 #include "CDDADirectory.h"
 #endif
@@ -212,6 +215,10 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #ifdef HAS_FILESYSTEM_DSM
     if (url.IsProtocol("smb") && CSettings::GetInstance().GetBool(CSettings::SETTING_SMB_ENABLEDSM))
       return new CDSMDirectory();
+#endif
+#ifdef HAS_FILESYSTEM_SMB2
+    if (url.IsProtocol("smb") && CSettings::GetInstance().GetBool(CSettings::SETTING_SMB_ENABLESMB2))
+      return new CSMB2Directory();
 #endif
 #ifdef HAS_FILESYSTEM_SMB
     if (url.IsProtocol("smb")) return new CSMBDirectory();

@@ -117,6 +117,9 @@
 #if defined(HAS_FILESYSTEM_DSM)
 #include "filesystem/DSMDirectory.h"
 #endif
+#if defined(HAS_FILESYSTEM_SMB2)
+#include "filesystem/SMB2File.h"
+#endif
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"
 #endif
@@ -4641,7 +4644,11 @@ void CApplication::ProcessSlow()
 #if defined(HAS_FILESYSTEM_DSM)
   CDSMSessionManager::ClearOutIdleSessions();
 #endif
- 
+
+#if defined(HAS_FILESYSTEM_SMB2)
+  CSMB2SessionManager::CheckIfIdle();
+#endif
+
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.CheckIfIdle();
 #endif
@@ -5294,6 +5301,10 @@ void CApplication::CloseNetworkShares()
   
 #if defined(HAS_FILESYSTEM_DSM)
   CDSMSessionManager::Disconnect();
+#endif
+
+#if defined(HAS_FILESYSTEM_SMB2)
+  CSMB2SessionManager::DisconnectAll();
 #endif
 
 #ifdef HAS_FILESYSTEM_NFS

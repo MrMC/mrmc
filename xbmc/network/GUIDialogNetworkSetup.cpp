@@ -123,7 +123,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   }
   else
   {
-  #if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_DSM)
+  #if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_SMB2) || defined(HAS_FILESYSTEM_DSM)
     labels.push_back(make_pair(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB));
   #endif
     labels.push_back(make_pair(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS));

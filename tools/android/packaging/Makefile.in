@@ -10,6 +10,7 @@ OBJS+= libxbogg.so libxbvorbis.so libxbvorbisfile.so
 OBJS+= libmpeg2.so libmpeg2convert.so
 OBJS+= libnfs.so
 OBJS+= libdsm.so
+OBJS+= libsmb2.so
 OBJS+= libsmbclient.so
 OBJS+= libbluray.so
 OBJS+= libplist.so

@@ -196,7 +196,7 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
   {
     CMediaSource share;
     share.m_ignore = true;
-#if defined(HAS_FILESYSTEM_SMB)
+#if defined(HAS_FILESYSTEM_SMB) || defined(HAS_FILESYSTEM_SMB2) || defined(HAS_FILESYSTEM_DSM)
     share.strPath = "smb://";
     share.strName = g_localizeStrings.Get(20171);
     locations.push_back(share);
