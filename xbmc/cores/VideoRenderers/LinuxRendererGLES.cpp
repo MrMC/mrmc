@@ -201,6 +201,8 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   m_iFlags = flags;
   m_format = format;
 
+  CLog::Log(LOGDEBUG, "%s: HDR: %x, %x", __PRETTY_FUNCTION__, m_iFlags, CONF_FLAGS_TRC_MASK(m_iFlags));
+
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
@@ -849,7 +851,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
         // create regular scan shader
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
-        m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
+        m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format, m_toneMap);
         m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
         m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, m_format);
         m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
@@ -1131,10 +1133,18 @@ void CLinuxRendererGLES::Render(uint32_t flags, int index)
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 {
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVBUFFER &buf    = m_buffers[index];
+  YV12Image &im     = buf.image;
+  YUVFIELDS &fields = buf.fields;
   YUVPLANES &planes = fields[FIELD_FULL];
   YUVPLANES &planesf = fields[field];
+
+  bool toneMap = false;
+  if (CONF_FLAGS_TRC_MASK(m_iFlags) >= CONF_FLAGS_TRC_SMPTE2084)  // HDR
+    toneMap = true;
+  if (toneMap != m_toneMap)
+    m_reloadShaders = true;
+  m_toneMap = toneMap;
 
   if (m_reloadShaders)
   {
@@ -1179,6 +1189,18 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
   pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
   pYUVShader->Enable();
+
+  if (m_toneMap)  // HDR: Apply tone mapping
+  {
+    float max_luma = 0.5;
+    if (buf.nal_info.has_light && buf.nal_info.light_maxcll > 0)
+      max_luma = log10(100) / log10(buf.nal_info.light_maxcll);
+    else if (buf.nal_info.has_master_prim && buf.nal_info.master_prim_maxlum > 0)
+      max_luma = log10(100) / log10(buf.nal_info.master_prim_maxlum);
+
+    GLint htoneP1Loc = glGetUniformLocation(pYUVShader->ProgramHandle(), "m_toneP1");
+    glUniform1f(htoneP1Loc, max_luma);
+  }
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat m_vert[4][3];
@@ -1726,8 +1748,9 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
     unsigned int time = XbmcThreads::SystemClockMillis();
   #endif
 
-  YUVPLANE &plane = m_buffers[index].fields[0][0];
-  YUVPLANE &planef = m_buffers[index].fields[field][0];
+  YUVBUFFER &buf = m_buffers[index];
+  YUVPLANE &plane = buf.fields[0][0];
+  YUVPLANE &planef = buf.fields[field][0];
 
   glDisable(GL_DEPTH_TEST);
 
@@ -1748,7 +1771,22 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
     glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
   }
   else
-    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
+  {
+    if (m_toneMap)  // HDR: Apply tone mapping
+    {
+      float max_luma = 0.5;
+      if (buf.nal_info.has_light && buf.nal_info.light_maxcll > 0)
+        max_luma = log10(100) / log10(buf.nal_info.light_maxcll);
+      else if (buf.nal_info.has_master_prim && buf.nal_info.master_prim_maxlum > 0)
+        max_luma = log10(100) / log10(buf.nal_info.master_prim_maxlum);
+
+      g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES_TONE);
+      GLint htoneP1Loc = glGetUniformLocation(g_Windowing.GUIShaderProgramHandle(), "m_toneP1");
+      glUniform1f(htoneP1Loc, max_luma);
+    }
+    else
+      g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
+  }
 
   GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
   glUniform1f(contrastLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
@@ -1897,6 +1935,13 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   restoreRotatedCoords();//restores the previous state of the rotated dest coords
 
   return true;
+}
+
+bool CLinuxRendererGLES::AddVideoPicture(DVDVideoPicture* picture, int index)
+{
+  YUVBUFFER &buf = m_buffers[index];
+  buf.nal_info = picture->nal_info;
+  return false;
 }
 
 //********************************************************************************************************

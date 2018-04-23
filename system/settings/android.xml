@@ -46,7 +46,7 @@
         <setting id="videoplayer.usemediacodec" type="boolean" label="13439" help="36544">
           <visible>HAS_MEDIACODEC</visible>
           <level>2</level>
-          <default>false</default>
+          <default>true</default>
           <updates>
             <update type="change" />
           </updates>

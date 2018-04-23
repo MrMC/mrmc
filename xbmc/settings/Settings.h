@@ -318,6 +318,7 @@ public:
   static const std::string SETTING_VIDEOSCREEN_SCREEN;
   static const std::string SETTING_VIDEOSCREEN_RESOLUTION;
   static const std::string SETTING_VIDEOSCREEN_SCREENMODE;
+  static const std::string SETTING_VIDEOSCREEN_HASHDR;
   static const std::string SETTING_VIDEOSCREEN_FAKEFULLSCREEN;
   static const std::string SETTING_VIDEOSCREEN_BLANKDISPLAYS;
   static const std::string SETTING_VIDEOSCREEN_STEREOSCOPICMODE;
