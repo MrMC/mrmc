@@ -2,7 +2,7 @@
 <addon id="resource.images.weathericons.default"
        name="Weather Icons - Default"
        version="1.1.8"
-       provider-name="Team Kodi">
+       provider-name="Team MrMC">
   <requires>
     <import addon="kodi.resource" version="1.0.0"/>
   </requires>
@@ -10,7 +10,7 @@
              type="weather" />
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Default Weather Icons</summary>
-    <description lang="en">Default set of Weather Icons shipped with Kodi</description>
+    <description lang="en">Default set of Weather Icons shipped with MrMC</description>
     <platform>all</platform>
   </extension>
 </addon>

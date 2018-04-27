@@ -1007,7 +1007,7 @@ msgctxt "#230"
 msgid "Video filters"
 msgstr ""
 
-#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
+#. Name of an action to perform on a specific event, like changing the CEC source away from MrMC
 #: system/peripherals.xml
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
@@ -10338,7 +10338,7 @@ msgid "No PVR add-ons could be found"
 msgstr ""
 
 msgctxt "#19272"
-msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit http://kodi.wiki/view/PVR to learn more."
+msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit https://wiki.mrmc.tv/view/PVR to learn more."
 msgstr ""
 
 #. Header on DialogOK
@@ -15424,7 +15424,7 @@ msgstr ""
 #. Help text of boolean on/off value
 #: system/settings/settings.xml
 msgctxt "#29987"
-msgid "Send present traffic messages around and can be handled from add-ons (nothing inside Kodi)"
+msgid "Send present traffic messages around and can be handled from add-ons (nothing inside MrMC)"
 msgstr ""
 
 #empty strings from id 29988 to 33000
@@ -16440,14 +16440,14 @@ msgctxt "#36043"
 msgid "Disable limited to full video rescaling"
 msgstr ""
 
-#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
+#. Name of an action to perform on a specific event, like changing the CEC source away from MrMC
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 #: system/peripherals.xml
 msgctxt "#36044"
 msgid "Stop Playback"
 msgstr ""
 
-#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
+#. Name of an action to perform on a specific event, like changing the CEC source away from MrMC
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 #: system/peripherals.xml
 msgctxt "#36045"

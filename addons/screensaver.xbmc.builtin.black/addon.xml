@@ -2,7 +2,7 @@
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
        version="1.0.29"
-       provider-name="Team-Kodi">
+       provider-name="Team-MrMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary lang="af_ZA">Sluimerskerm wat jou skerm swart maak.</summary>

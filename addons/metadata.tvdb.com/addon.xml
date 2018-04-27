@@ -2,7 +2,7 @@
 <addon id="metadata.tvdb.com"
        name="The TVDB"
        version="1.8.5"
-       provider-name="Team Kodi">
+       provider-name="Team MrMC">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
     <import addon="metadata.common.imdb.com" version="2.7.8"/>
