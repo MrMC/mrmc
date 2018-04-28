@@ -54,11 +54,16 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory strURL = %s", strUrl.c_str());
 
-  CVideoDatabase database;
-  database.Open();
-  bool hasMovies = database.HasContent(VIDEODB_CONTENT_MOVIES);
-  bool hasShows = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
-  database.Close();
+  CVideoDatabase vdatabase;
+  vdatabase.Open();
+  bool hasMovies = vdatabase.HasContent(VIDEODB_CONTENT_MOVIES);
+  bool hasShows = vdatabase.HasContent(VIDEODB_CONTENT_TVSHOWS);
+  vdatabase.Close();
+  CMusicDatabase mdatabase;
+  mdatabase.Open();
+  bool hasMusic = mdatabase.HasContent();
+  mdatabase.Close();
+
   
   if (StringUtils::StartsWithNoCase(strUrl, "plex://movies/"))
   {
@@ -306,15 +311,27 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     if (section.empty())
     {
-      //look through all plex servers and pull content data for "show" type
+      std::string pathsection = "";
+      if (basePath == "artists")
+        pathsection = "all";
+      else if (basePath == "albums")
+        pathsection = "all?type=9";
+      else if (basePath == "songs")
+        pathsection = "all?type=10";
+      else if (basePath == "recentlyaddedalbums")
+        pathsection = "recentlyAdded";
+      //look through all plex servers and pull content data for "music" type
       std::vector<CPlexClientPtr> clients;
       CPlexServices::GetInstance().GetClients(clients);
       for (const auto &client : clients)
       {
         client->ClearSectionItems();
         std::vector<PlexSectionsContent> contents = client->GetArtistContent();
-        if (contents.size() > 1 || ((items.Size() > 0 || CServicesManager::GetInstance().HasEmbyServices() || clients.size() > 1) && contents.size() == 1))
+        if (contents.size() > 1 ||
+            ((items.Size() > 0 || hasMusic || CServicesManager::GetInstance().HasEmbyServices() ||
+              clients.size() > 1) && contents.size() == 1))
         {
+          // multiple folders or providers found, add root folder for each node
           for (const auto &content : contents)
           {
             std::string title = client->FormatContentTitle(content.title);
@@ -325,7 +342,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             // have to do it this way because raw url has authToken as protocol option
             CURL curl(client->GetUrl());
             curl.SetProtocol(client->GetProtocol());
-            std::string filename = StringUtils::Format("%s/%s", content.section.c_str(), (basePath == "root" || basePath == "artists"? "all":basePath.c_str()));
+            std::string filename = StringUtils::Format("%s/%s", content.section.c_str(), pathsection.c_str());
             curl.SetFileName(filename);
             pItem->SetPath("plex://music/" + basePath + "/" + Base64URL::Encode(curl.Get()));
             pItem->SetLabel(title);
@@ -341,16 +358,16 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
         else if (contents.size() == 1)
         {
+          // only one folder/provider found, pull content directly
           CURL curl(client->GetUrl());
           curl.SetProtocol(client->GetProtocol());
-          curl.SetFileName(contents[0].section + "/all");
-          CPlexUtils::GetPlexArtistsOrAlbum(items, curl.Get(), false);
+          std::string filename = StringUtils::Format("%s/%s", contents[0].section.c_str(), pathsection.c_str());
+          curl.SetFileName(filename);
+          CDirectory::GetDirectory("plex://music/" + basePath + "/" + Base64URL::Encode(curl.Get()), items);
           items.SetContent("artists");
-          items.SetPath("plex://music/albums/");
           CPlexUtils::SetPlexItemProperties(items, client);
           for (int item = 0; item < items.Size(); ++item)
             CPlexUtils::SetPlexItemProperties(*items[item], client);
-          CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory '/all' client(%s), shows(%d)", client->GetServerName().c_str(), items.Size());
         }
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedalbums")

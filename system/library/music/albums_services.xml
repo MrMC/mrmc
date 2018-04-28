@@ -2,5 +2,6 @@
 <node order="3" type="folder" visible="!Library.HasContent(Music) + Library.HasServices">
   <label>132</label>
   <icon>DefaultMusicAlbums.png</icon>
-  <path>services://music/albums/</path>
+  <path>services://music/albums</path>
+  <content>albums</content>
 </node>
