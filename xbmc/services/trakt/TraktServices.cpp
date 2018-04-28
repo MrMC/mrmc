@@ -366,7 +366,7 @@ bool CTraktServices::MyTraktSignedIn()
 
 bool CTraktServices::GetSignInPinCode()
 {
-  // on return, show user m_signInByPinCode so they can enter it at https://emby.media/pin
+  // on return, show user m_signInByPinCode so they can enter it at https://trakt.tv/activate
   bool rtn = false;
   std::string strMessage;
 
@@ -459,7 +459,7 @@ bool CTraktServices::GetSignInPinCode()
     CLog::Log(LOGERROR, "CTraktServices::FetchSignInPin failed %s", response.c_str());
   }
   if (!rtn)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Emby Services", strMessage, 3000, true);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Trakt Service", strMessage, 3000, true);
   return rtn;
 }
 
