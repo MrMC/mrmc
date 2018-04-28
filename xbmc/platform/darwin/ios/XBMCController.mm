@@ -849,6 +849,7 @@ XBMCController *g_xbmcController;
     m_isPlayingBeforeInactive = FALSE;
   }
   CNetworkServices::GetInstance().StartPlexServices();
+  CIOSPlayShared::GetInstance().RunPlayback();
 }
 
 - (void)becomeInactive
