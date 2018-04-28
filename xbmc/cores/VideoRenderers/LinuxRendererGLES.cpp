@@ -1076,6 +1076,13 @@ void CLinuxRendererGLES::Render(uint32_t flags, int index)
   else
     m_currentField = FIELD_FULL;
 
+  bool toneMap = false;
+  if (CONF_FLAGS_TRC_MASK(m_iFlags) >= CONF_FLAGS_TRC_SMPTE2084)  // HDR
+    toneMap = true;
+  if (toneMap != m_toneMap)
+    m_reloadShaders = true;
+  m_toneMap = toneMap;
+
   (this->*m_textureUpload)(index);
 
   if (m_renderMethod & RENDER_GLSL)
@@ -1138,13 +1145,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   YUVFIELDS &fields = buf.fields;
   YUVPLANES &planes = fields[FIELD_FULL];
   YUVPLANES &planesf = fields[field];
-
-  bool toneMap = false;
-  if (CONF_FLAGS_TRC_MASK(m_iFlags) >= CONF_FLAGS_TRC_SMPTE2084)  // HDR
-    toneMap = true;
-  if (toneMap != m_toneMap)
-    m_reloadShaders = true;
-  m_toneMap = toneMap;
 
   if (m_reloadShaders)
   {
@@ -1779,6 +1779,7 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
         max_luma = log10(100) / log10(buf.nal_info.light_maxcll);
       else if (buf.nal_info.has_master_prim && buf.nal_info.master_prim_maxlum > 0)
         max_luma = log10(100) / log10(buf.nal_info.master_prim_maxlum);
+//      CLog::Log(LOGDEBUG, "%s - Tone mapping: %f", __PRETTY_FUNCTION__, max_luma);
 
       g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES_TONE);
       GLint htoneP1Loc = glGetUniformLocation(g_Windowing.GUIShaderProgramHandle(), "m_toneP1");
