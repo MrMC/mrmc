@@ -1033,6 +1033,12 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
     strPath = checkURL.GetHostName();
   if (checkURL.IsProtocol("plugin"))
     return 1;
+  if (checkURL.IsProtocol("services"))
+    return 1;
+  if (checkURL.IsProtocol("plex"))
+    return 1;
+  if (checkURL.IsProtocol("emby"))
+    return 1;
   if (checkURL.IsProtocol("multipath"))
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
