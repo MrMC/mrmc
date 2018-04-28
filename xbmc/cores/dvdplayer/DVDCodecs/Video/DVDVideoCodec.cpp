@@ -395,8 +395,6 @@ NALInfo CDVDVideoCodec::ProbeHEVCNALUnits(uint8_t *pData, int iSize)
               // no range specified but min < max.
               uint32_t max_display_mastering_luminance = CBitstreamParser::nal_bs_read(&bs, 32);
               uint32_t min_display_mastering_luminance = CBitstreamParser::nal_bs_read(&bs, 32);
-              float maxMasteringLuminance = 0.0001f * (float)max_display_mastering_luminance;
-              float minMasteringLuminance = 0.0001f * (float)min_display_mastering_luminance;
 
               info.master_prim_rx = display_primaries[2][0];
               info.master_prim_ry = display_primaries[2][1];
@@ -421,6 +419,8 @@ NALInfo CDVDVideoCodec::ProbeHEVCNALUnits(uint8_t *pData, int iSize)
                 displayPrimaries[1][0], displayPrimaries[1][1],
                 displayPrimaries[0][0], displayPrimaries[0][1],
                 whitePoint[0], whitePoint[1]);
+              float maxMasteringLuminance = 0.0001f * (float)max_display_mastering_luminance;
+              float minMasteringLuminance = 0.0001f * (float)min_display_mastering_luminance;
               CLog::Log(LOGDEBUG, "Mastering display luminance       : min: %f cd/m2, max: %f cd/m2",
                 minMasteringLuminance, maxMasteringLuminance);
 #endif
