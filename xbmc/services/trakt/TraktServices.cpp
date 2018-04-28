@@ -1108,8 +1108,6 @@ void CTraktServices::ServerChat(const std::string &url, const CVariant &data)
 
 void CTraktServices::RefreshAccessToken()
 {
-  https://api.trakt.tv/oauth/token
-
   XFILE::CCurlFile curlfile;
   curlfile.SetSilent(true);
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
