@@ -1269,7 +1269,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
 void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*/)
 {
-  YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[FIELD_FULL];
   YUVPLANES &planesf = fields[field];
