@@ -1127,6 +1127,11 @@ void CLinuxRendererGLES::Render(uint32_t flags, int index)
       RenderMultiPass(index, m_currentField);
       VerifyGLState();
       break;
+
+    case RQ_SOFTWARE:
+      RenderSoftware(index, m_currentField);
+      VerifyGLState();
+      break;
     }
   }
   else
