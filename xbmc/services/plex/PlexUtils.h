@@ -100,7 +100,7 @@ private:
   static void ReportToServer(std::string url, std::string filename);
   static void GetVideoDetails(CFileItem &item, const CVariant &variant);
   static void GetMusicDetails(CFileItem &item, const CVariant &video);
-  static void GetMediaDetals(CFileItem &item, CURL url, const CVariant &media, std::string id = "0");
+  static void GetMediaDetails(CFileItem &item, CURL url, const CVariant &media, std::string id = "0");
   static CVariant GetPlexCVariant(std::string url, std::string filter = "");
   static TiXmlDocument GetPlexXML(std::string url, std::string filter = "");
   static int ParsePlexCVariant(const CVariant &item);

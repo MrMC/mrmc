@@ -616,7 +616,7 @@ bool CPlexUtils::GetItemSubtiles(CFileItem &item)
       for (auto variantIt = variantMedia.begin_array(); variantIt != variantMedia.end_array(); ++variantIt)
       {
         if (*variantIt != CVariant::VariantTypeNull)
-          GetMediaDetals(item, curl, *variantIt, item.GetProperty("PlexMediaID").asString());
+          GetMediaDetails(item, curl, *variantIt, item.GetProperty("PlexMediaID").asString());
       }
     }
   }
@@ -681,7 +681,7 @@ bool CPlexUtils::GetMoreResolutions(CFileItem &item)
         if (*variantIt != CVariant::VariantTypeNull)
         {
           CFileItem mediaItem(item);
-          GetMediaDetals(mediaItem, curl, *variantIt);
+          GetMediaDetails(mediaItem, curl, *variantIt);
           resolutionList.push_back(mediaItem);
           choices.Add(resolutionList.size(), mediaItem.GetProperty("PlexResolutionChoice").c_str());
         }
@@ -1306,7 +1306,7 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
     plexItem->m_lStartOffset = item["viewOffset"].asInteger() / 1000;
 
     const CVariant media = makeVariantArrayIfSingleItem(item["Media"]);
-    GetMediaDetals(*plexItem, url, media[0]);
+    GetMediaDetails(*plexItem, url, media[0]);
 
     if (formatLabel)
     {
@@ -1848,7 +1848,7 @@ void CPlexUtils::GetMusicDetails(CFileItem &item, const CVariant &video)
 */
 }
 
-void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const CVariant &media, std::string id)
+void CPlexUtils::GetMediaDetails(CFileItem &item, CURL url, const CVariant &media, std::string id)
 {
   if (!media.isNull() && (id == "0" || media["id"].asString() == id))
   {
