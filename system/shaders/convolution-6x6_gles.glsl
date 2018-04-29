@@ -40,11 +40,13 @@ vec3 weight(float pos)
     return texture2D(kernelTex, vec2(pos, 0.5)).rgb;
   #endif
 #else
+  vec4 color;
   #if (USE1DTEXTURE)
-    return texture1D(kernelTex, pos).rgb * 2.0 - 1.0;
+    color = texture1D(kernelTex, pos).rgb;
   #else
-    return texture2D(kernelTex, vec2(pos, 0.5)).rgb * 2.0 - 1.0;
+    color = texture2D(kernelTex, vec2(pos, 0.5)).rgb;
   #endif
+  return color * 2.0 - 1.0;
 #endif
 }
 
