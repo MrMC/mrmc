@@ -128,9 +128,8 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
 
           // PCM sample rate
           unsigned int samplerate = format.m_sampleRate;
-          format.m_streamInfo.m_IECPacked = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED);
           // FormatNeedsIECPacked might switch noIEC to IEC
-          format.m_streamInfo.m_IECPacked = CAESinkFactory::FormatNeedsIECPacked(format);
+          format.m_streamInfo.m_IECPacked = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED) && CAESinkFactory::FormatNeedsIECPacked(format);
           if (isRaw && format.m_streamInfo.m_IECPacked)
           {
             switch (format.m_streamInfo.m_type)
@@ -744,9 +743,7 @@ void CActiveAESink::OpenSink()
   // iec packing or raw
   if (passthrough)
   {
-    m_requestedFormat.m_streamInfo.m_IECPacked = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED);
-    // FormatNeedsIECPacked might switch noIEC to IEC
-    m_requestedFormat.m_streamInfo.m_IECPacked = CAESinkFactory::FormatNeedsIECPacked(m_requestedFormat);
+    m_requestedFormat.m_streamInfo.m_IECPacked = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED) && CAESinkFactory::FormatNeedsIECPacked(m_requestedFormat);
     if (m_requestedFormat.m_streamInfo.m_IECPacked)
     {
       SAFE_DELETE(m_packer);
