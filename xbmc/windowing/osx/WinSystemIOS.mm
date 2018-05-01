@@ -35,7 +35,7 @@
 #include <vector>
 
 #import <Foundation/Foundation.h>
-#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES3/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
 
