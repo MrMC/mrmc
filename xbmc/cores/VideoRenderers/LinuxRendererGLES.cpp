@@ -2838,6 +2838,8 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LINEAR)
     return true;
 
+// disable GLES HQ scalers for iOS/tvOS until we get them working
+#if !defined(TARGET_DARWIN_IOS)
   if(method == VS_SCALINGMETHOD_CUBIC
   || method == VS_SCALINGMETHOD_LANCZOS2
   || method == VS_SCALINGMETHOD_SPLINE36_FAST
@@ -2862,6 +2864,7 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
         return g_advancedSettings.m_videoEnableHighQualityHwScalers;
     }
   }
+#endif
 
   return false;
 }
