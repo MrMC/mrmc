@@ -308,7 +308,27 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     m_format.m_sampleRate = m_sink_sampleRate;
     m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
     m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
-    if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+
+    if (CJNIAudioManager::GetSDKVersion() >= 23)
+    {
+      CJNIAudioDeviceInfos audiodevices = CXBMCApp::GetAudioDeviceInfos();
+      for (auto dev : audiodevices)
+      {
+        if (dev.getType() == CJNIAudioDeviceInfo::TYPE_HDMI || dev.getType() == CJNIAudioDeviceInfo::TYPE_HDMI_ARC)
+        {
+          for (auto enc : dev.getEncodings())
+          {
+            if (enc == CJNIAudioFormat::ENCODING_IEC61937)
+            {
+              // defaults for ENCODING_IEC61937
+              m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
+              m_encoding = CJNIAudioFormat::ENCODING_IEC61937;
+            }
+          }
+        }
+      }
+    }
+    else if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
     {
       // defaults for ENCODING_IEC61937
       m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
@@ -778,43 +798,33 @@ void CAESinkAUDIOTRACK::Drain()
 bool CAESinkAUDIOTRACK::FormatNeedsIECPacked(const AEAudioFormat &format)
 {
   // ENCODING_IEC61937 mean all bitstreamed formats are IEC packed
-  if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED))
     return true;
 
   bool needsIECPacked = true;
   switch (format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
-      if (format.m_streamInfo.m_IECPacked)
-        needsIECPacked = true;
-      else if (CJNIAudioFormat::ENCODING_AC3 != -1)
+      if (CJNIAudioFormat::ENCODING_AC3 != -1)
         needsIECPacked = false;
       break;
     case CAEStreamInfo::STREAM_TYPE_EAC3:
-      if (format.m_streamInfo.m_IECPacked)
-        needsIECPacked = true;
-      else if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
+      if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
         needsIECPacked = false;
       break;
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-      if (format.m_streamInfo.m_IECPacked)
-        needsIECPacked = true;
-      else if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+      if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
         needsIECPacked = false;
       break;
     case CAEStreamInfo::STREAM_TYPE_DTS_512:
     case CAEStreamInfo::STREAM_TYPE_DTS_2048:
     case CAEStreamInfo::STREAM_TYPE_DTS_1024:
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-      if (format.m_streamInfo.m_IECPacked)
-        needsIECPacked = true;
-      else if (CJNIAudioFormat::ENCODING_DTS != -1)
+      if (CJNIAudioFormat::ENCODING_DTS != -1)
         needsIECPacked = false;
       break;
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
-      if (format.m_streamInfo.m_IECPacked)
-        needsIECPacked = true;
-      else if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
+      if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
         needsIECPacked = false;
       break;
 

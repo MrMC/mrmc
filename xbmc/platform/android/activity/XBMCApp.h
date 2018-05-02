@@ -167,6 +167,7 @@ public:
   static bool ResetSystemIdleTimer();
   static bool HasFocus() { return m_hasFocus; }
   static bool IsResumed() { return m_hasResumed; }
+  static CJNIAudioDeviceInfos GetAudioDeviceInfos() { return m_audiodevices; }
   static void CheckHeadsetPlugged();
   static bool IsHeadsetPlugged();
   static bool IsHDMIPlugged();
