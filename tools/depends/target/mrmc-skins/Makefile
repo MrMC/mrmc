@@ -12,6 +12,7 @@ ifneq ($(findstring ios, $(TARGET_PLATFORM)), ios)
 	SUBDIRS += skin.mrmc
 	SUBDIRS += skin.pm3.hd
 	SUBDIRS += skin.amber
+	SUBDIRS += skin.ariana
 endif
 
 all: skins
