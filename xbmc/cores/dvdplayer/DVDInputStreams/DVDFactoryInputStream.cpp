@@ -104,13 +104,18 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     if (finalFileitem.ContentLookup())
     {
-      XFILE::CCurlFile url;
+      CURL origUrl(finalFileitem.GetURL());
+      XFILE::CCurlFile curlFile;
       // try opening the url to resolve all redirects if any
-      if (url.Open(finalFileitem.GetURL()))
+      if (curlFile.Open(finalFileitem.GetURL()))
       {
-        finalFileitem.SetPath(url.GetURL());
+        CURL finalUrl(curlFile.GetURL());
+        finalUrl.SetProtocolOptions(origUrl.GetProtocolOptions());
+        finalUrl.SetUserName(origUrl.GetUserName());
+        finalUrl.SetPassword(origUrl.GetPassWord());
+        finalFileitem.SetPath(finalUrl.Get());
       }
-      url.Close();
+      curlFile.Close();
     }
     
     if (finalFileitem.IsType(".m3u8"))
