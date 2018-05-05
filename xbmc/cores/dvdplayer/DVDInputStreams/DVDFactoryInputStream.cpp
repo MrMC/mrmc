@@ -35,7 +35,6 @@
 #include "FileItem.h"
 #include "storage/MediaManager.h"
 #include "URL.h"
-#include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
 
@@ -98,28 +97,22 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   else if(file.substr(0, 8) == "stack://")
     return new CDVDInputStreamStack(fileitem);
 #endif
-  CFileItem finalFileitem(fileitem);
-  
-  if (finalFileitem.IsInternetStream())
+  else if (fileitem.IsInternetStream())
   {
-    if (finalFileitem.ContentLookup())
+    if (fileitem.IsType(".m3u8"))
+      return new CDVDInputStreamFFmpeg(fileitem);
+
+    if (fileitem.ContentLookup())
     {
-      XFILE::CCurlFile url;
-      // try opening the url to resolve all redirects if any
-      if (url.Open(finalFileitem.GetURL()))
-      {
-        finalFileitem.SetPath(url.GetURL());
-      }
-      url.Close();
+      // request header
+      fileitem.SetMimeType("");
+      fileitem.FillInMimeType();
     }
-    
-    if (finalFileitem.IsType(".m3u8"))
-      return new CDVDInputStreamFFmpeg(finalFileitem);
-    
-    if (finalFileitem.GetMimeType() == "application/vnd.apple.mpegurl")
-      return new CDVDInputStreamFFmpeg(finalFileitem);
+
+    if (fileitem.GetMimeType() == "application/vnd.apple.mpegurl")
+      return new CDVDInputStreamFFmpeg(fileitem);
   }
 
   // our file interface handles all these types of streams
-  return (new CDVDInputStreamFile(finalFileitem));
+  return (new CDVDInputStreamFile(fileitem));
 }

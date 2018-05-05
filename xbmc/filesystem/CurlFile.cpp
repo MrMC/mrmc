@@ -1801,11 +1801,6 @@ std::string CCurlFile::GetServerReportedCharset(void)
   return m_state->m_httpheader.GetCharset();
 }
 
-std::string CCurlFile::GetURL(void)
-{
-  return m_url;
-}
-
 /* STATIC FUNCTIONS */
 bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 {
