@@ -32,7 +32,6 @@ CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* =
   : ISetting(id, settingsManager),
     m_callback(NULL),
     m_label(-1), m_help(-1),
-    m_enabled(true),
     m_level(SettingLevelStandard),
     m_control(NULL),
     m_changed(false)
@@ -42,7 +41,6 @@ CSetting::CSetting(const std::string &id, const CSetting &setting)
   : ISetting(id, setting.m_settingsManager),
     m_callback(NULL),
     m_label(-1), m_help(-1),
-    m_enabled(true),
     m_level(SettingLevelStandard),
     m_control(NULL),
     m_changed(false)
@@ -151,8 +149,11 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   
 bool CSetting::IsEnabled() const
 {
+  if (!ISetting::IsEnabled())
+    return false;
+
   if (m_dependencies.empty() && m_parentSetting.empty())
-    return m_enabled;
+    return true;
 
   // if the setting has a parent setting and that parent setting is disabled
   // the setting should automatically also be disabled
@@ -185,7 +186,7 @@ void CSetting::SetEnabled(bool enabled)
       m_enabled == enabled)
     return;
 
-  m_enabled = enabled;
+  ISetting::SetEnabled(enabled);
   OnSettingPropertyChanged(this, "enabled");
 }
 

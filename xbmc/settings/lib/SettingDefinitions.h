@@ -30,6 +30,7 @@
 #define SETTING_XML_ELM_GROUP         "group"
 #define SETTING_XML_ELM_SETTING       "setting"
 #define SETTING_XML_ELM_VISIBLE       "visible"
+#define SETTING_XML_ELM_ENABLED       "enabled"
 #define SETTING_XML_ELM_REQUIREMENT   "requirement"
 #define SETTING_XML_ELM_CONDITION     "condition"
 #define SETTING_XML_ELM_LEVEL         "level"

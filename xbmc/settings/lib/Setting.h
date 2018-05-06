@@ -126,7 +126,6 @@ protected:
   ISettingCallback *m_callback;
   int m_label;
   int m_help;
-  bool m_enabled;
   std::string m_parentSetting;
   SettingLevel m_level;
   ISettingControl *m_control;

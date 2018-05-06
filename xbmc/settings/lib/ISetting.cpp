@@ -24,11 +24,13 @@
 #include "SettingDefinitions.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 ISetting::ISetting(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : m_id(id),
     m_settingsManager(settingsManager),
     m_visible(true),
+    m_enabled(true),
     m_label(-1), m_help(-1),
     m_meetsRequirements(true),
     m_requirementCondition(settingsManager)
@@ -42,6 +44,8 @@ bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   bool value;
   if (XMLUtils::GetBoolean(node, SETTING_XML_ELM_VISIBLE, value))
     m_visible = value;
+  if (XMLUtils::GetBoolean(node, SETTING_XML_ELM_ENABLED, value))
+    m_enabled = value;
 
   const TiXmlElement *element = node->ToElement();
   if (element == NULL)
@@ -58,6 +62,16 @@ bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return true;
 
   return m_requirementCondition.Deserialize(requirementNode);
+}
+
+bool ISetting::IsVisible() const
+{
+  return m_visible;
+}
+
+bool ISetting::IsEnabled() const
+{
+  return m_enabled;
 }
 
 bool ISetting::DeserializeIdentification(const TiXmlNode *node, std::string &identification)

@@ -66,14 +66,28 @@ public:
 
    \return True if the setting object is visible, false otherwise
    */
-  virtual bool IsVisible() const { return m_visible; }
+  virtual bool IsVisible() const;
   /*!
    \brief Sets the visibility state of the setting object.
 
    \param visible Whether the setting object shall be visible or not
    */
   virtual void SetVisible(bool visible) { m_visible = visible; }
-   /*!
+
+  /*!
+   \brief Whether the setting object is enabled.
+
+   \return True if the setting object is enabled, false otherwise
+   */
+  virtual bool IsEnabled() const;
+  /*!
+   \brief Sets the enabled state of the setting object.
+
+   \param visible Whether the setting object shall be enabled or not
+   */
+  virtual void SetEnabled(bool enable) { m_enabled = enable; }
+
+  /*!
    \brief Gets the localizeable label ID of the setting group.
 
    \return Localizeable label ID of the setting group
@@ -126,10 +140,11 @@ public:
 
 protected:
   std::string m_id;
+  bool m_visible;
+  bool m_enabled;
   CSettingsManager *m_settingsManager;
 
 private:
-  bool m_visible;
   int m_label;
   int m_help;
   bool m_meetsRequirements;
