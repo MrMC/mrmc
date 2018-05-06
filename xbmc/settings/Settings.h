@@ -448,7 +448,34 @@ public:
   static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICG;
   static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICB;
   static const std::string SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER;
-  
+
+  // Hue service
+  static const std::string SETTING_SERVICES_HUE_ENABLE;
+  static const std::string SETTING_SERVICES_HUE_DISCOVER;
+  static const std::string SETTING_SERVICES_HUE_IP;
+  static const std::string SETTING_SERVICES_HUE_USERNAME;
+  static const std::string SETTING_SERVICES_HUE_CLIENTKEY;
+  static const std::string SETTING_SERVICES_HUE_FORCEON;
+  static const std::string SETTING_SERVICES_HUE_DIMDUR;
+  static const std::string SETTING_SERVICES_HUE_DIMPROPDUR;
+  static const std::string SETTING_SERVICES_HUE_DIMBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_DIMOVERPAUSEDBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_DIMPAUSEDBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_DIMOVERUNBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_DIMUNBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_MINBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_MAXBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_COLORBIAS;
+  static const std::string SETTING_SERVICES_HUE_STREAMGROUPID;
+  static const std::string SETTING_SERVICES_HUE_LIGHT1ID;
+  static const std::string SETTING_SERVICES_HUE_LIGHT1MODE;
+  static const std::string SETTING_SERVICES_HUE_LIGHT2ID;
+  static const std::string SETTING_SERVICES_HUE_LIGHT2MODE;
+  static const std::string SETTING_SERVICES_HUE_LIGHT3ID;
+  static const std::string SETTING_SERVICES_HUE_LIGHT3MODE;
+  static const std::string SETTING_SERVICES_HUE_LIGHT4ID;
+  static const std::string SETTING_SERVICES_HUE_LIGHT4MODE;
+
   // plex services
   static const std::string SETTING_SERVICES_PLEXSIGNIN;
   static const std::string SETTING_SERVICES_PLEXSIGNINPIN;

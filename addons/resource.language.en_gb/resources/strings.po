@@ -8052,6 +8052,139 @@ msgstr ""
 
 #empty strings from id 14125 to 15003
 
+# Hue
+msgctxt "#14200"
+msgid "Hue client"
+msgstr ""
+
+msgctxt "#14201"
+msgid "Setup Hue connection"
+msgstr ""
+
+msgctxt "#14202"
+msgid "Enable Hue"
+msgstr ""
+
+msgctxt "#14203"
+msgid "Enable Hue client, ambilight clone"
+msgstr ""
+
+msgctxt "#14204"
+msgid "Please press the link Button on the Hue bridge"
+msgstr ""
+
+msgctxt "#14205"
+msgid "Cannot find any bridge"
+msgstr ""
+
+msgctxt "#14206"
+msgid "Hue bridge pairing"
+msgstr ""
+
+msgctxt "#14207"
+msgid "Pair MrMC with the bridge"
+msgstr ""
+
+msgctxt "#14208"
+msgid "Pair"
+msgstr ""
+
+msgctxt "#14209"
+msgid "Dissociate"
+msgstr ""
+
+msgctxt "#14210"
+msgid "Cannot find configured bridge"
+msgstr ""
+
+msgctxt "#14211"
+msgid "Mode"
+msgstr ""
+
+msgctxt "#14212"
+msgid "Usage mode of this light"
+msgstr ""
+
+msgctxt "#14213"
+msgid "Ambilight"
+msgstr ""
+
+msgctxt "#14214"
+msgid "Dimming"
+msgstr ""
+
+msgctxt "#14216"
+msgid "Transition time (seconds)"
+msgstr ""
+
+msgctxt "#14217"
+msgid "Proportional transition time"
+msgstr ""
+
+msgctxt "#14218"
+msgid "Dimmed brightness"
+msgstr ""
+
+msgctxt "#14219"
+msgid "Override paused brightness"
+msgstr ""
+
+msgctxt "#14220"
+msgid "Paused brightness"
+msgstr ""
+
+msgctxt "#14221"
+msgid "Override undimmed brightness"
+msgstr ""
+
+msgctxt "#14222"
+msgid "Undimmed brightness"
+msgstr ""
+
+msgctxt "#14223"
+msgid "Dimming"
+msgstr ""
+
+msgctxt "#14224"
+msgid "Ambilight minimum brightness"
+msgstr ""
+
+msgctxt "#14225"
+msgid "Ambilight maximum brightness"
+msgstr ""
+
+msgctxt "#14226"
+msgid "Lights"
+msgstr ""
+
+msgctxt "#14227"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#14228"
+msgid "Light"
+msgstr ""
+
+msgctxt "#14229"
+msgid "Force lights ON"
+msgstr ""
+
+msgctxt "#14230"
+msgid "Entertainement group"
+msgstr ""
+
+msgctxt "#14231"
+msgid "Colors"
+msgstr ""
+
+msgctxt "#14232"
+msgid "Color precision"
+msgstr ""
+
+msgctxt "#14233"
+msgid "100% is each transition is sent; Lesser values avoid flickering"
+msgstr ""
+
 #. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15004"

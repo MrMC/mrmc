@@ -12,7 +12,6 @@ SRCS += plex/PlexServices.cpp
 SRCS += trakt/TraktServices.cpp
 SRCS += lighteffects/LightEffectClient.cpp
 SRCS += lighteffects/LightEffectServices.cpp
-SRCS += lighteffects/LightEffectClient.cpp
 
 
 LIB   = services.a

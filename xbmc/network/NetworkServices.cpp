@@ -30,6 +30,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "network/Network.h"
 #include "services/lighteffects/LightEffectServices.h"
+#include "services/hue/HueServices.h"
 #include "services/emby/EmbyServices.h"
 #include "services/plex/PlexServices.h"
 #include "settings/AdvancedSettings.h"
@@ -494,6 +495,9 @@ void CNetworkServices::Start()
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE) && !StartLightEffectServices())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_ENABLE) && !StartHueService())
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(14200), g_localizeStrings.Get(33100));
+
   if (!StartPlexServices())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 
@@ -515,6 +519,7 @@ void CNetworkServices::Stop(bool bWait)
     StopWebserver();
     StopRss();
     StopLightEffectServices();
+    StopHueService();
     StopPlexServices();
     StopEmbyServices();
   }
@@ -1047,6 +1052,29 @@ bool CNetworkServices::StopLightEffectServices()
     return true;
 
   CLightEffectServices::GetInstance().Stop();
+  return true;
+}
+
+bool CNetworkServices::StartHueService()
+{
+  if (IsHueServiceRunning())
+    return true;
+
+  CHueServices::GetInstance().Start();
+  return true;
+}
+
+bool CNetworkServices::IsHueServiceRunning()
+{
+  return CHueServices::GetInstance().IsActive();
+}
+
+bool CNetworkServices::StopHueService()
+{
+  if (!IsHueServiceRunning())
+    return true;
+
+  CHueServices::GetInstance().Stop();
   return true;
 }
 

@@ -88,9 +88,11 @@
 #include "view/ViewStateSettings.h"
 #include "input/InputManager.h"
 #include "services/lighteffects/LightEffectServices.h"
+#include "services/hue/HueServices.h"
 #include "services/emby/EmbyServices.h"
 #include "services/plex/PlexServices.h"
 #include "services/trakt/TraktServices.h"
+#include "services/hue/HueServices.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 #define SETTINGS_XML_ROOT   "settings"
@@ -490,6 +492,33 @@ const std::string CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICR = "services.li
 const std::string CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICG = "services.lighteffectsstaticg";
 const std::string CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICB = "services.lighteffectsstaticb";
 const std::string CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER = "services.lighteffectsstaticscreensaver";
+
+// Hue service
+const std::string CSettings::SETTING_SERVICES_HUE_ENABLE = "services.hue";
+const std::string CSettings::SETTING_SERVICES_HUE_DISCOVER = "hue.discover";
+const std::string CSettings::SETTING_SERVICES_HUE_IP = "hue.ip";
+const std::string CSettings::SETTING_SERVICES_HUE_USERNAME = "hue.username";
+const std::string CSettings::SETTING_SERVICES_HUE_CLIENTKEY = "hue.clientkey";
+const std::string CSettings::SETTING_SERVICES_HUE_FORCEON = "hue.forceon";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMDUR = "hue.dimdur";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMPROPDUR = "hue.dimpropdur";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMBRIGHT = "hue.dimbright";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMOVERPAUSEDBRIGHT = "hue.dimoverpausedbright";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMPAUSEDBRIGHT = "hue.dimpausedbright";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMOVERUNBRIGHT = "hue.dimoverunbright";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMUNBRIGHT = "hue.dimunbright";
+const std::string CSettings::SETTING_SERVICES_HUE_MINBRIGHT = "hue.minbright";
+const std::string CSettings::SETTING_SERVICES_HUE_MAXBRIGHT = "hue.maxbright";
+const std::string CSettings::SETTING_SERVICES_HUE_COLORBIAS = "hue.colorbias";
+const std::string CSettings::SETTING_SERVICES_HUE_STREAMGROUPID = "hue.streamgroup";
+const std::string CSettings::SETTING_SERVICES_HUE_LIGHT1ID = "hue.light1";
+const std::string CSettings::SETTING_SERVICES_HUE_LIGHT1MODE = "hue.light1mode";
+const std::string CSettings::SETTING_SERVICES_HUE_LIGHT2ID = "hue.light2";
+const std::string CSettings::SETTING_SERVICES_HUE_LIGHT2MODE = "hue.light2mode";
+const std::string CSettings::SETTING_SERVICES_HUE_LIGHT3ID = "hue.light3";
+const std::string CSettings::SETTING_SERVICES_HUE_LIGHT3MODE = "hue.light3mode";
+const std::string CSettings::SETTING_SERVICES_HUE_LIGHT4ID = "hue.light4";
+const std::string CSettings::SETTING_SERVICES_HUE_LIGHT4MODE = "hue.light4mode";
 
 // plex services
 const std::string CSettings::SETTING_SERVICES_PLEXSIGNIN = "plex.signin";
@@ -1095,6 +1124,8 @@ void CSettings::InitializeOptionFillers()
 #if defined(TARGET_DARWIN_TVOS)
   m_settingsManager->RegisterSettingOptionsFiller("siridisableosd", CTVOSInputSettings::SettingOptionsDisableSiriOSD);
 #endif
+  m_settingsManager->RegisterSettingOptionsFiller("huestreamgroups", CHueServices::SettingOptionsHueStreamGroupsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("huelights", CHueServices::SettingOptionsHueLightsFiller);
 }
 
 void CSettings::InitializeConditions()
@@ -1397,7 +1428,35 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICB);
   settingSet.insert(CSettings::SETTING_SERVICES_LIGHTEFFECTSSTATICSCREENSAVER);
   m_settingsManager->RegisterCallback(&CLightEffectServices::GetInstance(), settingSet);
-  
+
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_ENABLE);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DISCOVER);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_IP);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_USERNAME);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_CLIENTKEY);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_FORCEON);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMDUR);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMPROPDUR);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMOVERPAUSEDBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMPAUSEDBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMOVERUNBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMUNBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_MINBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_MAXBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_COLORBIAS);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_STREAMGROUPID);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_LIGHT1ID);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_LIGHT1MODE);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_LIGHT2ID);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_LIGHT2MODE);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_LIGHT3ID);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_LIGHT3MODE);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_LIGHT4ID);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_LIGHT4MODE);
+  m_settingsManager->RegisterCallback(&CHueServices::GetInstance(), settingSet);
+
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_SERVICES_PLEXSIGNIN);
   settingSet.insert(CSettings::SETTING_SERVICES_PLEXSIGNINPIN);

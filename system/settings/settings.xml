@@ -2847,6 +2847,287 @@
         </setting>             
       </group>  
     </category>    
+    <category id="hue" label="14200" help="14201">
+      <group id="1" label="14200">
+        <setting id="services.hue" type="boolean" label="14202" help="14203">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="hue.discover" type="string" label="14206" help="14207">
+          <level>0</level>
+          <default>Pair</default>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="hue.ip" type="string" label="1009">
+          <level>0</level>
+          <enabled>false</enabled>
+          <control type="edit" format="string"/>
+          <default/>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" on="property" name="hueenabled"/>
+          </dependencies>
+        </setting>
+        <setting id="hue.forceon" type="boolean" label="14229">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="hue.username" type="string">
+          <level>0</level>
+          <visible>false</visible>
+          <default/>
+          <control type="edit" format="string"/>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+        </setting>
+        <setting id="hue.clientkey" type="string">
+          <level>0</level>
+          <visible>false</visible>
+          <default/>
+          <control type="edit" format="string"/>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+        </setting>
+      </group>
+      <group id="5" label="14226">
+        <setting id="hue.streamgroup" type="integer" label="14230">
+          <level>0</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="update" setting="hue.discover" />
+          </dependencies>
+          <constraints>
+            <options>huestreamgroups</options>
+          </constraints>
+          <control type="list" format="string"/>
+        </setting>
+        <setting id="hue.light1" type="integer" label="14228">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>huelights</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="hue.discover" />
+          </dependencies>
+          <control type="list" format="string"/>
+        </setting>
+        <setting id="hue.light1mode" type="integer" parent="hue.light1" label="14211" help="14212">
+          <level>0</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="visible" setting="hue.light1" operator="!is">0</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <!-- Unused -->
+              <option label="14227">0</option>
+              <!-- Ambilight -->
+              <option label="14213">1</option>
+              <!-- Theater-->
+              <option label="14214">2</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer"/>
+        </setting>
+        <setting id="hue.light2" type="integer" label="14228">
+          <level>0</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="update" setting="hue.discover" />
+            <dependency type="visible" setting="hue.light1" operator="!is">0</dependency>
+          </dependencies>
+          <constraints>
+            <options>huelights</options>
+          </constraints>
+          <control type="list" format="string"/>
+        </setting>
+        <setting id="hue.light2mode" type="integer" parent="hue.light2" label="14211" help="14212">
+          <level>0</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="visible" setting="hue.light2" operator="!is">0</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <!-- Unused -->
+              <option label="14227">0</option>
+              <!-- Ambilight -->
+              <option label="14213">1</option>
+              <!-- Theater-->
+              <option label="14214">2</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer"/>
+        </setting>
+        <setting id="hue.light3" type="integer" label="14228">
+          <level>0</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="update" setting="hue.discover" />
+            <dependency type="visible" setting="hue.light2" operator="!is">0</dependency>
+          </dependencies>
+          <constraints>
+            <options>huelights</options>
+          </constraints>
+          <control type="list" format="string"/>
+        </setting>
+        <setting id="hue.light3mode" type="integer" parent="hue.light3" label="14211" help="14212">
+          <level>0</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="visible" setting="hue.light3" operator="!is">0</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <!-- Unused -->
+              <option label="14227">0</option>
+              <!-- Ambilight -->
+              <option label="14213">1</option>
+              <!-- Theater-->
+              <option label="14214">2</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer"/>
+        </setting>
+        <setting id="hue.light4" type="integer" label="14228">
+          <level>0</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="visible" setting="hue.light3" operator="!is">0</dependency>
+          </dependencies>
+          <constraints>
+            <options>huelights</options>
+          </constraints>
+          <control type="list" format="string"/>
+        </setting>
+        <setting id="hue.light4mode" type="integer" parent="hue.light4" label="14211" help="14212">
+          <level>0</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="update" setting="hue.discover" />
+            <dependency type="visible" setting="hue.light4" operator="!is">0</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <!-- Unused -->
+              <option label="14227">0</option>
+              <!-- Ambilight -->
+              <option label="14213">1</option>
+              <!-- Theater-->
+              <option label="14214">2</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer"/>
+        </setting>
+      </group>
+      <group id="3" label="14214">
+        <setting id="hue.dimdur" type="number" label="14216">
+          <level>0</level>
+          <default>4.0</default>
+          <constraints>
+            <minimum>0.0</minimum>
+            <step>0.5</step>
+            <maximum>10.0</maximum>
+          </constraints>
+          <control type="slider" format="number">
+            <formatlabel>862</formatlabel>
+          </control>
+        </setting>
+        <setting id="hue.dimpropdur" type="boolean" label="14217">
+          <level>0</level>
+          <default>false</default>
+          <visible>false</visible>
+          <control type="toggle"/>
+        </setting>
+      </group>
+      <group id="4" label="14223">
+        <setting id="hue.dimbright" type="integer" label="14218">
+          <level>0</level>
+          <default>10</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>5</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="slider" format="integer">
+          </control>
+        </setting>
+        <setting id="hue.dimoverpausedbright" type="boolean" label="14219">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="hue.dimpausedbright" type="integer" label="14220">
+          <level>0</level>
+          <default>10</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>5</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="slider" format="integer">
+          </control>
+        </setting>
+        <setting id="hue.dimoverunbright" type="boolean" label="14221">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="hue.dimunbright" type="integer" label="14222">
+          <level>0</level>
+          <default>10</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>5</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="slider" format="integer">
+          </control>
+        </setting>
+      </group>
+      <group id="5" label="14231">
+        <setting id="hue.minbright" type="integer" label="14224">
+          <level>0</level>
+          <default>20</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>5</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="slider" format="integer">
+          </control>
+        </setting>
+        <setting id="hue.maxbright" type="integer" label="14225">
+          <level>0</level>
+          <default>90</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>5</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="slider" format="integer">
+          </control>
+        </setting>
+        <setting id="hue.colorbias" type="integer" label="14232" help="14233">
+          <level>0</level>
+          <default>90</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>5</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="slider" format="integer">
+          </control>
+        </setting>
+      </group>
+    </category>
     <category id="webserver" label="33101" help="36327">
       <requirement>HAS_WEB_SERVER</requirement>
       <group id="1">

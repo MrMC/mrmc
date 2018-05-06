@@ -1,0 +1,10 @@
+SRCS  =
+SRCS += HueServices.cpp
+SRCS += HueClient.cpp
+SRCS += HueUtils.cpp
+
+
+LIB   = services_hue.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.S,,$(SRCS))))
