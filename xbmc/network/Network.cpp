@@ -24,6 +24,7 @@
 
 #include "Network.h"
 #include "messaging/ApplicationMessenger.h"
+#include "network/DNSNameCache.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -418,6 +419,18 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   }
 
   return 0; // success
+}
+
+bool CNetwork::PingHostOrIP(const char* hostOrIP, unsigned int timeout_ms)
+{
+  in_addr_t ipaddr = ntohl(inet_addr(hostOrIP));
+  if(ipaddr == INADDR_NONE)
+  {
+    std::string ip;
+    if(CDNSNameCache::Lookup(hostOrIP, ip))
+      ipaddr = ntohl(inet_addr(ip.c_str()));
+  }
+  return PingHost(ipaddr, timeout_ms);
 }
 
 bool CNetwork::PingHost(in_addr_t ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)

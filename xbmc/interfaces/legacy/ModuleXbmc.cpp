@@ -235,6 +235,12 @@ namespace XBMCAddon
       return cTitleIP;
     }
 
+    bool pingHostOrIP(const char* HostOrIP, int timeoutSeconds)
+    {
+      XBMC_TRACE;
+      return g_application.getNetwork().PingHostOrIP(HostOrIP, timeoutSeconds);
+    }
+
     long getDVDState()
     {
       XBMC_TRACE;

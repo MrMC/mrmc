@@ -137,6 +137,7 @@ public:
 
    // Return true if host replies to ping
    bool PingHost(in_addr_t ipaddr, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false);
+   bool PingHostOrIP(const char* hostOrIP, unsigned int timeout_ms = 2000);
    virtual bool PingHost(in_addr_t ipaddr, unsigned int timeout_ms = 2000) = 0;
 
    // Get/set the nameserver(s)

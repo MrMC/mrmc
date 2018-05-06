@@ -602,7 +602,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(in_addr_t host_ip, std::string& m
           rtm = (struct rt_msghdr *)next;
           sin = (struct sockaddr_inarp *)(rtm + 1);
           sdl = (struct sockaddr_dl *)(sin + 1);
-          
+
           if (host_ip != sin->sin_addr.s_addr || sdl->sdl_alen < 6)
             continue;
           
@@ -610,6 +610,12 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(in_addr_t host_ip, std::string& m
           
           mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
                                     cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]);
+
+          // iOS11+ devices – Apple blocked fetching MACs from arp table,
+          // they always return a MAC address of 02:00:00:00:00:00.
+          if (mac == "02:00:00:00:00:00")
+            continue;
+
           ret = true;
           break;
         }

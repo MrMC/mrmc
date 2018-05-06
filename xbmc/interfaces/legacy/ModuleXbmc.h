@@ -166,6 +166,16 @@ namespace XBMCAddon
     String getIPAddress();
 
     /**
+     * getPingHostOrIP() -- Pings Host name or IP address as a string.
+     *
+     * returns -- True (1) or False (0) as a bool
+     *
+     * example:
+     *   - ip = getPingHostOrIP('192.168.2.109', 1)
+     */
+    bool pingHostOrIP(const char* HostOrIP, int timeoutSeconds);
+
+    /**
      * getDVDState() -- Returns the dvd state as an integer.
      * 
      * return values are:
