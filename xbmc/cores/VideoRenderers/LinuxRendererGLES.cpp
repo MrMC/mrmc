@@ -2848,9 +2848,10 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LANCZOS3)
   {
     // if scaling is below level, avoid hq scaling
-    float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
-    float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
+    float scaleX = (m_destRect.Width() - (float)m_sourceWidth)/m_sourceWidth*100;
+    float scaleY = (m_destRect.Height() - (float)m_sourceHeight)/m_sourceHeight*100;
     int minScale = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+
     if (scaleX < minScale && scaleY < minScale)
       return false;
 
