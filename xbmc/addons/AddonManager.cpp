@@ -200,6 +200,7 @@ static constexpr const char* addonWhiteList[] = {
   "screensaver.xbmc.builtin.dim",
   "screensaver.xbmc.builtin.slideshow",
   "screensaver.xbmc.builtin.system",
+  "script.advanced.wol",
   "script.module.requests",
   "script.plex",
   "skin.ariana",

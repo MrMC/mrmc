@@ -3,6 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 
 SUBDIRS  = script-plex
+SUBDIRS += script.advanced.wol
 SUBDIRS += script.module.requests
 
 all: scripts
