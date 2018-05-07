@@ -1211,7 +1211,7 @@ bool CDarwinUtils::IsDarkInterface()
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_TVOS)
-  ret = [g_xbmcController m_isDarkMode];
+  ret = [g_xbmcController getIsDarkMode];
 #endif
   return ret;
 }
