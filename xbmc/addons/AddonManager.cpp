@@ -203,6 +203,7 @@ static constexpr const char* addonWhiteList[] = {
   "script.advanced.wol",
   "script.module.requests",
   "script.plex",
+  "service.libraryautoupdate",
   "skin.ariana",
   "skin.amber",
   "skin.blackglassnova",
