@@ -38,11 +38,6 @@ void main()
                  , 1.0);
 
   rgb   = m_yuvmat * yuv;
-  
-  #if defined(XBMC_TONE_MAPPING)
-  rgb.rgb = tonemapReinhard_luma(rgb.rgb);
-  #endif
-  
   rgb.a = m_alpha;
   gl_FragColor = rgb;
 }

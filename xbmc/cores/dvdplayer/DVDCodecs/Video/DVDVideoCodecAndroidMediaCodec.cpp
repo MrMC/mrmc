@@ -341,7 +341,6 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(bool surface_re
 , m_state(MEDIACODEC_STATE_UNINITIALIZED)
 {
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
-  m_videobuffer.nal_info = NALInfo();
 }
 
 CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
@@ -379,16 +378,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_drop = false;
   m_codecControlFlags = 0;
   m_hints = hints;
-
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: fpsrate %d / fpsscale %d\n", m_hints.fpsrate, m_hints.fpsscale);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: CodecID %d \n", m_hints.codec);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: StreamType %d \n", m_hints.type);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: Level %d \n", m_hints.level);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: Profile %d \n", m_hints.profile);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: PTS_invalid %d \n", m_hints.ptsinvalid);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: Tag %d \n", m_hints.codec_tag);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: %dx%d \n", m_hints.width,  m_hints.height);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: color -  space: %d; range: %d; transfer: %d\n", m_hints.colorspace,  m_hints.colorrange, m_hints.colortransfer);
 
   switch(m_hints.codec)
   {
@@ -641,16 +630,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // setup a YUV420P DVDVideoPicture buffer.
   // first make sure all properties are reset.
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
-  m_videobuffer.nal_info = NALInfo();
 
   m_videobuffer.dts = DVD_NOPTS_VALUE;
   m_videobuffer.pts = DVD_NOPTS_VALUE;
-  if (m_hints.colorrange == AVCOL_RANGE_JPEG)
-    m_videobuffer.color_range = 1;
-  else
-    m_videobuffer.color_range = 0;
-  m_videobuffer.color_matrix = m_hints.colorspace;
-  m_videobuffer.color_transfer = m_hints.colortransfer;
+  m_videobuffer.color_range  = 0;
+  m_videobuffer.color_matrix = 4;
   m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
   if (!m_render_surface && !CAndroidFeatures::IsShieldTVDevice())
   {
@@ -827,31 +811,6 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         // Codec specifics
         switch(m_hints.codec)
         {
-          case AV_CODEC_ID_HEVC:
-          {
-            NALInfo nal_info = ProbeHEVCNALUnits(pData, iSize);
-            if (nal_info.has_master_prim)
-            {
-              m_videobuffer.nal_info.has_master_prim = true;
-              m_videobuffer.nal_info.master_prim_rx = nal_info.master_prim_rx;
-              m_videobuffer.nal_info.master_prim_ry = nal_info.master_prim_ry;
-              m_videobuffer.nal_info.master_prim_gx = nal_info.master_prim_gx;
-              m_videobuffer.nal_info.master_prim_gy = nal_info.master_prim_gy;
-              m_videobuffer.nal_info.master_prim_bx = nal_info.master_prim_bx;
-              m_videobuffer.nal_info.master_prim_by = nal_info.master_prim_by;
-
-              m_videobuffer.nal_info.master_prim_minlum = nal_info.master_prim_minlum;
-              m_videobuffer.nal_info.master_prim_maxlum = nal_info.master_prim_maxlum;
-            }
-            if (nal_info.has_light)
-            {
-              m_videobuffer.nal_info.has_light = true;
-              m_videobuffer.nal_info.light_maxcll = nal_info.light_maxcll;
-              m_videobuffer.nal_info.light_maxfall = nal_info.light_maxfall;
-            }
-            memcpy(dst_ptr, pData, iSize);
-            break;
-          }
           case AV_CODEC_ID_VC1:
           {
             if (iSize >= 4 &&

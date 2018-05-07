@@ -70,12 +70,12 @@ namespace Shaders {
   };
 
 
-  class BaseYUV2RGBGLSLShader
+  class BaseYUV2RGBGLSLShader 
     : public BaseYUV2RGBShader
     , public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool tone, bool stretch);
+    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool stretch);
    ~BaseYUV2RGBGLSLShader() {}
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
@@ -133,7 +133,7 @@ namespace Shaders {
   };
 
 #ifndef HAS_GLES       // No ARB Shader when using GLES2.0
-  class BaseYUV2RGBARBShader
+  class BaseYUV2RGBARBShader 
     : public BaseYUV2RGBShader
     , public CARBShaderProgram
   {
@@ -175,7 +175,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBProgressiveShader(bool rect=false, unsigned flags=0, ERenderFormat format=RENDER_FMT_NONE, bool stretch = false, bool tone = false);
+    YUV2RGBProgressiveShader(bool rect=false, unsigned flags=0, ERenderFormat format=RENDER_FMT_NONE, bool stretch = false);
   };
 
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader

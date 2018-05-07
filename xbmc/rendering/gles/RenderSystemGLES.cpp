@@ -43,7 +43,6 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
      "guishader_frag_multi_blendcolor.glsl",
      "guishader_frag_rgba.glsl",
      "guishader_frag_rgba_oes.glsl",
-     "guishader_frag_rgba_oes_tone.glsl",
      "guishader_frag_rgba_blendcolor.glsl",
      "guishader_frag_rgba_bob.glsl",
      "guishader_frag_rgba_bob_oes.glsl"
@@ -602,7 +601,7 @@ void CRenderSystemGLES::InitialiseGUIShader()
     m_pGUIshader = new CGUIShader*[SM_ESHADERCOUNT];
     for (int i = 0; i < SM_ESHADERCOUNT; i++)
     {
-      if (i == SM_TEXTURE_RGBA_OES || i == SM_TEXTURE_RGBA_OES_TONE || i == SM_TEXTURE_RGBA_BOB_OES)
+      if (i == SM_TEXTURE_RGBA_OES || i == SM_TEXTURE_RGBA_BOB_OES)
       {
         if (!g_Windowing.IsExtSupported("GL_OES_EGL_image_external"))
         {
@@ -753,14 +752,6 @@ GLint CRenderSystemGLES::GUIShaderGetModel()
 {
   if (m_pGUIshader[m_method])
     return m_pGUIshader[m_method]->GetModelLoc();
-
-  return -1;
-}
-
-GLuint CRenderSystemGLES::GUIShaderProgramHandle()
-{
-  if (m_pGUIshader[m_method])
-    return m_pGUIshader[m_method]->ProgramHandle();
 
   return -1;
 }

@@ -38,12 +38,12 @@
 //
 // Transformation matrixes for different colorspaces.
 //
-static float yuv_coef_bt601[4][4] =
+static float yuv_coef_bt601[4][4] = 
 {
     { 1.0f,      1.0f,     1.0f,     0.0f },
     { 0.0f,     -0.34413f, 1.772f,   0.0f },
     { 1.402f,   -0.71414f, 0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f }
+    { 0.0f,      0.0f,     0.0f,     0.0f } 
 };
 
 static float yuv_coef_bt709[4][4] =
@@ -62,7 +62,7 @@ static float yuv_coef_bt2020[4][4] =
     { 0.0f,     0.0f,     0.0f,    0.0f }
 };
 
-static float yuv_coef_ebu[4][4] =
+static float yuv_coef_ebu[4][4] = 
 {
     { 1.0f,      1.0f,     1.0f,     0.0f },
     { 0.0f,     -0.3960f,  2.029f,   0.0f },
@@ -81,7 +81,7 @@ static float yuv_coef_smtp240m[4][4] =
 static float** PickYUVConversionMatrix(unsigned flags)
 {
   // Pick the matrix.
-
+   
    switch(CONF_FLAGS_YUVCOEF_MASK(flags))
    {
      case CONF_FLAGS_YUVCOEF_240M:
@@ -90,12 +90,12 @@ static float** PickYUVConversionMatrix(unsigned flags)
        return reinterpret_cast<float**>(yuv_coef_bt2020);
      case CONF_FLAGS_YUVCOEF_BT709:
        return (float**)yuv_coef_bt709; break;
-     case CONF_FLAGS_YUVCOEF_BT601:
+     case CONF_FLAGS_YUVCOEF_BT601:    
        return (float**)yuv_coef_bt601; break;
      case CONF_FLAGS_YUVCOEF_EBU:
        return (float**)yuv_coef_ebu; break;
    }
-
+   
    return (float**)yuv_coef_bt601;
 }
 
@@ -178,7 +178,7 @@ static void CalculateYUVMatrixGL(GLfloat      res[4][4]
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool tone, bool stretch)
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool stretch)
 {
   m_width      = 1;
   m_height     = 1;
@@ -246,9 +246,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
     m_defines += "#define XBMC_NV12\n";
   else
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
-
-  if (tone)
-    m_defines += "#define XBMC_TONE_MAPPING\n";
 
   VertexShader()->LoadSource("yuv2rgb_vertex_gles.glsl", m_defines);
 #endif
@@ -323,14 +320,13 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, ERenderFormat format)
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ERenderFormat format, bool tone, bool stretch)
-  : BaseYUV2RGBGLSLShader(rect, flags, format, tone, stretch)
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ERenderFormat format, bool stretch)
+  : BaseYUV2RGBGLSLShader(rect, flags, format, stretch)
 {
 #ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
 #elif HAS_GLES >= 2
   PixelShader()->LoadSource("yuv2rgb_basic_gles.glsl", m_defines);
-  PixelShader()->InsertSource("gl_tonemap.glsl", "void main");
 #endif
 }
 
@@ -340,7 +336,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ER
 //////////////////////////////////////////////////////////////////////
 
 YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags, ERenderFormat format)
-  : BaseYUV2RGBGLSLShader(rect, flags, format, false, false)
+  : BaseYUV2RGBGLSLShader(rect, flags, format, false)
 {
   m_hStepX = -1;
   m_hStepY = -1;
@@ -349,7 +345,6 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags, ERenderFormat form
   PixelShader()->LoadSource("yuv2rgb_bob.glsl", m_defines);
 #elif HAS_GLES >= 2
   PixelShader()->LoadSource("yuv2rgb_bob_gles.glsl", m_defines);
-  PixelShader()->InsertSource("gl_tonemap.glsl", "void main");
 #endif
 }
 

@@ -132,7 +132,6 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool AddVideoPicture(DVDVideoPicture* picture, int index);
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatunsigned, unsigned int orientation);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
@@ -279,7 +278,6 @@ protected:
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
-    NALInfo   nal_info;
 
 #if defined(TARGET_ANDROID)
     // mediacodec
@@ -329,8 +327,6 @@ protected:
   uint8_t     *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int m_rgbBufferSize;
   float        m_textureMatrix[16];
-  
-  bool         m_toneMap = false;
 };
 
 

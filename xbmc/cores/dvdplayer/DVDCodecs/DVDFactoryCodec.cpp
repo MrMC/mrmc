@@ -183,10 +183,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #if defined(TARGET_ANDROID)
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
   {
-    if (
-        !(hint.width < 800 && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_SD)) &&
-        !(hint.colortransfer >= AVCOL_TRC_SMPTE2084 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_HASHDR) > 1 /* No */)
-        )
+    if (!(hint.width < 800 && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_SD)))
     {
       bool render_interlaced = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_INTERLACED);
       switch(hint.codec)

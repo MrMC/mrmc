@@ -7301,12 +7301,7 @@ msgctxt "#13463"
 msgid "Allow SD content"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13464"
-msgid "Display supports HDR"
-msgstr ""
-
-#empty strings from id 13465 to 13504
+#empty strings from id 13464 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -18919,12 +18914,7 @@ msgctxt "#36644"
 msgid "Allow surface decoding of Standard Definition video. Prevent use of HQ scalers."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36645"
-msgid "Does the display support High Dynamic Range."
-msgstr ""
-
-#empty strings from id 36646 to 36899
+#empty strings from id 36645 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

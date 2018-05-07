@@ -368,7 +368,6 @@ const std::string CSettings::SETTING_VIDEOSCREEN_MONITOR = "videoscreen.monitor"
 const std::string CSettings::SETTING_VIDEOSCREEN_SCREEN = "videoscreen.screen";
 const std::string CSettings::SETTING_VIDEOSCREEN_RESOLUTION = "videoscreen.resolution";
 const std::string CSettings::SETTING_VIDEOSCREEN_SCREENMODE = "videoscreen.screenmode";
-const std::string CSettings::SETTING_VIDEOSCREEN_HASHDR = "videoscreen.hashdr";
 const std::string CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN = "videoscreen.fakefullscreen";
 const std::string CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS = "videoscreen.blankdisplays";
 const std::string CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE = "videoscreen.stereoscopicmode";

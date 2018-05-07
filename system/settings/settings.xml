@@ -3146,21 +3146,6 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="videoscreen.hashdr" type="integer" parent="videoscreen.screen" label="13464" help="36645">
-          <level>1</level>
-          <default>-1</default>  <!-- auto -->
-          <dependencies>
-            <dependency type="enable" on="property" name="IsFullscreen" />
-          </dependencies>
-          <constraints>
-            <options>
-              <option label="37026">-1</option>    <!-- auto -->
-              <option label="107">1</option> <!-- Yes -->
-              <option label="106">2</option> <!-- No -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
         <setting id="videoscreen.fakefullscreen" type="boolean" parent="videoscreen.screen" label="14083" help="36354">
           <level>2</level>
           <default>true</default>

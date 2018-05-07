@@ -55,25 +55,6 @@ class CDVDMediaCodecInfo;
 typedef void* EGLImageKHR;
 class CDVDClock;
 
-struct NALInfo
-{
-  bool has_master_prim = false;;
-  float master_prim_rx = 0.0;
-  float master_prim_ry = 0.0;
-  float master_prim_gx = 0.0;
-  float master_prim_gy = 0.0;
-  float master_prim_bx = 0.0;
-  float master_prim_by = 0.0;
-  float master_prim_wx = 0.0;
-  float master_prim_wy = 0.0;
-  float master_prim_minlum = 0.0;
-  float master_prim_maxlum = 0.0;
-
-  bool has_light = false;
-  uint16_t light_maxcll = 0;
-  uint16_t light_maxfall = 0;
-};
-
 // should be entirely filled by all codecs
 struct DVDVideoPicture
 {
@@ -119,7 +100,6 @@ struct DVDVideoPicture
   unsigned int dynamic_range;
   unsigned int extended_format;
   char         stereo_mode[32];
-  NALInfo      nal_info;
 
   int8_t*      qp_table;                //< Quantization parameters, primarily used by filters
   int          qstride;
@@ -331,8 +311,4 @@ public:
    * Some decoders (bypass) need access to the player clock for a/v sync
    */
   virtual void SetClock(CDVDClock *clock) {} ;
-
-protected:
-  NALInfo ProbeHEVCNALUnits(uint8_t *pData, int iSize);
-
 };
