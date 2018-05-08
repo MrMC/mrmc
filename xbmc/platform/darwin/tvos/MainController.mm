@@ -478,6 +478,7 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void)setIsDarkMode:(BOOL)enable;
 {
+  CLog::Log(LOGDEBUG, "setIsDarkMode %d", enable);
   m_isDarkMode = enable;
 }
 
