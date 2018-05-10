@@ -4117,17 +4117,17 @@ msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#1037"
-msgid "Video add-ons"
+msgid "Video extensions"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#1038"
-msgid "Music add-ons"
+msgid "Music extensions"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#1039"
-msgid "Picture add-ons"
+msgid "Picture extensions"
 msgstr ""
 
 #: xbmc/windows/GUIMediaWindow.cpp
@@ -4145,7 +4145,7 @@ msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#1043"
-msgid "Program add-ons"
+msgid "Program extensions"
 msgstr ""
 
 msgctxt "#1044"
@@ -4154,7 +4154,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
 msgctxt "#1045"
-msgid "Add-on settings"
+msgid "Extension settings"
 msgstr ""
 
 msgctxt "#1046"
@@ -5081,20 +5081,20 @@ msgctxt "#2101"
 msgid "Newer version needed. Check the log for more information about this message."
 msgstr ""
 
-#. Notification message indicating an add-on error. "<Add-on name> error".
+#. Notification message indicating an extension error. "<extension name> error".
 #: xbmc/interfaces/python/PythonInvoker.cpp
 msgctxt "#2102"
 msgid "%s error"
 msgstr ""
 
-#. Fallback message indicating an add-on error.
+#. Fallback message indicating an extension error.
 #: xbmc/interfaces/python/PythonInvoker.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#2103"
-msgid "Add-on error"
+msgid "Extension error"
 msgstr ""
 
-#. Used for add-on error kaitoast.
+#. Used for extension error kaitoast.
 #: xbmc/interfaces/python/PythonInvoker.cpp
 msgctxt "#2104"
 msgid "Check the log for more information."
@@ -5353,7 +5353,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10040"
-msgid "Add-on browser"
+msgid "Extension browser"
 msgstr ""
 
 #: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
@@ -5465,14 +5465,14 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10140"
-msgid "Add-on settings"
+msgid "Extension settings"
 msgstr ""
 
 #empty strings from id 10141 to 10145
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10146"
-msgid "Add-ons / Info"
+msgid "Extensions / Info"
 msgstr ""
 
 #empty strings from id 10147 to 10209
@@ -6006,19 +6006,19 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr ""
 
-#. Used on the button to toggle add-on update mode in the Add-on Manager.
+#. Used on the button to toggle extension update mode in the extension Manager.
 #: xbmc/addons/GUIWindowAddonBrowser.cpp
 msgctxt "#12396"
 msgid "Auto updates: On"
 msgstr ""
 
-#. Used on the button to toggle add-on update mode in the Add-on Manager.
+#. Used on the button to toggle extension update mode in the extension Manager.
 #: xbmc/addons/GUIWindowAddonBrowser.cpp
 msgctxt "#12397"
 msgid "Auto updates: Notify"
 msgstr ""
 
-#. Used on the button to toggle add-on update mode in the Add-on Manager.
+#. Used on the button to toggle extension update mode in the extension Manager.
 #: xbmc/addons/GUIWindowAddonBrowser.cpp
 msgctxt "#12398"
 msgid "Auto updates: Never"
@@ -8243,12 +8243,12 @@ msgstr ""
 
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#15048"
-msgid "No audio DSP add-on enabled"
+msgid "No audio DSP extension enabled"
 msgstr ""
 
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#15049"
-msgid "The audio DSP manager has been enabled without any enabled DSP add-on. Enable at least one add-on in order to use the DSP functionality."
+msgid "The audio DSP manager has been enabled without any enabled DSP extension. Enable at least one extension in order to use the DSP functionality."
 msgstr ""
 
 #. Name of a list with amount of entries behind on GUI
@@ -8299,7 +8299,7 @@ msgctxt "#15061"
 msgid "Output resampling"
 msgstr ""
 
-#. Header on detailed add-on dsp mode description
+#. Header on detailed extension dsp mode description
 #: xbmc/settings/dialogs/GUIDialogAudioDSPManager.cpp
 msgctxt "#15062"
 msgid "Detailed description"
@@ -10137,7 +10137,7 @@ msgid "Guide"
 msgstr ""
 
 msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more information."
+msgid "No PVR extension could be enabled. Check your settings or the log for more information."
 msgstr ""
 
 msgctxt "#19224"
@@ -10211,12 +10211,12 @@ msgstr ""
 
 #: xbmc/pvr/windows/PVRClients.cpp
 msgctxt "#19240"
-msgid "No PVR add-on enabled"
+msgid "No PVR extension enabled"
 msgstr ""
 
 #: xbmc/pvr/windows/PVRClients.cpp
 msgctxt "#19241"
-msgid "The PVR manager has been enabled without any enabled PVR add-on. Enable at least one add-on in order to use the PVR functionality."
+msgid "The PVR manager has been enabled without any enabled PVR extension. Enable at least one extension in order to use the PVR functionality."
 msgstr ""
 
 #empty strings from id 19242 to 19243
@@ -10344,23 +10344,23 @@ msgid "Group Items"
 msgstr ""
 
 msgctxt "#19271"
-msgid "No PVR add-ons could be found"
+msgid "No PVR extensions could be found"
 msgstr ""
 
 msgctxt "#19272"
-msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit https://wiki.mrmc.tv/view/PVR to learn more."
+msgid "You need a tuner, backend software, and an extension for the backend to be able to use PVR. Please visit https://wiki.mrmc.tv/view/PVR to learn more."
 msgstr ""
 
 #. Header on DialogOK
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#19273"
-msgid "No audio DSP add-ons could be found"
+msgid "No audio DSP extensions could be found"
 msgstr ""
 
-#. DialogOK for no installed ADSP add-on available
+#. DialogOK for no installed ADSP extension available
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#19274"
-msgid "You need an add-on installed to be able to use audio digital signal processing (DSP)."
+msgid "You need an extension installed to be able to use audio digital signal processing (DSP)."
 msgstr ""
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
@@ -12784,7 +12784,7 @@ msgctxt "#21336"
 msgid "Connecting to: %s"
 msgstr ""
 
-#. Used in the add-on browser under "Last updated" when a repository has never been updated
+#. Used in the extension browser under "Last updated" when a repository has never been updated
 #: xbmc/addons/RepositoryUpdater.cpp
 msgctxt "#21337"
 msgid "Never"
@@ -12812,7 +12812,7 @@ msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#21342"
-msgid "There are currently no updates available for this add-on."
+msgid "There are currently no updates available for this extension."
 msgstr ""
 
 #empty strings from id 21343 to 21358
@@ -13940,25 +13940,25 @@ msgid "Click \"OK\" when playback has ended"
 msgstr ""
 
 #empty strings from id 23105 to 23999
-#strings 24000 thru 24299 reserved for the Add-ons framework
+#strings 24000 thru 24299 reserved for the extensions framework
 
 #: xbmc/addons/GUIDialogAddonSettings.cpp
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24000"
-msgid "Add-on"
+msgid "Extension"
 msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24001"
-msgid "Add-ons"
+msgid "Extensions"
 msgstr ""
 
 msgctxt "#24002"
-msgid "Add-on options"
+msgid "Extension options"
 msgstr ""
 
 msgctxt "#24003"
-msgid "Add-on information"
+msgid "Extension information"
 msgstr ""
 
 #empty string with id 24004
@@ -13968,7 +13968,7 @@ msgctxt "#24005"
 msgid "Media sources"
 msgstr ""
 
-#. Name of an add-on type
+#. Name of an extension type
 #: xbmc/addons/Addon.cpp
 msgctxt "#24006"
 msgid "GUI sounds"
@@ -13996,7 +13996,7 @@ msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#24011"
-msgid "Add-on repository"
+msgid "Extension repository"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
@@ -14051,7 +14051,7 @@ msgctxt "#24022"
 msgid "Enable"
 msgstr ""
 
-#. Defines the state of the add-on in the add-on manager window
+#. Defines the state of the extension in the extension manager window
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24023"
 msgid "Disabled"
@@ -14060,7 +14060,7 @@ msgstr ""
 #. Used as an error message (triggered from content dialog) on disabled scrapers
 #: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
 msgctxt "#24024"
-msgid "Add-on disabled"
+msgid "Extensions disabled"
 msgstr ""
 
 #. Used as the type name for context item addons
@@ -14090,7 +14090,7 @@ msgstr ""
 
 #: xbmc/addons/GUIDialogAddonSettings.cpp
 msgctxt "#24030"
-msgid "This add-on can't be configured"
+msgid "This extensions can not be configured"
 msgstr ""
 
 msgctxt "#24031"
@@ -14099,7 +14099,7 @@ msgstr ""
 
 #: xbmc/pvr/addons/PVRClients.cpp
 msgctxt "#24032"
-msgid "All add-ons"
+msgid "All extensions"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
@@ -14113,7 +14113,7 @@ msgctxt "#24034"
 msgid "Check for updates"
 msgstr ""
 
-#: Name of an Add-on category
+#: Name of an extension category
 #: xbmc/addons/Addon.cpp
 msgctxt "#24035"
 msgid "Image collections"
@@ -14134,7 +14134,7 @@ msgstr ""
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24039"
-msgid "Disabled add-ons"
+msgid "Disabled extensions"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
@@ -14161,23 +14161,23 @@ msgstr ""
 #: xbmc/addons/AddonInstaller.cpp
 #: xbmc/addons/AddonsDatabase.cpp
 msgctxt "#24044"
-msgid "Dependencies not met. Please contact add-on author."
+msgid "Dependencies not met. Please contact extensions author."
 msgstr ""
 
-#. Used as an event log description for add-ons failed to install from zip
+#. Used as an event log description for extensions failed to install from zip
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24045"
-msgid "Failed to install Add-on from zip file"
+msgid "Failed to install extension from zip file"
 msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
+msgid "%s is used by the following installed extensions(s)"
 msgstr ""
 
 #: xbmc\addons\GUIDialogAddonInfo.cpp
 msgctxt "#24047"
-msgid "This add-on can't be uninstalled"
+msgid "This extensions can't be uninstalled"
 msgstr ""
 
 #empty string with id 24048
@@ -14189,7 +14189,7 @@ msgstr ""
 
 #: unknown
 msgctxt "#24050"
-msgid "Available add-ons"
+msgid "Available extensions"
 msgstr ""
 
 #: xbmc/peripherals/bus/PeripheralBus.cpp
@@ -14214,74 +14214,74 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr ""
 
-#. Used in the Add-on Manager
+#. Used in the extension Manager
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24055"
 msgid "Check for updates"
 msgstr ""
 
-#. Used in the Add-on Manager to specify last update time
+#. Used in the extension Manager to specify last update time
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24056"
 msgid "Last updated %s"
 msgstr ""
 
-#. Used as a title in the progress dialog when installing an add-on
+#. Used as a title in the progress dialog when installing an extension
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24057"
 msgid "Installing %s..."
 msgstr ""
 
-#. Used as a text in the progress dialog when installing an add-on
+#. Used as a text in the progress dialog when installing an extension
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24058"
 msgid "Checking dependencies..."
 msgstr ""
 
 msgctxt "#24059"
-msgid "Would you like to enable this add-on?"
+msgid "Would you like to enable this extension?"
 msgstr ""
 
 msgctxt "#24060"
-msgid "Would you like to disable this add-on?"
+msgid "Would you like to disable this extension?"
 msgstr ""
 
 #: xbmc/addons/RepositoryUpdater.cpp
 msgctxt "#24061"
-msgid "Add-on updates available"
+msgid "Extension updates available"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/filesystem/AndroidAppDirectory.cpp
 msgctxt "#24062"
-msgid "Enabled add-ons"
+msgid "Enabled extensions"
 msgstr ""
 
 msgctxt "#24063"
 msgid "Auto update"
 msgstr ""
 
-#. Used as an event log description for add-ons that have been installed/enabled
+#. Used as an event log description for extensions that have been installed/enabled
 #: xbmc/addons/AddonInstaller.cpp
 #: xbmc/addons/AddonManager.cpp
 msgctxt "#24064"
-msgid "Add-on enabled"
+msgid "Extension enabled"
 msgstr ""
 
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24065"
-msgid "Add-on updated"
+msgid "Extension updated"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24066"
-msgid "Cancel add-on download?"
+msgid "Cancel extension download?"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24067"
-msgid "Currently downloading add-ons"
+msgid "Currently downloading extensions"
 msgstr ""
 
 #: xbmc/addons/RepositoryUpdater.cpp
@@ -14295,7 +14295,7 @@ msgid "Update"
 msgstr ""
 
 msgctxt "#24070"
-msgid "Add-on couldn't be loaded."
+msgid "Extension couldn't be loaded."
 msgstr ""
 
 msgctxt "#24071"
@@ -14320,68 +14320,68 @@ msgstr ""
 
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24076"
-msgid "Add-on required"
+msgid "Extension required"
 msgstr ""
 
-#. Used as a text in the progress dialog when installing an add-on
+#. Used as a text in the progress dialog when installing an extension
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24077"
-msgid "Verifying downloaded add-on..."
+msgid "Verifying downloaded extension..."
 msgstr ""
 
-#. Used as a text in the progress dialog when installing an add-on
+#. Used as a text in the progress dialog when installing an extension
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24078"
-msgid "Downloading add-on..."
+msgid "Downloading extension..."
 msgstr ""
 
-#. Used as a text in the progress dialog when installing an add-on
+#. Used as a text in the progress dialog when installing an extension
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24079"
-msgid "Installing add-on dependencies..."
+msgid "Installing extension dependencies..."
 msgstr ""
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr ""
 
-#. The label in the add-ons manager for helper add-ons
+#. The label in the extensions manager for helper extensions
 #: xbmc/addons/Addon.cpp
 msgctxt "#24081"
-msgid "Helper add-ons"
+msgid "Helper extensions"
 msgstr ""
 
-#. The label in the add-ons manager for add-on libraries
+#. The label in the extensions manager for extension libraries
 #: xbmc/addons/Addon.cpp
 msgctxt "#24082"
-msgid "Add-on libraries"
+msgid "Extension libraries"
 msgstr ""
 
-#. The label in the add-ons manager for information libraries
+#. The label in the extensions manager for information libraries
 #: xbmc/addons/Addon.cpp
 msgctxt "#24083"
 msgid "Information libraries"
 msgstr ""
 
-#. The label in the add-ons manager for visualisation libraries
+#. The label in the extensions manager for visualisation libraries
 #: xbmc/addons/Addon.cpp
 msgctxt "#24084"
 msgid "Visualisation libraries"
 msgstr ""
 
-#. Used as a text in the progress dialog when installing an add-on
+#. Used as a text in the progress dialog when installing an extension
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24085"
 msgid "Failed to install a dependency"
 msgstr ""
 
-#. Used as a text in the progress dialog when installing an add-on
+#. Used as a text in the progress dialog when installing an extension
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24086"
-msgid "Installing add-on..."
+msgid "Installing extension..."
 msgstr ""
 
-#. Used in add-on browser
+#. Used in extension browser
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24087"
 msgid "All repositories"
@@ -14390,29 +14390,29 @@ msgstr ""
 #. Description on error dialog why not possible
 #: xbmc/addons/GUIDialogAddonInfo.h
 msgctxt "#24088"
-msgid "The DSP add-on is currently in use and can't be modified."
+msgid "The DSP extension is currently in use and can't be modified."
 msgstr ""
 
 msgctxt "#24089"
-msgid "Add-on restarts"
+msgid "Extension restarts"
 msgstr ""
 
 msgctxt "#24090"
-msgid "Lock add-on manager"
+msgid "Lock extension manager"
 msgstr ""
 
 #: xbmc\addons\GUIDialogAddonInfo.cpp
 msgctxt "#24091"
-msgid "This add-on can't be disabled"
+msgid "This extension can't be disabled"
 msgstr ""
 
-#. Used as title of the progress dialog when checking for add-on updates in add-on browser
+#. Used as title of the progress dialog when checking for extension updates in extension browser
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24092"
-msgid "Checking for add-on updates"
+msgid "Checking for extension updates"
 msgstr ""
 
-#. Used as a text in the progress dialog when checking for add-on updates. %s contains repository name
+#. Used as a text in the progress dialog when checking for extension updates. %s contains repository name
 #: xbmc/addons/Repository.cpp
 msgctxt "#24093"
 msgid "Checking %s..."
@@ -14429,7 +14429,7 @@ msgstr ""
 
 #: xbmc/addons/Repository.cpp
 msgctxt "#24096"
-msgid "Add-on is incompatible or has been marked broken in repository."
+msgid "Extension is incompatible or has been marked broken in repository."
 msgstr ""
 
 #: xbmc/addons/Repository.cpp
@@ -14449,12 +14449,12 @@ msgstr ""
 
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24100"
-msgid "To use this feature you must download an add-on:"
+msgid "To use this feature you must download an extension:"
 msgstr ""
 
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24101"
-msgid "Would you like to download this add-on?"
+msgid "Would you like to download this extension?"
 msgstr ""
 
 #: xbmc/Application.cpp
@@ -14469,7 +14469,7 @@ msgstr ""
 
 #: xbmc/addons/Repository.cpp
 msgctxt "#24104"
-msgid "Add-on is incompatible due to unmet dependencies."
+msgid "Extension is incompatible due to unmet dependencies."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14561,7 +14561,7 @@ msgctxt "#24121"
 msgid "Enter search string"
 msgstr ""
 
-#. Button in Add-on Manager -> Available Updates for updating all add-ons when auto-updating is off.
+#. Button in extension Manager -> Available Updates for updating all extensions when auto-updating is off.
 #: xbmc/filesystem/AddonDirectory.cpp
 msgctxt "#24122"
 msgid "Update all"
@@ -14650,13 +14650,13 @@ msgstr ""
 
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#24138"
-msgid "DSP add-on is currently in use and can't be removed."
+msgid "DSP extension is currently in use and can't be removed."
 msgstr ""
 
-#. Label for the action provided by addon management events to jump to a specific Add-on
+#. Label for the action provided by addon management events to jump to a specific extension
 #: xbmc/events/AddonManagementEvent.cpp
 msgctxt "#24139"
-msgid "View Add-on"
+msgid "View Extension"
 msgstr ""
 
 #. Label for the action provided by media library events to jump to a specific path/file
@@ -14665,10 +14665,10 @@ msgctxt "#24140"
 msgid "View"
 msgstr ""
 
-#. Used as an event log description for add-ons that have been disabled
+#. Used as an event log description for extensions that have been disabled
 #: xbmc/addons/AddonManager.cpp
 msgctxt "#24141"
-msgid "Add-on disabled"
+msgid "Extension disabled"
 msgstr ""
 
 #. The dependency on <addon id> version <addon version> coult not be satisfied.
@@ -14680,13 +14680,13 @@ msgstr ""
 #. Installing the addon from zip file located at <path to zip file> failed due to an invalid structure.
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24143"
-msgid "Installing the Add-on from zip file located at %s failed due to an invalid structure."
+msgid "Installing the Extension from zip file located at %s failed due to an invalid structure."
 msgstr ""
 
-#. Used as an event log description for add-ons that have been uninstalled
+#. Used as an event log description for extensions that have been uninstalled
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24144"
-msgid "Add-on uninstalled"
+msgid "Extension uninstalled"
 msgstr ""
 
 #. Used as an event log title for the video library scanner
@@ -14859,20 +14859,20 @@ msgstr ""
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24998"
-msgid "My add-ons"
+msgid "Extensions"
 msgstr ""
 
-#. Used in add-on browser
+#. Used in extension browser
 msgctxt "#24999"
 msgid "Hide incompatible"
 msgstr ""
 
-#. Used in add-on browser
+#. Used in extension browser
 msgctxt "#25000"
 msgid "Notifications"
 msgstr ""
 
-#. Used in add-on browser
+#. Used in extension browser
 msgctxt "#25001"
 msgid "Hide foreign"
 msgstr ""
@@ -15444,14 +15444,14 @@ msgstr ""
 #. Help text of boolean on/off value
 #: system/settings/settings.xml
 msgctxt "#29987"
-msgid "Send present traffic messages around and can be handled from add-ons (nothing inside MrMC)"
+msgid "Send present traffic messages around and can be handled from extensions (nothing inside MrMC)"
 msgstr ""
 
 #empty strings from id 29988 to 33000
 #strings 30000 thru 30999 reserved for plug-ins and plug-in settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
-#strings 33000 thru 33999 reserved for common strings used in Add-ons
+#strings 33000 thru 33999 reserved for common strings used in extensions
 
 #: unknown
 msgctxt "#33001"
@@ -16642,7 +16642,7 @@ msgstr ""
 #. Description of settings category "Appearance -> Screensaver" with label #360
 #: system/settings/settings.xml
 msgctxt "#36128"
-msgid "This category contains the settings for how the screensaver add-ons are handled."
+msgid "This category contains the settings for how the screensaver extensions are handled."
 msgstr ""
 
 #. Description of setting "Appearance -> Screensaver -> Wait time" with label #355
@@ -16660,7 +16660,7 @@ msgstr ""
 #. #. Description of setting "Appearance -> Screensaver -> Settings" with label #21417
 #: system/settings/settings.xml
 msgctxt "#36131"
-msgid "Select to change the screensaver specific settings. Which options are available for configuration depends on the features provided by the screensaver add-on."
+msgid "Select to change the screensaver specific settings. Which options are available for configuration depends on the features provided by the screensaver extension."
 msgstr ""
 
 #. Description of setting "Appearance -> Screensaver -> Preview" with label #1000
@@ -17054,17 +17054,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36198"
-msgid "Select the default movie information source. See the add-ons manager for options."
+msgid "Select the default movie information source. See the extensions manager for options."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36199"
-msgid "Select the default TV show information source. See the add-ons manager for options."
+msgid "Select the default TV show information source. See the extensions manager for options."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36200"
-msgid "Select the default music videos information source. See the add-ons manager for options."
+msgid "Select the default music videos information source. See the extensions manager for options."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17079,7 +17079,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36203"
-msgid "Enables the \"Personal Video Recorder\" (PVR) features. This requires that at least one PVR add-on is installed."
+msgid "Enables the \"Personal Video Recorder\" (PVR) features. This requires that at least one PVR extension is installed."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17094,7 +17094,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36206"
-msgid "Use the channel numbering from the backend, instead of configuring them manually in the channel manager. Only works with one enabled PVR add-on!"
+msgid "Use the channel numbering from the backend, instead of configuring them manually in the channel manager. Only works with one enabled PVR extension!"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17207,7 +17207,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36229"
-msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgid "Display signal quality information in the codec information window (if supported by the extension and backend)."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17237,22 +17237,22 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Not supported by all add-ons and backends."
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all extensions and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36236"
-msgid "Delete recording after this time. Not supported by all add-ons and backends."
+msgid "Delete recording after this time. Not supported by all extensions and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36237"
-msgid "Additional time to record before the scheduled start time to allow for minor broadcasting changes. Not supported by all add-ons and backends."
+msgid "Additional time to record before the scheduled start time to allow for minor broadcasting changes. Not supported by all extensions and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36238"
-msgid "Additional time to record after the scheduled end time to allow for minor broadcasting changes. Not supported by all add-ons and backends."
+msgid "Additional time to record after the scheduled end time to allow for minor broadcasting changes. Not supported by all extensions and backends."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17317,12 +17317,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36251"
-msgid "This category contains the settings for your PVR backend specifically, if supported by the PVR add-on and backend."
+msgid "This category contains the settings for your PVR backend specifically, if supported by the PVR extension and backend."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if supported by the PVR add-on and backend."
+msgid "This option will bring you to any specific settings for your PVR backend, if supported by the PVR extension and backend."
 msgstr ""
 
 #. Description of settings section "Music" with label #2
@@ -17643,7 +17643,7 @@ msgstr ""
 #. Description of settings category "Weather -> General" with label #16000
 #: system/settings/settings.xml
 msgctxt "#36316"
-msgid "This category contains the settings for how weather add-ons are handled."
+msgid "This category contains the settings for how weather extensions are handled."
 msgstr ""
 
 #. Description of settings category "Weather -> General -> Locations with label #0
@@ -17655,7 +17655,7 @@ msgstr ""
 #. Description of settings category "Weather -> General -> Service for weather information" with label #24029
 #: system/settings/settings.xml
 msgctxt "#36318"
-msgid "Specify the default weather information source. See the add-ons manager for options."
+msgid "Specify the default weather information source. See the extensions manager for options."
 msgstr ""
 
 #. Description of settings section "Services" with label #14036
@@ -17739,7 +17739,7 @@ msgstr ""
 #. Description of setting "Services -> Webserver -> Web interface" with label #199
 #: system/settings/settings.xml
 msgctxt "#36332"
-msgid "Select between web interfaces installed via the add-on manager."
+msgid "Select between web interfaces installed via the extension manager."
 msgstr ""
 
 #. Description of settings category "Services -> Remote Control" with label #790
@@ -18271,7 +18271,7 @@ msgstr ""
 #. Description of setting "TV -> Recording -> Prevent duplicate episodes" with label #812
 #: system/settings/settings.xml
 msgctxt "#36423"
-msgid "Repeating schedules shall only record new episodes. Not supported by all add-ons and backends."
+msgid "Repeating schedules shall only record new episodes. Not supported by all extensions and backends."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18362,13 +18362,13 @@ msgstr ""
 #. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 14082
 #: system/settings/settings.xml
 msgctxt "#36439"
-msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database will be erased."
+msgid "All data (extension settings and audio DSP manager settings) in the audio DSP database will be erased."
 msgstr ""
 
 #. Used in confirm on dialog to erase database
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#36440"
-msgid "Erasing all DSP add-on and audio DSP manager settings in the audio DSP database."
+msgid "Erasing all DSP extension and audio DSP manager settings in the audio DSP database."
 msgstr ""
 
 #. Settings boolean value name

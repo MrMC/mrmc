@@ -100,7 +100,8 @@ static bool IsDependecyType(TYPE type)
 
 static bool IsSystemAddon(const AddonPtr& addon)
 {
-  return StringUtils::StartsWith(addon->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
+  bool isSystemAddon = CAddonMgr::GetInstance().IsSystemAddon(addon->ID());
+  return isSystemAddon;
 }
 
 

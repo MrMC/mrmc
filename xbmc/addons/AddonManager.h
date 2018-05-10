@@ -100,6 +100,8 @@ namespace ADDON
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
+    bool IsSystemAddon(const std::string &id);
+    bool IsExtendedAddon(const std::string &id);
 
     /*! \brief Get addons with available updates */
     VECADDONS GetOutdated();

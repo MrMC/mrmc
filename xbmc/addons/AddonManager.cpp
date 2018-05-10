@@ -69,7 +69,9 @@ using namespace XFILE;
 namespace ADDON
 {
 
-static constexpr const char* addonWhiteList[] = {
+// these are the standard 'system' addons, they are always
+// enabled and cannot be disabled. Located in special://xbmc/addons
+static constexpr const char* systemAddonWhiteList[] = {
   "kodi.audiodecoder",
   "kodi.guilib",
   "kodi.resource",
@@ -200,10 +202,7 @@ static constexpr const char* addonWhiteList[] = {
   "screensaver.xbmc.builtin.dim",
   "screensaver.xbmc.builtin.slideshow",
   "screensaver.xbmc.builtin.system",
-  "script.advanced.wol",
   "script.module.requests",
-  "script.plex",
-  "service.libraryautoupdate",
   "skin.ariana",
   "skin.amber",
   "skin.blackglassnova",
@@ -227,12 +226,27 @@ static constexpr const char* addonWhiteList[] = {
   "xbmc.webinterface",
 };
 
+// these are the extended addons, they can be enabled/disabled.
+// they are also found in special://xbmc/addons as they are
+// packaged at build and shipped with the install.
+static constexpr const char* extendedAddonWhiteList[] = {
+  "script.advanced.wol",
+  "script.plex",
+  "service.libraryautoupdate",
+};
+
 static bool checkwhitelist(const char *addonName)
 {
-  const int whiteListSize = sizeof(addonWhiteList) / sizeof(addonWhiteList[0]);
+  int whiteListSize = sizeof(systemAddonWhiteList) / sizeof(systemAddonWhiteList[0]);
   for (int indx = 0; indx < whiteListSize; ++indx)
   {
-    if (strcmp(addonName, addonWhiteList[indx]) == 0)
+    if (strcmp(addonName, systemAddonWhiteList[indx]) == 0)
+      return true;
+  }
+  whiteListSize = sizeof(extendedAddonWhiteList) / sizeof(extendedAddonWhiteList[0]);
+  for (int indx = 0; indx < whiteListSize; ++indx)
+  {
+    if (strcmp(addonName, extendedAddonWhiteList[indx]) == 0)
       return true;
   }
   CLog::Log(LOGWARNING, "addon unsupported (%s)", addonName);
@@ -258,8 +272,11 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     return AddonPtr();
 
   // only allow addons in the whitelist
-  if (!checkwhitelist(props->plugin->identifier))
-    return AddonPtr();
+  if (!IsSystemAddon(props->plugin->identifier))
+  {
+    if (!IsExtendedAddon(props->plugin->identifier))
+      return AddonPtr();
+  }
 
   if (!PlatformSupportsAddon(props->plugin))
     return AddonPtr();
@@ -636,6 +653,28 @@ bool CAddonMgr::ReloadSettings(const std::string &id)
   return false;
 }
 
+bool CAddonMgr::IsSystemAddon(const std::string &id)
+{
+  const int listSize = sizeof(systemAddonWhiteList) / sizeof(systemAddonWhiteList[0]);
+  for (int indx = 0; indx < listSize; ++indx)
+  {
+    if (id == systemAddonWhiteList[indx])
+      return true;
+  }
+  return false;
+}
+
+bool CAddonMgr::IsExtendedAddon(const std::string &id)
+{
+  const int listSize = sizeof(extendedAddonWhiteList) / sizeof(extendedAddonWhiteList[0]);
+  for (int indx = 0; indx < listSize; ++indx)
+  {
+    if (id == extendedAddonWhiteList[indx])
+      return true;
+  }
+  return false;
+}
+
 VECADDONS CAddonMgr::GetOutdated()
 {
   CSingleLock lock(m_critSection);
@@ -937,6 +976,13 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
   // installed audio encoder addons can always be disabled
   if (localAddon->Type() == ADDON_AUDIOENCODER)
     return true;
+
+  const int extendedListSize = sizeof(extendedAddonWhiteList) / sizeof(extendedAddonWhiteList[0]);
+  for (int indx = 0; indx < extendedListSize; ++indx)
+  {
+    if (localAddon->ID() == extendedAddonWhiteList[indx])
+      return true;
+  }
 
   std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   // can't disable system addons
