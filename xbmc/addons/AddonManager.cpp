@@ -575,7 +575,18 @@ bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
   VECADDONS addons;
   return GetAddons(type, addons, enabled);
 }
-
+  
+bool CAddonMgr::HasExtensions()
+{
+  const int listSize = sizeof(extendedAddonWhiteList) / sizeof(extendedAddonWhiteList[0]);
+  for (int indx = 0; indx < listSize; ++indx)
+  {
+    if (!IsAddonDisabled(extendedAddonWhiteList[indx]))
+        return true;
+  }
+  return false;
+}
+  
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
 {
   CSingleLock lock(m_critSection);

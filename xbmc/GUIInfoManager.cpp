@@ -319,7 +319,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
                                   { "hasadsp",          SYSTEM_HAS_ADSP },
                                   { "hasappletvslider", SYSTEM_HAS_APPLETV_SLIDER },
-                                  { "isdarkinterface",  SYSTEM_IS_DARK_INTERFACE }};
+                                  { "isdarkinterface",  SYSTEM_IS_DARK_INTERFACE },
+                                  { "hasextensions",    SYSTEM_HAS_EXTENSIONS }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "hascoreid",        SYSTEM_HAS_CORE_ID },
@@ -2632,6 +2633,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #else
       bReturn = CDarwinUtils::IsDarkInterface();
 #endif
+      break;
+    case SYSTEM_HAS_EXTENSIONS:
+      bReturn = CAddonMgr::GetInstance().HasExtensions();
       break;
     case WEATHER_IS_FETCHED:
       bReturn = g_weatherManager.IsFetched();
