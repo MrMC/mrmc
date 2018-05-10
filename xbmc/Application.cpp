@@ -433,7 +433,7 @@ bool CApplication::Create()
   
 #if defined(TARGET_DARWIN_OSX)
   CDateTime dieDate;
-  std::string strDieDate = "2018-05-09T15:13:30+04:00";
+  std::string strDieDate = "2018-08-09T15:13:30+04:00";
   dieDate.SetFromW3CDateTime(strDieDate);
   CDateTime now = CDateTime::GetCurrentDateTime();
   CLog::Log(LOGNOTICE, "App dieDate is %s", dieDate.GetAsLocalizedDateTime().c_str());
