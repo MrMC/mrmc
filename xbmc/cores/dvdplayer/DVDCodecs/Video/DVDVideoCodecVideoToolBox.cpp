@@ -181,6 +181,11 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     if (hints.codec == AV_CODEC_ID_H264)
     {
       CBitstreamConverter bs;
+      // CBitstreamConverter might alter extradata, changing to 4 byte NALs
+      // for avcC if 2 or 3 byte NALs are detected, save a copy to restore.
+      uint8_t *saved_extradata[hints.extrasize];
+      memcpy(saved_extradata, hints.extradata, hints.extrasize);
+
       if (!bs.Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
         return false;
 
@@ -193,6 +198,9 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       if (sps_size)
         bs.parseh264_sps(spc+3, sps_size-1, &interlaced, &max_ref_frames);
       CFRelease(avcCData);
+
+      // restore original extradata contents
+      memcpy(hints.extradata, saved_extradata, hints.extrasize);
 
       if (interlaced)
         hints.maybe_interlaced = true;
@@ -245,7 +253,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         else
         {
           // use a bitstream converter for all flavors, that way
-          // even avcC with silly 3-byte nals are covered.
+          // even avcC with 2-byte or silly 3-byte nals are covered.
           m_bitstream = new CBitstreamConverter;
           if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, false))
           {

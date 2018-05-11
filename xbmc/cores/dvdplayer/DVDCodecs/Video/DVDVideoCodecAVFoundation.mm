@@ -204,6 +204,11 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     if (hints.codec == AV_CODEC_ID_H264)
     {
       CBitstreamConverter bs;
+      // CBitstreamConverter might alter extradata, changing to 4 byte NALs
+      // for avcC if 2 or 3 byte NALs are detected, save a copy to restore.
+      uint8_t *saved_extradata[hints.extrasize];
+      memcpy(saved_extradata, hints.extradata, hints.extrasize);
+
       if (!bs.Open(hints.codec, (uint8_t*)hints.extradata, hints.extrasize, false))
         return false;
 
@@ -216,6 +221,9 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       if (sps_size)
         bs.parseh264_sps(spc+3, sps_size-1, &interlaced, &max_ref_frames);
       CFRelease(avcCData);
+
+      // restore original extradata contents
+      memcpy(hints.extradata, saved_extradata, hints.extrasize);
 
       if (interlaced)
         hints.maybe_interlaced = true;
