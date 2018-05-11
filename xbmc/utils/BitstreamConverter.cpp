@@ -496,6 +496,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_to_annexb         = false;
   m_extradata         = NULL;
   m_extrasize         = 0;
+  m_convert_2byteTo4byteNALSize = false;
   m_convert_3byteTo4byteNALSize = false;
   m_convert_bytestream = false;
   m_sps_pps_context.sps_pps_data = NULL;
@@ -576,13 +577,21 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
         }
         else
         {
-          if (in_extradata[4] == 0xFE)
+          if (in_extradata[4] == 0xFE || in_extradata[4] == 0xFD)
           {
-            CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init 3 byte to 4 byte nal");
-            // video content is from so silly encoder that think 3 byte NAL sizes
-            // are valid, setup to convert 3 byte NAL sizes to 4 byte.
+            // video content is from so silly encoder that think 2 or 3 byte NAL sizes
+            // are valid, setup to convert 2 or 3 byte NAL sizes to 4 byte.
+            if (in_extradata[4] == 0xFD)
+            {
+              CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init 2 byte to 4 byte nal");
+              m_convert_2byteTo4byteNALSize = true;
+            }
+            else
+            {
+              CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init 3 byte to 4 byte nal");
+              m_convert_3byteTo4byteNALSize = true;
+            }
             in_extradata[4] = 0xFF;
-            m_convert_3byteTo4byteNALSize = true;
 
             m_extradata = (uint8_t *)av_malloc(in_extrasize);
             memcpy(m_extradata, in_extradata, in_extrasize);
@@ -664,7 +673,15 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
         }
         else
         {
-          if ((in_extradata[4] & 0x3) == 2)
+          if ((in_extradata[4] & 0x3) == 1)
+          {
+            CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init 2 byte to 4 byte nal");
+            // video content is from so silly encoder that think 3 byte NAL sizes
+            // are valid, setup to convert 2 byte NAL sizes to 4 byte.
+            in_extradata[4] |= 0x03;
+            m_convert_2byteTo4byteNALSize = true;
+          }
+          else if ((in_extradata[4] & 0x3) == 2)
           {
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init 3 byte to 4 byte nal");
             // video content is from so silly encoder that think 3 byte NAL sizes
@@ -706,6 +723,7 @@ void CBitstreamConverter::Close(void)
 
   m_convert_bitstream = false;
   m_convert_bytestream = false;
+  m_convert_2byteTo4byteNALSize = false;
   m_convert_3byteTo4byteNALSize = false;
 }
 
@@ -765,7 +783,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 
         if (m_convert_bytestream)
         {
-          if(m_convertBuffer)
+          if (m_convertBuffer)
           {
             av_free(m_convertBuffer);
             m_convertBuffer = NULL;
@@ -775,11 +793,38 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
           // convert demuxer packet from bytestream (AnnexB) to bitstream
           AVIOContext *pb;
 
-          if(avio_open_dyn_buf(&pb) < 0)
+          if (avio_open_dyn_buf(&pb) < 0)
           {
             return false;
           }
           m_convertSize = avc_parse_nal_units(pb, pData, iSize);
+          m_convertSize = avio_close_dyn_buf(pb, &m_convertBuffer);
+        }
+        else if (m_convert_2byteTo4byteNALSize)
+        {
+          if (m_convertBuffer)
+          {
+            av_free(m_convertBuffer);
+            m_convertBuffer = NULL;
+          }
+          m_convertSize = 0;
+
+          // convert demuxer packet from 2 byte NAL sizes to 4 byte
+          AVIOContext *pb;
+          if (avio_open_dyn_buf(&pb) < 0)
+            return false;
+
+          uint32_t nal_size;
+          uint8_t *end = pData + iSize;
+          uint8_t *nal_start = pData;
+          while (nal_start < end)
+          {
+            nal_size = BS_RB16(nal_start);
+            avio_wb32(pb, nal_size);
+            nal_start += 2;
+            avio_write(pb, nal_start, nal_size);
+            nal_start += nal_size;
+          }
           m_convertSize = avio_close_dyn_buf(pb, &m_convertBuffer);
         }
         else if (m_convert_3byteTo4byteNALSize)
@@ -807,7 +852,6 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
             avio_write(pb, nal_start, nal_size);
             nal_start += nal_size;
           }
-
           m_convertSize = avio_close_dyn_buf(pb, &m_convertBuffer);
         }
         return true;
@@ -821,7 +865,8 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 
 uint8_t *CBitstreamConverter::GetConvertBuffer() const
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
+  if ((m_convert_bitstream || m_convert_bytestream ||
+       m_convert_2byteTo4byteNALSize || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
     return m_convertBuffer;
   else
     return m_inputBuffer;
@@ -829,7 +874,8 @@ uint8_t *CBitstreamConverter::GetConvertBuffer() const
 
 int CBitstreamConverter::GetConvertSize() const
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
+  if((m_convert_bitstream || m_convert_bytestream ||
+    m_convert_2byteTo4byteNALSize || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
     return m_convertSize;
   else
     return m_inputSize;

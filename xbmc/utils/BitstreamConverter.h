@@ -217,6 +217,7 @@ protected:
 
   uint8_t          *m_extradata;
   int               m_extrasize;
+  bool              m_convert_2byteTo4byteNALSize;
   bool              m_convert_3byteTo4byteNALSize;
   bool              m_convert_bytestream;
   AVCodecID         m_codec;
