@@ -41,7 +41,9 @@ bool CGUIDialogOSDSettings::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-    case ACTION_MOVE_UP:
+//    disable this as the skins are taking care of it,
+//    some skins have multiple rows and need to be able to go up
+//    case ACTION_MOVE_UP:
     case ACTION_SHOW_OSD_SETTINGS:
       Close();
       return true;
