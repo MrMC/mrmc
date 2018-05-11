@@ -235,24 +235,6 @@ static constexpr const char* extendedAddonWhiteList[] = {
   "service.libraryautoupdate",
 };
 
-static bool checkwhitelist(const char *addonName)
-{
-  int whiteListSize = sizeof(systemAddonWhiteList) / sizeof(systemAddonWhiteList[0]);
-  for (int indx = 0; indx < whiteListSize; ++indx)
-  {
-    if (strcmp(addonName, systemAddonWhiteList[indx]) == 0)
-      return true;
-  }
-  whiteListSize = sizeof(extendedAddonWhiteList) / sizeof(extendedAddonWhiteList[0]);
-  for (int indx = 0; indx < whiteListSize; ++indx)
-  {
-    if (strcmp(addonName, extendedAddonWhiteList[indx]) == 0)
-      return true;
-  }
-  CLog::Log(LOGWARNING, "addon unsupported (%s)", addonName);
-  return false;
-}
-
 cp_log_severity_t clog_to_cp(int lvl);
 void cp_fatalErrorHandler(const char *msg);
 void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
