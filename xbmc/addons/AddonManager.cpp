@@ -232,6 +232,7 @@ static constexpr const char* systemAddonWhiteList[] = {
 static constexpr const char* extendedAddonWhiteList[] = {
   "script.advanced.wol",
   "script.plex",
+  "script.xbmc.unpausejumpback",
   "service.libraryautoupdate",
 };
 
