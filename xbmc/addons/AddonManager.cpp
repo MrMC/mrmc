@@ -522,6 +522,24 @@ bool CAddonMgr::Init()
     }
   }
 
+  // do the same for user extensions that are also in "special://xbmc/addons"
+  // just a note, the entire treatment of 'system' addons in database
+  // was a hack to deal with binary addons like pvr. They are packaged
+  // with install so they have to be located in special://xbmc/addons but
+  // need to be treated like user addons that can be enabled/disabled.
+  // We (MrMC) do the same thing for our packaged addons. Maybe we should
+  // package them elsewere but that is a change for another day.
+  const int listSize = sizeof(extendedAddonWhiteList) / sizeof(extendedAddonWhiteList[0]);
+  for (int indx = 0; indx < listSize; ++indx)
+  {
+    std::string id = extendedAddonWhiteList[indx];
+    if (!m_database.IsSystemAddonRegistered(id))
+    {
+      m_database.DisableAddon(id);
+      m_database.AddSystemAddon(id);
+    }
+  }
+
   std::vector<std::string> disabled;
   m_database.GetDisabled(disabled);
   m_disabled.insert(disabled.begin(), disabled.end());
