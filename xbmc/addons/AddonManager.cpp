@@ -232,8 +232,10 @@ static constexpr const char* systemAddonWhiteList[] = {
 static constexpr const char* extendedAddonWhiteList[] = {
   "script.advanced.wol",
   "script.plex",
+  "script.skinshortcuts",
   "script.xbmc.unpausejumpback",
   "service.libraryautoupdate",
+  "skin.titan",
 };
 
 cp_log_severity_t clog_to_cp(int lvl);
