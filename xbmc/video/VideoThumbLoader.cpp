@@ -369,15 +369,23 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     {
       // An auto-generated thumb may have been cached on a different device - check we have it here
       if (StringUtils::StartsWith(url, "image://video@"))
-        pItem->SetArt("thumb", "");
-
-      // Check invalid redirections
-      else if (URIUtils::IsInternetStream(url))
       {
-        std::string mimetype;
-        bool valid = XFILE::CCurlFile::GetMimeType(CURL(url), mimetype);
-        if (valid && !StringUtils::StartsWith(mimetype, "image/"))
-          valid = false;
+        pItem->SetArt("thumb", "");
+      }
+      else if (URIUtils::IsInternetStream(url)) // Check invalid redirections
+      {
+        bool valid = false;
+        if (URIUtils::HasExtension(url, ".jpg"))
+          valid = true;
+        else if (URIUtils::HasExtension(url, ".png"))
+          valid = true;
+        else
+        {
+          std::string mimetype;
+          valid = XFILE::CCurlFile::GetMimeType(CURL(url), mimetype);
+          if (valid && !StringUtils::StartsWith(mimetype, "image/"))
+            valid = false;
+        }
         if (!valid)
           pItem->SetArt("thumb", "");
       }
