@@ -3,7 +3,7 @@ DEPS= ../../../Makefile.include Makefile
 
 # lib name
 LIBNAME=script.plex
-VERSION=1.0.0
+VERSION=1.6.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 REALARCHIVE=mrmc-master.tar.gz
