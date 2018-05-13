@@ -49,7 +49,8 @@ void CGUIDialogVideoOSD::FrameMove()
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_GUIDE)
-                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_SETTINGS))
       // extend show time by original value
       SetAutoClose(m_showDuration);
   }
