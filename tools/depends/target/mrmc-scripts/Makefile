@@ -4,6 +4,7 @@ DEPS= ../../Makefile.include Makefile
 
 SUBDIRS  = script-plex
 SUBDIRS += script.advanced.wol
+SUBDIRS += script.keymap
 SUBDIRS += script.module.requests
 SUBDIRS += script.xbmc.unpausejumpback
 SUBDIRS += service.libraryautoupdate

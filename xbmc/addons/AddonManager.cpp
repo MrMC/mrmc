@@ -230,8 +230,9 @@ static constexpr const char* systemAddonWhiteList[] = {
 // they are also found in special://xbmc/addons as they are
 // packaged at build and shipped with the install.
 static constexpr const char* extendedAddonWhiteList[] = {
-  "script.advanced.wol",
   "script.plex",
+  "script.advanced.wol",
+  "script.keymap",
   "script.skinshortcuts",
   "script.xbmc.unpausejumpback",
   "service.libraryautoupdate",
