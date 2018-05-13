@@ -963,6 +963,13 @@ else
   AC_MSG_RESULT($wayland_disabled)
 fi
 
+# Python
+if test -z "$PYTHON_NOVERSIONCHECK"; then
+  AX_PYTHON_DEVEL([>= '2.6'])
+  AX_PYTHON_DEVEL([< '3.0'])
+  PYTHON_VERSION=$ac_python_version
+fi
+
 if test -z "$PYTHON_VERSION"; then
   AC_MSG_ERROR([Can't find a Python version.])
 else
@@ -1384,7 +1391,12 @@ fi
 
 # samba
 if test "x$use_samba" != "xno"; then
-  AC_CHECK_HEADER([libsmbclient.h],, [use_samba=no;AC_MSG_ERROR($missing_library)])
+  PKG_CHECK_MODULES([SAMBA], [smbclient],
+    [INCLUDES="$INCLUDES $SAMBA_CFLAGS"; LIBS="$LIBS $SAMBA_LIBS"],
+    [AC_CHECK_LIB([smbclient], [main],,
+      use_samba=no;AC_MSG_ERROR($missing_library))
+      USE_LIBSMBCLIENT=0
+])
 else
   AC_MSG_RESULT($samba_disabled)
   USE_LIBSMBCLIENT=0
@@ -2410,6 +2422,8 @@ AC_SUBST(USE_OPENGLES)
 AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_LIBSMBCLIENT)
+AC_SUBST(USE_LIBDSM)
+AC_SUBST(USE_LIBSMB2)
 AC_SUBST(USE_LIBNFS)
 AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_OPENMAX)

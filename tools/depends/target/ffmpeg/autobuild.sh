@@ -160,8 +160,6 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--enable-pic \
 	--enable-zlib \
 	--disable-mips32r2 \
-	--disable-mipsdspr1 \
-	--disable-mipsdspr2 \
         ${FLAGS}
 
 make -j ${BUILDTHREADS} 

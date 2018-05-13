@@ -2633,8 +2633,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case SYSTEM_IS_DARK_INTERFACE:
 #if defined(TARGET_ANDROID)
       bReturn = CXBMCApp::IsNightMode();
-#else
+#elif TARGET_DARWIN_TVOS
       bReturn = CDarwinUtils::IsDarkInterface();
+#else
+      bReturn = false;
 #endif
       break;
     case SYSTEM_HAS_EXTENSIONS:

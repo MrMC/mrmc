@@ -32,7 +32,6 @@
 #include "system.h"
 
 #include "SMBDirectory.h"
-#include "filesystem/DSMFile.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "FileItem.h"

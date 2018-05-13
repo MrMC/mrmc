@@ -21,6 +21,7 @@
 #include "CompileInfo.h"
 #include <string>
 #include <cstddef>
+#include <algorithm>
 
 int CCompileInfo::GetMajor()
 {

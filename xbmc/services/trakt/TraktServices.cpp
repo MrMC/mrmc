@@ -20,6 +20,8 @@
 
 #include "TraktServices.h"
 
+#include <math.h>
+
 #include "Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"

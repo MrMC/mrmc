@@ -18,8 +18,12 @@
  *
  */
 
+#include "config.h"
+
 #include "DNSNameCache.h"
+#ifdef HAVE_LIBDSM
 #include "filesystem/DSMFile.h"
+#endif
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -98,11 +102,13 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     }
   }
 
+#ifdef HAVE_LIBDSM
   CLog::Log(LOGDEBUG, "CDNSNameCache::Lookup, check by CDSMSessionManager::HostNameToIP");
   std::string ipaddress = strHostName;
   // HostNameToIP will do the g_DNSCache.Add if found
   if (CDSMSessionManager::HostNameToIP(ipaddress, true))
     return true;
+#endif
 
   CLog::Log(LOGERROR, "Unable to lookup host: '%s'", strHostName.c_str());
   return false;

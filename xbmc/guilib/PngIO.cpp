@@ -18,11 +18,12 @@
  *
 */
 
+#include "PngIO.h"
+
 #include <stdlib.h>
 #include <setjmp.h>
 
 #include "cores/FFmpeg.h"
-#include "guilib/PngIO.h"
 #include "utils/log.h"
 
 #ifndef png_jmpbuf

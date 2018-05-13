@@ -28,7 +28,9 @@
 #include "network/ZeroconfBrowser.h"
 #include "Directory.h"
 #include "utils/log.h"
+#ifdef HAVE_LIBDSM
 #include "filesystem/DSMFile.h"
+#endif
 
 using namespace XFILE;
 
@@ -226,9 +228,11 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         //  the same regardless of if they are set up via smb or zeroconfig browse.
         if (protocol == "smb")
         {
+#ifdef HAVE_LIBDSM
           const char *netbios_name = CDSMSessionManager::IPAddressToNetBiosName(zeroconf_service.GetIP());
           if (netbios_name != nullptr)
             service.SetHostName(netbios_name);
+#endif
         }
 
         //first try to show the txt-record defined path if any
