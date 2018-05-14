@@ -249,6 +249,10 @@ bool CHomeShelfJob::UpdateMusic()
 
 bool CHomeShelfJob::UpdateTotal()
 {
+  // cheeky return to not fetch any media totals
+  // lets see how many people complain about it :)
+  return true;
+  
   CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
   if (home == NULL)
     return false;
