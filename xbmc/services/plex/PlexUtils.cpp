@@ -1941,6 +1941,8 @@ void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const CVariant &media
           std::string propertyLangKey = StringUtils::Format("subtitle:%i_language", iSubtile);
           std::string languageCode = stream["languageCode"].asString();
           item.SetProperty(propertyLangKey, languageCode);
+          std::string propertyForcedKey = StringUtils::Format("subtitle:%i_forced", iSubtile);
+          item.SetProperty(propertyForcedKey, stream["forced"].asBoolean());
           iSubtile++;
         }
       }

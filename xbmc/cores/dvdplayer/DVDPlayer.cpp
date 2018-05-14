@@ -785,9 +785,13 @@ bool CDVDPlayer::OpenInputStream()
       {
         if ( !CUtil::IsVobSub(filenames, filenames[i] ) )
         {
+          bool forced = false;
           std::string key = StringUtils::Format("subtitle:%i_language", i+1);
           std::string language = m_item.GetProperty(key).asString();
-          AddSubtitleFile(filenames[i], "", language);
+          std::string forcedKey = StringUtils::Format("subtitle:%i_forced", i+1);
+          if (m_item.HasProperty(forcedKey))
+            forced = m_item.GetProperty(forcedKey).asBoolean();
+          AddSubtitleFile(filenames[i], "", language, forced);
         }
       }
     } // end loop over all subtitle files
@@ -4509,7 +4513,7 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   info.audioCodecName = s.codec;
 }
 
-int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename, const std::string language)
+int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename, const std::string language, bool forced)
 {
   std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
@@ -4563,7 +4567,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   {
     s.language = language;
     s.name     = g_localizeStrings.Get(21602);
-    s.flags    = CDemuxStream::FLAG_NONE;
+    s.flags    = forced ? CDemuxStream::FLAG_FORCED : CDemuxStream::FLAG_NONE;
   }
   else
   {
