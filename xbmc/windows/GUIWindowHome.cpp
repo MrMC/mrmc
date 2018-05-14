@@ -59,6 +59,7 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
                                        m_cumulativeUpdateFlag(0),
                                        m_countBackCalled(0)
 {
+  m_firstRun = true;
   m_updateHS = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
   
@@ -112,16 +113,25 @@ bool CGUIWindowHome::OnAction(const CAction &action)
 
 void CGUIWindowHome::OnInitWindow()
 {  
-  // for shared databases (ie mysql) always force an update on return to home
-  // this is a temporary solution until remote announcements can be delivered
+  // its stupid…
+  // - if its mysql we have to trigger on start and on every return to home screen.
+  // - if its service(plex/emby) we dont need it on start as the servers are still not discovered,
+  //   once they are it will trigger the update but we do need it on every return to home.
   if ((StringUtils::EqualsNoCase(g_advancedSettings.m_databaseVideo.type, "mysql") ||
-      StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql")) ||
-      CServicesManager::GetInstance().HasServices())
+      StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql")))
   {
     // totals will be done after these jobs are finished
     m_updateHS = (Audio | Video);
+    m_firstRun = false;
   }
-  AddHomeShelfJobs( m_updateHS );
+  
+  if (CServicesManager::GetInstance().HasServices())
+    m_updateHS = (Audio | Video);
+  
+  if (!m_firstRun)
+    AddHomeShelfJobs( m_updateHS );
+  else
+    m_firstRun = false;
 
   CGUIWindow::OnInitWindow();
 }

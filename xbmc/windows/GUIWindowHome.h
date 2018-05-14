@@ -43,7 +43,8 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 private:
-  int m_updateHS; // flag for which home shelf items needs to be queried
+  int  m_updateHS; // flag for which home shelf items needs to be queried
+  bool m_firstRun;
   void AddHomeShelfJobs(int flag);
   bool OnClickHomeShelfItem(CFileItem itemPtr, int action);
   bool PlayHomeShelfItem(CFileItem itemPtr);
