@@ -1253,8 +1253,7 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
     if (season > -1)
     {
       value = item["thumb"].asString();
-      removeLeadingSlash(value);
-      url.SetFileName(value);
+      url.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
       imagePath = url.Get();
       plexItem->SetArt("thumb", imagePath);
       plexItem->SetArt("tvshow.thumb", imagePath);
@@ -1273,16 +1272,14 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
       plexItem->GetVideoInfoTag()->m_strShowTitle = item["grandparentTitle"].asString();
 
       value = item["thumb"].asString();
-      removeLeadingSlash(value);
-      url.SetFileName(value);
+      url.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
       imagePath = url.Get();
       plexItem->SetArt("thumb", imagePath);
 
       value = item["parentThumb"].asString();
       if (value.empty())
         value = item["grandparentThumb"].asString();
-      removeLeadingSlash(value);
-      url.SetFileName(value);
+      url.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
       imagePath = url.Get();
       plexItem->SetArt("tvshow.poster", imagePath);
       plexItem->SetArt("tvshow.thumb", imagePath);
@@ -1297,8 +1294,7 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
       plexItem->SetLabel(item["title"].asString());
 
       value = item["thumb"].asString();
-      removeLeadingSlash(value);
-      url.SetFileName(value);
+      url.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
       imagePath = url.Get();
       plexItem->SetArt("thumb", imagePath);
       plexItem->SetIconImage(imagePath);
@@ -1323,8 +1319,7 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
     time_t lastPlayed = item["lastViewedAt"].asInteger();
     plexItem->GetVideoInfoTag()->m_lastPlayed = CDateTime(lastPlayed);
 
-    removeLeadingSlash(fanart);
-    url.SetFileName(fanart);
+    url.SetFileName("photo/:/transcode?width=1920&height=1080&quality=90&url=" + fanart);
     plexItem->SetArt("fanart", url.Get());
 
     plexItem->GetVideoInfoTag()->SetYear(item["year"].asInteger());
@@ -1403,18 +1398,15 @@ bool CPlexUtils::ParsePlexSeries(CFileItemList &items, const CURL &url, const CV
     plexItem->GetVideoInfoTag()->SetPlot(item["summary"].asString());
 
     value = item["thumb"].asString();
-    removeLeadingSlash(value);
-    curl.SetFileName(value);
+    curl.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
     plexItem->SetArt("thumb", curl.Get());
 
     value = item["banner"].asString();
-    removeLeadingSlash(value);
-    curl.SetFileName(value);
+    curl.SetFileName("photo/:/transcode?width=1280&height=720&quality=90&url=" + value);
     plexItem->SetArt("banner", curl.Get());
 
     value = item["art"].asString();
-    removeLeadingSlash(value);
-    curl.SetFileName(value);
+    curl.SetFileName("photo/:/transcode?width=1920&height=1080&quality=90&url=" + value);
     plexItem->SetArt("fanart", curl.Get());
 
     plexItem->GetVideoInfoTag()->SetYear(item["year"].asInteger());
@@ -1492,19 +1484,16 @@ bool CPlexUtils::ParsePlexSeasons(CFileItemList &items, const CURL &url, const C
       plexItem->SetProperty("PlexShowKey", mediacontainer["key"].asString());
 
       value = mediacontainer["art"].asString();
-      removeLeadingSlash(value);
-      curl.SetFileName(value);
+      curl.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
       plexItem->SetArt("fanart", curl.Get());
 
       value = mediacontainer["banner"].asString();
-      removeLeadingSlash(value);
-      curl.SetFileName(value);
+      curl.SetFileName("photo/:/transcode?width=1280&height=720&quality=90&url=" + value);
       plexItem->SetArt("banner", curl.Get());
 
       /// -------
       value = item["thumb"].asString();
-      removeLeadingSlash(value);
-      curl.SetFileName(value);
+      curl.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
       plexItem->SetArt("thumb", curl.Get());
 
       time_t addedTime = item["addedAt"].asInteger();
@@ -1627,13 +1616,11 @@ bool CPlexUtils::ParsePlexSongs(CFileItemList &items, const CURL &url, const CVa
         plexItem->GetMusicInfoTag()->SetDuration(item["duration"].asInteger()/1000);
 
         value = item["thumb"].asString();
-        removeLeadingSlash(value);
-        curl.SetFileName(value);
+        curl.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
         plexItem->SetArt("thumb", curl.Get());
 
         value = item["art"].asString();
-        removeLeadingSlash(value);
-        curl.SetFileName(value);
+        curl.SetFileName("photo/:/transcode?width=1920&height=1080&quality=90&url=" + value);
         plexItem->SetArt("fanart", curl.Get());
 
         time_t addedTime = item["addedAt"].asInteger();
@@ -1700,14 +1687,12 @@ bool CPlexUtils::ParsePlexArtistsAlbum(CFileItemList &items, const CURL &url, co
     plexItem->GetMusicInfoTag()->SetYear(item["year"].asInteger());
 
     value = item["thumb"].asString();
-    removeLeadingSlash(value);
-    curl.SetFileName(value);
+    curl.SetFileName("photo/:/transcode?height=800&width=800&url=" + value);
     plexItem->SetArt("thumb", curl.Get());
     plexItem->SetProperty("thumb", curl.Get());
 
     value = item["art"].asString();
-    removeLeadingSlash(value);
-    curl.SetFileName(value);
+    curl.SetFileName("photo/:/transcode?width=1920&height=1080&quality=90&url=" + value);
     plexItem->SetArt("fanart", curl.Get());
     plexItem->SetProperty("fanart", curl.Get());
 
@@ -1813,11 +1798,12 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
       {
         SActorInfo role;
         std::string strRole;
+        std::string strThumb = (*variantIt)["thumb"].asString();
         if ((*variantIt)["role"].asString() != "0")
           strRole =(*variantIt)["role"].asString();
         role.strName = (*variantIt)["tag"].asString();
         role.strRole = strRole;
-        role.thumb   = (*variantIt)["thumb"].asString();
+        role.thumb   = strThumb;
         roles.push_back(role);
       }
     }
