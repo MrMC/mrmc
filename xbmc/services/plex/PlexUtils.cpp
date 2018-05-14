@@ -1158,22 +1158,17 @@ bool CPlexUtils::GetAllPlexRecentlyAddedAlbums(CFileItemList &items, int limit)
     {
       if (limitTo == 2 && !client->IsOwned())
         continue;
-
-      std::vector<PlexSectionsContent> contents;
-      contents = client->GetArtistContent();
-      for (const auto &content : contents)
-      {
-        CURL curl(client->GetUrl());
-        curl.SetProtocol(client->GetProtocol());
-        curl.SetFileName(curl.GetFileName() + content.section + "/recentlyAdded");
-//        curl.SetFileName(curl.GetFileName() + "recentlyAdded");
-        curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
-
-        GetPlexArtistsOrAlbum(plexItems, curl.Get(), true);
-
-        for (int item = 0; item < plexItems.Size(); ++item)
-          CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
-      }
+      CURL curl(client->GetUrl());
+      curl.SetProtocol(client->GetProtocol());
+      curl.SetFileName(curl.GetFileName() + "hubs/home/recentlyAdded");
+      
+      curl.SetProtocolOption("type","8");
+      curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
+      
+      GetPlexArtistsOrAlbum(plexItems, curl.Get(), true);
+      for (int item = 0; item < plexItems.Size(); ++item)
+        CPlexUtils::SetPlexItemProperties(*plexItems[item], client);
+      
       SetPlexItemProperties(plexItems);
       items.Append(plexItems);
       items.SetLabel("Recently Added Albums");
