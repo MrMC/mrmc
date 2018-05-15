@@ -88,6 +88,7 @@ public:
   void SetVisibleCondition(const std::string &condition, int context);
 
   const CGUIAction &GetClickActions() const { return m_clickActions; };
+  void SetClickActions(CGUIAction action) { m_clickActions = action; };
 private:
   typedef std::vector< std::pair<CGUIInfoLabel, std::string> > InfoVector;
   InfoVector m_info;

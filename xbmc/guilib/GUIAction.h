@@ -32,6 +32,12 @@ class CGUIListItem; typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CGUIAction
 {
 public:
+  struct cond_action_pair
+  {
+    std::string condition;
+    std::string action;
+  };
+  
   CGUIAction();
   CGUIAction(int controlID);
 
@@ -55,14 +61,10 @@ public:
    * Set navigation route
    */
   void SetNavigation(int id);
-private:
-  struct cond_action_pair
-  {
-    std::string condition;
-    std::string action;
-  };
-
+  
   std::vector<cond_action_pair> m_actions;
+private:
+
   bool m_sendThreadMessages;
 
   typedef std::vector<cond_action_pair>::const_iterator ciActions;
