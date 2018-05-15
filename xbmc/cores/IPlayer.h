@@ -99,6 +99,7 @@ struct SPlayerAudioStreamInfo
 
 struct SPlayerSubtitleStreamInfo
 {
+  bool forced;
   std::string language;
   std::string name;
   std::string file;

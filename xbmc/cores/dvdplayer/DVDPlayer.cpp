@@ -3251,6 +3251,7 @@ void CDVDPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
     info.name += "(Invalid)";
 
   info.language = s.language;
+  info.forced = s.flags == CDemuxStream::FLAG_FORCED;
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)
