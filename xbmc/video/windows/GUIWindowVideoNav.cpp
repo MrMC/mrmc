@@ -1401,6 +1401,11 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
     return "videodb://musicvideos/";
   else if (lower == "recentlyaddedmusicvideos")
     return "videodb://recentlyaddedmusicvideos/";
+  // override to only show local sources, ignore Plex/Emby services
+  else if (lower == "movietitleslocal")
+    return "videodb://movies/titles/";
+  else if (lower == "tvshowtitleslocal")
+    return "videodb://tvshows/titles/";
   else if (lower == "files")
     return "sources://video/";
   return CGUIWindowVideoBase::GetStartFolder(dir);

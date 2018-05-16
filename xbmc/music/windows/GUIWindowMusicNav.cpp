@@ -926,6 +926,11 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
     if (CServicesManager::GetInstance().HasServices())
       return "services://music/" + lower + "/";
   }
+  // override to only show local sources, ignore Plex/Emby services
+  else if (lower == "rootlocal")
+  {
+    return "musicdb://root/";
+  }
   else if (lower == "singles")
     return "musicdb://singles/";
   else if (lower == "songs")
