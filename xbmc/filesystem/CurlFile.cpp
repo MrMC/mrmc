@@ -435,6 +435,7 @@ CCurlFile::CCurlFile()
   m_bufferSize = 512 * 1024;
   m_postdata = "";
   m_postdataset = false;
+  m_putdataset = false;
   m_username = "";
   m_password = "";
   m_httpauth = "";
@@ -558,6 +559,12 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (m_postdataset)
   {
     g_curlInterface.easy_setopt(h, CURLOPT_POST, 1 );
+    g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDSIZE, m_postdata.length());
+    g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDS, m_postdata.c_str());
+  }
+  else if (m_putdataset)
+  {
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_CUSTOMREQUEST, "PUT");
     g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDSIZE, m_postdata.length());
     g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDS, m_postdata.c_str());
   }
@@ -894,34 +901,11 @@ bool CCurlFile::Delete(const std::string& strURL, const std::string& strData, st
   return result == CURLE_OK;
 }
 
-bool CCurlFile::Put(const std::string& strURL, const std::string& strData, std::string& strHTML)
+bool CCurlFile::Put(const std::string& strURL, const std::string& strPostData, std::string& strHTML)
 {
-  CURL url2(strURL);
-  ParseAndCorrectUrl(url2);
-  
-  assert(m_state->m_easyHandle == NULL);
-  g_curlInterface.easy_aquire(
-                              url2.GetProtocol().c_str(), url2.GetHostName().c_str(), &m_state->m_easyHandle, NULL);
-  
-  SetCommonOptions(m_state);
-  SetRequestHeaders(m_state);
-  
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_CUSTOMREQUEST, "PUT");
-  // grrr, not in curl docs but use CURLOPT_POSTFIELDS for content body.
-  if (!strData.empty())
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_POSTFIELDS, strData.c_str());
-  
-  CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
-  if (result != CURLE_OK)
-  {
-    long code;
-    if (g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK)
-      CLog::Log(LOGERROR, "CCurlFile::Put - Failed: HTTP returned error %ld for %s", code, url2.GetRedacted().c_str());
-  }
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_CUSTOMREQUEST, NULL);
-  g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-  
-  return result == CURLE_OK;
+  m_postdata = strPostData;
+  m_putdataset = true;
+  return Service(strURL, strHTML);
 }
 
 bool CCurlFile::Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML)
@@ -979,6 +963,7 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
   {
     m_postdata = "";
     m_postdataset = false;
+    m_putdataset = false;
     const CURL pathToUrl(strURL);
     if (Open(pathToUrl))
     {

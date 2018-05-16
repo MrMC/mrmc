@@ -197,6 +197,7 @@ namespace XFILE
       bool            m_multisession;
       bool            m_skipshout;
       bool            m_postdataset;
+      bool            m_putdataset;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
       char           *m_readbuffer;
