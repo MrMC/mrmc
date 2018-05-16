@@ -322,6 +322,7 @@ const std::string CSettings::SETTING_AUDIOCDS_EJECTONRIP = "audiocds.ejectonrip"
 const std::string CSettings::SETTING_MYMUSIC_STARTWINDOW = "mymusic.startwindow";
 const std::string CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS = "mymusic.songthumbinvis";
 const std::string CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW = "mymusic.defaultlibview";
+const std::string CSettings::SETTING_MYMUSIC_FLATTEN = "mymusic.flatten";
 const std::string CSettings::SETTING_PICTURES_GENERATETHUMBS = "pictures.generatethumbs";
 const std::string CSettings::SETTING_PICTURES_SHOWVIDEOS = "pictures.showvideos";
 const std::string CSettings::SETTING_PICTURES_DISPLAYRESOLUTION = "pictures.displayresolution";
@@ -460,6 +461,8 @@ const std::string CSettings::SETTING_GENERAL_ADDONUPDATES = "general.addonupdate
 const std::string CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS = "general.addonnotifications";
 const std::string CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addonforeignfilter";
 const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
+const std::string CSettings::SETTING_GENERAL_SERVER_TYPE = "general.servertype";
+const std::string CSettings::SETTING_GENERAL_SERVER_UUID = "general.serveruuid";
 
 
 const std::string CSettings::SETTING_MYSQL_ENABLED = "mysql.enabled";

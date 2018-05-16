@@ -37,6 +37,8 @@
 #include "settings/Settings.h"
 #include "services/ServicesManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "GUIInfoManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 #if defined(TARGET_DARWIN_TVOS)
   #include "platform/darwin/DarwinUtils.h"
@@ -44,6 +46,32 @@
 #endif
 
 #define NUM_ITEMS 10
+
+
+CHomeButtonJob::CHomeButtonJob()
+{
+  
+}
+
+CHomeButtonJob::~CHomeButtonJob()
+{
+  
+}
+
+bool CHomeButtonJob::DoWork()
+{
+  int counter = 0;
+  while (!(g_infoManager.GetBool(PVR_HAS_RADIO_CHANNELS) ||
+         g_infoManager.GetBool(PVR_HAS_TV_CHANNELS)))
+  {
+    Sleep(500);
+    counter++;
+    if (counter > 10) // timeout after 5 seconds
+      return true;
+  }
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::PVR, "xbmc", "HomeScreenUpdate");
+  return true;
+}
 
 CHomeShelfJob::CHomeShelfJob(int flag)
 {
@@ -70,17 +98,18 @@ CHomeShelfJob::~CHomeShelfJob()
 
 bool CHomeShelfJob::UpdateVideo()
 {
+  CSingleLock lock(m_critsection);
   CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
 
   if ( home == NULL )
     return false;
 
+  // idea here is that if button 4000 exists in the home screen skin is compatible
+  // with new Server layouts and should only display RA and inProgress for those servers
+  const CGUIControl *btnServers = home->GetControl(4000);
+  
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateVideos() - Running HomeShelf screen update");
-
-  CSingleLock lock(m_critsection);
-
-  CVideoDatabase videodatabase;
-  videodatabase.Open();
+  
   CFileItemList homeShelfTVRA;
   CFileItemList homeShelfTVPR;
   CFileItemList homeShelfMoviesRA;
@@ -91,116 +120,137 @@ bool CHomeShelfJob::UpdateVideo()
   m_HomeShelfMoviesRA->ClearItems();
   m_HomeShelfMoviesPR->ClearItems();
 
+  std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
+  std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+  
   int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
   bool homeScreenWatched = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_WATCHEDHOMESHELFITEMS);
-  
-  if (homeScreenItemSelector > 1) // 2 and 3 are in progress and both
+  if (!btnServers || serverType == "mrmc" || serverType.empty())
   {
-    if (videodatabase.HasContent())
+    CVideoDatabase videodatabase;
+    videodatabase.Open();
+    if (homeScreenItemSelector > 1) // 2 and 3 are in progress and both
     {
-      CVideoThumbLoader loader;
+      if (videodatabase.HasContent())
+      {
+        CVideoThumbLoader loader;
 
-      XFILE::CDirectory::GetDirectory("videodb://recentlyaddedmovies/", homeShelfMoviesPR);
-      XFILE::CDirectory::GetDirectory("videodb://recentlyaddedepisodes/", homeShelfTVPR);
-      homeShelfMoviesPR.Sort(SortByLastPlayed, SortOrderDescending);
-      homeShelfTVPR.Sort(SortByLastPlayed, SortOrderDescending);
-      for (int i = 0; i < homeShelfMoviesPR.Size() && i < NUM_ITEMS; i++)
-      {
-        CFileItemPtr item = homeShelfMoviesPR.Get(i);
-        item->SetProperty("ItemType", g_localizeStrings.Get(682));
-        if (!item->HasArt("thumb"))
+        XFILE::CDirectory::GetDirectory("videodb://recentlyaddedmovies/", homeShelfMoviesPR);
+        XFILE::CDirectory::GetDirectory("videodb://recentlyaddedepisodes/", homeShelfTVPR);
+        homeShelfMoviesPR.Sort(SortByLastPlayed, SortOrderDescending);
+        homeShelfTVPR.Sort(SortByLastPlayed, SortOrderDescending);
+        for (int i = 0; i < homeShelfMoviesPR.Size() && i < NUM_ITEMS; i++)
         {
-          loader.LoadItem(item.get());
+          CFileItemPtr item = homeShelfMoviesPR.Get(i);
+          item->SetProperty("ItemType", g_localizeStrings.Get(682));
+          if (!item->HasArt("thumb"))
+          {
+            loader.LoadItem(item.get());
+          }
+          m_HomeShelfMoviesPR->Add(item);
         }
-        m_HomeShelfMoviesPR->Add(item);
+        for (int i = 0; i < homeShelfTVPR.Size() && i < NUM_ITEMS; i++)
+        {
+          CFileItemPtr item = homeShelfTVPR.Get(i);
+          std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
+          item->SetProperty("SeasonEpisode", seasonEpisode);
+          item->SetProperty("ItemType", g_localizeStrings.Get(682));
+          if (!item->HasArt("thumb"))
+          {
+            loader.LoadItem(item.get());
+          }
+          if (!item->HasArt("tvshow.thumb"))
+          {
+            item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
+          }
+          m_HomeShelfTVPR->Add(item);
+        }
       }
-      for (int i = 0; i < homeShelfTVPR.Size() && i < NUM_ITEMS; i++)
+      if (!btnServers)
       {
-        CFileItemPtr item = homeShelfTVPR.Get(i);
-        std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
-        item->SetProperty("SeasonEpisode", seasonEpisode);
-        item->SetProperty("ItemType", g_localizeStrings.Get(682));
-        if (!item->HasArt("thumb"))
-        {
-          loader.LoadItem(item.get());
-        }
-        if (!item->HasArt("tvshow.thumb"))
-        {
-          item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
-        }
-        m_HomeShelfTVPR->Add(item);
+        // get InProgress TVSHOWS and MOVIES from any enabled service
+        CServicesManager::GetInstance().GetAllInProgressShows(*m_HomeShelfTVPR, NUM_ITEMS);
+        CServicesManager::GetInstance().GetAllInProgressMovies(*m_HomeShelfMoviesPR, NUM_ITEMS);
       }
     }
-    // get InProgress TVSHOWS and MOVIES from any enabled service
-    CServicesManager::GetInstance().GetAllInProgressShows(*m_HomeShelfTVPR, NUM_ITEMS);
-    CServicesManager::GetInstance().GetAllInProgressMovies(*m_HomeShelfMoviesPR, NUM_ITEMS);
-  }
-  
-  if (homeScreenItemSelector == 1 || homeScreenItemSelector == 3) // 1 is recently added, 3 is both
-  {
-    if (videodatabase.HasContent())
+    
+    if (homeScreenItemSelector == 1 || homeScreenItemSelector == 3) // 1 is recently added, 3 is both
     {
-      std::string path;
-      CVideoThumbLoader loader;
-      loader.OnLoaderStart();
-
-      path = g_advancedSettings.m_recentlyAddedMoviePath;
-      if (!homeScreenWatched)
+      if (videodatabase.HasContent())
       {
-        CVideoDbUrl url;
-        url.FromString(path);
-        url.AddOption("filter", "{\"type\":\"movies\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
-        path = url.ToString();
+        std::string path;
+        CVideoThumbLoader loader;
+        loader.OnLoaderStart();
+
+        path = g_advancedSettings.m_recentlyAddedMoviePath;
+        if (!homeScreenWatched)
+        {
+          CVideoDbUrl url;
+          url.FromString(path);
+          url.AddOption("filter", "{\"type\":\"movies\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
+          path = url.ToString();
+        }
+
+        videodatabase.GetRecentlyAddedMoviesNav(path, homeShelfMoviesRA, NUM_ITEMS);
+
+        for (int i = 0; i < homeShelfMoviesRA.Size(); i++)
+        {
+          CFileItemPtr item = homeShelfMoviesRA.Get(i);
+          item->SetProperty("ItemType", g_localizeStrings.Get(681));
+          if (!item->HasArt("thumb"))
+          {
+            loader.LoadItem(item.get());
+          }
+          m_HomeShelfMoviesRA->Add(item);
+        }
+
+        path = g_advancedSettings.m_recentlyAddedEpisodePath;
+        if (!homeScreenWatched)
+        {
+          CVideoDbUrl url;
+          url.FromString(path);
+          url.AddOption("filter", "{\"type\":\"episodes\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
+          path = url.ToString();
+        }
+
+        videodatabase.GetRecentlyAddedEpisodesNav(path, homeShelfTVRA, NUM_ITEMS);
+        std::string seasonThumb;
+        for (int i = 0; i < homeShelfTVRA.Size(); i++)
+        {
+          CFileItemPtr item = homeShelfTVRA.Get(i);
+          std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
+          item->SetProperty("SeasonEpisode", seasonEpisode);
+          item->SetProperty("ItemType", g_localizeStrings.Get(681));
+          if (!item->HasArt("thumb"))
+          {
+            loader.LoadItem(item.get());
+          }
+          if (!item->HasArt("tvshow.thumb"))
+          {
+            item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
+          }
+          m_HomeShelfTVRA->Add(item);
+        }
       }
 
-      videodatabase.GetRecentlyAddedMoviesNav(path, homeShelfMoviesRA, NUM_ITEMS);
-
-      for (int i = 0; i < homeShelfMoviesRA.Size(); i++)
+      if (!btnServers)
       {
-        CFileItemPtr item = homeShelfMoviesRA.Get(i);
-        item->SetProperty("ItemType", g_localizeStrings.Get(681));
-        if (!item->HasArt("thumb"))
-        {
-          loader.LoadItem(item.get());
-        }
-        m_HomeShelfMoviesRA->Add(item);
-      }
-
-      path = g_advancedSettings.m_recentlyAddedEpisodePath;
-      if (!homeScreenWatched)
-      {
-        CVideoDbUrl url;
-        url.FromString(path);
-        url.AddOption("filter", "{\"type\":\"episodes\", \"rules\":[{\"field\":\"playcount\", \"operator\":\"is\", \"value\":\"0\"}]}");
-        path = url.ToString();
-      }
-
-      videodatabase.GetRecentlyAddedEpisodesNav(path, homeShelfTVRA, NUM_ITEMS);
-      std::string seasonThumb;
-      for (int i = 0; i < homeShelfTVRA.Size(); i++)
-      {
-        CFileItemPtr item = homeShelfTVRA.Get(i);
-        std::string seasonEpisode = StringUtils::Format("S%02iE%02i", item->GetVideoInfoTag()->m_iSeason, item->GetVideoInfoTag()->m_iEpisode);
-        item->SetProperty("SeasonEpisode", seasonEpisode);
-        item->SetProperty("ItemType", g_localizeStrings.Get(681));
-        if (!item->HasArt("thumb"))
-        {
-          loader.LoadItem(item.get());
-        }
-        if (!item->HasArt("tvshow.thumb"))
-        {
-          item->SetArt("tvshow.thumb", item->GetArt("season.poster"));
-        }
-        m_HomeShelfTVRA->Add(item);
+        // get recently added TVSHOWS and MOVIES from any enabled service
+        CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS, homeScreenWatched);
+        CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS, homeScreenWatched);
       }
     }
-
-    // get recently added TVSHOWS and MOVIES from any enabled service
-    CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS, homeScreenWatched);
-    CServicesManager::GetInstance().GetAllRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS, homeScreenWatched);
+    videodatabase.Close();
+  }
+  else
+  {
+    // get recently added TVSHOWS and MOVIES for chosen server in Home Screen, get 20 items as its not as slow as it was before
+    CServicesManager::GetInstance().GetRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS*2, homeScreenWatched, serverType, serverUUID);
+    CServicesManager::GetInstance().GetRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS*2, homeScreenWatched, serverType, serverUUID);
+    CServicesManager::GetInstance().GetInProgressShows(*m_HomeShelfTVPR, NUM_ITEMS*2, serverType, serverUUID);
+    CServicesManager::GetInstance().GetInProgressMovies(*m_HomeShelfMoviesPR, NUM_ITEMS*2, serverType, serverUUID);
   }
   
-  videodatabase.Close();
   m_HomeShelfTVRA->SetContent("episodes");
   m_HomeShelfTVPR->SetContent("episodes");
   m_HomeShelfMoviesRA->SetContent("movies");
@@ -219,30 +269,49 @@ bool CHomeShelfJob::UpdateMusic()
 
   CSingleLock lock(m_critsection);
 
-  CMusicDatabase musicdatabase;
-  musicdatabase.Open();
-  if (musicdatabase.HasContent())
+  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
+  
+  if ( home == NULL )
+    return false;
+  
+  // idea here is that if button 4000 exists in the home screen skin is compatible
+  // with new Server layouts and should only display RA and inProgress for those servers
+  const CGUIControl *btnServers = home->GetControl(4000);
+  std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
+  std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+  
+  if (!btnServers || serverType == "mrmc" || serverType.empty())
   {
-    VECALBUMS albums;
-    musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS);
-    for (size_t i = 0; i < albums.size(); ++i)
+    CMusicDatabase musicdatabase;
+    musicdatabase.Open();
+    if (musicdatabase.HasContent())
     {
-      CAlbum &album = albums[i];
-      std::string strDir = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
-      CFileItemPtr pItem(new CFileItem(strDir, album));
-      std::string strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
-      std::string strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
-      pItem->SetProperty("thumb", strThumb);
-      pItem->SetProperty("fanart", strFanart);
-      pItem->SetProperty("artist", album.GetAlbumArtistString());
-      pItem->SetProperty("ItemType", g_localizeStrings.Get(681));
-      m_HomeShelfMusicAlbums->Add(pItem);
+      VECALBUMS albums;
+      musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS);
+      for (size_t i = 0; i < albums.size(); ++i)
+      {
+        CAlbum &album = albums[i];
+        std::string strDir = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
+        CFileItemPtr pItem(new CFileItem(strDir, album));
+        std::string strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
+        std::string strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
+        pItem->SetProperty("thumb", strThumb);
+        pItem->SetProperty("fanart", strFanart);
+        pItem->SetProperty("artist", album.GetAlbumArtistString());
+        pItem->SetProperty("ItemType", g_localizeStrings.Get(681));
+        m_HomeShelfMusicAlbums->Add(pItem);
+      }
+      musicdatabase.Close();
     }
-    musicdatabase.Close();
+    if (serverType != "mrmc")
+      // get recently added ALBUMS from any enabled service
+      CServicesManager::GetInstance().GetAllRecentlyAddedAlbums(*m_HomeShelfMusicAlbums, NUM_ITEMS);
   }
-
-  // get recently added ALBUMS from any enabled service
-  CServicesManager::GetInstance().GetAllRecentlyAddedAlbums(*m_HomeShelfMusicAlbums, NUM_ITEMS);
+  else
+  {
+    // get recently added ALBUMS for chosen server in Home Screen
+    CServicesManager::GetInstance().GetRecentlyAddedAlbums(*m_HomeShelfMusicAlbums, NUM_ITEMS, serverType, serverUUID);
+  }
   
   return true;
 }

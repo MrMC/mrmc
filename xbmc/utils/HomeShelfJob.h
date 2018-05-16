@@ -28,6 +28,15 @@ enum EHomeShelfFlag
   Totals = 0x4
 };
 
+class CHomeButtonJob : public CJob
+{
+public:
+  CHomeButtonJob();
+  ~CHomeButtonJob();
+  
+  virtual bool DoWork();
+};
+
 class CHomeShelfJob : public CJob
 {
 public:

@@ -547,6 +547,8 @@ void CPVRManager::Process(void)
       /* try to continue last watched channel otherwise set group to last played group */
       if (!ContinueLastChannel())
         SetPlayingGroup(m_channelGroups->GetLastPlayedGroup());
+      
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::PVR, "xbmc", "HomeScreenUpdate");
     }
     /* execute the next pending jobs if there are any */
     try

@@ -147,12 +147,15 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         filter = "actor";
       else if (path == "directors")
         filter = "director";
-      else if (path == "sets")
+      else if (path == "sets" || path == "collection")
         filter = "collection";
-      else if (path == "countries")
+      else if (path == "countries" || path == "country")
         filter = "country";
       else if (path == "studios")
         filter = "studio";
+      else if (path == "clear" || path.empty())
+        filter = "";
+      
 
       if (path == "titles" || path == "filter")
       {
@@ -172,11 +175,15 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(g_localizeStrings.Get(627));
         items.SetContent("movies");
       }
+      else if (path == "filters")
+      {
+        CPlexUtils::GetPlexFilters(items, Base64URL::Decode(section), "plex://movies/");
+        items.SetLabel(g_localizeStrings.Get(369));
+        items.SetContent("movies");
+      }
       else
       {
         CPlexUtils::GetPlexFilter(items, Base64URL::Decode(section), "plex://movies/filter/", filter);
-        StringUtils::ToCapitalize(path);
-        items.SetLabel(path);
         items.SetContent("movies");
       }
       CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d movies", client->GetServerName().c_str(), items.Size());
@@ -262,8 +269,16 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         filter = "genre";
       else if (path == "actors")
         filter = "actor";
+      else if (path == "directors")
+        filter = "director";
+      else if (path == "sets" || path == "collection")
+        filter = "collection";
+      else if (path == "countries" || path == "country")
+        filter = "country";
       else if (path == "studios")
         filter = "studio";
+      else if (path == "clear" || path.empty())
+        filter = "";
 
       if (path == "titles" || path == "filter")
       {
@@ -296,11 +311,15 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(g_localizeStrings.Get(626));
         items.SetContent("episodes");
       }
+      else if (path == "filters")
+      {
+        CPlexUtils::GetPlexFilters(items, Base64URL::Decode(section), "plex://tvshows/");
+        items.SetLabel(g_localizeStrings.Get(369));
+        items.SetContent("episodes");
+      }
       else
       {
         CPlexUtils::GetPlexFilter(items, Base64URL::Decode(section), "plex://tvshows/filter/", filter);
-        StringUtils::ToCapitalize(path);
-        items.SetLabel(path);
         items.SetContent("tvshows");
       }
       CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d shows", client->GetServerName().c_str(), items.Size());

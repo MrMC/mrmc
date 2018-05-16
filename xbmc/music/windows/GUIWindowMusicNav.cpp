@@ -906,24 +906,26 @@ void CGUIWindowMusicNav::AddSearchFolder()
 
 std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
+  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
+  const CGUIControl *btnServers = home->GetControl(4000);
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "genres")
     return "musicdb://genres/";
   else if (lower == "artists")
   {
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://music/" + lower + "/";
     return "musicdb://artists/";
   }
   else if (lower == "albums")
   {
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://music/" + lower + "/";
     return "musicdb://albums/";
   }
   else if (lower == "root")
   {
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://music/" + lower + "/";
   }
   // override to only show local sources, ignore Plex/Emby services
@@ -943,7 +945,7 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
     return "musicdb://top100/albums/";
   else if (lower == "recentlyaddedalbums")
   {
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://music/" + lower + "/";
     return "musicdb://recentlyaddedalbums/";
   }

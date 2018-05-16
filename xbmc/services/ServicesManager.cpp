@@ -27,9 +27,13 @@
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/StringHasher.h"
+#include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 #include "services/plex/PlexUtils.h"
 #include "services/emby/EmbyUtils.h"
+#include "services/plex/PlexServices.h"
+#include "services/emby/EmbyServices.h"
+#include "services/emby/EmbyViewCache.h"
 
 
 using namespace ANNOUNCEMENT;
@@ -377,6 +381,230 @@ void CServicesManager::GetAllInProgressMovies(CFileItemList &inProgress, int ite
     inProgress.Append(temp);
     inProgress.ClearSortState();
     inProgress.Sort(SortByLastPlayed, SortOrderDescending);
+  }
+}
+
+void CServicesManager::GetRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit, bool watched, std::string type, std::string uuid)
+{
+  if (type == "plex" && CPlexUtils::HasClients())
+  {
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (!plexClient)
+      return;
+    CFileItemList plexItems;
+    CURL curl(plexClient->GetUrl());
+    curl.SetProtocol(plexClient->GetProtocol());
+    curl.SetFileName(curl.GetFileName() + "hubs/home/");
+    curl.SetProtocolOption("type","1");
+    CPlexUtils::GetPlexRecentlyAddedMovies(plexItems, curl.Get(), itemLimit, watched);
+
+    for (int item = 0; item < plexItems.Size(); ++item)
+    {
+      CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
+    }
+    
+    CPlexUtils::SetPlexItemProperties(plexItems);
+    recentlyAdded.Append(plexItems);
+  }
+  else if (type == "emby" && CEmbyUtils::HasClients())
+  {
+    CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(uuid);
+    if (!embyClient)
+      return;
+    std::vector<EmbyViewInfo> viewinfos = embyClient->GetViewInfoForMovieContent();
+    for (const auto &viewinfo : viewinfos)
+    {
+      CFileItemList embyItems;
+      std::string userId = embyClient->GetUserID();
+      CURL curl(embyClient->GetUrl());
+      curl.SetProtocol(embyClient->GetProtocol());
+      curl.SetOption("ParentId", viewinfo.id);
+      curl.SetFileName("Users/" + userId + "/Items");
+      CEmbyUtils::GetEmbyRecentlyAddedMovies(embyItems, curl.Get(), itemLimit);
+      recentlyAdded.Append(embyItems);
+      embyItems.ClearItems();
+    }
+  }
+}
+void CServicesManager::GetRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit, bool watched, std::string type, std::string uuid)
+{
+  if (type == "plex" && CPlexUtils::HasClients())
+  {
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (!plexClient)
+      return;
+    CFileItemList plexItems;
+    CURL curl(plexClient->GetUrl());
+    curl.SetProtocol(plexClient->GetProtocol());
+    curl.SetFileName(curl.GetFileName() + "hubs/home/");
+    curl.SetProtocolOption("type","2");
+    CPlexUtils::GetPlexRecentlyAddedEpisodes(plexItems, curl.Get(), itemLimit, watched);
+    
+    for (int item = 0; item < plexItems.Size(); ++item)
+    {
+      CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
+    }
+    
+    CPlexUtils::SetPlexItemProperties(plexItems);
+    recentlyAdded.Append(plexItems);
+  }
+  else if (type == "emby" && CEmbyUtils::HasClients())
+  {
+    CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(uuid);
+    if (!embyClient)
+      return;
+    std::vector<EmbyViewInfo> viewinfos = embyClient->GetViewInfoForTVShowContent();
+    for (const auto &viewinfo : viewinfos)
+    {
+      CFileItemList embyItems;
+      std::string userId = embyClient->GetUserID();
+      CURL curl(embyClient->GetUrl());
+      curl.SetProtocol(embyClient->GetProtocol());
+      curl.SetOption("ParentId", viewinfo.id);
+      curl.SetFileName("Users/" + userId + "/Items");
+      CEmbyUtils::GetEmbyRecentlyAddedEpisodes(embyItems, curl.Get(), itemLimit);
+      recentlyAdded.Append(embyItems);
+      embyItems.ClearItems();
+    }
+  }
+}
+void CServicesManager::GetRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit, std::string type, std::string uuid)
+{
+  if (type == "plex" && CPlexUtils::HasClients())
+  {
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (!plexClient)
+      return;
+    CFileItemList plexItems;
+    CURL curl(plexClient->GetUrl());
+    curl.SetProtocol(plexClient->GetProtocol());
+    curl.SetFileName(curl.GetFileName() + "hubs/home/recentlyAdded");
+    
+    curl.SetProtocolOption("type","8");
+    curl.SetProtocolOption("X-Plex-Container-Start", "0");
+    curl.SetProtocolOption("X-Plex-Container-Size", StringUtils::Format("%i",itemLimit));
+    
+    CPlexUtils::GetPlexArtistsOrAlbum(plexItems, curl.Get(), true);
+    for (int item = 0; item < plexItems.Size(); ++item)
+    {
+      CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
+    }
+    
+    CPlexUtils::SetPlexItemProperties(plexItems);
+    recentlyAdded.Append(plexItems);
+    recentlyAdded.SetLabel("Recently Added Albums");
+    recentlyAdded.ClearSortState();
+    recentlyAdded.Sort(SortByDateAdded, SortOrderDescending);
+    plexItems.ClearItems();
+  }
+  else if (type == "emby" && CEmbyUtils::HasClients())
+  {
+    CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(uuid);
+    if (!embyClient)
+      return;
+    std::vector<EmbyViewInfo> viewinfos;
+    viewinfos = embyClient->GetViewInfoForMusicContent();
+    for (const auto &viewinfo : viewinfos)
+    {
+      CFileItemList embyItems;
+      std::string userId = embyClient->GetUserID();
+      CURL curl(embyClient->GetUrl());
+      curl.SetProtocol(embyClient->GetProtocol());
+      curl.SetOption("ParentId", viewinfo.id);
+      curl.SetFileName("emby/Users/" + userId + "/Items/Latest");
+      CEmbyUtils::GetEmbyAlbum(embyItems, curl.Get(), 10);
+      recentlyAdded.Append(embyItems);
+      embyItems.ClearItems();
+    }
+  }
+}
+void CServicesManager::GetInProgressShows(CFileItemList &inProgress, int itemLimit, std::string type, std::string uuid)
+{
+  if (type == "plex" && CPlexUtils::HasClients())
+  {
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (!plexClient)
+      return;
+    CFileItemList plexItems;
+    CURL curl(plexClient->GetUrl());
+    curl.SetProtocol(plexClient->GetProtocol());
+    curl.SetFileName(curl.GetFileName() + "hubs/home/");
+    curl.SetProtocolOption("type","2");
+    CPlexUtils::GetPlexInProgressShows(plexItems, curl.Get(), itemLimit);
+    
+    for (int item = 0; item < plexItems.Size(); ++item)
+    {
+      CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(682));
+    }
+    
+    CPlexUtils::SetPlexItemProperties(plexItems);
+    inProgress.Append(plexItems);
+  }
+  else if (type == "emby" && CEmbyUtils::HasClients())
+  {
+    CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(uuid);
+    if (!embyClient)
+      return;
+    std::vector<EmbyViewInfo> viewinfos = embyClient->GetViewInfoForTVShowContent();
+    for (const auto &viewinfo : viewinfos)
+    {
+      CFileItemList embyItems;
+      std::string userId = embyClient->GetUserID();
+      CURL curl(embyClient->GetUrl());
+      curl.SetProtocol(embyClient->GetProtocol());
+      curl.SetOption("ParentId", viewinfo.id);
+      curl.SetFileName("Users/" + userId + "/Items");
+      CEmbyUtils::GetEmbyInProgressShows(embyItems, curl.Get(), itemLimit);
+      inProgress.Append(embyItems);
+      embyItems.ClearItems();
+    }
+  }
+}
+void CServicesManager::GetInProgressMovies(CFileItemList &inProgress, int itemLimit, std::string type, std::string uuid)
+{
+  if (type == "plex" && CPlexUtils::HasClients())
+  {
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (!plexClient)
+      return;
+    CFileItemList plexItems;
+    CURL curl(plexClient->GetUrl());
+    curl.SetProtocol(plexClient->GetProtocol());
+    curl.SetFileName(curl.GetFileName() + "hubs/home/continueWatching");
+    curl.SetProtocolOption("type","1");
+    CPlexUtils::GetPlexInProgressMovies(plexItems, curl.Get(), itemLimit);
+    
+    for (int item = 0; item < plexItems.Size(); ++item)
+    {
+      CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(682));
+    }
+    
+    CPlexUtils::SetPlexItemProperties(plexItems);
+    inProgress.Append(plexItems);
+  }
+  else if (type == "emby" && CEmbyUtils::HasClients())
+  {
+    CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(uuid);
+    if (!embyClient)
+      return;
+    std::vector<EmbyViewInfo> viewinfos = embyClient->GetViewInfoForMovieContent();
+    for (const auto &viewinfo : viewinfos)
+    {
+      CFileItemList embyItems;
+      std::string userId = embyClient->GetUserID();
+      CURL curl(embyClient->GetUrl());
+      curl.SetProtocol(embyClient->GetProtocol());
+      curl.SetOption("ParentId", viewinfo.id);
+      curl.SetFileName("Users/" + userId + "/Items");
+      CEmbyUtils::GetEmbyInProgressMovies(embyItems, curl.Get(), itemLimit);
+      inProgress.Append(embyItems);
+      embyItems.ClearItems();
+    }
   }
 }
 

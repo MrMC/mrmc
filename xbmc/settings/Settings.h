@@ -272,6 +272,7 @@ public:
   static const std::string SETTING_MYMUSIC_STARTWINDOW;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;
+  static const std::string SETTING_MYMUSIC_FLATTEN;
   static const std::string SETTING_PICTURES_GENERATETHUMBS;
   static const std::string SETTING_PICTURES_SHOWVIDEOS;
   static const std::string SETTING_PICTURES_DISPLAYRESOLUTION;
@@ -419,6 +420,8 @@ public:
   static const std::string SETTING_GENERAL_ADDONNOTIFICATIONS;
   static const std::string SETTING_GENERAL_ADDONFOREIGNFILTER;
   static const std::string SETTING_GENERAL_ADDONBROKENFILTER;
+  static const std::string SETTING_GENERAL_SERVER_TYPE;
+  static const std::string SETTING_GENERAL_SERVER_UUID;
   
   static const std::string SETTING_MYSQL_ENABLED;
   static const std::string SETTING_MYSQL_HOST;

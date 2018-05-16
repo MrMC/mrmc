@@ -73,6 +73,7 @@ public:
   static bool GetPlexEpisodes(CFileItemList &items, const std::string url);
 
   static bool GetPlexFilter(CFileItemList &items, std::string url, std::string parentPath, std::string filter);
+  static bool GetPlexFilters(CFileItemList &items, std::string url, std::string parentPath);
   static bool GetItemSubtiles(CFileItem &item);
   static bool GetMoreItemInfo(CFileItem &item);
   static bool GetMoreResolutions(CFileItem &item);

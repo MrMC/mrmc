@@ -103,6 +103,11 @@ public:
   void GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit);
   void GetAllInProgressShows(CFileItemList &inProgress, int itemLimit);
   void GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit);
+  void GetRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit, bool watched, std::string type, std::string uuid);
+  void GetRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit, bool watched, std::string type, std::string uuid);
+  void GetRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit, std::string type, std::string uuid);
+  void GetInProgressShows(CFileItemList &inProgress, int itemLimit, std::string type, std::string uuid);
+  void GetInProgressMovies(CFileItemList &inProgress, int itemLimit, std::string type, std::string uuid);
   void GetSubtitles(CFileItem &item);
   void GetMoreInfo(CFileItem &item);
   bool GetResolutions(CFileItem &item);

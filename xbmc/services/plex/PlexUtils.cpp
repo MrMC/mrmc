@@ -423,7 +423,10 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
 {
   bool rtn = false;
   CURL curl(url);
-  curl.SetFileName(curl.GetFileName() + "recentlyAdded");
+  // special case below, we can reuse base64 string
+  std::string fileName = curl.GetFileName();
+  StringUtils::TrimRight(fileName, "all");
+  curl.SetFileName(fileName + "recentlyAdded");
   if (!watched)
     curl.SetOption("unwatched","1");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
@@ -448,7 +451,10 @@ bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string 
   bool rtn = false;
   CURL curl(url);
   std::string strXML;
-  curl.SetFileName(curl.GetFileName() + "onDeck");
+  // special case below, we can reuse base64 string
+  std::string fileName = curl.GetFileName();
+  StringUtils::TrimRight(fileName, "all");
+  curl.SetFileName(fileName + "onDeck");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
 
   CVariant variant = GetPlexCVariant(curl.Get());
@@ -470,7 +476,10 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
 {
   bool rtn = false;
   CURL curl(url);
-  curl.SetFileName(curl.GetFileName() + "recentlyAdded");
+  // special case below, we can reuse base64 string
+  std::string fileName = curl.GetFileName();
+  StringUtils::TrimRight(fileName, "all");
+  curl.SetFileName(fileName + "recentlyAdded");
   if (!watched)
     curl.SetOption("unwatched","1");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
@@ -494,7 +503,13 @@ bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string
 {
   bool rtn = false;
   CURL curl(url);
-  curl.SetFileName(curl.GetFileName() + "continueWatching");
+  // special case below, we can reuse base64 string
+  std::string fileName = curl.GetFileName();
+  if (StringUtils::Replace(fileName, "/all" , "") > 0)
+  {
+    fileName = fileName + "/onDeck";
+  }
+  curl.SetFileName(fileName);
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
 
   CVariant variant = GetPlexCVariant(curl.Get());
@@ -602,6 +617,57 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
   CVariant variant = GetPlexCVariant(url, filter);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
+    CVariant directory(variant["MediaContainer"]["Directory"]);
+    int dirSize = variant["MediaContainer"]["size"].asInteger();
+    std::string title2 = variant["MediaContainer"]["title2"].asString();
+    if (!directory.isNull())
+    {
+      for (auto variantIt = directory.begin_array(); variantIt != directory.end_array(); ++variantIt)
+      {
+        if (*variantIt != CVariant::VariantTypeNull)
+        {
+          rtn = true;
+          CURL plex(url);
+          std::string title = (*variantIt)["title"].asString();
+          std::string key = (*variantIt)["key"].asString();
+          std::string fastKey = (*variantIt)["fastKey"].asString();
+          CFileItemPtr pItem(new CFileItem(title));
+          pItem->m_bIsFolder = true;
+          pItem->m_bIsShareOrDrive = false;
+          if (fastKey.empty())
+          {
+            plex.SetFileName(plex.GetFileName() + "/" + key);
+          }
+          else
+          {
+            removeLeadingSlash(fastKey);
+            std::vector<std::string> split = StringUtils::Split(fastKey, "?");
+            std::string value = StringUtils::Split(split[1], "=")[0];
+            plex.SetFileName(split[0]);
+            plex.SetProtocolOption(value, key);
+          }
+          pItem->SetPath(parentPath + Base64URL::Encode(plex.Get()));
+          pItem->SetLabel(title);
+          pItem->SetProperty("SkipLocalArt", true);
+          SetPlexItemProperties(*pItem);
+          items.Add(pItem);
+        }
+      }
+    }
+    StringUtils::ToCapitalize(title2);
+    items.SetLabel(title2);
+  }
+
+  return rtn;
+}
+
+bool CPlexUtils::GetPlexFilters(CFileItemList &items, std::string url, std::string parentPath)
+{
+  bool rtn = false;
+  CVariant variant = GetPlexCVariant(url);
+  if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
+  {
+    std::string librarySectionID = variant["MediaContainer"]["librarySectionID"].asString();
     const CVariant directory(variant["MediaContainer"]["Directory"]);
     if (!directory.isNull())
     {
@@ -612,12 +678,31 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
           rtn = true;
           std::string title = (*variantIt)["title"].asString();
           std::string key = (*variantIt)["key"].asString();
+          bool secondary = (*variantIt)["secondary"].asBoolean();
+          bool search = (*variantIt)["search"].asBoolean();
+          if (search)
+            break;
           CFileItemPtr pItem(new CFileItem(title));
           pItem->m_bIsFolder = true;
           pItem->m_bIsShareOrDrive = false;
           CURL plex(url);
-          plex.SetFileName(plex.GetFileName() + "all?" + filter + "=" + key);
-          pItem->SetPath(parentPath + Base64URL::Encode(plex.Get()));
+          // special case below, we can reuse base64 string
+          std::string fileName = plex.GetFileName();
+          StringUtils::TrimRight(fileName, "all");
+          if (secondary)
+          {
+            plex.SetFileName(plex.GetFileName() + key);
+            pItem->SetPath(parentPath + Base64URL::Encode(plex.Get()));
+          }
+          else
+          {
+            std::string path = "titles/";
+            if (librarySectionID == "2" && (key == "recentlyAdded" || key == "recentlyViewed" || key == "newest"))
+              path = "seasons/";
+              
+            plex.SetFileName(fileName + key);
+            pItem->SetPath(parentPath + path + Base64URL::Encode(plex.Get()));
+          }
           pItem->SetLabel(title);
           pItem->SetProperty("SkipLocalArt", true);
           SetPlexItemProperties(*pItem);
@@ -626,7 +711,7 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
       }
     }
   }
-
+  
   return rtn;
 }
 
@@ -676,7 +761,7 @@ bool CPlexUtils::GetMoreItemInfo(CFileItem &item)
   
   CURL curl(url);
   curl.SetFileName("library/metadata/" + id);
-  curl.SetOption("includeExtras","1");
+  curl.SetProtocolOption("includeExtras","1");
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
@@ -743,16 +828,17 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
 {
   if (CPlexServices::GetInstance().HasClients())
   {
-    StringUtils::Replace(strSearchString, " ","%20");
     CFileItemList plexItems;
     std::vector<CPlexClientPtr> clients;
     CPlexServices::GetInstance().GetClients(clients);
     for (const auto &client : clients)
     {
       CURL url(client->GetUrl());
-      url.SetFileName("hubs/search?sectionId=&query=" + strSearchString);
+      url.SetFileName("hubs/search");
+      url.SetProtocolOption("query",strSearchString);
 
       CVariant variant = GetPlexCVariant(url.Get());
+      url.RemoveProtocolOption("query");
       if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
       {
         const CVariant variantHub = makeVariantArrayIfSingleItem(variant["MediaContainer"]["Hub"]);
@@ -833,6 +919,9 @@ bool CPlexUtils::GetPlexTvshows(CFileItemList &items, std::string url)
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
     CURL curl(url);
+    std::string token = curl.GetProtocolOption("X-Plex-Token");
+    curl.SetProtocolOptions("");
+    curl.SetProtocolOption("X-Plex-Token",token);
     rtn = ParsePlexSeries(items, curl, variant["MediaContainer"]["Directory"]);
   }
 

@@ -1323,6 +1323,8 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   "videodb://movies/countries"
   "videodb://movies/studios"
   */
+  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
+  const CGUIControl *btnServers = home->GetControl(4000);
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "movietitles"||
       lower == "moviegenres"||
@@ -1334,7 +1336,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
       lower == "moviestudios")
   {
     StringUtils::Replace(lower, "movie", "");
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://movies/" + lower + "/";
     return "videodb://movies/" + lower + "/";
   }
@@ -1349,31 +1351,31 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
            lower == "tvshowstudios")
   {
     StringUtils::Replace(lower, "tvshow", "");
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://tvshows/" + lower + "/";
     return "videodb://tvshows/" + lower + "/";
   }
   else if (lower == "recentlyaddedmovies")
   {
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://movies/recentlyaddedmovies/";
     return "videodb://recentlyaddedmovies/";
   }
   else if (lower == "recentlyaddedepisodes")
   {
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://tvshows/recentlyaddedepisodes/";
     return "videodb://recentlyaddedepisodes/";
   }
   else if (lower == "inprogressshows")
   {
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://tvshows/inprogressshows/";
     return "library://video/inprogressshows.xml/";
   }
   else if (lower == "inprogressmovies")
   {
-    if (CServicesManager::GetInstance().HasServices())
+    if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://movies/inprogressmovies/";
     return "library://video/inprogressmovies.xml/";
   }

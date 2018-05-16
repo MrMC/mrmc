@@ -25,6 +25,24 @@
 #include "guilib/GUIWindow.h"
 #include "interfaces/IAnnouncer.h"
 #include "utils/Job.h"
+#include "services/plex/PlexServices.h"
+#include "services/emby/EmbyServices.h"
+#include "services/emby/EmbyUtils.h"
+#include "services/emby/EmbyViewCache.h"
+#include "services/emby/EmbyClient.h"
+
+typedef struct
+{
+  std::string name;
+  CVariant value;
+} ButtonProperty;
+
+typedef struct
+{
+  std::string onclick;
+  std::string label;
+  std::vector<ButtonProperty> properties;
+} HomeButton;
 
 class CVariant;
 
@@ -59,4 +77,17 @@ private:
   CFileItemList*               m_HomeShelfMusicSongs;
   CFileItemList*               m_HomeShelfMusicVideos;
   CFileItemList*               m_HomeShelfMusicAlbums;
+  
+  // services below
+  void SetupServices();
+  void SetupStaticHomeButtons(CFileItemList &sections);
+  CFileItemPtr MakeButton(HomeButton button);
+  CFileItemList* m_buttonSections;
+  // plex service
+  void  AddPlexSection(CPlexClientPtr client);
+  std::vector<PlexSectionsContent> GetPlexSections(CPlexClientPtr client);
+  // emby service
+  void AddEmbySection(CEmbyClientPtr client);
+  std::vector<EmbyViewInfo>    GetEmbySections(CEmbyClientPtr client);
+  
 };

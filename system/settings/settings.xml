@@ -505,8 +505,8 @@
           <control type="toggle" />
         </setting>
         <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
-          <level>1</level>
-          <default>false</default>
+          <level>0</level>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videolibrary.flattentvshows" type="integer" label="20412" help="36144">
@@ -1824,6 +1824,11 @@
           <control type="button" format="addon">
             <show more="true" details="true">installed</show>
           </control>
+        </setting>
+        <setting id="mymusic.flatten" type="boolean" label="20456" help="36183">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
         </setting>
         <setting id="musiclibrary.overridetags" type="boolean" label="20220" help="20221">
           <level>1</level>
@@ -4039,6 +4044,24 @@
         <setting id="general.addonbrokenfilter" type="boolean" label="0" help="36415">
           <level>4</level>
           <default>true</default>
+        </setting>
+        <setting id="general.servertype" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
+        </setting>
+        <setting id="general.serveruuid" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
         </setting>
       </group>
     </category>
