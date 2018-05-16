@@ -59,6 +59,7 @@ public:
   bool HasClients() const;
   void GetClients(std::vector<CPlexClientPtr> &clients) const;
   CPlexClientPtr FindClient(const std::string &path);
+  CPlexClientPtr GetClient(std::string uuid);
   bool ClientIsLocal(std::string path);
   MediaServicesPlayerState GetPlayState() { return m_playState; };
 
@@ -94,7 +95,6 @@ private:
 
   PlexServerInfo    ParsePlexDeviceNode(const TiXmlElement* DeviceNode);
 
-  CPlexClientPtr    GetClient(std::string uuid);
   bool              AddClient(CPlexClientPtr foundClient);
   bool              RemoveClient(CPlexClientPtr lostClient);
   bool              GetMyHomeUsers(std::string &homeusername);

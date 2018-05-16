@@ -58,6 +58,7 @@ public:
   bool IsEnabled();
   bool HasClients() const;
   void GetClients(std::vector<CEmbyClientPtr> &clients) const;
+  CEmbyClientPtr GetClient(std::string uuid);
   CEmbyClientPtr FindClient(const std::string &path);
   CEmbyClientPtr FindClient(const CEmbyClient *client);
   bool ClientIsLocal(std::string path);
@@ -100,7 +101,6 @@ private:
   EmbyServerInfoVector GetConnectServerList(const std::string &connectUserId, const std::string &connectAccessToken);
   bool              ExchangeAccessKeyForAccessToken(EmbyServerInfo &connectServerInfo);
 
-  CEmbyClientPtr    GetClient(std::string uuid);
   bool              AddClient(CEmbyClientPtr foundClient);
   bool              RemoveClient(CEmbyClientPtr lostClient);
 
