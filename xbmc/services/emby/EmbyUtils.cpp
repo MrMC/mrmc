@@ -1585,6 +1585,7 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
     item->SetProperty("SeasonEpisode", seasonEpisode);
     url2.SetFileName("Items/" + variant["SeasonId"].asString() + "/Images/Primary");
     item->SetArt("tvshow.thumb", url2.Get());
+    item->SetArt("tvshow.poster", url2.Get());
   }
   else
   {
