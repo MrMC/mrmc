@@ -991,6 +991,7 @@ PlexServerInfo CPlexServices::ParsePlexDeviceNode(const TiXmlElement* DeviceNode
     connection.address = XMLUtils::GetAttribute(ConnectionNode, "address");
     connection.protocol = XMLUtils::GetAttribute(ConnectionNode, "protocol");
     connection.external = XMLUtils::GetAttribute(ConnectionNode, "local") == "0" ? 1 : 0;
+    connection.uri = XMLUtils::GetAttribute(ConnectionNode, "uri");
     serverInfo.connections.push_back(connection);
 
     ConnectionNode = ConnectionNode->NextSiblingElement("Connection");

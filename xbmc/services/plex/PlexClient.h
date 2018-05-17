@@ -37,6 +37,7 @@ enum class PlexSectionParsing
 
 struct PlexConnection
 {
+  std::string uri;
   std::string port;
   std::string address;
   std::string protocol;

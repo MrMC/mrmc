@@ -108,21 +108,18 @@ bool CPlexClient::Init(const PlexServerInfo &serverInfo)
   m_httpsRequired = serverInfo.httpsRequired;
   m_platform = serverInfo.platform;
 
-  CURL url;
   if (!serverInfo.connections.empty())
   {
     for (const auto &connection : serverInfo.connections)
     {
-      url.SetHostName(connection.address);
-      url.SetPort(atoi(connection.port.c_str()));
-      url.SetProtocol(connection.protocol);
+      CURL url(connection.uri);
       url.SetProtocolOption("X-Plex-Token", m_accessToken);
       int timeout = connection.external ? 5 : 1;
       if (CPlexUtils::GetIdentity(url, timeout))
       {
         CLog::Log(LOGDEBUG, "CPlexClient::Init "
           "serverName(%s), ipAddress(%s), protocol(%s)",
-          m_serverName.c_str(), connection.address.c_str(), connection.protocol.c_str());
+          m_serverName.c_str(), connection.uri.c_str(), connection.protocol.c_str());
 
         m_url = url.Get();
         m_protocol = url.GetProtocol();
@@ -131,7 +128,6 @@ bool CPlexClient::Init(const PlexServerInfo &serverInfo)
       }
     }
   }
-
 
   if (m_clientSync)
     SAFE_DELETE(m_clientSync);
