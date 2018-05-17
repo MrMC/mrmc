@@ -65,6 +65,7 @@ CHueBridge::CHueBridge(std::string ip, std::string username, std::string clientk
   , m_streamingbuffersize(0)
 {
   refreshLightsState();
+  refreshGroupsState();
   m_sslbridge = this;
 }
 
@@ -425,7 +426,6 @@ std::vector<std::pair<std::string, int> > CHueBridge::getStreamGroupsNames()
 {
   std::vector<std::pair<std::string, int>> result;
 
-  refreshGroupsState();
   for (CVariant::iterator_map it = m_groupsState.begin_map(); it != m_groupsState.end_map(); ++it)
   {
     if (m_groupsState[it->first]["type"] == "Entertainment")
@@ -505,7 +505,6 @@ void CHueBridge::setClientkey(const std::string& value)
 
 bool CHueBridge::startStreaming(int streamgroupid)
 {
-  refreshGroupsState();
   m_streaminglights = m_groupsState[std::to_string((streamgroupid))]["lights"];
   if (m_streaminglights.isNull())
     return false;
