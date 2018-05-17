@@ -205,6 +205,8 @@ public:
   static void StopCapture();
 
   // Playback callbacks
+  void UpdateSessionMetadata();
+  void UpdateSessionState();
   void OnPlayBackStarted();
   void OnPlayBackPaused();
   void OnPlayBackStopped();
