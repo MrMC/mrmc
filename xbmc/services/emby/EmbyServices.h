@@ -58,6 +58,7 @@ public:
   bool IsEnabled();
   bool HasClients() const;
   void GetClients(std::vector<CEmbyClientPtr> &clients) const;
+  int GetNumberOfClients() {return m_clients.size();};
   CEmbyClientPtr GetClient(std::string uuid);
   CEmbyClientPtr FindClient(const std::string &path);
   CEmbyClientPtr FindClient(const CEmbyClient *client);
