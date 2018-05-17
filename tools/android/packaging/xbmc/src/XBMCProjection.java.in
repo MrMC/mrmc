@@ -95,7 +95,7 @@ public class XBMCProjection implements ImageReader.OnImageAvailableListener
     }
     return mMediaProjection.createVirtualDisplay("rendercapture",
             mWidth, mHeight, mActivity.getResources().getDisplayMetrics().densityDpi,
-            DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY,
+            DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
             mImageReader.getSurface(), null, mHandler);
   }
 

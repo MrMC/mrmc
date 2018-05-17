@@ -102,7 +102,7 @@
 #include "windowing/WindowingFactory.h"
 
 #define GIGABYTES       1073741824
-#define CAPTURE_QUEUE_MAXDEPTH 3
+#define CAPTURE_QUEUE_MAXDEPTH 1
 
 #define ACTION_XBMC_RESUME "android.intent.XBMC_RESUME"
 
