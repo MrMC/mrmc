@@ -670,17 +670,7 @@ void CXBMCApp::SetDisplayModeIdCallback(CVariant* rateVariant)
     if (params.getpreferredDisplayModeId() != modeId)
     {
       params.setpreferredDisplayModeId(modeId);
-      if (params.getpreferredDisplayModeId() > 0.0)
-      {
-        // we know the display is going away
-        // give windowing advanced notice.
-        g_Windowing.OnLostDevice();
-        window.setAttributes(params);
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "CXBMCApp::SetDisplayModeIdCallback: failed");
-      }
+      window.setAttributes(params);
     }
   }
 }
