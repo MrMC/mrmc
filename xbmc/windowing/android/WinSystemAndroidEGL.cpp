@@ -565,7 +565,7 @@ bool CWinSystemAndroidEGL::CreateNewWindow(const std::string& name, bool fullScr
     (current_resolution.dwFlags & D3DPRESENTFLAG_MODEMASK) == (res.dwFlags & D3DPRESENTFLAG_MODEMASK))
   {
     CLog::Log(LOGDEBUG, "CWinSystemAndroidEGL::CreateNewWindow: No need to create a new window");
-//xxx    return true;
+    return true;
   }
 
   OnLostDevice();
