@@ -197,7 +197,7 @@ public:
   int TranslateBool(const std::string &setting);
   bool GetBool(int setting) const;
   void SetBool(int setting, bool set);
-
+  bool GetSkinSettingBool(const std::string &setting);
   void Reset(const std::string &setting);
   void Reset();
 

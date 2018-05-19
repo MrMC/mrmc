@@ -659,6 +659,18 @@ void CSkinInfo::Reset(const std::string &setting)
   }
 }
 
+bool CSkinInfo::GetSkinSettingBool(const std::string &setting)
+{
+  for (auto& it : m_bools)
+  {
+    if (StringUtils::EqualsNoCase(setting, it.second->name))
+    {
+      return it.second->value;
+    }
+  }
+  return false;
+}
+  
 void CSkinInfo::Reset()
 {
   // clear all the settings and strings from this skin.
