@@ -234,10 +234,10 @@ public:
 
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
   bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map);
+  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
 
 protected:
   friend class INFO::InfoSingle;
-  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
   int TranslateSingleString(const std::string &strCondition, bool &listItemDependent);
 
   // routines for window retrieval
