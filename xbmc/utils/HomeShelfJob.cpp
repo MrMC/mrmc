@@ -100,8 +100,8 @@ bool CHomeShelfJob::UpdateVideo()
     {
       CVideoThumbLoader loader;
 
-      XFILE::CDirectory::GetDirectory("library://video/inprogressmovies.xml/", homeShelfMoviesPR);
-      XFILE::CDirectory::GetDirectory("library://video/inprogressepisodes.xml/", homeShelfTVPR);
+      XFILE::CDirectory::GetDirectory("videodb://recentlyaddedmovies/", homeShelfMoviesPR);
+      XFILE::CDirectory::GetDirectory("videodb://recentlyaddedepisodes/", homeShelfTVPR);
       homeShelfMoviesPR.Sort(SortByLastPlayed, SortOrderDescending);
       homeShelfTVPR.Sort(SortByLastPlayed, SortOrderDescending);
       for (int i = 0; i < homeShelfMoviesPR.Size() && i < NUM_ITEMS; i++)
