@@ -109,4 +109,5 @@ protected:
   double            m_sessionRestartPTS;
   VTBParameterSets  m_parameterSets;
   bool              m_enable_temporal_processing;
+  bool              m_hev1Format = false;
 };

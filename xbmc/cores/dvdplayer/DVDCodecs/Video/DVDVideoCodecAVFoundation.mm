@@ -334,14 +334,20 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             SAFE_DELETE(m_bitstream);
             return false;
           }
-          if (m_bitstream->GetExtraSize() < 23)
+          // exclude hev1 (in-stream sps/pps/vps for now
+          if (m_bitstream->GetExtraSize() <= 23)
           {
             SAFE_DELETE(m_bitstream);
             return false;
           }
 
           uint8_t *ps_ptr = m_bitstream->GetExtraData();
-          ps_ptr += 22; // skip over fixed length header
+          ps_ptr += 21; // skip over fixed length header
+
+          // nal size, 1, 2 or 4. we only handle 4
+          uint8_t nal_size = (*ps_ptr++ & 0x03) + 1;
+          if (nal_size != 4)
+            return false;
 
           // number of arrays
           size_t numberOfArrays = *ps_ptr++;

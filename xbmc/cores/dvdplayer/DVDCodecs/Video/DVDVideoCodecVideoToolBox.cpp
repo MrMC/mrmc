@@ -326,30 +326,38 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             SAFE_DELETE(m_bitstream);
             return false;
           }
+          // videotoolbox wants hvc1.
+          // check for hev1, it might have in-stream
+          // sps/pps/vps and we need to defer the open until
+          // these are extracted from stream during decode.
+          if (m_bitstream->GetExtraSize() == 23)
+            m_hev1Format = true;
           m_pFormatName = "vtb-h265";
         }
       break;
     }
 
     FreeParameterSets(m_parameterSets);
-    if (!CreateParameterSetArraysFromExtraData())
+    if (!m_hev1Format)
     {
-      Dispose();
-      return false;
-    }
+      if (!CreateParameterSetArraysFromExtraData())
+      {
+        Dispose();
+        return false;
+      }
 
-    if (!CreateFormatDescriptorFromParameterSetArrays())
-    {
-      Dispose();
-      return false;
-    }
+      if (!CreateFormatDescriptorFromParameterSetArrays())
+      {
+        Dispose();
+        return false;
+      }
 
-    if (!CreateVTSessionAndInitPictureFrame())
-    {
-      Dispose();
-      return false;
+      if (!CreateVTSessionAndInitPictureFrame())
+      {
+        Dispose();
+        return false;
+      }
     }
-
     m_DropPictures = false;
     // default to 5 min, this helps us feed correct pts to the player.
     m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
@@ -422,6 +430,8 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       }
     }
     ValidateVTSessionParameterSetsForRestart(pData, iSize);
+    if (!m_vt_session)
+      return VC_BUFFER;
 
     if (CBitstreamParser::HasKeyframe(m_hints.codec, pData, iSize, false))
     {
@@ -823,8 +833,11 @@ CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
 void
 CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize)
 {
-  // temp bypass of hevc
-  if (m_hints.codec == AV_CODEC_ID_HEVC)
+  // temp bypass of hevc (only if we are hvc1)
+  // for hev1, sps/pps/vps are in stream, not it extradata.
+  // so we have defered codec open until we can pull them out
+  // and package for code open.
+  if (!m_hev1Format && m_hints.codec == AV_CODEC_ID_HEVC)
     return;
 
   static uint64_t frameCount = 0;
