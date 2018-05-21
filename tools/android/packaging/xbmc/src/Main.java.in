@@ -1,6 +1,7 @@
 package @APP_PACKAGE@;
 
 import android.app.AlertDialog;
+import android.app.UiModeManager;
 import android.content.ActivityNotFoundException;
 import android.app.NativeActivity;
 import android.app.ProgressDialog;
@@ -266,6 +267,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         TvUtil.scheduleSyncingChannel(this);
     }
+
+    ((UiModeManager)getSystemService(UI_MODE_SERVICE)).setNightMode(UiModeManager.MODE_NIGHT_AUTO);
 
     mDecorView = getWindow().getDecorView();
     getWindow().takeSurface(null);
