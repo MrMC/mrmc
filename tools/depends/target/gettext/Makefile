@@ -17,6 +17,7 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
     --with-included-libcroco \
     --with-included-libxml \
     --without-git --without-cvs --disable-shared --disable-curses \
+    CFLAGS="$(CFLAGS) -Dlocale_charset=intl_locale_charset"
 
 LIBDYLIB=$(PLATFORM)/gettext-runtime/intl/.libs/libintl.a
 
