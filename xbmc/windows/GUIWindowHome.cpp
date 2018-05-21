@@ -490,6 +490,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         SetupServices();
         ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
         ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
+        ClearHomeShelfItems();
       }
       return true;
     }
@@ -1068,6 +1069,30 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections)
   
   sections.Append(*staticSections);
   
+}
+
+void CGUIWindowHome::ClearHomeShelfItems()
+{
+  CSingleLock lock(m_critsection);
+
+  CFileItemList* tempClearItems  = new CFileItemList;
+  CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, tempClearItems);
+  g_windowManager.SendThreadMessage(messageTVRA);
+
+  CGUIMessage messageTVPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSPR, 0, 0, tempClearItems);
+  g_windowManager.SendThreadMessage(messageTVPR);
+
+  CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, tempClearItems);
+  g_windowManager.SendThreadMessage(messageMovieRA);
+
+
+  CGUIMessage messageMoviePR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, tempClearItems);
+  g_windowManager.SendThreadMessage(messageMoviePR);
+
+  
+  CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMUSICALBUMS, 0, 0, tempClearItems);
+  g_windowManager.SendThreadMessage(messageAlbums);
+
 }
 
 CFileItemPtr CGUIWindowHome::MakeButton(HomeButton button)

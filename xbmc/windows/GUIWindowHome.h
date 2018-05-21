@@ -81,6 +81,7 @@ private:
   // services below
   void SetupServices();
   void SetupStaticHomeButtons(CFileItemList &sections);
+  void ClearHomeShelfItems();
   CFileItemPtr MakeButton(HomeButton button);
   CFileItemList* m_buttonSections;
   // plex service
