@@ -35,7 +35,8 @@
 
 #define XML_SKINSETTINGS  "skinsettings"
 #define NEW_SKIN          "skin.opacity"
-
+#define SIO_SKIN          "skin.sio2"
+#define ARIANA_SKIN       "skin.ariana"
 CSkinSettings::CSkinSettings()
 {
   Clear();
@@ -247,4 +248,17 @@ bool CSkinSettings::MigrateToNewSkin(const std::string skin)
   }
   
   return false;
+}
+
+std::string CSkinSettings::CheckFallbackSkin()
+{
+  // check here for fallback skins
+  ADDON::AddonPtr addon;
+  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+  if (skin == SIO_SKIN)
+  {
+    if (ADDON::CAddonMgr::GetInstance().GetAddon(ARIANA_SKIN, addon, ADDON::ADDON_SKIN))
+      return addon->ID();
+  }
+  return skin;
 }

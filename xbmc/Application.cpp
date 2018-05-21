@@ -1110,11 +1110,20 @@ bool CApplication::Initialize()
 
     // Make sure we have at least the default skin
     std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
-    std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    std::string skin = CSkinSettings::GetInstance().CheckFallbackSkin();
     if (!LoadSkin(skin) && !LoadSkin(defaultSkin))
     {
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
       return false;
+    }
+    
+    // fallback skin has changed, we need to save the setting
+    if (CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) != skin)
+    {
+      // m_skinReverting = true == no skin change prompt
+      m_skinReverting = true;
+      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, skin);
+      CSettings::GetInstance().Save();
     }
     
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&

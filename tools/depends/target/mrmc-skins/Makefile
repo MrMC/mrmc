@@ -8,7 +8,6 @@ ifneq ($(findstring tvos, $(TARGET_PLATFORM)), tvos)
 endif
 ifneq ($(findstring ios, $(TARGET_PLATFORM)), ios)
 	SUBDIRS += skin.blackglassnova
-	SUBDIRS += skin.sio2
 	SUBDIRS += skin.mrmc
 	SUBDIRS += skin.pm3.hd
 	SUBDIRS += skin.amber

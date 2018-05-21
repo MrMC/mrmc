@@ -40,6 +40,7 @@ public:
   void MigrateSettings(const ADDON::SkinPtr& skin);
   
   bool MigrateToNewSkin(const std::string skin);
+  std::string CheckFallbackSkin();
 
   int TranslateString(const std::string &setting);
   const std::string& GetString(int setting) const;
