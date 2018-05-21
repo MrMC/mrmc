@@ -2511,7 +2511,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #endif
       break;
     case SYSTEM_PLATFORM_DARWIN_IOS:
-#if defined(TARGET_DARWIN_IOS) & !defined(PLATFORM_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) & !defined(TARGET_DARWIN_TVOS)
       bReturn = true;
 #else
       bReturn = false;
