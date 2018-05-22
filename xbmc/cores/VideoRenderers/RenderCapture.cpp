@@ -23,6 +23,7 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "pictures/Picture.h"
 
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
@@ -154,6 +155,10 @@ void CRenderCaptureDroid::ReadOut()
       sws_freeContext(context);
 
       image.close();
+
+#if 0
+      CPicture::CreateThumbnailFromSurface(m_pixels, m_width, m_height, m_width * 4, "/sdcard/rendercapture.png");
+#endif
       SetState(CAPTURESTATE_DONE);
     }
     else
