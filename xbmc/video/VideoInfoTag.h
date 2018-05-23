@@ -40,6 +40,7 @@ struct SActorInfo
   {
     return order < right.order;
   }
+  std::string strMonogram;
   std::string strName;
   std::string strRole;
   CScraperUrl thumbUrl;

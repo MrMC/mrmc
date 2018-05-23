@@ -347,6 +347,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       item->SetIconImage("DefaultActor.png");
       item->SetLabel(it->strName);
       item->SetLabel2(it->strRole);
+      item->SetProperty("monogram", it->strMonogram);
       m_castList->Add(item);
     }
   }

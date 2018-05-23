@@ -2035,6 +2035,17 @@ void CPlexUtils::GetVideoDetails(CFileItem &item, const CVariant &video)
         role.strName = (*variantIt)["tag"].asString();
         role.strRole = strRole;
         role.thumb   = strThumb;
+        std::vector<std::string> split = StringUtils::Split(role.strName, " ");
+        if (split.size() > 1)
+        {
+          std::string monogram;
+          for (unsigned long i = 0; i < split.size() && i < 2; ++i)
+          {
+            monogram = monogram + split[i][0];
+            StringUtils::ToUpper(monogram);
+          }
+          role.strMonogram = monogram;
+        }
         roles.push_back(role);
       }
     }
