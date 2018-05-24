@@ -998,7 +998,8 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
             if (hub.isMember("type"))
             {
               std::string type = hub["type"].asString();
-              if (type == "show")
+              int size = hub["size"].asInteger();
+              if (type == "show" && size > 0)
               {
                 CFileItemList plexShow;
                 std::string ratingKey = hub["Directory"]["ratingKey"].asString();
@@ -1014,7 +1015,7 @@ bool CPlexUtils::SearchPlex(CFileItemList &items, std::string strSearchString)
                 }
                 CGUIWindowVideoBase::AppendAndClearSearchItems(plexShow, "[" + g_localizeStrings.Get(20359) + "] ", plexItems);
               }
-              else if (type == "movie")
+              else if (type == "movie"  && size > 0)
               {
                 CFileItemList plexMovies;
                 ParsePlexVideos(plexMovies, url, hub["Video"], MediaTypeMovie, false);
