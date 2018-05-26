@@ -129,7 +129,7 @@ bool CServicesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         if (URIUtils::GetFileName(basePath) == "recentlyaddedepisodes")
           pItem->SetPath("videodb://recentlyaddedepisodes/");
         else if (URIUtils::GetFileName(basePath) == "inprogressshows")
-          pItem->SetPath("library://video/inprogressshows.xml/");
+          pItem->SetPath("videodb://video/inprogresstvshows/");
         else
           pItem->SetPath("videodb://tvshows/" + basePath + "/");
         pItem->SetLabel(title);

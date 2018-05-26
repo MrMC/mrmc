@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2016 Team Kodi
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -524,7 +524,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         }
         items.SetContent("movies");
       }
-      else if (node == NODE_TYPE_TITLE_TVSHOWS)
+      else if (node == NODE_TYPE_TITLE_TVSHOWS ||
+               node == NODE_TYPE_INPROGRESS_TVSHOWS)
         items.SetContent("tvshows");
       else if (node == NODE_TYPE_TITLE_MUSICVIDEOS ||
                node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
@@ -1371,7 +1372,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   {
     if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://tvshows/inprogressshows/";
-    return "library://video/inprogressshows.xml/";
+    return "videodb://inprogresstvshows/";
   }
   else if (lower == "inprogressmovies")
   {
@@ -1403,6 +1404,8 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
     return "videodb://musicvideos/";
   else if (lower == "recentlyaddedmusicvideos")
     return "videodb://recentlyaddedmusicvideos/";
+  else if (lower == "inprogresstvshows")
+    return "videodb://inprogresstvshows/";
   // override to only show local sources, ignore Plex/Emby services
   else if (lower == "movietitleslocal")
     return "videodb://movies/titles/";

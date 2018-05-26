@@ -1977,6 +1977,9 @@
 		F5AC305D20B9A0F900A7A1ED /* HueServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC305120B9A0F800A7A1ED /* HueServices.cpp */; };
 		F5AC305E20B9A0F900A7A1ED /* HueServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC305120B9A0F800A7A1ED /* HueServices.cpp */; };
 		F5AC305F20B9A0F900A7A1ED /* HueServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC305120B9A0F800A7A1ED /* HueServices.cpp */; };
+		F5AC306420B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC306220B9F4BC00A7A1ED /* DirectoryNodeInProgressTvShows.cpp */; };
+		F5AC306520B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC306220B9F4BC00A7A1ED /* DirectoryNodeInProgressTvShows.cpp */; };
+		F5AC306620B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC306220B9F4BC00A7A1ED /* DirectoryNodeInProgressTvShows.cpp */; };
 		F5AE409C13415D9E0004BD79 /* AudioLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */; };
 		F5AE409F13415D9E0004BD79 /* FileItemHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */; };
 		F5AE40A013415D9E0004BD79 /* FileOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408813415D9E0004BD79 /* FileOperations.cpp */; };
@@ -5720,6 +5723,8 @@
 		F5AC305020B9A0F800A7A1ED /* HueServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HueServices.h; sourceTree = "<group>"; };
 		F5AC305120B9A0F800A7A1ED /* HueServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HueServices.cpp; sourceTree = "<group>"; };
 		F5AC305220B9A0F800A7A1ED /* HueClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HueClient.h; sourceTree = "<group>"; };
+		F5AC306220B9F4BC00A7A1ED /* DirectoryNodeInProgressTvShows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeInProgressTvShows.cpp; sourceTree = "<group>"; };
+		F5AC306320B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeInProgressTvShows.h; sourceTree = "<group>"; };
 		F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioLibrary.cpp; sourceTree = "<group>"; };
 		F5AE408113415D9E0004BD79 /* AudioLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioLibrary.h; sourceTree = "<group>"; };
 		F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItemHandler.cpp; sourceTree = "<group>"; };
@@ -9168,6 +9173,8 @@
 				E38E176D0D25F9FA00618676 /* DirectoryNodeMusicVideosOverview.h */,
 				E38E176E0D25F9FA00618676 /* DirectoryNodeOverview.cpp */,
 				E38E176F0D25F9FA00618676 /* DirectoryNodeOverview.h */,
+				F5AC306220B9F4BC00A7A1ED /* DirectoryNodeInProgressTvShows.cpp */,
+				F5AC306320B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.h */,
 				E38E17700D25F9FA00618676 /* DirectoryNodeRecentlyAddedEpisodes.cpp */,
 				E38E17710D25F9FA00618676 /* DirectoryNodeRecentlyAddedEpisodes.h */,
 				E38E17720D25F9FA00618676 /* DirectoryNodeRecentlyAddedMovies.cpp */,
@@ -11732,6 +11739,7 @@
 				7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */,
 				F5DF58791FEEBA3F00AD4C8C /* CloudUtils.cpp in Sources */,
 				7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */,
+				F5AC306420B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.cpp in Sources */,
 				C84828C0156CFCD8005A996F /* PVRClient.cpp in Sources */,
 				C84828C1156CFCD8005A996F /* PVRClients.cpp in Sources */,
 				C84828C3156CFCD8005A996F /* PVRChannel.cpp in Sources */,
@@ -12880,6 +12888,7 @@
 				E499143D174E604700741B6D /* Timer.cpp in Sources */,
 				E499143E174E605900741B6D /* AlarmClock.cpp in Sources */,
 				399442781A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */,
+				F5AC306520B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.cpp in Sources */,
 				DF4BF01E1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */,
 				F5A4F2A21BB086FE0083FC69 /* IptcParse.cpp in Sources */,
 				E499143F174E605900741B6D /* AliasShortcutUtils.cpp in Sources */,
@@ -14155,6 +14164,7 @@
 				F5AC305920B9A0F900A7A1ED /* HueClient.cpp in Sources */,
 				F58BF97D1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */,
 				F5D1417C1BAF0B6D0075A95C /* PasswordManager.cpp in Sources */,
+				F5AC306620B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.cpp in Sources */,
 				F5D1417D1BAF0B6D0075A95C /* PlayListPlayer.cpp in Sources */,
 				F5D1417E1BAF0B6D0075A95C /* SectionLoader.cpp in Sources */,
 				F5D1417F1BAF0B6D0075A95C /* SystemGlobals.cpp in Sources */,
