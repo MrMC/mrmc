@@ -670,7 +670,7 @@ void CGUIWindowHome::SetupServices()
   {
     std::string uuid;
     std::string type;
-    if (CPlexServices::GetInstance().HasClients())
+    if (serverType == "plex" && CPlexServices::GetInstance().HasClients())
     {
       std::vector<CPlexClientPtr> plexClients;
       CPlexServices::GetInstance().GetClients(plexClients);
@@ -683,7 +683,7 @@ void CGUIWindowHome::SetupServices()
         SET_CONTROL_LABEL(CONTROL_SERVER_BUTTON , plexClient->GetServerName());
       }
     }
-    else if (CEmbyServices::GetInstance().HasClients())
+    else if (serverType == "emby" && CEmbyServices::GetInstance().HasClients())
     {
       std::vector<CEmbyClientPtr> embyClients;
       CEmbyServices::GetInstance().GetClients(embyClients);
