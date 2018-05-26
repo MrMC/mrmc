@@ -995,6 +995,7 @@ void CDarwinUtils::GetAppMemory(int64_t &free, int64_t &delta)
   }
 }
 
+/*
 typedef struct FontHeader {
   int32_t version;
   uint16_t numTables;
@@ -1155,9 +1156,12 @@ static void clonefonts(const std::string &strPath)
   
 #endif
 }
+*/
 
 void CDarwinUtils::CloneSystemFonts(const std::string &strPath)
 {
+  return;
+/*
 #if defined(TARGET_DARWIN_IOS)
   //clonefonts(strPath);
   std::string fontFile = URIUtils::AddFileToFolder(strPath,"PingFang.ttc");
@@ -1205,6 +1209,7 @@ void CDarwinUtils::CloneSystemFonts(const std::string &strPath)
     free(data);
   }
 #endif
+*/
 }
 
 bool CDarwinUtils::IsDarkInterface()
