@@ -199,7 +199,7 @@ bool TraktSignInPinEnable (const std::string &condition, const std::string &valu
 bool HueEnabled (const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   bool enabled = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_DISCOVER) == g_localizeStrings.Get(14209);
-  return true;
+  return enabled;
 }
 
 bool IsUsingTTFSubtitles(const std::string &condition, const std::string &value, const CSetting *setting, void *data)

@@ -369,7 +369,7 @@ int CHueBridge::dtls_InitClient(SDTLSParams* params, const char *address)
   d.sin_addr.s_addr = inet_addr(address);
   d.sin_port = htons(2100);
 
-  int err = BIO_dgram_set_peer(params->bio, &d);
+  BIO_dgram_set_peer(params->bio, &d);
 
   params->ssl = SSL_new(params->ctx);
   SSL_set_bio(params->ssl, params->bio, params->bio);

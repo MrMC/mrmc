@@ -46,10 +46,12 @@
 using namespace ANNOUNCEMENT;
 
 // replace these when we hit c++17
+/*
 static inline int ClampValue(int value, int min, int max)
 {
   return std::min(std::max(value, min), max);
 }
+*/
 static inline float ClampValue(float value, float min, float max)
 {
   return std::min(std::max(value, min), max);
@@ -320,7 +322,7 @@ void CHueServices::Process()
 
         if (color_dist > biasC)
         {
-          CLog::Log(LOGDEBUG, "Hue - Color dist = %f", color_dist);
+          CLog::Log(LOGDEBUG, "Hue - Color bias = %f, dist = %f", biasC, color_dist);
           fx = x; fy = y;
           fu_old = u; fv_old = v;
         }

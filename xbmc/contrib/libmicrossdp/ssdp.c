@@ -48,7 +48,7 @@ ssdp_packettodevice(char* buffer, struct upnp_device* device)
 int
 ssdp_discovery(int family, unsigned int category, struct upnp_device* devices)
 {
-	struct in_addr localInterface;
+	//struct in_addr localInterface;
 	struct sockaddr_in groupSock;
 	struct sockaddr_in localSock;
 	struct ip_mreq group;
@@ -88,7 +88,7 @@ ssdp_discovery(int family, unsigned int category, struct upnp_device* devices)
 
 	// ssdp:all?
 
-	int dcpIndex = 0;
+	size_t dcpIndex = 0;
 	int count = 0;
 
 	for (dcpIndex = 0; dcpIndex < (sizeof(kKnownDCP) / sizeof(kKnownDCP[0])); dcpIndex++) {

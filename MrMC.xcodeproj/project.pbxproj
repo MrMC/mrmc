@@ -1965,6 +1965,18 @@
 		F5AA30FB1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5AA30F91BF014C100693976 /* DVDVideoCodecAVFoundation.mm */; };
 		F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */; };
 		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
+		F5AC304820B9A0C300A7A1ED /* ssdp.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304220B9A0C300A7A1ED /* ssdp.c */; };
+		F5AC304920B9A0C300A7A1ED /* ssdp.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304220B9A0C300A7A1ED /* ssdp.c */; };
+		F5AC304A20B9A0C300A7A1ED /* ssdp.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304220B9A0C300A7A1ED /* ssdp.c */; };
+		F5AC305420B9A0F900A7A1ED /* HueUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304C20B9A0F800A7A1ED /* HueUtils.cpp */; };
+		F5AC305520B9A0F900A7A1ED /* HueUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304C20B9A0F800A7A1ED /* HueUtils.cpp */; };
+		F5AC305620B9A0F900A7A1ED /* HueUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304C20B9A0F800A7A1ED /* HueUtils.cpp */; };
+		F5AC305720B9A0F900A7A1ED /* HueClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304D20B9A0F800A7A1ED /* HueClient.cpp */; };
+		F5AC305820B9A0F900A7A1ED /* HueClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304D20B9A0F800A7A1ED /* HueClient.cpp */; };
+		F5AC305920B9A0F900A7A1ED /* HueClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC304D20B9A0F800A7A1ED /* HueClient.cpp */; };
+		F5AC305D20B9A0F900A7A1ED /* HueServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC305120B9A0F800A7A1ED /* HueServices.cpp */; };
+		F5AC305E20B9A0F900A7A1ED /* HueServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC305120B9A0F800A7A1ED /* HueServices.cpp */; };
+		F5AC305F20B9A0F900A7A1ED /* HueServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC305120B9A0F800A7A1ED /* HueServices.cpp */; };
 		F5AE409C13415D9E0004BD79 /* AudioLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */; };
 		F5AE409F13415D9E0004BD79 /* FileItemHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */; };
 		F5AE40A013415D9E0004BD79 /* FileOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408813415D9E0004BD79 /* FileOperations.cpp */; };
@@ -5700,6 +5712,14 @@
 		F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSelect.cpp; sourceTree = "<group>"; };
 		F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSlider.cpp; sourceTree = "<group>"; };
 		F5AACA960FB3E2B800DBB77C /* GUIDialogSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSlider.h; sourceTree = "<group>"; };
+		F5AC304020B9A0C300A7A1ED /* ssdp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssdp.h; sourceTree = "<group>"; };
+		F5AC304220B9A0C300A7A1ED /* ssdp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ssdp.c; sourceTree = "<group>"; };
+		F5AC304C20B9A0F800A7A1ED /* HueUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HueUtils.cpp; sourceTree = "<group>"; };
+		F5AC304D20B9A0F800A7A1ED /* HueClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HueClient.cpp; sourceTree = "<group>"; };
+		F5AC304F20B9A0F800A7A1ED /* HueUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HueUtils.h; sourceTree = "<group>"; };
+		F5AC305020B9A0F800A7A1ED /* HueServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HueServices.h; sourceTree = "<group>"; };
+		F5AC305120B9A0F800A7A1ED /* HueServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HueServices.cpp; sourceTree = "<group>"; };
+		F5AC305220B9A0F800A7A1ED /* HueClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HueClient.h; sourceTree = "<group>"; };
 		F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioLibrary.cpp; sourceTree = "<group>"; };
 		F5AE408113415D9E0004BD79 /* AudioLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioLibrary.h; sourceTree = "<group>"; };
 		F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItemHandler.cpp; sourceTree = "<group>"; };
@@ -9807,6 +9827,7 @@
 				F55BD31B1D246E240072FE3A /* ServicesManager.cpp */,
 				F55BD3191D22423D0072FE3A /* ServicesManager.h */,
 				F5471B1B1E8562C100570A53 /* emby */,
+				F5AC304B20B9A0F800A7A1ED /* hue */,
 				F55BD2FF1D0A14ED0072FE3A /* plex */,
 				F58BF96E1CD83FAF005BB003 /* lighteffects */,
 				189DFAAC1E96747800002CA4 /* trakt */,
@@ -9945,6 +9966,28 @@
 			path = "ios-common";
 			sourceTree = "<group>";
 		};
+		F5AC303E20B9A0C300A7A1ED /* libmicrossdp */ = {
+			isa = PBXGroup;
+			children = (
+				F5AC304020B9A0C300A7A1ED /* ssdp.h */,
+				F5AC304220B9A0C300A7A1ED /* ssdp.c */,
+			);
+			path = libmicrossdp;
+			sourceTree = "<group>";
+		};
+		F5AC304B20B9A0F800A7A1ED /* hue */ = {
+			isa = PBXGroup;
+			children = (
+				F5AC304C20B9A0F800A7A1ED /* HueUtils.cpp */,
+				F5AC304D20B9A0F800A7A1ED /* HueClient.cpp */,
+				F5AC304F20B9A0F800A7A1ED /* HueUtils.h */,
+				F5AC305020B9A0F800A7A1ED /* HueServices.h */,
+				F5AC305120B9A0F800A7A1ED /* HueServices.cpp */,
+				F5AC305220B9A0F800A7A1ED /* HueClient.h */,
+			);
+			path = hue;
+			sourceTree = "<group>";
+		};
 		F5AE407F13415D9E0004BD79 /* json-rpc */ = {
 			isa = PBXGroup;
 			children = (
@@ -10016,6 +10059,7 @@
 		F5B722B11C7BC10B006432AE /* contrib */ = {
 			isa = PBXGroup;
 			children = (
+				F5AC303E20B9A0C300A7A1ED /* libmicrossdp */,
 				F503EEA81EC6167600102CBA /* rapidxml */,
 				F503EE9F1EC6166400102CBA /* xml2json */,
 				F5FC88DF1E61E44D00449E85 /* easywsclient */,
@@ -11107,6 +11151,7 @@
 				F55902251C32D52D00349249 /* DSMDirectory.cpp in Sources */,
 				E38E20810D25F9FD00618676 /* GUIDialogFileBrowser.cpp in Sources */,
 				E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */,
+				F5AC305420B9A0F900A7A1ED /* HueUtils.cpp in Sources */,
 				E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */,
 				F58BF96A1CD51257005BB003 /* VideoDatabaseFile.cpp in Sources */,
 				E38E208A0D25F9FD00618676 /* GUIDialogMusicOSD.cpp in Sources */,
@@ -11218,6 +11263,7 @@
 				F5022F2F1E2D41D5001BBF75 /* hdhomerun_pkt.c in Sources */,
 				E38E22C50D25F9FE00618676 /* Archive.cpp in Sources */,
 				E38E22C60D25F9FE00618676 /* BitstreamStats.cpp in Sources */,
+				F5AC304820B9A0C300A7A1ED /* ssdp.c in Sources */,
 				E38E22C70D25F9FE00618676 /* CharsetConverter.cpp in Sources */,
 				F5FA26B820545C290078DF4B /* AddonPythonInvoker.cpp in Sources */,
 				E38E22C80D25F9FE00618676 /* CPUInfo.cpp in Sources */,
@@ -11719,6 +11765,7 @@
 				C84828DF156CFCD8005A996F /* GUIWindowPVRChannels.cpp in Sources */,
 				C84828E1156CFCD8005A996F /* GUIWindowPVRGuide.cpp in Sources */,
 				C84828E2156CFCD8005A996F /* GUIWindowPVRRecordings.cpp in Sources */,
+				F5AC305720B9A0F900A7A1ED /* HueClient.cpp in Sources */,
 				C84828E3156CFCD8005A996F /* GUIWindowPVRSearch.cpp in Sources */,
 				C84828E4156CFCD8005A996F /* GUIWindowPVRTimers.cpp in Sources */,
 				C84828F5156CFD5E005A996F /* Epg.cpp in Sources */,
@@ -11796,6 +11843,7 @@
 				DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */,
 				DF404A3A16B9896C00D8023E /* imagefactory.cpp in Sources */,
 				DFD5812516C828500008EEA0 /* DAVCommon.cpp in Sources */,
+				F5AC305D20B9A0F900A7A1ED /* HueServices.cpp in Sources */,
 				DFD5812616C828500008EEA0 /* DAVFile.cpp in Sources */,
 				1DAFDB7C16DFDCA7007F8C68 /* PeripheralBusCEC.cpp in Sources */,
 				F5632F941CB9478F002027D9 /* ActiveAEDSPDatabase.cpp in Sources */,
@@ -12196,6 +12244,7 @@
 				E4991202174E5D4500741B6D /* DVDPlayerTeletext.cpp in Sources */,
 				F5B724A51C7E150C006432AE /* crypt.cpp in Sources */,
 				E4991203174E5D4500741B6D /* DVDPlayerVideo.cpp in Sources */,
+				F5AC305820B9A0F900A7A1ED /* HueClient.cpp in Sources */,
 				E4991204174E5D4500741B6D /* DVDStreamInfo.cpp in Sources */,
 				E4991205174E5D4500741B6D /* DVDTSCorrection.cpp in Sources */,
 				E4991206174E5D4500741B6D /* Edl.cpp in Sources */,
@@ -12563,6 +12612,7 @@
 				F5F23CD21C4D479E004B223A /* AnnounceReceiver.mm in Sources */,
 				E499134B174E5E5C00741B6D /* ITouchInputHandling.cpp in Sources */,
 				E499134D174E5EB700741B6D /* SkinVariable.cpp in Sources */,
+				F5AC304920B9A0C300A7A1ED /* ssdp.c in Sources */,
 				E499134E174E5EBE00741B6D /* AddonsOperations.cpp in Sources */,
 				E499134F174E5EBE00741B6D /* ApplicationOperations.cpp in Sources */,
 				E4991350174E5EBE00741B6D /* AudioLibrary.cpp in Sources */,
@@ -12618,6 +12668,7 @@
 				E499137B174E5F0E00741B6D /* MusicInfoScraper.cpp in Sources */,
 				E4991388174E5F0E00741B6D /* MusicInfoTag.cpp in Sources */,
 				F5FA25D720545C080078DF4B /* ModuleXbmcgui.cpp in Sources */,
+				F5AC305E20B9A0F900A7A1ED /* HueServices.cpp in Sources */,
 				E499138A174E5F0E00741B6D /* MusicInfoTagLoaderCDDA.cpp in Sources */,
 				E499138B174E5F0E00741B6D /* MusicInfoTagLoaderDatabase.cpp in Sources */,
 				E499138C174E5F0E00741B6D /* MusicInfoTagLoaderFactory.cpp in Sources */,
@@ -12721,6 +12772,7 @@
 				E49913E0174E5F8D00741B6D /* PlayListB4S.cpp in Sources */,
 				E49913E1174E5F8D00741B6D /* PlayListFactory.cpp in Sources */,
 				E49913E2174E5F8D00741B6D /* PlayListM3U.cpp in Sources */,
+				F5AC305520B9A0F900A7A1ED /* HueUtils.cpp in Sources */,
 				F5022F2D1E2D41D5001BBF75 /* hdhomerun_discover.c in Sources */,
 				E49913E3174E5F8D00741B6D /* PlayListPLS.cpp in Sources */,
 				181E4B701EFCF664004C5551 /* FocusEngineHandler.cpp in Sources */,
@@ -13277,6 +13329,7 @@
 				F5D13EFB1BAF0B6D0075A95C /* DVDVideoCodecFFmpeg.cpp in Sources */,
 				F5D13EFC1BAF0B6D0075A95C /* Key.cpp in Sources */,
 				F5D13EFD1BAF0B6D0075A95C /* DVDVideoCodecVDA.cpp in Sources */,
+				F5AC305620B9A0F900A7A1ED /* HueUtils.cpp in Sources */,
 				F5D13EFE1BAF0B6D0075A95C /* DVDVideoPPFFmpeg.cpp in Sources */,
 				F5D13EFF1BAF0B6D0075A95C /* DVDDemux.cpp in Sources */,
 				F5D13F001BAF0B6D0075A95C /* DVDDemuxBXA.cpp in Sources */,
@@ -13323,6 +13376,7 @@
 				F5D13F1D1BAF0B6D0075A95C /* DVDSubtitleTagSami.cpp in Sources */,
 				F5D13F1E1BAF0B6D0075A95C /* DVDAudio.cpp in Sources */,
 				F5B725061C7E150C006432AE /* savepos.cpp in Sources */,
+				F5AC305F20B9A0F900A7A1ED /* HueServices.cpp in Sources */,
 				F5471B2F1E8562C100570A53 /* EmbyUtils.cpp in Sources */,
 				F5022F251E2D41D5001BBF75 /* hdhomerun_debug.c in Sources */,
 				F51D170E1E29950600A03C93 /* md5.c in Sources */,
@@ -13918,6 +13972,7 @@
 				F5D140F21BAF0B6D0075A95C /* SettingControl.cpp in Sources */,
 				F5D140F31BAF0B6D0075A95C /* SettingPath.cpp in Sources */,
 				F5D140F41BAF0B6D0075A95C /* Settings.cpp in Sources */,
+				F5AC304A20B9A0C300A7A1ED /* ssdp.c in Sources */,
 				F5D140F51BAF0B6D0075A95C /* SkinSettings.cpp in Sources */,
 				F5B724E41C7E150C006432AE /* pathfn.cpp in Sources */,
 				F5FBE7DE1E2AB65F001B85EE /* strutl.c in Sources */,
@@ -14097,6 +14152,7 @@
 				F5D1417B1BAF0B6D0075A95C /* PartyModeManager.cpp in Sources */,
 				F51D17231E29950600A03C93 /* play.c in Sources */,
 				F5022F2E1E2D41D5001BBF75 /* hdhomerun_discover.c in Sources */,
+				F5AC305920B9A0F900A7A1ED /* HueClient.cpp in Sources */,
 				F58BF97D1CDBBB21005BB003 /* DVDAudioCodecAudioConverter.cpp in Sources */,
 				F5D1417C1BAF0B6D0075A95C /* PasswordManager.cpp in Sources */,
 				F5D1417D1BAF0B6D0075A95C /* PlayListPlayer.cpp in Sources */,

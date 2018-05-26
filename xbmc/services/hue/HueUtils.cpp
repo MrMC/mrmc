@@ -27,9 +27,9 @@ constexpr float D65_x = 0.31271f;
 constexpr float D65_y = 0.32902f;
 
 // Normalized XYZ coordinates of D65 (normalized s.t. Y = 100)
-constexpr float D65_Xn = 95.047f;
-constexpr float D65_Yn = 100.0f;
-constexpr float D65_Zn = 108.883f;
+//constexpr float D65_Xn = 95.047f;
+//constexpr float D65_Yn = 100.0f;
+//constexpr float D65_Zn = 108.883f;
 
 
 CHueUtils::CHueUtils()
