@@ -322,7 +322,7 @@ void CHueServices::Process()
 
         if (color_dist > biasC)
         {
-          CLog::Log(LOGDEBUG, "Hue - Color bias = %f, dist = %f", biasC, color_dist);
+          //CLog::Log(LOGDEBUG, "Hue - Color bias = %f, dist = %f", biasC, color_dist);
           fx = x; fy = y;
           fu_old = u; fv_old = v;
         }
