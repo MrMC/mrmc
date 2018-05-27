@@ -632,6 +632,11 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
   // some skins do not have these, so do not log them
   if (textureName != "OverlayUnwatched.png" &&
       textureName != "DefaultFolder.png" &&
+      textureName != "DefaultMovies.png" &&
+      textureName != "DefaultTVShows.png" &&
+      textureName != "DefaultInProgressShows.png" &&
+      textureName != "DefaultRecentlyAddedMovies.png" &&
+      textureName != "DefaultRecentlyAddedEpisodes.png" &&
       textureName != "DefaultVideoPlaylists.png" &&
       textureName != "OSDRadioRDSFO.png" &&
       textureName != "OSDRadioRDSNF.png" &&
