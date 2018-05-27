@@ -2555,10 +2555,16 @@ CGRect debugView2;
       }
       else
       {
-        swipeOrPanNoMore = true;
-        #if logfocus
-        CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: Not in same parent view");
-        #endif
+        FocusLayerView *nextFocusedItemParentView = [self findParentView:(FocusLayerView*)context.nextFocusedItem];
+        if (swipeStartingParent == nullptr ||
+            nextFocusedItemParentView == nullptr ||
+            swipeStartingParent->core != nextFocusedItemParentView->core)
+        {
+          swipeOrPanNoMore = true;
+          #if logfocus
+          CLog::Log(LOGDEBUG, "shouldUpdateFocusInContext: Not in same parent view");
+          #endif
+        }
       }
       [self setNeedsFocusUpdate];
     }
@@ -2678,11 +2684,25 @@ CGRect debugView2;
 
     if (view.type == "window")
     {
-      // need to skip making UIView if it is fullscreen video
-      // prevents possible running out of memory playing 4k video.
       CGUIControl *guiControl = (CGUIControl*)view.core;
-      if (guiControl && guiControl->GetID() == WINDOW_FULLSCREEN_VIDEO)
-        continue;
+      if (guiControl)
+      {
+        int windowID = guiControl->GetID();
+        switch(windowID)
+        {
+          // helps with fast swipe nav on some skins
+          case WINDOW_HOME:
+          case WINDOW_MUSIC_NAV:
+          case WINDOW_VIDEO_NAV:
+          case WINDOW_MUSIC_FILES:
+          case WINDOW_VIDEO_FILES:
+          case WINDOW_MEDIA_SOURCES:
+          // need to skip making UIView if it is fullscreen video
+          // prevents possible running out of memory playing 4k video.
+          case WINDOW_FULLSCREEN_VIDEO:
+            continue;
+        }
+      }
     }
 
     if (view.type == "dialog")
