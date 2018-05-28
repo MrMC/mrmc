@@ -39,8 +39,8 @@ import java.util.List;
 public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
   private static final String TAG = "@APP_NAME_UC@";
-  private static final int INTENT_RESULT_PROJECT_CODE = 4658;
-  private static final int INTENT_MAKE_BROWSABLE_REQUEST_CODE = 9001;
+  private static final int INTENT_RESULT_PROJECT_CODE = 34658;
+  private static final int INTENT_MAKE_BROWSABLE_REQUEST_CODE = 39001;
 
   public static Main MainActivity = null;
   public XBMCMainView mMainView = null;
