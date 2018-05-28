@@ -7,6 +7,9 @@ import java.io.OutputStreamWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -70,7 +73,7 @@ public class XBMCJsonRPC
 
   private String m_xbmc_web_url = "http://localhost:8080";
   private java.util.HashSet<Integer> mRecomendationIds = new java.util.HashSet<Integer>();
-  private java.util.HashSet<Uri> mWatchnextUris = new java.util.HashSet<Uri>();
+  private java.util.HashSet<Long> mWatchnextUris = new java.util.HashSet<Long>();
 
   private int MAX_RECOMMENDATIONS = 3;
 
@@ -129,7 +132,7 @@ public class XBMCJsonRPC
           "{ \"jsonrpc\": \"2.0\", \"method\": \"Files.GetDirectory\", \"params\": { \"directory\" : \"%s\" }, \"id\": \"%s\" }";
 
   private String INPROGRESS_MOVIES_JSON =
-      "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", \"params\": { \"filter\": {\"field\": \"inprogress\", \"operator\": \"true\", \"value\": \"\"}, \"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\"], \"sort\": { \"order\": \"descending\", \"method\": \"lastplayed\", \"ignorearticle\": true } }, \"id\": \"1\"}\n";
+      "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", \"params\": { \"filter\": {\"field\": \"inprogress\", \"operator\": \"true\", \"value\": \"\"}, \"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\", \"lastplayed\", \"resume\"], \"sort\": { \"order\": \"descending\", \"method\": \"lastplayed\", \"ignorearticle\": true } }, \"id\": \"1\"}\n";
 
   private NotificationManager mNotificationManager;
 
@@ -637,20 +640,6 @@ public class XBMCJsonRPC
   public void updateWatchnext(Context ctx)
   {
     WatchNextProgram watchNextProgram;
-    for(Uri uri : mWatchnextUris)
-    {
-      try (Cursor cursor = ctx.getContentResolver().query(uri, null, null, null, null))
-      {
-        if (cursor != null && cursor.getCount() != 0)
-        {
-          cursor.moveToNext();
-          watchNextProgram = WatchNextProgram.fromCursor(cursor);
-          ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(watchNextProgram.getId()),
-              null, null);
-        }
-      }
-    }
-    mWatchnextUris.clear();
 
     WatchNextProgram.Builder watchNextProgramBuilder = new WatchNextProgram.Builder()
         .setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_CONTINUE)
@@ -665,28 +654,67 @@ public class XBMCJsonRPC
         JsonArray movies = results.get("movies").getAsJsonArray();
 
         int count = 0;
+        java.util.HashSet<Long> newWatchnextUris = new java.util.HashSet<Long>();
         for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i)
         {
           try
           {
             JsonObject movie = movies.get(i).getAsJsonObject();
+            int id = movie.get("movieid").getAsInt() + 11000000;
 
             Intent detailsIntent = new Intent(ctx, Splash.class);
-            detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
-            detailsIntent.setData(Uri.parse("videodb://movies/titles/" + movie.get("movieid").getAsString() + "?showinfo=true"));
+            detailsIntent.setAction(Intent.ACTION_VIEW);
+            detailsIntent.setData(Uri.parse("videodb://movies/titles/" + movie.get("movieid").getAsString() + "?resume=true"));
 
-            watchNextProgram = watchNextProgramBuilder
+            watchNextProgramBuilder
                 .setPosterArtUri(
                     XBMCImageContentProvider.GetImageUri(
                         getDownloadUrl(movie.get("fanart").getAsString())))
+                .setId(id)
                 .setTitle(movie.get("title").getAsString())
                 .setDescription(movie.get("tagline").getAsString())
                 .setIntent(detailsIntent)
-                .build();
+                .setLastEngagementTimeUtcMillis(System.currentTimeMillis());
 
-            Uri watchNextProgramUri = ctx.getContentResolver().insert(TvContractCompat.WatchNextPrograms.CONTENT_URI,
-                watchNextProgram.toContentValues());
-            mWatchnextUris.add(watchNextProgramUri);
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date lastplayed =  df.parse(movie.get("lastplayed").getAsString());
+            watchNextProgramBuilder
+                .setLastEngagementTimeUtcMillis(lastplayed.getTime());
+
+            JsonObject resume = movie.getAsJsonObject("resume");
+            if (resume != null)
+            {
+              watchNextProgramBuilder
+                .setLastPlaybackPositionMillis(resume.get("position").getAsInt() * 1000)
+                .setDurationMillis(resume.get("total").getAsInt() * 1000);
+            }
+            else
+            {
+              watchNextProgramBuilder
+                .setLastPlaybackPositionMillis(0)
+                .setDurationMillis(0);
+            }
+            watchNextProgram = watchNextProgramBuilder.build();
+
+            Long watchNextId = watchNextProgram.getId();
+            if (mWatchnextUris.contains(watchNextId))
+            {
+              ctx.getContentResolver()
+                      .update(
+                              TvContractCompat.buildWatchNextProgramUri(watchNextId),
+                              watchNextProgram.toContentValues(),
+                              null,
+                              null);
+              newWatchnextUris.add(watchNextId);
+            }
+            else
+            {
+              Uri watchNextProgramUri = ctx.getContentResolver()
+                      .insert(
+                              TvContractCompat.WatchNextPrograms.CONTENT_URI,
+                              watchNextProgram.toContentValues());
+              newWatchnextUris.add(watchNextId);
+            }
 
             ++count;
           } catch (Exception e)
@@ -694,6 +722,13 @@ public class XBMCJsonRPC
             continue;
           }
         }
+        for(Long id : mWatchnextUris)
+        {
+          if (!newWatchnextUris.contains(id))
+            ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(id),
+                null, null);
+        }
+        mWatchnextUris = newWatchnextUris;
       } catch (Exception e)
       {
         e.printStackTrace();
