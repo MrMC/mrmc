@@ -86,23 +86,34 @@ void CHueServices::RevertLight(int lightid, bool force)
   if (!force && !m_bridge->getLight(lightid)->isOn() && !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
     return;
 
+  CLog::Log(LOGINFO, "Hue - Restoring Light (%d)", lightid);
+
   uint32_t dur = uint32_t(CSettings::GetInstance().GetNumber(CSettings::SETTING_SERVICES_HUE_DIMDUR) * 1000);
   m_bridge->getLight(lightid)->restoreState(dur);
+}
+
+void CHueServices::SetLight(int lightid, float fx, float fy, float fY)
+{
+  if (!m_bridge->getLight(lightid)->isOn() && !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
+    return;
+  m_bridge->getLight(lightid)->setColorXYB(fx, fy, uint8_t(fY * 255), 0);
 }
 
 void CHueServices::SetLight(int lightid, float fR, float fG, float fB, float fL)
 {
   if (!m_bridge->getLight(lightid)->isOn() && !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
     return;
-  m_bridge->getLight(lightid)->setColorRGBL(fR, fG, fB, fL, 0);
+  m_bridge->getLight(lightid)->setColorRGBL(fR, fG, fB, uint8_t(fL * 255), 0);
 }
 
-void CHueServices::DimLight(int lightid, int mode)
+void CHueServices::DimLight(int lightid, int status)
 {
   if (!m_bridge->getLight(lightid)->isOn() && !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
     return;
 
-  switch (mode)
+  CLog::Log(LOGINFO, "Hue - Dimming light(%d) status(%d)", lightid, status);
+
+  switch (status)
   {
     case STATUS_PLAY:
       m_bridge->getLight(lightid)->setBrightness(
@@ -329,15 +340,12 @@ void CHueServices::Process()
 
         fY = (0.2126f *fR + 0.7152f *fG + 0.0722f *fB);
         // map luma
-        if (fY > 0.05f)  // Black stays black
-        {
-          fY = fY * (maxL - minL) + minL;
-        }
+        fY = fY * (maxL - minL) + minL;
 
         for (auto& light : m_bridge->getLights())
         {
           if (light.second->getMode() == MODE_COLOR)
-            SetLight(light.first, fR, fG, fB, fY);
+            SetLight(light.first, fx, fy, fY);
         }
         if (m_bridge->isStreaming())
           m_bridge->streamXYB(fx, fy, fY);
@@ -423,7 +431,7 @@ bool CHueServices::SignIn()
   if (curBridge.getIp().empty() && bridges.size() == 1)
     curBridge = bridges[0];
 
-  if (!curBridge.Pair())
+  if (!curBridge.pair())
   {
     CLog::Log(LOGERROR, "Hue: Unable to pair with bridge at %s", curBridge.getIp().c_str());
     return false;
@@ -511,27 +519,30 @@ bool CHueServices::InitConnection()
     int id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1ID);
     lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1MODE));
     lights[id]->saveState();
+    CLog::Log(LOGINFO, "Hue - Light (%d) configured as %d", id, lights[id]->getMode());
   }
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2ID) > 0)
   {
     int id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2ID);
     lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2MODE));
     lights[id]->saveState();
+    CLog::Log(LOGINFO, "Hue - Light (%d) configured as %d", id, lights[id]->getMode());
   }
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3ID) > 0)
   {
     int id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3ID);
     lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3MODE));
     lights[id]->saveState();
+    CLog::Log(LOGINFO, "Hue - Light (%d) configured as %d", id, lights[id]->getMode());
   }
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4ID) > 0)
   {
     int id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4ID);
     lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4MODE));
     lights[id]->saveState();
+    CLog::Log(LOGINFO, "Hue - Light (%d) configured as %d", id, lights[id]->getMode());
   }
 
-  CLog::Log(LOGINFO, "%s - Connected to Hue Bridge", __FUNCTION__);
   return true;
 }
 

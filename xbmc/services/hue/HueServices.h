@@ -64,8 +64,9 @@ private:
   bool SignOut();
   bool InitConnection();
   void RevertLight(int lightid, bool force=false);
+  void SetLight(int lightid, float fx, float fy, float fY);
   void SetLight(int lightid, float fR, float fG, float fB, float fL);
-  void DimLight(int lightid, int mode);
+  void DimLight(int lightid, int status);
 
   uint8_t m_oldstatus;
   std::atomic<uint8_t> m_status;

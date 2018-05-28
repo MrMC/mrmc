@@ -8141,10 +8141,6 @@ msgctxt "#14222"
 msgid "Undimmed brightness"
 msgstr ""
 
-msgctxt "#14223"
-msgid "Dimming"
-msgstr ""
-
 msgctxt "#14224"
 msgid "Ambilight minimum brightness"
 msgstr ""

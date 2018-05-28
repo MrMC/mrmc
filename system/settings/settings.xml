@@ -2895,7 +2895,7 @@
           </constraints>
         </setting>
       </group>
-      <group id="5" label="14226">
+      <group id="2" label="14226">
         <setting id="hue.streamgroup" type="integer" label="14230">
           <level>0</level>
           <default>0</default>
@@ -3046,8 +3046,6 @@
           <visible>false</visible>
           <control type="toggle"/>
         </setting>
-      </group>
-      <group id="4" label="14223">
         <setting id="hue.dimbright" type="integer" label="14218">
           <level>0</level>
           <default>10</default>

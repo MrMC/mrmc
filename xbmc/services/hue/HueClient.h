@@ -41,7 +41,7 @@ public:
   uint8_t getBrightness();
 
   bool setColorHSV(uint16_t hue, uint8_t sat, uint8_t bri, uint32_t duration);
-  bool setColorRGBL(float r, float g, float b, float l, uint32_t duration);
+  bool setColorRGBL(float r, float g, float b, uint8_t l, uint32_t duration);
   bool setColorXYB(float x, float y, uint8_t bri, uint32_t duration);
   bool setBrightness(uint8_t bri, uint32_t duration);
 
@@ -90,7 +90,8 @@ public:
 
   static std::vector<CHueBridge> discover();
 
-  bool Pair();
+  bool pair();
+  void logConfig();
   std::vector< std::pair<std::string, int> > getStreamGroupsNames();
   std::vector< std::pair<std::string, int> > getLightsNames();
   std::map<int, std::shared_ptr<CHueLight>>& getLights();

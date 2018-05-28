@@ -64,6 +64,7 @@ CHueBridge::CHueBridge(std::string ip, std::string username, std::string clientk
   , m_streamingbuffer(nullptr)
   , m_streamingbuffersize(0)
 {
+  logConfig();
   refreshLightsState();
   refreshGroupsState();
   m_sslbridge = this;
@@ -110,7 +111,7 @@ std::vector<CHueBridge> CHueBridge::discover()
   return bridges;
 }
 
-bool CHueBridge::Pair()
+bool CHueBridge::pair()
 {
   bool ret = true;
 
@@ -190,6 +191,27 @@ bool CHueBridge::Pair()
   waitPinDialog->Close();
 
   return ret;
+}
+
+void CHueBridge::logConfig()
+{
+  if (m_username.empty())
+    return;
+
+  std::string sanswer;
+  CVariant tmpV;
+  XFILE::CCurlFile curlf;
+
+  if (!curlf.Get(getUsernameUrl() + "/config", sanswer))
+    return;
+  if (!CJSONVariantParser::Parse(sanswer, tmpV))
+    return;
+
+  CLog::Log(LOGINFO, "Hue - Bridge connection: model (%s) sw(%s) api(%s)",
+      tmpV["modelid"].asString().c_str(),
+      tmpV["swversion"].asString().c_str(),
+      tmpV["apiversion"].asString().c_str()
+      );
 }
 
 void CHueBridge::refreshGroupsState()
@@ -750,7 +772,7 @@ bool CHueLight::setColorXYB(float x, float y, uint8_t bri, uint32_t duration)
   return ret;
 }
 
-bool CHueLight::setColorRGBL(float r, float g, float b, float l, uint32_t duration)
+bool CHueLight::setColorRGBL(float r, float g, float b, uint8_t l, uint32_t duration)
 {
   float x, y;
   CHueUtils::rgb2xy(r, g, b, x, y);
@@ -775,20 +797,44 @@ bool CHueLight::setBrightness(uint8_t bri, uint32_t duration)
 
 void CHueLight::saveState()
 {
-  m_savstate = m_state;
+  m_savstate["on"] = m_state["on"];
+  m_savstate["bri"] = m_state["bri"];
+  m_savstate["hue"] = m_state["hue"];
+  m_savstate["sat"] = m_state["sat"];
+
+  CLog::Log(LOGINFO, "Hue - Light (%s) savestate: on (%s) h(%ld) s(%ld) b(%ld)", m_sid.c_str(),
+      m_savstate["on"].asBoolean() ? "true" : "false",
+      m_savstate["hue"].asInteger(),
+      m_savstate["sat"].asInteger(),
+      m_savstate["bri"].asInteger()
+      );
 }
 
 bool CHueLight::restoreState(uint32_t dur)
 {
-  m_state = m_savstate;
-  CVariant request = m_state;
+  CVariant request;
   request["transitiontime"] = int(dur/100);
-  request["hue"] = m_state["hue"];
-  request["sat"] =  m_state["sat"];
-  request["bri"] =  m_state["bri"];
-  request["on"] = m_state["on"];
+  request["hue"] = m_savstate["hue"];
+  request["sat"] =  m_savstate["sat"];
+  request["bri"] =  m_savstate["bri"];
+  request["on"] = m_savstate["on"];
 
-  return m_bridge->putLightStateRequest(m_sid, request);
+  bool ret;
+  if((ret = m_bridge->putLightStateRequest(m_sid, request)))
+  {
+    m_state["on"] = m_savstate["on"];
+    m_state["bri"] = m_savstate["bri"];
+    m_state["hue"] = m_savstate["hue"];
+    m_state["sat"] = m_savstate["sat"];
+
+    CLog::Log(LOGINFO, "Hue - Light (%s) restorestate: on (%s) h(%ld) s(%ld) b(%ld)", m_sid.c_str(),
+        m_savstate["on"].asBoolean() ? "true" : "false",
+        m_savstate["hue"].asInteger(),
+        m_savstate["sat"].asInteger(),
+        m_savstate["bri"].asInteger()
+        );
+  }
+  return ret;
 }
 
 int CHueLight::getMode() const
