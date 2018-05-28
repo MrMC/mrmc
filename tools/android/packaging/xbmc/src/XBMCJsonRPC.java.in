@@ -27,6 +27,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.support.media.tv.TvContractCompat;
+import android.support.media.tv.WatchNextProgram;
 import android.util.Log;
 
 import @APP_PACKAGE@.content.XBMCYTDLContentProvider;
@@ -68,6 +70,7 @@ public class XBMCJsonRPC
 
   private String m_xbmc_web_url = "http://localhost:8080";
   private java.util.HashSet<Integer> mRecomendationIds = new java.util.HashSet<Integer>();
+  private java.util.HashSet<Uri> mWatchnextUris = new java.util.HashSet<Uri>();
 
   private int MAX_RECOMMENDATIONS = 3;
 
@@ -124,6 +127,9 @@ public class XBMCJsonRPC
 
   private String RETRIEVE_FILE_ITEMS =
           "{ \"jsonrpc\": \"2.0\", \"method\": \"Files.GetDirectory\", \"params\": { \"directory\" : \"%s\" }, \"id\": \"%s\" }";
+
+  private String INPROGRESS_MOVIES_JSON =
+      "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", \"params\": { \"filter\": {\"field\": \"inprogress\", \"operator\": \"true\", \"value\": \"\"}, \"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\"], \"sort\": { \"order\": \"descending\", \"method\": \"lastplayed\", \"ignorearticle\": true } }, \"id\": \"1\"}\n";
 
   private NotificationManager mNotificationManager;
 
@@ -626,6 +632,74 @@ public class XBMCJsonRPC
     }
 
     return mc;
+  }
+
+  public void updateWatchnext(Context ctx)
+  {
+    WatchNextProgram watchNextProgram;
+    for(Uri uri : mWatchnextUris)
+    {
+      try (Cursor cursor = ctx.getContentResolver().query(uri, null, null, null, null))
+      {
+        if (cursor != null && cursor.getCount() != 0)
+        {
+          cursor.moveToNext();
+          watchNextProgram = WatchNextProgram.fromCursor(cursor);
+          ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(watchNextProgram.getId()),
+              null, null);
+        }
+      }
+    }
+    mWatchnextUris.clear();
+
+    WatchNextProgram.Builder watchNextProgramBuilder = new WatchNextProgram.Builder()
+        .setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_CONTINUE)
+        .setType(TvContractCompat.PreviewPrograms.TYPE_MOVIE);
+
+    JsonObject rep = request_object(INPROGRESS_MOVIES_JSON);
+    if (rep != null && rep.has("result"))
+    {
+      try
+      {
+        JsonObject results = rep.getAsJsonObject("result");
+        JsonArray movies = results.get("movies").getAsJsonArray();
+
+        int count = 0;
+        for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i)
+        {
+          try
+          {
+            JsonObject movie = movies.get(i).getAsJsonObject();
+
+            Intent detailsIntent = new Intent(ctx, Splash.class);
+            detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
+            detailsIntent.setData(Uri.parse("videodb://movies/titles/" + movie.get("movieid").getAsString() + "?showinfo=true"));
+
+            watchNextProgram = watchNextProgramBuilder
+                .setPosterArtUri(
+                    XBMCImageContentProvider.GetImageUri(
+                        getDownloadUrl(movie.get("fanart").getAsString())))
+                .setTitle(movie.get("title").getAsString())
+                .setDescription(movie.get("tagline").getAsString())
+                .setIntent(detailsIntent)
+                .build();
+
+            Uri watchNextProgramUri = ctx.getContentResolver().insert(TvContractCompat.WatchNextPrograms.CONTENT_URI,
+                watchNextProgram.toContentValues());
+            mWatchnextUris.add(watchNextProgramUri);
+
+            ++count;
+          } catch (Exception e)
+          {
+            continue;
+          }
+        }
+      } catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
+
   }
 
   public void updateLeanback(Context ctx)

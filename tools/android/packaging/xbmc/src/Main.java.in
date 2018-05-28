@@ -102,6 +102,23 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     }
   };
 
+  private Runnable watchnextUpdateRunnable = new Runnable()
+  {
+    @Override
+    public void run()
+    {
+      Log.d(TAG, "Updating watch next");
+      new Thread()
+      {
+        public void run()
+        {
+          mJsonRPC.updateWatchnext(Main.this);
+        }
+      }.start();
+      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60*60) * 1000);
+    }
+  };
+
   public Main()
   {
     super();
@@ -315,7 +332,11 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     {
       // Leanback
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+      {
         TvUtil.scheduleSyncingChannel(this);
+        handler.removeCallbacks(watchnextUpdateRunnable);
+        handler.postDelayed(watchnextUpdateRunnable, 1000);
+      }
       else
       {
         handler.removeCallbacks(leanbackUpdateRunnable);
@@ -346,6 +367,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   {
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     handler.removeCallbacks(leanbackUpdateRunnable);
+    handler.removeCallbacks(watchnextUpdateRunnable);
 
     new Thread() {
       public void run()
