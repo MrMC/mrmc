@@ -9,6 +9,7 @@ CPU_OBJ    = cpu-features.o
 INCLUDES += -I$(GLUEPATH) -I$(CPUPATH)
 
 SRCS       = android_main.cpp
+SRCS      += android_onload.cpp
 SRCS      += AndroidFeatures.cpp
 SRCS      += AndroidKey.cpp
 SRCS      += AndroidTouch.cpp
