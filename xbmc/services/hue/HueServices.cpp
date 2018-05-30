@@ -117,14 +117,14 @@ void CHueServices::DimLight(int lightid, int status)
   {
     case STATUS_PLAY:
       m_bridge->getLight(lightid)->setBrightness(
-            uint8_t(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_DIMBRIGHT) * 254 / 100),
+            uint8_t(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_DIMBRIGHT) * 255 / 100),
             uint32_t(CSettings::GetInstance().GetNumber(CSettings::SETTING_SERVICES_HUE_DIMDUR) * 1000.0)
             );
       break;
     case STATUS_PAUSE:
       if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_DIMOVERPAUSEDBRIGHT))
         m_bridge->getLight(lightid)->setBrightness(
-              uint8_t(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_DIMPAUSEDBRIGHT) * 254 / 100),
+              uint8_t(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_DIMPAUSEDBRIGHT) * 255 / 100),
               uint32_t(CSettings::GetInstance().GetNumber(CSettings::SETTING_SERVICES_HUE_DIMDUR) * 1000.0)
               );
       else
@@ -133,7 +133,7 @@ void CHueServices::DimLight(int lightid, int status)
     case STATUS_STOP:
       if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_DIMOVERUNBRIGHT))
         m_bridge->getLight(lightid)->setBrightness(
-              uint8_t(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_DIMUNBRIGHT) * 254 / 100),
+              uint8_t(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_DIMUNBRIGHT) * 255 / 100),
               uint32_t(CSettings::GetInstance().GetNumber(CSettings::SETTING_SERVICES_HUE_DIMDUR) * 1000.0)
               );
       else

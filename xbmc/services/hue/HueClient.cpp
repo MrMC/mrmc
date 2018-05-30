@@ -731,7 +731,7 @@ uint8_t CHueLight::getBrightness()
 bool CHueLight::setColorHSV(uint16_t hue, uint8_t sat, uint8_t bri, uint32_t duration)
 {
   CVariant request;
-  request["on"] = true;
+  request["on"] = (bri > 0 ? true : false);
   request["hue"] = hue;
   request["sat"] = sat;
   request["bri"] = bri;
@@ -740,7 +740,6 @@ bool CHueLight::setColorHSV(uint16_t hue, uint8_t sat, uint8_t bri, uint32_t dur
   bool ret;
   if((ret = m_bridge->putLightStateRequest(m_sid, request)))
   {
-    m_state["on"] = true;
     m_state["hue"] = hue;
     m_state["sat"] = sat;
     m_state["bri"] = bri;
@@ -756,7 +755,7 @@ bool CHueLight::setColorXYB(float x, float y, uint8_t bri, uint32_t duration)
   xyArray.push_back(x);
   xyArray.push_back(y);
 
-  request["on"] = true;
+  request["on"] = (bri > 0 ? true : false);
   request["xy"] = xyArray;
   request["bri"] = bri;
   request["transitiontime"] = int(duration/100);
@@ -764,7 +763,6 @@ bool CHueLight::setColorXYB(float x, float y, uint8_t bri, uint32_t duration)
   bool ret;
   if((ret = m_bridge->putLightStateRequest(m_sid, request)))
   {
-    m_state["on"] = true;
     m_state["xy"][0] = x;
     m_state["xy"][1] = y;
     m_state["bri"] = bri;
@@ -782,14 +780,13 @@ bool CHueLight::setColorRGBL(float r, float g, float b, uint8_t l, uint32_t dura
 bool CHueLight::setBrightness(uint8_t bri, uint32_t duration)
 {
   CVariant request;
-  request["on"] = true;
+  request["on"] = (bri > 0 ? true : false);
   request["bri"] = bri;
   request["transitiontime"] = int(duration/100);
 
   bool ret;
   if((ret = m_bridge->putLightStateRequest(m_sid, request)))
   {
-    m_state["on"] = true;
     m_state["bri"] = bri;
   }
   return ret;
