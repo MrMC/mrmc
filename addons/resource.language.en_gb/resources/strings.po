@@ -8166,7 +8166,7 @@ msgid "Force lights ON"
 msgstr ""
 
 msgctxt "#14230"
-msgid "Entertainement group"
+msgid "Entertainment group"
 msgstr ""
 
 msgctxt "#14231"
