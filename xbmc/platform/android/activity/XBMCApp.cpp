@@ -1266,11 +1266,18 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   CXBMCApp::android_printf("-- targetFile: %s", targetFile.c_str());
   if (action == "android.intent.action.VIEW")
   {
-    CFileItem* item = new CFileItem(targetFile, false);
+    CURL targeturl(targetFile);
+    bool resume = false;
+    if (targeturl.GetOption("resume") == "true")
+      resume = true;
+
+    CFileItem* item = new CFileItem(targeturl.GetWithoutOptions(), false);
     if (item->IsVideoDb())
     {
       *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
       item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      if (resume)
+        item->m_lStartOffset = STARTOFFSET_RESUME;
     }
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
   }
