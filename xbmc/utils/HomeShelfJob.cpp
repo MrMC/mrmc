@@ -245,8 +245,8 @@ bool CHomeShelfJob::UpdateVideo()
   else
   {
     // get recently added TVSHOWS and MOVIES for chosen server in Home Screen, get 20 items as its not as slow as it was before
-    CServicesManager::GetInstance().GetRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS*2, homeScreenWatched, serverType, serverUUID);
-    CServicesManager::GetInstance().GetRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS*2, homeScreenWatched, serverType, serverUUID);
+    CServicesManager::GetInstance().GetRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS*2, true, serverType, serverUUID);
+    CServicesManager::GetInstance().GetRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS*2, true, serverType, serverUUID);
     CServicesManager::GetInstance().GetInProgressShows(*m_HomeShelfTVPR, NUM_ITEMS*2, serverType, serverUUID);
     CServicesManager::GetInstance().GetInProgressMovies(*m_HomeShelfMoviesPR, NUM_ITEMS*2, serverType, serverUUID);
   }

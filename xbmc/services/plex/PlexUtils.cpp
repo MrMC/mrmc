@@ -428,7 +428,7 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
   StringUtils::TrimRight(fileName, "all");
   curl.SetFileName(fileName + "recentlyAdded");
   if (!watched)
-    curl.SetOption("unwatched","1");
+    curl.SetProtocolOption("unwatched","1");
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
   
   CVariant variant = GetPlexCVariant(curl.Get());
