@@ -76,6 +76,9 @@ CHueBridge::~CHueBridge()
 
 std::vector<CHueBridge> CHueBridge::discover()
 {
+  XFILE::CCurlFile curlf;
+
+  // SSDP
   std::vector<CHueBridge> bridges;
   struct upnp_device devices[SSDP_MAX];
   int found = ssdp_discovery(AF_INET, SSDP_CAT_BASIC, devices);
@@ -96,16 +99,42 @@ std::vector<CHueBridge> CHueBridge::discover()
       if(std::find_if(bridges.begin(), bridges.end(), [&](const CHueBridge &item){return item.getIp() == ip;}) != bridges.end())
         continue;
 
-      XFILE::CCurlFile curlf;
       std::string response;
       curlf.Get("http://" + ip + "/description.xml", response);
 
       std::smatch matchResult;
       if (std::regex_search(response, matchResult, serialRegex))
         bridges.push_back(CHueBridge(ip, matchResult[1].str()));
-
-
     }
+  }
+
+  if (!bridges.empty())
+    return bridges;
+
+  //N-UPNP
+  std::string sanswer;
+  CVariant tmpV;
+  if (!curlf.Get("https://www.meethue.com/api/nupnp", sanswer))
+    return bridges;
+  if (!CJSONVariantParser::Parse(sanswer, tmpV))
+    return bridges;
+  if (!tmpV.isArray())
+    return bridges;
+
+  for (CVariant::iterator_array it = tmpV.begin_array(); it != tmpV.end_array(); ++it)
+  {
+    if (!it->isObject())
+      continue;
+
+    if (!it->isMember("internalipaddress"))
+      continue;
+
+    std::string ip = (*it)["internalipaddress"].asString();
+    std::string mac;
+    if (!it->isMember("macaddress"))
+      mac = (*it)["macaddress"].asString();
+
+    bridges.push_back(CHueBridge(ip, mac));
   }
 
   return bridges;
@@ -799,7 +828,7 @@ void CHueLight::saveState()
   m_savstate["hue"] = m_state["hue"];
   m_savstate["sat"] = m_state["sat"];
 
-  CLog::Log(LOGINFO, "Hue - Light (%s) savestate: on (%s) h(%ld) s(%ld) b(%ld)", m_sid.c_str(),
+  CLog::Log(LOGINFO, "Hue - Light (%s) savestate: on (%s) h(%lld) s(%lld) b(%lld)", m_sid.c_str(),
       m_savstate["on"].asBoolean() ? "true" : "false",
       m_savstate["hue"].asInteger(),
       m_savstate["sat"].asInteger(),
@@ -824,7 +853,7 @@ bool CHueLight::restoreState(uint32_t dur)
     m_state["hue"] = m_savstate["hue"];
     m_state["sat"] = m_savstate["sat"];
 
-    CLog::Log(LOGINFO, "Hue - Light (%s) restorestate: on (%s) h(%ld) s(%ld) b(%ld)", m_sid.c_str(),
+    CLog::Log(LOGINFO, "Hue - Light (%s) restorestate: on (%s) h(%lld) s(%lld) b(%lld)", m_sid.c_str(),
         m_savstate["on"].asBoolean() ? "true" : "false",
         m_savstate["hue"].asInteger(),
         m_savstate["sat"].asInteger(),
