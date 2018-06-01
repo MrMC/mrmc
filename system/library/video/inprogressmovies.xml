@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="4" type="folder" visible="Library.HasContent(Movies) | Library.HasServices">
+<node order="4" type="filter" visible="Library.HasContent(Movies)">
   <label>627</label>
   <icon>DefaultInProgressShows.png</icon>
   <content>movies</content>
-  <path>services://movies/inprogressmovies</path>
+  <rule field="inprogress" operator="true" />
 </node>
