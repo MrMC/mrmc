@@ -201,6 +201,8 @@ void CGUIDialogOSDSettings::SetupButtons()
         lang = info.name;
       if (info.forced)
         lang = lang + " (forced)";
+      if (lang.empty())
+        lang = g_localizeStrings.Get(1446);
       m_subButtons.Add(iStream + m_subsButtonOffset, lang);
     }
     

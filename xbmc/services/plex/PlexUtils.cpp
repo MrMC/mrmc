@@ -2175,19 +2175,16 @@ void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const CVariant &media
           continue;
         const auto stream = *variantIt;
 
-        // "codecID" indicates that subtitle file is internal, we ignore it as our player will pick that up anyway
-        bool internalSubtitle = stream.isMember("codecID");
-        if (!internalSubtitle && stream["streamType"].asInteger() == 3)
+        // "key" indicates that subtitle file is external, we only need external as our player will pick up internal
+        bool externalSubtitle = stream.isMember("key");
+        if (externalSubtitle && stream["streamType"].asInteger() == 3)
         {
           CURL plex(url);
           std::string id    = stream["id"].asString();
           std::string ext   = stream["format"].asString();
           std::string codec = stream["codec"].asString();
-          std::string filename;
-          if(ext.empty() && codec.empty())
-            filename = StringUtils::Format("library/streams/%s", id.c_str());
-          else
-            filename = StringUtils::Format("library/streams/%s.%s", id.c_str(), ext.empty() ? codec.c_str():ext.c_str());
+          std::string filename = stream["key"].asString();
+          removeLeadingSlash(filename);
           plex.SetFileName(filename);
           std::string propertyKey = StringUtils::Format("subtitle:%i", iSubtile);
           item.SetProperty(propertyKey, plex.Get());
