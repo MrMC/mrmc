@@ -376,18 +376,20 @@ void CHueServices::Process()
           g_renderManager.ReleaseRenderCapture(capture);
           capture = nullptr;
         }
-
-        m_bridge->stopStreaming();
-        for (auto& light : m_bridge->getLights())
+        if (m_bridge)
         {
-          if (light.second->getMode() == MODE_DIM)
-            DimLight(light.first, curstatus);
-          else if (light.second->getMode() == MODE_STREAM)
-            RevertLight(light.first, true);
-          else if (light.second->getMode() != MODE_IGNORE)
-            RevertLight(light.first);
+          m_bridge->stopStreaming();
+          for (auto& light : m_bridge->getLights())
+          {
+            if (light.second->getMode() == MODE_DIM)
+              DimLight(light.first, curstatus);
+            else if (light.second->getMode() == MODE_STREAM)
+              RevertLight(light.first, true);
+            else if (light.second->getMode() != MODE_IGNORE)
+              RevertLight(light.first);
+          }
+          m_bridge.reset();
         }
-        m_bridge.reset();
 
         m_oldstatus = STATUS_STOP;
       }
