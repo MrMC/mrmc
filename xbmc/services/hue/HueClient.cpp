@@ -740,7 +740,7 @@ bool CHueGroup::setOn(bool val)
   bool ret;
   if((ret = m_bridge->putGroupStateRequest(m_gid, request)))
   {
-    CLog::Log(LOGINFO, "Hue - Group (%s) on (%s)", val ? "true" : "false");
+    CLog::Log(LOGINFO, "Hue - Group (%s) on (%s)", m_gid.c_str(), val ? "true" : "false");
     m_state["on"] = val;
   }
   return ret;
@@ -790,7 +790,7 @@ bool CHueLight::setOn(bool val)
   bool ret;
   if((ret = m_bridge->putLightStateRequest(m_sid, request)))
   {
-    CLog::Log(LOGINFO, "Hue - Light (%s) on (%s)", val ? "true" : "false");
+    CLog::Log(LOGINFO, "Hue - Light (%s) on (%s)", m_sid.c_str(), val ? "true" : "false");
     m_state["on"] = val;
   }
   return ret;
