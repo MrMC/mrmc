@@ -271,7 +271,7 @@ void CHueServices::Process()
         int streamgroup = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_STREAMGROUPID);
         if (streamgroup > 0
               && !m_bridge->getClientkey().empty()
-              && (m_bridge->getGroup(streamgroup)->isAnyOn() || CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_FORCEON))
+              && (m_bridge->getGroup(streamgroup)->isAnyOn() || CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
               && m_bridge->startStreaming(streamgroup)
               )
         {
