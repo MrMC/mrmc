@@ -370,12 +370,17 @@ int CHueBridge::dtls_InitContext(SDTLSParams* params)
 {
   int result = 0;
 
+  // Register the error strings for libcrypto & libssl
+  SSL_load_error_strings ();
+  // Register the available ciphers and digests
+  SSL_library_init ();
+
   // Create a new context using DTLS
   params->ctx = SSL_CTX_new(DTLSv1_2_client_method());
   if (!params->ctx)
   {
     ERR_print_errors_fp (stdout);
-    CLog::Log(LOGERROR, "%s - Error: cannot create SSL_CTX", __FUNCTION__);
+    CLog::Log(LOGERROR, "Hue %s - Error: cannot create SSL_CTX", __FUNCTION__);
     return -1;
   }
 
@@ -384,7 +389,7 @@ int CHueBridge::dtls_InitContext(SDTLSParams* params)
   if (result != 1)
   {
     ERR_print_errors_fp (stdout);
-    CLog::Log(LOGERROR, "%s - Error: cannot set the cipher list", __FUNCTION__);
+    CLog::Log(LOGERROR, "Hue %s - Error: cannot set the cipher list", __FUNCTION__);
     return -2;
   }
 
@@ -453,7 +458,6 @@ bool CHueBridge::initDTLSConnection()
       CLog::Log(LOGERROR, "%s - Unable to connect to the DTLS server.", __FUNCTION__);
       return false;
   }
-  CLog::Log(LOGINFO, "%s - Connected to Hue streaming API", __FUNCTION__);
   return true;
 }
 
@@ -594,6 +598,8 @@ bool CHueBridge::startStreaming(int streamgroupid)
   m_streamingbuffer = (char *)malloc(m_streamingbuffersize);
   memcpy(m_streamingbuffer, header, sizeof (SStreamPacketHeader));
 
+  CLog::Log(LOGINFO, "Hue - Ready to stream on group %d", m_streamgroupid);
+
   return true;
 }
 
@@ -692,7 +698,22 @@ bool CHueBridge::putLightStateRequest(std::string sid, const CVariant& request)
   XFILE::CCurlFile curlf;
   if (!curlf.Put(getUsernameUrl() + "/lights/" + sid + "/state", srequest, sanswer))
   {
-    CLog::Log(LOGERROR, "Hue - Error in %s", __FUNCTION__);
+    CLog::Log(LOGERROR, "Hue - Error in %s: %s", __FUNCTION__, sanswer.c_str());
+    return false;
+  }
+
+  return checkReply(sid, srequest, sanswer);
+}
+
+bool CHueBridge::putGroupStateRequest(std::string sid, const CVariant& request)
+{
+  std::string srequest, sanswer;
+  CJSONVariantWriter::Write(request, srequest, true);
+
+  XFILE::CCurlFile curlf;
+  if (!curlf.Put(getUsernameUrl() + "/groups/" + sid + "/action", srequest, sanswer))
+  {
+    CLog::Log(LOGERROR, "Hue - Error in %s: %s", __FUNCTION__, sanswer.c_str());
     return false;
   }
 
@@ -709,6 +730,20 @@ CHueGroup::CHueGroup(std::string gid, CHueBridge* bridge, CVariant state)
 bool CHueGroup::isAnyOn()
 {
   return m_state["any_on"].asBoolean();
+}
+
+bool CHueGroup::setOn(bool val)
+{
+  CVariant request;
+  request["on"] = val;
+
+  bool ret;
+  if((ret = m_bridge->putGroupStateRequest(m_gid, request)))
+  {
+    CLog::Log(LOGINFO, "Hue - Group (%s) on (%s)", val ? "true" : "false");
+    m_state["on"] = val;
+  }
+  return ret;
 }
 
 void CHueGroup::refreshState()
@@ -742,9 +777,23 @@ CHueLight::CHueLight(std::string sid, CHueBridge* bridge, CVariant state)
 {
 }
 
-bool CHueLight::isOn()
+bool CHueLight::isOn() const
 {
   return m_state["on"].asBoolean();
+}
+
+bool CHueLight::setOn(bool val)
+{
+  CVariant request;
+  request["on"] = val;
+
+  bool ret;
+  if((ret = m_bridge->putLightStateRequest(m_sid, request)))
+  {
+    CLog::Log(LOGINFO, "Hue - Light (%s) on (%s)", val ? "true" : "false");
+    m_state["on"] = val;
+  }
+  return ret;
 }
 
 std::pair<uint16_t, uint8_t> CHueLight::getColorHueSaturation()

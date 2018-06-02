@@ -35,7 +35,8 @@ class CHueLight
 public:
   CHueLight(std::string sid, CHueBridge* bridge, CVariant state);
 
-  bool isOn();
+  bool isOn() const;
+  bool setOn(bool val);
 
   std::pair<uint16_t, uint8_t> getColorHueSaturation();
   uint8_t getBrightness();
@@ -67,6 +68,7 @@ public:
   CHueGroup(std::string gid, CHueBridge* bridge, CVariant state);
 
   bool isAnyOn();
+  bool setOn(bool val);
 
 protected:
   std::string m_gid;
@@ -167,4 +169,5 @@ protected:
   std::string getUrl();
   std::string getUsernameUrl();
   bool putLightStateRequest(std::string sid, const CVariant& request);
+  bool putGroupStateRequest(std::string sid, const CVariant& request);
 };

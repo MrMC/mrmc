@@ -277,8 +277,9 @@ void CHueServices::Process()
         {
           for (CVariant::iterator_array it = m_bridge->getStreamingLights().begin_array(); it != m_bridge->getStreamingLights().end_array(); ++it)
           {
-            m_bridge->getLight(std::stoi(it->asString()))->setMode(MODE_STREAM);
-            m_bridge->getLight(std::stoi(it->asString()))->saveState();
+            std::shared_ptr<CHueLight> light = m_bridge->getLight(std::stoi(it->asString()));
+            light->setMode(MODE_STREAM);
+            light->saveState();
           }
         }
         minL = float(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_MINBRIGHT)) / 100.0f;
