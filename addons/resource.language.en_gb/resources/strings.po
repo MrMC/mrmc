@@ -8181,6 +8181,10 @@ msgctxt "#14233"
 msgid "100% is each transition is sent; Lesser values avoid flickering"
 msgstr ""
 
+msgctxt "#14234"
+msgid "Force lights ON only after sunset"
+msgstr ""
+
 #. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15004"

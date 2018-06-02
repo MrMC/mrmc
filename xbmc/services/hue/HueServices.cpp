@@ -269,9 +269,12 @@ void CHueServices::Process()
           continue;
         }
         int streamgroup = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_STREAMGROUPID);
+        bool forceOn = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON);
+        bool forceOnAfterSunset = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEONAFTERSUNSET);
         if (streamgroup > 0
               && !m_bridge->getClientkey().empty()
-              && (m_bridge->getGroup(streamgroup)->isAnyOn() || CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
+              && (m_bridge->getGroup(streamgroup)->isAnyOn() ||
+                  (forceOn && (!forceOnAfterSunset || (forceOnAfterSunset && !m_bridge->isDaylight()))))
               && m_bridge->startStreaming(streamgroup)
               )
         {

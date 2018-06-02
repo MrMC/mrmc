@@ -720,6 +720,28 @@ bool CHueBridge::putGroupStateRequest(std::string sid, const CVariant& request)
   return checkReply(sid, srequest, sanswer);
 }
 
+bool CHueBridge::isDaylight()
+{
+  if (m_username.empty())
+    return false;
+  
+  std::string sanswer;
+  CVariant tmpV;
+  XFILE::CCurlFile curlf;
+  
+  if (curlf.Get(getUsernameUrl() + "/sensors/1", sanswer))
+  {
+    if (CJSONVariantParser::Parse(sanswer, tmpV))
+    {
+      bool isDaylight = tmpV["state"]["daylight"].asBoolean();
+      CLog::Log(LOGINFO, "CHueBridge::isDaylight(): Is Daylight (%s)", isDaylight ? "true":"false");
+      return isDaylight;
+    }
+  }
+  CLog::Log(LOGINFO, "CHueBridge::isDaylight(): location is not setup correctly");
+  return false;
+}
+
 CHueGroup::CHueGroup(std::string gid, CHueBridge* bridge, CVariant state)
   : m_gid(gid)
   , m_bridge(bridge)

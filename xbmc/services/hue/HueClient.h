@@ -116,6 +116,7 @@ public:
   CVariant& getStreamingLights() { return m_streaminglights; }
   bool streamXYB(float x, float y, float B);
   bool streamRGBL(float r, float g, float b, float l);
+  bool isDaylight();
 
 protected:
   struct SDTLSParams

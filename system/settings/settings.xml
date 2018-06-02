@@ -2876,6 +2876,14 @@
           <default>false</default>
           <control type="toggle"/>
         </setting>
+        <setting id="hue.forceonaftersunset" type="boolean" parent="hue.forceon" label="14234">
+          <level>0</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="hue.forceon">true</dependency>
+          </dependencies>
+          <control type="toggle"/>
+        </setting>
         <setting id="hue.username" type="string">
           <level>0</level>
           <visible>false</visible>
