@@ -534,6 +534,7 @@ MainController *g_xbmcController;
   CNetworkServices::GetInstance().StartZeroconf();
   CNetworkServices::GetInstance().StartPlexServices();
   CNetworkServices::GetInstance().StartLightEffectServices();
+  CNetworkServices::GetInstance().StartHueService();
 
   // wait for AE to wake
   XbmcThreads::EndTime timer(2000);
@@ -633,6 +634,7 @@ MainController *g_xbmcController;
   CNetworkServices::GetInstance().StopZeroconf();
   CNetworkServices::GetInstance().StopPlexServices();
   CNetworkServices::GetInstance().StopLightEffectServices();
+  CNetworkServices::GetInstance().StopHueService();
 
   if (m_controllerState != MC_BACKGROUND)
   {
