@@ -253,12 +253,16 @@ bool CTextureDatabase::IncrementUseCount(const CTextureDetails &details)
 
 bool CTextureDatabase::GetCachedTexture(const std::string &url, CTextureDetails &details)
 {
+  std::string textureUrl = url;
+  CURL curl(url);
+  if (curl.HasOption("url"))
+    textureUrl = curl.GetOption("url");
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-
-    std::string sql = PrepareSQL("SELECT id, cachedurl, lasthashcheck, imagehash, width, height FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1) WHERE url='%s'", url.c_str());
+    
+    std::string sql = PrepareSQL("SELECT id, cachedurl, lasthashcheck, imagehash, width, height FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1) WHERE url='%s'", textureUrl.c_str());
     m_pDS->query(sql);
     if (!m_pDS->eof())
     { // have some information
@@ -277,7 +281,7 @@ bool CTextureDatabase::GetCachedTexture(const std::string &url, CTextureDetails 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s, failed on url '%s'", __FUNCTION__, url.c_str());
+    CLog::Log(LOGERROR, "%s, failed on url '%s'", __FUNCTION__, textureUrl.c_str());
   }
   return false;
 }
@@ -355,23 +359,32 @@ bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter)
 
 bool CTextureDatabase::SetCachedTextureValid(const std::string &url, bool updateable)
 {
+  std::string textureUrl = url;
+  CURL curl(url);
+  if (curl.HasOption("url"))
+    textureUrl = curl.GetOption("url");
   std::string date = updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
-  std::string sql = PrepareSQL("UPDATE texture SET lasthashcheck='%s' WHERE url='%s'", date.c_str(), url.c_str());
+  std::string sql = PrepareSQL("UPDATE texture SET lasthashcheck='%s' WHERE url='%s'", date.c_str(), textureUrl.c_str());
   return ExecuteQuery(sql);
 }
 
 bool CTextureDatabase::AddCachedTexture(const std::string &url, const CTextureDetails &details)
 {
+  std::string textureUrl = url;
+  CURL curl(url);
+  if (curl.HasOption("url"))
+    textureUrl = curl.GetOption("url");
+  
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-
-    std::string sql = PrepareSQL("DELETE FROM texture WHERE url='%s'", url.c_str());
+    
+    std::string sql = PrepareSQL("DELETE FROM texture WHERE url='%s'", textureUrl.c_str());
     m_pDS->exec(sql);
 
     std::string date = details.updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
-    sql = PrepareSQL("INSERT INTO texture (id, url, cachedurl, imagehash, lasthashcheck) VALUES(NULL, '%s', '%s', '%s', '%s')", url.c_str(), details.file.c_str(), details.hash.c_str(), date.c_str());
+    sql = PrepareSQL("INSERT INTO texture (id, url, cachedurl, imagehash, lasthashcheck) VALUES(NULL, '%s', '%s', '%s', '%s')", textureUrl.c_str(), details.file.c_str(), details.hash.c_str(), date.c_str());
     m_pDS->exec(sql);
     int textureID = (int)m_pDS->lastinsertid();
 
@@ -381,7 +394,7 @@ bool CTextureDatabase::AddCachedTexture(const std::string &url, const CTextureDe
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed on url '%s'", __FUNCTION__, url.c_str());
+    CLog::Log(LOGERROR, "%s failed on url '%s'", __FUNCTION__, textureUrl.c_str());
   }
   return true;
 }
