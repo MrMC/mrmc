@@ -153,6 +153,12 @@ void CHueServices::Announce(AnnouncementFlag flag, const char *sender, const cha
     else if (strcmp(message, "OnStop") == 0)
       m_status = STATUS_STOP;
   }
+
+  if (flag == GUI && !strcmp(sender, "xbmc"))
+  {
+    if (!strcmp(message, "OnScreensaverActivated"))
+      m_status = STATUS_STOP;
+  }
 }
 
 void CHueServices::Start()
@@ -370,31 +376,18 @@ void CHueServices::Process()
         m_oldstatus = curstatus;
       }
     }
-    else
+    else   // STATUS_STOP
     {
-      if (m_oldstatus != STATUS_STOP)
+      if (curstatus != m_oldstatus)
       {
         if (capture != nullptr)
         {
           g_renderManager.ReleaseRenderCapture(capture);
           capture = nullptr;
         }
-        if (m_bridge)
-        {
-          m_bridge->stopStreaming();
-          for (auto& light : m_bridge->getLights())
-          {
-            if (light.second->getMode() == MODE_DIM)
-              DimLight(light.first, curstatus);
-            else if (light.second->getMode() == MODE_STREAM)
-              RevertLight(light.first, true);
-            else if (light.second->getMode() != MODE_IGNORE)
-              RevertLight(light.first);
-          }
-          m_bridge.reset();
-        }
+        ResetConnection(curstatus);
 
-        m_oldstatus = STATUS_STOP;
+        m_oldstatus = curstatus;
       }
       usleep(50 * 1000);
     }
@@ -406,8 +399,7 @@ void CHueServices::Process()
   {
     g_renderManager.ReleaseRenderCapture(capture);
     capture = nullptr;
-    m_bridge->stopStreaming();
-    m_bridge.reset();
+    ResetConnection(STATUS_STOP);
   }
 }
 
@@ -550,5 +542,23 @@ bool CHueServices::InitConnection()
   }
 
   return true;
+}
+
+void CHueServices::ResetConnection(int status)
+{
+  if (m_bridge)
+  {
+    m_bridge->stopStreaming();
+    for (auto& light : m_bridge->getLights())
+    {
+      if (light.second->getMode() == MODE_DIM)
+        DimLight(light.first, status);
+      else if (light.second->getMode() == MODE_STREAM)
+        RevertLight(light.first, true);
+      else if (light.second->getMode() != MODE_IGNORE)
+        RevertLight(light.first);
+    }
+    m_bridge.reset();
+  }
 }
 

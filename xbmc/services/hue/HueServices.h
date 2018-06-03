@@ -62,7 +62,10 @@ private:
 
   bool SignIn();
   bool SignOut();
+
   bool InitConnection();
+  void ResetConnection(int status);
+
   void RevertLight(int lightid, bool force=false);
   void SetLight(int lightid, float fx, float fy, float fY);
   void SetLight(int lightid, float fR, float fG, float fB, float fL);
