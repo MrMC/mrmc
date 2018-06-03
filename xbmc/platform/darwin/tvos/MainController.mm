@@ -1517,14 +1517,9 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
   int actionID;
   std::string actionName;
   // Translate using custom controller translator.
-  if (CButtonTranslator::GetInstance().TranslateCustomControllerString(
-    CFocusEngineHandler::GetInstance().GetFocusWindowID(),
-    "SiriRemote", buttonId, actionID, actionName))
-  {
-    CInputManager::GetInstance().QueueAction(CAction(actionID, 1.0f, 0.0f, actionName, 0, buttonId), true);
-  }
-  else
-    CLog::Log(LOGDEBUG, "sendButtonPressed, ERROR mapping customcontroller action. CustomController: %s %i", "SiriRemote", buttonId);
+  CKey key(buttonId, (unsigned int)0);
+  CAction action = CButtonTranslator::GetInstance().GetAction(CFocusEngineHandler::GetInstance().GetFocusWindowID(), key);
+  CInputManager::GetInstance().QueueAction(action);
 }
 
 //--------------------------------------------------------------
