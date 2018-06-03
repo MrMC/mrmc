@@ -18,11 +18,7 @@
  *
  */
 
-#if defined (TARGET_ANDROID)
-#define AC3_ENCODE_BITRATE 384000
-#else
 #define AC3_ENCODE_BITRATE 640000
-#endif
 #define DTS_ENCODE_BITRATE 1411200
 
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
