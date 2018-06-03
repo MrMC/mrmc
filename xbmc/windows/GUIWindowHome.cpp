@@ -642,7 +642,7 @@ void CGUIWindowHome::SetupServices()
       if (plexClient)
       {
         AddPlexSection(plexClient);
-        SET_CONTROL_LABEL(CONTROL_SERVER_BUTTON , plexClient->GetServerName());
+        SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , plexClient->GetServerName());
         serverSet = true;
       }
     }
@@ -655,7 +655,7 @@ void CGUIWindowHome::SetupServices()
       if (embyClient)
       {
         AddEmbySection(embyClient);
-        SET_CONTROL_LABEL(CONTROL_SERVER_BUTTON , embyClient->GetServerName());
+        SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , embyClient->GetServerName());
         serverSet = true;
       }
     }
@@ -680,7 +680,7 @@ void CGUIWindowHome::SetupServices()
       if (plexClient)
       {
         AddPlexSection(plexClient);
-        SET_CONTROL_LABEL(CONTROL_SERVER_BUTTON , plexClient->GetServerName());
+        SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , plexClient->GetServerName());
       }
     }
     else if (serverType == "emby" && CEmbyServices::GetInstance().HasClients())
@@ -693,7 +693,7 @@ void CGUIWindowHome::SetupServices()
       if (embyClient)
       {
         AddEmbySection(embyClient);
-        SET_CONTROL_LABEL(CONTROL_SERVER_BUTTON , embyClient->GetServerName());
+        SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , embyClient->GetServerName());
       }
     }
     else if (g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO))
@@ -751,7 +751,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections)
   if ((hasVideoDB || hasPictures) && (serverType == "mrmc" || serverType.empty()))
   {
     SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
-    SET_CONTROL_LABEL(CONTROL_SERVER_BUTTON , "MrMC");
+    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , "MrMC");
     bool hasMovies = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MOVIES) &&
                       !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMovieButton"));
     bool hasTvShows = (g_infoManager.GetLibraryBool(LIBRARY_HAS_TVSHOWS) &&
