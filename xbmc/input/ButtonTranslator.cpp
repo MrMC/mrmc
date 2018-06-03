@@ -532,7 +532,14 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
       {
         if (!files[fileIndex]->m_bIsFolder)
+        {
+          // set to 1 for fixing edit keymaps opps during testing
+          #if 0
+            if (StringUtils::EndsWith(files[fileIndex]->GetPath(), "gen.xml"))
+              continue;
+          #endif
           success |= LoadKeymap(files[fileIndex]->GetPath());
+        }
       }
 
       // Load mappings for any HID devices we have connected
