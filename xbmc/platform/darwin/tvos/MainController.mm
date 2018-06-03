@@ -2703,7 +2703,15 @@ CGRect debugView2;
     }
 
     if (view.type == "dialog")
-      continue;
+    {
+      CGUIControl *guiControl = (CGUIControl*)view.core;
+      if (guiControl)
+      {
+        int windowID = guiControl->GetID();
+        if (windowID != WINDOW_DIALOG_SLIDER)
+          continue;
+      }
+    }
 
     FocusLayerView *focusLayerView = nil;
     focusLayerView = [[FocusLayerView alloc] initWithFrame:view.rect];

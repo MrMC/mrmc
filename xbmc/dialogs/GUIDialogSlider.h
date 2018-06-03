@@ -28,6 +28,7 @@ class CGUIDialogSlider : public CGUIDialog
 public:
   CGUIDialogSlider();
   virtual ~CGUIDialogSlider(void);
+  virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
 

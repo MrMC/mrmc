@@ -40,6 +40,12 @@ CGUIDialogSlider::~CGUIDialogSlider(void)
 {
 }
 
+void CGUIDialogSlider::Render()
+{
+  CGUIDialog::Render();
+  AppendFocusableTracker(this);
+}
+
 bool CGUIDialogSlider::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SELECT_ITEM)
