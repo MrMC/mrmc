@@ -25,6 +25,7 @@
 #include <queue>
 
 #include "Application.h"
+#include "network/Network.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderCapture.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -187,6 +188,60 @@ bool CHueServices::IsActive()
   return IsRunning();
 }
 
+static CCriticalSection  s_settings_critical;
+static std::vector< std::pair<std::string, int> > s_settings_groups;
+static std::vector< std::pair<std::string, int> > s_settings_lights;
+
+void CHueServices::SettingOptionsHueStreamGroupsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  if (s_settings_groups.empty())
+  {
+    CSingleLock lock(s_settings_critical);
+
+    std::string ip = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_IP);
+    std::string username = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_USERNAME);
+    std::string clientkey = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_CLIENTKEY);
+
+    s_settings_groups.push_back(std::make_pair(g_localizeStrings.Get(231), 0));
+    if (!ip.empty() && !username.empty())
+    {
+      in_addr_t bridgeip = inet_addr(ip.c_str());
+      if (g_application.getNetwork().PingHost(bridgeip, 0, 1000))
+      {
+        CHueBridge bridge(ip, username, clientkey);
+        std::vector< std::pair<std::string, int> > groups = bridge.getStreamGroupsNames();
+        s_settings_groups.insert(s_settings_groups.end(), groups.begin(), groups.end());
+      }
+    }
+  }
+  list.insert(list.end(), s_settings_groups.begin(), s_settings_groups.end());
+}
+
+void CHueServices::SettingOptionsHueLightsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  if (s_settings_lights.empty())
+  {
+    CSingleLock lock(s_settings_critical);
+
+    std::string ip = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_IP);
+    std::string username = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_USERNAME);
+    std::string clientkey = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_CLIENTKEY);
+
+    s_settings_lights.push_back(std::make_pair(g_localizeStrings.Get(231), 0));
+    if (!ip.empty() && !username.empty())
+    {
+      in_addr_t bridgeip = inet_addr(ip.c_str());
+      if (g_application.getNetwork().PingHost(bridgeip, 0, 1000))
+      {
+        CHueBridge bridge(ip, username, clientkey);
+        std::vector< std::pair<std::string, int> > lights = bridge.getLightsNames();
+        s_settings_lights.insert(s_settings_lights.end(), lights.begin(), lights.end());
+      }
+    }
+  }
+  list.insert(list.end(), s_settings_lights.begin(), s_settings_lights.end());
+}
+
 void CHueServices::OnSettingAction(const CSetting* setting)
 {
   if (setting == nullptr)
@@ -213,6 +268,12 @@ void CHueServices::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_SERVICES_HUE_ENABLE)
   {
+    {
+      CSingleLock lock(s_settings_critical);
+      s_settings_groups.clear();
+      s_settings_lights.clear();
+    }
+
     // start or stop the service
     if (static_cast<const CSettingBool*>(setting)->GetValue())
       Start();
@@ -470,36 +531,6 @@ bool CHueServices::SignOut()
   return true;
 }
 
-void CHueServices::SettingOptionsHueStreamGroupsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
-{
-  std::string ip = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_IP);
-  std::string username = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_USERNAME);
-  std::string clientkey = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_CLIENTKEY);
-
-  list.push_back(std::make_pair(g_localizeStrings.Get(231), 0));
-  if (!ip.empty() && !username.empty())
-  {
-    CHueBridge bridge(ip, username, clientkey);
-    std::vector< std::pair<std::string, int> > groups = bridge.getStreamGroupsNames();
-    list.insert(list.end(), groups.begin(), groups.end());
-  }
-}
-
-void CHueServices::SettingOptionsHueLightsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
-{
-  std::string ip = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_IP);
-  std::string username = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_USERNAME);
-  std::string clientkey = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_CLIENTKEY);
-
-  list.push_back(std::make_pair(g_localizeStrings.Get(231), 0));
-  if (!ip.empty() && !username.empty())
-  {
-    CHueBridge bridge(ip, username, clientkey);
-    std::vector< std::pair<std::string, int> > lights = bridge.getLightsNames();
-    list.insert(list.end(), lights.begin(), lights.end());
-  }
-}
-
 bool CHueServices::InitConnection()
 {
   std::string ip = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_IP);
@@ -511,6 +542,10 @@ bool CHueServices::InitConnection()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Hue Service", g_localizeStrings.Get(14205), 5000, true);
     return false;
   }
+
+  in_addr_t bridgeip = inet_addr(ip.c_str());
+  if (!g_application.getNetwork().PingHost(bridgeip, 0, 1000))
+    return false;
 
   m_bridge.reset(new CHueBridge(ip, username, clientkey));
 
