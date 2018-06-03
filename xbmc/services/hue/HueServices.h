@@ -73,6 +73,7 @@ private:
 
   uint8_t m_oldstatus;
   std::atomic<uint8_t> m_status;
+  bool              m_forceON;
   bool              m_useStreaming;
   int               m_width;
   int               m_height;

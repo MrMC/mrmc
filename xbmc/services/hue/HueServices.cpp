@@ -61,6 +61,7 @@ CHueServices::CHueServices()
 : CThread("HueServices")
 , m_oldstatus(STATUS_STOP)
 , m_status(STATUS_STOP)
+, m_forceON(false)
 , m_useStreaming(false)
 , m_width(32)
 , m_height(32)
@@ -83,7 +84,7 @@ CHueServices& CHueServices::GetInstance()
 
 void CHueServices::RevertLight(int lightid, bool force)
 {
-  if (!force && !m_bridge->getLight(lightid)->isOn() && !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
+  if (!force && !m_bridge->getLight(lightid)->isOn() && !m_forceON)
     return;
 
   CLog::Log(LOGINFO, "Hue - Restoring Light (%d)", lightid);
@@ -94,21 +95,21 @@ void CHueServices::RevertLight(int lightid, bool force)
 
 void CHueServices::SetLight(int lightid, float fx, float fy, float fY)
 {
-  if (!m_bridge->getLight(lightid)->isOn() && !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
+  if (!m_bridge->getLight(lightid)->isOn() && !m_forceON)
     return;
   m_bridge->getLight(lightid)->setColorXYB(fx, fy, uint8_t(fY * 255), 0);
 }
 
 void CHueServices::SetLight(int lightid, float fR, float fG, float fB, float fL)
 {
-  if (!m_bridge->getLight(lightid)->isOn() && !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
+  if (!m_bridge->getLight(lightid)->isOn() && !m_forceON)
     return;
   m_bridge->getLight(lightid)->setColorRGBL(fR, fG, fB, uint8_t(fL * 255), 0);
 }
 
 void CHueServices::DimLight(int lightid, int status)
 {
-  if (!m_bridge->getLight(lightid)->isOn() && !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON))
+  if (!m_bridge->getLight(lightid)->isOn() && !m_forceON)
     return;
 
   CLog::Log(LOGINFO, "Hue - Dimming light(%d) status(%d)", lightid, status);
@@ -274,13 +275,15 @@ void CHueServices::Process()
           m_bStop = true;
           continue;
         }
-        int streamgroup = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_STREAMGROUPID);
+
         bool forceOn = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON);
         bool forceOnAfterSunset = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEONAFTERSUNSET);
+        m_forceON = (forceOn && (!forceOnAfterSunset || (forceOnAfterSunset && !m_bridge->isDaylight())));
+
+        int streamgroup = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_STREAMGROUPID);
         if (streamgroup > 0
               && !m_bridge->getClientkey().empty()
-              && (m_bridge->getGroup(streamgroup)->isAnyOn() ||
-                  (forceOn && (!forceOnAfterSunset || (forceOnAfterSunset && !m_bridge->isDaylight()))))
+              && (m_bridge->getGroup(streamgroup)->isAnyOn() || m_forceON)
               && m_bridge->startStreaming(streamgroup)
               )
         {
