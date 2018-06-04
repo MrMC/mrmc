@@ -1633,7 +1633,7 @@ bool CPlexUtils::ParsePlexSeries(CFileItemList &items, const CURL &url, const CV
 
     rtn = true;
     CFileItemPtr plexItem(new CFileItem());
-
+    curl.SetOptions("");
     // set m_bIsFolder to true to indicate we are tvshow list
     plexItem->m_bIsFolder = true;
     plexItem->SetLabel(item["title"].asString());
