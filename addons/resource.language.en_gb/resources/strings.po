@@ -4468,7 +4468,12 @@ msgctxt "#1255"
 msgid "Set transcode quality that matches your server or internet speed"
 msgstr ""
 
-#empty strings from id 1256 to 1258
+#:
+msgctxt "#1256"
+msgid "Refreshing %s servers"
+msgstr ""
+
+#empty strings from id 1257 to 1258
 
 #: system/settings/settings.xml
 msgctxt "#1259"

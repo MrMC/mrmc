@@ -80,7 +80,7 @@ private:
   
   // services below
   void SetupServices();
-  void SetupStaticHomeButtons(CFileItemList &sections);
+  void SetupStaticHomeButtons(CFileItemList &sections, bool clear = false);
   void ClearHomeShelfItems();
   CFileItemPtr MakeButton(HomeButton button);
   CFileItemList* m_buttonSections;

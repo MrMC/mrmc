@@ -62,6 +62,8 @@ public:
   CPlexClientPtr FindClient(const std::string &path);
   CPlexClientPtr GetClient(std::string uuid);
   bool ClientIsLocal(std::string path);
+  std::string PickHomeUser();
+  std::string GetHomeUserName() { return m_myHomeUser; };
   MediaServicesPlayerState GetPlayState() { return m_playState; };
 
   // ISettingCallback

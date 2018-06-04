@@ -414,6 +414,7 @@ void CPlexServices::GetUserSettings()
   m_authToken  = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXMYPLEXAUTH);
   m_updateMins  = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_PLEXUPDATEMINS);
   m_useGDMServer = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXGDMSERVER);
+  m_myHomeUser = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER);
 }
 
 void CPlexServices::UpdateLibraries(bool forced)
@@ -1173,4 +1174,20 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
   if (!rtn)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Plex Services", strMessage, 3000, true);
   return rtn;
+}
+
+std::string CPlexServices::PickHomeUser()
+{
+  std::string homeUserName;
+  if (GetMyHomeUsers(homeUserName))
+  {
+    m_myHomeUser = homeUserName;
+    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, m_myHomeUser);
+    SetUserSettings();
+    CSingleLock lock(m_criticalClients);
+    m_clients.clear();
+    Start();
+    return homeUserName;
+  }
+  return "";
 }
