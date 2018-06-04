@@ -764,7 +764,8 @@ int CButtonTranslator::GetCustomControllerActionCode(int windowId, int buttonId,
     if (it2 != buttonMap.end())
     {
       strAction = it2->second;
-      TranslateActionString(strAction.c_str(), action);
+      if (!CButtonTranslator::GetInstance().TranslateCustomControllerString(windowId, strCustomController, buttonId, action, strAction))
+        TranslateActionString(strAction.c_str(), action);
     }
   }
   return action;
