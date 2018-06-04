@@ -21,13 +21,17 @@
 #include "HueServices.h"
 #include "HueUtils.h"
 
+#include "IHueProvider.h"
+#include "providers/HueProviderRenderCapture.h"
+#if defined TARGET_ANDROID
+#include "providers/HueProviderAndroidProjection.h"
+#endif
+
 #include <chrono>
 #include <queue>
 
 #include "Application.h"
 #include "network/Network.h"
-#include "cores/VideoRenderers/RenderManager.h"
-#include "cores/VideoRenderers/RenderCapture.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "interfaces/AnnouncementManager.h"
 #include "settings/lib/Setting.h"
@@ -300,6 +304,9 @@ void CHueServices::OnSettingChanged(const CSetting *setting)
         || settingId == CSettings::SETTING_SERVICES_HUE_LIGHT3MODE
         || settingId == CSettings::SETTING_SERVICES_HUE_LIGHT4ID
         || settingId == CSettings::SETTING_SERVICES_HUE_LIGHT4MODE
+        || settingId == CSettings::SETTING_SERVICES_HUE_FORCEON
+        || settingId == CSettings::SETTING_SERVICES_HUE_FORCEONAFTERSUNSET
+        || settingId == CSettings::SETTING_SERVICES_HUE_CONTINUOUS
         )
       // start or stop the service
       if (IsActive())
@@ -314,22 +321,30 @@ void CHueServices::OnSettingChanged(const CSetting *setting)
 
 void CHueServices::Process()
 {
-  CRenderCapture *capture = nullptr;
+  std::unique_ptr<IHueProvider> provider;
   float fR = 0.0f, fG = 0.0f, fB = 0.0f;
   float fx = 0.0, fy = 0.0, fY = 0.0;
   float minL = 0.0f, maxL = 1.0f, biasC = 0.0f;
   float fu_old = 0.0, fv_old = 0.0;
 
+  bool continuous = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_CONTINUOUS);
+
+  CLog::Log(LOGDEBUG, "Hue - Entering loop %s", continuous ? "true" : "false");
   while (!m_bStop)
   {
     uint8_t curstatus = m_status;
-    if (curstatus != STATUS_STOP)
+    if (curstatus != STATUS_STOP || continuous)
     {
-      // if starting, alloc a rendercapture and start capturing
-      if (capture == nullptr)
+      // if starting, alloc a provider and start capturing
+      if (!provider)
       {
-        capture = g_renderManager.AllocRenderCapture();
-        g_renderManager.Capture(capture, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
+#ifdef TARGET_ANDROID
+        if (continuous)
+          provider.reset(new CHueProviderAndroidProjection());
+        else
+#endif
+        provider.reset(new CHueProviderRenderCapture());
+        provider->Initialize(m_width, m_height);
 
         if (!InitConnection())
         {
@@ -360,13 +375,13 @@ void CHueServices::Process()
         biasC = float(((100 - CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_COLORBIAS)) / 5)+1) * 0.0011f;
       }
 
-      capture->GetEvent().WaitMSec(1000);
-      if (capture->GetUserState() == CAPTURESTATE_DONE)
+      provider->WaitMSec(1000);
+      if (provider->GetStatus() == HueProvideStatus::DONE)
       {
         fR = 0.0; fG = 0.0; fB = 0.0;
         int rows = 0;
         //read out the pixels
-        unsigned char *pixels = capture->GetPixels();
+        unsigned char *pixels = provider->GetBuffer();
         for (int y = 0; y < m_height; ++y)
         {
           double rR = 0.0, rG = 0.0, rB = 0.0;
@@ -424,8 +439,9 @@ void CHueServices::Process()
         if (m_bridge->isStreaming())
           m_bridge->streamXYB(fx, fy, fY);
       }
-      else  // capture->GetUserState() == CAPTURESTATE_DONE
+      else  // provider->GetStatus() == HueProvideStatus::DONE
       {
+        CLog::Log(LOGDEBUG, "Hue - no update");
         // Streaming dies after 10 sec; refresh it if we missed a capture
         if (m_bridge->isStreaming())
           m_bridge->streamXYB(fx, fy, fY);
@@ -440,15 +456,11 @@ void CHueServices::Process()
         m_oldstatus = curstatus;
       }
     }
-    else   // STATUS_STOP
+    else   // STATUS_STOP && !continuous
     {
       if (curstatus != m_oldstatus)
       {
-        if (capture != nullptr)
-        {
-          g_renderManager.ReleaseRenderCapture(capture);
-          capture = nullptr;
-        }
+        provider.reset();
         ResetConnection(curstatus);
 
         m_oldstatus = curstatus;
@@ -459,12 +471,8 @@ void CHueServices::Process()
 
   // have to check this in case we go
   // right from playing to death.
-  if (capture != nullptr)
-  {
-    g_renderManager.ReleaseRenderCapture(capture);
-    capture = nullptr;
-    ResetConnection(STATUS_STOP);
-  }
+  provider.reset();
+  ResetConnection(STATUS_STOP);
 }
 
 bool CHueServices::SignIn()

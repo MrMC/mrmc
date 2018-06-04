@@ -2,7 +2,11 @@ SRCS  =
 SRCS += HueServices.cpp
 SRCS += HueClient.cpp
 SRCS += HueUtils.cpp
+SRCS += providers/HueProviderRenderCapture.cpp
 
+ifeq (@USE_ANDROID@,1)
+SRCS += providers/HueProviderAndroidProjection.cpp
+endif
 
 LIB   = services_hue.a
 

@@ -82,7 +82,7 @@ bool CScreenshotSurface::capture()
   {
     jni::CJNIImage image;
     CXBMCApp::get()->TakeScreenshot();
-    if (CXBMCApp::get()->WaitForCapture(image))
+    if (CXBMCApp::get()->WaitForScreenshot(image))
     {
       if (image)
       {

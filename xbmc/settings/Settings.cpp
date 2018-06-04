@@ -93,7 +93,6 @@
 #include "services/emby/EmbyServices.h"
 #include "services/plex/PlexServices.h"
 #include "services/trakt/TraktServices.h"
-#include "services/hue/HueServices.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 #define SETTINGS_XML_ROOT   "settings"
@@ -508,6 +507,7 @@ const std::string CSettings::SETTING_SERVICES_HUE_USERNAME = "hue.username";
 const std::string CSettings::SETTING_SERVICES_HUE_CLIENTKEY = "hue.clientkey";
 const std::string CSettings::SETTING_SERVICES_HUE_FORCEON = "hue.forceon";
 const std::string CSettings::SETTING_SERVICES_HUE_FORCEONAFTERSUNSET = "hue.forceonaftersunset";
+const std::string CSettings::SETTING_SERVICES_HUE_CONTINUOUS = "hue.continuous";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMDUR = "hue.dimdur";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMPROPDUR = "hue.dimpropdur";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMBRIGHT = "hue.dimbright";
@@ -1456,6 +1456,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_CLIENTKEY);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_FORCEON);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_FORCEONAFTERSUNSET);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_CONTINUOUS);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMDUR);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMPROPDUR);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMBRIGHT);

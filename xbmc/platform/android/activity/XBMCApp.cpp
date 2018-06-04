@@ -147,6 +147,7 @@ std::vector<androidPackage> CXBMCApp::m_applications;
 std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
 
 CCriticalSection CXBMCApp::m_captureMutex;
+CCaptureEvent CXBMCApp::m_screenshotEvent;
 CCaptureEvent CXBMCApp::m_captureEvent;
 std::queue<CJNIImage> CXBMCApp::m_captureQueue;
 
@@ -1472,14 +1473,15 @@ void CXBMCApp::onCaptureAvailable(CJNIImage image)
     img.close();
     m_captureQueue.pop();
   }
+  m_captureEvent.Set();
 }
 
 void CXBMCApp::onScreenshotAvailable(CJNIImage image)
 {
   CSingleLock lock(m_captureMutex);
 
-  m_captureEvent.SetImage(image);
-  m_captureEvent.Set();
+  m_screenshotEvent.SetImage(image);
+  m_screenshotEvent.Set();
 }
 
 void CXBMCApp::onMultiWindowModeChanged(bool isInMultiWindowMode)
@@ -1518,14 +1520,21 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
   return ret;
 }
 
-bool CXBMCApp::WaitForCapture(CJNIImage& image)
+bool CXBMCApp::WaitForScreenshot(CJNIImage& image)
 {
   bool ret = false;
-  if (m_captureEvent.WaitMSec(2000))
+  if (m_screenshotEvent.WaitMSec(2000))
   {
-    image = m_captureEvent.GetImage();
+    image = m_screenshotEvent.GetImage();
     ret = true;
   }
+  m_screenshotEvent.Reset();
+  return ret;
+}
+
+bool CXBMCApp::WaitForCapture(unsigned int timeoutMs)
+{
+  bool ret = m_captureEvent.WaitMSec(timeoutMs);
   m_captureEvent.Reset();
   return ret;
 }

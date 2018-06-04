@@ -199,7 +199,8 @@ public:
   static CPoint MapDroidToGui(const CPoint& src);
 
   int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
-  bool WaitForCapture(jni::CJNIImage& image);
+  bool WaitForScreenshot(jni::CJNIImage& image);
+  bool WaitForCapture(unsigned int timeoutMs);
   bool GetCapture(jni::CJNIImage& img);
   void TakeScreenshot();
   void StopCapture();
@@ -270,6 +271,7 @@ private:
   static std::vector<CActivityResultEvent*> m_activityResultEvents;
 
   static CCriticalSection m_captureMutex;
+  static CCaptureEvent m_screenshotEvent;
   static CCaptureEvent m_captureEvent;
   static std::queue<jni::CJNIImage> m_captureQueue;
 

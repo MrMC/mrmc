@@ -87,6 +87,10 @@ extern "C" int MCRuntimeLib_Run(bool renderGUI)
     return false;
   g_RBP.LogFirmwareVerison();
 #endif
+#if defined(TARGET_ANDROID)
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE))
+    CXBMCApp::get()->startProjection();
+#endif
 
   if (renderGUI && !g_application.CreateGUI())
   {
@@ -98,11 +102,6 @@ extern "C" int MCRuntimeLib_Run(bool renderGUI)
     CMCRuntimeLibStartupLogger::DisplayError("ERROR: Unable to Initialize. Exiting");
     return status;
   }
-
-#if defined(TARGET_ANDROID)
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE))
-    CXBMCApp::get()->startProjection();
-#endif
 
   try
   {

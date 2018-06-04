@@ -159,7 +159,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     mProjectionIntentId = INTENT_RESULT_PROJECT_CODE;
   }
 
-  public void Initialize(int resultCode, Intent resultData)
+  public void initializeProjection(int resultCode, Intent resultData)
   {
     final MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
     mMediaProjection = projectionManager.getMediaProjection(resultCode, resultData);
@@ -360,7 +360,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     if (requestCode == mProjectionIntentId)
     {
       if (resultCode == RESULT_OK)
-        Initialize(resultCode, resultData);
+        initializeProjection(resultCode, resultData);
       return;
     }
 

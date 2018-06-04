@@ -2904,6 +2904,12 @@
           </dependencies>
           <control type="toggle"/>
         </setting>
+        <setting id="hue.continuous" type="boolean" label="14235" help="14236">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+          <visible>false</visible>
+        </setting>
         <setting id="hue.username" type="string">
           <level>0</level>
           <visible>false</visible>

@@ -8208,6 +8208,14 @@ msgctxt "#14234"
 msgid "Force lights ON only after sunset"
 msgstr ""
 
+msgctxt "#14235"
+msgid "Continuous"
+msgstr ""
+
+msgctxt "#14236"
+msgid "Synchronize Hue with your device even if no video is playing; Needs Mediacodec(Surface)-Capture enabled"
+msgstr ""
+
 #. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15004"

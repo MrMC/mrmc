@@ -463,6 +463,7 @@ public:
   static const std::string SETTING_SERVICES_HUE_CLIENTKEY;
   static const std::string SETTING_SERVICES_HUE_FORCEON;
   static const std::string SETTING_SERVICES_HUE_FORCEONAFTERSUNSET;
+  static const std::string SETTING_SERVICES_HUE_CONTINUOUS;
   static const std::string SETTING_SERVICES_HUE_DIMDUR;
   static const std::string SETTING_SERVICES_HUE_DIMPROPDUR;
   static const std::string SETTING_SERVICES_HUE_DIMBRIGHT;

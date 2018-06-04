@@ -168,4 +168,19 @@
       </group>
     </category>
   </section>
+  <section id="services">
+    <category id="hue">
+      <group id="1">
+        <setting id="hue.continuous" type="boolean">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+          <visible>true</visible>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.mediacodecsurface_capture" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
