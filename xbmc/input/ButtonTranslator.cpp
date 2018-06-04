@@ -741,7 +741,7 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
   return TranslateRemoteString((*it2).second.c_str());
 }
 
-int CButtonTranslator::GetCustomControllerActionCode(int windowId, int buttonId, std::string strAction) const
+int CButtonTranslator::GetCustomControllerActionCode(int windowId, int buttonId, std::string& strAction) const
 {
   std::string strCustomController;
 #if defined(TARGET_DARWIN_TVOS)
