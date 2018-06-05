@@ -73,6 +73,7 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeN
     break;
   case NODE_TYPE_TITLE_MOVIES:
   case NODE_TYPE_RECENTLY_ADDED_MOVIES:
+  case NODE_TYPE_INPROGRESS_MOVIES:
     m_idMovie = idDb;
     break;
   case NODE_TYPE_TITLE_TVSHOWS:

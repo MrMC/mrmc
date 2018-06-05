@@ -27,6 +27,9 @@
 		18690DCF1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18690DCC1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp */; };
 		18700F671C4A724B000A0007 /* TVOSTopShelf.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18700F651C4A724B000A0007 /* TVOSTopShelf.mm */; };
 		1883CAEC2081D620004C7F52 /* IOSPlayShared.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1883CAEA2081D61F004C7F52 /* IOSPlayShared.mm */; };
+		1886EB7E20C70EB1001E8E46 /* DirectoryNodeInProgressMovies.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1886EB7D20C70EB0001E8E46 /* DirectoryNodeInProgressMovies.cpp */; };
+		1886EB7F20C70EB1001E8E46 /* DirectoryNodeInProgressMovies.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1886EB7D20C70EB0001E8E46 /* DirectoryNodeInProgressMovies.cpp */; };
+		1886EB8020C70EB1001E8E46 /* DirectoryNodeInProgressMovies.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1886EB7D20C70EB0001E8E46 /* DirectoryNodeInProgressMovies.cpp */; };
 		188F75FE152217BC009870CE /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
 		188F7602152217DF009870CE /* GUIOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F7600152217DF009870CE /* GUIOperations.cpp */; };
 		189448B41CD905B70036E391 /* LightEffectClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189448B21CD905B70036E391 /* LightEffectClient.cpp */; };
@@ -3537,6 +3540,8 @@
 		18700F651C4A724B000A0007 /* TVOSTopShelf.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TVOSTopShelf.mm; sourceTree = "<group>"; };
 		1883CAEA2081D61F004C7F52 /* IOSPlayShared.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSPlayShared.mm; sourceTree = "<group>"; };
 		1883CAEB2081D61F004C7F52 /* IOSPlayShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSPlayShared.h; sourceTree = "<group>"; };
+		1886EB7C20C70EB0001E8E46 /* DirectoryNodeInProgressMovies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeInProgressMovies.h; sourceTree = "<group>"; };
+		1886EB7D20C70EB0001E8E46 /* DirectoryNodeInProgressMovies.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeInProgressMovies.cpp; sourceTree = "<group>"; };
 		188F751815211733009870CE /* IJSONRPCAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJSONRPCAnnouncer.h; sourceTree = "<group>"; };
 		188F751915211743009870CE /* JSONRPCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPCUtils.h; sourceTree = "<group>"; };
 		188F75FC152217BC009870CE /* Mime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mime.cpp; sourceTree = "<group>"; };
@@ -9173,6 +9178,8 @@
 				E38E176D0D25F9FA00618676 /* DirectoryNodeMusicVideosOverview.h */,
 				E38E176E0D25F9FA00618676 /* DirectoryNodeOverview.cpp */,
 				E38E176F0D25F9FA00618676 /* DirectoryNodeOverview.h */,
+				1886EB7D20C70EB0001E8E46 /* DirectoryNodeInProgressMovies.cpp */,
+				1886EB7C20C70EB0001E8E46 /* DirectoryNodeInProgressMovies.h */,
 				F5AC306220B9F4BC00A7A1ED /* DirectoryNodeInProgressTvShows.cpp */,
 				F5AC306320B9F4BD00A7A1ED /* DirectoryNodeInProgressTvShows.h */,
 				E38E17700D25F9FA00618676 /* DirectoryNodeRecentlyAddedEpisodes.cpp */,
@@ -11459,6 +11466,7 @@
 				184C472F1296BC6E0006DB3E /* Service.cpp in Sources */,
 				18B7C3841294203F009E7A26 /* AddonDatabase.cpp in Sources */,
 				18B7C38A12942090009E7A26 /* GUIDialogAddonInfo.cpp in Sources */,
+				1886EB7E20C70EB1001E8E46 /* DirectoryNodeInProgressMovies.cpp in Sources */,
 				18B7C38B12942090009E7A26 /* GUIViewStateAddonBrowser.cpp in Sources */,
 				18B7C392129420E5009E7A26 /* Settings.cpp in Sources */,
 				18B7C3A812942132009E7A26 /* AdvancedSettings.cpp in Sources */,
@@ -12808,6 +12816,7 @@
 				E49913F1174E5FB000741B6D /* GUIWindowPrograms.cpp in Sources */,
 				F5B723621C7C9A02006432AE /* GUIDialogPVRRadioRDSInfo.cpp in Sources */,
 				E49913F2174E5FB000741B6D /* PVRClient.cpp in Sources */,
+				1886EB7F20C70EB1001E8E46 /* DirectoryNodeInProgressMovies.cpp in Sources */,
 				E49913F3174E5FB000741B6D /* PVRClients.cpp in Sources */,
 				E49913F4174E5FB000741B6D /* PVRChannel.cpp in Sources */,
 				E49913F5174E5FB000741B6D /* PVRChannelGroup.cpp in Sources */,
@@ -13402,6 +13411,7 @@
 				F5D13F2A1BAF0B6D0075A95C /* DVDPlayerAudio.cpp in Sources */,
 				F5D13F2B1BAF0B6D0075A95C /* DVDPlayerSubtitle.cpp in Sources */,
 				F55B37B3201988C30096E5A7 /* TVOSDirectory.cpp in Sources */,
+				1886EB8020C70EB1001E8E46 /* DirectoryNodeInProgressMovies.cpp in Sources */,
 				F5D13F2C1BAF0B6D0075A95C /* DVDPlayerTeletext.cpp in Sources */,
 				F5D13F2D1BAF0B6D0075A95C /* DVDPlayerVideo.cpp in Sources */,
 				F5B722C91C7BC186006432AE /* rfft.cpp in Sources */,

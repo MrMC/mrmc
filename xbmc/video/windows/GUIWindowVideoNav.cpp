@@ -509,7 +509,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           items.SetContent("seasons");
       }
       else if (node == NODE_TYPE_TITLE_MOVIES ||
-               node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
+               node == NODE_TYPE_RECENTLY_ADDED_MOVIES ||
+               node == NODE_TYPE_INPROGRESS_MOVIES)
       {
         if (params.GetSetId() > 0)
         {
@@ -1378,7 +1379,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   {
     if (CServicesManager::GetInstance().HasServices() && !btnServers)
       return "services://movies/inprogressmovies/";
-    return "library://video/inprogressmovies.xml/";
+    return "videodb://inprogressmovies/";
   }
   else if (lower == "tvshowtags")
     return "videodb://tvshows/tags/";

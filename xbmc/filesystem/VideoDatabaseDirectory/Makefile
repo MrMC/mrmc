@@ -2,6 +2,7 @@ SRCS  = DirectoryNode.cpp
 SRCS += DirectoryNodeEpisodes.cpp
 SRCS += DirectoryNodeGrouped.cpp
 SRCS += DirectoryNodeInProgressTvShows.cpp
+SRCS += DirectoryNodeInProgressMovies.cpp
 SRCS += DirectoryNodeMoviesOverview.cpp
 SRCS += DirectoryNodeMusicVideosOverview.cpp
 SRCS += DirectoryNodeOverview.cpp

@@ -7032,6 +7032,14 @@ bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir, CFil
   return GetTvShowsByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
 }
 
+bool CVideoDatabase::GetInProgressMoviesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
+{
+  Filter filter;
+  filter.order = PrepareSQL("c%02d", VIDEODB_ID_TITLE);
+  filter.where = "movie_view.idFile  IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
+  return GetMoviesByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
+}
+
 std::string CVideoDatabase::GetGenreById(int id)
 {
   return GetSingleValue("genre", "name", PrepareSQL("genre_id=%i", id));

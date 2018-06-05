@@ -267,6 +267,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         break;
       }
     case NODE_TYPE_TITLE_MOVIES:
+    case NODE_TYPE_INPROGRESS_MOVIES:
       {
         if (params.GetSetId() > -1) // Is this a listing within a set?
         {

@@ -120,6 +120,7 @@ std::string CDirectoryNodeGrouped::GetContentType(const CQueryParams &params) co
     case NODE_TYPE_RECENTLY_ADDED_MOVIES:
     case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
     case NODE_TYPE_INPROGRESS_TVSHOWS:
+    case NODE_TYPE_INPROGRESS_MOVIES:
     case NODE_TYPE_ROOT:
     case NODE_TYPE_SEASONS:
     case NODE_TYPE_TITLE_MOVIES:
