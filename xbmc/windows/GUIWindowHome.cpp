@@ -438,7 +438,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     else if (iControl == CONTROL_SERVER_BUTTON)
     {
       // ask the user what to do
-      std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+      std::string selectedUuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
       CGUIDialogSelect* selectDialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
       selectDialog->Reset();
       selectDialog->SetHeading(g_localizeStrings.Get(33051) + " " + g_localizeStrings.Get(706));
@@ -446,16 +446,13 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       int selected = 0;
       
       // Add MrMC Database library button
-      if (g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO) || g_infoManager.GetLibraryBool(LIBRARY_HAS_PICTURES))
-      {
-        CFileItem item("MrMC");
-        item.SetProperty("type", "mrmc");
-        item.SetProperty("uuid", "mrmc");
-        selectDialog->Add(item);
-        if (uuid == "mrmc")
-          selected = counter;
-        counter++;
-      }
+      CFileItem item("MrMC");
+      item.SetProperty("type", "mrmc");
+      item.SetProperty("uuid", "mrmc");
+      selectDialog->Add(item);
+      if (selectedUuid == "mrmc")
+        selected = counter;
+      counter++;
       
       // Add all Plex server buttons
       std::vector<CPlexClientPtr>  plexClients;
@@ -466,7 +463,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         item.SetProperty("type", "plex");
         item.SetProperty("uuid", client->GetUuid());
         selectDialog->Add(item);
-        if (uuid == client->GetUuid())
+        if (selectedUuid == client->GetUuid())
           selected = counter;
         counter++;
       }
@@ -480,7 +477,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         item.SetProperty("type", "emby");
         item.SetProperty("uuid", client->GetUuid());
         selectDialog->Add(item);
-        if (uuid == client->GetUuid())
+        if (selectedUuid == client->GetUuid())
           selected = counter;
         counter++;
       }
@@ -491,7 +488,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       
       // check if the user has chosen one of the results
       const CFileItemPtr selectedItem = selectDialog->GetSelectedFileItem();
-      if (selectedItem->HasProperty("type"))
+      if (selectedItem->HasProperty("type") &&
+          selectedItem->HasProperty("uuid") &&
+          selectedItem->GetProperty("uuid").asString() != selectedUuid )
       {
         std::string type = selectedItem->GetProperty("type").asString();
         std::string uuid = selectedItem->GetProperty("uuid").asString();
