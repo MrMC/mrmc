@@ -269,6 +269,20 @@ do { \
 
 /*!
  \ingroup winmsg
+ \brief Set the second label of the current control
+ */
+#define SET_CONTROL_LABEL2_THREAD_SAFE(controlID,label) \
+{ \
+CGUIMessage msg(GUI_MSG_LABEL2_SET, GetID(), controlID); \
+msg.SetLabel(label); \
+if(g_application.IsCurrentThread()) \
+OnMessage(msg); \
+else \
+g_windowManager.SendThreadMessage(msg, GetID()); \
+}
+
+/*!
+ \ingroup winmsg
  \brief Set a bunch of labels on the given control
  */
 #define SET_CONTROL_LABELS(controlID, defaultValue, labels) \
