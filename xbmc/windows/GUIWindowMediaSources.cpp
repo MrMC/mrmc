@@ -172,7 +172,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     
     CFileItemPtr plexItem(new CFileItem("Plex"));
     plexItem->m_bIsFolder = true;
-    plexItem->m_bIsShareOrDrive = true;
+    plexItem->m_bIsShareOrDrive = false;
     plexItem->SetPath("mediasources://plex/");
     plexItem->SetLabel(text);
     plexItem->SetSpecialSort(SortSpecialOnBottom);
@@ -184,7 +184,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       text = StringUtils::Format("%s %s %s", strSignOut.c_str() , "Emby", g_localizeStrings.Get(706).c_str());
     CFileItemPtr embyItem(new CFileItem("Emby"));
     embyItem->m_bIsFolder = true;
-    embyItem->m_bIsShareOrDrive = true;
+    embyItem->m_bIsShareOrDrive = false;
     embyItem->SetPath("mediasources://emby/");
     embyItem->SetLabel(text);
     embyItem->SetSpecialSort(SortSpecialOnBottom);
@@ -245,6 +245,10 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
       params.push_back("parent_redirect=" + strParentPath);
+      std::string strSignOut = g_localizeStrings.Get(1241);
+      if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN) == strSignOut &&
+          !VerifyLogout("Plex"))
+        return false;
       CPlexServices::GetInstance().InitiateSignIn();
       g_windowManager.ActivateWindow(WINDOW_MEDIA_SOURCES, params);
     }
@@ -259,6 +263,10 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
       params.push_back("parent_redirect=" + strParentPath);
+      std::string strSignOut = g_localizeStrings.Get(1241);
+      if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignOut &&
+          !VerifyLogout("Emby"))
+        return false;
       CEmbyServices::GetInstance().InitiateSignIn();
       g_windowManager.ActivateWindow(WINDOW_MEDIA_SOURCES, params);
     }
@@ -267,6 +275,20 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
   return result;
 }
 
+bool CGUIWindowMediaSources::VerifyLogout(std::string service)
+{
+  CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (pDialogYesNo)
+  {
+    std::string text = StringUtils::Format(g_localizeStrings.Get(1257).c_str(), service.c_str());
+    pDialogYesNo->SetHeading(CVariant{2116});
+    pDialogYesNo->SetLine(1, text);
+    pDialogYesNo->Open();
+    
+    return pDialogYesNo->IsConfirmed();
+  }
+  return false;
+}
 
 bool CGUIWindowMediaSources::OnClick(int iItem)
 {

@@ -4473,7 +4473,12 @@ msgctxt "#1256"
 msgid "Refreshing %s servers"
 msgstr ""
 
-#empty strings from id 1257 to 1258
+#:
+msgctxt "#1257"
+msgid "Would you like to sign-out of %s service?"
+msgstr ""
+
+#empty strings from id 1258 to 1258
 
 #: system/settings/settings.xml
 msgctxt "#1259"

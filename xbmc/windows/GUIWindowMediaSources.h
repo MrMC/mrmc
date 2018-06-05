@@ -41,6 +41,7 @@ public:
 
 protected:
 
+  bool VerifyLogout(std::string service);
   // override base class methods
   virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
