@@ -2391,6 +2391,15 @@
           <control type="edit" format="string" />
           <visible>false</visible>
         </setting>
+        <setting id="plex.homeuserthumb" type="string" label="" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+          <visible>false</visible>
+        </setting>
       </group>
     </category>
     <category id="emby" label="2105" help="2106">

@@ -512,8 +512,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       {
         g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
         std::string strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
+        std::string thumb = CProfilesManager::GetInstance().GetCurrentProfile().getThumb();
+        if (thumb.empty())
+          thumb = "unknown-user.png";
         SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
         SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strLabel);
+        SET_CONTROL_LABEL2_THREAD_SAFE(CONTROL_PROFILES_BUTTON , thumb);
       }
       else if (type == "plex")
       {
@@ -523,12 +527,17 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           std::string strLabel = CPlexServices::GetInstance().PickHomeUser();
           if (!strLabel.empty())
           {
+            std::string thumb = CPlexServices::GetInstance().GetHomeUserThumb();
+            if (thumb.empty())
+              thumb = "unknown-user.png";
+            
             ClearHomeShelfItems();
             SetupStaticHomeButtons(*m_buttonSections, true);
             std::string text = StringUtils::Format(g_localizeStrings.Get(1256).c_str(),"Plex");
             CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, text, "", 3000, true);
             SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
             SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strLabel);
+            SET_CONTROL_LABEL2_THREAD_SAFE(CONTROL_PROFILES_BUTTON , thumb);
           }
         }
       }

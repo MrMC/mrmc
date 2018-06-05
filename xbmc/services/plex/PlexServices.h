@@ -65,6 +65,7 @@ public:
   void InitiateSignIn();
   std::string PickHomeUser();
   std::string GetHomeUserName() { return m_myHomeUser; };
+  std::string GetHomeUserThumb() { return m_myHomeUserThumb; };
   MediaServicesPlayerState GetPlayState() { return m_playState; };
 
   // ISettingCallback
@@ -113,6 +114,7 @@ private:
   std::string       m_signInByPinId;
   std::string       m_signInByPinCode;
   std::string       m_myHomeUser;
+  std::string       m_myHomeUserThumb;
   int               m_updateMins;
   CCriticalSection  m_plextvCritical;
   XFILE::CCurlFile *m_plextv = nullptr;

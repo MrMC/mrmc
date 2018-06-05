@@ -231,6 +231,7 @@ void CPlexServices::OnSettingAction(const CSetting *setting)
             // change prompt to 'sign-out'
             CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXSIGNIN, strSignOut);
             CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, m_myHomeUser);
+            CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB, m_myHomeUserThumb);
             CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction manual sign-in ok");
             startThread = true;
           }
@@ -255,6 +256,7 @@ void CPlexServices::OnSettingAction(const CSetting *setting)
       m_authToken.clear();
       CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXSIGNIN, strSignIn);
       CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, "");
+      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB, "");
       CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction sign-out ok");
     }
     SetUserSettings();
@@ -280,6 +282,7 @@ void CPlexServices::OnSettingAction(const CSetting *setting)
       {
         m_myHomeUser = homeUserName;
         CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, m_myHomeUser);
+        CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB, m_myHomeUserThumb);
         SetUserSettings();
         CSingleLock lock(m_criticalClients);
         m_clients.clear();
@@ -302,6 +305,7 @@ void CPlexServices::InitiateSignIn()
       // change prompt to 'sign-out'
       CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN, strSignOut);
       CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, m_myHomeUser);
+      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB, m_myHomeUserThumb);
       CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction pin sign-in ok");
       startThread = true;
     }
@@ -318,6 +322,7 @@ void CPlexServices::InitiateSignIn()
     m_authToken.clear();
     CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN, strSignIn);
     CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, "");
+    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB, "");
     CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction sign-out ok");
   }
   SetUserSettings();
@@ -424,6 +429,7 @@ void CPlexServices::GetUserSettings()
   m_updateMins  = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_PLEXUPDATEMINS);
   m_useGDMServer = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_PLEXGDMSERVER);
   m_myHomeUser = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER);
+  m_myHomeUserThumb = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB);
 }
 
 void CPlexServices::UpdateLibraries(bool forced)
@@ -1106,8 +1112,8 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
           plexUser->SetProperty("id", XMLUtils::GetAttribute(UserNode, "id"));
           plexUser->SetProperty("protected", XMLUtils::GetAttribute(UserNode, "protected"));
           plexUser->SetLabel(XMLUtils::GetAttribute(UserNode, "title"));
-          plexUser->SetIconImage(XMLUtils::GetAttribute(UserNode, "thumb"));
-          plexUser->SetArt("thumb", XMLUtils::GetAttribute(UserNode, "thumb"));
+          plexUser->SetIconImage(XMLUtils::GetAttribute(UserNode, "thumb") + "&s=512");
+          plexUser->SetArt("thumb", XMLUtils::GetAttribute(UserNode, "thumb") + "&s=512");
           plexUsers.Add(plexUser);
           UserNode = UserNode->NextSiblingElement("User");
         }
@@ -1166,6 +1172,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
     if (userContainer)
     {
       m_authToken = XMLUtils::GetAttribute(userContainer, "authToken");
+      m_myHomeUserThumb = XMLUtils::GetAttribute(userContainer, "thumb") + "&s=512";
       homeUserName = XMLUtils::GetAttribute(userContainer, "title");
       rtn = !homeUserName.empty() && !m_authToken.empty();
     }
@@ -1192,6 +1199,7 @@ std::string CPlexServices::PickHomeUser()
   {
     m_myHomeUser = homeUserName;
     CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, m_myHomeUser);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB, m_myHomeUserThumb);
     SetUserSettings();
     CSingleLock lock(m_criticalClients);
     m_clients.clear();

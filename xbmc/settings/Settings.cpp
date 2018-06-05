@@ -525,6 +525,7 @@ const std::string CSettings::SETTING_SERVICES_HUE_LIGHT4MODE = "hue.light4mode";
 const std::string CSettings::SETTING_SERVICES_PLEXSIGNIN = "plex.signin";
 const std::string CSettings::SETTING_SERVICES_PLEXSIGNINPIN = "plex.signinpin";
 const std::string CSettings::SETTING_SERVICES_PLEXHOMEUSER  = "plex.homeuser";
+const std::string CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB  = "plex.homeuserthumb";
 const std::string CSettings::SETTING_SERVICES_PLEXGDMSERVER = "plex.gdmserver";
 const std::string CSettings::SETTING_SERVICES_PLEXUPDATEMINS = "plex.updatetime";
 const std::string CSettings::SETTING_SERVICES_PLEXTRANSCODE = "plex.transcode";
