@@ -697,61 +697,6 @@ void CGUIWindowHome::SetupServices()
     }
     SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
   }
-  // if we are here, and there is no sections that means thet user hasnt selected the server
-  // or that selected server is no longer available... if there is only one server, use that one..
-  // otherwise pick first owned server
-  if (!serverSet &&
-           (CPlexServices::GetInstance().GetNumberOfClients() > 0 ||
-           CEmbyServices::GetInstance().GetNumberOfClients() > 0 ||
-           g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO)))
-  {
-    std::string uuid;
-    std::string type;
-    if (serverType == "plex" && CPlexServices::GetInstance().HasClients())
-    {
-      std::vector<CPlexClientPtr> plexClients;
-      CPlexServices::GetInstance().GetClients(plexClients);
-      CPlexClientPtr plexClient = plexClients[0];
-      uuid = plexClient->GetUuid();
-      type = "plex";
-      if (plexClient)
-      {
-        AddPlexSection(plexClient);
-        SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , plexClient->GetServerName());
-        strLabel = CPlexServices::GetInstance().GetHomeUserName();
-      }
-      SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
-    }
-    else if (serverType == "emby" && CEmbyServices::GetInstance().HasClients())
-    {
-      std::vector<CEmbyClientPtr> embyClients;
-      CEmbyServices::GetInstance().GetClients(embyClients);
-      CEmbyClientPtr embyClient = embyClients[0];
-      uuid = embyClient->GetUuid();
-      type = "emby";
-      if (embyClient)
-      {
-        AddEmbySection(embyClient);
-        SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , embyClient->GetServerName());
-      }
-      SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
-    }
-    else if (g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO))
-    {
-      type = "mrmc";
-      uuid = "mrmc";
-      strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
-    }
-    CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE, type);
-    CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID, uuid);
-    CSettings::GetInstance().Save();
-    
-    if (type == "mrmc")
-    {
-      m_buttonSections->ClearItems();
-      SetupStaticHomeButtons(*m_buttonSections);
-    }
-  }
   
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOME_LIST);
   OnMessage(msg);
@@ -789,12 +734,13 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   
   CFileItemList* staticSections = new CFileItemList;
 
+  if (CProfilesManager::GetInstance().GetNumberOfProfiles() > 1)
+    SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
+  else
+    SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
+  
   if (!clear && (hasVideoDB || hasPictures) && (serverType == "mrmc" || serverType.empty()))
   {
-    if (CProfilesManager::GetInstance().GetNumberOfProfiles() > 1)
-      SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
-    else
-      SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
     SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
     SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , "MrMC");
     bool hasMovies = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MOVIES) &&
