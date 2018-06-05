@@ -7035,7 +7035,7 @@ bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir, CFil
 bool CVideoDatabase::GetInProgressMoviesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
 {
   Filter filter;
-  filter.order = PrepareSQL("c%02d", VIDEODB_ID_TITLE);
+  filter.order = PrepareSQL("lastPlayed desc");
   filter.where = "movie_view.idFile  IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
   return GetMoviesByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
 }
