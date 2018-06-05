@@ -27,6 +27,8 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 Node TvShowChildren[] = {
+                          { NODE_TYPE_RECENTLY_ADDED_EPISODES,    "recentlyaddedepisodes",    20387 },
+                          { NODE_TYPE_INPROGRESS_TVSHOWS,         "inprogresstvshows",        626 },
                           { NODE_TYPE_GENRE,         "genres",   135 },
                           { NODE_TYPE_TITLE_TVSHOWS, "titles",   369 },
                           { NODE_TYPE_YEAR,          "years",    562 },

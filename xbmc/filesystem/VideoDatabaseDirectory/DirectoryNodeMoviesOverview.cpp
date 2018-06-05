@@ -28,6 +28,8 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 Node MovieChildren[] = {
+                        { NODE_TYPE_RECENTLY_ADDED_MOVIES,      "recentlyaddedmovies",      20386 },
+                        { NODE_TYPE_INPROGRESS_MOVIES,         "inprogressmovies",        627 },
                         { NODE_TYPE_GENRE,        "genres",     135 },
                         { NODE_TYPE_TITLE_MOVIES, "titles",     369 },
                         { NODE_TYPE_YEAR,         "years",      562 },
