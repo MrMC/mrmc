@@ -1147,7 +1147,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
     if (item->GetProperty("protected").asBoolean())
     {
       std::string pin;
-      if( !CGUIDialogNumeric::ShowAndGetNumber(pin, "Enter pin") )
+      if( !CGUIDialogNumeric::ShowAndGetNumber(pin, "Enter pin", 0, true) )
         return false;
       pinUrl = "/switch?pin=" + pin;
     }
