@@ -63,6 +63,7 @@ public:
   CEmbyClientPtr FindClient(const std::string &path);
   CEmbyClientPtr FindClient(const CEmbyClient *client);
   bool ClientIsLocal(std::string path);
+  void InitiateSignIn();
   EmbyServerInfo GetEmbyLocalServerInfo(const std::string url);
 
   // ISettingCallback

@@ -282,40 +282,7 @@ void CEmbyServices::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_SERVICES_EMBYSIGNINPIN)
   {
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignIn)
-    {
-      if (PostSignInPinCode())
-      {
-        // change prompt to 'sign-out'
-        CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN, strSignOut);
-        CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction pin sign-in ok");
-        startThread = true;
-      }
-      else
-      {
-        std::string strMessage = "Could not get authToken via pin request sign-in";
-        CLog::Log(LOGERROR, "CEmbyServices: %s", strMessage.c_str());
-      }
-    }
-    else
-    {
-      // prompt is 'sign-out'
-      // clear authToken and change prompt to 'sign-in'
-      m_userId.clear();
-      m_accessToken.clear();
-      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN, strSignIn);
-      CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction sign-out ok");
-    }
-    SetUserSettings();
-
-    if (startThread)
-      Start();
-    else
-    {
-      if (!strMessage.empty())
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Emby Services", strMessage, 3000, true);
-      Stop();
-    }
+    InitiateSignIn();
   }
   else if (settingId == CSettings::SETTING_SERVICES_EMBYSERVERSOURCES)
   {
@@ -376,6 +343,48 @@ void CEmbyServices::OnSettingAction(const CSetting *setting)
       CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSERVERSOURCES, "Selected Sources");
 
     Start();
+  }
+}
+
+void CEmbyServices::InitiateSignIn()
+{
+  bool startThread = false;
+  std::string strMessage;
+  std::string strSignIn = g_localizeStrings.Get(2115);
+  std::string strSignOut = g_localizeStrings.Get(2116);
+  if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignIn)
+  {
+    if (PostSignInPinCode())
+    {
+      // change prompt to 'sign-out'
+      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN, strSignOut);
+      CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction pin sign-in ok");
+      startThread = true;
+    }
+    else
+    {
+      std::string strMessage = "Could not get authToken via pin request sign-in";
+      CLog::Log(LOGERROR, "CEmbyServices: %s", strMessage.c_str());
+    }
+  }
+  else
+  {
+    // prompt is 'sign-out'
+    // clear authToken and change prompt to 'sign-in'
+    m_userId.clear();
+    m_accessToken.clear();
+    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN, strSignIn);
+    CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction sign-out ok");
+  }
+  SetUserSettings();
+  
+  if (startThread)
+    Start();
+  else
+  {
+    if (!strMessage.empty())
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Emby Services", strMessage, 3000, true);
+    Stop();
   }
 }
 

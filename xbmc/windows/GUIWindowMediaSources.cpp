@@ -41,6 +41,8 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "services/ServicesManager.h"
+#include "services/plex/PlexServices.h"
+#include "services/emby/EmbyServices.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -159,8 +161,35 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     pItem->SetPath("mediasources://pictures/");
     pItem->SetLabel(g_localizeStrings.Get(1213));
     items.Add(pItem);
+    
+    std::string text;
+    std::string strSignIn = g_localizeStrings.Get(1240);
+    std::string strSignOut = g_localizeStrings.Get(1241);
+    if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN) == strSignIn)
+      text = StringUtils::Format("%s %s %s", strSignIn.c_str() , "Plex", g_localizeStrings.Get(706).c_str());
+    else
+      text = StringUtils::Format("%s %s %s", strSignOut.c_str() , "Plex", g_localizeStrings.Get(706).c_str());
+    
+    CFileItemPtr plexItem(new CFileItem("Plex"));
+    plexItem->m_bIsFolder = true;
+    plexItem->m_bIsShareOrDrive = true;
+    plexItem->SetPath("mediasources://plex/");
+    plexItem->SetLabel(text);
+    plexItem->SetSpecialSort(SortSpecialOnBottom);
+    items.Add(plexItem);
+    
+    if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN) == strSignIn)
+      text = StringUtils::Format("%s %s %s", strSignIn.c_str() , "Emby", g_localizeStrings.Get(706).c_str());
+    else
+      text = StringUtils::Format("%s %s %s", strSignOut.c_str() , "Emby", g_localizeStrings.Get(706).c_str());
+    CFileItemPtr embyItem(new CFileItem("Emby"));
+    embyItem->m_bIsFolder = true;
+    embyItem->m_bIsShareOrDrive = true;
+    embyItem->SetPath("mediasources://emby/");
+    embyItem->SetLabel(text);
+    embyItem->SetSpecialSort(SortSpecialOnBottom);
+    items.Add(embyItem);
 
-//    items.SetLabel(g_localizeStrings.Get(20094));
     items.SetPath("mediasources://");
     result = true;
   }
@@ -204,6 +233,34 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       // at 'sources://' and we want to go back here.
       params.push_back("parent_redirect=" + strParentPath);
       g_windowManager.ActivateWindow(WINDOW_PICTURES, params);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plex/"))
+    {
+      std::string strParentPath;
+      URIUtils::GetParentPath(strDirectory, strParentPath);
+      SetHistoryForPath(strParentPath);
+      std::vector<std::string> params;
+      params.push_back("mediasources://");
+      params.push_back("return");
+      // going to ".." will put us
+      // at 'sources://' and we want to go back here.
+      params.push_back("parent_redirect=" + strParentPath);
+      CPlexServices::GetInstance().InitiateSignIn();
+      g_windowManager.ActivateWindow(WINDOW_MEDIA_SOURCES, params);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://emby/"))
+    {
+      std::string strParentPath;
+      URIUtils::GetParentPath(strDirectory, strParentPath);
+      SetHistoryForPath(strParentPath);
+      std::vector<std::string> params;
+      params.push_back("mediasources://");
+      params.push_back("return");
+      // going to ".." will put us
+      // at 'sources://' and we want to go back here.
+      params.push_back("parent_redirect=" + strParentPath);
+      CEmbyServices::GetInstance().InitiateSignIn();
+      g_windowManager.ActivateWindow(WINDOW_MEDIA_SOURCES, params);
     }
     result = true;
   }

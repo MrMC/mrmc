@@ -267,42 +267,7 @@ void CPlexServices::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_SERVICES_PLEXSIGNINPIN)
   {
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN) == strSignIn)
-    {
-      if (GetSignInPinCode())
-      {
-        // change prompt to 'sign-out'
-        CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN, strSignOut);
-        CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, m_myHomeUser);
-        CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction pin sign-in ok");
-        startThread = true;
-      }
-      else
-      {
-        std::string strMessage = "Could not get authToken via pin request sign-in";
-        CLog::Log(LOGERROR, "CPlexServices: %s", strMessage.c_str());
-      }
-    }
-    else
-    {
-      // prompt is 'sign-out'
-      // clear authToken and change prompt to 'sign-in'
-      m_authToken.clear();
-      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN, strSignIn);
-      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, "");
-      CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction sign-out ok");
-    }
-    SetUserSettings();
-
-
-    if (startThread || m_useGDMServer)
-      Start();
-    else
-    {
-      if (!strMessage.empty())
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Plex Services", strMessage, 3000, true);
-      Stop();
-    }
+    InitiateSignIn();
   }
   else if (settingId == CSettings::SETTING_SERVICES_PLEXHOMEUSER)
   {
@@ -321,6 +286,50 @@ void CPlexServices::OnSettingAction(const CSetting *setting)
         Start();
       }
     }
+  }
+}
+
+void CPlexServices::InitiateSignIn()
+{
+  std::string strMessage;
+  bool startThread = false;
+  std::string strSignIn = g_localizeStrings.Get(1240);
+  std::string strSignOut = g_localizeStrings.Get(1241);
+  if (CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN) == strSignIn)
+  {
+    if (GetSignInPinCode())
+    {
+      // change prompt to 'sign-out'
+      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN, strSignOut);
+      CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, m_myHomeUser);
+      CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction pin sign-in ok");
+      startThread = true;
+    }
+    else
+    {
+      strMessage = "Could not get authToken via pin request sign-in";
+      CLog::Log(LOGERROR, "CPlexServices: %s", strMessage.c_str());
+    }
+  }
+  else
+  {
+    // prompt is 'sign-out'
+    // clear authToken and change prompt to 'sign-in'
+    m_authToken.clear();
+    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXSIGNINPIN, strSignIn);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, "");
+    CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction sign-out ok");
+  }
+  SetUserSettings();
+  
+  
+  if (startThread || m_useGDMServer)
+    Start();
+  else
+  {
+    if (!strMessage.empty())
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Plex Services", strMessage, 3000, true);
+    Stop();
   }
 }
 
