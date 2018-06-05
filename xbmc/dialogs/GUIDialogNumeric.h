@@ -52,7 +52,7 @@ public:
   static bool ShowAndGetTime(SYSTEMTIME &time, const std::string &heading);
   static bool ShowAndGetDate(SYSTEMTIME &date, const std::string &heading);
   static bool ShowAndGetIPAddress(std::string &IPAddress, const std::string &heading);
-  static bool ShowAndGetNumber(std::string& strInput, const std::string &strHeading, unsigned int iAutoCloseTimeoutMs = 0);
+  static bool ShowAndGetNumber(std::string& strInput, const std::string &strHeading, unsigned int iAutoCloseTimeoutMs = 0, bool hidden = false);
   static bool ShowAndGetSeconds(std::string& timeString, const std::string &heading);
 
 protected:
