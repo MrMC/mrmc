@@ -180,11 +180,14 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CPlexUtils::GetPlexFilters(items, Base64URL::Decode(section), "plex://movies/");
         items.SetLabel(g_localizeStrings.Get(369));
         items.SetContent("movies");
+        items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
+        items.ClearSortState();
       }
       else
       {
         CPlexUtils::GetPlexFilter(items, Base64URL::Decode(section), "plex://movies/filter/", filter);
         items.SetContent("movies");
+        items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
       }
       CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d movies", client->GetServerName().c_str(), items.Size());
     }
@@ -315,11 +318,13 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         CPlexUtils::GetPlexFilters(items, Base64URL::Decode(section), "plex://tvshows/");
         items.SetLabel(g_localizeStrings.Get(369));
+        items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
         items.SetContent("episodes");
       }
       else
       {
         CPlexUtils::GetPlexFilter(items, Base64URL::Decode(section), "plex://tvshows/filter/", filter);
+        items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
         items.SetContent("tvshows");
       }
       CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d shows", client->GetServerName().c_str(), items.Size());
@@ -439,7 +444,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       else if (path == "filters")
       {
         CPlexUtils::GetPlexMusicFilters(items, Base64URL::Decode(section), "plex://music/");
-//        items.SetLabel(g_localizeStrings.Get(2));
+        items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
         items.SetContent("");
       }
       else
@@ -451,7 +456,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           parentPath = "plex://music/artists/";
         }
         CPlexUtils::GetPlexMusicFilter(items, Base64URL::Decode(section), parentPath, filter);
-//        items.SetContent("");
+        items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
       }
     }
     return true;
