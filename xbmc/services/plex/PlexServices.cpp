@@ -1123,7 +1123,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
         return false;
       }
     }
-
+    plexUsers.SetContent("users");
     CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     if (dialog == NULL)
       return false;
