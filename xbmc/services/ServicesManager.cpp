@@ -444,7 +444,7 @@ void CServicesManager::GetContinueWatching(CFileItemList &onDeck, std::string ty
     for (int item = 0; item < plexItems.Size(); ++item)
     {
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
-      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(682));
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13558));
     }
     
     CPlexUtils::SetPlexItemProperties(plexItems);
@@ -563,7 +563,7 @@ void CServicesManager::GetInProgressShows(CFileItemList &inProgress, int itemLim
     for (int item = 0; item < plexItems.Size(); ++item)
     {
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
-      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(682));
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13559));
     }
     
     CPlexUtils::SetPlexItemProperties(plexItems);

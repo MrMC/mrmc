@@ -7421,7 +7421,17 @@ msgctxt "#13557"
 msgid "Skip delay"
 msgstr ""
 
-#empty strings from id 13558 to 13599
+#.
+#: 
+msgctxt "#13558"
+msgid "Continue Watching"
+msgstr ""
+
+#.
+#: 
+msgctxt "#13559"
+msgid "On Deck"
+msgstr ""
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
