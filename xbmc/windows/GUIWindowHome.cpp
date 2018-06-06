@@ -512,7 +512,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
       std::string type = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
-      if (type == "mrmc")
+      if (type == "mrmc" || type.empty())
       {
         g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
         std::string strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
@@ -678,6 +678,7 @@ void CGUIWindowHome::SetupServices()
   m_buttonSections->ClearItems();
   SetupStaticHomeButtons(*m_buttonSections);
   std::string strLabel;
+  std::string strThumb;
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
   std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
   
@@ -691,6 +692,9 @@ void CGUIWindowHome::SetupServices()
         AddPlexSection(plexClient);
         SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , plexClient->GetServerName());
         strLabel = CPlexServices::GetInstance().GetHomeUserName();
+        strThumb = CPlexServices::GetInstance().GetHomeUserThumb();
+        SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strLabel);
+        SET_CONTROL_LABEL2_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strThumb);
         serverSet = true;
       }
       SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
@@ -718,7 +722,6 @@ void CGUIWindowHome::SetupServices()
   
   CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOME_LIST, item, 0, m_buttonSections);
   g_windowManager.SendThreadMessage(message);
-  SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strLabel);
 }
 
 void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
@@ -748,7 +751,15 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   CFileItemList* staticSections = new CFileItemList;
 
   if (CProfilesManager::GetInstance().GetNumberOfProfiles() > 1)
+  {
     SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
+    std::string strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
+    std::string thumb = CProfilesManager::GetInstance().GetCurrentProfile().getThumb();
+    if (thumb.empty())
+      thumb = "unknown-user.png";
+    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strLabel);
+    SET_CONTROL_LABEL2_THREAD_SAFE(CONTROL_PROFILES_BUTTON , thumb);
+  }
   else
     SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
   
