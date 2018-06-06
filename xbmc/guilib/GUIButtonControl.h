@@ -90,7 +90,8 @@ protected:
   virtual void ProcessText(unsigned int currentTime);
   virtual void RenderText();
   virtual CGUILabel::COLOR GetTextColor() const;
-
+  std::string GetDescriptionByIndex(int index) const;
+  
   CGUITexture m_imgFocus;
   CGUITexture m_imgNoFocus;
   unsigned int  m_focusCounter;

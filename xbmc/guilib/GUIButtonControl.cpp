@@ -390,3 +390,13 @@ void CGUIButtonControl::SetSelected(bool bSelected)
     SetInvalid();
   }
 }
+
+std::string CGUIButtonControl::GetDescriptionByIndex(int index) const
+{
+  if (index == 0)
+    return GetDescription();
+  else if(index == 1)
+    return GetLabel2();
+  
+  return "";
+}
