@@ -52,13 +52,14 @@
 #include "settings/SkinSettings.h"
 #include "profiles/ProfilesManager.h"
 
-#define CONTROL_HOMESHELFMOVIESRA      8000
-#define CONTROL_HOMESHELFTVSHOWSRA     8001
-#define CONTROL_HOMESHELFMUSICALBUMS   8002
-#define CONTROL_HOMESHELFMUSICVIDEOS   8003
-#define CONTROL_HOMESHELFMUSICSONGS    8004
-#define CONTROL_HOMESHELFMOVIESPR      8010
-#define CONTROL_HOMESHELFTVSHOWSPR     8011
+#define CONTROL_HOMESHELFMOVIESRA         8000
+#define CONTROL_HOMESHELFTVSHOWSRA        8001
+#define CONTROL_HOMESHELFMUSICALBUMS      8002
+#define CONTROL_HOMESHELFMUSICVIDEOS      8003
+#define CONTROL_HOMESHELFMUSICSONGS       8004
+#define CONTROL_HOMESHELFMOVIESPR         8010
+#define CONTROL_HOMESHELFTVSHOWSPR        8011
+#define CONTROL_HOMESHELFCONTINUEWATCHING 8020
 
 #define CONTROL_HOME_LIST              9000
 #define CONTROL_SERVER_BUTTON          4000
@@ -85,6 +86,7 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
   m_HomeShelfMusicAlbums = new CFileItemList;
   m_HomeShelfMusicSongs = new CFileItemList;
   m_HomeShelfMusicVideos = new CFileItemList;
+  m_HomeShelfContinueWatching = new CFileItemList;
 
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
   m_buttonSections = new CFileItemList;
@@ -262,6 +264,7 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       ((CHomeShelfJob *)job)->UpdateTvItemsPR(m_HomeShelfTVPR);
       ((CHomeShelfJob *)job)->UpdateMovieItemsRA(m_HomeShelfMoviesRA);
       ((CHomeShelfJob *)job)->UpdateMovieItemsPR(m_HomeShelfMoviesPR);
+      ((CHomeShelfJob *)job)->UpdateContinueWatchingItems(m_HomeShelfContinueWatching);
     }
     
     int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
@@ -294,7 +297,8 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesPR);
       g_windowManager.SendThreadMessage(messageMovieRA);
     }
-    
+    CGUIMessage messageContinueWatching(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING, 0, 0, m_HomeShelfContinueWatching);
+    g_windowManager.SendThreadMessage(messageContinueWatching);
   }
 
   if (jobFlag & Audio)

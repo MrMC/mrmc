@@ -77,6 +77,7 @@ private:
   CFileItemList*               m_HomeShelfMusicSongs;
   CFileItemList*               m_HomeShelfMusicVideos;
   CFileItemList*               m_HomeShelfMusicAlbums;
+  CFileItemList*               m_HomeShelfContinueWatching;
   
   // services below
   void SetupServices();

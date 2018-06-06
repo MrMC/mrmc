@@ -104,6 +104,7 @@ public:
   void GetAllInProgressShows(CFileItemList &inProgress, int itemLimit);
   void GetAllInProgressMovies(CFileItemList &inProgress, int itemLimit);
   void GetRecentlyAddedMovies(CFileItemList &recentlyAdded, int itemLimit, bool watched, std::string type, std::string uuid);
+  void GetContinueWatching(CFileItemList &onDeck, std::string type, std::string uuid);
   void GetRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit, bool watched, std::string type, std::string uuid);
   void GetRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit, std::string type, std::string uuid);
   void GetInProgressShows(CFileItemList &inProgress, int itemLimit, std::string type, std::string uuid);

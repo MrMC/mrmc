@@ -83,6 +83,7 @@ CHomeShelfJob::CHomeShelfJob(int flag)
   m_HomeShelfMusicAlbums = new CFileItemList;
   m_HomeShelfMusicSongs = new CFileItemList;
   m_HomeShelfMusicVideos = new CFileItemList;
+  m_HomeShelfContinueWatching = new CFileItemList;
 }
 
 CHomeShelfJob::~CHomeShelfJob()
@@ -94,6 +95,7 @@ CHomeShelfJob::~CHomeShelfJob()
   SAFE_DELETE(m_HomeShelfMusicAlbums);
   SAFE_DELETE(m_HomeShelfMusicSongs);
   SAFE_DELETE(m_HomeShelfMusicVideos);
+  SAFE_DELETE(m_HomeShelfContinueWatching);
 }
 
 bool CHomeShelfJob::UpdateVideo()
@@ -114,11 +116,13 @@ bool CHomeShelfJob::UpdateVideo()
   CFileItemList homeShelfTVPR;
   CFileItemList homeShelfMoviesRA;
   CFileItemList homeShelfMoviesPR;
+  CFileItemList homeShelfOnDeck;
   
   m_HomeShelfTVRA->ClearItems();
   m_HomeShelfTVPR->ClearItems();
   m_HomeShelfMoviesRA->ClearItems();
   m_HomeShelfMoviesPR->ClearItems();
+  m_HomeShelfContinueWatching->ClearItems();
 
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
   std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
@@ -249,12 +253,15 @@ bool CHomeShelfJob::UpdateVideo()
     CServicesManager::GetInstance().GetRecentlyAddedMovies(*m_HomeShelfMoviesRA, NUM_ITEMS*2, true, serverType, serverUUID);
     CServicesManager::GetInstance().GetInProgressShows(*m_HomeShelfTVPR, NUM_ITEMS*2, serverType, serverUUID);
     CServicesManager::GetInstance().GetInProgressMovies(*m_HomeShelfMoviesPR, NUM_ITEMS*2, serverType, serverUUID);
+    CServicesManager::GetInstance().GetContinueWatching(*m_HomeShelfContinueWatching, serverType, serverUUID);
+
   }
   
   m_HomeShelfTVRA->SetContent("episodes");
   m_HomeShelfTVPR->SetContent("episodes");
   m_HomeShelfMoviesRA->SetContent("movies");
   m_HomeShelfMoviesPR->SetContent("movies");
+  m_HomeShelfContinueWatching->SetContent("movies");
 #if defined(TARGET_DARWIN_TVOS)
   // send recently added Movies and TvShows to TopShelf
   CTVOSTopShelf::GetInstance().SetTopShelfItems(*m_HomeShelfMoviesRA,*m_HomeShelfTVRA,*m_HomeShelfMoviesPR,*m_HomeShelfTVPR);
@@ -426,6 +433,12 @@ void CHomeShelfJob::UpdateMovieItemsPR(CFileItemList *list)
 {
   CSingleLock lock(m_critsection);
   list->Assign(*m_HomeShelfMoviesPR);
+}
+
+void CHomeShelfJob::UpdateContinueWatchingItems(CFileItemList *list)
+{
+  CSingleLock lock(m_critsection);
+  list->Assign(*m_HomeShelfContinueWatching);
 }
 
 void CHomeShelfJob::UpdateMusicSongItems(CFileItemList *list)

@@ -427,6 +427,31 @@ void CServicesManager::GetRecentlyAddedMovies(CFileItemList &recentlyAdded, int 
     }
   }
 }
+
+void CServicesManager::GetContinueWatching(CFileItemList &onDeck, std::string type, std::string uuid)
+{
+  if (type == "plex" && CPlexUtils::HasClients())
+  {
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (!plexClient)
+      return;
+    CFileItemList plexItems;
+    CURL curl(plexClient->GetUrl());
+    curl.SetProtocol(plexClient->GetProtocol());
+    curl.SetFileName(curl.GetFileName() + "hubs/home/continueWatching");
+    CPlexUtils::GetPlexInProgressMovies(plexItems, curl.Get(), 10);
+    
+    for (int item = 0; item < plexItems.Size(); ++item)
+    {
+      CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(682));
+    }
+    
+    CPlexUtils::SetPlexItemProperties(plexItems);
+    onDeck.Append(plexItems);
+  }
+}
+
 void CServicesManager::GetRecentlyAddedShows(CFileItemList &recentlyAdded, int itemLimit, bool watched, std::string type, std::string uuid)
 {
   if (type == "plex" && CPlexUtils::HasClients())
@@ -574,7 +599,7 @@ void CServicesManager::GetInProgressMovies(CFileItemList &inProgress, int itemLi
     CFileItemList plexItems;
     CURL curl(plexClient->GetUrl());
     curl.SetProtocol(plexClient->GetProtocol());
-    curl.SetFileName(curl.GetFileName() + "hubs/home/continueWatching");
+    curl.SetFileName(curl.GetFileName() + "library/onDeck");
     curl.SetProtocolOption("type","1");
     CPlexUtils::GetPlexInProgressMovies(plexItems, curl.Get(), itemLimit);
     

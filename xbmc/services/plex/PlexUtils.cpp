@@ -587,7 +587,7 @@ bool CPlexUtils::GetAllPlexInProgress(CFileItemList &items, bool tvShow)
       
       CURL curl(client->GetUrl());
       curl.SetProtocol(client->GetProtocol());
-      curl.SetFileName(curl.GetFileName() + "hubs/home/");
+      curl.SetFileName(curl.GetFileName() + "library/");
       
       if (tvShow)
       {
