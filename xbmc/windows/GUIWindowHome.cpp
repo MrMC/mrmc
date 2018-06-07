@@ -1023,7 +1023,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   if (showPlaylists)
   {
     button.label = g_localizeStrings.Get(136);
-    button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/,return)";
+    button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/)";
     // type
     property.name = "type";
     property.value = "playlists";
