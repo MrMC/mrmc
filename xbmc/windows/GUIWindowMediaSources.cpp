@@ -55,11 +55,17 @@
 #include "pvr/recordings/PVRRecording.h"
 #include "ContextMenuManager.h"
 #include "services/ServicesManager.h"
+#include "addons/AddonManager.h"
+#include "addons/GUIDialogAddonInfo.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "filesystem/AddonsDirectory.h"
+#include "pvr/PVRManager.h"
 
 #include "video/windows/GUIWindowVideoBase.h"
 
 #include <utility>
 
+using namespace PVR;
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace KODI::MESSAGING;
@@ -169,6 +175,14 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     plItem->SetLabel(g_localizeStrings.Get(136));
     plItem->SetSpecialSort(SortSpecialOnBottom);
     items.Add(plItem);
+    
+    CFileItemPtr pvItem(new CFileItem("PVRAddons"));
+    pvItem->m_bIsFolder = true;
+    pvItem->m_bIsShareOrDrive = false;
+    pvItem->SetPath("mediasources://pvr/");
+    pvItem->SetLabel(g_localizeStrings.Get(24019));
+    pvItem->SetSpecialSort(SortSpecialOnBottom);
+    items.Add(pvItem);
     
     std::string text;
     std::string strSignIn = g_localizeStrings.Get(1240);
@@ -313,6 +327,71 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
           !VerifyLogout("Emby"))
         return false;
       CEmbyServices::GetInstance().InitiateSignIn();
+      g_windowManager.ActivateWindow(WINDOW_MEDIA_SOURCES, params);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://pvr/"))
+    {
+      std::string strParentPath;
+      URIUtils::GetParentPath(strDirectory, strParentPath);
+      SetHistoryForPath(strParentPath);
+      std::vector<std::string> params;
+      params.push_back("mediasources://");
+      params.push_back("return");
+      // going to ".." will put us
+      // at 'sources://' and we want to go back here.
+      params.push_back("parent_redirect=" + strParentPath);
+
+      ADDON::VECADDONS pvrAddons;
+      ADDON::CAddonMgr::GetInstance().GetAllAddons(ADDON::ADDON_PVRDLL, pvrAddons);
+      if (pvrAddons.size() > 0)
+      {
+        CFileItemList items;
+        CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        if (dialog == NULL)
+          return false;
+        int sel = 0;
+        std::vector<int> selected;
+        dialog->Reset();
+        dialog->SetHeading(g_localizeStrings.Get(24019));
+        dialog->SetMultiSelection(false);
+        dialog->SetUseDetails(true);
+        for (ADDON::VECADDONS::const_iterator addon = pvrAddons.begin(); addon != pvrAddons.end(); ++addon)
+        {
+          CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, (*addon)->ID()));
+          CFileItem item1(*item.get());
+          dialog->Add(item1);
+          if (!ADDON::CAddonMgr::GetInstance().IsAddonDisabled((*addon)->ID()))
+            dialog->SetSelected(sel);
+          sel++;
+        }
+        
+        dialog->Sort();
+        dialog->Open();
+        
+        if (!dialog->IsConfirmed())
+          return false;
+        
+        const CFileItemPtr item = dialog->GetSelectedFileItem();
+        
+        CGUIDialogAddonInfo::ShowForItem(item);
+        ADDON::AddonPtr addon = *new ADDON::AddonPtr;
+        ADDON::CAddonMgr::GetInstance().GetAddon(item->GetPath(), addon);
+        if (!ADDON::CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && !g_PVRManager.IsStarted())
+        {
+          CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED,true);
+          g_application.StartPVRManager();
+        }
+        else
+        {
+          ADDON::VECADDONS pvrAddons;
+          ADDON::CAddonMgr::GetInstance().GetAddons(ADDON::ADDON_PVRDLL, pvrAddons, true);
+          if (pvrAddons.size() < 1)
+          {
+            CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED,false);
+            g_application.StopPVRManager();
+          }
+        }
+      }
       g_windowManager.ActivateWindow(WINDOW_MEDIA_SOURCES, params);
     }
     result = true;
