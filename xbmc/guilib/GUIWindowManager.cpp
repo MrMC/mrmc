@@ -193,7 +193,9 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowAddonBrowser(WINDOW_PVRCLIENT_BROWSER));
   Add(new CGUIWindowAddonBrowser(WINDOW_INFOPROVIDER_BROWSER));
   Add(new CGUIWindowScreensaverDim);
-  //Add(new CGUIWindowDebugInfo);
+#if defined(TARGET_DARWIN_OSX)
+  Add(new CGUIWindowDebugInfo);
+#endif
   Add(new CGUIWindowPointer);
   Add(new CGUIDialogYesNo);
   Add(new CGUIDialogProgress);
