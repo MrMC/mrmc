@@ -1129,7 +1129,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
       return false;
 
     dialog->Reset();
-    dialog->SetHeading("Choose User");
+    dialog->SetHeading("Users");
     dialog->SetItems(plexUsers);
     dialog->SetMultiSelection(false);
     dialog->SetUseDetails(true);
