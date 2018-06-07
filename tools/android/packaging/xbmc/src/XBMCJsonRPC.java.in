@@ -988,6 +988,7 @@ public class XBMCJsonRPC
       }
       med.setXbmcUrl("videodb://movies/titles/" + details.get("movieid").getAsString() + "?showinfo=true");
 
+      /*
       if (details.has("trailer") && !details.get("trailer").getAsString().isEmpty())
       {
         String trailer_url = details.get("trailer").getAsString();
@@ -1007,6 +1008,7 @@ public class XBMCJsonRPC
         else
           med.setVideoUrl(trailer_url);
       }
+      */
       med.setCategory(Media.MEDIA_TYPE_MOVIE);
 
       med.setYear(details.get("year").getAsString());
