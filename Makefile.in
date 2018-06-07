@@ -201,12 +201,16 @@ CLEAN_FILES=@APP_NAME_LC@.bin @APP_NAME_LC@-xrandr lib@APP_NAME_LC@.so
 DISTCLEAN_FILES=config.h config.log config.status tools/Linux/@APP_NAME_LC@.sh \
         tools/Linux/@APP_NAME_LC@-standalone.sh autom4te.cache config.h.in~
 
-ifeq (@USE_LIBXBMC@,1)
-FINAL_TARGETS+=lib@APP_NAME_LC@.so
+ifeq (@USE_ANDROID@,1)
+  FINAL_TARGETS+=Makefile
 else
-FINAL_TARGETS=@APP_NAME_LC@.bin @APP_NAME_LC@-xrandr
+	ifeq (@USE_LIBXBMC@,1)
+	FINAL_TARGETS+=lib@APP_NAME_LC@.so
+	else
+	FINAL_TARGETS=@APP_NAME_LC@.bin @APP_NAME_LC@-xrandr
+	endif
+  FINAL_TARGETS+=Makefile externals
 endif
-FINAL_TARGETS+=Makefile externals
 
 ifeq (@USE_SSE4@,1)
 LIBSSE4+=sse4
@@ -362,13 +366,16 @@ apk24Obb: install
 	sed -i'' -e 's|targetSdkVersion="22"|targetSdkVersion="24"|' 'tools/android/packaging/xbmc/AndroidManifest.xml'
 	PKG_EXCLUDED_ADDONS="skin.pm3.hd skin.re-touched" make -C tools/android/packaging apk-obb
 
-apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-noobb-unsigned: install
+apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-noobb-unsigned source source-obb source-noobb: install
 	make -C tools/android/packaging $@
 
 apk-clean apk-sign:
 	make -C tools/android/packaging $@
 
 install-binaries: install-scripts
+ifeq (@USE_ANDROID@,1)
+	make -C xbmc
+else
 	@echo "Copying @APP_NAME_LC@ binary to $(DESTDIR)$(libdir)/@APP_NAME_LC@/"
 	@install -d $(DESTDIR)$(libdir)/@APP_NAME_LC@
 	@cd $(DESTDIR)$(libdir); [ -L xbmc ] || [ -d xbmc ] || ln -s @APP_NAME_LC@ xbmc
@@ -380,6 +387,7 @@ ifeq (@USE_LIBXBMC@,1)
 else
 	@install @APP_NAME_LC@.bin $(DESTDIR)$(libdir)/@APP_NAME_LC@/@APP_NAME_LC@.bin
 	@echo "You can run @APP_NAME_LC@ with the command '@APP_NAME_LC@'"
+endif
 endif
 endif
 

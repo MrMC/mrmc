@@ -1,10 +1,18 @@
-if(MICROHTTPD_FOUND)
-  set(SOURCES HTTPPythonInvoker.cpp
-              HTTPPythonWsgiInvoker.cpp)
+cmake_minimum_required(VERSION 3.4.1)
 
-  set(HEADERS HTTPPythonInvoker.h
-              HTTPPythonRequest.h
-              HTTPPythonWsgiInvoker.h)
+get_property(rtdir GLOBAL PROPERTY ROOT_DIR)
+include ( ${rtdir}/includes.cmake )
 
-  core_add_library(network_httprequesthandlers_python)
-endif()
+include_directories ( ${DEPENDS_DIR}/include/python2.7 )
+
+set (my_SOURCES
+        HTTPPythonInvoker.cpp
+        HTTPPythonWsgiInvoker.cpp
+        )
+
+add_library(
+        httprequesthandlers-python
+        STATIC
+
+        ${my_SOURCES}
+        )

@@ -1,0 +1,249 @@
+cmake_minimum_required(VERSION 3.4.1)
+
+# Sets lib_build_DIR to the path of the desired output directory.
+set( lib_build_DIR ../cmake_build )
+file(MAKE_DIRECTORY ${lib_build_DIR})
+
+set_property(GLOBAL PROPERTY ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../..")
+get_property(rtdir GLOBAL PROPERTY ROOT_DIR)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -D_DEBUG -DHAVE_CONFIG_H -DANDROID -DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_ANDROID -D__ANDROID_API__=21 -D_GLIBCXX_USE_C99_MATH_TR1 -D__STDC_CONSTANT_MACROS -D_FILE_DEFINED -DNPT_CONFIG_ENABLE_LOGGING -DPLT_HTTP_DEFAULT_USER_AGENT=\"\\\"UPnP/1.0 DLNADOC/1.50 @APP_NAME@\\\"\" -DPLT_HTTP_DEFAULT_SERVER=\"\\\"UPnP/1.0 DLNADOC/1.50 @APP_NAME@\\\"\" -Wno-inconsistent-missing-override -Wno-overloaded-virtual")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DHAVE_CONFIG_H -D_DEBUG -DANDROID -DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_ANDROID -D__ANDROID_API__=21 -D_GLIBCXX_USE_C99_MATH_TR1 -D__STDC_CONSTANT_MACROS -D_FILE_DEFINED -DNPT_CONFIG_ENABLE_LOGGING -DPLT_HTTP_DEFAULT_USER_AGENT=\"\\\"UPnP/1.0 DLNADOC/1.50 @APP_NAME@\\\"\" -DPLT_HTTP_DEFAULT_SERVER=\"\\\"UPnP/1.0 DLNADOC/1.50 @APP_NAME@\\\"\" -Wno-inconsistent-missing-override -Wno-overloaded-virtual")
+
+add_library( app-glue
+             STATIC
+             ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c )
+
+add_library( cpu-feature
+             STATIC
+             ${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c )
+
+add_library( libcurl SHARED IMPORTED )
+set_target_properties( libcurl PROPERTIES IMPORTED_LOCATION
+             ${DEPENDS_DIR}/lib/libcurl.so )
+
+include ( sources.cmake )
+include ( libs.cmake )
+include ( ${rtdir}/includes.cmake )
+
+# Export ANativeActivity_onCreate()¨
+# Refer to: https://github.com/android-ndk/ndk/issues/381.
+set(CMAKE_SHARED_LINKER_FLAGS
+    "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+
+set(DATA_FILES
+  ${rtdir}/system/settings/settings.xml
+  ${rtdir}/system/settings/android.xml
+
+  ${rtdir}/system/keymaps/keyboard.xml
+  ${rtdir}/system/keymaps/gamepad.xml
+  ${rtdir}/system/keymaps/joystick.xml.sample
+  ${rtdir}/addons/resource.language.en_gb/resources/strings.po
+)
+
+add_library( # Specifies the name of the library.
+             @APP_NAME_LC@
+             # Sets the library as a shared library.
+             SHARED
+
+             ${rtdir}/xbmc/Application.cpp
+             ${rtdir}/xbmc/Application.h
+
+             ${DATA_FILES}
+             )
+
+# Include libraries needed for @APP_NAME_LC@ lib
+target_link_libraries(@APP_NAME_LC@
+
+                        -Wl,--whole-archive
+                        main
+                        activity
+                        -Wl,--no-whole-archive
+
+                        -Wl,--start-group
+
+                        app-glue
+                        cpu-feature
+
+                        libdvd
+                        hdhomerun
+                        libupnp
+                        UnrarXLib
+
+                        xbmc
+                        addons
+                        cdrip
+                        commons
+                        easywsclient
+                        kissfft
+                        libmicrossdp
+                        cores
+                        audioengine
+                        dllloader
+
+                        dvdplayer
+                        dvdcodecs
+                        audiocodecs
+                        overlaycodecs
+                        videocodecs
+                        dvddemuxers
+                        dvdinputstreams
+                        dvdsubtitles
+                        externalplayer
+                        paplayer
+                        playercorefactory
+                        videorenderer
+                        videoshaders
+
+                        dbwrappers
+                        dialogs
+                        epg
+                        events
+                        filesystem
+                        musicdatabasedirectory
+                        videodatabasedirectory
+                        guilib
+
+                        input
+                        input_linux
+                        input_touch
+                        input_touch_generic
+
+                        interfaces
+                        builtins
+                        interfaces-generic
+                        info
+                        json-rpc
+                        legacy
+                        legacy-wsgi
+                        python_binding
+
+                        linux
+                        listproviders
+                        media
+                        messaging
+                        messagingHelpers
+
+                        music
+                        musicdialogs
+                        musicscanner
+                        musictags
+                        musicwindows
+
+                        network
+                        network_android
+                        dacp
+                        httprequesthandlers
+                        httprequesthandlers-python
+                        network_linux
+                        mdns
+                        upnp
+                        websocket
+
+                        peripherals
+                        peripheral-bus
+                        peripheral-devices
+                        peripheral-dialogs
+
+                        pictures
+
+                        playlists
+                        powermanagement
+                        powermanagement_android
+                        profiles
+                        profiles_dialogs
+                        profiles_windows
+                        programs
+
+                        pvr
+                        pvraddons
+                        pvrchannels
+                        pvrdialogs
+                        pvrrecordings
+                        pvrtimers
+                        pvrwindows
+
+                        rendering
+                        rendering_gles
+
+                        services
+                        services_hue
+
+                        settings
+                        settings_dialogs
+                        settings_lib
+                        settings_windows
+
+                        storage
+                        storage_android
+
+                        threads
+                        utils
+
+                        video
+                        videodialogs
+                        video-jobs
+                        videosync
+                        videowindows
+
+                        view
+                        windowing
+                        windowing_android
+                        windows
+
+                        # depends
+                        smbclient
+                        ssh
+                        mDNSEmbedded
+                        microhttpd
+                        iconv
+                        mysqlclient
+                        ssl
+                        crypto
+                        lzo2
+                        ulxmlrpcpp
+                        expat
+                        jpeg
+                        gif
+                        bz2
+                        gcrypt
+                        gpg-error
+                        androidjni
+                        python2.7
+                        ffi
+                        tinyxml
+                        crossguid
+                        uuid
+                        xml2
+                        xslt
+                        fribidi
+                        sqlite3
+                        png16
+                        pcre
+                        pcrecpp
+                        freetype
+                        tag
+                        zip
+                        gnutls
+                        gmp
+                        hogweed
+                        nettle
+                        tasn1
+                        avfilter
+                        avformat
+                        avcodec
+                        postproc
+                        swscale
+                        swresample
+                        avutil
+
+                        -Wl,--end-group
+
+                        log
+                        android
+                        mediandk
+                        jnigraphics
+                        GLESv3
+                        EGL
+                        z
+                      )

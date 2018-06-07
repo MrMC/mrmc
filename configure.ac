@@ -2297,6 +2297,7 @@ OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/AndroidManifest.xml"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/Makefile"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/variables.txt"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/build.gradle"
+OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/CMakeLists.txt"
 
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/Splash.java"
 OUTPUT_FILES="$OUTPUT_FILES tools/android/packaging/xbmc/src/Main.java"

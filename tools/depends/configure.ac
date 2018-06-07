@@ -2,7 +2,7 @@ AC_PREREQ(2.59)
 AC_INIT([xbmc-depends], [2.00], [http://trac.xbmc.org])
 :${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
+AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include ../../tools/android/packaging/local.properties target/Toolchain.cmake
                  target/config-binaddons.site target/Toolchain_binaddons.cmake])
 AC_CANONICAL_HOST
 m4_include([../../m4/xbmc_arch.m4])
@@ -129,6 +129,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
+    use_android_abi="armeabi-v7a"
     platform_cc=clang
     platform_cxx=clang++
     use_sdk="${use_sdk:-android-24}"
@@ -150,6 +151,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="arm64"
     fi
+    use_android_abi="arm64-v8a"
     platform_cc=clang
     platform_cxx=clang++
     use_sdk="${use_sdk:-android-24}"
@@ -171,6 +173,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
+    use_android_abi="x86"
     platform_cc=clang
     platform_cxx=clang++
     use_sdk="${use_sdk:-android-24}"
@@ -633,6 +636,7 @@ AC_SUBST(use_host)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)
 AC_SUBST(use_cpu)
+AC_SUBST(use_android_abi)
 AC_SUBST(use_toolchain)
 AC_SUBST(use_build_toolchain)
 AC_SUBST(use_tarballs)
@@ -656,6 +660,7 @@ AC_SUBST(native_platform_min_version)
 AC_OUTPUT
 echo -e "toolchain:\t $use_toolchain"
 echo -e "cpu:\t\t $use_cpu"
+echo -e "abi:\t\t $use_android_abi"
 echo -e "host:\t\t $use_host"
 if test "$platform_os" == "android"; then
   echo -e "sdk-platform:\t $use_sdk"

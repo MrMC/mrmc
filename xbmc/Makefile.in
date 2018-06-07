@@ -42,7 +42,11 @@ DISTCLEAN_FILES = DllPaths_generated.h DllPaths_generated_android.h CompileInfo.
 
 .PHONY: .GitRevision
 
+ifeq (@USE_ANDROID@,1)
+all: CompileInfo.cpp
+else
 all: $(SRCS) $(LIB) CompileInfoTemplate.cpp
+endif
 
 CompileInfo.cpp: ../version.txt GitRevision
 	$(MAKE) -f gen-compileinfo.mk

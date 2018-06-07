@@ -1,5 +1,27 @@
 apply plugin: 'com.android.application'
 
+def getDependsDir() {
+    Properties properties = new Properties()
+    properties.load(new File(rootDir.absolutePath + "/local.properties").newDataInputStream())
+    def dependsDir = properties.getProperty('depends.dir', null)
+    if (dependsDir == null) {
+        throw new GradleException(
+                "Depends location not found. Define location with depends.dir in the local.properties file!")
+    }
+    return dependsDir
+}
+
+def getABI() {
+    Properties properties = new Properties()
+    properties.load(new File(rootDir.absolutePath + "/local.properties").newDataInputStream())
+    def dependsDir = properties.getProperty('xbmcABI', null)
+    if (dependsDir == null) {
+        throw new GradleException(
+                "Depends location not found. Define location with depends.dir in the local.properties file!")
+    }
+    return dependsDir
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
@@ -9,6 +31,19 @@ android {
         targetSdkVersion 26
         versionCode @APP_VERSION_ANDROID_VERSION@
         versionName "@APP_VERSION@"
+
+        externalNativeBuild {
+            cmake {
+                abiFilters getABI()
+                arguments "-DANDROID_STL=c++_shared",
+                            "-DANDROID_TOOLCHAIN=clang",
+                            "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=FALSE",
+                            "-DANDROID_CPP_FEATURES=rtti exceptions",
+                            "-DDEPENDS_DIR="+getDependsDir();
+                            "-DANDROID_ARM_NEON=TRUE"
+            }
+        }
+
     }
     buildTypes {
         releaseUnsigned.initWith(buildTypes.release)
@@ -20,7 +55,7 @@ android {
         debugUnsigned {
             signingConfig null
         }
-        
+
     }
     aaptOptions {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
@@ -33,6 +68,12 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['lib']
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'CMakeLists.txt'
         }
     }
 
@@ -56,11 +97,12 @@ import com.android.build.OutputFile
 
 android.applicationVariants.all { variant ->
   variant.outputs.each { output ->
-    def baseAbiVersionCode = project.ext.abiCodes.get(xbmcABI)
+    def baseAbiVersionCode = project.ext.abiCodes.get(getABI())
     print baseAbiVersionCode
 
     output.versionCodeOverride =
             variant.versionCode * 100 + baseAbiVersionCode
   }
+
 }
 

@@ -40,6 +40,12 @@ cp $SRC_DIR/res/values/colors.xml $TMP_DIR/colors.xml.in
 cp $SRC_DIR/res/xml/searchable.xml $TMP_DIR/searchable.xml.in
 cp $SRC_DIR/res/layout/activity_main.xml $TMP_DIR/activity_main.xml.in
 
+cp $SRC_DIR/CMakeLists.txt $TMP_DIR/CMakeLists.txt.in
+cp $SRC_DIR/sources.cmake $TMP_DIR/sources.cmake
+cp $SRC_DIR/libs.cmake $TMP_DIR/libs.cmake
+#cp $SRC_DIR/includes.cmake $TMP_DIR/includes.cmake
+cp $SRC_DIR/build.gradle $TMP_DIR/build.gradle.in
+
 sed -i -e "s#${VARIABLES[APP_WEBSITE]}#@APP_WEBSITE@#g" -e "s#${VARIABLES[APP_PACKAGE]}#@APP_PACKAGE@#g" -e "s#${VARIABLES[APP_NAME_DISPLAY]}#@APP_NAME_DISPLAY@#g" -e "s#${VARIABLES[APP_NAME_LC]}#@APP_NAME_LC@#g" -e "s#${VARIABLES[APP_NAME_UC]}#@APP_NAME_UC@#g" -e "s#${VARIABLES[APP_VERSION_ANDROID_VERSION]}#@APP_VERSION_ANDROID_VERSION@#g" -e "s#${VARIABLES[APP_VERSION]}#@APP_VERSION@#g" $TMP_DIR/strings.xml.in
 find $TMP_DIR -name "*.in" |xargs -i sed -i -e "s#${VARIABLES[APP_WEBSITE]}#@APP_WEBSITE@#g" -e "s#${VARIABLES[APP_PACKAGE]}#@APP_PACKAGE@#g" -e "s#${VARIABLES[APP_NAME]}#@APP_NAME@#g" -e "s#${VARIABLES[APP_NAME_LC]}#@APP_NAME_LC@#g" -e "s#${VARIABLES[APP_NAME_UC]}#@APP_NAME_UC@#g" -e "s#${VARIABLES[APP_VERSION_ANDROID_VERSION]}#@APP_VERSION_ANDROID_VERSION@#g" -e "s#${VARIABLES[APP_VERSION]}#@APP_VERSION@#g" {}
 sed -i -e "s#appPackageName = \"@APP_PACKAGE@\";#appPackageName = \"tv.mrmc.mrmc\";#g" $TMP_JAVA_DIR/Main.java.in
@@ -50,5 +56,11 @@ cp -f $TMP_DIR/strings.xml.in $TARGET_DIR/strings.xml.in
 cp -f $TMP_DIR/colors.xml.in $TARGET_DIR/colors.xml.in
 cp -f $TMP_DIR/searchable.xml.in $TARGET_DIR/searchable.xml.in
 cp -f $TMP_DIR/activity_main.xml.in $TARGET_DIR/activity_main.xml.in
+
+cp -f $TMP_DIR/CMakeLists.txt.in $TARGET_DIR/CMakeLists.txt.in
+cp -f $TMP_DIR/sources.cmake $TARGET_DIR/sources.cmake
+cp -f $TMP_DIR/libs.cmake $TARGET_DIR/libs.cmake
+#cp -f $TMP_DIR/includes.cmake $TARGET_DIR/includes.cmake
+cp -f $TMP_DIR/build.gradle.in $TARGET_DIR/build.gradle.in
 
 rm -rf $TMP_DIR

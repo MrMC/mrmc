@@ -41,43 +41,17 @@ ifneq ($(strip $(SIGN_KEYPASS)),)
 SIGN_KEYPASS_OPT=-keypass $(SIGN_KEYPASS)
 endif
 
-#this fixes a android ndk fuckup where the pathes to
-#prebuilt stuff follow different name shemes for
-#arm and x86
-ifeq ($(findstring i686,$(CPU)),i686)
-ARCH=x86
-ABI=x86
-else ifeq ($(findstring arm64,$(CPU)),arm64)
-ARCH=arm64
-ABI=arm64-v8a
-else ifeq ($(findstring arm,$(CPU)),arm)
-ARCH=arm
-ABI=armeabi-v7a
-endif
-
-# libc++
-STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.so
-
-#older ndk x86
-GDBPATH=$(NDKROOT)/toolchains/$(ARCH)-$(GCC_VERSION)/prebuilt/gdbserver
-
-ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
-#older ndk arm
-GDBPATH=$(NDKROOT)/toolchains/$(HOST)-$(GCC_VERSION)/prebuilt/gdbserver
-endif
-
-ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
-#vanilla ndk >= 8
-GDBPATH=$(NDKROOT)/prebuilt/android-$(ARCH)/gdbserver/gdbserver
-endif
-
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS)) $(addprefix $(PREFIX)/lib/$(SDK_PLATFORM)/,$(PLATFORM_OBJS))
 DSTLIBS = $(ABI)/lib/lib@APP_NAME_LC@.so $(addprefix $(ABI)/lib/,$(OBJS)) $(addprefix $(ABI)/lib/,$(PLATFORM_OBJS))
 libs= $(DSTLIBS)
 
+ABI=$(ANDROID_ABI)
+
 all: apk
 
 apk: apk-clean sharedapk package apk-sign
+
+source: apk-clean sharedapk pack-no-build
 
 obb: apk-clean sharedobb
 
@@ -85,9 +59,13 @@ apk-unsigned: apk-clean sharedapk package
 
 apk-obb: apk-clean sharedobb package apk-sign
 
+source-obb: apk-clean sharedobb pack-no-build
+
 apk-obb-unsigned: apk-clean sharedobb package
 
-apk-noobb: apk-clean package apk-sign
+apk-noobb: apk-clean package apk-sign 
+
+source-noobb: apk-clean pack-no-build
 
 apk-noobb-unsigned: apk-clean package
 
@@ -143,10 +121,9 @@ res:
 	cp xbmc/activity_main.xml packaging/res/layout/
 	cp xbmc/searchable.xml packaging/res/xml/
 
-libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
+libs: 
 	mkdir -p packaging/lib/$(ABI) packaging/assets/python2.7/lib/
 	cp -fp $(SRCLIBS) packaging/lib/$(ABI)/
-	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so packaging/lib/$(ABI)/
 	# depends packaging of binary pvr hardcodes path to mrmc
 	find $(PREFIX)/lib/mrmc/addons/pvr* -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; || true
 	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; || true
@@ -154,16 +131,16 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} packaging/lib/$(ABI)/ \; || true
 	cd packaging/lib/$(ABI)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	$(STRIP) --strip-unneeded packaging/lib/$(ABI)/*.so
-	install -p $(GDBPATH) ./packaging/lib/$(ABI)/gdbserver
-	install -p $(STLLIB) ./packaging/lib/$(ABI)/
-	echo "set solib-search-path ./obj/local/$(ABI)" > ./packaging/lib/$(ABI)/gdb.setup
-	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
-	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./packaging/lib/$(ABI)/gdb.setup
 
 java: res
 	cp -fp xbmc/AndroidManifest.xml packaging/
 	cp -fp xbmc/build.gradle packaging/
+	cp -fp xbmc/CMakeLists.txt packaging/
+	cp -fp xbmc/sources.cmake packaging/
+	cp -fp xbmc/libs.cmake packaging/
 	cd xbmc/src; find . -name "*.java" -exec cp --parents -fp {} ../../packaging/java/@APP_PACKAGE_DIR@/ \;
+
+pack-no-build: libs python java
 
 package: libs python java
 	@echo "Gradle packaging..."
@@ -175,13 +152,11 @@ apk-sign:
 	@$(ZIPALIGN) -f 4 packaging/build/outputs/apk/$(BUILD_TYPE_LC)Unsigned/packaging-$(BUILD_TYPE_LC)Unsigned-unsigned.apk $(XBMCROOT)/@APP_NAME@app-$(ABI)-$(BUILD_TYPE_LC).apk
 	@echo "$(XBMCROOT)/@APP_NAME_LC@app-$(ABI)-$(BUILD_TYPE_LC).apk created"
 
-$(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
-	$(MAKE) -C ../../depends/target/xbmc
-
 $(SRCLIBS):
 
 apk-clean:
-	rm -rf packaging
+	#rm -rf packaging
+	rm -rf packaging/assets
 	rm -rf assets
 	mkdir -p packaging
 

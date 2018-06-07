@@ -121,6 +121,14 @@ install some android packages using the Android SDK Manager:
     $ cd <android-sdk>/tools
     $ ./android update sdk -u -t platform,platform-tool
     $ ./android update sdk --all -u -t build-tools-25.0.3
+
+As of newest SDKs the android tool is deprecated. Use sdkmanager instead:
+    $ cd <android-sdk>/tools/bin
+    $ ./sdkmanager  platform-tools
+    $ ./sdkmanager "platforms;android-26"
+    $ ./sdkmanager "build-tools;27.0.3"
+    $ ./sdkmanager "cmake;3.6.4111459"
+
 --------------------------------------------------------------------
 3.4. Setup the Android toolchain
 --------------------------------------------------------------------

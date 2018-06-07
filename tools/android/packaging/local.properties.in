@@ -1,0 +1,6 @@
+sdk.dir=@use_sdk_path@
+ndk.dir=@use_ndk_path@
+depends.dir=@prefix@/@deps_dir@
+
+# ['armeabi-v7a': 01, 'arm64-v8a': 11,  x86: 21, x86_64: 31]
+xbmcABI=@use_android_abi@
