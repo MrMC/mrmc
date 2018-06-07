@@ -162,6 +162,14 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     pItem->SetLabel(g_localizeStrings.Get(1213));
     items.Add(pItem);
     
+    CFileItemPtr plItem(new CFileItem("Playlists"));
+    plItem->m_bIsFolder = true;
+    plItem->m_bIsShareOrDrive = true;
+    plItem->SetPath("mediasources://playlists/");
+    plItem->SetLabel(g_localizeStrings.Get(136));
+    plItem->SetSpecialSort(SortSpecialOnBottom);
+    items.Add(plItem);
+    
     std::string text;
     std::string strSignIn = g_localizeStrings.Get(1240);
     std::string strSignOut = g_localizeStrings.Get(1241);
@@ -195,7 +203,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
   }
   else
   {
-    if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://video"))
+    if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://video/"))
     {
       std::string strParentPath;
       URIUtils::GetParentPath(strDirectory, strParentPath);
@@ -233,6 +241,43 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       // at 'sources://' and we want to go back here.
       params.push_back("parent_redirect=" + strParentPath);
       g_windowManager.ActivateWindow(WINDOW_PICTURES, params);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://playlists/"))
+    {
+      CFileItemPtr pItem(new CFileItem("MusicPlaylist"));
+      pItem->m_bIsFolder = true;
+      pItem->m_bIsShareOrDrive = true;
+      pItem->SetPath("mediasources://musicplaylists/");
+      pItem->SetLabel(g_localizeStrings.Get(20011));
+      items.Add(pItem);
+      
+      CFileItemPtr plItem(new CFileItem("VideoPlaylist"));
+      plItem->m_bIsFolder = true;
+      plItem->m_bIsShareOrDrive = true;
+      plItem->SetPath("mediasources://videoplaylists/");
+      plItem->SetLabel(g_localizeStrings.Get(20012));
+      plItem->SetSpecialSort(SortSpecialOnBottom);
+      items.Add(plItem);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://videoplaylists/"))
+    {
+      std::vector<std::string> params;
+      params.push_back("special://videoplaylists/");
+      params.push_back("return");
+      // going to ".." will put us
+      // at 'sources://' and we want to go back here.
+      params.push_back("parent_redirect=mediasources://videoplaylists/");
+      g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV, params);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://musicplaylists/"))
+    {
+      std::vector<std::string> params;
+      params.push_back("special://musicplaylists/");
+      params.push_back("return");
+      // going to ".." will put us
+      // at 'sources://' and we want to go back here.
+      params.push_back("parent_redirect=mediasources://musicplaylists/");
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV, params);
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plex/"))
     {
