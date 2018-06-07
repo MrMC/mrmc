@@ -44,6 +44,7 @@
 #include "music/MusicDatabase.h"
 #include "filesystem/CloudUtils.h"
 #include "filesystem/StackDirectory.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "utils/Base64URL.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "pvr/PVRManager.h"
@@ -51,6 +52,8 @@
 #include "addons/AddonManager.h"
 #include "settings/SkinSettings.h"
 #include "profiles/ProfilesManager.h"
+#include "Util.h"
+#include "filesystem/Directory.h"
 
 #define CONTROL_HOMESHELFMOVIESRA         8000
 #define CONTROL_HOMESHELFTVSHOWSRA        8001
@@ -750,6 +753,16 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   
   CFileItemList* staticSections = new CFileItemList;
 
+  /// below seems to be tho only way for find out if we have any playlists setup
+  CFileItemList dummy;
+  std::set<std::string> vec;
+  vec.insert(CUtil::MusicPlaylistsLocation());
+  vec.insert(CUtil::VideoPlaylistsLocation());
+  std::string strPlaylistPaths = XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
+  CURL curl(strPlaylistPaths);
+  XFILE::CDirectory::GetDirectory(curl, dummy);
+  bool showPlaylists = dummy.Size() > 0;
+  
   if (CProfilesManager::GetInstance().GetNumberOfProfiles() > 1)
   {
     SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
@@ -996,6 +1009,32 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     // id
     property.name = "id";
     property.value = "video";
+    button.properties.push_back(property);
+    // submenu
+    property.name = "submenu";
+    property.value = false;
+    button.properties.push_back(property);
+    
+    ptrButton = MakeButton(button);
+    staticSections->Add(ptrButton);
+  }
+  
+  // Playlists Button
+  if (showPlaylists)
+  {
+    button.label = g_localizeStrings.Get(136);
+    button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/,return)";
+    // type
+    property.name = "type";
+    property.value = "playlists";
+    button.properties.push_back(property);
+    // menu_id
+    property.name = "menu_id";
+    property.value = "$NUMBER[17000]";
+    button.properties.push_back(property);
+    // id
+    property.name = "id";
+    property.value = "playlists";
     button.properties.push_back(property);
     // submenu
     property.name = "submenu";
