@@ -97,6 +97,7 @@ namespace ADDON
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool HasExtensions();
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
+    bool GetAllAddons(const TYPE &type, VECADDONS &addons);
     bool GetAllAddons(VECADDONS &addons, bool enabled = true);
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    

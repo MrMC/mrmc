@@ -743,6 +743,26 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   return addons.size() > 0;
 }
 
+bool CAddonMgr::GetAllAddons(const TYPE &type, VECADDONS &addons)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_cp_context)
+    return false;
+  cp_status_t status;
+  int num;
+  std::string ext_point(TranslateType(type));
+  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+  for(int i=0; i <num; i++)
+  {
+    const cp_extension_t *props = exts[i];
+    AddonPtr addon(Factory(props));
+    if (addon)
+      addons.push_back(addon);
+  }
+  m_cpluff->release_info(m_cp_context, exts);
+  return addons.size() > 0;
+}
+  
 bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
 {
   CSingleLock lock(m_critSection);
