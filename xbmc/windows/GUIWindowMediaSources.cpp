@@ -57,6 +57,7 @@
 #include "services/ServicesManager.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonInfo.h"
+#include "addons/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/AddonsDirectory.h"
 #include "pvr/PVRManager.h"
@@ -335,66 +336,39 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     {
       std::string strParentPath;
       URIUtils::GetParentPath(strDirectory, strParentPath);
+      SetHistoryForPath("mediasources://enablepvr/");
+      std::vector<std::string> params;
+      params.push_back("addons://user/xbmc.pvrclient");
+      params.push_back("return");
+      // going to ".." will put us
+      // at 'sources://' and we want to go back here.
+      params.push_back("parent_redirect=mediasources://enablepvr/");
+      g_windowManager.ActivateWindow(WINDOW_PVRCLIENT_BROWSER,params);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://enablepvr/"))
+    {
+      ADDON::VECADDONS pvrAddons;
+      ADDON::CAddonMgr::GetInstance().GetAddons(ADDON::ADDON_PVRDLL, pvrAddons, true);
+      if (pvrAddons.size() < 1)
+      {
+        CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED,false);
+        g_application.StopPVRManager();
+      }
+      else
+      {
+        CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED,true);
+        g_application.StartPVRManager();
+      }
+      std::string strParentPath;
+      URIUtils::GetParentPath(strDirectory, strParentPath);
       SetHistoryForPath(strParentPath);
       std::vector<std::string> params;
-      params.push_back("mediasources://");
+      params.push_back(strParentPath);
       params.push_back("return");
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
       params.push_back("parent_redirect=" + strParentPath);
-
-      ADDON::VECADDONS pvrAddons;
-      ADDON::CAddonMgr::GetInstance().GetAllAddons(ADDON::ADDON_PVRDLL, pvrAddons);
-      if (pvrAddons.size() > 0)
-      {
-        CFileItemList items;
-        CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-        if (dialog == NULL)
-          return false;
-        int sel = 0;
-        std::vector<int> selected;
-        dialog->Reset();
-        dialog->SetHeading(g_localizeStrings.Get(24019));
-        dialog->SetMultiSelection(false);
-        dialog->SetUseDetails(true);
-        for (ADDON::VECADDONS::const_iterator addon = pvrAddons.begin(); addon != pvrAddons.end(); ++addon)
-        {
-          CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, (*addon)->ID()));
-          CFileItem item1(*item.get());
-          dialog->Add(item1);
-          if (!ADDON::CAddonMgr::GetInstance().IsAddonDisabled((*addon)->ID()))
-            dialog->SetSelected(sel);
-          sel++;
-        }
-        
-        dialog->Sort();
-        dialog->Open();
-        
-        if (!dialog->IsConfirmed())
-          return false;
-        
-        const CFileItemPtr item = dialog->GetSelectedFileItem();
-        
-        CGUIDialogAddonInfo::ShowForItem(item);
-        ADDON::AddonPtr addon = *new ADDON::AddonPtr;
-        ADDON::CAddonMgr::GetInstance().GetAddon(item->GetPath(), addon);
-        if (!ADDON::CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && !g_PVRManager.IsStarted())
-        {
-          CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED,true);
-          g_application.StartPVRManager();
-        }
-        else
-        {
-          ADDON::VECADDONS pvrAddons;
-          ADDON::CAddonMgr::GetInstance().GetAddons(ADDON::ADDON_PVRDLL, pvrAddons, true);
-          if (pvrAddons.size() < 1)
-          {
-            CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED,false);
-            g_application.StopPVRManager();
-          }
-        }
-      }
-      g_windowManager.ActivateWindow(WINDOW_MEDIA_SOURCES, params);
+      g_windowManager.ActivateWindow(WINDOW_MEDIA_SOURCES,params);
     }
     result = true;
   }
