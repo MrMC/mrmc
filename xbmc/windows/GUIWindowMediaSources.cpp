@@ -334,8 +334,6 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://pvr/"))
     {
-      std::string strParentPath;
-      URIUtils::GetParentPath(strDirectory, strParentPath);
       SetHistoryForPath("mediasources://enablepvr/");
       std::vector<std::string> params;
       params.push_back("addons://user/xbmc.pvrclient");
