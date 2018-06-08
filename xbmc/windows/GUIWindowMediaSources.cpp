@@ -272,6 +272,8 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       plItem->SetLabel(g_localizeStrings.Get(20012));
       plItem->SetSpecialSort(SortSpecialOnBottom);
       items.Add(plItem);
+      items.SetPath("mediasources://playlists/");
+      result = true;
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://videoplaylists/"))
     {
