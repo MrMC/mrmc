@@ -1716,6 +1716,7 @@ void CEmbyUtils::GetVideoDetails(CFileItem &item, const CVariant &variant)
           urlStr = Base64URL::Decode(URIUtils::GetFileName(item.GetPath()));
         CURL url(urlStr);
         url.SetFileName("Items/" + peep["Id"].asString() + "/Images/Primary");
+        role.strMonogram = StringUtils::Monogram(role.strName);
         role.thumb = url.Get();
         roles.push_back(role);
       }

@@ -913,6 +913,32 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
       ptrButton = MakeButton(button);
       staticSections->Add(ptrButton);
     }
+    
+    // Playlists Button
+    if (showPlaylists)
+    {
+      button.label = g_localizeStrings.Get(136);
+      button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/)";
+      // type
+      property.name = "type";
+      property.value = "playlists";
+      button.properties.push_back(property);
+      // menu_id
+      property.name = "menu_id";
+      property.value = "$NUMBER[17000]";
+      button.properties.push_back(property);
+      // id
+      property.name = "id";
+      property.value = "playlists";
+      button.properties.push_back(property);
+      // submenu
+      property.name = "submenu";
+      property.value = false;
+      button.properties.push_back(property);
+      
+      ptrButton = MakeButton(button);
+      staticSections->Add(ptrButton);
+    }
   }
   // LiveTV Button
   if (hasLiveTv)
@@ -1009,32 +1035,6 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     // id
     property.name = "id";
     property.value = "video";
-    button.properties.push_back(property);
-    // submenu
-    property.name = "submenu";
-    property.value = false;
-    button.properties.push_back(property);
-    
-    ptrButton = MakeButton(button);
-    staticSections->Add(ptrButton);
-  }
-  
-  // Playlists Button
-  if (showPlaylists)
-  {
-    button.label = g_localizeStrings.Get(136);
-    button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/)";
-    // type
-    property.name = "type";
-    property.value = "playlists";
-    button.properties.push_back(property);
-    // menu_id
-    property.name = "menu_id";
-    property.value = "$NUMBER[17000]";
-    button.properties.push_back(property);
-    // id
-    property.name = "id";
-    property.value = "playlists";
     button.properties.push_back(property);
     // submenu
     property.name = "submenu";

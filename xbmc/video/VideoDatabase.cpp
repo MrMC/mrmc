@@ -4090,6 +4090,7 @@ void CVideoDatabase::GetCast(int media_id, const std::string &media_type, std::v
     {
       SActorInfo info;
       info.strName = m_pDS2->fv(0).get_asString();
+      info.strMonogram = StringUtils::Monogram(info.strName);
       bool found = false;
       for (const auto &i : cast)
       {

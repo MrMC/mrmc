@@ -90,6 +90,7 @@ public:
   static bool EndsWith(const std::string &str1, const char *s2);
   static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
   static bool EndsWithNoCase(const std::string &str1, const char *s2);
+  static std::string Monogram(const std::string strLabel);
 
   static std::string Join(const std::vector<std::string> &strings, const std::string& delimiter);
   /*! \brief Splits the given input string using the given delimiter into separate strings.

@@ -669,6 +669,22 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   return true;
 }
 
+std::string StringUtils::Monogram(const std::string strLabel)
+{
+  std::vector<std::string> split = Split(strLabel, " ");
+  if (split.size() > 1)
+  {
+    std::string monogram;
+    for (unsigned long i = 0; i < split.size() && i < 2; ++i)
+    {
+      monogram = monogram + split[i][0];
+      StringUtils::ToUpper(monogram);
+    }
+    return monogram;
+  }
+  return "";
+}
+
 std::string StringUtils::Join(const std::vector<std::string> &strings, const std::string& delimiter)
 {
   std::string result;
