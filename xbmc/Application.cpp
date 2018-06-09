@@ -1222,6 +1222,13 @@ bool CApplication::Initialize()
     LoadSkin(skin);
   }
   
+  // Migrate to Ariana for old AppleTV users
+  if (CDarwinUtils::IsAppleTV() && !CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_ARIANASKINCHECKED))
+  {
+    CSkinSettings::GetInstance().MigrateToAriana(skin);
+    skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    LoadSkin(skin);
+  }
   return true;
 }
 

@@ -250,6 +250,57 @@ bool CSkinSettings::MigrateToNewSkin(const std::string skin)
   return false;
 }
 
+bool CSkinSettings::MigrateToAriana(const std::string skin)
+{
+  ADDON::AddonPtr addon;
+  
+  // if current skin is same as new skin return false but set SETTING_LOOKANDFEEL_ARIANASKINCHECKED to true
+  // corner case but possible to hit
+  if (skin == ARIANA_SKIN)
+  {
+    CSettings::GetInstance().SetBool(CSettings::SETTING_LOOKANDFEEL_ARIANASKINCHECKED, true);
+    CSettings::GetInstance().Save();
+    return false;
+  }
+  
+  // if we dont have Ariana skin installed, return false
+  if (!ADDON::CAddonMgr::GetInstance().GetAddon(ARIANA_SKIN, addon, ADDON::ADDON_SKIN))
+    return false;
+  
+  CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (!pDialogYesNo)
+    return false;
+  
+  
+  std::string currentSkinName;
+  if (ADDON::CAddonMgr::GetInstance().GetAddon(skin, addon, ADDON::ADDON_SKIN))
+    currentSkinName = addon->Name();
+  else
+    currentSkinName = "Unknown";
+  
+  pDialogYesNo->SetHeading(CVariant{20263});
+  pDialogYesNo->SetLine(1, CVariant{20264});
+  pDialogYesNo->SetLine(2, StringUtils::Format(g_localizeStrings.Get(20265).c_str(), currentSkinName.c_str()));
+  pDialogYesNo->SetLine(3, CVariant{20266});
+  pDialogYesNo->Open();
+  
+  // dont ask again
+  CSettings::GetInstance().SetBool(CSettings::SETTING_LOOKANDFEEL_ARIANASKINCHECKED, true);
+  CSettings::GetInstance().Save();
+  
+  if (!pDialogYesNo->IsConfirmed())
+    return false;
+  
+  if (ADDON::CAddonMgr::GetInstance().GetAddon(ARIANA_SKIN, addon, ADDON::ADDON_SKIN))
+  {
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, addon->ID());
+    CSettings::GetInstance().Save();
+    return true;
+  }
+  
+  return false;
+}
+
 std::string CSkinSettings::CheckFallbackSkin()
 {
   // check here for fallback skins
