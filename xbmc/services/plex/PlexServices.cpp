@@ -109,10 +109,10 @@ CPlexServices::CPlexServices()
 , m_playState(MediaServicesPlayerState::stopped)
 , m_hasClients(false)
 {
-  // register our redacted protocol options with CURL
+  // register our redacted items with CURL
   // we do not want these exposed in mrmc.log.
-  if (!CURL::HasProtocolOptionsRedacted("X-Plex-Token"))
-    CURL::SetProtocolOptionsRedacted("X-Plex-Token", "PLEXTOKEN");
+  if (!CURL::HasRedactedKey("X-Plex-Token"))
+    CURL::SetRedactedKey("X-Plex-Token", "PLEXTOKEN");
 
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }

@@ -122,10 +122,10 @@ CEmbyServices::CEmbyServices()
 , m_playState(MediaServicesPlayerState::stopped)
 , m_hasClients(false)
 {
-  // register our redacted protocol options with CURL
+  // register our redacted items with CURL
   // we do not want these exposed in mrmc.log.
-  if (!CURL::HasProtocolOptionsRedacted(EmbyApiKeyHeader))
-    CURL::SetProtocolOptionsRedacted(EmbyApiKeyHeader, "EMBYTOKEN");
+  if (!CURL::HasRedactedKey(EmbyApiKeyHeader))
+    CURL::SetRedactedKey(EmbyApiKeyHeader, "EMBYTOKEN");
 
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
