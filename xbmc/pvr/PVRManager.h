@@ -685,6 +685,7 @@ namespace PVR
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
+    CCriticalSection                m_startStopMutex;              /*!< mutex for protecting pvr manager's start/restart/stop sequence */
     std::vector<std::string>        m_outdatedAddons;
     static const int                m_pvrWindowIds[10];
   };

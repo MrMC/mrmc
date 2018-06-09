@@ -79,7 +79,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
 {
   if (m_ThreadId != 0)
   {
-    LOG(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
+    LOG(LOGERROR, "%s - fatal error creating thread %s - old thread id not null", __FUNCTION__, m_ThreadName.c_str());
     exit(1);
   }
   m_bAutoDelete = bAutoDelete;

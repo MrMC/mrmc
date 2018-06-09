@@ -427,10 +427,14 @@ void CPVRManager::Start(bool bAsync /* = false */)
     return;
   }
 
-  CSingleLock lock(m_critSection);
-
-  /* first stop and remove any clients */
+  CSingleLock initLock(m_startStopMutex);
+  // Note: Stop() must not be called while holding pvr manager's mutex. Stop() calls
+  // StopThread() which can deadlock if the worker thread tries to acquire pvr manager's
+  // lock while StopThread() is waiting for the worker to exit. Thus, we introduce another
+  // lock here (m_startStopMutex), which only gets hold while starting/restarting pvr manager.
   Stop();
+
+  CSingleLock lock(m_critSection);
 
   /* don't start if Settings->Video->TV->Enable isn't checked */
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
@@ -457,7 +461,7 @@ void CPVRManager::Start(bool bAsync /* = false */)
 void CPVRManager::Stop(void)
 {
   /* check whether the pvrmanager is loaded */
-  if (IsStopping() || IsStopped())
+  if (IsStopped())
     return;
 
   SetState(ManagerStateStopping);
@@ -481,7 +485,7 @@ void CPVRManager::Stop(void)
   SetWakeupCommand();
 
   /* close database */
-  if (m_database->IsOpen())
+  if (m_database && m_database->IsOpen())
     m_database->Close();
 
   /* unload all data */
