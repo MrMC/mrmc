@@ -164,7 +164,8 @@ public:
 
     if (onlyforced)
     {
-      if ((ss.flags & CDemuxStream::FLAG_FORCED) && g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang))
+      if ((ss.flags & CDemuxStream::FLAG_FORCED) &&
+          (g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang) || (ss.flags & CDemuxStream::FLAG_DEFAULT)))
         return false;
       else
         return true;
