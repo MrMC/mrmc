@@ -295,6 +295,19 @@ bool CDarwinUtils::IsSnowLeopard(void)
   return isSnowLeopard == 1;
 }
 
+bool CDarwinUtils::IsAppleTV(void)
+{
+  static int isAppleTV = -1;
+  if (isAppleTV == -1)
+  {
+    isAppleTV = 0;
+#if defined(TARGET_DARWIN_TVOS)
+      isAppleTV = 1;
+#endif
+  }
+  return isAppleTV == 1;
+}
+
 bool CDarwinUtils::IsAppleTV4KOrAbove(void)
 {
   static int isAppleTV4KOrAbove = -1;
