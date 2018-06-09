@@ -41,6 +41,12 @@
 #include <string>
 #include <sstream>
 
+static void removeLeadingSlash(std::string &path)
+{
+  if (!path.empty() && (path[0] == '/'))
+    StringUtils::TrimLeft(path, "/");
+}
+
 CPlexClient::CPlexClient()
 {
   m_local = true;
@@ -198,6 +204,12 @@ const PlexSectionsContentVector CPlexClient::GetPhotoContent() const
 {
   CSingleLock lock(m_criticalPhoto);
   return m_photoSectionsContents;
+}
+
+const PlexSectionsContentVector CPlexClient::GetPlaylistContent() const
+{
+  CSingleLock lock(m_criticalPlaylist);
+  return m_playlistSectionsContents;
 }
 
 const std::string CPlexClient::FormatContentTitle(const std::string contentTitle) const
@@ -412,7 +424,101 @@ bool CPlexClient::ParseSections(enum PlexSectionParsing parser)
       CLog::Log(LOGDEBUG, "CPlexClient::ParseSections failed %s", strResponse.c_str());
     rtn = false;
   }
-
+  
+  CURL curlP(m_url);
+  curlP.SetFileName(curlP.GetFileName() + "playlists");
+  if (plex.Get(curlP.Get(), strResponse))
+  {
+#if defined(PLEX_DEBUG_VERBOSE)
+    if (parser == PlexSectionParsing::newSection)
+      CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %d, %s", parser, strResponse.c_str());
+#endif
+    if (parser == PlexSectionParsing::updateSection)
+    {
+      {
+        CSingleLock lock(m_criticalMovies);
+        m_movieSectionsContents.clear();
+      }
+      m_needUpdate = false;
+    }
+    
+    TiXmlDocument xml;
+    xml.Parse(strResponse.c_str());
+    
+    TiXmlElement* MediaContainer = xml.RootElement();
+    if (MediaContainer)
+    {
+      const TiXmlElement* PlaylistNode = MediaContainer->FirstChildElement("Playlist");
+      while (PlaylistNode)
+      {
+        PlexSectionsContent content;
+        content.uuid = XMLUtils::GetAttribute(PlaylistNode, "uuid");
+        //content.path = XMLUtils::GetAttribute(DirectoryNode, "path");
+        content.type = XMLUtils::GetAttribute(PlaylistNode, "type");
+        content.title = XMLUtils::GetAttribute(PlaylistNode, "title");
+        content.updatedAt = XMLUtils::GetAttribute(PlaylistNode, "updatedAt");
+        std::string key = XMLUtils::GetAttribute(PlaylistNode, "key");
+        removeLeadingSlash(key);
+        content.section = key;
+        content.thumb = XMLUtils::GetAttribute(PlaylistNode, "composite");
+        content.contentType = XMLUtils::GetAttribute(PlaylistNode, "playlistType");
+        std::string art = XMLUtils::GetAttribute(PlaylistNode, "art");
+        content.art = content.thumb;
+        if (content.type == "playlist")
+        {
+          if (parser == PlexSectionParsing::checkSection)
+          {
+            CSingleLock lock(m_criticalPlaylist);
+            for (const auto &contents : m_playlistSectionsContents)
+            {
+              if (contents.uuid == content.uuid)
+              {
+                if (contents.updatedAt != content.updatedAt)
+                {
+#if defined(PLEX_DEBUG_VERBOSE)
+                  CLog::Log(LOGDEBUG, "CPlexClient::ParseSections need update on %s:%s",
+                            m_serverName.c_str(), content.title.c_str());
+#endif
+                  m_needUpdate = true;
+                }
+              }
+            }
+          }
+          else
+          {
+            CSingleLock lock(m_criticalPlaylist);
+            m_playlistSectionsContents.push_back(content);
+          }
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "CPlexClient::ParseSections Playlists %s found unhandled content type %s",
+                    m_serverName.c_str(), content.type.c_str());
+        }
+        PlaylistNode = PlaylistNode->NextSiblingElement("Playlist");
+      }
+      
+      if (parser == PlexSectionParsing::newSection)
+      {
+        CLog::Log(LOGDEBUG, "CPlexClient::ParseSections %s found %d playlist sections",
+                  m_serverName.c_str(), (int)m_playlistSectionsContents.size());
+      }
+      rtn = true;
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CPlexClient::ParseSections Playlists no MediaContainer found");
+    }
+  }
+  else
+  {
+    // 401's are attempts to access a local server that is also in PMS
+    // and these require an access token. Only local servers that are
+    // not is PMS can be accessed via GDM.
+    if (plex.GetResponseCode() != 401)
+      CLog::Log(LOGDEBUG, "CPlexClient::ParseSections Playlists failed %s", strResponse.c_str());
+    rtn = false;
+  }
   return rtn;
 }
 

@@ -70,6 +70,7 @@ struct PlexSectionsContent
   //std::string address; // not used
   //std::string path; // not used
   std::string section;
+  std::string contentType;
   std::string art; // not used
   std::string thumb; // not used
 };
@@ -113,6 +114,7 @@ public:
   const PlexSectionsContentVector GetMovieContent() const;
   const PlexSectionsContentVector GetArtistContent() const;
   const PlexSectionsContentVector GetPhotoContent() const;
+  const PlexSectionsContentVector GetPlaylistContent() const;
   const std::string FormatContentTitle(const std::string contentTitle) const;
 
   std::string GetHost();
@@ -144,8 +146,10 @@ private:
   CCriticalSection  m_criticalTVShow;
   CCriticalSection  m_criticalArtist;
   CCriticalSection  m_criticalPhoto;
+  CCriticalSection  m_criticalPlaylist;
   std::vector<PlexSectionsContent> m_movieSectionsContents;
   std::vector<PlexSectionsContent> m_showSectionsContents;
   std::vector<PlexSectionsContent> m_artistSectionsContents;
   std::vector<PlexSectionsContent> m_photoSectionsContents;
+  std::vector<PlexSectionsContent> m_playlistSectionsContents;
 };
