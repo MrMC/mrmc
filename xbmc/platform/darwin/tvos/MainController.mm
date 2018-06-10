@@ -1514,7 +1514,6 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
   if (m_nativeKeyboardActive)
     return;
 
-  int actionID;
   std::string actionName;
   // Translate using custom controller translator.
   CKey key(buttonId, (unsigned int)0);
