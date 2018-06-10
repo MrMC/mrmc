@@ -38,14 +38,17 @@ cp $SRC_DIR/AndroidManifest.xml $TMP_DIR/AndroidManifest.xml.in
 cp $SRC_DIR/res/values/strings.xml $TMP_DIR/strings.xml.in
 cp $SRC_DIR/res/values/colors.xml $TMP_DIR/colors.xml.in
 cp $SRC_DIR/res/xml/searchable.xml $TMP_DIR/searchable.xml.in
+cp $SRC_DIR/res/layout/activity_main.xml $TMP_DIR/activity_main.xml.in
 
 sed -i -e "s#${VARIABLES[APP_WEBSITE]}#@APP_WEBSITE@#g" -e "s#${VARIABLES[APP_PACKAGE]}#@APP_PACKAGE@#g" -e "s#${VARIABLES[APP_NAME_DISPLAY]}#@APP_NAME_DISPLAY@#g" -e "s#${VARIABLES[APP_NAME_LC]}#@APP_NAME_LC@#g" -e "s#${VARIABLES[APP_NAME_UC]}#@APP_NAME_UC@#g" -e "s#${VARIABLES[APP_VERSION_ANDROID_VERSION]}#@APP_VERSION_ANDROID_VERSION@#g" -e "s#${VARIABLES[APP_VERSION]}#@APP_VERSION@#g" $TMP_DIR/strings.xml.in
 find $TMP_DIR -name "*.in" |xargs -i sed -i -e "s#${VARIABLES[APP_WEBSITE]}#@APP_WEBSITE@#g" -e "s#${VARIABLES[APP_PACKAGE]}#@APP_PACKAGE@#g" -e "s#${VARIABLES[APP_NAME]}#@APP_NAME@#g" -e "s#${VARIABLES[APP_NAME_LC]}#@APP_NAME_LC@#g" -e "s#${VARIABLES[APP_NAME_UC]}#@APP_NAME_UC@#g" -e "s#${VARIABLES[APP_VERSION_ANDROID_VERSION]}#@APP_VERSION_ANDROID_VERSION@#g" -e "s#${VARIABLES[APP_VERSION]}#@APP_VERSION@#g" {}
+sed -i -e "s#appPackageName = \"@APP_PACKAGE@\";#appPackageName = \"tv.mrmc.mrmc\";#g" $TMP_JAVA_DIR/Main.java.in
 
 rsync -a --delete $TMP_JAVA_DIR/ $TARGET_JAVA_DIR
 cp -f $TMP_DIR/AndroidManifest.xml.in $TARGET_DIR/AndroidManifest.xml.in
 cp -f $TMP_DIR/strings.xml.in $TARGET_DIR/strings.xml.in
 cp -f $TMP_DIR/colors.xml.in $TARGET_DIR/colors.xml.in
 cp -f $TMP_DIR/searchable.xml.in $TARGET_DIR/searchable.xml.in
+cp -f $TMP_DIR/activity_main.xml.in $TARGET_DIR/activity_main.xml.in
 
 rm -rf $TMP_DIR
