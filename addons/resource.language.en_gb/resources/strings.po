@@ -4435,7 +4435,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1249"
-msgid "https://plex.tv/pin and enter this code -> "
+msgid "https://plex.tv/link and enter this code -> "
 msgstr ""
 
 #: system/settings/settings.xml

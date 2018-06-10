@@ -712,7 +712,7 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
 
 bool CPlexServices::GetSignInPinCode()
 {
-  // on return, show user m_signInByPinCode so they can enter it at https://plex.tv/pin
+  // on return, show user m_signInByPinCode so they can enter it at https://plex.tv/link
 
   bool rtn = false;
 
@@ -792,7 +792,7 @@ bool CPlexServices::GetSignInPinCode()
       if (pingTimer.GetElapsedSeconds() > 1)
       {
         // wait for user to run and enter pin code
-        // at https://plex.tv/pin
+        // at https://plex.tv/link
         if (GetSignInByPinReply())
           break;
         pingTimer.Reset();
