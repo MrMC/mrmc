@@ -112,8 +112,8 @@ bool CGUIWindowMediaSources::OnAction(const CAction &action)
 
 bool CGUIWindowMediaSources::OnBack(int actionID)
 {
-//  if (actionID == ACTION_NAV_BACK || actionID == ACTION_PREVIOUS_MENU)
-//    return CGUIMediaWindow::OnBack(ACTION_PREVIOUS_MENU);
+  if (actionID == ACTION_NAV_BACK || actionID == ACTION_PREVIOUS_MENU)
+    return CGUIMediaWindow::OnBack(ACTION_PREVIOUS_MENU);
   return CGUIMediaWindow::OnBack(actionID);
 }
 
