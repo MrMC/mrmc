@@ -7,6 +7,7 @@ include_directories ( SYSTEM ${ANDROID_NDK}/sources/android/native_app_glue ${AN
 
 set (my_SOURCES
   android_main.cpp
+  android_onload.cpp
   AndroidFeatures.cpp
   AndroidKey.cpp
   AndroidTouch.cpp
@@ -21,6 +22,8 @@ set (my_SOURCES
   JNIXBMCAudioManagerOnAudioFocusChangeListener.cpp
   JNIXBMCSurfaceTextureOnFrameAvailableListener.cpp
   JNIXBMCMediaSession.cpp
+  JNIXBMCBroadcastReceiver.cpp
+  JNIXBMCFile.cpp
   )
 
 file(GLOB my_HEADERS *.h)

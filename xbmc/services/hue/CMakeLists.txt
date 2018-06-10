@@ -7,6 +7,8 @@ set (my_SOURCES
   HueServices.cpp
   HueClient.cpp
   HueUtils.cpp
+  providers/HueProviderRenderCapture.cpp
+  providers/HueProviderAndroidProjection.cpp
   )
 
 file(GLOB_RECURSE my_HEADERS *.h)

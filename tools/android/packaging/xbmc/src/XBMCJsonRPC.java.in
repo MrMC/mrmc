@@ -974,6 +974,9 @@ public class XBMCJsonRPC
         return files;
 
       JsonObject results = req.getAsJsonObject("result");
+      if (!results.has("files"))
+        return files;
+
       JsonArray filesA = results.get("files").getAsJsonArray();
 
       for (int i = 0; i < filesA.size(); ++i)
