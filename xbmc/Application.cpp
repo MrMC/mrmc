@@ -430,7 +430,7 @@ bool CApplication::SetupNetwork()
 
 bool CApplication::Create()
 {
-  
+
 #if defined(TARGET_DARWIN_OSX)
   CDateTime dieDate;
   std::string strDieDate = "2018-08-09T15:13:30+04:00";
@@ -444,7 +444,7 @@ bool CApplication::Create()
 
   SetupNetwork();
 
-  // here we register all global classes for the CApplicationMessenger, 
+  // here we register all global classes for the CApplicationMessenger,
   // after that we can send messages to the corresponding modules
   CApplicationMessenger::GetInstance().RegisterReceiver(this);
   CApplicationMessenger::GetInstance().RegisterReceiver(&g_playlistPlayer);
@@ -538,7 +538,7 @@ bool CApplication::Create()
       CLog::Log(LOGNOTICE, "WARNING: unsupported ffmpeg version detected");
   }
 #endif
-  
+
   std::string cpuModel(g_cpuInfo.getCPUModel());
   if (!cpuModel.empty())
     CLog::Log(LOGNOTICE, "Host CPU: %s, %d core%s available", cpuModel.c_str(), g_cpuInfo.getCPUCount(), (g_cpuInfo.getCPUCount() == 1) ? "" : "s");
@@ -967,7 +967,7 @@ bool CApplication::InitDirectoriesDarwin()
   setenv("MRMC_DARWIN_FRAMEWORKS", frameworksPath.c_str(), 1);
   CLog::Log(LOGDEBUG, "CApplication::InitDirectoriesDarwin: fontconfigFilePath(%s)", fontconfigFilePath.c_str());
 #endif
-  
+
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
@@ -1066,7 +1066,7 @@ bool CApplication::Initialize()
     CSplash::GetInstance().Show(g_localizeStrings.Get(12374));
     g_advancedSettings.setInternalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
   }
-  
+
 
   DisableScreensaver(true);
   // initialize (and update as needed) our databases
@@ -1075,7 +1075,7 @@ bool CApplication::Initialize()
     CDatabaseManager::GetInstance().Initialize();
     event.Set();
   });
-  
+
   std::string localizedStr = g_localizeStrings.Get(24094);
   int iDots = 1;
   while (!event.WaitMSec(1000))
@@ -1089,7 +1089,7 @@ bool CApplication::Initialize()
   }
 
   DisableScreensaver(false);
-  
+
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
@@ -1116,7 +1116,7 @@ bool CApplication::Initialize()
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
       return false;
     }
-    
+
     // fallback skin has changed, we need to save the setting
     if (CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) != skin)
     {
@@ -1125,7 +1125,7 @@ bool CApplication::Initialize()
       CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, skin);
       CSettings::GetInstance().Save();
     }
-    
+
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
        !CProfilesManager::GetInstance().GetMasterProfile().getLockCode().empty())
@@ -1221,7 +1221,8 @@ bool CApplication::Initialize()
     skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     LoadSkin(skin);
   }
-  
+
+#if defined(TARGET_DARWIN)
   // Migrate to Ariana for old AppleTV users
   if (CDarwinUtils::IsAppleTV() && !CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_ARIANASKINCHECKED))
   {
@@ -1229,6 +1230,7 @@ bool CApplication::Initialize()
     skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     LoadSkin(skin);
   }
+#endif
   return true;
 }
 
@@ -1493,7 +1495,7 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
     CSettingString *audioDevice = (CSettingString*)setting;
     // Gotham and older didn't enumerate audio devices per stream on osx
     // add stream0 per default which should be ok for all old settings.
-    if (!StringUtils::EqualsNoCase(audioDevice->GetValue(), "DARWINOSX:default") && 
+    if (!StringUtils::EqualsNoCase(audioDevice->GetValue(), "DARWINOSX:default") &&
         StringUtils::FindWords(audioDevice->GetValue().c_str(), ":stream") == std::string::npos)
     {
       std::string newSetting = audioDevice->GetValue();
@@ -1531,7 +1533,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
        user as to whether they want to keep the current skin. */
     if (confirm && !m_skinReverting)
     {
-      if (HELPERS::ShowYesNoDialogText(CVariant{13123}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) != 
+      if (HELPERS::ShowYesNoDialogText(CVariant{13123}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
         DialogResponse::YES)
       {
         m_skinReverting = true;
@@ -1604,7 +1606,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 {
   if (!skin)
     return false;
-    
+
   // start/prepare the skin
   skin->Start();
 
@@ -1854,7 +1856,7 @@ bool CApplication::RenderNoPresent()
 //  g_graphicsContext.AcquireCurrentContext();
 
   g_graphicsContext.Lock();
-  
+
   bool hasRendered = g_windowManager.Render();
 
   g_graphicsContext.Unlock();
@@ -2096,8 +2098,8 @@ bool CApplication::OnAction(const CAction &action)
   if (action.IsMouse())
     CInputManager::GetInstance().SetMouseActive(true);
 
-  
-  if (action.GetID() == ACTION_CREATE_EPISODE_BOOKMARK)   
+
+  if (action.GetID() == ACTION_CREATE_EPISODE_BOOKMARK)
   {
     CGUIDialogVideoBookmarks::OnAddEpisodeBookmark();
   }
@@ -2105,7 +2107,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     CGUIDialogVideoBookmarks::OnAddBookmark();
   }
-  
+
   // The action PLAYPAUSE behaves as ACTION_PAUSE if we are currently
   // playing or ACTION_PLAYER_PLAY if we are seeking (FF/RW) or not playing.
   if (action.GetID() == ACTION_PLAYER_PLAYPAUSE)
@@ -2134,7 +2136,7 @@ bool CApplication::OnAction(const CAction &action)
   // notify action listeners
   if (NotifyActionListeners(action))
     return true;
-  
+
   // screenshot : take a screenshot :)
   if (action.GetID() == ACTION_TAKE_SCREENSHOT)
   {
@@ -2495,7 +2497,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_QUIT:
     Stop(EXITCODE_QUIT);
     break;
-  
+
   case TMSG_SHUTDOWN:
     HandleShutdownMessage();
     break;
@@ -2527,7 +2529,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_INHIBITIDLESHUTDOWN:
     InhibitIdleShutdown(pMsg->param1 != 0);
     break;
-  
+
   case TMSG_ACTIVATESCREENSAVER:
     ActivateScreenSaver();
     break;
@@ -2871,7 +2873,7 @@ bool CApplication::Cleanup()
 
 #ifdef HAS_DVD_DRIVE
     CLibcdio::ReleaseInstance();
-#endif 
+#endif
 #if defined(TARGET_ANDROID)
     // enable for all platforms once it's safe
     g_sectionLoader.UnloadAll();
@@ -3166,14 +3168,14 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
     else
     {
       LoadVideoSettings(item);
-      
+
       // see if we have the info in the database
       // TODO: If user changes the time speed (FPS via framerate conversion stuff)
       //       then these times will be wrong.
       //       Also, this is really just a hack for the slow load up times we have
       //       A much better solution is a fast reader of FPS and fileLength
       //       that we can use on a file to get it's time.
-      
+
       CVideoDatabase dbs;
       if (dbs.Open())
       {
@@ -3473,7 +3475,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     CSingleLock lock(m_playStateMutex);
     // tell system we are starting a file
     m_bPlaybackStarting = true;
-    
+
     // for playing a new item, previous playing item's callback may already
     // pushed some delay message into the threadmessage list, they are not
     // expected be processed after or during the new item playback starting.
@@ -3670,7 +3672,7 @@ void CApplication::OnPlayBackStarted()
       !g_application.CurrentFileItem().IsPVRRecording() &&
       g_application.m_pPlayer->GetSubtitleCount() == 0)
     g_windowManager.ActivateWindow(WINDOW_DIALOG_SUBTITLES);
-  
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -4267,7 +4269,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // Update our infoManager with the new details etc.
       if (m_nextPlaylistItem >= 0)
-      { 
+      {
         // playing an item which is not in the list - player might be stopped already
         // so do nothing
         if (playList.size() <= m_nextPlaylistItem)
@@ -4842,7 +4844,7 @@ float CApplication::GetVolume(bool percentage /* = true */) const
     // converts the hardware volume to a percentage
     return m_volumeLevel * 100.0f;
   }
-  
+
   return m_volumeLevel;
 }
 
@@ -5019,7 +5021,7 @@ void CApplication::SeekPercentage(float percent, bool resume)
       SeekTime(percent * 0.01 * GetTotalTime());
     else
       m_pPlayer->SeekPercentage(percent);
-    
+
     if (resume && m_pPlayer->IsPaused())
       m_pPlayer->Pause();
   }
@@ -5300,7 +5302,7 @@ void CApplication::CloseNetworkShares()
   smb.Deinit();
   smb.UnLoad();
 #endif
-  
+
 #if defined(HAS_FILESYSTEM_DSM)
   CDSMSessionManager::Disconnect();
 #endif
@@ -5342,7 +5344,7 @@ bool CApplication::NotifyActionListeners(const CAction &action) const
     if ((*it)->OnAction(action))
       return true;
   }
-  
+
   return false;
 }
 
