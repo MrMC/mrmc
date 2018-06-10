@@ -175,6 +175,12 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(g_localizeStrings.Get(627));
         items.SetContent("movies");
       }
+      else if (path == "videoplaylists")
+      {
+        CPlexUtils::GetPlexVideoPlaylistItems(items, Base64URL::Decode(section));
+        items.SetLabel(g_localizeStrings.Get(3));
+        items.SetContent("playlists");
+      }
       else if (path == "filters")
       {
         CPlexUtils::GetPlexFilters(items, Base64URL::Decode(section), "plex://movies/");
@@ -440,6 +446,12 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CPlexUtils::GetPlexRecentlyAddedAlbums(items, Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(359));
         items.SetContent("albums");
+      }
+      else if (path == "musicplaylists")
+      {
+        CPlexUtils::GetPlexMusicPlaylistItems(items, Base64URL::Decode(section));
+        items.SetLabel(g_localizeStrings.Get(134));
+        items.SetContent("songs");
       }
       else if (path == "filters")
       {

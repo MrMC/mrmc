@@ -1181,6 +1181,23 @@ std::vector<PlexSectionsContent> CGUIWindowHome::GetPlexSections(CPlexClientPtr 
 void CGUIWindowHome::AddPlexSection(CPlexClientPtr client)
 {
   std::vector<PlexSectionsContent> contents = GetPlexSections(client);
+  std::vector<PlexSectionsContent> playlists = client->GetPlaylistContent();
+
+  if (playlists.size() > 0)
+  {
+    CFileItemPtr item(new CFileItem());
+    item->SetLabel(g_localizeStrings.Get(136));
+    item->SetLabel2("Plex-" + client->GetServerName());
+    CURL curl(client->GetUrl());
+    curl.SetProtocol(client->GetProtocol());
+    curl.SetFileName("mediasources://plexplaylists/");
+    item->SetPath("ActivateWindow(MediaSources,mediasources://plexplaylists/,return)");
+    item->SetProperty("service",true);
+    item->SetProperty("servicetype","plex");
+    item->SetProperty("base64url",Base64URL::Encode(curl.Get()));
+    item->SetProperty("submenu",CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN));
+    m_buttonSections->AddFront(item,0);
+  }
   for (const auto &content : contents)
   {
     CFileItemPtr item(new CFileItem());

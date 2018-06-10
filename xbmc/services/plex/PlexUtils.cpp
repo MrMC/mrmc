@@ -418,6 +418,41 @@ bool CPlexUtils::DeletePlexMedia(CFileItem &item)
   return true;
 }
 
+#pragma mark - Plex Playlists
+bool CPlexUtils::GetPlexVideoPlaylistItems(CFileItemList &items, const std::string url)
+{
+  bool rtn = false;
+  CURL curl(url);
+  CVariant variant = GetPlexCVariant(curl.Get());
+  if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
+  {
+    CVariant variantVideo = variant["MediaContainer"]["Video"];
+    for (auto variantIt = variantVideo.begin_array(); variantIt != variantVideo.end_array(); ++variantIt)
+    {
+      const auto item = *variantIt;
+      if (item.isMember("parentIndex"))
+      {
+        int season = item["parentIndex"].asInteger();
+        rtn = ParsePlexVideos(items, curl, item, MediaTypeEpisode, false, season);
+      }
+      else
+        rtn = ParsePlexVideos(items, curl, item, MediaTypeMovie, false);
+    }
+    if (rtn)
+    {
+      items.SetLabel(variant["MediaContainer"]["title"].asString());
+    }
+  }
+  return rtn;
+}
+
+bool CPlexUtils::GetPlexMusicPlaylistItems(CFileItemList &items, const std::string url)
+{
+  // for clarity we call GetPlexMusicPlaylistItems which is the same as GetPlexSongs.
+  // where are music videos?
+  return GetPlexSongs(items,url);;
+}
+
 #pragma mark - Plex Recently Added and InProgress
 bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit, bool watched)
 {

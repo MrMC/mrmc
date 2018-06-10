@@ -62,6 +62,8 @@
 #include "filesystem/AddonsDirectory.h"
 #include "pvr/PVRManager.h"
 
+#include "services/ServicesManager.h"
+#include "utils/Base64URL.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
 #include <utility>
@@ -237,6 +239,90 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     items.SetPath("mediasources://playlists/");
     result = true;
   }
+  else if (strDirectory == "mediasources://plexplaylists/")
+  {
+    
+    CFileItemPtr pItem(new CFileItem("PlexMusicPlaylist"));
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    pItem->SetPath("mediasources://plexmusicplaylists/");
+    pItem->SetLabel(g_localizeStrings.Get(20011));
+    items.Add(pItem);
+    
+    CFileItemPtr plItem(new CFileItem("PlexVideoPlaylist"));
+    plItem->m_bIsFolder = true;
+    plItem->m_bIsShareOrDrive = false;
+    plItem->SetPath("mediasources://plexvideoplaylists/");
+    plItem->SetLabel(g_localizeStrings.Get(20012));
+    plItem->SetSpecialSort(SortSpecialOnBottom);
+    items.Add(plItem);
+    
+    items.SetPath("mediasources://plexplaylists/");
+    items.SetLabel(g_localizeStrings.Get(136));
+    result = true;
+  }
+  else if (strDirectory == "mediasources://plexmusicplaylists/")
+  {
+    std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (plexClient)
+    {
+      std::vector<PlexSectionsContent> playlists = plexClient->GetPlaylistContent();
+      for (const auto &playlist : playlists)
+      {
+        if (playlist.contentType == "audio")
+        {
+          CFileItemPtr item(new CFileItem());
+          item->m_bIsFolder = true;
+          item->m_bIsShareOrDrive = false;
+          item->SetLabel(playlist.title);
+          item->SetLabel2("Plex-" + plexClient->GetServerName());
+          CURL curl(plexClient->GetUrl());
+          curl.SetProtocol(plexClient->GetProtocol());
+          curl.SetFileName(playlist.section);
+          std::string strAction = "mediasources://plexmusicplaylistitems/" + Base64URL::Encode(curl.Get());
+          item->SetPath(strAction);
+          items.Add(item);
+        }
+      }
+    }
+    items.SetContent("playlists");
+    items.SetPath("mediasources://plexmusicplaylists/");
+    SetHistoryForPath("mediasources://plexplaylists/");
+    items.SetLabel(g_localizeStrings.Get(20011));
+    result = true;
+  }
+  else if (strDirectory == "mediasources://plexvideoplaylists/")
+  {
+    std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (plexClient)
+    {
+      std::vector<PlexSectionsContent> playlists = plexClient->GetPlaylistContent();
+      for (const auto &playlist : playlists)
+      {
+        if (playlist.contentType == "video")
+        {
+          CFileItemPtr item(new CFileItem());
+          item->m_bIsFolder = true;
+          item->m_bIsShareOrDrive = false;
+          item->SetLabel(playlist.title);
+          item->SetLabel2("Plex-" + plexClient->GetServerName());
+          CURL curl(plexClient->GetUrl());
+          curl.SetProtocol(plexClient->GetProtocol());
+          curl.SetFileName(playlist.section);
+          std::string strAction = "mediasources://plexvideoplaylistitems/" + Base64URL::Encode(curl.Get());
+          item->SetPath(strAction);
+          items.Add(item);
+        }
+      }
+    }
+    items.SetContent("playlists");
+    items.SetPath("mediasources://plexvideoplaylists/");
+    SetHistoryForPath("mediasources://plexplaylists/");
+    items.SetLabel(g_localizeStrings.Get(20012));
+    result = true;
+  }
   else
   {
     if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://video/"))
@@ -298,6 +384,32 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
       params.push_back("parent_redirect=mediasources://playlists/");
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV, params);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plexvideoplaylistitems/"))
+    {
+      //plex://music/musicplaylists/
+      std::vector<std::string> params;
+      std::string section = URIUtils::GetFileName(strDirectory);
+      SetHistoryForPath("mediasources://plexplaylists/");
+      params.push_back("plex://movies/videoplaylists/" + section);
+      params.push_back("return");
+      // going to ".." will put us
+      // at 'sources://' and we want to go back here.
+      params.push_back("parent_redirect=mediasources://plexplaylists/");
+      g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV, params);
+    }
+    else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plexmusicplaylistitems/"))
+    {
+      //plex://music/musicplaylists/
+      std::vector<std::string> params;
+      std::string section = URIUtils::GetFileName(strDirectory);
+      SetHistoryForPath("mediasources://plexplaylists/");
+      params.push_back("plex://music/musicplaylists/" + section);
+      params.push_back("return");
+      // going to ".." will put us
+      // at 'sources://' and we want to go back here.
+      params.push_back("parent_redirect=mediasources://plexplaylists/");
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV, params);
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plex/"))

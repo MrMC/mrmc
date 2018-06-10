@@ -55,6 +55,10 @@ public:
   static bool GetPlexMediaTotals(MediaServicesMediaCount &totals);
   static bool DeletePlexMedia(CFileItem &item);
 
+  // Plex Playlists
+  static bool GetPlexVideoPlaylistItems(CFileItemList &items, const std::string url);
+  static bool GetPlexMusicPlaylistItems(CFileItemList &items, const std::string url);
+
   // Plex Recently Added and InProgress
   static bool GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit, bool unWatched);
   static bool GetPlexInProgressShows(CFileItemList &items, const std::string url, int limit=25);
