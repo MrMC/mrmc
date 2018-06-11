@@ -1758,7 +1758,7 @@ bool CPlexUtils::ParsePlexSeasons(CFileItemList &items, const CURL &url, const C
     if (*variantIt == CVariant::VariantTypeNull)
       continue;
     const auto item = *variantIt;
-
+    curl.SetOptions("");
     // only get the seasons listing, the one with "ratingKey"
     if (item.isMember("ratingKey"))
     {
@@ -1898,6 +1898,7 @@ bool CPlexUtils::ParsePlexSongs(CFileItemList &items, const CURL &url, const CVa
     const auto item = *variantTrackIt;
 
     rtn = true;
+    curl.SetOptions("");
     CFileItemPtr plexItem(new CFileItem());
     plexItem->SetLabel(item["title"].asString());
 
@@ -1975,6 +1976,7 @@ bool CPlexUtils::ParsePlexArtistsAlbum(CFileItemList &items, const CURL &url, co
     const auto item = *variantIt;
 
     rtn = true;
+    curl.SetOptions("");
     CFileItemPtr plexItem(new CFileItem());
     // set m_bIsFolder to true to indicate we are artist list
     plexItem->m_bIsFolder = true;
