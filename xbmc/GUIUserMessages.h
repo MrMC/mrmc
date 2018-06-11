@@ -142,3 +142,6 @@
 
 // Send to RDS Radiotext handlers to inform about changed data
 #define GUI_MSG_UPDATE_RADIOTEXT      GUI_MSG_USER + 41
+
+// Send to GUIWindowHome to setup services
+#define GUI_MSG_SETUP_HOME_SERVICES   GUI_MSG_USER + 42

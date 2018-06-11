@@ -319,6 +319,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_SETUP_HOME_SERVICES:
+    SetupServices();
+  break;
   case GUI_MSG_NOTIFY_ALL:
   {
     if (message.GetParam1() == GUI_MSG_WINDOW_RESET || message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
@@ -667,6 +670,14 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
 
 void CGUIWindowHome::SetupServices()
 {
+  // we cannot be diddling gui unless we are on main thread.
+  if (!g_application.IsCurrentThread())
+  {
+    CGUIMessage msg(GUI_MSG_SETUP_HOME_SERVICES, 0, 0, 0);
+    g_windowManager.SendThreadMessage(msg, GetID());
+    return;
+  }
+
   // idea here is that if button 4000 exists in the home screen skin is compatible
   // with new Server layouts on home
   const CGUIControl *btnServers = GetControl(CONTROL_SERVER_BUTTON);
