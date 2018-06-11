@@ -1041,7 +1041,14 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (m_musicdatabase.LookupCDDBInfo(true))
       Refresh();
     return true;
-
+  case CONTEXT_BUTTON_SHOWONHOME:
+    {
+      CMediaSourceSettings::GetInstance().UpdateSource("music",item->GetLabel(),"showonhome", item->m_showOnHome ? "false":"true");
+      CMediaSourceSettings::GetInstance().Save();
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+      g_windowManager.SendThreadMessage(msg);
+      return true;
+    }
   default:
     break;
   }

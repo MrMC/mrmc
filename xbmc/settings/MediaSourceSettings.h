@@ -43,6 +43,7 @@ public:
   void Clear();
 
   VECSOURCES* GetSources(const std::string &type);
+  CMediaSource* GetSourceByName(const std::string &type, const std::string &name);
   const std::string& GetDefaultSource(const std::string &type) const;
   void SetDefaultSource(const std::string &type, const std::string &source);
 

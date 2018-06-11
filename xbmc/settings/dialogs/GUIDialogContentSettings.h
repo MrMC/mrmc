@@ -57,6 +57,7 @@ public:
   bool GetUseDirectoryNames() const { return m_useDirectoryNames; }
   bool GetContainsSingleItem() const { return m_containsSingleItem; }
   bool GetExclude() const { return m_exclude; }
+  bool GetShowOnHome() const { return m_showOnHome; }
   bool GetNoUpdating() const { return m_noUpdating; }
 
   static bool Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE content = CONTENT_NONE);
@@ -95,6 +96,7 @@ private:
   bool m_containsSingleItem;
   bool m_exclude;
   bool m_noUpdating;
+  bool m_showOnHome;
   
   std::map<CONTENT_TYPE, ADDON::VECADDONS> m_scrapers;
   std::map<CONTENT_TYPE, ADDON::AddonPtr> m_lastSelected;

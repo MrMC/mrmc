@@ -59,6 +59,7 @@
 #include "ContextMenuManager.h"
 #include "storage/MediaManager.h"
 #include "services/ServicesManager.h"
+#include "settings/MediaSourceSettings.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -502,7 +503,15 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
-      CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+      CMediaSource *musicSource = CMediaSourceSettings::GetInstance().GetSourceByName("music",item->GetLabel());
+      if (musicSource)
+      {
+        if (musicSource->m_showOnHome)
+          buttons.Add(CONTEXT_BUTTON_SHOWONHOME, 16001);
+        else
+          buttons.Add(CONTEXT_BUTTON_SHOWONHOME, 20382);
+        CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+      }
     }
     else
     {

@@ -159,6 +159,24 @@ VECSOURCES* CMediaSourceSettings::GetSources(const std::string &type)
   return NULL;
 }
 
+CMediaSource* CMediaSourceSettings::GetSourceByName(const std::string &type, const std::string &name)
+{
+  CMediaSource* pShare = NULL;
+  VECSOURCES *pShares = GetSources(type);
+  if (pShares == NULL)
+    return pShare;
+
+  // get share from list
+  for (IVECSOURCES it = pShares->begin(); it != pShares->end(); ++it)
+  {
+    if (it->strName == name)
+    {
+      pShare = &(*it);
+      break;
+    }
+  }
+  return pShare;
+}
 const std::string& CMediaSourceSettings::GetDefaultSource(const std::string &type) const
 {
   if (type == "programs" || type == "myprograms")
@@ -206,6 +224,8 @@ bool CMediaSourceSettings::UpdateSource(const std::string &strType, const std::s
         it->m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), NULL, 10);
       else if (strUpdateChild == "thumbnail")
         it->m_strThumbnailImage = strUpdateValue;
+      else if (strUpdateChild == "showonhome")
+        it->m_showOnHome = strUpdateValue == "true";
       else if (strUpdateChild == "path")
       {
         it->vecPaths.clear();
@@ -412,6 +432,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
     share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
 
   XMLUtils::GetBoolean(source, "allowsharing", share.m_allowSharing);
+  XMLUtils::GetBoolean(source, "showonhome", share.m_showOnHome);
 
   return true;
 }
@@ -487,6 +508,7 @@ bool CMediaSourceSettings::SetSources(TiXmlNode *root, const char *section, cons
       XMLUtils::SetPath(&source, "thumbnail", share.m_strThumbnailImage);
 
     XMLUtils::SetBoolean(&source, "allowsharing", share.m_allowSharing);
+    XMLUtils::SetBoolean(&source, "showonhome", share.m_showOnHome);
 
     sectionNode->InsertEndChild(source);
   }

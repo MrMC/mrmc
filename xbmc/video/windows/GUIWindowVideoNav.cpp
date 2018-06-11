@@ -976,6 +976,14 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         else
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
       }
+      CMediaSource *videoSource = CMediaSourceSettings::GetInstance().GetSourceByName("video",item->GetLabel());
+      if (videoSource)
+      {
+        if (videoSource->m_showOnHome)
+          buttons.Add(CONTEXT_BUTTON_SHOWONHOME, 16001);
+        else
+          buttons.Add(CONTEXT_BUTTON_SHOWONHOME, 20382);
+      }
     }
   }
   else

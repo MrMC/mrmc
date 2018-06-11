@@ -65,6 +65,7 @@ CGUIDialogContentSettings::CGUIDialogContentSettings()
     m_containsSingleItem(false),
     m_exclude(false),
     m_noUpdating(false),
+    m_showOnHome(false),
     m_vecItems(new CFileItemList)
 { }
 
@@ -220,7 +221,9 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
     content = dialog->GetContent();
 
     if (scraper == NULL || content == CONTENT_NONE)
+    {
       settings.exclude = dialog->GetExclude();
+    }
     else
     {
       settings.exclude = false;
@@ -426,8 +429,10 @@ void CGUIDialogContentSettings::InitializeSettings()
 
     case CONTENT_NONE:
     default:
+    {
       AddToggle(group, SETTING_EXCLUDE, 20380, 0, m_exclude, false, !m_showScanSettings);
       break;
+    }
   }
 }
 
@@ -526,7 +531,7 @@ void CGUIDialogContentSettings::FillScraperList()
   }
 
   // add the "Get More..." item
-  m_vecItems->Add(XFILE::CAddonsDirectory::GetMoreItem(ADDON::TranslateContent(m_content)));
+//  m_vecItems->Add(XFILE::CAddonsDirectory::GetMoreItem(ADDON::TranslateContent(m_content)));
 
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_SCRAPER_LIST, 0, 0, m_vecItems);
   OnMessage(msg);

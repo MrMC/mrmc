@@ -54,6 +54,7 @@ void CMediaSource::FromNameAndPaths(const std::string &category, const std::stri
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
   m_allowSharing = true;
+  m_showOnHome = false;
 
   if (URIUtils::IsMultiPath(strPath))
     m_iDriveType = SOURCE_TYPE_VPATH;

@@ -48,6 +48,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/dialogs/GUIDialogContentSettings.h"
 #include "services/ServicesManager.h"
 #include "input/Key.h"
@@ -987,6 +988,14 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_CONTENT:
     {
       OnAssignContent(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.empty() ? item->GetVideoInfoTag()->m_strPath : static_cast<const std::string&>(item->GetPath()));
+      return true;
+    }
+  case CONTEXT_BUTTON_SHOWONHOME:
+    {
+      CMediaSourceSettings::GetInstance().UpdateSource("video",item->GetLabel(),"showonhome", item->m_showOnHome ? "false":"true");
+      CMediaSourceSettings::GetInstance().Save();
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+      g_windowManager.SendThreadMessage(msg);
       return true;
     }
   case CONTEXT_BUTTON_PLAY_PART:

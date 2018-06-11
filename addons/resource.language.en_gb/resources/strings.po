@@ -8742,7 +8742,9 @@ msgctxt "#16000"
 msgid "General"
 msgstr ""
 
-#empty string with id 16001
+msgctxt "#16001"
+msgid "Remove folder from home"
+msgstr ""
 
 msgctxt "#16002"
 msgid "Internet lookup"
@@ -12467,7 +12469,9 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr ""
 
-#empty string with id 20382
+msgctxt "#20382"
+msgid "Show folder on home"
+msgstr ""
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"

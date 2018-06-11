@@ -309,6 +309,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_strLockCode = share.m_strLockCode;
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
+  m_showOnHome = share.m_showOnHome;
   m_iDriveType = share.m_iDriveType;
   SetArt("thumb", share.m_strThumbnailImage);
   SetLabelPreformated(true);

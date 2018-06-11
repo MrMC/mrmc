@@ -54,6 +54,7 @@
 #include "profiles/ProfilesManager.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "settings/MediaSourceSettings.h"
 
 #define CONTROL_HOMESHELFMOVIESRA         8000
 #define CONTROL_HOMESHELFTVSHOWSRA        8001
@@ -1055,7 +1056,68 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     ptrButton = MakeButton(button);
     staticSections->Add(ptrButton);
   }
-  
+
+  VECSOURCES *videoSources = CMediaSourceSettings::GetInstance().GetSources("video");
+  VECSOURCES *musicSources = CMediaSourceSettings::GetInstance().GetSources("music");
+  if (videoSources->size() > 0 || musicSources->size() > 0)
+  {
+    for (unsigned int i = 0;i < videoSources->size();++i)
+    {
+      CMediaSource source = (*videoSources)[i];
+      if (!source.m_showOnHome)
+        break;
+      button.label = source.strName;
+      button.onclick = "ActivateWindow(Videos," + source.strPath + ",return)";
+      // type
+      property.name = "type";
+      property.value = "source";
+      button.properties.push_back(property);
+      // menu_id
+      property.name = "menu_id";
+      property.value = "$NUMBER[19500]";
+      button.properties.push_back(property);
+      // id
+      property.name = "id";
+      property.value = "source";
+      button.properties.push_back(property);
+      // submenu
+      property.name = "submenu";
+      property.value = false;
+      button.properties.push_back(property);
+
+      ptrButton = MakeButton(button);
+      staticSections->Add(ptrButton);
+    }
+
+    for (unsigned int i = 0;i < musicSources->size();++i)
+    {
+      CMediaSource source = (*musicSources)[i];
+      if (!source.m_showOnHome)
+        break;
+      button.label = source.strName;
+      button.onclick = "ActivateWindow(Music," + source.strPath + ",return)";
+      // type
+      property.name = "type";
+      property.value = "source";
+      button.properties.push_back(property);
+      // menu_id
+      property.name = "menu_id";
+      property.value = "$NUMBER[19500]";
+      button.properties.push_back(property);
+      // id
+      property.name = "id";
+      property.value = "source";
+      button.properties.push_back(property);
+      // submenu
+      property.name = "submenu";
+      property.value = false;
+      button.properties.push_back(property);
+
+      ptrButton = MakeButton(button);
+      staticSections->Add(ptrButton);
+    }
+  }
+
   // Extensions Button
   if (showExtensions)
   {

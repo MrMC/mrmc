@@ -147,6 +147,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_USER8,
                       CONTEXT_BUTTON_USER9,
                       CONTEXT_BUTTON_USER10,
+                      CONTEXT_BUTTON_SHOWONHOME,
 
                       //NOTE: this has to be the last in this enum,
                       //because this one, and the ones higher will be used by context addons
