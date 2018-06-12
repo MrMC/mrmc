@@ -473,8 +473,6 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
-      items.ClearSortState();
-      items.Sort(SortByDateAdded, SortOrderDescending);
     }
   }
 
@@ -499,8 +497,6 @@ bool CPlexUtils::GetPlexInProgressShows(CFileItemList &items, const std::string 
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
-      items.ClearSortState();
-      items.Sort(SortByLastPlayed, SortOrderDescending);
     }
   }
 
@@ -526,8 +522,6 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
-      items.ClearSortState();
-      items.Sort(SortByDateAdded, SortOrderDescending);
     }
   }
 
@@ -554,8 +548,6 @@ bool CPlexUtils::GetPlexInProgressMovies(CFileItemList &items, const std::string
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
-      items.ClearSortState();
-      items.Sort(SortByLastPlayed, SortOrderDescending);
     }
   }
 
@@ -597,6 +589,8 @@ bool CPlexUtils::GetAllPlexRecentlyAddedMoviesAndShows(CFileItemList &items, boo
 
       SetPlexItemProperties(plexItems);
       items.Append(plexItems);
+      items.ClearSortState();
+      items.Sort(SortByLastPlayed, SortOrderDescending);
       plexItems.ClearItems();
     }
   }
@@ -639,6 +633,8 @@ bool CPlexUtils::GetAllPlexInProgress(CFileItemList &items, bool tvShow)
 
       SetPlexItemProperties(plexItems);
       items.Append(plexItems);
+      items.ClearSortState();
+      items.Sort(SortByLastPlayed, SortOrderDescending);
       plexItems.ClearItems();
     }
   }
