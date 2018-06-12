@@ -421,6 +421,21 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       }
       return true;
     }
+    else if (selectAction && iControl == CONTROL_HOMESHELFCONTINUEWATCHING)
+    {
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING);
+      OnMessage(msg);
+
+      CSingleLock lock(m_critsection);
+
+      int item = msg.GetParam1();
+      if (item >= 0 && item < m_HomeShelfContinueWatching->Size())
+      {
+        CFileItemPtr itemPtr = m_HomeShelfContinueWatching->Get(item);
+        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
+      }
+      return true;
+    }
     else if (selectAction && iControl == CONTROL_HOMESHELFMUSICALBUMS)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMUSICALBUMS);
