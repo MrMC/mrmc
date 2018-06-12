@@ -1043,7 +1043,8 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
   case CONTEXT_BUTTON_SHOWONHOME:
     {
-      CMediaSourceSettings::GetInstance().UpdateSource("music",item->GetLabel(),"showonhome", item->m_showOnHome ? "false":"true");
+      CMediaSource *musicSource = CMediaSourceSettings::GetInstance().GetSourceByName("music",item->GetLabel());
+      CMediaSourceSettings::GetInstance().UpdateSource("music",musicSource->strName ,"showonhome", musicSource->m_showOnHome ? "false":"true");
       CMediaSourceSettings::GetInstance().Save();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       g_windowManager.SendThreadMessage(msg);
