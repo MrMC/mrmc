@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.Image;
 import android.media.projection.MediaProjection;
@@ -292,6 +293,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void onStart()
   {
     super.onStart();
+    mDecorView.setBackgroundColor(Color.TRANSPARENT);
 
     Choreographer.getInstance().removeFrameCallback(this);
     Choreographer.getInstance().postFrameCallback(this);
