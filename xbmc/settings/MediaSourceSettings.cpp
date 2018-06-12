@@ -129,9 +129,10 @@ bool CMediaSourceSettings::Save(const std::string &file) const
   SetSources(pRoot, "pictures", m_pictureSources, m_defaultPictureSource);
   SetSources(pRoot, "files", m_fileSources, m_defaultFileSource);
 
+  bool ret = doc.SaveFile(file);
   CWakeOnAccess::GetInstance().QueueMACDiscoveryForAllRemotes();
-
-  return doc.SaveFile(file);
+  CLog::Log(LOGDEBUG, "CMediaSourceSettings::Save() - file (%s) - return (%s)",file.c_str(), ret ? "succesfull":"error");
+  return ret;
 }
 
 void CMediaSourceSettings::Clear()
