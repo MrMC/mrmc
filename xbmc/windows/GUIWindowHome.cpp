@@ -1287,6 +1287,8 @@ void CGUIWindowHome::AddPlexSection(CPlexClientPtr client)
     item->SetPath("ActivateWindow(MediaSources,mediasources://plexplaylists/,return)");
     item->SetProperty("service",true);
     item->SetProperty("servicetype","plex");
+    item->SetProperty("id","playlists");
+    item->SetProperty("type","playlists");
     item->SetProperty("base64url",Base64URL::Encode(curl.Get()));
     item->SetProperty("submenu",CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN));
     m_buttonSections->AddFront(item,0);
