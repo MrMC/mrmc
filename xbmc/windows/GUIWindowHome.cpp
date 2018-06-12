@@ -779,16 +779,6 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   CFileItemPtr ptrButton;
   
   CFileItemList* staticSections = new CFileItemList;
-
-  /// below seems to be tho only way for find out if we have any playlists setup
-  CFileItemList dummy;
-  std::set<std::string> vec;
-  vec.insert(CUtil::MusicPlaylistsLocation());
-  vec.insert(CUtil::VideoPlaylistsLocation());
-  std::string strPlaylistPaths = XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
-  CURL curl(strPlaylistPaths);
-  XFILE::CDirectory::GetDirectory(curl, dummy);
-  bool showPlaylists = dummy.Size() > 0;
   
   if (CProfilesManager::GetInstance().GetNumberOfProfiles() > 1)
   {
@@ -941,8 +931,20 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
       staticSections->Add(ptrButton);
     }
     
+
+  }
+  if (serverType == "mrmc" || serverType.empty())
+  {
+    /// below seems to be tho only way for find out if we have any playlists setup
+    CFileItemList dummy;
+    std::set<std::string> vec;
+    vec.insert(CUtil::MusicPlaylistsLocation());
+    vec.insert(CUtil::VideoPlaylistsLocation());
+    std::string strPlaylistPaths = XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
+    CURL curl(strPlaylistPaths);
+    XFILE::CDirectory::GetDirectory(curl, dummy);
     // Playlists Button
-    if (showPlaylists)
+    if (dummy.Size() > 0)
     {
       button.label = g_localizeStrings.Get(136);
       button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/)";
@@ -962,7 +964,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
       property.name = "submenu";
       property.value = false;
       button.properties.push_back(property);
-      
+
       ptrButton = MakeButton(button);
       staticSections->Add(ptrButton);
     }
