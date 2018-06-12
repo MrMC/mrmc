@@ -646,7 +646,6 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
 {
   bool rtn = false;
   CVariant variant = GetPlexCVariant(url, filter);
-  std::string librarySectionID = variant["MediaContainer"]["librarySectionID"].asString();
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
     CVariant directory(variant["MediaContainer"]["Directory"]);
@@ -667,13 +666,7 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
           pItem->m_bIsShareOrDrive = false;
           if (fastKey.empty())
           {
-            if (librarySectionID == "6")
-            {
-              removeLeadingSlash(key);
-              plex.SetFileName(key);
-            }
-            else
-              plex.SetFileName(plex.GetFileName() + "/" + key);
+            plex.SetFileName(plex.GetFileName() + "/" + key);
           }
           else
           {
@@ -704,7 +697,7 @@ bool CPlexUtils::GetPlexFilters(CFileItemList &items, std::string url, std::stri
   CVariant variant = GetPlexCVariant(url);
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
-    std::string librarySectionID = variant["MediaContainer"]["librarySectionID"].asString();
+    CURL parentFile(parentPath);
     const CVariant directory(variant["MediaContainer"]["Directory"]);
     if (!directory.isNull())
     {
@@ -734,13 +727,9 @@ bool CPlexUtils::GetPlexFilters(CFileItemList &items, std::string url, std::stri
           else
           {
             std::string path = "titles/";
-            if (librarySectionID == "2" && (key == "recentlyAdded" || key == "recentlyViewed" || key == "newest"))
+            if (parentFile.GetHostName() == "tvshows" &&
+                (key == "recentlyAdded" || key == "recentlyViewed" || key == "newest"))
               path = "seasons/";
-            
-            if (librarySectionID == "6" && (key == "albums" || key == "genre" || key == "decade"))
-            {
-              path = "albums/";
-            }
             
             plex.SetFileName(fileName + key);
             pItem->SetPath(parentPath + path + Base64URL::Encode(plex.Get()));
