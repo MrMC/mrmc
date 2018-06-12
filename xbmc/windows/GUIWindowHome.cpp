@@ -1235,6 +1235,9 @@ void CGUIWindowHome::ClearHomeShelfItems()
   CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMUSICALBUMS, 0, 0, tempClearItems);
   g_windowManager.SendThreadMessage(messageAlbums);
 
+  CGUIMessage messageContinue(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING, 0, 0, tempClearItems);
+  g_windowManager.SendThreadMessage(messageContinue);
+
 }
 
 CFileItemPtr CGUIWindowHome::MakeButton(HomeButton button)
