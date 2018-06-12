@@ -732,6 +732,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftstart",           PVR_TIMESHIFT_START_TIME },
                                   { "timeshiftend",             PVR_TIMESHIFT_END_TIME },
                                   { "timeshiftcur",             PVR_TIMESHIFT_PLAY_TIME },
+                                  { "tvmenutoguide",            PVR_TVMENU_TO_GUIDE },
                                   { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS }};
 
 const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE },

@@ -485,6 +485,9 @@ bool CPVRGUIInfo::TranslateBoolInfo(uint32_t dwInfo) const
   case PVR_IS_TIMESHIFTING:
     bReturn = m_bIsTimeshifting;
     break;
+  case PVR_TVMENU_TO_GUIDE:
+    bReturn = CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMENU_TVMENUTOGUIDE);
+    return true;
   default:
     break;
   }

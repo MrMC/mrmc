@@ -202,6 +202,7 @@ public:
   static const std::string SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH;
   static const std::string SETTING_PVRMENU_ICONPATH;
   static const std::string SETTING_PVRMENU_SEARCHICONS;
+  static const std::string SETTING_PVRMENU_TVMENUTOGUIDE;
   static const std::string SETTING_EPG_DAYSTODISPLAY;
   static const std::string SETTING_EPG_SELECTACTION;
   static const std::string SETTING_EPG_HIDENOINFOAVAILABLE;

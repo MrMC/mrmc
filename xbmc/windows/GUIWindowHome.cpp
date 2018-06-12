@@ -973,7 +973,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   if (hasLiveTv)
   {
     button.label = g_localizeStrings.Get(19020);
-    if (g_SkinInfo->GetSkinSettingBool("tv_to_gude"))
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMENU_TVMENUTOGUIDE))
       button.onclick = "ActivateWindow(TvGuide)";
     else
       button.onclick = "ActivateWindow(TVChannels)";

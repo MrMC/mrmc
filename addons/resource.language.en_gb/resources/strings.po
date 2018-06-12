@@ -16384,7 +16384,12 @@ msgctxt "#35507"
 msgid "TV Menu goes to TV Guide"
 msgstr ""
 
-#empty strings from id 35507 to 35999
+#: addons/skin.opacity
+msgctxt "#35508"
+msgid "If selected, when clicking TV button in home, TV Guide window will open. Default to TV Channels"
+msgstr ""
+
+#empty strings from id 35509 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
