@@ -792,11 +792,11 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   }
   else
     SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
-  
+
+  SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
+  SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , "MrMC");
   if (!clear && (hasVideoDB || hasPictures) && (serverType == "mrmc" || serverType.empty()))
   {
-    SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
-    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , "MrMC");
     bool hasMovies = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MOVIES) &&
                       !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMovieButton"));
     bool hasTvShows = (g_infoManager.GetLibraryBool(LIBRARY_HAS_TVSHOWS) &&
