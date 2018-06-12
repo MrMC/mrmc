@@ -510,8 +510,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_SHOWONHOME, 16001);
         else
           buttons.Add(CONTEXT_BUTTON_SHOWONHOME, 20382);
-        CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       }
+      CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
     }
     else
     {
