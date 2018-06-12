@@ -348,11 +348,11 @@ void CXBMCApp::onStop()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO) && !m_hasPIP)
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
   {
     if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
-    else if (m_playback_state & PLAYBACK_STATE_VIDEO)
+    else
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
 }
@@ -1396,6 +1396,7 @@ void CXBMCApp::onPictureInPictureModeChanged(bool isInPictureInPictureMode)
 {
   android_printf("%s: %s", __PRETTY_FUNCTION__, isInPictureInPictureMode ? "true" : "false");
   m_hasPIP = isInPictureInPictureMode;
+
 }
 
 void CXBMCApp::onUserLeaveHint()
