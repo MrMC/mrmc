@@ -1537,12 +1537,16 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
       plexItem->SetArt("thumb", imagePath);
 
       value = item["parentThumb"].asString();
-      if (value.empty())
-        value = item["grandparentThumb"].asString();
+      url.SetOption("url", value);
+      imagePath = url.Get();
+      plexItem->SetArt("season.poster", imagePath);
+
+      value = item["grandparentThumb"].asString();
       url.SetOption("url", value);
       imagePath = url.Get();
       plexItem->SetArt("tvshow.poster", imagePath);
       plexItem->SetArt("tvshow.thumb", imagePath);
+
       plexItem->SetIconImage(imagePath);
 
       std::string seasonEpisode = StringUtils::Format("S%02iE%02i", plexItem->GetVideoInfoTag()->m_iSeason, plexItem->GetVideoInfoTag()->m_iEpisode);
