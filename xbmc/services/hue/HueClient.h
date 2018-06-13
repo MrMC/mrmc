@@ -96,6 +96,7 @@ public:
   void logConfig();
   std::vector< std::pair<std::string, int> > getStreamGroupsNames();
   std::vector< std::pair<std::string, int> > getLightsNames();
+  std::vector< std::pair<std::string, std::string> > getScenesNames();
   std::map<int, std::shared_ptr<CHueLight>>& getLights();
   std::shared_ptr<CHueLight> getLight(int lightid);
   std::map<int, std::shared_ptr<CHueGroup>>& getGroups();
@@ -109,6 +110,9 @@ public:
 
   std::string getClientkey() const;
   void setClientkey(const std::string& value);
+
+  CVariant getSceneLights(const std::string& sceneId);
+  bool setScene(const std::string& sceneId, uint32_t duration);
 
   bool startStreaming(int streamgroupid);
   void stopStreaming();

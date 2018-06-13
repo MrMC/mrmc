@@ -7425,13 +7425,13 @@ msgid "Skip delay"
 msgstr ""
 
 #.
-#: 
+#:
 msgctxt "#13558"
 msgid "Continue Watching"
 msgstr ""
 
 #.
-#: 
+#:
 msgctxt "#13559"
 msgid "On Deck"
 msgstr ""
@@ -8149,7 +8149,7 @@ msgid "Dimmed brightness"
 msgstr ""
 
 msgctxt "#14219"
-msgid "Override paused brightness"
+msgid "Override paused state"
 msgstr ""
 
 msgctxt "#14220"
@@ -8157,7 +8157,7 @@ msgid "Paused brightness"
 msgstr ""
 
 msgctxt "#14221"
-msgid "Override undimmed brightness"
+msgid "Override stopped state"
 msgstr ""
 
 msgctxt "#14222"
@@ -8214,6 +8214,30 @@ msgstr ""
 
 msgctxt "#14236"
 msgid "Synchronize Hue with your device even if no video is playing; Needs Mediacodec(Surface)-Capture enabled"
+msgstr ""
+
+msgctxt "#14237"
+msgid "Dimming mode"
+msgstr ""
+
+msgctxt "#14238"
+msgid "Individual lights"
+msgstr ""
+
+msgctxt "#14239"
+msgid "Scene"
+msgstr ""
+
+msgctxt "#14240"
+msgid "Startup scene"
+msgstr ""
+
+msgctxt "#14241"
+msgid "Paused scene"
+msgstr ""
+
+msgctxt "#14242"
+msgid "End scene"
 msgstr ""
 
 #. Name of a class/preset for audio DSP

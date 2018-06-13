@@ -48,6 +48,9 @@
 #define STATUS_PAUSE 1
 #define STATUS_STOP 2
 
+#define DIMMODE_LIGHTS 0
+#define DIMMODE_SCENE 1
+
 using namespace ANNOUNCEMENT;
 
 // replace these when we hit c++17
@@ -66,7 +69,10 @@ CHueServices::CHueServices()
 : CThread("HueServices")
 , m_oldstatus(STATUS_STOP)
 , m_status(STATUS_STOP)
+, m_dim_mode(DIMMODE_LIGHTS)
+, m_continuous(false)
 , m_forceON(false)
+, m_scene_anyon(false)
 , m_useStreaming(false)
 , m_width(32)
 , m_height(32)
@@ -148,6 +154,67 @@ void CHueServices::DimLight(int lightid, int status)
   }
 }
 
+void CHueServices::DimScene(int status)
+{
+  CLog::Log(LOGINFO, "Hue - Dimming scene status(%d)", status);
+
+  switch (status)
+  {
+    case STATUS_PLAY:
+    {
+      std::string sceneId = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_DIMSCENE);
+      m_scene_lights = m_bridge->getSceneLights(sceneId);
+      assert(m_scene_lights.isArray());
+
+      m_scene_anyon = false;
+      for (CVariant::iterator_array it = m_scene_lights.begin_array(); it != m_scene_lights.end_array(); ++it)
+      {
+        if (m_bridge->getLight(it->asInteger())->isOn())
+          m_scene_anyon = true;
+      }
+
+      if (!m_scene_anyon && !m_forceON)
+        return;
+
+      m_bridge->setScene(
+            sceneId,
+            uint32_t(CSettings::GetInstance().GetNumber(CSettings::SETTING_SERVICES_HUE_DIMDUR) * 1000.0)
+            );
+      break;
+    }
+    case STATUS_PAUSE:
+      if (!m_scene_anyon && !m_forceON)
+        return;
+
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_DIMOVERPAUSEDBRIGHT))
+        m_bridge->setScene(
+              CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_DIMPAUSEDSCENE),
+              uint32_t(CSettings::GetInstance().GetNumber(CSettings::SETTING_SERVICES_HUE_DIMDUR) * 1000.0)
+              );
+      else
+      {
+        for (CVariant::iterator_array it = m_scene_lights.begin_array(); it != m_scene_lights.end_array(); ++it)
+          RevertLight(it->asInteger());
+      }
+      break;
+    case STATUS_STOP:
+      if (!m_scene_anyon && !m_forceON)
+        return;
+
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_DIMOVERUNBRIGHT))
+        m_bridge->setScene(
+              CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_DIMSTOPPEDSCENE),
+              uint32_t(CSettings::GetInstance().GetNumber(CSettings::SETTING_SERVICES_HUE_DIMDUR) * 1000.0)
+              );
+      else
+      {
+        for (CVariant::iterator_array it = m_scene_lights.begin_array(); it != m_scene_lights.end_array(); ++it)
+          RevertLight(it->asInteger());
+      }
+      break;
+  }
+}
+
 void CHueServices::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   if (flag == Player && !strcmp(sender, "xbmc"))
@@ -195,6 +262,7 @@ bool CHueServices::IsActive()
 static CCriticalSection  s_settings_critical;
 static std::vector< std::pair<std::string, int> > s_settings_groups;
 static std::vector< std::pair<std::string, int> > s_settings_lights;
+static std::vector< std::pair<std::string, std::string> > s_settings_scenes;
 
 void CHueServices::SettingOptionsHueStreamGroupsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
@@ -244,6 +312,39 @@ void CHueServices::SettingOptionsHueLightsFiller(const CSetting *setting, std::v
     }
   }
   list.insert(list.end(), s_settings_lights.begin(), s_settings_lights.end());
+}
+
+void CHueServices::SettingOptionsHueScenesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  if (s_settings_scenes.empty())
+  {
+    CSingleLock lock(s_settings_critical);
+
+    std::string ip = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_IP);
+    std::string username = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_USERNAME);
+    std::string clientkey = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_HUE_CLIENTKEY);
+
+    if (!ip.empty() && !username.empty())
+    {
+      in_addr_t bridgeip = inet_addr(ip.c_str());
+      if (g_application.getNetwork().PingHost(bridgeip, 0, 1000))
+      {
+        CHueBridge bridge(ip, username, clientkey);
+        std::vector< std::pair<std::string, std::string> > scenes = bridge.getScenesNames();
+        for (auto scene : scenes)
+        {
+          if (scene.first.find("huelabs") != std::string::npos)
+          {
+            // Pollution
+            continue;
+          }
+          s_settings_scenes.push_back(scene);
+        }
+        std::sort(s_settings_scenes.begin(),s_settings_scenes.end());
+      }
+    }
+  }
+  list.insert(list.end(), s_settings_scenes.begin(), s_settings_scenes.end());
 }
 
 void CHueServices::OnSettingAction(const CSetting* setting)
@@ -327,19 +428,20 @@ void CHueServices::Process()
   float minL = 0.0f, maxL = 1.0f, biasC = 0.0f;
   float fu_old = 0.0, fv_old = 0.0;
 
-  bool continuous = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_CONTINUOUS);
+  m_continuous = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_CONTINUOUS);
+  m_dim_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_DIMMODE);
 
-  CLog::Log(LOGDEBUG, "Hue - Entering loop %s", continuous ? "true" : "false");
+  CLog::Log(LOGDEBUG, "Hue - Entering loop %s", m_continuous ? "true" : "false");
   while (!m_bStop)
   {
     uint8_t curstatus = m_status;
-    if (curstatus != STATUS_STOP || continuous)
+    if (curstatus != STATUS_STOP || m_continuous)
     {
       // if starting, alloc a provider and start capturing
       if (!provider)
       {
 #ifdef TARGET_ANDROID
-        if (continuous)
+        if (m_continuous)
           provider.reset(new CHueProviderAndroidProjection());
         else
 #endif
@@ -448,15 +550,22 @@ void CHueServices::Process()
       }
       if (curstatus != m_oldstatus)
       {
-        for (auto& light : m_bridge->getLights())
+        if (m_dim_mode == DIMMODE_LIGHTS)
         {
-          if (light.second->getMode() == MODE_DIM)
-            DimLight(light.first, curstatus);
+          for (auto& light : m_bridge->getLights())
+          {
+            if (light.second->getMode() == MODE_DIM)
+              DimLight(light.first, curstatus);
+          }
+        }
+        else if (m_dim_mode == DIMMODE_SCENE)
+        {
+          DimScene(curstatus);
         }
         m_oldstatus = curstatus;
       }
     }
-    else   // STATUS_STOP && !continuous
+    else   // STATUS_STOP && !m_continuous
     {
       if (curstatus != m_oldstatus)
       {
@@ -607,15 +716,24 @@ void CHueServices::ResetConnection(int status)
   if (m_bridge)
   {
     m_bridge->stopStreaming();
-    for (auto& light : m_bridge->getLights())
+
+    if (m_dim_mode == DIMMODE_LIGHTS)
     {
-      if (light.second->getMode() == MODE_DIM)
-        DimLight(light.first, status);
-      else if (light.second->getMode() == MODE_STREAM)
-        RevertLight(light.first, true);
-      else if (light.second->getMode() != MODE_IGNORE)
-        RevertLight(light.first);
+      for (auto& light : m_bridge->getLights())
+      {
+        if (light.second->getMode() == MODE_DIM)
+          DimLight(light.first, status);
+        else if (light.second->getMode() == MODE_STREAM)
+          RevertLight(light.first, true);
+        else if (light.second->getMode() != MODE_IGNORE)
+          RevertLight(light.first);
+      }
     }
+    else if (m_dim_mode == DIMMODE_SCENE)
+    {
+      DimScene(status);
+    }
+
     m_bridge.reset();
   }
 }

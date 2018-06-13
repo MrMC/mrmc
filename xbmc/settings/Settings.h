@@ -466,11 +466,15 @@ public:
   static const std::string SETTING_SERVICES_HUE_CONTINUOUS;
   static const std::string SETTING_SERVICES_HUE_DIMDUR;
   static const std::string SETTING_SERVICES_HUE_DIMPROPDUR;
+  static const std::string SETTING_SERVICES_HUE_DIMMODE;
   static const std::string SETTING_SERVICES_HUE_DIMBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_DIMSCENE;
   static const std::string SETTING_SERVICES_HUE_DIMOVERPAUSEDBRIGHT;
   static const std::string SETTING_SERVICES_HUE_DIMPAUSEDBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_DIMPAUSEDSCENE;
   static const std::string SETTING_SERVICES_HUE_DIMOVERUNBRIGHT;
   static const std::string SETTING_SERVICES_HUE_DIMUNBRIGHT;
+  static const std::string SETTING_SERVICES_HUE_DIMSTOPPEDSCENE;
   static const std::string SETTING_SERVICES_HUE_MINBRIGHT;
   static const std::string SETTING_SERVICES_HUE_MAXBRIGHT;
   static const std::string SETTING_SERVICES_HUE_COLORBIAS;

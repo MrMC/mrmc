@@ -507,14 +507,18 @@ const std::string CSettings::SETTING_SERVICES_HUE_USERNAME = "hue.username";
 const std::string CSettings::SETTING_SERVICES_HUE_CLIENTKEY = "hue.clientkey";
 const std::string CSettings::SETTING_SERVICES_HUE_FORCEON = "hue.forceon";
 const std::string CSettings::SETTING_SERVICES_HUE_FORCEONAFTERSUNSET = "hue.forceonaftersunset";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMMODE = "hue.dimmode";
 const std::string CSettings::SETTING_SERVICES_HUE_CONTINUOUS = "hue.continuous";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMDUR = "hue.dimdur";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMPROPDUR = "hue.dimpropdur";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMBRIGHT = "hue.dimbright";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMSCENE = "hue.dimscene";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMOVERPAUSEDBRIGHT = "hue.dimoverpausedbright";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMPAUSEDBRIGHT = "hue.dimpausedbright";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMPAUSEDSCENE = "hue.dimpausedscene";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMOVERUNBRIGHT = "hue.dimoverunbright";
 const std::string CSettings::SETTING_SERVICES_HUE_DIMUNBRIGHT = "hue.dimunbright";
+const std::string CSettings::SETTING_SERVICES_HUE_DIMSTOPPEDSCENE = "hue.dimstoppedscene";
 const std::string CSettings::SETTING_SERVICES_HUE_MINBRIGHT = "hue.minbright";
 const std::string CSettings::SETTING_SERVICES_HUE_MAXBRIGHT = "hue.maxbright";
 const std::string CSettings::SETTING_SERVICES_HUE_COLORBIAS = "hue.colorbias";
@@ -609,7 +613,7 @@ bool CSettings::Initialize()
 
   m_settingsManager->SetInitialized();
 
-  InitializeISettingsHandlers();  
+  InitializeISettingsHandlers();
   InitializeISubSettings();
   InitializeISettingCallbacks();
 
@@ -970,7 +974,7 @@ bool CSettings::Initialize(const std::string &file)
   }
 
   CLog::Log(LOGDEBUG, "CSettings: loaded settings definition from %s", file.c_str());
-  
+
   TiXmlElement *root = xmlDoc.RootElement();
   if (root == NULL)
     return false;
@@ -1138,6 +1142,7 @@ void CSettings::InitializeOptionFillers()
 #endif
   m_settingsManager->RegisterSettingOptionsFiller("huestreamgroups", CHueServices::SettingOptionsHueStreamGroupsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("huelights", CHueServices::SettingOptionsHueLightsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("huescenes", CHueServices::SettingOptionsHueScenesFiller);
 }
 
 void CSettings::InitializeConditions()
@@ -1231,7 +1236,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE);
   m_settingsManager->RegisterCallback(&CDisplaySettings::GetInstance(), settingSet);
-  
+
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
@@ -1417,7 +1422,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_INPUT_APPLESIRIBACK);
   m_settingsManager->RegisterCallback(&CTVOSInputSettings::GetInstance(), settingSet);
 #endif
-  
+
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS);
@@ -1431,7 +1436,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
   m_settingsManager->RegisterCallback(&CWakeOnAccess::GetInstance(), settingSet);
-  
+
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_SERVICES_LIGHTEFFECTSENABLE);
   settingSet.insert(CSettings::SETTING_SERVICES_LIGHTEFFECTSIP);
@@ -1459,11 +1464,15 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_CONTINUOUS);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMDUR);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMPROPDUR);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMMODE);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMSCENE);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMOVERPAUSEDBRIGHT);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMPAUSEDBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMPAUSEDSCENE);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMOVERUNBRIGHT);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMUNBRIGHT);
+  settingSet.insert(CSettings::SETTING_SERVICES_HUE_DIMSTOPPEDSCENE);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_MINBRIGHT);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_MAXBRIGHT);
   settingSet.insert(CSettings::SETTING_SERVICES_HUE_COLORBIAS);
@@ -1496,7 +1505,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYACESSTOKEN);
   settingSet.insert(CSettings::SETTING_SERVICES_EMBYSAVEDSOURCES);
   m_settingsManager->RegisterCallback(&CEmbyServices::GetInstance(), settingSet);
-  
+
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_SERVICES_TRAKTSIGNINPIN);
   settingSet.insert(CSettings::SETTING_SERVICES_TRAKTPUSHWATCHED);
@@ -1510,7 +1519,7 @@ bool CSettings::Reset()
 
   CXBMCTinyXML xmlDoc;
   xmlDoc.DeleteFile(settingsFile);
-  
+
   // unload any loaded settings
   Unload();
 

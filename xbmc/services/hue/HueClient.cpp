@@ -508,6 +508,40 @@ std::vector<std::pair<std::string, int> > CHueBridge::getLightsNames()
   return result;
 }
 
+std::vector<std::pair<std::string, std::string> > CHueBridge::getScenesNames()
+{
+  std::vector<std::pair<std::string, std::string>> result;
+
+  std::string sanswer;
+  CVariant tmpV;
+  XFILE::CCurlFile curlf;
+
+  if (!curlf.Get(getUsernameUrl() + "/scenes", sanswer))
+    return result;
+  if (!CJSONVariantParser::Parse(sanswer, tmpV))
+    return result;
+
+  if (!tmpV.isObject())
+  {
+    CLog::Log(LOGERROR, "Hue - Error getting scenes: %s", sanswer.c_str());
+    return result;
+  }
+
+  for (CVariant::iterator_map it = tmpV.begin_map(); it != tmpV.end_map(); ++it)
+  {
+    if (!it->second.isMember("lights"))
+      continue;
+    if (!it->second["lights"].size())
+      continue;
+      
+    std::string id = it->first;
+    std::string name = it->second["name"].asString();
+    result.push_back(std::make_pair(name, id));
+  }
+
+  return result;
+}
+
 std::map<int, std::shared_ptr<CHueLight>>& CHueBridge::getLights()
 {
   return m_lights;
@@ -556,6 +590,39 @@ std::string CHueBridge::getClientkey() const
 void CHueBridge::setClientkey(const std::string& value)
 {
   m_clientkey = value;
+}
+
+CVariant CHueBridge::getSceneLights(const std::string& sceneId)
+{
+  CVariant ret(CVariant::VariantTypeArray);
+
+  if (m_username.empty())
+    return ret;
+
+  std::string sanswer;
+  CVariant tmpV;
+  XFILE::CCurlFile curlf;
+
+  if (!curlf.Get(getUsernameUrl() + "/scenes/" + sceneId, sanswer))
+    return ret;
+  if (!CJSONVariantParser::Parse(sanswer, tmpV))
+    return ret;
+  if (!tmpV.isObject())
+    return ret;
+
+  ret = tmpV["lights"];
+  return ret;
+}
+
+bool CHueBridge::setScene(const std::string& sceneId, uint32_t duration)
+{
+  CVariant request;
+  request["on"] = true;
+  request["scene"] = sceneId;
+  request["transitiontime"] = int(duration/100);
+
+  bool ret = putGroupStateRequest("0", request);
+  return ret;
 }
 
 bool CHueBridge::startStreaming(int streamgroupid)
@@ -724,11 +791,11 @@ bool CHueBridge::isDaylight()
 {
   if (m_username.empty())
     return false;
-  
+
   std::string sanswer;
   CVariant tmpV;
   XFILE::CCurlFile curlf;
-  
+
   if (curlf.Get(getUsernameUrl() + "/sensors/1", sanswer))
   {
     if (CJSONVariantParser::Parse(sanswer, tmpV))

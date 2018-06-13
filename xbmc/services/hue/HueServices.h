@@ -43,6 +43,7 @@ public:
 
   static void SettingOptionsHueStreamGroupsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   static void SettingOptionsHueLightsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void SettingOptionsHueScenesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
   // ISetting callbacks
   virtual void OnSettingAction(const CSetting *setting) override;
@@ -70,13 +71,18 @@ private:
   void SetLight(int lightid, float fx, float fy, float fY);
   void SetLight(int lightid, float fR, float fG, float fB, float fL);
   void DimLight(int lightid, int status);
+  void DimScene(int status);
 
   uint8_t m_oldstatus;
   std::atomic<uint8_t> m_status;
-  bool              m_forceON;
-  bool              m_useStreaming;
-  int               m_width;
-  int               m_height;
+  uint8_t m_dim_mode;
+  CVariant m_scene_lights;
+  bool m_continuous;
+  bool m_forceON;
+  bool m_scene_anyon;
+  bool m_useStreaming;
+  int  m_width;
+  int  m_height;
   CCriticalSection  m_critical;
   std::unique_ptr<CHueBridge> m_bridge;
 };

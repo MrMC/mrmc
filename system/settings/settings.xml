@@ -165,7 +165,7 @@
         <setting id="lookandfeel.rssrtl" type="boolean" parent="lookandfeel.enablerssfeeds" label="13258" help="13259">
           <dependencies>
             <dependency type="visible" setting="lookandfeel.enablerssfeeds">true</dependency>
-          </dependencies> 
+          </dependencies>
           <level>0</level>
           <default>false</default>
           <control type="toggle" />
@@ -380,9 +380,9 @@
         <setting id="thumbcache.cleanup" type="action" label="13315" help="616">
           <level>1</level>
           <control type="button" format="action" />
-        </setting>                      
-      </group> 
-    </category>    
+        </setting>
+      </group>
+    </category>
     <category id="screensaver" label="360" help="36128">
       <group id="1">
         <setting id="screensaver.mode" type="addon" label="356" help="36130">
@@ -1178,7 +1178,7 @@
           <level>2</level>
           <default>false</default>
           <control type="toggle" />
-        </setting>        
+        </setting>
         <setting id="subtitles.tv" type="integer" label="24116" help="24117">
           <level>1</level>
           <default>0</default>
@@ -2341,7 +2341,7 @@
           <default>4</default>
           <dependencies>
             <dependency type="visible" setting="plex.transcode">true</dependency>
-          </dependencies>  
+          </dependencies>
           <constraints>
             <options>
               <option label="1276">1</option>  <!--320Kbps|576x320 -->
@@ -2364,7 +2364,7 @@
           <default>false</default>
           <dependencies>
             <dependency type="visible" setting="plex.transcode">true</dependency>
-          </dependencies>  
+          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="plex.transcodelocal" type="boolean" parent="plex.transcode" label="1288" help="1289">
@@ -2372,7 +2372,7 @@
           <default>false</default>
           <dependencies>
             <dependency type="visible" setting="plex.transcode">true</dependency>
-          </dependencies>  
+          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="plex.transcodelocalexclusions" type="boolean" parent="plex.transcodelocal" label="1294" help="1291">
@@ -2381,7 +2381,7 @@
           <dependencies>
             <dependency type="visible" setting="plex.transcode">true</dependency>
             <dependency type="visible" setting="plex.transcodelocal">false</dependency>
-          </dependencies>  
+          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="plex.transcodelocalexclusionshevc" type="boolean" parent="plex.transcodelocal" label="1295" help="1291">
@@ -2390,7 +2390,7 @@
           <dependencies>
             <dependency type="visible" setting="plex.transcode">true</dependency>
             <dependency type="visible" setting="plex.transcodelocal">false</dependency>
-          </dependencies>  
+          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="plex.myplexauthtoken" type="string" label="" help="">
@@ -2528,7 +2528,7 @@
             <dependency type="enable">
                 <condition on="property" operator="!is" name="enablemysqlgui" />
             </dependency>
-          </dependencies>	
+          </dependencies>
           <level>1</level>
           <default>3306</default>
           <constraints>
@@ -2543,19 +2543,19 @@
             <dependency type="enable">
                 <condition on="property" operator="!is" name="enablemysqlgui" />
             </dependency>
-          </dependencies> 	
+          </dependencies>
           <level>1</level>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
           <control type="edit" format="string" />
-        </setting> 
+        </setting>
         <setting id="mysql.pass" type="string" label="15052" help="12326">
         <dependencies>
             <dependency type="enable">
                 <condition on="property" operator="!is" name="enablemysqlgui" />
             </dependency>
-          </dependencies>	
+          </dependencies>
           <level>1</level>
           <constraints>
             <allowempty>true</allowempty>
@@ -2571,7 +2571,7 @@
             <maximum>60</maximum>
           </constraints>
           <control type="edit" format="integer" />
-        </setting>                     
+        </setting>
       </group>
       <group id="2">
         <setting id="mysql.video" type="string" label="1265" help="1267">
@@ -2581,7 +2581,7 @@
             <allowempty>true</allowempty>
           </constraints>
           <control type="edit" format="string" />
-        </setting> 
+        </setting>
         <setting id="mysql.music" type="string" label="1266" help="1267">
           <level>1</level>
           <default>MyMusic</default>
@@ -2589,8 +2589,8 @@
             <allowempty>true</allowempty>
           </constraints>
           <control type="edit" format="string" />
-        </setting> 
-      </group>	
+        </setting>
+      </group>
     </category>
     <category id="trakt" label="2120" help="2121">
       <group id="1">
@@ -2705,7 +2705,7 @@
             <maximum>100</maximum>
           </constraints>
           <control type="edit" format="integer" />
-        </setting>        
+        </setting>
       </group>
     </category>
     <category id="lighteffects" label="857" help="858">
@@ -2732,7 +2732,7 @@
             <dependency type="enable">
                 <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
             </dependency>
-          </dependencies> 
+          </dependencies>
           <level>1</level>
           <default>19333</default>
           <constraints>
@@ -2741,7 +2741,7 @@
             <maximum>65535</maximum>
           </constraints>
           <control type="edit" format="string" />
-        </setting>                      
+        </setting>
       </group>
       <group id="2">
         <setting id="services.lighteffectsspeed" type="number" parent="services.lighteffects" label="863" help="864">
@@ -2754,7 +2754,7 @@
           </constraints>
           <control type="slider" format="number">
             <formatlabel>862</formatlabel>
-          </control>  
+          </control>
           <dependencies>
             <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
           </dependencies>
@@ -2769,7 +2769,7 @@
           </constraints>
           <control type="slider" format="number">
             <formatlabel>862</formatlabel>
-          </control>  
+          </control>
           <dependencies>
             <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
           </dependencies>
@@ -2784,11 +2784,11 @@
           </constraints>
           <control type="slider" format="number">
             <formatlabel>862</formatlabel>
-          </control>  
+          </control>
           <dependencies>
             <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
           </dependencies>
-        </setting>        
+        </setting>
         <setting id="services.lighteffectsthreshold" type="integer" parent="services.lighteffects" label="869" help="870">
           <level>1</level>
           <default>10</default>
@@ -2798,7 +2798,7 @@
             <maximum>255</maximum>
           </constraints>
           <control type="slider" format="number">
-          </control>  
+          </control>
           <dependencies>
             <condition on="setting" setting="services.lighteffects" operator="!is"></condition>
           </dependencies>
@@ -2824,7 +2824,7 @@
             <maximum>255</maximum>
           </constraints>
           <control type="slider" format="number">
-          </control>  
+          </control>
           <dependencies>
             <dependency type="visible" setting="services.lighteffectsstaticon">true</dependency>
           </dependencies>
@@ -2838,7 +2838,7 @@
             <maximum>255</maximum>
           </constraints>
           <control type="slider" format="number">
-          </control>  
+          </control>
           <dependencies>
             <dependency type="visible" setting="services.lighteffectsstaticon">true</dependency>
           </dependencies>
@@ -2852,7 +2852,7 @@
             <maximum>255</maximum>
           </constraints>
           <control type="slider" format="number">
-          </control>  
+          </control>
           <dependencies>
             <dependency type="visible" setting="services.lighteffectsstaticon">true</dependency>
           </dependencies>
@@ -2864,9 +2864,9 @@
           <dependencies>
             <dependency type="visible" setting="services.lighteffectsstaticon">true</dependency>
           </dependencies>
-        </setting>             
-      </group>  
-    </category>    
+        </setting>
+      </group>
+    </category>
     <category id="hue" label="14200" help="14201">
       <group id="1" label="14200">
         <setting id="services.hue" type="boolean" label="14202" help="14203">
@@ -2902,6 +2902,24 @@
           <dependencies>
             <dependency type="visible" setting="hue.forceon">true</dependency>
           </dependencies>
+          <control type="toggle"/>
+        </setting>
+        <setting id="hue.dimdur" type="number" label="14216">
+          <level>0</level>
+          <default>4.0</default>
+          <constraints>
+            <minimum>0.0</minimum>
+            <step>0.5</step>
+            <maximum>10.0</maximum>
+          </constraints>
+          <control type="slider" format="number">
+            <formatlabel>862</formatlabel>
+          </control>
+        </setting>
+        <setting id="hue.dimpropdur" type="boolean" label="14217">
+          <level>0</level>
+          <default>false</default>
+          <visible>false</visible>
           <control type="toggle"/>
         </setting>
         <setting id="hue.continuous" type="boolean" label="14235" help="14236">
@@ -3062,23 +3080,18 @@
         </setting>
       </group>
       <group id="3" label="14214">
-        <setting id="hue.dimdur" type="number" label="14216">
+        <setting id="hue.dimmode" type="integer" label="14211" help="14212">
           <level>0</level>
-          <default>4.0</default>
+          <default>0</default>
           <constraints>
-            <minimum>0.0</minimum>
-            <step>0.5</step>
-            <maximum>10.0</maximum>
+            <options>
+              <!-- Lights -->
+              <option label="14238">0</option>
+              <!-- Scene -->
+              <option label="14239">1</option>
+            </options>
           </constraints>
-          <control type="slider" format="number">
-            <formatlabel>862</formatlabel>
-          </control>
-        </setting>
-        <setting id="hue.dimpropdur" type="boolean" label="14217">
-          <level>0</level>
-          <default>false</default>
-          <visible>false</visible>
-          <control type="toggle"/>
+          <control type="list" format="integer"/>
         </setting>
         <setting id="hue.dimbright" type="integer" label="14218">
           <level>0</level>
@@ -3088,8 +3101,29 @@
             <step>5</step>
             <maximum>100</maximum>
           </constraints>
-          <control type="slider" format="integer">
-          </control>
+          <control type="slider" format="integer"/>
+          <dependencies>
+            <dependency type="visible">
+            <and>
+              <condition setting="hue.dimmode" operator="is">0</condition>
+            </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="hue.dimscene" type="string" label="14240">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>huescenes</options>
+          </constraints>
+          <control type="list" format="string"/>
+          <dependencies>
+            <dependency type="visible">
+            <and>
+              <condition setting="hue.dimmode" operator="is">1</condition>
+            </and>
+            </dependency>
+          </dependencies>
         </setting>
         <setting id="hue.dimoverpausedbright" type="boolean" label="14219">
           <level>0</level>
@@ -3104,8 +3138,31 @@
             <step>5</step>
             <maximum>100</maximum>
           </constraints>
-          <control type="slider" format="integer">
-          </control>
+          <control type="slider" format="integer"/>
+          <dependencies>
+            <dependency type="visible">
+            <and>
+              <condition setting="hue.dimmode" operator="is">0</condition>
+              <condition setting="hue.dimoverpausedbright" operator="is">true</condition>
+            </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="hue.dimpausedscene" type="string" label="14241">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>huescenes</options>
+          </constraints>
+          <control type="list" format="string"/>
+          <dependencies>
+            <dependency type="visible">
+            <and>
+              <condition setting="hue.dimmode" operator="is">1</condition>
+              <condition setting="hue.dimoverpausedbright" operator="is">true</condition>
+            </and>
+            </dependency>
+          </dependencies>
         </setting>
         <setting id="hue.dimoverunbright" type="boolean" label="14221">
           <level>0</level>
@@ -3120,8 +3177,31 @@
             <step>5</step>
             <maximum>100</maximum>
           </constraints>
-          <control type="slider" format="integer">
-          </control>
+          <control type="slider" format="integer"/>
+          <dependencies>
+            <dependency type="visible">
+            <and>
+              <condition setting="hue.dimmode" operator="is">0</condition>
+              <condition setting="hue.dimoverunbright" operator="is">true</condition>
+            </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="hue.dimstoppedscene" type="string" label="14242">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>huescenes</options>
+          </constraints>
+          <control type="list" format="string"/>
+          <dependencies>
+            <dependency type="visible">
+            <and>
+              <condition setting="hue.dimmode" operator="is">1</condition>
+              <condition setting="hue.dimoverunbright" operator="is">true</condition>
+            </and>
+            </dependency>
+          </dependencies>
         </setting>
       </group>
       <group id="5" label="14231">
@@ -4008,12 +4088,12 @@
             <maximum>10</maximum>
           </constraints>
           <control type="edit" format="integer" />
-        </setting>  
+        </setting>
         <setting id="network.disableipv6" type="boolean" label="36615" help="36616">
           <level>2</level>
           <default>false</default>
           <control type="toggle" />
-        </setting> 
+        </setting>
         <setting id="network.cachemembuffersize" type="integer" label="36617" help="36618">
           <level>2</level>
           <default>200</default>
@@ -4045,7 +4125,7 @@
             <maximum>20</maximum>
           </constraints>
           <control type="edit" format="integer" />
-        </setting>                                
+        </setting>
       </group>
     </category>
     <category id="powermanagement" label="14095" help="36387">
