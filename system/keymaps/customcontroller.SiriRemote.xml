@@ -81,6 +81,8 @@
     <customcontroller name="SiriRemote">
       <button id="1">Up</button>
       <button id="2">Down</button>
+      <button id="3">StepBack</button>
+      <button id="4">StepForward</button>
       <button id="5">OSD</button>
       <button id="7">ActivateWindow(PVROSDChannels)</button>
       <button id="8">noop</button>
