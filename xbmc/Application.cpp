@@ -1298,7 +1298,7 @@ void CApplication::StopPVRManager()
     StopPlaying();
   g_PVRManager.Stop();
   g_EpgContainer.Stop();
-  g_EpgContainer.Clear();
+  g_EpgContainer.Clear(true);
 }
 
 void CApplication::StartServices()
