@@ -213,7 +213,7 @@ bool CLog::WriteLogString(int logLevel, const std::string& logString)
                                   minute,
                                   second,
                                   static_cast<int>(millisecond),
-                                  static_cast<uint64_t>(CThread::GetCurrentThreadId()),
+                                  (uint64_t)CThread::GetCurrentThreadId(),
                                   levelNames[logLevel]) + strData;
 
   return s_globals.m_platform.WriteStringToLog(strData);
