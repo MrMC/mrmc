@@ -466,13 +466,14 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       if (pvrAddons.size() < 1)
       {
         CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED,false);
-        g_application.StopPVRManager();
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_SETPVRMANAGERSTATE, 0);
       }
       else
       {
         CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED,true);
-        g_application.StartPVRManager();
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_SETPVRMANAGERSTATE, 1);
       }
+      CSettings::GetInstance().Save();
       std::string strParentPath;
       URIUtils::GetParentPath(strDirectory, strParentPath);
       SetHistoryForPath(strParentPath);
