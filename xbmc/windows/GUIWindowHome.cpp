@@ -534,7 +534,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
       std::string type = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
-      if (type == "mrmc" || type.empty())
+      if (type == "mrmc" || type == "emby" || type.empty())
       {
         g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
         std::string strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
@@ -566,10 +566,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
             SET_CONTROL_LABEL2_THREAD_SAFE(CONTROL_PROFILES_BUTTON , thumb);
           }
         }
-      }
-      else if (type == "emby")
-      {
-        SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
       }
     }
     break;
@@ -686,6 +682,8 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
 
 void CGUIWindowHome::SetupServices()
 {
+  if (!IsActive())
+    return;
   // we cannot be diddling gui unless we are on main thread.
   if (!g_application.IsCurrentThread())
   {
@@ -742,7 +740,7 @@ void CGUIWindowHome::SetupServices()
         serverSet = true;
       }
     }
-    SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
+    SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
   }
   
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOME_LIST);
@@ -779,7 +777,6 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   CFileItemPtr ptrButton;
   
   CFileItemList* staticSections = new CFileItemList;
-  
   if (CProfilesManager::GetInstance().GetNumberOfProfiles() > 1)
   {
     SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
