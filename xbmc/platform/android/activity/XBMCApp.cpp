@@ -550,8 +550,8 @@ void CXBMCApp::CheckHeadsetPlugged()
 
 void CXBMCApp::RequestPictureInPictureMode()
 {
-  enterPictureInPictureMode();
-  CLog::Log(LOGDEBUG, "Entering PIP mode");
+//  enterPictureInPictureMode();
+//  CLog::Log(LOGDEBUG, "Entering PIP mode");
 }
 
 bool CXBMCApp::IsHeadsetPlugged()
