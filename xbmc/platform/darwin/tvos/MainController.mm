@@ -460,6 +460,11 @@ MainController *g_xbmcController;
   bool inActive = [UIApplication sharedApplication].applicationState == UIApplicationStateInactive;
   if (inActive)
   {
+    // if we double tap the home, player will get paused but we get called
+    // before that happens and will bounce out and back in. Trap that issue.
+    if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
+      return inActive;
+
     NSURL *url = [NSURL URLWithString:@"mrmc://wakeup"];
     if (CLiteUtils::IsLite())
       url = [NSURL URLWithString:@"mrmclite://wakeup"];
