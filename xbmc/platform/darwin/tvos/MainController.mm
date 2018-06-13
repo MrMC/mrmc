@@ -1512,6 +1512,59 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
+#pragma mark - bluetooth keyboard support methods
+- (NSArray *)keyCommands
+{
+  NSMutableArray *commands = [[NSMutableArray alloc] init];
+  // if self.focusView.userInteractionEnabled == NO,
+  // then native keyboard is up, don't add key handler
+  // as native keyboard will see them
+  if (self.focusView.userInteractionEnabled == YES)
+  {
+    // bluetooth keyboard support, do not map (and override) any standard
+    // tvOS/bluetooth keyboard behavior like arrow keys, return, esc or function keys.
+    NSString *characters = @"`1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./";
+    for (NSUInteger i = 0; i < characters.length; i++) {
+        NSString *input = [characters substringWithRange:NSMakeRange(i, 1)];
+        // Caps Lock
+        [commands addObject:[UIKeyCommand keyCommandWithInput:input modifierFlags:UIKeyModifierAlphaShift action:@selector(handleKeyCommand:)]];
+        // Shift
+        [commands addObject:[UIKeyCommand keyCommandWithInput:input modifierFlags:UIKeyModifierShift action:@selector(handleKeyCommand:)]];
+        // No modifier
+        [commands addObject:[UIKeyCommand keyCommandWithInput:input modifierFlags:kNilOptions action:@selector(handleKeyCommand:)]];
+    }
+    // Delete
+    [commands addObject:[UIKeyCommand keyCommandWithInput:@"\b" modifierFlags:kNilOptions action:@selector(handleKeyCommand:)]];
+    // Tab
+    [commands addObject:[UIKeyCommand keyCommandWithInput:@"\t" modifierFlags:kNilOptions action:@selector(handleKeyCommand:)]];
+  }
+  return commands;
+}
+- (void)handleKeyCommand:(UIKeyCommand *)command
+{
+  // UIKeyModifierFlags modifierFlags = command.modifierFlags;
+  NSString *input = command.input;
+  unichar currentKey = [input characterAtIndex:0];
+  //LOG(@"%s: this key -> \"%c\" :(", __PRETTY_FUNCTION__, currentKey);
+
+  XBMC_Event newEvent = {0};
+  // handle upper case letters
+  if (currentKey >= 'A' && currentKey <= 'Z')
+  {
+    newEvent.key.keysym.mod = XBMCKMOD_LSHIFT;
+    currentKey += 0x20;// convert to lower case
+  }
+  newEvent.key.keysym.sym = (XBMCKey)currentKey;
+  newEvent.key.keysym.unicode = currentKey;
+
+  newEvent.type = XBMC_KEYDOWN;
+  CWinEvents::MessagePush(&newEvent);
+  newEvent.type = XBMC_KEYUP;
+  CWinEvents::MessagePush(&newEvent);
+}
+
+//--------------------------------------------------------------
+//--------------------------------------------------------------
 #pragma mark - internal key press methods
 - (void)sendButtonPressed:(int)buttonId
 {
