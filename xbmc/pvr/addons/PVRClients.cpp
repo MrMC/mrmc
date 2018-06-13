@@ -1357,7 +1357,10 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
     return;
 
   CGUIDialogOK::ShowAndGetInput(CVariant{19240}, CVariant{19241});
-  g_windowManager.ActivateWindow(WINDOW_PVRCLIENT_BROWSER);
+  CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED, false);
+  CSettings::GetInstance().Save();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_SETPVRMANAGERSTATE, 0);
+  //g_windowManager.ActivateWindow(WINDOW_PVRCLIENT_BROWSER);
 }
 
 bool CPVRClients::UpdateAddons(void)
