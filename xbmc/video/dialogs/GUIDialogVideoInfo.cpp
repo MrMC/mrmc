@@ -245,18 +245,9 @@ void CGUIDialogVideoInfo::OnInitWindow()
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
-  if (m_movieItem->IsMediaServiceBased() &&
-      (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow))
-  {
-    CONTROL_DISABLE(CONTROL_BTN_PLAY);
-    SET_CONTROL_FOCUS(CONTROL_BTN_TRACKS, 0);
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_BTN_PLAY);
-    SET_CONTROL_FOCUS(CONTROL_BTN_PLAY, 0);
-  }
-  
+  CONTROL_ENABLE(CONTROL_BTN_PLAY);
+  SET_CONTROL_FOCUS(CONTROL_BTN_PLAY, 0);
+
   Update();
 
   CGUIDialog::OnInitWindow();
@@ -601,6 +592,15 @@ void CGUIDialogVideoInfo::ClearCastList()
 
 void CGUIDialogVideoInfo::Play(bool resume)
 {
+  if (m_movieItem->IsMediaServiceBased() &&
+      (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow))
+  {
+    // eat browse button action on Plex TvShows
+    // we need to focus on the button but we fail to set parent window properly if we list Seasons...
+    // .... to be continued
+    return;
+  }
+  
   if (!m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.empty())
   {
     std::string strPath = StringUtils::Format("videodb://tvshows/titles/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
