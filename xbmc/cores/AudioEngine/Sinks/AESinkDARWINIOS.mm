@@ -675,10 +675,14 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   }
   else
   {
+    UInt32 maxChannels = [[AVAudioSession sharedInstance] maximumOutputNumberOfChannels];
     audioFormat.mFramesPerPacket = 1; // must be 1
 #if defined(TARGET_DARWIN_TVOS)
     // tvos supports up to 8 channels
     audioFormat.mChannelsPerFrame= format.m_channelLayout.Count();
+    // clamp number of channels to what tvOS reports
+    if (maxChannels == 2)
+      audioFormat.mChannelsPerFrame = maxChannels;
 #else
     // ios supports up to 2 channels (unless we are hdmi connected ? )
     audioFormat.mChannelsPerFrame= 2;
@@ -691,7 +695,6 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     CAEChannelInfo channel_info;
     CAChannelIndex channel_index = CAChannel_PCM_6CHAN;
 #if defined(TARGET_DARWIN_TVOS)
-    UInt32 maxChannels = [[AVAudioSession sharedInstance] maximumOutputNumberOfChannels];
     if (maxChannels == 6 && format.m_channelLayout.Count() == 6)
     {
       // if 6, then audio is set to Digial Dolby 5.1, need to use DD mapping
@@ -704,7 +707,10 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
         channel_index = CAChannel_PCM_8CHAN;
     }
     for (size_t chan = 0; chan < format.m_channelLayout.Count(); ++chan)
-      channel_info += CAChannelMap[channel_index][chan];
+    {
+      if (chan < maxChannels)
+        channel_info += CAChannelMap[channel_index][chan];
+    }
     format.m_channelLayout = channel_info;
   }
 
