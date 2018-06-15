@@ -289,6 +289,9 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       
       CGUIMessage messageMoviePR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, m_HomeShelfMoviesPR);
       g_windowManager.SendThreadMessage(messageMoviePR);
+
+      CGUIMessage messageContinueWatching(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING, 0, 0, m_HomeShelfContinueWatching);
+      g_windowManager.SendThreadMessage(messageContinueWatching);
     }
     else
     {
