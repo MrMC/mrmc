@@ -685,6 +685,16 @@ void CGUIWindowManager::PreviousWindow()
   // ok, initialize the new window
   CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Activate new");
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, GetActiveWindow());
+  if (pCurrentWindow && pCurrentWindow->IsMediaWindow())
+  {
+    std::string parentRedirect = ((CGUIMediaWindow*) pCurrentWindow)->GetParentRedirect();
+    if (!parentRedirect.empty())
+    {
+      std::vector<std::string> params;
+      params.push_back(parentRedirect);
+      msg2.SetStringParams(params);
+    }
+  }
   pNewWindow->OnMessage(msg2);
 
   g_infoManager.SetPreviousWindow(WINDOW_INVALID);

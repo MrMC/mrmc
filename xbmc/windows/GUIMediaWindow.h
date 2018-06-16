@@ -48,6 +48,7 @@ public:
   virtual void OnInitWindow();
   virtual bool IsMediaWindow() const { return true; }
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); }
+  std::string GetParentRedirect() { return m_parentRedirect; }
   virtual bool HasListItems() const { return true; }
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
