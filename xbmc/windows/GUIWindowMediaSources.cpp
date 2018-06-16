@@ -450,7 +450,9 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://pvr/"))
     {
-      SetHistoryForPath("mediasources://enablepvr/");
+      std::string strParentPath;
+      URIUtils::GetParentPath(strDirectory, strParentPath);
+      SetHistoryForPath(strParentPath);
       std::vector<std::string> params;
       params.push_back("addons://user/xbmc.pvrclient");
       params.push_back("return");
@@ -458,6 +460,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       // at 'sources://' and we want to go back here.
       params.push_back("parent_redirect=mediasources://enablepvr/");
       g_windowManager.ActivateWindow(WINDOW_PVRCLIENT_BROWSER,params);
+
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://enablepvr/"))
     {
