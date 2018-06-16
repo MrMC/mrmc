@@ -436,8 +436,8 @@ bool CPlexClient::ParseSections(enum PlexSectionParsing parser)
     if (parser == PlexSectionParsing::updateSection)
     {
       {
-        CSingleLock lock(m_criticalMovies);
-        m_movieSectionsContents.clear();
+        CSingleLock lock(m_criticalPlaylist);
+        m_playlistSectionsContents.clear();
       }
       m_needUpdate = false;
     }
