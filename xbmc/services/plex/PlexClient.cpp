@@ -258,6 +258,14 @@ bool CPlexClient::ParseSections(enum PlexSectionParsing parser)
         CSingleLock lock(m_criticalTVShow);
         m_showSectionsContents.clear();
       }
+      {
+        CSingleLock lock(m_criticalArtist);
+        m_artistSectionsContents.clear();
+      }
+      {
+        CSingleLock lock(m_criticalPhoto);
+        m_photoSectionsContents.clear();
+      }
       m_needUpdate = false;
     }
 
