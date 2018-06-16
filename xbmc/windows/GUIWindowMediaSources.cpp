@@ -262,6 +262,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
     
     items.SetPath("mediasources://plexplaylists/");
     items.SetLabel(g_localizeStrings.Get(136));
+    items.SetContent("playlists");
     result = true;
   }
   else if (strDirectory == "mediasources://plexmusicplaylists/")
