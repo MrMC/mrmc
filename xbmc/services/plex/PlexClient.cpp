@@ -470,6 +470,8 @@ bool CPlexClient::ParseSections(enum PlexSectionParsing parser)
         content.section = key;
         content.thumb = XMLUtils::GetAttribute(PlaylistNode, "composite");
         content.contentType = XMLUtils::GetAttribute(PlaylistNode, "playlistType");
+        int duration = atoi(XMLUtils::GetAttribute(PlaylistNode, "duration").c_str()) / 1000;
+        content.duration = StringUtils::SecondsToTimeString(duration, TIME_FORMAT_HH_MM);
         std::string art = XMLUtils::GetAttribute(PlaylistNode, "art");
         content.art = content.thumb;
         if (content.type == "playlist")

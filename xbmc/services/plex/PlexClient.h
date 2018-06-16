@@ -71,6 +71,7 @@ struct PlexSectionsContent
   //std::string path; // not used
   std::string section;
   std::string contentType;
+  std::string duration;
   std::string art; // not used
   std::string thumb; // not used
 };

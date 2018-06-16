@@ -280,7 +280,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
           item->m_bIsFolder = true;
           item->m_bIsShareOrDrive = false;
           item->SetLabel(playlist.title);
-          item->SetLabel2("Plex-" + plexClient->GetServerName());
+          item->SetLabel2(playlist.duration);
           CURL curl(plexClient->GetUrl());
           curl.SetProtocol(plexClient->GetProtocol());
           curl.SetFileName(playlist.section);
@@ -311,7 +311,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
           item->m_bIsFolder = true;
           item->m_bIsShareOrDrive = false;
           item->SetLabel(playlist.title);
-          item->SetLabel2("Plex-" + plexClient->GetServerName());
+          item->SetLabel2(playlist.duration);
           CURL curl(plexClient->GetUrl());
           curl.SetProtocol(plexClient->GetProtocol());
           curl.SetFileName(playlist.section);
