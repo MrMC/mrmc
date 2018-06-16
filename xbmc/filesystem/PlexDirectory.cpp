@@ -185,14 +185,14 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         CPlexUtils::GetPlexFilters(items, Base64URL::Decode(section), "plex://movies/");
         items.SetLabel(g_localizeStrings.Get(369));
-        items.SetContent("movies");
+        items.SetContent("filters");
         items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
         items.ClearSortState();
       }
       else
       {
         CPlexUtils::GetPlexFilter(items, Base64URL::Decode(section), "plex://movies/filter/", filter);
-        items.SetContent("movies");
+        items.SetContent("filters");
         items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
       }
       CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d movies", client->GetServerName().c_str(), items.Size());
@@ -325,13 +325,13 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CPlexUtils::GetPlexFilters(items, Base64URL::Decode(section), "plex://tvshows/");
         items.SetLabel(g_localizeStrings.Get(369));
         items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
-        items.SetContent("episodes");
+        items.SetContent("filters");
       }
       else
       {
         CPlexUtils::GetPlexFilter(items, Base64URL::Decode(section), "plex://tvshows/filter/", filter);
         items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
-        items.SetContent("tvshows");
+        items.SetContent("filters");
       }
       CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d shows", client->GetServerName().c_str(), items.Size());
     }
@@ -457,7 +457,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         CPlexUtils::GetPlexMusicFilters(items, Base64URL::Decode(section), "plex://music/");
         items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
-        items.SetContent("");
+        items.SetContent("filters");
       }
       else
       {
@@ -469,6 +469,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
         CPlexUtils::GetPlexMusicFilter(items, Base64URL::Decode(section), parentPath, filter);
         items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
+        items.SetContent("filters");
       }
     }
     return true;
