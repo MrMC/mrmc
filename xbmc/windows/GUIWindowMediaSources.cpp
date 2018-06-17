@@ -379,7 +379,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       params.push_back("return");
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
-      params.push_back("parent_redirect=mediasources://playlists/");
+      params.push_back("parent_redirect=mediasources://videoplaylists/");
       g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV, params);
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://musicplaylists/"))
@@ -390,7 +390,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       params.push_back("return");
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
-      params.push_back("parent_redirect=mediasources://playlists/");
+      params.push_back("parent_redirect=mediasources://musicplaylists/");
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV, params);
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plexvideoplaylistitems/"))
@@ -403,7 +403,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       params.push_back("return");
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
-      params.push_back("parent_redirect=mediasources://plexplaylists/");
+      params.push_back("parent_redirect=mediasources://plexvideoplaylistitems/");
       g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV, params);
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plexmusicplaylistitems/"))
@@ -416,7 +416,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       params.push_back("return");
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
-      params.push_back("parent_redirect=mediasources://plexplaylists/");
+      params.push_back("parent_redirect=mediasources://plexmusicplaylistitems/");
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV, params);
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plex/"))
