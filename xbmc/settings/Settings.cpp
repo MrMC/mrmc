@@ -87,6 +87,7 @@
 #include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
 #include "input/InputManager.h"
+#include "settings/DiscSettings.h"
 #include "services/lighteffects/LightEffectServices.h"
 #include "services/hue/HueServices.h"
 #include "services/emby/EmbyServices.h"
@@ -769,6 +770,9 @@ void CSettings::Uninitialize()
 #endif // defined(TARGET_LINUX)
   m_settingsManager->UnregisterCallback(&g_weatherManager);
   m_settingsManager->UnregisterCallback(&PERIPHERALS::CPeripherals::GetInstance());
+#ifdef HAVE_LIBBLURAY
+  GetSettingsManager()->UnregisterCallback(&CDiscSettings::GetInstance());
+#endif
 #if defined(TARGET_DARWIN_OSX)
   m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
@@ -1389,6 +1393,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
   m_settingsManager->RegisterCallback(&XBMCHelper::GetInstance(), settingSet);
+#endif
+
+#ifdef HAVE_LIBBLURAY
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_DISC_PLAYBACK);
+  GetSettingsManager()->RegisterCallback(&CDiscSettings::GetInstance(), settingSet);
 #endif
 
 #if defined(TARGET_DARWIN_TVOS)

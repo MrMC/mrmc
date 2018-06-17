@@ -1884,6 +1884,9 @@
 		F56352C816E5436900D21BAD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352C616E5436900D21BAD /* AppParamParser.cpp */; };
 		F56353BF16E9BB3500D21BAD /* BitstreamConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */; };
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
+		F573CDE920D6FC9000743465 /* DiscSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F573CDE820D6FC9000743465 /* DiscSettings.cpp */; };
+		F573CDEA20D6FC9000743465 /* DiscSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F573CDE820D6FC9000743465 /* DiscSettings.cpp */; };
+		F573CDEB20D6FC9000743465 /* DiscSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F573CDE820D6FC9000743465 /* DiscSettings.cpp */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F583BA781FF472050046A109 /* FocusabilityTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F583BA771FF472050046A109 /* FocusabilityTracker.cpp */; };
 		F583BA791FF472050046A109 /* FocusabilityTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F583BA771FF472050046A109 /* FocusabilityTracker.cpp */; };
@@ -5615,6 +5618,8 @@
 		F56353BE16E9BB3500D21BAD /* BitstreamConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitstreamConverter.h; sourceTree = "<group>"; };
 		F56579AD13060D1E0085ED7F /* RenderCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCapture.cpp; sourceTree = "<group>"; };
 		F56579AE13060D1E0085ED7F /* RenderCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCapture.h; sourceTree = "<group>"; };
+		F573CDE720D6FC8F00743465 /* DiscSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscSettings.h; sourceTree = "<group>"; };
+		F573CDE820D6FC9000743465 /* DiscSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DiscSettings.cpp; sourceTree = "<group>"; };
 		F57483611BFFCA7300D5F221 /* ios_package_dylibs2frameworks.command */ = {isa = PBXFileReference; lastKnownFileType = text; path = ios_package_dylibs2frameworks.command; sourceTree = "<group>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
 		F57B6F7F1071B8B500079ACB /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
@@ -9275,6 +9280,8 @@
 				18B7C3A712942132009E7A26 /* AdvancedSettings.h */,
 				F5B723AB1C7C9C1A006432AE /* AudioDSPSettings.cpp */,
 				F5B723AC1C7C9C1A006432AE /* AudioDSPSettings.h */,
+				F573CDE820D6FC9000743465 /* DiscSettings.cpp */,
+				F573CDE720D6FC8F00743465 /* DiscSettings.h */,
 				DF28EE01170E1E51005FA9D2 /* DisplaySettings.cpp */,
 				DF28EE02170E1E51005FA9D2 /* DisplaySettings.h */,
 				DF8990161709BB2D00B35C21 /* MediaSettings.cpp */,
@@ -12105,6 +12112,7 @@
 				F5B723031C7C894F006432AE /* GUIControlBuiltins.cpp in Sources */,
 				7CCDAA8B192756250074CF51 /* NptPosixNetwork.cpp in Sources */,
 				7CCDAA8E192756250074CF51 /* NptPosixQueue.cpp in Sources */,
+				F573CDE920D6FC9000743465 /* DiscSettings.cpp in Sources */,
 				7CCDAA97192756250074CF51 /* NptPosixSystem.cpp in Sources */,
 				7CCDAAA0192756250074CF51 /* NptPosixThreads.cpp in Sources */,
 				F5B7251F1C7E150C006432AE /* timefn.cpp in Sources */,
@@ -13071,6 +13079,7 @@
 				E4991591174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.cpp in Sources */,
 				F5FA263220545C090078DF4B /* InfoTagMusic.cpp in Sources */,
 				E4991592174E6B5C00741B6D /* fstrcmp.c in Sources */,
+				F573CDEA20D6FC9000743465 /* DiscSettings.cpp in Sources */,
 				E4991596174E70BF00741B6D /* yuv2rgb.neon.S in Sources */,
 				F5B7226B1C7BBDD2006432AE /* DVDInputStreamBluray.cpp in Sources */,
 				0E3036ED1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
@@ -13812,6 +13821,7 @@
 				F5D1406A1BAF0B6D0075A95C /* GUIWindowMusicNav.cpp in Sources */,
 				F5B723A71C7C9B77006432AE /* CDDADirectory.cpp in Sources */,
 				F5B724981C7E150C006432AE /* cmddata.cpp in Sources */,
+				F573CDEB20D6FC9000743465 /* DiscSettings.cpp in Sources */,
 				F5B724091C7CA1CA006432AE /* DialogHelper.cpp in Sources */,
 				F5AA30FB1BF014C100693976 /* DVDVideoCodecAVFoundation.mm in Sources */,
 				F5D1406B1BAF0B6D0075A95C /* GUIWindowMusicPlaylist.cpp in Sources */,
