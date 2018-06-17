@@ -207,9 +207,6 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
       ra_flag |= Audio;
   }
 
-  if (!IsActive())
-    return;
-
   CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS, ra_flag);
   g_windowManager.SendThreadMessage(reload, GetID());
   SetupServices();
