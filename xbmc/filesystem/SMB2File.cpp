@@ -633,6 +633,13 @@ int64_t CSMB2Session::Seek(void* context, int64_t iFilePosition, int iWhence)
 
   m_lastAccess = XbmcThreads::SystemClockMillis();
 
+  // smb2 does not support SEEK_END yet, emulate it
+  if (iWhence == SEEK_END)
+  {
+    iWhence = SEEK_SET;
+    iFilePosition += file->size;
+  }
+
   // no need to lock lseek (it does nothing on connection)
   int ret = m_smb2lib->smb2_lseek(m_smb_context, file->handle, iFilePosition, iWhence, &file->offset);
   if (ret == -EINVAL)
