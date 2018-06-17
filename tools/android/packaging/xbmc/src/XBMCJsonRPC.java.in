@@ -692,23 +692,28 @@ public class XBMCJsonRPC
             watchNextProgram = watchNextProgramBuilder.build();
 
             Long watchNextId = watchNextProgram.getId();
-            if (mWatchnextUris.contains(watchNextId))
+            Uri watchNextUri = TvContractCompat.buildWatchNextProgramUri(watchNextId);
+
+            try (Cursor cursor = ctx.getContentResolver().query(watchNextUri, null, null, null, null))
             {
-              ctx.getContentResolver()
-                      .update(
-                              TvContractCompat.buildWatchNextProgramUri(watchNextId),
-                              watchNextProgram.toContentValues(),
-                              null,
-                              null);
-              newWatchnextUris.add(watchNextId);
-            }
-            else
-            {
-              Uri watchNextProgramUri = ctx.getContentResolver()
-                      .insert(
-                              TvContractCompat.WatchNextPrograms.CONTENT_URI,
-                              watchNextProgram.toContentValues());
-              newWatchnextUris.add(watchNextId);
+              if (cursor != null && cursor.getCount() != 0)
+              {
+                ctx.getContentResolver()
+                    .update(
+                        TvContractCompat.buildWatchNextProgramUri(watchNextId),
+                        watchNextProgram.toContentValues(),
+                        null,
+                        null);
+                newWatchnextUris.add(watchNextId);
+              }
+              else
+              {
+                Uri watchNextProgramUri = ctx.getContentResolver()
+                    .insert(
+                        TvContractCompat.WatchNextPrograms.CONTENT_URI,
+                        watchNextProgram.toContentValues());
+                newWatchnextUris.add(watchNextId);
+              }
             }
 
             ++count;
