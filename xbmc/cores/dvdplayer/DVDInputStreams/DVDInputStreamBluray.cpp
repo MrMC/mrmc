@@ -41,6 +41,7 @@
 #include "settings/DiscSettings.h"
 #include "utils/LangCodeExpander.h"
 #include "filesystem/SpecialProtocol.h"
+#include "utils/StringUtils.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -100,7 +101,7 @@ int64_t DllLibbluray::file_read(BD_FILE_H *file, uint8_t *buf, int64_t size)
 
 int64_t DllLibbluray::file_write(BD_FILE_H *file, const uint8_t *buf, int64_t size)
 {
-    return -1;
+  return static_cast<CFile*>(file->internal)->Write(buf, size);
 }
 
 BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
@@ -121,7 +122,20 @@ BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
       flags |= READ_BITRATE | READ_CHUNKED | READ_CACHED;
 
     CFile* fp = new CFile();
-    if(fp->Open(filename, flags))
+    if (mode != nullptr && StringUtils::EqualsNoCase(mode, "wb") && fp->OpenForWrite(filename, true))
+    {
+      if (extension == ".m2ts")
+      {
+        // only save cfile pointers for m2ts files,
+        // it is the only thing we are interested in caching for bluray
+        CSingleLock lock(m_cached_m2ts_files_lock);
+        m_cached_m2ts_files.push_back(fp);
+        CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - file_open caching (%s)", filename);
+      }
+      file->internal = (void*)fp;
+      return file;
+    }
+    else if(fp->Open(filename, flags))
     {
       if (extension == ".m2ts")
       {
