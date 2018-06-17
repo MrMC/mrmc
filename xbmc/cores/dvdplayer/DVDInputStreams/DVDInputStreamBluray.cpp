@@ -324,7 +324,7 @@ bool CDVDInputStreamBluray::Open()
     root     = url.GetHostName();
     filename = URIUtils::GetFileName(url.GetFileName());
   }
-  else if(URIUtils::HasExtension(strPath, ".iso|.img"))
+  else if(URIUtils::HasExtension(strPath, ".iso|.img|.udf"))
   {
     CURL url("udf://");
     url.SetHostName(strPath);
