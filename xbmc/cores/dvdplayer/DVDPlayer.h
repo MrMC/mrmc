@@ -304,7 +304,7 @@ public:
   virtual bool IsCaching() const { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_WAITCODEC; }
   virtual int GetCacheLevel() const ;
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);
+  virtual int OnDiscNavResult(void* pData, int iMessage);
 
   virtual bool ControlsVolume() {return false;}
 

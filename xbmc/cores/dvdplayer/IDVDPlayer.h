@@ -106,7 +106,7 @@ struct SStartMsg
 class IDVDPlayer
 {
 public:
-  virtual int OnDVDNavResult(void* pData, int iMessage) = 0;
+  virtual int OnDiscNavResult(void* pData, int iMessage) = 0;
   virtual ~IDVDPlayer() { }
 };
 
