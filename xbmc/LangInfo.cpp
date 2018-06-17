@@ -714,7 +714,7 @@ void CLangInfo::SetAudioLanguage(const std::string& language)
   if (language.empty()
     || StringUtils::EqualsNoCase(language, "default")
     || StringUtils::EqualsNoCase(language, "original")
-    || !g_LangCodeExpander.ConvertToISO6392T(language, m_audioLanguage))
+    || !g_LangCodeExpander.ConvertToISO6392B(language, m_audioLanguage))
     m_audioLanguage.clear();
 }
 
@@ -732,7 +732,7 @@ void CLangInfo::SetSubtitleLanguage(const std::string& language)
   if (language.empty()
     || StringUtils::EqualsNoCase(language, "default")
     || StringUtils::EqualsNoCase(language, "original")
-    || !g_LangCodeExpander.ConvertToISO6392T(language, m_subtitleLanguage))
+    || !g_LangCodeExpander.ConvertToISO6392B(language, m_subtitleLanguage))
     m_subtitleLanguage.clear();
 }
 

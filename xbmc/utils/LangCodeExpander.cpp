@@ -143,7 +143,7 @@ bool CLangCodeExpander::Lookup(const int code, std::string& desc)
   return Lookup(lang, desc);
 }
 
-bool CLangCodeExpander::ConvertISO6391ToISO6392T(const std::string& strISO6391, std::string& strISO6392T, bool checkWin32Locales /* = false */)
+bool CLangCodeExpander::ConvertISO6391ToISO6392B(const std::string& strISO6391, std::string& strISO6392B, bool checkWin32Locales /*= false*/)
 {
   // not a 2 char code
   if (strISO6391.length() != 2)
@@ -159,11 +159,11 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392T(const std::string& strISO6391, 
     {
       if (checkWin32Locales && LanguageCodes[index].win_id)
       {
-        strISO6392T = LanguageCodes[index].win_id;
+        strISO6392B = LanguageCodes[index].win_id;
         return true;
       }
 
-      strISO6392T = LanguageCodes[index].iso639_2b;
+      strISO6392B = LanguageCodes[index].iso639_2b;
       return true;
     }
   }
@@ -171,15 +171,15 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392T(const std::string& strISO6391, 
   return false;
 }
 
-bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales /* = false */)
+bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode, std::string& strISO6392B, bool checkWin32Locales /* = false */)
 {
 
   //first search in the user defined map
-  if (LookupUserCode(strCharCode, strISO6392T))
+  if (LookupUserCode(strCharCode, strISO6392B))
     return true;
 
   if (strCharCode.size() == 2)
-    return g_LangCodeExpander.ConvertISO6391ToISO6392T(strCharCode, strISO6392T, checkWin32Locales);
+    return g_LangCodeExpander.ConvertISO6391ToISO6392B(strCharCode, strISO6392B, checkWin32Locales);
 
   if (strCharCode.size() == 3)
   {
@@ -189,7 +189,7 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::s
       if (charCode == LanguageCodes[index].iso639_2b ||
          (checkWin32Locales && LanguageCodes[index].win_id != NULL && charCode == LanguageCodes[index].win_id))
       {
-        strISO6392T = charCode;
+        strISO6392B = charCode;
         return true;
       }
     }
@@ -198,7 +198,7 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::s
     {
       if (charCode == RegionCodes[index].alpha3)
       {
-        strISO6392T = charCode;
+        strISO6392B = charCode;
         return true;
       }
     }
@@ -209,7 +209,7 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::s
     {
       if (StringUtils::EqualsNoCase(strCharCode, g_iso639_2[i].name))
       {
-        CodeToString(g_iso639_2[i].code, strISO6392T);
+        CodeToString(g_iso639_2[i].code, strISO6392B);
         return true;
       }
     }
@@ -459,7 +459,7 @@ bool CLangCodeExpander::CompareISO639Codes(const std::string& code1, const std::
   return StringUtils::EqualsNoCase(expandedLang1, expandedLang2);
 }
 
-std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
+std::string CLangCodeExpander::ConvertToISO6392B(const std::string& lang)
 {
   if (lang.empty())
     return lang;
@@ -467,7 +467,7 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
   std::string two, three;
   if (ConvertToISO6391(lang, two))
   {
-    if (ConvertToISO6392T(two, three))
+    if (ConvertToISO6392B(two, three))
       return three;
   }
 

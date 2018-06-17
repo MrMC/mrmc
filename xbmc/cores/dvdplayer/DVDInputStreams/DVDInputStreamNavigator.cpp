@@ -902,7 +902,7 @@ bool CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId, DVDNavStream
     lang[1] = (subp_attributes.lang_code & 255);
     lang[0] = (subp_attributes.lang_code >> 8) & 255;
 
-    g_LangCodeExpander.ConvertToISO6392T(lang, info.language);
+    g_LangCodeExpander.ConvertToISO6392B(lang, info.language);
     return true;
   }
   return false;
@@ -1085,7 +1085,7 @@ bool CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId, DVDNavStreamInf
     lang[1] = (audio_attributes.lang_code & 255);
     lang[0] = (audio_attributes.lang_code >> 8) & 255;
 
-    g_LangCodeExpander.ConvertToISO6392T(lang, info.language);
+    g_LangCodeExpander.ConvertToISO6392B(lang, info.language);
 
     info.channels = audio_attributes.channels + 1;
 

@@ -2061,7 +2061,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const std::string& strVideo, co
         std::string langTmp(*it);
         std::string langCode;
         // try to recognize language
-        if (g_LangCodeExpander.ConvertToISO6392T(langTmp, langCode))
+        if (g_LangCodeExpander.ConvertToISO6392B(langTmp, langCode))
         {
           info.language = langCode;
           continue;
