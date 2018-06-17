@@ -564,7 +564,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
               thumb = "unknown-user.png";
             
             ClearHomeShelfItems();
-            SetupStaticHomeButtons(*m_buttonSections, true);
+            SetupServices();
             std::string text = StringUtils::Format(g_localizeStrings.Get(1256).c_str(),"Plex");
             CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, text, "", 3000, true);
             SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
@@ -707,10 +707,8 @@ void CGUIWindowHome::SetupServices()
   if (CServicesManager::GetInstance().HasServices())
     SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
   
-  bool serverSet = false;
   CSingleLock lock(m_critsection);
   m_buttonSections->ClearItems();
-  SetupStaticHomeButtons(*m_buttonSections);
   std::string strLabel;
   std::string strThumb;
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
@@ -729,7 +727,6 @@ void CGUIWindowHome::SetupServices()
         strThumb = CPlexServices::GetInstance().GetHomeUserThumb();
         SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strLabel);
         SET_CONTROL_LABEL2_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strThumb);
-        serverSet = true;
       }
       SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
     }
@@ -743,12 +740,16 @@ void CGUIWindowHome::SetupServices()
       {
         AddEmbySection(embyClient);
         SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , embyClient->GetServerName());
-        serverSet = true;
       }
     }
     SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
   }
-  
+  else if (serverType == "mrmc" || serverType.empty())
+  {
+    SetupMrMCHomeButtons();
+  }
+
+  SetupStaticHomeButtons();
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOME_LIST);
   OnMessage(msg);
   
@@ -758,17 +759,13 @@ void CGUIWindowHome::SetupServices()
   g_windowManager.SendThreadMessage(message);
 }
 
-void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
+void CGUIWindowHome::SetupStaticHomeButtons()
 {
-  bool hasVideoDB = g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO);
-  bool hasPictures = (g_infoManager.GetLibraryBool(LIBRARY_HAS_PICTURES) &&
-                      !g_SkinInfo->GetSkinSettingBool("HomeMenuNoPicturesButton"));
-
   bool hasLiveTv = (g_infoManager.GetBool(PVR_HAS_TV_CHANNELS) &&
                     !g_SkinInfo->GetSkinSettingBool("HomeMenuNoTVButton"));
   bool hasRadio = (g_infoManager.GetBool(PVR_HAS_RADIO_CHANNELS) &&
                     !g_SkinInfo->GetSkinSettingBool("HomeMenuNoRadioButton"));
-  
+
   const CGUIControl *btnFavourites = GetControl(CONTROL_FAVOURITES_BUTTON);
   const CGUIControl *btnSettings = GetControl(CONTROL_SETTINGS_BUTTON);
   const CGUIControl *btnExtensions = GetControl(CONTROL_EXTENSIONS_BUTTON);
@@ -776,202 +773,11 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
   bool showExtensions = (!btnExtensions && ADDON::CAddonMgr::GetInstance().HasExtensions()&&
                          !g_SkinInfo->GetSkinSettingBool("HomeMenuNoAddonsButton"));
   bool showMediaSources = !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMediaSourceButton");
-  std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
 
   HomeButton button;
   ButtonProperty property;
   CFileItemPtr ptrButton;
-  
-  CFileItemList* staticSections = new CFileItemList;
-  if (CProfilesManager::GetInstance().GetNumberOfProfiles() > 1)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
-    std::string strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
-    std::string thumb = CProfilesManager::GetInstance().GetCurrentProfile().getThumb();
-    if (thumb.empty())
-      thumb = "unknown-user.png";
-    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strLabel);
-    SET_CONTROL_LABEL2_THREAD_SAFE(CONTROL_PROFILES_BUTTON , thumb);
-  }
-  else
-    SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
 
-  SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
-  SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , "MrMC");
-  if (!clear && (hasVideoDB || hasPictures) && (serverType == "mrmc" || serverType.empty()))
-  {
-    bool hasMovies = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MOVIES) &&
-                      !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMovieButton"));
-    bool hasTvShows = (g_infoManager.GetLibraryBool(LIBRARY_HAS_TVSHOWS) &&
-                       !g_SkinInfo->GetSkinSettingBool("HomeMenuNoTVShowButton"));
-    bool hasMusic = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) &&
-                     !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMusicButton"));
-    bool hasMusicVideos = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS) &&
-                           !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMusicVideoButton"));
-    
-    int flatten = CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN);
-    
-    // Movies Button
-    if (hasMovies)
-    {
-      button.label = g_localizeStrings.Get(342);
-      button.onclick = flatten ? "ActivateWindow(Videos,MovieTitlesLocal,return)" :
-                                 "ActivateWindow(Videos,movies,return)";
-      // type
-      property.name = "type";
-      property.value = "movies";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[5000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "movies";
-      button.properties.push_back(property);
-      // submenu
-      property.name = "submenu";
-      property.value = flatten;
-      button.properties.push_back(property);
-      ptrButton = MakeButton(button);
-      staticSections->Add(ptrButton);
-    }
-    
-    
-    // TVShows Button
-    if (hasTvShows)
-    {
-      button.label = g_localizeStrings.Get(20343);
-      
-      button.onclick = flatten ?  "ActivateWindow(Videos,TVShowTitlesLocal,return)" :
-                                  "ActivateWindow(Videos,tvshows,return)";
-      // type
-      property.name = "type";
-      property.value = "tvshows";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[6000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "tvshows";
-      button.properties.push_back(property);
-      // submenu
-      property.name = "submenu";
-      property.value = flatten;
-      button.properties.push_back(property);
-      ptrButton = MakeButton(button);
-      staticSections->Add(ptrButton);
-    }
-    
-    // Music Button
-    if (hasMusic)
-    {
-      button.label = g_localizeStrings.Get(2);
-      button.onclick = "ActivateWindow(Music,rootLocal,return)";
-      // type
-      property.name = "type";
-      property.value = "music";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[7000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "music";
-      button.properties.push_back(property);
-      // submenu
-      property.name = "submenu";
-      property.value = true;
-      button.properties.push_back(property);
-      ptrButton = MakeButton(button);
-      staticSections->Add(ptrButton);
-    }
-    
-    // MusicVideos Button
-    if (hasMusicVideos)
-    {
-      button.label = g_localizeStrings.Get(20389);
-      button.onclick = "ActivateWindow(Videos,musicvideos,return)";
-      // type
-      property.name = "type";
-      property.value = "videos";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[16000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "musicvideos";
-      button.properties.push_back(property);
-
-      ptrButton = MakeButton(button);
-      staticSections->Add(ptrButton);
-    }
-    
-    // Pictures Button
-    if (hasPictures)
-    {
-      button.label = g_localizeStrings.Get(1);
-      button.onclick = "ActivateWindow(Pictures)";
-      // type
-      property.name = "type";
-      property.value = "pictures";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[4000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "pictures";
-      button.properties.push_back(property);
-      
-      ptrButton = MakeButton(button);
-      staticSections->Add(ptrButton);
-    }
-    
-
-  }
-  if (serverType == "mrmc" || serverType.empty())
-  {
-    /// below seems to be tho only way for find out if we have any playlists setup
-    CFileItemList dummy;
-    std::set<std::string> vec;
-    vec.insert(CUtil::MusicPlaylistsLocation());
-    vec.insert(CUtil::VideoPlaylistsLocation());
-    std::string strPlaylistPaths = XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
-    CURL curl(strPlaylistPaths);
-    XFILE::CDirectory::GetDirectory(curl, dummy);
-    // Playlists Button
-    if (dummy.Size() > 0)
-    {
-      button.label = g_localizeStrings.Get(136);
-      button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/)";
-      // type
-      property.name = "type";
-      property.value = "playlists";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[17000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "playlists";
-      button.properties.push_back(property);
-      // submenu
-      property.name = "submenu";
-      property.value = false;
-      button.properties.push_back(property);
-
-      ptrButton = MakeButton(button);
-      staticSections->Add(ptrButton);
-    }
-  }
   // LiveTV Button
   if (hasLiveTv)
   {
@@ -997,7 +803,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     property.value = true;
     button.properties.push_back(property);
     ptrButton = MakeButton(button);
-    staticSections->Add(ptrButton);
+    m_buttonSections->Add(ptrButton);
   }
   
   // Radio Button
@@ -1022,7 +828,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     property.value = true;
     button.properties.push_back(property);
     ptrButton = MakeButton(button);
-    staticSections->Add(ptrButton);
+    m_buttonSections->Add(ptrButton);
   }
   
   // Favourites Button
@@ -1048,7 +854,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     button.properties.push_back(property);
     
     ptrButton = MakeButton(button);
-    staticSections->Add(ptrButton);
+    m_buttonSections->Add(ptrButton);
   }
   
   // MediaSources Button
@@ -1074,7 +880,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     button.properties.push_back(property);
     
     ptrButton = MakeButton(button);
-    staticSections->Add(ptrButton);
+    m_buttonSections->Add(ptrButton);
   }
 
   VECSOURCES *videoSources = CMediaSourceSettings::GetInstance().GetSources("video");
@@ -1106,7 +912,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
       button.properties.push_back(property);
 
       ptrButton = MakeButton(button);
-      staticSections->Add(ptrButton);
+      m_buttonSections->Add(ptrButton);
     }
 
     for (unsigned int i = 0;i < musicSources->size();++i)
@@ -1134,7 +940,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
       button.properties.push_back(property);
 
       ptrButton = MakeButton(button);
-      staticSections->Add(ptrButton);
+      m_buttonSections->Add(ptrButton);
     }
   }
 
@@ -1161,7 +967,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     button.properties.push_back(property);
     
     ptrButton = MakeButton(button);
-    staticSections->Add(ptrButton);
+    m_buttonSections->Add(ptrButton);
   }
   // Settings Button
   if (!btnSettings)
@@ -1186,7 +992,7 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     button.properties.push_back(property);
     
     ptrButton = MakeButton(button);
-    staticSections->Add(ptrButton);
+    m_buttonSections->Add(ptrButton);
   }
   
   // QUIT Button
@@ -1208,14 +1014,205 @@ void CGUIWindowHome::SetupStaticHomeButtons(CFileItemList &sections, bool clear)
     button.properties.push_back(property);
     
     ptrButton = MakeButton(button);
-    staticSections->Add(ptrButton);
+    m_buttonSections->Add(ptrButton);
   }
-  
-  CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOME_LIST, 0, 0, staticSections);
-  g_windowManager.SendThreadMessage(message);
-  
-  sections.Append(*staticSections);
-  
+}
+
+void CGUIWindowHome::SetupMrMCHomeButtons()
+{
+  bool hasVideoDB = g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO);
+  bool hasPictures = (g_infoManager.GetLibraryBool(LIBRARY_HAS_PICTURES) &&
+                      !g_SkinInfo->GetSkinSettingBool("HomeMenuNoPicturesButton"));
+
+  HomeButton button;
+  ButtonProperty property;
+  CFileItemPtr ptrButton;
+
+  //  CFileItemList* staticSections = new CFileItemList;
+  if (CProfilesManager::GetInstance().GetNumberOfProfiles() > 1)
+  {
+    SET_CONTROL_VISIBLE(CONTROL_PROFILES_BUTTON);
+    std::string strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
+    std::string thumb = CProfilesManager::GetInstance().GetCurrentProfile().getThumb();
+    if (thumb.empty())
+      thumb = "unknown-user.png";
+    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_PROFILES_BUTTON , strLabel);
+    SET_CONTROL_LABEL2_THREAD_SAFE(CONTROL_PROFILES_BUTTON , thumb);
+  }
+  else
+    SET_CONTROL_HIDDEN(CONTROL_PROFILES_BUTTON);
+
+  SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
+  SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , "MrMC");
+
+  if (hasVideoDB || hasPictures)
+  {
+    bool hasMovies = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MOVIES) &&
+                      !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMovieButton"));
+    bool hasTvShows = (g_infoManager.GetLibraryBool(LIBRARY_HAS_TVSHOWS) &&
+                       !g_SkinInfo->GetSkinSettingBool("HomeMenuNoTVShowButton"));
+    bool hasMusic = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) &&
+                     !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMusicButton"));
+    bool hasMusicVideos = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS) &&
+                           !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMusicVideoButton"));
+
+    int flatten = CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN);
+
+    // Movies Button
+    if (hasMovies)
+    {
+      button.label = g_localizeStrings.Get(342);
+      button.onclick = flatten ? "ActivateWindow(Videos,MovieTitlesLocal,return)" :
+      "ActivateWindow(Videos,movies,return)";
+      // type
+      property.name = "type";
+      property.value = "movies";
+      button.properties.push_back(property);
+      // menu_id
+      property.name = "menu_id";
+      property.value = "$NUMBER[5000]";
+      button.properties.push_back(property);
+      // id
+      property.name = "id";
+      property.value = "movies";
+      button.properties.push_back(property);
+      // submenu
+      property.name = "submenu";
+      property.value = flatten;
+      button.properties.push_back(property);
+      ptrButton = MakeButton(button);
+      m_buttonSections->Add(ptrButton);
+    }
+
+    // TVShows Button
+    if (hasTvShows)
+    {
+      button.label = g_localizeStrings.Get(20343);
+      button.onclick = flatten ?  "ActivateWindow(Videos,TVShowTitlesLocal,return)" :
+      "ActivateWindow(Videos,tvshows,return)";
+      // type
+      property.name = "type";
+      property.value = "tvshows";
+      button.properties.push_back(property);
+      // menu_id
+      property.name = "menu_id";
+      property.value = "$NUMBER[6000]";
+      button.properties.push_back(property);
+      // id
+      property.name = "id";
+      property.value = "tvshows";
+      button.properties.push_back(property);
+      // submenu
+      property.name = "submenu";
+      property.value = flatten;
+      button.properties.push_back(property);
+      ptrButton = MakeButton(button);
+      m_buttonSections->Add(ptrButton);
+    }
+
+    // Music Button
+    if (hasMusic)
+    {
+      button.label = g_localizeStrings.Get(2);
+      button.onclick = "ActivateWindow(Music,rootLocal,return)";
+      // type
+      property.name = "type";
+      property.value = "music";
+      button.properties.push_back(property);
+      // menu_id
+      property.name = "menu_id";
+      property.value = "$NUMBER[7000]";
+      button.properties.push_back(property);
+      // id
+      property.name = "id";
+      property.value = "music";
+      button.properties.push_back(property);
+      // submenu
+      property.name = "submenu";
+      property.value = true;
+      button.properties.push_back(property);
+      ptrButton = MakeButton(button);
+      m_buttonSections->Add(ptrButton);
+    }
+
+    // MusicVideos Button
+    if (hasMusicVideos)
+    {
+      button.label = g_localizeStrings.Get(20389);
+      button.onclick = "ActivateWindow(Videos,musicvideos,return)";
+      // type
+      property.name = "type";
+      property.value = "videos";
+      button.properties.push_back(property);
+      // menu_id
+      property.name = "menu_id";
+      property.value = "$NUMBER[16000]";
+      button.properties.push_back(property);
+      // id
+      property.name = "id";
+      property.value = "musicvideos";
+      button.properties.push_back(property);
+
+      ptrButton = MakeButton(button);
+      m_buttonSections->Add(ptrButton);
+    }
+
+    // Pictures Button
+    if (hasPictures)
+    {
+      button.label = g_localizeStrings.Get(1);
+      button.onclick = "ActivateWindow(Pictures)";
+      // type
+      property.name = "type";
+      property.value = "pictures";
+      button.properties.push_back(property);
+      // menu_id
+      property.name = "menu_id";
+      property.value = "$NUMBER[4000]";
+      button.properties.push_back(property);
+      // id
+      property.name = "id";
+      property.value = "pictures";
+      button.properties.push_back(property);
+
+      ptrButton = MakeButton(button);
+      m_buttonSections->Add(ptrButton);
+    }
+  }
+
+  /// below seems to be tho only way for find out if we have any playlists setup
+  CFileItemList dummy;
+  std::set<std::string> vec;
+  vec.insert(CUtil::MusicPlaylistsLocation());
+  vec.insert(CUtil::VideoPlaylistsLocation());
+  std::string strPlaylistPaths = XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
+  CURL curl(strPlaylistPaths);
+  XFILE::CDirectory::GetDirectory(curl, dummy);
+  // Playlists Button
+  if (dummy.Size() > 0)
+  {
+    button.label = g_localizeStrings.Get(136);
+    button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/)";
+    // type
+    property.name = "type";
+    property.value = "playlists";
+    button.properties.push_back(property);
+    // menu_id
+    property.name = "menu_id";
+    property.value = "$NUMBER[17000]";
+    button.properties.push_back(property);
+    // id
+    property.name = "id";
+    property.value = "playlists";
+    button.properties.push_back(property);
+    // submenu
+    property.name = "submenu";
+    property.value = false;
+    button.properties.push_back(property);
+
+    ptrButton = MakeButton(button);
+    m_buttonSections->Add(ptrButton);
+  }
 }
 
 void CGUIWindowHome::ClearHomeShelfItems()
