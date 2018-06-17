@@ -861,7 +861,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
   if (showMediaSources)
   {
     button.label = g_localizeStrings.Get(20094);
-    button.onclick = "ActivateWindow(MediaSources,root,return)";
+    button.onclick = "ActivateWindow(MediaSources,mediasources://,return)";
     // type
     property.name = "type";
     property.value = "sources";
