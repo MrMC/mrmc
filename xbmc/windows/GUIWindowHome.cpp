@@ -861,7 +861,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
   if (showMediaSources)
   {
     button.label = g_localizeStrings.Get(20094);
-    button.onclick = "ActivateWindow(MediaSources,root)";
+    button.onclick = "ActivateWindow(MediaSources,root,return)";
     // type
     property.name = "type";
     property.value = "sources";
@@ -1192,7 +1192,7 @@ void CGUIWindowHome::SetupMrMCHomeButtons()
   if (dummy.Size() > 0)
   {
     button.label = g_localizeStrings.Get(136);
-    button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/)";
+    button.onclick = "ActivateWindow(MediaSources,mediasources://playlists/,return)";
     // type
     property.name = "type";
     property.value = "playlists";
