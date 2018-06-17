@@ -145,8 +145,11 @@ bool CGUIWindowMediaSources::Update(const std::string &strDirectory, bool update
 
 bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
-  items.Clear();
   bool result;
+  items.Clear();
+  items.ClearArt();
+  items.ClearProperties();
+  items.RemoveDiscCache(GetID());
 
   if (strDirectory.empty() || strDirectory == "mediasources://")
   {
