@@ -54,19 +54,6 @@ struct DVDNavStreamInfo
   DVDNavStreamInfo() : channels(0) {}
 };
 
-class DVDNavResult
-{
-public:
-  DVDNavResult() :
-      pData (NULL ),
-      type  (0    )
-  {
-  };
-  DVDNavResult(void* p, int t) { pData = p; type = t; };
-  void* pData;
-  int type;
-};
-
 class CDVDInputStreamNavigator
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
