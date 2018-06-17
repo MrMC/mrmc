@@ -1383,28 +1383,18 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   else if (action == "android.intent.action.GET_CONTENT")
   {
     CURL targeturl(targetFile);
-    if (targeturl.IsProtocol("videodb"))
+    if (targeturl.IsProtocol("videodb")
+        || (targeturl.IsProtocol("special") && targetFile.find("playlists/video") != std::string::npos)
+        || (targeturl.IsProtocol("special") && targetFile.find("playlists/mixed") != std::string::npos)
+        )
     {
-      if (targeturl.IsProtocol("videodb")
-          || (targeturl.IsProtocol("special") && targetFile.find("playlists/video") != std::string::npos)
-          || (targeturl.IsProtocol("special") && targetFile.find("playlists/mixed") != std::string::npos)
-          )
-      {
-        std::vector<std::string> params;
-        params.push_back(targeturl.Get());
-        params.push_back("return");
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
-      }
-      else if (targeturl.IsProtocol("musicdb")
-               || (targeturl.IsProtocol("special") && targetFile.find("playlists/music") != std::string::npos))
-      {
-        std::vector<std::string> params;
-        params.push_back(targeturl.Get());
-        params.push_back("return");
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
-      }
+      std::vector<std::string> params;
+      params.push_back(targeturl.Get());
+      params.push_back("return");
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
     }
-    else if (targeturl.IsProtocol("musicdb"))
+    else if (targeturl.IsProtocol("musicdb")
+             || (targeturl.IsProtocol("special") && targetFile.find("playlists/music") != std::string::npos))
     {
       std::vector<std::string> params;
       params.push_back(targeturl.Get());

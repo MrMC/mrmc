@@ -248,6 +248,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
         View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
   }
 
+  public void updateWatchnext()
+  {
+    handler.removeCallbacks(watchnextUpdateRunnable);
+    handler.postDelayed(watchnextUpdateRunnable, 1000);
+  }
+
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
@@ -346,8 +352,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
       {
         TvUtil.scheduleSyncingChannel(this);
-        handler.removeCallbacks(watchnextUpdateRunnable);
-        handler.postDelayed(watchnextUpdateRunnable, 1000);
+        updateWatchnext();
       }
       else
       {

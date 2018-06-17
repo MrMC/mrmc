@@ -147,16 +147,21 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           if (URIUtils::PathEquals(pItem->GetPath(), message.GetStringParam(0), true, true))
           {
             m_viewControl.SetSelectedItem(i);
-            i = -1;
             if (url.GetOption("showinfo") == "true")
             {
               ADDON::ScraperPtr scrapper;
               OnItemInfo(pItem.get(), scrapper);
             }
+            if (url.GetOption("resume") == "true")
+            {
+              pItem->m_lStartOffset = STARTOFFSET_RESUME;
+              OnClick(i);
+            }
+            i = -1;
             break;
           }
         }
-        if (i >= m_vecItems->Size() && url.GetOption("showinfo") == "true")
+        if (i >= m_vecItems->Size() && (url.GetOption("showinfo") == "true" || url.GetOption("resume") == "true"))
         {
           std::string path = message.GetStringParam(0);
           CFileItem* item = new CFileItem(path, URIUtils::HasSlashAtEnd(path));
@@ -199,8 +204,17 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
             *(item->GetVideoInfoTag()) = retrieveTag(m_vecItems->GetContent(), item->GetPath());
             item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
           }
-          ADDON::ScraperPtr scrapper;
-          OnItemInfo(item, scrapper);
+          if (url.GetOption("showinfo") == "true")
+          {
+            ADDON::ScraperPtr scrapper;
+            OnItemInfo(item, scrapper);
+          }
+          if (url.GetOption("resume") == "true")
+          {
+            item->m_lStartOffset = STARTOFFSET_RESUME;
+            g_application.PlayFile(*item);
+          }
+
         }
       }
 

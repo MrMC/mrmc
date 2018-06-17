@@ -1,12 +1,6 @@
 package @APP_PACKAGE@;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,7 +29,6 @@ import android.support.media.tv.TvContractCompat;
 import android.support.media.tv.WatchNextProgram;
 import android.util.Log;
 
-import @APP_PACKAGE@.content.XBMCYTDLContentProvider;
 import @APP_PACKAGE@.model.Album;
 import @APP_PACKAGE@.model.Movie;
 import @APP_PACKAGE@.model.MusicVideo;
@@ -73,7 +66,6 @@ public class XBMCJsonRPC
 
   private String m_xbmc_web_url = "http://localhost:8080";
   private java.util.HashSet<Integer> mRecomendationIds = new java.util.HashSet<Integer>();
-  private java.util.HashSet<Long> mWatchnextUris = new java.util.HashSet<Long>();
 
   private int MAX_RECOMMENDATIONS = 3;
 
@@ -135,9 +127,32 @@ public class XBMCJsonRPC
           "{ \"jsonrpc\": \"2.0\", \"method\": \"Files.GetDirectory\", \"params\": { \"directory\" : \"%s\" }, \"id\": \"%s\" }";
 
   private String INPROGRESS_MOVIES_JSON =
-      "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", \"params\": { \"filter\": {\"field\": \"inprogress\", \"operator\": \"true\", \"value\": \"\"}, \"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\", \"lastplayed\", \"resume\"], \"sort\": { \"order\": \"descending\", \"method\": \"lastplayed\", \"ignorearticle\": true } }, \"id\": \"1\"}\n";
+      "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", \"params\": { \"filter\": {\"field\": \"inprogress\", \"operator\": \"true\", \"value\": \"\"}, \"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\", \"lastplayed\", \"resume\"], \"sort\": { \"order\": \"descending\", \"method\": \"lastplayed\", \"ignorearticle\": true } }, \"id\": \"1\"}";
+
+  private String INPROGRESS_SHOWS_JSON =
+      "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{\"and\":[{\"field\":\"playcount\",\"operator\":\"is\",\"value\":\"0\"}]},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"title\",\"plot\",\"thumbnail\",\"fanart\", \"lastplayed\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"1\"}";
+
+  private String INPROGRESS_SHOWS_EPISODE_UNSEEN_JSON =
+      "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetEpisodes\", \"params\": { \"tvshowid\" : %s, \"filter\":{\"field\":\"playcount\",\"operator\":\"is\",\"value\":\"0\"},\"limits\":{\"start\":0,\"end\":1}, \"properties\" : [\"title\", \"tvshowid\", \"showtitle\", \"season\", \"episode\", \"thumbnail\", \"fanart\", \"resume\"], \"sort\":{\"order\":\"ascending\",\"method\":\"episode\"} }, \"id\":\"1\"}";
+
+  private String INPROGRESS_SHOWS_EPISODE_UNFINISHED_JSON =
+      "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetEpisodes\", \"params\": { \"tvshowid\" : %s, \"filter\":{\"field\":\"inprogress\", \"operator\": \"true\", \"value\": \"\"},\"limits\":{\"start\":0,\"end\":1}, \"properties\" : [\"title\", \"tvshowid\", \"showtitle\", \"season\", \"episode\", \"thumbnail\", \"fanart\", \"resume\"], \"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\"}}, \"id\":\"1\"}";
 
   private NotificationManager mNotificationManager;
+
+  private static final int COLUMN_WATCH_NEXT_ID_INDEX = 0;
+  private static final int COLUMN_WATCH_NEXT_COLUMN_BROWSABLE_INDEX = 1;
+  private static final int COLUMN_LAST_PLAYBACK_POSITION_MILLIS_INDEX = 2;
+  private static final int COLUMN_SEASON_DISPLAY_INDEX = 3;
+  private static final int COLUMN_EPISODE_DISPLAY_INDEX = 4;
+
+  private static final String[] WATCH_NEXT_MAP_PROJECTION =
+      {BaseColumns._ID,
+          TvContractCompat.WatchNextPrograms.COLUMN_BROWSABLE,
+          TvContractCompat.WatchNextPrograms.COLUMN_LAST_PLAYBACK_POSITION_MILLIS,
+          TvContractCompat.WatchNextPrograms.COLUMN_SEASON_DISPLAY_NUMBER,
+          TvContractCompat.WatchNextPrograms.COLUMN_EPISODE_DISPLAY_NUMBER
+      };
 
   public XBMCJsonRPC()
   {
@@ -636,6 +651,7 @@ public class XBMCJsonRPC
   {
     WatchNextProgram watchNextProgram;
 
+    // Movies
     WatchNextProgram.Builder watchNextProgramBuilder = new WatchNextProgram.Builder()
         .setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_CONTINUE)
         .setType(TvContractCompat.PreviewPrograms.TYPE_MOVIE);
@@ -655,7 +671,16 @@ public class XBMCJsonRPC
           try
           {
             JsonObject movie = movies.get(i).getAsJsonObject();
-            int id = movie.get("movieid").getAsInt() + 11000000;
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date lastplayed =  df.parse(movie.get("lastplayed").getAsString());
+
+            // Ignore if last play > 2 weeks
+            long diff = new Date().getTime() - lastplayed.getTime();
+            if (diff > 1000 * 60 * 60 * 24 * 7 * 2)
+              continue;
+
+            long id = movie.get("movieid").getAsInt() + 11000000;
 
             Intent detailsIntent = new Intent(ctx, Splash.class);
             detailsIntent.setAction(Intent.ACTION_VIEW);
@@ -671,8 +696,6 @@ public class XBMCJsonRPC
                 .setIntent(detailsIntent)
                 .setLastEngagementTimeUtcMillis(System.currentTimeMillis());
 
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date lastplayed =  df.parse(movie.get("lastplayed").getAsString());
             watchNextProgramBuilder
                 .setLastEngagementTimeUtcMillis(lastplayed.getTime());
 
@@ -692,19 +715,36 @@ public class XBMCJsonRPC
             watchNextProgram = watchNextProgramBuilder.build();
 
             Long watchNextId = watchNextProgram.getId();
+            newWatchnextUris.add(watchNextId);
             Uri watchNextUri = TvContractCompat.buildWatchNextProgramUri(watchNextId);
-
-            try (Cursor cursor = ctx.getContentResolver().query(watchNextUri, null, null, null, null))
+            try (Cursor cursor = ctx.getContentResolver().query(watchNextUri, WATCH_NEXT_MAP_PROJECTION, null, null, null))
             {
               if (cursor != null && cursor.getCount() != 0)
               {
-                ctx.getContentResolver()
-                    .update(
-                        TvContractCompat.buildWatchNextProgramUri(watchNextId),
-                        watchNextProgram.toContentValues(),
-                        null,
-                        null);
-                newWatchnextUris.add(watchNextId);
+                cursor.moveToNext();
+                if (cursor.getInt(COLUMN_WATCH_NEXT_COLUMN_BROWSABLE_INDEX) == 0)
+                {
+                  if (cursor.getInt(COLUMN_LAST_PLAYBACK_POSITION_MILLIS_INDEX) == watchNextProgram.getLastPlaybackPositionMillis())  // User has hidden the item; ignore
+                    continue;
+                  else
+                  {
+                    // User has hidden the item, but resume position changed. Force it back
+                    ctx.getContentResolver().delete(watchNextUri, null, null);
+                    ctx.getContentResolver()
+                        .insert(
+                            TvContractCompat.WatchNextPrograms.CONTENT_URI,
+                            watchNextProgram.toContentValues());
+                  }
+                }
+                else
+                {
+                  ctx.getContentResolver()
+                      .update(
+                          watchNextUri,
+                          watchNextProgram.toContentValues(),
+                          null,
+                          null);
+                }
               }
               else
               {
@@ -712,8 +752,11 @@ public class XBMCJsonRPC
                     .insert(
                         TvContractCompat.WatchNextPrograms.CONTENT_URI,
                         watchNextProgram.toContentValues());
-                newWatchnextUris.add(watchNextId);
               }
+            }
+            catch (Exception e)
+            {
+              e.printStackTrace();
             }
 
             ++count;
@@ -722,19 +765,235 @@ public class XBMCJsonRPC
             continue;
           }
         }
-        for(Long id : mWatchnextUris)
+
+        // Remove old
+        java.util.HashSet<Long> oldUris = new java.util.HashSet<Long>();
+        try
+        {
+          Cursor cursor = ctx.getContentResolver().query(
+              TvContractCompat.WatchNextPrograms.CONTENT_URI, WATCH_NEXT_MAP_PROJECTION, null, null, null);
+          if (cursor != null)
+          {
+            while (cursor.moveToNext())
+            {
+              if (!cursor.isNull(COLUMN_WATCH_NEXT_ID_INDEX))
+              {
+                try
+                {
+                  long id = cursor.getInt(COLUMN_WATCH_NEXT_ID_INDEX);
+                  if (id > 11000000 && id < 12000000)
+                    oldUris.add(id);
+                }
+                catch (Exception e)
+                {
+                  continue;
+                }
+              }
+            }
+          }
+        }
+        finally
+        {
+        }
+
+        for(Long id : oldUris)
         {
           if (!newWatchnextUris.contains(id))
             ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(id),
                 null, null);
         }
-        mWatchnextUris = newWatchnextUris;
       } catch (Exception e)
       {
         e.printStackTrace();
       }
     }
 
+    // Episodes from Shows
+    watchNextProgramBuilder = new WatchNextProgram.Builder()
+        .setType(TvContractCompat.PreviewPrograms.TYPE_TV_EPISODE);
+
+    rep = request_object(INPROGRESS_SHOWS_JSON);
+    if (rep != null && rep.has("result"))
+    {
+      try
+      {
+        JsonObject results = rep.getAsJsonObject("result");
+        JsonArray shows = results.get("tvshows").getAsJsonArray();
+
+        int count = 0;
+        java.util.HashSet<Long> newWatchnextUris = new java.util.HashSet<Long>();
+        for (int i = 0; i < shows.size() && count < MAX_RECOMMENDATIONS; ++i)
+        {
+          JsonObject show = shows.get(i).getAsJsonObject();
+          String show_id = show.get("tvshowid").getAsString();
+
+          int loop = 0;
+          while (loop < 2)
+          {
+            JsonObject epo;
+            if (loop == 0)
+            {
+              loop = 1;
+              epo = request_object(String.format(INPROGRESS_SHOWS_EPISODE_UNFINISHED_JSON, show_id));
+            }
+            else
+            {
+              loop = 2;
+              epo = request_object(String.format(INPROGRESS_SHOWS_EPISODE_UNSEEN_JSON, show_id));
+            }
+            if (epo != null && epo.has("result"))
+            {
+              results = epo.getAsJsonObject("result");
+              if (!results.has("episodes"))
+                continue;
+
+              JsonArray episodes = results.get("episodes").getAsJsonArray();
+              try
+              {
+                JsonObject episode = episodes.get(0).getAsJsonObject();
+                long id = episode.get("episodeid").getAsInt() + 12000000;
+
+                Intent detailsIntent = new Intent(ctx, Splash.class);
+                detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
+                detailsIntent.setData(Uri.parse("videodb://tvshows/titles/" + show_id + "/-2/" + episode.get("episodeid").getAsInt() + "?resume=true"));
+
+                watchNextProgramBuilder
+                    .setPosterArtUri(
+                        XBMCFileContentProvider.buildUri(
+                            episode.get("thumbnail").getAsString()))
+                    .setId(id)
+                    .setTitle(episode.get("showtitle").getAsString() + ": " + episode.get("title").getAsString())
+                    //.setEpisodeTitle(episode.get("title").getAsString())
+                    .setIntent(detailsIntent)
+                    .setLastEngagementTimeUtcMillis(System.currentTimeMillis());
+
+                int season_num = episode.get("season").getAsInt();
+                int episode_num = episode.get("episode").getAsInt();
+                if (!(season_num == 0 && episode_num == 0))
+                  watchNextProgramBuilder
+                      .setSeasonNumber(episode.get("season").getAsInt())
+                      .setEpisodeNumber(episode.get("episode").getAsInt());
+
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date lastplayed = df.parse(show.get("lastplayed").getAsString());
+                watchNextProgramBuilder
+                    .setLastEngagementTimeUtcMillis(lastplayed.getTime());
+
+                JsonObject resume = episode.getAsJsonObject("resume");
+                int resume_pos = 0;
+                int resume_total = 0;
+                if (resume != null)
+                {
+                  resume_pos = resume.get("position").getAsInt() * 1000;
+                  resume_total = resume.get("total").getAsInt() * 1000;
+                }
+                if (resume_pos != 0)
+                    watchNextProgramBuilder
+                        .setLastPlaybackPositionMillis(resume_pos)
+                        .setDurationMillis(resume_total)
+                        .setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_CONTINUE);
+                else
+                {
+                  watchNextProgramBuilder
+                      .setLastPlaybackPositionMillis(0)
+                      .setDurationMillis(0)
+                      .setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_NEXT);
+                }
+                watchNextProgram = watchNextProgramBuilder.build();
+
+                Long watchNextId = watchNextProgram.getId();
+                newWatchnextUris.add(watchNextId);
+                Uri watchNextUri = TvContractCompat.buildWatchNextProgramUri(watchNextId);
+                try (Cursor cursor = ctx.getContentResolver().query(watchNextUri, WATCH_NEXT_MAP_PROJECTION, null, null, null))
+                {
+                  if (cursor != null && cursor.getCount() != 0)
+                  {
+                    cursor.moveToNext();
+                    if (cursor.getInt(COLUMN_WATCH_NEXT_COLUMN_BROWSABLE_INDEX) == 0)
+                    {
+                      if (cursor.getInt(COLUMN_LAST_PLAYBACK_POSITION_MILLIS_INDEX) == watchNextProgram.getLastPlaybackPositionMillis())  // User has hidden the item; ignore
+                        continue;
+                      else
+                      {
+                        // User has hidden the item, but resume position changed. Force it back
+                        ctx.getContentResolver().delete(watchNextUri, null, null);
+                        ctx.getContentResolver()
+                            .insert(
+                                TvContractCompat.WatchNextPrograms.CONTENT_URI,
+                                watchNextProgram.toContentValues());
+                      }
+                    }
+                    else
+                    {
+                      ctx.getContentResolver()
+                          .update(
+                              watchNextUri,
+                              watchNextProgram.toContentValues(),
+                              null,
+                              null);
+                    }
+                  }
+                  else
+                  {
+                    Uri watchNextProgramUri = ctx.getContentResolver()
+                        .insert(
+                            TvContractCompat.WatchNextPrograms.CONTENT_URI,
+                            watchNextProgram.toContentValues());
+                  }
+                }
+
+                ++count;
+                loop = 99;
+              }
+              catch (Exception e)
+              {
+                continue;
+              }
+            }
+          }
+        }
+
+        // Remove old
+        java.util.HashSet<Long> oldUris = new java.util.HashSet<Long>();
+        try
+        {
+          Cursor cursor = ctx.getContentResolver().query(
+              TvContractCompat.WatchNextPrograms.CONTENT_URI, WATCH_NEXT_MAP_PROJECTION, null, null, null);
+          if (cursor != null)
+          {
+            while (cursor.moveToNext())
+            {
+              if (!cursor.isNull(COLUMN_WATCH_NEXT_ID_INDEX))
+              {
+                try
+                {
+                  long id = cursor.getInt(COLUMN_WATCH_NEXT_ID_INDEX);
+                  if (id > 12000000 && id < 13000000)
+                    oldUris.add(id);
+                }
+                catch (Exception e)
+                {
+                  continue;
+                }
+              }
+            }
+          }
+        }
+        finally
+        {
+        }
+
+        for(Long id : oldUris)
+        {
+          if (!newWatchnextUris.contains(id))
+            ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(id),
+                null, null);
+        }
+      } catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
   }
 
   public void updateLeanback(Context ctx)
@@ -1114,7 +1373,7 @@ public class XBMCJsonRPC
         if (url != null && !url.isEmpty())
           med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
-      med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/" + details.get("episodeid").getAsInt() + "?showinfo=true");
+      med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/-2/" + details.get("episodeid").getAsInt() + "?showinfo=true");
 
       String url = details.get("file").getAsString();
       if (url != null && !url.isEmpty())
