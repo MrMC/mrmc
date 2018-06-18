@@ -832,6 +832,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_channels.Reset();
   m_info.m_dataFormats.clear();
   m_info.m_sampleRates.clear();
+  m_info.m_streamTypes.clear();
 
   m_info.m_deviceType = AE_DEVTYPE_PCM;
   m_info.m_deviceName = "AudioTrack";
@@ -850,7 +851,6 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   if (m_sdk >= 21)
     m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
 
-  m_sink_sampleRates.clear();
   m_sink_sampleRates.insert(CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC));
 
   if (CXBMCApp::IsHDMIPlugged() && !CXBMCApp::IsHeadsetPlugged())
