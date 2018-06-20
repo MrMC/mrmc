@@ -6,7 +6,6 @@ LIBNAME=libbluray
 VERSION=1.0.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
-BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --exec-prefix=$(PREFIX) \
