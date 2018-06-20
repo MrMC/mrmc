@@ -40,11 +40,16 @@ CGUIWindowScreensaverDim::~CGUIWindowScreensaverDim(void)
 
 void CGUIWindowScreensaverDim::UpdateVisibility()
 {
-  m_newDimLevel = g_application.GetDimScreenSaverLevel();
-  if (m_newDimLevel)
-    Open();
-  else
-    Close();
+  float dimLevel = g_application.GetDimScreenSaverLevel();
+  if (dimLevel != m_newDimLevel)
+  {
+    m_newDimLevel = dimLevel;
+    if (m_newDimLevel)
+      Open();
+    else
+      Close();
+  }
+
 }
 
 void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
