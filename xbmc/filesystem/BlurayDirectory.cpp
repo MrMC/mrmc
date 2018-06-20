@@ -135,17 +135,20 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     item.reset(new CFileItem());
     item->SetPath(path.Get());
     item->m_bIsFolder = true;
-    item->SetLabel(g_localizeStrings.Get(25002) /* All titles */);
+    item->SetLabel(g_localizeStrings.Get(25002) /* "Select from all titles ..." */);
     item->SetIconImage("DefaultVideoPlaylists.png");
     items.Add(item);
 
+#ifdef TARGET_WINDOWS
+    // disable until we figure out java vm for embedded
     path.SetFileName("menu");
     item.reset(new CFileItem());
     item->SetPath(path.Get());
     item->m_bIsFolder = false;
-    item->SetLabel(g_localizeStrings.Get(25003) /* Menus */);
+    item->SetLabel(g_localizeStrings.Get(25003) /* "Show Blu-ray menu" */);
     item->SetIconImage("DefaultProgram.png");
     items.Add(item);
+#endif
 }
 
 bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
