@@ -209,7 +209,9 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogNumeric);
   Add(new CGUIDialogGamepad);
   Add(new CGUIDialogButtonMenu);
+#if !defined(TARGET_DARWIN_IOS)
   Add(new CGUIDialogMuteBug);
+#endif
   Add(new CGUIDialogPlayerControls);
   Add(new CGUIDialogSlider);
   Add(new CGUIDialogMusicOSD);
