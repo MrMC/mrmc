@@ -403,7 +403,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       params.push_back("return");
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
-      params.push_back("parent_redirect=mediasources://plexvideoplaylistitems/");
+      params.push_back("parent_redirect=mediasources://plexvideoplaylists/");
       g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV, params);
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plexmusicplaylistitems/"))
@@ -416,7 +416,7 @@ bool CGUIWindowMediaSources::GetDirectory(const std::string &strDirectory, CFile
       params.push_back("return");
       // going to ".." will put us
       // at 'sources://' and we want to go back here.
-      params.push_back("parent_redirect=mediasources://plexmusicplaylistitems/");
+      params.push_back("parent_redirect=mediasources://plexmusicplaylists/");
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV, params);
     }
     else if (StringUtils::StartsWithNoCase(strDirectory, "mediasources://plex/"))
