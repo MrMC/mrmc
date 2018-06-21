@@ -26,7 +26,7 @@
 #include "DiscSettings.h"
 #include "Settings.h"
 #include "lib/Setting.h"
-#include "DllLibbluray.h"
+#include "filesystem/DllLibbluray.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
