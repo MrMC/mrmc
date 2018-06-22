@@ -552,31 +552,43 @@ bool CHueServices::InitConnection()
   std::map<int, std::shared_ptr<CHueLight>>& lights = m_bridge->getLights();
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1ID) > 0)
   {
-    int id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1ID);
-    lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1MODE));
-    lights[id]->saveState();
-    CLog::Log(LOGINFO, "Hue - Light (%d) configured as %d", id, lights[id]->getMode());
+    size_t id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1ID);
+    if (id < lights.size())
+    {
+      lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1MODE));
+      lights[id]->saveState();
+      CLog::Log(LOGINFO, "Hue - Light (%zu) configured as %d", id, lights[id]->getMode());
+    }
   }
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2ID) > 0)
   {
-    int id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2ID);
-    lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2MODE));
-    lights[id]->saveState();
-    CLog::Log(LOGINFO, "Hue - Light (%d) configured as %d", id, lights[id]->getMode());
+    size_t id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2ID);
+    if (id < lights.size())
+    {
+      lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2MODE));
+      lights[id]->saveState();
+      CLog::Log(LOGINFO, "Hue - Light (%zu) configured as %d", id, lights[id]->getMode());
+    }
   }
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3ID) > 0)
   {
-    int id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3ID);
-    lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3MODE));
-    lights[id]->saveState();
-    CLog::Log(LOGINFO, "Hue - Light (%d) configured as %d", id, lights[id]->getMode());
+    size_t id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3ID);
+    if (id < lights.size())
+    {
+      lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3MODE));
+      lights[id]->saveState();
+      CLog::Log(LOGINFO, "Hue - Light (%zu) configured as %d", id, lights[id]->getMode());
+    }
   }
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4ID) > 0)
   {
-    int id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4ID);
-    lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4MODE));
-    lights[id]->saveState();
-    CLog::Log(LOGINFO, "Hue - Light (%d) configured as %d", id, lights[id]->getMode());
+    size_t id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4ID);
+    if (id < lights.size())
+    {
+      lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4MODE));
+      lights[id]->saveState();
+      CLog::Log(LOGINFO, "Hue - Light (%zu) configured as %d", id, lights[id]->getMode());
+    }
   }
 
   return true;
