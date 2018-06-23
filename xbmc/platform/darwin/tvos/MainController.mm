@@ -1254,10 +1254,6 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && ([otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] || [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]))
-  {
-    return YES;
-  }
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]])
   {
     return YES;
@@ -1446,6 +1442,7 @@ CGRect selectUpBounds    = { 0.4f,  0.0f, 1.2f, 0.4f};
 CGRect selectDownBounds  = { 0.4f,  1.6f, 1.2f, 0.4f};
 CGRect selectLeftBounds  = { 0.0f,  0.0f, 0.4f, 2.0f};
 CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
+CGPoint touchAbsPosition;
 //--------------------------------------------------------------
 - (void)initGameController
 {
@@ -1465,6 +1462,7 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
       // referenced from center (0, 0) of touchpad.
       CGPoint startPoint = CGPointMake(
         gamepad.dpad.xAxis.value, gamepad.dpad.yAxis.value);
+      touchAbsPosition = startPoint;
       // translate to (0,0) in top, left, (2,2) bottom, right
       // do this so we can use CGRectContainsPoint and bounding rects
       startPoint.x += 1.0;
@@ -1644,6 +1642,7 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
     }
   }
 }
+CGPoint panTouchAbsStart;
 //--------------------------------------------------------------
 - (IBAction)SiriPanHandler:(UIPanGestureRecognizer *)sender
 {
@@ -1671,9 +1670,25 @@ CGRect selectRightBounds = { 1.6f,  0.0f, 0.4f, 2.0f};
             swipeStartingParentViewRect.origin.x + swipeStartingParentViewRect.size.width,
             swipeStartingParentViewRect.origin.y + swipeStartingParentViewRect.size.height);
           #endif
+
+          panTouchAbsStart = touchAbsPosition;
+          CFocusEngineHandler::GetInstance().ClearAnimation();
+          //CLog::Log(LOGDEBUG, "SiriPanHandler:UIGestureRecognizerStateBegan");
+        }
+        break;
+      case UIGestureRecognizerStateChanged:
+        {
+          FocusEngineAnimate focusAnimate = FocusEngineAnimate();
+          float dx = touchAbsPosition.x - panTouchAbsStart.x;
+          float dy = touchAbsPosition.y - panTouchAbsStart.y;
+          focusAnimate.slideX = dx;
+          focusAnimate.slideY = dy;
+          CFocusEngineHandler::GetInstance().UpdateAnimation(focusAnimate);
+          //CLog::Log(LOGDEBUG, "SiriPanHandler:UIGestureRecognizerStateChanged");
         }
         break;
       default:
+        CFocusEngineHandler::GetInstance().ClearAnimation();
         break;
     }
   }
