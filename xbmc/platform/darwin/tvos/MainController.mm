@@ -1642,10 +1642,10 @@ CGPoint touchAbsPosition;
     }
   }
 }
-CGPoint panTouchAbsStart;
 //--------------------------------------------------------------
 - (IBAction)SiriPanHandler:(UIPanGestureRecognizer *)sender
 {
+  static CGPoint panTouchAbsStart;
   // these are for tracking tap/pan/swipe state only,
   // tvOS focus engine will handle the navigation.
   if (m_appAlive == YES)
