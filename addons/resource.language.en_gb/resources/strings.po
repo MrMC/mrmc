@@ -6688,7 +6688,10 @@ msgctxt "#13308"
 msgid "Do you wish to reboot your system instead of just this application?"
 msgstr ""
 
-#empty string with id 13309
+#: system/settings/settings.xml
+msgctxt "#13309"
+msgid "Allow navigation wrapping"
+msgstr ""
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -17077,7 +17080,11 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr ""
 
-#empty string with id 36172
+#: system/settings/settings.xml
+msgctxt "#36172"
+msgid "Allow wrapping (top<->bottom) when navigating in gui"
+msgstr ""
+
 
 #. Description of setting "Appearance -> International -> Short date format" with label #14109
 #: system/settings/settings.xml

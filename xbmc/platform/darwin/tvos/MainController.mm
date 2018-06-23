@@ -2569,9 +2569,17 @@ CGRect debugView2;
     swipeCounter++;
     if (context.focusHeading != UIFocusHeadingNone)
     {
-      // track focus idle time, if focus was idled,
-      // allow wrapping in lists, else no wrapping in lists
-      g_windowManager.SetWrapOverride(!m_focusIdleState);
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NAVIGATIONWRAPPING))
+      {
+        // track focus idle time, if focus was idled,
+        // allow wrapping in lists, else no wrapping in lists
+        g_windowManager.SetWrapOverride(!m_focusIdleState);
+      }
+      else
+      {
+        // disable wrapping
+        g_windowManager.SetWrapOverride(true);
+      }
       [self startFocusTimer];
     }
 

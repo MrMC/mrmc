@@ -28,6 +28,14 @@
           </control>
         </setting>
       </group>
+      <group id="1">
+        <setting id="lookandfeel.navigationwrapping" type="boolean" label="13309" help="36172">
+          <level>0</level>
+          <default>false</default>
+          <visible>true</visible>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="screensaver">
       <visible>false</visible>
