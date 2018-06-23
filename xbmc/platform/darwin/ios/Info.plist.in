@@ -187,5 +187,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>KeychainGroup</key>
+    <string>$(AppIdentifierPrefix)MrMC4.0</string>
 </dict>
 </plist>

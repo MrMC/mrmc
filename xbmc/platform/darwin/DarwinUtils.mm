@@ -42,6 +42,8 @@
   #import <sys/sysctl.h>
   #if defined(TARGET_DARWIN_TVOS)
     #import "platform/darwin/tvos/MainController.h"
+  #else
+    #import "platform/darwin/RMStore/Optional/RMStoreKeychainPersistence.h"
   #endif
 #else
   #import <Cocoa/Cocoa.h>
@@ -1250,6 +1252,23 @@ void CDarwinUtils::ClearIOSInbox()
       [fileMgr removeItemAtPath:fullPath error:&error];
     }
   }
+#endif
+}
+
+void CDarwinUtils::SetMrMCTouchFlag()
+{
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS) && !defined(APP_PACKAGE_LITE)
+  // this is for the future use, we will set the flag in keychain for
+  // MrMC Touch transition to universal tvOS and iOS app
+  RMStoreKeychainPersistence *persistence = [[RMStoreKeychainPersistence alloc] init];
+  if (1)
+  {
+    if (![persistence isPurchasedProductOfIdentifier:@"tv.mrmc.mrmc.tvos.iosupgrade"])
+      [persistence persistTransactionProductID:@"tv.mrmc.mrmc.tvos.iosupgrade"];
+    [persistence dumpProducts];
+  }
+  else
+    [persistence removeTransactions];
 #endif
 }
 

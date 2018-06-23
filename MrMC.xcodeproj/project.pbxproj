@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
 		0E3036ED1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
+		1816EA1820DE80A3000627E6 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1816EA1720DE80A3000627E6 /* StoreKit.framework */; };
 		181E4B701EFCF664004C5551 /* FocusEngineHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */; };
 		182600F71EC0E87F0004447E /* MediaDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182600F51EC0E87F0004447E /* MediaDirectory.cpp */; };
 		182600F81EC0E87F0004447E /* MediaDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182600F51EC0E87F0004447E /* MediaDirectory.cpp */; };
@@ -163,6 +164,9 @@
 		18F123CC2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
 		18F123CD2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
 		18F123CE2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
+		18FCB0AC20DD3BE10027327A /* RMStoreKeychainPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FCB09020DD3BE00027327A /* RMStoreKeychainPersistence.m */; };
+		18FCB0B220DD3BE10027327A /* RMStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FCB09420DD3BE00027327A /* RMStore.m */; };
+		18FCB0BA20DD3FFC0027327A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FCB0B920DD3FFB0027327A /* Security.framework */; };
 		18FD1CA91BC8E62600027005 /* PodnapisiSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18FD1CA71BC8E62600027005 /* PodnapisiSearch.cpp */; };
 		18FD1CAA1BC8E62600027005 /* PodnapisiSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18FD1CA71BC8E62600027005 /* PodnapisiSearch.cpp */; };
 		18FD1CAB1BC8E62600027005 /* PodnapisiSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18FD1CA71BC8E62600027005 /* PodnapisiSearch.cpp */; };
@@ -3519,6 +3523,7 @@
 /* Begin PBXFileReference section */
 		0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FavouritesDirectory.cpp; sourceTree = "<group>"; };
 		0E3036EB1760F68A00D93596 /* FavouritesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesDirectory.h; sourceTree = "<group>"; };
+		1816EA1720DE80A3000627E6 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.4.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		18252F0A1C497D94002E71F9 /* MrMC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MrMC.entitlements; sourceTree = "<group>"; };
 		18252F0B1C497DA3002E71F9 /* TopShelf.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TopShelf.entitlements; sourceTree = "<group>"; };
 		182600F51EC0E87F0004447E /* MediaDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaDirectory.cpp; sourceTree = "<group>"; };
@@ -3809,6 +3814,15 @@
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogOSDSettings.cpp; sourceTree = "<group>"; };
 		18F123CB2017AD7400C82783 /* GUIDialogOSDSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogOSDSettings.h; sourceTree = "<group>"; };
+		18FCB03320DD3BE00027327A /* RMStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMStore.h; sourceTree = "<group>"; };
+		18FCB03720DD3BE00027327A /* RMStoreKeychainPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMStoreKeychainPersistence.h; sourceTree = "<group>"; };
+		18FCB09020DD3BE00027327A /* RMStoreKeychainPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMStoreKeychainPersistence.m; sourceTree = "<group>"; };
+		18FCB09420DD3BE00027327A /* RMStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMStore.m; sourceTree = "<group>"; };
+		18FCB0B420DD3DEA0027327A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.4.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
+		18FCB0B820DD3F2B0027327A /* MrMC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MrMC.entitlements; sourceTree = "<group>"; };
+		18FCB0B920DD3FFB0027327A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.4.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		18FCB0BB20DD40050027327A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.4.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		18FCB0C120DD98030027327A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.4.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		18FD1CA31BC7DC2900027005 /* SubtitleSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubtitleSearch.h; sourceTree = "<group>"; };
 		18FD1CA71BC8E62600027005 /* PodnapisiSearch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PodnapisiSearch.cpp; sourceTree = "<group>"; };
 		18FD1CA81BC8E62600027005 /* PodnapisiSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodnapisiSearch.h; sourceTree = "<group>"; };
@@ -6323,6 +6337,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1816EA1820DE80A3000627E6 /* StoreKit.framework in Frameworks */,
+				18FCB0BA20DD3FFC0027327A /* Security.framework in Frameworks */,
 				F50F8E9B1F02BD3C00C8F93B /* VideoToolbox.framework in Frameworks */,
 				E49910F3174E54FB00741B6D /* AVFoundation.framework in Frameworks */,
 				F5024C0D1BB433F400134B16 /* UIKit.framework in Frameworks */,
@@ -6428,6 +6444,11 @@
 		18AC31EE1C49445D00AE9433 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1816EA1720DE80A3000627E6 /* StoreKit.framework */,
+				18FCB0C120DD98030027327A /* Foundation.framework */,
+				18FCB0B920DD3FFB0027327A /* Security.framework */,
+				18FCB0BB20DD40050027327A /* Security.framework */,
+				18FCB0B420DD3DEA0027327A /* StoreKit.framework */,
 				F5C28F0F1FC7D19B00F63834 /* AVKit.framework */,
 				F50F8E9C1F02BD4E00C8F93B /* VideoToolbox.framework */,
 				F50F8E9A1F02BD3C00C8F93B /* VideoToolbox.framework */,
@@ -6841,6 +6862,25 @@
 				DFEF0BC0180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.h */,
 			);
 			path = playlists;
+			sourceTree = "<group>";
+		};
+		18FCB03220DD3BE00027327A /* RMStore */ = {
+			isa = PBXGroup;
+			children = (
+				18FCB03420DD3BE00027327A /* Optional */,
+				18FCB03320DD3BE00027327A /* RMStore.h */,
+				18FCB09420DD3BE00027327A /* RMStore.m */,
+			);
+			path = RMStore;
+			sourceTree = "<group>";
+		};
+		18FCB03420DD3BE00027327A /* Optional */ = {
+			isa = PBXGroup;
+			children = (
+				18FCB09020DD3BE00027327A /* RMStoreKeychainPersistence.m */,
+				18FCB03720DD3BE00027327A /* RMStoreKeychainPersistence.h */,
+			);
+			path = Optional;
 			sourceTree = "<group>";
 		};
 		19C28FBDFE9D53C911CA2CBB /* Products */ = {
@@ -9887,6 +9927,7 @@
 				F590452D1BA372A600DB589A /* ios */,
 				F5AA30EE1BE5643A00693976 /* ios-common */,
 				F59045451BA372A600DB589A /* osx */,
+				18FCB03220DD3BE00027327A /* RMStore */,
 				F5D142911BAF31FB0075A95C /* tvos */,
 				F51063401BDAA11D00BBCED6 /* DarwinNSUserDefaults.h */,
 				F51063411BDAA11D00BBCED6 /* DarwinNSUserDefaults.mm */,
@@ -9908,6 +9949,7 @@
 		F590452D1BA372A600DB589A /* ios */ = {
 			isa = PBXGroup;
 			children = (
+				18FCB0B820DD3F2B0027327A /* MrMC.entitlements */,
 				F590452E1BA372A600DB589A /* Default-568h@2x.png */,
 				F590452F1BA372A600DB589A /* Default-667h@2x.png */,
 				F59045301BA372A600DB589A /* Default-736h@3x.png */,
@@ -10694,6 +10736,17 @@
 					};
 					E4991088174D0D2600741B6D = {
 						DevelopmentTeam = 8U6WVDN2Q6;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					F5D13EC51BAF0B6D0075A95C = {
 						DevelopmentTeam = 8U6WVDN2Q6;
@@ -10701,6 +10754,12 @@
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 0;
 							};
 						};
 					};
@@ -12962,6 +13021,7 @@
 				42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */,
 				E4991472174E605900741B6D /* SortUtils.cpp in Sources */,
 				F5471B191E8562AA00570A53 /* EmbyDirectory.cpp in Sources */,
+				18FCB0AC20DD3BE10027327A /* RMStoreKeychainPersistence.m in Sources */,
 				F5B725141C7E150C006432AE /* strfn.cpp in Sources */,
 				E4991473174E605900741B6D /* Splash.cpp in Sources */,
 				E4991474174E605900741B6D /* Stopwatch.cpp in Sources */,
@@ -13258,6 +13318,7 @@
 				F5B722F51C7C894F006432AE /* ApplicationBuiltins.cpp in Sources */,
 				B5011E4219AF3B56005ADF89 /* PosixFile.cpp in Sources */,
 				7CCDAA83192756250074CF51 /* NptPosixDynamicLibraries.cpp in Sources */,
+				18FCB0B220DD3BE10027327A /* RMStore.m in Sources */,
 				7CCDAA86192756250074CF51 /* NptPosixEnvironment.cpp in Sources */,
 				7CCDAA8C192756250074CF51 /* NptPosixNetwork.cpp in Sources */,
 				7CCDAA8F192756250074CF51 /* NptPosixQueue.cpp in Sources */,
@@ -14743,6 +14804,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = xbmc/platform/darwin/ios/MrMC.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -14776,6 +14838,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = xbmc/platform/darwin/ios/MrMC.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;

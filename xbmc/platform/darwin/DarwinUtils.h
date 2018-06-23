@@ -73,6 +73,7 @@ public:
   static bool        IsDarkInterface();
   static void        CloneSystemFonts(const std::string &strPath);
   static void        ClearIOSInbox();
+  static void        SetMrMCTouchFlag();
 };
 
 #endif

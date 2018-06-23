@@ -686,6 +686,10 @@ bool CApplication::Create()
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
   m_lastRenderTime = m_lastFrameTime;
 
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+  CDarwinUtils::SetMrMCTouchFlag();
+#endif
+
   CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnCreated");
   return true;
 }
