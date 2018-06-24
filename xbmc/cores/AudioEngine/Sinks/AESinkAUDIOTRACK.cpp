@@ -601,15 +601,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     return;
   }
 
-  if (m_nonIECPauseTimer.MillisLeft() > 0)
-  {
-    double delay = GetMovingAverageDelay(GetCacheTotal());
-    CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK::GetDelay "
-      "m_nonIECPauseTimer.MillisLeft=%d, delay=%f", m_nonIECPauseTimer.MillisLeft(), delay);
-    status.SetDelay(delay);
-    return;
-  }
-
   double framesInBuffer = (double)(m_writeBytes - headBytes) / m_sink_frameSize;
   double delay = framesInBuffer / (double)m_sink_sampleRate;
   //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetDelay "
@@ -765,7 +756,7 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
 
   // on startup the buffer is empty, it "should" take the silence if we would really send some
   // without any delay. In between we need to sleep out the frames though
-  if (m_playbackHeadOffset == -1 && m_nonIECPauseTimer.MillisLeft() + millis <= m_sink_bufferSeconds * 1000 && m_playbackHeadOffset == -1)
+  if (m_playbackHeadOffset == -1 && m_nonIECPauseTimer.MillisLeft() + millis <= m_sink_bufferSeconds * 1000)
     m_nonIECPauseTimer.Set(m_nonIECPauseTimer.MillisLeft() + millis);
   else
   {
