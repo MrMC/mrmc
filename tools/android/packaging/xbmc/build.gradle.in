@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 def getDependsDir() {
     Properties properties = new Properties()
     properties.load(new File(rootDir.absolutePath + "/local.properties").newDataInputStream())
@@ -45,15 +49,29 @@ android {
         }
 
     }
+    signingConfigs {
+        standard {
+            keyAlias keystoreProperties['SIGN_KEY']
+            keyPassword keystoreProperties['SIGN_KEYPASS']
+            storeFile file(keystoreProperties['SIGN_STORE'])
+            storePassword keystoreProperties['SIGN_STOREPASS']
+        }
+    }
     buildTypes {
         releaseUnsigned.initWith(buildTypes.release)
         releaseUnsigned {
             signingConfig null
         }
+        release {
+            signingConfig signingConfigs.standard
+        }
 
         debugUnsigned.initWith(buildTypes.debug)
         debugUnsigned {
             signingConfig null
+        }
+        debug {
+            signingConfig signingConfigs.standard
         }
 
     }

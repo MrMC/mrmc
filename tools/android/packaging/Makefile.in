@@ -49,25 +49,25 @@ ABI=$(ANDROID_ABI)
 
 all: apk
 
-apk: apk-clean sharedapk package apk-sign
+apk: apk-clean sharedapk package
 
 source: apk-clean sharedapk pack-no-build
 
 obb: apk-clean sharedobb
 
-apk-unsigned: apk-clean sharedapk package
+apk-unsigned: apk-clean sharedapk package-unsigned
 
-apk-obb: apk-clean sharedobb package apk-sign
+apk-obb: apk-clean sharedobb package
 
 source-obb: apk-clean sharedobb pack-no-build
 
-apk-obb-unsigned: apk-clean sharedobb package
+apk-obb-unsigned: apk-clean sharedobb package-unsigned
 
-apk-noobb: apk-clean package apk-sign 
+apk-noobb: apk-clean package
 
 source-noobb: apk-clean pack-no-build
 
-apk-noobb-unsigned: apk-clean package
+apk-noobb-unsigned: apk-clean package-unsigned
 
 xbmc/assets:
 	mkdir -p packaging/assets
@@ -121,7 +121,7 @@ res:
 	cp xbmc/activity_main.xml packaging/res/layout/
 	cp xbmc/searchable.xml packaging/res/xml/
 
-libs: 
+libs:
 	mkdir -p packaging/lib/$(ABI) packaging/assets/python2.7/lib/
 	cp -fp $(SRCLIBS) packaging/lib/$(ABI)/
 	# depends packaging of binary pvr hardcodes path to mrmc
@@ -143,6 +143,12 @@ java: res
 pack-no-build: libs python java
 
 package: libs python java
+	@echo "Gradle packaging..."
+	ANDROID_HOME=$(SDKROOT) ./gradlew --no-daemon -PxbmcABI=$(ABI) assemble$(BUILD_TYPE)
+	cp -fp packaging/build/outputs/apk/$(BUILD_TYPE_LC)/packaging-$(BUILD_TYPE_LC).apk $(XBMCROOT)/@APP_NAME@app-$(ABI)-$(BUILD_TYPE_LC).apk
+	@echo "$(XBMCROOT)/@APP_NAME@app-$(ABI)-$(BUILD_TYPE_LC).apk created"
+
+package-unsigned: libs python java
 	@echo "Gradle packaging..."
 	ANDROID_HOME=$(SDKROOT) ./gradlew --no-daemon -PxbmcABI=$(ABI) assemble$(BUILD_TYPE)Unsigned
 
