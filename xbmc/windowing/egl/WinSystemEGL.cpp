@@ -54,6 +54,7 @@ CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
   m_displayWidth      = 0;
   m_displayHeight     = 0;
 
+  m_version           = -1;
   m_display           = EGL_NO_DISPLAY;
   m_surface           = EGL_NO_SURFACE;
   m_context           = EGL_NO_CONTEXT;
@@ -221,7 +222,24 @@ bool CWinSystemEGL::CreateWindow(RESOLUTION_INFO &res)
 
   if (m_context == EGL_NO_CONTEXT)
   {
+    m_version = 300;
+    const EGLint contextAttrs[] =
+    {
+      EGL_CONTEXT_CLIENT_VERSION, 3,
+      EGL_NONE
+    };
     if (!m_egl->CreateContext(m_display, m_config, contextAttrs, &m_context))
+    {
+      CLog::Log(LOGWARNING, "%s: EGL3 not supported; Falling back to EGL2",__FUNCTION__);
+      m_version = 200;
+      const EGLint contextAttrsFallback[] =
+      {
+        EGL_CONTEXT_CLIENT_VERSION, 2,
+        EGL_NONE
+      };
+      m_egl->CreateContext(m_display, m_config, contextAttrsFallback, &m_context);
+    }
+    if (m_context == EGL_NO_CONTEXT)
     {
       CLog::Log(LOGERROR, "%s: Could not create context",__FUNCTION__);
       return false;
@@ -563,6 +581,11 @@ void CWinSystemEGL::OnAppFocusChange(bool focus)
   CSingleLock lock(m_resourceSection);
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
     (*i)->OnAppFocusChange(focus);
+}
+
+int CWinSystemEGL::GetEGLVersion()
+{
+  return m_version;
 }
 
 EGLDisplay CWinSystemEGL::GetEGLDisplay()

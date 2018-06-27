@@ -63,10 +63,11 @@ public:
   virtual bool  Support3D(int width, int height, uint32_t mode)     const;
   virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
 
+  int           GetEGLVersion();
   EGLConfig     GetEGLConfig();
-
   EGLDisplay    GetEGLDisplay();
   EGLContext    GetEGLContext();
+
 protected:
   virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
   virtual void  SetVSyncImpl(bool enable);
@@ -80,6 +81,7 @@ protected:
   int                   m_displayHeight;
   EGLint                m_result;
 
+  int                   m_version;
   EGLDisplay            m_display;
   EGLSurface            m_surface;
   EGLContext            m_context;

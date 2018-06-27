@@ -153,6 +153,7 @@ CWinSystemAndroidEGL::CWinSystemAndroidEGL() : CWinSystemBase()
   m_displayWidth      = 0;
   m_displayHeight     = 0;
 
+  m_version           = -1;
   m_display           = EGL_NO_DISPLAY;
   m_surface           = EGL_NO_SURFACE;
   m_context           = EGL_NO_CONTEXT;
@@ -343,12 +344,6 @@ bool CWinSystemAndroidEGL::CreateWindow(RESOLUTION_INFO &res)
   }
   CLog::Log(LOGDEBUG, "%s: Created surface of size %ix%i",__FUNCTION__, width, height);
 
-  EGLint contextAttrs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 3,
-    EGL_NONE
-  };
-
   EGLBoolean status;
   status = eglBindAPI(EGL_OPENGL_ES_API);
   CheckError();
@@ -361,9 +356,24 @@ bool CWinSystemAndroidEGL::CreateWindow(RESOLUTION_INFO &res)
 
   if (m_context == EGL_NO_CONTEXT)
   {
+    m_version = 300;
+    const EGLint contextAttrs[] =
+    {
+      EGL_CONTEXT_CLIENT_VERSION, 3,
+      EGL_NONE
+    };
     m_context = eglCreateContext(m_display, m_config, NULL, contextAttrs);
-    CheckError();
-
+    if (m_context == EGL_NO_CONTEXT)
+    {
+      CLog::Log(LOGWARNING, "%s: EGL3 not supported; Falling back to EGL2",__FUNCTION__);
+      m_version = 200;
+      const EGLint contextAttrsFallback[] =
+      {
+        EGL_CONTEXT_CLIENT_VERSION, 2,
+        EGL_NONE
+      };
+      m_context = eglCreateContext(m_display, m_config, NULL, contextAttrsFallback);
+    }
     if (m_context == EGL_NO_CONTEXT)
     {
       CLog::Log(LOGERROR, "%s: Could not create context",__FUNCTION__);
@@ -823,6 +833,11 @@ void CWinSystemAndroidEGL::OnAppFocusChange(bool focus)
   CSingleLock lock(m_resourceSection);
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
     (*i)->OnAppFocusChange(focus);
+}
+
+int CWinSystemAndroidEGL::GetEGLVersion()
+{
+  return m_version;
 }
 
 EGLDisplay CWinSystemAndroidEGL::GetEGLDisplay()
