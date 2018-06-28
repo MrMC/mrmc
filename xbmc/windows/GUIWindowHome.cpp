@@ -134,23 +134,10 @@ bool CGUIWindowHome::OnAction(const CAction &action)
 }
 
 void CGUIWindowHome::OnInitWindow()
-{  
-  // its stupid…
-  // - if its mysql we have to trigger on start and on every return to home screen.
-  // - if its service(plex/emby) we dont need it on start as the servers are still not discovered,
-  //   once they are it will trigger the update but we do need it on every return to home.
-  if ((StringUtils::EqualsNoCase(g_advancedSettings.m_databaseVideo.type, "mysql") ||
-      StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql")))
-  {
-    // totals will be done after these jobs are finished
-    m_updateHS = (Audio | Video);
+{
+  m_updateHS = (Audio | Video);
+  if (!CServicesManager::GetInstance().HasServices())
     m_firstRun = false;
-  }
-  
-  if (CServicesManager::GetInstance().HasServices())
-  {
-    m_updateHS = (Audio | Video);
-  }
 
   SET_CONTROL_HIDDEN(CONTROL_SERVER_BUTTON);
   m_buttonSections->Clear();
