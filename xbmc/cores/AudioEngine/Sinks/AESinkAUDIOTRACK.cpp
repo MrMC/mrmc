@@ -23,6 +23,7 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "platform/android/activity/AndroidFeatures.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -32,11 +33,6 @@
 #include <androidjni/AudioTrack.h>
 #include <androidjni/Build.h>
 #include <androidjni/System.h>
-
-/// This is an alternative to the linear weighted delay smoothing
-// advantages: only one history value needs to be stored
-// in tests the linear weighted average smoother yield better results
-//#define AT_USE_EXPONENTIAL_AVERAGING 1
 
 using namespace jni;
 
@@ -248,6 +244,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
 , m_writeSeconds(0.0)
 , m_playbackHead(0)
 , m_playbackHeadOffset(-1)
+, m_lastdelay(0.0)
 {
   m_nonIECPauseTimer.SetExpired();
 }
@@ -273,6 +270,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_writeSeconds = 0.0;
   m_playbackHead = 0;
   m_playbackHeadOffset = -1;
+  m_lastdelay = 0.0;
   m_linearmovingaverage.clear();
   m_nonIECPauseTimer.SetExpired();
 
@@ -450,12 +448,10 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     if (m_passthrough)
     {
       m_format.m_frameSize = 1;
-      m_sink_frameSize = 1;
+      m_sink_frameSize = 2 * 2;
       m_sink_bufferSize = std::max((int)m_format.m_frames, m_sink_bufferSize);
       if (m_passthroughIsIECPacked)
       {
-        // IEC packed is AE_CH_LAYOUT_2_0 * ENCODING_PCM_16BIT;
-        m_sink_frameSize = 2 * 2;
         if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
         {
           // ENCODING_IEC61937 is eight channels for DTSHD/TRUEHD
@@ -550,6 +546,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_writeSeconds = 0.0;
   m_playbackHead = 0;
   m_playbackHeadOffset = -1;
+  m_lastdelay = 0.0;
   m_linearmovingaverage.clear();
   m_nonIECPauseTimer.SetExpired();
 }
@@ -564,54 +561,74 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (!m_at_jni)
     return status.SetDelay(0);
 
-  if (m_passthrough && !m_passthroughIsIECPacked)
+  uint64_t head_pos = 0;
+  double frameDiffMilli = 0;
+
+  if (CJNIBuild::SDK_INT >= 23)
   {
-    // the frame position is unreliable when using native raw passthrough
-    // so switch to using presentation timestamps.
-    // also, do not move, m_nonIECPauseTimer usage depends on GetPresentedDelay.
-    double delay = GetPresentedDelay();
-    if (delay < 0)
-      delay = 0;
-
-    if (m_nonIECPauseTimer.MillisLeft() > 0)
+    CJNIAudioTimestamp ts;
+    int64_t systime = CJNISystem::nanoTime();
+    if (m_at_jni->getTimestamp(ts))
     {
-      double delay = GetMovingAverageDelay(GetCacheTotal());
-      //CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK::GetDelay "
-      //  "m_nonIECPauseTimer.MillisLeft=%d, delay=%f", m_nonIECPauseTimer.MillisLeft(), delay);
-      status.SetDelay(delay);
-      return;
+      head_pos = ts.get_framePosition();
+      frameDiffMilli = (systime - ts.get_nanoTime()) / 1000000000.0;
+
+      if (g_advancedSettings.CanLogComponent(LOGAUDIO))
+        CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetDelay timestamp: pos(%lld) time(%lld) diff(%f)", ts.get_framePosition(), ts.get_nanoTime(), frameDiffMilli);
     }
-
-    const double d = GetMovingAverageDelay(delay);
-    //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetDelay delay=%f, d=%f", delay, d);
-    status.SetDelay(d);
-    return;
   }
+  if (!head_pos)
+  {
+    // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
+    // return a 32bit "int" that you should "interpret as unsigned."  As such,
+    // for wrap saftey, we need to do all ops on it in 32bit integer math.
+    head_pos = (uint32_t)m_at_jni->getPlaybackHeadPosition();
+    while (m_playbackHead > head_pos)
+      head_pos += (1 << 31);
+  }
+  m_playbackHead = head_pos;
+  if (m_playbackHeadOffset == -1)
+    m_playbackHeadOffset = head_pos;
+  else
+    m_playbackHead -= m_playbackHeadOffset;
 
-  // normal delay calculation, ie. non-passthrough or IEC packed passthrough.
-  // do not move, m_nonIECPauseTimer usage depends on GetPlaybackHeadPosition.
-  uint64_t headBytes = GetPlaybackHeadPosition() * m_sink_frameSize;
+  uint64_t headBytes = m_playbackHead * m_sink_frameSize;
   if (headBytes > m_writeBytes)
   {
     // this should never happend, head should always
     // be less than or equal to what we have written.
     CLog::Log(LOGERROR, "AESinkAUDIOTRACK::GetDelay over-write error, "
-      "frameSize=%d, headBytes=%lu, m_writeBytes=%lu", m_sink_frameSize, headBytes, m_writeBytes);
+      "frameSize=%d, headBytes=%llu, m_writeBytes=%llu", m_sink_frameSize, headBytes, m_writeBytes);
     status.SetDelay(0);
     return;
   }
 
   double framesInBuffer = (double)(m_writeBytes - headBytes) / m_sink_frameSize;
   double delay = framesInBuffer / (double)m_sink_sampleRate;
-  //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetDelay "
-  //  "headBytes=%lld, writeBytes=%lld, waitingBytes=%lld, framesInBuffer=%f, delay=%f",
-  //   headBytes, m_writeBytes, m_writeBytes - headBytes, framesInBuffer, delay);
+
+  if (m_nonIECPauseTimer.MillisLeft() > 0)
+  {
+    double delay = GetMovingAverageDelay(GetCacheTotal());
+    m_lastdelay = delay;
+    if (g_advancedSettings.CanLogComponent(LOGAUDIO))
+      CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK::GetDelay "
+        "m_nonIECPauseTimer.MillisLeft=%d, delay=%f", m_nonIECPauseTimer.MillisLeft(), delay);
+    status.SetDelay(delay);
+    return;
+  }
+
+  if (g_advancedSettings.CanLogComponent(LOGAUDIO))
+    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetDelay "
+      "headBytes=%lld, writeBytes=%lld, waitingBytes=%lld, framesInBuffer=%f, delay=%f",
+       headBytes, m_writeBytes, m_writeBytes - headBytes, framesInBuffer, delay);
 
   if (delay < 0)
     delay = 0;
 
   const double d = GetMovingAverageDelay(delay);
-  //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetDelay frameSize=%d, maveraged=%f, d=%f", m_sink_frameSize, d, delay);
+  m_lastdelay = d;
+  if (g_advancedSettings.CanLogComponent(LOGAUDIO))
+    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetDelay frameSize=%d, maveraged=%f, d=%f", m_sink_frameSize, d, delay);
   status.SetDelay(d);
 }
 
@@ -781,6 +798,7 @@ void CAESinkAUDIOTRACK::Drain()
   m_writeSeconds = 0.0;
   m_playbackHead = 0;
   m_playbackHeadOffset = -1;
+  m_lastdelay = 0.0;
   m_linearmovingaverage.clear();
   m_nonIECPauseTimer.SetExpired();
 }
@@ -894,86 +912,8 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   list.push_back(m_info);
 }
 
-double CAESinkAUDIOTRACK::GetPresentedDelay()
-{
-  double presentSeconds = 0.0;
-
-  CJNIAudioTimestamp ts;
-  if (m_at_jni->getTimestamp(ts))
-  {
-    if (m_playbackHeadOffset == -1)
-    {
-      if (m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING)
-      {
-        // we only care about framePosition on start up, it should
-        // never wrap so use it directly.
-        m_playbackHeadOffset = ts.get_framePosition();
-        //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetPlaybackHeadPositionSeconds: "
-        //  "m_playbackHeadOffset=%lu", m_playbackHeadOffset);
-      }
-    }
-    int64_t systime = CJNISystem::nanoTime();
-    presentSeconds = (systime - ts.get_nanoTime()) / 1000000000.0;
-    //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetPlaybackHeadPositionSeconds timestamp: pos(%lld) time(%lld) diff(%f)",
-    //  ts.get_framePosition(), ts.get_nanoTime(), presentSeconds);
-  }
-
-  return presentSeconds;
-}
-
-uint64_t CAESinkAUDIOTRACK::GetPlaybackHeadPosition()
-{
-  // returns the normalized head position in frames.
-  if (!m_at_jni)
-    return 0.0;
-
-  uint32_t headPosition = (uint32_t)m_at_jni->getPlaybackHeadPosition();
-  // Wraparound
-  if ((uint32_t)(m_playbackHead & UINT64_LOWER_BYTES) > headPosition) // need to compute wraparound
-  {
-    //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetPlaybackHeadPosition: m_playbackHead=%lu, headPosition=%u",
-    //    m_playbackHead, headPosition);
-    m_playbackHead += (1ULL << 32); // add wraparound, e.g. 0x0000 FFFF FFFF -> 0x0001 FFFF FFFF
-  }
-  // clear lower 32 bit values, e.g. 0x0001 FFFF FFFF -> 0x0001 0000 0000
-  // and add head_pos which wrapped around, e.g. 0x0001 0000 0000 -> 0x0001 0000 0004
-  m_playbackHead = (m_playbackHead & UINT64_UPPER_BYTES) | (uint64_t)headPosition;
-
-  if (m_playbackHeadOffset == -1)
-  {
-    if (m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING)
-    {
-      m_playbackHeadOffset = m_playbackHead;
-      //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetPlaybackHeadPosition: m_playbackHead=%lu, m_playbackHeadOffset=%lu",
-      //  m_playbackHead, m_playbackHeadOffset);
-    }
-    return 0;
-  }
-
-  if (m_playbackHeadOffset > 0)
-    m_playbackHead -= m_playbackHeadOffset;
-
-  return m_playbackHead;
-}
-
 double CAESinkAUDIOTRACK::GetMovingAverageDelay(double newestdelay)
 {
-#if defined AT_USE_EXPONENTIAL_AVERAGING
-  double old = 0.0;
-  if (m_linearmovingaverage.empty()) // just for creating one space in list
-    m_linearmovingaverage.push_back(newestdelay);
-  else
-    old = m_linearmovingaverage.front();
-
-  const double alpha = 0.3;
-  const double beta = 0.7;
-
-  double d = alpha * newestdelay + beta * old;
-  m_linearmovingaverage.at(0) = d;
-
-  return d;
-#endif
-
   m_linearmovingaverage.push_back(newestdelay);
 
   // new values are in the back, old values are in the front

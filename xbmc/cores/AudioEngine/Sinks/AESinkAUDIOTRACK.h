@@ -91,6 +91,7 @@ private:
   double                m_writeSeconds;
   uint64_t              m_playbackHead;
   int64_t               m_playbackHeadOffset;
+  double                m_lastdelay;
 
   // When AddPause is called the pause time is increased by the
   // package duration. This is only used for non IEC passthrough
