@@ -2,12 +2,12 @@
 DEPS= ../../../Makefile.include Makefile
 
 # lib name
-SKINNAME=skin.ariana.touch
+SKINNAME=skin.re-touched
 VERSION=1.0.0
 SOURCE=$(SKINNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 REALARCHIVE=master.tar.gz
-BASE_URL=https://github.com/MrMC/skin.ariana.touch/archive
+BASE_URL=https://github.com/MrMC/skin.re-touched/archive
 
 RSYNC_SKIN =rsync -av
 RSYNC_SKIN +=--exclude .DS_Store* --exclude LICENSE.txt --exclude README.md --exclude changelog.txt
