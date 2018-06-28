@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile
 SUBDIRS  = skin.opacity
 
 ifneq ($(findstring tvos, $(TARGET_PLATFORM)), tvos)
-	SUBDIRS += skin.re-touched
+	SUBDIRS += skin.ariana.touch
 endif
 ifneq ($(findstring ios, $(TARGET_PLATFORM)), ios)
 	SUBDIRS += skin.blackglassnova
