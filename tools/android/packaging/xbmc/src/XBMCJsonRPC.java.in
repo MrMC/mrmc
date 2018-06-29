@@ -604,13 +604,17 @@ public class XBMCJsonRPC
     JsonObject rep = request_object(INPROGRESS_MOVIES_JSON);
     if (rep != null && rep.has("result"))
     {
-      try
+      java.util.HashSet<Long> newWatchnextUris = new java.util.HashSet<Long>();
+
+      watchnextmovies: try
       {
         JsonObject results = rep.getAsJsonObject("result");
+        if (results == null || !results.has("movies"))
+          break watchnextmovies;
+
         JsonArray movies = results.get("movies").getAsJsonArray();
 
         int count = 0;
-        java.util.HashSet<Long> newWatchnextUris = new java.util.HashSet<Long>();
         for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i)
         {
           try
@@ -710,46 +714,46 @@ public class XBMCJsonRPC
             continue;
           }
         }
+      } catch (Exception e)
+      {
+        e.printStackTrace();
+      }
 
-        // Remove old
-        java.util.HashSet<Long> oldUris = new java.util.HashSet<Long>();
-        try
+      // Remove old
+      java.util.HashSet<Long> oldUris = new java.util.HashSet<Long>();
+      try
+      {
+        Cursor cursor = ctx.getContentResolver().query(
+            TvContractCompat.WatchNextPrograms.CONTENT_URI, WATCH_NEXT_MAP_PROJECTION, null, null, null);
+        if (cursor != null)
         {
-          Cursor cursor = ctx.getContentResolver().query(
-              TvContractCompat.WatchNextPrograms.CONTENT_URI, WATCH_NEXT_MAP_PROJECTION, null, null, null);
-          if (cursor != null)
+          while (cursor.moveToNext())
           {
-            while (cursor.moveToNext())
+            if (!cursor.isNull(COLUMN_WATCH_NEXT_ID_INDEX))
             {
-              if (!cursor.isNull(COLUMN_WATCH_NEXT_ID_INDEX))
+              try
               {
-                try
-                {
-                  long id = cursor.getInt(COLUMN_WATCH_NEXT_ID_INDEX);
-                  if (id > 11000000 && id < 12000000)
-                    oldUris.add(id);
-                }
-                catch (Exception e)
-                {
-                  continue;
-                }
+                long id = cursor.getInt(COLUMN_WATCH_NEXT_ID_INDEX);
+                if (id > 11000000 && id < 12000000)
+                  oldUris.add(id);
+              }
+              catch (Exception e)
+              {
+                continue;
               }
             }
           }
         }
-        finally
-        {
-        }
-
-        for(Long id : oldUris)
-        {
-          if (!newWatchnextUris.contains(id))
-            ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(id),
-                null, null);
-        }
-      } catch (Exception e)
+      }
+      finally
       {
-        e.printStackTrace();
+      }
+
+      for(Long id : oldUris)
+      {
+        if (!newWatchnextUris.contains(id))
+          ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(id),
+              null, null);
       }
     }
 
@@ -760,13 +764,17 @@ public class XBMCJsonRPC
     rep = request_object(INPROGRESS_SHOWS_JSON);
     if (rep != null && rep.has("result"))
     {
-      try
+      java.util.HashSet<Long> newWatchnextUris = new java.util.HashSet<Long>();
+
+      watchnextepisodes: try
       {
         JsonObject results = rep.getAsJsonObject("result");
+        if (results == null || !results.has("tvshows"))
+          break watchnextepisodes;
+
         JsonArray shows = results.get("tvshows").getAsJsonArray();
 
         int count = 0;
-        java.util.HashSet<Long> newWatchnextUris = new java.util.HashSet<Long>();
         for (int i = 0; i < shows.size() && count < MAX_RECOMMENDATIONS; ++i)
         {
           JsonObject show = shows.get(i).getAsJsonObject();
@@ -897,46 +905,46 @@ public class XBMCJsonRPC
             }
           }
         }
+      } catch (Exception e)
+      {
+        e.printStackTrace();
+      }
 
-        // Remove old
-        java.util.HashSet<Long> oldUris = new java.util.HashSet<Long>();
-        try
+      // Remove old
+      java.util.HashSet<Long> oldUris = new java.util.HashSet<Long>();
+      try
+      {
+        Cursor cursor = ctx.getContentResolver().query(
+            TvContractCompat.WatchNextPrograms.CONTENT_URI, WATCH_NEXT_MAP_PROJECTION, null, null, null);
+        if (cursor != null)
         {
-          Cursor cursor = ctx.getContentResolver().query(
-              TvContractCompat.WatchNextPrograms.CONTENT_URI, WATCH_NEXT_MAP_PROJECTION, null, null, null);
-          if (cursor != null)
+          while (cursor.moveToNext())
           {
-            while (cursor.moveToNext())
+            if (!cursor.isNull(COLUMN_WATCH_NEXT_ID_INDEX))
             {
-              if (!cursor.isNull(COLUMN_WATCH_NEXT_ID_INDEX))
+              try
               {
-                try
-                {
-                  long id = cursor.getInt(COLUMN_WATCH_NEXT_ID_INDEX);
-                  if (id > 12000000 && id < 13000000)
-                    oldUris.add(id);
-                }
-                catch (Exception e)
-                {
-                  continue;
-                }
+                long id = cursor.getInt(COLUMN_WATCH_NEXT_ID_INDEX);
+                if (id > 12000000 && id < 13000000)
+                  oldUris.add(id);
+              }
+              catch (Exception e)
+              {
+                continue;
               }
             }
           }
         }
-        finally
-        {
-        }
-
-        for(Long id : oldUris)
-        {
-          if (!newWatchnextUris.contains(id))
-            ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(id),
-                null, null);
-        }
-      } catch (Exception e)
+      }
+      finally
       {
-        e.printStackTrace();
+      }
+
+      for(Long id : oldUris)
+      {
+        if (!newWatchnextUris.contains(id))
+          ctx.getContentResolver().delete(TvContractCompat.buildWatchNextProgramUri(id),
+              null, null);
       }
     }
   }
@@ -954,9 +962,11 @@ public class XBMCJsonRPC
     JsonObject rep = request_object(RECOMMENDATION_MOVIES_JSON);
     if (rep != null && rep.has("result"))
     {
-      try
+      leanbackmovies: try
       {
         JsonObject results = rep.getAsJsonObject("result");
+        if (results == null || !results.has("movies"))
+          break leanbackmovies;
         JsonArray movies = results.get("movies").getAsJsonArray();
 
         int count = 0;
@@ -1001,9 +1011,11 @@ public class XBMCJsonRPC
     rep = request_object(RECOMMENDATIONS_SHOWS_JSON);
     if (rep != null && rep.has("result"))
     {
-      try
+      leanbackshows: try
       {
         JsonObject results = rep.getAsJsonObject("result");
+        if (results == null || !results.has("tvshows"))
+          break leanbackshows;
         JsonArray tvshows = results.get("tvshows").getAsJsonArray();
 
         int count = 0;
@@ -1049,9 +1061,11 @@ public class XBMCJsonRPC
     rep = request_object(RECOMMENDATIONS_ALBUMS_JSON);
     if (rep != null && rep.has("result"))
     {
-      try
+      leanbackalbums: try
       {
         JsonObject results = rep.getAsJsonObject("result");
+        if (results == null || !results.has("albums"))
+          break leanbackalbums;
         JsonArray albums = results.get("albums").getAsJsonArray();
 
         int count = 0;
@@ -1163,7 +1177,7 @@ public class XBMCJsonRPC
       Uri uri = Uri.parse(fileO.get("file").getAsString());
       f = File.createFile(fileO.get("label").getAsString(), "file", XBMCFileContentProvider.buildUri(uri.toString()).toString());
     }
-     catch (Exception e)
+    catch (Exception e)
     {
       e.printStackTrace();
     }
