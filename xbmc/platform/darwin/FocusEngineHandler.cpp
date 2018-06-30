@@ -91,11 +91,35 @@ void CFocusEngineHandler::Process()
       case FocusEngineState::Idle:
         break;
       case FocusEngineState::Clear:
+      {
+//        m_focus.itemFocus->ResetAnimation(ANIM_TYPE_DYNAMIC);
+//        m_focus.itemFocus->ClearDynamicAnimations();
+        std::vector<CAnimation> animations;
+        CRect rect = focus.itemFocus->GetSelectionRenderRect();
+        FocusEngineAnimate focusAnimate = m_focusAnimate;
+        float screenDX =   focusAnimate.slideX  * focusAnimate.maxScreenSlideX;
+        float screenDY = (-focusAnimate.slideY) * focusAnimate.maxScreenSlideY;
+        TiXmlElement node("animation");
+        node.SetAttribute("reversible", "false");
+        node.SetAttribute("effect", "slide");
+        std::string temp = StringUtils::Format("%f, %f", screenDX, screenDY);
+        node.SetAttribute("start", temp);
+        node.SetAttribute("end", "0, 0");
+        node.SetAttribute("time", "200");
+        node.SetAttribute("condition", "true");
+        TiXmlText text("dynamic");
+        node.InsertEndChild(text);
+
+        CAnimation anim;
+        anim.Create(&node, rect, 0);
+        animations.push_back(anim);
+
         m_focus.itemFocus->ResetAnimation(ANIM_TYPE_DYNAMIC);
-        m_focus.itemFocus->ClearDynamicAnimations();
+        m_focus.itemFocus->SetDynamicAnimations(animations);
         m_focusAnimate = FocusEngineAnimate();
         m_state = FocusEngineState::Idle;
         break;
+      }
       case FocusEngineState::Update:
         {
           CRect rect = focus.itemFocus->GetSelectionRenderRect();
