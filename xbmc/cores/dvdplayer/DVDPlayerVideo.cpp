@@ -425,6 +425,13 @@ void CDVDPlayerVideo::Process()
     {
       m_paused = static_cast<CDVDMsgBool*>(pMsg)->m_value;
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_PAUSE: %d", m_paused);
+      if (m_pVideoCodec)
+      {
+        if (m_paused)
+          m_pVideoCodec->SetSpeed(DVD_PLAYSPEED_PAUSE);
+        else
+          m_pVideoCodec->SetSpeed(DVD_PLAYSPEED_NORMAL);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
