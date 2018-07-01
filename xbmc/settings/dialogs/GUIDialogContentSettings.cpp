@@ -515,6 +515,10 @@ void CGUIDialogContentSettings::FillScraperList()
     m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
   }
 
+  auto iter = m_scrapers.find(m_content);
+  if (iter == m_scrapers.end())
+    return;
+
   for (IVECADDONS iter = m_scrapers.find(m_content)->second.begin(); iter != m_scrapers.find(m_content)->second.end(); ++iter)
   {
     CFileItemPtr item(new CFileItem((*iter)->Name()));
