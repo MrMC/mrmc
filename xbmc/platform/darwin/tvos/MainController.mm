@@ -1642,10 +1642,10 @@ CGPoint touchAbsPosition;
     }
   }
 }
+static CGPoint panTouchAbsStart;
 //--------------------------------------------------------------
 - (IBAction)SiriPanHandler:(UIPanGestureRecognizer *)sender
 {
-  static CGPoint panTouchAbsStart;
   // these are for tracking tap/pan/swipe state only,
   // tvOS focus engine will handle the navigation.
   if (m_appAlive == YES)
@@ -1689,6 +1689,7 @@ CGPoint touchAbsPosition;
         break;
       default:
         CFocusEngineHandler::GetInstance().ClearAnimation();
+        //CLog::Log(LOGDEBUG, "SiriPanHandler:default");
         break;
     }
   }
@@ -2479,6 +2480,22 @@ CGRect debugView2;
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
   withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
+  // reset PanTouchAbsStart when jumping to next item
+  // so the next item's animation starts centered.
+  if (focusActionType == FocusActionPan)
+  {
+    switch (context.focusHeading)
+    {
+      case UIFocusHeadingUp:
+      case UIFocusHeadingDown:
+      case UIFocusHeadingLeft:
+      case UIFocusHeadingRight:
+          //CLog::Log(LOGDEBUG, "didUpdateFocusInContext:panTouchAbsStart reset");
+          panTouchAbsStart = touchAbsPosition;
+        break;
+    }
+  }
+
   // if we had a focus change, send the heading down to core
   switch (context.focusHeading)
   {
