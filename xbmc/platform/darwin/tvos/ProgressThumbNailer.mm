@@ -289,6 +289,9 @@ void CProgressThumbNailer::QueueExtractThumb(int seekTime)
 
     if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
     {
+      if (picture.format == RENDER_FMT_NONE)
+        return;
+
       unsigned int nWidth = m_width;
       double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
       if(m_forced_aspect && m_aspect != 0)
