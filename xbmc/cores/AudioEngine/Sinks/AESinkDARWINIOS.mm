@@ -63,6 +63,28 @@ static void dumpAVAudioSessionProperties()
   CDarwinUtils::DumpAudioDescriptions(__PRETTY_FUNCTION__);
 }
 
+static bool deactivateAudioSession(int count)
+{
+  if (--count < 0)
+    return false;
+
+  bool rtn = false;
+  NSError *err = nullptr;
+  // deactvivate the session
+  AVAudioSession *mySession = [AVAudioSession sharedInstance];
+  if (![mySession setActive: NO error: &err])
+  {
+    CLog::Log(LOGWARNING, "AVAudioSession setActive NO failed, count %d", count);
+    usleep(10 * 1000);
+    rtn = deactivateAudioSession(count);
+  }
+  else
+  {
+    rtn = true;
+  }
+  return rtn;
+}
+
 static void setAVAudioSessionProperties(NSTimeInterval bufferseconds, double samplerate, int channels)
 {
   // darwin docs and technotes say,
@@ -73,8 +95,8 @@ static void setAVAudioSessionProperties(NSTimeInterval bufferseconds, double sam
   int maxchannels = [mySession maximumOutputNumberOfChannels];
 
   NSError *err = nullptr;
-  // deavivate the session
-  if (![mySession setActive: NO error: &err])
+  // deactvivate the session
+  if (!deactivateAudioSession(10))
     CLog::Log(LOGWARNING, "AVAudioSession setActive NO failed: %ld", (long)err.code);
 
   // change the number of channels
