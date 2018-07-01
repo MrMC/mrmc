@@ -83,10 +83,26 @@ MainController* m_xbmcController;
   CPreflightHandler::MigrateUserdataXMLToNSUserDefaults();
 
   NSError *err = nullptr;
-  if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&err])
+
+  if (__builtin_available(tvOS 11.0, *))
   {
-    NSLog(@"AVAudioSession setCategory failed: %ld", (long)err.code);
+    NSString *categoryMode = AVAudioSessionModeDefault;
+    AVAudioSessionCategoryOptions options = 0;
+    AVAudioSessionRouteSharingPolicy policy = AVAudioSessionRouteSharingPolicyLongForm;
+    NSString *categoryString = AVAudioSessionCategoryPlayback;
+    if (![[AVAudioSession sharedInstance] setCategory:categoryString mode:categoryMode routeSharingPolicy:policy options:options error:&err])
+    {
+      NSLog(@"AVAudioSession setCategory (longform) failed: %ld", (long)err.code);
+    }
   }
+  else
+  {
+    if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&err])
+    {
+      NSLog(@"AVAudioSession setCategory failed: %ld", (long)err.code);
+    }
+  }
+
   err = nil;
   if (![[AVAudioSession sharedInstance] setMode:AVAudioSessionModeMoviePlayback error:&err])
   {
