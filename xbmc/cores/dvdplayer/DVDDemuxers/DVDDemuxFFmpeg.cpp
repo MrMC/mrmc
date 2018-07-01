@@ -1372,6 +1372,19 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         if (av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
 */
+
+        if (pStream->codec->codec_id == AV_CODEC_ID_HEVC)
+        {
+          if (strcmp(m_pFormatContext->iformat->name, "mpegts") == 0)
+          {
+            if (pStream->id == 0x1015)
+            {
+              CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding suspect dolby vision stream");
+              stream->SetDiscard(AVDISCARD_ALL);
+              pStream->discard = AVDISCARD_ALL;
+           }
+          }
+        }
         break;
       }
     case AVMEDIA_TYPE_DATA:
