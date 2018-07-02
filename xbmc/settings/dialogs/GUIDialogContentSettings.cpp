@@ -107,17 +107,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SCRAPER_LIST);
         OnMessage(msg);
         int iSelected = msg.GetParam1();
-        if (iSelected == m_vecItems->Size() - 1)
-        { // Get More... item, path 'addons://more/<content>'
-          // This is tricky - ideally we want to completely save the state of this dialog,
-          // close it while linking to the addon manager, then reopen it on return.
-          // For now, we just close the dialog + send the GetPath() to open the addons window
-          std::string content = m_vecItems->Get(iSelected)->GetPath().substr(14);
-          OnCancel();
-          Close();
-          CBuiltins::GetInstance().Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
-          return true;
-        }
 
         AddonPtr last = m_scraper;
         m_scraper = std::dynamic_pointer_cast<CScraper>(m_scrapers[m_content][iSelected]);
