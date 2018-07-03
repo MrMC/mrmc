@@ -1637,7 +1637,9 @@ CGPoint touchAbsPosition;
         }
         break;
       default:
-        //CLog::Log(LOGDEBUG, "SiriSwipeHandler:StateRecognized:other %ld", sender.state);
+        #if logfocus
+        CLog::Log(LOGDEBUG, "SiriSwipeHandler:StateRecognized:other %ld", sender.state);
+        #endif
         break;
     }
   }
@@ -1673,7 +1675,9 @@ static CGPoint panTouchAbsStart;
 
           panTouchAbsStart = touchAbsPosition;
           CFocusEngineHandler::GetInstance().ClearAnimation();
-          //CLog::Log(LOGDEBUG, "SiriPanHandler:UIGestureRecognizerStateBegan");
+          #if logfocus
+          CLog::Log(LOGDEBUG, "SiriPanHandler:UIGestureRecognizerStateBegan");
+          #endif
         }
         break;
       case UIGestureRecognizerStateChanged:
@@ -1684,12 +1688,16 @@ static CGPoint panTouchAbsStart;
           focusAnimate.slideX = dx;
           focusAnimate.slideY = dy;
           CFocusEngineHandler::GetInstance().UpdateAnimation(focusAnimate);
-          //CLog::Log(LOGDEBUG, "SiriPanHandler:UIGestureRecognizerStateChanged");
+          #if logfocus
+          CLog::Log(LOGDEBUG, "SiriPanHandler:UIGestureRecognizerStateChanged");
+          #endif
         }
         break;
       default:
         CFocusEngineHandler::GetInstance().ClearAnimation();
-        //CLog::Log(LOGDEBUG, "SiriPanHandler:default");
+        #if logfocus
+        CLog::Log(LOGDEBUG, "SiriPanHandler:StateRecognized:other %ld", sender.state);
+        #endif
         break;
     }
   }
@@ -2482,7 +2490,8 @@ CGRect debugView2;
 {
   // reset PanTouchAbsStart when jumping to next item
   // so the next item's animation starts centered.
-  if (focusActionType == FocusActionPan)
+  if (focusActionType == FocusActionPan ||
+      focusActionType == FocusActionSwipe)
   {
     switch (context.focusHeading)
     {
@@ -2490,7 +2499,9 @@ CGRect debugView2;
       case UIFocusHeadingDown:
       case UIFocusHeadingLeft:
       case UIFocusHeadingRight:
-          //CLog::Log(LOGDEBUG, "didUpdateFocusInContext:panTouchAbsStart reset");
+          #if logfocus
+          CLog::Log(LOGDEBUG, "didUpdateFocusInContext:panTouchAbsStart reset");
+          #endif
           panTouchAbsStart = touchAbsPosition;
         break;
     }
