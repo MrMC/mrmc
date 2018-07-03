@@ -24,7 +24,6 @@
 #include "SMB2File.h"
 #include "FileItem.h"
 #include "URL.h"
-#include "network/DNSNameCache.h"
 
 using namespace XFILE;
 
@@ -42,13 +41,7 @@ bool CSMB2Directory::GetDirectory(const CURL& url, CFileItemList &items)
   if (!strlen(url.GetShareName().c_str()))
     return false;
 
-  // libsmb2 wants ip address
-  CURL url2(url);
-  std::string ip;
-  if (CDNSNameCache::Lookup(url2.GetHostName(), ip))
-    url2.SetHostName(ip);
-
-  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url2);
+  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url);
   if (!conn)
   {
     int err = CSMB2SessionManager::GetLastError();
@@ -56,12 +49,12 @@ bool CSMB2Directory::GetDirectory(const CURL& url, CFileItemList &items)
       || err == -ECONNREFUSED // SMB2_STATUS_LOGON_FAILURE
       )
     {
-      RequireAuthentication(url2);
+      RequireAuthentication(url);
     }
     return false;
   }
 
-  auto res = conn->GetDirectory(url2, items);
+  auto res = conn->GetDirectory(url, items);
   return res;
 
 }
@@ -71,17 +64,11 @@ bool CSMB2Directory::Create(const CURL& url)
   if (!strlen(url.GetShareName().c_str()))
     return false;
 
-  // libsmb2 wants ip address
-  CURL url2(url);
-  std::string ip;
-  if (CDNSNameCache::Lookup(url2.GetHostName(), ip))
-    url2.SetHostName(ip);
-
-  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url2);
+  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url);
   if (!conn)
     return false;
 
-  auto res = conn->CreateDirectory(url2);
+  auto res = conn->CreateDirectory(url);
 
   return res;
 }
@@ -91,13 +78,7 @@ bool CSMB2Directory::Exists(const CURL& url)
   if (!strlen(url.GetShareName().c_str()))
     return false;
 
-  // libsmb2 wants ip address
-  CURL url2(url);
-  std::string ip;
-  if (CDNSNameCache::Lookup(url2.GetHostName(), ip))
-    url2.SetHostName(ip);
-
-  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url2);
+  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url);
   if (!conn)
     return false;
 
@@ -110,17 +91,11 @@ bool CSMB2Directory::Remove(const CURL& url)
   if (!strlen(url.GetShareName().c_str()))
     return false;
 
-  // libsmb2 wants ip address
-  CURL url2(url);
-  std::string ip;
-  if (CDNSNameCache::Lookup(url2.GetHostName(), ip))
-    url2.SetHostName(ip);
-
-  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url2);
+  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url);
   if (!conn)
     return false;
 
-  auto res = conn->RemoveDirectory(url2);
+  auto res = conn->RemoveDirectory(url);
 
   return res;
 }
