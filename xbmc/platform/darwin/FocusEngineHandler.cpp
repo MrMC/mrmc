@@ -261,7 +261,29 @@ CFocusEngineHandler::IsWindowFullScreenVideo()
     if (focusWindowID == WINDOW_FULLSCREEN_VIDEO ||
         focusWindowID == WINDOW_FULLSCREEN_LIVETV ||
         focusWindowID == WINDOW_VIDEO_MENU)
-    return true;
+      return true;
+  }
+  return false;
+}
+
+const bool
+CFocusEngineHandler::IsWindowPVR()
+{
+  CSingleLock lock(m_focusLock);
+  if (m_focus.window)
+  {
+    int focusWindowID = m_focus.window->GetID();
+    if (focusWindowID == WINDOW_TV_CHANNELS ||
+        focusWindowID == WINDOW_TV_GUIDE ||
+        focusWindowID == WINDOW_TV_RECORDINGS ||
+        focusWindowID == WINDOW_TV_SEARCH ||
+        focusWindowID == WINDOW_TV_TIMERS ||
+        focusWindowID == WINDOW_RADIO_CHANNELS ||
+        focusWindowID == WINDOW_RADIO_GUIDE ||
+        focusWindowID == WINDOW_RADIO_RECORDINGS ||
+        focusWindowID == WINDOW_RADIO_SEARCH ||
+        focusWindowID == WINDOW_RADIO_TIMERS)
+      return true;
   }
   return false;
 }

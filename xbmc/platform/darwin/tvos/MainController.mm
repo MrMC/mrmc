@@ -1682,15 +1682,18 @@ static CGPoint panTouchAbsStart;
         break;
       case UIGestureRecognizerStateChanged:
         {
-          FocusEngineAnimate focusAnimate = FocusEngineAnimate();
-          float dx = touchAbsPosition.x - panTouchAbsStart.x;
-          float dy = touchAbsPosition.y - panTouchAbsStart.y;
-          focusAnimate.slideX = dx;
-          focusAnimate.slideY = dy;
-          CFocusEngineHandler::GetInstance().UpdateAnimation(focusAnimate);
-          #if logfocus
-          CLog::Log(LOGDEBUG, "SiriPanHandler:UIGestureRecognizerStateChanged");
-          #endif
+          if (!CFocusEngineHandler::GetInstance().IsWindowPVR())
+          {
+            FocusEngineAnimate focusAnimate = FocusEngineAnimate();
+            float dx = touchAbsPosition.x - panTouchAbsStart.x;
+            float dy = touchAbsPosition.y - panTouchAbsStart.y;
+            focusAnimate.slideX = dx;
+            focusAnimate.slideY = dy;
+            CFocusEngineHandler::GetInstance().UpdateAnimation(focusAnimate);
+            #if logfocus
+            CLog::Log(LOGDEBUG, "SiriPanHandler:UIGestureRecognizerStateChanged");
+            #endif
+          }
         }
         break;
       default:
