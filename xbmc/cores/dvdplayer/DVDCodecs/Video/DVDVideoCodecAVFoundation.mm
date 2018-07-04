@@ -534,7 +534,10 @@ int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, do
     Sleep(5);
   }
 
-  if (m_trackerQueue.size() < (2 * m_max_ref_frames))
+  // avfoundation is greedy and does not like to wait for
+  // sampleBuffers one by one. Keep it happy and shove
+  // several at it. m_trackerQueue sort of tracks m_sampleBuffers
+  if (m_trackerQueue.size() < (10 * m_max_ref_frames))
     return VC_BUFFER;
 
   return VC_PICTURE;
@@ -838,6 +841,8 @@ void CDVDVideoCodecAVFoundation::StartSampleProviderWithBlock()
 
       if (bufferCount)
       {
+        //CLog::Log(LOGNOTICE, "%s - CDVDVideoCodecAVFoundation bufferCount(%zu)",
+        //      __FUNCTION__, bufferCount);
         pthread_mutex_lock(&m_sampleBuffersMutex);
         CMSampleBufferRef nextSampleBuffer = m_sampleBuffers.front();
         if (nextSampleBuffer)
@@ -906,7 +911,7 @@ void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double ts)
     return;
 
   //CLog::Log(LOGDEBUG, "UpdateFrameRateTracking ts(%f), last_ts(%f), diff(%f)",
-  //    ts, m_lastTrackingTS, ts - m_lastTrackingTS);
+  //  ts, m_lastTrackingTS, ts - m_lastTrackingTS);
 
   m_lastTrackingTS = ts;
 
@@ -961,9 +966,8 @@ void CDVDVideoCodecAVFoundation::UpdateFrameRateTracking(double ts)
         break;
 
       default:
+        //CLog::Log(LOGDEBUG, "UpdateFrameRateTracking: unknown duration(%f), m_pts(%f)", pts_duration, m_pts);
         fps = 0.0;
-        //CLog::Log(LOGDEBUG, "%s: unknown duration(%f), cur_pts(%f)",
-        //  __MODULE_NAME__, duration, cur_pts);
         break;
     }
 
