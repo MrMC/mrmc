@@ -849,10 +849,11 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         presentationTimeUs = demux_pkt.pts;
       else if (demux_pkt.dts != DVD_NOPTS_VALUE)
         presentationTimeUs = demux_pkt.dts;
-/*
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
-        "pts(%lld), demux_pkt.iSize(%d)", presentationTimeUs, demux_pkt.iSize);
-*/
+
+      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
+                            "pts(%lld), demux_pkt.iSize(%d)", presentationTimeUs, demux_pkt.iSize);
+
       int flags = 0;
       int offset = 0;
       media_status_t mstat = AMediaCodec_queueInputBuffer(m_codec, index, offset, iSize, presentationTimeUs, flags);
@@ -863,10 +864,11 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
 
   if (m_demux.size() < 25)
     rtn |= VC_BUFFER;
-/*
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Decode, "
-    "rtn(%d), m_demux.size(%ld)", rtn, m_demux.size());
-*/
+
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Decode, "
+                        "rtn(%d), m_demux.size(%ld)", rtn, m_demux.size());
+
   return rtn;
 }
 
@@ -1129,8 +1131,11 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       AMediaCodec_releaseOutputBuffer(m_codec, index, false);
       return -1;
     }
-    if (m_drop)
+    if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
     {
+      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture dropped "
+                            "index(%d), pts(%f)", index, m_videobuffer.pts);
       AMediaCodec_releaseOutputBuffer(m_codec, index, false);
       return 1;
     }
@@ -1185,10 +1190,9 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture error: releaseOutputBuffer(%d)", mstat);
     }
 
-/*
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture "
-      "index(%d), pts(%f)", index, m_videobuffer.pts);
-*/
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture "
+                          "index(%d), pts(%f)", index, m_videobuffer.pts);
 
     rtn = 1;
   }
