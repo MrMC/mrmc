@@ -100,11 +100,14 @@ CHomeShelfJob::~CHomeShelfJob()
 
 bool CHomeShelfJob::UpdateVideo()
 {
-  CSingleLock lock(m_critsection);
-  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
+  if (g_application.IsSkinReverting())
+    return NULL;
 
-  if ( home == NULL )
+  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
+  if (home == NULL)
     return false;
+
+  CSingleLock lock(m_critsection);
 
   // idea here is that if button 4000 exists in the home screen skin is compatible
   // with new Server layouts and should only display RA and inProgress for those servers
@@ -272,15 +275,17 @@ bool CHomeShelfJob::UpdateVideo()
 
 bool CHomeShelfJob::UpdateMusic()
 {
-  CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateMusic() - Running HomeShelf screen update");
-
-  CSingleLock lock(m_critsection);
+  if (g_application.IsSkinReverting())
+    return NULL;
 
   CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
-  
-  if ( home == NULL )
+  if (home == NULL)
     return false;
   
+  CSingleLock lock(m_critsection);
+
+  CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateMusic() - Running HomeShelf screen update");
+
   // idea here is that if button 4000 exists in the home screen skin is compatible
   // with new Server layouts and should only display RA and inProgress for those servers
   const CGUIControl *btnServers = home->GetControl(4000);
