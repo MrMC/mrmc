@@ -22,6 +22,7 @@
 #include "GUIInfoManager.h"
 #include "utils/log.h"
 #include "addons/Skin.h" // for the effect time adjustments
+#include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "Tween.h"
 #include "utils/XBMCTinyXML.h"
@@ -209,7 +210,10 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
 
 void CSlideEffect::ApplyEffect(float offset, const CPoint &center)
 {
-  m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
+  float dx = (m_endX - m_startX)*offset + m_startX;
+  float dy = (m_endY - m_startY)*offset + m_startY;
+  // translations must be quantized to pixels or text letter spacing wiggles.
+  m_matrix.SetTranslation(MathUtils::round_int(dx), MathUtils::round_int(dy), 0);
 }
 
 CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAnimEffect(node, effect)
