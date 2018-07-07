@@ -707,7 +707,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
       audioFormat.mChannelsPerFrame = maxChannels;
 #else
     // ios supports up to 2 channels (unless we are hdmi connected ? )
-    audioFormat.mChannelsPerFrame= 2;
+    audioFormat.mChannelsPerFrame= maxChannels;
 #endif
     audioFormat.mBitsPerChannel  = CAEUtil::DataFormatToBits(format.m_dataFormat);
     audioFormat.mBytesPerFrame   = audioFormat.mChannelsPerFrame * (audioFormat.mBitsPerChannel >> 3);
