@@ -339,6 +339,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(bool surface_re
 , m_render_surface(surface_render)
 , m_render_interlaced(render_interlaced)
 , m_state(MEDIACODEC_STATE_UNINITIALIZED)
+, m_lastpts(-1.0)
 {
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
 }
@@ -748,11 +749,20 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
 
-  int rtn = (m_state == MEDIACODEC_STATE_ENDOFSTREAM) ? 0 : VC_BUFFER;;
+  int rtn = 0;
 
   // must check for an output picture 1st,
   // otherwise, mediacodec can stall on some devices.
   int retgp = GetOutputPicture();
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
+  {
+    if (retgp > 0)
+      return VC_PICTURE;
+    else
+      return VC_BUFFER;
+  }
+
   if (retgp > 0)
   {
     rtn |= VC_PICTURE;
@@ -763,6 +773,9 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     m_state = MEDIACODEC_STATE_FLUSHED;
     rtn |= VC_BUFFER;
   }
+  else
+    rtn |= VC_BUFFER;
+
 
   if (pData)
   {
@@ -776,7 +789,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     m_demux.push(demux_pkt);
   }
 
-  if (!m_demux.empty()&& m_state != MEDIACODEC_STATE_ENDOFSTREAM)
+  if (!m_demux.empty() && m_state != MEDIACODEC_STATE_ENDOFSTREAM)
   {
     // try to fetch an input buffer
     int64_t timeout_us = 5000;
@@ -862,8 +875,6 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     }
   }
 
-  if (m_demux.size() < 25)
-    rtn |= VC_BUFFER;
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Decode, "
@@ -924,6 +935,10 @@ bool CDVDVideoCodecAndroidMediaCodec::GetPicture(DVDVideoPicture* pDvdVideoPictu
   if (!m_render_sw)
     m_videobuffer.mediacodec = NULL;
 
+  if (m_lastpts != -1.0)
+    pDvdVideoPicture->iDuration = pDvdVideoPicture->pts - m_lastpts;
+
+  m_lastpts = pDvdVideoPicture->pts;
   return true;
 }
 

@@ -139,6 +139,7 @@ protected:
   bool            m_drop;
   int             m_codecControlFlags;
   int             m_state;
+  double          m_lastpts;
 
   std::shared_ptr<CJNIXBMCVideoView> m_jnivideoview;
   CJNISurface*    m_jnisurface;
