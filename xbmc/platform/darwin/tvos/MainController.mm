@@ -2568,6 +2568,9 @@ CGRect debugView2;
 {
   // Asks whether the system should allow a focus update to occur.
 
+  // slow down nav, we respond much faster than normal tvOS apps
+  usleep(50 * 1000);
+
   // useful debugging help
   // po [UIFocusDebugger help]
   // po [UIFocusDebugger status]
