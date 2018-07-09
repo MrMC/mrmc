@@ -35,6 +35,7 @@
 #import "Util.h"
 #import "addons/AddonManager.h"
 #import "cores/AudioEngine/AEFactory.h"
+#import "guilib/GUIDialog.h"
 #import "guilib/GUIWindowManager.h"
 #import "input/Key.h"
 #import "input/ButtonTranslator.h"
@@ -2818,12 +2819,15 @@ CGRect debugView2;
 
     if (view.type == "dialog")
     {
-      CGUIControl *guiControl = (CGUIControl*)view.core;
-      if (guiControl)
+      CGUIDialog *guiDialog = (CGUIDialog*)view.core;
+      if (guiDialog)
       {
-        int windowID = guiControl->GetID();
+        int windowID = guiDialog->GetID();
         if (windowID != WINDOW_DIALOG_SLIDER)
-          continue;
+        {
+          if (!guiDialog->IsModalDialog())
+            continue;
+        }
       }
     }
 
