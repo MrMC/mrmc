@@ -442,7 +442,6 @@ const std::string CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME = "powermanage
 const std::string CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE = "powermanagement.shutdownstate";
 const std::string CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS = "powermanagement.wakeonaccess";
 const std::string CSettings::SETTING_DEBUG_SHOWLOGINFO = "debug.showloginfo";
-const std::string CSettings::SETTING_DEBUG_MEMORYCPU = "debug.logmemcpu";
 const std::string CSettings::SETTING_DEBUG_EXTRALOGGING = "debug.extralogging";
 const std::string CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL = "debug.setextraloglevel";
 const std::string CSettings::SETTING_DEBUG_SCREENSHOTPATH = "debug.screenshotpath";
@@ -1193,7 +1192,6 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-  settingSet.insert(CSettings::SETTING_DEBUG_MEMORYCPU);
   settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
   settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
   settingSet.insert(CSettings::SETTING_MYSQL_ENABLED);
