@@ -2080,8 +2080,8 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           [self.m_irArrowHoldTimer invalidate];
           if (self.m_irArrowHoldCounter < 1)
           {
-            // we need to check if m_enableRemoteExpertMode is active, if so do not send the tap as didUpdateFocusInContext will send one.
-            if (!m_enableRemoteExpertMode)
+            // we need to check if we have [self hasPlayerProgressScrubbing], only send the tap if true
+            if ([self hasPlayerProgressScrubbing])
               [self sendButtonPressed:SiriRemote_LeftTap];
           }
           else
@@ -2136,8 +2136,8 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           [self.m_irArrowHoldTimer invalidate];
           if (self.m_irArrowHoldCounter < 1)
           {
-            // we need to check if m_enableRemoteExpertMode is active, if so do not send the tap as didUpdateFocusInContext will send one.
-            if (!m_enableRemoteExpertMode)
+            // we need to check if we have [self hasPlayerProgressScrubbing], only send the tap if true
+            if ([self hasPlayerProgressScrubbing])
               [self sendButtonPressed:SiriRemote_RightTap];
           }
           else
