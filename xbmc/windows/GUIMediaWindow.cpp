@@ -296,7 +296,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
         if (iItem < 0) break;
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+        if (iAction == ACTION_PLAYER_PLAY || iAction == ACTION_PLAYER_PLAYPAUSE)
+        {
+          CGUIMediaWindow::OnSelect(iItem);
+        }
+        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
           OnSelect(iItem);
         }

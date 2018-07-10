@@ -347,8 +347,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
   {
     int iControl = message.GetSenderId();
+    bool playAction = (message.GetParam1() == ACTION_PLAYER_PLAYPAUSE ||
+                       message.GetParam1() == ACTION_PLAYER_PLAY);
     bool selectAction = (message.GetParam1() == ACTION_SELECT_ITEM ||
-                         message.GetParam1() == ACTION_MOUSE_LEFT_CLICK);
+                         message.GetParam1() == ACTION_MOUSE_LEFT_CLICK ||
+                         playAction
+                         );
 
     VideoSelectAction clickSelectAction = (VideoSelectAction)CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION);
     if (selectAction && iControl == CONTROL_HOMESHELFMOVIESRA)
@@ -362,7 +366,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfMoviesRA->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfMoviesRA->Get(item);
-        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
+        OnClickHomeShelfItem(*itemPtr, (playAction ? SELECT_ACTION_PLAY : clickSelectAction));
       }
       return true;
     }
@@ -377,7 +381,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfMoviesPR->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfMoviesPR->Get(item);
-        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
+        OnClickHomeShelfItem(*itemPtr, (playAction ? SELECT_ACTION_PLAY : clickSelectAction));
       }
       return true;
     }
@@ -392,7 +396,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfTVRA->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfTVRA->Get(item);
-        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
+        OnClickHomeShelfItem(*itemPtr, (playAction ? SELECT_ACTION_PLAY : clickSelectAction));
       }
       return true;
     }
@@ -407,7 +411,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfTVPR->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfTVPR->Get(item);
-        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
+        OnClickHomeShelfItem(*itemPtr, (playAction ? SELECT_ACTION_PLAY : clickSelectAction));
       }
       return true;
     }
@@ -422,7 +426,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfContinueWatching->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfContinueWatching->Get(item);
-        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
+        OnClickHomeShelfItem(*itemPtr, (playAction ? SELECT_ACTION_PLAY : clickSelectAction));
       }
       return true;
     }
@@ -437,7 +441,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfMusicAlbums->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfMusicAlbums->Get(item);
-        OnClickHomeShelfItem(*itemPtr,clickSelectAction);
+        OnClickHomeShelfItem(*itemPtr, (playAction ? SELECT_ACTION_PLAY : clickSelectAction));
       }
       return true;
     }
