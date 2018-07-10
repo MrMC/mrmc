@@ -2279,19 +2279,13 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
   {
     switch (receivedEvent.subtype)
     {
+      case UIEventSubtypeRemoteControlPlay:
+      case UIEventSubtypeRemoteControlPause:
       case UIEventSubtypeRemoteControlTogglePlayPause:
         // check if not in background, we can get this if sleep is forced
         if (m_controllerState < MC_BACKGROUND)
           CApplicationMessenger::GetInstance().PostMsg(
             TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
-        break;
-      case UIEventSubtypeRemoteControlPlay:
-        [self sendButtonPressed:SiriRemote_IR_Play];
-        break;
-      case UIEventSubtypeRemoteControlPause:
-        // check if not in background, we can get this if sleep is forced
-        if (m_controllerState < MC_BACKGROUND)
-          [self sendButtonPressed:SiriRemote_IR_Pause];
         break;
       case UIEventSubtypeRemoteControlStop:
         [self sendButtonPressed:SiriRemote_IR_Stop];
