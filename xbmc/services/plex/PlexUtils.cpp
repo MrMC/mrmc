@@ -453,6 +453,34 @@ bool CPlexUtils::GetPlexMusicPlaylistItems(CFileItemList &items, const std::stri
   return GetPlexSongs(items,url);;
 }
 
+#pragma mark - Plex Continue Watching
+bool CPlexUtils::GetPlexContinueWatching(CFileItemList &items, const std::string url)
+{
+  bool rtn = false;
+  CURL curl(url);
+  CVariant variant = GetPlexCVariant(curl.Get());
+  if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
+  {
+    CVariant variantVideo = variant["MediaContainer"]["Video"];
+    for (auto variantIt = variantVideo.begin_array(); variantIt != variantVideo.end_array(); ++variantIt)
+    {
+      const auto item = *variantIt;
+      if (item.isMember("parentIndex"))
+      {
+        int season = item["parentIndex"].asInteger();
+        rtn = ParsePlexVideos(items, curl, item, MediaTypeEpisode, false, season);
+      }
+      else
+        rtn = ParsePlexVideos(items, curl, item, MediaTypeMovie, false);
+    }
+    if (rtn)
+    {
+      items.SetLabel(variant["MediaContainer"]["title2"].asString());
+    }
+  }
+  return rtn;
+}
+
 #pragma mark - Plex Recently Added and InProgress
 bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit, bool watched)
 {
