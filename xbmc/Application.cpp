@@ -621,6 +621,15 @@ bool CApplication::Create()
   }
   CSettings::GetInstance().SetLoaded();
 
+  // there must be a better way to do this...
+  std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
+  if (uuid == "replaceme")
+  {
+    uuid = StringUtils::CreateUUID();
+    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_UUID, uuid);
+    CSettings::GetInstance().Save();
+  }
+
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", CURL::GetRedacted(CProfilesManager::GetInstance().GetProfileUserDataFolder()).c_str());
   CLog::Log(LOGINFO, "recording folder: %s", CURL::GetRedacted(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)).c_str());

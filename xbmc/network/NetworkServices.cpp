@@ -117,13 +117,7 @@ CNetworkServices::CNetworkServices()
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
 {
-  // there must be a better way to do this...
-  std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_UUID);
-  if (uuid == "replaceme")
-  {
-    uuid = StringUtils::CreateUUID();
-    CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_UUID, uuid);
-  }
+
 
 #ifdef HAS_WEB_SERVER
   CWebServer::RegisterRequestHandler(&m_httpImageHandler);
