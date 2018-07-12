@@ -1488,6 +1488,7 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
 
   std::string value;
   std::string imagePath;
+  url.RemoveProtocolOption("type");
   url.RemoveProtocolOption("X-Plex-Container-Start");
   url.RemoveProtocolOption("X-Plex-Container-Size");
   const CVariant variantVideo = makeVariantArrayIfSingleItem(videos);
