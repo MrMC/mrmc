@@ -1261,7 +1261,7 @@ void CDarwinUtils::SetMrMCTouchFlag()
   // this is for the future use, we will set the flag in keychain for
   // MrMC Touch transition to universal tvOS and iOS app
   RMStoreKeychainPersistence *persistence = [[RMStoreKeychainPersistence alloc] init];
-  if (1)
+  if (/* DISABLES CODE */ (1))
   {
     if (![persistence isPurchasedProductOfIdentifier:@"tv.mrmc.mrmc.tvos.iosupgrade"])
       [persistence persistTransactionProductID:@"tv.mrmc.mrmc.tvos.iosupgrade"];
