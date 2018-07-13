@@ -1232,16 +1232,19 @@ bool CApplication::Initialize()
     g_windowManager.SendThreadMessage(msg);
   }
 
-  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-  if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)))
-  {
-    CSkinSettings::GetInstance().MigrateToNewSkin(skin);
-    skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-    LoadSkin(skin);
-  }
+//  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+//  if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)))
+//  {
+//    if (CSkinSettings::GetInstance().MigrateToNewSkin(skin))
+//    {
+//      m_skinReverting = true;
+//      LoadSkin("skin.opacity");
+//    }
+//  }
 
 #if defined(TARGET_DARWIN_TVOS)
   // Migrate to Ariana for old AppleTV users
+  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_ARIANASKINCHECKED))
   {
     if (CSkinSettings::GetInstance().MigrateToAriana(skin))
