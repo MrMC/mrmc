@@ -64,13 +64,6 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_AUTO,
                  VIEW_TYPE_MAX };
 
-enum AdjustRefreshRate
-{
-  ADJUST_REFRESHRATE_OFF          = 0,
-  ADJUST_REFRESHRATE_ALWAYS,
-  ADJUST_REFRESHRATE_ON_STARTSTOP
-};
-
 class CGraphicContext : public CCriticalSection,
                         public ISettingCallback
 {
