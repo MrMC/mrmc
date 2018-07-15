@@ -571,8 +571,8 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldPlot) index = VIDEODB_ID_PLOT;
     else if (field == FieldPlotOutline) index = VIDEODB_ID_PLOTOUTLINE;
     else if (field == FieldTagline) index = VIDEODB_ID_TAGLINE;
-    else if (field == FieldVotes) index = VIDEODB_ID_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_RATING_ID;
+    else if (field == FieldVotes) return VIDEODB_DETAILS_MOVIE_VOTES;
+    else if (field == FieldRating) return VIDEODB_DETAILS_MOVIE_RATING;
     else if (field == FieldWriter) index = VIDEODB_ID_CREDITS;
     else if (field == FieldYear) index = VIDEODB_ID_YEAR;
     else if (field == FieldTime) index = VIDEODB_ID_RUNTIME;
@@ -609,8 +609,8 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldOriginalTitle) index = VIDEODB_ID_TV_ORIGINALTITLE;
     else if (field == FieldPlot) index = VIDEODB_ID_TV_PLOT;
     else if (field == FieldTvShowStatus) index = VIDEODB_ID_TV_STATUS;
-    else if (field == FieldVotes) index = VIDEODB_ID_TV_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_TV_RATING_ID;
+    else if (field == FieldVotes) return VIDEODB_DETAILS_TVSHOW_VOTES;
+    else if (field == FieldRating) return VIDEODB_DETAILS_TVSHOW_RATING;
     else if (field == FieldYear) index = VIDEODB_ID_TV_PREMIERED;
     else if (field == FieldGenre) index = VIDEODB_ID_TV_GENRE;
     else if (field == FieldMPAA) index = VIDEODB_ID_TV_MPAA;
@@ -638,8 +638,8 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     if (field == FieldId) return 0;
     else if (field == FieldTitle) index = VIDEODB_ID_EPISODE_TITLE;
     else if (field == FieldPlot) index = VIDEODB_ID_EPISODE_PLOT;
-    else if (field == FieldVotes) index = VIDEODB_ID_EPISODE_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_EPISODE_RATING_ID;
+    else if (field == FieldVotes) return VIDEODB_DETAILS_EPISODE_VOTES;
+    else if (field == FieldRating) return VIDEODB_DETAILS_EPISODE_RATING;
     else if (field == FieldWriter) index = VIDEODB_ID_EPISODE_CREDITS;
     else if (field == FieldAirDate) index = VIDEODB_ID_EPISODE_AIRED;
     else if (field == FieldTime) index = VIDEODB_ID_EPISODE_RUNTIME;
