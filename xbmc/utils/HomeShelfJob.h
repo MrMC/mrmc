@@ -60,6 +60,7 @@ public:
 
 private:
   int m_flag;
+  bool m_compatibleSkin;
   CCriticalSection m_critsection;
   CFileItemList *m_HomeShelfTVRA;
   CFileItemList *m_HomeShelfTVPR;

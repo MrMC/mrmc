@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "HomeShelfJob.h"
+#include "addons/AddonManager.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -84,6 +85,15 @@ CHomeShelfJob::CHomeShelfJob(int flag)
   m_HomeShelfMusicSongs = new CFileItemList;
   m_HomeShelfMusicVideos = new CFileItemList;
   m_HomeShelfContinueWatching = new CFileItemList;
+
+  m_compatibleSkin = false;
+  std::string skinId = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+  ADDON::AddonPtr addon;
+  if (ADDON::CAddonMgr::GetInstance().GetAddon(skinId, addon, ADDON::ADDON_SKIN))
+  {
+    if (skinId == "skin.opacity" || skinId == "skin.ariana" || skinId == "skin.ariana.touch")
+      m_compatibleSkin = true;
+  }
 }
 
 CHomeShelfJob::~CHomeShelfJob()
@@ -100,18 +110,7 @@ CHomeShelfJob::~CHomeShelfJob()
 
 bool CHomeShelfJob::UpdateVideo()
 {
-  if (g_application.IsSkinReverting())
-    return NULL;
-
-  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
-  if (home == NULL)
-    return false;
-
   CSingleLock lock(m_critsection);
-
-  // idea here is that if button 4000 exists in the home screen skin is compatible
-  // with new Server layouts and should only display RA and inProgress for those servers
-  const CGUIControl *btnServers = home->GetControl(4000);
   
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateVideos() - Running HomeShelf screen update");
   
@@ -132,7 +131,7 @@ bool CHomeShelfJob::UpdateVideo()
   
   int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
   bool homeScreenWatched = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_WATCHEDHOMESHELFITEMS);
-  if (!btnServers || serverType == "mrmc" || serverType.empty())
+  if (!m_compatibleSkin || serverType == "mrmc" || serverType.empty())
   {
     CVideoDatabase videodatabase;
     videodatabase.Open();
@@ -173,7 +172,7 @@ bool CHomeShelfJob::UpdateVideo()
           m_HomeShelfTVPR->Add(item);
         }
       }
-      if (!btnServers)
+      if (!m_compatibleSkin)
       {
         // get InProgress TVSHOWS and MOVIES from any enabled service
         CServicesManager::GetInstance().GetAllInProgressShows(*m_HomeShelfTVPR, NUM_ITEMS);
@@ -240,7 +239,7 @@ bool CHomeShelfJob::UpdateVideo()
         }
       }
 
-      if (!btnServers)
+      if (!m_compatibleSkin)
       {
         // get recently added TVSHOWS and MOVIES from any enabled service
         CServicesManager::GetInstance().GetAllRecentlyAddedShows(*m_HomeShelfTVRA, NUM_ITEMS, homeScreenWatched);
@@ -275,24 +274,14 @@ bool CHomeShelfJob::UpdateVideo()
 
 bool CHomeShelfJob::UpdateMusic()
 {
-  if (g_application.IsSkinReverting())
-    return NULL;
-
-  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
-  if (home == NULL)
-    return false;
-  
   CSingleLock lock(m_critsection);
 
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateMusic() - Running HomeShelf screen update");
 
-  // idea here is that if button 4000 exists in the home screen skin is compatible
-  // with new Server layouts and should only display RA and inProgress for those servers
-  const CGUIControl *btnServers = home->GetControl(4000);
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
   std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
   
-  if (!btnServers || serverType == "mrmc" || serverType.empty())
+  if (!m_compatibleSkin || serverType == "mrmc" || serverType.empty())
   {
     CMusicDatabase musicdatabase;
     musicdatabase.Open();
