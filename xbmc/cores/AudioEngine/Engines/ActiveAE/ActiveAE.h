@@ -75,6 +75,7 @@ struct AudioSettings
   unsigned int samplerate;
   AEQuality resampleQuality;
   double atempoThreshold;
+  int boostcenter;
 };
 
 class CActiveAEControlProtocol : public Protocol

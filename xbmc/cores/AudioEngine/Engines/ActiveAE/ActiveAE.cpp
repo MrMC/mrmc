@@ -1287,7 +1287,10 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         bool useDSP = !isRaw ? m_settings.dspaddonsenabled : false;
 
         (*it)->m_processingBuffers = new CActiveAEStreamBuffers((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
-        (*it)->m_processingBuffers->ForceResampler((*it)->m_forceResampler);
+        if (m_settings.boostcenter > 0)
+          (*it)->m_processingBuffers->ForceResampler(true);
+        else
+          (*it)->m_processingBuffers->ForceResampler((*it)->m_forceResampler);
         (*it)->m_processingBuffers->SetDSPConfig(useDSP, (*it)->m_bypassDSP);
 
         if (useDSP && !(*it)->m_bypassDSP)
@@ -1352,6 +1355,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   if (!m_sinkBuffers)
   {
     m_sinkBuffers = new CActiveAEBufferPoolResample(sinkInputFormat, m_sinkFormat, m_settings.resampleQuality);
+    if (m_settings.boostcenter > 0)
+      m_sinkBuffers->ForceResampler(true);
     m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true, false);
   }
 
@@ -2576,6 +2581,8 @@ void CActiveAE::LoadSettings()
 
   m_settings.resampleQuality = static_cast<AEQuality>(CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY));
   m_settings.atempoThreshold = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD) / 100.0;
+
+  m_settings.boostcenter = CSettings::GetInstance().GetInt("audiooutput.boostcenter");
 }
 
 bool CActiveAE::Initialize()
@@ -2654,6 +2661,11 @@ bool CActiveAE::SupportsRaw(AEAudioFormat &format)
   {
     CLog::Log(LOGDEBUG, "sink does not support passthrough of %s for %d channels at %d sample rate",
       CAEUtil::StreamTypeToStr(format.m_streamInfo.m_type), format.m_channelLayout.Count(), format.m_streamInfo.m_sampleRate);
+    return false;
+  }
+  if (CSettings::GetInstance().GetInt("audiooutput.boostcenter") > 0)
+  {
+    // If boost is requested, force transcode
     return false;
   }
   return true;

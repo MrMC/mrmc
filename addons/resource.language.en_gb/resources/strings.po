@@ -19454,12 +19454,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#37046"
-msgid "Boost center channel when downmixing"
+msgid "Boost voice channel"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#37047"
-msgid "Increase this value to make the dialogue louder compared to background sounds when downmixing multichannel audio"
+msgid "Increase this value to make the dialogue louder compared to background sounds; If AC3 transcoding is enabled, works for multi-channel as well (but forces AC3 transcoding for *all* passthrough formats)"
 msgstr ""
 
 #: system/settings/settings.xml

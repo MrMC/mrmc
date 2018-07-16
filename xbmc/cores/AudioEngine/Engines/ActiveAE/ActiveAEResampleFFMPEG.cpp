@@ -176,6 +176,34 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
       return false;
     }
   }
+  // boost center
+  else if (boost_center > 0)
+  {
+    float gain = pow(10.0f, ((float)(-3 + boost_center))/20.0f);
+    memset(m_rematrix, 0, sizeof(m_rematrix));
+    for (int in=0; in<m_src_channels; in++)
+    {
+      uint64_t in_chan = av_channel_layout_extract_channel(m_src_chan_layout, in);
+      switch(in_chan)
+      {
+        case AV_CH_LOW_FREQUENCY:
+        case AV_CH_FRONT_CENTER:
+          m_rematrix[in][in] = 1.0;
+          m_rematrix[in][in] = 1.0;
+          break;
+        default:
+          m_rematrix[in][in] = 1.0 / gain;
+          m_rematrix[in][in] = 1.0 / gain;
+          break;
+      }
+    }
+
+    if (swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
+    {
+      CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - setting channel matrix failed");
+      return false;
+    }
+  }
 
   int status = swr_init(m_pContext);
   if (status < 0)
