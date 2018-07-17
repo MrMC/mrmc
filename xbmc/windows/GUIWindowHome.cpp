@@ -74,15 +74,15 @@
 
 using namespace ANNOUNCEMENT;
 
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), 
-                                       m_HomeShelfRunning(false),
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
+                                       m_HomeShelfRunningId(-1),
                                        m_cumulativeUpdateFlag(0),
                                        m_countBackCalled(0)
 {
   m_firstRun = true;
   m_updateHS = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
-  
+
   m_HomeShelfTVRA = new CFileItemList;
   m_HomeShelfTVPR = new CFileItemList;
   m_HomeShelfMoviesRA = new CFileItemList;
@@ -142,13 +142,22 @@ void CGUIWindowHome::OnInitWindow()
   SET_CONTROL_HIDDEN(CONTROL_SERVER_BUTTON);
   m_buttonSections->Clear();
   SetupServices();
-  
+
   if (!m_firstRun)
     AddHomeShelfJobs( m_updateHS );
   else
     m_firstRun = false;
 
   CGUIWindow::OnInitWindow();
+}
+
+void CGUIWindowHome::OnDeinitWindow(int nextWindowID)
+{
+  CJobManager::GetInstance().CancelJob(m_HomeShelfRunningId);
+  m_HomeShelfRunningId = -1;
+  m_firstRun = true;
+
+  CGUIWindow::OnDeinitWindow(nextWindowID);
 }
 
 void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
@@ -202,19 +211,15 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
 void CGUIWindowHome::AddHomeShelfJobs(int flag)
 {
   CSingleLock lockMe(*this);
-  if (!m_HomeShelfRunning)
+  if (m_HomeShelfRunningId == -1)
   {
     flag |= m_cumulativeUpdateFlag; // add the flags from previous calls to AddHomeShelfJob
 
     m_cumulativeUpdateFlag = 0; // now taken care of in flag.
                                 // reset this since we're going to execute a job
 
-    // we're about to add one so set the indicator
     if (flag)
-    {
-      m_HomeShelfRunning = true; // this will happen in the if clause below
-      CJobManager::GetInstance().AddJob(new CHomeShelfJob(flag), this);
-    }
+      m_HomeShelfRunningId = CJobManager::GetInstance().AddJob(new CHomeShelfJob(flag), this);
   }
   else
     // since we're going to skip a job, mark that one came in and ...
@@ -225,23 +230,8 @@ void CGUIWindowHome::AddHomeShelfJobs(int flag)
 
 void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  int flag = 0;
-
-  {
-    CSingleLock lockMe(*this);
-
-    // the job is finished.
-    // did one come in in the meantime?
-    flag = m_cumulativeUpdateFlag;
-    m_HomeShelfRunning = false; /// we're done.
-  }
 
   int jobFlag = ((CHomeShelfJob *)job)->GetFlag();
-
-  if (flag)
-    AddHomeShelfJobs(0 /* the flag will be set inside AddHomeShelfJobs via m_cumulativeUpdateFlag */ );
-  else if(jobFlag != Totals)
-    AddHomeShelfJobs(Totals);
 
   if (jobFlag & Video)
   {
@@ -259,21 +249,21 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     }
     
     int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
-    
+
     if (homeScreenItemSelector == 1 || homeScreenItemSelector == 3)
     {
       CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVRA);
       g_windowManager.SendThreadMessage(messageTVRA);
 
-      
+
       CGUIMessage messageTVPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSPR, 0, 0, m_HomeShelfTVPR);
       g_windowManager.SendThreadMessage(messageTVPR);
-      
-      
+
+
       CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesRA);
       g_windowManager.SendThreadMessage(messageMovieRA);
-      
-      
+
+
       CGUIMessage messageMoviePR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, m_HomeShelfMoviesPR);
       g_windowManager.SendThreadMessage(messageMoviePR);
 
@@ -282,12 +272,12 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     }
     else
     {
-      
+
       // if we are set to only do in Progress, push progress items into recently added shelf items
       // this is a hack for skins that only have one line
       CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVPR);
       g_windowManager.SendThreadMessage(messageTVRA);
-      
+
       CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesPR);
       g_windowManager.SendThreadMessage(messageMovieRA);
     }
@@ -304,6 +294,20 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     g_windowManager.SendThreadMessage(messageAlbums);
   }
 
+  int flag = 0;
+  {
+    CSingleLock lockMe(*this);
+
+    // the job is finished.
+    // did one come in in the meantime?
+    flag = m_cumulativeUpdateFlag;
+    m_HomeShelfRunningId = -1; /// we're done.
+  }
+
+  if (flag)
+    AddHomeShelfJobs(0 /* the flag will be set inside AddHomeShelfJobs via m_cumulativeUpdateFlag */ );
+  else if(jobFlag != Totals)
+    AddHomeShelfJobs(Totals);
 }
 
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
@@ -315,7 +319,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   break;
   case GUI_MSG_NOTIFY_ALL:
   {
-    if (message.GetParam1() == GUI_MSG_WINDOW_RESET || message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
+    if (message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
     {
       int updateRA = (message.GetSenderId() == GetID()) ? message.GetParam2() : (Video | Audio | Totals);
 
@@ -374,9 +378,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMOVIESPR);
       OnMessage(msg);
-      
+
       CSingleLock lock(m_critsection);
-      
+
       int item = msg.GetParam1();
       if (item >= 0 && item < m_HomeShelfMoviesPR->Size())
       {
@@ -404,9 +408,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFTVSHOWSPR);
       OnMessage(msg);
-      
+
       CSingleLock lock(m_critsection);
-      
+
       int item = msg.GetParam1();
       if (item >= 0 && item < m_HomeShelfTVPR->Size())
       {
@@ -449,7 +453,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOME_LIST);
       OnMessage(msg);
-      
+
       int item = msg.GetParam1();
       CFileItem selectedItem(*new CFileItem(*m_buttonSections->Get(item)));
       CBuiltins::GetInstance().Execute(selectedItem.GetPath());
@@ -464,7 +468,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       selectDialog->SetHeading(g_localizeStrings.Get(33051) + " " + g_localizeStrings.Get(706));
       int counter = 0;
       int selected = 0;
-      
+
       // Add MrMC Database library button
       CFileItem item("MrMC");
       item.SetProperty("type", "mrmc");
@@ -473,7 +477,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (selectedUuid == "mrmc")
         selected = counter;
       counter++;
-      
+
       // Add all Plex server buttons
       std::vector<CPlexClientPtr>  plexClients;
       CPlexServices::GetInstance().GetClients(plexClients);
@@ -487,7 +491,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           selected = counter;
         counter++;
       }
-      
+
       // Add all Emby server buttons
       std::vector<CEmbyClientPtr>  embyClients;
       CEmbyServices::GetInstance().GetClients(embyClients);
@@ -501,11 +505,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           selected = counter;
         counter++;
       }
-      
+
       selectDialog->SetSelected(selected);
       selectDialog->EnableButton(false, 0);
       selectDialog->Open();
-      
+
       // check if the user has chosen one of the results
       const CFileItemPtr selectedItem = selectDialog->GetSelectedFileItem();
       if (selectedItem->HasProperty("type") &&
@@ -550,7 +554,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
             std::string thumb = CPlexServices::GetInstance().GetHomeUserThumb();
             if (thumb.empty())
               thumb = "unknown-user.png";
-            
+
             ClearHomeShelfItems();
             SetupServices();
             std::string text = StringUtils::Format(g_localizeStrings.Get(1256).c_str(),"Plex");
@@ -578,7 +582,7 @@ bool CGUIWindowHome::OnClickHomeShelfItem(CFileItem itemPtr, int action)
     case SELECT_ACTION_CHOOSE:
     {
       CContextButtons choices;
-      
+
       if (itemPtr.IsVideoDb())
       {
         std::string itemPath(itemPtr.GetPath());
@@ -586,13 +590,13 @@ bool CGUIWindowHome::OnClickHomeShelfItem(CFileItem itemPtr, int action)
         if (URIUtils::IsStack(itemPath) && CFileItem(XFILE::CStackDirectory::GetFirstStackedFile(itemPath),false).IsDiscImage())
           choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
           }
-      
+
       choices.Add(SELECT_ACTION_PLAY, 208);   // Play
       choices.Add(SELECT_ACTION_INFO, 22081); // Info
       int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
       if (value < 0)
         return true;
-      
+
       return OnClickHomeShelfItem(itemPtr, value);
     }
       break;
@@ -649,7 +653,7 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
       if (value == SELECT_ACTION_RESUME)
         itemPtr.m_lStartOffset = STARTOFFSET_RESUME;
     }
-    
+
     if (itemPtr.IsMediaServiceBased())
     {
       if (!CServicesManager::GetInstance().GetResolutions(itemPtr))
@@ -667,7 +671,7 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
     playlist.Clear();
     CFileItemPtr movieItem(new CFileItem(itemPtr));
     playlist.Add(movieItem);
-    
+
     // play movie...
     g_playlistPlayer.Play(0);
   }
@@ -691,17 +695,17 @@ void CGUIWindowHome::SetupServices()
   const CGUIControl *btnServers = GetControl(CONTROL_SERVER_BUTTON);
   if (!btnServers)
     return;
-  
+
   if (CServicesManager::GetInstance().HasServices())
     SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
-  
+
   CSingleLock lock(m_critsection);
   m_buttonSections->ClearItems();
   std::string strLabel;
   std::string strThumb;
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
   std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
-  
+
   if (serverType == "plex")
   {
     if (CPlexServices::GetInstance().HasClients())
@@ -740,9 +744,9 @@ void CGUIWindowHome::SetupServices()
   SetupStaticHomeButtons();
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOME_LIST);
   OnMessage(msg);
-  
+
   int item = msg.GetParam1();
-  
+
   CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOME_LIST, item, 0, m_buttonSections);
   g_windowManager.SendThreadMessage(message);
 }
@@ -793,7 +797,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     ptrButton = MakeButton(button);
     m_buttonSections->Add(ptrButton);
   }
-  
+
   // Radio Button
   if (hasRadio)
   {
@@ -818,7 +822,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     ptrButton = MakeButton(button);
     m_buttonSections->Add(ptrButton);
   }
-  
+
   // Favourites Button
   if (showFavourites)
   {
@@ -840,11 +844,11 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     property.name = "submenu";
     property.value = false;
     button.properties.push_back(property);
-    
+
     ptrButton = MakeButton(button);
     m_buttonSections->Add(ptrButton);
   }
-  
+
   // MediaSources Button
   if (showMediaSources)
   {
@@ -866,7 +870,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     property.name = "submenu";
     property.value = false;
     button.properties.push_back(property);
-    
+
     ptrButton = MakeButton(button);
     m_buttonSections->Add(ptrButton);
   }
@@ -953,7 +957,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     property.name = "submenu";
     property.value = false;
     button.properties.push_back(property);
-    
+
     ptrButton = MakeButton(button);
     m_buttonSections->Add(ptrButton);
   }
@@ -978,11 +982,11 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     property.name = "submenu";
     property.value = true;
     button.properties.push_back(property);
-    
+
     ptrButton = MakeButton(button);
     m_buttonSections->Add(ptrButton);
   }
-  
+
   // QUIT Button
   if (!g_infoManager.GetBool(SYSTEM_PLATFORM_DARWIN_TVOS) && !g_infoManager.GetBool(SYSTEM_PLATFORM_DARWIN_IOS))
   {
@@ -1000,7 +1004,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     property.name = "submenu";
     property.value = false;
     button.properties.push_back(property);
-    
+
     ptrButton = MakeButton(button);
     m_buttonSections->Add(ptrButton);
   }
@@ -1221,7 +1225,7 @@ void CGUIWindowHome::ClearHomeShelfItems()
   CGUIMessage messageMoviePR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, tempClearItems);
   g_windowManager.SendThreadMessage(messageMoviePR);
 
-  
+
   CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMUSICALBUMS, 0, 0, tempClearItems);
   g_windowManager.SendThreadMessage(messageAlbums);
 

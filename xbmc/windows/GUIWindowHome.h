@@ -55,6 +55,8 @@ public:
   CGUIWindowHome(void);
   virtual ~CGUIWindowHome(void);
   virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
+
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
   virtual bool OnMessage(CGUIMessage& message);
@@ -66,7 +68,7 @@ private:
   void AddHomeShelfJobs(int flag);
   bool OnClickHomeShelfItem(CFileItem itemPtr, int action);
   bool PlayHomeShelfItem(CFileItem itemPtr);
-  std::atomic<bool> m_HomeShelfRunning;
+  std::atomic<int> m_HomeShelfRunningId;
   std::atomic<int> m_cumulativeUpdateFlag;
   int m_countBackCalled;
   CCriticalSection             m_critsection;
