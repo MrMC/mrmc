@@ -235,6 +235,19 @@ void CSkinInfo::Start()
     m_currentAspect = res.strId;
   }
 }
+  
+std::string CSkinInfo::GetSkinIncludeFile(const std::string& strFile) const
+{
+  // try to load include from alternate location (support for skinshortcuts etc.)
+  std::string strPathAlt = URIUtils::AddFileToFolder(Profile(), strFile);
+  if (CFile::Exists(strPathAlt))
+  {
+    CLog::Log(LOGDEBUG, "Loading skin include from non-default location: %s", strPathAlt.c_str());
+    return strPathAlt;
+  }
+  else
+    return GetSkinPath(strFile);
+}
 
 std::string CSkinInfo::GetSkinPath(const std::string& strFile, RESOLUTION_INFO *res, const std::string& strBaseDir /* = "" */) const
 {
@@ -264,6 +277,7 @@ std::string CSkinInfo::GetSkinPath(const std::string& strFile, RESOLUTION_INFO *
 
   strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode);
   strPath = URIUtils::AddFileToFolder(strPath, strFile);
+  
   return strPath;
 }
 

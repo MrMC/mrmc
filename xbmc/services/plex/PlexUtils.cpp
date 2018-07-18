@@ -165,6 +165,47 @@ void CPlexUtils::SetPlexItemProperties(CFileItem &item, const CPlexClientPtr &cl
     item.SetProperty("MediaServicesLocalItem", true);
 }
 
+void CPlexUtils::SetPlexRatingProperties(CFileItem &plexItem, const CVariant &item)
+{
+  // set rating (extract ratingtype from ratingimage)
+  std::string ratingProvider = "";
+  std::string ratingDelimiter = "://";
+  std::string ratingImageValue = item["ratingImage"].asString();
+  if (ratingImageValue != "")
+  {
+    std::string::size_type pos = ratingImageValue.find(ratingDelimiter);
+    ratingProvider = ratingImageValue.substr(0, pos);
+    std::string ratingImage = ratingImageValue.substr(pos + ratingDelimiter.length());
+    plexItem.SetProperty("ratingImage", ratingImage);
+    if (ratingProvider == "rottentomatoes")
+      plexItem.SetProperty("RottenTomatoesRating", item["rating"].asFloat() * 10);
+  }
+  plexItem.GetVideoInfoTag()->SetRating(item["rating"].asFloat(), ratingProvider, true);
+  
+  // audience rating
+  std::string audienceRatingImageValue = item["audienceRatingImage"].asString();
+  if (audienceRatingImageValue != "")
+  {
+    std::string::size_type pos = audienceRatingImageValue.find(ratingDelimiter);
+    ratingProvider = audienceRatingImageValue.substr(0, pos);
+    std::string audienceRatingImage = audienceRatingImageValue.substr(pos + ratingDelimiter.length());
+    plexItem.SetProperty("audienceRatingImage", audienceRatingImage);
+    plexItem.SetProperty("audienceRating", item["audienceRating"].asString());
+    if (ratingProvider == "rottentomatoes")
+      plexItem.SetProperty("RottenTomatoesAudienceRating", item["audienceRating"].asFloat() * 10);
+    ratingProvider += "audience";
+    plexItem.GetVideoInfoTag()->SetRating(item["audienceRating"].asFloat(), ratingProvider, false);
+  }
+  
+  // User rating
+  if (item["userRating"].asString() != "") {
+    plexItem.GetVideoInfoTag()->SetUserrating(item["userRating"].asInteger());
+  }
+  
+  // MPAA rating
+  plexItem.GetVideoInfoTag()->m_strMPAARating = item["contentRating"].asString();
+}
+
 #pragma mark - Plex Server Utils
 void CPlexUtils::SetWatched(CFileItem &item)
 {
@@ -616,7 +657,7 @@ bool CPlexUtils::GetItemSubtiles(CFileItem &item)
       for (auto variantIt = variantMedia.begin_array(); variantIt != variantMedia.end_array(); ++variantIt)
       {
         if (*variantIt != CVariant::VariantTypeNull)
-          GetMediaDetals(item, curl, *variantIt, item.GetProperty("PlexMediaID").asString());
+          GetMediaDetails(item, curl, *variantIt, item.GetProperty("PlexMediaID").asString());
       }
     }
   }
@@ -681,7 +722,7 @@ bool CPlexUtils::GetMoreResolutions(CFileItem &item)
         if (*variantIt != CVariant::VariantTypeNull)
         {
           CFileItem mediaItem(item);
-          GetMediaDetals(mediaItem, curl, *variantIt);
+          GetMediaDetails(mediaItem, curl, *variantIt);
           resolutionList.push_back(mediaItem);
           choices.Add(resolutionList.size(), mediaItem.GetProperty("PlexResolutionChoice").c_str());
         }
@@ -1287,9 +1328,10 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
     plexItem->SetArt("fanart", url.Get());
 
     plexItem->GetVideoInfoTag()->SetYear(item["year"].asInteger());
-    plexItem->GetVideoInfoTag()->SetRating(item["rating"].asFloat());
-    plexItem->GetVideoInfoTag()->m_strMPAARating = item["contentRating"].asString();
-
+    
+    // Set ratings
+    SetPlexRatingProperties(*plexItem, item);
+    
     // lastViewedAt means that it was watched, if so we set m_playCount to 1 and set overlay.
     // If we have "viewOffset" that means we are partially watched and shoudl not set m_playCount to 1
     if (item.isMember("lastViewedAt") && !item.isMember("viewOffset"))
@@ -1306,7 +1348,7 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
     plexItem->m_lStartOffset = item["viewOffset"].asInteger() / 1000;
 
     const CVariant media = makeVariantArrayIfSingleItem(item["Media"]);
-    GetMediaDetals(*plexItem, url, media[0]);
+    GetMediaDetails(*plexItem, url, media[0]);
 
     if (formatLabel)
     {
@@ -1848,7 +1890,7 @@ void CPlexUtils::GetMusicDetails(CFileItem &item, const CVariant &video)
 */
 }
 
-void CPlexUtils::GetMediaDetals(CFileItem &item, CURL url, const CVariant &media, std::string id)
+void CPlexUtils::GetMediaDetails(CFileItem &item, CURL url, const CVariant &media, std::string id)
 {
   if (!media.isNull() && (id == "0" || media["id"].asString() == id))
   {

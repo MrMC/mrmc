@@ -146,20 +146,20 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     }
     else if (node->Attribute("file"))
     { 
+      std::string includeFile = g_SkinInfo->GetSkinIncludeFile(node->Attribute("file"));
       const char *condition = node->Attribute("condition");
       if (condition)
       { // check this condition
         INFO::InfoPtr conditionID = g_infoManager.Register(condition);
         bool value = conditionID->Get();
-
         if (value)
         {
           // load this file in as well
-          LoadIncludes(g_SkinInfo->GetSkinPath(node->Attribute("file")));
+          LoadIncludes(includeFile);
         }
       }
       else
-        LoadIncludes(g_SkinInfo->GetSkinPath(node->Attribute("file")));
+        LoadIncludes(includeFile);
     }
     node = node->NextSiblingElement("include");
   }

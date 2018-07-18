@@ -39,6 +39,9 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "video/VideoThumbLoader.h"
+#include "services/ServicesManager.h"
+#include "playlists/PlayList.h"
+#include "PlayListPlayer.h"
 
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
@@ -212,19 +215,20 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   // we are only interested in library changes
-  if ((flag & (VideoLibrary | AudioLibrary)) == 0)
+  if ((flag & (VideoLibrary | AudioLibrary | MediaService)) == 0)
     return;
-
   {
     CSingleLock lock(m_section);
     // we don't need to refresh anything if there are no fitting
     // items in this list provider for the announcement flag
-    if (((flag & VideoLibrary) &&
-         (std::find(m_itemTypes.begin(), m_itemTypes.end(), VIDEO) == m_itemTypes.end())) ||
-        ((flag & AudioLibrary) &&
-         (std::find(m_itemTypes.begin(), m_itemTypes.end(), AUDIO) == m_itemTypes.end())))
-      return;
-
+    if (m_itemTypes.size() > 0)
+    {
+      if (((flag & VideoLibrary) &&
+           (std::find(m_itemTypes.begin(), m_itemTypes.end(), VIDEO) == m_itemTypes.end())) ||
+          ((flag & AudioLibrary) &&
+           (std::find(m_itemTypes.begin(), m_itemTypes.end(), AUDIO) == m_itemTypes.end())))
+        return;
+    }
     // if we're in a database transaction, don't bother doing anything just yet
     if (data.isMember("transaction") && data["transaction"].asBoolean())
       return;
@@ -234,6 +238,7 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
     if (strcmp(message, "OnScanFinished") == 0 ||
         strcmp(message, "OnCleanFinished") == 0 ||
         strcmp(message, "OnUpdate") == 0 ||
+        strcmp(message, "ServicesUpdated") == 0 ||
         strcmp(message, "OnRemove") == 0)
       m_updateState = PENDING;
   }
@@ -290,21 +295,64 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
   if (item->IsFileItem())
   {
     CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
-    std::string target = fileItem.GetProperty("node.target").asString();
-    if (target.empty())
-      target = m_currentTarget;
-    if (target.empty())
-      target = m_target.GetLabel(m_parentID, false);
-    if (fileItem.HasProperty("node.target_url"))
-      fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
-    // grab the execute string
-    std::string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
-    if (!execute.empty())
+    
+    if (fileItem.IsMediaServiceBased() && !fileItem.IsFolder())
     {
-      CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
-      message.SetStringParam(execute);
-      g_windowManager.SendMessage(message);
+      // handle playback for items from mediaservice
+      if (fileItem.IsAudio())
+      {
+        // music items
+        CFileItemList items;
+        CServicesManager::GetInstance().GetAlbumSongs(fileItem, items);
+        g_playlistPlayer.Reset();
+        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+        PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+        playlist.Clear();
+        playlist.Add(items);
+        // play full album, starting with first song...
+        g_playlistPlayer.Play(0);
+        g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+      }
+      else
+      {
+        // video items
+        if (!CServicesManager::GetInstance().GetResolutions(fileItem))
+          return false;
+        CServicesManager::GetInstance().GetURL(fileItem);
+        
+        // always resume at resume point for now
+        fileItem.m_lStartOffset = STARTOFFSET_RESUME;
+        
+        g_playlistPlayer.Reset();
+        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+        PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+        playlist.Clear();
+        CFileItemPtr movieItem(new CFileItem(fileItem));
+        playlist.Add(movieItem);
+        
+        // play item
+        g_playlistPlayer.Play(0);
+      }
       return true;
+    }
+    else
+    {
+      std::string target = fileItem.GetProperty("node.target").asString();
+      if (target.empty())
+        target = m_currentTarget;
+      if (target.empty())
+        target = m_target.GetLabel(m_parentID, false);
+      if (fileItem.HasProperty("node.target_url"))
+        fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
+      // grab the execute string
+      std::string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
+      if (!execute.empty())
+      {
+        CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
+        message.SetStringParam(execute);
+        g_windowManager.SendMessage(message);
+        return true;
+      }
     }
   }
   return false;
@@ -346,8 +394,8 @@ bool CDirectoryProvider::UpdateURL()
 
   m_currentUrl = value;
 
-  // Register this provider only if we have library content
-  RegisterListProvider(URIUtils::IsLibraryContent(m_currentUrl));
+  // Register this provider only if we have library content or a media service
+  RegisterListProvider(URIUtils::IsLibraryContent(m_currentUrl) || URIUtils::IsServices(m_currentUrl));
 
   return true;
 }
