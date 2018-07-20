@@ -445,7 +445,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (item >= 0 && item < m_HomeShelfMusicAlbums->Size())
       {
         CFileItemPtr itemPtr = m_HomeShelfMusicAlbums->Get(item);
-        OnClickHomeShelfItem(*itemPtr, (playAction ? SELECT_ACTION_PLAY : clickSelectAction));
+        OnClickHomeShelfItem(*itemPtr, SELECT_ACTION_PLAY);
       }
       return true;
     }
