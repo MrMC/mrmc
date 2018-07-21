@@ -1098,6 +1098,10 @@ MainController *g_xbmcController;
   }
 }
 
+- (void)volumeChanged: (NSNumber *) volume
+{
+}
+
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 #pragma mark - gesture creators/recognizers
