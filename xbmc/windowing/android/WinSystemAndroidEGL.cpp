@@ -105,7 +105,6 @@ static void fetchDisplayModes()
     {
       if (m.getPhysicalWidth() > m.getPhysicalHeight())   // Assume unusable if portrait is returned
       {
-        CLog::Log(LOGDEBUG, "CWinSystemAndroidEGL: current mode: %d: %dx%d@%f", m.getModeId(), m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
         s_res_cur_displayMode.strId = StringUtils::Format("%d", m.getModeId());
         s_res_cur_displayMode.iWidth = s_res_cur_displayMode.iScreenWidth = m.getPhysicalWidth();
         s_res_cur_displayMode.iHeight = s_res_cur_displayMode.iScreenHeight = m.getPhysicalHeight();
@@ -121,8 +120,6 @@ static void fetchDisplayModes()
         std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
         for (auto m : modes)
         {
-          CLog::Log(LOGDEBUG, "CWinSystemAndroidEGL: available mode: %d: %dx%d@%f", m.getModeId(), m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
-
           RESOLUTION_INFO res;
           res.strId = StringUtils::Format("%d", m.getModeId());
           res.iWidth = res.iScreenWidth = m.getPhysicalWidth();
@@ -138,13 +135,24 @@ static void fetchDisplayModes()
 
           s_res_displayModes.push_back(res);
         }
+        if (s_res_displayModes.size() == 0)
+          CLog::Log(LOGWARNING, "CWinSystemAndroidEGL : fetchDisplayModes : no mode list");
       }
     }
+    else
+      CLog::Log(LOGWARNING, "CWinSystemAndroidEGL : fetchDisplayModes : no current mode");
   }
+  else
+    CLog::Log(LOGWARNING, "CWinSystemAndroidEGL : fetchDisplayModes : no display");
   // Enable if mode api is borked
 //  if (s_res_displayModes.size() > 1)
   if (s_res_displayModes.size() > 0)
+  {
     s_hasModeApi = true;
+    CLog::Log(LOGINFO, "CWinSystemAndroidEGL : fetchDisplayModes : found %d modes", s_res_displayModes.size());
+  }
+  else
+    CLog::Log(LOGWARNING, "CWinSystemAndroidEGL : fetchDisplayModes : no modes");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,15 +326,7 @@ bool CWinSystemAndroidEGL::InitWindowSystem()
 
 bool CWinSystemAndroidEGL::CreateWindow(RESOLUTION_INFO &res)
 {
-  CLog::Log(LOGDEBUG, "CWinSystemAndroidEGL: SetNativeResolution: %s: %dx%d %dx%d@%f", res.strId.c_str(), res.iWidth, res.iHeight, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
-
-  if (s_hasModeApi && res.strId != s_res_cur_displayMode.strId)
-  {
-    CXBMCApp::SetDisplayModeId(atoi(res.strId.c_str()));
-    s_res_cur_displayMode = res;
-  }
-  else if (abs(currentRefreshRate() - res.fRefreshRate) > 0.0001)
-    CXBMCApp::get()->SetRefreshRate(res.fRefreshRate);
+  SetNativeResolution(res);
 
   EGLNativeWindowType* nativeWindow = (EGLNativeWindowType*) CXBMCApp::GetNativeWindow(30000);
   SetNativeResolution(res);
@@ -485,10 +485,27 @@ bool CWinSystemAndroidEGL::SetNativeResolution(const RESOLUTION_INFO &res)
 {
   CLog::Log(LOGDEBUG, "CWinSystemAndroidEGL: SetNativeResolution: %s: %dx%d %dx%d@%f", res.strId.c_str(), res.iWidth, res.iHeight, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
 
-  if (s_hasModeApi && res.strId != s_res_cur_displayMode.strId)
+  if (s_hasModeApi && !(res.iScreenWidth == s_res_cur_displayMode.iScreenWidth && res.iScreenHeight == s_res_cur_displayMode.iScreenHeight && res.fRefreshRate == s_res_cur_displayMode.fRefreshRate))
   {
-    CXBMCApp::SetDisplayModeId(atoi(res.strId.c_str()));
+    int modeid = -1;
+    fetchDisplayModes();
+    for (auto moderes : s_res_displayModes)
+    {
+      if (res.iScreenWidth == moderes.iScreenWidth && res.iScreenHeight == moderes.iScreenHeight && res.fRefreshRate == moderes.fRefreshRate)
+      {
+        modeid = atoi(moderes.strId.c_str());
+        break;
+      }
+    }
+
+    if (modeid == -1)
+    {
+      CLog::Log(LOGERROR, "CWinSystemAndroidEGL : Cannot find resolution %s", res.strMode.c_str());
+      return false;
+    }
+    CXBMCApp::SetDisplayModeId(modeid);
     s_res_cur_displayMode = res;
+
   }
   else if (abs(currentRefreshRate() - res.fRefreshRate) > 0.0001)
     CXBMCApp::get()->SetRefreshRate(res.fRefreshRate);
