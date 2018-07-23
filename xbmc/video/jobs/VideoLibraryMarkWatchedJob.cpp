@@ -66,8 +66,6 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items.Get(i);
-    if (item->HasVideoInfoTag() && m_mark == (item->GetVideoInfoTag()->m_playCount > 0))
-      continue;
 
 #ifdef HAS_UPNP
     if (URIUtils::IsUPnP(item->GetPath()) && UPNP::CUPnP::MarkWatched(*item, m_mark))
@@ -85,17 +83,29 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
   for (std::vector<CFileItemPtr>::const_iterator iter = markItems.begin(); iter != markItems.end(); ++iter)
   {
     CFileItemPtr item = *iter;
+    std::string path(item->GetPath());
+    if (item->HasVideoInfoTag())
+      path = item->GetVideoInfoTag()->GetPath();
+
     if (m_mark)
     {
-      std::string path(item->GetPath());
-      if (item->HasVideoInfoTag())
-        path = item->GetVideoInfoTag()->GetPath();
+      bool skipIncrement = false;
 
+      CBookmark bookmark;
+      if (db.GetResumeBookMark(path, bookmark) && item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0)
+      {
+        // If file has a resume point and was already watched, just clear the resume point
+        skipIncrement = true;
+      }
       db.ClearBookMarksOfFile(path, CBookmark::RESUME);
-      db.IncrementPlayCount(*item);
+      if (!skipIncrement)
+        db.IncrementPlayCount(*item);
     }
     else
+    {
+      db.ClearBookMarksOfFile(path, CBookmark::RESUME);
       db.SetPlayCount(*item, 0);
+    }
   }
 
   db.CommitTransaction();
