@@ -553,7 +553,7 @@ bool CHueServices::InitConnection()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1ID) > 0)
   {
     size_t id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1ID);
-    if (id < lights.size())
+    if (lights.find(id) != lights.end())
     {
       lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1MODE));
       lights[id]->saveState();
@@ -563,7 +563,7 @@ bool CHueServices::InitConnection()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2ID) > 0)
   {
     size_t id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2ID);
-    if (id < lights.size())
+    if (lights.find(id) != lights.end())
     {
       lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2MODE));
       lights[id]->saveState();
@@ -573,7 +573,7 @@ bool CHueServices::InitConnection()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3ID) > 0)
   {
     size_t id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3ID);
-    if (id < lights.size())
+    if (lights.find(id) != lights.end())
     {
       lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3MODE));
       lights[id]->saveState();
@@ -583,7 +583,7 @@ bool CHueServices::InitConnection()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4ID) > 0)
   {
     size_t id = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4ID);
-    if (id < lights.size())
+    if (lights.find(id) != lights.end())
     {
       lights[id]->setMode(CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4MODE));
       lights[id]->saveState();
