@@ -155,7 +155,6 @@ void CGUIWindowHome::OnDeinitWindow(int nextWindowID)
 {
   CJobManager::GetInstance().CancelJob(m_HomeShelfRunningId);
   m_HomeShelfRunningId = -1;
-  m_firstRun = true;
 
   CGUIWindow::OnDeinitWindow(nextWindowID);
 }
