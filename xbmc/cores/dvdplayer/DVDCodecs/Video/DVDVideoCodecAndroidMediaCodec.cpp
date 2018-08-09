@@ -172,6 +172,7 @@ private:
 CDVDMediaCodecInfo::CDVDMediaCodecInfo(
     ssize_t index
   , unsigned int texture
+  , int64_t timestamp
   , AMediaCodec* codec
   , std::shared_ptr<CJNISurfaceTexture> &surfacetexture
   , std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready
@@ -182,7 +183,7 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
 , m_isReleased(true)
 , m_index(index)
 , m_texture(texture)
-, m_timestamp(0)
+, m_timestamp(timestamp)
 , m_codec(codec)
 , m_surfacetexture(surfacetexture)
 , m_frameready(frameready)
@@ -210,7 +211,7 @@ long CDVDMediaCodecInfo::Release()
 {
   long count = --m_refs;
   if (count == 1)
-    ReleaseOutputBuffer(false);
+    ReleaseOutputBuffer(0);
   if (count == 0)
     delete this;
 
@@ -224,7 +225,7 @@ void CDVDMediaCodecInfo::Validate(bool state)
   m_valid = state;
 }
 
-void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
+void CDVDMediaCodecInfo::ReleaseOutputBuffer(int64_t timestamp)
 {
   CSingleLock lock(m_section);
 
@@ -234,17 +235,21 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
   // release OutputBuffer and render if indicated
   // then wait for rendered frame to become avaliable.
 
-  if (render)
+  if (timestamp)
     if (m_frameready)
       m_frameready->Reset();
 
-  media_status_t mstat = AMediaCodec_releaseOutputBuffer(m_codec, m_index, render);
+  media_status_t mstat;
+  if (timestamp)
+    mstat = AMediaCodec_releaseOutputBufferAtTime(m_codec, m_index, timestamp);
+  else
+    mstat = AMediaCodec_releaseOutputBuffer(m_codec, m_index, false);
   m_isReleased = true;
 
   if (mstat != AMEDIA_OK)
   {
     CLog::Log(LOGERROR, "CDVDMediaCodecInfo::ReleaseOutputBuffer "
-                        "error %d in render(%d)", mstat, render);
+                        "error %d in render(%lld)", mstat, timestamp);
   }
 }
 
@@ -1165,7 +1170,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       }
       if (i == m_inflight.size())
         m_inflight.push_back(
-          new CDVDMediaCodecInfo(index, m_textureId, m_codec, m_surfaceTexture, m_frameAvailable, m_jnivideoview)
+          new CDVDMediaCodecInfo(index, pts, m_textureId, m_codec, m_surfaceTexture, m_frameAvailable, m_jnivideoview)
         );
       m_videobuffer.mediacodec = m_inflight[i]->Retain();
       m_videobuffer.mediacodec->Validate(true);

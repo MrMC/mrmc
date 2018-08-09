@@ -150,7 +150,7 @@ CCriticalSection CXBMCApp::m_captureMutex;
 CCaptureEvent CXBMCApp::m_captureEvent;
 std::queue<CJNIImage> CXBMCApp::m_captureQueue;
 
-uint64_t CXBMCApp::m_vsynctime = 0;
+std::atomic<uint64_t> CXBMCApp::m_vsynctime;
 CEvent CXBMCApp::m_vsyncEvent;
 CJNIAudioDeviceInfos CXBMCApp::m_audiodevices;
 
@@ -1554,6 +1554,7 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
 void CXBMCApp::doFrame(int64_t frameTimeNanos)
 {
   m_vsynctime = frameTimeNanos;
+  //CLog::Log(LOGDEBUG, "vsync: %lld", frameTimeNanos);
   m_vsyncEvent.Set();
 }
 

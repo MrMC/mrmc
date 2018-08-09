@@ -34,6 +34,7 @@
 #include "utils/MathUtils.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -66,6 +67,7 @@ extern "C" {
 #endif
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/AndroidFeatures.h"
+#include "platform/android/activity/XBMCApp.h"
 #endif
 
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
@@ -133,6 +135,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_NumYV12Buffers = 0;
   m_iLastRenderBuffer = 0;
   m_bConfigured = false;
+  m_fps = 0;
   m_bValidated = false;
   m_bImageReady = false;
   m_StrictBinding = false;
@@ -196,6 +199,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   m_sourceHeight = height;
   m_renderOrientation = orientation;
   m_readyToRender = false;
+  m_lastVs = 0;
 
   // Save the flags.
   m_iFlags = flags;
@@ -224,6 +228,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   ManageDisplay();
 
   m_bConfigured = true;
+  m_fps = fps;
   m_bImageReady = false;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
@@ -636,7 +641,28 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
       }
 
       mci->RenderUpdate(srcRect, dstRect);
-      mci->ReleaseOutputBuffer(m_readyToRender);
+      if (!m_readyToRender || !m_fps)
+        mci->ReleaseOutputBuffer(0);
+      else
+      {
+        bool adjusted = false;
+        uint64_t cs = CurrentHostCounter();
+        uint64_t vs = CXBMCApp::GetVsyncTime();
+        double frameTime = (1.0 / m_fps) * CurrentHostFrequency();
+        int64_t ts = vs + (frameTime * 1.5);
+        if (m_lastVs)
+        {
+          if (vs - m_lastVs > frameTime * 1.1)  // missed vsync
+          {
+            adjusted = true;
+            ts -= frameTime / 2;
+          }
+        }
+        //CLog::Log(LOGDEBUG, "ReleaseOutputBuffer: cur:%lld; vsync: %lld; target: %lld; adj: %s; diff: %lld", cs, vs, ts, adjusted ? "true" : "false", ts - m_lastTs);
+        mci->ReleaseOutputBuffer(ts);
+        m_lastVs = vs;
+        m_lastTs = ts;
+      }
     }
   }
 #endif
@@ -658,6 +684,7 @@ unsigned int CLinuxRendererGLES::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
+  m_fps = 0;
   m_bValidated = false;
 
 #ifdef TARGET_DARWIN
@@ -980,6 +1007,7 @@ void CLinuxRendererGLES::UnInit()
   m_bValidated = false;
   m_bImageReady = false;
   m_bConfigured = false;
+  m_fps = 0;
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;
   m_RenderFeaturesCallBackFn = NULL;
@@ -2906,7 +2934,7 @@ void CLinuxRendererGLES::AddProcessor(CDVDMediaCodecInfo *mediacodec, int index)
       // releaseOutputBuffer must be in same thread as
       // dequeueOutputBuffer. We are in DVDPlayerVideo
       // thread here, so we are safe.
-      buf.mediacodec->ReleaseOutputBuffer(m_readyToRender);
+      buf.mediacodec->ReleaseOutputBuffer(m_readyToRender ? 1 : 0);
     }
   }
 

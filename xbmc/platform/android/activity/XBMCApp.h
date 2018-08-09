@@ -274,7 +274,7 @@ private:
   static ANativeWindow* m_window;
   static CJNIAudioDeviceInfos m_audiodevices;
 
-  static uint64_t m_vsynctime;
+  static std::atomic<uint64_t> m_vsynctime;
   static CEvent m_vsyncEvent;
 
   void XBMC_DestroyDisplay();

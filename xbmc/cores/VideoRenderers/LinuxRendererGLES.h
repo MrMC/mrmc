@@ -234,6 +234,7 @@ protected:
   int m_iLastRenderBuffer;
 
   bool m_bConfigured;
+  float m_fps;
   bool m_bValidated;
   std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
@@ -244,6 +245,8 @@ protected:
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;
   bool m_readyToRender;
+  int64_t m_lastVs;
+  int64_t m_lastTs;
 
   // Raw data used by renderer
   int m_currentField;

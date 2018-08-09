@@ -57,6 +57,7 @@ class CDVDMediaCodecInfo
 public:
   CDVDMediaCodecInfo( ssize_t index,
                       unsigned int texture,
+                      int64_t timestamp,
                       AMediaCodec* codec,
                       std::shared_ptr<CJNISurfaceTexture> &surfacetexture,
                       std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready,
@@ -69,7 +70,7 @@ public:
   // meat and potatos
   void                Validate(bool state);
   // MediaCodec related
-  void                ReleaseOutputBuffer(bool render);
+  void                ReleaseOutputBuffer(int64_t timestamp);
   // SurfaceTexture released
   ssize_t             GetIndex() const;
   int                 GetTextureID() const;
