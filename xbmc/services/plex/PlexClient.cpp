@@ -94,7 +94,7 @@ bool CPlexClient::Init(std::string data, std::string ip)
   url.SetHostName(ip);
   url.SetPort(port);
   url.SetProtocol(m_protocol);
-  if (CPlexUtils::GetIdentity(url, 2))
+  if (CPlexUtils::GetIdentity(url, 4))
     m_url = url.Get();
 
   return !m_url.empty();
@@ -120,7 +120,7 @@ bool CPlexClient::Init(const PlexServerInfo &serverInfo)
     {
       CURL url(connection.uri);
       url.SetProtocolOption("X-Plex-Token", m_accessToken);
-      int timeout = connection.external ? 5 : 1;
+      int timeout = connection.external ? 7 : 3;
       if (CPlexUtils::GetIdentity(url, timeout))
       {
         CLog::Log(LOGDEBUG, "CPlexClient::Init "
