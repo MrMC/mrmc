@@ -1975,7 +1975,7 @@ bool CPlexUtils::ParsePlexArtistsAlbum(CFileItemList &items, const CURL &url, co
   bool rtn = false;
   if (directory.isNull())
   {
-    CLog::Log(LOGERROR, "CPlexUtils::ParsePlexArtistsAlbum invalid response from %s", url.GetRedacted().c_str());
+    CLog::Log(LOGERROR, "CPlexUtils::ParsePlexArtistsAlbum directory is null %s", url.GetRedacted().c_str());
     return rtn;
   }
 
