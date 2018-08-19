@@ -31,6 +31,7 @@
 
 #include <cassert>
 
+CCriticalSection CImageLoader::m_transcodeSection;
 CImageLoader::CImageLoader(const std::string &path, const bool useCache):
   m_path(path)
 {
@@ -45,15 +46,17 @@ CImageLoader::~CImageLoader()
 
 bool CImageLoader::DoWork()
 {
-  bool needsChecking = false;
-  std::string loadPath;
+  if (WasLoaderCancelled())
+    return false;
 
   std::string texturePath = g_TextureManager.GetTexturePath(m_path);
   if (texturePath.empty())
     return false;
 
+  std::string loadPath;
+  bool needsRecaching = false;
   if (m_use_cache)
-    loadPath = CTextureCache::GetInstance().CheckCachedImage(texturePath, needsChecking);
+    loadPath = CTextureCache::GetInstance().CheckCachedImage(texturePath, needsRecaching);
   else
     loadPath = texturePath;
 
@@ -68,9 +71,12 @@ bool CImageLoader::DoWork()
 
     if (m_texture)
     {
-      if (needsChecking)
+      if (needsRecaching)
+      {
+        if (WasLoaderCancelled())
+          return false;
         CTextureCache::GetInstance().BackgroundCacheImage(texturePath);
-
+      }
       return true;
     }
 
@@ -78,13 +84,37 @@ bool CImageLoader::DoWork()
     CLog::Log(LOGERROR, "%s - Direct texture file loading failed for %s", __FUNCTION__, loadPath.c_str());
   }
 
-  if (!m_use_cache)
+  if (!m_use_cache || WasLoaderCancelled())
     return false; // We're done
 
-  // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
-  CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
+  // not in our texture cache or it failed to load from it,
+  // so try and load directly and then cache the result
+  if (texturePath.find("transcode") != std::string::npos)
+  {
+    // plex photo transcoder is not serialized and will fail
+    // if two fetches happen close in time. CGUILargeTextureManager
+    // just cannot handle failures very well and needs a reafactor.
+    CSingleLock lock(m_transcodeSection);
+    CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
+  }
+  else
+  {
+    CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
+  }
+
   return (m_texture != NULL);
 }
+
+bool CImageLoader::WasLoaderCancelled()
+{
+  // silly but we need to check if job was cancelled.
+  // the only way to do this is directly check if
+  // job callback will nulled by JobMananger in response
+  // to someone calling CancelJob.
+  return ShouldCancel(0, 0);
+}
+
+
 
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path):
   m_path(path)

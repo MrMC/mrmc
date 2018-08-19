@@ -45,9 +45,13 @@ public:
    */
   virtual bool DoWork();
 
-  bool          m_use_cache; ///< Whether or not to use any caching with this image
-  std::string    m_path; ///< path of image to load
   CBaseTexture *m_texture; ///< Texture object to load the image into \sa CBaseTexture.
+private:
+  bool  WasLoaderCancelled();
+
+  bool m_use_cache; ///< Whether or not to use any caching with this image
+  std::string m_path; ///< path of image to load
+  static CCriticalSection m_transcodeSection;
 };
 
 /*!
