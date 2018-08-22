@@ -252,7 +252,21 @@ bool CTextureCache::ClearCachedTexture(int id, std::string &cachedURL)
 
 std::string CTextureCache::GetCacheFile(const std::string &url)
 {
-  uint32_t crc = Crc32::ComputeFromLowerCase(url);
+  std::string cleanUrl(url);
+  // do not include access tokens as they can change
+  if (cleanUrl.find("X-Plex-Token") != std::string::npos)
+  {
+    CURL curl(cleanUrl);
+    curl.RemoveProtocolOption("X-Plex-Token");
+    cleanUrl = curl.Get();
+  }
+  else if (cleanUrl.find("X-MediaBrowser-Token") != std::string::npos)
+  {
+    CURL curl(cleanUrl);
+    curl.RemoveProtocolOption("X-MediaBrowser-Token");
+    cleanUrl = curl.Get();
+  }
+  uint32_t crc = Crc32::ComputeFromLowerCase(cleanUrl);
   std::string hex = StringUtils::Format("%08x", crc);
   std::string hash = StringUtils::Format("%c/%s", hex[0], hex.c_str());
   return hash;
