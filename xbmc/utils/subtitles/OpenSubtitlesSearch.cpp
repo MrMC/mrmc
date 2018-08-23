@@ -151,7 +151,7 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     // convert from English to eng
     for(std::vector<std::string>::iterator it = languages.begin(); it != languages.end(); ++it)
     {
-      g_LangCodeExpander.ConvertToISO6392T((*it).c_str(),lg);
+      g_LangCodeExpander.ConvertToISO6392B((*it).c_str(),lg);
       languages3.push_back(lg);
     }
     
