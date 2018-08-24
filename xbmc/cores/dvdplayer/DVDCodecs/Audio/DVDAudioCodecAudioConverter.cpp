@@ -43,7 +43,7 @@ enum DDLayout {
   DDLayout_2_1  = 11,
   DDLayout_3_0  = 7,
   DDLayout_3_1  = 15,
-  DDLayout_5_0  = 55,
+  DDLayout_5_0a = 55,
   DDLayout_5_0b = 1543,
   DDLayout_5_1a = 63,
   DDLayout_5_1b = 1551,
@@ -57,7 +57,7 @@ enum DDIndex {
   DDIndex_2_1  = 2,
   DDIndex_3_0  = 3,
   DDIndex_3_1  = 4,
-  DDIndex_5_0  = 5,
+  DDIndex_5_0a = 5,
   DDIndex_5_0b = 6,
   DDIndex_5_1a = 7,
   DDIndex_5_1b = 8,
@@ -308,11 +308,11 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
     case DDLayout_3_1:
       index = DDIndex_3_1;
       break;
-    case DDLayout_5_0:
-      index = DDIndex_5_0;
+    case DDLayout_5_0a:
+      index = DDIndex_5_0a;
       break;
     case DDLayout_5_0b:
-      index = DDIndex_5_0;
+      index = DDIndex_5_0b;
       break;
     case DDLayout_5_1a:
       index = DDIndex_5_1a;
