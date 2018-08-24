@@ -44,6 +44,7 @@ enum DDLayout {
   DDLayout_3_0  = 7,
   DDLayout_3_1  = 15,
   DDLayout_5_0  = 55,
+  DDLayout_5_0b = 1543,
   DDLayout_5_1a = 63,
   DDLayout_5_1b = 1551,
   DDLayout_7_0  = 1591,
@@ -57,19 +58,21 @@ enum DDIndex {
   DDIndex_3_0  = 3,
   DDIndex_3_1  = 4,
   DDIndex_5_0  = 5,
-  DDIndex_5_1a = 6,
-  DDIndex_5_1b = 6,
-  DDIndex_7_0  = 7,
-  DDIndex_7_1  = 8,
+  DDIndex_5_0b = 6,
+  DDIndex_5_1a = 7,
+  DDIndex_5_1b = 8,
+  DDIndex_7_0  = 9,
+  DDIndex_7_1  = 10,
 };
 
-static const AEChannel DolbyChannels[10][9] = {
+static const AEChannel DolbyChannels[11][9] = {
 { AE_CH_FC , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FR , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_LFE, AE_CH_NULL },
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_NULL},
+{ AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_NULL},
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_LFE, AE_CH_NULL},
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL},
 { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_NULL},
@@ -306,6 +309,9 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
       index = DDIndex_3_1;
       break;
     case DDLayout_5_0:
+      index = DDIndex_5_0;
+      break;
+    case DDLayout_5_0b:
       index = DDIndex_5_0;
       break;
     case DDLayout_5_1a:
