@@ -723,6 +723,12 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
       channel_index = CAChannel_PCM_DD5_1;
     }
     else
+    if (format.m_channelLayout.Count() == 5)
+    {
+      // if 5, then audio is set to Digial Dolby 5.0, need to use DD mapping
+      channel_index = CAChannel_PCM_DD5_1;
+    }
+    else
 #endif
     {
       if (format.m_channelLayout.Count() > 6)
