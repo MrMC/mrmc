@@ -7352,7 +7352,15 @@ std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
       else
         sql += PrepareSQL("WHERE strPath LIKE '%s%%'", strPath.c_str());
 
-      m_pDS->query( sql );
+      try
+      {
+        m_pDS->query( sql );
+      }
+      catch (...)
+      {
+        CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, sql.c_str());
+        return "";
+      }
       if (m_pDS->num_rows() && m_pDS->fv(0).get_asInt() > 0)
         return "episodes";
       return foundDirectly ? "tvshows" : "seasons";
