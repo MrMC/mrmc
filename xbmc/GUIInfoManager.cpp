@@ -1654,7 +1654,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PLAYER_FILEPATH:
     if (m_currentFile)
     {
-      if (m_currentFile->HasMusicInfoTag())
+      if (m_currentFile->HasProperty("PlexItem"))
+        strLabel = m_currentFile->GetMediaServiceFile();
+      else if (m_currentFile->HasMusicInfoTag())
         strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
       else if (m_currentFile->HasVideoInfoTag())
         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
