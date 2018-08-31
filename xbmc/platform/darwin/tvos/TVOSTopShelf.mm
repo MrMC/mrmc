@@ -122,6 +122,15 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& moviesRA, CFileItemList& tvR
       
       // srcPath == full path to the thumb
       std::string srcPath = item->GetArt("thumb");
+      CURL thumbCurl(srcPath);
+      if (thumbCurl.HasProtocolOption("X-Plex-Token"))
+      {
+        std::string strToken = thumbCurl.GetProtocolOption("X-Plex-Token");
+        thumbCurl.RemoveProtocolOption("X-Plex-Token");
+        thumbCurl.SetOption("X-Plex-Token", strToken);
+        srcPath = thumbCurl.Get();
+      }
+
       // make the destfilename different for distinguish files with the same name
       std::string fileName;
       if(item->IsMediaServiceBased())
@@ -170,7 +179,11 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& moviesRA, CFileItemList& tvR
       if (item->IsMediaServiceBased())
       {
         seasonThumb = item->GetArt("tvshow.poster");
-        fileName = URIUtils::GetFileName(seasonThumb);
+        CURL curl(seasonThumb);
+        if (curl.HasOption("url"))
+          fileName = URIUtils::GetFileName(curl.GetOption("url"));
+        else
+          fileName = URIUtils::GetFileName(seasonThumb);
       }
       else
       {
@@ -222,6 +235,14 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& moviesRA, CFileItemList& tvR
       
       // srcPath == full path to the thumb
       std::string srcPath = item->GetArt("thumb");
+      CURL thumbCurl(srcPath);
+      if (thumbCurl.HasProtocolOption("X-Plex-Token"))
+      {
+        std::string strToken = thumbCurl.GetProtocolOption("X-Plex-Token");
+        thumbCurl.RemoveProtocolOption("X-Plex-Token");
+        thumbCurl.SetOption("X-Plex-Token", strToken);
+        srcPath = thumbCurl.Get();
+      }
       // make the destfilename different for distinguish files with the same name
       std::string fileName;
       if(item->IsMediaServiceBased())
@@ -270,7 +291,11 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& moviesRA, CFileItemList& tvR
       if (item->IsMediaServiceBased())
       {
         seasonThumb = item->GetArt("tvshow.poster");
-        fileName = URIUtils::GetFileName(seasonThumb);
+        CURL curl(seasonThumb);
+        if (curl.HasOption("url"))
+          fileName = URIUtils::GetFileName(curl.GetOption("url"));
+        else
+          fileName = URIUtils::GetFileName(seasonThumb);
       }
       else
       {
