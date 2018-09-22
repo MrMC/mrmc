@@ -1,3 +1,9 @@
+[B]2.0.13[/B]
+- Fixed: Character encoding fixes (part 2)
+
+[B]2.0.12[/B]
+- Fixed: Character encoding fixes
+
 [B]2.0.11[/B]
 - Fixed: Episode List changes
 

@@ -1,3 +1,24 @@
+[B]1.3.15[/B]
+- Fixed: Show overview
+
+[B]1.3.14[/B]
+- Scraping now is really fixed after API layout changes
+
+[B]1.3.13[/B]
+- Fixed scraping after API layout changes
+
+[B]1.3.12[/B]
+- use https to access thetvdb.com
+
+[B]1.3.11[/B]
+- fixed: scraping episodes with no air date
+
+[B]1.3.9[/B]
+- fixed: typo causing season swapped with episode numbers (thanks tdf1970)
+
+[B]1.3.8[/B]
+- added: some missing languages
+
 [B]1.3.4[/B]
 - Really fixed after API layout changes
 

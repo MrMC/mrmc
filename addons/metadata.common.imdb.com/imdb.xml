@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <scraperfunctions>
 	<GetIMDBGenresById dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBGenres&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
@@ -7,8 +7,11 @@
 	</GetIMDBGenresById>
 	<ParseIMDBGenres dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
-				<expression repeat="yes">tt_stry_gnr&quot;\s>\s([^&lt;]+)</expression>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">"genre":\s\[(.*?)\]</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
+				<expression repeat="yes">&quot;([^&quot;]+)&quot;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -21,8 +24,8 @@
 	</GetIMDBRatingById>
 	<ParseIMDBRating dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
-				<expression>&lt;span\sitemprop=&quot;ratingValue&quot;&gt;([0-9.]+).*?ratingCount&quot;&gt;([0-9,]+)&lt;</expression>
+			<RegExp input="$$1" output="&lt;rating&gt;\2&lt;/rating&gt;&lt;votes&gt;\1&lt;/votes&gt;" dest="2">
+				<expression>&quot;ratingCount&quot;:\s([0-9,]+),\s*&quot;bestRating&quot;:\s&quot;[^&quot;]*&quot;,\s*&quot;worstRating&quot;:\s&quot;[^&quot;]*&quot;,\s*&quot;ratingValue&quot;:\s&quot;([0-9.]+)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -38,8 +41,8 @@
 	</GetIMDBRatingsById>
 	<ParseIMDBRatings dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;ratings&gt;&lt;rating name=&quot;imdb&quot; $$3&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
-				<expression>&lt;span\sitemprop=&quot;ratingValue&quot;&gt;([0-9.]+).*?ratingCount&quot;&gt;([0-9,]+)&lt;</expression>
+			<RegExp input="$$1" output="&lt;ratings&gt;&lt;rating name=&quot;imdb&quot; $$3&gt;&lt;value&gt;\2&lt;/value&gt;&lt;votes&gt;\1&lt;/votes&gt;&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
+				<expression>&quot;ratingCount&quot;:\s([0-9,]+),\s*&quot;bestRating&quot;:\s&quot;[^&quot;]*&quot;,\s*&quot;worstRating&quot;:\s&quot;[^&quot;]*&quot;,\s*&quot;ratingValue&quot;:\s&quot;([0-9.]+)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -67,7 +70,7 @@
 	<ParseIMDBStudio dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="2">
-				<expression>&quot;/company/[^&gt;]+&gt;[^&lt;]*&lt;[^&gt;]*&gt;([^&lt;]+)&lt;/span&gt;</expression>
+				<expression>&quot;/company/[^&quot;]+&quot;\s*&gt;([^&lt;]+)&lt;/a&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -84,7 +87,7 @@
 				<expression clear="yes" noclean="1">Country:[^&gt;]+&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;country&gt;\1&lt;/country&gt;" dest="2">
-				<expression repeat="yes">itemprop='url'&gt;([^&lt;]+)</expression>
+				<expression repeat="yes">&gt;([^&lt;]+)&lt;/a&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -98,13 +101,13 @@
 	<ParseMetaCriticRating dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">(&lt;div class=&quot;metascore_block&quot;.*)</expression>
+				<expression clear="yes" noclean="1">&lt;div\sclass=&quot;metascore_block&quot;(.*?)Metacritic.com&lt;/a&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;rating max=&quot;100&quot;&gt;\1&lt;/value&gt;" dest="2">
-				<expression clear="yes">&lt;span itemprop=&quot;ratingValue&quot;&gt;(\d+)&lt;/span&gt;</expression>
+				<expression clear="yes">&lt;span\sitemprop=&quot;ratingValue&quot;&gt;(\d+)&lt;/span&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="2+">
-				<expression>&lt;span itemprop=&quot;ratingCount&quot;&gt;(\d+)&lt;/span&gt;</expression>
+				<expression>&lt;span\sitemprop=&quot;ratingCount&quot;&gt;(\d+)&lt;/span&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -122,13 +125,13 @@
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$4" output="&lt;ratings&gt;&lt;rating name=&quot;metacritic&quot; max=&quot;100&quot; $$3&gt;\1&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
 				<RegExp input="$$1" output="\1" dest="6">
-					<expression clear="yes" noclean="1">(&lt;div class=&quot;metascore_block&quot;.*)</expression>
+					<expression clear="yes" noclean="1">&lt;div\sclass=&quot;metascore_block&quot;(.*?)Metacritic.com&lt;/a&gt;</expression>
 				</RegExp>
 				<RegExp input="$$6" output="&lt;value&gt;\1&lt;/value&gt;" dest="4">
-					<expression clear="yes">&lt;span itemprop=&quot;ratingValue&quot;&gt;(\d+)&lt;/span&gt;</expression>
+					<expression clear="yes">&lt;span\sitemprop=&quot;ratingValue&quot;&gt;(\d+)&lt;/span&gt;</expression>
 				</RegExp>
 				<RegExp input="$$6" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="4+">
-					<expression>&lt;span itemprop=&quot;ratingCount&quot;&gt;(\d+)&lt;/span&gt;</expression>
+					<expression>&lt;span\sitemprop=&quot;ratingCount&quot;&gt;(\d+)&lt;/span&gt;</expression>
 				</RegExp>
 				<expression noclean="1" clear="yes"/>
 			</RegExp>
@@ -144,7 +147,7 @@
 	<ParseIMDBPlot dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
-				<expression fixchars="1" trim="1">&lt;h2&gt;Storyline&lt;/h2&gt;\s+&lt;div\sclass=&quot;inline\scanwrap&quot;\sitemprop=&quot;description&quot;&gt;\s+&lt;p&gt;(.*?)&lt;[^a/]</expression>
+				<expression fixchars="1" trim="1">&lt;h2&gt;Storyline&lt;/h2&gt;\s+&lt;div\sclass=&quot;inline\scanwrap&quot;&gt;\s+&lt;p&gt;\s+&lt;span&gt;(.*?)&lt;/span&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -172,13 +175,13 @@
 	<ParseIMDBOutline dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2">
-				<expression fixchars="1" trim="1">itemprop=&quot;description&quot;&gt;(.+?)&lt;div\sclass</expression>
+				<expression fixchars="1" trim="1">&lt;div class=&quot;summary_text&quot;&gt;(.+?)&lt;div\sclass</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2">
-				<expression fixchars="1" trim="1">itemprop=&quot;description&quot;&gt;(.+?)&lt;a\shref=&quot;/title/[^/]*/plotsummary[^&quot;]*&quot;\s*&gt;See</expression>
+				<expression fixchars="1" trim="1">&lt;div class=&quot;summary_text&quot;&gt;(.+?)&lt;a\shref=&quot;(.+?)=tt_ov_pl&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2">
-				<expression fixchars="1" trim="1">itemprop=&quot;description&quot;&gt;(.+?)&lt;a\shref=&quot;[^&quot;]*&quot;\s*&gt;Add\sa\sPlot</expression>
+				<expression fixchars="1" trim="1">&lt;div class=&quot;summary_text&quot;&gt;(.+?)&lt;a\shref=&quot;[^&quot;]*&quot;\s*&gt;Add\sa\sPlot</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -191,8 +194,14 @@
 	</GetIMDBOutlineToPlotById>
 	<ParseIMDBOutlineToPlot dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
-				<expression fixchars="1" trim="1">itemprop=&quot;description&quot;&gt;([^&lt;]+)&lt;</expression>
+			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2">
+				<expression fixchars="1" trim="1">&lt;div class=&quot;summary_text&quot;&gt;(.+?)&lt;div\sclass</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2">
+				<expression fixchars="1" trim="1">&lt;div class=&quot;summary_text&quot;&gt;(.+?)&lt;a\shref=&quot;(.+?)=tt_ov_pl&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2">
+				<expression fixchars="1" trim="1">&lt;div class=&quot;summary_text&quot;&gt;(.+?)&lt;a\shref=&quot;[^&quot;]*&quot;\s*&gt;Add\sa\sPlot</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -209,10 +218,10 @@
 				<expression noclean="1">&lt;table\sclass=&quot;cast_list&quot;&gt;(.*?)&lt;/table&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\2\3SX1024_SY1024_.jpg&lt;/thumb&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;img[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:[^&quot;]*\.[^&quot;]*&quot;\sclass=&quot;loadlate\shidden\s&quot;\sloadlate=&quot;([^&quot;]*)(_V..?_))[^&gt;]*.*?ter&quot;&gt;[^&gt;]*&gt;\n\s*(&lt;[^&gt;]*&gt;)?([^&lt;\(]*)?</expression>
+				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;img[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:[^&quot;]*\.[^&quot;]*&quot;\sclass=&quot;loadlate\shidden\s&quot;\sloadlate=&quot;([^&quot;]*)(_V..?_))[^&gt;]*.*?ter&quot;&gt;[^&gt;]*&gt;(&lt;[^&gt;]*&gt;)?([^&lt;\(]*)?</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;&lt;/thumb&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="7+">
-				<expression repeat="yes" trim="1,2,3" fixchars="3" noclean="1,2">&lt;img[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:[^&quot;]*\.[^&quot;]*\.png)&quot;\sclass=&quot;.*?&quot;\s/&gt;*.*?ter&quot;&gt;[^&gt;]*&gt;\n\s*(&lt;[^&gt;]*&gt;)?([^&lt;\(]*)?</expression>
+				<expression repeat="yes" trim="1,2,3" fixchars="3" noclean="1,2">&lt;img[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:[^&quot;]*\.[^&quot;]*\.png)&quot;\sclass=&quot;.*?&quot;\s/&gt;*.*?ter&quot;&gt;[^&gt;]*&gt;(&lt;[^&gt;]*&gt;)?([^&lt;\(]*)?</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
 				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)?&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
@@ -232,7 +241,7 @@
 				<expression clear="yes" noclean="1">Director(?:s)?:.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2">
-				<expression repeat="yes" fixchars="1" clear="yes">href=&quot;/name[^&gt;]*&gt;[^&lt;]*&lt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes" fixchars="yes" clear="yes">href=&quot;/name[^&gt;]*&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -249,7 +258,7 @@
 				<expression clear="yes" noclean="1">Writer(?:s)?:.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2">
-				<expression repeat="yes" fixchars="1" clear="yes">href=&quot;/name[^&gt;]*&gt;[^&lt;]*&lt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes" fixchars="yes" clear="yes">href=&quot;/name[^&gt;]*&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -405,7 +414,7 @@
 					<expression>(.+)</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="11">
-					<expression clear="yes">&lt;td&gt;World-wide\s\(English[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+					<expression clear="yes">&lt;td&gt;World-wide\s\(English\stitle\)&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 				</RegExp>
 				<RegExp input="$$11" output="\1" dest="10">
 					<expression>(.+)</expression>
