@@ -256,7 +256,11 @@ bool CTextureDatabase::GetCachedTexture(const std::string &url, CTextureDetails 
   std::string textureUrl = url;
   CURL curl(url);
   if (curl.HasOption("url"))
+  {
     textureUrl = curl.GetOption("url");
+    if (curl.HasOption("blur"))
+      textureUrl = textureUrl + "?blur=" + curl.GetOption("url");
+  }
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -362,7 +366,11 @@ bool CTextureDatabase::SetCachedTextureValid(const std::string &url, bool update
   std::string textureUrl = url;
   CURL curl(url);
   if (curl.HasOption("url"))
+  {
     textureUrl = curl.GetOption("url");
+    if (curl.HasOption("blur"))
+      textureUrl = textureUrl + "?blur=" + curl.GetOption("url");
+  }
   std::string date = updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
   std::string sql = PrepareSQL("UPDATE texture SET lasthashcheck='%s' WHERE url='%s'", date.c_str(), textureUrl.c_str());
   return ExecuteQuery(sql);
@@ -373,8 +381,11 @@ bool CTextureDatabase::AddCachedTexture(const std::string &url, const CTextureDe
   std::string textureUrl = url;
   CURL curl(url);
   if (curl.HasOption("url"))
+  {
     textureUrl = curl.GetOption("url");
-  
+    if (curl.HasOption("blur"))
+      textureUrl = textureUrl + "?blur=" + curl.GetOption("url");
+  }
   try
   {
     if (NULL == m_pDB.get()) return false;
