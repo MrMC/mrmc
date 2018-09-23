@@ -107,13 +107,24 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
       CURL origUrl(finalFileitem.GetURL());
       XFILE::CCurlFile curlFile;
       // try opening the url to resolve all redirects if any
-      if (curlFile.Open(finalFileitem.GetURL()))
+      try
       {
-        CURL finalUrl(curlFile.GetURL());
-        finalUrl.SetProtocolOptions(origUrl.GetProtocolOptions());
-        finalUrl.SetUserName(origUrl.GetUserName());
-        finalUrl.SetPassword(origUrl.GetPassWord());
-        finalFileitem.SetPath(finalUrl.Get());
+        if (curlFile.Open(finalFileitem.GetURL()))
+        {
+          CURL finalUrl(curlFile.GetURL());
+          finalUrl.SetProtocolOptions(origUrl.GetProtocolOptions());
+          finalUrl.SetUserName(origUrl.GetUserName());
+          finalUrl.SetPassword(origUrl.GetPassWord());
+          finalFileitem.SetPath(finalUrl.Get());
+        }
+      }
+      catch (XFILE::CRedirectException *pRedirectEx)
+      {
+        if (pRedirectEx)
+        {
+          delete pRedirectEx->m_pNewFileImp;
+          delete pRedirectEx;
+        }
       }
       curlFile.Close();
     }
