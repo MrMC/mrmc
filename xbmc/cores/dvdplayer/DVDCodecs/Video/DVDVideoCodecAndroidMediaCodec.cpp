@@ -387,6 +387,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_drop = false;
   m_codecControlFlags = 0;
   m_hints = hints;
+  int profile(0);
 
   switch(m_hints.codec)
   {
@@ -412,6 +413,22 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_formatname = "amc-vp8";
       break;
     case AV_CODEC_ID_VP9:
+      switch(hints.profile)
+      {
+        case FF_PROFILE_VP9_0:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile0;
+          break;
+        case FF_PROFILE_VP9_1:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile1;
+          break;
+        case FF_PROFILE_VP9_2:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile2;
+          break;
+        case FF_PROFILE_VP9_3:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile3;
+          break;
+        default:;
+      }
       m_mime = "video/x-vnd.on2.vp9";
       m_formatname = "amc-vp9";
       break;
@@ -421,6 +438,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       switch(hints.profile)
       {
         case FF_PROFILE_H264_HIGH_10:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh10;
+          break;
         case FF_PROFILE_H264_HIGH_10_INTRA:
           // No known h/w decoder supporting Hi10P
           CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - no known h/w decoder supports Hi10P");
@@ -565,16 +584,24 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       CLog::Log(LOGDEBUG, "----  MediaCodec: %s -----------", codec_info.getName().c_str());
 
     std::vector<int> color_formats;
-    if (m_render_sw)
+    CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
+    if (xbmc_jnienv()->ExceptionCheck())
     {
-      CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
-      if (xbmc_jnienv()->ExceptionCheck())
+      // Unsupported type?
+      xbmc_jnienv()->ExceptionClear();
+      continue;
+    }
+    color_formats = codec_caps.colorFormats();
+
+    if (profile)
+    {
+      std::vector<CJNIMediaCodecInfoCodecProfileLevel> profileLevels = codec_caps.profileLevels();
+      if (std::find_if(profileLevels.cbegin(), profileLevels.cend(),
+        [&](const CJNIMediaCodecInfoCodecProfileLevel profileLevel){ return profileLevel.profile() == profile; }) == profileLevels.cend())
       {
-        // Unsupported type?
-        xbmc_jnienv()->ExceptionClear();
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: %d", profile);
         continue;
       }
-      color_formats = codec_caps.colorFormats();
     }
 
     std::vector<std::string> types = codec_info.getSupportedTypes();
