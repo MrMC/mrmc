@@ -375,6 +375,12 @@ void CEmbyServices::InitiateSignIn()
     m_accessToken.clear();
     CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_EMBYSIGNINPIN, strSignIn);
     CLog::Log(LOGDEBUG, "CEmbyServices:OnSettingAction sign-out ok");
+    std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
+    if (serverType == "emby")
+    {
+      CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"");
+      CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+    }
   }
   SetUserSettings();
   
@@ -811,6 +817,9 @@ bool CEmbyServices::PostSignInPinCode()
   }
   if (!rtn)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Emby Services", strMessage, 3000, true);
+  else
+    // Emby signed in, save server type for home selection
+    CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"emby");
   return rtn;
 }
 
@@ -1009,6 +1018,15 @@ CEmbyClientPtr CEmbyServices::GetClient(std::string uuid)
   }
 
   return nullptr;
+}
+
+CEmbyClientPtr CEmbyServices::GetFirstClient()
+{
+  CSingleLock lock(m_clients_lock);
+  if (m_clients.size() > 0)
+    return m_clients[0];
+  else
+    return nullptr;
 }
 
 bool CEmbyServices::ClientIsLocal(std::string path)

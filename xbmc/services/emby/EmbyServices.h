@@ -60,6 +60,7 @@ public:
   void GetClients(std::vector<CEmbyClientPtr> &clients) const;
   int GetNumberOfClients() {return m_clients.size();};
   CEmbyClientPtr GetClient(std::string uuid);
+  CEmbyClientPtr GetFirstClient();
   CEmbyClientPtr FindClient(const std::string &path);
   CEmbyClientPtr FindClient(const CEmbyClient *client);
   bool ClientIsLocal(std::string path);

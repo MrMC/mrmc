@@ -61,6 +61,7 @@ public:
   int GetNumberOfClients() {return m_clients.size();};
   CPlexClientPtr FindClient(const std::string &path);
   CPlexClientPtr GetClient(std::string uuid);
+  CPlexClientPtr GetFirstClient();
   bool ClientIsLocal(std::string path);
   void InitiateSignIn();
   std::string PickHomeUser();

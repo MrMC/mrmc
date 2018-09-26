@@ -710,6 +710,13 @@ void CGUIWindowHome::SetupServices()
     if (CPlexServices::GetInstance().HasClients())
     {
       CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(serverUUID);
+      if (plexClient == nullptr)
+      {
+        // this is only triggered when we first sign in plex as the server has not been selected yet, we pick the first one
+        plexClient = CPlexServices::GetInstance().GetFirstClient();
+        if (plexClient)
+          CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,plexClient->GetUuid());
+      }
       if (plexClient)
       {
         AddPlexSection(plexClient);
@@ -727,6 +734,13 @@ void CGUIWindowHome::SetupServices()
     if (CEmbyServices::GetInstance().HasClients())
     {
       CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(serverUUID);
+      if (embyClient == nullptr)
+      {
+        // this is only triggered when we first sign in emby as the server has not been selected yet, we pick the first one
+        embyClient = CEmbyServices::GetInstance().GetFirstClient();
+        if (embyClient)
+          CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,embyClient->GetUuid());
+      }
       if (embyClient)
       {
         AddEmbySection(embyClient);

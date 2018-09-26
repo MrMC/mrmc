@@ -258,6 +258,12 @@ void CPlexServices::OnSettingAction(const CSetting *setting)
       CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, "");
       CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB, "");
       CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction sign-out ok");
+      std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
+      if (serverType == "plex")
+      {
+        CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"");
+        CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+      }
     }
     SetUserSettings();
 
@@ -975,6 +981,15 @@ CPlexClientPtr CPlexServices::GetClient(std::string uuid)
   return nullptr;
 }
 
+CPlexClientPtr CPlexServices::GetFirstClient()
+{
+  CSingleLock lock(m_criticalClients);
+  if (m_clients.size() > 0)
+    return m_clients[0];
+  else
+    return nullptr;
+}
+
 bool CPlexServices::ClientIsLocal(std::string path)
 {
   CSingleLock lock(m_criticalClients);
@@ -1097,6 +1112,8 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
         // if we only have one user show the name of it
         const TiXmlElement* UserNode = MediaContainer->FirstChildElement("User");
         homeUserName = XMLUtils::GetAttribute(UserNode, "title");
+        // plex service is enabled and home user has been selected,save server type for home selection
+        CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"plex");
         return true;
       }
       else if (atoi(users.c_str()) > 1)
@@ -1189,6 +1206,9 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
 
   if (!rtn)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Plex Services", strMessage, 3000, true);
+  else
+    // plex service is enabled and home user has been selected,save server type for home selection
+    CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"plex");
   return rtn;
 }
 
