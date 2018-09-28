@@ -779,14 +779,14 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
   {
     std::string resumeString = GetResumeString(item);
     if (!resumeString.empty())
-    { // prompt user whether they wish to resume
+    {
       CContextButtons choices;
-      choices.Add(1, resumeString);
-      choices.Add(2, 12021); // start from the beginning
-      int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-      if (retVal < 0)
-        return false; // don't do anything
-      if (retVal == 1)
+      choices.Add(SELECT_ACTION_RESUME, resumeString);
+      choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+      int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+      if (value < 0)
+        return false;
+      if (value == SELECT_ACTION_RESUME)
         item.m_lStartOffset = STARTOFFSET_RESUME;
     }
   }

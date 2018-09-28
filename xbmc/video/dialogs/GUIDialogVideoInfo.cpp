@@ -59,6 +59,7 @@
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
+#include "playlists/PlayList.h"
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/DarwinUtils.h"
 #endif
@@ -609,27 +610,31 @@ void CGUIDialogVideoInfo::Play(bool resume)
     return;
   }
   
-// not sure why we have this below, we recreate the Item and in the process loose all the info we set.
-// disabled for now, lets see if this has any downside. Plex client works fine now  
-//  CFileItem movie(*m_movieItem->GetVideoInfoTag());
-//  if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.empty())
-//    movie.SetPath(m_movieItem->GetPath());
-  CFileItem movie(*m_movieItem);
-  CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
-  if (pWindow)
+  // not sure why we have this below, we recreate the Item and in the process loose all the info we set.
+  // disabled for now, lets see if this has any downside. Plex client works fine now  
+  //  CFileItem movie(*m_movieItem->GetVideoInfoTag());
+  //  if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.empty())
+  //    movie.SetPath(m_movieItem->GetPath());
+
+  // close our dialog
+  Close(true);
+  if (resume)
+    m_movieItem->m_lStartOffset = STARTOFFSET_RESUME;
+  else if (!CGUIWindowVideoBase::ShowResumeMenu(*m_movieItem))
   {
-    // close our dialog
-    Close(true);
-    if (resume)
-      movie.m_lStartOffset = STARTOFFSET_RESUME;
-    else if (!CGUIWindowVideoBase::ShowResumeMenu(movie)) 
-    {
-      // The Resume dialog was closed without any choice
-      Open();
-      return;
-    }
-    pWindow->PlayMovie(&movie);
+    // The Resume dialog was closed without any choice
+    Open();
+    return;
   }
+  g_playlistPlayer.Reset();
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+  PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+  playlist.Clear();
+  CFileItemPtr movieItem(new CFileItem(*m_movieItem));
+  playlist.Add(movieItem);
+
+  // play movie...
+  g_playlistPlayer.Play(0);
 }
 
 std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::map<std::string, std::string> &currentArt)
