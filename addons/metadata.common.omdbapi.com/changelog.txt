@@ -1,2 +1,12 @@
+[B]1.2.0[/B]
+- Changed: Refactored RT Ratings
+
+[B]1.1.1[/B]
+- Changed: Simplify ratings code
+
+[B]1.1.0[/B]
+- Fixed: RT ratings, but users need to obtain their individual omdbapi key at omdbapi.com
+- Added: Prepare for multiple ratings and uniqueid support (requires Kodi v17)
+
 [B]1.0.0[/B]
 - Initial Release

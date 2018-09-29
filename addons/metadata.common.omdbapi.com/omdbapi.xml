@@ -1,7 +1,108 @@
 ﻿<scraperfunctions>
-	<!-- Get OMDBAPI URL from IMDb ID for ratings -->
+
+	<!-- Get Rotten Tomatoes Rating as Default (requires Kodi Krypton) usage: imdb_id|default=TomatoMeter All Critics or TomatoMeter Audience Score or Average Rating All Critics or Average Rating Audience Score -->
+	<GetRTDefaultRatingById dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRTDefaultRating&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.omdbapi.com/?i=tt\1&amp;apikey=$INFO[omdbapikey2]&amp;r=xml&amp;tomatoes=true&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="3">
+				<expression clear="yes">\|(default=.*?)$</expression>
+			</RegExp>
+			<expression>([0-9]{7})</expression>
+		</RegExp>
+	</GetRTDefaultRatingById>
+
+	<!-- Get all Rotten Tomatoes Rating as non-default ratings > Krypton -->
+	<GetRTRatingsById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRTRatings&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.omdbapi.com/?i=tt\1&amp;apikey=$INFO[omdbapikey2]&amp;r=xml&amp;tomatoes=true&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>([0-9]{7})</expression>
+		</RegExp>
+	</GetRTRatingsById>
+
+	<!-- Parse requested TomatoMeter rating as default rating (requires Krypton) -->
+	<ParseRTDefaultRating dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;&lt;ratings&gt;\1&lt;/ratings&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="2">
+				<expression />
+			</RegExp>
+			<RegExp input="$$3" output="$$8" dest="2+">
+				<RegExp input="$$1" output="&lt;rating name=&quot;tomatometerallcritics&quot; max=&quot;100&quot; default=&quot;true&quot;&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;" dest="8">
+					<expression noclean="1">tomatoMeter=&quot;([^&quot;]+)&quot;.*?tomatoReviews=&quot;([^&quot;]+)</expression>
+				</RegExp>
+				<expression>(default=TomatoMeter All Critics)$</expression>
+			</RegExp>
+			<RegExp input="$$3" output="$$8" dest="2+">
+				<RegExp input="$$1" output="&lt;rating name=&quot;tomatometerallaudience&quot; max=&quot;100&quot; default=&quot;true&quot;&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;" dest="8">
+					<expression noclean="1">tomatoUserMeter=&quot;([^&quot;]+)&quot;.*?tomatoUserReviews=&quot;([^&quot;]+)</expression>
+				</RegExp>
+				<expression>(default=TomatoMeter Audience Score)$</expression>
+			</RegExp>
+			<RegExp input="$$3" output="$$8" dest="2+">
+				<RegExp input="$$1" output="&lt;rating name=&quot;tomatometeravgcritics&quot; max=&quot;100&quot; default=&quot;true&quot;&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;" dest="8">
+					<expression noclean="1">tomatoRating=&quot;([^&quot;]+)&quot;.*?tomatoReviews=&quot;([^&quot;]+)</expression>
+				</RegExp>
+				<expression>(default=Average Rating All Critics)$</expression>
+			</RegExp>
+			<RegExp input="$$3" output="$$8" dest="2+">
+				<RegExp input="$$1" output="&lt;rating name=&quot;tomatometeravgaudience&quot; max=&quot;100&quot; default=&quot;true&quot;&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;" dest="8">
+					<expression noclean="1">tomatoUserRating=&quot;([^&quot;]+)&quot;.*?tomatoUserReviews=&quot;([^&quot;]+)</expression>
+				</RegExp>
+				<expression>(default=Average Rating Audience Score)$</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseRTDefaultRating>
+
+	<!-- Parse All TomatoMeter ratings as non-default ratings (requires Krypton) -->
+	<ParseRTRatings dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;&lt;ratings&gt;\1&lt;/ratings&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;rating name=&quot;tomatometerallcritics&quot; max=&quot;100&quot;&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;" dest="2">
+				<expression noclean="1">tomatoMeter=&quot;([^&quot;]+)&quot;.*?tomatoReviews=&quot;([^&quot;]+)</expression>
+			</RegExp>			
+			<RegExp input="$$1" output="&lt;rating name=&quot;tomatometerallaudience&quot; max=&quot;100&quot;&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;" dest="2+">
+				<expression noclean="1">tomatoUserMeter=&quot;([^&quot;]+)&quot;.*?tomatoUserReviews=&quot;([^&quot;]+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;rating name=&quot;tomatometeravgcritics&quot; &gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;" dest="2+">
+				<expression noclean="1">tomatoRating=&quot;([^&quot;]+)&quot;.*?tomatoReviews=&quot;([^&quot;]+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;rating name=&quot;tomatometeravgaudience&quot; max=&quot;5&quot; &gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;" dest="2+">
+				<expression noclean="1">tomatoUserRating=&quot;([^&quot;]+)&quot;.*?tomatoUserReviews=&quot;([^&quot;]+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseRTRatings>
+
+	<!-- Critics' Consensus -->
+	<GetRTOutlineById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRTOutline$$10&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.omdbapi.com/?i=tt\1&amp;apikey=$INFO[omdbapikey]&amp;r=xml&amp;tomatoes=true&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>([0-9]{7})</expression>
+		</RegExp>
+	</GetRTOutlineById>
+	<ParseRTOutline dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;outline&gt;\1&lt;/outline&gt;&lt;/details&gt;" dest="5">
+			<expression trim="1" noclean="1">tomatoConsensus=&quot;([^&quot;]+)&quot;</expression>
+		</RegExp>
+		<RegExp input="$$5" output="" dest="5">
+			<expression>&lt;details&gt;&lt;outline&gt;No consensus yet.&lt;/outline&gt;&lt;/details&gt;</expression>
+		</RegExp>
+	</ParseRTOutline>
+
+	<!-- Critics' Consensus -->
+	<GetRTCConsensusToPlotById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRTCConsensusToPlot$$10&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.omdbapi.com/?i=tt\1&amp;apikey=$INFO[omdbapikey]&amp;r=xml&amp;tomatoes=true&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>([0-9]{7})</expression>
+		</RegExp>
+	</GetRTCConsensusToPlotById>
+	<ParseRTCConsensusToPlot dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;plot&gt;\1&lt;/plot&gt;&lt;/details&gt;" dest="5">
+			<expression trim="1" noclean="1">tomatoConsensus=&quot;([^&quot;]+)&quot;</expression>
+		</RegExp>
+		<RegExp input="$$5" output="" dest="5">
+			<expression>&lt;details&gt;&lt;plot&gt;No consensus yet.&lt;/plot&gt;&lt;/details&gt;</expression>
+		</RegExp>
+	</ParseRTCConsensusToPlot>
+
+	<!-- Function for pre-Krypton releases. Usage: imdb_id -->
 	<GetRTRatingById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRT$$10&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.omdbapi.com/?i=tt\1&amp;r=json&amp;tomatoes=true&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRT$$10&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.omdbapi.com/?i=tt\1&amp;apikey=$INFO[omdbapikey]&amp;r=xml&amp;tomatoes=true&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$INFO[tomato]" output="Tom" dest="10">
 				<expression>TomatoMeter</expression>
 			</RegExp>
@@ -18,73 +119,32 @@
 		</RegExp>
 	</GetRTRatingById>
 
-	<!-- TomatoMeter from All Critics -->
+	<!-- Parse TomatoMeter from All Critics (compatibility legacy for pre-Krypton) -->
 	<ParseRTTomAll dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;rating max=&quot;100&quot;&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1">&quot;tomatoMeter&quot;:&quot;([^&quot;]+)&quot;.*?&quot;tomatoReviews&quot;:&quot;([^&quot;]+)</expression>
+			<expression noclean="1">tomatoMeter=&quot;([^&quot;]+)&quot;.*?tomatoReviews=&quot;([^&quot;]+)</expression>
 		</RegExp>
 	</ParseRTTomAll>
 
-	<!-- TomatoMeter from Audience-->
+	<!-- Parse TomatoMeter from Audience (compatibility legacy for pre-Krypton) -->
 	<ParseRTTomAud dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;rating max=&quot;100&quot;&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1">&quot;tomatoUserMeter&quot;:&quot;([^&quot;]+)&quot;.*?&quot;tomatoUserReviews&quot;:&quot;([^&quot;]+)</expression>
+			<expression noclean="1">tomatoUserMeter=&quot;([^&quot;]+)&quot;.*?tomatoUserReviews=&quot;([^&quot;]+)</expression>
 		</RegExp>
 	</ParseRTTomAud>
 
-	<!-- Average Rating from All Critics -->
+	<!-- Parse Average Rating from All Critics (compatibility legacy for pre-Krypton) -->
 	<ParseRTAveAll dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1">&quot;tomatoRating&quot;:&quot;([^&quot;]+)&quot;.*?&quot;tomatoReviews&quot;:&quot;([^&quot;]+)</expression>
+			<expression noclean="1">tomatoRating=&quot;([^&quot;]+)&quot;.*?tomatoReviews=&quot;([^&quot;]+)</expression>
 		</RegExp>
 	</ParseRTAveAll>
 
-	<!-- Average Rating from Audience-->
+	<!-- Parse Average Rating from Audience (compatibility legacy for pre-Krypton) -->
 	<ParseRTAveAud dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;rating max=&quot;5&quot;&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1">&quot;tomatoUserRating&quot;:&quot;([^&quot;]+)&quot;.*?&quot;tomatoUserReviews&quot;:&quot;([^&quot;]+)</expression>
+			<expression noclean="1">tomatoUserRating=&quot;([^&quot;]+)&quot;.*?tomatoUserReviews=&quot;([^&quot;]+)</expression>
 		</RegExp>
 	</ParseRTAveAud>
 
-	<!-- Critics' Consensus -->
-	<GetRTOutlineById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRTOutline$$10&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.omdbapi.com/?i=tt\1&amp;r=json&amp;tomatoes=true&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression>([0-9]{7})</expression>
-		</RegExp>
-	</GetRTOutlineById>
-	<ParseRTOutline dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;outline&gt;\1&lt;/outline&gt;&lt;/details&gt;" dest="5">
-			<expression trim="1" noclean="1">&quot;tomatoConsensus&quot;:&quot;([^&quot;]+)&quot;</expression>
-		</RegExp>
-		<RegExp input="$$5" output="" dest="5">
-			<expression>&lt;details&gt;&lt;outline&gt;No consensus yet.&lt;/outline&gt;&lt;/details&gt;</expression>
-		</RegExp>
-	</ParseRTOutline>
-
-	<!-- Critics' Consensus -->
-	<GetRTCConsensusToPlotById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRTCConsensusToPlot$$10&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.omdbapi.com/?i=tt\1&amp;r=json&amp;tomatoes=true&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression>([0-9]{7})</expression>
-		</RegExp>
-	</GetRTCConsensusToPlotById>
-	<ParseRTCConsensusToPlot dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;plot&gt;\1&lt;/plot&gt;&lt;/details&gt;" dest="5">
-			<expression trim="1" noclean="1">&quot;tomatoConsensus&quot;:&quot;([^&quot;]+)&quot;</expression>
-		</RegExp>
-		<RegExp input="$$5" output="" dest="5">
-			<expression>&lt;details&gt;&lt;plot&gt;No consensus yet.&lt;/plot&gt;&lt;/details&gt;</expression>
-		</RegExp>
-	</ParseRTCConsensusToPlot>
-
-	<!-- Plot (NOT ACTIVE)-->
-	<GetRTPlotById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRTPlot&quot; cache=&quot;\1-omdbapi.html&quot;&gt;http://www.rottentomatoes.com/alias?type=imdbid&amp;s=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression>([0-9]{7})</expression>
-		</RegExp>
-	</GetRTPlotById>
-	<ParseRTPlot dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;plot&gt;\1\2&lt;/plot&gt;&lt;/details&gt;" dest="5">
-			<expression trim="1">&lt;h2&gt;Movie Info&lt;/h2&gt;[^\w]*([^\n]*)[^&gt;]*&gt;\s([^~&lt;]*)</expression>
-		</RegExp>
-	</ParseRTPlot>
 </scraperfunctions>

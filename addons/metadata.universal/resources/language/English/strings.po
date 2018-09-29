@@ -131,7 +131,7 @@ msgid "Preferred Certification Country"
 msgstr ""
 
 msgctxt "#30034"
-msgid "Preferred Thumb Language"
+msgid "Preferred Poster Language"
 msgstr ""
 
 msgctxt "#30035"
@@ -204,7 +204,15 @@ msgctxt "#30115"
 msgid "Use the Score Aggregated from"
 msgstr ""
 
-#empty strings from id 30116 to 30199
+msgctxt "#30116"
+msgid "OMDB Api Key"
+msgstr ""
+
+msgctxt "#30117"
+msgid "Please Register Api Key on omdbapi.com and Add it Above"
+msgstr ""
+
+#empty strings from id 30118 to 30199
 
 msgctxt "#30200"
 msgid "Credits"
@@ -282,4 +290,8 @@ msgstr ""
 
 msgctxt "#30503"
 msgid "Enable fanart from fanart.tv"
+msgstr ""
+
+msgctxt "#30504"
+msgid "Enable posters from IMDb"
 msgstr ""
