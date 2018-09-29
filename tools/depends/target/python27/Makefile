@@ -49,6 +49,8 @@ ifeq ($(NATIVE_OS),osx)
 	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-urllib.diff
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
+	cd $(PLATFORM); sed -ie 's|register ||' Include/unicodeobject.h
+	cd $(PLATFORM); sed -ie 's|register ||' Include/stringobject.h
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist
 
 #Add -liconv as needed, and add the _scproxy module for darwin osx only
