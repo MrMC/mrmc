@@ -38,6 +38,7 @@ public:
   bool RefreshAll() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
   bool HasUpdatedUserrating() const { return m_hasUpdatedUserrating; };
+  int IsPlayRequested() const { return m_bPlayRequested; };
 
   std::string GetThumbnail() const;
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_movieItem; }
@@ -98,4 +99,5 @@ protected:
   bool m_hasUpdatedThumb;
   bool m_hasUpdatedUserrating;
   int m_startUserrating;
+  int m_bPlayRequested;
 };
