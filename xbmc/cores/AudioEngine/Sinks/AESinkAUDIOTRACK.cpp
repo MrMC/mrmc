@@ -448,10 +448,12 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     if (m_passthrough)
     {
       m_format.m_frameSize = 1;
-      m_sink_frameSize = 2 * 2;
+      m_sink_frameSize = 1;
       m_sink_bufferSize = std::max((int)m_format.m_frames, m_sink_bufferSize);
       if (m_passthroughIsIECPacked)
       {
+        // IEC packed is AE_CH_LAYOUT_2_0 * ENCODING_PCM_16BIT;
+        m_sink_frameSize = 2 * 2;
         if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
         {
           // ENCODING_IEC61937 is eight channels for DTSHD/TRUEHD
@@ -592,19 +594,18 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   else
     m_playbackHead -= m_playbackHeadOffset;
 
-  uint64_t headBytes = m_playbackHead * m_sink_frameSize;
-  if (headBytes > m_writeBytes)
+  double headSeconds = (double)m_playbackHead / m_sink_sampleRate;
+  if (headSeconds > m_writeSeconds)
   {
     // this should never happend, head should always
     // be less than or equal to what we have written.
     CLog::Log(LOGERROR, "AESinkAUDIOTRACK::GetDelay over-write error, "
-      "frameSize=%d, headBytes=%llu, m_writeBytes=%llu", m_sink_frameSize, headBytes, m_writeBytes);
+      "frameSize=%d, headSeconds=%f, m_writeSeconds=%f", m_sink_frameSize, headSeconds, m_writeSeconds);
     status.SetDelay(0);
     return;
   }
 
-  double framesInBuffer = (double)(m_writeBytes - headBytes) / m_sink_frameSize;
-  double delay = framesInBuffer / (double)m_sink_sampleRate;
+  double delay = m_writeSeconds - headSeconds;
 
   if (m_nonIECPauseTimer.MillisLeft() > 0)
   {
@@ -619,8 +620,8 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   if (g_advancedSettings.CanLogComponent(LOGAUDIO))
     CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::GetDelay "
-      "headBytes=%lld, writeBytes=%lld, waitingBytes=%lld, framesInBuffer=%f, delay=%f",
-       headBytes, m_writeBytes, m_writeBytes - headBytes, framesInBuffer, delay);
+      "headSeconds=%f, writeSeconds=%f, waitingSeconds=%f, delay=%f",
+       headSeconds, m_writeSeconds, m_writeSeconds - headSeconds, delay);
 
   if (delay < 0)
     delay = 0;
