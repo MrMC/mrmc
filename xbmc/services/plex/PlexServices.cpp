@@ -695,6 +695,7 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
         {
           // new client
           CLog::Log(LOGNOTICE, "CPlexServices: Server found via plex.tv %s", client->GetServerName().c_str());
+          AddJob(new CPlexServiceJob(0, "FoundNewClient"));
         }
         else if (GetClient(client->GetUuid()) == nullptr)
         {
@@ -704,7 +705,6 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
         }
       }
     }
-    AddJob(new CPlexServiceJob(0, "FoundNewClient"));
   }
 
   if (!lostClients.empty())
