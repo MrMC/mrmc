@@ -240,10 +240,10 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(int64_t timestamp)
       m_frameready->Reset();
 
   media_status_t mstat;
-  if (timestamp)
+  if (timestamp > 1)
     mstat = AMediaCodec_releaseOutputBufferAtTime(m_codec, m_index, timestamp);
   else
-    mstat = AMediaCodec_releaseOutputBuffer(m_codec, m_index, false);
+    mstat = AMediaCodec_releaseOutputBuffer(m_codec, m_index, (timestamp > 0));
   m_isReleased = true;
 
   if (mstat != AMEDIA_OK)
@@ -1170,7 +1170,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       }
       if (i == m_inflight.size())
         m_inflight.push_back(
-          new CDVDMediaCodecInfo(index, pts, m_textureId, m_codec, m_surfaceTexture, m_frameAvailable, m_jnivideoview)
+          new CDVDMediaCodecInfo(index, m_textureId, pts, m_codec, m_surfaceTexture, m_frameAvailable, m_jnivideoview)
         );
       m_videobuffer.mediacodec = m_inflight[i]->Retain();
       m_videobuffer.mediacodec->Validate(true);
