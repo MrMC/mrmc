@@ -1834,7 +1834,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   unsigned int startTimer = XbmcThreads::SystemClockMillis();
   
   CFileItem item(strMovie, false);
-  if ( item.IsInternetStream()
+  if ( (item.IsInternetStream() && !g_application.CurrentFileItem().IsMediaServiceBased())
     || item.IsHDHomeRun()
     || item.IsPlayList()
     || item.IsLiveTV()
@@ -1843,42 +1843,46 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
 
   CLog::Log(LOGDEBUG,"%s: Searching for subtitles...", __FUNCTION__);
 
-  std::string strBasePath;
-  std::string strSubtitle = URIUtils::ReplaceExtension(URIUtils::GetFileName(strMovie), "");
-
-  if (item.HasVideoInfoTag())
-    strBasePath = item.GetVideoInfoTag()->m_basePath;
-
-  CURL url(strMovie);
-  if (strBasePath.empty() && url.IsProtocol("bluray"))
-  {
-    strBasePath = url.GetHostName();
-    strSubtitle = URIUtils::ReplaceExtension(GetTitleFromPath(url.GetHostName()), "");
-
-    url = CURL(url.GetHostName());
-    if (url.IsProtocol("udf"))
-      strBasePath = URIUtils::GetParentPath(url.GetHostName());
-  }
-
-  if (strBasePath.empty())
-    strBasePath = URIUtils::GetBasePath(strMovie);
-
   CFileItemList items;
+  std::string strSubtitle;
   std::vector<std::string> strLookInPaths;
-
   int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
-
-  if (!strBasePath.empty())
-    CDirectory::GetDirectory(strBasePath, items, g_advancedSettings.m_subtitlesExtensions, flags);
-
-  const std::vector<std::string> common_sub_dirs = {"subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle"};
-
-  for (int i = 0; i < items.Size(); ++i)
+  
+  // if item is MediaService(Plex/Emby) do not check if we have subtitles next to it
+  if (!g_application.CurrentFileItem().IsMediaServiceBased())
   {
-    for (const auto& subdir : common_sub_dirs)
+    std::string strBasePath;
+    strSubtitle = URIUtils::ReplaceExtension(URIUtils::GetFileName(strMovie), "");
+
+    if (item.HasVideoInfoTag())
+      strBasePath = item.GetVideoInfoTag()->m_basePath;
+
+    CURL url(strMovie);
+    if (strBasePath.empty() && url.IsProtocol("bluray"))
     {
-      if (StringUtils::EqualsNoCase(items[i]->GetLabel(), subdir))
-        strLookInPaths.push_back(items[i]->GetPath());
+      strBasePath = url.GetHostName();
+      strSubtitle = URIUtils::ReplaceExtension(GetTitleFromPath(url.GetHostName()), "");
+
+      url = CURL(url.GetHostName());
+      if (url.IsProtocol("udf"))
+        strBasePath = URIUtils::GetParentPath(url.GetHostName());
+    }
+
+    if (strBasePath.empty())
+      strBasePath = URIUtils::GetBasePath(strMovie);
+
+    if (!strBasePath.empty())
+      CDirectory::GetDirectory(strBasePath, items, g_advancedSettings.m_subtitlesExtensions, flags);
+
+    const std::vector<std::string> common_sub_dirs = {"subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle"};
+
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      for (const auto& subdir : common_sub_dirs)
+      {
+        if (StringUtils::EqualsNoCase(items[i]->GetLabel(), subdir))
+          strLookInPaths.push_back(items[i]->GetPath());
+      }
     }
   }
 
@@ -1906,6 +1910,10 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     strLookInPaths.push_back(strPath2);
   }
 
+  // if item is MediaService(Plex/Emby) its possible we have saved subtitle to special://temp/
+  if (g_application.CurrentFileItem().IsMediaServiceBased())
+    strLookInPaths.push_back("special://temp/");
+
   for (std::vector<std::string>::const_iterator it = strLookInPaths.begin(); it != strLookInPaths.end(); ++it)
   {
     CFileItemList moreItems;
@@ -1919,6 +1927,12 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
 
     if (pItem->m_bIsFolder)
       continue;
+
+    // if item is MediaService(Plex/Emby) use ServiceID as subtitle name
+    if (g_application.CurrentFileItem().IsMediaServiceBased())
+    {
+      strSubtitle = g_application.CurrentFileItem().GetMediaServiceId();
+    }
 
     std::string strCandidate = URIUtils::GetFileName(pItem->GetPath());
     URIUtils::RemoveExtension(strCandidate);

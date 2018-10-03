@@ -398,13 +398,16 @@ void CGUIDialogSubtitles::OnDownloadComplete(std::vector<std::string> items, CFi
   std::vector<std::string> vecFiles;
   
   std::string strCurrentFilePath;
-  if (StringUtils::StartsWith(strCurrentFile, "http://"))
+  if (!g_application.CurrentFileItem().IsMediaServiceBased() && StringUtils::StartsWith(strCurrentFile, "http://"))
   {
     strCurrentFile = "TempSubtitle";
     vecFiles.push_back(strCurrentFile);
   }
   else
   {
+    // if item is MediaService(Plex/Emby) use ServiceID as subtitle name
+    if (g_application.CurrentFileItem().IsMediaServiceBased())
+      strCurrentFile = g_application.CurrentFileItem().GetMediaServiceId();
     std::string subPath = CSpecialProtocol::TranslatePath("special://subtitles");
     if (!subPath.empty())
       strDownloadPath = subPath;
