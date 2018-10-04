@@ -206,7 +206,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
     else
       written = m_at_jni->write(m_charbuf, 0, sizeInBytes - offsetInBytes);
   }
-  
+
   return written;
 }
 
@@ -240,7 +240,6 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
 , m_sink_bufferSeconds(0)
 , m_sink_sleepOnWriteStall(0)
 , m_sink_bufferBytesPerSecond(0)
-, m_writeBytes(0)
 , m_writeSeconds(0.0)
 , m_playbackHead(0)
 , m_playbackHeadOffset(-1)
@@ -266,7 +265,6 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
   m_format = format;
   m_volume = -1;
-  m_writeBytes = 0;
   m_writeSeconds = 0.0;
   m_playbackHead = 0;
   m_playbackHeadOffset = -1;
@@ -544,7 +542,6 @@ void CAESinkAUDIOTRACK::Deinitialize()
     m_volume = -1;
   }
 
-  m_writeBytes = 0;
   m_writeSeconds = 0.0;
   m_playbackHead = 0;
   m_playbackHeadOffset = -1;
@@ -710,24 +707,19 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       retried = false; // at least one time there was more than zero data written
       if (m_passthrough)
       {
-        if (written == size)
-        {
-          m_writeBytes += written;
+        if (!m_passthroughIsIECPacked)
           m_writeSeconds += m_format.m_streamInfo.GetDuration() / 1000;
-        }
         else
+          m_writeSeconds += ((double) written / m_sink_frameSize) / m_sink_sampleRate;
+        if (written != size)
         {
           // Let AE wait some ms to come back
           CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::AddPackets: write stall - punting back to AE");
-          unsigned int written_frames = written / m_format.m_frameSize;
-          return written_frames;
+          return written / m_format.m_frameSize;
         }
       }
       else
-      {
-        m_writeBytes += written;
-        m_writeSeconds += ((double) written / m_format.m_frameSize) / m_format.m_sampleRate;
-      }
+        m_writeSeconds += ((double) written / m_sink_frameSize) / m_sink_sampleRate;
 
       // just try again to care for fragmentation
       if (written < size)
@@ -795,7 +787,6 @@ void CAESinkAUDIOTRACK::Drain()
   m_at_jni->flush();
   //m_at_jni->stop();
 
-  m_writeBytes = 0;
   m_writeSeconds = 0.0;
   m_playbackHead = 0;
   m_playbackHeadOffset = -1;

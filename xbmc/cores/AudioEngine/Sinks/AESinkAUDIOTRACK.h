@@ -87,7 +87,6 @@ private:
   double                m_sink_bufferBytesPerSecond;
 
   // sink buffer filled handling
-  uint64_t              m_writeBytes;
   double                m_writeSeconds;
   uint64_t              m_playbackHead;
   int64_t               m_playbackHeadOffset;
