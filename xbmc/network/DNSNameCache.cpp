@@ -117,7 +117,7 @@ bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIp
   {
     CDNSName& DNSname = g_DNSCache.m_vecDNSNames[i];
     // RFC 4343, Domain Name System (DNS) Case Insensitivity Clarification
-    if (!StringUtils::EqualsNoCase(DNSname.m_strHostName, strHostName))
+    if (StringUtils::EqualsNoCase(DNSname.m_strHostName, strHostName))
     {
       strIpAddress = DNSname.m_strIpAddress;
       return true;
