@@ -580,6 +580,7 @@ MainController *g_xbmcController;
     AVPlayerHDRMode HDRMode = AVPlayer.availableHDRModes;
     intHDRMode = (int)HDRMode;
   }
+  CLog::Log(LOGDEBUG, "enterActiveDelayed: AVPlayerHDRMode = %d", intHDRMode);
   m_controllerState = MC_ACTIVE;
 }
 
