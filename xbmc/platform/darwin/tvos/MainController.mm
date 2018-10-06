@@ -575,6 +575,11 @@ MainController *g_xbmcController;
         break;
     }
   }
+  int intHDRMode = 0;
+  if (@available(tvOS 11.2, *)) {
+    AVPlayerHDRMode HDRMode = AVPlayer.availableHDRModes;
+    intHDRMode = (int)HDRMode;
+  }
   m_controllerState = MC_ACTIVE;
 }
 
@@ -980,6 +985,18 @@ MainController *g_xbmcController;
           // HDR == 2, 3 (3 is what tests with loading assets show)
           // DoblyVision == 4
           // infer initWithRefreshRate in case it ever changes
+          //
+          // AVPlayerHDRModeDolbyVision = 0x4 (Dolby Vision HDR mode)
+          // AVPlayerHDRModeHDR10 = 0x2 (HDR10 HDR mode)
+          // AVPlayerHDRModeHLG = 0x1 (HLG (Hybrid Log-Gamma) HDR mode)
+          // see AVPlayerHDRMode.
+          // AVPlayer (AVPlayerPlaybackCapabilities)
+          // property availableHDRModes
+          // An AVPlayerHDRMode value that indicates the HDR modes the device can play
+          // to an appropriate display.   A value of 0 indicates that no HDR modes are supported
+          // if (@available(iOS 11.2, *)) {
+          //   AVPlayerHDRMode HDRMode = AVPlayer.availableHDRModes;
+          // }
           using namespace StringObfuscation;
           std::string neveryyoumind = ObfuscateString("AVDisplayCriteria");
           Class AVDisplayCriteriaClass = NSClassFromString([NSString stringWithUTF8String: neveryyoumind.c_str()]);
