@@ -645,23 +645,28 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
         mci->ReleaseOutputBuffer(0);
       else
       {
-        bool adjusted = false;
-        uint64_t cs = CurrentHostCounter();
-        uint64_t vs = CXBMCApp::GetVsyncTime();
-        double frameTime = (1.0 / m_fps) * CurrentHostFrequency();
-        int64_t ts = vs + (frameTime * 1.5);
-        if (m_lastVs)
+        if (CAndroidFeatures::IsShieldTVDevice())
         {
-          if (vs - m_lastVs > frameTime * 1.1)  // missed vsync
+          bool adjusted = false;
+          uint64_t cs = CurrentHostCounter();
+          uint64_t vs = CXBMCApp::GetVsyncTime();
+          double frameTime = (1.0 / m_fps) * CurrentHostFrequency();
+          int64_t ts = vs + (frameTime * 1.5);
+          if (m_lastVs)
           {
-            adjusted = true;
-            ts -= frameTime / 2;
+            if (vs - m_lastVs > frameTime * 1.1)  // missed vsync
+            {
+              adjusted = true;
+              ts -= frameTime / 2;
+            }
           }
+          //CLog::Log(LOGDEBUG, "ReleaseOutputBuffer: cur:%lld; vsync: %lld; target: %lld; adj: %s; diff: %lld", cs, vs, ts, adjusted ? "true" : "false", ts - m_lastTs);
+          mci->ReleaseOutputBuffer(ts);
+          m_lastVs = vs;
+          m_lastTs = ts;
         }
-        //CLog::Log(LOGDEBUG, "ReleaseOutputBuffer: cur:%lld; vsync: %lld; target: %lld; adj: %s; diff: %lld", cs, vs, ts, adjusted ? "true" : "false", ts - m_lastTs);
-        mci->ReleaseOutputBuffer(ts);
-        m_lastVs = vs;
-        m_lastTs = ts;
+        else
+          mci->ReleaseOutputBuffer(1);
       }
     }
   }
