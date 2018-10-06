@@ -154,80 +154,80 @@ std::atomic<uint64_t> CXBMCApp::m_vsynctime;
 CEvent CXBMCApp::m_vsyncEvent;
 CJNIAudioDeviceInfos CXBMCApp::m_audiodevices;
 
+static std::map<int, std::string> type2string = {
+  {19, "TYPE_AUX_LINE"},
+  { 8, "TYPE_BLUETOOTH_A2DP"},
+  { 7, "TYPE_BLUETOOTH_SCO"},
+  { 1, "TYPE_BUILTIN_EARPIECE"},
+  {15, "TYPE_BUILTIN_MIC"},
+  { 2, "TYPE_BUILTIN_SPEAKER"},
+  {21, "TYPE_BUS"},
+  {13, "TYPE_DOCK"},
+  {14, "TYPE_FM"},
+  {16, "TYPE_FM_TUNER"},
+  { 9, "TYPE_HDMI"},
+  {10, "TYPE_HDMI_ARC"},
+  {23, "TYPE_HEARING_AID"},
+  {20, "TYPE_IP"},
+  { 5, "TYPE_LINE_ANALOG"},
+  { 6, "TYPE_LINE_DIGITAL"},
+  {18, "TYPE_TELEPHONY"},
+  {17, "TYPE_TV_TUNER"},
+  { 0, "TYPE_UNKNOWN"},
+  {12, "TYPE_USB_ACCESSORY"},
+  {11, "TYPE_USB_DEVICE"},
+  {22, "TYPE_USB_HEADSET"},
+  { 4, "TYPE_WIRED_HEADPHONES"},
+  { 3, "TYPE_WIRED_HEADSET"},
+};
+
+static std::map<int, std::string> encode2string = {
+  {15, "ENCODING_AAC_ELD"},
+  {11, "ENCODING_AAC_HE_V1"},
+  {12, "ENCODING_AAC_HE_V2"},
+  {10, "ENCODING_AAC_LC"},
+  {16, "ENCODING_AAC_XHE"},
+  { 5, "ENCODING_AC3"},
+  {17, "ENCODING_AC4"},
+  { 1, "ENCODING_DEFAULT"},
+  {14, "ENCODING_DOLBY_TRUEHD"},
+  { 7, "ENCODING_DTS"},
+  { 8, "ENCODING_DTS_HD"},
+  { 6, "ENCODING_E_AC3"},
+  {18, "ENCODING_E_AC3_JOC"},
+  {13, "ENCODING_IEC61937"},
+  { 0, "ENCODING_INVALID"},
+  { 9, "ENCODING_MP3"},
+  { 2, "ENCODING_PCM_16BIT"},
+  { 3, "ENCODING_PCM_8BIT"},
+  { 4, "ENCODING_PCM_FLOAT"},
+};
+
+static std::map<int, std::string> chanmask2string = {
+  {0x0000, "CHANNEL_INVALID"},
+  {0x00fc, "CHANNEL_OUT_5POINT1"},
+  {0x03fc, "CHANNEL_OUT_7POINT1"},
+  {0x18fc, "CHANNEL_OUT_7POINT1_SURROUND"},
+  {0x0400, "CHANNEL_OUT_BACK_CENTER"},
+  {0x0040, "CHANNEL_OUT_BACK_LEFT"},
+  {0x0080, "CHANNEL_OUT_BACK_RIGHT"},
+  {0x0001, "CHANNEL_OUT_DEFAULT"},
+  {0x0010, "CHANNEL_OUT_FRONT_CENTER"},
+  {0x0004, "CHANNEL_OUT_FRONT_LEFT"},
+  {0x0100, "CHANNEL_OUT_FRONT_LEFT_OF_CENTER"},
+  {0x0008, "CHANNEL_OUT_FRONT_RIGHT"},
+  {0x0200, "CHANNEL_OUT_FRONT_RIGHT_OF_CENTER"},
+  {0x0020, "CHANNEL_OUT_LOW_FREQUENCY"},
+  {0x0004, "CHANNEL_OUT_MONO"},
+  {0x00cc, "CHANNEL_OUT_QUAD"},
+  {0x0800, "CHANNEL_OUT_SIDE_LEFT"},
+  {0x1000, "CHANNEL_OUT_SIDE_RIGHT"},
+  {0x000c, "CHANNEL_OUT_STEREO"},
+  {0x041c, "CHANNEL_OUT_SURROUND"}
+};
+
 void LogAudoDevices(const char* stage, const CJNIAudioDeviceInfos& devices)
 {
-  static std::map<int, std::string> type2string = {
-    {19, "TYPE_AUX_LINE"},
-    { 8, "TYPE_BLUETOOTH_A2DP"},
-    { 7, "TYPE_BLUETOOTH_SCO"},
-    { 1, "TYPE_BUILTIN_EARPIECE"},
-    {15, "TYPE_BUILTIN_MIC"},
-    { 2, "TYPE_BUILTIN_SPEAKER"},
-    {21, "TYPE_BUS"},
-    {13, "TYPE_DOCK"},
-    {14, "TYPE_FM"},
-    {16, "TYPE_FM_TUNER"},
-    { 9, "TYPE_HDMI"},
-    {10, "TYPE_HDMI_ARC"},
-    {23, "TYPE_HEARING_AID"},
-    {20, "TYPE_IP"},
-    { 5, "TYPE_LINE_ANALOG"},
-    { 6, "TYPE_LINE_DIGITAL"},
-    {18, "TYPE_TELEPHONY"},
-    {17, "TYPE_TV_TUNER"},
-    { 0, "TYPE_UNKNOWN"},
-    {12, "TYPE_USB_ACCESSORY"},
-    {11, "TYPE_USB_DEVICE"},
-    {22, "TYPE_USB_HEADSET"},
-    { 4, "TYPE_WIRED_HEADPHONES"},
-    { 3, "TYPE_WIRED_HEADSET"},
-  };
-
-  static std::map<int, std::string> encode2string = {
-    {15, "ENCODING_AAC_ELD"},
-    {11, "ENCODING_AAC_HE_V1"},
-    {12, "ENCODING_AAC_HE_V2"},
-    {10, "ENCODING_AAC_LC"},
-    {16, "ENCODING_AAC_XHE"},
-    { 5, "ENCODING_AC3"},
-    {17, "ENCODING_AC4"},
-    { 1, "ENCODING_DEFAULT"},
-    {14, "ENCODING_DOLBY_TRUEHD"},
-    { 7, "ENCODING_DTS"},
-    { 8, "ENCODING_DTS_HD"},
-    { 6, "ENCODING_E_AC3"},
-    {18, "ENCODING_E_AC3_JOC"},
-    {13, "ENCODING_IEC61937"},
-    { 0, "ENCODING_INVALID"},
-    { 9, "ENCODING_MP3"},
-    { 2, "ENCODING_PCM_16BIT"},
-    { 3, "ENCODING_PCM_8BIT"},
-    { 4, "ENCODING_PCM_FLOAT"},
-  };
-
-  static std::map<int, std::string> chanmask2string = {
-    {0x0000, "CHANNEL_INVALID"},
-    {0x00fc, "CHANNEL_OUT_5POINT1"},
-    {0x03fc, "CHANNEL_OUT_7POINT1"},
-    {0x18fc, "CHANNEL_OUT_7POINT1_SURROUND"},
-    {0x0400, "CHANNEL_OUT_BACK_CENTER"},
-    {0x0040, "CHANNEL_OUT_BACK_LEFT"},
-    {0x0080, "CHANNEL_OUT_BACK_RIGHT"},
-    {0x0001, "CHANNEL_OUT_DEFAULT"},
-    {0x0010, "CHANNEL_OUT_FRONT_CENTER"},
-    {0x0004, "CHANNEL_OUT_FRONT_LEFT"},
-    {0x0100, "CHANNEL_OUT_FRONT_LEFT_OF_CENTER"},
-    {0x0008, "CHANNEL_OUT_FRONT_RIGHT"},
-    {0x0200, "CHANNEL_OUT_FRONT_RIGHT_OF_CENTER"},
-    {0x0020, "CHANNEL_OUT_LOW_FREQUENCY"},
-    {0x0004, "CHANNEL_OUT_MONO"},
-    {0x00cc, "CHANNEL_OUT_QUAD"},
-    {0x0800, "CHANNEL_OUT_SIDE_LEFT"},
-    {0x1000, "CHANNEL_OUT_SIDE_RIGHT"},
-    {0x000c, "CHANNEL_OUT_STEREO"},
-    {0x041c, "CHANNEL_OUT_SURROUND"}
-  };
-
   CLog::Log(LOGDEBUG, ">>> Audio device list: %s", stage);
   for (auto dev : devices)
   {
@@ -953,7 +953,7 @@ void CXBMCApp::OnPlayBackStarted()
   UpdateSessionMetadata();
   m_mediaSession->activate(true);
   UpdateSessionState();
-  
+
   CJNIIntent intent(ACTION_XBMC_RESUME, CJNIURI::EMPTY, *this, get_class(CJNIContext::get_raw()));
   m_mediaSession->updateIntent(intent);
 }
@@ -1290,6 +1290,14 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     if (newstate != m_hdmiPlugged)
     {
       CLog::Log(LOGDEBUG, "-- HDMI state: %s",  newstate ? "on" : "off");
+      std::ostringstream oss;
+      if (intent.hasExtra("android.media.extra.ENCODINGS"))
+      {
+        for (auto i : intent.getIntArrayExtra("android.media.extra.ENCODINGS"))
+          oss << encode2string[i].c_str() << " / ";
+        CLog::Log(LOGDEBUG, "    encodings: %s", oss.str().c_str());
+      }
+
       m_hdmiPlugged = newstate;
       CAEFactory::DeviceChange();
     }
