@@ -173,9 +173,12 @@ ConnectSessionErrors CDSMSession::ConnectSession(const CURL &url)
   if (login.empty())
     login = "Guest";
 
+  // smb domain (host) name are always treated as uppercase
+  std::string netbiosName(netbios_name);
+  StringUtils::ToUpper(netbiosName);
   // setup credentials and login.
   m_dsmlib->smb_session_set_creds(m_smb_session,
-    netbios_name, login.c_str(), password.c_str());
+    netbiosName.c_str(), login.c_str(), password.c_str());
   if (m_dsmlib->smb_session_login(m_smb_session) == DSM_SUCCESS)
   {
     int response = m_dsmlib->smb_session_is_guest(m_smb_session);
