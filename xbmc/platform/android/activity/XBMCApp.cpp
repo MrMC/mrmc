@@ -320,6 +320,10 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
   {
      if (strcmp(message, "OnVideoResolutionChanged") == 0)
       CalculateGUIRatios();
+
+     //HACK: AFTV send a dummy "pause" mediasession command when switching reso. Mask...
+     if (CAndroidFeatures::IsAmazonDevice())
+       m_mediaSession->activate(false);
   }
 }
 
@@ -1300,6 +1304,14 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 
       m_hdmiPlugged = newstate;
       CAEFactory::DeviceChange();
+
+      //HACK: AFTV send a dummy "pause" mediasession command when switching reso. Reenable...
+      if (CAndroidFeatures::IsAmazonDevice())
+      {
+        if (newstate && m_playback_state & PLAYBACK_STATE_PLAYING)
+          m_mediaSession->activate(true);
+      }
+
     }
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
