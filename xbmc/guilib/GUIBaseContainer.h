@@ -124,7 +124,7 @@ protected:
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout(bool refreshAllItems = false);
   virtual void SetPageControlRange();
-  virtual void UpdatePageControl(int offset);
+  virtual void UpdatePageControl(int offset, int itemsPerRow = 1);
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual bool SelectItemFromPoint(const CPoint &point) { return false; };

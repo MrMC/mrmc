@@ -884,11 +884,11 @@ void CGUIBaseContainer::SetPageControlRange()
   }
 }
 
-void CGUIBaseContainer::UpdatePageControl(int offset)
+void CGUIBaseContainer::UpdatePageControl(int offset, int itemsPerRow)
 {
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset, itemsPerRow);
     SendWindowMessage(msg);
   }
 }

@@ -200,6 +200,18 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_SEARCH:
     OnSearch();
     break;
+  case GUI_MSG_ITEM_SELECT:
+    {
+      if (m_thumbLoader.IsLoading())
+      {
+        int item = message.GetParam1();
+        int itemsPerRow = message.GetParam2();
+        if (itemsPerRow > 0)
+          item *= itemsPerRow;
+        m_thumbLoader.SetFocus(item);
+      }
+    }
+    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }

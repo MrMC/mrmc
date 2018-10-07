@@ -24,7 +24,9 @@
 #include "utils/log.h"
 #include "URL.h"
 
-CBackgroundInfoLoader::CBackgroundInfoLoader() : m_thread (NULL)
+#include <algorithm>
+
+CBackgroundInfoLoader::CBackgroundInfoLoader() : m_thread (nullptr)
 {
   m_bStop = true;
   m_pObserver=NULL;
@@ -40,34 +42,62 @@ CBackgroundInfoLoader::~CBackgroundInfoLoader()
 
 void CBackgroundInfoLoader::Run()
 {
+  CSingleLock lock(m_lock);
+  size_t focus = m_focus;
+  lock.Leave();
+
   try
   {
-    if (m_vecItems.size() > 0)
+    if (!m_stage1.empty())
     {
       OnLoaderStart();
 
       // Stage 1: All "fast" stuff we have already cached
-      for (std::vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
+      while (!m_stage1.empty())
       {
-        CFileItemPtr pItem = *iter;
-
         // Ask the callback if we should abort
         if ((m_pProgressCallback && m_pProgressCallback->Abort()) || m_bStop)
           break;
 
+        // check if we need to rotate the order to
+        // align front (next processed) to focused item
+        lock.Enter();
+        if (focus != m_focus)
+        {
+          // update m_focus so we do this once
+          focus = m_focus;
+          // find start index in stage1 list
+          auto focusIt = std::find_if( m_stage1.begin(), m_stage1.end(),
+            [&focus](const std::pair<size_t, CFileItemPtr>& element){ return element.first == focus;} );
+          if (focusIt != m_stage1.end())
+          {
+            // focus index is in list, rotate the vector contents
+            // so that focus index is in front and will get processed next.
+            std::rotate(m_stage1.begin(), focusIt, m_stage1.end());
+          }
+        }
+        lock.Leave();
+
+        CFileItemPtr pItem = m_stage1.front().second;
         try
         {
+          // process the item
           if (LoadItemCached(pItem.get()) && m_pObserver)
             m_pObserver->OnItemLoaded(pItem.get());
-        }
+          // once stage1 is processed, move item to stage2
+          m_stage2.push_back(m_stage1.front().second);
+          // no pop in std:vector, erase the front.
+          m_stage1.erase(m_stage1.begin());
+         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemCached - Unhandled exception for item %s", CURL::GetRedacted(pItem->GetPath()).c_str());
+          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemCached - Unhandled exception for item %s", CURL::GetRedacted(
+            pItem->GetPath()).c_str());
         }
       }
 
       // Stage 2: All "slow" stuff that we need to lookup
-      for (std::vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
+      for (std::vector<CFileItemPtr>::const_iterator iter = m_stage2.begin(); iter != m_stage2.end(); ++iter)
       {
         CFileItemPtr pItem = *iter;
 
@@ -82,7 +112,8 @@ void CBackgroundInfoLoader::Run()
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemLookup - Unhandled exception for item %s", CURL::GetRedacted(pItem->GetPath()).c_str());
+          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemLookup - Unhandled exception for item %s",
+            CURL::GetRedacted(pItem->GetPath()).c_str());
         }
       }
     }
@@ -97,6 +128,13 @@ void CBackgroundInfoLoader::Run()
   }
 }
 
+void CBackgroundInfoLoader::SetFocus(size_t focus)
+{
+  CSingleLock lock(m_lock);
+  if (m_focus != focus)
+    m_focus = focus;
+}
+
 void CBackgroundInfoLoader::Load(CFileItemList& items)
 {
   StopThread();
@@ -106,8 +144,9 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 
   CSingleLock lock(m_lock);
 
-  for (int nItem=0; nItem < items.Size(); nItem++)
-    m_vecItems.push_back(items[nItem]);
+  m_focus = 0;
+  for (size_t nItem = 0; nItem < (size_t)items.Size(); ++nItem)
+    m_stage1.push_back(std::make_pair(nItem, items[nItem]));
 
   m_pVecItems = &items;
   m_bStop = false;
@@ -134,7 +173,9 @@ void CBackgroundInfoLoader::StopThread()
     delete m_thread;
     m_thread = NULL;
   }
-  m_vecItems.clear();
+  m_focus = 0;
+  m_stage1.clear();
+  m_stage2.clear();
   m_pVecItems = NULL;
   m_bIsLoading = false;
 }

@@ -270,9 +270,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     }
     break;
     // update the display
-    case GUI_MSG_REFRESH_THUMBS:
-      Refresh();
-      break;
+  case GUI_MSG_REFRESH_THUMBS:
+    Refresh();
+    break;
   }
   return CGUIWindowVideoBase::OnMessage(message);
 }

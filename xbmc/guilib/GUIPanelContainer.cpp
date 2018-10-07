@@ -53,9 +53,11 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
   int cacheBefore, cacheAfter;
   GetCacheOffsets(cacheBefore, cacheAfter);
 
+  int keepStart = CorrectOffset(offset - cacheBefore, 0);
+  int keepEnd   = CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0);
   // Free memory not used on screen
   if ((int)m_items.size() > m_itemsPerPage + cacheBefore + cacheAfter)
-    FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0));
+    FreeMemory(keepStart, keepEnd);
 
   CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
   float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
@@ -69,7 +71,7 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
   {
     if (current >= (int)m_items.size())
       break;
-    if (current >= 0)
+    if (current >= 0 && current >= keepStart && current <= keepEnd)
     {
       CGUIListItemPtr item = m_items[current];
       bool focused = (current == GetOffset() * m_itemsPerRow + GetCursor()) && m_bHasFocus;
@@ -92,7 +94,7 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
 
   // when we are scrolling up, offset will become lower (integer division, see offset calc)
   // to have same behaviour when scrolling down, we need to set page control to offset+1
-  UpdatePageControl(offset + (m_scroller.IsScrollingDown() ? 1 : 0));
+  UpdatePageControl(offset + (m_scroller.IsScrollingDown() ? 1 : 0), m_itemsPerRow);
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
@@ -430,13 +432,14 @@ void CGUIPanelContainer::CalculateLayout()
   // calculate the number of items to display
   if (m_orientation == HORIZONTAL)
   {
-    m_itemsPerRow = (int)(m_height / m_layout->Size(VERTICAL));
-    m_itemsPerPage = (int)(m_width / m_layout->Size(HORIZONTAL));
+    m_itemsPerRow = (int)(0.5 + (float)m_height / (float)m_layout->Size(VERTICAL));
+    m_itemsPerPage = (int)(0.5 + (float)m_width / (float)m_layout->Size(HORIZONTAL));
   }
   else
   {
-    m_itemsPerRow = (int)(m_width / m_layout->Size(HORIZONTAL));
-    m_itemsPerPage = (int)(m_height / m_layout->Size(VERTICAL));
+    m_itemsPerRow = (int)(0.5 + (float)m_width / (float)m_layout->Size(HORIZONTAL));
+    // this is really rows per page ?
+    m_itemsPerPage = (int)(0.5 + (float)m_height / (float)m_layout->Size(VERTICAL));
   }
   if (m_itemsPerRow < 1) m_itemsPerRow = 1;
   if (m_itemsPerPage < 1) m_itemsPerPage = 1;

@@ -43,6 +43,7 @@ public:
   CBackgroundInfoLoader();
   virtual ~CBackgroundInfoLoader();
 
+  void SetFocus(size_t start);
   void Load(CFileItemList& items);
   bool IsLoading();
   virtual void Run();
@@ -59,8 +60,11 @@ protected:
   virtual void OnLoaderStart() {};
   virtual void OnLoaderFinish() {};
 
+  size_t m_focus;
   CFileItemList *m_pVecItems;
-  std::vector<CFileItemPtr> m_vecItems; // FileItemList would delete the items and we only want to keep a reference.
+  // FileItemList would delete the items and we only want to keep a reference.
+  std::vector< std::pair<size_t, CFileItemPtr> > m_stage1;
+  std::vector<CFileItemPtr> m_stage2;
   CCriticalSection m_lock;
 
   volatile bool m_bIsLoading;
