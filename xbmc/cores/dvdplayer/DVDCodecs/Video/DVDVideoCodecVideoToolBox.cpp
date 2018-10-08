@@ -569,6 +569,15 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iHeight         = (unsigned int)m_display_queue->height;
   pDvdVideoPicture->iDisplayWidth   = (unsigned int)m_display_queue->width;
   pDvdVideoPicture->iDisplayHeight  = (unsigned int)m_display_queue->height;
+  if (m_hints.aspect > 1.0 && !m_hints.forced_aspect)
+  {
+    pDvdVideoPicture->iDisplayWidth  = ((int)lrint(pDvdVideoPicture->iHeight * m_hints.aspect)) & ~3;
+    if (pDvdVideoPicture->iDisplayWidth > pDvdVideoPicture->iWidth)
+    {
+      pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
+      pDvdVideoPicture->iDisplayHeight = ((int)lrint(pDvdVideoPicture->iWidth / m_hints.aspect)) & ~3;
+    }
+  }
   if (m_hints.colorrange == AVCOL_RANGE_JPEG)
     pDvdVideoPicture->color_range = 1;
   else
