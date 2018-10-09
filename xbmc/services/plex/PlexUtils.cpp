@@ -680,7 +680,8 @@ bool CPlexUtils::GetPlexFilter(CFileItemList &items, std::string url, std::strin
     std::string title2 = variant["MediaContainer"]["title2"].asString();
     if (!directory.isNull())
     {
-      for (auto variantIt = directory.begin_array(); variantIt != directory.end_array(); ++variantIt)
+      const CVariant variantMedia = makeVariantArrayIfSingleItem(directory);
+      for (auto variantIt = variantMedia.begin_array(); variantIt != variantMedia.end_array(); ++variantIt)
       {
         if (*variantIt != CVariant::VariantTypeNull)
         {
