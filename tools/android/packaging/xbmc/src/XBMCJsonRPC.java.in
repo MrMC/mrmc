@@ -1363,53 +1363,41 @@ public class XBMCJsonRPC
         if (req == null || !req.has("result"))
           continue;
 
+        Media med = null;
         File file = files.get(i);
         String mediaType = file.getMediatype();
         if (mediaType.equals("movie"))
         {
           JsonObject details = req.getAsJsonObject("result").getAsJsonObject("moviedetails");
-          Movie med = createMovieFromJson(details);
-          if (med != null)
-          {
-            medias.add(med);
-            nbItems++;
-          }
+          med = createMovieFromJson(details);
         }
         else if (mediaType.equals("episode"))
         {
           JsonObject details = req.getAsJsonObject("result").getAsJsonObject("episodedetails");
-          TVEpisode med = createTVEpisodeFromJson(details);
-          if (med != null)
-          {
-            medias.add(med);
-            nbItems++;
-          }
+          med = createTVEpisodeFromJson(details);
         }
         else if (mediaType.equals("tvshow"))
         {
           JsonObject details = req.getAsJsonObject("result").getAsJsonObject("tvshowdetails");
-          TVShow med = createTVShowFromJson(details);
-          medias.add(med);
-          nbItems++;
+          med = createTVShowFromJson(details);
         }
         else if (mediaType.equals("album"))
         {
           JsonObject details = req.getAsJsonObject("result").getAsJsonObject("albumdetails");
-          Album med = createAlbumFromJson(details);
-          medias.add(med);
-          nbItems++;
+          med = createAlbumFromJson(details);
         }
         else if (mediaType.equals("song"))
         {
           JsonObject details = req.getAsJsonObject("result").getAsJsonObject("songdetails");
-          Song med = createSongFromJson(details);
-          medias.add(med);
-          nbItems++;
+          med = createSongFromJson(details);
         }
         else if (mediaType.equals("musicvideo"))
         {
           JsonObject details = req.getAsJsonObject("result").getAsJsonObject("musicvideodetails");
-          MusicVideo med = createMusicvideoFromJson(details);
+          med = createMusicvideoFromJson(details);
+        }
+        if (med != null)
+        {
           medias.add(med);
           nbItems++;
         }
