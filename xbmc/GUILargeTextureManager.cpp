@@ -87,6 +87,7 @@ bool CImageLoader::DoWork()
   if (!m_use_cache || WasLoaderCancelled())
     return false; // We're done
 
+#if 0
   // not in our texture cache or it failed to load from it,
   // so try and load directly and then cache the result
   if (texturePath.find("transcode") != std::string::npos)
@@ -98,6 +99,7 @@ bool CImageLoader::DoWork()
     CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
   }
   else
+#endif
   {
     CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
   }
