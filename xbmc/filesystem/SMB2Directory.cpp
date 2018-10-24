@@ -38,25 +38,45 @@ CSMB2Directory::~CSMB2Directory(void)
 bool CSMB2Directory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   assert(url.IsProtocol("smb"));
-  if (!strlen(url.GetShareName().c_str()))
-    return false;
 
-  CSMB2SessionPtr conn = CSMB2SessionManager::Open(url);
-  if (!conn)
+  bool rtn = false;
+  if (url.GetShareName().empty())
   {
-    int err = CSMB2SessionManager::GetLastError();
-    if ( err == -EACCES       // SMB2_STATUS_ACCESS_DENIED
-      || err == -ECONNREFUSED // SMB2_STATUS_LOGON_FAILURE
-      )
+    // we are browsing a server for shares,
+    // do not retain the session
+    CSMB2SessionPtr conn = CSMB2SessionManager::Open(url, false);
+    if (!conn)
     {
-      RequireAuthentication(url);
+      int err = CSMB2SessionManager::GetLastError();
+      if ( err == -EACCES       // SMB2_STATUS_ACCESS_DENIED
+        || err == -ECONNREFUSED // SMB2_STATUS_LOGON_FAILURE
+        )
+      {
+        RequireAuthentication(url);
+      }
+      return false;
     }
-    return false;
+    rtn = conn->GetShares(url, items);
+    conn->Close();
+  }
+  else
+  {
+    CSMB2SessionPtr conn = CSMB2SessionManager::Open(url);
+    if (!conn)
+    {
+      int err = CSMB2SessionManager::GetLastError();
+      if ( err == -EACCES       // SMB2_STATUS_ACCESS_DENIED
+        || err == -ECONNREFUSED // SMB2_STATUS_LOGON_FAILURE
+        )
+      {
+        RequireAuthentication(url);
+      }
+      return false;
+    }
+    rtn = conn->GetDirectory(url, items);
   }
 
-  auto res = conn->GetDirectory(url, items);
-  return res;
-
+  return rtn;
 }
 
 bool CSMB2Directory::Create(const CURL& url)

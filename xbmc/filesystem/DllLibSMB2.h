@@ -98,8 +98,8 @@ public:
   virtual int smb2_echo_async(struct smb2_context *smb2, smb2_command_cb cb, void *cb_data)=0;
   virtual int smb2_echo(struct smb2_context *smb2)=0;
 
-  virtual int smb2_share_enum_async(struct smb2_context *smb2,
-    const char *server, smb2_command_cb cb, void *cb_data)=0;
+  virtual int smb2_share_enum_async(struct smb2_context *smb2, smb2_command_cb cb, void *cb_data)=0;
+  virtual void smb2_free_data(struct smb2_context *smb2, void *ptr)=0;
 };
 
 class DllLibSMB2 : public DllDynamic, DllLibSMB2Interface
@@ -155,7 +155,8 @@ class DllLibSMB2 : public DllDynamic, DllLibSMB2Interface
   DEFINE_METHOD3(int,                   smb2_ftruncate, (struct smb2_context *p1, struct smb2fh *p2, uint64_t p3))
   DEFINE_METHOD3(int,                   smb2_echo_async, (struct smb2_context *p1, smb2_command_cb p2, void *p3))
   DEFINE_METHOD1(int,                   smb2_echo, (struct smb2_context *p1))
-  DEFINE_METHOD4(int,                   smb2_share_enum_async, (struct smb2_context *p1, const char *p2, smb2_command_cb p3, void *p4))
+  DEFINE_METHOD3(int,                   smb2_share_enum_async, (struct smb2_context *p1, smb2_command_cb p2, void *p3))
+  DEFINE_METHOD2(void,                  smb2_free_data, (struct smb2_context *p1, void *p2))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(smb2_init_context,        smb2_init_context)
@@ -206,5 +207,7 @@ class DllLibSMB2 : public DllDynamic, DllLibSMB2Interface
     RESOLVE_METHOD_RENAME(smb2_echo_async,          smb2_echo_async)
     RESOLVE_METHOD_RENAME(smb2_echo,                smb2_echo)
     RESOLVE_METHOD_RENAME(smb2_share_enum_async,    smb2_share_enum_async)
+    RESOLVE_METHOD_RENAME(smb2_free_data,           smb2_free_data)
+
   END_METHOD_RESOLVE()
 };

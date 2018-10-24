@@ -51,7 +51,7 @@ typedef std::vector<struct file_open*> files_vec_t;
 class CSMB2SessionManager
 {
 public:
-  static CSMB2SessionPtr Open(const CURL& url);
+  static CSMB2SessionPtr Open(const CURL& url, bool retain = true);
   static void* OpenFile(const CURL& url, int mode = O_RDONLY);
 
   static void DisconnectAll();
@@ -73,6 +73,7 @@ public:
   static CSMB2SessionPtr GetForContext(void* context);
 
   // static operations
+  bool GetShares(const CURL& url, CFileItemList &items);
   bool GetDirectory(const CURL& url, CFileItemList &items);
   int Stat(const CURL& url, struct __stat64* buffer);
   bool Delete(const CURL& url);

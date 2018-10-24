@@ -32,6 +32,7 @@ extern "C"
 #include "PasswordManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "URL.h"
 
 #include <poll.h>
@@ -143,13 +144,15 @@ session_map_t CSMB2SessionManager::m_sessions;
 int CSMB2SessionManager::m_lastError = 0;
 DllLibSMB2* CSMB2SessionManager::m_smb2lib = nullptr;
 
-CSMB2SessionPtr CSMB2SessionManager::Open(const CURL &url)
+CSMB2SessionPtr CSMB2SessionManager::Open(const CURL &url, bool retain)
 {
   CURL authURL(url);
   CPasswordManager::GetInstance().AuthenticateURL(authURL);
 
   std::string hostname = authURL.GetHostName();
   std::string sharename = authURL.GetShareName();
+  if (sharename.empty())
+    sharename = "IPC$";
   std::string domain = !strlen(authURL.GetDomain().c_str()) ? "MicrosoftAccount" : authURL.GetDomain();
   std::string username = !strlen(authURL.GetUserName().c_str()) ? "Guest" : authURL.GetUserName();
   std::string password = authURL.GetPassWord();
@@ -171,15 +174,16 @@ CSMB2SessionPtr CSMB2SessionManager::Open(const CURL &url)
   }
 
   // open new session
-  CSMB2SessionPtr new_sess = CSMB2SessionPtr(new CSMB2Session(m_smb2lib, hostname, domain, username, password, sharename));
-  m_lastError = new_sess->GetLastError();
+  CSMB2SessionPtr newSession = CSMB2SessionPtr(new CSMB2Session(m_smb2lib, hostname, domain, username, password, sharename));
+  m_lastError = newSession->GetLastError();
 
-  if (!new_sess->IsValid())
+  if (!newSession->IsValid())
     return nullptr;
 
-  m_sessions[key] = new_sess;
+  if (retain)
+    m_sessions[key] = newSession;
 
-  return new_sess;
+  return newSession;
 }
 
 void* CSMB2SessionManager::OpenFile(const CURL& url, int mode /*= O_RDONLY*/)
@@ -282,6 +286,56 @@ CSMB2Session::~CSMB2Session()
 bool CSMB2Session::IsIdle() const
 {
   return (XbmcThreads::SystemClockMillis() - m_lastAccess) > CONTEXT_TIMEOUT;
+}
+
+bool CSMB2Session::GetShares(const CURL& url, CFileItemList &items)
+{
+  bool rtn = false;
+  DllLibSMB2 *smb2lib = m_smb2lib;
+  struct sync_cb_data cb_data = { 0 };
+
+  int ret = ProcessAsync(m_smb2lib, "getshares", cb_data, [&smb2lib](smb_ctx ctx, smb_cb cb, smb_data data) {
+    return smb2lib->smb2_share_enum_async(ctx, cb, &data);
+  });
+
+  if (cb_data.status)
+  {
+    m_lastError = ret;
+    CLog::Log(LOGERROR, "SMB2: getshares failed: %s", m_smb2lib->smb2_get_error(m_smb_context));
+    return rtn;
+  }
+
+  m_lastError = 0;
+  std::string rootpath = url.Get();
+  struct srvsvc_netshareenumall_rep* rep = static_cast<struct srvsvc_netshareenumall_rep*>(cb_data.data);
+
+  //CLog::Log(LOGDEBUG, "Number of shares:%d", rep->ctr->ctr1.count);
+  for (uint32_t i = 0; i < rep->ctr->ctr1.count; i++)
+  {
+    if ((rep->ctr->ctr1.array[i].type & 3) == SHARE_TYPE_DISKTREE)
+    {
+      //CLog::Log(LOGDEBUG, "%-20s %-20s", rep->ctr->ctr1.array[i].name, rep->ctr->ctr1.array[i].comment);
+      CFileItemPtr pItem(new CFileItem(rep->ctr->ctr1.array[i].name));
+      std::string path(rootpath);
+      path = URIUtils::AddFileToFolder(path, rep->ctr->ctr1.array[i].name);
+      URIUtils::AddSlashAtEnd(path);
+      pItem->SetPath(path);
+      pItem->m_bIsFolder = true;
+      pItem->m_bIsShareOrDrive = true;
+      // set the default folder icon
+      pItem->FillInDefaultIcon();
+      items.Add(pItem);
+      rtn = true;
+    }
+  }
+
+  m_smb2lib->smb2_free_data(m_smb_context, rep);
+  m_smb2lib->smb2_disconnect_share(m_smb_context);
+  // smb2_share_enum_async cannot reuse the context
+  m_smb2lib->smb2_destroy_context(m_smb_context);
+  m_smb_context = nullptr;
+
+  return rtn;
 }
 
 bool CSMB2Session::GetDirectory(const CURL& url, CFileItemList &items)
