@@ -265,7 +265,7 @@ bool CDVDAudioCodecAudioConverter::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
       break;
 
     case AV_CODEC_ID_EAC3:
-      if (hints.bitrate >= 640000)
+      if (hints.bitrate > 640000)
         return false;
       m_formatName = "dac-ec3";
       break;
