@@ -34,6 +34,11 @@ ifeq ($(OS),osx)
 	  mv $(PLATFORM)/src/syscfg/tmp.h $(PLATFORM)/src/syscfg/$$(awk 'NR==1 {print $$2}' $(PLATFORM)/src/syscfg/tmp.h)
   endif
 endif
+ifeq ($(OS),ios)
+ifeq ($(CPU),arm64)
+	  cp $(PLATFORM)/src/syscfg/lock-obj-pub.aarch64-apple-darwin.h $(PLATFORM)/src/syscfg/lock-obj-pub.arm-apple-darwin.h
+endif
+endif
 ifeq ($(OS),android)
 ifeq ($(CPU),arm64)
 	cp lock-obj-pub.aarch64-unknown-linux-android.h $(PLATFORM)/src/syscfg/lock-obj-pub.linux-android.h
