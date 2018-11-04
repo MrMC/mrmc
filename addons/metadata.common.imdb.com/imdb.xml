@@ -8,6 +8,9 @@
 	<ParseIMDBGenres dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">,\s*&quot;genre&quot;:\s(&quot;[^&quot;]+&quot;),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">"genre":\s\[(.*?)\]</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
