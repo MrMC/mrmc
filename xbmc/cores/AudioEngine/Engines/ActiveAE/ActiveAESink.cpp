@@ -239,8 +239,16 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           m_extSilenceTimer = 0;
           m_extStreaming = false;
           ReturnBuffers();
-          OpenSink();
 
+          try
+          {
+            OpenSink();
+          }
+          catch (...)
+          {
+            CLog::Log(LOGERROR, "CActiveAESink::%s - OpenSink failed: %d", __FUNCTION__, m_state);
+            m_extError = true;
+          }
           if (!m_extError)
           {
             SinkReply reply;
@@ -430,7 +438,15 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CSinkDataProtocol::SAMPLE:
           m_extError = false;
-          OpenSink();
+          try
+          {
+            OpenSink();
+          }
+          catch (...)
+          {
+            CLog::Log(LOGERROR, "CActiveAESink::%s - OpenSink failed: %d", __FUNCTION__, m_state);
+            m_extError = true;
+          }
           if (!m_extError)
           {
             OutputSamples(&m_sampleOfSilence);
