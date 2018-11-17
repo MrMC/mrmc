@@ -9,10 +9,6 @@ cd $WORKSPACE;git clean -xfd -e "project/cmake/.last_success_revision" -e "tools
 # if depends path has changed - cleanout everything and do a full rebuild
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
-  #Be sure to have latest version of mrmc skins/scripts
-  cd $WORKSPACE/tools/depends/target/mrmc-scripts; make distcleanfiles
-  cd $WORKSPACE/tools/depends/target/mrmc-skins; make distcleanfiles
-
   #clean up the rest too
   cd $WORKSPACE;git clean -xffd
   cd $WORKSPACE/tools/depends/;./bootstrap

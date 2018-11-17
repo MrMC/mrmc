@@ -6,6 +6,9 @@ LIBNAME=lokalise
 ARCHIVE=$(LIBNAME).tar.gz
 BASE_URL=https://github.com/MrMC/repo-resources/archive
 
+# No versioning, so download locally
+TARBALLS_LOCATION:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 all: .installed-$(PLATFORM)

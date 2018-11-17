@@ -9,6 +9,9 @@ ARCHIVE=$(SOURCE).tar.gz
 REALARCHIVE=master.tar.gz
 BASE_URL=https://github.com/MrMC/skin.pm3.hd/archive
 
+# No versioning, so always download locally
+TARBALLS_LOCATION:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
 RSYNC_SKIN =rsync -av
 RSYNC_SKIN +=--exclude .DS_Store* --exclude LICENSE.txt --exclude README.md --exclude changelog.txt
 RSYNC_SKIN +=--include /media/Textures.xbt
@@ -26,8 +29,7 @@ CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
-	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(REALARCHIVE)
-	mv -f $(REALARCHIVE) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	$(RETRIEVE_TOOL) -Ls --create-dirs -f $(BASE_URL)/$(REALARCHIVE) -o $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
