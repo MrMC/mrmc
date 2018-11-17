@@ -587,14 +587,14 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iDisplayWidth   = pDvdVideoPicture->iWidth;
   pDvdVideoPicture->iDisplayHeight  = pDvdVideoPicture->iHeight;
 
+  pthread_mutex_lock(&m_trackerQueueMutex);
   if (!m_trackerQueue.empty())
   {
-    pthread_mutex_lock(&m_trackerQueueMutex);
     pktTracker *tracker = m_trackerQueue.front();
     m_trackerQueue.pop_front();
-    pthread_mutex_unlock(&m_trackerQueueMutex);
     delete tracker;
   }
+  pthread_mutex_unlock(&m_trackerQueueMutex);
 
   return true;
 }
