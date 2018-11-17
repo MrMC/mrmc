@@ -8,10 +8,7 @@ then
   LITE_OPT="lite=yes"
 fi
 
-if [ "x$BUILD_OBB" == "xtrue" ]
-then
-  cd $WORKSPACE; make apk-obb-unsigned $LITE_OPT
-elif [ "x$BUILD_OBB" == "xYes" ]
+if [ "x$BUILD_OBB" == "xYes" ]
 then
   cd $WORKSPACE; make apk-obb-unsigned $LITE_OPT
 elif [ "x$BUILD_OBB" == "xNo" ]
@@ -23,8 +20,8 @@ fi
 $RUN_SIGNSTEP
 
 #rename for upload
-#e.x. xbmc-20130314-8c2fb31-Frodo-armeabi-v7a.apk
-UPLOAD_FILENAME="$(getAppName)$(if [ "$IS_LITE" == "yes" ]; then echo Lite;fi)-$(getBuildRevDateStr)-armeabi-v7a"
+#e.x. xbmc-20130314-8c2fb31-Frodo-arm-24-true.apk
+UPLOAD_FILENAME="$(getAppName)$(if [ "$IS_LITE" == "yes" ]; then echo Lite;fi)-$(getBuildRevDateStr)-$BUILD_ARCH-$BUILD_MIN_API-Obb$BUILD_OBB"
 mv $(getAppName)*.apk $UPLOAD_FILENAME.apk
 if [ -f *.obb ]
 then

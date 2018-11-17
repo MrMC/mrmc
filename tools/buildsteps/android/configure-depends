@@ -2,16 +2,29 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-NDK_ARCH="arm"
+if [ "x$BUILD_ARCH" == "xarm" ]
+then
+  BUILD_HOST=arm-linux-androideabi 
+elif [ "x$BUILD_ARCH" == "xaarch64" ]
+then
+  BUILD_HOST=aarch64-linux-android
+elif [ "x$BUILD_ARCH" == "xx86" ]
+then
+  BUILD_HOST=i686-linux-android 
+else
+  echo "Invalid BUILD_ARCH variable !! : $BUILD_ARCH"
+  exit 1
+fi
+
 #the following paths must exist on the slave and use the defined scheme here!
 NDK_PATH=$ANDROID_DEV_ROOT/android-ndk-r$NDK_VERSION
-TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$NDK_API-r$NDK_VERSION
+TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$BUILD_ARCH-$NDK_API-r$NDK_VERSION
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
     --with-tarballs=$TARBALLS \
-    --host=arm-linux-androideabi \
+    --host=$BUILD_HOST \
     --with-sdk-path=$SDK_PATH \
     --with-ndk-path=$NDK_PATH \
     $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
