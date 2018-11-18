@@ -39,7 +39,7 @@ public:
   virtual void         Stop            ();
   virtual void         GetDelay        (AEDelayStatus& status);
   virtual double       GetCacheTotal   () { return 0.0; } /* FIXME */
-  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
+  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp);
   virtual void         Drain           ();
   static  void         EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 private:

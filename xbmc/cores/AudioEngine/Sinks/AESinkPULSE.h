@@ -42,7 +42,7 @@ public:
   virtual double       GetDelay        () { return 0.0; }
   virtual void         GetDelay        (AEDelayStatus& status);
   virtual double       GetCacheTotal   ();
-  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
+  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp);
   virtual void         Drain           ();
 
   virtual bool HasVolume() { return true; };

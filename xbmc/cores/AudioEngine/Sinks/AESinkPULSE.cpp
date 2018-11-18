@@ -823,7 +823,7 @@ double CAESinkPULSE::GetCacheTotal()
   return (float)m_BufferSize / (float)m_BytesPerSecond;
 }
 
-unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
+unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp)
 {
   if (!m_IsAllocated)
     return 0;

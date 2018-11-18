@@ -1009,7 +1009,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   while (frames > 0)
   {
     maxFrames = std::min(frames, m_sinkFormat.m_frames);
-    written = m_sink->AddPackets(buffer, maxFrames, totalFrames - frames);
+    written = m_sink->AddPackets(buffer, maxFrames, totalFrames - frames, samples->timestamp);
     if (written == 0)
     {
       Sleep(500*m_sinkFormat.m_frames/m_sinkFormat.m_sampleRate);

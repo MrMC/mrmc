@@ -39,7 +39,7 @@ public:
 
   virtual void         GetDelay(AEDelayStatus& status);
   virtual double       GetCacheTotal   ();
-  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
+  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp);
   virtual void         Drain           ();
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 

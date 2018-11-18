@@ -402,7 +402,7 @@ void CAESinkOSS::GetDelay(AEDelayStatus& status)
   status.SetDelay((double)delay / (m_format.m_frameSize * m_format.m_sampleRate));
 }
 
-unsigned int CAESinkOSS::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
+unsigned int CAESinkOSS::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp)
 {
   int size = frames * m_format.m_frameSize;
   if (m_fd == -1)

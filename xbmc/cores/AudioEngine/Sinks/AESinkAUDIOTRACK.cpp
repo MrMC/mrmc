@@ -641,7 +641,7 @@ double CAESinkAUDIOTRACK::GetCacheTotal()
 
 // this method is supposed to block until all frames are written to the device buffer
 // when it returns ActiveAESink will take the next buffer out of a queue
-unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
+unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp)
 {
   if (!IsInitialized())
     return INT_MAX;
@@ -727,7 +727,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
 
   unsigned int written_frames = written / m_format.m_frameSize;
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
-  //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::AddPackets: time_to_add_ms=%f, written_frames=%u", time_to_add_ms, written_frames);
+//  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::AddPackets: timestamp=%lld, time_to_add_ms=%f, written_frames=%u", timestamp, time_to_add_ms, written_frames);
   if (m_passthrough)
   {
     // AT does not consume in a blocking way - it runs ahead and blocks

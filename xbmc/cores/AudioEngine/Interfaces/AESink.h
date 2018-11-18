@@ -63,7 +63,7 @@ public:
    * @param offset offset in frames where audio data starts
    * @return number of frames consumed by the sink
   */
-  virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) = 0;
+  virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp) = 0;
 
   /*!
    * @brief instruct the sink to add a pause
