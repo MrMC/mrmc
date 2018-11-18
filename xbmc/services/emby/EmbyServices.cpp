@@ -472,6 +472,22 @@ void CEmbyServices::Process()
   CLog::Log(LOGDEBUG, "CEmbyServices::Process bgn");
   SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 
+  // This gets started when network comes up but we need to
+  // wait until gui is up before poking for emby servers
+  // there is no real indication that gui has something
+  // in focus, so we wait another 0.75 secs before continuing.
+  while (!m_bStop)
+  {
+    if (g_application.IsAppInitialized() && g_application.IsAppFocused())
+    {
+      m_processSleep.WaitMSec(750);
+      m_processSleep.Reset();
+      break;
+    }
+    m_processSleep.WaitMSec(250);
+    m_processSleep.Reset();
+  }
+
   GetUserSettings();
 
   bool signInByPin, signInByManual;
