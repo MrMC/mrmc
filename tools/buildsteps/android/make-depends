@@ -7,3 +7,8 @@ then
   cd $WORKSPACE/tools/depends;make -j $BUILDTHREADS && tagSuccessFulBuild $WORKSPACE/tools/depends
 fi
 
+# always make mrmc-* stuff
+cd $WORKSPACE/tools/depends/target/mrmc-repo-resources; make
+cd $WORKSPACE/tools/depends/target/mrmc-scripts; make
+cd $WORKSPACE/tools/depends/target/mrmc-skins; make
+

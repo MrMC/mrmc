@@ -30,3 +30,6 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM) $(PREFIX)/mrmc/repo-resources
+
+distcleanfiles::
+	rm -rf $(PLATFORM) .installed-$(PLATFORM) $(PREFIX)/mrmc/repo-resources $(TARBALLS_LOCATION)/$(ARCHIVE)
