@@ -922,16 +922,7 @@ std::string CDarwinUtils::GetAudioRoute()
 #if defined(TARGET_DARWIN_IOS)
   AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
   AVAudioSessionRouteDescription *currentRoute = [myAudioSession currentRoute];
-  NSString *output = nullptr;
-  try
-  {
-    // this can thow when coming back from sleep on AppleTV4/4k
-    output = [[currentRoute.outputs objectAtIndex:0] portType];
-  }
-  catch (...)
-  {
-  }
-
+  NSString *output = [[currentRoute.outputs objectAtIndex:0] portType];
   if (output)
     route = [output UTF8String];
 #endif
