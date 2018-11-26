@@ -41,7 +41,7 @@ enum EINTERLACEMETHOD
 
   VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED=3,
   VS_INTERLACEMETHOD_RENDER_WEAVE=4,
-  
+
   VS_INTERLACEMETHOD_RENDER_BOB_INVERTED=5,
   VS_INTERLACEMETHOD_RENDER_BOB=6,
 
@@ -78,6 +78,13 @@ enum EINTERLACEMETHOD
   VS_INTERLACEMETHOD_MAX // do not use and keep as last enum value.
 };
 
+enum ETONEMAPMETHOD
+{
+  VS_TONEMAPMETHOD_OFF=0,
+  VS_TONEMAPMETHOD_REINHARD,
+  VS_TONEMAPMETHOD_MAX
+};
+
 enum ESCALINGMETHOD
 {
   VS_SCALINGMETHOD_NEAREST=0,
@@ -89,7 +96,7 @@ enum ESCALINGMETHOD
   VS_SCALINGMETHOD_LANCZOS3,
   VS_SCALINGMETHOD_SINC8,
   VS_SCALINGMETHOD_NEDI,
-  
+
   VS_SCALINGMETHOD_BICUBIC_SOFTWARE,
   VS_SCALINGMETHOD_LANCZOS_SOFTWARE,
   VS_SCALINGMETHOD_SINC_SOFTWARE,
@@ -133,7 +140,6 @@ public:
   bool  m_CustomNonLinStretch;
   int m_AudioStream;
   float m_VolumeAmplification;
-  bool m_OutputToAllSpeakers;
   int m_SubtitleStream;
   float m_SubtitleDelay;
   bool m_SubtitleOn;
@@ -149,8 +155,10 @@ public:
   int m_StereoMode;
   bool m_StereoInvert;
   int m_VideoStream;
-
-private:
+  int m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
+  float m_ToneMapParam = 1.0;
+  int m_Orientation = 0;
+  int m_CenterMixLevel = 0; // relative to metadata or default
 };
 
 #endif // !defined(AFX_VIDEOSETTINGS_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)

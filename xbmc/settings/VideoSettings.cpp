@@ -50,7 +50,6 @@ CVideoSettings::CVideoSettings()
   m_PostProcess = false;
   m_VolumeAmplification = 0;
   m_AudioDelay = 0.0f;
-  m_OutputToAllSpeakers = false;
   m_ResumeTime = 0;
   m_StereoMode = 0;
   m_StereoInvert = false;
@@ -80,9 +79,12 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_PostProcess != right.m_PostProcess) return true;
   if (m_VolumeAmplification != right.m_VolumeAmplification) return true;
   if (m_AudioDelay != right.m_AudioDelay) return true;
-  if (m_OutputToAllSpeakers != right.m_OutputToAllSpeakers) return true;
   if (m_ResumeTime != right.m_ResumeTime) return true;
   if (m_StereoMode != right.m_StereoMode) return true;
   if (m_StereoInvert != right.m_StereoInvert) return true;
+  if (m_ToneMapMethod != right.m_ToneMapMethod) return true;
+  if (m_ToneMapParam != right.m_ToneMapParam) return true;
+  if (m_Orientation != right.m_Orientation) return true;
+  if (m_CenterMixLevel != right.m_CenterMixLevel) return true;
   return false;
 }
