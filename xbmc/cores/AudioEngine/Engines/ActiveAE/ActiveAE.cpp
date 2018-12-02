@@ -1603,6 +1603,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
     format.m_streamInfo.m_channels = 2;
     format.m_streamInfo.m_sampleRate = 48000;
+    format.m_streamInfo.m_ac3FrameSize = 2560;   // 640kbps
     if (mode)
       *mode = MODE_TRANSCODE;
   }
