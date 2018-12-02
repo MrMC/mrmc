@@ -338,7 +338,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         m_format.m_frames = m_format.m_streamInfo.m_ac3FrameSize;
         if (m_format.m_frames == 0)
           m_format.m_frames = 1536;
-        m_format.m_frames *= 4;
+        m_format.m_frames *= 8;
         if (!m_passthroughIsIECPacked && CJNIAudioFormat::ENCODING_AC3 != -1)
           m_encoding = CJNIAudioFormat::ENCODING_AC3;
         break;
@@ -368,20 +368,18 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       // DTS
       case CAEStreamInfo::STREAM_TYPE_DTS_512:
       case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-        m_format.m_frames = 512;
-        m_format.m_frames *= 4;
+        m_format.m_frames = 2012;
+        m_format.m_frames *= 8;
         if (!m_passthroughIsIECPacked && CJNIAudioFormat::ENCODING_DTS != -1)
           m_encoding = CJNIAudioFormat::ENCODING_DTS;
         break;
       case CAEStreamInfo::STREAM_TYPE_DTS_1024:
-        m_format.m_frames = 1024;
-        m_format.m_frames *= 2;
+        m_format.m_frames = 4 * 5462;
         if (!m_passthroughIsIECPacked && CJNIAudioFormat::ENCODING_DTS != -1)
           m_encoding = CJNIAudioFormat::ENCODING_DTS;
         break;
       case CAEStreamInfo::STREAM_TYPE_DTS_2048:
-        m_format.m_frames = 2048;
-        m_format.m_frames *= 1;
+        m_format.m_frames = 4 * 5462;
         if (!m_passthroughIsIECPacked && CJNIAudioFormat::ENCODING_DTS != -1)
           m_encoding = CJNIAudioFormat::ENCODING_DTS;
         break;
