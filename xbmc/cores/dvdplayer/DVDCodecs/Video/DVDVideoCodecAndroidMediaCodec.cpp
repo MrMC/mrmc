@@ -1309,6 +1309,14 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(AMediaFormat* mediaf
       width = stride = m_hints.width;
       height = slice_height = m_hints.height;
     }
+    // FireTV stick gen3 quirk: Returned size > frame size
+    if (StringUtils::StartsWith(CJNIBuild::MODEL, "AFTMM"))
+    {
+      width = stride = m_hints.width;
+      height = slice_height = m_hints.height;
+    }
+
+
     // No color-format? Initialize with the one we detected as valid earlier
     if (color_format == 0)
       color_format = m_colorFormat;

@@ -21,6 +21,7 @@
 #include "system.h"
 
 #include <cstdlib> // std::abs(int) prototype
+#include <cmath>
 #include <algorithm>
 #include "BaseRenderer.h"
 #include "settings/DisplaySettings.h"
@@ -272,7 +273,7 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
     // if it has a matching fps mode, which is evaluated below
 
     loop_diff = info.iScreenWidth - m_sourceWidth;
-    if (loop_diff < 0)
+    if (adjustReso && loop_diff < 0)
     {
       // Do not allow downscaling
       continue;
