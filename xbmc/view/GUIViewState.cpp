@@ -81,8 +81,8 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.IsProtocol("musicsearch"))
     return new CGUIViewStateMusicSearch(items);
 
-  if (!items.IsMediaServiceBased() && (items.IsSmartPlayList() || url.IsProtocol("upnp") ||
-      items.IsLibraryFolder()))
+  if (items.IsSmartPlayList() || url.IsProtocol("upnp") ||
+      items.IsLibraryFolder())
   {
     if (items.GetContent() == "songs" ||
         items.GetContent() == "albums" ||
