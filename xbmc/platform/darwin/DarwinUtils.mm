@@ -118,16 +118,23 @@ enum iosPlatform
   iPhoneSE,
   iPhone7,
   iPhone8,
+  iPhoneXR,
   iPadAir2Wifi,
   iPadAir2Cellular,
   iPadPro9_7InchWifi,
   iPadPro9_7InchCellular,
+  iPad6thGeneration9_7InchWifi,
+  iPad6thGeneration9_7InchCellular,
   iPadPro12_9InchWifi,
   iPadPro12_9InchCellular,
   iPadPro2_12_9InchWifi,
   iPadPro2_12_9InchCellular,
+  iPadPro3_12_9InchWifi,
+  iPadPro3_12_9InchCellular,
   iPadPro_10_5InchWifi,
   iPadPro_10_5InchCellular,
+  iPadPro11InchWifi,
+  iPadPro11InchCellular,
   iPadMini3Wifi,
   iPadMini3Cellular,
   iPadMini4Wifi,
@@ -137,6 +144,8 @@ enum iosPlatform
   iPhone7Plus,
   iPhone8Plus,
   iPhoneX,
+  iPhoneXS,
+  iPhoneXSMax,
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
@@ -201,6 +210,9 @@ enum iosPlatform getIosPlatform()
       case "iPhone10,4"_mkhash: eDev = iPhone8; break;
       case "iPhone10,5"_mkhash: eDev = iPhone8Plus; break;
       case "iPhone10,6"_mkhash: eDev = iPhoneX; break;
+      case "iPhone11,2"_mkhash: eDev = iPhoneXS; break;
+      case "iPhone11,6"_mkhash: eDev = iPhoneXSMax; break;
+      case "iPhone11,8"_mkhash: eDev = iPhoneXR; break;
       case "iPod1,1"_mkhash: eDev = iPodTouch1G; break;
       case "iPod2,1"_mkhash: eDev = iPodTouch2G; break;
       case "iPod3,1"_mkhash: eDev = iPodTouch3G; break;
@@ -245,6 +257,16 @@ enum iosPlatform getIosPlatform()
       case "iPad7,2"_mkhash: eDev = iPadPro2_12_9InchCellular; break;
       case "iPad7,3"_mkhash: eDev = iPadPro_10_5InchWifi; break;
       case "iPad7,4"_mkhash: eDev = iPadPro_10_5InchCellular; break;
+      case "iPad7,5"_mkhash: eDev = iPad6thGeneration9_7InchWifi; break;
+      case "iPad7,6"_mkhash: eDev = iPad6thGeneration9_7InchCellular; break;
+      case "iPad8,1"_mkhash: eDev = iPadPro11InchWifi; break;
+      case "iPad8,2"_mkhash: eDev = iPadPro11InchWifi; break;
+      case "iPad8,3"_mkhash: eDev = iPadPro11InchCellular; break;
+      case "iPad8,4"_mkhash: eDev = iPadPro11InchCellular; break;
+      case "iPad8,5"_mkhash: eDev = iPadPro3_12_9InchWifi; break;
+      case "iPad8,6"_mkhash: eDev = iPadPro3_12_9InchWifi; break;
+      case "iPad8,7"_mkhash: eDev = iPadPro3_12_9InchCellular; break;
+      case "iPad8,8"_mkhash: eDev = iPadPro3_12_9InchCellular; break;
       case "AppleTV2,1"_mkhash: eDev = AppleTV2; break;
       case "AppleTV5,3"_mkhash: eDev = AppleTV4; break;
       case "AppleTV6,2"_mkhash: eDev = AppleTV4K; break;
