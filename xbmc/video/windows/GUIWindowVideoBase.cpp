@@ -716,6 +716,8 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
   case SELECT_ACTION_INFO:
     if (OnItemInfo(iItem))
       return true;
+    else
+      return OnResumeItem(iItem);
     break;
   case SELECT_ACTION_MORE:
     OnPopupMenu(iItem);
