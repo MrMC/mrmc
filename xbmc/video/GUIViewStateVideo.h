@@ -71,6 +71,7 @@ class CGUIViewStateVideoMovies : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateVideoMovies(const CFileItemList& items);
+  virtual bool AutoPlayNextItem();
 protected:
   virtual void SaveViewState();
 };
@@ -95,6 +96,7 @@ class CGUIViewStateVideoEpisodes : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateVideoEpisodes(const CFileItemList& items);
+  virtual bool AutoPlayNextItem();
 protected:
   virtual void SaveViewState();
 };

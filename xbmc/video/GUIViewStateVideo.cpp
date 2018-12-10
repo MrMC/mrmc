@@ -508,6 +508,15 @@ CGUIViewStateVideoMovies::CGUIViewStateVideoMovies(const CFileItemList& items) :
   LoadViewState(items.GetPath(), WINDOW_VIDEO_NAV);
 }
 
+bool CGUIViewStateVideoMovies::AutoPlayNextItem()
+{
+  // below is to maintain current behaviour with MrMC database, Plex/Emby movie list is recognised as
+  // GUIViewStateVideoMovies, MrMC database is GUIViewStateWindowVideoNav.
+  if (m_items.IsMediaServiceBased())
+    return CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM);
+  return false;
+}
+
 void CGUIViewStateVideoMovies::SaveViewState()
 {
   SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, CViewStateSettings::GetInstance().Get("videonavtitles"));
@@ -622,6 +631,15 @@ CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& item
   SetViewAsControl(viewState->m_viewMode);
 
   LoadViewState(items.GetPath(), WINDOW_VIDEO_NAV);
+}
+
+bool CGUIViewStateVideoEpisodes::AutoPlayNextItem()
+{
+  // below is to maintain current behaviour with MrMC database, Plex/Emby movie list is recognised as
+  // GUIViewStateVideoMovies, MrMC database is GUIViewStateWindowVideoNav.
+  if (m_items.IsMediaServiceBased())
+    return CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM);
+  return false;
 }
 
 void CGUIViewStateVideoEpisodes::SaveViewState()
