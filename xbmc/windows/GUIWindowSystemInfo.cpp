@@ -29,6 +29,10 @@
 #include "storage/MediaManager.h"
 #include "guiinfo/GUIInfoLabels.h"
 
+#ifdef TARGET_DARWIN
+#include "platform/darwin/DarwinUtils.h"
+#endif
+
 #define CONTROL_BT_STORAGE  94
 #define CONTROL_BT_DEFAULT  95
 #define CONTROL_BT_NETWORK  96
@@ -60,6 +64,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + CSysInfo::GetVersion());
       SET_CONTROL_LABEL(53, CSysInfo::GetBuildDate());
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, PVR::CPVRManager::GetInstance().IsStarted());
+#ifdef TARGET_DARWIN
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_STORAGE,!(CDarwinUtils::IsIOS() || CDarwinUtils::IsAppleTV()));
+#endif
       return true;
     }
     break;
