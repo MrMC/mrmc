@@ -346,6 +346,15 @@ bool CDarwinUtils::IsAppleTV4KOrAbove(void)
   return isAppleTV4KOrAbove == 1;
 }
 
+bool CDarwinUtils::IsIOS(void)
+{
+  bool IsIOS = false;
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+  IsIOS = true;
+#endif
+  return IsIOS;
+}
+
 bool CDarwinUtils::HasDisplayRateSwitching(void)
 {
   static int hasDisplayRateSwitching = -1;

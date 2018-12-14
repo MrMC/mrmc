@@ -36,6 +36,7 @@ public:
   static bool        IsSnowLeopard(void);
   static bool        IsAppleTV(void);
   static bool        IsAppleTV4KOrAbove(void);
+  static bool        IsIOS(void);
   static bool        HasDisplayRateSwitching(void);
   static bool        DeviceHasRetina(double &scale);
   static bool        DeviceHasLeakyVDA(void);
