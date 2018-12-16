@@ -15,19 +15,69 @@
   <body>
     <div id="header">
       <div id="commsErrorPanel" style="display: none;"></div>
-      <div id="navigation">
+      <img src="images/ajax-loader.gif" alt="Loading please wait" id="spinner" style="display: none">
+      
+      <div class="row-log">
+        <div class="column-log">
+          <div class="navContainer" id="log">
+            <img src="../images/logbutton.png" style="width:50%;">
+            <div class="bottom-center-log" id="logText">Log</div>
+          </div>
+        </div>
+        <div class="column-log" id="logold">
+          <div class="navContainer" >
+            <img src="../images/logbutton.png" style="width:50%;">
+            <div class="bottom-center-log" id="logoldText">Log Old</div>
+          </div>
+        </div>
+      </div>  
+    
+<!--     <div id="navigation">
         <ul>
-          <li id="logold">MrMC old log</li>
+           <li id="logold">MrMC old log</li>
           <li id="log">MrMC log</li>
           <li id="musicLibrary">Music</li>
           <li id="tvshowLibrary">TV Shows</li>
           <li id="movieLibrary">Movies</li>
           <li id="remoteControl">Remote</li>
           <li id="profiles">Profiles</li>
-          <!-- <li id="authcloud">Authorize Cloud</li> -->
+          <li id="authcloud">Authorize Cloud</li>
         </ul>
+    </div> -->
+      <img class="logoContainer" src="images/Logo_dark.png"></img>
+      
+      <div class="row">
+        <div class="column">
+          <div class="navContainer" id="remoteControl">
+            <img src="../images/remotebutton.png" style="width:70%;">
+            <div class="bottom-center" id="remoteControlText">Remote</div>
+          </div>
+        </div>
+        <div class="column" id="movieLibrary">
+          <div class="navContainer" >
+            <img src="../images/moviesbutton.png" style="width:70%;">
+            <div class="bottom-center" id="movieLibraryText">Movies</div>
+          </div>
+        </div>
+        <div class="column" id="tvshowLibrary">
+          <div class="navContainer">
+            <img src="../images/tvbutton.png" style="width:70%;">
+            <div class="bottom-center" id="tvshowLibraryText">Tv Shows</div>
+          </div>
+        </div>
+        <div class="column" id="musicLibrary">
+          <div class="navContainer">
+            <img src="../images/musicbutton.png" style="width:70%;">
+            <div class="bottom-center" id="musicLibraryText">Music</div>
+          </div>
+        </div>
+        <div class="column" id="authcloud">
+          <div class="navContainer">
+            <img src="../images/cloudbutton.png" style="width:70%;">
+            <div class="bottom-center" id="authcloudText">Authorize Cloud</div>
+          </div>
+        </div>
       </div>
-      <img src="images/ajax-loader.gif" alt="Loading please wait" id="spinner" style="display: none">
     </div>
     <div id="body">
       <div id="topScrollFade" style="display: none;"></div>

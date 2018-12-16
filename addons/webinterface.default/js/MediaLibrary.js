@@ -42,15 +42,15 @@ MediaLibrary.prototype = {
     $(document).on('contextmenu', jQuery.proxy(this.handleContextMenu, this));
   },
   resetPage: function () {
-    $('#musicLibrary').removeClass('selected');
-    $('#movieLibrary').removeClass('selected');
-    $('#tvshowLibrary').removeClass('selected');
-    $('#remoteControl').removeClass('selected');
-    $('#pictureLibrary').removeClass('selected');
+    $('#musicLibraryText').removeClass('selected');
+    $('#movieLibraryText').removeClass('selected');
+    $('#tvshowLibraryText').removeClass('selected');
+    $('#remoteControlText').removeClass('selected');
+    $('#pictureLibraryText').removeClass('selected');
     $('#profiles').removeClass('selected');
-    $('#log').removeClass('selected');
-    $('#logold').removeClass('selected');
-    $('#authcloud').removeClass('selected');
+    $('#logText').removeClass('selected');
+    $('#logoldText').removeClass('selected');
+    $('#authcloudText').removeClass('selected');
     $('iframe').remove();
     $('button').remove();
     $('label').remove();
@@ -80,7 +80,7 @@ MediaLibrary.prototype = {
   },
   remoteControlOpen: function (event) {
     this.resetPage();
-    $('#remoteControl').addClass('selected');
+    $('#remoteControlText').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#remoteContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
@@ -90,28 +90,28 @@ MediaLibrary.prototype = {
         .addClass('contentContainer');
       $('#content').append(libraryContainer);
       var keys=[
-        {name:'up',width:'40px',height:'30px',top:'28px',left:'58px'},
-        {name:'down',width:'40px',height:'30px',top:'122px',left:'58px'},
-        {name:'left',width:'40px',height:'30px',top:'74px',left:'15px'},
-        {name:'right',width:'40px',height:'30px',top:'74px',left:'104px'},
-        {name:'ok',width:'40px',height:'30px',top:'74px',left:'58px'},
-        {name:'back',width:'40px',height:'30px',top:'13px',left:'161px'},
-        {name:'home',width:'40px',height:'30px',top:'154px',left:'8px'},
-        {name:'mute',width:'40px',height:'30px',top:'107px',left:'391px'},
-        {name:'power',width:'30px',height:'30px',top:'-3px',left:'13px'},
-        {name:'volumeup',width:'30px',height:'30px',top:'49px',left:'422px'},
-        {name:'volumedown',width:'30px',height:'30px',top:'49px',left:'367px'},
-        {name:'playpause',width:'32px',height:'23px',top:'62px',left:'260px'},
-        {name:'stop',width:'32px',height:'23px',top:'62px',left:'211px'},
-        {name:'next',width:'38px',height:'25px',top:'102px',left:'304px'},
-        {name:'previous',width:'38px',height:'25px',top:'101px',left:'160px'},
-        {name:'forward',width:'32px',height:'23px',top:'102px',left:'259px'},
-        {name:'rewind',width:'32px',height:'23px',top:'101px',left:'211px'},
-        {name:'cleanlib_a',width:'46px',height:'26px',top:'47px',left:'553px'},
-        {name:'updatelib_a',width:'46px',height:'26px',top:'47px',left:'492px'},
-        {name:'cleanlib_v',width:'46px',height:'26px',top:'111px',left:'553px'},
-        {name:'updatelib_v',width:'46px',height:'26px',top:'111px',left:'492px'},
-        {name:'codec',width:'40px',height:'30px',top:'154px',left:'600px'},
+        {name:'up',width:'40px',height:'40px',top:'15px',left:'70px'},
+        {name:'down',width:'40px',height:'40px',top:'125px',left:'70px'},
+        {name:'left',width:'40px',height:'40px',top:'70px',left:'15px'},
+        {name:'right',width:'40px',height:'40px',top:'70px',left:'122px'},
+        {name:'ok',width:'40px',height:'40px',top:'70px',left:'69px'},
+        {name:'home',width:'40px',height:'40px',top:'7px',left:'170px'},
+        {name:'back',width:'40px',height:'40px',top:'157px',left:'15px'},
+        // {name:'mute',width:'40px',height:'30px',top:'107px',left:'391px'},
+        // {name:'power',width:'30px',height:'30px',top:'-3px',left:'13px'},
+        // {name:'volumeup',width:'30px',height:'30px',top:'49px',left:'422px'},
+        // {name:'volumedown',width:'30px',height:'30px',top:'49px',left:'367px'},
+        {name:'playpause',width:'40px',height:'40px',top:'47px',left:'337px'},
+        {name:'stop',width:'40px',height:'40px',top:'47px',left:'282px'},
+        {name:'next',width:'40px',height:'40px',top:'102px',left:'390px'},
+        {name:'previous',width:'40px',height:'40px',top:'101px',left:'225px'},
+        {name:'forward',width:'40px',height:'40px',top:'102px',left:'339px'},
+        {name:'rewind',width:'40px',height:'40px',top:'101px',left:'281px'},
+        {name:'cleanlib_a',width:'40px',height:'40px',top:'33px',left:'566px'},
+        {name:'updatelib_a',width:'40px',height:'40px',top:'36px',left:'506px'},
+        {name:'cleanlib_v',width:'40px',height:'40px',top:'116px',left:'566px'},
+        {name:'updatelib_v',width:'40px',height:'40px',top:'116px',left:'506px'},
+        {name:'codec',width:'40px',height:'40px',top:'157px',left:'623px'},
       ];
       for (var akey in keys) {
         var aremotekey=$('<p>').attr('id',keys[akey]['name']);
@@ -149,13 +149,13 @@ MediaLibrary.prototype = {
         if(event == "log")
         {
           logUrl = 'vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc' + logSufix + '.log?';
-          $('#log').addClass('selected');
+          $('#logText').addClass('selected');
           btnLabel = "Copy Log Content";
         }
         else
         {
           logUrl = 'vfs%2Fspecial%3A%2F%2Flogs%2Fmrmc' + logSufix + '.old.log?';
-          $('#logold').addClass('selected');
+          $('#logoldText').addClass('selected');
           btnLabel = "Copy Log (Old) Content";
         }
         $('.contentContainer').hide();
@@ -178,6 +178,7 @@ MediaLibrary.prototype = {
         iframe.height=height - 115;
         iframe.name=event;
         iframe.id=event;
+        iframe.style.backgroundColor = "white";
         $('#content').append(iframe);
       }
     });
@@ -187,7 +188,7 @@ MediaLibrary.prototype = {
     $('#footerPopover').hide();
     var logUrl;
     var btnLabel;
-    $('#authcloud').addClass('selected');
+    $('#authcloudText').addClass('selected');
 
     $('.contentContainer').hide();
 
@@ -195,10 +196,11 @@ MediaLibrary.prototype = {
 
     var input = document.createElement("input");
     input.type = "text";
-    input.value = "Paste your authourization token here";
+    input.value = "Paste your authorization token here";
     input.name = "auth_text";
     input.id = "auth_text";
     input.disabled = true;
+    input.style="display:none";
     div.appendChild(input);
 
     var buttonDB = document.createElement('button');
@@ -222,7 +224,7 @@ MediaLibrary.prototype = {
     $('#content').append(div);
   },
   shouldHandleEvent: function (event) {
-    var inRemoteControl = $('#remoteControl').hasClass('selected');
+    var inRemoteControl = $('#remoteControlText').hasClass('selected');
     return (!event.ctrlKey && !event.altKey && inRemoteControl);
   },
   handleKeyPress: function (event) {
@@ -352,6 +354,8 @@ MediaLibrary.prototype = {
       if (button.innerHTML == "Authorize DropBox")
       {
         document.getElementById('google').disabled = true;
+        document.getElementById('auth_text').style="display:center"
+        document.getElementById('auth_text').value = "Paste your authorization token here";
         document.getElementById('auth_text').disabled = false;
         $('#spinner').show();
         xbmc.rpc.request({
@@ -393,6 +397,8 @@ MediaLibrary.prototype = {
           }
         });
         document.getElementById('auth_text').disabled = true;
+        document.getElementById('auth_text').style="display:center"
+        document.getElementById('auth_text').value = "Paste your authorization token here";
         document.getElementById('google').disabled = false;
         button.innerHTML = "Authorize DropBox";
       }
@@ -510,7 +516,7 @@ MediaLibrary.prototype = {
   },
   musicLibraryOpen: function (event) {
     this.resetPage();
-    $('#musicLibrary').addClass('selected');
+    $('#musicLibraryText').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#libraryContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
@@ -1037,7 +1043,7 @@ MediaLibrary.prototype = {
   },
   movieLibraryOpen: function () {
     this.resetPage();
-    $('#movieLibrary').addClass('selected');
+    $('#movieLibraryText').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#movieLibraryContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
@@ -1099,7 +1105,7 @@ MediaLibrary.prototype = {
   },
   tvshowLibraryOpen: function () {
     this.resetPage();
-    $('#tvshowLibrary').addClass('selected');
+    $('#tvshowLibraryText').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#tvshowLibraryContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
@@ -1270,7 +1276,7 @@ MediaLibrary.prototype = {
     var directory = event.data.directory.file;
     var jsonDirectory = this.replaceAll(directory, "\\", "\\\\");
     this.resetPage();
-    $('#pictureLibrary').addClass('selected');
+    $('#pictureLibraryText').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#pictureLibraryDirContainer' + directory);
     if (!libraryContainer || libraryContainer.length === 0) {
@@ -1332,7 +1338,7 @@ MediaLibrary.prototype = {
   },
   pictureLibraryOpen: function () {
     this.resetPage();
-    $('#pictureLibrary').addClass('selected');
+    $('#pictureLibraryText').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#pictureLibraryContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
