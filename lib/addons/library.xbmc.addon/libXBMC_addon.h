@@ -64,7 +64,11 @@
   #define ADDON_HELPER_EXT      ".so"
 #endif
 #define ADDON_NAME "libXBMCaddon"
+#if defined(ANDROID)
+#define ADDON_DLL_NAME ADDON_NAME ADDON_HELPER_EXT
+#else
 #define ADDON_DLL_NAME ADDON_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#endif
 #define ADDON_DLL "/library.xbmc.addon/" ADDON_DLL_NAME
 
 #ifdef LOG_DEBUG

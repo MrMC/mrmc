@@ -28,7 +28,11 @@
 #include "libXBMC_addon.h"
 
 #define PVR_HELPER_NAME "libXBMCpvr"
+#if defined(ANDROID)
+#define PVR_HELPER_DLL_NAME PVR_HELPER_NAME ADDON_HELPER_EXT
+#else
 #define PVR_HELPER_DLL_NAME PVR_HELPER_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#endif
 #define PVR_HELPER_DLL "/library.xbmc.pvr/" PVR_HELPER_DLL_NAME
 
 #define DVD_TIME_BASE 1000000

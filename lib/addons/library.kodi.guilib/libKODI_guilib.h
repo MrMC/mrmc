@@ -29,7 +29,11 @@
 typedef void* GUIHANDLE;
 
 #define GUI_HELPER_NAME "libKODIguilib"
+#if defined(ANDROID)
+#define GUI_HELPER_DLL_NAME GUI_HELPER_NAME ADDON_HELPER_EXT
+#else
 #define GUI_HELPER_DLL_NAME GUI_HELPER_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#endif
 #define GUI_HELPER_DLL "/library.kodi.guilib/" GUI_HELPER_DLL_NAME
 
 /* current ADDONGUI API version */

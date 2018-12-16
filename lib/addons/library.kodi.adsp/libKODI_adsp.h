@@ -36,7 +36,11 @@ typedef void* ADSPHANDLE;
 #ifdef _WIN32
 #define ADSP_HELPER_DLL "\\library.kodi.adsp\\libKODI_adsp" ADDON_HELPER_EXT
 #else
+#if defined(ANDROID)
+#define ADSP_HELPER_DLL_NAME "libKODI_adsp" ADDON_HELPER_EXT
+#else
 #define ADSP_HELPER_DLL_NAME "libKODI_adsp-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#endif
 #define ADSP_HELPER_DLL "/library.kodi.adsp/" ADSP_HELPER_DLL_NAME
 #endif
 

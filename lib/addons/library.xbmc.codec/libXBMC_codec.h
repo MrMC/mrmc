@@ -28,7 +28,11 @@
 #include "libXBMC_addon.h"
 
 #define CODEC_HELPER_NAME "libXBMCcodec"
+#if defined(ANDROID)
+#define CODEC_HELPER_DLL_NAME CODEC_HELPER_NAME ADDON_HELPER_EXT
+#else
 #define CODEC_HELPER_DLL_NAME CODEC_HELPER_NAME "-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#endif
 #define CODEC_HELPER_DLL "/library.xbmc.codec/" CODEC_HELPER_DLL_NAME
 
 class CHelper_libXBMC_codec
