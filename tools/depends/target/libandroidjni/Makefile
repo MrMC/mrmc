@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libandroidjni
-VERSION=fb842e19431682304a79889878163173396476d7
+VERSION=7582568e05397440ed0b14076c8c6916604ceaa9
 SOURCE=archive
 ARCHIVE=$(VERSION).tar.gz
 GIT_BASE_URL=https://github.com/koying
