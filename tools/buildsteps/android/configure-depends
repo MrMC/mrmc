@@ -30,6 +30,6 @@ then
     $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
     $(if [ "$NDK_API" != "Default" ]; then echo --with-ndk=$NDK_API;fi) \
     --with-toolchain=$TOOLCHAIN \
-    --prefix=$XBMC_DEPENDS_ROOT \
+    --prefix=$ANDROID_DEV_ROOT/xbmc-depends \
     --enable-neon
 fi
