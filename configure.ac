@@ -466,6 +466,9 @@ AC_ARG_WITH([bundle_extension],
 if test "x$bundle_extension" = "xlite"; then
   AC_DEFINE(APP_PACKAGE_LITE, [1], [Define if building a lite version])
 fi
+if test "x$bundle_extension" = "xdev"; then
+  AC_DEFINE(APP_PACKAGE_DEV, [1], [Define if building a dev version])
+fi
 
 ### End of external options
 
@@ -479,6 +482,12 @@ if test "x$bundle_extension" = "xlite"; then
   APP_NAME="${APP_NAME}Lite"
   URL_SCHEME="${URL_SCHEME}lite"
   APP_SUFFIX=".lite"
+fi
+if test "x$bundle_extension" = "xdev"; then
+  APP_NAME_DISPLAY="${APP_NAME} (dev)"
+  APP_NAME="${APP_NAME}Dev"
+  URL_SCHEME="${URL_SCHEME}"
+  APP_SUFFIX=".dev"
 fi
 APP_NAME_LC=$(echo $APP_NAME | ${AWK} '{print tolower($0)}')
 APP_NAME_UC=$(echo $APP_NAME | ${AWK} '{print toupper($0)}')
@@ -2298,6 +2307,8 @@ OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/osx/Info.plist"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/ios/Info.plist"
 OUTPUT_FILES="$OUTPUT_FILES TopShelf/Info.plist"
 OUTPUT_FILES="$OUTPUT_FILES xbmc/platform/darwin/tvos/Info.plist"
+elif test "$target_platform" = "target_android" ; then
+OUTPUT_FILES="$OUTPUT_FILES"
 else
 OUTPUT_FILES="$OUTPUT_FILES tools/Linux/${APP_NAME_LC}.sh"
 OUTPUT_FILES="$OUTPUT_FILES tools/Linux/${APP_NAME_LC}-standalone.sh"

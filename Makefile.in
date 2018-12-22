@@ -415,6 +415,7 @@ endif
 endif
 
 install-scripts:
+ifneq (@USE_ANDROID@,1)
 	@install -d $(DESTDIR)$(bindir)
 	@install tools/Linux/@APP_NAME_LC@.sh $(DESTDIR)$(bindir)/@APP_NAME_LC@
 	@cd $(DESTDIR)$(bindir); [ -L xbmc ] || [ -f xbmc ] || ln -s @APP_NAME_LC@ xbmc
@@ -425,6 +426,7 @@ install-scripts:
 	@install -d $(DESTDIR)$(datarootdir)/xsessions
 	@install -m 0644 tools/Linux/@APP_NAME_LC@-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
 	@cd $(DESTDIR)$(datarootdir)/xsessions; [ -L xbmc.desktop ] || [ -f xbmc.desktop ] || ln -s @APP_NAME_LC@.desktop xbmc.desktop
+endif
 
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
@@ -455,6 +457,7 @@ else
 	@find addons media userdata system -regextype posix-extended -type f -not -iregex ".*-@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.so\.[0-9].*|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
+ifneq (@USE_ANDROID@,1)
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications
 	@install -m 0644 tools/Linux/@APP_NAME_LC@.desktop $(DESTDIR)$(datarootdir)/applications/@APP_NAME_LC@.desktop
@@ -477,6 +480,7 @@ endif
 	@install -m 0644 tools/Linux/packaging/media/icon256x256.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/@APP_NAME_LC@.png
 
 	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
+endif
 
 	@echo "Copying bindings to $(DESTDIR)$(includedir)/@APP_NAME_LC@"
 	@install -d $(DESTDIR)$(includedir)/@APP_NAME_LC@

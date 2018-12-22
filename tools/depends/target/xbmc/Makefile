@@ -15,22 +15,21 @@ CONFIGURE = cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
 
 ifeq ($(OS),android)
   CONFIGURE += --disable-libcec
-endif
-
-ifeq ($(lite),yes)
-  CONFIGURE += --with-bundle_extension=lite
-else
-  ifeq ($(OS),osx)
-    CONFIGURE += --with-bundle_extension=osx
-    ifeq ($(USE_SIMULATOR),yes)
-      CONFIGURE += --enable-gles
-    endif
-  else ifeq ($(OS),ios)
-    ifeq ($(TARGET_PLATFORM),tvos)
-      CONFIGURE += --with-bundle_extension=tvos
-    else
-     CONFIGURE += --with-bundle_extension=ios
-    endif
+  ifeq ($(lite),yes)
+    CONFIGURE += --with-bundle_extension=lite
+  else ifeq ($(dev),yes)
+    CONFIGURE += --with-bundle_extension=dev
+  endif
+else ifeq ($(OS),osx)
+  CONFIGURE += --with-bundle_extension=osx
+  ifeq ($(USE_SIMULATOR),yes)
+    CONFIGURE += --enable-gles
+  endif
+else ifeq ($(OS),ios)
+  ifeq ($(TARGET_PLATFORM),tvos)
+    CONFIGURE += --with-bundle_extension=tvos
+  else
+   CONFIGURE += --with-bundle_extension=ios
   endif
 endif
 
