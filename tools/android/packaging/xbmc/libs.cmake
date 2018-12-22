@@ -9,6 +9,10 @@ add_library(androidjni STATIC IMPORTED)
 set_target_properties(androidjni PROPERTIES IMPORTED_LOCATION
     ${DEPENDS_DIR}/lib/libandroidjni.a)
 
+add_library(icundk STATIC IMPORTED)
+set_target_properties(icundk PROPERTIES IMPORTED_LOCATION
+    ${DEPENDS_DIR}/lib/libicundk.a)
+
 add_library(smbclient SHARED IMPORTED)
 set_target_properties(smbclient PROPERTIES IMPORTED_LOCATION
     ${DEPENDS_DIR}/lib/libsmbclient.so)

@@ -137,6 +137,7 @@ public:
    \brief Returns the system's current locale.
    */
   const std::locale& GetSystemLocale() const { return m_systemLocale; }
+  const std::string& GetSystemLocaleString() const { return m_systemLocaleString; }
 
   bool ForceUnicodeFont() const { return m_forceUnicodeFont; }
 
@@ -235,6 +236,7 @@ protected:
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
   std::locale m_systemLocale;     // current locale, matching GUI settings
+  std::string m_systemLocaleString;  // locale string as it *should* be
 
   LanguageResourcePtr m_languageAddon;
 

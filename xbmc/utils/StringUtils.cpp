@@ -33,10 +33,17 @@
 #include "StringUtils.h"
 #include "CharsetConverter.h"
 #include "utils/fstrcmp.h"
+#include "utils/log.h"
 #include "Util.h"
 #include "LangInfo.h"
 #include <locale>
 #include <functional>
+
+#ifdef TARGET_ANDROID
+#include <unicode/ustring.h>
+#include <unicode/ucol.h>
+#endif
+
 
 #include <assert.h>
 #include <math.h>
@@ -767,12 +774,65 @@ int StringUtils::FindNumber(const std::string& strInput, const std::string &strF
 // and 0 if they are identical (essentially calculates left - right)
 int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *right)
 {
+#ifdef TARGET_ANDROID
+  // Use ICU
+  UErrorCode ustatus = U_ZERO_ERROR;
+  UCollator* ucoll = ucol_open(g_langInfo.GetSystemLocaleString().c_str(), &ustatus);
+  if (U_FAILURE(ustatus))
+  {
+    CLog::Log(LOGWARNING, "Cannot open icu collation '%s': %s", g_langInfo.GetSystemLocaleString().c_str(), u_errorName(ustatus));
+    ucol_close(ucoll);
+    ucoll = nullptr;
+  }
+  ucol_setStrength(ucoll, UCOL_PRIMARY);
+  ucol_setAttribute(ucoll, UCOL_NUMERIC_COLLATION, UCOL_ON, &ustatus);
+  if (U_FAILURE(ustatus))
+  {
+    CLog::Log(LOGWARNING, "Cannot set icu numeric attribute: %s", u_errorName(ustatus));
+    ucol_close(ucoll);
+    ucoll = nullptr;
+  }
+
+  if (ucoll)
+  {
+    UChar *ul, *ur;
+    int32_t len;
+
+    size_t ll = wcslen(left);
+    size_t lr = wcslen(right);
+    ul = static_cast<UChar*>(calloc(ll + 1, sizeof(UChar)));
+    u_strFromWCS(ul, ll + 1, &len, left, -1, &ustatus);
+    assert(U_SUCCESS(ustatus));
+    ur = static_cast<UChar*>(calloc(lr + 1, sizeof(UChar)));
+    u_strFromWCS(ur, lr + 1, &len, right, -1, &ustatus);
+    assert(U_SUCCESS(ustatus));
+
+    UCollationResult ures = ucol_strcoll(ucoll, ul, -1, ur, -1);
+
+    ucol_close(ucoll);
+    free(ul);
+    free(ur);
+
+    switch (ures)
+    {
+      case UCOL_LESS:
+        return -1;
+      case UCOL_GREATER:
+        return 1;
+      default:
+        return 0;
+    }
+  }
+  else
+  {
+#endif
   bool isNumeric = true;
   wchar_t *l = (wchar_t *)left;
   wchar_t *r = (wchar_t *)right;
   wchar_t *ld = nullptr, *rd = nullptr;
   wchar_t lc, rc;
   int64_t lnum, rnum;
+
   const std::collate<wchar_t>& coll = std::use_facet<std::collate<wchar_t> >(g_langInfo.GetSystemLocale());
   int cmp_res = 0;
 
@@ -829,6 +889,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *rig
     }
     l++; r++;
   }
+
   if (*r)
   { // r is longer
     return -1;
@@ -838,6 +899,10 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *rig
     return 1;
   }
   return 0; // files are the same
+
+#ifdef TARGET_ANDROID
+  }
+#endif
 }
 
 int StringUtils::DateStringToYYYYMMDD(const std::string &dateString)

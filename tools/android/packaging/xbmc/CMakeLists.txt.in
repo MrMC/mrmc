@@ -209,6 +209,7 @@ target_link_libraries(@APP_NAME_LC@
                         gcrypt
                         gpg-error
                         androidjni
+                        icundk
                         python2.7
                         ffi
                         tinyxml

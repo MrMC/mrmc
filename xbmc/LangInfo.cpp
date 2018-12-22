@@ -263,8 +263,8 @@ void CLangInfo::CRegion::SetGlobalLocale()
   std::string strLocale;
   if (m_strRegionLocaleName.length() > 0)
   {
-    strLocale = m_strLangLocaleName + "_" + m_strRegionLocaleName;
-    strLocale += ".UTF-8";
+    g_langInfo.m_systemLocaleString = m_strLangLocaleName + "_" + m_strRegionLocaleName;
+    strLocale = g_langInfo.m_systemLocaleString + ".UTF-8";
   }
 
   CLog::Log(LOGDEBUG, "trying to set locale to %s", strLocale.c_str());
