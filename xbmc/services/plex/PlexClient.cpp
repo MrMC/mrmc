@@ -89,6 +89,8 @@ bool CPlexClient::Init(std::string data, std::string ip)
         port = atoi(val.c_str());
     }
   }
+  if (CPlexUtils::HasClient(m_uuid))
+    return false;
 
   CURL url;
   url.SetHostName(ip);
