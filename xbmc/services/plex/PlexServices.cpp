@@ -494,7 +494,7 @@ void CPlexServices::Process()
     // CPlexServices::Stop checks m_plextv, lock access to it during create
     CSingleLock plextvLock(m_plextvCritical);
     m_plextv = new XFILE::CCurlFile();
-    m_plextv->SetTimeout(10);
+    m_plextv->SetTimeout(20);
   //m_plextv.SetBufferSize(32768*10);
   }
 
@@ -622,7 +622,7 @@ bool CPlexServices::GetPlexToken(std::string user, std::string pass)
 {
   bool rtn = false;
   XFILE::CCurlFile plex;
-  plex.SetTimeout(10);
+  plex.SetTimeout(20);
   CPlexUtils::GetDefaultHeaders(&plex);
 
   CURL url(NS_PLEXTV_URL + "/users/sign_in.json");
@@ -759,7 +759,7 @@ bool CPlexServices::GetSignInPinCode()
 
   XFILE::CCurlFile plex;
   // use a lower default timeout
-  plex.SetTimeout(10);
+  plex.SetTimeout(20);
   CPlexUtils::GetDefaultHeaders(&plex);
 
   CURL url(NS_PLEXTV_URL + "/pins.xml");
@@ -876,7 +876,7 @@ bool CPlexServices::GetSignInByPinReply()
   bool rtn = false;
   std::string strMessage;
   XFILE::CCurlFile plex;
-  plex.SetTimeout(10);
+  plex.SetTimeout(20);
   CPlexUtils::GetDefaultHeaders(&plex);
 
   std::string path = NS_PLEXTV_URL + "/pins/" + m_signInByPinId + ".xml";
@@ -1126,7 +1126,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
 
   std::string strMessage;
   XFILE::CCurlFile plex;
-  plex.SetTimeout(10);
+  plex.SetTimeout(20);
   //plex.SetBufferSize(32768*10);
   CPlexUtils::GetDefaultHeaders(&plex);
   if (MyPlexSignedIn())
@@ -1211,7 +1211,7 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
     }
 
     XFILE::CCurlFile plex;
-    plex.SetTimeout(10);
+    plex.SetTimeout(20);
     CPlexUtils::GetDefaultHeaders(&plex);
     if (MyPlexSignedIn())
       plex.SetRequestHeader("X-Plex-Token", m_authToken);
