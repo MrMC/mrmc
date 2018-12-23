@@ -40,6 +40,7 @@ class CPlexUtils
 {
 public:
   static bool HasClients();
+  static bool HasClient(const std::string &uuid);
   static void GetClientHosts(std::vector<std::string>& hosts);
   static bool GetIdentity(CURL url, int timeout);
   static void GetDefaultHeaders(XFILE::CCurlFile *curl);

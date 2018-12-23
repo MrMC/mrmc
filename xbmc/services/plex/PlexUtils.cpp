@@ -96,6 +96,11 @@ bool CPlexUtils::HasClients()
   return CPlexServices::GetInstance().HasClients();
 }
 
+bool CPlexUtils::HasClient(const std::string &uuid)
+{
+  return CPlexServices::GetInstance().HasClient(uuid);
+}
+
 void CPlexUtils::GetClientHosts(std::vector<std::string>& hosts)
 {
   std::vector<CPlexClientPtr> clients;

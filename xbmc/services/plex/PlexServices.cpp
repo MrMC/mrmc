@@ -1050,6 +1050,17 @@ PlexServerInfo CPlexServices::ParsePlexDeviceNode(const TiXmlElement* DeviceNode
   return serverInfo;
 }
 
+bool CPlexServices::HasClient(const std::string &uuid)
+{
+  CSingleLock lock(m_criticalClients);
+  for (const auto &client : m_clients)
+  {
+    if (client->GetUuid() == uuid)
+      return true;
+  }
+  return false;
+}
+
 bool CPlexServices::AddClient(CPlexClientPtr foundClient)
 {
   CSingleLock lock(m_criticalClients);

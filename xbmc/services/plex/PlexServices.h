@@ -57,6 +57,7 @@ public:
   bool IsActive();
   bool IsEnabled();
   bool HasClients() const;
+  bool HasClient(const std::string &uuid);
   void GetClients(std::vector<CPlexClientPtr> &clients) const;
   int GetNumberOfClients() {return m_clients.size();};
   CPlexClientPtr FindClient(const std::string &path);
