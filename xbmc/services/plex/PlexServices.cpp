@@ -504,17 +504,31 @@ void CPlexServices::Process()
   {
     if (g_sysinfo.HasInternet())
     {
+      // check that we have any internet access (for iOS devices not on wifi)
       CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway1");
       break;
     }
-
+    else
+    {
+      // else check that we have any sort of network access (ie. local only)
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+      if (iface && iface->IsConnected())
+      {
+        in_addr_t router = inet_addr(iface->GetCurrentDefaultGateway().c_str());
+        if (router != INADDR_NONE && g_application.getNetwork().PingHost(router, 0, 1000))
+        {
+          CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway2");
+          break;
+        }
+      }
+    }
     std::string ip;
     if (CDNSNameCache::Lookup("plex.com", ip))
     {
       in_addr_t plexdotcom = inet_addr(ip.c_str());
       if (g_application.getNetwork().PingHost(plexdotcom, 0, 1000))
       {
-        CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway2");
+        CLog::Log(LOGDEBUG, "CPlexServices::Process has gateway3");
         break;
       }
       if (gdmTimer.GetElapsedSeconds() > 5)
