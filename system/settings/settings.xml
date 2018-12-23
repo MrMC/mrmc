@@ -3846,7 +3846,7 @@
           <visible>false</visible>
           <default>true</default>
           <dependencies>
-            <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
+            <dependency type="visible" setting="audiooutput.passthrough" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
