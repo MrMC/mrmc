@@ -10,6 +10,7 @@
 /native/*/x86_64-darwin*.*.*-native/
 /native/*/armeabi-v7a-native/*
 
+/target/**/*.tar.gz
 /target/**/.patched-*
 /target/**/.installed-*
 /target/**/x86/*

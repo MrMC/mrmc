@@ -9,8 +9,8 @@ ARCHIVE=$(SOURCE).tar.gz
 REALARCHIVE=master.tar.gz
 BASE_URL=https://github.com/MrMC/skin.ariana.touch/archive
 
-# No versioning, so always download locally
-TARBALLS_LOCATION:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+# No versioning, so always download locally in this (Makefile) directory
+TARBALLS_LOCATION:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 RSYNC_SKIN =rsync -av
 RSYNC_SKIN +=--exclude .DS_Store* --exclude LICENSE.txt --exclude README.md --exclude changelog.txt
