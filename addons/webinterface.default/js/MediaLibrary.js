@@ -85,33 +85,36 @@ MediaLibrary.prototype = {
     var libraryContainer = $('#remoteContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
+      imageContainer = $('<img>');
+      imageContainer.attr('src', '../images/remote_blue.png').addClass('remoteImage');
+      $('#content').append(imageContainer);
       libraryContainer = $('<div>');
-      libraryContainer.attr('id', 'remoteContainer')
-        .addClass('contentContainer');
+      libraryContainer.attr('id', 'remoteContainer').addClass('contentContainer');
+        
       $('#content').append(libraryContainer);
       var keys=[
-        {name:'up',width:'40px',height:'40px',top:'15px',left:'70px'},
-        {name:'down',width:'40px',height:'40px',top:'125px',left:'70px'},
-        {name:'left',width:'40px',height:'40px',top:'70px',left:'15px'},
-        {name:'right',width:'40px',height:'40px',top:'70px',left:'122px'},
-        {name:'ok',width:'40px',height:'40px',top:'70px',left:'69px'},
-        {name:'home',width:'40px',height:'40px',top:'7px',left:'170px'},
-        {name:'back',width:'40px',height:'40px',top:'157px',left:'15px'},
-        // {name:'mute',width:'40px',height:'30px',top:'107px',left:'391px'},
+        {name:'up',width:'40px',height:'40px',top:'15px',left:'93px'},
+        {name:'down',width:'40px',height:'40px',top:'125px',left:'93px'},
+        {name:'left',width:'40px',height:'40px',top:'70px',left:'38px'},
+        {name:'right',width:'40px',height:'40px',top:'70px',left:'145px'},
+        {name:'ok',width:'40px',height:'40px',top:'70px',left:'92px'},
+        {name:'home',width:'30px',height:'30px',top:'192px',left:'98px'},
+        {name:'back',width:'30px',height:'30px',top:'192px',left:'58px'},
+        {name:'mute',width:'40px',height:'40px',top:'130px',left:'330px'},
         // {name:'power',width:'30px',height:'30px',top:'-3px',left:'13px'},
-        // {name:'volumeup',width:'30px',height:'30px',top:'49px',left:'422px'},
-        // {name:'volumedown',width:'30px',height:'30px',top:'49px',left:'367px'},
-        {name:'playpause',width:'40px',height:'40px',top:'47px',left:'337px'},
-        {name:'stop',width:'40px',height:'40px',top:'47px',left:'282px'},
-        {name:'next',width:'40px',height:'40px',top:'102px',left:'390px'},
-        {name:'previous',width:'40px',height:'40px',top:'101px',left:'225px'},
-        {name:'forward',width:'40px',height:'40px',top:'102px',left:'339px'},
-        {name:'rewind',width:'40px',height:'40px',top:'101px',left:'281px'},
-        {name:'cleanlib_a',width:'40px',height:'40px',top:'33px',left:'566px'},
-        {name:'updatelib_a',width:'40px',height:'40px',top:'36px',left:'506px'},
-        {name:'cleanlib_v',width:'40px',height:'40px',top:'116px',left:'566px'},
-        {name:'updatelib_v',width:'40px',height:'40px',top:'116px',left:'506px'},
-        {name:'codec',width:'40px',height:'40px',top:'157px',left:'623px'},
+        {name:'volumeup',width:'40px',height:'40px',top:'130px',left:'385px'},
+        {name:'volumedown',width:'40px',height:'40px',top:'130px',left:'273px'},
+        {name:'playpause',width:'40px',height:'40px',top:'75px',left:'597px'},
+        {name:'stop',width:'40px',height:'40px',top:'75px',left:'542px'},
+        {name:'next',width:'40px',height:'40px',top:'130px',left:'650px'},
+        {name:'previous',width:'40px',height:'40px',top:'130px',left:'487px'},
+        {name:'forward',width:'40px',height:'40px',top:'130px',left:'595px'},
+        {name:'rewind',width:'40px',height:'40px',top:'130px',left:'541px'},
+        {name:'cleanlib_a',width:'40px',height:'40px',top:'70px',left:'305px'},
+        {name:'updatelib_a',width:'40px',height:'40px',top:'70px',left:'250px'},
+        {name:'cleanlib_v',width:'40px',height:'40px',top:'70px',left:'358px'},
+        {name:'updatelib_v',width:'40px',height:'40px',top:'70px',left:'410px'},
+        {name:'codec',width:'30px',height:'30px',top:'192px',left:'138px'},
       ];
       for (var akey in keys) {
         var aremotekey=$('<p>').attr('id',keys[akey]['name']);
@@ -126,6 +129,7 @@ MediaLibrary.prototype = {
     } else {
       libraryContainer.show();
       libraryContainer.trigger('scroll');
+
     }
 
     $('#spinner').hide();
@@ -163,11 +167,9 @@ MediaLibrary.prototype = {
         var body = document.getElementsByTagName("body")[0];
         var height = Math.max( body.scrollHeight, body.offsetHeight, 
                            html.clientHeight, html.scrollHeight, html.offsetHeight );
-
         var button = document.createElement('button');
         button.innerHTML = btnLabel;
         button.style.marginTop = "5px";
-
         $('#content').append(button);
 
         button.addEventListener ("click", jQuery.proxy(this.pressLogKey,this, event));

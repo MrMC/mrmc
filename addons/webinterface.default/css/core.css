@@ -13,11 +13,25 @@ body {
 	background-color:#363d42
 }
 #remoteContainer {
-	background:url("../images/new_remote_line.png") no-repeat;
-	width: 720px;
-	height: 213px;
+	/*background:url("../images/remote_blue.png") no-repeat;*/
+	/*content:url("../images/remote_blue.png");*/
+	width: 721px;
+	height: 257px;
 	/*position: relative;*/
 	margin: auto;
+
+}
+.remoteImage {
+	content:url("../images/remote_blue.png");
+	width: 721px;
+	height: 257px;
+	position: relative;
+	/*margin: auto;*/
+	/*left:50%;*/
+	/*position: center;*/
+	margin: auto;
+	text-align:center;
+    display:block;
 }
 .logoContainer {
 	  display: block;
@@ -293,12 +307,12 @@ div.imgWrapper div.inner {
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: absolute;
-	top: 320px;
+	top: 245px;
 	bottom: 1px;
 	left: 0;
 	right: 0;
 	color: white;
-	background: #363d42;
+	/*background: #363d42;*/
 	padding-bottom: 149px;
 	}
 
