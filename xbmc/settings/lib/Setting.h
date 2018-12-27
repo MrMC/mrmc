@@ -94,8 +94,8 @@ public:
   void SetLabel(int label) { m_label = label; }
   int GetHelp() const { return m_help; }
   void SetHelp(int help) { m_help = help; }
-  bool IsEnabled() const;
-  void SetEnabled(bool enabled);
+  bool IsEnabled() const override;
+  void SetEnabled(bool enabled) override;
   bool IsDefault() const { return !m_changed; }
   const std::string& GetParent() const { return m_parentSetting; }
   void SetParent(const std::string& parentSetting) { m_parentSetting = parentSetting; }

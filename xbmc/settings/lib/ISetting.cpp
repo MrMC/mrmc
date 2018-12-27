@@ -28,9 +28,9 @@
 
 ISetting::ISetting(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : m_id(id),
-    m_settingsManager(settingsManager),
     m_visible(true),
     m_enabled(true),
+    m_settingsManager(settingsManager),
     m_label(-1), m_help(-1),
     m_meetsRequirements(true),
     m_requirementCondition(settingsManager)
