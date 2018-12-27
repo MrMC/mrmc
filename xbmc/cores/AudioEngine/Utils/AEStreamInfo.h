@@ -33,7 +33,6 @@ extern "C" {
 class CAEStreamInfo
 {
 public:
-  CAEStreamInfo();
   double GetDuration();
   bool operator==(const CAEStreamInfo& info) const;
 
@@ -48,16 +47,17 @@ public:
     STREAM_TYPE_DTSHD_CORE,
     STREAM_TYPE_EAC3,
     STREAM_TYPE_MLP,
-    STREAM_TYPE_TRUEHD
+    STREAM_TYPE_TRUEHD,
+    STREAM_TYPE_DTSHD_MA
   };
-  DataType m_type;
-  bool m_IECPacked;
+  DataType m_type = STREAM_TYPE_NULL;
+  bool m_IECPacked = true;
   unsigned int m_sampleRate;
   unsigned int m_channels;
-  bool m_dataIsLE;
-  unsigned int m_dtsPeriod;
-  unsigned int m_repeat;
-  unsigned int m_ac3FrameSize;
+  bool m_dataIsLE = true;
+  unsigned int m_dtsPeriod = 0;
+  unsigned int m_repeat = 0;
+  unsigned int m_ac3FrameSize = 0;
 };
 
 class CAEStreamParser
@@ -85,26 +85,26 @@ public:
 
 private:
   uint8_t m_buffer[MAX_IEC61937_PACKET];
-  unsigned int m_bufferSize;
-  unsigned int m_skipBytes;
+  unsigned int m_bufferSize = 0;
+  unsigned int m_skipBytes = 0;
 
   typedef unsigned int (CAEStreamParser::*ParseFunc)(uint8_t *data, unsigned int size);
 
   CAEStreamInfo m_info;
-  bool m_coreOnly;
-  unsigned int m_needBytes;
+  bool m_coreOnly = false;
+  unsigned int m_needBytes = 0;
   ParseFunc m_syncFunc;
-  bool m_hasSync;
+  bool m_hasSync = false;
 
-  unsigned int m_coreSize;         /* core size for dtsHD */
-  unsigned int m_dtsBlocks;
-  unsigned int m_fsize;
-  unsigned int m_fsizeMain;        /* used for EAC3 substreams */
-  int m_substreams;       /* used for TrueHD  */
+  unsigned int m_coreSize = 0;         /* core size for dtsHD */
+  unsigned int m_dtsBlocks = 0;
+  unsigned int m_fsize = 0;
+  int m_substreams = 0;       /* used for TrueHD  */
   AVCRC m_crcTrueHD[1024];  /* TrueHD crc table */
 
   void GetPacket(uint8_t **buffer, unsigned int *bufferSize);
   unsigned int DetectType(uint8_t *data, unsigned int size);
+  bool TrySyncAC3(uint8_t *data, unsigned int size, bool resyncing, bool wantEAC3dependent);
   unsigned int SyncAC3(uint8_t *data, unsigned int size);
   unsigned int SyncDTS(uint8_t *data, unsigned int size);
   unsigned int SyncTrueHD(uint8_t *data, unsigned int size);
