@@ -817,7 +817,7 @@ double CAESinkDARWINIOS::GetCacheTotal()
   return 0.0;
 }
 
-unsigned int CAESinkDARWINIOS::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
+unsigned int CAESinkDARWINIOS::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp)
 {
   uint8_t *buffer = data[0] + (offset * m_format.m_frameSize);
 #if DO_440HZ_TONE_TEST

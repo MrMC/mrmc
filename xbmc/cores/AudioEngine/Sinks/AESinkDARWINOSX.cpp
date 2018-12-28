@@ -386,7 +386,7 @@ double CAESinkDARWINOSX::GetCacheTotal()
 CCriticalSection mutex;
 XbmcThreads::ConditionVariable condVar;
 
-unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
+unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp)
 {
   if (m_buffer->GetWriteSize() < frames * m_frameSizePerPlane)
   { // no space to write - wait for a bit
