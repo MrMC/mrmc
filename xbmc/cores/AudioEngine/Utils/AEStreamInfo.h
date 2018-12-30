@@ -55,6 +55,7 @@ public:
   unsigned int m_sampleRate;
   unsigned int m_channels;
   bool m_dataIsLE = true;
+  bool m_eac3IsAtmos = false;
   unsigned int m_dtsPeriod = 0;
   unsigned int m_repeat = 0;
   unsigned int m_ac3FrameSize = 0;
@@ -79,6 +80,7 @@ public:
   unsigned int GetEAC3BlocksDiv() { return m_info.m_repeat; }
   enum CAEStreamInfo::DataType GetDataType() { return m_info.m_type; }
   bool IsLittleEndian() { return m_info.m_dataIsLE; }
+  bool IsEAC3Atmos() { return m_info.m_eac3IsAtmos; }
   unsigned int GetBufferSize() { return m_bufferSize; }
   CAEStreamInfo& GetStreamInfo() { return m_info; }
   void Reset();

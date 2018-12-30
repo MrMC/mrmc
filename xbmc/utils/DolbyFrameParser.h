@@ -31,6 +31,7 @@ class CDolbyFrameParser
   public:
    ~CDolbyFrameParser() {};
 
+    static bool isAtmos(const uint8_t *buf, int len);
     std::string parse(const uint8_t *buf, int len);
  private:
     int  analyze(eac3_info *info, uint8_t *frame, int size);

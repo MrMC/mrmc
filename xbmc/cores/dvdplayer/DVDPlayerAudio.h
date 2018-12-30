@@ -22,8 +22,8 @@
 #include <list>
 #include <utility>
 
-#include "DVDAudio.h"
 #include "DVDClock.h"
+#include "IAudioSink.h"
 #include "DVDMessageQueue.h"
 #include "DVDStreamInfo.h"
 #include "IDVDPlayer.h"
@@ -55,9 +55,9 @@ public:
   void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
   void FlushMessages()                                  { m_messageQueue.Flush(); }
 
-  void SetVolume(float fVolume)                         { m_dvdAudio.SetVolume(fVolume); }
+  void SetVolume(float fVolume)                         { m_dvdAudio->SetVolume(fVolume); }
   void SetMute(bool bOnOff)                             { }
-  void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
+  void SetDynamicRangeCompression(long drc)             { m_dvdAudio->SetDynamicRangeCompression(drc); }
   float GetDynamicRangeAmplification() const            { return 0.0f; }
 
 
@@ -84,7 +84,7 @@ protected:
   //! Switch codec if needed. Called when the sample rate gotten from the
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();
-  float GetCurrentAttenuation()                         { return m_dvdAudio.GetCurrentAttenuation(); }
+  float GetCurrentAttenuation()                         { return m_dvdAudio->GetCurrentAttenuation(); }
   bool AllowDTSHDDecode();
 
   CDVDMessageQueue m_messageQueue;
@@ -134,9 +134,9 @@ protected:
     }
   } m_decode;
 
-  CDVDAudio m_dvdAudio; // audio output device
-  CDVDClock* m_pClock; // dvd master clock
-  CDVDAudioCodec* m_pAudioCodec; // audio codec
+  IAudioSink* m_dvdAudio;         // audio output device
+  CDVDClock* m_pClock;            // dvd master clock
+  CDVDAudioCodec* m_pAudioCodec;  // audio codec
   BitstreamStats m_audioStats;
 
   int m_speed;

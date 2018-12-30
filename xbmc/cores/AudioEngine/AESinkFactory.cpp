@@ -102,6 +102,7 @@ IAESink *CAESinkFactory::TrySink(std::string &driver, std::string &device, AEAud
     sink = new CAESinkALSA();
   #endif
 #elif defined(TARGET_DARWIN_IOS)
+  if (driver == "DARWINIOS")
     sink = new CAESinkDARWINIOS();
 #elif defined(TARGET_DARWIN_OSX)
     sink = new CAESinkDARWINOSX();
@@ -164,6 +165,8 @@ bool CAESinkFactory::FormatNeedsIECPacked(const AEAudioFormat &format)
 #if defined(TARGET_ANDROID)
   // only android supports split non-IEC and IEC packed passthrough formats
   return CAESinkAUDIOTRACK::FormatNeedsIECPacked(format);
+#elif defined(TARGET_DARWIN_IOS)
+  return false;
 #else
   return true;
 #endif

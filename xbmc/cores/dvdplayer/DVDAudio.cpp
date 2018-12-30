@@ -28,7 +28,9 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "settings/MediaSettings.h"
 
-CDVDAudio::CDVDAudio(volatile bool &bStop, CDVDClock *clock) : m_bStop(bStop), m_pClock(clock)
+CDVDAudio::CDVDAudio(volatile bool &bStop, CDVDClock *clock)
+: m_bStop(bStop)
+, m_pClock(clock)
 {
   m_pAudioStream = NULL;
   m_bPassthrough = false;

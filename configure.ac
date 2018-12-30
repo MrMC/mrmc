@@ -182,6 +182,9 @@ libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
 
+libavaudiosink_not_found="== Could not find avaudiosink. avaudiosink support disabled. =="
+libavaudiosink_disabled="== avaudiosink support disabled. =="
+
 AC_ARG_WITH([ffmpeg],
   [AS_HELP_STRING([--with-ffmpeg],
   [ffmpeg options: auto (search pkg-config or auto build), force (always build ffmpeg), shared (link dynamically), path_to_ffmpeg [default=force]])],
@@ -447,6 +450,12 @@ AC_ARG_ENABLE([libcap],
   [use_libcap=$enableval],
   [use_libcap=auto])
 
+AC_ARG_ENABLE([libavaudiosink],
+  [AS_HELP_STRING([--enable-libavaudiosink],
+  [enable libavaudiosink support (default is no)])],
+  [use_libavaudiosink=$enableval],
+  [use_libavaudiosink=no])
+
 AC_ARG_ENABLE([player],
   [AS_HELP_STRING([--enable-player],
   [enable additional players from a list of comma separated names, (default is none, choices are omxplayer)])],
@@ -635,6 +644,7 @@ case $host in
      use_neon=yes
      use_libcec=no
      use_vtbdecoder=yes
+     use_libavaudiosink=yes
      use_optical_drive=no
      use_gles=yes
      use_cpu=cortex-a8
@@ -1619,6 +1629,31 @@ else
   AC_MSG_NOTICE($libcap_disabled)
 fi
 
+# libavaduiosink
+if test "x$use_libavaudiosink" != "xno"; then
+  AC_CHECK_HEADERS([avaudiosink/avaudiosink.h],,
+   [if test "x$use_libavaudiosink" = "xyes"; then
+      AC_MSG_NOTICE($libavaudiosink_not_found)
+      use_libavaudiosink="no"
+      USE_LIBAVAUDIOSINK=0
+    elif test "x$use_libavaudiosink" != "xno"; then
+      AC_MSG_NOTICE($libavaudiosink_not_found)
+      use_libavaudiosink="no"
+      USE_LIBAVAUDIOSINK=0
+    fi
+   ])
+  if test "x$use_libavaudiosink" != "xno"; then
+    XB_FIND_SONAME([AVAUDIOSINK], [avaudiosink], [use_libavaudiosink])
+  fi
+  if test "x$use_libavaudiosink" != "xno"; then
+    AC_DEFINE([HAVE_LIBAVAUDIOSINK], [1], [Whether to use use_libavaudiosink library.])
+    USE_LIBAVAUDIOSINK=1
+  fi
+else
+  USE_LIBAVAUDIOSINK=0
+  AC_MSG_NOTICE($libdsm_disabled)
+fi
+
 # FFmpeg
 FFMPEG_LIBNAMES="libavcodec >= 56.26.100
                  libavfilter >= 5.11.102
@@ -2222,6 +2257,12 @@ if test "x$use_libcap" != "xno"; then
   final_message="$final_message\n  libcap support:\tYes"
 else
   final_message="$final_message\n  libcap support:\tNo"
+fi
+
+if test "x$use_libavaudiosink" != "xno"; then
+  final_message="$final_message\n  libavaudiosink support:\tYes"
+else
+  final_message="$final_message\n  libavaudiosink support:\tNo"
 fi
 
 if test "x$add_players" != "xno"; then

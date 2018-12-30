@@ -22,6 +22,9 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
 #include "utils/log.h"
+#ifdef TARGET_DARWIN_TVOS
+#include "platform/darwin/DarwinUtils.h"
+#endif
 
 #include <algorithm>
 
@@ -90,9 +93,18 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   }
 
 #if defined(TARGET_DARWIN_TVOS)
-  // tvos doesn't like 44100 dts passthrough even if it generally can do 44100 samplerate
-  if (hints.codec == AV_CODEC_ID_DTS && hints.samplerate != 48000)
+  if (!ret && hints.codec == AV_CODEC_ID_EAC3)
   {
+    // check for eac3/atmos
+    if (hints.codec_tag == MKTAG('e','c','+','3'))
+    {
+      if (CDarwinUtils::IsAppleTV4KOrAbove() && CDarwinUtils::AudioAtmosEnabled())
+        ret = true;
+    }
+  }
+  else if (hints.codec == AV_CODEC_ID_DTS && hints.samplerate != 48000)
+  {
+    // tvos doesn't like 44100 dts passthrough even if it generally can do 44100 samplerate
     ret = false;
   }
 #endif

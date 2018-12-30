@@ -27,6 +27,11 @@ public:
   CBitstreamReader(const uint8_t *buf, int len);
   uint32_t   ReadBits(int nbits);
   void       SkipBits(int nbits);
+  void       SkipBytes(int bytes);
+  uint32_t   PeekBits(int nbits);
+  void       ByteAlign();
+  uint32_t   GetRemainingBits();
+  // ie peek ?
   uint32_t   GetBits(int nbits);
 
 private:

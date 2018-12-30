@@ -1,8 +1,8 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2019 Team MrMC
+ *      http://mrmc.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,29 +15,30 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with MrMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "IAudioSink.h"
+#include "threads/SystemClock.h"
 #include "threads/CriticalSection.h"
-#include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "threads/Thread.h"
+
 #include <atomic>
 
-class CSingleLock;
-class CDVDClock;
+class DllAVAudioSink;
 
-class CDVDAudio : public IAudioSink, IAEClockCallback
+class CAudioSinkAVFoundation : public IAudioSink, IAEClockCallback, CThread
 {
 public:
-  CDVDAudio(volatile bool& bStop, CDVDClock *clock);
- ~CDVDAudio();
+  CAudioSinkAVFoundation(volatile bool& bStop, CDVDClock *clock);
+ ~CAudioSinkAVFoundation();
 
-  void SetVolume(float fVolume);
-  void SetDynamicRangeCompression(long drc);
-  float GetCurrentAttenuation();
+  void SetVolume(float fVolume) {};
+  void SetDynamicRangeCompression(long drc) {};
+  float GetCurrentAttenuation() { return 1.0f; };
   void Pause();
   void Resume();
   bool Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler);
@@ -51,35 +52,33 @@ public:
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetSyncError();
   void SetSyncErrorCorrection(double correction);
-  double GetResampleRatio();
-  void SetResampleMode(int mode);
+  double GetResampleRatio() { return 1.0; };
+  void SetResampleMode(int mode) {};
   void Flush();
   void Drain();
   void AbortAddPackets();
 
   void SetSpeed(int iSpeed) {};
-  void SetResampleRatio(double ratio);
+  void SetResampleRatio(double ratio) {};
 
   double GetClock();
-  double GetClockSpeed();
-  IAEStream *m_pAudioStream;
+  double GetClockSpeed() { return 1.0; };
 
 protected:
-
-  double m_playingPts;
-  double m_timeOfPts;
-  double m_syncError;
-  unsigned int m_syncErrorTime;
-  double m_resampleRatio;
-  CCriticalSection m_critSection;
-
-  unsigned int m_sampeRate;
-  int m_iBitsPerSample;
-  bool m_bPassthrough;
-  CAEChannelInfo m_channelLayout;
-  bool m_bPaused;
+  virtual void Process();
+  double CalcSyncErrorSeconds();
 
   volatile bool& m_bStop;
-  std::atomic_bool m_bAbort;
   CDVDClock *m_pClock;
+
+  double m_syncErrorDVDTime;
+  double m_syncErrorDVDTimeSecondsOld;
+  double m_startPtsSeconds;
+  std::atomic_bool m_startPtsFlag;
+  CCriticalSection m_critSection;
+  std::atomic_bool m_abortAddPacketWait;
+private:
+  DllAVAudioSink *m_sink;
+  int m_frameSize = 0;
+  int m_sinkErrorSeconds = 0;
 };

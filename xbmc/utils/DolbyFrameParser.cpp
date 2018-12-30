@@ -33,6 +33,14 @@ extern const uint8_t  ff_ac3_channels_tab[8];
 extern const uint16_t ff_ac3_frame_size_tab[38][3];
 }
 
+// source:
+// https://bitbucket.org/galad87/subler
+// https://bitbucket.org/galad87/mp42foundation.git
+// thanks to Damiano Galassi <damiog@gmail.com>
+// licenced GPL v2
+
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
 #define EC3Extension_JOC  1
 #define EC3Extension_None 0
 
@@ -42,8 +50,6 @@ typedef struct eac3_info {
 
   uint8_t ec3_done;
   uint8_t num_blocks;
-
-  // Layout of the EC3SpecificBox
   // maximum bitrate
   uint16_t data_rate;
   // number of independent substreams
@@ -63,8 +69,8 @@ typedef struct eac3_info {
    // section of the object audio metadata payload.
    // The maximum value of this field shall be 16.
 
-  uint8_t ec3_extension_type;      // 0x01 -> E-AC3 JOC extension
-  uint8_t complexity_index;        // 0 <= complexity_index <= 16
+  uint8_t ec3_extension_type; // 0x01 -> E-AC3 JOC extension
+  uint8_t complexity_index; // 0 <= complexity_index <= 16
   struct {
     // sample rate code (see ff_ac3_sample_rate_tab) 2 bits
     uint8_t fscod;
@@ -190,23 +196,23 @@ typedef struct AC3HeaderInfo {
   uint8_t  channel_mode;
   uint8_t  lfe_on;
   uint8_t  frame_type;
-  int      substreamid;                        ///< substream identification
-  int      center_mix_level;                   ///< Center mix level index
-  int      surround_mix_level;                 ///< Surround mix level index
+  int      substreamid;           // substream identification
+  int      center_mix_level;      // Center mix level index
+  int      surround_mix_level;    // Surround mix level index
   uint16_t channel_map;
-  int      num_blocks;                         ///< number of audio blocks
+  int      num_blocks;            // number of audio blocks
   int      dolby_surround_mode;
-  uint8_t  blkswe;              //If true, full block switch syntax shall be present in each audio block
-  uint8_t  dithflage;            //If true, full dither flag syntax shall be present in each audio block
-  uint8_t  ec3_extension_type;        //E-AC3 Extension as per ETSI TS 103 420
-  uint8_t  complexity_index;        //Decoding complexity of E-AC3 Extension as per ETSI TS 103 420
+  uint8_t  blkswe;                //If true, full block switch syntax shall be present in each audio block
+  uint8_t  dithflage;             //If true, full dither flag syntax shall be present in each audio block
+  uint8_t  ec3_extension_type;    //E-AC3 Extension as per ETSI TS 103 420
+  uint8_t  complexity_index;      //Decoding complexity of E-AC3 Extension as per ETSI TS 103 420
   // Derived values
-  uint8_t    sr_shift;
-  uint16_t  sample_rate;
-  uint32_t  bit_rate;
-  uint8_t    channels;
-  uint16_t  frame_size;
-  uint64_t  channel_layout;
+  uint8_t  sr_shift;
+  uint16_t sample_rate;
+  uint32_t bit_rate;
+  uint8_t  channels;
+  uint16_t frame_size;
+  uint64_t channel_layout;
 } AC3HeaderInfo;
 
 const uint16_t ff_ac3_dec3_chap_map[16][2] = {
@@ -228,9 +234,9 @@ const uint16_t ff_ac3_dec3_chap_map[16][2] = {
   {AC3_CUSTOM_CHANNEL_MAP_LEFT            , NULL},
 };
 
-static uint16_t ac3_to_dec3_chan_map(uint16_t ac3_chan_loc) {
+static uint16_t ac3_to_dec3_chan_map(uint16_t ac3_chan_loc)
+{
   uint16_t dec3_chan_loc = 0;
-
   for (int i = 0; i < 16; i++)
   {
     uint16_t chan_loc = ac3_chan_loc & (0x1 << i);
@@ -240,9 +246,23 @@ static uint16_t ac3_to_dec3_chan_map(uint16_t ac3_chan_loc) {
         dec3_chan_loc |= ff_ac3_dec3_chap_map[j][1];
     }
   }
-
   return dec3_chan_loc;
 }
+
+//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+bool CDolbyFrameParser::isAtmos(const uint8_t *buf, int len)
+{
+  // assume correct endian for arch
+  if (buf[0] != 0x0b || buf[1] != 0x77)
+    return false;
+
+  CDolbyFrameParser parser;
+  parser.parse((uint8_t*)buf, len);
+  return parser.mimeType == "EAC3-ATMOS";
+}
+
+//-----------------------------------------------------------------------------------
 std::string CDolbyFrameParser::parse(const uint8_t *buf, int len)
 {
   // assume correct endian for arch
@@ -261,6 +281,7 @@ std::string CDolbyFrameParser::parse(const uint8_t *buf, int len)
   return mimeType;
 }
 
+//-----------------------------------------------------------------------------------
 int CDolbyFrameParser::analyze(eac3_info *info, uint8_t *frame, int size)
 {
   CMemoryBitstream bs;
@@ -393,6 +414,8 @@ concatenate:
 
   return 0;
 }
+
+//-----------------------------------------------------------------------------------
 int CDolbyFrameParser::parseheader(CMemoryBitstream &bs, AC3HeaderInfo *hdr)
 {
   int frame_size_code;
@@ -514,6 +537,7 @@ int CDolbyFrameParser::parseheader(CMemoryBitstream &bs, AC3HeaderInfo *hdr)
   return 0;
 }
 
+//-----------------------------------------------------------------------------------
 void CDolbyFrameParser::checkforatmos(CMemoryBitstream &bs, AC3HeaderInfo *hdr)
 {
   if (hdr->bitstream_id != 16)

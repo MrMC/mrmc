@@ -102,7 +102,14 @@ bool CActiveAESink::HasPassthroughDevice()
     {
       CAEDeviceInfo& info = *itt2;
       if (info.m_deviceType != AE_DEVTYPE_PCM)
-        return true;
+      {
+        // device type check is not enough for some devices (iOS/tvOS)
+        // need to check dataFormats for AE_FMT_RAW
+        AEDataFormatList::iterator iit3;
+        iit3 = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), AE_FMT_RAW);
+        bool rawExists = (iit3 != info.m_dataFormats.end());
+        return rawExists;
+      }
     }
   }
   return false;

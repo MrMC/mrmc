@@ -50,6 +50,30 @@ void CBitstreamReader::SkipBits(int nbits)
     oflow = 1;
 }
 
+void CBitstreamReader::SkipBytes(int bytes)
+{
+  for(int indx = 0; indx < bytes; indx++)
+    SkipBits(8);
+}
+
+uint32_t CBitstreamReader::PeekBits(int nbits)
+{
+  return GetBits(nbits);
+}
+
+void CBitstreamReader::ByteAlign()
+{
+  if (offbits == 0)
+      return;
+  if (offbits & 0x7)
+    SkipBits(8 - (offbits & 0x7));
+}
+
+uint32_t CBitstreamReader::GetRemainingBits()
+{
+  return 8 * ((start + length) - buffer);
+}
+
 uint32_t CBitstreamReader::GetBits(int nbits)
 {
   int i, nbytes;

@@ -137,4 +137,16 @@ public:
    * should return the ffmpeg profile value
    */
   virtual int GetProfile() { return 0; }
+
+  /**
+   * Some decoders (bypass) need access to the player clock for a/v sync
+   */
+  virtual void SetClock(CDVDClock *clock) {} ;
+
+  /**
+   * Some decoders (bypass) need access to the playback speed
+   * will be called by video player indicating the playback speed. see DVD_PLAYSPEED_NORMAL,
+   * DVD_PLAYSPEED_PAUSE and friends.
+   */
+  virtual void SetSpeed(int iSpeed) {};
 };

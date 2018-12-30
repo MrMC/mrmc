@@ -77,6 +77,7 @@ public:
   static void        SetMrMCTouchFlag();
   static std::string GetIPAddress();
   static std::string GetNetmask();
+  static bool        AudioAtmosEnabled();
 };
 
 #endif

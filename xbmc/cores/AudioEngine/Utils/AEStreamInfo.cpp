@@ -19,6 +19,7 @@
  */
 
 #include "AEStreamInfo.h"
+#include "utils/DolbyFrameParser.h"
 #include "utils/log.h"
 #include <algorithm>
 #include <string.h>
@@ -116,6 +117,8 @@ bool CAEStreamInfo::operator==(const CAEStreamInfo& info) const
   if (m_type != info.m_type)
     return false;
   if (m_dataIsLE != info.m_dataIsLE)
+    return false;
+  if (m_eac3IsAtmos != info.m_eac3IsAtmos)
     return false;
   if (m_repeat != info.m_repeat)
     return false;
@@ -412,6 +415,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_info.m_channels = AC3Channels[acmod] + lfeon;
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+    m_info.m_eac3IsAtmos = false;
     m_info.m_ac3FrameSize = m_fsize;
     m_info.m_repeat = 1;
 
@@ -455,6 +459,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
 
     m_fsize = framesize << 1;
     m_info.m_repeat = MAX_EAC3_BLOCKS / blocks;
+    m_info.m_eac3IsAtmos = CDolbyFrameParser::isAtmos(data, m_fsize);
 
     if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && m_hasSync && !resyncing)
       return true;
@@ -465,8 +470,17 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
     m_info.m_ac3FrameSize = m_fsize;
+    std::string eac3format = "E-AC3";
+    if (m_info.m_eac3IsAtmos)
+    {
+      // force info to 8 channels for atmos
+      // until we fix/update ffmpeg.
+      m_info.m_channels = 8;
+      eac3format = "E-AC3/ATMOS";
+    }
 
-    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - E-AC3 stream detected (%d channels, %dHz)", m_info.m_channels, m_info.m_sampleRate);
+    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - %s stream detected (%d channels, %dHz)",
+      eac3format.c_str(), m_info.m_channels, m_info.m_sampleRate);
     return true;
   }
 }
