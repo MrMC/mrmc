@@ -1,0 +1,377 @@
+diff -rupN a/libavcodec/aac_ac3_parser.c b/libavcodec/aac_ac3_parser.c
+--- a/libavcodec/aac_ac3_parser.c	2019-01-08 11:27:40.000000000 -0500
++++ b/libavcodec/aac_ac3_parser.c	2019-01-19 09:35:55.000000000 -0500
+@@ -24,6 +24,7 @@
+ #include "libavutil/common.h"
+ #include "parser.h"
+ #include "aac_ac3_parser.h"
++#include "ac3_parser.h"
+ 
+ int ff_aac_ac3_parse(AVCodecParserContext *s1,
+                      AVCodecContext *avctx,
+@@ -56,6 +57,13 @@ get_next:
+                 s->state=0;
+                 i-= s->header_size -1;
+                 s->remaining_size = len;
++                //av_log(NULL, AV_LOG_DEBUG, "ff_aac_ac3_parse2, i = %d, len = %d\n", i, len);
++                if (s->codec_id == AV_CODEC_ID_EAC3) {
++                    if (avpriv_eac3atmos_parse_header(&buf[i], len, s)){
++                        av_log(NULL, AV_LOG_DEBUG, "ff_aac_ac3_parse2, found Atmos\n");
++                        avctx->codec_tag = MKTAG('e', 'c', '+', '3');
++                    }
++                }
+                 if(!new_frame_start || pc->index+i<=0){
+                     s->remaining_size += i;
+                     goto get_next;
+diff -rupN a/libavcodec/ac3_parser.c b/libavcodec/ac3_parser.c
+--- a/libavcodec/ac3_parser.c	2019-01-08 11:27:40.000000000 -0500
++++ b/libavcodec/ac3_parser.c	2019-01-19 09:35:56.000000000 -0500
+@@ -46,6 +46,311 @@ static const uint8_t center_levels[4] = 
+  */
+ static const uint8_t surround_levels[4] = { 4, 6, 7, 6 };
+ 
++/*
++static int parse_ac3_emdf(GetBitContext *gbc, int *num_objects_oamd, int *num_objects_joc)
++{
++    av_log(NULL, AV_LOG_DEBUG, "parse_ac3_emdf\n");
++    return 0;
++}
++*/
++
++int avpriv_eac3atmos_parse_header(const uint8_t *buf, int buf_size, AACAC3ParseContext *phdr)
++{
++    GetBitContext gbc;
++    init_get_bits(&gbc, buf, buf_size * 8);
++
++    int sync_word = get_bits(&gbc, 16);
++    if (sync_word != 0x0B77)
++        return 0;
++
++    int frame_type = get_bits(&gbc, 2);
++    // substreamid
++    skip_bits(&gbc, 3);
++    int frame_size = (get_bits(&gbc, 11) + 1) << 1;
++    if(frame_size < AC3_HEADER_SIZE)
++        return AAC_AC3_PARSE_ERROR_FRAME_SIZE;
++
++    int num_blocks = 6;
++    int sample_rate;
++    int sr_shift;
++    int channels;
++    int channel_mode;
++    int lfe_on;
++    int bit_rate;
++    int sr_code = get_bits(&gbc, 2);
++    if (sr_code == 3) {
++        int sr_code2 = get_bits(&gbc, 2);
++        if(sr_code2 == 3)
++            return AAC_AC3_PARSE_ERROR_SAMPLE_RATE;
++        sample_rate = ff_ac3_sample_rate_tab[sr_code2] / 2;
++        sr_shift = 1;
++    } else {
++        num_blocks = eac3_blocks[get_bits(&gbc, 2)];
++        sample_rate = ff_ac3_sample_rate_tab[sr_code];
++        sr_shift = 0;
++    }
++
++    channel_mode = get_bits(&gbc, 3);
++    lfe_on = get_bits1(&gbc);
++
++    bit_rate = 8LL * frame_size * sample_rate /
++                    (num_blocks * 256);
++    channels = ff_ac3_channels_tab[channel_mode] + lfe_on;
++
++
++    int i, blk;
++    int dialog_normalization[2];
++    int compression_exists[2];
++    int preferred_downmix;
++
++    int bitstream_id = get_bits(&gbc, 5);
++    if (bitstream_id != 0x10)
++      return 0;
++
++    /* volume control params */
++    for (i = 0; i < (channel_mode ? 1 : 2); i++) {
++        dialog_normalization[i] = -get_bits(&gbc, 5);
++        compression_exists[i] = get_bits1(&gbc);
++        if (compression_exists[i]) {
++            skip_bits(&gbc, 8);
++        }
++    }
++
++    /* dependent stream channel map */
++    if (frame_type == EAC3_FRAME_TYPE_DEPENDENT) {
++        if (get_bits1(&gbc)) {
++            skip_bits(&gbc, 16); // skip custom channel map
++        }
++    }
++
++    /* mixing metadata */
++    if (get_bits1(&gbc)) {
++        /* center and surround mix levels */
++        if (channel_mode > AC3_CHMODE_STEREO) {
++            preferred_downmix = get_bits(&gbc, 2);
++            if((channel_mode & 0x1) && (channel_mode > 0x2)) {
++                /* if three front channels exist */
++                skip_bits(&gbc, 3);
++                skip_bits(&gbc, 3);
++            }
++            if (channel_mode & 4) {
++                /* if a surround channel exists */
++                skip_bits(&gbc, 3);
++                skip_bits(&gbc, 3);
++            }
++        }
++
++        /* lfe mix level */
++        int lfe_mix_level_exists;
++        if (lfe_on && (lfe_mix_level_exists = get_bits1(&gbc))) {
++            skip_bits(&gbc, 5);
++        }
++
++        /* info for mixing with other streams and substreams */
++        if (frame_type == EAC3_FRAME_TYPE_INDEPENDENT) {
++            for (i = 0; i < (channel_mode ? 1 : 2); i++) {
++                // TODO: apply program scale factor
++                if (get_bits1(&gbc)) {
++                    skip_bits(&gbc, 6);  // skip program scale factor
++                }
++            }
++            if (get_bits1(&gbc)) {
++                skip_bits(&gbc, 6);  // skip external program scale factor
++            }
++            /* skip mixing parameter data */
++            switch(get_bits(&gbc, 2)) {
++                case 1: skip_bits(&gbc, 5);  break;
++                case 2: skip_bits(&gbc, 12); break;
++                case 3: {
++                    int mix_data_size = (get_bits(&gbc, 5) + 2) << 3;
++
++                    if (get_bits(&gbc, 1))    //mixdata2e
++                    {
++                      skip_bits(&gbc, 6+1+3);  //premixcmpsel,drcsrc,premixcmpscl
++                      if(get_bits(&gbc, 1))   //extpgmlscle
++                        skip_bits(&gbc, 4);  //extpgmlscl
++                      if(get_bits(&gbc, 1))   //extpgmcscle
++                        skip_bits(&gbc, 4);  //extpgmcscl
++                      if(get_bits(&gbc, 1))   //extpgmrscle
++                        skip_bits(&gbc, 4);  //extpgmrscl
++                      if(get_bits(&gbc, 1))   //extpgmlsscle
++                        skip_bits(&gbc, 4);  //extpgmlsscl
++                      if(get_bits(&gbc, 1))   //extpgmrsscle
++                        skip_bits(&gbc, 4);  //extpgmrsscl
++                      if(get_bits(&gbc, 1))   //extpgmlfescle
++                        skip_bits(&gbc, 4);  //extpgmlfescl
++                      if(get_bits(&gbc, 1))   //dmixscle
++                        skip_bits(&gbc, 4);  //dmixscl
++                      if (get_bits(&gbc, 1))  //addche
++                      {
++                        if(get_bits(&gbc, 1))  //extpgmaux1scle
++                          skip_bits(&gbc, 4);  //extpgmaux1scl
++                        if(get_bits(&gbc, 1))  //extpgmaux2scle
++                          skip_bits(&gbc, 4);  //extpgmaux2scl
++                      }
++                    }
++                    if(get_bits(&gbc, 1))      //mixdata3e
++                    {
++                      skip_bits(&gbc, 5);      //spchdat
++                      if(get_bits(&gbc, 1))    //addspchdate
++                      {
++                        skip_bits(&gbc, 5+2);  //spchdat1,spchan1att
++                        if(get_bits(&gbc, 1))  //addspchdat1e
++                          skip_bits(&gbc, 5+2);//spchdat2,spchan2att
++                      }
++                    }
++
++                    skip_bits_long(&gbc, mix_data_size);
++                    align_get_bits(&gbc);
++                    break;
++                }
++            }
++            /* skip pan information for mono or dual mono source */
++            if (channel_mode < AC3_CHMODE_STEREO) {
++                for (i = 0; i < (channel_mode ? 1 : 2); i++) {
++                    if (get_bits1(&gbc)) {
++                        /* note: this is not in the ATSC A/52B specification
++                           reference: ETSI TS 102 366 V1.1.1
++                                      section: E.1.3.1.25 */
++                        skip_bits(&gbc, 8);  // skip pan mean direction index
++                        skip_bits(&gbc, 6);  // skip reserved paninfo bits
++                    }
++                }
++            }
++            /* skip mixing configuration information */
++            if (get_bits1(&gbc)) {
++                for (blk = 0; blk < num_blocks; blk++) {
++                    if (num_blocks == 1 || get_bits1(&gbc)) {
++                        skip_bits(&gbc, 5);
++                    }
++                }
++            }
++        }
++    }
++
++    /* informational metadata */
++    if (get_bits1(&gbc)) {
++        skip_bits(&gbc, 3);
++        skip_bits(&gbc, 2); // skip copyright bit and original bitstream bit
++        if (channel_mode == AC3_CHMODE_STEREO) {
++            skip_bits(&gbc, 2);
++            skip_bits(&gbc, 2);
++        }
++        if (channel_mode >= AC3_CHMODE_2F2R) {
++            skip_bits(&gbc, 2);
++        }
++        for (i = 0; i < (channel_mode ? 1 : 2); i++) {
++            if (get_bits1(&gbc)) {
++                skip_bits(&gbc, 8); // skip mix level, room type, and A/D converter type
++            }
++        }
++        if (sr_code != 3) {
++            skip_bits1(&gbc); // skip source sample rate code
++        }
++    }
++
++    /* converter synchronization flag
++       If frames are less than six blocks, this bit should be turned on
++       once every 6 blocks to indicate the start of a frame set.
++       reference: RFC 4598, Section 2.1.3  Frame Sets */
++    if (frame_type == EAC3_FRAME_TYPE_INDEPENDENT && num_blocks != 6) {
++        skip_bits1(&gbc); // skip converter synchronization flag
++    }
++
++    /* original frame size code if this stream was converted from AC-3 */
++    if (frame_type == EAC3_FRAME_TYPE_AC3_CONVERT && num_blocks != 6)
++        skip_bits1(&gbc); // convsync
++    /* if bit stream converted from AC-3 */
++    if(frame_type == EAC3_FRAME_TYPE_AC3_CONVERT){
++      uint8_t blkid = 0;
++      if (num_blocks == 6)       /* 6 blocks per syncframe */
++        blkid = 1;
++      else
++        blkid = get_bits1(&gbc);
++      if (blkid)
++        skip_bits(&gbc, 6); // skip frame size code
++    }
++
++    int addbsil = 0;
++    int ec3_extension_type = 0;
++    int complexity_index = 0;
++    /* additional bitstream info */
++    if (get_bits1(&gbc)) { // addbsie
++        uint8_t addbsi[64] = {0};
++        addbsil = get_bits(&gbc, 6) + 1;
++        av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header addbsil = %d, %d\n", addbsil, frame_type);
++        for (i = 0; i < addbsil; i++)
++            addbsi[i] = get_bits(&gbc, 8);
++        // defined in 8.3 of ETSI TS 103 420
++        if ((addbsil) >= 2 && addbsi[0] & 0x1)
++        {
++          ec3_extension_type = 1;
++          complexity_index = addbsi[1];
++          av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header complexity_index = %d\n", complexity_index);
++        }
++    }
++    /* certainly not atmos if we see this */
++    if (addbsil < 2 || ec3_extension_type != 1)
++      return 0;
++
++    if (complexity_index == 0 || complexity_index > 16)
++      return 0;
++
++    /*
++    av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header size_in_bits = %d, frame_size_bits = %d\n", gbc.size_in_bits, frame_size * 8);
++    // 18 bits = auxdatae (1) + errorcheck (crcrsv (1) + crc2 (16))
++    // backup from end of frame to auxdatae
++    av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header1 gbc.index = %d\n", gbc.index);
++    gbc.index = (frame_size * 8) - 18;
++    av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header2 gbc.index = %d\n", gbc.index);
++    if (gbc.index > gbc.size_in_bits)
++        return 0;
++
++    if (get_bits1(&gbc)) {
++        // back up to beginning of auxdatal field
++        av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header3 gbc.index = %d\n", gbc.index);
++        gbc.index -= 14;
++        av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header4 gbc.index = %d\n", gbc.index);
++        // length in bits
++        int auxdatal = get_bits(&gbc, 14);
++        av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header4 auxdatal = %d\n", auxdatal);
++        // back up to beginning of auxdatal payload
++        gbc.index -= auxdatal;
++        // EMDF syncword may start anywhere in stream, also mid-byte!
++        while(get_bits_left(&gbc) > 16) {
++            av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header5 gbc.index = %d\n", gbc.index);
++            int emdf_syncword = show_bits(&gbc, 16);
++            if (emdf_syncword == 0x5838) {
++                av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header emdf_syncword = %d\n", emdf_syncword);
++                uint16_t emdf_container_length = show_bits_long(&gbc, 32) & 0xFFFF;
++                av_log(NULL, AV_LOG_DEBUG, "avpriv_eac3atmos_parse_header emdf_container_length %d\n",
++                    emdf_container_length);
++                if (emdf_container_length > frame_size - ((get_bits_left(&gbc) + 7) >> 3)) {
++                    skip_bits1(&gbc);
++                    continue;
++                }
++                int num_objects_joc;
++                int num_objects_oamd;
++                if (parse_ac3_emdf(&gbc, &num_objects_oamd, &num_objects_joc))
++                    break;
++            } else {
++                skip_bits1(&gbc);
++            }
++        }
++    }
++    */
++
++
++    /*
++      More rubust way is to also check EMDF for JOC objects but that gets tricky as EMDF
++      can be in two places (auxdata field or skipfld). As this is targeted to playing
++      eac3/atmos on appletv4, it seems to prefer media with two addbsil,
++      ec3_extension_type set and complexity_index between 1 and 16. Go figure...
++    */
++    return addbsil == 2 &&
++        ec3_extension_type == 1 &&
++        (complexity_index > 0 && complexity_index <= 16);
++}
+ 
+ int avpriv_ac3_parse_header(GetBitContext *gbc, AC3HeaderInfo **phdr)
+ {
+diff -rupN a/libavcodec/ac3_parser.h b/libavcodec/ac3_parser.h
+--- a/libavcodec/ac3_parser.h	2019-01-08 11:27:41.000000000 -0500
++++ b/libavcodec/ac3_parser.h	2019-01-19 09:35:57.000000000 -0500
+@@ -25,6 +25,9 @@
+ 
+ #include "ac3.h"
+ #include "get_bits.h"
++#include "aac_ac3_parser.h"
++
++int avpriv_eac3atmos_parse_header(const uint8_t *buf, int buf_size, AACAC3ParseContext *hdr);
+ 
+ /**
+  * Parse AC-3 frame header.
+diff -rupN a/libavformat/ac3dec.c b/libavformat/ac3dec.c
+--- a/libavformat/ac3dec.c	2019-01-08 11:27:39.000000000 -0500
++++ b/libavformat/ac3dec.c	2019-01-19 09:35:54.000000000 -0500
+@@ -45,7 +45,7 @@ static int ac3_eac3_probe(AVProbeData *p
+         for(frames = 0; buf2 < end; frames++) {
+             uint8_t buf3[4096];
+             int i;
+-            if(!memcmp(buf2, "\x1\x10\0\0\0\0\0\0", 8))
++            if(!memcmp(buf2, "\x1\x10", 2))
+                 buf2+=16;
+             if (buf[0] == 0x77 && buf[1] == 0x0B) {
+                 for(i=0; i<8; i+=2) {
+diff -rupN a/libavutil/utils.c b/libavutil/utils.c
+--- a/libavutil/utils.c	2019-01-08 11:27:38.000000000 -0500
++++ b/libavutil/utils.c	2019-01-19 09:35:53.000000000 -0500
+@@ -132,7 +132,7 @@ char *av_fourcc_make_string(char *buf, u
+         const int print_chr = (c >= '0' && c <= '9') ||
+                               (c >= 'a' && c <= 'z') ||
+                               (c >= 'A' && c <= 'Z') ||
+-                              (c && strchr(". -_", c));
++                              (c && strchr(". -+_", c));
+         const int len = snprintf(buf, buf_size, print_chr ? "%c" : "[%d]", c);
+         if (len < 0)
+             break;
