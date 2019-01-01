@@ -613,8 +613,8 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
     if (!items.Contains(item->GetPath()))
     {
 #if defined(TARGET_ANDROID)
-      // only show "skin.re-touched" on fire tables and iOS.
-      if ((*addon)->ID() == "skin.re-touched")
+      // only show "skin.ariana.touch" on fire tables and iOS.
+      if ((*addon)->ID() == "skin.ariana.touch")
       {
         if (!CAndroidFeatures::HasTouchScreen())
           continue;

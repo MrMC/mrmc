@@ -209,7 +209,7 @@ static constexpr const char* systemAddonWhiteList[] = {
   "skin.mrmc",
   "skin.opacity",
   "skin.pm3-hd",
-  "skin.re-touched",
+  "skin.ariana.touch",
   "visualization.spectrum",
   "visualization.waveform",
   "webinterface.default",
