@@ -1713,6 +1713,16 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
       return;
     }
 #endif
+    if (stream->codec == AV_CODEC_ID_EAC3)
+    {
+      // check codec_fourcc for eac3/atmos,
+      // ffmpeg only knows when probing, no decoder for it.
+      if (stream->codec_fourcc == MKTAG('e','c','+','3'))
+      {
+        strName = "eac3atmos";
+        return;
+      }
+    }
 
     AVCodec *codec = avcodec_find_decoder(stream->codec);
     if (codec)
