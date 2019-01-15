@@ -75,6 +75,8 @@ public:
   static void        CloneSystemFonts(const std::string &strPath);
   static void        ClearIOSInbox();
   static void        SetMrMCTouchFlag();
+  static std::string GetIPAddress();
+  static std::string GetNetmask();
 };
 
 #endif

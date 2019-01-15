@@ -38,6 +38,7 @@
   #include <net/if.h>
   #include <net/if_dl.h>
   #include <ifaddrs.h>
+  #include "platform/darwin/DarwinUtils.h"
   #if defined(TARGET_DARWIN_OSX)
     #include <net/if_types.h>
     #include <net/route.h>
@@ -152,23 +153,28 @@ void CNetworkInterfaceLinux::GetMacAddressRaw(char rawMac[6])
 
 std::string CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 {
-   std::string result;
+  std::string result;
+#if defined(TARGET_DARWIN)
+  result = CDarwinUtils::GetIPAddress();
+#else
+  struct ifreq ifr;
+  strcpy(ifr.ifr_name, m_interfaceName.c_str());
+  ifr.ifr_addr.sa_family = AF_INET;
+  if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
+  {
+    result = inet_ntoa((*((struct sockaddr_in *)&ifr.ifr_addr)).sin_addr);
+  }
+#endif
+return result;
 
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   ifr.ifr_addr.sa_family = AF_INET;
-   if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
-   {
-      result = inet_ntoa((*((struct sockaddr_in *)&ifr.ifr_addr)).sin_addr);
-   }
-
-   return result;
 }
 
 std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
 {
    std::string result;
-
+#if defined(TARGET_DARWIN)
+  result = CDarwinUtils::GetNetmask();
+#else
    struct ifreq ifr;
    strcpy(ifr.ifr_name, m_interfaceName.c_str());
    ifr.ifr_addr.sa_family = AF_INET;
@@ -176,7 +182,7 @@ std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
    {
       result = inet_ntoa((*((struct sockaddr_in*)&ifr.ifr_addr)).sin_addr);
    }
-
+#endif
    return result;
 }
 
