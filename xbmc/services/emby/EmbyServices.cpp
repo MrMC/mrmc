@@ -695,7 +695,7 @@ EmbyServerInfo CEmbyServices::GetEmbyLocalServerInfo(const std::string url)
       !responseObj.isMember(ServerPropertyId) ||
       !responseObj.isMember(ServerPropertyName) ||
       !responseObj.isMember(ServerPropertyVersion) ||
-      !responseObj.isMember(ServerPropertyWanAddress) ||
+//      !responseObj.isMember(ServerPropertyWanAddress) ||
       !responseObj.isMember(ServerPropertyLocalAddress) ||
       !responseObj.isMember(ServerPropertyOperatingSystem))
     return serverInfo;
