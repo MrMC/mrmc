@@ -1,6 +1,8 @@
 package @APP_PACKAGE@;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -48,16 +50,36 @@ public class Service extends android.app.Service
     }
 
     Bitmap icon = BitmapFactory.decodeResource(getResources(),
-            R.drawable.ic_recommendation_80dp);
+        R.drawable.ic_recommendation_80dp);
 
     Notification.Builder builder = new Notification.Builder(this)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText("@APP_NAME@ is running...")
-            .setSmallIcon(R.drawable.notif_icon)
-            .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-            ;
+        .setContentTitle(getString(R.string.app_name))
+        .setContentText("@APP_NAME@ is running...")
+        .setSmallIcon(R.drawable.notif_icon)
+        .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+        ;
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+    {
+      NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+      String id = "mrmc_channel_svc";
+      CharSequence name = getString(R.string.notif_channel_name);
+
+      // The user-visible description of the channel.
+      String description = getString(R.string.notif_channel_desc);
+      int importance = NotificationManager.IMPORTANCE_LOW;
+
+      NotificationChannel mChannel = new NotificationChannel(id, name, importance);
+
+      // Configure the notification channel.
+      mChannel.setDescription(description);
+
+      mNotificationManager.createNotificationChannel(mChannel);
+      builder.setChannelId(id);
+    }
     Notification notification = builder.build();
+
     startForeground(1, notification);
     return START_STICKY;
   }

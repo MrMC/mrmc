@@ -5,5 +5,7 @@
     <string name="search_hint">@APP_NAME_DISPLAY@</string>
 
     <string name="suggestion_channel">Suggestions</string>
+    <string name="notif_channel_name">MrMC</string>
+    <string name="notif_channel_desc">MrMC notifications</string>
 
 </resources>
