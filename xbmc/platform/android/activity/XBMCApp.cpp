@@ -227,7 +227,12 @@ static std::map<int, std::string> chanmask2string = {
   {0x041c, "CHANNEL_OUT_SURROUND"}
 };
 
-void LogAudoDevices(const char* stage, const CJNIAudioDeviceInfos& devices)
+const char* CXBMCApp::audioencode2string(int i)
+{
+  return encode2string[i].c_str();
+}
+
+void CXBMCApp::LogAudoDevices(const char* stage, const CJNIAudioDeviceInfos& devices)
 {
   CLog::Log(LOGDEBUG, ">>> Audio device list: %s", stage);
   for (auto dev : devices)
@@ -252,7 +257,7 @@ void LogAudoDevices(const char* stage, const CJNIAudioDeviceInfos& devices)
 
     oss.clear(); oss.str("");
     for (auto i : dev.getEncodings())
-      oss << encode2string[i].c_str() << " / ";
+      oss << audioencode2string(i) << " / ";
     CLog::Log(LOGDEBUG, "    encodings: %s", oss.str().c_str());
 
     oss.clear(); oss.str("");

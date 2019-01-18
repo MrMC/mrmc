@@ -1218,14 +1218,13 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       if (m_encoder->GetCodecID() == AV_CODEC_ID_AC3)
       {
         AEAudioFormat format;
-        format.m_channelLayout += AE_CH_FC;
         format.m_dataFormat = AE_FMT_RAW;
         format.m_sampleRate = 48000;
         format.m_channelLayout = AE_CH_LAYOUT_2_0;
         format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
         format.m_streamInfo.m_channels = 2;
         format.m_streamInfo.m_sampleRate = 48000;
-        format.m_streamInfo.m_ac3FrameSize = m_encoderFormat.m_frames;
+        format.m_streamInfo.m_frameSize = m_encoderFormat.m_frames;
         //! @todo implement
         if (m_encoderBuffers && initSink)
         {
@@ -1620,7 +1619,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
     format.m_streamInfo.m_channels = 2;
     format.m_streamInfo.m_sampleRate = 48000;
-    format.m_streamInfo.m_ac3FrameSize = 2560;   // 640kbps
+    format.m_streamInfo.m_frameSize = 2560;   // 640kbps
     if (mode)
       *mode = MODE_TRANSCODE;
   }

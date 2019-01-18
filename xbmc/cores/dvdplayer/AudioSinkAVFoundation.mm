@@ -72,7 +72,7 @@ bool CAudioSinkAVFoundation::Create(const DVDAudioFrame &audioframe, AVCodecID c
     usleep(1 * 1000);
 
   // EAC3 can have 1,2,3 or 6 audio blocks of 256 bytes per sync frame
-  m_frameSize = audioframe.format.m_streamInfo.m_ac3FrameSize;
+  m_frameSize = audioframe.format.m_streamInfo.m_frameSize;
   m_frameSize = 1792;
   m_startPtsFlag = false;
   m_startPtsSeconds = 0;

@@ -58,8 +58,6 @@ private:
   AVPacket m_Pkt;
   uint8_t m_Buffer[8 + FF_MIN_BUFFER_SIZE];
   int m_BufferSize;
-  int m_OutputSize;
-  double m_OutputRatio;
   double m_SampleRateMul;
   unsigned int  m_NeededFrames;
   bool m_NeedConversion;

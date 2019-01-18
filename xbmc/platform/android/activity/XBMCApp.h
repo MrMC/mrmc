@@ -116,6 +116,8 @@ public:
   virtual ~CXBMCApp();
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
+  static const char* audioencode2string(int i);
+
   // IAnnouncer IF
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
@@ -227,6 +229,8 @@ public:
   void onLayoutChange(int left, int top, int width, int height);
 
 protected:
+  static void LogAudoDevices(const char* stage, const CJNIAudioDeviceInfos& devices);
+
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
 

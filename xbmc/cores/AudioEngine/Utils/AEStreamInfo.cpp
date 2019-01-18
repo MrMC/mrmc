@@ -106,7 +106,7 @@ double CAEStreamInfo::GetDuration()
       duration = 2048.0 / m_sampleRate;
       break;
     default:
-      CLog::Log(LOGERROR, "CAEStreamInfo::GetDuration - invalid stream type");
+      CLog::Log(LOGERROR, "CAEStreamInfo::GetDuration - invalid stream type: %d", m_type);
       break;
   }
   return duration * 1000;
@@ -416,10 +416,10 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
     m_info.m_eac3IsAtmos = false;
-    m_info.m_ac3FrameSize = m_fsize;
+    m_info.m_frameSize = m_fsize;
     m_info.m_repeat = 1;
 
-    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - AC3 stream detected (%d channels, %dHz)", m_info.m_channels, m_info.m_sampleRate);
+    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - AC3 stream detected (%d channels, %dHz, fs:%d)", m_info.m_channels, m_info.m_sampleRate, m_info.m_frameSize);
     return true;
   }
   else
@@ -469,7 +469,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_info.m_channels = AC3Channels[acmod] + lfeon;
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
-    m_info.m_ac3FrameSize = m_fsize;
+    m_info.m_frameSize = m_fsize;
     std::string eac3format = "E-AC3";
     if (m_info.m_eac3IsAtmos)
     {
@@ -479,8 +479,8 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
       eac3format = "E-AC3/ATMOS";
     }
 
-    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - %s stream detected (%d channels, %dHz)",
-      eac3format.c_str(), m_info.m_channels, m_info.m_sampleRate);
+    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - %s stream detected (%d channels, %dHz, fs:%d)",
+      eac3format.c_str(), m_info.m_channels, m_info.m_sampleRate, m_info.m_frameSize);
     return true;
   }
 }
@@ -675,6 +675,7 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t *data, unsigned int size)
       m_info.m_channels = DTSChannels[amode] + (lfe ? 1 : 0);
       m_syncFunc = &CAEStreamParser::SyncDTS;
       m_info.m_repeat = 1;
+      m_info.m_frameSize = m_fsize;
 
       if (dataType == CAEStreamInfo::STREAM_TYPE_DTSHD_MA)
       {
@@ -810,6 +811,8 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t *data, unsigned int size)
       m_info.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
       m_syncFunc = &CAEStreamParser::SyncTrueHD;
       m_info.m_repeat = 1;
+      m_info.m_frameSize = m_fsize;
+
       return skip;
     }
     else
