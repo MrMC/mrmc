@@ -403,7 +403,7 @@ case $host in
         platform_cflags+=" -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings -O3"
         platform_cflags+=" -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
         platform_cflags+=" -Wno-error=implicit-function-declaration"
-        platform_ldflags+=" -L$use_sdk_path/usr/lib/system"
+        platform_ldflags+=" -L$use_sdk_path/usr/lib"
         platform_cxxflags+=" $cpu_flags"
       ;;
     esac
