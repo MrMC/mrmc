@@ -1343,7 +1343,10 @@ std::string CDarwinUtils::GetIPAddress()
     freeifaddrs(interfaces);
   }
   NSString *addr = wifiAddress ? wifiAddress : cellAddress;
-  return [addr UTF8String];
+  if (addr)
+    return [addr UTF8String];
+  else
+    return "";
 }
 
 std::string CDarwinUtils::GetNetmask()
@@ -1383,7 +1386,10 @@ std::string CDarwinUtils::GetNetmask()
     freeifaddrs(interfaces);
   }
   NSString *addr = wifiAddress ? wifiAddress : cellAddress;
-  return [addr UTF8String];
+  if (addr)
+    return [addr UTF8String];
+  else
+    return "";
 }
 
 #if defined(TARGET_DARWIN_IOS)

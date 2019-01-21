@@ -156,15 +156,17 @@ std::string CNetworkInterfaceLinux::GetCurrentIPAddress(void)
   std::string result;
 #if defined(TARGET_DARWIN)
   result = CDarwinUtils::GetIPAddress();
-#else
-  struct ifreq ifr;
-  strcpy(ifr.ifr_name, m_interfaceName.c_str());
-  ifr.ifr_addr.sa_family = AF_INET;
-  if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
-  {
-    result = inet_ntoa((*((struct sockaddr_in *)&ifr.ifr_addr)).sin_addr);
-  }
 #endif
+  if (result.empty())
+  {
+    struct ifreq ifr;
+    strcpy(ifr.ifr_name, m_interfaceName.c_str());
+    ifr.ifr_addr.sa_family = AF_INET;
+    if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
+    {
+      result = inet_ntoa((*((struct sockaddr_in *)&ifr.ifr_addr)).sin_addr);
+    }
+  }
 return result;
 
 }
@@ -174,16 +176,18 @@ std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
    std::string result;
 #if defined(TARGET_DARWIN)
   result = CDarwinUtils::GetNetmask();
-#else
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   ifr.ifr_addr.sa_family = AF_INET;
-   if (ioctl(m_network->GetSocket(), SIOCGIFNETMASK, &ifr) >= 0)
-   {
-      result = inet_ntoa((*((struct sockaddr_in*)&ifr.ifr_addr)).sin_addr);
-   }
 #endif
-   return result;
+  if (result.empty())
+  {
+    struct ifreq ifr;
+    strcpy(ifr.ifr_name, m_interfaceName.c_str());
+    ifr.ifr_addr.sa_family = AF_INET;
+    if (ioctl(m_network->GetSocket(), SIOCGIFNETMASK, &ifr) >= 0)
+    {
+      result = inet_ntoa((*((struct sockaddr_in*)&ifr.ifr_addr)).sin_addr);
+    }
+  }
+  return result;
 }
 
 std::string CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
