@@ -82,39 +82,40 @@ MediaLibrary.prototype = {
     this.resetPage();
     $('#remoteControlText').addClass('selected');
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
     var libraryContainer = $('#remoteContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
-      imageContainer = $('<img>');
-      imageContainer.attr('src', '../images/remote_blue.png').addClass('remoteImage');
-      $('#content').append(imageContainer);
+      // imageContainer = $('<img>');
+      // imageContainer.attr('src', '../images/remote_blue.png').addClass('remoteImage');
+      // $('#content').append(imageContainer);
       libraryContainer = $('<div>');
-      libraryContainer.attr('id', 'remoteContainer').addClass('contentContainer');
+      libraryContainer.attr('id', 'remoteContainer').addClass('contentContainerRemote');
         
       $('#content').append(libraryContainer);
       var keys=[
-        {name:'up',width:'40px',height:'40px',top:'15px',left:'93px'},
-        {name:'down',width:'40px',height:'40px',top:'125px',left:'93px'},
-        {name:'left',width:'40px',height:'40px',top:'70px',left:'38px'},
-        {name:'right',width:'40px',height:'40px',top:'70px',left:'145px'},
-        {name:'ok',width:'40px',height:'40px',top:'70px',left:'92px'},
-        {name:'home',width:'30px',height:'30px',top:'192px',left:'98px'},
-        {name:'back',width:'30px',height:'30px',top:'192px',left:'58px'},
-        {name:'mute',width:'40px',height:'40px',top:'130px',left:'330px'},
+        {name:'up',width:'40px',height:'40px',top:'5px',left:'93px'},
+        {name:'down',width:'40px',height:'40px',top:'115px',left:'93px'},
+        {name:'left',width:'40px',height:'40px',top:'60px',left:'38px'},
+        {name:'right',width:'40px',height:'40px',top:'60px',left:'145px'},
+        {name:'ok',width:'40px',height:'40px',top:'60px',left:'92px'},
+        {name:'home',width:'30px',height:'30px',top:'182px',left:'98px'},
+        {name:'back',width:'30px',height:'30px',top:'182px',left:'58px'},
+        {name:'mute',width:'40px',height:'40px',top:'120px',left:'330px'},
         // {name:'power',width:'30px',height:'30px',top:'-3px',left:'13px'},
-        {name:'volumeup',width:'40px',height:'40px',top:'130px',left:'385px'},
-        {name:'volumedown',width:'40px',height:'40px',top:'130px',left:'273px'},
-        {name:'playpause',width:'40px',height:'40px',top:'75px',left:'597px'},
-        {name:'stop',width:'40px',height:'40px',top:'75px',left:'542px'},
-        {name:'next',width:'40px',height:'40px',top:'130px',left:'650px'},
-        {name:'previous',width:'40px',height:'40px',top:'130px',left:'487px'},
-        {name:'forward',width:'40px',height:'40px',top:'130px',left:'595px'},
-        {name:'rewind',width:'40px',height:'40px',top:'130px',left:'541px'},
-        {name:'cleanlib_a',width:'40px',height:'40px',top:'70px',left:'305px'},
-        {name:'updatelib_a',width:'40px',height:'40px',top:'70px',left:'250px'},
-        {name:'cleanlib_v',width:'40px',height:'40px',top:'70px',left:'358px'},
-        {name:'updatelib_v',width:'40px',height:'40px',top:'70px',left:'410px'},
-        {name:'codec',width:'30px',height:'30px',top:'192px',left:'138px'},
+        {name:'volumeup',width:'40px',height:'40px',top:'120px',left:'385px'},
+        {name:'volumedown',width:'40px',height:'40px',top:'120px',left:'273px'},
+        {name:'playpause',width:'40px',height:'40px',top:'65px',left:'597px'},
+        {name:'stop',width:'40px',height:'40px',top:'65px',left:'542px'},
+        {name:'next',width:'40px',height:'40px',top:'120px',left:'650px'},
+        {name:'previous',width:'40px',height:'40px',top:'120px',left:'487px'},
+        {name:'forward',width:'40px',height:'40px',top:'120px',left:'595px'},
+        {name:'rewind',width:'40px',height:'40px',top:'120px',left:'541px'},
+        {name:'cleanlib_a',width:'40px',height:'40px',top:'60px',left:'305px'},
+        {name:'updatelib_a',width:'40px',height:'40px',top:'60px',left:'250px'},
+        {name:'cleanlib_v',width:'40px',height:'40px',top:'60px',left:'358px'},
+        {name:'updatelib_v',width:'40px',height:'40px',top:'60px',left:'410px'},
+        {name:'codec',width:'30px',height:'30px',top:'182px',left:'138px'},
       ];
       for (var akey in keys) {
         var aremotekey=$('<p>').attr('id',keys[akey]['name']);
@@ -163,6 +164,7 @@ MediaLibrary.prototype = {
           btnLabel = "Copy Log (Old) Content";
         }
         $('.contentContainer').hide();
+        $('.contentContainerRemote').hide();
         var html = document.documentElement;
         var body = document.getElementsByTagName("body")[0];
         var height = Math.max( body.scrollHeight, body.offsetHeight, 
@@ -193,6 +195,7 @@ MediaLibrary.prototype = {
     $('#authcloudText').addClass('selected');
 
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
 
     var div = document.createElement('div');
 
@@ -520,6 +523,7 @@ MediaLibrary.prototype = {
     this.resetPage();
     $('#musicLibraryText').addClass('selected');
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
     var libraryContainer = $('#libraryContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
@@ -651,6 +655,7 @@ MediaLibrary.prototype = {
   },
   hideAlbumDetails: function () {
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
     this.musicLibraryOpen();
   },
   displayAlbumDetails: function (event) {
@@ -687,6 +692,7 @@ MediaLibrary.prototype = {
             .addClass('albumContainer')
             .html('<table class="albumView"><thead><tr class="headerRow"><th>Artwork</th><th>&nbsp;</th><th>Name</th><th class="time">Time</th><th>Artist</th><th>Genre</th></tr></thead><tbody class="resultSet"></tbody></table>');
           $('.contentContainer').hide();
+          $('.contentContainerRemote').hide();
           $('#content').append(albumDetailsContainer);
           var albumThumbnail = event.data.album.thumbnail;
           var albumTitle = event.data.album.title||'Unknown Album';
@@ -745,6 +751,7 @@ MediaLibrary.prototype = {
       });
     } else {
       $('.contentContainer').hide();
+      $('.contentContainerRemote').hide();
       $('#albumDetails' + event.data.album.albumid).show();
     }
   },
@@ -844,6 +851,7 @@ MediaLibrary.prototype = {
       });
     } else {
       $('.contentContainer').hide();
+      $('.contentContainerRemote').hide();
       $('#tvShowDetails' + event.data.tvshow.tvshowid).show();
       $('#tvShowDetails' + event.data.tvshow.tvshowid +' select').trigger('change');
     }
@@ -1047,6 +1055,7 @@ MediaLibrary.prototype = {
     this.resetPage();
     $('#movieLibraryText').addClass('selected');
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
     var libraryContainer = $('#movieLibraryContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
@@ -1109,6 +1118,7 @@ MediaLibrary.prototype = {
     this.resetPage();
     $('#tvshowLibraryText').addClass('selected');
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
     var libraryContainer = $('#tvshowLibraryContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
@@ -1191,6 +1201,7 @@ MediaLibrary.prototype = {
     this.resetPage();
     $('#profiles').addClass('selected');
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
     var libraryContainer = $('#profilesContainer');
     if (!libraryContainer || libraryContainer.length == 0) {
       $('#spinner').show();
@@ -1280,6 +1291,7 @@ MediaLibrary.prototype = {
     this.resetPage();
     $('#pictureLibraryText').addClass('selected');
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
     var libraryContainer = $('#pictureLibraryDirContainer' + directory);
     if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
@@ -1342,6 +1354,7 @@ MediaLibrary.prototype = {
     this.resetPage();
     $('#pictureLibraryText').addClass('selected');
     $('.contentContainer').hide();
+    $('.contentContainerRemote').hide();
     var libraryContainer = $('#pictureLibraryContainer');
     if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
