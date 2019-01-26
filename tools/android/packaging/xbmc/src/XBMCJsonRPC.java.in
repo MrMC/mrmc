@@ -1252,7 +1252,7 @@ public class XBMCJsonRPC
         {
           Uri u = Uri.parse(trailer_url);
           String videoid = u.getQueryParameter("videoid");
-          String yturl = Uri.parse("http://www.youtube.com/watch")
+          String yturl = Uri.parse("https://www.youtube.com/watch")
                   .buildUpon()
                   .appendQueryParameter("v", videoid)
                   .build()
