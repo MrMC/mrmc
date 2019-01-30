@@ -375,11 +375,6 @@ void CAdvancedSettings::Initialize()
   m_startFullScreen = false;
 #endif
   m_showExitButton = true;
-#if defined(TARGET_DARWIN_TVOS)
-  m_splashImage = false;
-#else
-  m_splashImage = true;
-#endif
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
@@ -862,7 +857,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 #if defined(HAS_SDL)
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
-  XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
   XMLUtils::GetBoolean(pRootElement, "showexitbutton", m_showExitButton);
   XMLUtils::GetBoolean(pRootElement, "canwindowed", m_canWindowed);
 
