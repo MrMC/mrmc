@@ -32,12 +32,14 @@
 #import  <AVFoundation/AVAudioSession.h>
 
 enum CAChannelIndex {
-  CAChannel_PCM_6CHAN = 0,
-  CAChannel_PCM_8CHAN = 1,
-  CAChannel_PCM_DD5_1 = 2,
+  CAChannel_PCM_2CHAN = 0,
+  CAChannel_PCM_6CHAN = 1,
+  CAChannel_PCM_8CHAN = 2,
+  CAChannel_PCM_DD5_1 = 3,
 };
 
-static enum AEChannel CAChannelMap[3][9] = {
+static enum AEChannel CAChannelMap[4][9] = {
+  { AE_CH_FL , AE_CH_FR , AE_CH_NULL },
   { AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_NULL },
   { AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_FC , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_NULL },
   { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL },
@@ -716,13 +718,18 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     CAEChannelInfo channel_info;
     CAChannelIndex channel_index = CAChannel_PCM_6CHAN;
 #if defined(TARGET_DARWIN_TVOS)
-    if (maxChannels == 6 && format.m_channelLayout.Count() == 6)
+    if (maxChannels == 2 && format.m_channelLayout.Count() > 2)
+    {
+      // if 2, then audio is set to 2 channel PCM
+      // aimed at handling airplay
+      channel_index = CAChannel_PCM_2CHAN;
+    }
+    else if (maxChannels == 6 && format.m_channelLayout.Count() == 6)
     {
       // if 6, then audio is set to Digial Dolby 5.1, need to use DD mapping
       channel_index = CAChannel_PCM_DD5_1;
     }
-    else
-    if (format.m_channelLayout.Count() == 5)
+    else if (format.m_channelLayout.Count() == 5)
     {
       // if 5, then audio is set to Digial Dolby 5.0, need to use DD mapping
       channel_index = CAChannel_PCM_DD5_1;
