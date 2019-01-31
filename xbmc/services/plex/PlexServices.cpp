@@ -330,6 +330,12 @@ void CPlexServices::InitiateSignIn()
     CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSER, "");
     CSettings::GetInstance().SetString(CSettings::SETTING_SERVICES_PLEXHOMEUSERTHUMB, "");
     CLog::Log(LOGDEBUG, "CPlexServices:OnSettingAction sign-out ok");
+    std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
+    if (serverType == "plex")
+    {
+      CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"");
+      CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+    }
   }
   SetUserSettings();
   
