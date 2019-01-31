@@ -695,8 +695,9 @@ void CGUIWindowHome::SetupServices()
   if (!btnServers)
     return;
 
-  if (CServicesManager::GetInstance().HasServices())
-    SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
+  // Always show server button as we might loose the server and "not have services"
+  //  if (CServicesManager::GetInstance().HasServices())
+  SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
 
   CSingleLock lock(m_critsection);
   m_buttonSections->ClearItems();
@@ -710,12 +711,15 @@ void CGUIWindowHome::SetupServices()
     if (CPlexServices::GetInstance().HasClients())
     {
       CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(serverUUID);
-      if (plexClient == nullptr)
+      if (serverUUID.empty())
       {
-        // this is only triggered when we first sign in plex as the server has not been selected yet, we pick the first one
-        plexClient = CPlexServices::GetInstance().GetFirstClient();
-        if (plexClient)
-          CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,plexClient->GetUuid());
+        if (plexClient == nullptr)
+        {
+          // this is only triggered when we first sign in plex as the server has not been selected yet, we pick the first one
+          plexClient = CPlexServices::GetInstance().GetFirstClient();
+          if (plexClient)
+            CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,plexClient->GetUuid());
+        }
       }
       if (plexClient)
       {
@@ -734,12 +738,15 @@ void CGUIWindowHome::SetupServices()
     if (CEmbyServices::GetInstance().HasClients())
     {
       CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(serverUUID);
-      if (embyClient == nullptr)
+      if (serverUUID.empty())
       {
-        // this is only triggered when we first sign in emby as the server has not been selected yet, we pick the first one
-        embyClient = CEmbyServices::GetInstance().GetFirstClient();
-        if (embyClient)
-          CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,embyClient->GetUuid());
+        if (embyClient == nullptr)
+        {
+          // this is only triggered when we first sign in emby as the server has not been selected yet, we pick the first one
+          embyClient = CEmbyServices::GetInstance().GetFirstClient();
+          if (embyClient)
+            CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,embyClient->GetUuid());
+        }
       }
       if (embyClient)
       {
