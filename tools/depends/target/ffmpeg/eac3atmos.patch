@@ -331,7 +331,7 @@ diff -rupN a/libavcodec/ac3_parser.c b/libavcodec/ac3_parser.c
 +      eac3/atmos on appletv4, it seems to prefer media with two addbsil,
 +      ec3_extension_type set and complexity_index between 1 and 16. Go figure...
 +    */
-+    return addbsil == 2 &&
++    return frame_size == 1792 && addbsil == 2 &&
 +        ec3_extension_type == 1 &&
 +        (complexity_index > 0 && complexity_index <= 16);
 +}
