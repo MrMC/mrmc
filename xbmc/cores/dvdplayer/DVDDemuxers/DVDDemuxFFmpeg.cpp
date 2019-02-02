@@ -1345,6 +1345,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iColorSpace = pStream->codec->colorspace;
         st->iColorRange = pStream->codec->color_range;
         st->iColorTransfer = pStream->codec->color_trc;
+        st->iColorPrimaries = pStream->codec->color_primaries;
         st->CheckForInterlaced(pStream->parser);
 
         AVDictionaryEntry *rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);

@@ -68,6 +68,7 @@ void CDVDStreamInfo::Clear()
   colorspace = 0;
   colorrange = 0;
   colortransfer = 0;
+  colorprimaries = 0;
   pid = 0;
   stereo_mode.clear();
   maybe_interlaced = false;
@@ -116,6 +117,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  colorspace != right.colorspace
   ||  colorrange != right.colorrange
   ||  colortransfer != right.colortransfer
+  ||  colorprimaries != right.colorprimaries
   ||  pid != right.pid
   ||  vfr      != right.vfr
   ||  maybe_interlaced != right.maybe_interlaced
@@ -188,6 +190,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   colorspace = right.colorspace;
   colorrange = right.colorrange;
   colortransfer = right.colortransfer;
+  colorprimaries = right.colorprimaries;
   pid = right.pid;
   vfr = right.vfr;
   software = right.software;
@@ -253,6 +256,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     colorspace = stream->iColorSpace;
     colorrange = stream->iColorRange;
     colortransfer = stream->iColorTransfer;
+    colorprimaries = stream->iColorPrimaries;
     pid = stream->iPhysicalId;
     stereo_mode = stream->stereo_mode;
     maybe_interlaced = stream->bMaybeInterlaced;

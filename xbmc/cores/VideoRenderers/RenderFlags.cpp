@@ -75,6 +75,7 @@ namespace RenderManager {
       case AVCOL_PRI_BT470BG: return CONF_FLAGS_COLPRI_BT470BG;
       case AVCOL_PRI_SMPTE170M: return CONF_FLAGS_COLPRI_170M;
       case AVCOL_PRI_SMPTE240M: return CONF_FLAGS_COLPRI_240M;
+      case AVCOL_PRI_BT2020: return CONF_FLAGS_COLPRI_BT2020;
     }
     return 0;
   }

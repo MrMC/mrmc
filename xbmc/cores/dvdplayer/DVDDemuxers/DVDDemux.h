@@ -167,6 +167,9 @@ public:
     iOrientation = 0;
     iBitsPerPixel = 0;
     iColorSpace = 0;
+    iColorRange = 0;
+    iColorTransfer = 0;
+    iColorPrimaries = 0;
     bMaybeInterlaced = false;
   }
 
@@ -186,6 +189,7 @@ public:
   int iColorSpace;
   int iColorRange;
   int iColorTransfer;
+  int iColorPrimaries;
   std::string stereo_mode; // expected stereo mode
   bool bMaybeInterlaced; // stream 'might' be interlaced, on some, we can't tell for sure unless decoding.
 };
