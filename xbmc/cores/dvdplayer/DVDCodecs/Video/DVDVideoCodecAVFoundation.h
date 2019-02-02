@@ -96,6 +96,7 @@ protected:
   int                     m_colorrange;
   int                     m_colorspace;
   int                     m_colortransfer;
+  int                     m_colorprimaries;
   int                     m_dynamicrange;
   int                     m_width;
   int                     m_height;

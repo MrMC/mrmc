@@ -403,12 +403,18 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           // start with assuming SDR
           m_colorspace = hints.colorspace;
           m_colortransfer = hints.colortransfer;
+          m_colorprimaries = hints.colorprimaries;
           m_dynamicrange = DVP_DYNAMIC_RANGE_SDR;
           // HEVC Main 10 is always HDR10. Needs verify.
           if (hints.profile == FF_PROFILE_HEVC_MAIN_10 ||
               hints.profile == FF_PROFILE_HEVC_REXT)
           {
             if (hints.colortransfer >= AVCOL_TRC_SMPTE2084)
+              m_dynamicrange = DVP_DYNAMIC_RANGE_HDR10;
+            if (hints.colorprimaries == AVCOL_PRI_BT2020)
+              m_dynamicrange = DVP_DYNAMIC_RANGE_HDR10;
+            if (hints.colorspace == AVCOL_SPC_BT2020_CL ||
+                hints.colorspace == AVCOL_SPC_BT2020_NCL)
               m_dynamicrange = DVP_DYNAMIC_RANGE_HDR10;
           }
           // check for DolbyVision, hints.profile will be wrong
@@ -581,6 +587,7 @@ bool CDVDVideoCodecAVFoundation::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->color_range     = m_colorrange;
   pDvdVideoPicture->color_matrix    = m_colorspace;
   pDvdVideoPicture->color_transfer  = m_colortransfer;
+  pDvdVideoPicture->color_primaries = m_colorprimaries;
   pDvdVideoPicture->dynamic_range   = m_dynamicrange;
   pDvdVideoPicture->iWidth          = m_width;
   pDvdVideoPicture->iHeight         = m_height;
