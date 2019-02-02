@@ -403,6 +403,7 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
   // some ac3/eac3 has 14 byte padding (seems to come from ts files)
   // ffmpeg strips it internally during decode
   // but autotoolbox does not like it, so we strip it (only if padded).
+  // mystery solved, ffmpeg inserted sidedata (mepgts id)
   int sizeInternal = iSize;
 	float fSize = (float)sizeInternal / 256;
   if ((sizeInternal - ((int)fSize * 256)) == 14)
@@ -418,7 +419,7 @@ int CDVDAudioCodecAudioConverter::Decode(uint8_t* pData, int iSize, double dts, 
   if (!m_oBuffer)
   {
     // set up our output buffer
-    // AudioCOnverter always seems to return no more than 1536
+    // AudioConverter always seems to return no more than 1536
     // for any ac3/eac3 flavor.
     m_oBufferSize = 1536 * m_hints.channels * 4;
     // just a little extra because I'm paranoid
