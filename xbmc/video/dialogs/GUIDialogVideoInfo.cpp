@@ -948,8 +948,8 @@ void CGUIDialogVideoInfo::PlayTrailer()
   if (StringUtils::StartsWith(path, "plugin://plugin.video.youtube"))
   {
     std::string videoID = StringUtils::Split(path,"videoid=")[1];
-    std::string ytPath = "http://youtube.com/watch?v=" + videoID;
     #if defined(TARGET_DARWIN)
+      std::string ytPath = "http://youtube.com/watch?v=" + videoID;
       CDarwinUtils::OpenAppWithOpenURL(ytPath);
     #else
       CXBMCApp::get()->openYouTubeVideo(videoID);

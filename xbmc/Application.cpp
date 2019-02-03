@@ -3017,6 +3017,21 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   //If item is a plugin, expand out now and run ourselves again
   if (item.IsPlugin())
   {
+#if defined(TARGET_DARWIN) || defined(TARGET_ANDROID)
+  if (StringUtils::StartsWith(item.GetPath(), "plugin://plugin.video.youtube"))
+  {
+    std::string videoID = StringUtils::Split(item.GetPath(),"videoid=")[1];
+    #if defined(TARGET_DARWIN)
+      std::string ytPath = "http://youtube.com/watch?v=" + videoID;
+      CDarwinUtils::OpenAppWithOpenURL(ytPath);
+    #else
+      CXBMCApp::get()->openYouTubeVideo(videoID);
+    #endif
+
+    return true;
+  }
+#endif
+
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
       return PlayMedia(item_new, iPlaylist);
@@ -3308,7 +3323,22 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return PLAYBACK_FAIL;
 
   if (item.IsPlugin())
-  { // we modify the item so that it becomes a real URL
+  {
+#if defined(TARGET_DARWIN) || defined(TARGET_ANDROID)
+    if (StringUtils::StartsWith(item.GetPath(), "plugin://plugin.video.youtube"))
+    {
+      std::string videoID = StringUtils::Split(item.GetPath(),"videoid=")[1];
+#if defined(TARGET_DARWIN)
+      std::string ytPath = "http://youtube.com/watch?v=" + videoID;
+      CDarwinUtils::OpenAppWithOpenURL(ytPath);
+#else
+      CXBMCApp::get()->openYouTubeVideo(videoID);
+#endif
+
+      return PLAYBACK_OK;
+    }
+#endif
+    // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
       return PlayFile(item_new, false);
