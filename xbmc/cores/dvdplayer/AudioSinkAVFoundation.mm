@@ -65,7 +65,7 @@ bool CAudioSinkAVFoundation::Create(const DVDAudioFrame &audioframe, AVCodecID c
 
   CSingleLock lock(m_critSection);
 
-  CAEFactory::Suspend();
+  CAEFactory::SetExternalDevice(true);
   // wait for AE to suspend
   XbmcThreads::EndTime timer(250);
   while (!CAEFactory::IsSuspended() && !timer.IsTimePast())
@@ -104,7 +104,8 @@ void CAudioSinkAVFoundation::Destroy()
 
   SAFE_DELETE(m_sink);
 
-  CAEFactory::Resume();
+  if (CAEFactory::UsingExternalDevice())
+    CAEFactory::SetExternalDevice(false);
   // wait for AE to wake
   XbmcThreads::EndTime timer(250);
   while (CAEFactory::IsSuspended() && !timer.IsTimePast())

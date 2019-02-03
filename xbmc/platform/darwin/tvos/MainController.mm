@@ -542,10 +542,13 @@ MainController *g_xbmcController;
   CNetworkServices::GetInstance().StartLightEffectServices();
   CNetworkServices::GetInstance().StartHueService();
 
+  if (!CAEFactory::UsingExternalDevice())
+  {
   // wait for AE to wake
-  XbmcThreads::EndTime timer(2000);
-  while (CAEFactory::IsSuspended() && !timer.IsTimePast())
-    usleep(250*1000);
+    XbmcThreads::EndTime timer(2000);
+    while (CAEFactory::IsSuspended() && !timer.IsTimePast())
+      usleep(250*1000);
+  }
 
   // handles a push into foreground by a topshelf item select/play
   // returns false if there is no topshelf item

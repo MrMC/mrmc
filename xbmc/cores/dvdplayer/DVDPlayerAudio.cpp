@@ -193,7 +193,8 @@ void CDVDPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 
 void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
-  bool bWait = bWaitForBuffers && m_speed > 0 && !CAEFactory::IsSuspended();
+  bool bWait = bWaitForBuffers && m_speed > 0 &&
+    !(CAEFactory::UsingExternalDevice() || CAEFactory::IsSuspended());
 
   // wait until buffers are empty
   if (bWait)
