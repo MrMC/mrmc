@@ -105,6 +105,21 @@ bool CAEFactory::IsSuspended()
   return true;
 }
 
+void CAEFactory::SetExternalDevice(bool active)
+{
+  if(AE)
+    AE->SetExternalDevice(active);
+}
+
+bool CAEFactory::UsingExternalDevice()
+{
+  if(AE)
+    return AE->UsingExternalDevice();
+
+  /* No engine to process audio */
+  return true;
+}
+
 /* engine wrapping */
 IAESound *CAEFactory::MakeSound(const std::string &file)
 {

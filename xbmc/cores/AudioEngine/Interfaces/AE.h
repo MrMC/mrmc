@@ -108,6 +108,19 @@ public:
   virtual bool Resume() = 0;
 
   /**
+   * Get the current Bypass() state
+   * @return True if AE is in bypass state.
+   */
+  virtual bool UsingExternalDevice() = 0;
+
+  /**
+   * Suspends output and de-initializes sink
+   * blocks Suspend/Resume/Lost/Reset/Focus changes
+   * used to shutdown audio and ignore lost/reset display changes
+   */
+  virtual void SetExternalDevice(bool active) = 0;
+
+  /**
    * Get the current Suspend() state
    * Used by players to determine if audio is being processed
    * Default is true so players drop audio or pause if engine unloaded

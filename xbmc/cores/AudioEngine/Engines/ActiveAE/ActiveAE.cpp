@@ -237,6 +237,18 @@ void CEngineStats::SetSuspended(bool state)
   m_suspended = state;
 }
 
+void CEngineStats::SetExternalDevice(bool active)
+{
+  CSingleLock lock(m_lock);
+  m_externalActive = active;
+}
+
+bool CEngineStats::UsingExternalDevice()
+{
+  CSingleLock lock(m_lock);
+  return m_externalActive;
+}
+
 bool CEngineStats::IsSuspended()
 {
   CSingleLock lock(m_lock);
@@ -2810,37 +2822,70 @@ void CActiveAE::Shutdown()
 
 bool CActiveAE::Suspend()
 {
-  return m_controlPort.SendOutMessage(CActiveAEControlProtocol::SUSPEND);
+  if (!m_stats.UsingExternalDevice())
+    return m_controlPort.SendOutMessage(CActiveAEControlProtocol::SUSPEND);
+  return true;
 }
 
 bool CActiveAE::Resume()
 {
-  Message *reply;
-  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
-                                                 &reply,
-                                                 5000))
+  if (!m_stats.UsingExternalDevice())
   {
-    bool success = reply->signal == CActiveAEControlProtocol::ACC;
-    reply->Release();
-    if (!success)
+    Message *reply;
+    if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
+                                                   &reply,
+                                                   5000))
     {
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      bool success = reply->signal == CActiveAEControlProtocol::ACC;
+      reply->Release();
+      if (!success)
+      {
+        CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+        return false;
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
       return false;
     }
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
-    return false;
-  }
 
-  m_inMsgEvent.Reset();
+    m_inMsgEvent.Reset();
+  }
   return true;
 }
 
 bool CActiveAE::IsSuspended()
 {
   return m_stats.IsSuspended();
+}
+
+bool CActiveAE::UsingExternalDevice()
+{
+  return m_stats.UsingExternalDevice();
+}
+
+void CActiveAE::SetExternalDevice(bool active)
+{
+  CLog::Log(LOGDEBUG,"CActiveAE - ExternalDevice %s", active ? "enabled":"disabled");
+  if (active)
+  {
+    // if already using external device, do nothing
+    if (!m_stats.UsingExternalDevice())
+    {
+      CActiveAE::Suspend();
+      m_stats.SetExternalDevice(true);
+    }
+  }
+  else
+  {
+    // update external device state so we can resume
+    m_stats.SetExternalDevice(false);
+    // resume if we were suspended
+    if (m_stats.IsSuspended())
+      CActiveAE::Resume();
+  }
+  CLog::Log(LOGDEBUG,"CActiveAE - ExternalDevice state change finished");
 }
 
 float CActiveAE::GetVolume()
@@ -2878,7 +2923,8 @@ void CActiveAE::KeepConfiguration(unsigned int millis)
 
 void CActiveAE::DeviceChange()
 {
-  m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECHANGE);
+  if (!m_stats.UsingExternalDevice())
+    m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECHANGE);
 }
 
 bool CActiveAE::HasDSP()
@@ -2893,32 +2939,37 @@ AEAudioFormat CActiveAE::GetCurrentSinkFormat()
 
 void CActiveAE::OnLostDevice()
 {
-  Message *reply;
-  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::DISPLAYLOST,
-                                                 &reply,
-                                                 5000))
+  if (!m_stats.UsingExternalDevice())
   {
-    bool success = reply->signal == CActiveAEControlProtocol::ACC;
-    reply->Release();
-    if (!success)
+    Message *reply;
+    if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::DISPLAYLOST,
+                                                   &reply,
+                                                   5000))
     {
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      bool success = reply->signal == CActiveAEControlProtocol::ACC;
+      reply->Release();
+      if (!success)
+      {
+        CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      }
     }
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "ActiveAE::%s - timed out", __FUNCTION__);
+    else
+    {
+      CLog::Log(LOGERROR, "ActiveAE::%s - timed out", __FUNCTION__);
+    }
   }
 }
 
 void CActiveAE::OnResetDevice()
 {
-  m_controlPort.SendOutMessage(CActiveAEControlProtocol::DISPLAYRESET);
+  if (!m_stats.UsingExternalDevice())
+    m_controlPort.SendOutMessage(CActiveAEControlProtocol::DISPLAYRESET);
 }
 
 void CActiveAE::OnAppFocusChange(bool focus)
 {
-  m_controlPort.SendOutMessage(CActiveAEControlProtocol::APPFOCUSED, &focus, sizeof(focus));
+  if (!m_stats.UsingExternalDevice())
+    m_controlPort.SendOutMessage(CActiveAEControlProtocol::APPFOCUSED, &focus, sizeof(focus));
 }
 
 //-----------------------------------------------------------------------------

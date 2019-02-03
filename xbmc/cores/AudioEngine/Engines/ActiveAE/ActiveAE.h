@@ -195,6 +195,8 @@ public:
   float GetCacheTotal();
   float GetMaxDelay();
   float GetWaterLevel();
+  bool UsingExternalDevice();
+  void SetExternalDevice(bool active);
   void SetSuspended(bool state);
   void SetDSP(bool state);
   void SetCurrentSinkFormat(AEAudioFormat SinkFormat);
@@ -209,6 +211,7 @@ protected:
   int m_bufferedSamples;
   unsigned int m_sinkSampleRate;
   AEDelayStatus m_sinkDelay;
+  bool m_externalActive = false;
   bool m_suspended;
   bool m_hasDSP;
   AEAudioFormat m_sinkFormat;
@@ -243,6 +246,8 @@ public:
   virtual bool   Suspend();
   virtual bool   Resume();
   virtual bool   IsSuspended();
+  virtual bool   UsingExternalDevice();
+  virtual void   SetExternalDevice(bool active);
   virtual void   OnSettingsChange(const std::string& setting);
 
   virtual float GetVolume();
