@@ -25,6 +25,7 @@ set (my_SOURCES
   Crc32.cpp
   CryptThreading.cpp
   DatabaseUtils.cpp
+  DolbyFrameParser.cpp
   EndianSwap.cpp
   Environment.cpp
   Fanart.cpp
@@ -53,6 +54,7 @@ set (my_SOURCES
   Locale.cpp
   log.cpp
   md5.cpp
+  MemoryBitstream.cpp
   Mime.cpp
   Observer.cpp
   posix/PosixInterfaceForCLog.cpp
