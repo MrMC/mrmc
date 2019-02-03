@@ -213,6 +213,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     try
     {
       Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + key));
+      intent.putExtra("finish_on_ended", true);
+
       // Check if the youtube app exists on the device
       if (intent.resolveActivity(getPackageManager()) == null) {
           // If the youtube app doesn't exist, then use the browser
