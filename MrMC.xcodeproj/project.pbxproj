@@ -1872,7 +1872,6 @@
 		F55BD31C1D246E240072FE3A /* ServicesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55BD31B1D246E240072FE3A /* ServicesManager.cpp */; };
 		F55BD31D1D246E240072FE3A /* ServicesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55BD31B1D246E240072FE3A /* ServicesManager.cpp */; };
 		F55BD31E1D246E240072FE3A /* ServicesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55BD31B1D246E240072FE3A /* ServicesManager.cpp */; };
-		F55F0CF921D991FE005DC95F /* AudioSinkAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F55F0CF721D991FE005DC95F /* AudioSinkAVFoundation.mm */; };
 		F55F0CFA21D991FE005DC95F /* AudioSinkAVFoundation.mm in Sources */ = {isa = PBXBuildFile; fileRef = F55F0CF721D991FE005DC95F /* AudioSinkAVFoundation.mm */; };
 		F55F0CFE21E1570A005DC95F /* point1sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F55F0CFD21E1570A005DC95F /* point1sec.mp3 */; };
 		F55F0CFF21E1570A005DC95F /* point1sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F55F0CFD21E1570A005DC95F /* point1sec.mp3 */; };
@@ -12849,7 +12848,6 @@
 				E49913B1174E5F3300741B6D /* UPnPSettings.cpp in Sources */,
 				E49913B2174E5F3700741B6D /* WebSocket.cpp in Sources */,
 				E49913B3174E5F3700741B6D /* WebSocketManager.cpp in Sources */,
-				F55F0CF921D991FE005DC95F /* AudioSinkAVFoundation.mm in Sources */,
 				E49913B4174E5F3700741B6D /* WebSocketV13.cpp in Sources */,
 				E49913B5174E5F3700741B6D /* WebSocketV8.cpp in Sources */,
 				F5022F461E2D4404001BBF75 /* HDHomeRunFile.cpp in Sources */,
