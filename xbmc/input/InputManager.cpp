@@ -21,6 +21,7 @@
 #include <math.h>
 
 #include "Application.h"
+#include "FileItem.h"
 #include "InputManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
@@ -604,6 +605,9 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
 
 bool CInputManager::OnKey(const CKey& key)
 {
+  // if splash is on , we dont want any input
+  if ( g_application.CurrentFileItem().GetPath() == "special://xbmc/media/Splash.mp4")
+    return true;
 
   // Turn the mouse off, as we've just got a keypress from controller or remote
   m_Mouse.SetActive(false);

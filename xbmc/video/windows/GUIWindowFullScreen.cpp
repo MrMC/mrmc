@@ -113,6 +113,10 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
+  // if splash is on , we dont want any input
+  if ( g_application.CurrentFileItem().GetPath() == "special://xbmc/media/Splash.mp4")
+    return true;
+
   if (m_timeCodePosition > 0 && action.GetButtonCode())
   { // check whether we have a mapping in our virtual videotimeseek "window" and have a select action
     CKey key(action.GetButtonCode());
