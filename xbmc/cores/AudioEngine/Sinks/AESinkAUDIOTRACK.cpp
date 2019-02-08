@@ -437,8 +437,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       CLog::Log(LOGERROR, "m_sink_sampleRate %d - atChannelMask %d - m_encoding %d", m_sink_sampleRate, atChannelMask, m_encoding);
       return false;
     }
-
-    m_sink_bufferSize = std::min(min_bufferSize * 2, (int)(m_format.m_frames * m_format.m_frameSize));
+    min_bufferSize += m_sink_frameSize - (min_bufferSize % m_sink_frameSize);  // Be sure the min buffer is a multiple of the frame size
+    m_sink_bufferSize = std::max(min_bufferSize, std::min(min_bufferSize * 2, (int)(m_format.m_frames * m_format.m_frameSize)));
 
     m_at_jni = CreateAudioTrack(stream, m_sink_sampleRate, atChannelMask, m_encoding, m_sink_bufferSize);
 
