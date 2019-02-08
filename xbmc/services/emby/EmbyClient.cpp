@@ -52,11 +52,11 @@
 #include <string>
 
 static const std::string MoviesFields = {
-  "DateCreated,Genres,MediaStreams,Overview,Path"
+  "DateCreated,Genres,MediaStreams,MediaSources,Overview,Path"
 };
 
 static const std::string TVShowsFields = {
-  "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,RecursiveItemCount"
+  "DateCreated,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,RecursiveItemCount"
 };
 
 class CEmbyUtilsJob: public CJob
@@ -862,7 +862,7 @@ const CVariant CEmbyClient::FetchItemByIds(const std::vector<std::string> &Ids)
     return CVariant(CVariant::VariantTypeNull);
 
   static const std::string Fields = {
-    "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,ImageTags,Taglines,RecursiveItemCount,ProviderIds"
+    "DateCreated,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,ImageTags,Taglines,RecursiveItemCount,ProviderIds"
   };
 
   CURL curl(m_url);

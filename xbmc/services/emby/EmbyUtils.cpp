@@ -51,19 +51,19 @@
 #include "guilib/GUIWindowManager.h"
 
 static const std::string StandardFields = {
-  "DateCreated,Genres,MediaStreams,Overview,Path,ImageTags,BackdropImageTags"
+  "DateCreated,Genres,MediaStreams,Overview,MediaSources,Path,ImageTags,BackdropImageTags"
 };
 
 static const std::string MoviesFields = {
-  "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount,ProviderIds"
+  "DateCreated,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount,ProviderIds"
 };
 
 static const std::string TVShowsFields = {
-  "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount"
+  "DateCreated,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount"
 };
 
 static const std::string MoviesSetFields = {
-  "DateCreated,Genres,MediaStreams,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount,ProviderIds,ItemCounts,ParentId"
+  "DateCreated,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,ImageTags,BackdropImageTags,RecursiveItemCount,ProviderIds,ItemCounts,ParentId"
 };
 
 static int g_progressSec = 0;
@@ -1765,6 +1765,8 @@ void CEmbyUtils::GetMediaDetals(CFileItem &item, const CVariant &variant, std::s
   if (variant.isMember("MediaStreams") && variant["MediaStreams"].isArray())
   {
     CStreamDetails streamDetail;
+    const auto& sources = variant["MediaSources"][0];
+    std::string mediaID = sources["Id"].asString();
     const auto& streams = variant["MediaStreams"];
     int iSubPart = 1;
     for (auto streamIt = streams.begin_array(); streamIt != streams.end_array(); ++streamIt)
@@ -1802,7 +1804,7 @@ void CEmbyUtils::GetMediaDetals(CFileItem &item, const CVariant &variant, std::s
         if (stream["IsExternal"].asBoolean() && stream["IsTextSubtitleStream"].asBoolean())
         {
           CURL url(item.GetPath());
-          url.SetFileName("Videos/" + id + "/" + id + "/Subtitles/" + stream["Index"].asString() + "/Stream.srt");
+          url.SetFileName("Videos/" + id + "/" + mediaID + "/Subtitles/" + stream["Index"].asString() + "/Stream.srt");
           std::string propertyKey = StringUtils::Format("subtitle:%i", iSubPart);
           std::string propertyLangKey = StringUtils::Format("subtitle:%i_language", iSubPart);
           item.SetProperty(propertyKey, url.Get());
