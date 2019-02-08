@@ -34,6 +34,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "guilib/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "utils/BitstreamConverter.h"
@@ -362,7 +363,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - null size, cannot handle");
     return false;
   }
-  else if (hints.stills || hints.dvd)
+  else if ((hints.stills || hints.dvd) && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELMPEG2) > 0)
   {
     // Won't work reliably
     return false;

@@ -139,47 +139,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
   options.m_opaque_pointer = info.opaque_pointer;
 
 
-  if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO) && (hint.stills || hint.filename == "dvd"))
-  {
-     // If dvd is an mpeg2 and hint.stills
-     if ( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
-  }
-
-#if defined(TARGET_DARWIN_OSX)
-  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
-  {
-    if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
-    {
-      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
-    }
-  }
-#endif
-
-#if defined(TARGET_DARWIN)
-  if (!hint.software)
-  {
-    switch(hint.codec)
-    {
-      case AV_CODEC_ID_H264:
-      case AV_CODEC_ID_HEVC:
-      case AV_CODEC_ID_MPEG4:
-        if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
-          break;
-        if (hint.codec == AV_CODEC_ID_HEVC && hint.ptsinvalid)
-          break;
-        if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
-          if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
-#if defined(TARGET_DARWIN_IOS)
-        if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAVF))
-          if ( (pCodec = OpenCodec(new CDVDVideoCodecAVFoundation(), hint, options)) ) return pCodec;
-#endif
-        break;
-      default:
-        break;
-    }
-  }
-#endif
-
 #if defined(TARGET_ANDROID)
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
   {
@@ -237,6 +196,47 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
       default:
         CLog::Log(LOGINFO, "MediaCodec Video Decoder...");
         if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(false, render_interlaced), hint, options)) ) return pCodec;
+    }
+  }
+#endif
+
+  if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO) && (hint.stills || hint.filename == "dvd"))
+  {
+     // If dvd is an mpeg2 and hint.stills
+     if ( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
+  }
+
+#if defined(TARGET_DARWIN_OSX)
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
+  {
+    if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
+    {
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+    }
+  }
+#endif
+
+#if defined(TARGET_DARWIN)
+  if (!hint.software)
+  {
+    switch(hint.codec)
+    {
+      case AV_CODEC_ID_H264:
+      case AV_CODEC_ID_HEVC:
+      case AV_CODEC_ID_MPEG4:
+        if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
+          break;
+        if (hint.codec == AV_CODEC_ID_HEVC && hint.ptsinvalid)
+          break;
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
+#if defined(TARGET_DARWIN_IOS)
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAVF))
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecAVFoundation(), hint, options)) ) return pCodec;
+#endif
+        break;
+      default:
+        break;
     }
   }
 #endif

@@ -19656,6 +19656,10 @@ msgctxt "#39003"
 msgid "Accelerate h264"
 msgstr ""
 
+msgctxt "#39004"
+msgid "Always (including DVD)"
+msgstr ""
+
 msgctxt "#39008"
 msgid "Accelerate hevc"
 msgstr ""

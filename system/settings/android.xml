@@ -74,7 +74,8 @@
             <options>
               <option label="20420">9999</option>   <!-- Never -->
               <option label="39000">800</option>  <!-- HD -->
-              <option label="20422">0</option>  <!-- Always -->
+              <option label="20422">1</option>  <!-- Always -->
+              <option label="39004">0</option>  <!-- Always + DVD -->
             </options>
           </constraints>
           <control type="spinner" format="string" />
