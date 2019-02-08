@@ -482,7 +482,8 @@ void CEmbyServices::Process()
     {
       m_processSleep.WaitMSec(750);
       m_processSleep.Reset();
-      break;
+      if (!(g_application.CurrentFileItem().GetPath() == "special://xbmc/media/Splash.mp4"))
+        break;
     }
     m_processSleep.WaitMSec(250);
     m_processSleep.Reset();

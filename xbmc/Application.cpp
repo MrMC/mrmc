@@ -4270,6 +4270,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
         // remove splash window
         g_windowManager.Delete(WINDOW_SPLASH);
 
+        CFileItemPtr pSplash(new CFileItem("Splash"));
+        pSplash->SetPath("special://xbmc/media/Splash.mp4");
+        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pSplash)));
+        
         if (m_fallbackLanguageLoaded)
           CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});
       }
