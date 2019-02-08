@@ -1024,8 +1024,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_SHOWONHOME:
     {
-      CMediaSource *musicSource = CMediaSourceSettings::GetInstance().GetSourceByName("video",item->GetLabel());
-      CMediaSourceSettings::GetInstance().UpdateSource("video",musicSource->strName ,"showonhome", musicSource->m_showOnHome ? "false":"true");
+      CMediaSource *videoSource = CMediaSourceSettings::GetInstance().GetSourceByName("video",item->GetLabel());
+      CMediaSourceSettings::GetInstance().UpdateSource("video",videoSource->strName ,"showonhome", videoSource->m_showOnHome ? "false":"true");
       CMediaSourceSettings::GetInstance().Save();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       g_windowManager.SendThreadMessage(msg);
