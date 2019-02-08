@@ -903,7 +903,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     {
       CMediaSource source = (*videoSources)[i];
       if (!source.m_showOnHome)
-        break;
+        continue;
       button.label = source.strName;
       button.onclick = "ActivateWindow(Videos," + source.strPath + ",return)";
       // type
@@ -931,7 +931,7 @@ void CGUIWindowHome::SetupStaticHomeButtons()
     {
       CMediaSource source = (*musicSources)[i];
       if (!source.m_showOnHome)
-        break;
+        continue;
       button.label = source.strName;
       button.onclick = "ActivateWindow(Music," + source.strPath + ",return)";
       // type
