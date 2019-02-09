@@ -53,6 +53,8 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   AEAudioFormat format;
   format.m_dataFormat = AE_FMT_RAW;
   format.m_sampleRate = hints.samplerate;
+  format.m_channelLayout = CAEUtil::GetAEChannelLayout(hints.channellayout);
+
   switch (hints.codec)
   {
     case AV_CODEC_ID_AC3:

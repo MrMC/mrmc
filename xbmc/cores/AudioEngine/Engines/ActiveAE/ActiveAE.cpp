@@ -27,6 +27,7 @@ using namespace ActiveAE;
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#include "cores/AudioEngine/Utils/AEChannelData.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
 
@@ -2740,6 +2741,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
     AEAudioFormat format;
     format.m_dataFormat = AE_FMT_RAW;
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTS_512;
+    format.m_channelLayout = AE_CH_LAYOUT_5_1;
     format.m_sampleRate = 48000;
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
@@ -2750,6 +2752,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
     AEAudioFormat format;
     format.m_dataFormat = AE_FMT_RAW;
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
+    format.m_channelLayout = AE_CH_LAYOUT_5_1;
     format.m_streamInfo.m_sampleRate = 192000;
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
@@ -2759,6 +2762,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   {
     AEAudioFormat format;
     format.m_dataFormat = AE_FMT_RAW;
+    format.m_channelLayout = AE_CH_LAYOUT_5_1;
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
@@ -2768,6 +2772,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   {
     AEAudioFormat format;
     format.m_dataFormat = AE_FMT_RAW;
+    format.m_channelLayout = AE_CH_LAYOUT_5_1;
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
