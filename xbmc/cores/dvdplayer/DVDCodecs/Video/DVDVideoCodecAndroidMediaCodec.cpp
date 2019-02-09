@@ -363,7 +363,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - null size, cannot handle");
     return false;
   }
-  else if ((hints.stills || hints.dvd) && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELMPEG2) > 0)
+  else if (hints.stills || (hints.dvd && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ACCELMPEG2) > 0))
   {
     // Won't work reliably
     return false;

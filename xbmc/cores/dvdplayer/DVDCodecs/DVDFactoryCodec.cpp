@@ -200,14 +200,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
   }
 #endif
 
-  if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO) && (hint.stills || hint.filename == "dvd"))
+  if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO) && (hint.stills || hint.dvd || hint.filename == "dvd"))
   {
      // If dvd is an mpeg2 and hint.stills
      if ( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
 
 #if defined(TARGET_DARWIN_OSX)
-  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
+  if (!hint.software && !hint.dvd && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
   {
     if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
     {
@@ -217,7 +217,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(TARGET_DARWIN)
-  if (!hint.software)
+  if (!hint.software && !hint.dvd)
   {
     switch(hint.codec)
     {
