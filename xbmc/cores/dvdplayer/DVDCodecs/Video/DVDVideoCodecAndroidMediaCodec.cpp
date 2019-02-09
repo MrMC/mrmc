@@ -794,7 +794,12 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     rtn |= VC_BUFFER;
   }
   else
-    rtn |= VC_BUFFER;
+  {
+    if (m_demux.size() < 16)  // No need to overbuffer; If we are over, we have a problem
+      rtn |= VC_BUFFER;
+    else
+      CLog::Log(LOGWARNING, "CDVDVideoCodecAndroidMediaCodec: demux packets over-buffering");
+  }
 
 
   if (pData)
