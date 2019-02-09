@@ -840,6 +840,11 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
           iSize = m_bitstream->GetConvertSize();
           pData = m_bitstream->GetConvertBuffer();
         }
+        else
+        {
+          iSize = demux_pkt.iSize;
+          pData = demux_pkt.pData;
+        }
 
         // Codec specifics
         switch(m_hints.codec)
