@@ -243,6 +243,11 @@ bool CAEFactory::SupportsRaw(AEAudioFormat &format)
     CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH is false");
     return false;
   }
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH))
+  {
+    CLog::Log(LOGDEBUG, "SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH is false");
+    return false;
+  }
 
   if(AE)
     return AE->SupportsRaw(format);
