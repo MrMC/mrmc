@@ -27,14 +27,6 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.mediacodecsurface_sd" type="boolean" parent="videoplayer.usemediacodecsurface" label="13463" help="36644">
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="visible" setting="videoplayer.usemediacodecsurface">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
         <setting id="videoplayer.mediacodecsurface_capture" type="boolean" parent="videoplayer.usemediacodecsurface" label="13462" help="#38114">
           <level>2</level>
           <default>false</default>
