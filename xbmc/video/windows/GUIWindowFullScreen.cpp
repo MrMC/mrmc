@@ -114,7 +114,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
   // if splash is on , we dont want any input
-  if ( g_application.CurrentFileItem().GetPath() == "special://xbmc/media/Splash.mp4")
+  if (g_application.IsPlayingSplash())
     return true;
 
   if (m_timeCodePosition > 0 && action.GetButtonCode())

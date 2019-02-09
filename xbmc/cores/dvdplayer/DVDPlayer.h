@@ -213,6 +213,7 @@ public:
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile(bool reopen = false);
   virtual bool IsPlaying() const;
+  virtual bool IsPlayingSplash() const;
   virtual void Pause();
   virtual bool IsPaused() const;
   virtual bool HasVideo() const;

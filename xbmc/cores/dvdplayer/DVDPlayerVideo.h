@@ -81,6 +81,7 @@ public:
   void EnableSubtitle(bool bEnable) { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled() { return m_bRenderSubs; }
   void EnableFullscreen(bool bEnable) { m_bAllowFullscreen = bEnable; }
+  void RunningVideoSpash(bool isSplash) { m_isSpash = isSplash; }
 
 #ifdef HAS_VIDEO_PLAYBACK
   void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) const { g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect); }
@@ -163,6 +164,7 @@ protected:
     double       framerate;
   } m_output; //holds currently configured output
 
+  bool m_isSpash = false;
   bool m_bFpsInvalid;        // needed to ignore fps (e.g. dvd stills)
   bool m_bAllowFullscreen;
   bool m_bRenderSubs;

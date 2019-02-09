@@ -712,6 +712,13 @@ bool CDVDPlayer::IsPlaying() const
   return !m_bStop;
 }
 
+bool CDVDPlayer::IsPlayingSplash() const
+{
+  if (m_item.HasProperty("VideoSplash"))
+    return true;
+  return m_item.GetPath() == "special://xbmc/media/Splash.mp4";
+}
+
 void CDVDPlayer::OnStartup()
 {
   m_CurrentVideo.Clear();
@@ -1164,6 +1171,7 @@ void CDVDPlayer::Process()
 
   // allow renderer to switch to fullscreen if requested
   m_dvdPlayerVideo->EnableFullscreen(m_PlayerOptions.fullscreen);
+  m_dvdPlayerVideo->RunningVideoSpash(IsPlayingSplash());
 
   OpenDefaultStreams();
 

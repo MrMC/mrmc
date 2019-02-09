@@ -488,7 +488,7 @@ void CPlexServices::Process()
     {
       m_processSleep.WaitMSec(750);
       m_processSleep.Reset();
-      if (!(g_application.CurrentFileItem().GetPath() == "special://xbmc/media/Splash.mp4"))
+      if (g_application.IsPlayingSplash())
         break;
     }
     m_processSleep.WaitMSec(250);

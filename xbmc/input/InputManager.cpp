@@ -606,7 +606,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
 bool CInputManager::OnKey(const CKey& key)
 {
   // if splash is on , we dont want any input
-  if ( g_application.CurrentFileItem().GetPath() == "special://xbmc/media/Splash.mp4")
+  if (g_application.IsPlayingSplash())
     return true;
 
   // Turn the mouse off, as we've just got a keypress from controller or remote

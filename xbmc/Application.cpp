@@ -3799,6 +3799,11 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 #endif
 }
 
+bool CApplication::IsPlayingSplash() const
+{
+  return m_pPlayer->IsPlayingSplash();
+}
+
 bool CApplication::IsPlayingFullScreenVideo() const
 {
   return m_pPlayer->IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
@@ -4271,6 +4276,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_windowManager.Delete(WINDOW_SPLASH);
 
         CFileItemPtr pSplash(new CFileItem("Splash"));
+        pSplash->SetProperty("VideoSplash", true);
         pSplash->SetPath("special://xbmc/media/Splash.mp4");
         KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pSplash)));
         
@@ -4733,6 +4739,7 @@ const std::string& CApplication::CurrentFile()
 {
   return m_itemCurrentFile->GetPath();
 }
+
 CFileItem& CApplication::CurrentFileItem()
 {
   return *m_itemCurrentFile;
