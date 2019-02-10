@@ -81,7 +81,7 @@ public:
   void EnableSubtitle(bool bEnable) { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled() { return m_bRenderSubs; }
   void EnableFullscreen(bool bEnable) { m_bAllowFullscreen = bEnable; }
-  void RunningVideoSpash(bool isSplash) { m_isSpash = isSplash; }
+  void RunningVideoSplash(bool isSplash) { m_isSpash = isSplash; }
 
 #ifdef HAS_VIDEO_PLAYBACK
   void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) const { g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect); }

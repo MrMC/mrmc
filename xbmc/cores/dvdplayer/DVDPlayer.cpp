@@ -1171,7 +1171,7 @@ void CDVDPlayer::Process()
 
   // allow renderer to switch to fullscreen if requested
   m_dvdPlayerVideo->EnableFullscreen(m_PlayerOptions.fullscreen);
-  m_dvdPlayerVideo->RunningVideoSpash(IsPlayingSplash());
+  m_dvdPlayerVideo->RunningVideoSplash(IsPlayingSplash());
 
   OpenDefaultStreams();
 

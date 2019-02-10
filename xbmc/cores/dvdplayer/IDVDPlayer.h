@@ -149,7 +149,7 @@ public:
   virtual void EnableSubtitle(bool bEnable) = 0;
   virtual bool IsSubtitleEnabled() = 0;
   virtual void EnableFullscreen(bool bEnable) = 0;
-  virtual void RunningVideoSpash(bool isSplash) { };
+  virtual void RunningVideoSplash(bool isSplash) { };
 #ifdef HAS_VIDEO_PLAYBACK
   virtual void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) const = 0;
   virtual float GetAspectRatio() = 0;
