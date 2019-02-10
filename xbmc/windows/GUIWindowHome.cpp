@@ -135,9 +135,6 @@ bool CGUIWindowHome::OnAction(const CAction &action)
 
 void CGUIWindowHome::OnInitWindow()
 {
-  m_serverType = "";
-  m_serverUUID = "";
-
   m_updateHS = (Audio | Video);
   if (!CServicesManager::GetInstance().HasServices())
     m_firstRun = false;
@@ -703,16 +700,12 @@ void CGUIWindowHome::SetupServices()
   SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
 
   CSingleLock lock(m_critsection);
+  m_buttonSections->ClearItems();
   std::string strLabel;
   std::string strThumb;
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
   std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
 
-  // no point going over it all the time
-  if (serverType == m_serverType && serverUUID == m_serverUUID)
-    return;
-
-  m_buttonSections->ClearItems();
   if (serverType == "plex")
   {
     if (CPlexServices::GetInstance().HasClients())
@@ -730,8 +723,6 @@ void CGUIWindowHome::SetupServices()
       }
       if (plexClient)
       {
-        m_serverType = serverType;
-        m_serverUUID = serverUUID;
         AddPlexSection(plexClient);
         SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , plexClient->GetServerName());
         strLabel = CPlexServices::GetInstance().GetHomeUserName();
@@ -759,8 +750,6 @@ void CGUIWindowHome::SetupServices()
       }
       if (embyClient)
       {
-        m_serverType = serverType;
-        m_serverUUID = serverUUID;
         AddEmbySection(embyClient);
         SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , embyClient->GetServerName());
       }
@@ -769,8 +758,6 @@ void CGUIWindowHome::SetupServices()
   }
   else if (serverType == "mrmc" || serverType.empty())
   {
-    m_serverType = serverType;
-    m_serverUUID = serverUUID;
     SetupMrMCHomeButtons();
   }
 

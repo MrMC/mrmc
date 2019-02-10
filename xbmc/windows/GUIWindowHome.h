@@ -94,8 +94,5 @@ private:
   // emby service
   void AddEmbySection(CEmbyClientPtr client);
   std::vector<EmbyViewInfo>    GetEmbySections(CEmbyClientPtr client);
-
-  std::string m_serverType;
-  std::string m_serverUUID;
   
 };
