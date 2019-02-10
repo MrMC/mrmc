@@ -1959,8 +1959,8 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
             {
               case TOUCH_UP:
                 {
-                  int champterCount = g_application.m_pPlayer->GetChapterCount();
-                  if (champterCount > 0 || ![self hasPlayerProgressScrubbing])
+                  int chapterCount = g_application.m_pPlayer->GetChapterCount();
+                  if (chapterCount > 0 || ![self hasPlayerProgressScrubbing])
                   {
                     // chapter seek or channel change for pvr
                     [self sendButtonPressed:SiriRemote_UpTap];
@@ -1969,8 +1969,8 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
                 break;
               case TOUCH_DOWN:
                 {
-                  int champterCount = g_application.m_pPlayer->GetChapterCount();
-                  if (champterCount > 0 || ![self hasPlayerProgressScrubbing])
+                  int chapterCount = g_application.m_pPlayer->GetChapterCount();
+                  if (chapterCount > 0 || ![self hasPlayerProgressScrubbing])
                   {
                     // chapter seek or channel change for pvr
                     [self sendButtonPressed:SiriRemote_DownTap];
