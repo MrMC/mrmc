@@ -262,8 +262,9 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, bool al
     if( pCodec ) return pCodec;
   }
 
-#if defined(TARGET_DARWIN)
-  if (/*hint.codec == AV_CODEC_ID_AC3 ||*/ hint.codec == AV_CODEC_ID_EAC3)
+// users report 9db reduction on AppleTV4/4K, disable until resoved
+#if false && defined(TARGET_DARWIN)
+  if (hint.codec == AV_CODEC_ID_AC3 || hint.codec == AV_CODEC_ID_EAC3)
   {
     if (!hint.realtime && hint.filename != "dvd")
     {
