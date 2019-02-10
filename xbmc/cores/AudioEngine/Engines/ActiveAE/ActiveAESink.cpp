@@ -1028,7 +1028,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     {
       Sleep(500*m_sinkFormat.m_frames/m_sinkFormat.m_sampleRate);
       retry++;
-      if (retry > 4)
+      if (retry > 10)
       {
         m_extError = true;
         CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - failed");
