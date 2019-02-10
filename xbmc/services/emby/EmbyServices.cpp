@@ -380,6 +380,7 @@ void CEmbyServices::InitiateSignIn()
     {
       CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"");
       CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+      CSettings::GetInstance().Save();
     }
   }
   SetUserSettings();
@@ -651,6 +652,9 @@ bool CEmbyServices::AuthenticateByName(const CURL& url)
   m_userId = responseObj["User"]["Id"].asString();
   m_accessToken = responseObj["AccessToken"].asString();
 
+  CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"emby");
+  CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+  CSettings::GetInstance().Save();
   return !m_accessToken.empty() && !m_userId.empty();
 }
 
@@ -835,8 +839,12 @@ bool CEmbyServices::PostSignInPinCode()
   if (!rtn)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Emby Services", strMessage, 3000, true);
   else
+  {
     // Emby signed in, save server type for home selection
     CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"emby");
+    CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+    CSettings::GetInstance().Save();
+  }
   return rtn;
 }
 

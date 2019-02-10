@@ -263,6 +263,7 @@ void CPlexServices::OnSettingAction(const CSetting *setting)
       {
         CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"");
         CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+        CSettings::GetInstance().Save();
       }
     }
     SetUserSettings();
@@ -335,6 +336,7 @@ void CPlexServices::InitiateSignIn()
     {
       CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"");
       CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+      CSettings::GetInstance().Save();
     }
   }
   SetUserSettings();
@@ -1162,6 +1164,8 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
         homeUserName = XMLUtils::GetAttribute(UserNode, "title");
         // plex service is enabled and home user has been selected,save server type for home selection
         CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"plex");
+        CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+        CSettings::GetInstance().Save();
         return true;
       }
       else if (atoi(users.c_str()) > 1)
@@ -1255,8 +1259,12 @@ bool CPlexServices::GetMyHomeUsers(std::string &homeUserName)
   if (!rtn)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Plex Services", strMessage, 3000, true);
   else
+  {
     // plex service is enabled and home user has been selected,save server type for home selection
     CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,"plex");
+    CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,"");
+    CSettings::GetInstance().Save();
+  }
   return rtn;
 }
 
