@@ -482,7 +482,7 @@ void CEmbyServices::Process()
     {
       m_processSleep.WaitMSec(750);
       m_processSleep.Reset();
-      if (g_application.IsPlayingSplash())
+      if (!g_application.IsPlayingSplash())
         break;
     }
     m_processSleep.WaitMSec(250);
