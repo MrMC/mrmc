@@ -263,7 +263,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, bool al
   }
 
 #if defined(TARGET_DARWIN)
-  if (hint.codec == AV_CODEC_ID_AC3 || hint.codec == AV_CODEC_ID_EAC3)
+  if (/*hint.codec == AV_CODEC_ID_AC3 ||*/ hint.codec == AV_CODEC_ID_EAC3)
   {
     if (!hint.realtime && hint.filename != "dvd")
     {
