@@ -82,7 +82,6 @@ CHomeShelfJob::CHomeShelfJob(int flag)
   m_HomeShelfMoviesRA = new CFileItemList;
   m_HomeShelfMoviesPR = new CFileItemList;
   m_HomeShelfMusicAlbums = new CFileItemList;
-  m_HomeShelfMusicSongs = new CFileItemList;
   m_HomeShelfMusicVideos = new CFileItemList;
   m_HomeShelfContinueWatching = new CFileItemList;
 
@@ -103,7 +102,6 @@ CHomeShelfJob::~CHomeShelfJob()
   SAFE_DELETE(m_HomeShelfMoviesRA);
   SAFE_DELETE(m_HomeShelfMoviesPR);
   SAFE_DELETE(m_HomeShelfMusicAlbums);
-  SAFE_DELETE(m_HomeShelfMusicSongs);
   SAFE_DELETE(m_HomeShelfMusicVideos);
   SAFE_DELETE(m_HomeShelfContinueWatching);
 }
@@ -249,7 +247,7 @@ bool CHomeShelfJob::UpdateVideo()
   m_HomeShelfContinueWatching->SetContent("movies");
 #if defined(TARGET_DARWIN_TVOS)
   // send recently added Movies and TvShows to TopShelf
-  CTVOSTopShelf::GetInstance().SetTopShelfItems(*m_HomeShelfMoviesRA,*m_HomeShelfTVRA,*m_HomeShelfMoviesPR,*m_HomeShelfTVPR);
+ CTVOSTopShelf::GetInstance().SetTopShelfItems(*m_HomeShelfMoviesRA,*m_HomeShelfTVRA,*m_HomeShelfMoviesPR,*m_HomeShelfTVPR);
 #endif
 
   return true;
@@ -328,12 +326,6 @@ void CHomeShelfJob::UpdateContinueWatchingItems(CFileItemList *list)
 {
   CSingleLock lock(m_critsection);
   list->Assign(*m_HomeShelfContinueWatching);
-}
-
-void CHomeShelfJob::UpdateMusicSongItems(CFileItemList *list)
-{
-  CSingleLock lock(m_critsection);
-  list->Assign(*m_HomeShelfMusicSongs);
 }
 
 void CHomeShelfJob::UpdateMusicAlbumItems(CFileItemList *list)

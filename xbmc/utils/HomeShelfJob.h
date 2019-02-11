@@ -49,7 +49,6 @@ public:
   void UpdateMovieItemsRA(CFileItemList *list);
   void UpdateMovieItemsPR(CFileItemList *list);
   void UpdateContinueWatchingItems(CFileItemList *list);
-  void UpdateMusicSongItems(CFileItemList *list);
   void UpdateMusicAlbumItems(CFileItemList *list);
   void UpdateMusicVideoItems(CFileItemList *list);
   const int GetFlag() const { return m_flag; };
@@ -65,7 +64,6 @@ private:
   CFileItemList *m_HomeShelfMoviesRA;
   CFileItemList *m_HomeShelfMoviesPR;
   CFileItemList *m_HomeShelfMusicAlbums;
-  CFileItemList *m_HomeShelfMusicSongs;
   CFileItemList *m_HomeShelfMusicVideos;
   CFileItemList *m_HomeShelfContinueWatching;
 };
