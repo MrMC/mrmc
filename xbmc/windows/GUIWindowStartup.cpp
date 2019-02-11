@@ -18,6 +18,7 @@
  *
  */
 
+#include "Application.h"
 #include "GUIWindowStartup.h"
 #include "input/Key.h"
 #include "guilib/GUIWindowManager.h"
@@ -42,8 +43,5 @@ bool CGUIWindowStartup::OnAction(const CAction &action)
 void CGUIWindowStartup::OnDeinitWindow(int nextWindowID)
 {
   CGUIWindow::OnDeinitWindow(nextWindowID);
-
-  // let everyone know that the user interface is now ready for usage
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
-  g_windowManager.SendThreadMessage(msg);
+  g_application.PlaySplash();
 }

@@ -1073,38 +1073,6 @@ bool CApplication::Initialize()
   g_curlInterface.Load();
   g_curlInterface.Unload();
 
-  // check if we have set internal MYSQL settings and load
-  const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
-  if (((CSettingBool*)mysqlSetting)->GetValue())
-  {
-    //show splash with MySQL loading msg even if internal splash is disabled
-    CSplash::GetInstance().Show(g_localizeStrings.Get(12374));
-    g_advancedSettings.setInternalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
-  }
-
-
-  DisableScreensaver(true);
-  // initialize (and update as needed) our databases
-  CEvent event(true);
-  CJobManager::GetInstance().Submit([&event]() {
-    CDatabaseManager::GetInstance().Initialize();
-    event.Set();
-  });
-
-  std::string localizedStr = g_localizeStrings.Get(24094);
-  int iDots = 1;
-  while (!event.WaitMSec(1000))
-  {
-    if (CDatabaseManager::GetInstance().m_bIsUpgrading)
-      CSplash::GetInstance().Show(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
-    if (iDots == 3)
-      iDots = 1;
-    else
-      ++iDots;
-  }
-
-  DisableScreensaver(false);
-
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
@@ -1216,12 +1184,12 @@ bool CApplication::Initialize()
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
 
-  // if the user interfaces has been fully initialized let everyone know
-  if (uiInitializationFinished)
-  {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
-    g_windowManager.SendThreadMessage(msg);
-  }
+//  // if the user interfaces has been fully initialized let everyone know
+//  if (uiInitializationFinished)
+//  {
+//    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+//    g_windowManager.SendThreadMessage(msg);
+//  }
 
 //  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
 //  if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)))
@@ -3662,6 +3630,14 @@ void CApplication::OnPlayBackEnded()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
+
+  if (m_itemCurrentFile->HasProperty("VideoSplash"))
+  {
+    // splash has finished playing
+    // let everyone know that the user interface is now ready for usage
+    CGUIMessage msgSplash(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    g_windowManager.SendThreadMessage(msgSplash);
+ }
 }
 
 void CApplication::OnPlayBackStarted()
@@ -3732,6 +3708,14 @@ void CApplication::OnPlayBackStopped()
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   g_windowManager.SendThreadMessage(msg);
+
+  if (m_itemCurrentFile->HasProperty("VideoSplash"))
+  {
+    // splash has finished playing
+    // let everyone know that the user interface is now ready for usage
+    CGUIMessage msgSplash(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    g_windowManager.SendThreadMessage(msgSplash);
+  }
 }
 
 void CApplication::OnPlayBackPaused()
@@ -4272,13 +4256,39 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1() == GUI_MSG_UI_READY)
       {
-        // remove splash window
-        g_windowManager.Delete(WINDOW_SPLASH);
 
-        CFileItemPtr pSplash(new CFileItem("Splash"));
-        pSplash->SetProperty("VideoSplash", true);
-        pSplash->SetPath("special://xbmc/media/Splash.mp4");
-        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pSplash)));
+        // check if we have set internal MYSQL settings and load
+        const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
+        if (((CSettingBool*)mysqlSetting)->GetValue())
+        {
+          g_advancedSettings.setInternalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
+        }
+
+        DisableScreensaver(true);
+        // initialize (and update as needed) our databases
+        CEvent event(true);
+        CJobManager::GetInstance().Submit([&event]() {
+          CDatabaseManager::GetInstance().Initialize();
+          event.Set();
+        });
+
+        std::string localizedStr = g_localizeStrings.Get(24094);
+        int iDots = 1;
+        while (!event.WaitMSec(1000))
+        {
+          if (CDatabaseManager::GetInstance().m_bIsUpgrading)
+            CSplash::GetInstance().Show(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
+          if (iDots == 3)
+            iDots = 1;
+          else
+            ++iDots;
+        }
+
+        DisableScreensaver(false);
+
+        // remove splash window
+        if (g_windowManager.GetWindow(WINDOW_SPLASH))
+          g_windowManager.Delete(WINDOW_SPLASH);
         
         if (m_fallbackLanguageLoaded)
           CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});
@@ -5342,6 +5352,14 @@ bool CApplication::NotifyActionListeners(const CAction &action) const
   }
 
   return false;
+}
+
+void CApplication::PlaySplash()
+{
+  CFileItemPtr pSplash(new CFileItem("Splash"));
+  pSplash->SetProperty("VideoSplash", true);
+  pSplash->SetPath("special://xbmc/media/Splash.mp4");
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pSplash)));
 }
 
 void CApplication::InitEnvironment()
