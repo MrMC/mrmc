@@ -66,8 +66,9 @@ static const std::string NS_PLEXTV_URL("https://plex.tv");
 class CPlexServiceJob: public CJob
 {
 public:
-  CPlexServiceJob(double currentTime, std::string strFunction)
+  CPlexServiceJob(double currentTime, std::string strFunction,std::string strUUID="")
   : m_function(strFunction)
+  , m_strUUID(strUUID)
   , m_currentTime(currentTime)
   {
   }
@@ -87,8 +88,10 @@ public:
       g_windowManager.SendThreadMessage(msg);
 
       // announce that we have a plex client and that recently added should be updated
-      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
-      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
+      CVariant data(CVariant::VariantTypeObject);
+      data["uuid"] = m_strUUID;
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded",data);
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded",data);
     }
     return true;
   }
@@ -98,6 +101,7 @@ public:
   }
 private:
   std::string    m_function;
+  std::string    m_strUUID;
   double         m_currentTime;
 };
 
@@ -734,7 +738,7 @@ bool CPlexServices::GetMyPlexServers(bool includeHttps)
         {
           // new client
           CLog::Log(LOGNOTICE, "CPlexServices: Server found via plex.tv %s", client->GetServerName().c_str());
-          AddJob(new CPlexServiceJob(0, "FoundNewClient"));
+          AddJob(new CPlexServiceJob(0, "FoundNewClient", client->GetUuid()));
         }
         else if (GetClient(client->GetUuid()) == nullptr)
         {
@@ -976,6 +980,7 @@ void CPlexServices::CheckForGDMServers()
     }
 
     bool foundNewClient = false;
+    std::string uuid;
     // listen for GDM reply until we timeout
     if (socket && m_gdmListener->Listen(250))
     {
@@ -993,6 +998,7 @@ void CPlexServices::CheckForGDMServers()
             if (AddClient(client))
             {
               CLog::Log(LOGNOTICE, "CPlexServices:CheckforGDMServers Server found via GDM %s", client->GetServerName().c_str());
+              uuid = client->GetUuid();
             }
             else if (GetClient(client->GetUuid()) == nullptr)
             {
@@ -1004,7 +1010,7 @@ void CPlexServices::CheckForGDMServers()
       }
     }
     if (foundNewClient)
-      AddJob(new CPlexServiceJob(0, "FoundNewClient"));
+      AddJob(new CPlexServiceJob(0, "FoundNewClient",uuid));
   }
 }
 

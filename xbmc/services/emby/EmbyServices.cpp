@@ -86,8 +86,9 @@ static bool IsInSubNet(CURL url)
 class CEmbyServiceJob: public CJob
 {
 public:
-  CEmbyServiceJob(double currentTime, std::string strFunction)
+  CEmbyServiceJob(double currentTime, std::string strFunction,std::string strUUID="")
   : m_function(strFunction)
+  , m_strUUID(strUUID)
   , m_currentTime(currentTime)
   {
   }
@@ -102,8 +103,10 @@ public:
       g_windowManager.SendThreadMessage(msg);
 
       // announce that we have a emby client and that recently added should be updated
-      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
-      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
+      CVariant data(CVariant::VariantTypeObject);
+      data["uuid"] = m_strUUID;
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded",data);
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded",data);
     }
     return true;
   }
@@ -113,6 +116,7 @@ public:
   }
 private:
   std::string    m_function;
+  std::string    m_strUUID;
   double         m_currentTime;
 };
 
@@ -1081,7 +1085,7 @@ bool CEmbyServices::AddClient(CEmbyClientPtr foundClient)
   {
     m_clients.push_back(foundClient);
     m_hasClients = !m_clients.empty();
-    AddJob(new CEmbyServiceJob(0, "FoundNewClient"));
+    AddJob(new CEmbyServiceJob(0, "FoundNewClient",foundClient->GetUuid()));
     return true;
   }
 

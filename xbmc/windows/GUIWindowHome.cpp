@@ -135,6 +135,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
 
 void CGUIWindowHome::OnInitWindow()
 {
+  m_triggerRA = true;
   m_updateHS = (Audio | Video);
   if (!CServicesManager::GetInstance().HasServices())
     m_firstRun = false;
@@ -182,20 +183,34 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
     return;
 
   if (strcmp(message, "OnScanStarted") == 0 ||
-      strcmp(message, "OnCleanStarted") == 0)
+      strcmp(message, "OnCleanStarted") == 0 ||
+      strcmp(message, "OnUpdate") == 0)
     return;
 
   CLog::Log(LOGDEBUG, "CGUIWindowHome::Announce, type: %i, from %s, message %s",(int)flag, sender, message);
 
-  bool onUpdate = strcmp(message, "OnUpdate") == 0;
+  if (strcmp(message, "UpdateRecentlyAdded") == 0)
+  {
+    if (!data.isMember("uuid"))
+      m_triggerRA = true;
+
+    std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+    if (serverUUID == data["uuid"].asString())
+    {
+      m_triggerRA = true;
+    }
+  }
+
+
   // always update Totals except on an OnUpdate with no playcount update
   int ra_flag = 0;
 //  if (!onUpdate || data.isMember("playcount"))
 //    ra_flag |= Totals;
 
   // always update the full list except on an OnUpdate
-  if (!onUpdate)
+  if (m_triggerRA)
   {
+    m_triggerRA = false;
     if (flag & VideoLibrary)
       ra_flag |= Video;
     if (flag & AudioLibrary)
@@ -521,8 +536,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,uuid);
         CSettings::GetInstance().Save();
         SetupServices();
-        ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
-        ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
+        CVariant data(CVariant::VariantTypeObject);
+        data["uuid"] = uuid;
+        ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded",data);
+        ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded",data);
         ClearHomeShelfItems();
       }
       return true;
