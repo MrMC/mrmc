@@ -144,7 +144,7 @@ void CGUIWindowHome::OnInitWindow()
   m_buttonSections->Clear();
   SetupServices();
 
-  if (!m_firstRun)
+  if (!m_firstRun && !g_application.IsPlayingSplash())
     AddHomeShelfJobs( m_updateHS );
   else
     m_firstRun = false;
@@ -210,11 +210,11 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
       ra_flag |= Video;
     if (flag & AudioLibrary)
       ra_flag |= Audio;
-  }
 
-  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS, ra_flag);
-  g_windowManager.SendThreadMessage(reload, GetID());
-  SetupServices();
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS, ra_flag);
+    g_windowManager.SendThreadMessage(reload, GetID());
+    SetupServices();
+  }
 }
 
 void CGUIWindowHome::AddHomeShelfJobs(int flag)
@@ -256,40 +256,22 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       ((CHomeShelfJob *)job)->UpdateMovieItemsPR(m_HomeShelfMoviesPR);
       ((CHomeShelfJob *)job)->UpdateContinueWatchingItems(m_HomeShelfContinueWatching);
     }
-    
-    int homeScreenItemSelector = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS);
 
-    if (homeScreenItemSelector == 1 || homeScreenItemSelector == 3)
-    {
-      CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVRA);
-      g_windowManager.SendThreadMessage(messageTVRA);
+    CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVRA);
+    g_windowManager.SendThreadMessage(messageTVRA);
 
 
-      CGUIMessage messageTVPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSPR, 0, 0, m_HomeShelfTVPR);
-      g_windowManager.SendThreadMessage(messageTVPR);
+    CGUIMessage messageTVPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSPR, 0, 0, m_HomeShelfTVPR);
+    g_windowManager.SendThreadMessage(messageTVPR);
 
 
-      CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesRA);
-      g_windowManager.SendThreadMessage(messageMovieRA);
+    CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesRA);
+    g_windowManager.SendThreadMessage(messageMovieRA);
 
 
-      CGUIMessage messageMoviePR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, m_HomeShelfMoviesPR);
-      g_windowManager.SendThreadMessage(messageMoviePR);
+    CGUIMessage messageMoviePR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, m_HomeShelfMoviesPR);
+    g_windowManager.SendThreadMessage(messageMoviePR);
 
-      CGUIMessage messageContinueWatching(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING, 0, 0, m_HomeShelfContinueWatching);
-      g_windowManager.SendThreadMessage(messageContinueWatching);
-    }
-    else
-    {
-
-      // if we are set to only do in Progress, push progress items into recently added shelf items
-      // this is a hack for skins that only have one line
-      CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVPR);
-      g_windowManager.SendThreadMessage(messageTVRA);
-
-      CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesPR);
-      g_windowManager.SendThreadMessage(messageMovieRA);
-    }
     CGUIMessage messageContinueWatching(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING, 0, 0, m_HomeShelfContinueWatching);
     g_windowManager.SendThreadMessage(messageContinueWatching);
   }

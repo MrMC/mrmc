@@ -146,7 +146,6 @@ const std::string CSettings::SETTING_WINDOW_TOP  = "window.top";
 const std::string CSettings::SETTING_WINDOW_WIDTH = "window.width";
 const std::string CSettings::SETTING_WINDOW_HEIGHT = "window.height";
 const std::string CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS = "videolibrary.showunwatchedplots";
-const std::string CSettings::SETTING_VIDEOLIBRARY_HOMESHELFITEMS = "videolibrary.homeshelfitems";
 const std::string CSettings::SETTING_VIDEOLIBRARY_WATCHEDHOMESHELFITEMS = "videolibrary.watchedhomescreen";
 const std::string CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS = "videolibrary.actorthumbs";
 const std::string CSettings::SETTING_MYVIDEOS_FLATTEN = "myvideos.flatten";
