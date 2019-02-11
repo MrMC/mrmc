@@ -181,7 +181,7 @@ bool CPlexServices::IsEnabled()
 
 bool CPlexServices::HasClients() const
 {
-  return m_hasClients;
+  return m_hasClients && IsRunning();
 }
 
 void CPlexServices::GetClients(std::vector<CPlexClientPtr> &clients) const
