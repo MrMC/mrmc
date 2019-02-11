@@ -25,7 +25,6 @@ enum EHomeShelfFlag
 {
   Audio = 0x1,
   Video = 0x2,
-  Totals = 0x4
 };
 
 class CHomeButtonJob : public CJob
@@ -45,7 +44,6 @@ public:
 
   bool UpdateVideo();
   bool UpdateMusic();
-  bool UpdateTotal();
   void UpdateTvItemsRA(CFileItemList *list);
   void UpdateTvItemsPR(CFileItemList *list);
   void UpdateMovieItemsRA(CFileItemList *list);

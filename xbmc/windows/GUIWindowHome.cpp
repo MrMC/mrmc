@@ -80,7 +80,7 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
                                        m_countBackCalled(0)
 {
   m_firstRun = true;
-  m_updateHS = (Audio | Video | Totals);
+  m_updateHS = (Audio | Video);
   m_loadType = KEEP_IN_MEMORY;
 
   m_HomeShelfTVRA = new CFileItemList;
@@ -201,13 +201,8 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
     }
   }
 
-
-  // always update Totals except on an OnUpdate with no playcount update
   int ra_flag = 0;
-//  if (!onUpdate || data.isMember("playcount"))
-//    ra_flag |= Totals;
 
-  // always update the full list except on an OnUpdate
   if (m_triggerRA)
   {
     m_triggerRA = false;
@@ -320,8 +315,6 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
   if (flag)
     AddHomeShelfJobs(0 /* the flag will be set inside AddHomeShelfJobs via m_cumulativeUpdateFlag */ );
-  else if(jobFlag != Totals)
-    AddHomeShelfJobs(Totals);
 }
 
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
@@ -335,7 +328,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
     if (message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
     {
-      int updateRA = (message.GetSenderId() == GetID()) ? message.GetParam2() : (Video | Audio | Totals);
+      int updateRA = (message.GetSenderId() == GetID()) ? message.GetParam2() : (Video | Audio);
 
       if (IsActive())
         AddHomeShelfJobs(updateRA);

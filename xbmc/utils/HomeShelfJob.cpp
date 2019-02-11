@@ -317,94 +317,6 @@ bool CHomeShelfJob::UpdateMusic()
   return true;
 }
 
-bool CHomeShelfJob::UpdateTotal()
-{
-  // cheeky return to not fetch any media totals
-  // lets see how many people complain about it :)
-  return true;
-  
-  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
-  if (home == NULL)
-    return false;
-
-  CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateTotal() - Running HomeShelf home screen update");
-  int MusSongTotals   = 0;
-  int MusAlbumTotals  = 0;
-  int MusArtistTotals = 0;
-  int tvShowCount     = 0;
-  int movieTotals     = 0;
-  int movieWatched    = 0;
-  int MusVidTotals    = 0;
-  int MusVidWatched   = 0;
-  int EpWatched       = 0;
-  int EpCount         = 0;
-  int TvShowsWatched  = 0;
-  
-  CMusicDatabase musicdatabase;
-  musicdatabase.Open();
-  if (musicdatabase.HasContent())
-  {
-    MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
-    MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
-    MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
-  }
-  musicdatabase.Close();
-
-  CVideoDatabase videodatabase;
-  videodatabase.Open();
-  if (videodatabase.HasContent())
-  {
-    tvShowCount     = atoi(videodatabase.GetSingleValue("tvshow_view"     , "count(1)").c_str());
-    movieTotals     = atoi(videodatabase.GetSingleValue("movie_view"      , "count(1)").c_str());
-    movieWatched    = atoi(videodatabase.GetSingleValue("movie_view"      , "count(playCount)").c_str());
-    MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(1)").c_str());
-    MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(playCount)").c_str());
-    EpWatched       = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount)").c_str());
-    EpCount         = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(totalcount)").c_str());
-    TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount = totalcount)").c_str());
-  }
-  videodatabase.Close();
-  
-  if(CServicesManager::GetInstance().HasServices())
-  {
-    // Pull up all plex totals and add to existing ones
-    MediaServicesMediaCount mediaTotals;
-    CServicesManager::GetInstance().GetMediaTotals(mediaTotals);
-    
-    MusSongTotals   = MusSongTotals + mediaTotals.iMusicSongs;
-    MusAlbumTotals  = MusAlbumTotals + mediaTotals.iMusicAlbums;
-    MusArtistTotals = MusArtistTotals + mediaTotals.iMusicArtist;
-    tvShowCount     = tvShowCount + mediaTotals.iShowTotal;
-    movieTotals     = movieTotals + mediaTotals.iMovieTotal;
-    movieWatched    = movieWatched + (mediaTotals.iMovieTotal - mediaTotals.iMovieUnwatched);
-    EpWatched       = EpWatched + (mediaTotals.iEpisodeTotal - mediaTotals.iEpisodeUnwatched);
-    EpCount         = EpCount + mediaTotals.iEpisodeTotal;
-    TvShowsWatched  = TvShowsWatched + (mediaTotals.iShowTotal - mediaTotals.iShowUnwatched);
-    
-    // signal library providers that our services have been updated so lists can be refreshed if needed etc.
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::MediaService, "xbmc", "ServicesUpdated");
-  }
-  
-  home->SetProperty("Music.SongsCount"      , MusSongTotals);
-  home->SetProperty("Music.AlbumsCount"     , MusAlbumTotals);
-  home->SetProperty("Music.ArtistsCount"    , MusArtistTotals);
-  home->SetProperty("TVShows.Count"         , tvShowCount);
-  home->SetProperty("TVShows.Watched"       , TvShowsWatched);
-  home->SetProperty("TVShows.UnWatched"     , tvShowCount - TvShowsWatched);
-  home->SetProperty("Episodes.Count"        , EpCount);
-  home->SetProperty("Episodes.Watched"      , EpWatched);
-  home->SetProperty("Episodes.UnWatched"    , EpCount-EpWatched);
-  home->SetProperty("Movies.Count"          , movieTotals);
-  home->SetProperty("Movies.Watched"        , movieWatched);
-  home->SetProperty("Movies.UnWatched"      , movieTotals - movieWatched);
-  home->SetProperty("MusicVideos.Count"     , MusVidTotals);
-  home->SetProperty("MusicVideos.Watched"   , MusVidWatched);
-  home->SetProperty("MusicVideos.UnWatched" , MusVidTotals - MusVidWatched);
-  
-  CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateTotal() - Finished");
-  return true;
-}
-
 void CHomeShelfJob::UpdateTvItemsRA(CFileItemList *list)
 {
   CSingleLock lock(m_critsection);
@@ -468,12 +380,6 @@ bool CHomeShelfJob::DoWork()
 
   if (m_flag & Video)
     ret &= UpdateVideo();
-
-  if (g_application.m_bStop)
-    return ret;
-
-  if (m_flag & Totals)
-    ret &= UpdateTotal();
 
   return ret;
 }
