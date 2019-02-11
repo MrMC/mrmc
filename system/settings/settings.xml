@@ -488,18 +488,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videolibrary.homeshelfitems" type="integer" label="703" help="704">
-          <level>0</level>
-          <default>3</default>
-          <constraints>
-            <options>
-              <option label="681">1</option> <!-- Recently added -->
-              <option label="682">2</option> <!-- In Progress -->
-              <option label="683">3</option> <!-- Both if possible -->
-            </options>
-          </constraints>
-          <control type="list" format="integer" />
-        </setting>
         <setting id="videolibrary.watchedhomescreen" type="boolean" label="1178" help="1179">
           <level>1</level>
           <default>true</default>
