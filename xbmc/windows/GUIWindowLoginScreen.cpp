@@ -345,6 +345,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
   {
+    g_application.StartDatabase();
     g_application.PlaySplash();
   }
 }

@@ -43,5 +43,6 @@ bool CGUIWindowStartup::OnAction(const CAction &action)
 void CGUIWindowStartup::OnDeinitWindow(int nextWindowID)
 {
   CGUIWindow::OnDeinitWindow(nextWindowID);
+  g_application.StartDatabase();
   g_application.PlaySplash();
 }

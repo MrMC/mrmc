@@ -4256,36 +4256,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1() == GUI_MSG_UI_READY)
       {
-
-        // check if we have set internal MYSQL settings and load
-        const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
-        if (((CSettingBool*)mysqlSetting)->GetValue())
-        {
-          g_advancedSettings.setInternalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
-        }
-
-        DisableScreensaver(true);
-        // initialize (and update as needed) our databases
-        CEvent event(true);
-        CJobManager::GetInstance().Submit([&event]() {
-          CDatabaseManager::GetInstance().Initialize();
-          event.Set();
-        });
-
-        std::string localizedStr = g_localizeStrings.Get(24094);
-        int iDots = 1;
-        while (!event.WaitMSec(1000))
-        {
-          if (CDatabaseManager::GetInstance().m_bIsUpgrading)
-            CSplash::GetInstance().Show(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
-          if (iDots == 3)
-            iDots = 1;
-          else
-            ++iDots;
-        }
-
-        DisableScreensaver(false);
-
         // remove splash window
         if (g_windowManager.GetWindow(WINDOW_SPLASH))
           g_windowManager.Delete(WINDOW_SPLASH);
@@ -5360,6 +5330,37 @@ void CApplication::PlaySplash()
   pSplash->SetProperty("VideoSplash", true);
   pSplash->SetPath("special://xbmc/media/Splash.mp4");
   KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pSplash)));
+}
+
+void CApplication::StartDatabase()
+{
+  // check if we have set internal MYSQL settings and load
+  const CSetting *mysqlSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_MYSQL_ENABLED);
+  if (((CSettingBool*)mysqlSetting)->GetValue())
+  {
+    g_advancedSettings.setInternalMYSQL(((CSettingBool*)mysqlSetting)->GetValue(), false);
+  }
+
+  DisableScreensaver(true);
+  // initialize (and update as needed) our databases
+  CEvent event(true);
+  CJobManager::GetInstance().Submit([&event]() {
+    CDatabaseManager::GetInstance().Initialize();
+    event.Set();
+  });
+
+  std::string localizedStr = g_localizeStrings.Get(24094);
+  int iDots = 1;
+  while (!event.WaitMSec(1000))
+  {
+    if (CDatabaseManager::GetInstance().m_bIsUpgrading)
+      CSplash::GetInstance().Show(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
+    if (iDots == 3)
+      iDots = 1;
+    else
+      ++iDots;
+  }
+  DisableScreensaver(false);
 }
 
 void CApplication::InitEnvironment()

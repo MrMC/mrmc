@@ -394,6 +394,7 @@ public:
   void UnregisterActionListener(IActionListener *listener);
 
   void PlaySplash();
+  void StartDatabase();
 
 protected:
   virtual bool OnSettingsSaving() const override;
