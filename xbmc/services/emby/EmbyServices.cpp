@@ -187,7 +187,7 @@ bool CEmbyServices::IsEnabled()
 
 bool CEmbyServices::HasClients() const
 {
-  return m_hasClients && IsRunning();
+  return m_hasClients;
 }
 
 void CEmbyServices::GetClients(std::vector<CEmbyClientPtr> &clients) const
