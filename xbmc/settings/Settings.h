@@ -53,6 +53,7 @@ public:
   static const std::string SETTING_LOOKANDFEEL_SKINCOLORS;
   static const std::string SETTING_LOOKANDFEEL_FONT;
   static const std::string SETTING_LOOKANDFEEL_SKINZOOM;
+  static const std::string SETTING_LOOKANDFEEL_INTERFACEAPPEARANCE;
   static const std::string SETTING_LOOKANDFEEL_STARTUPWINDOW;
   static const std::string SETTING_LOOKANDFEEL_MINIMIZEFROMHOME;
   static const std::string SETTING_LOOKANDFEEL_SOUNDSKIN;

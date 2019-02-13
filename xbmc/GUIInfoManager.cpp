@@ -2631,13 +2631,24 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #endif
       break;
     case SYSTEM_IS_DARK_INTERFACE:
+      {
+        int appearance = CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_INTERFACEAPPEARANCE);
+        // System dictated
+        if (appearance == 0)
 #if defined(TARGET_ANDROID)
-      bReturn = CXBMCApp::IsNightMode();
+          bReturn = CXBMCApp::IsNightMode();
 #elif TARGET_DARWIN_TVOS
-      bReturn = CDarwinUtils::IsDarkInterface();
+          bReturn = CDarwinUtils::IsDarkInterface();
 #else
-      bReturn = false;
+          bReturn = false;
 #endif
+        // Light
+        else if (appearance == 1)
+          bReturn = false;
+        // Dark
+        else if (appearance == 2)
+          bReturn = true;
+      }
       break;
     case SYSTEM_HAS_EXTENSIONS:
       bReturn = CAddonMgr::GetInstance().HasExtensions();

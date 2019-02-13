@@ -548,6 +548,21 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std:
     current = list[0].second;
 }
 
+void CSkinInfo::SettingOptionsInterfaceAppearance(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  // set current to setting value
+  current = ((const CSettingInt*)setting)->GetValue();
+
+#if !(defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS))
+  // hide System on iOS as we still dont have Dark/Light mode on it
+  list.push_back(make_pair(g_localizeStrings.Get(22026), 0)); // System interface selection
+#endif
+  list.push_back(make_pair(g_localizeStrings.Get(22027), 1)); // Light interface selection
+
+  list.push_back(make_pair(g_localizeStrings.Get(22028), 2)); // Dark interface selection
+
+}
+
 void CSkinInfo::ToggleDebug()
 {
   m_debugging = !m_debugging;

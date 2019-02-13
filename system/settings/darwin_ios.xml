@@ -13,6 +13,22 @@
             <show more="true" details="true">installed</show>
           </control>
         </setting>
+        <setting id="lookandfeel.interfaceappearance" type="integer" label="22025" help="22029">
+          <level>1</level>
+          <default>0</default>
+          <constraints>
+            <options>interfaceappearance</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition setting="lookandfeel.skin" operator="is">skin.ariana</condition>
+                <condition setting="lookandfeel.skin" operator="is">skin.ariana.touch</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
       </group>
     </category>
   </section>

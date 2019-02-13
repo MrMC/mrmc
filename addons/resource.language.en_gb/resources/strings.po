@@ -14030,7 +14030,30 @@ msgctxt "#22024"
 msgid "Direct3D version:"
 msgstr ""
 
-#empty strings from id 22025 to 22029
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#22025"
+msgid "Interface appearance"
+msgstr ""
+
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#22026"
+msgid "System"
+msgstr ""
+
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#22027"
+msgid "Light"
+msgstr ""
+
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#22028"
+msgid "Dark"
+msgstr ""
+
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#22029"
+msgid "Change appearance of backgrounds and menus. Light, dark or set by system"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22030"

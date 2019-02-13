@@ -68,6 +68,22 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
+        <setting id="lookandfeel.interfaceappearance" type="integer" label="22025" help="22029">
+          <level>1</level>
+          <default>0</default>
+          <constraints>
+            <options>interfaceappearance</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition setting="lookandfeel.skin" operator="is">skin.ariana</condition>
+                <condition setting="lookandfeel.skin" operator="is">skin.ariana.touch</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
         <setting id="lookandfeel.startupwindow" type="integer" label="512" help="36109">
           <level>0</level>
           <default>10000</default> <!-- WINDOW_HOME -->

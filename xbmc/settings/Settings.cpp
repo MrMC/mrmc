@@ -105,6 +105,7 @@ const std::string CSettings::SETTING_LOOKANDFEEL_SKINTHEME = "lookandfeel.skinth
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINCOLORS = "lookandfeel.skincolors";
 const std::string CSettings::SETTING_LOOKANDFEEL_FONT = "lookandfeel.font";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINZOOM = "lookandfeel.skinzoom";
+const std::string CSettings::SETTING_LOOKANDFEEL_INTERFACEAPPEARANCE = "lookandfeel.interfaceappearance";
 const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW = "lookandfeel.startupwindow";
 const std::string CSettings::SETTING_LOOKANDFEEL_MINIMIZEFROMHOME = "lookandfeel.mnimizefromhome";
 const std::string CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN = "lookandfeel.soundskin";
@@ -742,6 +743,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("skincolors");
   m_settingsManager->UnregisterSettingOptionsFiller("skinfonts");
   m_settingsManager->UnregisterSettingOptionsFiller("skinthemes");
+  m_settingsManager->UnregisterSettingOptionsFiller("interfaceappearance");
 #if defined(TARGET_LINUX)
   m_settingsManager->UnregisterSettingOptionsFiller("timezonecountries");
   m_settingsManager->UnregisterSettingOptionsFiller("timezones");
@@ -1127,6 +1129,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("skincolors", ADDON::CSkinInfo::SettingOptionsSkinColorsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinfonts", ADDON::CSkinInfo::SettingOptionsSkinFontsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinthemes", ADDON::CSkinInfo::SettingOptionsSkinThemesFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("interfaceappearance",ADDON::CSkinInfo::SettingOptionsInterfaceAppearance);
 #ifdef TARGET_LINUX
   m_settingsManager->RegisterSettingOptionsFiller("timezonecountries", CLinuxTimezone::SettingOptionsTimezoneCountriesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("timezones", CLinuxTimezone::SettingOptionsTimezonesFiller);
