@@ -1269,6 +1269,9 @@ XBMCController *g_xbmcController;
 
 -(NSUInteger)supportedInterfaceOrientations
 {
+  if (CDarwinUtils::IosHasNotch())
+    return UIInterfaceOrientationMaskLandscapeRight;
+  
   return UIInterfaceOrientationMaskLandscape;
 }
 
