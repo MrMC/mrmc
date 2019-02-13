@@ -1110,6 +1110,8 @@ bool CApplication::Initialize()
        g_passwordManager.CheckStartUpLock();
     }
 
+    StartDatabase();
+
     // check if we should use the login screen
     if (CProfilesManager::GetInstance().UsingLoginScreen())
     {
