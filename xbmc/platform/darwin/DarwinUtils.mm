@@ -434,6 +434,22 @@ bool CDarwinUtils::DeviceHasLeakyVDA(void)
 #endif
 }
 
+bool CDarwinUtils::IosHasNotch(void)
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+  static enum iosPlatform platform = getIosPlatform();
+
+  // below phones that have a "notch" , ariana.touch only looks good in LandscapeRight
+  if (platform == iPhoneX  ||
+      platform == iPhoneXS ||
+      platform == iPhoneXSMax ||
+      platform == iPhoneXR)
+    ret = true;
+#endif
+  return ret;
+}
+
 const char *CDarwinUtils::GetOSReleaseString(void)
 {
   static std::string osreleaseStr;

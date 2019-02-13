@@ -40,6 +40,7 @@ public:
   static bool        HasDisplayRateSwitching(void);
   static bool        DeviceHasRetina(double &scale);
   static bool        DeviceHasLeakyVDA(void);
+  static bool        IosHasNotch(void);
   static bool        DeviceHas10BitH264(void);
   static const char *GetOSReleaseString(void);
   static const char *GetOSVersionString(void);
