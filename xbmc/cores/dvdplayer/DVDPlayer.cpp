@@ -1177,7 +1177,7 @@ void CDVDPlayer::Process()
 
   // look for any EDL files
   m_Edl.Clear();
-  if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
+  if (!m_item.HasProperty("VideoSplash") && m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
   {
     float fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
     m_Edl.ReadEditDecisionLists(m_item.GetPath(), fFramesPerSecond, m_CurrentVideo.hint.height);

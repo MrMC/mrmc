@@ -4792,6 +4792,10 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)", CURL::GetRedacted(item.GetPath()).c_str());
   *m_currentFile = item;
 
+  // its splash, nothing to do
+  if (m_currentFile->HasProperty("VideoSplash"))
+    return;
+
   /* also call GetMovieInfo() when a VideoInfoTag is already present or additional info won't be present in the tag */
   if (!m_currentFile->HasPVRChannelInfoTag() && !item.IsMediaServiceBased())
   {

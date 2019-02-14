@@ -40,6 +40,9 @@
 
 bool CSaveFileStateJob::DoWork()
 {
+  if (m_item.HasProperty("VideoSplash"))
+    return true;
+  
   if (!m_item.GetPath().empty() && CTraktServices::GetInstance().IsEnabled())
   {
     double total_s = m_bookmark.totalTimeInSeconds;
