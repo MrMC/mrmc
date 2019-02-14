@@ -801,6 +801,9 @@ bool CFileItem::IsAudio() const
   if(StringUtils::StartsWithNoCase(m_mimetype, "audio/"))
     return true;
 
+  if(StringUtils::StartsWithNoCase(m_mimetype, "video/"))
+    return false;
+
   if (HasMusicInfoTag())
     return true;
 
