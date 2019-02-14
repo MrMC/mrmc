@@ -1087,20 +1087,11 @@ bool CApplication::Initialize()
 
     // Make sure we have at least the default skin
     std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
-    std::string skin = CSkinSettings::GetInstance().CheckFallbackSkin();
+    std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     if (!LoadSkin(skin) && !LoadSkin(defaultSkin))
     {
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
       return false;
-    }
-
-    // fallback skin has changed, we need to save the setting
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) != skin)
-    {
-      // m_skinReverting = true == no skin change prompt
-      m_skinReverting = true;
-      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, skin);
-      CSettings::GetInstance().Save();
     }
 
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
@@ -1193,29 +1184,6 @@ bool CApplication::Initialize()
 //    g_windowManager.SendThreadMessage(msg);
 //  }
 
-//  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-//  if ((!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)))
-//  {
-//    if (CSkinSettings::GetInstance().MigrateToNewSkin(skin))
-//    {
-//      m_skinReverting = true;
-//      LoadSkin("skin.opacity");
-//    }
-//  }
-
-#if defined(TARGET_DARWIN_TVOS)
-  // Migrate to Ariana for old AppleTV users
-  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_LOOKANDFEEL_ARIANASKINCHECKED))
-  {
-    if (CSkinSettings::GetInstance().MigrateToAriana(skin))
-    {
-      m_skinReverting = true;
-      LoadSkin("skin.ariana");
-    }
-
-  }
-#endif
   return true;
 }
 
@@ -1375,10 +1343,6 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
       builtin += "(confirm)";
     CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
-  }
-  else if (settingId == CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED)
-  {
-    m_skinReverting = true;
   }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
   {

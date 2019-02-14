@@ -115,8 +115,6 @@ const std::string CSettings::SETTING_LOOKANDFEEL_RSSHOST = "lookandfeel.rsshost"
 const std::string CSettings::SETTING_LOOKANDFEEL_RSSINTERVAL = "lookandfeel.rssinterval";
 const std::string CSettings::SETTING_LOOKANDFEEL_RSSRTL = "lookandfeel.rssrtl";
 const std::string CSettings::SETTING_LOOKANDFEEL_STEREOSTRENGTH = "lookandfeel.stereostrength";
-const std::string CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED = "lookandfeel.newskinchecked";
-const std::string CSettings::SETTING_LOOKANDFEEL_ARIANASKINCHECKED = "lookandfeel.arianaskinchecked";
 const std::string CSettings::SETTING_LOOKANDFEEL_NAVIGATIONWRAPPING = "lookandfeel.navigationwrapping";
 const std::string CSettings::SETTING_LOCALE_LANGUAGE = "locale.language";
 const std::string CSettings::SETTING_LOCALE_COUNTRY = "locale.country";
@@ -1276,8 +1274,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_FONT);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_NEWSKINCHECKED);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_ARIANASKINCHECKED);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_NAVIGATIONWRAPPING);

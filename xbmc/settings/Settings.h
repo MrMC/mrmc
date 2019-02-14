@@ -63,8 +63,6 @@ public:
   static const std::string SETTING_LOOKANDFEEL_RSSINTERVAL;
   static const std::string SETTING_LOOKANDFEEL_RSSRTL;
   static const std::string SETTING_LOOKANDFEEL_STEREOSTRENGTH;
-  static const std::string SETTING_LOOKANDFEEL_NEWSKINCHECKED;
-  static const std::string SETTING_LOOKANDFEEL_ARIANASKINCHECKED;
   static const std::string SETTING_LOOKANDFEEL_NAVIGATIONWRAPPING;
   static const std::string SETTING_LOCALE_LANGUAGE;
   static const std::string SETTING_LOCALE_COUNTRY;
