@@ -54,9 +54,7 @@ CFocusEngineHandler::GetInstance()
 }
 
 CFocusEngineHandler::CFocusEngineHandler()
-: m_focusZoom(true)
-, m_focusSlide(true)
-, m_showFocusRect(false)
+: m_showFocusRect(false)
 , m_showVisibleRects(false)
 , m_state(FocusEngineState::Idle)
 , m_focusedOrientation(UNDEFINED)
@@ -128,7 +126,7 @@ void CFocusEngineHandler::Process()
             FocusEngineAnimate focusAnimate = m_focusAnimate;
             std::vector<CAnimation> animations;
             // handle control slide
-            if (m_focusSlide && (fabs(focusAnimate.slideX) > 0.0f || fabs(focusAnimate.slideY) > 0.0f))
+            if ((fabs(focusAnimate.slideX) > 0.0f || fabs(focusAnimate.slideY) > 0.0f))
             {
               float screenDX =   focusAnimate.slideX  * focusAnimate.maxScreenSlideX;
               float screenDY = (-focusAnimate.slideY) * focusAnimate.maxScreenSlideY;
@@ -148,7 +146,7 @@ void CFocusEngineHandler::Process()
               animations.push_back(anim);
             }
             // handle control zoom
-            if (m_focusZoom && (focusAnimate.zoomX > 0.0f && focusAnimate.zoomY > 0.0f))
+            if ((focusAnimate.zoomX > 0.0f && focusAnimate.zoomY > 0.0f))
             {
               TiXmlElement node("animation");
               node.SetAttribute("reversible", "false");
@@ -203,18 +201,6 @@ void CFocusEngineHandler::UpdateAnimation(FocusEngineAnimate &focusAnimate)
   CSingleLock lock(m_stateLock);
   m_focusAnimate = focusAnimate;
   m_state = FocusEngineState::Update;
-}
-
-void CFocusEngineHandler::EnableFocusZoom(bool enable)
-{
-  CSingleLock lock(m_stateLock);
-  m_focusZoom = enable;
-}
-
-void CFocusEngineHandler::EnableFocusSlide(bool enable)
-{
-  CSingleLock lock(m_stateLock);
-  m_focusSlide = enable;
 }
 
 void CFocusEngineHandler::InvalidateFocus(CGUIControl *control)

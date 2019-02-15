@@ -106,57 +106,10 @@
         <setting id="input.appleremotesequencetime">
           <visible>false</visible>
         </setting>
-        <setting id="input.applesirifocuseffects" type="boolean" label="899" help="900">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-          <visible>false</visible>
-       </setting>
-        <setting id="input.applesirifocuszoom" type="boolean" parent="input.applesirifocuseffects" label="890" help="891">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-          <dependencies>
-            <dependency type="visible" setting="input.applesirifocuseffects">true</dependency>
-          </dependencies>
-          <visible>false</visible>
-        </setting>
-        <setting id="input.applesirifocusslide" type="boolean" parent="input.applesirifocuseffects" label="892" help="893">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-          <dependencies>
-            <dependency type="visible" setting="input.applesirifocuseffects">true</dependency>
-          </dependencies>
-          <visible>false</visible>
-        </setting>
         <setting id="input.applesiriback" type="boolean" label="884" help="885">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
-        </setting>
-        <setting id="input.applesiritimeoutenabled" type="boolean" label="24160" help="24161">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-          <visible>false</visible>
-        </setting>
-        <setting id="input.applesiritimeout" type="integer" label="24154" help="24155">
-          <level>1</level>
-          <default>60</default>
-          <constraints>
-            <options>
-              <option label="24156">30</option>
-              <option label="24157">60</option>
-              <option label="24158">90</option>
-              <option label="24159">120</option>
-            </options>
-          </constraints>
-          <control type="list" format="integer" />
-          <dependencies>
-            <dependency type="enable" setting="input.applesiritimeoutenabled">true</dependency>
-          </dependencies>
-          <visible>false</visible>
         </setting>
         <setting id="input.applesiriexpertmode" type="boolean" label="901" help="902">
           <level>1</level>

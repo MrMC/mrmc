@@ -109,8 +109,6 @@ private:
   CFocusEngineHandler(CFocusEngineHandler const&);
   CFocusEngineHandler& operator=(CFocusEngineHandler const&);
 
-  bool m_focusZoom;
-  bool m_focusSlide;
   bool m_showFocusRect;
   bool m_showVisibleRects;
   FocusEngineState m_state;

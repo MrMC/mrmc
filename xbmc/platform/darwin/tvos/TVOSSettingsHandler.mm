@@ -51,19 +51,9 @@ CTVOSInputSettings::CTVOSInputSettings()
 void CTVOSInputSettings::Initialize()
 {
   /*
-   const std::string CSettings::SETTING_INPUT_APPLESIRIFOCUSEFFECTS = "input.applesirifocuseffects";
-   const std::string CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM = "input.applesirifocuszoom";
-   const std::string CSettings::SETTING_INPUT_APPLESIRIFOCUSLIDE = "input.applesirifocusslide";
    const std::string CSettings::SETTING_INPUT_APPLESIRIBACK = "input.applesiriback";
-   const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUT = "input.applesiritimeout";
-   const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED = "input.applesiritimeoutenabled";
    const std::string CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE = "input.applesiriexpertmode";
    */
-  bool enableFocusEffects = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIFOCUSEFFECTS);
-  bool enableFocusZoom = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM);
-  CFocusEngineHandler::GetInstance().EnableFocusZoom(enableFocusEffects && enableFocusZoom);
-  bool enableFocusSlide = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIFOCUSLIDE);
-  CFocusEngineHandler::GetInstance().EnableFocusSlide(enableFocusEffects && enableFocusSlide);
   bool enableExpertMode = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
   [g_xbmcController enableRemoteExpertMode:enableExpertMode];
   bool stopPlaybackOnMenu = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIBACK);
@@ -87,17 +77,7 @@ void CTVOSInputSettings::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_INPUT_APPLESIRIFOCUSEFFECTS ||
-           settingId == CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM ||
-           settingId == CSettings::SETTING_INPUT_APPLESIRIFOCUSLIDE)
-  {
-    bool enableFocusEffects = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIFOCUSEFFECTS);
-    bool enableFocusZoom = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIFOCUSZOOM);
-    CFocusEngineHandler::GetInstance().EnableFocusZoom(enableFocusEffects && enableFocusZoom);
-    bool enableFocusSlide = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIFOCUSLIDE);
-    CFocusEngineHandler::GetInstance().EnableFocusSlide(enableFocusEffects && enableFocusSlide);
-  }
-  else if (settingId == CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE)
+  if (settingId == CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE)
   {
     bool enableExpertMode = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLESIRIEXPERTMODE);
     [g_xbmcController enableRemoteExpertMode:enableExpertMode];

@@ -363,13 +363,8 @@ public:
   static const std::string SETTING_INPUT_APPLEREMOTEMODE;
   static const std::string SETTING_INPUT_APPLEREMOTEALWAYSON;
   static const std::string SETTING_INPUT_APPLEREMOTESEQUENCETIME;
-  static const std::string SETTING_INPUT_APPLESIRIFOCUSEFFECTS;
   static const std::string SETTING_INPUT_APPLESIRISWIPEONCE;
-  static const std::string SETTING_INPUT_APPLESIRIFOCUSZOOM;
-  static const std::string SETTING_INPUT_APPLESIRIFOCUSLIDE;
   static const std::string SETTING_INPUT_APPLESIRIBACK;
-  static const std::string SETTING_INPUT_APPLESIRITIMEOUT;
-  static const std::string SETTING_INPUT_APPLESIRITIMEOUTENABLED;
   static const std::string SETTING_INPUT_APPLESIRIEXPERTMODE;
   static const std::string SETTING_INPUT_APPLESIRIDISABLEOSD;
   static const std::string SETTING_NETWORK_USEHTTPPROXY;
