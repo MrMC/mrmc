@@ -3,16 +3,6 @@
   <section id="appearance">
     <category id="lookandfeel" label="166" help="36102">
       <group id="1">
-        <setting id="lookandfeel.skin" type="addon" label="166" help="36103">
-          <level>0</level>
-          <default>skin.ariana</default>
-          <constraints>
-            <addontype>xbmc.gui.skin</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
         <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
           <level>0</level>
           <default>resource.uisounds.tvos</default>
