@@ -990,6 +990,11 @@ bool CSettings::InitializeDefinitions()
 #if defined(TARGET_ANDROID)
   if (CFile::Exists(SETTINGS_XML_FOLDER "android.xml") && !Initialize(SETTINGS_XML_FOLDER "android.xml"))
     CLog::Log(LOGFATAL, "Unable to load android-specific settings definitions");
+  if (CAndroidFeatures::HasTouchScreen())
+  {
+    if (CFile::Exists(SETTINGS_XML_FOLDER "android.touch.xml") && !Initialize(SETTINGS_XML_FOLDER "android.touch.xml"))
+      CLog::Log(LOGFATAL, "Unable to load android.touch-specific settings definitions");
+  }
 #elif defined(TARGET_RASPBERRY_PI)
   if (CFile::Exists(SETTINGS_XML_FOLDER "rbp.xml") && !Initialize(SETTINGS_XML_FOLDER "rbp.xml"))
     CLog::Log(LOGFATAL, "Unable to load rbp-specific settings definitions");
