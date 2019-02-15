@@ -309,6 +309,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler, CJob
     bool m_startFullScreen;
     bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
     bool m_canWindowed;
+    bool m_splashImage;
     bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx only .. */
     int m_playlistRetries;
     int m_playlistTimeout;

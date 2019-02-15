@@ -46,6 +46,7 @@
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Weather.h"
@@ -345,6 +346,12 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
   {
-    g_application.PlaySplash();
+    if (g_advancedSettings.m_splashImage)
+    {
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+      g_windowManager.SendThreadMessage(msg);
+    }
+    else
+      g_application.PlaySplash();
   }
 }

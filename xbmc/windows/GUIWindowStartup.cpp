@@ -23,6 +23,7 @@
 #include "input/Key.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "settings/AdvancedSettings.h"
 
 CGUIWindowStartup::CGUIWindowStartup(void)
     : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")
@@ -43,5 +44,11 @@ bool CGUIWindowStartup::OnAction(const CAction &action)
 void CGUIWindowStartup::OnDeinitWindow(int nextWindowID)
 {
   CGUIWindow::OnDeinitWindow(nextWindowID);
-  g_application.PlaySplash();
+  if (g_advancedSettings.m_splashImage)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    g_windowManager.SendThreadMessage(msg);
+  }
+  else
+    g_application.PlaySplash();
 }

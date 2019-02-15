@@ -796,6 +796,9 @@ bool CApplication::CreateGUI()
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
 
+  if (g_advancedSettings.m_splashImage)
+    CSplash::GetInstance().Show();
+
   // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
   if (!CButtonTranslator::GetInstance().Load())
@@ -1084,6 +1087,12 @@ bool CApplication::Initialize()
 
     g_windowManager.CreateWindows();
     /* window id's 3000 - 3100 are reserved for python */
+
+    // initialize splash window after splash screen disappears
+    // because we need a real window in the background which gets
+    // rendered while we load the main window or enter the master lock key
+    if (g_advancedSettings.m_splashImage)
+      g_windowManager.ActivateWindow(WINDOW_SPLASH);
 
     // Make sure we have at least the default skin
     std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
@@ -5292,10 +5301,13 @@ bool CApplication::NotifyActionListeners(const CAction &action) const
 
 void CApplication::PlaySplash()
 {
-  CFileItemPtr pSplash(new CFileItem("Splash"));
-  pSplash->SetProperty("VideoSplash", true);
-  pSplash->SetPath("special://xbmc/media/Splash.mp4");
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pSplash)));
+  if (!g_advancedSettings.m_splashImage)
+  {
+    CFileItemPtr pSplash(new CFileItem("Splash"));
+    pSplash->SetProperty("VideoSplash", true);
+    pSplash->SetPath("special://xbmc/media/Splash.mp4");
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pSplash)));
+  }
 }
 
 void CApplication::StartDatabase()
