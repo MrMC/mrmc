@@ -140,8 +140,6 @@ void CGUIWindowHome::OnInitWindow()
   if (!CServicesManager::GetInstance().HasServices())
     m_firstRun = false;
 
-  SET_CONTROL_HIDDEN(CONTROL_SERVER_BUTTON);
-  m_buttonSections->Clear();
   SetupServices();
 
   if (!m_firstRun && !g_application.IsPlayingSplash())
@@ -305,7 +303,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_SETUP_HOME_SERVICES:
     SetupServices();
-  break;
+    break;
   case GUI_MSG_NOTIFY_ALL:
   {
     if (message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
@@ -672,10 +670,14 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
 void CGUIWindowHome::SetupServices()
 {
   if (!IsActive())
+  {
+    CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - !IsActive()");
     return;
+  }
   // we cannot be diddling gui unless we are on main thread.
   if (!g_application.IsCurrentThread())
   {
+    CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - !g_application.IsCurrentThread()");
     CGUIMessage msg(GUI_MSG_SETUP_HOME_SERVICES, 0, 0, 0);
     g_windowManager.SendThreadMessage(msg, GetID());
     return;
@@ -685,7 +687,10 @@ void CGUIWindowHome::SetupServices()
   // with new Server layouts on home
   const CGUIControl *btnServers = GetControl(CONTROL_SERVER_BUTTON);
   if (!btnServers)
+  {
+    CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - No server button");
     return;
+  }
 
   // Always show server button as we might loose the server and "not have services"
   //  if (CServicesManager::GetInstance().HasServices())
@@ -698,6 +703,7 @@ void CGUIWindowHome::SetupServices()
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
   std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
 
+  CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - serverType(%s) ,  serverUUID(%s)",serverType.c_str(),serverUUID.c_str());
   if (serverType == "plex")
   {
     if (CPlexServices::GetInstance().HasClients())
@@ -765,6 +771,8 @@ void CGUIWindowHome::SetupServices()
 
 void CGUIWindowHome::SetupStaticHomeButtons()
 {
+  CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupStaticHomeButtons()");
+
   bool hasLiveTv = (g_infoManager.GetBool(PVR_HAS_TV_CHANNELS) &&
                     !g_SkinInfo->GetSkinSettingBool("HomeMenuNoTVButton"));
   bool hasRadio = (g_infoManager.GetBool(PVR_HAS_RADIO_CHANNELS) &&
