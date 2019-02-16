@@ -375,7 +375,7 @@ void CAdvancedSettings::Initialize()
   m_startFullScreen = false;
 #endif
   m_showExitButton = true;
-  m_splashImage = false;
+  m_splashImage = true;
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
