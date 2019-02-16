@@ -92,11 +92,6 @@ private:
   int64_t               m_playbackHeadOffset;
   double                m_lastdelay;
 
-  // When AddPause is called the pause time is increased by the
-  // package duration. This is only used for non IEC passthrough
-  // as IEC packed will get an IEC packed pause burst injected.
-  XbmcThreads::EndTime  m_nonIECPauseTimer;
-
   // We maintain our linear weighted average delay counter in here
   // The n-th value (timely oldest value) is weighted with 1/n
   // the newest value gets a weight of 1
