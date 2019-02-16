@@ -18,6 +18,7 @@
  *
  */
  
+#import <AVKit/AVKit.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
@@ -28,8 +29,11 @@
 #import "platform/darwin/tvos/MainController.h"
 #import "platform/darwin/tvos/TVOSTopShelf.h"
 #import "platform/darwin/tvos/PreflightHandler.h"
+#import "Util.h"
 
 @implementation MainApplicationDelegate
+UIWindow *m_splashWindow;
+AVPlayer *m_splashPlayer;
 MainController* m_xbmcController;
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -72,9 +76,43 @@ MainController* m_xbmcController;
   [m_xbmcController enterForeground];
 }
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application 
+- (void)applicationDidFinishSplash:(NSNotification *)notification
 {
   PRINT_SIGNATURE();
+  [[NSNotificationCenter defaultCenter] removeObserver:self
+    name:AVPlayerItemDidPlayToEndTimeNotification object:m_splashPlayer.currentItem];
+
+#if FALSE
+  // testing if tvOS support 192kHz Sample Rate
+  {
+    AVAudioSession* session = [AVAudioSession sharedInstance];
+    NSError *error = nil;
+    double preferredSampleRate = 192000;
+    BOOL success  = [session setPreferredSampleRate:preferredSampleRate error:&error];
+    if (success) {
+        NSLog (@"session.sampleRate = %f", session.sampleRate);
+    } else {
+        NSLog (@"error setting sample rate %@", error);
+    }
+  }
+#endif
+
+  UIScreen *currentScreen = [UIScreen mainScreen];
+  m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
+  [m_xbmcController startAnimation];
+
+  [self registerScreenNotifications];
+  [self registerAudioRouteNotifications];
+
+  // player will stop at end of splash, leaving last frame showing
+  // defer ARC driven shutdown/delete until after xbmcController
+  // is coming up.
+  m_splashPlayer = nil;
+  m_splashWindow = nil;
+}
+
+- (void)applicationDidFinishLaunching:(UIApplication *)application
+{
   // applicationDidFinishLaunching is the very first callback that we get
 
   // This needs to run before anything does any CLog::Log calls
@@ -114,27 +152,29 @@ MainController* m_xbmcController;
     NSLog(@"AVAudioSession setActive YES failed: %ld", (long)err.code);
   }
 
-#if FALSE
-  // testing if tvOS support 192kHz Sample Rate
-  {
-    AVAudioSession* session = [AVAudioSession sharedInstance];
-    NSError *error = nil;
-    double preferredSampleRate = 192000;
-    BOOL success  = [session setPreferredSampleRate:preferredSampleRate error:&error];
-    if (success) {
-        NSLog (@"session.sampleRate = %f", session.sampleRate);
-    } else {
-        NSLog (@"error setting sample rate %@", error);
-    }
-  }
-#endif
+  // MrMC.app/AppData/AppHome/media/Splash.mp4
+  std::string splashPath;
+  CUtil::GetHomePath(splashPath);
+  splashPath += "/media/Splash.mp4";
+  NSString *stringFromUTFString = [[NSString alloc] initWithUTF8String:splashPath.c_str()];
+  NSURL *splashURL = [NSURL fileURLWithPath:stringFromUTFString];
+  m_splashPlayer = [AVPlayer playerWithURL:splashURL];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+    selector:@selector(applicationDidFinishSplash:)
+    name: AVPlayerItemDidPlayToEndTimeNotification object:m_splashPlayer.currentItem];
+  // create a player view controller
+  AVPlayerViewController *controller = [[AVPlayerViewController alloc] init];
+  controller.showsPlaybackControls = NO;
+  controller.player = m_splashPlayer;
 
   UIScreen *currentScreen = [UIScreen mainScreen];
-  m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
-  [m_xbmcController startAnimation];
-
-  [self registerScreenNotifications];
-  [self registerAudioRouteNotifications];
+  m_splashWindow = [[UIWindow alloc] initWithFrame:[currentScreen bounds]];
+  m_splashWindow.screen = currentScreen;
+  m_splashWindow.rootViewController = controller;
+  m_splashWindow.backgroundColor = [UIColor blackColor];
+  // this 'hooks' the view into being the front view
+  [m_splashWindow makeKeyAndVisible];
+  [m_splashPlayer play];
 }
 
 - (BOOL)application:(UIApplication *)app
