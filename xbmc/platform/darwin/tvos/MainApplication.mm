@@ -79,36 +79,22 @@ MainController* m_xbmcController;
 - (void)applicationDidFinishSplash:(NSNotification *)notification
 {
   PRINT_SIGNATURE();
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-    name:AVPlayerItemDidPlayToEndTimeNotification object:m_splashPlayer.currentItem];
+  // notifications might not be on main thread
+  dispatch_async(dispatch_get_main_queue(),^{
+    UIScreen *currentScreen = [UIScreen mainScreen];
+    m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
+    [m_xbmcController startAnimation];
 
-#if FALSE
-  // testing if tvOS support 192kHz Sample Rate
-  {
-    AVAudioSession* session = [AVAudioSession sharedInstance];
-    NSError *error = nil;
-    double preferredSampleRate = 192000;
-    BOOL success  = [session setPreferredSampleRate:preferredSampleRate error:&error];
-    if (success) {
-        NSLog (@"session.sampleRate = %f", session.sampleRate);
-    } else {
-        NSLog (@"error setting sample rate %@", error);
-    }
-  }
-#endif
+    [self registerScreenNotifications];
+    [self registerAudioRouteNotifications];
 
-  UIScreen *currentScreen = [UIScreen mainScreen];
-  m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
-  [m_xbmcController startAnimation];
-
-  [self registerScreenNotifications];
-  [self registerAudioRouteNotifications];
-
-  // player will stop at end of splash, leaving last frame showing
-  // defer ARC driven shutdown/delete until after xbmcController
-  // is coming up.
-  m_splashPlayer = nil;
-  m_splashWindow = nil;
+    // player should stop at end of splash, leaving last frame showing
+    // defer ARC driven shutdown/delete until after xbmcController is coming up.
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+      name:AVPlayerItemDidPlayToEndTimeNotification object:m_splashPlayer.currentItem];
+    m_splashPlayer = nil;
+    m_splashWindow = nil;
+  });
 }
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application
@@ -158,15 +144,21 @@ MainController* m_xbmcController;
   splashPath += "/media/Splash.mp4";
   NSString *stringFromUTFString = [[NSString alloc] initWithUTF8String:splashPath.c_str()];
   NSURL *splashURL = [NSURL fileURLWithPath:stringFromUTFString];
+
+  // create a player
   m_splashPlayer = [AVPlayer playerWithURL:splashURL];
+  m_splashPlayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
   [[NSNotificationCenter defaultCenter] addObserver:self
     selector:@selector(applicationDidFinishSplash:)
     name: AVPlayerItemDidPlayToEndTimeNotification object:m_splashPlayer.currentItem];
+
   // create a player view controller
   AVPlayerViewController *controller = [[AVPlayerViewController alloc] init];
   controller.showsPlaybackControls = NO;
+  controller.requiresLinearPlayback = YES;
   controller.player = m_splashPlayer;
 
+  // create a window to show the view in.
   UIScreen *currentScreen = [UIScreen mainScreen];
   m_splashWindow = [[UIWindow alloc] initWithFrame:[currentScreen bounds]];
   m_splashWindow.screen = currentScreen;
@@ -174,6 +166,8 @@ MainController* m_xbmcController;
   m_splashWindow.backgroundColor = [UIColor blackColor];
   // this 'hooks' the view into being the front view
   [m_splashWindow makeKeyAndVisible];
+
+  // now we can play :)
   [m_splashPlayer play];
 }
 
