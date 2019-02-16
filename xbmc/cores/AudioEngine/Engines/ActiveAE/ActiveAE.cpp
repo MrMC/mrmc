@@ -1927,16 +1927,20 @@ bool CActiveAE::RunStages()
         AEDelayStatus status;
         m_stats.GetDelay(status);
         double pts = buf->timestamp - (buf->pkt_start_offset * 1000 / buf->pkt->config.sample_rate);
+        if (m_mode == MODE_RAW)
+        {
+          pts = buf->timestamp - (*it)->m_format.m_streamInfo.GetDuration();
+        }
         double delay = status.GetDelay() * 1000;
         double playingPts = pts - delay;
         double maxError = ((*it)->m_syncState == CAESyncInfo::SYNC_INSYNC) ? 1000 : 5000;
         double error = playingPts - (*it)->m_pClock->GetClock();
-        if (error > 1000)
+        if (error > maxError)
         {
           CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %f", error);
           error = maxError;
         }
-        else if (error < -1000)
+        else if (error < -maxError)
         {
           CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %f", error);
           error = -maxError;
