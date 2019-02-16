@@ -133,12 +133,6 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
           bool isRaw = format.m_dataFormat == AE_FMT_RAW;
           bool formatExists = false;
 
-#ifdef TARGET_ANDROID
-          // Don't even try to quirk stereo
-          if (isRaw && format.m_channelLayout.Count() <= 2)
-            return false;
-#endif
-
           // PCM sample rate
           unsigned int samplerate = format.m_sampleRate;
           // FormatNeedsIECPacked might switch noIEC to IEC
