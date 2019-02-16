@@ -5301,6 +5301,7 @@ bool CApplication::NotifyActionListeners(const CAction &action) const
 
 void CApplication::PlaySplash()
 {
+/*
   if (!g_advancedSettings.m_splashImage)
   {
     CFileItemPtr pSplash(new CFileItem("Splash"));
@@ -5308,6 +5309,7 @@ void CApplication::PlaySplash()
     pSplash->SetPath("special://xbmc/media/Splash.mp4");
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pSplash)));
   }
+*/
 }
 
 void CApplication::StartDatabase()
