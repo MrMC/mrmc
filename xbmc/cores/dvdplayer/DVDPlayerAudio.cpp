@@ -118,6 +118,13 @@ bool CDVDPlayerAudio::OpenStream(CDVDStreamInfo &hints)
   //if (hints.realtime)
   //  allowpassthrough = false;
 
+  // Handle special case where switching from AC3 -> EAC3 and no passthrough support for EAC3
+  if (allowpassthrough && m_pAudioCodec && 
+      m_pAudioCodec->GetFormat().m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3 &&
+      hints.codec == AV_CODEC_ID_EAC3 && m_pAudioCodec->NeedPassthrough() && 
+      !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH))
+    allowpassthrough = false;
+
   CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, allowpassthrough);
   if(!codec)
   {

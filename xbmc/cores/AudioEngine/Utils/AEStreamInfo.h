@@ -95,6 +95,7 @@ private:
   unsigned int m_needBytes;
   ParseFunc m_syncFunc;
   bool m_hasSync;
+  bool m_detectedEAC3;
 
   unsigned int m_coreSize;         /* core size for dtsHD */
   unsigned int m_dtsBlocks;

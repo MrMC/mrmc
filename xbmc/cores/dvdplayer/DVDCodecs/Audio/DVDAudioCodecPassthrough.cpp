@@ -80,15 +80,26 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   bool ret = CAEFactory::SupportsRaw(format);
 
   m_parser.SetCoreOnly(false);
-  if (!ret && hints.codec == AV_CODEC_ID_DTS)
+  if (!ret && (hints.codec == AV_CODEC_ID_DTS || hints.codec == AV_CODEC_ID_EAC3))
   {
-    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
+    if (hints.codec == AV_CODEC_ID_DTS)
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
+    else
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+
     ret = CAEFactory::SupportsRaw(format);
 
-    // only get the dts core from the parser if we don't support dtsHD
+    // only get the core from the parser if we don't support dtsHD/EAC3
     m_parser.SetCoreOnly(true);
   }
-
+  else if (ret && hints.codec == AV_CODEC_ID_AC3)
+  {
+      // check for EAC3 passthrough support. If not enabled then set for core only
+      AEAudioFormat eac3format = format;
+      eac3format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+      m_parser.SetCoreOnly(!CAEFactory::SupportsRaw(eac3format));
+  }
+  
 #if defined(TARGET_DARWIN_TVOS)
   // tvos doesn't like 44100 dts passthrough even if it generally can do 44100 samplerate
   if (hints.codec == AV_CODEC_ID_DTS && hints.samplerate != 48000)

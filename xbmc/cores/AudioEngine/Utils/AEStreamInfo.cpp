@@ -67,6 +67,7 @@ CAEStreamParser::CAEStreamParser() :
   m_needBytes     (0),
   m_syncFunc      (&CAEStreamParser::DetectType),
   m_hasSync       (false),
+  m_detectedEAC3  (false),
   m_coreSize      (0),
   m_dtsBlocks     (0),
   m_fsize         (0),
@@ -254,10 +255,15 @@ void CAEStreamParser::GetPacket(uint8_t **buffer, unsigned int *bufferSize)
   /* if the caller wants the packet */
   if (buffer)
   {
-    /* if it is dtsHD and we only want the core, just fetch that */
+    /* if it is dtsHD/eac3 and we only want the core, just fetch that */
     unsigned int size = m_fsize;
-    if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE)
+    if ((m_info.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE || m_info.m_type == CAEStreamInfo::STREAM_TYPE_AC3) && 
+        m_fsize)
+    {
       size = m_coreSize;
+      m_coreSize = 0;
+    }
+      
 
     /* make sure the buffer is allocated and big enough */
     if (!*buffer || !bufferSize || *bufferSize < size)
@@ -276,7 +282,6 @@ void CAEStreamParser::GetPacket(uint8_t **buffer, unsigned int *bufferSize)
   m_bufferSize -= m_fsize;
   memmove(m_buffer, m_buffer + m_fsize, m_bufferSize);
   m_fsize = 0;
-  m_coreSize = 0;
 }
 
 /* SYNC FUNCTIONS */
@@ -393,10 +398,12 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
 
       m_fsize = framesize << 1;
       m_info.m_sampleRate = AC3FSCod[fscod];
+      m_coreSize = m_fsize;
 
       /* dont do extensive testing if we have not lost sync */
       /* this may be the main stream of EAC3 */
-      if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && skip == 0)
+      if ((m_info.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 ||
+           (m_info.m_type == CAEStreamInfo::STREAM_TYPE_AC3 && m_detectedEAC3 && m_coreOnly)) && skip == 0)
       {
         m_fsizeMain = m_fsize;
         m_fsize = 0;
@@ -464,6 +471,11 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
         m_fsize += m_fsizeMain;
       }
       m_fsizeMain = 0;
+      m_detectedEAC3 = true;
+
+      if (m_coreOnly && m_info.m_type == CAEStreamInfo::STREAM_TYPE_AC3 && m_hasSync && skip == 0 &&
+          strmtyp == 1)
+        return 0;
 
       m_info.m_repeat = MAX_EAC3_BLOCKS / blocks;
 
