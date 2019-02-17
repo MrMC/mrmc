@@ -1076,6 +1076,8 @@ bool CApplication::Initialize()
   g_curlInterface.Load();
   g_curlInterface.Unload();
 
+  StartDatabase();
+
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
@@ -1109,8 +1111,6 @@ bool CApplication::Initialize()
     {
        g_passwordManager.CheckStartUpLock();
     }
-
-    StartDatabase();
 
     // check if we should use the login screen
     if (CProfilesManager::GetInstance().UsingLoginScreen())
