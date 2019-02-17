@@ -138,6 +138,14 @@ MainController* m_xbmcController;
     NSLog(@"AVAudioSession setActive YES failed: %ld", (long)err.code);
   }
 
+#if true
+  UIScreen *currentScreen = [UIScreen mainScreen];
+  m_xbmcController = [[MainController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
+  [m_xbmcController startAnimation];
+
+  [self registerScreenNotifications];
+  [self registerAudioRouteNotifications];
+#else
   // MrMC.app/AppData/AppHome/media/Splash.mp4
   std::string splashPath;
   CUtil::GetHomePath(splashPath);
@@ -169,6 +177,7 @@ MainController* m_xbmcController;
 
   // now we can play :)
   [m_splashPlayer play];
+#endif
 }
 
 - (BOOL)application:(UIApplication *)app
