@@ -90,7 +90,7 @@ struct DVDVideoPicture
   unsigned int iFlags;
 
   double       iRepeatPicture;
-  double       iDuration;
+  double       iDuration = 0.0;
   unsigned int iFrameType         : 4;  //< see defines above // 1->I, 2->P, 3->B, 0->Undef
   unsigned int color_matrix       : 4;
   unsigned int color_range        : 1;  //< 1 indicate if we have a full range of color

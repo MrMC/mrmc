@@ -174,6 +174,7 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
     ssize_t index
   , unsigned int texture
   , int64_t timestamp
+  , double duration
   , AMediaCodec* codec
   , std::shared_ptr<CJNISurfaceTexture> &surfacetexture
   , std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready
@@ -185,6 +186,7 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
 , m_index(index)
 , m_texture(texture)
 , m_timestamp(timestamp)
+, m_duration(duration)
 , m_codec(codec)
 , m_surfacetexture(surfacetexture)
 , m_frameready(frameready)
@@ -966,9 +968,6 @@ bool CDVDVideoCodecAndroidMediaCodec::GetPicture(DVDVideoPicture* pDvdVideoPictu
   if (!m_render_sw)
     m_videobuffer.mediacodec = NULL;
 
-  if (m_lastpts != -1.0)
-    pDvdVideoPicture->iDuration = pDvdVideoPicture->pts - m_lastpts;
-
   m_lastpts = pDvdVideoPicture->pts;
   return true;
 }
@@ -1169,6 +1168,8 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     m_videobuffer.pts = DVD_NOPTS_VALUE;
     if (pts != AV_NOPTS_VALUE)
       m_videobuffer.pts = pts;
+    if (m_lastpts != -1.0)
+      m_videobuffer.iDuration = (pts - m_lastpts) / DVD_TIME_BASE;
 
     uint32_t flags = bufferInfo.flags;
     if (flags & AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM)
@@ -1196,7 +1197,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       }
       if (i == m_inflight.size())
         m_inflight.push_back(
-          new CDVDMediaCodecInfo(index, m_textureId, pts, m_codec, m_surfaceTexture, m_frameAvailable, m_jnivideoview)
+          new CDVDMediaCodecInfo(index, m_textureId, pts, m_videobuffer.iDuration, m_codec, m_surfaceTexture, m_frameAvailable, m_jnivideoview)
         );
       m_videobuffer.mediacodec = m_inflight[i]->Retain();
       m_videobuffer.mediacodec->Validate(true);

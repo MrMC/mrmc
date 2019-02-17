@@ -58,6 +58,7 @@ public:
   CDVDMediaCodecInfo( ssize_t index,
                       unsigned int texture,
                       int64_t timestamp,
+                      double duration,
                       AMediaCodec* codec,
                       std::shared_ptr<CJNISurfaceTexture> &surfacetexture,
                       std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready,
@@ -75,6 +76,7 @@ public:
   ssize_t             GetIndex() const;
   int                 GetTextureID() const;
   void                GetTransformMatrix(float *textureMatrix);
+  double              GetDuration() { return m_duration; }
   void                UpdateTexImage();
   void                RenderUpdate(const CRect &SrcRect, const CRect &DestRect);
 
@@ -88,6 +90,7 @@ private:
   ssize_t             m_index;
   unsigned int        m_texture;
   int64_t             m_timestamp;
+  double              m_duration;
   CCriticalSection    m_section;
   // shared_ptr bits, shared between
   // CDVDVideoCodecAndroidMediaCodec and LinuxRenderGLES.

@@ -29,6 +29,7 @@
 #include "system_gl.h"
 
 #include <locale.h>
+#include "cores/dvdplayer/DVDClock.h"
 #include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
 #include "utils/MathUtils.h"
@@ -650,14 +651,14 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
           bool adjusted = false;
           uint64_t cs = CurrentHostCounter();
           uint64_t vs = CXBMCApp::GetVsyncTime();
-          double frameTime = (1.0 / m_fps) * CurrentHostFrequency();
-          int64_t ts = vs + (frameTime * 1.5);
+          double frameduration = mci->GetDuration() * DVD_TIME_BASE;
+          int64_t ts = vs + (frameduration * 1.5);
           if (m_lastVs)
           {
-            if (vs - m_lastVs > frameTime * 1.1)  // missed vsync
+            if (vs - m_lastVs > frameduration * 1.1)  // missed vsync
             {
               adjusted = true;
-              ts -= frameTime / 2;
+              ts -= frameduration / 2;
             }
           }
           //CLog::Log(LOGDEBUG, "ReleaseOutputBuffer: cur:%lld; vsync: %lld; target: %lld; adj: %s; diff: %lld", cs, vs, ts, adjusted ? "true" : "false", ts - m_lastTs);
