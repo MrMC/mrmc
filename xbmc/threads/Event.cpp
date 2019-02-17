@@ -65,10 +65,13 @@ void CEvent::Set()
   // checking the signal and calling wait() on the Wait call in the
   // CEvent class. This now perfectly matches the boost example here:
   // http://www.boost.org/doc/libs/1_41_0/doc/html/thread/synchronization.html#thread.synchronization.condvar_ref
-  {
-    CSingleLock slock(mutex);
-    signaled = true; 
-  }
+  // changed 2019.02.17. Need to hold the lock on mutex or risk
+  // a race on signaled/condVar.notifyAll and the destruction of
+  // CEvent before the groupListMutex is locked and groups are checked.
+  // see usage in CApplication::StartDatabase.
+
+  CSingleLock slock(mutex);
+  signaled = true;
 
   condVar.notifyAll();
 

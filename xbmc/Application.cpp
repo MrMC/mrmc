@@ -1076,8 +1076,8 @@ bool CApplication::Initialize()
   g_curlInterface.Load();
   g_curlInterface.Unload();
 
+  // do not move StartDatabase
   StartDatabase();
-
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
@@ -5323,7 +5323,8 @@ void CApplication::StartDatabase()
 
   DisableScreensaver(true);
   // initialize (and update as needed) our databases
-  CEvent event(true);
+  CEvent event;
+  event.Reset();
   CJobManager::GetInstance().Submit([&event]() {
     CDatabaseManager::GetInstance().Initialize();
     event.Set();
