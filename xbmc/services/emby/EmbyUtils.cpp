@@ -634,6 +634,26 @@ bool CEmbyUtils::GetEmbyRecentlyAddedAlbums(CFileItemList &items, const std::str
   return rtn;
 }
 
+bool CEmbyUtils::GetEmbyContinueWatching(CFileItemList &items, const std::string url)
+{
+  bool rtn = false;
+  if (CEmbyServices::GetInstance().HasClients())
+  {
+    CURL url2(url);
+    url2.SetFileName(url2.GetFileName() + "/Resume");
+
+    url2.SetOptions("");
+    url2.SetOption("Limit", StringUtils::Format("%i",12));
+    url2.SetOption("Fields", MoviesFields);
+    url2.SetOption("MediaTypes", "Video");
+    CVariant variant = GetEmbyCVariant(url2.Get());
+
+    rtn = ParseEmbyVideos(items, url2, variant, "");
+  }
+  return rtn;
+}
+
+
 #pragma mark - Emby Set
 bool CEmbyUtils::GetEmbySet(CFileItemList &items, const std::string url)
 {
@@ -933,7 +953,13 @@ bool CEmbyUtils::ParseEmbyVideos(CFileItemList &items, CURL url, const CVariant 
     if (objectItem["IsFolder"].asBoolean())
       continue;
 
-    CFileItemPtr item = ToVideoFileItemPtr(url, objectItem, type);
+    std::string videoType = type;
+    if (videoType.empty())
+    {
+      videoType = objectItem["Type"].asString();
+      StringUtils::ToLower(videoType);
+    }
+    CFileItemPtr item = ToVideoFileItemPtr(url, objectItem, videoType);
     items.Add(item);
   }
   // this is needed to display movies/episodes properly ... dont ask
@@ -1575,8 +1601,11 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
     url2.SetFileName("Items/" + itemId + "/Images/Primary");
     item->SetArt("thumb", url2.Get());
     item->SetIconImage(url2.Get());
+    CVariant fanarts = variant["BackdropImageTags"];
     url2.SetFileName("Items/" + itemId + "/Images/Backdrop");
     fanart = url2.Get();
+    if (fanarts.size() > 0)
+      item->SetArt("fanart", fanart);
 
     item->GetVideoInfoTag()->m_strShowTitle = variant["SeriesName"].asString();
     item->GetVideoInfoTag()->m_iSeason = variant["ParentIndexNumber"].asInteger();
@@ -1591,11 +1620,14 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
   }
   else
   {
+    CVariant fanarts = variant["BackdropImageTags"];
     url2.SetFileName("Items/" + itemId + "/Images/Primary");
     item->SetArt("thumb", url2.Get());
     item->SetIconImage(url2.Get());
     url2.SetFileName("Items/" + itemId + "/Images/Backdrop");
     fanart = url2.Get();
+    if (fanarts.size() > 0)
+      item->SetArt("fanart", fanart);
     
     CVariant paramsProvID = variant["ProviderIds"];
     if (paramsProvID.isObject())
@@ -1631,7 +1663,6 @@ CFileItemPtr CEmbyUtils::ToVideoFileItemPtr(CURL url, const CVariant &variant, s
     url2.SetFileName("Videos/" + itemId +"/stream?static=true");
     item->SetPath(url2.Get());
   }
-  item->SetArt("fanart", fanart);
 
   item->GetVideoInfoTag()->m_strTitle = title;
   item->GetVideoInfoTag()->SetSortTitle(title);

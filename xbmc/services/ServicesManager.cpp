@@ -422,6 +422,11 @@ void CServicesManager::GetRecentlyAddedMovies(CFileItemList &recentlyAdded, int 
       curl.SetOption("ParentId", viewinfo.id);
       curl.SetFileName("Users/" + userId + "/Items");
       CEmbyUtils::GetEmbyRecentlyAddedMovies(embyItems, curl.Get(), itemLimit);
+      for (int item = 0; item < embyItems.Size(); ++item)
+      {
+        CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "movies", embyClient);
+        embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
+      }
       recentlyAdded.Append(embyItems);
       embyItems.ClearItems();
     }
@@ -449,6 +454,30 @@ void CServicesManager::GetContinueWatching(CFileItemList &continueWatching, std:
     
     CPlexUtils::SetPlexItemProperties(plexItems);
     continueWatching.Append(plexItems);
+  }
+  else if (type == "emby" && CEmbyUtils::HasClients())
+  {
+    CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(uuid);
+    if (!embyClient)
+      return;
+    std::vector<EmbyViewInfo> viewinfos = embyClient->GetViewInfoForTVShowContent();
+    for (const auto &viewinfo : viewinfos)
+    {
+      CFileItemList embyItems;
+      std::string userId = embyClient->GetUserID();
+      CURL curl(embyClient->GetUrl());
+      curl.SetProtocol(embyClient->GetProtocol());
+      curl.SetOption("ParentId", viewinfo.id);
+      curl.SetFileName("Users/" + userId + "/Items");
+      CEmbyUtils::GetEmbyContinueWatching(embyItems, curl.Get());
+      for (int item = 0; item < embyItems.Size(); ++item)
+      {
+        CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "tvshows", embyClient);
+        embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13558));
+      }
+      continueWatching.Append(embyItems);
+      embyItems.ClearItems();
+    }
   }
 }
 
@@ -490,6 +519,11 @@ void CServicesManager::GetRecentlyAddedShows(CFileItemList &recentlyAdded, int i
       curl.SetOption("ParentId", viewinfo.id);
       curl.SetFileName("Users/" + userId + "/Items");
       CEmbyUtils::GetEmbyRecentlyAddedEpisodes(embyItems, curl.Get(), itemLimit);
+      for (int item = 0; item < embyItems.Size(); ++item)
+      {
+        CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "tvshows", embyClient);
+        embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
+      }
       recentlyAdded.Append(embyItems);
       embyItems.ClearItems();
     }
@@ -541,6 +575,11 @@ void CServicesManager::GetRecentlyAddedAlbums(CFileItemList &recentlyAdded, int 
       curl.SetOption("ParentId", viewinfo.id);
       curl.SetFileName("emby/Users/" + userId + "/Items/Latest");
       CEmbyUtils::GetEmbyAlbum(embyItems, curl.Get(), 10);
+      for (int item = 0; item < embyItems.Size(); ++item)
+      {
+        CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "music", embyClient);
+        embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
+      }
       recentlyAdded.Append(embyItems);
       embyItems.ClearItems();
     }
@@ -584,6 +623,11 @@ void CServicesManager::GetInProgressShows(CFileItemList &inProgress, int itemLim
       curl.SetOption("ParentId", viewinfo.id);
       curl.SetFileName("Users/" + userId + "/Items");
       CEmbyUtils::GetEmbyInProgressShows(embyItems, curl.Get(), itemLimit);
+      for (int item = 0; item < embyItems.Size(); ++item)
+      {
+        CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "tvshows", embyClient);
+        embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13559));
+      }
       inProgress.Append(embyItems);
       embyItems.ClearItems();
     }
@@ -627,6 +671,11 @@ void CServicesManager::GetInProgressMovies(CFileItemList &inProgress, int itemLi
       curl.SetOption("ParentId", viewinfo.id);
       curl.SetFileName("Users/" + userId + "/Items");
       CEmbyUtils::GetEmbyInProgressMovies(embyItems, curl.Get(), itemLimit);
+      for (int item = 0; item < embyItems.Size(); ++item)
+      {
+        CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "movies", embyClient);
+        embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(682));
+      }
       inProgress.Append(embyItems);
       embyItems.ClearItems();
     }

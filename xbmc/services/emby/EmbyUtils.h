@@ -82,6 +82,7 @@ public:
   static bool GetAllEmbyRecentlyAddedMoviesAndShows(CFileItemList &items, bool tvShow=false);
   static bool GetAllEmbyRecentlyAddedAlbums(CFileItemList &items,int limit);
   static bool GetEmbyRecentlyAddedAlbums(CFileItemList &items, const std::string url, int limit=25);
+  static bool GetEmbyContinueWatching(CFileItemList &items, const std::string url);
 
   #pragma mark - Emby Set
   static bool GetEmbySet(CFileItemList &items, const std::string url);
