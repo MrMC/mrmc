@@ -246,7 +246,7 @@ void CProgressThumbNailer::QueueExtractThumb(int seekTime)
   if (m_videoDemuxer->SeekTime(seekTime, true))
   {
     int iDecoderState = VC_ERROR;
-    DVDVideoPicture picture = {0};
+    DVDVideoPicture picture;
 
     if (m_bStop)
       return;
