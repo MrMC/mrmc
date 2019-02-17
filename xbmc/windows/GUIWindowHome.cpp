@@ -1393,20 +1393,22 @@ void CGUIWindowHome::AddEmbySection(CEmbyClientPtr client)
       strAction = "emby://movies/titles/" + Base64URL::Encode(curl.Get());
       item->SetProperty("type","Movies");
       item->SetProperty("submenu",true);
+      item->SetPath("ActivateWindow(Videos," + strAction +  ",return)");
     }
     else if (content.mediaType == "tvshows")
     {
       strAction = "emby://tvshows/titles/" + Base64URL::Encode(curl.Get());
       item->SetProperty("type","TvShows");
       item->SetProperty("submenu",true);
+      item->SetPath("ActivateWindow(Videos," + strAction +  ",return)");
     }
     else if (content.mediaType == "music")
     {
       strAction = "emby://music/root/" + Base64URL::Encode(curl.Get());
       item->SetProperty("type","Music");
       item->SetProperty("submenu",true);
+      item->SetPath("ActivateWindow(Music," + strAction +  ",return)");
     }
-    item->SetPath("ActivateWindow(Videos," + strAction +  ",return)");
     m_buttonSections->AddFront(item,0);
   }
 }
