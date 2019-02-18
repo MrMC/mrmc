@@ -63,7 +63,6 @@ static void LoadTexture(GLenum target
 
   GLenum internalFormat = alpha ? GL_ALPHA : GL_RGBA;
 #ifdef HAS_GLES
-  /** OpenGL ES does not support BGR so use RGB and swap later **/
   GLenum externalFormat = alpha ? GL_ALPHA : GL_RGBA;
 #else
   GLenum externalFormat = alpha ? GL_ALPHA : GL_BGRA;
@@ -77,14 +76,27 @@ static void LoadTexture(GLenum target
   }
 
 #ifdef HAS_GLES
-
-  /** OpenGL ES does not support BGR **/
+  bool bgraSupported = false;
   if (!alpha)
   {
-    int bytesPerLine = bytesPerPixel * width;
+    if (g_Windowing.SupportsBGRA())
+    {
+      bgraSupported = true;
+      internalFormat = externalFormat = GL_BGRA_EXT;
+    }
+    else if (g_Windowing.SupportsBGRAApple())
+    {
+      // Apple's implementation does not conform to spec. Instead, they require
+      // differing format/internalformat, more like GL.
+      bgraSupported = true;
+      externalFormat = GL_BGRA_EXT;
+    }
+  }
 
-    pixelVector = (char *)malloc(bytesPerLine * height);
+  int bytesPerLine = bytesPerPixel * width;
 
+  if (!alpha && !bgraSupported)
+  {
     const char *src = (const char*)pixels;
     char *dst = pixelVector;
     for (int y = 0;y < height;++y)
@@ -105,10 +117,8 @@ static void LoadTexture(GLenum target
     stride = width;
   }
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
-  else if (stride != width)
+  else if (stride != bytesPerLine)
   {
-    int bytesPerLine = bytesPerPixel * width;
-
     pixelVector = (char *)malloc(bytesPerLine * height);
 
     const char *src = (const char*)pixels;
@@ -121,7 +131,7 @@ static void LoadTexture(GLenum target
     }
 
     pixelData = pixelVector;
-    stride = width;
+    stride = bytesPerLine;
   }
 #else
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / bytesPerPixel);
