@@ -286,7 +286,9 @@ int main(int argc, char *argv[]) {
 
   @try
   {
-    retVal = UIApplicationMain(argc,argv,@"UIApplication",@"XBMCApplicationDelegate");
+    @autoreleasepool {
+      retVal = UIApplicationMain(argc,argv,@"UIApplication",@"XBMCApplicationDelegate");
+    }
   }
   @catch (id theException) 
   {

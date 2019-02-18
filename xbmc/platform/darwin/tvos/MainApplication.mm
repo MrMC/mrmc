@@ -367,7 +367,9 @@ int main(int argc, char *argv[])
   int retVal = 0;
   @try
   {
-    retVal = UIApplicationMain(argc,argv,@"UIApplication",@"MainApplicationDelegate");
+    @autoreleasepool {
+      retVal = UIApplicationMain(argc,argv,@"UIApplication",@"MainApplicationDelegate");
+    }
   }
   @catch (id theException) 
   {
