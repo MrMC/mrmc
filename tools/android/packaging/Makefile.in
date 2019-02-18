@@ -49,6 +49,8 @@ ABI=$(ANDROID_ABI)
 
 all: apk
 
+bundle: apk-clean sharedapk package-bundle
+
 apk: apk-clean sharedapk package
 
 source: apk-clean sharedapk pack-no-build
@@ -147,6 +149,12 @@ package: libs python java
 	ANDROID_HOME=$(SDKROOT) ./gradlew --no-daemon -PxbmcABI=$(ABI) assemble$(BUILD_TYPE)
 	cp -fp packaging/build/outputs/apk/$(BUILD_TYPE_LC)/packaging-$(BUILD_TYPE_LC).apk $(XBMCROOT)/@APP_NAME@app-$(ABI)-$(BUILD_TYPE_LC).apk
 	@echo "$(XBMCROOT)/@APP_NAME@app-$(ABI)-$(BUILD_TYPE_LC).apk created"
+
+package-bundle: libs python java
+	@echo "Gradle bundle packaging..."
+	ANDROID_HOME=$(SDKROOT) ./gradlew --no-daemon -PxbmcABI=$(ABI) bundle$(BUILD_TYPE)
+	cp -fp packaging/build/outputs/bundle/$(BUILD_TYPE_LC)/packaging.aab $(XBMCROOT)/@APP_NAME@app-$(ABI)-$(BUILD_TYPE_LC).aab
+	@echo "$(XBMCROOT)/@APP_NAME@app-$(ABI)-$(BUILD_TYPE_LC).aab created"
 
 package-unsigned: libs python java
 	@echo "Gradle packaging..."
