@@ -49,9 +49,7 @@
 #import "windowing/WindowingFactory.h"
 #import "utils/SeekHandler.h"
 
-#import <AVFoundation/AVAudioSession.h>
 #import <MediaPlayer/MPMediaItem.h>
-#import <MediaPlayer/MPVolumeView.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
 
 #ifndef M_PI
@@ -567,22 +565,12 @@ XBMCController *g_xbmcController;
     [self.view setNeedsDisplay];
 
     [self createGestureRecognizers];
-
-    [[AVAudioSession sharedInstance] setActive:YES error:nil];
-    [[AVAudioSession sharedInstance] addObserver:self forKeyPath:@"outputVolume" options:0 context:nil];
   }
 }
 //--------------------------------------------------------------
 -(void)viewDidLoad
 {
   [super viewDidLoad];
-  CGRect frame = CGRectMake(0, -100, 10, 0);
-  MPVolumeView *volumeView = [[MPVolumeView alloc] initWithFrame:frame];
-  [volumeView sizeToFit];
-  [self.view addSubview: volumeView];
-
-  float volume = [[AVAudioSession sharedInstance] outputVolume];
-  g_application.SetVolume(volume, false);
 }
 //--------------------------------------------------------------
 - (void)dealloc
@@ -601,8 +589,6 @@ XBMCController *g_xbmcController;
   // take us off the default center for our app
   center = [NSNotificationCenter defaultCenter];
   [center removeObserver: self];
-
-  [[AVAudioSession sharedInstance] removeObserver:self forKeyPath:@"outputVolume"];
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
@@ -1275,33 +1261,4 @@ XBMCController *g_xbmcController;
   
   return UIInterfaceOrientationMaskLandscape;
 }
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-  if ([keyPath isEqual:@"outputVolume"])
-  {
-    float volume = [[AVAudioSession sharedInstance] outputVolume];
-    g_application.SetVolume(volume, false);
-  }
-}
-
-- (void)volumeChanged: (NSNumber *) volume
-{
-  MPVolumeView *volumeView = [[MPVolumeView alloc] init];
-  UISlider *volumeViewSlider = nil;
-
-  for (UIView *view in [volumeView subviews])
-  {
-    if ([view.class.description isEqualToString:@"MPVolumeSlider"])
-    {
-      volumeViewSlider = (UISlider *)view;
-      break;
-    }
-  }
-
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    volumeViewSlider.value = [volume floatValue];
-  });
-}
-
 @end

@@ -74,7 +74,6 @@ typedef enum
 - (void)onPausePlaying:(NSDictionary *)item;
 - (void)onStopPlaying:(NSDictionary *)item;
 - (void)onSeekPlaying;
-- (void)volumeChanged:(NSNumber *)volume;
 
 - (void) pauseAnimation;
 - (void) resumeAnimation;

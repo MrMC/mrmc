@@ -186,11 +186,6 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
   {
     [g_xbmcController performSelectorOnMainThread:@selector(onSeekPlaying) withObject:nil  waitUntilDone:NO];
   }
-  else if (msg == "OnVolumeChanged")
-  {
-    float volume = g_application.GetVolume(false);
-    [g_xbmcController performSelectorOnMainThread:@selector(volumeChanged:) withObject:@(volume)  waitUntilDone:NO];
-  }
 }
 
 
