@@ -764,6 +764,7 @@ bool CEmbyClient::FetchViewItems(CEmbyViewCachePtr &view, const CURL &url, const
     // also known as TVShows for non-eu'ers
     curl.SetFileName("Users/" + GetUserID() + "/Items");
     curl.SetOption("IncludeItemTypes", type);
+    curl.SetOption("Recursive", "true");
     curl.SetOption("Fields", TVShowsFields);
     // must be last, wtf?
     if (view && !view->GetId().empty())
