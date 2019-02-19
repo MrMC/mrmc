@@ -33,7 +33,6 @@ public:
   CWinSystemAndroidEGL();
   virtual ~CWinSystemAndroidEGL();
 
-  virtual int   GetEGLVersion();
   virtual bool  InitWindowSystem();
   virtual bool  DestroyWindowSystem();
   virtual bool  CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
@@ -81,7 +80,6 @@ protected:
   int                   m_displayHeight;
   EGLint                m_result;
 
-  int                   m_version;
   EGLDisplay            m_display;
   EGLSurface            m_surface;
   EGLContext            m_context;

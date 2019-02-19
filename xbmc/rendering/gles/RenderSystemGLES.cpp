@@ -81,12 +81,18 @@ bool CRenderSystemGLES::InitRenderSystem()
   const char* ver = (const char*)glGetString(GL_VERSION);
   if (ver != 0)
   {
+    m_RenderVersionString = ver;
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
     if (!m_RenderVersionMajor)
       sscanf(ver, "%*s %*s %d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
-    m_RenderVersion = ver;
+    if (!m_RenderVersionMajor)
+    {
+      m_RenderVersionMajor = 2;
+      m_RenderVersionMinor = 0;
+    }
   }
-  
+  CLog::Log(LOGINFO, "%s: GLES version %d", __FUNCTION__, GetRenderVersion());
+
   // Get our driver vendor and renderer
   const char *tmpVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderVendor.clear();
@@ -252,11 +258,6 @@ bool CRenderSystemGLES::ClearBuffers(color_t color)
   glClear(flags);
 
   return true;
-}
-
-int CRenderSystemGLES::GetEGLVersion()
-{
-  return 2;
 }
 
 bool CRenderSystemGLES::IsExtSupported(const char* extension)

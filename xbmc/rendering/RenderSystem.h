@@ -138,10 +138,11 @@ public:
    */
   virtual void Project(float &x, float &y, float &z) { }
 
+  int GetRenderVersion() const;
   void GetRenderVersion(unsigned int& major, unsigned int& minor) const;
   const std::string& GetRenderVendor() const { return m_RenderVendor; }
   const std::string& GetRenderRenderer() const { return m_RenderRenderer; }
-  const std::string& GetRenderVersionString() const { return m_RenderVersion; }
+  const std::string& GetRenderVersionString() const { return m_RenderVersionString; }
   bool SupportsDXT() const;
   bool SupportsBGRA() const;
   bool SupportsBGRAApple() const;
@@ -161,7 +162,7 @@ protected:
 
   std::string   m_RenderRenderer;
   std::string   m_RenderVendor;
-  std::string   m_RenderVersion;
+  std::string   m_RenderVersionString;
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
   unsigned int m_renderCaps;

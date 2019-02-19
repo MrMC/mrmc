@@ -39,6 +39,11 @@ CRenderSystemBase::~CRenderSystemBase()
 
 }
 
+int CRenderSystemBase::GetRenderVersion() const
+{
+  return m_RenderVersionMajor * 100 + m_RenderVersionMinor;
+}
+
 void CRenderSystemBase::GetRenderVersion(unsigned int& major, unsigned int& minor) const
 {
   major = m_RenderVersionMajor;

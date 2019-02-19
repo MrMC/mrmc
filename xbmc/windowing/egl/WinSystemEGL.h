@@ -67,7 +67,6 @@ public:
   virtual bool  Support3D(int width, int height, uint32_t mode)     const;
   virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
 
-  int           GetEGLVersion();
   EGLConfig     GetEGLConfig();
   EGLDisplay    GetEGLDisplay();
   EGLContext    GetEGLContext();

@@ -58,7 +58,6 @@ public:
   virtual bool EndRender();
   virtual bool PresentRender(const CDirtyRegionList &dirty);
   virtual bool ClearBuffers(color_t color);
-  virtual int  GetEGLVersion();
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
