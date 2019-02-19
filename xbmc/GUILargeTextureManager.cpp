@@ -89,7 +89,7 @@ bool CImageLoader::DoWork()
 
   // not in our texture cache or it failed to load from it,
   // so try and load directly and then cache the result
-  if (false && texturePath.find("transcode") != std::string::npos)
+  if (texturePath.find("transcode") != std::string::npos)
   {
     // plex photo transcoder is not serialized and will fail
     // if two fetches happen close in time. CGUILargeTextureManager
