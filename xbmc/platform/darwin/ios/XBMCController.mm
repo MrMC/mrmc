@@ -571,6 +571,7 @@ XBMCController *g_xbmcController;
 -(void)viewDidLoad
 {
   [super viewDidLoad];
+  g_application.SetVolume(100, true);
 }
 //--------------------------------------------------------------
 - (void)dealloc
