@@ -302,6 +302,7 @@ MainController *g_xbmcController;
       [avDisplayManager addObserver:self forKeyPath:@"displayModeSwitchInProgress" options:NSKeyValueObservingOptionNew context:nullptr];
     }
   }
+  g_application.SetVolume(100, true);
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
