@@ -318,12 +318,14 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
 
   m_dspEnabled = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
 
+#if !defined(TARGET_DARWIN_IOS)
   // audio settings
   // audio volume setting
   m_volume = g_application.GetVolume(false);
   CSettingNumber *settingAudioVolume = AddSlider(groupAudio, SETTING_AUDIO_VOLUME, 13376, 0, m_volume, 14054, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM);
   settingAudioVolume->SetDependencies(depsAudioOutputPassthroughDisabled);
   static_cast<CSettingControlSlider*>(settingAudioVolume->GetControl())->SetFormatter(SettingFormatterPercentAsDecibel);
+#endif
 
   if (m_dspEnabled)
     AddButton(groupAudio, SETTING_AUDIO_DSP, 24136, 0);
