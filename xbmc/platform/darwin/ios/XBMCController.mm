@@ -568,7 +568,8 @@ XBMCController *g_xbmcController;
 
     [self createGestureRecognizers];
 
-    [self setVolumeChangeObserver];
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
+    [[AVAudioSession sharedInstance] addObserver:self forKeyPath:@"outputVolume" options:0 context:nil];
   }
 }
 //--------------------------------------------------------------
@@ -580,8 +581,8 @@ XBMCController *g_xbmcController;
   [volumeView sizeToFit];
   [self.view addSubview: volumeView];
 
-  m_volume = [[AVAudioSession sharedInstance] outputVolume];
-  g_application.SetVolume(m_volume, false);
+  float volume = [[AVAudioSession sharedInstance] outputVolume];
+  g_application.SetVolume(volume, false);
 }
 //--------------------------------------------------------------
 - (void)dealloc
@@ -601,7 +602,7 @@ XBMCController *g_xbmcController;
   center = [NSNotificationCenter defaultCenter];
   [center removeObserver: self];
 
-  [self removeVolumeChangeObserver];
+  [[AVAudioSession sharedInstance] removeObserver:self forKeyPath:@"outputVolume"];
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
@@ -1279,27 +1280,13 @@ XBMCController *g_xbmcController;
 {
   if ([keyPath isEqual:@"outputVolume"])
   {
-    float volume = g_application.GetVolume(false);
-    m_volume = [[AVAudioSession sharedInstance] outputVolume];
-
-    if (m_volume == volume)
-      return;
-
-    int iAction;
-    if (m_volume > volume)
-      iAction = ACTION_VOLUME_UP;
-    else
-      iAction = ACTION_VOLUME_DOWN;
-
-    CAction *action = new CAction(iAction);
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
-
+    float volume = [[AVAudioSession sharedInstance] outputVolume];
+    g_application.SetVolume(volume, false);
   }
 }
 
 - (void)volumeChanged: (NSNumber *) volume
 {
-  [self removeVolumeChangeObserver];
   MPVolumeView *volumeView = [[MPVolumeView alloc] init];
   UISlider *volumeViewSlider = nil;
 
@@ -1311,37 +1298,10 @@ XBMCController *g_xbmcController;
       break;
     }
   }
-  m_volume = [volume floatValue];
-  if (volumeViewSlider)
-  {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-      volumeViewSlider.value = m_volume;
-      [self setVolumeChangeObserver];
-    });
-  }
-  else
-    [self setVolumeChangeObserver];
-}
 
-- (void)setVolumeChangeObserver
-{
-  [self removeVolumeChangeObserver];
-
-  [[AVAudioSession sharedInstance] setActive:YES error:nil];
-  [[AVAudioSession sharedInstance] addObserver:self forKeyPath:@"outputVolume" options:0 context:nil];
-}
-
-- (void)removeVolumeChangeObserver
-{
-  @try
-  {
-    [[AVAudioSession sharedInstance] removeObserver:self forKeyPath:@"outputVolume"];
-  }
-
-  @catch(id anException)
-  {
-
-  }
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    volumeViewSlider.value = [volume floatValue];
+  });
 }
 
 @end

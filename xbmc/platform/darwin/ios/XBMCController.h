@@ -59,7 +59,6 @@ typedef enum
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
   bool                        m_nativeKeyboardActive;
-  float                       m_volume;
 }
 @property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
 @property (nonatomic, retain) NSTimer      *m_networkAutoSuspendTimer;
