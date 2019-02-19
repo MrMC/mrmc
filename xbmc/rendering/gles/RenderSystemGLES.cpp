@@ -254,6 +254,11 @@ bool CRenderSystemGLES::ClearBuffers(color_t color)
   return true;
 }
 
+int CRenderSystemGLES::GetEGLVersion()
+{
+  return 2;
+}
+
 bool CRenderSystemGLES::IsExtSupported(const char* extension)
 {
   if (strcmp( extension, "GL_EXT_framebuffer_object" ) == 0)
