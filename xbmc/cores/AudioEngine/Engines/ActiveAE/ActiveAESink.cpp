@@ -883,7 +883,7 @@ void CActiveAESink::OpenSink()
   else
   {
     m_sampleOfSilence.pkt->nb_samples = 0;
-    m_sampleOfSilence.pkt->pause_burst_ms = m_sinkFormat.m_streamInfo.GetDuration();
+    m_sampleOfSilence.pkt->pause_burst_us = m_sinkFormat.m_streamInfo.GetDuration() * 1000;
   }
 
   m_swapState = CHECK_SWAP;
@@ -949,11 +949,11 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         else
           m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
       }
-      else if (samples->pkt->pause_burst_ms > 0)
+      else if (samples->pkt->pause_burst_us > 0)
       {
         // construct a pause burst if we have already output valid audio
         bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
-        if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst))
+        if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_us, burst))
           skipSwap = true;
       }
       else
@@ -1002,9 +1002,9 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         totalFrames = size / m_sinkFormat.m_frameSize;
         frames = totalFrames;
       }
-      if (samples->pkt->pause_burst_ms > 0)
+      if (samples->pkt->pause_burst_us > 0)
       {
-        m_sink->AddPause(samples->pkt->pause_burst_ms);
+        m_sink->AddPause(samples->pkt->pause_burst_us);
         m_sink->GetDelay(status);
         m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
         return status.delay * 1000;

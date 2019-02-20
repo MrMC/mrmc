@@ -738,17 +738,17 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   return written_frames;
 }
 
-void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
+void CAESinkAUDIOTRACK::AddPause(unsigned int micros)
 {
   // fake a burst pause, used for a/v sync and only for non-IEC packed.
   if (!m_at_jni)
     return;
 
   if (g_advancedSettings.CanLogComponent(LOGAUDIO))
-    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::AddPause %d ms", millis);
+    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::AddPause %d µs", micros);
 
   m_at_jni->pause();
-  usleep(millis * 1000);
+  usleep(micros);
 }
 
 void CAESinkAUDIOTRACK::Drain()

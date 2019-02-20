@@ -2369,7 +2369,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     if (m_mode == MODE_RAW)
     {
       buf->pkt->nb_samples = 0;
-      buf->pkt->pause_burst_ms = stream->m_processingBuffers->m_inputFormat.m_streamInfo.GetDuration();
+      buf->pkt->pause_burst_us = stream->m_processingBuffers->m_inputFormat.m_streamInfo.GetDuration() * 1000;
     }
     else
     {
@@ -2387,7 +2387,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       if (ret)
       {
         ret->pkt->nb_samples = 0;
-        ret->pkt->pause_burst_ms = 0;
+        ret->pkt->pause_burst_us = 0;
         int framesToDelay = error / 1000 * ret->pkt->config.sample_rate;
         if (framesToDelay > ret->pkt->max_nb_samples)
           framesToDelay = ret->pkt->max_nb_samples;
@@ -2402,12 +2402,12 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         if (m_mode == MODE_RAW)
         {
           ret->pkt->nb_samples = 0;
-          ret->pkt->pause_burst_ms = error;
+          ret->pkt->pause_burst_us = error;
           if (error > stream->m_format.m_streamInfo.GetDuration())
-            ret->pkt->pause_burst_ms = stream->m_format.m_streamInfo.GetDuration();
+            ret->pkt->pause_burst_us = stream->m_format.m_streamInfo.GetDuration() * 1000;
 
-          stream->m_syncError.Correction(-ret->pkt->pause_burst_ms);
-          error -= ret->pkt->pause_burst_ms;
+          stream->m_syncError.Correction(- (ret->pkt->pause_burst_us / 1000));
+          error -= ret->pkt->pause_burst_us / 1000;
         }
         else
         {
@@ -2419,7 +2419,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
           }
         }
 
-        if ((ret->pkt->nb_samples == 0) && (ret->pkt->pause_burst_ms == 0))
+        if ((ret->pkt->nb_samples == 0) && (ret->pkt->pause_burst_us == 0))
         {
           ret->Return();
           ret = nullptr;

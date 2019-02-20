@@ -19,6 +19,7 @@
  */
 
 #include <cassert>
+#include <cmath>
 #include "system.h"
 #include "AEPackIEC61937.h"
 
@@ -217,15 +218,15 @@ int CAEPackIEC61937::PackDTS(uint8_t *data, unsigned int size, uint8_t *dest, bo
   return frameSize;
 }
 
-int CAEPackIEC61937::PackPause(uint8_t *dest, unsigned int millis, unsigned int framesize, unsigned int samplerate, unsigned int rep_priod, unsigned int encodedRate)
+int CAEPackIEC61937::PackPause(uint8_t *dest, unsigned int micros, unsigned int framesize, unsigned int samplerate, unsigned int rep_priod, unsigned int encodedRate)
 {
   int periodInBytes = rep_priod * framesize;
-  double periodInTime = (double)rep_priod / samplerate * 1000;
-  int periodsNeeded = millis / periodInTime;
+  double periodInTime_us = (double)rep_priod / samplerate * 1000000;
+  int periodsNeeded = std::round(micros / periodInTime_us);
   int maxPeriods = MAX_IEC61937_PACKET / periodInBytes;
   if (periodsNeeded > maxPeriods)
     periodsNeeded = maxPeriods;
-  uint16_t gap = encodedRate * millis / 1000;
+  uint16_t gap = encodedRate * micros / 1000000;
 
   struct IEC61937Packet *packet = (struct IEC61937Packet*)dest;
   packet->m_preamble1 = IEC61937_PREAMBLE1;

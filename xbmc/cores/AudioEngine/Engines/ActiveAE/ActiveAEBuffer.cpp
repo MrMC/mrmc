@@ -36,7 +36,7 @@ CSoundPacket::CSoundPacket(SampleConfig conf, int samples) : config(conf)
   data = AE.AllocSoundSample(config, samples, bytes_per_sample, planes, linesize);
   max_nb_samples = samples;
   nb_samples = 0;
-  pause_burst_ms = 0;
+  pause_burst_us = 0;
 }
 
 CSoundPacket::~CSoundPacket()
@@ -109,7 +109,7 @@ CSampleBuffer* CActiveAEBufferPool::GetFreeBuffer()
 void CActiveAEBufferPool::ReturnBuffer(CSampleBuffer *buffer)
 {
   buffer->pkt->nb_samples = 0;
-  buffer->pkt->pause_burst_ms = 0;
+  buffer->pkt->pause_burst_us = 0;
   m_freeSamples.push_back(buffer);
 }
 

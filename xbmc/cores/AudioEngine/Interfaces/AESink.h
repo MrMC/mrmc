@@ -69,7 +69,7 @@ public:
    * @brief instruct the sink to add a pause
    * @param millis ms to pause
    */
-  virtual void AddPause(unsigned int millis) {};
+  virtual void AddPause(unsigned int micros) {};
 
   /*!
    * @brief Return a timestamped status structure with delay and sink info

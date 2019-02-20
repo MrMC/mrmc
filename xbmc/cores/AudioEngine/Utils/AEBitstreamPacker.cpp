@@ -94,18 +94,18 @@ void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
   }
 }
 
-bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts)
+bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int micros, bool iecBursts)
 {
   // re-use last buffer
-  if (m_pauseDuration == millis)
+  if (m_pauseDuration == micros)
     return false;
 
   switch (info.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
     case CAEStreamInfo::STREAM_TYPE_EAC3:
-      m_dataSize = CAEPackIEC61937::PackPause(m_packedBuffer, millis, GetOutputChannelMap(info).Count() * 2, GetOutputRate(info), 4, info.m_sampleRate);
-      m_pauseDuration = millis;
+      m_dataSize = CAEPackIEC61937::PackPause(m_packedBuffer, micros, GetOutputChannelMap(info).Count() * 2, GetOutputRate(info), 4, info.m_sampleRate);
+      m_pauseDuration = micros;
       break;
 
     case CAEStreamInfo::STREAM_TYPE_AC3:
@@ -115,8 +115,8 @@ bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, boo
     case CAEStreamInfo::STREAM_TYPE_DTS_512:
     case CAEStreamInfo::STREAM_TYPE_DTS_1024:
     case CAEStreamInfo::STREAM_TYPE_DTS_2048:
-      m_dataSize = CAEPackIEC61937::PackPause(m_packedBuffer, millis, GetOutputChannelMap(info).Count() * 2, GetOutputRate(info), 3, info.m_sampleRate);
-      m_pauseDuration = millis;
+      m_dataSize = CAEPackIEC61937::PackPause(m_packedBuffer, micros, GetOutputChannelMap(info).Count() * 2, GetOutputRate(info), 3, info.m_sampleRate);
+      m_pauseDuration = micros;
       break;
 
     default:
