@@ -133,6 +133,9 @@ int glFormatElementByteCount(GLenum format)
 #ifndef HAS_GLES
   case GL_BGRA:
 #endif
+#ifdef HAS_GLES
+  case GL_BGRA_EXT:
+#endif
   case GL_RGBA:
     return 4;
 #ifndef HAS_GLES

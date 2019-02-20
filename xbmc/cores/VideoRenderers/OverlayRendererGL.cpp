@@ -67,7 +67,6 @@ static void LoadTexture(GLenum target
 #else
   GLenum externalFormat = alpha ? GL_ALPHA : GL_BGRA;
 #endif
-  int bytesPerPixel = glFormatElementByteCount(externalFormat);
 
   if (!g_Windowing.SupportsNPOT(0))
   {
@@ -93,47 +92,56 @@ static void LoadTexture(GLenum target
     }
   }
 
+  int bytesPerPixel = glFormatElementByteCount(externalFormat);
   int bytesPerLine = bytesPerPixel * width;
 
-  if (!alpha && !bgraSupported)
+  if (g_Windowing.GetRenderVersion() >= 300)
   {
-    const char *src = (const char*)pixels;
-    char *dst = pixelVector;
-    for (int y = 0;y < height;++y)
-    {
-      src = (const char*)pixels + y * stride;
-      dst = pixelVector + y * bytesPerLine;
-
-      for (GLsizei i = 0; i < width; i++, src+=4, dst+=4)
-      {
-        dst[0] = src[2];
-        dst[1] = src[1];
-        dst[2] = src[0];
-        dst[3] = src[3];
-      }
-    }
-
-    pixelData = pixelVector;
-    stride = width;
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / bytesPerPixel);
   }
-  /** OpenGL ES does not support strided texture input. Make a copy without stride **/
-  else if (stride != bytesPerLine)
+  else
   {
-    pixelVector = (char *)malloc(bytesPerLine * height);
-
-    const char *src = (const char*)pixels;
-    char *dst = pixelVector;
-    for (int y = 0;y < height;++y)
+    if (!alpha && !bgraSupported)
     {
-      memcpy(dst, src, bytesPerLine);
-      src += stride;
-      dst += bytesPerLine;
-    }
+      const char *src = (const char*)pixels;
+      char *dst = pixelVector;
+      for (int y = 0;y < height;++y)
+      {
+        src = (const char*)pixels + y * stride;
+        dst = pixelVector + y * bytesPerLine;
 
-    pixelData = pixelVector;
-    stride = bytesPerLine;
+        for (GLsizei i = 0; i < width; i++, src+=4, dst+=4)
+        {
+          dst[0] = src[2];
+          dst[1] = src[1];
+          dst[2] = src[0];
+          dst[3] = src[3];
+        }
+      }
+
+      pixelData = pixelVector;
+      stride = width;
+    }
+    else if (stride != bytesPerLine)
+    {
+      /** OpenGL ES 2.0 does not support strided texture input. Make a copy without stride **/
+      pixelVector = (char *)malloc(bytesPerLine * height);
+
+      const char *src = (const char*)pixels;
+      char *dst = pixelVector;
+      for (int y = 0;y < height;++y)
+      {
+        memcpy(dst, src, bytesPerLine);
+        src += stride;
+        dst += bytesPerLine;
+      }
+
+      pixelData = pixelVector;
+      stride = bytesPerLine;
+    }
   }
 #else
+  int bytesPerPixel = glFormatElementByteCount(externalFormat);
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / bytesPerPixel);
 #endif
 
@@ -160,7 +168,12 @@ static void LoadTexture(GLenum target
                    , externalFormat, GL_UNSIGNED_BYTE
                    , (unsigned char*)pixelData + bytesPerPixel * (width-1));
 
-#ifndef HAS_GLES
+#ifdef HAS_GLES
+  if (g_Windowing.GetRenderVersion() >= 300)
+  {
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+  }
+#else
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
 
