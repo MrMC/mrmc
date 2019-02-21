@@ -309,7 +309,13 @@ int CSkinInfo::GetStartWindow() const
   for (std::vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); ++it)
   {
     if (windowID == (*it).m_id)
+    {
+      if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED) &&
+          (windowID == WINDOW_TV_CHANNELS || windowID == WINDOW_RADIO_CHANNELS))
+        continue;
+
       return windowID;
+    }
   }
   // return our first one
   return m_startupWindows[0].m_id;
@@ -327,7 +333,7 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
   m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
+//  m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
   return true;
 }
 

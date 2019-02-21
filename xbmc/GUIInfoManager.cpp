@@ -2080,7 +2080,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());
     break;
   case SYSTEM_STARTUP_WINDOW:
-    strLabel = StringUtils::Format("%i", CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
+    strLabel = StringUtils::Format("%i", g_SkinInfo->GetStartWindow());
     break;
   case SYSTEM_CURRENT_CONTROL:
     {
