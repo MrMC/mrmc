@@ -1000,7 +1000,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
     return -1;
 
   if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
-    CLog::Log(LOGDEBUG, "webserver [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
+    CLog::Log(LOGDEBUG, "webserver [OUT] write maximum %zu bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
 
   // check if we need to add the end-boundary
   if (context->rangeCountTotal > 1 && context->ranges.IsEmpty())
