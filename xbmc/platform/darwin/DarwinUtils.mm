@@ -1438,4 +1438,15 @@ bool CDarwinUtils::AudioAtmosEnabled()
 #endif
 }
 
+std::string CDarwinUtils::GetFriendlyName()
+{
+  std::string name = CCompileInfo::GetAppName();
+#if defined(TARGET_DARWIN_IOS)
+  std::string iOSname = [[[UIDevice currentDevice] name] UTF8String];
+  if (!iOSname.empty())
+    name = iOSname;
+#endif
+  return name;
+}
+
 #endif

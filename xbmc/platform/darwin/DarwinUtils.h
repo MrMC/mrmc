@@ -79,6 +79,7 @@ public:
   static std::string GetIPAddress();
   static std::string GetNetmask();
   static bool        AudioAtmosEnabled();
+  static std::string GetFriendlyName();
 };
 
 #endif

@@ -2203,12 +2203,8 @@
   </section>
   <section id="services" label="14036" help="36319">
     <category id="general" label="16000" help="36320">
+      <visible>false</visible>
       <group id="1">
-        <setting id="services.devicename" type="string" label="1271" help="36321">
-          <level>0</level>
-          <default>MrMC</default>
-          <control type="edit" format="string" />
-        </setting>
         <setting id="services.uuid" type="string" label="" help="">
           <level>0</level>
           <default>replaceme</default>

@@ -1016,7 +1016,12 @@ std::string CSysInfo::GetUserAgent()
 
 std::string CSysInfo::GetDeviceName()
 {
-  std::string friendlyName = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_DEVICENAME);
+  std::string friendlyName;
+#if defined(TARGET_DARWIN)
+  friendlyName = CDarwinUtils::GetFriendlyName();
+#else
+  friendlyName = "My Android Name";
+#endif
   if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
   {
     std::string hostname("[unknown]");
