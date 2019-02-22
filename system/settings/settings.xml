@@ -3283,6 +3283,7 @@
         <setting id="services.webskin" type="addon" label="199" help="36332">
           <level>1</level>
           <default>webinterface.default</default>
+          <visible>false</visible>
           <constraints>
             <addontype>xbmc.webinterface</addontype>
           </constraints>
