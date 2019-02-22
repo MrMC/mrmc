@@ -75,7 +75,7 @@ void CRenderSystemGL::CheckOpenGLQuirks()
   ||  StringUtils::EqualsNoCase(m_RenderVendor, "Tungsten Graphics, Inc"))
   {
     unsigned major, minor, micro;
-    if (sscanf(m_RenderVersion.c_str(), "%*s Mesa %u.%u.%u", &major, &minor, &micro) == 3)
+    if (sscanf(m_RenderVersionString.c_str(), "%*s Mesa %u.%u.%u", &major, &minor, &micro) == 3)
     {
 
       if((major  < 7)
@@ -121,7 +121,7 @@ bool CRenderSystemGL::InitRenderSystem()
   if (ver != 0)
   {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
-    m_RenderVersion = ver;
+    m_RenderVersionString = ver;
   }
 
   if (glewIsSupported("GL_ARB_shading_language_100"))
