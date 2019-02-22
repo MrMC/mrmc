@@ -102,6 +102,7 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40, g_localizeStrings.Get(20154));
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
+    SetControlLabel(i++, "%s: %s", 1271, SYSTEM_FRIENDLY_NAME);
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
     SetControlLabel(i++, "%s %s", 13283, SYSTEM_OS_VERSION_INFO);
