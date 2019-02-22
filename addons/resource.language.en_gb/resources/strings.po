@@ -2966,7 +2966,10 @@ msgctxt "#670"
 msgid "Verbose logging for the [B]libcURL[/B] library (HTTP(S), DAV)"
 msgstr ""
 
-#empty string with id 671
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#671"
+msgid "Verbose logging for [B]Webserver[/B] requests"
+msgstr ""
 
 #: xbmc/settings/AdvancedSettings.cpp
 msgctxt "#672"

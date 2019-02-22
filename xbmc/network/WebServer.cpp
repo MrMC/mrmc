@@ -32,6 +32,7 @@
 
 #include "filesystem/File.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
@@ -45,8 +46,6 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "XBDateTime.h"
-
-//#define WEBSERVER_DEBUG
 
 #define MAX_POST_BUFFER_SIZE 2048
 
@@ -143,15 +142,17 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
     return MHD_NO;
   }
 
-#ifdef WEBSERVER_DEBUG
-  std::multimap<std::string, std::string> headerValues;
-  GetRequestHeaderValues(connection, MHD_RESPONSE_HEADER_KIND, headerValues);
 
-  CLog::Log(LOGDEBUG, "webserver [OUT] HTTP %d", MHD_HTTP_UNAUTHORIZED);
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+  {
+    std::multimap<std::string, std::string> headerValues;
+    GetRequestHeaderValues(connection, MHD_RESPONSE_HEADER_KIND, headerValues);
 
-  for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
-    CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", header->first.c_str(), header->second.c_str());
-#endif
+    CLog::Log(LOGDEBUG, "webserver [OUT] HTTP %d", MHD_HTTP_UNAUTHORIZED);
+
+    for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
+      CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", header->first.c_str(), header->second.c_str());
+  }
 
   ret = MHD_queue_response(connection, MHD_HTTP_UNAUTHORIZED, response);
   MHD_destroy_response(response);
@@ -205,8 +206,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   // reset con_cls and set it if still necessary
   *con_cls = NULL;
 
-#ifdef WEBSERVER_DEBUG
-  if (isNewRequest)
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER) && isNewRequest)
   {
     std::multimap<std::string, std::string> headerValues;
     GetRequestHeaderValues(connection, MHD_HEADER_KIND, headerValues);
@@ -229,7 +229,6 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
       CLog::Log(LOGDEBUG, "webserver  [IN] %s: %s", header->first.c_str(), header->second.c_str());
   }
-#endif
 
   if (!IsAuthenticated(server, connection)) 
     return AskForAuthentication(connection);
@@ -577,15 +576,16 @@ int CWebServer::FinalizeRequest(IHTTPRequestHandler *handler, int responseStatus
   for (std::multimap<std::string, std::string>::const_iterator it = responseDetails.headers.begin(); it != responseDetails.headers.end(); ++it)
     AddHeader(response, it->first, it->second);
 
-#ifdef WEBSERVER_DEBUG
-  std::multimap<std::string, std::string> headerValues;
-  GetRequestHeaderValues(request.connection, MHD_RESPONSE_HEADER_KIND, headerValues);
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+  {
+    std::multimap<std::string, std::string> headerValues;
+    GetRequestHeaderValues(request.connection, MHD_RESPONSE_HEADER_KIND, headerValues);
 
-  CLog::Log(LOGDEBUG, "webserver [OUT] %s %d %s", request.version.c_str(), responseStatus, request.pathUrlFull.c_str());
+    CLog::Log(LOGDEBUG, "webserver [OUT] %s %d %s", request.version.c_str(), responseStatus, request.pathUrlFull.c_str());
 
-  for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
-    CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", header->first.c_str(), header->second.c_str());
-#endif
+    for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
+      CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", header->first.c_str(), header->second.c_str());
+  }
 
   int ret = MHD_queue_response(request.connection, responseStatus, response);
   MHD_destroy_response(response);
@@ -952,15 +952,16 @@ int CWebServer::SendErrorResponse(struct MHD_Connection *connection, int errorTy
   int ret = CreateErrorResponse(connection, errorType, method, response);
   if (ret == MHD_YES)
   {
-#ifdef WEBSERVER_DEBUG
-    std::multimap<std::string, std::string> headerValues;
-    GetRequestHeaderValues(connection, MHD_RESPONSE_HEADER_KIND, headerValues);
+    if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    {
+      std::multimap<std::string, std::string> headerValues;
+      GetRequestHeaderValues(connection, MHD_RESPONSE_HEADER_KIND, headerValues);
 
-    CLog::Log(LOGDEBUG, "webserver [OUT] HTTP %d", errorType);
+      CLog::Log(LOGDEBUG, "webserver [OUT] HTTP %d", errorType);
 
-    for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
-      CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", header->first.c_str(), header->second.c_str());
-#endif
+      for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
+        CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", header->first.c_str(), header->second.c_str());
+    }
 
     ret = MHD_queue_response(connection, errorType, response);
     MHD_destroy_response(response);
@@ -979,7 +980,8 @@ void* CWebServer::UriRequestLogger(void *cls, const char *uri)
   conHandler->requestHandler = NULL;
 
   // log the full URI
-  CLog::Log(LOGDEBUG, "webserver: request received for %s", uri);
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    CLog::Log(LOGDEBUG, "webserver: request received for %s", uri);
 
   // return the connection handler so that we can access it in AnswerToConnection as con_cls
   return conHandler;
@@ -997,9 +999,8 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   if (context == NULL || context->file == NULL)
     return -1;
 
-#ifdef WEBSERVER_DEBUG
-  CLog::Log(LOGDEBUG, "webserver [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
-#endif
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    CLog::Log(LOGDEBUG, "webserver [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
 
   // check if we need to add the end-boundary
   if (context->rangeCountTotal > 1 && context->ranges.IsEmpty())
@@ -1067,9 +1068,10 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
 
   // add the number of read bytes to the number of written bytes
   written += res;
-#ifdef WEBSERVER_DEBUG
-  CLog::Log(LOGDEBUG, "webserver [OUT] wrote %d bytes from %" PRIu64 " in range (%" PRIu64 " - %" PRIu64 ")", written, context->writePosition, start, end);
-#endif
+
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    CLog::Log(LOGDEBUG, "webserver [OUT] wrote %d bytes from %" PRIu64 " in range (%" PRIu64 " - %" PRIu64 ")", written, context->writePosition, start, end);
+
   // update the current write position
   context->writePosition += res;
 
@@ -1089,9 +1091,9 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
   HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
   delete context;
 
-#ifdef WEBSERVER_DEBUG
-  CLog::Log(LOGDEBUG, "webserver [OUT] done");
-#endif
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    CLog::Log(LOGDEBUG, "webserver [OUT] done");
+
 }
 
 // local helper
@@ -1352,9 +1354,9 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
   if (response == NULL || name.empty())
     return 0;
 
-#ifdef WEBSERVER_DEBUG
-  CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", name.c_str(), value.c_str());
-#endif
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", name.c_str(), value.c_str());
+
   return MHD_add_response_header(response, name.c_str(), value.c_str());
 }
 
