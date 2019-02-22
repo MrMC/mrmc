@@ -1016,10 +1016,10 @@ std::string CSysInfo::GetUserAgent()
 
 std::string CSysInfo::GetDeviceName()
 {
-  std::string friendlyName;
+  std::string friendlyName = CCompileInfo::GetAppName();
 #if defined(TARGET_DARWIN)
   friendlyName = CDarwinUtils::GetFriendlyName();
-#else
+#elif defined(TARGET_ANDROID)
   friendlyName = "My Android Name";
 #endif
   if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
