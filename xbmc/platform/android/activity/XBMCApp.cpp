@@ -956,7 +956,6 @@ void CXBMCApp::OnPlayBackStarted()
     CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 
   AcquireAudioFocus();
-  CAndroidKey::SetHandleMediaKeys(false);
 
   m_playback_state = PLAYBACK_STATE_PLAYING;
   if (g_application.m_pPlayer->HasVideo())
@@ -990,7 +989,6 @@ void CXBMCApp::OnPlayBackStopped()
   m_playback_state = PLAYBACK_STATE_STOPPED;
   UpdateSessionState();
 
-  CAndroidKey::SetHandleMediaKeys(true);
   ReleaseAudioFocus();
   m_mediaSession->activate(false);
 }
