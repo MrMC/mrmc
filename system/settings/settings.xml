@@ -4397,6 +4397,7 @@
       </group>
     </category>
     <category id="general" label="" help="36412">
+      <visible>false</visible>
       <group id="1">
         <setting id="general.addonupdates" type="integer" label="0" help="36413">
           <level>4</level>
