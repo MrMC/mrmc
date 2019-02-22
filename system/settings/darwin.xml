@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
+  <section id="appearance">
+    <category id="lookandfeel" label="166" help="36102">
+      <group id="1">
+        <setting id="lookandfeel.mnimizefromhome" type="boolean" label="36552" help="36553">
+          <level>0</level>
+          <visible>false</visible>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+  </section>
   <section id="system">
     <category id="videoscreen">
       <group id="1">
