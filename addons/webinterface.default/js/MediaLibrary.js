@@ -328,7 +328,8 @@ MediaLibrary.prototype = {
         textArea.contentEditable = true; // iOS will only select text on non-form elements if contentEditable = true;
         textArea.readOnly = false; // iOS will not select in a read only form element
         var range = document.createRange();
-        range.selectNodeContents(textArea);
+        // range.selectNodeContents(textArea);
+        range.selectNode(textArea);
         var sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(range); // Does not work for Firefox if a textarea or input
@@ -341,7 +342,10 @@ MediaLibrary.prototype = {
         try
         {
           var successful = document.execCommand('copy');
-          window.alert(logDetail + " was copied to clipboard");
+          if (successful)
+            window.alert(logDetail + " was copied to clipboard");
+          else
+            window.alert(logDetail + " was NOT copied to clipboard, select all content and copy manually");
         }
         catch (err)
         {
