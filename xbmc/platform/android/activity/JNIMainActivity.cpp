@@ -221,3 +221,10 @@ void CJNIMainActivity::openYouTubeVideo(const std::string key)
   call_method<void>(m_object,
                     "openYouTubeVideo", "(Ljava/lang/String;)V", jcast<jhstring>(key));
 }
+
+std::string CJNIMainActivity::getDeviceName() const
+{
+  if (!m_object)
+    return "";
+  return jcast<std::string>(get_field<jhstring>(m_object, "mDeviceName"));
+}

@@ -47,6 +47,7 @@
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
 #include <androidjni/Build.h>
+#include "platform/android/activity/XBMCApp.h"
 #include "utils/SysfsUtils.h"
 #endif
 
@@ -1020,7 +1021,7 @@ std::string CSysInfo::GetDeviceName()
 #if defined(TARGET_DARWIN)
   friendlyName = CDarwinUtils::GetFriendlyName();
 #elif defined(TARGET_ANDROID)
-  friendlyName = "My Android Name";
+  friendlyName = CXBMCApp::get()->getDeviceName();
 #endif
   if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
   {
