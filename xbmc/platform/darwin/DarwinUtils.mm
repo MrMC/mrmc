@@ -279,49 +279,6 @@ enum iosPlatform getIosPlatform()
   return eDev;
 }
 
-bool CDarwinUtils::IsMavericks(void)
-{
-  static int isMavericks = -1;
-#if defined(TARGET_DARWIN_OSX)
-  // there is no NSAppKitVersionNumber10_9 out there anywhere
-  // so we detect mavericks by one of these newly added app nap
-  // methods - and fix the ugly mouse rect problem which was hitting
-  // us when mavericks came out
-  if (isMavericks == -1)
-  {
-    isMavericks = [NSProcessInfo instancesRespondToSelector:@selector(beginActivityWithOptions:reason:)] == TRUE ? 1 : 0;
-  }
-#endif
-  return isMavericks == 1;
-}
-
-bool CDarwinUtils::IsLion(void)
-{
-  static int isLion = -1;
-#if defined(TARGET_DARWIN_OSX)
-  if (isLion == -1)
-  {
-    double appKitVersion = floor(NSAppKitVersionNumber);
-    // everything lower 10.8 is 10.7.x because 10.7 is deployment target...
-    isLion = (appKitVersion < NSAppKitVersionNumber10_8) ? 1 : 0;
-  }
-#endif
-  return isLion == 1;
-}
-
-bool CDarwinUtils::IsSnowLeopard(void)
-{
-  static int isSnowLeopard = -1;
-#if defined(TARGET_DARWIN_OSX)
-  if (isSnowLeopard == -1)
-  {
-    double appKitVersion = floor(NSAppKitVersionNumber);
-    isSnowLeopard = (appKitVersion <= NSAppKitVersionNumber10_6 && appKitVersion > NSAppKitVersionNumber10_5) ? 1 : 0;
-  }
-#endif
-  return isSnowLeopard == 1;
-}
-
 bool CDarwinUtils::IsAppleTV(void)
 {
   static int isAppleTV = -1;

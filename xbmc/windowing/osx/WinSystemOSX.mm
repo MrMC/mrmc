@@ -908,13 +908,7 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
         window = [view window];
         if (window)
         {
-          // find the screenID
-          NSDictionary* screenInfo = [[window screen] deviceDescription];
-          NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-          if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
-          {
-            SetMenuBarVisible(false);
-          }
+          SetMenuBarVisible(false);
           [window orderFront:nil];
         }
       }

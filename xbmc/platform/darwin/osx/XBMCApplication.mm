@@ -413,12 +413,11 @@ int main(int argc, char *argv[])
   }
   
   // fix open with document/movie - autostart
-  // on mavericks we are not called with "-psn" anymore
+  // on mavericks and > we are not called with "-psn" anymore
   // as the whole ProcessSerialNumber approach is deprecated
   // in that case assume finder launch - else
   // we wouldn't handle documents/movies someone dragged on the app icon
-  if (CDarwinUtils::IsMavericks())
-    gFinderLaunch = TRUE;
+  gFinderLaunch = TRUE;
 
   // Ensure the application object is initialised.
   [NSApplication sharedApplication];

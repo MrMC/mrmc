@@ -307,16 +307,14 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_pboSupported = glewIsSupported("GL_ARB_pixel_buffer_object");
 
 #ifdef TARGET_DARWIN_OSX
-  // on osx 10.9 mavericks we get a strange ripple
+  // on osx 10.9 mavericks and > we get a strange ripple
   // effect when rendering with pbo
   // when used on intel gpu - we have to quirk it here
-  if (CDarwinUtils::IsMavericks())
-  {
-    std::string rendervendor = g_Windowing.GetRenderVendor();
-    StringUtils::ToLower(rendervendor);
-    if (rendervendor.find("intel") != std::string::npos)
-      m_pboSupported = false;
-  }
+
+  std::string rendervendor = g_Windowing.GetRenderVendor();
+  StringUtils::ToLower(rendervendor);
+  if (rendervendor.find("intel") != std::string::npos)
+    m_pboSupported = false;
 #endif
 
   return true;

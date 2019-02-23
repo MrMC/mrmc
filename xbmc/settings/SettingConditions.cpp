@@ -354,10 +354,6 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_DARWIN_OSX
   m_simpleConditions.insert("HasVDA");
 #endif
-#ifdef TARGET_DARWIN_OSX
-  if (CDarwinUtils::IsSnowLeopard())
-    m_simpleConditions.insert("osxissnowleopard");
-#endif
 #ifdef TARGET_DARWIN_IOS
   m_simpleConditions.insert("hasAVF");
   if (CDarwinUtils::HasDisplayRateSwitching())
