@@ -108,7 +108,7 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
   int boost_center = CSettings::GetInstance().GetInt("audiooutput.boostcenter");
   if (boost_center)
   {
-    float gain = pow(10.0f, ((float)(-3 + boost_center))/20.0f);
+    double gain = pow(10.0, ((double)(-3 + boost_center))/20.0);
     av_opt_set_double(m_pContext, "center_mix_level", gain, 0);
   }
 
@@ -177,7 +177,7 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
     }
   }
   // boost center
-  else if (boost_center > 0)
+  else if (boost_center > 0 && m_dst_channels > 2)
   {
     float gain = pow(10.0f, ((float)(-3 + boost_center))/20.0f);
     memset(m_rematrix, 0, sizeof(m_rematrix));
