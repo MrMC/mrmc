@@ -1659,7 +1659,10 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
       if (m_settings.config == AE_CONFIG_FIXED || settings.dspaddonsenabled || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
         format.m_channelLayout = CActiveAEDSP::GetInstance().GetInternalChannelLayout(stdChannelLayout);
       else if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
+      {
+        CLog::Log(LOGINFO, "CActiveAE::ApplySettings - keeping channel Layout");
         format.m_channelLayout = m_internalFormat.m_channelLayout;
+      }
       else
       {
         if (stdLayout == AE_CH_LAYOUT_5_0 || stdLayout == AE_CH_LAYOUT_5_1)
