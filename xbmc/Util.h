@@ -184,7 +184,7 @@ public:
    */
   static int GetRandomNumber();
   static int GetRandomNumber(int min, int max);
-
+  static void DumpSettingsFile();
 private:
   static unsigned int s_randomSeed;
 

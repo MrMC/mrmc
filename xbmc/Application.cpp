@@ -1193,6 +1193,7 @@ bool CApplication::Initialize()
 //    g_windowManager.SendThreadMessage(msg);
 //  }
 
+  CUtil::DumpSettingsFile();
   return true;
 }
 

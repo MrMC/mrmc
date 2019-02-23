@@ -47,7 +47,9 @@
 #include <algorithm>
 
 #include "Application.h"
+#include "profiles/ProfilesManager.h"
 #include "Util.h"
+#include "filesystem/File.h"
 #include "filesystem/PVRDirectory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
@@ -65,6 +67,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/TextureManager.h"
 #include "utils/fstrcmp.h"
+#include "utils/XMLUtils.h"
 #include "storage/MediaManager.h"
 #if defined(TARGET_DARWIN)
 #include "CompileInfo.h"
@@ -2307,4 +2310,86 @@ int CUtil::GetRandomNumber(int min, int max)
     first = false;
   }
   return min + rand() % (max - min);
+}
+
+void CUtil::DumpSettingsFile()
+{
+  if (CLog::GetLogLevel() == LOGDEBUG)
+  {
+    CXBMCTinyXML advancedXML;
+    const std::string file = CProfilesManager::GetInstance().GetUserDataItem("guisettings.xml");
+    if (!advancedXML.LoadFile(file))
+      return;
+
+    TiXmlElement *pRootElement = advancedXML.RootElement();
+    TiXmlElement *pCloud = pRootElement->FirstChildElement("cloud");
+    if (pCloud)
+    {
+      TiXmlNode *pHide = pCloud->FirstChildElement();
+      while (pHide)
+      {
+        TiXmlNode *pDropboxtokenValue = pHide->FirstChild();
+        if (pDropboxtokenValue)
+          pDropboxtokenValue->SetValue("HIDDEN");
+        pHide = pHide->NextSiblingElement();
+      }
+    }
+    TiXmlElement *pPlex = pRootElement->FirstChildElement("plex");
+    if (pPlex)
+    {
+      TiXmlNode *pHide = pPlex->FirstChildElement("homeuser");
+      if (pHide)
+      {
+        TiXmlNode *pHUValue = pHide->FirstChild();
+        if (pHUValue)
+          pHUValue->SetValue("HIDDEN");
+      }
+      pHide = pPlex->FirstChildElement("homeuserthumb");
+      if (pHide)
+      {
+        TiXmlNode *pHUValue = pHide->FirstChild();
+        if (pHUValue)
+          pHUValue->SetValue("HIDDEN");
+      }
+      pHide = pPlex->FirstChildElement("myplexauthtoken");
+      if (pHide)
+      {
+        TiXmlNode *pHUValue = pHide->FirstChild();
+        if (pHUValue)
+          pHUValue->SetValue("HIDDEN");
+      }
+    }
+
+    TiXmlElement *pEmby = pRootElement->FirstChildElement("emby");
+    if (pEmby)
+    {
+      TiXmlNode *pHide = pEmby->FirstChildElement("accesstoken");
+      if (pHide)
+      {
+        TiXmlNode *pHUValue = pHide->FirstChild();
+        if (pHUValue)
+          pHUValue->SetValue("HIDDEN");
+      }
+      pHide = pEmby->FirstChildElement("serverurl");
+      if (pHide)
+      {
+        TiXmlNode *pHUValue = pHide->FirstChild();
+        if (pHUValue)
+          pHUValue->SetValue("HIDDEN");
+      }
+      pHide = pEmby->FirstChildElement("userid");
+      if (pHide)
+      {
+        TiXmlNode *pHUValue = pHide->FirstChild();
+        if (pHUValue)
+          pHUValue->SetValue("HIDDEN");
+      }
+    }
+    // Dump contents of guisettings.xml to debug log
+    TiXmlPrinter printer;
+    printer.SetLineBreak("\n");
+    printer.SetIndent("  ");
+    advancedXML.Accept(&printer);
+    CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
+  }
 }
