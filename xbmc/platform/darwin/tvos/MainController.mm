@@ -884,16 +884,13 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 - (void) traitCollectionDidChange: (UITraitCollection *) previousTraitCollection
 {
-  // system calls this method when the iOS interface environment changes
-  CLog::Log(LOGDEBUG, "traitCollectionDidChange");
+  // system calls this method when the tvOS interface environment changes
   [super traitCollectionDidChange: previousTraitCollection];
-  if (self.traitCollection.displayGamut != previousTraitCollection.displayGamut)
+  if (self.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle)
   {
-    // your custom implementation here
+    CLog::Log(LOGDEBUG, "tvOS userInterfaceStyle set to %s", self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark? "Dark":"Light");
+    [self setIsDarkMode:self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark];
   }
-  
-  [self setIsDarkMode:self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark];
-  
 }
 
 - (float)getDisplayRate
