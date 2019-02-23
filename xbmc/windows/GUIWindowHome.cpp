@@ -716,7 +716,15 @@ void CGUIWindowHome::SetupServices()
           // this is only triggered when we first sign in plex as the server has not been selected yet, we pick the first one
           plexClient = CPlexServices::GetInstance().GetFirstClient();
           if (plexClient)
+          {
             CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,plexClient->GetUuid());
+            CSettings::GetInstance().Save();
+            // announce that we have a plex client and that recently added should be updated
+            CVariant data(CVariant::VariantTypeObject);
+            data["uuid"] = plexClient->GetUuid();
+            ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded",data);
+            ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded",data);
+          }
         }
       }
       if (plexClient)
@@ -743,7 +751,15 @@ void CGUIWindowHome::SetupServices()
           // this is only triggered when we first sign in emby as the server has not been selected yet, we pick the first one
           embyClient = CEmbyServices::GetInstance().GetFirstClient();
           if (embyClient)
+          {
             CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,embyClient->GetUuid());
+            CSettings::GetInstance().Save();
+            // announce that we have a emby client and that recently added should be updated
+            CVariant data(CVariant::VariantTypeObject);
+            data["uuid"] = embyClient->GetUuid();
+            ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded",data);
+            ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded",data);
+          }
         }
       }
       if (embyClient)
