@@ -45,6 +45,7 @@ public:
   virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
 
+  virtual void         AddPause(unsigned int micros);
   virtual void         GetDelay(AEDelayStatus& status);
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp);

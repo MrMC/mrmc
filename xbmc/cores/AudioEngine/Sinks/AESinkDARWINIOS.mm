@@ -816,6 +816,16 @@ void CAESinkDARWINIOS::GetDelay(AEDelayStatus &status)
     status.SetDelay(0.0);
 }
 
+void CAESinkDARWINIOS::AddPause(unsigned int micros)
+{
+  uint8_t buffer[m_format.m_frameSize];
+  memset(buffer, 0x00, m_format.m_frameSize);
+  uint8_t *bufferptr = buffer;
+  AddPackets(&bufferptr, m_format.m_frameSize, 0, 0);
+
+  usleep(micros);
+}
+
 double CAESinkDARWINIOS::GetCacheTotal()
 {
   if (m_audioSink)
