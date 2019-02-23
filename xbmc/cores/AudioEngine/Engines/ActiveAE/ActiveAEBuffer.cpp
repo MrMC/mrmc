@@ -101,7 +101,8 @@ CSampleBuffer* CActiveAEBufferPool::GetFreeBuffer()
   {
     buf = m_freeSamples.front();
     m_freeSamples.pop_front();
-    buf->refCount = 1;
+    if (buf)
+      buf->refCount = 1;
   }
   return buf;
 }
