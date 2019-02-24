@@ -166,7 +166,7 @@ bool CAESinkFactory::FormatNeedsIECPacked(const AEAudioFormat &format)
   // only android supports split non-IEC and IEC packed passthrough formats
   return CAESinkAUDIOTRACK::FormatNeedsIECPacked(format);
 #elif defined(TARGET_DARWIN_IOS)
-  return false;
+  return true;
 #else
   return true;
 #endif
