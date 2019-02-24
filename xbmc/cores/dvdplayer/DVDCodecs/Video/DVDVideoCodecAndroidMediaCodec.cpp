@@ -418,14 +418,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
-      if (hints.maybe_interlaced)
-      {
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - possible interlaced h264, profile(%d), level(%d)",
-          hints.profile, hints.level);
-        if (!m_render_interlaced)
-          return false;
-      }
-
       switch(hints.profile)
       {
         case FF_PROFILE_H264_HIGH_10:
@@ -524,6 +516,14 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Unknown hints.codec(%d)", hints.codec);
       return false;
       break;
+  }
+
+  if (hints.maybe_interlaced)
+  {
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - possible interlaced codec(%s%s), profile(%d), level(%d)",
+      m_formatname.c_str(), m_render_surface ? "-sfc" : "-egl", hints.profile, hints.level);
+    if (!m_render_interlaced)
+      return false;
   }
 
 #ifdef DEBUG_EXTRADATA
