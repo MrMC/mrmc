@@ -453,6 +453,7 @@ protected:
   std::string m_prevMedia;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   bool m_bInitializing;
+  CEvent m_dbInitializing;
   bool m_bPlatformDirectories;
 
   CBookmark& m_progressTrackingVideoResumeBookmark;

@@ -5324,8 +5324,12 @@ void CApplication::StartDatabase()
 
   DisableScreensaver(true);
   // initialize (and update as needed) our databases
-  CEvent event;
-  event.Reset();
+  // m_dbInitializing is a memeber var to work around
+  // race in CEvent where signaled is set and WaitMSec
+  // returns true but the CEvent is destroyed before
+  // the internal group events are checked.
+  CEvent &event = m_dbInitializing;
+  m_dbInitializing.Reset();
   CJobManager::GetInstance().Submit([&event]() {
     CDatabaseManager::GetInstance().Initialize();
     event.Set();
@@ -5333,7 +5337,7 @@ void CApplication::StartDatabase()
 
   std::string localizedStr = g_localizeStrings.Get(24094);
   int iDots = 1;
-  while (!event.WaitMSec(1000))
+  while (!m_dbInitializing.WaitMSec(1000))
   {
     if (CDatabaseManager::GetInstance().m_bIsUpgrading)
       CSplash::GetInstance().Show(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
