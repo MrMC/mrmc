@@ -31,6 +31,8 @@
 
 bool CAndroidFeatures::HasNeon()
 {
+  if (android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM64) // aarch64 is always neon
+    return true;
   if (android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM)
     return ((android_getCpuFeatures() & ANDROID_CPU_ARM_FEATURE_NEON) != 0);
   return false;
