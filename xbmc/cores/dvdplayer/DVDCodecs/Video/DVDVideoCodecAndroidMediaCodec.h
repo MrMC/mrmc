@@ -54,6 +54,8 @@ typedef struct amc_demux {
 
 class CDVDMediaCodecInfo
 {
+  friend class CDVDVideoCodecAndroidMediaCodec;
+
 public:
   CDVDMediaCodecInfo( ssize_t index,
                       unsigned int texture,
@@ -73,14 +75,16 @@ public:
   // MediaCodec related
   void                ReleaseOutputBuffer(int64_t timestamp);
   // SurfaceTexture released
+  bool                IsValid() const { return m_valid && !m_isReleased; }
   ssize_t             GetIndex() const;
   int                 GetTextureID() const;
   void                GetTransformMatrix(float *textureMatrix);
-  double              GetDuration() { return m_duration; }
+  double              GetDuration() const { return m_duration; }
+  int64_t             GetTimestamp() const { return m_timestamp; }
   void                UpdateTexImage();
   void                RenderUpdate(const CRect &SrcRect, const CRect &DestRect);
 
-private:
+protected:
   // private because we are reference counted
   virtual            ~CDVDMediaCodecInfo();
 

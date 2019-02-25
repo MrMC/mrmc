@@ -591,7 +591,7 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
   else if (m_renderMethod & RENDER_MEDIACODECSURFACE)
   {
     CDVDMediaCodecInfo *mci = m_buffers[m_iYV12RenderBuffer].mediacodec;
-    if (mci)
+    if (mci && mci->IsValid())
     {
       // this hack is needed to get the 2D mode of a 3D movie going
       RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
@@ -661,7 +661,7 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
               ts -= frameduration / 2;
             }
           }
-          //CLog::Log(LOGDEBUG, "ReleaseOutputBuffer: cur:%lld; vsync: %lld; target: %lld; adj: %s; diff: %lld", cs, vs, ts, adjusted ? "true" : "false", ts - m_lastTs);
+//          CLog::Log(LOGDEBUG, "ReleaseOutputBuffer: idx: %d(0x%p); cur:%lld; vsync: %lld; pts: %lld; dur: %f; target: %lld; adj: %s; diff: %lld", mci->GetIndex(), mci, cs, vs, mci->GetTimestamp(), frameduration, ts, adjusted ? "true" : "false", ts - m_lastTs);
           mci->ReleaseOutputBuffer(ts);
           m_lastVs = vs;
           m_lastTs = ts;

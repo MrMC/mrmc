@@ -952,6 +952,7 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
   }
   m_drop = false;
   m_codecControlFlags = 0;
+  m_lastpts = -1;
 }
 
 bool CDVDVideoCodecAndroidMediaCodec::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -1168,8 +1169,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     m_videobuffer.pts = DVD_NOPTS_VALUE;
     if (pts != AV_NOPTS_VALUE)
       m_videobuffer.pts = pts;
-    if (m_lastpts != -1.0)
-      m_videobuffer.iDuration = (pts - m_lastpts) / DVD_TIME_BASE;
+    if (m_lastpts == -1.0)
+      m_videobuffer.iDuration = 0.0;
+    else
+    {
+      if (pts - m_lastpts < DVD_TIME_BASE)  // Seek ?
+        m_videobuffer.iDuration = (pts - m_lastpts) / DVD_TIME_BASE;
+    }
 
     uint32_t flags = bufferInfo.flags;
     if (flags & AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM)
@@ -1199,6 +1205,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         m_inflight.push_back(
           new CDVDMediaCodecInfo(index, m_textureId, pts, m_videobuffer.iDuration, m_codec, m_surfaceTexture, m_frameAvailable, m_jnivideoview)
         );
+      else
+      {
+        if (m_inflight[i]->IsValid())
+          CLog::Log(LOGWARNING, "%s - Reusing a still valid buffer: %d", __FUNCTION__, index);
+        m_inflight[i]->m_timestamp = pts;
+        m_inflight[i]->m_duration = m_videobuffer.iDuration;
+      }
       m_videobuffer.mediacodec = m_inflight[i]->Retain();
       m_videobuffer.mediacodec->Validate(true);
     }
