@@ -646,7 +646,7 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
         mci->ReleaseOutputBuffer(0);
       else
       {
-        if (CAndroidFeatures::IsShieldTVDevice())
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_TIMING))
         {
           bool adjusted = false;
           uint64_t cs = CurrentHostCounter();

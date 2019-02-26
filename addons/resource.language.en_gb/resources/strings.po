@@ -7322,7 +7322,17 @@ msgctxt "#13463"
 msgid "Allow SD content"
 msgstr ""
 
-#empty strings from id 13464 to 13504
+#: system/settings/settings.xml
+msgctxt "#13464"
+msgid "Avanced timing"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#13465"
+msgid "Avanced algorithm for picture timing. Might not work on some devices."
+msgstr ""
+
+#empty strings from id 13466 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
