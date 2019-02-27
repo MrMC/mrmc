@@ -86,7 +86,7 @@ struct YUVCOEF
 enum RenderMethod
 {
   RENDER_GLSL   = 0x001,
-  RENDER_SW     = 0x004,
+  //RENDER_SW     = 0x004,
   RENDER_POT    = 0x010,
   RENDER_CVREF  = 0x080,
   RENDER_BYPASS = 0x100,

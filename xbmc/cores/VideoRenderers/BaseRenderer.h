@@ -62,7 +62,7 @@ enum RenderMethods
   RENDER_METHOD_AUTO     = 0,
   RENDER_METHOD_ARB      = 1,
   RENDER_METHOD_GLSL     = 2,
-  RENDER_METHOD_SOFTWARE = 3,
+  //RENDER_METHOD_SOFTWARE = 3,
   //RENDER_METHOD_D3D_PS   = 4,
   //RENDER_METHOD_DXVA     = 5,
   RENDER_OVERLAYS        = 99   // to retain compatibility

@@ -15,10 +15,6 @@ set (my_SOURCES
   OverlayRendererGL.cpp
   )
 
-if(ANDROID_ABI MATCHES "arm")
-    set(my_SOURCES ${my_SOURCES} yuv2rgb.neon.S)
-endif()
-
 file(GLOB my_HEADERS *.h)
 
 add_library(
