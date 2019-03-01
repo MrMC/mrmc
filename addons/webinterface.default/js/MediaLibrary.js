@@ -216,13 +216,13 @@ MediaLibrary.prototype = {
     buttonDB.addEventListener ("click", jQuery.proxy(this.pressAuthKey,this, buttonDB));
     div.appendChild(buttonDB);
 
-    var buttonG = document.createElement('button');
-    buttonG.innerHTML = "Authorize Google Drive";
-    buttonG.name = "google";
-    buttonG.id = "google";
-    buttonG.style.marginTop = "5px";
-    buttonG.addEventListener ("click", jQuery.proxy(this.pressAuthKey,this, buttonG));
-    div.appendChild(buttonG);
+    // var buttonG = document.createElement('button');
+    // buttonG.innerHTML = "Authorize Google Drive";
+    // buttonG.name = "google";
+    // buttonG.id = "google";
+    // buttonG.style.marginTop = "5px";
+    // buttonG.addEventListener ("click", jQuery.proxy(this.pressAuthKey,this, buttonG));
+    // div.appendChild(buttonG);
 
     div.style.textAlign = "center";
 
@@ -362,7 +362,7 @@ MediaLibrary.prototype = {
     {
       if (button.innerHTML == "Authorize DropBox")
       {
-        document.getElementById('google').disabled = true;
+        //document.getElementById('google').disabled = true;
         document.getElementById('auth_text').style="display:center"
         document.getElementById('auth_text').value = "Paste your authorization token here";
         document.getElementById('auth_text').disabled = false;
@@ -408,7 +408,7 @@ MediaLibrary.prototype = {
         document.getElementById('auth_text').disabled = true;
         document.getElementById('auth_text').style="display:center"
         document.getElementById('auth_text').value = "Paste your authorization token here";
-        document.getElementById('google').disabled = false;
+        //document.getElementById('google').disabled = false;
         button.innerHTML = "Authorize DropBox";
       }
     }
