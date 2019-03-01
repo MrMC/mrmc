@@ -514,6 +514,7 @@ public:
   static const std::string SETTING_SERVICES_TRAKTACESSREFRESHTOKEN;
   static const std::string SETTING_SERVICES_TRAKTACESSTOKENVALIDITY;
   // cloud services
+  static const std::string SETTING_SERVICES_CLOUDDROPBOXINFO;
   static const std::string SETTING_SERVICES_CLOUDDROPBOXTOKEN;
   static const std::string SETTING_SERVICES_CLOUDGOOGLETOKEN;
   static const std::string SETTING_SERVICES_CLOUDGOOGLEREFRESHTOKEN;

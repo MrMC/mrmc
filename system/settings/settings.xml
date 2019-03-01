@@ -2239,11 +2239,20 @@
         </setting>
       </group>
     </category>
-    <category id="cloud" label="" help="">
-      <visible>false</visible>
-      <group id="1">
+    <category id="cloud" label="40000" help="">
+      <group id="1" label="40001">
+        <setting id="cloud.dropboxinfo" type="string" label="40002" help="40002">
+          <level>0</level>
+          <enabled>false</enabled>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
         <setting id="cloud.dropboxtoken" type="string" label="" help="">
           <level>0</level>
+          <visible>false</visible>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -2252,6 +2261,7 @@
         </setting>
          <setting id="cloud.googletoken" type="string" label="" help="">
           <level>0</level>
+          <visible>false</visible>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -2260,14 +2270,18 @@
         </setting>
         <setting id="cloud.googlerefreshtoken" type="string" label="" help="">
           <level>0</level>
+          <visible>false</visible>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
           <control type="edit" format="string" />
         </setting>
+      </group>
+      <group id="2">
         <setting id="cloud.googlerefreshtime" type="integer" label="" help="">
           <level>0</level>
+          <visible>false</visible>
           <default>0</default>
           <control type="edit" format="integer" />
           <visible>false</visible>

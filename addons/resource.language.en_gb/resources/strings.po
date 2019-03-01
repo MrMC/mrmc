@@ -19682,3 +19682,14 @@ msgctxt "#39008"
 msgid "Accelerate hevc"
 msgstr ""
 
+msgctxt "#40000"
+msgid "Cloud"
+msgstr ""
+
+msgctxt "#40001"
+msgid "Dropbox"
+msgstr ""
+
+msgctxt "#40002"
+msgid "Please use the Web UI to authorize"
+msgstr ""

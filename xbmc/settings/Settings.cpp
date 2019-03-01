@@ -559,6 +559,7 @@ const std::string CSettings::SETTING_SERVICES_TRAKTACESSREFRESHTOKEN = "trakt.ac
 const std::string CSettings::SETTING_SERVICES_TRAKTACESSTOKENVALIDITY = "trakt.accesstokenvalidity";
 
 // cloud services
+const std::string CSettings::SETTING_SERVICES_CLOUDDROPBOXINFO = "cloud.dropboxinfo";
 const std::string CSettings::SETTING_SERVICES_CLOUDDROPBOXTOKEN = "cloud.dropboxtoken";
 const std::string CSettings::SETTING_SERVICES_CLOUDGOOGLETOKEN = "cloud.googletoken";
 const std::string CSettings::SETTING_SERVICES_CLOUDGOOGLEREFRESHTOKEN = "cloud.googlerefreshtoken";
