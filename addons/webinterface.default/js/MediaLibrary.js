@@ -205,6 +205,9 @@ MediaLibrary.prototype = {
     input.name = "auth_text";
     input.id = "auth_text";
     input.disabled = true;
+    input.onfocus = function() {
+      input.value = ""
+    };
     input.style="display:none";
     div.appendChild(input);
 
