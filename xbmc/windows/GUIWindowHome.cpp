@@ -1051,6 +1051,10 @@ void CGUIWindowHome::SetupMrMCHomeButtons()
   bool hasVideoDB = g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO);
   bool hasPictures = (g_infoManager.GetLibraryBool(LIBRARY_HAS_PICTURES) &&
                       !g_SkinInfo->GetSkinSettingBool("HomeMenuNoPicturesButton"));
+  bool hasMusic = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) &&
+                   !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMusicButton"));
+  bool hasMusicVideos = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS) &&
+                         !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMusicVideoButton"));
 
   HomeButton button;
   ButtonProperty property;
@@ -1073,16 +1077,12 @@ void CGUIWindowHome::SetupMrMCHomeButtons()
   SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
   SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_SERVER_BUTTON , "MrMC");
 
-  if (hasVideoDB || hasPictures)
+  if (hasVideoDB)
   {
     bool hasMovies = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MOVIES) &&
                       !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMovieButton"));
     bool hasTvShows = (g_infoManager.GetLibraryBool(LIBRARY_HAS_TVSHOWS) &&
                        !g_SkinInfo->GetSkinSettingBool("HomeMenuNoTVShowButton"));
-    bool hasMusic = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) &&
-                     !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMusicButton"));
-    bool hasMusicVideos = (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS) &&
-                           !g_SkinInfo->GetSkinSettingBool("HomeMenuNoMusicVideoButton"));
 
     int flatten = CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN);
 
@@ -1137,75 +1137,74 @@ void CGUIWindowHome::SetupMrMCHomeButtons()
       ptrButton = MakeButton(button);
       m_buttonSections->Add(ptrButton);
     }
+  }
+  // Music Button
+  if (hasMusic)
+  {
+    button.label = g_localizeStrings.Get(2);
+    button.onclick = "ActivateWindow(Music,rootLocal,return)";
+    // type
+    property.name = "type";
+    property.value = "music";
+    button.properties.push_back(property);
+    // menu_id
+    property.name = "menu_id";
+    property.value = "$NUMBER[7000]";
+    button.properties.push_back(property);
+    // id
+    property.name = "id";
+    property.value = "music";
+    button.properties.push_back(property);
+    // submenu
+    property.name = "submenu";
+    property.value = true;
+    button.properties.push_back(property);
+    ptrButton = MakeButton(button);
+    m_buttonSections->Add(ptrButton);
+  }
 
-    // Music Button
-    if (hasMusic)
-    {
-      button.label = g_localizeStrings.Get(2);
-      button.onclick = "ActivateWindow(Music,rootLocal,return)";
-      // type
-      property.name = "type";
-      property.value = "music";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[7000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "music";
-      button.properties.push_back(property);
-      // submenu
-      property.name = "submenu";
-      property.value = true;
-      button.properties.push_back(property);
-      ptrButton = MakeButton(button);
-      m_buttonSections->Add(ptrButton);
-    }
+  // MusicVideos Button
+  if (hasMusicVideos)
+  {
+    button.label = g_localizeStrings.Get(20389);
+    button.onclick = "ActivateWindow(Videos,musicvideos,return)";
+    // type
+    property.name = "type";
+    property.value = "videos";
+    button.properties.push_back(property);
+    // menu_id
+    property.name = "menu_id";
+    property.value = "$NUMBER[16000]";
+    button.properties.push_back(property);
+    // id
+    property.name = "id";
+    property.value = "musicvideos";
+    button.properties.push_back(property);
 
-    // MusicVideos Button
-    if (hasMusicVideos)
-    {
-      button.label = g_localizeStrings.Get(20389);
-      button.onclick = "ActivateWindow(Videos,musicvideos,return)";
-      // type
-      property.name = "type";
-      property.value = "videos";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[16000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "musicvideos";
-      button.properties.push_back(property);
+    ptrButton = MakeButton(button);
+    m_buttonSections->Add(ptrButton);
+  }
 
-      ptrButton = MakeButton(button);
-      m_buttonSections->Add(ptrButton);
-    }
+  // Pictures Button
+  if (hasPictures)
+  {
+    button.label = g_localizeStrings.Get(1);
+    button.onclick = "ActivateWindow(Pictures)";
+    // type
+    property.name = "type";
+    property.value = "pictures";
+    button.properties.push_back(property);
+    // menu_id
+    property.name = "menu_id";
+    property.value = "$NUMBER[4000]";
+    button.properties.push_back(property);
+    // id
+    property.name = "id";
+    property.value = "pictures";
+    button.properties.push_back(property);
 
-    // Pictures Button
-    if (hasPictures)
-    {
-      button.label = g_localizeStrings.Get(1);
-      button.onclick = "ActivateWindow(Pictures)";
-      // type
-      property.name = "type";
-      property.value = "pictures";
-      button.properties.push_back(property);
-      // menu_id
-      property.name = "menu_id";
-      property.value = "$NUMBER[4000]";
-      button.properties.push_back(property);
-      // id
-      property.name = "id";
-      property.value = "pictures";
-      button.properties.push_back(property);
-
-      ptrButton = MakeButton(button);
-      m_buttonSections->Add(ptrButton);
-    }
+    ptrButton = MakeButton(button);
+    m_buttonSections->Add(ptrButton);
   }
 
   /// below seems to be tho only way for find out if we have any playlists setup
