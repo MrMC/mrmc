@@ -136,6 +136,7 @@ void CEmbyUtils::SetEmbyItemProperties(CFileItem &item, const char *content, con
     item.SetProperty("MediaServicesCloudItem", true);
   item.SetProperty("MediaServicesContent", content);
   item.SetProperty("MediaServicesClientID", client->GetUuid());
+  item.SetProperty("SkipLocalArt",true);
 }
 
 uint64_t CEmbyUtils::TicksToSeconds(uint64_t ticks)
