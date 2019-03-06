@@ -461,7 +461,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       if (pInput->GetLength() > 20000000000)
       isBluray = true;
   }
-  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray)
+  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isFile && !isBluray)
   {
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
     m_checkvideo = true;
