@@ -1406,4 +1406,13 @@ std::string CDarwinUtils::GetFriendlyName()
   return name;
 }
 
+bool CDarwinUtils::ReduceMotionEnabled()
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_IOS)
+  ret = UIAccessibilityIsReduceMotionEnabled();
+#endif
+  return ret;
+}
+
 #endif
