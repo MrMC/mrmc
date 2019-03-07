@@ -1405,27 +1405,39 @@ void CGUIWindowHome::AddEmbySection(CEmbyClientPtr client)
     item->SetProperty("servicetype","emby");
     item->SetProperty("base64url",Base64URL::Encode(curl.Get()));
     std::string strAction;
+    std::string filename;
+    std::string videoFilters;
+    std::string musicFilters;
+    if (!CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
+    {
+      videoFilters = "filters/";
+    }
+    if (!CSettings::GetInstance().GetBool(CSettings::SETTING_MYMUSIC_FLATTEN))
+    {
+      musicFilters = "filters/";
+    }
     if (content.mediaType == "movies")
     {
-      strAction = "emby://movies/titles/" + Base64URL::Encode(curl.Get());
-      item->SetProperty("type","Movies");
-      item->SetProperty("submenu",true);
+      strAction = "emby://movies/titles/" + videoFilters + Base64URL::Encode(curl.Get());
       item->SetPath("ActivateWindow(Videos," + strAction +  ",return)");
+      item->SetProperty("type","Movies");
+      item->SetProperty("submenu",CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN));
     }
     else if (content.mediaType == "tvshows")
     {
-      strAction = "emby://tvshows/titles/" + Base64URL::Encode(curl.Get());
-      item->SetProperty("type","TvShows");
-      item->SetProperty("submenu",true);
+      strAction = "emby://tvshows/titles/" + videoFilters + Base64URL::Encode(curl.Get());
       item->SetPath("ActivateWindow(Videos," + strAction +  ",return)");
+      item->SetProperty("type","TvShows");
+      item->SetProperty("submenu",CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN));
     }
     else if (content.mediaType == "music")
     {
       strAction = "emby://music/root/" + Base64URL::Encode(curl.Get());
       item->SetProperty("type","Music");
-      item->SetProperty("submenu",true);
       item->SetPath("ActivateWindow(Music," + strAction +  ",return)");
+      item->SetProperty("submenu",false);
     }
+    item->SetProperty("base64url",Base64URL::Encode(curl.Get()));
     m_buttonSections->AddFront(item,0);
   }
 }

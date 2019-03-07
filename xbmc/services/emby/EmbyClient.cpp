@@ -343,6 +343,49 @@ bool CEmbyClient::GetMoviesFilter(CFileItemList &items, std::string url, std::st
   return rtn;
 }
 
+bool CEmbyClient::GetMoviesFilters(CFileItemList &items, std::string url)
+{
+  CSingleLock lock(m_viewMoviesFilterLock);
+
+  bool rtn = false;
+  CURL curl(url);
+  curl.SetFileName("Items/Filters");
+  std::string path = curl.Get();
+  CVariant variant = CEmbyUtils::GetEmbyCVariant(path);
+  if (variant.isNull())
+  {
+    CLog::Log(LOGERROR, "CEmbyClient::GetMoviesFilters: invalid response for views items from %s", CURL::GetRedacted(path).c_str());
+    return rtn;
+  }
+  // Set Title item as emby doesnt have that??
+  CFileItemPtr newItem(new CFileItem());
+  newItem->m_bIsFolder = true;
+  newItem->m_bIsShareOrDrive = false;
+  newItem->SetLabel("Title");
+  curl.SetFileName("emby/Items");
+  newItem->SetPath("emby://movies/titles/" + Base64URL::Encode(curl.Get()));
+  CEmbyUtils::SetEmbyItemProperties(*newItem, "filter");
+  items.Add(newItem);
+
+  for (auto variantItemIt = variant.begin_map(); variantItemIt != variant.end_map(); ++variantItemIt)
+  {
+    // local vars for common fields
+    std::string itemName = variantItemIt->first;
+    CFileItemPtr newItem(new CFileItem());
+    newItem->m_bIsFolder = true;
+    newItem->m_bIsShareOrDrive = false;
+    newItem->SetLabel(itemName);
+    curl.SetFileName("Users/" + GetUserID() + "/Items");
+    curl.SetOption("Recursive", "true");
+    newItem->SetPath("emby://movies/" + itemName + "/" + Base64URL::Encode(curl.Get()));
+    CEmbyUtils::SetEmbyItemProperties(*newItem, "filter");
+    items.Add(newItem);
+    rtn = true;
+  }
+  CEmbyUtils::SetEmbyItemProperties(items, "filter");
+  return rtn;
+}
+
 bool CEmbyClient::GetTVShows(CFileItemList &items, std::string url, bool fromfilter)
 {
   bool rtn = false;
@@ -390,6 +433,49 @@ bool CEmbyClient::GetTVShowsFilter(CFileItemList &items, std::string url, std::s
   bool rtn = false;
   if (m_viewTVShowsFilter->ItemsValid())
     rtn = CEmbyUtils::ParseEmbyTVShowsFilter(items, curl, m_viewTVShowsFilter->GetItems(), filter);
+  return rtn;
+}
+
+bool CEmbyClient::GetTVShowFilters(CFileItemList &items, std::string url)
+{
+  CSingleLock lock(m_viewMoviesFilterLock);
+
+  bool rtn = false;
+  CURL curl(url);
+  curl.SetFileName("Items/Filters");
+  std::string path = curl.Get();
+  CVariant variant = CEmbyUtils::GetEmbyCVariant(path);
+  if (variant.isNull())
+  {
+    CLog::Log(LOGERROR, "CEmbyClient::GetMoviesFilters: invalid response for views items from %s", CURL::GetRedacted(path).c_str());
+    return rtn;
+  }
+  // Set Title item as emby doesnt have that??
+  CFileItemPtr newItem(new CFileItem());
+  newItem->m_bIsFolder = true;
+  newItem->m_bIsShareOrDrive = false;
+  newItem->SetLabel("Title");
+  curl.SetFileName("emby/Items");
+  newItem->SetPath("emby://tvshows/titles/" + Base64URL::Encode(curl.Get()));
+  CEmbyUtils::SetEmbyItemProperties(*newItem, "filter");
+  items.Add(newItem);
+
+  for (auto variantItemIt = variant.begin_map(); variantItemIt != variant.end_map(); ++variantItemIt)
+  {
+    // local vars for common fields
+    std::string itemName = variantItemIt->first;
+    CFileItemPtr newItem(new CFileItem());
+    newItem->m_bIsFolder = true;
+    newItem->m_bIsShareOrDrive = false;
+    newItem->SetLabel(itemName);
+    curl.SetFileName("Users/" + GetUserID() + "/Items");
+    curl.SetOption("Recursive", "true");
+    newItem->SetPath("emby://tvshows/" + itemName + "/" + Base64URL::Encode(curl.Get()));
+    CEmbyUtils::SetEmbyItemProperties(*newItem, "filter");
+    items.Add(newItem);
+    rtn = true;
+  }
+  CEmbyUtils::SetEmbyItemProperties(items, "filter");
   return rtn;
 }
 

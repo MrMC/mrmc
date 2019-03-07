@@ -179,6 +179,8 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
    //     filter = "country";
       else if (path == "studios")
         filter = "Studios";
+      else
+        filter = path;
 
       if (path == "" || path == "titles" || path == "filter")
       {
@@ -204,11 +206,19 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         //We set the items name in GetEmbySets
         items.SetContent("movies");
       }
+      else if (path == "filters")
+      {
+        client->GetMoviesFilters(items, Base64URL::Decode(section));
+        items.SetLabel(g_localizeStrings.Get(369));
+        items.SetContent("filters");
+        items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
+        items.ClearSortState();
+      }
       else if(!filter.empty())
       {
         client->GetMoviesFilter(items, Base64URL::Decode(section), filter);
-        StringUtils::ToCapitalize(path);
-        items.SetLabel(path);
+        StringUtils::ToCapitalize(filter);
+        items.SetLabel(filter);
         items.SetContent("movies");
       }
 #if defined(EMBY_DEBUG_VERBOSE)
@@ -298,6 +308,8 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       //     filter = "country";
       else if (path == "studios")
         filter = "Studios";
+      else
+        filter = path;
 
       if (path == "" || path == "titles" || path == "filter")
       {
@@ -331,11 +343,19 @@ bool CEmbyDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         items.SetLabel(g_localizeStrings.Get(626));
         items.SetContent("episodes");
       }
+      else if (path == "filters")
+      {
+        client->GetTVShowFilters(items, Base64URL::Decode(section));
+        items.SetLabel("Filters");
+        items.SetContent("filters");
+        items.AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
+        items.ClearSortState();
+      }
       else if(!filter.empty())
       {
         client->GetTVShowsFilter(items, Base64URL::Decode(section), filter);
-        StringUtils::ToCapitalize(path);
-        items.SetLabel(path);
+        StringUtils::ToCapitalize(filter);
+        items.SetLabel(filter);
         items.SetContent("tvshows");
       }
 #if defined(EMBY_DEBUG_VERBOSE)
