@@ -1118,9 +1118,11 @@ bool CEmbyUtils::ParseEmbySeasons(CFileItemList &items, const CURL &url, const C
     seriesId = item["SeriesId"].asString();
     // clear url options
     CURL curl(url);
+    CEmbyClientPtr client = CEmbyServices::GetInstance().FindClient(curl.Get());
     curl.SetOptions("");
-    curl.SetOption("ParentId", itemId);
-
+    curl.SetFileName("Shows/" + seriesId + "/Episodes");
+    curl.SetOption("seasonId", itemId);
+    curl.SetOption("userId",client->GetUserID());
     CFileItemPtr newItem(new CFileItem());
     // set m_bIsFolder to true to indicate we are seasons list
     newItem->m_bIsFolder = true;
