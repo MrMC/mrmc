@@ -495,6 +495,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldRating) return CMusicDatabase::album_fRating;
     else if (field == FieldPlaycount) return CMusicDatabase::album_iTimesPlayed;
     else if (field == FieldDateAdded) return CMusicDatabase::album_dtDateAdded;
+    else if (field == FieldLastPlayed) return CMusicDatabase::album_dtLastPlayed;
   }
   else if (mediaType == MediaTypeSong)
   {

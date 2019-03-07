@@ -317,6 +317,8 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldMusicLabel);
     fields.push_back(FieldRating);
     fields.push_back(FieldPlaycount);
+    fields.push_back(FieldLastPlayed);
+    fields.push_back(FieldDateAdded);
   }
   else if (type == "artists")
   {
@@ -330,6 +332,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldBandFormed);
     fields.push_back(FieldDisbanded);
     fields.push_back(FieldDied);
+    fields.push_back(FieldDateAdded);
   }
   else if (type == "tvshows")
   {
@@ -465,6 +468,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     orders.push_back(SortByPlaycount);
     orders.push_back(SortByLastPlayed);
     orders.push_back(SortByRating);
+    orders.push_back(SortByDateAdded);
   }
   else if (type == "albums")
   {
@@ -479,10 +483,12 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     //orders.push_back(SortByMusicLabel);
     orders.push_back(SortByRating);
     orders.push_back(SortByPlaycount);
+    orders.push_back(SortByDateAdded);
   }
   else if (type == "artists")
   {
     orders.push_back(SortByArtist);
+    orders.push_back(SortByDateAdded);
   }
   else if (type == "tvshows")
   {
@@ -740,7 +746,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + " EXISTS (SELECT 1 FROM song_artist, artist WHERE song_artist.idSong = " + GetField(FieldId, strType) + " AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     else if (m_field == FieldAlbumArtist)
       query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " + table + ".idAlbum AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
-    else if (m_field == FieldLastPlayed && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " is NULL or " + GetField(m_field, strType) + parameter;
   }
   else if (strType == "albums")
@@ -753,6 +759,8 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + " EXISTS (SELECT 1 FROM song, song_artist, artist WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND song.idSong = song_artist.idSong AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     else if (m_field == FieldAlbumArtist)
       query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " + GetField(FieldId, strType) + " AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
+    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+      query = GetField(m_field, strType) + " is NULL or " + GetField(m_field, strType) + parameter;
   }
   else if (strType == "artists")
   {
@@ -764,6 +772,8 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query += " OR ";
       query += "EXISTS (SELECT DISTINCT album_artist.idArtist FROM album_artist, album_genre, genre WHERE album_artist.idArtist = " + GetField(FieldId, strType) + " AND album_artist.idAlbum = album_genre.idAlbum AND album_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + "))";
     }
+    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+      query = GetField(m_field, strType) + " is NULL or " + GetField(m_field, strType) + parameter;
   }
   else if (strType == "movies")
   {
