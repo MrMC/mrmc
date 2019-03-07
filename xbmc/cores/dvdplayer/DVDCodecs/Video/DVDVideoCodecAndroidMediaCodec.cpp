@@ -1191,18 +1191,14 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   ssize_t index = AMediaCodec_dequeueOutputBuffer(m_codec, &bufferInfo, timeout_us);
   if (index >= 0)
   {
-    int64_t pts= bufferInfo.presentationTimeUs;
+    int64_t pts = bufferInfo.presentationTimeUs;
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
     if (pts != AV_NOPTS_VALUE)
       m_videobuffer.pts = pts;
-    if (m_lastpts == -1.0)
-      m_videobuffer.iDuration = 0.0;
-    else
-    {
-      if (pts - m_lastpts < DVD_TIME_BASE)  // Seek ?
-        m_videobuffer.iDuration = (pts - m_lastpts) / DVD_TIME_BASE;
-    }
+    m_videobuffer.iDuration = 0.0;
+    if (m_lastpts > -1.0 && pts - m_lastpts < DVD_TIME_BASE /* Seek ? */)
+      m_videobuffer.iDuration = (pts - m_lastpts) / DVD_TIME_BASE;
 
     uint32_t flags = bufferInfo.flags;
     if (flags & AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM)
