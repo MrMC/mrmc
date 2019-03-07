@@ -300,7 +300,7 @@ bool CEmbyClient::GetMovies(CFileItemList &items, std::string url, bool fromfilt
   {
     CSingleLock lock(m_viewMoviesFilterLock);
     FetchViewItems(m_viewMoviesFilter, curl, "");
-    if (m_viewMoviesFilter->ItemsValid())
+    if (m_viewMoviesFilter && m_viewMoviesFilter->ItemsValid())
       rtn = CEmbyUtils::ParseEmbyVideos(items, curl, m_viewMoviesFilter->GetItems(), MediaTypeMovie);
   }
   else
