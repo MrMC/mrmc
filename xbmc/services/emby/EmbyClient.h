@@ -95,8 +95,10 @@ public:
   // main view entry points (from CEmbyDirectory)
   bool  GetMovies(CFileItemList &items, std::string url, bool fromfilter);
   bool  GetMoviesFilter(CFileItemList &items, std::string url, std::string filter);
+  bool  GetMoviesFilters(CFileItemList &items, std::string url);
   bool  GetTVShows(CFileItemList &items, std::string url, bool fromfilter);
   bool  GetTVShowsFilter(CFileItemList &items, std::string url, std::string filter);
+  bool  GetTVShowFilters(CFileItemList &items, std::string url);
   bool  GetMusicArtists(CFileItemList &items, std::string url);
 
   void  AddNewViewItems(const std::vector<std::string> &ids);
