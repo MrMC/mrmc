@@ -1353,6 +1353,7 @@ void CGUIWindowHome::AddPlexSection(CPlexClientPtr client)
       strAction = "plex://movies/titles/" + videoFilters + Base64URL::Encode(curl.Get());
       item->SetPath("ActivateWindow(Videos," + strAction +  ",return)");
       item->SetProperty("type","Movies");
+      item->SetProperty("submenu",CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN));
     }
     else if (content.type == "show")
     {
@@ -1361,6 +1362,7 @@ void CGUIWindowHome::AddPlexSection(CPlexClientPtr client)
       strAction = "plex://tvshows/titles/"  + videoFilters + Base64URL::Encode(curl.Get());
       item->SetPath("ActivateWindow(Videos," + strAction +  ",return)");
       item->SetProperty("type","TvShows");
+      item->SetProperty("submenu",CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN));
     }
     else if (content.type == "artist")
     {
@@ -1369,9 +1371,9 @@ void CGUIWindowHome::AddPlexSection(CPlexClientPtr client)
       strAction = "plex://music/root/"  + musicFilters + Base64URL::Encode(curl.Get());
       item->SetPath("ActivateWindow(Music," + strAction +  ",return)");
       item->SetProperty("type","Music");
+      item->SetProperty("submenu",CSettings::GetInstance().GetBool(CSettings::SETTING_MYMUSIC_FLATTEN));
     }
     item->SetProperty("base64url",Base64URL::Encode(curl.Get()));
-    item->SetProperty("submenu",CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN));
     m_buttonSections->AddFront(item,0);
   }
 }
