@@ -77,6 +77,7 @@ public:
   static std::string GetNetmask();
   static bool        AudioAtmosEnabled();
   static std::string GetFriendlyName();
+  static bool        ReduceMotionEnabled();
 };
 
 #endif

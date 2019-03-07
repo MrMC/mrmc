@@ -1706,7 +1706,7 @@ static CGPoint panTouchAbsStart;
         break;
       case UIGestureRecognizerStateChanged:
         {
-          if (!CFocusEngineHandler::GetInstance().IsWindowPVR())
+          if (!CFocusEngineHandler::GetInstance().IsWindowPVR() && !CDarwinUtils::ReduceMotionEnabled())
           {
             FocusEngineAnimate focusAnimate = FocusEngineAnimate();
             float dx = touchAbsPosition.x - panTouchAbsStart.x;
