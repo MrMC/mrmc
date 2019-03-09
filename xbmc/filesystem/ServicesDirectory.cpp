@@ -173,7 +173,7 @@ bool CServicesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CFileItemPtr pItem(new CFileItem(title));
         pItem->m_bIsFolder = true;
         pItem->m_bIsShareOrDrive = false;
-        pItem->SetPath("");
+        pItem->SetPath("musicdb://" + basePath + "/");
         pItem->SetLabel(title);
         items.Add(pItem);
       }
