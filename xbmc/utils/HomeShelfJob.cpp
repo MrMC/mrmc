@@ -51,12 +51,12 @@
 
 CHomeButtonJob::CHomeButtonJob()
 {
-  
+
 }
 
 CHomeButtonJob::~CHomeButtonJob()
 {
-  
+
 }
 
 bool CHomeButtonJob::DoWork()
@@ -109,15 +109,15 @@ CHomeShelfJob::~CHomeShelfJob()
 bool CHomeShelfJob::UpdateVideo()
 {
   CSingleLock lock(m_critsection);
-  
+
   CLog::Log(LOGDEBUG, "CHomeShelfJob::UpdateVideos() - Running HomeShelf screen update");
-  
+
   CFileItemList homeShelfTVRA;
   CFileItemList homeShelfTVPR;
   CFileItemList homeShelfMoviesRA;
   CFileItemList homeShelfMoviesPR;
   CFileItemList homeShelfOnDeck;
-  
+
   m_HomeShelfTVRA->ClearItems();
   m_HomeShelfTVPR->ClearItems();
   m_HomeShelfMoviesRA->ClearItems();
@@ -126,7 +126,7 @@ bool CHomeShelfJob::UpdateVideo()
 
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
   std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
-  
+
   bool homeScreenWatched = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_WATCHEDHOMESHELFITEMS);
   if (!m_compatibleSkin || serverType == "mrmc" || serverType.empty())
   {
@@ -190,7 +190,7 @@ bool CHomeShelfJob::UpdateVideo()
         }
         m_HomeShelfMoviesRA->Add(item);
       }
-      
+
       path = g_advancedSettings.m_recentlyAddedEpisodePath;
       if (!homeScreenWatched)
       {
@@ -239,7 +239,7 @@ bool CHomeShelfJob::UpdateVideo()
     CServicesManager::GetInstance().GetContinueWatching(*m_HomeShelfContinueWatching, serverType, serverUUID);
 
   }
-  
+
   m_HomeShelfTVRA->SetContent("episodes");
   m_HomeShelfTVPR->SetContent("episodes");
   m_HomeShelfMoviesRA->SetContent("movies");
@@ -261,7 +261,7 @@ bool CHomeShelfJob::UpdateMusic()
 
   std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
   std::string serverUUID = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
-  
+
   if (!m_compatibleSkin || serverType == "mrmc" || serverType.empty())
   {
     CMusicDatabase musicdatabase;
@@ -285,7 +285,7 @@ bool CHomeShelfJob::UpdateMusic()
       }
       musicdatabase.Close();
     }
-    if (serverType != "mrmc")
+    if (!serverType.empty() && serverType != "mrmc")
       // get recently added ALBUMS from any enabled service
       CServicesManager::GetInstance().GetAllRecentlyAddedAlbums(*m_HomeShelfMusicAlbums, NUM_ITEMS);
   }
@@ -294,7 +294,7 @@ bool CHomeShelfJob::UpdateMusic()
     // get recently added ALBUMS for chosen server in Home Screen
     CServicesManager::GetInstance().GetRecentlyAddedAlbums(*m_HomeShelfMusicAlbums, NUM_ITEMS, serverType, serverUUID);
   }
-  
+
   return true;
 }
 
