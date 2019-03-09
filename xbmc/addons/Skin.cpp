@@ -134,7 +134,7 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
 }
 
 CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
-  : CAddon(props), m_defaultRes(resolution), m_version(""), m_effectsSlowDown(1.f), m_debugging(false)
+  : CAddon(props), m_defaultRes(resolution), m_version(""), m_effectsSlowDown(1.f), m_debugging(false), isDynamicHomeCompatible(false)
 {
 }
 
@@ -178,6 +178,7 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
     m_effectsSlowDown = (float)atof(str.c_str());
 
   m_debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
+  isDynamicHomeCompatible = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@dynamichome") == "true";
 
   LoadStartupWindows(ext);
 
@@ -379,6 +380,11 @@ bool CSkinInfo::IsInUse() const
 {
   // Could extend this to prompt for reverting to the standard skin perhaps
   return CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID();
+}
+
+bool CSkinInfo::IsDynamicHomeCompatible()
+{
+  return isDynamicHomeCompatible;
 }
 
 const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string& name, int context)

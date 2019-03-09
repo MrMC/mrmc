@@ -174,6 +174,8 @@ public:
 
   bool IsInUse() const;
 
+  bool IsDynamicHomeCompatible();
+
   const std::string& GetCurrentAspect() const { return m_currentAspect; }
 
   void LoadIncludes();
@@ -241,6 +243,7 @@ protected:
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_debugging;
+  bool isDynamicHomeCompatible;
 
 private:
   std::map<int, CSkinSettingStringPtr> m_strings;
