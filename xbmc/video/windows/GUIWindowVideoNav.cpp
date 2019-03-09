@@ -36,6 +36,7 @@
 
 #include "FileItem.h"
 #include "Application.h"
+#include "addons/Skin.h"
 #include "messaging/ApplicationMessenger.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
@@ -1349,8 +1350,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   "videodb://movies/countries"
   "videodb://movies/studios"
   */
-  std::string skinId = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-  bool compatibleSkin = (skinId == "skin.opacity" || skinId == "skin.ariana" || skinId == "skin.ariana.touch");
+  bool isDynamicHomeCompatible = g_SkinInfo->IsDynamicHomeCompatible();
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "movietitles"||
       lower == "moviegenres"||
@@ -1362,7 +1362,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
       lower == "moviestudios")
   {
     StringUtils::Replace(lower, "movie", "");
-    if (CServicesManager::GetInstance().HasServices() && !compatibleSkin)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://movies/" + lower + "/";
     return "videodb://movies/" + lower + "/";
   }
@@ -1377,31 +1377,31 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
            lower == "tvshowstudios")
   {
     StringUtils::Replace(lower, "tvshow", "");
-    if (CServicesManager::GetInstance().HasServices() && !compatibleSkin)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://tvshows/" + lower + "/";
     return "videodb://tvshows/" + lower + "/";
   }
   else if (lower == "recentlyaddedmovies")
   {
-    if (CServicesManager::GetInstance().HasServices() && !compatibleSkin)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://movies/recentlyaddedmovies/";
     return "videodb://recentlyaddedmovies/";
   }
   else if (lower == "recentlyaddedepisodes")
   {
-    if (CServicesManager::GetInstance().HasServices() && !compatibleSkin)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://tvshows/recentlyaddedepisodes/";
     return "videodb://recentlyaddedepisodes/";
   }
   else if (lower == "inprogressshows")
   {
-    if (CServicesManager::GetInstance().HasServices() && !compatibleSkin)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://tvshows/inprogressshows/";
     return "videodb://inprogresstvshows/";
   }
   else if (lower == "inprogressmovies")
   {
-    if (CServicesManager::GetInstance().HasServices() && !compatibleSkin)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://movies/inprogressmovies/";
     return "videodb://inprogressmovies/";
   }
