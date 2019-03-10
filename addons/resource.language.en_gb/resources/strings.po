@@ -7459,7 +7459,11 @@ msgctxt "#13600"
 msgid "Apple Remote"
 msgstr ""
 
-#empty string with id 13601
+#.
+#:
+msgctxt "#13601"
+msgid "Next Up"
+msgstr ""
 
 #: system/settings/darwin.xml
 msgctxt "#13602"

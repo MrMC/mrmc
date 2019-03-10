@@ -635,18 +635,13 @@ bool CEmbyUtils::GetEmbyRecentlyAddedAlbums(CFileItemList &items, const std::str
   return rtn;
 }
 
-bool CEmbyUtils::GetEmbyContinueWatching(CFileItemList &items, const std::string url)
+bool CEmbyUtils::GetEmbyNextUp(CFileItemList &items, const std::string url)
 {
   bool rtn = false;
   if (CEmbyServices::GetInstance().HasClients())
   {
     CURL url2(url);
-    url2.SetFileName(url2.GetFileName() + "/Resume");
-
-    url2.SetOptions("");
-    url2.SetOption("Limit", StringUtils::Format("%i",12));
-    url2.SetOption("Fields", MoviesFields);
-    url2.SetOption("MediaTypes", "Video");
+    url2.SetOption("Fields", TVShowsFields);
     CVariant variant = GetEmbyCVariant(url2.Get());
 
     rtn = ParseEmbyVideos(items, url2, variant, "");

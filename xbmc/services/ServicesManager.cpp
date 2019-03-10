@@ -457,27 +457,7 @@ void CServicesManager::GetContinueWatching(CFileItemList &continueWatching, std:
   }
   else if (type == "emby" && CEmbyUtils::HasClients())
   {
-    CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(uuid);
-    if (!embyClient)
-      return;
-    std::vector<EmbyViewInfo> viewinfos = embyClient->GetViewInfoForTVShowContent();
-    for (const auto &viewinfo : viewinfos)
-    {
-      CFileItemList embyItems;
-      std::string userId = embyClient->GetUserID();
-      CURL curl(embyClient->GetUrl());
-      curl.SetProtocol(embyClient->GetProtocol());
-      curl.SetOption("ParentId", viewinfo.id);
-      curl.SetFileName("Users/" + userId + "/Items");
-      CEmbyUtils::GetEmbyContinueWatching(embyItems, curl.Get());
-      for (int item = 0; item < embyItems.Size(); ++item)
-      {
-        CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "tvshows", embyClient);
-        embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13558));
-      }
-      continueWatching.Append(embyItems);
-      embyItems.ClearItems();
-    }
+
   }
 }
 
@@ -613,24 +593,21 @@ void CServicesManager::GetInProgressShows(CFileItemList &inProgress, int itemLim
     CEmbyClientPtr embyClient = CEmbyServices::GetInstance().GetClient(uuid);
     if (!embyClient)
       return;
-    std::vector<EmbyViewInfo> viewinfos = embyClient->GetViewInfoForTVShowContent();
-    for (const auto &viewinfo : viewinfos)
+    CFileItemList embyItems;
+    std::string userId = embyClient->GetUserID();
+    CURL curl(embyClient->GetUrl());
+    curl.SetProtocol(embyClient->GetProtocol());
+    curl.SetOption("UserId", userId);
+    curl.SetFileName("/Shows/NextUp");
+    curl.SetOption("Limit", StringUtils::Format("%i",itemLimit));
+    CEmbyUtils::GetEmbyNextUp(embyItems, curl.Get());
+    for (int item = 0; item < embyItems.Size(); ++item)
     {
-      CFileItemList embyItems;
-      std::string userId = embyClient->GetUserID();
-      CURL curl(embyClient->GetUrl());
-      curl.SetProtocol(embyClient->GetProtocol());
-      curl.SetOption("ParentId", viewinfo.id);
-      curl.SetFileName("Users/" + userId + "/Items");
-      CEmbyUtils::GetEmbyInProgressShows(embyItems, curl.Get(), itemLimit);
-      for (int item = 0; item < embyItems.Size(); ++item)
-      {
-        CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "tvshows", embyClient);
-        embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13559));
-      }
-      inProgress.Append(embyItems);
-      embyItems.ClearItems();
+      CEmbyUtils::SetEmbyItemProperties(*embyItems[item], "tvshows", embyClient);
+      embyItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13601));
     }
+    inProgress.Append(embyItems);
+    embyItems.ClearItems();
   }
 }
 void CServicesManager::GetInProgressMovies(CFileItemList &inProgress, int itemLimit, std::string type, std::string uuid)
