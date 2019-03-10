@@ -866,7 +866,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(std::string &path, bool allowNetwor
 
   browser->SetSources(shares);
   browser->m_rootDir.SetMask("/");
-  browser->m_rootDir.AllowNonLocalSources(false);  // don't allow plug n play shares
+  browser->m_rootDir.AllowNonLocalSources(true);  // allow plug n play shares
   browser->m_browsingForFolders = 1;
   browser->m_addNetworkShareEnabled = allowNetworkShares;
   browser->m_selectedPath = "";
