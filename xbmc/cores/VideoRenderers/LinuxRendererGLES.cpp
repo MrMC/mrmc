@@ -646,13 +646,15 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
         mci->ReleaseOutputBuffer(0);
       else
       {
-        if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_TIMING))
+        int64_t ts = 1;
+        bool doTiming = (MathUtils::round_int(CXBMCApp::get()->GetRefreshRate() * 1000) % MathUtils::round_int(m_fps * 1000) == 0);  // Don't in 3:2
+        if (doTiming && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_TIMING))
         {
           bool adjusted = false;
           uint64_t cs = CurrentHostCounter();
           uint64_t vs = CXBMCApp::GetVsyncTime();
           double frameduration = mci->GetDuration() * DVD_TIME_BASE;
-          int64_t ts = vs + (frameduration * 1.5);
+          ts = vs + (frameduration * 1.5);
           if (m_lastVs)
           {
             if (vs - m_lastVs > frameduration * 1.1)  // missed vsync
@@ -666,8 +668,7 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
           m_lastVs = vs;
           m_lastTs = ts;
         }
-        else
-          mci->ReleaseOutputBuffer(1);
+        mci->ReleaseOutputBuffer(ts);
       }
     }
   }
