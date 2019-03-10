@@ -54,6 +54,7 @@
 #include "utils/Variant.h"
 #include "utils/URIUtils.h"
 #include "utils/SysfsUtils.h"
+#include "utils/TimeUtils.h"
 #include "AppParamParser.h"
 #include <android/bitmap.h>
 #include "cores/AudioEngine/AEFactory.h"
@@ -727,6 +728,7 @@ void CXBMCApp::SetRefreshRate(float rate)
   if (rate < 1.0)
     return;
   m_refreshrate = rate;
+  m_vsyncinterval = (1.0 / m_refreshrate) / CurrentHostFrequency();
 
   CVariant *variant = new CVariant(rate);
   runNativeOnUiThread(SetRefreshRateCallback, variant);
@@ -737,6 +739,7 @@ void CXBMCApp::SetDisplayModeId(int modeId, float rate)
   if (modeId < 0)
     return;
   m_refreshrate = rate;
+  m_vsyncinterval = (1.0 / m_refreshrate) / CurrentHostFrequency();
 
   CVariant *variant = new CVariant(modeId);
   runNativeOnUiThread(SetDisplayModeIdCallback, variant);

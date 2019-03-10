@@ -188,6 +188,7 @@ public:
   void SetRefreshRate(float rate);
   void SetDisplayModeId(int mode, float rate);
   float GetRefreshRate() { return m_refreshrate; }
+  float GetVsyncInterval() { return m_vsyncinterval; }
   int GetDPI();
   static bool IsNightMode();
   static CPointInt GetMaxDisplayResolution();
@@ -278,6 +279,7 @@ private:
   static std::atomic<uint64_t> m_vsynctime;
   static CEvent m_vsyncEvent;
   float m_refreshrate = 0.0;
+  float m_vsyncinterval = 0.0;
 
   static void CalculateGUIRatios();
   static CRect m_droid2guiRatio;
