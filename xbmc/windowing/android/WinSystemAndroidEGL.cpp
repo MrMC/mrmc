@@ -506,7 +506,7 @@ bool CWinSystemAndroidEGL::SetNativeResolution(const RESOLUTION_INFO &res)
       CLog::Log(LOGERROR, "CWinSystemAndroidEGL : Cannot find resolution %s", res.strMode.c_str());
       return false;
     }
-    CXBMCApp::get()->SetDisplayModeId(modeid);
+    CXBMCApp::get()->SetDisplayModeId(modeid, res.fRefreshRate);
     s_res_cur_displayMode = res;
 
   }

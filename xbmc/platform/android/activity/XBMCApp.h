@@ -192,7 +192,8 @@ public:
   void SetSystemVolume(float percent);
 
   void SetRefreshRate(float rate);
-  void SetDisplayModeId(int mode);
+  void SetDisplayModeId(int mode, float rate);
+  float GetRefreshRate() { return m_refreshrate; }
   int GetDPI();
   static bool IsNightMode();
   static CPointInt GetMaxDisplayResolution();
@@ -284,6 +285,7 @@ private:
 
   static std::atomic<uint64_t> m_vsynctime;
   static CEvent m_vsyncEvent;
+  float m_refreshrate = 0.0;
 
   void XBMC_DestroyDisplay();
   void XBMC_SetupDisplay();
