@@ -767,15 +767,17 @@ void CXBMCApp::SetRefreshRate(float rate)
 {
   if (rate < 1.0)
     return;
+  m_refreshrate = rate;
 
   CVariant *variant = new CVariant(rate);
   runNativeOnUiThread(SetRefreshRateCallback, variant);
 }
 
-void CXBMCApp::SetDisplayModeId(int modeId)
+void CXBMCApp::SetDisplayModeId(int modeId, float rate)
 {
   if (modeId < 0)
     return;
+  m_refreshrate = rate;
 
   CVariant *variant = new CVariant(modeId);
   runNativeOnUiThread(SetDisplayModeIdCallback, variant);
