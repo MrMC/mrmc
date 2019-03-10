@@ -683,6 +683,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
           bool playing = m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING;
           CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::AddPackets: retry write after sleeping %d ms, playing: %s",
             sleep_time_ms, playing ? "yes" : "no");
+          retried = true;
           continue;
         }
         else
