@@ -160,6 +160,7 @@
 		18D18CE81D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
 		18D18CE91D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
 		18D18CEA1D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
+		18D533DD2236CFF10062B012 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18D533DC2236CFF10062B012 /* Launch Screen.storyboard */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
 		18F123CC2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
 		18F123CD2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
@@ -3822,6 +3823,7 @@
 		18C1D22C13033F6A00CFFE59 /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
 		18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexUtils.cpp; sourceTree = "<group>"; };
 		18D18CE71D0DC14400BBAB05 /* PlexUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexUtils.h; sourceTree = "<group>"; };
+		18D533DC2236CFF10062B012 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogOSDSettings.cpp; sourceTree = "<group>"; };
@@ -9989,6 +9991,7 @@
 				F5C28F121FC9014600F63834 /* Default-812h@3x.png */,
 				F5C28F111FC9014600F63834 /* Default-Landscape-812h@3x.png */,
 				F54570851BF5947A00432C6A /* Info.plist */,
+				18D533DC2236CFF10062B012 /* Launch Screen.storyboard */,
 				F54570841BF5947A00432C6A /* Info.plist.in */,
 				F59045321BA372A600DB589A /* InfoPlist.strings */,
 				F59045351BA372A600DB589A /* IOSEAGLView.h */,
@@ -10852,6 +10855,7 @@
 				F59045671BA372A600DB589A /* InfoPlist.strings in Resources */,
 				F55F0CFE21E1570A005DC95F /* point1sec.mp3 in Resources */,
 				F5C28F141FC9014700F63834 /* Default-812h@3x.png in Resources */,
+				18D533DD2236CFF10062B012 /* Launch Screen.storyboard in Resources */,
 				F59045651BA372A600DB589A /* Default-736h@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -14853,7 +14857,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${APP_SUFFIX}";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -14887,7 +14890,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${APP_SUFFIX}";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
