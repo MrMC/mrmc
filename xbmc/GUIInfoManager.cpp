@@ -271,6 +271,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "canhibernate",     SYSTEM_CAN_HIBERNATE },
                                   { "canreboot",        SYSTEM_CAN_REBOOT },
                                   { "istouch",          SYSTEM_IS_TOUCH },
+                                  { "hasnotch",         SYSTEM_HAS_NOTCH },
                                   { "screensaveractive",SYSTEM_SCREENSAVER_ACTIVE },
                                   { "dpmsactive",       SYSTEM_DPMS_ACTIVE },
                                   { "cputemperature",   SYSTEM_CPU_TEMPERATURE },     // labels from here
@@ -2570,6 +2571,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = true;
 #elif defined(TARGET_ANDROID)
       bReturn = CAndroidFeatures::HasTouchScreen();
+#endif
+      break;
+    case SYSTEM_HAS_NOTCH:
+      bReturn = false;
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
+      bReturn = CDarwinUtils::IosHasNotch();
 #endif
       break;
     case SYSTEM_SCREENSAVER_ACTIVE:
