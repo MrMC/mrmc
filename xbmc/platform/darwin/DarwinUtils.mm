@@ -163,13 +163,25 @@ const char* CDarwinUtils::getIosPlatformString(void)
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);  
     char *machine = new char[size];  
     if (sysctlbyname("hw.machine", machine, &size, NULL, 0) == 0 && machine[0])
-      iOSPlatformString.assign(machine, size -1);
+    {
+      NSString *platform = [NSString stringWithFormat:@"%s" , machine];
+      if ([platform isEqualToString:@"i386"] || [platform isEqualToString:@"x86_64"])
+      {
+        // simulators
+        iOSPlatformString = getenv("SIMULATOR_MODEL_IDENTIFIER");
+      }
+      else
+      {
+        // actual hardware
+        iOSPlatformString.assign(machine, size -1);
+      }
+    }
    else
 #endif
       iOSPlatformString = "unknown0,0";
 
 #if defined(TARGET_DARWIN_IOS)
-    delete [] machine;
+    free(machine);
 #endif
   }
 
