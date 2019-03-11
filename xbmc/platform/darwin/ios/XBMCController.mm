@@ -566,6 +566,8 @@ XBMCController *g_xbmcController;
 
     [self createGestureRecognizers];
   }
+
+  m_hasNotch = CDarwinUtils::IosHasNotch();
 }
 //--------------------------------------------------------------
 -(void)viewDidLoad
@@ -1257,7 +1259,7 @@ XBMCController *g_xbmcController;
 
 -(NSUInteger)supportedInterfaceOrientations
 {
-  if (CDarwinUtils::IosHasNotch())
+  if (m_hasNotch)
     return UIInterfaceOrientationMaskLandscapeRight;
   
   return UIInterfaceOrientationMaskLandscape;
