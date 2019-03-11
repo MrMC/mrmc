@@ -56,6 +56,7 @@ typedef enum
   BOOL                        m_appAlive;
   BOOL                        m_animating;
   BOOL                        m_readyToRun;
+  BOOL                        m_hasNotch;
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
   bool                        m_nativeKeyboardActive;
