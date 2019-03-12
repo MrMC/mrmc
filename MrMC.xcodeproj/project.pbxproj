@@ -10792,6 +10792,7 @@
 					};
 					E4991088174D0D2600741B6D = {
 						DevelopmentTeam = 8U6WVDN2Q6;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -14880,6 +14881,7 @@
 				CODE_SIGN_ENTITLEMENTS = xbmc/platform/darwin/ios/MrMC.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 8U6WVDN2Q6;
@@ -14892,6 +14894,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "iOS Development carplay";
 				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -14913,6 +14916,7 @@
 				CODE_SIGN_ENTITLEMENTS = xbmc/platform/darwin/ios/MrMC.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 8U6WVDN2Q6;
@@ -14925,6 +14929,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "iOS Development carplay";
 				SDKROOT = iphoneos;
 				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
