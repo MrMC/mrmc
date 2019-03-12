@@ -153,6 +153,9 @@
 		18B7C938129428CA009E7A26 /* SmartPlayList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C92D129428CA009E7A26 /* SmartPlayList.cpp */; };
 		18B7C97C1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C97A12943809009E7A26 /* GUIWindowAddonBrowser.cpp */; };
 		18B7C9831294385F009E7A26 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
+		18B8550B22271D3C0046F26D /* CarPlayUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B8550A22271D3C0046F26D /* CarPlayUtils.cpp */; };
+		18B8550C222726D10046F26D /* CarPlayUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B8550A22271D3C0046F26D /* CarPlayUtils.cpp */; };
+		18B8550F222832500046F26D /* CarPlayDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18B8550E222832500046F26D /* CarPlayDelegate.mm */; };
 		18BBE8DF1E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */; };
 		18BBE8E01E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */; };
 		18BBE8E11E7EEBDE00B36525 /* ServicesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */; };
@@ -3817,6 +3820,10 @@
 		18B7C9811294385F009E7A26 /* XMLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLUtils.cpp; sourceTree = "<group>"; };
 		18B7C9821294385F009E7A26 /* XMLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLUtils.h; sourceTree = "<group>"; };
 		18B7C9E7129447B9009E7A26 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtils.h; sourceTree = "<group>"; };
+		18B8550922271D3B0046F26D /* CarPlayUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CarPlayUtils.h; sourceTree = "<group>"; };
+		18B8550A22271D3C0046F26D /* CarPlayUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CarPlayUtils.cpp; sourceTree = "<group>"; };
+		18B8550D2228324F0046F26D /* CarPlayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CarPlayDelegate.h; sourceTree = "<group>"; };
+		18B8550E222832500046F26D /* CarPlayDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CarPlayDelegate.mm; sourceTree = "<group>"; };
 		18BBE8DD1E7EEBDE00B36525 /* ServicesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServicesDirectory.cpp; sourceTree = "<group>"; };
 		18BBE8DE1E7EEBDE00B36525 /* ServicesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServicesDirectory.h; sourceTree = "<group>"; };
 		18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLUtils.cpp; sourceTree = "<group>"; };
@@ -9408,6 +9415,8 @@
 				F5A0E2551E3A63190086B1D1 /* BitstreamWriter.h */,
 				DFECFB1A172D9D0100A43CF7 /* BooleanLogic.cpp */,
 				DFECFB1B172D9D0100A43CF7 /* BooleanLogic.h */,
+				18B8550A22271D3C0046F26D /* CarPlayUtils.cpp */,
+				18B8550922271D3B0046F26D /* CarPlayUtils.h */,
 				E38E1E290D25F9FD00618676 /* CharsetConverter.cpp */,
 				E38E1E2A0D25F9FD00618676 /* CharsetConverter.h */,
 				7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */,
@@ -9994,6 +10003,8 @@
 				18D533DC2236CFF10062B012 /* Launch Screen.storyboard */,
 				F54570841BF5947A00432C6A /* Info.plist.in */,
 				F59045321BA372A600DB589A /* InfoPlist.strings */,
+				18B8550D2228324F0046F26D /* CarPlayDelegate.h */,
+				18B8550E222832500046F26D /* CarPlayDelegate.mm */,
 				F59045351BA372A600DB589A /* IOSEAGLView.h */,
 				F59045361BA372A600DB589A /* IOSEAGLView.mm */,
 				F59045371BA372A600DB589A /* IOSExternalTouchController.h */,
@@ -12068,6 +12079,7 @@
 				7C140998183224B8009F9411 /* SettingDependency.cpp in Sources */,
 				7C14099B183224B8009F9411 /* SettingRequirement.cpp in Sources */,
 				7C14099E183224B8009F9411 /* SettingSection.cpp in Sources */,
+				18B8550C222726D10046F26D /* CarPlayUtils.cpp in Sources */,
 				F5FA260420545C080078DF4B /* ModuleXbmc.cpp in Sources */,
 				7C1409A1183224B8009F9411 /* SettingsManager.cpp in Sources */,
 				7C1409A4183224B8009F9411 /* SettingUpdate.cpp in Sources */,
@@ -12527,6 +12539,7 @@
 				F51D16F51E29950600A03C93 /* read_cache.c in Sources */,
 				E4991285174E5D9900741B6D /* DirectoryNodeAlbumTop100Song.cpp in Sources */,
 				E4991286174E5D9900741B6D /* DirectoryNodeArtist.cpp in Sources */,
+				18B8550F222832500046F26D /* CarPlayDelegate.mm in Sources */,
 				DF29BCEF1B5D911800904347 /* BaseEvent.cpp in Sources */,
 				E4991287174E5D9900741B6D /* DirectoryNodeGrouped.cpp in Sources */,
 				F585581A1DBA7CD200641870 /* ActiveAEFilter.cpp in Sources */,
@@ -12673,6 +12686,7 @@
 				E49912FD174E5DAD00741B6D /* GUILabelControl.cpp in Sources */,
 				E49912FE174E5DAD00741B6D /* GUIListContainer.cpp in Sources */,
 				E49912FF174E5DAD00741B6D /* GUIListGroup.cpp in Sources */,
+				18B8550B22271D3C0046F26D /* CarPlayUtils.cpp in Sources */,
 				E4991300174E5DAD00741B6D /* GUIListItem.cpp in Sources */,
 				E4991301174E5DAD00741B6D /* GUIListItemLayout.cpp in Sources */,
 				E4991302174E5DAD00741B6D /* GUIListLabel.cpp in Sources */,

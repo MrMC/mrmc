@@ -109,6 +109,8 @@ public:
   void GetRecentlyAddedAlbums(CFileItemList &recentlyAdded, int itemLimit, std::string type, std::string uuid);
   void GetInProgressShows(CFileItemList &inProgress, int itemLimit, std::string type, std::string uuid);
   void GetInProgressMovies(CFileItemList &inProgress, int itemLimit, std::string type, std::string uuid);
+  void GetMostPlayedSongs(CFileItemList &songs, int itemLimit, std::string type, std::string uuid);
+  void GetAllAlbums(CFileItemList &albums, std::string type, std::string uuid);
   void GetSubtitles(CFileItem &item);
   void GetMoreInfo(CFileItem &item);
   bool GetResolutions(CFileItem &item);

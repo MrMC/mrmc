@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2010-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2019 Team MrMC
+ *      http://mrmc.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,15 +13,22 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with MrMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>
+#include <string>
+#include "utils/Variant.h"
 
-@interface XBMCApplicationDelegate : NSObject <UIApplicationDelegate> {
-  CarPlayDelegate *CarPlay;
-}
-@end
+class CarPlayUtils
+{
+public:
+  static CFileItemList *GetRecentlyAddedAlbums();
+  static bool          GetAlbumSongs(CFileItemPtr itemPtr, CFileItemList &items);
+  static CFileItemList *GetMostPlayedSongs();
+  static CFileItemList *GetPlaylists();
+  static CFileItemList *GetPlaylistItems(std::string url);
+  static CFileItemList *GetArtists();
+  static CFileItemList *GetArtistAlbum(std::string url);
+};

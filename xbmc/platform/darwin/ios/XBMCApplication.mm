@@ -21,6 +21,7 @@
 #import <UIKit/UIKit.h>
 
 #import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios/CarPlayDelegate.h"
 #import "platform/darwin/ios/XBMCApplication.h"
 #import "platform/darwin/ios/XBMCController.h"
 #import "platform/darwin/ios/IOSScreenManager.h"
@@ -68,6 +69,7 @@ XBMCController *m_xbmcController;
 {
   [m_xbmcController stopAnimation];
   CDarwinUtils::ClearIOSInbox();
+  CCarPlayAnnounceReceiver::GetInstance().DeInitialize();
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -257,6 +259,11 @@ XBMCController *m_xbmcController;
   m_xbmcController = [[XBMCController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];  
   [m_xbmcController startAnimation];
   [self registerScreenNotifications:YES];
+
+  CCarPlayAnnounceReceiver::GetInstance().Initialize();
+  CarPlay = [CarPlayDelegate alloc];
+  [[MPPlayableContentManager sharedContentManager] setDataSource:CarPlay];
+  [[MPPlayableContentManager sharedContentManager] setDelegate:CarPlay];
 }
 
 - (BOOL)application:(UIApplication *)app

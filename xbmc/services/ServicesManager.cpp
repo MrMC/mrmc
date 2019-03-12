@@ -659,6 +659,65 @@ void CServicesManager::GetInProgressMovies(CFileItemList &inProgress, int itemLi
   }
 }
 
+void CServicesManager::GetMostPlayedSongs(CFileItemList &songs, int itemLimit, std::string type, std::string uuid)
+{
+  if (type == "plex" && CPlexUtils::HasClients())
+  {
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (!plexClient)
+      return;
+    CFileItemList plexItems;
+    std::vector<PlexSectionsContent> contents;
+    contents = plexClient->GetArtistContent();
+    for (const auto &content : contents)
+    {
+      CURL curl(plexClient->GetUrl());
+      curl.SetProtocol(plexClient->GetProtocol());
+      curl.SetFileName(content.section + "/all");
+      curl.SetProtocolOption("type","10");
+      curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", itemLimit));
+      CPlexUtils::GetPlexSongs(plexItems, curl.Get());
+    }
+    for (int item = 0; item < plexItems.Size(); ++item)
+    {
+      CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
+      plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(682));
+    }
+
+    CPlexUtils::SetPlexItemProperties(plexItems);
+    songs.Append(plexItems);
+  }
+  else if (type == "emby" && CEmbyUtils::HasClients())
+  {
+  }
+}
+
+void CServicesManager::GetAllAlbums(CFileItemList &albums, std::string type, std::string uuid)
+{
+  if (type == "plex" && CPlexUtils::HasClients())
+  {
+    CPlexClientPtr plexClient = CPlexServices::GetInstance().GetClient(uuid);
+    if (!plexClient)
+      return;
+    std::vector<PlexSectionsContent> contents;
+    contents = plexClient->GetArtistContent();
+    for (const auto &content : contents)
+    {
+      CURL curl(plexClient->GetUrl());
+      curl.SetProtocol(plexClient->GetProtocol());
+      curl.SetFileName(content.section + "/all");
+      curl.SetProtocolOption("type","8");
+      CPlexUtils::GetPlexArtistsOrAlbum(albums, curl.Get(), false);
+    }
+  }
+  else if (type == "emby" && CEmbyUtils::HasClients())
+  {
+
+  }
+}
+
+
+
 void CServicesManager::GetSubtitles(CFileItem &item)
 {
   if (item.HasProperty("PlexItem"))

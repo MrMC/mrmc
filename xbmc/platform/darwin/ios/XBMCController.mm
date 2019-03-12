@@ -49,6 +49,7 @@
 #import "windowing/WindowingFactory.h"
 #import "utils/SeekHandler.h"
 
+#import <MediaPlayer/MediaPlayer.h>
 #import <MediaPlayer/MPMediaItem.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
 
@@ -573,6 +574,7 @@ XBMCController *g_xbmcController;
 -(void)viewDidLoad
 {
   [super viewDidLoad];
+  [self createCustomControlCenter];
   g_application.SetVolume(100, true);
 }
 //--------------------------------------------------------------
@@ -1211,6 +1213,9 @@ XBMCController *g_xbmcController;
     usleep(50*1000);
   
   //PRINT_SIGNATURE();
+  // Sleep a bit to let app playback settle down,
+  // g_application.GetTime() seems to be jumpy
+  usleep(300*1000);
   NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
   
   NSNumber *elapsed = [NSNumber numberWithDouble:g_application.GetTime()];
@@ -1264,4 +1269,74 @@ XBMCController *g_xbmcController;
   
   return UIInterfaceOrientationMaskLandscape;
 }
+
+#pragma mark - control center
+- (void)createCustomControlCenter
+{
+  //PRINT_SIGNATURE();
+  MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+
+  // enable play button
+  MPRemoteCommand *playCommand = [commandCenter togglePlayPauseCommand];
+  [playCommand setEnabled:YES];
+  [playCommand addTarget:self action:@selector(onCCPlay:)];
+
+  // enable seek
+  MPRemoteCommand *seekBackwardIntervalCommand = [commandCenter seekForwardCommand];
+  [seekBackwardIntervalCommand setEnabled:YES];
+  [seekBackwardIntervalCommand addTarget:self action:@selector(onCCFF:)];
+
+  MPRemoteCommand *seekForwardIntervalCommand = [commandCenter seekBackwardCommand];
+  [seekForwardIntervalCommand setEnabled:YES];
+  [seekForwardIntervalCommand addTarget:self action:@selector(onCCREW:)];
+
+  // enable next/previous
+  MPRemoteCommand *previousTrackIntervalCommand = [commandCenter previousTrackCommand];
+  [previousTrackIntervalCommand setEnabled:YES];
+  [previousTrackIntervalCommand addTarget:self action:@selector(onCCPrev:)];
+
+  MPRemoteCommand *nextTrackIntervalCommand = [commandCenter nextTrackCommand];
+  [nextTrackIntervalCommand setEnabled:YES];
+  [nextTrackIntervalCommand addTarget:self action:@selector(onCCNext:)];
+
+  // seek bar
+  [commandCenter.changePlaybackPositionCommand addTarget:self action:@selector(onCCPlaybackPossition:)];
+
+}
+- (MPRemoteCommandHandlerStatus)onCCPlaybackPossition:(MPChangePlaybackPositionCommandEvent *) event
+{
+  NSMutableDictionary *info = [self.m_nowPlayingInfo mutableCopy];
+  NSNumber *elapsed = [NSNumber numberWithDouble:event.positionTime];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  [self setIOSNowPlayingInfo:info];
+  g_application.SeekTime(event.positionTime);
+  return MPRemoteCommandHandlerStatusSuccess;
+}
+- (void)onCCPlay:(MPRemoteCommandHandlerStatus*)event
+{
+  //PRINT_SIGNATURE();
+}
+- (void)onCCStop:(MPRemoteCommandHandlerStatus*)event
+{
+  //PRINT_SIGNATURE();
+}
+- (void)onCCFF:(MPRemoteCommandHandlerStatus*)event
+{
+  //PRINT_SIGNATURE();
+}
+- (void)onCCREW:(MPRemoteCommandHandlerStatus*)event
+{
+  //PRINT_SIGNATURE();
+}
+- (void)onCCNext:(MPRemoteCommandHandlerStatus*)event
+{
+  // PRINT_SIGNATURE();
+}
+- (void)onCCPrev:(MPRemoteCommandHandlerStatus*)event
+{
+  // PRINT_SIGNATURE();
+}
+
+
 @end
