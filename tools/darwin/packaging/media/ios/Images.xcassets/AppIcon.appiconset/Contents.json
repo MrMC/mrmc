@@ -1,6 +1,20 @@
 {
   "images" : [
     {
+      "size" : "60x60",
+      "idiom" : "car",
+      "expected-size" : "120",
+      "filename" : "car@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "60x60",
+      "idiom" : "car",
+      "expected-size" : "180",
+      "filename" : "car@3x.png",
+      "scale" : "3x"
+    },
+    {
       "size" : "20x20",
       "idiom" : "iphone",
       "filename" : "Icon-40.png",
