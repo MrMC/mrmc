@@ -868,8 +868,7 @@ XBMCController *g_xbmcController;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   // check whether we need disable network auto suspend.
-  [self rescheduleNetworkAutoSuspend];
-  CNetworkServices::GetInstance().StopPlexServices();
+//  [self rescheduleNetworkAutoSuspend];
 }
 
 //--------------------------------------------------------------
