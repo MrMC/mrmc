@@ -2084,7 +2084,10 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
 {
   if (m_appAlive == YES)
   {
-    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
+    // exclude if in dvd menu or we get a double press,
+    // one here and one in didUpdateFocusInContext
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo() &&
+        CFocusEngineHandler::GetInstance().GetFocusWindowID() != WINDOW_VIDEO_MENU)
     {
       switch (sender.state)
       {
@@ -2140,7 +2143,10 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
 {
   if (m_appAlive == YES)
   {
-    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
+    // exclude if in dvd menu or we get a double press,
+    // one here and one in didUpdateFocusInContext
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo() &&
+        CFocusEngineHandler::GetInstance().GetFocusWindowID() != WINDOW_VIDEO_MENU)
     {
       switch (sender.state)
       {
@@ -2238,7 +2244,10 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
 {
   if (m_appAlive == YES)
   {
-    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
+    // exclude if in dvd menu or we get a double press,
+    // one here and one in didUpdateFocusInContext
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo() &&
+        CFocusEngineHandler::GetInstance().GetFocusWindowID() != WINDOW_VIDEO_MENU)
     {
       switch (sender.state)
       {
@@ -2266,7 +2275,10 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
 {
   if (m_appAlive == YES)
   {
-    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo())
+    // exclude if in dvd menu or we get a double press,
+    // one here and one in didUpdateFocusInContext
+    if (CFocusEngineHandler::GetInstance().IsWindowFullScreenVideo() &&
+        CFocusEngineHandler::GetInstance().GetFocusWindowID() != WINDOW_VIDEO_MENU)
     {
       switch (sender.state)
       {
