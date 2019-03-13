@@ -33,6 +33,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/Base64URL.h"
 #include "CompileInfo.h"
+#include "filesystem/Directory.h"
 
 
 //#include "utils/StringHasher.h"
@@ -125,7 +126,8 @@ CFileItemList *CarPlayUtils::GetPlaylists()
   }
   else if (serverType == "mrmc")
   {
-
+    CFileItemList list;
+    XFILE::CDirectory::GetDirectory("special://musicplaylists/", *itemListData);
   }
   return itemListData;
 }

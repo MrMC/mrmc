@@ -153,12 +153,13 @@ CFileItemList *CCarPlayAnnounceReceiver::m_SelectedArtistAlbumsSongs;
     {
       if (CCarPlayAnnounceReceiver::m_Playlists->Size() > 0)
       {
+        std::string serverType = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_TYPE);
         CFileItemPtr itemPtr = CCarPlayAnnounceReceiver::m_Playlists->Get(itemIndex);
         contentItem = [[MPContentItem alloc] initWithIdentifier:[NSString stringWithFormat:@"AllPlaylistsItem %lu", itemIndex]];
         contentItem.title = [NSString stringWithCString:itemPtr->GetLabel().c_str()
                                                encoding:[NSString defaultCStringEncoding]];
-        contentItem.playable = NO;
-        contentItem.container = YES;
+        contentItem.playable = (serverType=="mrmc" || serverType.empty()) ? YES:NO;
+        contentItem.container = (serverType=="mrmc" || serverType.empty()) ? NO:YES;
         CURL curl(itemPtr->GetArt("thumb"));
         contentItem.artwork = [self MakeMediaItemArtworkCURL:&curl];
       }
@@ -335,6 +336,12 @@ initiatePlaybackOfContentItemAtIndexPath:(NSIndexPath *)indexPath
       // but start playback from the selected one
       playOffset = tabIndex1;
       items.Assign(*CCarPlayAnnounceReceiver::m_MPSongs);
+    }
+    else if (tabIndex == 2)
+    {
+      // Play Playlist items
+      CFileItemPtr itemPtr = CCarPlayAnnounceReceiver::m_Playlists->Get(tabIndex1);
+      items.Add(itemPtr);
     }
   }
   else if (indexPath.length == 3)
