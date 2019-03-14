@@ -307,7 +307,7 @@ float CBaseRenderer::RefreshWeight(float refresh, float fps)
   if (round < 1)
     return (fps - refresh) / fps;
   else
-    return (float)fabs(div / round - 1.0);
+    return (float)fabs(div / std::min(2, round) - 1.0);
 }
 
 RESOLUTION CBaseRenderer::GetResolution() const
