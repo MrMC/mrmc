@@ -309,36 +309,17 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     // setup defaults for IEC packed format
     m_format.m_sampleRate = m_sink_sampleRate;
     m_format.m_frameSize = 1;
-    m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
-
-    if (CJNIAudioManager::GetSDKVersion() >= 23)
-    {
-      CJNIAudioDeviceInfos audiodevices = CXBMCApp::GetAudioDeviceInfos();
-      for (auto dev : audiodevices)
-      {
-        if (dev.getType() == CJNIAudioDeviceInfo::TYPE_HDMI || dev.getType() == CJNIAudioDeviceInfo::TYPE_HDMI_ARC)
-        {
-          for (auto enc : dev.getEncodings())
-          {
-            if (enc == CJNIAudioFormat::ENCODING_IEC61937)
-            {
-              // defaults for ENCODING_IEC61937
-              m_encoding = CJNIAudioFormat::ENCODING_IEC61937;
-            }
-          }
-        }
-      }
-    }
-    else if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
-    {
-      // defaults for ENCODING_IEC61937
-      m_encoding = CJNIAudioFormat::ENCODING_IEC61937;
-    }
 
     if (m_passthroughIsIECPacked)
     {
       m_sink_frameSize = 2 * 2;
       atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
+      m_encoding = CJNIAudioFormat::ENCODING_IEC61937;
+      if (CJNIAudioManager::GetSDKVersion() < 24)
+      {
+        // Fallback to PCM, at users ears discretion
+        m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
+      }
       switch (m_format.m_streamInfo.m_type)
       {
         // Digital Dolby
@@ -774,42 +755,31 @@ void CAESinkAUDIOTRACK::Drain()
 bool CAESinkAUDIOTRACK::FormatNeedsIECPacked(const AEAudioFormat &format)
 {
   // ENCODING_IEC61937 mean all bitstreamed formats are IEC packed
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED))
-    return true;
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHIECPACKED))
+    return false;
 
-  bool needsIECPacked = true;
-  switch (format.m_streamInfo.m_type)
+  if (CJNIAudioManager::GetSDKVersion() >= 24)
   {
-    case CAEStreamInfo::STREAM_TYPE_AC3:
-      if (CJNIAudioFormat::ENCODING_AC3 != -1)
-        needsIECPacked = false;
-      break;
-    case CAEStreamInfo::STREAM_TYPE_EAC3:
-      if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
-        needsIECPacked = false;
-      break;
-    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-      if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
-        needsIECPacked = false;
-      break;
-    case CAEStreamInfo::STREAM_TYPE_DTS_512:
-    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
-    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
-    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-      if (CJNIAudioFormat::ENCODING_DTS != -1)
-        needsIECPacked = false;
-      break;
-    case CAEStreamInfo::STREAM_TYPE_DTSHD:
-    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
-      if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
-        needsIECPacked = false;
-      break;
-
-    default:
-      break;
+    // Check capability on API >= 24
+    CJNIAudioDeviceInfos audiodevices = CXBMCApp::GetAudioDeviceInfos();
+    for (auto dev : audiodevices)
+    {
+      if (dev.getType() == CJNIAudioDeviceInfo::TYPE_HDMI || dev.getType() == CJNIAudioDeviceInfo::TYPE_HDMI_ARC)
+      {
+        for (auto enc : dev.getEncodings())
+        {
+          if (enc == CJNIAudioFormat::ENCODING_IEC61937)
+            return true;
+        }
+      }
+    }
+    return false;
   }
-
-  return needsIECPacked;
+  else
+  {
+    // Fallback to PCM
+    return true;
+  }
 }
 
 void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
@@ -848,17 +818,26 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     m_info.m_dataFormats.push_back(AE_FMT_RAW);
 
     // digital dolby capabilities
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+    if (CJNIAudioFormat::ENCODING_AC3 != -1)
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+    if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+    if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
 
     // dts capabilities
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
+    if (CJNIAudioFormat::ENCODING_DTS != -1)
+    {
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+    }
+    if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
+    {
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
+    }
 
     // check encoding capabilities
     int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
