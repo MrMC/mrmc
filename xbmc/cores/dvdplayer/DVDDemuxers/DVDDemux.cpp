@@ -220,6 +220,9 @@ void CDemuxStream::CheckForInterlaced(const AVCodecParserContext *parser)
   if (vstream == nullptr)
     return;
 
+  if (vstream->bMaybeInterlaced > -1) // we already came to a conclusion
+    return;
+
   if (parser)
   {
     switch(parser->field_order)
@@ -227,21 +230,68 @@ void CDemuxStream::CheckForInterlaced(const AVCodecParserContext *parser)
       default:
       case AV_FIELD_PROGRESSIVE:
         // default value for bMaybeInterlaced but we set it anyway
-        vstream->bMaybeInterlaced = false;
+        vstream->bMaybeInterlaced = 0;
         break;
       case AV_FIELD_TT: //< Top coded_first, top displayed first
       case AV_FIELD_BB: //< Bottom coded first, bottom displayed first
       case AV_FIELD_TB: //< Top coded first, bottom displayed first
       case AV_FIELD_BT: //< Bottom coded first, top displayed first
-        vstream->bMaybeInterlaced = true;
+        vstream->bMaybeInterlaced = 1;
         break;
       case AV_FIELD_UNKNOWN:
-        {
-          // if picture_structure is AV_PICTURE_STRUCTURE_UNKNOWN, no clue so assume progressive
-          bool interlaced = parser->picture_structure == AV_PICTURE_STRUCTURE_TOP_FIELD;
-          interlaced |= parser->picture_structure == AV_PICTURE_STRUCTURE_BOTTOM_FIELD;
-          vstream->bMaybeInterlaced = interlaced;
-        }
+      {
+        // if picture_structure is AV_PICTURE_STRUCTURE_UNKNOWN, no clue so assume progressive
+        bool interlaced = parser->picture_structure == AV_PICTURE_STRUCTURE_TOP_FIELD;
+        interlaced |= parser->picture_structure == AV_PICTURE_STRUCTURE_BOTTOM_FIELD;
+        vstream->bMaybeInterlaced = (interlaced ? 1 : 0);
+      }
+        break;
+    }
+  }
+}
+
+void CDemuxStream::CheckForInterlaced(const AVStream *stream)
+{
+  CDemuxStreamVideo *vstream = dynamic_cast<CDemuxStreamVideo*>(this);
+  // paranoid check to make sure we are a video stream
+  if (vstream == nullptr)
+    return;
+
+  if (vstream->bMaybeInterlaced > -1) // we already came to a conclusion
+    return;
+
+  if (stream->parser)
+  {
+    CheckForInterlaced(stream->parser);
+    return;
+  }
+  else
+  {
+    AVCodecContext *avctx = avcodec_alloc_context3(NULL);
+    if (!avctx)
+      return;
+
+    int ret = avcodec_parameters_to_context(avctx, stream->codecpar);
+    if (ret < 0)
+    {
+      avcodec_free_context(&avctx);
+      return;
+    }
+
+    switch(avctx->field_order)
+    {
+      default:
+      case AV_FIELD_PROGRESSIVE:
+        vstream->bMaybeInterlaced = 0;
+        break;
+      case AV_FIELD_TT: //< Top coded_first, top displayed first
+      case AV_FIELD_BB: //< Bottom coded first, bottom displayed first
+      case AV_FIELD_TB: //< Top coded first, bottom displayed first
+      case AV_FIELD_BT: //< Bottom coded first, top displayed first
+        vstream->bMaybeInterlaced = 1;
+        break;
+      case AV_FIELD_UNKNOWN:
+        // No clue, yet
         break;
     }
   }

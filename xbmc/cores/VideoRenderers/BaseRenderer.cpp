@@ -54,7 +54,7 @@ CBaseRenderer::CBaseRenderer()
     m_rotatedDestCoords[i].x = 0;
     m_rotatedDestCoords[i].y = 0;
     m_savedRotatedDestCoords[i].x = 0;
-    m_savedRotatedDestCoords[i].y = 0;    
+    m_savedRotatedDestCoords[i].y = 0;
   }
 
   m_RenderUpdateCallBackFn = NULL;
@@ -281,9 +281,9 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
 
     int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 10000.0);
 
-    // Closer the better, prefer higher refresh rate if the same
+    // Closer the better, prefer lower refresh rate if the same
     if ((i_weight < c_weight) ||
-        (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate && loop_diff <= curr_diff) ||
+        (i_weight == c_weight && info.fRefreshRate < curr.fRefreshRate && loop_diff <= curr_diff) ||
         (i_weight == c_weight && info.fRefreshRate == curr.fRefreshRate && loop_diff < curr_diff))
     {
       current = (RESOLUTION)i;
@@ -371,7 +371,7 @@ inline void CBaseRenderer::ReorderDrawPoints()
   int diffY = 0;
   int centerX = 0;
   int centerY = 0;
-  
+
   if (changeAspect)// we are either rotating by 90 or 270 degrees which inverts aspect ratio
   {
     int newWidth = m_destRect.Height(); // new width is old height
@@ -398,7 +398,7 @@ inline void CBaseRenderer::ReorderDrawPoints()
         newWidth /= aspectRatio;
       }
     }
-    
+
     // calculate the center point of the view
     centerX = m_viewRect.x1 + m_viewRect.Width() / 2;
     centerY = m_viewRect.y1 + m_viewRect.Height() / 2;
@@ -409,7 +409,7 @@ inline void CBaseRenderer::ReorderDrawPoints()
     // calculate the number of pixels we need to go in each
     // y direction from the center point
     diffY = newHeight / 2;
-    
+
   }
 
   for (int destIdx=0, srcIdx=pointOffset; destIdx < 4; destIdx++)
@@ -453,13 +453,13 @@ void CBaseRenderer::saveRotatedCoords()
 void CBaseRenderer::syncDestRectToRotatedPoints()
 {
   m_rotatedDestCoords[0].x = m_destRect.x1;
-  m_rotatedDestCoords[0].y = m_destRect.y1;  
+  m_rotatedDestCoords[0].y = m_destRect.y1;
   m_rotatedDestCoords[1].x = m_destRect.x2;
   m_rotatedDestCoords[1].y = m_destRect.y1;
   m_rotatedDestCoords[2].x = m_destRect.x2;
-  m_rotatedDestCoords[2].y = m_destRect.y2;  
+  m_rotatedDestCoords[2].y = m_destRect.y2;
   m_rotatedDestCoords[3].x = m_destRect.x1;
-  m_rotatedDestCoords[3].y = m_destRect.y2; 
+  m_rotatedDestCoords[3].y = m_destRect.y2;
 }
 
 void CBaseRenderer::restoreRotatedCoords()

@@ -113,6 +113,7 @@ public:
   virtual void      SetDiscard(AVDiscard discard);
   virtual AVDiscard GetDiscard();
   virtual void CheckForInterlaced(const AVCodecParserContext *parser);
+  virtual void CheckForInterlaced(const AVStream *stream);
 
   int iId;         // most of the time starting from 0
   int iPhysicalId; // id
@@ -135,7 +136,7 @@ public:
   int  changes; // increment on change which player may need to know about
 
   enum EFlags
-  { FLAG_NONE             = 0x0000 
+  { FLAG_NONE             = 0x0000
   , FLAG_DEFAULT          = 0x0001
   , FLAG_DUB              = 0x0002
   , FLAG_ORIGINAL         = 0x0004
@@ -170,7 +171,7 @@ public:
     iColorRange = 0;
     iColorTransfer = 0;
     iColorPrimaries = 0;
-    bMaybeInterlaced = false;
+    bMaybeInterlaced = -1;
   }
 
   virtual ~CDemuxStreamVideo() {}
@@ -191,7 +192,7 @@ public:
   int iColorTransfer;
   int iColorPrimaries;
   std::string stereo_mode; // expected stereo mode
-  bool bMaybeInterlaced; // stream 'might' be interlaced, on some, we can't tell for sure unless decoding.
+  int bMaybeInterlaced; // stream 'might' be interlaced, on some, we can't tell for sure unless decoding.
 };
 
 class CDemuxStreamAudio : public CDemuxStream

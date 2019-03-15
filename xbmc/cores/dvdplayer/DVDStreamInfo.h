@@ -79,7 +79,7 @@ public:
   int colorprimaries;
   int pid;
   std::string stereo_mode; // stereoscopic 3d mode
-  bool maybe_interlaced;   // stream 'might' be interlaced, on some, we can't tell for sure unless decoding.
+  int maybe_interlaced;   // stream 'might' be interlaced, on some, we can't tell for sure unless decoding.
 
   // AUDIO
   int channels;
@@ -104,14 +104,14 @@ public:
     if (this != &right)
       Assign(right, true);
 
-    return *this; 
+    return *this;
   }
 
   bool operator==(const CDemuxStream& right)      { return Equal( CDVDStreamInfo(right, true), true);}
   bool operator!=(const CDemuxStream& right)      { return !Equal( CDVDStreamInfo(right, true), true);}
 
   CDVDStreamInfo& operator=(const CDemuxStream& right)
-  { 
+  {
     Assign(right, true);
     return *this;
   }

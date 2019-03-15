@@ -537,7 +537,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       break;
   }
 
-  if (hints.maybe_interlaced)
+  if (hints.maybe_interlaced > 0)
   {
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open - possible interlaced codec(%s%s), profile(%d), level(%d)",
       m_formatname.c_str(), m_render_surface ? "-sfc" : "-egl", hints.profile, hints.level);
@@ -692,7 +692,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     // for FireOS, MediaCodec returns the interlaced frames as is,
     // for Shield, MediaCodec will kick in an internal deinterlacer
     // and return progressive frames.
-    if (hints.maybe_interlaced)
+    if (hints.maybe_interlaced > 0)
     {
       m_videobuffer.iFlags |= DVP_FLAG_INTERLACED;
       // should be DVP_FLAG_TOP_FIELD_FIRST but android seems to be inverted ?

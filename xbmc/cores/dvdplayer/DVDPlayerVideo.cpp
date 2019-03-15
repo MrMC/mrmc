@@ -438,6 +438,7 @@ void CDVDPlayerVideo::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
+      m_hints.maybe_interlaced = pPacket->interlaced;
       if (m_stalled)
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");
@@ -880,6 +881,16 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
 #ifdef HAS_VIDEO_PLAYBACK
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
+  if (m_hints.maybe_interlaced == 1)
+  {
+    CLog::Log(LOGDEBUG, "%s - interlaced: %s", __FUNCTION__,
+              m_hints.maybe_interlaced ? "yes" : "no");
+
+    if (MathUtils::FloatEquals(config_framerate, 25.0, 0.02))
+      config_framerate = 50.0;
+    else if (MathUtils::FloatEquals(config_framerate, 29.97, 0.02))
+      config_framerate = 59.94;  }
+
   double render_framerate = g_graphicsContext.GetFPS();
   // disable switching if running video splash
   int settingAdjustRefreshRate = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE);

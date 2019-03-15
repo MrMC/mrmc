@@ -264,7 +264,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       {
         url.SetProtocol("mmst");
         strFile = url.Get();
-      } 
+      }
     }
  #if 0
     if (url.IsFileType("m3u8"))
@@ -446,9 +446,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   }
 
   // Avoid detecting framerate if advancedsettings.xml says so
-  if (g_advancedSettings.m_videoFpsDetect == 0) 
+  if (g_advancedSettings.m_videoFpsDetect == 0)
       m_pFormatContext->fps_probe_size = 0;
-  
+
   // analyse very short to speed up mjpeg playback start
   if (iformat && (strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->seekable == 0)
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
@@ -987,6 +987,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         // content has changed
         stream = AddStream(pPacket->iStreamId);
       }
+      pPacket->interlaced = ((CDemuxStreamVideo*)stream)->bMaybeInterlaced;
     }
     if (!stream)
     {
@@ -1094,7 +1095,7 @@ bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
 void CDVDDemuxFFmpeg::UpdateCurrentPTS()
 {
   m_currentPts = DVD_NOPTS_VALUE;
-  
+
   int idx = av_find_default_stream_index(m_pFormatContext);
   if (idx >= 0)
   {
@@ -1262,7 +1263,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iChannelLayout = pStream->codec->channel_layout;
         if (st->iBitsPerSample == 0)
           st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
-	
+
         if(av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
 
@@ -1346,10 +1347,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iColorRange = pStream->codec->color_range;
         st->iColorTransfer = pStream->codec->color_trc;
         st->iColorPrimaries = pStream->codec->color_primaries;
-        st->CheckForInterlaced(pStream->parser);
+        st->CheckForInterlaced(pStream);
 
         AVDictionaryEntry *rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
-        if (rtag) 
+        if (rtag)
           st->iOrientation = atoi(rtag->value);
 
         // detect stereoscopic mode
@@ -1360,7 +1361,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         if (!stereoMode.empty())
           st->stereo_mode = stereoMode;
 
-        
+
         if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
         {
           if (pStream->codec->codec_id == AV_CODEC_ID_PROBE)
@@ -1425,10 +1426,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         {
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           stream = st;
-	    
+
           if(av_dict_get(pStream->metadata, "title", NULL, 0))
             st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
-	
+
           break;
         }
       }
@@ -1611,7 +1612,7 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName, int chapterIdx
   if (chapterIdx <= 0 || chapterIdx > GetChapterCount())
     chapterIdx = GetChapter();
   CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
-  if(ich)  
+  if(ich)
     ich->GetChapterName(strChapterName, chapterIdx);
   else
   {
@@ -1633,7 +1634,7 @@ int64_t CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
     return 0;
 
   CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
-  if(ich)  
+  if(ich)
     return ich->GetChapterPos(chapterIdx);
 
   return m_pFormatContext->chapters[chapterIdx-1]->start*av_q2d(m_pFormatContext->chapters[chapterIdx-1]->time_base);
@@ -1882,10 +1883,6 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
       {
         st->codec->extradata_size = 0;
       }
-      // check for interlaced content, the check in AddStream might
-      // be skipped if parser is null, we do it in both places
-      if (stream)
-        stream->CheckForInterlaced(st->parser);
     }
   }
 
@@ -1927,6 +1924,11 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
     avcodec_decode_video2(st->codec, &picture, &got_picture, pkt);
     av_frame_unref(&picture);
   }
+
+  // check for interlaced content, the check in AddStream might
+  // be skipped if parser is null, we do it in both places
+  if (stream)
+    stream->CheckForInterlaced(st);
 }
 
 bool CDVDDemuxFFmpeg::IsVideoReady()

@@ -203,10 +203,10 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       memcpy(hints.extradata, saved_extradata, hints.extrasize);
 
       if (interlaced)
-        hints.maybe_interlaced = true;
+        hints.maybe_interlaced = 1;
     }
 
-    if (hints.maybe_interlaced)
+    if (hints.maybe_interlaced > 1)
     {
       CLog::Log(LOGNOTICE, "%s - interlaced content.", __FUNCTION__);
       return false;
@@ -214,7 +214,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 
     m_hints = hints;
     m_options = options;
- 
+
     switch(m_hints.profile)
     {
       //case FF_PROFILE_H264_HIGH_10:
@@ -235,7 +235,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         __FUNCTION__, m_hints.width, m_hints.height);
       return false;
     }
-    
+
     switch (m_hints.codec)
     {
       default:
@@ -390,7 +390,7 @@ void CDVDVideoCodecVideoToolBox::Dispose()
     m_videobuffer.cvBufferRef = nullptr;
     m_videobuffer.iFlags = 0;
   }
-  
+
   while (m_queue_depth)
     DisplayQueuePop();
 }
@@ -459,7 +459,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
       CLog::Log(LOGNOTICE, "%s - CreateSampleBufferFrom failed", __FUNCTION__);
       return VC_ERROR;
     }
-    
+
     VTDecodeFrameFlags decoderFlags = 0;
     if (m_enable_temporal_processing)
       decoderFlags |= kVTDecodeFrame_EnableTemporalProcessing;
@@ -533,7 +533,7 @@ void CDVDVideoCodecVideoToolBox::Reset(void)
 
   while (m_queue_depth)
     DisplayQueuePop();
-  
+
   m_codecControlFlags = 0;
 }
 
@@ -600,7 +600,7 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     CLog::Log(LOGDEBUG, "%s - VTBDecoderDecode dts(%f), pts(%f), old_pts(%f)", __FUNCTION__,
       pDvdVideoPicture->dts, pDvdVideoPicture->pts, old_pts);
   old_pts = pDvdVideoPicture->pts;
-  
+
 //  CLog::Log(LOGDEBUG, "%s - VTBDecoderDecode dts(%f), pts(%f), cvBufferRef(%p)", __FUNCTION__,
 //    pDvdVideoPicture->dts, pDvdVideoPicture->pts, pDvdVideoPicture->cvBufferRef);
 
@@ -1214,10 +1214,10 @@ CDVDVideoCodecVideoToolBox::DestroyVTSession()
 typedef void (*VTDecompressionOutputCallback)(
 		void * CM_NULLABLE decompressionOutputRefCon,
 		void * CM_NULLABLE sourceFrameRefCon,
-		OSStatus status, 
+		OSStatus status,
 		VTDecodeInfoFlags infoFlags,
 		CM_NULLABLE CVImageBufferRef imageBuffer,
-		CMTime presentationTimeStamp, 
+		CMTime presentationTimeStamp,
 		CMTime presentationDuration );
 
 void
@@ -1269,7 +1269,7 @@ CDVDVideoCodecVideoToolBox::VTDecoderCallback(
   {
     newFrame->width  = CVPixelBufferGetWidth(imageBuffer);
     newFrame->height = CVPixelBufferGetHeight(imageBuffer);
-  }  
+  }
   newFrame->pixel_buffer_format = CVPixelBufferGetPixelFormatType(imageBuffer);;
   newFrame->pixel_buffer_ref = CVBufferRetain(imageBuffer);
   newFrame->pts = (double)pts.value;

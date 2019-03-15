@@ -71,7 +71,7 @@ void CDVDStreamInfo::Clear()
   colorprimaries = 0;
   pid = 0;
   stereo_mode.clear();
-  maybe_interlaced = false;
+  maybe_interlaced = -1;
 
   channels   = 0;
   samplerate = 0;
