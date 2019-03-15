@@ -653,17 +653,25 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, uint32_t flags, uint32_t 
           bool adjusted = false;
           uint64_t cs = CurrentHostCounter();
           uint64_t vs = CXBMCApp::GetVsyncTime();
-          double frameduration = mci->GetDuration() * DVD_TIME_BASE;
+          double frameduration = mci->GetDuration() * CurrentHostFrequency();
           ts = vs + (frameduration * 1.5);
           if (m_lastVs)
           {
-            if (vs - m_lastVs > frameduration * 1.1)  // missed vsync
+            if (vs - m_lastVs <= 0)  // double play in same vsync
             {
               adjusted = true;
-              ts -= frameduration / 2;
+              ts += frameduration;
+            }
+            else if (vs - m_lastVs > frameduration * 1.1)  // missed vsync
+            {
+              adjusted = true;
+              vs -= frameduration;
+              ts -= frameduration;
             }
           }
-//          CLog::Log(LOGDEBUG, "ReleaseOutputBuffer: idx: %d(0x%p); cur:%lld; vsync: %lld; pts: %lld; dur: %f; target: %lld; adj: %s; diff: %lld", mci->GetIndex(), mci, cs, vs, mci->GetTimestamp(), frameduration, ts, adjusted ? "true" : "false", ts - m_lastTs);
+          else
+            ts = cs;
+          //CLog::Log(LOGDEBUG, "ReleaseOutputBuffer: idx: %d(0x%p); cur:%lld; vsync: %lld; pts: %lld; dur: %f; target: %lld; adj: %s; diff: %lld; syncdiff: %lld", mci->GetIndex(), mci, cs, vs, mci->GetTimestamp(), frameduration, ts, adjusted ? "true" : "false", ts - m_lastTs, vs - m_lastVs);
           mci->ReleaseOutputBuffer(ts);
           m_lastVs = vs;
           m_lastTs = ts;
