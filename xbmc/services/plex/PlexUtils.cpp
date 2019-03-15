@@ -456,7 +456,7 @@ bool CPlexUtils::GetPlexMusicPlaylistItems(CFileItemList &items, const std::stri
 {
   // for clarity we call GetPlexMusicPlaylistItems which is the same as GetPlexSongs.
   // where are music videos?
-  return GetPlexSongs(items,url);;
+  return GetPlexSongs(items,url);
 }
 
 #pragma mark - Plex Continue Watching
