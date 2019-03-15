@@ -523,6 +523,7 @@ bool CEmbyUtils::GetEmbyInProgressMovies(CFileItemList &items, const std::string
   url2.SetOption("Limit", StringUtils::Format("%i",limit));
   url2.SetOption("GroupItems", "False");
   url2.SetOption("Fields", MoviesFields);
+  url2.SetOption("Recursive", "true");
   CVariant result = GetEmbyCVariant(url2.Get());
 
   bool rtn = ParseEmbyVideos(items, url2, result, MediaTypeMovie);
