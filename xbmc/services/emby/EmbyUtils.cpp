@@ -334,7 +334,58 @@ bool CEmbyUtils::GetMoreItemInfo(CFileItem &item)
 
 bool CEmbyUtils::GetMoreResolutions(CFileItem &item)
 {
-  return true;
+  std::string id = item.GetMediaServiceId();
+  std::string url = item.GetVideoInfoTag()->m_strFileNameAndPath;
+
+  if (URIUtils::IsStack(url))
+    url = XFILE::CStackDirectory::GetFirstStackedFile(url);
+  else
+    url = URIUtils::GetParentPath(url);
+
+  CEmbyClientPtr client = CEmbyServices::GetInstance().FindClient(url);
+  CURL curl(client->GetUrl());
+  curl.SetProtocol(client->GetProtocol());
+  curl.SetFileName("emby/Users/" + client->GetUserID() + "/Items/" + id);
+
+
+  CContextButtons choices;
+  std::vector<CFileItem> resolutionList;
+
+  RemoveSubtitleProperties(item);
+  CVariant variant = GetEmbyCVariant(curl.Get());
+  if (!variant.isNull() && variant.isObject() && variant.isMember("MediaSources"))
+  {
+//    CFileItemPtr item = ToVideoFileItemPtr(url, objectItem, videoType);
+    const CVariant video(variant["MediaSources"]);
+    if (!video.isNull())
+    {
+//      const CVariant variantMedia = makeVariantArrayIfSingleItem(video["Media"]);
+      for (auto variantIt = video.begin_array(); variantIt != video.end_array(); ++variantIt)
+      {
+        if (*variantIt != CVariant::VariantTypeNull)
+        {
+          CFileItem mediaItem(item);
+          GetResolutionDetails(mediaItem, *variantIt);
+//          GetMediaDetals(mediaItem, curl, *variantIt);
+          resolutionList.push_back(mediaItem);
+          choices.Add(resolutionList.size(), mediaItem.GetProperty("EmbyResolutionChoice").c_str());
+        }
+      }
+    }
+    if (resolutionList.size() < 2)
+      return true;
+
+    int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+    if (button > -1)
+    {
+      m_curItem = resolutionList[button - 1];
+      item.UpdateInfo(m_curItem, false);
+      item.SetPath(m_curItem.GetPath());
+      return true;
+    }
+  }
+
+  return false;
 }
 
 bool CEmbyUtils::GetURL(CFileItem &item)
@@ -1850,6 +1901,47 @@ void CEmbyUtils::GetMediaDetals(CFileItem &item, const CVariant &variant, std::s
     CEmbyClientPtr client = CEmbyServices::GetInstance().FindClient(url.Get());
     std::string userId = client->GetUserID();
     item.SetProperty("EmbyMovieTrailer","Users/" + userId + "/Items/" + id +"/LocalTrailers");
+  }
+}
+
+void CEmbyUtils::GetResolutionDetails(CFileItem &item, const CVariant &variant)
+{
+  if (variant.isMember("MediaStreams") && variant["MediaStreams"].isArray())
+  {
+    CStreamDetails streamDetail;
+    item.SetProperty("EmbyResolutionChoice", variant["Name"].asString());
+    const auto& streams = variant["MediaStreams"];
+    for (auto streamIt = streams.begin_array(); streamIt != streams.end_array(); ++streamIt)
+    {
+      const auto stream = *streamIt;
+      const auto streamType = stream["Type"].asString();
+      if (streamType == "Video")
+      {
+        CStreamDetailVideo* videoStream = new CStreamDetailVideo();
+        videoStream->m_strCodec = stream["Codec"].asString();
+        videoStream->m_fAspect = (float)stream["Width"].asInteger()/stream["Height"].asInteger();
+        videoStream->m_strLanguage = stream["Language"].asString();
+        videoStream->m_iWidth = static_cast<int>(stream["Width"].asInteger());
+        videoStream->m_iHeight = static_cast<int>(stream["Height"].asInteger());
+        videoStream->m_iDuration = item.GetVideoInfoTag()->m_duration;
+
+        streamDetail.AddStream(videoStream);
+      }
+      else if (streamType == "Audio")
+      {
+        CStreamDetailAudio* audioStream = new CStreamDetailAudio();
+        audioStream->m_strCodec = stream["Codec"].asString();
+        audioStream->m_strLanguage = stream["Language"].asString();
+        audioStream->m_iChannels = static_cast<int>(stream["Channels"].asInteger());
+
+        streamDetail.AddStream(audioStream);
+      }
+    }
+    CURL url(item.GetPath());
+    url.SetOption("mediaSourceId", variant["Id"].asString());
+    item.SetPath(url.Get());
+    item.GetVideoInfoTag()->m_streamDetails = streamDetail;
+    // mediaSourceId=f02ab5ce70f0c9c288c471e50f61b154
   }
 }
 

@@ -119,6 +119,7 @@ private:
   static void GetVideoDetails(CFileItem &item, const CVariant &variant);
   static void GetMusicDetails(CFileItem &item, const CVariant &variant);
   static void GetMediaDetals(CFileItem &item, const CVariant &variant, std::string id = "0");
+  static void GetResolutionDetails(CFileItem &item, const CVariant &variant);
   static void RemoveSubtitleProperties(CFileItem &item);
   
 };
