@@ -836,7 +836,7 @@ static int hasNotch = -1;
 //--------------------------------------------------------------
 - (void)enterBackground
 {
-  if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+  if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = TRUE;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
@@ -868,7 +868,7 @@ static int hasNotch = -1;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   // check whether we need disable network auto suspend.
-//  [self rescheduleNetworkAutoSuspend];
+  [self disableNetworkAutoSuspend];
 }
 
 //--------------------------------------------------------------
