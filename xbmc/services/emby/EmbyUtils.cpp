@@ -238,7 +238,7 @@ void CEmbyUtils::ReportProgress(CFileItem &item, double currentSeconds)
       */
 
       CURL curl(item.GetPath());
-      if (status == "playing")
+      if (status == "playing" || status == "paused")
       {
         if (g_progressSec < 0)
           // playback started
