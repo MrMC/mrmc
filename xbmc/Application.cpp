@@ -3226,6 +3226,13 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.GetMimeType().empty())
     const_cast<CFileItem&>(item).FillInMimeType();
 
+  if (item.IsMediaServiceBased())
+  {
+    if (!CServicesManager::GetInstance().GetResolutions(const_cast<CFileItem&>(item)))
+      return PLAYBACK_CANCELED;
+    CServicesManager::GetInstance().GetURL(const_cast<CFileItem&>(item));
+  }
+
   if (!bRestart)
   {
     SaveFileState(true);

@@ -642,13 +642,6 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
       if (value == SELECT_ACTION_RESUME)
         itemPtr.m_lStartOffset = STARTOFFSET_RESUME;
     }
-
-    if (itemPtr.IsMediaServiceBased())
-    {
-      if (!CServicesManager::GetInstance().GetResolutions(itemPtr))
-        return false;
-      CServicesManager::GetInstance().GetURL(itemPtr);
-    }
     else if (itemPtr.IsCloud())
     {
       CCloudUtils::GetInstance().GetURL(itemPtr);
