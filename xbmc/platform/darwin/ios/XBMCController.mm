@@ -77,6 +77,8 @@ XBMCController *g_xbmcController;
 @synthesize m_networkAutoSuspendTimer;
 @synthesize m_nowPlayingInfo;
 
+static int hasNotch = -1;
+
 #pragma mark - internal key press methods
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -567,8 +569,6 @@ XBMCController *g_xbmcController;
 
     [self createGestureRecognizers];
   }
-
-  m_hasNotch = CDarwinUtils::IosHasNotch();
 }
 //--------------------------------------------------------------
 -(void)viewDidLoad
@@ -1263,7 +1263,9 @@ XBMCController *g_xbmcController;
 
 -(NSUInteger)supportedInterfaceOrientations
 {
-  if (m_hasNotch)
+  if (hasNotch == -1)
+    hasNotch = CDarwinUtils::IosHasNotch();
+  if (hasNotch)
     return UIInterfaceOrientationMaskLandscapeRight;
   
   return UIInterfaceOrientationMaskLandscape;
