@@ -579,16 +579,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     m_playbackHead -= m_playbackHeadOffset;
 
   double headSeconds = ((double)m_playbackHead / m_sink_sampleRate);
-  if (headSeconds > m_writeSeconds)
-  {
-    // this should never happend, head should always
-    // be less than or equal to what we have written.
-    CLog::Log(LOGERROR, "AESinkAUDIOTRACK::GetDelay over-write error, "
-      "frameSize=%d, headSeconds=%f, m_writeSeconds=%f", m_sink_frameSize, headSeconds, m_writeSeconds);
-    status.SetDelay(0);
-    return;
-  }
-
   double delay = m_writeSeconds - headSeconds;
 
   if (g_advancedSettings.CanLogComponent(LOGAUDIO))
@@ -596,8 +586,14 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
       "headSeconds=%f, writeSeconds=%f, delay=%f",
        headSeconds, m_writeSeconds, delay);
 
-  if (delay < 0)
+  if (delay < -0.001)  // Pesky double comparisons
+  {
+    // this should never happend, head should always
+    // be less than or equal to what we have written.
+    CLog::Log(LOGERROR, "AESinkAUDIOTRACK::GetDelay over-write error, "
+                        "frameSize=%d, headSeconds=%f, m_writeSeconds=%f", m_sink_frameSize, headSeconds, m_writeSeconds);
     delay = 0;
+  }
 
   const double d = GetMovingAverageDelay(delay);
   m_lastdelay = d;
