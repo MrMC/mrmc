@@ -24,6 +24,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "GUIUserMessages.h"
+#include "addons/Skin.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderCapture.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -1058,6 +1059,7 @@ PlexServerInfo CPlexServices::ParsePlexDeviceNode(const TiXmlElement* DeviceNode
   serverInfo.serverName = XMLUtils::GetAttribute(DeviceNode, "name");
   serverInfo.accessToken = XMLUtils::GetAttribute(DeviceNode, "accessToken");
   serverInfo.httpsRequired = XMLUtils::GetAttribute(DeviceNode, "httpsRequired");
+  serverInfo.publicAdrressMatch = XMLUtils::GetAttribute(DeviceNode, "publicAddressMatches") == "1" ? true : false;
 
   const TiXmlElement* ConnectionNode = DeviceNode->FirstChildElement("Connection");
   while (ConnectionNode)
@@ -1103,8 +1105,11 @@ bool CPlexServices::AddClient(CPlexClientPtr foundClient)
   CWakeOnAccess::GetInstance().WakeUpHost(foundClient->GetHost(), "Plex Server");
 
   // only add new clients that are present
-  if (foundClient->GetPresence() && foundClient->ParseSections(PlexSectionParsing::newSection))
+  if (foundClient->GetPresence())
   {
+    std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+    if (uuid == foundClient->GetUuid() || !g_SkinInfo->IsDynamicHomeCompatible())
+      foundClient->ParseSections(PlexSectionParsing::newSection);
     m_clients.push_back(foundClient);
     m_hasClients = !m_clients.empty();
     return true;
@@ -1289,4 +1294,16 @@ std::string CPlexServices::PickHomeUser()
     return homeUserName;
   }
   return "";
+}
+
+bool CPlexServices::ParseCurrentServerSections()
+{
+  std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+  CPlexClientPtr client = GetClient(uuid);;
+  if (client)
+  {
+    client->ParseSections(PlexSectionParsing::newSection);
+    return true;
+  }
+  return false;
 }

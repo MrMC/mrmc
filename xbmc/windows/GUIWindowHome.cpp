@@ -508,6 +508,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_TYPE,type);
         CSettings::GetInstance().SetString(CSettings::SETTING_GENERAL_SERVER_UUID,uuid);
         CSettings::GetInstance().Save();
+        if (type == "plex")
+          CPlexServices::GetInstance().ParseCurrentServerSections();
+        else if (type == "emby")
+          CEmbyServices::GetInstance().ParseCurrentServerSections();
         SetupServices();
         CVariant data(CVariant::VariantTypeObject);
         data["uuid"] = uuid;

@@ -69,6 +69,7 @@ public:
   std::string GetHomeUserName() { return m_myHomeUser; };
   std::string GetHomeUserThumb() { return m_myHomeUserThumb; };
   MediaServicesPlayerState GetPlayState() { return m_playState; };
+  bool ParseCurrentServerSections();
 
   // ISettingCallback
   virtual void OnSettingAction(const CSetting *setting) override;
