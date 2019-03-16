@@ -54,6 +54,7 @@ typedef struct PlexServerInfo
   std::string serverName;
   std::string accessToken;
   std::string httpsRequired;
+  bool        publicAdrressMatch;
   std::vector<PlexConnection> connections;
 } PlexServerInfo;
 
