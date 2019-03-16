@@ -176,8 +176,8 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
       return false;
     }
   }
-  // boost center
-  else if (boost_center > 0 && m_dst_channels > 2)
+  // boost center (if we have a center)
+  else if (boost_center > 0 && (m_dst_chan_layout & AV_CH_FRONT_CENTER) )
   {
     float gain = pow(10.0f, ((float)(-3 + boost_center))/20.0f);
     memset(m_rematrix, 0, sizeof(m_rematrix));
@@ -189,10 +189,8 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
         case AV_CH_LOW_FREQUENCY:
         case AV_CH_FRONT_CENTER:
           m_rematrix[in][in] = 1.0;
-          m_rematrix[in][in] = 1.0;
           break;
         default:
-          m_rematrix[in][in] = 1.0 / gain;
           m_rematrix[in][in] = 1.0 / gain;
           break;
       }
