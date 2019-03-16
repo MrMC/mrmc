@@ -71,9 +71,8 @@ bool CAudioSinkAVFoundation::Create(const DVDAudioFrame &audioframe, AVCodecID c
   while (!CAEFactory::IsSuspended() && !timer.IsTimePast())
     usleep(1 * 1000);
 
-  // EAC3 can have 1,2,3 or 6 audio blocks of 256 bytes per sync frame
+  // EAC3 can have many audio blocks of 256 bytes per sync frame
   m_frameSize = audioframe.format.m_streamInfo.m_frameSize;
-  m_frameSize = 1792;
   m_startPtsFlag = false;
   m_startPtsSeconds = 0;
   m_sinkErrorSeconds = 0;
@@ -328,18 +327,16 @@ void CAudioSinkAVFoundation::Process()
   {
     double sink_s = 0.0;
     double buffer_s = 0.0;
-    double buffer2_s = 0.0;
     double absolute;
     double player_s = m_pClock->GetClock(absolute) / DVD_TIME_BASE;
     if (m_startPtsFlag && m_sink)
     {
       sink_s = m_sink->AVAudioSinkTimeSeconds() + m_startPtsSeconds;
       buffer_s = m_sink->AVAudioSinkDelaySeconds();
-      buffer2_s = m_sink->AVAudioSinkDelay2Seconds();
     }
     CLog::Log(LOGDEBUG, "CAudioSinkAVFoundation::Process "
-      "buffer2_s (%f), buffer_s (%f), player_s(%f), sink_s(%f), delta(%f)",
-      buffer2_s, buffer_s, player_s, sink_s, player_s - sink_s);
+      "buffer_s (%f), player_s(%f), sink_s(%f), delta(%f)",
+      buffer_s, player_s, sink_s, player_s - sink_s);
 
     Sleep(250);
   }
