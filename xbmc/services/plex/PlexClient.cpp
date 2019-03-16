@@ -123,12 +123,18 @@ bool CPlexClient::Init(const PlexServerInfo &serverInfo)
       CURL url;
       if (serverInfo.publicAdrressMatch)
       {
+        // publicAdrressMatch indicates that we are
+        // on the same LAN as Plex server
         url.SetHostName(connection.address);
         url.SetProtocol(connection.protocol);
         url.SetPort(std::atoi(connection.port.c_str()));
       }
       else
       {
+        // if we are not on the same LAN (as above)
+        // there is no point of trying the local address, so we skip it
+        if (!connection.external)
+          continue;
         CURL url1(connection.uri);
         url = url1;
       }
