@@ -1350,7 +1350,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
   "videodb://movies/countries"
   "videodb://movies/studios"
   */
-  bool isDynamicHomeCompatible = g_SkinInfo->IsDynamicHomeCompatible();
+  bool isDynamicHomeCompatible = (g_SkinInfo && !g_SkinInfo->IsDynamicHomeCompatible());
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "movietitles"||
       lower == "moviegenres"||
