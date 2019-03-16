@@ -916,7 +916,7 @@ void CGUIWindowMusicNav::AddSearchFolder()
 
 std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
-  bool isDynamicHomeCompatible = g_SkinInfo->IsDynamicHomeCompatible();
+  bool isDynamicHomeCompatible = (g_SkinInfo && !g_SkinInfo->IsDynamicHomeCompatible());
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "genres")
     return "musicdb://genres/";
