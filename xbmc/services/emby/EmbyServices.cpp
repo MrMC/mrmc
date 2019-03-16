@@ -26,6 +26,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "GUIUserMessages.h"
+#include "addons/Skin.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -1081,8 +1082,11 @@ bool CEmbyServices::AddClient(CEmbyClientPtr foundClient)
   }
 
   // only add new clients that are present
-  if (foundClient->GetPresence() && foundClient->FetchViews())
+  if (foundClient->GetPresence())
   {
+    std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+    if (uuid == foundClient->GetUuid() || !g_SkinInfo->IsDynamicHomeCompatible())
+      foundClient->FetchViews();
     m_clients.push_back(foundClient);
     m_hasClients = !m_clients.empty();
     AddJob(new CEmbyServiceJob(0, "FoundNewClient",foundClient->GetUuid()));
@@ -1111,5 +1115,17 @@ bool CEmbyServices::RemoveClient(CEmbyClientPtr lostClient)
     }
   }
 
+  return false;
+}
+
+bool CEmbyServices::ParseCurrentServerSections()
+{
+  std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+  CEmbyClientPtr client = GetClient(uuid);
+  if (client)
+  {
+    client->FetchViews();
+    return true;
+  }
   return false;
 }

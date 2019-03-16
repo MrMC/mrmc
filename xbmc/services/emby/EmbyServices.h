@@ -66,6 +66,7 @@ public:
   bool ClientIsLocal(std::string path);
   void InitiateSignIn();
   EmbyServerInfo GetEmbyLocalServerInfo(const std::string url);
+  bool ParseCurrentServerSections();
 
   // ISettingCallback
   virtual void OnSettingAction(const CSetting *setting) override;
