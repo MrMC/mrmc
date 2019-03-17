@@ -431,23 +431,36 @@ void CHueServices::Process()
   m_continuous = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_CONTINUOUS);
   m_dim_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_DIMMODE);
 
-  CLog::Log(LOGDEBUG, "Hue - Entering loop %s", m_continuous ? "true" : "false");
+  bool captureNeeded = m_continuous;
+
+  int streamgroup = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_STREAMGROUPID);
+  captureNeeded |= (streamgroup > 0);
+
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1ID) > 0)
+  {
+    captureNeeded |= (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT1MODE) == MODE_COLOR);
+  }
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2ID) > 0)
+  {
+    captureNeeded |= (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT2MODE) == MODE_COLOR);
+  }
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3ID) > 0)
+  {
+    captureNeeded |= (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT3MODE) == MODE_COLOR);
+  }
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4ID) > 0)
+  {
+    captureNeeded |= (CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_LIGHT4MODE) == MODE_COLOR);
+  }
+
+  CLog::Log(LOGINFO, "Hue - Entering loop capture: %s; continuous: %s", captureNeeded ? "true" : "false", m_continuous ? "true" : "false");
   while (!m_bStop)
   {
     uint8_t curstatus = m_status;
     if (curstatus != STATUS_STOP || m_continuous)
     {
-      // if starting, alloc a provider and start capturing
-      if (!provider)
+      if (!m_bridge)
       {
-#ifdef TARGET_ANDROID
-        if (m_continuous)
-          provider.reset(new CHueProviderAndroidProjection());
-        else
-#endif
-        provider.reset(new CHueProviderRenderCapture());
-        provider->Initialize(m_width, m_height);
-
         if (!InitConnection())
         {
           m_bStop = true;
@@ -457,8 +470,19 @@ void CHueServices::Process()
         bool forceOn = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEON);
         bool forceOnAfterSunset = CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_HUE_FORCEONAFTERSUNSET);
         m_forceON = (forceOn && (!forceOnAfterSunset || (forceOnAfterSunset && !m_bridge->isDaylight())));
+      }
 
-        int streamgroup = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_STREAMGROUPID);
+      // if starting, alloc a provider and start capturing
+      if (captureNeeded && !provider)
+      {
+#ifdef TARGET_ANDROID
+        if (m_continuous)
+          provider.reset(new CHueProviderAndroidProjection());
+        else
+#endif
+        provider.reset(new CHueProviderRenderCapture());
+        provider->Initialize(m_width, m_height);
+
         if (streamgroup > 0
               && !m_bridge->getClientkey().empty()
               && (m_bridge->getGroup(streamgroup)->isAnyOn() || m_forceON)
@@ -477,76 +501,83 @@ void CHueServices::Process()
         biasC = float(((100 - CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_HUE_COLORBIAS)) / 5)+1) * 0.0011f;
       }
 
-      provider->WaitMSec(1000);
-      if (provider->GetStatus() == HueProvideStatus::DONE)
+      if (captureNeeded)
       {
-        fR = 0.0; fG = 0.0; fB = 0.0;
-        int rows = 0;
-        //read out the pixels
-        unsigned char *pixels = provider->GetBuffer();
-        for (int y = 0; y < m_height; ++y)
+        provider->WaitMSec(1000);
+        if (provider->GetStatus() == HueProvideStatus::DONE)
         {
-          double rR = 0.0, rG = 0.0, rB = 0.0;
-          int row = m_width * y * 4;
-          for (int x = 0; x < m_width; ++x)
+          fR = 0.0;
+          fG = 0.0;
+          fB = 0.0;
+          int rows = 0;
+          //read out the pixels
+          unsigned char *pixels = provider->GetBuffer();
+          for (int y = 0; y < m_height; ++y)
           {
-            int pixel = row + (x * 4);
-            rR += pixels[pixel + 2];
-            rG += pixels[pixel + 1];
-            rB += pixels[pixel];
+            double rR = 0.0, rG = 0.0, rB = 0.0;
+            int row = m_width * y * 4;
+            for (int x = 0; x < m_width; ++x)
+            {
+              int pixel = row + (x * 4);
+              rR += pixels[pixel + 2];
+              rG += pixels[pixel + 1];
+              rB += pixels[pixel];
+            }
+
+            // ignore black rows
+            rR = ClampValue((rR / (float) (m_width)) / 255.0f, 0.0f, 1.0f);
+            rG = ClampValue((rG / (float) (m_width)) / 255.0f, 0.0f, 1.0f);
+            rB = ClampValue((rB / (float) (m_width)) / 255.0f, 0.0f, 1.0f);
+            double rY = (0.2126 * rR + 0.7152 * rG + 0.0722 * rB);
+            if (rY > 0.01)
+            {
+              fR += rR;
+              fG += rG;
+              fB += rB;
+              ++rows;
+            }
           }
 
-          // ignore black rows
-          rR = ClampValue((rR / (float)(m_width)) / 255.0f, 0.0f, 1.0f);
-          rG = ClampValue((rG / (float)(m_width)) / 255.0f, 0.0f, 1.0f);
-          rB = ClampValue((rB / (float)(m_width)) / 255.0f, 0.0f, 1.0f);
-          double rY = (0.2126 *rR + 0.7152 *rG + 0.0722 *rB);
-          if (rY > 0.01)
+          fR /= rows;
+          fG /= rows;
+          fB /= rows;
+
+          float x, y;
+          CHueUtils::rgb2xy(fR, fG, fB, x, y);
+
+          // Skip imperceptible color updates (+ bias)
+          float u, v;
+          CHueUtils::xy2uv(x, y, u, v);
+          double color_dist = sqrt(pow(u - fu_old, 2) + pow(v - fv_old, 2));
+
+          if (color_dist > biasC)
           {
-            fR += rR;
-            fG += rG;
-            fB += rB;
-            ++rows;
+            //CLog::Log(LOGDEBUG, "Hue - Color bias = %f, dist = %f", biasC, color_dist);
+            fx = x;
+            fy = y;
+            fu_old = u;
+            fv_old = v;
           }
+
+          fY = (0.2126f * fR + 0.7152f * fG + 0.0722f * fB);
+          // map luma
+          fY = fY * (maxL - minL) + minL;
+
+          for (auto &light : m_bridge->getLights())
+          {
+            if (light.second->getMode() == MODE_COLOR)
+              SetLight(light.first, fx, fy, fY);
+          }
+          if (m_bridge->isStreaming())
+            m_bridge->streamXYB(fx, fy, fY);
         }
-
-        fR /= rows;
-        fG /= rows;
-        fB /= rows;
-
-        float x, y;
-        CHueUtils::rgb2xy(fR, fG, fB, x, y);
-
-        // Skip imperceptible color updates (+ bias)
-        float u, v;
-        CHueUtils::xy2uv(x, y, u, v);
-        double color_dist = sqrt(pow(u - fu_old, 2) + pow(v - fv_old, 2));
-
-        if (color_dist > biasC)
+        else  // provider->GetStatus() == HueProvideStatus::DONE
         {
-          //CLog::Log(LOGDEBUG, "Hue - Color bias = %f, dist = %f", biasC, color_dist);
-          fx = x; fy = y;
-          fu_old = u; fv_old = v;
+          CLog::Log(LOGDEBUG, "Hue - no update");
+          // Streaming dies after 10 sec; refresh it if we missed a capture
+          if (m_bridge->isStreaming())
+            m_bridge->streamXYB(fx, fy, fY);
         }
-
-        fY = (0.2126f *fR + 0.7152f *fG + 0.0722f *fB);
-        // map luma
-        fY = fY * (maxL - minL) + minL;
-
-        for (auto& light : m_bridge->getLights())
-        {
-          if (light.second->getMode() == MODE_COLOR)
-            SetLight(light.first, fx, fy, fY);
-        }
-        if (m_bridge->isStreaming())
-          m_bridge->streamXYB(fx, fy, fY);
-      }
-      else  // provider->GetStatus() == HueProvideStatus::DONE
-      {
-        CLog::Log(LOGDEBUG, "Hue - no update");
-        // Streaming dies after 10 sec; refresh it if we missed a capture
-        if (m_bridge->isStreaming())
-          m_bridge->streamXYB(fx, fy, fY);
       }
       if (curstatus != m_oldstatus)
       {
