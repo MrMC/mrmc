@@ -666,6 +666,11 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
 
 void CGUIWindowHome::SetupServices()
 {
+  if (!g_SkinInfo->IsDynamicHomeCompatible())
+  {
+    CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - !g_SkinInfo->IsDynamicHomeCompatible(), skin = %s", g_SkinInfo->Name().c_str());
+    return;
+  }
   if (!IsActive())
   {
     CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - !IsActive()");
@@ -677,15 +682,6 @@ void CGUIWindowHome::SetupServices()
     CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - !g_application.IsCurrentThread()");
     CGUIMessage msg(GUI_MSG_SETUP_HOME_SERVICES, 0, 0, 0);
     g_windowManager.SendThreadMessage(msg, GetID());
-    return;
-  }
-
-  // idea here is that if button 4000 exists in the home screen skin is compatible
-  // with new Server layouts on home
-  const CGUIControl *btnServers = GetControl(CONTROL_SERVER_BUTTON);
-  if (!btnServers)
-  {
-    CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - No server button");
     return;
   }
 
