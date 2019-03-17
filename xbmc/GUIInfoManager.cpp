@@ -98,7 +98,6 @@
 #include "music/MusicThumbLoader.h"
 #include "video/VideoDatabase.h"
 #include "cores/IPlayer.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 #include "interfaces/info/InfoExpression.h"
@@ -318,7 +317,6 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "haspvr",           SYSTEM_HAS_PVR },
                                   { "startupwindow",    SYSTEM_STARTUP_WINDOW },
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
-                                  { "hasadsp",          SYSTEM_HAS_ADSP },
                                   { "hasappletvslider", SYSTEM_HAS_APPLETV_SLIDER },
                                   { "isdarkinterface",  SYSTEM_IS_DARK_INTERFACE },
                                   { "hasextensions",    SYSTEM_HAS_EXTENSIONS }};
@@ -735,20 +733,6 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftcur",             PVR_TIMESHIFT_PLAY_TIME },
                                   { "tvmenutoguide",            PVR_TVMENU_TO_GUIDE },
                                   { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS }};
-
-const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE },
-                                  { "hasinputresample",         ADSP_HAS_INPUT_RESAMPLE },
-                                  { "haspreprocess",            ADSP_HAS_PRE_PROCESS },
-                                  { "hasmasterprocess",         ADSP_HAS_MASTER_PROCESS },
-                                  { "haspostprocess",           ADSP_HAS_POST_PROCESS },
-                                  { "hasoutputresample",        ADSP_HAS_OUTPUT_RESAMPLE },
-                                  { "masteractive",             ADSP_MASTER_ACTIVE },
-                                  { "activestreamtype",         ADSP_ACTIVE_STREAM_TYPE },
-                                  { "detectedstreamtype",       ADSP_DETECTED_STREAM_TYPE },
-                                  { "mastername",               ADSP_MASTER_NAME },
-                                  { "masterinfo",               ADSP_MASTER_INFO },
-                                  { "masterownicon",            ADSP_MASTER_OWN_ICON },
-                                  { "masteroverrideicon",       ADSP_MASTER_OVERRIDE_ICON }};
 
 const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
                                   { "hasradiotext",             RDS_HAS_RADIOTEXT },
@@ -1356,14 +1340,6 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return pvr[i].val;
       }
     }
-    else if (cat.name == "adsp")
-    {
-      for (size_t i = 0; i < sizeof(adsp) / sizeof(infomap); i++)
-      {
-        if (prop.name == adsp[i].str)
-          return adsp[i].val;
-      }
-    }
     else if (cat.name == "rds")
     {
       if (prop.name == "getline")
@@ -1580,14 +1556,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_TIMESHIFT_END_TIME:
   case PVR_TIMESHIFT_PLAY_TIME:
     g_PVRManager.TranslateCharInfo(info, strLabel);
-    break;
-  case ADSP_ACTIVE_STREAM_TYPE:
-  case ADSP_DETECTED_STREAM_TYPE:
-  case ADSP_MASTER_NAME:
-  case ADSP_MASTER_INFO:
-  case ADSP_MASTER_OWN_ICON:
-  case ADSP_MASTER_OVERRIDE_ICON:
-    ActiveAE::CActiveAEDSP::GetInstance().TranslateCharInfo(info, strLabel);
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
@@ -2600,9 +2568,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case SYSTEM_HAS_PVR:
       bReturn = true;
       break;
-    case SYSTEM_HAS_ADSP:
-      bReturn = true;
-      break;
     case SYSTEM_ISMASTER:
       bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
       break;
@@ -2665,9 +2630,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case PVR_CONDITIONS_START...PVR_CONDITIONS_END:
       bReturn = g_PVRManager.TranslateBoolInfo(condition);
-      break;
-    case ADSP_CONDITIONS_START...ADSP_CONDITIONS_END:
-      bReturn = ActiveAE::CActiveAEDSP::GetInstance().TranslateBoolInfo(condition);
       break;
     case SYSTEM_INTERNET_STATE:
       {

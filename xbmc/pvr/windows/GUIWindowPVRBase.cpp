@@ -19,7 +19,6 @@
  */
 
 #include "Application.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
@@ -274,21 +273,6 @@ bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
 
   return bReturn || CGUIMediaWindow::OnContextButton(itemNumber, button);
-}
-
-bool CGUIWindowPVRBase::OnContextButtonActiveAEDSPSettings(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS)
-  {
-    bReturn = true;
-
-    if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
-      g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
-  }
-
-  return bReturn;
 }
 
 void CGUIWindowPVRBase::SetInvalid()

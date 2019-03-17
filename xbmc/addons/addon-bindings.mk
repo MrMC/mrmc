@@ -1,5 +1,3 @@
-BINDINGS =lib/addons/library.kodi.adsp/libKODI_adsp.h
-BINDINGS+=lib/addons/library.kodi.audioengine/libKODI_audioengine.h
 BINDINGS+=lib/addons/library.kodi.guilib/libKODI_guilib.h
 BINDINGS+=lib/addons/library.xbmc.pvr/libXBMC_pvr.h
 BINDINGS+=lib/addons/library.xbmc.addon/libXBMC_addon.h
@@ -7,9 +5,6 @@ BINDINGS+=lib/addons/library.xbmc.codec/libXBMC_codec.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_cpp_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_types.h
-BINDINGS+=xbmc/addons/include/kodi_adsp_dll.h
-BINDINGS+=xbmc/addons/include/kodi_adsp_types.h
-BINDINGS+=xbmc/addons/include/kodi_audioengine_types.h
 BINDINGS+=xbmc/addons/include/xbmc_audioenc_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_audioenc_types.h
 BINDINGS+=xbmc/addons/include/kodi_audiodec_dll.h

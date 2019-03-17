@@ -474,7 +474,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     OrphanedAddons(path, items);
     return true;
   }
-  // PVR & adsp hardcodes this view so keep for compatibility
+  // PVR hardcodes this view so keep for compatibility
   else if (endpoint == "disabled")
   {
     VECADDONS addons;
@@ -482,8 +482,6 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     if (path.GetFileName() == "xbmc.pvrclient")
       type = ADDON_PVRDLL;
-    else if (path.GetFileName() == "kodi.adsp")
-      type = ADDON_ADSPDLL;
     else
       type = ADDON_UNKNOWN;
 

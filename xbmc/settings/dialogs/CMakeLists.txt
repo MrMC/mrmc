@@ -4,8 +4,6 @@ get_property(rtdir GLOBAL PROPERTY ROOT_DIR)
 include ( ${rtdir}/includes.cmake )
 
 set (my_SOURCES
-  GUIDialogAudioDSPManager.cpp
-  GUIDialogAudioDSPSettings.cpp
   GUIDialogContentSettings.cpp
   GUIDialogSettingsBase.cpp
   GUIDialogSettingsManagerBase.cpp

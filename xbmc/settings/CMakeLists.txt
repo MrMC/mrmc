@@ -5,7 +5,6 @@ include ( ${rtdir}/includes.cmake )
 
 set (my_SOURCES
   AdvancedSettings.cpp
-  AudioDSPSettings.cpp
   DiscSettings.cpp
   DisplaySettings.cpp
   MediaSettings.cpp

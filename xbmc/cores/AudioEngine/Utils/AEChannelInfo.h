@@ -25,11 +25,7 @@
 
 #include "AEChannelData.h"
 
-class CHelper_libKODI_audioengine;
-
 class CAEChannelInfo {
-  friend class CHelper_libKODI_audioengine;
-
 public:
   CAEChannelInfo();
   CAEChannelInfo(const enum AEChannel* rhs);

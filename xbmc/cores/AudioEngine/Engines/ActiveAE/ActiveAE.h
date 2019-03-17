@@ -69,7 +69,6 @@ struct AudioSettings
   bool stereoupmix;
   bool normalizelevels;
   bool passthrough;
-  bool dspaddonsenabled;
   int config;
   int guisoundmode;
   unsigned int samplerate;
@@ -198,12 +197,10 @@ public:
   bool UsingExternalDevice();
   void SetExternalDevice(bool active);
   void SetSuspended(bool state);
-  void SetDSP(bool state);
   void SetCurrentSinkFormat(AEAudioFormat SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
   bool IsSuspended();
-  bool HasDSP();
   AEAudioFormat GetCurrentSinkFormat();
 protected:
   float m_sinkCacheTotal;
@@ -213,7 +210,6 @@ protected:
   AEDelayStatus m_sinkDelay;
   bool m_externalActive = false;
   bool m_suspended;
-  bool m_hasDSP;
   AEAudioFormat m_sinkFormat;
   bool m_pcmOutput;
   CCriticalSection m_lock;
@@ -276,7 +272,6 @@ public:
   virtual bool IsSettingVisible(const std::string &settingId);
   virtual void KeepConfiguration(unsigned int millis);
   virtual void DeviceChange();
-  virtual bool HasDSP();
   virtual AEAudioFormat GetCurrentSinkFormat();
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
@@ -406,6 +401,5 @@ protected:
   // polled via the interface
   float m_aeVolume;
   bool m_aeMuted;
-  bool m_aeGUISoundForce;
 };
 };

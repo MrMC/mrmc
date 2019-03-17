@@ -54,7 +54,6 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid)
   m_streamFreeBuffers = 0;
   m_streamIsBuffering = false;
   m_streamIsFlushed = false;
-  m_bypassDSP = false;
   m_streamSlave = NULL;
   m_leftoverBuffer = new uint8_t[m_format.m_frameSize];
   m_leftoverBytes = 0;
@@ -542,11 +541,6 @@ bool CActiveAEStream::IsFading()
   return m_streamFading;
 }
 
-bool CActiveAEStream::HasDSP()
-{
-  return AE.HasDSP();
-}
-
 const unsigned int CActiveAEStream::GetFrameSize() const
 {
   return m_format.m_frameSize;
@@ -607,9 +601,9 @@ bool CActiveAEStreamBuffers::HasInputLevel(int level)
     return false;
 }
 
-bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize, bool useDSP)
+bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize)
 {
-  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize, useDSP))
+  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize))
     return false;
 
   if (!m_atempoBuffers->Create(totaltime))
@@ -659,9 +653,9 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
   return busy;
 }
 
-void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool dspenabled, bool stereoupmix, AEQuality quality)
+void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality)
 {
-  m_resampleBuffers->ConfigureResampler(normalizelevels, dspenabled, stereoupmix, quality);
+  m_resampleBuffers->ConfigureResampler(normalizelevels, stereoupmix, quality);
 }
 
 float CActiveAEStreamBuffers::GetDelay()
@@ -755,11 +749,6 @@ bool CActiveAEStreamBuffers::DoesNormalize()
 void CActiveAEStreamBuffers::ForceResampler(bool force)
 {
   m_resampleBuffers->ForceResampler(force);
-}
-
-void CActiveAEStreamBuffers::SetDSPConfig(bool usedsp, bool bypassdsp)
-{
-  m_resampleBuffers->SetDSPConfig(usedsp, bypassdsp);
 }
 
 CActiveAEBufferPool* CActiveAEStreamBuffers::GetResampleBuffers()

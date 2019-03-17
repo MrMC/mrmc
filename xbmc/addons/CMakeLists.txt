@@ -7,8 +7,6 @@ set (my_SOURCES
   Addon.cpp
   AddonCallbacks.cpp
   AddonCallbacksAddon.cpp
-  AddonCallbacksAudioDSP.cpp
-  AddonCallbacksAudioEngine.cpp
   AddonCallbacksCodec.cpp
   AddonCallbacksGUI.cpp
   AddonCallbacksPVR.cpp

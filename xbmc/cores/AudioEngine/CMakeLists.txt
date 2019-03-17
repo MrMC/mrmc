@@ -20,11 +20,6 @@ set (my_SOURCES
 
   Sinks/AESinkNULL.cpp
   Sinks/AESinkAUDIOTRACK.cpp
-  DSPAddons/ActiveAEDSP.cpp
-  DSPAddons/ActiveAEDSPMode.cpp
-  DSPAddons/ActiveAEDSPAddon.cpp
-  DSPAddons/ActiveAEDSPDatabase.cpp
-  DSPAddons/ActiveAEDSPProcess.cpp
 
   Utils/AEChannelInfo.cpp
   Utils/AEBuffer.cpp
