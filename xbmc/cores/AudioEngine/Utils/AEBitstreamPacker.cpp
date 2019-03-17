@@ -33,8 +33,6 @@
 #define EAC3_MAX_BURST_PAYLOAD_SIZE (24576 - BURST_HEADER_SIZE)
 
 CAEBitstreamPacker::CAEBitstreamPacker() :
-  m_trueHD   (NULL),
-  m_trueHDPos(0),
   m_dtsHD    (NULL),
   m_dtsHDSize(0),
   m_eac3     (NULL),
@@ -49,7 +47,6 @@ CAEBitstreamPacker::CAEBitstreamPacker() :
 
 CAEBitstreamPacker::~CAEBitstreamPacker()
 {
-  delete[] m_trueHD;
   delete[] m_dtsHD;
   delete[] m_eac3;
 }
@@ -144,51 +141,14 @@ uint8_t* CAEBitstreamPacker::GetBuffer()
 void CAEBitstreamPacker::Reset()
 {
   m_dataSize = 0;
-  m_trueHDPos = 0;
   m_pauseDuration = 0;
   m_packedBuffer[0] = 0;
+
 }
 
-/* we need to pack 24 TrueHD audio units into the unknown MAT format before packing into IEC61937 */
 void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size)
 {
-  /* magic MAT format values, meaning is unknown at this point */
-  static const uint8_t mat_start_code [20] = { 0x07, 0x9E, 0x00, 0x03, 0x84, 0x01, 0x01, 0x01, 0x80, 0x00, 0x56, 0xA5, 0x3B, 0xF4, 0x81, 0x83, 0x49, 0x80, 0x77, 0xE0 };
-  static const uint8_t mat_middle_code[12] = { 0xC3, 0xC1, 0x42, 0x49, 0x3B, 0xFA, 0x82, 0x83, 0x49, 0x80, 0x77, 0xE0 };
-  static const uint8_t mat_end_code   [16] = { 0xC3, 0xC2, 0xC0, 0xC4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x97, 0x11 };
-
-  /* create the buffer if it doesnt already exist */
-  if (!m_trueHD)
-  {
-    m_trueHD    = new uint8_t[MAT_FRAME_SIZE];
-    m_trueHDPos = 0;
-  }
-
-  /* setup the frame for the data */
-  if (m_trueHDPos == 0)
-  {
-    memset(m_trueHD, 0, MAT_FRAME_SIZE);
-    memcpy(m_trueHD, mat_start_code, sizeof(mat_start_code));
-    memcpy(m_trueHD + (12 * TRUEHD_FRAME_OFFSET) - BURST_HEADER_SIZE + MAT_MIDDLE_CODE_OFFSET, mat_middle_code, sizeof(mat_middle_code));
-    memcpy(m_trueHD + MAT_FRAME_SIZE - sizeof(mat_end_code), mat_end_code, sizeof(mat_end_code));
-  }
-
-  size_t offset;
-  if (m_trueHDPos == 0 )
-    offset = (m_trueHDPos * TRUEHD_FRAME_OFFSET) + sizeof(mat_start_code);
-  else if (m_trueHDPos == 12)
-    offset = (m_trueHDPos * TRUEHD_FRAME_OFFSET) + sizeof(mat_middle_code) - BURST_HEADER_SIZE + MAT_MIDDLE_CODE_OFFSET;
-  else
-    offset = (m_trueHDPos * TRUEHD_FRAME_OFFSET) - BURST_HEADER_SIZE;
-
-  memcpy(m_trueHD + offset, data, size);
-
-  /* if we have a full frame */
-  if (++m_trueHDPos == 24)
-  {
-    m_trueHDPos = 0;
-    m_dataSize  = CAEPackIEC61937::PackTrueHD(m_trueHD, MAT_FRAME_SIZE, m_packedBuffer);
-  }
+  m_trueHDpacker.BitstreamTrueHD(data, size, &m_dataSize, m_packedBuffer);
 }
 
 void CAEBitstreamPacker::PackDTSHD(CAEStreamInfo &info, uint8_t* data, int size)

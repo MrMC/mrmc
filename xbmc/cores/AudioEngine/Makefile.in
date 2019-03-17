@@ -56,6 +56,7 @@ SRCS += Utils/AEUtil.cpp
 SRCS += Utils/AEStreamInfo.cpp
 SRCS += Utils/AEPackIEC61937.cpp
 SRCS += Utils/AEBitstreamPacker.cpp
+SRCS += Utils/BitstreamTrueHDMAT.cpp
 SRCS += Utils/AEELDParser.cpp
 SRCS += Utils/AEDeviceInfo.cpp
 SRCS += Utils/AELimiter.cpp

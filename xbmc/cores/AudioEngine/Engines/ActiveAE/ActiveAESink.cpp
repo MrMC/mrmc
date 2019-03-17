@@ -916,116 +916,147 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   std::unique_ptr<uint8_t[]> mergebuffer;
   uint8_t* p_mergebuffer = NULL;
   AEDelayStatus status;
+  bool loop = false;
+  int trueHDoffset = 0;
 
-  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
+  do
   {
-    bool skipSwap = false;
-    if (m_requestedFormat.m_streamInfo.m_IECPacked)
+    if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
     {
-      if (frames > 0)
+      bool skipSwap = false;
+      if (m_requestedFormat.m_streamInfo.m_IECPacked)
       {
-        m_packer->Reset();
-        if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+        if (frames > 0 || loop)
         {
-          if (frames == 61440)
+          m_packer->Reset();
+          if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
           {
-            int offset;
-            int len;
-            m_packer->GetBuffer();
-            for (int i=0; i<24; i++)
+            if (frames == 61440 || loop)
             {
-              offset = i*2560;
-              len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
-              m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0] + offset, len);
+              int len = (*(samples->pkt->data[0] + trueHDoffset) << 8) + *(samples->pkt->data[0] + trueHDoffset + 1);
+              // CLog::Log(LOGDEBUG, "TrueHD: offset: %d; len: %d; loop: %s", trueHDoffset, len, loop ? "yes" : "no");
+              while (len > 0)
+              {
+                m_packer->Pack(m_sinkFormat.m_streamInfo, samples->pkt->data[0] + trueHDoffset + 2, len);
+                trueHDoffset += len + 2;
+                len = (*(samples->pkt->data[0] + trueHDoffset) << 8) + *(samples->pkt->data[0] + trueHDoffset + 1);
+
+                if (m_packer->GetSize() && len)
+                {
+                  //CLog::Log(LOGDEBUG, ">> TrueHD: got frame offset: %d; len: %d", trueHDoffset, len);
+                  break;
+                }
+              }
+              if (len != 0)
+              {
+                loop = true;
+                //CLog::Log(LOGDEBUG, ">> TrueHD: early packet: looping: %d; len: %d; loop: %s; got frame: %s", trueHDoffset, len, loop ? "yes" : "no", m_packer->GetSize() > 0 ? "yes" : "no");
+              }
+              else
+              {
+                loop = false;
+                //CLog::Log(LOGDEBUG, ">> TrueHD: emptied input offset: %d; len: %d; loop: %s; got frame: %s", trueHDoffset, len, loop ? "yes" : "no", m_packer->GetSize() > 0 ? "yes" : "no");
+              }
             }
-          }
-          else
+            else
+            {
+              m_extError = true;
+              CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - incomplete TrueHD buffer");
+              return 0;
+            }
+          } else
           {
-            m_extError = true;
-            CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - incomplete TrueHD buffer");
-            return 0;
+            m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
           }
-        }
-        else
-          m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
-      }
-      else if (samples->pkt->pause_burst_us > 0)
-      {
-        // construct a pause burst if we have already output valid audio
-        bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
-        if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_us, burst))
-          skipSwap = true;
-      }
-      else
-        m_packer->Reset();
-
-      unsigned int size = m_packer->GetSize();
-      packBuffer = m_packer->GetBuffer();
-      buffer = &packBuffer;
-      totalFrames = size / m_sinkFormat.m_frameSize;
-      frames = totalFrames;
-
-      switch(m_swapState)
-      {
-        case SKIP_SWAP:
-          break;
-        case NEED_BYTESWAP:
-          if (!skipSwap)
-            Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], size / 2);
-          break;
-        case CHECK_SWAP:
-          SwapInit(samples);
-          if (m_swapState == NEED_BYTESWAP)
-            Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], size / 2);
-          break;
-        default:
-          break;
-      }
-    }
-    else
-    {
-      if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && frames == 61440)
-      {
-        int offset;
-        int len;
-        unsigned int size = 0;
-        mergebuffer.reset(new uint8_t[MAX_IEC61937_PACKET]);
-        p_mergebuffer = mergebuffer.get();
-        for (int i=0; i<24; i++)
+        } else if (samples->pkt->pause_burst_us > 0)
         {
-          offset = i*2560;
-          len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
-          memcpy(&(mergebuffer.get())[size], buffer[0] + offset, len);
-          size += len;
-        }
-        buffer = &p_mergebuffer;
+          // construct a pause burst if we have already output valid audio
+          bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
+          if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_us, burst))
+            skipSwap = true;
+        } else
+          m_packer->Reset();
+
+        unsigned int size = m_packer->GetSize();
+        packBuffer = m_packer->GetBuffer();
+        buffer = &packBuffer;
         totalFrames = size / m_sinkFormat.m_frameSize;
         frames = totalFrames;
+
+        switch (m_swapState)
+        {
+          case SKIP_SWAP:
+            break;
+          case NEED_BYTESWAP:
+            if (!skipSwap)
+              Endian_Swap16_buf((uint16_t *) buffer[0], (uint16_t *) buffer[0], size / 2);
+            break;
+          case CHECK_SWAP:
+            SwapInit(samples);
+            if (m_swapState == NEED_BYTESWAP)
+              Endian_Swap16_buf((uint16_t *) buffer[0], (uint16_t *) buffer[0], size / 2);
+            break;
+          default:
+            break;
+        }
       }
-      if (samples->pkt->pause_burst_us > 0)
+      else
       {
-        m_sink->AddPause(samples->pkt->pause_burst_us);
-        m_sink->GetDelay(status);
-        m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
-        return status.delay * 1000;
+        if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD &&
+            frames == 61440)
+        {
+          int offset = 0;
+          unsigned int size = 0;
+          mergebuffer.reset(new uint8_t[MAX_IEC61937_PACKET]);
+          p_mergebuffer = mergebuffer.get();
+          int len = (*(buffer[0] + offset) << 8) + *(buffer[0] + offset + 1);
+          while (len > 0)
+          {
+            memcpy(&(mergebuffer.get())[size], buffer[0] + offset + 2, len);
+            size += len;
+            offset += len + 2;
+            len = (*(buffer[0] + offset) << 8) + *(buffer[0] + offset + 1);
+          }
+          buffer = &p_mergebuffer;
+          totalFrames = size / m_sinkFormat.m_frameSize;
+          frames = totalFrames;
+        }
+        if (samples->pkt->pause_burst_us > 0)
+        {
+          m_sink->AddPause(samples->pkt->pause_burst_us);
+          m_sink->GetDelay(status);
+          m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
+          return status.delay * 1000;
+        }
       }
     }
-  }
 
-  int framesOrPackets;
+    int framesOrPackets;
 
-  while (frames > 0)
-  {
-    maxFrames = std::min(frames, m_sinkFormat.m_frames);
-    written = m_sink->AddPackets(buffer, maxFrames, totalFrames - frames, samples->timestamp);
-    if (written == 0)
+    while (frames > 0)
     {
-      Sleep(500*m_sinkFormat.m_frames/m_sinkFormat.m_sampleRate);
-      retry++;
-      if (retry > 10)
+      maxFrames = std::min(frames, m_sinkFormat.m_frames);
+      written = m_sink->AddPackets(buffer, maxFrames, totalFrames - frames, samples->timestamp);
+      if (written == 0)
+      {
+        Sleep(500 * m_sinkFormat.m_frames / m_sinkFormat.m_sampleRate);
+        retry++;
+        if (retry > 10)
+        {
+          m_extError = true;
+          CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - failed");
+          status.SetDelay(0);
+          framesOrPackets = frames;
+          if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
+            framesOrPackets = 1;
+          m_stats->UpdateSinkDelay(status, samples->pool ? framesOrPackets : 0);
+          return 0;
+        } else
+          continue;
+      } else if (written > maxFrames)
       {
         m_extError = true;
-        CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - failed");
+        CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - sink returned error");
         status.SetDelay(0);
         framesOrPackets = frames;
         if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
@@ -1033,31 +1064,17 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         m_stats->UpdateSinkDelay(status, samples->pool ? framesOrPackets : 0);
         return 0;
       }
-      else
-        continue;
-    }
-    else if (written > maxFrames)
-    {
-      m_extError = true;
-      CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - sink returned error");
-      status.SetDelay(0);
-      framesOrPackets = frames;
-      if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
-        framesOrPackets = 1;
-      m_stats->UpdateSinkDelay(status, samples->pool ? framesOrPackets : 0);
-      return 0;
-    }
-    frames -= written;
+      frames -= written;
 
-    m_sink->GetDelay(status);
+      m_sink->GetDelay(status);
 
-    if (m_requestedFormat.m_dataFormat != AE_FMT_RAW)
-      m_stats->UpdateSinkDelay(status, samples->pool ? written : 0);
-  }
+      if (m_requestedFormat.m_dataFormat != AE_FMT_RAW)
+        m_stats->UpdateSinkDelay(status, samples->pool ? written : 0);
+    }
+  } while (loop);
 
   if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
     m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
-
   return status.delay * 1000;
 }
 
@@ -1099,7 +1116,7 @@ void CActiveAESink::GenerateNoise()
       R2 = (float) rand() / (float) RAND_MAX;
     }
     while(R1 == 0.0f);
-    
+
     noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * noiseFactor;
   }
 
