@@ -1,7 +1,6 @@
 SRCS  = Addon.cpp
 SRCS += AddonCallbacks.cpp
 SRCS += AddonCallbacksAddon.cpp
-SRCS += AddonCallbacksAudioEngine.cpp
 SRCS += AddonCallbacksCodec.cpp
 SRCS += AddonCallbacksGUI.cpp
 SRCS += AddonCallbacksPVR.cpp
