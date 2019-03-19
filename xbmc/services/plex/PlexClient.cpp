@@ -131,10 +131,6 @@ bool CPlexClient::Init(const PlexServerInfo &serverInfo)
       }
       else
       {
-        // if we are not on the same LAN (as above)
-        // there is no point of trying the local address, so we skip it
-        if (!connection.external)
-          continue;
         CURL url1(connection.uri);
         url = url1;
       }
