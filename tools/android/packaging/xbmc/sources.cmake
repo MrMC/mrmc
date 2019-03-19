@@ -1,5 +1,3 @@
-add_subdirectory (${rtdir}/lib/addons/library.kodi.adsp ${lib_build_DIR}/KODIadsp)
-add_subdirectory (${rtdir}/lib/addons/library.kodi.audioengine ${lib_build_DIR}/KODIaudioengine)
 add_subdirectory (${rtdir}/lib/addons/library.kodi.guilib ${lib_build_DIR}/KODIguilib)
 add_subdirectory (${rtdir}/lib/addons/library.xbmc.addon ${lib_build_DIR}/XBMCaddon)
 add_subdirectory (${rtdir}/lib/addons/library.xbmc.codec ${lib_build_DIR}/XBMCcodec)
