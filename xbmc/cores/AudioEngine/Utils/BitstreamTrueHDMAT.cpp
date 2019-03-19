@@ -24,6 +24,8 @@
 #include "BitstreamTrueHDMAT.h"
 
 #include <assert.h>
+#include <string.h>
+
 #include <libavutil/macros.h>
 #include "libavutil/intreadwrite.h"
 

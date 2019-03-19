@@ -20,7 +20,7 @@
 
 #include "TraktServices.h"
 
-#include <math.h>
+#include <cmath>
 
 #include "Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -405,7 +405,7 @@ bool CTraktServices::GetSignInPinCode()
 
     if (!reply.isObject() && !reply.isMember("user_code"))
       return rtn;
- 
+
     m_deviceCode = reply["device_code"].asString();
     verification_url = reply["verification_url"].asString();
     expires_in = reply["expires_in"].asInteger();
@@ -577,7 +577,7 @@ void CTraktServices::SetItemWatchedJob(CFileItem &item, bool watched, bool setLa
       CVideoDatabase videodatabase;
       if (!videodatabase.Open())
         return;
-      
+
       std::string basePath = StringUtils::Format("videodb://tvshows/titles/%i/%i/%i",item.GetVideoInfoTag()->m_iIdShow, item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iDbId);
       videodatabase.GetTvShowInfo(basePath, *showItem.GetVideoInfoTag(), item.GetVideoInfoTag()->m_iIdShow);
       videodatabase.Close();
@@ -714,7 +714,7 @@ void CTraktServices::ReportProgress(CFileItem &item, const std::string &status, 
 void CTraktServices::SaveFileState(CFileItem &item, double currentTime, double totalTime)
 {
   double percentage = 100.0 * currentTime / totalTime;
-  if (isnan(percentage))
+  if (std::isnan(percentage))
     percentage = 0;
   AddJob(new CTraktServiceJob(item, percentage, "TraktSetStopped"));
 }
@@ -946,10 +946,10 @@ void CTraktServices::PushWatchedStatus()
           {
             CVariant season;
             season["number"] = episodeItems[i]->GetVideoInfoTag()->m_iSeason;
-            
+
             CDateTime date = episodeItems[i]->GetVideoInfoTag()->m_lastPlayed;
             std::string timePlayed = date.GetAsW3CDateTime(true);
-            
+
             CVariant episode;
             episode["watched_at"] = timePlayed;
             episode["number"]     = episodeItems[i]->GetVideoInfoTag()->m_iEpisode;
@@ -1086,7 +1086,7 @@ void CTraktServices::ServerChat(const std::string &url, const CVariant &data)
   curlfile.SetRequestHeader("Authorization", "Bearer " + CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_TRAKTACESSTOKEN));
 
   CURL curl(url);
-  
+
   std::string jsondata;
   if (!CJSONVariantWriter::Write(data, jsondata, false))
     return;

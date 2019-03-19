@@ -899,7 +899,7 @@ double CAESinkALSA::GetCacheTotal()
   return (double)m_bufferSize * m_formatSampleRateMul;
 }
 
-unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
+unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset, int64_t timestamp)
 {
   if (!m_pcm)
   {

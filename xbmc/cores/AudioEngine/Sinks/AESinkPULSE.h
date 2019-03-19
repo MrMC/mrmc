@@ -23,8 +23,8 @@
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "Utils/AEDeviceInfo.h"
-#include "Utils/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include <pulse/pulseaudio.h>
 #include "threads/CriticalSection.h"
 

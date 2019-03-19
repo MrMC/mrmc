@@ -23,7 +23,7 @@
 
 #include "ALSAHControlMonitor.h"
 
-#include "AEFactory.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "linux/FDEventMonitor.h"
 #include "utils/log.h"
 

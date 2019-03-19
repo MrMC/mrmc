@@ -1000,14 +1000,6 @@ void CLinuxRendererGL::LoadShaders(int field)
         CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
         // drop through and use SW
       }
-      case RENDER_METHOD_SOFTWARE:
-      default:
-      // Use software YUV 2 RGB conversion if user requested it or GLSL and/or ARB shaders failed
-      {
-        m_renderMethod = RENDER_SW ;
-        CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
-        break;
-      }
     }
   }
 
