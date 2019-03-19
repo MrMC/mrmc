@@ -666,9 +666,9 @@ bool CGUIWindowHome::PlayHomeShelfItem(CFileItem itemPtr)
 
 void CGUIWindowHome::SetupServices()
 {
-  if (!g_SkinInfo->IsDynamicHomeCompatible())
+  if (!g_SkinInfo || !g_SkinInfo->IsDynamicHomeCompatible())
   {
-    CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - !g_SkinInfo->IsDynamicHomeCompatible(), skin = %s", g_SkinInfo->Name().c_str());
+    CLog::Log(LOGDEBUG, "CGUIWindowHome::SetupServices() - !g_SkinInfo->IsDynamicHomeCompatible(), skin = %s", !g_SkinInfo ? "none" : g_SkinInfo->Name().c_str());
     return;
   }
   if (!IsActive())
