@@ -134,7 +134,7 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
 }
 
 CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
-  : CAddon(props), m_defaultRes(resolution), m_version(""), m_effectsSlowDown(1.f), m_debugging(false), isDynamicHomeCompatible(false)
+  : CAddon(props), m_defaultRes(resolution), m_version(""), m_effectsSlowDown(1.f), m_debugging(false), m_isDynamicHomeCompatible(false)
 {
 }
 
@@ -178,7 +178,7 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
     m_effectsSlowDown = (float)atof(str.c_str());
 
   m_debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
-  isDynamicHomeCompatible = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@dynamichome") == "true";
+  m_isDynamicHomeCompatible = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@dynamichome") == "true";
 
   LoadStartupWindows(ext);
 
@@ -384,7 +384,7 @@ bool CSkinInfo::IsInUse() const
 
 bool CSkinInfo::IsDynamicHomeCompatible()
 {
-  return isDynamicHomeCompatible;
+  return m_isDynamicHomeCompatible;
 }
 
 const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string& name, int context)
