@@ -42,6 +42,7 @@ public:
   virtual bool IsEnabled();
   virtual bool IsConnected();
   virtual bool IsWireless();
+  virtual bool IsVPN();
   virtual std::string GetMacAddress();
   virtual void GetMacAddressRaw(char rawMac[6]);
   virtual bool GetHostMacAddress(in_addr_t host, std::string& mac);

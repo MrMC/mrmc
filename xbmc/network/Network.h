@@ -80,6 +80,7 @@ public:
    virtual bool IsEnabled(void) = 0;
    virtual bool IsConnected(void) = 0;
    virtual bool IsWireless(void) = 0;
+   virtual bool IsVPN(void) { return false; }
 
    virtual std::string GetMacAddress(void) = 0;
    virtual void GetMacAddressRaw(char rawMac[6]) = 0;
