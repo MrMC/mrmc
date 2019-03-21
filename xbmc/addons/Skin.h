@@ -243,7 +243,7 @@ protected:
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_debugging;
-  bool isDynamicHomeCompatible;
+  bool m_isDynamicHomeCompatible;
 
 private:
   std::map<int, CSkinSettingStringPtr> m_strings;
