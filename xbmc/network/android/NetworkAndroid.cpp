@@ -27,6 +27,7 @@
 #include <net/if_arp.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <map>
 
 #include "platform/android/activity/XBMCApp.h"
 #include <androidjni/ConnectivityManager.h>
@@ -97,6 +98,17 @@ bool CNetworkInterfaceAndroid::IsWireless()
 
   int type = ni.getType();
   return !(type == CJNIConnectivityManager::TYPE_ETHERNET || type == CJNIConnectivityManager::TYPE_DUMMY);
+}
+
+bool CNetworkInterfaceAndroid::IsVPN()
+{
+  CJNIConnectivityManager connman(CXBMCService::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
+  CJNINetworkInfo ni = connman.getNetworkInfo(m_network);
+  if (!ni)
+    return false;
+
+  int type = ni.getType();
+  return (type == CJNIConnectivityManager::TYPE_VPN);
 }
 
 std::string CNetworkInterfaceAndroid::GetMacAddress()
@@ -343,11 +355,22 @@ CNetworkInterface* CNetworkAndroid::GetFirstConnectedInterface()
 {
   CSingleLock lock(m_refreshMutex);
 
+  std::multimap<int, CNetworkInterface*> con_interfaces;
   for(CNetworkInterface* intf : m_interfaces)
   {
     if (intf->IsEnabled() && intf->IsConnected() && !intf->GetCurrentDefaultGateway().empty())
-      return intf;
+    {
+      if (intf->IsVPN())
+        con_interfaces.insert(std::pair<int, CNetworkInterface*>(3, intf));
+      if (intf->IsWireless())
+        con_interfaces.insert(std::pair<int, CNetworkInterface*>(2, intf));
+      else
+        con_interfaces.insert(std::pair<int, CNetworkInterface*>(1, intf));
+    }
   }
+
+  if (!con_interfaces.empty())
+    return (*(con_interfaces.begin())).second;
 
   return nullptr;
 }
