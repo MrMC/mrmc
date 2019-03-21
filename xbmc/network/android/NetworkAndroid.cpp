@@ -55,6 +55,8 @@ std::vector<std::string> CNetworkInterfaceAndroid::GetNameServers()
   CJNIList<CJNIInetAddress> lia = m_lp.getDnsServers();
   for (int i=0; i < lia.size(); ++i)
   {
+    if (lia.get(i).getAddress().size() > 4)  //IPV4 only
+      continue;
     ret.push_back(lia.get(i).getHostAddress());
   }
 
@@ -265,6 +267,8 @@ std::string CNetworkInterfaceAndroid::GetCurrentDefaultGateway()
 
     CJNIInetAddress ia = ri.getGateway();
     std::vector<char> adr = ia.getAddress();
+    if (adr.size() > 4)  //IPV4 only
+      continue;
     return StringUtils::Format("%u.%u.%u.%u", adr[0], adr[1], adr[2], adr[3]);
   }
   return "";
