@@ -117,6 +117,7 @@ public:
   const PlexSectionsContentVector GetArtistContent() const;
   const PlexSectionsContentVector GetPhotoContent() const;
   const PlexSectionsContentVector GetPlaylistContent() const;
+  const PlexSectionsContentVector GetHomeContent() const;
   const std::string FormatContentTitle(const std::string contentTitle) const;
 
   std::string GetHost();
@@ -149,9 +150,11 @@ private:
   CCriticalSection  m_criticalArtist;
   CCriticalSection  m_criticalPhoto;
   CCriticalSection  m_criticalPlaylist;
+  CCriticalSection  m_criticalHome;
   std::vector<PlexSectionsContent> m_movieSectionsContents;
   std::vector<PlexSectionsContent> m_showSectionsContents;
   std::vector<PlexSectionsContent> m_artistSectionsContents;
   std::vector<PlexSectionsContent> m_photoSectionsContents;
   std::vector<PlexSectionsContent> m_playlistSectionsContents;
+  std::vector<PlexSectionsContent> m_homeSectionsContents;
 };

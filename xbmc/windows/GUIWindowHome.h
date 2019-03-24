@@ -90,7 +90,6 @@ private:
   CFileItemList* m_buttonSections;
   // plex service
   void  AddPlexSection(CPlexClientPtr client);
-  std::vector<PlexSectionsContent> GetPlexSections(CPlexClientPtr client);
   // emby service
   void AddEmbySection(CEmbyClientPtr client);
   std::vector<EmbyViewInfo>    GetEmbySections(CEmbyClientPtr client);

@@ -1276,24 +1276,10 @@ CFileItemPtr CGUIWindowHome::MakeButton(HomeButton button)
   return item;
 }
 
-
-std::vector<PlexSectionsContent> CGUIWindowHome::GetPlexSections(CPlexClientPtr client)
-{
-  std::vector<PlexSectionsContent> sections;
-  std::vector<PlexSectionsContent> contents = client->GetMovieContent();
-  sections.insert(sections.begin(), contents.begin(),contents.end());
-  contents = client->GetTvContent();
-  sections.insert(sections.begin(), contents.begin(),contents.end());
-  contents = client->GetArtistContent();
-  sections.insert(sections.begin(), contents.begin(),contents.end());
-//  contents = client->GetPhotoContent();
-//  sections.insert(sections.begin(), contents.begin(),contents.end());
-  return sections;
-}
-
 void CGUIWindowHome::AddPlexSection(CPlexClientPtr client)
 {
-  std::vector<PlexSectionsContent> contents = GetPlexSections(client);
+  std::vector<PlexSectionsContent> contents = client->GetHomeContent();
+  std::reverse(contents.begin(), contents.end());
   std::vector<PlexSectionsContent> playlists = client->GetPlaylistContent();
 
   if (playlists.size() > 0)
