@@ -228,6 +228,12 @@ const PlexSectionsContentVector CPlexClient::GetPlaylistContent() const
   return m_playlistSectionsContents;
 }
 
+const PlexSectionsContentVector CPlexClient::GetHomeContent() const
+{
+  CSingleLock lock(m_criticalHome);
+  return m_homeSectionsContents;
+}
+
 const std::string CPlexClient::FormatContentTitle(const std::string contentTitle) const
 {
   std::string owned = (GetOwned() == "1") ? "O":"S";
@@ -332,6 +338,7 @@ bool CPlexClient::ParseSections(enum PlexSectionParsing parser)
           {
             CSingleLock lock(m_criticalMovies);
             m_movieSectionsContents.push_back(content);
+            m_homeSectionsContents.push_back(content);
           }
         }
         else if (content.type == "show")
@@ -358,6 +365,7 @@ bool CPlexClient::ParseSections(enum PlexSectionParsing parser)
           {
             CSingleLock lock(m_criticalTVShow);
             m_showSectionsContents.push_back(content);
+            m_homeSectionsContents.push_back(content);
           }
         }
         else if (content.type == "artist")
@@ -384,6 +392,7 @@ bool CPlexClient::ParseSections(enum PlexSectionParsing parser)
           {
             CSingleLock lock(m_criticalArtist);
             m_artistSectionsContents.push_back(content);
+            m_homeSectionsContents.push_back(content);
           }
         }
         else if (content.type == "photo")
