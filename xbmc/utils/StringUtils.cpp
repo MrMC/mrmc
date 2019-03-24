@@ -956,6 +956,8 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
     strHMS += StringUtils::Format("%i", hh);
   if (format & TIME_FORMAT_MM)
     strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", mm);
+  else if (format & TIME_FORMAT_M)
+    strHMS += StringUtils::Format("%i", mm);
   if (format & TIME_FORMAT_SS)
     strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", ss);
   return strHMS;

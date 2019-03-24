@@ -1500,6 +1500,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const std::string &format)
   else if (StringUtils::EqualsNoCase(format, "h:mm:ss")) return TIME_FORMAT_H_MM_SS;
   else if (StringUtils::EqualsNoCase(format, "h:mm:ss xx")) return TIME_FORMAT_H_MM_SS_XX;
   else if (StringUtils::EqualsNoCase(format, "xx")) return TIME_FORMAT_XX;
+  else if (StringUtils::EqualsNoCase(format, "m")) return TIME_FORMAT_M;
   return TIME_FORMAT_GUESS;
 }
 
@@ -3893,6 +3894,8 @@ std::string CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT for
     return time.GetAsLocalizedTime("h:mm:ss xx", true);
   case TIME_FORMAT_XX:
     return use12hourclock ? time.GetAsLocalizedTime("xx", false) : "";
+  case TIME_FORMAT_M:
+    return time.GetAsLocalizedTime("m", true);
   default:
     break;
   }
