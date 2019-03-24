@@ -942,6 +942,7 @@ long StringUtils::TimeStringToSeconds(const std::string &timeString)
 
 std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
+  int totalM = lSeconds / 60;
   int hh = lSeconds / 3600;
   lSeconds = lSeconds % 3600;
   int mm = lSeconds / 60;
@@ -957,7 +958,7 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
   if (format & TIME_FORMAT_MM)
     strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", mm);
   else if (format & TIME_FORMAT_M)
-    strHMS += StringUtils::Format("%i", mm);
+    strHMS += StringUtils::Format("%i", totalM);
   if (format & TIME_FORMAT_SS)
     strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", ss);
   return strHMS;
