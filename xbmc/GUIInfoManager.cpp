@@ -242,6 +242,7 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "timespeed",        PLAYER_TIME_SPEED },
                                   { "time",             PLAYER_TIME },
                                   { "duration",         PLAYER_DURATION },
+                                  { "nextduration",     PLAYER_NEXT_DURATION},
                                   { "finishtime",       PLAYER_FINISH_TIME },
                                   { "starttime",        PLAYER_START_TIME}};
 
@@ -3564,6 +3565,16 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   else if (info.m_info == PLAYER_DURATION)
   {
     return GetDuration((TIME_FORMAT)info.GetData1());
+  }
+  else if (info.m_info == PLAYER_NEXT_DURATION)
+  {
+    std::string duration;
+    CEpgInfoTagPtr epgTag;
+    CPVRChannelPtr tag(m_currentFile->GetPVRChannelInfoTag());
+    epgTag = tag->GetEPGNext();
+    if (epgTag && epgTag->GetDuration() > 0)
+      duration = StringUtils::SecondsToTimeString(epgTag->GetDuration(),(TIME_FORMAT)info.GetData1());
+    return duration;
   }
   else if (info.m_info == PLAYER_SEEKTIME)
   {
