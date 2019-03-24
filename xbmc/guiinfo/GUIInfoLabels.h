@@ -80,6 +80,7 @@
 #define PLAYER_FILENAME              55
 #define PLAYER_SEEKSTEPSIZE          56
 #define PLAYER_IS_CHANNEL_PREVIEW_ACTIVE  57
+#define PLAYER_NEXT_DURATION         58
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
