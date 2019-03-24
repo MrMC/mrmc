@@ -36,6 +36,8 @@ config.log
 *.orig
 *.bak
 *.apk
+*.obb
+*.log
 *.class
 
 # Windows specific generated files

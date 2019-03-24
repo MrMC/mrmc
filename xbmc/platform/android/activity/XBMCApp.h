@@ -142,6 +142,7 @@ public:
   virtual void surfaceDestroyed(CJNISurfaceHolder holder) override;
 
   bool isValid() { return m_activity != NULL; }
+  void Deinitialize(int status);
 
   void onStart();
   void onResume();
@@ -164,6 +165,7 @@ public:
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
   void BringToFront();
+  void Minimize();
 
   static int GetBatteryLevel();
   bool EnableWakeLock(bool on);
@@ -179,14 +181,6 @@ public:
   bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   std::vector <androidPackage> GetApplications();
 
-  /*!
-   * \brief If external storage is available, it returns the path for the external storage (for the specified type)
-   * \param path will contain the path of the external storage (for the specified type)
-   * \param type optional type. Possible values are "", "files", "music", "videos", "pictures", "photos, "downloads"
-   * \return true if external storage is available and a valid path has been stored in the path parameter
-   */
-  static bool GetExternalStorage(std::string &path, const std::string &type = "");
-  static bool GetStorageUsage(const std::string &path, std::string &usage);
   int GetMaxSystemVolume();
   float GetSystemVolume();
   void SetSystemVolume(float percent);
@@ -249,9 +243,7 @@ private:
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
-  void run();
   void stop();
-  void SetupEnv();
   static void SetRefreshRateCallback(CVariant *rate);
   static void SetDisplayModeIdCallback(CVariant *mode);
   static ANativeActivity *m_activity;
@@ -268,7 +260,7 @@ private:
   static bool m_hdmiPlugged;
   static bool m_hasPIP;
   bool m_videosurfaceInUse;
-  bool m_firstrun;
+  bool m_firstActivityRun;
   bool m_exiting;
   pthread_t m_thread;
   static CCriticalSection m_applicationsMutex;
@@ -287,8 +279,6 @@ private:
   static CEvent m_vsyncEvent;
   float m_refreshrate = 0.0;
 
-  void XBMC_DestroyDisplay();
-  void XBMC_SetupDisplay();
   static void CalculateGUIRatios();
   static CRect m_droid2guiRatio;
 

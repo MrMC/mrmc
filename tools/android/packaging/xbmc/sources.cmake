@@ -88,6 +88,7 @@ add_subdirectory (${rtdir}/xbmc/pictures ${lib_build_DIR}/pictures)
 add_subdirectory (${rtdir}/xbmc/platform ${lib_build_DIR}/main)
 add_subdirectory (${rtdir}/xbmc/platform/android/activity ${lib_build_DIR}/activity)
 add_subdirectory (${rtdir}/xbmc/platform/android/bionic_supplement ${lib_build_DIR}/bionic_supplement)
+add_subdirectory (${rtdir}/xbmc/platform/android/service ${lib_build_DIR}/android_service)
 
 add_subdirectory (${rtdir}/xbmc/playlists ${lib_build_DIR}/playlists)
 add_subdirectory (${rtdir}/xbmc/powermanagement ${lib_build_DIR}/powermanagement)

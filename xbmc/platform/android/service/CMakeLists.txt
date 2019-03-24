@@ -1,10 +1,20 @@
-include /var/lib/cloud9/w1/mrmc/tools/depends/Makefile.include
+cmake_minimum_required(VERSION 3.4.1)
 
-SRCS       = XBMCService.cpp
+get_property(rtdir GLOBAL PROPERTY ROOT_DIR)
+include ( ${rtdir}/includes.cmake )
 
-LIB        = service.a
+include_directories ( SYSTEM ${ANDROID_NDK}/sources/android/native_app_glue ${ANDROID_NDK}/sources/android/cpufeatures )
 
-$(LIB): $(OBJS)
+set (my_SOURCES
+  XBMCService.cpp
+  )
 
-include /var/lib/cloud9/w1/mrmc/Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+file(GLOB my_HEADERS *.h)
+
+add_library(
+  android_service
+  STATIC
+
+  ${my_SOURCES}
+  ${my_HEADERS}
+  )

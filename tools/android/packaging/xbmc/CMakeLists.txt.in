@@ -58,6 +58,7 @@ target_link_libraries(@APP_NAME_LC@
                         -Wl,--whole-archive
                         main
                         activity
+                        android_service
                         -Wl,--no-whole-archive
 
                         -Wl,--start-group

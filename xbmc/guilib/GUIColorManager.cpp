@@ -56,23 +56,30 @@ void CGUIColorManager::Load(const std::string &colorFile)
     LoadXML(xmlDoc);
 
   // first load the default color map if it exists
-  std::string basePath = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors");
-  std::string path = URIUtils::AddFileToFolder(basePath, "defaults.xml");
+  std::string path, basePath;
+  if (g_SkinInfo)
+  {
+    basePath = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors");
+    path = URIUtils::AddFileToFolder(basePath, "defaults.xml");
 
-  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(path)))
-    LoadXML(xmlDoc);
+    if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(path)))
+      LoadXML(xmlDoc);
+  }
 
   // now the color map requested
   if (StringUtils::EqualsNoCase(colorFile, "SKINDEFAULT"))
     return; // nothing to do
 
-  path = URIUtils::AddFileToFolder(basePath, colorFile);
-  if (!URIUtils::HasExtension(path))
-    path += ".xml";
-  CLog::Log(LOGINFO, "Loading colors from %s", path.c_str());
+  if (g_SkinInfo)
+  {
+    path = URIUtils::AddFileToFolder(basePath, colorFile);
+    if (!URIUtils::HasExtension(path))
+      path += ".xml";
+    CLog::Log(LOGINFO, "Loading colors from %s", path.c_str());
 
-  if (xmlDoc.LoadFile(path))
-    LoadXML(xmlDoc);
+    if (xmlDoc.LoadFile(path))
+      LoadXML(xmlDoc);
+  }
 }
 
 bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)

@@ -22,7 +22,6 @@
 
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 
 #ifdef TARGET_RASPBERRY_PI
@@ -31,6 +30,7 @@
 
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
+#include "platform/android/service/XBMCService.h"
 #endif
 
 extern "C" void MCRuntimeLib_Preflight()
@@ -87,10 +87,6 @@ extern "C" int MCRuntimeLib_Run(bool renderGUI)
     return false;
   g_RBP.LogFirmwareVerison();
 #endif
-#if defined(TARGET_ANDROID)
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE_CAPTURE))
-    CXBMCApp::get()->startProjection();
-#endif
 
   if (renderGUI && !g_application.CreateGUI())
   {
@@ -115,6 +111,10 @@ extern "C" int MCRuntimeLib_Run(bool renderGUI)
 
 #ifdef TARGET_RASPBERRY_PI
   g_RBP.Deinitialize();
+#elif defined(TARGET_ANDROID)
+  if (CXBMCApp::get())
+    CXBMCApp::get()->Deinitialize(status);
+  CXBMCService::get()->Deinitialize();
 #endif
 
   return status;

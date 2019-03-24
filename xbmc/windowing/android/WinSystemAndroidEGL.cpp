@@ -787,7 +787,7 @@ void CWinSystemAndroidEGL::NotifyAppActiveChange(bool bActivated)
 
 bool CWinSystemAndroidEGL::Minimize()
 {
-  CXBMCApp::get()->moveTaskToBack(true);
+  CXBMCApp::get()->Minimize();
   return true;
 }
 

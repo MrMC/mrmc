@@ -64,8 +64,6 @@ public:
   void openGooglePlayStore();
   void openYouTubeVideo(const std::string key);
 
-  std::string getDeviceName() const;
-
 private:
   static CJNIMainActivity *m_appInstance;
 

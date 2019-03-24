@@ -125,7 +125,6 @@
             android:name=".content.XBMCMediaContentProvider"
             android:authorities="@APP_PACKAGE@.media"
             android:exported="true" />
-
         <provider
             android:name=".content.XBMCFileContentProvider"
             android:authorities="@APP_PACKAGE@.file"
@@ -135,8 +134,8 @@
             android:authorities="@APP_PACKAGE@.ytdl"
             android:exported="true" />
 
-        <activity android:name=".XBMCSearchableActivity" >
-             <intent-filter>
+        <activity android:name=".XBMCSearchableActivity">
+            <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -154,17 +153,18 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-       <service
-           android:name=".channels.SyncChannelJobService"
-           android:exported="false"
-           android:permission="android.permission.BIND_JOB_SERVICE" />
-
-       <service
-           android:name=".channels.SyncProgramsJobService"
-           android:exported="false"
-           android:permission="android.permission.BIND_JOB_SERVICE" />
-
+        <service
+            android:name=".channels.SyncChannelJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".channels.SyncProgramsJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".Service"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest> <!-- END_INCLUDE(manifest) -->
-

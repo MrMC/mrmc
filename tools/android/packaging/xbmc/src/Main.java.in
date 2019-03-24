@@ -3,7 +3,6 @@ package @APP_PACKAGE@;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.UiModeManager;
-import android.bluetooth.BluetoothAdapter;
 import android.content.ActivityNotFoundException;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -47,6 +46,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private static final String TAG = "@APP_NAME_UC@";
   private static final int INTENT_RESULT_PROJECT_CODE = 34658;
   private static final int INTENT_MAKE_BROWSABLE_REQUEST_CODE = 39001;
+  private static final int XBMC_EXITCODE_UNINITIALIZED = -99;
+  private static final int XBMC_EXITCODE_QUIT = 0;
   private static final int XBMC_EXITCODE_POWERDOWN = 64;
   private static final int XBMC_EXITCODE_RESTARTAPP= 65;
   private static final int XBMC_EXITCODE_REBOOT    = 66;
@@ -66,8 +67,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private MediaProjection mMediaProjection;
   private int mProjectionIntentId = 0;
 
-  public String mDeviceName = Build.MODEL;
-  public int mExitCode = 0;
+  public int mExitCode = XBMC_EXITCODE_UNINITIALIZED;
   native void _onNewIntent(Intent intent);
   native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
   native void _doFrame(long frameTimeNanos);
@@ -267,13 +267,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-    BluetoothAdapter btDevice = BluetoothAdapter.getDefaultAdapter();
-    if (btDevice != null)
-      mDeviceName = btDevice.getName();
-
     mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
     mJsonRPC = new XBMCJsonRPC();
+
+    // keep alive
+    startService(new Intent(this, Service.class));
 
     // Delayed Intent
     if (getIntent().getData() != null)
@@ -390,6 +389,9 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   @Override
   public void onDestroy()
   {
+    if (mExitCode == XBMC_EXITCODE_QUIT)
+      stopService(new Intent(this, Service.class));
+
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     handler.removeCallbacks(leanbackUpdateRunnable);
     handler.removeCallbacks(watchnextUpdateRunnable);

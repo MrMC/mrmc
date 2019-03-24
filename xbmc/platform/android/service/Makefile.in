@@ -1,0 +1,10 @@
+include @abs_top_srcdir@/tools/depends/Makefile.include
+
+SRCS       = XBMCService.cpp
+
+LIB        = service.a
+
+$(LIB): $(OBJS)
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

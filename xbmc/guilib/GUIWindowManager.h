@@ -76,6 +76,7 @@ public:
   void ChangeActiveWindow(int iNewID, const std::string &strPath = "");
   void ActivateWindow(int iWindowID, const std::vector<std::string>& params, bool swappingWindows = false, bool force = false);
   void PreviousWindow();
+  void ClearWindowHistory();
 
   void CloseDialogs(bool forceClose = false) const;
   void CloseInternalModalDialogs(bool forceClose = false) const;
@@ -204,7 +205,6 @@ private:
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
   void AddToWindowHistory(int newWindowID);
-  void ClearWindowHistory();
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
   CGUIWindow *GetTopMostDialog() const;
   CGUIWindow *GetTopMostModalDialog() const;

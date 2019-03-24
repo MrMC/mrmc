@@ -28,6 +28,7 @@
 #include <androidjni/PackageManager.h>
 
 #include "platform/android/activity/XBMCApp.h"
+#include "platform/android/service/XBMCService.h"
 
 bool CAndroidFeatures::HasNeon()
 {
@@ -101,7 +102,7 @@ bool CAndroidFeatures::HasTouchScreen()
   static int hastouchscreen = -1;
   if (hastouchscreen == -1)
   {
-    if (CXBMCApp::get()->GetPackageManager().hasSystemFeature("android.hardware.touchscreen"))
+    if (CXBMCService::get()->GetPackageManager().hasSystemFeature("android.hardware.touchscreen"))
       hastouchscreen = 1;
     else
       hastouchscreen = 0;

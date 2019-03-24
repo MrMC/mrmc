@@ -21,6 +21,7 @@
 
 #include "NetworkAndroid.h"
 
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
@@ -29,7 +30,7 @@
 #include <arpa/inet.h>
 #include <map>
 
-#include "platform/android/activity/XBMCApp.h"
+#include "platform/android/service/XBMCService.h"
 #include <androidjni/ConnectivityManager.h>
 #include <androidjni/LinkAddress.h>
 #include <androidjni/InetAddress.h>
@@ -71,7 +72,7 @@ std::string& CNetworkInterfaceAndroid::GetName()
 
 bool CNetworkInterfaceAndroid::IsEnabled()
 {
-  CJNIConnectivityManager connman(CXBMCApp::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
+  CJNIConnectivityManager connman(CXBMCService::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
   CJNINetworkInfo ni = connman.getNetworkInfo(m_network);
   if (!ni)
     return false;
@@ -81,7 +82,7 @@ bool CNetworkInterfaceAndroid::IsEnabled()
 
 bool CNetworkInterfaceAndroid::IsConnected()
 {
-  CJNIConnectivityManager connman(CXBMCApp::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
+  CJNIConnectivityManager connman(CXBMCService::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
   CJNINetworkInfo ni = connman.getNetworkInfo(m_network);
   if (!ni)
     return false;
@@ -91,7 +92,7 @@ bool CNetworkInterfaceAndroid::IsConnected()
 
 bool CNetworkInterfaceAndroid::IsWireless()
 {
-  CJNIConnectivityManager connman(CXBMCApp::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
+  CJNIConnectivityManager connman(CXBMCService::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
   CJNINetworkInfo ni = connman.getNetworkInfo(m_network);
   if (!ni)
     return false;
@@ -149,7 +150,7 @@ void CNetworkInterfaceAndroid::GetMacAddressRaw(char rawMac[6])
 bool CNetworkInterfaceAndroid::GetHostMacAddress(in_addr_t host_ip, std::string& mac)
 {
   CLog::Log(LOGDEBUG, "CNetworkInterfaceAndroid::GetHostMacAddress");
-  if (CJNIAudioManager::GetSDKVersion() < 23)
+  if (CJNIBase::GetSDKVersion() < 23)
   {
     struct arpreq areq;
     struct sockaddr_in* sin;
@@ -290,14 +291,14 @@ std::string CNetworkInterfaceAndroid::GetCurrentWirelessEssId()
 {
   std::string ret;
 
-  CJNIConnectivityManager connman(CXBMCApp::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
+  CJNIConnectivityManager connman(CXBMCService::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
   CJNINetworkInfo ni = connman.getNetworkInfo(m_network);
   if (!ni)
     return "";
 
   if (ni.getType() == CJNIConnectivityManager::TYPE_WIFI)
   {
-    CJNIWifiManager wm = CXBMCApp::get()->getSystemService("wifi");
+    CJNIWifiManager wm = CXBMCService::get()->getSystemService("wifi");
     if (wm.isWifiEnabled())
     {
       CJNIWifiInfo wi = wm.getConnectionInfo();
@@ -423,7 +424,7 @@ void CNetworkAndroid::RetrieveInterfaces()
   m_oldInterfaces = m_interfaces;
   m_interfaces.clear();
 
-  CJNIConnectivityManager connman(CXBMCApp::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
+  CJNIConnectivityManager connman(CXBMCService::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
   std::vector<CJNINetwork> networks = connman.getAllNetworks();
 
   for (auto n : networks)

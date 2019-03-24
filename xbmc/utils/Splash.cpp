@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "Splash.h"
+#include "Application.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIFontManager.h"
@@ -56,6 +57,9 @@ void CSplash::Show()
 
 void CSplash::Show(const std::string& message)
 {
+  if (!g_application.GetRenderGUI())
+    return;
+
   if (!m_image)
   {
     std::string splashName = "Splash.png";

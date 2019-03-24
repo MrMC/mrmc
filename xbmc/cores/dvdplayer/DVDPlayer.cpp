@@ -171,7 +171,7 @@ public:
       else
         return true;
     }
-      
+
     if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
       return false;
 
@@ -662,7 +662,10 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   Create();
 
   // wait for the ready event
-  CGUIDialogBusy::WaitOnEvent(m_ready, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
+  if (g_application.GetRenderGUI())
+    CGUIDialogBusy::WaitOnEvent(m_ready, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
+  else
+    m_ready.Wait();
 
   // Playback might have been stopped due to some error
   if (m_bStop || m_bAbortRequest)
@@ -761,12 +764,12 @@ bool CDVDPlayer::OpenInputStream()
       CURL::GetRedacted(m_item.GetPath().c_str()).c_str());
     return false;
   }
-  
+
   if (m_item.IsMediaServiceBased())
   {
     CServicesManager::GetInstance().GetSubtitles(m_item);
   }
-  
+
   // find any available external subtitles for non dvd files
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
@@ -2690,7 +2693,7 @@ void CDVDPlayer::HandleMessages()
           SAFE_DELETE(m_pDemuxer);
           m_playSpeed = DVD_PLAYSPEED_NORMAL;
 #ifdef HAS_VIDEO_PLAYBACK
-          // when using fast channel switching some shortcuts are taken which 
+          // when using fast channel switching some shortcuts are taken which
           // means we'll have to update the view mode manually
           g_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
 #endif
@@ -2764,7 +2767,7 @@ void CDVDPlayer::HandleMessages()
 
               g_infoManager.SetDisplayAfterSeek();
 #ifdef HAS_VIDEO_PLAYBACK
-              // when using fast channel switching some shortcuts are taken which 
+              // when using fast channel switching some shortcuts are taken which
               // means we'll have to update the view mode manually
               g_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
 #endif
@@ -4830,11 +4833,11 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
       p.m_strLanguage = subs[i].language;
       extSubDetails.push_back(p);
     }
-    
+
     bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, extSubDetails, details);
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
-      /* 
+      /*
        * We can only obtain the aspect & duration from dvdplayer when the Process() thread is running
        * and UpdatePlayState() has been called at least once. In this case dvdplayer duration/AR will
        * return 0 and we'll have to fallback to the (less accurate) info from the demuxer.

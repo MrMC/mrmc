@@ -302,6 +302,7 @@ endif
 
 ifeq (@USE_ANDROID@,1)
 MAINOBJS+=xbmc/platform/android/activity/activity.a
+MAINOBJS+=xbmc/platform/android/service/service.a
 endif
 MAINOBJS+=xbmc/platform/main.a
 
