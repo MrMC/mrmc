@@ -1259,12 +1259,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   CFileItemPtr movieItem(new CFileItem(*item));
 
   bool playback = true;
-  if (movieItem->IsMediaServiceBased())
-  {
-    playback = CServicesManager::GetInstance().GetResolutions(*movieItem);
-    CServicesManager::GetInstance().GetURL(*movieItem);
-  }
-  else if (movieItem->IsCloud())
+  if (movieItem->IsCloud())
   {
     CCloudUtils::GetInstance().GetURL(*movieItem);
   }
