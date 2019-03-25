@@ -1661,8 +1661,6 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
   // good thing it didnt take 2 days to figure it out
   items.SetProperty("library.filter", "true");
   SetPlexItemProperties(items);
-  items.ClearSortState();
-  items.Sort(SortByTitle, SortOrderAscending);
 
   return rtn;
 }
