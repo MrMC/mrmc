@@ -1169,6 +1169,8 @@ bool CApplication::Initialize()
   StartDatabase();
   StartServices();
 
+  CTextureCache::GetInstance().Initialize();
+
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
 
@@ -1657,7 +1659,6 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   g_windowManager.AddMsgTarget(&CStereoscopicsManager::GetInstance());
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
-  CTextureCache::GetInstance().Initialize();
   g_audioManager.Enable(true);
   g_audioManager.Load();
 
@@ -1715,7 +1716,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   g_audioManager.Enable(false);
 
   g_windowManager.DeInitialize();
-  CTextureCache::GetInstance().Deinitialize();
+  CTextureCache::GetInstance().CancelJobs();
 
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
