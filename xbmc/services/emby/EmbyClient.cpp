@@ -716,6 +716,24 @@ bool CEmbyClient::FetchViews()
     CLog::Log(LOGDEBUG, "CEmbyClient::FetchViews %s", response.c_str());
 #endif
 
+    // clear all views
+    {
+      CSingleLock lock(m_viewMoviesLock);
+      m_viewMovies.clear();
+    }
+    {
+      CSingleLock lock(m_viewTVShowsLock);
+      m_viewTVShows.clear();
+    }
+    {
+      CSingleLock lock(m_viewMusicLock);
+      m_viewMusic.clear();
+    }
+    {
+      CSingleLock lock(m_viewPhotosLock);
+      m_viewPhotos.clear();
+    }
+
     CVariant resultObject;
     if (!CJSONVariantParser::Parse(response, resultObject) ||
         !resultObject.isObject() || !resultObject.isMember("Items"))

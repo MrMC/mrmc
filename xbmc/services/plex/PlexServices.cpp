@@ -1302,7 +1302,7 @@ bool CPlexServices::ParseCurrentServerSections()
   CPlexClientPtr client = GetClient(uuid);;
   if (client)
   {
-    client->ParseSections(PlexSectionParsing::newSection);
+    client->ParseSections(PlexSectionParsing::updateSection);
     return true;
   }
   return false;
