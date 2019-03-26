@@ -19,7 +19,9 @@
  */
 
 #include "system.h"
+#include "Application.h"
 #include "AppParamParser.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
@@ -42,8 +44,25 @@
 #ifdef __cplusplus
 extern "C"
 #endif
+
+//----------------------------------------------------------------------------
+void XBMC_Exit(int nSignal)
+{
+  switch(nSignal)
+  {
+    case SIGTERM:
+    case SIGINT:
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+      break;
+  }
+}
+//----------------------------------------------------------------------------
+
 int main(int argc, char* argv[])
 {
+  signal(SIGINT, XBMC_Exit);
+  signal(SIGTERM, XBMC_Exit);
+
   // set up some xbmc specific relationships
   MCRuntimeLib::Context context;
 
