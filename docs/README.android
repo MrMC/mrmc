@@ -97,13 +97,7 @@ archives to your harddisk. For our example we are extracting in the following
 directories (this matches the example from tools/depends/README as well):
 
 NDK (referenced as <android-ndk> from now on):
-/opt/android-ndk-r10d
-
-TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
-/opt/arm-linux-androideabi-4.8-vanilla/android-17
-
-TOOLCHAIN (x86) (referenced as <android-toolchain-x86> from now on):
-/opt/x86-linux-4.8-vanilla/android-17
+/opt/android-ndk-r19c
 
 SDK (referenced as <android-sdk> from now on):
 /opt/android-sdk-linux
@@ -130,49 +124,8 @@ As of newest SDKs the android tool is deprecated. Use sdkmanager instead:
     $ ./sdkmanager "cmake;3.6.4111459"
 
 --------------------------------------------------------------------
-3.4. Setup the Android toolchain
+3.4. Setup the Android toolchain (deprecated)
 --------------------------------------------------------------------
-
-To be able to compile MrMC and the libraries it depends on for the
-Android platform you first need to setup an Android toolchain using
-the Android NDK which you earlier extracted to <android-ndk>. The
-following commands will create a toolchain suitable for the most
-common scenario.
-The --install-dir option (and therefore the <android-toolchain-arm>/<android-toolchain-x86> value)
-specifies where the resulting toolchain should be installed (your choice).
-
-[NOTICE] MrMC uses the android API Version 17 and gcc version 4.8!
-
-Building for arm architecture:
-
-    $ cd <android-ndk>
-    $ ls platforms
-    $ cd build/tools
-    $ ./make-standalone-toolchain.sh \
-      --install-dir=<android-toolchain-arm>/android-21 --platform=android-21 \
-      --toolchain=arm-linux-androideabi-4.9 --stl=libc++
-
-Building for aarch64 architecture:
-
-    $ cd <android-ndk>
-    $ ls platforms
-    $ cd build/tools
-    $ ./make-standalone-toolchain.sh \
-      --install-dir=<android-toolchain-aarch64>/android-21 --platform=android-21 \
-      --toolchain=aarch64-linux-android-4.9 --stl=libc++
-
-Building for x86 architecture:
-
-    $ cd <android-ndk>
-    $ ls platforms
-    $ cd build/tools
-    $ ./make-standalone-toolchain.sh \
-      --install-dir=<android-toolchain-x86>/android-21 --platform=android-21 \
-      --toolchain=x86-4.9 --arch=x86 --stl=libc++
-
-Make sure to pick a toolchain for your desired architecture. If an error about
-the used system is shown - please add proper --system parameter as mentioned
-in the error message.
 
 --------------------------------------------------------------------
 3.5. Create a (new) debug key to sign debug APKs

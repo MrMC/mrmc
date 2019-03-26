@@ -24,7 +24,7 @@ AC_DEFUN([MC_CHECK_NOT_CPU],
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
-  [specify path to toolchain. Required for android. Defaults to xcode root for darwin, /usr for linux])],
+  [specify path to toolchain. Ignored for android. Defaults to xcode root for darwin, /usr for linux])],
   [use_toolchain=$withval])
 
 AC_ARG_WITH([platform],
@@ -130,8 +130,8 @@ case $host in
       use_cpu="armeabi-v7a"
     fi
     use_android_abi="armeabi-v7a"
-    platform_cc=clang
-    platform_cxx=clang++
+    platform_cc=armv7a-linux-androideabi$use_ndk_api-clang
+    platform_cxx=armv7a-linux-androideabi$use_ndk_api-clang++
     use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api"
@@ -146,14 +146,16 @@ case $host in
     platform_os="android"
     #android builds are always cross
     cross_compiling="yes"
+    # As of NDK 19, contruct toolchain
+    use_toolchain=$use_ndk_path/toolchains/llvm/prebuilt/linux-x86_64
   ;;
   aarch64*-*linux-android*)
     if test "x$use_cpu" = "xauto"; then
       use_cpu="arm64"
     fi
     use_android_abi="arm64-v8a"
-    platform_cc=clang
-    platform_cxx=clang++
+    platform_cc=aarch64-linux-android$use_ndk_api-clang
+    platform_cxx=aarch64-linux-android$use_ndk_api-clang++
     use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api"
@@ -168,14 +170,16 @@ case $host in
     platform_os="android"
     #android builds are always cross
     cross_compiling="yes"
+    # As of NDK 19, contruct toolchain
+    use_toolchain=$use_ndk_path/toolchains/llvm/prebuilt/linux-x86_64
   ;;
   i*86*-linux-android*)
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
     use_android_abi="x86"
-    platform_cc=clang
-    platform_cxx=clang++
+    platform_cc=i686-linux-android$use_ndk_api-clang
+    platform_cxx=i686-linux-android$use_ndk_api-clang++
     use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api"
@@ -187,6 +191,8 @@ case $host in
     platform_os="android"
     #android builds are always cross
     cross_compiling="yes"
+    # As of NDK 19, contruct toolchain
+    use_toolchain=$use_ndk_path/toolchains/llvm/prebuilt/linux-x86_64
   ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
     if test "$use_platform" = "auto"; then
