@@ -714,7 +714,6 @@ bool CApplication::CreateGUI()
 {
   CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
-  m_renderGUI = true;
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 

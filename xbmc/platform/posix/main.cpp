@@ -47,7 +47,6 @@ int main(int argc, char* argv[])
   // set up some xbmc specific relationships
   MCRuntimeLib::Context context;
 
-  bool renderGUI = true;
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG
@@ -73,5 +72,5 @@ int main(int argc, char* argv[])
   CAppParamParser appParamParser;
   appParamParser.Parse(const_cast<const char**>(argv), argc);
   
-  return MCRuntimeLib_Run(renderGUI);
+  return MCRuntimeLib_Run(g_application.GetRenderGUI());
 }

@@ -35,7 +35,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_bStop = false;
   m_AppFocused = true;
   m_ExitCode = EXITCODE_QUIT;
-  m_renderGUI = false;
+  m_renderGUI = true;
 }
 
 CXBApplicationEx::~CXBApplicationEx()
