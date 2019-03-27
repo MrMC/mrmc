@@ -30,6 +30,7 @@ extern "C"
 #include "FileItem.h"
 #include "DllLibSMB2.h"
 #include "PasswordManager.h"
+#include "network/DNSNameCache.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -260,7 +261,9 @@ bool CSMB2Session::Connect(std::string& hostname, std::string& domain, std::stri
 
   m_smb2lib->smb2_set_security_mode(m_smb_context, SMB2_NEGOTIATE_SIGNING_ENABLED);
 
-  m_lastError = m_smb2lib->smb2_connect_share(m_smb_context, hostname.c_str(), sharename.c_str(), nullptr);
+  std::string ip;
+  CDNSNameCache::Lookup(hostname, ip);
+  m_lastError = m_smb2lib->smb2_connect_share(m_smb_context, ip.c_str(), sharename.c_str(), nullptr);
 
   if (m_lastError < 0)
   {
