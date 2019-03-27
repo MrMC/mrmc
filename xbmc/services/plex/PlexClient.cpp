@@ -139,9 +139,10 @@ bool CPlexClient::Init(const PlexServerInfo &serverInfo)
       int timeout = connection.external ? 7 : 3;
       if (CPlexUtils::GetIdentity(url, timeout))
       {
+        std::string redactUrl = CURL::GetRedacted(url.Get().c_str());
         CLog::Log(LOGDEBUG, "CPlexClient::Init "
           "serverName(%s), ipAddress(%s), protocol(%s)",
-          m_serverName.c_str(), url.Get().c_str(), connection.protocol.c_str());
+          m_serverName.c_str(), redactUrl.c_str(), connection.protocol.c_str());
 
         m_url = url.Get();
         m_protocol = url.GetProtocol();
