@@ -102,7 +102,7 @@ bool CNetworkInterfaceAndroid::IsWireless()
 
 bool CNetworkInterfaceAndroid::IsVPN()
 {
-  CJNIConnectivityManager connman(CXBMCService::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
+  CJNIConnectivityManager connman(CXBMCApp::get()->getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
   CJNINetworkInfo ni = connman.getNetworkInfo(m_network);
   if (!ni)
     return false;
