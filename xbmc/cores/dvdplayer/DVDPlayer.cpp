@@ -3834,11 +3834,6 @@ void CDVDPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   if(pts != DVD_NOPTS_VALUE && sync)
     m_clock.Discontinuity(pts);
   UpdatePlayState(0);
-
-  // update state, buffers are flushed and it may take some time until
-  // we get an update from players
-  CSingleLock lock(m_StateSection);
-  m_State = m_State;
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
