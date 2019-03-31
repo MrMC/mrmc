@@ -48,7 +48,7 @@ Debug: DEBUG=--enable-debug=yes
 Debug: $(SOURCE)/lib$(APP_NAME).so
 
 $(SOURCE)/lib$(APP_NAME).so:
-	cd $(SOURCE); SWIG_LIB=$(PREFIX)/../x86_64-linux-gnu-native/share/swig/3.0.10 BOOTSTRAP_FROM_DEPENDS=yes ./bootstrap
+	cd $(SOURCE); SWIG_LIB=$(NATIVEPREFIX)/share/swig/3.0.10 BOOTSTRAP_FROM_DEPENDS=yes ./bootstrap
 	cd $(SOURCE); echo $(EXPORTS) echo $(CONFIGURE)
 
 ../../Makefile.include:
