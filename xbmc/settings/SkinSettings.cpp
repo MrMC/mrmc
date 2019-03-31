@@ -60,7 +60,7 @@ int CSkinSettings::TranslateString(const std::string &setting)
 const std::string& CSkinSettings::GetString(int setting) const
 {
   if (!g_SkinInfo)
-    return "";
+    return StringUtils::Empty;
 
   return g_SkinInfo->GetString(setting);
 }
