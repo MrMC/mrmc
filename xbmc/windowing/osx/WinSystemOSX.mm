@@ -329,29 +329,30 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   windowStyleMask = NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask;
   if (m_appWindow == NULL)
   {
-    appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight) styleMask:windowStyleMask];
-    NSString *title = [NSString stringWithUTF8String:m_name.c_str()];
-    [appWindow setBackgroundColor:[NSColor blackColor]];
-    [appWindow setTitle:title];
-    [appWindow setOneShot:NO];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight) styleMask:windowStyleMask];
+      NSString *title = [NSString stringWithUTF8String:m_name.c_str()];
+      [appWindow setBackgroundColor:[NSColor blackColor]];
+      [appWindow setTitle:title];
+      [appWindow setOneShot:NO];
 
-    NSWindowCollectionBehavior behavior = [appWindow collectionBehavior];
-    behavior |= NSWindowCollectionBehaviorFullScreenPrimary;
-    [appWindow setCollectionBehavior:behavior];
+      NSWindowCollectionBehavior behavior = [appWindow collectionBehavior];
+      behavior |= NSWindowCollectionBehaviorFullScreenPrimary;
+      [appWindow setCollectionBehavior:behavior];
 
-    // create new content view
-    NSRect appRect = [appWindow contentRectForFrameRect:[appWindow frame]];
+      // create new content view
+      NSRect appRect = [appWindow contentRectForFrameRect:[appWindow frame]];
 
-    // create new view if we don't have one
-    if(!m_glView)
-      m_glView = [[OSXGLView alloc] initWithFrame:appRect];
-    OSXGLView *view = (OSXGLView*)m_glView;
+      // create new view if we don't have one
+      if(!m_glView)
+        m_glView = [[OSXGLView alloc] initWithFrame:appRect];
+      OSXGLView *view = (OSXGLView*)m_glView;
 
-    // associate with current window
-    [appWindow setContentView: view];
-    [[view getGLContext] makeCurrentContext];
-    [[view getGLContext] update];
-
+      // associate with current window
+      [appWindow setContentView: view];
+      [[view getGLContext] makeCurrentContext];
+      [[view getGLContext] update];
+    });
     if (!fullScreen)
     {
       NSRect rect = [appWindow contentRectForFrameRect:[appWindow frame]];
