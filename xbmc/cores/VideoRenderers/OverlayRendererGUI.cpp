@@ -23,9 +23,11 @@
 
 #include "filesystem/File.h"
 #include "Util.h"
+#include "utils/ColorUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "guilib/GUITexture.h"
 #include "guilib/GUITextLayout.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIFont.h"
@@ -33,14 +35,25 @@
 
 using namespace OVERLAY;
 
-static color_t color[8] = { 0xFFFFFF00
-                          , 0xFFFFFFFF
-                          , 0xFF0099FF
-                          , 0xFF00FF00
-                          , 0xFFCCFF00
-                          , 0xFF00FFFF
-                          , 0xFFE5E5E5
-                          , 0xFFC0C0C0 };
+static UTILS::Color colors[8] = {
+  UTILS::COLOR::YELLOW,
+  UTILS::COLOR::WHITE,
+  UTILS::COLOR::BLUE,
+  UTILS::COLOR::BRIGHTGREEN,
+  UTILS::COLOR::YELLOWGREEN,
+  UTILS::COLOR::CYAN,
+  UTILS::COLOR::LIGHTGREY,
+  UTILS::COLOR::GREY
+};
+
+static UTILS::Color bgcolors[5] = {
+  UTILS::COLOR::BLACK,
+  UTILS::COLOR::YELLOW,
+  UTILS::COLOR::WHITE,
+  UTILS::COLOR::LIGHTGREY,
+  UTILS::COLOR::GREY
+};
+
 
 static CGUITextLayout* GetFontLayout()
 {
@@ -54,7 +67,7 @@ static CGUITextLayout* GetFontLayout()
     RESOLUTION_INFO pal(720, 576, 0);
     CGUIFont *subtitle_font = g_fontManager.LoadTTF("__subtitle__"
                                                     , font_path
-                                                    , color[CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_COLOR)]
+                                                    , colors[CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_COLOR)]
                                                     , 0
                                                     , CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT)
                                                     , CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_STYLE)
@@ -157,6 +170,18 @@ void COverlayText::PrepareRender()
   float width_max = (float)res.Overscan.right - res.Overscan.left;
   m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
   m_layout->GetTextExtent(m_width, m_height);
+
+  // Compute the color to be used for the overlay background (depending on the opacity)
+  UTILS::Color bgcolor = bgcolors[CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_BGCOLOR)];
+  int bgopacity = CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_BGOPACITY);
+  if (bgopacity > 0 && bgopacity < 100)
+  {
+    m_bgcolor = ColorUtils::ChangeOpacity(bgcolor, bgopacity / 100.0f);
+  }
+  else if (bgopacity == 0)
+  {
+    m_bgcolor = UTILS::COLOR::NONE;
+  }
 }
 
 void COverlayText::Render(OVERLAY::SRenderState &state)
@@ -195,6 +220,12 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   y = std::max(y, (float) res.Overscan.top);
   y = std::min(y, res.Overscan.bottom - m_height);
 
+  // draw the overlay background
+  if (m_bgcolor != UTILS::COLOR::NONE)
+  {
+    CRect backgroundbox(x - m_layout->GetTextWidth() * 0.52f, y, x + m_layout->GetTextWidth() * 0.52f, y + m_layout->GetTextHeight());
+    CGUITexture::DrawQuad(backgroundbox, m_bgcolor);
+  }
   m_layout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, width_max);
   g_graphicsContext.RemoveTransform();
 }

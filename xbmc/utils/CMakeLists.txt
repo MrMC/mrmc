@@ -21,6 +21,7 @@ set (my_SOURCES
   BooleanLogic.cpp
   CharsetConverter.cpp
   CharsetDetection.cpp
+  ColorUtils.cpp
   CPUInfo.cpp
   Crc32.cpp
   CryptThreading.cpp

@@ -1830,6 +1830,9 @@
 		F534EDA41E8D8BD60009D1A1 /* EmbyViewCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F534EDA01E8D8BD60009D1A1 /* EmbyViewCache.cpp */; };
 		F5364D34155B3B270016D00B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364D33155B3B270016D00B /* CoreVideo.framework */; };
 		F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364E04155B3CAF0016D00B /* IOSurface.framework */; };
+		F541204422592827001E16BA /* ColorUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F541204122592827001E16BA /* ColorUtils.cpp */; };
+		F541204522592827001E16BA /* ColorUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F541204122592827001E16BA /* ColorUtils.cpp */; };
+		F541204622592827001E16BA /* ColorUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F541204122592827001E16BA /* ColorUtils.cpp */; };
 		F5471B181E8562AA00570A53 /* EmbyDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B161E8562AA00570A53 /* EmbyDirectory.cpp */; };
 		F5471B191E8562AA00570A53 /* EmbyDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B161E8562AA00570A53 /* EmbyDirectory.cpp */; };
 		F5471B1A1E8562AA00570A53 /* EmbyDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5471B161E8562AA00570A53 /* EmbyDirectory.cpp */; };
@@ -5555,6 +5558,9 @@
 		F5364E04155B3CAF0016D00B /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = /System/Library/Frameworks/IOSurface.framework; sourceTree = "<absolute>"; };
 		F541203F22512125001E16BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F541204022512125001E16BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F541204122592827001E16BA /* ColorUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ColorUtils.cpp; sourceTree = "<group>"; };
+		F541204222592827001E16BA /* ColorUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorUtils.h; sourceTree = "<group>"; };
+		F541204322592827001E16BA /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		F54570841BF5947A00432C6A /* Info.plist.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist.in; sourceTree = "<group>"; };
 		F54570851BF5947A00432C6A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F54570881BF5955900432C6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -9369,6 +9375,9 @@
 				E38E1E2A0D25F9FD00618676 /* CharsetConverter.h */,
 				7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */,
 				7CC82C9218284F9F0010DF30 /* CharsetDetection.h */,
+				F541204322592827001E16BA /* Color.h */,
+				F541204122592827001E16BA /* ColorUtils.cpp */,
+				F541204222592827001E16BA /* ColorUtils.h */,
 				E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */,
 				E38E1E2C0D25F9FD00618676 /* CPUInfo.h */,
 				18B7C8E712942603009E7A26 /* Crc32.cpp */,
@@ -11975,6 +11984,7 @@
 				DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */,
 				F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */,
 				7C2612711825B6340086E04D /* DatabaseQuery.cpp in Sources */,
+				F541204422592827001E16BA /* ColorUtils.cpp in Sources */,
 				7C920CF9181669FF00DA1477 /* TextureOperations.cpp in Sources */,
 				DFEF0BAC180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
 				DFEF0BC1180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
@@ -12333,6 +12343,7 @@
 				E4991225174E5D5A00741B6D /* RenderCapture.cpp in Sources */,
 				F5B723F41C7CA014006432AE /* DetectDVDType.cpp in Sources */,
 				E4991226174E5D5A00741B6D /* RenderManager.cpp in Sources */,
+				F541204522592827001E16BA /* ColorUtils.cpp in Sources */,
 				F5B723DB1C7C9F76006432AE /* ContextMenuAddon.cpp in Sources */,
 				E4991227174E5D5A00741B6D /* DummyVideoPlayer.cpp in Sources */,
 				F5FA260E20545C080078DF4B /* CallbackFunction.cpp in Sources */,
@@ -13494,6 +13505,7 @@
 				F5FA266D20545C290078DF4B /* AddonModuleXbmc.cpp in Sources */,
 				F5D13F441BAF0B6D0075A95C /* dataset.cpp in Sources */,
 				F51D17201E29950600A03C93 /* getset.c in Sources */,
+				F541204622592827001E16BA /* ColorUtils.cpp in Sources */,
 				F5B724BE1C7E150C006432AE /* filefn.cpp in Sources */,
 				F5D13F451BAF0B6D0075A95C /* mysqldataset.cpp in Sources */,
 				F5D13F461BAF0B6D0075A95C /* qry_dat.cpp in Sources */,
