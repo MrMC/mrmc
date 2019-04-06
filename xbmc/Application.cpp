@@ -813,15 +813,6 @@ bool CApplication::CreateGUI()
             info.iHeight,
             info.strMode.c_str());
 
-  // Make sure we have at least the default skin
-  std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
-  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-  if (!LoadSkin(skin) && !LoadSkin(defaultSkin))
-  {
-    CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
-    return false;
-  }
-
   m_bGUICreated = true;
 
   CLog::Log(LOGDEBUG, ">>> %s", __PRETTY_FUNCTION__);
@@ -859,6 +850,16 @@ bool CApplication::StartGUI()
 #if !defined(TARGET_DARWIN_TVOS)
   g_peripherals.Initialise();
 #endif
+
+  // Make sure we have at least the default skin
+  std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
+  std::string skin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+  if (!LoadSkin(skin) && !LoadSkin(defaultSkin))
+  {
+    CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
+    return false;
+  }
+
   CSettings::GetInstance().GetSetting(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF)->SetRequirementsMet(m_dpms->IsSupported());
 
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
