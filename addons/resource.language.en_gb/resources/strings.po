@@ -3155,7 +3155,11 @@ msgctxt "#730"
 msgid "Port"
 msgstr ""
 
-#empty string with id 731
+#: system/settings/settings.xml
+msgctxt "#731"
+msgid "Black"
+msgstr ""
+
 
 msgctxt "#732"
 msgid "Save & apply"
@@ -3218,7 +3222,15 @@ msgctxt "#744"
 msgid "Files"
 msgstr ""
 
-#empty strings from id 745 to 746
+#: system/settings/settings.xml
+msgctxt "#745"
+msgid "Background color"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#746"
+msgid "Background opacity"
+msgstr ""
 
 msgctxt "#747"
 msgid "Error loading image"
@@ -17818,7 +17830,19 @@ msgctxt "#36292"
 msgid "Wait time before starting LiveTV playback."
 msgstr ""
 
-#empty strings from id 36293 to 36300
+#. Description of setting with label #745 "Background Color"
+#: system/settings/settings.xml
+msgctxt "#36293"
+msgid "Set the color to be used for the subtitle background."
+msgstr ""
+
+#. Description of setting with label #746 "Background Opacity"
+#: system/settings/settings.xml
+msgctxt "#36294"
+msgid "Set the the subtitle background opacity."
+msgstr ""
+
+#empty strings from id 36295 to 36300
 
 #: system/settings/settings.xml
 msgctxt "#36301"

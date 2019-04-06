@@ -14,6 +14,7 @@ SRCS += BitstreamWriter.cpp
 SRCS += BooleanLogic.cpp
 SRCS += CharsetConverter.cpp
 SRCS += CharsetDetection.cpp
+SRCS += ColorUtils.cpp
 SRCS += CPUInfo.cpp
 SRCS += Crc32.cpp
 SRCS += CryptThreading.cpp
