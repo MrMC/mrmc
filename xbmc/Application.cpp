@@ -813,6 +813,8 @@ bool CApplication::CreateGUI()
             info.iHeight,
             info.strMode.c_str());
 
+  g_windowManager.Initialize();
+
   m_bGUICreated = true;
 
   CLog::Log(LOGDEBUG, ">>> %s", __PRETTY_FUNCTION__);
