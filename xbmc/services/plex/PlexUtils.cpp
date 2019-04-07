@@ -1539,10 +1539,8 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
     if (season > -1)
     {
       value = item["thumb"].asString();
-      url.SetFileName("photo/:/transcode");
-      url.SetOption("height", "800");
-      url.SetOption("width", "800");
-      url.SetOption("url", value);
+      removeLeadingSlash(value);
+      url.SetFileName(value);
       imagePath = url.Get();
       plexItem->SetArt("thumb", imagePath);
       plexItem->SetArt("tvshow.thumb", imagePath);
@@ -1561,20 +1559,20 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
       plexItem->GetVideoInfoTag()->m_strShowTitle = item["grandparentTitle"].asString();
 
       value = item["thumb"].asString();
-      url.SetFileName("photo/:/transcode");
-      url.SetOption("height", "800");
-      url.SetOption("width", "800");
-      url.SetOption("url", value);
+      removeLeadingSlash(value);
+      url.SetFileName(value);
       imagePath = url.Get();
       plexItem->SetArt("thumb", imagePath);
 
       value = item["parentThumb"].asString();
-      url.SetOption("url", value);
+      removeLeadingSlash(value);
+      url.SetFileName(value);
       imagePath = url.Get();
       plexItem->SetArt("season.poster", imagePath);
 
       value = item["grandparentThumb"].asString();
-      url.SetOption("url", value);
+      removeLeadingSlash(value);
+      url.SetFileName(value);
       imagePath = url.Get();
       plexItem->SetArt("tvshow.poster", imagePath);
       plexItem->SetArt("tvshow.thumb", imagePath);
@@ -1590,10 +1588,8 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
       plexItem->SetLabel(item["title"].asString());
 
       value = item["thumb"].asString();
-      url.SetFileName("photo/:/transcode");
-      url.SetOption("height", "800");
-      url.SetOption("width", "800");
-      url.SetOption("url", value);
+      removeLeadingSlash(value);
+      url.SetFileName(value);
       imagePath = url.Get();
       plexItem->SetArt("thumb", imagePath);
       plexItem->SetIconImage(imagePath);
@@ -1618,11 +1614,8 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
     time_t lastPlayed = item["lastViewedAt"].asInteger();
     plexItem->GetVideoInfoTag()->m_lastPlayed = CDateTime(lastPlayed);
 
-    url.SetFileName("photo/:/transcode");
-    url.SetOption("height", "1080");
-    url.SetOption("width", "1920");
-    url.SetOption("quality", "90");
-    url.SetOption("url", fanart);
+    removeLeadingSlash(fanart);
+    url.SetFileName(fanart);
     plexItem->SetArt("fanart", url.Get());
 
     plexItem->GetVideoInfoTag()->SetYear(item["year"].asInteger());
@@ -1703,25 +1696,20 @@ bool CPlexUtils::ParsePlexSeries(CFileItemList &items, const CURL &url, const CV
     plexItem->GetVideoInfoTag()->SetPlot(item["summary"].asString());
 
     value = item["thumb"].asString();
-    curl.SetFileName("photo/:/transcode");
-    curl.SetOption("height", "800");
-    curl.SetOption("width", "800");
-    curl.SetOption("url", value);
+    removeLeadingSlash(value);
+    curl.SetFileName(value);
     plexItem->SetArt("thumb", curl.Get());
 
     value = item["banner"].asString();
-    curl.SetOption("height", "720");
-    curl.SetOption("width", "1280");
-    curl.SetOption("quality", "90");
+    removeLeadingSlash(value);
+    curl.SetFileName(value);
     curl.SetOption("url", value);
     
     plexItem->SetArt("banner", curl.Get());
 
     value = item["art"].asString();
-    curl.SetOption("height", "1080");
-    curl.SetOption("width", "1920");
-    curl.SetOption("quality", "90");
-    curl.SetOption("url", value);
+    removeLeadingSlash(value);
+    curl.SetFileName(value);
     plexItem->SetArt("fanart", curl.Get());
 
     plexItem->GetVideoInfoTag()->SetYear(item["year"].asInteger());
@@ -1802,25 +1790,19 @@ bool CPlexUtils::ParsePlexSeasons(CFileItemList &items, const CURL &url, const C
       plexItem->SetProperty("PlexShowKey", mediacontainer["key"].asString());
 
       value = mediacontainer["art"].asString();
-      curl.SetFileName("photo/:/transcode");
-      curl.SetOption("height", "800");
-      curl.SetOption("width", "800");
-      curl.SetOption("url", value);
+      removeLeadingSlash(value);
+      curl.SetFileName(value);
       plexItem->SetArt("fanart", curl.Get());
 
       value = mediacontainer["banner"].asString();
-      curl.SetOption("height", "720");
-      curl.SetOption("width", "1280");
-      curl.SetOption("quality", "90");
-      curl.SetOption("url", value);
+      removeLeadingSlash(value);
+      curl.SetFileName(value);
       plexItem->SetArt("banner", curl.Get());
 
       /// -------
       value = item["thumb"].asString();
-      curl.SetFileName("photo/:/transcode");
-      curl.SetOption("height", "800");
-      curl.SetOption("width", "800");
-      curl.SetOption("url", value);
+      removeLeadingSlash(value);
+      curl.SetFileName(value);
       plexItem->SetArt("thumb", curl.Get());
 
       time_t addedTime = item["addedAt"].asInteger();
@@ -1947,17 +1929,13 @@ bool CPlexUtils::ParsePlexSongs(CFileItemList &items, const CURL &url, const CVa
         plexItem->GetMusicInfoTag()->SetDuration(item["duration"].asInteger()/1000);
 
         value = item["thumb"].asString();
-        curl.SetFileName("photo/:/transcode");
-        curl.SetOption("height", "800");
-        curl.SetOption("width", "800");
-        curl.SetOption("url", value);
+        removeLeadingSlash(value);
+        curl.SetFileName(value);
         plexItem->SetArt("thumb", curl.Get());
 
         value = item["art"].asString();
-        curl.SetOption("height", "1080");
-        curl.SetOption("width", "1920");
-        curl.SetOption("quality", "90");
-        curl.SetOption("url", value);
+        removeLeadingSlash(value);
+        curl.SetFileName(value);
         plexItem->SetArt("fanart", curl.Get());
 
         time_t addedTime = item["addedAt"].asInteger();
@@ -2027,18 +2005,14 @@ bool CPlexUtils::ParsePlexArtistsAlbum(CFileItemList &items, const CURL &url, co
     plexItem->GetMusicInfoTag()->SetYear(item["year"].asInteger());
 
     value = item["thumb"].asString();
-    curl.SetFileName("photo/:/transcode");
-    curl.SetOption("height", "800");
-    curl.SetOption("width", "800");
-    curl.SetOption("url", value);
+    removeLeadingSlash(value);
+    curl.SetFileName(value);
     plexItem->SetArt("thumb", curl.Get());
     plexItem->SetProperty("thumb", curl.Get());
 
     value = item["art"].asString();
-    curl.SetOption("height", "1080");
-    curl.SetOption("width", "1920");
-    curl.SetOption("quality", "90");
-    curl.SetOption("url", value);
+    removeLeadingSlash(value);
+    curl.SetFileName(value);
     plexItem->SetArt("fanart", curl.Get());
     plexItem->SetProperty("fanart", curl.Get());
 
