@@ -89,6 +89,7 @@ bool CImageLoader::DoWork()
 
   // not in our texture cache or it failed to load from it,
   // so try and load directly and then cache the result
+  /*
   if (texturePath.find("transcode") != std::string::npos)
   {
     // plex photo transcoder is not serialized and will fail
@@ -98,6 +99,7 @@ bool CImageLoader::DoWork()
     CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
   }
   else
+  */
   {
     CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
   }
@@ -176,7 +178,13 @@ CGUILargeTextureManager::~CGUILargeTextureManager()
 
 void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 {
-  CSingleLock lock(m_listSection);
+  CSingleTryLock tryLock(m_listSection);
+  if (!tryLock.IsOwner())
+  {
+    CLog::Log(LOGWARNING, "%s deadlock trapped, skipping", __FUNCTION__);
+    return;
+  }
+
   // check for items to remove from allocated list, and remove
   listIterator it = m_allocated.begin();
   while (it != m_allocated.end())
