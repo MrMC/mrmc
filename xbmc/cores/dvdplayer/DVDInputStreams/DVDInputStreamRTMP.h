@@ -30,7 +30,7 @@ class CDVDInputStreamRTMP
   , public CDVDInputStream::ISeekable
 {
 public:
-  CDVDInputStreamRTMP(CFileItem &fileitem);
+  CDVDInputStreamRTMP(const CFileItem &fileitem);
   virtual ~CDVDInputStreamRTMP();
   virtual bool    Open();
   virtual void    Close();

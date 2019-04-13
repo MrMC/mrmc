@@ -38,7 +38,7 @@ using namespace PVR;
  * Description: Class constructor, initialize member variables
  *              public class is CDVDInputStream
  */
-CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IDVDPlayer* pPlayer, CFileItem& fileitem)
+CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IDVDPlayer* pPlayer, const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER, fileitem)
 {
   m_pPlayer = pPlayer;
@@ -115,6 +115,8 @@ bool CDVDInputStreamPVRManager::Open()
     m_isOtherStreamHack = true;
 
     m_item.SetPath(transFile);
+    m_item.SetMimeTypeForInternetFile();
+
     m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, m_item);
     if (!m_pOtherStream)
     {

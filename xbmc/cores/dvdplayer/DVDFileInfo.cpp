@@ -100,6 +100,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   std::string redactPath = CURL::GetRedacted(strPath);
   unsigned int nTime = XbmcThreads::SystemClockMillis();
   CFileItem item(strPath, false);
+  item.SetMimeTypeForInternetFile();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
   if (!pInputStream)
   {
@@ -352,6 +353,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
     playablePath = XFILE::CStackDirectory::GetFirstStackedFile(playablePath);
 
   CFileItem item(playablePath, false);
+  item.SetMimeTypeForInternetFile();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
   if (!pInputStream)
     return false;

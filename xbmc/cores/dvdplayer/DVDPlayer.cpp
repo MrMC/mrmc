@@ -652,6 +652,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_PlayerOptions = options;
   m_item = file;
+  // Try to resolve the correct mime type
+  m_item.SetMimeTypeForInternetFile();
 
   m_ready.Reset();
 
