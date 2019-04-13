@@ -163,6 +163,13 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
       }
     }
   }
+  else if ((flag & AnnouncementFlag::Other) && strcmp(sender, "mrmc") == 0)
+  {
+    if (strcmp(message, "ReloadSkin") == 0)
+    {
+      ReloadProfiles();
+    }
+  }
 }
 
 bool CServicesManager::HasServices()
