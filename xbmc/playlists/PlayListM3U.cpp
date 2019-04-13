@@ -173,6 +173,11 @@ bool CPlayListM3U::Load(const std::string& strFileName)
           newItem->GetVideoInfoTag()->Reset(); // Force VideoInfoTag creation
         if (lDuration && newItem->IsAudio())
           newItem->GetMusicInfoTag()->SetDuration(lDuration);
+
+        newItem->SetMimeType(newItem->GetProperty("mimetype").asString());
+        if (!newItem->GetMimeType().empty())
+          newItem->SetContentLookup(false);
+
         Add(newItem);
 
         // Reset the values just in case there part of the file have the extended marker
