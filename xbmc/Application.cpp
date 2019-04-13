@@ -1521,6 +1521,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
           CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, oldSkin);
       }
     }
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, "mrmc", "ReloadSkin");
   }
   else
   {
