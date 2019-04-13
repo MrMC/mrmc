@@ -62,7 +62,7 @@ class CDVDInputStreamNavigator
   , public CDVDInputStream::IMenus
 {
 public:
-  CDVDInputStreamNavigator(IDVDPlayer* player, CFileItem& fileitem);
+  CDVDInputStreamNavigator(IDVDPlayer* player, const CFileItem& fileitem);
   virtual ~CDVDInputStreamNavigator();
 
   virtual bool Open();

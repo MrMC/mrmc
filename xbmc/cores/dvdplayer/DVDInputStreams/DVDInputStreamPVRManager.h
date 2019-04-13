@@ -42,7 +42,7 @@ class CDVDInputStreamPVRManager
   , public CDVDInputStream::ISeekable
 {
 public:
-  CDVDInputStreamPVRManager(IDVDPlayer* pPlayer, CFileItem& fileitem);
+  CDVDInputStreamPVRManager(IDVDPlayer* pPlayer, const CFileItem& fileitem);
   virtual ~CDVDInputStreamPVRManager();
   virtual bool Open();
   virtual void Close();

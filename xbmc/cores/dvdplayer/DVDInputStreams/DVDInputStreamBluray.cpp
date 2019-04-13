@@ -255,7 +255,7 @@ void  bluray_overlay_argb_cb(void *this_gen, const struct bd_argb_overlay_s * co
 }
 #endif
 
-CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player, CFileItem& fileitem) :
+CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player, const CFileItem& fileitem) :
   CDVDInputStream(DVDSTREAM_TYPE_BLURAY, fileitem), m_pstream(nullptr), m_rootPath("")
 {
   m_title = NULL;

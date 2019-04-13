@@ -51,7 +51,7 @@ class CDVDInputStreamBluray
   , public CDVDInputStream::IMenus
 {
 public:
-  CDVDInputStreamBluray(IDVDPlayer* player, CFileItem& fileitem);
+  CDVDInputStreamBluray(IDVDPlayer* player, const CFileItem& fileitem);
   virtual ~CDVDInputStreamBluray();
   virtual bool Open();
   virtual void Close();

@@ -142,7 +142,7 @@ static int hls_interrupt_cb(void* ctx)
   return 0;
 }
 
-CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg(CFileItem& fileitem)
+CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg(const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG, fileitem)
   , m_can_pause(false)
   , m_can_seek(false)
