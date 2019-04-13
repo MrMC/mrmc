@@ -241,9 +241,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   // remote path
   SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH,
-    m_protocol != NET_PROTOCOL_UPNP &&
-    m_protocol != NET_PROTOCOL_EMBY &&
-    m_protocol != NET_PROTOCOL_EMBYS);
+    m_protocol != NET_PROTOCOL_UPNP);
   if (m_protocol == NET_PROTOCOL_FTP ||
       m_protocol == NET_PROTOCOL_HTTP ||
       m_protocol == NET_PROTOCOL_HTTPS ||
