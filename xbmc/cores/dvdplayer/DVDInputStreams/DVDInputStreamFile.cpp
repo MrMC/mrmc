@@ -86,9 +86,14 @@ bool CDVDInputStreamFile::Open()
   std::string content = m_item.GetMimeType();
 
   if (content == "video/mp4")
-  {
     flags |= READ_NO_CACHE;
-  }
+  else if (content == "video/m4v")
+    flags |= READ_NO_CACHE;
+  else if (URIUtils::HasExtension(m_item.GetPath(), ".mp4"))
+    flags |= READ_NO_CACHE;
+  else if (URIUtils::HasExtension(m_item.GetPath(), ".m4v"))
+    flags |= READ_NO_CACHE;
+
 
   if (m_forceNoCache)
     flags |= READ_NO_CACHE;
