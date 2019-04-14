@@ -222,7 +222,13 @@ bool CGUILargeTextureManager::GetImage(const std::string &path, CTextureArray &t
 
 void CGUILargeTextureManager::ReleaseImage(const std::string &path, bool immediately)
 {
-  CSingleLock lock(m_listSection);
+  CSingleTryLock tryLock(m_listSection);
+  if (!tryLock.IsOwner())
+  {
+    CLog::Log(LOGWARNING, "%s deadlock trapped, skipping", __FUNCTION__);
+    return;
+  }
+
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
