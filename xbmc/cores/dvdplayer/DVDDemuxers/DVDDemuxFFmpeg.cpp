@@ -39,6 +39,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/BitstreamConverter.h"
+#include "utils/URIUtils.h"
 
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
@@ -284,6 +285,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   else
   {
     int blocksize = m_pInput->GetBlockSize();
+    // some itunes DRM strippers will have really bad a/v interleaving
+    // dropping to a smaller blocksize will make these playable.
+    if (blocksize > (FFMPEG_FILE_BUFFER_SIZE / 2) &&
+       (URIUtils::HasExtension(strFile, ".mp4") ||
+        URIUtils::HasExtension(strFile, ".m4v")))
+    {
+      blocksize = FFMPEG_FILE_BUFFER_SIZE / 2;
+    }
+
     if (blocksize <= FFMPEG_FILE_BUFFER_SIZE)
     {
       // orignal behavior.
