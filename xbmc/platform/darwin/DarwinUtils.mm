@@ -943,7 +943,7 @@ std::string CDarwinUtils::GetAudioRoute()
 #if defined(TARGET_DARWIN_IOS)
   AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
   AVAudioSessionRouteDescription *currentRoute = [myAudioSession currentRoute];
-  NSString *output = [[currentRoute.outputs objectAtIndex:0] portType];
+  NSString *output = [[currentRoute.outputs firstObject] portType];
   if (output)
     route = [output UTF8String];
 #endif
