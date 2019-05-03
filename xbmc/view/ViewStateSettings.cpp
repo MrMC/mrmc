@@ -126,7 +126,12 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
   {
     int settingLevel;
     if (XMLUtils::GetInt(pElement, XML_SETTINGLEVEL, settingLevel, (const int)SettingLevelBasic, (const int)SettingLevelExpert))
-      m_settingLevel = (SettingLevel)settingLevel;
+    {
+      if (settingLevel < 2)
+        m_settingLevel = SettingLevelStandard;
+      else
+        m_settingLevel = SettingLevelExpert;
+    }
     else
       m_settingLevel = SettingLevelStandard;
 
@@ -228,12 +233,10 @@ CViewState* CViewStateSettings::Get(const std::string &viewState)
 
 void CViewStateSettings::SetSettingLevel(SettingLevel settingLevel)
 {
-  if (settingLevel < SettingLevelBasic)
-    m_settingLevel = SettingLevelBasic;
-  if (settingLevel > SettingLevelExpert)
-    m_settingLevel = SettingLevelExpert;
+  if (settingLevel < SettingLevelAdvanced)
+    m_settingLevel = SettingLevelStandard;
   else
-    m_settingLevel = settingLevel;
+    m_settingLevel = SettingLevelExpert;
 }
 
 void CViewStateSettings::CycleSettingLevel()
@@ -246,6 +249,11 @@ SettingLevel CViewStateSettings::GetNextSettingLevel() const
   SettingLevel level = (SettingLevel)((int)m_settingLevel + 1);
   if (level > SettingLevelExpert)
     level = SettingLevelBasic;
+  
+  if (level < SettingLevelAdvanced)
+    level = SettingLevelStandard;
+  else
+    level = SettingLevelExpert;
   return level;
 }
 
