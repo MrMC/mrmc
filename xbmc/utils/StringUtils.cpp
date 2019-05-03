@@ -54,6 +54,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <algorithm>
+#include <random>
 #include "utils/RegExp.h" // don't move or std functions end up in PCRE namespace
 
 #define FORMAT_BLOCK_SIZE 512 // # of bytes for initial allocation for printf
@@ -1280,4 +1281,19 @@ void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& t
     // Skip delimiters.  Note the "not_of"
     dataPos = input.find_first_not_of(delimiter, nextDelimPos);
   }
+}
+
+std::string StringUtils::RandomAlphaNumeric(int length)
+{
+  auto randchar = []() -> char
+  {
+    const char charset[] =
+    "0123456789"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const size_t max_index = (sizeof(charset) - 1);
+    return charset[ rand() % max_index ];
+  };
+  std::string str(length,0);
+  std::generate_n( str.begin(), length, randchar );
+  return str;
 }
