@@ -389,6 +389,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   @Override
   public void onDestroy()
   {
+    if (getPackageManager().hasSystemFeature("android.software.leanback"))
+    {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        TvUtil.cancelAllJobs(this);
+    }
+
     if (mExitCode == XBMC_EXITCODE_QUIT)
       stopService(new Intent(this, Service.class));
 

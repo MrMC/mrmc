@@ -42,7 +42,7 @@ import @APP_PACKAGE@.model.File;
 public class SyncChannelJobService extends JobService
 {
 
-  private static final String TAG = "RecommendChannelJobSvc";
+  private static final String TAG = "SyncChannelJobService";
 
   private SyncChannelTask mSyncChannelTask;
 

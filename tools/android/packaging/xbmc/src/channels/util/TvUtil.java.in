@@ -295,4 +295,11 @@ public class TvUtil
   {
     return (int) (CHANNEL_IMMEDIATE_JOB_ID_OFFSET + channelId);
   }
+
+  public static void cancelAllJobs(Context context)
+  {
+    JobScheduler scheduler =
+        (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+    scheduler.cancelAll();
+  }
 }
