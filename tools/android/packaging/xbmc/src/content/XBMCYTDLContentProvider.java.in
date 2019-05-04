@@ -6,14 +6,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.support.media.tv.PreviewProgram;
+import android.support.media.tv.TvContractCompat;
 import android.util.Log;
+import android.util.SparseArray;
 import android.util.TimingLogger;
 
+import at.huber.youtubeExtractor.VideoMeta;
+import at.huber.youtubeExtractor.YouTubeExtractor;
+import at.huber.youtubeExtractor.YtFile;
 import @APP_PACKAGE@.XBMCProperties;
 
 public class XBMCYTDLContentProvider extends XBMCContentProvider
@@ -28,7 +35,7 @@ public class XBMCYTDLContentProvider extends XBMCContentProvider
     return true;
   }
 
-  public static Uri GetYTDLUri(String surl)
+  public static String GetYTDLUri(String surl)
   {
     if (surl == null)
       return null;
@@ -41,31 +48,48 @@ public class XBMCYTDLContentProvider extends XBMCContentProvider
             .fragment(surl);
 
     Uri out = builder.build();
-    return out;
+    return out.toString();
   }
 
-  private static String getFinalURL(String url) throws IOException
+  private String getFinalURL(String url) throws ExecutionException, InterruptedException
   {
     TimingLogger timings = new TimingLogger(TAG, "XBMCYTDLContentProvider::getFinalURL");
 
-    HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-    con.setInstanceFollowRedirects(false);
-    con.connect();
-    timings.addSplit("connect");
+    String redirectUrl = url;
 
-    con.getInputStream();
-    timings.addSplit("response");
-
-    if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP)
+    YouTubeExtractor ytExt = new YouTubeExtractor(getContext())
     {
-      String redirectUrl = con.getHeaderField("Location");
-      return getFinalURL(redirectUrl);
+      @Override
+      public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta)
+      {
+      }
+    };
+    ytExt.extract(url, false, true);
+    SparseArray<YtFile> ytFiles = ytExt.get();
+    if (ytFiles != null)
+    {
+      int itag = -1;
+      if (ytFiles.indexOfKey(22) >= 0) // 720p h264
+        itag = 22;
+      else if (ytFiles.indexOfKey(45) >= 0) // 720p webm
+        itag = 45;
+      else if (ytFiles.indexOfKey(35) >= 0) // 480p h264
+        itag = 18;
+      else if (ytFiles.indexOfKey(44) >= 0) // 480p webm
+        itag = 44;
+      else if (ytFiles.indexOfKey(18) >= 0) // 360p h264
+        itag = 18;
+      else if (ytFiles.indexOfKey(43) >= 0) // 360p webm
+        itag = 43;
+
+      if (itag > 0)
+        redirectUrl = ytFiles.get(itag).getUrl();
     }
 
     timings.addSplit("done");
     timings.dumpToLog();
 
-    return url;
+    return redirectUrl;
   }
 
   @Override
