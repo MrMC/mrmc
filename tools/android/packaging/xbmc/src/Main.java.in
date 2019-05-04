@@ -285,7 +285,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     if (getPackageManager().hasSystemFeature("android.software.leanback"))
     {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        TvUtil.scheduleSyncingChannel(this);
+        TvUtil.scheduleSyncingChannel(this, true);
     }
 
     ((UiModeManager)getSystemService(UI_MODE_SERVICE)).setNightMode(UiModeManager.MODE_NIGHT_AUTO);
@@ -358,7 +358,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
       // Leanback
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
       {
-        TvUtil.scheduleSyncingChannel(this);
+        TvUtil.scheduleSyncingChannel(this, false);
         updateWatchnext();
       }
       else

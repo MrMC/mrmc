@@ -175,15 +175,12 @@ public class TvUtil
    *
    * @param context for accessing the {@link JobScheduler}.
    */
-  public static void scheduleSyncingChannel(Context context)
+  public static void scheduleSyncingChannel(Context context, boolean initial)
   {
     JobScheduler scheduler =
             (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-    if (scheduler.getPendingJob(CHANNEL_JOB_ID) != null)
-    {
-      Log.d(TAG, "Channel syncing already running");
+    if (!initial && scheduler.getPendingJob(CHANNEL_JOB_ID) != null)
       return;
-    }
 
     ComponentName componentName = new ComponentName(context, SyncChannelJobService.class);
     JobInfo.Builder builder = new JobInfo.Builder(CHANNEL_JOB_ID, componentName);
@@ -237,9 +234,6 @@ public class TvUtil
   {
     JobScheduler scheduler =
             (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-    if (scheduler.getPendingJob(getTimedJobIdForChannelId(channelId)) != null)
-      return;
-
     ComponentName componentName = new ComponentName(context, SyncProgramsJobService.class);
 
     JobInfo.Builder builder =
@@ -267,9 +261,6 @@ public class TvUtil
   {
     JobScheduler scheduler =
             (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-    if (scheduler.getPendingJob(getImmediateJobIdForChannelId(channelId)) != null)
-      return;
-
     ComponentName componentName = new ComponentName(context, SyncProgramsJobService.class);
 
     JobInfo.Builder builder =
