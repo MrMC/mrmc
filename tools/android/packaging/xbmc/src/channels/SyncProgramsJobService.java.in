@@ -27,9 +27,14 @@ import android.support.media.tv.Channel;
 import android.support.media.tv.PreviewProgram;
 import android.support.media.tv.TvContractCompat;
 import android.util.Log;
+import android.util.SparseArray;
 
+import at.huber.youtubeExtractor.VideoMeta;
+import at.huber.youtubeExtractor.YouTubeExtractor;
+import at.huber.youtubeExtractor.YtFile;
 import @APP_PACKAGE@.Splash;
 import @APP_PACKAGE@.XBMCJsonRPC;
+import @APP_PACKAGE@.content.XBMCYTDLContentProvider;
 import @APP_PACKAGE@.model.Movie;
 import @APP_PACKAGE@.model.TVEpisode;
 import @APP_PACKAGE@.model.File;
@@ -196,16 +201,55 @@ public class SyncProgramsJobService extends JobService
       List<Media> mediasAdded = new ArrayList<>(medias.size());
       for (Media media : medias)
       {
-        PreviewProgram previewProgram = buildProgram(channelId, media);
+        final PreviewProgram previewProgram = buildProgram(channelId, media);
 
         Uri programUri =
                 getContentResolver()
                         .insert(
                                 TvContractCompat.PreviewPrograms.CONTENT_URI,
                                 previewProgram.toContentValues());
-        long programId = ContentUris.parseId(programUri);
+        final long programId = ContentUris.parseId(programUri);
         Log.d(TAG, "Inserted new program: " + programId);
         media.setProgramId(programId);
+
+        if (media instanceof Movie && media.getVideoUrl() != null)
+        {
+          new YouTubeExtractor(getApplicationContext())
+          {
+            @Override
+            public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta)
+            {
+              if (ytFiles != null)
+              {
+                int itag = -1;
+                if (ytFiles.indexOfKey(22) >= 0) // 720p h264
+                  itag = 22;
+                else if (ytFiles.indexOfKey(45) >= 0) // 720p webm
+                  itag = 45;
+                else if (ytFiles.indexOfKey(35) >= 0) // 480p h264
+                  itag = 18;
+                else if (ytFiles.indexOfKey(44) >= 0) // 480p webm
+                  itag = 44;
+                else if (ytFiles.indexOfKey(18) >= 0) // 360p h264
+                  itag = 18;
+                else if (ytFiles.indexOfKey(43) >= 0) // 360p webm
+                  itag = 43;
+
+                if (itag > 0)
+                {
+                  String downloadUrl = ytFiles.get(itag).getUrl();
+
+                  PreviewProgram updatedProgram = new PreviewProgram.Builder(previewProgram)
+                      .setPreviewVideoUri(Uri.parse(downloadUrl))
+                      .build();
+                  getContentResolver().update(TvContractCompat.buildPreviewProgramUri(programId),
+                      updatedProgram.toContentValues(), null, null);
+                }
+              }
+            }
+          }.extract(media.getVideoUrl(), false, true);
+        }
+
         mediasAdded.add(media);
       }
 

@@ -1257,7 +1257,7 @@ public class XBMCJsonRPC
                   .appendQueryParameter("v", videoid)
                   .build()
                   .toString();
-          med.setVideoUrl(yturl.toString());
+          med.setVideoUrl(yturl);
         }
         else
           med.setVideoUrl(trailer_url);
