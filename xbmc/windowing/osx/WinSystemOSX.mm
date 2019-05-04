@@ -744,154 +744,8 @@ bool CWinSystemOSX::IsObscured(void)
 {
   if (m_bFullScreen && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
     return false;// in true fullscreen mode - we can't be obscured by anyone...
-
-  // check once a second if we are obscured.
-  unsigned int now_time = XbmcThreads::SystemClockMillis();
-  if (m_obscured_timecheck > now_time)
-    return m_obscured;
-  else
-    m_obscured_timecheck = now_time + 1000;
-
-  NSOpenGLContext* cur_context = [NSOpenGLContext currentContext];
-  NSView* view = [cur_context view];
-  if (!view)
-  {
-    // sanity check, we should always have a view
-    m_obscured = true;
-    return m_obscured;
-  }
-
-  NSWindow *window = [view window];
-  if (!window)
-  {
-    // sanity check, we should always have a window
-    m_obscured = true;
-    return m_obscured;
-  }
-
-  if ([window isVisible] == NO)
-  {
-    // not visable means the window is not showing.
-    // this should never really happen as we are always visable
-    // even when minimized in dock.
-    m_obscured = true;
-    return m_obscured;
-  }
-
-  // check if we are minimized (to an icon in the Dock).
-  if ([window isMiniaturized] == YES)
-  {
-    m_obscured = true;
-    return m_obscured;
-  }
-
-  // check if we are showing on the active workspace.
-  if ([window isOnActiveSpace] == NO)
-  {
-    m_obscured = true;
-    return m_obscured;
-  }
-
-  // default to false before we start parsing though the windows.
-  // if we are are obscured by any windows, then set true.
-  m_obscured = false;
-  static bool obscureLogged = false;
-
-  CGWindowListOption opts;
-  opts = kCGWindowListOptionOnScreenAboveWindow | kCGWindowListExcludeDesktopElements;
-  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);  
-
-  if (!windowIDs)
-    return m_obscured;
-
-  CFArrayRef windowDescs = CGWindowListCreateDescriptionFromArray(windowIDs);
-  if (!windowDescs)
-  {
-    CFRelease(windowIDs);
-    return m_obscured;
-  }
-
-  CGRect bounds = NSRectToCGRect([window frame]);
-  // kCGWindowBounds measures the origin as the top-left corner of the rectangle
-  //  relative to the top-left corner of the screen.
-  // NSWindow’s frame property measures the origin as the bottom-left corner
-  //  of the rectangle relative to the bottom-left corner of the screen.
-  // convert bounds from NSWindow to CGWindowBounds here.
-  bounds.origin.y = [[window screen] frame].size.height - bounds.origin.y - bounds.size.height;
-
-  std::vector<CRect> partialOverlaps;
-  CRect ourBounds = CGRectToCRect(bounds);
-
-  for (CFIndex idx=0; idx < CFArrayGetCount(windowDescs); idx++)
-  {
-    // walk the window list of windows that are above us and are not desktop elements
-    CFDictionaryRef windowDictionary = (CFDictionaryRef)CFArrayGetValueAtIndex(windowDescs, idx);
-
-    // skip the Dock window, it actually covers the entire screen.
-    CFStringRef ownerName = (CFStringRef)CFDictionaryGetValue(windowDictionary, kCGWindowOwnerName);
-    if (CFStringCompare(ownerName, CFSTR("Dock"), 0) == kCFCompareEqualTo)
-      continue;
-
-    // Ignore known brightness tools for dimming the screen. They claim to cover
-    // the whole XBMC window and therefore would make the framerate limiter
-    // kicking in. Unfortunatly even the alpha of these windows is 1.0 so
-    // we have to check the ownerName.
-    if (CFStringCompare(ownerName, CFSTR("MrMC"), 0)              == kCFCompareEqualTo ||
-        CFStringCompare(ownerName, CFSTR("Shades"), 0)            == kCFCompareEqualTo ||
-        CFStringCompare(ownerName, CFSTR("SmartSaver"), 0)        == kCFCompareEqualTo ||
-        CFStringCompare(ownerName, CFSTR("Brightness Slider"), 0) == kCFCompareEqualTo ||
-        CFStringCompare(ownerName, CFSTR("Displaperture"), 0)     == kCFCompareEqualTo ||
-        CFStringCompare(ownerName, CFSTR("Dreamweaver"), 0)       == kCFCompareEqualTo ||
-        CFStringCompare(ownerName, CFSTR("Window Server"), 0)     ==  kCFCompareEqualTo)
-      continue;
-
-    CFDictionaryRef rectDictionary = (CFDictionaryRef)CFDictionaryGetValue(windowDictionary, kCGWindowBounds);
-    if (!rectDictionary)
-      continue;
-
-    CGRect windowBounds;
-    if (CGRectMakeWithDictionaryRepresentation(rectDictionary, &windowBounds))
-    {
-      if (CGRectContainsRect(windowBounds, bounds))
-      {
-        // if the windowBounds completely encloses our bounds, we are obscured.
-        if (!obscureLogged)
-        {
-          std::string appName;
-          if (CDarwinUtils::CFStringRefToUTF8String(ownerName, appName))
-            CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures XBMC!", appName.c_str());
-          obscureLogged = true;
-        }
-        m_obscured = true;
-        break;
-      }
-
-      // handle overlaping windows above us that combine
-      // to obscure by collecting any partial overlaps,
-      // then subtract them from our bounds and check
-      // for any remaining area.
-      CRect intersection = CGRectToCRect(windowBounds);
-      intersection.Intersect(ourBounds);
-      if (!intersection.IsEmpty())
-        partialOverlaps.push_back(intersection);
-    }
-  }
-
-  if (!m_obscured)
-  {
-    // if we are here we are not obscured by any fullscreen window - reset flag
-    // for allowing the logmessage above to show again if this changes.
-    if (obscureLogged)
-      obscureLogged = false;
-    std::vector<CRect> rects = ourBounds.SubtractRects(partialOverlaps);
-    // they got us covered
-    if (rects.size() == 0)
-      m_obscured = true;
-  }
-
-  CFRelease(windowDescs);
-  CFRelease(windowIDs);
-
+  if (m_obscured)
+    CLog::Log(LOGDEBUG, "CWinSystemOSX::IsObscured(void) - TRUE");
   return m_obscured;
 }
 
@@ -1169,6 +1023,13 @@ void CWinSystemOSX::SetMovedToOtherScreen(bool moved)
   m_movedToOtherScreen = moved;
   WindowChangedScreen();
 }
+
+void CWinSystemOSX::SetOcclusionState(bool occluded)
+{
+  m_obscured = occluded;
+  CLog::Log(LOGDEBUG, "CWinSystemOSX::SetOcclusionState(bool occluded) - %s", occluded ? "true":"false");
+}
+
 void CWinSystemOSX::WindowChangedScreen()
 {
   // user has moved the window to a

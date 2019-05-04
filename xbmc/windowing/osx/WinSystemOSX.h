@@ -89,6 +89,7 @@ public:
   
   void         SetMovedToOtherScreen(bool moved);
   int          CheckDisplayChanging();
+  void         SetOcclusionState(bool occluded);
   void         SetFullscreenWillToggle(bool toggle){ m_fullscreenWillToggle = toggle; }
   bool         GetFullscreenWillToggle(){ return m_fullscreenWillToggle; }
   

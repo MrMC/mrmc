@@ -288,6 +288,15 @@ static void setupApplicationMenu(void)
   g_Windowing.NotifyAppFocusChange(true);
 }
 
+- (void)applicationDidChangeOcclusionState:(NSNotification *)notification
+{
+  bool occluded = true;
+  if ([NSApp occlusionState] & NSApplicationOcclusionStateVisible)
+    occluded = false;
+  g_Windowing.SetOcclusionState(occluded);
+
+}
+
 /*
  * Catch document open requests...this lets us notice files when the app
  *  was launched by double-clicking a document, or when a document was
