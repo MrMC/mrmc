@@ -682,6 +682,8 @@ void CServicesManager::GetMostPlayedSongs(CFileItemList &songs, int itemLimit, s
       curl.SetProtocol(plexClient->GetProtocol());
       curl.SetFileName(content.section + "/all");
       curl.SetProtocolOption("type","10");
+      curl.SetProtocolOption("sort","viewCount:desc");
+      curl.SetProtocolOption("track.viewCount>>","0");
       curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", itemLimit));
       CPlexUtils::GetPlexSongs(plexItems, curl.Get());
     }
