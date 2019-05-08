@@ -96,5 +96,7 @@ private:
   std::vector<EmbyViewInfo>    GetEmbySections(CEmbyClientPtr client);
 
   bool        m_triggerRA;
+  void SetContextMenuItems(int iControl);
+  int  GetSelectedItem(int iControl);
 
 };

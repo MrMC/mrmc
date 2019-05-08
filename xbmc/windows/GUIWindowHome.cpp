@@ -21,6 +21,8 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowHome.h"
 #include "GUIInfoManager.h"
+#include "ContextMenuManager.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "input/Key.h"
 #include "guilib/WindowIDs.h"
 #include "utils/JobManager.h"
@@ -55,6 +57,9 @@
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "settings/MediaSourceSettings.h"
+#include "video/VideoInfoScanner.h"
+#include "video/VideoLibraryQueue.h"
+#include "services/trakt/TraktServices.h"
 
 #define CONTROL_HOMESHELFMOVIESRA         8000
 #define CONTROL_HOMESHELFTVSHOWSRA        8001
@@ -336,6 +341,30 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           m_HomeShelfTVRA->UpdateItem(newItem.get());
           m_HomeShelfTVPR->UpdateItem(newItem.get());
         }
+        m_HomeShelfContinueWatching->UpdateItem(newItem.get());
+      }
+    }
+    else if (message.GetParam1() == GUI_MSG_REMOVE_ITEM && message.GetItem())
+    {
+      CFileItemPtr newItem = std::dynamic_pointer_cast<CFileItem>(message.GetItem());
+      if (newItem && IsActive())
+      {
+        CSingleLock lock(m_critsection);
+        if (newItem->GetVideoInfoTag()->m_type == MediaTypeMovie)
+        {
+          m_HomeShelfMoviesPR->Remove(newItem.get());
+          CGUIMessage messageMoviesPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, m_HomeShelfMoviesPR);
+          g_windowManager.SendThreadMessage(messageMoviesPR);
+        }
+        else
+        {
+          m_HomeShelfTVPR->Remove(newItem.get());
+          CGUIMessage messageTVPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSPR, 0, 0, m_HomeShelfTVPR);
+          g_windowManager.SendThreadMessage(messageTVPR);
+        }
+        m_HomeShelfContinueWatching->Remove(newItem.get());
+        CGUIMessage messageContinueWatching(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING, 0, 0, m_HomeShelfContinueWatching);
+        g_windowManager.SendThreadMessage(messageContinueWatching);
       }
     }
     break;
@@ -349,8 +378,14 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
                          message.GetParam1() == ACTION_MOUSE_LEFT_CLICK ||
                          playAction
                          );
-
+    bool contextAction = (message.GetParam1()== ACTION_CONTEXT_MENU ||
+                          message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK);
     VideoSelectAction clickSelectAction = (VideoSelectAction)CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION);
+    if (contextAction)
+    {
+      SetContextMenuItems(iControl);
+      return true;
+    }
     if (selectAction && iControl == CONTROL_HOMESHELFMOVIESRA)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_HOMESHELFMOVIESRA);
@@ -1424,4 +1459,135 @@ void CGUIWindowHome::AddEmbySection(CEmbyClientPtr client)
     item->SetProperty("base64url",Base64URL::Encode(curl.Get()));
     m_buttonSections->AddFront(item,0);
   }
+}
+
+void CGUIWindowHome::SetContextMenuItems(int iControl)
+{
+  CFileItemPtr itemPtr;
+  if (iControl == CONTROL_HOMESHELFMOVIESRA)
+  {
+    CSingleLock lock(m_critsection);
+
+    int item = GetSelectedItem(iControl);
+    if (item >= 0 && item < m_HomeShelfMoviesRA->Size())
+    {
+      itemPtr = m_HomeShelfMoviesRA->Get(item);
+    }
+  }
+  else if (iControl == CONTROL_HOMESHELFMOVIESPR)
+  {
+    CSingleLock lock(m_critsection);
+
+    int item = GetSelectedItem(iControl);
+    if (item >= 0 && item < m_HomeShelfMoviesPR->Size())
+    {
+      itemPtr = m_HomeShelfMoviesPR->Get(item);
+    }
+  }
+  else if (iControl == CONTROL_HOMESHELFTVSHOWSRA)
+  {
+    CSingleLock lock(m_critsection);
+
+    int item = GetSelectedItem(iControl);
+    if (item >= 0 && item < m_HomeShelfTVRA->Size())
+    {
+      itemPtr = m_HomeShelfTVRA->Get(item);
+    }
+  }
+  else if (iControl == CONTROL_HOMESHELFTVSHOWSPR)
+  {
+    CSingleLock lock(m_critsection);
+
+    int item = GetSelectedItem(iControl);
+    if (item >= 0 && item < m_HomeShelfTVPR->Size())
+    {
+      itemPtr = m_HomeShelfTVPR->Get(item);
+    }
+  }
+  else if (iControl == CONTROL_HOMESHELFCONTINUEWATCHING)
+  {
+    CSingleLock lock(m_critsection);
+
+    int item = GetSelectedItem(iControl);
+    if (item >= 0 && item < m_HomeShelfContinueWatching->Size())
+    {
+      itemPtr = m_HomeShelfContinueWatching->Get(item);
+    }
+  }
+
+  if (!itemPtr)
+    return;
+  // highlight the item
+  itemPtr->Select(true);
+
+  CContextButtons choices;
+
+  choices.Add(1, 208); //play
+
+  // Info
+  if (itemPtr->GetVideoInfoTag()->m_type == MediaTypeTvShow)
+    choices.Add(2, 20351);
+  else if (itemPtr->GetVideoInfoTag()->m_type == MediaTypeEpisode)
+    choices.Add(2, 20352);
+  else if (itemPtr->GetVideoInfoTag()->m_type == MediaTypeMovie)
+    choices.Add(2, 13346);
+
+  if (itemPtr->GetVideoInfoTag()->m_playCount > 0)
+    choices.Add(3, 16104); //Mark as UnWatched
+  else
+    choices.Add(4, 16103);   //Mark as Watched
+
+
+  CContextMenuManager::GetInstance().AddVisibleItems(itemPtr, choices);
+
+  int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+
+  // unhighlight the item
+  itemPtr->Select(false);
+
+
+  if (button == 1)
+    PlayHomeShelfItem(*itemPtr);
+  else if (button == 2)
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_SHOW_VIDEO_INFO, -1, -1,  static_cast<void*>(new CFileItem(*itemPtr)));
+  else if (button == 3)
+  {
+    if (itemPtr->IsMediaServiceBased())
+      CServicesManager::GetInstance().SetItemUnWatched(*itemPtr);
+    else
+      CVideoLibraryQueue::GetInstance().MarkAsWatched(itemPtr, false);
+
+    itemPtr->GetVideoInfoTag()->m_playCount = 0;
+    itemPtr->GetVideoInfoTag()->m_resumePoint.timeInSeconds = 0;
+    itemPtr->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, itemPtr);
+    g_windowManager.SendThreadMessage(msg);
+    if (CTraktServices().GetInstance().IsEnabled())
+      CTraktServices::GetInstance().SetItemUnWatched(*itemPtr);
+  }
+  else if (button == 4)
+  {
+    if (itemPtr->IsMediaServiceBased())
+      CServicesManager::GetInstance().SetItemWatched(*itemPtr);
+    else
+      CVideoLibraryQueue::GetInstance().MarkAsWatched(itemPtr, true);
+
+    itemPtr->GetVideoInfoTag()->m_playCount = 1;
+    itemPtr->GetVideoInfoTag()->m_resumePoint.timeInSeconds = 0;
+    itemPtr->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
+
+    int guiMsg = (iControl == CONTROL_HOMESHELFMOVIESRA || iControl == CONTROL_HOMESHELFTVSHOWSRA) ? GUI_MSG_UPDATE_ITEM : GUI_MSG_REMOVE_ITEM;
+
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, guiMsg, 0, itemPtr);
+    g_windowManager.SendThreadMessage(msg);
+    if (CTraktServices().GetInstance().IsEnabled())
+      CTraktServices::GetInstance().SetItemWatched(*itemPtr);
+  }
+}
+
+int CGUIWindowHome::GetSelectedItem(int iControl)
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
+  OnMessage(msg);
+  return msg.GetParam1();
 }
