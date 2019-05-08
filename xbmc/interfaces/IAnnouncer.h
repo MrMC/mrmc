@@ -19,6 +19,7 @@
  *
  */
 
+class CFileItemList;
 class CVariant;
 namespace ANNOUNCEMENT
 {
@@ -34,10 +35,11 @@ namespace ANNOUNCEMENT
     Input         = 0x080,
     PVR           = 0x100,
     Other         = 0x200,
-    MediaService  = 0x300
+    MediaService  = 0x300,
+    HomeScreen    = 0x400,
   };
 
-  #define ANNOUNCE_ALL (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input | ANNOUNCEMENT::PVR | Other)
+  #define ANNOUNCE_ALL (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input | ANNOUNCEMENT::PVR | Other | MediaService | HomeScreen)
 
   /*!
     \brief Returns a string representation for the 
@@ -69,6 +71,10 @@ namespace ANNOUNCEMENT
       return "PVR";
     case Other:
       return "Other";
+    case MediaService:
+      return "MediaService";
+    case HomeScreen:
+      return "HomeScreen";
     default:
       return "Unknown";
     }
@@ -80,5 +86,6 @@ namespace ANNOUNCEMENT
     IAnnouncer() { };
     virtual ~IAnnouncer() { };
     virtual void Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) = 0;
+    virtual void Announce(AnnouncementFlag flag, const char *sender, const char *message, const CFileItemList &items) { };
   };
 }

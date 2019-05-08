@@ -44,6 +44,7 @@ namespace ANNOUNCEMENT
     void Announce(AnnouncementFlag flag, const char *sender, const char *message);
     void Announce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data);
     void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item);
+    void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemList &items);
     void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data);
   private:
     CAnnouncementManager();

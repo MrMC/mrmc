@@ -102,6 +102,16 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
   Announce(flag, sender, message, item, data);
 }
 
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemList &items)
+{
+  CSingleLock lock (m_critSection);
+
+  // Make a copy of announers. They may be removed or even remove themselves during execution of IAnnouncer::Announce()!
+  std::vector<IAnnouncer *> announcers(m_announcers);
+  for (unsigned int i = 0; i < announcers.size(); i++)
+    announcers[i]->Announce(flag, sender, message, items);
+}
+
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
 {
   if (!item.get())
