@@ -225,21 +225,22 @@ bool CHomeShelfJob::UpdateVideo()
     homeShelfContinueWatching.SetContent("movies");
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfContinueWatching",homeShelfContinueWatching);
 
+    CServicesManager::GetInstance().GetRecentlyAddedMovies(homeShelfMoviesRA, NUM_ITEMS*2, true, serverType, serverUUID);
+    homeShelfMoviesRA.SetContent("movies");
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfMoviesRA",homeShelfMoviesRA);
+
     CServicesManager::GetInstance().GetRecentlyAddedShows(homeShelfTVRA, NUM_ITEMS*2, true, serverType, serverUUID);
     homeShelfTVRA.SetContent("episodes");
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfTVRA",homeShelfTVRA);
 
-    CServicesManager::GetInstance().GetRecentlyAddedMovies(homeShelfMoviesRA, NUM_ITEMS*2, true, serverType, serverUUID);
-    homeShelfMoviesRA.SetContent("movies");
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfMoviesRA",homeShelfMoviesRA);
+    CServicesManager::GetInstance().GetInProgressMovies(homeShelfMoviesPR, NUM_ITEMS*2, serverType, serverUUID);
+    homeShelfMoviesPR.SetContent("movies");
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfMoviesPR",homeShelfMoviesPR);
 
     CServicesManager::GetInstance().GetInProgressShows(homeShelfTVPR, NUM_ITEMS*2, serverType, serverUUID);
     homeShelfTVPR.SetContent("episodes");
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfTVPR",homeShelfTVPR);
 
-    CServicesManager::GetInstance().GetInProgressMovies(homeShelfMoviesPR, NUM_ITEMS*2, serverType, serverUUID);
-    homeShelfMoviesPR.SetContent("movies");
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfMoviesPR",homeShelfMoviesPR);
 
   }
 
