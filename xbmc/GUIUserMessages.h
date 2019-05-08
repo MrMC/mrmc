@@ -145,3 +145,6 @@
 
 // Send to GUIWindowHome to setup services
 #define GUI_MSG_SETUP_HOME_SERVICES   GUI_MSG_USER + 42
+
+// Send to GUIWindowHome to remove item from list
+#define GUI_MSG_REMOVE_ITEM           GUI_MSG_USER + 43
