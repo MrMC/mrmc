@@ -292,6 +292,7 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   m_mainView.reset(new CJNIXBMCMainView(this));
   m_firstActivityRun = true;
   m_exiting = false;
+  m_window = nullptr;
   CLog::Log(LOGDEBUG, "CXBMCApp: Created");
 }
 

@@ -312,6 +312,10 @@ CApplication::CApplication(void)
 
   m_muted = false;
   m_volumeLevel = VOLUME_MAXIMUM;
+
+#ifdef TARGET_ANDROID
+  m_renderGUI = false;
+#endif
 }
 
 CApplication::~CApplication(void)
@@ -2519,15 +2523,22 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_DISPLAY_INIT:
     CLog::Log(LOGDEBUG, "TMSG_DISPLAY_INIT");
     if (m_renderGUI)
+    {
+      CLog::Log(LOGDEBUG, ">> GUI already running");
       break;
+    }
 
     // Wait for main window
     if (!*CXBMCApp::GetNativeWindow(30000))
+    {
+      CLog::Log(LOGERROR, ">> Cannot get native window");
       break;
+    }
 
     CreateGUI();
     if (!g_application.IsGUIInitialized())
       StartGUI();
+    SetRenderGUI(true);
 
     break;
 
