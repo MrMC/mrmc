@@ -101,11 +101,14 @@ MainController* m_xbmcController;
 {
   // applicationDidFinishLaunching is the very first callback that we get
 
+  // check if apple removed our Cache folder first
+  // this will trigger the restore if there is a backup avaialable
+  CPreflightHandler::CheckForRemovedCacheFolder();
+  
   // This needs to run before anything does any CLog::Log calls
   // as they will directly cause guitsetting to get accessed/created
   // via debug log settings.
   CPreflightHandler::MigrateUserdataXMLToNSUserDefaults();
-  CPreflightHandler::CheckForRemovedCacheFolder();
 
   NSError *err = nullptr;
 
