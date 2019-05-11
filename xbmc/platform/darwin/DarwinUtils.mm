@@ -44,6 +44,14 @@
   #import <mach/mach_host.h>
   #import <sys/sysctl.h>
   #if defined(TARGET_DARWIN_TVOS)
+    #include "platform/darwin/DarwinNSUserDefaults.h"
+    #include "settings/MediaSourceSettings.h"
+    #include "music/MusicDatabase.h"
+    #include "video/VideoDatabase.h"
+    #include "platform/darwin/ZipArchive/ZipArchive.h"
+    #include "platform/darwin/NSData+GZIP.h"
+    #include "messaging/ApplicationMessenger.h"
+    #include "interfaces/AnnouncementManager.h"
     #import "platform/darwin/tvos/MainController.h"
   #else
     #import "platform/darwin/RMStore/Optional/RMStoreKeychainPersistence.h"
@@ -1425,6 +1433,184 @@ bool CDarwinUtils::ReduceMotionEnabled()
   bool ret = false;
 #if defined(TARGET_DARWIN_IOS)
   ret = UIAccessibilityIsReduceMotionEnabled();
+#endif
+  return ret;
+}
+
+bool CDarwinUtils::BackupUserFolder()
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_TVOS)
+  CVideoDatabase videodb;
+  CMusicDatabase musicdb;
+  std::string backupPath;
+  videodb.Open();
+  musicdb.Open();
+  if (!(videodb.IsSqlite() || musicdb.IsSqlite()))
+  {
+    // if database is not Sqlite, we dont need to back anything up
+    videodb.Close();
+    musicdb.Close();
+    return false;
+  }
+  videodb.Close();
+  musicdb.Close();
+
+  std::string strHomeDir = CSpecialProtocol::TranslatePath("special://home/");
+  std::string strTempZipName = CSpecialProtocol::TranslatePath("special://temp/") + "tempBackupZip.zip";
+
+  NSString *NsStrTempZipName = [NSString stringWithCString:strTempZipName.c_str()
+                                              encoding:[NSString defaultCStringEncoding]];
+  BOOL isDir=NO;
+  NSArray *subpaths = nil;
+  NSString *exportPath = [NSString stringWithCString:strHomeDir.c_str()
+                                            encoding:[NSString defaultCStringEncoding]];
+
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  if ([fileManager fileExistsAtPath:exportPath isDirectory:&isDir] && isDir){
+    subpaths = [fileManager subpathsAtPath:exportPath];
+  }
+
+  ZipArchive *archiver = [[ZipArchive alloc] init];
+  [archiver CreateZipFile2:NsStrTempZipName];
+
+  if (isDir)
+  {
+    for(NSString *path in subpaths)
+    {
+      if ([path hasPrefix:@"userdata/Thumbnails"])
+        continue;
+      NSString *fullPath = [exportPath stringByAppendingPathComponent:path];
+      if([fileManager fileExistsAtPath:fullPath isDirectory:&isDir] && !isDir){
+        [archiver addFileToZip:fullPath newname:path];
+      }
+    }
+  }
+
+  if (![archiver CloseZipFile2])
+    return false;
+
+
+  NSURL *u = [[NSURL alloc] initFileURLWithPath:NsStrTempZipName];
+  NSData *data = [[NSData alloc] initWithContentsOfURL:u];
+
+  NSUbiquitousKeyValueStore *cloudStore = [NSUbiquitousKeyValueStore defaultStore];
+
+  NSDictionary *kvd = [cloudStore dictionaryRepresentation];
+  NSArray *arr = [kvd allKeys];
+  for (NSUInteger i=0; i < arr.count; i++)
+  {
+    // clear out all keys that start with MrMC_ as that was a previous backup
+    NSString *key = [arr objectAtIndex:i];
+    if ([key hasPrefix:@"MrMC_"] || [key hasPrefix:@"/userdata/"])
+      [cloudStore removeObjectForKey:key];
+  }
+
+  // Split zip data into chunks
+  NSUInteger length = [data length]; // total size of data
+  NSUInteger chunkSize = 900 * 1024; // divide data into 900 kb, max iCloud allows is 1mb
+  NSUInteger offset = 0;
+  NSUInteger index = 0;
+  do {
+    // get the chunk location
+    NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
+    // get the chunk
+    NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[data bytes] + offset length:thisChunkSize freeWhenDone:NO];
+    NSString *keyName = [NSString stringWithFormat:@"MrMC_Backup_Zip_%lu", (unsigned long)index];
+    [cloudStore setData:chunk forKey:keyName];
+    // update the index
+    index += 1;
+    // update the offset
+    offset += thisChunkSize;
+  } while (offset < length);
+
+  [cloudStore setLongLong:index forKey:@"MrMC_number_of_zip_chunks"];
+
+
+  // remove temporary zip backup
+  NSError *error;
+  if (![fileManager removeItemAtPath:NsStrTempZipName error:&error])
+   NSLog(@"Could not delete file -:%@ ",[error localizedDescription]);
+
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSDictionary<NSString *, id> *dict = [defaults dictionaryRepresentation];
+  for (NSString *aKey in [dict allKeys] )
+  {
+    if ([aKey hasPrefix:@"/userdata/"])
+    {
+      NSData *nsdata = [defaults dataForKey:aKey];
+      [cloudStore setData:nsdata forKey:aKey];
+    }
+  }
+  [cloudStore synchronize];
+#endif
+  return ret;
+}
+
+bool CDarwinUtils::RestoreUserFolder()
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_TVOS)
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSDictionary<NSString *, id> *dict = [defaults dictionaryRepresentation];
+  for (NSString *aKey in [dict allKeys] )
+  {
+    // clear out all keys that start with /userdata/
+    if ([aKey hasPrefix:@"/userdata/"])
+    {
+      [defaults removeObjectForKey:aKey];
+    }
+  }
+
+  NSUbiquitousKeyValueStore *cloudStore = [NSUbiquitousKeyValueStore defaultStore];
+  NSDictionary *kvd = [cloudStore dictionaryRepresentation];
+  NSArray *arr = [kvd allKeys];
+  for (NSUInteger i=0; i < arr.count; i++)
+  {
+    NSString *key = [arr objectAtIndex:i];
+    if ([key hasPrefix:@"/userdata/"])
+    {
+      NSData *nsdata = [cloudStore dataForKey:key];
+      [defaults setObject:nsdata forKey:key];
+    }
+  }
+  [defaults synchronize];
+  // reload sources to get the latest from backup
+  CMediaSourceSettings::GetInstance().Load();
+  CSettings::GetInstance().Save();
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_RELOAD_KEYMAPS)));
+  NSUInteger numberOfChunks = [cloudStore longLongForKey:@"MrMC_number_of_zip_chunks"];
+
+  // create empty mutable data
+  NSMutableData *d = [NSMutableData data];
+  for (NSUInteger i=0; i < numberOfChunks; i++)
+  {
+    // read the chunk
+    NSString *keyName = [NSString stringWithFormat:@"MrMC_Backup_Zip_%lu", (unsigned long)i];
+    NSData *dataOfFile = [cloudStore dataForKey:keyName];
+    // append the data
+    [d appendData:dataOfFile];
+  }
+
+  // Save it into file system
+  std::string restoreZip = CSpecialProtocol::TranslatePath("special://temp/") + "tempRestoreZip.zip";
+  std::string strHomeDir = CSpecialProtocol::TranslatePath("special://home/");
+  NSString *nsstrRestoreZip = [NSString stringWithCString:restoreZip.c_str()
+                                                encoding:[NSString defaultCStringEncoding]];
+  NSString *exportPath = [NSString stringWithCString:strHomeDir.c_str()
+                                            encoding:[NSString defaultCStringEncoding]];
+
+  [d writeToFile:nsstrRestoreZip atomically:YES];
+
+
+  ZipArchive *archiver = [[ZipArchive alloc] init];
+  [archiver UnzipOpenFile:nsstrRestoreZip];
+  [archiver UnzipFileTo:exportPath overWrite:YES];
+  [archiver UnzipCloseFile];
+
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
 #endif
   return ret;
 }

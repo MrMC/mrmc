@@ -178,6 +178,26 @@ MainController* m_xbmcController;
   // now we can play :)
   [m_splashPlayer play];
 #endif
+
+  // we will need below if we ever decide to push/sync libraries on the fly... not sure we want to
+  // but we get teh notification in updateKVStoreItems
+  // "fakeSyncBit" is needed sometimes to speedup the sync from iCloud.. or internet seems to think so
+  NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(updateKVStoreItems:) name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification object:store];
+  if ([store boolForKey:@"fakeSyncBit"])
+  {
+    NSLog(@"in initiCloud setting syncbit NO");
+    [store setBool:NO forKey:@"fakeSyncBit"];
+  }
+  else
+  {
+    NSLog(@"in initiCloud setting syncbit YES");
+    [store setBool:YES forKey:@"fakeSyncBit"];
+  }
+  [store synchronize];
+  NSLog(@"icloud store is synchronized. updateKVStoreItems: should be called shortly");
+
 }
 
 - (BOOL)application:(UIApplication *)app
@@ -356,6 +376,11 @@ MainController* m_xbmcController;
   //unregister from screen notifications
   [nc removeObserver:self name:UIScreenDidConnectNotification object:nil];
   [nc removeObserver:self name:UIScreenDidDisconnectNotification object:nil];
+}
+
+- (void) updateKVStoreItems:(NSNotification *)notification
+{
+  PRINT_SIGNATURE();
 }
 
 @end

@@ -78,6 +78,8 @@ public:
   static bool        AudioAtmosEnabled();
   static std::string GetFriendlyName();
   static bool        ReduceMotionEnabled();
+  static bool        BackupUserFolder();
+  static bool        RestoreUserFolder();
 };
 
 #endif
