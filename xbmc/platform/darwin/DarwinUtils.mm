@@ -1594,8 +1594,9 @@ bool CDarwinUtils::RestoreUserFolder()
   }
 
   // Save it into file system
-  std::string restoreZip = CSpecialProtocol::TranslatePath("special://temp/") + "tempRestoreZip.zip";
-  std::string strHomeDir = CSpecialProtocol::TranslatePath("special://home/");
+  std::string tempDir = GetOSTemporaryDirectory();
+  std::string restoreZip = tempDir + "/tempRestoreZip.zip";
+  std::string strHomeDir = GetUserHomeDirectory();;
   NSString *nsstrRestoreZip = [NSString stringWithCString:restoreZip.c_str()
                                                 encoding:[NSString defaultCStringEncoding]];
   NSString *exportPath = [NSString stringWithCString:strHomeDir.c_str()

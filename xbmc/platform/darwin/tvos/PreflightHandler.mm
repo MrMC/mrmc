@@ -54,6 +54,25 @@ void CPreflightHandler::NSUserDefaultsPurge(const char *prefix)
   }
 }
 
+void CPreflightHandler::CheckForRemovedCacheFolder()
+{
+  // if already migrated, "UserdataMigrated" key will be in UserDefaults
+  // if user home directory does not exist, Apple deleted shit from under us.
+  // we will mark it for possible restore if the backup exist
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *migration_key = @"UserdataMigrated";
+  if ([defaults objectForKey:migration_key])
+  {
+    std::string userHome = CDarwinUtils::GetUserHomeDirectory();
+    NSString *nsPath = [NSString stringWithUTF8String:userHome.c_str()];
+    BOOL isDirectory = YES;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:nsPath isDirectory: &isDirectory])
+    {
+      CDarwinUtils::RestoreUserFolder();
+    }
+  }
+}
+
 void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
 {
   // MrMC below 1.3 has an opps bug, NSUserDefaults was keyed to "Caches/userdata"

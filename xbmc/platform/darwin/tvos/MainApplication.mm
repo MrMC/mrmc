@@ -105,6 +105,7 @@ MainController* m_xbmcController;
   // as they will directly cause guitsetting to get accessed/created
   // via debug log settings.
   CPreflightHandler::MigrateUserdataXMLToNSUserDefaults();
+  CPreflightHandler::CheckForRemovedCacheFolder();
 
   NSError *err = nullptr;
 

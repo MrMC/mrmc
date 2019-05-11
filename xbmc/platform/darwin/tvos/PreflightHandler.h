@@ -27,4 +27,5 @@ public:
   static uint64_t    NSUserDefaultsSize();
   static void        NSUserDefaultsPurge(const char *prefix);
   static void        MigrateUserdataXMLToNSUserDefaults();
+  static void        CheckForRemovedCacheFolder();
 };
