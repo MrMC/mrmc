@@ -34,6 +34,7 @@
 #import "threads/Atomics.h"
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
 #if defined(TARGET_DARWIN_TVOS)
+#import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/tvos/MainController.h"
 #else
 #import "platform/darwin/ios/XBMCController.h"
@@ -186,6 +187,12 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
   {
     [g_xbmcController performSelectorOnMainThread:@selector(onSeekPlaying) withObject:nil  waitUntilDone:NO];
   }
+#if defined(TARGET_DARWIN_TVOS)
+  if (msg == "OnScanFinished" || msg == "OnCleanFinished")
+  {
+    CDarwinUtils::BackupUserFolder();
+  }
+#endif
 }
 
 

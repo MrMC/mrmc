@@ -1543,6 +1543,7 @@ bool CDarwinUtils::BackupUserFolder()
     }
   }
   [cloudStore synchronize];
+  CLog::Log(LOGDEBUG, "CDarwinUtils::BackupUserFolder() - Backup completed");
 #endif
   return ret;
 }
