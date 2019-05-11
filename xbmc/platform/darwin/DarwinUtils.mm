@@ -1551,6 +1551,13 @@ bool CDarwinUtils::RestoreUserFolder()
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_TVOS)
+  NSUbiquitousKeyValueStore *cloudStore = [NSUbiquitousKeyValueStore defaultStore];
+  if (![cloudStore objectForKey:@"MrMC_number_of_zip_chunks"])
+  {
+    // if there is no "MrMC_number_of_zip_chunks", backup doesnt exist ... easy :)
+    CLog::Log(LOGDEBUG, "CDarwinUtils::RestoreUserFolder() - Backup doesnt exist");
+    return ret;
+  }
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSDictionary<NSString *, id> *dict = [defaults dictionaryRepresentation];
   for (NSString *aKey in [dict allKeys] )
@@ -1562,7 +1569,6 @@ bool CDarwinUtils::RestoreUserFolder()
     }
   }
 
-  NSUbiquitousKeyValueStore *cloudStore = [NSUbiquitousKeyValueStore defaultStore];
   NSDictionary *kvd = [cloudStore dictionaryRepresentation];
   NSArray *arr = [kvd allKeys];
   for (NSUInteger i=0; i < arr.count; i++)
