@@ -1609,6 +1609,11 @@ bool CDarwinUtils::RestoreUserFolder()
   [archiver UnzipFileTo:exportPath overWrite:YES];
   [archiver UnzipCloseFile];
 
+  NSError *error;
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  if (![fileManager removeItemAtPath:nsstrRestoreZip error:&error])
+    NSLog(@"Could not delete file -:%@ ",[error localizedDescription]);
+
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
 #endif
