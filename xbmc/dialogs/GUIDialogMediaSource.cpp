@@ -19,6 +19,7 @@
  *
  */
 
+#include <xbmc/services/ServicesManager.h>
 #include "GUIDialogMediaSource.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "GUIDialogFileBrowser.h"
@@ -247,6 +248,14 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     }
 #endif
 
+    if (CServicesManager::GetInstance().HasPlexServices())
+    {
+      share1.strPath = "plex://music/";
+      share1.strName = g_localizeStrings.Get(20217);
+      extraShares.push_back(share1);
+
+    }
+
     // add the music playlist location
     share1.strPath = "special://musicplaylists/";
     share1.strName = g_localizeStrings.Get(20011);
@@ -278,6 +287,17 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
 #endif
+
+    if (CServicesManager::GetInstance().HasPlexServices())
+    {
+      share1.strPath = "plex://movies/";
+      share1.strName = g_localizeStrings.Get(20215);
+      extraShares.push_back(share1);
+
+      share1.strPath = "plex://tvshows/";
+      share1.strName = g_localizeStrings.Get(20216);
+      extraShares.push_back(share1);
+    }
 
     // add the video playlist location
     share1.m_ignore = true;

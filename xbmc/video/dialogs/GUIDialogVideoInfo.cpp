@@ -85,7 +85,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_LIST                50
 
 // predicate used by sorting and set_difference
-bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs) 
+bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs)
 {
   return lhs->HasVideoInfoTag() && rhs->HasVideoInfoTag() && lhs->GetVideoInfoTag()->m_iDbId < rhs->GetVideoInfoTag()->m_iDbId;
 }
@@ -283,7 +283,7 @@ void CGUIDialogVideoInfo::SetUserrating(int userrating)
   if (userrating != m_movieItem->GetVideoInfoTag()->m_iUserRating)
   {
     m_movieItem->GetVideoInfoTag()->SetUserrating(userrating);
-    
+
     // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_movieItem);
     g_windowManager.SendMessage(msg);
@@ -296,11 +296,11 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 
   // setup cast list
   ClearCastList();
-  
+
   // When the scraper throws an error, the video tag can be null here
   if (!item->HasVideoInfoTag())
     return;
-  
+
   MediaType type = item->GetVideoInfoTag()->m_type;
 
   m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
@@ -502,9 +502,9 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
 /// \param items Items Found
 void CGUIDialogVideoInfo::DoSearch(std::string& strSearch, CFileItemList& items)
 {
-  if (CServicesManager::GetInstance().HasServices())
+  if (CServicesManager::GetInstance().HasServices() && CServicesManager::GetInstance().UseGlobalServices())
     CServicesManager::GetInstance().SearchService(items, strSearch);
-  
+
   CVideoDatabase db;
   if (!db.Open())
     return;
@@ -602,7 +602,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
     // .... to be continued
     return;
   }
-  
+
   if (!m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.empty())
   {
     std::string strPath = StringUtils::Format("videodb://tvshows/titles/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
@@ -1288,7 +1288,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (pDialog == NULL)
     return false;
-  
+
   int heading = -1;
   VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)item->GetVideoContentType();
   switch (type)
@@ -1422,7 +1422,7 @@ bool CGUIDialogVideoInfo::ManageMovieSets(const CFileItemPtr &item)
   std::sort(original.begin(), original.end(), compFileItemsByDbId);
   VECFILEITEMS selected = selectedItems.GetList();
   std::sort(selected.begin(), selected.end(), compFileItemsByDbId);
-  
+
   bool refreshNeeded = false;
   // update the "added" items
   VECFILEITEMS addedItems;
@@ -1548,7 +1548,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
   dialog->SetItems(listItems);
   if (currentSetId >= 0)
   {
-    for (int listIndex = 0; listIndex < listItems.Size(); listIndex++) 
+    for (int listIndex = 0; listIndex < listItems.Size(); listIndex++)
     {
       if (listItems.Get(listIndex)->GetVideoInfoTag()->m_iDbId == currentSetId)
       {
@@ -1866,7 +1866,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
 
   if (!local)
     items.Add(noneitem);
-  
+
   std::string result;
   VECSOURCES sources=*CMediaSourceSettings::GetInstance().GetSources("video");
   g_mediaManager.GetLocalDrives(sources);
@@ -1955,7 +1955,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
     currentTitle = detail.m_strTitle;
   else
     currentTitle = detail.m_strSortTitle;
-  
+
   // get the new sort title
   if (!CGUIKeyboardFactory::ShowAndGetInput(currentTitle, CVariant{g_localizeStrings.Get(16107)}, false))
     return false;
@@ -2037,7 +2037,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
   CVideoThumbLoader loader;
   CFileItem item(*videoItem);
   loader.LoadItem(&item);
-  
+
   CFileItemList items;
   if (item.HasArt("fanart"))
   {

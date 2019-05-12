@@ -133,7 +133,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         message.SetStringParam("");
       }
-      
+
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
@@ -362,7 +362,7 @@ int CGUIWindowVideoNav::GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool 
 
       CVideoInfoTag *pTag = pItem->GetVideoInfoTag();
 
-      // Does the episode belong to the unwatched season and Is the episode unwatched, and is its epsiode number 
+      // Does the episode belong to the unwatched season and Is the episode unwatched, and is its epsiode number
       // lower than the currently identified first unwatched episode
       if (pTag->m_iSeason == iUnwatchedSeason && pTag->m_playCount == 0 && pTag->m_iEpisode < iUnwatchedEpisode)
       {
@@ -579,7 +579,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       std::string label;
-      if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("video"), &label)) 
+      if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("video"), &label))
         items.SetLabel(label);
       if (!items.IsSourcesPath() && !items.IsLibraryFolder())
         LoadVideoInfo(items);
@@ -596,7 +596,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       items.Add(newTag);
     }
   }
-  
+
   return bResult;
 }
 
@@ -684,7 +684,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
         database.GetPlayCounts(items.GetPath(), items);
         fetchedPlayCounts = true;
       }
-      
+
       // preferably use some information from PVR info tag if available
       if (pItem->HasPVRRecordingInfoTag())
         pItem->GetPVRRecordingInfoTag()->CopyClientInfo(pItem->GetVideoInfoTag());
@@ -790,7 +790,7 @@ void CGUIWindowVideoNav::DoSearch(const std::string& strSearch, CFileItemList& i
 
   m_database.GetMusicVideosByAlbum(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(558) + "] ", items);
-  
+
   // get matching genres
   m_database.GetMovieGenresByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strGenre + " - " + g_localizeStrings.Get(20342) + "] ", items);
@@ -859,7 +859,7 @@ void CGUIWindowVideoNav::OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper
   }
   if (pItem->IsMediaServiceBased())
     CServicesManager::GetInstance().GetMoreInfo(*pItem);
-    
+
   CGUIWindowVideoBase::OnItemInfo(pItem,scraper);
 }
 
@@ -1193,7 +1193,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         type = "actor";
       else if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
         type = MediaTypeArtist;
-      
+
       bool result = CGUIDialogVideoInfo::ManageVideoItemArtwork(m_vecItems->Get(itemNumber), type);
       Refresh();
 
@@ -1262,7 +1262,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{662});
       return true;
-    }	  
+    }
   }
   else if (StringUtils::StartsWithNoCase(item->GetPath(), "newtag://"))
   {
@@ -1362,7 +1362,7 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
       lower == "moviestudios")
   {
     StringUtils::Replace(lower, "movie", "");
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
       return "services://movies/" + lower + "/";
     return "videodb://movies/" + lower + "/";
   }
@@ -1377,31 +1377,31 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
            lower == "tvshowstudios")
   {
     StringUtils::Replace(lower, "tvshow", "");
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
       return "services://tvshows/" + lower + "/";
     return "videodb://tvshows/" + lower + "/";
   }
   else if (lower == "recentlyaddedmovies")
   {
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
       return "services://movies/recentlyaddedmovies/";
     return "videodb://recentlyaddedmovies/";
   }
   else if (lower == "recentlyaddedepisodes")
   {
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
       return "services://tvshows/recentlyaddedepisodes/";
     return "videodb://recentlyaddedepisodes/";
   }
   else if (lower == "inprogressshows")
   {
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
       return "services://tvshows/inprogressshows/";
     return "videodb://inprogresstvshows/";
   }
   else if (lower == "inprogressmovies")
   {
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
       return "services://movies/inprogressmovies/";
     return "videodb://inprogressmovies/";
   }

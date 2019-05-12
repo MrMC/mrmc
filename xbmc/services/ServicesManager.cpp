@@ -172,6 +172,11 @@ void CServicesManager::Announce(AnnouncementFlag flag, const char *sender, const
   }
 }
 
+bool CServicesManager::UseGlobalServices()
+{
+  return false;
+}
+
 bool CServicesManager::HasServices()
 {
   bool rtn = CPlexUtils::HasClients() ||
@@ -333,7 +338,7 @@ void CServicesManager::GetAllRecentlyAddedAlbums(CFileItemList &recentlyAdded, i
       item->SetProperty("ItemType", g_localizeStrings.Get(681));
       temp.Add(item);
     }
-    
+
     recentlyAdded.ClearItems();
     recentlyAdded.Append(temp);
   }
@@ -357,7 +362,7 @@ void CServicesManager::GetAllInProgressShows(CFileItemList &inProgress, int item
       item->SetProperty("ItemType", g_localizeStrings.Get(682));
       temp.Add(item);
     }
-    
+
     inProgress.ClearItems();
     inProgress.Append(temp);
     inProgress.ClearSortState();
@@ -383,7 +388,7 @@ void CServicesManager::GetAllInProgressMovies(CFileItemList &inProgress, int ite
       item->SetProperty("ItemType", g_localizeStrings.Get(682));
       temp.Add(item);
     }
-    
+
     inProgress.ClearItems();
     inProgress.Append(temp);
     inProgress.ClearSortState();
@@ -410,7 +415,7 @@ void CServicesManager::GetRecentlyAddedMovies(CFileItemList &recentlyAdded, int 
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
       plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
     }
-    
+
     CPlexUtils::SetPlexItemProperties(plexItems);
     recentlyAdded.Append(plexItems);
   }
@@ -452,13 +457,13 @@ void CServicesManager::GetContinueWatching(CFileItemList &continueWatching, std:
     curl.SetProtocol(plexClient->GetProtocol());
     curl.SetFileName(curl.GetFileName() + "hubs/home/continueWatching");
     CPlexUtils::GetPlexContinueWatching(plexItems, curl.Get());
-    
+
     for (int item = 0; item < plexItems.Size(); ++item)
     {
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
       plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13558));
     }
-    
+
     CPlexUtils::SetPlexItemProperties(plexItems);
     continueWatching.Append(plexItems);
   }
@@ -481,13 +486,13 @@ void CServicesManager::GetRecentlyAddedShows(CFileItemList &recentlyAdded, int i
     curl.SetFileName(curl.GetFileName() + "hubs/home/");
     curl.SetProtocolOption("type","2");
     CPlexUtils::GetPlexRecentlyAddedEpisodes(plexItems, curl.Get(), itemLimit, watched);
-    
+
     for (int item = 0; item < plexItems.Size(); ++item)
     {
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
       plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
     }
-    
+
     CPlexUtils::SetPlexItemProperties(plexItems);
     recentlyAdded.Append(plexItems);
   }
@@ -527,18 +532,18 @@ void CServicesManager::GetRecentlyAddedAlbums(CFileItemList &recentlyAdded, int 
     CURL curl(plexClient->GetUrl());
     curl.SetProtocol(plexClient->GetProtocol());
     curl.SetFileName(curl.GetFileName() + "hubs/home/recentlyAdded");
-    
+
     curl.SetProtocolOption("type","8");
     curl.SetProtocolOption("X-Plex-Container-Start", "0");
     curl.SetProtocolOption("X-Plex-Container-Size", StringUtils::Format("%i",itemLimit));
-    
+
     CPlexUtils::GetPlexArtistsOrAlbum(plexItems, curl.Get(), true);
     for (int item = 0; item < plexItems.Size(); ++item)
     {
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
       plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(681));
     }
-    
+
     CPlexUtils::SetPlexItemProperties(plexItems);
     recentlyAdded.Append(plexItems);
     recentlyAdded.SetLabel("Recently Added Albums");
@@ -585,13 +590,13 @@ void CServicesManager::GetInProgressShows(CFileItemList &inProgress, int itemLim
     curl.SetFileName(curl.GetFileName() + "hubs/home/");
     curl.SetProtocolOption("type","2");
     CPlexUtils::GetPlexInProgressShows(plexItems, curl.Get(), itemLimit);
-    
+
     for (int item = 0; item < plexItems.Size(); ++item)
     {
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
       plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(13559));
     }
-    
+
     CPlexUtils::SetPlexItemProperties(plexItems);
     inProgress.Append(plexItems);
   }
@@ -630,13 +635,13 @@ void CServicesManager::GetInProgressMovies(CFileItemList &inProgress, int itemLi
     curl.SetFileName(curl.GetFileName() + "library/onDeck");
     curl.SetProtocolOption("type","1");
     CPlexUtils::GetPlexInProgressMovies(plexItems, curl.Get(), itemLimit);
-    
+
     for (int item = 0; item < plexItems.Size(); ++item)
     {
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);
       plexItems[item]->SetProperty("ItemType", g_localizeStrings.Get(682));
     }
-    
+
     CPlexUtils::SetPlexItemProperties(plexItems);
     inProgress.Append(plexItems);
   }

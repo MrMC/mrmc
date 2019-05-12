@@ -31,5 +31,6 @@ namespace XFILE
 
     virtual bool GetDirectory(const CURL& url, CFileItemList &items);
     virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const;
+    virtual bool Exists(const CURL& url);
   };
 }

@@ -1071,6 +1071,11 @@ bool CFileItem::IsNfs() const
   return URIUtils::IsNfs(m_strPath);
 }
 
+bool CFileItem::IsPlex() const
+{
+  return URIUtils::IsProtocol(m_strPath, "plex");
+}
+
 bool CFileItem::IsOnLAN() const
 {
   return URIUtils::IsOnLAN(m_strPath);
@@ -1110,7 +1115,7 @@ bool CFileItem::IsCloud() const
 {
   if (CUtil::IsCloud(m_strPath))
     return true;
-  
+
   if (HasVideoInfoTag()) // we need to check for MusicTag?
   {
     if (!GetVideoInfoTag()->m_strFileNameAndPath.empty())
@@ -1422,7 +1427,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
     }
     if (m_videoInfoTag->m_iDbId != -1 && item->m_videoInfoTag->m_iDbId != -1)
       return ((m_videoInfoTag->m_iDbId == item->m_videoInfoTag->m_iDbId) &&
-        (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));        
+        (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));
   }
   if (HasMusicInfoTag() && item->HasMusicInfoTag())
   {
@@ -1523,7 +1528,7 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     m_strPath = video.m_strFileNameAndPath;
     m_bIsFolder = false;
   }
-  
+
   *GetVideoInfoTag() = video;
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
@@ -1694,13 +1699,13 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
       {
         if (song.strAlbum.empty() && !tag.GetAlbum().empty())
           song.strAlbum = tag.GetAlbum();
-        //Pass album artist to final MusicInfoTag object via setting song album artist vector. 
+        //Pass album artist to final MusicInfoTag object via setting song album artist vector.
         if (song.GetAlbumArtist().empty() && !tag.GetAlbumArtist().empty())
-          song.SetAlbumArtist(tag.GetAlbumArtist());        
+          song.SetAlbumArtist(tag.GetAlbumArtist());
         if (song.genre.empty() && !tag.GetGenre().empty())
           song.genre = tag.GetGenre();
         //Pass artist to final MusicInfoTag object via setting song artist description string only.
-        //Artist credits not used during loading from cue sheet. 
+        //Artist credits not used during loading from cue sheet.
         if (song.strArtistDesc.empty() && !tag.GetArtistString().empty())
           song.strArtistDesc = tag.GetArtistString();
         if (tag.GetDiscNumber())
@@ -2474,7 +2479,7 @@ void CFileItemList::StackFolders()
       // 1. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
-        || item->IsNfs() 
+        || item->IsNfs()
         || URIUtils::IsInRAR(item->GetPath())
         || URIUtils::IsInZIP(item->GetPath())
         || URIUtils::IsOnLAN(item->GetPath())

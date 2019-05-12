@@ -46,6 +46,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory");
 
   std::string strUrl = url.Get();
+  URIUtils::RemoveSlashAtEnd(strUrl);
   std::string section = URIUtils::GetFileName(strUrl);
   items.SetPath(strUrl);
   std::string basePath = strUrl;
@@ -64,8 +65,8 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   bool hasMusic = mdatabase.HasContent();
   mdatabase.Close();
 
-  
-  if (StringUtils::StartsWithNoCase(strUrl, "plex://movies/"))
+
+  if (StringUtils::StartsWithNoCase(strUrl, "plex://movies"))
   {
     if (section.empty())
     {
@@ -90,7 +91,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             // have to do it this way because raw url has authToken as protocol option
             CURL curl(client->GetUrl());
             curl.SetProtocol(client->GetProtocol());
-            std::string filename = StringUtils::Format("%s/%s", content.section.c_str(), (basePath == "titles"? "all":""));
+            std::string filename = (basePath == "titles" ? StringUtils::Format("%s/all", content.section.c_str()) : content.section.c_str());
             curl.SetFileName(filename);
             pItem->SetPath("plex://movies/" + basePath + "/" + Base64URL::Encode(curl.Get()));
             pItem->SetLabel(title);
@@ -101,20 +102,21 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             pItem->SetIconImage(curl.Get());
             items.Add(pItem);
             client->AddSectionItem(pItem);
-            CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory client(%s), title(%s)", client->GetServerName().c_str(), title.c_str());
+            CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory client(%s), section(%s), title(%s)", client->GetServerName().c_str(), content.section.c_str(), title.c_str());
           }
         }
         else if (contents.size() == 1)
         {
           CURL curl(client->GetUrl());
           curl.SetProtocol(client->GetProtocol());
-          std::string filename = StringUtils::Format("%s/%s", contents[0].section.c_str(), (basePath == "titles"? "all":""));
+          std::string filename = (basePath == "titles" ? StringUtils::Format("%s/all", contents[0].section.c_str()) : contents[0].section.c_str());
           curl.SetFileName(filename);
           CDirectory::GetDirectory("plex://movies/" + basePath + "/" + Base64URL::Encode(curl.Get()), items);
           items.SetContent("movies");
           CPlexUtils::SetPlexItemProperties(items, client);
           for (int item = 0; item < items.Size(); ++item)
             CPlexUtils::SetPlexItemProperties(*items[item], client);
+          CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory client(%s), section(%s)", client->GetServerName().c_str(), contents[0].section.c_str());
         }
         std::string label = basePath;
         if (URIUtils::GetFileName(basePath) == "recentlyaddedmovies")
@@ -155,7 +157,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         filter = "studio";
       else if (path == "clear" || path.empty())
         filter = "";
-      
+
 
       if (path == "titles" || path == "filter")
       {
@@ -199,9 +201,10 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       }
       CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory' client(%s), found %d movies", client->GetServerName().c_str(), items.Size());
     }
+    items.SetPath(url.Get());
     return true;
   }
-  else if (StringUtils::StartsWithNoCase(strUrl, "plex://tvshows/"))
+  else if (StringUtils::StartsWithNoCase(strUrl, "plex://tvshows"))
   {
     if (section.empty())
     {
@@ -344,7 +347,7 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     }
     return true;
   }
-  else if (StringUtils::StartsWithNoCase(strUrl, "plex://music/"))
+  else if (StringUtils::StartsWithNoCase(strUrl, "plex://music"))
   {
     if (section.empty())
     {
@@ -425,11 +428,11 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       std::string path = URIUtils::GetParentPath(strUrl);
       URIUtils::RemoveSlashAtEnd(path);
       path = URIUtils::GetFileName(path);
-      
+
       std::string filter = "all";
       if (path == "albums")
         filter = "albums";
-      
+
       if (path == "root" || path == "artists")
       {
         CPlexUtils::GetPlexArtistsOrAlbum(items,Base64URL::Decode(section), false);
@@ -492,4 +495,9 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 DIR_CACHE_TYPE CPlexDirectory::GetCacheType(const CURL& url) const
 {
   return DIR_CACHE_NEVER;
+}
+
+bool CPlexDirectory::Exists(const CURL& url)
+{
+  return true;
 }

@@ -175,10 +175,10 @@ namespace VIDEO
     {
       CLog::Log(LOGERROR, "VideoInfoScanner: Exception while scanning.");
     }
-    
+
     m_bRunning = false;
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
-    
+
     if (m_handle)
       m_handle->MarkFinished();
     m_handle = NULL;
@@ -600,6 +600,14 @@ namespace VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
+    // handle plex
+    if (pItem->HasProperty("PlexItem"))
+    {
+      if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
+        return INFO_ERROR;
+      return INFO_ADDED;
+    }
+
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
@@ -614,6 +622,7 @@ namespace VIDEO
         return INFO_ERROR;
       return INFO_ADDED;
     }
+
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
       pURL = &scrUrl;
 
@@ -623,7 +632,7 @@ namespace VIDEO
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
     {
-      if (retVal < 0) 
+      if (retVal < 0)
         return INFO_CANCELLED;
       else if (retVal == 0 && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_IMPORTALL))
       {
@@ -1651,13 +1660,13 @@ namespace VIDEO
         item.SetPath(file->strPath);
         if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *item.GetVideoInfoTag(), pDlgProgress))
           return INFO_NOT_FOUND; // TODO: should we just skip to the next episode?
-          
+
         // Only set season/epnum from filename when it is not already set by a scraper
         if (item.GetVideoInfoTag()->m_iSeason == -1)
           item.GetVideoInfoTag()->m_iSeason = guide->iSeason;
         if (item.GetVideoInfoTag()->m_iEpisode == -1)
           item.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
-          
+
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
           return INFO_ERROR;
       }
