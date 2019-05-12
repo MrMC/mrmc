@@ -30,6 +30,7 @@
 #import "platform/darwin/tvos/TVOSTopShelf.h"
 #import "platform/darwin/tvos/PreflightHandler.h"
 #import "Util.h"
+#import "utils/log.h"
 
 @implementation MainApplicationDelegate
 UIWindow *m_splashWindow;
@@ -191,16 +192,16 @@ MainController* m_xbmcController;
                                            selector:@selector(updateKVStoreItems:) name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification object:store];
   if ([store boolForKey:@"fakeSyncBit"])
   {
-    NSLog(@"in initiCloud setting syncbit NO");
-    [store setBool:NO forKey:@"fakeSyncBit"];
+    CLog::Log(LOGDEBUG, "in initiCloud setting syncbit NO");
+    [store setBool:NO forKey:@"fakeSyncBitTVOS"];
   }
   else
   {
-    NSLog(@"in initiCloud setting syncbit YES");
-    [store setBool:YES forKey:@"fakeSyncBit"];
+    CLog::Log(LOGDEBUG, "in initiCloud setting syncbit YES");
+    [store setBool:YES forKey:@"fakeSyncBitTVOS"];
   }
   [store synchronize];
-  NSLog(@"icloud store is synchronized. updateKVStoreItems: should be called shortly");
+  CLog::Log(LOGDEBUG, "updateKVStoreItems:(NSNotification *)notification");
 
 }
 
@@ -384,7 +385,7 @@ MainController* m_xbmcController;
 
 - (void) updateKVStoreItems:(NSNotification *)notification
 {
-  PRINT_SIGNATURE();
+  CLog::Log(LOGDEBUG, "updateKVStoreItems:(NSNotification *)notification");
 }
 
 @end

@@ -176,7 +176,6 @@
 		18ED6186228626C3002FD568 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 18ED617B228626C3002FD568 /* zip.c */; };
 		18ED6187228626C3002FD568 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 18ED617C228626C3002FD568 /* ioapi.c */; };
 		18ED6188228626C3002FD568 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = 18ED617D228626C3002FD568 /* mztools.c */; };
-		18ED618A228633F6002FD568 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18ED6189228633F6002FD568 /* CloudKit.framework */; };
 		18F123CC2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
 		18F123CD2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
 		18F123CE2017AD7500C82783 /* GUIDialogOSDSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */; };
@@ -3834,7 +3833,6 @@
 		18ED6181228626C3002FD568 /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
 		18ED6182228626C3002FD568 /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
 		18ED6183228626C3002FD568 /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
-		18ED6189228633F6002FD568 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.2.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		18F123CA2017AD7400C82783 /* GUIDialogOSDSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogOSDSettings.cpp; sourceTree = "<group>"; };
 		18F123CB2017AD7400C82783 /* GUIDialogOSDSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogOSDSettings.h; sourceTree = "<group>"; };
 		18FCB03320DD3BE00027327A /* RMStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMStore.h; sourceTree = "<group>"; };
@@ -6381,7 +6379,6 @@
 				18ED606222861550002FD568 /* Security.framework in Frameworks */,
 				F5C28F101FC7D19B00F63834 /* AVKit.framework in Frameworks */,
 				F50F8E991F02BD2D00C8F93B /* VideoToolbox.framework in Frameworks */,
-				18ED618A228633F6002FD568 /* CloudKit.framework in Frameworks */,
 				F5D142411BAF0B6D0075A95C /* AudioToolbox.framework in Frameworks */,
 				F5D1423E1BAF0B6D0075A95C /* AVFoundation.framework in Frameworks */,
 				F5D142451BAF0B6D0075A95C /* Foundation.framework in Frameworks */,
@@ -6464,7 +6461,6 @@
 		18AC31EE1C49445D00AE9433 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				18ED6189228633F6002FD568 /* CloudKit.framework */,
 				18ED6067228618A8002FD568 /* libiconv.tbd */,
 				18ED60652286179C002FD568 /* libz.tbd */,
 				18ED606122861550002FD568 /* Security.framework */,
@@ -10798,6 +10794,12 @@
 							com.apple.Keychain = {
 								enabled = 1;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
 					};
 					F5D13EC51BAF0B6D0075A95C = {
@@ -14935,6 +14937,7 @@
 				CODE_SIGN_ENTITLEMENTS = xbmc/platform/darwin/tvos/MrMC.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 8U6WVDN2Q6;
@@ -14976,6 +14979,7 @@
 				CODE_SIGN_ENTITLEMENTS = xbmc/platform/darwin/tvos/MrMC.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 8U6WVDN2Q6;

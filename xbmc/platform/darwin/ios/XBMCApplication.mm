@@ -28,6 +28,7 @@
 #import "platform/darwin/ios/IOSPlayShared.h"
 #import "platform/darwin/DarwinUtils.h"
 #import "utils/LiteUtils.h"
+#import "utils/log.h"
 
 @implementation XBMCApplicationDelegate
 
@@ -229,6 +230,11 @@ XBMCController *m_xbmcController;
   }
 }
 
+- (void) updateKVStoreItems:(NSNotification *)notification
+{
+  CLog::Log(LOGDEBUG, "updateKVStoreItems:(NSNotification *)notification");
+}
+
 - (void)registerAudioRouteNotifications:(BOOL)bRegister
 {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -271,6 +277,24 @@ XBMCController *m_xbmcController;
     [[MPPlayableContentManager sharedContentManager] setDataSource:CarPlay];
     [[MPPlayableContentManager sharedContentManager] setDelegate:CarPlay];
   }
+  // we will need below if we ever decide to push/sync libraries on the fly... not sure we want to
+  // but we get teh notification in updateKVStoreItems
+  // "fakeSyncBit" is needed sometimes to speedup the sync from iCloud.. or internet seems to think so
+  NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(updateKVStoreItems:) name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification object:store];
+  if ([store boolForKey:@"fakeSyncBit"])
+  {
+    CLog::Log(LOGDEBUG, "in initiCloud setting syncbit NO");
+    [store setBool:NO forKey:@"fakeSyncBit"];
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "in initiCloud setting syncbit YES");
+    [store setBool:YES forKey:@"fakeSyncBit"];
+  }
+  [store synchronize];
+  CLog::Log(LOGDEBUG, "icloud store is synchronized. updateKVStoreItems: should be called shortly");
 }
 
 - (BOOL)application:(UIApplication *)app

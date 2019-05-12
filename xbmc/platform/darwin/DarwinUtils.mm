@@ -1289,15 +1289,30 @@ void CDarwinUtils::SetMrMCTouchFlag()
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS) && !defined(APP_PACKAGE_LITE)
   // this is for the future use, we will set the flag in keychain for
   // MrMC Touch transition to universal tvOS and iOS app
+  CLog::Log(LOGDEBUG, "CDarwinUtils::SetMrMCTouchFlag()");
   RMStoreKeychainPersistence *persistence = [[RMStoreKeychainPersistence alloc] init];
   if (/* DISABLES CODE */ (1))
   {
     if (![persistence isPurchasedProductOfIdentifier:@"tv.mrmc.mrmc.tvos.iosupgrade"])
+    {
       [persistence persistTransactionProductID:@"tv.mrmc.mrmc.tvos.iosupgrade"];
+      CLog::Log(LOGDEBUG, "CDarwinUtils::SetMrMCTouchFlag() - persistTransaction for MrMC Touch");
+    }
     [persistence dumpProducts];
   }
   else
+  {
     [persistence removeTransactions];
+  }
+
+  NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
+  NSDictionary *kvd = [store dictionaryRepresentation];
+  if (![store boolForKey:@"tv.mrmc.mrmc.tvos.iosupgrade"])
+  {
+    CLog::Log(LOGDEBUG, "CDarwinUtils::SetMrMCTouchFlag() - NSUbiquitousKeyValueStore key for MrMC Touch");
+    [store setBool:YES forKey:@"tv.mrmc.mrmc.tvos.iosupgrade"];
+  }
+  [store synchronize];
 #endif
 }
 
