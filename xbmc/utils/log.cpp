@@ -20,10 +20,22 @@
 
 #include "log.h"
 #include "system.h"
+#include "URL.h"
+#include "filesystem/CurlFile.h"
+#include "filesystem/SpecialProtocol.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StringUtils.h"
 #include "CompileInfo.h"
+#include "ClientPrivateInfo.h"
+#include "utils/JSONVariantParser.h"
+#include "guilib/LocalizeStrings.h"
+
+#include <sstream>
+#include <fstream>
 
 static const char* const levelNames[] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
@@ -40,6 +52,12 @@ CLog::CLog()
 
 CLog::~CLog()
 {}
+
+CLog& CLog::GetInstance()
+{
+  static CLog sCLog;
+  return sCLog;
+}
 
 void CLog::Close()
 {
@@ -217,4 +235,77 @@ bool CLog::WriteLogString(int logLevel, const std::string& logString)
                                   levelNames[logLevel]) + strData;
 
   return s_globals.m_platform.WriteStringToLog(strData);
+}
+
+void CLog::OnSettingAction(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_DEBUG_UPLOAD)
+    UploadLogs();
+}
+
+void CLog::UploadLogs()
+{
+  std::string clientInfoString = CClientPrivateInfo::Decrypt();
+  CVariant clientInfo(CVariant::VariantTypeArray);
+  CJSONVariantParser::Parse(clientInfoString, clientInfo);
+  std::string userName;
+  std::string password;
+  for (auto variantItemIt = clientInfo.begin_array(); variantItemIt != clientInfo.end_array(); ++variantItemIt)
+  {
+    const auto &client = *variantItemIt;
+    if (client["client"].asString() == "nextcloud")
+    {
+      userName = client["client_id"].asString();
+      password = client["client_secret"].asString();
+      break;
+    }
+  }
+  if (userName.empty() || password.empty())
+  {
+    CLog::Log(LOGERROR, "%s: error getting username/password for NextCloud", __FUNCTION__);
+    return;
+  }
+
+  std::string random = StringUtils::RandomAlphaNumeric(5);
+  std::string response;
+  CURL curl("http://log.mrmc.tv");
+  std::string uploadFile = StringUtils::Format("remote.php/webdav/Logs/%s.log", random.c_str());
+  curl.SetFileName(uploadFile);
+  curl.SetUserName(userName);
+  curl.SetPassword(password);
+  XFILE::CCurlFile curlfile;
+  curlfile.SetTimeout(10);
+  curlfile.SetRequestHeader("Content-Range", "");
+
+  std::stringstream buffer;
+  std::string lowerAppName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(lowerAppName);
+  std::string logFile = CSpecialProtocol::TranslatePath("special://logs/mrmc.log");
+  std::string logFileOld = CSpecialProtocol::TranslatePath("special://logs/mrmc.old.log");
+  buffer << "############## MrMC Log ################\n";
+  buffer << "\n";
+  std::ifstream file(logFile.c_str());
+  buffer << file.rdbuf();
+  buffer << "\n";
+  buffer << "############## MrMC Log Old ################\n";
+  buffer << "\n";
+  std::ifstream fileOld(logFileOld.c_str());
+  buffer << fileOld.rdbuf();
+
+  std::string label = "Log not uploaded";
+  if (!curlfile.Put(curl.Get(), buffer.str(), response))
+  {
+    CLog::Log(LOGERROR, "%s: Failed to upload log - %s.log to http://log.mrmc.tv", __FUNCTION__, random.c_str());
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "%s: Successfully uploaded log - %s.log to http://log.mrmc.tv", __FUNCTION__, random.c_str());
+    std::string log = StringUtils::Format("%s.log",random.c_str());
+    label = StringUtils::Format(g_localizeStrings.Get(490).c_str(),log.c_str());
+  }
+  CSettings::GetInstance().SetString(CSettings::SETTING_DEBUG_UPLOAD, label);
 }

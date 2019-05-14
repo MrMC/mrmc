@@ -4287,6 +4287,16 @@
           </control>
         </setting>
       </group>
+      <group id="3">
+        <setting id="debug.upload" type="string" label="483" help="484">
+          <level>1</level>
+          <default>Log not uploaded</default>
+          <dependencies>
+            <dependency type="enable" setting="debug.showloginfo" operator="is">true</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>  
     </category>
     <category id="masterlock" label="12360" help="36395">
       <access>CheckMasterLock</access>

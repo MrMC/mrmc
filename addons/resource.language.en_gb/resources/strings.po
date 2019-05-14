@@ -2141,7 +2141,13 @@ msgctxt "#482"
 msgid "About MrMC"
 msgstr ""
 
-#empty strings from id 483 to 484
+msgctxt "#483"
+msgid "Upload Debuglog"
+msgstr ""
+
+msgctxt "#484"
+msgid "Using this will upload your debuglog to MrMC servers for further debugging.\n Note: this will expose your settings and details about media being played."
+msgstr ""
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2164,7 +2170,10 @@ msgctxt "#489"
 msgid "Play next song automatically"
 msgstr ""
 
-#empty string with id 490
+#: Clog::UploadLog
+msgctxt "#490"
+msgid "Uploaded (%s)"
+msgstr ""
 
 msgctxt "#491"
 msgid "- Use big icons"

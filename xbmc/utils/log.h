@@ -28,16 +28,18 @@ typedef class CPosixInterfaceForCLog PlatformInterfaceForCLog;
 #endif
 
 #include "commons/ilog.h"
+#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
 
 #include "utils/params_check_macros.h"
 
-class CLog
+class CLog : public ISettingCallback
 {
 public:
   CLog();
   ~CLog(void);
+  static CLog &GetInstance();
   static void Close();
   static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
   static void LogFunction(int loglevel, IN_OPT_STRING const char* functionName, PRINTF_FORMAT_STRING const char* format, ...) PARAM3_PRINTF_FORMAT;
@@ -49,6 +51,8 @@ public:
   static int  GetLogLevel();
   static void SetExtraLogLevels(int level);
   static bool IsLogLevelLogged(int loglevel);
+
+  virtual void OnSettingAction(const CSetting *setting) override;
 
 protected:
   class CLogGlobals
@@ -67,6 +71,8 @@ protected:
   class CLogGlobals m_globalInstance; // used as static global variable
   static void LogString(int logLevel, const std::string& logString);
   static bool WriteLogString(int logLevel, const std::string& logString);
+private:
+  void UploadLogs();
 };
 
 

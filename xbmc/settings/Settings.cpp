@@ -437,6 +437,7 @@ const std::string CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS = "powermanage
 const std::string CSettings::SETTING_DEBUG_SHOWLOGINFO = "debug.showloginfo";
 const std::string CSettings::SETTING_DEBUG_EXTRALOGGING = "debug.extralogging";
 const std::string CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL = "debug.setextraloglevel";
+const std::string CSettings::SETTING_DEBUG_UPLOAD = "debug.upload";
 const std::string CSettings::SETTING_DEBUG_SCREENSHOTPATH = "debug.screenshotpath";
 const std::string CSettings::SETTING_EVENTLOG_ENABLED = "eventlog.enabled";
 const std::string CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS = "eventlog.enablednotifications";
@@ -1495,6 +1496,10 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_TRAKTPUSHWATCHED);
   settingSet.insert(CSettings::SETTING_SERVICES_TRAKTPULLWATCHED);
   m_settingsManager->RegisterCallback(&CTraktServices::GetInstance(), settingSet);
+
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_DEBUG_UPLOAD);
+  m_settingsManager->RegisterCallback(&CLog::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()

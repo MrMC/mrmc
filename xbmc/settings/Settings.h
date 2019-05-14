@@ -399,6 +399,7 @@ public:
   static const std::string SETTING_DEBUG_SHOWLOGINFO;
   static const std::string SETTING_DEBUG_EXTRALOGGING;
   static const std::string SETTING_DEBUG_SETEXTRALOGLEVEL;
+  static const std::string SETTING_DEBUG_UPLOAD;
   static const std::string SETTING_DEBUG_SCREENSHOTPATH;
   static const std::string SETTING_EVENTLOG_ENABLED;
   static const std::string SETTING_EVENTLOG_ENABLED_NOTIFICATIONS;
