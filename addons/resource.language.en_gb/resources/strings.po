@@ -3042,7 +3042,67 @@ msgctxt "#684"
 msgid "Verbose logging for the [B]Database[/B] component"
 msgstr ""
 
-#empty strings from id 685 to 699
+#: settings.xml
+msgctxt "#685"
+msgid "iCloud"
+msgstr ""
+
+#: settings.xml
+msgctxt "#686"
+msgid "Apple iCloud backup of local database and settings."
+msgstr ""
+
+#: settings.xml
+msgctxt "#687"
+msgid "Enable iCloud backup"
+msgstr ""
+
+#: settings.xml
+msgctxt "#688"
+msgid "Enable iCloud backup of local database and settings. Change to Advanced Settings to see the full list of backup and restore options"
+msgstr ""
+
+#: settings.xml
+msgctxt "#689"
+msgid "Backup to iCloud"
+msgstr ""
+
+#: settings.xml
+msgctxt "#690"
+msgid "Initiate manual backup to iCloud"
+msgstr ""
+
+#: settings.xml
+msgctxt "#691"
+msgid "Restore from iCloud"
+msgstr ""
+
+#: settings.xml
+msgctxt "#692"
+msgid "Initiate manual restore from iCloud"
+msgstr ""
+
+#: settings.xml
+msgctxt "#693"
+msgid "Backup after completed library update"
+msgstr ""
+
+#: settings.xml
+msgctxt "#694"
+msgid "Automatic backup after each library update or clean, only for internal databases and settings"
+msgstr ""
+
+#: settings.xml
+msgctxt "#695"
+msgid "Remove iCloud backup"
+msgstr ""
+
+#: settings.xml
+msgctxt "#696"
+msgid "Removes iCloud backup, this can't be undone"
+msgstr ""
+
+#empty strings from id 695 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"

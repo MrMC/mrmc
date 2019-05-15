@@ -2313,6 +2313,47 @@
         </setting>
       </group>
     </category>
+    <category id="icloud" label="685" help="686">
+      <visible>false</visible>
+      <group id="1">
+        <setting id="icloud.enable" type="boolean" label="687" help="688">
+          <level>0</level>
+          <dependencies>
+            <dependency type="enable" setting="mysql.enabled">false</dependency>
+          </dependencies>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="icloud.restore" type="action" label="691" help="692">
+          <level>0</level>
+          <control type="button" format="action"/>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="icloud.backup" type="action" label="689" help="690">
+          <level>2</level>
+          <dependencies>
+            <dependency type="enable" setting="icloud.enable">true</dependency>
+          </dependencies>
+          <control type="button" format="action"/>
+        </setting>
+        <setting id="icloud.autobackup" type="boolean" label="693" help="694">
+          <level>2</level>
+          <dependencies>
+            <dependency type="enable" setting="icloud.enable">true</dependency>
+          </dependencies>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="icloud.remove" type="action" label="695" help="696">
+          <level>2</level>
+          <dependencies>
+            <dependency type="enable" setting="icloud.enable">true</dependency>
+          </dependencies>
+          <control type="button" format="action"/>
+        </setting>
+      </group>  
+    </category>
     <category id="plex" label="1236" help="1237">
       <group id="1">
         <setting id="plex.signin" type="string" label="1238" help="1239">

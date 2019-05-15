@@ -523,6 +523,13 @@ public:
   static const std::string SETTING_SERVICES_CLOUDGOOGLETOKEN;
   static const std::string SETTING_SERVICES_CLOUDGOOGLEREFRESHTOKEN;
   static const std::string SETTING_SERVICES_CLOUDGOOGLEREFRESHTIME;
+
+  // Apple iCloud
+  static const std::string SETTING_SERVICES_ICLOUDENABLED;
+  static const std::string SETTING_SERVICES_ICLOUDBACKUP;
+  static const std::string SETTING_SERVICES_ICLOUDRESTORE;
+  static const std::string SETTING_SERVICES_ICLOUDAUTOBACKUP;
+  static const std::string SETTING_SERVICES_ICLOUDREMOVE;
   
 
   /*!

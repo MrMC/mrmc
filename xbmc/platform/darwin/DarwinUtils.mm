@@ -159,6 +159,12 @@ enum iosPlatform
   iPhoneXSMax,
 };
 
+CDarwinUtils& CDarwinUtils::GetInstance()
+{
+  static CDarwinUtils sCDarwinUtils;
+  return sCDarwinUtils;
+}
+
 // platform strings are based on http://theiphonewiki.com/wiki/Models
 const char* CDarwinUtils::getIosPlatformString(void)
 {
@@ -1641,6 +1647,38 @@ bool CDarwinUtils::RestoreUserFolder()
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
 #endif
   return ret;
+}
+
+bool CDarwinUtils::CleariCloudBackup()
+{
+  NSUbiquitousKeyValueStore *cloudStore = [NSUbiquitousKeyValueStore defaultStore];
+
+  NSDictionary *kvd = [cloudStore dictionaryRepresentation];
+  NSArray *arr = [kvd allKeys];
+  for (NSUInteger i=0; i < arr.count; i++)
+  {
+    // clear out all keys that start with MrMC_ as that was a previous backup
+    NSString *key = [arr objectAtIndex:i];
+    if ([key hasPrefix:@"MrMC_"] || [key hasPrefix:@"/userdata/"])
+      [cloudStore removeObjectForKey:key];
+  }
+  [cloudStore synchronize];
+  NSDictionary *kvdTest = [cloudStore dictionaryRepresentation];
+  return true;
+}
+
+void CDarwinUtils::OnSettingAction(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_SERVICES_ICLOUDBACKUP)
+    BackupUserFolder();
+  else if (settingId == CSettings::SETTING_SERVICES_ICLOUDRESTORE)
+    RestoreUserFolder();
+  else if (settingId == CSettings::SETTING_SERVICES_ICLOUDREMOVE)
+    CleariCloudBackup();
 }
 
 #endif

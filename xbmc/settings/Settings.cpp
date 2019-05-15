@@ -564,6 +564,13 @@ const std::string CSettings::SETTING_SERVICES_CLOUDGOOGLETOKEN = "cloud.googleto
 const std::string CSettings::SETTING_SERVICES_CLOUDGOOGLEREFRESHTOKEN = "cloud.googlerefreshtoken";
 const std::string CSettings::SETTING_SERVICES_CLOUDGOOGLEREFRESHTIME = "cloud.googlerefreshtime";
 
+// Apple iCloud
+const std::string CSettings::SETTING_SERVICES_ICLOUDENABLED = "icloud.enable";
+const std::string CSettings::SETTING_SERVICES_ICLOUDBACKUP = "icloud.backup";
+const std::string CSettings::SETTING_SERVICES_ICLOUDRESTORE = "icloud.restore";
+const std::string CSettings::SETTING_SERVICES_ICLOUDAUTOBACKUP = "icloud.autobackup";
+const std::string CSettings::SETTING_SERVICES_ICLOUDREMOVE = "icloud.remove";
+
 CSettings::CSettings()
   : m_initialized(false)
 {
@@ -1500,6 +1507,14 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_DEBUG_UPLOAD);
   m_settingsManager->RegisterCallback(&CLog::GetInstance(), settingSet);
+
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDENABLED);
+  settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDRESTORE);
+  settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDBACKUP);
+  settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDAUTOBACKUP);
+  settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDREMOVE);
+  m_settingsManager->RegisterCallback(&CDarwinUtils::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()

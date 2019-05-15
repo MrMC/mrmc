@@ -36,6 +36,7 @@
 #if defined(TARGET_DARWIN_TVOS)
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/tvos/MainController.h"
+#include "settings/Settings.h"
 #else
 #import "platform/darwin/ios/XBMCController.h"
 #endif
@@ -190,7 +191,9 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
 #if defined(TARGET_DARWIN_TVOS)
   if (msg == "OnScanFinished" || msg == "OnCleanFinished")
   {
-    CDarwinUtils::BackupUserFolder();
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ICLOUDENABLED) &&
+        CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ICLOUDAUTOBACKUP))
+      CDarwinUtils::BackupUserFolder();
   }
 #endif
 }

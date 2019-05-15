@@ -21,15 +21,17 @@
 #define _DARWIN_UTILS_H_
 
 #include <string>
+#include "settings/lib/ISettingCallback.h"
 
 // We forward declare CFStringRef in order to avoid
 // pulling in tons of Objective-C headers.
 struct __CFString;
 typedef const struct __CFString * CFStringRef;
 
-class CDarwinUtils
+class CDarwinUtils : public ISettingCallback
 {
 public:
+  static CDarwinUtils &GetInstance();
   static const char *getIosPlatformString(void);
   static bool        IsAppleTV(void);
   static bool        IsAppleTV4KOrAbove(void);
@@ -80,6 +82,9 @@ public:
   static bool        ReduceMotionEnabled();
   static bool        BackupUserFolder();
   static bool        RestoreUserFolder();
+  static bool        CleariCloudBackup();
+
+  virtual void OnSettingAction(const CSetting *setting) override;
 };
 
 #endif
