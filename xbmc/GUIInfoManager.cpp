@@ -6290,7 +6290,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
 {
   if (condition == LIBRARY_HAS_MUSIC)
   {
-    if (m_libraryHasMusic < 0)
+    if (m_libraryHasMusic <= 0)
     { // query
       CMusicDatabase db;
       if (db.Open())
@@ -6303,7 +6303,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   }
   else if (condition == LIBRARY_HAS_MOVIES)
   {
-    if (m_libraryHasMovies < 0)
+    if (m_libraryHasMovies <= 0)
     {
       CVideoDatabase db;
       if (db.Open())
@@ -6329,7 +6329,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   }
   else if (condition == LIBRARY_HAS_TVSHOWS)
   {
-    if (m_libraryHasTVShows < 0)
+    if (m_libraryHasTVShows <= 0)
     {
       CVideoDatabase db;
       if (db.Open())
