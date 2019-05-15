@@ -50,6 +50,7 @@
     #include "video/VideoDatabase.h"
     #include "platform/darwin/ZipArchive/ZipArchive.h"
     #include "platform/darwin/NSData+GZIP.h"
+    #include "profiles/ProfilesManager.h"
     #include "messaging/ApplicationMessenger.h"
     #include "interfaces/AnnouncementManager.h"
     #import "platform/darwin/tvos/MainController.h"
@@ -1605,9 +1606,14 @@ bool CDarwinUtils::RestoreUserFolder()
   [defaults synchronize];
   // reload sources to get the latest from backup
   CMediaSourceSettings::GetInstance().Load();
-  CSettings::GetInstance().Save();
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
+  CSettings::GetInstance().Unload();
+  std::string strGuiSettings = CSpecialProtocol::TranslatePath(CProfilesManager::GetInstance().GetSettingsFile());
+  CSettings::GetInstance().Load(strGuiSettings);
+  CSettings::GetInstance().SetLoaded();
+//  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
   KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_RELOAD_KEYMAPS)));
+  int profil = CProfilesManager::GetInstance().GetCurrentProfileIndex();
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, profil);
   NSUInteger numberOfChunks = [cloudStore longLongForKey:@"MrMC_number_of_zip_chunks"];
 
   // create empty mutable data
@@ -1663,7 +1669,6 @@ bool CDarwinUtils::CleariCloudBackup()
       [cloudStore removeObjectForKey:key];
   }
   [cloudStore synchronize];
-  NSDictionary *kvdTest = [cloudStore dictionaryRepresentation];
   return true;
 }
 
