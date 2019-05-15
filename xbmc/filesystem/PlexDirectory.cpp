@@ -296,8 +296,8 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CPlexUtils::GetPlexTvshows(items,Base64URL::Decode(section));
         items.SetLabel(g_localizeStrings.Get(369));
         items.SetContent("tvshows");
-        items.ClearSortState();
-        items.Sort(SortByTitle, SortOrderAscending);
+//        items.ClearSortState();
+        items.Sort(SortByLabel, SortOrderAscending);
       }
       else if (path == "shows")
       {
@@ -306,15 +306,14 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           items.SetContent("tvshows");
         else
           items.SetContent("episodes");
-        items.ClearSortState();
-        items.Sort(SortByTitle, SortOrderAscending);
+//        items.ClearSortState();
+        items.Sort(SortByLabel, SortOrderAscending);
       }
       else if (path == "seasons")
       {
         CPlexUtils::GetPlexEpisodes(items,Base64URL::Decode(section));
         items.SetContent("episodes");
-        items.ClearSortState();
-        items.Sort(SortByTitle, SortOrderAscending);
+        items.Sort(SortByLabel, SortOrderAscending);
       }
       else if (path == "recentlyaddedepisodes")
       {

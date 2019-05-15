@@ -1502,7 +1502,7 @@ bool CPlexUtils::GetPlexRecentlyAddedAlbums(CFileItemList &items, const std::str
     items.SetLabel("Recently Added Albums");
     items.Sort(SortByDateAdded, SortOrderDescending);
     plexItems.ClearItems();
-    items.SetProperty("library.filter", "true");
+//    items.SetProperty("library.filter", "true");
     items.GetMusicInfoTag()->m_type = MediaTypeAlbum;
     return rtn;
   }
@@ -1652,7 +1652,7 @@ bool CPlexUtils::ParsePlexVideos(CFileItemList &items, CURL url, const CVariant 
   }
   // this is needed to display movies/episodes properly ... dont ask
   // good thing it didnt take 2 days to figure it out
-  items.SetProperty("library.filter", "true");
+//  items.SetProperty("library.filter", "true");
   SetPlexItemProperties(items);
 
   return rtn;
@@ -1742,7 +1742,7 @@ bool CPlexUtils::ParsePlexSeries(CFileItemList &items, const CURL &url, const CV
     plexItem->SetProperty("SkipLocalArt", true);
     items.Add(plexItem);
   }
-  items.SetProperty("library.filter", "true");
+//  items.SetProperty("library.filter", "true");
   items.GetVideoInfoTag()->m_type = MediaTypeTvShow;
 
   return rtn;
@@ -1876,7 +1876,7 @@ bool CPlexUtils::ParsePlexSeasons(CFileItemList &items, const CURL &url, const C
       items.SetLabel(showTitle);
     }
   }
-  items.SetProperty("library.filter", "true");
+//  items.SetProperty("library.filter", "true");
   SetPlexItemProperties(items);
 
   return rtn;
@@ -1946,7 +1946,7 @@ bool CPlexUtils::ParsePlexSongs(CFileItemList &items, const CURL &url, const CVa
       }
     }
   }
-  items.SetProperty("library.filter", "true");
+//  items.SetProperty("library.filter", "true");
   items.GetMusicInfoTag()->m_type = MediaTypeSong;
   SetPlexItemProperties(items);
 
@@ -2023,7 +2023,7 @@ bool CPlexUtils::ParsePlexArtistsAlbum(CFileItemList &items, const CURL &url, co
     SetPlexItemProperties(*plexItem);
     items.Add(plexItem);
   }
-  items.SetProperty("library.filter", "true");
+//  items.SetProperty("library.filter", "true");
   items.GetVideoInfoTag()->m_type = strMediaType;
   SetPlexItemProperties(items);
 
