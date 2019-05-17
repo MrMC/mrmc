@@ -1604,16 +1604,7 @@ bool CDarwinUtils::RestoreUserFolder()
     }
   }
   [defaults synchronize];
-  // reload sources to get the latest from backup
-  CMediaSourceSettings::GetInstance().Load();
-  CSettings::GetInstance().Unload();
-  std::string strGuiSettings = CSpecialProtocol::TranslatePath(CProfilesManager::GetInstance().GetSettingsFile());
-  CSettings::GetInstance().Load(strGuiSettings);
-  CSettings::GetInstance().SetLoaded();
-//  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_RELOAD_KEYMAPS)));
-  int profil = CProfilesManager::GetInstance().GetCurrentProfileIndex();
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, profil);
+
   NSUInteger numberOfChunks = [cloudStore longLongForKey:@"MrMC_number_of_zip_chunks"];
 
   // create empty mutable data
@@ -1627,30 +1618,48 @@ bool CDarwinUtils::RestoreUserFolder()
     [d appendData:dataOfFile];
   }
 
-  // Save it into file system
+  // write zip file to temp folder
   std::string tempDir = GetOSTemporaryDirectory();
   std::string restoreZip = tempDir + "/tempRestoreZip.zip";
-  std::string strHomeDir = GetUserHomeDirectory();;
   NSString *nsstrRestoreZip = [NSString stringWithCString:restoreZip.c_str()
                                                 encoding:[NSString defaultCStringEncoding]];
-  NSString *exportPath = [NSString stringWithCString:strHomeDir.c_str()
-                                            encoding:[NSString defaultCStringEncoding]];
 
-  [d writeToFile:nsstrRestoreZip atomically:YES];
+  if (![d writeToFile:nsstrRestoreZip atomically:YES])
+    return false;
 
 
+  // unzip it to userfolder
   ZipArchive *archiver = [[ZipArchive alloc] init];
-  [archiver UnzipOpenFile:nsstrRestoreZip];
-  [archiver UnzipFileTo:exportPath overWrite:YES];
-  [archiver UnzipCloseFile];
-
+  if (archiver && [archiver UnzipOpenFile:nsstrRestoreZip])
+  {
+    std::string strHomeDir = GetUserHomeDirectory();
+    NSString *exportPath = [NSString stringWithCString:strHomeDir.c_str()
+                                              encoding:[NSString defaultCStringEncoding]];
+    if ([archiver UnzipFileTo:exportPath overWrite:YES])
+    {
+      // reload sources to get the latest from backup
+      CMediaSourceSettings::GetInstance().Load();
+      // unload settings
+      CSettings::GetInstance().Unload();
+      // ... and load new ones
+      std::string strGuiSettings = CSpecialProtocol::TranslatePath(CProfilesManager::GetInstance().GetSettingsFile());
+      CSettings::GetInstance().Load(strGuiSettings);
+      CSettings::GetInstance().SetLoaded();
+      // reload keymaps, in case there was a new one in the backup
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_RELOAD_KEYMAPS)));
+      // reload profiles, that reloads all settings and services
+      int profile = CProfilesManager::GetInstance().GetCurrentProfileIndex();
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, profile);
+    }
+    // close the zip file
+    [archiver UnzipCloseFile];
+  }
+  // cleanup, remove our temporary zip
   NSError *error;
   NSFileManager *fileManager = [NSFileManager defaultManager];
   if (![fileManager removeItemAtPath:nsstrRestoreZip error:&error])
-    NSLog(@"Could not delete file -:%@ ",[error localizedDescription]);
+    CLog::Log(LOGDEBUG, "CDarwinUtils::RestoreUserFolder() - Could not delete file %s error - %s", restoreZip.c_str(),[error.localizedDescription UTF8String]);
 
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateRecentlyAdded");
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateRecentlyAdded");
 #endif
   return ret;
 }
