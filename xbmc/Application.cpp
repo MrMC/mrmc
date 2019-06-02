@@ -830,7 +830,6 @@ bool CApplication::DestroyGUI()
   CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
   g_windowManager.DeInitialize();
-  CTextureCache::GetInstance().Deinitialize();
 
   g_TextureManager.Cleanup();
   g_largeTextureManager.CleanupUnusedImages(true);
@@ -3007,6 +3006,7 @@ void CApplication::Stop(int exitCode)
 
     DestroyGUI();
 
+    CTextureCache::GetInstance().Deinitialize();
     g_audioManager.DeInitialize();
     // shutdown the AudioEngine
     CAEFactory::Shutdown();
