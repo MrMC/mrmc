@@ -2568,6 +2568,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     {
       DestroyGUI();
       SetRenderGUI(false);
+      UnloadSkin();
     }
     break;
 #endif
