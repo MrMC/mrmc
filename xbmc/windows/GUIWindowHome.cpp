@@ -729,7 +729,7 @@ void CGUIWindowHome::SetupServices()
   //  if (CServicesManager::GetInstance().HasServices())
   SET_CONTROL_VISIBLE(CONTROL_SERVER_BUTTON);
 
-//  CSingleLock lock(m_critsection);
+  CSingleLock lock(m_critsection);
   m_buttonSections->ClearItems();
   std::string strLabel;
   std::string strThumb;
