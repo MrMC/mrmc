@@ -222,11 +222,13 @@ public class SyncProgramsJobService extends JobService
               if (ytFiles != null)
               {
                 int itag = -1;
+/*
                 if (ytFiles.indexOfKey(22) >= 0) // 720p h264
                   itag = 22;
                 else if (ytFiles.indexOfKey(45) >= 0) // 720p webm
                   itag = 45;
-                else if (ytFiles.indexOfKey(35) >= 0) // 480p h264
+*/
+                if (ytFiles.indexOfKey(35) >= 0) // 480p h264
                   itag = 18;
                 else if (ytFiles.indexOfKey(44) >= 0) // 480p webm
                   itag = 44;
