@@ -1508,6 +1508,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_DEBUG_UPLOAD);
   m_settingsManager->RegisterCallback(&CLog::GetInstance(), settingSet);
 
+#if defined(TARGET_DARWIN_TVOS)
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDENABLED);
   settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDRESTORE);
@@ -1515,6 +1516,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDAUTOBACKUP);
   settingSet.insert(CSettings::SETTING_SERVICES_ICLOUDREMOVE);
   m_settingsManager->RegisterCallback(&CDarwinUtils::GetInstance(), settingSet);
+#endif
 }
 
 bool CSettings::Reset()
