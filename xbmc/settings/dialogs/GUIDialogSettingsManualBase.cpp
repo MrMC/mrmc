@@ -940,9 +940,9 @@ void CGUIDialogSettingsManualBase::setSettingDetails(CSetting *setting, int leve
   if (setting == NULL)
     return;
 
-  if (level < 2)
-    level = SettingLevelStandard;
-  else if (level > 2)
+  if (level < 0)
+    level = SettingLevelBasic;
+  else if (level > SettingLevelExpert)
     level = SettingLevelExpert;
 
   setting->SetLevel(static_cast<SettingLevel>(level));
