@@ -266,7 +266,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   }
   if (item->IsMusicDb() && !item->m_bIsFolder)
     m_musicdatabase.SetPropertiesForFileItem(*item);
-
+    
   return CGUIWindowMusicBase::OnClick(iItem);
 }
 
@@ -291,7 +291,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
 
   // we need to remove cache
   items.RemoveDiscCache(GetID());
-
+  
   bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
@@ -357,7 +357,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   }
   else if (items.IsPlayList())
     items.SetContent("songs");
-  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/") ||
+  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/") || 
            URIUtils::PathEquals(strDirectory, "library://music/playlists.xml/"))
     items.SetContent("playlists");
   else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
@@ -375,7 +375,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     {
       items.Sort(SortByTitle, SortOrderAscending);
       items.Trim(trimSize);
-
+      
       if (preTrimSize > items.Size())
       {
         CLiteUtils::ShowIsLiteDialog(preTrimSize);
@@ -922,19 +922,19 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
     return "musicdb://genres/";
   else if (lower == "artists")
   {
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible  && CServicesManager::GetInstance().UseGlobalServices())
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://music/" + lower + "/";
     return "musicdb://artists/";
   }
   else if (lower == "albums")
   {
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://music/" + lower + "/";
     return "musicdb://albums/";
   }
   else if (lower == "root")
   {
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://music/" + lower + "/";
   }
   // override to only show local sources, ignore Plex/Emby services
@@ -954,7 +954,7 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
     return "musicdb://top100/albums/";
   else if (lower == "recentlyaddedalbums")
   {
-    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible && CServicesManager::GetInstance().UseGlobalServices())
+    if (CServicesManager::GetInstance().HasServices() && !isDynamicHomeCompatible)
       return "services://music/" + lower + "/";
     return "musicdb://recentlyaddedalbums/";
   }

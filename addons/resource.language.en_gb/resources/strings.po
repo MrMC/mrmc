@@ -12056,6 +12056,8 @@ msgctxt "#20184"
 msgid "Emby server (https)"
 msgstr ""
 
+#empty string with id 20184
+
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
 msgstr ""
@@ -12127,21 +12129,8 @@ msgctxt "#20199"
 msgid "Downloading artist information failed"
 msgstr ""
 
-
-#empty strings from id 20200 to 20219
+#empty strings from id 20201 to 20219
 #string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)
-
-msgctxt "#20215"
-msgid "Plex movies"
-msgstr ""
-
-msgctxt "#20216"
-msgid "Plex TV shows"
-msgstr ""
-
-msgctxt "#20217"
-msgid "Plex music"
-msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20220"

@@ -85,7 +85,6 @@ class CServicesManager
 public:
   static CServicesManager &GetInstance();
 
-  bool UseGlobalServices();
   bool HasServices();
   bool HasPlexServices();
   bool HasEmbyServices();
@@ -122,7 +121,7 @@ public:
   XFILE::DIR_CACHE_TYPE GetCacheType(const CURL& url);
   bool GetMediaTotals(MediaServicesMediaCount &totals);
   bool DeleteMediaItem(CFileItem item);
-
+  
   void RegisterMediaServicesHandler(IMediaServicesHandler *mediaServicesHandler);
   void UnregisterSettingsHandler(IMediaServicesHandler *mediaServicesHandler);
 

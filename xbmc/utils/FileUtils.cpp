@@ -154,13 +154,11 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
     return true;
   else if (StringUtils::StartsWithNoCase(realPath, "image://"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "plex://"))
-    return true;
   else
   {
     std::string strPlaylistsPath = CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
     URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
-    if (StringUtils::StartsWithNoCase(realPath, strPlaylistsPath))
+    if (StringUtils::StartsWithNoCase(realPath, strPlaylistsPath)) 
       return true;
   }
   bool isSource;

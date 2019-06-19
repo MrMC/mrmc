@@ -142,7 +142,7 @@ void CGUIWindowHome::OnInitWindow()
 {
   m_triggerRA = true;
   m_updateHS = (Audio | Video);
-  if (!CServicesManager::GetInstance().HasServices() ||  !CServicesManager::GetInstance().UseGlobalServices())
+  if (!CServicesManager::GetInstance().HasServices())
     m_firstRun = false;
 
   SetupServices();

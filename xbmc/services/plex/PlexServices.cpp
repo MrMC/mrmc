@@ -345,8 +345,8 @@ void CPlexServices::InitiateSignIn()
     }
   }
   SetUserSettings();
-
-
+  
+  
   if (startThread || m_useGDMServer)
     Start();
   else
@@ -1044,7 +1044,7 @@ bool CPlexServices::ClientIsLocal(std::string path)
     if (StringUtils::StartsWithNoCase(client->GetUrl(), path))
       return client->IsLocal();
   }
-
+  
   return false;
 }
 
@@ -1107,7 +1107,9 @@ bool CPlexServices::AddClient(CPlexClientPtr foundClient)
   // only add new clients that are present
   if (foundClient->GetPresence())
   {
-    foundClient->ParseSections(PlexSectionParsing::newSection);
+    std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
+    if (uuid == foundClient->GetUuid() || (g_SkinInfo && !g_SkinInfo->IsDynamicHomeCompatible()))
+      foundClient->ParseSections(PlexSectionParsing::newSection);
     m_clients.push_back(foundClient);
     m_hasClients = !m_clients.empty();
     return true;
