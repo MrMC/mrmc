@@ -33,12 +33,12 @@
 #import "utils/StringUtils.h"
 #import "utils/log.h"
 
-#define enableDebugLogging 0
+//#define enableDebugLogging 1
 
 // has to be a global as this object will get
 // destroyed when core settings window pops up.
 static bool gOSDSettingsWasUp = false;
-static double gScrubbedPercentForRestore = -1;
+static double gScrubbedSeekTimeSecondsForRestore = -1;
 
 @interface FocusLayerViewPlayerProgress ()
 @property (strong, nonatomic) NSTimer *pressAutoRepeatTimer;
@@ -95,7 +95,7 @@ static double gScrubbedPercentForRestore = -1;
     self->totalTimeSeconds = -1.0;
     self->seekTimeSeconds = 0.0;
     self->thumbNailer = nullptr;
-    float percentage = 0.0;
+    double percentage = 0.0;
     color_t systemFocusColor = g_colorManager.GetColor("systemfocus");
     if (systemFocusColor == 0)
       self->videoRectColor = [UIColor whiteColor];
@@ -123,11 +123,20 @@ static double gScrubbedPercentForRestore = -1;
     if (gOSDSettingsWasUp)
     {
       gOSDSettingsWasUp = false;
-      if (gScrubbedPercentForRestore > 0)
-        percentage = gScrubbedPercentForRestore;
+      if (gScrubbedSeekTimeSecondsForRestore > 0)
+      {
+        self->seekTimeSeconds = gScrubbedSeekTimeSecondsForRestore;
+        percentage = self->seekTimeSeconds / self->totalTimeSeconds;
+      }
     }
     // set initial slider position and kick off a thumb image gen
-    [self setPercentage:percentage];
+    if (self->thumbNailer)
+      self->thumbNailer->RequestThumbAsScreenCapture(self->seekTimeSeconds);
+
+    // roundf to match CGUIDialogSeekBar position
+    bgnValue = roundf((distance * percentage)) + min;
+    self.value = bgnValue;
+    gScrubbedSeekTimeSecondsForRestore = self->seekTimeSeconds;
     thumbConstant = thumb;
 
     auto pan = [[UIPanGestureRecognizer alloc]
@@ -199,16 +208,14 @@ static double gScrubbedPercentForRestore = -1;
     percentage = 0.0;
   if (percentage > 1.0)
     percentage = 1.0;
-  self.value = (distance * percentage) + min;
+  self.value = (distance * percentage) + min;;
 #if enableDebugLogging
   CLog::Log(LOGDEBUG, "PlayerProgress::set percentage(%f), value(%f)", percentage, self.value);
 #endif
+  self->seekTimeSeconds = percentage * self->totalTimeSeconds;
   if (self->thumbNailer)
-  {
-    self->seekTimeSeconds = percentage * self->totalTimeSeconds;
-    self->thumbNailer->RequestThumbAsPercentage(100.0 * percentage);
-  }
-  gScrubbedPercentForRestore = percentage;
+    self->thumbNailer->RequestThumb(self->seekTimeSeconds);
+  gScrubbedSeekTimeSecondsForRestore = self->seekTimeSeconds;
 }
 
 - (double) getSeekTimePercentage
@@ -317,7 +324,7 @@ static double gScrubbedPercentForRestore = -1;
   }
 
   // always show time text (H:M:S)
-  int imageTimeSeconds = self->seekTimeSeconds;
+  int imageTimeSeconds = self->seekTimeSeconds + 0.5;
   /*
   if (haveThumbImage)
   {

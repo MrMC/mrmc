@@ -18,7 +18,7 @@
  *
  */
 
-#define enableDebugLogging 0
+//#define enableDebugLogging 1
 
 #import "ProgressThumbNailer.h"
 
@@ -42,12 +42,23 @@
 #import "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #import "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
 #import "cores/dvdplayer/DVDClock.h"
+#import "cores/VideoRenderers/RenderManager.h"
+#import "cores/VideoRenderers/RenderCapture.h"
 #import "filesystem/StackDirectory.h"
 #import "platform/darwin/tvos/FocusLayerViewPlayerProgress.h"
 #import "threads/SystemClock.h"
 #import "video/VideoInfoTag.h"
 #import "utils/log.h"
 
+void flip_vertically(unsigned char *dst, unsigned char *src, const size_t height, const size_t stride)
+{
+    unsigned char *low = src;
+    unsigned char *high = dst;
+    high += (height - 1) * stride;
+
+    for (size_t line = 0; line < height; line++, low += stride, high -= stride)
+        memcpy(high, low, stride);
+}
 
 CProgressThumbNailer::CProgressThumbNailer(const CFileItem& item, int width, id obj)
 : CThread("ProgressThumbNailer")
@@ -91,10 +102,103 @@ CProgressThumbNailer::~CProgressThumbNailer()
   SAFE_DELETE(m_inputStream);
 }
 
-void CProgressThumbNailer::RequestThumbAsPercentage(double percentage)
+void CProgressThumbNailer::RequestThumb(double seconds)
 {
-  m_seekQueue.push(percentage);
+  m_seekQueue.push(seconds);
   m_processSleep.Set();
+}
+
+void CProgressThumbNailer::RequestThumbAsScreenCapture(double seconds)
+{
+  if (!g_renderManager.CanRenderCapture())
+  {
+    RequestThumb(seconds);
+    return;
+  }
+
+  float aspectRatio = g_renderManager.GetAspectRatio();
+
+  int width = m_width;
+  int height = (int)(m_width / aspectRatio);
+  if (height > m_width)
+  {
+    height = m_width;
+    width = (int)(m_width * aspectRatio);
+  }
+
+#if enableDebugLogging
+  unsigned int nTime = XbmcThreads::SystemClockMillis();
+#endif
+  ThumbNailerImage thumbNailerImage;
+  CRenderCapture* thumbnail = g_renderManager.AllocRenderCapture();
+  if (thumbnail)
+  {
+    g_renderManager.Capture(thumbnail, width, height, CAPTUREFLAG_IMMEDIATELY);
+
+    thumbnail->GetEvent().WaitMSec(1000);
+    if (thumbnail->GetUserState() == CAPTURESTATE_DONE)
+    {
+      // XOR Swap BGRA -> RGBA
+      unsigned char* pixels = (unsigned char*)thumbnail->GetPixels();
+      for (unsigned int i = 0; i < thumbnail->GetWidth() * thumbnail->GetHeight(); i++, pixels+=4)
+        std::swap(pixels[0], pixels[2]);
+
+      int scaledLineSize = width * 4;
+      uint8_t *scaledData = (uint8_t*)malloc(scaledLineSize * height);
+      flip_vertically(scaledData, thumbnail->GetPixels(), height, scaledLineSize);
+      //memcpy(scaledData, thumbnail->GetPixels(), height * scaledLineSize);
+
+      CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
+      CFDataRef data = CFDataCreate(kCFAllocatorDefault, scaledData, scaledLineSize * height);
+      CGDataProviderRef provider = CGDataProviderCreateWithCFData(data);
+      CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+      CGImageRef cgImageRef = CGImageCreate(width,
+                         height,
+                         8,
+                         32,
+                         scaledLineSize,
+                         colorSpace,
+                         bitmapInfo,
+                         provider,
+                         NULL,
+                         NO,
+                         kCGRenderingIntentDefault);
+      CGColorSpaceRelease(colorSpace);
+      CGDataProviderRelease(provider);
+      CFRelease(data);
+
+      if (cgImageRef)
+      {
+        if (seconds < m_totalTimeMilliSeconds)
+          m_seekTimeMilliSeconds = seconds * 1000.0;
+        else
+          m_seekTimeMilliSeconds = m_totalTimeMilliSeconds;
+#if enableDebugLogging
+        CLog::Log(LOGDEBUG, "RequestThumbAsScreenCapture - requested(%d)", m_seekTimeMilliSeconds);
+#endif
+        thumbNailerImage.time = m_seekTimeMilliSeconds;
+        thumbNailerImage.image = cgImageRef;
+        CSingleLock lock(m_thumbImagesCritical);
+        m_thumbImages.push(thumbNailerImage);
+        lock.Leave();
+        if ([m_obj isKindOfClass:[FocusLayerViewPlayerProgress class]] )
+        {
+          FocusLayerViewPlayerProgress *viewPlayerProgress = (FocusLayerViewPlayerProgress*)m_obj;
+          [viewPlayerProgress updateViewMainThread];
+        }
+      }
+
+      free(scaledData);
+    }
+    else
+      CLog::Log(LOGERROR,"RequestThumbAsScreenCapture: failed to create thumbnail");
+
+    g_renderManager.ReleaseRenderCapture(thumbnail);
+  }
+#if enableDebugLogging
+  unsigned int nTotalTime = XbmcThreads::SystemClockMillis() - nTime;
+  CLog::Log(LOGDEBUG,"%s - measured %u ms to capture thumb at %d.", __FUNCTION__, nTotalTime, thumbNailerImage.time);
+#endif
 }
 
 ThumbNailerImage CProgressThumbNailer::GetThumb()
@@ -207,14 +311,14 @@ void CProgressThumbNailer::Process()
     if (!m_seekQueue.empty())
     {
       CSingleLock lock(m_seekQueueCritical);
-      double percent = m_seekQueue.back();
+      double seconds = m_seekQueue.back();
       // grab last submitted seek percent
       while (!m_seekQueue.empty())
         m_seekQueue.pop();
       lock.Leave();
 
-      if (percent < 100.0)
-        m_seekTimeMilliSeconds = 0.5 + (percent * m_totalTimeMilliSeconds) / 100;
+      if (seconds < m_totalTimeMilliSeconds)
+        m_seekTimeMilliSeconds = seconds * 1000.0;
       else
         m_seekTimeMilliSeconds = m_totalTimeMilliSeconds;
 #if enableDebugLogging

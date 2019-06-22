@@ -35,6 +35,7 @@ class CProgressThumbNailer;
   double thumb;
   double thumbConstant;
   double distance;
+  double bgnValue;
   CGFloat decelerationRate;
   CGFloat deceleratingVelocity;
   CGFloat decelerationMaxVelocity;

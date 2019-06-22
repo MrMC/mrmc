@@ -45,7 +45,8 @@ public:
  ~CProgressThumbNailer();
 
   bool IsInitialized() { return m_videoCodec != nullptr; };
-  void RequestThumbAsPercentage(double percentage);
+  void RequestThumb(double seconds);
+  void RequestThumbAsScreenCapture(double seconds);
   ThumbNailerImage GetThumb();
 
 private:
