@@ -1299,6 +1299,15 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
             return NULL;
         }
 #endif
+        // missing in ffmpeg for DolbyVison (dvhe)
+        if (pStream->codec->codec_id == AV_CODEC_ID_NONE)
+        {
+          if (pStream->codec->codec_tag == MKTAG('d','v','h','e'))
+          {
+            pStream->codec->codec_id = AV_CODEC_ID_HEVC;
+            CLog::Log(LOGERROR, "%s - dvhe, detected forcing AV_CODEC_ID_HEVC", __FUNCTION__);
+          }
+        }
         // overlap in ffmpeg of DV Video and DolbyVison (dvh1)
         // hack force it to AV_CODEC_ID_HEVC, should fix ffmpeg.
         if (pStream->codec->codec_id == AV_CODEC_ID_DVVIDEO)
