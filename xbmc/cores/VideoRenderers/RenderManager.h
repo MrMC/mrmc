@@ -42,9 +42,6 @@ struct DVDVideoPicture;
 
 #define ERRORBUFFSIZE 30
 
-class CWinRenderer;
-class CMMALRenderer;
-class CLinuxRenderer;
 class CLinuxRendererGL;
 class CLinuxRendererGLES;
 class CXBMCRenderManager;
@@ -75,6 +72,7 @@ public:
   bool IsVideoLayer();
   void SetupScreenshot();
 
+  bool CanRenderCapture();
   CRenderCapture* AllocRenderCapture();
   void ReleaseRenderCapture(CRenderCapture* capture);
   void Capture(CRenderCapture *capture, unsigned int width, unsigned int height, int flags);
@@ -160,13 +158,9 @@ public:
   void UpdateResolution();
 
 #ifdef HAS_GL
-  CLinuxRendererGL    *m_pRenderer;
-#elif defined(HAS_MMAL)
-  CMMALRenderer       *m_pRenderer;
+  CLinuxRendererGL *m_pRenderer;
 #elif HAS_GLES >= 2
-  CLinuxRendererGLES  *m_pRenderer;
-#elif defined(HAS_SDL)
-  CLinuxRenderer      *m_pRenderer;
+  CLinuxRendererGLES *m_pRenderer;
 #endif
 
   // Get renderer info, can be called before configure
@@ -216,8 +210,6 @@ protected:
   bool m_bReconfigured;
   bool m_bRenderGUI;
   int m_waitForBufferCount;
-
-  int m_rendermethod;
 
   enum EPRESENTSTEP
   {

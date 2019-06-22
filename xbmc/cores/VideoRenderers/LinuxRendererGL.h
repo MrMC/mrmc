@@ -120,6 +120,7 @@ public:
   virtual void Update();
   virtual void SetupScreenshot() {};
 
+  bool CanRenderCapture();
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions

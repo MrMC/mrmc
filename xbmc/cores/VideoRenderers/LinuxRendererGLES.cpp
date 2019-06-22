@@ -1862,6 +1862,12 @@ void CLinuxRendererGLES::AfterRenderHook(int index)
 #endif
 }
 
+bool CLinuxRendererGLES::CanRenderCapture()
+{
+  bool IsByPass = m_renderMethod & RENDER_BYPASS || m_renderMethod & RENDER_MEDIACODECSURFACE;
+  return !IsByPass;
+}
+
 bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 {
   if (!m_bValidated)

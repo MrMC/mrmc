@@ -106,7 +106,6 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_bIsStarted = false;
 
   m_presentstep = PRESENT_IDLE;
-  m_rendermethod = 0;
   m_presentsource = 0;
   m_bReconfigured = false;
   m_hasCaptures = false;
@@ -526,6 +525,15 @@ void CXBMCRenderManager::SetupScreenshot()
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->SetupScreenshot();
+}
+
+bool CXBMCRenderManager::CanRenderCapture()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->CanRenderCapture();
+
+  return false;
 }
 
 CRenderCapture* CXBMCRenderManager::AllocRenderCapture()
