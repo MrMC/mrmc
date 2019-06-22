@@ -259,7 +259,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     colorprimaries = stream->iColorPrimaries;
     pid = stream->iPhysicalId;
     stereo_mode = stream->stereo_mode;
-    maybe_interlaced = stream->bMaybeInterlaced;
+    maybe_interlaced = stream->bMaybeInterlaced > 0? 1:0;
   }
   else if(  right.type == STREAM_SUBTITLE )
   {
