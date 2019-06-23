@@ -25,25 +25,13 @@
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
+#include "platform/darwin/DarwinVideoUtils.h"
 #include <CoreVideo/CoreVideo.h>
 #include <CoreMedia/CoreMedia.h>
 #include <VideoToolBox/VideoToolBox.h>
 
-class DllVideoToolBox;
 class CBitstreamConverter;
 struct VTDumpDecompressionPropCtx;
-
-typedef struct VTBParameterSets {
-  size_t sps_count = 0;
-  size_t *sps_sizes = nullptr;
-  uint8_t **sps_array = nullptr;
-  size_t pps_count = 0;
-  size_t *pps_sizes = nullptr;
-  uint8_t **pps_array = nullptr;
-  size_t vps_count = 0;
-  size_t *vps_sizes = nullptr;
-  uint8_t **vps_array = nullptr;
-} VTBParameterSets;
 
 // tracks a frame in and output queue in display order
 typedef struct frame_queue {
@@ -77,10 +65,9 @@ public:
 
 protected:
   void DisplayQueuePop();
-  bool CreateParameterSetArraysFromExtraData();
   bool CreateFormatDescriptorFromParameterSetArrays();
   void ValidateVTSessionParameterSetsForRestart(uint8_t *pData, int iSize);
-  bool ResetVTSession(VTBParameterSets &parameterSets);
+  bool ResetVTSession(VideoParameterSets &parameterSets);
   bool CreateVTSessionAndInitPictureFrame();
   void DestroyVTSession();
   static void VTDecoderCallback(
@@ -107,7 +94,7 @@ protected:
   int               m_lastKeyframe;
   bool              m_sessionRestart;
   double            m_sessionRestartPTS;
-  VTBParameterSets  m_parameterSets;
+  VideoParameterSets m_parameterSets;
   bool              m_enable_temporal_processing;
   bool              m_hev1Format = false;
 };

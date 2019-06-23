@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2015 Team MrMC
+ *      Copyright (C) 2015-2019 Team MrMC
  *      https://github.com/MrMC
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -28,6 +28,7 @@
 
 #include "cores/VideoRenderers/RenderFeatures.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "platform/darwin/DarwinVideoUtils.h"
 #include "threads/Thread.h"
 
 #ifdef __OBJC__
@@ -58,7 +59,7 @@ public:
   virtual void  SetSpeed(int iSpeed);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   virtual unsigned GetAllowedReferences();
-  virtual void SetCodecControl(int flags);
+  virtual void  SetCodecControl(int flags);
 
 protected:
   virtual void  Process();
@@ -72,11 +73,13 @@ protected:
   void          UpdateFrameRateTracking(double ts);
   void          GetRenderFeatures(Features &renderFeatures);
   static void   RenderFeaturesCallBack(const void *ctx, Features &renderFeatures);
-  void          ProbeNALUnits(uint8_t *pData, int iSize);
 
   VideoLayerView         *m_decoder;        // opaque decoder reference
 	dispatch_queue_t        m_providerQueue;
-  CMFormatDescriptionRef  m_fmt_desc;
+  CMFormatDescriptionRef  m_fmt_desc = nullptr;
+  VideoParameterSets      m_parameterSets;
+  bool                    m_hev1Format = false;
+
   pthread_mutex_t         m_sampleBuffersMutex;    // mutex protecting queue manipulation
   std::queue<CMSampleBufferRef> m_sampleBuffers;
 

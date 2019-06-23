@@ -33,17 +33,6 @@ extern "C" {
 #include "libavformat/avformat.h"
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 110000 || __TV_OS_VERSION_MAX_ALLOWED < 110000
-extern OSStatus CMVideoFormatDescriptionCreateFromHEVCParameterSets(CFAllocatorRef allocator, size_t parameterSetCount, const uint8_t *const  _Nonnull *parameterSetPointers, const size_t *parameterSetSizes, int NALUnitHeaderLength, CFDictionaryRef extensions, CMFormatDescriptionRef  _Nullable *formatDescriptionOut) __attribute__((weak_import));
-#endif
-
-
-const uint8_t AVC_NAL_SPS = 7;
-const uint8_t AVC_NAL_PPS = 8;
-const uint8_t HEVC_NAL_VPS = 32;
-const uint8_t HEVC_NAL_SPS = 33;
-const uint8_t HEVC_NAL_PPS = 34;
-
 #if !defined(TARGET_DARWIN_OSX)
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
@@ -58,39 +47,6 @@ static int CheckNP2( unsigned x )
     return ++x;
 }
 #endif
-
-static void FreeParameterSets(VTBParameterSets &parameterSets)
-{
-  // free old saved sps's
-  if (parameterSets.sps_count)
-  {
-    for (size_t i = 0; i < parameterSets.sps_count; i++)
-      free(parameterSets.sps_array[i]), parameterSets.sps_array[i] = nullptr;
-    free(parameterSets.sps_array), parameterSets.sps_array = nullptr;
-    free(parameterSets.sps_sizes), parameterSets.sps_sizes = nullptr;
-    parameterSets.sps_count = 0;
-  }
-
-  // free old saved pps's
-  if (parameterSets.pps_count)
-  {
-    for (size_t i = 0; i < parameterSets.pps_count; i++)
-      free(parameterSets.pps_array[i]), parameterSets.pps_array[i] = nullptr;
-    free(parameterSets.pps_array), parameterSets.pps_array = nullptr;
-    free(parameterSets.pps_sizes), parameterSets.pps_sizes = nullptr;
-    parameterSets.pps_count = 0;
-  }
-
-  // free old saved vps's
-  if (parameterSets.vps_count)
-  {
-    for (size_t i = 0; i < parameterSets.vps_count; i++)
-      free(parameterSets.vps_array[i]), parameterSets.vps_array[i] = nullptr;
-    free(parameterSets.vps_array), parameterSets.vps_array = nullptr;
-    free(parameterSets.vps_sizes), parameterSets.vps_sizes = nullptr;
-    parameterSets.vps_count = 0;
-  }
-}
 
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
@@ -337,10 +293,11 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
-    FreeParameterSets(m_parameterSets);
+    CDarwinVideoUtils::FreeParameterSets(m_parameterSets);
     if (!m_hev1Format)
     {
-      if (!CreateParameterSetArraysFromExtraData())
+      if (!CDarwinVideoUtils::CreateParameterSetArraysFromExtraData(
+           m_parameterSets, m_hints.codec, m_bitstream->GetExtraData()))
       {
         Dispose();
         return false;
@@ -367,7 +324,6 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_max_ref_frames = m_max_ref_frames > 16 ? 16 : m_max_ref_frames;
 
     CLog::Log(LOGDEBUG,"VideoToolBox: opened width(%d), height(%d)", m_hints.width, m_hints.height);
-
     return true;
   }
 
@@ -380,7 +336,7 @@ void CDVDVideoCodecVideoToolBox::Dispose()
   if (m_fmt_desc)
     CFRelease(m_fmt_desc), m_fmt_desc = nullptr;
   SAFE_DELETE(m_bitstream);
-  FreeParameterSets(m_parameterSets);
+  CDarwinVideoUtils::FreeParameterSets(m_parameterSets);
 
   if (m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
   {
@@ -650,193 +606,20 @@ void CDVDVideoCodecVideoToolBox::DisplayQueuePop(void)
   free(top_frame);
 }
 
-bool
-CDVDVideoCodecVideoToolBox::CreateParameterSetArraysFromExtraData()
+bool CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
 {
-  bool rtn = false;
-  switch (m_hints.codec)
-  {
-    default:
-    break;
-    case AV_CODEC_ID_H264:
-    {
-      uint8_t *ps_ptr = m_bitstream->GetExtraData();
-      ps_ptr += 5; // skip over fixed length header
-      size_t numberOfSPSs = 0x001F & *ps_ptr++; // sps count is lower five bits;
+  m_fmt_desc = CDarwinVideoUtils::CreateFormatDescriptorFromParameterSetArrays(
+    m_parameterSets, m_hints.codec);
+  if (m_fmt_desc == nullptr)
+    return false;
 
-      // handle sps's
-      m_parameterSets.sps_count = numberOfSPSs;
-      m_parameterSets.sps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfSPSs);
-      m_parameterSets.sps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfSPSs);
-      for (size_t i = 0; i < numberOfSPSs; i++)
-      {
-        uint32_t ps_size = BS_RB16(ps_ptr);
-        ps_ptr += 2;
-        m_parameterSets.sps_sizes[i] = ps_size;
-        m_parameterSets.sps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
-        memcpy(m_parameterSets.sps_array[i], ps_ptr, ps_size);
-        ps_ptr += ps_size;
-      }
+  const Boolean useCleanAperture = true;
+  const Boolean usePixelAspectRatio = false;
+  auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
 
-      // handle pps's
-      size_t numberOfPPSs = *ps_ptr++;
-      m_parameterSets.pps_count = numberOfPPSs;
-      m_parameterSets.pps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfPPSs);
-      m_parameterSets.pps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfPPSs);
-      for (size_t i = 0; i < numberOfPPSs; i++)
-      {
-        uint32_t ps_size = BS_RB16(ps_ptr);
-        ps_ptr += 2;
-        m_parameterSets.pps_sizes[i] = ps_size;
-        m_parameterSets.pps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
-        memcpy(m_parameterSets.pps_array[i], ps_ptr, ps_size);
-        ps_ptr += ps_size;
-      }
-      // h264 only requires sps
-      if (m_parameterSets.sps_count >= 1)
-        rtn = true;
-    }
-    break;
-    case AV_CODEC_ID_HEVC:
-    {
-      uint8_t *ps_ptr = m_bitstream->GetExtraData();
-      ps_ptr += 22; // skip over fixed length header
-
-      // number of arrays
-      size_t numberOfParameterSetArrays = *ps_ptr++;
-      for (size_t i = 0; i < numberOfParameterSetArrays; i++)
-      {
-        // bit(1) array_completeness;
-        // bit(1) reserved = 0;
-        // bit(6) NAL_unit_type;
-        int nal_type = 0x3F & *ps_ptr++;
-        size_t numberOfParameterSets = BS_RB16(ps_ptr);
-        ps_ptr += 2;
-        switch(nal_type)
-        {
-          case HEVC_NAL_SPS:
-            m_parameterSets.sps_count = numberOfParameterSets;
-            m_parameterSets.sps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfParameterSets);
-            m_parameterSets.sps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfParameterSets);
-            break;
-          case HEVC_NAL_PPS:
-            m_parameterSets.pps_count = numberOfParameterSets;
-            m_parameterSets.pps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfParameterSets);
-            m_parameterSets.pps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfParameterSets);
-            break;
-          case HEVC_NAL_VPS:
-            m_parameterSets.vps_count = numberOfParameterSets;
-            m_parameterSets.vps_sizes = (size_t*)malloc(sizeof(size_t*) * numberOfParameterSets);
-            m_parameterSets.vps_array = (uint8_t**)malloc(sizeof(uint8_t*) * numberOfParameterSets);
-            break;
-        }
-        for (size_t i = 0; i < numberOfParameterSets; i++)
-        {
-          uint32_t ps_size = BS_RB16(ps_ptr);
-          ps_ptr += 2;
-          switch(nal_type)
-          {
-            case HEVC_NAL_SPS:
-              m_parameterSets.sps_sizes[i] = ps_size;
-              m_parameterSets.sps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
-              memcpy(m_parameterSets.sps_array[i], ps_ptr, ps_size);
-              break;
-            case HEVC_NAL_PPS:
-              m_parameterSets.pps_sizes[i] = ps_size;
-              m_parameterSets.pps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
-              memcpy(m_parameterSets.pps_array[i], ps_ptr, ps_size);
-              break;
-            case HEVC_NAL_VPS:
-              m_parameterSets.vps_sizes[i] = ps_size;
-              m_parameterSets.vps_array[i] = (uint8_t*)malloc(sizeof(uint8_t) * ps_size);
-              memcpy(m_parameterSets.vps_array[i], ps_ptr, ps_size);
-              break;
-          }
-          ps_ptr += ps_size;
-        }
-      }
-      // h265 requires at least one sps, pps and vps
-      if (m_parameterSets.sps_count >= 1 &&
-          m_parameterSets.pps_count >= 1 &&
-          m_parameterSets.vps_count >= 1)
-        rtn = true;
-    }
-    break;
-  }
-
-  return rtn;
-}
-
-bool
-CDVDVideoCodecVideoToolBox::CreateFormatDescriptorFromParameterSetArrays()
-{
-  bool rtn = false;
-  int arraySize = m_parameterSets.sps_count + m_parameterSets.pps_count + m_parameterSets.vps_count;
-  if (arraySize < 1)
-    return rtn;
-
-  size_t parameterSetSizes[arraySize];
-  uint8_t *parameterSetPointers[arraySize];
-
-  size_t parameterSetCount = 0;
-  for (size_t i = 0; i < m_parameterSets.sps_count; i++)
-  {
-    parameterSetSizes[parameterSetCount] = m_parameterSets.sps_sizes[i];
-    parameterSetPointers[parameterSetCount++] = m_parameterSets.sps_array[i];
-  }
-  for (size_t i = 0; i < m_parameterSets.pps_count; i++)
-  {
-    parameterSetSizes[parameterSetCount] = m_parameterSets.pps_sizes[i];
-    parameterSetPointers[parameterSetCount++] = m_parameterSets.pps_array[i];
-  }
-  for (size_t i = 0; i < m_parameterSets.vps_count; i++)
-  {
-    parameterSetSizes[parameterSetCount] = m_parameterSets.vps_sizes[i];
-    parameterSetPointers[parameterSetCount++] = m_parameterSets.vps_array[i];
-  }
-
-  OSStatus status = -1;
-  int nalUnitHeaderLength = 4;
-  switch (m_hints.codec)
-  {
-    default:
-    break;
-    case AV_CODEC_ID_H264:
-    {
-      CLog::Log(LOGNOTICE, "Constructing new format description");
-      status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
-        parameterSetCount, parameterSetPointers, parameterSetSizes, nalUnitHeaderLength, &m_fmt_desc);
-      if (status != noErr)
-        CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromH264ParameterSets failed status(%d)", __FUNCTION__, status);
-    }
-    break;
-    case AV_CODEC_ID_HEVC:
-    {
-      CLog::Log(LOGNOTICE, "Constructing new format description");
-      // check availability at runtime
-      if (__builtin_available(macOS 10.13, ios 11, tvos 11, *))
-      {
-        status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(kCFAllocatorDefault,
-          parameterSetCount, parameterSetPointers, parameterSetSizes, nalUnitHeaderLength, nullptr, &m_fmt_desc);
-      }
-      if (status != noErr)
-        CLog::Log(LOGERROR, "%s - CMVideoFormatDescriptionCreateFromHEVCParameterSets failed status(%d)", __FUNCTION__, status);
-    }
-    break;
-  }
-
-  if (status == noErr && m_fmt_desc != nullptr)
-  {
-    const Boolean useCleanAperture = true;
-    const Boolean usePixelAspectRatio = false;
-    auto videoSize = CMVideoFormatDescriptionGetPresentationDimensions(m_fmt_desc, usePixelAspectRatio, useCleanAperture);
-
-    m_hints.width = videoSize.width;
-    m_hints.height = videoSize.height;
-    rtn = true;
-  }
-
-  return rtn;
+  m_hints.width = videoSize.width;
+  m_hints.height = videoSize.height;
+  return true;
 }
 
 void
@@ -849,194 +632,61 @@ CDVDVideoCodecVideoToolBox::ValidateVTSessionParameterSetsForRestart(uint8_t *pD
   if (!m_hev1Format && m_hints.codec == AV_CODEC_ID_HEVC)
     return;
 
-  static uint64_t frameCount = 0;
+  VideoParameterSets parameterSets;
+  if (!CDarwinVideoUtils::ParsePacketForVideoParameterSets(parameterSets, m_hints.codec, pData, iSize))
+      return;
 
-  size_t spsCount = 0;
-  size_t ppsCount = 0;
-  size_t vpsCount = 0;
-
-  // pData is in bit stream format, 32 size (big endian), followed by NAL
-  uint8_t *data = pData;
-  uint8_t *dataEnd = data + iSize;
-  // do a quick search for parameter sets in this frame
-  while (data < dataEnd)
+  bool wasReset = false;
+  // quick test of parameter set count
+  if (parameterSets.sps_count != m_parameterSets.sps_count ||
+      parameterSets.pps_count != m_parameterSets.pps_count ||
+      parameterSets.vps_count != m_parameterSets.vps_count)
   {
-    int nal_size = BS_RB32(data);
-    data += 4;
-    if (m_hints.codec == AV_CODEC_ID_H264)
-    {
-      int nal_type = data[0] & 0x1f;
-      switch(nal_type)
-      {
-        case AVC_NAL_SPS:
-          spsCount++;
-          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found sps of size(%d)", __FUNCTION__, frameCount, nal_size);
-        break;
-        case AVC_NAL_PPS:
-          ppsCount++;
-          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found pps of size(%d)", __FUNCTION__, frameCount, nal_size);
-        break;
-      }
-    }
-    else if (m_hints.codec == AV_CODEC_ID_HEVC)
-    {
-      int nal_type = (data[0] >> 1) & 0x3f;
-      switch(nal_type)
-      {
-        case HEVC_NAL_SPS:
-          spsCount++;
-          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found sps of size(%d)", __FUNCTION__, frameCount, nal_size);
-        break;
-        case HEVC_NAL_PPS:
-          ppsCount++;
-          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found pps of size(%d)", __FUNCTION__, frameCount, nal_size);
-        break;
-        case HEVC_NAL_VPS:
-          vpsCount++;
-          //CLog::Log(LOGDEBUG, "%s - frame(%llu), found vps of size(%d)", __FUNCTION__, frameCount, nal_size);
-        break;
-      }
-    }
-    data += nal_size;
+    ResetVTSession(parameterSets);
+    wasReset = true;
   }
-  frameCount++;
-
-  if (ppsCount > 0 && spsCount < 1)
+  else
   {
-    // if no sps is found, skip vtb restart checks
-    // pps can change per picture so ignore those.
-    return;
-  }
-
-  // found some parameter sets, now we can compare them to the original parameter sets
-  if (spsCount && ppsCount)
-  {
-    VTBParameterSets parameterSets;
-    int spsIndex = 0;
-    if (spsCount)
+    for (size_t i = 0; i < parameterSets.sps_count; i++)
     {
-      parameterSets.sps_count = spsCount;
-      parameterSets.sps_sizes = (size_t*)malloc(sizeof(size_t*) * spsCount);
-      parameterSets.sps_array = (uint8_t**)malloc(sizeof(uint8_t*) * spsCount);
-    }
-
-    int ppsIndex = 0;
-    if (ppsCount)
-    {
-      parameterSets.pps_count = ppsCount;
-      parameterSets.pps_sizes = (size_t*)malloc(sizeof(size_t*) * ppsCount);
-      parameterSets.pps_array = (uint8_t**)malloc(sizeof(uint8_t*) * ppsCount);
-    }
-
-    int vpsIndex = 0;
-    if (vpsCount)
-    {
-      parameterSets.vps_count = vpsCount;
-      parameterSets.vps_sizes = (size_t*)malloc(sizeof(size_t*) * vpsCount);
-      parameterSets.vps_array = (uint8_t**)malloc(sizeof(uint8_t*) * vpsCount);
-    }
-    data = pData;
-    while (data < dataEnd)
-    {
-      int nal_size = BS_RB32(data);
-      data += 4;
-      if (m_hints.codec == AV_CODEC_ID_H264)
+      if (parameterSets.sps_sizes[i] != m_parameterSets.sps_sizes[i])
       {
-        int nal_type = data[0] & 0x1f;
-        switch(nal_type)
+        //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
         {
-          case AVC_NAL_SPS:
-            parameterSets.sps_sizes[spsIndex] = nal_size;
-            parameterSets.sps_array[spsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
-            memcpy(parameterSets.sps_array[spsIndex], data, nal_size);
-            spsIndex++;
-            break;
-          case AVC_NAL_PPS:
-            parameterSets.pps_sizes[ppsIndex] = nal_size;
-            parameterSets.pps_array[ppsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
-            memcpy(parameterSets.pps_array[ppsIndex], data, nal_size);
-            ppsIndex++;
-            break;
+          CLog::Log(LOGDEBUG, "%s - sps changed size(%zu), orignal size(%zu)", __FUNCTION__, parameterSets.sps_sizes[i], m_parameterSets.sps_sizes[i]);
         }
+        ResetVTSession(parameterSets);
+        wasReset = true;
+        break;
       }
-      else if (m_hints.codec == AV_CODEC_ID_HEVC)
+      if (memcmp(parameterSets.sps_array[i], m_parameterSets.sps_array[i], parameterSets.sps_sizes[i]) != 0)
       {
-        int nal_type = (data[0] >> 1) & 0x3f;
-        switch(nal_type)
+        // some parameter size changed, recreate the vtsession
+        //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
         {
-          case HEVC_NAL_SPS:
-            parameterSets.sps_sizes[spsIndex] = nal_size;
-            parameterSets.sps_array[spsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
-            memcpy(parameterSets.sps_array[spsIndex], data, nal_size);
-            spsIndex++;
-            break;
-          case HEVC_NAL_PPS:
-            parameterSets.pps_sizes[ppsIndex] = nal_size;
-            parameterSets.pps_array[ppsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
-            memcpy(parameterSets.pps_array[ppsIndex], data, nal_size);
-            ppsIndex++;
-            break;
-          case HEVC_NAL_VPS:
-            parameterSets.vps_sizes[vpsIndex] = nal_size;
-            parameterSets.vps_array[vpsIndex] = (uint8_t*)malloc(sizeof(uint8_t) * nal_size);
-            memcpy(parameterSets.vps_array[vpsIndex], data, nal_size);
-            vpsIndex++;
-            break;
+          CLog::Log(LOGDEBUG, "%s - sps of size(%zu) contents differ", __FUNCTION__, parameterSets.sps_sizes[i]);
+          CLog::MemDump((char*)parameterSets.sps_array[i], parameterSets.sps_sizes[i]);
+          CLog::MemDump((char*)m_parameterSets.sps_array[i], m_parameterSets.sps_sizes[i]);
         }
-      }
-      data += nal_size;
-    }
-
-    bool wasReset = false;
-    // quick test of parameter set count
-    if (parameterSets.sps_count != m_parameterSets.sps_count ||
-        parameterSets.pps_count != m_parameterSets.pps_count ||
-        parameterSets.vps_count != m_parameterSets.vps_count)
-    {
-      ResetVTSession(parameterSets);
-      wasReset = true;
-    }
-    else
-    {
-      for (size_t i = 0; i < spsCount; i++)
-      {
-        if (parameterSets.sps_sizes[i] != m_parameterSets.sps_sizes[i])
-        {
-          //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-          {
-            CLog::Log(LOGDEBUG, "%s - sps changed size(%zu), orignal size(%zu)", __FUNCTION__, parameterSets.sps_sizes[i], m_parameterSets.sps_sizes[i]);
-          }
-          ResetVTSession(parameterSets);
-          wasReset = true;
-          break;
-        }
-        if (memcmp(parameterSets.sps_array[i], m_parameterSets.sps_array[i], parameterSets.sps_sizes[i]) != 0)
-        {
-          // some parameter size changed, recreate the vtsession
-          //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-          {
-            CLog::Log(LOGDEBUG, "%s - sps of size(%zu) contents differ", __FUNCTION__, parameterSets.sps_sizes[i]);
-            CLog::MemDump((char*)parameterSets.sps_array[i], parameterSets.sps_sizes[i]);
-            CLog::MemDump((char*)m_parameterSets.sps_array[i], m_parameterSets.sps_sizes[i]);
-          }
-          ResetVTSession(parameterSets);
-          wasReset = true;
-          break;
-        }
+        ResetVTSession(parameterSets);
+        wasReset = true;
+        break;
       }
     }
-    if (!wasReset)
-      FreeParameterSets(parameterSets);
+
+  if (!wasReset)
+    CDarwinVideoUtils::FreeParameterSets(parameterSets);
   }
 }
 
 bool
-CDVDVideoCodecVideoToolBox::ResetVTSession(VTBParameterSets &parameterSets)
+CDVDVideoCodecVideoToolBox::ResetVTSession(VideoParameterSets &parameterSets)
 {
-  FreeParameterSets(m_parameterSets);
-  m_parameterSets = parameterSets;
+  CDarwinVideoUtils::FreeParameterSets(m_parameterSets);
   if (m_fmt_desc)
     CFRelease(m_fmt_desc), m_fmt_desc = nullptr;
+
+  m_parameterSets = parameterSets;
   if (!CreateFormatDescriptorFromParameterSetArrays())
     return false;
 
