@@ -1843,6 +1843,11 @@ void CDVDPlayer::HandlePlaySpeed()
     else if (video && audio)
     {
       double clock = 0;
+      // default to video starttime (in case of no audio stream)
+      // fixes seeks in video with no audio.
+      if (m_CurrentVideo.id >= 0 && m_CurrentVideo.starttime != DVD_NOPTS_VALUE)
+        clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
+
       if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
         CLog::Log(LOGDEBUG, "CDVDPlayer::Sync - Audio - pts: %f, cache: %f, totalcache: %f",
                              m_CurrentAudio.starttime, m_CurrentAudio.cachetime, m_CurrentAudio.cachetotal);
@@ -2800,6 +2805,8 @@ void CDVDPlayer::HandleMessages()
           m_CurrentVideo.cachetime = msg.cachetime;
           m_CurrentVideo.cachetotal = msg.cachetotal;
           m_CurrentVideo.starttime = msg.timestamp;
+          if (m_CurrentVideo.starttime == DVD_NOPTS_VALUE)
+            m_CurrentVideo.starttime = m_CurrentVideo.startpts;
         }
         std::string player_str;
         switch(msg.player)
