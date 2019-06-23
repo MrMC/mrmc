@@ -2347,6 +2347,9 @@
 		F5B725361C7E150C006432AE /* volume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724891C7E150C006432AE /* volume.cpp */; };
 		F5B725371C7E150C006432AE /* volume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724891C7E150C006432AE /* volume.cpp */; };
 		F5B725381C7E150C006432AE /* volume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B724891C7E150C006432AE /* volume.cpp */; };
+		F5B72DE522BEB45900298852 /* DarwinVideoUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B72DE422BEB45900298852 /* DarwinVideoUtils.mm */; };
+		F5B72DE622BEB45900298852 /* DarwinVideoUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B72DE422BEB45900298852 /* DarwinVideoUtils.mm */; };
+		F5B72DE722BEB45900298852 /* DarwinVideoUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B72DE422BEB45900298852 /* DarwinVideoUtils.mm */; };
 		F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
@@ -6051,6 +6054,8 @@
 		F5B724881C7E150C006432AE /* version.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = version.hpp; sourceTree = "<group>"; };
 		F5B724891C7E150C006432AE /* volume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = volume.cpp; sourceTree = "<group>"; };
 		F5B7248A1C7E150C006432AE /* volume.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = volume.hpp; sourceTree = "<group>"; };
+		F5B72DE322BEB45800298852 /* DarwinVideoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinVideoUtils.h; sourceTree = "<group>"; };
+		F5B72DE422BEB45900298852 /* DarwinVideoUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinVideoUtils.mm; sourceTree = "<group>"; };
 		F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CryptThreading.cpp; sourceTree = "<group>"; };
 		F5BD02F5148D3A7E001B5583 /* CryptThreading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptThreading.h; sourceTree = "<group>"; };
 		F5BDB80A120202F400F0B710 /* DVDSubtitleTagSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagSami.h; sourceTree = "<group>"; };
@@ -9986,6 +9991,8 @@
 				F590452C1BA372A600DB589A /* DarwinUtils.mm */,
 				F5D13EBA1BAA17890075A95C /* DictionaryUtils.h */,
 				F5D13EB91BAA17890075A95C /* DictionaryUtils.mm */,
+				F5B72DE322BEB45800298852 /* DarwinVideoUtils.h */,
+				F5B72DE422BEB45900298852 /* DarwinVideoUtils.mm */,
 				F50F8E831EE578AB00C8F93B /* FocusEngineHandler.h */,
 				F50F8E821EE578AB00C8F93B /* FocusEngineHandler.cpp */,
 				F5B722001C52962F006432AE /* NSData+GZIP.h */,
@@ -11894,6 +11901,7 @@
 				F5D8A1D5208BA29A004DCC1B /* SMB2Directory.cpp in Sources */,
 				F51D16EE1E29950600A03C93 /* libdvd.c in Sources */,
 				C84828D6156CFCD8005A996F /* PVRManager.cpp in Sources */,
+				F5B72DE522BEB45900298852 /* DarwinVideoUtils.mm in Sources */,
 				C84828D8156CFCD8005A996F /* PVRRecording.cpp in Sources */,
 				C84828D9156CFCD8005A996F /* PVRRecordings.cpp in Sources */,
 				C84828DB156CFCD8005A996F /* PVRTimerInfoTag.cpp in Sources */,
@@ -12563,6 +12571,7 @@
 				18690DCF1B94DA6200E762C1 /* OpenSubtitlesSearch.cpp in Sources */,
 				E49912A0174E5D9900741B6D /* PlaylistFileDirectory.cpp in Sources */,
 				F51D17251E29950600A03C93 /* vm.c in Sources */,
+				F5B72DE622BEB45900298852 /* DarwinVideoUtils.mm in Sources */,
 				E49912A2174E5D9900741B6D /* PVRDirectory.cpp in Sources */,
 				E49912A3174E5D9900741B6D /* PVRFile.cpp in Sources */,
 				E49912A7174E5D9900741B6D /* RSSDirectory.cpp in Sources */,
@@ -14262,6 +14271,7 @@
 				F5D1415F1BAF0B6D0075A95C /* ViewStateSettings.cpp in Sources */,
 				F5D141601BAF0B6D0075A95C /* WinSystem.cpp in Sources */,
 				F5022F281E2D41D5001BBF75 /* hdhomerun_device.c in Sources */,
+				F5B72DE722BEB45900298852 /* DarwinVideoUtils.mm in Sources */,
 				F5D141611BAF0B6D0075A95C /* GUIMediaWindow.cpp in Sources */,
 				F5D141621BAF0B6D0075A95C /* GUIWindowDebugInfo.cpp in Sources */,
 				F5D141631BAF0B6D0075A95C /* GUIWindowFileManager.cpp in Sources */,
