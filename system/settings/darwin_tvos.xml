@@ -61,7 +61,7 @@
   </section>
   <section id="services" label="14036" help="36319">
     <category id="icloud" label="685" help="686">
-      <visible>true</visible>
+      <visible>false</visible>
     </category>
   </section>
   <section id="system">
