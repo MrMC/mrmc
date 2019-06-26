@@ -226,10 +226,10 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       memcpy(hints.extradata, saved_extradata, hints.extrasize);
 
       if (interlaced)
-        hints.maybe_interlaced = true;
+        hints.maybe_interlaced = 1;
     }
 
-    if (hints.maybe_interlaced)
+    if (hints.maybe_interlaced > 0)
     {
       CLog::Log(LOGNOTICE, "%s - interlaced content.", __FUNCTION__);
       return false;

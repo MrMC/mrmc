@@ -175,7 +175,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         break;
     }
 
-    if (hints.maybe_interlaced)
+    if (hints.maybe_interlaced > 0)
     {
       CLog::Log(LOGNOTICE, "%s - interlaced content.", __FUNCTION__);
       return false;
