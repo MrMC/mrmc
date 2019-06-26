@@ -162,7 +162,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         hints.maybe_interlaced = 1;
     }
 
-    if (hints.maybe_interlaced > 1)
+    if (hints.maybe_interlaced > 0)
     {
       CLog::Log(LOGNOTICE, "%s - interlaced content.", __FUNCTION__);
       return false;
