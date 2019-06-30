@@ -1657,10 +1657,9 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
   VerifyGLState();
 }
 
-bool CLinuxRendererGLES::CanRenderCapture()
+bool CLinuxRendererGL::CanRenderCapture()
 {
-  bool IsByPass = m_renderMethod & RENDER_BYPASS;
-  return !IsByPass;
+  return true;
 }
 
 bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
