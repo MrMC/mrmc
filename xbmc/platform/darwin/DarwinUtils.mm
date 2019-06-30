@@ -1666,6 +1666,7 @@ bool CDarwinUtils::RestoreUserFolder()
 
 bool CDarwinUtils::CleariCloudBackup()
 {
+#if defined(TARGET_DARWIN_TVOS)
   NSUbiquitousKeyValueStore *cloudStore = [NSUbiquitousKeyValueStore defaultStore];
 
   NSDictionary *kvd = [cloudStore dictionaryRepresentation];
@@ -1679,10 +1680,12 @@ bool CDarwinUtils::CleariCloudBackup()
   }
   [cloudStore synchronize];
   return true;
+#endif
 }
 
 void CDarwinUtils::OnSettingAction(const CSetting *setting)
 {
+#if defined(TARGET_DARWIN_TVOS)
   if (setting == NULL)
     return;
 
@@ -1693,6 +1696,7 @@ void CDarwinUtils::OnSettingAction(const CSetting *setting)
     RestoreUserFolder();
   else if (settingId == CSettings::SETTING_SERVICES_ICLOUDREMOVE)
     CleariCloudBackup();
+#endif
 }
 
 #endif
