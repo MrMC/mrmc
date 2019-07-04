@@ -590,9 +590,12 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   {
     // this should never happend, head should always
     // be less than or equal to what we have written.
+    // possible de-sync
     CLog::Log(LOGERROR, "AESinkAUDIOTRACK::GetDelay over-write error, "
                         "frameSize=%d, headSeconds=%f, m_writeSeconds=%f", m_sink_frameSize, headSeconds, m_writeSeconds);
-    delay = 0;
+    m_writeSeconds = headSeconds + m_lastdelay;
+    delay = m_lastdelay;
+
   }
 
   const double d = GetMovingAverageDelay(delay);
@@ -734,7 +737,7 @@ void CAESinkAUDIOTRACK::Drain()
   if (!m_at_jni)
     return;
 
-  //CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Drain");
+  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Drain");
   // no need to stop, just pause, flush and go
   // Deinitialize will handle any thing else.
   m_at_jni->pause();
