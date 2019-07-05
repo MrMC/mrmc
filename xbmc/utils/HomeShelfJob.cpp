@@ -113,7 +113,7 @@ bool CHomeShelfJob::UpdateVideo()
     CVideoDatabase videodatabase;
     videodatabase.Open();
 
-    if (videodatabase.HasContent())
+    if (videodatabase.HasContent() || !m_compatibleSkin)
     {
       CVideoThumbLoader loader;
       loader.OnLoaderStart();
