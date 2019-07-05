@@ -638,7 +638,24 @@ bool CGUIWindowHome::OnClickHomeShelfItem(CFileItem itemPtr, int action)
       return true;
     case SELECT_ACTION_PLAY:
     default:
-      PlayHomeShelfItem(itemPtr);
+    {
+      if (itemPtr.IsVideo())
+      {
+        if (itemPtr.HasVideoInfoTag() &&
+            (itemPtr.GetVideoInfoTag()->m_type == MediaTypeEpisode || itemPtr.GetVideoInfoTag()->m_type == MediaTypeMovie))
+          PlayHomeShelfItem(itemPtr);
+        else
+        {
+          std::vector<std::string> params;
+          params.push_back(itemPtr.GetPath());
+          params.push_back("return");
+          g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV, params);
+        }
+      }
+      else
+        PlayHomeShelfItem(itemPtr);
+
+    }
       break;
   }
   return false;
@@ -1522,7 +1539,10 @@ void CGUIWindowHome::SetContextMenuItems(int iControl)
 
   CContextButtons choices;
 
-  choices.Add(1, 208); //play
+  if (itemPtr->GetVideoInfoTag()->m_type == MediaTypeEpisode || itemPtr->GetVideoInfoTag()->m_type == MediaTypeMovie || itemPtr->GetVideoInfoTag()->m_type == MediaTypeMusic)
+  {
+    choices.Add(1, 208); //play
+  }
 
   // Info
   if (itemPtr->GetVideoInfoTag()->m_type == MediaTypeTvShow)

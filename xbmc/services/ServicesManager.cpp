@@ -480,7 +480,7 @@ void CServicesManager::GetRecentlyAddedShows(CFileItemList &recentlyAdded, int i
     curl.SetProtocol(plexClient->GetProtocol());
     curl.SetFileName(curl.GetFileName() + "hubs/home/");
     curl.SetProtocolOption("type","2");
-    CPlexUtils::GetPlexRecentlyAddedEpisodes(plexItems, curl.Get(), itemLimit, watched);
+    CPlexUtils::GetPlexRecentlyAddedEpisodes(plexItems, curl.Get(), itemLimit, watched, false);
     
     for (int item = 0; item < plexItems.Size(); ++item)
     {

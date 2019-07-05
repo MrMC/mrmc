@@ -488,7 +488,7 @@ bool CPlexUtils::GetPlexContinueWatching(CFileItemList &items, const std::string
 }
 
 #pragma mark - Plex Recently Added and InProgress
-bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit, bool watched)
+bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::string url, int limit, bool watched, bool episodesonly)
 {
   bool rtn = false;
   CURL curl(url);
@@ -498,15 +498,42 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
   curl.SetFileName(fileName + "recentlyAdded");
   if (!watched)
     curl.SetProtocolOption("unwatched","1");
-  curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
+  curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit+15));
+
+  if (!episodesonly)
+    curl.SetProtocolOptions(curl.GetProtocolOptions() + "&X-Plex-Features=external-media");
   
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
-    rtn = ParsePlexVideos(items, curl, variant["MediaContainer"]["Video"], MediaTypeEpisode, false);
-    if (rtn)
+    ParsePlexVideos(items, curl, variant["MediaContainer"]["Video"], MediaTypeEpisode, false);
+
+    // below is used when plex sends episodes and shows in recently added listing,
+    // easiest way to sort it is to get both and sort by date added
+    if (!episodesonly)
+    {
+      const CVariant variantDirectory = makeVariantArrayIfSingleItem(variant["MediaContainer"]["Directory"]);
+      for (auto variantIt = variantDirectory.begin_array(); variantIt != variantDirectory.end_array(); ++variantIt)
+      {
+        if (*variantIt == CVariant::VariantTypeNull)
+          continue;
+        const auto item = *variantIt;
+        if (item["type"].asString() == "season")
+        {
+          ParsePlexSeasons(items, curl, item, item);
+        }
+        else
+        {
+          ParsePlexSeries(items, curl, item);
+        }
+      }
+      items.Sort(SortByDateAdded, SortOrderDescending);
+    }
+
+    if (items.Size() > 0)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
+      rtn = true;
     }
   }
 
@@ -1686,6 +1713,7 @@ bool CPlexUtils::ParsePlexSeries(CFileItemList &items, const CURL &url, const CV
     // set m_bIsFolder to true to indicate we are tvshow list
     plexItem->m_bIsFolder = true;
     plexItem->SetLabel(item["title"].asString());
+    plexItem->SetProperty("SeasonEpisode", item["title"].asString());
     curl.SetFileName("library/metadata/" + item["ratingKey"].asString() + "/children");
     plexItem->SetPath("plex://tvshows/shows/" + Base64URL::Encode(curl.Get()));
     plexItem->SetMediaServiceId(item["ratingKey"].asString());
@@ -1777,6 +1805,7 @@ bool CPlexUtils::ParsePlexSeasons(CFileItemList &items, const CURL &url, const C
 
       plexItem->m_bIsFolder = true;
       plexItem->SetLabel(item["title"].asString());
+      plexItem->SetProperty("SeasonEpisode", mediacontainer["parentTitle"].asString());
       curl.SetFileName("library/metadata/" + item["ratingKey"].asString() + "/children");
       plexItem->SetPath("plex://tvshows/seasons/" + Base64URL::Encode(curl.Get()));
       plexItem->SetMediaServiceId(item["ratingKey"].asString());
