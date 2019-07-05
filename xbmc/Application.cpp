@@ -1502,6 +1502,8 @@ bool CApplication::OnSettingsSaving() const
 
 void CApplication::ReloadSkin(bool confirm/*=false*/)
 {
+  // force confirmation to false, dont see the point in asking
+  confirm = false;
   std::string oldSkin = g_SkinInfo ? g_SkinInfo->ID() : "";
 
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
