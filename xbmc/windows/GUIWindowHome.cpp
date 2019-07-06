@@ -214,7 +214,7 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
     if (flag & AudioLibrary)
       ra_flag |= Audio;
 
-    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS, ra_flag);
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEND_HOME_UPDATE, ra_flag);
     g_windowManager.SendThreadMessage(reload, GetID());
     SetupServices();
   }
@@ -316,7 +316,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_NOTIFY_ALL:
   {
-    if (message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
+    if (message.GetParam1() == GUI_MSG_SEND_HOME_UPDATE)
     {
       int updateRA = (message.GetSenderId() == GetID()) ? message.GetParam2() : (Video | Audio);
 
