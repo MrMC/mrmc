@@ -225,11 +225,11 @@ bool CHomeShelfJob::UpdateVideo()
     homeShelfContinueWatching.SetContent("movies");
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfContinueWatching",homeShelfContinueWatching);
 
-    CServicesManager::GetInstance().GetRecentlyAddedMovies(homeShelfMoviesRA, NUM_ITEMS*2, true, serverType, serverUUID);
+    CServicesManager::GetInstance().GetRecentlyAddedMovies(homeShelfMoviesRA, NUM_ITEMS*2, homeScreenWatched, serverType, serverUUID);
     homeShelfMoviesRA.SetContent("movies");
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfMoviesRA",homeShelfMoviesRA);
 
-    CServicesManager::GetInstance().GetRecentlyAddedShows(homeShelfTVRA, NUM_ITEMS*2, true, serverType, serverUUID);
+    CServicesManager::GetInstance().GetRecentlyAddedShows(homeShelfTVRA, NUM_ITEMS*2, homeScreenWatched, serverType, serverUUID);
     homeShelfTVRA.SetContent("episodes");
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::HomeScreen, "mrmc", "UpdateRecentlyAddedShelfTVRA",homeShelfTVRA);
 

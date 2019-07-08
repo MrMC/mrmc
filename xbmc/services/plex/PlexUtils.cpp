@@ -497,7 +497,10 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
   StringUtils::TrimRight(fileName, "all");
   curl.SetFileName(fileName + "recentlyAdded");
   if (!watched)
-    curl.SetProtocolOption("unwatched","1");
+  {
+    // if the user doesnt want watched items, we get more and filetr them later
+    limit = limit*2;
+  }
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit+15));
 
   if (!episodesonly)
@@ -506,8 +509,22 @@ bool CPlexUtils::GetPlexRecentlyAddedEpisodes(CFileItemList &items, const std::s
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
-    ParsePlexVideos(items, curl, variant["MediaContainer"]["Video"], MediaTypeEpisode, false);
-
+    if (!watched)
+    {
+      CFileItemList tempItems;
+      ParsePlexVideos(tempItems, curl, variant["MediaContainer"]["Video"], MediaTypeEpisode, false);
+      for (int i = 0; i < tempItems.Size() && i <= limit/2; ++i)
+      {
+        CFileItemPtr temp = tempItems[i];
+        if (temp->GetVideoInfoTag()->m_playCount > 0)
+          continue;
+        items.Add(temp);
+      }
+    }
+    else
+    {
+      ParsePlexVideos(items, curl, variant["MediaContainer"]["Video"], MediaTypeEpisode, false);
+    }
     // below is used when plex sends episodes and shows in recently added listing,
     // easiest way to sort it is to get both and sort by date added
     if (!episodesonly)
@@ -573,13 +590,32 @@ bool CPlexUtils::GetPlexRecentlyAddedMovies(CFileItemList &items, const std::str
   StringUtils::TrimRight(fileName, "all");
   curl.SetFileName(fileName + "recentlyAdded");
   if (!watched)
-    curl.SetOption("unwatched","1");
+  {
+    // if the user doesnt want watched items, we get more and filetr them later
+    limit = limit*2;
+  }
   curl.SetProtocolOptions(curl.GetProtocolOptions() + StringUtils::Format("&X-Plex-Container-Start=0&X-Plex-Container-Size=%i", limit));
   
   CVariant variant = GetPlexCVariant(curl.Get());
   if (!variant.isNull() && variant.isObject() && variant.isMember("MediaContainer"))
   {
-    rtn = ParsePlexVideos(items, curl, variant["MediaContainer"]["Video"], MediaTypeMovie, false);
+    if (!watched)
+    {
+      CFileItemList tempItems;
+      rtn = ParsePlexVideos(tempItems, curl, variant["MediaContainer"]["Video"], MediaTypeMovie, false);
+      for (int i = 0; i < tempItems.Size() && i <= limit/2; ++i)
+      {
+        CFileItemPtr temp = tempItems[i];
+        if (temp->GetVideoInfoTag()->m_playCount > 0)
+          continue;
+        items.Add(temp);
+      }
+    }
+    else
+    {
+      rtn = ParsePlexVideos(items, curl, variant["MediaContainer"]["Video"], MediaTypeMovie, false);
+    }
+
     if (rtn)
     {
       items.SetLabel(variant["MediaContainer"]["title2"].asString());
