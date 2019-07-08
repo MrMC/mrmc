@@ -5112,13 +5112,13 @@ void CApplication::UpdateLibraries()
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_UPDATEONSTARTUP))
   {
     CLog::LogF(LOGNOTICE, "Starting video library startup scan");
-    StartVideoScan("", !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE));
+    StartVideoScan("", !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE) && IsGUICreated());
   }
 
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_UPDATEONSTARTUP))
   {
     CLog::LogF(LOGNOTICE, "Starting music library startup scan");
-    StartMusicScan("", !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
+    StartMusicScan("", !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE) && IsGUICreated());
   }
 }
 
