@@ -103,42 +103,43 @@ namespace XBMCAddon
       XBMC_TRACE;
       RESOLUTION_INFO res;
       std::string strSkinPath = "";
+      std::string str("none");
+      ADDON::AddonProps props(str, ADDON::ADDON_SKIN, "", "");
+      ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
+      std::string fallbackPath = URIUtils::AddFileToFolder(scriptPath, "resources");
+      fallbackPath = URIUtils::AddFileToFolder(fallbackPath, "skins");
+
       if (g_SkinInfo)
+      {
         strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
+        if (!XFILE::CFile::Exists(strSkinPath))
+        {
+          // Check for the matching folder for the skin in the fallback skins folder
+          std::string basePath = URIUtils::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
+
+          strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
+
+          // Check for the matching folder for the skin in the fallback skins folder (if it exists)
+          if (XFILE::CFile::Exists(basePath))
+          {
+            props.path = basePath;
+            ADDON::CSkinInfo skinInfo(props, res);
+            skinInfo.Start();
+            strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
+          }
+        }
+      }
 
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        std::string str("none");
-        ADDON::AddonProps props(str, ADDON::ADDON_SKIN, "", "");
-        ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
+        // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
+        props.path = URIUtils::AddFileToFolder(fallbackPath, defaultSkin);
+        ADDON::CSkinInfo skinInfo(props, res);
 
-        // Check for the matching folder for the skin in the fallback skins folder
-        std::string fallbackPath = URIUtils::AddFileToFolder(scriptPath, "resources");
-        fallbackPath = URIUtils::AddFileToFolder(fallbackPath, "skins");
-        std::string basePath = URIUtils::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
-
-        strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
-
-        // Check for the matching folder for the skin in the fallback skins folder (if it exists)
-        if (XFILE::CFile::Exists(basePath))
-        {
-          props.path = basePath;
-          ADDON::CSkinInfo skinInfo(props, res);
-          skinInfo.Start();
-          strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
-        }
-
+        skinInfo.Start();
+        strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
         if (!XFILE::CFile::Exists(strSkinPath))
-        {
-          // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
-          props.path = URIUtils::AddFileToFolder(fallbackPath, defaultSkin);
-          ADDON::CSkinInfo skinInfo(props, res);
-
-          skinInfo.Start();
-          strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
-          if (!XFILE::CFile::Exists(strSkinPath))
-            throw WindowException("XML File for Window is missing");
-        }
+          throw WindowException("XML File for Window is missing");
       }
 
       m_scriptPath = scriptPath;
