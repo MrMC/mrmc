@@ -225,11 +225,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   CSingleLock lock(m_critSection);
   int mask = pMsg->dwMessage & TMSG_MASK_MESSAGE;
 
-  auto target = m_mapTargets.at(mask);
-  if (target != nullptr)
+  if (m_mapTargets.find(mask) != m_mapTargets.end())
   {
     CSingleExit exit(m_critSection);
-    target->OnApplicationMessage(pMsg);
+    m_mapTargets.at(mask)->OnApplicationMessage(pMsg);
   }
 }
 
