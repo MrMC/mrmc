@@ -21,21 +21,37 @@
 #include "platform/MCRuntimeLibStartupLogger.h"
 #include "CompileInfo.h"
 
+#ifdef TARGET_ANDROID
+#include "platform/android/service/XBMCService.h"
+#endif
+
 #include <stdio.h>
 
 void CMCRuntimeLibStartupLogger::DisplayMessage(const std::string& message)
 {
+#ifdef TARGET_ANDROID
+  CXBMCService::android_printf("info: %s\n", message.c_str());
+#else
   fprintf(stdout, "%s\n", message.c_str());
+#endif
 }
 
 void CMCRuntimeLibStartupLogger::DisplayWarning(const std::string& warning)
 {
+#ifdef TARGET_ANDROID
+  CXBMCService::android_printf("warning: %s\n", warning.c_str());
+#else
   fprintf(stderr, "%s\n", warning.c_str());
+#endif
 }
 
 void CMCRuntimeLibStartupLogger::DisplayError(const std::string& error)
 {
+#ifdef TARGET_ANDROID
+  CXBMCService::android_printf("ERROR: %s\n", error.c_str());
+#else
   fprintf(stderr,"%s\n", error.c_str());
+#endif
 }
 
 void CMCRuntimeLibStartupLogger::DisplayHelpMessage(const std::vector<std::pair<std::string, std::string>>& help)
