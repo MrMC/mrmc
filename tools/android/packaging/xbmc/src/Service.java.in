@@ -41,14 +41,6 @@ public class Service extends android.app.Service
   @Override
   public int onStartCommand(Intent intent, int flags, int startId)
   {
-    if (!m_isStarted)
-      m_isStarted =_launchApplication();
-    if (m_isStarted)
-    {
-      Intent i = new Intent("@APP_PACKAGE@.SERVICE_STARTED");
-      sendBroadcast(i);
-    }
-
     Bitmap icon = BitmapFactory.decodeResource(getResources(),
         R.drawable.ic_recommendation_80dp);
 
@@ -81,6 +73,15 @@ public class Service extends android.app.Service
     Notification notification = builder.build();
 
     startForeground(1, notification);
+
+    if (!m_isStarted)
+      m_isStarted =_launchApplication();
+    if (m_isStarted)
+    {
+      Intent i = new Intent("@APP_PACKAGE@.SERVICE_STARTED");
+      sendBroadcast(i);
+    }
+
     return START_STICKY;
   }
 
