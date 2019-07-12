@@ -23,9 +23,20 @@ def getABI() {
     def dependsDir = properties.getProperty('xbmcABI', null)
     if (dependsDir == null) {
         throw new GradleException(
-                "Depends location not found. Define location with depends.dir in the local.properties file!")
+                "Depends location not found. Define location with xbmcABI in the local.properties file!")
     }
     return dependsDir
+}
+
+def getNDKapi() {
+    Properties properties = new Properties()
+    properties.load(new File(rootDir.absolutePath + "/local.properties").newDataInputStream())
+    def ndkapi = properties.getProperty('NDKapi', null)
+    if (ndkapi == null) {
+        throw new GradleException(
+                "Cannot detect ndk api! Define location with NDKapi in the local.properties file")
+    }
+    return ndkapi
 }
 
 android {
@@ -43,10 +54,11 @@ android {
                 abiFilters getABI()
                 arguments "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
+                            "-DANDROID_PLATFORM=" + getNDKapi(),
+                            "-DANDROID_ARM_NEON=TRUE",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=FALSE",
                             "-DANDROID_CPP_FEATURES=rtti exceptions",
                             "-DDEPENDS_DIR="+getDependsDir();
-                            "-DANDROID_ARM_NEON=TRUE"
             }
         }
 
