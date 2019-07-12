@@ -37,7 +37,7 @@ public:
 
   static CXBMCService* get() { return m_xbmcserviceinstance; }
   static jboolean _launchApplication(JNIEnv*, jobject thiz);
-  int android_printf(const char* format...);
+  static int android_printf(const char* format...);
 
   std::string getDeviceName() const;
 
