@@ -23,7 +23,6 @@
 #include <list>
 #include "AEPackIEC61937.h"
 #include "AEChannelInfo.h"
-#include "BitstreamTrueHDMAT.h"
 
 class CAEStreamInfo;
 
@@ -46,6 +45,10 @@ private:
   void PackDTSHD(CAEStreamInfo &info, uint8_t* data, int size);
   void PackEAC3(CAEStreamInfo &info, uint8_t* data, int size);
 
+  /* we keep the trueHD and dtsHD buffers seperate so that we can handle a fast stream switch */
+  uint8_t      *m_trueHD;
+  unsigned int  m_trueHDPos;
+
   uint8_t      *m_dtsHD;
   unsigned int  m_dtsHDSize;
 
@@ -53,8 +56,6 @@ private:
   unsigned int  m_eac3Size;
   unsigned int  m_eac3FramesCount;
   unsigned int  m_eac3FramesPerBurst;
-
-  CBitstreamTrueHDMAT m_trueHDpacker;
 
   unsigned int  m_dataSize;
   uint8_t       m_packedBuffer[MAX_IEC61937_PACKET];

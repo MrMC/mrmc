@@ -27,7 +27,6 @@ set (my_SOURCES
   Utils/AEStreamInfo.cpp
   Utils/AEPackIEC61937.cpp
   Utils/AEBitstreamPacker.cpp
-  Utils/BitstreamTrueHDMAT.cpp
   Utils/AEELDParser.cpp
   Utils/AEDeviceInfo.cpp
   Utils/AELimiter.cpp

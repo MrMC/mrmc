@@ -39,8 +39,7 @@ extern "C" {
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void) :
   m_buffer(NULL),
   m_bufferSize(0),
-  m_trueHDoffset(0),
-  m_trueHDcount(0)
+  m_trueHDoffset(0)
 {
 }
 
@@ -227,19 +226,17 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
     if (!m_trueHDoffset)
       memset(m_trueHDBuffer.get(), 0, TRUEHD_BUF_SIZE);
 
+    memcpy(&(m_trueHDBuffer.get())[m_trueHDoffset], m_buffer, m_dataSize);
     uint8_t highByte = (m_dataSize >> 8) & 0xFF;
     uint8_t lowByte = m_dataSize & 0xFF;
-    m_trueHDBuffer[m_trueHDoffset] = highByte;
-    m_trueHDBuffer[m_trueHDoffset+1] = lowByte;
+    m_trueHDBuffer[m_trueHDoffset+2560-2] = highByte;
+    m_trueHDBuffer[m_trueHDoffset+2560-1] = lowByte;
+    m_trueHDoffset += 2560;
 
-    memcpy(&(m_trueHDBuffer.get())[m_trueHDoffset+2], m_buffer, m_dataSize);
-    m_trueHDoffset += m_dataSize + 2;
-
-    if (++m_trueHDcount == 24)
+    if (m_trueHDoffset / 2560 == 24)
     {
-      m_dataSize = 61440;
+      m_dataSize = m_trueHDoffset;
       m_trueHDoffset = 0;
-      m_trueHDcount = 0;
     }
     else
       m_dataSize = 0;
@@ -277,7 +274,6 @@ int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
 void CDVDAudioCodecPassthrough::Reset()
 {
   m_trueHDoffset = 0;
-  m_trueHDcount = 0;
   m_dataSize = 0;
   m_bufferSize = 0;
   m_backlogSize = 0;
