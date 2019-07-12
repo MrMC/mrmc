@@ -1194,6 +1194,9 @@ bool CApplication::Initialize()
 #endif
     ADDON::CAddonMgr::GetInstance().StartServices(false);
 
+    // start the PVR manager
+    StartPVRManager();
+
     g_sysinfo.Refresh();
   }
 
