@@ -532,7 +532,9 @@ void CServicesManager::GetRecentlyAddedAlbums(CFileItemList &recentlyAdded, int 
     curl.SetProtocolOption("X-Plex-Container-Start", "0");
     curl.SetProtocolOption("X-Plex-Container-Size", StringUtils::Format("%i",itemLimit));
     
-    CPlexUtils::GetPlexArtistsOrAlbum(plexItems, curl.Get(), true);
+    if (!CPlexUtils::GetPlexArtistsOrAlbum(plexItems, curl.Get(), true))
+      return;
+
     for (int item = 0; item < plexItems.Size(); ++item)
     {
       CPlexUtils::SetPlexItemProperties(*plexItems[item], plexClient);

@@ -432,13 +432,15 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       
       if (path == "root" || path == "artists")
       {
-        CPlexUtils::GetPlexArtistsOrAlbum(items,Base64URL::Decode(section), false);
+        if (!CPlexUtils::GetPlexArtistsOrAlbum(items,Base64URL::Decode(section), false))
+          return false;
         items.SetLabel(g_localizeStrings.Get(133));
         items.SetContent("artists");
       }
       else if (path == "albums")
       {
-        CPlexUtils::GetPlexArtistsOrAlbum(items,Base64URL::Decode(section), true);
+        if (!CPlexUtils::GetPlexArtistsOrAlbum(items,Base64URL::Decode(section), true))
+          return false;
         items.SetLabel(g_localizeStrings.Get(132));
         items.SetContent("albums");
       }
