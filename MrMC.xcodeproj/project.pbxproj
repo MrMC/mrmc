@@ -164,9 +164,6 @@
 		18D18CE91D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
 		18D18CEA1D0DC14400BBAB05 /* PlexUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */; };
 		18D533DD2236CFF10062B012 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18D533DC2236CFF10062B012 /* Launch Screen.storyboard */; };
-		18D533E022411C8A0062B012 /* BitstreamTrueHDMAT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D533DF22411C890062B012 /* BitstreamTrueHDMAT.cpp */; };
-		18D533E122411C8A0062B012 /* BitstreamTrueHDMAT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D533DF22411C890062B012 /* BitstreamTrueHDMAT.cpp */; };
-		18D533E222411C8A0062B012 /* BitstreamTrueHDMAT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18D533DF22411C890062B012 /* BitstreamTrueHDMAT.cpp */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
 		18ED606222861550002FD568 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18ED606122861550002FD568 /* Security.framework */; };
 		18ED60662286179C002FD568 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18ED60652286179C002FD568 /* libz.tbd */; };
@@ -3818,8 +3815,6 @@
 		18D18CE61D0DC14400BBAB05 /* PlexUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexUtils.cpp; sourceTree = "<group>"; };
 		18D18CE71D0DC14400BBAB05 /* PlexUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexUtils.h; sourceTree = "<group>"; };
 		18D533DC2236CFF10062B012 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		18D533DE22411C890062B012 /* BitstreamTrueHDMAT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitstreamTrueHDMAT.h; sourceTree = "<group>"; };
-		18D533DF22411C890062B012 /* BitstreamTrueHDMAT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BitstreamTrueHDMAT.cpp; sourceTree = "<group>"; };
 		18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		18ED606122861550002FD568 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.2.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
@@ -8487,8 +8482,6 @@
 				DFB65FB015373AE7006B8FF1 /* AEStreamInfo.h */,
 				DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */,
 				DFB65FB215373AE7006B8FF1 /* AEUtil.h */,
-				18D533DF22411C890062B012 /* BitstreamTrueHDMAT.cpp */,
-				18D533DE22411C890062B012 /* BitstreamTrueHDMAT.h */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -11190,7 +11183,6 @@
 				E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */,
 				E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */,
 				E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */,
-				18D533E022411C8A0062B012 /* BitstreamTrueHDMAT.cpp in Sources */,
 				E38E1FC70D25F9FD00618676 /* CodecFactory.cpp in Sources */,
 				F5B722AB1C7BBFBF006432AE /* EncoderFFmpeg.cpp in Sources */,
 				E38E1FE90D25F9FD00618676 /* LinuxRendererGL.cpp in Sources */,
@@ -13147,7 +13139,6 @@
 				E49914A9174E607200741B6D /* GUIWindowScreensaverDim.cpp in Sources */,
 				E49914AA174E607200741B6D /* GUIWindowStartup.cpp in Sources */,
 				E49914AB174E607200741B6D /* GUIWindowSystemInfo.cpp in Sources */,
-				18D533E122411C8A0062B012 /* BitstreamTrueHDMAT.cpp in Sources */,
 				E499152C174E640800741B6D /* Application.cpp in Sources */,
 				E499152E174E642900741B6D /* AppParamParser.cpp in Sources */,
 				E4991530174E642900741B6D /* AutoSwitch.cpp in Sources */,
@@ -14028,7 +14019,6 @@
 				F5D140A41BAF0B6D0075A95C /* PeripheralNIC.cpp in Sources */,
 				F5D140A51BAF0B6D0075A95C /* PeripheralNyxboard.cpp in Sources */,
 				F5D140A61BAF0B6D0075A95C /* PeripheralTuner.cpp in Sources */,
-				18D533E222411C8A0062B012 /* BitstreamTrueHDMAT.cpp in Sources */,
 				F5D140A81BAF0B6D0075A95C /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5D140A91BAF0B6D0075A95C /* Locale.cpp in Sources */,
 				F5D140AA1BAF0B6D0075A95C /* Peripherals.cpp in Sources */,
