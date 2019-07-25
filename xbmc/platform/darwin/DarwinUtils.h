@@ -82,7 +82,7 @@ public:
   static bool        ReduceMotionEnabled();
   static bool        BackupUserFolder();
   static bool        RestoreUserFolder();
-  static bool        CleariCloudBackup();
+  static void        CleariCloudBackup();
 
   virtual void OnSettingAction(const CSetting *setting) override;
 };

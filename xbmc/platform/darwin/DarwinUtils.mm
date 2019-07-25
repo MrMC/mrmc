@@ -1664,7 +1664,7 @@ bool CDarwinUtils::RestoreUserFolder()
   return ret;
 }
 
-bool CDarwinUtils::CleariCloudBackup()
+void CDarwinUtils::CleariCloudBackup()
 {
 #if defined(TARGET_DARWIN_TVOS)
   NSUbiquitousKeyValueStore *cloudStore = [NSUbiquitousKeyValueStore defaultStore];
@@ -1679,7 +1679,6 @@ bool CDarwinUtils::CleariCloudBackup()
       [cloudStore removeObjectForKey:key];
   }
   [cloudStore synchronize];
-  return true;
 #endif
 }
 
