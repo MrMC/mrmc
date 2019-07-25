@@ -1423,8 +1423,6 @@ std::vector<EmbyViewInfo> CGUIWindowHome::GetEmbySections(CEmbyClientPtr client)
   sections.insert(sections.begin(), contents.begin(),contents.end());
   contents = client->GetViewInfoForMusicContent();
   sections.insert(sections.begin(), contents.begin(),contents.end());
-  // reverse the sections, for some reason emby sents it in reverse order
-  std::reverse(sections.begin(), sections.end());
   return sections;
 }
 
