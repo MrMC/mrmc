@@ -1313,7 +1313,6 @@ void CDarwinUtils::SetMrMCTouchFlag()
   }
 
   NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
-  NSDictionary *kvd = [store dictionaryRepresentation];
   if (![store boolForKey:@"tv.mrmc.mrmc.tvos.iosupgrade"])
   {
     CLog::Log(LOGDEBUG, "CDarwinUtils::SetMrMCTouchFlag() - NSUbiquitousKeyValueStore key for MrMC Touch");
