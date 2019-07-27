@@ -86,7 +86,6 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
 {
   m_firstRun = true;
   m_updateHS = (Audio | Video);
-  m_loadType = KEEP_IN_MEMORY;
 
   m_HomeShelfTVRA = new CFileItemList;
   m_HomeShelfTVPR = new CFileItemList;
