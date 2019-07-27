@@ -638,6 +638,35 @@ std::string CEmbyClient::GetUserID()
   return m_serverInfo.UserId;
 }
 
+const std::vector<EmbyViewInfo> CEmbyClient::GetEmbySections()
+{
+  CSingleLock lock(m_topViewIDsLock);
+  CSingleLock movielock(m_viewMoviesLock);
+  CSingleLock tvlock(m_viewMoviesLock);
+  CSingleLock musiclock(m_viewMoviesLock);
+
+  std::vector<EmbyViewInfo> sections;
+  for (const auto &id : m_topViewIDs)
+  {
+    for (auto &view : m_viewMovies)
+    {
+      if (view->GetId() == id)
+        sections.push_back(view->GetInfo());
+    }
+    for (auto &view : m_viewTVShows)
+    {
+      if (view->GetId() == id)
+        sections.push_back(view->GetInfo());
+    }
+    for (auto &view : m_viewMusic)
+    {
+      if (view->GetId() == id)
+        sections.push_back(view->GetInfo());
+    }
+  }
+  return sections;
+}
+
 const std::vector<EmbyViewInfo> CEmbyClient::GetViewInfoForMovieContent() const
 {
   std::vector<EmbyViewInfo> infos;
@@ -718,6 +747,10 @@ bool CEmbyClient::FetchViews()
 
     // clear all views
     {
+      CSingleLock lock(m_topViewIDsLock);
+      m_topViewIDs.clear();
+    }
+    {
       CSingleLock lock(m_viewMoviesLock);
       m_viewMovies.clear();
     }
@@ -759,6 +792,9 @@ bool CEmbyClient::FetchViews()
     "music"
     };
 
+    // need to hold the the entire time
+    CSingleLock lock(m_topViewIDsLock);
+
     const auto& viewsObject = resultObject["Items"];
     for (auto viewIt = viewsObject.begin_array(); viewIt != viewsObject.end_array(); ++viewIt)
     {
@@ -789,8 +825,11 @@ bool CEmbyClient::FetchViews()
       if (libraryView.id.empty() || libraryView.name.empty())
         continue;
 
+      m_topViewIDs.push_back(libraryView.id);
       views.push_back(libraryView);
     }
+    // restore the original view order as from emby server
+    std::reverse(m_topViewIDs.begin(), m_topViewIDs.end());
 
     for (const auto &content : views)
     {

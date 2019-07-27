@@ -105,6 +105,7 @@ public:
   void  UpdateViewItems(const std::vector<std::string> &ids);
   void  RemoveViewItems(const std::vector<std::string> &ids);
 
+  const std::vector<EmbyViewInfo> GetEmbySections();
   const std::vector<EmbyViewInfo> GetViewInfoForMovieContent() const;
   const std::vector<EmbyViewInfo> GetViewInfoForMusicContent() const;
   const std::vector<EmbyViewInfo> GetViewInfoForPhotoContent() const;
@@ -147,10 +148,12 @@ private:
   CCriticalSection m_viewMoviesFilterLock;
   CCriticalSection m_viewTVShowsFilterLock;
 
+  CCriticalSection m_topViewIDsLock;
   CCriticalSection m_viewMusicLock;
   CCriticalSection m_viewMoviesLock;
   CCriticalSection m_viewPhotosLock;
   CCriticalSection m_viewTVShowsLock;
+  std::vector<std::string> m_topViewIDs;
   std::vector<CEmbyViewCachePtr> m_viewMusic;
   std::vector<CEmbyViewCachePtr> m_viewMovies;
   std::vector<CEmbyViewCachePtr> m_viewPhotos;

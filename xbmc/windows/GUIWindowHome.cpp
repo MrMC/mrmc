@@ -1414,21 +1414,9 @@ void CGUIWindowHome::AddPlexSection(CPlexClientPtr client)
   }
 }
 
-std::vector<EmbyViewInfo> CGUIWindowHome::GetEmbySections(CEmbyClientPtr client)
-{
-  std::vector<EmbyViewInfo> sections;
-  std::vector<EmbyViewInfo> contents = client->GetViewInfoForMovieContent();
-  sections.insert(sections.begin(), contents.begin(),contents.end());
-  contents = client->GetViewInfoForTVShowContent();
-  sections.insert(sections.begin(), contents.begin(),contents.end());
-  contents = client->GetViewInfoForMusicContent();
-  sections.insert(sections.begin(), contents.begin(),contents.end());
-  return sections;
-}
-
 void CGUIWindowHome::AddEmbySection(CEmbyClientPtr client)
 {
-  std::vector<EmbyViewInfo> contents = GetEmbySections(client);
+  std::vector<EmbyViewInfo> contents = client->GetEmbySections();
   for (const auto &content : contents)
   {
     CFileItemPtr item(new CFileItem());

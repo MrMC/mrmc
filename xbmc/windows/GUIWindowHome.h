@@ -93,7 +93,6 @@ private:
   void  AddPlexSection(CPlexClientPtr client);
   // emby service
   void AddEmbySection(CEmbyClientPtr client);
-  std::vector<EmbyViewInfo>    GetEmbySections(CEmbyClientPtr client);
 
   bool        m_triggerRA;
   void SetContextMenuItems(int iControl);
