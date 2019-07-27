@@ -88,4 +88,28 @@
 }
 #endif
 
+/*
+- (UIView *)snapshotView
+{
+    UIView *snapView = [self snapshotViewAfterScreenUpdates:YES];
+    return snapView;
+}
+
+- (UIImage *)imageFromView:(UIView *)view
+{
+  UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
+  [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];
+  UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+
+  //image = [UIImage imageWithCGImage:image.CGImage scale:image.scale orientation:UIImageOrientationUpMirrored];
+
+  CGImageRef imageRef = [img CGImage];
+  int width = CGImageGetWidth(imageRef);
+  int height = CGImageGetHeight(imageRef);
+
+    return img;
+}
+*/
+
 @end
