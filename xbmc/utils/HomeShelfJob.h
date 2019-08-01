@@ -44,6 +44,13 @@ public:
 
   bool UpdateVideo();
   bool UpdateMusic();
+  void UpdateTvItemsRA(CFileItemList *list);
+  void UpdateTvItemsPR(CFileItemList *list);
+  void UpdateMovieItemsRA(CFileItemList *list);
+  void UpdateMovieItemsPR(CFileItemList *list);
+  void UpdateContinueWatchingItems(CFileItemList *list);
+  void UpdateMusicAlbumItems(CFileItemList *list);
+  void UpdateMusicVideoItems(CFileItemList *list);
   const int GetFlag() const { return m_flag; };
 
   virtual bool DoWork();
@@ -52,4 +59,11 @@ private:
   int m_flag;
   bool m_compatibleSkin;
   CCriticalSection m_critsection;
+  CFileItemList *m_HomeShelfTVRA;
+  CFileItemList *m_HomeShelfTVPR;
+  CFileItemList *m_HomeShelfMoviesRA;
+  CFileItemList *m_HomeShelfMoviesPR;
+  CFileItemList *m_HomeShelfMusicAlbums;
+  CFileItemList *m_HomeShelfMusicVideos;
+  CFileItemList *m_HomeShelfContinueWatching;
 };

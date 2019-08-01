@@ -220,57 +220,6 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
   }
 }
 
-void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CFileItemList &items)
-{
-  // we are only interested in home screen changes
-  if ((flag & HomeScreen) == 0)
-    return;
-
-  CSingleLock lock(m_critsection);
-  if (strcmp(message, "UpdateRecentlyAddedShelfTVRA") == 0)
-  {
-    m_HomeShelfTVRA->ClearItems();
-    m_HomeShelfTVRA->Copy(items);
-    CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVRA);
-    g_windowManager.SendThreadMessage(messageTVRA);
-  }
-  else if (strcmp(message, "UpdateRecentlyAddedShelfMoviesRA") == 0)
-  {
-    m_HomeShelfMoviesRA->ClearItems();
-    m_HomeShelfMoviesRA->Copy(items);
-    CGUIMessage messageMoviesRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesRA);
-    g_windowManager.SendThreadMessage(messageMoviesRA);
-  }
-  else if (strcmp(message, "UpdateRecentlyAddedShelfTVPR") == 0)
-  {
-    m_HomeShelfTVPR->ClearItems();
-    m_HomeShelfTVPR->Copy(items);
-    CGUIMessage messageTVPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSPR, 0, 0, m_HomeShelfTVPR);
-    g_windowManager.SendThreadMessage(messageTVPR);
-  }
-  else if (strcmp(message, "UpdateRecentlyAddedShelfMoviesPR") == 0)
-  {
-    m_HomeShelfMoviesPR->ClearItems();
-    m_HomeShelfMoviesPR->Copy(items);
-    CGUIMessage messageMoviesPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, m_HomeShelfMoviesPR);
-    g_windowManager.SendThreadMessage(messageMoviesPR);
-  }
-  else if (strcmp(message, "UpdateRecentlyAddedShelfContinueWatching") == 0)
-  {
-    m_HomeShelfContinueWatching->ClearItems();
-    m_HomeShelfContinueWatching->Copy(items);
-    CGUIMessage messageContinueWatching(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING, 0, 0, m_HomeShelfContinueWatching);
-    g_windowManager.SendThreadMessage(messageContinueWatching);
-  }
-  else if (strcmp(message, "UpdateRecentlyAddedShelfMusicAlbums") == 0)
-  {
-    m_HomeShelfMusicAlbums->ClearItems();
-    m_HomeShelfMusicAlbums->Copy(items);
-    CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMUSICALBUMS, 0, 0, m_HomeShelfMusicAlbums);
-    g_windowManager.SendThreadMessage(messageAlbums);
-  }
-}
-
 void CGUIWindowHome::AddHomeShelfJobs(int flag)
 {
   CSingleLock lockMe(*this);
@@ -293,6 +242,52 @@ void CGUIWindowHome::AddHomeShelfJobs(int flag)
 
 void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
+
+  int jobFlag = ((CHomeShelfJob *)job)->GetFlag();
+
+  if (jobFlag & Video)
+  {
+    CSingleLock lock(m_critsection);
+    {
+      // these can alter the gui lists and cause renderer crashing
+      // if gui lists are yanked out from under rendering. Needs lock.
+      CSingleLock lock(g_graphicsContext);
+
+      ((CHomeShelfJob *)job)->UpdateTvItemsRA(m_HomeShelfTVRA);
+      ((CHomeShelfJob *)job)->UpdateTvItemsPR(m_HomeShelfTVPR);
+      ((CHomeShelfJob *)job)->UpdateMovieItemsRA(m_HomeShelfMoviesRA);
+      ((CHomeShelfJob *)job)->UpdateMovieItemsPR(m_HomeShelfMoviesPR);
+      ((CHomeShelfJob *)job)->UpdateContinueWatchingItems(m_HomeShelfContinueWatching);
+    }
+
+    CGUIMessage messageTVRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSRA, 0, 0, m_HomeShelfTVRA);
+    g_windowManager.SendThreadMessage(messageTVRA);
+
+
+    CGUIMessage messageTVPR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFTVSHOWSPR, 0, 0, m_HomeShelfTVPR);
+    g_windowManager.SendThreadMessage(messageTVPR);
+
+
+    CGUIMessage messageMovieRA(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESRA, 0, 0, m_HomeShelfMoviesRA);
+    g_windowManager.SendThreadMessage(messageMovieRA);
+
+
+    CGUIMessage messageMoviePR(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMOVIESPR, 0, 0, m_HomeShelfMoviesPR);
+    g_windowManager.SendThreadMessage(messageMoviePR);
+
+    CGUIMessage messageContinueWatching(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFCONTINUEWATCHING, 0, 0, m_HomeShelfContinueWatching);
+    g_windowManager.SendThreadMessage(messageContinueWatching);
+  }
+
+  if (jobFlag & Audio)
+  {
+    CSingleLock lock(m_critsection);
+
+    ((CHomeShelfJob *)job)->UpdateMusicAlbumItems(m_HomeShelfMusicAlbums);
+    CGUIMessage messageAlbums(GUI_MSG_LABEL_BIND, GetID(), CONTROL_HOMESHELFMUSICALBUMS, 0, 0, m_HomeShelfMusicAlbums);
+    g_windowManager.SendThreadMessage(messageAlbums);
+  }
+
   int flag = 0;
   {
     CSingleLock lockMe(*this);
