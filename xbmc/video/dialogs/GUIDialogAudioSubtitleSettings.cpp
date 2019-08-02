@@ -337,12 +337,14 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO))
     AddToggle(groupAudio, SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, 252, 0, videoSettings.m_OutputToAllSpeakers);
 
+#if !defined(TARGET_DARWIN_IOS)
   // audio digital/analog setting
   if (SupportsAudioFeature(IPC_AUD_SELECT_OUTPUT))
   {
     m_passthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
     AddToggle(groupAudio, SETTING_AUDIO_PASSTHROUGH, 348, 0, m_passthrough);
   }
+#endif
 
   // subitlte settings
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
