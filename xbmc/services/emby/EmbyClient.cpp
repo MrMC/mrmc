@@ -52,11 +52,11 @@
 #include <string>
 
 static const std::string MoviesFields = {
-  "DateCreated,Genres,MediaStreams,MediaSources,Overview,Path"
+  "DateCreated,PremiereDate,ProductionYear,Genres,MediaStreams,MediaSources,Overview,Path"
 };
 
 static const std::string TVShowsFields = {
-  "DateCreated,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,RecursiveItemCount"
+  "DateCreated,PremiereDate,ProductionYear,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,RecursiveItemCount"
 };
 
 class CEmbyUtilsJob: public CJob
@@ -961,13 +961,13 @@ bool CEmbyClient::FetchFilterItems(CEmbyViewCachePtr &view, const CURL &url, con
       curl.SetOption("Recursive", "true");
       curl.SetOption("ParentId", "");
     }
-    curl.SetOption("Fields", "Etag,DateCreated,ImageTags");
+    curl.SetOption("Fields", "Etag,DateCreated,PremiereDate,ProductionYear,ImageTags");
   }
   else if (type == EmbyTypeSeries)
   {
     curl.SetFileName("emby/" + filter);
     curl.SetOption("IncludeItemTypes", EmbyTypeSeries);
-    curl.SetOption("Fields", "Etag,DateCreated,ImageTags");
+    curl.SetOption("Fields", "Etag,DateCreated,PremiereDate,ProductionYear,ImageTags");
   }
   else
   {
@@ -1006,7 +1006,7 @@ const CVariant CEmbyClient::FetchItemByIds(const std::vector<std::string> &Ids)
     return CVariant(CVariant::VariantTypeNull);
 
   static const std::string Fields = {
-    "DateCreated,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,ImageTags,Taglines,RecursiveItemCount,ProviderIds"
+    "DateCreated,PremiereDate,ProductionYear,Genres,MediaStreams,MediaSources,Overview,ShortOverview,Path,ImageTags,Taglines,RecursiveItemCount,ProviderIds"
   };
 
   CURL curl(m_url);
