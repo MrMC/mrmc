@@ -1,3 +1,6 @@
+[B]2.0.17[/B]
+- Fix crash for empty artwork
+
 [B]2.0.16[/B]
 - Fixed: DVD and Absolute episode ordering fixes
 
