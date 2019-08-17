@@ -380,7 +380,7 @@ bool CTraktServices::GetSignInPinCode()
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
 
-  CURL curl("https://trakt.tv");
+  CURL curl("https://api.trakt.tv");
   curl.SetFileName("oauth/device/code");
   curl.SetOption("format", "json");
 
@@ -478,7 +478,7 @@ bool CTraktServices::GetSignInByPinReply()
   curlfile.SetRequestHeader("Content-Type", "application/json");
   curlfile.SetSilent(true);
 
-  CURL curl("https://trakt.tv");
+  CURL curl("https://api.trakt.tv");
   curl.SetFileName("oauth/device/token");
   curl.SetOption("format", "json");
 
