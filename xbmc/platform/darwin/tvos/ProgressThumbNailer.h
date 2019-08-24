@@ -34,6 +34,7 @@ typedef struct CGImage* CGImageRef;
 typedef struct ThumbNailerImage
 {
   int time = 0;
+  bool isCapture = false;
   CGImageRef image = nullptr;
 } ThumbNailerImage;
 

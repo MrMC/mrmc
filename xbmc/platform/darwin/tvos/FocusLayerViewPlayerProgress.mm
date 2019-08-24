@@ -222,9 +222,10 @@ static double gScrubbedSeekTimeSecondsForRestore = -1;
 {
   if (self->thumbNailer)
   {
-    // take the seek time (ms) of the displayed thumb
+    // default to the seek time (ms)
     int seekTimeMilliSeconds = self->seekTimeSeconds * 1000;
-    if (self->thumbImage.image)
+    // if we have a displayed thumb from a seek, use the seek time from it
+    if (!self->thumbImage.isCapture && self->thumbImage.image)
       seekTimeMilliSeconds = self->thumbImage.time;
     if (seekTimeMilliSeconds < 0)
       seekTimeMilliSeconds = 0;

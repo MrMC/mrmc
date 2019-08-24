@@ -176,6 +176,7 @@ void CProgressThumbNailer::RequestThumbAsScreenCapture(double seconds)
 #if enableDebugLogging
         CLog::Log(LOGDEBUG, "RequestThumbAsScreenCapture - requested(%d)", m_seekTimeMilliSeconds);
 #endif
+        thumbNailerImage.isCapture = true;
         thumbNailerImage.time = m_seekTimeMilliSeconds;
         thumbNailerImage.image = cgImageRef;
         CSingleLock lock(m_thumbImagesCritical);
