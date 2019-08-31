@@ -1432,6 +1432,13 @@ ORIENTATION swipeStartingFocusedOrientation;
       {
         CLog::Log(LOGDEBUG, "shouldReceivePress:focusedWindowID == WINDOW_HOME");
         handled = NO;
+        if (g_application.m_pPlayer->IsPlayingVideo())
+        {
+          // if video playing, need to check stopPlaybackOnMenu
+          // to see if we should just exit or return to fullscreen video
+          if (!m_stopPlaybackOnMenu)
+            handled = YES;
+        }
       }
       break;
     }
