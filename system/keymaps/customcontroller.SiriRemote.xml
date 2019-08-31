@@ -59,7 +59,7 @@
   </global>
   <Home>
     <customcontroller name="SiriRemote">
-      <button id="6">ActivateWindow(Favourites)</button>
+      <button id="7">ActivateWindow(Favourites)</button>
     </customcontroller>
   </Home>
   <FullscreenVideo>
