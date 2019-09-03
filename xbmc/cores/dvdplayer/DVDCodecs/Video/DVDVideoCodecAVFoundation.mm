@@ -36,6 +36,7 @@
 #import "settings/Settings.h"
 #import "settings/MediaSettings.h"
 #import "utils/BitstreamConverter.h"
+#import "utils/StringObfuscation.h"
 #import "utils/log.h"
 
 // tracks pts in and output queue in display order
@@ -150,6 +151,12 @@ protected:
   pthread_mutex_t       m_mutex;
   std::queue<AVMESSAGE> m_messages;
 };
+
+@interface AVSampleBufferDisplayLayer (WebCoreAVSampleBufferDisplayLayerQueueManagementPrivate)
+- (void)prerollDecodeWithCompletionHandler:(void (^)(BOOL success))block;
+- (void)expectMinimumUpcomingSampleBufferPresentationTime: (CMTime)minimumUpcomingPresentationTime;
+- (void)resetUpcomingSampleBufferPresentationTimeExpectations;
+@end
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -415,7 +422,6 @@ bool CDVDVideoCodecAVFoundation::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
-
     // VideoLayerView create MUST be done on main thread or
     // it will not get updates when a new video frame is decoded and presented.
     __block VideoLayerView *mcview = nullptr;
@@ -509,6 +515,31 @@ int CDVDVideoCodecAVFoundation::Decode(uint8_t* pData, int iSize, double dts, do
     pthread_mutex_lock(&m_sampleBuffersMutex);
     m_sampleBuffers.push(sampleBuffer);
     pthread_mutex_unlock(&m_sampleBuffersMutex);
+
+    if (__builtin_available(tvOS 13.0, *))
+    {
+      if (pts != DVD_NOPTS_VALUE && m_pts != DVD_NOPTS_VALUE && pts > m_pts)
+      {
+        using namespace StringObfuscation;
+        static std::string neveryyoumind = ObfuscateString("expectMinimumUpcomingSampleBufferPresentationTime:");
+        NSString *nsString = [NSString stringWithCString:neveryyoumind.c_str() encoding:[NSString defaultCStringEncoding]];
+        SEL selector = NSSelectorFromString(nsString);
+        dispatch_sync(dispatch_get_main_queue(),^{
+          VideoLayerView *mcview = (VideoLayerView*)m_decoder;
+          AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)mcview.layer;
+          if ([videolayer respondsToSelector:selector])
+            ((void (*)(id, SEL, CMTime))[videolayer methodForSelector:selector])(videolayer, selector, sampleTimingInfo.presentationTimeStamp);
+        });
+/*
+        dispatch_sync(dispatch_get_main_queue(),^{
+          VideoLayerView *mcview = (VideoLayerView*)m_decoder;
+          AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)mcview.layer;
+          if ([videolayer respondsToSelector:@selector(expectMinimumUpcomingSampleBufferPresentationTime:)])
+            [videolayer expectMinimumUpcomingSampleBufferPresentationTime:sampleTimingInfo.presentationTimeStamp];
+        });
+*/
+      }
+    }
 
     m_dts = dts;
     m_pts = pts;
@@ -686,12 +717,26 @@ void CDVDVideoCodecAVFoundation::Process()
         dispatch_sync(dispatch_get_main_queue(),^{
           // Flush the previous enqueued sample buffers for display while scrubbing
           DrainQueues();
-          VideoLayerView *mcview = (VideoLayerView*)m_decoder;
-          AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)mcview.layer;
-          [videolayer flush];
+            VideoLayerView *mcview = (VideoLayerView*)m_decoder;
+            AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)mcview.layer;
+
+            if (__builtin_available(tvOS 13.0, *))
+            {
+              using namespace StringObfuscation;
+              static std::string neveryyoumind = ObfuscateString("resetUpcomingSampleBufferPresentationTimeExpectations:");
+              NSString *nsString = [NSString stringWithCString:neveryyoumind.c_str() encoding:[NSString defaultCStringEncoding]];
+              SEL selector = NSSelectorFromString(nsString);
+              if ([videolayer respondsToSelector:selector])
+                ((void (*)(id, SEL))[videolayer methodForSelector:selector])(videolayer, selector);
+              /*
+              if ([videolayer respondsToSelector:@selector(resetUpcomingSampleBufferPresentationTimeExpectations)])
+                [videolayer resetUpcomingSampleBufferPresentationTimeExpectations];
+              */
+            }
+            [videolayer flush];
         });
-        message = NONE;
         CLog::Log(LOGDEBUG, "%s - CDVDVideoCodecAVFoundation::Reset", __FUNCTION__);
+        message = NONE;
       }
       break;
 
@@ -734,9 +779,9 @@ void CDVDVideoCodecAVFoundation::Process()
             if (error > 0.150)
             {
               //dispatch_sync(dispatch_get_main_queue(),^{
-                CLog::Log(LOGDEBUG, "adjusting playback "
-                  "timeBase_s(%f) player_s(%f), sampleBuffers(%lu), trackerQueue(%lu)",
-                   timeBase_s, player_s, m_sampleBuffers.size(), m_trackerQueue.size());
+                //CLog::Log(LOGDEBUG, "adjusting playback "
+                //  "timeBase_s(%f) player_s(%f), sampleBuffers(%lu), trackerQueue(%lu)",
+                //   timeBase_s, player_s, m_sampleBuffers.size(), m_trackerQueue.size());
                 CMTimebaseSetTime(videolayer.controlTimebase, CMTimeMake(player_s, 1));
                 CMTimebaseSetRate(videolayer.controlTimebase, 1.0);
               //});
