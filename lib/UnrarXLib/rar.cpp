@@ -146,7 +146,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
   int bRes = 1;
 
   // Set the arguments for the extract command
-  auto_ptr<CommandData> pCmd (new CommandData);
+  unique_ptr<CommandData> pCmd (new CommandData);
 
   if( pCmd.get() )
   {
@@ -179,7 +179,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
       }
 
     // Opent the archive    
-    auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
+    unique_ptr<Archive> pArc( new Archive(pCmd.get()) );
     
     if( pArc.get() )
     {
@@ -188,7 +188,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 
       if (pArc->IsOpened() && pArc->IsArchive(true))
       {
-        auto_ptr<CmdExtract> pExtract( new CmdExtract );
+        unique_ptr<CmdExtract> pExtract( new CmdExtract );
         
         if( pExtract.get() )
         {
@@ -281,7 +281,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
   InitCRC();
 
   // Set the arguments for the extract command
-  auto_ptr<CommandData> pCmd( new CommandData );
+  unique_ptr<CommandData> pCmd( new CommandData );
 
   {
     strcpy(pCmd->Command, "L");
@@ -297,7 +297,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
     }
 
     // Opent the archive
-    auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
+    unique_ptr<Archive> pArc( new Archive(pCmd.get()) );
     if ( pArc.get() )
     {
       if (!pArc->WOpen(rarfile,NULL))
