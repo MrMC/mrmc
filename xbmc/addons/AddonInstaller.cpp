@@ -75,8 +75,9 @@ CAddonInstaller &CAddonInstaller::GetInstance()
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   CSingleLock lock(m_critSection);
-  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
-  if (i != m_downloadJobs.end())
+  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
+    return p.second.jobID == jobID;
+  });  if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
   lock.Leave();
   PrunePackageCache();
@@ -88,7 +89,9 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
 {
   CSingleLock lock(m_critSection);
-  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
+    return p.second.jobID == jobID;
+  });
   if (i != m_downloadJobs.end())
   {
     // update job progress
