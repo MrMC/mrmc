@@ -295,16 +295,15 @@ case $host in
             11.2);;
             11.3);;
             11.4);;
-            12.0);;
-            12.1);;
-            12.2);;
+            12.*);;
+            13.*);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
           esac
           use_simulator=yes
           sdk_name=iphonesimulator$use_sdk
           platform_cflags+=" -Wno-error=implicit-function-declaration"
-          platform_min_version="ios-simulator-version-min=10.2"
+          platform_min_version="ios-simulator-version-min=11.2"
         elif test "$use_platform" = "tvos-simulator"; then
           case $use_sdk in
             9.0);;
@@ -314,16 +313,15 @@ case $host in
             11.2);;
             11.3);;
             11.4);;
-            12.0);;
-            12.1);;
-            12.2);;
+            12.*);;
+            13.*);;
            *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
           esac
           use_simulator=yes
           sdk_name=appletvsimulator$use_sdk
           platform_cflags+=" -Wno-error=implicit-function-declaration"
-          platform_min_version="tvos-simulator-version-min=10.2"
+          platform_min_version="tvos-simulator-version-min=11.2"
         else
           case $use_sdk in
             10.5);;
@@ -369,12 +367,12 @@ case $host in
           found_sdk_version=[`$use_xcodebuild -showsdks | grep appletvos | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
           sdk_name=appletvos$use_sdk
-          platform_min_version="appletvos-version-min=10.2"
+          platform_min_version="appletvos-version-min=11.2"
         else
           found_sdk_version=[`$use_xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
           sdk_name=iphoneos$use_sdk
-          platform_min_version="iphoneos-version-min=10.2"
+          platform_min_version="iphoneos-version-min=11.2"
         fi
         platform_cflags+=" -fembed-bitcode"
         platform_cxxflags+=" -fembed-bitcode"
@@ -390,6 +388,7 @@ case $host in
           10.*);;
           11.*);;
           12.*);;
+          13.*);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;
