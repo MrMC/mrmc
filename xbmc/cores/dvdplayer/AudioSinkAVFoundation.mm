@@ -190,6 +190,13 @@ void CAudioSinkAVFoundation::Flush()
     m_sink->AVAudioSinkFlush();
 }
 
+bool CAudioSinkAVFoundation::Initialized()
+{
+  if (m_sink)
+    return m_sink->AVAudioSinkReady();
+  return true;
+}
+
 void CAudioSinkAVFoundation::Pause()
 {
   CSingleLock lock (m_critSection);

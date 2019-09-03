@@ -35,6 +35,7 @@ public:
   virtual void SetVolume(float fVolume) = 0;
   virtual void SetDynamicRangeCompression(long drc) = 0;
   virtual float GetCurrentAttenuation() = 0;
+  virtual bool Initialized() = 0;
   virtual void Pause() = 0;
   virtual void Resume() = 0;
   virtual bool Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler) = 0;

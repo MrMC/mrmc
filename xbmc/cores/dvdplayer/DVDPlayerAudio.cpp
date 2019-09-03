@@ -499,9 +499,7 @@ void CDVDPlayerAudio::Process()
           // signal to our parent that we have initialized
           if (m_syncState == IDVDStreamPlayer::SYNC_STARTING)
           {
-            double cachetotal = m_dvdAudio->GetCacheTotal();
-            double cachetime = m_dvdAudio->GetCacheTime();
-            if (cachetime >= cachetotal * 0.75)
+            if (m_dvdAudio->Initialized())
             {
               m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
               m_stalled = false;

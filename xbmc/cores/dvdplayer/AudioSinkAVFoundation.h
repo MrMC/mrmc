@@ -39,6 +39,7 @@ public:
   void SetVolume(float fVolume) {};
   void SetDynamicRangeCompression(long drc) {};
   float GetCurrentAttenuation() { return 1.0f; };
+  bool Initialized();
   void Pause();
   void Resume();
   bool Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler);

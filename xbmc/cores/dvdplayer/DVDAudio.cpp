@@ -192,6 +192,19 @@ float CDVDAudio::GetCurrentAttenuation()
     return 1.0f;
 }
 
+bool CDVDAudio::Initialized()
+{
+  CSingleLock lock (m_critSection);
+  double cachetime = 0.0;
+  double cachetotal = 0.0;
+  if (m_pAudioStream)
+  {
+    cachetime = m_pAudioStream->GetCacheTime();
+    cachetotal = m_pAudioStream->GetCacheTotal();
+  }
+  return (cachetime >= cachetotal * 0.75);
+}
+
 void CDVDAudio::Pause()
 {
   CSingleLock lock (m_critSection);
