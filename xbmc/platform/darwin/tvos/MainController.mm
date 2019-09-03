@@ -539,6 +539,7 @@ MainController *g_xbmcController;
 
   // restart ZeroConfig (if stopped)
   CNetworkServices::GetInstance().StartZeroconf();
+  CNetworkServices::GetInstance().StartJSONRPCServer();
   CNetworkServices::GetInstance().StartPlexServices();
   CNetworkServices::GetInstance().StartLightEffectServices();
   CNetworkServices::GetInstance().StartHueService();
@@ -647,6 +648,7 @@ MainController *g_xbmcController;
   g_Windowing.OnAppFocusChange(false);
 
   // Apple says to disable ZeroConfig when moving to background
+  CNetworkServices::GetInstance().StopJSONRPCServer(false);
   CNetworkServices::GetInstance().StopZeroconf();
   CNetworkServices::GetInstance().StopPlexServices();
   CNetworkServices::GetInstance().StopLightEffectServices();
