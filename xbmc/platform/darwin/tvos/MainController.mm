@@ -298,7 +298,7 @@ MainController *g_xbmcController;
   {
     if ([m_window respondsToSelector:@selector(avDisplayManager)])
     {
-      auto avDisplayManager = [m_window avDisplayManager];
+      AVDisplayManager *avDisplayManager = [m_window avDisplayManager];
       [avDisplayManager addObserver:self forKeyPath:@"displayModeSwitchInProgress" options:NSKeyValueObservingOptionNew context:nullptr];
     }
   }
@@ -327,7 +327,7 @@ MainController *g_xbmcController;
   {
     if ([m_window respondsToSelector:@selector(avDisplayManager)])
     {
-      auto avDisplayManager = [m_window avDisplayManager];
+      AVDisplayManager *avDisplayManager = [m_window avDisplayManager];
       [avDisplayManager removeObserver:self forKeyPath:@"displayModeSwitchInProgress"];
     }
   }
@@ -973,8 +973,8 @@ MainController *g_xbmcController;
       // tvOS 11.2 gets released.
       if ([m_window respondsToSelector:@selector(avDisplayManager)])
       {
-        auto avDisplayManager = [m_window avDisplayManager];
-        if (refreshRate > 0.0)
+        AVDisplayManager *avDisplayManager = [m_window avDisplayManager];
+        if (refreshRate > 0.0 && avDisplayManager.displayCriteriaMatchingEnabled)
         {
           // initWithRefreshRate is private in 11.2 beta4 but apple
           // will move it public at some time.
@@ -1006,14 +1006,20 @@ MainController *g_xbmcController;
           if (displayCriteria)
           {
             // setting preferredDisplayCriteria will trigger a display rate switch
-            avDisplayManager.preferredDisplayCriteria = displayCriteria;
+            dispatch_sync(dispatch_get_main_queue(),^{
+              if (avDisplayManager.displayCriteriaMatchingEnabled)
+                avDisplayManager.preferredDisplayCriteria = displayCriteria;
+            });
           }
         }
         else
         {
           // switch back to tvOS defined user settings if we get
           // zero or less than value for refreshRate. Should never happen :)
-          avDisplayManager.preferredDisplayCriteria = nil;
+          dispatch_sync(dispatch_get_main_queue(),^{
+            if (avDisplayManager.displayCriteriaMatchingEnabled)
+              avDisplayManager.preferredDisplayCriteria = nil;
+          });
         }
         std::string dynamicRangeString = "Unknown";
         switch(dynamicRange)
@@ -1046,8 +1052,11 @@ MainController *g_xbmcController;
       {
         // setting preferredDisplayCriteria to nil will
         // switch back to tvOS defined user settings
-        auto avDisplayManager = [m_window avDisplayManager];
-        avDisplayManager.preferredDisplayCriteria = nil;
+        AVDisplayManager *avDisplayManager = [m_window avDisplayManager];
+        dispatch_sync(dispatch_get_main_queue(),^{
+          if (avDisplayManager.displayCriteriaMatchingEnabled)
+            avDisplayManager.preferredDisplayCriteria = nil;
+        });
       }
     }
   }
@@ -1067,8 +1076,8 @@ MainController *g_xbmcController;
       float refreshRate = self.getDisplayRate;
       if ([m_window respondsToSelector:@selector(avDisplayManager)])
       {
-        auto avDisplayManager = [m_window avDisplayManager];
-        auto displayCriteria = avDisplayManager.preferredDisplayCriteria;
+        AVDisplayManager *avDisplayManager = [m_window avDisplayManager];
+        AVDisplayCriteria *displayCriteria = avDisplayManager.preferredDisplayCriteria;
         // preferredDisplayCriteria can be nil, this is NOT an error
         // and just indicates tvOS defined user settings which we cannot see.
         if (displayCriteria != nil)
