@@ -59,11 +59,11 @@ public:
   void Drain();
   void AbortAddPackets();
 
-  void SetSpeed(int iSpeed) {};
+  void SetSpeed(int iSpeed);
   void SetResampleRatio(double ratio) {};
 
   double GetClock();
-  double GetClockSpeed() { return 1.0; };
+  double GetClockSpeed();
 
 protected:
   virtual void Process();

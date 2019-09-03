@@ -308,6 +308,10 @@ void CAudioSinkAVFoundation::SetSyncErrorCorrection(double correction)
   m_syncErrorDVDTime += correction;
 }
 
+void CAudioSinkAVFoundation::SetSpeed(int iSpeed)
+{
+}
+
 double CAudioSinkAVFoundation::GetClock()
 {
   // return clock time in milliseconds (corrected for starting pts)
@@ -322,6 +326,14 @@ double CAudioSinkAVFoundation::GetClock()
     return (m_sink->AVAudioSinkTimeSeconds() + m_startPtsSeconds) * 1000.0;
   }
   return m_startPtsSeconds * 1000.0;
+}
+
+double CAudioSinkAVFoundation::GetClockSpeed()
+{
+  if (m_pClock)
+    return m_pClock->GetClockSpeed();
+  else
+    return 1.0;
 }
 
 void CAudioSinkAVFoundation::Process()
