@@ -24,6 +24,12 @@
 #define MCSAMPLEBUFFER_DEBUG_MESSAGES 0
 
 #pragma mark -
+#if !defined(__TVOS_13_0)
+@interface AVSampleBufferDisplayLayer()
+@property (nonatomic) BOOL preventsDisplaySleepDuringVideoPlayback;
+@end
+#endif
+
 @implementation VideoLayerView
 
 + (Class) layerClass
@@ -47,6 +53,11 @@
 
     // setup the time base clock stopped with a zero initial time.
     AVSampleBufferDisplayLayer *videolayer = (AVSampleBufferDisplayLayer*)[self layer];
+    if (__builtin_available(ios 13.0, tvOS 13.0, *))
+    {
+      if ([videolayer respondsToSelector:@selector(preventsDisplaySleepDuringVideoPlayback)])
+        videolayer.preventsDisplaySleepDuringVideoPlayback = YES;
+    }
     videolayer.controlTimebase = controlTimebase;
     CMTimebaseSetTime(videolayer.controlTimebase, kCMTimeZero);
     CMTimebaseSetRate(videolayer.controlTimebase, 0);
