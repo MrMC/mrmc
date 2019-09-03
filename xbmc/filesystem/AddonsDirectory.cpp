@@ -257,7 +257,7 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
   CAddonMgr::GetInstance().GetAllAddons(addons, true);
   CAddonMgr::GetInstance().GetAllAddons(addons, false);
   addons.erase(std::remove_if(addons.begin(), addons.end(),
-                              std::not1(std::ptr_fun(IsUserInstalled))), addons.end());
+                              std::not1(std::function<bool(const AddonPtr&)>(IsUserInstalled))), addons.end());
   if (addons.empty())
     return;
 
