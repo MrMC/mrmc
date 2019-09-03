@@ -537,12 +537,12 @@ MainController *g_xbmcController;
   // this will fire only if we are already alive and have 'menu'ed out and back
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::System, "xbmc", "OnWake");
 
-  // restart ZeroConfig (if stopped)
-  CNetworkServices::GetInstance().StartZeroconf();
-  CNetworkServices::GetInstance().StartJSONRPCServer();
-  CNetworkServices::GetInstance().StartPlexServices();
-  CNetworkServices::GetInstance().StartLightEffectServices();
-  CNetworkServices::GetInstance().StartHueService();
+  // restart NetworkServices (if stopped)
+  if (!CNetworkServices::GetInstance().IsZeroconfRunning())
+  {
+    CLog::Log(LOGDEBUG, "enterActiveDelayed: restarting network services");
+    CNetworkServices::GetInstance().Start();
+  }
 
   if (!CAEFactory::UsingExternalDevice())
   {
@@ -647,12 +647,10 @@ MainController *g_xbmcController;
 
   g_Windowing.OnAppFocusChange(false);
 
-  // Apple says to disable ZeroConfig when moving to background
-  CNetworkServices::GetInstance().StopJSONRPCServer(false);
-  CNetworkServices::GetInstance().StopZeroconf();
-  CNetworkServices::GetInstance().StopPlexServices();
-  CNetworkServices::GetInstance().StopLightEffectServices();
-  CNetworkServices::GetInstance().StopHueService();
+  CLog::Log(LOGDEBUG, "enterBackgroundDetached: signaling network services to stop");
+  CNetworkServices::GetInstance().Stop(false); // tell network services to stop, but don't wait for them yet
+  CLog::Log(LOGDEBUG, "enterBackgroundDetached: waiting for network services to stop");
+  CNetworkServices::GetInstance().Stop(true); // wait for network services to stop
 
   if (m_controllerState != MC_BACKGROUND)
   {
@@ -976,7 +974,7 @@ MainController *g_xbmcController;
       if ([m_window respondsToSelector:@selector(avDisplayManager)])
       {
         AVDisplayManager *avDisplayManager = [m_window avDisplayManager];
-        if (refreshRate > 0.0 && avDisplayManager.displayCriteriaMatchingEnabled)
+        if (refreshRate > 0.0)
         {
           // initWithRefreshRate is private in 11.2 beta4 but apple
           // will move it public at some time.
@@ -1009,8 +1007,15 @@ MainController *g_xbmcController;
           {
             // setting preferredDisplayCriteria will trigger a display rate switch
             dispatch_sync(dispatch_get_main_queue(),^{
-              if (avDisplayManager.displayCriteriaMatchingEnabled)
+              if (__builtin_available(tvOS 11.3, *))
+              {
+                if (avDisplayManager.displayCriteriaMatchingEnabled)
+                  avDisplayManager.preferredDisplayCriteria = displayCriteria;
+              }
+              else
+              {
                 avDisplayManager.preferredDisplayCriteria = displayCriteria;
+              }
             });
           }
         }
@@ -1019,8 +1024,15 @@ MainController *g_xbmcController;
           // switch back to tvOS defined user settings if we get
           // zero or less than value for refreshRate. Should never happen :)
           dispatch_sync(dispatch_get_main_queue(),^{
-            if (avDisplayManager.displayCriteriaMatchingEnabled)
+            if (__builtin_available(tvOS 11.3, *))
+            {
+              if (avDisplayManager.displayCriteriaMatchingEnabled)
+                avDisplayManager.preferredDisplayCriteria = nil;
+            }
+            else
+            {
               avDisplayManager.preferredDisplayCriteria = nil;
+            }
           });
         }
         std::string dynamicRangeString = "Unknown";
@@ -1056,8 +1068,15 @@ MainController *g_xbmcController;
         // switch back to tvOS defined user settings
         AVDisplayManager *avDisplayManager = [m_window avDisplayManager];
         dispatch_sync(dispatch_get_main_queue(),^{
-          if (avDisplayManager.displayCriteriaMatchingEnabled)
+          if (__builtin_available(tvOS 11.3, *))
+          {
+            if (avDisplayManager.displayCriteriaMatchingEnabled)
+              avDisplayManager.preferredDisplayCriteria = nil;
+          }
+          else
+          {
             avDisplayManager.preferredDisplayCriteria = nil;
+          }
         });
       }
     }
