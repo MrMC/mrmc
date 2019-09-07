@@ -4918,11 +4918,12 @@ void CGUIInfoManager::Clear()
     will remove those bools that are no longer dependencies of other bools
     in the vector.
    */
-  std::vector<InfoPtr>::iterator i = std::remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
+
+  std::vector<InfoPtr>::iterator i = std::remove_if(m_bools.begin(), m_bools.end(), std::mem_fn(&InfoPtr::unique));
   while (i != m_bools.end())
   {
     m_bools.erase(i, m_bools.end());
-    i = std::remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
+    i = std::remove_if(m_bools.begin(), m_bools.end(), std::mem_fn(&InfoPtr::unique));
   }
   // log which ones are used - they should all be gone by now
   for (std::vector<InfoPtr>::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
