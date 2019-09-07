@@ -3260,47 +3260,54 @@ CGRect debugView2;
   [commandCenter.changePlaybackPositionCommand addTarget:self action:@selector(onCCPlaybackPossition:)];
   
 }
-- (MPRemoteCommandHandlerStatus)onCCPlaybackPossition:(MPChangePlaybackPositionCommandEvent *) event
+- (MPRemoteCommandHandlerStatus)onCCPlaybackPossition:(MPChangePlaybackPositionCommandEvent*) event
 {
   g_application.SeekTime(event.positionTime);
-  
   return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCPlay:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCPlay:(MPRemoteCommandEvent*)event
 {
   //PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCStop:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCStop:(MPRemoteCommandEvent*)event
 {
   //PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCFF:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCFF:(MPRemoteCommandEvent*)event
 {
   //PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCREW:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCREW:(MPRemoteCommandEvent*)event
 {
   //PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCNext:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCNext:(MPRemoteCommandEvent*)event
 {
  // PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCPrev:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCPrev:(MPRemoteCommandEvent*)event
 {
  // PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCSkipNext:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCSkipNext:(MPRemoteCommandEvent*)event
 {
   CApplicationMessenger::GetInstance().PostMsg(
     TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STEP_FORWARD)));
  // PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCSkipPrev:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCSkipPrev:(MPRemoteCommandEvent*)event
 {
   CApplicationMessenger::GetInstance().PostMsg(
     TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STEP_BACK)));
  // PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
 
 @end

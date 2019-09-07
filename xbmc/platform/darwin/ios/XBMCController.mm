@@ -1314,29 +1314,35 @@ static int hasNotch = -1;
   g_application.SeekTime(event.positionTime);
   return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCPlay:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCPlay:(MPRemoteCommandEvent*)event
 {
   //PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCStop:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCStop:(MPRemoteCommandEvent*)event
 {
   //PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCFF:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCFF:(MPRemoteCommandEvent*)event
 {
   //PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCREW:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCREW:(MPRemoteCommandEvent*)event
 {
   //PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCNext:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCNext:(MPRemoteCommandEvent*)event
 {
   // PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
-- (void)onCCPrev:(MPRemoteCommandHandlerStatus*)event
+- (MPRemoteCommandHandlerStatus)onCCPrev:(MPRemoteCommandEvent*)event
 {
   // PRINT_SIGNATURE();
+  return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
