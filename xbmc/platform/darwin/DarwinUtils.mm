@@ -56,6 +56,7 @@
     #import "platform/darwin/tvos/MainController.h"
   #else
     #import "platform/darwin/RMStore/Optional/RMStoreKeychainPersistence.h"
+    #import "platform/darwin/ios/XBMCController.h"
   #endif
 #else
   #import <Cocoa/Cocoa.h>
@@ -1266,8 +1267,25 @@ void CDarwinUtils::CloneSystemFonts(const std::string &strPath)
 bool CDarwinUtils::IsDarkInterface()
 {
   bool ret = false;
-#if defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_IOS)
   ret = [g_xbmcController getIsDarkMode];
+#endif
+  return ret;
+}
+
+bool CDarwinUtils::CanHaveDarkInterface()
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_TVOS)
+  if (@available(tvOS 12.0, *))
+  {
+    ret = true;
+  }
+#elif defined(TARGET_DARWIN_IOS)
+  if (@available(iOS 13.0, *))
+  {
+    ret = true;
+  }
 #endif
   return ret;
 }

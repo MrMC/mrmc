@@ -38,6 +38,10 @@
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
 
+#if defined(TARGET_DARWIN_IOS)
+#include "platform/darwin/DarwinUtils.h"
+#endif
+
 #define XML_SETTINGS      "settings"
 #define XML_SETTING       "setting"
 #define XML_ATTR_TYPE     "type"
@@ -575,8 +579,11 @@ void CSkinInfo::SettingOptionsInterfaceAppearance(const CSetting *setting, std::
   // set current to setting value
   current = ((const CSettingInt*)setting)->GetValue();
 
-#if !(defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS))
-  // hide System on iOS as we still dont have Dark/Light mode on it
+#if (defined(TARGET_DARWIN_IOS))
+  // hide System on iOS < 13 as there is no Dark/Light mode on it
+  if (CDarwinUtils::CanHaveDarkInterface())
+    list.push_back(make_pair(g_localizeStrings.Get(22026), 0)); // System interface selection
+#elif
   list.push_back(make_pair(g_localizeStrings.Get(22026), 0)); // System interface selection
 #endif
   list.push_back(make_pair(g_localizeStrings.Get(22027), 1)); // Light interface selection

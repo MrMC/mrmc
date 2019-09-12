@@ -59,6 +59,7 @@ typedef enum
   NSConditionLock            *m_animationThreadLock;
   NSThread                   *m_animationThread;
   bool                        m_nativeKeyboardActive;
+  BOOL                        m_isDarkMode;
 }
 @property (nonatomic, retain) NSDictionary *m_nowPlayingInfo;
 @property (nonatomic, retain) NSTimer      *m_networkAutoSuspendTimer;
@@ -67,6 +68,7 @@ typedef enum
 @property bool                m_touchBeginSignaled;
 @property int                 m_screenIdx;
 @property CGSize              m_screensize;
+@property BOOL                m_isDarkMode;
 
 // message from which our instance is obtained
 - (void)onPlayDelayed:(NSDictionary *)item;
@@ -116,6 +118,8 @@ typedef enum
 
 - (void) insertVideoView:(UIView*)view;
 - (void) removeVideoView:(UIView*)view;
+- (bool) getIsDarkMode;
+- (void) setIsDarkMode:(BOOL)enable;
 @end
 
 extern XBMCController *g_xbmcController;

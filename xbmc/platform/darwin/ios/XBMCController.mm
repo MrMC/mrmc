@@ -76,6 +76,7 @@ XBMCController *g_xbmcController;
 @synthesize m_screensize;
 @synthesize m_networkAutoSuspendTimer;
 @synthesize m_nowPlayingInfo;
+@synthesize m_isDarkMode;
 
 static int hasNotch = -1;
 
@@ -576,6 +577,9 @@ static int hasNotch = -1;
   [super viewDidLoad];
   [self createCustomControlCenter];
   g_application.SetVolume(100, true);
+  if (@available(iOS 13.0, *)) {
+    [self setIsDarkMode:self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark];
+  }
 }
 //--------------------------------------------------------------
 - (void)dealloc
@@ -650,6 +654,18 @@ static int hasNotch = -1;
   
 }
 
+//--------------------------------------------------------------
+- (bool)getIsDarkMode
+{
+  return m_isDarkMode;
+}
+
+//--------------------------------------------------------------
+- (void)setIsDarkMode:(BOOL)enable;
+{
+  CLog::Log(LOGDEBUG, "setIsDarkMode %d", enable);
+  m_isDarkMode = enable;
+}
 
 //--------------------------------------------------------------
 - (BOOL)prefersHomeIndicatorAutoHidden
@@ -699,6 +715,22 @@ static int hasNotch = -1;
   else
     return FALSE;
 }
+
+//--------------------------------------------------------------
+- (void) traitCollectionDidChange: (UITraitCollection *) previousTraitCollection
+{
+  // system calls this method when the ios interface environment changes
+  [super traitCollectionDidChange: previousTraitCollection];
+  if (@available(iOS 13.0, *))
+  {
+    if (self.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle)
+    {
+      CLog::Log(LOGDEBUG, "tvOS userInterfaceStyle set to %s", self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark? "Dark":"Light");
+      [self setIsDarkMode:self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark];
+    }
+  }
+}
+
 //--------------------------------------------------------------
 - (CGSize) getScreenSize
 {

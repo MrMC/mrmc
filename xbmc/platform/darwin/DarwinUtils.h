@@ -72,6 +72,7 @@ public:
   static std::string GetHardwareUUID();
   static void        GetAppMemory(int64_t &free, int64_t &delta);
   static bool        IsDarkInterface();
+  static bool        CanHaveDarkInterface();
   static void        CloneSystemFonts(const std::string &strPath);
   static void        ClearIOSInbox();
   static void        SetMrMCTouchFlag();
