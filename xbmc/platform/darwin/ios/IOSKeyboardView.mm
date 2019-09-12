@@ -66,7 +66,11 @@ static CEvent keyboardFinishedEvent;
     _textField.borderStyle = UITextBorderStyleNone;
     _textField.returnKeyType = UIReturnKeyDone;
     _textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    _textField.backgroundColor = [UIColor whiteColor];
+    if (@available(iOS 13.0, *)) {
+      _textField.backgroundColor = [UIColor systemGray6Color];
+    } else {
+      _textField.backgroundColor = [UIColor whiteColor];
+    }
     _textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _textField.delegate = self;
     
@@ -74,7 +78,12 @@ static CEvent keyboardFinishedEvent;
     labelFrame.origin.x = 0;
     _heading = [[UITextField alloc] initWithFrame:labelFrame];
     _heading.borderStyle = UITextBorderStyleNone;
-    _heading.backgroundColor = [UIColor whiteColor];
+    if (@available(iOS 13.0, *)) {
+      _heading.backgroundColor = [UIColor systemGray6Color];
+    } else {
+      _heading.backgroundColor = [UIColor whiteColor];
+    }
+
     _heading.adjustsFontSizeToFitWidth = YES;
     _heading.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _heading.enabled = NO;
