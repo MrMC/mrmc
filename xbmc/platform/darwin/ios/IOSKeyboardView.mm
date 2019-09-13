@@ -72,11 +72,16 @@ static CEvent keyboardFinishedEvent;
       _textField.backgroundColor = [UIColor whiteColor];
     }
     _textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _textField.autocorrectionType = UITextAutocorrectionTypeNo;
     _textField.delegate = self;
     
     CGRect labelFrame = textFieldFrame;
     labelFrame.origin.x = 0;
     _heading = [[UITextField alloc] initWithFrame:labelFrame];
+    // add paddingWiew to move the text right
+    UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50, labelFrame.size.height)];
+    _heading.leftView = paddingView;
+    _heading.leftViewMode = UITextFieldViewModeAlways;
     _heading.borderStyle = UITextBorderStyleNone;
     if (@available(iOS 13.0, *)) {
       _heading.backgroundColor = [UIColor systemGray6Color];
@@ -130,68 +135,6 @@ static CEvent keyboardFinishedEvent;
   {
     return [self initWithFrameInternal];
   }
-  /*
-  self = [super initWithFrame:frame];
-  if (self) 
-  {
-    _iosKeyboard = nil;
-    _confirmed = NO;
-    _canceled = NULL;
-    _deactivated = NO;
-    
-    self.text = [NSMutableString stringWithString:@""];
-
-   // default input box position above the half screen.
-    CGRect textFieldFrame = CGRectMake(frame.size.width/2, 
-                                       frame.size.height/2-INPUT_BOX_HEIGHT-SPACE_BETWEEN_INPUT_AND_KEYBOARD, 
-                                       frame.size.width/2, 
-                                       INPUT_BOX_HEIGHT);
-    _textField = [[UITextField alloc] initWithFrame:textFieldFrame];
-    _textField.clearButtonMode = UITextFieldViewModeAlways;
-    // UITextBorderStyleRoundedRect; - with round rect we can't control backgroundcolor
-    _textField.borderStyle = UITextBorderStyleNone;    
-    _textField.returnKeyType = UIReturnKeyDone;
-    _textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    _textField.backgroundColor = [UIColor whiteColor];
-    _textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    _textField.delegate = self;
-    
-    CGRect labelFrame = textFieldFrame;
-    labelFrame.origin.x = 0;
-    _heading = [[UITextField alloc] initWithFrame:labelFrame];
-    _heading.borderStyle = UITextBorderStyleNone;
-    _heading.backgroundColor = [UIColor whiteColor];
-    _heading.adjustsFontSizeToFitWidth = YES;
-    _heading.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    _heading.enabled = NO;
-
-    [self addSubview:_heading];
-    [self addSubview:_textField];
-   
-    self.userInteractionEnabled = YES;
-
-    [self setAlpha:0.9];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textChanged:)
-                                                 name:UITextFieldTextDidChangeNotification
-                                               object:_textField];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(keyboardDidHide:) 
-                                                 name:UIKeyboardDidHideNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidChangeFrame:)
-                                                 name:UIKeyboardDidChangeFrameNotification 
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShow:)
-                                                 name:UIKeyboardDidShowNotification
-                                               object:nil];
-  }*/
   return self;
 }
 
@@ -202,7 +145,7 @@ static CEvent keyboardFinishedEvent;
   {
     CGSize headingSize = [_heading.text sizeWithAttributes:
                    @{NSFontAttributeName: [UIFont systemFontOfSize:[UIFont systemFontSize]]}];
-    headingW = MIN(self.bounds.size.width/2, headingSize.width+30);
+    headingW = MIN(self.bounds.size.width/2, headingSize.width+80);
   }
   CGFloat kbHeight = _kbRect.size.width;
 #if __IPHONE_8_0
