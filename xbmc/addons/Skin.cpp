@@ -579,11 +579,11 @@ void CSkinInfo::SettingOptionsInterfaceAppearance(const CSetting *setting, std::
   // set current to setting value
   current = ((const CSettingInt*)setting)->GetValue();
 
-#if (defined(TARGET_DARWIN_IOS))
+#if defined(TARGET_DARWIN_IOS)
   // hide System on iOS < 13 as there is no Dark/Light mode on it
   if (CDarwinUtils::CanHaveDarkInterface())
     list.push_back(make_pair(g_localizeStrings.Get(22026), 0)); // System interface selection
-#elif
+#else
   list.push_back(make_pair(g_localizeStrings.Get(22026), 0)); // System interface selection
 #endif
   list.push_back(make_pair(g_localizeStrings.Get(22027), 1)); // Light interface selection
