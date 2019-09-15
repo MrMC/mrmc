@@ -281,7 +281,14 @@ case $host in
         elif test "$use_platform" = "tvos-simulator"; then
           found_sdk_version=[`$use_xcodebuild -showsdks | grep appletvsimulator | sort | tail -n 1 | awk '{ print $4}'`]
         else
-          found_sdk_version=[`$use_xcodebuild -showsdks | sed -E -n 's/.*macosx([0-9]+)\.([0-9]+)/\1.\2/p' | sort  -n -t. -k1,1 -k2,2 | tail -n 1`]
+          case $use_xcode in
+            11.* | 11.*.* )
+              found_sdk_version=`xcrun --sdk macosx --show-sdk-version`
+              ;;
+            *)
+              found_sdk_version=`$use_xcodebuild -showsdks | sed -E -n 's/.*macOS ([0-9]+)\.([0-9]+)/\1.\2/p' | sort  -n -t. -k1,1 -k2,2 | tail -n 1`
+              ;;
+          esac
         fi
         use_sdk="${use_sdk:-$found_sdk_version}"
 
@@ -334,6 +341,7 @@ case $host in
             10.12);;
             10.13);;
             10.14);;
+            10.15);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
           esac
