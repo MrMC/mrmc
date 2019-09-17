@@ -1,3 +1,24 @@
+[B]3.7.56/B]
+fixed: allmusic scraping
+
+[B]3.7.5[/B]
+fixed: search results after MB API changes
+
+[B]3.7.4[/B]
+changed: dash is not replaced with /- any longer
+
+[B]3.7.3[/B]
+cleanup: sources and options what won't work
+
+[B]3.7.2[/B]
+Fixed: another try to fix all scenarios for mbid resolution
+
+[B]3.7.1[/B]
+Fixed: mbid resolution under certain scenarios
+
+[B]3.7.0[/B]
+Added: ability to define MusicBrainz mirror
+
 [B]3.6.2[/B]
 Update author name
 
