@@ -1,5 +1,11 @@
-[B]2.0.17[/B]
+[B]2.0.19[/B]
 - Fix crash for empty artwork
+
+[B]2.0.18[/B]
+- Fixed: Ratings for episodes not getting scraped
+
+[B]2.0.17[/B]
+- Added: Support slug URLs in nfo files
 
 [B]2.0.16[/B]
 - Fixed: DVD and Absolute episode ordering fixes
