@@ -1,3 +1,9 @@
+[B]2.9.11[/B]
+- fixed: search results for real
+
+[B]2.9.10[/B]
+- fixed: search results
+
 [B]2.9.9[/B]
 - changed: adjust search results parsing
 
