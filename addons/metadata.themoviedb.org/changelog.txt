@@ -1,3 +1,6 @@
+[B]4.1.6[/B]
+- fixed: search results
+
 [B]4.1.2[/B]
 - fixed: TMDb ratings
 
