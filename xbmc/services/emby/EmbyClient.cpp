@@ -349,14 +349,14 @@ bool CEmbyClient::GetMoviesFilters(CFileItemList &items, std::string url)
 
   bool rtn = false;
   CURL curl(url);
-  curl.SetFileName("Items/Filters");
-  std::string path = curl.Get();
-  CVariant variant = CEmbyUtils::GetEmbyCVariant(path);
-  if (variant.isNull())
-  {
-    CLog::Log(LOGERROR, "CEmbyClient::GetMoviesFilters: invalid response for views items from %s", CURL::GetRedacted(path).c_str());
-    return rtn;
-  }
+//  curl.SetFileName("Items/Filters");
+//  std::string path = curl.Get();
+//  CVariant variant = CEmbyUtils::GetEmbyCVariant(path);
+//  if (variant.isNull())
+//  {
+//    CLog::Log(LOGERROR, "CEmbyClient::GetMoviesFilters: invalid response for views items from %s", CURL::GetRedacted(path).c_str());
+//    return rtn;
+//  }
   // Set Title item as emby doesnt have that??
   CFileItemPtr newItem(new CFileItem());
   newItem->m_bIsFolder = true;
@@ -366,6 +366,12 @@ bool CEmbyClient::GetMoviesFilters(CFileItemList &items, std::string url)
   newItem->SetPath("emby://movies/titles/" + Base64URL::Encode(curl.Get()));
   CEmbyUtils::SetEmbyItemProperties(*newItem, "filter");
   items.Add(newItem);
+
+  // hardcode filter options, why Emby removed that is unknown
+  CVariant variant;
+  variant["Genres"] = 1;
+  variant["Years"] = 1;
+  variant["Collections"] = 1;
 
   for (auto variantItemIt = variant.begin_map(); variantItemIt != variant.end_map(); ++variantItemIt)
   {
@@ -442,14 +448,14 @@ bool CEmbyClient::GetTVShowFilters(CFileItemList &items, std::string url)
 
   bool rtn = false;
   CURL curl(url);
-  curl.SetFileName("Items/Filters");
-  std::string path = curl.Get();
-  CVariant variant = CEmbyUtils::GetEmbyCVariant(path);
-  if (variant.isNull())
-  {
-    CLog::Log(LOGERROR, "CEmbyClient::GetMoviesFilters: invalid response for views items from %s", CURL::GetRedacted(path).c_str());
-    return rtn;
-  }
+//  curl.SetFileName("Items/Filters");
+//  std::string path = curl.Get();
+//  CVariant variant = CEmbyUtils::GetEmbyCVariant(path);
+//  if (variant.isNull())
+//  {
+//    CLog::Log(LOGERROR, "CEmbyClient::GetMoviesFilters: invalid response for views items from %s", CURL::GetRedacted(path).c_str());
+//    return rtn;
+//  }
   // Set Title item as emby doesnt have that??
   CFileItemPtr newItem(new CFileItem());
   newItem->m_bIsFolder = true;
@@ -459,6 +465,12 @@ bool CEmbyClient::GetTVShowFilters(CFileItemList &items, std::string url)
   newItem->SetPath("emby://tvshows/titles/" + Base64URL::Encode(curl.Get()));
   CEmbyUtils::SetEmbyItemProperties(*newItem, "filter");
   items.Add(newItem);
+
+  // hardcode filter options, why Emby removed that is unknown
+  CVariant variant;
+  variant["Genres"] = 1;
+  variant["Years"] = 1;
+//  variant["Collections"] = 1;
 
   for (auto variantItemIt = variant.begin_map(); variantItemIt != variant.end_map(); ++variantItemIt)
   {
