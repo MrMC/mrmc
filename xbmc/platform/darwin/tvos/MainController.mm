@@ -303,6 +303,9 @@ MainController *g_xbmcController;
     }
   }
   g_application.SetVolume(100, true);
+  if (@available(tvOS 10.0, *)) {
+    [self setIsDarkMode:self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark];
+  }
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
