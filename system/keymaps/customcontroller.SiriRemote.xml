@@ -57,11 +57,6 @@
       <!-- page down -->       <button id="24">PageDown</button>
     </customcontroller>
   </global>
-  <Home>
-    <customcontroller name="SiriRemote">
-      <button id="7">ActivateWindow(Favourites)</button>
-    </customcontroller>
-  </Home>
   <FullscreenVideo>
     <customcontroller name="SiriRemote">
       <button id="1">ChapterOrBigStepForward</button>
