@@ -1277,7 +1277,7 @@ bool CDarwinUtils::CanHaveDarkInterface()
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_TVOS)
-  if (@available(tvOS 12.0, *))
+  if (@available(tvOS 10.0, *))
   {
     ret = true;
   }
