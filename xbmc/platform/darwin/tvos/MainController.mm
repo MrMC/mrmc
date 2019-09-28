@@ -75,6 +75,7 @@
 #if __TVOS_11_2
   #import <AVFoundation/AVDisplayCriteria.h>
   #import <AVKit/AVDisplayManager.h>
+  #import <AVKit/AVRoutePickerView.h>
   #import <AVKit/UIWindow.h>
 
   @interface AVDisplayCriteria()
@@ -136,6 +137,7 @@ MainController *g_xbmcController;
 //--------------------------------------------------------------
 #pragma mark - MainController interface
 @interface MainController ()
+@property (nonatomic, nullable) AVRoutePickerView *routePickerView;
 @property (strong, nonatomic) NSTimer *pressAutoRepeatTimer;
 @property (nonatomic, strong) CADisplayLink *displayLink;
 @property (nonatomic, assign) float displayRate;
@@ -277,6 +279,8 @@ MainController *g_xbmcController;
   [self.focusView addSubview:self.focusViewLeft];
   [self.focusView addSubview:self.focusViewRight];
   [self.focusView addSubview:self.focusViewBottom];
+
+  self.routePickerView =  nullptr;
 }
 //--------------------------------------------------------------
 - (void)viewDidLoad
@@ -595,12 +599,20 @@ MainController *g_xbmcController;
 - (void)becomeActive
 {
   PRINT_SIGNATURE();
+  // check is audio route picker was up
+  // it will force this controller to inactive
+  if (self.routePickerView)
+  {
+    // audio route picker was up, remove/delete it
+    [self.routePickerView removeFromSuperview];
+    self.routePickerView = nullptr;
+  }
   // stop background task (if running)
   [self disableBackGroundTask];
 
   SEL singleParamSelector = @selector(enterActiveDelayed:);
   [g_xbmcController performSelector:singleParamSelector withObject:nil afterDelay:2.0];
-    [self performSelectorOnMainThread:@selector(updateFocusLayer) withObject:nil  waitUntilDone:NO];
+  [self performSelectorOnMainThread:@selector(updateFocusLayer) withObject:nil  waitUntilDone:NO];
   
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::GUI, "xbmc", "OnScreensaverDeactivated");
 }
@@ -1922,6 +1934,20 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           [self sendButtonPressed:SiriRemote_IR_FastForward];
           [self sendButtonPressed:SiriRemote_IR_FastForward];
           break;
+        case TOUCH_CENTER:
+        {
+          if (!self.routePickerView)
+          {
+            CLog::Log(LOGDEBUG, "SiriLongSelectHoldHandler:StateBegan:TOUCH_CENTER");
+            self.routePickerView = [[AVRoutePickerView alloc] initWithFrame:CGRectMake(0.0f, 30.0f, 30.0f, 30.0f)];
+            self.routePickerView.activeTintColor = [UIColor clearColor];
+            self.routePickerView.hidden = YES;
+            self.routePickerView.userInteractionEnabled = YES;
+            [self.view addSubview:self.routePickerView];
+            UIButton *routePickerButton = self.routePickerView.subviews.firstObject;
+            [routePickerButton sendActionsForControlEvents: UIControlEventTouchUpInside];
+          }
+        }
         default:
           break;
       }
