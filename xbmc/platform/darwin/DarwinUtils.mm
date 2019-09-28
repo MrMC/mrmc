@@ -132,6 +132,7 @@ enum iosPlatform
   iPhone7,
   iPhone8,
   iPhoneXR,
+  iPhone11,
   iPadAir2Wifi,
   iPadAir2Cellular,
   iPadPro9_7InchWifi,
@@ -159,6 +160,8 @@ enum iosPlatform
   iPhoneX,
   iPhoneXS,
   iPhoneXSMax,
+  iPhone11Pro,
+  iPhone11ProMax,
 };
 
 CDarwinUtils& CDarwinUtils::GetInstance()
@@ -242,8 +245,10 @@ enum iosPlatform getIosPlatform()
       case "iPhone10,5"_mkhash: eDev = iPhone8Plus; break;
       case "iPhone10,6"_mkhash: eDev = iPhoneX; break;
       case "iPhone11,2"_mkhash: eDev = iPhoneXS; break;
-      case "iPhone11,6"_mkhash: eDev = iPhoneXSMax; break;
       case "iPhone11,8"_mkhash: eDev = iPhoneXR; break;
+      case "iPhone12,1"_mkhash: eDev = iPhone11; break;
+      case "iPhone12,3"_mkhash: eDev = iPhoneXSMax; break;
+      case "iPhone12,5"_mkhash: eDev = iPhone11ProMax; break;
       case "iPod1,1"_mkhash: eDev = iPodTouch1G; break;
       case "iPod2,1"_mkhash: eDev = iPodTouch2G; break;
       case "iPod3,1"_mkhash: eDev = iPodTouch3G; break;
