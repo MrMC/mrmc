@@ -253,11 +253,19 @@ void CAdvancedSettings::Initialize()
   m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
+  m_videoExcludeFromListingRegExps.clear();
+  m_videoExcludeFromListingRegExps.push_back("\\@eaDir");          // Synology makes these
+  m_audioExcludeFromListingRegExps.clear();
+  m_audioExcludeFromListingRegExps.push_back("\\@eaDir");
+  m_pictureExcludeFromListingRegExps.clear();
+  m_pictureExcludeFromListingRegExps.push_back("\\@eaDir");
+
   m_moviesExcludeFromScanRegExps.clear();
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
   m_moviesExcludeFromScanRegExps.push_back("[\\/].+\\.ite[\\/]");  // ignore itunes extras dir
   m_moviesExcludeFromScanRegExps.push_back("[\\/].+\\.itlp[\\/]"); // ignore itunes lp dir
   m_moviesExcludeFromScanRegExps.push_back("[\\/]\\.\\_");
+  m_moviesExcludeFromScanRegExps.push_back("\\@eaDir");
   m_moviesExcludeFromScanRegExps.push_back("\\.DS_Store");
   m_moviesExcludeFromScanRegExps.push_back("\\.AppleDouble");
   m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
@@ -268,6 +276,7 @@ void CAdvancedSettings::Initialize()
   m_tvshowExcludeFromScanRegExps.push_back("[\\/].+\\.ite[\\/]");  // ignore itunes extras dir
   m_tvshowExcludeFromScanRegExps.push_back("[\\/].+\\.itlp[\\/]"); // ignore itunes lp dir
   m_tvshowExcludeFromScanRegExps.push_back("[\\/]\\.\\_");
+  m_tvshowExcludeFromScanRegExps.push_back("\\@eaDir");
   m_tvshowExcludeFromScanRegExps.push_back("\\.DS_Store");
   m_tvshowExcludeFromScanRegExps.push_back("\\.AppleDouble");
   m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
@@ -277,6 +286,7 @@ void CAdvancedSettings::Initialize()
   m_audioExcludeFromScanRegExps.push_back("[\\/].+\\.ite[\\/]");  // ignore itunes extras dir
   m_audioExcludeFromScanRegExps.push_back("[\\/].+\\.itlp[\\/]"); // ignore itunes lp dir
   m_audioExcludeFromScanRegExps.push_back("[\\/]\\.\\_");
+  m_audioExcludeFromScanRegExps.push_back("\\@eaDir");
   m_audioExcludeFromScanRegExps.push_back("\\.DS_Store");
   m_audioExcludeFromScanRegExps.push_back("\\.AppleDouble");
   m_audioExcludeFromScanRegExps.push_back("_gsdata_");
