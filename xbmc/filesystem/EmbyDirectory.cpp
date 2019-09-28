@@ -578,18 +578,22 @@ bool CEmbyDirectory::FindByBroadcast(CFileItemList &items)
 
             items.Add(local);
 
-            CFileItemPtr remote(new CFileItem("", true));
-            CURL curl2(embyServerInfo.WanAddress);
-            curl2.SetProtocol("emby");
-            // set a magic key
-            curl1.SetFileName("wan");
-            remote->SetPath(curl2.Get());
-            remote->SetLabel(embyServerInfo.ServerName + " (wan)");
-            remote->SetLabelPreformated(true);
-            //just set the default folder icon
-            remote->FillInDefaultIcon();
-            remote->m_bIsShareOrDrive = true;
-            items.Add(remote);
+            // jellyfin does use WanAddress and it might be missing
+            if (!embyServerInfo.WanAddress.empty())
+            {
+              CFileItemPtr remote(new CFileItem("", true));
+              CURL curl2(embyServerInfo.WanAddress);
+              curl2.SetProtocol("emby");
+              // set a magic key
+              curl1.SetFileName("wan");
+              remote->SetPath(curl2.Get());
+              remote->SetLabel(embyServerInfo.ServerName + " (wan)");
+              remote->SetLabelPreformated(true);
+              //just set the default folder icon
+              remote->FillInDefaultIcon();
+              remote->m_bIsShareOrDrive = true;
+              items.Add(remote);
+            }
             rtn = true;
           }
         }

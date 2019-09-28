@@ -705,7 +705,6 @@ EmbyServerInfo CEmbyServices::GetEmbyLocalServerInfo(const std::string url)
       !responseObj.isMember(ServerPropertyId) ||
       !responseObj.isMember(ServerPropertyName) ||
       !responseObj.isMember(ServerPropertyVersion) ||
-//      !responseObj.isMember(ServerPropertyWanAddress) ||
       !responseObj.isMember(ServerPropertyLocalAddress))
     return serverInfo;
 
@@ -716,7 +715,9 @@ EmbyServerInfo CEmbyServices::GetEmbyLocalServerInfo(const std::string url)
   serverInfo.ServerId = responseObj[ServerPropertyId].asString();
   serverInfo.ServerURL = curl.GetWithoutFilename();
   serverInfo.ServerName = responseObj[ServerPropertyName].asString();
-  serverInfo.WanAddress = responseObj[ServerPropertyWanAddress].asString();
+  // jellyfin does use WanAddress and it might be missing
+  if (responseObj.isMember(ServerPropertyWanAddress))
+    serverInfo.WanAddress = responseObj[ServerPropertyWanAddress].asString();
   serverInfo.LocalAddress = responseObj[ServerPropertyLocalAddress].asString();
   return serverInfo;
 }
@@ -990,9 +991,17 @@ EmbyServerInfoVector CEmbyServices::GetConnectServerList(const std::string &conn
         serverInfo.WanAddress= server["Url"].asString();
         serverInfo.LocalAddress= server["LocalAddress"].asString();
         if (IsInSubNet(CURL(serverInfo.LocalAddress)))
+        {
           serverInfo.ServerURL= serverInfo.LocalAddress;
+        }
         else
-          serverInfo.ServerURL= serverInfo.WanAddress;
+        {
+          // jellyfin does use WanAddress and it might be missing
+          if (!serverInfo.WanAddress.empty())
+            serverInfo.ServerURL= serverInfo.WanAddress;
+          else
+            serverInfo.ServerURL= serverInfo.LocalAddress;
+        }
         if (ExchangeAccessKeyForAccessToken(serverInfo))
           servers.push_back(serverInfo);
       }
