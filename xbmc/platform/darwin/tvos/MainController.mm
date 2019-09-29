@@ -697,6 +697,30 @@ MainController *g_xbmcController;
 #pragma mark - helper methods/routines
 //--------------------------------------------------------------
 //--------------------------------------------------------------
+- (void) showAudioRoutePicker;
+{
+  if (!self.routePickerView)
+  {
+    // popup tvOS audio route picker UIView,
+    // this will deactivate this controller as routePickerView
+    // takes over. When routePickerView closes, we activate
+    // so in becomeActive, delete routePickerView.
+    dispatch_async(dispatch_get_main_queue(),^{
+      // check again in async dispatch, there can be only one.
+      if (!self.routePickerView)
+      {
+        self.routePickerView = [[AVRoutePickerView alloc] initWithFrame:CGRectMake(0.0f, 30.0f, 30.0f, 30.0f)];
+        self.routePickerView.activeTintColor = [UIColor clearColor];
+        self.routePickerView.hidden = YES;
+        self.routePickerView.userInteractionEnabled = YES;
+        [self.view addSubview:self.routePickerView];
+        UIButton *routePickerButton = self.routePickerView.subviews.firstObject;
+        [routePickerButton sendActionsForControlEvents: UIControlEventTouchUpInside];
+      }
+    });
+  }
+}
+//--------------------------------------------------------------
 - (void)audioRouteChanged
 {
   PRINT_SIGNATURE();
@@ -1263,7 +1287,6 @@ MainController *g_xbmcController;
   longSelectRecognizer.minimumPressDuration = 0.001;
   longSelectRecognizer.delegate = self;
   [self.focusView addGestureRecognizer: longSelectRecognizer];
-
   auto selectRecognizer = [[UITapGestureRecognizer alloc]
     initWithTarget: self action: @selector(SiriLongSelectHandler:)];
   selectRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
@@ -1271,10 +1294,17 @@ MainController *g_xbmcController;
   [selectRecognizer requireGestureRecognizerToFail:longSelectRecognizer];
   [self.focusView addGestureRecognizer: selectRecognizer];
   
+  auto longPlayPauseRecognizer = [[UILongPressGestureRecognizer alloc]
+    initWithTarget: self action: @selector(SiriPlayPauseHandler:)];
+  longPlayPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
+  longPlayPauseRecognizer.minimumPressDuration = 0.001;
+  longPlayPauseRecognizer.delegate = self;
+  [self.focusView addGestureRecognizer: longPlayPauseRecognizer];
   auto playPauseRecognizer = [[UITapGestureRecognizer alloc]
     initWithTarget: self action: @selector(SiriPlayPauseHandler:)];
   playPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
   playPauseRecognizer.delegate  = self;
+  [playPauseRecognizer requireGestureRecognizerToFail:longPlayPauseRecognizer];
   [self.focusView addGestureRecognizer: playPauseRecognizer];
 
   // ir remote presses only, left/right/up/down
@@ -1887,16 +1917,35 @@ static CGPoint panTouchAbsStart;
       break;
   }
 }
+// TODO These should work but remoteControlReceivedWithEvent
+// is grabbing the play/pause down and we can't see the hold.
+//--------------------------------------------------------------
+- (void)SiriLongPlayHoldHandler
+{
+  PRINT_SIGNATURE();
+  self.m_playHoldCounter++;
+}
 //--------------------------------------------------------------
 - (void)SiriPlayPauseHandler:(UITapGestureRecognizer *) sender
 {
+  PRINT_SIGNATURE();
   switch (sender.state)
   {
+    case UIGestureRecognizerStateBegan:
+      {
+        self.m_playHoldCounter = 0;
+        self.m_playHoldTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(SiriLongPlayHoldHandler) userInfo:nil repeats:NO];
+      }
+      break;
     case UIGestureRecognizerStateEnded:
       #if logfocus
       CLog::Log(LOGDEBUG, "SiriPlayPauseHandler:StateEnded");
       #endif
-      [self sendButtonPressed:SiriRemote_PausePlayClick];
+      [self.m_playHoldTimer invalidate];
+      if (self.m_playHoldCounter == 1)
+        [self showAudioRoutePicker];
+      else
+        [self sendButtonPressed:SiriRemote_PausePlayClick];
       break;
     default:
       break;
@@ -1935,19 +1984,8 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           [self sendButtonPressed:SiriRemote_IR_FastForward];
           break;
         case TOUCH_CENTER:
-        {
-          if (!self.routePickerView)
-          {
-            CLog::Log(LOGDEBUG, "SiriLongSelectHoldHandler:StateBegan:TOUCH_CENTER");
-            self.routePickerView = [[AVRoutePickerView alloc] initWithFrame:CGRectMake(0.0f, 30.0f, 30.0f, 30.0f)];
-            self.routePickerView.activeTintColor = [UIColor clearColor];
-            self.routePickerView.hidden = YES;
-            self.routePickerView.userInteractionEnabled = YES;
-            [self.view addSubview:self.routePickerView];
-            UIButton *routePickerButton = self.routePickerView.subviews.firstObject;
-            [routePickerButton sendActionsForControlEvents: UIControlEventTouchUpInside];
-          }
-        }
+          // remove when we get SiriPlayPauseHandler working
+          [self showAudioRoutePicker];
         default:
           break;
       }
@@ -2382,6 +2420,7 @@ static CFAbsoluteTime keyPressTimerStartSeconds;
   #endif
   if (receivedEvent.type == UIEventTypeRemoteControl)
   {
+    PRINT_SIGNATURE();
     switch (receivedEvent.subtype)
     {
       case UIEventSubtypeRemoteControlPlay:
@@ -3255,7 +3294,13 @@ CGRect debugView2;
   // enable play button
   commandCenter.playCommand.enabled = YES;
   [commandCenter.playCommand addTarget:self action:@selector(onCCPlay:)];
-   
+  // enable pause button
+  commandCenter.pauseCommand.enabled = YES;
+  [commandCenter.pauseCommand addTarget:self action:@selector(onCCPlay:)];
+  // enable play/pause button
+  commandCenter.togglePlayPauseCommand.enabled = YES;
+  [commandCenter.togglePlayPauseCommand addTarget:self action:@selector(onCCPlay:)];
+
   // enable seek
   MPRemoteCommand *seekBackwardIntervalCommand = [commandCenter seekForwardCommand];
   [seekBackwardIntervalCommand setEnabled:YES];
@@ -3296,7 +3341,7 @@ CGRect debugView2;
 }
 - (MPRemoteCommandHandlerStatus)onCCPlay:(MPRemoteCommandEvent*)event
 {
-  //PRINT_SIGNATURE();
+  PRINT_SIGNATURE();
   return MPRemoteCommandHandlerStatusSuccess;
 }
 - (MPRemoteCommandHandlerStatus)onCCStop:(MPRemoteCommandEvent*)event
