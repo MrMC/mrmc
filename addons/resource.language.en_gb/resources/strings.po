@@ -10767,7 +10767,11 @@ msgctxt "#19294"
 msgid "Delete this recording permanently?"
 msgstr ""
 
-#empty strings from id 19295 to 19498
+msgctxt "#19295"
+msgid "Speaker"
+msgstr ""
+
+#empty strings from id 19296 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"

@@ -1295,6 +1295,13 @@ bool CDarwinUtils::CanHaveDarkInterface()
   return ret;
 }
 
+void CDarwinUtils::ShowAudioRoutePicker()
+{
+#if defined(TARGET_DARWIN_TVOS)
+  [g_xbmcController showAudioRoutePicker];
+#endif
+}
+
 void CDarwinUtils::ClearIOSInbox()
 {
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)

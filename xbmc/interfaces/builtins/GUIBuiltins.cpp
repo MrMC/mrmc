@@ -40,6 +40,10 @@
 #include "utils/AlarmClock.h"
 #include "windows/GUIMediaWindow.h"
 
+#if defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/DarwinUtils.h"
+#endif
+
 using namespace KODI::MESSAGING;
 
 /*! \brief Execute a GUI action.
@@ -411,6 +415,15 @@ static int ToggleDirty(const std::vector<std::string>&)
   return 0;
 }
 
+static int AudioRouteSelector(const std::vector<std::string>&)
+{
+#if defined(TARGET_DARWIN_TVOS)
+  CDarwinUtils::ShowAudioRoutePicker();
+#endif
+  return 0;
+}
+
+
 CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
 {
   return {
@@ -430,6 +443,9 @@ CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
            {"setproperty",                    {"Sets a window property for the current focused window/dialog (key,value)", 2, SetProperty}},
            {"setstereomode",                  {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)", 1, SetStereoMode}},
            {"takescreenshot",                 {"Takes a Screenshot", 0, Screenshot}},
+#if defined(TARGET_DARWIN_TVOS)
+           {"showaudiorouteselector",         {"Shows speaker selection on tvOS", 0, AudioRouteSelector}},
+#endif
            {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}}
          };
 }
