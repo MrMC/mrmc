@@ -514,7 +514,7 @@ void CEmbyServices::Process()
     if (signInByPin && g_application.getNetwork().IsConnected())
     {
       std::string ip;
-      if (CDNSNameCache::Lookup("connect.mediabrowser.tv", ip))
+      if (CDNSNameCache::Lookup("connect.emby.media", ip))
       {
         in_addr_t embydotcom = inet_addr(ip.c_str());
         if (g_application.getNetwork().PingHost(embydotcom, 0, 1000))
@@ -760,7 +760,7 @@ bool CEmbyServices::PostSignInPinCode()
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
 
-  CURL curl("https://connect.mediabrowser.tv");
+  CURL curl("https://connect.emby.media");
   curl.SetFileName("service/pin");
   curl.SetOption("format", "json");
 
@@ -863,7 +863,7 @@ bool CEmbyServices::GetSignInByPinReply()
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
 
-  CURL curl("https://connect.mediabrowser.tv");
+  CURL curl("https://connect.emby.media");
   curl.SetFileName("service/pin");
   curl.SetOption("format", "json");
   curl.SetOption("pin", m_signInByPinCode);
@@ -906,7 +906,7 @@ bool CEmbyServices::AuthenticatePinReply(const std::string &deviceId, const std:
   curlfile.SetRequestHeader("Cache-Control", "no-cache");
   curlfile.SetRequestHeader("Content-Type", "application/json");
 
-  CURL curl("https://connect.mediabrowser.tv");
+  CURL curl("https://connect.emby.media");
   curl.SetFileName("service/pin/authenticate");
   curl.SetOption("format", "json");
 
