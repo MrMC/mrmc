@@ -1553,9 +1553,16 @@ bool CApplication::Load(const TiXmlNode *settings)
   const TiXmlElement *audioElement = settings->FirstChildElement("audio");
   if (audioElement != NULL)
   {
+#if defined(TARGET_DARWIN_TVOS)
+    // Volume cant be muted or anything else other than maximum on tvOS
+    m_volumeLevel = VOLUME_MAXIMUM;
+    m_muted = false;
+#else
     XMLUtils::GetBoolean(audioElement, "mute", m_muted);
     if (!XMLUtils::GetFloat(audioElement, "fvolumelevel", m_volumeLevel, VOLUME_MINIMUM, VOLUME_MAXIMUM))
       m_volumeLevel = VOLUME_MAXIMUM;
+#endif
+
   }
 
   return true;
