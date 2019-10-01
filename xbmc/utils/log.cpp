@@ -21,6 +21,7 @@
 #include "log.h"
 #include "system.h"
 #include "URL.h"
+#include "Util.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
@@ -269,6 +270,9 @@ void CLog::UploadLogs()
     CLog::Log(LOGERROR, "%s: error getting username/password for NextCloud", __FUNCTION__);
     return;
   }
+
+  // Dump settings into Log
+  CUtil::DumpSettingsFile();
 
   std::string random = StringUtils::RandomAlphaNumeric(5);
   std::string response;
