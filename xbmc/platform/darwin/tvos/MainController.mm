@@ -474,6 +474,9 @@ MainController *g_xbmcController;
     if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
       return inActive;
 
+    if (g_application.m_pPlayer->IsPlayingVideo() && self.routePickerView)
+      return inActive;
+
     NSURL *url = [NSURL URLWithString:@"mrmc://wakeup"];
     if (CLiteUtils::IsLite())
       url = [NSURL URLWithString:@"mrmclite://wakeup"];
@@ -556,7 +559,7 @@ MainController *g_xbmcController;
   // wait for AE to wake
     XbmcThreads::EndTime timer(2000);
     while (CAEFactory::IsSuspended() && !timer.IsTimePast())
-      usleep(250*1000);
+      usleep(50*1000);
   }
 
   // handles a push into foreground by a topshelf item select/play
@@ -587,6 +590,7 @@ MainController *g_xbmcController;
         break;
     }
   }
+  // test logging of HDRMode
   int intHDRMode = 0;
   if (@available(tvOS 11.2, *)) {
     AVPlayerHDRMode HDRMode = AVPlayer.availableHDRModes;
@@ -599,10 +603,12 @@ MainController *g_xbmcController;
 - (void)becomeActive
 {
   PRINT_SIGNATURE();
+  bool waitBecomeActive = true;
   // check is audio route picker was up
   // it will force this controller to inactive
   if (self.routePickerView)
   {
+    waitBecomeActive = false;
     // audio route picker was up, remove/delete it
     [self.routePickerView removeFromSuperview];
     self.routePickerView = nullptr;
@@ -610,10 +616,17 @@ MainController *g_xbmcController;
   // stop background task (if running)
   [self disableBackGroundTask];
 
-  SEL singleParamSelector = @selector(enterActiveDelayed:);
-  [g_xbmcController performSelector:singleParamSelector withObject:nil afterDelay:2.0];
+  if (waitBecomeActive)
+  {
+    SEL singleParamSelector = @selector(enterActiveDelayed:);
+    [self performSelector:singleParamSelector withObject:nil afterDelay:2.0];
+  }
+  else
+  {
+    [self enterActiveDelayed:nil];
+  }
   [self performSelectorOnMainThread:@selector(updateFocusLayer) withObject:nil  waitUntilDone:NO];
-  
+
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::GUI, "xbmc", "OnScreensaverDeactivated");
 }
 //--------------------------------------------------------------
@@ -1294,17 +1307,10 @@ MainController *g_xbmcController;
   [selectRecognizer requireGestureRecognizerToFail:longSelectRecognizer];
   [self.focusView addGestureRecognizer: selectRecognizer];
   
-  auto longPlayPauseRecognizer = [[UILongPressGestureRecognizer alloc]
-    initWithTarget: self action: @selector(SiriPlayPauseHandler:)];
-  longPlayPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
-  longPlayPauseRecognizer.minimumPressDuration = 0.001;
-  longPlayPauseRecognizer.delegate = self;
-  [self.focusView addGestureRecognizer: longPlayPauseRecognizer];
   auto playPauseRecognizer = [[UITapGestureRecognizer alloc]
     initWithTarget: self action: @selector(SiriPlayPauseHandler:)];
   playPauseRecognizer.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
   playPauseRecognizer.delegate  = self;
-  [playPauseRecognizer requireGestureRecognizerToFail:longPlayPauseRecognizer];
   [self.focusView addGestureRecognizer: playPauseRecognizer];
 
   // ir remote presses only, left/right/up/down
@@ -1917,35 +1923,17 @@ static CGPoint panTouchAbsStart;
       break;
   }
 }
-// TODO These should work but remoteControlReceivedWithEvent
-// is grabbing the play/pause down and we can't see the hold.
-//--------------------------------------------------------------
-- (void)SiriLongPlayHoldHandler
-{
-  PRINT_SIGNATURE();
-  self.m_playHoldCounter++;
-}
 //--------------------------------------------------------------
 - (void)SiriPlayPauseHandler:(UITapGestureRecognizer *) sender
 {
   PRINT_SIGNATURE();
   switch (sender.state)
   {
-    case UIGestureRecognizerStateBegan:
-      {
-        self.m_playHoldCounter = 0;
-        self.m_playHoldTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(SiriLongPlayHoldHandler) userInfo:nil repeats:NO];
-      }
-      break;
     case UIGestureRecognizerStateEnded:
       #if logfocus
       CLog::Log(LOGDEBUG, "SiriPlayPauseHandler:StateEnded");
       #endif
-      [self.m_playHoldTimer invalidate];
-      if (self.m_playHoldCounter == 1)
-        [self showAudioRoutePicker];
-      else
-        [self sendButtonPressed:SiriRemote_PausePlayClick];
+      [self sendButtonPressed:SiriRemote_PausePlayClick];
       break;
     default:
       break;
@@ -1984,7 +1972,6 @@ TOUCH_POSITION touchPositionAtStateBegan = TOUCH_CENTER;
           [self sendButtonPressed:SiriRemote_IR_FastForward];
           break;
         case TOUCH_CENTER:
-          // remove when we get SiriPlayPauseHandler working
           [self showAudioRoutePicker];
         default:
           break;
