@@ -663,7 +663,6 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
             // done with the converted extradata, we MUST free using av_free
             av_free(in_extradata);
             return true;
-            return false;
           }
           else
           {
@@ -676,7 +675,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
           if ((in_extradata[4] & 0x3) == 1)
           {
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init 2 byte to 4 byte nal");
-            // video content is from so silly encoder that think 3 byte NAL sizes
+            // video content is from so silly encoder that think 2 byte NAL sizes
             // are valid, setup to convert 2 byte NAL sizes to 4 byte.
             in_extradata[4] |= 0x03;
             m_convert_2byteTo4byteNALSize = true;
