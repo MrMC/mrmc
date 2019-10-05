@@ -139,6 +139,8 @@ enum iosPlatform
   iPadPro9_7InchCellular,
   iPad6thGeneration9_7InchWifi,
   iPad6thGeneration9_7InchCellular,
+  iPad7thGeneration10_2InchWifi,
+  iPad7thGeneration10_2InchCellular,
   iPadPro12_9InchWifi,
   iPadPro12_9InchCellular,
   iPadPro2_12_9InchWifi,
@@ -297,6 +299,8 @@ enum iosPlatform getIosPlatform()
       case "iPad7,6"_mkhash: eDev = iPad6thGeneration9_7InchCellular; break;
       case "iPad8,1"_mkhash: eDev = iPadPro11InchWifi; break;
       case "iPad8,2"_mkhash: eDev = iPadPro11InchWifi; break;
+      case "iPad7,11"_mkhash: eDev = iPad7thGeneration10_2InchWifi; break;
+      case "iPad7,12"_mkhash: eDev = iPad7thGeneration10_2InchCellular; break;
       case "iPad8,3"_mkhash: eDev = iPadPro11InchCellular; break;
       case "iPad8,4"_mkhash: eDev = iPadPro11InchCellular; break;
       case "iPad8,5"_mkhash: eDev = iPadPro3_12_9InchWifi; break;
