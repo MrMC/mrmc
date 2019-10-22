@@ -663,6 +663,9 @@ ssize_t CSMB2Session::Write(void* context, const void* lpBuf, size_t uiBufSize)
 
   // it's possible
   size_t max_size = GetChunkSize(file);
+  // limit writes to 32k, helps on some servers that fail with POLLHUP errors.
+  max_size = std::min(max_size, size_t(32 * 1024) );
+
   if (uiBufSize > max_size)
     uiBufSize = max_size;
 
