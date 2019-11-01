@@ -316,3 +316,6 @@ tools/android/packaging/packaging/
 /xbmc/windowing/tests/wayland/Makefile
 
 /lib/libUPnP/Makefile
+
+/tools/depends/*-tarballs/
+/tools/depends/*-depends/
