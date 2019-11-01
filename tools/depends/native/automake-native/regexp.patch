@@ -1,0 +1,11 @@
+--- x86_64-linux-native/automake.in.orig	2019-11-01 18:15:01.481214816 +0000
++++ x86_64-linux-native/automake.in	2019-11-01 18:15:36.225062375 +0000
+@@ -4156,7 +4156,7 @@
+ sub substitute_ac_subst_variables ($)
+ {
+   my ($text) = @_;
+-  $text =~ s/\${([^ \t=:+{}]+)}/&substitute_ac_subst_variables_worker ($1)/ge;
++  $text =~ s/\$[{]([^ \t=:+{}]+)}/substitute_ac_subst_variables_worker ($1)/ge;
+   return $text;
+ }
+ 
