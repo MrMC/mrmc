@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) autoconf/; \
-          ./configure --prefix=$(PREFIX) --enable-shared
+          ./configure --prefix=$(PREFIX) --enable-shared CFLAGS='-std=c90 -fPIC'
 
 LIBDYLIB=$(PLATFORM)/src/.libs/lib$(LIBNAME)2.a
 
