@@ -135,7 +135,7 @@ case $host in
     use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api"
-    platform_cflags="-DANDROID -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
+    platform_cflags="-DANDROID -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-integrated-as -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
       platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
