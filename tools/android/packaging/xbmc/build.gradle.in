@@ -58,7 +58,8 @@ android {
                             "-DANDROID_ARM_NEON=TRUE",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=FALSE",
                             "-DANDROID_CPP_FEATURES=rtti exceptions",
-                            "-DDEPENDS_DIR="+getDependsDir();
+                            "-DDEPENDS_DIR="+getDependsDir(),
+                            "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
             }
         }
 
