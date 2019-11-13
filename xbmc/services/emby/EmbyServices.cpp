@@ -511,16 +511,32 @@ void CEmbyServices::Process()
       CLog::Log(LOGDEBUG, "CEmbyServices::Process has gateway1");
       break;
     }
-    if (signInByPin && g_application.getNetwork().IsConnected())
+    if (g_application.getNetwork().IsConnected())
     {
-      std::string ip;
-      if (CDNSNameCache::Lookup("connect.emby.media", ip))
+      if (signInByPin)
       {
-        in_addr_t embydotcom = inet_addr(ip.c_str());
-        if (g_application.getNetwork().PingHost(embydotcom, 0, 1000))
+        std::string ip;
+        if (CDNSNameCache::Lookup("connect.emby.media", ip))
         {
-          CLog::Log(LOGDEBUG, "CEmbyServices::Process has gateway2");
-          break;
+          in_addr_t embydotcom = inet_addr(ip.c_str());
+          if (g_application.getNetwork().PingHost(embydotcom, 0, 1000))
+          {
+            CLog::Log(LOGDEBUG, "CEmbyServices::Process has gateway2");
+            break;
+          }
+        }
+      }
+      else if (signInByManual)
+      {
+        std::string ip;
+        if (CDNSNameCache::Lookup(m_serverURL, ip))
+        {
+          in_addr_t localembydotcom = inet_addr(ip.c_str());
+          if (g_application.getNetwork().PingHost(localembydotcom, 0, 1000))
+          {
+            CLog::Log(LOGDEBUG, "CEmbyServices::Process has network, manual signin");
+            break;
+          }
         }
       }
     }
