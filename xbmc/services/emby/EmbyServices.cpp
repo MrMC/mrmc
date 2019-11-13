@@ -1109,7 +1109,7 @@ bool CEmbyServices::AddClient(CEmbyClientPtr foundClient)
   if (foundClient->GetPresence())
   {
     std::string uuid = CSettings::GetInstance().GetString(CSettings::SETTING_GENERAL_SERVER_UUID);
-    if (uuid == foundClient->GetUuid() || (g_SkinInfo && !g_SkinInfo->IsDynamicHomeCompatible()))
+    if (uuid.empty() || uuid == foundClient->GetUuid() || (g_SkinInfo && !g_SkinInfo->IsDynamicHomeCompatible()))
       foundClient->FetchViews();
     m_clients.push_back(foundClient);
     m_hasClients = !m_clients.empty();
