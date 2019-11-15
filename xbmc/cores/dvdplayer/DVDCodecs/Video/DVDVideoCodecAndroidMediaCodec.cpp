@@ -388,6 +388,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_codecControlFlags = 0;
   m_hints = hints;
   int profile(0);
+  bool check_dv = false;
 
   switch(m_hints.codec)
   {
@@ -474,6 +475,19 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
       else
         return false;
+      
+      // check for DolbyVision, hints.profile will be wrong
+      // and we have to look at codec_tag
+      if (hints.codec_tag == MKTAG('d','v','h','1') ||
+          hints.codec_tag == MKTAG('d','v','h','e') ||
+          hints.codec_tag == MKTAG('D','O','V','I'))
+      {
+        check_dv = true;
+        m_mime = "video/dolby-vision";
+        m_formatname = "amc-dv";
+        CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open - Dolby Vision detected");
+      }
+
       break;
     case AV_CODEC_ID_WMV3:
       if (m_hints.extrasize == 4 || m_hints.extrasize == 5)
@@ -531,6 +545,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_formatname = "amc-vc1";
       break;
     }
+
     default:
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Unknown hints.codec(%d)", hints.codec);
       return false;
@@ -567,78 +582,94 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // but not in current 4.1 devices. So 1st search for a matching codec, then create it.
   m_codec = nullptr;
   m_colorFormat = -1;
-  int num_codecs = CJNIMediaCodecList::getCodecCount();
-  for (int i = 0; i < num_codecs; i++)
+  std::string lookup_mime = m_mime;
+  if (check_dv)
+    lookup_mime = "video/dolby-vision";
+
+  while (true)
   {
-    CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
-    if (codec_info.isEncoder())
-      continue;
-    if (!m_codec)
+    int num_codecs = CJNIMediaCodecList::getCodecCount();
+    for (int i = 0; i < num_codecs; i++)
     {
-      m_codecname = codec_info.getName();
-      if (IsBlacklisted(m_codecname))
+      CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
+      if (codec_info.isEncoder())
         continue;
-    }
-
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "----  MediaCodec: %s -----------", codec_info.getName().c_str());
-
-    std::vector<int> color_formats;
-    CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
-    if (xbmc_jnienv()->ExceptionCheck())
-    {
-      // Unsupported type?
-      xbmc_jnienv()->ExceptionClear();
-      continue;
-    }
-    color_formats = codec_caps.colorFormats();
-
-    if (profile)
-    {
-      std::vector<CJNIMediaCodecInfoCodecProfileLevel> profileLevels = codec_caps.profileLevels();
-      if (std::find_if(profileLevels.cbegin(), profileLevels.cend(),
-        [&](const CJNIMediaCodecInfoCodecProfileLevel profileLevel){ return profileLevel.profile() == profile; }) == profileLevels.cend())
+      if (!m_codec)
       {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: %d", profile);
+        m_codecname = codec_info.getName();
+        if (IsBlacklisted(m_codecname))
+          continue;
+      }
+
+      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+        CLog::Log(LOGDEBUG, "----  MediaCodec: %s -----------", codec_info.getName().c_str());
+
+      std::vector<int> color_formats;
+      CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
+      if (xbmc_jnienv()->ExceptionCheck())
+      {
+        // Unsupported type?
+        xbmc_jnienv()->ExceptionClear();
         continue;
       }
-    }
 
-    std::vector<std::string> types = codec_info.getSupportedTypes();
-    // return the 1st one we find, that one is typically 'the best'
-    for (size_t j = 0; j < types.size(); ++j)
-    {
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG, "type: %s", types[j].c_str());
-
-      if (!m_codec && types[j] == m_mime)
+      color_formats = codec_caps.colorFormats();
+      if (profile)
       {
-        m_codec = AMediaCodec_createCodecByName(m_codecname.c_str());
-        // clear any jni exceptions, jni gets upset if we do not.
-        if (!m_codec)
+        std::vector<CJNIMediaCodecInfoCodecProfileLevel> profileLevels = codec_caps.profileLevels();
+        if (std::find_if(profileLevels.cbegin(), profileLevels.cend(),
+          [&](const CJNIMediaCodecInfoCodecProfileLevel profileLevel){ return profileLevel.profile() == profile; }) == profileLevels.cend())
         {
-          CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open ExceptionCheck");
-          m_codec = nullptr;
+          CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: %d", profile);
           continue;
         }
+      }
 
-        if (m_render_sw)
+      std::vector<std::string> types = codec_info.getSupportedTypes();
+      // return the 1st one we find, that one is typically 'the best'
+      for (size_t j = 0; j < types.size(); ++j)
+      {
+        if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+          CLog::Log(LOGDEBUG, "type: %s", types[j].c_str());
+
+        if (!m_codec && types[j] == m_mime)
         {
-          for (size_t k = 0; k < color_formats.size(); ++k)
+          m_codec = AMediaCodec_createCodecByName(m_codecname.c_str());
+          // clear any jni exceptions, jni gets upset if we do not.
+          if (!m_codec)
           {
-            CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open "
-                                "m_codecname(%s), colorFormat(%d)", m_codecname.c_str(), color_formats[k]);
-            if (IsSupportedColorFormat(color_formats[k]))
-              m_colorFormat = color_formats[k]; // Save color format for initial output configuration
+            CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open ExceptionCheck");
+            m_codec = nullptr;
+            continue;
           }
+
+          if (m_render_sw)
+          {
+            for (size_t k = 0; k < color_formats.size(); ++k)
+            {
+              CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open "
+                                  "m_codecname(%s), colorFormat(%d)", m_codecname.c_str(), color_formats[k]);
+              if (IsSupportedColorFormat(color_formats[k]))
+                m_colorFormat = color_formats[k]; // Save color format for initial output configuration
+            }
+          }
+          if (!g_advancedSettings.CanLogComponent(LOGVIDEO))
+            break;
         }
         if (!g_advancedSettings.CanLogComponent(LOGVIDEO))
           break;
       }
+      if (m_codec && !g_advancedSettings.CanLogComponent(LOGVIDEO))
+        break;
     }
-    if (m_codec && !g_advancedSettings.CanLogComponent(LOGVIDEO))
+    if (m_codec || !check_dv)
       break;
+
+    check_dv = false;
+    m_mime = "video/hevc";
+    m_formatname = "amc-h265";
   }
+
   if (!m_codec)
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec:: Failed to create Android MediaCodec");
