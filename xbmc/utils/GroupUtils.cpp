@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoThumbLoader.h"
 
 using SetMap = std::map<int, std::set<CFileItemPtr> >;
 
@@ -106,6 +107,18 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       for (std::set<CFileItemPtr>::const_iterator movie = set->second.begin(); movie != set->second.end(); ++movie)
       {
         CVideoInfoTag* movieInfo = (*movie)->GetVideoInfoTag();
+
+        // handle local art movieset-poster.* and movieset-fanart.*
+        CFileItem tempvideo(movieInfo->m_basePath, false);
+        std::string localPoster = CVideoThumbLoader::GetLocalArt(tempvideo, "movieset-poster", true);
+        if (!localPoster.empty())
+          pItem->SetArt("thumb", localPoster);
+        std::string localFanart = CVideoThumbLoader::GetLocalArt(tempvideo, "movieset-fanart", true);
+        if (!localFanart.empty())
+          pItem->SetArt("fanart", localFanart);
+        if (!localFanart.empty() || !localPoster.empty())
+          pItem->SetProperty("SkipLocalArt", true);
+
         // handle rating
         if (movieInfo->GetRating().rating > 0.0f)
         {
