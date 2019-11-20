@@ -319,3 +319,17 @@ tools/android/packaging/packaging/
 
 /tools/depends/*-tarballs/
 /tools/depends/*-depends/
+/tools/depends/target/crossguid/.gitattributes
+/tools/depends/target/crossguid/android
+/tools/depends/target/crossguid/android.sh
+/tools/depends/target/crossguid/clean.sh
+/tools/depends/target/crossguid/guid.cpp
+/tools/depends/target/crossguid/guid.h
+/tools/depends/target/crossguid/LICENSE
+/tools/depends/target/crossguid/linux.sh
+/tools/depends/target/crossguid/mac.sh
+/tools/depends/target/crossguid/README.md
+/tools/depends/target/crossguid/test.cpp
+/tools/depends/target/crossguid/test.h
+/tools/depends/target/crossguid/testmain.cpp
+/tools/depends/target/crossguid/VisualStudio
