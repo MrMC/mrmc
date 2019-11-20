@@ -99,7 +99,7 @@
 	<!-- output: <results><entity><title>*</title><year>*</year><language>*</language><url>*</url><id>*</id></entity>*</results> -->
 	<GetSearchResultsAuth dest="6" clearbuffers="no">
 		<RegExp input="$$1" output="&lt;series&gt;&lt;id&gt;\3&lt;/id&gt;&lt;seriesName&gt;\4&lt;/seriesName&gt;&lt;aliases&gt;\1&lt;/aliases&gt;&lt;firstAired&gt;\2&lt;/firstAired&gt;&lt;year&gt;\5&lt;/year&gt;&lt;/series&gt;" dest="4">
-			<expression repeat="yes" fixchars="1,4">"aliases":\s*?\[([^]]*)\],\s*?"banner":\s*?"[^"]*",\s*?"firstAired":\s*?"([^"]*)",\s*?"id":\s*?(\d+),\s*?"network":\s*?"[^"]*",\s*?"overview":\s*?(?:"[^}]*"|null),\s*?"seriesName":\s*?"([^}]*?(?:\(([0-9]{4})\))?)",\s*?"slug":\s*?"[^"]*"</expression>
+			<expression repeat="yes" fixchars="1,4">"aliases":\s*?\[([^]]*)\],\s*?"banner":\s*?"[^"]*",\s*?"firstAired":\s*?(?:"([^"]*)"|null),\s*?"id":\s*?(\d+),\s*?"network":\s*?(?:"[^"]*"|null),\s*?"overview":\s*?(?:"[^}]*"|null),\s*?"seriesName":\s*?"([^}]*?(?:\(([0-9]{4})\))?)",\s*?"slug":\s*?"[^"]*"</expression>
 		</RegExp>
 		<RegExp input="" output="" dest="6">
 			<expression/>
@@ -300,7 +300,7 @@
 	</GetActors>
 	<ParseActors dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;thumb&gt;http://www.thetvdb.com/banners/\4&lt;/thumb&gt;&lt;/actor&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;thumb&gt;https://artworks.thetvdb.com/banners/\4&lt;/thumb&gt;&lt;/actor&gt;" dest="5">
 				<expression repeat="yes" fixchars="1,2">"name":\s*?"([^}]+)",\s*?"role":\s*?"([^}]+)",\s*?"sortOrder":\s*?(\d+),\s*?"image":\s*?"([^"]+)",</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;/actor&gt;" dest="5+">
@@ -369,7 +369,7 @@
 	<LoadArt dest="3" clearbuffers="no">		
 		<RegExp input="$$1" output="&lt;details&gt;&lt;!-- $$16 \1 loaded --&gt;&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;Banner&gt;&lt;id&gt;\1&lt;/id&gt;&lt;keyType&gt;\2&lt;/keyType&gt;&lt;subKey&gt;\3&lt;/subKey&gt;&lt;fileName&gt;\4&lt;/fileName&gt;&lt;resolution&gt;\5&lt;/resolution&gt;&lt;average&gt;\6&lt;/average&gt;&lt;thumbnail&gt;\7&lt;/thumbnail&gt;&lt;language&gt;$$16&lt;/language&gt;&lt;/Banner&gt;" dest="10+">
-				<expression repeat="yes">"id":\s*?(\d+),\s*?"keyType":\s*?"([^"]+)",\s*?"subKey":\s*?"([^"]*)",\s*?"fileName":\s*?"([^"]+)","languageId":\s*?\d+,\s*?"resolution":\s*?"([^"]*)",\s*?"ratingsInfo":\s*?{\s*?"average":\s*?(?:([\d\.]+)|null),\s*?"count":\s*?\d+\s*?},\s*?"thumbnail":\s*?"([^"]*?)"</expression>
+				<expression repeat="yes">"id":\s*?(\d+),\s*?"keyType":\s*?"([^"]+)",\s*?"subKey":\s*?"([^"]*)",\s*?"fileName":\s*?"([^"]+)",\s*?"languageId":\s*?\d+,.*?"resolution":\s*?"([^"]*)",\s*?"ratingsInfo":\s*?{\s*?"average":\s*?(?:([\d\.]+)|null),\s*?"count":\s*?\d+\s*?},\s*?"thumbnail":\s*?"([^"]*?)"</expression>
 			</RegExp>
 			<expression noclean="1">"keyType":\s*?"([^"]+)",</expression>
 		</RegExp>
@@ -387,7 +387,7 @@
 
 				<xsl:template match="Banners">
 					<details>
-						<fanart url="http://www.thetvdb.com/banners/">
+						<fanart url="https://artworks.thetvdb.com/banners/">
 							<xsl:apply-templates select="Banner[(keyType='fanart') and (generate-id()=generate-id(key('BannersById', id)[1]))]">
 								<xsl:sort data-type="number" order="descending" select="average"/>
 							</xsl:apply-templates>
@@ -430,7 +430,7 @@
 							<xsl:attribute name="type">season</xsl:attribute>
 							<xsl:attribute name="season"><xsl:value-of select="subKey"/></xsl:attribute>
 						</xsl:if>
-						<xsl:attribute name="language"><xsl:value-of select="language"/></xsl:attribute>http://www.thetvdb.com/banners/<xsl:value-of select="fileName"/>
+						<xsl:attribute name="language"><xsl:value-of select="language"/></xsl:attribute>https://artworks.thetvdb.com/banners/<xsl:value-of select="fileName"/>
 					</thumb>
 				</xsl:template>
 
@@ -444,7 +444,7 @@
 						</xsl:attribute>
 						<xsl:attribute name="type">season</xsl:attribute>
 						<xsl:attribute name="season">-1</xsl:attribute>
-						<xsl:attribute name="language"><xsl:value-of select="language"/></xsl:attribute>http://www.thetvdb.com/banners/<xsl:value-of select="fileName"/></thumb>
+						<xsl:attribute name="language"><xsl:value-of select="language"/></xsl:attribute>https://artworks.thetvdb.com/banners/<xsl:value-of select="fileName"/></thumb>
 				</xsl:template>
 
 			</xsl:stylesheet>
@@ -1095,7 +1095,7 @@
 					</xsl:template>
 
 					<xsl:template match="Episode" mode="match">
-						<xsl:if test="filename!=''"><thumb>http://www.thetvdb.com/banners/<xsl:value-of select="filename"/></thumb></xsl:if>
+						<xsl:if test="filename!=''"><thumb>https://artworks.thetvdb.com/banners/<xsl:value-of select="filename"/></thumb></xsl:if>
 						<xsl:for-each select="credits|director|actor">
 							<xsl:copy-of select="."/>
 						</xsl:for-each>
