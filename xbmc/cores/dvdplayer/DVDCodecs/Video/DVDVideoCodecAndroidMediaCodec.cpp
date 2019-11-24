@@ -58,7 +58,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
-//#define DEBUG_EXTRADATA 1
+#define DEBUG_EXTRADATA 1
 
 #define XMEDIAFORMAT_KEY_ROTATION "rotation-degrees"
 #define XMEDIAFORMAT_KEY_SLICE "slice-height"
@@ -501,7 +501,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         check_dv = true;
         m_mime = "video/dolby-vision";
         m_formatname = "amc-dv";
-        CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open - Dolby Vision detected");
+        CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open - Dolby Vision detected: extradata: %d", m_hints.extrasize);
       }
 
       break;
@@ -1133,6 +1133,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
       size = m_bitstream->GetExtraSize();
       src_ptr = m_bitstream->GetExtraData();
     }
+    CLog::Log(LOGDEBUG, "%s::%s csd-0: %d", "CDVDVideoCodecAndroidMediaCodec", __func__, size);
     // Allocate a byte buffer via allocateDirect in java instead of NewDirectByteBuffer,
     // since the latter doesn't allocate storage of its own, and we don't know how long
     // the codec uses the buffer.
