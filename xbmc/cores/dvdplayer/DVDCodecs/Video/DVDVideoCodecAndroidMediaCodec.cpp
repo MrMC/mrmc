@@ -390,6 +390,22 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   int profile(0);
   bool check_dv = false;
 
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  {
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: CodecID: %d \n", m_hints.codec);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: Codec Tag: %c%c%c%c \n", 
+      (m_hints.codec_tag & 0x000000ff),
+      (m_hints.codec_tag & 0x0000ff00) >> 8,
+      (m_hints.codec_tag & 0x00ff0000) >> 16,
+      (m_hints.codec_tag & 0xff000000) >> 24
+      );
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: Profile / Level: %d / %d \n", m_hints.profile, m_hints.level);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: PTS_invalid: %d \n", m_hints.ptsinvalid);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: wxh: %dx%d \n", m_hints.width,  m_hints.height);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: colors space: %d; range: %d; transf: %d; prime: %d\n", 
+      m_hints.colorspace, m_hints.colorrange, m_hints.colortransfer, m_hints.colorprimaries);
+  }
+
   switch(m_hints.codec)
   {
     case AV_CODEC_ID_MPEG2VIDEO:
