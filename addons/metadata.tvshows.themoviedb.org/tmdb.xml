@@ -49,6 +49,12 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;url cache=&quot;tmdb-\2-$INFO[language].json&quot;&gt;http://api.themoviedb.org/3/tv/\2?api_key=1d7c6cae0b5dd497c57ccb9734ea42a8&amp;amp;language=$INFO[language]&amp;amp;append_to_response=content_ratings,credits,external_ids,images&amp;amp;include_image_language=$INFO[language],en,null&lt;/url&gt;&lt;/entity&gt;" dest="3+">
 				<expression repeat="yes">original_name&quot;:&quot;([^&quot;]*)&quot;,&quot;id&quot;:([0-9]*),.*?&quot;first_air_date&quot;:null.*?&quot;</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\3&lt;/id&gt;&lt;year&gt;\2&lt;/year&gt;&lt;url cache=&quot;tmdb-\3-$INFO[language].json&quot;&gt;http://api.themoviedb.org/3/tv/\3?api_key=1d7c6cae0b5dd497c57ccb9734ea42a8&amp;amp;language=$INFO[language]&amp;amp;append_to_response=content_ratings,credits,external_ids,images&amp;amp;include_image_language=$INFO[language],en,null&lt;/url&gt;&lt;/entity&gt;" dest="3+">
+				<expression repeat="yes">original_name&quot;:&quot;([^&quot;]*)&quot;,.*?first_air_date&quot;:&quot;([0-9]+).*?&quot;id&quot;:([0-9]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;url cache=&quot;tmdb-\2-$INFO[language].json&quot;&gt;http://api.themoviedb.org/3/tv/\2?api_key=1d7c6cae0b5dd497c57ccb9734ea42a8&amp;amp;language=$INFO[language]&amp;amp;append_to_response=content_ratings,credits,external_ids,images&amp;amp;include_image_language=$INFO[language],en,null&lt;/url&gt;&lt;/entity&gt;" dest="3+">
+				<expression repeat="yes">original_name&quot;:&quot;([^&quot;]*)&quot;,.*?first_air_date&quot;:null.*?&quot;.*?&quot;id&quot;:([0-9]*)</expression>
+			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</GetSearchResults>
