@@ -13,7 +13,7 @@ TARGET_DIR="${ROOT_DIR}/tools/android/packaging/xbmc"
 TARGET_JAVA_DIR="${TARGET_DIR}/src"
 
 declare -A VARIABLES
-while  read var value ; do
+while  IFS="= " read -r var value ; do
   if [[ $var =~ [a-zA-Z] ]]; then
     VARIABLES[$var]=$value
   fi
@@ -48,7 +48,7 @@ cp $SRC_DIR/build.gradle $TMP_DIR/build.gradle.in
 
 sed -i -e "s#${VARIABLES[APP_WEBSITE]}#@APP_WEBSITE@#g" -e "s#${VARIABLES[APP_PACKAGE]}#@APP_PACKAGE@#g" -e "s#${VARIABLES[APP_NAME_DISPLAY]}#@APP_NAME_DISPLAY@#g" -e "s#${VARIABLES[APP_NAME_LC]}#@APP_NAME_LC@#g" -e "s#${VARIABLES[APP_NAME_UC]}#@APP_NAME_UC@#g" -e "s#${VARIABLES[APP_VERSION_ANDROID_VERSION]}#@APP_VERSION_ANDROID_VERSION@#g" -e "s#${VARIABLES[APP_VERSION]}#@APP_VERSION@#g" -e "s#${VARIABLES[APP_NAME_INSTALL_LC]}#@APP_NAME_INSTALL_LC@#g" $TMP_DIR/strings.xml.in
 find $TMP_DIR -name "*.in" |xargs -i sed -i -e "s#${VARIABLES[APP_WEBSITE]}#@APP_WEBSITE@#g" -e "s#${VARIABLES[APP_PACKAGE]}#@APP_PACKAGE@#g" -e "s#${VARIABLES[APP_NAME]}#@APP_NAME@#g" -e "s#${VARIABLES[APP_NAME_LC]}#@APP_NAME_LC@#g" -e "s#${VARIABLES[APP_NAME_UC]}#@APP_NAME_UC@#g" -e "s#${VARIABLES[APP_VERSION_ANDROID_VERSION]}#@APP_VERSION_ANDROID_VERSION@#g" -e "s#${VARIABLES[APP_VERSION]}#@APP_VERSION@#g" -e "s#${VARIABLES[APP_NAME_INSTALL_LC]}#@APP_NAME_INSTALL_LC@#g" {}
-sed -i -e "s#appPackageName = \"@APP_PACKAGE@\";#appPackageName = \"tv.mrmc.mrmc\";#g" $TMP_JAVA_DIR/Main.java.in
+find $TMP_DIR -name "Main.java.in" |xargs -i sed -i -e "s#appPackageName = \"@APP_PACKAGE@\";#appPackageName = \"tv.mrmc.mrmc\";#g" {}
 
 rsync -a --delete $TMP_JAVA_DIR/ $TARGET_JAVA_DIR
 cp -f $TMP_DIR/AndroidManifest.xml.in $TARGET_DIR/AndroidManifest.xml.in
