@@ -69,6 +69,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
   if ((groupBy & GroupBySet) && !setMap.empty())
   {
     CVideoDbUrl itemsUrl;
+    bool setMovieSet = false;
     if (!itemsUrl.FromString(baseDir))
       return false;
 
@@ -108,17 +109,25 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       {
         CVideoInfoTag* movieInfo = (*movie)->GetVideoInfoTag();
 
-        // handle local art movieset-poster.* and movieset-fanart.*
-        CFileItem tempvideo(movieInfo->m_basePath, false);
-        std::string localPoster = CVideoThumbLoader::GetLocalArt(tempvideo, "movieset-poster", true);
-        if (!localPoster.empty())
-          pItem->SetArt("thumb", localPoster);
-        std::string localFanart = CVideoThumbLoader::GetLocalArt(tempvideo, "movieset-fanart", true);
-        if (!localFanart.empty())
-          pItem->SetArt("fanart", localFanart);
-        if (!localFanart.empty() || !localPoster.empty())
-          pItem->SetProperty("SkipLocalArt", true);
+        if (!setMovieSet)
+        {
+          // handle local art movieset-poster.* and movieset-fanart.*
+          CFileItem tempvideo(movieInfo->m_basePath, false);
+          std::string localPoster = CVideoThumbLoader::GetLocalArt(tempvideo, "movieset-poster", true);
+          if (!localPoster.empty())
+            pItem->SetArt("thumb", localPoster);
+          std::string localFanart = CVideoThumbLoader::GetLocalArt(tempvideo, "movieset-fanart", true);
+          if (!localFanart.empty())
+            pItem->SetArt("fanart", localFanart);
+          
+          if (!localFanart.empty() || !localPoster.empty())
+          {
+            pItem->SetProperty("SkipLocalArt", true);
+            setMovieSet = true;
+          }
 
+
+        }
         // handle rating
         if (movieInfo->GetRating().rating > 0.0f)
         {
