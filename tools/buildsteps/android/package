@@ -8,6 +8,17 @@ then
   LITE_OPT="lite=yes"
 fi
 
+if [ "x$BUILD_ARCH" == "xarm" ]
+then
+  VERSION_SUFFIX="01"
+elif [ "x$BUILD_ARCH" == "xaarch64" ]
+then
+  VERSION_SUFFIX="11"
+elif [ "x$BUILD_ARCH" == "xx86" ]
+then
+  VERSION_SUFFIX="21"
+fi
+
 OUT_EXT=apk
 if [ "x$BUILD_OBB" == "xBundle" ]
 then
@@ -29,7 +40,7 @@ UPLOAD_FILENAME="$(getAppName)$(if [ "$IS_LITE" == "yes" ]; then echo Lite;fi)-$
 mv $(getAppName)*.$OUT_EXT $UPLOAD_FILENAME.$OUT_EXT
 if [ -f *.obb ]
 then
-  mv *.obb $UPLOAD_FILENAME.obb
+  mv *.obb main.$APP_VERSION_ANDROID_VERSION$VERSION_SUFFIX.$APP_PACKAGE.obb
 fi
 if [ -f *.symbols*.tar.bz2 ]
 then
