@@ -239,10 +239,17 @@ std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
     ret.push_back("poster");
     ret.push_back("fanart");
   }
-  else if (type == MediaTypeMovie || type == MediaTypeMusicVideo || type == MediaTypeVideoCollection)
+  else if (type == MediaTypeMovie || type == MediaTypeMusicVideo)
   {
     ret.push_back("poster");
     ret.push_back("fanart");
+  }
+  else if (type == MediaTypeVideoCollection)
+  {
+    ret.push_back("poster");
+    ret.push_back("fanart");
+    ret.push_back("movieset-poster");
+    ret.push_back("movieset-fanart");
   }
   else if (type.empty()) // unknown - just throw everything in
   {
@@ -334,7 +341,8 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       pItem->GetVideoInfoTag()->m_type != MediaTypeMovie      &&
       pItem->GetVideoInfoTag()->m_type != MediaTypeTvShow     &&
       pItem->GetVideoInfoTag()->m_type != MediaTypeEpisode    &&
-      pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo)
+      pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeVideoCollection)
     return false; // Nothing to do here
 
   DetectAndAddMissingItemData(*pItem);
@@ -356,6 +364,17 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
         SetCachedImage(*pItem, type, art);
         CTextureCache::GetInstance().BackgroundCacheImage(art);
         artwork.insert(std::make_pair(type, art));
+
+        if (type == "movieset-poster" || type == "movieset-fanart")
+        {
+          // update thumb in the database
+           CVideoDatabase db;
+           if (db.Open())
+           {
+             db.SetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, type, art);
+             db.Close();
+           }
+        }
       }
     }
   }
@@ -460,6 +479,17 @@ void CVideoThumbLoader::SetArt(CFileItem &item, const std::map<std::string, std:
     else if (artwork.find("banner") != artwork.end())
       item.SetArtFallback("thumb", "banner");
   }
+  if (artwork.find("movieset-poster") != artwork.end())
+  {
+    std::map<std::string, std::string>::const_iterator pos = artwork.find("movieset-poster");
+    item.SetArt("poster", pos->second);
+  }
+  if (artwork.find("movieset-fanart") != artwork.end())
+  {
+    std::map<std::string, std::string>::const_iterator pos = artwork.find("movieset-fanart");
+    item.SetArt("fanart", pos->second);
+  }
+
 }
 
 bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
@@ -575,6 +605,23 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
       art = item.FindLocalArt("movie.tbn", true);
       if (art.empty()) // try folder.jpg
         art = item.FindLocalArt("folder.jpg", true);
+    }
+  }
+  if (art.empty() &&(type == "movieset-poster" || type == "movieset-fanart"))
+  {
+    CFileItemList setMovies;
+    CDirectory::GetDirectory(item.GetPath(), setMovies);
+    for (int i = 0; i < setMovies.Size(); ++i)
+    {
+      CVideoInfoTag* movieInfo = (*setMovies[i]).GetVideoInfoTag();
+      // handle local art movieset-poster.* and movieset-fanart.*
+      CFileItem tempvideo(movieInfo->m_basePath, false);
+      art = tempvideo.FindLocalArt(type + ".jpg", true);
+      if (art.empty())
+        art = tempvideo.FindLocalArt(type + ".png", true);
+
+      if (!art.empty())
+        break;
     }
   }
   return art;
