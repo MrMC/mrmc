@@ -24,7 +24,7 @@ msgctxt "#30002"
 msgid "Enable posters from themoviedb.org"
 msgstr ""
 
-#empty string with id 30003
+# empty string with id 30003
 
 msgctxt "#30004"
 msgid "Enable posters from MoviePosterDB"
@@ -34,9 +34,9 @@ msgctxt "#30005"
 msgid "Get Trailers directly from YouTube"
 msgstr ""
 
-#empty string with id 30006
+# empty string with id 30006
 
-#empty string with id 30007
+# empty string with id 30007
 
 msgctxt "#30008"
 msgid "Preferred Title Language from"
@@ -46,7 +46,7 @@ msgctxt "#30009"
 msgid "Enable trailers from themoviedb.org"
 msgstr ""
 
-#empty string with id 30010
+# empty string with id 30010
 
 msgctxt "#30011"
 msgid "Poster"
@@ -72,7 +72,7 @@ msgctxt "#30016"
 msgid "Plot Sources"
 msgstr ""
 
-#empty strings from id 30017 to 30019
+# empty strings from id 30017 to 30019
 
 msgctxt "#30020"
 msgid "Preferred Plot Language"
@@ -186,19 +186,19 @@ msgctxt "#30048"
 msgid "Get Keywords and Save as Tags from"
 msgstr ""
 
-#empty strings from id 30049 to 30099
+# empty strings from id 30049 to 30099
 
 msgctxt "#30100"
 msgid "Rating"
 msgstr ""
 
-#empty strings from id 30101 to 30109
+# empty strings from id 30101 to 30109
 
 msgctxt "#30110"
 msgid "Rating Generated Using"
 msgstr ""
 
-#empty strings from id 30111 to 30114
+# empty strings from id 30111 to 30114
 
 msgctxt "#30115"
 msgid "Use the Score Aggregated from"
@@ -212,7 +212,7 @@ msgctxt "#30117"
 msgid "Please Register Api Key on omdbapi.com and Add it Above"
 msgstr ""
 
-#empty strings from id 30118 to 30199
+# empty strings from id 30118 to 30199
 
 msgctxt "#30200"
 msgid "Credits"
@@ -226,7 +226,7 @@ msgctxt "#30202"
 msgid "Get Country from"
 msgstr ""
 
-#empty strings from id 30203 to 30299
+# empty strings from id 30203 to 30299
 
 msgctxt "#30300"
 msgid "Search"
@@ -264,7 +264,7 @@ msgctxt "#30308"
 msgid "Preferred Search Language"
 msgstr ""
 
-#empty strings from id 30309 to 30399
+# empty strings from id 30309 to 30399
 
 msgctxt "#30400"
 msgid "Plot"
@@ -274,7 +274,7 @@ msgctxt "#30401"
 msgid "Plot / Tagline / Outline"
 msgstr ""
 
-#empty strings from id 30402 to 30499
+# empty strings from id 30402 to 30499
 
 msgctxt "#30500"
 msgid "Fanart"

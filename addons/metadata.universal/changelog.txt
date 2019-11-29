@@ -1,3 +1,6 @@
+[B]2.9.12[/B]
+- improved: search results to handle articles at the end of title
+
 [B]2.9.11[/B]
 - fixed: search results for real
 
