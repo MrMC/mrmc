@@ -413,7 +413,7 @@
 				<xsl:template match="Banner[keyType='fanart']">
 					<thumb>
 						<xsl:attribute name="dim"><xsl:value-of select="resolution"/></xsl:attribute>
-						<xsl:attribute name="preview">_cache/<xsl:value-of select="fileName"/></xsl:attribute>
+						<xsl:attribute name="preview"><xsl:value-of select="concat(substring-before(fileName,'.'),'_t.',substring-after(fileName,'.'))"/></xsl:attribute>
 						<xsl:value-of select="fileName"/>
 					</thumb>
 				</xsl:template>
