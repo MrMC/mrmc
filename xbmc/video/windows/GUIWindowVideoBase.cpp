@@ -431,6 +431,22 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         item->SetPath(item->GetVideoInfoTag()->GetPath());
     }
+    
+    if (needsRefresh)
+    {
+      // Delete stream details (=media flags). This allows users to force
+      // a refresh of the stream details by performing a video info refresh
+      const int fileId = item->GetVideoInfoTag()->m_iFileId;
+      if (fileId > 0)
+      {
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          db.DeleteStreamDetails(fileId);
+          db.Close();
+        }
+      }
+    }
   }
 
   // quietly return if Internet lookups are disabled
