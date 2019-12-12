@@ -204,6 +204,13 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
     }
   }
 
+  // trigger RA update after library update is done
+  if (strcmp(message, "OnScanFinished") == 0)
+  {
+    if (!data.isMember("uuid"))
+      m_triggerRA = true;
+  }
+
   int ra_flag = 0;
 
   if (m_triggerRA)
