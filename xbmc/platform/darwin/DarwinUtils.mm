@@ -30,6 +30,7 @@
 #include "utils/StringUtils.h"
 #include <ifaddrs.h>
 #include <arpa/inet.h>
+#include <net/if.h>
 #include "filesystem/SpecialProtocol.h"
 
 #include "CompileInfo.h"
@@ -1368,26 +1369,49 @@ std::string CDarwinUtils::GetIPAddress()
   {
     // Loop through linked list of interfaces
     temp_addr = interfaces;
-    while(temp_addr != NULL)
+    for (temp_addr = interfaces; temp_addr; temp_addr = temp_addr->ifa_next)
     {
+      if (!(temp_addr->ifa_flags & IFF_UP) || (temp_addr->ifa_flags & IFF_LOOPBACK))
+        // Ignore interfaces that aren't up and loopback interfaces.
+        continue;
+
+      if (!temp_addr->ifa_addr)
+        continue;
+
       sa_family_t sa_type = temp_addr->ifa_addr->sa_family;
       if(sa_type == AF_INET || sa_type == AF_INET6)
       {
+        NSString *address = nil;
         NSString *name = [NSString stringWithUTF8String:temp_addr->ifa_name];
-        NSString *addr = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)]; // pdp_ip0
+        char addrBuf[ MAX(INET_ADDRSTRLEN, INET6_ADDRSTRLEN) ];
+        if(sa_type == AF_INET)
+        {
+          const struct sockaddr_in *temp_4 = (const struct sockaddr_in*)temp_addr->ifa_addr;
+          if(inet_ntop(AF_INET, &temp_4->sin_addr, addrBuf, INET_ADDRSTRLEN))
+          {
+            address = [NSString stringWithUTF8String:addrBuf];
+          }
+        }
+        else
+        {
+          const struct sockaddr_in6 *addr6 = (const struct sockaddr_in6*)temp_addr->ifa_addr;
+          if(inet_ntop(AF_INET6, &addr6->sin6_addr, addrBuf, INET6_ADDRSTRLEN))
+          {
+            address = [NSString stringWithUTF8String:addrBuf];
+          }
+        }
 
         if([name isEqualToString:@"en0"])
         {
           // Interface is the wifi connection on the iPhone
-          wifiAddress = addr;
+          wifiAddress = address;
         }
         else if([name isEqualToString:@"pdp_ip0"])
         {
-            // Interface is the cell connection on the iPhone
-            cellAddress = addr;
+          // Interface is the cell connection on the iPhone
+          cellAddress = address;
         }
       }
-      temp_addr = temp_addr->ifa_next;
     }
     // Free memory
     freeifaddrs(interfaces);
@@ -1411,26 +1435,45 @@ std::string CDarwinUtils::GetNetmask()
   {
     // Loop through linked list of interfaces
     temp_addr = interfaces;
-    while(temp_addr != NULL)
+    for (temp_addr = interfaces; temp_addr; temp_addr = temp_addr->ifa_next)
     {
+      if (!(temp_addr->ifa_flags & IFF_UP) || (temp_addr->ifa_flags & IFF_LOOPBACK))
+        // Ignore interfaces that aren't up and loopback interfaces.
+        continue;
+
+      if (!temp_addr->ifa_addr)
+        continue;
+
       sa_family_t sa_type = temp_addr->ifa_addr->sa_family;
       if(sa_type == AF_INET || sa_type == AF_INET6)
       {
+        NSString *address = nil;
         NSString *name = [NSString stringWithUTF8String:temp_addr->ifa_name];
-        NSString *addr = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_netmask)->sin_addr)]; // pdp_ip0
+        char addrBuf[ MAX(INET_ADDRSTRLEN, INET6_ADDRSTRLEN) ];
+        if(sa_type == AF_INET)
+        {
+          const struct sockaddr_in *temp_4 = (const struct sockaddr_in*)temp_addr->ifa_netmask;
+          if(inet_ntop(AF_INET, &temp_4->sin_addr, addrBuf, INET_ADDRSTRLEN))
+          {
+            address = [NSString stringWithUTF8String:addrBuf];
+          }
+        }
+        else
+          // who the fuck understands how ipv6 works?
+          // does it need netmask? dunno...
+          address = @"0.0.0.0";
 
         if([name isEqualToString:@"en0"])
         {
           // Interface is the wifi connection on the iPhone
-          wifiAddress = addr;
+          wifiAddress = address;
         }
         else if([name isEqualToString:@"pdp_ip0"])
         {
           // Interface is the cell connection on the iPhone
-          cellAddress = addr;
+          cellAddress = address;
         }
       }
-      temp_addr = temp_addr->ifa_next;
     }
     // Free memory
     freeifaddrs(interfaces);
