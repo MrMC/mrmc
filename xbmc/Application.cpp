@@ -442,8 +442,11 @@ bool CApplication::Create()
 
 #if defined(TARGET_DARWIN_OSX)
   CDateTime dieDate;
-  std::string strDieDate = "2019-12-02T15:13:30+04:00";
+  std::string strDieDate = CDarwinUtils::GetBuildDate();
+  // add 60 days to dieDate from the build date
+  const CDateTimeSpan interval(60, 0, 0, 0);
   dieDate.SetFromW3CDateTime(strDieDate);
+  dieDate = dieDate + interval;
   CDateTime now = CDateTime::GetCurrentDateTime();
   CLog::Log(LOGNOTICE, "App dieDate is %s", dieDate.GetAsLocalizedDateTime().c_str());
   if (now > dieDate )

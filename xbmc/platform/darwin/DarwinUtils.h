@@ -85,6 +85,7 @@ public:
   static bool        BackupUserFolder();
   static bool        RestoreUserFolder();
   static void        CleariCloudBackup();
+  static std::string GetBuildDate();
 
   virtual void OnSettingAction(const CSetting *setting) override;
 };

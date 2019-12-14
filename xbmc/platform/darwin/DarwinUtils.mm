@@ -1774,4 +1774,25 @@ void CDarwinUtils::OnSettingAction(const CSetting *setting)
 #endif
 }
 
+std::string CDarwinUtils::GetBuildDate()
+{
+#if defined(TARGET_DARWIN)
+    NSString *buildDate;
+
+    // Get build date and time, format to 'yyMMddHHmm'
+    NSString *dateStr = [NSString stringWithFormat:@"%@ %@", [NSString stringWithUTF8String:__DATE__], [NSString stringWithUTF8String:__TIME__]];
+
+    // Convert to date
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"LLL d yyyy HH:mm:ss"];
+    NSDate *date = [dateFormat dateFromString:dateStr];
+
+    // Set output format and convert to string "2019-12-02T15:13:30+04:00"
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    buildDate = [dateFormat stringFromDate:date];
+
+    return [buildDate UTF8String];
+#endif
+}
+
 #endif
