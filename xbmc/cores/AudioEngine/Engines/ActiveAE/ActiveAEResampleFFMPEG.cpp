@@ -112,6 +112,13 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
     av_opt_set_double(m_pContext, "center_mix_level", gain, 0);
   }
 
+  // percent of lfe channel to add to stereo downmix
+  double mix_lfe = (float)CSettings::GetInstance().GetInt("audiooutput.mixlfe") / (float)100;
+  if (mix_lfe > 0.0)
+  {
+    av_opt_set_double(m_pContext, "lfe_mix_level", mix_lfe, 0);
+  }
+
   if (remapLayout)
   {
     // one-to-one mapping of channels
