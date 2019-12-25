@@ -237,7 +237,7 @@ void CVideoDatabase::CreateAnalytics()
   /* advantage of a index that has been created on ( bar_id, foo_id )   */
   /* however an index on ( foo_id, bar_id ) will be considered for use  */
 
-  CLog::Log(LOGINFO, "%s - creating indicies", __FUNCTION__);
+  CLog::Log(LOGINFO, "%s - creating indices", __FUNCTION__);
   m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_stacktimes ON stacktimes ( idFile )\n");
@@ -368,6 +368,7 @@ void CVideoDatabase::CreateViews()
                                       "  tvshow.c%02d AS mpaa,"
                                       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
                                       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
+                                      "  bookmark.playerState AS playerState, "
                                       "  rating.rating AS rating, "
                                       "  rating.votes AS votes, "
                                       "  rating.rating_type AS rating_type, "
@@ -449,6 +450,7 @@ void CVideoDatabase::CreateViews()
                                      "    uniqueid.uniqueid_id=tvshow.c%02d ",
                                      VIDEODB_ID_TV_RATING_ID, VIDEODB_ID_TV_IDENT_ID);
   m_pDS->exec(tvshowview);
+
   CLog::Log(LOGINFO, "create season_view");
   std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
                                      "  seasons.idSeason AS idSeason,"
@@ -501,7 +503,8 @@ void CVideoDatabase::CreateViews()
               "  files.lastPlayed as lastPlayed,"
               "  files.dateAdded as dateAdded, "
               "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
-              "  bookmark.totalTimeInSeconds AS totalTimeInSeconds "
+              "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
+              "  bookmark.playerState AS playerState "
               "FROM musicvideo"
               "  JOIN files ON"
               "    files.idFile=musicvideo.idFile"
@@ -523,6 +526,7 @@ void CVideoDatabase::CreateViews()
                                       "  files.dateAdded AS dateAdded, "
                                       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
                                       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
+                                      "  bookmark.playerState AS playerState, "
                                       "  rating.rating AS rating, "
                                       "  rating.votes AS votes, "
                                       "  rating.rating_type AS rating_type, "
