@@ -555,7 +555,7 @@ bool CDatabase::UpdateVersion(const std::string &dbName)
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
   }
-  else if (version == 116)
+  else if (!m_sqlite && version == 116)
   {
     m_pDS->query("SELECT COUNT(*) as col_count FROM information_schema.COLUMNS WHERE  TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'movie_view' AND  COLUMN_NAME = 'playerState';");
     if (m_pDS->num_rows() > 0)
