@@ -3855,6 +3855,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MOVIE_DATEADDED).get_asString());
   details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_RESUME_TIME).get_asInt();
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_TOTAL_TIME).get_asInt();
+  details.m_resumePoint.playerState = record->at(VIDEODB_DETAILS_MOVIE_PLAYER_STATE).get_asString();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_MOVIE_USER_RATING).get_asInt();
   details.SetRating(record->at(VIDEODB_DETAILS_MOVIE_RATING).get_asFloat(), 
@@ -4019,6 +4020,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
 
   details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_RESUME_TIME).get_asInt();
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt();
+  details.m_resumePoint.playerState = record->at(VIDEODB_DETAILS_EPISODE_PLAYER_STATE).get_asString();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_EPISODE_USER_RATING).get_asInt();
   details.SetRating(record->at(VIDEODB_DETAILS_EPISODE_RATING).get_asFloat(), 
@@ -4083,6 +4085,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MUSICVIDEO_DATEADDED).get_asString());
   details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_MUSICVIDEO_RESUME_TIME).get_asInt();
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME).get_asInt();
+  details.m_resumePoint.playerState = record->at(VIDEODB_DETAILS_MUSICVIDEO_PLAYER_STATE).get_asString();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_MUSICVIDEO_USER_RATING).get_asInt();
   std::string premieredString = record->at(VIDEODB_DETAILS_MUSICVIDEO_PREMIERED).get_asString();
