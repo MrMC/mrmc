@@ -33,36 +33,158 @@
 
 enum CAChannelIndex {
   CAChannel_PCM_2CHAN = 0,
-  CAChannel_PCM_6CHAN = 1,
-  CAChannel_PCM_8CHAN = 2,
-  CAChannel_PCM_DD5_1 = 3,
+  CAChannel_PCM_5CHAN = 1,
+  CAChannel_PCM_6CHAN = 2,
+  CAChannel_PCM_8CHAN = 3,
+  CAChannel_PCM_DD5_0 = 4,
+  CAChannel_PCM_DD5_1 = 5,
 };
 
-static enum AEChannel CAChannelMap[4][9] = {
+// Stereo (L R) (Stereo eanbled)
+// 5.1 (L C R Ls Rs LFE) (DD5.1 enabled)
+// 5.1 (L R LFE C Ls Rs) (DD5.1 disabled
+// 7.1 (L R LFE C Ls Rs Rls Rrs) (auto)
+static enum AEChannel CAChannelMap[6][9] = {
   { AE_CH_FL , AE_CH_FR , AE_CH_NULL },
+  { AE_CH_FL,  AE_CH_FR,  AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_NULL },
   { AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_NULL },
   { AE_CH_FL , AE_CH_FR , AE_CH_LFE, AE_CH_FC , AE_CH_SL , AE_CH_SR , AE_CH_BL , AE_CH_BR , AE_CH_NULL },
+  { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_NULL},
   { AE_CH_FL , AE_CH_FC , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL },
 };
+
+enum NativeAudioSettings {
+  kAudioStereo    = 0,
+  kAudioDD5_1     = 1,
+  kAudioAuto      = 2,
+  kAudioAutoAtmos = 3,
+  kAudioUnknown   = 4,
+};
+
+static NativeAudioSettings getNativeAudioSettings()
+{
+  NativeAudioSettings nativeAudioSettings = kAudioUnknown;
+
+  AudioComponentDescription description = {0};
+  description.componentType = kAudioUnitType_Output;
+  description.componentSubType = kAudioUnitSubType_RemoteIO;
+  description.componentManufacturer = kAudioUnitManufacturer_Apple;
+
+  // Get component
+  AudioUnit audioUnit;
+  AudioComponent component;
+  component = AudioComponentFindNext(NULL, &description);
+  OSStatus status = AudioComponentInstanceNew(component, &audioUnit);
+  if (status == noErr)
+  {
+    // must initialize for AudioUnitGetPropertyXXXX to work
+    status = AudioUnitInitialize(audioUnit);
+
+    UInt32 layoutSize = 0;
+    status = AudioUnitGetPropertyInfo(audioUnit,
+      kAudioUnitProperty_AudioChannelLayout, kAudioUnitScope_Output, 0, &layoutSize, nullptr);
+    if (status == noErr)
+    {
+      AudioChannelLayout *layout = nullptr;
+      layout = (AudioChannelLayout*)malloc(layoutSize);
+      status = AudioUnitGetProperty(audioUnit,
+        kAudioUnitProperty_AudioChannelLayout, kAudioUnitScope_Output, 0, layout, &layoutSize);
+
+      /*
+      CFStringRef layoutName = nullptr;
+      UInt32 propertySize = sizeof(layoutName);
+      status = AudioFormatGetProperty(kAudioFormatProperty_ChannelLayoutName, layoutSize, layout, &propertySize, &layoutName);
+      if (layoutName)
+      {
+        NSLog(@"ChannelLayoutName: %@", layoutName);
+        CFRelease(layoutName);
+      }
+
+      status = AudioFormatGetProperty(kAudioFormatProperty_ChannelLayoutSimpleName, layoutSize, layout, &propertySize, &layoutName);
+      // later
+      if (layoutName)
+      {
+        NSLog(@"ChannelLayoutSimpleName: %@", layoutName);
+        CFRelease(layoutName);
+      }
+      */
+
+      // function returns noErr only if audio set to Stereo or DD5.1
+      AudioChannelLayoutTag layoutTag = kAudioChannelLayoutTag_Unknown;
+      UInt32 layoutTagSize = sizeof(layoutTagSize);
+      status = AudioFormatGetProperty(kAudioFormatProperty_TagForChannelLayout, layoutSize, layout, &layoutTagSize, &layoutTag);
+      //NSLog(@"mChannelLayoutTag: %u", layoutTag);
+      if (layoutTag == kAudioChannelLayoutTag_Stereo)
+      {
+        CLog::Log(LOGNOTICE, "getNativeAudioSettings:Stereo");
+        nativeAudioSettings = kAudioStereo;
+      }
+      else if (layoutTag == kAudioChannelLayoutTag_MPEG_5_1_C)
+      {
+        CLog::Log(LOGNOTICE, "getNativeAudioSettings:DD5.1");
+        nativeAudioSettings = kAudioDD5_1;
+      }
+      else if (layoutTag == kAudioChannelLayoutTag_Unknown)
+      {
+        long maxChannels = [[AVAudioSession sharedInstance] maximumOutputNumberOfChannels];
+        //NSLog(@"maxChannels: %ld", maxChannels);
+        if (maxChannels > 8)
+        {
+          CLog::Log(LOGNOTICE, "getNativeAudioSettings:Auto, Atmos Enabled");
+          nativeAudioSettings = kAudioAutoAtmos;
+        }
+        else
+        {
+          CLog::Log(LOGNOTICE, "getNativeAudioSettings:Auto, Atmos Disabled");
+          nativeAudioSettings = kAudioAuto;
+        }
+      }
+      else
+      {
+        CLog::Log(LOGNOTICE, "getNativeAudioSettings:Unknown. layoutTag: %u", layoutTag);
+        nativeAudioSettings = kAudioAuto;
+        CFStringRef layoutName = nullptr;
+        UInt32 propertySize = sizeof(layoutName);
+        status = AudioFormatGetProperty(kAudioFormatProperty_ChannelLayoutName, layoutSize, layout, &propertySize, &layoutName);
+        if (layoutName)
+        {
+          const char *layoutNameCString =  [(__bridge NSString *)layoutName UTF8String];
+          CLog::Log(LOGNOTICE, "getNativeAudioSettings:ChannelLayoutName: %s", layoutNameCString);
+          CFRelease(layoutName);
+        }
+      }
+
+      free(layout);
+    }
+
+  }
+
+  AudioUnitUninitialize(audioUnit);
+  AudioComponentInstanceDispose(audioUnit);
+
+  return nativeAudioSettings;
+}
 
 static void dumpAVAudioSessionProperties()
 {
   std::string route = CDarwinUtils::GetAudioRoute();
-  CLog::Log(LOGNOTICE, "%s audio route = %s", __PRETTY_FUNCTION__, route.empty() ? "NONE" : route.c_str());
+  CLog::Log(LOGNOTICE, "dumpAVAudioSessionProperties:audio route = %s", route.empty() ? "NONE" : route.c_str());
 
   AVAudioSession *mySession = [AVAudioSession sharedInstance];
 
-  CLog::Log(LOGNOTICE, "%s sampleRate %f", __PRETTY_FUNCTION__, [mySession sampleRate]);
-  CLog::Log(LOGNOTICE, "%s outputLatency %f", __PRETTY_FUNCTION__, [mySession outputLatency]);
-  CLog::Log(LOGNOTICE, "%s IOBufferDuration %f", __PRETTY_FUNCTION__, [mySession IOBufferDuration]);
-  CLog::Log(LOGNOTICE, "%s outputNumberOfChannels %ld", __PRETTY_FUNCTION__, (long)[mySession outputNumberOfChannels]);
+  CLog::Log(LOGNOTICE, "dumpAVAudioSessionProperties:sampleRate %f", [mySession sampleRate]);
+  CLog::Log(LOGNOTICE, "dumpAVAudioSessionProperties:outputLatency %f", [mySession outputLatency]);
+  CLog::Log(LOGNOTICE, "dumpAVAudioSessionProperties:IOBufferDuration %f", [mySession IOBufferDuration]);
+  CLog::Log(LOGNOTICE, "dumpAVAudioSessionProperties:outputNumberOfChannels %ld", (long)[mySession outputNumberOfChannels]);
   // maximumOutputNumberOfChannels provides hints to tvOS audio settings
   // if 2, then audio is set to two channel stereo. iOS return this unless hdmi connected
   // if 6, then audio is set to Digial Dolby 5.1 OR hdmi path detected sink can only handle 6 channels.
   // if 8, then audio is set to Best Quality AND hdmi path detected sink can handle 8 channels.
-  CLog::Log(LOGNOTICE, "%s maximumOutputNumberOfChannels %ld", __PRETTY_FUNCTION__, (long)[mySession maximumOutputNumberOfChannels]);
+  CLog::Log(LOGNOTICE, "dumpAVAudioSessionProperties:maximumOutputNumberOfChannels %ld", (long)[mySession maximumOutputNumberOfChannels]);
+  int portChannelCount =  CDarwinUtils::GetAudioSessionOutputChannels();
+  CLog::Log(LOGNOTICE, "dumpAVAudioSessionProperties:SessionPortOutputNumberOfChannels %d", portChannelCount);
 
-  CDarwinUtils::DumpAudioDescriptions(__PRETTY_FUNCTION__);
+  CDarwinUtils::DumpAudioDescriptions("dumpAVAudioSessionProperties");
 }
 
 static bool deactivateAudioSession(int count)
@@ -107,19 +229,19 @@ static void setAVAudioSessionProperties(NSTimeInterval bufferseconds, double sam
   err = nullptr;
   [mySession setPreferredOutputNumberOfChannels: channels error: &err];
   if (err != nullptr)
-    CLog::Log(LOGWARNING, "%s setPreferredOutputNumberOfChannels failed", __PRETTY_FUNCTION__);
+    CLog::Log(LOGWARNING, "setAVAudioSessionProperties:setPreferredOutputNumberOfChannels failed");
 
   // change the sameple rate
   err = nullptr;
   [mySession setPreferredSampleRate: samplerate error: &err];
   if (err != nullptr)
-    CLog::Log(LOGWARNING, "%s setPreferredSampleRate failed", __PRETTY_FUNCTION__);
+    CLog::Log(LOGWARNING, "setAVAudioSessionProperties:setPreferredSampleRate failed");
 
   // change the i/o buffer duration
   err = nullptr;
   [mySession setPreferredIOBufferDuration: bufferseconds error: &err];
   if (err != nullptr)
-    CLog::Log(LOGWARNING, "%s setPreferredIOBufferDuration failed", __PRETTY_FUNCTION__);
+    CLog::Log(LOGWARNING, "setAVAudioSessionProperties:setPreferredIOBufferDuration failed");
 
   // reactivate the session
   if (![mySession setActive: YES error: &err])
@@ -412,7 +534,7 @@ bool CAAudioUnitSink::setupAudio()
   OSStatus status = AudioComponentInstanceNew(component, &m_audioUnit);
   if (status != noErr)
   {
-    CLog::Log(LOGERROR, "%s error creating audioUnit (error: %d)", __PRETTY_FUNCTION__, (int)status);
+    CLog::Log(LOGERROR, "CAAudioUnitSink::setupAudio:error creating audioUnit (error: %d)", (int)status);
     return false;
   }
 
@@ -421,16 +543,16 @@ bool CAAudioUnitSink::setupAudio()
   double samplerate = m_outputFormat.mSampleRate;
   int channels = m_outputFormat.mChannelsPerFrame;
   NSTimeInterval bufferseconds = 1024 * m_outputFormat.mChannelsPerFrame / m_outputFormat.mSampleRate;
-  CLog::Log(LOGNOTICE, "%s setting channels %d", __PRETTY_FUNCTION__, channels);
-  CLog::Log(LOGNOTICE, "%s setting samplerate %f", __PRETTY_FUNCTION__, samplerate);
-  CLog::Log(LOGNOTICE, "%s setting buffer duration to %f", __PRETTY_FUNCTION__, bufferseconds);
+  CLog::Log(LOGNOTICE, "CAAudioUnitSink::setupAudio:setting channels %d", channels);
+  CLog::Log(LOGNOTICE, "CAAudioUnitSink::setupAudio:setting samplerate %f", samplerate);
+  CLog::Log(LOGNOTICE, "CAAudioUnitSink::setupAudio:setting buffer duration to %f", bufferseconds);
   setAVAudioSessionProperties(bufferseconds, samplerate, channels);
- 
-	// Get the real output samplerate, the requested might not avaliable
+
+  // Get the real output samplerate, the requested might not avaliable
   Float64 realisedSampleRate = [[AVAudioSession sharedInstance] sampleRate];
   if (m_outputFormat.mSampleRate != realisedSampleRate)
   {
-    CLog::Log(LOGNOTICE, "%s couldn't set requested samplerate %d, AudioUnit will resample to %d instead", __PRETTY_FUNCTION__, (int)m_outputFormat.mSampleRate, (int)realisedSampleRate);
+    CLog::Log(LOGNOTICE, "CAAudioUnitSink::setupAudio:couldn't set requested samplerate %d, AudioUnit will resample to %d instead", (int)m_outputFormat.mSampleRate, (int)realisedSampleRate);
     // if we don't want AudioUnit to resample - but instead let activeae resample -
     // reflect the realised samplerate to the output format here
     // well maybe it is handy in the future - as of writing this
@@ -445,9 +567,10 @@ bool CAAudioUnitSink::setupAudio()
     kAudioUnitScope_Input, 0, &m_outputFormat, ioDataSize);
   if (status != noErr)
   {
-    CLog::Log(LOGERROR, "%s error setting stream format on audioUnit (error: %d)", __PRETTY_FUNCTION__, (int)status);
+    CLog::Log(LOGERROR, "CAAudioUnitSink::setupAudio:error setting stream format on audioUnit (error: %d)", (int)status);
     return false;
   }
+
 
   // Attach a render callback on the unit
   AURenderCallbackStruct callbackStruct = {0};
@@ -457,14 +580,14 @@ bool CAAudioUnitSink::setupAudio()
     kAudioUnitScope_Input, 0, &callbackStruct, sizeof(callbackStruct));
   if (status != noErr)
   {
-    CLog::Log(LOGERROR, "%s error setting render callback for AudioUnit (error: %d)", __PRETTY_FUNCTION__, (int)status);
+    CLog::Log(LOGERROR, "CAAudioUnitSink::setupAudio:error setting render callback for AudioUnit (error: %d)", (int)status);
     return false;
   }
 
   status = AudioUnitInitialize(m_audioUnit);
 	if (status != noErr)
   {
-    CLog::Log(LOGERROR, "%s error initializing AudioUnit (error: %d)", __PRETTY_FUNCTION__, (int)status);
+    CLog::Log(LOGERROR, "CAAudioUnitSink::setupAudio:error initializing AudioUnit (error: %d)", (int)status);
     return false;
   }
 
@@ -474,11 +597,11 @@ bool CAAudioUnitSink::setupAudio()
   m_bufferDuration = [mySession IOBufferDuration];
   //m_totalLatency   = (m_inputLatency + m_bufferDuration) + (m_outputLatency + m_bufferDuration);
   m_totalLatency   = m_outputLatency + m_bufferDuration;
-  CLog::Log(LOGNOTICE, "%s total latency = %f", __PRETTY_FUNCTION__, m_totalLatency);
+  CLog::Log(LOGNOTICE, "CAAudioUnitSink::setupAudio:total latency = %f", m_totalLatency);
 
   m_setup = true;
   std::string formatString;
-  CLog::Log(LOGNOTICE, "%s setup audio format: %s", __PRETTY_FUNCTION__,
+  CLog::Log(LOGNOTICE, "CAAudioUnitSink::setupAudio:setup audio format: %s",
     StreamDescriptionToString(m_outputFormat, formatString));
 
   dumpAVAudioSessionProperties();
@@ -699,6 +822,9 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   else
   {
     UInt32 maxChannels = [[AVAudioSession sharedInstance] maximumOutputNumberOfChannels];
+    NativeAudioSettings nativeAudioSettings = getNativeAudioSettings();
+    UInt32 portChannelCount =  CDarwinUtils::GetAudioSessionOutputChannels();
+    CLog::Log(LOGNOTICE, "CAESinkDARWINIOS::Initialize: portChannelCount %d", portChannelCount);
     audioFormat.mFramesPerPacket = 1; // must be 1
 #if defined(TARGET_DARWIN_TVOS)
     // tvos supports up to 8 channels
@@ -715,7 +841,6 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     audioFormat.mBytesPerPacket  = audioFormat.mBytesPerFrame * audioFormat.mFramesPerPacket;
     audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsPacked;
 
-    CAEChannelInfo channel_info;
     CAChannelIndex channel_index = CAChannel_PCM_6CHAN;
 #if defined(TARGET_DARWIN_TVOS)
     if (maxChannels == 2 && format.m_channelLayout.Count() > 2)
@@ -726,13 +851,23 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
     }
     else if (maxChannels == 6 && format.m_channelLayout.Count() == 6)
     {
-      // if 6, then audio is set to Digial Dolby 5.1, need to use DD mapping
-      channel_index = CAChannel_PCM_DD5_1;
+      // if audio is set to Digial Dolby 5.1, need to use DD mapping
+      if (nativeAudioSettings == kAudioDD5_1)
+        channel_index = CAChannel_PCM_DD5_1;
+      else
+        channel_index = CAChannel_PCM_6CHAN;
+      if (maxChannels > 6)
+        maxChannels = 6;
     }
     else if (format.m_channelLayout.Count() == 5)
     {
-      // if 5, then audio is set to Digial Dolby 5.0, need to use DD mapping
-      channel_index = CAChannel_PCM_DD5_1;
+      // if audio is set to Digial Dolby 5.1, need to use DD mapping
+      if (nativeAudioSettings == kAudioDD5_1)
+        channel_index = CAChannel_PCM_DD5_0;
+      else
+        channel_index = CAChannel_PCM_5CHAN;
+      if (maxChannels > 5)
+        maxChannels = 5;
     }
     else
 #endif
@@ -740,6 +875,8 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
       if (format.m_channelLayout.Count() > 6)
         channel_index = CAChannel_PCM_8CHAN;
     }
+
+    CAEChannelInfo channel_info;
     for (size_t chan = 0; chan < format.m_channelLayout.Count(); ++chan)
     {
       if (chan < maxChannels)
@@ -749,7 +886,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   std::string formatString;
-  CLog::Log(LOGDEBUG, "%s: AudioStreamBasicDescription: %s %s", __PRETTY_FUNCTION__,
+  CLog::Log(LOGDEBUG, "CAESinkDARWINIOS::Initialize: AudioStreamBasicDescription: %s %s",
     StreamDescriptionToString(audioFormat, formatString), passthrough ? "passthrough" : "pcm");
 
 #if DO_440HZ_TONE_TEST
