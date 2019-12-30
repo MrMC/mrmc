@@ -40,7 +40,7 @@ UPLOAD_FILENAME="$(getAppName)$(if [ "$IS_LITE" == "yes" ]; then echo Lite;fi)-$
 mv $(getAppName)*.$OUT_EXT $UPLOAD_FILENAME.$OUT_EXT
 if [ -f *.obb ]
 then
-  mv *.obb main.$APP_VERSION_ANDROID_VERSION$VERSION_SUFFIX.$APP_PACKAGE.obb
+  mv *.obb main.$APP_VERSION_ANDROID_VERSION$VERSION_SUFFIX.$APP_PACKAGE$(if [ "$IS_LITE" == "yes" ]; then echo .lite;fi).obb
 fi
 if [ -f *.symbols*.tar.bz2 ]
 then
