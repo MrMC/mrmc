@@ -69,6 +69,7 @@ public:
   static bool        OpenAppWithOpenURL(const std::string& path);
   static std::string GetAudioRoute();
   static void        DumpAudioDescriptions(const std::string& why);
+  static int         GetAudioSessionOutputChannels();
   static std::string GetHardwareUUID();
   static void        GetAppMemory(int64_t &free, int64_t &delta);
   static bool        IsDarkInterface();
