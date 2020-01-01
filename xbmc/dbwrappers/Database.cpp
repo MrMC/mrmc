@@ -555,38 +555,36 @@ bool CDatabase::UpdateVersion(const std::string &dbName)
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
   }
-  else if (!m_sqlite && version == 116)
+  else if (version == 116)
   {
-    m_pDS->query("SELECT COUNT(*) as col_count FROM information_schema.COLUMNS WHERE  TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'movie_view' AND  COLUMN_NAME = 'playerState';");
-    if (m_pDS->num_rows() > 0)
+    m_pDS->query("select * from movie_view");
+    // there are only 43 columns in 3.9.3 Database v116, there should be 44.
+    // we drop all views and recreate it
+    if (m_pDS->fieldCount() == 43)
     {
-      int check = m_pDS->fv("col_count").get_asInt();
-      if (check == 0)
+      CLog::Log(LOGNOTICE, "Attempting to update the database 116 after 3.9.3 issues");
+      bool success = true;
+      BeginTransaction();
+      try
       {
-        CLog::Log(LOGNOTICE, "Attempting to update the database 116 after 3.9.3 issues");
-        bool success = true;
-        BeginTransaction();
-        try
-        {
-          // drop old analytics, update table(s), recreate analytics, update version
-          m_pDB->drop_analytics();
-          CreateAnalytics();
-        }
-        catch (...)
-        {
-          CLog::Log(LOGERROR, "Exception updating database 116 after 3.9.3 issues");
-          success = false;
-        }
-        if (!success)
-        {
-          CLog::Log(LOGERROR, "Error updating database 116 after 3.9.3 issues");
-          RollbackTransaction();
-        }
-        else
-        {
-          CommitTransaction();
-          CLog::Log(LOGINFO, "Update to version 116 after 3.9.3 issues");
-        }
+        // drop old analytics, recreate analytics
+        m_pDB->drop_analytics();
+        CreateAnalytics();
+      }
+      catch (...)
+      {
+        CLog::Log(LOGERROR, "Exception updating database 116 after 3.9.3 issues");
+        success = false;
+      }
+      if (!success)
+      {
+        CLog::Log(LOGERROR, "Error updating database 116 after 3.9.3 issues");
+        RollbackTransaction();
+      }
+      else
+      {
+        CommitTransaction();
+        CLog::Log(LOGINFO, "Update to version 116 after 3.9.3 issues");
       }
     }
   }
