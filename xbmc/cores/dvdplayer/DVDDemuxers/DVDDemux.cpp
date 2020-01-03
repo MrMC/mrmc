@@ -220,9 +220,10 @@ void CDemuxStream::CheckForInterlaced(const AVCodecParserContext *parser)
   if (vstream == nullptr)
     return;
 
+#if defined(TARGET_ANDROID)
   if (vstream->bMaybeInterlaced > -1) // we already came to a conclusion
     return;
-
+#endif
   if (parser)
   {
     switch(parser->field_order)
@@ -257,9 +258,10 @@ void CDemuxStream::CheckForInterlaced(const AVStream *stream)
   if (vstream == nullptr)
     return;
 
+#if defined(TARGET_ANDROID)
   if (vstream->bMaybeInterlaced > -1) // we already came to a conclusion
     return;
-
+#endif
   if (stream->parser)
   {
     CheckForInterlaced(stream->parser);
