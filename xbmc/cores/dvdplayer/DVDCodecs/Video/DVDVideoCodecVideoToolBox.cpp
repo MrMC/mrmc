@@ -159,9 +159,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       memcpy(hints.extradata, saved_extradata, hints.extrasize);
 
       // if maybe_interlaced is already set ( > 0 )
-      // assume who set it is smarter than us :)
-      // and ignore parseh264 results for interlaced
-      if (hints.maybe_interlaced == -1 && interlaced)
+      // assume we are smarter than others :)
+      if (interlaced)
         hints.maybe_interlaced = 1;
     }
 
