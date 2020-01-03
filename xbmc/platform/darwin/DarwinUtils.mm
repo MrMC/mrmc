@@ -1025,7 +1025,7 @@ void CDarwinUtils::DumpAudioDescriptions(const std::string& why)
 int CDarwinUtils::GetAudioSessionOutputChannels()
 {
   int portChannelCount = 0;
-
+#if defined(TARGET_DARWIN_IOS)
   AVAudioSession *myAudioSession = [AVAudioSession sharedInstance];
   NSArray *currentOutputs = myAudioSession.currentRoute.outputs;
   if ([currentOutputs count] != 0)
@@ -1034,6 +1034,7 @@ int CDarwinUtils::GetAudioSessionOutputChannels()
     if (portDesc)
       portChannelCount = [portDesc.channels count];
   }
+#endif
   return portChannelCount;
 }
 
