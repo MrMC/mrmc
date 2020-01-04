@@ -82,7 +82,8 @@ enum DecoderState
 
 enum EFilterFlags {
   FILTER_NONE                =  0x0,
-  FILTER_DEINTERLACE_YADIF   =  0x1,  //< use first deinterlace mode
+  FILTER_DEINTERLACE_YADIF   =  0x1,
+  FILTER_DEINTERLACE_W3FDIF  =  0x2,
   FILTER_DEINTERLACE_ANY     =  0xf,  //< use any deinterlace mode
   FILTER_DEINTERLACE_FLAGGED = 0x10,  //< only deinterlace flagged frames
   FILTER_DEINTERLACE_HALFED  = 0x20,  //< do half rate deinterlacing
@@ -467,17 +468,26 @@ void CDVDVideoCodecFFmpeg::SetFilters()
     CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
   }
 
-  if (mInt != VS_INTERLACEMETHOD_DEINTERLACE && mInt != VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+  if (mInt != VS_INTERLACEMETHOD_DEINTERLACE &&
+      mInt != VS_INTERLACEMETHOD_DEINTERLACE_HALF &&
+      mInt != VS_INTERLACEMETHOD_DEINTERLACE_W3FDIF &&
+      mInt != VS_INTERLACEMETHOD_DEINTERLACE_W3FDIF_SIMPLE)
+  {
     mInt = VS_INTERLACEMETHOD_NONE;
+  }
 
   unsigned int filters = 0;
 
   if (mDeintMode != VS_DEINTERLACEMODE_OFF)
   {
     if (mInt == VS_INTERLACEMETHOD_DEINTERLACE)
-      filters = FILTER_DEINTERLACE_ANY;
+      filters = FILTER_DEINTERLACE_YADIF;
     else if (mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
-      filters = FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_HALFED;
+      filters = FILTER_DEINTERLACE_YADIF | FILTER_DEINTERLACE_HALFED;
+    else if (mInt == VS_INTERLACEMETHOD_DEINTERLACE_W3FDIF)
+      filters = FILTER_DEINTERLACE_W3FDIF;
+    else if (mInt == VS_INTERLACEMETHOD_DEINTERLACE_W3FDIF_SIMPLE)
+      filters = FILTER_DEINTERLACE_W3FDIF | FILTER_DEINTERLACE_HALFED;
 
     if (mDeintMode == VS_DEINTERLACEMODE_AUTO && filters)
       filters |= FILTER_DEINTERLACE_FLAGGED;
@@ -515,6 +525,16 @@ void CDVDVideoCodecFFmpeg::SetFilters()
 
     if (filters & FILTER_DEINTERLACE_FLAGGED)
       m_filters_next += ":1";
+  }
+  else if (filters & FILTER_DEINTERLACE_W3FDIF)
+  {
+    if (filters & FILTER_DEINTERLACE_HALFED)
+      m_filters_next = "w3fdif=simple";
+    else
+      m_filters_next = "w3fdif=complex";
+
+    if (filters & FILTER_DEINTERLACE_FLAGGED)
+      m_filters_next += ":interlaced";
   }
 }
 
