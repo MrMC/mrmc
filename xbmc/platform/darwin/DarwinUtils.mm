@@ -993,12 +993,16 @@ void CDarwinUtils::DumpAudioDescriptions(const std::string& why)
     {
       AVAudioSessionPortDescription *portDesc = [currentInputs objectAtIndex:k];
       CLog::Log(LOGDEBUG, "DumpAudioDescriptions: portName, %s", [portDesc.portName UTF8String]);
+      CLog::Log(LOGDEBUG, "DumpAudioDescriptions: portType, %s", [portDesc.portType UTF8String]);
+      CLog::Log(LOGDEBUG, "DumpAudioDescriptions: portChannelCount, %lu", (unsigned long)[portDesc.channels count]);
+      /*
       for (AVAudioSessionChannelDescription *channel in portDesc.channels)
       {
         CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelName , %s", [channel.channelName UTF8String]);
         //CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelLabel, %d", channel.channelLabel);
         //CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelNumber, %lu", (unsigned long)channel.channelNumber);
       }
+      */
     }
   }
 
@@ -1011,13 +1015,15 @@ void CDarwinUtils::DumpAudioDescriptions(const std::string& why)
     AVAudioSessionPortDescription *portDesc = [currentOutputs objectAtIndex:k];
     CLog::Log(LOGDEBUG, "DumpAudioDescriptions: portName, %s", [portDesc.portName UTF8String]);
     CLog::Log(LOGDEBUG, "DumpAudioDescriptions: portType, %s", [portDesc.portType UTF8String]);
-    //CLog::Log(LOGDEBUG, "DumpAudioDescriptions: portChannelCount, %lu", (unsigned long)[portDesc.channels count]);
+    CLog::Log(LOGDEBUG, "DumpAudioDescriptions: portChannelCount, %lu", (unsigned long)[portDesc.channels count]);
+    /*
     for (AVAudioSessionChannelDescription *channel in portDesc.channels)
     {
       CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelName , %s", [channel.channelName UTF8String]);
       //CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelLabel, %d", channel.channelLabel);
       //CLog::Log(LOGDEBUG, "DumpAudioDescriptions: channelNumber, %lu", (unsigned long)channel.channelNumber);
     }
+    */
   }
 #endif
 }

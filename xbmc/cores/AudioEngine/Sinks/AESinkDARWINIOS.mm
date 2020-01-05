@@ -223,6 +223,10 @@ static void setAVAudioSessionProperties(NSTimeInterval bufferseconds, double sam
   if (!deactivateAudioSession(10))
     CLog::Log(LOGWARNING, "AVAudioSession setActive NO failed: %ld", (long)err.code);
 
+  int deactivateMaxchannels = [mySession maximumOutputNumberOfChannels];
+
+  CLog::Log(LOGNOTICE, "dumpAVAudioSessionProperties:maxchannels %d, deactivateMaxchannels %d",maxchannels, deactivateMaxchannels);
+
   // change the number of channels
   if (channels > maxchannels)
     channels = maxchannels;
@@ -895,29 +899,28 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   // they might be change.
   if (!passthrough)
   {
-    UInt32 maxChannels = [[AVAudioSession sharedInstance] maximumOutputNumberOfChannels];
+    int maxChannels = [[AVAudioSession sharedInstance] maximumOutputNumberOfChannels];
+    int outputChannels = [[AVAudioSession sharedInstance] outputNumberOfChannels];
     NativeAudioSettings nativeAudioSettings = getNativeAudioSettings();
     UInt32 portChannelCount =  CDarwinUtils::GetAudioSessionOutputChannels();
-    CLog::Log(LOGNOTICE, "CAESinkDARWINIOS::Initialize: maxChannels %d, portChannelCount %d",
-      maxChannels, portChannelCount);
 
     CAChannelIndex channel_index = CAChannel_PCM_6CHAN;
 #if defined(TARGET_DARWIN_TVOS)
-    if (maxChannels == 2 && format.m_channelLayout.Count() > 2)
+    if (outputChannels == 2 && format.m_channelLayout.Count() > 2)
     {
       // if 2, then audio is set to 2 channel PCM
       // aimed at handling airplay
       channel_index = CAChannel_PCM_2CHAN;
     }
-    else if (maxChannels == 6 && format.m_channelLayout.Count() == 6)
+    else if (outputChannels == 6 && format.m_channelLayout.Count() == 6)
     {
       // if audio is set to Digial Dolby 5.1, need to use DD mapping
       if (nativeAudioSettings == kAudioDD5_1)
         channel_index = CAChannel_PCM_DD5_1;
       else
         channel_index = CAChannel_PCM_6CHAN;
-      if (maxChannels > 6)
-        maxChannels = 6;
+      if (outputChannels > 6)
+        outputChannels = 6;
     }
     else if (format.m_channelLayout.Count() == 5)
     {
@@ -926,8 +929,8 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
         channel_index = CAChannel_PCM_DD5_0;
       else
         channel_index = CAChannel_PCM_5CHAN;
-      if (maxChannels > 5)
-        maxChannels = 5;
+      if (outputChannels > 5)
+        outputChannels = 5;
     }
     else
 #endif
@@ -935,11 +938,13 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
       if (format.m_channelLayout.Count() > 6)
         channel_index = CAChannel_PCM_8CHAN;
     }
+    CLog::Log(LOGNOTICE, "CAESinkDARWINIOS::Initialize: channel_index %d, maxChannels %d, outputChannels %d, portChannelCount %d",
+      channel_index, maxChannels, outputChannels, portChannelCount);
 
     CAEChannelInfo channel_info;
     for (size_t chan = 0; chan < format.m_channelLayout.Count(); ++chan)
     {
-      if (chan < maxChannels)
+      if (chan < (size_t)outputChannels)
         channel_info += CAChannelMap[channel_index][chan];
     }
     format.m_channelLayout = channel_info;
