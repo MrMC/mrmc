@@ -99,7 +99,7 @@
 	<!-- output: <results><entity><title>*</title><year>*</year><language>*</language><url>*</url><id>*</id></entity>*</results> -->
 	<GetSearchResultsAuth dest="6" clearbuffers="no">
 		<RegExp input="$$1" output="&lt;series&gt;&lt;id&gt;\3&lt;/id&gt;&lt;seriesName&gt;\4&lt;/seriesName&gt;&lt;aliases&gt;\1&lt;/aliases&gt;&lt;firstAired&gt;\2&lt;/firstAired&gt;&lt;year&gt;\5&lt;/year&gt;&lt;/series&gt;" dest="4">
-			<expression repeat="yes" fixchars="1,4">"aliases":\s*?\[([^]]*)\],\s*?"banner":\s*?"[^"]*",\s*?"firstAired":\s*?(?:"([^"]*)"|null),\s*?"id":\s*?(\d+),\s*?"network":\s*?(?:"[^"]*"|null),\s*?"overview":\s*?(?:"[^}]*"|null),\s*?"seriesName":\s*?"([^}]*?(?:\(([0-9]{4})\))?)",\s*?"slug":\s*?"[^"]*"</expression>
+			<expression repeat="yes" fixchars="1,4">"aliases":\s*?\[([^]]*)\],\s*?"banner":\s*?(?:"[^"]*"|null),\s*?"firstAired":\s*?(?:"([^"]*)"|null),\s*?"id":\s*?(\d+),\s*?"image":\s*?(?:"[^"]*"|null),\s*?"network":\s*?(?:"[^"]*"|null),.*?"seriesName":\s*?"([^}]*?(?:\(([0-9]{4})\))?)",\s*?"slug":\s*?"[^"]*"</expression>
 		</RegExp>
 		<RegExp input="" output="" dest="6">
 			<expression/>

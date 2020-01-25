@@ -1,3 +1,8 @@
+[B]2.1.4[/B]
+- Fixed: search results following yet another change in tvdb API response
+- Fixed: search results 
+- Fixed: Another patch in order to fix TVDB inconsistency (trying to find series without overview)
+
 [B]2.1.1[/B]
 - Fixed: artwork preview (Scudlee rocks! Thank you!)
 
