@@ -70,10 +70,20 @@ static ulxr::MethodResponse ServerChat(ulxr::MethodCall methodcall)
   }
   catch(...)
   {
-    std::string method = methodcall.getMethodName();
-    CLog::Log(LOGDEBUG, "%s - crashed with %s", __PRETTY_FUNCTION__, method.c_str());
+    try
+    {
+      std::unique_ptr<ulxr::TcpIpConnection> connection(new ulxr::TcpIpConnection(false, ULXR_PCHAR(strServerUrl), 80));
+      ulxr::HttpProtocol    protocol(connection.get());
+      ulxr::Requester       client(&protocol);
+      response = client.call(methodcall, ULXR_PCHAR("/xml-rpc"));
+      CLog::Log(LOGDEBUG, "%s - finished -  %s", __PRETTY_FUNCTION__, method.c_str());
+    }
+    catch(...)
+    {
+      std::string method = methodcall.getMethodName();
+      CLog::Log(LOGDEBUG, "%s - crashed with %s", __PRETTY_FUNCTION__, method.c_str());
+    }
   }
-  
   return response;
 }
 
