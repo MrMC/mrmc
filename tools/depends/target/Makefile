@@ -48,7 +48,6 @@ DEPENDS += libssh
 DEPENDS += taglib
 DEPENDS += libusb
 DEPENDS += libnfs
-DEPENDS += libulxmlrpcpp
 DEPENDS += libxslt
 DEPENDS += libdcadec
 DEPENDS += ffmpeg
