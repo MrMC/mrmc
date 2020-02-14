@@ -20,27 +20,6 @@
 
 #include <stdlib.h>
 
-// stupid libs that include their config.h
-#define PACKAGE _PACKAGE
-#undef PACKAGE
-#define VERSION _VERSION
-#undef VERSION
-#define __unix__
-#include <ulxmlrpcpp/ulxr_tcpip_connection.h>
-#include <ulxmlrpcpp/ulxr_ssl_connection.h>
-#include <ulxmlrpcpp/ulxr_http_protocol.h>
-#include <ulxmlrpcpp/ulxr_requester.h>
-#include <ulxmlrpcpp/ulxr_value.h>
-#include <ulxmlrpcpp/ulxr_except.h>
-#include <ulxmlrpcpp/ulxr_log4j.h>
-#include "zlib.h"
-#include "zconf.h"
-#undef VERSION
-#define _VERSION VERSION
-#undef PACKAGE
-#define _PACKAGE PACKAGE
-#undef __unix__
-
 #include "OpenSubtitlesSearch.h"
 #include "SubtitleUtilities.h"
 
@@ -54,37 +33,31 @@
 #include "utils/Variant.h"
 #include "utils/LangCodeExpander.h"
 #include "video/VideoInfoTag.h"
+#include "URL.h"
+#include "filesystem/CurlFile.h"
+#include "filesystem/ZipManager.h"
+#include "utils/JSONVariantParser.h"
+#include "utils/URIUtils.h"
 
-static ulxr::MethodResponse ServerChat(ulxr::MethodCall methodcall)
+static std::string restUrl = "https://rest.opensubtitles.org";
+
+CVariant ServerChat(CURL curl)
 {
-  ulxr::MethodResponse response;
-  std::string strServerUrl = "api.opensubtitles.org";
-  std::string method = methodcall.getMethodName();
-  try
+  std::string strUA = StringUtils::Format("mrmc_v%i.%i",CCompileInfo::GetMajor(),CCompileInfo::GetMinor());
+  StringUtils::ToLower(strUA);
+  CVariant resultObject;
+  std::string responseStr;
+  XFILE::CCurlFile curlFile;
+  curlFile.SetRequestHeader("X-User-Agent", strUA);
+  if (curlFile.Get(curl.Get(),responseStr))
   {
-    std::unique_ptr<ulxr::SSLConnection> connection(new ulxr::SSLConnection(false, ULXR_PCHAR(strServerUrl), 443));
-    ulxr::HttpProtocol    protocol(connection.get());
-    ulxr::Requester       client(&protocol);
-    response = client.call(methodcall, ULXR_PCHAR("/xml-rpc"));
-    CLog::Log(LOGDEBUG, "%s - finished -  %s", __PRETTY_FUNCTION__, method.c_str());
+      if (CJSONVariantParser::Parse(responseStr, resultObject))
+      {
+        if (resultObject.isObject() || resultObject.isArray())
+          return resultObject;
+      }
   }
-  catch(...)
-  {
-    try
-    {
-      std::unique_ptr<ulxr::TcpIpConnection> connection(new ulxr::TcpIpConnection(false, ULXR_PCHAR(strServerUrl), 80));
-      ulxr::HttpProtocol    protocol(connection.get());
-      ulxr::Requester       client(&protocol);
-      response = client.call(methodcall, ULXR_PCHAR("/xml-rpc"));
-      CLog::Log(LOGDEBUG, "%s - finished -  %s", __PRETTY_FUNCTION__, method.c_str());
-    }
-    catch(...)
-    {
-      std::string method = methodcall.getMethodName();
-      CLog::Log(LOGDEBUG, "%s - crashed with %s", __PRETTY_FUNCTION__, method.c_str());
-    }
-  }
-  return response;
+  return resultObject;
 }
 
 COpenSubtitlesSearch::COpenSubtitlesSearch()
@@ -109,72 +82,41 @@ void COpenSubtitlesSearch::ChangeUserPass()
   m_authenticated = CPasswordManager::GetInstance().SetUserPass(ModuleName(), m_strUser, m_strPass);
 }
 
-bool COpenSubtitlesSearch::LogIn()
-{
-  if (!m_authenticated)
-  {
-    CPasswordManager::GetInstance().SetUserPass(ModuleName(), m_strUser, m_strPass);
-  }
-  
-  std::string strUA = StringUtils::Format("mrmc_v%i.%i",CCompileInfo::GetMajor(),CCompileInfo::GetMinor());
-  StringUtils::ToLower(strUA);
-  ulxr::MethodCall      methodcall(ULXR_PCHAR("LogIn"));
-  methodcall.addParam(ulxr::RpcString(ULXR_PCHAR(m_strUser)));         // username
-  methodcall.addParam(ulxr::RpcString(ULXR_PCHAR(m_strPass)));         // password
-  methodcall.addParam(ulxr::RpcString(ULXR_PCHAR("eng")));             // language
-  methodcall.addParam(ulxr::RpcString(ULXR_PCHAR(strUA)));             // useragent string
-  ulxr::MethodResponse response = ServerChat(methodcall);
-  ulxr::Struct cap = response.getResult();
-  if (response.isOK() && cap.hasMember(ULXR_PCHAR("status")))
-  {
-    ulxr::RpcString status = cap.getMember(ULXR_PCHAR("status"));
-    CLog::Log(LOGDEBUG, "%s - response - %s", __PRETTY_FUNCTION__, status.getString().c_str());
-    if (status.getString() == "200 OK")
-    {
-      ulxr::RpcString token = cap.getMember(ULXR_PCHAR("token"));
-      m_strToken = token.getString();
-      m_authenticated = true;
-      return true;
-    }
-  }
-  m_authenticated = false;
-  return false;
-}
-
 bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::string strLanguages,
                                           const std::string preferredLanguage,
                                           CFileItemList &subtitlesList,
                                           const std::string &strSearch)
 {
-  if (LogIn())
-  {
-    std::string strSize;
-    std::string strHash;
-    CSubtitleUtilities::SubtitleFileSizeAndHash(path, strSize, strHash);
-    CLog::Log(LOGDEBUG, "%s - HASH - %s and Size - %s", __FUNCTION__, strHash.c_str(), strSize.c_str());
 
-    ulxr::Array searchList;
-    
-    std::string lg;
-    std::vector<std::string> languages3;
-    std::vector<std::string> languages = StringUtils::Split(strLanguages, ',');
-    // convert from English to eng
-    for(std::vector<std::string>::iterator it = languages.begin(); it != languages.end(); ++it)
-    {
-      g_LangCodeExpander.ConvertToISO6392B((*it).c_str(),lg);
-      languages3.push_back(lg);
-    }
-    
-    //  hash search
-    ulxr::Struct searchHashParam;
-    std::string strLang = StringUtils::Join(languages3, ",");
-    searchHashParam.addMember(ULXR_PCHAR("sublanguageid"), ulxr::RpcString(strLang));
-    searchHashParam.addMember(ULXR_PCHAR("moviehash"),     ulxr::RpcString(strHash));
-    searchHashParam.addMember(ULXR_PCHAR("moviebytesize"), ulxr::RpcString(strSize));
-    searchList.addItem(searchHashParam);
-    
+  if (!m_authenticated)
+  {
+    CPasswordManager::GetInstance().SetUserPass(ModuleName(), m_strUser, m_strPass);
+  }
+
+  std::string lg;
+  CURL curl(restUrl);
+  CVariant responseJ;
+  std::string strSize;
+  std::string strHash;
+  std::vector<std::string> languages = StringUtils::Split(strLanguages, ',');
+  CSubtitleUtilities::SubtitleFileSizeAndHash(path, strSize, strHash);
+  CLog::Log(LOGDEBUG, "%s - HASH - %s and Size - %s", __FUNCTION__, strHash.c_str(), strSize.c_str());
+
+  // convert from English to eng
+  for(std::vector<std::string>::iterator it = languages.begin(); it != languages.end(); ++it)
+  {
+    g_LangCodeExpander.ConvertToISO6392B((*it).c_str(),lg);
+    std::string filename = StringUtils::Format("search/moviehash-%s/moviebytesize-%s/sublanguageid-%s",strHash.c_str(), strSize.c_str(),lg.c_str());
+    curl.SetFileName(filename);
+    CVariant response = ServerChat(curl);
+    if (response[0].size() > 0)
+      responseJ.append(response[0]);
+  }
+
+  if (responseJ.size() < 1)
+  {
     CVideoInfoTag* tag = g_application.CurrentFileItem().GetVideoInfoTag();
-    
+
     std::string searchString;
     if (!strSearch.empty())
     {
@@ -182,7 +124,7 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
     }
     else if (tag->m_iEpisode > -1)
     {
-      searchString = StringUtils::Format("%s S%.2dE%.2d",tag->m_strShowTitle.c_str()
+      searchString = StringUtils::Format("%s/season-%.2d/episode-%.2d",tag->m_strShowTitle.c_str()
                                                         ,tag->m_iSeason
                                                         ,tag->m_iEpisode
                                          );
@@ -198,7 +140,7 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
       else
       {
         std::string strName = g_application.CurrentFileItem().GetMovieName(false);
-        
+
         std::string strTitleAndYear;
         std::string strTitle;
         std::string strYear;
@@ -207,134 +149,107 @@ bool COpenSubtitlesSearch::SubtitleSearch(const std::string &path,const std::str
       }
     }
 
-    StringUtils::Replace(searchString, " ", "+");
+    StringUtils::Replace(searchString, " ", "%20");
     StringUtils::Replace(searchString, "'", "");
-    ulxr::Struct searchStringParam;
-    
-    //  title search
-    searchStringParam.addMember(ULXR_PCHAR("sublanguageid"), ulxr::RpcString(StringUtils::Join(languages3, ",")));
-    searchStringParam.addMember(ULXR_PCHAR("query"),         ulxr::RpcString(searchString));
-    searchList.addItem(searchStringParam);
-    
-    ulxr::MethodCall      methodcall(ULXR_PCHAR("SearchSubtitles"));
-    ulxr::RpcString token = m_strToken;
-    methodcall.addParam(token);
-    methodcall.addParam(searchList);
-    ulxr::MethodResponse response = ServerChat(methodcall);
-  
-    ulxr::Struct cap = response.getResult();
-    if (response.isOK() && cap.hasMember(ULXR_PCHAR("status")))
+
+    // convert from English to eng
+    for(std::vector<std::string>::iterator it = languages.begin(); it != languages.end(); ++it)
     {
-      ulxr::RpcString status = cap.getMember(ULXR_PCHAR("status"));
-      CLog::Log(LOGDEBUG, "%s - response - %s", __PRETTY_FUNCTION__, status.getString().c_str());
-      if (status.getString() == "200 OK")
-      {
-        if (cap.hasMember(ULXR_PCHAR("data")))
-        {
-          ulxr::Array subs = cap.getMember(ULXR_PCHAR("data"));      
-          for (unsigned i = 0; i < subs.size(); ++i)
-          {
-            ulxr::Struct entry = subs.getItem(i);
-            CFileItemPtr item(new CFileItem());
-            if (entry.hasMember(ULXR_PCHAR("LanguageName")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("LanguageName"));
-              item->SetLabel(value.getString());
-            }
-            if (entry.hasMember(ULXR_PCHAR("SubFileName")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("SubFileName"));
-              item->SetLabel2(value.getString());
-            }
-            if (entry.hasMember(ULXR_PCHAR("SubRating")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("SubRating"));
-              item->SetIconImage(StringUtils::Format("%i", atoi(value.getString().c_str())/2));
-            }
-            if (entry.hasMember(ULXR_PCHAR("ISO639")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("ISO639"));
-              item->SetArt("thumb",value.getString());
-            }
-            if (entry.hasMember(ULXR_PCHAR("MatchedBy")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("MatchedBy"));
-              item->SetProperty("sync", value.getString() == "moviehash" ? "true":"false");
-            }
-            if (entry.hasMember(ULXR_PCHAR("SubHearingImpaired")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("SubHearingImpaired"));
-              item->SetProperty("hearing_imp", value.getString() == "1" ? "true":"false");
-            }
-            if (entry.hasMember(ULXR_PCHAR("ZipDownloadLink")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("ZipDownloadLink"));
-              item->SetProperty("ZipDownloadLink", value.getString());
-            }
-            if (entry.hasMember(ULXR_PCHAR("IDSubtitleFile")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("IDSubtitleFile"));
-              item->SetProperty("IDSubtitleFile", value.getString());
-            }
-            if (entry.hasMember(ULXR_PCHAR("SubFormat")))
-            {
-              ulxr::RpcString value = entry.getMember(ULXR_PCHAR("SubFormat"));
-              item->SetProperty("SubFormat", value.getString());
-            }
-            subtitlesList.Add(item);
-          }
-        }
-        CLog::Log(LOGDEBUG, "%s - hold", __PRETTY_FUNCTION__);
-        return true;
-      }
+      g_LangCodeExpander.ConvertToISO6392B((*it).c_str(),lg);
+      std::string filename = StringUtils::Format("search/query-%s/sublanguageid-%s",searchString.c_str(),lg.c_str());
+      curl.SetFileName(filename);
+      CVariant response = ServerChat(curl);
+      if (response[0].size() > 0)
+        responseJ.append(response[0]);
     }
+  }
+
+  if (responseJ.size() > 0 && !responseJ.isNull() && responseJ.isArray())
+  {
+    for (auto variantIt = responseJ.begin_array(); variantIt != responseJ.end_array(); ++variantIt)
+    {
+      CFileItemPtr item(new CFileItem());
+      const auto varItem = *variantIt;
+      if (varItem.isMember("LanguageName"))
+      {
+        item->SetLabel(varItem["LanguageName"].asString());
+      }
+      if (varItem.isMember("SubFileName"))
+      {
+        item->SetLabel2(varItem["SubFileName"].asString());
+      }
+      if (varItem.isMember("SubRating"))
+      {
+        item->SetIconImage(StringUtils::Format("%lli", varItem["SubRating"].asInteger()/2));
+      }
+      if (varItem.isMember("ISO639"))
+      {
+        item->SetArt("thumb",varItem["ISO639"].asString());
+      }
+      if (varItem.isMember("MatchedBy"))
+      {
+        item->SetProperty("sync", varItem["MatchedBy"].asString() == "moviehash" ? "true":"false");
+      }
+      if (varItem.isMember("SubHearingImpaired"))
+      {
+        item->SetProperty("hearing_imp", varItem["SubHearingImpaired"].asString() == "1" ? "true":"false");
+      }
+      if (varItem.isMember("ZipDownloadLink"))
+      {
+        item->SetProperty("ZipDownloadLink", varItem["ZipDownloadLink"].asString());
+      }
+      if (varItem.isMember("IDSubtitleFile"))
+      {
+        item->SetProperty("IDSubtitleFile", varItem["IDSubtitleFile"].asString());
+      }
+      if (varItem.isMember("SubFormat"))
+      {
+        item->SetProperty("SubFormat", varItem["SubFormat"].asString());
+      }
+      if (varItem.isMember("SubFileName"))
+      {
+        item->SetProperty("SubFileName", varItem["SubFileName"].asString());
+      }
+      subtitlesList.Add(item);
+    }
+    return true;
   }
   return false;
 }
 
 bool COpenSubtitlesSearch::Download(const CFileItem *subItem,std::vector<std::string> &items)
 {
-  ulxr::MethodCall      methodcall(ULXR_PCHAR("DownloadSubtitles"));
-  ulxr::Array subtitleIDlist;
-  ulxr::RpcString ID = subItem->GetProperty("IDSubtitleFile").asString();
-  subtitleIDlist.addItem(ID);
-  ulxr::RpcString token = m_strToken;
-  methodcall.addParam(token);
-  methodcall.addParam(subtitleIDlist);
-  
-  ulxr::MethodResponse response = ServerChat(methodcall);
-  ulxr::Struct cap = response.getResult();
-  
-  if (response.isOK() && cap.hasMember(ULXR_PCHAR("status")))
+  CURL curl(subItem->GetProperty("ZipDownloadLink").asString());
+
+  CURL zipPath(subItem->GetProperty("ZipDownloadLink").asString());
+  zipPath.SetUserName(m_strUser);
+  zipPath.SetPassword(m_strPass);
+  XFILE::CCurlFile http;
+  std::string UUID = StringUtils::CreateUUID();
+  std::string destination = StringUtils::Format("special://temp/%s.zip",UUID.c_str());
+  if (http.Download(zipPath.Get(), destination))
   {
-    ulxr::RpcString status = cap.getMember(ULXR_PCHAR("status"));
-    CLog::Log(LOGDEBUG, "%s - response - %s", __PRETTY_FUNCTION__, status.getString().c_str());
-    if (status.getString() == "200 OK")
+    CURL pathToUrl(destination);
+    std::vector<SZipEntry> entry;
+    CURL url = URIUtils::CreateArchivePath("zip", pathToUrl);
+    g_ZipManager.GetZipList(url, entry);
+    for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
     {
-      if (cap.hasMember(ULXR_PCHAR("data")))
+      if (it->name[strlen(it->name)-1] == '/') // skip dirs
+        continue;
+      std::string strFilePath(it->name);
+
+      CURL zipPath = URIUtils::CreateArchivePath("zip", pathToUrl, strFilePath);
+      std::string sub = zipPath.Get();
+      std::string subFormat = StringUtils::Format(".%s",subItem->GetProperty("SubFormat").asString().c_str());
+      if (URIUtils::HasExtension(sub, subFormat))
       {
-        ulxr::Array subs = cap.getMember(ULXR_PCHAR("data"));
-        for (unsigned i = 0; i < subs.size(); ++i)
-        {
-          ulxr::Struct entry = subs.getItem(i);
-          ulxr::RpcString data = entry.getMember(ULXR_PCHAR("data"));
-          std::string zipdata = data.getString();
-          std::string zipdata64Decoded = Base64::Decode(zipdata);
-          std::string zipdata64DecodedInflated;
-          CSubtitleUtilities::gzipInflate(zipdata64Decoded,zipdata64DecodedInflated);
-          XFILE::CFile file;
-          std::string destination = StringUtils::Format("special://temp/%s.%s",
-                                                        StringUtils::CreateUUID().c_str(),
-                                                        subItem->GetProperty("SubFormat").asString().c_str()
-                                                        );
-          file.OpenForWrite(destination);
-          file.Write(zipdata64DecodedInflated.c_str(), zipdata64DecodedInflated.size());
-          items.push_back(destination);
-        }
-        CLog::Log(LOGDEBUG, "%s - OpenSubitles subfile downloaded", __PRETTY_FUNCTION__);
-        return true;
+        std::string destinationSub = StringUtils::Format("special://temp/%s%s",UUID.c_str(),subFormat.c_str());
+        if (XFILE::CFile::Copy(sub, destinationSub))
+          items.push_back(destinationSub);
       }
     }
+    XFILE::CFile::Delete(destination);
   }
-  return false;
+  return items.size() > 0;
 }
